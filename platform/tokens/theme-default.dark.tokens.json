@@ -3373,6 +3373,116 @@
           "purpose": "The bullet of a bulleted list."
         }
       }
+    },
+    "data-grid-header-top": {
+      "$value": "{plx-ref.color-gray-900}",
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "DataGrid: the header band at its top (silver, the top of its gradient) (owner, 2026-10-23)."
+        }
+      }
+    },
+    "data-grid-header-bottom": {
+      "$value": "{plx-ref.color-gray-900}",
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "DataGrid: the header band at its bottom (silver, the bottom of its gradient) (owner, 2026-10-23)."
+        }
+      }
+    },
+    "data-grid-header-edge": {
+      "$value": "{plx-ref.color-gray-700}",
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "DataGrid: the line under the header, and the line before its options button (owner, 2026-10-23)."
+        }
+      }
+    },
+    "data-grid-header-hover-top": {
+      "$value": "{plx-ref.color-gray-800}",
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "DataGrid: a header column under the pointer, the top of its gradient (owner, 2026-10-23)."
+        }
+      }
+    },
+    "data-grid-header-hover-bottom": {
+      "$value": "{plx-ref.color-gray-800}",
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "DataGrid: a header column under the pointer, the bottom of its gradient (owner, 2026-10-23)."
+        }
+      }
+    },
+    "data-grid-header-hover-line": {
+      "$value": "{plx-ref.color-gray-700}",
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "DataGrid: the header’s column lines while the pointer is over the header (owner, 2026-10-23)."
+        }
+      }
+    },
+    "data-grid-header-hover-edge": {
+      "$value": "{plx-ref.color-gray-500}",
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "DataGrid: the two lines of the header column under the pointer (owner, 2026-10-23)."
+        }
+      }
+    },
+    "data-grid-row-hover-line": {
+      "$value": "{plx-ref.color-gray-700}",
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "DataGrid: the lines of a row under the pointer (top, bottom, between its cells) (owner, 2026-10-23)."
+        }
+      }
+    },
+    "data-grid-row-selected-line": {
+      "$value": "{plx-ref.color-blue-650}",
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "DataGrid: the lines of a selected row (owner, 2026-10-23)."
+        }
+      }
+    },
+    "data-grid-row-selected-bar": {
+      "$value": "{plx-ref.color-blue-300}",
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "DataGrid: the bar at the start of a selected row (owner, 2026-10-23)."
+        }
+      }
+    },
+    "data-grid-menu-button-hover": {
+      "$value": "{plx-ref.color-gray-800}",
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "DataGrid: the header’s options button under the pointer (owner, 2026-10-23)."
+        }
+      }
     }
   }
 }

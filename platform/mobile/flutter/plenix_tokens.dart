@@ -350,6 +350,17 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
   final Color categoryGreySoftBorder;
   final Color categoryGreyOnSoft;
   final Color listBullet;
+  final Color dataGridHeaderTop;
+  final Color dataGridHeaderBottom;
+  final Color dataGridHeaderEdge;
+  final Color dataGridHeaderHoverTop;
+  final Color dataGridHeaderHoverBottom;
+  final Color dataGridHeaderHoverLine;
+  final Color dataGridHeaderHoverEdge;
+  final Color dataGridRowHoverLine;
+  final Color dataGridRowSelectedLine;
+  final Color dataGridRowSelectedBar;
+  final Color dataGridMenuButtonHover;
   const PlenixTheme({
     required this.datavizCategorical1,
     required this.datavizCategorical2,
@@ -694,6 +705,17 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     required this.categoryGreySoftBorder,
     required this.categoryGreyOnSoft,
     required this.listBullet,
+    required this.dataGridHeaderTop,
+    required this.dataGridHeaderBottom,
+    required this.dataGridHeaderEdge,
+    required this.dataGridHeaderHoverTop,
+    required this.dataGridHeaderHoverBottom,
+    required this.dataGridHeaderHoverLine,
+    required this.dataGridHeaderHoverEdge,
+    required this.dataGridRowHoverLine,
+    required this.dataGridRowSelectedLine,
+    required this.dataGridRowSelectedBar,
+    required this.dataGridMenuButtonHover,
   });
   static const light = PlenixTheme(
     datavizCategorical1: Color(0xFF2A6FDB),
@@ -914,9 +936,9 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     dataGridTextMuted: Color(0xFF56585E),
     tableTextMuted: Color(0xFF56585E),
     dataGridTextSubtle: Color(0xFF8E9094),
-    dataGridRowHover: Color(0xFFE8E9EC),
-    dataGridRowSelected: Color(0xFFC8DFF7),
-    dataGridRowSelectedHover: Color(0xFFF3F3F3),
+    dataGridRowHover: Color(0xFFF3F3F3),
+    dataGridRowSelected: Color(0xFFEBF0F7),
+    dataGridRowSelectedHover: Color(0xFFC8DFF7),
     dataGridRowSelectedText: Color(0xFF1F5BB8),
     dataGridAccent: Color(0xFF2A6FDB),
     dataGridDanger: Color(0xFFB70000),
@@ -1039,6 +1061,17 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     categoryGreySoftBorder: Color(0xFFD0D0D0),
     categoryGreyOnSoft: Color(0xFF56585E),
     listBullet: Color(0xFFA3A6AD),
+    dataGridHeaderTop: Color(0xFFFCFCFC),
+    dataGridHeaderBottom: Color(0xFFE8E9EC),
+    dataGridHeaderEdge: Color(0xFFA3A6AD),
+    dataGridHeaderHoverTop: Color(0xFFF3F3F3),
+    dataGridHeaderHoverBottom: Color(0xFFD0D0D0),
+    dataGridHeaderHoverLine: Color(0xFFC0C2C8),
+    dataGridHeaderHoverEdge: Color(0xFFA3A6AD),
+    dataGridRowHoverLine: Color(0xFFD0D0D0),
+    dataGridRowSelectedLine: Color(0xFFC0CCDA),
+    dataGridRowSelectedBar: Color(0xFF1F5BB8),
+    dataGridMenuButtonHover: Color(0xFFE8E9EC),
   );
   static const dark = PlenixTheme(
     datavizCategorical1: Color(0xFF2A6FDB),
@@ -1384,6 +1417,17 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     categoryGreySoftBorder: Color(0xFFD0D0D0),
     categoryGreyOnSoft: Color(0xFF56585E),
     listBullet: Color(0xFFA3A6AD),
+    dataGridHeaderTop: Color(0xFF34363B),
+    dataGridHeaderBottom: Color(0xFF34363B),
+    dataGridHeaderEdge: Color(0xFF56585E),
+    dataGridHeaderHoverTop: Color(0xFF444444),
+    dataGridHeaderHoverBottom: Color(0xFF444444),
+    dataGridHeaderHoverLine: Color(0xFF56585E),
+    dataGridHeaderHoverEdge: Color(0xFF8E9094),
+    dataGridRowHoverLine: Color(0xFF56585E),
+    dataGridRowSelectedLine: Color(0xFF3D5A80),
+    dataGridRowSelectedBar: Color(0xFFA2C0E3),
+    dataGridMenuButtonHover: Color(0xFF444444),
   );
   static const String fontSans = 'DM Sans'; // web --plx-sys-typeface-sans
   static const String fontMono = 'Reddit Mono'; // web --plx-sys-typeface-mono

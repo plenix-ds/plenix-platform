@@ -6,6 +6,34 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.69.0] - 2026-10-24
+
+### Changed
+- DataGrid look (owner's studies, docs/grid-header-study, grid-row-hover-study, grid-row-selection-study):
+  - The header is a silver band (gray 50 to gray 200) with a gray 400 line under it, 28px tall at Compact (32px
+    Standard, 40px Comfortable), the titles unchanged. Hovered, every header line shows and the column under the
+    pointer deepens (gray 100 to gray 300) with both edges in gray 400. The resize handle draws no blue mark (the
+    resize cursor is the cue).
+  - A hovered row tints gray 100 (was gray 200, the color of the lines) and its lines turn gray 300, so they stay
+    visible. A selected row is blue 100 (was blue 200) with blue-gray 250 lines and a 3px blue 600 bar at its start;
+    hovered it turns blue 200 (it used to turn gray).
+  - What an app should check: screenshots of grids; the header is 8px shorter at Compact.
+- DataGrid header menus (Windows Explorer and Airtable):
+  - A click on a title sorts; the sort arrow follows the title. The options button sits at the header's end edge, its
+    height, with a line before it, and always shows its chevron. An active filter shows a funnel after the title; the
+    filter box stacks its field and Clear filter.
+  - The column menu: the application's field actions (columnMenu), sort in the type's words, Filter by this field,
+    Group / Don't group by this field. Width, order and visibility moved to the right-click menu.
+  - Right-click on a header: Size column to fit, Size all columns to fit, every column with a check, More… (the Manage
+    columns dialog).
+  - What an app should check: an app that relied on Narrower, Wider, Move, Hide or Show all in the column menu finds
+    them in the right-click menu (or the Manage columns dialog).
+- DataGrid on TanStack Table: column pinning (getIsPinned, getStart), row selection (toggleSelected, single or
+  multiple), filter-list values (faceted unique values) and column resizing (the header resize handler, Plenix's size
+  steps kept) now use TanStack's own features. Grouping stays Plenix's (a record may belong to several groups).
+### Added
+- ManageColumnsDialog: open, onOpenChange and trigger={null}, so an owner can open it (the grid's More…).
+
 ## [0.68.1] - 2026-10-23
 
 ### Fixed

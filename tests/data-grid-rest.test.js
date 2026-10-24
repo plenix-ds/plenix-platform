@@ -164,7 +164,7 @@ module.exports = async function rest(page) {
       empty: 'Deleted'
     }, {
       title: 'Zero',
-      field: 'zero', width: 'calc(var(--plx-ref-size-40px) * 2)'
+      field: 'zero', width: 'calc(var(--plx-ref-size-40px) * 3)'
     }, {
       title: 'No',
       field: 'no', width: 'clamp(80px, calc(var(--plx-ref-size-40px) * 3), 160px)'
@@ -176,7 +176,7 @@ module.exports = async function rest(page) {
     });
     ok(t.getColumn('name').getWidth() > 60 && t.getColumn('name').getWidth() < 200, 'CSS ch length resolves as a column width');
     ok(t.getColumn('size').getWidth() === 120, 'CSS px width preserves requested grid value');
-    ok(t.getColumn('zero').getWidth() === 80, 'CSS calc width keeps its expression instead of extracting an inner token');
+    ok(t.getColumn('zero').getWidth() === 120, 'CSS calc width keeps its expression instead of extracting an inner token');
     ok(t.getColumn('no').getWidth() === 120, 'CSS clamp width resolves the complete expression');
     let row = t.getRow(1);
     ok(row.getCell('size').getElement().textContent.includes('2.5'), 'Byte cell formats numeric bytes');

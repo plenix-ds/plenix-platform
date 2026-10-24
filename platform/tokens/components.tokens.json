@@ -5307,7 +5307,7 @@
       "$type": "color"
     },
     "data-grid-border-bottom-color": {
-      "$value": "{plx-sys.data-grid-header-line}",
+      "$value": "{plx-comp.data-grid-header-edge}",
       "$type": "color"
     },
     "data-grid-header-text": {

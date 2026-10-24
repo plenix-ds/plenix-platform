@@ -1191,7 +1191,7 @@
   --plx-comp-data-grid-text: var(--plx-sys-data-grid-text);
   --plx-comp-data-grid-focus-outline-color: var(--plx-sys-data-grid-accent);
   --plx-comp-data-grid-header-background: var(--plx-sys-data-grid-header-background);
-  --plx-comp-data-grid-border-bottom-color: var(--plx-sys-data-grid-header-line);
+  --plx-comp-data-grid-border-bottom-color: var(--plx-comp-data-grid-header-edge);
   --plx-comp-data-grid-header-text: var(--plx-sys-data-grid-text-muted);
   --plx-comp-data-grid-header-column-line: var(--plx-sys-data-grid-header-line);
   --plx-comp-data-grid-height: var(--plx-sys-data-grid-row-height);
@@ -3394,24 +3394,38 @@
   --plx-comp-data-grid-unread-font-weight: var(--plx-sys-font-weight-semibold);
   --plx-comp-data-grid-unread-bar-width: var(--plx-sys-border-width-thick);
   --plx-comp-data-grid-unread-bar-color: var(--plx-sys-action-primary-background);
+  --plx-comp-data-grid-header-background-image: linear-gradient(to bottom,var(--plx-sys-data-grid-header-top),var(--plx-sys-data-grid-header-bottom));
+  --plx-comp-data-grid-header-hover-background-image: linear-gradient(to bottom,var(--plx-sys-data-grid-header-hover-top),var(--plx-sys-data-grid-header-hover-bottom));
+  --plx-comp-data-grid-header-edge: var(--plx-sys-data-grid-header-edge);
+  --plx-comp-data-grid-header-hover-line: var(--plx-sys-data-grid-header-hover-line);
+  --plx-comp-data-grid-header-hover-edge: var(--plx-sys-data-grid-header-hover-edge);
+  --plx-comp-data-grid-row-hover-line: var(--plx-sys-data-grid-row-hover-line);
+  --plx-comp-data-grid-row-selected-line: var(--plx-sys-data-grid-row-selected-line);
+  --plx-comp-data-grid-row-selected-bar: var(--plx-sys-data-grid-row-selected-bar);
+  --plx-comp-data-grid-row-selected-bar-width: var(--plx-sys-border-width-thick);
+  --plx-comp-data-grid-menu-button-hover-background: var(--plx-sys-data-grid-menu-button-hover);
+  --plx-comp-data-grid-menu-button-padding-inline: var(--plx-ref-space-4px);
 }
 [data-plx-density="standard"],:root[data-plx-density-policy="standard"]:not([data-plx-density]),:root:not([data-plx-density], [data-plx-density-policy]){
   --plx-ctx-density-plx-comp-data-grid-text-line-height: var(--plx-ref-size-20px);
   --plx-ctx-density-plx-comp-data-grid-header-type-icon-size: var(--plx-ref-glyph-size-14px);
   --plx-ctx-density-plx-comp-data-grid-header-type-icon-gap: var(--plx-ref-space-6px);
   --plx-ctx-density-plx-comp-data-grid-view-column-width: var(--plx-ref-size-36px);
+  --plx-ctx-density-plx-comp-data-grid-header-height: var(--plx-ref-size-32px);
 }
 [data-plx-density="compact"],:root[data-plx-density-policy="compact"]:not([data-plx-density]){
   --plx-ctx-density-plx-comp-data-grid-text-line-height: var(--plx-ref-size-16px);
   --plx-ctx-density-plx-comp-data-grid-header-type-icon-size: 0;
   --plx-ctx-density-plx-comp-data-grid-header-type-icon-gap: 0;
   --plx-ctx-density-plx-comp-data-grid-view-column-width: var(--plx-ref-size-36px);
+  --plx-ctx-density-plx-comp-data-grid-header-height: var(--plx-ref-size-28px);
 }
 [data-plx-density="comfortable"],:root[data-plx-density-policy="comfortable"]:not([data-plx-density]){
   --plx-ctx-density-plx-comp-data-grid-text-line-height: var(--plx-ref-size-20px);
   --plx-ctx-density-plx-comp-data-grid-header-type-icon-size: var(--plx-ref-glyph-size-14px);
   --plx-ctx-density-plx-comp-data-grid-header-type-icon-gap: var(--plx-ref-space-6px);
   --plx-ctx-density-plx-comp-data-grid-view-column-width: var(--plx-ref-size-36px);
+  --plx-ctx-density-plx-comp-data-grid-header-height: var(--plx-ref-size-40px);
 }
 :root[data-plx-interaction="touch"]{
   --plx-ctx-interaction-plx-comp-data-grid-header-type-icon-size: var(--plx-ref-glyph-size-14px);
@@ -6068,4 +6082,5 @@
   --plx-comp-data-grid-header-type-icon-size: var(--plx-ctx-interaction-plx-comp-data-grid-header-type-icon-size, var(--plx-ctx-density-plx-comp-data-grid-header-type-icon-size));
   --plx-comp-data-grid-header-type-icon-gap: var(--plx-ctx-interaction-plx-comp-data-grid-header-type-icon-gap, var(--plx-ctx-density-plx-comp-data-grid-header-type-icon-gap));
   --plx-comp-data-grid-view-column-width: var(--plx-ctx-interaction-plx-comp-data-grid-view-column-width, var(--plx-ctx-density-plx-comp-data-grid-view-column-width));
+  --plx-comp-data-grid-header-height: var(--plx-ctx-density-plx-comp-data-grid-header-height);
 }

@@ -243,7 +243,7 @@
   --plx-sys-data-grid-text-muted: var(--plx-ref-color-gray-700);
   --plx-sys-table-text-muted: var(--plx-ref-color-gray-700);
   --plx-sys-data-grid-text-subtle: var(--plx-ref-color-gray-500);
-  --plx-sys-data-grid-row-hover: var(--plx-ref-color-gray-200);
+  --plx-sys-data-grid-row-hover: var(--plx-ref-color-gray-100);
   --plx-sys-data-grid-accent: var(--plx-ref-color-blue-400);
   --plx-sys-data-grid-danger: var(--plx-ref-color-red-700);
   --plx-sys-data-grid-menu-shadow: 0 var(--plx-ref-space-8px) var(--plx-ref-space-24px) var(--plx-ref-color-black-alpha-14);
@@ -366,6 +366,17 @@
   --plx-sys-category-grey-soft-border: var(--plx-ref-color-gray-300);
   --plx-sys-category-grey-on-soft: var(--plx-ref-color-gray-700);
   --plx-sys-list-bullet: var(--plx-ref-color-gray-400);
+  --plx-sys-data-grid-header-top: var(--plx-ref-color-gray-50);
+  --plx-sys-data-grid-header-bottom: var(--plx-ref-color-gray-200);
+  --plx-sys-data-grid-header-edge: var(--plx-ref-color-gray-400);
+  --plx-sys-data-grid-header-hover-top: var(--plx-ref-color-gray-100);
+  --plx-sys-data-grid-header-hover-bottom: var(--plx-ref-color-gray-300);
+  --plx-sys-data-grid-header-hover-line: var(--plx-ref-color-gray-350);
+  --plx-sys-data-grid-header-hover-edge: var(--plx-ref-color-gray-400);
+  --plx-sys-data-grid-row-hover-line: var(--plx-ref-color-gray-300);
+  --plx-sys-data-grid-row-selected-line: var(--plx-ref-color-blue-250);
+  --plx-sys-data-grid-row-selected-bar: var(--plx-ref-color-blue-600);
+  --plx-sys-data-grid-menu-button-hover: var(--plx-ref-color-gray-200);
 }
 /* the person's contrast settings: forced colors, then more contrast, else the values above */
 @media not (forced-colors: active) {
@@ -378,8 +389,8 @@
     --plx-sys-selected-border: var(--plx-ref-color-blue-200);
     --plx-sys-selected-content: var(--plx-ref-color-blue-700);
     --plx-sys-frost-state-selected: var(--plx-ref-color-blue-200);
-    --plx-sys-data-grid-row-selected: var(--plx-ref-color-blue-200);
-    --plx-sys-data-grid-row-selected-hover: var(--plx-ref-color-gray-100);
+    --plx-sys-data-grid-row-selected: var(--plx-ref-color-blue-100);
+    --plx-sys-data-grid-row-selected-hover: var(--plx-ref-color-blue-200);
     --plx-sys-data-grid-row-selected-text: var(--plx-ref-color-blue-600);
   }
 }
@@ -730,6 +741,17 @@
   --plx-sys-category-grey-soft-border: var(--plx-ref-color-gray-300);
   --plx-sys-category-grey-on-soft: var(--plx-ref-color-gray-700);
   --plx-sys-list-bullet: var(--plx-ref-color-gray-400);
+  --plx-sys-data-grid-header-top: var(--plx-ref-color-gray-900);
+  --plx-sys-data-grid-header-bottom: var(--plx-ref-color-gray-900);
+  --plx-sys-data-grid-header-edge: var(--plx-ref-color-gray-700);
+  --plx-sys-data-grid-header-hover-top: var(--plx-ref-color-gray-800);
+  --plx-sys-data-grid-header-hover-bottom: var(--plx-ref-color-gray-800);
+  --plx-sys-data-grid-header-hover-line: var(--plx-ref-color-gray-700);
+  --plx-sys-data-grid-header-hover-edge: var(--plx-ref-color-gray-500);
+  --plx-sys-data-grid-row-hover-line: var(--plx-ref-color-gray-700);
+  --plx-sys-data-grid-row-selected-line: var(--plx-ref-color-blue-650);
+  --plx-sys-data-grid-row-selected-bar: var(--plx-ref-color-blue-300);
+  --plx-sys-data-grid-menu-button-hover: var(--plx-ref-color-gray-800);
 }
 /* the person's contrast settings: forced colors, then more contrast, else the values above */
 @media not (forced-colors: active) {

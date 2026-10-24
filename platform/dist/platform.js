@@ -8974,7 +8974,7 @@ const DragHandle = exports.DragHandle = /*#__PURE__*/_react.default.forwardRef(f
   }));
 });
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/columnHelper.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/columnHelper.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -9044,7 +9044,7 @@ function createColumnHelper() {
 }
 exports.createColumnHelper = createColumnHelper;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/utils.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -9154,7 +9154,7 @@ exports.makeStateUpdater = makeStateUpdater;
 exports.memo = memo;
 exports.noop = noop;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/core/cell.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/core/cell.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -9195,7 +9195,7 @@ function createCell(table, row, column, columnId) {
 }
 exports.createCell = createCell;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/core/column.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/core/column.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -9274,7 +9274,7 @@ function createColumn(table, columnDef, depth, parent) {
 }
 exports.createColumn = createColumn;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/core/headers.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/core/headers.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -9543,7 +9543,7 @@ function buildHeaderGroups(allColumns, columnsToGroup, table, headerFamily) {
 exports.Headers = Headers;
 exports.buildHeaderGroups = buildHeaderGroups;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/core/row.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./cell.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/cell.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/core/row.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./cell.js":"node_modules/@tanstack/table-core/build/lib/core/cell.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -9631,7 +9631,7 @@ const createRow = (table, id, original, rowIndex, depth, subRows, parentId) => {
 };
 exports.createRow = createRow;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -9672,7 +9672,7 @@ const ColumnFaceting = {
 };
 exports.ColumnFaceting = ColumnFaceting;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/filterFns.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/filterFns.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -9768,7 +9768,7 @@ function testFalsey(val) {
 }
 exports.filterFns = filterFns;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js": { deps: {"../filterFns.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/filterFns.js","../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js": { deps: {"../filterFns.js":"node_modules/@tanstack/table-core/build/lib/filterFns.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -9920,7 +9920,7 @@ function shouldAutoRemoveFilter(filterFn, value, column) {
 exports.ColumnFiltering = ColumnFiltering;
 exports.shouldAutoRemoveFilter = shouldAutoRemoveFilter;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/aggregationFns.js": { deps: {"./utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/aggregationFns.js": { deps: {"./utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10027,7 +10027,7 @@ const aggregationFns = {
 };
 exports.aggregationFns = aggregationFns;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js": { deps: {"../aggregationFns.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/aggregationFns.js","../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js": { deps: {"../aggregationFns.js":"node_modules/@tanstack/table-core/build/lib/aggregationFns.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10169,7 +10169,7 @@ function orderColumns(leafColumns, grouping, groupedColumnMode) {
 exports.ColumnGrouping = ColumnGrouping;
 exports.orderColumns = orderColumns;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10268,7 +10268,7 @@ function _getVisibleLeafColumns(table, position) {
 exports.ColumnVisibility = ColumnVisibility;
 exports._getVisibleLeafColumns = _getVisibleLeafColumns;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./ColumnGrouping.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","./ColumnVisibility.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./ColumnGrouping.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","./ColumnVisibility.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10352,7 +10352,7 @@ const ColumnOrdering = {
 };
 exports.ColumnOrdering = ColumnOrdering;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10482,7 +10482,7 @@ const ColumnPinning = {
 };
 exports.ColumnPinning = ColumnPinning;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/document.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/utils/document.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10500,7 +10500,7 @@ function safelyAccessDocument(_document) {
 }
 exports.safelyAccessDocument = safelyAccessDocument;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","../utils/document.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/document.js","./ColumnVisibility.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","../utils/document.js":"node_modules/@tanstack/table-core/build/lib/utils/document.js","./ColumnVisibility.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10771,7 +10771,7 @@ exports.ColumnSizing = ColumnSizing;
 exports.defaultColumnSizing = defaultColumnSizing;
 exports.passiveEventSupported = passiveEventSupported;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10812,7 +10812,7 @@ const GlobalFaceting = {
 };
 exports.GlobalFaceting = GlobalFaceting;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js": { deps: {"../filterFns.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/filterFns.js","../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js": { deps: {"../filterFns.js":"node_modules/@tanstack/table-core/build/lib/filterFns.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10875,7 +10875,7 @@ const GlobalFiltering = {
 };
 exports.GlobalFiltering = GlobalFiltering;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11048,7 +11048,7 @@ const RowExpanding = {
 };
 exports.RowExpanding = RowExpanding;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPagination.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/features/RowPagination.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11217,7 +11217,7 @@ const RowPagination = {
 };
 exports.RowPagination = RowPagination;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPinning.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/features/RowPinning.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11362,7 +11362,7 @@ const RowPinning = {
 };
 exports.RowPinning = RowPinning;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSelection.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/features/RowSelection.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11753,7 +11753,7 @@ exports.isRowSelected = isRowSelected;
 exports.isSubRowSelected = isSubRowSelected;
 exports.selectRowsFn = selectRowsFn;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/sortingFns.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/sortingFns.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11873,7 +11873,7 @@ const sortingFns = {
 exports.reSplitAlphaNumeric = reSplitAlphaNumeric;
 exports.sortingFns = sortingFns;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSorting.js": { deps: {"../sortingFns.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/sortingFns.js","../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/features/RowSorting.js": { deps: {"../sortingFns.js":"node_modules/@tanstack/table-core/build/lib/sortingFns.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12099,7 +12099,7 @@ const RowSorting = {
 };
 exports.RowSorting = RowSorting;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/core/table.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./column.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/column.js","./headers.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/headers.js","../features/ColumnFaceting.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js","../features/ColumnFiltering.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js","../features/ColumnGrouping.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","../features/ColumnOrdering.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js","../features/ColumnPinning.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js","../features/ColumnSizing.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js","../features/ColumnVisibility.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js","../features/GlobalFaceting.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js","../features/GlobalFiltering.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js","../features/RowExpanding.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js","../features/RowPagination.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPagination.js","../features/RowPinning.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPinning.js","../features/RowSelection.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSelection.js","../features/RowSorting.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSorting.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/core/table.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./column.js":"node_modules/@tanstack/table-core/build/lib/core/column.js","./headers.js":"node_modules/@tanstack/table-core/build/lib/core/headers.js","../features/ColumnFaceting.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js","../features/ColumnFiltering.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js","../features/ColumnGrouping.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","../features/ColumnOrdering.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js","../features/ColumnPinning.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js","../features/ColumnSizing.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js","../features/ColumnVisibility.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js","../features/GlobalFaceting.js":"node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js","../features/GlobalFiltering.js":"node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js","../features/RowExpanding.js":"node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js","../features/RowPagination.js":"node_modules/@tanstack/table-core/build/lib/features/RowPagination.js","../features/RowPinning.js":"node_modules/@tanstack/table-core/build/lib/features/RowPinning.js","../features/RowSelection.js":"node_modules/@tanstack/table-core/build/lib/features/RowSelection.js","../features/RowSorting.js":"node_modules/@tanstack/table-core/build/lib/features/RowSorting.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12310,7 +12310,7 @@ function createTable(options) {
 }
 exports.createTable = createTable;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getCoreRowModel.js": { deps: {"../core/row.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/row.js","../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/utils/getCoreRowModel.js": { deps: {"../core/row.js":"node_modules/@tanstack/table-core/build/lib/core/row.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12374,7 +12374,7 @@ function getCoreRowModel() {
 }
 exports.getCoreRowModel = getCoreRowModel;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12419,7 +12419,7 @@ function expandRows(rowModel) {
 exports.expandRows = expandRows;
 exports.getExpandedRowModel = getExpandedRowModel;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedMinMaxValues.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/utils/getFacetedMinMaxValues.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12454,7 +12454,7 @@ function getFacetedMinMaxValues() {
 }
 exports.getFacetedMinMaxValues = getFacetedMinMaxValues;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js": { deps: {"../core/row.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/row.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js": { deps: {"../core/row.js":"node_modules/@tanstack/table-core/build/lib/core/row.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12564,7 +12564,7 @@ function filterRowModelFromRoot(rowsToFilter, filterRow, table) {
 }
 exports.filterRows = filterRows;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedRowModel.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./filterRowsUtils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/utils/getFacetedRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./filterRowsUtils.js":"node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12599,7 +12599,7 @@ function getFacetedRowModel() {
 }
 exports.getFacetedRowModel = getFacetedRowModel;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedUniqueValues.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/utils/getFacetedUniqueValues.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12637,7 +12637,7 @@ function getFacetedUniqueValues() {
 }
 exports.getFacetedUniqueValues = getFacetedUniqueValues;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFilteredRowModel.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./filterRowsUtils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/utils/getFilteredRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./filterRowsUtils.js":"node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12747,7 +12747,7 @@ function getFilteredRowModel() {
 }
 exports.getFilteredRowModel = getFilteredRowModel;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getGroupedRowModel.js": { deps: {"../core/row.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/row.js","../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/utils/getGroupedRowModel.js": { deps: {"../core/row.js":"node_modules/@tanstack/table-core/build/lib/core/row.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12903,7 +12903,7 @@ function groupBy(rows, columnId) {
 }
 exports.getGroupedRowModel = getGroupedRowModel;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getPaginationRowModel.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./getExpandedRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/utils/getPaginationRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./getExpandedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12962,7 +12962,7 @@ function getPaginationRowModel(opts) {
 }
 exports.getPaginationRowModel = getPaginationRowModel;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getSortedRowModel.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/utils/getSortedRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13063,7 +13063,7 @@ function getSortedRowModel() {
 }
 exports.getSortedRowModel = getSortedRowModel;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/index.js": { deps: {"./columnHelper.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/columnHelper.js","./core/cell.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/cell.js","./core/column.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/column.js","./core/headers.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/headers.js","./core/row.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/row.js","./core/table.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/table.js","./features/ColumnFaceting.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js","./features/ColumnFiltering.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js","./features/ColumnGrouping.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","./features/ColumnOrdering.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js","./features/ColumnPinning.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js","./features/ColumnSizing.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js","./features/ColumnVisibility.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js","./features/GlobalFaceting.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js","./features/GlobalFiltering.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js","./features/RowExpanding.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js","./features/RowPagination.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPagination.js","./features/RowPinning.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPinning.js","./features/RowSelection.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSelection.js","./features/RowSorting.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSorting.js","./utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./utils/getCoreRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getCoreRowModel.js","./utils/getExpandedRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js","./utils/getFacetedMinMaxValues.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedMinMaxValues.js","./utils/getFacetedRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedRowModel.js","./utils/getFacetedUniqueValues.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedUniqueValues.js","./utils/getFilteredRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFilteredRowModel.js","./utils/getGroupedRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getGroupedRowModel.js","./utils/getPaginationRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getPaginationRowModel.js","./utils/getSortedRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getSortedRowModel.js","./aggregationFns.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/aggregationFns.js","./filterFns.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/filterFns.js","./sortingFns.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/sortingFns.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/index.js": { deps: {"./columnHelper.js":"node_modules/@tanstack/table-core/build/lib/columnHelper.js","./core/cell.js":"node_modules/@tanstack/table-core/build/lib/core/cell.js","./core/column.js":"node_modules/@tanstack/table-core/build/lib/core/column.js","./core/headers.js":"node_modules/@tanstack/table-core/build/lib/core/headers.js","./core/row.js":"node_modules/@tanstack/table-core/build/lib/core/row.js","./core/table.js":"node_modules/@tanstack/table-core/build/lib/core/table.js","./features/ColumnFaceting.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js","./features/ColumnFiltering.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js","./features/ColumnGrouping.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","./features/ColumnOrdering.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js","./features/ColumnPinning.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js","./features/ColumnSizing.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js","./features/ColumnVisibility.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js","./features/GlobalFaceting.js":"node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js","./features/GlobalFiltering.js":"node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js","./features/RowExpanding.js":"node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js","./features/RowPagination.js":"node_modules/@tanstack/table-core/build/lib/features/RowPagination.js","./features/RowPinning.js":"node_modules/@tanstack/table-core/build/lib/features/RowPinning.js","./features/RowSelection.js":"node_modules/@tanstack/table-core/build/lib/features/RowSelection.js","./features/RowSorting.js":"node_modules/@tanstack/table-core/build/lib/features/RowSorting.js","./utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./utils/getCoreRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getCoreRowModel.js","./utils/getExpandedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js","./utils/getFacetedMinMaxValues.js":"node_modules/@tanstack/table-core/build/lib/utils/getFacetedMinMaxValues.js","./utils/getFacetedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getFacetedRowModel.js","./utils/getFacetedUniqueValues.js":"node_modules/@tanstack/table-core/build/lib/utils/getFacetedUniqueValues.js","./utils/getFilteredRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getFilteredRowModel.js","./utils/getGroupedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getGroupedRowModel.js","./utils/getPaginationRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getPaginationRowModel.js","./utils/getSortedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getSortedRowModel.js","./aggregationFns.js":"node_modules/@tanstack/table-core/build/lib/aggregationFns.js","./filterFns.js":"node_modules/@tanstack/table-core/build/lib/filterFns.js","./sortingFns.js":"node_modules/@tanstack/table-core/build/lib/sortingFns.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13161,7 +13161,7 @@ exports.filterFns = filterFns.filterFns;
 exports.reSplitAlphaNumeric = sortingFns.reSplitAlphaNumeric;
 exports.sortingFns = sortingFns.sortingFns;
   } },
-  "../Plenix/node_modules/@tanstack/react-table/build/lib/index.js": { deps: {"react":null,"@tanstack/table-core":"../Plenix/node_modules/@tanstack/table-core/build/lib/index.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "node_modules/@tanstack/react-table/build/lib/index.js": { deps: {"react":null,"@tanstack/table-core":"node_modules/@tanstack/table-core/build/lib/index.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 /**
    * react-table
    *
@@ -13264,7 +13264,7 @@ Object.keys(tableCore).forEach(function (k) {
   });
 });
   } },
-  "../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/lazy-measurements.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/virtual-core/dist/cjs/lazy-measurements.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -13306,7 +13306,7 @@ function createLazyMeasurementsView(cache, flat) {
 exports.createLazyMeasurementsView = createLazyMeasurementsView;
 exports.getMeasurementKey = getMeasurementKey;
   } },
-  "../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -13384,7 +13384,7 @@ exports.debounce = debounce;
 exports.memo = memo;
 exports.notUndefined = notUndefined;
   } },
-  "../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/scroll-classifier.cjs": { deps: {"./utils.cjs":"../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/virtual-core/dist/cjs/scroll-classifier.cjs": { deps: {"./utils.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -13477,7 +13477,7 @@ exports.externalRetiresCommand = externalRetiresCommand;
 exports.flingCaught = flingCaught;
 exports.flingSpedUp = flingSpedUp;
   } },
-  "../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/ios-gesture.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/virtual-core/dist/cjs/ios-gesture.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -13608,7 +13608,7 @@ exports._resetIOSDetectionForTests = _resetIOSDetectionForTests;
 exports.iosMomentumOverridesWrites = iosMomentumOverridesWrites;
 exports.isIOSWebKit = isIOSWebKit;
   } },
-  "../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/index.cjs": { deps: {"./lazy-measurements.cjs":"../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/lazy-measurements.cjs","./utils.cjs":"../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs","./scroll-classifier.cjs":"../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/scroll-classifier.cjs","./ios-gesture.cjs":"../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/ios-gesture.cjs"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/virtual-core/dist/cjs/index.cjs": { deps: {"./lazy-measurements.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/lazy-measurements.cjs","./utils.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs","./scroll-classifier.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/scroll-classifier.cjs","./ios-gesture.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/ios-gesture.cjs"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -15182,7 +15182,7 @@ exports.observeWindowOffset = observeWindowOffset;
 exports.observeWindowRect = observeWindowRect;
 exports.windowScroll = windowScroll;
   } },
-  "../Plenix/node_modules/@tanstack/react-virtual/dist/cjs/index.cjs": { deps: {"react":null,"react-dom":null,"@tanstack/virtual-core":"../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/index.cjs"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "node_modules/@tanstack/react-virtual/dist/cjs/index.cjs": { deps: {"react":null,"react-dom":null,"@tanstack/virtual-core":"node_modules/@tanstack/virtual-core/dist/cjs/index.cjs"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -15691,6 +15691,685 @@ function tokenPixels(token, el) {
   return /^\d+(?:\.\d+)?px$/.test(v) ? parseFloat(v) : v ? tokenPixels(v, el) : 0;
 }
   } },
+  "platform/components/Checkbox/Checkbox.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Checkbox = void 0;
+exports.ChoiceList = ChoiceList;
+exports.Radio = void 0;
+exports.RadioGroup = RadioGroup;
+exports.Switch = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Checkbox, Radio, RadioGroup, ChoiceList, Switch
+   Summary: Native choice inputs, so keyboard, forms and assistive technology work as usual.
+   Usage:
+     <Checkbox checked={on} onChange={(e) => …} label="Include subfolders" description="…" indeterminate={some} />
+     <RadioGroup label="Format" value={fmt} onChange={(value) => …}
+       options={[{ value: 'png', label: 'PNG', description: '…' }, { value: 'jpg', label: 'JPG' }]} layout="row" />
+     <ChoiceList legend="Plan" value={plan} onChange={(value) => …} options={[{ value: 'team', label: 'Team', description: '…' }]} />
+     <Switch checked={on} onChange={(e) => …} label="Notifications" />
+   Props:
+     Checkbox.label: the text beside the box
+     Checkbox.description: a second line under the label
+     Checkbox.indeterminate: shows the mixed state (default false)
+     Checkbox.className: more classes on the row
+     Checkbox.checked: whether the box is checked (passed to the <input>)
+     Checkbox.onChange(event): runs when the box changes (passed to the <input>)
+     Radio.label: the text beside the circle; without it there is no visible text
+     Radio.description: a second line under the label
+     Radio.className: more classes on the row
+     RadioGroup.label: the legend of the group
+     RadioGroup.name: the radio name (default a generated one)
+     RadioGroup.value: the selected option value
+     RadioGroup.onChange(value): runs with the chosen option value
+     RadioGroup.options: the choices: [{ value, label, description, disabled }]
+     RadioGroup.layout: "column" (default) | "row"
+     RadioGroup.className: more classes on the <fieldset>
+     ChoiceList.legend: the legend of the list
+     ChoiceList.name: the radio name (default a generated one)
+     ChoiceList.value: the selected option value
+     ChoiceList.onChange(value): runs with the chosen option value
+     ChoiceList.options: the choices, shown as cards with descriptions: [{ value, label, description, hidden }]
+     ChoiceList.className: more classes on the <fieldset>
+     Switch.label: the text beside the switch
+     Switch.labelHidden: true hides the label and uses it as the accessible name (default false)
+     Switch.className: more classes on the row
+     Switch.checked: whether the switch is on (passed to the <input>)
+     Switch.onChange(event): runs when the switch changes (passed to the <input>)
+   Behavior:
+     The whole row (control and label) is the target, at least the inline-action height.
+     A Checkbox without label or description (a row's selection box) still has a 24px target (44px with touch): it extends
+       invisibly past the 16px box (Platforms Standard 3.1).
+     Switch is a checkbox with role="switch".
+     The selected ChoiceList card shows the selected state.
+   Notes:
+     The Switch track is 36 × 20px and the knob 16px, centered: (track − knob) / 2.
+     Checkbox, Radio and Switch pass other props (checked, onChange, name, value, disabled, …) and their ref to the <input>.
+     RadioGroup and ChoiceList pass other props to the <fieldset>.
+*/
+const Checkbox = exports.Checkbox = /*#__PURE__*/_react.default.forwardRef(function Checkbox({
+  label,
+  description,
+  indeterminate = false,
+  className,
+  ...rest
+}, ref) {
+  const inner = _react.default.useRef(null);
+  _react.default.useImperativeHandle(ref, () => inner.current);
+  _react.default.useEffect(() => {
+    if (inner.current) inner.current.indeterminate = indeterminate;
+  }, [indeterminate]);
+  return /*#__PURE__*/_react.default.createElement("label", {
+    className: (0, _cx.cx)('plx-check', className)
+  }, /*#__PURE__*/_react.default.createElement("input", _extends({
+    ref: inner,
+    type: "checkbox",
+    className: "plx-check__input"
+  }, rest)), label || description ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-check__text"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-check__label"
+  }, label), description ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-check__description"
+  }, description) : null) : null);
+});
+const Radio = exports.Radio = /*#__PURE__*/_react.default.forwardRef(function Radio({
+  label,
+  description,
+  className,
+  ...rest
+}, ref) {
+  return /*#__PURE__*/_react.default.createElement("label", {
+    className: (0, _cx.cx)('plx-check', className)
+  }, /*#__PURE__*/_react.default.createElement("input", _extends({
+    ref: ref,
+    type: "radio",
+    className: "plx-check__input"
+  }, rest)), label ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-check__text"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-check__label"
+  }, label), description ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-check__description"
+  }, description) : null) : null);
+});
+function RadioGroup({
+  label,
+  name,
+  value,
+  onChange,
+  options,
+  layout = 'column',
+  className,
+  ...rest
+}) {
+  const auto = 'plx-r' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  return /*#__PURE__*/_react.default.createElement("fieldset", _extends({
+    className: (0, _cx.cx)('plx-radio-group', 'plx-radio-group--' + layout, className)
+  }, rest), label ? /*#__PURE__*/_react.default.createElement("legend", {
+    className: "plx-radio-group__legend"
+  }, label) : null, options.map(o => /*#__PURE__*/_react.default.createElement(Radio, {
+    key: o.value,
+    name: name || auto,
+    value: o.value,
+    label: o.label,
+    description: o.description,
+    checked: o.value === value,
+    onChange: () => onChange(o.value),
+    disabled: o.disabled
+  })));
+}
+function ChoiceList({
+  legend,
+  name,
+  value,
+  onChange,
+  options,
+  className,
+  ...rest
+}) {
+  const auto = 'plx-c' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  return /*#__PURE__*/_react.default.createElement("fieldset", _extends({
+    className: (0, _cx.cx)('plx-choice-list', className)
+  }, rest), legend ? /*#__PURE__*/_react.default.createElement("legend", {
+    className: "plx-choice-list__legend"
+  }, legend) : null, options.map(o => /*#__PURE__*/_react.default.createElement("label", {
+    key: o.value,
+    className: (0, _cx.cx)('plx-choice', o.value === value && 'is-selected'),
+    hidden: o.hidden || undefined
+  }, /*#__PURE__*/_react.default.createElement("input", {
+    type: "radio",
+    className: "plx-choice__input",
+    name: name || auto,
+    value: o.value,
+    checked: o.value === value,
+    onChange: () => onChange(o.value)
+  }), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-choice__text"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-choice__label"
+  }, o.label), o.description ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-choice__description"
+  }, o.description) : null))));
+}
+const Switch = exports.Switch = /*#__PURE__*/_react.default.forwardRef(function Switch({
+  label,
+  labelHidden = false,
+  className,
+  ...rest
+}, ref) {
+  return /*#__PURE__*/_react.default.createElement("label", {
+    className: (0, _cx.cx)('plx-switch', className)
+  }, /*#__PURE__*/_react.default.createElement("input", _extends({
+    ref: ref,
+    type: "checkbox",
+    role: "switch",
+    className: "plx-switch__input",
+    "aria-label": labelHidden ? label : undefined
+  }, rest)), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-switch__track",
+    "aria-hidden": "true"
+  }), label && !labelHidden ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-switch__label"
+  }, label) : null);
+});
+  } },
+  "platform/components/Kbd/Kbd.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Kbd = Kbd;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Kbd
+   Summary: A key or shortcut ("Ctrl K").
+   Usage:
+     <Kbd>Ctrl K</Kbd>
+     <Kbd onAccent>/</Kbd>
+   Props:
+     onAccent: the version for the blue header (default false)
+     children: the key or shortcut text
+     className: more classes on the <kbd>
+   Notes:
+     It uses the data font at a 16px label height.
+     Other props pass through to the <kbd>.
+*/
+function Kbd({
+  onAccent = false,
+  className,
+  children,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement("kbd", _extends({
+    className: (0, _cx.cx)('plx-kbd', onAccent && 'plx-kbd--on-accent', className)
+  }, rest), children);
+}
+  } },
+  "platform/components/SearchField/SearchField.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SearchField = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _announce = require("../../utils/announce.jsx");
+var _format = require("../../utils/format.js");
+var _Button = require("../Button/Button.jsx");
+var _Icon = require("../Icon/Icon.jsx");
+var _Kbd = require("../Kbd/Kbd.jsx");
+var _Loading = require("../Loading/Loading.jsx");
+var _Tooltip = require("../Tooltip/Tooltip.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · SearchField
+   Summary: A search input with a search icon, an optional clear button and an optional shortcut hint; optionally a list
+     under it of suggestions while people type, and of their recent searches while it is empty.
+   Usage:
+     <SearchField value={query} onChange={(e) => setQuery(e.target.value)} onClear={() => setQuery('')} shortcut="Ctrl K" />
+     const history = useSearchHistory('assets');
+     <SearchField value={q} onChange={(e) => setQ(e.target.value)} onClear={() => setQ('')}
+       suggestions={matches(q)} recent={history.items} onSelect={(item) => open(item)}
+       onSubmitSearch={(text) => { history.add(text); search(text); }} onRemoveRecent={history.remove} onClearRecent={history.clear} />
+   Props:
+     size: "sm" explicitly selects the existing toolbar control height; omitted or "md" preserves today’s search height.
+     value: the search text
+     onChange(event): runs when the text changes
+     onClear(): runs from the clear button; without it there is no clear button
+     placeholder: the placeholder text; default "Search"
+     label: the accessible name; default "Search"
+     shortcut: a keyboard shortcut hint ("Ctrl K")
+     loading: shows a spinner in place of the search icon; default false
+     onAccent: the look for the blue header; default false
+     suggestions: what to offer while there is text, already matched to it by the caller: strings, or
+       [{ value, label, description }] (label defaults to value); the part of each label that matches the text is in bold
+     recent: the person's recent searches (strings, newest first: useSearchHistory), offered while the field is empty
+     onSelect(item): runs when a suggestion or a recent search is chosen; item is { value, label, kind: 'suggestion' |
+       'recent' }; without it a choice puts its text in the field (onChange) and searches (onSubmitSearch)
+     onSubmitSearch(text): runs on Enter when no suggestion is active (the search itself)
+     onRemoveRecent(text): removes one recent search: its row's remove button (an "×" named "Remove <term>"), or Delete
+       on it; onClearRecent(): removes them all (the Clear button in the list's heading); without them the recent
+       searches cannot be removed here
+     strings: the list's words: { suggestions: 'Suggestions', recent: 'Recent searches', clearRecent: 'Clear recent searches',
+       clear: 'Clear search', results: '{n} suggestions', removed: '{query} removed from recent searches', remove: 'Remove {query}' }
+     width: "auto" (default: as wide as its container gives it) | "xs" | "sm" | "md" | "lg" (the field-width scale, P-52) | "bar" (the command bar's search: one fixed width, 240px,
+       never squeezed; owner, 2026-10-14) | "fill" (the whole width: the find field inside a panel, a dialog or a menu)
+     collapsed: the narrow bar's search (owner, 2026-10-14): an icon-only search button in the field's place (tinted while
+       there is text) that opens the field across the bar, over its other controls; default false
+     open, onOpenChange(open): (collapsed) whether the field is open across the bar, kept by the caller (CommandBar keeps
+       it, so the bar holds its width step while the field is open)
+     className: more classes on the field
+     ...rest: other attributes go on the input (inputMode, enterKeyHint, autoComplete… override the search defaults)
+   Behavior:
+     The clear button shows only while there is text.
+     The shortcut hint shows only while the field is empty.
+     It is type="search" with inputMode "search" and enterKeyHint "search": a touch keyboard shows a Search key.
+     With suggestions or recent searches it is a combobox (the ARIA pattern): the list opens on focus and on typing, under
+       the field; Arrow Down and Up move through it (the text stays the person's own), Enter chooses, Escape closes the
+       list (a second Escape clears the text, as in the browser); a click chooses; a click outside closes it. The number
+       of suggestions is announced politely after typing pauses. Delete on a recent search removes it (onRemoveRecent).
+     Recent searches with onRemoveRecent (owner, 2026-10-14): the WAI-ARIA "combobox with grid popup" pattern. The field
+       has aria-haspopup="grid"; the list is a grid named by its heading, one row per search with two cells: the term and
+       its remove button (an icon-only ghost button, "Remove <term>"). The focus stays in the field (aria-activedescendant
+       names the active cell): Arrow Down and Up move between rows (in the same cell), Arrow Right moves into the remove
+       cell and Arrow Left back to the term (mirrored right to left); Enter on the term searches it, Enter on the remove
+       cell removes it, and Delete removes the active row from either cell. The removal is announced politely. A click on
+       the term searches, a click on the button removes. Without onRemoveRecent, and for suggestions, the list stays a
+       listbox.
+     Collapsed: the button opens the field across the nearest positioned box (the command bar's row), focused, with × to
+       clear once there is text; Escape closes it and the focus returns to the button; leaving it empty closes it too.
+   Notes:
+     It has the toolbar control height. The list is a menu surface (border only, no shadow); the caller matches,
+     ranks and limits the suggestions (about eight) and the recent searches (about five).
+*/
+const STRINGS = {
+  suggestions: 'Suggestions',
+  recent: 'Recent searches',
+  clearRecent: 'Clear recent searches',
+  clear: 'Clear search',
+  results: '{n} suggestions',
+  removed: '{query} removed from recent searches',
+  remove: 'Remove {query}'
+};
+const asItem = kind => x => typeof x === 'string' ? {
+  value: x,
+  label: x,
+  kind
+} : Object.assign({
+  label: x.value
+}, x, {
+  kind
+});
+
+// the label with the part that matches the text in bold (the first match, ignoring case)
+function marked(label, text) {
+  const s = String(label),
+    q = String(text || '').trim();
+  const at = q ? s.toLowerCase().indexOf(q.toLowerCase()) : -1;
+  if (at < 0) return s;
+  return [s.slice(0, at), /*#__PURE__*/_react.default.createElement("strong", {
+    key: "m",
+    className: "plx-search__match"
+  }, s.slice(at, at + q.length)), s.slice(at + q.length)];
+}
+
+// the field itself (width "auto", "bar" or "fill")
+const SearchInput = /*#__PURE__*/_react.default.forwardRef(function SearchInput({
+  value,
+  onChange,
+  onClear,
+  placeholder = 'Search',
+  label = 'Search',
+  shortcut,
+  loading = false,
+  onAccent = false,
+  suggestions,
+  recent,
+  onSelect,
+  onSubmitSearch,
+  onRemoveRecent,
+  onClearRecent,
+  strings,
+  className,
+  onKeyDown,
+  onFocus,
+  width = 'auto',
+  size,
+  ...rest
+}, ref) {
+  const t = Object.assign({}, STRINGS, strings);
+  const auto = 'plx-sf' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const listId = auto + '-list';
+  const wrap = _react.default.useRef(null),
+    input = _react.default.useRef(null),
+    list = _react.default.useRef(null);
+  _react.default.useImperativeHandle(ref, () => input.current);
+  const hasList = !!(suggestions || recent);
+  const text = value == null ? '' : String(value);
+  const showRecent = !text;
+  const items = showRecent ? (recent || []).map(asItem('recent')) : (suggestions || []).map(asItem('suggestion'));
+  const [open, setOpen] = _react.default.useState(false);
+  const [active, setActive] = _react.default.useState(-1);
+  const [cell, setCell] = _react.default.useState(0); // the grid's active cell in its row: 0 the term, 1 the remove button
+  const shown = hasList && open && items.length > 0;
+  // recent searches that can be removed one by one: the combobox with grid popup (WAI-ARIA APG)
+  const grid = showRecent && !!onRemoveRecent;
+  _react.default.useEffect(() => {
+    setActive(-1);
+    setCell(0);
+  }, [text, showRecent]);
+  _react.default.useEffect(() => {
+    if (!open) return undefined;
+    const off = e => {
+      if (wrap.current && !wrap.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener('mousedown', off);
+    return () => document.removeEventListener('mousedown', off);
+  }, [open]);
+  // the number of suggestions, once typing pauses (announce waits for the pause)
+  _react.default.useEffect(() => {
+    if (shown && !showRecent) (0, _announce.announce)(t.results.replace('{n}', (0, _format.formatNumber)(items.length)));
+  }, [shown, showRecent, items.length, t.results]);
+  // the active option stays in view in a long list
+  _react.default.useEffect(() => {
+    const el = active >= 0 && list.current ? list.current.querySelector('#' + auto + '-r' + active + ', #' + auto + '-o' + active) : null;
+    if (el && el.scrollIntoView) el.scrollIntoView({
+      block: 'nearest'
+    });
+  }, [active, auto]);
+  const setText = v => {
+    if (onChange && input.current) onChange({
+      target: Object.assign(input.current, {
+        value: v
+      }),
+      currentTarget: input.current
+    });
+  };
+  const choose = item => {
+    setOpen(false);
+    if (onSelect) onSelect(item);else {
+      setText(item.value);
+      if (onSubmitSearch) onSubmitSearch(item.value);
+    }
+  };
+  // one recent search removed (its button, Delete, or Enter on its remove cell): the active row stays in place
+  const removeRecent = i => {
+    const it = items[i];
+    if (!it || !onRemoveRecent) return;
+    onRemoveRecent(it.value);
+    if (active >= 0) setActive(a => Math.min(a, items.length - 2));
+    if (items.length <= 1) setCell(0);
+    (0, _announce.announce)(t.removed.replace('{query}', it.value));
+  };
+  const keys = e => {
+    if (onKeyDown) onKeyDown(e);
+    if (e.defaultPrevented || !hasList) {
+      if (e.key === 'Enter' && onSubmitSearch && !e.defaultPrevented) onSubmitSearch(text);
+      return;
+    }
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (!open) setOpen(true);else if (items.length) setActive(a => (a + 1) % items.length);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (!open) setOpen(true);else if (items.length) setActive(a => a <= 0 ? items.length - 1 : a - 1);
+    } else if (grid && shown && active >= 0 && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) {
+      // the grid's cells in reading order: toward the end is the remove cell (Arrow Left in a right-to-left page)
+      const rtl = !!wrap.current && getComputedStyle(wrap.current).direction === 'rtl';
+      e.preventDefault();
+      setCell(e.key === 'ArrowRight' !== rtl ? 1 : 0);
+    } else if (e.key === 'Enter') {
+      if (shown && items[active] && grid && cell === 1) {
+        e.preventDefault();
+        removeRecent(active);
+      } else if (shown && items[active]) {
+        e.preventDefault();
+        choose(items[active]);
+      } else {
+        setOpen(false);
+        if (onSubmitSearch) onSubmitSearch(text);
+      }
+    } else if (e.key === 'Escape') {
+      if (shown) {
+        e.preventDefault();
+        setOpen(false);
+      }
+    } else if (e.key === 'Delete' && shown && showRecent && items[active] && onRemoveRecent) {
+      e.preventDefault();
+      removeRecent(active);
+    } else if (!open && e.key.length === 1) setOpen(true);
+  };
+  const optId = i => auto + '-o' + i;
+  const cellId = (i, c) => auto + '-o' + i + (c ? '-x' : '');
+  const comboProps = hasList ? {
+    role: 'combobox',
+    'aria-expanded': shown,
+    'aria-controls': listId,
+    'aria-autocomplete': 'list',
+    'aria-haspopup': grid ? 'grid' : undefined,
+    'aria-activedescendant': shown && active >= 0 ? grid ? cellId(active, cell) : optId(active) : undefined
+  } : {};
+  return /*#__PURE__*/_react.default.createElement("div", {
+    ref: wrap,
+    className: (0, _cx.cx)('plx-search', size === 'sm' && 'plx-search--size-sm', width === 'bar' && 'plx-search--bar', width === 'fill' && 'plx-search--fill', ['xs', 'sm', 'md', 'lg'].includes(width) && 'plx-search--width-' + width, onAccent && 'plx-search--on-accent', shown && 'is-open', className),
+    role: "search"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search__icon",
+    "aria-hidden": "true"
+  }, loading ? /*#__PURE__*/_react.default.createElement(_Loading.Spinner, {
+    size: "sm",
+    label: "Searching"
+  }) : /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "search"
+  })), /*#__PURE__*/_react.default.createElement("input", _extends({
+    ref: input,
+    size: size === 'sm' || size === 'md' ? undefined : size,
+    type: "search",
+    inputMode: "search",
+    enterKeyHint: "search",
+    autoComplete: "off",
+    className: "plx-search__input",
+    "aria-label": label,
+    placeholder: placeholder,
+    value: value,
+    onChange: e => {
+      if (hasList) setOpen(true);
+      if (onChange) onChange(e);
+    },
+    onKeyDown: keys,
+    onFocus: e => {
+      if (hasList) setOpen(true);
+      if (onFocus) onFocus(e);
+    }
+  }, comboProps, rest)), onClear && value ? /*#__PURE__*/_react.default.createElement("button", {
+    type: "button",
+    className: "plx-search__clear",
+    "aria-label": t.clear,
+    onClick: onClear
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "close"
+  })) : null, shortcut && !value ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search__kbd"
+  }, /*#__PURE__*/_react.default.createElement(_Kbd.Kbd, {
+    onAccent: onAccent
+  }, shortcut)) : null, hasList ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-search__popup",
+    hidden: !shown
+  }, showRecent ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-search__popup-head"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search__popup-title",
+    id: listId + '-t'
+  }, t.recent), onClearRecent ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "ghost",
+    size: "2xs",
+    className: "plx-search__popup-action",
+    onMouseDown: e => e.preventDefault(),
+    onClick: () => {
+      onClearRecent();
+      setOpen(false);
+      if (input.current) input.current.focus();
+    }
+  }, t.clearRecent) : null) : null, grid ? /*#__PURE__*/_react.default.createElement("div", {
+    ref: list,
+    id: listId,
+    role: "grid",
+    className: "plx-search__list plx-search__grid",
+    "aria-labelledby": listId + '-t'
+  }, items.map((it, i) => /*#__PURE__*/_react.default.createElement("div", {
+    key: it.kind + ':' + it.value,
+    id: auto + '-r' + i,
+    role: "row",
+    className: (0, _cx.cx)('plx-search__option', 'plx-search__option--recent', 'plx-search__row', i === active && 'is-active'),
+    onMouseDown: e => e.preventDefault(),
+    onMouseEnter: () => setActive(i)
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    id: cellId(i, 0),
+    role: "gridcell",
+    "aria-selected": i === active && cell === 0,
+    className: "plx-search__cell",
+    onClick: () => choose(it)
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search__option-icon",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "clock"
+  })), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search__option-text"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search__option-label"
+  }, it.label))), /*#__PURE__*/_react.default.createElement("span", {
+    id: cellId(i, 1),
+    role: "gridcell",
+    "aria-selected": i === active && cell === 1,
+    className: "plx-search__remove-cell"
+  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "ghost",
+    size: "xs",
+    iconOnly: true,
+    icon: "close",
+    tabIndex: -1,
+    label: t.remove.replace('{query}', it.value),
+    className: (0, _cx.cx)('plx-search__remove', i === active && cell === 1 && 'is-focus-visible'),
+    onMouseDown: e => e.preventDefault(),
+    onClick: e => {
+      e.stopPropagation();
+      removeRecent(i);
+      if (input.current) input.current.focus();
+    }
+  }))))) : /*#__PURE__*/_react.default.createElement("ul", {
+    ref: list,
+    id: listId,
+    role: "listbox",
+    className: "plx-search__list",
+    "aria-label": showRecent ? undefined : t.suggestions,
+    "aria-labelledby": showRecent ? listId + '-t' : undefined
+  }, items.map((it, i) => /*#__PURE__*/_react.default.createElement("li", {
+    key: it.kind + ':' + it.value,
+    id: optId(i),
+    role: "option",
+    "aria-selected": i === active,
+    className: (0, _cx.cx)('plx-search__option', it.kind === 'recent' && 'plx-search__option--recent', i === active && 'is-active'),
+    onMouseDown: e => e.preventDefault(),
+    onClick: () => choose(it),
+    onMouseEnter: () => setActive(i)
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search__option-icon",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: it.kind === 'recent' ? 'clock' : 'search'
+  })), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search__option-text"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search__option-label"
+  }, it.kind === 'recent' ? it.label : marked(it.label, text)), it.description ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-search__option-description"
+  }, it.description) : null))))) : null);
+});
+
+// the narrow bar's search (owner, 2026-10-14): the search icon in the field's place; it opens the field across the bar
+function CollapsedSearch({
+  value,
+  label = 'Search',
+  onKeyDown,
+  onBlur,
+  className,
+  open: openProp,
+  onOpenChange,
+  ...rest
+}, ref) {
+  const [own, setOwn] = _react.default.useState(false);
+  const open = openProp === undefined ? own : openProp;
+  const setOpen = v => {
+    setOwn(v);
+    if (onOpenChange) onOpenChange(v);
+  };
+  const field = _react.default.useRef(null),
+    button = _react.default.useRef(null);
+  _react.default.useImperativeHandle(ref, () => open ? field.current : button.current);
+  _react.default.useEffect(() => {
+    if (open && field.current) field.current.focus();
+  }, [open]);
+  const close = refocus => {
+    setOpen(false);
+    if (refocus) setTimeout(() => {
+      if (button.current) button.current.focus();
+    }, 0);
+  };
+  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+    content: label
+  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    ref: button,
+    size: "sm",
+    variant: "ghost",
+    icon: "search",
+    iconOnly: true,
+    label: label,
+    selected: !!value,
+    "aria-expanded": open,
+    className: (0, _cx.cx)('plx-search__toggle', className),
+    onClick: () => setOpen(true)
+  })), open ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-search__over"
+  }, /*#__PURE__*/_react.default.createElement(SearchInput, _extends({
+    ref: field,
+    value: value,
+    label: label,
+    width: "fill"
+  }, rest, {
+    onKeyDown: e => {
+      if (onKeyDown) onKeyDown(e);
+      if (e.key === 'Escape' && !e.defaultPrevented && e.currentTarget.getAttribute('aria-expanded') !== 'true') {
+        e.preventDefault();
+        close(true);
+      }
+    },
+    onBlur: e => {
+      if (onBlur) onBlur(e);
+      if (!e.currentTarget.value) close(false);
+    }
+  }))) : null);
+}
+const Collapsed = /*#__PURE__*/_react.default.forwardRef(CollapsedSearch);
+const SearchField = exports.SearchField = /*#__PURE__*/_react.default.forwardRef(function SearchField({
+  collapsed = false,
+  ...props
+}, ref) {
+  return collapsed ? /*#__PURE__*/_react.default.createElement(Collapsed, _extends({
+    ref: ref
+  }, props)) : /*#__PURE__*/_react.default.createElement(SearchInput, _extends({
+    ref: ref
+  }, props));
+});
+  } },
   "platform/components/Text/Text.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -15839,6 +16518,2370 @@ function ExpandableText({
     "aria-controls": id,
     onClick: () => setOpen(!open)
   }, open ? words.less : words.more) : null);
+}
+  } },
+  "platform/utils/barFit.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.useBarFit = useBarFit;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · barFit (platform/utils/barFit.js). Internal; not part of the public API.
+   The button rule of a command bar, measured (owner, 2026-10-14): useBarFit(ref, key, max, min, rows, hold) returns the bar's step.
+   Step 0 draws every control with its icon and label; each later step makes the bar narrower (icons only with tooltips,
+   the search as its icon, then one more action into More per step, from the end, Delete last: the bar decides what a
+   step means). The rows measured are the elements in ref that match rows (default [data-plx-bar-row]): a row fits while every visible child of
+   it lies inside it on one line. The step starts again from `min` whenever the bar's width or `key` (anything that changes
+   the controls' widths: labels, a selection) changes, unless hold (the bar's search is open across it), and goes up one step at a time, before the browser paints,
+   until every row fits or `max` is reached. Nothing is written to the page: the bar draws each step from its classes. */
+
+// a row is too narrow when a child of it ends past its edge (either edge: right to left mirrors it) or starts on a
+// second line. Children are read, not scrollWidth: a tooltip's hidden bubble at the end may reach past the edge
+const over = row => {
+  const kids = Array.prototype.filter.call(row.children, k => k.offsetParent !== null && k.offsetWidth > 0);
+  if (!kids.length) return false;
+  const box = row.getBoundingClientRect();
+  const top = Math.min.apply(null, kids.map(k => k.offsetTop));
+  const tall = Math.max.apply(null, kids.map(k => k.offsetHeight));
+  return kids.some(k => {
+    const r = k.getBoundingClientRect();
+    return r.right > box.right + 1 || r.left < box.left - 1 || k.offsetTop >= top + tall;
+  });
+};
+function useBarFit(ref, key, max, min = 0, rows = '[data-plx-bar-row]', hold = false) {
+  const [step, setStep] = _react.default.useState(min);
+  const [width, setWidth] = _react.default.useState(0);
+  const measured = _react.default.useRef(null);
+  _react.default.useLayoutEffect(() => {
+    if (!hold) setStep(min);
+  }, [width, key, min, hold]); // eslint-disable-line react-hooks/exhaustive-deps
+  _react.default.useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el || typeof ResizeObserver === 'undefined') return undefined;
+    const ro = new ResizeObserver(() => setWidth(el.clientWidth));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [ref]);
+  _react.default.useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el || step >= max || hold) return;
+    // Text covers count/custom-slot changes not represented by the caller's key. Reading it does not force layout.
+    // Keep this check after the commit: a render-time dependency would still see the previous DOM text.
+    const signature = [el, width, key, max, min, rows, step, el.textContent];
+    if (measured.current && signature.every((value, i) => value === measured.current[i])) return;
+    measured.current = signature;
+    if (Array.prototype.some.call(el.querySelectorAll(rows), over)) setStep(step + 1);
+  });
+  return Math.max(min, Math.min(step, max));
+}
+  } },
+  "platform/utils/roving.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.roveTo = roveTo;
+exports.useRovingFocus = useRovingFocus;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Roving focus (platform/utils/roving.js)
+   Summary: One Tab stop for a group of controls (a toolbar, a rail): only the current control is in the Tab order
+     (tabindex 0), the others are reached with the arrow keys (tabindex -1). The current control is the one last focused,
+     else the first. This is the WAI-ARIA toolbar pattern: Tab enters and leaves the group in one step.
+   Usage:
+     const ref = React.useRef(null);
+     useRovingFocus(ref, () => items());          // after every render
+     <div ref={ref} onFocus={(e) => roveTo(ref, items(), e.target)}>
+   Props:
+     useRovingFocus(ref, getItems): keeps exactly one item at tabindex 0 after every render
+     roveTo(ref, items, el): makes el the current item (call when focus enters an item)
+*/
+
+function apply(items, current) {
+  items.forEach(el => {
+    const on = el === current;
+    if (el.tabIndex !== (on ? 0 : -1)) el.tabIndex = on ? 0 : -1;
+    el.setAttribute('data-plx-roving', on ? 'current' : '');
+  });
+}
+function roveTo(ref, items, el) {
+  if (!ref.current || items.indexOf(el) < 0) return;
+  apply(items, el);
+}
+function useRovingFocus(ref, getItems) {
+  _react.default.useEffect(() => {
+    if (!ref.current) return;
+    const items = getItems();
+    if (!items.length) return;
+    const current = items.filter(el => el.getAttribute('data-plx-roving') === 'current')[0] || items[0];
+    apply(items, current);
+  });
+}
+  } },
+  "platform/components/Toolbar/Toolbar.jsx": { deps: {"react":null,"../../utils/roving.js":"platform/utils/roving.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Toolbar = Toolbar;
+var _react = _interopRequireDefault(require("react"));
+var _roving = require("../../utils/roving.js");
+var _direction = require("../../utils/direction.js");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Toolbar, Toolbar.Group, Toolbar.Spacer
+   Summary: One row of controls (role="toolbar").
+   Usage:
+     <Toolbar label="Asset actions">
+       <Toolbar.Group>…</Toolbar.Group>
+       <Toolbar.Spacer/>
+       <Toolbar.Group>…</Toolbar.Group>
+     </Toolbar>
+   Props:
+     Toolbar.label: its accessible name
+     Toolbar.variant: "default" (rows wrap; gaps follow the density) | "bar" (one row that never wraps, fixed gaps: CommandBar)
+     Toolbar.onKeyDown(event): runs first; preventDefault stops the toolbar's own key handling
+     Toolbar.className: more classes on the toolbar
+     Toolbar.children: controls, groups and spacers. Stack and Inline layout wrappers (also nested inside Group) are transparent: toolbar spacing applies to their controls.
+       Keep semantic composites together; do not wrap popup internals in a layout wrapper intended to be flattened.
+     Toolbar.Group.className: more classes on the group
+     Toolbar.Group.children: the controls in the group
+     Toolbar.Spacer: pushes what follows to the end of the row; no props
+   Behavior:
+     One Tab stop: Tab enters and leaves the toolbar; the current control (the one last used) is in the Tab order.
+     Arrow keys move between its controls in reading order (wrapping; reversed in right to left); Home and End jump to the
+     first and last.
+     Tab leaves the toolbar.
+     Text fields, text areas, selects and editable regions keep their own arrow and Home/End behavior.
+     Descendant controls are discovered through wrappers; nested toolbars retain their own focus scope.
+     In a radio group, only the checked option is a stop.
+   Notes:
+     Every control in it takes the toolbar control height.
+     Other props reach the toolbar or group element.
+*/
+const POPUP = '[role="dialog"],[role="alertdialog"],[role="menu"],[role="listbox"],[role="tree"],[role="grid"],[role="tablist"]';
+const FOCUSABLE = 'button,input,textarea,select,a[href],[tabindex],[contenteditable="true"]';
+function Toolbar({
+  label,
+  variant = 'default',
+  className,
+  children,
+  onKeyDown,
+  onFocus,
+  ...rest
+}) {
+  const ref = _react.default.useRef(null);
+  const itemsOf = () => ref.current ? Array.prototype.filter.call(ref.current.querySelectorAll(FOCUSABLE), el => el.closest('[role="toolbar"]') === ref.current && (!el.closest(POPUP) || !ref.current.contains(el.closest(POPUP))) && el.getClientRects().length && getComputedStyle(el).visibility === 'visible' && !el.matches(':disabled,[aria-disabled="true"]') && !el.closest('[inert],[aria-hidden="true"]') && !el.closest('[role="radiogroup"] [aria-checked="false"]') && (el.matches('button,input,textarea,select,a[href],[contenteditable="true"]') || el.tabIndex >= 0 || el.hasAttribute('data-plx-roving'))) : [];
+  _react.default.useEffect(() => {
+    const root = ref.current;
+    if (!root) return;
+    const refresh = () => {
+      root.querySelectorAll('[data-plx-toolbar-layout]').forEach(el => {
+        if (el.closest('[role="toolbar"]') === root) el.removeAttribute('data-plx-toolbar-layout');
+      });
+      const visit = parent => Array.from(parent.children).forEach(el => {
+        if (el.matches('.plx-stack,.plx-inline') && getComputedStyle(el).display !== 'none') {
+          el.setAttribute('data-plx-toolbar-layout', '');
+          visit(el);
+        } else if (el.classList.contains('plx-toolbar__group')) visit(el);
+      });
+      visit(root);
+      const items = itemsOf();
+      (0, _roving.roveTo)(ref, items, items.find(el => el.getAttribute('data-plx-roving') === 'current') || items[0]);
+    };
+    refresh();
+    const observer = new MutationObserver(refresh);
+    observer.observe(root, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['disabled', 'hidden', 'inert', 'aria-hidden', 'aria-disabled', 'class']
+    });
+    const resize = typeof ResizeObserver === 'function' ? new ResizeObserver(refresh) : null;
+    if (resize) resize.observe(root);
+    window.addEventListener('resize', refresh);
+    return () => {
+      observer.disconnect();
+      if (resize) resize.disconnect();
+      window.removeEventListener('resize', refresh);
+    };
+  }, []);
+  // one Tab stop: the current control is in the Tab order, the others are reached with the arrows (batch 213)
+  (0, _roving.useRovingFocus)(ref, itemsOf);
+  const onKey = e => {
+    if (onKeyDown) onKeyDown(e);
+    if (e.defaultPrevented || ['ArrowLeft', 'ArrowRight', 'Home', 'End'].indexOf(e.key) < 0) return;
+    if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable) return; // preserve the control's editing keys
+    if (e.target.closest(POPUP) && ref.current.contains(e.target.closest(POPUP))) return; // popup/composite controls keep their own keys
+    if (e.target.closest('[role="toolbar"]') !== ref.current) return; // a nested toolbar owns its arrows
+    const items = itemsOf();
+    const i = items.indexOf(document.activeElement);
+    if (i < 0) return;
+    const step = (0, _direction.arrowStep)(e, ref.current, {
+      vertical: false
+    }); // in reading order: right to left reverses Left and Right
+    const n = e.key === 'Home' ? 0 : e.key === 'End' ? items.length - 1 : (i + step + items.length) % items.length;
+    e.preventDefault();
+    items[n].focus();
+  };
+  const onFocusIn = e => {
+    if (onFocus) onFocus(e);
+    (0, _roving.roveTo)(ref, itemsOf(), e.target);
+  };
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    ref: ref,
+    role: "toolbar",
+    "aria-label": label,
+    className: (0, _cx.cx)('plx-toolbar', variant === 'bar' && 'plx-toolbar--bar', className),
+    onKeyDown: onKey,
+    onFocus: onFocusIn
+  }, rest), children);
+}
+Toolbar.Group = function ToolbarGroup({
+  className,
+  children,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    className: (0, _cx.cx)('plx-toolbar__group', className)
+  }, rest), children);
+};
+Toolbar.Spacer = function ToolbarSpacer() {
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-toolbar__spacer",
+    "aria-hidden": "true"
+  });
+};
+  } },
+  "platform/components/Divider/Divider.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Divider = Divider;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Divider
+   Summary: A 1px rule between groups.
+   Usage:
+     <Divider />
+     <Divider orientation="vertical" />
+   Props:
+     orientation: "horizontal" (default) | "vertical" (in a row)
+     className: more classes on the rule
+   Behavior:
+     It is a separator (role="separator") with its orientation.
+   Notes:
+     Other props pass through to the <div>.
+*/
+function Divider({
+  orientation = 'horizontal',
+  className,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    role: "separator",
+    "aria-orientation": orientation,
+    className: (0, _cx.cx)('plx-divider', 'plx-divider--' + orientation, className)
+  }, rest));
+}
+  } },
+  "platform/patterns/CommandBar/BarActions.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../../components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/layer.js":"platform/utils/layer.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.BarActions = BarActions;
+exports.foldOrder = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Button = require("../../components/Button/Button.jsx");
+var _Menu = require("../../components/Menu/Menu.jsx");
+var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
+var _Popover = require("../../components/Popover/Popover.jsx");
+var _Loading = require("../../components/Loading/Loading.jsx");
+var _layer = require("../../utils/layer.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · BarActions
+   (platform/patterns/CommandBar; internal, not part of the public API: the commands of a bar, shared by CommandBar, the
+   page's actions, and BulkActions, the selection's actions.)
+   Usage:
+     <BarActions actions={actions} iconOnly={step >= 1} fold={Math.max(0, step - 2)} moreLabel="More actions" dangerClass="plx-command-bar__danger" />
+   Summary: A row of commands drawn by the button rule (owner, 2026-10-14): ghost buttons with their icon and label; icons
+     only (each with its tooltip) when the bar does not fit; then the commands fold into "More actions" (⋮) one at a time
+     from the end, the danger commands last. More shows only when something has folded.
+   Props:
+     actions: [{ id, label, icon, onSelect, items, danger, disabled, why, primary, single, toggle, pressed, choices, value, onChange, loading, tooltip, panel }]
+     actions[].toggle: an on/off command (owner, 2026-10-15, the Fluent model): a pressed button (pressed true or false);
+       onSelect(next) runs with the new state; folded into More it is a checked menu item
+     actions[].choices: a command that picks one of [{ value, label, icon }]: a menu button showing the current choice
+       (named "label: choice"), onChange(value) runs on a pick; folded into More it is a submenu of radio items
+     actions[].items: a menu: Menu children (MenuItem…) or [{ id, label, icon, danger, disabled, single, onSelect }]
+     actions[].why: the tooltip of a disabled command, saying why (owner, 2026-10-14: commands are never hidden by state,
+       only disabled, with a why-tooltip)
+     actions[].loading: uses the existing Button spinner and busy state; folded commands are busy and cannot be chosen
+     actions[].tooltip: additional help on hover and keyboard focus, with labels or icons; disabled why takes precedence
+     actions[].panel({ close }): returns a small form in the existing Popover; Escape returns focus to the action
+     iconOnly: draw the commands as icons with tooltips
+     fold: how many commands are in More (from the end: the others first, the danger commands last)
+     off(action): whether a command (or a menu item) is disabled now; default action.disabled
+     why(action): the tooltip of a disabled command; default action.why
+     moreLabel: the More button's name ("More actions")
+     dangerClass: the class that draws a ghost button in the danger color
+     extra: more menu nodes for More, after the folded commands (the bar's folded quick filters); More shows for them too
+   Notes:
+     The danger commands come last, after a divider. A primary command (the page's one, when it marks one) stays filled
+     and keeps its label. */
+// Composite triggers do not all forward arbitrary props. Keep Tooltip's description on the real control.
+function HintTarget({
+  children,
+  'aria-describedby': description
+}) {
+  const wrap = _react.default.useRef(null);
+  _react.default.useLayoutEffect(() => {
+    const button = wrap.current && wrap.current.querySelector('button,a[href]');
+    if (!button || !description) return undefined;
+    const before = button.getAttribute('aria-describedby');
+    const ids = [...new Set((before || '').split(' ').concat(description.split(' ')).filter(Boolean))];
+    button.setAttribute('aria-describedby', ids.join(' '));
+    return () => {
+      if (before) button.setAttribute('aria-describedby', before);else button.removeAttribute('aria-describedby');
+    };
+  });
+  return /*#__PURE__*/_react.default.createElement("span", {
+    ref: wrap,
+    className: "plx-bar-actions__hint-target"
+  }, children);
+}
+function ActionHint({
+  content,
+  children,
+  className
+}) {
+  return /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+    content: content,
+    className: className
+  }, /*#__PURE__*/_react.default.createElement(HintTarget, null, children));
+}
+
+// MenuItem intentionally has no public ref. This adapter exposes its real button to Popover's focus/anchor handling.
+const PanelMenuTrigger = /*#__PURE__*/_react.default.forwardRef(function PanelMenuTrigger(props, ref) {
+  const wrap = _react.default.useRef(null);
+  _react.default.useImperativeHandle(ref, () => wrap.current && wrap.current.querySelector('[data-plx-menu-item]'));
+  return /*#__PURE__*/_react.default.createElement("span", {
+    ref: wrap,
+    className: "plx-bar-actions__panel-item"
+  }, /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, _extends({}, props, {
+    keepOpen: true
+  })));
+});
+function ActionPanel({
+  action,
+  trigger
+}) {
+  const [open, setOpen] = _react.default.useState(false);
+  const holder = _react.default.useRef(null);
+  const unavailable = !!action.disabled || !!action.loading;
+  const show = open && !unavailable;
+  const close = () => setOpen(false);
+  // If dismissing a narrow sheet also closes More, its item is gone: return to the surviving More trigger.
+  _react.default.useEffect(() => {
+    if (!show) return undefined;
+    const menu = holder.current && holder.current.closest('[role="menu"]');
+    const more = menu && menu.parentElement.querySelector(':scope > button');
+    return () => {
+      requestAnimationFrame(() => {
+        if (more && more.isConnected && document.activeElement === document.body) more.focus({
+          preventScroll: true
+        });
+      });
+    };
+  }, [show]);
+  _react.default.useEffect(() => {
+    if (unavailable) setOpen(false);
+  }, [unavailable]);
+  const contain = e => {
+    const dialog = e.target.closest('[role="dialog"]');
+    if (!dialog) return;
+    // The non-modal form is outside the toolbar's roving order. Tab past its last control leaves the whole bar.
+    if (e.type === 'keydown' && e.key === 'Tab' && !e.shiftKey && dialog.getAttribute('aria-modal') !== 'true') {
+      const controls = (0, _layer.focusables)(dialog).filter(el => el.tabIndex >= 0);
+      const toolbar = holder.current && holder.current.closest('[role="toolbar"]');
+      if (toolbar && e.target === controls[controls.length - 1]) {
+        const next = (0, _layer.focusables)(document.body).find(el => el.tabIndex >= 0 && !toolbar.contains(el) && !el.closest('[role="menu"],[role="dialog"],[inert]') && toolbar.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING);
+        if (next) {
+          e.preventDefault();
+          next.focus();
+        }
+      }
+    }
+    e.stopPropagation();
+  };
+  const leave = e => {
+    const next = e.relatedTarget,
+      menu = e.currentTarget.closest('[role="menu"]');
+    if (!menu || !next || menu.contains(next) || next.closest('[role="dialog"]')) return;
+    const more = menu.parentElement.querySelector(':scope > button');
+    if (more) more.click();
+  };
+  return /*#__PURE__*/_react.default.createElement("span", {
+    ref: holder,
+    className: "plx-bar-actions__panel",
+    onKeyDown: contain,
+    onFocus: contain,
+    onMouseDown: contain,
+    onBlur: leave
+  }, /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
+    trigger: trigger,
+    title: action.label,
+    closeButton: true,
+    open: show,
+    onOpenChange: next => {
+      if (!next || !unavailable) setOpen(next);
+    }
+  }, show ? action.panel({
+    close
+  }) : null));
+}
+
+// a menu's items: Menu children, or descriptors drawn as MenuItems
+const itemsOf = (a, off) => {
+  const list = a.items;
+  if (!Array.isArray(list) || !list.length || /*#__PURE__*/_react.default.isValidElement(list[0])) return list;
+  return list.map(it => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    key: it.id || it.label,
+    icon: it.icon,
+    danger: it.danger,
+    disabled: off(it),
+    onSelect: it.onSelect
+  }, it.label));
+};
+
+// the commands that fold, in their folding order: the others from the end, then the danger ones from the end
+const foldOrder = actions => {
+  const plain = actions.filter(a => !a.danger && !a.primary),
+    danger = actions.filter(a => a.danger && !a.primary);
+  return plain.slice().reverse().concat(danger.slice().reverse());
+};
+exports.foldOrder = foldOrder;
+function BarActions({
+  actions = [],
+  iconOnly = false,
+  fold = 0,
+  off = a => !!a.disabled,
+  why = a => a.why,
+  moreLabel = 'More actions',
+  dangerClass,
+  size = 'sm',
+  extra = []
+}) {
+  const folded = new Set(foldOrder(actions).slice(0, fold).map(a => a.id || a.label));
+  const kept = actions.filter(a => !folded.has(a.id || a.label));
+  const away = actions.filter(a => folded.has(a.id || a.label));
+  // a choices command: its options as radio items, and the current one's label
+  const radios = a => /*#__PURE__*/_react.default.createElement(_Menu.MenuRadioGroup, {
+    label: a.label,
+    value: a.value,
+    onChange: v => a.onChange && a.onChange(v)
+  }, (a.choices || []).map(c => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    key: c.value,
+    value: c.value,
+    icon: c.icon
+  }, c.label)));
+  const current = a => {
+    const c = (a.choices || []).find(x => x.value === a.value);
+    return c ? c.label : '';
+  };
+  const one = a => {
+    const disabled = off(a),
+      loading = !!a.loading;
+    const filled = !!a.primary;
+    const only = iconOnly && !filled && !!a.icon;
+    const panel = typeof a.panel === 'function';
+    const menu = !!a.items || !!a.choices;
+    // a choices command shows its current choice and is named by both ("Profile: Raphael")
+    const name = a.choices ? a.label + ': ' + current(a) : a.label;
+    const text = a.choices ? current(a) || a.label : a.label;
+    const click = panel ? undefined : a.toggle ? () => a.onSelect && a.onSelect(!a.pressed) : menu ? undefined : a.onSelect;
+    const button = /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: size,
+      variant: filled ? 'primary' : 'ghost',
+      icon: a.icon,
+      iconOnly: only,
+      label: only || a.choices ? name : undefined,
+      caret: menu && !only,
+      "aria-haspopup": panel ? 'dialog' : menu ? 'menu' : undefined,
+      expanded: loading && (panel || menu) ? false : undefined,
+      pressed: a.toggle ? !!a.pressed : undefined,
+      disabled: disabled,
+      loading: loading,
+      className: a.danger && !filled ? dangerClass : undefined,
+      onClick: click
+    }, text);
+    const el = loading ? button : panel ? /*#__PURE__*/_react.default.createElement(ActionPanel, {
+      action: Object.assign({}, a, {
+        disabled
+      }),
+      trigger: button
+    }) : a.choices ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+      label: a.label,
+      trigger: button
+    }, radios(a)) : a.items ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+      label: a.label,
+      trigger: button
+    }, itemsOf(a, off)) : button;
+    const tip = disabled && why(a) || a.tooltip || (only ? name : null);
+    return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, {
+      key: a.id || a.label
+    }, tip ? /*#__PURE__*/_react.default.createElement(ActionHint, {
+      content: tip
+    }, el) : el);
+  };
+  const plain = kept.filter(a => !a.danger),
+    danger = kept.filter(a => a.danger);
+  const allOff = away.length > 0 && !extra.length && away.every(a => off(a));
+  const more = away.length || extra.length ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+    key: "plx-more",
+    content: allOff ? why(away[0]) : moreLabel
+  }, /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+    label: moreLabel,
+    placement: "bottom-end",
+    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: size,
+      variant: "ghost",
+      icon: "more",
+      iconOnly: true,
+      label: moreLabel,
+      disabled: allOff
+    })
+  }, away.map((a, i) => {
+    const sep = a.danger && i > 0 && !away[i - 1].danger ? /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, {
+      key: (a.id || a.label) + '-sep'
+    }) : null;
+    // folded (the Fluent model): a toggle is a checked item, a choices command a submenu of radio items
+    const busy = !!a.loading,
+      disabled = off(a) || busy;
+    const item = busy ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      key: a.id || a.label,
+      icon: /*#__PURE__*/_react.default.createElement(_Loading.Spinner, {
+        size: "sm",
+        label: a.label
+      }),
+      danger: a.danger,
+      checked: a.toggle ? !!a.pressed : undefined,
+      "aria-label": a.choices ? a.label + ': ' + current(a) : a.label,
+      "aria-busy": true,
+      disabled: true
+    }, a.choices ? a.label + ': ' + current(a) : a.label) : typeof a.panel === 'function' ? /*#__PURE__*/_react.default.createElement(ActionPanel, {
+      key: a.id || a.label,
+      action: Object.assign({}, a, {
+        disabled
+      }),
+      trigger: /*#__PURE__*/_react.default.createElement(PanelMenuTrigger, {
+        icon: a.icon,
+        danger: a.danger,
+        disabled: disabled
+      }, a.label)
+    }) : a.choices ? /*#__PURE__*/_react.default.createElement(_Menu.MenuSub, {
+      key: a.id || a.label,
+      label: a.label + ': ' + current(a),
+      icon: a.icon,
+      disabled: off(a)
+    }, radios(a)) : a.toggle ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      key: a.id || a.label,
+      icon: a.icon,
+      checked: !!a.pressed,
+      disabled: off(a),
+      onSelect: () => a.onSelect && a.onSelect(!a.pressed)
+    }, a.label) : a.items ? /*#__PURE__*/_react.default.createElement(_Menu.MenuGroup, {
+      key: a.id || a.label,
+      label: a.label
+    }, itemsOf(a, off)) : /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      key: a.id || a.label,
+      icon: a.icon,
+      danger: a.danger,
+      disabled: off(a),
+      onSelect: a.onSelect
+    }, a.label);
+    const tip = off(a) && why(a) || a.tooltip;
+    const described = tip ? /*#__PURE__*/_react.default.createElement(ActionHint, {
+      key: a.id || a.label,
+      content: tip,
+      className: "plx-bar-actions__tooltip"
+    }, item) : item;
+    return sep ? [sep, described] : described;
+  }), away.length && extra.length ? /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, {
+    key: "plx-extra-sep"
+  }) : null, extra)) : null;
+  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, plain.map(one), more, danger.length && (plain.length || more) ? /*#__PURE__*/_react.default.createElement("span", {
+    key: "plx-danger-divider",
+    className: (0, _cx.cx)('plx-bar-actions__divider'),
+    "aria-hidden": "true"
+  }) : null, danger.map(one));
+}
+  } },
+  "platform/patterns/QuickFilter/single-choice.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.singleChoice = singleChoice;
+/* Plenix · singleChoice
+   Summary: Normalize a single quick choice, preserving the collection's array value shape.
+   Usage: singleChoice(options, value, required)
+   Props: options are strings or value descriptors; value is the current selection; required chooses the first fallback.
+   Behavior: Keep at most one valid value; a required empty choice falls back to the first option.
+   Notes: Shared by the hook, panel and folded radio group. */
+function singleChoice(options, value, required) {
+  const values = (options || []).map(option => typeof option === 'string' ? option : option.value);
+  const selected = (Array.isArray(value) ? value : value === undefined || value === null ? [] : [value]).find(item => values.includes(item));
+  return selected !== undefined ? [selected] : required && values.length ? [values[0]] : [];
+}
+  } },
+  "platform/components/Stack/Stack.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Bleed = Bleed;
+exports.Center = Center;
+exports.Inline = Inline;
+exports.Stack = Stack;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Stack, Inline, Center, Bleed
+   Summary: Lay children out in a column (Stack) or a row (Inline), spaced by the spacing tokens, never by a margin or a number;
+     center a block at a readable width (Center); let a child reach past its parent's inset to the edge (Bleed).
+   Usage:
+     <Stack gap="md">
+       <Inline gap="sm" justify="between">…</Inline>
+       <Inline wrap>…</Inline>
+     </Stack>
+     <Inline reverseBelow="narrow"><Main /><Summary /></Inline>    the summary comes first on a narrow window
+     <Center maxWidth="sm" text><EmptyState … /></Center>
+     <Stack inset="md"><Bleed space="md"><Image … /></Bleed><Text>…</Text></Stack>
+   Props:
+     Stack.gap: "none" | "xs" | "sm" | "md" (default) | "lg" | "xl" (--plx-sys-space-stack-*) | "section" (--plx-sys-space-section)
+       Stack.equal: every child as wide as the widest (stacked buttons, owner 2026-10-22): the Stack shrinks to its widest
+       child and each Button takes its whole width; with align="end" or "center" the Stack itself sits at the end or middle
+       Peer sections that are not framed (a SectionHeading and its table, list or text, then the next): <Stack gap="section">
+       holding one <Stack gap="sm"> per section; the same in a page or a split pane, every density, either direction, phones
+     Inline.gap: "none" | "xs" | "sm" (default) | "md" | "lg" | "xl" (--plx-sys-space-inline-*)
+     Stack.align: "start" | "center" | "end" | "stretch" | "baseline" (the cross axis)
+     Inline.align: the same values; default "center"
+     Stack.justify: "start" | "center" | "end" | "between"
+     Inline.wrap: an Inline that wraps onto more lines (its lines are --plx-sys-space-stack-xs apart)
+     Stack.inset: "none" | "xs" | "sm" | "md" | "lg" | "xl" (padding on every side, --plx-sys-space-inset-*)
+     Stack.grow: fills the rest of its parent row or column (it may shrink below its content)
+     Stack.scroll: scrolls its own content
+     Stack.width: "xs" | "sm" | "md" | "lg" (a fixed width from --plx-sys-field-width-*: a field narrower than its row)
+     Stack.maxHeight: "sm" | "md" | "lg" (scrolls past --plx-sys-scroll-max-*)
+     Stack.indent: starts one inline step in (a nested group)
+     Stack.push: moves itself to the end of its row (a search box at the end of a toolbar)
+     Stack.reverse: lays the children out in the other order (column-reverse, row-reverse); the reading and Tab order stay the markup's
+     Stack.reverseBelow: "narrow" (under 600px) | "medium" (under 840px): reverses only below that window class
+     Stack.order: "first" | "last": moves this element to the start or the end of its parent Stack or Inline
+     Stack.orderBelow: "narrow" | "medium": applies order only below that window class
+     Stack.as: the element; "div" by default; ul, ol, section, header, footer, form, fieldset, …
+     Stack.className: more classes on the element
+     Stack.children: the content to lay out
+     Center.maxWidth: "sm" (400px: a sign-in form, an empty state) | "md" (default, 600px: a dialog-like page) | "lg" (900px:
+       reading) | "page" (the contained layout's maximum) | "none": the widest it grows; narrower parents keep it narrower
+     Center.intrinsic: centers each child at its own width (a column of centered children) instead of stretching it
+     Center.vertical: centers the content in its parent's height too; content taller than the parent starts at the top
+     Center.text: centers the lines of text (short headings and messages only)
+     Center.as, Center.className: as for Stack
+     Bleed.space: "xs" | "sm" | "md" (default) | "lg" | "xl": the parent's inset (Stack inset) it cancels
+     Bleed.sides: "inline" (default: to the start and end edges) | "block" (top and bottom) | "all"
+     Bleed.as, Bleed.className: as for Stack
+   Behavior:
+     A scrolling Stack or Inline shows its scroll bar on hover.
+     reverse, reverseBelow and order change only where the children are drawn: assistive technology and the Tab key follow
+       the markup. Use them for regions without a reading order between them (a summary and the content it sums up), never
+       for steps, form fields or anything read in sequence; when the meaning changes, change the markup instead.
+     Bleed cancels exactly the inset tokens of its parent (Stack inset), so its edges meet the parent's edges; its own content
+       keeps no inset (text stays out of a Bleed).
+   Notes:
+     Inline takes the same props as Stack.
+     Any other prop reaches the element.
+     Applications build their layouts from these (and the Platform's patterns) instead of styles.
+*/
+function layout(kind, {
+  as: As = 'div',
+  gap,
+  equal,
+  align,
+  justify,
+  wrap,
+  inset,
+  grow,
+  scroll,
+  width,
+  maxHeight,
+  indent,
+  push,
+  reverse,
+  reverseBelow,
+  order,
+  orderBelow,
+  className,
+  children,
+  ...rest
+}, defaults) {
+  return /*#__PURE__*/_react.default.createElement(As, _extends({
+    className: (0, _cx.cx)('plx-' + kind, 'plx-' + kind + '--gap-' + (gap || defaults.gap), (align || defaults.align) && 'plx-layout--align-' + (align || defaults.align), justify && 'plx-layout--justify-' + justify, wrap && 'plx-inline--wrap', inset && 'plx-layout--inset-' + inset, grow && 'plx-grow', scroll && 'plx-layout--scroll', width && 'plx-layout--width-' + width, maxHeight && 'plx-layout--max-' + maxHeight, indent && 'plx-layout--indent', push && 'plx-layout--push', equal && kind === 'stack' && 'plx-stack--equal', equal && kind === 'stack' && (align === 'end' || align === 'center') && 'plx-stack--equal-' + align, reverse && 'plx-layout--reverse', reverseBelow && 'plx-layout--reverse-below-' + reverseBelow, order && 'plx-layout--order-' + order + (orderBelow ? '-below-' + orderBelow : ''), className)
+  }, rest), children);
+}
+function Stack(props) {
+  return layout('stack', props, {
+    gap: 'md'
+  });
+}
+function Inline(props) {
+  return layout('inline', props, {
+    gap: 'sm',
+    align: 'center'
+  });
+}
+function Center({
+  as: As = 'div',
+  maxWidth = 'md',
+  intrinsic,
+  vertical,
+  text,
+  className,
+  children,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement(As, _extends({
+    className: (0, _cx.cx)('plx-center', 'plx-center--max-' + maxWidth, intrinsic && 'plx-center--intrinsic', vertical && 'plx-center--vertical', text && 'plx-center--text', className)
+  }, rest), children);
+}
+function Bleed({
+  as: As = 'div',
+  space = 'md',
+  sides = 'inline',
+  className,
+  children,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement(As, _extends({
+    className: (0, _cx.cx)('plx-bleed', 'plx-bleed--' + space, 'plx-bleed--' + sides, className)
+  }, rest), children);
+}
+  } },
+  "platform/utils/fields.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.WITHIN = exports.OPERATORS = exports.KIND_ICONS = exports.DIRECTIONS = exports.DATE_PRESETS = exports.CATEGORY_ORDER = void 0;
+exports.compareLevels = compareLevels;
+exports.kindOf = exports.fieldOf = exports.conditionsOf = void 0;
+exports.matchesCondition = matchesCondition;
+exports.matchesDate = matchesDate;
+exports.matchesFilter = matchesFilter;
+exports.valueOf = exports.optionsOf = exports.nextId = exports.newCondition = void 0;
+/* Plenix · fields (platform/utils/fields.js): the field model of the command bar's panels (owner, 2026-10-14, Airtable
+   style): what a collection's fields are, how a filter tests a row, how sort levels order rows and how a date quick filter
+   reads its presets. FilterPanel, SortPanel, GroupPanel, QuickFilter and useCollectionView use it; a page may too (a
+   server that filters the same way).
+   A field: { value (its key), label, kind: "text" | "select" | "multi" | "number" | "date", options: [{ value, label,
+   color }] (select and multi: color is a category color name; without one they take the category colors in order),
+   get(row) (the row's value; default row[value]) }.
+   A filter: { join: "and" | "or", items: [condition | { group: true, id, join, items: [condition…] }] }; a condition:
+   { id, field, op, value }. A condition left unfinished (no value) does not filter.
+   Sort levels: [{ field, dir: "asc" | "desc" }], the first the main one; a select field sorts in its options' order. */
+
+// the type icon of each kind (the field pickers and the column headers' type icons)
+const KIND_ICONS = exports.KIND_ICONS = {
+  text: 'ed-text',
+  select: 'field-select',
+  multi: 'tags',
+  number: 'field-number',
+  date: 'calendar'
+};
+// the directions in each kind's words (Airtable's)
+const DIRECTIONS = exports.DIRECTIONS = {
+  text: ['A → Z', 'Z → A'],
+  select: ['First → Last', 'Last → First'],
+  multi: ['First → Last', 'Last → First'],
+  number: ['1 → 9', '9 → 1'],
+  date: ['Oldest → newest', 'Newest → oldest']
+};
+// the operators by kind: [op, words]
+const OPERATORS = exports.OPERATORS = {
+  text: [['contains', 'contains'], ['ncontains', 'does not contain'], ['is', 'is'], ['isnot', 'is not'], ['empty', 'is empty'], ['nempty', 'is not empty']],
+  select: [['any', 'is any of'], ['none', 'is none of'], ['empty', 'is empty'], ['nempty', 'is not empty']],
+  multi: [['any', 'has any of'], ['none', 'has none of'], ['empty', 'is empty'], ['nempty', 'is not empty']],
+  number: [['eq', '='], ['ne', '≠'], ['lt', '<'], ['gt', '>'], ['empty', 'is empty'], ['nempty', 'is not empty']],
+  date: [['is', 'is'], ['before', 'is before'], ['after', 'is after'], ['within', 'is within'], ['empty', 'is empty'], ['nempty', 'is not empty']]
+};
+// "is within": the past week, month or year
+const WITHIN = exports.WITHIN = [{
+  value: 'week',
+  label: 'the past week',
+  days: 7
+}, {
+  value: 'month',
+  label: 'the past month',
+  days: 30
+}, {
+  value: 'year',
+  label: 'the past year',
+  days: 365
+}];
+// the category colors (Trubetskoy's 20), in the order options take them
+const CATEGORY_ORDER = exports.CATEGORY_ORDER = ['blue', 'green', 'purple', 'orange', 'teal', 'magenta', 'yellow', 'navy', 'red', 'cyan', 'lavender', 'brown', 'olive', 'pink', 'apricot', 'mint', 'maroon', 'lime', 'beige', 'grey'];
+const fieldOf = (fields, key) => fields.find(f => f.value === key) || fields[0];
+exports.fieldOf = fieldOf;
+const valueOf = (f, row) => f.get ? f.get(row) : row[f.value];
+exports.valueOf = valueOf;
+const kindOf = f => OPERATORS[f && f.kind] ? f.kind : 'text';
+// a field's options, each with its color (given, or the next category color)
+exports.kindOf = kindOf;
+const optionsOf = f => (f && f.options || []).map((o, i) => typeof o === 'string' ? {
+  value: o
+} : o).map((o, i) => Object.assign({
+  label: o.value,
+  color: CATEGORY_ORDER[i % CATEGORY_ORDER.length]
+}, o));
+exports.optionsOf = optionsOf;
+const blank = x => x === null || x === undefined || x === '' || Array.isArray(x) && !x.length;
+const iso = d => (d instanceof Date ? d : new Date(d)).toISOString().slice(0, 10);
+const daysBefore = (n, today) => {
+  const d = new Date((today || iso(new Date())) + 'T00:00:00Z');
+  d.setUTCDate(d.getUTCDate() - n);
+  return iso(d);
+};
+
+// one condition against one row (today: an ISO date, for "is within"; default the current date)
+function matchesCondition(c, row, fields, today) {
+  const f = fieldOf(fields, c.field),
+    v = valueOf(f, row),
+    val = c.value,
+    k = kindOf(f);
+  if (c.op === 'empty') return blank(v);
+  if (c.op === 'nempty') return !blank(v);
+  if (blank(val)) return true;
+  if (k === 'text') {
+    const s = String(v == null ? '' : v).toLowerCase(),
+      q = String(val).toLowerCase();
+    return c.op === 'contains' ? s.includes(q) : c.op === 'ncontains' ? !s.includes(q) : c.op === 'is' ? s === q : s !== q;
+  }
+  if (k === 'select') {
+    const list = [].concat(val);
+    return c.op === 'any' ? list.indexOf(v) >= 0 : list.indexOf(v) < 0;
+  }
+  if (k === 'multi') {
+    const list = [].concat(val),
+      hit = [].concat(v || []).some(x => list.indexOf(x) >= 0);
+    return c.op === 'any' ? hit : !hit;
+  }
+  if (k === 'number') {
+    const n = Number(v),
+      q = parseFloat(val);
+    if (isNaN(q)) return true;
+    return c.op === 'eq' ? n === q : c.op === 'ne' ? n !== q : c.op === 'lt' ? n < q : n > q;
+  }
+  const d = blank(v) ? '' : String(v).slice(0, 10);
+  if (c.op === 'within') {
+    const w = WITHIN.find(x => x.value === val) || WITHIN[0];
+    return d >= daysBefore(w.days, today);
+  }
+  return c.op === 'is' ? d === val : c.op === 'before' ? d < val : d > val;
+}
+// a filter (or a condition group) against one row
+function matchesFilter(node, row, fields, today) {
+  if (!node || !node.items || !node.items.length) return true;
+  const t = x => x.group ? matchesFilter(x, row, fields, today) : matchesCondition(x, row, fields, today);
+  return node.join === 'or' ? node.items.some(t) : node.items.every(t);
+}
+// every condition of a filter, its groups' included (the count on the Filter button)
+const conditionsOf = node => (node && node.items || []).reduce((l, x) => l.concat(x.group ? conditionsOf(x) : [x]), []);
+exports.conditionsOf = conditionsOf;
+let uid = 0;
+const nextId = () => 'c' + ++uid;
+// a new condition on a field: its kind's first operator, no value yet
+exports.nextId = nextId;
+const newCondition = f => ({
+  id: nextId(),
+  field: f.value,
+  op: OPERATORS[kindOf(f)][0][0],
+  value: kindOf(f) === 'select' || kindOf(f) === 'multi' ? [] : ''
+});
+
+// rows in the order of sort levels: a comparator
+exports.newCondition = newCondition;
+function compareLevels(fields, levels) {
+  return (a, b) => {
+    for (const l of levels || []) {
+      const f = fields.find(x => x.value === l.field);
+      if (!f) continue;
+      let x = valueOf(f, a),
+        y = valueOf(f, b);
+      if (kindOf(f) === 'select' && f.options) {
+        const o = optionsOf(f).map(p => p.value);
+        x = o.indexOf(x);
+        y = o.indexOf(y);
+      }
+      if (Array.isArray(x)) x = x.join(', ');
+      if (Array.isArray(y)) y = y.join(', ');
+      const c = x < y ? -1 : x > y ? 1 : 0;
+      if (c) return l.dir === 'desc' ? -c : c;
+    }
+    return 0;
+  };
+}
+
+// the date quick filter: { preset: "any" | "7" | "30" | "year" | "custom", from, to } (ISO dates)
+const DATE_PRESETS = exports.DATE_PRESETS = [{
+  value: 'any',
+  label: 'Any time'
+}, {
+  value: '7',
+  label: 'Last 7 days'
+}, {
+  value: '30',
+  label: 'Last 30 days'
+}, {
+  value: 'year',
+  label: 'This year'
+}];
+function matchesDate(range, value, today) {
+  if (!range || range.preset === 'any' || !range.preset) return true;
+  const d = blank(value) ? '' : String(value).slice(0, 10);
+  if (!d) return false;
+  const now = today || iso(new Date());
+  if (range.preset === '7' || range.preset === '30') return d >= daysBefore(Number(range.preset), now) && d <= now;
+  if (range.preset === 'year') return d.slice(0, 4) === now.slice(0, 4);
+  return (!range.from || d >= range.from) && (!range.to || d <= range.to);
+}
+  } },
+  "platform/patterns/QuickFilter/QuickFilter.jsx": { deps: {"react":null,"./single-choice.js":"platform/patterns/QuickFilter/single-choice.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/format.js":"platform/utils/format.js","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../utils/fields.js":"platform/utils/fields.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.QuickFilter = QuickFilter;
+var _react = _interopRequireDefault(require("react"));
+var _singleChoice = require("./single-choice.js");
+var _Button = require("../../components/Button/Button.jsx");
+var _Checkbox = require("../../components/Checkbox/Checkbox.jsx");
+var _Field = require("../../components/Field/Field.jsx");
+var _Input = require("../../components/Input/Input.jsx");
+var _SearchField = require("../../components/SearchField/SearchField.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _format = require("../../utils/format.js");
+var _panelParts = require("../CommandBar/panel-parts.jsx");
+var _fields = require("../../utils/fields.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · QuickFilter
+   Summary: An application's own shortcut beside Filter (owner, 2026-10-14): Category, Type, Tags or Date. An app that has
+     categories or types shows its own button; otherwise not. The Filter panel still holds every possibility.
+     kind "list" (Category, Type, Tags): a button that opens a searchable checklist of the field's values, shown as their
+     pills (the GitHub labels style). kind "date" (Date): a button that opens presets (Any time, Last 7 days, Last 30 days,
+     This year) and a custom range (the Google Analytics style).
+   Usage:
+     <QuickFilter label="Tags" icon="tags" noun="tag" options={tags} value={chosen} onChange={setChosen} />
+     <QuickFilter kind="date" label="Modified" icon="calendar" value={range} onChange={setRange} />
+   Props:
+     kind: "list" (default) | "single" | "date"
+     required: (single) hides All and Clear; defaults an empty choice to the first option
+     Single choices use the same array value shape as list filters, with at most one entry.
+     label: the button's words ("Category", "Type", "Tags", "Date")
+     icon: its icon
+     noun: (list) the word for one value, for the find field ("Find a tag")
+     options: (list, single) the values: [{ value, label, color, count }] or strings; colors default to the category colors in order
+     counts: optional Map (or object) from option value to faceted count; useCollectionView.quickProps supplies it
+       An option's explicit count wins, including zero; without counts the existing labels remain unchanged
+     value: (list) the chosen values; (date) { preset: "any" | "7" | "30" | "year" | "custom", from, to } (ISO dates)
+     onChange(value): runs on every change
+     inline: draws the panel alone (open, in a frame); default false
+     strings: { find: "Find a {noun}", none: "No {noun} matches", clear: "Clear", presets: [{ value, label }…],
+       custom: "Custom range", from: "From", to: "To" }
+   Behavior:
+     The button keeps its label; while it filters it takes the tint and a count badge (the chosen values; 1 for a date).
+     The checklist's find field fills the panel (owner, 2026-10-14); each value is a checkbox with its pill. A date
+     range typed by hand chooses Custom range. Clear (the panel's footer) empties it; it is disabled while nothing is
+     chosen. A required single choice omits All and Clear.
+   Notes:
+     The page applies the choice (useCollectionView, or matchesDate from utils/fields.js). */
+
+const STRINGS = {
+  find: 'Find a {noun}',
+  none: 'No {noun} matches',
+  clear: 'Clear',
+  all: 'All',
+  presets: _fields.DATE_PRESETS,
+  custom: 'Custom range',
+  from: 'From',
+  to: 'To'
+};
+const asOptions = options => (options || []).map((o, i) => typeof o === 'string' ? {
+  value: o
+} : o).map((o, i) => Object.assign({
+  label: o.value,
+  color: _fields.CATEGORY_ORDER[i % _fields.CATEGORY_ORDER.length]
+}, o));
+function QuickFilter({
+  kind = 'list',
+  label,
+  icon,
+  noun = 'value',
+  options,
+  value,
+  onChange,
+  counts,
+  required = false,
+  inline = false,
+  strings
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const [q, setQ] = _react.default.useState('');
+  const first = (options || [])[0],
+    firstValue = typeof first === 'string' ? first : first && first.value;
+  _react.default.useEffect(() => {
+    if (kind === 'single' && required && (!value || !value.length) && firstValue !== undefined && onChange) onChange([firstValue]);
+  }, [kind, required, value, firstValue, onChange]);
+  const countOf = o => o.count !== undefined ? o.count : counts instanceof Map ? counts.get(o.value) || 0 : counts ? Object.prototype.hasOwnProperty.call(counts, o.value) ? counts[o.value] : 0 : undefined;
+  const counted = (o, label) => {
+    const n = countOf(o);
+    return n === undefined || n === null ? label : /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+      as: "span",
+      gap: "xs"
+    }, label, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+      variant: "data"
+    }, (0, _format.formatNumber)(n)));
+  };
+  if (kind === 'date') {
+    const d = Object.assign({
+      preset: 'any',
+      from: '',
+      to: ''
+    }, value);
+    const range = (k, v) => onChange(Object.assign({}, d, {
+      preset: 'custom',
+      [k]: v
+    }));
+    const on = d.preset && d.preset !== 'any';
+    const body = /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-find-panel plx-find-panel--date"
+    }, /*#__PURE__*/_react.default.createElement(_Checkbox.RadioGroup, {
+      label: label,
+      value: d.preset,
+      onChange: v => onChange(Object.assign({}, d, {
+        preset: v
+      })),
+      options: t.presets.map(x => ({
+        value: x.value,
+        label: counted(x, x.label)
+      })).concat({
+        value: 'custom',
+        label: counted({
+          value: 'custom'
+        }, t.custom)
+      })
+    }), /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-find-panel__range"
+    }, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+      label: t.from
+    }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+      type: "date",
+      data: true,
+      value: d.from,
+      onChange: e => range('from', e.target.value)
+    })), /*#__PURE__*/_react.default.createElement(_Field.Field, {
+      label: t.to
+    }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+      type: "date",
+      data: true,
+      value: d.to,
+      onChange: e => range('to', e.target.value)
+    }))));
+    const footer = /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: "sm",
+      variant: "ghost",
+      icon: "filter-off",
+      disabled: !on,
+      onClick: () => onChange({
+        preset: 'any',
+        from: '',
+        to: ''
+      })
+    }, t.clear);
+    return /*#__PURE__*/_react.default.createElement(_panelParts.PanelTrigger, {
+      icon: icon || 'calendar',
+      label: label,
+      title: label,
+      count: on ? 1 : 0,
+      caret: true,
+      size: "sm",
+      footer: footer,
+      inline: inline
+    }, body);
+  }
+  const list = asOptions(options);
+  if (kind === 'single') {
+    const chosen = (0, _singleChoice.singleChoice)(list, value, required);
+    const choices = list.map(o => ({
+      value: o.value,
+      label: counted(o, /*#__PURE__*/_react.default.createElement(_panelParts.Pill, {
+        color: o.color
+      }, o.label))
+    }));
+    if (!required) choices.unshift({
+      value: '',
+      label: t.all
+    });
+    const body = /*#__PURE__*/_react.default.createElement("div", {
+      className: "plx-find-panel"
+    }, /*#__PURE__*/_react.default.createElement(_Checkbox.RadioGroup, {
+      label: label,
+      value: chosen.length ? chosen[0] : '',
+      options: choices,
+      onChange: v => onChange(v === '' ? [] : [v])
+    }));
+    const footer = required ? null : /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: "sm",
+      variant: "ghost",
+      icon: "filter-off",
+      disabled: !chosen.length,
+      onClick: () => onChange([])
+    }, t.clear);
+    return /*#__PURE__*/_react.default.createElement(_panelParts.PanelTrigger, {
+      icon: icon,
+      label: label,
+      title: label,
+      count: chosen.length,
+      caret: true,
+      size: "sm",
+      footer: footer,
+      inline: inline
+    }, body);
+  }
+  const chosen = value || [];
+  const shown = list.filter(o => String(o.label).toLowerCase().indexOf(q.trim().toLowerCase()) >= 0);
+  const body = /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-find-panel plx-find-panel--checklist"
+  }, /*#__PURE__*/_react.default.createElement(_SearchField.SearchField, {
+    width: "fill",
+    value: q,
+    onChange: e => setQ(e.target.value),
+    onClear: () => setQ(''),
+    placeholder: (0, _panelParts.fill)(t.find, {
+      noun
+    }),
+    label: (0, _panelParts.fill)(t.find, {
+      noun
+    })
+  }), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-find-panel__checklist"
+  }, shown.length ? shown.map(o => /*#__PURE__*/_react.default.createElement(_Checkbox.Checkbox, {
+    key: o.value,
+    label: counted(o, /*#__PURE__*/_react.default.createElement(_panelParts.Pill, {
+      color: o.color
+    }, o.label)),
+    checked: chosen.indexOf(o.value) >= 0,
+    onChange: () => onChange((0, _panelParts.toggle)(chosen, o.value))
+  })) : /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "secondary"
+  }, (0, _panelParts.fill)(t.none, {
+    noun
+  }))));
+  const footer = /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    variant: "ghost",
+    icon: "filter-off",
+    disabled: !chosen.length,
+    onClick: () => onChange([])
+  }, t.clear);
+  return /*#__PURE__*/_react.default.createElement(_panelParts.PanelTrigger, {
+    icon: icon,
+    label: label,
+    title: label,
+    count: chosen.length,
+    caret: true,
+    size: "sm",
+    footer: footer,
+    inline: inline
+  }, body);
+}
+  } },
+  "platform/patterns/QuickFilter/single-menu.jsx": { deps: {"react":null,"../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./single-choice.js":"platform/patterns/QuickFilter/single-choice.js","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SingleQuickFilterMenu = SingleQuickFilterMenu;
+var _react = _interopRequireDefault(require("react"));
+var _Menu = require("../../components/Menu/Menu.jsx");
+var _singleChoice = require("./single-choice.js");
+var _Text = require("../../components/Text/Text.jsx");
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _format = require("../../utils/format.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · SingleQuickFilterMenu
+   Summary: A quick filter's single-choice radio group inside More.
+   Usage: <SingleQuickFilterMenu {...quickFilter} />
+   Props: label, options, value, required, onChange, counts and strings are the QuickFilter descriptor.
+   Behavior: Required choices omit All; radio changes preserve the collection's array shape.
+   Notes: The CommandBar folding task 132 consumes this shared group. */
+
+function SingleQuickFilterMenu({
+  label,
+  options = [],
+  value,
+  required,
+  onChange,
+  counts,
+  strings
+}) {
+  const chosen = (0, _singleChoice.singleChoice)(options, value, required);
+  const items = options.map(option => typeof option === 'string' ? {
+    value: option,
+    label: option
+  } : option);
+  if (!required) items.unshift({
+    value: '',
+    label: strings && strings.all || 'All'
+  });
+  return /*#__PURE__*/_react.default.createElement(_Menu.MenuRadioGroup, {
+    label: label,
+    value: chosen.length ? chosen[0] : '',
+    onChange: v => onChange && onChange(v === '' ? [] : [v])
+  }, items.map(option => {
+    const count = option.count !== undefined ? option.count : counts instanceof Map ? counts.get(option.value) || 0 : counts ? counts[option.value] || 0 : undefined;
+    return /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      key: option.value,
+      value: option.value
+    }, count === undefined ? option.label || option.value : /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+      as: "span",
+      gap: "xs"
+    }, option.label || option.value, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+      variant: "data"
+    }, (0, _format.formatNumber)(count))));
+  }));
+}
+  } },
+  "platform/patterns/CommandBar/CommandBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/barFit.js":"platform/utils/barFit.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","../../components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./BarActions.jsx":"platform/patterns/CommandBar/BarActions.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","../QuickFilter/single-menu.jsx":"platform/patterns/QuickFilter/single-menu.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/fields.js":"platform/utils/fields.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.CommandBar = CommandBar;
+exports.useCommandBar = exports.CommandBarSearch = exports.CommandBarButton = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _barFit = require("../../utils/barFit.js");
+var _Button = require("../../components/Button/Button.jsx");
+var _Badge = require("../../components/Badge/Badge.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _Toolbar = require("../../components/Toolbar/Toolbar.jsx");
+var _Divider = require("../../components/Divider/Divider.jsx");
+var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
+var _announce = require("../../utils/announce.jsx");
+var _format = require("../../utils/format.js");
+var _SearchField = require("../../components/SearchField/SearchField.jsx");
+var _BarActions = require("./BarActions.jsx");
+var _Menu = require("../../components/Menu/Menu.jsx");
+var _QuickFilter = require("../QuickFilter/QuickFilter.jsx");
+var _singleMenu = require("../QuickFilter/single-menu.jsx");
+var _Stack = require("../../components/Stack/Stack.jsx");
+var _fields = require("../../utils/fields.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · CommandBar, CommandBarButton, CommandBarSearch, useCommandBar
+   Summary: The bar over a collection (owner, 2026-10-14 and 2026-10-15, the command bar study): ONE white framed bar of
+     one height, fixed at the top of the content while the content scrolls; the table under it never moves. With nothing
+     selected: the page's actions, then the search and the filters, then Sort, Group, Columns and View, and the count at
+     the end. With rows selected the bar swaps (Microsoft 365): the actions, the search and the filters give way to the
+     selection's commands (Delete last); Sort, Group, Columns and View stay where they are; the bar ends with "× N
+     selected", which clears the selection. A page with no actions has a view bar (1F).
+   Usage:
+     <CommandBar label="Assets" count="24 assets"
+       actions={[{ id: 'new', label: 'New', icon: 'plus', items: <><MenuItem icon="folder-add">Folder</MenuItem>…</> },
+                 { id: 'upload', label: 'Upload', icon: 'upload', onSelect: upload }]}
+       find={<><CommandBarSearch value={q} onChange={(e) => setQ(e.target.value)} onClear={() => setQ('')} placeholder="Search assets" />
+         <FilterPanel fields={fields} value={filter} onChange={setFilter} /></>}
+       view={<><SortPanel fields={fields} value={sort} onChange={setSort} /><GroupPanel … /><ViewMenu … /></>}
+       selection={{ count: sel.length, noun: 'asset', onClear: () => setSel([]),
+         actions: [{ id: 'download', label: 'Download', icon: 'download-arrow', onSelect: … }, …, { id: 'delete', label: 'Delete', icon: 'trash', danger: true, onSelect: … }] }} />
+   Props:
+     label: the bar's accessible name (the collection: "Assets")
+     actions: the page's commands, in order: [{ id, label, icon, onSelect, items, danger, disabled, why, primary, toggle,
+       pressed, choices, value, onChange, loading, tooltip, panel }]. The bar holds commands only (owner, 2026-10-15, the Fluent model): an on/off
+       setting is a toggle command (toggle: true, pressed, onSelect(next)), a pick of one value is a choices command
+       (choices: [{ value, label, icon }], value, onChange(value)); folded into More they become a checked item and a
+       submenu of radio items. No other controls go in the bar.
+     actions[].items: makes the command a menu: Menu children (MenuItem…) or [{ id, label, icon, danger, disabled, onSelect }]
+     actions[].danger: a destructive command: in the danger color, after a divider, the last to fold into More
+     actions[].disabled: the command is grayed, never hidden (owner, 2026-10-14)
+     actions[].why: the tooltip of a disabled command, saying why
+     actions[].loading: spinner, busy and inert, including folded commands
+     actions[].tooltip: help shown on hover and focus with labels or icons (disabled why takes precedence)
+     actions[].panel({ close }): a small form in a Popover anchored to the action, including selection and More items;
+       focus enters the form and returns on Escape or close. Use close() after the form succeeds.
+     actions[].primary: the page's one primary command (filled; it keeps its label); default none
+     find: the find side, in order: CommandBarSearch first (owner, 2026-10-14), then FilterPanel
+     quickFilters: the app's quick filters after Filter, as descriptors (QuickFilter's props): [{ id, label, icon, noun,
+       options, value, onChange, kind, required, counts }]; when the bar is short of room they fold into More after the commands, each a
+       submenu of checkable values (a date: its presets as radio items) (owner, 2026-10-15, the Fluent model)
+     view: the view side: SortPanel, GroupPanel, ColumnsMenu, ViewMenu
+     count: the collection's count at the end ("24 assets"; a string or a number is drawn in the data font); hidden while
+       rows are selected ("× N selected" takes its place)
+     status: a short status text beside the count ("Synced 2 min ago"), muted; it steps out with the count when the bar
+       is short of room, and while rows are selected
+     end: more controls at the very end (Export); hidden while rows are selected. A descriptor { content,
+       fold: { label, icon, items } } supplies its More submenu; without fold the content stays in the bar.
+       items are Menu children or MenuItem descriptors, including checked toggles.
+     selection.hidden: how many selected records are hidden by filters (DataGrid onSelectionChange supplies it)
+     selection: the selection (the swap): { count, hidden, actions, onClear, noun, plural, label }; while count is above 0 the bar
+       holds selection.actions ([{ id, label, icon, onSelect, items, danger, single, disabled, why }]; single: disabled
+       while more than one is selected, with a why-tooltip) instead of the page's actions, search and filters, and ends
+       with "× N selected" (onClear); label names the bar meanwhile (default "{label} actions")
+     layout: "auto" (default: "one" with actions, "view" without) | "one" (1A) | "view" (1F: a view bar, no actions);
+       "split" (a separate action bar for many actions) is retired (2026-10-15) and draws "one": many actions fold into More
+     sticky: "auto" (default) sticks only as a direct child of PageContent or AppShell main; true/false force
+       sticky/normal flow. A bar inside a card or another layout wrapper stays in normal flow. It has no background
+       until content scrolls under it (data-plx-stuck); then the page canvas, so the content does not show through.
+     narrow: the bar starts at icons only with the search as its icon (a side panel's width); default false (the width
+       decides)
+     strings: { more: "More actions", actions: "{label} actions", find: "Find and view", selected: "{n} selected",
+       clear: "Clear the selection", clearName: "{n} selected, clear the selection", swapped: "{n} selected. Selection
+       actions available.", cleared: "Selection cleared.", why: "Select {plural} to {action}", single: "Select one {noun}
+       to {action}" }
+     className: more classes
+     CommandBarButton: a find-and-view button (the trigger of a panel or a menu): { icon, label, count, active, caret }; ghost;
+       icon and label, or its icon only while the bar is narrow (give it a Tooltip); active or a count tints it and shows the
+       count in a badge; other props reach the Button (ref too)
+     CommandBarSearch: the bar's SearchField (width "bar"; collapsed to its icon while the bar is narrow); SearchField's props
+     useCommandBar(): { iconOnly, collapsed, step, searchOpen, setSearchOpen } of the bar around a control
+   Behavior:
+     The button rule, measured (owner, 2026-10-14 and 2026-10-15): every control shows its icon and label while the bar
+       fits on one line; first, every labeled control becomes its icon only, each with its tooltip (the actions, Filter,
+       the quick filters, Sort, Group, Columns, View); then the search becomes its icon, which opens the field across the
+       bar, and the count and status step out; then the commands fold into "More actions" (⋮) one per step from the end,
+       the danger commands last. More shows only
+       when something does not fit. A change of width, labels or counts starts again from icons and labels.
+     Sort, Filter, Group, View and Columns are never merged: each keeps its own button at every width.
+     Commands are never hidden by state: they are disabled, with a tooltip saying why.
+     Every button is ghost (no outline). The bar is white and framed (3A), never tinted while rows are selected.
+     The swap keeps the bar's height and the focus where it is (on the table); it is announced ("2 selected. Selection
+       actions available.", "Selection cleared."). Escape in the bar clears the selection. Sort, Group, Columns and View
+       stay mounted through the swap, so an open panel keeps its state.
+     The bar is a Toolbar: one Tab stop, the arrow keys move between its controls.
+   Notes:
+     The count and the end controls sit at the end of the bar. Pages with neither actions nor find and view have no
+     bar: the plain table. */
+const STRINGS = {
+  more: 'More actions',
+  actions: '{label} actions',
+  find: 'Find and view',
+  selected: '{n} selected',
+  hidden: ' ({n} hidden by filters)',
+  clear: 'Clear the selection',
+  clearName: '{n} selected, clear the selection',
+  swapped: '{n} selected. Selection actions available.',
+  cleared: 'Selection cleared.',
+  why: 'Select {plural} to {action}',
+  single: 'Select one {noun} to {action}'
+};
+const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
+// the steps of the button rule: 0 icon and label; 1 icons only; 2 the search as its icon; then one more action per step
+// into More
+const ICONS = 1,
+  SEARCH = 2;
+const BarContext = /*#__PURE__*/_react.default.createContext({
+  iconOnly: false,
+  collapsed: false,
+  step: 0,
+  searchOpen: false,
+  setSearchOpen: () => {}
+});
+const useCommandBar = () => _react.default.useContext(BarContext);
+exports.useCommandBar = useCommandBar;
+const CommandBarButton = exports.CommandBarButton = /*#__PURE__*/_react.default.forwardRef(function CommandBarButton({
+  icon,
+  label,
+  count = 0,
+  active = false,
+  caret = false,
+  iconOnly,
+  className,
+  children,
+  ...rest
+}, ref) {
+  const ctx = useCommandBar();
+  const only = iconOnly === undefined ? ctx.iconOnly : iconOnly;
+  const n = Number(count) || 0;
+  const badge = n ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    size: "sm",
+    tone: "active"
+  }, n) : null;
+  const name = n ? label + ', ' + n : label;
+  // icons only: no caret (the tooltip names it); with a count: the icon and the count, named "Filter, 2"
+  return /*#__PURE__*/_react.default.createElement(_Button.Button, _extends({
+    ref: ref,
+    size: "sm",
+    variant: "ghost",
+    icon: icon,
+    caret: caret && !only,
+    selected: active || n > 0,
+    iconOnly: only && !n,
+    label: only ? name : undefined,
+    className: (0, _cx.cx)('plx-command-bar__button', className)
+  }, rest), only ? n ? badge : label : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, children || label, badge ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, ' ', badge) : null));
+});
+const CommandBarSearch = exports.CommandBarSearch = /*#__PURE__*/_react.default.forwardRef(function CommandBarSearch(props, ref) {
+  const {
+    collapsed,
+    searchOpen,
+    setSearchOpen
+  } = useCommandBar();
+  return /*#__PURE__*/_react.default.createElement(_SearchField.SearchField, _extends({
+    ref: ref,
+    width: "bar",
+    collapsed: collapsed,
+    open: collapsed ? searchOpen : undefined,
+    onOpenChange: collapsed ? setSearchOpen : undefined
+  }, props));
+});
+function CommandBar({
+  label,
+  actions = [],
+  find,
+  quickFilters = [],
+  view,
+  count,
+  status,
+  end,
+  selection,
+  layout = 'auto',
+  sticky = 'auto',
+  narrow = false,
+  strings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const root = _react.default.useRef(null);
+  // the selection (owner, 2026-10-15: the swap): an object { count, actions, onClear, noun, plural, label }; while its
+  // count is above 0 the bar holds the selection's commands instead of the page's actions, search and filters
+  const sel = selection && ! /*#__PURE__*/_react.default.isValidElement(selection) && typeof selection === 'object' ? selection : null;
+  const selCount = sel ? Number(sel.count) || 0 : 0;
+  const selecting = selCount > 0;
+  const selActs = selecting ? sel.actions || [] : [];
+  // "split" (a separate action bar) is retired (2026-10-15): many actions fold into More in the one bar
+  const shape = layout === 'auto' || layout === 'split' ? actions.length ? 'one' : 'view' : layout;
+  const shown = selecting ? selActs : shape === 'view' ? [] : actions;
+  const quick = selecting ? [] : quickFilters;
+  const ending = end && ! /*#__PURE__*/_react.default.isValidElement(end) && !Array.isArray(end) && typeof end === 'object' && ('content' in end || 'fold' in end) ? end : null;
+  const endContent = ending ? ending.content : end;
+  const endFold = !selecting && ending && ending.fold;
+  const folds = (0, _BarActions.foldOrder)(shown).length + quick.length + (endFold ? 1 : 0);
+  // the bar's search, opened across the bar: the bar holds its step while it is open
+  const [searchOpen, setSearchOpen] = _react.default.useState(false);
+  const key = [shape, narrow, selecting ? 'sel' : 'rest', shown.map(a => a.label + (a.disabled ? '0' : '') + (a.loading ? 'busy' : '')).join('|'), quickFilters.map(q => q.label + (q.value && q.value.length ? q.value.length : '')).join('|'), endFold && endFold.label].join('§');
+  const step = (0, _barFit.useBarFit)(root, key, SEARCH + folds, narrow ? SEARCH : 0, ':scope > .plx-command-bar__bar > [data-plx-bar-row]', searchOpen);
+  const ctx = _react.default.useMemo(() => ({
+    iconOnly: step >= ICONS,
+    collapsed: step >= SEARCH,
+    step,
+    searchOpen: searchOpen && step >= SEARCH,
+    setSearchOpen
+  }), [step, searchOpen]);
+  // Commands fold first (from the end, Delete last), then an opted-in end control, then quick filters.
+  const foldAll = Math.max(0, step - SEARCH);
+  const fold = Math.min(foldAll, (0, _BarActions.foldOrder)(shown).length);
+  const endAway = !!endFold && foldAll > fold;
+  const quickAway = Math.min(quick.length, Math.max(0, foldAll - fold - (endAway ? 1 : 0)));
+  const quickKept = quick.slice(0, quick.length - quickAway),
+    quickFolded = quick.slice(quick.length - quickAway);
+  const quickMenu = quickFolded.map(q => {
+    const id = q.id || q.label;
+    const counted = option => {
+      const count = option.count !== undefined ? option.count : q.counts instanceof Map ? q.counts.get(option.value) || 0 : q.counts ? q.counts[option.value] || 0 : undefined;
+      return count === undefined ? option.label || option.value : /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+        as: "span",
+        gap: "xs"
+      }, option.label || option.value, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+        variant: "data"
+      }, (0, _format.formatNumber)(count)));
+    };
+    if (q.kind === 'single') return /*#__PURE__*/_react.default.createElement(_Menu.MenuSub, {
+      key: id,
+      label: q.label,
+      icon: q.icon
+    }, /*#__PURE__*/_react.default.createElement(_singleMenu.SingleQuickFilterMenu, q));
+    if (q.kind === 'date') {
+      const d = Object.assign({
+        preset: 'any',
+        from: '',
+        to: ''
+      }, q.value);
+      return /*#__PURE__*/_react.default.createElement(_Menu.MenuSub, {
+        key: id,
+        label: q.label,
+        icon: q.icon
+      }, /*#__PURE__*/_react.default.createElement(_Menu.MenuRadioGroup, {
+        label: q.label,
+        value: d.preset,
+        onChange: v => q.onChange && q.onChange(Object.assign({}, d, {
+          preset: v
+        }))
+      }, _fields.DATE_PRESETS.map(p => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+        key: p.value,
+        value: p.value
+      }, counted(p)))));
+    }
+    const chosen = q.value || [];
+    return /*#__PURE__*/_react.default.createElement(_Menu.MenuSub, {
+      key: id,
+      label: chosen.length ? q.label + ' (' + chosen.length + ')' : q.label,
+      icon: q.icon
+    }, (q.options || []).map(o => typeof o === 'string' ? {
+      value: o,
+      label: o
+    } : o).map(o => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      key: o.value,
+      checked: chosen.indexOf(o.value) >= 0,
+      keepOpen: true,
+      onSelect: () => q.onChange && q.onChange(chosen.indexOf(o.value) >= 0 ? chosen.filter(x => x !== o.value) : chosen.concat(o.value))
+    }, counted(o))));
+  });
+  const endMenu = endAway ? /*#__PURE__*/_react.default.createElement(_Menu.MenuSub, {
+    key: "plx-end",
+    label: endFold.label,
+    icon: endFold.icon
+  }, Array.isArray(endFold.items) && endFold.items.length && ! /*#__PURE__*/_react.default.isValidElement(endFold.items[0]) ? endFold.items.map(item => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    key: item.id || item.label,
+    icon: item.icon,
+    checked: item.checked,
+    disabled: item.disabled,
+    danger: item.danger,
+    onSelect: item.onSelect
+  }, item.label)) : endFold.items) : null;
+  const extraMenu = endMenu ? [endMenu].concat(quickMenu) : quickMenu;
+  // the swap is announced (the focus stays where it is, on the table)
+  const was = _react.default.useRef(selecting);
+  // stuck: the bar is sticky, pinned at its scroll container's top, with content scrolled under it
+  _react.default.useEffect(() => {
+    const el = root.current;
+    if (!el || typeof window === 'undefined') return undefined;
+    const scrollerOf = node => {
+      for (let p = node.parentElement; p; p = p.parentElement) {
+        const o = getComputedStyle(p).overflowY;
+        if (o === 'auto' || o === 'scroll') return p;
+      }
+      return null;
+    };
+    // the scroll container is found on each check: on the first render the page's stylesheets may not have applied yet
+    const check = () => {
+      const scroller = scrollerOf(el);
+      const sticky = getComputedStyle(el).position === 'sticky';
+      const top = scroller ? scroller.getBoundingClientRect().top + (parseFloat(getComputedStyle(scroller).paddingTop) || 0) : 0,
+        scrolled = scroller ? scroller.scrollTop > 0 : window.scrollY > 0;
+      const stuck = sticky && scrolled && el.getBoundingClientRect().top <= top + 1;
+      if (stuck) el.setAttribute('data-plx-stuck', '');else el.removeAttribute('data-plx-stuck');
+    };
+    // scroll events come at most once a frame already: the check runs on each
+    const schedule = check;
+    // scroll does not bubble: listening in the capture phase on the document hears every scroll container
+    document.addEventListener('scroll', schedule, {
+      capture: true,
+      passive: true
+    });
+    window.addEventListener('resize', schedule);
+    check();
+    return () => {
+      document.removeEventListener('scroll', schedule, {
+        capture: true
+      });
+      window.removeEventListener('resize', schedule);
+    };
+  }, [sticky]);
+  _react.default.useEffect(() => {
+    if (was.current !== selecting) (0, _announce.announce)(selecting ? fill(t.swapped, {
+      n: (0, _format.formatNumber)(selCount)
+    }) : t.cleared);
+    was.current = selecting;
+  }, [selecting]);
+  const words = {
+    noun: sel && sel.noun || 'item',
+    plural: sel && sel.plural || (sel && sel.noun || 'item') + 's'
+  };
+  const off = a => !!a.disabled || !!(a.single && selCount > 1);
+  const why = a => a.why || fill(a.single && selCount > 1 ? t.single : t.why, Object.assign({
+    action: String(a.label).toLowerCase()
+  }, words));
+  const acts = shown.length || extraMenu.length ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
+    className: "plx-command-bar__actions"
+  }, /*#__PURE__*/_react.default.createElement(_BarActions.BarActions, {
+    actions: shown,
+    iconOnly: ctx.iconOnly,
+    fold: fold,
+    moreLabel: t.more,
+    dangerClass: "plx-command-bar__danger",
+    off: selecting ? off : undefined,
+    why: selecting ? why : undefined,
+    extra: extraMenu
+  })) : null;
+  const quickEls = quickKept.map(q => /*#__PURE__*/_react.default.createElement(_QuickFilter.QuickFilter, _extends({
+    key: q.id || q.label
+  }, q)));
+  const findEl = (find || quickEls.length) && !selecting ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
+    className: "plx-command-bar__find"
+  }, find, quickEls) : null;
+  const viewEl = view ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
+    className: "plx-command-bar__view"
+  }, view) : null;
+  const countEl = selecting || count === undefined || count === null || ctx.collapsed ? null : typeof count === 'string' || typeof count === 'number' ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data",
+    className: "plx-command-bar__count"
+  }, count) : count;
+  // while rows are selected the bar ends with "× N selected": the way out of the selection (Microsoft 365)
+  const hiddenText = sel && sel.hidden > 0 ? fill(t.hidden, {
+    n: (0, _format.formatNumber)(sel.hidden)
+  }) : '';
+  const [hiddenBefore, hiddenAfter] = String(t.hidden).split('{n}');
+  const [before, after] = String(t.selected).split('{n}');
+  const clearEl = selecting ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+    content: t.clear
+  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    variant: "ghost",
+    icon: "close",
+    className: "plx-command-bar__clear",
+    "aria-label": fill(t.clearName, {
+      n: (0, _format.formatNumber)(selCount)
+    }) + hiddenText,
+    onClick: () => sel.onClear && sel.onClear()
+  }, before, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data",
+    className: "plx-command-bar__number"
+  }, (0, _format.formatNumber)(selCount)), after, hiddenText ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, hiddenBefore, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data"
+  }, (0, _format.formatNumber)(sel.hidden)), hiddenAfter) : null)) : null;
+  const statusEl = selecting || !status || ctx.collapsed ? null : /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "secondary",
+    className: "plx-command-bar__status"
+  }, status);
+  const keptEnd = !selecting && !endAway ? endContent : null;
+  const tail = countEl || statusEl || keptEnd || clearEl ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
+    className: "plx-command-bar__end"
+  }, selecting && viewEl ? /*#__PURE__*/_react.default.createElement(_Divider.Divider, {
+    orientation: "vertical"
+  }) : null, countEl, statusEl, keptEnd, clearEl) : null;
+  // Escape in the bar clears the selection (as "× N selected" does)
+  const onKeyDown = selecting && sel.onClear ? e => {
+    if (e.key === 'Escape' && !e.defaultPrevented && !e.target.closest('[role="menu"], [role="dialog"]')) {
+      e.preventDefault();
+      sel.onClear();
+    }
+  } : undefined;
+  const parts = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, acts, acts && findEl ? /*#__PURE__*/_react.default.createElement(_Divider.Divider, {
+    orientation: "vertical"
+  }) : null, findEl, /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Spacer, null), viewEl, tail);
+  const name = selecting ? sel.label || fill(t.actions, {
+    label: label || ''
+  }).trim() : label;
+  return /*#__PURE__*/_react.default.createElement(BarContext.Provider, {
+    value: ctx
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    ref: root,
+    className: (0, _cx.cx)('plx-command-bar', ctx.iconOnly && 'plx-command-bar--icons', selecting && 'plx-command-bar--selecting', className),
+    "data-plx-layout": shape,
+    "data-plx-position": sticky === true ? 'sticky' : sticky === false ? 'static' : 'auto',
+    onKeyDown: onKeyDown
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-command-bar__bar"
+  }, /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar, {
+    label: name,
+    variant: "bar",
+    className: "plx-command-bar__row",
+    "data-plx-bar-row": ""
+  }, parts)), /*#__PURE__*/_react.default.isValidElement(selection) ? selection : null));
+}
+  } },
+  "platform/patterns/CommandBar/panel-parts.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.MultiPick = MultiPick;
+exports.PanelHead = PanelHead;
+exports.PanelTrigger = PanelTrigger;
+exports.Pick = Pick;
+exports.toggle = exports.fill = exports.REORDER_STRINGS = exports.Pill = void 0;
+exports.useReorder = useReorder;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Button = require("../../components/Button/Button.jsx");
+var _Menu = require("../../components/Menu/Menu.jsx");
+var _Popover = require("../../components/Popover/Popover.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
+var _VisuallyHidden = require("../../components/VisuallyHidden/VisuallyHidden.jsx");
+var _CommandBar = require("./CommandBar.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · PanelTrigger, PanelHead, Pick, MultiPick, Pill, useReorder
+   (platform/patterns/CommandBar; internal, not part of the public API)
+   Summary: The find-and-view panels' shared parts. FilterPanel, SortPanel, GroupPanel, ColumnsMenu and QuickFilter are built
+     from these, so the panels share one row (owner, 2026-10-14: "Group, Sort and Filter panels share row geometry"): the
+     same control height, the same spacing.
+   Usage:
+     <PanelTrigger icon="sort" label="Sort" count={levels.length}><div className="plx-find-panel">…</div></PanelTrigger>
+     const ro = useReorder(levels, setLevels, (l) => l.field, REORDER_STRINGS);
+   Props:
+     PanelTrigger: the bar button (CommandBarButton) and its Popover; or, inline, the panel's body alone in a frame
+     PanelHead: the panel's title, its info button (a tooltip) and its actions on the right; a line under it
+     Pick: a select drawn as a menu button (the field with its type icon, the direction, the operator)
+     MultiPick: a multi-select whose chosen values show as pills in their colors
+     Pill: a value in its category color
+     useReorder: rows that move by drag, by their handle's Move up and Move down, or by Alt + Arrow Up / Down on a focused
+       row; each move is announced (WCAG 2.5.7: a way without dragging) */
+
+const toggle = (list, v) => list.indexOf(v) >= 0 ? list.filter(x => x !== v) : list.concat(v);
+exports.toggle = toggle;
+const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
+
+// the bar button and its panel; inline: the body alone (a panel drawn open, or in a side panel)
+exports.fill = fill;
+function PanelTrigger({
+  icon,
+  label,
+  count = 0,
+  active,
+  caret = false,
+  size = 'auto',
+  title,
+  footer,
+  inline = false,
+  placement,
+  className,
+  children
+}) {
+  const ctx = (0, _CommandBar.useCommandBar)();
+  const box = _react.default.useRef(null);
+  // the focus goes to the panel's first row control, else its Add button: not the info button of its head
+  const first = {
+    get current() {
+      const el = box.current;
+      return el ? el.querySelector('[data-plx-panel-first] button:not([disabled]), [data-plx-panel-first] input, .plx-find-panel__rows button:not([disabled]), .plx-find-panel__rows input, .plx-find-panel__add button:not([disabled]), .plx-find-panel input') : null;
+    }
+  };
+  const body = /*#__PURE__*/_react.default.createElement("div", {
+    ref: box,
+    className: (0, _cx.cx)('plx-find-panel-body', className)
+  }, children);
+  if (inline) return /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-find-panel-frame"
+  }, children);
+  const trigger = /*#__PURE__*/_react.default.createElement(_CommandBar.CommandBarButton, {
+    icon: icon,
+    label: label,
+    count: count,
+    active: active,
+    caret: caret
+  });
+  const pop = /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
+    label: title ? undefined : label,
+    title: title,
+    size: size,
+    trigger: trigger,
+    footer: footer,
+    placement: placement,
+    initialFocus: first
+  }, body);
+  return ctx.iconOnly ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+    content: label
+  }, pop) : pop;
+}
+function PanelHead({
+  title,
+  info,
+  infoLabel,
+  sub,
+  actions
+}) {
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-find-panel__head"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-find-panel__title-row"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-find-panel__title"
+  }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "heading",
+    as: "span"
+  }, title), info ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+    content: info
+  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "xs",
+    variant: "ghost",
+    icon: "circle-info",
+    iconOnly: true,
+    label: infoLabel || title
+  })) : null), actions ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-find-panel__actions"
+  }, actions) : null), sub ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "secondary"
+  }, sub) : null);
+}
+
+// a select as a menu button: the current option's icon and words
+function Pick({
+  label,
+  value,
+  options,
+  onChange,
+  size = 'field',
+  disabled
+}) {
+  const cur = options.find(o => o.value === value) || options[0] || {
+    label: ''
+  };
+  return /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+    label: label,
+    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      icon: cur.icon,
+      caret: true,
+      truncate: true,
+      disabled: disabled,
+      className: (0, _cx.cx)('plx-find-pick', 'plx-find-pick--' + size),
+      title: cur.label,
+      "aria-label": label + ': ' + cur.label
+    }, cur.label)
+  }, /*#__PURE__*/_react.default.createElement(_Menu.MenuRadioGroup, {
+    label: label,
+    value: value,
+    onChange: onChange
+  }, options.map(o => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    key: o.value,
+    value: o.value,
+    icon: o.icon
+  }, o.label))));
+}
+const Pill = ({
+  color,
+  children
+}) => /*#__PURE__*/_react.default.createElement("span", {
+  className: "plx-find-pill",
+  "data-plx-category": color || 'grey'
+}, children);
+
+// a multi-select: the chosen values as pills, or the placeholder
+exports.Pill = Pill;
+function MultiPick({
+  label,
+  options,
+  value,
+  onChange,
+  placeholder
+}) {
+  const chosen = value.map(v => options.find(o => o.value === v) || {
+    value: v,
+    label: v
+  });
+  return /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+    label: label,
+    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      caret: true,
+      truncate: true,
+      className: "plx-find-pick plx-find-pick--value",
+      "aria-label": label + ': ' + (chosen.length ? chosen.map(o => o.label).join(', ') : placeholder)
+    }, chosen.length ? /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-find-pick__pills"
+    }, chosen.map(o => /*#__PURE__*/_react.default.createElement(Pill, {
+      key: o.value,
+      color: o.color
+    }, o.label))) : /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-find-pick__placeholder"
+    }, placeholder))
+  }, options.map(o => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    key: o.value,
+    checked: value.indexOf(o.value) >= 0,
+    keepOpen: true,
+    onSelect: () => onChange(toggle(value, o.value))
+  }, /*#__PURE__*/_react.default.createElement(Pill, {
+    color: o.color
+  }, o.label))));
+}
+
+// rows that reorder: drag, the handle's menu, Alt + Arrow Up / Down on a focused row; announced
+function useReorder(items, setItems, nameOf, t) {
+  const [msg, setMsg] = _react.default.useState('');
+  const drag = _react.default.useRef(null);
+  const box = _react.default.useRef(null);
+  const [dragging, setDragging] = _react.default.useState(-1);
+  const move = (i, to, focus) => {
+    if (to < 0 || to >= items.length || to === i) return;
+    const next = items.slice();
+    const [x] = next.splice(i, 1);
+    next.splice(to, 0, x);
+    setItems(next);
+    setMsg(fill(t.moved, {
+      name: nameOf(x),
+      position: to + 1,
+      total: items.length
+    }));
+    if (focus) setTimeout(() => {
+      const el = box.current && box.current.querySelectorAll(':scope > [data-plx-row]')[to];
+      if (el) el.focus();
+    }, 0);
+  };
+  const rowProps = (i, name) => ({
+    'data-plx-row': '',
+    tabIndex: 0,
+    draggable: true,
+    'aria-label': fill(t.row, {
+      name,
+      position: i + 1,
+      total: items.length
+    }),
+    'aria-keyshortcuts': 'Alt+ArrowUp Alt+ArrowDown',
+    className: (0, _cx.cx)('plx-find-panel__row', dragging === i && 'is-dragging'),
+    onKeyDown: e => {
+      if (e.target !== e.currentTarget || !e.altKey) return;
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        move(i, i - 1, true);
+      }
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        move(i, i + 1, true);
+      }
+    },
+    onDragStart: e => {
+      e.stopPropagation();
+      drag.current = i;
+      setDragging(i);
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', String(i));
+    },
+    onDragEnd: () => {
+      drag.current = null;
+      setDragging(-1);
+    },
+    onDragOver: e => e.preventDefault(),
+    onDrop: e => {
+      e.preventDefault();
+      e.stopPropagation();
+      const from = drag.current;
+      drag.current = null;
+      setDragging(-1);
+      if (from !== null && from !== i) move(from, i);
+    }
+  });
+  const handle = (i, name) => /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+    label: fill(t.reorder, {
+      name
+    }),
+    placement: "bottom-end",
+    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "ghost",
+      icon: "drag",
+      iconOnly: true,
+      label: fill(t.reorder, {
+        name
+      }),
+      className: "plx-find-panel__handle"
+    })
+  }, /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    icon: "chevron-up",
+    disabled: i === 0,
+    onSelect: () => move(i, i - 1, true)
+  }, t.moveUp), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    icon: "chevron-down",
+    disabled: i === items.length - 1,
+    onSelect: () => move(i, i + 1, true)
+  }, t.moveDown));
+  const status = /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, {
+    role: "status",
+    "aria-live": "polite"
+  }, msg);
+  return {
+    box,
+    rowProps,
+    handle,
+    status
+  };
+}
+// the words of a row that reorders
+const REORDER_STRINGS = exports.REORDER_STRINGS = {
+  moved: '{name} moved to position {position} of {total}',
+  row: '{name}, {position} of {total}. Alt + Arrow Up or Down moves it',
+  reorder: 'Reorder {name}',
+  moveUp: 'Move up',
+  moveDown: 'Move down'
+};
+  } },
+  "platform/patterns/ColumnsMenu/ColumnsMenu.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ColumnsList = ColumnsList;
+exports.ColumnsMenu = ColumnsMenu;
+exports.ManageColumnsDialog = ManageColumnsDialog;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Button = require("../../components/Button/Button.jsx");
+var _Checkbox = require("../../components/Checkbox/Checkbox.jsx");
+var _Dialog = require("../../components/Dialog/Dialog.jsx");
+var _Field = require("../../components/Field/Field.jsx");
+var _Icon = require("../../components/Icon/Icon.jsx");
+var _Input = require("../../components/Input/Input.jsx");
+var _SearchField = require("../../components/SearchField/SearchField.jsx");
+var _Text = require("../../components/Text/Text.jsx");
+var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
+var _VisuallyHidden = require("../../components/VisuallyHidden/VisuallyHidden.jsx");
+var _panelParts = require("../CommandBar/panel-parts.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · ColumnsMenu, ManageColumnsDialog
+   Summary: The command bar's Columns (owner, 2026-10-14: the first column is a must; a list with reordering): a "Columns"
+     dropdown listing every column with its handle, a checkbox (shown or hidden), "Make first column" (or the pinned mark
+     of the first) and Move up / Move down; ManageColumnsDialog is the same list, larger, with a find field, Show all,
+     Hide all and a First column select, applied with Apply.
+   Usage:
+     const [columns, setColumns] = React.useState({ order: ['name', 'type', 'size'], hidden: [] });
+     <ColumnsMenu fields={fields} value={columns} onChange={setColumns} />
+     <ManageColumnsDialog fields={fields} value={columns} onChange={setColumns} />
+     <DataGrid … columnOrder={columns.order} hiddenColumns={columns.hidden} />      (or useCollectionView)
+   Props:
+     fields: the columns: [{ value, label }] (the collection's fields)
+     value: { order: [field…], hidden: [field…] }; the first of the order is the first column (never hidden)
+     onChange(value): runs on every change (the dialog: on Apply)
+     open, onOpenChange(open): (ManageColumnsDialog) the dialog opened by its owner, e.g. the DataGrid's "More…" in the
+       header's right-click menu; trigger={null} draws no button
+     inline: (ColumnsMenu) draws the list alone (open, in a frame); default false
+     strings: { label: "Columns", manage: "Manage columns", first: "First column", makeFirst: "Make first column",
+       moveUp: "Move {name} up", moveDown: "Move {name} down", up: "Move up", down: "Move down", find: "Find a column",
+       showAll: "Show all", hideAll: "Hide all", apply: "Apply", cancel: "Cancel", shown: "{name} shown", hidden: "{name}
+       hidden", isFirst: "{name} is the first column", moved: "{name}, position {position} of {total}", row: "{name}{first}.
+       Alt + Arrow Up or Down moves it", firstMark: ", first column", none: "No column matches" }
+   Behavior:
+     Changes in the dropdown apply at once; the dialog applies them with Apply (Cancel leaves the columns as they were).
+     A row moves by drag, by Move up and Move down, or by Alt + Arrow Up / Down on the focused row; Make first column moves
+       it to the top. Each change is announced politely. The first column cannot be hidden.
+     The button reads "Columns" with the thin chevron; icons only, its icon and tooltip; hidden columns tint it and show
+       their count. */
+
+const STRINGS = {
+  label: 'Columns',
+  manage: 'Manage columns',
+  first: 'First column',
+  makeFirst: 'Make first column',
+  moveUp: 'Move {name} up',
+  moveDown: 'Move {name} down',
+  up: 'Move up',
+  down: 'Move down',
+  find: 'Find a column',
+  showAll: 'Show all',
+  hideAll: 'Hide all',
+  apply: 'Apply',
+  cancel: 'Cancel',
+  shown: '{name} shown',
+  hidden: '{name} hidden',
+  isFirst: '{name} is the first column',
+  moved: '{name}, position {position} of {total}',
+  row: '{name}{first}. Alt + Arrow Up or Down moves it',
+  firstMark: ', first column',
+  none: 'No column matches'
+};
+const moveTo = (order, f, i) => {
+  const rest = order.filter(x => x !== f);
+  rest.splice(i, 0, f);
+  return rest;
+};
+const nameIn = fields => f => {
+  const x = fields.find(y => y.value === f);
+  return x ? x.label : f;
+};
+
+// the list: one row per column
+function ColumnsList({
+  fields,
+  value,
+  onChange,
+  filter = '',
+  t
+}) {
+  const [msg, setMsg] = _react.default.useState('');
+  const [drag, setDrag] = _react.default.useState(null);
+  const box = _react.default.useRef(null);
+  const name = nameIn(fields);
+  const order = value.order,
+    hidden = value.hidden || [];
+  const put = (o, h, words, focus) => {
+    onChange({
+      order: o,
+      hidden: h
+    });
+    setMsg(words);
+    if (focus) setTimeout(() => {
+      const el = box.current && box.current.querySelector('[data-plx-field="' + focus + '"]');
+      if (el) el.focus();
+    }, 0);
+  };
+  const move = (f, to, focus) => {
+    if (to < 0 || to >= order.length) return;
+    put(moveTo(order, f, to), to === 0 ? hidden.filter(x => x !== f) : hidden, to === 0 ? (0, _panelParts.fill)(t.isFirst, {
+      name: name(f)
+    }) : (0, _panelParts.fill)(t.moved, {
+      name: name(f),
+      position: to + 1,
+      total: order.length
+    }), focus ? f : null);
+  };
+  const q = filter.trim().toLowerCase();
+  const shown = order.filter(f => !q || name(f).toLowerCase().indexOf(q) >= 0);
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-columns-list",
+    ref: box
+  }, shown.length ? null : /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "secondary"
+  }, t.none), shown.map(f => {
+    const i = order.indexOf(f);
+    return /*#__PURE__*/_react.default.createElement("div", {
+      key: f,
+      "data-plx-field": f,
+      tabIndex: 0,
+      draggable: true,
+      "aria-label": (0, _panelParts.fill)(t.row, {
+        name: name(f),
+        first: i === 0 ? t.firstMark : ''
+      }),
+      "aria-keyshortcuts": "Alt+ArrowUp Alt+ArrowDown",
+      className: (0, _cx.cx)('plx-columns-list__row', drag === f && 'is-dragging'),
+      onKeyDown: e => {
+        if (e.target !== e.currentTarget || !e.altKey) return;
+        if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          move(f, i - 1, true);
+        }
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          move(f, i + 1, true);
+        }
+      },
+      onDragStart: e => {
+        setDrag(f);
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', f);
+      },
+      onDragEnd: () => setDrag(null),
+      onDragOver: e => e.preventDefault(),
+      onDrop: e => {
+        e.preventDefault();
+        const from = e.dataTransfer.getData('text/plain') || drag;
+        setDrag(null);
+        if (from && from !== f) move(from, i);
+      }
+    }, /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-columns-list__handle",
+      "aria-hidden": "true"
+    }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+      name: "drag"
+    })), /*#__PURE__*/_react.default.createElement(_Checkbox.Checkbox, {
+      label: name(f),
+      checked: hidden.indexOf(f) < 0,
+      disabled: i === 0,
+      onChange: () => put(order, (0, _panelParts.toggle)(hidden, f), (0, _panelParts.fill)(hidden.indexOf(f) >= 0 ? t.shown : t.hidden, {
+        name: name(f)
+      }))
+    }), i === 0 ? /*#__PURE__*/_react.default.createElement("span", {
+      className: "plx-columns-list__first"
+    }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+      name: "pin-filled"
+    }), /*#__PURE__*/_react.default.createElement(_Text.Text, {
+      variant: "secondary"
+    }, t.first)) : /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: "xs",
+      variant: "ghost",
+      icon: "pin",
+      onClick: () => move(f, 0, true)
+    }, t.makeFirst), /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+      content: t.up
+    }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: "xs",
+      variant: "ghost",
+      icon: "chevron-up",
+      iconOnly: true,
+      label: (0, _panelParts.fill)(t.moveUp, {
+        name: name(f)
+      }),
+      disabled: i === 0,
+      onClick: () => move(f, i - 1)
+    })), /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+      content: t.down
+    }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      size: "xs",
+      variant: "ghost",
+      icon: "chevron-down",
+      iconOnly: true,
+      label: (0, _panelParts.fill)(t.moveDown, {
+        name: name(f)
+      }),
+      disabled: i === order.length - 1,
+      onClick: () => move(f, i + 1)
+    })));
+  }), /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, {
+    role: "status",
+    "aria-live": "polite"
+  }, msg));
+}
+function ColumnsMenu({
+  fields = [],
+  value,
+  onChange,
+  inline = false,
+  strings
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const v = value || {
+    order: fields.map(f => f.value),
+    hidden: []
+  };
+  const list = /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-find-panel plx-find-panel--columns"
+  }, /*#__PURE__*/_react.default.createElement(ColumnsList, {
+    fields: fields,
+    value: v,
+    onChange: onChange,
+    t: t
+  }));
+  return /*#__PURE__*/_react.default.createElement(_panelParts.PanelTrigger, {
+    icon: "fields",
+    label: t.label,
+    title: t.label,
+    count: (v.hidden || []).length,
+    caret: true,
+    size: "lg",
+    inline: inline
+  }, list);
+}
+function ManageColumnsDialog({
+  fields = [],
+  value,
+  onChange,
+  strings,
+  trigger,
+  open: openProp,
+  onOpenChange
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const v = value || {
+    order: fields.map(f => f.value),
+    hidden: []
+  };
+  const controlled = openProp !== undefined;
+  const [own, setOwn] = _react.default.useState(false),
+    open = controlled ? !!openProp : own;
+  const setOpen = next => {
+    if (!controlled) setOwn(next);
+    if (onOpenChange) onOpenChange(next);
+  };
+  const [draft, setDraft] = _react.default.useState(v);
+  const [q, setQ] = _react.default.useState('');
+  const name = nameIn(fields);
+  // opened by its owner: start from the current columns, as the button does
+  _react.default.useEffect(() => {
+    if (controlled && openProp) {
+      setDraft(v);
+      setQ('');
+    }
+  }, [controlled, openProp]);
+  const start = () => {
+    setDraft(v);
+    setQ('');
+    setOpen(true);
+  };
+  const button = trigger === null ? null : trigger ? /*#__PURE__*/_react.default.cloneElement(trigger, {
+    onClick: start
+  }) : /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    variant: "ghost",
+    icon: "fields",
+    onClick: start
+  }, t.manage);
+  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, button, /*#__PURE__*/_react.default.createElement(_Dialog.Dialog, {
+    open: open,
+    onClose: () => setOpen(false),
+    title: t.manage,
+    icon: "fields",
+    size: "md",
+    footer: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      onClick: () => setOpen(false)
+    }, t.cancel), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "primary",
+      onClick: () => {
+        onChange(draft);
+        setOpen(false);
+      }
+    }, t.apply))
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-find-panel plx-find-panel--dialog"
+  }, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.first
+  }, /*#__PURE__*/_react.default.createElement(_Input.Select, {
+    value: draft.order[0],
+    options: draft.order.map(f => ({
+      value: f,
+      label: name(f)
+    })),
+    onChange: e => setDraft({
+      order: moveTo(draft.order, e.target.value, 0),
+      hidden: (draft.hidden || []).filter(x => x !== e.target.value)
+    })
+  })), /*#__PURE__*/_react.default.createElement(_SearchField.SearchField, {
+    width: "fill",
+    value: q,
+    onChange: e => setQ(e.target.value),
+    onClear: () => setQ(''),
+    placeholder: t.find,
+    label: t.find
+  }), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-find-panel__add"
+  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    variant: "ghost",
+    icon: "visibility",
+    onClick: () => setDraft({
+      order: draft.order,
+      hidden: []
+    })
+  }, t.showAll), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    variant: "ghost",
+    icon: "visibility-off",
+    onClick: () => setDraft({
+      order: draft.order,
+      hidden: draft.order.slice(1)
+    })
+  }, t.hideAll)), /*#__PURE__*/_react.default.createElement(ColumnsList, {
+    fields: fields,
+    value: draft,
+    onChange: setDraft,
+    filter: q,
+    t: t
+  }))));
 }
   } },
   "platform/components/Pagination/Pagination.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -17058,7 +20101,7 @@ function groupDisplay(groups, collapsed, add, gaps = true) {
   return display;
 }
   } },
-  "platform/components/DataGrid/DataGridEngine.jsx": { deps: {"react":null,"./unread.js":"platform/components/DataGrid/unread.js","./room.js":"platform/components/DataGrid/room.js","react-dom":null,"./scrollbars.jsx":"platform/components/DataGrid/scrollbars.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","@tanstack/react-table":"../Plenix/node_modules/@tanstack/react-table/build/lib/index.js","@tanstack/react-virtual":"../Plenix/node_modules/@tanstack/react-virtual/dist/cjs/index.cjs","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./environment.js":"platform/components/DataGrid/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataGrid/state.js","./adapter.js":"platform/components/DataGrid/adapter.js","./cells.jsx":"platform/components/DataGrid/cells.jsx","./records.js":"platform/components/DataGrid/records.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/DataGrid/DataGridEngine.jsx": { deps: {"react":null,"./unread.js":"platform/components/DataGrid/unread.js","./room.js":"platform/components/DataGrid/room.js","react-dom":null,"./scrollbars.jsx":"platform/components/DataGrid/scrollbars.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","@tanstack/react-table":"node_modules/@tanstack/react-table/build/lib/index.js","@tanstack/react-virtual":"node_modules/@tanstack/react-virtual/dist/cjs/index.cjs","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./environment.js":"platform/components/DataGrid/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataGrid/state.js","./adapter.js":"platform/components/DataGrid/adapter.js","./cells.jsx":"platform/components/DataGrid/cells.jsx","./records.js":"platform/components/DataGrid/records.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -17084,6 +20127,7 @@ var _environment = require("./environment.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _Button = require("../Button/Button.jsx");
 var _Menu = require("../Menu/Menu.jsx");
+var _ColumnsMenu = require("../../patterns/ColumnsMenu/ColumnsMenu.jsx");
 var _Text = require("../Text/Text.jsx");
 var _Input = require("../Input/Input.jsx");
 var _Popover = require("../Popover/Popover.jsx");
@@ -17191,6 +20235,11 @@ const defaults = {
   clearFilter: 'Clear filter',
   groupBy: 'Group by this field',
   ungroup: 'Ungroup',
+  noGroup: 'Don’t group by this field',
+  sizeToFit: 'Size column to fit',
+  sizeAllToFit: 'Size all columns to fit',
+  moreColumns: 'More…',
+  columns: 'Columns',
   loadMore: 'Load more',
   loading: 'Loading records',
   group: 'Group by this field',
@@ -17530,7 +20579,8 @@ function NextEngine(props) {
   }, [widthsSignal, !!props.onViewChange, columns]);
   const [rowHeight, setRowHeight] = _react.default.useState(initial.rowHeight),
     [wrapHeaders, setWrapHeaders] = _react.default.useState(initial.wrapHeaders);
-  const [filterField, setFilterField] = _react.default.useState(null);
+  const [filterField, setFilterField] = _react.default.useState(null),
+    [managing, setManaging] = _react.default.useState(false);
   const [edited, setEdited] = _react.default.useState(null),
     [editing, setEditing] = _react.default.useState(null),
     [expanded, setExpanded] = _react.default.useState(props.treeExpanded ?? options.dataTreeStartExpanded ?? false);
@@ -17688,6 +20738,10 @@ function NextEngine(props) {
     const width = (0, _grid.snapToGrid)((0, _sizeSteps.snapSize)((0, _environment.tokenPixels)(value, at), min, max), {
       el: at
     });
+    live.current.sizing = {
+      ...(live.current.sizing || sizing),
+      [field]: width
+    };
     setSizing(s => ({
       ...s,
       [field]: width
@@ -17735,13 +20789,24 @@ function NextEngine(props) {
     emit('rowSelectionChanged', records, records.map(r => api.row((0, _state.recordKey)(r[index]))));
   };
   const pick = (key, value) => {
-    if (!!live.current.selection[key] === !!value) return;
-    const next = {
-      ...live.current.selection
-    };
-    if (options.selectableRows === 1 && value) Object.keys(next).forEach(k => delete next[k]);
-    if (value) next[key] = true;else delete next[key];
-    notifySelection(next);
+    const now = live.current;
+    if (!!now.selection[key] === !!value) return;
+    let row = null;
+    try {
+      row = now.table.getRow(key, true);
+    } catch (e) {
+      row = null;
+    }
+    if (row && row.getIsSelected() === !!now.selection[key]) row.toggleSelected(!!value, {
+      selectChildren: false
+    });else now.table.setRowSelection(old => {
+      const next = {
+        ...old
+      };
+      if (options.selectableRows === 1 && value) Object.keys(next).forEach(k => delete next[k]);
+      if (value) next[key] = true;else delete next[key];
+      return next;
+    });
   };
   const changeSort = update => {
     const next = typeof update === 'function' ? update(sorting) : update;
@@ -17768,6 +20833,18 @@ function NextEngine(props) {
     maxSize: kinds(c).includes('icon') ? metrics.lead : c.maxWidth ? (0, _environment.tokenPixels)(c.maxWidth, frame.current) : _sizeSteps.SIZE_STEPS[_sizeSteps.SIZE_STEPS.length - 1],
     meta: c
   })), [columns, metrics.min, metrics.lead, autoSizing, floors]);
+  // pinned (frozen) columns are TanStack's left pinning, listed in the columns' current order (columnOrder first, then
+  // the rest as defined, as TanStack orders them), so a pinned column's offset is its getStart('left')
+  const pinnedAt = columns.findIndex(c => c.rowLabel),
+    pinnedIds = columns.filter((c, i) => c.frozen || pinnedAt >= 0 && i <= pinnedAt).map(c => c.field);
+  const orderAt = id => {
+    const i = (columnOrder || []).indexOf(id);
+    return i < 0 ? (columnOrder || []).length + columns.findIndex(c => c.field === id) : i;
+  };
+  const columnPinning = _react.default.useMemo(() => ({
+    left: pinnedIds.slice().sort((a, b) => orderAt(a) - orderAt(b)),
+    right: []
+  }), [JSON.stringify(pinnedIds), JSON.stringify(columnOrder)]);
   const table = (0, _reactTable.useReactTable)({
     data: source,
     columns: leafDefs,
@@ -17787,16 +20864,28 @@ function NextEngine(props) {
         pageIndex: page,
         pageSize
       },
-      rowSelection: selection
+      rowSelection: selection,
+      columnPinning
     },
     onSortingChange: changeSort,
+    enableMultiRowSelection: options.selectableRows !== 1,
+    enableSubRowSelection: false,
+    onRowSelectionChange: update => notifySelection(typeof update === 'function' ? update(live.current.selection || selection) : update),
     onColumnVisibilityChange: update => {
       changeVisibility(typeof update === 'function' ? update(columnVisibility) : update);
     },
     onColumnOrderChange: update => {
       changeOrder(typeof update === 'function' ? update(columnOrder) : update);
     },
-    onColumnSizingChange: setSizing,
+    onColumnSizingChange: update => {
+      const before = live.current.sizing || sizing,
+        next = typeof update === 'function' ? update(before) : update;
+      Object.keys(next).forEach(id => {
+        if (next[id] !== before[id]) resize(id, next[id]);
+      });
+    },
+    columnResizeMode: 'onChange',
+    columnResizeDirection: frame.current && (0, _direction.isRtl)(frame.current) ? 'rtl' : 'ltr',
     onColumnFiltersChange: update => {
       setFilters(update);
       setPage(0);
@@ -17812,6 +20901,15 @@ function NextEngine(props) {
     getCoreRowModel: (0, _reactTable.getCoreRowModel)(),
     getFilteredRowModel: (0, _reactTable.getFilteredRowModel)(),
     getSortedRowModel: (0, _reactTable.getSortedRowModel)(),
+    getFacetedRowModel: t => () => {
+      const all = t.getPreFilteredRowModel();
+      return {
+        rows: all.rows,
+        flatRows: all.rows,
+        rowsById: all.rowsById
+      };
+    },
+    getFacetedUniqueValues: (0, _reactTable.getFacetedUniqueValues)(),
     getPaginationRowModel: mode === 'pages' ? (0, _reactTable.getPaginationRowModel)() : undefined,
     autoResetPageIndex: false
   });
@@ -17875,6 +20973,8 @@ function NextEngine(props) {
     if (doc && doc.__plxPillWidths && doc.__plxPillWidths.rules.delete(gridKey)) doc.__plxPillWidths.flush();
   }, []);
   const loadedRows = _react.default.useMemo(() => mode === 'load-more' && !remoteMode ? allRows.slice(0, loaded) : allRows, [allRows, mode, remoteMode, loaded]);
+  // grouping stays Plenix's own (records.js): a record of a multi-value column belongs to every group of its values, and
+  // dates and numbers group in buckets, which TanStack's grouped row model (one group per row) cannot express
   const groups = _react.default.useMemo(() => (0, _records.groupedRows)(loadedRows, groupBy, columns), [loadedRows, groupBy, columns]);
   const model = _react.default.useMemo(() => groups.length ? (0, _records.groupDisplay)(groups, printing ? new Set() : collapsed, !!props.onAddToGroup) : loadedRows, [groups, collapsed, loadedRows, !!props.onAddToGroup, printing]),
     virtualized = !isStatic && mode !== 'pages' && !isNarrow && !printing;
@@ -17898,10 +20998,9 @@ function NextEngine(props) {
     first = virtualized ? virtualItems[0]?.index || 0 : 0,
     last = virtualized ? (virtualItems[virtualItems.length - 1]?.index ?? Math.min(model.length, 1) - 1) + 1 : model.length;
   const shown = virtualized ? model.slice(first, last) : model;
-  const pinnedAt = columns.findIndex(c => c.rowLabel),
-    frozen = new Set(columns.filter((c, i) => c.frozen || pinnedAt >= 0 && i <= pinnedAt).map(c => c.field));
-  const visible = table.getVisibleLeafColumns(),
-    ordered = visible.filter(c => frozen.has(c.id)).concat(visible.filter(c => !frozen.has(c.id)));
+  const frozen = new Set(columnPinning.left),
+    ordered = table.getLeftVisibleLeafColumns().concat(table.getCenterVisibleLeafColumns());
+  const pinStart = column => (selectable ? metrics.lead : 0) + column.getStart('left');
   const widths = Object.fromEntries(ordered.map(column => [column.id, column.getSize()]));
   const listable = column => !column.rowHandle && !kinds(column).some(kind => ['icon', 'actions'].includes(kind));
   const keys = keyColumns?.length ? keyColumns : columns.filter(c => !kinds(c).some(k => ['icon', 'actions'].includes(k)) && !c.rowHandle).slice(0, 3).map(c => c.field);
@@ -18014,7 +21113,10 @@ function NextEngine(props) {
       // wrapped headers show two lines: the narrowest width that holds the title in two (never a word broken)
       let text = ctx.measureText(title).width;
       if (effectiveWrap) for (let i = 1; i < words.length; i += 1) text = Math.min(text, Math.max(ctx.measureText(words.slice(0, i).join(' ')).width, ctx.measureText(words.slice(i).join(' ')).width));
-      const head = text + Math.max(showTypes ? tokenPx('--plx-comp-data-grid-header-type-icon-size') + tokenPx('--plx-comp-data-grid-header-type-icon-gap') : 0, !isStatic && headerMenu ? tokenPx('--plx-comp-data-grid-title-reserve') : 0);
+      // hovered, a header shows its type icon, its title, the sort arrow after it and the options button at the edge: the floor holds all of them (owner, 2026-10-23: the arrow follows the title)
+      const gap = tokenPx('--plx-comp-data-grid-header-type-icon-gap'),
+        arrow = c.headerSort !== false && !isStatic ? 2 * tokenPx('--plx-comp-data-grid-sorter-inset') + gap : 0;
+      const head = text + (showTypes ? tokenPx('--plx-comp-data-grid-header-type-icon-size') + gap : 0) + arrow + (!isStatic && headerMenu ? tokenPx('--plx-comp-data-grid-title-reserve') : 0);
       floor[c.field] = snapUp(Math.max(metrics.min, head + metrics.space * 2));
       const explicit = tokenPx(c.width);
       if (explicit) {
@@ -18260,7 +21362,7 @@ function NextEngine(props) {
     selectionRows.forEach(r => {
       if (value) next[r.id] = true;else delete next[r.id];
     });
-    notifySelection(next);
+    table.setRowSelection(next);
   };
   const pickCheckbox = (row, event) => {
     const wanted = event.target.checked,
@@ -18273,7 +21375,7 @@ function NextEngine(props) {
       selectionRows.slice(Math.min(from, to), Math.max(from, to) + 1).forEach(record => {
         if (wanted) next[record.id] = true;else delete next[record.id];
       });
-      notifySelection(next);
+      table.setRowSelection(next);
     } else pick(row.id, wanted);
     selectionAnchor.current = row.id;
   };
@@ -18304,77 +21406,69 @@ function NextEngine(props) {
       }
     }, item.label);
   });
+  // the column menu (owner, 2026-10-23, Windows Explorer and Airtable): the application's field actions (columnMenu: duplicate,
+  // insert, link, description, permissions), then sort in the type's words, filter, and group by this field. Width, order
+  // and visibility live in the header's right-click menu (columnChooser); a click on the title sorts.
+  const groupedBy = field => [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === field);
   const headerItems = column => {
     const c = column.columnDef.meta,
       custom = typeof columnMenu === 'function' ? columnMenu(c) : columnMenu || [];
     const direction = typeOf(c) === 'number' || typeOf(c) === 'currency' || typeOf(c) === 'bytes' ? S.sortNumber : typeOf(c) === 'date' ? S.sortDate : typeOf(c) === 'checkbox' ? S.sortCheck : S.sortText;
+    const grouped = groupedBy(c.field),
+      others = [].concat(groupBy || []).filter(level => (typeof level === 'object' ? level.field : level) !== c.field);
     return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, menuItems(custom, c, api.column(c.field)), custom.length ? /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null) : null, /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-      onSelect: () => table.setSorting([{
-        id: c.field,
-        desc: false
-      }])
+      icon: "sort-ascending",
+      disabled: !column.getCanSort(),
+      onSelect: () => column.toggleSorting(false)
     }, direction[0]), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-      onSelect: () => table.setSorting([{
-        id: c.field,
-        desc: true
-      }])
-    }, direction[1]), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-      onSelect: () => table.setSorting([])
-    }, S.clearSort), /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      icon: "sort-descending",
+      disabled: !column.getCanSort(),
+      onSelect: () => column.toggleSorting(true)
+    }, direction[1]), /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      icon: "filter",
+      disabled: !column.getCanFilter(),
       onSelect: () => setFilterField(c.field)
     }, S.filterBy), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-      onSelect: () => column.setFilterValue(undefined)
-    }, S.clearFilter), /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-      onSelect: () => resize(c.field, (0, _sizeSteps.stepSize)(column.getSize(), -1, column.columnDef.minSize, column.columnDef.maxSize))
-    }, S.narrower), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-      onSelect: () => resize(c.field, (0, _sizeSteps.stepSize)(column.getSize(), 1, column.columnDef.minSize, column.columnDef.maxSize))
-    }, S.wider), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-      onSelect: () => fit(c.field)
-    }, S.fit), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-      disabled: frozen.has(c.field) || ordered.indexOf(column) === 0,
-      onSelect: () => columnDnd.moveTo(ordered.indexOf(column), ordered.indexOf(column) - 1)
-    }, S.moveLeft), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-      disabled: frozen.has(c.field) || ordered.indexOf(column) === ordered.length - 1,
-      onSelect: () => columnDnd.moveTo(ordered.indexOf(column), ordered.indexOf(column) + 1)
-    }, S.moveRight), /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-      disabled: c.groupable === false,
-      onSelect: () => changeGroups(c.field)
-    }, S.group), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-      onSelect: () => changeGroups(false)
-    }, S.ungroup), /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-      onSelect: () => column.toggleVisibility(false),
-      disabled: frozen.has(c.field)
-    }, S.hide), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-      onSelect: () => changeVisibility({})
-    }, S.showAll));
+      icon: "group-by",
+      disabled: !grouped && c.groupable === false,
+      onSelect: () => changeGroups(grouped ? others.length ? others : false : c.field)
+    }, grouped ? S.noGroup : S.group));
+  };
+  // the header's right-click menu (Windows Explorer): size this column or every column to fit, every column with a check
+  // (TanStack's visibility; a pinned column stays shown) and More… for the columns dialog (order, find, show all, hide all)
+  const columnChooser = column => /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    onSelect: () => fit(column.id)
+  }, S.sizeToFit), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    onSelect: () => table.getVisibleLeafColumns().forEach(col => fit(col.id))
+  }, S.sizeAllToFit), /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), chooserColumns().map(col => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    key: col.id,
+    checked: col.getIsVisible(),
+    disabled: frozen.has(col.id),
+    onSelect: () => col.toggleVisibility(!col.getIsVisible())
+  }, col.columnDef.meta.title || col.id)), /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    onSelect: () => setManaging(true)
+  }, S.moreColumns));
+  const chooserColumns = () => {
+    const all = table.getAllLeafColumns().filter(col => !kinds(col.columnDef.meta).some(k => ['icon', 'actions'].includes(k)));
+    return all.slice().sort((x, y) => orderAt(x.id) - orderAt(y.id));
   };
   const startResize = (event, column) => {
-    if (event.button !== 0) return;
-    event.preventDefault();
+    if (event.type === 'mousedown' && event.button !== 0) return;
+    if (event.type === 'mousedown') event.preventDefault();
     event.stopPropagation();
-    const from = event.clientX,
-      width = column.getSize(),
-      doc = event.currentTarget.ownerDocument;
-    const move = e => resize(column.id, width + (e.clientX - from) * ((0, _direction.isRtl)(frame.current) ? -1 : 1));
-    const up = () => {
-      doc.removeEventListener('pointermove', move);
-      doc.removeEventListener('pointerup', up);
-    };
-    doc.addEventListener('pointermove', move);
-    doc.addEventListener('pointerup', up, {
-      once: true
-    });
+    const head = table.getFlatHeaders().find(h => h.column.id === column.id);
+    head?.getResizeHandler(frame.current?.ownerDocument)(event);
   };
   const headerCell = column => {
     const c = column.columnDef.meta,
-      pinned = frozen.has(c.field),
+      pinned = column.getIsPinned() === 'left',
       sorted = column.getIsSorted(),
       filtered = column.getIsFiltered(),
       icon = kinds(c).includes('icon'),
       hasFilter = !!(c.filter || filterField === c.field || filtered),
       align = c.headerHozAlign || (c.type === 'bytes' ? 'right' : null),
-      titleFixed = icon ? 'flush' : sorted || filtered ? 'reserve' : null,
-      offset = (selectable ? metrics.lead : 0) + ordered.slice(0, ordered.indexOf(column)).filter(col => frozen.has(col.id)).reduce((sum, col) => sum + col.getSize(), 0);
+      titleFixed = icon ? 'flush' : null,
+      offset = pinned ? pinStart(column) : 0;
     const node = /*#__PURE__*/_react.default.createElement(Width, _extends({
       key: c.field
     }, columnDnd.itemProps(ordered.indexOf(column)), {
@@ -18401,7 +21495,7 @@ function NextEngine(props) {
     }), /*#__PURE__*/_react.default.createElement("div", {
       className: (0, _cx.cx)(B + '__grid-col-content', isStatic && B + '__grid-col-content--static', icon && B + '__grid-col-content--icon', !icon && align === 'center' && B + '__grid-col-content--center', effectiveWrap && B + '__grid-col-content--wrap')
     }, /*#__PURE__*/_react.default.createElement("div", {
-      className: `${B}__grid-col-title-holder`
+      className: (0, _cx.cx)(B + '__grid-col-title-holder', icon && B + '__grid-col-title-holder--flush')
     }, /*#__PURE__*/_react.default.createElement("div", {
       className: (0, _cx.cx)(B + '__grid-col-title', isStatic && B + '__grid-col-title--static', titleFixed && B + '__grid-col-title--' + titleFixed, icon && B + '__grid-col-title--icon', align && B + '__grid-col-title--align-' + align),
       title: c.title
@@ -18422,24 +21516,12 @@ function NextEngine(props) {
     })) : null, /*#__PURE__*/_react.default.createElement("span", {
       className: (0, _cx.cx)(B + '__title-text', effectiveWrap && B + '__title-text--wrap')
     }, c.title || c.field))), /*#__PURE__*/_react.default.createElement("div", {
-      className: (0, _cx.cx)(B + '__grid-col-sorter', sorted && B + '__grid-col-sorter--on', column.getCanSort() && B + '__grid-col-sorter--sortable', icon && B + '__grid-col-sorter--icon', headerMenu && !isStatic && B + '__grid-col-sorter--joined'),
+      className: (0, _cx.cx)(B + '__grid-col-sorter', sorted && B + '__grid-col-sorter--on', column.getCanSort() && B + '__grid-col-sorter--sortable', icon && B + '__grid-col-sorter--icon'),
       "aria-hidden": "true"
     }, /*#__PURE__*/_react.default.createElement("div", {
       className: (0, _cx.cx)(B + '__grid-arrow', sorted === 'asc' && B + '__grid-arrow--asc', sorted === 'desc' && B + '__grid-arrow--desc')
-    }))), headerMenu ? /*#__PURE__*/_react.default.createElement("span", {
-      className: (0, _cx.cx)(B + '__grid-header-popup-button', B + '__grid-header-popup-button--menu')
-    }, /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-      label: c.title + ' column actions',
-      trigger: /*#__PURE__*/_react.default.createElement("span", {
-        role: "button",
-        tabIndex: 0,
-        className: B + '__menu-chevron',
-        "aria-label": c.title + ' column actions'
-      }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-        name: column.getIsSorted() === 'asc' ? 'sort-ascending' : column.getIsSorted() === 'desc' ? 'sort-descending' : 'chevron-down'
-      }))
-    }, headerItems(column))) : null, c.filter || filterField === c.field || column.getIsFiltered() ? /*#__PURE__*/_react.default.createElement("span", {
-      className: (0, _cx.cx)(B + '__grid-header-popup-button', filtered && B + '__grid-header-popup-button--filtered', headerMenu && B + '__grid-header-popup-button--shift')
+    })), filtered || filterField === c.field ? /*#__PURE__*/_react.default.createElement("span", {
+      className: (0, _cx.cx)(B + '__title-filter', filtered && B + '__title-filter--on')
     }, /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
       open: filterField === c.field,
       onOpenChange: open => setFilterField(open ? c.field : null),
@@ -18448,17 +21530,20 @@ function NextEngine(props) {
       trigger: /*#__PURE__*/_react.default.createElement("span", {
         role: "button",
         tabIndex: 0,
+        className: B + '__title-filter-button',
         "aria-label": S.filter + ' ' + c.title
       }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
         name: "filter"
       }))
+    }, /*#__PURE__*/_react.default.createElement("div", {
+      className: B + '__filter-form'
     }, c.filter === 'list' ? /*#__PURE__*/_react.default.createElement(_Input.Select, {
       "aria-label": S.filter + ' ' + c.title,
       value: column.getFilterValue() || '',
       options: [{
         value: '',
         label: S.any
-      }, ...[...new Set(source.map(r => String((0, _state.valueAt)(r, c.field) ?? '')))].filter(Boolean).map(value => ({
+      }, ...[...new Set([...column.getFacetedUniqueValues().keys()].map(value => String(value ?? '')))].filter(Boolean).map(value => ({
         value,
         label: value
       }))],
@@ -18471,7 +21556,19 @@ function NextEngine(props) {
       variant: "ghost",
       size: "sm",
       onClick: () => column.setFilterValue(undefined)
-    }, S.clearFilter))) : null), c.resizable !== false && !pinned && !kinds(c).includes('icon') ? /*#__PURE__*/_react.default.createElement("span", {
+    }, S.clearFilter)))) : null), headerMenu ? /*#__PURE__*/_react.default.createElement("span", {
+      className: (0, _cx.cx)(B + '__grid-header-popup-button', B + '__grid-header-popup-button--menu')
+    }, /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+      label: c.title + ' column actions',
+      trigger: /*#__PURE__*/_react.default.createElement("span", {
+        role: "button",
+        tabIndex: 0,
+        className: B + '__menu-chevron',
+        "aria-label": c.title + ' column actions'
+      }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+        name: "chevron-down"
+      }))
+    }, headerItems(column))) : null), c.resizable !== false && !pinned && !kinds(c).includes('icon') ? /*#__PURE__*/_react.default.createElement("span", {
       className: `${B}__grid-col-resize-handle`,
       role: "separator",
       "aria-label": S.resize + ' ' + c.title,
@@ -18480,7 +21577,8 @@ function NextEngine(props) {
       "aria-valuenow": column.getSize(),
       "aria-valuemin": column.columnDef.minSize,
       "aria-valuemax": column.columnDef.maxSize,
-      onPointerDown: e => startResize(e, column),
+      onMouseDown: e => startResize(e, column),
+      onTouchStart: e => startResize(e, column),
       onDoubleClick: () => fit(c.field),
       onKeyDown: e => {
         if (['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) {
@@ -18492,8 +21590,8 @@ function NextEngine(props) {
     return headerMenu ? /*#__PURE__*/_react.default.createElement(_Menu.ContextMenu, {
       key: c.field,
       target: node,
-      label: c.title + ' column actions'
-    }, headerItems(column)) : node;
+      label: S.columns
+    }, columnChooser(column)) : node;
   };
   const focusCell = (rowIndex, columnIndex, step = 1) => {
     while (model[rowIndex] && !model[rowIndex].original) rowIndex += step;
@@ -18664,7 +21762,6 @@ function NextEngine(props) {
     }));
     const rowApi = api.row(row.id),
       record = row.original;
-    let offset = selectable ? metrics.lead : 0;
     const step = !isStatic && !isNarrow ? effectiveStep : undefined,
       sized = step != null,
       lines = sized && step !== 'short',
@@ -18723,7 +21820,7 @@ function NextEngine(props) {
         }
       }
     }), selectable ? /*#__PURE__*/_react.default.createElement("div", {
-      className: (0, _cx.cx)(`${B}__grid-cell ${B}__grid-row-header ${B}__w-lead ${B}__grid-frozen`, modes),
+      className: (0, _cx.cx)(`${B}__grid-cell ${B}__grid-row-header ${B}__w-lead ${B}__grid-frozen`, modes, selection[row.id] && B + '__grid-cell--selected-start'),
       role: "gridcell"
     }, /*#__PURE__*/_react.default.createElement(Check, {
       label: S.selectRow + ' ' + record[index],
@@ -18732,9 +21829,8 @@ function NextEngine(props) {
     })) : null, ordered.map(column => {
       const c = column.columnDef.meta,
         k = kinds(c),
-        pinned = frozen.has(c.field),
-        sticky = offset;
-      if (pinned) offset += column.getSize();
+        pinned = column.getIsPinned() === 'left',
+        sticky = pinned ? pinStart(column) : 0;
       const cell = api.cell(row.id, c.field),
         canEdit = !!c.editor && (typeof c.editable === 'function' ? c.editable(cell) : c.editable !== false);
       const value = (0, _state.valueAt)(record, c.field),
@@ -18803,7 +21899,7 @@ function NextEngine(props) {
         },
         "data-plx-sticky": pinned && sticky ? sticky + 'px' : undefined,
         "data-plx-text-follow": c.rowLabel || columns.indexOf(c) <= pinnedAt ? 'size family weight' : 'size family',
-        className: (0, _cx.cx)('' + B + '__grid-cell', modes, bare && B + '__grid-cell--bare', selectable && ordered.indexOf(column) === 0 && B + '__grid-cell--after-lead', isTree && row.depth > 0 && B + '__tree-cell--level-' + Math.min(12, row.depth), editing?.key === row.id && editing.field === c.field && '' + B + '__grid-editing', k.map(kind => B + '__cell--' + kind).join(' '), (k.includes('data') || c.type === 'bytes') && B + '__grid-cell--data', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', c.type === 'bytes' && B + '__cell--data', c.rowHandle && B + '__cell--handle', childField && c.field === (props.treeColumn || options.dataTreeElementColumn || columns[0]?.field) && B + '__tree-cell', pinned && '' + B + '__grid-frozen', (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + '__cell--row-label', k.includes('icon') && B + '__w-lead', keys.includes(c.field) && B + '__cell--key', keys[0] === c.field && B + '__cell--key-first', (c.hozAlign || c.type === 'bytes') && B + '__cell--align-' + (c.hozAlign || 'right'))
+        className: (0, _cx.cx)('' + B + '__grid-cell', modes, !selectable && selection[row.id] && ordered.indexOf(column) === 0 && B + '__grid-cell--selected-start', bare && B + '__grid-cell--bare', selectable && ordered.indexOf(column) === 0 && B + '__grid-cell--after-lead', isTree && row.depth > 0 && B + '__tree-cell--level-' + Math.min(12, row.depth), editing?.key === row.id && editing.field === c.field && '' + B + '__grid-editing', k.map(kind => B + '__cell--' + kind).join(' '), (k.includes('data') || c.type === 'bytes') && B + '__grid-cell--data', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', c.type === 'bytes' && B + '__cell--data', c.rowHandle && B + '__cell--handle', childField && c.field === (props.treeColumn || options.dataTreeElementColumn || columns[0]?.field) && B + '__tree-cell', pinned && '' + B + '__grid-frozen', (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + '__cell--row-label', k.includes('icon') && B + '__w-lead', keys.includes(c.field) && B + '__cell--key', keys[0] === c.field && B + '__cell--key-first', (c.hozAlign || c.type === 'bytes') && B + '__cell--align-' + (c.hozAlign || 'right'))
       }, childField && c.field === (props.treeColumn || options.dataTreeElementColumn || columns[0]?.field) ? /*#__PURE__*/_react.default.createElement("span", {
         className: B + '__tree-level',
         "data-plx-depth": 0
@@ -18899,7 +21995,23 @@ function NextEngine(props) {
   const failed = error || remoteError;
   return /*#__PURE__*/_react.default.createElement(WidthPixels.Provider, {
     value: widthPixels
-  }, /*#__PURE__*/_react.default.createElement("div", {
+  }, headerMenu && !isStatic && managing ? /*#__PURE__*/_react.default.createElement(_ColumnsMenu.ManageColumnsDialog, {
+    trigger: null,
+    open: managing,
+    onOpenChange: setManaging,
+    fields: chooserColumns().map(col => ({
+      value: col.id,
+      label: col.columnDef.meta.title || col.id
+    })),
+    value: {
+      order: chooserColumns().map(col => col.id),
+      hidden: chooserColumns().filter(col => !col.getIsVisible()).map(col => col.id)
+    },
+    onChange: next => {
+      changeOrder(next.order);
+      changeVisibility(Object.fromEntries((next.hidden || []).map(field => [field, false])));
+    }
+  }) : null, /*#__PURE__*/_react.default.createElement("div", {
     ref: frame,
     className: (0, _cx.cx)(B, isStatic && B + '--static', pinnedAt >= 0 && B + '--row-header', listed && B + '--list', isNarrow && B + '--narrow', height === '100%' && B + '--fill', mode === 'pages' && B + '--pages', mode === 'load-more' && B + '--load-more', className),
     "data-plx-engine": "next",
@@ -21316,209 +24428,6 @@ function RadioTiles({
   })));
 }
   } },
-  "platform/components/Kbd/Kbd.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Kbd = Kbd;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Kbd
-   Summary: A key or shortcut ("Ctrl K").
-   Usage:
-     <Kbd>Ctrl K</Kbd>
-     <Kbd onAccent>/</Kbd>
-   Props:
-     onAccent: the version for the blue header (default false)
-     children: the key or shortcut text
-     className: more classes on the <kbd>
-   Notes:
-     It uses the data font at a 16px label height.
-     Other props pass through to the <kbd>.
-*/
-function Kbd({
-  onAccent = false,
-  className,
-  children,
-  ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement("kbd", _extends({
-    className: (0, _cx.cx)('plx-kbd', onAccent && 'plx-kbd--on-accent', className)
-  }, rest), children);
-}
-  } },
-  "platform/components/Divider/Divider.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Divider = Divider;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Divider
-   Summary: A 1px rule between groups.
-   Usage:
-     <Divider />
-     <Divider orientation="vertical" />
-   Props:
-     orientation: "horizontal" (default) | "vertical" (in a row)
-     className: more classes on the rule
-   Behavior:
-     It is a separator (role="separator") with its orientation.
-   Notes:
-     Other props pass through to the <div>.
-*/
-function Divider({
-  orientation = 'horizontal',
-  className,
-  ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement("div", _extends({
-    role: "separator",
-    "aria-orientation": orientation,
-    className: (0, _cx.cx)('plx-divider', 'plx-divider--' + orientation, className)
-  }, rest));
-}
-  } },
-  "platform/components/Stack/Stack.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Bleed = Bleed;
-exports.Center = Center;
-exports.Inline = Inline;
-exports.Stack = Stack;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Stack, Inline, Center, Bleed
-   Summary: Lay children out in a column (Stack) or a row (Inline), spaced by the spacing tokens, never by a margin or a number;
-     center a block at a readable width (Center); let a child reach past its parent's inset to the edge (Bleed).
-   Usage:
-     <Stack gap="md">
-       <Inline gap="sm" justify="between">…</Inline>
-       <Inline wrap>…</Inline>
-     </Stack>
-     <Inline reverseBelow="narrow"><Main /><Summary /></Inline>    the summary comes first on a narrow window
-     <Center maxWidth="sm" text><EmptyState … /></Center>
-     <Stack inset="md"><Bleed space="md"><Image … /></Bleed><Text>…</Text></Stack>
-   Props:
-     Stack.gap: "none" | "xs" | "sm" | "md" (default) | "lg" | "xl" (--plx-sys-space-stack-*) | "section" (--plx-sys-space-section)
-       Stack.equal: every child as wide as the widest (stacked buttons, owner 2026-10-22): the Stack shrinks to its widest
-       child and each Button takes its whole width; with align="end" or "center" the Stack itself sits at the end or middle
-       Peer sections that are not framed (a SectionHeading and its table, list or text, then the next): <Stack gap="section">
-       holding one <Stack gap="sm"> per section; the same in a page or a split pane, every density, either direction, phones
-     Inline.gap: "none" | "xs" | "sm" (default) | "md" | "lg" | "xl" (--plx-sys-space-inline-*)
-     Stack.align: "start" | "center" | "end" | "stretch" | "baseline" (the cross axis)
-     Inline.align: the same values; default "center"
-     Stack.justify: "start" | "center" | "end" | "between"
-     Inline.wrap: an Inline that wraps onto more lines (its lines are --plx-sys-space-stack-xs apart)
-     Stack.inset: "none" | "xs" | "sm" | "md" | "lg" | "xl" (padding on every side, --plx-sys-space-inset-*)
-     Stack.grow: fills the rest of its parent row or column (it may shrink below its content)
-     Stack.scroll: scrolls its own content
-     Stack.width: "xs" | "sm" | "md" | "lg" (a fixed width from --plx-sys-field-width-*: a field narrower than its row)
-     Stack.maxHeight: "sm" | "md" | "lg" (scrolls past --plx-sys-scroll-max-*)
-     Stack.indent: starts one inline step in (a nested group)
-     Stack.push: moves itself to the end of its row (a search box at the end of a toolbar)
-     Stack.reverse: lays the children out in the other order (column-reverse, row-reverse); the reading and Tab order stay the markup's
-     Stack.reverseBelow: "narrow" (under 600px) | "medium" (under 840px): reverses only below that window class
-     Stack.order: "first" | "last": moves this element to the start or the end of its parent Stack or Inline
-     Stack.orderBelow: "narrow" | "medium": applies order only below that window class
-     Stack.as: the element; "div" by default; ul, ol, section, header, footer, form, fieldset, …
-     Stack.className: more classes on the element
-     Stack.children: the content to lay out
-     Center.maxWidth: "sm" (400px: a sign-in form, an empty state) | "md" (default, 600px: a dialog-like page) | "lg" (900px:
-       reading) | "page" (the contained layout's maximum) | "none": the widest it grows; narrower parents keep it narrower
-     Center.intrinsic: centers each child at its own width (a column of centered children) instead of stretching it
-     Center.vertical: centers the content in its parent's height too; content taller than the parent starts at the top
-     Center.text: centers the lines of text (short headings and messages only)
-     Center.as, Center.className: as for Stack
-     Bleed.space: "xs" | "sm" | "md" (default) | "lg" | "xl": the parent's inset (Stack inset) it cancels
-     Bleed.sides: "inline" (default: to the start and end edges) | "block" (top and bottom) | "all"
-     Bleed.as, Bleed.className: as for Stack
-   Behavior:
-     A scrolling Stack or Inline shows its scroll bar on hover.
-     reverse, reverseBelow and order change only where the children are drawn: assistive technology and the Tab key follow
-       the markup. Use them for regions without a reading order between them (a summary and the content it sums up), never
-       for steps, form fields or anything read in sequence; when the meaning changes, change the markup instead.
-     Bleed cancels exactly the inset tokens of its parent (Stack inset), so its edges meet the parent's edges; its own content
-       keeps no inset (text stays out of a Bleed).
-   Notes:
-     Inline takes the same props as Stack.
-     Any other prop reaches the element.
-     Applications build their layouts from these (and the Platform's patterns) instead of styles.
-*/
-function layout(kind, {
-  as: As = 'div',
-  gap,
-  equal,
-  align,
-  justify,
-  wrap,
-  inset,
-  grow,
-  scroll,
-  width,
-  maxHeight,
-  indent,
-  push,
-  reverse,
-  reverseBelow,
-  order,
-  orderBelow,
-  className,
-  children,
-  ...rest
-}, defaults) {
-  return /*#__PURE__*/_react.default.createElement(As, _extends({
-    className: (0, _cx.cx)('plx-' + kind, 'plx-' + kind + '--gap-' + (gap || defaults.gap), (align || defaults.align) && 'plx-layout--align-' + (align || defaults.align), justify && 'plx-layout--justify-' + justify, wrap && 'plx-inline--wrap', inset && 'plx-layout--inset-' + inset, grow && 'plx-grow', scroll && 'plx-layout--scroll', width && 'plx-layout--width-' + width, maxHeight && 'plx-layout--max-' + maxHeight, indent && 'plx-layout--indent', push && 'plx-layout--push', equal && kind === 'stack' && 'plx-stack--equal', equal && kind === 'stack' && (align === 'end' || align === 'center') && 'plx-stack--equal-' + align, reverse && 'plx-layout--reverse', reverseBelow && 'plx-layout--reverse-below-' + reverseBelow, order && 'plx-layout--order-' + order + (orderBelow ? '-below-' + orderBelow : ''), className)
-  }, rest), children);
-}
-function Stack(props) {
-  return layout('stack', props, {
-    gap: 'md'
-  });
-}
-function Inline(props) {
-  return layout('inline', props, {
-    gap: 'sm',
-    align: 'center'
-  });
-}
-function Center({
-  as: As = 'div',
-  maxWidth = 'md',
-  intrinsic,
-  vertical,
-  text,
-  className,
-  children,
-  ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement(As, _extends({
-    className: (0, _cx.cx)('plx-center', 'plx-center--max-' + maxWidth, intrinsic && 'plx-center--intrinsic', vertical && 'plx-center--vertical', text && 'plx-center--text', className)
-  }, rest), children);
-}
-function Bleed({
-  as: As = 'div',
-  space = 'md',
-  sides = 'inline',
-  className,
-  children,
-  ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement(As, _extends({
-    className: (0, _cx.cx)('plx-bleed', 'plx-bleed--' + space, 'plx-bleed--' + sides, className)
-  }, rest), children);
-}
-  } },
   "platform/components/Thumbnail/Thumbnail.jsx": { deps: {"react":null,"../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -23352,194 +26261,6 @@ function SegmentedControl({
   }, o.icon ? (0, _Icon.stateIcon)(o.icon, o.value === value) : null, o.label ? /*#__PURE__*/_react.default.createElement("span", null, o.label) : null)));
 }
   } },
-  "platform/components/Checkbox/Checkbox.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Checkbox = void 0;
-exports.ChoiceList = ChoiceList;
-exports.Radio = void 0;
-exports.RadioGroup = RadioGroup;
-exports.Switch = void 0;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Checkbox, Radio, RadioGroup, ChoiceList, Switch
-   Summary: Native choice inputs, so keyboard, forms and assistive technology work as usual.
-   Usage:
-     <Checkbox checked={on} onChange={(e) => …} label="Include subfolders" description="…" indeterminate={some} />
-     <RadioGroup label="Format" value={fmt} onChange={(value) => …}
-       options={[{ value: 'png', label: 'PNG', description: '…' }, { value: 'jpg', label: 'JPG' }]} layout="row" />
-     <ChoiceList legend="Plan" value={plan} onChange={(value) => …} options={[{ value: 'team', label: 'Team', description: '…' }]} />
-     <Switch checked={on} onChange={(e) => …} label="Notifications" />
-   Props:
-     Checkbox.label: the text beside the box
-     Checkbox.description: a second line under the label
-     Checkbox.indeterminate: shows the mixed state (default false)
-     Checkbox.className: more classes on the row
-     Checkbox.checked: whether the box is checked (passed to the <input>)
-     Checkbox.onChange(event): runs when the box changes (passed to the <input>)
-     Radio.label: the text beside the circle; without it there is no visible text
-     Radio.description: a second line under the label
-     Radio.className: more classes on the row
-     RadioGroup.label: the legend of the group
-     RadioGroup.name: the radio name (default a generated one)
-     RadioGroup.value: the selected option value
-     RadioGroup.onChange(value): runs with the chosen option value
-     RadioGroup.options: the choices: [{ value, label, description, disabled }]
-     RadioGroup.layout: "column" (default) | "row"
-     RadioGroup.className: more classes on the <fieldset>
-     ChoiceList.legend: the legend of the list
-     ChoiceList.name: the radio name (default a generated one)
-     ChoiceList.value: the selected option value
-     ChoiceList.onChange(value): runs with the chosen option value
-     ChoiceList.options: the choices, shown as cards with descriptions: [{ value, label, description, hidden }]
-     ChoiceList.className: more classes on the <fieldset>
-     Switch.label: the text beside the switch
-     Switch.labelHidden: true hides the label and uses it as the accessible name (default false)
-     Switch.className: more classes on the row
-     Switch.checked: whether the switch is on (passed to the <input>)
-     Switch.onChange(event): runs when the switch changes (passed to the <input>)
-   Behavior:
-     The whole row (control and label) is the target, at least the inline-action height.
-     A Checkbox without label or description (a row's selection box) still has a 24px target (44px with touch): it extends
-       invisibly past the 16px box (Platforms Standard 3.1).
-     Switch is a checkbox with role="switch".
-     The selected ChoiceList card shows the selected state.
-   Notes:
-     The Switch track is 36 × 20px and the knob 16px, centered: (track − knob) / 2.
-     Checkbox, Radio and Switch pass other props (checked, onChange, name, value, disabled, …) and their ref to the <input>.
-     RadioGroup and ChoiceList pass other props to the <fieldset>.
-*/
-const Checkbox = exports.Checkbox = /*#__PURE__*/_react.default.forwardRef(function Checkbox({
-  label,
-  description,
-  indeterminate = false,
-  className,
-  ...rest
-}, ref) {
-  const inner = _react.default.useRef(null);
-  _react.default.useImperativeHandle(ref, () => inner.current);
-  _react.default.useEffect(() => {
-    if (inner.current) inner.current.indeterminate = indeterminate;
-  }, [indeterminate]);
-  return /*#__PURE__*/_react.default.createElement("label", {
-    className: (0, _cx.cx)('plx-check', className)
-  }, /*#__PURE__*/_react.default.createElement("input", _extends({
-    ref: inner,
-    type: "checkbox",
-    className: "plx-check__input"
-  }, rest)), label || description ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-check__text"
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-check__label"
-  }, label), description ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-check__description"
-  }, description) : null) : null);
-});
-const Radio = exports.Radio = /*#__PURE__*/_react.default.forwardRef(function Radio({
-  label,
-  description,
-  className,
-  ...rest
-}, ref) {
-  return /*#__PURE__*/_react.default.createElement("label", {
-    className: (0, _cx.cx)('plx-check', className)
-  }, /*#__PURE__*/_react.default.createElement("input", _extends({
-    ref: ref,
-    type: "radio",
-    className: "plx-check__input"
-  }, rest)), label ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-check__text"
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-check__label"
-  }, label), description ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-check__description"
-  }, description) : null) : null);
-});
-function RadioGroup({
-  label,
-  name,
-  value,
-  onChange,
-  options,
-  layout = 'column',
-  className,
-  ...rest
-}) {
-  const auto = 'plx-r' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
-  return /*#__PURE__*/_react.default.createElement("fieldset", _extends({
-    className: (0, _cx.cx)('plx-radio-group', 'plx-radio-group--' + layout, className)
-  }, rest), label ? /*#__PURE__*/_react.default.createElement("legend", {
-    className: "plx-radio-group__legend"
-  }, label) : null, options.map(o => /*#__PURE__*/_react.default.createElement(Radio, {
-    key: o.value,
-    name: name || auto,
-    value: o.value,
-    label: o.label,
-    description: o.description,
-    checked: o.value === value,
-    onChange: () => onChange(o.value),
-    disabled: o.disabled
-  })));
-}
-function ChoiceList({
-  legend,
-  name,
-  value,
-  onChange,
-  options,
-  className,
-  ...rest
-}) {
-  const auto = 'plx-c' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
-  return /*#__PURE__*/_react.default.createElement("fieldset", _extends({
-    className: (0, _cx.cx)('plx-choice-list', className)
-  }, rest), legend ? /*#__PURE__*/_react.default.createElement("legend", {
-    className: "plx-choice-list__legend"
-  }, legend) : null, options.map(o => /*#__PURE__*/_react.default.createElement("label", {
-    key: o.value,
-    className: (0, _cx.cx)('plx-choice', o.value === value && 'is-selected'),
-    hidden: o.hidden || undefined
-  }, /*#__PURE__*/_react.default.createElement("input", {
-    type: "radio",
-    className: "plx-choice__input",
-    name: name || auto,
-    value: o.value,
-    checked: o.value === value,
-    onChange: () => onChange(o.value)
-  }), /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-choice__text"
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-choice__label"
-  }, o.label), o.description ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-choice__description"
-  }, o.description) : null))));
-}
-const Switch = exports.Switch = /*#__PURE__*/_react.default.forwardRef(function Switch({
-  label,
-  labelHidden = false,
-  className,
-  ...rest
-}, ref) {
-  return /*#__PURE__*/_react.default.createElement("label", {
-    className: (0, _cx.cx)('plx-switch', className)
-  }, /*#__PURE__*/_react.default.createElement("input", _extends({
-    ref: ref,
-    type: "checkbox",
-    role: "switch",
-    className: "plx-switch__input",
-    "aria-label": labelHidden ? label : undefined
-  }, rest)), /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-switch__track",
-    "aria-hidden": "true"
-  }), label && !labelHidden ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-switch__label"
-  }, label) : null);
-});
-  } },
   "platform/components/Combobox/Combobox.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -23845,463 +26566,6 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
   }, emptyText)) : null);
 });
   } },
-  "platform/components/SearchField/SearchField.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.SearchField = void 0;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _announce = require("../../utils/announce.jsx");
-var _format = require("../../utils/format.js");
-var _Button = require("../Button/Button.jsx");
-var _Icon = require("../Icon/Icon.jsx");
-var _Kbd = require("../Kbd/Kbd.jsx");
-var _Loading = require("../Loading/Loading.jsx");
-var _Tooltip = require("../Tooltip/Tooltip.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · SearchField
-   Summary: A search input with a search icon, an optional clear button and an optional shortcut hint; optionally a list
-     under it of suggestions while people type, and of their recent searches while it is empty.
-   Usage:
-     <SearchField value={query} onChange={(e) => setQuery(e.target.value)} onClear={() => setQuery('')} shortcut="Ctrl K" />
-     const history = useSearchHistory('assets');
-     <SearchField value={q} onChange={(e) => setQ(e.target.value)} onClear={() => setQ('')}
-       suggestions={matches(q)} recent={history.items} onSelect={(item) => open(item)}
-       onSubmitSearch={(text) => { history.add(text); search(text); }} onRemoveRecent={history.remove} onClearRecent={history.clear} />
-   Props:
-     size: "sm" explicitly selects the existing toolbar control height; omitted or "md" preserves today’s search height.
-     value: the search text
-     onChange(event): runs when the text changes
-     onClear(): runs from the clear button; without it there is no clear button
-     placeholder: the placeholder text; default "Search"
-     label: the accessible name; default "Search"
-     shortcut: a keyboard shortcut hint ("Ctrl K")
-     loading: shows a spinner in place of the search icon; default false
-     onAccent: the look for the blue header; default false
-     suggestions: what to offer while there is text, already matched to it by the caller: strings, or
-       [{ value, label, description }] (label defaults to value); the part of each label that matches the text is in bold
-     recent: the person's recent searches (strings, newest first: useSearchHistory), offered while the field is empty
-     onSelect(item): runs when a suggestion or a recent search is chosen; item is { value, label, kind: 'suggestion' |
-       'recent' }; without it a choice puts its text in the field (onChange) and searches (onSubmitSearch)
-     onSubmitSearch(text): runs on Enter when no suggestion is active (the search itself)
-     onRemoveRecent(text): removes one recent search: its row's remove button (an "×" named "Remove <term>"), or Delete
-       on it; onClearRecent(): removes them all (the Clear button in the list's heading); without them the recent
-       searches cannot be removed here
-     strings: the list's words: { suggestions: 'Suggestions', recent: 'Recent searches', clearRecent: 'Clear recent searches',
-       clear: 'Clear search', results: '{n} suggestions', removed: '{query} removed from recent searches', remove: 'Remove {query}' }
-     width: "auto" (default: as wide as its container gives it) | "xs" | "sm" | "md" | "lg" (the field-width scale, P-52) | "bar" (the command bar's search: one fixed width, 240px,
-       never squeezed; owner, 2026-10-14) | "fill" (the whole width: the find field inside a panel, a dialog or a menu)
-     collapsed: the narrow bar's search (owner, 2026-10-14): an icon-only search button in the field's place (tinted while
-       there is text) that opens the field across the bar, over its other controls; default false
-     open, onOpenChange(open): (collapsed) whether the field is open across the bar, kept by the caller (CommandBar keeps
-       it, so the bar holds its width step while the field is open)
-     className: more classes on the field
-     ...rest: other attributes go on the input (inputMode, enterKeyHint, autoComplete… override the search defaults)
-   Behavior:
-     The clear button shows only while there is text.
-     The shortcut hint shows only while the field is empty.
-     It is type="search" with inputMode "search" and enterKeyHint "search": a touch keyboard shows a Search key.
-     With suggestions or recent searches it is a combobox (the ARIA pattern): the list opens on focus and on typing, under
-       the field; Arrow Down and Up move through it (the text stays the person's own), Enter chooses, Escape closes the
-       list (a second Escape clears the text, as in the browser); a click chooses; a click outside closes it. The number
-       of suggestions is announced politely after typing pauses. Delete on a recent search removes it (onRemoveRecent).
-     Recent searches with onRemoveRecent (owner, 2026-10-14): the WAI-ARIA "combobox with grid popup" pattern. The field
-       has aria-haspopup="grid"; the list is a grid named by its heading, one row per search with two cells: the term and
-       its remove button (an icon-only ghost button, "Remove <term>"). The focus stays in the field (aria-activedescendant
-       names the active cell): Arrow Down and Up move between rows (in the same cell), Arrow Right moves into the remove
-       cell and Arrow Left back to the term (mirrored right to left); Enter on the term searches it, Enter on the remove
-       cell removes it, and Delete removes the active row from either cell. The removal is announced politely. A click on
-       the term searches, a click on the button removes. Without onRemoveRecent, and for suggestions, the list stays a
-       listbox.
-     Collapsed: the button opens the field across the nearest positioned box (the command bar's row), focused, with × to
-       clear once there is text; Escape closes it and the focus returns to the button; leaving it empty closes it too.
-   Notes:
-     It has the toolbar control height. The list is a menu surface (border only, no shadow); the caller matches,
-     ranks and limits the suggestions (about eight) and the recent searches (about five).
-*/
-const STRINGS = {
-  suggestions: 'Suggestions',
-  recent: 'Recent searches',
-  clearRecent: 'Clear recent searches',
-  clear: 'Clear search',
-  results: '{n} suggestions',
-  removed: '{query} removed from recent searches',
-  remove: 'Remove {query}'
-};
-const asItem = kind => x => typeof x === 'string' ? {
-  value: x,
-  label: x,
-  kind
-} : Object.assign({
-  label: x.value
-}, x, {
-  kind
-});
-
-// the label with the part that matches the text in bold (the first match, ignoring case)
-function marked(label, text) {
-  const s = String(label),
-    q = String(text || '').trim();
-  const at = q ? s.toLowerCase().indexOf(q.toLowerCase()) : -1;
-  if (at < 0) return s;
-  return [s.slice(0, at), /*#__PURE__*/_react.default.createElement("strong", {
-    key: "m",
-    className: "plx-search__match"
-  }, s.slice(at, at + q.length)), s.slice(at + q.length)];
-}
-
-// the field itself (width "auto", "bar" or "fill")
-const SearchInput = /*#__PURE__*/_react.default.forwardRef(function SearchInput({
-  value,
-  onChange,
-  onClear,
-  placeholder = 'Search',
-  label = 'Search',
-  shortcut,
-  loading = false,
-  onAccent = false,
-  suggestions,
-  recent,
-  onSelect,
-  onSubmitSearch,
-  onRemoveRecent,
-  onClearRecent,
-  strings,
-  className,
-  onKeyDown,
-  onFocus,
-  width = 'auto',
-  size,
-  ...rest
-}, ref) {
-  const t = Object.assign({}, STRINGS, strings);
-  const auto = 'plx-sf' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
-  const listId = auto + '-list';
-  const wrap = _react.default.useRef(null),
-    input = _react.default.useRef(null),
-    list = _react.default.useRef(null);
-  _react.default.useImperativeHandle(ref, () => input.current);
-  const hasList = !!(suggestions || recent);
-  const text = value == null ? '' : String(value);
-  const showRecent = !text;
-  const items = showRecent ? (recent || []).map(asItem('recent')) : (suggestions || []).map(asItem('suggestion'));
-  const [open, setOpen] = _react.default.useState(false);
-  const [active, setActive] = _react.default.useState(-1);
-  const [cell, setCell] = _react.default.useState(0); // the grid's active cell in its row: 0 the term, 1 the remove button
-  const shown = hasList && open && items.length > 0;
-  // recent searches that can be removed one by one: the combobox with grid popup (WAI-ARIA APG)
-  const grid = showRecent && !!onRemoveRecent;
-  _react.default.useEffect(() => {
-    setActive(-1);
-    setCell(0);
-  }, [text, showRecent]);
-  _react.default.useEffect(() => {
-    if (!open) return undefined;
-    const off = e => {
-      if (wrap.current && !wrap.current.contains(e.target)) setOpen(false);
-    };
-    document.addEventListener('mousedown', off);
-    return () => document.removeEventListener('mousedown', off);
-  }, [open]);
-  // the number of suggestions, once typing pauses (announce waits for the pause)
-  _react.default.useEffect(() => {
-    if (shown && !showRecent) (0, _announce.announce)(t.results.replace('{n}', (0, _format.formatNumber)(items.length)));
-  }, [shown, showRecent, items.length, t.results]);
-  // the active option stays in view in a long list
-  _react.default.useEffect(() => {
-    const el = active >= 0 && list.current ? list.current.querySelector('#' + auto + '-r' + active + ', #' + auto + '-o' + active) : null;
-    if (el && el.scrollIntoView) el.scrollIntoView({
-      block: 'nearest'
-    });
-  }, [active, auto]);
-  const setText = v => {
-    if (onChange && input.current) onChange({
-      target: Object.assign(input.current, {
-        value: v
-      }),
-      currentTarget: input.current
-    });
-  };
-  const choose = item => {
-    setOpen(false);
-    if (onSelect) onSelect(item);else {
-      setText(item.value);
-      if (onSubmitSearch) onSubmitSearch(item.value);
-    }
-  };
-  // one recent search removed (its button, Delete, or Enter on its remove cell): the active row stays in place
-  const removeRecent = i => {
-    const it = items[i];
-    if (!it || !onRemoveRecent) return;
-    onRemoveRecent(it.value);
-    if (active >= 0) setActive(a => Math.min(a, items.length - 2));
-    if (items.length <= 1) setCell(0);
-    (0, _announce.announce)(t.removed.replace('{query}', it.value));
-  };
-  const keys = e => {
-    if (onKeyDown) onKeyDown(e);
-    if (e.defaultPrevented || !hasList) {
-      if (e.key === 'Enter' && onSubmitSearch && !e.defaultPrevented) onSubmitSearch(text);
-      return;
-    }
-    if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      if (!open) setOpen(true);else if (items.length) setActive(a => (a + 1) % items.length);
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      if (!open) setOpen(true);else if (items.length) setActive(a => a <= 0 ? items.length - 1 : a - 1);
-    } else if (grid && shown && active >= 0 && (e.key === 'ArrowRight' || e.key === 'ArrowLeft')) {
-      // the grid's cells in reading order: toward the end is the remove cell (Arrow Left in a right-to-left page)
-      const rtl = !!wrap.current && getComputedStyle(wrap.current).direction === 'rtl';
-      e.preventDefault();
-      setCell(e.key === 'ArrowRight' !== rtl ? 1 : 0);
-    } else if (e.key === 'Enter') {
-      if (shown && items[active] && grid && cell === 1) {
-        e.preventDefault();
-        removeRecent(active);
-      } else if (shown && items[active]) {
-        e.preventDefault();
-        choose(items[active]);
-      } else {
-        setOpen(false);
-        if (onSubmitSearch) onSubmitSearch(text);
-      }
-    } else if (e.key === 'Escape') {
-      if (shown) {
-        e.preventDefault();
-        setOpen(false);
-      }
-    } else if (e.key === 'Delete' && shown && showRecent && items[active] && onRemoveRecent) {
-      e.preventDefault();
-      removeRecent(active);
-    } else if (!open && e.key.length === 1) setOpen(true);
-  };
-  const optId = i => auto + '-o' + i;
-  const cellId = (i, c) => auto + '-o' + i + (c ? '-x' : '');
-  const comboProps = hasList ? {
-    role: 'combobox',
-    'aria-expanded': shown,
-    'aria-controls': listId,
-    'aria-autocomplete': 'list',
-    'aria-haspopup': grid ? 'grid' : undefined,
-    'aria-activedescendant': shown && active >= 0 ? grid ? cellId(active, cell) : optId(active) : undefined
-  } : {};
-  return /*#__PURE__*/_react.default.createElement("div", {
-    ref: wrap,
-    className: (0, _cx.cx)('plx-search', size === 'sm' && 'plx-search--size-sm', width === 'bar' && 'plx-search--bar', width === 'fill' && 'plx-search--fill', ['xs', 'sm', 'md', 'lg'].includes(width) && 'plx-search--width-' + width, onAccent && 'plx-search--on-accent', shown && 'is-open', className),
-    role: "search"
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-search__icon",
-    "aria-hidden": "true"
-  }, loading ? /*#__PURE__*/_react.default.createElement(_Loading.Spinner, {
-    size: "sm",
-    label: "Searching"
-  }) : /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: "search"
-  })), /*#__PURE__*/_react.default.createElement("input", _extends({
-    ref: input,
-    size: size === 'sm' || size === 'md' ? undefined : size,
-    type: "search",
-    inputMode: "search",
-    enterKeyHint: "search",
-    autoComplete: "off",
-    className: "plx-search__input",
-    "aria-label": label,
-    placeholder: placeholder,
-    value: value,
-    onChange: e => {
-      if (hasList) setOpen(true);
-      if (onChange) onChange(e);
-    },
-    onKeyDown: keys,
-    onFocus: e => {
-      if (hasList) setOpen(true);
-      if (onFocus) onFocus(e);
-    }
-  }, comboProps, rest)), onClear && value ? /*#__PURE__*/_react.default.createElement("button", {
-    type: "button",
-    className: "plx-search__clear",
-    "aria-label": t.clear,
-    onClick: onClear
-  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: "close"
-  })) : null, shortcut && !value ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-search__kbd"
-  }, /*#__PURE__*/_react.default.createElement(_Kbd.Kbd, {
-    onAccent: onAccent
-  }, shortcut)) : null, hasList ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-search__popup",
-    hidden: !shown
-  }, showRecent ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-search__popup-head"
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-search__popup-title",
-    id: listId + '-t'
-  }, t.recent), onClearRecent ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    variant: "ghost",
-    size: "2xs",
-    className: "plx-search__popup-action",
-    onMouseDown: e => e.preventDefault(),
-    onClick: () => {
-      onClearRecent();
-      setOpen(false);
-      if (input.current) input.current.focus();
-    }
-  }, t.clearRecent) : null) : null, grid ? /*#__PURE__*/_react.default.createElement("div", {
-    ref: list,
-    id: listId,
-    role: "grid",
-    className: "plx-search__list plx-search__grid",
-    "aria-labelledby": listId + '-t'
-  }, items.map((it, i) => /*#__PURE__*/_react.default.createElement("div", {
-    key: it.kind + ':' + it.value,
-    id: auto + '-r' + i,
-    role: "row",
-    className: (0, _cx.cx)('plx-search__option', 'plx-search__option--recent', 'plx-search__row', i === active && 'is-active'),
-    onMouseDown: e => e.preventDefault(),
-    onMouseEnter: () => setActive(i)
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    id: cellId(i, 0),
-    role: "gridcell",
-    "aria-selected": i === active && cell === 0,
-    className: "plx-search__cell",
-    onClick: () => choose(it)
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-search__option-icon",
-    "aria-hidden": "true"
-  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: "clock"
-  })), /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-search__option-text"
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-search__option-label"
-  }, it.label))), /*#__PURE__*/_react.default.createElement("span", {
-    id: cellId(i, 1),
-    role: "gridcell",
-    "aria-selected": i === active && cell === 1,
-    className: "plx-search__remove-cell"
-  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    variant: "ghost",
-    size: "xs",
-    iconOnly: true,
-    icon: "close",
-    tabIndex: -1,
-    label: t.remove.replace('{query}', it.value),
-    className: (0, _cx.cx)('plx-search__remove', i === active && cell === 1 && 'is-focus-visible'),
-    onMouseDown: e => e.preventDefault(),
-    onClick: e => {
-      e.stopPropagation();
-      removeRecent(i);
-      if (input.current) input.current.focus();
-    }
-  }))))) : /*#__PURE__*/_react.default.createElement("ul", {
-    ref: list,
-    id: listId,
-    role: "listbox",
-    className: "plx-search__list",
-    "aria-label": showRecent ? undefined : t.suggestions,
-    "aria-labelledby": showRecent ? listId + '-t' : undefined
-  }, items.map((it, i) => /*#__PURE__*/_react.default.createElement("li", {
-    key: it.kind + ':' + it.value,
-    id: optId(i),
-    role: "option",
-    "aria-selected": i === active,
-    className: (0, _cx.cx)('plx-search__option', it.kind === 'recent' && 'plx-search__option--recent', i === active && 'is-active'),
-    onMouseDown: e => e.preventDefault(),
-    onClick: () => choose(it),
-    onMouseEnter: () => setActive(i)
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-search__option-icon",
-    "aria-hidden": "true"
-  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: it.kind === 'recent' ? 'clock' : 'search'
-  })), /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-search__option-text"
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-search__option-label"
-  }, it.kind === 'recent' ? it.label : marked(it.label, text)), it.description ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-search__option-description"
-  }, it.description) : null))))) : null);
-});
-
-// the narrow bar's search (owner, 2026-10-14): the search icon in the field's place; it opens the field across the bar
-function CollapsedSearch({
-  value,
-  label = 'Search',
-  onKeyDown,
-  onBlur,
-  className,
-  open: openProp,
-  onOpenChange,
-  ...rest
-}, ref) {
-  const [own, setOwn] = _react.default.useState(false);
-  const open = openProp === undefined ? own : openProp;
-  const setOpen = v => {
-    setOwn(v);
-    if (onOpenChange) onOpenChange(v);
-  };
-  const field = _react.default.useRef(null),
-    button = _react.default.useRef(null);
-  _react.default.useImperativeHandle(ref, () => open ? field.current : button.current);
-  _react.default.useEffect(() => {
-    if (open && field.current) field.current.focus();
-  }, [open]);
-  const close = refocus => {
-    setOpen(false);
-    if (refocus) setTimeout(() => {
-      if (button.current) button.current.focus();
-    }, 0);
-  };
-  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
-    content: label
-  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    ref: button,
-    size: "sm",
-    variant: "ghost",
-    icon: "search",
-    iconOnly: true,
-    label: label,
-    selected: !!value,
-    "aria-expanded": open,
-    className: (0, _cx.cx)('plx-search__toggle', className),
-    onClick: () => setOpen(true)
-  })), open ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-search__over"
-  }, /*#__PURE__*/_react.default.createElement(SearchInput, _extends({
-    ref: field,
-    value: value,
-    label: label,
-    width: "fill"
-  }, rest, {
-    onKeyDown: e => {
-      if (onKeyDown) onKeyDown(e);
-      if (e.key === 'Escape' && !e.defaultPrevented && e.currentTarget.getAttribute('aria-expanded') !== 'true') {
-        e.preventDefault();
-        close(true);
-      }
-    },
-    onBlur: e => {
-      if (onBlur) onBlur(e);
-      if (!e.currentTarget.value) close(false);
-    }
-  }))) : null);
-}
-const Collapsed = /*#__PURE__*/_react.default.forwardRef(CollapsedSearch);
-const SearchField = exports.SearchField = /*#__PURE__*/_react.default.forwardRef(function SearchField({
-  collapsed = false,
-  ...props
-}, ref) {
-  return collapsed ? /*#__PURE__*/_react.default.createElement(Collapsed, _extends({
-    ref: ref
-  }, props)) : /*#__PURE__*/_react.default.createElement(SearchInput, _extends({
-    ref: ref
-  }, props));
-});
-  } },
   "platform/components/Slider/Slider.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -24526,186 +26790,6 @@ function Slider({
     }
   }, m.label)))) : null);
 }
-  } },
-  "platform/utils/roving.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.roveTo = roveTo;
-exports.useRovingFocus = useRovingFocus;
-var _react = _interopRequireDefault(require("react"));
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · Roving focus (platform/utils/roving.js)
-   Summary: One Tab stop for a group of controls (a toolbar, a rail): only the current control is in the Tab order
-     (tabindex 0), the others are reached with the arrow keys (tabindex -1). The current control is the one last focused,
-     else the first. This is the WAI-ARIA toolbar pattern: Tab enters and leaves the group in one step.
-   Usage:
-     const ref = React.useRef(null);
-     useRovingFocus(ref, () => items());          // after every render
-     <div ref={ref} onFocus={(e) => roveTo(ref, items(), e.target)}>
-   Props:
-     useRovingFocus(ref, getItems): keeps exactly one item at tabindex 0 after every render
-     roveTo(ref, items, el): makes el the current item (call when focus enters an item)
-*/
-
-function apply(items, current) {
-  items.forEach(el => {
-    const on = el === current;
-    if (el.tabIndex !== (on ? 0 : -1)) el.tabIndex = on ? 0 : -1;
-    el.setAttribute('data-plx-roving', on ? 'current' : '');
-  });
-}
-function roveTo(ref, items, el) {
-  if (!ref.current || items.indexOf(el) < 0) return;
-  apply(items, el);
-}
-function useRovingFocus(ref, getItems) {
-  _react.default.useEffect(() => {
-    if (!ref.current) return;
-    const items = getItems();
-    if (!items.length) return;
-    const current = items.filter(el => el.getAttribute('data-plx-roving') === 'current')[0] || items[0];
-    apply(items, current);
-  });
-}
-  } },
-  "platform/components/Toolbar/Toolbar.jsx": { deps: {"react":null,"../../utils/roving.js":"platform/utils/roving.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Toolbar = Toolbar;
-var _react = _interopRequireDefault(require("react"));
-var _roving = require("../../utils/roving.js");
-var _direction = require("../../utils/direction.js");
-var _cx = require("../../utils/cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Toolbar, Toolbar.Group, Toolbar.Spacer
-   Summary: One row of controls (role="toolbar").
-   Usage:
-     <Toolbar label="Asset actions">
-       <Toolbar.Group>…</Toolbar.Group>
-       <Toolbar.Spacer/>
-       <Toolbar.Group>…</Toolbar.Group>
-     </Toolbar>
-   Props:
-     Toolbar.label: its accessible name
-     Toolbar.variant: "default" (rows wrap; gaps follow the density) | "bar" (one row that never wraps, fixed gaps: CommandBar)
-     Toolbar.onKeyDown(event): runs first; preventDefault stops the toolbar's own key handling
-     Toolbar.className: more classes on the toolbar
-     Toolbar.children: controls, groups and spacers. Stack and Inline layout wrappers (also nested inside Group) are transparent: toolbar spacing applies to their controls.
-       Keep semantic composites together; do not wrap popup internals in a layout wrapper intended to be flattened.
-     Toolbar.Group.className: more classes on the group
-     Toolbar.Group.children: the controls in the group
-     Toolbar.Spacer: pushes what follows to the end of the row; no props
-   Behavior:
-     One Tab stop: Tab enters and leaves the toolbar; the current control (the one last used) is in the Tab order.
-     Arrow keys move between its controls in reading order (wrapping; reversed in right to left); Home and End jump to the
-     first and last.
-     Tab leaves the toolbar.
-     Text fields, text areas, selects and editable regions keep their own arrow and Home/End behavior.
-     Descendant controls are discovered through wrappers; nested toolbars retain their own focus scope.
-     In a radio group, only the checked option is a stop.
-   Notes:
-     Every control in it takes the toolbar control height.
-     Other props reach the toolbar or group element.
-*/
-const POPUP = '[role="dialog"],[role="alertdialog"],[role="menu"],[role="listbox"],[role="tree"],[role="grid"],[role="tablist"]';
-const FOCUSABLE = 'button,input,textarea,select,a[href],[tabindex],[contenteditable="true"]';
-function Toolbar({
-  label,
-  variant = 'default',
-  className,
-  children,
-  onKeyDown,
-  onFocus,
-  ...rest
-}) {
-  const ref = _react.default.useRef(null);
-  const itemsOf = () => ref.current ? Array.prototype.filter.call(ref.current.querySelectorAll(FOCUSABLE), el => el.closest('[role="toolbar"]') === ref.current && (!el.closest(POPUP) || !ref.current.contains(el.closest(POPUP))) && el.getClientRects().length && getComputedStyle(el).visibility === 'visible' && !el.matches(':disabled,[aria-disabled="true"]') && !el.closest('[inert],[aria-hidden="true"]') && !el.closest('[role="radiogroup"] [aria-checked="false"]') && (el.matches('button,input,textarea,select,a[href],[contenteditable="true"]') || el.tabIndex >= 0 || el.hasAttribute('data-plx-roving'))) : [];
-  _react.default.useEffect(() => {
-    const root = ref.current;
-    if (!root) return;
-    const refresh = () => {
-      root.querySelectorAll('[data-plx-toolbar-layout]').forEach(el => {
-        if (el.closest('[role="toolbar"]') === root) el.removeAttribute('data-plx-toolbar-layout');
-      });
-      const visit = parent => Array.from(parent.children).forEach(el => {
-        if (el.matches('.plx-stack,.plx-inline') && getComputedStyle(el).display !== 'none') {
-          el.setAttribute('data-plx-toolbar-layout', '');
-          visit(el);
-        } else if (el.classList.contains('plx-toolbar__group')) visit(el);
-      });
-      visit(root);
-      const items = itemsOf();
-      (0, _roving.roveTo)(ref, items, items.find(el => el.getAttribute('data-plx-roving') === 'current') || items[0]);
-    };
-    refresh();
-    const observer = new MutationObserver(refresh);
-    observer.observe(root, {
-      childList: true,
-      subtree: true,
-      attributes: true,
-      attributeFilter: ['disabled', 'hidden', 'inert', 'aria-hidden', 'aria-disabled', 'class']
-    });
-    const resize = typeof ResizeObserver === 'function' ? new ResizeObserver(refresh) : null;
-    if (resize) resize.observe(root);
-    window.addEventListener('resize', refresh);
-    return () => {
-      observer.disconnect();
-      if (resize) resize.disconnect();
-      window.removeEventListener('resize', refresh);
-    };
-  }, []);
-  // one Tab stop: the current control is in the Tab order, the others are reached with the arrows (batch 213)
-  (0, _roving.useRovingFocus)(ref, itemsOf);
-  const onKey = e => {
-    if (onKeyDown) onKeyDown(e);
-    if (e.defaultPrevented || ['ArrowLeft', 'ArrowRight', 'Home', 'End'].indexOf(e.key) < 0) return;
-    if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable) return; // preserve the control's editing keys
-    if (e.target.closest(POPUP) && ref.current.contains(e.target.closest(POPUP))) return; // popup/composite controls keep their own keys
-    if (e.target.closest('[role="toolbar"]') !== ref.current) return; // a nested toolbar owns its arrows
-    const items = itemsOf();
-    const i = items.indexOf(document.activeElement);
-    if (i < 0) return;
-    const step = (0, _direction.arrowStep)(e, ref.current, {
-      vertical: false
-    }); // in reading order: right to left reverses Left and Right
-    const n = e.key === 'Home' ? 0 : e.key === 'End' ? items.length - 1 : (i + step + items.length) % items.length;
-    e.preventDefault();
-    items[n].focus();
-  };
-  const onFocusIn = e => {
-    if (onFocus) onFocus(e);
-    (0, _roving.roveTo)(ref, itemsOf(), e.target);
-  };
-  return /*#__PURE__*/_react.default.createElement("div", _extends({
-    ref: ref,
-    role: "toolbar",
-    "aria-label": label,
-    className: (0, _cx.cx)('plx-toolbar', variant === 'bar' && 'plx-toolbar--bar', className),
-    onKeyDown: onKey,
-    onFocus: onFocusIn
-  }, rest), children);
-}
-Toolbar.Group = function ToolbarGroup({
-  className,
-  children,
-  ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement("div", _extends({
-    className: (0, _cx.cx)('plx-toolbar__group', className)
-  }, rest), children);
-};
-Toolbar.Spacer = function ToolbarSpacer() {
-  return /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-toolbar__spacer",
-    "aria-hidden": "true"
-  });
-};
   } },
   "platform/components/Toast/Toast.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../utils/tokenTime.js":"platform/utils/tokenTime.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
@@ -25425,1668 +27509,6 @@ ActivityList.Item = function ActivityListItem({
   }, actions) : null);
 };
   } },
-  "platform/utils/barFit.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.useBarFit = useBarFit;
-var _react = _interopRequireDefault(require("react"));
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · barFit (platform/utils/barFit.js). Internal; not part of the public API.
-   The button rule of a command bar, measured (owner, 2026-10-14): useBarFit(ref, key, max, min, rows, hold) returns the bar's step.
-   Step 0 draws every control with its icon and label; each later step makes the bar narrower (icons only with tooltips,
-   the search as its icon, then one more action into More per step, from the end, Delete last: the bar decides what a
-   step means). The rows measured are the elements in ref that match rows (default [data-plx-bar-row]): a row fits while every visible child of
-   it lies inside it on one line. The step starts again from `min` whenever the bar's width or `key` (anything that changes
-   the controls' widths: labels, a selection) changes, unless hold (the bar's search is open across it), and goes up one step at a time, before the browser paints,
-   until every row fits or `max` is reached. Nothing is written to the page: the bar draws each step from its classes. */
-
-// a row is too narrow when a child of it ends past its edge (either edge: right to left mirrors it) or starts on a
-// second line. Children are read, not scrollWidth: a tooltip's hidden bubble at the end may reach past the edge
-const over = row => {
-  const kids = Array.prototype.filter.call(row.children, k => k.offsetParent !== null && k.offsetWidth > 0);
-  if (!kids.length) return false;
-  const box = row.getBoundingClientRect();
-  const top = Math.min.apply(null, kids.map(k => k.offsetTop));
-  const tall = Math.max.apply(null, kids.map(k => k.offsetHeight));
-  return kids.some(k => {
-    const r = k.getBoundingClientRect();
-    return r.right > box.right + 1 || r.left < box.left - 1 || k.offsetTop >= top + tall;
-  });
-};
-function useBarFit(ref, key, max, min = 0, rows = '[data-plx-bar-row]', hold = false) {
-  const [step, setStep] = _react.default.useState(min);
-  const [width, setWidth] = _react.default.useState(0);
-  const measured = _react.default.useRef(null);
-  _react.default.useLayoutEffect(() => {
-    if (!hold) setStep(min);
-  }, [width, key, min, hold]); // eslint-disable-line react-hooks/exhaustive-deps
-  _react.default.useLayoutEffect(() => {
-    const el = ref.current;
-    if (!el || typeof ResizeObserver === 'undefined') return undefined;
-    const ro = new ResizeObserver(() => setWidth(el.clientWidth));
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, [ref]);
-  _react.default.useLayoutEffect(() => {
-    const el = ref.current;
-    if (!el || step >= max || hold) return;
-    // Text covers count/custom-slot changes not represented by the caller's key. Reading it does not force layout.
-    // Keep this check after the commit: a render-time dependency would still see the previous DOM text.
-    const signature = [el, width, key, max, min, rows, step, el.textContent];
-    if (measured.current && signature.every((value, i) => value === measured.current[i])) return;
-    measured.current = signature;
-    if (Array.prototype.some.call(el.querySelectorAll(rows), over)) setStep(step + 1);
-  });
-  return Math.max(min, Math.min(step, max));
-}
-  } },
-  "platform/patterns/CommandBar/BarActions.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../../components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/layer.js":"platform/utils/layer.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.BarActions = BarActions;
-exports.foldOrder = void 0;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _Button = require("../../components/Button/Button.jsx");
-var _Menu = require("../../components/Menu/Menu.jsx");
-var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
-var _Popover = require("../../components/Popover/Popover.jsx");
-var _Loading = require("../../components/Loading/Loading.jsx");
-var _layer = require("../../utils/layer.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · BarActions
-   (platform/patterns/CommandBar; internal, not part of the public API: the commands of a bar, shared by CommandBar, the
-   page's actions, and BulkActions, the selection's actions.)
-   Usage:
-     <BarActions actions={actions} iconOnly={step >= 1} fold={Math.max(0, step - 2)} moreLabel="More actions" dangerClass="plx-command-bar__danger" />
-   Summary: A row of commands drawn by the button rule (owner, 2026-10-14): ghost buttons with their icon and label; icons
-     only (each with its tooltip) when the bar does not fit; then the commands fold into "More actions" (⋮) one at a time
-     from the end, the danger commands last. More shows only when something has folded.
-   Props:
-     actions: [{ id, label, icon, onSelect, items, danger, disabled, why, primary, single, toggle, pressed, choices, value, onChange, loading, tooltip, panel }]
-     actions[].toggle: an on/off command (owner, 2026-10-15, the Fluent model): a pressed button (pressed true or false);
-       onSelect(next) runs with the new state; folded into More it is a checked menu item
-     actions[].choices: a command that picks one of [{ value, label, icon }]: a menu button showing the current choice
-       (named "label: choice"), onChange(value) runs on a pick; folded into More it is a submenu of radio items
-     actions[].items: a menu: Menu children (MenuItem…) or [{ id, label, icon, danger, disabled, single, onSelect }]
-     actions[].why: the tooltip of a disabled command, saying why (owner, 2026-10-14: commands are never hidden by state,
-       only disabled, with a why-tooltip)
-     actions[].loading: uses the existing Button spinner and busy state; folded commands are busy and cannot be chosen
-     actions[].tooltip: additional help on hover and keyboard focus, with labels or icons; disabled why takes precedence
-     actions[].panel({ close }): returns a small form in the existing Popover; Escape returns focus to the action
-     iconOnly: draw the commands as icons with tooltips
-     fold: how many commands are in More (from the end: the others first, the danger commands last)
-     off(action): whether a command (or a menu item) is disabled now; default action.disabled
-     why(action): the tooltip of a disabled command; default action.why
-     moreLabel: the More button's name ("More actions")
-     dangerClass: the class that draws a ghost button in the danger color
-     extra: more menu nodes for More, after the folded commands (the bar's folded quick filters); More shows for them too
-   Notes:
-     The danger commands come last, after a divider. A primary command (the page's one, when it marks one) stays filled
-     and keeps its label. */
-// Composite triggers do not all forward arbitrary props. Keep Tooltip's description on the real control.
-function HintTarget({
-  children,
-  'aria-describedby': description
-}) {
-  const wrap = _react.default.useRef(null);
-  _react.default.useLayoutEffect(() => {
-    const button = wrap.current && wrap.current.querySelector('button,a[href]');
-    if (!button || !description) return undefined;
-    const before = button.getAttribute('aria-describedby');
-    const ids = [...new Set((before || '').split(' ').concat(description.split(' ')).filter(Boolean))];
-    button.setAttribute('aria-describedby', ids.join(' '));
-    return () => {
-      if (before) button.setAttribute('aria-describedby', before);else button.removeAttribute('aria-describedby');
-    };
-  });
-  return /*#__PURE__*/_react.default.createElement("span", {
-    ref: wrap,
-    className: "plx-bar-actions__hint-target"
-  }, children);
-}
-function ActionHint({
-  content,
-  children,
-  className
-}) {
-  return /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
-    content: content,
-    className: className
-  }, /*#__PURE__*/_react.default.createElement(HintTarget, null, children));
-}
-
-// MenuItem intentionally has no public ref. This adapter exposes its real button to Popover's focus/anchor handling.
-const PanelMenuTrigger = /*#__PURE__*/_react.default.forwardRef(function PanelMenuTrigger(props, ref) {
-  const wrap = _react.default.useRef(null);
-  _react.default.useImperativeHandle(ref, () => wrap.current && wrap.current.querySelector('[data-plx-menu-item]'));
-  return /*#__PURE__*/_react.default.createElement("span", {
-    ref: wrap,
-    className: "plx-bar-actions__panel-item"
-  }, /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, _extends({}, props, {
-    keepOpen: true
-  })));
-});
-function ActionPanel({
-  action,
-  trigger
-}) {
-  const [open, setOpen] = _react.default.useState(false);
-  const holder = _react.default.useRef(null);
-  const unavailable = !!action.disabled || !!action.loading;
-  const show = open && !unavailable;
-  const close = () => setOpen(false);
-  // If dismissing a narrow sheet also closes More, its item is gone: return to the surviving More trigger.
-  _react.default.useEffect(() => {
-    if (!show) return undefined;
-    const menu = holder.current && holder.current.closest('[role="menu"]');
-    const more = menu && menu.parentElement.querySelector(':scope > button');
-    return () => {
-      requestAnimationFrame(() => {
-        if (more && more.isConnected && document.activeElement === document.body) more.focus({
-          preventScroll: true
-        });
-      });
-    };
-  }, [show]);
-  _react.default.useEffect(() => {
-    if (unavailable) setOpen(false);
-  }, [unavailable]);
-  const contain = e => {
-    const dialog = e.target.closest('[role="dialog"]');
-    if (!dialog) return;
-    // The non-modal form is outside the toolbar's roving order. Tab past its last control leaves the whole bar.
-    if (e.type === 'keydown' && e.key === 'Tab' && !e.shiftKey && dialog.getAttribute('aria-modal') !== 'true') {
-      const controls = (0, _layer.focusables)(dialog).filter(el => el.tabIndex >= 0);
-      const toolbar = holder.current && holder.current.closest('[role="toolbar"]');
-      if (toolbar && e.target === controls[controls.length - 1]) {
-        const next = (0, _layer.focusables)(document.body).find(el => el.tabIndex >= 0 && !toolbar.contains(el) && !el.closest('[role="menu"],[role="dialog"],[inert]') && toolbar.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING);
-        if (next) {
-          e.preventDefault();
-          next.focus();
-        }
-      }
-    }
-    e.stopPropagation();
-  };
-  const leave = e => {
-    const next = e.relatedTarget,
-      menu = e.currentTarget.closest('[role="menu"]');
-    if (!menu || !next || menu.contains(next) || next.closest('[role="dialog"]')) return;
-    const more = menu.parentElement.querySelector(':scope > button');
-    if (more) more.click();
-  };
-  return /*#__PURE__*/_react.default.createElement("span", {
-    ref: holder,
-    className: "plx-bar-actions__panel",
-    onKeyDown: contain,
-    onFocus: contain,
-    onMouseDown: contain,
-    onBlur: leave
-  }, /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
-    trigger: trigger,
-    title: action.label,
-    closeButton: true,
-    open: show,
-    onOpenChange: next => {
-      if (!next || !unavailable) setOpen(next);
-    }
-  }, show ? action.panel({
-    close
-  }) : null));
-}
-
-// a menu's items: Menu children, or descriptors drawn as MenuItems
-const itemsOf = (a, off) => {
-  const list = a.items;
-  if (!Array.isArray(list) || !list.length || /*#__PURE__*/_react.default.isValidElement(list[0])) return list;
-  return list.map(it => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-    key: it.id || it.label,
-    icon: it.icon,
-    danger: it.danger,
-    disabled: off(it),
-    onSelect: it.onSelect
-  }, it.label));
-};
-
-// the commands that fold, in their folding order: the others from the end, then the danger ones from the end
-const foldOrder = actions => {
-  const plain = actions.filter(a => !a.danger && !a.primary),
-    danger = actions.filter(a => a.danger && !a.primary);
-  return plain.slice().reverse().concat(danger.slice().reverse());
-};
-exports.foldOrder = foldOrder;
-function BarActions({
-  actions = [],
-  iconOnly = false,
-  fold = 0,
-  off = a => !!a.disabled,
-  why = a => a.why,
-  moreLabel = 'More actions',
-  dangerClass,
-  size = 'sm',
-  extra = []
-}) {
-  const folded = new Set(foldOrder(actions).slice(0, fold).map(a => a.id || a.label));
-  const kept = actions.filter(a => !folded.has(a.id || a.label));
-  const away = actions.filter(a => folded.has(a.id || a.label));
-  // a choices command: its options as radio items, and the current one's label
-  const radios = a => /*#__PURE__*/_react.default.createElement(_Menu.MenuRadioGroup, {
-    label: a.label,
-    value: a.value,
-    onChange: v => a.onChange && a.onChange(v)
-  }, (a.choices || []).map(c => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-    key: c.value,
-    value: c.value,
-    icon: c.icon
-  }, c.label)));
-  const current = a => {
-    const c = (a.choices || []).find(x => x.value === a.value);
-    return c ? c.label : '';
-  };
-  const one = a => {
-    const disabled = off(a),
-      loading = !!a.loading;
-    const filled = !!a.primary;
-    const only = iconOnly && !filled && !!a.icon;
-    const panel = typeof a.panel === 'function';
-    const menu = !!a.items || !!a.choices;
-    // a choices command shows its current choice and is named by both ("Profile: Raphael")
-    const name = a.choices ? a.label + ': ' + current(a) : a.label;
-    const text = a.choices ? current(a) || a.label : a.label;
-    const click = panel ? undefined : a.toggle ? () => a.onSelect && a.onSelect(!a.pressed) : menu ? undefined : a.onSelect;
-    const button = /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      size: size,
-      variant: filled ? 'primary' : 'ghost',
-      icon: a.icon,
-      iconOnly: only,
-      label: only || a.choices ? name : undefined,
-      caret: menu && !only,
-      "aria-haspopup": panel ? 'dialog' : menu ? 'menu' : undefined,
-      expanded: loading && (panel || menu) ? false : undefined,
-      pressed: a.toggle ? !!a.pressed : undefined,
-      disabled: disabled,
-      loading: loading,
-      className: a.danger && !filled ? dangerClass : undefined,
-      onClick: click
-    }, text);
-    const el = loading ? button : panel ? /*#__PURE__*/_react.default.createElement(ActionPanel, {
-      action: Object.assign({}, a, {
-        disabled
-      }),
-      trigger: button
-    }) : a.choices ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-      label: a.label,
-      trigger: button
-    }, radios(a)) : a.items ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-      label: a.label,
-      trigger: button
-    }, itemsOf(a, off)) : button;
-    const tip = disabled && why(a) || a.tooltip || (only ? name : null);
-    return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, {
-      key: a.id || a.label
-    }, tip ? /*#__PURE__*/_react.default.createElement(ActionHint, {
-      content: tip
-    }, el) : el);
-  };
-  const plain = kept.filter(a => !a.danger),
-    danger = kept.filter(a => a.danger);
-  const allOff = away.length > 0 && !extra.length && away.every(a => off(a));
-  const more = away.length || extra.length ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
-    key: "plx-more",
-    content: allOff ? why(away[0]) : moreLabel
-  }, /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-    label: moreLabel,
-    placement: "bottom-end",
-    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      size: size,
-      variant: "ghost",
-      icon: "more",
-      iconOnly: true,
-      label: moreLabel,
-      disabled: allOff
-    })
-  }, away.map((a, i) => {
-    const sep = a.danger && i > 0 && !away[i - 1].danger ? /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, {
-      key: (a.id || a.label) + '-sep'
-    }) : null;
-    // folded (the Fluent model): a toggle is a checked item, a choices command a submenu of radio items
-    const busy = !!a.loading,
-      disabled = off(a) || busy;
-    const item = busy ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-      key: a.id || a.label,
-      icon: /*#__PURE__*/_react.default.createElement(_Loading.Spinner, {
-        size: "sm",
-        label: a.label
-      }),
-      danger: a.danger,
-      checked: a.toggle ? !!a.pressed : undefined,
-      "aria-label": a.choices ? a.label + ': ' + current(a) : a.label,
-      "aria-busy": true,
-      disabled: true
-    }, a.choices ? a.label + ': ' + current(a) : a.label) : typeof a.panel === 'function' ? /*#__PURE__*/_react.default.createElement(ActionPanel, {
-      key: a.id || a.label,
-      action: Object.assign({}, a, {
-        disabled
-      }),
-      trigger: /*#__PURE__*/_react.default.createElement(PanelMenuTrigger, {
-        icon: a.icon,
-        danger: a.danger,
-        disabled: disabled
-      }, a.label)
-    }) : a.choices ? /*#__PURE__*/_react.default.createElement(_Menu.MenuSub, {
-      key: a.id || a.label,
-      label: a.label + ': ' + current(a),
-      icon: a.icon,
-      disabled: off(a)
-    }, radios(a)) : a.toggle ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-      key: a.id || a.label,
-      icon: a.icon,
-      checked: !!a.pressed,
-      disabled: off(a),
-      onSelect: () => a.onSelect && a.onSelect(!a.pressed)
-    }, a.label) : a.items ? /*#__PURE__*/_react.default.createElement(_Menu.MenuGroup, {
-      key: a.id || a.label,
-      label: a.label
-    }, itemsOf(a, off)) : /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-      key: a.id || a.label,
-      icon: a.icon,
-      danger: a.danger,
-      disabled: off(a),
-      onSelect: a.onSelect
-    }, a.label);
-    const tip = off(a) && why(a) || a.tooltip;
-    const described = tip ? /*#__PURE__*/_react.default.createElement(ActionHint, {
-      key: a.id || a.label,
-      content: tip,
-      className: "plx-bar-actions__tooltip"
-    }, item) : item;
-    return sep ? [sep, described] : described;
-  }), away.length && extra.length ? /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, {
-    key: "plx-extra-sep"
-  }) : null, extra)) : null;
-  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, plain.map(one), more, danger.length && (plain.length || more) ? /*#__PURE__*/_react.default.createElement("span", {
-    key: "plx-danger-divider",
-    className: (0, _cx.cx)('plx-bar-actions__divider'),
-    "aria-hidden": "true"
-  }) : null, danger.map(one));
-}
-  } },
-  "platform/patterns/QuickFilter/single-choice.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.singleChoice = singleChoice;
-/* Plenix · singleChoice
-   Summary: Normalize a single quick choice, preserving the collection's array value shape.
-   Usage: singleChoice(options, value, required)
-   Props: options are strings or value descriptors; value is the current selection; required chooses the first fallback.
-   Behavior: Keep at most one valid value; a required empty choice falls back to the first option.
-   Notes: Shared by the hook, panel and folded radio group. */
-function singleChoice(options, value, required) {
-  const values = (options || []).map(option => typeof option === 'string' ? option : option.value);
-  const selected = (Array.isArray(value) ? value : value === undefined || value === null ? [] : [value]).find(item => values.includes(item));
-  return selected !== undefined ? [selected] : required && values.length ? [values[0]] : [];
-}
-  } },
-  "platform/patterns/CommandBar/panel-parts.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.MultiPick = MultiPick;
-exports.PanelHead = PanelHead;
-exports.PanelTrigger = PanelTrigger;
-exports.Pick = Pick;
-exports.toggle = exports.fill = exports.REORDER_STRINGS = exports.Pill = void 0;
-exports.useReorder = useReorder;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _Button = require("../../components/Button/Button.jsx");
-var _Menu = require("../../components/Menu/Menu.jsx");
-var _Popover = require("../../components/Popover/Popover.jsx");
-var _Text = require("../../components/Text/Text.jsx");
-var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
-var _VisuallyHidden = require("../../components/VisuallyHidden/VisuallyHidden.jsx");
-var _CommandBar = require("./CommandBar.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · PanelTrigger, PanelHead, Pick, MultiPick, Pill, useReorder
-   (platform/patterns/CommandBar; internal, not part of the public API)
-   Summary: The find-and-view panels' shared parts. FilterPanel, SortPanel, GroupPanel, ColumnsMenu and QuickFilter are built
-     from these, so the panels share one row (owner, 2026-10-14: "Group, Sort and Filter panels share row geometry"): the
-     same control height, the same spacing.
-   Usage:
-     <PanelTrigger icon="sort" label="Sort" count={levels.length}><div className="plx-find-panel">…</div></PanelTrigger>
-     const ro = useReorder(levels, setLevels, (l) => l.field, REORDER_STRINGS);
-   Props:
-     PanelTrigger: the bar button (CommandBarButton) and its Popover; or, inline, the panel's body alone in a frame
-     PanelHead: the panel's title, its info button (a tooltip) and its actions on the right; a line under it
-     Pick: a select drawn as a menu button (the field with its type icon, the direction, the operator)
-     MultiPick: a multi-select whose chosen values show as pills in their colors
-     Pill: a value in its category color
-     useReorder: rows that move by drag, by their handle's Move up and Move down, or by Alt + Arrow Up / Down on a focused
-       row; each move is announced (WCAG 2.5.7: a way without dragging) */
-
-const toggle = (list, v) => list.indexOf(v) >= 0 ? list.filter(x => x !== v) : list.concat(v);
-exports.toggle = toggle;
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
-
-// the bar button and its panel; inline: the body alone (a panel drawn open, or in a side panel)
-exports.fill = fill;
-function PanelTrigger({
-  icon,
-  label,
-  count = 0,
-  active,
-  caret = false,
-  size = 'auto',
-  title,
-  footer,
-  inline = false,
-  placement,
-  className,
-  children
-}) {
-  const ctx = (0, _CommandBar.useCommandBar)();
-  const box = _react.default.useRef(null);
-  // the focus goes to the panel's first row control, else its Add button: not the info button of its head
-  const first = {
-    get current() {
-      const el = box.current;
-      return el ? el.querySelector('[data-plx-panel-first] button:not([disabled]), [data-plx-panel-first] input, .plx-find-panel__rows button:not([disabled]), .plx-find-panel__rows input, .plx-find-panel__add button:not([disabled]), .plx-find-panel input') : null;
-    }
-  };
-  const body = /*#__PURE__*/_react.default.createElement("div", {
-    ref: box,
-    className: (0, _cx.cx)('plx-find-panel-body', className)
-  }, children);
-  if (inline) return /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-find-panel-frame"
-  }, children);
-  const trigger = /*#__PURE__*/_react.default.createElement(_CommandBar.CommandBarButton, {
-    icon: icon,
-    label: label,
-    count: count,
-    active: active,
-    caret: caret
-  });
-  const pop = /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
-    label: title ? undefined : label,
-    title: title,
-    size: size,
-    trigger: trigger,
-    footer: footer,
-    placement: placement,
-    initialFocus: first
-  }, body);
-  return ctx.iconOnly ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
-    content: label
-  }, pop) : pop;
-}
-function PanelHead({
-  title,
-  info,
-  infoLabel,
-  sub,
-  actions
-}) {
-  return /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-find-panel__head"
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-find-panel__title-row"
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-find-panel__title"
-  }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
-    variant: "heading",
-    as: "span"
-  }, title), info ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
-    content: info
-  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    size: "xs",
-    variant: "ghost",
-    icon: "circle-info",
-    iconOnly: true,
-    label: infoLabel || title
-  })) : null), actions ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-find-panel__actions"
-  }, actions) : null), sub ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
-    variant: "secondary"
-  }, sub) : null);
-}
-
-// a select as a menu button: the current option's icon and words
-function Pick({
-  label,
-  value,
-  options,
-  onChange,
-  size = 'field',
-  disabled
-}) {
-  const cur = options.find(o => o.value === value) || options[0] || {
-    label: ''
-  };
-  return /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-    label: label,
-    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      icon: cur.icon,
-      caret: true,
-      truncate: true,
-      disabled: disabled,
-      className: (0, _cx.cx)('plx-find-pick', 'plx-find-pick--' + size),
-      title: cur.label,
-      "aria-label": label + ': ' + cur.label
-    }, cur.label)
-  }, /*#__PURE__*/_react.default.createElement(_Menu.MenuRadioGroup, {
-    label: label,
-    value: value,
-    onChange: onChange
-  }, options.map(o => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-    key: o.value,
-    value: o.value,
-    icon: o.icon
-  }, o.label))));
-}
-const Pill = ({
-  color,
-  children
-}) => /*#__PURE__*/_react.default.createElement("span", {
-  className: "plx-find-pill",
-  "data-plx-category": color || 'grey'
-}, children);
-
-// a multi-select: the chosen values as pills, or the placeholder
-exports.Pill = Pill;
-function MultiPick({
-  label,
-  options,
-  value,
-  onChange,
-  placeholder
-}) {
-  const chosen = value.map(v => options.find(o => o.value === v) || {
-    value: v,
-    label: v
-  });
-  return /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-    label: label,
-    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      caret: true,
-      truncate: true,
-      className: "plx-find-pick plx-find-pick--value",
-      "aria-label": label + ': ' + (chosen.length ? chosen.map(o => o.label).join(', ') : placeholder)
-    }, chosen.length ? /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-find-pick__pills"
-    }, chosen.map(o => /*#__PURE__*/_react.default.createElement(Pill, {
-      key: o.value,
-      color: o.color
-    }, o.label))) : /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-find-pick__placeholder"
-    }, placeholder))
-  }, options.map(o => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-    key: o.value,
-    checked: value.indexOf(o.value) >= 0,
-    keepOpen: true,
-    onSelect: () => onChange(toggle(value, o.value))
-  }, /*#__PURE__*/_react.default.createElement(Pill, {
-    color: o.color
-  }, o.label))));
-}
-
-// rows that reorder: drag, the handle's menu, Alt + Arrow Up / Down on a focused row; announced
-function useReorder(items, setItems, nameOf, t) {
-  const [msg, setMsg] = _react.default.useState('');
-  const drag = _react.default.useRef(null);
-  const box = _react.default.useRef(null);
-  const [dragging, setDragging] = _react.default.useState(-1);
-  const move = (i, to, focus) => {
-    if (to < 0 || to >= items.length || to === i) return;
-    const next = items.slice();
-    const [x] = next.splice(i, 1);
-    next.splice(to, 0, x);
-    setItems(next);
-    setMsg(fill(t.moved, {
-      name: nameOf(x),
-      position: to + 1,
-      total: items.length
-    }));
-    if (focus) setTimeout(() => {
-      const el = box.current && box.current.querySelectorAll(':scope > [data-plx-row]')[to];
-      if (el) el.focus();
-    }, 0);
-  };
-  const rowProps = (i, name) => ({
-    'data-plx-row': '',
-    tabIndex: 0,
-    draggable: true,
-    'aria-label': fill(t.row, {
-      name,
-      position: i + 1,
-      total: items.length
-    }),
-    'aria-keyshortcuts': 'Alt+ArrowUp Alt+ArrowDown',
-    className: (0, _cx.cx)('plx-find-panel__row', dragging === i && 'is-dragging'),
-    onKeyDown: e => {
-      if (e.target !== e.currentTarget || !e.altKey) return;
-      if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        move(i, i - 1, true);
-      }
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        move(i, i + 1, true);
-      }
-    },
-    onDragStart: e => {
-      e.stopPropagation();
-      drag.current = i;
-      setDragging(i);
-      e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/plain', String(i));
-    },
-    onDragEnd: () => {
-      drag.current = null;
-      setDragging(-1);
-    },
-    onDragOver: e => e.preventDefault(),
-    onDrop: e => {
-      e.preventDefault();
-      e.stopPropagation();
-      const from = drag.current;
-      drag.current = null;
-      setDragging(-1);
-      if (from !== null && from !== i) move(from, i);
-    }
-  });
-  const handle = (i, name) => /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-    label: fill(t.reorder, {
-      name
-    }),
-    placement: "bottom-end",
-    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      variant: "ghost",
-      icon: "drag",
-      iconOnly: true,
-      label: fill(t.reorder, {
-        name
-      }),
-      className: "plx-find-panel__handle"
-    })
-  }, /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-    icon: "chevron-up",
-    disabled: i === 0,
-    onSelect: () => move(i, i - 1, true)
-  }, t.moveUp), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-    icon: "chevron-down",
-    disabled: i === items.length - 1,
-    onSelect: () => move(i, i + 1, true)
-  }, t.moveDown));
-  const status = /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, {
-    role: "status",
-    "aria-live": "polite"
-  }, msg);
-  return {
-    box,
-    rowProps,
-    handle,
-    status
-  };
-}
-// the words of a row that reorders
-const REORDER_STRINGS = exports.REORDER_STRINGS = {
-  moved: '{name} moved to position {position} of {total}',
-  row: '{name}, {position} of {total}. Alt + Arrow Up or Down moves it',
-  reorder: 'Reorder {name}',
-  moveUp: 'Move up',
-  moveDown: 'Move down'
-};
-  } },
-  "platform/utils/fields.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.WITHIN = exports.OPERATORS = exports.KIND_ICONS = exports.DIRECTIONS = exports.DATE_PRESETS = exports.CATEGORY_ORDER = void 0;
-exports.compareLevels = compareLevels;
-exports.kindOf = exports.fieldOf = exports.conditionsOf = void 0;
-exports.matchesCondition = matchesCondition;
-exports.matchesDate = matchesDate;
-exports.matchesFilter = matchesFilter;
-exports.valueOf = exports.optionsOf = exports.nextId = exports.newCondition = void 0;
-/* Plenix · fields (platform/utils/fields.js): the field model of the command bar's panels (owner, 2026-10-14, Airtable
-   style): what a collection's fields are, how a filter tests a row, how sort levels order rows and how a date quick filter
-   reads its presets. FilterPanel, SortPanel, GroupPanel, QuickFilter and useCollectionView use it; a page may too (a
-   server that filters the same way).
-   A field: { value (its key), label, kind: "text" | "select" | "multi" | "number" | "date", options: [{ value, label,
-   color }] (select and multi: color is a category color name; without one they take the category colors in order),
-   get(row) (the row's value; default row[value]) }.
-   A filter: { join: "and" | "or", items: [condition | { group: true, id, join, items: [condition…] }] }; a condition:
-   { id, field, op, value }. A condition left unfinished (no value) does not filter.
-   Sort levels: [{ field, dir: "asc" | "desc" }], the first the main one; a select field sorts in its options' order. */
-
-// the type icon of each kind (the field pickers and the column headers' type icons)
-const KIND_ICONS = exports.KIND_ICONS = {
-  text: 'ed-text',
-  select: 'field-select',
-  multi: 'tags',
-  number: 'field-number',
-  date: 'calendar'
-};
-// the directions in each kind's words (Airtable's)
-const DIRECTIONS = exports.DIRECTIONS = {
-  text: ['A → Z', 'Z → A'],
-  select: ['First → Last', 'Last → First'],
-  multi: ['First → Last', 'Last → First'],
-  number: ['1 → 9', '9 → 1'],
-  date: ['Oldest → newest', 'Newest → oldest']
-};
-// the operators by kind: [op, words]
-const OPERATORS = exports.OPERATORS = {
-  text: [['contains', 'contains'], ['ncontains', 'does not contain'], ['is', 'is'], ['isnot', 'is not'], ['empty', 'is empty'], ['nempty', 'is not empty']],
-  select: [['any', 'is any of'], ['none', 'is none of'], ['empty', 'is empty'], ['nempty', 'is not empty']],
-  multi: [['any', 'has any of'], ['none', 'has none of'], ['empty', 'is empty'], ['nempty', 'is not empty']],
-  number: [['eq', '='], ['ne', '≠'], ['lt', '<'], ['gt', '>'], ['empty', 'is empty'], ['nempty', 'is not empty']],
-  date: [['is', 'is'], ['before', 'is before'], ['after', 'is after'], ['within', 'is within'], ['empty', 'is empty'], ['nempty', 'is not empty']]
-};
-// "is within": the past week, month or year
-const WITHIN = exports.WITHIN = [{
-  value: 'week',
-  label: 'the past week',
-  days: 7
-}, {
-  value: 'month',
-  label: 'the past month',
-  days: 30
-}, {
-  value: 'year',
-  label: 'the past year',
-  days: 365
-}];
-// the category colors (Trubetskoy's 20), in the order options take them
-const CATEGORY_ORDER = exports.CATEGORY_ORDER = ['blue', 'green', 'purple', 'orange', 'teal', 'magenta', 'yellow', 'navy', 'red', 'cyan', 'lavender', 'brown', 'olive', 'pink', 'apricot', 'mint', 'maroon', 'lime', 'beige', 'grey'];
-const fieldOf = (fields, key) => fields.find(f => f.value === key) || fields[0];
-exports.fieldOf = fieldOf;
-const valueOf = (f, row) => f.get ? f.get(row) : row[f.value];
-exports.valueOf = valueOf;
-const kindOf = f => OPERATORS[f && f.kind] ? f.kind : 'text';
-// a field's options, each with its color (given, or the next category color)
-exports.kindOf = kindOf;
-const optionsOf = f => (f && f.options || []).map((o, i) => typeof o === 'string' ? {
-  value: o
-} : o).map((o, i) => Object.assign({
-  label: o.value,
-  color: CATEGORY_ORDER[i % CATEGORY_ORDER.length]
-}, o));
-exports.optionsOf = optionsOf;
-const blank = x => x === null || x === undefined || x === '' || Array.isArray(x) && !x.length;
-const iso = d => (d instanceof Date ? d : new Date(d)).toISOString().slice(0, 10);
-const daysBefore = (n, today) => {
-  const d = new Date((today || iso(new Date())) + 'T00:00:00Z');
-  d.setUTCDate(d.getUTCDate() - n);
-  return iso(d);
-};
-
-// one condition against one row (today: an ISO date, for "is within"; default the current date)
-function matchesCondition(c, row, fields, today) {
-  const f = fieldOf(fields, c.field),
-    v = valueOf(f, row),
-    val = c.value,
-    k = kindOf(f);
-  if (c.op === 'empty') return blank(v);
-  if (c.op === 'nempty') return !blank(v);
-  if (blank(val)) return true;
-  if (k === 'text') {
-    const s = String(v == null ? '' : v).toLowerCase(),
-      q = String(val).toLowerCase();
-    return c.op === 'contains' ? s.includes(q) : c.op === 'ncontains' ? !s.includes(q) : c.op === 'is' ? s === q : s !== q;
-  }
-  if (k === 'select') {
-    const list = [].concat(val);
-    return c.op === 'any' ? list.indexOf(v) >= 0 : list.indexOf(v) < 0;
-  }
-  if (k === 'multi') {
-    const list = [].concat(val),
-      hit = [].concat(v || []).some(x => list.indexOf(x) >= 0);
-    return c.op === 'any' ? hit : !hit;
-  }
-  if (k === 'number') {
-    const n = Number(v),
-      q = parseFloat(val);
-    if (isNaN(q)) return true;
-    return c.op === 'eq' ? n === q : c.op === 'ne' ? n !== q : c.op === 'lt' ? n < q : n > q;
-  }
-  const d = blank(v) ? '' : String(v).slice(0, 10);
-  if (c.op === 'within') {
-    const w = WITHIN.find(x => x.value === val) || WITHIN[0];
-    return d >= daysBefore(w.days, today);
-  }
-  return c.op === 'is' ? d === val : c.op === 'before' ? d < val : d > val;
-}
-// a filter (or a condition group) against one row
-function matchesFilter(node, row, fields, today) {
-  if (!node || !node.items || !node.items.length) return true;
-  const t = x => x.group ? matchesFilter(x, row, fields, today) : matchesCondition(x, row, fields, today);
-  return node.join === 'or' ? node.items.some(t) : node.items.every(t);
-}
-// every condition of a filter, its groups' included (the count on the Filter button)
-const conditionsOf = node => (node && node.items || []).reduce((l, x) => l.concat(x.group ? conditionsOf(x) : [x]), []);
-exports.conditionsOf = conditionsOf;
-let uid = 0;
-const nextId = () => 'c' + ++uid;
-// a new condition on a field: its kind's first operator, no value yet
-exports.nextId = nextId;
-const newCondition = f => ({
-  id: nextId(),
-  field: f.value,
-  op: OPERATORS[kindOf(f)][0][0],
-  value: kindOf(f) === 'select' || kindOf(f) === 'multi' ? [] : ''
-});
-
-// rows in the order of sort levels: a comparator
-exports.newCondition = newCondition;
-function compareLevels(fields, levels) {
-  return (a, b) => {
-    for (const l of levels || []) {
-      const f = fields.find(x => x.value === l.field);
-      if (!f) continue;
-      let x = valueOf(f, a),
-        y = valueOf(f, b);
-      if (kindOf(f) === 'select' && f.options) {
-        const o = optionsOf(f).map(p => p.value);
-        x = o.indexOf(x);
-        y = o.indexOf(y);
-      }
-      if (Array.isArray(x)) x = x.join(', ');
-      if (Array.isArray(y)) y = y.join(', ');
-      const c = x < y ? -1 : x > y ? 1 : 0;
-      if (c) return l.dir === 'desc' ? -c : c;
-    }
-    return 0;
-  };
-}
-
-// the date quick filter: { preset: "any" | "7" | "30" | "year" | "custom", from, to } (ISO dates)
-const DATE_PRESETS = exports.DATE_PRESETS = [{
-  value: 'any',
-  label: 'Any time'
-}, {
-  value: '7',
-  label: 'Last 7 days'
-}, {
-  value: '30',
-  label: 'Last 30 days'
-}, {
-  value: 'year',
-  label: 'This year'
-}];
-function matchesDate(range, value, today) {
-  if (!range || range.preset === 'any' || !range.preset) return true;
-  const d = blank(value) ? '' : String(value).slice(0, 10);
-  if (!d) return false;
-  const now = today || iso(new Date());
-  if (range.preset === '7' || range.preset === '30') return d >= daysBefore(Number(range.preset), now) && d <= now;
-  if (range.preset === 'year') return d.slice(0, 4) === now.slice(0, 4);
-  return (!range.from || d >= range.from) && (!range.to || d <= range.to);
-}
-  } },
-  "platform/patterns/QuickFilter/QuickFilter.jsx": { deps: {"react":null,"./single-choice.js":"platform/patterns/QuickFilter/single-choice.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/format.js":"platform/utils/format.js","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../utils/fields.js":"platform/utils/fields.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.QuickFilter = QuickFilter;
-var _react = _interopRequireDefault(require("react"));
-var _singleChoice = require("./single-choice.js");
-var _Button = require("../../components/Button/Button.jsx");
-var _Checkbox = require("../../components/Checkbox/Checkbox.jsx");
-var _Field = require("../../components/Field/Field.jsx");
-var _Input = require("../../components/Input/Input.jsx");
-var _SearchField = require("../../components/SearchField/SearchField.jsx");
-var _Text = require("../../components/Text/Text.jsx");
-var _Stack = require("../../components/Stack/Stack.jsx");
-var _format = require("../../utils/format.js");
-var _panelParts = require("../CommandBar/panel-parts.jsx");
-var _fields = require("../../utils/fields.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · QuickFilter
-   Summary: An application's own shortcut beside Filter (owner, 2026-10-14): Category, Type, Tags or Date. An app that has
-     categories or types shows its own button; otherwise not. The Filter panel still holds every possibility.
-     kind "list" (Category, Type, Tags): a button that opens a searchable checklist of the field's values, shown as their
-     pills (the GitHub labels style). kind "date" (Date): a button that opens presets (Any time, Last 7 days, Last 30 days,
-     This year) and a custom range (the Google Analytics style).
-   Usage:
-     <QuickFilter label="Tags" icon="tags" noun="tag" options={tags} value={chosen} onChange={setChosen} />
-     <QuickFilter kind="date" label="Modified" icon="calendar" value={range} onChange={setRange} />
-   Props:
-     kind: "list" (default) | "single" | "date"
-     required: (single) hides All and Clear; defaults an empty choice to the first option
-     Single choices use the same array value shape as list filters, with at most one entry.
-     label: the button's words ("Category", "Type", "Tags", "Date")
-     icon: its icon
-     noun: (list) the word for one value, for the find field ("Find a tag")
-     options: (list, single) the values: [{ value, label, color, count }] or strings; colors default to the category colors in order
-     counts: optional Map (or object) from option value to faceted count; useCollectionView.quickProps supplies it
-       An option's explicit count wins, including zero; without counts the existing labels remain unchanged
-     value: (list) the chosen values; (date) { preset: "any" | "7" | "30" | "year" | "custom", from, to } (ISO dates)
-     onChange(value): runs on every change
-     inline: draws the panel alone (open, in a frame); default false
-     strings: { find: "Find a {noun}", none: "No {noun} matches", clear: "Clear", presets: [{ value, label }…],
-       custom: "Custom range", from: "From", to: "To" }
-   Behavior:
-     The button keeps its label; while it filters it takes the tint and a count badge (the chosen values; 1 for a date).
-     The checklist's find field fills the panel (owner, 2026-10-14); each value is a checkbox with its pill. A date
-     range typed by hand chooses Custom range. Clear (the panel's footer) empties it; it is disabled while nothing is
-     chosen. A required single choice omits All and Clear.
-   Notes:
-     The page applies the choice (useCollectionView, or matchesDate from utils/fields.js). */
-
-const STRINGS = {
-  find: 'Find a {noun}',
-  none: 'No {noun} matches',
-  clear: 'Clear',
-  all: 'All',
-  presets: _fields.DATE_PRESETS,
-  custom: 'Custom range',
-  from: 'From',
-  to: 'To'
-};
-const asOptions = options => (options || []).map((o, i) => typeof o === 'string' ? {
-  value: o
-} : o).map((o, i) => Object.assign({
-  label: o.value,
-  color: _fields.CATEGORY_ORDER[i % _fields.CATEGORY_ORDER.length]
-}, o));
-function QuickFilter({
-  kind = 'list',
-  label,
-  icon,
-  noun = 'value',
-  options,
-  value,
-  onChange,
-  counts,
-  required = false,
-  inline = false,
-  strings
-}) {
-  const t = Object.assign({}, STRINGS, strings);
-  const [q, setQ] = _react.default.useState('');
-  const first = (options || [])[0],
-    firstValue = typeof first === 'string' ? first : first && first.value;
-  _react.default.useEffect(() => {
-    if (kind === 'single' && required && (!value || !value.length) && firstValue !== undefined && onChange) onChange([firstValue]);
-  }, [kind, required, value, firstValue, onChange]);
-  const countOf = o => o.count !== undefined ? o.count : counts instanceof Map ? counts.get(o.value) || 0 : counts ? Object.prototype.hasOwnProperty.call(counts, o.value) ? counts[o.value] : 0 : undefined;
-  const counted = (o, label) => {
-    const n = countOf(o);
-    return n === undefined || n === null ? label : /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
-      as: "span",
-      gap: "xs"
-    }, label, /*#__PURE__*/_react.default.createElement(_Text.Text, {
-      variant: "data"
-    }, (0, _format.formatNumber)(n)));
-  };
-  if (kind === 'date') {
-    const d = Object.assign({
-      preset: 'any',
-      from: '',
-      to: ''
-    }, value);
-    const range = (k, v) => onChange(Object.assign({}, d, {
-      preset: 'custom',
-      [k]: v
-    }));
-    const on = d.preset && d.preset !== 'any';
-    const body = /*#__PURE__*/_react.default.createElement("div", {
-      className: "plx-find-panel plx-find-panel--date"
-    }, /*#__PURE__*/_react.default.createElement(_Checkbox.RadioGroup, {
-      label: label,
-      value: d.preset,
-      onChange: v => onChange(Object.assign({}, d, {
-        preset: v
-      })),
-      options: t.presets.map(x => ({
-        value: x.value,
-        label: counted(x, x.label)
-      })).concat({
-        value: 'custom',
-        label: counted({
-          value: 'custom'
-        }, t.custom)
-      })
-    }), /*#__PURE__*/_react.default.createElement("div", {
-      className: "plx-find-panel__range"
-    }, /*#__PURE__*/_react.default.createElement(_Field.Field, {
-      label: t.from
-    }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
-      type: "date",
-      data: true,
-      value: d.from,
-      onChange: e => range('from', e.target.value)
-    })), /*#__PURE__*/_react.default.createElement(_Field.Field, {
-      label: t.to
-    }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
-      type: "date",
-      data: true,
-      value: d.to,
-      onChange: e => range('to', e.target.value)
-    }))));
-    const footer = /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      size: "sm",
-      variant: "ghost",
-      icon: "filter-off",
-      disabled: !on,
-      onClick: () => onChange({
-        preset: 'any',
-        from: '',
-        to: ''
-      })
-    }, t.clear);
-    return /*#__PURE__*/_react.default.createElement(_panelParts.PanelTrigger, {
-      icon: icon || 'calendar',
-      label: label,
-      title: label,
-      count: on ? 1 : 0,
-      caret: true,
-      size: "sm",
-      footer: footer,
-      inline: inline
-    }, body);
-  }
-  const list = asOptions(options);
-  if (kind === 'single') {
-    const chosen = (0, _singleChoice.singleChoice)(list, value, required);
-    const choices = list.map(o => ({
-      value: o.value,
-      label: counted(o, /*#__PURE__*/_react.default.createElement(_panelParts.Pill, {
-        color: o.color
-      }, o.label))
-    }));
-    if (!required) choices.unshift({
-      value: '',
-      label: t.all
-    });
-    const body = /*#__PURE__*/_react.default.createElement("div", {
-      className: "plx-find-panel"
-    }, /*#__PURE__*/_react.default.createElement(_Checkbox.RadioGroup, {
-      label: label,
-      value: chosen.length ? chosen[0] : '',
-      options: choices,
-      onChange: v => onChange(v === '' ? [] : [v])
-    }));
-    const footer = required ? null : /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      size: "sm",
-      variant: "ghost",
-      icon: "filter-off",
-      disabled: !chosen.length,
-      onClick: () => onChange([])
-    }, t.clear);
-    return /*#__PURE__*/_react.default.createElement(_panelParts.PanelTrigger, {
-      icon: icon,
-      label: label,
-      title: label,
-      count: chosen.length,
-      caret: true,
-      size: "sm",
-      footer: footer,
-      inline: inline
-    }, body);
-  }
-  const chosen = value || [];
-  const shown = list.filter(o => String(o.label).toLowerCase().indexOf(q.trim().toLowerCase()) >= 0);
-  const body = /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-find-panel plx-find-panel--checklist"
-  }, /*#__PURE__*/_react.default.createElement(_SearchField.SearchField, {
-    width: "fill",
-    value: q,
-    onChange: e => setQ(e.target.value),
-    onClear: () => setQ(''),
-    placeholder: (0, _panelParts.fill)(t.find, {
-      noun
-    }),
-    label: (0, _panelParts.fill)(t.find, {
-      noun
-    })
-  }), /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-find-panel__checklist"
-  }, shown.length ? shown.map(o => /*#__PURE__*/_react.default.createElement(_Checkbox.Checkbox, {
-    key: o.value,
-    label: counted(o, /*#__PURE__*/_react.default.createElement(_panelParts.Pill, {
-      color: o.color
-    }, o.label)),
-    checked: chosen.indexOf(o.value) >= 0,
-    onChange: () => onChange((0, _panelParts.toggle)(chosen, o.value))
-  })) : /*#__PURE__*/_react.default.createElement(_Text.Text, {
-    variant: "secondary"
-  }, (0, _panelParts.fill)(t.none, {
-    noun
-  }))));
-  const footer = /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    size: "sm",
-    variant: "ghost",
-    icon: "filter-off",
-    disabled: !chosen.length,
-    onClick: () => onChange([])
-  }, t.clear);
-  return /*#__PURE__*/_react.default.createElement(_panelParts.PanelTrigger, {
-    icon: icon,
-    label: label,
-    title: label,
-    count: chosen.length,
-    caret: true,
-    size: "sm",
-    footer: footer,
-    inline: inline
-  }, body);
-}
-  } },
-  "platform/patterns/QuickFilter/single-menu.jsx": { deps: {"react":null,"../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./single-choice.js":"platform/patterns/QuickFilter/single-choice.js","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.SingleQuickFilterMenu = SingleQuickFilterMenu;
-var _react = _interopRequireDefault(require("react"));
-var _Menu = require("../../components/Menu/Menu.jsx");
-var _singleChoice = require("./single-choice.js");
-var _Text = require("../../components/Text/Text.jsx");
-var _Stack = require("../../components/Stack/Stack.jsx");
-var _format = require("../../utils/format.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · SingleQuickFilterMenu
-   Summary: A quick filter's single-choice radio group inside More.
-   Usage: <SingleQuickFilterMenu {...quickFilter} />
-   Props: label, options, value, required, onChange, counts and strings are the QuickFilter descriptor.
-   Behavior: Required choices omit All; radio changes preserve the collection's array shape.
-   Notes: The CommandBar folding task 132 consumes this shared group. */
-
-function SingleQuickFilterMenu({
-  label,
-  options = [],
-  value,
-  required,
-  onChange,
-  counts,
-  strings
-}) {
-  const chosen = (0, _singleChoice.singleChoice)(options, value, required);
-  const items = options.map(option => typeof option === 'string' ? {
-    value: option,
-    label: option
-  } : option);
-  if (!required) items.unshift({
-    value: '',
-    label: strings && strings.all || 'All'
-  });
-  return /*#__PURE__*/_react.default.createElement(_Menu.MenuRadioGroup, {
-    label: label,
-    value: chosen.length ? chosen[0] : '',
-    onChange: v => onChange && onChange(v === '' ? [] : [v])
-  }, items.map(option => {
-    const count = option.count !== undefined ? option.count : counts instanceof Map ? counts.get(option.value) || 0 : counts ? counts[option.value] || 0 : undefined;
-    return /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-      key: option.value,
-      value: option.value
-    }, count === undefined ? option.label || option.value : /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
-      as: "span",
-      gap: "xs"
-    }, option.label || option.value, /*#__PURE__*/_react.default.createElement(_Text.Text, {
-      variant: "data"
-    }, (0, _format.formatNumber)(count))));
-  }));
-}
-  } },
-  "platform/patterns/CommandBar/CommandBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/barFit.js":"platform/utils/barFit.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","../../components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./BarActions.jsx":"platform/patterns/CommandBar/BarActions.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","../QuickFilter/single-menu.jsx":"platform/patterns/QuickFilter/single-menu.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/fields.js":"platform/utils/fields.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.CommandBar = CommandBar;
-exports.useCommandBar = exports.CommandBarSearch = exports.CommandBarButton = void 0;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _barFit = require("../../utils/barFit.js");
-var _Button = require("../../components/Button/Button.jsx");
-var _Badge = require("../../components/Badge/Badge.jsx");
-var _Text = require("../../components/Text/Text.jsx");
-var _Toolbar = require("../../components/Toolbar/Toolbar.jsx");
-var _Divider = require("../../components/Divider/Divider.jsx");
-var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
-var _announce = require("../../utils/announce.jsx");
-var _format = require("../../utils/format.js");
-var _SearchField = require("../../components/SearchField/SearchField.jsx");
-var _BarActions = require("./BarActions.jsx");
-var _Menu = require("../../components/Menu/Menu.jsx");
-var _QuickFilter = require("../QuickFilter/QuickFilter.jsx");
-var _singleMenu = require("../QuickFilter/single-menu.jsx");
-var _Stack = require("../../components/Stack/Stack.jsx");
-var _fields = require("../../utils/fields.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · CommandBar, CommandBarButton, CommandBarSearch, useCommandBar
-   Summary: The bar over a collection (owner, 2026-10-14 and 2026-10-15, the command bar study): ONE white framed bar of
-     one height, fixed at the top of the content while the content scrolls; the table under it never moves. With nothing
-     selected: the page's actions, then the search and the filters, then Sort, Group, Columns and View, and the count at
-     the end. With rows selected the bar swaps (Microsoft 365): the actions, the search and the filters give way to the
-     selection's commands (Delete last); Sort, Group, Columns and View stay where they are; the bar ends with "× N
-     selected", which clears the selection. A page with no actions has a view bar (1F).
-   Usage:
-     <CommandBar label="Assets" count="24 assets"
-       actions={[{ id: 'new', label: 'New', icon: 'plus', items: <><MenuItem icon="folder-add">Folder</MenuItem>…</> },
-                 { id: 'upload', label: 'Upload', icon: 'upload', onSelect: upload }]}
-       find={<><CommandBarSearch value={q} onChange={(e) => setQ(e.target.value)} onClear={() => setQ('')} placeholder="Search assets" />
-         <FilterPanel fields={fields} value={filter} onChange={setFilter} /></>}
-       view={<><SortPanel fields={fields} value={sort} onChange={setSort} /><GroupPanel … /><ViewMenu … /></>}
-       selection={{ count: sel.length, noun: 'asset', onClear: () => setSel([]),
-         actions: [{ id: 'download', label: 'Download', icon: 'download-arrow', onSelect: … }, …, { id: 'delete', label: 'Delete', icon: 'trash', danger: true, onSelect: … }] }} />
-   Props:
-     label: the bar's accessible name (the collection: "Assets")
-     actions: the page's commands, in order: [{ id, label, icon, onSelect, items, danger, disabled, why, primary, toggle,
-       pressed, choices, value, onChange, loading, tooltip, panel }]. The bar holds commands only (owner, 2026-10-15, the Fluent model): an on/off
-       setting is a toggle command (toggle: true, pressed, onSelect(next)), a pick of one value is a choices command
-       (choices: [{ value, label, icon }], value, onChange(value)); folded into More they become a checked item and a
-       submenu of radio items. No other controls go in the bar.
-     actions[].items: makes the command a menu: Menu children (MenuItem…) or [{ id, label, icon, danger, disabled, onSelect }]
-     actions[].danger: a destructive command: in the danger color, after a divider, the last to fold into More
-     actions[].disabled: the command is grayed, never hidden (owner, 2026-10-14)
-     actions[].why: the tooltip of a disabled command, saying why
-     actions[].loading: spinner, busy and inert, including folded commands
-     actions[].tooltip: help shown on hover and focus with labels or icons (disabled why takes precedence)
-     actions[].panel({ close }): a small form in a Popover anchored to the action, including selection and More items;
-       focus enters the form and returns on Escape or close. Use close() after the form succeeds.
-     actions[].primary: the page's one primary command (filled; it keeps its label); default none
-     find: the find side, in order: CommandBarSearch first (owner, 2026-10-14), then FilterPanel
-     quickFilters: the app's quick filters after Filter, as descriptors (QuickFilter's props): [{ id, label, icon, noun,
-       options, value, onChange, kind, required, counts }]; when the bar is short of room they fold into More after the commands, each a
-       submenu of checkable values (a date: its presets as radio items) (owner, 2026-10-15, the Fluent model)
-     view: the view side: SortPanel, GroupPanel, ColumnsMenu, ViewMenu
-     count: the collection's count at the end ("24 assets"; a string or a number is drawn in the data font); hidden while
-       rows are selected ("× N selected" takes its place)
-     status: a short status text beside the count ("Synced 2 min ago"), muted; it steps out with the count when the bar
-       is short of room, and while rows are selected
-     end: more controls at the very end (Export); hidden while rows are selected. A descriptor { content,
-       fold: { label, icon, items } } supplies its More submenu; without fold the content stays in the bar.
-       items are Menu children or MenuItem descriptors, including checked toggles.
-     selection.hidden: how many selected records are hidden by filters (DataGrid onSelectionChange supplies it)
-     selection: the selection (the swap): { count, hidden, actions, onClear, noun, plural, label }; while count is above 0 the bar
-       holds selection.actions ([{ id, label, icon, onSelect, items, danger, single, disabled, why }]; single: disabled
-       while more than one is selected, with a why-tooltip) instead of the page's actions, search and filters, and ends
-       with "× N selected" (onClear); label names the bar meanwhile (default "{label} actions")
-     layout: "auto" (default: "one" with actions, "view" without) | "one" (1A) | "view" (1F: a view bar, no actions);
-       "split" (a separate action bar for many actions) is retired (2026-10-15) and draws "one": many actions fold into More
-     sticky: "auto" (default) sticks only as a direct child of PageContent or AppShell main; true/false force
-       sticky/normal flow. A bar inside a card or another layout wrapper stays in normal flow. It has no background
-       until content scrolls under it (data-plx-stuck); then the page canvas, so the content does not show through.
-     narrow: the bar starts at icons only with the search as its icon (a side panel's width); default false (the width
-       decides)
-     strings: { more: "More actions", actions: "{label} actions", find: "Find and view", selected: "{n} selected",
-       clear: "Clear the selection", clearName: "{n} selected, clear the selection", swapped: "{n} selected. Selection
-       actions available.", cleared: "Selection cleared.", why: "Select {plural} to {action}", single: "Select one {noun}
-       to {action}" }
-     className: more classes
-     CommandBarButton: a find-and-view button (the trigger of a panel or a menu): { icon, label, count, active, caret }; ghost;
-       icon and label, or its icon only while the bar is narrow (give it a Tooltip); active or a count tints it and shows the
-       count in a badge; other props reach the Button (ref too)
-     CommandBarSearch: the bar's SearchField (width "bar"; collapsed to its icon while the bar is narrow); SearchField's props
-     useCommandBar(): { iconOnly, collapsed, step, searchOpen, setSearchOpen } of the bar around a control
-   Behavior:
-     The button rule, measured (owner, 2026-10-14 and 2026-10-15): every control shows its icon and label while the bar
-       fits on one line; first, every labeled control becomes its icon only, each with its tooltip (the actions, Filter,
-       the quick filters, Sort, Group, Columns, View); then the search becomes its icon, which opens the field across the
-       bar, and the count and status step out; then the commands fold into "More actions" (⋮) one per step from the end,
-       the danger commands last. More shows only
-       when something does not fit. A change of width, labels or counts starts again from icons and labels.
-     Sort, Filter, Group, View and Columns are never merged: each keeps its own button at every width.
-     Commands are never hidden by state: they are disabled, with a tooltip saying why.
-     Every button is ghost (no outline). The bar is white and framed (3A), never tinted while rows are selected.
-     The swap keeps the bar's height and the focus where it is (on the table); it is announced ("2 selected. Selection
-       actions available.", "Selection cleared."). Escape in the bar clears the selection. Sort, Group, Columns and View
-       stay mounted through the swap, so an open panel keeps its state.
-     The bar is a Toolbar: one Tab stop, the arrow keys move between its controls.
-   Notes:
-     The count and the end controls sit at the end of the bar. Pages with neither actions nor find and view have no
-     bar: the plain table. */
-const STRINGS = {
-  more: 'More actions',
-  actions: '{label} actions',
-  find: 'Find and view',
-  selected: '{n} selected',
-  hidden: ' ({n} hidden by filters)',
-  clear: 'Clear the selection',
-  clearName: '{n} selected, clear the selection',
-  swapped: '{n} selected. Selection actions available.',
-  cleared: 'Selection cleared.',
-  why: 'Select {plural} to {action}',
-  single: 'Select one {noun} to {action}'
-};
-const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
-// the steps of the button rule: 0 icon and label; 1 icons only; 2 the search as its icon; then one more action per step
-// into More
-const ICONS = 1,
-  SEARCH = 2;
-const BarContext = /*#__PURE__*/_react.default.createContext({
-  iconOnly: false,
-  collapsed: false,
-  step: 0,
-  searchOpen: false,
-  setSearchOpen: () => {}
-});
-const useCommandBar = () => _react.default.useContext(BarContext);
-exports.useCommandBar = useCommandBar;
-const CommandBarButton = exports.CommandBarButton = /*#__PURE__*/_react.default.forwardRef(function CommandBarButton({
-  icon,
-  label,
-  count = 0,
-  active = false,
-  caret = false,
-  iconOnly,
-  className,
-  children,
-  ...rest
-}, ref) {
-  const ctx = useCommandBar();
-  const only = iconOnly === undefined ? ctx.iconOnly : iconOnly;
-  const n = Number(count) || 0;
-  const badge = n ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
-    size: "sm",
-    tone: "active"
-  }, n) : null;
-  const name = n ? label + ', ' + n : label;
-  // icons only: no caret (the tooltip names it); with a count: the icon and the count, named "Filter, 2"
-  return /*#__PURE__*/_react.default.createElement(_Button.Button, _extends({
-    ref: ref,
-    size: "sm",
-    variant: "ghost",
-    icon: icon,
-    caret: caret && !only,
-    selected: active || n > 0,
-    iconOnly: only && !n,
-    label: only ? name : undefined,
-    className: (0, _cx.cx)('plx-command-bar__button', className)
-  }, rest), only ? n ? badge : label : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, children || label, badge ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, ' ', badge) : null));
-});
-const CommandBarSearch = exports.CommandBarSearch = /*#__PURE__*/_react.default.forwardRef(function CommandBarSearch(props, ref) {
-  const {
-    collapsed,
-    searchOpen,
-    setSearchOpen
-  } = useCommandBar();
-  return /*#__PURE__*/_react.default.createElement(_SearchField.SearchField, _extends({
-    ref: ref,
-    width: "bar",
-    collapsed: collapsed,
-    open: collapsed ? searchOpen : undefined,
-    onOpenChange: collapsed ? setSearchOpen : undefined
-  }, props));
-});
-function CommandBar({
-  label,
-  actions = [],
-  find,
-  quickFilters = [],
-  view,
-  count,
-  status,
-  end,
-  selection,
-  layout = 'auto',
-  sticky = 'auto',
-  narrow = false,
-  strings,
-  className
-}) {
-  const t = Object.assign({}, STRINGS, strings);
-  const root = _react.default.useRef(null);
-  // the selection (owner, 2026-10-15: the swap): an object { count, actions, onClear, noun, plural, label }; while its
-  // count is above 0 the bar holds the selection's commands instead of the page's actions, search and filters
-  const sel = selection && ! /*#__PURE__*/_react.default.isValidElement(selection) && typeof selection === 'object' ? selection : null;
-  const selCount = sel ? Number(sel.count) || 0 : 0;
-  const selecting = selCount > 0;
-  const selActs = selecting ? sel.actions || [] : [];
-  // "split" (a separate action bar) is retired (2026-10-15): many actions fold into More in the one bar
-  const shape = layout === 'auto' || layout === 'split' ? actions.length ? 'one' : 'view' : layout;
-  const shown = selecting ? selActs : shape === 'view' ? [] : actions;
-  const quick = selecting ? [] : quickFilters;
-  const ending = end && ! /*#__PURE__*/_react.default.isValidElement(end) && !Array.isArray(end) && typeof end === 'object' && ('content' in end || 'fold' in end) ? end : null;
-  const endContent = ending ? ending.content : end;
-  const endFold = !selecting && ending && ending.fold;
-  const folds = (0, _BarActions.foldOrder)(shown).length + quick.length + (endFold ? 1 : 0);
-  // the bar's search, opened across the bar: the bar holds its step while it is open
-  const [searchOpen, setSearchOpen] = _react.default.useState(false);
-  const key = [shape, narrow, selecting ? 'sel' : 'rest', shown.map(a => a.label + (a.disabled ? '0' : '') + (a.loading ? 'busy' : '')).join('|'), quickFilters.map(q => q.label + (q.value && q.value.length ? q.value.length : '')).join('|'), endFold && endFold.label].join('§');
-  const step = (0, _barFit.useBarFit)(root, key, SEARCH + folds, narrow ? SEARCH : 0, ':scope > .plx-command-bar__bar > [data-plx-bar-row]', searchOpen);
-  const ctx = _react.default.useMemo(() => ({
-    iconOnly: step >= ICONS,
-    collapsed: step >= SEARCH,
-    step,
-    searchOpen: searchOpen && step >= SEARCH,
-    setSearchOpen
-  }), [step, searchOpen]);
-  // Commands fold first (from the end, Delete last), then an opted-in end control, then quick filters.
-  const foldAll = Math.max(0, step - SEARCH);
-  const fold = Math.min(foldAll, (0, _BarActions.foldOrder)(shown).length);
-  const endAway = !!endFold && foldAll > fold;
-  const quickAway = Math.min(quick.length, Math.max(0, foldAll - fold - (endAway ? 1 : 0)));
-  const quickKept = quick.slice(0, quick.length - quickAway),
-    quickFolded = quick.slice(quick.length - quickAway);
-  const quickMenu = quickFolded.map(q => {
-    const id = q.id || q.label;
-    const counted = option => {
-      const count = option.count !== undefined ? option.count : q.counts instanceof Map ? q.counts.get(option.value) || 0 : q.counts ? q.counts[option.value] || 0 : undefined;
-      return count === undefined ? option.label || option.value : /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
-        as: "span",
-        gap: "xs"
-      }, option.label || option.value, /*#__PURE__*/_react.default.createElement(_Text.Text, {
-        variant: "data"
-      }, (0, _format.formatNumber)(count)));
-    };
-    if (q.kind === 'single') return /*#__PURE__*/_react.default.createElement(_Menu.MenuSub, {
-      key: id,
-      label: q.label,
-      icon: q.icon
-    }, /*#__PURE__*/_react.default.createElement(_singleMenu.SingleQuickFilterMenu, q));
-    if (q.kind === 'date') {
-      const d = Object.assign({
-        preset: 'any',
-        from: '',
-        to: ''
-      }, q.value);
-      return /*#__PURE__*/_react.default.createElement(_Menu.MenuSub, {
-        key: id,
-        label: q.label,
-        icon: q.icon
-      }, /*#__PURE__*/_react.default.createElement(_Menu.MenuRadioGroup, {
-        label: q.label,
-        value: d.preset,
-        onChange: v => q.onChange && q.onChange(Object.assign({}, d, {
-          preset: v
-        }))
-      }, _fields.DATE_PRESETS.map(p => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-        key: p.value,
-        value: p.value
-      }, counted(p)))));
-    }
-    const chosen = q.value || [];
-    return /*#__PURE__*/_react.default.createElement(_Menu.MenuSub, {
-      key: id,
-      label: chosen.length ? q.label + ' (' + chosen.length + ')' : q.label,
-      icon: q.icon
-    }, (q.options || []).map(o => typeof o === 'string' ? {
-      value: o,
-      label: o
-    } : o).map(o => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-      key: o.value,
-      checked: chosen.indexOf(o.value) >= 0,
-      keepOpen: true,
-      onSelect: () => q.onChange && q.onChange(chosen.indexOf(o.value) >= 0 ? chosen.filter(x => x !== o.value) : chosen.concat(o.value))
-    }, counted(o))));
-  });
-  const endMenu = endAway ? /*#__PURE__*/_react.default.createElement(_Menu.MenuSub, {
-    key: "plx-end",
-    label: endFold.label,
-    icon: endFold.icon
-  }, Array.isArray(endFold.items) && endFold.items.length && ! /*#__PURE__*/_react.default.isValidElement(endFold.items[0]) ? endFold.items.map(item => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-    key: item.id || item.label,
-    icon: item.icon,
-    checked: item.checked,
-    disabled: item.disabled,
-    danger: item.danger,
-    onSelect: item.onSelect
-  }, item.label)) : endFold.items) : null;
-  const extraMenu = endMenu ? [endMenu].concat(quickMenu) : quickMenu;
-  // the swap is announced (the focus stays where it is, on the table)
-  const was = _react.default.useRef(selecting);
-  // stuck: the bar is sticky, pinned at its scroll container's top, with content scrolled under it
-  _react.default.useEffect(() => {
-    const el = root.current;
-    if (!el || typeof window === 'undefined') return undefined;
-    const scrollerOf = node => {
-      for (let p = node.parentElement; p; p = p.parentElement) {
-        const o = getComputedStyle(p).overflowY;
-        if (o === 'auto' || o === 'scroll') return p;
-      }
-      return null;
-    };
-    // the scroll container is found on each check: on the first render the page's stylesheets may not have applied yet
-    const check = () => {
-      const scroller = scrollerOf(el);
-      const sticky = getComputedStyle(el).position === 'sticky';
-      const top = scroller ? scroller.getBoundingClientRect().top + (parseFloat(getComputedStyle(scroller).paddingTop) || 0) : 0,
-        scrolled = scroller ? scroller.scrollTop > 0 : window.scrollY > 0;
-      const stuck = sticky && scrolled && el.getBoundingClientRect().top <= top + 1;
-      if (stuck) el.setAttribute('data-plx-stuck', '');else el.removeAttribute('data-plx-stuck');
-    };
-    // scroll events come at most once a frame already: the check runs on each
-    const schedule = check;
-    // scroll does not bubble: listening in the capture phase on the document hears every scroll container
-    document.addEventListener('scroll', schedule, {
-      capture: true,
-      passive: true
-    });
-    window.addEventListener('resize', schedule);
-    check();
-    return () => {
-      document.removeEventListener('scroll', schedule, {
-        capture: true
-      });
-      window.removeEventListener('resize', schedule);
-    };
-  }, [sticky]);
-  _react.default.useEffect(() => {
-    if (was.current !== selecting) (0, _announce.announce)(selecting ? fill(t.swapped, {
-      n: (0, _format.formatNumber)(selCount)
-    }) : t.cleared);
-    was.current = selecting;
-  }, [selecting]);
-  const words = {
-    noun: sel && sel.noun || 'item',
-    plural: sel && sel.plural || (sel && sel.noun || 'item') + 's'
-  };
-  const off = a => !!a.disabled || !!(a.single && selCount > 1);
-  const why = a => a.why || fill(a.single && selCount > 1 ? t.single : t.why, Object.assign({
-    action: String(a.label).toLowerCase()
-  }, words));
-  const acts = shown.length || extraMenu.length ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
-    className: "plx-command-bar__actions"
-  }, /*#__PURE__*/_react.default.createElement(_BarActions.BarActions, {
-    actions: shown,
-    iconOnly: ctx.iconOnly,
-    fold: fold,
-    moreLabel: t.more,
-    dangerClass: "plx-command-bar__danger",
-    off: selecting ? off : undefined,
-    why: selecting ? why : undefined,
-    extra: extraMenu
-  })) : null;
-  const quickEls = quickKept.map(q => /*#__PURE__*/_react.default.createElement(_QuickFilter.QuickFilter, _extends({
-    key: q.id || q.label
-  }, q)));
-  const findEl = (find || quickEls.length) && !selecting ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
-    className: "plx-command-bar__find"
-  }, find, quickEls) : null;
-  const viewEl = view ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
-    className: "plx-command-bar__view"
-  }, view) : null;
-  const countEl = selecting || count === undefined || count === null || ctx.collapsed ? null : typeof count === 'string' || typeof count === 'number' ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
-    variant: "data",
-    className: "plx-command-bar__count"
-  }, count) : count;
-  // while rows are selected the bar ends with "× N selected": the way out of the selection (Microsoft 365)
-  const hiddenText = sel && sel.hidden > 0 ? fill(t.hidden, {
-    n: (0, _format.formatNumber)(sel.hidden)
-  }) : '';
-  const [hiddenBefore, hiddenAfter] = String(t.hidden).split('{n}');
-  const [before, after] = String(t.selected).split('{n}');
-  const clearEl = selecting ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
-    content: t.clear
-  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    size: "sm",
-    variant: "ghost",
-    icon: "close",
-    className: "plx-command-bar__clear",
-    "aria-label": fill(t.clearName, {
-      n: (0, _format.formatNumber)(selCount)
-    }) + hiddenText,
-    onClick: () => sel.onClear && sel.onClear()
-  }, before, /*#__PURE__*/_react.default.createElement(_Text.Text, {
-    variant: "data",
-    className: "plx-command-bar__number"
-  }, (0, _format.formatNumber)(selCount)), after, hiddenText ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, hiddenBefore, /*#__PURE__*/_react.default.createElement(_Text.Text, {
-    variant: "data"
-  }, (0, _format.formatNumber)(sel.hidden)), hiddenAfter) : null)) : null;
-  const statusEl = selecting || !status || ctx.collapsed ? null : /*#__PURE__*/_react.default.createElement(_Text.Text, {
-    variant: "secondary",
-    className: "plx-command-bar__status"
-  }, status);
-  const keptEnd = !selecting && !endAway ? endContent : null;
-  const tail = countEl || statusEl || keptEnd || clearEl ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
-    className: "plx-command-bar__end"
-  }, selecting && viewEl ? /*#__PURE__*/_react.default.createElement(_Divider.Divider, {
-    orientation: "vertical"
-  }) : null, countEl, statusEl, keptEnd, clearEl) : null;
-  // Escape in the bar clears the selection (as "× N selected" does)
-  const onKeyDown = selecting && sel.onClear ? e => {
-    if (e.key === 'Escape' && !e.defaultPrevented && !e.target.closest('[role="menu"], [role="dialog"]')) {
-      e.preventDefault();
-      sel.onClear();
-    }
-  } : undefined;
-  const parts = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, acts, acts && findEl ? /*#__PURE__*/_react.default.createElement(_Divider.Divider, {
-    orientation: "vertical"
-  }) : null, findEl, /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Spacer, null), viewEl, tail);
-  const name = selecting ? sel.label || fill(t.actions, {
-    label: label || ''
-  }).trim() : label;
-  return /*#__PURE__*/_react.default.createElement(BarContext.Provider, {
-    value: ctx
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    ref: root,
-    className: (0, _cx.cx)('plx-command-bar', ctx.iconOnly && 'plx-command-bar--icons', selecting && 'plx-command-bar--selecting', className),
-    "data-plx-layout": shape,
-    "data-plx-position": sticky === true ? 'sticky' : sticky === false ? 'static' : 'auto',
-    onKeyDown: onKeyDown
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-command-bar__bar"
-  }, /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar, {
-    label: name,
-    variant: "bar",
-    className: "plx-command-bar__row",
-    "data-plx-bar-row": ""
-  }, parts)), /*#__PURE__*/_react.default.isValidElement(selection) ? selection : null));
-}
-  } },
   "platform/patterns/ReviewFlow/ReviewFlow.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","../../components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","../ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","../CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -27589,8 +28011,15 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        current view (filtered and sorted, the current page, every row of it); columns stay independent; default false
      typeIcons: the column type icon before each header title (default: on in a DataGrid, off in the static Table);
        false hides them
-     headerMenu (default true): the column menu (sort in the type's words, filter, group, width, move, hide); columnMenu:
-       the application's field actions first in it ([{ label, icon, onSelect(column), danger, disabled, separator }])
+     headerMenu (default true): a click on a title sorts; the options button at a header's end edge opens the column menu
+       (sort in the type's words, filter by this field, group or don't group by this field); right-click on a header
+       opens the column chooser (size this column or every column to fit, every column with a check, More… for the
+       Manage columns dialog). columnMenu: the application's field actions first in the column menu (duplicate, insert
+       left or right, copy link, description, permissions: [{ label, icon, onSelect(column), danger, disabled, separator }])
+     Look (owner, 2026-10-23): a silver header (gray 50 to gray 200, a gray 400 line under it) 28/32/40px tall by
+       density; hovered, every header line shows and the column under the pointer deepens with both edges in gray 400;
+       a hovered row tints gray 100 with its lines in gray 300; a selected row is blue 100 with blue-gray lines and a 3px
+       blue 600 bar at its start (blue 200 hovered); the sort arrow follows the title; an active filter shows a funnel
      rowMenu: [{ label, icon, onSelect(record), danger, disabled, separator }] or (record) => that list, opened by the
        row's button (rowMenuButton, default true) or right-click; DataGrid.useActions(actions, selectedKeys, strings)
        wraps selection commands with Undo for the CommandBar
@@ -47307,342 +47736,6 @@ function GroupPanel({
     count: levels.length,
     inline: inline
   }, body);
-}
-  } },
-  "platform/patterns/ColumnsMenu/ColumnsMenu.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.ColumnsList = ColumnsList;
-exports.ColumnsMenu = ColumnsMenu;
-exports.ManageColumnsDialog = ManageColumnsDialog;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _Button = require("../../components/Button/Button.jsx");
-var _Checkbox = require("../../components/Checkbox/Checkbox.jsx");
-var _Dialog = require("../../components/Dialog/Dialog.jsx");
-var _Field = require("../../components/Field/Field.jsx");
-var _Icon = require("../../components/Icon/Icon.jsx");
-var _Input = require("../../components/Input/Input.jsx");
-var _SearchField = require("../../components/SearchField/SearchField.jsx");
-var _Text = require("../../components/Text/Text.jsx");
-var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
-var _VisuallyHidden = require("../../components/VisuallyHidden/VisuallyHidden.jsx");
-var _panelParts = require("../CommandBar/panel-parts.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · ColumnsMenu, ManageColumnsDialog
-   Summary: The command bar's Columns (owner, 2026-10-14: the first column is a must; a list with reordering): a "Columns"
-     dropdown listing every column with its handle, a checkbox (shown or hidden), "Make first column" (or the pinned mark
-     of the first) and Move up / Move down; ManageColumnsDialog is the same list, larger, with a find field, Show all,
-     Hide all and a First column select, applied with Apply.
-   Usage:
-     const [columns, setColumns] = React.useState({ order: ['name', 'type', 'size'], hidden: [] });
-     <ColumnsMenu fields={fields} value={columns} onChange={setColumns} />
-     <ManageColumnsDialog fields={fields} value={columns} onChange={setColumns} />
-     <DataGrid … columnOrder={columns.order} hiddenColumns={columns.hidden} />      (or useCollectionView)
-   Props:
-     fields: the columns: [{ value, label }] (the collection's fields)
-     value: { order: [field…], hidden: [field…] }; the first of the order is the first column (never hidden)
-     onChange(value): runs on every change (the dialog: on Apply)
-     inline: (ColumnsMenu) draws the list alone (open, in a frame); default false
-     strings: { label: "Columns", manage: "Manage columns", first: "First column", makeFirst: "Make first column",
-       moveUp: "Move {name} up", moveDown: "Move {name} down", up: "Move up", down: "Move down", find: "Find a column",
-       showAll: "Show all", hideAll: "Hide all", apply: "Apply", cancel: "Cancel", shown: "{name} shown", hidden: "{name}
-       hidden", isFirst: "{name} is the first column", moved: "{name}, position {position} of {total}", row: "{name}{first}.
-       Alt + Arrow Up or Down moves it", firstMark: ", first column", none: "No column matches" }
-   Behavior:
-     Changes in the dropdown apply at once; the dialog applies them with Apply (Cancel leaves the columns as they were).
-     A row moves by drag, by Move up and Move down, or by Alt + Arrow Up / Down on the focused row; Make first column moves
-       it to the top. Each change is announced politely. The first column cannot be hidden.
-     The button reads "Columns" with the thin chevron; icons only, its icon and tooltip; hidden columns tint it and show
-       their count. */
-
-const STRINGS = {
-  label: 'Columns',
-  manage: 'Manage columns',
-  first: 'First column',
-  makeFirst: 'Make first column',
-  moveUp: 'Move {name} up',
-  moveDown: 'Move {name} down',
-  up: 'Move up',
-  down: 'Move down',
-  find: 'Find a column',
-  showAll: 'Show all',
-  hideAll: 'Hide all',
-  apply: 'Apply',
-  cancel: 'Cancel',
-  shown: '{name} shown',
-  hidden: '{name} hidden',
-  isFirst: '{name} is the first column',
-  moved: '{name}, position {position} of {total}',
-  row: '{name}{first}. Alt + Arrow Up or Down moves it',
-  firstMark: ', first column',
-  none: 'No column matches'
-};
-const moveTo = (order, f, i) => {
-  const rest = order.filter(x => x !== f);
-  rest.splice(i, 0, f);
-  return rest;
-};
-const nameIn = fields => f => {
-  const x = fields.find(y => y.value === f);
-  return x ? x.label : f;
-};
-
-// the list: one row per column
-function ColumnsList({
-  fields,
-  value,
-  onChange,
-  filter = '',
-  t
-}) {
-  const [msg, setMsg] = _react.default.useState('');
-  const [drag, setDrag] = _react.default.useState(null);
-  const box = _react.default.useRef(null);
-  const name = nameIn(fields);
-  const order = value.order,
-    hidden = value.hidden || [];
-  const put = (o, h, words, focus) => {
-    onChange({
-      order: o,
-      hidden: h
-    });
-    setMsg(words);
-    if (focus) setTimeout(() => {
-      const el = box.current && box.current.querySelector('[data-plx-field="' + focus + '"]');
-      if (el) el.focus();
-    }, 0);
-  };
-  const move = (f, to, focus) => {
-    if (to < 0 || to >= order.length) return;
-    put(moveTo(order, f, to), to === 0 ? hidden.filter(x => x !== f) : hidden, to === 0 ? (0, _panelParts.fill)(t.isFirst, {
-      name: name(f)
-    }) : (0, _panelParts.fill)(t.moved, {
-      name: name(f),
-      position: to + 1,
-      total: order.length
-    }), focus ? f : null);
-  };
-  const q = filter.trim().toLowerCase();
-  const shown = order.filter(f => !q || name(f).toLowerCase().indexOf(q) >= 0);
-  return /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-columns-list",
-    ref: box
-  }, shown.length ? null : /*#__PURE__*/_react.default.createElement(_Text.Text, {
-    variant: "secondary"
-  }, t.none), shown.map(f => {
-    const i = order.indexOf(f);
-    return /*#__PURE__*/_react.default.createElement("div", {
-      key: f,
-      "data-plx-field": f,
-      tabIndex: 0,
-      draggable: true,
-      "aria-label": (0, _panelParts.fill)(t.row, {
-        name: name(f),
-        first: i === 0 ? t.firstMark : ''
-      }),
-      "aria-keyshortcuts": "Alt+ArrowUp Alt+ArrowDown",
-      className: (0, _cx.cx)('plx-columns-list__row', drag === f && 'is-dragging'),
-      onKeyDown: e => {
-        if (e.target !== e.currentTarget || !e.altKey) return;
-        if (e.key === 'ArrowUp') {
-          e.preventDefault();
-          move(f, i - 1, true);
-        }
-        if (e.key === 'ArrowDown') {
-          e.preventDefault();
-          move(f, i + 1, true);
-        }
-      },
-      onDragStart: e => {
-        setDrag(f);
-        e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setData('text/plain', f);
-      },
-      onDragEnd: () => setDrag(null),
-      onDragOver: e => e.preventDefault(),
-      onDrop: e => {
-        e.preventDefault();
-        const from = e.dataTransfer.getData('text/plain') || drag;
-        setDrag(null);
-        if (from && from !== f) move(from, i);
-      }
-    }, /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-columns-list__handle",
-      "aria-hidden": "true"
-    }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-      name: "drag"
-    })), /*#__PURE__*/_react.default.createElement(_Checkbox.Checkbox, {
-      label: name(f),
-      checked: hidden.indexOf(f) < 0,
-      disabled: i === 0,
-      onChange: () => put(order, (0, _panelParts.toggle)(hidden, f), (0, _panelParts.fill)(hidden.indexOf(f) >= 0 ? t.shown : t.hidden, {
-        name: name(f)
-      }))
-    }), i === 0 ? /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-columns-list__first"
-    }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-      name: "pin-filled"
-    }), /*#__PURE__*/_react.default.createElement(_Text.Text, {
-      variant: "secondary"
-    }, t.first)) : /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      size: "xs",
-      variant: "ghost",
-      icon: "pin",
-      onClick: () => move(f, 0, true)
-    }, t.makeFirst), /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
-      content: t.up
-    }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      size: "xs",
-      variant: "ghost",
-      icon: "chevron-up",
-      iconOnly: true,
-      label: (0, _panelParts.fill)(t.moveUp, {
-        name: name(f)
-      }),
-      disabled: i === 0,
-      onClick: () => move(f, i - 1)
-    })), /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
-      content: t.down
-    }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      size: "xs",
-      variant: "ghost",
-      icon: "chevron-down",
-      iconOnly: true,
-      label: (0, _panelParts.fill)(t.moveDown, {
-        name: name(f)
-      }),
-      disabled: i === order.length - 1,
-      onClick: () => move(f, i + 1)
-    })));
-  }), /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, {
-    role: "status",
-    "aria-live": "polite"
-  }, msg));
-}
-function ColumnsMenu({
-  fields = [],
-  value,
-  onChange,
-  inline = false,
-  strings
-}) {
-  const t = Object.assign({}, STRINGS, strings);
-  const v = value || {
-    order: fields.map(f => f.value),
-    hidden: []
-  };
-  const list = /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-find-panel plx-find-panel--columns"
-  }, /*#__PURE__*/_react.default.createElement(ColumnsList, {
-    fields: fields,
-    value: v,
-    onChange: onChange,
-    t: t
-  }));
-  return /*#__PURE__*/_react.default.createElement(_panelParts.PanelTrigger, {
-    icon: "fields",
-    label: t.label,
-    title: t.label,
-    count: (v.hidden || []).length,
-    caret: true,
-    size: "lg",
-    inline: inline
-  }, list);
-}
-function ManageColumnsDialog({
-  fields = [],
-  value,
-  onChange,
-  strings,
-  trigger
-}) {
-  const t = Object.assign({}, STRINGS, strings);
-  const v = value || {
-    order: fields.map(f => f.value),
-    hidden: []
-  };
-  const [open, setOpen] = _react.default.useState(false);
-  const [draft, setDraft] = _react.default.useState(v);
-  const [q, setQ] = _react.default.useState('');
-  const name = nameIn(fields);
-  const start = () => {
-    setDraft(v);
-    setQ('');
-    setOpen(true);
-  };
-  const button = trigger ? /*#__PURE__*/_react.default.cloneElement(trigger, {
-    onClick: start
-  }) : /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    size: "sm",
-    variant: "ghost",
-    icon: "fields",
-    onClick: start
-  }, t.manage);
-  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, button, /*#__PURE__*/_react.default.createElement(_Dialog.Dialog, {
-    open: open,
-    onClose: () => setOpen(false),
-    title: t.manage,
-    icon: "fields",
-    size: "md",
-    footer: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      onClick: () => setOpen(false)
-    }, t.cancel), /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      variant: "primary",
-      onClick: () => {
-        onChange(draft);
-        setOpen(false);
-      }
-    }, t.apply))
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-find-panel plx-find-panel--dialog"
-  }, /*#__PURE__*/_react.default.createElement(_Field.Field, {
-    label: t.first
-  }, /*#__PURE__*/_react.default.createElement(_Input.Select, {
-    value: draft.order[0],
-    options: draft.order.map(f => ({
-      value: f,
-      label: name(f)
-    })),
-    onChange: e => setDraft({
-      order: moveTo(draft.order, e.target.value, 0),
-      hidden: (draft.hidden || []).filter(x => x !== e.target.value)
-    })
-  })), /*#__PURE__*/_react.default.createElement(_SearchField.SearchField, {
-    width: "fill",
-    value: q,
-    onChange: e => setQ(e.target.value),
-    onClear: () => setQ(''),
-    placeholder: t.find,
-    label: t.find
-  }), /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-find-panel__add"
-  }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    size: "sm",
-    variant: "ghost",
-    icon: "visibility",
-    onClick: () => setDraft({
-      order: draft.order,
-      hidden: []
-    })
-  }, t.showAll), /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    size: "sm",
-    variant: "ghost",
-    icon: "visibility-off",
-    onClick: () => setDraft({
-      order: draft.order,
-      hidden: draft.order.slice(1)
-    })
-  }, t.hideAll)), /*#__PURE__*/_react.default.createElement(ColumnsList, {
-    fields: fields,
-    value: draft,
-    onChange: setDraft,
-    filter: q,
-    t: t
-  }))));
 }
   } },
   "platform/patterns/ViewMenu/ViewMenu.jsx": { deps: {"react":null,"../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {

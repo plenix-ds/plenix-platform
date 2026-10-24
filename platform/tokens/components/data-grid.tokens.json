@@ -170,6 +170,61 @@
       "$value": "{plx-sys.action-primary-background}",
       "$type": "color",
       "$description": "Unread record unread-bar-color (task 164)."
+    },
+    "data-grid-header-background-image": {
+      "$value": "linear-gradient(to bottom,{plx-sys.data-grid-header-top},{plx-sys.data-grid-header-bottom})",
+      "$type": "color",
+      "$description": "DataGrid header: the silver band, gray 50 at the top to gray 200 at the bottom (owner, 2026-10-23, C)."
+    },
+    "data-grid-header-hover-background-image": {
+      "$value": "linear-gradient(to bottom,{plx-sys.data-grid-header-hover-top},{plx-sys.data-grid-header-hover-bottom})",
+      "$type": "color",
+      "$description": "DataGrid header: a column under the pointer, one shade deeper, gray 100 to gray 300 (owner, 2026-10-23, H3)."
+    },
+    "data-grid-header-edge": {
+      "$value": "{plx-sys.data-grid-header-edge}",
+      "$type": "color",
+      "$description": "DataGrid header: the gray 400 line under it and before its options button (owner, 2026-10-23)."
+    },
+    "data-grid-header-hover-line": {
+      "$value": "{plx-sys.data-grid-header-hover-line}",
+      "$type": "color",
+      "$description": "DataGrid header: its column lines while the pointer is over it, gray 350 (owner, 2026-10-23, H3)."
+    },
+    "data-grid-header-hover-edge": {
+      "$value": "{plx-sys.data-grid-header-hover-edge}",
+      "$type": "color",
+      "$description": "DataGrid header: the two lines of the column under the pointer, gray 400 (owner, 2026-10-23, H3)."
+    },
+    "data-grid-row-hover-line": {
+      "$value": "{plx-sys.data-grid-row-hover-line}",
+      "$type": "color",
+      "$description": "DataGrid: the lines of a row under the pointer, gray 300, so the row reads as a band of cells (owner, 2026-10-23, R2)."
+    },
+    "data-grid-row-selected-line": {
+      "$value": "{plx-sys.data-grid-row-selected-line}",
+      "$type": "color",
+      "$description": "DataGrid: the lines of a selected row, blue-gray 250 (owner, 2026-10-23, S2)."
+    },
+    "data-grid-row-selected-bar": {
+      "$value": "{plx-sys.data-grid-row-selected-bar}",
+      "$type": "color",
+      "$description": "DataGrid: the bar at the start of a selected row, blue 600 (owner, 2026-10-23, S2)."
+    },
+    "data-grid-row-selected-bar-width": {
+      "$value": "{plx-sys.border-width-thick}",
+      "$type": "dimension",
+      "$description": "DataGrid: the selected row’s start bar, 3px (the accent bar width the UI uses)."
+    },
+    "data-grid-menu-button-hover-background": {
+      "$value": "{plx-sys.data-grid-menu-button-hover}",
+      "$type": "color",
+      "$description": "DataGrid header: the options button under the pointer, gray 200 (owner, 2026-10-23)."
+    },
+    "data-grid-menu-button-padding-inline": {
+      "$value": "{plx-ref.space-4px}",
+      "$type": "dimension",
+      "$description": "DataGrid header: the options button’s sides (Windows Explorer: a narrow button the header’s height)."
     }
   }
 }

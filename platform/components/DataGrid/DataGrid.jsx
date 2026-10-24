@@ -53,8 +53,15 @@
        current view (filtered and sorted, the current page, every row of it); columns stay independent; default false
      typeIcons: the column type icon before each header title (default: on in a DataGrid, off in the static Table);
        false hides them
-     headerMenu (default true): the column menu (sort in the type's words, filter, group, width, move, hide); columnMenu:
-       the application's field actions first in it ([{ label, icon, onSelect(column), danger, disabled, separator }])
+     headerMenu (default true): a click on a title sorts; the options button at a header's end edge opens the column menu
+       (sort in the type's words, filter by this field, group or don't group by this field); right-click on a header
+       opens the column chooser (size this column or every column to fit, every column with a check, More… for the
+       Manage columns dialog). columnMenu: the application's field actions first in the column menu (duplicate, insert
+       left or right, copy link, description, permissions: [{ label, icon, onSelect(column), danger, disabled, separator }])
+     Look (owner, 2026-10-23): a silver header (gray 50 to gray 200, a gray 400 line under it) 28/32/40px tall by
+       density; hovered, every header line shows and the column under the pointer deepens with both edges in gray 400;
+       a hovered row tints gray 100 with its lines in gray 300; a selected row is blue 100 with blue-gray lines and a 3px
+       blue 600 bar at its start (blue 200 hovered); the sort arrow follows the title; an active filter shows a funnel
      rowMenu: [{ label, icon, onSelect(record), danger, disabled, separator }] or (record) => that list, opened by the
        row's button (rowMenuButton, default true) or right-click; DataGrid.useActions(actions, selectedKeys, strings)
        wraps selection commands with Undo for the CommandBar

@@ -12,6 +12,8 @@
      fields: the columns: [{ value, label }] (the collection's fields)
      value: { order: [field…], hidden: [field…] }; the first of the order is the first column (never hidden)
      onChange(value): runs on every change (the dialog: on Apply)
+     open, onOpenChange(open): (ManageColumnsDialog) the dialog opened by its owner, e.g. the DataGrid's "More…" in the
+       header's right-click menu; trigger={null} draws no button
      inline: (ColumnsMenu) draws the list alone (open, in a frame); default false
      strings: { label: "Columns", manage: "Manage columns", first: "First column", makeFirst: "Make first column",
        moveUp: "Move {name} up", moveDown: "Move {name} down", up: "Move up", down: "Move down", find: "Find a column",
@@ -98,15 +100,19 @@ export function ColumnsMenu({ fields = [], value, onChange, inline = false, stri
   return <PanelTrigger icon="fields" label={t.label} title={t.label} count={(v.hidden || []).length} caret size="lg" inline={inline}>{list}</PanelTrigger>;
 }
 
-export function ManageColumnsDialog({ fields = [], value, onChange, strings, trigger }) {
+export function ManageColumnsDialog({ fields = [], value, onChange, strings, trigger, open: openProp, onOpenChange }) {
   const t = Object.assign({}, STRINGS, strings);
   const v = value || { order: fields.map((f) => f.value), hidden: [] };
-  const [open, setOpen] = React.useState(false);
+  const controlled = openProp !== undefined;
+  const [own, setOwn] = React.useState(false), open = controlled ? !!openProp : own;
+  const setOpen = (next) => { if (!controlled) setOwn(next); if (onOpenChange) onOpenChange(next); };
   const [draft, setDraft] = React.useState(v);
   const [q, setQ] = React.useState('');
   const name = nameIn(fields);
+  // opened by its owner: start from the current columns, as the button does
+  React.useEffect(() => { if (controlled && openProp) { setDraft(v); setQ(''); } }, [controlled, openProp]);
   const start = () => { setDraft(v); setQ(''); setOpen(true); };
-  const button = trigger ? React.cloneElement(trigger, { onClick: start }) : <Button size="sm" variant="ghost" icon="fields" onClick={start}>{t.manage}</Button>;
+  const button = trigger === null ? null : trigger ? React.cloneElement(trigger, { onClick: start }) : <Button size="sm" variant="ghost" icon="fields" onClick={start}>{t.manage}</Button>;
   return (
     <>
       {button}

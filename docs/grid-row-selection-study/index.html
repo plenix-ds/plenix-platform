@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DataGrid selected rows study</title>
+<link rel="stylesheet" href="../../platform/platform.css">
+<script src="../../platform/providers/theme-boot.js"></script>
+<script src="../../platform/vendor/react-loader.js"></script>
+<script src="../../platform/dist/platform.js"></script>
+<style>
+/* The owner's selected-row study (2026-10-23): silver header, row hover R2 (chosen), five selected-row styles. Palette colors only. */
+body{background:var(--plx-sys-color-surface-page,var(--plx-ref-color-gray-75));margin:0;}
+.study{display:grid;gap:var(--plx-ref-space-32px);margin-inline:auto;max-inline-size:var(--plx-ref-size-900px);padding:var(--plx-ref-space-32px) var(--plx-ref-space-16px);}
+.study__intro h1{font-size:var(--plx-sys-font-size-heading-lg,1.5rem);margin:0 0 var(--plx-ref-space-8px);}
+.study__intro p{color:var(--plx-ref-color-gray-700);margin:0;}
+.study__option h2{font-size:var(--plx-sys-font-size-heading-sm,1rem);margin:0 0 var(--plx-ref-space-4px);}
+.study__option p{color:var(--plx-ref-color-gray-700);margin:0 0 var(--plx-ref-space-12px);}
+/* every option: the header band carries the gradient; its cells are clear so the band shows through */
+.study__option .plx-data-grid__grid-header{background-color:transparent;}
+.study__option .plx-data-grid__grid-col,.study__option .plx-data-grid__grid-headers{background-color:transparent;}
+.study__option .plx-data-grid__grid-col-title{color:var(--plx-comp-data-grid-header-text);}
+.study__option .plx-data-grid{--plx-comp-data-grid-header-text:var(--plx-ref-color-gray-900);}
+.study__option .plx-data-grid__grid-header{background-image:linear-gradient(to bottom,var(--plx-ref-color-gray-50),var(--plx-ref-color-gray-200));border-block-end-color:var(--plx-ref-color-gray-400);}
+.study__option .plx-data-grid[data-plx-density="compact"] .plx-data-grid__grid-header{--plx-comp-data-grid-height:var(--plx-ref-size-28px);}
+.study__option .plx-data-grid[data-plx-density="standard"] .plx-data-grid__grid-header{--plx-comp-data-grid-height:var(--plx-ref-size-32px);}
+.study__option .plx-data-grid[data-plx-density="comfortable"] .plx-data-grid__grid-header{--plx-comp-data-grid-height:var(--plx-ref-size-40px);}
+/* clicking the title sorts; on hover the options button shows at the right edge, full height, a 1px line on its left */
+.study__option .plx-data-grid__grid-header-popup-button--menu{background-color:transparent;block-size:100%;border-inline-start-color:var(--plx-ref-color-gray-400);border-inline-start-style:solid;border-inline-start-width:var(--plx-sys-border-width-thin);border-radius:0;inset-block-start:0;inset-inline-end:0;padding-inline-end:var(--plx-ref-space-4px);padding-inline-start:var(--plx-ref-space-4px);transform:none;}
+.study__option .plx-data-grid__grid-header-popup-button--menu:hover{background-color:var(--plx-ref-color-gray-200);}
+/* the resize handle draws no blue mark on hover: the resize cursor is the cue, as in Explorer */
+.study__option .plx-data-grid__grid-col-resize-handle:hover{background-image:none;}
+
+.study__option .plx-data-grid__grid-row.plx-data-grid__grid-selectable:hover:not(.plx-data-grid__grid-selected){--plx-comp-data-grid-context-row-fill:var(--plx-ref-color-gray-100);}
+.study__option .plx-data-grid__grid-row.plx-data-grid__grid-selectable:hover:not(.plx-data-grid__grid-selected){border-block-end-color:var(--plx-ref-color-gray-300);}
+.study__option .plx-data-grid__grid-row.plx-data-grid__grid-selectable:hover:not(.plx-data-grid__grid-selected) .plx-data-grid__grid-cell::before,.study__option .plx-data-grid__grid-row.plx-data-grid__grid-selectable:hover:not(.plx-data-grid__grid-selected) .plx-data-grid__grid-cell::after{background-color:var(--plx-ref-color-gray-300);}
+.study__option .plx-data-grid__grid-row:has(+ .plx-data-grid__grid-row.plx-data-grid__grid-selectable:hover:not(.plx-data-grid__grid-selected)){border-block-end-color:var(--plx-ref-color-gray-300);}
+/* S0 today: blue 200; hovered, gray 100 */
+/* S1 light blue */
+.s1 .plx-data-grid__grid-row.plx-data-grid__grid-selected:not(:hover){--plx-comp-data-grid-context-row-fill:var(--plx-ref-color-blue-100);}
+.s1 .plx-data-grid__grid-row.plx-data-grid__grid-selected:hover{--plx-comp-data-grid-context-row-fill:var(--plx-ref-color-blue-200);}
+.s1 .plx-data-grid__grid-row.plx-data-grid__grid-selected:not(:hover){border-block-end-color:var(--plx-ref-color-blue-250);}
+.s1 .plx-data-grid__grid-row.plx-data-grid__grid-selected:not(:hover) .plx-data-grid__grid-cell::before,.s1 .plx-data-grid__grid-row.plx-data-grid__grid-selected:not(:hover) .plx-data-grid__grid-cell::after{background-color:var(--plx-ref-color-blue-250);}
+.s1 .plx-data-grid__grid-row.plx-data-grid__grid-selected:hover{border-block-end-color:var(--plx-ref-color-blue-250);}
+.s1 .plx-data-grid__grid-row.plx-data-grid__grid-selected:hover .plx-data-grid__grid-cell::before,.s1 .plx-data-grid__grid-row.plx-data-grid__grid-selected:hover .plx-data-grid__grid-cell::after{background-color:var(--plx-ref-color-blue-250);}
+.s1 .plx-data-grid__grid-row:has(+ .plx-data-grid__grid-row.plx-data-grid__grid-selected){border-block-end-color:var(--plx-ref-color-blue-250);}
+/* S2 light blue with an accent bar */
+.s2 .plx-data-grid__grid-row.plx-data-grid__grid-selected:not(:hover){--plx-comp-data-grid-context-row-fill:var(--plx-ref-color-blue-100);}
+.s2 .plx-data-grid__grid-row.plx-data-grid__grid-selected:hover{--plx-comp-data-grid-context-row-fill:var(--plx-ref-color-blue-200);}
+.s2 .plx-data-grid__grid-row.plx-data-grid__grid-selected:not(:hover){border-block-end-color:var(--plx-ref-color-blue-250);}
+.s2 .plx-data-grid__grid-row.plx-data-grid__grid-selected:not(:hover) .plx-data-grid__grid-cell::before,.s2 .plx-data-grid__grid-row.plx-data-grid__grid-selected:not(:hover) .plx-data-grid__grid-cell::after{background-color:var(--plx-ref-color-blue-250);}
+.s2 .plx-data-grid__grid-row.plx-data-grid__grid-selected:hover{border-block-end-color:var(--plx-ref-color-blue-250);}
+.s2 .plx-data-grid__grid-row.plx-data-grid__grid-selected:hover .plx-data-grid__grid-cell::before,.s2 .plx-data-grid__grid-row.plx-data-grid__grid-selected:hover .plx-data-grid__grid-cell::after{background-color:var(--plx-ref-color-blue-250);}
+.s2 .plx-data-grid__grid-row:has(+ .plx-data-grid__grid-row.plx-data-grid__grid-selected){border-block-end-color:var(--plx-ref-color-blue-250);}
+.s2 .plx-data-grid__grid-row.plx-data-grid__grid-selected:not(:hover) > .plx-data-grid__grid-cell:first-child,.s2 .plx-data-grid__grid-row.plx-data-grid__grid-selected:hover > .plx-data-grid__grid-cell:first-child{box-shadow:inset var(--plx-sys-border-width-thick) 0 0 var(--plx-ref-color-blue-600);}
+/* S3 light blue block with blue lines */
+.s3 .plx-data-grid__grid-row.plx-data-grid__grid-selected:not(:hover){--plx-comp-data-grid-context-row-fill:var(--plx-ref-color-blue-100);}
+.s3 .plx-data-grid__grid-row.plx-data-grid__grid-selected:hover{--plx-comp-data-grid-context-row-fill:var(--plx-ref-color-blue-200);}
+.s3 .plx-data-grid__grid-row.plx-data-grid__grid-selected:not(:hover){border-block-end-color:var(--plx-ref-color-blue-300);}
+.s3 .plx-data-grid__grid-row.plx-data-grid__grid-selected:not(:hover) .plx-data-grid__grid-cell::before,.s3 .plx-data-grid__grid-row.plx-data-grid__grid-selected:not(:hover) .plx-data-grid__grid-cell::after{background-color:var(--plx-ref-color-blue-300);}
+.s3 .plx-data-grid__grid-row.plx-data-grid__grid-selected:hover{border-block-end-color:var(--plx-ref-color-blue-300);}
+.s3 .plx-data-grid__grid-row.plx-data-grid__grid-selected:hover .plx-data-grid__grid-cell::before,.s3 .plx-data-grid__grid-row.plx-data-grid__grid-selected:hover .plx-data-grid__grid-cell::after{background-color:var(--plx-ref-color-blue-300);}
+.s3 .plx-data-grid__grid-row:has(+ .plx-data-grid__grid-row.plx-data-grid__grid-selected){border-block-end-color:var(--plx-ref-color-blue-300);}
+/* S4 faint blue with an accent bar, gray lines kept */
+.s4 .plx-data-grid__grid-row.plx-data-grid__grid-selected:not(:hover){--plx-comp-data-grid-context-row-fill:var(--plx-ref-color-blue-50);}
+.s4 .plx-data-grid__grid-row.plx-data-grid__grid-selected:hover{--plx-comp-data-grid-context-row-fill:var(--plx-ref-color-blue-100);}
+.s4 .plx-data-grid__grid-row.plx-data-grid__grid-selected:not(:hover) > .plx-data-grid__grid-cell:first-child,.s4 .plx-data-grid__grid-row.plx-data-grid__grid-selected:hover > .plx-data-grid__grid-cell:first-child{box-shadow:inset var(--plx-sys-border-width-thick) 0 0 var(--plx-ref-color-blue-600);}
+</style>
+</head><body><div class="study" id="root"></div>
+<script>
+const h = React.createElement, P = window.Plenix;
+const first = ['Michael', 'Marina', 'Peter', 'Irene', 'Samuel', 'Martha'], last = ['Hanna', 'Abdel-Malik', 'Tawfik', 'Girgis', 'Boulos', 'Saad'];
+const status = ['Open', 'Closed', 'Adjourned', 'In session', 'Draft'];
+const rows = Array.from({ length: 5 }, (_, i) => ({ id: i + 1, n: '2026' + String(100000 + i), who: { name: first[i] + ' ' + last[(i * 7) % 6], gender: i % 2 ? 'female' : 'male' },
+  date: '2026-' + String(1 + i).padStart(2, '0') + '-' + String(3 + i * 4).padStart(2, '0'), amount: (i * 1237) % 5000, status: status[i], note: 'Note ' + ((i * 13) % 97) }));
+const cols = [{ title: 'Case number', field: 'n', kind: 'data' }, { title: 'Person', field: 'who', type: 'person' }, { title: 'Date', field: 'date', type: 'date' },
+  { title: 'Amount', field: 'amount', type: 'number' }, { title: 'Status', field: 'status' }, { title: 'Note', field: 'note' }];
+const options = [
+ [
+  "s0",
+  "Today",
+  "Blue 200 fill; the grid lines vanish into it, and a hovered selected row turns gray 100, so it no longer looks selected."
+ ],
+ [
+  "s1",
+  "S1 · Light blue",
+  "Blue 100 fill with its lines in blue-gray 250, so the cells stay separated; hovered, one step deeper (blue 200), still blue."
+ ],
+ [
+  "s2",
+  "S2 · Light blue with an accent bar",
+  "S1 plus a 3px blue 600 bar at the start of each selected row: easy to scan down a long list."
+ ],
+ [
+  "s3",
+  "S3 · Light blue block",
+  "Blue 100 fill with the selected rows’ lines in blue 300: the selection reads as one block, like a spreadsheet range."
+ ],
+ [
+  "s4",
+  "S4 · Faint blue with an accent bar",
+  "Blue 50 fill (barely tinted), the gray lines kept and the 3px blue 600 bar doing the work; hovered, blue 100. The most modern and quiet."
+ ]
+];
+function Grid({ title }) { const [sel, setSel] = React.useState([3, 4]); return h(P.DataGrid, { label: title, data: rows, columns: cols, cells: 'pill', selectable: true, selected: sel, onSelectionChange: setSel }); }
+function App() {
+  return h(React.Fragment, null,
+    h('div', { className: 'study__intro' }, h('h1', null, 'DataGrid selected rows'), h('p', null, 'The real grid with the silver header and the chosen row hover (R2). Rows 3 and 4 are selected in every grid, so the line between two selected rows shows too. Hover a selected row to see its hover.')),
+    options.map(([cls, title, text]) => h('section', { key: cls, className: 'study__option ' + cls }, h('h2', null, title), h('p', null, text), h(Grid, { title }))));
+}
+ReactDOM.createRoot(document.getElementById('root')).render(h(App));
+</script></body></html>

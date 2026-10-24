@@ -20,6 +20,11 @@
       "$value": "{plx-ref.size-36px}",
       "$type": "dimension",
       "$description": "DataGrid: the view column at the end of the header (the view menu's button): as wide as the checkbox column."
+    },
+    "data-grid-header-height": {
+      "$value": "{plx-ref.size-28px}",
+      "$type": "dimension",
+      "$description": "DataGrid column header: 28px at Compact, the titles unchanged (owner, 2026-10-23: Windows Explorer’s header)."
     }
   }
 }
