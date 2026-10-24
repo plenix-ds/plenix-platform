@@ -8,7 +8,7 @@ Start here in a new session (Claude or Codex). TODO.md now only points here: new
 
 - Branch: `styling/phase-2` in both repositories (`plenix-ds/plenix-platform` and its submodule
   `platform/design-system` = `plenix-ds/plenix-design-system`). `main` is behind it. Work continues on this branch.
-- Last release: 0.69.1 (2026-10-23; 0.68.1 grid speed, 0.69.0 the new grid look and header menus, 0.69.1 grouping on TanStack). Not released yet on the branch: header style 2, the spec's permanent merge, and the icon fix (#268, planned as 0.69.2).
+- Last release: 0.69.2 (2026-10-24): icons drawn inline with no gray squares (#268), the grid studies linked and published (#272), the tag picker fix (#261), the EntityHeader layouts (#244, header style 1). Before it: 0.68.1 grid speed, 0.69.0 the new grid look, 0.69.1 grouping on TanStack.
 - **No release unless the owner declares it.**
 
 ## Done
@@ -31,7 +31,6 @@ Start here in a new session (Claude or Codex). TODO.md now only points here: new
 
 | # | Work | State |
 |---|---|---|
-| **#261** | **Priority 1.** Tags seem not to save: in Combobox with `multiple`, Enter on a suggested tag the person already has removes it (RedSave P-57) | not started |
 | #207–#210 | Zero overlap for the rest: 137 stylesheets (Z1 charts and patterns 40, Z2 components A–L 39, Z3 M–Z and services 37, Z4 the design-system site 21) | 13 Z1 PRs (#222–#234) open, not merged |
 | #249 | Phase 5: cascade layers, and remove `!important` (413 in `utilities.css`, 44 in `services/auth/brand.css`) | not started |
 | #250 | Phase 7, rest: unused classes and duplicate utilities, with a check | not started |
@@ -47,8 +46,7 @@ Start here in a new session (Claude or Codex). TODO.md now only points here: new
 | #255 | DataGrid: badges and icons in custom cells 0.5 to 1.1px below center | waits for the owner's decision (fix measured) |
 | #257 | Spec wording: choose the rules (`docs/briefs/spec-wording/proposal.md`), then one cleanup after the styling work | waits for the owner's decision |
 | #258 | Housekeeping: stale scratch copies and worktrees (remove `node_modules` junctions first) | not started |
-| #268 | Icons: the gray-square fix, built and checked | release as 0.69.2 when its tests pass |
-| #269, #270, #271, #272 | Grid follow-ups: Filter by this field to the command bar's Filter panel; a plain right arrow icon; five grid tests that failed before today; link and publish the grid studies | not started |
+| #269, #270, #271 | Grid follow-ups: Filter by this field to the command bar's Filter panel; a plain right arrow icon; five grid tests that failed before today | not started |
 | #236, #237 | The stand-in account's real name and email; SplitView's divider after stacking | not started |
 | #263 | Bug: the color references no longer show in the spec | could not reproduce; the owner names the page |
 | #264 | The design system as a PostgreSQL database (tables, links, mappings to other systems); children #265 Web/iOS/Android split, #266 a record per variation, #267 styling per variation (base, variations, themes apart) | needs the owner (schema review, hosting, tool choice) |
