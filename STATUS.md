@@ -1,6 +1,6 @@
 # Plenix: what is done and what is left (2026-10-23)
 
-Start here in a new session (Claude or Codex). Then read `AGENTS.md` (Codex) or `CLAUDE.md` and the memory index
+Start here in a new session (Claude or Codex). TODO.md now only points here: new work is a GitHub issue. Then read `AGENTS.md` (Codex) or `CLAUDE.md` and the memory index
 (Claude), and the issue for the task you take. Every remaining item below has a GitHub issue in
 `plenix-ds/plenix-platform`; the tracking issue #252 lists them all.
 
@@ -30,6 +30,7 @@ Start here in a new session (Claude or Codex). Then read `AGENTS.md` (Codex) or 
 
 | # | Work | State |
 |---|---|---|
+| **#261** | **Priority 1.** Tags seem not to save: in Combobox with `multiple`, Enter on a suggested tag the person already has removes it (RedSave P-57) | not started |
 | #207–#210 | Zero overlap for the rest: 137 stylesheets (Z1 charts and patterns 40, Z2 components A–L 39, Z3 M–Z and services 37, Z4 the design-system site 21) | 13 Z1 PRs (#222–#234) open, not merged |
 | #249 | Phase 5: cascade layers, and remove `!important` (413 in `utilities.css`, 44 in `services/auth/brand.css`) | not started |
 | #250 | Phase 7, rest: unused classes and duplicate utilities, with a check | not started |
@@ -46,6 +47,9 @@ Start here in a new session (Claude or Codex). Then read `AGENTS.md` (Codex) or 
 | #257 | Spec wording: choose the rules (`docs/briefs/spec-wording/proposal.md`), then one cleanup after the styling work | waits for the owner's decision |
 | #258 | Housekeeping: stale scratch copies and worktrees (remove `node_modules` junctions first) | not started |
 | #220 | Spec mappings: Django and Frappe as source systems | open |
+| #262 | Library adoption: components onto the foundation hooks (moved from TODO.md) | not started |
+| #244 | The page-header study into the CDN | waits for the owner |
+| #52, #90–#98 | Last touch targets; owner infrastructure tasks (SMTP, backups, save service, mirrors, SSO, CPU, Figma themes, new login) | owner tasks |
 | #58 | Final full system-wide test run | last, when everything else is done |
 | #205, #218, #221 | Dark mode, Arabic UI, iOS/Android page template | later (owner: last) |
 
