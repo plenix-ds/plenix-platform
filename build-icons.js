@@ -5,6 +5,9 @@
 // up to 20px), <symbol>-24.svg and <symbol>-24-fill.svg optical size 24 (24px icons). map.json names the symbol behind every
 // Plenix icon name. The stylesheet carries every file as a data: URI, so an icon (outline or filled) never waits for a
 // download when it first appears or when its row is selected.
+// It also writes platform/components/Icon/glyphs.js: every symbol's four path drawings and the name of each Plenix icon,
+// so the Icon component draws an inline SVG (owner, 2026-10-23: a mask icon cost ~0.6 ms to paint, an inline path
+// ~200 times less). A class name alone (no component, or a Material name from icons-all.css) still draws the mask.
 const fs = require('fs');
 const path = require('path');
 
@@ -23,7 +26,7 @@ module.exports = function buildIcons(root) {
   const M = JSON.parse(fs.readFileSync(path.join(dir, 'map.json'), 'utf8'));
   const VARIANTS = [['', ''], ['-fill', '-fill'], ['-24', '-24'], ['-24-fill', '-24-fill']];
   const symbols = [...new Set(Object.values(M.map).map((v) => v.split('#')[0]))].sort();
-  const glyphs = [];
+  const glyphs = [], paths = {};
   for (const s of symbols) for (const [file, suffix] of VARIANTS) {
     // the working set first, then Plenix's own icons (platform/icons/custom, owner 2026-10-19), then the full library
     // (platform/icons/library: every symbol, batch 273)
@@ -31,7 +34,14 @@ module.exports = function buildIcons(root) {
     if (!fs.existsSync(f)) f = path.join(dir, 'custom', s + file + '.svg');
     if (!fs.existsSync(f)) f = path.join(dir, 'library', s + file + '.svg');
     if (!fs.existsSync(f)) throw new Error('icon file missing: ' + s + file + '.svg');
-    glyphs.push('  --plx-comp-icon-glyph-' + ident(s) + suffix + ':' + dataUri(fs.readFileSync(f, 'utf8')) + ';');
+    // one path per file, in its own box (its viewBox, or its width and height when it has none), with the path's own
+    // drawing attributes (a transform, a fill rule: Plenix's custom person icons place their path with a transform)
+    const svg = fs.readFileSync(f, 'utf8'), tag = svg.match(/<path\b([^>]*)\/?>/), box = svg.match(/viewBox="([^"]+)"/), w = svg.match(/ width="([\d.]+)"/), h = svg.match(/ height="([\d.]+)"/);
+    const attr = (name) => { const m = tag && tag[1].match(new RegExp('\\s' + name + '="([^"]+)"')); return m ? m[1] : null; };
+    if (!tag || !attr('d') || (svg.match(/<path/g) || []).length !== 1 || !(box || (w && h))) throw new Error('icon file is not one path with a box: ' + s + file + '.svg');
+    const extra = {}; for (const [a, key] of [['transform', 'transform'], ['fill-rule', 'fillRule'], ['clip-rule', 'clipRule']]) if (attr(a)) extra[key] = attr(a);
+    (paths[s] = paths[s] || []).push([attr('d'), box ? box[1] : '0 0 ' + w[1] + ' ' + h[1]].concat(Object.keys(extra).length ? [extra] : []));
+    glyphs.push('  --plx-comp-icon-glyph-' + ident(s) + suffix + ':' + dataUri(svg) + ';');
   }
   const names = Object.keys(M.map).sort().map((n) => {
     const v = M.map[n], s = ident(v.split('#')[0]), fill = v.endsWith('#fill');
@@ -56,10 +66,22 @@ module.exports = function buildIcons(root) {
     ':root{', ...glyphs, '}',
     '/* the optical size each context draws (exclusive): a Comfortable region and a 24px container draw 24, every other',
     '   density context 20 (the page itself is one) */',
-    '[data-plx-density]:where(:not([data-plx-density="comfortable"], [data-plx-icon-optical="24"])){' + autos(false) + '}',
-    '[data-plx-density="comfortable"]:where(:not([data-plx-icon-optical="24"])){' + autos(true) + '}',
-    '[data-plx-icon-optical="24"]{' + autos(true) + '}',
-    '.plx-icon{outline-color:var(--plx-comp-icon-context-keyline-color,currentcolor);outline-offset:var(--plx-comp-icon-context-keyline-offset,0);outline-style:var(--plx-comp-icon-context-keyline-style,none);outline-width:var(--plx-comp-icon-context-keyline-width,medium);border-inline-start-color:currentcolor;border-inline-start-style:solid;border-inline-start-width:calc(var(--plx-comp-icon-size,var(--plx-sys-icon-size)) * var(--plx-sys-icon-forced-stroke));-webkit-mask-image:var(--plx-comp-icon-url);-webkit-mask-position:center;-webkit-mask-repeat:no-repeat;-webkit-mask-size:var(--plx-comp-icon-mask-size,contain);background-color:currentcolor;block-size:var(--plx-comp-icon-size,var(--plx-sys-icon-size));display:inline-block;flex-shrink:0;inline-size:var(--plx-comp-icon-size,var(--plx-sys-icon-size));margin-inline-start:var(--plx-comp-icon-lead,0);mask-image:var(--plx-comp-icon-url);mask-position:center;mask-repeat:no-repeat;mask-size:var(--plx-comp-icon-mask-size,contain);transform:var(--plx-comp-icon-turn,none);transition-duration:var(--plx-comp-icon-turn-duration,0s);transition-property:transform;transition-timing-function:var(--plx-comp-icon-turn-easing,ease);vertical-align:middle;}',
+    '[data-plx-density]:where(:not([data-plx-density="comfortable"], [data-plx-icon-optical="24"])){--plx-comp-icon-context-show-20:block;--plx-comp-icon-context-show-24:none;' + autos(false) + '}',
+    '[data-plx-density="comfortable"]:where(:not([data-plx-icon-optical="24"])){--plx-comp-icon-context-show-20:none;--plx-comp-icon-context-show-24:block;' + autos(true) + '}',
+    '[data-plx-icon-optical="24"]{--plx-comp-icon-context-show-20:none;--plx-comp-icon-context-show-24:block;' + autos(true) + '}',
+    '.plx-icon{outline-color:var(--plx-comp-icon-context-keyline-color,currentcolor);outline-offset:var(--plx-comp-icon-context-keyline-offset,0);outline-style:var(--plx-comp-icon-context-keyline-style,none);outline-width:var(--plx-comp-icon-context-keyline-width,medium);border-inline-start-color:currentcolor;border-inline-start-style:solid;border-inline-start-width:var(--plx-state-icon-stroke,calc(var(--plx-comp-icon-size,var(--plx-sys-icon-size)) * var(--plx-sys-icon-forced-stroke)));-webkit-mask-image:var(--plx-state-icon-mask,var(--plx-comp-icon-url,linear-gradient(transparent,transparent)));-webkit-mask-position:center;-webkit-mask-repeat:no-repeat;-webkit-mask-size:var(--plx-comp-icon-mask-size,contain);background-color:var(--plx-state-icon-paint,currentcolor);block-size:var(--plx-comp-icon-size,var(--plx-sys-icon-size));display:inline-block;flex-shrink:0;inline-size:var(--plx-comp-icon-size,var(--plx-sys-icon-size));margin-inline-start:var(--plx-comp-icon-lead,0);mask-image:var(--plx-state-icon-mask,var(--plx-comp-icon-url,linear-gradient(transparent,transparent)));mask-position:center;mask-repeat:no-repeat;mask-size:var(--plx-comp-icon-mask-size,contain);transform:var(--plx-comp-icon-turn,none);transition-duration:var(--plx-comp-icon-turn-duration,0s);transition-property:transform;transition-timing-function:var(--plx-comp-icon-turn-easing,ease);vertical-align:middle;}',
+    '@property --plx-state-icon-mask{syntax:"*";inherits:false;}',
+    '@property --plx-state-icon-paint{syntax:"*";inherits:false;}',
+    '@property --plx-state-icon-stroke{syntax:"*";inherits:false;}',
+    '/* the inline drawing (<Icon>): the svg in the text color, no mask; the paths show by the same rules as the mask: the',
+    '   context\'s optical size, or 24 for lg and xl (the component draws only the fill it is given) */',
+    '.plx-icon--inline{--plx-state-icon-mask:none;--plx-state-icon-paint:transparent;--plx-state-icon-stroke:0px;}',
+    '.plx-icon--inline:where(:not(.plx-icon--size-lg, .plx-icon--size-xl)){--plx-comp-icon-glyph-show-20:var(--plx-comp-icon-context-show-20,block);--plx-comp-icon-glyph-show-24:var(--plx-comp-icon-context-show-24,none);}',
+    '.plx-icon--inline:where(.plx-icon--size-lg, .plx-icon--size-xl){--plx-comp-icon-glyph-show-20:none;--plx-comp-icon-glyph-show-24:block;}',
+    '.plx-icon__svg{block-size:var(--plx-comp-icon-mask-size,100%);fill:currentcolor;inline-size:var(--plx-comp-icon-mask-size,100%);margin-block-end:0;margin-block-start:calc((100% - var(--plx-comp-icon-mask-size,100%)) / 2);margin-inline:auto;overflow:hidden;pointer-events:none;}',
+    '.plx-icon__glyph--20{display:var(--plx-comp-icon-glyph-show-20,block);}',
+    '.plx-icon__glyph--24{display:var(--plx-comp-icon-glyph-show-24,none);}',
+    '.plx-icon__svg--shared{display:block;}',
     '.plx-icon--size-xs{--plx-comp-icon-size:var(--plx-comp-icon-size-xs);}',
     '.plx-icon--size-sm{--plx-comp-icon-size:var(--plx-comp-icon-size-sm);}',
     '.plx-icon--size-md{--plx-comp-icon-size:var(--plx-comp-icon-size-md);}',
@@ -83,5 +105,28 @@ module.exports = function buildIcons(root) {
   const missing = Object.keys(M.map).filter((n) => !css.includes('.plx-icon--' + n + '{') && !css.includes('.plx-icon--' + n + ','));
   if (missing.length) throw new Error('icon names without a rule: ' + missing.join(', '));
   fs.writeFileSync(out, css);
+  // the inline drawings: symbol -> [outline 20, filled 20, outline 24, filled 24]; Plenix name (and its underscore alias) ->
+  // [symbol, 1 when its outline is the symbol's fill version (map.json '#fill')]
+  const named = {};
+  for (const n of Object.keys(M.map).sort()) { const v = M.map[n], entry = [v.split('#')[0], v.endsWith('#fill') ? 1 : 0]; named[n] = entry; const a = aliasOf(M, n); if (a) named[a] = entry; }
+  // the whole library's symbol names (platform/icons/library, every symbol with its four files): the Icon component
+  // resolves any Material name against it and loads that symbol's files on demand (here, or /cdn/material/<commit>/)
+  const libDir = path.join(dir, 'library'), files = new Set(fs.existsSync(libDir) ? fs.readdirSync(libDir) : []);
+  const library = [...new Set([...files].map((f) => f.replace(/(-24)?(-fill)?\.svg$/, '')))].filter((s) => VARIANTS.every(([v]) => files.has(s + v + '.svg'))).sort();
+  fs.writeFileSync(path.join(root, 'platform', 'components', 'Icon', 'glyphs.js'),
+    '/* Plenix · Icon glyphs\n' +
+    '   Summary: GENERATED FILE — DO NOT EDIT. Written by build-icons.js from platform/icons/ (Material Symbols Sharp, weight\n' +
+    '     300, used exactly as published): the names the Icon component resolves. The drawings themselves are in icon.css\n' +
+    '     (one copy: the component reads a Plenix symbol\'s files from its --plx-comp-icon-glyph-* data URIs).\n' +
+    '   Usage: import { SYMBOLS, NAMES, LIBRARY, LIBRARY_COMMIT } from \'./glyphs.js\'   (Icon.jsx only)\n' +
+    '   Props:\n' +
+    '     SYMBOLS: the Plenix set\'s symbols, space separated (their drawings are in icon.css)\n' +
+    '     NAMES: each Plenix icon name (and its underscore alias) -> [symbol, 1 when its outline is the fill version]\n' +
+    '     LIBRARY: the whole library\'s symbol names, space separated (their files load on demand)\n' +
+    '     LIBRARY_COMMIT: the library\'s commit (the CDN keeps its files under /cdn/material/<commit>/) */\n' +
+    'export const SYMBOLS = ' + JSON.stringify(Object.keys(paths).sort().join(' ')) + ';\n' +
+    'export const NAMES = ' + JSON.stringify(named) + ';\n' +
+    'export const LIBRARY = ' + JSON.stringify(library.join(' ')) + ';\n' +
+    'export const LIBRARY_COMMIT = ' + JSON.stringify(String(M._commit).slice(0, 12)) + ';\n');
   return { symbols: symbols.length, names: names.length, bytes: Buffer.byteLength(css) };
 };

@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en" data-plx-density="compact"><head><meta charset="utf-8"><title>Icon names</title>
+<link rel="stylesheet" href="../../../platform/platform.css">
+<script src="../../../platform/vendor/react.production.min.js"></script>
+<script src="../../../platform/vendor/react-dom.production.min.js"></script>
+<script src="../../../platform/dist/platform.js"></script>
+</head><body><div id="root"></div>
+<script>
+// Icon names (icon-names.js drives it): one Icon per way of naming one, so each case can be checked: a Plenix name, its
+// underscore alias, a Material-only name in underscores and in dashes and capitals, an unknown name, and a bare class.
+const h = React.createElement, P = window.Plenix;
+const cases = ['person-cancel', 'person_cancel', 'rocket_launch', 'Rocket-Launch', 'no-such-icon', 'calendar'];
+ReactDOM.createRoot(document.getElementById('root')).render(h('div', null,
+  cases.map((n) => h('span', { key: n, 'data-case': n }, h(P.Icon, { name: n, size: 'md' }))),
+  h('span', { 'data-case': 'bare-unknown', dangerouslySetInnerHTML: { __html: '<span class="plx-icon plx-icon--not-a-real-icon"></span>' } })));
+</script></body></html>

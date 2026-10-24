@@ -21,6 +21,28 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
   field). Before, typing part of a chosen tag and pressing Enter removed that tag, so tags seemed not to save (#261,
   RedSave P-57). The checkbox select (`marks="checkbox"`) still toggles. Test: `tests/combobox-tags.test.js`.
 
+## [0.69.2] - 2026-10-24
+
+### Fixed
+- Icon (#268): one way to draw an icon, inline SVG in the text color.
+  - Every name goes through one resolver (resolveIcon): a Plenix name or its underscore spelling, or any Material
+    Symbols name in dashes or underscores and any case.
+  - Plenix icons draw at once: their drawings are read from icon.css, which already carries every file (one copy, no
+    request, works from file://; glyphs.js holds only the names). Any other symbol loads
+    its files once, on demand, from the library beside the bundle (the CDN's /cdn/material/<commit>/;
+    setIconLibrary(url) points elsewhere).
+  - An unknown name draws nothing, never a filled square (a bare class name neither), and warns once in the console
+    with the closest names.
+  - The drawings are the published paths, with their own transform where a file has one. Compared with the mask
+    drawing at every size, outline and filled, Compact and Comfortable: 6 pixels of antialiasing differ in 64 sets.
+  - Paint: scrolling a 600-row grid 6.2 s → 2.0 s, sorting 1.25 s → 0.61 s, select all 0.48 s → 0.15 s (CPU slowed
+    four times).
+  - What an app should check: nothing to change. icons-all.css is only needed for icons written as bare class names.
+### Added
+- resolveIcon(name) and setIconLibrary(url) in the public API.
+- The design spec's Data grid page links its three studies (header, row hover, selected rows) as its sources, and the
+  deploy publishes them under /Plenix/docs/ (#272).
+
 ## [0.69.1] - 2026-10-24
 
 ### Changed

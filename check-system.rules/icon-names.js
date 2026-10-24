@@ -26,7 +26,7 @@ const PATTERNS = [
 ];
 // the Icon's own modifier classes
 // the modifiers that are not names: the sizes, and the fill an owner passes (<Icon filled>, <Icon filled={false}>)
-const MODIFIER = /^(size-(xs|sm|md|lg|xl)|filled|outline)$/;
+const MODIFIER = /^(size-(xs|sm|md|lg|xl)|filled|outline|inline)$/;   // inline: the component's inline SVG drawing (2026-10-23)
 
 function known(root) {
   const f = path.join(root, 'platform', 'icons', 'map.json');

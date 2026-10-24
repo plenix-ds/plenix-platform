@@ -31,6 +31,7 @@ Any time a `*-prd.md` file in `capabilities/<name>/` is added, edited, or delete
 It writes only these generated files, each starting with `GENERATED FILE — DO NOT EDIT`; never edit them by hand:
 
 - `platform/components/Icon/icon.css`: the icon stylesheet (build-icons.js, from `platform/icons/`)
+- `platform/components/Icon/glyphs.js`: the icon names the Icon component resolves (Plenix names, the Plenix symbols, the whole library's symbol names and commit; build-icons.js). The drawings stay in icon.css
 - `platform/dist/platform.js`: the Platform bundle; publishes the exports of `platform/index.js` on `window.Plenix`
 - `<app>/app.js`: each suite application's page script (dashboard, projects, messages, contacts, calendar, tasks, notes, bookmarks, files, settings), from `<app>/main.jsx`
 - `dam/app/assets.js`: the Asset Manager's page script (React islands)
