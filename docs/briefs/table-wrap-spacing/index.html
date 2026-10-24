@@ -34,19 +34,17 @@
   <section class="rv-section">
     <h2 class="rv-h2">The options</h2>
     <div class="rv-grid">
-      <figure class="rv-fig"><img src="stage-a-256.png" alt="Option A: the wrapped lines sit close together and rows start at the top"><figcaption><span class="rv-tag">A (+ #256)</span> · a cell that wraps reads like a text column: lines close together; with #256 the tall rows start at the top. One-line rows are unchanged.</figcaption></figure>
-      <figure class="rv-fig"><img src="stage-a.png" alt="Option A without the top alignment: lines close, centered in the row"><figcaption><span class="rv-tag">A ALONE</span> · lines close together, centered in the tall row (today's centering)</figcaption></figure>
+      <figure class="rv-fig"><img src="stage-a.png" alt="Option A without the top alignment: lines close, centered in the row"><figcaption><span class="rv-tag">A</span> · a cell that wraps reads like a text column: lines close together; one-line rows unchanged (rows stay centered, as today)</figcaption></figure>
+      <figure class="rv-fig"><img src="stage-a-256.png" alt="Option A: the wrapped lines sit close together and rows start at the top"><figcaption><span class="rv-tag">A, IF #256 IS CHOSEN</span> · the same, with tall rows starting at the top (#256 is still to be decided)</figcaption></figure>
       <figure class="rv-fig"><img src="stage-b.png" alt="Option B: long text stays on one line and ends in an ellipsis"><figcaption><span class="rv-tag">B</span> · never wrap: long text ends in "…" (as a DataGrid cell); the rest is hidden</figcaption></figure>
     </div>
     <ul class="rv-list">
       <li><strong>C · Leave it:</strong> every table author marks long columns <span class="rv-tag">kind: "wrap"</span> by hand; the plain columns keep the gap.</li>
+      <li><strong>With #256 (not decided):</strong> A works with either answer; B and C do not depend on it.</li>
     </ul>
   </section>
 
-  <p class="rv-rec"><strong>Suggestion:</strong> A, together with #256 (tall rows start at the top; code columns kept on one
-    line). A static Table is for reading, so its text should wrap the way paragraphs do, with lines close together. One-line
-    rows stay exactly as they are today. B hides facts in a table meant to show them all; C keeps the bug wherever someone
-    forgets a setting.</p>
+  <p class="rv-rec"><strong>Suggestion:</strong> A. A static Table is for reading, so its text should wrap the way paragraphs do, with lines close together; one-line rows stay exactly as they are today. It stands on its own and fits either answer to #256 (centered or top-aligned tall rows). B hides facts in a table meant to show them all; C keeps the bug wherever someone forgets a setting.</p>
 </main>
 </body>
 </html>
