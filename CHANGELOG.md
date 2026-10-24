@@ -6,21 +6,6 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
-### Added
-- EntityHeader `layout`: the five layouts of the owner's page-header study (header style 1, #244): `top-small` (default,
-  unchanged), `top-large` (a 72px image beside the title), `column-small` (a 44px image in its own column),
-  `column-large` (a square spanning the title and the details, at least 112px) and `edge` (the image fills the card's
-  start edge, at least 128px); section headers follow at 32, 48, 32, 64 and 80px. The stretched squares take the largest
-  size token that fits their row (`data-plx-size`, system/steps.css), at most a quarter of the header's width. New
-  tokens: `--plx-comp-entity-header-media-size-*`, `-media-icon-size-*`, `-split-gap`. The section header's media sizes
-  are now the media's own classes (two parent-to-child rules fewer). Review page: `docs/briefs/header-layouts/`.
-
-### Fixed
-- Combobox as a tag picker (`multiple` without `marks`): the list offers only the tags not chosen yet, so Enter on a
-  suggestion always adds one and never removes it; a tag is removed only by its remove button (or Backspace in the empty
-  field). Before, typing part of a chosen tag and pressing Enter removed that tag, so tags seemed not to save (#261,
-  RedSave P-57). The checkbox select (`marks="checkbox"`) still toggles. Test: `tests/combobox-tags.test.js`.
-
 ## [0.69.2] - 2026-10-24
 
 ### Fixed
@@ -38,10 +23,22 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
   - Paint: scrolling a 600-row grid 6.2 s → 2.0 s, sorting 1.25 s → 0.61 s, select all 0.48 s → 0.15 s (CPU slowed
     four times).
   - What an app should check: nothing to change. icons-all.css is only needed for icons written as bare class names.
+- Combobox as a tag picker (`multiple` without `marks`): the list offers only the tags not chosen yet, so Enter on a
+  suggestion always adds one and never removes it; a tag is removed only by its remove button (or Backspace in the empty
+  field). Before, typing part of a chosen tag and pressing Enter removed that tag, so tags seemed not to save (#261,
+  RedSave P-57). The checkbox select (`marks="checkbox"`) still toggles. Test: `tests/combobox-tags.test.js`.
+
 ### Added
 - resolveIcon(name) and setIconLibrary(url) in the public API.
 - The design spec's Data grid page links its three studies (header, row hover, selected rows) as its sources, and the
   deploy publishes them under /Plenix/docs/ (#272).
+- EntityHeader `layout`: the five layouts of the owner's page-header study (header style 1, #244): `top-small` (default,
+  unchanged), `top-large` (a 72px image beside the title), `column-small` (a 44px image in its own column),
+  `column-large` (a square spanning the title and the details, at least 112px) and `edge` (the image fills the card's
+  start edge, at least 128px); section headers follow at 32, 48, 32, 64 and 80px. The stretched squares take the largest
+  size token that fits their row (`data-plx-size`, system/steps.css), at most a quarter of the header's width. New
+  tokens: `--plx-comp-entity-header-media-size-*`, `-media-icon-size-*`, `-split-gap`. The section header's media sizes
+  are now the media's own classes (two parent-to-child rules fewer). Review page: `docs/briefs/header-layouts/`.
 
 ## [0.69.1] - 2026-10-24
 
