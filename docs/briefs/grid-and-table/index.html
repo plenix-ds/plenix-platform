@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en" data-plx-mode="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DataGrid and Table · Plenix sample</title>
+<!-- The owner's sample (2026-10-24): a DataGrid with its CommandBar (commands, search, filter, sort, group) and a static
+     Table below it, both drawn with the real Platform components and sample text. Same base look; different jobs. -->
+<script src="../../../platform/providers/theme-boot.js"></script>
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<link rel="stylesheet" href="../review.css">
+<script src="../../../platform/vendor/react-loader.js"></script>
+<script src="../../../platform/dist/platform.js"></script>
+</head>
+<body class="rv-page">
+<div id="root"></div>
+<script>
+(function () {
+  const h = React.createElement, P = window.Plenix;
+  const owners = ['Maya Chen', 'Jeff Torres', 'Luis Herrera', 'Sarah Morgan', 'James Whitfield', 'Ana Ruiz'];
+  const kinds = ['Report', 'Invoice', 'Contract', 'Proposal', 'Brief'];
+  const statuses = ['Active', 'Draft', 'In review', 'Approved', 'Archived'];
+  const words = ['Northwind', 'Contoso', 'Fabrikam', 'Apex', 'Litware', 'Tailspin', 'Wingtip', 'Adventure', 'Proseware', 'Lucerne'];
+  const rows = Array.from({ length: 40 }, (_, i) => ({ id: i + 1, name: words[i % 10] + ' ' + kinds[(i * 3) % 5].toLowerCase() + ' ' + (i + 1),
+    kind: kinds[(i * 3) % 5], owner: owners[(i * 7) % 6], status: statuses[(i * 2) % 5], amount: ((i * 1373) % 9000) + 120,
+    updated: '2026-' + String(((i * 5) % 12) + 1).padStart(2, '0') + '-' + String(((i * 11) % 27) + 1).padStart(2, '0') }));
+  const fields = [{ value: 'name', label: 'Name', kind: 'text' }, { value: 'kind', label: 'Kind', kind: 'select', options: kinds },
+    { value: 'owner', label: 'Owner', kind: 'select', options: owners }, { value: 'status', label: 'Status', kind: 'select', options: statuses },
+    { value: 'amount', label: 'Amount', kind: 'number' }, { value: 'updated', label: 'Updated', kind: 'date' }];
+  const columns = [{ title: 'Name', field: 'name', kind: 'name', rowLabel: true }, { title: 'Kind', field: 'kind' }, { title: 'Owner', field: 'owner' },
+    { title: 'Status', field: 'status' }, { title: 'Amount', field: 'amount', type: 'currency', align: 'right' }, { title: 'Updated', field: 'updated', type: 'date' }];
+  const facts = [
+    { id: 1, part: 'Header', both: 'Silver header, gray lines', grid: 'Click to sort, menu, resize, move', table: 'Titles only' },
+    { id: 2, part: 'First column', both: 'Names the row', grid: 'Can stay in place while scrolling', table: 'Names the row' },
+    { id: 3, part: 'Borders', both: 'Full inside lines, the same frame', grid: 'Same', table: 'Same' },
+    { id: 4, part: 'Rows', both: 'Same height and padding', grid: 'Select, open, hover, menus', table: 'Read only' },
+    { id: 5, part: 'Data', both: 'From any source', grid: 'Sort, filter, search, group', table: 'Shown as given' }];
+  function Page() {
+    const v = P.useCollectionView(fields, { data: rows, text: (r) => r.name + ' ' + r.owner, quick: { status: 'list' } });
+    const [sel, setSel] = React.useState([]);
+    const shown = rows.filter(v.test);
+    return h('main', { className: 'rv-doc' },
+      h('h1', { className: 'rv-h1' }, 'DataGrid and Table'),
+      h('p', { className: 'rv-lead' }, 'The same base look (header, first column, borders), two different jobs. The data in both can come from any source.'),
+      h('section', { className: 'rv-section' },
+        h('h2', { className: 'rv-h2' }, 'DataGrid: records you work with'),
+        h('p', { className: 'rv-lead' }, 'Sort by clicking a header, search, filter, group, choose columns, select rows and act on them. Its command bar holds the commands, the search and the filters.'),
+        h(P.CommandBar, { label: 'Documents', count: shown.length + ' documents',
+          actions: [{ id: 'new', label: 'New document', icon: 'plus', onSelect: () => {} }, { id: 'upload', label: 'Upload', icon: 'upload', onSelect: () => {} }],
+          find: h(React.Fragment, null, h(P.CommandBarSearch, Object.assign({ placeholder: 'Search documents' }, v.searchProps)), h(P.FilterPanel, v.filterProps)),
+          quickFilters: [Object.assign({ id: 'status', label: 'Status', noun: 'status', options: statuses.map((s) => ({ value: s, label: s })) }, v.quickProps('status'))],
+          view: h(React.Fragment, null, h(P.SortPanel, v.sortProps), h(P.GroupPanel, v.groupProps)),
+          selection: { count: sel.length, noun: 'document', onClear: () => setSel([]),
+            actions: [{ id: 'download', label: 'Download', icon: 'download-arrow', onSelect: () => {} }, { id: 'delete', label: 'Delete', icon: 'trash', danger: true, onSelect: () => {} }] } }),
+        h(P.DataGrid, Object.assign({ label: 'Documents', data: rows, columns, selectable: true, selected: sel, onSelectionChange: (k) => setSel(k), height: '--plx-ref-size-400px' }, v.tableProps))),
+      h('section', { className: 'rv-section' },
+        h('h2', { className: 'rv-h2' }, 'Table: facts you read'),
+        h('p', { className: 'rv-lead' }, 'Static: no sorting, filters, grouping, menus or selection. Every row is shown as given. It looks the same as the grid.'),
+        h(P.Table, { label: 'DataGrid and Table compared', data: facts, columns: [{ title: 'Part', field: 'part', rowLabel: true, width: '--plx-ref-size-160px' },
+          { title: 'Both', field: 'both', width: '--plx-ref-size-320px' }, { title: 'DataGrid', field: 'grid', width: '--plx-ref-size-320px' }, { title: 'Table', field: 'table' }] })));
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(h(Page));
+})();
+</script>
+</body>
+</html>
