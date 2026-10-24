@@ -31575,7 +31575,101 @@ function RecordPage({
 }
 RecordPage.Header = Header;
   } },
-  "platform/patterns/EntityHeader/EntityHeader.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../../utils/barFit.js":"platform/utils/barFit.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/AvatarGroup/AvatarGroup.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.AvatarGroup = AvatarGroup;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _cx = require("../../utils/cx.js");
+var _Avatar = require("../Avatar/Avatar.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · AvatarGroup
+   Summary: The people of one item (owners, collaborators, assignees) as a row of avatars: overlapped in a stack or spaced
+     in a grid, up to a maximum, then a +N tile for the rest (03 Content & Identity › Identity › Avatar group).
+   Usage:
+     <AvatarGroup label="Collaborators" people={[{ name: 'Maya Chen' }, { name: 'Alex Kim', presence: 'away' }]} />
+     <AvatarGroup label="Assignees" people={team} max={3} size="md" onMore={() => setOpen(true)} />
+     <AvatarGroup label="Members" people={team} layout="grid" max={12} />
+   Props:
+     people: [{ id, name, src, color, presence }]: each person as an Avatar (name gives the initials and the accessible
+       name; src a picture; color a data color; presence "online" | "away" | "busy" | "dnd" | "offline")
+     label: the group's accessible name, by role ("Collaborators", "Assignees")
+     max: how many avatars show before the rest collapse into +N (default 4)
+     size: "xs" (24px) | "sm" (28px, default) | "md" (32px) | "lg" (40px): every avatar of a group has the same size
+     layout: "stack" (default: overlapped, each ringed in the surface color) | "grid" (spaced, wrapping to more rows)
+     onMore: called when the +N tile is pressed (open the full list); without it the tile is a count, not a control
+     strings: the words, for other languages: { more: "+{n}", moreLabel: "{n} more", online, away, busy, offline }
+     className: more classes on the group
+   Behavior:
+     The group is one named group (role="group"); each avatar is an image named by the person (and their presence).
+     With onMore the +N tile is a button: Enter or Space opens the full list; its focus changes the tile's ring to the
+       focus color.
+     People keep the order they are given (put the owner first).
+   Notes:
+     The count is a number: Reddit Mono (the data font), like other technical values.
+     Other props pass through to the wrapper.
+*/
+const SIZES = ['xs', 'sm', 'md', 'lg'];
+const STRINGS = {
+  more: '+{n}',
+  moreLabel: '{n} more'
+};
+function AvatarGroup({
+  people = [],
+  label,
+  max = 4,
+  size = 'sm',
+  layout = 'stack',
+  onMore,
+  strings,
+  className,
+  ...rest
+}) {
+  (0, _devWarn.devWarn)('AvatarGroup', {
+    size
+  }, {
+    size: ['xs', 'sm', 'md', 'lg']
+  });
+  const s = SIZES.indexOf(size) >= 0 ? size : 'sm';
+  const l = layout === 'grid' ? 'grid' : 'stack';
+  const words = Object.assign({}, STRINGS, strings);
+  const limit = Math.max(1, max | 0);
+  const shown = people.length > limit ? people.slice(0, limit) : people;
+  const rest_ = people.length - shown.length;
+  const fill = t => t.replace('{n}', String(rest_));
+  const more = rest_ > 0 ? /*#__PURE__*/_react.default.createElement(_Avatar.Avatar, {
+    initials: fill(words.more),
+    size: s,
+    label: onMore ? undefined : fill(words.moreLabel),
+    className: "plx-avatar-group__more"
+  }) : null;
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    className: (0, _cx.cx)('plx-avatar-group', 'plx-avatar-group--' + l, 'plx-avatar-group--' + s, className),
+    role: "group",
+    "aria-label": label
+  }, rest), shown.map((p, i) => /*#__PURE__*/_react.default.createElement(_Avatar.Avatar, {
+    key: p.id != null ? p.id : i,
+    name: p.name,
+    src: p.src,
+    color: p.color,
+    presence: p.presence,
+    size: s,
+    label: p.name,
+    strings: strings,
+    className: "plx-avatar-group__avatar"
+  })), more && onMore ? /*#__PURE__*/_react.default.createElement("button", {
+    type: "button",
+    className: "plx-avatar-group__more-button",
+    "aria-label": fill(words.moreLabel),
+    onClick: onMore
+  }, more) : more);
+}
+  } },
+  "platform/patterns/EntityHeader/EntityHeader.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../../utils/barFit.js":"platform/utils/barFit.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","../../components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","../../components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -31592,6 +31686,11 @@ var _Button = require("../../components/Button/Button.jsx");
 var _Icon = require("../../components/Icon/Icon.jsx");
 var _Menu = require("../../components/Menu/Menu.jsx");
 var _Text = require("../../components/Text/Text.jsx");
+var _Badge = require("../../components/Badge/Badge.jsx");
+var _AvatarGroup = require("../../components/AvatarGroup/AvatarGroup.jsx");
+var _ProgressBar = require("../../components/ProgressBar/ProgressBar.jsx");
+var _Tag = require("../../components/Tag/Tag.jsx");
+var _Link = require("../../components/Link/Link.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · EntityHeader
    Summary: The header of a page that shows one entity (a contact, a project, an email, a note, a component page), and of a
@@ -31617,6 +31716,20 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        states={{ value: 'in-progress', onChange: setState, options: [{ value: 'draft', label: 'Draft', icon: 'pencil', tone: 'waiting' },
          { value: 'in-progress', label: 'In progress', icon: 'clock', tone: 'success' }, { value: 'adjourned', label: 'Adjourned', icon: 'do-not-disturb', tone: 'negative' }] }} />
    Props:
+     headerStyle: "structured" (default: header style 1, the props below) | "streamlined" (the study's header style 2,
+       Streamlined: one line of media, title with badges and subtitle, then people, inline progress and actions; under a
+       divider the details strip). Streamlined reads media (null: none), title, subtitle (**names** in bold), status (the
+       first badge), and:
+       badges: more badges after the status: [{ label, tone, icon }]
+       people: { label, list: [{ name, src }], max (default 3), onMore }: an AvatarGroup (32px, stacked, +N)
+       progress: { label, value, max }: an inline progress, its label over a 4px bar
+       actions: [{ icon, label, onClick, text, primary }]: icon buttons, then labeled ones (text), then one primary button
+       detail: the details strip: { progress: { label, valueText, value, max }, facts: [{ label, value, data, tone }]
+         (tiles under the bar; a tone makes a status tile), tags: [{ label, category }], items: [{ icon, label, tone
+         (success | warning), data }], text, end: { badge: { tone, icon, label } } | { link: { label, href } } | an element
+         (at the end of the strip) }
+       view: "detailed" (default) | "compact" (the top line only)
+       kind "section": its icon, title and summary (a badge), with its actions
      kind: "page" (default) | "section": a section header (32px icon, 15px title, 4px rule, a summary instead of tiles)
      layout: where the media sits and how big it is (header style 1, the owner's study "Plenix page headers"):
        "top-small" (default): a 44px square beside the title (a section: 32px);
@@ -32026,7 +32139,228 @@ function Actions({
     className: (0, _cx.cx)('plx-entity-header__actions', column && 'plx-entity-header__actions--column', size === 'sm' && 'plx-entity-header__actions--sm')
   }, (0, _overflow.splitAt)(items, fit, more));
 }
-function EntityHeader({
+
+// a subtitle written with **names** in bold (a string); an element passes as it is
+function strongText(text) {
+  if (typeof text !== 'string' || text.indexOf('**') < 0) return text;
+  return text.split('**').map((part, i) => i % 2 ? /*#__PURE__*/_react.default.createElement("strong", {
+    key: i,
+    className: "plx-entity-header__strong"
+  }, part) : part);
+}
+const toneOf = t => TONES.indexOf(ALIASES[t] || t) >= 0 ? ALIASES[t] || t : 'neutral';
+
+// a detail item: its icon and text, colored when it is on track (success) or needs attention (warning)
+function Item({
+  it
+}) {
+  return /*#__PURE__*/_react.default.createElement("span", {
+    className: (0, _cx.cx)('plx-entity-header__item', it.tone === 'success' && 'plx-entity-header__item--success', it.tone === 'warning' && 'plx-entity-header__item--warning')
+  }, it.icon ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-entity-header__item-icon",
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: it.icon
+  })) : null, it.data ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data"
+  }, it.label) : it.label);
+}
+
+// header style Streamlined (the owner's study "Plenix page headers", 2026-10-19): the media, the title with its badges
+// (status first) over the subtitle; at the end the people, an inline progress and the actions (one primary); under a
+// divider the details strip (Detailed view only). A section: its icon, title and summary badge, with its actions.
+function Streamlined({
+  section,
+  H,
+  title,
+  sub,
+  media,
+  status,
+  badges,
+  summary,
+  people,
+  progress,
+  actions,
+  detail,
+  view,
+  className,
+  strings
+}) {
+  const list = (actions || []).filter(Boolean);
+  const icons = list.filter(a => !a.primary && !a.text),
+    labeled = list.filter(a => !a.primary && a.text),
+    primary = list.filter(a => a.primary).slice(0, 1);
+  const allBadges = (section ? summary || sub ? [{
+    label: summary || sub,
+    tone: 'neutral'
+  }] : [] : [status && ! /*#__PURE__*/_react.default.isValidElement(status) ? status : null].concat(badges || [])).filter(Boolean);
+  const d = !section && view !== 'compact' ? detail : null;
+  const endItem = d && d.end ? d.end.link ? /*#__PURE__*/_react.default.createElement(_Link.Link, {
+    href: d.end.link.href,
+    variant: "standalone"
+  }, d.end.link.label) : d.end.badge ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: toneOf(d.end.badge.tone),
+    icon: d.end.badge.icon
+  }, d.end.badge.label) : d.end : null;
+  return /*#__PURE__*/_react.default.createElement("header", {
+    className: (0, _cx.cx)('plx-entity-header', 'plx-entity-header--streamlined', section && 'plx-entity-header--section', view === 'compact' && 'plx-entity-header--compact', className)
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-entity-header__top"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-entity-header__start"
+  }, media === null ? null : /*#__PURE__*/_react.default.createElement(Media, {
+    media: media || {
+      icon: 'doc-text'
+    },
+    section: section,
+    layout: section ? 'top-small' : 'streamlined'
+  }), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-entity-header__head"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-entity-header__title-row"
+  }, /*#__PURE__*/_react.default.createElement(H, {
+    className: "plx-entity-header__title"
+  }, title), allBadges.length ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-entity-header__badges"
+  }, allBadges.map((b, i) => /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    key: i,
+    tone: toneOf(b.tone),
+    icon: b.icon
+  }, b.label))) : null), sub && !section ? /*#__PURE__*/_react.default.createElement("p", {
+    className: "plx-entity-header__subtitle plx-entity-header__subtitle--streamlined"
+  }, strongText(sub)) : null)), people || progress || list.length ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-entity-header__end"
+  }, people && !section ? /*#__PURE__*/_react.default.createElement(_AvatarGroup.AvatarGroup, {
+    label: people.label || strings.people,
+    people: people.list || [],
+    max: people.max || 3,
+    size: "md",
+    onMore: people.onMore
+  }) : null, progress && !section ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-entity-header__mini-progress"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-entity-header__mini-progress-label"
+  }, progress.label), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-entity-header__mini-progress-bar"
+  }, /*#__PURE__*/_react.default.createElement(_ProgressBar.ProgressBar, {
+    value: progress.value,
+    max: progress.max,
+    size: "sm",
+    label: progress.label,
+    labelHidden: true
+  }))) : null, list.length ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-entity-header__buttons"
+  }, icons.map(a => /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    key: a.label,
+    size: section ? 'sm' : 'md',
+    iconOnly: true,
+    icon: a.icon,
+    label: a.label,
+    title: a.label,
+    variant: "secondary",
+    disabled: a.disabled,
+    onClick: a.onClick
+  })), labeled.map(a => /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    key: a.label,
+    size: "sm",
+    icon: a.icon,
+    variant: "secondary",
+    disabled: a.disabled,
+    onClick: a.onClick
+  }, a.label)), primary.map(a => /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    key: a.label,
+    size: section ? 'sm' : 'md',
+    icon: a.icon,
+    variant: "primary",
+    disabled: a.disabled,
+    onClick: a.onClick
+  }, a.label))) : null) : null), d ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-entity-header__strip"
+  }, d.progress ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-entity-header__progress"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-entity-header__progress-row"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-entity-header__progress-label"
+  }, d.progress.label), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-entity-header__progress-value"
+  }, d.progress.valueText)), /*#__PURE__*/_react.default.createElement(_ProgressBar.ProgressBar, {
+    value: d.progress.value,
+    max: d.progress.max,
+    label: d.progress.label,
+    labelHidden: true
+  }), d.facts && d.facts.length ? /*#__PURE__*/_react.default.createElement("dl", {
+    className: "plx-entity-header__details plx-entity-header__details--strip"
+  }, d.facts.map((f, i) => f.tone ? /*#__PURE__*/_react.default.createElement("div", {
+    key: i,
+    className: "plx-entity-header__fact plx-entity-header__fact--status",
+    "data-plx-tone": toneOf(f.tone)
+  }, /*#__PURE__*/_react.default.createElement("dt", {
+    className: "plx-entity-header__fact-label"
+  }, f.label), /*#__PURE__*/_react.default.createElement("dd", {
+    className: "plx-entity-header__fact-value"
+  }, f.value)) : /*#__PURE__*/_react.default.createElement(Fact, {
+    key: i,
+    f: f
+  }))) : null) : null, (d.tags || []).map((t, i) => /*#__PURE__*/_react.default.createElement(_Tag.Tag, {
+    key: 't' + i,
+    category: t.category
+  }, t.label)), (d.items || []).map((it, i) => /*#__PURE__*/_react.default.createElement(Item, {
+    key: 'i' + i,
+    it: it
+  })), d.text ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-entity-header__strip-text"
+  }, d.text) : null, endItem ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-entity-header__strip-end"
+  }, endItem) : null) : null);
+}
+
+// the header style picks the component: Structured (style 1, default) or Streamlined
+function EntityHeader(props) {
+  if (props.headerStyle !== 'streamlined') return /*#__PURE__*/_react.default.createElement(Structured, props);
+  const {
+    kind = 'page',
+    title,
+    subtitle,
+    description,
+    context,
+    media,
+    status,
+    live,
+    badges,
+    summary,
+    people,
+    progress,
+    actions,
+    detail,
+    view = 'detailed',
+    headingLevel,
+    className,
+    strings
+  } = props;
+  const section = kind === 'section';
+  return /*#__PURE__*/_react.default.createElement(Streamlined, {
+    section: section,
+    H: 'h' + (headingLevel || (section ? 2 : 1)),
+    title: title,
+    sub: subtitle !== undefined ? subtitle : description !== undefined ? description : context,
+    media: media,
+    status: status || live,
+    badges: badges,
+    summary: summary,
+    people: people,
+    progress: progress,
+    actions: actions,
+    detail: detail,
+    view: view,
+    className: className,
+    strings: {
+      people: 'People',
+      ...strings
+    }
+  });
+}
+function Structured({
   kind = 'page',
   layout = 'top-small',
   title,
@@ -37276,100 +37610,6 @@ function RetryNotice({
   }, status) : null, count ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-retry__count"
   }, count) : null) : null);
-}
-  } },
-  "platform/components/AvatarGroup/AvatarGroup.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.AvatarGroup = AvatarGroup;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
-var _Avatar = require("../Avatar/Avatar.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · AvatarGroup
-   Summary: The people of one item (owners, collaborators, assignees) as a row of avatars: overlapped in a stack or spaced
-     in a grid, up to a maximum, then a +N tile for the rest (03 Content & Identity › Identity › Avatar group).
-   Usage:
-     <AvatarGroup label="Collaborators" people={[{ name: 'Maya Chen' }, { name: 'Alex Kim', presence: 'away' }]} />
-     <AvatarGroup label="Assignees" people={team} max={3} size="md" onMore={() => setOpen(true)} />
-     <AvatarGroup label="Members" people={team} layout="grid" max={12} />
-   Props:
-     people: [{ id, name, src, color, presence }]: each person as an Avatar (name gives the initials and the accessible
-       name; src a picture; color a data color; presence "online" | "away" | "busy" | "dnd" | "offline")
-     label: the group's accessible name, by role ("Collaborators", "Assignees")
-     max: how many avatars show before the rest collapse into +N (default 4)
-     size: "xs" (24px) | "sm" (28px, default) | "md" (32px) | "lg" (40px): every avatar of a group has the same size
-     layout: "stack" (default: overlapped, each ringed in the surface color) | "grid" (spaced, wrapping to more rows)
-     onMore: called when the +N tile is pressed (open the full list); without it the tile is a count, not a control
-     strings: the words, for other languages: { more: "+{n}", moreLabel: "{n} more", online, away, busy, offline }
-     className: more classes on the group
-   Behavior:
-     The group is one named group (role="group"); each avatar is an image named by the person (and their presence).
-     With onMore the +N tile is a button: Enter or Space opens the full list; its focus changes the tile's ring to the
-       focus color.
-     People keep the order they are given (put the owner first).
-   Notes:
-     The count is a number: Reddit Mono (the data font), like other technical values.
-     Other props pass through to the wrapper.
-*/
-const SIZES = ['xs', 'sm', 'md', 'lg'];
-const STRINGS = {
-  more: '+{n}',
-  moreLabel: '{n} more'
-};
-function AvatarGroup({
-  people = [],
-  label,
-  max = 4,
-  size = 'sm',
-  layout = 'stack',
-  onMore,
-  strings,
-  className,
-  ...rest
-}) {
-  (0, _devWarn.devWarn)('AvatarGroup', {
-    size
-  }, {
-    size: ['xs', 'sm', 'md', 'lg']
-  });
-  const s = SIZES.indexOf(size) >= 0 ? size : 'sm';
-  const l = layout === 'grid' ? 'grid' : 'stack';
-  const words = Object.assign({}, STRINGS, strings);
-  const limit = Math.max(1, max | 0);
-  const shown = people.length > limit ? people.slice(0, limit) : people;
-  const rest_ = people.length - shown.length;
-  const fill = t => t.replace('{n}', String(rest_));
-  const more = rest_ > 0 ? /*#__PURE__*/_react.default.createElement(_Avatar.Avatar, {
-    initials: fill(words.more),
-    size: s,
-    label: onMore ? undefined : fill(words.moreLabel),
-    className: "plx-avatar-group__more"
-  }) : null;
-  return /*#__PURE__*/_react.default.createElement("div", _extends({
-    className: (0, _cx.cx)('plx-avatar-group', 'plx-avatar-group--' + l, 'plx-avatar-group--' + s, className),
-    role: "group",
-    "aria-label": label
-  }, rest), shown.map((p, i) => /*#__PURE__*/_react.default.createElement(_Avatar.Avatar, {
-    key: p.id != null ? p.id : i,
-    name: p.name,
-    src: p.src,
-    color: p.color,
-    presence: p.presence,
-    size: s,
-    label: p.name,
-    strings: strings,
-    className: "plx-avatar-group__avatar"
-  })), more && onMore ? /*#__PURE__*/_react.default.createElement("button", {
-    type: "button",
-    className: "plx-avatar-group__more-button",
-    "aria-label": fill(words.moreLabel),
-    onClick: onMore
-  }, more) : more);
 }
   } },
   "platform/components/ProgressCircle/ProgressCircle.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {

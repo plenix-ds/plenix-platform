@@ -6,6 +6,8 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.69.3] - 2026-10-24
+
 ### Added
 - EntityHeader `headerStyle="streamlined"`: header style 2 of the owner's page-header study (#244). One line holds the
   media (48px), the title with its badges (status first) over the subtitle (`**names**` in bold), and at the end the
