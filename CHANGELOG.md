@@ -6,6 +6,12 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+### Fixed
+- Combobox as a tag picker (`multiple` without `marks`): the list offers only the tags not chosen yet, so Enter on a
+  suggestion always adds one and never removes it; a tag is removed only by its remove button (or Backspace in the empty
+  field). Before, typing part of a chosen tag and pressing Enter removed that tag, so tags seemed not to save (#261,
+  RedSave P-57). The checkbox select (`marks="checkbox"`) still toggles. Test: `tests/combobox-tags.test.js`.
+
 ## [0.69.1] - 2026-10-24
 
 ### Changed

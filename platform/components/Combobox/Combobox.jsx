@@ -37,7 +37,11 @@
      The list opens on focus and on typing, and closes on a click outside.
      ↓ / ↑ move, Enter chooses, Escape closes.
      Backspace in an empty multiple field removes the last value.
-     A single choice closes the list; with multiple, choosing toggles the value and the list stays open.
+     A single choice closes the list; with multiple, the list stays open after each choice.
+     Tags (multiple without marks): the list offers only the values not chosen yet, so Enter or a click always adds; a
+       chosen value is removed only by its tag's remove button (or Backspace in the empty field). Typing a chosen tag's
+       exact name offers nothing (no duplicate, no Create).
+     Checkbox select (multiple with marks="checkbox"): every option stays listed and choosing one toggles it.
      A tag's remove button removes its value.
      With loadOptions, each pause in typing loads once; an answer that arrives after a newer request is dropped. The list
        is busy (aria-busy) while it loads, the number of options is announced politely, a failed load says so in the list.
@@ -95,7 +99,11 @@ export const Combobox = React.forwardRef(function Combobox({ options = [], value
   const chosen = multiple ? (values || []) : (value !== undefined && value !== null && value !== '' ? [value] : []);
   const current = !multiple && chosen.length ? optionOf(chosen[0]) || null : null;
   const q = text.trim().toLowerCase();
-  const matching = isLoading || failed ? [] : async ? loaded : options.filter((o) => !q || String(o.label).toLowerCase().indexOf(q) >= 0);
+  // a tag picker (multiple without marks) offers only the values not chosen yet: a chosen tag leaves only by its remove
+  // button, so Enter on a suggestion always adds (P-57: Enter on a chosen suggestion removed the tag)
+  const tags = multiple && !marks;
+  const offered = (async ? loaded : options).filter((o) => !tags || chosen.indexOf(o.value) < 0);
+  const matching = isLoading || failed ? [] : async ? offered : offered.filter((o) => !q || String(o.label).toLowerCase().indexOf(q) >= 0);
   // grouped options stay together under their group's heading (groups in the order they first appear)
   const groupOrder = []; matching.forEach((o) => { if (groupOrder.indexOf(o.group) < 0) groupOrder.push(o.group); });
   const filtered = groupOrder.reduce((all, g) => all.concat(matching.filter((o) => o.group === g)), []);
@@ -112,7 +120,8 @@ export const Combobox = React.forwardRef(function Combobox({ options = [], value
     if (!item) return;
     if (item.kind === 'create') { if (onCreate) onCreate(text.trim()); setText(''); return; }
     const v = item.o.value;
-    if (multiple) { onChange(chosen.indexOf(v) >= 0 ? chosen.filter((x) => x !== v) : chosen.concat([v])); setText(''); }
+    if (tags) { if (chosen.indexOf(v) < 0) onChange(chosen.concat([v])); setText(''); }
+    else if (multiple) { onChange(chosen.indexOf(v) >= 0 ? chosen.filter((x) => x !== v) : chosen.concat([v])); setText(''); }
     else { onChange(v); setText(''); setOpen(false); }
   };
   const onKey = (e) => {
