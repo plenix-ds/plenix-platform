@@ -17,10 +17,10 @@ exports.SUITE_SESSION = void 0;
 // (RedSave P-37).
 const SUITE_SESSION = exports.SUITE_SESSION = {
   account: {
-    name: 'Raphael Maher',
-    firstName: 'Raphael',
-    lastName: 'Maher',
-    email: 'raphael@lighthouseway.org'
+    name: 'Jordan Avery',
+    firstName: 'Jordan',
+    lastName: 'Avery',
+    email: 'jordan.avery@example.com'
   },
   notifications: [{
     id: 1,
@@ -114,7 +114,7 @@ const CATEGORY_CARDS = exports.CATEGORY_CARDS = [['Banner icon', 24, 5, 'Aug 28,
 }));
 const CATEGORY_TOTAL = exports.CATEGORY_TOTAL = 48;
 const CATEGORY_COUNT_LABEL = exports.CATEGORY_COUNT_LABEL = '52 categories';
-const COLLECTION_CARDS = exports.COLLECTION_CARDS = [['Website Assets', 84, 'Aug 28, 2026', 'raphael'], ['Social Media', 42, 'Aug 25, 2026', 'raphael'], ['Print ready', 156, 'Aug 20, 2026', 'sarah'], ['Needs review', 23, 'Aug 14, 2026', 'daniel']].map(([name, count, updated, owner], i) => ({
+const COLLECTION_CARDS = exports.COLLECTION_CARDS = [['Website Assets', 84, 'Aug 28, 2026', 'jordan'], ['Social Media', 42, 'Aug 25, 2026', 'jordan'], ['Print ready', 156, 'Aug 20, 2026', 'sarah'], ['Needs review', 23, 'Aug 14, 2026', 'daniel']].map(([name, count, updated, owner], i) => ({
   id: i,
   name,
   count,
@@ -135,7 +135,7 @@ const ASSETS = exports.ASSETS = [['Coptic Cross Gold Traditional', 'Cross - Trad
   thumb: 'assets/thumb-' + (21 + i) + '.svg',
   typeIcon: 'file-' + badge.toLowerCase(),
   tags: name.toLowerCase().split(' '),
-  owner: ['Raphael Maher', 'Sarah M.', 'John Deacon'][i % 3]
+  owner: ['Jordan Avery', 'Sarah M.', 'John Deacon'][i % 3]
 }));
 const ASSET_TOTAL = exports.ASSET_TOTAL = 210;
 const SEARCH_QUERY = exports.SEARCH_QUERY = 'cross gold';
@@ -157,7 +157,7 @@ const CATEGORY_DETAIL = exports.CATEGORY_DETAIL = {
   description: 'Traditional Coptic cross designs and variations',
   tags: ['cross', 'traditional', 'coptic'],
   stats: [['Total assets', '78'], ['Storage used', '1.4 GB'], ['Created', 'Jul 3, 2026'], ['Modified', 'Aug 28, 2026']],
-  permissions: [['Owner', 'raphael'], ['View groups', 'administrators, users, guest'], ['Edit groups', 'administrators']],
+  permissions: [['Owner', 'jordan'], ['View groups', 'administrators, users, guest'], ['Edit groups', 'administrators']],
   customFields: [['Style', 'e.g. Byzantine, Nubian...'], ['Material', 'e.g. Wood, Stone, Metal...'], ['Origin', 'e.g. Egypt, Ethiopia...']]
 };
 const COLLECTION_DETAIL = exports.COLLECTION_DETAIL = {
@@ -186,7 +186,7 @@ const USAGE_RIGHTS = exports.USAGE_RIGHTS = ['Internal use only', 'Church Use', 
 const VERSIONS = exports.VERSIONS = [{
   label: 'Version 3 (Current)',
   date: 'Aug 12, 2026 at 2:45 PM',
-  user: 'Fr. Raphael M.',
+  user: 'Jordan A.',
   current: true
 }, {
   label: 'Version 2',
@@ -822,7 +822,7 @@ const HOT_FOLDERS = exports.HOT_FOLDERS = [{
   meta: 'Path: imports · Fully scanned Aug 18, 2026, 3:49 PM'
 }];
 const CONVERSIONS = exports.CONVERSIONS = [['Image 3000x3000 JPG', 'image3000x3000.jpg', 'Yes', 'Yes', 'Image'], ['Webp Image 3000x3000', 'image3000x3000.webp', 'Yes', 'Yes', 'Image'], ['Webp Image 550x550', 'image550x550.webp', 'Yes', 'Yes', 'Image, Documents, Video'], ['Webp Image 200 Thumbnail', 'image200x200.webp', 'Yes', 'Yes', 'Image, Documents, Video'], ['Webp Image Large Watermarked', 'image3000x3000wm.webp', 'Yes', 'No', 'Image, Documents'], ['Video HLS', 'video.m3u8', 'Yes', 'Yes', 'Video'], ['Video MP4 480p', 'video.mp4', 'Yes', 'No', 'Video'], ['Video Proxy MOV', 'VideoProxy.mov', 'Yes', 'No', 'Video'], ['Mp3 Audio', 'audio.mp3', 'Yes', 'Yes', 'Audio'], ['Document Large Webp Image', 'image3000x3000.webp', 'Yes', 'Yes', 'Documents']];
-const USERS = exports.USERS = [['admin', 'Administrator Administrator', 'admin@lighthouseway.org', 'Administrators', 'Dec 18, 2023', 'Sep 1, 2026'], ['agent', 'Plenix Finder AI Helper', '—', null, 'Sep 1, 2026', '—'], ['raphael', 'Fr. Raphael Maher', 'raphael@lighthouseway.org', 'Administrators', 'Sep 1, 2026', 'Sep 19, 2026'], ['testuser', '—', '—', null, 'Dec 18, 2023', 'Feb 13, 2015']];
+const USERS = exports.USERS = [['admin', 'Administrator Administrator', 'admin@example.com', 'Administrators', 'Dec 18, 2023', 'Sep 1, 2026'], ['agent', 'Plenix Finder AI Helper', '—', null, 'Sep 1, 2026', '—'], ['jordan', 'Jordan Avery', 'jordan.avery@example.com', 'Administrators', 'Sep 1, 2026', 'Sep 19, 2026'], ['testuser', '—', '—', null, 'Dec 18, 2023', 'Feb 13, 2015']];
 const GROUPS = exports.GROUPS = ['Administrators', 'Catalogs Admins', 'Uploaders', 'Users'];
 const PERMISSION_ROLES = exports.PERMISSION_ROLES = ['Entity owner', 'Administrators', 'Entity editor', 'Users', 'Anonymous'];
 const PERMISSION_AREAS = exports.PERMISSION_AREAS = [{

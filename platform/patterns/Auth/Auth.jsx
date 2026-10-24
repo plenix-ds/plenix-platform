@@ -16,7 +16,7 @@
      <Auth title="Create your account"><SignUpForm onSubmit={create} terms={<>I agree to the <Link href="/terms">terms</Link></>} /></Auth>
      <Auth title="Reset your password"><PasswordResetForm onRequest={send} onReset={save} signIn={{ href: '/auth/sign-in' }} /></Auth>
      <Auth title="Two-step verification"><MfaChallenge methods={METHODS} onVerify={verify} onResend={resend} recovery={{ onClick: recover }} /></Auth>
-     <Auth title="Recover your account"><AccountRecovery onCode={useCode} admin="Parish office (office@lighthouseway.org)" /></Auth>
+     <Auth title="Recover your account"><AccountRecovery onCode={useCode} admin="Parish office (office@example.com)" /></Auth>
    Props:
      Auth.title: the card's heading (h1 on a page of its own); Auth.description: one line under it
      Auth.page: the frame fills the window below the header and centers the card (a page of its own); default false

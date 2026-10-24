@@ -15,10 +15,10 @@ exports.SUITE_SESSION = void 0;
 // (RedSave P-37).
 const SUITE_SESSION = exports.SUITE_SESSION = {
   account: {
-    name: 'Raphael Maher',
-    firstName: 'Raphael',
-    lastName: 'Maher',
-    email: 'raphael@lighthouseway.org'
+    name: 'Jordan Avery',
+    firstName: 'Jordan',
+    lastName: 'Avery',
+    email: 'jordan.avery@example.com'
   },
   notifications: [{
     id: 1,

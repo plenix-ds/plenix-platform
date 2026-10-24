@@ -44,9 +44,9 @@ export const CONVERSIONS = [
 ];
 
 export const USERS = [
-  ['admin', 'Administrator Administrator', 'admin@lighthouseway.org', 'Administrators', 'Dec 18, 2023', 'Sep 1, 2026'],
+  ['admin', 'Administrator Administrator', 'admin@example.com', 'Administrators', 'Dec 18, 2023', 'Sep 1, 2026'],
   ['agent', 'Plenix Finder AI Helper', '—', null, 'Sep 1, 2026', '—'],
-  ['raphael', 'Fr. Raphael Maher', 'raphael@lighthouseway.org', 'Administrators', 'Sep 1, 2026', 'Sep 19, 2026'],
+  ['jordan', 'Jordan Avery', 'jordan.avery@example.com', 'Administrators', 'Sep 1, 2026', 'Sep 19, 2026'],
   ['testuser', '—', '—', null, 'Dec 18, 2023', 'Feb 13, 2015'],
 ];
 
