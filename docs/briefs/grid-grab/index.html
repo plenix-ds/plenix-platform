@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en" data-plx-mode="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Where your mouse can grab · Plenix review</title>
+<!-- Owner review for #217 (answered 2026-10-24: follow Windows Explorer for the resize handles and the header menu;
+     keep the nav pane splitter at 8px): the grab areas today and after, with the cursor drawn in. -->
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<link rel="stylesheet" href="../review.css">
+</head>
+<body class="rv-page">
+<main class="rv-doc">
+  <h1 class="rv-h1">Where your mouse can grab in the grid's header</h1>
+  <p class="rv-lead">Nothing you see changes. What changes is the invisible area around two things where your mouse
+    "catches": where the pointer turns into the resize arrows, and where a click opens the column's menu. The shaded areas
+    below are that invisible area; the cursor shows what you would see there.</p>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">1 · Resizing a column (green: where the pointer turns into ↔)</h2>
+    <div class="rv-pair">
+      <figure class="rv-fig"><img src="today-resize.png" alt="Today: a thin green strip only on the left of each column line"><figcaption><span class="rv-tag">TODAY</span> · an 8px strip, only on the left of the column line: you have to hit just inside the column</figcaption></figure>
+      <figure class="rv-fig"><img src="after-resize.png" alt="After: the green strip sits on the column line, reaching both sides"><figcaption><span class="rv-tag">AFTER</span> · 12px centered on the line, a few pixels each side, as Windows Explorer: aim at the line itself</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">2 · The column's menu (blue: where a click opens it)</h2>
+    <div class="rv-pair">
+      <figure class="rv-fig"><img src="today-menu.png" alt="Today: only the small chevron, 14 pixels, is clickable"><figcaption><span class="rv-tag">TODAY</span> · only the small chevron (14×14px) opens the menu</figcaption></figure>
+      <figure class="rv-fig"><img src="after-menu.png" alt="After: the whole full-height part around the chevron is clickable"><figcaption><span class="rv-tag">AFTER</span> · the whole drop-down part at the end of the header (24px wide, the header's full height), as in your Explorer picture</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">3 · The navigation pane's divider</h2>
+    <p class="rv-lead">The divider stays 8px, as you chose. The Collapse button beside it moves 4px away, so the small
+      divider has its own room (the accessibility rule allows a small target when a 24px circle around it touches nothing
+      else). Green = the divider, red circle = its 24px room, blue = the Collapse button.</p>
+    <div class="rv-pair">
+      <figure class="rv-fig"><img src="today-splitter.png" alt="Today: the Collapse button sits inside the divider's circle"><figcaption><span class="rv-tag">TODAY</span> · the button is 4px from the divider, inside its circle</figcaption></figure>
+      <figure class="rv-fig"><img src="after-splitter.png" alt="After: the Collapse button sits just outside the circle"><figcaption><span class="rv-tag">AFTER</span> · the button is 8px from the divider, just outside the circle</figcaption></figure>
+    </div>
+    <p class="rv-lead">In the applications (Projects, Notes, Settings) the navigation rows also reach to 4px from the
+      divider; giving them the same room is a separate choice for you.</p>
+  </section>
+
+  <p class="rv-rec">In short: you can grab a column's edge right on the line, and the whole drop-down part opens the menu.
+    Both match Windows Explorer. The column menu's "Size to fit" and the arrow keys still resize a column too.</p>
+</main>
+</body>
+</html>

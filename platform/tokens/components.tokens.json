@@ -5498,7 +5498,7 @@
       "$type": "dimension"
     },
     "data-grid-resize-width": {
-      "$value": "{plx-ref.size-8px}",
+      "$value": "{plx-ref.size-12px}",
       "$type": "dimension"
     },
     "data-grid-resize-z-index": {
@@ -8579,6 +8579,11 @@
     "nav-pane-header-gap": {
       "$value": "{plx-sys.space-inline-xs}",
       "$type": "dimension"
+    },
+    "nav-pane-collapse-margin-inline-end": {
+      "$value": "{plx-ref.space-4px}",
+      "$type": "dimension",
+      "$description": "Nav pane: the Collapse button stands 4px further from the pane splitter, so the 8px splitter meets WCAG 2.5.8's spacing exception (owner, 2026-10-24, #217)."
     },
     "nav-pane-header-padding-block-start": {
       "$value": "{plx-sys.space-inset-sm}",

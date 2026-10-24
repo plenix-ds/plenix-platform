@@ -9,7 +9,7 @@
 .plx-nav-pane__footer{align-items:center;box-shadow:var(--plx-comp-nav-pane-footer-shadow);column-gap:var(--plx-comp-nav-pane-footer-gap);display:flex;flex-shrink:0;min-block-size:var(--plx-comp-pane-footer-height);padding-block-end:var(--plx-comp-nav-pane-footer-padding-block);padding-block-start:var(--plx-comp-nav-pane-footer-padding-block);padding-inline-end:var(--plx-comp-nav-pane-footer-padding-inline);padding-inline-start:var(--plx-comp-nav-pane-footer-padding-inline);}
 /* the pane's own Collapse button: at the end of its header row (or the start) */
 .plx-nav-pane__collapse{display:inline-flex;flex-shrink:0;}
-.plx-nav-pane__collapse--end{margin-inline-start:auto;}
+.plx-nav-pane__collapse--end{margin-inline-end:var(--plx-comp-nav-pane-collapse-margin-inline-end);margin-inline-start:auto;}
 /* collapsed: the rail on the pane's surface */
 .plx-nav-pane-rail{align-self:stretch;background-color:var(--plx-comp-nav-pane-background);flex-shrink:0;}
 /* the title row: Collapse, the pane’s title (filling the row, cut with an ellipsis), its actions; then the optional second row */
