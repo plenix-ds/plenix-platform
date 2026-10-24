@@ -1,0 +1,1376 @@
+[
+ {
+  "id": "data-display/data-grid/1",
+  "title": "Move \"Reference tables\" from When to use to When not to use?",
+  "context": "The approved DataGrid sample sends static reference facts to Table. The spec has since been updated: the current text below already reads this way, so the question only needs your confirmation.",
+  "current": [
+   {
+    "where": "DataGrid · When to use (rec.use, inventory.js)",
+    "text": "Records people work with: compare, sort, filter, group, search, select, open, edit or nest them"
+   },
+   {
+    "where": "DataGrid · When not to use (rec.avoid[0], inventory.js)",
+    "text": "Static facts, in documentation or settings: use Table"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Static facts: a Table",
+    "jsx": "h(P.Table, { label: 'File facts', headerVisible: true, data: [{id:1,k:'Size',v:'2.4 MB'},{id:2,k:'Type',v:'JPG'},{id:3,k:'Added',v:'Oct 12, 2026'}], columns: [{title:'Property',field:'k',rowLabel:true},{title:'Value',field:'v'}] })",
+    "width": "600"
+   },
+   {
+    "caption": "Records people work with: a DataGrid (sortable columns)",
+    "jsx": "h(P.DataGrid, { label: 'People', data: [{id:1,name:'Maya Chen',role:'Designer',status:'Active'},{id:2,name:'Leo Park',role:'Engineer',status:'In review'},{id:3,name:'Ana Ruiz',role:'Writer',status:'Done'}], columns: [{title:'Name',field:'name',sortable:true},{title:'Role',field:'role',sortable:true},{title:'Status',field:'status'}] })",
+    "width": "600"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Keep it moved (as now)",
+    "recommended": true,
+    "text": "Static facts stay under When not to use, pointing to Table.",
+    "render": {
+     "caption": "Static facts drawn as a Table",
+     "jsx": "h(P.Table, { label: 'File facts', headerVisible: true, data: [{id:1,k:'Size',v:'2.4 MB'},{id:2,k:'Type',v:'JPG'},{id:3,k:'Added',v:'Oct 12, 2026'}], columns: [{title:'Property',field:'k',rowLabel:true},{title:'Value',field:'v'}] })",
+     "width": "600"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Put it back in When to use",
+    "text": "The DataGrid page would again recommend itself for static facts.",
+    "render": {
+     "caption": "Static facts drawn as a DataGrid",
+     "jsx": "h(P.DataGrid, { label: 'File facts', data: [{id:1,k:'Size',v:'2.4 MB'},{id:2,k:'Type',v:'JPG'}], columns: [{title:'Property',field:'k',sortable:true},{title:'Value',field:'v'}] })",
+     "width": "600"
+    }
+   }
+  ],
+  "recommendation": "A. It matches the approved sample. Carbon and Fluent keep a light static table apart from the interactive data grid.",
+  "sources": [
+   "Carbon · Data table usage",
+   "Fluent 2 · Table vs DataGrid",
+   "Plenix rule: Table static, DataGrid dynamic (2026-10-19)"
+  ],
+  "settled": true
+ },
+ {
+  "id": "data-display/table/1",
+  "title": "May a name/value Table hide its header row?",
+  "context": "Table accepts headerVisible={false} and its Anatomy offers it for name/value tables. The Property table page says every name/value list has a header row. This one is still open.",
+  "current": [
+   {
+    "where": "Table · Anatomy (docs.anatomy[1], inventory-docs.js)",
+    "text": "Header row — the Data grid’s silver band (gray 50 to gray 200) with a gray 400 line under it, 28px tall at Compact (32 Standard, 40 Comfortable), 12px semibold titles (optional: headerVisible={false} hides it for a name/value table, whose first column names each row).",
+    "conflict": true
+   },
+   {
+    "where": "Property table · Overview (rec.text)",
+    "text": "A property table is a static Table whose first column names each row (rowLabel), with the values in the columns after it: a reference of facts read across. Every name/value list of reference facts in Plenix is a Table with a header row.",
+    "conflict": true
+   },
+   {
+    "where": "Table.jsx (the code)",
+    "text": "headerVisible = true"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "With the header row",
+    "jsx": "h(P.Table, { label: 'File facts', headerVisible: true, data: [{id:1,k:'Size',v:'2.4 MB'},{id:2,k:'Type',v:'JPG'},{id:3,k:'Added',v:'Oct 12, 2026'}], columns: [{title:'Property',field:'k',rowLabel:true},{title:'Value',field:'v'}] })",
+    "width": "600"
+   },
+   {
+    "caption": "headerVisible={false}",
+    "jsx": "h(P.Table, { label: 'File facts', headerVisible: false, data: [{id:1,k:'Size',v:'2.4 MB'},{id:2,k:'Type',v:'JPG'},{id:3,k:'Added',v:'Oct 12, 2026'}], columns: [{title:'Property',field:'k',rowLabel:true},{title:'Value',field:'v'}] })",
+    "width": "600"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Header always shown",
+    "recommended": true,
+    "text": "Every Table keeps its header row; drop the headerVisible remark from Anatomy.",
+    "render": {
+     "caption": "Name/value with a header",
+     "jsx": "h(P.Table, { label: 'File facts', headerVisible: true, data: [{id:1,k:'Size',v:'2.4 MB'},{id:2,k:'Type',v:'JPG'},{id:3,k:'Added',v:'Oct 12, 2026'}], columns: [{title:'Property',field:'k',rowLabel:true},{title:'Value',field:'v'}] })",
+     "width": "600"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Header optional for name/value",
+    "text": "Property table page changes to allow hiding it.",
+    "render": {
+     "caption": "Name/value without a header",
+     "jsx": "h(P.Table, { label: 'File facts', headerVisible: false, data: [{id:1,k:'Size',v:'2.4 MB'},{id:2,k:'Type',v:'JPG'},{id:3,k:'Added',v:'Oct 12, 2026'}], columns: [{title:'Property',field:'k',rowLabel:true},{title:'Value',field:'v'}] })",
+     "width": "600"
+    }
+   },
+   {
+    "key": "C",
+    "label": "Use Property list instead",
+    "text": "A headerless name/value list is a Property list, not a Table.",
+    "render": {
+     "caption": "Property list look (labels beside values)",
+     "jsx": "h(P.Stack, null, h(P.Inline, null, h('strong', null, 'Size'), h('span', null, '2.4 MB')), h(P.Inline, null, h('strong', null, 'Type'), h('span', null, 'JPG')))",
+     "width": "600"
+    }
+   }
+  ],
+  "recommendation": "A. A header row names each column for screen readers and keeps every reference table the same (WCAG 1.3.1, GOV.UK tables). Facts without columns already have the Property list.",
+  "sources": [
+   "WCAG 2.2 · 1.3.1 Info and Relationships",
+   "GOV.UK · Table component",
+   "Carbon · Data table"
+  ]
+ },
+ {
+  "id": "data-display/table/2",
+  "title": "Should the static Table be announced as a grid?",
+  "context": "The code gives the static Table role=\"table\" with cell and rowheader cells; only the DataGrid is a grid. The spec has since been updated: the current text below already reads this way, so the question only needs your confirmation.",
+  "current": [
+   {
+    "where": "Table · Accessibility (docs.a11y.announce, inventory-docs.js)",
+    "text": "A table of rows, column headers and cells (role table), read like any table; the first column’s cells are row headers when it names each row."
+   },
+   {
+    "where": "DataGridEngine.jsx (the code)",
+    "text": "role={isStatic?'table':groups.length||childField?'treegrid':'grid'}"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Static Table: Tab skips it",
+    "jsx": "h(P.Table, { label: 'People', data: [{id:1,name:'Maya Chen',role:'Designer',status:'Active'},{id:2,name:'Leo Park',role:'Engineer',status:'In review'},{id:3,name:'Ana Ruiz',role:'Writer',status:'Done'}], columns: [{title:'Name',field:'name',rowLabel:true},{title:'Role',field:'role'},{title:'Status',field:'status'}] })",
+    "width": "600"
+   },
+   {
+    "caption": "DataGrid: a grid you can Tab into and arrow through",
+    "jsx": "h(P.DataGrid, { label: 'People', data: [{id:1,name:'Maya Chen',role:'Designer',status:'Active'},{id:2,name:'Leo Park',role:'Engineer',status:'In review'},{id:3,name:'Ana Ruiz',role:'Writer',status:'Done'}], columns: [{title:'Name',field:'name',sortable:true},{title:'Role',field:'role',sortable:true},{title:'Status',field:'status'}] })",
+    "width": "600"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "A table (as now)",
+    "recommended": true,
+    "text": "Keep \"role table\". Matches the code.",
+    "render": {
+     "caption": "Static: role=\"table\"",
+     "jsx": "h(P.Table, { label: 'People', data: [{id:1,name:'Maya Chen',role:'Designer',status:'Active'},{id:2,name:'Leo Park',role:'Engineer',status:'In review'},{id:3,name:'Ana Ruiz',role:'Writer',status:'Done'}], columns: [{title:'Name',field:'name',rowLabel:true},{title:'Role',field:'role'},{title:'Status',field:'status'}] })",
+     "width": "600"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Make it a grid",
+    "text": "Change the code to role=\"grid\" with cell focus, for a table with nothing to operate.",
+    "render": {
+     "caption": "Interactive: role=\"grid\"",
+     "jsx": "h(P.DataGrid, { label: 'People', data: [{id:1,name:'Maya Chen',role:'Designer',status:'Active'},{id:2,name:'Leo Park',role:'Engineer',status:'In review'},{id:3,name:'Ana Ruiz',role:'Writer',status:'Done'}], columns: [{title:'Name',field:'name',sortable:true},{title:'Role',field:'role',sortable:true},{title:'Status',field:'status'}] })",
+     "width": "600"
+    }
+   }
+  ],
+  "recommendation": "A. The ARIA Authoring Practices reserve the grid role for cells people operate; read-only data is a plain table so screen-reader table commands work.",
+  "sources": [
+   "WAI-ARIA APG · Table and Grid patterns",
+   "WCAG 2.2 · 1.3.1 Info and Relationships"
+  ],
+  "settled": true
+ },
+ {
+  "id": "data-display/tag/1",
+  "title": "Is the \"focus underline\" sentence on the Tag page outdated?",
+  "context": "The field focus rule says focus recolors the border only. The spec has since been updated: the current text below already reads this way, so the question only needs your confirmation.",
+  "current": [
+   {
+    "where": "Tag · Accessibility (docs.a11y.focus, inventory-docs.js)",
+    "text": "Tab reaches each rename and remove button in order. The rename button shows the focus ring; TagInput and the rename field show the field’s focused border, like every field."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Tags, a renamable tag and a tag field: Tab through them",
+    "jsx": "h(P.TagList, { label: 'Keywords' }, h(P.Tag, { onRemove: () => {} }, 'sky'), h(P.Tag, { category: 'teal', onRename: () => {} }, 'Client'), h(P.TagInput, { placeholder: 'Add a tag' }))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Focused border (as now)",
+    "recommended": true,
+    "text": "TagInput and the rename field use the field’s focused border, like every field.",
+    "render": {
+     "caption": "Tab into the field",
+     "jsx": "h(P.TagList, { label: 'Keywords' }, h(P.Tag, null, 'sky'), h(P.TagInput, { placeholder: 'Add a tag' }))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "An underline here",
+    "text": "Tag fields become an exception to the field focus rule; needs new styles.",
+    "render": {
+     "caption": "The same field today (no underline exists)",
+     "jsx": "h(P.TagList, { label: 'Keywords' }, h(P.TagInput, { placeholder: 'Add a tag' }))"
+    }
+   }
+  ],
+  "recommendation": "A. One focus look for every field, as in Fluent 2 and Carbon, and your field focus rule.",
+  "sources": [
+   "Fluent 2 · Input: focus state",
+   "Carbon · Text input states",
+   "Plenix rule: field focus recolors the border (0.52.0)"
+  ],
+  "settled": true
+ },
+ {
+  "id": "data-display/counter/1",
+  "title": "Is the counter pill solid or soft, and is Warning \"amber\" or yellow?",
+  "context": "The Counter page documents the Count component. Its pill is soft in code and its warning tone is called yellow. The spec has since been updated: the current text below already reads this way, so the question only needs your confirmation.",
+  "current": [
+   {
+    "where": "Counter · Anatomy (docs.anatomy[1], inventory-docs.js)",
+    "text": "Variant — plain muted text, or a 16px soft count pill (light fill, a border two shades darker, dark text) with 4px corners (optional, default plain)"
+   },
+   {
+    "where": "Count.jsx (the code)",
+    "text": "\"warning\" (yellow)"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Count pills in every tone, and the plain count",
+    "jsx": "h(P.Inline, null, h(P.Count, { variant: 'pill', tone: 'danger', value: 3 }), h(P.Count, { variant: 'pill', tone: 'warning', value: 12 }), h(P.Count, { variant: 'pill', tone: 'info', value: 7 }), h(P.Count, { variant: 'pill', tone: 'neutral', value: 120, max: 99 }), h(P.Count, { value: 24 }))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Soft, yellow (as now)",
+    "recommended": true,
+    "text": "No exception to the pill rule; Warning is yellow like Badge.",
+    "render": {
+     "caption": "Soft count pills",
+     "jsx": "h(P.Inline, null, h(P.Count, { variant: 'pill', tone: 'danger', value: 3 }), h(P.Count, { variant: 'pill', tone: 'warning', value: 12 }), h(P.Count, { variant: 'pill', tone: 'info', value: 7 }), h(P.Count, { variant: 'pill', tone: 'neutral', value: 120, max: 99 }), h(P.Count, { value: 24 }))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Make counters solid",
+    "text": "Counters become the one solid pill; component and pill rule change.",
+    "render": {
+     "caption": "Badges at sm (also soft) for comparison",
+     "jsx": "h(P.Inline, null, h(P.Badge, { tone: 'negative', size: 'sm' }, '3'), h(P.Badge, { tone: 'waiting', size: 'sm' }, '12'))"
+    }
+   }
+  ],
+  "recommendation": "A. Code, spec and pill rule agree. One name per hue (Polaris and Atlassian say yellow/warning) avoids confusion.",
+  "sources": [
+   "Shopify Polaris · Badge",
+   "Atlassian · Lozenge",
+   "Plenix rule: every pill is soft (2026-10-14)"
+  ],
+  "settled": true
+ },
+ {
+  "id": "data-display/metric/1",
+  "title": "Should \"use Count\" say Counter?",
+  "context": "The component in code is Count (platform/components/Count); the spec page for it is titled Counter. Still open.",
+  "current": [
+   {
+    "where": "Metric · When not to use (rec.avoid[0], inventory.js)",
+    "text": "A count beside a label: use Count",
+    "conflict": true
+   },
+   {
+    "where": "Counter page (inventory.js)",
+    "text": "leaf: 'Counter', plenix: 'Count', src: 'components/Count/Count.jsx'",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Metric (a key figure) vs Count (a number beside a label)",
+    "jsx": "h(P.Inline, null, h(P.Metric, { value: '1,284', label: 'Assets added' }), h(P.Inline, null, h('span', null, 'Inbox'), h(P.Count, { variant: 'pill', value: 4 })))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Keep \"Count\" (the component)",
+    "recommended": true,
+    "text": "The sentence names the real component; optionally rename the page Count.",
+    "render": {
+     "caption": "P.Count beside a label",
+     "jsx": "h(P.Inline, null, h('span', null, 'Files'), h(P.Count, { value: 128 }))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Say \"Counter\" (the page)",
+    "text": "Matches the page title, names no component in code.",
+    "render": {
+     "caption": "Same component, different word",
+     "jsx": "h(P.Inline, null, h('span', null, 'Inbox'), h(P.Count, { variant: 'pill', value: 4 }))"
+    }
+   },
+   {
+    "key": "C",
+    "label": "Both: \"Counter (Count)\"",
+    "text": "Names the page and the component.",
+    "render": {
+     "caption": "Same drawing",
+     "jsx": "h(P.Count, { variant: 'pill', tone: 'info', value: 7 })"
+    }
+   }
+  ],
+  "recommendation": "A. A spec should name the component developers import, as Carbon and Polaris do. Other Plenix pages already show the component name where it differs from the page title (plenix: Count).",
+  "sources": [
+   "Carbon · component docs name the code component",
+   "Plenix rule: authoritative docs"
+  ]
+ },
+ {
+  "id": "data-display/card/1",
+  "title": "Should the Card purpose say it usually opens its object?",
+  "context": "The Static card variant does not open; in code a Card opens only with href or onOpen. The spec has since been updated: the current text below already reads this way, so the question only needs your confirmation.",
+  "current": [
+   {
+    "where": "Card · Purpose (docs.purpose, inventory-docs.js)",
+    "text": "Shows one object in a collection, such as a project or a note, with its meta and actions, and can open it."
+   },
+   {
+    "where": "Card · Overview (rec.text, inventory.js)",
+    "text": "An object in a collection (a project, a note) that opens, with meta and actions.",
+    "conflict": true
+   },
+   {
+    "where": "Static card variant (inventory.js)",
+    "text": "A card that only shows its content and does not open.",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "A card that opens, and a static card",
+    "jsx": "h(P.Inline, null, h(P.Card, { title: 'Brand kit', meta: '12 assets', href: '#' }, 'Opens the kit'), h(P.Card, { title: 'Storage', meta: '4 GB of 10' }, 'Only shows'))",
+    "width": "840"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "\"can open it\" everywhere",
+    "recommended": true,
+    "text": "Keep the purpose; also change the Overview to \"… with meta and actions; it can open\".",
+    "render": {
+     "caption": "Opening card",
+     "jsx": "h(P.Card, { title: 'Brand kit', meta: '12 assets', href: '#' }, 'Opens the kit')",
+     "width": "600"
+    }
+   },
+   {
+    "key": "B",
+    "label": "\"usually opens\"",
+    "text": "Purpose and Overview say it usually opens its object.",
+    "render": {
+     "caption": "Static card",
+     "jsx": "h(P.Card, { title: 'Storage', meta: '4 GB of 10' }, 'Only shows')",
+     "width": "600"
+    }
+   }
+  ],
+  "recommendation": "A. The purpose already says \"can open it\"; aligning the Overview removes the last conflict. Material 3 and Polaris present cards as either actionable or static.",
+  "sources": [
+   "Material 3 · Cards",
+   "Shopify Polaris · Card"
+  ]
+ },
+ {
+  "id": "data-display/data-display-status-label/1",
+  "title": "Which tone for Active and In review?",
+  "context": "Badge tones: neutral, success, active (blue: in progress), waiting (yellow), action-required, negative; every Badge is soft. The spec has since been updated: the current text below already reads this way, so the question only needs your confirmation.",
+  "current": [
+   {
+    "where": "Status label · Overview (rec.text, w00B.records.js)",
+    "text": "A status label is a Badge whose tone matches the status (active, blue, for Active; waiting, yellow, for In review; neutral for Draft), with its icon. The word carries the meaning; the color helps scanning."
+   },
+   {
+    "where": "Badge.jsx (the code)",
+    "text": "\"active\" (blue: in progress, current, information)"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "As the spec reads now",
+    "jsx": "h(P.Inline, null, h(P.Badge, { tone: 'active', icon: 'progress' }, 'Active'), h(P.Badge, { tone: 'waiting', icon: 'schedule' }, 'In review'), h(P.Badge, { tone: 'neutral', icon: 'edit' }, 'Draft'))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Active blue, In review yellow (as now)",
+    "recommended": true,
+    "text": "In review waits on someone, so it is waiting.",
+    "render": {
+     "caption": "Active, In review, Draft",
+     "jsx": "h(P.Inline, null, h(P.Badge, { tone: 'active' }, 'Active'), h(P.Badge, { tone: 'waiting' }, 'In review'), h(P.Badge, { tone: 'neutral' }, 'Draft'))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Both blue",
+    "text": "Active and In review are both in progress.",
+    "render": {
+     "caption": "Both active",
+     "jsx": "h(P.Inline, null, h(P.Badge, { tone: 'active' }, 'Active'), h(P.Badge, { tone: 'active' }, 'In review'))"
+    }
+   },
+   {
+    "key": "C",
+    "label": "Active green",
+    "text": "Active as success; In review blue.",
+    "render": {
+     "caption": "Active green",
+     "jsx": "h(P.Inline, null, h(P.Badge, { tone: 'success' }, 'Active'), h(P.Badge, { tone: 'active' }, 'In review'))"
+    }
+   }
+  ],
+  "recommendation": "A. Green stays for done, blue for in progress, yellow for waiting: the Atlassian lozenge and Polaris badge split. It also gives Active and In review different colors so they scan apart.",
+  "sources": [
+   "Atlassian · Lozenge appearances",
+   "Shopify Polaris · Badge tones",
+   "Plenix · Badge tones (2026-10-14)"
+  ],
+  "settled": true
+ },
+ {
+  "id": "data-display/data-display-lozenge/1",
+  "title": "Lozenge: always soft, and a status only?",
+  "context": "Every Badge is soft, and a category is a Tag. The overview is already fixed; When to use still says \"state or category\".",
+  "current": [
+   {
+    "where": "Lozenge · Overview (rec.text, w00B.records.js)",
+    "text": "A lozenge (Atlassian’s name) is the Plenix Badge: a short status word on a soft pill with its icon, small (size=\"sm\") beside a title. A category is a Tag.",
+    "conflict": true
+   },
+   {
+    "where": "Lozenge · When to use (rec.use[0], w00B.records.js)",
+    "text": "A short state or category beside a title",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "A status (Badge) and a category (Tag) beside a title",
+    "jsx": "h(P.Stack, null, h(P.Inline, null, h('strong', null, 'Kitchen renovation'), h(P.Badge, { tone: 'success', size: 'sm', icon: 'check' }, 'Approved')), h(P.Inline, null, h('strong', null, 'Kitchen renovation'), h(P.Tag, { category: 'teal' }, 'Client')))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "When to use: \"A short status\"",
+    "recommended": true,
+    "text": "Change When to use to \"A short status beside a title\"; categories go to Tag.",
+    "render": {
+     "caption": "Status lozenge",
+     "jsx": "h(P.Inline, null, h('strong', null, 'Brand kit'), h(P.Badge, { tone: 'waiting', size: 'sm' }, 'Paused'))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Keep \"state or category\"",
+    "text": "When to use contradicts its own overview.",
+    "render": {
+     "caption": "A category drawn as a Badge",
+     "jsx": "h(P.Inline, null, h('strong', null, 'Brand kit'), h(P.Badge, { size: 'sm' }, 'Client'))"
+    }
+   }
+  ],
+  "recommendation": "A. Statuses are badges, categories are tags, in your pill rules and in Atlassian (lozenge vs tag).",
+  "sources": [
+   "Atlassian · Lozenge and Tag",
+   "Plenix rule: categories are Tags"
+  ]
+ },
+ {
+  "id": "data-display/data-display-list/1",
+  "title": "Can a List be numbered, and say \"DataGrid\" for acted-on rows?",
+  "context": "The List code supports ordered lists (decimal, alpha, steps). The spec has since been updated: the current text below already reads this way, so the question only needs your confirmation.",
+  "current": [
+   {
+    "where": "List · Overview (rec.text, w00B.records.js)",
+    "text": "A plain list is List: statements with an icon or a number each, in a <ul> or <ol>, nested when a statement has its own list. It shows content; rows people act on are an interactive list or a DataGrid."
+   },
+   {
+    "where": "List.jsx (the code)",
+    "text": "List.ordered: an ordered list (<ol>): \"decimal\" (true is the same) | \"alpha\"; without it, the icon list (<ul>)"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Icon list, numbered list, steps",
+    "jsx": "h(P.Inline, null, h(P.List, { items: [{ icon: 'check', tone: 'success', children: 'Use it for facts' }, { icon: 'close', tone: 'danger', children: 'Not for actions' }] }), h(P.List, { ordered: true, items: [{ children: 'Create the project' }, { children: 'Upload the files' }] }), h(P.List, { ordered: true, variant: 'steps', items: [{ children: 'Choose' }, { children: 'Confirm' }] }))",
+    "width": "840"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Numbered + DataGrid (as now)",
+    "recommended": true,
+    "text": "Keep the text; also add the number part to the List anatomy.",
+    "render": {
+     "caption": "Numbered list",
+     "jsx": "h(P.List, { ordered: 'alpha', items: [{ children: 'Photos' }, { children: 'Videos' }] })"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Icon list only",
+    "text": "Drop numbering from text and code.",
+    "render": {
+     "caption": "Icon list",
+     "jsx": "h(P.List, { items: [{ icon: 'check', tone: 'success', children: 'Only icons' }] })"
+    }
+   }
+  ],
+  "recommendation": "A. The component draws numbered lists and every system supports them; acted-on rows are a DataGrid under your rule.",
+  "sources": [
+   "Carbon · List (ordered, unordered)",
+   "Plenix rule: Table static, DataGrid dynamic"
+  ],
+  "settled": true
+ },
+ {
+  "id": "data-display/data-display-responsive-table/1",
+  "title": "Under 600px: list or sideways scroll? And whose is narrow=\"table\"?",
+  "context": "Both happen in code: the DataGrid becomes a list under narrowAt (600px), and scrolls inside a SplitView or with narrow=\"table\" (a DataGrid option). The Table always scrolls. The spec has since been updated: the current text below already reads this way, so the question only needs your confirmation.",
+  "current": [
+   {
+    "where": "Responsive table · Overview (rec.text, w00B.records.js)",
+    "text": "The DataGrid responds to its own width: under 600px it becomes a list of its key columns, the first as the title line and the others under it, keeping the checkbox and the row actions. Inside a SplitView, or with narrow=\"table\", it scrolls sideways instead. The static Table always scrolls sideways."
+   },
+   {
+    "where": "DataGrid.jsx (the code)",
+    "text": "narrow: \"table\" (default inside SplitView) | \"list\" (default elsewhere: under narrowAt, 600px, a list of keyColumns) | \"auto\""
+   }
+  ],
+  "renders": [
+   {
+    "caption": "DataGrid at phone width (list)",
+    "jsx": "h(P.DataGrid, { label: 'People', data: [{id:1,name:'Maya Chen',role:'Designer',status:'Active'},{id:2,name:'Leo Park',role:'Engineer',status:'In review'},{id:3,name:'Ana Ruiz',role:'Writer',status:'Done'}], columns: [{title:'Name',field:'name',sortable:true},{title:'Role',field:'role',sortable:true},{title:'Status',field:'status'}] })",
+    "width": "360"
+   },
+   {
+    "caption": "DataGrid with narrow=\"table\" (scrolls)",
+    "jsx": "h(P.DataGrid, { label: 'People', data: [{id:1,name:'Maya Chen',role:'Designer',status:'Active'},{id:2,name:'Leo Park',role:'Engineer',status:'In review'},{id:3,name:'Ana Ruiz',role:'Writer',status:'Done'}], columns: [{title:'Name',field:'name',sortable:true},{title:'Role',field:'role',sortable:true},{title:'Status',field:'status'}], narrow: 'table' })",
+    "width": "360"
+   },
+   {
+    "caption": "Static Table at phone width (scrolls)",
+    "jsx": "h(P.Table, { label: 'People', data: [{id:1,name:'Maya Chen',role:'Designer',status:'Active'},{id:2,name:'Leo Park',role:'Engineer',status:'In review'},{id:3,name:'Ana Ruiz',role:'Writer',status:'Done'}], columns: [{title:'Name',field:'name',rowLabel:true},{title:'Role',field:'role'},{title:'Status',field:'status'}] })",
+    "width": "360"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "List by default (as now)",
+    "recommended": true,
+    "text": "Keep the text: list under 600px, sideways scroll in a SplitView or with narrow=\"table\".",
+    "render": {
+     "caption": "Default DataGrid at 360",
+     "jsx": "h(P.DataGrid, { label: 'People', data: [{id:1,name:'Maya Chen',role:'Designer',status:'Active'},{id:2,name:'Leo Park',role:'Engineer',status:'In review'},{id:3,name:'Ana Ruiz',role:'Writer',status:'Done'}], columns: [{title:'Name',field:'name',sortable:true},{title:'Role',field:'role',sortable:true},{title:'Status',field:'status'}] })",
+     "width": "360"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Always scroll sideways",
+    "text": "Drop the list mode.",
+    "render": {
+     "caption": "narrow=\"table\" at 360",
+     "jsx": "h(P.DataGrid, { label: 'People', data: [{id:1,name:'Maya Chen',role:'Designer',status:'Active'},{id:2,name:'Leo Park',role:'Engineer',status:'In review'},{id:3,name:'Ana Ruiz',role:'Writer',status:'Done'}], columns: [{title:'Name',field:'name',sortable:true},{title:'Role',field:'role',sortable:true},{title:'Status',field:'status'}], narrow: 'table' })",
+     "width": "360"
+    }
+   }
+  ],
+  "recommendation": "A. It is what the code does. Material and Polaris reflow tables into lists on phones and keep horizontal scroll where columns must align.",
+  "sources": [
+   "Material 3 · Lists and tables on compact widths",
+   "Shopify Polaris · IndexTable condensed",
+   "WCAG 2.2 · 1.4.10 Reflow"
+  ],
+  "settled": true
+ },
+ {
+  "id": "data-display/data-display-compact-table/1",
+  "title": "Variant pages: only what is special, plus a link?",
+  "context": "The variant pages now have their own overview text; the question is whether the written sections below should stop repeating the DataGrid write-up.",
+  "current": [
+   {
+    "where": "Compact table · Overview (rec.text, w00B.records.js)",
+    "text": "The DataGrid in Compact density: shorter rows and smaller insets from the density tokens; the columns, sizes and features stay the same. Asset pages declare compact; a region can be compact on its own (data-plx-density)."
+   },
+   {
+    "where": "Compact table · written sections (paraphrase)",
+    "text": "The DataGrid’s purpose, anatomy, behavior, accessibility and content are shown again in full.",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Compact DataGrid",
+    "jsx": "h('div', { 'data-plx-density': 'compact' }, h(P.DataGrid, { label: 'People', data: [{id:1,name:'Maya Chen',role:'Designer',status:'Active'},{id:2,name:'Leo Park',role:'Engineer',status:'In review'},{id:3,name:'Ana Ruiz',role:'Writer',status:'Done'}], columns: [{title:'Name',field:'name',sortable:true},{title:'Role',field:'role',sortable:true},{title:'Status',field:'status'}] }))",
+    "width": "840"
+   },
+   {
+    "caption": "Standard DataGrid",
+    "jsx": "h('div', { 'data-plx-density': 'standard' }, h(P.DataGrid, { label: 'People', data: [{id:1,name:'Maya Chen',role:'Designer',status:'Active'},{id:2,name:'Leo Park',role:'Engineer',status:'In review'},{id:3,name:'Ana Ruiz',role:'Writer',status:'Done'}], columns: [{title:'Name',field:'name',sortable:true},{title:'Role',field:'role',sortable:true},{title:'Status',field:'status'}] }))",
+    "width": "840"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Only what differs + link",
+    "recommended": true,
+    "text": "Each variant page keeps its overview, demo and differences, and links to DataGrid for the rest.",
+    "render": {
+     "caption": "Compact demo only",
+     "jsx": "h('div', { 'data-plx-density': 'compact' }, h(P.DataGrid, { label: 'People', data: [{id:1,name:'Maya Chen',role:'Designer',status:'Active'},{id:2,name:'Leo Park',role:'Engineer',status:'In review'},{id:3,name:'Ana Ruiz',role:'Writer',status:'Done'}], columns: [{title:'Name',field:'name',sortable:true},{title:'Role',field:'role',sortable:true},{title:'Status',field:'status'}] }))",
+     "width": "840"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Keep the full copy",
+    "text": "Every fix must be made on every page.",
+    "render": {
+     "caption": "Same demo",
+     "jsx": "h(P.DataGrid, { label: 'People', data: [{id:1,name:'Maya Chen',role:'Designer',status:'Active'},{id:2,name:'Leo Park',role:'Engineer',status:'In review'},{id:3,name:'Ana Ruiz',role:'Writer',status:'Done'}], columns: [{title:'Name',field:'name',sortable:true},{title:'Role',field:'role',sortable:true},{title:'Status',field:'status'}] })",
+     "width": "840"
+    }
+   }
+  ],
+  "recommendation": "A. One source of truth avoids drift; Carbon and Material document variants briefly and point to the component page.",
+  "sources": [
+   "Carbon · Data table variants",
+   "Plenix rule: one page per component (2026-10-23)"
+  ]
+ },
+ {
+  "id": "data-display/data-display-editable-table/1",
+  "title": "Rewrite Editable and Tree table text once, on the DataGrid page?",
+  "context": "The Editable and Tree table pages now have their own overview text; their written sections still come from the DataGrid write-up.",
+  "current": [
+   {
+    "where": "Editable table · Overview (rec.text, w00B.records.js)",
+    "text": "Double-click a cell to edit it with its column’s editor (\"input\" and \"number\" are Plenix inputs). Enter keeps the value, Escape cancels, and onCellEdit lets the page save it. Give an editor only to the columns people may change."
+   },
+   {
+    "where": "Tree table · Overview (rec.text, w00B.records.js)",
+    "text": "A tree table shows a hierarchy several levels deep: tree, with each level indented one step (--plx-comp-data-grid-tree-indent), the + / − boxes in the name column, and the columns aligned across levels."
+   },
+   {
+    "where": "Editable and Tree table · written sections (paraphrase)",
+    "text": "The DataGrid’s own write-up, word for word.",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Tree DataGrid (tree, treeColumn, treeExpanded)",
+    "jsx": "h(P.DataGrid, { label: 'Folders', tree: true, childrenField: 'children', treeColumn: 'name', treeExpanded: true, data: [{id:1,name:'Projects',size:'3 items',children:[{id:2,name:'Kitchen',size:'12 files'},{id:3,name:'Garden',size:'4 files'}]}], columns: [{title:'Name',field:'name'},{title:'Size',field:'size',align:'right',headerAlign:'right'}] })",
+    "width": "600"
+   },
+   {
+    "caption": "Editable DataGrid: double-click a name",
+    "jsx": "h(P.DataGrid, { label: 'People', data: [{id:1,name:'Maya Chen',role:'Designer',status:'Active'},{id:2,name:'Leo Park',role:'Engineer',status:'In review'},{id:3,name:'Ana Ruiz',role:'Writer',status:'Done'}], columns: [{title:'Name',field:'name',editor:'input'},{title:'Role',field:'role'}] })",
+    "width": "600"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Rewrite once on DataGrid",
+    "recommended": true,
+    "text": "Rewrite the DataGrid page from the approved sample; the variant pages keep their overview and link to it.",
+    "render": {
+     "caption": "Tree table demo",
+     "jsx": "h(P.DataGrid, { label: 'Folders', tree: true, childrenField: 'children', treeColumn: 'name', treeExpanded: true, data: [{id:1,name:'Projects',size:'3 items',children:[{id:2,name:'Kitchen',size:'12 files'},{id:3,name:'Garden',size:'4 files'}]}], columns: [{title:'Name',field:'name'},{title:'Size',field:'size',align:'right',headerAlign:'right'}] })",
+     "width": "600"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Rewrite each page now",
+    "text": "Three separate full rewrites.",
+    "render": {
+     "caption": "Editable demo",
+     "jsx": "h(P.DataGrid, { label: 'People', data: [{id:1,name:'Maya Chen',role:'Designer',status:'Active'},{id:2,name:'Leo Park',role:'Engineer',status:'In review'},{id:3,name:'Ana Ruiz',role:'Writer',status:'Done'}], columns: [{title:'Name',field:'name',editor:'input'},{title:'Role',field:'role'}] })",
+     "width": "600"
+    }
+   }
+  ],
+  "recommendation": "A. One rewrite avoids diverging copies and follows your one-page-per-component rule.",
+  "sources": [
+   "Carbon · Data table: expandable and editable variants",
+   "Plenix rule: one page per component (2026-10-23)"
+  ]
+ },
+ {
+  "id": "data-display/chart-foundations/1",
+  "title": "Call a chart's values view the \"data table\", not the \"data grid\"?",
+  "context": "Chart foundations now says \"Data table … as a Table\". Most other chart pages still say \"data grid\".",
+  "current": [
+   {
+    "where": "Chart foundations · Anatomy (docs.anatomy[8], w07C.docs.js)",
+    "text": "Data table — the same values as a Table behind “Show the data” (required)"
+   },
+   {
+    "where": "Bar chart and others · Anatomy (parts/*.docs.js)",
+    "text": "Frame — the title, the description and the data grid (ChartFrame) (required)",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "A bar chart; \"Show the data\" opens its values",
+    "jsx": "h(P.BarChart, { title: 'Storage by team', description: 'Design uses the most storage.', categories: ['Design', 'Marketing', 'Sales'], series: [{ id: 'gb', label: 'Storage (GB)', values: [420, 310, 120] }], valueLabel: 'Storage (GB)' })",
+    "width": "600"
+   },
+   {
+    "caption": "Those values as a static Table",
+    "jsx": "h(P.Table, { label: 'Storage by team', data: [{id:1,t:'Design',v:'420'},{id:2,t:'Marketing',v:'310'},{id:3,t:'Sales',v:'120'}], columns: [{title:'Team',field:'t',rowLabel:true},{title:'Storage (GB)',field:'v',align:'right',headerAlign:'right'}] })",
+    "width": "600"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "\"data table\" everywhere",
+    "recommended": true,
+    "text": "Every chart page says \"data table\" (a Table).",
+    "render": {
+     "caption": "Data table",
+     "jsx": "h(P.Table, { label: 'Storage by team', data: [{id:1,t:'Design',v:'420'},{id:2,t:'Marketing',v:'310'},{id:3,t:'Sales',v:'120'}], columns: [{title:'Team',field:'t',rowLabel:true},{title:'Storage (GB)',field:'v',align:'right',headerAlign:'right'}] })",
+     "width": "600"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Keep \"data grid\" elsewhere",
+    "text": "Readers may expect sorting and filtering.",
+    "render": {
+     "caption": "What \"data grid\" suggests",
+     "jsx": "h(P.DataGrid, { label: 'Storage by team', data: [{id:1,t:'Design',v:420},{id:2,t:'Marketing',v:310},{id:3,t:'Sales',v:120}], columns: [{title:'Team',field:'t',sortable:true},{title:'Storage (GB)',field:'v',align:'right',headerAlign:'right',sortable:true}] })",
+     "width": "600"
+    }
+   }
+  ],
+  "recommendation": "A. Carbon and the HIG call it the chart's data table; it is static, so under your rule a Table.",
+  "sources": [
+   "Carbon · Data visualization accessibility: data table",
+   "Apple HIG · Charts: accessibility",
+   "Plenix rule: Table static, DataGrid dynamic"
+  ]
+ },
+ {
+  "id": "data-display/chart-threshold/1",
+  "title": "Give Threshold its own purpose?",
+  "context": "Threshold used to show the Reference line purpose. The spec has since been updated: the current text below already reads this way, so the question only needs your confirmation.",
+  "current": [
+   {
+    "where": "Threshold · Purpose (rec.purpose, w08A.records.js)",
+    "text": "Marks a limit the data should stay under or above, so values past it stand out."
+   },
+   {
+    "where": "ReferenceLine.jsx (the code)",
+    "text": "kind: \"reference\" (default: a dashed line in the subtle content color) | \"threshold\" (a dashed line in an alert color)"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Threshold (kind=\"threshold\", critical)",
+    "jsx": "h(P.LineChart, { title: 'Sign-ups', description: 'Sign-ups grew through spring.', data: [{month:'Jan',web:120},{month:'Feb',web:132},{month:'Mar',web:128},{month:'Apr',web:150},{month:'May',web:171},{month:'Jun',web:168}], x: 'month', series: [{ id: 'web', label: 'Web' }], yLabel: 'Sign-ups', overlay: ({ inner, y }) => h(P.ReferenceLine, { kind: 'threshold', level: 'critical', scale: y, value: 160, inner: inner, label: 'Limit' }) })",
+    "width": "600"
+   },
+   {
+    "caption": "Reference line (kind=\"reference\")",
+    "jsx": "h(P.LineChart, { title: 'Sign-ups', description: 'Sign-ups grew through spring.', data: [{month:'Jan',web:120},{month:'Feb',web:132},{month:'Mar',web:128},{month:'Apr',web:150},{month:'May',web:171},{month:'Jun',web:168}], x: 'month', series: [{ id: 'web', label: 'Web' }], yLabel: 'Sign-ups', overlay: ({ inner, y }) => h(P.ReferenceLine, { kind: 'reference', scale: y, value: 150, inner: inner, label: 'Target' }) })",
+    "width": "600"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Own purpose (as now)",
+    "recommended": true,
+    "text": "Keep: a limit the data should stay under or above.",
+    "render": {
+     "caption": "Threshold",
+     "jsx": "h(P.LineChart, { title: 'Sign-ups', description: 'Sign-ups grew through spring.', data: [{month:'Jan',web:120},{month:'Feb',web:132},{month:'Mar',web:128},{month:'Apr',web:150},{month:'May',web:171},{month:'Jun',web:168}], x: 'month', series: [{ id: 'web', label: 'Web' }], yLabel: 'Sign-ups', overlay: ({ inner, y }) => h(P.ReferenceLine, { kind: 'threshold', level: 'critical', scale: y, value: 160, inner: inner, label: 'Limit' }) })",
+     "width": "600"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Shared purpose",
+    "text": "Both pages say target, average, limit or date.",
+    "render": {
+     "caption": "Reference line",
+     "jsx": "h(P.LineChart, { title: 'Sign-ups', description: 'Sign-ups grew through spring.', data: [{month:'Jan',web:120},{month:'Feb',web:132},{month:'Mar',web:128},{month:'Apr',web:150},{month:'May',web:171},{month:'Jun',web:168}], x: 'month', series: [{ id: 'web', label: 'Web' }], yLabel: 'Sign-ups', overlay: ({ inner, y }) => h(P.ReferenceLine, { kind: 'reference', scale: y, value: 145, inner: inner, label: 'Average' }) })",
+     "width": "600"
+    }
+   }
+  ],
+  "recommendation": "A. Different meaning, different look (alert color) and different page; the purpose should say so. Carbon separates thresholds from reference lines too.",
+  "sources": [
+   "Carbon · Charts: thresholds",
+   "Plenix · ReferenceLine kind"
+  ],
+  "settled": true
+ },
+ {
+  "id": "data-display/profile-card/1",
+  "title": "Does the presence dot add a shape from 40px?",
+  "context": "Yes, in code: from 40px the dot carries the state's shape. The spec has since been updated: the current text below already reads this way, so the question only needs your confirmation.",
+  "current": [
+   {
+    "where": "Profile card · Accessibility (a11y.contrast, w08A.records.js)",
+    "text": "The line and the details are secondary text at its contrast; on avatars 40px and larger the presence dot also shows a shape (a check, a clock, a minus), so it never relies on color alone."
+   },
+   {
+    "where": "Avatar.jsx (the code)",
+    "text": "from 40px it carries the availability's shape"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "32px (dot) vs 40px (dot with a shape)",
+    "jsx": "h(P.Inline, null, h(P.Avatar, { name: 'Maya Chen', label: 'Maya Chen', size: 'md', presence: 'online' }), h(P.Avatar, { name: 'Leo Park', label: 'Leo Park', size: 'md', presence: 'away' }), h(P.Avatar, { name: 'Maya Chen', label: 'Maya Chen', size: 'lg', presence: 'online' }), h(P.Avatar, { name: 'Leo Park', label: 'Leo Park', size: 'lg', presence: 'away' }), h(P.Avatar, { name: 'Ana Ruiz', label: 'Ana Ruiz', size: 'lg', presence: 'dnd' }))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Spelled out (as now)",
+    "recommended": true,
+    "text": "Keep the clarified sentence.",
+    "render": {
+     "caption": "40px avatars",
+     "jsx": "h(P.Inline, null, h(P.Avatar, { name: 'Ana Ruiz', label: 'Ana Ruiz', size: 'lg', presence: 'online' }), h(P.Avatar, { name: 'Ana Ruiz', label: 'Ana Ruiz', size: 'lg', presence: 'busy' }), h(P.Avatar, { name: 'Ana Ruiz', label: 'Ana Ruiz', size: 'lg', presence: 'offline' }))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Shorter wording",
+    "text": "Back to \"carries a shape from 40px\".",
+    "render": {
+     "caption": "Same avatars",
+     "jsx": "h(P.Inline, null, h(P.Avatar, { name: 'Ana Ruiz', label: 'Ana Ruiz', size: 'xl', presence: 'online' }))"
+    }
+   }
+  ],
+  "recommendation": "A. It says what happens and why (WCAG 1.4.1). Fluent presence badges use a shape per state the same way.",
+  "sources": [
+   "WCAG 2.2 · 1.4.1 Use of Color",
+   "Fluent 2 · Avatar presence badge"
+  ],
+  "settled": true
+ },
+ {
+  "id": "data-display/chart-reference-line/1",
+  "title": "Fix \"the scale’s format or format\"?",
+  "context": "The line has its own format prop in code. The spec has since been updated: the current text below already reads this way, so the question only needs your confirmation.",
+  "current": [
+   {
+    "where": "Reference line · Content (docs.content.localization, parts docs)",
+    "text": "The value in the scale’s format, or the line’s own format setting, in the reader’s locale."
+   },
+   {
+    "where": "ReferenceLine.jsx (the code)",
+    "text": "format: (value) => text, instead of the scale's format"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Scale format",
+    "jsx": "h(P.LineChart, { title: 'Sign-ups', description: 'Sign-ups grew through spring.', data: [{month:'Jan',web:120},{month:'Feb',web:132},{month:'Mar',web:128},{month:'Apr',web:150},{month:'May',web:171},{month:'Jun',web:168}], x: 'month', series: [{ id: 'web', label: 'Web' }], yLabel: 'Sign-ups', overlay: ({ inner, y }) => h(P.ReferenceLine, { kind: 'reference', scale: y, value: 150, inner: inner, label: 'Target' }) })",
+    "width": "600"
+   },
+   {
+    "caption": "Line's own format",
+    "jsx": "h(P.LineChart, { title: 'Sign-ups', description: 'Sign-ups grew through spring.', data: [{month:'Jan',web:120},{month:'Feb',web:132},{month:'Mar',web:128},{month:'Apr',web:150},{month:'May',web:171},{month:'Jun',web:168}], x: 'month', series: [{ id: 'web', label: 'Web' }], yLabel: 'Sign-ups', overlay: ({ inner, y }) => h(P.ReferenceLine, { scale: y, value: 150, inner: inner, label: 'Target', format: (v) => v + ' sign-ups' }) })",
+    "width": "600"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Scale’s, or the line’s own (as now)",
+    "recommended": true,
+    "text": "Keep the corrected sentence.",
+    "render": {
+     "caption": "format on the line",
+     "jsx": "h(P.LineChart, { title: 'Sign-ups', description: 'Sign-ups grew through spring.', data: [{month:'Jan',web:120},{month:'Feb',web:132},{month:'Mar',web:128},{month:'Apr',web:150},{month:'May',web:171},{month:'Jun',web:168}], x: 'month', series: [{ id: 'web', label: 'Web' }], yLabel: 'Sign-ups', overlay: ({ inner, y }) => h(P.ReferenceLine, { scale: y, value: 150, inner: inner, label: 'Target', format: (v) => v + ' sign-ups' }) })",
+     "width": "600"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Scale’s format only",
+    "text": "Drops the line’s format setting from the text.",
+    "render": {
+     "caption": "Scale format",
+     "jsx": "h(P.LineChart, { title: 'Sign-ups', description: 'Sign-ups grew through spring.', data: [{month:'Jan',web:120},{month:'Feb',web:132},{month:'Mar',web:128},{month:'Apr',web:150},{month:'May',web:171},{month:'Jun',web:168}], x: 'month', series: [{ id: 'web', label: 'Web' }], yLabel: 'Sign-ups', overlay: ({ inner, y }) => h(P.ReferenceLine, { kind: 'reference', scale: y, value: 150, inner: inner, label: 'Target' }) })",
+     "width": "600"
+    }
+   }
+  ],
+  "recommendation": "A. It matches the format prop and reads plainly.",
+  "sources": [
+   "GOV.UK · Writing for user interfaces",
+   "Plenix · ReferenceLine props"
+  ],
+  "settled": true
+ },
+ {
+  "id": "data-display/chart-accessibility/1",
+  "title": "Should every chart be readable point by point with the keyboard?",
+  "context": "The chart accessibility page now says point-by-point reading applies to line, scatter, heat map, treemap, waterfall and similar charts; on the others the keyboard reaches “Show the data”. The spec has since been updated: the current text below already reads this way, so the question only needs your confirmation.",
+  "current": [
+   {
+    "where": "Chart accessibility · Overview (rec.text, w09C.records.js)",
+    "text": "the chart interaction (ChartFrame’s plot; useChartPoints for charts of separate marks) lets the keyboard read the values one by one, each spoken, on line, scatter, heat map, treemap, waterfall and similar charts; on the others the keyboard reaches “Show the data”, the same values as a table."
+   },
+   {
+    "where": "Bar chart · Behavior (behavior.keyboard, parts docs)",
+    "text": "The chart is one image; Tab reaches “Show the data”, whose table lists every value. Interactive legends are toggles in the Tab order."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Line chart: Tab in, then arrow keys through the points",
+    "jsx": "h(P.LineChart, { title: 'Sign-ups', description: 'Sign-ups grew through spring.', data: [{month:'Jan',web:120},{month:'Feb',web:132},{month:'Mar',web:128},{month:'Apr',web:150},{month:'May',web:171},{month:'Jun',web:168}], x: 'month', series: [{ id: 'web', label: 'Web' }], yLabel: 'Sign-ups' })",
+    "width": "600"
+   },
+   {
+    "caption": "Bar chart: Tab reaches \"Show the data\"",
+    "jsx": "h(P.BarChart, { title: 'Storage by team', description: 'Design uses the most storage.', categories: ['Design', 'Marketing', 'Sales'], series: [{ id: 'gb', label: 'Storage (GB)', values: [420, 310, 120] }], valueLabel: 'Storage (GB)' })",
+    "width": "600"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Split by chart type (as now)",
+    "recommended": true,
+    "text": "Point by point where marks form a sequence or field; Show the data on the others.",
+    "render": {
+     "caption": "Line chart with point reading",
+     "jsx": "h(P.LineChart, { title: 'Sign-ups', description: 'Sign-ups grew through spring.', data: [{month:'Jan',web:120},{month:'Feb',web:132},{month:'Mar',web:128},{month:'Apr',web:150},{month:'May',web:171},{month:'Jun',web:168}], x: 'month', series: [{ id: 'web', label: 'Web' }], yLabel: 'Sign-ups', points: true })",
+     "width": "600"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Every chart point by point",
+    "text": "Bar, pie, box plot and the rest also get arrow-key reading.",
+    "render": {
+     "caption": "Bar chart would gain point reading",
+     "jsx": "h(P.BarChart, { title: 'Storage by team', description: 'Design uses the most storage.', categories: ['Design', 'Marketing', 'Sales'], series: [{ id: 'gb', label: 'Storage (GB)', values: [420, 310, 120] }], valueLabel: 'Storage (GB)' })",
+     "width": "600"
+    }
+   }
+  ],
+  "recommendation": "A. It matches what the charts do and keeps the data table as the full alternative WCAG asks for. Point reading on every chart is a larger build you can add later where people need it.",
+  "sources": [
+   "Carbon · Data visualization accessibility",
+   "WCAG 2.2 · 2.1.1 Keyboard",
+   "Highcharts · Keyboard navigation"
+  ],
+  "settled": true
+ },
+ {
+  "id": "data-display/chart-accessibility/2",
+  "title": "Call charts' value tables \"data table\" everywhere?",
+  "context": "When to use now says \"data table\". The focus line and most chart anatomies still say \"data grid\".",
+  "current": [
+   {
+    "where": "Chart accessibility · When to use (rec.use[1], w09C.records.js)",
+    "text": "The data table (ChartFrame’s Table) on every chart, with the same values in the axis’s format"
+   },
+   {
+    "where": "Chart accessibility · Accessibility (a11y.focus, w09C.docs.js)",
+    "text": "One Tab stop per chart: the wrapper, not each mark; the data grid and its rows keep their own keys.",
+    "conflict": true
+   },
+   {
+    "where": "Bar chart and others · Accessibility (parts docs)",
+    "text": "The marks are hidden from assistive technology; the data grid (one click away) carries every value.",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Bar chart with its data table",
+    "jsx": "h(P.BarChart, { title: 'Storage by team', description: 'Design uses the most storage.', categories: ['Design', 'Marketing', 'Sales'], series: [{ id: 'gb', label: 'Storage (GB)', values: [420, 310, 120] }], valueLabel: 'Storage (GB)' })",
+    "width": "600"
+   },
+   {
+    "caption": "Its values as a static Table",
+    "jsx": "h(P.Table, { label: 'Storage by team', data: [{id:1,t:'Design',v:'420'},{id:2,t:'Marketing',v:'310'},{id:3,t:'Sales',v:'120'}], columns: [{title:'Team',field:'t',rowLabel:true},{title:'Storage (GB)',field:'v',align:'right',headerAlign:'right'}] })",
+    "width": "600"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "\"data table\" everywhere",
+    "recommended": true,
+    "text": "Replace \"data grid\" on every chart page; the focus line becomes \"the data table follows the chart in the Tab order\".",
+    "render": {
+     "caption": "Data table",
+     "jsx": "h(P.Table, { label: 'Storage by team', data: [{id:1,t:'Design',v:'420'},{id:2,t:'Marketing',v:'310'},{id:3,t:'Sales',v:'120'}], columns: [{title:'Team',field:'t',rowLabel:true},{title:'Storage (GB)',field:'v',align:'right',headerAlign:'right'}] })",
+     "width": "600"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Keep \"data grid\"",
+    "text": "Readers may read it as a DataGrid.",
+    "render": {
+     "caption": "What \"data grid\" suggests",
+     "jsx": "h(P.DataGrid, { label: 'Storage by team', data: [{id:1,t:'Design',v:420},{id:2,t:'Marketing',v:310},{id:3,t:'Sales',v:120}], columns: [{title:'Team',field:'t',sortable:true},{title:'Storage (GB)',field:'v',align:'right',headerAlign:'right',sortable:true}] })",
+     "width": "600"
+    }
+   }
+  ],
+  "recommendation": "A. It is static, so a Table under your rule; Carbon and the HIG call it the data table.",
+  "sources": [
+   "Carbon · Data visualization accessibility",
+   "Apple HIG · Charts"
+  ]
+ },
+ {
+  "id": "data-display/metric-card/1",
+  "title": "Which Metric card is current: the new overview or the old sections?",
+  "context": "The code is the new card. The spec has since been updated: the current text below already reads this way, so the question only needs your confirmation.",
+  "current": [
+   {
+    "where": "Metric card · Behavior (behavior.pointer, w09C.docs.js)",
+    "text": "With href the whole card opens the details; info, the filter and More stay their own targets."
+   },
+   {
+    "where": "Metric card · When to use (rec.use, w09C.records.js)",
+    "text": "href to the detailed view: the whole card is the target"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "MetricCard with href (whole card is the link)",
+    "jsx": "h(P.MetricCard, { icon: 'checklist', title: 'Open tasks', context: 'All projects', value: '128', change: { amount: '12', direction: 'up', versus: 'since last week' }, goodWhen: 'down', href: '#' })",
+    "width": "600"
+   },
+   {
+    "caption": "Trend type",
+    "jsx": "h(P.MetricCard, { type: 'trend', icon: 'image-b', title: 'Assets added', context: 'Last 30 days', value: '1,284', change: { amount: '12.5%', direction: 'up', versus: 'vs previous 30 days' }, goodWhen: 'up', trend: [38, 41, 40, 44, 47, 52], footer: 'Updated 5 minutes ago' })",
+    "width": "600"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "The new card (as now)",
+    "recommended": true,
+    "text": "Keep the rewritten sections: the whole card is the link.",
+    "render": {
+     "caption": "Whole card as a link",
+     "jsx": "h(P.MetricCard, { icon: 'checklist', title: 'Open tasks', context: 'All projects', value: '128', change: { amount: '12', direction: 'up', versus: 'since last week' }, goodWhen: 'down', href: '#' })",
+     "width": "600"
+    }
+   },
+   {
+    "key": "B",
+    "label": "The old card",
+    "text": "Only the title is a link; the code would change back.",
+    "render": {
+     "caption": "No href",
+     "jsx": "h(P.MetricCard, { icon: 'checklist', title: 'Open tasks', context: 'All projects', value: '128', change: { amount: '12', direction: 'up', versus: 'since last week' }, goodWhen: 'down' })",
+     "width": "600"
+    }
+   }
+  ],
+  "recommendation": "A. It matches the code and the 2026-10-19 decision. Material and Polaris make a summary card one target with inner actions kept separate.",
+  "sources": [
+   "Material 3 · Cards: one primary action",
+   "Plenix · Metric cards approved 2026-10-19"
+  ],
+  "settled": true
+ },
+ {
+  "id": "data-display/metric-card/2",
+  "title": "\"Appearance\" or \"style\" for the 5 looks?",
+  "context": "The prop is appearance; the decision says styles. The spec now says \"style\" and names the setting. The spec has since been updated: the current text below already reads this way, so the question only needs your confirmation.",
+  "current": [
+   {
+    "where": "Metric card · Overview (rec.text, w09C.records.js)",
+    "text": "the style how strongly it stands out (5; the `appearance` setting)"
+   },
+   {
+    "where": "Metric card · Anatomy (docs.anatomy[0], w09C.docs.js)",
+    "text": "Frame — Panel’s frame in one of five styles (`appearance`): plain, edge, soft, filled or gradient (required)"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "plain, edge, soft",
+    "jsx": "h(P.Inline, null, h(P.MetricCard, { icon: 'checklist', title: 'Open tasks', context: 'All projects', value: '128', change: { amount: '12', direction: 'up', versus: 'since last week' }, goodWhen: 'down', appearance: 'plain' }), h(P.MetricCard, { icon: 'checklist', title: 'Open tasks', context: 'All projects', value: '128', change: { amount: '12', direction: 'up', versus: 'since last week' }, goodWhen: 'down', appearance: 'edge' }), h(P.MetricCard, { icon: 'checklist', title: 'Open tasks', context: 'All projects', value: '128', change: { amount: '12', direction: 'up', versus: 'since last week' }, goodWhen: 'down', appearance: 'soft' }))",
+    "width": "1200"
+   },
+   {
+    "caption": "filled, gradient",
+    "jsx": "h(P.Inline, null, h(P.MetricCard, { icon: 'checklist', title: 'Open tasks', context: 'All projects', value: '128', change: { amount: '12', direction: 'up', versus: 'since last week' }, goodWhen: 'down', appearance: 'filled' }), h(P.MetricCard, { icon: 'checklist', title: 'Open tasks', context: 'All projects', value: '128', change: { amount: '12', direction: 'up', versus: 'since last week' }, goodWhen: 'down', appearance: 'gradient' }))",
+    "width": "1200"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "\"style\" + the prop name (as now)",
+    "recommended": true,
+    "text": "Prose says style, as decided; the prop name appears once in code type.",
+    "render": {
+     "caption": "appearance=\"edge\"",
+     "jsx": "h(P.MetricCard, { icon: 'checklist', title: 'Open tasks', context: 'All projects', value: '128', change: { amount: '12', direction: 'up', versus: 'since last week' }, goodWhen: 'down', appearance: 'edge' })",
+     "width": "600"
+    }
+   },
+   {
+    "key": "B",
+    "label": "\"appearance\" everywhere",
+    "text": "Prose matches the prop.",
+    "render": {
+     "caption": "appearance=\"soft\"",
+     "jsx": "h(P.MetricCard, { icon: 'checklist', title: 'Open tasks', context: 'All projects', value: '128', change: { amount: '12', direction: 'up', versus: 'since last week' }, goodWhen: 'down', appearance: 'soft' })",
+     "width": "600"
+    }
+   }
+  ],
+  "recommendation": "A. It keeps your decided word for people and the exact prop for developers, the pattern Fluent 2 docs use (\"appearance\" prop explained in prose).",
+  "sources": [
+   "Fluent 2 · appearance prop",
+   "Plenix · Metric cards approved 2026-10-19"
+  ],
+  "settled": true
+ },
+ {
+  "id": "data-display/bubble-chart/1",
+  "title": "Is the largest bubble 24px radius or 24px wide?",
+  "context": "The sentence was ambiguous. The spec has since been updated: the current text below already reads this way, so the question only needs your confirmation.",
+  "current": [
+   {
+    "where": "Bubble chart · Overview (rec.text, w09C.records.js)",
+    "text": "each bubble sits at its two measures and its area (not its radius) follows the third, the largest bubble 48px wide (a 24px radius)."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Bubble chart (ScatterChart variant=\"bubble\")",
+    "jsx": "h(P.ScatterChart, { variant: 'bubble', title: 'Assets by team', description: 'Design has the most assets and views.', xTitle: 'Assets', yTitle: 'Downloads', sizeTitle: 'Views', series: [{ id: 't', label: 'Teams', points: [{ x: 120, y: 300, size: 900, label: 'Design' }, { x: 80, y: 180, size: 300, label: 'Sales' }, { x: 40, y: 90, size: 60, label: 'Legal' }] }] })",
+    "width": "600"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "48px wide, 24px radius (as now)",
+    "recommended": true,
+    "text": "Keep the clarified sentence.",
+    "render": {
+     "caption": "Largest bubble 48px",
+     "jsx": "h(P.ScatterChart, { variant: 'bubble', title: 'Assets by team', description: 'Design has the most assets and views.', xTitle: 'Assets', yTitle: 'Downloads', sizeTitle: 'Views', series: [{ id: 't', label: 'Teams', points: [{ x: 120, y: 300, size: 900, label: 'Design' }, { x: 80, y: 180, size: 300, label: 'Sales' }, { x: 40, y: 90, size: 60, label: 'Legal' }] }] })",
+     "width": "600"
+    }
+   },
+   {
+    "key": "B",
+    "label": "24px wide",
+    "text": "Halve the largest bubble; less range between values.",
+    "render": {
+     "caption": "Scatter (all one size) for scale",
+     "jsx": "h(P.ScatterChart, { title: 'Assets by team', description: 'Points only.', xTitle: 'Assets', yTitle: 'Downloads', series: [{ id: 't', label: 'Teams', points: [{ x: 120, y: 300 }, { x: 80, y: 180 }, { x: 40, y: 90 }] }] })",
+     "width": "600"
+    }
+   }
+  ],
+  "recommendation": "A. It matches the chart; enough range keeps areas comparable (Carbon bubble chart).",
+  "sources": [
+   "Carbon · Bubble chart"
+  ],
+  "settled": true
+ },
+ {
+  "id": "data-display/box-plot/1",
+  "title": "What does \"points of the frame\" mean for outliers?",
+  "context": "It meant plain points. The spec has since been updated: the current text below already reads this way, so the question only needs your confirmation.",
+  "current": [
+   {
+    "where": "Box plot · With outliers (rec.variantPages[2].text, records)",
+    "text": "The values beyond the whiskers, as points."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Box plot: Design has an outlier at 30 hours",
+    "jsx": "h(P.BoxPlot, { title: 'Review time by team', description: 'Design reviews take longest and vary most.', valueLabel: 'Hours', groups: [{ id: 'design', label: 'Design', values: [4, 6, 7, 9, 12, 30] }, { id: 'legal', label: 'Legal', values: [2, 3, 4, 5, 6, 7] }] })",
+    "width": "600"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "\"as points\" (as now)",
+    "recommended": true,
+    "text": "Keep the short sentence.",
+    "render": {
+     "caption": "Outlier as a point",
+     "jsx": "h(P.BoxPlot, { title: 'Review time by team', description: 'Design reviews take longest and vary most.', valueLabel: 'Hours', groups: [{ id: 'design', label: 'Design', values: [4, 6, 7, 9, 12, 30] }, { id: 'legal', label: 'Legal', values: [2, 3, 4, 5, 6, 7] }] })",
+     "width": "600"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Say more",
+    "text": "Add \"beyond 1.5 times the box’s length\", as the code computes.",
+    "render": {
+     "caption": "Same chart",
+     "jsx": "h(P.BoxPlot, { title: 'Review time by team', description: 'Design reviews take longest and vary most.', valueLabel: 'Hours', groups: [{ id: 'design', label: 'Design', values: [4, 6, 7, 9, 12, 30] }, { id: 'legal', label: 'Legal', values: [2, 3, 4, 5, 6, 7] }] })",
+     "width": "600"
+    }
+   }
+  ],
+  "recommendation": "A. Outliers as points is the standard Tukey box plot (Carbon); the 1.5× rule can live in Behavior.",
+  "sources": [
+   "Carbon · Box plot"
+  ],
+  "settled": true
+ },
+ {
+  "id": "data-display/step-chart/1",
+  "title": "Give the step chart its own purpose?",
+  "context": "It used to show the line chart purpose. The spec has since been updated: the current text below already reads this way, so the question only needs your confirmation.",
+  "current": [
+   {
+    "where": "Step chart · Purpose (rec.purpose, w09A.records.js)",
+    "text": "Shows values that change at moments and hold in between, such as prices, plans or limits."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Step chart (curve=\"step\")",
+    "jsx": "h(P.LineChart, { title: 'Price per seat', description: 'The price rose twice this year.', data: [{date:'Jan',price:12},{date:'Feb',price:12},{date:'Mar',price:15},{date:'Apr',price:15},{date:'May',price:15},{date:'Jun',price:18}], x: 'date', series: [{ id: 'price', label: 'Price' }], yLabel: 'Price ($)', curve: 'step', points: true })",
+    "width": "600"
+   },
+   {
+    "caption": "The same data as a line",
+    "jsx": "h(P.LineChart, { title: 'Price per seat', description: 'The price rose twice this year.', data: [{date:'Jan',price:12},{date:'Feb',price:12},{date:'Mar',price:15},{date:'Apr',price:15},{date:'May',price:15},{date:'Jun',price:18}], x: 'date', series: [{ id: 'price', label: 'Price' }], yLabel: 'Price ($)' })",
+    "width": "600"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Own purpose (as now)",
+    "recommended": true,
+    "text": "Keep it.",
+    "render": {
+     "caption": "Step",
+     "jsx": "h(P.LineChart, { title: 'Price per seat', description: 'The price rose twice this year.', data: [{date:'Jan',price:12},{date:'Feb',price:12},{date:'Mar',price:15},{date:'Apr',price:15},{date:'May',price:15},{date:'Jun',price:18}], x: 'date', series: [{ id: 'price', label: 'Price' }], yLabel: 'Price ($)', curve: 'step', points: true })",
+     "width": "600"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Line chart purpose",
+    "text": "Nothing says when to pick a step chart.",
+    "render": {
+     "caption": "Line",
+     "jsx": "h(P.LineChart, { title: 'Price per seat', description: 'The price rose twice this year.', data: [{date:'Jan',price:12},{date:'Feb',price:12},{date:'Mar',price:15},{date:'Apr',price:15},{date:'May',price:15},{date:'Jun',price:18}], x: 'date', series: [{ id: 'price', label: 'Price' }], yLabel: 'Price ($)' })",
+     "width": "600"
+    }
+   }
+  ],
+  "recommendation": "A. A variant needs its own reason; step lines show values held until the next change (Highcharts, Carbon).",
+  "sources": [
+   "Carbon · Line chart: step",
+   "Highcharts · Step line"
+  ],
+  "settled": true
+ },
+ {
+  "id": "data-display/waterfall-chart/1",
+  "title": "Clarify \"Subtotals (total without a value)\"?",
+  "context": "In code a total with no value shows the running total so far. The spec has since been updated: the current text below already reads this way, so the question only needs your confirmation.",
+  "current": [
+   {
+    "where": "Waterfall chart · When to use (rec.use[2], records)",
+    "text": "Subtotals at natural breaks: a step marked as a total with no amount, so the chart shows the running total there."
+   },
+   {
+    "where": "WaterfallChart.jsx (the code)",
+    "text": "a total (total: true) is a column from zero: with a value it sets the running total (the start), without one it shows the running total so far (a subtotal: the \"with totals\" variant)"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "With a subtotal (total, no value)",
+    "jsx": "h(P.WaterfallChart, { title: 'Revenue, last year to this year', description: 'New customers made up for churn.', yLabel: 'Revenue ($k)', data: [{ label: 'Last year', value: 820, total: true }, { label: 'New customers', value: 240 }, { label: 'Churn', value: -110 }, { label: 'Half year', total: true }, { label: 'Price change', value: 60 }] })",
+    "width": "600"
+   },
+   {
+    "caption": "Without",
+    "jsx": "h(P.WaterfallChart, { title: 'Revenue, last year to this year', description: 'New customers made up for churn.', yLabel: 'Revenue ($k)', data: [{ label: 'Last year', value: 820, total: true }, { label: 'New customers', value: 240 }, { label: 'Churn', value: -110 }, { label: 'Price change', value: 60 }] })",
+    "width": "600"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Spelled out (as now)",
+    "recommended": true,
+    "text": "Keep the clarified sentence.",
+    "render": {
+     "caption": "With subtotal",
+     "jsx": "h(P.WaterfallChart, { title: 'Revenue, last year to this year', description: 'New customers made up for churn.', yLabel: 'Revenue ($k)', data: [{ label: 'Last year', value: 820, total: true }, { label: 'New customers', value: 240 }, { label: 'Churn', value: -110 }, { label: 'Half year', total: true }, { label: 'Price change', value: 60 }] })",
+     "width": "600"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Short form",
+    "text": "Back to \"total without a value\".",
+    "render": {
+     "caption": "Same chart",
+     "jsx": "h(P.WaterfallChart, { title: 'Revenue, last year to this year', description: 'New customers made up for churn.', yLabel: 'Revenue ($k)', data: [{ label: 'Last year', value: 820, total: true }, { label: 'New customers', value: 240 }, { label: 'Churn', value: -110 }, { label: 'Half year', total: true }, { label: 'Price change', value: 60 }] })",
+     "width": "600"
+    }
+   }
+  ],
+  "recommendation": "A. It matches the code and mainstream waterfalls (Excel \"set as total\", Highcharts isIntermediateSum).",
+  "sources": [
+   "Microsoft Excel · Waterfall: set as total",
+   "Highcharts · isIntermediateSum"
+  ],
+  "settled": true
+ }
+]

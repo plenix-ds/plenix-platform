@@ -1,0 +1,789 @@
+[
+ {
+  "id": "feedback/spinner/1",
+  "title": "Does Spinner come in two sizes or three?",
+  "context": "The overview now says three sizes, matching the code (sm 12px, md 16px, lg 24px).",
+  "current": [
+   {
+    "where": "Spinner · Overview (rec.text)",
+    "text": "An indeterminate loading indicator in three sizes: small (12px), medium (16px) and large (24px)."
+   },
+   {
+    "where": "Loading.jsx (the code)",
+    "text": "Spinner.size: \"sm\" | \"md\" (default) | \"lg\""
+   }
+  ],
+  "renders": [
+   {
+    "caption": "The three sizes",
+    "jsx": "h(P.Inline, null, h(P.Spinner, { size: 'sm' }), h(P.Spinner, { size: 'md' }), h(P.Spinner, { size: 'lg' }))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Three sizes",
+    "recommended": true,
+    "text": "As the code draws them.",
+    "render": {
+     "caption": "sm · md · lg",
+     "jsx": "h(P.Inline, null, h(P.Spinner, { size: 'sm' }), h(P.Spinner, { size: 'md' }), h(P.Spinner, { size: 'lg' }))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Two sizes",
+    "text": "Drop one size from code and variant pages.",
+    "render": {
+     "caption": "md · lg",
+     "jsx": "h(P.Inline, null, h(P.Spinner, { size: 'md' }), h(P.Spinner, { size: 'lg' }))"
+    }
+   }
+  ],
+  "recommendation": "A. It matches the code. Carbon and Fluent 2 size the spinner to its place.",
+  "sources": [
+   "Fluent 2 · Spinner sizes",
+   "Carbon · Loading"
+  ]
+ },
+ {
+  "id": "feedback/empty-state/1",
+  "title": "Is “could not load” an empty state or an error state?",
+  "context": "EmptyState has tone=\"error\" in the code, and its Usage, Behavior and Error variant use it with Retry. A separate Error state page also exists.",
+  "current": [
+   {
+    "where": "Empty state · Usage (rec.use[1])",
+    "text": "Content that could not load: tone=\"error\" names the problem and gives the one action that recovers (Retry)"
+   },
+   {
+    "where": "Empty state · Error behavior (docs.behavior.error)",
+    "text": "…name the problem and give the one action that recovers (Retry); it is announced as an alert. An error in one field stays at the field."
+   },
+   {
+    "where": "EmptyState.jsx (the code)",
+    "text": "\"error\" (the content could not load: the title names the problem, the action recovers; announced as an alert, the icon in the danger color)"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Empty and could-not-load",
+    "width": "840",
+    "jsx": "h(P.Inline, null, h(P.EmptyState, { icon: 'folder', title: 'No assets yet', action: h(P.Button, { variant: 'primary' }, 'Upload') }, 'Upload files to start.'), h(P.EmptyState, { tone: 'error', title: 'The assets could not load', action: h(P.Button, { icon: 'refresh' }, 'Retry') }, 'The server did not answer.'))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "EmptyState covers it (tone=\"error\")",
+    "recommended": true,
+    "text": "One component for a region with nothing to show; Error state points to it.",
+    "render": {
+     "caption": "tone=\"error\"",
+     "jsx": "h(P.EmptyState, { tone: 'error', title: 'The assets could not load', action: h(P.Button, { icon: 'refresh' }, 'Retry') }, 'The server did not answer.')"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Errors are not empty states",
+    "text": "Remove tone=\"error\"; Error state owns the case.",
+    "render": {
+     "caption": "A Notice instead",
+     "jsx": "h(P.Notice, { tone: 'danger', title: 'The assets could not load', actions: h(P.Button, { size: 'xs' }, 'Retry') }, 'The server did not answer.')"
+    }
+   }
+  ],
+  "recommendation": "A. It matches the code. Carbon and Polaris treat “could not load” as an empty state with a recovery action.",
+  "sources": [
+   "Carbon · Empty states",
+   "Shopify Polaris · Empty state",
+   "Atlassian · Empty state"
+  ]
+ },
+ {
+  "id": "feedback/empty-state/2",
+  "title": "Should the Empty state overview describe all its uses?",
+  "context": "The overview now covers nothing yet, no results and could-not-load, at both sizes.",
+  "current": [
+   {
+    "where": "Empty state · Overview (rec.text)",
+    "text": "EmptyState is what a region shows when it has nothing to show: nothing yet, no results, or content that could not load. It says what the place is for and gives the one action that follows, as a whole view or a line inside a list."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Inline and page",
+    "width": "840",
+    "jsx": "h(P.Stack, null, h(P.EmptyState, { size: 'inline', title: 'No results' }, 'Try other words.'), h(P.EmptyState, { size: 'page', icon: 'folder', title: 'No assets yet', action: h(P.Button, { variant: 'primary' }, 'Upload') }, 'Upload files to start.'))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "General overview",
+    "recommended": true,
+    "text": "Keep it general.",
+    "render": {
+     "caption": "Inline",
+     "jsx": "h(P.EmptyState, { title: 'No results' }, 'Try other words.')"
+    }
+   },
+   {
+    "key": "B",
+    "label": "First-use only",
+    "text": "Overview about a new app; other cases in variants.",
+    "render": {
+     "caption": "Page",
+     "width": "840",
+     "jsx": "h(P.EmptyState, { size: 'page', icon: 'folder', title: 'No assets yet' }, 'Upload files to start.')"
+    }
+   }
+  ],
+  "recommendation": "A. Carbon, Material 3 and Polaris list first use, no results and errors together on one page.",
+  "sources": [
+   "Carbon · Empty states",
+   "Shopify Polaris · Empty state"
+  ]
+ },
+ {
+  "id": "feedback/skeleton/1",
+  "title": "Below how long a wait should no skeleton show?",
+  "context": "Skeleton says under a second shows nothing. The “half a second” Shimmer line from the question was not found in the current spec.",
+  "current": [
+   {
+    "where": "Skeleton · Avoid (rec.avoid[0])",
+    "text": "Waits under a second: show nothing."
+   },
+   {
+    "where": "Shimmer page (paraphrase)",
+    "text": "Waits under half a second: show nothing.",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "A skeleton",
+    "jsx": "h(P.Stack, null, h(P.Skeleton, { width: '200px', height: '16px' }), h(P.Skeleton, { width: '160px', height: '16px' }))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Under a second",
+    "recommended": true,
+    "text": "Both pages say one second.",
+    "render": {
+     "caption": "After 1 s",
+     "jsx": "h(P.Skeleton, { width: '200px', height: '16px' })"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Under half a second",
+    "text": "Skeletons show sooner.",
+    "render": {
+     "caption": "After 0.5 s",
+     "jsx": "h(P.Skeleton, { width: '200px', height: '16px' })"
+    }
+   }
+  ],
+  "recommendation": "A. Nielsen’s limits put one second as the point people notice a wait; Carbon shows indicators only after that to avoid flashing.",
+  "sources": [
+   "Nielsen Norman Group · Response time limits",
+   "Carbon · Loading pattern"
+  ]
+ },
+ {
+  "id": "feedback/toast/1",
+  "title": "Does a plain save show a “Saved” toast?",
+  "context": "Success toast now says: a Save button shows “Saved”; saving by itself shows nothing.",
+  "current": [
+   {
+    "where": "Toast · Success (rec.variantPages[1].use[1])",
+    "text": "A save people start with a Save button: “Saved”"
+   },
+   {
+    "where": "Toast · Success (rec.variantPages[1].avoid[0])",
+    "text": "Saving that happens by itself: say nothing"
+   },
+   {
+    "where": "Snackbar · Usage (rec.use[0])",
+    "text": "Confirming an action that finished (Saved, 3 assets moved)"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Press Save",
+    "jsx": "h(P.ToastProvider, null, h(function Demo(){ const t = P.useToast(); return h(P.Button, { onClick: function(){ t.show(\"Saved\", { tone: \"success\" }); } }, \"Save\"); }))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Toast for a Save button; nothing for autosave",
+    "recommended": true,
+    "text": "As written.",
+    "render": {
+     "caption": "Press Save",
+     "jsx": "h(P.ToastProvider, null, h(function Demo(){ const t = P.useToast(); return h(P.Button, { onClick: function(){ t.show(\"Saved\", { tone: \"success\" }); } }, \"Save\"); }))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Never toast a save",
+    "text": "Snackbar and writing guidance change examples.",
+    "render": {
+     "caption": "Press Save: nothing appears",
+     "jsx": "h(P.Button, null, 'Save')"
+    }
+   }
+  ],
+  "recommendation": "A. People who press Save want to know it worked; Material 3 snackbars and Fluent toasts confirm explicit actions.",
+  "sources": [
+   "Material 3 · Snackbar",
+   "Fluent 2 · Toast"
+  ]
+ },
+ {
+  "id": "feedback/feedback-snackbar/1",
+  "title": "Should the Snackbar overview mention that danger toasts stay?",
+  "context": "The overview now mentions it, matching the code.",
+  "current": [
+   {
+    "where": "Snackbar · Overview (rec.text)",
+    "text": "A snackbar (Material’s name) is the Plenix toast: a short message about what just happened, at the edge of the window, that leaves on its own (a danger toast stays until dismissed); useToast().show(message, { tone }) shows it, and every toast has Dismiss."
+   },
+   {
+    "where": "Toast · Error (docs.behavior.error)",
+    "text": "The danger tone: a danger start border and the alert icon. It stays until dismissed unless a `duration` is given."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Info leaves; danger stays",
+    "jsx": "h(P.ToastProvider, null, h(P.Inline, null, h(function Demo(){ const t = P.useToast(); return h(P.Button, { onClick: function(){ t.show(\"3 assets moved\", { tone: \"info\" }); } }, \"Show info\"); }), h(function Demo(){ const t = P.useToast(); return h(P.Button, { onClick: function(){ t.show(\"Could not save; check the connection and try again\", { tone: \"danger\" }); } }, \"Show danger\"); })))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Mention the exception",
+    "recommended": true,
+    "text": "Keep it.",
+    "render": {
+     "caption": "Danger stays",
+     "jsx": "h(P.ToastProvider, null, h(function Demo(){ const t = P.useToast(); return h(P.Button, { onClick: function(){ t.show(\"Could not save\", { tone: \"danger\" }); } }, \"Show danger\"); }))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Leave it out",
+    "text": "Only in Behavior.",
+    "render": {
+     "caption": "Info leaves",
+     "jsx": "h(P.ToastProvider, null, h(function Demo(){ const t = P.useToast(); return h(P.Button, { onClick: function(){ t.show(\"3 assets moved\", { tone: \"info\" }); } }, \"Show info\"); }))"
+    }
+   }
+  ],
+  "recommendation": "A. A message that can vanish before people reach it fails WCAG 2.2.1; Carbon keeps error toasts until dismissed.",
+  "sources": [
+   "WCAG 2.2 · 2.2.1 Timing adjustable",
+   "Carbon · Notifications"
+  ]
+ },
+ {
+  "id": "feedback/feedback-presence-indicator/1",
+  "title": "Should Presence indicator be merged into Availability indicator?",
+  "context": "“Presence indicator” is already an alias of the Availability indicator record, which has its own write-up. The question saw it showing the Status dot write-up.",
+  "current": [
+   {
+    "where": "Availability indicator · Avoid (rec.avoid[0])",
+    "text": "The feedback tones (success, warning) for presence: the Status colors are its roles"
+   },
+   {
+    "where": "Status dot · Written purpose (docs.purpose)",
+    "text": "Marks a state (active, paused, priority) with a small tone dot. It is a quick visual cue next to a status in words.",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Availability dots with shapes",
+    "jsx": "h(P.Inline, null, h(P.StatusDot, { tone: 'online', size: 'lg', icon: true, label: 'online' }), h(P.StatusDot, { tone: 'away', size: 'lg', icon: true, label: 'away' }), h(P.StatusDot, { tone: 'busy', size: 'lg', icon: true, label: 'busy' }), h(P.StatusDot, { tone: 'dnd', size: 'lg', icon: true, label: 'dnd' }), h(P.StatusDot, { tone: 'offline', size: 'lg', icon: true, label: 'offline' }))"
+   },
+   {
+    "caption": "Status dots (feedback tones)",
+    "jsx": "h(P.Inline, null, h(P.StatusDot, { tone: 'neutral', label: 'neutral' }), h(P.StatusDot, { tone: 'info', label: 'info' }), h(P.StatusDot, { tone: 'success', label: 'success' }), h(P.StatusDot, { tone: 'warning', label: 'warning' }), h(P.StatusDot, { tone: 'danger', label: 'danger' }))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Merge: one Availability page",
+    "recommended": true,
+    "text": "Presence indicator is only an alias.",
+    "render": {
+     "caption": "Avatars with presence",
+     "jsx": "h(P.Inline, null, h(P.Avatar, { name: 'Maya Chen', size: 'xl', presence: 'busy', label: 'Maya Chen' }), h(P.Avatar, { name: 'Ari Lane', size: 'xl', presence: 'online', label: 'Ari Lane' }))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Keep it, showing the Availability write-up",
+    "text": "Its own page with the Availability text.",
+    "render": {
+     "caption": "Same dot",
+     "jsx": "h(P.StatusDot, { tone: 'away', size: 'md', icon: true, label: 'Away' })"
+    }
+   }
+  ],
+  "recommendation": "A. One page per component; Fluent 2 has one Presence badge.",
+  "sources": [
+   "Plenix rule: one page per component",
+   "Fluent 2 · Presence badge",
+   "Atlassian · Avatar presence"
+  ]
+ },
+ {
+  "id": "feedback/feedback-health-indicator/1",
+  "title": "Should Health and Severity use the status badge instead of a dot?",
+  "context": "Your rule: statuses are a badge with an icon. Health’s overview already says so, but its written sections still describe StatusDot; Severity still says StatusDot.",
+  "current": [
+   {
+    "where": "Health indicator · Overview (rec.text)",
+    "text": "The health of a service or a sync is a status badge with its icon: success for working, waiting for slow or partial, negative for down. Status dot remains only for a person’s availability."
+   },
+   {
+    "where": "Health indicator · Written purpose (docs.purpose)",
+    "text": "Marks a state (active, paused, priority) with a small tone dot. It is a quick visual cue next to a status in words.",
+    "conflict": true
+   },
+   {
+    "where": "Severity indicator · Overview (rec.text)",
+    "text": "Severity is a StatusDot in the tone of the level, with the level in words: info for a note, warning for something to check, danger for something broken. Lists sorted by severity put danger first.",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Dot vs badge",
+    "jsx": "h(P.Stack, null, h(P.Inline, null, h(P.StatusDot, { tone: 'success' }), 'Working'), h(P.Badge, { tone: 'success', icon: 'check' }, 'Working'))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Badges with icons; dots only for availability",
+    "recommended": true,
+    "text": "Health and Severity point to the badge.",
+    "render": {
+     "caption": "As badges",
+     "jsx": "h(P.Inline, null, h(P.Badge, { tone: 'success', icon: 'check' }, 'Working'), h(P.Badge, { tone: 'waiting', icon: 'clock' }, 'Slow'), h(P.Badge, { tone: 'negative', icon: 'warning' }, 'Down'))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Keep dots with words",
+    "text": "An exception to the rule.",
+    "render": {
+     "caption": "Dots",
+     "jsx": "h(P.Stack, null, h(P.Inline, null, h(P.StatusDot, { tone: 'success' }), 'Working'), h(P.Inline, null, h(P.StatusDot, { tone: 'danger' }), 'Down'))"
+    }
+   }
+  ],
+  "recommendation": "A. It follows your rule; Carbon uses icon plus label so state never rests on color (WCAG 1.4.1).",
+  "sources": [
+   "Plenix rule: statuses are badges with an icon",
+   "Carbon · Status indicators",
+   "WCAG 2.2 · 1.4.1"
+  ]
+ },
+ {
+  "id": "feedback/feedback-severity-indicator/1",
+  "title": "Does severity have three levels or four?",
+  "context": "The avoid line now says three.",
+  "current": [
+   {
+    "where": "Severity indicator · Avoid (rec.avoid[0])",
+    "text": "More levels than the three: information, warning and danger."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Three levels",
+    "jsx": "h(P.Inline, null, h(P.Badge, { tone: 'active', icon: 'info' }, 'Info'), h(P.Badge, { tone: 'waiting', icon: 'warning' }, 'Warning'), h(P.Badge, { tone: 'negative', icon: 'warning' }, 'Danger'))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Three",
+    "recommended": true,
+    "text": "Info, warning, danger.",
+    "render": {
+     "caption": "Three",
+     "jsx": "h(P.Inline, null, h(P.Badge, { tone: 'active' }, 'Info'), h(P.Badge, { tone: 'waiting' }, 'Warning'), h(P.Badge, { tone: 'negative' }, 'Danger'))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Four with neutral",
+    "text": "Adds neutral.",
+    "render": {
+     "caption": "Four",
+     "jsx": "h(P.Inline, null, h(P.Badge, null, 'None'), h(P.Badge, { tone: 'active' }, 'Info'), h(P.Badge, { tone: 'waiting' }, 'Warning'), h(P.Badge, { tone: 'negative' }, 'Danger'))"
+    }
+   }
+  ],
+  "recommendation": "A. Matches the overview and the info/warning/error scale in Carbon and Fluent.",
+  "sources": [
+   "Carbon · Notification types",
+   "Fluent 2 · MessageBar intents"
+  ]
+ },
+ {
+  "id": "feedback/feedback-notification/1",
+  "title": "Is it NotificationList or ActivityList?",
+  "context": "Both exist: NotificationList is a pattern built on ActivityList.",
+  "current": [
+   {
+    "where": "Notification · Overview (rec.text)",
+    "text": "A notification tells the signed-in person about something that happened while they were elsewhere: one row of NotificationList with who, what and when, unread until opened. A notification that only confirms the person’s own action is a toast instead."
+   },
+   {
+    "where": "Notification · Anatomy (docs.anatomy[0])",
+    "text": "List — an ActivityList named by `label` (required)"
+   },
+   {
+    "where": "NotificationList.jsx (the code)",
+    "text": "Unread ones are marked (ActivityList's unread dot) and bold."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "NotificationList",
+    "width": "600",
+    "jsx": "h(P.NotificationList, { footer: false, items: [{ id: 1, text: 'Maya shared Kitchen renovation', time: '2 min ago', unread: true }, { id: 2, text: 'Ari mentioned you', time: '1 h ago' }] })"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "NotificationList (built on ActivityList)",
+    "recommended": true,
+    "text": "Name NotificationList; say it is made of ActivityList rows.",
+    "render": {
+     "caption": "NotificationList",
+     "width": "600",
+     "jsx": "h(P.NotificationList, { footer: false, items: [{ id: 1, text: 'Maya shared Kitchen renovation', time: '2 min ago', unread: true }] })"
+    }
+   },
+   {
+    "key": "B",
+    "label": "ActivityList only",
+    "text": "Name ActivityList.",
+    "render": {
+     "caption": "Same rows, with footer",
+     "width": "600",
+     "jsx": "h(P.NotificationList, { items: [{ id: 1, text: 'Ari mentioned you', time: '1 h ago' }] })"
+    }
+   }
+  ],
+  "recommendation": "A. NotificationList is the exported component people use.",
+  "sources": [
+   "Plenix code: platform/patterns/NotificationList",
+   "Carbon · Notification panel"
+  ]
+ },
+ {
+  "id": "feedback/feedback-status-badge/1",
+  "title": "Does the status badge carry an icon?",
+  "context": "The overview and Badge anatomy now say yes.",
+  "current": [
+   {
+    "where": "Status badge · Overview (rec.text)",
+    "text": "A status badge is Badge with a tone: a short status word on a soft fill, with its status icon inside."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Status badges",
+    "jsx": "h(P.Inline, null, h(P.Badge, { tone: 'success', icon: 'check' }, 'Approved'), h(P.Badge, { tone: 'negative', icon: 'warning' }, 'Failed'))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Always an icon",
+    "recommended": true,
+    "text": "Every status badge has its icon.",
+    "render": {
+     "caption": "With icons",
+     "jsx": "h(P.Inline, null, h(P.Badge, { tone: 'success', icon: 'check' }, 'Approved'), h(P.Badge, { tone: 'negative', icon: 'warning' }, 'Failed'))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Optional icon",
+    "text": "Icon only when color alone would carry it.",
+    "render": {
+     "caption": "Without",
+     "jsx": "h(P.Inline, null, h(P.Badge, { tone: 'success' }, 'Approved'), h(P.Badge, { tone: 'negative' }, 'Failed'))"
+    }
+   }
+  ],
+  "recommendation": "A. Your status rule; Carbon status tags do the same.",
+  "sources": [
+   "Plenix rule: statuses are badges with an icon",
+   "Carbon · Status indicators",
+   "WCAG 2.2 · 1.4.1"
+  ]
+ },
+ {
+  "id": "feedback/banner/1",
+  "title": "Can a banner have one action or two?",
+  "context": "Purpose, anatomy, With actions and code say one or two; one usage line still says one.",
+  "current": [
+   {
+    "where": "Banner · Purpose (rec.purpose)",
+    "text": "Tells people about a state of the whole page or pane (offline, read-only, an ending plan) before they work, and offers one or two actions that resolve it."
+   },
+   {
+    "where": "Banner · Usage (rec.use[2])",
+    "text": "One action that resolves it (“Retry”, “Renew”) and Dismiss when it can be put away",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "One and two actions",
+    "width": "840",
+    "jsx": "h(P.Stack, null, h(P.Banner, { tone: 'danger', actions: h(P.Button, { size: 'sm' }, 'Retry') }, 'The library could not sync.'), h(P.Banner, { tone: 'warning', title: 'Your plan ends in 3 days.', actions: h(P.Inline, null, h(P.Button, { size: 'sm', variant: 'primary' }, 'Renew'), h(P.Button, { size: 'sm' }, 'Compare plans')) }, 'Renew it to keep sharing links active.'))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "One or two",
+    "recommended": true,
+    "text": "The usage line is corrected.",
+    "render": {
+     "caption": "Two",
+     "width": "840",
+     "jsx": "h(P.Banner, { tone: 'warning', actions: h(P.Inline, null, h(P.Button, { size: 'sm', variant: 'primary' }, 'Renew'), h(P.Button, { size: 'sm' }, 'Compare plans')) }, 'Your plan ends in 3 days.')"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Only one",
+    "text": "Code and With actions drop the second.",
+    "render": {
+     "caption": "One",
+     "width": "840",
+     "jsx": "h(P.Banner, { tone: 'danger', actions: h(P.Button, { size: 'sm' }, 'Retry') }, 'The library could not sync.')"
+    }
+   }
+  ],
+  "recommendation": "A. Matches the code; Material 3 banners allow one or two actions.",
+  "sources": [
+   "Material 3 · Banners",
+   "Shopify Polaris · Banner",
+   "Atlassian · Banner"
+  ]
+ },
+ {
+  "id": "feedback/banner/2",
+  "title": "Say “pressing it removes the banner”?",
+  "context": "The Dismissible page now reads so. The code comment still says “the owner removes the banner”.",
+  "current": [
+   {
+    "where": "Banner · Dismissible (rec.variantPages[7].text)",
+    "text": "A Dismiss button at the end; pressing it removes the banner."
+   },
+   {
+    "where": "Banner.jsx (the code)",
+    "text": "onDismiss(): shows a Dismiss button that runs it; the owner removes the banner (optional: without it the banner stays)",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Press Dismiss",
+    "width": "840",
+    "jsx": "h(function Demo(){ const [on, set] = React.useState(true); return on ? h(P.Banner, { tone: 'info', onDismiss: function(){ set(false); } }, 'A new place for tags: open Organize.') : h(P.Button, { onClick: function(){ set(true); } }, 'Show the banner again'); })"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "“Pressing it removes the banner”",
+    "recommended": true,
+    "text": "Plain words; the code comment says “the application removes the banner”.",
+    "render": {
+     "caption": "Dismissible",
+     "width": "840",
+     "jsx": "h(P.Banner, { tone: 'info', onDismiss: function(){} }, 'Pressing Dismiss removes this banner.')"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Name the code",
+    "text": "“Pressing it runs onDismiss; the application removes the banner.”",
+    "render": {
+     "caption": "Dismissible",
+     "width": "840",
+     "jsx": "h(P.Banner, { tone: 'neutral', onDismiss: function(){} }, 'Dismiss runs onDismiss; the application removes the banner.')"
+    }
+   }
+  ],
+  "recommendation": "A. Design pages describe what people see; code detail stays in the API.",
+  "sources": [
+   "Material 3 · Banners",
+   "GOV.UK · Notification banner"
+  ]
+ },
+ {
+  "id": "feedback/loading-overlay/1",
+  "title": "Is the overlay’s message required or optional?",
+  "context": "With message now says “Most overlays”; anatomy and code say optional.",
+  "current": [
+   {
+    "where": "Loading overlay · With message (rec.variantPages[2].use[0])",
+    "text": "Most overlays, saying what is happening (“Saving changes”, “Refreshing”); without one, “Loading” is announced"
+   },
+   {
+    "where": "Loading overlay · Anatomy (docs.anatomy[3])",
+    "text": "Message — a few words that say what is happening (optional)"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "With and without",
+    "width": "840",
+    "jsx": "h(P.Inline, null, h(P.LoadingOverlay, { active: true, message: \"Saving changes\" }, h(P.Card, null, h('p', null, 'Asset details'), h('p', null, 'Name, owner, tags'))), h(P.LoadingOverlay, { active: true }, h(P.Card, null, h('p', null, 'Asset details'), h('p', null, 'Name, owner, tags'))))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Optional, recommended",
+    "recommended": true,
+    "text": "“Loading” is the fallback.",
+    "render": {
+     "caption": "With message",
+     "jsx": "h(P.LoadingOverlay, { active: true, message: \"Saving changes\" }, h(P.Card, null, h('p', null, 'Asset details'), h('p', null, 'Name, owner, tags')))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Required",
+    "text": "The prop becomes required.",
+    "render": {
+     "caption": "Required",
+     "jsx": "h(P.LoadingOverlay, { active: true, message: \"Refreshing\" }, h(P.Card, null, h('p', null, 'Asset details'), h('p', null, 'Name, owner, tags')))"
+    }
+   }
+  ],
+  "recommendation": "A. Matches the code; Carbon and Fluent spinners have an optional label defaulting to “Loading”.",
+  "sources": [
+   "Carbon · Loading",
+   "Fluent 2 · Spinner label",
+   "WCAG 2.2 · 4.1.3"
+  ]
+ },
+ {
+  "id": "feedback/loading-overlay/2",
+  "title": "With reduced motion, does the overlay spinner stand still?",
+  "context": "Behavior now reads plainly that neither moves.",
+  "current": [
+   {
+    "where": "Loading overlay · Motion (docs.behavior.motion)",
+    "text": "The veil fades in and the spinner turns; with reduced motion, neither moves."
+   },
+   {
+    "where": "Loading overlay · Accessibility (docs.a11y.motion)",
+    "text": "With reduced motion the veil appears at once and the spinner stands still."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "The overlay",
+    "jsx": "h(P.LoadingOverlay, { active: true, message: \"Refreshing\" }, h(P.Card, null, h('p', null, 'Asset details'), h('p', null, 'Name, owner, tags')))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Neither moves",
+    "recommended": true,
+    "text": "Keep it.",
+    "render": {
+     "caption": "Overlay",
+     "jsx": "h(P.LoadingOverlay, { active: true, message: \"Refreshing\" }, h(P.Card, null, h('p', null, 'Asset details'), h('p', null, 'Name, owner, tags')))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Spinner keeps turning",
+    "text": "Only the fade stops.",
+    "render": {
+     "caption": "Spinner",
+     "jsx": "h(P.Spinner, { size: 'lg', label: 'Refreshing' })"
+    }
+   }
+  ],
+  "recommendation": "A. Matches Spinner code and Accessibility; meets WCAG 2.3.3.",
+  "sources": [
+   "WCAG 2.2 · 2.3.3",
+   "Apple HIG · Reduce motion"
+  ],
+  "settled": true
+ },
+ {
+  "id": "feedback/undo-pattern/1",
+  "title": "With reduced motion, does the undo toast appear at once?",
+  "context": "Behavior now reads so, matching Accessibility and the toast code.",
+  "current": [
+   {
+    "where": "Undo pattern · Motion (docs.behavior.motion)",
+    "text": "The toast slides in and out; with reduced motion it appears at once."
+   },
+   {
+    "where": "Toast · Accessibility motion (docs.a11y.motion)",
+    "text": "With reduced motion, the slide runs at zero duration, so the toast appears and leaves instantly; it still leaves."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Press Archive",
+    "jsx": "h(P.ToastProvider, null, h(function Demo(){ const t = P.useToast(); return h(P.Button, { onClick: function(){ t.show(\"3 assets archived\", { action: { label: 'Undo', onAction: function(){} } }); } }, \"Archive\"); }))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Appears at once",
+    "recommended": true,
+    "text": "Keep it.",
+    "render": {
+     "caption": "Press Move",
+     "jsx": "h(P.ToastProvider, null, h(function Demo(){ const t = P.useToast(); return h(P.Button, { onClick: function(){ t.show(\"Asset moved\", { action: { label: 'Undo', onAction: function(){} } }); } }, \"Move\"); }))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Still slides",
+    "text": "The slide stays with reduced motion.",
+    "render": {
+     "caption": "Press Archive",
+     "jsx": "h(P.ToastProvider, null, h(function Demo(){ const t = P.useToast(); return h(P.Button, { onClick: function(){ t.show(\"3 assets archived\", { action: { label: 'Undo', onAction: function(){} } }); } }, \"Archive\"); }))"
+    }
+   }
+  ],
+  "recommendation": "A. Matches the toast code; WCAG 2.3.3 and Apple HIG ask to replace slides when motion is reduced.",
+  "sources": [
+   "WCAG 2.2 · 2.3.3",
+   "Apple HIG · Motion"
+  ],
+  "settled": true
+ }
+]
