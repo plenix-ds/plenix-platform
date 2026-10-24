@@ -24,7 +24,7 @@ let current = '';   // the design-system page being checked
   page.on('pageerror', (e) => errs.push('page error: ' + String(e).slice(0, 200)));
   page.on('response', (r) => { if (r.status() >= 400 && !ALLOWED_MISSING.test(r.url()) && !/favicon/.test(r.url())) errs.push(r.status() + ' ' + r.url()); });
   const failed = []; let n = 0;
-  // every table is a DataGrid (batch 226): a <table> left on the page or in its frames (Tabulator draws with divs) fails it;
+  // every table is a DataGrid (batch 226): a <table> left on the page or in its frames (the grids draw with divs) fails it;
   // a table a person wrote in their own content (inside .plx-user-content: the rich-text editor, RichText showing saved HTML) is content, not interface
   const tables = async () => { const left = await page.evaluate(() => [document].concat([...document.querySelectorAll('iframe')].map((f) => { try { return f.contentDocument; } catch (e) { return null; } }).filter(Boolean))
     .reduce((n, d) => n + [...d.querySelectorAll('table')].filter((t) => !t.closest('.plx-user-content')).length, 0)); if (left) errs.push(left + (left === 1 ? ' table that is' : ' tables that are') + ' not a DataGrid'); };

@@ -1,7 +1,7 @@
 # Plenix package registry (Verdaccio), option A of TODO.md "own mirror" (owner, 2026-10-11): a proxy that copies the
 # @plenix-ds packages from GitHub Packages and keeps them, so installs keep working when GitHub is down. GitHub stays the
 # one place releases are published; each release asks this registry for the new version at once (prefetch.sh), so the
-# copy never lags. Everything else (react, tabulator…) is proxied from the public npm registry and kept too.
+# copy never lags. Everything else (react, @tanstack…) is proxied from the public npm registry and kept too.
 storage: /verdaccio/storage
 plugins: /verdaccio/plugins
 

@@ -269,7 +269,7 @@ The word-spacing leak happened exactly there.
   combine.
 - **Every production stylesheet is assigned to its layer, all at once.** Unlayered CSS beats layered CSS, so a partial
   move would invert precedence.
-- **Vendor CSS:** the legacy Tabulator stylesheet sits in `vendor`, isolated until the last application moves off it.
+- **Vendor CSS:** none for tables: the legacy table stylesheet is removed; the DataGrid and Table draw with Plenix classes only.
   It is the only temporary exception to the `!important` and clash checks, listed by file, and it disappears with the
   legacy table.
 - **Utilities:** they win by layer order. Every `!important` is removed in verified batches; an important declaration
@@ -538,7 +538,7 @@ rule, and proves the result.
 | 4. Typography roles | Typography composite tokens with the word-spacing companion, generated; components given a declared text contract; the word-spacing rule replaced by the text-contract check. Full suite before release. | Every component has a contract; no leak in the audit, including different sizes. |
 | 5. Layers and `!important` | All sheets layered at once; utilities' `!important` removed in batches; the bundle, web components and the design-system site layered. Full suite before release. | Zero `!important` outside the listed vendor files; no unlayered production CSS. |
 | 6. Framing contract | Framed/unframed presentation on containers; patterns choose; composition check. `nesting.css` reduced to a fallback. | Framing chosen explicitly everywhere; no third frame. |
-| 7. Unused classes and legacy | Unused classes deleted; utilities that repeat APIs removed (their uses moved to primitives). The applications moved off `LegacyDataTable`, then Tabulator and its 77 clashes removed with it, emptying the vendor exceptions. | No unused classes; no vendor table CSS; the exceptions file empty. |
+| 7. Unused classes and legacy | Unused classes deleted; utilities that repeat APIs removed (their uses moved to primitives). The applications moved off `LegacyDataTable`, then the legacy table engine and its 77 clashes removed with it, emptying the vendor exceptions. | No unused classes; no vendor table CSS; the exceptions file empty. |
 | 8. Delivery | Measure and reduce the 2.1 MB bundle (minification, deduplication) once the ownership work is done. Not a prerequisite. | Bundle measured and reduced; no visual change. |
 
 ## 13. Definition of done

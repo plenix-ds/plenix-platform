@@ -19,7 +19,7 @@ const ROOT=path.resolve(__dirname,'..');
    props={label:'Next records',data:rows,columns,height:'--plx-ref-size-400px',narrow:'table',selectable:true,onSelectionChange:(keys,info)=>{selectionEvent={keys,info};},onReady:t=>{table=t;}};
    try{
      render({});for(let i=0;!table&&i<50;i++)await wait();await wait();
-     check(!!table,'table becomes ready');check(!window.Tabulator,'trial does not load the Tabulator engine');
+     check(!!table,'table becomes ready');
      const drawn=()=>host.querySelectorAll('.plx-data-grid__grid-row').length;check(drawn()>0&&drawn()<600,'TanStack virtualizes 600 records');
      check(host.querySelector('[role="grid"]').getAttribute('aria-rowcount')==='601','logical row count covers every record');
      check(host.querySelectorAll('.plx-data-grid__grid-col[data-plx-field]').length===3,'all headers rendered');

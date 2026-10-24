@@ -252,7 +252,7 @@ Strings left exactly as they were, because changing them needs a decision. Answe
 ### data-grid
 
 - **rec.use[1]:** The approved DataGrid sample moves "Reference tables in documentation and settings" out of When to use and corrects it to "Static facts, in documentation or settings: use Table" under When not to use. A text replacement cannot move a list item, so I left it. Should it be moved by hand (deleted from When to use, added to When not to use)?
-- **docs.content.labels:** It says to align numbers to the end with hozAlign "right". hozAlign is a Tabulator setting, and the grid is now built on TanStack. Is this still the right name, or should it name the DataGrid's own setting?
+- **docs.content.labels:** It says to align numbers to the end with hozAlign "right". hozAlign is a setting name from the retired grid engine, and the grid is now built on TanStack. Is this still the right name, or should it name the DataGrid's own setting?
 
 ### table
 
@@ -293,11 +293,11 @@ Strings left exactly as they were, because changing them needs a decision. Answe
 
 ### data-display-expandable-table
 
-- **rec.text:** This page says an expanding row gets a chevron in its name column, but the shared Anatomy describes the tree control as a 14px box with − or +. Which one does the product draw? Also, options.dataTree, _children and dataTreeStartExpanded are the old Tabulator names: are they still the DataGrid’s names now that it runs on TanStack?
+- **rec.text:** This page says an expanding row gets a chevron in its name column, but the shared Anatomy describes the tree control as a 14px box with − or +. Which one does the product draw? Also, options.dataTree, _children and dataTreeStartExpanded are names from the retired grid engine: are they still the DataGrid’s names now that it runs on TanStack?
 
 ### data-display-compact-table
 
-- **docs.content.labels:** The shared DataGrid write-up (on all six pages) still uses hozAlign "right", a Tabulator name, and options.dataTree in Anatomy. Should those be renamed to the TanStack-based DataGrid’s real prop names? (Not changed here because the text is shared across pages.)
+- **docs.content.labels:** The shared DataGrid write-up (on all six pages) still uses hozAlign "right", a name from the retired grid engine, and options.dataTree in Anatomy. Should those be renamed to the TanStack-based DataGrid’s real prop names? (Not changed here because the text is shared across pages.)
 - **docs.purpose:** Every page in this group repeats the full DataGrid write-up word for word (purpose, anatomy, behavior, accessibility, content). Should these variant pages show only what is special about them and link to the DataGrid page for the rest?
 
 ### data-display-editable-table
@@ -306,7 +306,7 @@ Strings left exactly as they were, because changing them needs a decision. Answe
 
 ### data-display-tree-table
 
-- **rec.text:** The overview says each level is “indented by its level class” and names options.dataTree; the Editable table names on.cellEdited, and the DataGrid text uses hozAlign. These look like names from the old Tabulator grid. Are they still the DataGrid’s real settings, or should they be updated to the current names (the indent is now a token, --plx-comp-data-grid-tree-indent)? I did not change this text.
+- **rec.text:** The overview says each level is “indented by its level class” and names options.dataTree; the Editable table names on.cellEdited, and the DataGrid text uses hozAlign. These look like names from the retired grid engine. Are they still the DataGrid’s real settings, or should they be updated to the current names (the indent is now a token, --plx-comp-data-grid-tree-indent)? I did not change this text.
 
 ### chart-foundations
 

@@ -81,8 +81,6 @@
 
 /* the thin outline caret on the sample tables' column header buttons (Airtable's chevron, owner 2026-10-14): chevron-down,
    muted, in place of the header button's own icon */
-.study-thin-caret .tabulator-header-popup-button .plx-icon{--plx-comp-icon-outline:var(--plx-comp-icon-glyph-expand-more);--plx-comp-icon-outline-24:var(--plx-comp-icon-glyph-expand-more-24);--plx-comp-icon-filled:var(--plx-comp-icon-glyph-expand-more);--plx-comp-icon-filled-24:var(--plx-comp-icon-glyph-expand-more-24);}
-.study-thin-caret .tabulator-header-popup-button{color:var(--plx-sys-content-muted);}
 
 /* the group-by icon (view_agenda), added to platform/icons/map.json; until build-icons.js runs, it borrows the glyph the
    generated stylesheet already holds (cards-large is the same symbol) */

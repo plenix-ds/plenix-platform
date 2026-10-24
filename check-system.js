@@ -7,7 +7,7 @@
 //   hex         no raw hex colors outside the reference token file and the themes (colors come from tokens)
 //   font-size   no font size written as a number: font sizes come from --plx-ref-font-size-* tokens
 //   classes     every class a Platform stylesheet defines starts with plx- (state classes is-… excepted; the DataGrid's
-//               stylesheets (DataGrid, Table) also restyle their engine's tabulator-… classes, there only)
+//               stylesheets (DataGrid, Table) style the classes their renderer writes, there only)
 //   imports     every component and pattern stylesheet is imported by platform.css
 //   legacy      the retired files stay gone (suite/, tokens/legacy.css, the asset app's plenix.css and demo.css, system/nesting.css)
 //   embedded    the asset app has no embedded SVG and no data: URIs (icons are files)
@@ -203,7 +203,7 @@ for (const { file } of files) {
     const sel = css.replace(/\{[^{}]*\}/g, '{}');
     for (const m of sel.matchAll(/\.(-?[_a-zA-Z][\w-]*)/g)) {
       if (/^(plx-|is-)/.test(m[1])) continue;
-      // the DataGrid's stylesheet restyles the classes its engine writes (the React renderer, platform/vendor/tabulator): there only
+      // the DataGrid's stylesheet restyles the classes its engine writes (the React renderer): there only
       // the RichTextEditor's stylesheet styles the classes its engine writes (ProseMirror and prosemirror-tables, platform/vendor/tiptap):
       // the separator image, the hidden selection, a selected node and the cells of a table selection; there only
       if (/^(ProseMirror-(separator|hideselection|selectednode)|selectedCell)$/.test(m[1]) && /[\\/]components[\\/]RichTextEditor[\\/]rich-text-editor\.css$/.test(file)) continue;

@@ -23,4 +23,3 @@ Validation:
 - node tests/data-grid-next-capabilities.test.js: grouping, tree, editing, movement, copy and print.
 - node tests/data-grid-next-independent.test.js: standalone module graph and blocked legacy-engine access.
 - node tests/data-grid-next-perf.test.js: identical rich 600-row scenarios for both engines.
-- node tests/phase7-review.js: paired application review captures.
