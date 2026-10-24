@@ -19,7 +19,7 @@ Start here in a new session (Claude or Codex). Then read `AGENTS.md` (Codex) or 
 | App Header slice (Phase 1) | 0.55.x |
 | No component styles another one (Phase 2) | 0.59.0; `check-system.exceptions.json` has 0 cross-component entries |
 | Redundant declarations, order and element styles (Phase 3) | proof logged 2026-10-19 |
-| Typography roles as tokens, text contracts per component (Phase 4) | 0.59.0; `platform/standards/text-contracts.json`, rule `text-contract` |
+| Typography roles as tokens, text contracts per component (Phase 4; 22 parts left, #253) | 0.59.0; `platform/standards/text-contracts.json`, rule `text-contract` |
 | Framing: containers nest two deep, never three (Phase 6) | `nesting.css` retired 2026-10-20; `tests/pages.test.js` fails a third frame |
 | Legacy table removed, apps on DataGrid (Phase 7, first half) | #145 / #146 |
 | Zero overlap for DataGrid, Table and the foundations | 0.59.0 |
@@ -34,11 +34,17 @@ Start here in a new session (Claude or Codex). Then read `AGENTS.md` (Codex) or 
 | #249 | Phase 5: cascade layers, and remove `!important` (413 in `utilities.css`, 44 in `services/auth/brand.css`) | not started |
 | #250 | Phase 7, rest: unused classes and duplicate utilities, with a check | not started |
 | #152 | Phase 8: shrink the 2 MB stylesheet bundle | not started |
+| #253 | Phase 4, rest: 22 parts still on the text-role backlog (`check-system.text-contract.json`) | not started; Brand lockup and DataPill wait for the owner |
+| #254 | Unused component tokens: 119 `--plx-comp-*` tokens nothing reads, and a check | not started |
+| #256 | Typography test fails on every run: Mono beside wrapped cells, stale baseline | not started (predates Phase 4) |
 | #251 | Spec: the variant block on every variant page (1,612 pending; each needs its Figma design) | blocked by the Figma Starter plan's call limit |
 | #45 | Complete library: recount the leaves with no record, classify, plan the remaining waves | not started |
 | #144, #53, #54 | Figma: the Web component library; native designs for newer components; the 24 iOS drawings | blocked / open |
 | #198–#203, #147–#195 | RedSave lanes and DataGrid findings (Codex) | PRs #206, #211, #212, #215, #219 open |
 | #217 | Touch targets that are undersized | waits for the owner's decision |
+| #255 | DataGrid: badges and icons in custom cells 0.5 to 1.1px below center | waits for the owner's decision (fix measured) |
+| #257 | Spec wording: choose the rules (`docs/briefs/spec-wording/proposal.md`), then one cleanup after the styling work | waits for the owner's decision |
+| #258 | Housekeeping: stale scratch copies and worktrees (remove `node_modules` junctions first) | not started |
 | #220 | Spec mappings: Django and Frappe as source systems | open |
 | #58 | Final full system-wide test run | last, when everything else is done |
 | #205, #218, #221 | Dark mode, Arabic UI, iOS/Android page template | later (owner: last) |
