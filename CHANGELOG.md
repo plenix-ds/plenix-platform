@@ -6,6 +6,17 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.69.5] - 2026-10-24
+
+### Fixed
+- DataGrid: every line is one screen pixel at any display scaling. The top line of a hovered or selected row, the lines
+  between columns (rows, group rows, the header), the line after the checkbox column and the header hover edges were
+  1px painted strips. At 125% or 150% scaling the browser rounded a strip to one or two screen pixels by its position, so
+  a selected row's top line was thicker than its bottom line and the column lines differed from column to column.
+  - **What changed:** those lines are borders on the same pseudo-elements, which the browser rounds like the row borders.
+    Colors and positions are unchanged.
+  - **Effect:** at 100% scaling nothing changes; at 125% and 150% all lines match.
+
 ## [0.69.4] - 2026-10-24
 
 ### Fixed
