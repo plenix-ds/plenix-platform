@@ -45,6 +45,11 @@ function measure(min, spacing) {
     // WCAG 2.5.8 "Equivalent": a drag handle whose job another control on the page does at full size (the splitter's
     // width menu, the header menu's width items) is marked data-plx-target-equivalent and is not a finding
     if (!shown(el) || el.disabled || el.getAttribute('aria-disabled') === 'true' || inline(el) || el.hasAttribute('data-plx-target-equivalent')) continue;
+    // Owner-accepted (#217, 2026-10-24: "No, leave the Collapse button where it is."): the nav pane's own splitter
+    // (div.plx-panel-splitter.plx-panel-splitter--end, a direct child of .plx-nav-pane) stays 8px wide. It fails the mouse
+    // check's spacing rule because the Collapse sidebar button and the nav rows sit 8px from its center (the rule needs 12px),
+    // on the spec pages and in the apps. Only the mouse check skips it; the touch check still measures it (#52).
+    if (spacing && el.classList.contains('plx-panel-splitter--end') && el.parentElement && el.parentElement.classList.contains('plx-nav-pane')) continue;
     let t = el;
     const r0 = el.getBoundingClientRect();
     const tiny = r0.width <= 2 || r0.height <= 2 || getComputedStyle(el).opacity === '0';
