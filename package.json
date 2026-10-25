@@ -12,6 +12,8 @@
     "release:build": "node build-app.js && node build-usage.js && node check-system.js && node build-packages.js",
     "test": "node tests/run.js",
     "test:full": "node tests/run.js --full",
+    "test:on-demand": "node tests/run.js --on-demand",
+    "test:on-demand:full": "node tests/run.js --on-demand --full",
     "test:scope": "node tests/changed.js",
     "test:visual": "node tests/visual.test.js",
     "test:pages": "node tests/pages.test.js",

@@ -1,0 +1,84 @@
+# Plenix on-demand tests (owner, 2026-10-25: "Reserve only for as on demand test by owner and take out from the tests"):
+# accessibility, high contrast, color contrast, themes and density. They never run on a push, a pull request or in the
+# full suite; the owner starts them by hand: Actions › On-demand tests › Run workflow. Scope "full" checks every page
+# (accessibility in two parts, about an hour each); "changed" checks only what changed since the last commit.
+name: On-demand tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      scope:
+        description: 'full: every page; changed: only what changed'
+        type: choice
+        options: [full, changed]
+        default: full
+
+permissions:
+  contents: read
+
+env:
+  CHROME_PATH: /usr/bin/google-chrome
+  TEST_SCOPE: ${{ inputs.scope }}
+
+jobs:
+  contrast:
+    name: Color contrast
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Color contrast (no browser)
+        run: node tests/run.js contrast
+
+  browser:
+    name: On demand ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 100
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: 'accessibility 1/2', tests: a11y, shard: 1/2 }
+          - { name: 'accessibility 2/2', tests: a11y, shard: 2/2 }
+          - { name: 'high contrast, themes and density', tests: high-contrast theme density, shard: '' }
+    env:
+      TEST_SHARD: ${{ matrix.shard }}
+      TEST_TIMEOUT_MS: '5400000'
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Design system (submodule)
+        env:
+          DS_TOKEN: ${{ secrets.DS_TOKEN }}
+        run: |
+          if [ -n "$DS_TOKEN" ]; then
+            git config --global url."https://x-access-token:${DS_TOKEN}@github.com/".insteadOf "https://github.com/"
+            git submodule update --init --depth 1
+          else
+            echo "::warning::DS_TOKEN is not set: the design system's pages are not tested"
+          fi
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build
+        run: |
+          node build-app.js
+          node build-usage.js
+
+      - name: Tests (${{ matrix.tests }})
+        run: node tests/run.js ${{ matrix.tests }}

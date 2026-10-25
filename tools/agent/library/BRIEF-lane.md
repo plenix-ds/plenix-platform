@@ -134,7 +134,7 @@ Per target: files written, record ids, lab ids with checks/tokens from the labs 
 fragments, test results, anything left with the reason. Short.
 
 ## Lessons from wave 1 (the integrator, 2026-10-12)
-- Run tests/typography.test.js and tests/a11y.test.js before you report: in wave 1 they caught format output in DM Sans
+- Run tests/typography.test.js before you report: in wave 1 it caught format output in DM Sans. Accessibility, contrast, high contrast, themes and density are on-demand tests the owner runs (2026-10-25); do not run them unless asked.
   (technical values are kind 'data': Reddit Mono at the table's size) and a scroll area without keyboard access.
 - Any scrolling region you create must be keyboard reachable (tabIndex 0 plus a name), or use useVirtualizer, which
   does that already.
