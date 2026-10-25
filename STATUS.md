@@ -9,7 +9,7 @@ Start with [HANDOFF.md](HANDOFF.md) in a new session (Claude or Codex). TODO.md 
 - Branch: `styling/phase-2` in both repositories (`plenix-ds/plenix-platform` and its submodule
   `platform/design-system` = `plenix-ds/plenix-design-system`). `main` is behind it. Work continues on this branch.
 - Last release: 0.69.5 (2026-10-24: DataGrid lines one screen pixel at any display scaling, #290). Before it, the same day: 0.69.4 the icon library in the self-hosting archive, 0.69.3 the Streamlined header style. Before: 0.69.2 (2026-10-24): icons drawn inline with no gray squares (#268), the grid studies linked and published (#272), the tag picker fix (#261), the EntityHeader layouts (#244, header style 1). Before it: 0.68.1 grid speed, 0.69.0 the new grid look, 0.69.1 grouping on TanStack.
-- **No release unless the owner declares it.** Done since 0.69.5 and not released: #158, #178, #294, the legacy grid's removal (19184a44).
+- **No release unless the owner declares it.** Done since 0.69.5 and not released: #158, #178, #294, the legacy grid's removal (19184a44), #236 the made-up sample person, #244 the 30 capability headers in the spec, and, merged on the owner's word on 2026-10-24, #302 the header divider (#297), #303 the DataGrid grab areas (#217) and #304 the status box (#300).
 - CI on `styling/phase-2` fails in three suites (pages, targets and reflow, typography; #217, #256); every open PR inherits them.
 
 ## Who works on what
