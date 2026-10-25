@@ -84,6 +84,25 @@
   </section>
 
   <section class="rv-section">
+    <h2 class="rv-h2">1 · The fix: PR #331, before and after</h2>
+    <p class="rv-lead">Each picture: 0.69.5 on the left, the tip (0.71.0) in the middle, PR #331 on the right. Built from the PR in a clean copy.</p>
+    <figure class="rv-fig"><img src="fix-table-wrap.png" alt="Table wrap example: 0.69.5, tip with Notes lower, PR 331 with every cell on the same line"><figcaption><span class="rv-tag">TABLE</span> · the Table's own wrap example: every cell starts on the same line again</figcaption></figure>
+    <figure class="rv-fig"><img src="fix-cmdbar-props.png" alt="Command bar props table: 0.69.5, tip with tall rows, PR 331 compact and aligned"><figcaption><span class="rv-tag">PROPS</span> · Command bar props: prop and description start on the same line; rows compact again</figcaption></figure>
+    <figure class="rv-fig"><img src="fix-button-table.png" alt="Button overview table: 0.69.5, tip, PR 331"><figcaption><span class="rv-tag">OVERVIEW</span> · Button page: labels at the top with their values</figcaption></figure>
+    <figure class="rv-fig"><img src="fix-glance.png" alt="At a glance table: 0.69.5 with tall centered rows, tip with top-aligned rows and space below, PR 331 with short rows"><figcaption><span class="rv-tag">AT A GLANCE</span> · spec home: one-line rows are now shorter than in 0.69.5</figcaption></figure>
+    <ul class="rv-list">
+      <li><strong>Measured (text distance from the row top):</strong>
+        <ul class="rv-list">
+          <li>Table example (Field / Type / Notes): 0.69.5 10 / 10 / 9px, tip 9 / 9 / 19px, PR #331 9 / 9 / 9px.</li>
+          <li>Command bar props (prop / description): tip 9 / 19px, PR #331 9 / 9px.</li>
+          <li>Rows whose value is a bullet list: label 9px, first bullet 11px. The 2px comes from the bullet list's own spacing, not from the wrap.</li>
+        </ul></li>
+      <li><strong>One difference from 0.69.5:</strong> one-line spec rows are about 34px tall instead of 52px, because every cell now starts at the top with the wrap spacing once (your option A). Say if you want the 0.69.5 row height back.</li>
+      <li><strong>PR #331 is this fix;</strong> no second PR was made. It also fixes typography kind 1.</li>
+    </ul>
+  </section>
+
+  <section class="rv-section">
     <h2 class="rv-h2">2 · Header facts: numbers and dates in two fonts (applied unevenly)</h2>
     <div class="rv-grid">
       <figure class="rv-fig"><img src="files-header-old.png" alt="Files header at 0.69.5 with one fact, Files 7"><figcaption><span class="rv-tag">0.69.5</span> · Files: one fact</figcaption></figure>
