@@ -79,7 +79,9 @@
    Behavior:
      A card. Its background follows the user's settings on the page root: data-plx-header-tint none (default: white) | gray
        | blue | warm | green | purple | red, and data-plx-header-tint-style fade (default) | flat.
-     Two columns, main 1.7 to aside 1, with a divider between them; with no next step and no actions there is no aside.
+     Two columns with a divider between them: the divider starts at 63% of the width (main 1.7 to aside 1) and moves
+       toward the end when the title needs the room; the aside keeps at least 220px (entity-header-aside-min-width), and
+       past that the title wraps and the actions fold into More. With no next step and no actions there is no aside.
      The accent rule runs 10% past the wider of the heading and the details.
      The tiles wrap on narrow screens; under 640px of the header's own width the aside moves under the main column (its
        divider above it, at the start edge).
@@ -173,7 +175,7 @@ function States({ states, label, iconOnly }) {
   return (
     <div className="plx-entity-header__fact plx-entity-header__fact--states">
       <dt className="plx-entity-header__fact-label">{states.label || label}</dt>
-      <dd className="plx-entity-header__states" role="radiogroup" aria-label={states.label || label}>
+      <dd className="plx-entity-header__fact-line"><div className="plx-entity-header__states" role="radiogroup" aria-label={states.label || label}>
         {opts.map((o, i) => {
           const on = o.value === states.value, tone = TONES.indexOf(ALIASES[o.tone] || o.tone) >= 0 ? (ALIASES[o.tone] || o.tone) : 'neutral';
           return (
@@ -186,7 +188,7 @@ function States({ states, label, iconOnly }) {
             </button>
           );
         })}
-      </dd>
+      </div></dd>
     </div>
   );
 }

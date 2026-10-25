@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en" data-plx-mode="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grid lines and hover · Plenix review</title>
+<!-- Owner review (2026-10-24, from the grid-and-table sample): the outer frame and the frozen first column's line; the
+     column menu part on hover; the resize cursor while dragging. Pictures of the real sample; options for the picture only. -->
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<link rel="stylesheet" href="../review.css">
+</head>
+<body class="rv-page">
+<main class="rv-doc">
+  <h1 class="rv-h1">Grid and Table: the frame, the frozen line, the menu hover, the resize cursor</h1>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">Built (your answers of 2026-10-24)</h2>
+    <p class="rv-lead">Frame, heading line and frozen edge in one color (gray 400); the Table's header now as tall as the
+      grid's (28px at Compact, was 36px); the menu part's hover is the column's shade one step darker; the resize cursor stays
+      for the whole drag (one cover, no work while moving). Before on the left, after on the right.</p>
+    <div class="rv-pair">
+      <figure class="rv-fig"><img src="built-before-grid.png" alt="Before: grid frame and frozen line light"><figcaption><span class="rv-tag">BEFORE · GRID</span></figcaption></figure>
+      <figure class="rv-fig"><img src="built-after-grid.png" alt="After: grid frame and the line after Name gray 400"><figcaption><span class="rv-tag">AFTER · GRID</span> · frame and the edge after "Name" gray 400</figcaption></figure>
+    </div>
+    <div class="rv-pair">
+      <figure class="rv-fig"><img src="built-before-table.png" alt="Before: Table header 36px, light frame"><figcaption><span class="rv-tag">BEFORE · TABLE</span> · header 36px</figcaption></figure>
+      <figure class="rv-fig"><img src="built-after-table.png" alt="After: Table header 28px, frame and frozen edge gray 400"><figcaption><span class="rv-tag">AFTER · TABLE</span> · header 28px like the grid; frame and frozen edge gray 400</figcaption></figure>
+    </div>
+    <div class="rv-pair">
+      <figure class="rv-fig"><img src="built-before-hover.png" alt="Before: flat gray menu part on hover"><figcaption><span class="rv-tag">BEFORE · HOVER</span></figcaption></figure>
+      <figure class="rv-fig"><img src="built-after-hover.png" alt="After: the menu part takes a darker shade"><figcaption><span class="rv-tag">AFTER · HOVER</span></figcaption></figure>
+    </div>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">1 · Outer frame and the frozen first column's line</h2>
+    <p class="rv-lead">Today the outer frame is gray 300, the line under the headings gray 400, and the line after a
+      frozen first column gray 200 like every inside line. You asked for the frame to match the heading line, and the frozen
+      column's line to be darker. Existing colors only.</p>
+    <div class="rv-pair">
+      <figure class="rv-fig"><img src="lines-today-grid.png" alt="Today: frame and frozen line light"><figcaption><span class="rv-tag">TODAY · GRID</span> · frame gray 300; the line after "Name" gray 200</figcaption></figure>
+      <figure class="rv-fig"><img src="lines-a-grid.png" alt="Option A: frame and frozen line gray 400"><figcaption><span class="rv-tag">A · GRID</span> · frame and the frozen line gray 400, the heading line's color</figcaption></figure>
+    </div>
+    <div class="rv-pair">
+      <figure class="rv-fig"><img src="lines-today-table.png" alt="Today: the table's frame and frozen line light"><figcaption><span class="rv-tag">TODAY · TABLE</span></figcaption></figure>
+      <figure class="rv-fig"><img src="lines-a-table.png" alt="Option A in the table"><figcaption><span class="rv-tag">A · TABLE</span> · the same: frame and frozen line gray 400</figcaption></figure>
+    </div>
+    <div class="rv-pair">
+      <figure class="rv-fig"><img src="lines-b-grid.png" alt="Option B: frame gray 400, frozen line gray 300"><figcaption><span class="rv-tag">B · GRID</span> · frame gray 400; the frozen line one step lighter, gray 300 (darker than the inside lines, lighter than the frame)</figcaption></figure>
+      <figure class="rv-fig"><img src="lines-b-table.png" alt="Option B in the table"><figcaption><span class="rv-tag">B · TABLE</span></figcaption></figure>
+    </div>
+    <p class="rv-rec"><strong>Suggestion:</strong> A. One dark line color for the frame, the heading line and the frozen
+      edge: everything that holds the table together in one color, the inside lines lighter.</p>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">2 · The column menu part on hover</h2>
+    <p class="rv-lead">Hovering a column gives it the silver hover shade; hovering its menu part (the ⌄) switches that part
+      to a flat gray, a different look.</p>
+    <div class="rv-pair">
+      <figure class="rv-fig"><img src="hover-today.png" alt="Today: the hovered menu part is flat gray"><figcaption><span class="rv-tag">TODAY</span> · flat gray (gray 200)</figcaption></figure>
+      <figure class="rv-fig"><img src="hover-dark.png" alt="Proposed: the menu part takes the column's hover shade one step darker"><figcaption><span class="rv-tag">PROPOSED</span> · the column's hover shade, one step darker (gray 200 → gray 400)</figcaption></figure>
+    </div>
+    <p class="rv-rec"><strong>Suggestion:</strong> the proposed shade, so the part reads as part of the column. (Or keep as is.)</p>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">3 · The resize cursor while dragging</h2>
+    <p class="rv-lead">Reproduced: when you drag a column's edge, the pointer soon leaves the thin grab area, and the cursor
+      switches to whatever it is over (the column's grab hand), so the resize arrows seem to go "behind". Nothing keeps the
+      resize cursor for the whole drag (DataGridEngine.jsx, startResize hands the drag to TanStack without it). At rest and on
+      hover the grab area is on top, as it should be. The cursor is drawn in, since a screenshot cannot show it.</p>
+    <div class="rv-pair">
+      <figure class="rv-fig"><img src="cursor-today.png" alt="Today: dragging past the handle shows a grab hand"><figcaption><span class="rv-tag">TODAY</span> · mid-drag the cursor shows the grab hand</figcaption></figure>
+      <figure class="rv-fig"><img src="cursor-fixed.png" alt="Fixed: the resize arrows stay for the whole drag"><figcaption><span class="rv-tag">FIXED</span> · the resize arrows stay until you let go (as Windows Explorer)</figcaption></figure>
+    </div>
+    <p class="rv-rec"><strong>Fix:</strong> while a resize drag is on, the whole page shows the resize cursor and nothing
+      else reacts to the pointer; it ends when you let go. PR #303 (the Explorer grab areas) does not cause this and does not
+      fix it on its own.</p>
+  </section>
+</main>
+</body>
+</html>

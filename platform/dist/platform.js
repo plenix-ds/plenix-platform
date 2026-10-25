@@ -3510,7 +3510,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Props:
      variant: "secondary" (default; white with a border, reversible actions) | "primary" (filled; the main action, usually one
        per view) | "tertiary" (outlined in the action color, no fill; fills on hover) | "ghost" (no fill or border until
-       hovered; the lowest emphasis) | "danger" (filled red; destructive) | "danger-secondary"
+       hovered, when its icon turns the action color; the lowest emphasis) | "danger" (filled red; destructive) | "danger-secondary"
        (red outline, fills on hover). There is no link look: a link goes somewhere (Link), a button does something
      truncate: the label fills the button from its start edge and ends in an ellipsis (a long choice)
      stackedLabel: the label’s lines stack, start-aligned and wrapping; the gap is --plx-comp-button-context-label-gap (SuggestedAction)
@@ -9408,7 +9408,7 @@ const DragHandle = exports.DragHandle = /*#__PURE__*/_react.default.forwardRef(f
   }));
 });
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/columnHelper.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/columnHelper.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -9478,7 +9478,7 @@ function createColumnHelper() {
 }
 exports.createColumnHelper = createColumnHelper;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -9588,7 +9588,7 @@ exports.makeStateUpdater = makeStateUpdater;
 exports.memo = memo;
 exports.noop = noop;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/core/cell.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/core/cell.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -9629,7 +9629,7 @@ function createCell(table, row, column, columnId) {
 }
 exports.createCell = createCell;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/core/column.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/core/column.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -9708,7 +9708,7 @@ function createColumn(table, columnDef, depth, parent) {
 }
 exports.createColumn = createColumn;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/core/headers.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/core/headers.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -9977,7 +9977,7 @@ function buildHeaderGroups(allColumns, columnsToGroup, table, headerFamily) {
 exports.Headers = Headers;
 exports.buildHeaderGroups = buildHeaderGroups;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/core/row.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./cell.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/cell.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/core/row.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./cell.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/core/cell.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10065,7 +10065,7 @@ const createRow = (table, id, original, rowIndex, depth, subRows, parentId) => {
 };
 exports.createRow = createRow;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10106,7 +10106,7 @@ const ColumnFaceting = {
 };
 exports.ColumnFaceting = ColumnFaceting;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/filterFns.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/filterFns.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10202,7 +10202,7 @@ function testFalsey(val) {
 }
 exports.filterFns = filterFns;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js": { deps: {"../filterFns.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/filterFns.js","../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js": { deps: {"../filterFns.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/filterFns.js","../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10354,7 +10354,7 @@ function shouldAutoRemoveFilter(filterFn, value, column) {
 exports.ColumnFiltering = ColumnFiltering;
 exports.shouldAutoRemoveFilter = shouldAutoRemoveFilter;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/aggregationFns.js": { deps: {"./utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/aggregationFns.js": { deps: {"./utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10461,7 +10461,7 @@ const aggregationFns = {
 };
 exports.aggregationFns = aggregationFns;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js": { deps: {"../aggregationFns.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/aggregationFns.js","../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js": { deps: {"../aggregationFns.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/aggregationFns.js","../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10603,7 +10603,7 @@ function orderColumns(leafColumns, grouping, groupedColumnMode) {
 exports.ColumnGrouping = ColumnGrouping;
 exports.orderColumns = orderColumns;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10702,7 +10702,7 @@ function _getVisibleLeafColumns(table, position) {
 exports.ColumnVisibility = ColumnVisibility;
 exports._getVisibleLeafColumns = _getVisibleLeafColumns;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./ColumnGrouping.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","./ColumnVisibility.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./ColumnGrouping.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","./ColumnVisibility.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10786,7 +10786,7 @@ const ColumnOrdering = {
 };
 exports.ColumnOrdering = ColumnOrdering;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10916,7 +10916,7 @@ const ColumnPinning = {
 };
 exports.ColumnPinning = ColumnPinning;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/document.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/document.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10934,7 +10934,7 @@ function safelyAccessDocument(_document) {
 }
 exports.safelyAccessDocument = safelyAccessDocument;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","../utils/document.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/document.js","./ColumnVisibility.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","../utils/document.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/document.js","./ColumnVisibility.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11205,7 +11205,7 @@ exports.ColumnSizing = ColumnSizing;
 exports.defaultColumnSizing = defaultColumnSizing;
 exports.passiveEventSupported = passiveEventSupported;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11246,7 +11246,7 @@ const GlobalFaceting = {
 };
 exports.GlobalFaceting = GlobalFaceting;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js": { deps: {"../filterFns.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/filterFns.js","../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js": { deps: {"../filterFns.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/filterFns.js","../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11309,7 +11309,7 @@ const GlobalFiltering = {
 };
 exports.GlobalFiltering = GlobalFiltering;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11482,7 +11482,7 @@ const RowExpanding = {
 };
 exports.RowExpanding = RowExpanding;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPagination.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPagination.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11651,7 +11651,7 @@ const RowPagination = {
 };
 exports.RowPagination = RowPagination;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPinning.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPinning.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11796,7 +11796,7 @@ const RowPinning = {
 };
 exports.RowPinning = RowPinning;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSelection.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSelection.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12187,7 +12187,7 @@ exports.isRowSelected = isRowSelected;
 exports.isSubRowSelected = isSubRowSelected;
 exports.selectRowsFn = selectRowsFn;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/sortingFns.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/sortingFns.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12307,7 +12307,7 @@ const sortingFns = {
 exports.reSplitAlphaNumeric = reSplitAlphaNumeric;
 exports.sortingFns = sortingFns;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSorting.js": { deps: {"../sortingFns.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/sortingFns.js","../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSorting.js": { deps: {"../sortingFns.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/sortingFns.js","../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12533,7 +12533,7 @@ const RowSorting = {
 };
 exports.RowSorting = RowSorting;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/core/table.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./column.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/column.js","./headers.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/headers.js","../features/ColumnFaceting.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js","../features/ColumnFiltering.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js","../features/ColumnGrouping.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","../features/ColumnOrdering.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js","../features/ColumnPinning.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js","../features/ColumnSizing.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js","../features/ColumnVisibility.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js","../features/GlobalFaceting.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js","../features/GlobalFiltering.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js","../features/RowExpanding.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js","../features/RowPagination.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPagination.js","../features/RowPinning.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPinning.js","../features/RowSelection.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSelection.js","../features/RowSorting.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSorting.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/core/table.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./column.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/core/column.js","./headers.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/core/headers.js","../features/ColumnFaceting.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js","../features/ColumnFiltering.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js","../features/ColumnGrouping.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","../features/ColumnOrdering.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js","../features/ColumnPinning.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js","../features/ColumnSizing.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js","../features/ColumnVisibility.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js","../features/GlobalFaceting.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js","../features/GlobalFiltering.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js","../features/RowExpanding.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js","../features/RowPagination.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPagination.js","../features/RowPinning.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPinning.js","../features/RowSelection.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSelection.js","../features/RowSorting.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSorting.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12744,7 +12744,7 @@ function createTable(options) {
 }
 exports.createTable = createTable;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getCoreRowModel.js": { deps: {"../core/row.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/row.js","../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getCoreRowModel.js": { deps: {"../core/row.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/core/row.js","../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12808,7 +12808,7 @@ function getCoreRowModel() {
 }
 exports.getCoreRowModel = getCoreRowModel;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12853,7 +12853,7 @@ function expandRows(rowModel) {
 exports.expandRows = expandRows;
 exports.getExpandedRowModel = getExpandedRowModel;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedMinMaxValues.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedMinMaxValues.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12888,7 +12888,7 @@ function getFacetedMinMaxValues() {
 }
 exports.getFacetedMinMaxValues = getFacetedMinMaxValues;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js": { deps: {"../core/row.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/row.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js": { deps: {"../core/row.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/core/row.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12998,7 +12998,7 @@ function filterRowModelFromRoot(rowsToFilter, filterRow, table) {
 }
 exports.filterRows = filterRows;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedRowModel.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./filterRowsUtils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedRowModel.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./filterRowsUtils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13033,7 +13033,7 @@ function getFacetedRowModel() {
 }
 exports.getFacetedRowModel = getFacetedRowModel;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedUniqueValues.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedUniqueValues.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13071,7 +13071,7 @@ function getFacetedUniqueValues() {
 }
 exports.getFacetedUniqueValues = getFacetedUniqueValues;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFilteredRowModel.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./filterRowsUtils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFilteredRowModel.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./filterRowsUtils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13181,7 +13181,7 @@ function getFilteredRowModel() {
 }
 exports.getFilteredRowModel = getFilteredRowModel;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getGroupedRowModel.js": { deps: {"../core/row.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/row.js","../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getGroupedRowModel.js": { deps: {"../core/row.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/core/row.js","../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13337,7 +13337,7 @@ function groupBy(rows, columnId) {
 }
 exports.getGroupedRowModel = getGroupedRowModel;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getPaginationRowModel.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./getExpandedRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getPaginationRowModel.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./getExpandedRowModel.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13396,7 +13396,7 @@ function getPaginationRowModel(opts) {
 }
 exports.getPaginationRowModel = getPaginationRowModel;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getSortedRowModel.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getSortedRowModel.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13497,7 +13497,7 @@ function getSortedRowModel() {
 }
 exports.getSortedRowModel = getSortedRowModel;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/index.js": { deps: {"./columnHelper.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/columnHelper.js","./core/cell.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/cell.js","./core/column.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/column.js","./core/headers.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/headers.js","./core/row.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/row.js","./core/table.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/table.js","./features/ColumnFaceting.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js","./features/ColumnFiltering.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js","./features/ColumnGrouping.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","./features/ColumnOrdering.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js","./features/ColumnPinning.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js","./features/ColumnSizing.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js","./features/ColumnVisibility.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js","./features/GlobalFaceting.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js","./features/GlobalFiltering.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js","./features/RowExpanding.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js","./features/RowPagination.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPagination.js","./features/RowPinning.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPinning.js","./features/RowSelection.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSelection.js","./features/RowSorting.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSorting.js","./utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./utils/getCoreRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getCoreRowModel.js","./utils/getExpandedRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js","./utils/getFacetedMinMaxValues.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedMinMaxValues.js","./utils/getFacetedRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedRowModel.js","./utils/getFacetedUniqueValues.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedUniqueValues.js","./utils/getFilteredRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFilteredRowModel.js","./utils/getGroupedRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getGroupedRowModel.js","./utils/getPaginationRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getPaginationRowModel.js","./utils/getSortedRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getSortedRowModel.js","./aggregationFns.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/aggregationFns.js","./filterFns.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/filterFns.js","./sortingFns.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/sortingFns.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/index.js": { deps: {"./columnHelper.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/columnHelper.js","./core/cell.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/core/cell.js","./core/column.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/core/column.js","./core/headers.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/core/headers.js","./core/row.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/core/row.js","./core/table.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/core/table.js","./features/ColumnFaceting.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js","./features/ColumnFiltering.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js","./features/ColumnGrouping.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","./features/ColumnOrdering.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js","./features/ColumnPinning.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js","./features/ColumnSizing.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js","./features/ColumnVisibility.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js","./features/GlobalFaceting.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js","./features/GlobalFiltering.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js","./features/RowExpanding.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js","./features/RowPagination.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPagination.js","./features/RowPinning.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPinning.js","./features/RowSelection.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSelection.js","./features/RowSorting.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSorting.js","./utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./utils/getCoreRowModel.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getCoreRowModel.js","./utils/getExpandedRowModel.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js","./utils/getFacetedMinMaxValues.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedMinMaxValues.js","./utils/getFacetedRowModel.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedRowModel.js","./utils/getFacetedUniqueValues.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedUniqueValues.js","./utils/getFilteredRowModel.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFilteredRowModel.js","./utils/getGroupedRowModel.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getGroupedRowModel.js","./utils/getPaginationRowModel.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getPaginationRowModel.js","./utils/getSortedRowModel.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getSortedRowModel.js","./aggregationFns.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/aggregationFns.js","./filterFns.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/filterFns.js","./sortingFns.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/sortingFns.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13595,7 +13595,7 @@ exports.filterFns = filterFns.filterFns;
 exports.reSplitAlphaNumeric = sortingFns.reSplitAlphaNumeric;
 exports.sortingFns = sortingFns.sortingFns;
   } },
-  "../Plenix/node_modules/@tanstack/react-table/build/lib/index.js": { deps: {"react":null,"@tanstack/table-core":"../Plenix/node_modules/@tanstack/table-core/build/lib/index.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/react-table/build/lib/index.js": { deps: {"react":null,"@tanstack/table-core":"../../Plenix/node_modules/@tanstack/table-core/build/lib/index.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 /**
    * react-table
    *
@@ -13698,7 +13698,7 @@ Object.keys(tableCore).forEach(function (k) {
   });
 });
   } },
-  "../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/lazy-measurements.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/lazy-measurements.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -13740,7 +13740,7 @@ function createLazyMeasurementsView(cache, flat) {
 exports.createLazyMeasurementsView = createLazyMeasurementsView;
 exports.getMeasurementKey = getMeasurementKey;
   } },
-  "../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -13818,7 +13818,7 @@ exports.debounce = debounce;
 exports.memo = memo;
 exports.notUndefined = notUndefined;
   } },
-  "../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/scroll-classifier.cjs": { deps: {"./utils.cjs":"../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/scroll-classifier.cjs": { deps: {"./utils.cjs":"../../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -13911,7 +13911,7 @@ exports.externalRetiresCommand = externalRetiresCommand;
 exports.flingCaught = flingCaught;
 exports.flingSpedUp = flingSpedUp;
   } },
-  "../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/ios-gesture.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/ios-gesture.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -14042,7 +14042,7 @@ exports._resetIOSDetectionForTests = _resetIOSDetectionForTests;
 exports.iosMomentumOverridesWrites = iosMomentumOverridesWrites;
 exports.isIOSWebKit = isIOSWebKit;
   } },
-  "../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/index.cjs": { deps: {"./lazy-measurements.cjs":"../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/lazy-measurements.cjs","./utils.cjs":"../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs","./scroll-classifier.cjs":"../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/scroll-classifier.cjs","./ios-gesture.cjs":"../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/ios-gesture.cjs"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/index.cjs": { deps: {"./lazy-measurements.cjs":"../../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/lazy-measurements.cjs","./utils.cjs":"../../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs","./scroll-classifier.cjs":"../../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/scroll-classifier.cjs","./ios-gesture.cjs":"../../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/ios-gesture.cjs"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -15616,7 +15616,7 @@ exports.observeWindowOffset = observeWindowOffset;
 exports.observeWindowRect = observeWindowRect;
 exports.windowScroll = windowScroll;
   } },
-  "../Plenix/node_modules/@tanstack/react-virtual/dist/cjs/index.cjs": { deps: {"react":null,"react-dom":null,"@tanstack/virtual-core":"../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/index.cjs"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/react-virtual/dist/cjs/index.cjs": { deps: {"react":null,"react-dom":null,"@tanstack/virtual-core":"../../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/index.cjs"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -20537,7 +20537,7 @@ function groupDisplay(groups, collapsed, add, gaps = true) {
   return display;
 }
   } },
-  "platform/components/DataGrid/DataGridEngine.jsx": { deps: {"react":null,"./unread.js":"platform/components/DataGrid/unread.js","./room.js":"platform/components/DataGrid/room.js","react-dom":null,"./scrollbars.jsx":"platform/components/DataGrid/scrollbars.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","@tanstack/react-table":"../Plenix/node_modules/@tanstack/react-table/build/lib/index.js","@tanstack/react-virtual":"../Plenix/node_modules/@tanstack/react-virtual/dist/cjs/index.cjs","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./environment.js":"platform/components/DataGrid/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataGrid/state.js","./adapter.js":"platform/components/DataGrid/adapter.js","./cells.jsx":"platform/components/DataGrid/cells.jsx","./records.js":"platform/components/DataGrid/records.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/DataGrid/DataGridEngine.jsx": { deps: {"react":null,"./unread.js":"platform/components/DataGrid/unread.js","./room.js":"platform/components/DataGrid/room.js","react-dom":null,"./scrollbars.jsx":"platform/components/DataGrid/scrollbars.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","@tanstack/react-table":"../../Plenix/node_modules/@tanstack/react-table/build/lib/index.js","@tanstack/react-virtual":"../../Plenix/node_modules/@tanstack/react-virtual/dist/cjs/index.cjs","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./environment.js":"platform/components/DataGrid/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataGrid/state.js","./adapter.js":"platform/components/DataGrid/adapter.js","./cells.jsx":"platform/components/DataGrid/cells.jsx","./records.js":"platform/components/DataGrid/records.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -20662,6 +20662,8 @@ const defaults = {
   perPage: 'Rows per page',
   view: 'View options',
   wrapHeaders: 'Wrap headers',
+  wrapText: 'Wrap text',
+  wrapAll: 'Wrap all columns',
   rowHeight: 'Row height',
   short: 'Short',
   medium: 'Medium',
@@ -21015,6 +21017,27 @@ function NextEngine(props) {
   }, [widthsSignal, !!props.onViewChange, columns]);
   const [rowHeight, setRowHeight] = _react.default.useState(initial.rowHeight),
     [wrapHeaders, setWrapHeaders] = _react.default.useState(initial.wrapHeaders);
+  // Wrap text, per column (owner, 2026-10-24): the column's wrap prop or kind "wrap" is the default; the column menu turns it on or off
+  const [wrapColumns, setWrapColumns] = _react.default.useState(() => props.wrapColumns || initial.wrapColumns || {});
+  const wrapOf = c => (props.wrapColumns || wrapColumns)[c.field] ?? (c.wrap === true || kinds(c).includes('wrap'));
+  const kindsOf = c => {
+    const k = kinds(c).filter(x => x !== 'wrap');
+    return wrapOf(c) ? k.concat('wrap') : k;
+  };
+  const changeWrap = next => {
+    setWrapColumns(next);
+    props.onViewChange?.({
+      wrapColumns: next
+    });
+    props.onWrapColumnsChange?.(next);
+    // wrapped text needs room: a Short grid moves to Medium (2 lines) when a column starts wrapping
+    if (Object.values(next).some(Boolean) && !props.rowHeight && (effectiveStep || 'short') === 'short') {
+      setRowHeight('medium');
+      props.onViewChange?.({
+        rowHeight: 'medium'
+      });
+    }
+  };
   const [filterField, setFilterField] = _react.default.useState(null),
     [managing, setManaging] = _react.default.useState(false);
   const [edited, setEdited] = _react.default.useState(null),
@@ -21762,6 +21785,7 @@ function NextEngine(props) {
       widths: Object.fromEntries(Object.entries(sizing).map(([k, v]) => [k, v + 'px'])),
       rowHeight: effectiveStep,
       wrapHeaders: effectiveWrap,
+      wrapColumns: props.wrapColumns || wrapColumns,
       groupBy,
       collapsed: [...collapsed]
     });
@@ -21958,7 +21982,13 @@ function NextEngine(props) {
       icon: "group-by",
       disabled: !grouped && c.groupable === false,
       onSelect: () => changeGroups(grouped ? others.length ? others : false : c.field)
-    }, grouped ? S.noGroup : S.group));
+    }, grouped ? S.noGroup : S.group), /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      checked: !!wrapOf(c),
+      onSelect: () => changeWrap({
+        ...(props.wrapColumns || wrapColumns),
+        [c.field]: !wrapOf(c)
+      })
+    }, S.wrapText));
   };
   // the header's right-click menu (Windows Explorer): size this column or every column to fit, every column with a check
   // (TanStack's visibility; a pinned column stays shown) and More… for the columns dialog (order, find, show all, hide all)
@@ -21966,7 +21996,14 @@ function NextEngine(props) {
     onSelect: () => fit(column.id)
   }, S.sizeToFit), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
     onSelect: () => table.getVisibleLeafColumns().forEach(col => fit(col.id))
-  }, S.sizeAllToFit), /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), chooserColumns().map(col => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+  }, S.sizeAllToFit), (() => {
+    const cols = table.getVisibleLeafColumns().map(col => col.columnDef.meta).filter(m => m && m.field && !kinds(m).includes('icon')),
+      all = cols.length > 0 && cols.every(wrapOf);
+    return /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      checked: all,
+      onSelect: () => changeWrap(Object.fromEntries(cols.map(m => [m.field, !all])))
+    }, S.wrapAll);
+  })(), /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), chooserColumns().map(col => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
     key: col.id,
     checked: col.getIsVisible(),
     disabled: frozen.has(col.id),
@@ -21983,7 +22020,20 @@ function NextEngine(props) {
     if (event.type === 'mousedown') event.preventDefault();
     event.stopPropagation();
     const head = table.getFlatHeaders().find(h => h.column.id === column.id);
-    head?.getResizeHandler(frame.current?.ownerDocument)(event);
+    const doc = frame.current?.ownerDocument || document,
+      cover = doc.createElement('div');
+    cover.className = B + '__resize-cover';
+    doc.body.appendChild(cover);
+    const end = () => {
+      cover.remove();
+      doc.removeEventListener('mouseup', end);
+      doc.removeEventListener('touchend', end);
+      doc.removeEventListener('touchcancel', end);
+    };
+    doc.addEventListener('mouseup', end);
+    doc.addEventListener('touchend', end);
+    doc.addEventListener('touchcancel', end);
+    head?.getResizeHandler(doc)(event);
   };
   const headerCell = column => {
     const c = column.columnDef.meta,
@@ -22007,7 +22057,7 @@ function NextEngine(props) {
       tabIndex: isStatic ? undefined : 0,
       "data-plx-field": c.field,
       "aria-sort": column.getIsSorted() ? column.getIsSorted() === 'desc' ? 'descending' : 'ascending' : undefined,
-      className: (0, _cx.cx)('' + B + '__grid-col', isStatic && B + '__grid-col--static', selectable && ordered.indexOf(column) === 0 && B + '__grid-col--after-lead', column.getCanSort() && B + '__grid-sortable', column.getCanSort() && B + '__grid-col-sorter-element', kinds(c).includes('icon') && B + '__cell--icon', kinds(c).includes('icon') && B + '__w-lead', column.getIsFiltered() && B + '__filtered', pinned && '' + B + '__grid-frozen', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', (c.headerAlign || c.type === 'bytes') && B + '__head-align-' + (c.headerAlign || 'right')),
+      className: (0, _cx.cx)('' + B + '__grid-col', isStatic && B + '__grid-col--static', selectable && ordered.indexOf(column) === 0 && B + '__grid-col--after-lead', ordered.indexOf(column) > 0 && ordered[ordered.indexOf(column) - 1].getIsPinned() === 'left' && column.getIsPinned() !== 'left' && B + '__grid-col--after-frozen', column.getCanSort() && B + '__grid-sortable', column.getCanSort() && B + '__grid-col-sorter-element', kinds(c).includes('icon') && B + '__cell--icon', kinds(c).includes('icon') && B + '__w-lead', column.getIsFiltered() && B + '__filtered', pinned && '' + B + '__grid-frozen', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', (c.headerAlign || c.type === 'bytes') && B + '__head-align-' + (c.headerAlign || 'right')),
       "data-plx-sticky": pinned && offset ? offset + 'px' : undefined,
       onClick: e => {
         if (!e.target.closest(interactive) && column.getCanSort()) column.toggleSorting();
@@ -22091,6 +22141,7 @@ function NextEngine(props) {
       }))
     }, headerItems(column))) : null), c.resizable !== false && !pinned && !kinds(c).includes('icon') ? /*#__PURE__*/_react.default.createElement("span", {
       className: `${B}__grid-col-resize-handle`,
+      "data-plx-target-equivalent": "",
       role: "separator",
       "aria-label": S.resize + ' ' + c.title,
       "aria-orientation": "vertical",
@@ -22254,6 +22305,7 @@ function NextEngine(props) {
       emit('cellEdit', api.cell(key, field));
     }
   }, [source]);
+  const anyWrap = table.getVisibleLeafColumns().some(col => col.columnDef.meta && col.columnDef.meta.field && wrapOf(col.columnDef.meta));
   const rowNode = row => {
     if (row.__group) return groupNode(row.__group);
     if (row.__add) return /*#__PURE__*/_react.default.createElement("div", {
@@ -22300,7 +22352,7 @@ function NextEngine(props) {
       tabIndex: props.onRowClick || on.rowClick || options.selectableRows ? 0 : undefined,
       "aria-level": childField ? row.depth + 1 : undefined,
       "aria-expanded": row.getCanExpand?.() ? row.getIsExpanded() : undefined,
-      className: (0, _cx.cx)('' + B + '__grid-row', (selectable || options.selectableRows || props.onRowClick || on.rowClick) && B + '__grid-selectable', childField && '' + B + '__grid-tree-level-' + Math.min(12, row.depth), selection[row.id] && '' + B + '__grid-selected', isStatic && B + '__grid-row--static', isNarrow && B + '__grid-row--narrow', virtualized && B + '__grid-row--virtual'),
+      className: (0, _cx.cx)('' + B + '__grid-row', (selectable || options.selectableRows || props.onRowClick || on.rowClick) && B + '__grid-selectable', childField && '' + B + '__grid-tree-level-' + Math.min(12, row.depth), selection[row.id] && '' + B + '__grid-selected', isStatic && B + '__grid-row--static', anyWrap && !isNarrow && (isStatic || (effectiveStep || 'short') !== 'short') && B + '__grid-row--wrap', isNarrow && B + '__grid-row--narrow', virtualized && B + '__grid-row--virtual'),
       onClick: e => {
         if (e.target.closest(interactive)) return;
         if (selectable) pickCheckbox(row, {
@@ -22349,7 +22401,7 @@ function NextEngine(props) {
       onChange: e => pickCheckbox(row, e)
     })) : null, ordered.map(column => {
       const c = column.columnDef.meta,
-        k = kinds(c),
+        k = kindsOf(c),
         pinned = column.getIsPinned() === 'left',
         sticky = pinned ? pinStart(column) : 0;
       const cell = api.cell(row.id, c.field),
@@ -22359,7 +22411,7 @@ function NextEngine(props) {
         isEditing = editing?.key === row.id && editing.field === c.field,
         handled = c.rowHandle && (recordPositions.get(record) ?? -1) >= 0,
         actions = k.includes('actions');
-      const mods = (0, _cx.cx)(isStatic && B + '__value--static', k.includes('wrap') && B + '__value--wrap', sized && B + '__value--sized', lines && B + '__value--lines') || undefined,
+      const mods = (0, _cx.cx)(isStatic && B + '__value--static', k.includes('wrap') && B + '__value--wrap', sized && B + '__value--sized', lines && k.includes('wrap') && B + '__value--lines') || undefined,
         shown = (0, _cells.CellValue)({
           block: B,
           column: c,
@@ -22420,7 +22472,7 @@ function NextEngine(props) {
         },
         "data-plx-sticky": pinned && sticky ? sticky + 'px' : undefined,
         "data-plx-text-follow": c.rowLabel || columns.indexOf(c) <= pinnedAt ? 'size family weight' : 'size family',
-        className: (0, _cx.cx)('' + B + '__grid-cell', modes, !selectable && selection[row.id] && ordered.indexOf(column) === 0 && B + '__grid-cell--selected-start', bare && B + '__grid-cell--bare', selectable && ordered.indexOf(column) === 0 && B + '__grid-cell--after-lead', isTree && row.depth > 0 && B + '__tree-cell--level-' + Math.min(12, row.depth), editing?.key === row.id && editing.field === c.field && '' + B + '__grid-editing', k.map(kind => B + '__cell--' + kind).join(' '), (k.includes('data') || c.type === 'bytes') && B + '__grid-cell--data', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', c.type === 'bytes' && B + '__cell--data', c.rowHandle && B + '__cell--handle', childField && c.field === (props.treeColumn || columns[0]?.field) && B + '__tree-cell', pinned && '' + B + '__grid-frozen', (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + '__cell--row-label', k.includes('icon') && B + '__w-lead', keys.includes(c.field) && B + '__cell--key', keys[0] === c.field && B + '__cell--key-first', (c.align || c.type === 'bytes') && B + '__cell--align-' + (c.align || 'right'))
+        className: (0, _cx.cx)('' + B + '__grid-cell', modes, !selectable && selection[row.id] && ordered.indexOf(column) === 0 && B + '__grid-cell--selected-start', bare && B + '__grid-cell--bare', selectable && ordered.indexOf(column) === 0 && B + '__grid-cell--after-lead', ordered.indexOf(column) > 0 && ordered[ordered.indexOf(column) - 1].getIsPinned() === 'left' && column.getIsPinned() !== 'left' && B + '__grid-cell--after-frozen', isTree && row.depth > 0 && B + '__tree-cell--level-' + Math.min(12, row.depth), editing?.key === row.id && editing.field === c.field && '' + B + '__grid-editing', k.map(kind => B + '__cell--' + kind).join(' '), (k.includes('data') || c.type === 'bytes') && B + '__grid-cell--data', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', c.type === 'bytes' && B + '__cell--data', c.rowHandle && B + '__cell--handle', childField && c.field === (props.treeColumn || columns[0]?.field) && B + '__tree-cell', pinned && '' + B + '__grid-frozen', (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + '__cell--row-label', k.includes('icon') && B + '__w-lead', keys.includes(c.field) && B + '__cell--key', keys[0] === c.field && B + '__cell--key-first', (c.align || c.type === 'bytes') && B + '__cell--align-' + (c.align || 'right'))
       }, childField && c.field === (props.treeColumn || columns[0]?.field) ? /*#__PURE__*/_react.default.createElement("span", {
         className: B + '__tree-level',
         "data-plx-depth": 0
@@ -22502,7 +22554,7 @@ function NextEngine(props) {
       rowApi: rowApi
     })) : node;
   };
-  const rowVersion = _react.default.useMemo(() => ({}), [unread.keys, unreadOnly, props, source, model, editing, metrics, autoSizing, sizing, columnOrder, columnVisibility, sorting, expanded, page, pageSize, isNarrow, collapsed, printing, filterField, groupBy, loaded]);
+  const rowVersion = _react.default.useMemo(() => ({}), [wrapColumns, unread.keys, unreadOnly, props, source, model, editing, metrics, autoSizing, sizing, columnOrder, columnVisibility, sorting, expanded, page, pageSize, isNarrow, collapsed, printing, filterField, groupBy, loaded]);
   const renderRow = row => row.original ? /*#__PURE__*/_react.default.createElement(MemoGridRow, {
     key: row.displayKey || row.id,
     row: row,
@@ -22762,7 +22814,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
    Usage: <Table label="Fields" data={fields} columns={[{title:'Field',field:'name',rowLabel:true},{title:'Notes',field:'notes',kind:'wrap'}]} />
    Props:
      label: accessible table name (required); data: records; columns: title, field, kind, render(record), width,
-       minWidth, maxWidth, rowLabel, frozen, align and headerAlign. index identifies records (default "id").
+       minWidth, maxWidth, rowLabel, frozen, align, headerAlign and wrap (true: the column wraps its text; a row with a wrapping
+       column starts every cell at the top). Cells do not wrap otherwise; long text ends in an ellipsis. index identifies records (default "id").
      empty: no-record message; narrow: "table" by default; className.
      cells: "text" (default) | "pill": the pill view (owner, 2026-10-19): every value a DataPill with its column's type icon
        (type: text, number, currency, date, person …); a person's value.gender makes it blue or pink with the male or female
@@ -22802,7 +22855,8 @@ function Table({
     frozen,
     align,
     headerAlign,
-    empty
+    empty,
+    wrap
   }) => ({
     title,
     field,
@@ -22818,6 +22872,7 @@ function Table({
     align,
     headerAlign,
     empty,
+    wrap,
     sortable: false,
     resizable: false
   })), [columns]);
@@ -28573,6 +28628,10 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        { rows, total }; search: the page's search text
      storageKey: keeps the person's standalone view (sort, widths, order, hidden columns, row height, wrap, groups).
      onViewChange(patch): delegates view changes to an external controller; its presence disables the grid's own store.
+     columns[].wrap: true starts the column wrapped (as kind "wrap"); people turn Wrap text on or off in the column menu, and
+       Wrap all columns in the header's right-click menu. A row with a wrapping column starts every cell at the top, at the
+       reading line height; rows without one stay centered. wrapColumns ({ field: true|false }) and onWrapColumnsChange(next)
+       control it from outside; the saved view keeps it (owner, 2026-10-24)
        useCollectionView supplies this callback and columnWidths, so its collection state owns the view.
      narrow: "table" (default inside SplitView) | "list" (default elsewhere: under narrowAt, 600px, a list of keyColumns) | "auto"
      empty: shown when no row matches; error and onRetry(): the error state and its one recovery; strings: the words
@@ -31775,7 +31834,9 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
    Behavior:
      A card. Its background follows the user's settings on the page root: data-plx-header-tint none (default: white) | gray
        | blue | warm | green | purple | red, and data-plx-header-tint-style fade (default) | flat.
-     Two columns, main 1.7 to aside 1, with a divider between them; with no next step and no actions there is no aside.
+     Two columns with a divider between them: the divider starts at 63% of the width (main 1.7 to aside 1) and moves
+       toward the end when the title needs the room; the aside keeps at least 220px (entity-header-aside-min-width), and
+       past that the title wraps and the actions fold into More. With no next step and no actions there is no aside.
      The accent rule runs 10% past the wider of the heading and the details.
      The tiles wrap on narrow screens; under 640px of the header's own width the aside moves under the main column (its
        divider above it, at the start edge).
@@ -31916,6 +31977,8 @@ function States({
   }, /*#__PURE__*/_react.default.createElement("dt", {
     className: "plx-entity-header__fact-label"
   }, states.label || label), /*#__PURE__*/_react.default.createElement("dd", {
+    className: "plx-entity-header__fact-line"
+  }, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-entity-header__states",
     role: "radiogroup",
     "aria-label": states.label || label
@@ -31944,7 +32007,7 @@ function States({
     })) : null, iconOnly && o.icon ? null : /*#__PURE__*/_react.default.createElement("span", {
       className: "plx-entity-header__state-label"
     }, o.label));
-  })));
+  }))));
 }
 
 // a fact: label over value; with an icon, the icon in a square at its start; with an action (header style 2), the icon

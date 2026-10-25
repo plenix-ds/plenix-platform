@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Header divider study</title>
+<script src="../../../platform/providers/theme-boot.js"></script>
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<script src="../../../platform/vendor/react-loader.js"></script>
+<script src="../../../platform/dist/platform.js"></script>
+<style>
+/* a study page (not Platform code): the page header's vertical divider, today and three options (#297). Each option
+   only sets the header's column token, --plx-comp-entity-header-columns, on its frame. */
+body{background:var(--plx-sys-surface-canvas);font-family:var(--plx-sys-text-body-font-family);margin:0;padding:var(--plx-sys-space-layout-md);color:var(--plx-sys-content-default);}
+h1{font-size:var(--plx-sys-text-title-font-size);font-weight:var(--plx-sys-text-title-font-weight);margin:0 0 var(--plx-sys-space-stack-xs);}
+h2{font-size:var(--plx-sys-text-label-font-size);margin:var(--plx-sys-space-stack-lg) 0 var(--plx-sys-space-stack-xs);}
+p,li{font-size:var(--plx-sys-text-body-font-size);max-inline-size:var(--plx-ref-size-900px);}
+.dv-stack{display:flex;flex-direction:column;gap:var(--plx-sys-space-stack-sm);}
+.dv-today{--plx-comp-entity-header-columns:minmax(0, 1.7fr) minmax(0, 1fr);}
+.dv-a{--plx-comp-entity-header-columns:minmax(0, 1fr) max-content;}
+.dv-b{--plx-comp-entity-header-columns:minmax(63%, max-content) minmax(var(--plx-ref-size-220px), 1fr);}
+.dv-box-400 .plx-entity-header__fact--states{border-color:var(--plx-ref-color-gray-400);}
+.dv-btn-500 .plx-entity-header__state:not(.is-selected){border-color:var(--plx-ref-color-gray-500);}
+.dv-c{--plx-comp-entity-header-columns:minmax(0, 1.7fr) minmax(var(--plx-ref-size-220px), 1fr);}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+(function () {
+  var P = window.Plenix, R = window.React, h = R.createElement;
+  var states = { value: 'in-progress', onChange: function () {}, options: [{ value: 'draft', label: 'Draft', icon: 'pencil', tone: 'waiting' }, { value: 'in-progress', label: 'In progress', icon: 'clock', tone: 'success' }, { value: 'adjourned', label: 'Adjourned', icon: 'do-not-disturb', tone: 'negative' }] };
+  var hdr = function (title) {
+    return h(P.EntityHeader, { headingLevel: 3, title: title, subtitle: 'Marketing · Owned by Sam Patel', media: { icon: 'folder', hue: 'blue' },
+      states: states, facts: [{ label: 'Due', value: 'Nov 14', data: true }, { label: 'Tasks', value: '18 of 31', data: true }],
+      next: { title: 'Approve homepage copy', detail: 'Due tomorrow · Ana Kim' }, actions: [{ icon: 'share', label: 'Share' }, { icon: 'star', label: 'Favorite' }, { icon: 'edit', label: 'Edit', primary: true }] });
+  };
+  var SHORT = 'Website relaunch', LONG = 'Website relaunch for the parish council and the diocesan youth programs, 2026';
+  var option = function (cls, name, what) {
+    return h('section', { id: cls }, h('h2', null, name), h('p', null, what),
+      h('div', { className: 'dv-stack ' + cls }, hdr(SHORT), hdr(LONG)));
+  };
+  ReactDOM.createRoot(document.getElementById('root')).render(h('div', null,
+    h('h1', null, 'The page header’s divider line'),
+    h('p', null, 'The vertical line in the page header (Structured style) splits the title and facts on the left from the next step and the actions on the right. Each option below shows a short title and a long one, live.'),
+    h('h2', null, 'Where it is today'),
+    h('ul', null,
+      h('li', null, 'Structured style, all five layouts: the line sits at a fixed share of the width, about 63% from the left (left 1.7 parts, right 1 part). Nothing moves it; a long title wraps instead.'),
+      h('li', null, 'What fixes it: one setting, the header’s column token (--plx-comp-entity-header-columns). The space on each side of the line comes from two more: the gap before it (column gap, 20px) and the padding after it (20px).'),
+      h('li', null, 'Streamlined style has no divider line: its two groups sit at the two ends of one row and wrap when they meet. Nothing to change there.'),
+      h('li', null, 'Under 640px of header width the right side moves under the left; the line becomes a horizontal one. That stays.')),
+    option('dv-today', 'Today: a fixed share', 'The line stays at about 63% whatever the title. A long title wraps onto two or three lines even when the right side has room to spare.'),
+    option('dv-a', 'Option A: the right side takes only what it needs', 'The line sits as far right as the next step and the actions allow. The title almost never wraps, but the line moves with every header, so headers next to each other do not line up.'),
+    option('dv-b', 'Option B (our suggestion): a default position that gives way', 'The line starts at the same place as today (63%). When the title needs more room, it pushes the line to the right, but the right side always keeps at least 220px (a new token, entity-header-aside-min-width). Past that point the title wraps. Headers with short titles line up as today; only headers that need it move. When the right side gets narrow, its actions fold into More (as they already do) and its next step wraps.'),
+    option('dv-c', 'Option C: a fixed share with a floor for the right side', 'As today, but the right side never gets narrower than 220px. The line never moves for the title; it only protects the actions on narrow screens.'),
+    h('h2', { id: 'status' }, 'The status box outline (#300): today and two shades darker'),
+    h('p', null, 'The same Option B header three times. Only the status box (Draft, In progress, Adjourned) changes; every color is an existing palette color.'),
+    h('h2', null, 'Today: the box outline gray 200, the state buttons gray 300'), h('div', { className: 'dv-b' }, hdr(SHORT)),
+    h('h2', null, 'Two shades darker: the box outline gray 400'), h('div', { className: 'dv-b dv-box-400' }, hdr(SHORT)),
+    h('h2', null, 'Two shades darker, box and buttons: the box outline gray 400, the state buttons gray 500'), h('div', { className: 'dv-b dv-box-400 dv-btn-500' }, hdr(SHORT)),
+    h('h2', null, 'The minimum padding'),
+    h('p', null, 'In every option the space before the line (column gap) and after it (aside padding) stay 20px each: tokens entity-header-column-gap and entity-header-aside-padding-inline. Option B adds one token, the right side’s smallest width (220px). How others do it: Carbon and Atlassian page headers size the action area to its content (Option A); Fluent and Material keep fixed regions; none move a divider for the title, which is why Option B keeps a default position.')));
+})();
+</script>
+</body>
+</html>
