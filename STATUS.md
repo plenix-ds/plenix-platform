@@ -8,8 +8,8 @@ Start with [HANDOFF.md](HANDOFF.md) in a new session (Claude or Codex). TODO.md 
 
 - Branch: `styling/phase-2` in both repositories (`plenix-ds/plenix-platform` and its submodule
   `platform/design-system` = `plenix-ds/plenix-design-system`). `main` is behind it. Work continues on this branch.
-- Last release: 0.69.5 (2026-10-24: DataGrid lines one screen pixel at any display scaling, #290). Before it, the same day: 0.69.4 the icon library in the self-hosting archive, 0.69.3 the Streamlined header style. Before: 0.69.2 (2026-10-24): icons drawn inline with no gray squares (#268), the grid studies linked and published (#272), the tag picker fix (#261), the EntityHeader layouts (#244, header style 1). Before it: 0.68.1 grid speed, 0.69.0 the new grid look, 0.69.1 grouping on TanStack.
-- **No release unless the owner declares it.** Done since 0.69.5 and not released: #158, #178, #294, the legacy grid's removal (19184a44).
+- Last release: 0.70.0 (2026-10-25, tag v0.70.0, live at /cdn/0.70.0/): buttons in the Fluent style and 4px control corners (#298, #299), grid and Table lines, wrap text and header targets (#256, #217, #305, #308), the page header divider and status box (#297, #300), the spec wording rewrite (#257), tokens.css (#158), safe RichText (#178). **Breaking:** the DataGrid and Table option renames (#294). Released by Governance on the owner's standing permission. Before it: 0.69.5 (DataGrid lines one screen pixel).
+- **Releases:** Governance releases whenever approved merges are ready (the owner's standing permission, 2026-10-24). Every merge still needs the owner's word. Approved after 0.70.0, next release: #317 (app headers), once merged.
 - CI on `styling/phase-2` fails in three suites (pages, targets and reflow, typography; #217, #256); every open PR inherits them.
 
 ## Who works on what

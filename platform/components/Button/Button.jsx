@@ -7,7 +7,7 @@
    Props:
      variant: "secondary" (default; white with a border, reversible actions) | "primary" (filled; the main action, usually one
        per view) | "tertiary" (outlined in the action color, no fill; fills on hover) | "ghost" (no fill or border until
-       hovered; the lowest emphasis) | "danger" (filled red; destructive) | "danger-secondary"
+       hovered, when its icon turns the action color; the lowest emphasis) | "danger" (filled red; destructive) | "danger-secondary"
        (red outline, fills on hover). There is no link look: a link goes somewhere (Link), a button does something
      truncate: the label fills the button from its start edge and ends in an ellipsis (a long choice)
      stackedLabel: the label’s lines stack, start-aligned and wrapping; the gap is --plx-comp-button-context-label-gap (SuggestedAction)

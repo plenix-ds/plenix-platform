@@ -6,6 +6,51 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.70.0] - 2026-10-25
+
+### Breaking
+- DataGrid and Table options have Plenix names (#294); there are no aliases.
+  - **Columns:** `hozAlign` → `align`, `headerHozAlign` → `headerAlign`, `headerSort` → `sortable`.
+  - **Trees:** `dataTree`, `dataTreeChildField`, `dataTreeElementColumn` and `dataTreeStartExpanded` → `tree`, `childrenField`, `treeColumn` and `treeExpanded`.
+  - **Children:** the children key defaults to `children` (was `_children`).
+  - **Events:** the `on` map's `cellEdited` event is `cellEdit`; the `onCellEdit` prop is unchanged.
+  - **What an app must do:** rename these options when it moves to 0.70.0. RedSave and CTM use them.
+
+### Added
+- `tokens.css`, the token set for shadow roots and pages Plenix doesn't own, at `/cdn/<version>/tokens.css`, plus `plenixTokens(url?)`, which returns an adoptable stylesheet (#158).
+- DataGrid **Wrap text** (#256):
+  - each column menu has "Wrap text"; the header's right-click menu has "Wrap all columns"
+  - `columns[].wrap`, `kind: 'wrap'`, `wrapColumns` and `onWrapColumnsChange` set it from code, and the saved view keeps it
+  - a wrapped column uses the row-height steps: 2 lines at Medium, 3 at Tall, then "…"; a Short grid moves to Medium
+  - a row with a wrapped column starts every cell at the top
+  - Table gets the same look through a column `wrap` prop
+- DataGrid header targets the Windows Explorer way (#217):
+  - the resize grab area is 12px, centered on the column line
+  - the full-height options part is one target, at least 24px wide
+
+### Changed (visual)
+- Buttons follow the Fluent style (#298), through tokens only, from existing palette colors:
+  - **Corners:** `radius-control` is 4px in every density (#299), for buttons, text fields, selects, comboboxes and navigation items
+  - **Border:** the default border is gray-300 (gray-350 on hover), which also fixes the corner that looked cut at 125% and 150%
+  - **Hover:** neutral, and a ghost button's icon turns blue
+- DataGrid and Table lines (#305, #308):
+  - the frame, the heading line and the edge after a frozen first column share one color, gray 400; inside lines stay lighter
+  - the Table header is the header height (28px at Compact, like the grid)
+  - the header's options part takes a hover one shade darker than the column hover
+- EntityHeader:
+  - the divider starts at 63% and moves toward the end when the title needs the room; the right side keeps at least 220px (`entity-header-aside-min-width`) (#297)
+  - the status box has a gray-200 outline and a gray-75 background (#300)
+- The design spec's wording is rewritten in plain language (#257).
+
+### Fixed
+- RichText cleans its `html` through the rich-text allow-list (#178).
+- The resize cursor holds during a column drag and right on the column line (#308).
+- Sample data uses a made-up person, Jordan Avery, instead of a real name (#236).
+- The 30 capability headers are in the spec in both header styles (#244). Their icons use Plenix names.
+
+### Removed
+- The retired grid engine is gone from code, stylesheets, tests, tools and current docs.
+
 ## [0.69.5] - 2026-10-24
 
 ### Fixed

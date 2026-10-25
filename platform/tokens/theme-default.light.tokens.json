@@ -1905,13 +1905,43 @@
         }
       }
     },
-    "data-grid-border": {
-      "$value": "{plx-ref.color-gray-300}",
+    "data-grid-frozen-edge": {
+      "$value": "{plx-ref.color-gray-400}",
       "$type": "color",
       "$extensions": {
         "plenix": {
           "group": "component",
-          "purpose": "DataGrid: the outer edge."
+          "purpose": "DataGrid and Table: the edge after a frozen first column, as dark as the frame and the heading line (owner, 2026-10-24)."
+        }
+      }
+    },
+    "data-grid-menu-button-hover-top": {
+      "$value": "{plx-ref.color-gray-200}",
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "DataGrid header: the options part under the pointer, the column hover one step darker: top (owner, 2026-10-24)."
+        }
+      }
+    },
+    "data-grid-menu-button-hover-bottom": {
+      "$value": "{plx-ref.color-gray-400}",
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "DataGrid header: the options part under the pointer, the column hover one step darker: bottom (owner, 2026-10-24)."
+        }
+      }
+    },
+    "data-grid-border": {
+      "$value": "{plx-ref.color-gray-400}",
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "DataGrid and Table: the outer edge, the heading line\u2019s color (owner, 2026-10-24)."
         }
       }
     },

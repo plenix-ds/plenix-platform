@@ -961,3 +961,107 @@ Strings left exactly as they were, because changing them needs a decision. Answe
 
 - **docs.content.guidance:** The "guidance" row repeats the page’s purpose word for word. Should it be removed, or should it say something else?
 
+
+## Written since 2026-10-21 (11 questions)
+
+
+### wizard-dialog
+
+- **docs.anatomy[4]:** "Unsaved-changes check — closing asks before losing work" is the only anatomy entry without (required) or (optional). Which is it?
+
+### interaction-accessible-names
+
+- **rec.anatomy[2]:** "VisuallyHidden adds words a screen reader needs that the layout shows" reads backwards — should it be words the layout does *not* show?
+- **rec.anatomy[1]:** The `label` part has no "(required)" or "(optional)" marker, unlike the other parts; which is it?
+
+### tabs
+
+- **rec.text / rec.use[0]:** The overview defines contained tabs as "folder tabs joined to a bordered panel", while use[0] names "Folder tabs" as a separate choice for when the whole page body switches. Are contained tabs a kind of folder tab, or are Contained and Folder two different variants (and which name should the overview use)?
+
+### swatch-picker
+
+- **variantPages[0].text:** It lists "brown (drawn in orange)" among the data hues; is brown still a data hue name, or should it read orange (the Brown category was retired in the color consolidation)?
+
+### typing-indicator
+
+- **variantPages[0].text, variantPages[1].text:** Both describe chat message bubbles (someone else's message on the start side; the person's own in the action color), not a typing indicator. Are these variant pages on the wrong item, or should the text describe the indicator?
+
+### docs/back-to-top
+
+- **docs.anatomy[1]:** The sentinel is called "a very thin strip" yet "one window tall"; which is right (thin strip, or a strip one window tall)?
+
+### data-grid
+
+- **docs.anatomy[25]:** The string ends "The row menu on a row's button or right-click:" followed only by tokens; the row menu's items seem to be missing. What does the row menu contain?
+- **docs.content.labels:** It names `hozAlign "right"`, a Tabulator option, while the grid is now TanStack. Is `hozAlign` still the column prop, or should it name the TanStack-era prop?
+
+### design-system-mcp
+
+- **docs.behavior.error:** "Initialize first; arguments are checked." is too terse to simplify safely — does it mean a call before initialization is refused with an error, and invalid arguments are rejected? Which wording is right?
+
+### document-viewer
+
+- **docs.behavior.pointer:** The text describes loading PDF.js, cancelling outdated renders and exposing text/keyboard scrolling/errors — none of it is pointer behavior. Should it move to loading/a11y, and what is the pointer behavior?
+
+## Guidance for items not built yet (19 questions)
+
+### data-display: charts with no axes
+
+- **Choropleth map, Donut chart, Pie chart, Gauge, Sankey diagram, Treemap, Word cloud (content[1]):** These pages carry the shared chart line "Label axes with the measure and its unit, and avoid acronyms.", but none of these charts has axes. Should each drop the line, or get its own rule (a choropleth labels its color scale legend; a donut or pie labels slices with the part name and share; a gauge labels the value with its unit and range; a Sankey labels nodes with totals; a treemap labels tiles; a word cloud explains size in a legend)?
+- **Gantt chart (content[1]):** The Gantt axis is time, not a measure. Should it read "Label the time scale with its unit (days, weeks or months)"?
+- **Radar chart (content[1]):** Radar spokes are axes that share one scale. Keep the shared line, or say "Label spokes with the measure name"?
+- **Gauge (content[0]):** The shared title line ("the question the chart answers") may not fit a single-value meter. Keep it, or replace it with a gauge rule?
+
+### data-display|Sparkline
+
+- **content[0]:** The shared chart rule asks for a title written as a question or finding, but a sparkline is word-sized, sits next to the number it describes and has no title. Drop or replace this line for sparklines?
+- **content[1]:** "Label axes with the measure and its unit" contradicts behavior[1] "Do not show axes, grid lines or legends." Which is right?
+
+### data-display|Object list
+
+- **commonGround:** "none names a distinct object list, and SAP Fiori is the main system that defines one" reads as a contradiction. Does "none" mean none of the compared systems, with SAP Fiori outside that set?
+
+### content|Version label
+
+- **use[1]:** use[1] names the qualifiers "Current" or "Draft"; anatomy[1] and content[1] say "Latest". Which qualifier is right?
+
+### feedback|Circular progress
+
+- **content[1]:** "Do not end the label with an ellipsis-only message." Does it ban a label that is only "…", or ending labels with an ellipsis?
+
+### forms|Field style variants
+
+- **anatomy[1]:** "Filled — tinted background with a bottom line" conflicts with the Plenix field rule (a filled field has a border; no underline). Which is right?
+- **behavior[1]:** "Change only the border color on focus and error" conflicts with the Plenix invalid state (2px danger border plus the lightest red fill). Should focus recolor the border only, with error following the invalid rule?
+
+### foundations|Text alternatives
+
+- **behavior[1]:** "Provide data grids or summaries for charts": does "data grids" mean the DataGrid component, or a static Table as the chart's text alternative?
+
+### foundations|Style and grammar
+
+- **anatomy[0] / commonGround:** The anatomy lists "serial comma use" as a Plenix rule, but commonGround says systems differ and no string says whether Plenix uses the serial comma. Does it?
+
+### foundations|Contrast rules
+
+- **avoid[1]:** "Do not treat disabled controls as a reason to pass off unreadable active content." Does it mean active content never borrows the disabled-control contrast exemption?
+
+### interaction|Portal
+
+- **content[0]:** "Not applicable; content rules follow the overlay rendered inside." reads as placeholder text. Keep it, or drop it and keep only content[1]?
+
+### interaction|Scroll lock
+
+- **content[1]:** "Not applicable beyond the overlay's own text." reads as placeholder text. Keep it, or replace it with a content rule?
+
+### navigation|Navigation bar
+
+- **use[1]:** "At the bottom on compact screens; as a rail on wider ones" overlaps Bottom navigation, whose avoid[1] says not to use it on wide screens. Are these one item, or should the rail case be named differently?
+
+### navigation|Previous / next navigation
+
+- **behavior[0]:** The overview calls the parts links, but behavior says "Disable or hide the control" at the start and end; links cannot be disabled. Should the end state be "hide" only?
+
+### patterns|Delete flow
+
+- **text:** It says "permanently removing an object" but also "with recovery when possible", and use[1] prefers undo when the item can be restored. Is deletion permanent, or should "permanently" go?
