@@ -1,0 +1,26 @@
+{
+ "resize": {
+  "resize": [
+   8,
+   28
+  ],
+  "resizeLeftOfLine": -76,
+  "resizeRightOfLine": 84,
+  "menu": [
+   14,
+   14
+  ]
+ },
+ "menu": {
+  "resize": [
+   8,
+   28
+  ],
+  "resizeLeftOfLine": -76,
+  "resizeRightOfLine": 84,
+  "menu": [
+   14,
+   14
+  ]
+ }
+}
