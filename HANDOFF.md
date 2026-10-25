@@ -44,6 +44,13 @@ One design system and the suite of applications built on it, owned by one person
 
 ## How to work
 
+- **On-demand tests (owner only, 2026-10-25).**
+  - Accessibility, high contrast, color contrast, themes and density run only when the owner asks for them.
+  - They are not in `npm test`, `npm run test:full`, the per-push CI or the full suite.
+  - On this computer: `npm run test:on-demand` checks what changed; `npm run test:on-demand:full` checks every page (accessibility alone takes about two hours).
+  - On GitHub: Actions › On-demand tests › Run workflow, then pick "full" or "changed".
+  - One test by name: `node tests/run.js a11y` (or `high-contrast`, `contrast`, `theme`, `density`).
+- **No target-size test.** The owner removed it ("Remove tap areas from all tests", 2026-10-25).
 - Gates before finishing any change: `node build-app.js`, `node check-system.js` (SYSTEM_OK), `node check-spec.js` (SPEC_OK).
   After a spec change, `node build-spec-parts.js` (build-app runs it).
 - Generated files (never edit by hand): `platform/dist/platform.js`, `<app>/app.js`, `platform/system/steps.css`,
