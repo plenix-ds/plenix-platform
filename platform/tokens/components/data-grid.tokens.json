@@ -225,6 +225,11 @@
       "$value": "{plx-ref.space-4px}",
       "$type": "dimension",
       "$description": "DataGrid header: the options button’s sides (Windows Explorer: a narrow button the header’s height)."
+    },
+    "data-grid-menu-button-min-width": {
+      "$value": "{plx-ref.size-24px}",
+      "$type": "dimension",
+      "$description": "DataGrid header: the options part is one target the header’s height and at least 24px wide, the chevron in its middle (owner, 2026-10-24: as Windows Explorer; WCAG 2.5.8)."
     }
   }
 }
