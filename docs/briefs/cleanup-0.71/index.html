@@ -191,7 +191,7 @@
   <section class="rv-section">
     <h2 class="rv-h2">Targets and reflow (older; fewer findings than at 0.69.5)</h2>
     <ul class="rv-list">
-      <li><strong>Count:</strong> 54 pages worse at 0.69.5, 32 on 0.70.0, 14 in the tip's sample. Reflow passes.</li>
+      <li><strong>Count:</strong> 53 pages worse on 0.69.5 (full run, local), 32 on 0.70.0 (full CI run), 14 in the tip's sample. Reflow passes.</li>
       <li><strong>Nav-pane splitter, 8px wide:</strong> your decision (#217) is to keep it. Fix: record it as an accepted case in the test so it stops failing. Size: small.</li>
       <li><strong>DataGrid header cells (28px tall) and menu arrows (18 to 24px) on touch:</strong> 44px touch targets belong to #52. Fix: the same accepted list, pointing at #52. Size: small.</li>
       <li><strong>Links alone in a spec table cell</strong> ("All buttons", 61×17px): flagged because nothing surrounds them, so the inline-link exception does not apply. Options: A · the test treats a link in a table cell as text; B · the spec gives these links a full-height row target. Size: small.</li>
@@ -201,6 +201,7 @@
   <section class="rv-section">
     <h2 class="rv-h2">Typography (older; analysed in #256)</h2>
     <ul class="rv-list">
+      <li><strong>Count:</strong> 81 checks worse on 0.69.5 (full run, local), 58 on 0.70.0. 0.70 made it better, not worse.</li>
       <li><strong>Kind 1, spec tables with code (50 of 54 checks):</strong> the same problem as visual finding 1. Fixed by that fix.</li>
       <li><strong>Kind 2, dashboard due dates 3.5px off the label baseline:</strong> PR #329, approved.</li>
       <li><strong>Kind 3, header fact dates in the normal font:</strong> PR #328 with spec #3, approved (finding 2).</li>
