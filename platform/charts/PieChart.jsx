@@ -89,7 +89,7 @@ export function PieChart({ title, description, hideCaption, size, data = [], var
   const slices = pieSlices(data, { sort, maxSlices, other: t.other });
   const total = slices.reduce((a, d) => a + d.value, 0);
   const table = {
-    columns: [{ title: t.part, field: 'part', kind: 'name', rowLabel: true }, { title: t.value, field: 'value', kind: 'data', hozAlign: 'right' }, { title: t.share, field: 'share', kind: 'data', hozAlign: 'right' }],
+    columns: [{ title: t.part, field: 'part', kind: 'name', rowLabel: true }, { title: t.value, field: 'value', kind: 'data', align: 'right' }, { title: t.share, field: 'share', kind: 'data', align: 'right' }],
     data: slices.map((d, i) => ({ id: i + 1, part: d.label, value: fmt(d.value), share: formatPercent(d.share) }))
   };
   const key = legend === false ? null : <ChartLegend items={legendItems(slices, (d) => formatPercent(d.share))} orientation={legendPosition === 'end' ? 'vertical' : 'horizontal'} />;

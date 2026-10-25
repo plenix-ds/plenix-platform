@@ -9,8 +9,8 @@
     "background": "plx-comp-avatar-background",
     "content": "plx-comp-avatar-content",
     "border": null,
-    "compose": "PlenixAvatar(name = \"Raphael Maher\")",
-    "views": "avatarView(context, \"Raphael Maher\")",
+    "compose": "PlenixAvatar(name = \"Jordan Avery\")",
+    "views": "avatarView(context, \"Jordan Avery\")",
     "use": "A person without a picture."
    },
    {
@@ -240,7 +240,7 @@
     "}",
     "",
     "// In a list row",
-    "PlenixListRow(\"Raphael Maher\", supporting = \"Owner\", leading = { PlenixAvatar(\"Raphael Maher\", size = AvatarSize.S40) })"
+    "PlenixListRow(\"Jordan Avery\", supporting = \"Owner\", leading = { PlenixAvatar(\"Jordan Avery\", size = AvatarSize.S40) })"
    ],
    "views": [
     "import android.content.res.ColorStateList",
@@ -285,7 +285,7 @@
     "    if (label != null) contentDescription = label else importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO",
     "}",
     "",
-    "row.addView(avatarView(this, \"Raphael Maher\", size = AvatarSize.S40))",
+    "row.addView(avatarView(this, \"Jordan Avery\", size = AvatarSize.S40))",
     "row.addView(avatarView(this, \"Website\", fill = argb(PlenixColors.categoryBlue.light, PlenixColors.categoryBlue.dark),",
     "    text = argb(PlenixColors.categoryBlueOn.light, PlenixColors.categoryBlueOn.dark)))"
    ]

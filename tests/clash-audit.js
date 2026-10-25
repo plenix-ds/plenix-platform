@@ -8,7 +8,6 @@
 //        cross-component    a rule of another block setting the element's property
 //        order-decided      two rules of the same owner with different values: specificity or file order decides
 //        redundant          two rules with the same value
-//        vendor             a rule from the vendored Tabulator stylesheet (legacy table)
 //   2. records every element's computed style (a hash per element, in document order), so a repair can prove no
 //      element changed.
 //   node tests/clash-audit.js            writes tests/baselines/clashes.json and tests/baselines/computed.json
@@ -137,7 +136,7 @@ function audit(noClash, from, to, opts) {
       theme: de.getAttribute('data-plx-theme') || 'default', mode: de.getAttribute('data-plx-mode') || 'light', density: de.getAttribute('data-plx-density') || 'standard', interaction: de.getAttribute('data-plx-interaction') || 'default',
       forced: [...new Set([...document.querySelectorAll('[data-force]')].map((e) => e.getAttribute('data-force')))] } : null };
 }
-const kindOf = (x) => (/tabulator/i.test(x.files) ? 'vendor' : x.cross ? 'cross-component' : x.variant ? (x.same ? 'variant-repeat' : 'state-variant') : x.same ? 'redundant' : 'order-decided');
+const kindOf = (x) => (x.cross ? 'cross-component' : x.variant ? (x.same ? 'variant-repeat' : 'state-variant') : x.same ? 'redundant' : 'order-decided');
 
 module.exports = { audit };
 if (require.main === module) (async () => {

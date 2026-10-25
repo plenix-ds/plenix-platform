@@ -126,7 +126,7 @@ export function WordCloud({ title, description, words = [], layout = 'spiral', g
   });
 
   const table = {
-    columns: [{ title: t.word, field: 'w', kind: 'name', rowLabel: true }].concat(groups ? [{ title: t.group, field: 'g', kind: 'name' }] : [], [{ title: vLabel, field: 'v', kind: 'data', hozAlign: 'right' }]),
+    columns: [{ title: t.word, field: 'w', kind: 'name', rowLabel: true }].concat(groups ? [{ title: t.group, field: 'g', kind: 'name' }] : [], [{ title: vLabel, field: 'v', kind: 'data', align: 'right' }]),
     data: sorted.map((w, i) => ({ id: i + 1, w: w.text, g: groups && gIndex(w.group) >= 0 ? groups[gIndex(w.group)].label : '', v: fmt(w.value) })),
   };
   const legendNode = groups && groups.length ? <ChartLegend items={groups.map((g, i) => ({ id: g.id, label: g.label, color: seriesColor(i) }))} /> : null;

@@ -2864,7 +2864,7 @@
     "horizontal",
     "sticky headers"
    ],
-   "note": "hooks/useVirtualizer.js; DataGrid keeps Tabulator; VirtualList and file grids use this",
+   "note": "hooks/useVirtualizer.js; DataGrid uses TanStack Virtual; VirtualList and file grids use this",
    "leaves": [
     "interaction/Virtualization",
     "implementation/Virtualization (duplicate)"
@@ -22865,7 +22865,7 @@
     "horizontal",
     "sticky headers"
    ],
-   "note": "hooks/useVirtualizer.js; DataGrid keeps Tabulator; VirtualList and file grids use this",
+   "note": "hooks/useVirtualizer.js; DataGrid uses TanStack Virtual; VirtualList and file grids use this",
    "wave": 1,
    "lane": "A"
   },

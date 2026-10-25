@@ -9,7 +9,7 @@ Codex
 ### The task
 
 The owner wants to **try** a DataTable built on **TanStack Table** (headless: it holds the state, we draw every element
-in React) before deciding to replace Tabulator (2026-10-16): "make a new datatable using TanStack and try it; if it
+in React) before deciding to replace the legacy grid (2026-10-16): "make a new datatable using TanStack and try it; if it
 works, we implement it throughout; it uses exactly the same styling and capabilities as we have now".
 
 Build `DataTableNext` in its **own folder**, beside the current DataTable, without changing any existing table:
@@ -20,12 +20,12 @@ Build `DataTableNext` in its **own folder**, beside the current DataTable, witho
   `rowMenu`, `rowMenuButton`, `headerMenu`, `columnMenu`, `rowHeight`, `wrapHeaders`, `viewMenu`, `sort`, `groupBy`,
   `columnOrder`, `hiddenColumns`, `strings`, `empty`, `error`, `keyColumns`, `narrow`, `narrowAt`, `storageKey`, `mode`
   (fill, pages, load-more), editing, tree data, moving rows and columns, print, the floating scrollbars, and the rest).
-  Where today's API exposes Tabulator itself (`on.rowClick(e, row)` with `row.getData()`, `options`), give a small
+  Where today's API exposes the legacy grid itself (`on.rowClick(e, row)` with `row.getData()`, `options`), give a small
   compatible shim for what the applications actually use (grep them), and list what you could not shim.
-- **Same look.** Draw the same DOM structure with the **same class names** the current grid has (`.tabulator`,
-  `.tabulator-row`, `.tabulator-cell`, `.tabulator-header`, `.tabulator-col`, `.tabulator-group` …, and the
+- **Same look.** Draw the same DOM structure with the **same class names** the current grid has (`.legacy-grid`,
+  `.legacy-grid-row`, `.legacy-grid-cell`, `.legacy-grid-header`, `.legacy-grid-col`, `.legacy-grid-group` …, and the
   `plx-data-table__*` ones), so `data-table.css` and `data-table-steps.css` apply **unchanged**. Do not edit those
-  stylesheets for the trial; if a rule depends on something Tabulator computes, reproduce the class or attribute, not
+  stylesheets for the trial; if a rule depends on something the legacy grid computes, reproduce the class or attribute, not
   the rule. (Renaming to `plx-` classes is a later step, if the trial is adopted.)
 - **The owner's style rule.** No style attributes, except sizes JavaScript sets that equal a Plenix token and sit on the
   grid (row heights, the virtual scroller's spacer heights, column widths rounded to whole grid steps), and 1px lines

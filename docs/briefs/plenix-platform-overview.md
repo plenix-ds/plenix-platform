@@ -40,8 +40,7 @@ A factual description of how Plenix is built and styled today. It describes what
   - `@plenix-ds/angular` and `@plenix-ds/vue` (wrappers that render the React components);
   - `@plenix-ds/icons`, `@plenix-ds/figma`, `@plenix-ds/lint`, and an MCP server.
 - **Vendored engines:**
-  - Tables: TanStack Table and TanStack Virtual are bundled. Tabulator remains as `LegacyDataTable` for the existing
-    applications only.
+  - Tables: TanStack Table and TanStack Virtual are bundled; the DataGrid and Table run on them.
   - Rich text: Tiptap.
   - Documents: pdf.js.
 
@@ -153,7 +152,7 @@ screen of all 11 applications: every rule of every stylesheet was matched agains
   - 4,322 elements checked; 921 (21%) have at least one property set by two or more rules.
   - 348 distinct clashes (a property plus a pair of rules), once repeats across pages are merged.
   - 270 clashes have different values; 78 have the same value.
-  - 77 of the 348 come from the vendored Tabulator stylesheet (the legacy table).
+  - 77 of the 348 came from the retired legacy table stylesheet, removed since.
   - Per application: from 30 clashes (contacts, notes) to 156 (the asset manager); the asset manager has 243 elements
     with a clash, settings 155.
 - **The kinds of clash:**

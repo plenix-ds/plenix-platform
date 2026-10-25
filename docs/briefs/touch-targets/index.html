@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en" data-plx-mode="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Small targets · Plenix review</title>
+<!-- Owner review for #217: what the targets test flags (column resize handles, header menu chevrons, the nav pane
+     splitter), how big they are today, and the three options. Pictures of the real pages; outlines drawn for this page. -->
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<link rel="stylesheet" href="../review.css">
+</head>
+<body class="rv-page">
+<main class="rv-doc">
+  <h1 class="rv-h1">Small targets: what #217 is about (column resize, header menu, nav pane splitter)</h1>
+  <p class="rv-lead">The DataGrid's look and behavior are settled (0.69). This is a separate check: the accessibility
+    rule that every pointer target is at least 24×24px (WCAG 2.2, 2.5.8), or 44×44px on touch, unless another control
+    of that size does the same thing. Three small targets fail it. They fail because the old grid engine marked them as
+    "has an equivalent", and that marker was lost when the engine was removed (87d58e1b).</p>
+  <ul class="rv-list">
+    <li><strong>Column resize handle:</strong> 8×28px, on each column's end edge.</li>
+    <li><strong>Header menu chevron:</strong> 14×14px, inside the options button (about 23×28px) that shows on hover.</li>
+    <li><strong>Nav pane splitter:</strong> 8px wide, the full height of the pane.</li>
+  </ul>
+  <p class="rv-lead">Red dashes = the hit area today. Green = a 24px (or 44px) hit area. The outlines are drawn on the
+    pictures only; nothing on screen changes in any option except that a bigger area reacts to the pointer.</p>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">1 · Column resize handles</h2>
+    <div class="rv-pair">
+      <figure class="rv-fig"><img src="resize-today.png" alt="Resize handles today: thin 8px strips at each column edge"><figcaption><span class="rv-tag">TODAY</span> · 8×28px at each column edge</figcaption></figure>
+      <figure class="rv-fig"><img src="resize-24.png" alt="Resize handles with 24px hit areas: they cover the edge of each title and the options button"><figcaption><span class="rv-tag">OPTION A</span> · 24px: the area runs into the options button and the next title</figcaption></figure>
+    </div>
+  </section>
+  <section class="rv-section">
+    <h2 class="rv-h2">2 · Header menu chevron</h2>
+    <div class="rv-grid">
+      <figure class="rv-fig"><img src="chevron-today.png" alt="The chevron's own box, 14px"><figcaption><span class="rv-tag">TODAY</span> · the chevron's own 14×14px box</figcaption></figure>
+      <figure class="rv-fig"><img src="chevron-button.png" alt="The options button around it, the full header height"><figcaption><span class="rv-tag">ITS BUTTON</span> · the options button, about 23×28px</figcaption></figure>
+      <figure class="rv-fig"><img src="chevron-24.png" alt="A 24px area around the chevron"><figcaption><span class="rv-tag">OPTION A</span> · 24×24px</figcaption></figure>
+    </div>
+  </section>
+  <section class="rv-section">
+    <h2 class="rv-h2">3 · Nav pane splitter</h2>
+    <div class="rv-grid">
+      <figure class="rv-fig"><img src="splitter-today.png" alt="The splitter today, 8px wide"><figcaption><span class="rv-tag">TODAY</span> · 8px wide</figcaption></figure>
+      <figure class="rv-fig"><img src="splitter-24.png" alt="A 24px wide hit area over the splitter line"><figcaption><span class="rv-tag">OPTION A</span> · 24px with a mouse</figcaption></figure>
+      <figure class="rv-fig"><img src="splitter-44.png" alt="A 44px wide hit area for touch"><figcaption><span class="rv-tag">OPTION A</span> · 44px on touch</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">The options</h2>
+    <ul class="rv-list">
+      <li><strong>A · A bigger invisible hit area.</strong> The line and icons look the same; a 24px area (44px on touch) reacts to the pointer. Good for the splitter. For resize handles it collides with the options button and the start of the next title, so near the edge a click could resize instead of sort.</li>
+      <li><strong>B · Mark them "has an equivalent" again.</strong> No change on screen or in behavior. Allowed by the rule when another full-size control does the same: the column menu's width and "Size to fit" items (resize), the whole options button and right-click (the chevron), and the nav pane's own toggle and arrow keys (the splitter). This is what the old engine did.</li>
+      <li><strong>C · Leave them.</strong> Nothing changes; the targets test keeps failing on every run and every PR.</li>
+    </ul>
+  </section>
+  <p class="rv-rec"><strong>Recommendation:</strong> B for the resize handles and the chevron (the menu already gives a
+    full-size way to do both; Windows Explorer, Excel and Google Sheets keep thin resize edges too); A for the nav pane
+    splitter (24px with a mouse, 44px on touch, as VS Code, Fluent and Material give their drag handles a larger invisible
+    area). Sources: WCAG 2.2 · 2.5.8 Target Size (Minimum) and its "Equivalent" exception; Material 3 · touch targets 48dp;
+    Apple HIG · 44pt hit targets.</p>
+</main>
+</body>
+</html>

@@ -75,7 +75,7 @@ if (require.main === module) {
   // the rule's own fixtures
   const fx = [['.a{padding-inline-start:var(--x)}', 0], ['.a{border-left-color:var(--x);border-right-color:var(--x)}', 0], ['.a{border-left-color:var(--x)}', 1],
     ['.a{margin-left:var(--x)}', 1], ['.a{text-align:left}', 1], ['.a{text-align:start}', 0], ['.a{float:right}', 1], ['.a{left:0}', 1],
-    ['.a{border-top-left-radius:var(--r);border-top-right-radius:var(--r)}', 0], ['.a{border-top-left-radius:var(--r)}', 1], ['.a{border-left-width:var(--a-border-left-width);border-right-width:var(--a-border-right-width)}', 0], ['.a .tabulator-col{padding-left:0}', 0]];
+    ['.a{border-top-left-radius:var(--r);border-top-right-radius:var(--r)}', 0], ['.a{border-top-left-radius:var(--r)}', 1], ['.a{border-left-width:var(--a-border-left-width);border-right-width:var(--a-border-right-width)}', 0], ['.a .b-col{padding-left:0}', 0]];
   fx.forEach(([src, n]) => { if (scan(src).length !== n) found.push('fixture: ' + src + ' gives ' + scan(src).length + ' finding(s), expected ' + n); });
   found.forEach((x) => console.log('FAIL ' + x));
   console.log(found.length ? '\n' + found.length + ' finding(s)' : 'LOGICAL_PROPERTIES_OK (' + files.length + ' files, ' + fx.length + ' fixtures)');

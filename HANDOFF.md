@@ -40,7 +40,7 @@ One design system and the suite of applications built on it, owned by one person
 - **Other sessions share this folder.** Commit only your own files; build generated files in a clean copy; never `git add -A`.
 - Proofs: prove only the pages you touch (`tests/clash-audit.js --check --pages …`, `tests/compare-styles.js`), log
   them in `tools/agent/proof-log.md`, never wait on them; the full suite (#58) only at the very end.
-- Commits: author "Coptic Collection" <frraphaelmaher@gmail.com>, trailer `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`. This machine has **no git identity**: pass `-c user.name=… -c user.email=…` or export `GIT_AUTHOR_*`/`GIT_COMMITTER_*`.
+- Commits: author "Coptic Collection" <frraphaelmaher@gmail.com>, trailer `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`. The global git identity is set to this author (owner, 2026-10-24).
 
 ## How to work
 

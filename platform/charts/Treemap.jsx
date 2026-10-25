@@ -93,7 +93,7 @@ export function Treemap({ title, description, data = [], variant, color, format,
   const pct = (n) => formatPercent(n, { decimals: n < 0.1 ? 1 : 0 });
   const keys = useChartPoints({ count: tiles.length, describe: (i) => (nested ? tiles[i].group.label + ', ' : '') + tiles[i].label + ': ' + fmt(tiles[i].value) + ', ' + pct(tiles[i].share) });
   const table = { columns: [].concat(nested ? [{ title: t.group, field: 'group', kind: 'name' }] : [], [{ title: t.item, field: 'label', kind: 'name', rowLabel: true },
-    { title: valueTitle || t.value, field: 'shown', kind: 'data', hozAlign: 'right' }, { title: t.share, field: 'share', kind: 'data', hozAlign: 'right' }]),
+    { title: valueTitle || t.value, field: 'shown', kind: 'data', align: 'right' }, { title: t.share, field: 'share', kind: 'data', align: 'right' }]),
     data: tiles.map((p, i) => ({ id: i + 1, group: p.group.label, label: p.label, shown: fmt(p.value), share: pct(p.share) })) };
   return (
       <ChartFrame interaction={keys.interaction} title={title} description={description} size={size} table={table} margin={{ top: 0, end: 0, bottom: 0, start: 0 }} className={cx('plx-treemap', 'plx-treemap--' + v, className)}>

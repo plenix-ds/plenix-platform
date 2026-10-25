@@ -52,7 +52,7 @@ export function RadarChart({ title, description, hideCaption, size = 'lg', axes 
   const side = Math.ceil((axes.reduce((n, a) => Math.max(n, String(a.label || '').length), 0) * CHAR + 8) / 4) * 4;
   const m = Object.assign({}, WEB_MARGIN, { start: side, end: side }, margin);
   const table = {
-    columns: [{ title: t.measure, field: 'measure', kind: 'name', rowLabel: true }].concat(list.map((s, si) => ({ title: s.label, field: 's' + si, kind: 'data', hozAlign: 'right' }))),
+    columns: [{ title: t.measure, field: 'measure', kind: 'name', rowLabel: true }].concat(list.map((s, si) => ({ title: s.label, field: 's' + si, kind: 'data', align: 'right' }))),
     data: axes.map((a, ai) => { const row = { id: ai + 1, measure: a.label }; list.forEach((s, si) => { row['s' + si] = fmt(valueOf(s, ai)); }); return row; })
   };
   const showLegend = legend === undefined ? list.length > 1 : !!legend;

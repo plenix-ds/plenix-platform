@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en" data-plx-mode="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Header titles · Plenix review</title>
+<!-- Owner review for PR #293: the real DataGrid header (the approved 0.69 design) with one title wrapping, before and after. -->
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<link rel="stylesheet" href="../review.css">
+</head>
+<body class="rv-page">
+<main class="rv-doc">
+  <h1 class="rv-h1">DataGrid header: short titles stay in the middle when another title wraps (PR #293)</h1>
+  <p class="rv-lead">Pictures of the real DataGrid on the design spec's Data grid page (Wrapped headers example), taken from
+    the code before and after the change. It is the approved 0.69 header design: silver header, gray lines, H3 hover, no sort
+    arrow. Nothing in that design changes.</p>
+  <ul class="rv-list">
+    <li>When a long title wraps to two lines ("Quantity on the shelf"), the header grows taller.</li>
+    <li>Before: the short titles (Item, Vendor, Kind, Status, Price, Notes) stayed at the top: <strong>2px above the middle</strong>.</li>
+    <li>After: every title sits in the middle of the header. Measured offset: 0px for every column, at both densities.</li>
+    <li>Headers where no title wraps look exactly the same as before.</li>
+  </ul>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">Compact</h2>
+    <div class="rv-pair">
+      <figure class="rv-fig"><img src="before-compact.png" alt="Before, Compact: short titles sit higher than the wrapped title's middle"><figcaption><span class="rv-tag">BEFORE</span> · short titles 2px high</figcaption></figure>
+      <figure class="rv-fig"><img src="after-compact.png" alt="After, Compact: all titles centered in the header"><figcaption><span class="rv-tag">AFTER</span> · every title in the middle</figcaption></figure>
+    </div>
+  </section>
+  <section class="rv-section">
+    <h2 class="rv-h2">Standard</h2>
+    <div class="rv-pair">
+      <figure class="rv-fig"><img src="before-standard.png" alt="Before, Standard: short titles sit high"><figcaption><span class="rv-tag">BEFORE</span> · short titles 2px high</figcaption></figure>
+      <figure class="rv-fig"><img src="after-standard.png" alt="After, Standard: all titles centered"><figcaption><span class="rv-tag">AFTER</span> · every title in the middle</figcaption></figure>
+    </div>
+  </section>
+  <p class="rv-rec">The change is one line in the DataGrid stylesheet: a header column's content fills its column's height,
+    so the title centers in the whole header. Measurements are in before.json and after.json beside this page; the pictures
+    are made by capture.js from the two versions of the code.</p>
+</main>
+</body>
+</html>

@@ -15,7 +15,7 @@ try{
  assert.deepEqual(names.slice().sort(),manifest.files.map(f=>f.path).concat('bundle-manifest.json').sort());checks++;
  for(const file of manifest.files){const actual=fs.readFileSync(path.join(temp,file.path));assert.equal(actual.length,file.bytes,file.path);assert.equal(sha(actual),file.sha256,file.path);assert.deepEqual(actual,fs.readFileSync(path.join(cdn,file.path)),file.path);checks+=3;}
  for(const file of ['plenix.esm.js','plenix.js','plenix.css','plenix.min.css','fonts.css','theme-boot.js','vendor/react.production.min.js','vendor/react-dom.production.min.js'])ok(names.includes(file),'required offline asset '+file);
- ok(names.some(n=>n.startsWith('vendor/tabulator/')),'DataGrid lazy engine bundled');ok(names.some(n=>n.startsWith('vendor/tiptap/')),'editor lazy engine bundled');ok(names.some(n=>n.startsWith('fonts/')),'fonts bundled');
+ ok(names.some(n=>n.startsWith('vendor/tiptap/')),'editor lazy engine bundled');ok(names.some(n=>n.startsWith('fonts/')),'fonts bundled');
  const fonts=fs.readFileSync(path.join(temp,'fonts.css'),'utf8');for(const match of fonts.matchAll(/url\(["']?([^"')]+)["']?\)/g)){ok(!/^(https?:|\/\/)/.test(match[1]),'local font URL');ok(fs.existsSync(path.resolve(temp,match[1])),'font URL resolves');}
  const versions=JSON.parse(fs.readFileSync(path.join(ROOT,'release/cdn/index.json'),'utf8'));assert.equal(versions.versions.find(v=>v.version===version).bundle,version+'/'+index.files.bundle);checks++;
  console.log('REDSAVE118_CDN_OK '+checks+' checks, '+manifest.files.length+' hashed runtime files');

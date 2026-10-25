@@ -133,7 +133,7 @@ export function SeriesChart({ kind = 'line', title, description, data = [], x = 
 
   const table = {
     columns: [{ title: xLabel || t.category, field: 'x', kind: type === 'band' ? 'name' : 'data', rowLabel: true }]
-      .concat(list.map((s, i) => ({ title: s.label, field: 's' + i, kind: 'data', hozAlign: 'right' }))),
+      .concat(list.map((s, i) => ({ title: s.label, field: 's' + i, kind: 'data', align: 'right' }))),
     data: data.map((row, c) => { const o = { id: c + 1, x: fmtX(xs[c]) }; list.forEach((s, i) => { const v = raw(i, c); o['s' + i] = v === null ? DASH : fmtV(v); }); return o; }),
   };
   const legendNode = legend === 'auto' ? (list.length > 1

@@ -61,8 +61,8 @@ export function FunnelChart({ title, description, data = [], orientation = 'vert
   const pct = (v) => (v === null ? '' : formatPercent(v, { decimals: 0 }));
   const keys = useChartPoints({ count: rows.length, describe: (i) => rows[i].label + ', ' + fmt(rows[i].value) + (rows[i].kept !== null ? ', ' + pct(rows[i].kept) + ' ' + t.kept.toLowerCase() : '') });
   const mark = color || seriesColor(0);
-  const table = { columns: [{ title: t.stage, field: 'label', kind: 'name', rowLabel: true }, { title: valueTitle || t.value, field: 'shown', kind: 'data', hozAlign: 'right' },
-    { title: t.kept, field: 'kept', kind: 'data', hozAlign: 'right' }, { title: t.ofFirst, field: 'share', kind: 'data', hozAlign: 'right' }],
+  const table = { columns: [{ title: t.stage, field: 'label', kind: 'name', rowLabel: true }, { title: valueTitle || t.value, field: 'shown', kind: 'data', align: 'right' },
+    { title: t.kept, field: 'kept', kind: 'data', align: 'right' }, { title: t.ofFirst, field: 'share', kind: 'data', align: 'right' }],
     data: rows.map((r) => ({ id: r.id, label: r.label, shown: fmt(r.value), kept: pct(r.kept), share: pct(r.share) })) };
   return (
       <ChartFrame interaction={keys.interaction} title={title} description={description} size={size} table={table} className={cx('plx-funnel', 'plx-funnel--' + o, className)}>

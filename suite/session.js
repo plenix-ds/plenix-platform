@@ -2,7 +2,7 @@
 // person: passed to SessionProvider by suite.jsx and dam/app/assets.jsx. The Platform itself ships no person's data
 // (RedSave P-37).
 export const SUITE_SESSION = {
-  account: { name: 'Raphael Maher', firstName: 'Raphael', lastName: 'Maher', email: 'raphael@lighthouseway.org' },
+  account: { name: 'Jordan Avery', firstName: 'Jordan', lastName: 'Avery', email: 'jordan.avery@example.com' },
   notifications: [
     { id: 1, text: 'Fr. Daniel uploaded 12 new assets to Liturgy', time: '5 min ago', unread: true },
     { id: 2, text: 'Maya Chen sent a message: Round 3 concepts — confirm Thursday?', time: '10:24 AM', unread: true },

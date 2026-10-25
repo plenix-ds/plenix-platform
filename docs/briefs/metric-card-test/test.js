@@ -39,7 +39,7 @@
       h(M, { type: 'week', icon: 'clock', title: 'Hours logged', context: 'This week', value: '35.5', unit: 'hrs', days: [7, 8, 9, 6, 5.5, 0, null] }),
       h(M, { type: 'week', week: 'marks', icon: 'calendar', title: 'Hours goal hit', context: 'This week · 9.5 hrs a day', value: '4', target: '7 days', days: [true, false, true, true, false, true, null] }),
       h(M, { type: 'month', icon: 'calendar', title: 'Days worked', context: 'October 2026', value: '11', target: '22 work days', month: { year: 2026, month: 10, levels: [2, 3, 2, 0, 2, 3, 1, 2, 2, 3, 0, 2, 1], today: 19 }, footer: 'Darker: more hours' }),
-      h(M, { type: 'table', icon: 'clock', title: 'Hours by project', context: 'This month', value: '128', unit: 'hrs', table: { columns: [{ title: 'Project', field: 'p', rowLabel: true }, { title: 'Hours', field: 'h', hozAlign: 'right', headerHozAlign: 'right' }], data: [{ id: 1, p: 'Kitchen renovation', h: '46' }, { id: 2, p: 'Brand refresh', h: '38' }, { id: 3, p: 'Q4 launch', h: '29' }] } })
+      h(M, { type: 'table', icon: 'clock', title: 'Hours by project', context: 'This month', value: '128', unit: 'hrs', table: { columns: [{ title: 'Project', field: 'p', rowLabel: true }, { title: 'Hours', field: 'h', align: 'right', headerAlign: 'right' }], data: [{ id: 1, p: 'Kitchen renovation', h: '46' }, { id: 2, p: 'Brand refresh', h: '38' }, { id: 3, p: 'Q4 launch', h: '29' }] } })
     ]),
     row('Layouts', [
       h(M, { layout: 'inline', icon: 'document', title: 'New cases', context: 'This month', value: '8' }),

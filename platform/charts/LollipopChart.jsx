@@ -59,7 +59,7 @@ export function LollipopChart({ title, description, data = [], orientation = 'ho
   const fmt = (v) => (typeof format === 'function' ? format(v) : formatNumber(v));
   const keys = useChartPoints({ count: rows.length, describe: (i) => rows[i].label + ', ' + fmt(rows[i].value) });
   const mark = color || seriesColor(0);
-  const table = { columns: [{ title: categoryTitle || t.category, field: 'label', kind: 'name', rowLabel: true }, { title: valueTitle || t.value, field: 'shown', kind: 'data', hozAlign: 'right' }],
+  const table = { columns: [{ title: categoryTitle || t.category, field: 'label', kind: 'name', rowLabel: true }, { title: valueTitle || t.value, field: 'shown', kind: 'data', align: 'right' }],
     data: rows.map((r) => ({ id: r.id, label: r.label, shown: fmt(r.value) })) };
   const lo = Math.min(0, ...rows.map((r) => r.value)), hi = Math.max(0, ...rows.map((r) => r.value));
   return (

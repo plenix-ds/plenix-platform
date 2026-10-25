@@ -87,9 +87,9 @@ export function GeoMap({ title, description, features, idKey = 'id', nameKey = '
   const [view, setView] = React.useState({ z: 1, cx: null, cy: null });
   const drag = React.useRef(null);
   const table = choropleth || !places.length
-    ? { columns: [{ title: t.region, field: 'name', kind: 'name', rowLabel: true }].concat(choropleth ? [{ title: valueTitle || t.value, field: 'shown', kind: 'data', hozAlign: 'right' }] : []),
+    ? { columns: [{ title: t.region, field: 'name', kind: 'name', rowLabel: true }].concat(choropleth ? [{ title: valueTitle || t.value, field: 'shown', kind: 'data', align: 'right' }] : []),
       data: regions.map((r, i) => ({ id: i + 1, name: r.name, shown: r.value === null ? t.noData : fmt(r.value) })) }
-    : { columns: [{ title: t.place, field: 'label', kind: 'name', rowLabel: true }, { title: t.latitude, field: 'lat', kind: 'data', hozAlign: 'right' }, { title: t.longitude, field: 'lon', kind: 'data', hozAlign: 'right' }],
+    : { columns: [{ title: t.place, field: 'label', kind: 'name', rowLabel: true }, { title: t.latitude, field: 'lat', kind: 'data', align: 'right' }, { title: t.longitude, field: 'lon', kind: 'data', align: 'right' }],
       data: places.map((m, i) => ({ id: i + 1, label: m.label, lat: formatNumber(m.lat, { decimals: 4 }), lon: formatNumber(m.lon, { decimals: 4 }) })) };
   // the legend of a choropleth: each step with the range of values it holds (the data font)
   const legend = choropleth && nums.length ? (

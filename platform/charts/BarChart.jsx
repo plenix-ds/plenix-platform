@@ -121,11 +121,11 @@ export function BarChart({ title, description, hideCaption, size, categories = [
 
   const rangeText = (b) => edgeFmt(b.x0) + '–' + edgeFmt(b.x1);
   const table = bins
-    ? { columns: [{ title: categoryLabel || t.range, field: 'range', kind: 'data', rowLabel: true }, { title: valueLabel || t.count, field: 'count', kind: 'data', hozAlign: 'right' }],
+    ? { columns: [{ title: categoryLabel || t.range, field: 'range', kind: 'data', rowLabel: true }, { title: valueLabel || t.count, field: 'count', kind: 'data', align: 'right' }],
       data: bins.map((b, i) => ({ id: i + 1, range: rangeText(b), count: fmt(b.count) })) }
     : { columns: [{ title: categoryLabel || t.category, field: 'category', kind: 'name', rowLabel: true }]
-      .concat(list.map((s, si) => ({ title: s.label, field: 's' + si, kind: 'data', hozAlign: 'right' })))
-      .concat(mode !== 'grouped' && list.length > 1 ? [{ title: t.total, field: 'total', kind: 'data', hozAlign: 'right' }] : []),
+      .concat(list.map((s, si) => ({ title: s.label, field: 's' + si, kind: 'data', align: 'right' })))
+      .concat(mode !== 'grouped' && list.length > 1 ? [{ title: t.total, field: 'total', kind: 'data', align: 'right' }] : []),
     data: cats.map((c, ci) => {
       const row = { id: ci + 1, category: String(c) };
       list.forEach((s, si) => { const v = val(si, ci); row['s' + si] = v === null ? '' : mode === 'percent' && totals[ci] ? fmt(v) + ' (' + formatPercent(Math.max(0, v) / totals[ci]) + ')' : fmt(v); });

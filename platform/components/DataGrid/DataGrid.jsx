@@ -37,7 +37,7 @@
          fits its content up to --plx-comp-data-grid-auto-max-width (360px; longer text ends in an ellipsis, the full
          text on hover) and the last such column takes the room left, so the grid fills its width; minWidth, maxWidth; frozen: pinned at the start; rowLabel: this and
          the columns before it are the row header (pinned and shaded)
-       hozAlign, headerHozAlign: "left" | "center" | "right"; headerSort: false turns sorting off; resizable: false
+       align, headerAlign: "left" | "center" | "right"; sortable: false turns sorting off; resizable: false
        editor: "input" | "number" (a Plenix input; double-click or Enter edits, Escape cancels); editable(record): which
          rows may edit; rowHandle: true makes the column the drag handle for moving rows
      selectable: the checkbox column (select all in its header); selected (keys) with onSelectionChange(keys,
@@ -68,7 +68,7 @@
      The page's view (the command bar drives it; each applies when it changes): filter(record), sort [{ field, dir }],
        groupBy (a field, or a list for nested groups), columnOrder, hiddenColumns; onAddToGroup(value, path): the add row
        at the end of each group
-     tree: rows nest (children in childrenField, default "_children"; the toggle in treeColumn; treeExpanded: start open)
+     tree: rows nest (children in childrenField, default "children"; the toggle in treeColumn; treeExpanded: start open)
      movableRows with onRowMove(records), movableColumns: drag, with the same moves in the menus
      rowHeight: "short" (the density's) | "medium" | "tall" | "extra-tall"; wrapHeaders; viewMenu: the grid's own view
        button (default false: the page's ViewMenu sets these)

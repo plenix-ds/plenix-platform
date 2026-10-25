@@ -10,7 +10,7 @@ Base: `e9782b790039f5cdaea852cfe016eca3ef4b387d`; production head: `aa32c09936c3
 | Theme fixture | Same missing `platform/index.js` in its temporary copy. |
 | DataTable behavior | Same undefined `.bind` at the original test's line 98. |
 | Labs | Identical TextField invalid-background token mismatch; FeatureCard, UserCard and PromptDialog pass. |
-| Pages | Same two Tabulator inline-style failures in Files and DAM settings; 212/214 checks pass on both. |
+| Pages | Same two the legacy grid inline-style failures in Files and DAM settings; 212/214 checks pass on both. |
 | Accessibility | Same five CodeBlock `aria-prohibited-attr` findings on the Card documentation route, using the original axe rules. |
 | Broad targets | Both exceed the 600s audit guard. Base stops in fine React implementation docs; head in fine bulk-selection docs. These scans are incomplete, not passes. CI itself reports a protocol timeout. |
 | Card-focused targets | Eight route/pointer comparisons: identical measured and covered counts, no added findings. Same five existing coarse-pointer MediaCard findings; all other cases have none. |

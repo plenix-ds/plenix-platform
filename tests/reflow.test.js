@@ -3,7 +3,7 @@
 //   page-scroll   the page itself scrolls sideways (the document is wider than the window)
 //   scroller      an area inside the page scrolls sideways (overflow-x auto or scroll, and wider content)
 //   cut-off       visible text or a control reaches past the window's edge where nothing scrolls to it (lost content)
-// Content that needs two dimensions is exempt, as WCAG allows: data grids (the DataGrid and Table, Tabulator), the
+// Content that needs two dimensions is exempt, as WCAG allows: data grids (the DataGrid and Table), the
 // calendar's time grid, maps and diagrams (svg, canvas), images and the image editor's canvas, preformatted code (the
 // CodeBlock), and the design system's specimen stages. Each exempt sideways scroller is listed under "exempt" so it stays visible in the report.
 // Known findings are kept in tests/baselines/reflow.json (page -> finding -> number of elements); the test fails only on a

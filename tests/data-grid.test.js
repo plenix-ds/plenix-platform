@@ -145,7 +145,7 @@ if (!ONLY && changed.wants({ units: ['components/DataGrid'] })) {
         check(drawn()===600,'native print includes every loaded record');
         window.dispatchEvent(new Event('afterprint'));await wait();
         check(drawn()>0&&drawn()<600,'native renderer restores its virtual window after print');
-        // Reveal the fixture before measuring a scroll: native Tabulator redraws once on first visibility.
+        // Reveal the fixture before measuring a scroll.
         host.scrollIntoView({block:'start'});await wait();await wait();
         const holder=host.querySelector('.plx-data-grid__grid-tableholder');holder.focus({preventScroll:true});holder.scrollTop=10000;await wait();await wait();
         check(document.activeElement===holder&&+host.querySelector('.plx-data-grid__grid-row').getAttribute('aria-rowindex')>2,'native scrolling retains focus and logical row positions '+JSON.stringify({active:document.activeElement?.className,scroll:holder.scrollTop,index:host.querySelector('.plx-data-grid__grid-row')?.getAttribute('aria-rowindex'),renderer:table.options.renderVertical}));
@@ -257,7 +257,7 @@ if (!ONLY && changed.wants({ units: ['components/DataGrid'] })) {
       // its boxes: avatars, badges, icons, checkboxes, buttons) has the same room above and below, within 1px, in the
       // header and the first rows, for every cell kind; in a Narrow list the key lines together, and the checkbox, the
       // handle and the actions each, sit in the middle of the row (horizontal alignment is not checked: it is unchanged)
-      const kindOf = (c) => (c.classList.contains('tabulator-row-header') ? 'select' : (Array.from(c.classList).find((x) => /__cell--(?!key|align|row-label)/.test(x)) || 'plain').replace(/^.*__cell--/, ''));
+      const kindOf = (c) => (c.classList.contains('plx-data-grid__grid-row-header') ? 'select' : (Array.from(c.classList).find((x) => /__cell--(?!key|align|row-label)/.test(x)) || 'plain').replace(/^.*__cell--/, ''));
       const contentBox = (els) => {
         let top = Infinity, bottom = -Infinity;
         const take = (r) => { if (r.width > 0 && r.height > 0) { top = Math.min(top, r.top); bottom = Math.max(bottom, r.bottom); } };

@@ -1,0 +1,2629 @@
+[
+ {
+  "id": "foundations/control-heights/1",
+  "title": "Which names do the control height roles use?",
+  "context": "Each control takes its height from a role. The tokens (and now the usage line) say inline, toolbar, standard, prominent, dialog and dialog-destructive; the question reports an older usage line with \"inline-action\" and \"page-action\". The only role class with \"-action\" is .plx-control-inline-action.",
+  "current": [
+   {
+    "where": "Control heights · Usage (rec.use[0])",
+    "text": "Size a control by its role (inline, toolbar, standard, prominent, dialog, dialog-destructive), never by a raw height.",
+    "conflict": true
+   },
+   {
+    "where": "Control heights · Anatomy (docs.anatomy[1])",
+    "text": "Height roles — inline, toolbar, standard, prominent, dialog, dialog-destructive (--plx-sys-control-height-*) (required)"
+   },
+   {
+    "where": "Control heights · Anatomy (docs.anatomy[2])",
+    "text": "Role classes — .plx-control-inline-action, -toolbar, -standard, -dialog set the minimum height (optional)",
+    "conflict": true
+   },
+   {
+    "where": "Usage line as reported in the question (paraphrase)",
+    "text": "inline-action, toolbar, standard, page-action, dialog",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Buttons at the sizes the roles resolve to",
+    "jsx": "h(P.Inline, null, h(P.Button, { size: '2xs' }, 'Inline'), h(P.Button, { size: 'xs' }, 'Toolbar'), h(P.Button, { size: 'sm' }, 'Standard'), h(P.Button, { size: 'md', variant: 'primary' }, 'Prominent'), h(P.Button, { size: 'lg' }, 'Dialog'))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Token names everywhere",
+    "text": "Use inline, toolbar, standard, prominent, dialog, dialog-destructive in all text. \"page-action\" is an old name for prominent. The class .plx-control-inline-action stays as a class name only.",
+    "render": {
+     "caption": "Role names as the tokens spell them",
+     "jsx": "h(P.Table, { label: \"Height roles\", columns: [{\"title\":\"Role\",\"field\":\"c0\",\"kind\":\"wrap\"},{\"title\":\"Token\",\"field\":\"c1\",\"kind\":\"wrap\"}], data: [{\"id\":0,\"c0\":\"inline\",\"c1\":\"--plx-sys-control-height-inline\"},{\"id\":1,\"c0\":\"toolbar\",\"c1\":\"--plx-sys-control-height-toolbar\"},{\"id\":2,\"c0\":\"standard\",\"c1\":\"--plx-sys-control-height-standard\"},{\"id\":3,\"c0\":\"prominent\",\"c1\":\"--plx-sys-control-height-prominent\"},{\"id\":4,\"c0\":\"dialog\",\"c1\":\"--plx-sys-control-height-dialog\"},{\"id\":5,\"c0\":\"dialog-destructive\",\"c1\":\"--plx-sys-control-height-dialog-destructive\"}] })"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Rename tokens to inline-action and page-action",
+    "text": "Keep the older words and rename the tokens and every consumer to match.",
+    "render": {
+     "caption": "The older names",
+     "jsx": "h(P.Inline, null, h(P.Button, { size: '2xs' }, 'inline-action'), h(P.Button, { size: 'md', variant: 'primary' }, 'page-action'))"
+    }
+   }
+  ],
+  "recommendation": "A. The tokens are the source of truth and the code already uses prominent, so the text follows them. Carbon and Fluent 2 also name sizes by one set of tokens and use those names in docs; two vocabularies for one scale confuse people.",
+  "sources": [
+   "Carbon · Button sizes: one named scale used in code and docs",
+   "Fluent 2 · Design tokens: one name per value",
+   "Plenix rule: tokens are JSON and named once"
+  ]
+ },
+ {
+  "id": "foundations/layers/1",
+  "title": "What is the stacking order of the layers?",
+  "context": "The layer tokens set the order: behind -1, base 0, raised 1, sticky 10, menu 100, overlay 1000, modal 1100, popover 1200, toast 1300, critical 9999. Both spec lists now give this order; the question reports an older usage list.",
+  "current": [
+   {
+    "where": "Layers · Usage (rec.use[0])",
+    "text": "One level per stacking purpose, lowest to highest: behind, base, raised, sticky, menu, overlay, modal, popover, toast, critical."
+   },
+   {
+    "where": "Layers · Anatomy (docs.anatomy[0])",
+    "text": "Levels — behind, base, raised, sticky, menu, overlay, modal, popover, toast, critical (--plx-sys-layer-*) (required)"
+   },
+   {
+    "where": "Usage list as reported in the question (paraphrase)",
+    "text": "base, raised, sticky, overlay, popover, menu, modal, toast, critical",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "The token values, lowest first",
+    "jsx": "h(P.Table, { label: \"Layer tokens\", columns: [{\"title\":\"Level\",\"field\":\"c0\",\"kind\":\"wrap\"},{\"title\":\"Value\",\"field\":\"c1\",\"kind\":\"wrap\"}], data: [{\"id\":0,\"c0\":\"behind\",\"c1\":\"-1\"},{\"id\":1,\"c0\":\"base\",\"c1\":\"0\"},{\"id\":2,\"c0\":\"raised\",\"c1\":\"1\"},{\"id\":3,\"c0\":\"sticky\",\"c1\":\"10\"},{\"id\":4,\"c0\":\"menu\",\"c1\":\"100\"},{\"id\":5,\"c0\":\"overlay\",\"c1\":\"1000\"},{\"id\":6,\"c0\":\"modal\",\"c1\":\"1100\"},{\"id\":7,\"c0\":\"popover\",\"c1\":\"1200\"},{\"id\":8,\"c0\":\"toast\",\"c1\":\"1300\"},{\"id\":9,\"c0\":\"critical\",\"c1\":\"9999\"}] })"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "The token order (behind … critical)",
+    "text": "Both lists keep the order of the tokens: a popover opened inside a dialog sits above it, toasts above all.",
+    "render": {
+     "caption": "A dialog with a toast above it",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h(P.Card, null, h(P.Text, { variant: 'heading' }, 'Dialog (modal 1100)'), h(P.Text, { variant: 'secondary' }, 'A popover inside opens at 1200')), h(P.Notice, { tone: 'success' }, 'Toast (1300): Saved'))"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "The older usage order",
+    "text": "Menus above overlays and popovers below modals. A popover opened from a dialog would sit behind it.",
+    "render": {
+     "caption": "Popover hidden behind the dialog",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h(P.Notice, { tone: 'warning' }, 'Popover (below modal): hidden'), h(P.Card, null, h(P.Text, { variant: 'heading' }, 'Dialog')))"
+    }
+   }
+  ],
+  "recommendation": "A. It matches the tokens and the rule that anything opened from a layer sits above it. Material 3 and Fluent 2 put transient surfaces (menus, popovers, snackbars/toasts) above the dialog that opens them.",
+  "sources": [
+   "Material 3 · Elevation and layering",
+   "Fluent 2 · Layering: z-order of surfaces",
+   "WAI-ARIA APG · Dialog (modal) pattern"
+  ]
+ },
+ {
+  "id": "foundations/foundations-heading-hierarchy/1",
+  "title": "Should Heading hierarchy have its own write-up?",
+  "context": "The page is about the order of headings, but its written sections come from SectionHeading, a small uppercase group label. Its purpose line is already about heading order.",
+  "current": [
+   {
+    "where": "Heading hierarchy · Purpose (spec-parts.js)",
+    "text": "Headings give a page an outline: one page title, then sections and subsections in order, never skipping a level, so people and screen readers can scan the page."
+   },
+   {
+    "where": "SectionHeading.jsx (shown as the write-up)",
+    "text": "A small uppercase heading that names a group (navigation sections, panel sections, settings), sized by its level.",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "A page outline with real headings",
+    "jsx": "h(P.Stack, { gap: 'sm' }, h(P.Text, { variant: 'title', as: 'h1' }, 'Project settings'), h(P.SectionHeading, { level: 2 }, 'Appearance'), h(P.SectionHeading, { level: 3 }, 'Theme'), h(P.SectionHeading, { level: 3 }, 'Density'))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Own short write-up, links to SectionHeading",
+    "text": "The page explains the outline rules (one h1, no skipped levels) and points to SectionHeading for the component.",
+    "render": {
+     "caption": "Outline first, component second",
+     "jsx": "h(P.Stack, { gap: 'xs' }, h(P.Text, null, 'One level 1 title, then levels in order.'), h(P.Link, { href: '#' }, 'SectionHeading component'))"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Keep the SectionHeading write-up",
+    "text": "The page keeps describing the group label component.",
+    "render": {
+     "caption": "The group label it describes now",
+     "jsx": "h(P.SectionHeading, { collapsible: true, expanded: true, onToggle: function(){} }, 'Recent')"
+    }
+   }
+  ],
+  "recommendation": "A. Heading order is a foundation rule, separate from one component. GOV.UK and WCAG treat heading structure as its own topic (1.3.1, 2.4.6) and link to the heading styles.",
+  "sources": [
+   "WCAG 2.2 · 1.3.1 Info and relationships, 2.4.6 Headings and labels",
+   "GOV.UK Design System · Headings",
+   "Carbon · Typography: productive heading sets"
+  ]
+ },
+ {
+  "id": "foundations/foundations-heading-hierarchy/2",
+  "title": "Is the default section label 11px or 10px?",
+  "context": "SectionHeading code says level 3 (the default) is 11px and level 4 is 10px. The only \"10px bold\" text found in the spec now belongs to Badge.",
+  "current": [
+   {
+    "where": "Heading hierarchy · Overview (spec-parts.js)",
+    "text": "level 2 is 13px, level 3 (the default) 11px and level 4 10px, so a higher level is always larger."
+   },
+   {
+    "where": "SectionHeading.jsx (the code)",
+    "text": "2 (13px) is larger than 3 (11px), which is larger than 4 (10px); a plain label and levels 5 and 6 are 10px"
+   },
+   {
+    "where": "Contrast note as reported in the question (paraphrase)",
+    "text": "the label is \"10px bold\"",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Levels 2, 3 and 4 as drawn",
+    "jsx": "h(P.Stack, { gap: 'xs' }, h(P.SectionHeading, { level: 2 }, 'Level 2 · 13px'), h(P.SectionHeading, { level: 3 }, 'Level 3 · 11px (default)'), h(P.SectionHeading, { level: 4 }, 'Level 4 · 10px'))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "11px default; fix the contrast note",
+    "text": "The contrast note says the default label is 11px; 10px is level 4 and plain labels.",
+    "render": {
+     "caption": "Default label",
+     "jsx": "h(P.SectionHeading, null, 'Default · 11px')"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "10px default",
+    "text": "Change the component so level 3 is 10px, matching the note.",
+    "render": {
+     "caption": "Level 4 look for everything",
+     "jsx": "h(P.SectionHeading, { level: 4 }, 'Default · 10px')"
+    }
+   }
+  ],
+  "recommendation": "A. The code draws 11px; the note is the stray text. Material 3 sets its smallest label role at 11 and Fluent 2 keeps 10px for rare captions only.",
+  "sources": [
+   "Material 3 · Type scale: label small 11",
+   "Fluent 2 · Typography ramp",
+   "WCAG 2.2 · 1.4.4 Resize text"
+  ]
+ },
+ {
+  "id": "foundations/foundations-font-size/1",
+  "title": "Is the font-size scale in rem or px?",
+  "context": "The tokens are in rem so text follows the person's font setting; the numbers 09 to 20 only say the size at the default root. The shared parts list now says rem.",
+  "current": [
+   {
+    "where": "Font size · Overview (spec-parts.js)",
+    "text": "Font sizes come from one scale in rem (--plx-ref-font-size-09 to -20), so text follows the person’s font settings."
+   },
+   {
+    "where": "Typography · Anatomy (inventory-docs.js)",
+    "text": "Size scale — --plx-ref-font-size-09 to -20, in rem so text follows the person's font size (required)"
+   },
+   {
+    "where": "Parts list as reported in the question (paraphrase)",
+    "text": "--plx-ref-font-size-09 to -20 in px",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "The Text variants on the scale",
+    "jsx": "h(P.Stack, { gap: 'xs' }, h(P.Text, { variant: 'title', as: 'div' }, 'Title 20'), h(P.Text, { variant: 'lead', as: 'div' }, 'Lead 15'), h(P.Text, { as: 'div' }, 'Body 13'), h(P.Text, { variant: 'caption', as: 'div' }, 'Caption 11'))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "rem (names give the px at default)",
+    "text": "Every page says rem; the number in the name is the px size at the default root.",
+    "render": {
+     "caption": "Text in rem",
+     "jsx": "h(P.Text, null, 'Body text in rem grows when the person sets a larger font.')"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "px",
+    "text": "Text stays fixed regardless of the person's font setting.",
+    "render": {
+     "caption": "Fixed text",
+     "jsx": "h(P.Text, { variant: 'secondary' }, 'Body text in px ignores the browser font setting.')"
+    }
+   }
+  ],
+  "recommendation": "A. WCAG 1.4.4 asks that text resize to 200%, and Material 3, Carbon and GOV.UK define type in scalable units for that reason. The tokens already use rem.",
+  "sources": [
+   "WCAG 2.2 · 1.4.4 Resize text",
+   "Carbon · Type tokens in rem",
+   "GOV.UK · Type scale in rem"
+  ]
+ },
+ {
+  "id": "foundations/foundations-font-weight/1",
+  "title": "What does the font-weight rule mean?",
+  "context": "The reported sentence is no longer on the page; the overview now lists what each weight is for. The question is which meaning to keep if a rule sentence returns.",
+  "current": [
+   {
+    "where": "Font weight · Overview (spec-parts.js)",
+    "text": "Four weights: regular (400) for body text, medium (500) for the names of rows, semibold (600) for labels, headings and buttons, bold (700) for page titles and the eyebrow."
+   },
+   {
+    "where": "Font weight · Avoid (spec-parts.js)",
+    "text": "Bold to make body text stand out: use a heading or strong"
+   },
+   {
+    "where": "Sentence as reported in the question (paraphrase)",
+    "text": "Weight shows the role of the text, never a color or a size change",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "The weights by role",
+    "jsx": "h(P.Stack, { gap: 'xs' }, h(P.Text, { as: 'div' }, 'Body · regular'), h(P.Text, { variant: 'strong', as: 'div' }, 'Strong · semibold'), h(P.Text, { variant: 'label', as: 'div' }, 'Label · semibold'), h(P.Text, { variant: 'title', as: 'div' }, 'Title · bold'))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Weight comes with the role",
+    "text": "Say it plainly: each Text role brings its weight; never change weight alone to stand in for a role.",
+    "render": {
+     "caption": "Role, not ad-hoc bold",
+     "jsx": "h(P.Stack, { gap: 'xs' }, h(P.Text, { variant: 'heading', as: 'div' }, 'Section heading'), h(P.Text, null, 'Body text under it'))"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Weight replaces color and size",
+    "text": "Emphasis is shown only by weight, never by color or size.",
+    "render": {
+     "caption": "Emphasis by weight only",
+     "jsx": "h(P.Text, null, 'Body with ', h(P.Text, { variant: 'strong' }, 'strong words'), ' inside')"
+    }
+   }
+  ],
+  "recommendation": "A. Material 3, Carbon and Fluent 2 tie weight to type roles (size, weight and line height together), not to free emphasis. It matches the current overview.",
+  "sources": [
+   "Material 3 · Type roles",
+   "Carbon · Type sets",
+   "Fluent 2 · Type ramp"
+  ]
+ },
+ {
+  "id": "foundations/foundations-sizing-scale/1",
+  "title": "Can a size prop be a number, or must it name a token?",
+  "context": "Size props such as width=\"200px\" look like numbers but map to the size token of the same name; anything else snaps to the nearest token.",
+  "current": [
+   {
+    "where": "Sizing scale · Overview (spec-parts.js)",
+    "text": "Components name a size token; a number in a stylesheet or a prop snaps to the nearest one.",
+    "conflict": true
+   },
+   {
+    "where": "Sizing scale · Use (spec-parts.js)",
+    "text": "Named sizes in props (Avatar size=\"md\", Skeleton width=\"200px\")"
+   },
+   {
+    "where": "Sizing scale · Avoid (spec-parts.js)",
+    "text": "A raw number in a component: a size prop names a size token, such as width=\"200px\" for --plx-ref-size-200px",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Skeleton width=\"200px\" (the token --plx-ref-size-200px)",
+    "jsx": "h(P.Skeleton, { width: '200px' })"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Props name a step; off-scale snaps",
+    "text": "width=\"200px\" is the name of a step. A value off the scale is snapped (and warned in development).",
+    "render": {
+     "caption": "Steps by name",
+     "jsx": "h(P.Stack, { gap: 'xs' }, h(P.Skeleton, { width: '120px' }), h(P.Skeleton, { width: '200px' }))"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Only token names in props",
+    "text": "Props must say --plx-ref-size-200px; \"200px\" is refused.",
+    "render": {
+     "caption": "Long token name in the prop",
+     "jsx": "h(P.Skeleton, { width: '--plx-ref-size-200px' })"
+    }
+   }
+  ],
+  "recommendation": "A. It keeps props short and on the grid. Material 3 and Carbon publish a fixed size scale and use named steps.",
+  "sources": [
+   "Carbon · Spacing and sizing scale",
+   "Material 3 · Layout spacing (4dp grid)",
+   "Plenix rule: nothing hard-coded, 4px grid"
+  ]
+ },
+ {
+  "id": "foundations/icon/1",
+  "title": "When are the optical size 24 icon files used?",
+  "context": "The overview now says the 24 files are for the app header, Comfortable density and the large sizes, matching the Large icon page. \"Touch\" no longer appears.",
+  "current": [
+   {
+    "where": "Icon · Overview (inventory.js)",
+    "text": "Material Symbols Sharp, weight 300, optical size 20 (24 in the app header, in Comfortable density and for the large sizes)"
+   },
+   {
+    "where": "Large icon · Use (inventory.js)",
+    "text": "The application header and Comfortable density"
+   },
+   {
+    "where": "Overview as reported in the question (paraphrase)",
+    "text": "optional \"for the header and touch\"",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "md 20px and lg 24px",
+    "jsx": "h(P.Inline, null, h(P.Icon, { name: 'folder', size: 'md' }), h(P.Icon, { name: 'folder', size: 'lg' }))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Header and Comfortable density",
+    "text": "Touch raises targets to 44px but keeps the icon at 20; the 24 files are for the header, Comfortable and lg.",
+    "render": {
+     "caption": "Comfortable button with lg icon",
+     "jsx": "h(P.Button, { size: 'lg', icon: 'folder' }, 'Open')"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Also on touch",
+    "text": "Every icon on touch uses the 24 files.",
+    "render": {
+     "caption": "Touch-sized icon",
+     "jsx": "h(P.Button, { size: 'lg', icon: 'folder', iconOnly: true, label: 'Open' })"
+    }
+   }
+  ],
+  "recommendation": "A. It matches the code. Apple HIG and Material 3 grow the target for touch (44pt / 48dp), not the glyph.",
+  "sources": [
+   "Apple HIG · Layout: 44pt targets",
+   "Material 3 · Icons: 24dp default, target 48dp",
+   "Material Symbols · Optical size axis"
+  ]
+ },
+ {
+  "id": "foundations/foundations-semantic-tokens/1",
+  "title": "Should child pages keep the parent page's write-up?",
+  "context": "Fifteen child pages (tokens, typography, spacing) show their parent's purpose and write-up. Each now has its own one-line purpose in spec-parts.js, but the long write-up is still the parent's.",
+  "current": [
+   {
+    "where": "Design tokens · Purpose (inventory-docs.js)",
+    "text": "Design tokens give every visual value one name, so the whole product stays consistent and a value can change in one place.",
+    "conflict": true
+   },
+   {
+    "where": "Semantic tokens · Purpose (spec-parts.js)",
+    "text": "Semantic tokens name a value by its job, such as the text color or a card’s border, so a theme can change the value without touching the screens."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Two pages, same write-up today",
+    "jsx": "h(P.Columns, null, h(P.Card, null, h(P.Text, { variant: 'heading' }, 'Design tokens'), h(P.Text, { variant: 'secondary' }, 'Design tokens give every visual value one name…')), h(P.Card, null, h(P.Text, { variant: 'heading' }, 'Semantic tokens'), h(P.Text, { variant: 'secondary' }, 'Design tokens give every visual value one name…')))",
+    "width": "840"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Own short purpose, link to the parent",
+    "text": "Each child shows its own purpose and overview, then links to the parent for the shared parts list.",
+    "render": {
+     "caption": "Own purpose plus link",
+     "jsx": "h(P.Card, null, h(P.Text, { variant: 'heading' }, 'Semantic tokens'), h(P.Text, null, 'Semantic tokens name a value by its job.'), h(P.Link, { href: '#', variant: 'standalone' }, 'All design tokens'))"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Keep the parent text",
+    "text": "Child pages repeat the parent word for word.",
+    "render": {
+     "caption": "Repeated text",
+     "jsx": "h(P.Card, null, h(P.Text, { variant: 'heading' }, 'Semantic tokens'), h(P.Text, { variant: 'secondary' }, 'Design tokens give every visual value one name…'))"
+    }
+   }
+  ],
+  "recommendation": "A. Carbon, Material 3 and Atlassian give each foundation subpage its own intro and link up for shared detail; repeated text hides what is different about the page.",
+  "sources": [
+   "Carbon · Tokens subpages",
+   "Material 3 · Foundations: each topic has its own overview",
+   "Atlassian · Design tokens pages"
+  ]
+ },
+ {
+  "id": "foundations/foundations-content-widths/1",
+  "title": "Should Content widths get its own write-up?",
+  "context": "The Content widths page shows another page's purpose and write-up. Its own overview in spec-parts.js already describes it.",
+  "current": [
+   {
+    "where": "Spacing · Purpose (inventory-docs.js)",
+    "text": "Spacing shows how things relate: related items sit closer than unrelated ones. A 4px base keeps every gap, inset and position on one grid.",
+    "conflict": true
+   },
+   {
+    "where": "Content widths · Overview (spec-parts.js)",
+    "text": "Content widths keep lines readable and forms compact. The reference maxima are 760px (reading), 960px (forms), 1200, 1600 and 2600px."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "What the page shows today",
+    "jsx": "h(P.Card, null, h(P.Text, { variant: 'heading' }, \"Content widths\"), h(P.Text, { variant: 'secondary' }, \"Spacing shows how things relate: related items sit closer th…\"))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Show the Layout write-up",
+    "text": "Its own purpose (\"cap how wide text and page content can grow\") and the Layout write-up, which covers widths.",
+    "render": {
+     "caption": "Content widths with its own text and a link",
+     "jsx": "h(P.Card, null, h(P.Text, { variant: 'heading' }, \"Content widths\"), h(P.Text, null, \"Content widths keep lines readable and forms compact. The reference maxima are 760px (read…\"), h(P.Link, { href: '#', variant: 'standalone' }, \"Layout\"))"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Keep the current write-up",
+    "text": "The page keeps the unrelated write-up.",
+    "render": {
+     "caption": "Unrelated text",
+     "jsx": "h(P.Text, { variant: 'secondary' }, \"Spacing shows how things relate: related items sit closer than unrelated ones. A…\")"
+    }
+   }
+  ],
+  "recommendation": "A. Each topic page should describe its own subject; Material 3, Carbon and GOV.UK give each foundation page its own intro and link to related ones.",
+  "sources": [
+   "Material 3 · Layout: content width",
+   "GOV.UK · Layout: max width and line length",
+   "WCAG 2.2 · 1.4.8 Visual presentation (line length)"
+  ]
+ },
+ {
+  "id": "foundations/foundations-responsive-sizing/1",
+  "title": "Should Responsive sizing get its own write-up?",
+  "context": "The Responsive sizing page shows another page's purpose and write-up. Its own overview in spec-parts.js already describes it.",
+  "current": [
+   {
+    "where": "Spacing · Purpose (inventory-docs.js)",
+    "text": "Spacing shows how things relate: related items sit closer than unrelated ones. A 4px base keeps every gap, inset and position on one grid.",
+    "conflict": true
+   },
+   {
+    "where": "Responsive sizing · Overview (spec-parts.js)",
+    "text": "Sizes respond in three ways: spacing and control sizes are in rem, so they follow the person’s font size; density picks a different step for controls, rows and panels; and touch and mobile raise every target to 44px."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "What the page shows today",
+    "jsx": "h(P.Card, null, h(P.Text, { variant: 'heading' }, \"Responsive sizing\"), h(P.Text, { variant: 'secondary' }, \"Spacing shows how things relate: related items sit closer th…\"))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Show the Density write-up",
+    "text": "Its own purpose and the Density write-up, which covers how sizes change with density and touch.",
+    "render": {
+     "caption": "Responsive sizing with its own text and a link",
+     "jsx": "h(P.Card, null, h(P.Text, { variant: 'heading' }, \"Responsive sizing\"), h(P.Text, null, \"Sizes respond in three ways: spacing and control sizes are in rem, so they follow the pers…\"), h(P.Link, { href: '#', variant: 'standalone' }, \"Density\"))"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Keep the current write-up",
+    "text": "The page keeps the unrelated write-up.",
+    "render": {
+     "caption": "Unrelated text",
+     "jsx": "h(P.Text, { variant: 'secondary' }, \"Spacing shows how things relate: related items sit closer than unrelated ones. A…\")"
+    }
+   }
+  ],
+  "recommendation": "A. Each topic page should describe its own subject; Material 3, Carbon and GOV.UK give each foundation page its own intro and link to related ones.",
+  "sources": [
+   "Material 3 · Density",
+   "Fluent 2 · Size and density",
+   "Apple HIG · Layout: touch targets"
+  ]
+ },
+ {
+  "id": "foundations/foundations-icon-alignment/1",
+  "title": "Should Icon alignment show the Icons write-up?",
+  "context": "The Icon alignment page shows another page's purpose and write-up. Its own overview in spec-parts.js already describes it.",
+  "current": [
+   {
+    "where": "Spacing · Purpose (inventory-docs.js)",
+    "text": "Spacing shows how things relate: related items sit closer than unrelated ones. A 4px base keeps every gap, inset and position on one grid.",
+    "conflict": true
+   },
+   {
+    "where": "Icon alignment · Overview (spec-parts.js)",
+    "text": "Icons sit on the 4px grid. Each control role has its grid icon (--plx-sys-control-icon-<role>), and the icon box is centered in the control’s height; the icon files keep their own padding."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "What the page shows today",
+    "jsx": "h(P.Card, null, h(P.Text, { variant: 'heading' }, \"Icon alignment\"), h(P.Text, { variant: 'secondary' }, \"Spacing shows how things relate: related items sit closer th…\"))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Show the Icon write-up",
+    "text": "Show the Icon write-up, like Icon sizes does.",
+    "render": {
+     "caption": "Icon alignment with its own text and a link",
+     "jsx": "h(P.Card, null, h(P.Text, { variant: 'heading' }, \"Icon alignment\"), h(P.Text, null, \"Icons sit on the 4px grid. Each control role has its grid icon (--plx-sys-control-icon-<ro…\"), h(P.Link, { href: '#', variant: 'standalone' }, \"Icon\"))"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Keep the current write-up",
+    "text": "The page keeps the unrelated write-up.",
+    "render": {
+     "caption": "Unrelated text",
+     "jsx": "h(P.Text, { variant: 'secondary' }, \"Spacing shows how things relate: related items sit closer than unrelated ones. A…\")"
+    }
+   }
+  ],
+  "recommendation": "A. Each topic page should describe its own subject; Material 3, Carbon and GOV.UK give each foundation page its own intro and link to related ones.",
+  "sources": [
+   "Material 3 · Icons: alignment and keylines",
+   "Carbon · Iconography: alignment",
+   "Fluent 2 · Iconography"
+  ]
+ },
+ {
+  "id": "foundations/foundations-surface-fills/1",
+  "title": "Should Surface fills show the Surface colors write-up?",
+  "context": "The Surface fills page shows another page's purpose and write-up. Its own overview in spec-parts.js already describes it.",
+  "current": [
+   {
+    "where": "Shadows · Purpose (inventory-docs.js)",
+    "text": "Shadows show that a surface sits above the page, such as a raised card or a dialog. They tell people what is on top and what they can interact with now.",
+    "conflict": true
+   },
+   {
+    "where": "Surface fills · Overview (spec-parts.js)",
+    "text": "Surface fills are theme roles for each kind of plane: the canvas behind the page, the default surface of panels and fields, raised and overlay surfaces, the sunken fill of read-only fields"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "What the page shows today",
+    "jsx": "h(P.Card, null, h(P.Text, { variant: 'heading' }, \"Surface fills\"), h(P.Text, { variant: 'secondary' }, \"Shadows show that a surface sits above the page, such as a r…\"))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Show the Surface colors write-up",
+    "text": "Use the Surface colors write-up. The record already carries docsFrom: 'color-surface'.",
+    "render": {
+     "caption": "Surface fills with its own text and a link",
+     "jsx": "h(P.Card, null, h(P.Text, { variant: 'heading' }, \"Surface fills\"), h(P.Text, null, \"Surface fills are theme roles for each kind of plane: the canvas behind the page, the defa…\"), h(P.Link, { href: '#', variant: 'standalone' }, \"Surface colors\"))"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Keep the current write-up",
+    "text": "The page keeps the unrelated write-up.",
+    "render": {
+     "caption": "Unrelated text",
+     "jsx": "h(P.Text, { variant: 'secondary' }, \"Shadows show that a surface sits above the page, such as a raised card or a dial…\")"
+    }
+   }
+  ],
+  "recommendation": "A. Each topic page should describe its own subject; Material 3, Carbon and GOV.UK give each foundation page its own intro and link to related ones.",
+  "sources": [
+   "Material 3 · Color roles: surface",
+   "Fluent 2 · Color: neutral backgrounds",
+   "Carbon · Color: layer tokens"
+  ]
+ },
+ {
+  "id": "foundations/foundations-responsive-sizing/2",
+  "title": "Does the column count change with size?",
+  "context": "The grid changes its columns with window width (4, 8, 12, 16) but not with font size or density. The overview now says so.",
+  "current": [
+   {
+    "where": "Responsive sizing · Overview (spec-parts.js)",
+    "text": "The column count changes only with the screen width, never with font size or density; the order of headings never changes."
+   },
+   {
+    "where": "Sentence as reported in the question (paraphrase)",
+    "text": "Columns and the hierarchy never change with size",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Columns at a narrow width",
+    "jsx": "h(P.Columns, null, h(P.Card, null, 'One'), h(P.Card, null, 'Two'), h(P.Card, null, 'Three'))",
+    "width": "360"
+   },
+   {
+    "caption": "Columns at a wide width",
+    "jsx": "h(P.Columns, null, h(P.Card, null, 'One'), h(P.Card, null, 'Two'), h(P.Card, null, 'Three'))",
+    "width": "1200"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Width only, never density or font size",
+    "text": "Keep the current wording: columns follow width; density and font size never change them.",
+    "render": {
+     "caption": "Wide window",
+     "jsx": "h(P.Columns, null, h(P.Card, null, 'A'), h(P.Card, null, 'B'), h(P.Card, null, 'C'), h(P.Card, null, 'D'))",
+     "width": "840"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Never change",
+    "text": "Columns stay fixed at every width (contradicts Breakpoints).",
+    "render": {
+     "caption": "Fixed columns at phone width",
+     "jsx": "h(P.Columns, null, h(P.Card, null, 'A'), h(P.Card, null, 'B'), h(P.Card, null, 'C'), h(P.Card, null, 'D'))",
+     "width": "360"
+    }
+   }
+  ],
+  "recommendation": "A. Material 3 (window size classes) and Carbon (2x grid: 4/8/16 columns) change columns only with width.",
+  "sources": [
+   "Material 3 · Window size classes",
+   "Carbon · 2x Grid breakpoints",
+   "Fluent 2 · Layout: responsive grid"
+  ],
+  "settled": true
+ },
+ {
+  "id": "foundations/foundations-border-style/1",
+  "title": "Which border-style token names are right?",
+  "context": "Both exist: components use the sys tokens, which point to the ref tokens. The overview now says so.",
+  "current": [
+   {
+    "where": "Border style · Overview (spec-parts.js)",
+    "text": "The styles are tokens: components use --plx-sys-border-style-solid and -dashed, which point to --plx-ref-border-style-*."
+   },
+   {
+    "where": "Parts list as reported in the question (paraphrase)",
+    "text": "--plx-ref-border-style-*",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Solid frame and dashed drop zone",
+    "jsx": "h(P.Stack, { gap: 'sm' }, h(P.Card, null, 'Solid border'), h(P.DropZone, { label: 'Drop files here' }))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Both: sys used, ref underneath",
+    "text": "Overview and parts list both name the sys tokens for use and the ref tokens as their values.",
+    "render": {
+     "caption": "Token tiers",
+     "jsx": "h(P.Table, { label: \"Border style tokens\", columns: [{\"title\":\"Tier\",\"field\":\"c0\",\"kind\":\"wrap\"},{\"title\":\"Token\",\"field\":\"c1\",\"kind\":\"wrap\"},{\"title\":\"Who uses it\",\"field\":\"c2\",\"kind\":\"wrap\"}], data: [{\"id\":0,\"c0\":\"sys\",\"c1\":\"--plx-sys-border-style-solid / -dashed\",\"c2\":\"Components\"},{\"id\":1,\"c0\":\"ref\",\"c1\":\"--plx-ref-border-style-*\",\"c2\":\"Only sys tokens\"}] })"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Only ref",
+    "text": "Components use ref tokens directly (breaks the token tier rule).",
+    "render": {
+     "caption": "Ref in a component",
+     "jsx": "h(P.Table, { label: \"Border style tokens\", columns: [{\"title\":\"Tier\",\"field\":\"c0\",\"kind\":\"wrap\"},{\"title\":\"Token\",\"field\":\"c1\",\"kind\":\"wrap\"}], data: [{\"id\":0,\"c0\":\"ref\",\"c1\":\"--plx-ref-border-style-solid\"}] })"
+    }
+   }
+  ],
+  "recommendation": "A. Three-tier tokens (reference, system, component) are standard in Material 3 and Carbon; components never use reference values.",
+  "sources": [
+   "Material 3 · Design tokens: reference, system, component",
+   "Carbon · Tokens",
+   "Plenix rule: three token tiers"
+  ]
+ },
+ {
+  "id": "foundations/foundations-border-color/1",
+  "title": "Which border should a control use?",
+  "context": "Fields have their own role (--plx-sys-field-border). Default is for frames and cards; strong is where a boundary must be seen to use the control.",
+  "current": [
+   {
+    "where": "Border color · Overview (spec-parts.js)",
+    "text": "Border colors are theme roles by intent: default for frames and cards, the field border for a field’s edge, subtle and divider for separation, strong where a boundary must be seen",
+    "conflict": true
+   },
+   {
+    "where": "Border · Accessibility contrast (inventory-docs.js)",
+    "text": "Use --plx-sys-border-strong where a boundary must be seen to use the control; default and subtle borders are for separation only.",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "A card (default border) holding a field (field border)",
+    "jsx": "h(P.Card, null, h(P.Field, { label: 'Name' }, h(P.Input, { defaultValue: 'Cross 021' })))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Field border for fields, default for frames",
+    "text": "Controls use their own role (field border, button border), which meets 3:1; default stays for frames and cards. Fix the a11y row to say so.",
+    "render": {
+     "caption": "Field and secondary button",
+     "jsx": "h(P.Inline, null, h(P.Input, { defaultValue: 'Value' }), h(P.Button, null, 'Apply'))"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Default border on controls",
+    "text": "Controls use the default border like frames.",
+    "render": {
+     "caption": "Card frame only",
+     "jsx": "h(P.Card, null, 'Frame with the default border')"
+    }
+   }
+  ],
+  "recommendation": "A. WCAG 1.4.11 needs 3:1 for the boundary of a control, while frames are decoration. Material 3 (outline vs outline variant) and Fluent 2 (accessible stroke vs stroke) split the same way.",
+  "sources": [
+   "WCAG 2.2 · 1.4.11 Non-text contrast",
+   "Material 3 · Color roles: outline and outline variant",
+   "Fluent 2 · Color tokens: stroke accessible"
+  ]
+ },
+ {
+  "id": "foundations/foundations-shape-treatment/1",
+  "title": "Are badges fully round or 4px corners?",
+  "context": "Badge code: 4px corners. The overview now says badges and chips have 4px corners and nothing is fully round.",
+  "current": [
+   {
+    "where": "Shape treatment · Overview (spec-parts.js)",
+    "text": "badges and chips 4px corners. Corners are moderate everywhere; nothing is fully round."
+   },
+   {
+    "where": "Badge.jsx (the code)",
+    "text": "A status pill: bold text on a soft background of its variant's color family, a 1px border and 4px corners"
+   },
+   {
+    "where": "Overview as reported in the question (paraphrase)",
+    "text": "badges use the pill shape",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Badges as drawn",
+    "jsx": "h(P.Inline, null, h(P.Badge, { tone: 'success', icon: 'check' }, 'Approved'), h(P.Badge, { tone: 'waiting' }, 'Paused'))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "4px corners",
+    "text": "Keep the code and the current overview; \"pill\" stays only as the shape's everyday name.",
+    "render": {
+     "caption": "4px badge and tag",
+     "jsx": "h(P.Inline, null, h(P.Badge, { tone: 'success' }, 'Approved'), h(P.Tag, null, 'sky'))"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Fully round",
+    "text": "Change the radius of every badge and chip to full (not built today).",
+    "render": {
+     "caption": "Badge today (would change)",
+     "jsx": "h(P.Badge, { tone: 'info' }, 'Fully round (not built)')"
+    }
+   }
+  ],
+  "recommendation": "A. It matches the code and the Plenix rule that nothing is fully round. Fluent 2 badges offer rounded and square shapes; there is no mainstream requirement for fully round.",
+  "sources": [
+   "Carbon · Tag",
+   "Fluent 2 · Badge: shape rounded or square",
+   "Plenix rule: moderate corners"
+  ]
+ },
+ {
+  "id": "foundations/foundations-easing/1",
+  "title": "Should the shared Motion parts list name every motion token?",
+  "context": "The Motion parts list now names instant, quick, fast, base, slow, both easings and the enter scale.",
+  "current": [
+   {
+    "where": "Motion · Anatomy (inventory-docs.js)",
+    "text": "Easing — standard and enter (--plx-sys-motion-ease-standard, --plx-sys-motion-ease-enter) (required)"
+   },
+   {
+    "where": "Motion · Anatomy (inventory-docs.js)",
+    "text": "Enter scale — --plx-sys-motion-enter-scale (optional)"
+   },
+   {
+    "where": "Transitions · Overview (spec-parts.js)",
+    "text": "instant (0.08s), quick (0.12s), fast (0.15s, the usual), base (0.2s) and slow (0.25s)."
+   },
+   {
+    "where": "Parts list as reported in the question (paraphrase)",
+    "text": "only the standard easing and fast, base and slow",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "A collapsible section turning its chevron (fast, standard)",
+    "jsx": "h(function Demo(){ var s = React.useState(false); return h(P.CollapsibleSection, { title: 'Details', expanded: s[0], onToggle: function(){ s[1](!s[0]); } }, h(P.Text, null, 'Body appears at once.')); })"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Full list in the shared parts",
+    "text": "The shared list names every duration, both easings and the enter scale, so every Motion page agrees.",
+    "render": {
+     "caption": "All motion tokens",
+     "jsx": "h(P.Table, { label: \"Motion tokens\", columns: [{\"title\":\"Token\",\"field\":\"c0\",\"kind\":\"wrap\"},{\"title\":\"Value\",\"field\":\"c1\",\"kind\":\"wrap\"}], data: [{\"id\":0,\"c0\":\"instant\",\"c1\":\"0.08s\"},{\"id\":1,\"c0\":\"quick\",\"c1\":\"0.12s\"},{\"id\":2,\"c0\":\"fast\",\"c1\":\"0.15s\"},{\"id\":3,\"c0\":\"base\",\"c1\":\"0.2s\"},{\"id\":4,\"c0\":\"slow\",\"c1\":\"0.25s\"},{\"id\":5,\"c0\":\"ease-standard\",\"c1\":\"ease\"},{\"id\":6,\"c0\":\"ease-enter\",\"c1\":\"cubic-bezier(0.2, 0, 0, 1)\"},{\"id\":7,\"c0\":\"enter-scale\",\"c1\":\"96%\"}] })"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Short list",
+    "text": "Keep only standard, fast, base, slow; pages add the rest.",
+    "render": {
+     "caption": "Short list",
+     "jsx": "h(P.Table, { label: \"Motion tokens\", columns: [{\"title\":\"Token\",\"field\":\"c0\",\"kind\":\"wrap\"}], data: [{\"id\":0,\"c0\":\"ease-standard\"},{\"id\":1,\"c0\":\"fast\"},{\"id\":2,\"c0\":\"base\"},{\"id\":3,\"c0\":\"slow\"}] })"
+    }
+   }
+  ],
+  "recommendation": "A. Material 3 and Carbon publish the full set of duration and easing tokens in one place.",
+  "sources": [
+   "Material 3 · Motion: easing and duration tokens",
+   "Carbon · Motion: duration tokens",
+   "Fluent 2 · Motion"
+  ]
+ },
+ {
+  "id": "foundations/color-status/1",
+  "title": "Is do not disturb its own presence role?",
+  "context": "Yes in code: StatusDot has tone \"dnd\", with the same color as busy and a minus shape. The parts list names status-dnd.",
+  "current": [
+   {
+    "where": "Status colors · Anatomy (w00C.docs.js)",
+    "text": "Presence — status-online, status-away, status-busy, status-dnd, status-offline (required)"
+   },
+   {
+    "where": "Presence · Overview (spec-parts.js)",
+    "text": "busy and do not disturb share a color and differ by shape."
+   },
+   {
+    "where": "Status colors · Overview as reported in the question (paraphrase)",
+    "text": "online, away, busy and offline",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "The five presence dots",
+    "jsx": "h(P.Inline, null, h(P.StatusDot, { tone: 'online', size: 'md', icon: true, label: 'Online' }), h(P.StatusDot, { tone: 'away', size: 'md', icon: true, label: 'Away' }), h(P.StatusDot, { tone: 'busy', size: 'md', icon: true, label: 'Busy' }), h(P.StatusDot, { tone: 'dnd', size: 'md', icon: true, label: 'Do not disturb' }), h(P.StatusDot, { tone: 'offline', size: 'md', icon: true, label: 'Offline' }))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Five roles: add do not disturb",
+    "text": "The overview lists all five; dnd shares busy's color and shows a minus.",
+    "render": {
+     "caption": "Busy vs do not disturb",
+     "jsx": "h(P.Inline, null, h(P.StatusDot, { tone: 'busy', size: 'md', icon: true, label: 'Busy' }), h(P.StatusDot, { tone: 'dnd', size: 'md', icon: true, label: 'Do not disturb' }))"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Merge dnd into busy",
+    "text": "Remove status-dnd and the dnd tone.",
+    "render": {
+     "caption": "Busy only",
+     "jsx": "h(P.StatusDot, { tone: 'busy', size: 'md', icon: true, label: 'Busy' })"
+    }
+   }
+  ],
+  "recommendation": "A. Fluent 2 presence has both Busy and Do not disturb (same red, different glyph), and the code already draws it.",
+  "sources": [
+   "Fluent 2 · Avatar presence badge: busy, do not disturb",
+   "WCAG 2.2 · 1.4.1 Use of color",
+   "Plenix rule: statuses never color alone"
+  ]
+ },
+ {
+  "id": "foundations/illustration/1",
+  "title": "May an illustration ever add information the text does not have?",
+  "context": "The current page says illustrations are decorative only: no label, and the text says everything.",
+  "current": [
+   {
+    "where": "Illustrations · Use (spec-parts.js)",
+    "text": "Decorative only: an illustration has no label, and anything it shows is also said in the text"
+   },
+   {
+    "where": "Illustrations · Avoid (spec-parts.js)",
+    "text": "A drawing that carries information the text does not"
+   },
+   {
+    "where": "Usage as reported in the question (paraphrase)",
+    "text": "give an illustration a label \"only when the drawing says something the text does not\"",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "An empty state: drawing plus the words",
+    "jsx": "h(P.Stack, { align: 'center', gap: 'sm' }, h(P.Illustration, { name: 'no-results', size: 'sm' }), h(P.EmptyState, { title: 'No results' }, 'Try another search.'))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Never: decorative only",
+    "text": "Drop the \"label when…\" case. Anything the drawing shows is in the text.",
+    "render": {
+     "caption": "Decorative",
+     "jsx": "h(P.Stack, { align: 'center' }, h(P.Illustration, { name: 'empty-folder', size: 'sm' }), h(P.Text, null, 'This folder is empty.'))"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Allowed with a label",
+    "text": "A drawing may carry extra meaning if it has a text alternative.",
+    "render": {
+     "caption": "Drawing with meaning",
+     "jsx": "h(P.Illustration, { name: 'no-data', size: 'sm' })"
+    }
+   }
+  ],
+  "recommendation": "A. Material 3, Atlassian and GOV.UK treat empty-state illustrations as supportive decoration; WCAG lets decorative images be hidden. Keeping meaning in text avoids a missing alternative.",
+  "sources": [
+   "WCAG 2.2 · 1.1.1 Non-text content (decorative images)",
+   "Atlassian · Illustrations: support the message",
+   "Material 3 · Empty states"
+  ]
+ },
+ {
+  "id": "foundations/type-styles/1",
+  "title": "Is there a \"secondary\" text style?",
+  "context": "Text has a secondary variant (muted 12px), but the Type style page lists five styles. The contrast row mentions secondary.",
+  "current": [
+   {
+    "where": "Type style · Accessibility contrast (spec-parts.js)",
+    "text": "Body, lead, label and display use the default content color (4.5:1 and more); caption and secondary use the subtle and muted roles, which keep 4.5:1.",
+    "conflict": true
+   },
+   {
+    "where": "Text · Overview (inventory.js)",
+    "text": "Text in one of the system’s roles (body, secondary, caption, data, label, strong, heading, title, display, lead, eyebrow, accent, success, danger, link), from the type tokens."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Body, secondary and caption",
+    "jsx": "h(P.Stack, { gap: 'xs' }, h(P.Text, { as: 'div' }, 'Body'), h(P.Text, { variant: 'secondary', as: 'div' }, 'Secondary (muted 12px)'), h(P.Text, { variant: 'caption', as: 'div' }, 'Caption'))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "List secondary on the page",
+    "text": "Secondary is a real Text style; the page lists six.",
+    "render": {
+     "caption": "Six styles",
+     "jsx": "h(P.Stack, { gap: 'xs' }, h(P.Text, { variant: 'display', as: 'div' }, 'Display'), h(P.Text, { variant: 'lead', as: 'div' }, 'Lead'), h(P.Text, { as: 'div' }, 'Body'), h(P.Text, { variant: 'label', as: 'div' }, 'Label'), h(P.Text, { variant: 'secondary', as: 'div' }, 'Secondary'), h(P.Text, { variant: 'caption', as: 'div' }, 'Caption'))"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Remove the word",
+    "text": "The contrast row talks only about the five styles listed.",
+    "render": {
+     "caption": "Five styles",
+     "jsx": "h(P.Stack, { gap: 'xs' }, h(P.Text, { as: 'div' }, 'Body'), h(P.Text, { variant: 'caption', as: 'div' }, 'Caption'))"
+    }
+   }
+  ],
+  "recommendation": "A. The style exists and is used for helper text; Carbon (helper text) and Fluent 2 list their muted style with the others.",
+  "sources": [
+   "Carbon · Type: helper text style",
+   "Fluent 2 · Typography: secondary text",
+   "WCAG 2.2 · 1.4.3 Contrast (minimum)"
+  ]
+ },
+ {
+  "id": "foundations/content-style/1",
+  "title": "Should the Style and grammar parts be written for this page?",
+  "context": "The record's parts and many behavior rows are generic sentences.",
+  "current": [
+   {
+    "where": "Style and grammar · Purpose (spec-parts.js)",
+    "text": "Apply the existing sentence-case and American English house rules to static component strings and design-system guidance."
+   },
+   {
+    "where": "Style and grammar · Anatomy as reported in the question (paraphrase)",
+    "text": "Source standard or build entry point; Specific implementation instructions; Existing checks and limitations",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "What a page-specific parts list could say",
+    "jsx": "h(P.Table, { label: \"Style and grammar parts\", columns: [{\"title\":\"Part\",\"field\":\"c0\",\"kind\":\"wrap\"},{\"title\":\"Says\",\"field\":\"c1\",\"kind\":\"wrap\"}], data: [{\"id\":0,\"c0\":\"Capitalization\",\"c1\":\"Sentence case for titles, labels and buttons\"},{\"id\":1,\"c0\":\"Spelling\",\"c1\":\"American English\"},{\"id\":2,\"c0\":\"Punctuation\",\"c1\":\"Periods in sentences, none in labels\"},{\"id\":3,\"c0\":\"Numbers\",\"c1\":\"Digits in the UI\"}] })"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Write them for this page",
+    "text": "Parts become the actual rules (capitalization, spelling, punctuation, numbers); empty rows are dropped.",
+    "render": {
+     "caption": "A field in house style",
+     "jsx": "h(P.Field, { label: 'Display name' }, h(P.Input, { defaultValue: 'Fr. Raphael' }))"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Leave for the later pass",
+    "text": "Keep the generic text until empty rows are hidden.",
+    "render": {
+     "caption": "Generic row",
+     "jsx": "h(P.Text, { variant: 'secondary' }, 'Specific implementation instructions')"
+    }
+   }
+  ],
+  "recommendation": "A. Content guides in Material 3, Polaris and GOV.UK list concrete rules; generic rows add nothing.",
+  "sources": [
+   "Polaris · Content: grammar and mechanics",
+   "GOV.UK · Style guide",
+   "Material 3 · Content design"
+  ]
+ },
+ {
+  "id": "foundations/design-principles/1",
+  "title": "What should the \"guidance\" row on Design principles say?",
+  "context": "The row repeats the purpose word for word.",
+  "current": [
+   {
+    "where": "Design principles · Purpose (spec-parts.js)",
+    "text": "Make each task clear, predictable and recoverable with the existing Platform roles."
+   },
+   {
+    "where": "Design principles · content.guidance (paraphrase: same as the purpose)",
+    "text": "Make each task clear, predictable and recoverable with the existing Platform roles.",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "The three principles drawn",
+    "jsx": "h(P.Stack, { gap: 'xs' }, h(P.Notice, { tone: 'info', title: 'Clear' }, 'One main action'), h(P.Notice, { tone: 'info', title: 'Predictable' }, 'Same control, same behavior'), h(P.Notice, { tone: 'success', title: 'Recoverable' }, 'Undo after delete'))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Remove the row",
+    "text": "Drop the duplicate; the purpose already says it.",
+    "render": {
+     "caption": "Purpose only",
+     "jsx": "h(P.Text, null, 'Make each task clear, predictable and recoverable.')"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Rewrite as how to apply",
+    "text": "The row says how to use the principles when choosing between options.",
+    "render": {
+     "caption": "A how-to line",
+     "jsx": "h(P.Text, null, 'When two options fit, pick the one that is easier to undo.')"
+    }
+   }
+  ],
+  "recommendation": "A. Repeated text adds length without meaning; GOV.UK and Carbon keep principle pages short.",
+  "sources": [
+   "GOV.UK · Design principles",
+   "Carbon · Design principles",
+   "Polaris · Experience values"
+  ]
+ },
+ {
+  "id": "foundations/wizard-dialog/1",
+  "title": "Is the unsaved-changes check required in a wizard dialog?",
+  "context": "WizardDialog takes dirty (default false); when dirty, Close, Escape, the veil and Cancel ask first. The guard is always built in and acts only when there is work.",
+  "current": [
+   {
+    "where": "Wizard dialog · Anatomy (spec-parts.js)",
+    "text": "Unsaved-changes check — closing asks before losing work",
+    "conflict": true
+   },
+   {
+    "where": "WizardDialog.jsx (the code)",
+    "text": "Close, Escape, the veil and Cancel pass through the unsaved-change guard."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "The confirm a dirty wizard shows on close",
+    "jsx": "h(P.ConfirmDialog, { open: true, title: 'Discard changes?', confirmLabel: 'Discard', onConfirm: function(){}, onCancel: function(){} }, 'Your changes will be lost.')"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Required",
+    "text": "Mark it (required): every wizard guards its work; it asks only when values would be lost.",
+    "render": {
+     "caption": "Guard in every wizard",
+     "jsx": "h(P.Table, { label: \"Close a wizard\", columns: [{\"title\":\"State\",\"field\":\"c0\",\"kind\":\"wrap\"},{\"title\":\"Result\",\"field\":\"c1\",\"kind\":\"wrap\"}], data: [{\"id\":0,\"c0\":\"No values entered\",\"c1\":\"Closes at once\"},{\"id\":1,\"c0\":\"Values entered\",\"c1\":\"Asks: Your changes will be lost.\"}] })"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Optional",
+    "text": "Mark it (optional): a caller may skip the guard.",
+    "render": {
+     "caption": "No guard",
+     "jsx": "h(P.Table, { label: \"Close a wizard\", columns: [{\"title\":\"State\",\"field\":\"c0\",\"kind\":\"wrap\"},{\"title\":\"Result\",\"field\":\"c1\",\"kind\":\"wrap\"}], data: [{\"id\":0,\"c0\":\"Values entered\",\"c1\":\"Closes and loses them\"}] })"
+    }
+   }
+  ],
+  "recommendation": "A. Material 3, Fluent 2 and Polaris confirm before discarding entered data in a multi-step flow.",
+  "sources": [
+   "Material 3 · Dialogs: confirmation",
+   "Fluent 2 · Dialog",
+   "Polaris · Modal: discard changes"
+  ]
+ },
+ {
+  "id": "foundations/interaction-accessible-names/1",
+  "title": "Is VisuallyHidden for words the layout does not show?",
+  "context": "VisuallyHidden adds text only screen readers read. The sentence says \"that the layout shows\", which is backwards.",
+  "current": [
+   {
+    "where": "Accessible names · Anatomy (spec-parts.js)",
+    "text": "Hidden text — VisuallyHidden adds words a screen reader needs that the layout shows (optional)",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Delete button with hidden words",
+    "jsx": "h(P.Button, { icon: 'trash' }, 'Delete', h(P.VisuallyHidden, null, ' Cross 021'))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "\"…that the layout does not show\"",
+    "text": "Fix the sentence.",
+    "render": {
+     "caption": "Visible \"Delete\", read as \"Delete Cross 021\"",
+     "jsx": "h(P.Button, { icon: 'trash' }, 'Delete', h(P.VisuallyHidden, null, ' Cross 021'))"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Keep it",
+    "text": "The sentence stays as is.",
+    "render": {
+     "caption": "Unchanged",
+     "jsx": "h(P.Text, { variant: 'secondary' }, 'adds words a screen reader needs that the layout shows')"
+    }
+   }
+  ],
+  "recommendation": "A. That is what visually hidden text is for (WAI-ARIA APG, GOV.UK govuk-visually-hidden).",
+  "sources": [
+   "WAI-ARIA APG · Providing accessible names",
+   "GOV.UK · Visually hidden text",
+   "WCAG 2.2 · 2.4.6 Headings and labels"
+  ]
+ },
+ {
+  "id": "foundations/interaction-accessible-names/2",
+  "title": "Is the label part required or optional?",
+  "context": "The label prop is needed whenever there is no visible text (icon-only button, landmark, grid). Otherwise the visible label names it.",
+  "current": [
+   {
+    "where": "Accessible names · Anatomy (spec-parts.js)",
+    "text": "label — names an icon-only button, an icon that carries meaning, a landmark or a grid (when there is no visible text)",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Icon-only button with label",
+    "jsx": "h(P.Button, { icon: 'trash', iconOnly: true, label: 'Delete' })"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Required when there is no visible text",
+    "text": "Mark it \"(required without visible text)\".",
+    "render": {
+     "caption": "Both cases",
+     "jsx": "h(P.Inline, null, h(P.Button, { icon: 'trash' }, 'Delete'), h(P.Button, { icon: 'trash', iconOnly: true, label: 'Delete' }))"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Optional",
+    "text": "Mark it (optional).",
+    "render": {
+     "caption": "Visible text only",
+     "jsx": "h(P.Button, { icon: 'trash' }, 'Delete')"
+    }
+   }
+  ],
+  "recommendation": "A. WCAG 4.1.2 requires a name for every control; WAI-ARIA APG says aria-label is needed exactly when no visible label exists.",
+  "sources": [
+   "WCAG 2.2 · 4.1.2 Name, role, value",
+   "WAI-ARIA APG · Naming with aria-label",
+   "Material 3 · Icon buttons: content description"
+  ]
+ },
+ {
+  "id": "foundations/tabs/1",
+  "title": "Are Contained and Folder tabs two variants?",
+  "context": "The code has variant \"contained\" (default), \"folder\" and \"segmented\". Contained uses the folder tab shape joined to a framed panel; Folder has no frame.",
+  "current": [
+   {
+    "where": "Tabs · Overview (inventory.js)",
+    "text": "Contained tabs (folder tabs joined to a bordered panel) are the default.",
+    "conflict": true
+   },
+   {
+    "where": "Tabs · Use (inventory.js)",
+    "text": "Peer views of the same object: the contained variant by default; Folder tabs when the whole page body switches, Segmented tabs for a small switch inside a region",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Contained",
+    "jsx": "h(P.Tabs, { label: 'Asset details', variant: 'contained', defaultValue: 'info', items: [{ value: 'info', label: 'Info', content: h(P.Text, null, 'Details') }, { value: 'act', label: 'Activity', content: h(P.Text, null, 'Activity') }] })",
+    "width": "600"
+   },
+   {
+    "caption": "Folder",
+    "jsx": "h(P.Tabs, { label: 'Asset details', variant: 'folder', defaultValue: 'info', items: [{ value: 'info', label: 'Info', content: h(P.Text, null, 'Details') }, { value: 'act', label: 'Activity', content: h(P.Text, null, 'Activity') }] })",
+    "width": "600"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Two variants; overview avoids \"folder\"",
+    "text": "Overview: \"Contained tabs (tabs joined to a bordered panel) are the default.\" Folder stays its own variant.",
+    "render": {
+     "caption": "Contained",
+     "jsx": "h(P.Tabs, { label: 'Asset details', variant: 'contained', defaultValue: 'info', items: [{ value: 'info', label: 'Info', content: h(P.Text, null, 'Details') }, { value: 'act', label: 'Activity', content: h(P.Text, null, 'Activity') }] })",
+     "width": "600"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Contained is a kind of Folder",
+    "text": "Describe one Folder variant with a framed option.",
+    "render": {
+     "caption": "Folder",
+     "jsx": "h(P.Tabs, { label: 'Asset details', variant: 'folder', defaultValue: 'info', items: [{ value: 'info', label: 'Info', content: h(P.Text, null, 'Details') }, { value: 'act', label: 'Activity', content: h(P.Text, null, 'Activity') }] })",
+     "width": "600"
+    }
+   }
+  ],
+  "recommendation": "A. The code has two values, and one name per variant avoids confusion. Carbon (line vs contained tabs) and Fluent 2 name tab styles distinctly.",
+  "sources": [
+   "Carbon · Tabs: line and contained",
+   "Fluent 2 · TabList appearances",
+   "WAI-ARIA APG · Tabs pattern"
+  ]
+ },
+ {
+  "id": "foundations/swatch-picker/1",
+  "title": "Is \"brown\" still a data hue name?",
+  "context": "The color consolidation retired Brown (now Orange). The data palette variant still says \"brown (drawn in orange)\".",
+  "current": [
+   {
+    "where": "Swatch picker · Data palette (spec-parts.js)",
+    "text": "The data hues of the theme: blue, green, purple, red, brown (drawn in orange) and gray.",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Data swatches",
+    "jsx": "h(P.Inline, null, h(P.ColorSwatch, { color: 'blue', label: 'Blue' }), h(P.ColorSwatch, { color: 'green', label: 'Green' }), h(P.ColorSwatch, { color: 'purple', label: 'Purple' }), h(P.ColorSwatch, { color: 'red', label: 'Red' }), h(P.ColorSwatch, { color: 'orange', label: 'Orange' }), h(P.ColorSwatch, { color: 'gray', label: 'Gray' }))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Say orange",
+    "text": "\"blue, green, purple, red, orange and gray\". If a token is still named brown, rename it too.",
+    "render": {
+     "caption": "Orange swatch, named Orange",
+     "jsx": "h(P.ColorSwatch, { color: 'orange', label: 'Orange' })"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Keep brown",
+    "text": "Keep the old name with the note.",
+    "render": {
+     "caption": "Orange drawn, named Brown",
+     "jsx": "h(P.ColorSwatch, { color: 'orange', label: 'Brown' })"
+    }
+   }
+  ],
+  "recommendation": "A. A color name should match what people see; the consolidation already retired brown.",
+  "sources": [
+   "WCAG 2.2 · 1.3.3 Sensory characteristics",
+   "Plenix color consolidation (0.48.0)",
+   "Fluent 2 · SwatchPicker: named colors"
+  ]
+ },
+ {
+  "id": "foundations/typing-indicator/1",
+  "title": "Are the message variant pages on the right item?",
+  "context": "The item id is typing-indicator but its leaf is Chat: it covers the whole messaging surface, so Theirs, Mine and Typing are all Chat variants.",
+  "current": [
+   {
+    "where": "Chat · Overview (inventory.js)",
+    "text": "The live messaging surface of a conversation: its header, the thread of messages (mine and theirs), the typing dots and the composer."
+   },
+   {
+    "where": "Their message (variantPages[0].text)",
+    "text": "A message from someone else, on the start side with their name and the time.",
+    "conflict": true
+   },
+   {
+    "where": "My message (variantPages[1].text)",
+    "text": "A message the person wrote, on the end side in the action color.",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Chat messages and typing dots",
+    "jsx": "h(P.Chat.Thread, { label: 'Conversation' }, h(P.Chat.Message, { author: 'Maya Chen', time: '10:24' }, 'Are the renders ready?'), h(P.Chat.Message, { mine: true, time: '10:26' }, 'Uploading them now.'), h(P.Chat.Typing, { label: 'Maya is typing' }))",
+    "width": "600"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Keep them; the item is Chat",
+    "text": "The pages are right: they are Chat variants. The item's id or title should read Chat, not typing indicator.",
+    "render": {
+     "caption": "Chat",
+     "jsx": "h(P.Chat.Thread, { label: 'Conversation' }, h(P.Chat.Message, { mine: true, time: '10:26' }, 'Done.'))",
+     "width": "600"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Move them to Message",
+    "text": "The typing indicator keeps only the dots; messages move to the Message page.",
+    "render": {
+     "caption": "Typing dots only",
+     "jsx": "h(P.Chat.Typing, { label: 'Maya is typing' })"
+    }
+   }
+  ],
+  "recommendation": "A. The Chat component owns both; one page per component is the Plenix rule, and Fluent 2 (Chat) documents messages and typing together.",
+  "sources": [
+   "Fluent 2 · Chat",
+   "Plenix rule: one page per component",
+   "WAI-ARIA · role=log for chat threads"
+  ]
+ },
+ {
+  "id": "foundations/docs/back-to-top/1",
+  "title": "Is the sentinel a thin strip or one window tall?",
+  "context": "Code: the sentinel is as tall as the reveal distance (one window height). So \"very thin strip\" is wrong.",
+  "current": [
+   {
+    "where": "BackToTop · Anatomy (spec-parts.js)",
+    "text": "Sentinel — an invisible, very thin strip one window tall, at the spot where BackToTop is written (the top of the content)",
+    "conflict": true
+   },
+   {
+    "where": "BackToTop.jsx (the code)",
+    "text": "A sentinel as tall as the reveal distance (--plx-comp-back-to-top-reveal-distance, one window height) sits where it is drawn"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "The inline back to top button",
+    "jsx": "h(P.BackToTop, { variant: 'inline' })"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "\"an invisible marker one window tall\"",
+    "text": "Drop \"very thin strip\".",
+    "render": {
+     "caption": "Wording beside the button",
+     "jsx": "h(P.Stack, { gap: 'xs' }, h(P.BackToTop, { variant: 'inline' }), h(P.Text, null, 'Sentinel — an invisible marker one window tall at the top of the content (floating only)'))"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "\"a thin strip\"",
+    "text": "Drop \"one window tall\" (contradicts the code).",
+    "render": {
+     "caption": "Wording",
+     "jsx": "h(P.Text, { variant: 'secondary' }, 'Sentinel — a very thin strip')"
+    }
+   }
+  ],
+  "recommendation": "A. It matches the code. Carbon and GOV.UK show back-to-top after about a screen of scrolling, which is what the window-tall marker does.",
+  "sources": [
+   "Carbon · Back to top",
+   "GOV.UK · Back to top link",
+   "MDN · IntersectionObserver"
+  ]
+ },
+ {
+  "id": "foundations/data-grid/1",
+  "title": "What does the DataGrid row menu contain?",
+  "context": "The row menu has no fixed items: the app passes rowMenu (label, icon, onSelect, danger, disabled, separator). The anatomy line lists only tokens.",
+  "current": [
+   {
+    "where": "DataGrid · Anatomy (inventory-docs.js)",
+    "text": "The row menu on a row’s button or right-click: --plx-comp-data-grid-menu-radius, --plx-sys-data-grid-menu-shadow, --plx-comp-data-grid-menu-font-size, --plx-comp-data-grid-menu-item-padding-*, --plx-comp-data-grid-menu-item-gap",
+    "conflict": true
+   },
+   {
+    "where": "DataGrid.jsx (the code)",
+    "text": "rowMenu: [{ label, icon, onSelect(record), danger, disabled, separator }] or (record) => that list, opened by the"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "A row menu as an app passes it (right-click a row)",
+    "jsx": "h(P.DataGrid, { label: 'Assets', index: 'id', data: [{ id: 1, name: 'Cross 021' }, { id: 2, name: 'Icon 7' }], columns: [{ title: 'Name', field: 'name' }], rowMenu: [{ label: 'Open', icon: 'open', onSelect: function(){} }, { separator: true }, { label: 'Delete', icon: 'trash', danger: true, onSelect: function(){} }] })",
+    "width": "600"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Say the app supplies it",
+    "text": "\"The row menu: the actions the application passes (rowMenu), such as Open and Delete, dangerous ones last.\" Then the tokens.",
+    "render": {
+     "caption": "Menu items",
+     "jsx": "h(P.Menu, { label: 'Row actions' }, h(P.MenuItem, { icon: 'open' }, 'Open'), h(P.MenuDivider), h(P.MenuItem, { icon: 'trash', danger: true }, 'Delete'))"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Fix a standard set",
+    "text": "Every grid shows Open, Rename, Delete.",
+    "render": {
+     "caption": "Fixed set",
+     "jsx": "h(P.Table, { label: \"Row menu\", columns: [{\"title\":\"Item\",\"field\":\"c0\",\"kind\":\"wrap\"}], data: [{\"id\":0,\"c0\":\"Open\"},{\"id\":1,\"c0\":\"Rename\"},{\"id\":2,\"c0\":\"Delete\"}] })"
+    }
+   }
+  ],
+  "recommendation": "A. It matches the code. Carbon (overflow menu) and Fluent 2 let each product pick row actions, with destructive items last.",
+  "sources": [
+   "Carbon · Data table: overflow menu",
+   "Fluent 2 · DataGrid",
+   "WAI-ARIA APG · Menu pattern"
+  ]
+ },
+ {
+  "id": "foundations/design-system-mcp/1",
+  "title": "What does \"Initialize first; arguments are checked\" mean?",
+  "context": "Code: a call before the session is initialized is refused with error -32002 \"Initialize the MCP session first.\"; bad arguments get -32602 (missing, unknown or invalid argument).",
+  "current": [
+   {
+    "where": "Design system MCP · Behavior error (spec-parts.js)",
+    "text": "Initialize first; arguments are checked. Protocol errors are kept apart from tool and data failures.",
+    "conflict": true
+   },
+   {
+    "where": "build-packages.d/mcp.js (the code; exact, outside the spec files) (paraphrase)",
+    "text": "if (!initialized) throw new RpcError(-32002, 'Initialize the MCP session first.');"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "What happens",
+    "jsx": "h(P.Table, { label: \"MCP errors\", columns: [{\"title\":\"Case\",\"field\":\"c0\",\"kind\":\"wrap\"},{\"title\":\"Answer\",\"field\":\"c1\",\"kind\":\"wrap\"}], data: [{\"id\":0,\"c0\":\"Call before initialize\",\"c1\":\"-32002 Initialize the MCP session first.\"},{\"id\":1,\"c0\":\"Missing argument\",\"c1\":\"-32602 Missing argument: name\"},{\"id\":2,\"c0\":\"Unknown argument\",\"c1\":\"-32602 Unknown argument: name\"},{\"id\":3,\"c0\":\"Tool fails\",\"c1\":\"Tool result with an error, not a protocol error\"}] })"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Spell it out",
+    "text": "\"A call before initialization is refused with an error. Missing, unknown or invalid arguments are rejected with an error that names them. Protocol errors are kept apart from tool and data failures.\"",
+    "render": {
+     "caption": "As it would read",
+     "jsx": "h(P.Notice, { tone: 'danger', title: 'Initialize the MCP session first.' }, 'Calls before initialization are refused.')"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Keep the short text",
+    "text": "Leave it terse.",
+    "render": {
+     "caption": "Current",
+     "jsx": "h(P.Text, { variant: 'secondary' }, 'Initialize first; arguments are checked.')"
+    }
+   }
+  ],
+  "recommendation": "A. It says what the code does. The MCP spec requires initialize before other requests, and JSON-RPC uses -32602 for invalid params.",
+  "sources": [
+   "Model Context Protocol · Lifecycle: initialization",
+   "JSON-RPC 2.0 · Error codes",
+   "Plenix rule: authoritative docs"
+  ]
+ },
+ {
+  "id": "foundations/document-viewer/1",
+  "title": "What is the Document viewer's pointer behavior?",
+  "context": "The pointer row talks about loading and accessibility. Pointer behavior is the page buttons, zoom steps and thumbnails.",
+  "current": [
+   {
+    "where": "Document viewer · Behavior (spec-parts.js)",
+    "text": "Loads PDF.js locally and cancels rendering of outdated documents and canvases. Exposes the PDF text, scrolling by keyboard, and load errors people can recover from.",
+    "conflict": true
+   },
+   {
+    "where": "Document viewer · Anatomy item (spec-parts.js)",
+    "text": "Named scroll viewport"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "The viewer's pointer controls",
+    "jsx": "h(P.Toolbar, { label: 'Document' }, h(P.Button, { icon: 'chevron-left', iconOnly: true, label: 'Previous page', size: 'xs' }), h(P.Text, { variant: 'data' }, '3 / 12'), h(P.Button, { icon: 'chevron-right', iconOnly: true, label: 'Next page', size: 'xs' }), h(P.Button, { size: 'xs' }, 'Zoom out'), h(P.Text, { variant: 'data' }, '100%'), h(P.Button, { size: 'xs' }, 'Zoom in'))",
+    "width": "600"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Split rows",
+    "text": "Pointer: previous/next, zoom steps and a click on a thumbnail go to that page. Loading: PDF.js and cancelling. A11y: text layer, keyboard scrolling. Error: recoverable load errors.",
+    "render": {
+     "caption": "Rows",
+     "jsx": "h(P.Table, { label: \"Document viewer behavior\", columns: [{\"title\":\"Row\",\"field\":\"c0\",\"kind\":\"wrap\"},{\"title\":\"Text\",\"field\":\"c1\",\"kind\":\"wrap\"}], data: [{\"id\":0,\"c0\":\"pointer\",\"c1\":\"Previous, Next, zoom steps, a thumbnail opens its page\"},{\"id\":1,\"c0\":\"loading\",\"c1\":\"Loads PDF.js locally; cancels outdated renders\"},{\"id\":2,\"c0\":\"a11y\",\"c1\":\"PDF text exposed; keyboard scrolling\"},{\"id\":3,\"c0\":\"error\",\"c1\":\"Load errors people can recover from\"}] })"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Keep one row",
+    "text": "Leave it under pointer.",
+    "render": {
+     "caption": "Current",
+     "jsx": "h(P.Text, { variant: 'secondary' }, 'Loads PDF.js locally and cancels rendering…')"
+    }
+   }
+  ],
+  "recommendation": "A. Each row should describe its own kind of behavior; a document viewer's pointer interactions are page navigation and zoom, as the WAI-ARIA toolbar pattern models.",
+  "sources": [
+   "Fluent 2 · Toolbar",
+   "WAI-ARIA APG · Toolbar pattern",
+   "WCAG 2.2 · 2.1.1 Keyboard"
+  ]
+ },
+ {
+  "id": "foundations/data-display: charts with no axes/1",
+  "title": "What should charts without axes say instead of \"Label axes\"?",
+  "context": "Choropleth, donut, pie, gauge, Sankey, treemap and word cloud pages repeat the shared axis line. These charts have no axes.",
+  "current": [
+   {
+    "where": "Chart pages · content[1] (inventory-guidance.js)",
+    "text": "Label axes with the measure and its unit, and avoid acronyms.",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "A pie chart: slices, no axes",
+    "jsx": "h(P.PieChart, { title: 'Storage by file type', data: [{ id: 'video', label: 'Videos', value: 540 }, { id: 'img', label: 'Images', value: 260 }, { id: 'doc', label: 'Documents', value: 120 }] })",
+    "width": "600"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Own rule per chart",
+    "text": "Choropleth: label the color scale. Pie and donut: label slices with name and share. Gauge: value, unit, range. Sankey: node totals. Treemap: tiles. Word cloud: say what size means.",
+    "render": {
+     "caption": "Donut labeled by slice",
+     "jsx": "h(P.PieChart, { variant: 'donut', title: 'Storage by file type', centerLabel: 'GB used', data: [{ id: 'v', label: 'Videos', value: 540 }, { id: 'i', label: 'Images', value: 260 }] })",
+     "width": "600"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Drop the line",
+    "text": "These pages say nothing about labels.",
+    "render": {
+     "caption": "Gauge with no rule",
+     "jsx": "h(P.Gauge, { title: 'Storage used', value: 72, format: function(v){ return v + '%'; }, label: 'of 100 GB' })"
+    }
+   }
+  ],
+  "recommendation": "A. Carbon and Atlassian chart guides give each chart type its own labeling rule (legend, slice labels, value labels).",
+  "sources": [
+   "Carbon · Data visualization: labels and legends",
+   "Atlassian · Data visualization",
+   "WCAG 2.2 · 1.1.1 Non-text content"
+  ]
+ },
+ {
+  "id": "foundations/data-display: charts with no axes/2",
+  "title": "How should the Gantt chart label its time axis?",
+  "context": "A Gantt's axis is time, not a measure.",
+  "current": [
+   {
+    "where": "Gantt chart · content[1] (inventory-guidance.js)",
+    "text": "Label axes with the measure and its unit, and avoid acronyms.",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "The Gantt chart",
+    "jsx": "h(P.GanttChart, { title: 'Brand refresh schedule', tasks: [{ id: 'brief', label: 'Brief', start: '2026-09-01', end: '2026-09-04', progress: 1 }, { id: 'design', label: 'Design', start: '2026-09-04', end: '2026-09-18', progress: 0.6, dependsOn: ['brief'] }], today: new Date(2026, 8, 15) })",
+    "width": "840"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Label the time scale",
+    "text": "\"Label the time scale with its unit (days, weeks or months).\"",
+    "render": {
+     "caption": "Time scale",
+     "jsx": "h(P.GanttChart, { title: 'Schedule', tasks: [{ id: 'a', label: 'Review', start: '2026-09-01', end: '2026-09-10' }] })",
+     "width": "840"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Keep the shared line",
+    "text": "Leave \"measure and its unit\".",
+    "render": {
+     "caption": "Shared line",
+     "jsx": "h(P.Text, { variant: 'secondary' }, 'Label axes with the measure and its unit')"
+    }
+   }
+  ],
+  "recommendation": "A. Gantt charts in Carbon timelines and project tools label the time scale by its unit.",
+  "sources": [
+   "Carbon · Data visualization: labels and legends",
+   "Atlassian · Data visualization",
+   "WCAG 2.2 · 1.1.1 Non-text content"
+  ]
+ },
+ {
+  "id": "foundations/data-display: charts with no axes/3",
+  "title": "How should the radar chart label its spokes?",
+  "context": "Radar spokes are axes on one shared scale; each spoke names a measure.",
+  "current": [
+   {
+    "where": "Radar chart · content[1] (inventory-guidance.js)",
+    "text": "Label axes with the measure and its unit, and avoid acronyms.",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Radar chart",
+    "jsx": "h(P.RadarChart, { title: 'Asset quality', axes: [{ key: 'res', label: 'Resolution' }, { key: 'color', label: 'Color' }, { key: 'meta', label: 'Metadata' }, { key: 'size', label: 'File size' }], series: [{ id: 'hero', label: 'Hero image', values: { res: 9, color: 8, meta: 7, size: 4 } }], max: 10 })",
+    "width": "600"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Label spokes; scale once",
+    "text": "\"Label spokes with the measure name; give the shared scale and unit once.\"",
+    "render": {
+     "caption": "Radar",
+     "jsx": "h(P.RadarChart, { title: 'Quality', axes: [{ key: 'a', label: 'Resolution' }, { key: 'b', label: 'Color' }, { key: 'c', label: 'Rights' }], series: [{ id: 's', label: 'Image', values: { a: 8, b: 6, c: 9 } }], max: 10 })",
+     "width": "600"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Keep the shared line",
+    "text": "Leave it as for other axis charts.",
+    "render": {
+     "caption": "Shared line",
+     "jsx": "h(P.Text, { variant: 'secondary' }, 'Label axes with the measure and its unit')"
+    }
+   }
+  ],
+  "recommendation": "A. Carbon's radar guidance uses one shared scale with labeled spokes.",
+  "sources": [
+   "Carbon · Data visualization: labels and legends",
+   "Atlassian · Data visualization",
+   "WCAG 2.2 · 1.1.1 Non-text content"
+  ]
+ },
+ {
+  "id": "foundations/data-display: charts with no axes/4",
+  "title": "Does a gauge need a question-style title?",
+  "context": "A gauge shows one value; its title names the measure.",
+  "current": [
+   {
+    "where": "Gauge · content[0] (inventory-guidance.js)",
+    "text": "Write the title as the question the chart answers or the finding it shows, in sentence case.",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Gauge titled by its measure",
+    "jsx": "h(P.Gauge, { title: 'Storage used', value: 72, format: function(v){ return v + '%'; }, label: 'of 100 GB' })"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Name the measure",
+    "text": "\"Name the measure in the title (Storage used); show the value with its unit and range.\"",
+    "render": {
+     "caption": "Storage used",
+     "jsx": "h(P.Gauge, { title: 'Storage used', value: 86, format: function(v){ return v + '%'; }, label: 'of 100 GB' })"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Keep the question title",
+    "text": "A title like \"Are we running out of storage?\"",
+    "render": {
+     "caption": "Question title",
+     "jsx": "h(P.Gauge, { title: 'Are we running out of storage?', value: 86, format: function(v){ return v + '%'; } })"
+    }
+   }
+  ],
+  "recommendation": "A. Single-value meters in Carbon, Polaris and Fluent are titled by the measure.",
+  "sources": [
+   "Carbon · Data visualization: labels and legends",
+   "Atlassian · Data visualization",
+   "WCAG 2.2 · 1.1.1 Non-text content"
+  ]
+ },
+ {
+  "id": "foundations/data-display|Sparkline/1",
+  "title": "Does a sparkline need a title?",
+  "context": "A sparkline sits next to its number and has no title; its label is the accessible name.",
+  "current": [
+   {
+    "where": "Sparkline · content[0] (inventory-guidance.js)",
+    "text": "Write the title as the question the chart answers or the finding it shows, in sentence case.",
+    "conflict": true
+   },
+   {
+    "where": "Sparkline · text (inventory-guidance.js)",
+    "text": "A small, word-sized line chart without axes that shows the shape of a trend."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Sparkline beside a number",
+    "jsx": "h(P.Inline, null, h(P.Text, { variant: 'title' }, '1,240'), h(P.Sparkline, { values: [3, 5, 4, 7, 6, 9, 11], label: 'Downloads, last 7 days' }))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Replace with a label rule",
+    "text": "\"Name what it shows in its label (Downloads, last 7 days); the number beside it is the value.\"",
+    "render": {
+     "caption": "Labeled",
+     "jsx": "h(P.Inline, null, h(P.Text, null, 'Downloads'), h(P.Sparkline, { values: [2, 4, 3, 6, 8], label: 'Downloads, last 7 days' }))"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Keep a title",
+    "text": "Add a visible title over every sparkline.",
+    "render": {
+     "caption": "With title",
+     "jsx": "h(P.Stack, { gap: 'xs' }, h(P.Text, { variant: 'label' }, 'Are downloads growing?'), h(P.Sparkline, { values: [2, 4, 3, 6, 8], label: 'Downloads' }))"
+    }
+   }
+  ],
+  "recommendation": "A. Carbon, Fluent and Polaris sparklines have no title and rely on the adjacent value and an accessible label.",
+  "sources": [
+   "Carbon · Sparkline",
+   "Fluent 2 · Sparkline",
+   "Polaris · Sparkline"
+  ]
+ },
+ {
+  "id": "foundations/data-display|Sparkline/2",
+  "title": "Does a sparkline show axes?",
+  "context": "Behavior says no axes; content says to label axes.",
+  "current": [
+   {
+    "where": "Sparkline · behavior[1] (inventory-guidance.js)",
+    "text": "Do not show axes, grid lines or legends.",
+    "conflict": true
+   },
+   {
+    "where": "Sparkline · content[1] (inventory-guidance.js)",
+    "text": "Label axes with the measure and its unit, and avoid acronyms.",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Sparkline with no axes",
+    "jsx": "h(P.Sparkline, { values: [5, 3, 6, 8, 7, 10], label: 'Visits, last 6 days' })"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "No axes; replace the content line",
+    "text": "\"Describe the trend in text (Up 12% over 30 days).\"",
+    "render": {
+     "caption": "Trend in text",
+     "jsx": "h(P.Inline, null, h(P.Sparkline, { values: [5, 6, 8, 9, 12], label: 'Visits' }), h(P.Text, { variant: 'secondary' }, 'Up 12% over 30 days'))"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Show axes",
+    "text": "Draw axes; it becomes a small line chart.",
+    "render": {
+     "caption": "A sparkline with a caption standing in for axes",
+     "jsx": "h(P.Stack, { gap: 'xs' }, h(P.Sparkline, { values: [5, 8, 12], label: 'Visits' }), h(P.Text, { variant: 'caption' }, 'Visits per day (axis labels would go here)'))"
+    }
+   }
+  ],
+  "recommendation": "A. Sparklines by definition have no axes (Carbon, Fluent, Polaris).",
+  "sources": [
+   "Carbon · Sparkline",
+   "Fluent 2 · Sparkline",
+   "Polaris · Sparkline"
+  ]
+ },
+ {
+  "id": "foundations/data-display|Object list/1",
+  "title": "Does \"none\" in Object list mean none of the compared systems?",
+  "context": "The map compares Carbon, Polaris and Material 3; SAP Fiori is not in it.",
+  "current": [
+   {
+    "where": "Object list · commonGround (inventory-guidance.js)",
+    "text": "The systems agree on a consistent row structure with a title, supporting values and optional status; none names a distinct object list, and SAP Fiori is the main system that defines one.",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "An object list row",
+    "jsx": "h(P.Table, { label: 'Assets', columns: [{ title: 'Name', field: 'n', rowLabel: true }, { title: 'Type', field: 't' }, { title: 'Status', field: 's', render: function(r){ return h(P.Badge, { tone: 'success', icon: 'check' }, r.s); } }], data: [{ id: 1, n: 'Cross 021', t: 'JPG', s: 'Approved' }] })",
+    "width": "600"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Say \"none of these three\"",
+    "text": "\"…; none of Carbon, Polaris or Material names a distinct object list. SAP Fiori, not compared here, defines one.\"",
+    "render": {
+     "caption": "Wording",
+     "jsx": "h(P.Text, null, 'None of Carbon, Polaris or Material names a distinct object list; SAP Fiori defines one.')"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Add Fiori to the map",
+    "text": "Add a SAP Fiori row (Object list, Direct) and drop \"none\".",
+    "render": {
+     "caption": "Map",
+     "jsx": "h(P.Table, { label: \"Object list map\", columns: [{\"title\":\"System\",\"field\":\"c0\",\"kind\":\"wrap\"},{\"title\":\"Name\",\"field\":\"c1\",\"kind\":\"wrap\"},{\"title\":\"Match\",\"field\":\"c2\",\"kind\":\"wrap\"}], data: [{\"id\":0,\"c0\":\"Carbon\",\"c1\":\"Structured list\",\"c2\":\"Partial\"},{\"id\":1,\"c0\":\"Polaris\",\"c1\":\"Resource list\",\"c2\":\"Partial\"},{\"id\":2,\"c0\":\"Material 3\",\"c1\":\"Lists\",\"c2\":\"Partial\"},{\"id\":3,\"c0\":\"SAP Fiori\",\"c1\":\"Object list\",\"c2\":\"Direct\"}] })"
+    }
+   }
+  ],
+  "recommendation": "A. Smallest fix that keeps the compared set honest; Fiori is outside the systems Plenix tracks.",
+  "sources": [
+   "SAP Fiori · Object list item",
+   "Carbon · Structured list",
+   "Polaris · Resource list"
+  ]
+ },
+ {
+  "id": "foundations/content|Version label/1",
+  "title": "Is the qualifier \"Latest\" or \"Current\"?",
+  "context": "VersionLabel code: status \"latest\" | \"draft\" (\"Latest\", \"Draft\").",
+  "current": [
+   {
+    "where": "Version label · use[1] (inventory-guidance.js; exact; the file escapes the quotes) (paraphrase)",
+    "text": "Use with \"Current\" or \"Draft\" when several versions exist.",
+    "conflict": true
+   },
+   {
+    "where": "Version label · anatomy[1] (inventory-guidance.js; exact; the file escapes the quotes) (paraphrase)",
+    "text": "Qualifier — optional, such as \"Latest\" or \"Draft\"."
+   },
+   {
+    "where": "VersionLabel.jsx (the code)",
+    "text": "status: \"latest\" | \"draft\": the qualifier on a neutral badge after the number"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "VersionLabel as drawn",
+    "jsx": "h(P.Inline, null, h(P.VersionLabel, { version: '2.1.0', status: 'latest' }), h(P.VersionLabel, { version: '2.2.0', status: 'draft' }))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "\"Latest\"",
+    "text": "use[1] says \"Latest\" or \"Draft\".",
+    "render": {
+     "caption": "Latest",
+     "jsx": "h(P.VersionLabel, { version: '3', status: 'latest' })"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "\"Current\"",
+    "text": "Change the component's word to Current (new status).",
+    "render": {
+     "caption": "Without qualifier today",
+     "jsx": "h(P.VersionLabel, { version: '3' })"
+    }
+   }
+  ],
+  "recommendation": "A. It matches the code. GitHub releases use \"Latest\"; the component already ships it.",
+  "sources": [
+   "GitHub · Releases: Latest",
+   "Semantic Versioning 2.0",
+   "Plenix VersionLabel"
+  ]
+ },
+ {
+  "id": "foundations/feedback|Circular progress/1",
+  "title": "What does \"ellipsis-only message\" ban?",
+  "context": "The component doc says \"no ellipsis-only messages\": a label that is only \"…\" or says nothing.",
+  "current": [
+   {
+    "where": "Circular progress · content[1] (inventory-guidance.js)",
+    "text": "Do not end the label with an ellipsis-only message.",
+    "conflict": true
+   },
+   {
+    "where": "ProgressCircle · content labels (spec-parts.js)",
+    "text": "Say what is loading (“Loading assets”, “Uploading 3 files”), not “Please wait”; no ellipsis-only messages."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "A named progress circle",
+    "jsx": "h(P.Inline, null, h(P.ProgressCircle, { value: 62, label: 'Uploading 3 files' }), h(P.Text, null, 'Uploading 3 files'))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Ban a label that is only \"…\"",
+    "text": "\"Do not use a label that is only an ellipsis; say what is loading.\"",
+    "render": {
+     "caption": "Says what loads",
+     "jsx": "h(P.Inline, null, h(P.ProgressCircle, { label: 'Loading assets', size: 'sm' }), h(P.Text, null, 'Loading assets…'))"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Ban ending any label with \"…\"",
+    "text": "No label may end with an ellipsis.",
+    "render": {
+     "caption": "No trailing ellipsis",
+     "jsx": "h(P.Inline, null, h(P.ProgressCircle, { label: 'Loading assets', size: 'sm' }), h(P.Text, null, 'Loading assets'))"
+    }
+   }
+  ],
+  "recommendation": "A. Material 3 and Carbon allow \"Loading…\" but want it to name what loads; the point is meaning, not punctuation.",
+  "sources": [
+   "Material 3 · Progress indicators",
+   "Carbon · Loading",
+   "WCAG 2.2 · 4.1.3 Status messages"
+  ]
+ },
+ {
+  "id": "foundations/forms|Field style variants/1",
+  "title": "Does a filled field have a bottom line or a border?",
+  "context": "Plenix rule (owner, 0.52.0): a filled field has a border; no underline.",
+  "current": [
+   {
+    "where": "Field style variants · anatomy[1] (inventory-guidance.js)",
+    "text": "Filled — tinted background with a bottom line.",
+    "conflict": true
+   },
+   {
+    "where": "Plenix field rule (paraphrase)",
+    "text": "filled has a border; no underline",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Plenix field",
+    "jsx": "h(P.Field, { label: 'Name' }, h(P.Input, { defaultValue: 'Cross 021' }))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Border on all sides",
+    "text": "\"Filled — tinted background with a full border.\"",
+    "render": {
+     "caption": "Bordered field",
+     "jsx": "h(P.Field, { label: 'Title' }, h(P.Input, { defaultValue: 'Annual report' }))"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Bottom line (Material style)",
+    "text": "Keep the underline (not built in Plenix).",
+    "render": {
+     "caption": "Not drawable",
+     "jsx": "h(P.Notice, { tone: 'warning' }, 'Underline-only fields are not drawn by the Platform.')"
+    }
+   }
+  ],
+  "recommendation": "A. Fluent 2, Carbon and GOV.UK use full borders, which meet WCAG 1.4.11 more clearly; it is your rule.",
+  "sources": [
+   "Fluent 2 · Input appearances",
+   "GOV.UK · Text input",
+   "WCAG 2.2 · 1.4.11 Non-text contrast"
+  ]
+ },
+ {
+  "id": "foundations/forms|Field style variants/2",
+  "title": "What changes on focus and on error?",
+  "context": "Input code: invalid draws a 2px danger border and the lightest red fill. Focus recolors the border only.",
+  "current": [
+   {
+    "where": "Field style variants · behavior[1] (inventory-guidance.js)",
+    "text": "Change only the border color on focus and error.",
+    "conflict": true
+   },
+   {
+    "where": "Input.jsx (the code)",
+    "text": "invalid draws a 2px danger border (the border and a line inside it, so the value does not move) on the lightest"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Normal and invalid",
+    "jsx": "h(P.Stack, { gap: 'sm' }, h(P.Field, { label: 'Email' }, h(P.Input, { defaultValue: 'maya@example.com' })), h(P.Field, { label: 'Email', error: 'Enter a valid email' }, h(P.Input, { defaultValue: 'maya@', invalid: true })))",
+    "width": "600"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Focus: border only; error: invalid rule",
+    "text": "\"Focus recolors the border only; an error draws the 2px danger border with the lightest red fill, plus the message.\"",
+    "render": {
+     "caption": "Invalid field",
+     "jsx": "h(P.Field, { label: 'Email', error: 'Enter a valid email' }, h(P.Input, { defaultValue: 'maya@', invalid: true }))"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Border color only for both",
+    "text": "Drop the 2px and fill from the invalid state.",
+    "render": {
+     "caption": "Normal field",
+     "jsx": "h(P.Field, { label: 'Email' }, h(P.Input, { defaultValue: 'maya@' }))"
+    }
+   }
+  ],
+  "recommendation": "A. It matches the code; GOV.UK and Carbon thicken the error border and show a message so errors do not rely on color alone.",
+  "sources": [
+   "GOV.UK · Error message: thick red border",
+   "Carbon · Text input: invalid state",
+   "WCAG 2.2 · 1.4.1 Use of color, 3.3.1 Error identification"
+  ]
+ },
+ {
+  "id": "foundations/foundations|Text alternatives/1",
+  "title": "Is a chart's text alternative a DataGrid or a Table?",
+  "context": "A chart's data is static reference: the Table component. DataGrid is for working with records.",
+  "current": [
+   {
+    "where": "Text alternatives · behavior[1] (inventory-guidance.js)",
+    "text": "Provide data grids or summaries for charts.",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Chart with its table",
+    "jsx": "h(P.Stack, { gap: 'sm' }, h(P.PieChart, { title: 'Storage by file type', data: [{ id: 'v', label: 'Videos', value: 540 }, { id: 'i', label: 'Images', value: 260 }] }), h(P.Table, { label: \"Storage by file type\", columns: [{\"title\":\"Type\",\"field\":\"c0\",\"kind\":\"wrap\"},{\"title\":\"GB\",\"field\":\"c1\",\"kind\":\"wrap\"}], data: [{\"id\":0,\"c0\":\"Videos\",\"c1\":\"540\"},{\"id\":1,\"c0\":\"Images\",\"c1\":\"260\"}] }))",
+    "width": "600"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "A static Table",
+    "text": "\"Provide a data table (Table) or a summary for charts.\"",
+    "render": {
+     "caption": "Table",
+     "jsx": "h(P.Table, { label: \"Storage by file type\", columns: [{\"title\":\"Type\",\"field\":\"c0\",\"kind\":\"wrap\"},{\"title\":\"GB\",\"field\":\"c1\",\"kind\":\"wrap\"}], data: [{\"id\":0,\"c0\":\"Videos\",\"c1\":\"540\"},{\"id\":1,\"c0\":\"Images\",\"c1\":\"260\"}] })"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "A DataGrid",
+    "text": "Charts offer an interactive grid.",
+    "render": {
+     "caption": "DataGrid",
+     "jsx": "h(P.DataGrid, { label: 'Storage', index: 'id', data: [{ id: 1, t: 'Videos', g: 540 }], columns: [{ title: 'Type', field: 't' }, { title: 'GB', field: 'g' }] })",
+     "width": "600"
+    }
+   }
+  ],
+  "recommendation": "A. WCAG techniques and Carbon offer a plain data table as the alternative; Plenix splits Table (static) from DataGrid.",
+  "sources": [
+   "WCAG 2.2 · 1.1.1 Non-text content",
+   "Carbon · Data visualization accessibility: data table",
+   "Plenix rule: Table static vs DataGrid"
+  ]
+ },
+ {
+  "id": "foundations/foundations|Style and grammar/1",
+  "title": "Does Plenix use the serial comma?",
+  "context": "Behavior already says \"Use the serial comma.\" Much Plenix text omits it (for example \"names, sentences or statuses\").",
+  "current": [
+   {
+    "where": "Style and grammar · anatomy[0] (inventory-guidance.js)",
+    "text": "Punctuation — periods, commas, and serial comma use."
+   },
+   {
+    "where": "Style and grammar · behavior[1] (inventory-guidance.js)",
+    "text": "Use the serial comma."
+   },
+   {
+    "where": "commonGround as reported in the question (paraphrase)",
+    "text": "systems differ and no string says whether Plenix uses the serial comma",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Helper text with a serial comma",
+    "jsx": "h(P.Field, { label: 'Formats', description: 'JPG, PNG, and PDF' }, h(P.Input, { defaultValue: '' }))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Yes, serial comma",
+    "text": "commonGround adds \"Plenix uses the serial comma (American English).\"",
+    "render": {
+     "caption": "With",
+     "jsx": "h(P.Field, { label: 'Formats', description: 'JPG, PNG, and PDF' }, h(P.Input, { defaultValue: '' }))"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "No serial comma",
+    "text": "Remove the behavior line; keep what the text does today.",
+    "render": {
+     "caption": "Without",
+     "jsx": "h(P.Field, { label: 'Formats', description: 'JPG, PNG and PDF' }, h(P.Input, { defaultValue: '' }))"
+    }
+   }
+  ],
+  "recommendation": "A. Behavior already says so, and the Microsoft, Apple and Polaris style guides use the serial comma in American English. A sweep of existing text would follow.",
+  "sources": [
+   "Microsoft Writing Style Guide · Commas",
+   "Apple Style Guide · serial comma",
+   "Polaris · Grammar and mechanics"
+  ]
+ },
+ {
+  "id": "foundations/foundations|Contrast rules/1",
+  "title": "What does the disabled-controls avoid line mean?",
+  "context": "WCAG exempts disabled controls from contrast. The line means that exemption never covers active content.",
+  "current": [
+   {
+    "where": "Contrast rules · avoid[1] (inventory-guidance.js)",
+    "text": "Do not treat disabled controls as a reason to pass off unreadable active content.",
+    "conflict": true
+   },
+   {
+    "where": "Contrast rules · anatomy[2] (inventory-guidance.js)",
+    "text": "Exemptions — disabled controls, logos, and pure decoration."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Disabled and active buttons",
+    "jsx": "h(P.Inline, null, h(P.Button, { disabled: true }, 'Disabled'), h(P.Button, null, 'Active'))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Active content never uses the exemption",
+    "text": "\"The disabled-control exemption covers only controls that are actually disabled; active content keeps full contrast.\"",
+    "render": {
+     "caption": "Active stays readable",
+     "jsx": "h(P.Inline, null, h(P.Button, { disabled: true }, 'Export'), h(P.Text, null, 'Active text at full contrast'))"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Drop the line",
+    "text": "The exemption row is enough.",
+    "render": {
+     "caption": "Exemption only",
+     "jsx": "h(P.Button, { disabled: true }, 'Disabled')"
+    }
+   }
+  ],
+  "recommendation": "A. Plain restatement of WCAG 1.4.3 (the incidental exemption for inactive components).",
+  "sources": [
+   "WCAG 2.2 · 1.4.3 Contrast (minimum): incidental",
+   "WCAG 2.2 · 1.4.11 Non-text contrast",
+   "Carbon · Accessibility: color contrast"
+  ]
+ },
+ {
+  "id": "foundations/interaction|Portal/1",
+  "title": "Should Portal keep its \"Not applicable\" content line?",
+  "context": "A portal has no text of its own; content[1] already says where text lives.",
+  "current": [
+   {
+    "where": "Portal · content[0] (inventory-guidance.js)",
+    "text": "Not applicable; content rules follow the overlay rendered inside.",
+    "conflict": true
+   },
+   {
+    "where": "Portal · content[1] (inventory-guidance.js)",
+    "text": "Keep visible text in the overlay, not in the portal root."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "A tooltip rendered through a portal",
+    "jsx": "h(P.Tooltip, { content: 'Rename' }, h(P.Button, { icon: 'edit', iconOnly: true, label: 'Rename' }))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Drop content[0]",
+    "text": "Keep only \"Keep visible text in the overlay, not in the portal root.\"",
+    "render": {
+     "caption": "Overlay holds the text",
+     "jsx": "h(P.Tooltip, { content: 'Delete' }, h(P.Button, { icon: 'trash', iconOnly: true, label: 'Delete' }))"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Keep both",
+    "text": "Leave the placeholder.",
+    "render": {
+     "caption": "Placeholder",
+     "jsx": "h(P.Text, { variant: 'secondary' }, 'Not applicable; content rules follow the overlay rendered inside.')"
+    }
+   }
+  ],
+  "recommendation": "A. Placeholder lines add nothing; Atlassian and Fluent Portal docs have no content section.",
+  "sources": [
+   "Atlassian · Portal",
+   "Fluent 2 · Portal",
+   "Plenix rule: authoritative docs"
+  ]
+ },
+ {
+  "id": "foundations/interaction|Scroll lock/1",
+  "title": "Should Scroll lock keep its \"Not applicable\" content lines?",
+  "context": "Scroll lock has no text. Both content lines are placeholders.",
+  "current": [
+   {
+    "where": "Scroll lock · content[0] (inventory-guidance.js)",
+    "text": "Not applicable."
+   },
+   {
+    "where": "Scroll lock · content[1] (inventory-guidance.js)",
+    "text": "Not applicable beyond the overlay's own text.",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "A dialog locks the page scroll",
+    "jsx": "h(function Demo(){ var s = React.useState(false); return h(P.Inline, null, h(P.Button, { onClick: function(){ s[1](true); } }, 'Open dialog'), h(P.Dialog, { open: s[0], title: 'Dialog', onClose: function(){ s[1](false); } }, h(P.Text, null, 'The page behind does not scroll; this body can.'))); })"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "One line: \"No text of its own.\"",
+    "text": "Replace both with a single honest line, or hide the empty section.",
+    "render": {
+     "caption": "Wording",
+     "jsx": "h(P.Text, null, 'Scroll lock has no text of its own.')"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Write a content rule",
+    "text": "For example \"Tell people the page behind is paused.\"",
+    "render": {
+     "caption": "Rule",
+     "jsx": "h(P.Text, null, 'Tell people the page behind is paused.')"
+    }
+   }
+  ],
+  "recommendation": "A. React Aria usePreventScroll has no content guidance; inventing a rule adds noise.",
+  "sources": [
+   "React Aria · usePreventScroll",
+   "WAI-ARIA APG · Dialog (modal)",
+   "Plenix rule: authoritative docs"
+  ]
+ },
+ {
+  "id": "foundations/navigation|Navigation bar/1",
+  "title": "Is Navigation bar the same as Bottom navigation?",
+  "context": "Navigation bar says bottom on compact, rail on wider; Bottom navigation says not on wide screens. Plenix adapts NavPane: rail on Medium, bottom bar on Narrow.",
+  "current": [
+   {
+    "where": "Navigation bar · use[1] (inventory-guidance.js)",
+    "text": "Use on compact screens at the bottom, and as a rail on wider ones.",
+    "conflict": true
+   },
+   {
+    "where": "Bottom navigation · avoid[1] (inventory-guidance.js)",
+    "text": "Do not use on wide screens; use product navigation.",
+    "conflict": true
+   },
+   {
+    "where": "Adaptive patterns · Overview (spec-parts.js)",
+    "text": "The navigation pane sits beside the main region on Wide windows, becomes a rail on Medium and a bottom navigation bar on Narrow."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Three destinations at phone width",
+    "jsx": "h(P.SegmentedControl, { label: 'Destinations', value: 'home', onChange: function(){}, options: [{ value: 'home', label: 'Home', icon: 'home' }, { value: 'files', label: 'Files', icon: 'folder' }, { value: 'cal', label: 'Calendar', icon: 'calendar' }] })",
+    "width": "360"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "One item; rail is Navigation rail",
+    "text": "Navigation bar is the bottom bar on narrow screens (merged with Bottom navigation). The wider form is its own item, Navigation rail.",
+    "render": {
+     "caption": "Mapping",
+     "jsx": "h(P.Table, { label: \"Navigation by width\", columns: [{\"title\":\"Width\",\"field\":\"c0\",\"kind\":\"wrap\"},{\"title\":\"Form\",\"field\":\"c1\",\"kind\":\"wrap\"}], data: [{\"id\":0,\"c0\":\"Narrow\",\"c1\":\"Navigation bar (bottom)\"},{\"id\":1,\"c0\":\"Medium\",\"c1\":\"Navigation rail\"},{\"id\":2,\"c0\":\"Wide\",\"c1\":\"Navigation pane\"}] })"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Keep both items",
+    "text": "Navigation bar covers bottom and rail; Bottom navigation stays separate.",
+    "render": {
+     "caption": "Two names",
+     "jsx": "h(P.Table, { label: \"Items\", columns: [{\"title\":\"Item\",\"field\":\"c0\",\"kind\":\"wrap\"},{\"title\":\"Where\",\"field\":\"c1\",\"kind\":\"wrap\"}], data: [{\"id\":0,\"c0\":\"Navigation bar\",\"c1\":\"Bottom or rail\"},{\"id\":1,\"c0\":\"Bottom navigation\",\"c1\":\"Bottom only\"}] })"
+    }
+   }
+  ],
+  "recommendation": "A. Material 3 renamed bottom navigation to \"Navigation bar\" and keeps \"Navigation rail\" as a separate component for medium widths.",
+  "sources": [
+   "Material 3 · Navigation bar",
+   "Material 3 · Navigation rail",
+   "Apple HIG · Tab bars"
+  ]
+ },
+ {
+  "id": "foundations/navigation|Previous / next navigation/1",
+  "title": "At the first and last item, hide or disable previous/next?",
+  "context": "The parts are links, and links cannot be disabled.",
+  "current": [
+   {
+    "where": "Previous / next · behavior[0] (inventory-guidance.js)",
+    "text": "Disable or hide the control at the start and end.",
+    "conflict": true
+   },
+   {
+    "where": "Previous / next · anatomy[0] (inventory-guidance.js)",
+    "text": "Previous link — arrow and optional item title."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "First item: only Next shows",
+    "jsx": "h(P.Inline, null, h(P.Link, { href: '#', variant: 'standalone' }, 'Next: Billing'))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Hide at the ends",
+    "text": "\"Leave out Previous on the first item and Next on the last.\"",
+    "render": {
+     "caption": "Middle item",
+     "jsx": "h(P.Inline, null, h(P.Link, { href: '#', variant: 'standalone' }, 'Previous: Profile'), h(P.Link, { href: '#', variant: 'standalone' }, 'Next: Billing'))"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Disable",
+    "text": "Show a grayed-out Previous (needs a button, not a link).",
+    "render": {
+     "caption": "Disabled button",
+     "jsx": "h(P.Inline, null, h(P.Button, { disabled: true }, 'Previous'), h(P.Button, null, 'Next'))"
+    }
+   }
+  ],
+  "recommendation": "A. GOV.UK pagination leaves out the missing link, and an HTML link has no disabled state.",
+  "sources": [
+   "GOV.UK · Pagination: omit previous on the first page",
+   "HTML · the a element has no disabled state",
+   "Plenix rule: links are not buttons"
+  ]
+ },
+ {
+  "id": "foundations/patterns|Delete flow/1",
+  "title": "Is deletion always permanent?",
+  "context": "The text says \"permanently removing\" but also \"recovery when possible\" and prefers undo.",
+  "current": [
+   {
+    "where": "Delete flow · text (inventory-guidance.js)",
+    "text": "A workflow for permanently removing an object, with confirmation and recovery when possible.",
+    "conflict": true
+   },
+   {
+    "where": "Delete flow · use[1] (inventory-guidance.js)",
+    "text": "Use undo instead of confirmation when the item can be restored.",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Undo after a reversible delete",
+    "jsx": "h(P.Notice, { tone: 'info', actions: h(P.Button, { size: 'xs' }, 'Undo') }, 'Cross 021 moved to the trash.')"
+   },
+   {
+    "caption": "Confirm for a permanent delete",
+    "jsx": "h(P.ConfirmDialog, { open: true, title: 'Delete Cross 021 forever?', confirmLabel: 'Delete', onConfirm: function(){}, onCancel: function(){} }, 'This cannot be undone.')"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Drop \"permanently\"",
+    "text": "\"A workflow for removing an object: undo when it can be restored, confirmation when it cannot.\"",
+    "render": {
+     "caption": "Undo",
+     "jsx": "h(P.Notice, { tone: 'info', actions: h(P.Button, { size: 'xs' }, 'Undo') }, '3 items deleted.')"
+    },
+    "recommended": true
+   },
+   {
+    "key": "B",
+    "label": "Keep \"permanently\"",
+    "text": "The flow is only for permanent deletes; the trash is a different flow.",
+    "render": {
+     "caption": "Confirm",
+     "jsx": "h(P.Button, { variant: 'danger' }, 'Delete forever')"
+    }
+   }
+  ],
+  "recommendation": "A. Material 3, Polaris and GOV.UK prefer undo for reversible deletes and confirm only permanent ones.",
+  "sources": [
+   "Material 3 · Snackbar with undo",
+   "Polaris · Destructive actions",
+   "NN/g · Confirmation dialogs vs undo"
+  ]
+ }
+]

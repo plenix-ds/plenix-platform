@@ -2,7 +2,7 @@
    Summary: A one-time passcode or PIN of a known length, one box per character: typing moves on, Backspace moves back, a
      pasted or autofilled code fills every box.
    Usage:
-     <Field label="Verification code" description="We sent a 6-digit code to r•••@lighthouseway.org." error={err}>
+     <Field label="Verification code" description="We sent a 6-digit code to j•••@example.com." error={err}>
        <OtpInput value={code} onChange={setCode} onComplete={verify} />
      </Field>
      <OtpInput length={4} masked label="PIN" />

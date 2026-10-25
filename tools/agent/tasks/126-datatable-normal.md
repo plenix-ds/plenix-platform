@@ -1,4 +1,4 @@
-# Task #126: DataTable on Tabulator the normal way, option B (Codex)
+# Task #126: DataTable on the legacy grid the normal way, option B (Codex)
 
 Tracker: https://github.com/plenix-ds/plenix-platform/issues/126 · Plan of record: https://github.com/plenix-ds/plenix-platform/issues/3
 
@@ -13,8 +13,8 @@ plan of record (#3); when #117 shows as done, pull main and start.
 
 ### The task
 
-The owner chose **option B** (2026-10-16): keep Tabulator, but use it the way grids are meant to be used. Today the
-DataTable builds the table first and then applies the view step by step, and `strict.js` overrides Tabulator's own
+The owner chose **option B** (2026-10-16): keep the legacy grid, but use it the way grids are meant to be used. Today the
+DataTable builds the table first and then applies the view step by step, and `strict.js` overrides the legacy grid's own
 rendering. RedSave measured the cost (`Redsave-v1/docs/plenix-datatable-issues.md` #19–#21, GitHub #72–#89 for the
 others):
 
@@ -24,9 +24,9 @@ others):
 | DT-20 | `applyView` (about line 575) | the order check uses `getPrevColumn()`, which skips hidden columns, so with any hidden column it never matches and the column moves again on every load and view change; each move fires `columnMoved` → `redrawGroups` → `syncSticky`, which reads `holder.scrollTop` (a forced layout, 30–70 ms) even when the table is not grouped. Chats (14 of 18 columns hidden) froze 1.5–2 s per visit |
 | DT-21 | after `setData` | `addFilter` (`refreshFilter`, a full redraw), then `setSort` (another), with `floatingScroll` and the virtual fill reading sizes in between: about 12 forced layouts per table on opening |
 
-**1. State at build.** Build the Tabulator options from the view the table opens with (the controlled props from
+**1. State at build.** Build the legacy grid options from the view the table opens with (the controlled props from
 `useCollectionView`, or the view kept under `storageKey`): the column definitions in their order, each with `visible`
-and `width`; `initialSort`; the filter as `initialFilter` where Tabulator can express it, otherwise set once before the
+and `width`; `initialSort`; the filter as `initialFilter` where the legacy grid can express it, otherwise set once before the
 first draw (for example build with the filter in place, then `setData`). The first draw is the right one. Delete the
 apply-after-build steps of `restoreView` that this replaces.
 
@@ -37,20 +37,20 @@ column, hidden ones included), never `getPrevColumn()`/`getNextColumn()`. Hide a
 each. When the column set itself changes, prefer one `setColumns()` to many moves.
 
 **3. Layout reads.** `syncSticky` runs only when the table is grouped. Size reads (floating scrollbars, the virtual fill,
-sticky group headers) happen once per animation frame, after Tabulator has drawn, never between its steps.
+sticky group headers) happen once per animation frame, after the legacy grid has drawn, never between its steps.
 
-**4. Let Tabulator draw its rows (strict.js).** The owner's rule allows JavaScript to set sizes inline when the values
-come from tokens and land on the 4px grid. So Tabulator may write its own row geometry again (row heights, positions,
+**4. Let the legacy grid draw its rows (strict.js).** The owner's rule allows JavaScript to set sizes inline when the values
+come from tokens and land on the 4px grid. So the legacy grid may write its own row geometry again (row heights, positions,
 its own virtual renderer), with its inputs from tokens: the row height step (`rowHeight`, density) read from the
-`--plx-comp-data-table-*` tokens and passed as Tabulator's row height, so what it writes stays on the grid. Remove the
-parts of `strict.js` that switch Tabulator's geometry off and replace its virtual renderer's measurements
-(`virtualResync`, the token-height bookkeeping, `groupLayout`/`groupAt` if Tabulator's own grouping now does the job);
-keep what only maps tokens into Tabulator's options and the column widths rounding to whole grid steps. Every value
-Tabulator writes must still be on the grid: check it.
+`--plx-comp-data-table-*` tokens and passed as the legacy grid's row height, so what it writes stays on the grid. Remove the
+parts of `strict.js` that switch the legacy grid's geometry off and replace its virtual renderer's measurements
+(`virtualResync`, the token-height bookkeeping, `groupLayout`/`groupAt` if the legacy grid's own grouping now does the job);
+keep what only maps tokens into the legacy grid's options and the column widths rounding to whole grid steps. Every value
+the legacy grid writes must still be on the grid: check it.
 
 **Unchanged:** the public API (every prop and callback in DataTable's header comment), the look (the visual baselines),
 the features (selection, editing, grouping, tree, moving rows and columns, the header and row menus, the floating
-scrollbars, print, the narrow list), and every application. No inline style outside what Tabulator's engine writes.
+scrollbars, print, the narrow list), and every application. No inline style outside what the legacy grid's engine writes.
 
 ### Measure (before and after, in the pull request)
 
@@ -63,7 +63,7 @@ under 50 ms. Report the numbers before and after in a table.
 
 ### Files you own
 
-- `platform/components/DataTable/` (DataTable.jsx, strict.js, tabulator.js, floatingScroll.js, data-table.css,
+- `platform/components/DataTable/` (DataTable.jsx, strict.js, legacy-grid.js, floatingScroll.js, data-table.css,
   data-table-steps.css only if the row geometry needs it)
 - `platform/hooks/useCollectionView.js` (only if the view's shape must carry what the build needs)
 - `tests/data-table.test.js` (keep every case passing; add cases for order with hidden columns and for a saved view),
@@ -85,13 +85,13 @@ Never edit generated files or the applications.
 
 1. `AGENTS.md`
 2. `Redsave-v1/docs/plenix-datatable-issues.md` #19–#21 (the measurements above are theirs)
-3. The header comments of `DataTable.jsx` and `strict.js`; Tabulator's docs on `initialSort`, `initialFilter`, column
+3. The header comments of `DataTable.jsx` and `strict.js`; the legacy grid's docs on `initialSort`, `initialFilter`, column
    `visible`, `blockRedraw` / `restoreRedraw`, `setColumns`, and its virtual DOM renderer
 
 ### Owner decision (2026-10-16, after PR #127's review)
 
 **Allow inline values that equal a token.** Update the runtime style audit (`platform/dev/style-audit.js`) and any
-check that enforces the same rule: an inline size Tabulator writes is accepted when it equals a Plenix token value and
+check that enforces the same rule: an inline size the legacy grid writes is accepted when it equals a Plenix token value and
 sits on the grid (the row heights from the `--plx-comp-data-table-*` / density tokens); a 1px line is accepted when it
 equals the border-width token (`--plx-sys-border-width-thin`). Anything else inline stays an error. This is the owner's
 existing rule for JavaScript sizes, written into the checker.

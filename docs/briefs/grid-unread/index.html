@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en" data-plx-mode="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unread commands · Plenix review</title>
+<!-- Owner review for #287 (RedSave P-58): the unread row the DataGrid draws above its column headers, its cause, and
+     where its two commands go instead. Pictures of the real components (stage.html); options drawn for the picture. -->
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<link rel="stylesheet" href="../review.css">
+</head>
+<body class="rv-page">
+<main class="rv-doc">
+  <h1 class="rv-h1">Unread: no text above the column headers (#287)</h1>
+  <p class="rv-lead">When a grid shows unread rows (bold, with the blue start bar), the DataGrid adds a row of its own
+    between the command bar and the headers: "Show unread only (2)" and "Change selected rows". You said there should not
+    be any text above the columns.</p>
+  <ul class="rv-list">
+    <li><strong>Cause:</strong> the grid draws these two ghost buttons itself whenever unread is on (DataGridEngine.jsx, before the table). Their words are fixed English, and no setting moves or hides them.</li>
+    <li><strong>Already in place:</strong> the row menu has "Mark as read / Mark as unread"; the grid has <span class="rv-tag">unreadOnly</span> and <span class="rv-tag">onUnreadOnlyChange</span>, and reports the unread count.</li>
+  </ul>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">Today</h2>
+    <figure class="rv-fig"><img src="today.png" alt="The unread row with two text buttons between the command bar and the column headers"><figcaption><span class="rv-tag">TODAY</span> · a row of text between the command bar and the headers</figcaption></figure>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">A · A toggle in the command bar, and the marks in the selection commands (recommended)</h2>
+    <div class="rv-pair">
+      <figure class="rv-fig"><img src="option-a.png" alt="The command bar has an Unread only (2) toggle beside Add person; nothing above the headers"><figcaption>Nothing selected: <strong>Unread only (2)</strong> is a toggle command in the bar (the bar's own on/off command)</figcaption></figure>
+      <figure class="rv-fig"><img src="option-a-selected.png" alt="With a row selected the bar shows Mark as read, Mark as unread and Delete"><figcaption>Rows selected: <strong>Mark as read / Mark as unread</strong> join the selection commands (and stay in the row menu)</figcaption></figure>
+    </div>
+  </section>
+  <section class="rv-section">
+    <h2 class="rv-h2">B · A "Read status" quick filter</h2>
+    <figure class="rv-fig"><img src="option-b.png" alt="The command bar has a Read status filter after the search"><figcaption>"Read status" sits with the filters (Unread 2 · Read 3); the marks go in the selection commands as in A</figcaption></figure>
+  </section>
+  <section class="rv-section">
+    <h2 class="rv-h2">C · Row menu only</h2>
+    <figure class="rv-fig"><img src="option-c-selected.png" alt="The row menu with Mark as unread; the bar has no unread command"><figcaption>The grid draws nothing; marking is only in each row's menu; any unread filter is the app's own</figcaption></figure>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">For every option</h2>
+    <ul class="rv-list">
+      <li>The row above the headers is removed. The words go through the grid's strings (translatable).</li>
+      <li>The grid gives the app the unread count and the two mark actions, so the app puts them in its CommandBar; a grid without a CommandBar keeps the row menu.</li>
+      <li>(The "Mark as read" icon in the pictures is missing because "mail-open" is not a Plenix icon name; the build would use an existing one.)</li>
+    </ul>
+  </section>
+  <p class="rv-rec"><strong>Recommendation:</strong> A. It follows the CommandBar's own rule (an on/off setting is a toggle
+    command) and how mail apps work: Outlook and Gmail put "Unread" with the list's filters and "Mark as read / unread" in
+    the commands for selected messages and in each message's menu. B also works when an app has several filters; C hides
+    the filter people use most.</p>
+</main>
+</body>
+</html>

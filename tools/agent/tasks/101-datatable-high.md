@@ -28,7 +28,7 @@ Write each fix where the code already lives; keep the style of the file. New tok
 
 ### Files you own
 
-- `platform/components/DataTable/DataTable.jsx`, `data-table.css`, `tabulator.js`, `strict.js`
+- `platform/components/DataTable/DataTable.jsx`, `data-table.css`, `legacy-grid.js`, `strict.js`
 - `platform/hooks/useCollectionView.js`
 - `platform/components/Text/Text.jsx` (only `dir="auto"` for DT-9)
 - `platform/patterns/CommandBar/CommandBar.jsx` (only the hidden count of DT-11) and `platform/patterns/ViewMenu/` (only

@@ -588,7 +588,7 @@ Apps to check: CSS that set a component's internals from outside (now context ho
   (owner): as tall as its rows, wrapped text grows its row, the columns share the width they are given.
 - AuditLog, FileList, ImportWizard, PermissionsEditor, RenditionList, ReviewFlow and the Account and page templates use
   the TanStack `DataTable` with the Plenix callbacks; the design system's own tables (DS.grid, the labs' matrices) too.
-  No page of the design system loads Tabulator now; only `LegacyDataTable` (the existing apps) does, on demand.
+  No page of the design system loads the legacy grid now; only `LegacyDataTable` (the existing apps) does, on demand.
 
 ## [0.52.0] - 2026-10-17
 
@@ -607,7 +607,7 @@ Apps to check: CSS that set a component's internals from outside (now context ho
 
 ### Fixed
 - The design system's "All …" variant pages draw again (Illustration, Button and every component lab): the static
-  Table in a lab's frame showed its header and no rows, because Tabulator in the frame rejected an empty-state
+  Table in a lab's frame showed its header and no rows, because the legacy grid in the frame rejected an empty-state
   placeholder made in the page's document and stopped drawing. The placeholder is now made in the grid's own document.
 
 ## [0.51.2] - 2026-10-17
@@ -629,16 +629,16 @@ Apps to check: CSS that set a component's internals from outside (now context ho
 ## [0.51.0] - 2026-10-16
 
 ### Changed
-- **`DataTable` is the TanStack table** (owner, 2026-10-16: Tabulator performed badly; the design spec documents only
+- **`DataTable` is the TanStack table** (owner, 2026-10-16: the legacy grid performed badly; the design spec documents only
   the TanStack table, and new applications are built on it). Same props and look; Plenix callbacks
   (`onRowClick(record, event)`, `onRowDoubleClick`, `onCellEdit(record, change)`), `tree`/`treeColumn`/`treeExpanded`,
   `groupBy`, `sort`, `movableRows`/`movableColumns` as props. `DataTable.useActions` and `DataTable.preload` stay.
-- The design spec no longer documents Tabulator: the Data table page, its guidelines, the Table page and the layout lab
+- The design spec no longer documents the legacy grid: the Data table page, its guidelines, the Table page and the layout lab
   describe the TanStack table; every example uses the Plenix props.
 ### Deprecated
-- `LegacyDataTable`: the Tabulator table, kept only for the existing applications until they move (they import it
+- `LegacyDataTable`: the legacy grid table, kept only for the existing applications until they move (they import it
   under their local name DataTable; nothing changes for them). Apps to check: an app that imports `DataTable` and
-  passes Tabulator `options`, `on` or `onReady` should import `LegacyDataTable` until it moves to the Plenix props.
+  passes the legacy grid `options`, `on` or `onReady` should import `LegacyDataTable` until it moves to the Plenix props.
 
 ## [0.50.0] - 2026-10-16
 
@@ -647,7 +647,7 @@ Apps to check: CSS that set a component's internals from outside (now context ho
   grouping with summaries, tree rows, editing, moving rows and columns, load-more, copy, print, the floating
   scrollbars, every cell kind), its own `plx-data-table__*` markup and stylesheet (`data-table-next.css`, on the
   existing data-table tokens, the same look), and Plenix callbacks (`onRowClick(row, event)`, `onRowDoubleClick`,
-  `onCellEdit`). On 600 rich rows it opens in 24–92 ms (Tabulator 90–159 ms).
+  `onCellEdit`). On 600 rich rows it opens in 24–92 ms (the legacy grid 90–159 ms).
 - `DataTable engine="next"` renders the TanStack table with the same props (opt in per table; the default is unchanged).
 
 ## [0.49.0] - 2026-10-16
@@ -656,10 +656,10 @@ Apps to check: CSS that set a component's internals from outside (now context ho
 - `DataTableNext` (#128, phase 1): the table on TanStack Table and TanStack Virtual (MIT, bundled into platform.js):
   the same props and look as DataTable, with rendering, virtual scrolling, sort, filter, selection (hidden selection
   too), column order, visibility and widths, pages, the narrow list, menus, keyboard and saved views. Measured on 600
-  rich rows it opens in 24–45 ms (Tabulator 100–206 ms) and sorts and filters 2–4× faster. The design system shows it
+  rich rows it opens in 24–45 ms (the legacy grid 100–206 ms) and sorts and filters 2–4× faster. The design system shows it
   beside DataTable with `?engine=next`. Phase 2 (grouping, tree rows, editing, moving, load-more, copy, print) follows.
 ### Changed
-- DataTable (Tabulator, #126 option B): the view is built into the table at creation (order, hidden columns, sort,
+- DataTable (the legacy grid, #126 option B): the view is built into the table at creation (order, hidden columns, sort,
   filters), later view changes redraw once, and the geometry patches are gone; frozen columns fixed. The runtime style
   audit accepts inline sizes that equal a token on the grid and 1px lines equal to the border-width token.
 
@@ -760,7 +760,7 @@ Apps to check: CSS that set a component's internals from outside (now context ho
   - DataTable, the rest of RedSave's list: grouping by a multi-value field, faceted quick-filter counts, `narrowAt`,
     `empty` and the deleted look, `type: "bytes"`, undo on destructive actions, built-in avatar/tags/badge cells, widths
     as CSS lengths or size tokens, checkbox labels kept through view changes.
-- Codex task #126: the DataTable on Tabulator the normal way (option B), after the owner's choice.
+- Codex task #126: the DataTable on the legacy grid the normal way (option B), after the owner's choice.
 ### Fixed
 - The Vue package's ESM declarations and the lint package's source dependency (#121).
 
@@ -1047,8 +1047,8 @@ Apps to check: CSS that set a component's internals from outside (now context ho
 ### Fixed
 - TypeScript definitions (@plenix-ds/react) are valid TypeScript: renamed exports typed by their public name, part
   props on their own export, interfaces extend `Omit<HTMLAttributes, own props>`; 364 exports, matching window.Plenix.
-- The npm package finds its vendor files (Tabulator, Tiptap) in `dist/vendor/`; the idle Tabulator prefetch runs only
-  on the Platform's own origin (an app no longer downloads Tabulator on pages without a table).
+- The npm package finds its vendor files (the legacy grid, Tiptap) in `dist/vendor/`; the idle the legacy grid prefetch runs only
+  on the Platform's own origin (an app no longer downloads the legacy grid on pages without a table).
 - Unknown icon names fixed in Icon, Thumbnail, CollapsibleSection and the navigation-list examples.
 - Touch targets (coarse 18 → 9): the combobox field's whole height is its target; the field info button reaches 44px
   with touch; DataTable's selection checkboxes fill their 44px cell with touch (a tap beside the box toggles that row).
@@ -1084,7 +1084,7 @@ Apps to check: CSS that set a component's internals from outside (now context ho
   (BulkActions as `selection`) is replaced by the swap.
 - BulkActions is for pages without a command bar.
 - The Asset Manager's home page uses the swap (categories, a category's assets).
-- DataTable: floating scrollbars. The table body's scrollbars float over the rows and take no room, so Tabulator no
+- DataTable: floating scrollbars. The table body's scrollbars float over the rows and take no room, so the legacy grid no
   longer writes a margin on the header row (the off-grid 10px). Thin thumbs (the Platform's scrollbar color), shown
   while the pointer is over the table or focus is in it; drag a thumb or press its track. Browsers without
   scroll-driven animations and anchor positioning keep the thin native bars.
@@ -1308,8 +1308,8 @@ Apps to check: CSS that set a component's internals from outside (now context ho
 ## [0.31.52] - 2026-10-14
 
 ### Changed
-- DataTable geometry (owner): row height and cell padding come only from the density (never measured); Tabulator
-  measures column widths from the content, rounded up to the 4px grid; columns resize with Tabulator's handle (also by
+- DataTable geometry (owner): row height and cell padding come only from the density (never measured); the legacy grid
+  measures column widths from the content, rounded up to the 4px grid; columns resize with the legacy grid's handle (also by
   keyboard, in size steps) and the widths are kept in the saved view; pinned columns keep Plenix classes.
 - Large tables are fast: the wasted full redraw is gone, grids with a height draw only the rows in view (virtual
   rendering; the space for the others comes from classes; aria-rowcount and aria-rowindex; focus kept; printing draws
@@ -2186,7 +2186,7 @@ Apps to check: CSS that set a component's internals from outside (now context ho
 ## [0.25.0] - 2026-10-09
 
 ### Changed (breaking)
-- Tabulator is drawn by Plenix (Strict DS 6b): no style attribute anywhere, the tables included. Tabulator runs in
+- the legacy grid is drawn by Plenix (Strict DS 6b): no style attribute anywhere, the tables included. the legacy grid runs in
   strict mode (components/DataTable/strict.js, applied once per window as it loads): its geometry writes are off (cell
   and column widths, heights and alignment, row heights, header alignment, body sizing, virtual padding, the
   frozen-rows holder), pinned columns are classes (sticky at the widths before them, data-plx-sticky), tree rows a
@@ -2194,26 +2194,26 @@ Apps to check: CSS that set a component's internals from outside (now context ho
   placed by CSS anchor positioning against what opened them.
 - DataTable and Table columns: width is a size token class (__w-<size>; a number snaps to the nearest token; the icon
   and checkbox columns __w-lead); a column without one shares the room left (__w-fill, never under 80px or its
-  minWidth token). maxWidth is gone. hozAlign and headerHozAlign become classes. height is a size token (the body
+  minWidth token). maxWidth is gone. align and headerAlign become classes. height is a size token (the body
   scrolls inside it) or "100%" (fills its container). Rows render all at once (no virtual scrolling).
 - Moving rows (options.movableRows with a rowHandle column) and columns (options.movableColumns) is native drag and
   drop with a drop line; a header's resize grip and Fit to content snap its width to the size tokens. The "input" and
   "number" editors are a Plenix input. Events rowMoved and columnMoved reach on.
 - The header, rows and columns are flex rows (data-table.css, table.css); their per-size rules are generated beside
-  them (data-table-steps.css, table-steps.css, build-steps.js). tests/pages.test.js fails any style attribute, Tabulator
+  them (data-table-steps.css, table-steps.css, build-steps.js). tests/pages.test.js fails any style attribute, the legacy grid
   included (722 pages: none).
 
 ## [0.24.0] - 2026-10-09
 
 ### Changed
-- No style attribute anywhere outside Tabulator (Strict DS steps 6 and 7; owner: "strictly follow the DS.. no
+- No style attribute anywhere outside the legacy grid (Strict DS steps 6 and 7; owner: "strictly follow the DS.. no
   exceptions"). The design system's own samples (a token's swatch, radius, shadow, opacity, icon size, type, a demo box's
   width, a wireframe's grid) take their value as a generated class: DS.varClass(doc, name, value) writes one rule per
   property and value into the page's constructed sample sheet (document.adoptedStyleSheets: no element), DS.setVar and
   DS.sample use it, React samples use DS.sampleClass. The sample properties are named --ds-sample-<property>.
 - check-system rejects every style object, style.setProperty and style write, custom properties included (until now an
   object of --plx- custom properties was allowed).
-- tests/pages.test.js fails any page or frame with an element that has a style attribute (722 pages: none). Tabulator's
+- tests/pages.test.js fails any page or frame with an element that has a style attribute (722 pages: none). the legacy grid's
   own writes (Strict DS 6b, next) are counted apart until DataTable draws without them.
 
 ## [0.23.2] - 2026-10-09
@@ -2433,7 +2433,7 @@ Apps to check: CSS that set a component's internals from outside (now context ho
   a tag it has). The Asset Manager's Tags and the add-asset dialog use it. A tag being renamed is a small field with
   the input's focused border (it was a blue underline shadow). (batch 268)
 - "DataGrid" / "data grid" is gone from every active file (owner: "nowhere"): the reference file is
-  docs/data-table-reference.html (was datagrid-tabulator-demo.html), the Data table alias and the orphan "Data grid"
+  docs/data-table-reference.html (was datagrid-legacy-grid-demo.html), the Data table alias and the orphan "Data grid"
   guidance entry are removed, guidance says "data table", and the two Fluent 2 mapping rows that named its
   "Data grid" are dropped. Only the changelog and the work log keep the old name. (batch 268)
 
@@ -2609,7 +2609,7 @@ Apps to check: CSS that set a component's internals from outside (now context ho
 ## [0.13.1] - 2026-10-09
 
 ### Fixed
-- @plenix-ds/react: a DataTable in an app built with a bundler (Vite, webpack) never drew: it looked for Tabulator next to a
+- @plenix-ds/react: a DataTable in an app built with a bundler (Vite, webpack) never drew: it looked for the legacy grid next to a
   Plenix script the page does not have (404 on /platform/vendor/). The npm build now falls back to the release's CDN copy,
   https://design-system.lighthouseway.org/cdn/<version>/vendor/ (versioned, never changes); window.PlenixVendorBase still
   overrides it. Found while building the starter template (plenix-ds/plenix-starter). (batch 251)
@@ -2654,7 +2654,7 @@ Apps to check: CSS that set a component's internals from outside (now context ho
 
 ### Fixed
 - DataTable (owner: "uncheckbox does not really work"): a checked row checkbox could not be unchecked: in the "click" range
-  mode the rows use, Tabulator's checkbox read a plain click as "only this row", and an extra cell handler toggled again.
+  mode the rows use, the legacy grid's checkbox read a plain click as "only this row", and an extra cell handler toggled again.
   The row checkbox now toggles its row (Shift and Ctrl/Cmd keep range and add); the cell around it acts as a row click.
   (batch 246)
 
@@ -2753,8 +2753,8 @@ Apps to check: CSS that set a component's internals from outside (now context ho
   transition still wins; reduced motion still turns all of it off. (batch 236)
 
 ### Added
-- Loading: DataTable.preload() and Table.preload() start loading Tabulator before the first grid mounts; the Asset
-  Manager and Files call it as they start. Every other page prefetches Tabulator into the cache once idle after load.
+- Loading: DataTable.preload() and Table.preload() start loading the legacy grid before the first grid mounts; the Asset
+  Manager and Files call it as they start. Every other page prefetches the legacy grid into the cache once idle after load.
   (batch 237)
 - Next page ready before the click: in Chromium browsers a same-site link is prerendered when the pointer rests on it
   (speculation rules, moderate eagerness), so switching apps shows the finished page at once; other browsers fetch the
@@ -2769,7 +2769,7 @@ Apps to check: CSS that set a component's internals from outside (now context ho
 ### Changed (visual)
 - Tables (owner: "data grid should be merged into data table… Table should have the same UI as data table except it is purely
   static"): DataGrid is DataTable (components/DataTable, plx-data-table, --plx-sys-data-table-*, --plx-comp-data-table-*;
-  no "grid" name left), and Table is back as the static table: the same Tabulator engine and look (its own tokens
+  no "grid" name left), and Table is back as the static table: the same the legacy grid engine and look (its own tokens
   --plx-sys-table-*, --plx-comp-table-*, equal to the DataTable's: computed styles identical in light and dark at each
   density) with no hover, sorting, filters, menus, selection, resizing, moving or editing. Reference tables use Table: the
   design system's props, attributes, states, classes and token tables, Settings' documentation and fact tables,
@@ -2796,9 +2796,9 @@ Apps to check: CSS that set a component's internals from outside (now context ho
   with a destructive action first and the primary last. Tokens --plx-comp-action-bar-*; a scrolling area sets
   --plx-comp-action-bar-stick to minus its bottom padding so the stuck bar is flush. Design system: Action bar
   (#/actions/page-actions). Dialog, panel and side panel footers were already on the right. (batch 231)
-- DataGrid: every table in Plenix is a Tabulator grid (6.6.1, MIT, vendored in platform/vendor/tabulator, loaded the
-  first time a grid renders) in the owner's grid style (docs/datagrid-tabulator-demo.html), drawn with tokens only
-  (components/DataGrid/data-grid.css). Columns are Tabulator's own definitions plus Plenix kinds (name, data, icon,
+- DataGrid: every table in Plenix is a legacy grid grid (6.6.1, MIT, vendored in platform/vendor/legacy-grid, loaded the
+  first time a grid renders) in the owner's grid style (docs/datagrid-legacy-grid-demo.html), drawn with tokens only
+  (components/DataGrid/data-grid.css). Columns are the legacy grid's own definitions plus Plenix kinds (name, data, icon,
   center, actions), React cells (render), filters, a row header; header menu, row menu, filter popup, groups, tree rows,
   editing, selection. New tokens: grid color roles (--plx-sys-grid-*, light and dark), --plx-sys-grid-row-height
   (28 / 32 / 40; 44 on touch and mobile) and --plx-sys-grid-font-size (12 / 13 / 13), 48 --plx-comp-data-grid-*
@@ -2872,11 +2872,11 @@ Apps to check: CSS that set a component's internals from outside (now context ho
   platform/fonts with platform/system/fonts.css (SIL Open Font License); every page preloads DM Sans and no page calls
   Google. The styles package and the CDN carry the font files beside fonts.css. check-system rule fonts rejects a call
   to Google Fonts. The package build's default theme path (renamed in batch 219) is fixed. (batch 227)
-- Every table in the apps is a DataGrid (Tabulator, the owner's grid style): Files, Projects (files), the suite's
+- Every table in the apps is a DataGrid (the legacy grid, the owner's grid style): Files, Projects (files), the suite's
   Search workspace (every source), Settings (scenarios, fields, product vision, terminology, data model: 7 kinds of
   table), the Asset Manager's categories, collections and asset results, its system settings (enabled for, actions,
   view and edit all folders, fields, conversion presets, users, email templates, database, customizations, scheduled
-  tasks) and its field dialogs. Columns are written as Tabulator column definitions; sorting is Tabulator's (sorter
+  tasks) and its field dialogs. Columns are written as the legacy grid column definitions; sorting is the legacy grid's (sorter
   functions for counts, sizes and dates); dialogs reorder rows by their handle (movableRows). DataGrid adds: selected /
   onSelectionChange, Enter opens a row that has rowClick, the wrap kind (long text grows the row), a grid built while
   hidden is drawn when shown, rows equal to the ones shown change nothing. tests/grid.test.js (in npm test and CI)
