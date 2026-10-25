@@ -1138,7 +1138,7 @@
       "library": "plenix",
       "icon": "file-jpg",
       "shape": "square",
-      "state": "restyled",
+      "state": "approved",
       "replaces": "file-jpg",
       "why": "Owner, 2026-10-24: lettered file icons with squared letters in the sharp style (tools/icons/draw-file-types.js). Today the name draws a generic Material icon.",
       "sizes": [
@@ -1204,7 +1204,8 @@
             "edge-grid"
           ]
         }
-      }
+      },
+      "decision": "Owner, 2026-10-24: the apps use it (platform/icons/custom, map.json file-jpg)."
     },
     {
       "id": "plenix/file-png",
@@ -1221,7 +1222,7 @@
       "library": "plenix",
       "icon": "file-png",
       "shape": "square",
-      "state": "restyled",
+      "state": "approved",
       "replaces": "file-png",
       "why": "Owner, 2026-10-24: lettered file icons with squared letters in the sharp style (tools/icons/draw-file-types.js). Today the name draws a generic Material icon.",
       "sizes": [
@@ -1287,7 +1288,8 @@
             "edge-grid"
           ]
         }
-      }
+      },
+      "decision": "Owner, 2026-10-24: the apps use it (platform/icons/custom, map.json file-png)."
     },
     {
       "id": "plenix/file-svg",
@@ -1304,7 +1306,7 @@
       "library": "plenix",
       "icon": "file-svg",
       "shape": "square",
-      "state": "restyled",
+      "state": "approved",
       "replaces": "file-svg",
       "why": "Owner, 2026-10-24: lettered file icons with squared letters in the sharp style (tools/icons/draw-file-types.js). Today the name draws a generic Material icon.",
       "sizes": [
@@ -1370,7 +1372,8 @@
             "edge-grid"
           ]
         }
-      }
+      },
+      "decision": "Owner, 2026-10-24: the apps use it (platform/icons/custom, map.json file-svg)."
     },
     {
       "id": "plenix/file-pdf",
@@ -1387,7 +1390,7 @@
       "library": "plenix",
       "icon": "file-pdf",
       "shape": "square",
-      "state": "restyled",
+      "state": "approved",
       "replaces": "file-pdf",
       "why": "Owner, 2026-10-24: lettered file icons with squared letters in the sharp style (tools/icons/draw-file-types.js). Today the name draws a generic Material icon.",
       "sizes": [
@@ -1453,7 +1456,8 @@
             "edge-grid"
           ]
         }
-      }
+      },
+      "decision": "Owner, 2026-10-24: the apps use it (platform/icons/custom, map.json file-pdf)."
     },
     {
       "id": "plenix/file-psd",
@@ -1470,7 +1474,7 @@
       "library": "plenix",
       "icon": "file-psd",
       "shape": "square",
-      "state": "restyled",
+      "state": "approved",
       "replaces": "file-psd",
       "why": "Owner, 2026-10-24: lettered file icons with squared letters in the sharp style (tools/icons/draw-file-types.js). Today the name draws a generic Material icon.",
       "sizes": [
@@ -1532,7 +1536,8 @@
             "edge-grid"
           ]
         }
-      }
+      },
+      "decision": "Owner, 2026-10-24: the apps use it (platform/icons/custom, map.json file-psd)."
     },
     {
       "id": "plenix/file-ai",
@@ -1549,7 +1554,7 @@
       "library": "plenix",
       "icon": "file-ai",
       "shape": "square",
-      "state": "restyled",
+      "state": "approved",
       "replaces": "file-ai",
       "why": "Owner, 2026-10-24: lettered file icons with squared letters in the sharp style (tools/icons/draw-file-types.js). Today the name draws a generic Material icon.",
       "sizes": [
@@ -1615,7 +1620,8 @@
             "edge-grid"
           ]
         }
-      }
+      },
+      "decision": "Owner, 2026-10-24: the apps use it (platform/icons/custom, map.json file-ai)."
     }
   ],
   "gaps": []

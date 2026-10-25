@@ -87,12 +87,12 @@
     "field-number": "numbers",
     "field-select": "arrow_drop_down_circle",
     "fields": "list_alt",
-    "file-ai": "draft",
-    "file-jpg": "image",
-    "file-pdf": "picture_as_pdf",
-    "file-png": "image",
-    "file-psd": "draft",
-    "file-svg": "image",
+    "file-ai": "file_ai",
+    "file-jpg": "file_jpg",
+    "file-pdf": "file_pdf",
+    "file-png": "file_png",
+    "file-psd": "file_psd",
+    "file-svg": "file_svg",
     "file-zip": "folder_zip",
     "filter": "filter_alt",
     "filter-off": "filter_alt_off",
@@ -217,12 +217,7 @@
     "wifi-off": "wifi_off"
   },
   "flag": {
-    "ed-flip-y": "Material has one Flip (horizontal); no vertical flip",
-    "file-ai": "No per-format file icons (AI); generic file",
-    "file-psd": "No per-format file icons (PSD); generic file",
-    "file-jpg": "No per-format file icons; generic image",
-    "file-png": "No per-format file icons; generic image",
-    "file-svg": "No per-format file icons; generic image"
+    "ed-flip-y": "Material has one Flip (horizontal); no vertical flip"
   },
   "_files": "<name>.svg / <name>-fill.svg: optical size 20 (16-20px icons); <name>-24.svg / <name>-24-fill.svg: optical size 24 (24px icons: the header, touch and mobile). All weight 300, Sharp, unedited."
 }

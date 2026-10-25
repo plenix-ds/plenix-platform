@@ -13,5 +13,11 @@ after the working set and before the library.
 | `git-branch` | `git_branch` | Lucide `git-branch` (ISC), restyled to the icon guidance | owner, 2026-10-24 |
 | `git-merge` | `git_merge` | Lucide `git-merge` (ISC), restyled to the icon guidance | owner, 2026-10-24 |
 | `git-pull-request` | `git_pull_request` | Lucide `git-pull-request` (ISC), restyled to the icon guidance | owner, 2026-10-24 |
+| `file-jpg` | `file_jpg` | Plenix's own lettered file icon, squared letters (tools/icons/draw-file-types.js) | owner, 2026-10-24 |
+| `file-png` | `file_png` | Plenix's own lettered file icon, squared letters (tools/icons/draw-file-types.js) | owner, 2026-10-24 |
+| `file-svg` | `file_svg` | Plenix's own lettered file icon, squared letters (tools/icons/draw-file-types.js) | owner, 2026-10-24 |
+| `file-pdf` | `file_pdf` | Plenix's own lettered file icon, squared letters (tools/icons/draw-file-types.js) | owner, 2026-10-24 |
+| `file-psd` | `file_psd` | Plenix's own lettered file icon, squared letters (tools/icons/draw-file-types.js) | owner, 2026-10-24 |
+| `file-ai` | `file_ai` | Plenix's own lettered file icon, squared letters (tools/icons/draw-file-types.js) | owner, 2026-10-24 |
 
 The person icons are filled drawings: their outline files carry the same shape. The others are icons from other libraries restyled by tools/icons/restyle-icon.js; their originals are in platform/icons/inventory/svg/.
