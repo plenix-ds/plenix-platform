@@ -2398,11 +2398,11 @@ function MessagingScreen({
       label: 'Messages',
       value: mList.length,
       data: true
-    }, {
+    }].concat(thd.preview ? [] : [{
       label: 'Last',
       value: thd.time,
       data: true
-    }],
+    }]),
     next: thd.preview ? {
       label: 'Latest',
       title: thd.preview,

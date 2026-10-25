@@ -2597,10 +2597,6 @@ function FilesScreen({
       label: 'Size',
       value: _shared.ALL_FILES.reduce((n, f) => n + parseFloat(f.s) * (/GB/.test(f.s) ? 1024 : /KB/.test(f.s) ? 1 / 1024 : 1), 0).toFixed(1) + ' MB',
       data: true
-    }, {
-      label: 'Latest',
-      value: _shared.ALL_FILES[0] ? _shared.ALL_FILES[0].d : '—',
-      data: true
     }],
     next: _shared.ALL_FILES[0] ? {
       label: 'Latest file',

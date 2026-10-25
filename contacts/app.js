@@ -2599,7 +2599,7 @@ function ContactsScreen({
     } : null, contact.role ? {
       label: 'Role',
       value: contact.role
-    } : null, {
+    } : null, contact.msg ? null : {
       label: 'Last message',
       value: contact.last,
       data: true
