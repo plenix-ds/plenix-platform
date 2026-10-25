@@ -16,7 +16,8 @@
        addAnother: "Add another sort", remove: "Remove the sort by {name}", removeTip: "Remove sort", field: "Field",
        direction: "Direction", moved, row, reorder, moveUp, moveDown }
    Behavior:
-     The bar button reads "Sort" (never reworded); with levels it takes the tint and a count badge.
+     The bar button shows the sort in force (a pop-up button, Apple HIG): "Sort" alone while there is none, "Sort: Name"
+       with one level, "Sort: Name +1" with more; it takes the tint while it sorts.
      Each row: the field (its type icon), the direction, remove (×) and the handle. A field is used once: the pickers
        offer the fields not yet used. Rows move by drag, the handle's menu or Alt + Arrow Up / Down, announced.
      The panel opens with the focus on its first row (else the Add button).
@@ -65,5 +66,6 @@ export function SortPanel({ fields = [], value = [], onChange, grouped = false, 
       </div>
     </div>
   );
-  return <PanelTrigger icon="sort" label={t.label} count={levels.length} inline={inline}>{body}</PanelTrigger>;
+  const current = levels.length ? fieldOf(fields, levels[0].field).label + (levels.length > 1 ? ' +' + (levels.length - 1) : '') : undefined;
+  return <PanelTrigger icon="sort" label={t.label} current={current} count={levels.length} inline={inline}>{body}</PanelTrigger>;
 }

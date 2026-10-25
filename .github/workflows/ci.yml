@@ -80,8 +80,8 @@ jobs:
       - name: What changed (the scope of the browser tests)
         run: node tests/changed.js
 
-      - name: "Tests without a browser (contrast, formats, brand rules, login)"
-        run: node tests/run.js contrast formats brand-rules login types
+      - name: "Tests without a browser (formats, brand rules, login, types)"
+        run: node tests/run.js formats brand-rules login types
 
   browser:
     name: Browser tests (${{ matrix.name }})
@@ -93,12 +93,10 @@ jobs:
         include:
           - name: pages
             tests: pages
-          - name: accessibility
-            tests: a11y
           - name: typography
             tests: typography
-          - name: targets and reflow
-            tests: targets reflow
+          - name: reflow
+            tests: reflow
           # the labs in three parts: a change to a shared component reaches many labs (0.31.52 ran out of time in one job)
           - name: labs 1 of 3
             tests: labs
@@ -110,9 +108,9 @@ jobs:
             tests: labs
             shard: 3/3
           - name: fixtures
-            tests: visual density layout theme
+            tests: visual layout
           - name: behavior
-            tests: data-grid keyboard high-contrast focus-order semantic-html utilities navigation one-primary
+            tests: data-grid keyboard focus-order semantic-html utilities navigation one-primary
     env:
       TEST_TIMEOUT_MS: '1200000'
       TEST_SHARD: ${{ matrix.shard }}

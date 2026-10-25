@@ -52,7 +52,9 @@
        (hue: surface, a white tile); or an element. 44px square (32px in a section)
      status: the Status tile, first in the details, in its tone as a whole: { tone, label, icon } (tone: a Badge tone:
        neutral, success, active, waiting, action-required, negative; info, warning and danger still work)
-     facts: up to four fact tiles after the Status tile, each as wide as its content: [{ label, value, data, icon, action }]
+     facts: up to four fact tiles after the Status tile, each as wide as its content: [{ label, value, data, icon, action }];
+       dates, times and numbers in a value are set in the data font and its words in the normal font; data: true
+       sets the whole value in the data font, data: false none of it
        (data: a technical value, in the data font); a plain string or element is a tile with no label. icon: the fact's
        identifying icon, in a 40px square at its start. action (header style 2): { label, icon (default add), name,
        onClick, disabled }: the fact becomes a count box, its icon before the label, the value large, the action's button
@@ -195,8 +197,19 @@ function States({ states, label, iconOnly }) {
 
 // a fact: label over value; with an icon, the icon in a square at its start; with an action (header style 2), the icon
 // before the label, the value large, and the action right after the value
+// numbers and dates in the data font, words in the normal font (owner, 2026-10-24): a fact's value is set in the
+// data role where it is a date, a time or a number (with its currency, percent, separators and units), word by word
+const MONTH = '(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\\.?';
+const DATUM = new RegExp('(\\d{4}-\\d{2}-\\d{2}(?:[ T]\\d{1,2}:\\d{2})?|' + MONTH + ' \\d{1,2}(?:, \\d{4})?|\\d{1,2}:\\d{2}(?:\\s?[AP]M)?|[$€£]?\\d[\\d,.]*(?:\\s?(?:%|[kKMB]\\b|KB|MB|GB|TB))?(?:\\s?[×x]\\s?\\d[\\d,.]*)?)', 'g');
+function dataText(value) {
+  if (typeof value === 'number') return <Text variant="data">{value}</Text>;
+  if (typeof value !== 'string' || !/\d/.test(value)) return value;
+  const parts = value.split(DATUM);
+  return parts.map((p, i) => (i % 2 ? <Text key={i} variant="data">{p}</Text> : p || null));
+}
+
 function Fact({ f, iconOnly }) {
-  const value = f.data ? <Text variant="data">{f.value}</Text> : f.value;
+  const value = f.data ? <Text variant="data">{f.value}</Text> : f.data === false ? f.value : dataText(f.value);
   if (f.action) {
     const a = f.action;
     return (
@@ -235,14 +248,14 @@ function Details({ status, states, facts, strings, step = 0 }) {
     tiles.push(
       <div key="st" className="plx-entity-header__fact plx-entity-header__fact--status" data-plx-tone={tone}>
         <dt className="plx-entity-header__fact-label">{strings.status}</dt>
-        <dd className="plx-entity-header__fact-value plx-entity-header__status-value">{status.icon ? <Icon name={status.icon} size="sm" /> : null}{status.label}</dd>
+        <dd className="plx-entity-header__fact-value plx-entity-header__status-value">{status.icon ? <Icon name={status.icon} size="sm" /> : null}{dataText(status.label)}</dd>
       </div>
     );
   }
   (facts || []).filter(Boolean).slice(0, 4).forEach((f, i) => {
     const plain = typeof f === 'string' || typeof f === 'number' || React.isValidElement(f);
     tiles.push(plain
-      ? <div key={'f' + i} className="plx-entity-header__fact"><dd className="plx-entity-header__fact-value">{f}</dd></div>
+      ? <div key={'f' + i} className="plx-entity-header__fact"><dd className="plx-entity-header__fact-value">{dataText(f)}</dd></div>
       : <Fact key={'f' + i} f={f} iconOnly={step >= 1} />);
   });
   if (states) tiles.push(<States key="states" states={states} label={strings.status} iconOnly={step >= 2} />);
@@ -351,7 +364,7 @@ function Streamlined({ section, H, title, sub, media, status, badges, summary, p
               {d.facts && d.facts.length ? (
                 <dl className="plx-entity-header__details plx-entity-header__details--strip">
                   {d.facts.map((f, i) => (f.tone
-                    ? <div key={i} className="plx-entity-header__fact plx-entity-header__fact--status" data-plx-tone={toneOf(f.tone)}><dt className="plx-entity-header__fact-label">{f.label}</dt><dd className="plx-entity-header__fact-value">{f.value}</dd></div>
+                    ? <div key={i} className="plx-entity-header__fact plx-entity-header__fact--status" data-plx-tone={toneOf(f.tone)}><dt className="plx-entity-header__fact-label">{f.label}</dt><dd className="plx-entity-header__fact-value">{f.data ? <Text variant="data">{f.value}</Text> : dataText(f.value)}</dd></div>
                     : <Fact key={i} f={f} />))}
                 </dl>
               ) : null}

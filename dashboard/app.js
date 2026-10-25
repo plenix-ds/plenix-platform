@@ -3027,10 +3027,6 @@ function ProjectContent({
       subtitle: proj.desc,
       status: statusOf(proj.status),
       facts: [{
-        label: 'Due',
-        value: open[0] ? open[0].due : '—',
-        data: true
-      }, {
         label: 'Tasks',
         value: pTasks.length - open.length + ' / ' + pTasks.length,
         data: true

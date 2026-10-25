@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en" data-plx-mode="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wrap rows stage · Plenix review</title>
+<!-- The stage for the wrap-row fix: a Table and a DataGrid (tall rows, wrap columns) like the spec's States table, a row label, two plain wrap
+     columns and a long drawn code cell. The test reads each cell's first text line; capture.js photographs it. -->
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<link rel="stylesheet" href="../review.css">
+<script src="../../../platform/vendor/react-loader.js"></script>
+<script src="../../../platform/dist/platform.js"></script>
+</head>
+<body class="rv-page">
+<div id="root" class="rv-doc"></div>
+<script>
+(function () {
+  const h = React.createElement, P = window.Plenix;
+  const code = ['button.plx-color-swatch outline-color: var(--plx-comp-color-swatch-focus-outline-color)', 'button.plx-color-swatch outline-offset: var(--plx-comp-color-swatch-focus-outline-offset)', 'button.plx-color-swatch outline-style: solid'];
+  const rows = [{ id: 1, name: 'Focus', look: 'Drawn above', set: 'Keyboard focus (:focus-visible)' }, { id: 2, name: 'Hover', look: 'Drawn above', set: 'Pointer over it' }];
+  const columns = [{ title: 'State', field: 'name', kind: 'name', rowLabel: true, width: '--plx-ref-size-160px' }, { title: 'Looks', field: 'look', kind: 'wrap' },
+    { title: 'Set by', field: 'set', kind: 'wrap' },
+    { title: 'Changes', field: 'changes', kind: 'wrap', sortable: false, render: () => h('div', null, code.map((c, i) => h('div', { key: i }, h(P.Text, { variant: 'data' }, c)))) }];
+  function Stage() {
+    return h('div', { id: 'stage' }, h(P.Stack, { gap: 'lg' },
+      h('div', { id: 'table' }, h(P.Table, { label: 'States', data: rows, columns })),
+      h('div', { id: 'grid' }, h(P.DataGrid, { label: 'States (grid)', rowHeight: 'tall', data: rows, columns: columns.map((c) => c.kind === 'wrap' ? Object.assign({}, c, { wrap: true }) : c), height: '--plx-ref-size-320px' }))));
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(h(Stage));
+})();
+</script>
+</body>
+</html>

@@ -2599,7 +2599,7 @@ function ContactsScreen({
     } : null, contact.role ? {
       label: 'Role',
       value: contact.role
-    } : null, {
+    } : null, contact.msg ? null : {
       label: 'Last message',
       value: contact.last,
       data: true
@@ -2607,7 +2607,9 @@ function ContactsScreen({
     next: contact.msg ? {
       label: 'Last message',
       title: contact.msg,
-      detail: contact.last
+      detail: /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
+        variant: "data"
+      }, contact.last)
     } : undefined,
     actions: [{
       icon: 'phone',

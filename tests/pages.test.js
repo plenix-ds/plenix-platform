@@ -98,8 +98,10 @@ let current = '';   // the design-system page being checked
     current = r; at('design system ' + r);   // named in the error if this page hangs
     if (process.env.PAGES_TRACE) console.log('page ' + r);   // PAGES_TRACE=1: name each page as it loads (to find one that hangs)
     await page.evaluate((h) => { location.hash = h; }, r); await sleep(250);
-    const blank = await page.evaluate(() => !document.querySelector('main') || document.querySelector('main').innerText.trim().length < 20);
-    if (blank) errs.push('empty page');
+    const isBlank = () => page.evaluate(() => !document.querySelector('main') || document.querySelector('main').innerText.trim().length < 20);
+    // the first page of another platform (iOS, Android) loads that platform's files first: 2 to 4 seconds with no main
+    if (await isBlank()) await page.waitForFunction(() => document.querySelector('main') && document.querySelector('main').innerText.trim().length >= 20, { timeout: 8000 }).catch(() => {});
+    if (await isBlank()) errs.push('empty page');
     await tables(); await nesting(); await styles();
     done('design system ' + r);
   }
