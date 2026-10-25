@@ -23,11 +23,11 @@
   --plx-comp-button-size-md-padding-inline: var(--plx-comp-button-padding-inline);
   --plx-comp-button-size-md-text: var(--plx-sys-content-default);
   --plx-comp-button-size-md-hover-background: var(--plx-sys-state-hover);
-  --plx-comp-button-size-md-hover-border: var(--plx-sys-border-strong);
+  --plx-comp-button-size-md-hover-border: var(--plx-ref-color-gray-350);
   --plx-comp-button-size-md-pressed-background: var(--plx-sys-state-pressed);
-  --plx-comp-button-size-md-selected-border: var(--plx-sys-selected-border);
-  --plx-comp-button-size-md-selected-text: var(--plx-sys-selected-content);
-  --plx-comp-button-size-md-primary-ring: var(--plx-sys-shadow-ring-subtle);
+  --plx-comp-button-size-md-selected-border: var(--plx-sys-border-default);
+  --plx-comp-button-size-md-selected-text: var(--plx-sys-content-default);
+  --plx-comp-button-size-md-primary-ring: none;
   --plx-comp-button-size-sm-font-size: var(--plx-ref-font-size-12);
   --plx-comp-button-size-sm-font-weight: var(--plx-sys-font-weight-medium);
   --plx-comp-button-size-sm-gap: var(--plx-sys-space-inline-xs);
@@ -35,11 +35,11 @@
   --plx-comp-button-size-sm-icon-size: var(--plx-sys-control-icon-toolbar);
   --plx-comp-button-size-sm-padding-inline: var(--plx-sys-space-inset-sm);
   --plx-comp-button-size-sm-text: var(--plx-sys-content-muted);
-  --plx-comp-button-size-sm-hover-background: var(--plx-sys-fill-neutral-hover);
-  --plx-comp-button-size-sm-hover-border: var(--plx-sys-control-border);
-  --plx-comp-button-size-sm-pressed-background: var(--plx-sys-fill-neutral-pressed);
-  --plx-comp-button-size-sm-selected-border: var(--plx-sys-action-primary-background);
-  --plx-comp-button-size-sm-selected-text: var(--plx-sys-content-link);
+  --plx-comp-button-size-sm-hover-background: var(--plx-sys-state-hover);
+  --plx-comp-button-size-sm-hover-border: var(--plx-ref-color-gray-350);
+  --plx-comp-button-size-sm-pressed-background: var(--plx-sys-state-pressed);
+  --plx-comp-button-size-sm-selected-border: var(--plx-sys-border-default);
+  --plx-comp-button-size-sm-selected-text: var(--plx-sys-content-default);
   --plx-comp-button-size-sm-primary-ring: none;
   --plx-comp-button-size-xs-font-size: var(--plx-ref-font-size-12);
   --plx-comp-button-size-xs-font-weight: var(--plx-sys-font-weight-medium);
@@ -48,11 +48,11 @@
   --plx-comp-button-size-xs-icon-size: var(--plx-sys-control-icon-inline);
   --plx-comp-button-size-xs-padding-inline: var(--plx-sys-space-inset-sm);
   --plx-comp-button-size-xs-text: var(--plx-sys-content-muted);
-  --plx-comp-button-size-xs-hover-background: var(--plx-sys-fill-neutral-hover);
-  --plx-comp-button-size-xs-hover-border: var(--plx-sys-control-border);
-  --plx-comp-button-size-xs-pressed-background: var(--plx-sys-fill-neutral-pressed);
-  --plx-comp-button-size-xs-selected-border: var(--plx-sys-action-primary-background);
-  --plx-comp-button-size-xs-selected-text: var(--plx-sys-content-link);
+  --plx-comp-button-size-xs-hover-background: var(--plx-sys-state-hover);
+  --plx-comp-button-size-xs-hover-border: var(--plx-ref-color-gray-350);
+  --plx-comp-button-size-xs-pressed-background: var(--plx-sys-state-pressed);
+  --plx-comp-button-size-xs-selected-border: var(--plx-sys-border-default);
+  --plx-comp-button-size-xs-selected-text: var(--plx-sys-content-default);
   --plx-comp-button-size-xs-primary-ring: none;
   --plx-comp-button-size-2xs-font-size: var(--plx-ref-font-size-11);
   --plx-comp-button-size-2xs-font-weight: var(--plx-sys-font-weight-medium);
@@ -75,14 +75,14 @@
   --plx-comp-button-size-lg-padding-inline: var(--plx-sys-space-inset-lg);
   --plx-comp-button-size-lg-text: var(--plx-sys-content-default);
   --plx-comp-button-size-lg-hover-background: var(--plx-sys-state-hover);
-  --plx-comp-button-size-lg-hover-border: var(--plx-sys-border-strong);
+  --plx-comp-button-size-lg-hover-border: var(--plx-ref-color-gray-350);
   --plx-comp-button-size-lg-pressed-background: var(--plx-sys-state-pressed);
-  --plx-comp-button-size-lg-selected-border: var(--plx-sys-selected-border);
-  --plx-comp-button-size-lg-selected-text: var(--plx-sys-selected-content);
-  --plx-comp-button-size-lg-primary-ring: var(--plx-sys-shadow-ring-subtle);
+  --plx-comp-button-size-lg-selected-border: var(--plx-sys-border-default);
+  --plx-comp-button-size-lg-selected-text: var(--plx-sys-content-default);
+  --plx-comp-button-size-lg-primary-ring: none;
   /* variants: rest and hover (secondary takes its text and hover from the size) */
   --plx-comp-button-secondary-background: var(--plx-sys-control-background);
-  --plx-comp-button-secondary-border: var(--plx-sys-control-border);
+  --plx-comp-button-secondary-border: var(--plx-sys-border-default);
   --plx-comp-button-secondary-hover-text: var(--plx-sys-content-default);
   --plx-comp-button-primary-background: var(--plx-sys-action-primary-background);
   --plx-comp-button-primary-border: var(--plx-sys-action-primary-background);
@@ -105,6 +105,7 @@
   --plx-comp-button-ghost-text: var(--plx-sys-content-muted);
   --plx-comp-button-ghost-hover-border: transparent;
   --plx-comp-button-ghost-hover-text: var(--plx-sys-content-default);
+  --plx-comp-button-ghost-hover-icon: var(--plx-sys-action-primary-background);
   --plx-comp-button-danger-background: var(--plx-sys-action-danger-background);
   --plx-comp-button-danger-border: var(--plx-sys-action-danger-background);
   --plx-comp-button-danger-text: var(--plx-sys-action-danger-content);
@@ -2238,8 +2239,8 @@
 /* the person's contrast settings: forced colors, then more contrast, else the values above */
 @media not (forced-colors: active) {
   :root,[data-plx-density],[data-plx-interaction] {
-    --plx-comp-button-selected-background: var(--plx-sys-state-selected);
-    --plx-comp-button-disabled-border: var(--plx-sys-border-strong);
+    --plx-comp-button-selected-background: var(--plx-ref-color-gray-200);
+    --plx-comp-button-disabled-border: var(--plx-sys-border-subtle);
     --plx-comp-button-disabled-text: var(--plx-sys-content-disabled);
     --plx-comp-button-disabled-quiet-border: transparent;
     --plx-comp-input-disabled-text: var(--plx-sys-content-disabled);

@@ -1472,7 +1472,7 @@ class PlenixRadius {
   static const double radiusAvatar6px = 6;
   static const double radiusAvatar8px = 8;
   static const double radiusAvatar12px = 12;
-  static const double radiusControl = 6;
+  static const double radiusControl = 4;
 }
 
 class PlenixSpace {

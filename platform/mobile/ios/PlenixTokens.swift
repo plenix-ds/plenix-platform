@@ -395,7 +395,7 @@ public enum Plenix {
         public static let radiusAvatar6px: CGFloat = 6
         public static let radiusAvatar8px: CGFloat = 8
         public static let radiusAvatar12px: CGFloat = 12
-        public static let radiusControl: CGFloat = 6
+        public static let radiusControl: CGFloat = 4
     }
     public enum Space {
         public static let spaceInlineXs: CGFloat = 4
@@ -523,7 +523,7 @@ public enum Plenix {
         public static let buttonClusterGap: CGFloat = 8
         public static let buttonIconLabelGap: CGFloat = 4
         public static let buttonPaddingInline: CGFloat = 12
-        public static let buttonRadius: CGFloat = 6
+        public static let buttonRadius: CGFloat = 4
         public static let cardAccentBorderInlineStartWidth: CGFloat = 3
         public static let cardBodyFontSize: CGFloat = 13
         public static let cardBorderWidth: CGFloat = 1
@@ -587,7 +587,7 @@ public enum Plenix {
         public static let inputBorderWidth: CGFloat = 1
         public static let inputMinHeight: CGFloat = 32
         public static let inputPaddingInline: CGFloat = 12
-        public static let inputRadius: CGFloat = 6
+        public static let inputRadius: CGFloat = 4
         public static let listItemFontSize: CGFloat = 13
         public static let listItemGap: CGFloat = 8
         public static let menuBorderWidth: CGFloat = 1
@@ -613,7 +613,7 @@ public enum Plenix {
         public static let navListItemGap: CGFloat = 8
         public static let navListItemMinHeight: CGFloat = 32
         public static let navListItemPaddingInline: CGFloat = 8
-        public static let navListItemRadius: CGFloat = 6
+        public static let navListItemRadius: CGFloat = 4
         public static let navPaneWidth: CGFloat = 240
         public static let productCardRadius: CGFloat = 12
         public static let progressBarFillDuration: Double = 0.2
@@ -634,10 +634,10 @@ public enum Plenix {
         public static let searchIconInsetInlineStart: CGFloat = 12
         public static let searchInputBorderWidth: CGFloat = 1
         public static let searchInputMinHeight: CGFloat = 28
-        public static let searchInputRadius: CGFloat = 6
+        public static let searchInputRadius: CGFloat = 4
         public static let searchResultGap: CGFloat = 12
         public static let segmentedItemMinHeight: CGFloat = 32
-        public static let segmentedRadius: CGFloat = 6
+        public static let segmentedRadius: CGFloat = 4
         public static let selectAfterInsetInlineEnd: CGFloat = 12
         public static let selectAfterWidth: CGFloat = 12
         public static let sliderInputDisabledOpacity: Double = 0.5
