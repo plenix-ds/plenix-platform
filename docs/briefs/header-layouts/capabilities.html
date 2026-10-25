@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Capability headers: the real component</title>
+<script src="../../../platform/providers/theme-boot.js"></script>
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<script src="../../../platform/vendor/react-loader.js"></script>
+<script src="../../../platform/dist/platform.js"></script>
+<style>
+/* a review page (not Platform code): the 30 capability headers of the owner's study, drawn by the spec's own part
+   (platform/design-system/parts/w17A.records.js); ?style=streamlined for header style 2 */
+body{background:var(--plx-sys-surface-canvas);font-family:var(--plx-sys-text-body-font-family);margin:0;padding:var(--plx-sys-space-layout-md);}
+h1,h2{color:var(--plx-sys-content-default);font-size:var(--plx-sys-text-label-font-size);margin:var(--plx-sys-space-stack-lg) 0 var(--plx-sys-space-stack-xs);}
+</style>
+<script>
+// the part's interface, as the spec gives it: it adds its examples to a record; here they are drawn in order
+window.DSParts = { records: [] };
+</script>
+<script src="../../../platform/design-system/parts/w17A.records.js"></script>
+</head>
+<body>
+<div id="root"></div>
+<script>
+(function () {
+  var P = window.Plenix, R = window.React, h = R.createElement, groups = [];
+  var H = { h: h, P: P, box: function (w, c) { return c; }, addExamples: function (id, g) { groups = groups.concat(g); } };
+  window.DSParts.records.forEach(function (f) { f(H); });
+  var want = new URLSearchParams(location.search).get('style') === 'streamlined' ? 1 : 0, g = groups[want];
+  ReactDOM.createRoot(document.getElementById('root')).render(h('div', null, h('h1', null, g[0]),
+    g[1].map(function (c) { return h('section', { key: c[0] }, h('h2', null, c[0]), h(c[1])); })));
+})();
+</script>
+</body>
+</html>

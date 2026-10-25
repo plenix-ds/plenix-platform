@@ -1,0 +1,797 @@
+[
+ {
+  "id": "layout/grid/1",
+  "title": "Two grids on the Grid page, or is one outdated?",
+  "context": "The question saw the Overview name only .plx-layout-grid and the Anatomy only .plx-page-grid. The Overview now describes both: the content grid inside an application, and the layout grid outside the shell.",
+  "current": [
+   {
+    "where": "Grid · Overview (rec.text), now",
+    "text": "Inside an application, the content grid (`.plx-page-grid`) follows the main region: 4 columns under 600px, 8 to 1023px, 12 to 1439px, 16 from 1440px. Outside the shell, the layout grid (`.plx-layout-grid`) follows the window, changing at 600 and 840px"
+   },
+   {
+    "where": "Grid · Anatomy (docs.anatomy)",
+    "text": "Page grid — .plx-page-grid: 4, 8, 12 or 16 columns with a gutter and page margins (required)"
+   },
+   {
+    "where": "As the question quoted the Overview (paraphrase)",
+    "text": ".plx-layout-grid (12 columns at most, contained at 1200px)",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Content grid columns at a narrow main region",
+    "width": "360",
+    "jsx": "h(P.Table, { label: \"Content grid\", columns: [{\"title\":\"Main region\",\"field\":\"c0\",\"kind\":\"wrap\",\"rowLabel\":true},{\"title\":\"Columns\",\"field\":\"c1\",\"kind\":\"wrap\"}], data: [{\"c0\":\"under 600px\",\"c1\":\"4\"},{\"c0\":\"600 to 1023px\",\"c1\":\"8\"},{\"c0\":\"1024 to 1439px\",\"c1\":\"12\"},{\"c0\":\"1440px and up\",\"c1\":\"16\"}] })"
+   },
+   {
+    "caption": "Layout grid (outside the shell)",
+    "width": "840",
+    "jsx": "h(P.Table, { label: \"Layout grid\", columns: [{\"title\":\"Window\",\"field\":\"c0\",\"kind\":\"wrap\",\"rowLabel\":true},{\"title\":\"Columns\",\"field\":\"c1\",\"kind\":\"wrap\"},{\"title\":\"Gutter\",\"field\":\"c2\",\"kind\":\"wrap\"},{\"title\":\"Margin\",\"field\":\"c3\",\"kind\":\"wrap\"}], data: [{\"c0\":\"under 600px\",\"c1\":\"4\",\"c2\":\"12px\",\"c3\":\"16px\"},{\"c0\":\"600 to 839px\",\"c1\":\"8\",\"c2\":\"16px\",\"c3\":\"24px\"},{\"c0\":\"840px and up\",\"c1\":\"12\",\"c2\":\"24px\",\"c3\":\"32px\"}] })"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Two grids, both on the page",
+    "recommended": true,
+    "text": "Keep both: the content grid in the shell's main region, the layout grid for pages outside the shell. The Anatomy lists both.",
+    "render": [
+     {
+      "caption": "Same content at 360",
+      "width": "360",
+      "jsx": "h(P.Columns, Object.assign({ count: 2 }, {\"collapseBelow\":\"medium\"}), h(P.Panel, { title: 'Group 1' }, 'Text in group 1'), h(P.Panel, { title: 'Group 2' }, 'Text in group 2'))"
+     },
+     {
+      "caption": "Same content at 1200",
+      "width": "1200",
+      "jsx": "h(P.Columns, Object.assign({ count: 2 }, {\"collapseBelow\":\"medium\"}), h(P.Panel, { title: 'Group 1' }, 'Text in group 1'), h(P.Panel, { title: 'Group 2' }, 'Text in group 2'))"
+     }
+    ]
+   },
+   {
+    "key": "B",
+    "label": "One grid only",
+    "text": "Retire one of the two classes and its breakpoints; every page and the code that uses it changes.",
+    "render": {
+     "caption": "What would go",
+     "jsx": "h(P.Table, { label: \"Option B\", columns: [{\"title\":\"Class\",\"field\":\"c0\",\"kind\":\"wrap\",\"rowLabel\":true},{\"title\":\"Breakpoints\",\"field\":\"c1\",\"kind\":\"wrap\"}], data: [{\"c0\":\".plx-page-grid\",\"c1\":\"600 · 1024 · 1440 (main region)\"},{\"c0\":\".plx-layout-grid\",\"c1\":\"600 · 840 (window)\"}] })"
+    }
+   }
+  ],
+  "recommendation": "A. Both classes exist in the code for different containers. Material 3 sets window-size classes at 600 and 840, while content inside a pane follows its own container; documenting both, clearly labeled, matches that. Add the layout grid to the Anatomy.",
+  "sources": [
+   "Material 3 · Window size classes (600, 840)",
+   "Carbon · 2x Grid: 4, 8, 16 columns",
+   "WCAG 2.2 · 1.4.10 Reflow"
+  ]
+ },
+ {
+  "id": "layout/grid/2",
+  "title": "Two \"contained\" widths, 1200px and 960px, on purpose?",
+  "context": "The grid's --contained modifier stops it at 1200px. The contained layout mode of a page is one centered column at the 960px form width. The Grid Overview now says these are different things.",
+  "current": [
+   {
+    "where": "Grid · Overview (rec.text), now",
+    "text": "`--contained` stops it at 1200px and centers it (a page in the contained layout mode is a different thing: one centered column at the 960px form width)"
+   },
+   {
+    "where": "AppShell.jsx (the code)",
+    "text": "contained (one centered column at the 960px form width)"
+   },
+   {
+    "where": "One-column layout · Anatomy",
+    "text": "Column — PageContent at most 960px wide, centered in the main region (required)"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "A 960px form column on a wide window",
+    "width": "1200",
+    "jsx": "h(P.Center, { maxWidth: 'lg' }, h(P.Stack, null, h(P.Field, Object.assign({ label: \"Name\" }, {}), h(P.Input, null)), h(P.Field, Object.assign({ label: \"Email\" }, {}), h(P.Input, null))))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Two widths, two names",
+    "recommended": true,
+    "text": "Keep both, but stop calling both \"contained\": the grid modifier is the contained grid (1200px); the page mode is the form column (960px).",
+    "render": [
+     {
+      "caption": "Contained grid, 1200",
+      "width": "1200",
+      "jsx": "h(P.Columns, Object.assign({ count: 3 }, {}), h(P.Panel, { title: 'Group 1' }, 'Text in group 1'), h(P.Panel, { title: 'Group 2' }, 'Text in group 2'), h(P.Panel, { title: 'Group 3' }, 'Text in group 3'))"
+     },
+     {
+      "caption": "Form column, 960",
+      "width": "1200",
+      "jsx": "h(P.Center, { maxWidth: 'lg' }, h(P.Field, Object.assign({ label: \"Name\" }, {}), h(P.Input, null)))"
+     }
+    ]
+   },
+   {
+    "key": "B",
+    "label": "One contained width",
+    "text": "Use one width (960 or 1200) for both; pages that use the other change.",
+    "render": {
+     "caption": "One width",
+     "jsx": "h(P.Table, { label: \"Option B\", columns: [{\"title\":\"Use\",\"field\":\"c0\",\"kind\":\"wrap\",\"rowLabel\":true},{\"title\":\"Width\",\"field\":\"c1\",\"kind\":\"wrap\"}], data: [{\"c0\":\"Contained grid\",\"c1\":\"960 or 1200\"},{\"c0\":\"Contained page\",\"c1\":\"same\"}] })"
+    }
+   }
+  ],
+  "recommendation": "A. Forms read best near 960px and dashboards need more room; Carbon and Polaris keep separate maxima for form and page widths. Different names avoid the clash.",
+  "sources": [
+   "Shopify Polaris · Page: default vs narrow width",
+   "Carbon · Grid: max widths",
+   "Plenix content widths: 760, 960, 1200"
+  ]
+ },
+ {
+  "id": "layout/grid/3",
+  "title": "Do Columns stack on narrow windows, or stay side by side?",
+  "context": "The code settles it: Columns stay side by side unless collapseBelow is set, then stack under 600px (medium) or 840px (wide), measured on the main region. The Grid page now says the same.",
+  "current": [
+   {
+    "where": "Columns.jsx (the code) (paraphrase)",
+    "text": "collapseBelow: none (default: always side by side) | \"medium\" (one column in a Narrow window, under 600px) | \"wide\" (… under 840px)"
+   },
+   {
+    "where": "Grid · Overview (rec.text), now",
+    "text": "Columns stay side by side unless collapseBelow is set, then stack into one column under 600px (medium) or 840px (wide)"
+   },
+   {
+    "where": "As the question quoted the Grid page (paraphrase)",
+    "text": "Columns collapse to one column on narrow windows",
+    "conflict": true
+   },
+   {
+    "where": "Two-column layout, as quoted (paraphrase)",
+    "text": "stay side by side at every width … do not stack",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Default, at 360",
+    "width": "360",
+    "jsx": "h(P.Columns, Object.assign({ count: 2 }, {}), h(P.Panel, { title: 'Group 1' }, 'Text in group 1'), h(P.Panel, { title: 'Group 2' }, 'Text in group 2'))"
+   },
+   {
+    "caption": "Default, at 1200",
+    "width": "1200",
+    "jsx": "h(P.Columns, Object.assign({ count: 2 }, {}), h(P.Panel, { title: 'Group 1' }, 'Text in group 1'), h(P.Panel, { title: 'Group 2' }, 'Text in group 2'))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Side by side unless collapseBelow",
+    "recommended": true,
+    "text": "Every page says what the code does: no collapse by default; collapseBelow stacks them.",
+    "render": [
+     {
+      "caption": "collapseBelow=\"medium\" at 360 (in the shell it stacks)",
+      "width": "360",
+      "jsx": "h(P.Columns, Object.assign({ count: 2 }, {\"collapseBelow\":\"medium\"}), h(P.Panel, { title: 'Group 1' }, 'Text in group 1'), h(P.Panel, { title: 'Group 2' }, 'Text in group 2'))"
+     },
+     {
+      "caption": "collapseBelow=\"medium\" at 1200",
+      "width": "1200",
+      "jsx": "h(P.Columns, Object.assign({ count: 2 }, {\"collapseBelow\":\"medium\"}), h(P.Panel, { title: 'Group 1' }, 'Text in group 1'), h(P.Panel, { title: 'Group 2' }, 'Text in group 2'))"
+     }
+    ]
+   },
+   {
+    "key": "B",
+    "label": "Always collapse on narrow",
+    "text": "Make collapse the default. Dialogs with two short columns would stack too.",
+    "render": {
+     "caption": "Two short columns in a dialog stacking",
+     "width": "360",
+     "jsx": "h(P.Stack, null, h(P.Panel, { title: 'From' }, 'Date'), h(P.Panel, { title: 'To' }, 'Date'))"
+    }
+   }
+  ],
+  "recommendation": "A. It is what the code does, and an opt-in collapse is how Material 3 and Fluent treat side-by-side panes. Note: the preview frames are not inside the shell's main region, so the collapse does not draw here.",
+  "sources": [
+   "Material 3 · Canonical layouts: panes by window class",
+   "Fluent 2 · Layout: reflow",
+   "Columns.jsx: collapseBelow"
+  ]
+ },
+ {
+  "id": "layout/dashboard-grid/1",
+  "title": "Does the widget handle open a menu?",
+  "context": "Yes. The code opens a menu on click, Enter or Space (Move earlier, Move later, Move to the start, Move to the end), so reordering works without dragging. The Behavior row now says so.",
+  "current": [
+   {
+    "where": "WidgetGrid.jsx (the code)",
+    "text": "Without dragging (WCAG 2.5.7): a click on the handle (or Enter or Space) opens its menu: Move earlier, Move later, Move to the start and Move to the end"
+   },
+   {
+    "where": "Dashboard grid · Mouse (docs.behavior.pointer), now",
+    "text": "A click on the handle, or Enter or Space, opens its menu: Move earlier, Move later, Move to the start, Move to the end; moves that cannot happen are turned off."
+   },
+   {
+    "where": "As the question saw Behavior (paraphrase)",
+    "text": "only dragging and arrow keys",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Click a handle to see the menu",
+    "width": "840",
+    "jsx": "h(function Demo(){ const [it, set] = React.useState([{\"id\":\"a\",\"title\":\"Inbox\"},{\"id\":\"b\",\"title\":\"Tasks\"},{\"id\":\"c\",\"title\":\"Calendar\"}]); return h(P.WidgetGrid, { label: 'Dashboard', columns: 3, items: it, onReorder: function (ids) { set(ids.map(function (id) { return it.find(function (w) { return w.id === id; }); })); }, renderItem: function (w) { return h(P.Panel, { title: w.title }, 'Content'); } }); })"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "The menu exists; Behavior and Anatomy name it",
+    "recommended": true,
+    "text": "Keep the updated Behavior row and add the menu to the Handle row in Anatomy.",
+    "render": {
+     "caption": "Handle row",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h('h3', null, \"Anatomy · Handle\"), h('p', null, \"A move button in the widget's top corner: drag it, use the arrow keys, or press it to open Move earlier, Move later, Move to the start, Move to the end.\"))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Drop the menu",
+    "text": "Remove the menu from code and text. Reordering then needs dragging or keys, which fails WCAG 2.5.7.",
+    "render": {
+     "caption": "Drag only",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h('h3', null, \"Handle\"), h('p', null, \"Drag or arrow keys only.\"))"
+    }
+   }
+  ],
+  "recommendation": "A. WCAG 2.2 (2.5.7) asks for a single-pointer alternative to dragging; Atlassian and Material use a move menu for exactly this. The code already has it.",
+  "sources": [
+   "WCAG 2.2 · 2.5.7 Dragging movements",
+   "Atlassian · Drag and drop: menu alternative",
+   "WidgetGrid.jsx"
+  ]
+ },
+ {
+  "id": "layout/dashboard-grid/2",
+  "title": "Is this page about the whole dashboard or the widget grid?",
+  "context": "The page purpose described the whole dashboard page; the written Purpose describes the widget grid. The dashboard page itself has its own template (Dashboard).",
+  "current": [
+   {
+    "where": "Dashboard grid · Purpose (docs.purpose)",
+    "text": "Lets people arrange a dashboard's widgets in the order that suits them, by dragging a handle or with the arrow keys, while the page keeps the order."
+   },
+   {
+    "where": "Dashboard grid · rec.purpose (as the question quoted) (paraphrase)",
+    "text": "several applications in one workspace",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "What the component is: the widget grid",
+    "width": "840",
+    "jsx": "h(function Demo(){ const [it, set] = React.useState([{\"id\":\"a\",\"title\":\"Inbox\",\"span\":\"2\"},{\"id\":\"b\",\"title\":\"Tasks\"},{\"id\":\"c\",\"title\":\"Files\"}]); return h(P.WidgetGrid, { label: 'Dashboard', columns: 3, items: it, onReorder: function (ids) { set(ids.map(function (id) { return it.find(function (w) { return w.id === id; }); })); }, renderItem: function (w) { return h(P.Panel, { title: w.title }, 'Content'); } }); })"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "The widget grid",
+    "recommended": true,
+    "text": "Both purposes speak of arranging widgets. The whole dashboard page stays on the Dashboard template page.",
+    "render": {
+     "caption": "Purpose",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h('h3', null, \"Dashboard grid\"), h('p', null, \"Lets people arrange a dashboard's widgets in the order that suits them, by dragging a handle or with the arrow keys, while the page keeps the order.\"))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "The whole dashboard page",
+    "text": "Both describe the page that brings applications together; the grid text moves to WidgetGrid.",
+    "render": {
+     "caption": "Purpose",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h('h3', null, \"Dashboard grid\"), h('p', null, \"A workspace that brings several applications together in one page.\"))"
+    }
+   }
+  ],
+  "recommendation": "A. A component page describes the component. The page-level story belongs to the Dashboard template, as Carbon and Polaris split components from page templates.",
+  "sources": [
+   "Carbon · Patterns vs components",
+   "Shopify Polaris · Page templates"
+  ]
+ },
+ {
+  "id": "layout/dashboard-grid/3",
+  "title": "What does \"Every widget: the grid becomes one column\" mean?",
+  "context": "The wide-widget variant's avoid line is hard to read. It means: do not make every widget two columns wide; the grid would end up a single column.",
+  "current": [
+   {
+    "where": "Dashboard grid · Two columns wide · When not to use (rec.variantPages[4].avoid[0]) (paraphrase)",
+    "text": "Every widget: the grid becomes one column, use fewer columns",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Every widget wide: one column of widgets",
+    "width": "840",
+    "jsx": "h(function Demo(){ const [it, set] = React.useState([{\"id\":\"a\",\"title\":\"Inbox\",\"span\":\"2\"},{\"id\":\"b\",\"title\":\"Tasks\",\"span\":\"2\"},{\"id\":\"c\",\"title\":\"Files\",\"span\":\"2\"}]); return h(P.WidgetGrid, { label: 'Dashboard', columns: 2, items: it, onReorder: function (ids) { set(ids.map(function (id) { return it.find(function (w) { return w.id === id; }); })); }, renderItem: function (w) { return h(P.Panel, { title: w.title }, 'Content'); } }); })"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Rewrite plainly",
+    "recommended": true,
+    "text": "\"Making every widget wide: the grid turns into one column. If every widget needs room, choose fewer columns.\"",
+    "render": {
+     "caption": "Mixed widths: the reason to use wide",
+     "width": "840",
+     "jsx": "h(function Demo(){ const [it, set] = React.useState([{\"id\":\"a\",\"title\":\"Inbox\",\"span\":\"2\"},{\"id\":\"b\",\"title\":\"Tasks\"},{\"id\":\"c\",\"title\":\"Files\"}]); return h(P.WidgetGrid, { label: 'Dashboard', columns: 3, items: it, onReorder: function (ids) { set(ids.map(function (id) { return it.find(function (w) { return w.id === id; }); })); }, renderItem: function (w) { return h(P.Panel, { title: w.title }, 'Content'); } }); })"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Delete the line",
+    "text": "Remove it; the variant keeps its other guidance.",
+    "render": {
+     "caption": "Without the line",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h('h3', null, \"When not to use\"), h('p', null, \"(none)\"))"
+    }
+   }
+  ],
+  "recommendation": "A. The rule is useful, just badly worded; plain, full sentences match GOV.UK and Polaris content guidance.",
+  "sources": [
+   "GOV.UK · Writing for GOV.UK: plain English",
+   "Shopify Polaris · Content: actionable language"
+  ]
+ },
+ {
+  "id": "layout/panel/1",
+  "title": "Should Panel get its own overview?",
+  "context": "The Panel page overview describes PageContent and Center (the page content container), not Panel. Panel is a titled section on a bordered surface.",
+  "current": [
+   {
+    "where": "Panel · Overview (rec.text) (paraphrase)",
+    "text": "Describes PageContent and Center, the page content container",
+    "conflict": true
+   },
+   {
+    "where": "Panel · Purpose (docs.purpose)",
+    "text": "Groups related settings or facts under a title on a bordered surface, with room for actions and a footer, so a page reads as clear sections."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Panel",
+    "jsx": "h(P.Panel, { title: 'Storage', description: '12 GB of 20 GB used', actions: h(P.Button, { size: 'sm' }, 'Manage') }, 'Usage by type')"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Own overview; PageContent text moves",
+    "recommended": true,
+    "text": "Panel's overview says what a Panel is. The PageContent and Center text moves to the One-column layout (PageContent) and Stack (Center) pages.",
+    "render": {
+     "caption": "Overview as it would read",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h('h3', null, \"Panel\"), h('p', null, \"A titled section of a page or a settings screen on a bordered surface, with optional description, actions, footer and collapse.\"))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Keep the shared text",
+    "text": "Panel keeps the PageContent text.",
+    "render": {
+     "caption": "Today",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h('h3', null, \"Panel\"), h('p', null, \"PageContent and Center: the page content container …\"))"
+    }
+   }
+  ],
+  "recommendation": "A. Each page should describe its own component; Carbon and Polaris give Card/Panel its own overview and put page containers under layout.",
+  "sources": [
+   "Shopify Polaris · Card vs Page",
+   "Carbon · Tile vs Grid"
+  ]
+ },
+ {
+  "id": "layout/panel/2",
+  "title": "Remove the copied Stack and Grid sentences from Panel's purpose?",
+  "context": "Panel's purpose also contains the Stack and Grid purposes, copied from those pages.",
+  "current": [
+   {
+    "where": "Panel · Purpose (rec.purpose) (paraphrase)",
+    "text": "Panel's purpose followed by the Stack purpose and the Grid purpose",
+    "conflict": true
+   },
+   {
+    "where": "Panel · Purpose (docs.purpose)",
+    "text": "Groups related settings or facts under a title on a bordered surface, with room for actions and a footer, so a page reads as clear sections."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Panel holding a Stack",
+    "jsx": "h(P.Panel, { title: 'Profile' }, h(P.Stack, null, h(P.Field, Object.assign({ label: \"Name\" }, {}), h(P.Input, null)), h(P.Field, Object.assign({ label: \"Email\" }, {}), h(P.Input, null))))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Remove them",
+    "recommended": true,
+    "text": "The purpose keeps only the Panel sentence; Stack and Grid keep theirs.",
+    "render": {
+     "caption": "Purpose",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h('h3', null, \"Purpose\"), h('p', null, \"Groups related settings or facts under a title on a bordered surface, with room for actions and a footer, so a page reads as clear sections.\"))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Keep them",
+    "text": "Leave the three purposes together.",
+    "render": {
+     "caption": "Purpose",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h('h3', null, \"Purpose\"), h('p', null, \"Groups related settings … Lets applications arrange elements in a column (Stack) … The grid …\"))"
+    }
+   }
+  ],
+  "recommendation": "A. One purpose per page avoids drift when the other pages change; link to Stack and Grid instead.",
+  "sources": [
+   "Plenix page template: Purpose",
+   "Carbon · Usage pages: one purpose"
+  ]
+ },
+ {
+  "id": "layout/panel/3",
+  "title": "Does Panel's collapse toggle show the Plenix focus ring?",
+  "context": "The code says yes: card.css draws the focus ring on the collapse toggle (batch 213). Panel's focus row says so; the \"relies on the browser's default ring\" text now remains only on Section heading.",
+  "current": [
+   {
+    "where": "card.css (the code)",
+    "text": "the collapse toggle shows the focus ring, as every control (batch 213)"
+   },
+   {
+    "where": "Panel · Focus (docs.a11y.focus), now",
+    "text": "The fold toggle shows the Plenix focus ring, like every control. Actions show their own rings."
+   },
+   {
+    "where": "As the question quoted (paraphrase)",
+    "text": "The toggle has no focus style of its own in card.css; it relies on the browser's default ring.",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Tab to the toggle",
+    "jsx": "h(P.Panel, { title: 'Advanced', collapsible: true }, 'Hidden options')"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Plenix ring, like every control",
+    "recommended": true,
+    "text": "Keep the current focus row.",
+    "render": {
+     "caption": "Collapsible panel",
+     "jsx": "h(P.Panel, { title: 'Advanced', collapsible: true, defaultExpanded: false }, 'Hidden options')"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Browser default ring",
+    "text": "Remove the Plenix ring; the toggle would look different from other buttons.",
+    "render": {
+     "caption": "Not recommended",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h('h3', null, \"Focus\"), h('p', null, \"The toggle relies on the browser's default ring.\"))"
+    }
+   }
+  ],
+  "recommendation": "A. One focus ring across controls is the WCAG 2.4.7 practice and what the code does.",
+  "sources": [
+   "WCAG 2.2 · 2.4.7 Focus visible",
+   "card.css (batch 213)"
+  ]
+ },
+ {
+  "id": "layout/columns/1",
+  "title": "Which text belongs on the Two-column layout page?",
+  "context": "Its overview describes the list-and-detail workspace (SecondaryPane) and its purpose the application shell, while the written Purpose describes Columns (equal groups side by side).",
+  "current": [
+   {
+    "where": "Columns · Overview and rec.purpose (paraphrase)",
+    "text": "The two-pane list-and-detail workspace (SecondaryPane) and the application shell",
+    "conflict": true
+   },
+   {
+    "where": "Columns · Purpose (docs.purpose)",
+    "text": "Puts two or three peer groups side by side at equal width inside a dialog or a page, optionally divided, such as the upload dialog's three steps."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Columns (equal groups)",
+    "width": "840",
+    "jsx": "h(P.Columns, Object.assign({ count: 3 }, {\"divided\":true}), h(P.Panel, { title: 'Group 1' }, 'Text in group 1'), h(P.Panel, { title: 'Group 2' }, 'Text in group 2'), h(P.Panel, { title: 'Group 3' }, 'Text in group 3'))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Columns text; list-and-detail moves to Split pane",
+    "recommended": true,
+    "text": "The page describes Columns. The SecondaryPane and shell text moves to the Split pane and Application shell pages.",
+    "render": {
+     "caption": "Columns at 840",
+     "width": "840",
+     "jsx": "h(P.Columns, Object.assign({ count: 2 }, {}), h(P.Panel, { title: 'Group 1' }, 'Text in group 1'), h(P.Panel, { title: 'Group 2' }, 'Text in group 2'))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "The page is the two-pane workspace",
+    "text": "Rewrite the written Purpose for list-and-detail; Columns gets another page.",
+    "render": {
+     "caption": "List and detail",
+     "width": "840",
+     "jsx": "h(P.Columns, { ratio: 'sidebar-start' }, h(P.Panel, { title: 'Messages' }, 'List'), h(P.Panel, { title: 'Message' }, 'Detail'))"
+    }
+   }
+  ],
+  "recommendation": "A. The component is Columns; list-and-detail is a separate canonical layout in Material 3 with its own page. Matching the page to its component keeps both clear.",
+  "sources": [
+   "Material 3 · Canonical layouts: list-detail",
+   "Fluent 2 · Layout"
+  ]
+ },
+ {
+  "id": "layout/columns/2",
+  "title": "Move \"lists read one at a time\" to the Split pane page?",
+  "context": "\"Lists whose items are read one at a time (notes, messages)\" describes a list-and-detail screen, not equal columns.",
+  "current": [
+   {
+    "where": "Columns · When to use (rec.use[1]) (paraphrase)",
+    "text": "Lists whose items are read one at a time (notes, messages)",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Equal columns vs list and detail",
+    "width": "1200",
+    "jsx": "h(P.Columns, null, h(P.Columns, Object.assign({ count: 2 }, {}), h(P.Panel, { title: 'Group 1' }, 'Text in group 1'), h(P.Panel, { title: 'Group 2' }, 'Text in group 2')), h(P.Columns, { ratio: 'sidebar-start' }, h(P.Panel, { title: 'Notes' }, 'List'), h(P.Panel, { title: 'Note' }, 'Detail')))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Move it to Split pane",
+    "recommended": true,
+    "text": "Columns' When to use keeps peer groups (a dialog's steps, two forms side by side).",
+    "render": {
+     "caption": "Columns use",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h('h3', null, \"When to use Columns\"), h('ul', null, h('li', null, \"Two or three peer groups side by side, such as the upload dialog's steps\")))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Keep it on Columns",
+    "text": "Leave it.",
+    "render": {
+     "caption": "Today",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h('h3', null, \"When to use\"), h('ul', null, h('li', null, \"Lists whose items are read one at a time (notes, messages)\")))"
+    }
+   }
+  ],
+  "recommendation": "A. Reading items one at a time is the list-detail layout in Material 3 and Fluent; it belongs with Split pane.",
+  "sources": [
+   "Material 3 · List-detail layout",
+   "Apple HIG · Split views"
+  ]
+ },
+ {
+  "id": "layout/layout-spacer/1",
+  "title": "Should Spacer show only its own text?",
+  "context": "The Spacer page showed the Stack purpose and full write-up. Spacer has its own purpose now (push and Toolbar.Spacer); the rest still comes from Stack.",
+  "current": [
+   {
+    "where": "Spacer · Purpose (w00B records)",
+    "text": "Pushes the items after it to the far end of a row or column (Toolbar.Spacer in a toolbar), so actions line up at the edge without margins. For spacing, see Stack."
+   },
+   {
+    "where": "Spacer · write-up (docs) (paraphrase)",
+    "text": "The full Stack anatomy, behavior and accessibility",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "push sends the last button to the end",
+    "width": "600",
+    "jsx": "h(P.Inline, null, h(P.Button, null, 'Bold'), h(P.Button, null, 'Italic'), h(P.Stack, { push: true }, h(P.Button, { variant: 'primary' }, 'Publish')))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Own text, point to Stack",
+    "recommended": true,
+    "text": "Spacer shows push and Toolbar.Spacer only, with \"For layout, see Stack.\"",
+    "render": {
+     "caption": "At 600",
+     "width": "600",
+     "jsx": "h(P.Inline, null, h(P.Button, null, 'Bold'), h(P.Stack, { push: true }, h(P.Button, { variant: 'primary' }, 'Publish')))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Keep the full Stack write-up",
+    "text": "Leave the copy.",
+    "render": {
+     "caption": "Copy",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h('h3', null, \"Spacer\"), h('p', null, \"Lets applications arrange elements in a column (Stack) or a row (Inline) …\"))"
+    }
+   }
+  ],
+  "recommendation": "A. One source of truth per topic; Polaris and Carbon link to the layout primitive instead of copying it.",
+  "sources": [
+   "Shopify Polaris · Layout primitives",
+   "Plenix · one page per component"
+  ]
+ },
+ {
+  "id": "layout/layout-inset/1",
+  "title": "Should Inset show only its own text?",
+  "context": "The Inset page shows the Stack purpose and full write-up. Its own subject is the inset tokens and Bleed.",
+  "current": [
+   {
+    "where": "Inset · Purpose and docs (paraphrase)",
+    "text": "The Stack purpose and the full Stack write-up",
+    "conflict": true
+   },
+   {
+    "where": "Stack.jsx (the code)",
+    "text": "Stack.inset: \"none\" | \"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" (padding on every side, --plx-sys-space-inset-*)"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Inset with a Bleed child",
+    "jsx": "h(P.Panel, { title: 'Card', flush: true }, h(P.Stack, { inset: 'md' }, h(P.Bleed, { space: 'md' }, h(P.Divider, null)), 'Text inside the inset'))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Own text, point to Stack",
+    "recommended": true,
+    "text": "Inset shows the inset tokens and Bleed, with \"For layout, see Stack.\"",
+    "render": {
+     "caption": "Inset sizes",
+     "jsx": "h(P.Stack, null, h(P.Panel, { title: 'sm', flush: true }, h(P.Stack, { inset: 'sm' }, 'Inset sm')), h(P.Panel, { title: 'lg', flush: true }, h(P.Stack, { inset: 'lg' }, 'Inset lg')))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Keep the full Stack write-up",
+    "text": "Leave the copy.",
+    "render": {
+     "caption": "Copy",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h('h3', null, \"Inset\"), h('p', null, \"Lets applications arrange elements in a column (Stack) …\"))"
+    }
+   }
+  ],
+  "recommendation": "A. Same as Spacer: describe Inset here and link to Stack, as Polaris does for its Box padding.",
+  "sources": [
+   "Shopify Polaris · Box: padding",
+   "Plenix · one page per component"
+  ]
+ },
+ {
+  "id": "layout/layout-full-screen-workspace/1",
+  "title": "What should the \"Full-screen experience\" variant say?",
+  "context": "The variant had placeholder text. The Page structures records now give it real text: the task takes the whole window, and Close returns.",
+  "current": [
+   {
+    "where": "As the question quoted (paraphrase)",
+    "text": "composed from existing Platform controls · use for \"The matching page purpose\" · avoid \"Unrelated workflows\"",
+    "conflict": true
+   },
+   {
+    "where": "Full-screen variant (w03A records), now",
+    "text": "The task takes the whole window: the header and panes step aside, and Close returns."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Full screen: only the task and Close",
+    "width": "840",
+    "jsx": "h(P.Stack, null, h(P.Inline, { justify: 'between' }, h('strong', null, 'Edit image'), h(P.Button, { icon: 'close', iconOnly: true, label: 'Close' })), h(P.Panel, { title: 'Canvas' }, 'The whole window'))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Real text",
+    "recommended": true,
+    "text": "Text: the task takes the whole window, Close returns. Use: editing an image or a document, a presentation. Avoid: tasks people do beside other work (use a side panel).",
+    "render": {
+     "caption": "Variant page",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h('h3', null, \"Full screen\"), h('p', null, \"The task takes the whole window: the header and panes step aside, and Close returns.\"), h('p', null, \"Use: an image editor, a document editor, a slideshow. Avoid: a task people do while looking at other things: use a side panel.\"))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Remove the variant",
+    "text": "The page keeps only its default.",
+    "render": {
+     "caption": "Without the variant",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h('h3', null, \"Full-screen workspace\"), h('p', null, \"One page, no variants.\"))"
+    }
+   }
+  ],
+  "recommendation": "A. Focus and full-screen modes are a common, distinct case (Material 3 full-screen dialogs, Apple HIG full-screen mode) worth its own guidance.",
+  "sources": [
+   "Material 3 · Full-screen dialogs",
+   "Apple HIG · Going full screen"
+  ]
+ },
+ {
+  "id": "layout/sticky/1",
+  "title": "Should the Sticky overview say \"by default\"?",
+  "context": "The overview now says it \"by default shows a shadow only while it is stuck … it can show the shadow always, or never\", matching the code's shadow prop.",
+  "current": [
+   {
+    "where": "Sticky · Overview (rec.text), now",
+    "text": "by default shows a shadow only while it is stuck (the browser reports it); it can show the shadow always, or never."
+   },
+   {
+    "where": "Sticky.jsx (the code)",
+    "text": "Sticky.shadow: \"stuck\" (default: the shadow and the separator show only while it is stuck) | \"always\" | \"none\""
+   },
+   {
+    "where": "As the question quoted",
+    "text": "shows a shadow only while it is stuck",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Stuck vs always",
+    "width": "840",
+    "jsx": "h(P.Columns, null, h(P.Sticky, { label: 'Stuck', stuck: true }, h(P.Inline, null, h(P.Button, null, 'Cancel'), h(P.Button, { variant: 'primary' }, 'Save'))), h(P.Sticky, { label: 'Always', shadow: 'always' }, h(P.Inline, null, h(P.Button, null, 'Cancel'), h(P.Button, { variant: 'primary' }, 'Save'))))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "\"By default\", with Always and None",
+    "recommended": true,
+    "text": "Keep the current overview.",
+    "render": {
+     "caption": "Default: shadow only while stuck",
+     "jsx": "h(P.Sticky, { label: 'Actions', stuck: true }, h(P.Inline, null, h(P.Button, { variant: 'primary' }, 'Save')))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Overview without the options",
+    "text": "Say only \"while stuck\" and leave Always to its variant page.",
+    "render": {
+     "caption": "Overview",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h('h3', null, \"Sticky\"), h('p', null, \"Shows a shadow only while it is stuck.\"))"
+    }
+   }
+  ],
+  "recommendation": "A. The overview should be true for every variant; Material 3 describes elevation on scroll as the default with options.",
+  "sources": [
+   "Material 3 · Top app bar: elevation on scroll",
+   "Sticky.jsx: shadow prop"
+  ],
+  "settled": true
+ }
+]

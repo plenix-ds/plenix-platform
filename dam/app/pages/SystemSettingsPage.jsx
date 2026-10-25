@@ -58,14 +58,14 @@ const Search = ({ value, onChange, label }) => (
 );
 const match = (q, row) => !q || row.some((c) => String(c || '').toLowerCase().indexOf(q.toLowerCase()) >= 0);
 const rowsOf = (list, keys) => list.map((r, i) => Object.assign({ id: i }, ...keys.map((k, j) => ({ [k]: r[j] }))));
-const switchCol = (title) => ({ title, field: 'on', kind: 'center', headerSort: false, render: (r) => <Switch label={r.name + ': ' + title} labelHidden checked={r.on} onChange={() => r.toggle()} /> });
+const switchCol = (title) => ({ title, field: 'on', kind: 'center', sortable: false, render: (r) => <Switch label={r.name + ': ' + title} labelHidden checked={r.on} onChange={() => r.toggle()} /> });
 function useToggles(list) {
   const [on, setOn] = React.useState(list.map((r) => r[1]));
   return list.map((r, i) => ({ id: i, name: r[0], on: on[i], toggle: () => setOn(on.map((v, j) => (j === i ? !v : v))) }));
 }
 // a name/value list as a table with a header (owner, 2026-10-09: every name/value list in the DataGrid's look); values are technical
 const facts = (label, list) => <Table label={label} headerMenu={false} data={list.map(([k, v], i) => ({ id: i, name: k, value: v }))}
-  columns={[{ title: 'Name', field: 'name', kind: 'name', rowLabel: true, headerSort: false }, { title: 'Value', field: 'value', kind: 'data', headerSort: false }]} />;
+  columns={[{ title: 'Name', field: 'name', kind: 'name', rowLabel: true, sortable: false }, { title: 'Value', field: 'value', kind: 'data', sortable: false }]} />;
 // the form's buttons: in an ActionBar (on the right, sticky at the bottom), a destructive action first, the primary last
 const Actions = ({ act, save = 'Save', del = 'Delete' }) => (
   <ActionBar label="Form actions">{del ? <Button variant="danger-secondary" onClick={act(del, 'warning')}>{del}</Button> : null}<Button type="submit" variant="primary">{save}</Button></ActionBar>
@@ -118,7 +118,7 @@ function Properties({ act }) {
         </Section>
         <Section title="Actions" collapsible defaultExpanded={false} description="The actions of this module and the roles that may run them.">
           <DataGrid label="Actions" data={rowsOf(D.ACTIONS, ['name', 'roles'])}
-            columns={[{ title: 'Action', field: 'name', kind: 'name', frozen: true, filter: true }, { title: 'Roles', field: 'roles', filter: true }, { title: 'Status', field: 'status', kind: 'center', headerSort: false, render: () => <Badge tone="success">Active</Badge> }]} />
+            columns={[{ title: 'Action', field: 'name', kind: 'name', frozen: true, filter: true }, { title: 'Roles', field: 'roles', filter: true }, { title: 'Status', field: 'status', kind: 'center', sortable: false, render: () => <Badge tone="success">Active</Badge> }]} />
         </Section>
         <Section title="View all folders" collapsible defaultExpanded={false} description="Groups and roles that can view all folders for this module.">
           <DataGrid label="View all folders" data={viewAll} columns={[roleCol, switchCol('View all')]} />
@@ -276,7 +276,7 @@ function EmailTemplates({ act }) {
       <Section title="Templates">
         <DataGrid label="Email templates" data={rowsOf(D.EMAIL_TEMPLATES, ['name', 'file'])} columns={[
           { title: 'Template', field: 'name', kind: 'name', frozen: true, filter: true }, { title: 'File', field: 'file', kind: 'data' },
-          { title: 'Actions', field: 'actions', kind: 'center', headerSort: false, render: (r) => <Button size="xs" variant="ghost" aria-label={'Edit ' + r.name} onClick={act('Edit ' + r.file, 'info')}>Edit</Button> }]} />
+          { title: 'Actions', field: 'actions', kind: 'center', sortable: false, render: (r) => <Button size="xs" variant="ghost" aria-label={'Edit ' + r.name} onClick={act('Edit ' + r.file, 'info')}>Edit</Button> }]} />
       </Section>
     </Screen>
   );

@@ -1,0 +1,1112 @@
+[
+ {
+  "id": "forms/color-swatch/1",
+  "title": "Is a color swatch square or round by default?",
+  "context": "The question saw the Anatomy say \"round (default) or square\". The component and the spec now both say square with 2px corners is the default; round is an option.",
+  "current": [
+   {
+    "where": "Color swatch · Overview variant (rec.variantPages[0])",
+    "text": "Square (default): 2px corners"
+   },
+   {
+    "where": "Color swatch · Anatomy (docs.anatomy[1]), now",
+    "text": "Shape — square with 2px corners (default) or round (optional)"
+   },
+   {
+    "where": "Anatomy as the question quoted it (paraphrase)",
+    "text": "round (default) or square",
+    "conflict": true
+   },
+   {
+    "where": "ColorSwatch.jsx (the code)",
+    "text": "shape: \"square\" (default: 2px corners, owner batch 291) | \"round\" (a circle)"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Both shapes the component draws",
+    "jsx": "h(P.Inline, null, h(P.ColorSwatch, { color: 'blue' }), h(P.ColorSwatch, { color: 'green' }), h(P.ColorSwatch, { color: 'red' }), h(P.ColorSwatch, { color: 'blue', shape: 'round' }), h(P.ColorSwatch, { color: 'green', shape: 'round' }), h(P.ColorSwatch, { color: 'red', shape: 'round' }))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Square is the default",
+    "recommended": true,
+    "text": "Keep the code and the corrected Anatomy: square with 2px corners, round on request.",
+    "render": {
+     "caption": "Default: square",
+     "jsx": "h(P.ColorPicker, { label: 'Category color', value: 'blue', onChange: function () {} })"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Round is the default",
+    "text": "Change the component default to a circle and rewrite the Overview and the variant page.",
+    "render": {
+     "caption": "Round swatches",
+     "jsx": "h(P.Inline, null, h(P.ColorSwatch, { color: 'blue', shape: 'round' }), h(P.ColorSwatch, { color: 'green', shape: 'round' }), h(P.ColorSwatch, { color: 'purple', shape: 'round' }))"
+    }
+   }
+  ],
+  "recommendation": "A: square. The code already draws square swatches, and square chips line up with Plenix tags, pills and table cells. Carbon and Fluent use square or slightly rounded swatches in color pickers; round swatches are common for avatars and status, which Plenix already shows differently.",
+  "sources": [
+   "Fluent 2 · Swatch picker: square and circular shapes, one per place",
+   "Carbon · Tag and data colors drawn as rounded squares",
+   "ColorSwatch.jsx: shape=\"square\" by default (batch 291)"
+  ]
+ },
+ {
+  "id": "forms/creatable-select/1",
+  "title": "Does the add-a-tag field look like every other text field?",
+  "context": "The Overview says the add field is a normal text field. The question saw older Anatomy and Focus rows (borderless, underline focus). Those rows now say it is a text field like every other, with the field's focused border.",
+  "current": [
+   {
+    "where": "Creatable select · Anatomy (docs.anatomy[2]), now",
+    "text": "Add field — TagInput, a text field like every other, at the end of the list (required)"
+   },
+   {
+    "where": "Creatable select · Focus (docs.a11y.focus), now",
+    "text": "The add field shows the field's focused border, like every field; the remove button uses the native focus style."
+   },
+   {
+    "where": "As the question quoted it (paraphrase)",
+    "text": "a borderless text field … an underline focus shadow",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "A normal field next to tags (focus it to see the border change)",
+    "jsx": "h(P.Stack, null, h(P.Inline, null, h(P.Badge, null, 'Brand'), h(P.Badge, null, 'Print')), h(P.Field, Object.assign({ label: \"Add a tag\" }, {}), h(P.Input, { placeholder: 'Type a tag and press Enter' })))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "A text field like every other",
+    "recommended": true,
+    "text": "Keep the updated Anatomy and Focus rows: a bordered field whose border recolors on focus.",
+    "render": {
+     "caption": "Bordered field, border-only focus",
+     "jsx": "h(P.Field, Object.assign({ label: \"Add a tag\" }, {}), h(P.Input, { placeholder: 'Type a tag and press Enter' }))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "A borderless field with an underline",
+    "text": "Bring back the borderless look with an underline on focus. This conflicts with the field focus rule and the removal of underline fields.",
+    "render": {
+     "caption": "Not drawable with the Platform: there is no underline field",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h('h3', null, \"Underline field\"), h('p', null, \"Input.jsx: \\\"There is no underline field (owner, 2026-10-16)\\\". This option needs a new look.\"))"
+    }
+   }
+  ],
+  "recommendation": "A. One field look across forms is the mainstream rule: Material 3 and Fluent 2 use the same text field inside chip inputs, and WCAG 1.4.11 needs a visible boundary. Plenix's own field-focus rule (focus recolors the border only) and the removal of underline fields point the same way.",
+  "sources": [
+   "Material 3 · Chips: input chips inside a standard text field",
+   "Fluent 2 · Tag picker: the same input as other fields",
+   "WCAG 2.2 · 1.4.11 Non-text contrast",
+   "Plenix rule: field focus recolors the border only"
+  ]
+ },
+ {
+  "id": "forms/search-input/1",
+  "title": "Is the search field white or gray?",
+  "context": "The question saw the width rule say \"White, outlined\" and the contrast row say the neutral fill. The code draws the search input on the field background (white, outlined), the same as other fields.",
+  "current": [
+   {
+    "where": "Search input · Width rule as the question quoted it (paraphrase)",
+    "text": "White, outlined, the height of the buttons beside it",
+    "conflict": true
+   },
+   {
+    "where": "Search input · Contrast as the question quoted it (paraphrase)",
+    "text": "uses the neutral fill (fill-neutral) on page surfaces",
+    "conflict": true
+   },
+   {
+    "where": "components.tokens.json (the code) (paraphrase)",
+    "text": "search-input-background → {plx-sys.field-background}"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "The search field today, beside a button",
+    "width": "600",
+    "jsx": "h(P.Inline, null, h(P.SearchField, { value: '', onChange: function () {} }), h(P.Button, null, 'Filter'))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "White and outlined",
+    "recommended": true,
+    "text": "The contrast row says the field background and the field border, like every field. The width rule keeps \"white, outlined\".",
+    "render": {
+     "caption": "White, outlined",
+     "width": "600",
+     "jsx": "h(P.SearchField, { value: 'brand', onChange: function () {}, onClear: function () {} })"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Neutral gray fill",
+    "text": "The search becomes a filled gray field. This needs new tokens and differs from the other fields in a bar.",
+    "render": {
+     "caption": "Closest Platform look: the filled appearance of a field",
+     "jsx": "h(P.Field, Object.assign({ label: \"Search\" }, {\"hideLabel\":true}), h(P.Input, { appearance: 'filled', placeholder: 'Search' }))"
+    }
+   }
+  ],
+  "recommendation": "A: white and outlined, which is what the code draws. Carbon and Fluent outline their search boxes in toolbars so they read as fields next to buttons; a gray fill reads as a filled field and Plenix allows one appearance per form. Fix the contrast row to name the field background.",
+  "sources": [
+   "Fluent 2 · SearchBox: outline appearance in toolbars",
+   "Carbon · Search: same field styles as text input",
+   "Plenix: one field appearance per form (Input.jsx)"
+  ]
+ },
+ {
+  "id": "forms/radio-group/1",
+  "title": "How many options before a radio group becomes a select?",
+  "context": "Radio group, Radio, Select, Combobox and Segmented control each give a different number for when to switch controls. One shared scale would end the conflict.",
+  "current": [
+   {
+    "where": "Radio group · When not to use (paraphrase)",
+    "text": "more than about seven options means a select",
+    "conflict": true
+   },
+   {
+    "where": "Radio page (paraphrase)",
+    "text": "two to five options",
+    "conflict": true
+   },
+   {
+    "where": "Select page (paraphrase)",
+    "text": "up to about ten",
+    "conflict": true
+   },
+   {
+    "where": "Combobox page (paraphrase)",
+    "text": "fewer than seven means a select",
+    "conflict": true
+   },
+   {
+    "where": "Segmented control · Anatomy (paraphrase)",
+    "text": "Option — … (required, two to five)"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "The same choice in each control",
+    "jsx": "h(P.Table, { label: \"Controls by option count\", columns: [{\"title\":\"Options\",\"field\":\"c0\",\"kind\":\"wrap\",\"rowLabel\":true},{\"title\":\"Control\",\"field\":\"c1\",\"kind\":\"wrap\"}], data: [{\"c0\":\"2 to 5, short labels, a view switch\",\"c1\":\"Segmented control\"},{\"c0\":\"2 to 7, all visible\",\"c1\":\"Radio group\"},{\"c0\":\"8 to about 15\",\"c1\":\"Select\"},{\"c0\":\"More than 15, or typed search\",\"c1\":\"Combobox\"}] })"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "One scale: 5 · 7 · 15",
+    "recommended": true,
+    "text": "Segmented control two to five; radio group up to seven; select from eight to about fifteen; combobox above that. Every page quotes the same numbers.",
+    "render": [
+     {
+      "caption": "Up to seven: a radio group",
+      "jsx": "h(P.RadioGroup, { label: 'Format', value: 'png', onChange: function () {}, options: [{ value: 'png', label: 'PNG' }, { value: 'jpg', label: 'JPG' }, { value: 'webp', label: 'WebP' }] })"
+     },
+     {
+      "caption": "Eight or more: a select",
+      "jsx": "h(P.Field, Object.assign({ label: \"Country\" }, {}), h(P.Select, { options: ['Belgium','Canada','France','Germany','Ireland','Italy','Japan','Spain','United States'].map(function (c) { return { value: c, label: c }; }) }))"
+     }
+    ]
+   },
+   {
+    "key": "B",
+    "label": "One scale: 5 · 5 · 10",
+    "text": "Radio group stops at five (like Radio and Segmented control); select up to ten; combobox above ten.",
+    "render": {
+     "caption": "Thresholds",
+     "jsx": "h(P.Table, { label: \"Option B\", columns: [{\"title\":\"Options\",\"field\":\"c0\",\"kind\":\"wrap\",\"rowLabel\":true},{\"title\":\"Control\",\"field\":\"c1\",\"kind\":\"wrap\"}], data: [{\"c0\":\"2 to 5\",\"c1\":\"Radio group or segmented control\"},{\"c0\":\"6 to 10\",\"c1\":\"Select\"},{\"c0\":\"More than 10\",\"c1\":\"Combobox\"}] })"
+    }
+   }
+  ],
+  "recommendation": "A. Most systems put the radio limit around five to seven (GOV.UK and Carbon: a few options; Material 3: radios for a short list) and move to a searchable list once scanning gets slow, around fifteen. Seven matches the Radio group page today, so only the other pages change.",
+  "sources": [
+   "Carbon · Radio button: use for a small set; dropdown for longer lists",
+   "GOV.UK · Radios and Select: avoid selects where radios fit",
+   "Material 3 · Menus and radio buttons",
+   "Fluent 2 · Combobox: for long lists with filtering"
+  ]
+ },
+ {
+  "id": "forms/forms-required-indicator/1",
+  "title": "Mark the required fields, or the optional ones?",
+  "context": "The Required indicator page says marking optional fields is something to avoid. The Text field, Text area and Native select pages, and the label guidance, say to mark the optional fields when most are required.",
+  "current": [
+   {
+    "where": "Required indicator · When not to use (rec.avoid[0])",
+    "text": "Marking optional fields instead",
+    "conflict": true
+   },
+   {
+    "where": "Field label guidance (w01A docs.content.labels)",
+    "text": "Label fields plainly: \"Full name\", \"Phone number\". Mark optional fields as optional.",
+    "conflict": true
+   },
+   {
+    "where": "Field.jsx (the code)",
+    "text": "required: marks the field and the control required; the label shows \" *\""
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Required marked with an asterisk (today)",
+    "jsx": "h(P.Stack, null, h(P.Field, Object.assign({ label: \"Full name\" }, {\"required\":true}), h(P.Input, null)), h(P.Field, Object.assign({ label: \"Email\" }, {\"required\":true}), h(P.Input, null)), h(P.Field, Object.assign({ label: \"Phone\" }, {}), h(P.Input, null)))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Mark whichever is fewer",
+    "recommended": true,
+    "text": "Mark required fields with the asterisk; when most fields are required, mark the few optional ones \"(optional)\" instead. The Required indicator page drops its avoid line.",
+    "render": [
+     {
+      "caption": "Mostly optional: asterisks",
+      "jsx": "h(P.Stack, null, h(P.Field, Object.assign({ label: \"Full name\" }, {\"required\":true}), h(P.Input, null)), h(P.Field, Object.assign({ label: \"Phone\" }, {}), h(P.Input, null)), h(P.Field, Object.assign({ label: \"Company\" }, {}), h(P.Input, null)))"
+     },
+     {
+      "caption": "Mostly required: optional marked",
+      "jsx": "h(P.Stack, null, h(P.Field, Object.assign({ label: \"Full name\" }, {}), h(P.Input, null)), h(P.Field, Object.assign({ label: \"Email\" }, {}), h(P.Input, null)), h(P.Field, Object.assign({ label: \"Phone (optional)\" }, {}), h(P.Input, null)))"
+     }
+    ]
+   },
+   {
+    "key": "B",
+    "label": "Always mark required only",
+    "text": "Every form uses the asterisk; nothing is marked optional. The Text field, Text area and Native select pages change.",
+    "render": {
+     "caption": "Asterisks only",
+     "jsx": "h(P.Stack, null, h(P.Field, Object.assign({ label: \"Full name\" }, {\"required\":true}), h(P.Input, null)), h(P.Field, Object.assign({ label: \"Email\" }, {\"required\":true}), h(P.Input, null)), h(P.Field, Object.assign({ label: \"Phone\" }, {}), h(P.Input, null)))"
+    }
+   }
+  ],
+  "recommendation": "A. Carbon, Atlassian and Polaris mark whichever set is smaller, and GOV.UK marks optional fields. Mixing both marks in one form confuses people, so each form uses one, picked by count.",
+  "sources": [
+   "Carbon · Forms: mark the smaller set (required or optional)",
+   "GOV.UK · Question pages: mark optional fields",
+   "Atlassian · Forms: required fields asterisk",
+   "Shopify Polaris · Forms: label optional fields"
+  ]
+ },
+ {
+  "id": "forms/forms-form/1",
+  "title": "Should Form and its parts get their own purpose text?",
+  "context": "Form, Label, Help text, Required indicator and Validation message show the Field page's purpose and write-up word for word. For Form, that purpose speaks of one field, not a whole form.",
+  "current": [
+   {
+    "where": "Form · Purpose (rec.purpose, copied from Field)",
+    "text": "A label, the control, and its help or error, connected for assistive technology.",
+    "conflict": true
+   },
+   {
+    "where": "Form, Label, Help text, Required indicator, Validation message (paraphrase)",
+    "text": "The Field page's write-up, word for word",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "A Form is many fields plus actions; a Field is one",
+    "width": "840",
+    "jsx": "h(P.Columns, null, h(P.Stack, null, h('h3', null, 'Field'), h(P.Field, Object.assign({ label: \"Name\" }, {\"description\":\"Shown on the asset\"}), h(P.Input, null))), h(P.Stack, null, h('h3', null, 'Form'), h(P.Field, Object.assign({ label: \"Name\" }, {}), h(P.Input, null)), h(P.Field, Object.assign({ label: \"Email\" }, {}), h(P.Input, null)), h(P.Inline, null, h(P.Button, { variant: 'primary' }, 'Save'), h(P.Button, null, 'Cancel'))))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Own purpose for each page",
+    "recommended": true,
+    "text": "Form gets a purpose about the whole form (fields, order, actions, errors). Label, Help text, Required indicator and Validation message each say what their part does and point to Field for the rest.",
+    "render": {
+     "caption": "How Form would read",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h('h3', null, \"Form\"), h('p', null, \"Purpose: Collects related values in one place, in a clear order, and saves or submits them together, with errors summarized where people will see them.\"), h('p', null, \"Anatomy, behavior and accessibility of one field: see Field.\"))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Keep showing Field's text",
+    "text": "All five pages keep Field's purpose and write-up as they are.",
+    "render": {
+     "caption": "How Form reads today",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h('h3', null, \"Form\"), h('p', null, \"Purpose: A label, the control, and its help or error, connected for assistive technology.\"))"
+    }
+   }
+  ],
+  "recommendation": "A. Each page should say what its own part is for; Carbon, Polaris and GOV.UK document Form and its parts (label, help text, error message) separately and link between them. A shared purpose that describes one field is wrong on the Form page.",
+  "sources": [
+   "Carbon · Form: own usage page; Text input separate",
+   "Shopify Polaris · Form layout vs Text field",
+   "GOV.UK · Error message and Hint text as their own components"
+  ]
+ },
+ {
+  "id": "forms/forms-url-field/1",
+  "title": "Should the URL, phone and password pages have their own error example?",
+  "context": "These pages show the Text field write-up, whose error example is \"Enter a valid email address\". On a URL page that example reads wrong.",
+  "current": [
+   {
+    "where": "URL, Telephone, Password field · Errors (docs.content.errors, shared) (paraphrase)",
+    "text": "Write the error in the Field's `error`; say what to change (\"Enter a valid email address\").",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "The shared example on a URL field",
+    "jsx": "h(P.Field, Object.assign({ label: \"Website\" }, {\"error\":\"Enter a valid email address\"}), h(P.Input, { type: 'url', value: 'example', onChange: function () {}, invalid: true }))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "An example that fits each page",
+    "recommended": true,
+    "text": "URL: \"Enter a web address that starts with https://\". Telephone: \"Enter a phone number, like 555 0100\". Password: \"Enter a password of at least 12 characters\".",
+    "render": [
+     {
+      "caption": "URL",
+      "jsx": "h(P.Field, Object.assign({ label: \"Website\" }, {\"error\":\"Enter a web address that starts with https://\"}), h(P.Input, { type: 'url', value: 'example', onChange: function () {}, invalid: true }))"
+     },
+     {
+      "caption": "Telephone",
+      "jsx": "h(P.Field, Object.assign({ label: \"Phone\" }, {\"error\":\"Enter a phone number, like 555 0100\"}), h(P.Input, { type: 'tel', value: '12', onChange: function () {}, invalid: true }))"
+     }
+    ]
+   },
+   {
+    "key": "B",
+    "label": "Keep the shared text",
+    "text": "All pages keep the email example.",
+    "render": {
+     "caption": "As today",
+     "jsx": "h(P.Field, Object.assign({ label: \"Phone\" }, {\"error\":\"Enter a valid email address\"}), h(P.Input, { type: 'tel', value: '12', onChange: function () {}, invalid: true }))"
+    }
+   }
+  ],
+  "recommendation": "A. GOV.UK and Polaris write error examples for the exact field: say what is wrong and how to fix it, in the field's own terms. An email example on a phone page teaches the wrong pattern.",
+  "sources": [
+   "GOV.UK · Error message: be specific to the field",
+   "Shopify Polaris · Error messages",
+   "Carbon · Text input: error text"
+  ]
+ },
+ {
+  "id": "forms/drop-zone/1",
+  "title": "Does the drop zone show a focus ring when tabbed to?",
+  "context": "The question saw the focus row say there is no focus style. The code now draws the focus ring on the button version (drop-zone.css, batch 213), and the spec's focus row says so.",
+  "current": [
+   {
+    "where": "Drop zone · Focus as the question quoted it (paraphrase)",
+    "text": "no focus style of its own",
+    "conflict": true
+   },
+   {
+    "where": "Drop zone · Focus (docs.a11y.focus), now",
+    "text": "Only the button version takes Tab focus; it then shows the standard focus ring. The plain drop area takes no focus."
+   },
+   {
+    "where": "drop-zone.css (the code)",
+    "text": "as a button (as=\"button\") the drop zone shows the focus ring, as every control (batch 213)"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Tab to the button version",
+    "jsx": "h(P.Stack, null, h(P.Button, null, 'Before'), h(P.DropZone, { as: 'button', onClick: function () {} }, 'Drop files or click to choose'))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "The ring exists: the text says where it shows",
+    "recommended": true,
+    "text": "Keep the current focus row: the button version shows the standard focus ring; the plain area takes no focus.",
+    "render": {
+     "caption": "Button version, focusable",
+     "jsx": "h(P.DropZone, { as: 'button', onClick: function () {} }, 'Drop files or click to choose')"
+    }
+   },
+   {
+    "key": "B",
+    "label": "The plain area takes focus too",
+    "text": "Make the plain drop area focusable as well. A focusable thing that does nothing on Enter breaks WCAG expectations.",
+    "render": {
+     "caption": "Plain area (no focus)",
+     "jsx": "h(P.DropZone, null, 'Drop files here')"
+    }
+   }
+  ],
+  "recommendation": "A. Every focusable control needs a visible focus indicator (WCAG 2.4.7) and the code already draws it. Only controls that act should be in the Tab order, so the plain area stays out.",
+  "sources": [
+   "WCAG 2.2 · 2.4.7 Focus visible, 2.4.11 Focus not obscured",
+   "Carbon · File uploader: drop zone is a button",
+   "drop-zone.css (batch 213)"
+  ],
+  "settled": true
+ },
+ {
+  "id": "forms/forms-toggle-button-group/1",
+  "title": "Move the look out of the toggle button group's purpose?",
+  "context": "The purpose also describes the look (joined segments, blue tint, \"look A, owner, 2026-10-14\"). Most of that look is already in the Anatomy list.",
+  "current": [
+   {
+    "where": "Toggle button group · Purpose (rec.purpose) (paraphrase)",
+    "text": "Describes what it is for and its look: bordered joined segments, the blue tint of the chosen one, look A (owner, 2026-10-14), no gray track or white thumb",
+    "conflict": true
+   },
+   {
+    "where": "Segmented control · Anatomy (inventory-docs.js)",
+    "text": "Group — a radio group drawn as joined segments: a 1px control-border edge around the group and between segments, the control radius on the outer corners and square joins; look A (owner, 2026-10-14), with no gray track and no raised white thumb (required)"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Look A today",
+    "jsx": "h(function Demo(){ const [v, s] = React.useState('list'); return h(P.SegmentedControl, { label: 'View', value: v, onChange: s, options: [{ value: 'list', label: 'List' }, { value: 'grid', label: 'Grid' }, { value: 'board', label: 'Board' }] }); })"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Purpose says the use; look in Anatomy",
+    "recommended": true,
+    "text": "The purpose says only what it is for. The look and your note \"look A, owner, 2026-10-14\" stay in the Anatomy Group row.",
+    "render": {
+     "caption": "Purpose as it would read",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h('h3', null, \"Purpose\"), h('p', null, \"Lets people switch between a few views or modes of the same content with one press, the current one always shown.\"))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Keep the look in the purpose",
+    "text": "Leave the purpose as it is, repeating Anatomy.",
+    "render": {
+     "caption": "Purpose today (paraphrased)",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h('h3', null, \"Purpose\"), h('p', null, \"Switches between a few options … drawn as bordered joined segments, the chosen one in the blue tint (look A, owner, 2026-10-14), no gray track or white thumb.\"))"
+    }
+   }
+  ],
+  "recommendation": "A. Purpose sections in Material 3, Carbon and Polaris say what the component is for; the visual detail goes in Anatomy or Style. Your note stays with the look it describes.",
+  "sources": [
+   "Material 3 · Segmented buttons: overview vs specs",
+   "Carbon · Content switcher: usage vs style",
+   "Plenix page template: Purpose, then Anatomy"
+  ]
+ },
+ {
+  "id": "forms/swatch-picker/1",
+  "title": "Is brown still one of the data colors?",
+  "context": "The color consolidation retired Brown as a category color. The data colors are a separate set: the code still has a brown data color (data-color-brown tokens; ColorSwatch and Card accept \"brown\").",
+  "current": [
+   {
+    "where": "Swatch picker · Data palette variant (rec.variantPages[0].text)",
+    "text": "a data color is a hue name (blue, green, purple, red, brown, gray), never a value"
+   },
+   {
+    "where": "ColorSwatch.jsx (the code)",
+    "text": "color: a data color: a hue name (blue, green, purple, red, brown, gray: the --plx-sys-data-color-<hue> tokens)"
+   },
+   {
+    "where": "Color consolidation (0.48.0) (paraphrase)",
+    "text": "Brown category retired (Orange)",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "The six data colors the code draws",
+    "jsx": "h(P.Inline, null, ['blue','green','purple','red','brown','gray'].map(function (c) { return h(P.ColorSwatch, { key: c, color: c, label: c, showLabel: true }); }))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Keep brown: data colors differ from categories",
+    "recommended": true,
+    "text": "The list stays. The page adds one line: data colors (project hues) are a separate set from the category colors.",
+    "render": {
+     "caption": "Data palette",
+     "jsx": "h(P.ColorPicker, { label: 'Project color', value: 'brown', onChange: function () {} })"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Drop brown from the data colors too",
+    "text": "Remove brown from the data palette, the tokens and the components, and move existing brown data to orange or another hue.",
+    "render": {
+     "caption": "Five data colors",
+     "jsx": "h(P.Inline, null, ['blue','green','purple','red','gray'].map(function (c) { return h(P.ColorSwatch, { key: c, color: c, label: c, showLabel: true }); }))"
+    }
+   }
+  ],
+  "recommendation": "A. The retirement was for the category palette; the data colors are their own tokens and the code still uses brown. Keeping sets separate by purpose matches Carbon and Material, which keep data-visualization palettes apart from tag colors.",
+  "sources": [
+   "Carbon · Data visualization palettes vs tag colors",
+   "Plenix · Category colors are their own tokens",
+   "ColorSwatch.jsx / theme tokens: data-color-brown"
+  ]
+ },
+ {
+  "id": "forms/field-style-variants/1",
+  "title": "Remove \"or the line\" from the field states?",
+  "context": "Hover, focus and invalid say they change \"the border or the line\". The line meant an underlined field, which no longer exists: only outline and filled, both with a border.",
+  "current": [
+   {
+    "where": "Field style variants · Pointer, Focus, Error (as the question quoted) (paraphrase)",
+    "text": "the border or the line",
+    "conflict": true
+   },
+   {
+    "where": "Input.jsx (the code) (paraphrase)",
+    "text": "appearance: \"outline\" (default; a border on every side) | \"filled\" (the same border and corners, a gray fill …). There is no underline field (owner, 2026-10-16)"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "The two looks that exist",
+    "width": "600",
+    "jsx": "h(P.Columns, null, h(P.Field, Object.assign({ label: \"Outline\" }, {}), h(P.Input, null)), h(P.Field, Object.assign({ label: \"Filled\" }, {}), h(P.Input, { appearance: 'filled' })))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Say \"the border\" only",
+    "recommended": true,
+    "text": "All three rows say the border changes; \"or the line\" goes.",
+    "render": {
+     "caption": "Invalid: the border changes on both looks",
+     "width": "600",
+     "jsx": "h(P.Columns, null, h(P.Field, Object.assign({ label: \"Outline\" }, {\"error\":\"Enter a name\"}), h(P.Input, { invalid: true })), h(P.Field, Object.assign({ label: \"Filled\" }, {\"error\":\"Enter a name\"}), h(P.Input, { appearance: 'filled', invalid: true })))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Keep \"or the line\"",
+    "text": "Leave the rows as they are, describing a look that does not exist.",
+    "render": {
+     "caption": "No Platform look has a line",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h('h3', null, \"Underline field\"), h('p', null, \"Not available: Input.jsx has no underline appearance.\"))"
+    }
+   }
+  ],
+  "recommendation": "A. The text should describe the looks that exist. Both looks have a border, so \"the border\" is complete and accurate.",
+  "sources": [
+   "Input.jsx: no underline field (owner, 2026-10-16)",
+   "Plenix rule: field focus recolors the border only",
+   "Material 3 · Text fields: state changes per style"
+  ]
+ },
+ {
+  "id": "forms/number-input/1",
+  "title": "Which contrast figures should the number input state?",
+  "context": "The row once said only that the text and border \"contrast\". Other fields state 4.5:1 for text and 3:1 for the border. The shared row now states those figures.",
+  "current": [
+   {
+    "where": "Number input family · Contrast (docs.a11y.contrast), now (paraphrase)",
+    "text": "The text keeps 4.5:1 and the border 3:1 against the field's background; the step buttons are Buttons …"
+   },
+   {
+    "where": "As the question quoted it (paraphrase)",
+    "text": "The field’s text and border contrast; the buttons are Buttons.",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Number, stepper, currency",
+    "jsx": "h(P.Stack, null, h(P.Field, Object.assign({ label: \"Copies\" }, {}), h(P.NumberInput, { defaultValue: 2, min: 1, max: 99, stepper: 'buttons', width: 'sm' })), h(P.Field, Object.assign({ label: \"Price\" }, {}), h(P.NumberInput, { defaultValue: 12.5, format: 'currency', currency: 'USD', min: 0 })))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "4.5:1 text, 3:1 border",
+    "recommended": true,
+    "text": "Same figures as other fields; the buttons follow the Button page.",
+    "render": {
+     "caption": "What the row says",
+     "jsx": "h(P.Table, { label: \"Contrast\", columns: [{\"title\":\"Part\",\"field\":\"c0\",\"kind\":\"wrap\",\"rowLabel\":true},{\"title\":\"Minimum\",\"field\":\"c1\",\"kind\":\"wrap\"}], data: [{\"c0\":\"Value text\",\"c1\":\"4.5:1 (WCAG 1.4.3)\"},{\"c0\":\"Field border\",\"c1\":\"3:1 (WCAG 1.4.11)\"},{\"c0\":\"Step buttons\",\"c1\":\"As Button\"}] })"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Keep the short sentence",
+    "text": "Leave it without figures.",
+    "render": {
+     "caption": "Today's wording as the question saw it",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h('h3', null, \"Contrast\"), h('p', null, \"The field’s text and border contrast; the buttons are Buttons.\"))"
+    }
+   }
+  ],
+  "recommendation": "A. WCAG 2.2 sets 4.5:1 for normal text and 3:1 for the boundary of a control; stating them matches every other field page.",
+  "sources": [
+   "WCAG 2.2 · 1.4.3 Contrast (minimum)",
+   "WCAG 2.2 · 1.4.11 Non-text contrast"
+  ]
+ },
+ {
+  "id": "forms/forms-searchable-select/1",
+  "title": "Should the searchable select get its own one-value purpose?",
+  "context": "The searchable select picks one value, but its page shows the shared Combobox purpose (one or several values, optional create) and an anatomy with Tags and Create.",
+  "current": [
+   {
+    "where": "Searchable select · Purpose (shared from Combobox) (paraphrase)",
+    "text": "choose one or several values ... and optionally create a value",
+    "conflict": true
+   },
+   {
+    "where": "Combobox.jsx (the code) (paraphrase)",
+    "text": "multiple: allows several values … (default false); creatable: offers \"Create “text”\" … (default false)"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Searchable select: one value, filtered as you type",
+    "jsx": "h(function Demo(){ const [v, s] = React.useState('mc'); return h(P.Field, { label: 'Owner' }, h(P.Combobox, { options: [{ value: 'mc', label: 'Maya Chen' }, { value: 'jo', label: 'Jon Ortiz' }, { value: 'ak', label: 'Aiko Kato' }], value: v, onChange: s })); })"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Its own one-value purpose",
+    "recommended": true,
+    "text": "Purpose: \"Lets people pick one value from a long list by typing to filter it.\" The anatomy leaves out Tags and Create.",
+    "render": {
+     "caption": "Purpose as it would read",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h('h3', null, \"Searchable select\"), h('p', null, \"Lets people pick one value from a long list by typing to filter it.\"))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Keep the shared Combobox text",
+    "text": "The page keeps the shared purpose and anatomy.",
+    "render": {
+     "caption": "Shared purpose",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h('h3', null, \"Searchable select\"), h('p', null, \"Choose one or several values … and optionally create a value.\"))"
+    }
+   }
+  ],
+  "recommendation": "A. A variant page should describe what that variant does. Fluent 2 and Carbon document the single-select combobox apart from the multiselect, and showing Tags and Create on a one-value page misleads.",
+  "sources": [
+   "Fluent 2 · Combobox: single vs multiselect",
+   "Carbon · Combo box vs Multiselect",
+   "WAI-ARIA APG · Combobox pattern"
+  ]
+ },
+ {
+  "id": "forms/date-range-picker/1",
+  "title": "Should the date range picker get its own purpose?",
+  "context": "The date range picker shows the date picker's purpose, which speaks of one date. The component's range mode chooses a start and an end with two months side by side.",
+  "current": [
+   {
+    "where": "Date range picker · Purpose (shared from Date picker) (paraphrase)",
+    "text": "Takes a date as people prefer to give it…",
+    "conflict": true
+   },
+   {
+    "where": "DatePicker.jsx (the code) (paraphrase)",
+    "text": "mode: … \"range\" (a start and an end)"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Range mode with presets",
+    "jsx": "h(P.Field, Object.assign({ label: \"Period\" }, {}), h(P.DatePicker, { mode: 'range', defaultValue: { start: '2026-10-01', end: '2026-10-14' }, presets: true }))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Its own purpose about a period",
+    "recommended": true,
+    "text": "Purpose: \"Lets people choose a period, a start date and an end date, by typing them or picking them on two months side by side.\"",
+    "render": {
+     "caption": "Purpose as it would read",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h('h3', null, \"Date range picker\"), h('p', null, \"Lets people choose a period, a start date and an end date, by typing them or picking them on two months side by side.\"))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Keep the shared purpose",
+    "text": "The page keeps the one-date purpose.",
+    "render": {
+     "caption": "Shared purpose",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h('h3', null, \"Date range picker\"), h('p', null, \"Takes a date as people prefer to give it…\"))"
+    }
+   }
+  ],
+  "recommendation": "A. Material 3, Carbon and Fluent each describe the range picker by its own job (a period). The shared text speaks of one date and is wrong on this page.",
+  "sources": [
+   "Material 3 · Date pickers: date range",
+   "Carbon · Date picker: range variant",
+   "Fluent 2 · Date picker"
+  ]
+ },
+ {
+  "id": "forms/date-time-picker/1",
+  "title": "Should the date-time picker get its own purpose?",
+  "context": "The date-time picker shows the date picker's purpose, which speaks only of a date. Its mode picks one moment: a date and a time, with the time zone.",
+  "current": [
+   {
+    "where": "Date-time picker · Purpose (shared from Date picker) (paraphrase)",
+    "text": "Takes a date as people prefer to give it…",
+    "conflict": true
+   },
+   {
+    "where": "DatePicker.jsx (the code) (paraphrase)",
+    "text": "mode: … \"date-time\" (a date and a time: one moment)"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Date-time mode",
+    "jsx": "h(P.Field, Object.assign({ label: \"Starts\" }, {}), h(P.DatePicker, { mode: 'date-time', defaultValue: '2026-10-24T09:00' }))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Its own purpose about a moment",
+    "recommended": true,
+    "text": "Purpose: \"Lets people choose one moment, a date and a time in a stated time zone, for a meeting, a deadline or a publish time.\"",
+    "render": {
+     "caption": "Purpose as it would read",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h('h3', null, \"Date-time picker\"), h('p', null, \"Lets people choose one moment, a date and a time in a stated time zone, for a meeting, a deadline or a publish time.\"))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Keep the shared purpose",
+    "text": "The page keeps the date-only purpose.",
+    "render": {
+     "caption": "Shared purpose",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h('h3', null, \"Date-time picker\"), h('p', null, \"Takes a date as people prefer to give it…\"))"
+    }
+   }
+  ],
+  "recommendation": "A. The page should say it picks a moment, including the time zone; Apple HIG and Material 3 describe date-and-time pickers by that job.",
+  "sources": [
+   "Apple HIG · Date pickers: date and time",
+   "Material 3 · Time pickers",
+   "DatePicker.jsx: mode=\"date-time\""
+  ]
+ },
+ {
+  "id": "forms/attachment-picker/1",
+  "title": "Does the attachment picker take device files only?",
+  "context": "The Overview says local files; When to use said files from more than one source. The component takes device files only (a FileInput); the code notes say limits apply to device files.",
+  "current": [
+   {
+    "where": "Attachment picker · Overview",
+    "text": "Attach validated local files with a reversible selection."
+   },
+   {
+    "where": "Attachment picker · When to use (as the question quoted) (paraphrase)",
+    "text": "files that come from more than one source",
+    "conflict": true
+   },
+   {
+    "where": "AttachmentPicker.jsx (the code)",
+    "text": "Attach device files as removable rows or chips without uploading them implicitly."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "What it draws today",
+    "jsx": "h(function Demo(){ const [f, s] = React.useState([]); return h(P.AttachmentPicker, { value: f, onChange: s, accept: '.pdf,image/*', multiple: true }); })"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Device files only",
+    "recommended": true,
+    "text": "The page says device files. Files from the Files app or a library use the Files picker (FilePicker or EntityPicker).",
+    "render": {
+     "caption": "Device files",
+     "jsx": "h(function Demo(){ const [f, s] = React.useState([]); return h(P.AttachmentPicker, { value: f, onChange: s, variant: 'chips', multiple: true }); })"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Several sources",
+    "text": "The component gains a source menu (device, Files app). This needs new code.",
+    "render": {
+     "caption": "What a source menu would offer",
+     "jsx": "h(P.Inline, null, h(P.Button, { icon: 'upload' }, 'From device'), h(P.Button, { icon: 'folder' }, 'From Files'))"
+    }
+   }
+  ],
+  "recommendation": "A: device files, which is what the code does. Fluent and Polaris keep the device upload control separate from pickers that browse stored files; a combined source menu can come later if a real screen needs it.",
+  "sources": [
+   "Shopify Polaris · Drop zone: device files",
+   "Fluent 2 · File upload patterns",
+   "Plenix rule: features as needed"
+  ]
+ },
+ {
+  "id": "forms/attachment-picker/2",
+  "title": "What should Inline and Chips each say not to use them for?",
+  "context": "Both variant pages showed the fallback \"Keep selection reversible and restore explicit.\" under When not to use. The lab data now has a line per variant.",
+  "current": [
+   {
+    "where": "Attachment picker variant pages (fallback in w12C.records.js)",
+    "text": "Keep selection reversible and restore explicit.",
+    "conflict": true
+   },
+   {
+    "where": "w12C.labs.js · Inline",
+    "text": "Where space is short, such as a message composer: use Chips"
+   },
+   {
+    "where": "w12C.labs.js · Chips",
+    "text": "When people need each file’s size and type to check it: use Inline"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Inline and Chips",
+    "width": "840",
+    "jsx": "h(P.Columns, null, h(P.AttachmentPicker, { value: [], onChange: function () {}, variant: 'inline' }), h(P.AttachmentPicker, { value: [], onChange: function () {}, variant: 'chips' }))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Each points to the other",
+    "recommended": true,
+    "text": "Inline: not where space is short (a message composer): use Chips. Chips: not when people must check each file's size and type: use Inline.",
+    "render": {
+     "caption": "The two lines",
+     "jsx": "h(P.Table, { label: \"When not to use\", columns: [{\"title\":\"Variant\",\"field\":\"c0\",\"kind\":\"wrap\",\"rowLabel\":true},{\"title\":\"When not to use\",\"field\":\"c1\",\"kind\":\"wrap\"}], data: [{\"c0\":\"Inline\",\"c1\":\"Where space is short, such as a message composer: use Chips\"},{\"c0\":\"Chips\",\"c1\":\"When people need each file’s size and type to check it: use Inline\"}] })"
+    }
+   },
+   {
+    "key": "B",
+    "label": "One shared line",
+    "text": "Both pages keep one general line, such as \"Uploading files right away: use the upload queue\".",
+    "render": {
+     "caption": "Shared line",
+     "jsx": "h(P.Table, { label: \"When not to use\", columns: [{\"title\":\"Variant\",\"field\":\"c0\",\"kind\":\"wrap\",\"rowLabel\":true},{\"title\":\"When not to use\",\"field\":\"c1\",\"kind\":\"wrap\"}], data: [{\"c0\":\"Inline and Chips\",\"c1\":\"Uploading files right away: use the upload queue\"}] })"
+    }
+   }
+  ],
+  "recommendation": "A. Variant pages help most when each says when to choose the other one; Carbon and Polaris write \"when not to use\" as a pointer to the better choice.",
+  "sources": [
+   "Carbon · Usage: when not to use, with the alternative",
+   "Shopify Polaris · Best practices"
+  ]
+ },
+ {
+  "id": "forms/attachment-picker/3",
+  "title": "What is the difference between Inline and Chips?",
+  "context": "Both variant pages said only \"Use this composition when it fits the task.\" and had the same description. The component draws rows (Inline) or compact chips (Chips).",
+  "current": [
+   {
+    "where": "Attachment picker variant pages (fallback)",
+    "text": "Use this composition when it fits the task.",
+    "conflict": true
+   },
+   {
+    "where": "w12C.labs.js · Inline",
+    "text": "Each file is a row with its name, size and type, and a menu to remove it."
+   },
+   {
+    "where": "w12C.labs.js · Chips",
+    "text": "Each file is a compact chip with its name and a remove button."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Choose files in each to compare",
+    "width": "840",
+    "jsx": "h(function Demo(){ const a = React.useState([]), b = React.useState([]); return h(P.Columns, null, h(P.Stack, null, h('h3', null, 'Inline'), h(P.AttachmentPicker, { value: a[0], onChange: a[1], variant: 'inline', multiple: true })), h(P.Stack, null, h('h3', null, 'Chips'), h(P.AttachmentPicker, { value: b[0], onChange: b[1], variant: 'chips', multiple: true }))); })"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Inline to check, Chips to save space",
+    "recommended": true,
+    "text": "Inline: rows with name, size and type, for forms where people check files. Chips: name only, for composers and tight spaces.",
+    "render": {
+     "caption": "When to use",
+     "jsx": "h(P.Table, { label: \"When to use\", columns: [{\"title\":\"Variant\",\"field\":\"c0\",\"kind\":\"wrap\",\"rowLabel\":true},{\"title\":\"When to use\",\"field\":\"c1\",\"kind\":\"wrap\"}], data: [{\"c0\":\"Inline\",\"c1\":\"When people need to check the files: their size and type are in view\"},{\"c0\":\"Chips\",\"c1\":\"Where space is short, such as a message composer\"}] })"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Merge into one variant",
+    "text": "Drop the choice and keep rows only.",
+    "render": {
+     "caption": "Rows only",
+     "jsx": "h(P.AttachmentPicker, { value: [], onChange: function () {}, variant: 'inline' })"
+    }
+   }
+  ],
+  "recommendation": "A. Mail and chat apps (Gmail, Teams) show attachments as chips in a composer and as rows where details matter; the code already draws both.",
+  "sources": [
+   "Fluent 2 · Attachment in Teams composer: chips",
+   "Material 3 · Chips: input chips for compact items",
+   "AttachmentPicker.jsx: variant inline | chips"
+  ]
+ },
+ {
+  "id": "forms/attachment-picker/4",
+  "title": "What should the Mouse row say?",
+  "context": "The Mouse row repeated the variant description about checking files. The spec now has a pointer row about choosing and removing files.",
+  "current": [
+   {
+    "where": "Attachment picker · Mouse (as the question quoted) (paraphrase)",
+    "text": "Validate types, per-file size and count…",
+    "conflict": true
+   },
+   {
+    "where": "Attachment picker · Mouse (docs.behavior.pointer), now",
+    "text": "Click the file input to choose files from the device; remove a file with Remove in its row menu (Inline) or the chip's remove button (Chips)."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Try it with the mouse",
+    "jsx": "h(function Demo(){ const [f, s] = React.useState([]); return h(P.AttachmentPicker, { value: f, onChange: s, multiple: true }); })"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Choose and remove",
+    "recommended": true,
+    "text": "Keep the new row: click the file input to choose; remove with Remove (Inline) or the chip's × (Chips).",
+    "render": {
+     "caption": "The row",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h('h3', null, \"Mouse\"), h('p', null, \"Click the file input to choose files from the device; remove a file with Remove in its row menu (Inline) or the chip's remove button (Chips).\"))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Add dropping files",
+    "text": "Also say files can be dropped on it. The component has no drop target today, so this needs code (a DropZone).",
+    "render": {
+     "caption": "Would need a drop zone",
+     "jsx": "h(P.DropZone, null, 'Drop files here')"
+    }
+   }
+  ],
+  "recommendation": "A. The Mouse row should describe what the pointer does with this component, and the component does not take dropped files. Add dropping only if a screen needs it.",
+  "sources": [
+   "Plenix page template: Behavior · Mouse",
+   "Carbon · File uploader: interactions"
+  ],
+  "settled": true
+ },
+ {
+  "id": "forms/attachment-picker/5",
+  "title": "Fill in the attachment picker's parts list?",
+  "context": "The parts list gave names only. The spec now gives each part a description and a required or optional mark, matching the component.",
+  "current": [
+   {
+    "where": "Attachment picker · Anatomy as the question quoted (paraphrase)",
+    "text": "Device FileInput, Selected FileRows or removable chips, Validation Notice",
+    "conflict": true
+   },
+   {
+    "where": "Attachment picker · Anatomy (docs.anatomy), now (paraphrase)",
+    "text": "File input — chooses files from the device (required) · Selected files — rows (Inline) or removable chips (Chips); “No attachments.” when empty (required) · Problem notice — shows when a file is the wrong type, too large, or one too many (optional)"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "The parts, as drawn",
+    "jsx": "h(P.AttachmentPicker, { value: [], onChange: function () {}, accept: '.pdf', maxFiles: 2 })"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Described parts, marked",
+    "recommended": true,
+    "text": "Keep the three described parts with required/optional marks.",
+    "render": {
+     "caption": "Anatomy",
+     "jsx": "h(P.Table, { label: \"Anatomy\", columns: [{\"title\":\"Part\",\"field\":\"c0\",\"kind\":\"wrap\",\"rowLabel\":true},{\"title\":\"What it is\",\"field\":\"c1\",\"kind\":\"wrap\"},{\"title\":\"Required\",\"field\":\"c2\",\"kind\":\"wrap\"}], data: [{\"c0\":\"File input\",\"c1\":\"Chooses files from the device\",\"c2\":\"Required\"},{\"c0\":\"Selected files\",\"c1\":\"Rows (Inline) or removable chips (Chips); “No attachments.” when empty\",\"c2\":\"Required\"},{\"c0\":\"Problem notice\",\"c1\":\"Wrong type, too large, or one too many\",\"c2\":\"Optional\"}] })"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Names only",
+    "text": "Go back to the three names.",
+    "render": {
+     "caption": "Names only",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h('h3', null, \"Anatomy\"), h('ul', null, h('li', null, \"Device FileInput\"), h('li', null, \"Selected FileRows or removable chips\"), h('li', null, \"Validation Notice\")))"
+    }
+   }
+  ],
+  "recommendation": "A. Every other page describes its parts and marks them required or optional, as Carbon and Material anatomy sections do.",
+  "sources": [
+   "Carbon · Anatomy sections",
+   "Material 3 · Anatomy",
+   "Plenix page template: Anatomy"
+  ]
+ },
+ {
+  "id": "forms/attachment-picker/6",
+  "title": "Should the purpose say why people use it?",
+  "context": "The purpose was the Overview word for word. The spec now has a purpose about the need it serves.",
+  "current": [
+   {
+    "where": "Attachment picker · Purpose as the question quoted",
+    "text": "Attach validated local files with a reversible selection.",
+    "conflict": true
+   },
+   {
+    "where": "Attachment picker · Purpose (docs.purpose), now",
+    "text": "Lets people add files from their device to a message or record, check them, and take any back out before anything is sent."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Overview and purpose as they read now",
+    "jsx": "h(P.Stack, null, h(P.Stack, { gap: 'sm' }, h('h3', null, \"Overview\"), h('p', null, \"Attach validated local files with a reversible selection.\")), h(P.Stack, { gap: 'sm' }, h('h3', null, \"Purpose\"), h('p', null, \"Lets people add files from their device to a message or record, check them, and take any back out before anything is sent.\")))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Purpose says the need",
+    "recommended": true,
+    "text": "Keep the new purpose; the Overview says what it is.",
+    "render": {
+     "caption": "Purpose",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h('h3', null, \"Purpose\"), h('p', null, \"Lets people add files from their device to a message or record, check them, and take any back out before anything is sent.\"))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Purpose repeats the Overview",
+    "text": "Go back to the copy.",
+    "render": {
+     "caption": "Purpose",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h('h3', null, \"Purpose\"), h('p', null, \"Attach validated local files with a reversible selection.\"))"
+    }
+   }
+  ],
+  "recommendation": "A. A purpose that names the person's need is the standard in Polaris and Carbon usage pages; repeating the overview tells readers nothing new.",
+  "sources": [
+   "Shopify Polaris · Component purpose",
+   "Carbon · Usage overview"
+  ],
+  "settled": true
+ }
+]

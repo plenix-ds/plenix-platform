@@ -199,7 +199,7 @@ page #/specialized/prompt-suggestions/v/prompt-suggestions-cards
 page #/ios-implementation/leaf-ios-implementation-how-to-build
 page #/android-implementation/leaf-android-implementation-how-to-build
 FAIL files/index.html
-     29 element(s) with an inline style the system does not allow: div.tabulator-tableholder height: 231px | div.tabulator-cell.plx-data-table__cell--name height: 32px
+     29 element(s) with an inline style the system does not allow: div.legacy-grid-tableholder height: 231px | div.legacy-grid-cell.plx-data-table__cell--name height: 32px
 FAIL dam/settings-system.html
-     11 element(s) with an inline style the system does not allow: div.tabulator-tableholder height: 145px | div.tabulator-cell.plx-data-table__cell--name height: 28px
+     11 element(s) with an inline style the system does not allow: div.legacy-grid-tableholder height: 145px | div.legacy-grid-cell.plx-data-table__cell--name height: 28px
 PAGES_FAIL 212/214

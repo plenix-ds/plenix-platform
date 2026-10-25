@@ -1687,20 +1687,20 @@ const STORAGE_COLUMNS = [{
   title: 'Files',
   field: 'files',
   kind: 'data',
-  hozAlign: 'right',
-  headerHozAlign: 'right'
+  align: 'right',
+  headerAlign: 'right'
 }, {
   title: 'Size',
   field: 'size',
   kind: 'data',
-  hozAlign: 'right',
-  headerHozAlign: 'right'
+  align: 'right',
+  headerAlign: 'right'
 }, {
   title: 'Share of storage',
   field: 'share',
   kind: 'data',
-  hozAlign: 'right',
-  headerHozAlign: 'right'
+  align: 'right',
+  headerAlign: 'right'
 }];
 function StorageByType() {
   return /*#__PURE__*/React.createElement(Stack, {

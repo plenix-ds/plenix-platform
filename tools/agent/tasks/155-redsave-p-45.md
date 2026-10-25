@@ -1,4 +1,4 @@
-# Task #155: P-45: Components inject remote scripts and styles at runtime (Tiptap, Tabulator) (Codex)
+# Task #155: P-45: Components inject remote scripts and styles at runtime (Tiptap, the legacy grid) (Codex)
 
 Tracker: https://github.com/plenix-ds/plenix-platform/issues/155 · Plan of record: https://github.com/plenix-ds/plenix-platform/issues/3
 
@@ -10,7 +10,7 @@ RichTextEditor (and its preload) and LegacyDataTable add <script src> and <link 
 
 ### Suggested fix
 
-Bundle Tiptap like TanStack (dynamic import() of a bundled chunk); no default remote base, ever; if a vendor path stays, an explicit option that fails loudly when missing. (Tabulator goes with #145.)
+Bundle Tiptap like TanStack (dynamic import() of a bundled chunk); no default remote base, ever; if a vendor path stays, an explicit option that fails loudly when missing. (the legacy grid goes with #145.)
 
 
 ### Done means

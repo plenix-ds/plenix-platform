@@ -58,8 +58,8 @@ export function BulletChart({ title, description, hideCaption, size, items = [],
   const m = Object.assign({}, auto, margin);
   Object.keys(m).forEach((k) => { if (m[k] === undefined) delete m[k]; });
   const table = {
-    columns: [{ title: t.measure, field: 'measure', kind: 'name', rowLabel: true }, { title: t.value, field: 'value', kind: 'data', hozAlign: 'right' },
-      { title: t.target, field: 'target', kind: 'data', hozAlign: 'right' }, { title: t.ranges, field: 'ranges', kind: 'data' }],
+    columns: [{ title: t.measure, field: 'measure', kind: 'name', rowLabel: true }, { title: t.value, field: 'value', kind: 'data', align: 'right' },
+      { title: t.target, field: 'target', kind: 'data', align: 'right' }, { title: t.ranges, field: 'ranges', kind: 'data' }],
     data: list.map((it, i) => ({ id: i + 1, measure: it.label, value: fmt(finite(it.value)), target: it.target === undefined || it.target === null ? '' : fmt(it.target),
       ranges: it.ranges.map(fmt).join(' · ') + (it.ranges.length ? ' (' + rangeOf(it) + ')' : '') }))
   };

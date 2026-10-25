@@ -1,0 +1,847 @@
+[
+ {
+  "id": "page-structures/application-shell/1",
+  "title": "Are the skip-link translation and right-to-left arrow keys done?",
+  "context": "Two written versions disagree. The record now says the skip link text comes from strings and the splitters mirror in right-to-left; the older write-up still calls both open to-dos. The code settles it: AppShell takes strings.skip, and its splitters follow the writing direction.",
+  "current": [
+   {
+    "where": "Application shell · Write-up (inventory-docs.js, docs.content.localization, after the sentence that the skip link text is fixed in code and needs translating)",
+    "text": "The layout uses logical properties; the splitter's arrow keys follow physical Left and Right, which should be checked in right-to-left.",
+    "conflict": true
+   },
+   {
+    "where": "Application shell · Record (spec-parts.js, content.localization)",
+    "text": "The skip link text (“Skip to main content”) comes from strings. The layout uses logical properties; in right-to-left pages the splitters mirror, so the arrow key toward the outside widens the area.",
+    "conflict": true
+   },
+   {
+    "where": "AppShell.jsx (the code)",
+    "text": "The splitters follow the writing direction: in a right-to-left page the edges are mirrored, so dragging and Arrow Left / Right move the edge the mirrored way (the key toward the outside widens the area)."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "The shell whose skip link and splitter are in question",
+    "width": "1200",
+    "jsx": "h(P.Stack,{gap:'sm'},h(P.Inline,null,h(P.Heading,{level:1},'Assets'),h(P.Button,{variant:'primary'},'Upload')),h(P.Inline,null,h(P.Card,{title:\"Navigation\"},h(P.Text,{variant:'secondary',as:'p'},\"Categories, collections\")),h(P.Card,{title:\"Main region\"},h(P.Text,{variant:'secondary',as:'p'},\"The list of assets\")),h(P.Card,{title:\"Inspector\"},h(P.Text,{variant:'secondary',as:'p'},\"Details of hero.jpg\"))),h(P.StatusBar,{start:h('span',null,'4,546 assets'),end:h('span',null,'Synced 2 min ago')}))"
+   },
+   {
+    "caption": "The two texts as they read on the page",
+    "jsx": "h(P.Stack,{gap:'md'},h(P.Card,{title:\"Write-up (old)\"},h(P.Stack,{gap:'sm'},h(P.Text,{as:'p'},\"The skip link text \\\"Skip to main content\\\" is fixed in code and needs translating.\"),h(P.Text,{as:'p'},\"The splitter's arrow keys follow physical Left and Right, which should be checked in right-to-left.\"))),h(P.Card,{title:\"Record (new)\"},h(P.Stack,{gap:'sm'},h(P.Text,{as:'p'},\"The skip link text (“Skip to main content”) comes from strings.\"),h(P.Text,{as:'p'},\"In right-to-left pages the splitters mirror, so the arrow key toward the outside widens the area.\"))))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Done: use the new wording on all three pages",
+    "recommended": true,
+    "text": "The write-up takes the record's wording everywhere: the text comes from strings and the splitters mirror. No to-do remains.",
+    "render": {
+     "caption": "The rule as it would read",
+     "jsx": "h(P.Card,{title:\"Localization\"},h(P.Stack,{gap:'sm'},h(P.Text,{as:'p'},\"The skip link text (“Skip to main content”) comes from strings.\"),h(P.Text,{as:'p'},\"In right-to-left pages the splitters mirror, so the arrow key toward the outside widens the area.\")))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Keep it as a to-do",
+    "text": "The page keeps saying the work is open. It would no longer match the code.",
+    "render": {
+     "caption": "The to-do as it reads today",
+     "jsx": "h(P.Card,{title:\"Localization\"},h(P.Stack,{gap:'sm'},h(P.Text,{as:'p'},\"The skip link text \\\"Skip to main content\\\" is fixed in code and needs translating.\")))"
+    }
+   }
+  ],
+  "recommendation": "A. The code already does both: the skip link reads from strings, and the splitter keys mirror in right-to-left, as the WAI-ARIA window splitter pattern and logical-property layouts expect. A spec states rules, not to-dos.",
+  "sources": [
+   "WAI-ARIA APG · Window splitter pattern",
+   "WCAG 2.2 · 2.4.1 Bypass blocks (skip link)",
+   "Material 3 · Bidirectionality: mirror layout and directional controls",
+   "Plenix rule: authoritative docs say each fact once, as a rule"
+  ]
+ },
+ {
+  "id": "page-structures/page-structures-footer/1",
+  "title": "Should the Footer page describe the footer, or merge with Status region?",
+  "context": "The Footer page is a view of the Application shell record, so it inherits the shell's purpose (the whole frame). Its overview is about the status bar, which the Status region page already covers.",
+  "current": [
+   {
+    "where": "Footer · Purpose (inherited from Application shell, inventory-docs.js)",
+    "text": "Gives every Plenix application the same frame: the header across the top, the navigation pane, the main region and the inspector between them, and the footer across the bottom. Pages fill only the main region.",
+    "conflict": true
+   },
+   {
+    "where": "Footer · Overview (spec-parts.js, text)",
+    "text": "The footer of an application is the status bar (StatusBar) across the bottom of the shell, under both side panes: facts about the whole application, such as the library size and the sync state. It holds no actions."
+   },
+   {
+    "where": "Status region · Purpose (inventory-docs.js)",
+    "text": "Shows facts about the whole application, such as library size or sync, in a thin line at the foot of the window, where they are always in view and never in the way."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "The footer both pages describe: the StatusBar",
+    "width": "840",
+    "jsx": "h(P.StatusBar,{start:h('span',null,'4,546 assets'),end:h('span',null,'Synced 2 min ago')})"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Merge into Status region",
+    "recommended": true,
+    "text": "One page for the StatusBar. \"Footer\" becomes an alias of Status region, so searching for it still lands there.",
+    "render": [
+     {
+      "caption": "The one part the page covers",
+      "width": "840",
+      "jsx": "h(P.StatusBar,{start:h('span',null,'4,546 assets'),end:h('span',null,'Synced 2 min ago')})"
+     },
+     {
+      "caption": "Who covers what",
+      "jsx": "h(P.Table,{label:\"After the merge\",columns:[{\"title\":\"Page\",\"field\":\"c0\",\"rowLabel\":true},{\"title\":\"Covers\",\"field\":\"c1\",\"kind\":\"wrap\",\"rowLabel\":false}],data:[{\"c0\":\"Status region\",\"c1\":\"The StatusBar. Alias: Footer.\"},{\"c0\":\"Application shell\",\"c1\":\"The whole frame, linking to Status region\"}]})"
+     }
+    ]
+   },
+   {
+    "key": "B",
+    "label": "Keep Footer with its own purpose",
+    "text": "Footer gets a footer-only purpose, and both pages describe the same StatusBar in their own words.",
+    "render": {
+     "caption": "The same bar, drawn on two pages",
+     "width": "840",
+     "jsx": "h(P.Stack,{gap:'md'},h(P.StatusBar,{start:h('span',null,'4,546 assets'),end:h('span',null,'Synced 2 min ago')}),h(P.StatusBar,{start:h('span',null,'4,546 assets'),end:h('span',null,'Synced 2 min ago')}))"
+    }
+   }
+  ],
+  "recommendation": "A. Both pages describe one component, and saying a fact twice lets them drift apart (as already happened). Carbon and Atlassian document a shell region once and link to it from the shell page.",
+  "sources": [
+   "Carbon · UI shell: header, side nav and panels",
+   "Atlassian · Navigation system: one page per layout slot",
+   "Plenix rule: authoritative docs say each fact once, as a rule"
+  ]
+ },
+ {
+  "id": "page-structures/page-structures-footer/2",
+  "title": "Does the footer hold facts about the whole page or the whole application?",
+  "context": "Both pages now say \"the whole application\", and the StatusBar sits under both side panes, outside any one page. The \"whole page\" wording is gone from the spec.",
+  "current": [
+   {
+    "where": "Footer · When to use (spec-parts.js, use[0])",
+    "text": "Counts and sync state that apply to the whole application"
+   },
+   {
+    "where": "Status region · When to use (rec.use[0])",
+    "text": "Facts about the whole application (library size, sync) across the bottom"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Where the footer sits: under both side panes, below every page",
+    "width": "1200",
+    "jsx": "h(P.Stack,{gap:'sm'},h(P.Inline,null,h(P.Heading,{level:1},'Assets'),h(P.Button,{variant:'primary'},'Upload')),h(P.Inline,null,h(P.Card,{title:\"Navigation\"},h(P.Text,{variant:'secondary',as:'p'},\"Categories, collections\")),h(P.Card,{title:\"Main region\"},h(P.Text,{variant:'secondary',as:'p'},\"The list of assets\")),h(P.Card,{title:\"Inspector\"},h(P.Text,{variant:'secondary',as:'p'},\"Details of hero.jpg\"))),h(P.StatusBar,{start:h('span',null,'4,546 assets'),end:h('span',null,'Synced 2 min ago')}))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "The whole application",
+    "recommended": true,
+    "text": "Keep \"the whole application\" on both pages. Page-level counts go in the command bar's count.",
+    "render": [
+     {
+      "caption": "App facts in the footer",
+      "width": "840",
+      "jsx": "h(P.StatusBar,{start:h('span',null,'4,546 assets'),end:h('span',null,'Synced 2 min ago')})"
+     },
+     {
+      "caption": "Page counts at the end of the command bar",
+      "width": "840",
+      "jsx": "h(P.CommandBar,{label:'Assets',count:'24 assets',actions:[{id:'upload',label:'Upload',icon:'upload',onSelect:function(){}}]})"
+     }
+    ]
+   },
+   {
+    "key": "B",
+    "label": "The whole page",
+    "text": "The footer would change with every page and repeat the command bar's count.",
+    "render": {
+     "caption": "The footer holding a page count",
+     "width": "840",
+     "jsx": "h(P.StatusBar,{start:h('span',null,'24 assets on this page')})"
+    }
+   }
+  ],
+  "recommendation": "A. The bar spans the window under both panes, so its facts belong to the application, like the status bars in VS Code and Outlook. Counts for one list already sit at the end of the command bar.",
+  "sources": [
+   "Fluent 2 · Status bar: app-wide state",
+   "Fluent 2 · Command bar: the selection swaps the commands",
+   "Carbon · UI shell: header, side nav and panels"
+  ]
+ },
+ {
+  "id": "page-structures/page-structures-three-pane-workspace/1",
+  "title": "On phones, does the inspector open as a bottom sheet?",
+  "context": "The code settles it: SidePanel opens as a bottom sheet below 600px, and over the main region from 600 to 1023px. The shell's responsive row now says both.",
+  "current": [
+   {
+    "where": "Three-pane workspace · Overview (spec-parts.js, text)",
+    "text": "On windows under 1024px the inspector opens over the main region; on Narrow windows it is a bottom sheet."
+   },
+   {
+    "where": "Application shell · Responsive (inventory-docs.js)",
+    "text": "below --plx-sys-shell-inspector-overlay-below (1024px) the inspector collapses and opens over the main region, and below 600px (Narrow) it opens as a bottom sheet."
+   },
+   {
+    "where": "SidePanel.jsx (the code)",
+    "text": "At Narrow (under 600px, --plx-sys-shell-phone-below) Expand opens it as a bottom sheet (Sheet, form=\"bottom\")"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Desktop: three panes side by side",
+    "width": "1200",
+    "jsx": "h(P.Stack,{gap:'sm'},h(P.Inline,null,h(P.Heading,{level:1},'Assets'),h(P.Button,{variant:'primary'},'Upload')),h(P.Inline,null,h(P.Card,{title:\"Navigation\"},h(P.Text,{variant:'secondary',as:'p'},\"Categories, collections\")),h(P.Card,{title:\"Main region\"},h(P.Text,{variant:'secondary',as:'p'},\"The list of assets\")),h(P.Card,{title:\"Inspector\"},h(P.Text,{variant:'secondary',as:'p'},\"Details of hero.jpg\"))),h(P.StatusBar,{start:h('span',null,'4,546 assets'),end:h('span',null,'Synced 2 min ago')}))"
+   },
+   {
+    "caption": "Phone: the details rise from the bottom",
+    "width": "360",
+    "jsx": "h(P.Stack,{gap:'sm'},h(P.Heading,{level:1},'Assets'),h(P.Card,{title:\"Main region\"},h(P.Text,{variant:'secondary',as:'p'},\"The list of assets\")),h(P.Card,{title:\"Bottom sheet: hero.jpg\"},h(P.Text,{variant:'secondary',as:'p'},\"Details, with Save and Cancel\")),h(P.StatusBar,{start:h('span',null,'4,546 assets'),end:h('span',null,'Synced 2 min ago')}))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Yes: overlay below 1024px, sheet below 600px",
+    "recommended": true,
+    "text": "Keep both statements; they match the code.",
+    "render": {
+     "caption": "Phone, as built",
+     "width": "360",
+     "jsx": "h(P.Stack,{gap:'sm'},h(P.Heading,{level:1},'Assets'),h(P.Card,{title:\"Main region\"},h(P.Text,{variant:'secondary',as:'p'},\"The list of assets\")),h(P.Card,{title:\"Bottom sheet: hero.jpg\"},h(P.Text,{variant:'secondary',as:'p'},\"Details, with Save and Cancel\")),h(P.StatusBar,{start:h('span',null,'4,546 assets'),end:h('span',null,'Synced 2 min ago')}))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "No: an overlay at every width under 1024px",
+    "text": "Drop the bottom sheet from the spec and the code; phones get the side overlay.",
+    "render": {
+     "caption": "Phone with a side overlay",
+     "width": "360",
+     "jsx": "h(P.Stack,{gap:'sm'},h(P.Heading,{level:1},'Assets'),h(P.Card,{title:\"Main region\"},h(P.Text,{variant:'secondary',as:'p'},\"The list of assets\")),h(P.Card,{title:\"Side overlay: hero.jpg\"},h(P.Text,{variant:'secondary',as:'p'},\"Covers most of the screen\")),h(P.StatusBar,{start:h('span',null,'4,546 assets'),end:h('span',null,'Synced 2 min ago')}))"
+    }
+   }
+  ],
+  "recommendation": "A. It is built and mainstream: Material 3 turns side sheets into bottom sheets on compact windows, and iOS presents details as a sheet. A side overlay on a 360px phone leaves almost no room.",
+  "sources": [
+   "Material 3 · Bottom sheets replace side sheets on compact windows",
+   "Apple HIG · Sheets",
+   "Material 3 · Canonical layouts: list-detail and supporting pane"
+  ]
+ },
+ {
+  "id": "page-structures/page-structures-three-pane-workspace/2",
+  "title": "Say \"below 1024px\" instead of \"on Narrow and Medium windows\"?",
+  "context": "The inspector overlays below 1024px, which includes 840–1023px (wider than Medium). Three-pane workspace now says \"below 1024px\"; the inspector drawer record still says \"on Narrow and Medium windows\".",
+  "current": [
+   {
+    "where": "Three-pane workspace · When not to use (spec-parts.js, avoid[0])",
+    "text": "Three columns below 1024px: the inspector overlays there"
+   },
+   {
+    "where": "Inspector drawer · When to use (spec-parts.js line 63)",
+    "text": "Details of the selected item on Narrow and Medium windows",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "At 1200px the inspector is docked",
+    "width": "1200",
+    "jsx": "h(P.Stack,{gap:'sm'},h(P.Inline,null,h(P.Heading,{level:1},'Assets'),h(P.Button,{variant:'primary'},'Upload')),h(P.Inline,null,h(P.Card,{title:\"Navigation\"},h(P.Text,{variant:'secondary',as:'p'},\"Categories, collections\")),h(P.Card,{title:\"Main region\"},h(P.Text,{variant:'secondary',as:'p'},\"The list of assets\")),h(P.Card,{title:\"Inspector\"},h(P.Text,{variant:'secondary',as:'p'},\"Details of hero.jpg\"))),h(P.StatusBar,{start:h('span',null,'4,546 assets'),end:h('span',null,'Synced 2 min ago')}))"
+   },
+   {
+    "caption": "At 840px it already lies over the main region",
+    "width": "840",
+    "jsx": "h(P.Stack,{gap:'sm'},h(P.Inline,null,h(P.Heading,{level:1},'Assets'),h(P.Button,{variant:'primary'},'Upload')),h(P.Inline,null,h(P.Card,{title:\"Navigation\"},h(P.Text,{variant:'secondary',as:'p'},\"Categories, collections\")),h(P.Card,{title:\"Main region\"},h(P.Text,{variant:'secondary',as:'p'},\"The list of assets\")),h(P.Card,{title:\"Inspector\"},h(P.Text,{variant:'secondary',as:'p'},\"Overlay: hero.jpg\"))),h(P.StatusBar,{start:h('span',null,'4,546 assets'),end:h('span',null,'Synced 2 min ago')}))"
+   },
+   {
+    "caption": "The widths in question",
+    "jsx": "h(P.Table,{label:\"Inspector by width\",columns:[{\"title\":\"Window\",\"field\":\"c0\",\"rowLabel\":true},{\"title\":\"Size class\",\"field\":\"c1\",\"kind\":\"wrap\",\"rowLabel\":false},{\"title\":\"Inspector\",\"field\":\"c2\",\"kind\":\"wrap\",\"rowLabel\":false}],data:[{\"c0\":\"under 600px\",\"c1\":\"Narrow\",\"c2\":\"Bottom sheet\"},{\"c0\":\"600–839px\",\"c1\":\"Medium\",\"c2\":\"Over the main region\"},{\"c0\":\"840–1023px\",\"c1\":\"Wide (lower)\",\"c2\":\"Over the main region\"},{\"c0\":\"1024px and up\",\"c1\":\"Wide\",\"c2\":\"Docked\"}]})"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Say \"below 1024px\" everywhere",
+    "recommended": true,
+    "text": "Both pages name the real limit, the --plx-sys-shell-inspector-overlay-below token.",
+    "render": {
+     "caption": "The rule",
+     "jsx": "h(P.Card,{title:\"When not to use\"},h(P.Stack,{gap:'sm'},h(P.Text,{as:'p'},\"Three columns below 1024px: the inspector overlays there.\")))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Keep the size-class names",
+    "text": "Keep \"Narrow and Medium\"; 840–1023px is left out of the rule.",
+    "render": {
+     "caption": "The rule",
+     "jsx": "h(P.Card,{title:\"When to use\"},h(P.Stack,{gap:'sm'},h(P.Text,{as:'p'},\"Details of the selected item on Narrow and Medium windows.\")))"
+    }
+   }
+  ],
+  "recommendation": "A. The rule should match the token the code uses; otherwise the 840–1023px band is undefined. Material 3 and Fluent state pane rules by the width at which panes change.",
+  "sources": [
+   "Material 3 · Canonical layouts: list-detail and supporting pane",
+   "Fluent 2 · Responsive layout breakpoints",
+   "Plenix rule: nothing hard-coded, values come from tokens"
+  ]
+ },
+ {
+  "id": "page-structures/inspector-region/1",
+  "title": "Call it the \"main region\", not the \"main area\"?",
+  "context": "The term everywhere is \"main region\". The variant line the question names now already reads \"main region\".",
+  "current": [
+   {
+    "where": "Inspector region · Resizable inspector · When not to use (rec.variantPages[0].avoid[0])",
+    "text": "An inspector below 1024px: it opens over the main region and is not resized"
+   },
+   {
+    "where": "Application shell · Anatomy (inventory-docs.js)",
+    "text": "Main region — the main landmark (`mainId`, default \"main\") that fills the rest and holds PageContent (required)"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "The region the text names",
+    "width": "1200",
+    "jsx": "h(P.Stack,{gap:'sm'},h(P.Inline,null,h(P.Heading,{level:1},'Assets'),h(P.Button,{variant:'primary'},'Upload')),h(P.Inline,null,h(P.Card,{title:\"Navigation\"},h(P.Text,{variant:'secondary',as:'p'},\"Categories, collections\")),h(P.Card,{title:\"Main region\"},h(P.Text,{variant:'secondary',as:'p'},\"The list of assets\")),h(P.Card,{title:\"Inspector\"},h(P.Text,{variant:'secondary',as:'p'},\"Resizable inspector\"))),h(P.StatusBar,{start:h('span',null,'4,546 assets'),end:h('span',null,'Synced 2 min ago')}))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "\"Main region\" everywhere",
+    "recommended": true,
+    "text": "One term for one thing, matching the main landmark.",
+    "render": {
+     "caption": "As it reads",
+     "jsx": "h(P.Card,{title:\"When not to use\"},h(P.Stack,{gap:'sm'},h(P.Text,{as:'p'},\"An inspector below 1024px: it opens over the main region and is not resized.\")))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Allow \"main area\" as a synonym",
+    "text": "Both words stay in use; readers may think they are two places.",
+    "render": {
+     "caption": "As it would read",
+     "jsx": "h(P.Card,{title:\"When not to use\"},h(P.Stack,{gap:'sm'},h(P.Text,{as:'p'},\"An inspector below 1024px: it opens over the main area and is not resized.\")))"
+    }
+   }
+  ],
+  "recommendation": "A. Style guides ask for one term per concept, and \"region\" matches the ARIA landmark name (the \"main\" region) the shell renders.",
+  "sources": [
+   "Microsoft Writing Style Guide · use one term consistently",
+   "WAI-ARIA APG · Landmark regions: main",
+   "Plenix rule: authoritative docs say each fact once, as a rule"
+  ],
+  "settled": true
+ },
+ {
+  "id": "page-structures/record-page/1",
+  "title": "Is the record page about the whole page or about its header?",
+  "context": "The overview describes a whole page (header over panels, optional column), while \"when to use\" and the variants are about EntityHeader and RecordPage.Header. RecordPage draws the whole page; the header is one part.",
+  "current": [
+   {
+    "where": "Object / record page · Overview (rec.text)",
+    "text": "A page about one record: its header (title, facts, actions) over the record’s body in panels, with an optional column of facts or related items at the end.",
+    "conflict": true
+   },
+   {
+    "where": "Object / record page · When to use (rec.use[0])",
+    "text": "The header of a page about one entity (a contact, a project, an email, a note, a component page): EntityHeader, header style 1 (Structured · Top row · Small).",
+    "conflict": true
+   },
+   {
+    "where": "Object / record page · Anatomy (docs.anatomy[5])",
+    "text": "Body — the record's panels and tables, stacked (required)"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "A record page: the header is one of three parts",
+    "width": "1200",
+    "jsx": "h(P.Stack,{gap:'md'},h(P.Card,{title:'Header: Kitchen renovation',meta:'Project · 12 files'},h(P.Inline,null,h(P.Badge,{tone:'active'},'In progress'),h(P.Button,null,'Share'))),h(P.Inline,null,h(P.Card,{title:\"Body\"},h(P.Text,{variant:'secondary',as:'p'},\"Panels: tasks, files, notes\")),h(P.Card,{title:\"Aside\"},h(P.Text,{variant:'secondary',as:'p'},\"Facts and related items\"))))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "The whole page; the header is one part",
+    "recommended": true,
+    "text": "Keep the overview. \"When to use\" talks about record pages; header detail stays in the Entity header variants, linked.",
+    "render": {
+     "caption": "The page at phone width: header, then body",
+     "width": "360",
+     "jsx": "h(P.Stack,{gap:'sm'},h(P.Card,{title:'Kitchen renovation',meta:'Project'},h(P.Badge,{tone:'active'},'In progress')),h(P.Card,{title:\"Body\"},h(P.Text,{variant:'secondary',as:'p'},\"Panels: tasks, files, notes\")))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Only the header",
+    "text": "Rewrite the overview around EntityHeader and drop the page layout; the page itself would have no spec.",
+    "render": {
+     "caption": "Only this would be described",
+     "jsx": "h(P.Card,{title:'Kitchen renovation',meta:'Project · 12 files'},h(P.Inline,null,h(P.Badge,{tone:'active'},'In progress'),h(P.Button,null,'Share')))"
+    }
+   }
+  ],
+  "recommendation": "A. The component and its anatomy describe a full page, and mainstream systems document the detail page as a template with the page header as one part (Carbon, Atlassian, Polaris's Page).",
+  "sources": [
+   "Carbon · Page header (IBM products) as part of a page",
+   "Shopify Polaris · Page: title, actions and content",
+   "Atlassian · Page header"
+  ]
+ },
+ {
+  "id": "page-structures/record-page/2",
+  "title": "Where do we point a state that never changes on the page?",
+  "context": "The live-state header shows a changing state as the first fact. Its \"when not to use\" now points a fixed state to the Status tile (EntityHeader's status box).",
+  "current": [
+   {
+    "where": "Object / record page · Live state entity header · When to use",
+    "text": "Something running now, such as an assistant, a sync or a job"
+   },
+   {
+    "where": "Object / record page · Live state entity header · When not to use (rec.variantPages[2].avoid[0])",
+    "text": "A state that does not change while the page is open: show it in the Status tile, not as a live fact"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Both are status badges with an icon; only the place differs",
+    "jsx": "h(P.Stack,{gap:'md'},h(P.Card,{title:'Live fact (first fact)',meta:'Sync job'},h(P.Badge,{tone:'active',icon:'sync'},'Syncing')),h(P.Card,{title:'Status tile',meta:'Project'},h(P.Badge,{tone:'success',icon:'check'},'Approved')))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Changing: first fact. Fixed: the Status tile",
+    "recommended": true,
+    "text": "Keep today's wording. Both use the status badge with its icon; the live one leads the facts.",
+    "render": {
+     "caption": "A fixed state in the Status tile",
+     "jsx": "h(P.Card,{title:'Status',meta:'Project'},h(P.Badge,{tone:'success',icon:'check'},'Approved'))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Show every state as a live fact",
+    "text": "One place for all states; people lose the cue that something is running now.",
+    "render": {
+     "caption": "A fixed state shown as a live fact",
+     "jsx": "h(P.Inline,null,h(P.Badge,{tone:'success',icon:'check'},'Approved'),h(P.Text,{variant:'secondary'},'12 files'))"
+    }
+   }
+  ],
+  "recommendation": "A. Polaris and Carbon keep a record's status in one fixed spot of the header and show live state only for running work. It keeps your rule: statuses are badges with icons.",
+  "sources": [
+   "Shopify Polaris · Page header: status badge beside the title",
+   "Carbon · Status indicators",
+   "Plenix rule: statuses are badges with an icon inside"
+  ],
+  "settled": true
+ },
+ {
+  "id": "page-structures/settings-page/1",
+  "title": "Should Create and Edit pages move off the Settings page?",
+  "context": "Settings carries Create page and Edit page variants plus two generic lines. Settings save per row; Create and Edit save the whole form, which the page itself sends to \"a form page\".",
+  "current": [
+   {
+    "where": "Settings page · When to use (rec.use[2])",
+    "text": "Starting a page with an existing layout and behavior",
+    "conflict": true
+   },
+   {
+    "where": "Settings page · When not to use (rec.avoid[0])",
+    "text": "Long forms that save as one: use a form page",
+    "conflict": true
+   },
+   {
+    "where": "Settings page · When not to use (rec.avoid[2])",
+    "text": "Copying a template to bypass shared controls"
+   },
+   {
+    "where": "Settings page · Create page · When to use (rec.variantPages[2].use[0])",
+    "text": "Adding a new record on a page of its own"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "A settings section: each row applies on change",
+    "jsx": "h(P.Card,{title:'Regional'},h(P.Stack,{gap:'sm'},h(P.Field,{label:'Date format'},h(P.Select,{options:[{value:'a',label:'Oct 24, 2026'},{value:'b',label:'24/10/2026'}]})),h(P.Switch,{label:'24-hour clock'})))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Move Create and Edit to a Form page",
+    "recommended": true,
+    "text": "A form page gets Create and Edit (saved as one, with Save and Cancel). The two generic lines leave Settings.",
+    "render": {
+     "caption": "A create page: one Save for the whole form",
+     "jsx": "h(P.Card,{title:'New contact'},h(P.Stack,{gap:'sm'},h(P.Field,{label:'Name'},h(P.Input,null)),h(P.Field,{label:'Email'},h(P.Input,null)),h(P.Inline,null,h(P.Button,null,'Cancel'),h(P.Button,{variant:'primary'},'Save'))))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Keep them on Settings",
+    "text": "Only the generic lines go; Settings keeps two kinds of page that save differently.",
+    "render": {
+     "caption": "Two save models on one page",
+     "jsx": "h(P.Stack,{gap:'md'},h(P.Switch,{label:'24-hour clock'}),h(P.Inline,null,h(P.Button,null,'Cancel'),h(P.Button,{variant:'primary'},'Save')))"
+    }
+   }
+  ],
+  "recommendation": "A. Settings that apply on change and forms that save at once are separate patterns in Polaris, Carbon and GOV.UK. The Settings page already points long forms to a form page.",
+  "sources": [
+   "Shopify Polaris · Settings page and resource forms",
+   "Carbon · Forms: create and edit flows",
+   "GOV.UK Design System · one page, one purpose; plain words"
+  ]
+ },
+ {
+  "id": "page-structures/settings-page/2",
+  "title": "Give the Create, Edit and Landing variants real guidance?",
+  "context": "Create and Edit now have real lines. The Authentication, Error and Split workspace variants on Landing page still fall back to the code's default text.",
+  "current": [
+   {
+    "where": "Settings page · Create page · When not to use (rec.variantPages[2].avoid[0])",
+    "text": "A quick add of one or two fields: use a dialog"
+   },
+   {
+    "where": "Landing page · variants (parts/w15A.records.js, the code)",
+    "text": "use:[v[4]||'The matching page purpose'],avoid:[v[5]||'Unrelated workflows']",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "The error page the fallback describes",
+    "jsx": "h(P.Stack,{gap:'sm'},h(P.EmptyState,{title:'You don’t have access to this page',description:'Ask the owner to share it with you.'}),h(P.Card,{title:\"When to use (today)\"},h(P.Stack,{gap:'sm'},h(P.Text,{as:'p'},\"The matching page purpose\"))))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Real guidance for every variant",
+    "recommended": true,
+    "text": "Each variant gets its own use and avoid lines; the fallback is removed so a missing line shows as incomplete.",
+    "render": {
+     "caption": "Example: Error page",
+     "jsx": "h(P.Card,{title:\"Error page\"},h(P.Stack,{gap:'sm'},h(P.Text,{as:'p'},\"When to use: A page that cannot be shown (403, 404, 500), with what to do next.\"),h(P.Text,{as:'p'},\"When not to use: A failed action on a page that works: use a Notice or a Toast.\")))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Leave the fallback",
+    "text": "The variants keep the generic lines.",
+    "render": {
+     "caption": "As today",
+     "jsx": "h(P.Card,{title:\"Error page\"},h(P.Stack,{gap:'sm'},h(P.Text,{as:'p'},\"When to use: The matching page purpose\"),h(P.Text,{as:'p'},\"When not to use: Unrelated workflows\")))"
+    }
+   }
+  ],
+  "recommendation": "A. Lines that say nothing teach nothing, and your spec marks incomplete items red rather than filling them. GOV.UK and Polaris give every pattern a concrete \"when to use\" and \"when not to use\".",
+  "sources": [
+   "GOV.UK Design System · one page, one purpose; plain words",
+   "Shopify Polaris · Best practices per component",
+   "Plenix rule: incomplete is shown red, never placeholder text"
+  ]
+ },
+ {
+  "id": "page-structures/listing-page/1",
+  "title": "Does Listing page get its own write-up?",
+  "context": "The placeholder text is gone: Listing page now has its own purpose and sections. The choice is to keep that or point to DataGrid / master-detail.",
+  "current": [
+   {
+    "where": "Listing page · Purpose (docs.purpose)",
+    "text": "Shows the records of one kind as a list, one per row, with the title and page actions above and facts in the footer."
+   },
+   {
+    "where": "Listing page · Anatomy (docs.anatomy[2])",
+    "text": "Record list — one row per record in the Platform data grid; with none, an EmptyState (“No records yet”) (required)"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "A listing page, desktop",
+    "width": "1200",
+    "jsx": "h(P.Stack,{gap:'sm'},h(P.Heading,{level:1},'Assets'),h(P.CommandBar,{label:'Assets',count:'24 assets',actions:[{id:'upload',label:'Upload',icon:'upload',onSelect:function(){}}]}),h(P.Table,{label:'Assets',columns:[{title:'Name',field:'n',rowLabel:true},{title:'Type',field:'t'},{title:'Status',field:'s',render:function(r){return h(P.Badge,{tone:r.s==='Approved'?'success':'waiting',icon:r.s==='Approved'?'check':undefined},r.s);}}],data:[{n:'hero.jpg',t:'Image',s:'Approved'},{n:'brief.pdf',t:'Document',s:'In review'},{n:'logo.svg',t:'Image',s:'Approved'}]}),h(P.StatusBar,{start:h('span',null,'4,546 assets'),end:h('span',null,'Synced 2 min ago')}))"
+   },
+   {
+    "caption": "A listing page, phone",
+    "width": "360",
+    "jsx": "h(P.Stack,{gap:'sm'},h(P.Heading,{level:1},'Assets'),h(P.CommandBar,{label:'Assets',count:'24 assets',actions:[{id:'upload',label:'Upload',icon:'upload',onSelect:function(){}}]}),h(P.Table,{label:'Assets',columns:[{title:'Name',field:'n',rowLabel:true},{title:'Type',field:'t'},{title:'Status',field:'s',render:function(r){return h(P.Badge,{tone:r.s==='Approved'?'success':'waiting',icon:r.s==='Approved'?'check':undefined},r.s);}}],data:[{n:'hero.jpg',t:'Image',s:'Approved'},{n:'brief.pdf',t:'Document',s:'In review'},{n:'logo.svg',t:'Image',s:'Approved'}]}))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Keep its own write-up",
+    "recommended": true,
+    "text": "The page describes how the parts fit; DataGrid and Command bar keep their details and are linked.",
+    "render": {
+     "caption": "The arrangement it describes",
+     "width": "840",
+     "jsx": "h(P.Stack,{gap:'sm'},h(P.Heading,{level:1},'Assets'),h(P.CommandBar,{label:'Assets',count:'24 assets',actions:[{id:'upload',label:'Upload',icon:'upload',onSelect:function(){}}]}),h(P.Table,{label:'Assets',columns:[{title:'Name',field:'n',rowLabel:true},{title:'Type',field:'t'},{title:'Status',field:'s',render:function(r){return h(P.Badge,{tone:r.s==='Approved'?'success':'waiting',icon:r.s==='Approved'?'check':undefined},r.s);}}],data:[{n:'hero.jpg',t:'Image',s:'Approved'},{n:'brief.pdf',t:'Document',s:'In review'},{n:'logo.svg',t:'Image',s:'Approved'}]}))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Show another page's write-up",
+    "text": "Listing page reuses DataGrid's text; the arrangement has no description.",
+    "render": {
+     "caption": "Only the grid would be described",
+     "jsx": "h(P.Table,{label:'Assets',columns:[{title:'Name',field:'n',rowLabel:true},{title:'Type',field:'t'},{title:'Status',field:'s',render:function(r){return h(P.Badge,{tone:r.s==='Approved'?'success':'waiting',icon:r.s==='Approved'?'check':undefined},r.s);}}],data:[{n:'hero.jpg',t:'Image',s:'Approved'},{n:'brief.pdf',t:'Document',s:'In review'},{n:'logo.svg',t:'Image',s:'Approved'}]})"
+    }
+   }
+  ],
+  "recommendation": "A. A template page should explain the arrangement and link to its parts, as Carbon's and Polaris's page templates do. Borrowing DataGrid's text would repeat it and still not say how the page fits together.",
+  "sources": [
+   "Shopify Polaris · Index table with bulk actions",
+   "Carbon · Data table templates",
+   "Plenix rule: authoritative docs say each fact once, as a rule"
+  ]
+ },
+ {
+  "id": "page-structures/content-template/1",
+  "title": "Card-grid listing: its own write-up, and which name?",
+  "context": "The write-up is now its own (title row, filter row, ContentGrid of Cards, inspector). The names still differ between title and sidebar leaf.",
+  "current": [
+   {
+    "where": "Content template · Title (rec.title)",
+    "text": "Listing page (card grid)",
+    "conflict": true
+   },
+   {
+    "where": "Content template · Sidebar leaf (rec.leaf)",
+    "text": "Content-management template",
+    "conflict": true
+   },
+   {
+    "where": "Content template · Overview (rec.text)",
+    "text": "A page of items shown as cards, with a filter row above the grid."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "What the page is: cards under a title",
+    "width": "840",
+    "jsx": "h(P.Stack,{gap:'sm'},h(P.Heading,{level:1},'Bookmarks'),h(P.Inline,null,h(P.Card,{title:'Plenix docs',meta:'docs.plenix.org'}),h(P.Card,{title:'Material 3',meta:'m3.material.io'}),h(P.Card,{title:'Fluent 2',meta:'fluent2.microsoft.design'})))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "\"Listing page (card grid)\" for both",
+    "recommended": true,
+    "text": "The leaf matches the title and sits beside \"Listing page (table or list)\"; the old name becomes an alias.",
+    "render": [
+     {
+      "caption": "Card grid",
+      "jsx": "h(P.Inline,null,h(P.Card,{title:'Plenix docs',meta:'docs.plenix.org'}),h(P.Card,{title:'Material 3',meta:'m3.material.io'}))"
+     },
+     {
+      "caption": "Its sibling, the table listing",
+      "jsx": "h(P.Table,{label:'Assets',columns:[{title:'Name',field:'n',rowLabel:true},{title:'Type',field:'t'},{title:'Status',field:'s',render:function(r){return h(P.Badge,{tone:r.s==='Approved'?'success':'waiting',icon:r.s==='Approved'?'check':undefined},r.s);}}],data:[{n:'hero.jpg',t:'Image',s:'Approved'},{n:'brief.pdf',t:'Document',s:'In review'},{n:'logo.svg',t:'Image',s:'Approved'}]})"
+     }
+    ]
+   },
+   {
+    "key": "B",
+    "label": "\"Content-management template\" for both",
+    "text": "The title changes to the leaf name; it no longer pairs with the table listing.",
+    "render": {
+     "caption": "Sidebar after",
+     "jsx": "h(P.Table,{label:\"Page structures\",columns:[{\"title\":\"Leaf\",\"field\":\"c0\",\"rowLabel\":true},{\"title\":\"Shows\",\"field\":\"c1\",\"kind\":\"wrap\",\"rowLabel\":false}],data:[{\"c0\":\"Listing page (table or list)\",\"c1\":\"Records in rows\"},{\"c0\":\"Content-management template\",\"c1\":\"Items as cards\"}]})"
+    }
+   }
+  ],
+  "recommendation": "A. The overview describes a listing of cards, and pairing it with the table listing makes the choice obvious. Material and Polaris name collection layouts by how they show items.",
+  "sources": [
+   "Material 3 · Lists and cards: choosing a collection layout",
+   "Shopify Polaris · Index table with bulk actions",
+   "Plenix rule: authoritative docs say each fact once, as a rule"
+  ]
+ },
+ {
+  "id": "page-structures/master-detail-workspace/1",
+  "title": "Master-detail: its own purpose about the list-and-details layout?",
+  "context": "Done in the record: the purpose now speaks of a list and the selected item's details. The responsive row still says the pane does not collapse on narrow screens, which contradicts \"on a phone the details open on their own screen\".",
+  "current": [
+   {
+    "where": "Master-detail workspace · Purpose (rec.purpose)",
+    "text": "Shows a list and the selected item’s details side by side, so people can move through records without leaving the page; on a phone the details open on their own screen with Back."
+   },
+   {
+    "where": "Master-detail workspace · Responsive (docs.behavior.responsive)",
+    "text": "The list pane keeps its width and its body scrolls on its own; the detail scrolls beside it. The pane does not collapse by itself on narrow screens.",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Desktop: list and details side by side",
+    "width": "1200",
+    "jsx": "h(P.Inline,null,h(P.Card,{title:\"Notes\"},h(P.Text,{variant:'secondary',as:'p'},\"Meeting notes · Grocery list · Ideas\")),h(P.Card,{title:\"Meeting notes\"},h(P.Text,{variant:'secondary',as:'p'},\"The selected note\")))"
+   },
+   {
+    "caption": "Phone: details on their own screen with Back",
+    "width": "360",
+    "jsx": "h(P.Stack,{gap:'sm'},h(P.Button,{variant:'ghost',icon:'arrow-back'},'Back'),h(P.Card,{title:\"Meeting notes\"},h(P.Text,{variant:'secondary',as:'p'},\"The selected note\")))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Keep the new purpose; align the write-up",
+    "recommended": true,
+    "text": "The responsive row is made to match: on a phone the details open on their own screen with Back.",
+    "render": {
+     "caption": "Phone, after",
+     "width": "360",
+     "jsx": "h(P.Stack,{gap:'sm'},h(P.Button,{variant:'ghost',icon:'arrow-back'},'Back'),h(P.Card,{title:\"Meeting notes\"},h(P.Text,{variant:'secondary',as:'p'},\"The selected note\")))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Return to the DAM-based purpose",
+    "text": "The page describes how a data-management capability is built; list-detail is left to SecondaryPane.",
+    "render": {
+     "caption": "Phone, side by side and cramped",
+     "width": "360",
+     "jsx": "h(P.Inline,null,h(P.Card,{title:\"Notes\"},h(P.Text,{variant:'secondary',as:'p'},\"Meeting notes\")),h(P.Card,{title:\"Meeting notes\"},h(P.Text,{variant:'secondary',as:'p'},\"The note\")))"
+    }
+   }
+  ],
+  "recommendation": "A. List-detail is a canonical layout in Material 3 and Fluent, and both show details as their own screen on compact windows. The purpose already says so; the responsive row should not contradict it.",
+  "sources": [
+   "Material 3 · Canonical layouts: list-detail and supporting pane",
+   "Fluent 2 · Layout: navigation, content and detail panes",
+   "Apple HIG · Split views collapse to a navigation stack"
+  ]
+ },
+ {
+  "id": "page-structures/dam-template/1",
+  "title": "Point the Asset Manager link to dam/index.html?",
+  "context": "Already fixed in the record: the overview now says \"../../dam/index.html\". The Asset Manager lives in Plenix/dam/; the old folder keeps only its history.",
+  "current": [
+   {
+    "where": "Asset Manager (reference) · Overview (rec.text)",
+    "text": "Open it at ../../dam/index.html."
+   },
+   {
+    "where": "Earlier wording, from the question (paraphrase)",
+    "text": "Open it at \"../../../Plenix - DAM/index.html\"",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "The reference screen the link opens",
+    "width": "1200",
+    "jsx": "h(P.Stack,{gap:'sm'},h(P.Inline,null,h(P.Heading,{level:1},'Assets'),h(P.Button,{variant:'primary'},'Upload')),h(P.Inline,null,h(P.Card,{title:\"Navigation\"},h(P.Text,{variant:'secondary',as:'p'},\"Categories, collections\")),h(P.Card,{title:\"Main region\"},h(P.Text,{variant:'secondary',as:'p'},\"The list of assets\")),h(P.Card,{title:\"Inspector\"},h(P.Text,{variant:'secondary',as:'p'},\"Details with Save and Cancel\"))),h(P.StatusBar,{start:h('span',null,'4,546 assets'),end:h('span',null,'Synced 2 min ago')}))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "dam/index.html",
+    "recommended": true,
+    "text": "Keep the new link; it opens the app people use today.",
+    "render": {
+     "caption": "As it reads",
+     "jsx": "h('p',null,'Open the ',h(P.Link,{href:'#'},'Asset Manager'),' (dam/index.html).')"
+    }
+   },
+   {
+    "key": "B",
+    "label": "The old folder",
+    "text": "The link would open a history folder, not the app.",
+    "render": {
+     "caption": "As it read",
+     "jsx": "h('p',null,'Open it at ',h(P.Text,{variant:'data'},'../../../Plenix - DAM/index.html'))"
+    }
+   }
+  ],
+  "recommendation": "A. A reference link must open the live reference; the old folder has only history (its MOVED.md says so).",
+  "sources": [
+   "Plenix project structure (CLAUDE.md): dam/ is the Asset Manager",
+   "GOV.UK Design System · links go to the current page"
+  ],
+  "settled": true
+ },
+ {
+  "id": "page-structures/landing-page/1",
+  "title": "Move Authentication, Error and Split workspace off Landing page?",
+  "context": "Landing page now has its own overview and content rows. It still carries Authentication, Error and Split workspace variants, which are not landing pages; sign-in has its own pages in Patterns.",
+  "current": [
+   {
+    "where": "Landing page · Overview (parts/w15A.records.js, text)",
+    "text": "The start of an application or document: a header, then overview cards and tables."
+   },
+   {
+    "where": "Landing page · When not to use (avoid[0])",
+    "text": "Copying a template to bypass shared controls",
+    "conflict": true
+   },
+   {
+    "where": "Landing page · variants (paraphrase)",
+    "text": "Authentication, Error and Split workspace, each with \"The matching page purpose\" and \"Unrelated workflows\"",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "A landing page: header, then cards that are places",
+    "width": "840",
+    "jsx": "h(P.Stack,{gap:'sm'},h(P.Heading,{level:1},'Plenix'),h(P.Text,{as:'p'},'Your files, projects and notes in one place.'),h(P.Inline,null,h(P.Card,{title:'Assets',meta:'Find and organize files.'}),h(P.Card,{title:'Projects',meta:'Plan and track work.'})))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Move them to the pages they belong to",
+    "recommended": true,
+    "text": "Authentication joins Sign in, Error gets an Error page entry, Split workspace joins Workspace structures.",
+    "render": [
+     {
+      "caption": "An error page, on its own page",
+      "jsx": "h(P.EmptyState,{title:'Page not found',description:'Check the address or go back to the start.'})"
+     },
+     {
+      "caption": "Where each goes",
+      "jsx": "h(P.Table,{label:\"Moves\",columns:[{\"title\":\"Variant\",\"field\":\"c0\",\"rowLabel\":true},{\"title\":\"Goes to\",\"field\":\"c1\",\"kind\":\"wrap\",\"rowLabel\":false}],data:[{\"c0\":\"Authentication\",\"c1\":\"Patterns · Sign in\"},{\"c0\":\"Error\",\"c1\":\"Page structures · Error page\"},{\"c0\":\"Split workspace\",\"c1\":\"Workspace structures · Split workspace\"}]})"
+     }
+    ]
+   },
+   {
+    "key": "B",
+    "label": "Keep them as \"page templates\"",
+    "text": "Rename Landing page to Page templates and keep all variants there.",
+    "render": {
+     "caption": "Unrelated pages under one name",
+     "jsx": "h(P.Stack,{gap:'md'},h(P.Card,{title:'Assets',meta:'Find and organize files.'}),h(P.EmptyState,{title:'Page not found'}))"
+    }
+   }
+  ],
+  "recommendation": "A. One page per purpose is how GOV.UK, Carbon and Polaris organize templates, and Sign in and Split workspace already have homes. It also lets each variant get real guidance.",
+  "sources": [
+   "GOV.UK Design System · one page, one purpose; plain words",
+   "Carbon · Patterns: login and error pages",
+   "Plenix rule: authoritative docs say each fact once, as a rule"
+  ]
+ }
+]

@@ -97,8 +97,8 @@ export function OrderManagement({ orders = [], currency = 'USD', onOpen, onFulfi
     { title: t.number, field: 'number', kind: ['name', 'data'], width: '--plx-ref-size-120px' },
     { title: t.date, field: 'date', kind: 'data', sorter: 'date', render: (o) => day(o.date) },
     { title: t.customer, field: 'customer' },
-    { title: t.items, field: 'count', kind: 'data', sorter: 'number', hozAlign: 'right', headerHozAlign: 'right', width: '--plx-ref-size-80px' },
-    { title: t.total, field: 'total', kind: 'data', sorter: 'number', hozAlign: 'right', headerHozAlign: 'right', render: (o) => money(o.total, o.currency || currency) },
+    { title: t.items, field: 'count', kind: 'data', sorter: 'number', align: 'right', headerAlign: 'right', width: '--plx-ref-size-80px' },
+    { title: t.total, field: 'total', kind: 'data', sorter: 'number', align: 'right', headerAlign: 'right', render: (o) => money(o.total, o.currency || currency) },
     { title: t.status, field: 'status', kind: 'center', render: (o) => <OrderStatus status={o.status} statuses={S} /> },
   ], [S, currency, strings]);
   return (
@@ -232,9 +232,9 @@ export function SubscriptionManagement({ subscription = {}, plans = [], history 
   const columns = [
     { title: t.date, field: 'date', kind: 'data', sorter: 'date', render: (r) => day(r.date) },
     { title: t.description, field: 'description', kind: 'wrap' },
-    { title: t.amount, field: 'amount', kind: 'data', sorter: 'number', hozAlign: 'right', headerHozAlign: 'right', render: (r) => money(r.amount, r.currency || currency) },
+    { title: t.amount, field: 'amount', kind: 'data', sorter: 'number', align: 'right', headerAlign: 'right', render: (r) => money(r.amount, r.currency || currency) },
     { title: t.status, field: 'status', kind: 'center', render: (r) => badge(r.status) },
-    { title: t.invoice, field: 'invoice', kind: 'center', headerSort: false, render: (r) => (r.invoice ? <Link href={r.invoice} variant="subtle">{fill(t.invoiceFor, { date: day(r.date) })}</Link> : null) },
+    { title: t.invoice, field: 'invoice', kind: 'center', sortable: false, render: (r) => (r.invoice ? <Link href={r.invoice} variant="subtle">{fill(t.invoiceFor, { date: day(r.date) })}</Link> : null) },
   ];
   return (
     <div className={cx('plx-commerce', 'plx-commerce--subscription', className)}>

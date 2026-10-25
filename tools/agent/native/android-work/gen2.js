@@ -522,7 +522,7 @@ const avatar = {
     summary: 'A Plenix avatar on Android is a small composable (a ShapeableImageView or a TextView in Views), since Material 3 has no avatar component: a person’s picture or initials in a rounded square, never a circle, with the corner and the text size following the size. Initials are DM Sans bold in the avatar colors; a person’s own color uses its soft fill and text color; a category uses its category color. It is hidden from TalkBack unless it carries a label. Material’s lists show a 40 dp circle; Plenix keeps the list placement and replaces the shape and colors.',
     variants: [
       { name: 'Initials', material: 'Circular monogram in a list', web: 'content|Avatar', background: 'plx-comp-avatar-background', content: 'plx-comp-avatar-content', border: null,
-        compose: 'PlenixAvatar(name = "Raphael Maher")', views: 'avatarView(context, "Raphael Maher")', use: 'A person without a picture.' },
+        compose: 'PlenixAvatar(name = "Jordan Avery")', views: 'avatarView(context, "Jordan Avery")', use: 'A person without a picture.' },
       { name: 'Picture', material: 'Circular image in a list', web: 'content|Avatar', background: null, content: null, border: null,
         compose: 'PlenixAvatar(name, pictureUrl = url)', views: 'ShapeableImageView with the avatar shape', use: 'A person with a picture; the initials show if it fails to load.' },
       { name: 'Own color', material: '—', web: 'content|Avatar', background: 'plx-comp-avatar-own-background', content: 'plx-comp-avatar-own-content', border: null,
@@ -619,7 +619,7 @@ const avatar = {
         '}',
         '',
         '// In a list row',
-        'PlenixListRow("Raphael Maher", supporting = "Owner", leading = { PlenixAvatar("Raphael Maher", size = 40) })'
+        'PlenixListRow("Jordan Avery", supporting = "Owner", leading = { PlenixAvatar("Jordan Avery", size = 40) })'
       ],
       views: [
         'import android.content.res.ColorStateList',
@@ -654,7 +654,7 @@ const avatar = {
         '    if (label != null) contentDescription = label else importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO',
         '}',
         '',
-        'row.addView(avatarView(this, "Raphael Maher", size = 40))',
+        'row.addView(avatarView(this, "Jordan Avery", size = 40))',
         'row.addView(avatarView(this, "Website", fill = argb(PlenixColors.categoryBlue.light, PlenixColors.categoryBlue.dark),',
         '    text = argb(PlenixColors.categoryBlueOn.light, PlenixColors.categoryBlueOn.dark)))'
       ]

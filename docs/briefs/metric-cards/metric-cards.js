@@ -157,11 +157,11 @@
               { id: 1, city: 'Lianyungang', cost: '59,553.92', share: '7.4%' }, { id: 2, city: 'Yancheng', cost: '30,740.29', share: '3.8%' },
               { id: 3, city: 'Huai’an', cost: '27,850.11', share: '3.5%' }, { id: 4, city: 'Changzhou', cost: '21,888.55', share: '2.7%' },
               { id: 5, city: 'Zhenjiang', cost: '21,228.07', share: '2.6%' }],
-              columns: [{ title: 'City', field: 'city', rowLabel: true }, { title: 'Cost', field: 'cost', hozAlign: 'right', headerHozAlign: 'right' }, { title: 'Share', field: 'share', hozAlign: 'right', headerHozAlign: 'right' }] })) }),
+              columns: [{ title: 'City', field: 'city', rowLabel: true }, { title: 'Cost', field: 'cost', align: 'right', headerAlign: 'right' }, { title: 'Share', field: 'share', align: 'right', headerAlign: 'right' }] })) }),
         card({ icon: 'clock', title: 'Hours by project', context: 'This month', footer: 'Billable hours only',
           body: frag(figure({ value: '128', unit: 'hrs' }),
             h(P.Table, { label: 'Hours by project', data: [{ id: 1, p: 'Kitchen renovation', h: '46' }, { id: 2, p: 'Brand refresh', h: '38' }, { id: 3, p: 'Q4 launch', h: '29' }, { id: 4, p: 'Hiring', h: '15' }],
-              columns: [{ title: 'Project', field: 'p', rowLabel: true }, { title: 'Hours', field: 'h', hozAlign: 'right', headerHozAlign: 'right' }] })) })
+              columns: [{ title: 'Project', field: 'p', rowLabel: true }, { title: 'Hours', field: 'h', align: 'right', headerAlign: 'right' }] })) })
       ] }
   ];
   function personInside(name, role, src, value, unit, ch, extra, note) {

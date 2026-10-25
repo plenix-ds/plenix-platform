@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en" data-plx-mode="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tall table rows · Plenix review</title>
+<!-- Owner review for #256: how mainstream systems align cells in tall rows, and the options for Plenix's Table, with
+     pictures of a real spec table (options applied for the picture only). -->
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<link rel="stylesheet" href="../review.css">
+</head>
+<body class="rv-page">
+<main class="rv-doc">
+  <h1 class="rv-h1">Tall table rows: middle or top? (#256)</h1>
+  <p class="rv-lead">When one cell in a row wraps to several lines, the row grows. Today every cell's content sits in the
+    middle of that tall row, so cells with one line and cells with three lines start at different heights. The typography
+    test flags this as "Mono beside DM Sans, 8px apart" on 53 spec pages.</p>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">What mainstream systems do</h2>
+    <ul class="rv-list">
+      <li><strong>Fluent 2 (Microsoft):</strong> the Table cell is centered: <span class="rv-tag">verticalAlign: middle</span> (or <span class="rv-tag">alignItems: center</span> in its flex layout). Rows have a set height, so text rarely wraps.</li>
+      <li><strong>Material:</strong> the data table has fixed row heights (52px by default) and sets no vertical alignment, so cells sit in the middle; it does not plan for wrapped text.</li>
+      <li><strong>Carbon (IBM):</strong> "Column header and row text is always centered in the row, with the exception of the extra large" row, which starts 16px from the top. Extra large is the size "recommended if your data is expected to have two lines of content in a single row": <strong>tall, multi-line rows are top-aligned.</strong></li>
+      <li>Spreadsheets and document tables (Excel, Google Docs, GitHub Markdown) start multi-line cells at the top, so every cell's first line reads across.</li>
+    </ul>
+    <p class="rv-lead">Pattern: single-line rows are centered everywhere; when rows hold several lines, systems that plan for it align to the top.</p>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">The real table (Dialog page, platform names)</h2>
+    <div class="rv-pair">
+      <figure class="rv-fig"><img src="today.png" alt="Today: every cell centered; one-line cells sit lower than the first line of the three-line cell"><figcaption><span class="rv-tag">TODAY</span> · every cell in the middle: "Dialog", "plx-dialog" and "AlertDialog" start at different heights from ".alert,"</figcaption></figure>
+      <figure class="rv-fig"><img src="top.png" alt="Option A: cells start at the top"><figcaption><span class="rv-tag">OPTION A</span> · top-aligned: first lines read across (the cells' top padding still differs slightly and would be made equal)</figcaption></figure>
+    </div>
+    <div class="rv-pair">
+      <figure class="rv-fig"><img src="nowrap-code.png" alt="Option B: code no longer wraps but spills into the next column"><figcaption><span class="rv-tag">OPTION B</span> · code columns never wrap: needs the column to widen to fit (here it only stopped wrapping, so the code runs into the next column)</figcaption></figure>
+      <figure class="rv-fig"><img src="top-nowrap.png" alt="Option A and B together"><figcaption><span class="rv-tag">A + B</span> · top-aligned and code kept on one line</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">The options</h2>
+    <ul class="rv-list">
+      <li><strong>A · Top-align cells in tall static Table rows.</strong> One-line rows look exactly as today. In tall rows every cell's first line lines up, as Carbon does for two-line rows. The cells' top padding is made equal so the first lines match exactly.</li>
+      <li><strong>B · Give code columns enough width.</strong> Identifiers like <span class="rv-tag">.confirmationDialog</span> stay on one line; the column fits its longest value (as DataGrid columns already fit their content up to 360px). Fewer tall rows, but long identifiers can still wrap in narrow panes.</li>
+      <li><strong>C · Keep the middle, re-record the test.</strong> Matches Fluent and Material; the offset stays and the test baseline is rewritten to accept it.</li>
+    </ul>
+  </section>
+  <p class="rv-rec"><strong>Recommendation:</strong> A, with B where columns hold code. It matches Carbon's rule for
+    multi-line rows and how people read tables with wrapped text, keeps one-line rows unchanged (they are centered, as in
+    Fluent and Material), and makes the typography test pass for the right reason. Sources: Carbon · Data table · Style
+    ("always centered in the row, with the exception of the extra large"); Fluent UI React v9 · TableCell styles; Material
+    Components · data table theme (fixed row height).</p>
+</main>
+</body>
+</html>

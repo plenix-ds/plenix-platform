@@ -203,10 +203,10 @@ function FieldVisibilityDialog({ open, onClose, value, onSave, title, descriptio
       <Stack>
         <SearchField name="searchFields" label="Search fields" placeholder="Search fields..." value={q} onChange={(e) => setQ(e.target.value)} onClear={() => setQ('')} />
         <DataGrid label={title} data={rows} empty={EMPTY_TEXT} headerMenu={false} movableRows onRowMove={(records) => setOrder(records.map((record) => record.id))} columns={[
-          { title: 'Order', field: 'handle', kind: 'icon', icon: 'menu-lines', rowHandle: true, headerSort: false, render: () => <Icon name="menu-lines" size="sm" /> },
-          { title: 'Field', field: 'name', kind: 'name', headerSort: false },
-          { title: 'Type', field: 'type', kind: 'data', headerSort: false },
-          { title: 'Show', field: 'show', kind: 'center', hozAlign: 'right', headerHozAlign: 'right', headerSort: false, render: (r) => (
+          { title: 'Order', field: 'handle', kind: 'icon', icon: 'menu-lines', rowHandle: true, sortable: false, render: () => <Icon name="menu-lines" size="sm" /> },
+          { title: 'Field', field: 'name', kind: 'name', sortable: false },
+          { title: 'Type', field: 'type', kind: 'data', sortable: false },
+          { title: 'Show', field: 'show', kind: 'center', align: 'right', headerAlign: 'right', sortable: false, render: (r) => (
             <Switch label={'Show ' + r.name} labelHidden checked={!!draft[r.name]} onChange={(e) => setDraft({ ...draft, [r.name]: e.target.checked })} />) },
         ]} />
       </Stack>
@@ -242,10 +242,10 @@ export function CatEditFieldsDialog({ open, onClose, onDone }) {
           <Checkbox name="editForAllUsers" label="Edit for all users" checked={forAll} onChange={(e) => setForAll(e.target.checked)} />
         </Inline>
         <DataGrid label="Edit fields" data={fields.map((f) => ({ id: f.name, ...f }))} empty={EMPTY_TEXT} headerMenu={false} movableRows onRowMove={setFields} columns={[
-          { title: 'Order', field: 'handle', kind: 'icon', icon: 'menu-lines', rowHandle: true, headerSort: false, render: () => <Icon name="menu-lines" size="sm" /> },
-          { title: 'Field', field: 'name', kind: 'name', headerSort: false },
-          { title: 'Type', field: 'type', kind: 'data', headerSort: false },
-          { title: 'Remove', field: 'remove', kind: 'center', hozAlign: 'right', headerHozAlign: 'right', headerSort: false, render: (r) => (
+          { title: 'Order', field: 'handle', kind: 'icon', icon: 'menu-lines', rowHandle: true, sortable: false, render: () => <Icon name="menu-lines" size="sm" /> },
+          { title: 'Field', field: 'name', kind: 'name', sortable: false },
+          { title: 'Type', field: 'type', kind: 'data', sortable: false },
+          { title: 'Remove', field: 'remove', kind: 'center', align: 'right', headerAlign: 'right', sortable: false, render: (r) => (
             <Button size="xs" variant="ghost" iconOnly icon="close" label={'Remove ' + r.name} onClick={() => remove(r.name)} />) },
         ]} />
         <Select name="addAnotherField" aria-label="Add another field" value="" onChange={add}>

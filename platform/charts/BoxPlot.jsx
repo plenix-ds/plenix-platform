@@ -77,8 +77,8 @@ export function BoxPlot({ title, description, hideCaption, size, groups = [], or
   Object.keys(m).forEach((k) => { if (m[k] === undefined) delete m[k]; });
   const table = {
     columns: [{ title: categoryLabel || t.group, field: 'group', kind: 'name', rowLabel: true }]
-      .concat(['min', 'q1', 'median', 'q3', 'max'].map((k) => ({ title: t[k], field: k, kind: 'data', hozAlign: 'right' })))
-      .concat([{ title: t.outliers, field: 'outliers', kind: 'data' }, { title: t.n, field: 'n', kind: 'data', hozAlign: 'right' }]),
+      .concat(['min', 'q1', 'median', 'q3', 'max'].map((k) => ({ title: t[k], field: k, kind: 'data', align: 'right' })))
+      .concat([{ title: t.outliers, field: 'outliers', kind: 'data' }, { title: t.n, field: 'n', kind: 'data', align: 'right' }]),
     data: list.map((g, i) => ({ id: i + 1, group: g.label, min: fmt(g.s.min), q1: fmt(g.s.q1), median: fmt(g.s.median), q3: fmt(g.s.q3), max: fmt(g.s.max),
       outliers: (g.s.outliers || []).map(fmt).join(', '), n: g.s.n === undefined ? '' : fmt(g.s.n) }))
   };

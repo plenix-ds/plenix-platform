@@ -45,7 +45,7 @@ export const CATEGORY_CARDS = [
 export const CATEGORY_TOTAL = 48;
 export const CATEGORY_COUNT_LABEL = '52 categories';
 
-export const COLLECTION_CARDS = [['Website Assets', 84, 'Aug 28, 2026', 'raphael'], ['Social Media', 42, 'Aug 25, 2026', 'raphael'], ['Print ready', 156, 'Aug 20, 2026', 'sarah'], ['Needs review', 23, 'Aug 14, 2026', 'daniel']]
+export const COLLECTION_CARDS = [['Website Assets', 84, 'Aug 28, 2026', 'jordan'], ['Social Media', 42, 'Aug 25, 2026', 'jordan'], ['Print ready', 156, 'Aug 20, 2026', 'sarah'], ['Needs review', 23, 'Aug 14, 2026', 'daniel']]
   .map(([name, count, updated, owner], i) => ({ id: i, name, count, updated, owner }));
 
 export const ASSETS = [
@@ -59,7 +59,7 @@ export const ASSETS = [
   ['Gold Coptic Cross Linear', 'Cross - Linear', 'Gold_Coptic_Linear.ai', 'Adobe Illustrator (.ai)', 'AI', '6.1 MB', '1800 × 2400 px', 'Jul 5, 2026', 'Complete'],
 ].map(([name, cat, file, fmt, badge, size, dims, date, status], i) => ({
   id: i, name, cat, file, fmt, badge, size, dims, date, status, thumb: 'assets/thumb-' + (21 + i) + '.svg', typeIcon: 'file-' + badge.toLowerCase(),
-  tags: name.toLowerCase().split(' '), owner: ['Raphael Maher', 'Sarah M.', 'John Deacon'][i % 3],
+  tags: name.toLowerCase().split(' '), owner: ['Jordan Avery', 'Sarah M.', 'John Deacon'][i % 3],
 }));
 export const ASSET_TOTAL = 210;
 export const SEARCH_QUERY = 'cross gold';
@@ -73,7 +73,7 @@ export const CATEGORY_DETAIL = {
   order: '8', color: 'brown' /* a category color (CATEGORY_COLORS, batch 290) */, copyright: 'Coptic Orthodox Church', rights: 'Internal', rightsOptions: ['Internal', 'Commercial', 'Editorial', 'Public domain'],
   rating: 0, description: 'Traditional Coptic cross designs and variations', tags: ['cross', 'traditional', 'coptic'],
   stats: [['Total assets', '78'], ['Storage used', '1.4 GB'], ['Created', 'Jul 3, 2026'], ['Modified', 'Aug 28, 2026']],
-  permissions: [['Owner', 'raphael'], ['View groups', 'administrators, users, guest'], ['Edit groups', 'administrators']],
+  permissions: [['Owner', 'jordan'], ['View groups', 'administrators, users, guest'], ['Edit groups', 'administrators']],
   customFields: [['Style', 'e.g. Byzantine, Nubian...'], ['Material', 'e.g. Wood, Stone, Metal...'], ['Origin', 'e.g. Egypt, Ethiopia...']],
 };
 export const COLLECTION_DETAIL = { name: 'Website Assets', count: '84 assets' };
@@ -89,7 +89,7 @@ export const ASSET_DOWNLOADS = [
 export const ASSET_STATUSES = ['Complete', 'New', 'In progress', 'Pending review', 'Archived'];
 export const USAGE_RIGHTS = ['Internal use only', 'Church Use', 'Creative Commons', 'Public domain'];
 export const VERSIONS = [
-  { label: 'Version 3 (Current)', date: 'Aug 12, 2026 at 2:45 PM', user: 'Fr. Raphael M.', current: true },
+  { label: 'Version 3 (Current)', date: 'Aug 12, 2026 at 2:45 PM', user: 'Jordan A.', current: true },
   { label: 'Version 2', date: 'Jul 5, 2026 at 10:12 AM', user: 'Sarah M.' },
   { label: 'Version 1 (Original)', date: 'Jun 18, 2026 at 3:30 PM', user: 'Fr. Daniel' },
 ];

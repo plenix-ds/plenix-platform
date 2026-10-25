@@ -53,7 +53,7 @@ async function inspect() {
   // titles and headings
   const TITLE = 'h1, h2, h3, h4, h5, h6, [class*="__title"], .plx-text--title, .plx-text--heading, .plx-text--eyebrow';
   const shown = (el) => { if (!el.getClientRects().length) return false; const c = getComputedStyle(el); return c.visibility !== 'hidden' && !el.closest('[hidden], [aria-hidden="true"], .plx-visually-hidden, .plx-u-sr-only'); };
-  const say = (el, t) => { const c = typeof el.className === 'string' ? el.className.split(' ').filter((x) => /^(plx|ds|tabulator)-/.test(x)).slice(0, 2).join('.') : ''; return '"' + t.slice(0, 28) + '" (' + el.tagName.toLowerCase() + (c ? '.' + c : '') + ', ' + fam(el).split(',')[0] + ' ' + getComputedStyle(el).fontSize + ')'; };
+  const say = (el, t) => { const c = typeof el.className === 'string' ? el.className.split(' ').filter((x) => /^(plx|ds)-/.test(x)).slice(0, 2).join('.') : ''; return '"' + t.slice(0, 28) + '" (' + el.tagName.toLowerCase() + (c ? '.' + c : '') + ', ' + fam(el).split(',')[0] + ' ' + getComputedStyle(el).fontSize + ')'; };
   const MONTH = '(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\\.?';
   const ONE = [
     '\\d{4}-\\d{2}-\\d{2}(?:[ T]\\d{1,2}:\\d{2}(?::\\d{2})?)?',               // 2026-10-11, 2026-10-11 10:42

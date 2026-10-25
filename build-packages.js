@@ -135,6 +135,25 @@ write(path.join(T, 'index.js'), '/* ' + SCOPE + '/tokens ' + VERSION + ' (genera
   '/** The CSS reference for use in styles: var(--plx-…). */\nexport function cssVar(name) { return "var(" + name + ")"; }\n');
 write(path.join(T, 'index.d.ts'), 'export interface TokenValue { selector: string; value: string; file: string }\nexport interface Token { name: string; tier: "plx-ref" | "plx-sys" | "plx-comp"; type: string; description: string; values: TokenValue[]; refs: string[] }\nexport declare const version: string;\nexport declare const tokens: Token[];\nexport declare function token(name: string): Token | undefined;\nexport declare function value(name: string, selector?: string): string | undefined;\nexport declare function cssVar(name: string): string;\n');
 write(path.join(T, 'css', 'all.css'), ['reference.css', 'semantic.css', 'components.css', 'theme-default.css'].map((f) => '@import url("' + f + '");').join('\n') + '\n');
+// tokens.css (RedSave P-49, #158): the four token files in one, without @import, every :root rule also on :host, so a
+// shadow root or a page Plenix does not own can adopt it (plenixTokens() in the Platform loads it)
+{
+  const hostOf = (sel) => {   // ':root…' -> ':host(…)' when the rest is one compound selector, else nothing
+    const s = sel.trim(); if (!s.startsWith(':root')) return null;
+    const rest = s.slice(5); if (!rest) return ':host';
+    let depth = 0; for (const ch of rest) { if (ch === '(' || ch === '[') depth++; else if (ch === ')' || ch === ']') depth--; else if (depth === 0 && /[\s>+~]/.test(ch)) return null; }
+    return ':host(' + rest + ')';
+  };
+  const split = (list) => { const out = []; let depth = 0, cur = ''; for (const ch of list) { if (ch === '(' || ch === '[') depth++; if (ch === ')' || ch === ']') depth--; if (ch === ',' && depth === 0) { out.push(cur); cur = ''; } else cur += ch; } out.push(cur); return out; };
+  const css = ['reference.css', 'semantic.css', 'components.css', 'theme-default.css'].map((f) => fs.readFileSync(path.join(T, 'css', f), 'utf8')).join('\n')
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/(^|[{};])(\s*)([^{};@][^{};]*?)\{/g, (m, lead, space, prelude) => {
+      const sels = split(prelude), hosts = sels.map(hostOf).filter(Boolean);
+      return lead + space + (hosts.length ? sels.map((x) => x.trim()).concat(hosts).join(',') : prelude.trim()) + '{';
+    })
+    .replace(/\n\s*\n+/g, '\n');
+  write(path.join(T, 'css', 'tokens.css'), '/* Plenix ' + VERSION + ' · tokens.css: every --plx-* token, light and dark, on :root and :host; no @import (adoptable: plenixTokens()). Generated. */\n' + css.trim() + '\n');
+}
 json(path.join(T, 'package.json'), manifest('tokens', 'Plenix design tokens: the source JSON, CSS custom properties (--plx-…) and a JS module.', {
   type: 'module', main: 'index.js', types: 'index.d.ts',
   exports: { '.': { types: './index.d.ts', default: './index.js' }, './tokens.json': './tokens.json', './css/*': './css/*', './json/*': './json/*', './package.json': './package.json' },
@@ -263,6 +282,7 @@ copy(path.join(ROOT, 'docs', 'integration', 'acceptance.html'), path.join(CDN, '
   write(path.join(CDN, 'icons-all.css'), '/* Plenix ' + VERSION + ' · every Material Symbols Sharp symbol (weight 300, unedited, ' + lib.source + ') as an Icon name: <Icon name="person_cancel">.\n   Load after plenix.css. The files are at ' + base + ' (shared by every release). ' + rules.length + ' symbols; Plenix names keep their own symbol. */\n' + rules.join('\n') + '\n');
 }
 copyDir(path.join(T, 'css'), path.join(CDN, 'tokens'));
+copy(path.join(T, 'css', 'tokens.css'), path.join(CDN, 'tokens.css'));   // /cdn/<version>/tokens.css, beside plenix.js (plenixTokens' default)
 copy(path.join(T, 'tokens.json'), path.join(CDN, 'tokens', 'tokens.json'));
 // the native outputs (build-mobile.js) and the platform sets they come from (Platforms Standard 7.1 and 7.2, batch 297)
 for (const d of ['ios', 'android', 'flutter']) copyDir(path.join(P, 'mobile', d), path.join(CDN, 'mobile', d));

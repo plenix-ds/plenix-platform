@@ -1,0 +1,76 @@
+{
+ "compact": {
+  "header": 33,
+  "cols": [
+   {
+    "title": "Item",
+    "offset": -2
+   },
+   {
+    "title": "Vendor",
+    "offset": -2
+   },
+   {
+    "title": "Kind",
+    "offset": -2
+   },
+   {
+    "title": "Status",
+    "offset": -2
+   },
+   {
+    "title": "Quantity on the shelf",
+    "offset": 0
+   },
+   {
+    "title": "Price",
+    "offset": -2
+   },
+   {
+    "title": "Received at the north do",
+    "offset": 0
+   },
+   {
+    "title": "Notes",
+    "offset": -2
+   }
+  ]
+ },
+ "standard": {
+  "header": 33,
+  "cols": [
+   {
+    "title": "Item",
+    "offset": -2
+   },
+   {
+    "title": "Vendor",
+    "offset": -2
+   },
+   {
+    "title": "Kind",
+    "offset": -2
+   },
+   {
+    "title": "Status",
+    "offset": -2
+   },
+   {
+    "title": "Quantity on the shelf",
+    "offset": 0
+   },
+   {
+    "title": "Price",
+    "offset": -2
+   },
+   {
+    "title": "Received at the north do",
+    "offset": 0
+   },
+   {
+    "title": "Notes",
+    "offset": -2
+   }
+  ]
+ }
+}

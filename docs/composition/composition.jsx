@@ -78,7 +78,7 @@ function Posts() {
           view={<><SortPanel {...v.sortProps} /><GroupPanel {...v.groupProps} /><ColumnsMenu {...v.columnsProps} /><ViewMenu {...v.viewProps} gallery={false} /></>} />
         <DataGrid label="Posts" data={rows} {...v.tableProps} columns={[
           { title: 'Title', field: 'title', kind: 'name' }, { title: 'Community', field: 'community' }, { title: 'Tags', field: 'tags' }, { title: 'Collection', field: 'collection' },
-          { title: 'Score', field: 'score', kind: 'data', hozAlign: 'right', headerHozAlign: 'right', sorter: 'number' }, { title: 'Posted', field: 'posted', kind: 'data' }]} />
+          { title: 'Score', field: 'score', kind: 'data', align: 'right', headerAlign: 'right', sorter: 'number' }, { title: 'Posted', field: 'posted', kind: 'data' }]} />
       </Stack>
     </PageContent>
   );

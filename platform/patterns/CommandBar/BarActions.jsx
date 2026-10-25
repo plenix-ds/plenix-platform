@@ -133,7 +133,7 @@ export function BarActions({ actions = [], iconOnly = false, fold = 0, off = (a)
     const only = iconOnly && !filled && !!a.icon;
     const panel = typeof a.panel === 'function';
     const menu = !!a.items || !!a.choices;
-    // a choices command shows its current choice and is named by both ("Profile: Raphael")
+    // a choices command shows its current choice and is named by both ("Profile: Jordan")
     const name = a.choices ? a.label + ': ' + current(a) : a.label;
     const text = a.choices ? current(a) || a.label : a.label;
     const click = panel ? undefined : a.toggle ? () => a.onSelect && a.onSelect(!a.pressed) : menu ? undefined : a.onSelect;

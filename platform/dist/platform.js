@@ -9408,7 +9408,7 @@ const DragHandle = exports.DragHandle = /*#__PURE__*/_react.default.forwardRef(f
   }));
 });
   } },
-  "node_modules/@tanstack/table-core/build/lib/columnHelper.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/table-core/build/lib/columnHelper.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -9478,7 +9478,7 @@ function createColumnHelper() {
 }
 exports.createColumnHelper = createColumnHelper;
   } },
-  "node_modules/@tanstack/table-core/build/lib/utils.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -9588,7 +9588,7 @@ exports.makeStateUpdater = makeStateUpdater;
 exports.memo = memo;
 exports.noop = noop;
   } },
-  "node_modules/@tanstack/table-core/build/lib/core/cell.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/table-core/build/lib/core/cell.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -9629,7 +9629,7 @@ function createCell(table, row, column, columnId) {
 }
 exports.createCell = createCell;
   } },
-  "node_modules/@tanstack/table-core/build/lib/core/column.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/table-core/build/lib/core/column.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -9708,7 +9708,7 @@ function createColumn(table, columnDef, depth, parent) {
 }
 exports.createColumn = createColumn;
   } },
-  "node_modules/@tanstack/table-core/build/lib/core/headers.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/table-core/build/lib/core/headers.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -9977,7 +9977,7 @@ function buildHeaderGroups(allColumns, columnsToGroup, table, headerFamily) {
 exports.Headers = Headers;
 exports.buildHeaderGroups = buildHeaderGroups;
   } },
-  "node_modules/@tanstack/table-core/build/lib/core/row.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./cell.js":"node_modules/@tanstack/table-core/build/lib/core/cell.js"}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/table-core/build/lib/core/row.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./cell.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/cell.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10065,7 +10065,7 @@ const createRow = (table, id, original, rowIndex, depth, subRows, parentId) => {
 };
 exports.createRow = createRow;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10106,7 +10106,7 @@ const ColumnFaceting = {
 };
 exports.ColumnFaceting = ColumnFaceting;
   } },
-  "node_modules/@tanstack/table-core/build/lib/filterFns.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/table-core/build/lib/filterFns.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10202,7 +10202,7 @@ function testFalsey(val) {
 }
 exports.filterFns = filterFns;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js": { deps: {"../filterFns.js":"node_modules/@tanstack/table-core/build/lib/filterFns.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js": { deps: {"../filterFns.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/filterFns.js","../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10354,7 +10354,7 @@ function shouldAutoRemoveFilter(filterFn, value, column) {
 exports.ColumnFiltering = ColumnFiltering;
 exports.shouldAutoRemoveFilter = shouldAutoRemoveFilter;
   } },
-  "node_modules/@tanstack/table-core/build/lib/aggregationFns.js": { deps: {"./utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/table-core/build/lib/aggregationFns.js": { deps: {"./utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10461,7 +10461,7 @@ const aggregationFns = {
 };
 exports.aggregationFns = aggregationFns;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js": { deps: {"../aggregationFns.js":"node_modules/@tanstack/table-core/build/lib/aggregationFns.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js": { deps: {"../aggregationFns.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/aggregationFns.js","../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10603,7 +10603,7 @@ function orderColumns(leafColumns, grouping, groupedColumnMode) {
 exports.ColumnGrouping = ColumnGrouping;
 exports.orderColumns = orderColumns;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10702,7 +10702,7 @@ function _getVisibleLeafColumns(table, position) {
 exports.ColumnVisibility = ColumnVisibility;
 exports._getVisibleLeafColumns = _getVisibleLeafColumns;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./ColumnGrouping.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","./ColumnVisibility.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js"}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./ColumnGrouping.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","./ColumnVisibility.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10786,7 +10786,7 @@ const ColumnOrdering = {
 };
 exports.ColumnOrdering = ColumnOrdering;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10916,7 +10916,7 @@ const ColumnPinning = {
 };
 exports.ColumnPinning = ColumnPinning;
   } },
-  "node_modules/@tanstack/table-core/build/lib/utils/document.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/document.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10934,7 +10934,7 @@ function safelyAccessDocument(_document) {
 }
 exports.safelyAccessDocument = safelyAccessDocument;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","../utils/document.js":"node_modules/@tanstack/table-core/build/lib/utils/document.js","./ColumnVisibility.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js"}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","../utils/document.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/document.js","./ColumnVisibility.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11205,7 +11205,7 @@ exports.ColumnSizing = ColumnSizing;
 exports.defaultColumnSizing = defaultColumnSizing;
 exports.passiveEventSupported = passiveEventSupported;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11246,7 +11246,7 @@ const GlobalFaceting = {
 };
 exports.GlobalFaceting = GlobalFaceting;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js": { deps: {"../filterFns.js":"node_modules/@tanstack/table-core/build/lib/filterFns.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js": { deps: {"../filterFns.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/filterFns.js","../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11309,7 +11309,7 @@ const GlobalFiltering = {
 };
 exports.GlobalFiltering = GlobalFiltering;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11482,7 +11482,7 @@ const RowExpanding = {
 };
 exports.RowExpanding = RowExpanding;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/RowPagination.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPagination.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11651,7 +11651,7 @@ const RowPagination = {
 };
 exports.RowPagination = RowPagination;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/RowPinning.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPinning.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11796,7 +11796,7 @@ const RowPinning = {
 };
 exports.RowPinning = RowPinning;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/RowSelection.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSelection.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12187,7 +12187,7 @@ exports.isRowSelected = isRowSelected;
 exports.isSubRowSelected = isSubRowSelected;
 exports.selectRowsFn = selectRowsFn;
   } },
-  "node_modules/@tanstack/table-core/build/lib/sortingFns.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/table-core/build/lib/sortingFns.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12307,7 +12307,7 @@ const sortingFns = {
 exports.reSplitAlphaNumeric = reSplitAlphaNumeric;
 exports.sortingFns = sortingFns;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/RowSorting.js": { deps: {"../sortingFns.js":"node_modules/@tanstack/table-core/build/lib/sortingFns.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSorting.js": { deps: {"../sortingFns.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/sortingFns.js","../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12533,7 +12533,7 @@ const RowSorting = {
 };
 exports.RowSorting = RowSorting;
   } },
-  "node_modules/@tanstack/table-core/build/lib/core/table.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./column.js":"node_modules/@tanstack/table-core/build/lib/core/column.js","./headers.js":"node_modules/@tanstack/table-core/build/lib/core/headers.js","../features/ColumnFaceting.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js","../features/ColumnFiltering.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js","../features/ColumnGrouping.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","../features/ColumnOrdering.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js","../features/ColumnPinning.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js","../features/ColumnSizing.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js","../features/ColumnVisibility.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js","../features/GlobalFaceting.js":"node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js","../features/GlobalFiltering.js":"node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js","../features/RowExpanding.js":"node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js","../features/RowPagination.js":"node_modules/@tanstack/table-core/build/lib/features/RowPagination.js","../features/RowPinning.js":"node_modules/@tanstack/table-core/build/lib/features/RowPinning.js","../features/RowSelection.js":"node_modules/@tanstack/table-core/build/lib/features/RowSelection.js","../features/RowSorting.js":"node_modules/@tanstack/table-core/build/lib/features/RowSorting.js"}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/table-core/build/lib/core/table.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./column.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/column.js","./headers.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/headers.js","../features/ColumnFaceting.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js","../features/ColumnFiltering.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js","../features/ColumnGrouping.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","../features/ColumnOrdering.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js","../features/ColumnPinning.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js","../features/ColumnSizing.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js","../features/ColumnVisibility.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js","../features/GlobalFaceting.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js","../features/GlobalFiltering.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js","../features/RowExpanding.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js","../features/RowPagination.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPagination.js","../features/RowPinning.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPinning.js","../features/RowSelection.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSelection.js","../features/RowSorting.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSorting.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12744,7 +12744,7 @@ function createTable(options) {
 }
 exports.createTable = createTable;
   } },
-  "node_modules/@tanstack/table-core/build/lib/utils/getCoreRowModel.js": { deps: {"../core/row.js":"node_modules/@tanstack/table-core/build/lib/core/row.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getCoreRowModel.js": { deps: {"../core/row.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/row.js","../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12808,7 +12808,7 @@ function getCoreRowModel() {
 }
 exports.getCoreRowModel = getCoreRowModel;
   } },
-  "node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12853,7 +12853,7 @@ function expandRows(rowModel) {
 exports.expandRows = expandRows;
 exports.getExpandedRowModel = getExpandedRowModel;
   } },
-  "node_modules/@tanstack/table-core/build/lib/utils/getFacetedMinMaxValues.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedMinMaxValues.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12888,7 +12888,7 @@ function getFacetedMinMaxValues() {
 }
 exports.getFacetedMinMaxValues = getFacetedMinMaxValues;
   } },
-  "node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js": { deps: {"../core/row.js":"node_modules/@tanstack/table-core/build/lib/core/row.js"}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js": { deps: {"../core/row.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/row.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12998,7 +12998,7 @@ function filterRowModelFromRoot(rowsToFilter, filterRow, table) {
 }
 exports.filterRows = filterRows;
   } },
-  "node_modules/@tanstack/table-core/build/lib/utils/getFacetedRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./filterRowsUtils.js":"node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedRowModel.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./filterRowsUtils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13033,7 +13033,7 @@ function getFacetedRowModel() {
 }
 exports.getFacetedRowModel = getFacetedRowModel;
   } },
-  "node_modules/@tanstack/table-core/build/lib/utils/getFacetedUniqueValues.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedUniqueValues.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13071,7 +13071,7 @@ function getFacetedUniqueValues() {
 }
 exports.getFacetedUniqueValues = getFacetedUniqueValues;
   } },
-  "node_modules/@tanstack/table-core/build/lib/utils/getFilteredRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./filterRowsUtils.js":"node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFilteredRowModel.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./filterRowsUtils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13181,7 +13181,7 @@ function getFilteredRowModel() {
 }
 exports.getFilteredRowModel = getFilteredRowModel;
   } },
-  "node_modules/@tanstack/table-core/build/lib/utils/getGroupedRowModel.js": { deps: {"../core/row.js":"node_modules/@tanstack/table-core/build/lib/core/row.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getGroupedRowModel.js": { deps: {"../core/row.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/row.js","../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13337,7 +13337,7 @@ function groupBy(rows, columnId) {
 }
 exports.getGroupedRowModel = getGroupedRowModel;
   } },
-  "node_modules/@tanstack/table-core/build/lib/utils/getPaginationRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./getExpandedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js"}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getPaginationRowModel.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./getExpandedRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13396,7 +13396,7 @@ function getPaginationRowModel(opts) {
 }
 exports.getPaginationRowModel = getPaginationRowModel;
   } },
-  "node_modules/@tanstack/table-core/build/lib/utils/getSortedRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getSortedRowModel.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13497,7 +13497,7 @@ function getSortedRowModel() {
 }
 exports.getSortedRowModel = getSortedRowModel;
   } },
-  "node_modules/@tanstack/table-core/build/lib/index.js": { deps: {"./columnHelper.js":"node_modules/@tanstack/table-core/build/lib/columnHelper.js","./core/cell.js":"node_modules/@tanstack/table-core/build/lib/core/cell.js","./core/column.js":"node_modules/@tanstack/table-core/build/lib/core/column.js","./core/headers.js":"node_modules/@tanstack/table-core/build/lib/core/headers.js","./core/row.js":"node_modules/@tanstack/table-core/build/lib/core/row.js","./core/table.js":"node_modules/@tanstack/table-core/build/lib/core/table.js","./features/ColumnFaceting.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js","./features/ColumnFiltering.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js","./features/ColumnGrouping.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","./features/ColumnOrdering.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js","./features/ColumnPinning.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js","./features/ColumnSizing.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js","./features/ColumnVisibility.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js","./features/GlobalFaceting.js":"node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js","./features/GlobalFiltering.js":"node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js","./features/RowExpanding.js":"node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js","./features/RowPagination.js":"node_modules/@tanstack/table-core/build/lib/features/RowPagination.js","./features/RowPinning.js":"node_modules/@tanstack/table-core/build/lib/features/RowPinning.js","./features/RowSelection.js":"node_modules/@tanstack/table-core/build/lib/features/RowSelection.js","./features/RowSorting.js":"node_modules/@tanstack/table-core/build/lib/features/RowSorting.js","./utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./utils/getCoreRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getCoreRowModel.js","./utils/getExpandedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js","./utils/getFacetedMinMaxValues.js":"node_modules/@tanstack/table-core/build/lib/utils/getFacetedMinMaxValues.js","./utils/getFacetedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getFacetedRowModel.js","./utils/getFacetedUniqueValues.js":"node_modules/@tanstack/table-core/build/lib/utils/getFacetedUniqueValues.js","./utils/getFilteredRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getFilteredRowModel.js","./utils/getGroupedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getGroupedRowModel.js","./utils/getPaginationRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getPaginationRowModel.js","./utils/getSortedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getSortedRowModel.js","./aggregationFns.js":"node_modules/@tanstack/table-core/build/lib/aggregationFns.js","./filterFns.js":"node_modules/@tanstack/table-core/build/lib/filterFns.js","./sortingFns.js":"node_modules/@tanstack/table-core/build/lib/sortingFns.js"}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/table-core/build/lib/index.js": { deps: {"./columnHelper.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/columnHelper.js","./core/cell.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/cell.js","./core/column.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/column.js","./core/headers.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/headers.js","./core/row.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/row.js","./core/table.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/table.js","./features/ColumnFaceting.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js","./features/ColumnFiltering.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js","./features/ColumnGrouping.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","./features/ColumnOrdering.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js","./features/ColumnPinning.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js","./features/ColumnSizing.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js","./features/ColumnVisibility.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js","./features/GlobalFaceting.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js","./features/GlobalFiltering.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js","./features/RowExpanding.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js","./features/RowPagination.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPagination.js","./features/RowPinning.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPinning.js","./features/RowSelection.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSelection.js","./features/RowSorting.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSorting.js","./utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./utils/getCoreRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getCoreRowModel.js","./utils/getExpandedRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js","./utils/getFacetedMinMaxValues.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedMinMaxValues.js","./utils/getFacetedRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedRowModel.js","./utils/getFacetedUniqueValues.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedUniqueValues.js","./utils/getFilteredRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFilteredRowModel.js","./utils/getGroupedRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getGroupedRowModel.js","./utils/getPaginationRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getPaginationRowModel.js","./utils/getSortedRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getSortedRowModel.js","./aggregationFns.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/aggregationFns.js","./filterFns.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/filterFns.js","./sortingFns.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/sortingFns.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13595,7 +13595,7 @@ exports.filterFns = filterFns.filterFns;
 exports.reSplitAlphaNumeric = sortingFns.reSplitAlphaNumeric;
 exports.sortingFns = sortingFns.sortingFns;
   } },
-  "node_modules/@tanstack/react-table/build/lib/index.js": { deps: {"react":null,"@tanstack/table-core":"node_modules/@tanstack/table-core/build/lib/index.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/react-table/build/lib/index.js": { deps: {"react":null,"@tanstack/table-core":"../Plenix/node_modules/@tanstack/table-core/build/lib/index.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 /**
    * react-table
    *
@@ -13698,7 +13698,7 @@ Object.keys(tableCore).forEach(function (k) {
   });
 });
   } },
-  "node_modules/@tanstack/virtual-core/dist/cjs/lazy-measurements.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/lazy-measurements.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -13740,7 +13740,7 @@ function createLazyMeasurementsView(cache, flat) {
 exports.createLazyMeasurementsView = createLazyMeasurementsView;
 exports.getMeasurementKey = getMeasurementKey;
   } },
-  "node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -13818,7 +13818,7 @@ exports.debounce = debounce;
 exports.memo = memo;
 exports.notUndefined = notUndefined;
   } },
-  "node_modules/@tanstack/virtual-core/dist/cjs/scroll-classifier.cjs": { deps: {"./utils.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs"}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/scroll-classifier.cjs": { deps: {"./utils.cjs":"../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -13911,7 +13911,7 @@ exports.externalRetiresCommand = externalRetiresCommand;
 exports.flingCaught = flingCaught;
 exports.flingSpedUp = flingSpedUp;
   } },
-  "node_modules/@tanstack/virtual-core/dist/cjs/ios-gesture.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/ios-gesture.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -14042,7 +14042,7 @@ exports._resetIOSDetectionForTests = _resetIOSDetectionForTests;
 exports.iosMomentumOverridesWrites = iosMomentumOverridesWrites;
 exports.isIOSWebKit = isIOSWebKit;
   } },
-  "node_modules/@tanstack/virtual-core/dist/cjs/index.cjs": { deps: {"./lazy-measurements.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/lazy-measurements.cjs","./utils.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs","./scroll-classifier.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/scroll-classifier.cjs","./ios-gesture.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/ios-gesture.cjs"}, externals: {  }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/index.cjs": { deps: {"./lazy-measurements.cjs":"../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/lazy-measurements.cjs","./utils.cjs":"../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs","./scroll-classifier.cjs":"../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/scroll-classifier.cjs","./ios-gesture.cjs":"../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/ios-gesture.cjs"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -15616,7 +15616,7 @@ exports.observeWindowOffset = observeWindowOffset;
 exports.observeWindowRect = observeWindowRect;
 exports.windowScroll = windowScroll;
   } },
-  "node_modules/@tanstack/react-virtual/dist/cjs/index.cjs": { deps: {"react":null,"react-dom":null,"@tanstack/virtual-core":"node_modules/@tanstack/virtual-core/dist/cjs/index.cjs"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "../Plenix/node_modules/@tanstack/react-virtual/dist/cjs/index.cjs": { deps: {"react":null,"react-dom":null,"@tanstack/virtual-core":"../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/index.cjs"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -17441,7 +17441,7 @@ function BarActions({
     const only = iconOnly && !filled && !!a.icon;
     const panel = typeof a.panel === 'function';
     const menu = !!a.items || !!a.choices;
-    // a choices command shows its current choice and is named by both ("Profile: Raphael")
+    // a choices command shows its current choice and is named by both ("Profile: Jordan")
     const name = a.choices ? a.label + ': ' + current(a) : a.label;
     const text = a.choices ? current(a) || a.label : a.label;
     const click = panel ? undefined : a.toggle ? () => a.onSelect && a.onSelect(!a.pressed) : menu ? undefined : a.onSelect;
@@ -20537,7 +20537,7 @@ function groupDisplay(groups, collapsed, add, gaps = true) {
   return display;
 }
   } },
-  "platform/components/DataGrid/DataGridEngine.jsx": { deps: {"react":null,"./unread.js":"platform/components/DataGrid/unread.js","./room.js":"platform/components/DataGrid/room.js","react-dom":null,"./scrollbars.jsx":"platform/components/DataGrid/scrollbars.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","@tanstack/react-table":"node_modules/@tanstack/react-table/build/lib/index.js","@tanstack/react-virtual":"node_modules/@tanstack/react-virtual/dist/cjs/index.cjs","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./environment.js":"platform/components/DataGrid/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataGrid/state.js","./adapter.js":"platform/components/DataGrid/adapter.js","./cells.jsx":"platform/components/DataGrid/cells.jsx","./records.js":"platform/components/DataGrid/records.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/DataGrid/DataGridEngine.jsx": { deps: {"react":null,"./unread.js":"platform/components/DataGrid/unread.js","./room.js":"platform/components/DataGrid/room.js","react-dom":null,"./scrollbars.jsx":"platform/components/DataGrid/scrollbars.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","@tanstack/react-table":"../Plenix/node_modules/@tanstack/react-table/build/lib/index.js","@tanstack/react-virtual":"../Plenix/node_modules/@tanstack/react-virtual/dist/cjs/index.cjs","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./environment.js":"platform/components/DataGrid/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataGrid/state.js","./adapter.js":"platform/components/DataGrid/adapter.js","./cells.jsx":"platform/components/DataGrid/cells.jsx","./records.js":"platform/components/DataGrid/records.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -21019,7 +21019,7 @@ function NextEngine(props) {
     [managing, setManaging] = _react.default.useState(false);
   const [edited, setEdited] = _react.default.useState(null),
     [editing, setEditing] = _react.default.useState(null),
-    [expanded, setExpanded] = _react.default.useState(props.treeExpanded ?? options.dataTreeStartExpanded ?? false);
+    [expanded, setExpanded] = _react.default.useState(props.treeExpanded ?? false);
   const [localGroups, setGroups] = _react.default.useState(() => initial.groupBy),
     [groupOwner, setGroupOwner] = _react.default.useState(null),
     [collapsed, setCollapsed] = _react.default.useState(() => new Set(initial.collapsed));
@@ -21031,7 +21031,7 @@ function NextEngine(props) {
   }, [collapsedSignal, !!props.onViewChange]);
   const groupSignal = JSON.stringify(props.groupBy),
     groupBy = props.onViewChange ? props.groupBy ?? false : groupOwner === groupSignal ? localGroups : props.groupBy ?? options.groupBy ?? localGroups;
-  const childField = props.tree ?? options.dataTree ? props.childrenField || options.dataTreeChildField || '_children' : null;
+  const childField = props.tree ? props.childrenField || 'children' : null;
   const [ownSelection, setSelection] = _react.default.useState({}),
     [filters, setFilters] = _react.default.useState([]),
     [page, setPage] = _react.default.useState(0),
@@ -21261,7 +21261,7 @@ function NextEngine(props) {
     id: c.field,
     accessorFn: r => (0, _state.valueAt)(r, c.field),
     header: c.title || c.field,
-    enableSorting: c.headerSort !== false,
+    enableSorting: c.sortable !== false,
     filterFn: c.type === 'bytes' ? _cells.byteFilter : c.filter === 'list' ? _cells.listFilter : _cells.textFilter,
     sortingFn: typeof c.sorter === 'function' ? (a, b, id) => c.sorter(a.getValue(id), b.getValue(id), a.original, b.original, id, sortingRef.current.find(s => s.id === id)?.desc ? 'desc' : 'asc') : c.sorter === 'number' || c.type === 'bytes' ? 'basic' : compare,
     size: kinds(c).includes('icon') ? metrics.lead : Math.max(metrics.min, floors[c.field] || 0, autoSizing[c.field] || (0, _environment.tokenPixels)(c.width, frame.current) || metrics.min),
@@ -21992,7 +21992,7 @@ function NextEngine(props) {
       filtered = column.getIsFiltered(),
       icon = kinds(c).includes('icon'),
       hasFilter = !!(c.filter || filterField === c.field || filtered),
-      align = c.headerHozAlign || (c.type === 'bytes' ? 'right' : null),
+      align = c.headerAlign || (c.type === 'bytes' ? 'right' : null),
       titleFixed = icon ? 'flush' : null,
       offset = pinned ? pinStart(column) : 0;
     const node = /*#__PURE__*/_react.default.createElement(Width, _extends({
@@ -22007,7 +22007,7 @@ function NextEngine(props) {
       tabIndex: isStatic ? undefined : 0,
       "data-plx-field": c.field,
       "aria-sort": column.getIsSorted() ? column.getIsSorted() === 'desc' ? 'descending' : 'ascending' : undefined,
-      className: (0, _cx.cx)('' + B + '__grid-col', isStatic && B + '__grid-col--static', selectable && ordered.indexOf(column) === 0 && B + '__grid-col--after-lead', column.getCanSort() && B + '__grid-sortable', column.getCanSort() && B + '__grid-col-sorter-element', kinds(c).includes('icon') && B + '__cell--icon', kinds(c).includes('icon') && B + '__w-lead', column.getIsFiltered() && B + '__filtered', pinned && '' + B + '__grid-frozen', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', (c.headerHozAlign || c.type === 'bytes') && B + '__head-align-' + (c.headerHozAlign || 'right')),
+      className: (0, _cx.cx)('' + B + '__grid-col', isStatic && B + '__grid-col--static', selectable && ordered.indexOf(column) === 0 && B + '__grid-col--after-lead', column.getCanSort() && B + '__grid-sortable', column.getCanSort() && B + '__grid-col-sorter-element', kinds(c).includes('icon') && B + '__cell--icon', kinds(c).includes('icon') && B + '__w-lead', column.getIsFiltered() && B + '__filtered', pinned && '' + B + '__grid-frozen', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', (c.headerAlign || c.type === 'bytes') && B + '__head-align-' + (c.headerAlign || 'right')),
       "data-plx-sticky": pinned && offset ? offset + 'px' : undefined,
       onClick: e => {
         if (!e.target.closest(interactive) && column.getCanSort()) column.toggleSorting();
@@ -22091,6 +22091,7 @@ function NextEngine(props) {
       }))
     }, headerItems(column))) : null), c.resizable !== false && !pinned && !kinds(c).includes('icon') ? /*#__PURE__*/_react.default.createElement("span", {
       className: `${B}__grid-col-resize-handle`,
+      "data-plx-target-equivalent": "",
       role: "separator",
       "aria-label": S.resize + ' ' + c.title,
       "aria-orientation": "vertical",
@@ -22251,7 +22252,7 @@ function NextEngine(props) {
         field
       } = pendingEdit.current;
       pendingEdit.current = null;
-      emit('cellEdited', api.cell(key, field));
+      emit('cellEdit', api.cell(key, field));
     }
   }, [source]);
   const rowNode = row => {
@@ -22355,7 +22356,7 @@ function NextEngine(props) {
       const cell = api.cell(row.id, c.field),
         canEdit = !!c.editor && (typeof c.editable === 'function' ? c.editable(cell) : c.editable !== false);
       const value = (0, _state.valueAt)(record, c.field),
-        isTree = !!childField && c.field === (props.treeColumn || options.dataTreeElementColumn || columns[0]?.field),
+        isTree = !!childField && c.field === (props.treeColumn || columns[0]?.field),
         isEditing = editing?.key === row.id && editing.field === c.field,
         handled = c.rowHandle && (recordPositions.get(record) ?? -1) >= 0,
         actions = k.includes('actions');
@@ -22420,8 +22421,8 @@ function NextEngine(props) {
         },
         "data-plx-sticky": pinned && sticky ? sticky + 'px' : undefined,
         "data-plx-text-follow": c.rowLabel || columns.indexOf(c) <= pinnedAt ? 'size family weight' : 'size family',
-        className: (0, _cx.cx)('' + B + '__grid-cell', modes, !selectable && selection[row.id] && ordered.indexOf(column) === 0 && B + '__grid-cell--selected-start', bare && B + '__grid-cell--bare', selectable && ordered.indexOf(column) === 0 && B + '__grid-cell--after-lead', isTree && row.depth > 0 && B + '__tree-cell--level-' + Math.min(12, row.depth), editing?.key === row.id && editing.field === c.field && '' + B + '__grid-editing', k.map(kind => B + '__cell--' + kind).join(' '), (k.includes('data') || c.type === 'bytes') && B + '__grid-cell--data', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', c.type === 'bytes' && B + '__cell--data', c.rowHandle && B + '__cell--handle', childField && c.field === (props.treeColumn || options.dataTreeElementColumn || columns[0]?.field) && B + '__tree-cell', pinned && '' + B + '__grid-frozen', (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + '__cell--row-label', k.includes('icon') && B + '__w-lead', keys.includes(c.field) && B + '__cell--key', keys[0] === c.field && B + '__cell--key-first', (c.hozAlign || c.type === 'bytes') && B + '__cell--align-' + (c.hozAlign || 'right'))
-      }, childField && c.field === (props.treeColumn || options.dataTreeElementColumn || columns[0]?.field) ? /*#__PURE__*/_react.default.createElement("span", {
+        className: (0, _cx.cx)('' + B + '__grid-cell', modes, !selectable && selection[row.id] && ordered.indexOf(column) === 0 && B + '__grid-cell--selected-start', bare && B + '__grid-cell--bare', selectable && ordered.indexOf(column) === 0 && B + '__grid-cell--after-lead', isTree && row.depth > 0 && B + '__tree-cell--level-' + Math.min(12, row.depth), editing?.key === row.id && editing.field === c.field && '' + B + '__grid-editing', k.map(kind => B + '__cell--' + kind).join(' '), (k.includes('data') || c.type === 'bytes') && B + '__grid-cell--data', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', c.type === 'bytes' && B + '__cell--data', c.rowHandle && B + '__cell--handle', childField && c.field === (props.treeColumn || columns[0]?.field) && B + '__tree-cell', pinned && '' + B + '__grid-frozen', (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + '__cell--row-label', k.includes('icon') && B + '__w-lead', keys.includes(c.field) && B + '__cell--key', keys[0] === c.field && B + '__cell--key-first', (c.align || c.type === 'bytes') && B + '__cell--align-' + (c.align || 'right'))
+      }, childField && c.field === (props.treeColumn || columns[0]?.field) ? /*#__PURE__*/_react.default.createElement("span", {
         className: B + '__tree-level',
         "data-plx-depth": 0
       }, row.getCanExpand() ? /*#__PURE__*/_react.default.createElement("button", {
@@ -22762,7 +22763,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
    Usage: <Table label="Fields" data={fields} columns={[{title:'Field',field:'name',rowLabel:true},{title:'Notes',field:'notes',kind:'wrap'}]} />
    Props:
      label: accessible table name (required); data: records; columns: title, field, kind, render(record), width,
-       minWidth, maxWidth, rowLabel, frozen, hozAlign and headerHozAlign. index identifies records (default "id").
+       minWidth, maxWidth, rowLabel, frozen, align and headerAlign. index identifies records (default "id").
      empty: no-record message; narrow: "table" by default; className.
      cells: "text" (default) | "pill": the pill view (owner, 2026-10-19): every value a DataPill with its column's type icon
        (type: text, number, currency, date, person …); a person's value.gender makes it blue or pink with the male or female
@@ -22800,8 +22801,8 @@ function Table({
     maxWidth,
     rowLabel,
     frozen,
-    hozAlign,
-    headerHozAlign,
+    align,
+    headerAlign,
     empty
   }) => ({
     title,
@@ -22815,10 +22816,10 @@ function Table({
     maxWidth,
     rowLabel,
     frozen,
-    hozAlign,
-    headerHozAlign,
+    align,
+    headerAlign,
     empty,
-    headerSort: false,
+    sortable: false,
     resizable: false
   })), [columns]);
   return /*#__PURE__*/_react.default.createElement(_DataGridEngine.DataGridEngine, {
@@ -23062,7 +23063,7 @@ function Gauge({
       title: t.value,
       field: 'v',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }],
     data: [{
       id: 1,
@@ -23895,12 +23896,12 @@ function PieChart({
       title: t.value,
       field: 'value',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }, {
       title: t.share,
       field: 'share',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }],
     data: slices.map((d, i) => ({
       id: i + 1,
@@ -28527,7 +28528,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
          fits its content up to --plx-comp-data-grid-auto-max-width (360px; longer text ends in an ellipsis, the full
          text on hover) and the last such column takes the room left, so the grid fills its width; minWidth, maxWidth; frozen: pinned at the start; rowLabel: this and
          the columns before it are the row header (pinned and shaded)
-       hozAlign, headerHozAlign: "left" | "center" | "right"; headerSort: false turns sorting off; resizable: false
+       align, headerAlign: "left" | "center" | "right"; sortable: false turns sorting off; resizable: false
        editor: "input" | "number" (a Plenix input; double-click or Enter edits, Escape cancels); editable(record): which
          rows may edit; rowHandle: true makes the column the drag handle for moving rows
      selectable: the checkbox column (select all in its header); selected (keys) with onSelectionChange(keys,
@@ -28558,7 +28559,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The page's view (the command bar drives it; each applies when it changes): filter(record), sort [{ field, dir }],
        groupBy (a field, or a list for nested groups), columnOrder, hiddenColumns; onAddToGroup(value, path): the add row
        at the end of each group
-     tree: rows nest (children in childrenField, default "_children"; the toggle in treeColumn; treeExpanded: start open)
+     tree: rows nest (children in childrenField, default "children"; the toggle in treeColumn; treeExpanded: start open)
      movableRows with onRowMove(records), movableColumns: drag, with the same moves in the menus
      rowHeight: "short" (the density's) | "medium" | "tall" | "extra-tall"; wrapHeaders; viewMenu: the grid's own view
        button (default false: the page's ViewMenu sets these)
@@ -31775,7 +31776,9 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
    Behavior:
      A card. Its background follows the user's settings on the page root: data-plx-header-tint none (default: white) | gray
        | blue | warm | green | purple | red, and data-plx-header-tint-style fade (default) | flat.
-     Two columns, main 1.7 to aside 1, with a divider between them; with no next step and no actions there is no aside.
+     Two columns with a divider between them: the divider starts at 63% of the width (main 1.7 to aside 1) and moves
+       toward the end when the title needs the room; the aside keeps at least 220px (entity-header-aside-min-width), and
+       past that the title wraps and the actions fold into More. With no next step and no actions there is no aside.
      The accent rule runs 10% past the wider of the heading and the details.
      The tiles wrap on narrow screens; under 640px of the header's own width the aside moves under the main column (its
        divider above it, at the start edge).
@@ -31916,6 +31919,8 @@ function States({
   }, /*#__PURE__*/_react.default.createElement("dt", {
     className: "plx-entity-header__fact-label"
   }, states.label || label), /*#__PURE__*/_react.default.createElement("dd", {
+    className: "plx-entity-header__fact-line"
+  }, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-entity-header__states",
     role: "radiogroup",
     "aria-label": states.label || label
@@ -31944,7 +31949,7 @@ function States({
     })) : null, iconOnly && o.icon ? null : /*#__PURE__*/_react.default.createElement("span", {
       className: "plx-entity-header__state-label"
     }, o.label));
-  })));
+  }))));
 }
 
 // a fact: label over value; with an icon, the icon in a square at its start; with an action (header style 2), the icon
@@ -35675,7 +35680,171 @@ function Blockquote({
   }, citation) : null);
 }
   } },
-  "platform/components/RichText/RichText.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/utils/richTextClean.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SAFE_HREF = exports.RICH_TEXT_STYLE_PROPERTIES = void 0;
+exports.cleanRichText = cleanRichText;
+/* Plenix · richTextClean
+   Summary: The rich-text allow-list: a clean copy of HTML from people (comments, imported documents, the RichTextEditor's
+     output), with only the prose elements, safe links and pictures, and the person's own text formatting.
+   Usage: import { cleanRichText } from '../utils/richTextClean.js'; const safe = cleanRichText(html);
+   Behavior: Elements outside the list are unwrapped (their text stays); scripts, event and style attributes are dropped,
+     except the person's color, background color, font, size and alignment on their text; links keep http(s), mailto and
+     relative addresses only; pictures keep http(s) and relative sources only. Returns '' with no document (server).
+   Notes: Used by RichText (its html prop) and RichTextEditor (its value and onChange); published as cleanRichText. */
+const MENTION_CLASS = 'plx-rich-text-editor__mention';
+const CHECK_CLASS = 'plx-check__input';
+const ALLOWED = {
+  P: 1,
+  BR: 1,
+  STRONG: 1,
+  EM: 1,
+  U: 1,
+  S: 1,
+  CODE: 1,
+  SUB: 1,
+  SUP: 1,
+  MARK: 1,
+  A: 1,
+  SPAN: 1,
+  H1: 1,
+  H2: 1,
+  H3: 1,
+  H4: 1,
+  H5: 1,
+  H6: 1,
+  UL: 1,
+  OL: 1,
+  LI: 1,
+  BLOCKQUOTE: 1,
+  PRE: 1,
+  HR: 1,
+  IMG: 1,
+  FIGURE: 1,
+  FIGCAPTION: 1,
+  TABLE: 1,
+  THEAD: 1,
+  TBODY: 1,
+  TR: 1,
+  TH: 1,
+  TD: 1,
+  LABEL: 1,
+  INPUT: 1,
+  DIV: 1
+};
+const RENAME = {
+  B: 'strong',
+  I: 'em',
+  STRIKE: 's',
+  DEL: 's',
+  DIV: 'p'
+};
+// the person's own formatting kept on their content: these style properties only, on these elements
+const USER_STYLE = {
+  SPAN: ['color', 'background-color', 'font-family', 'font-size'],
+  MARK: ['color', 'background-color'],
+  P: ['text-align'],
+  H1: ['text-align'],
+  H2: ['text-align'],
+  H3: ['text-align'],
+  H4: ['text-align'],
+  H5: ['text-align'],
+  H6: ['text-align'],
+  TH: ['text-align'],
+  TD: ['text-align']
+};
+const RICH_TEXT_STYLE_PROPERTIES = exports.RICH_TEXT_STYLE_PROPERTIES = ['color', 'background-color', 'font-family', 'font-size', 'text-align'];
+const SAFE_HREF = exports.SAFE_HREF = /^(https?:|mailto:|\/|\.|#|[^:]*$)/i;
+const SAFE_SRC = /^(https?:|\/|\.|[^:]*$)/i;
+
+// the allow-list: a clean copy of the HTML (elements renamed or unwrapped, attributes dropped, styles kept to the person's formatting)
+function cleanRichText(html) {
+  if (typeof document === 'undefined') return '';
+  const from = document.createElement('template');
+  from.innerHTML = String(html || '');
+  const copy = (node, into, task) => {
+    node.childNodes.forEach(n => {
+      if (n.nodeType === 3) {
+        const text = n.nodeValue.replace(/​/g, '');
+        if (text) into.appendChild(document.createTextNode(text));
+        return;
+      }
+      if (n.nodeType !== 1) return;
+      // inside a task item its label, checkbox and content div stay as Tiptap writes them
+      const inTask = task && n.parentNode && n.parentNode.getAttribute && n.parentNode.getAttribute('data-type') === 'taskItem';
+      let tag = RENAME[n.tagName] && !(inTask && n.tagName === 'DIV') ? RENAME[n.tagName].toUpperCase() : n.tagName;
+      if ((tag === 'LABEL' || tag === 'DIV') && !inTask) {
+        copy(n, into, task);
+        return;
+      }
+      if (tag === 'INPUT') {
+        if (!(task && n.closest('li[data-type="taskItem"]') && /^checkbox$/i.test(n.getAttribute('type') || ''))) return;
+        const box = document.createElement('input');
+        const item = n.closest('li[data-type="taskItem"]'),
+          body = item && item.querySelector(':scope > div');
+        box.setAttribute('type', 'checkbox');
+        box.setAttribute('class', CHECK_CLASS);
+        box.setAttribute('disabled', '');
+        if (n.hasAttribute('checked') || item && item.getAttribute('data-checked') === 'true') box.setAttribute('checked', 'checked');
+        box.setAttribute('aria-label', ((body ? body.textContent : '') || '').trim().slice(0, 200));
+        into.appendChild(box);
+        return;
+      }
+      const mention = tag === 'SPAN' && n.hasAttribute('data-mention');
+      const styles = (USER_STYLE[tag] || []).map(p => [p, n.style ? n.style.getPropertyValue(p) : '']).filter(s => s[1] && !/url\(|expression|[<>]/i.test(s[1]));
+      if (!ALLOWED[tag] || tag === 'SPAN' && !mention && !styles.length) {
+        copy(n, into, task);
+        return;
+      }
+      const el = document.createElement(tag.toLowerCase());
+      if (tag === 'A') {
+        const href = (n.getAttribute('href') || '').trim();
+        if (SAFE_HREF.test(href)) el.setAttribute('href', href);
+      }
+      if (tag === 'IMG') {
+        const src = (n.getAttribute('src') || '').trim();
+        if (!src || !SAFE_SRC.test(src)) return;
+        el.setAttribute('src', src);
+        el.setAttribute('alt', n.getAttribute('alt') || '');
+        if (n.getAttribute('title')) el.setAttribute('title', n.getAttribute('title'));
+      }
+      if (tag === 'OL' && /^\d+$/.test(n.getAttribute('start') || '') && n.getAttribute('start') !== '1') el.setAttribute('start', n.getAttribute('start'));
+      if (tag === 'TD' || tag === 'TH') ['colspan', 'rowspan'].forEach(a => {
+        const v = n.getAttribute(a);
+        if (/^\d+$/.test(v || '') && v !== '1') el.setAttribute(a, v);
+      });
+      if (tag === 'UL' && n.getAttribute('data-type') === 'taskList') el.setAttribute('data-type', 'taskList');
+      const isTask = tag === 'LI' && n.getAttribute('data-type') === 'taskItem';
+      if (isTask) {
+        el.setAttribute('data-type', 'taskItem');
+        el.setAttribute('data-checked', n.getAttribute('data-checked') === 'true' ? 'true' : 'false');
+      }
+      if (tag === 'MARK' && n.getAttribute('data-color')) el.setAttribute('data-color', n.getAttribute('data-color'));
+      if (mention) {
+        el.setAttribute('data-mention', n.getAttribute('data-mention'));
+        el.setAttribute('class', MENTION_CLASS);
+        el.setAttribute('contenteditable', 'false');
+      }
+      styles.forEach(s => el.style.setProperty(s[0], s[1]));
+      if (tag === 'LABEL') el.setAttribute('contenteditable', 'false');
+      if (tag === 'IMG' || tag === 'HR' || tag === 'BR') {
+        into.appendChild(el);
+        return;
+      }
+      copy(n, el, task || isTask);
+      into.appendChild(el);
+    });
+  };
+  const out = document.createElement('div');
+  copy(from.content, out, false);
+  return out.innerHTML;
+}
+  } },
+  "platform/components/RichText/RichText.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/richTextClean.js":"platform/utils/richTextClean.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35685,6 +35854,7 @@ exports.RichText = RichText;
 var _react = _interopRequireDefault(require("react"));
 var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
+var _richTextClean = require("../../utils/richTextClean.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · RichText
    Summary: A block of formatted reading text (prose): paragraphs, headings, lists, links, quotes, inline code and code
@@ -35699,7 +35869,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Props:
      variant: "article" (default: a page of reading: 14px text, 24px lines, a reading width of about 80 characters) |
        "compact" (notes, comments and help in a panel: the body size, 20px lines, the container's width)
-     html: HTML to show, already sanitized by the application (see Notes); without it, the children
+     html: HTML to show; RichText cleans it through the rich-text allow-list (cleanRichText) first; without it, the children
      as: the element: "div" (default) | "article" | "section"
      label: names the region for assistive technology when it is a landmark (as="section")
      children: the content, as plain elements (h1–h6, p, ul, ol, li, a, strong, em, u, s, sub, sup, mark, code, pre,
@@ -35712,8 +35882,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        overflows (give it tabindex="0" and a name in the content).
      Lists take their markers from the writing direction; the quote's rule sits at the start side.
    Notes:
-     It sanitizes nothing: HTML from people (comments, imported documents) must be cleaned by the application first (an
-       allow-list of the elements above, no scripts, no event attributes, no style attributes).
+     html is always cleaned by cleanRichText (the RichTextEditor's allow-list): the elements above, no scripts, no event
+       attributes, no style attributes except the person's text formatting, safe link and picture addresses only.
      With html, the container carries plx-user-content: the HTML is a person's content, whose own formatting (color,
        background-color, font-family, font-size and text-align on its text, as the RichTextEditor stores them) the style
        audit and the page checks allow there; the rest follows the type styles.
@@ -35737,9 +35907,10 @@ function RichText({
   }, {
     variant: ['article', 'compact']
   });
-  const content = html != null ? {
+  const clean = _react.default.useMemo(() => html != null ? (0, _richTextClean.cleanRichText)(html) : null, [html]);
+  const content = clean != null ? {
     dangerouslySetInnerHTML: {
-      __html: html
+      __html: clean
     }
   } : null;
   return /*#__PURE__*/_react.default.createElement(Tag, _extends({
@@ -38628,6 +38799,54 @@ function Time({
   }, el) : el;
 }
   } },
+  "platform/utils/tokenSheet.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.plenixTokens = plenixTokens;
+/* Plenix · plenixTokens
+   Summary: The Plenix tokens as an adoptable stylesheet, for a shadow root or a page Plenix does not own (a browser
+     extension's content script): every --plx-* custom property, light and dark, and nothing else.
+   Usage:
+     const sheet = await plenixTokens();                     // tokens.css beside plenix.js / plenix.css on the CDN
+     shadowRoot.adoptedStyleSheets = [...shadowRoot.adoptedStyleSheets, sheet];
+     await plenixTokens(chrome.runtime.getURL('plenix/tokens.css'));   // a self-hosted copy
+   Props:
+     url: the tokens.css address (optional): window.PlenixTokens when set, else tokens.css beside the Plenix script or
+       stylesheet on the page
+   Behavior: Loads the file once per address and returns the same CSSStyleSheet each time. The sheet sets the tokens on
+     :root and on :host, so a shadow root's host carries them; the theme follows data-plx-mode and data-plx-theme on the
+     page or the host. Rejects when no address is known or the file does not load.
+   Notes: tokens.css is generated with each release (build-packages.js): /cdn/<version>/tokens.css, also in the
+     self-hosting archive. It has no @import, so it can be adopted (replaceSync). */
+const sheets = new Map();
+function tokensUrl() {
+  if (typeof window !== 'undefined' && typeof window.PlenixTokens === 'string' && window.PlenixTokens) return window.PlenixTokens;
+  if (typeof document === 'undefined') return null;
+  const at = [...document.querySelectorAll('script[src], link[rel="stylesheet"][href]')].map(el => el.src || el.href).find(url => /\/plenix(\.esm|\.min)?\.(js|css)(\?|#|$)/.test(url));
+  return at ? new URL('tokens.css', at).href : null;
+}
+function plenixTokens(url) {
+  const href = url || tokensUrl();
+  if (!href) return Promise.reject(new Error('plenixTokens: no tokens.css address; pass one, or set window.PlenixTokens'));
+  if (!sheets.has(href)) {
+    sheets.set(href, fetch(href).then(response => {
+      if (!response.ok) throw new Error('plenixTokens: ' + href + ' answered ' + response.status);
+      return response.text();
+    }).then(css => {
+      const sheet = new CSSStyleSheet();
+      sheet.replaceSync(css);
+      return sheet;
+    }).catch(error => {
+      sheets.delete(href);
+      throw error;
+    }));
+  }
+  return sheets.get(href);
+}
+  } },
   "platform/components/Spotlight/Spotlight.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/portal.jsx":"platform/utils/portal.jsx","../../utils/floating.js":"platform/utils/floating.js","../../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -41248,7 +41467,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Summary: A one-time passcode or PIN of a known length, one box per character: typing moves on, Backspace moves back, a
      pasted or autofilled code fills every box.
    Usage:
-     <Field label="Verification code" description="We sent a 6-digit code to r•••@lighthouseway.org." error={err}>
+     <Field label="Verification code" description="We sent a 6-digit code to j•••@example.com." error={err}>
        <OtpInput value={code} onChange={setCode} onComplete={verify} />
      </Field>
      <OtpInput length={4} masked label="PIN" />
@@ -41840,15 +42059,26 @@ function loadTiptap(win) {
   return p;
 }
   } },
-  "platform/components/RichTextEditor/RichTextEditor.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js","../../utils/overflow.js":"platform/utils/overflow.js","../Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","../ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","../../utils/hotkey.js":"platform/utils/hotkey.js","./tiptap.js":"platform/components/RichTextEditor/tiptap.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/RichTextEditor/RichTextEditor.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js","../../utils/overflow.js":"platform/utils/overflow.js","../Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","../ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","../../utils/hotkey.js":"platform/utils/hotkey.js","./tiptap.js":"platform/components/RichTextEditor/tiptap.js","../../utils/richTextClean.js":"platform/utils/richTextClean.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.RICH_TEXT_STYLE_PROPERTIES = exports.RICH_TEXT_SIZES = exports.RICH_TEXT_FONTS = void 0;
+exports.RICH_TEXT_SIZES = exports.RICH_TEXT_FONTS = void 0;
+Object.defineProperty(exports, "RICH_TEXT_STYLE_PROPERTIES", {
+  enumerable: true,
+  get: function () {
+    return _richTextClean.RICH_TEXT_STYLE_PROPERTIES;
+  }
+});
 exports.RichTextEditor = RichTextEditor;
-exports.cleanRichText = cleanRichText;
+Object.defineProperty(exports, "cleanRichText", {
+  enumerable: true,
+  get: function () {
+    return _richTextClean.cleanRichText;
+  }
+});
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
@@ -41864,6 +42094,7 @@ var _ColorSwatch = require("../ColorSwatch/ColorSwatch.jsx");
 var _categoryColors = require("../ColorSwatch/categoryColors.js");
 var _hotkey = require("../../utils/hotkey.js");
 var _tiptap = require("./tiptap.js");
+var _richTextClean = require("../../utils/richTextClean.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · RichTextEditor
    Summary: A field for formatted text: a formatting toolbar (the Platform Toolbar, Buttons and Menus) over an editing
@@ -42085,154 +42316,13 @@ const keysAria = binding => binding.replace('Mod', (0, _hotkey.isMac)() ? 'Meta'
 // the person's fonts and sizes to choose from (content, not interface: any family or size can be typed in too)
 const RICH_TEXT_FONTS = exports.RICH_TEXT_FONTS = [['DM Sans', '"DM Sans", sans-serif'], ['Reddit Mono', '"Reddit Mono", monospace'], ['Arial', 'Arial, sans-serif'], ['Helvetica', 'Helvetica, Arial, sans-serif'], ['Verdana', 'Verdana, sans-serif'], ['Tahoma', 'Tahoma, sans-serif'], ['Trebuchet MS', '"Trebuchet MS", sans-serif'], ['Georgia', 'Georgia, serif'], ['Times New Roman', '"Times New Roman", serif'], ['Garamond', 'Garamond, serif'], ['Courier New', '"Courier New", monospace']];
 const RICH_TEXT_SIZES = exports.RICH_TEXT_SIZES = ['12px', '14px', '16px', '18px', '20px', '24px', '28px', '32px', '36px', '48px'];
-const ALLOWED = {
-  P: 1,
-  BR: 1,
-  STRONG: 1,
-  EM: 1,
-  U: 1,
-  S: 1,
-  CODE: 1,
-  SUB: 1,
-  SUP: 1,
-  MARK: 1,
-  A: 1,
-  SPAN: 1,
-  H1: 1,
-  H2: 1,
-  H3: 1,
-  H4: 1,
-  H5: 1,
-  H6: 1,
-  UL: 1,
-  OL: 1,
-  LI: 1,
-  BLOCKQUOTE: 1,
-  PRE: 1,
-  HR: 1,
-  IMG: 1,
-  TABLE: 1,
-  TBODY: 1,
-  TR: 1,
-  TH: 1,
-  TD: 1,
-  LABEL: 1,
-  INPUT: 1,
-  DIV: 1
-};
-const RENAME = {
-  B: 'strong',
-  I: 'em',
-  STRIKE: 's',
-  DEL: 's',
-  DIV: 'p'
-};
-// the person's own formatting kept on their content: these style properties only, on these elements
-const USER_STYLE = {
-  SPAN: ['color', 'background-color', 'font-family', 'font-size'],
-  MARK: ['color', 'background-color'],
-  P: ['text-align'],
-  H1: ['text-align'],
-  H2: ['text-align'],
-  H3: ['text-align'],
-  H4: ['text-align'],
-  H5: ['text-align'],
-  H6: ['text-align'],
-  TH: ['text-align'],
-  TD: ['text-align']
-};
-const RICH_TEXT_STYLE_PROPERTIES = exports.RICH_TEXT_STYLE_PROPERTIES = ['color', 'background-color', 'font-family', 'font-size', 'text-align'];
-const SAFE_HREF = /^(https?:|mailto:|\/|\.|#|[^:]*$)/i;
-const SAFE_SRC = /^(https?:|\/|\.|[^:]*$)/i;
+
 // the mention list goes to the top layer only where the browser also places it by anchor (as Menu and Popover): without
 // anchor positioning it stays inline, beside the text, where useFloating's inline placement works (RedSave P-48)
 const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 const MENTION_CLASS = 'plx-rich-text-editor__mention';
 const CHECK_CLASS = 'plx-check__input';
 const USER_CONTENT = 'plx-user-content';
-
-// the allow-list: a clean copy of the HTML (elements renamed or unwrapped, attributes dropped, styles kept to the person's formatting)
-function cleanRichText(html) {
-  if (typeof document === 'undefined') return '';
-  const from = document.createElement('template');
-  from.innerHTML = String(html || '');
-  const copy = (node, into, task) => {
-    node.childNodes.forEach(n => {
-      if (n.nodeType === 3) {
-        const text = n.nodeValue.replace(/​/g, '');
-        if (text) into.appendChild(document.createTextNode(text));
-        return;
-      }
-      if (n.nodeType !== 1) return;
-      // inside a task item its label, checkbox and content div stay as Tiptap writes them
-      const inTask = task && n.parentNode && n.parentNode.getAttribute && n.parentNode.getAttribute('data-type') === 'taskItem';
-      let tag = RENAME[n.tagName] && !(inTask && n.tagName === 'DIV') ? RENAME[n.tagName].toUpperCase() : n.tagName;
-      if ((tag === 'LABEL' || tag === 'DIV') && !inTask) {
-        copy(n, into, task);
-        return;
-      }
-      if (tag === 'INPUT') {
-        if (!(task && n.closest('li[data-type="taskItem"]') && /^checkbox$/i.test(n.getAttribute('type') || ''))) return;
-        const box = document.createElement('input');
-        const item = n.closest('li[data-type="taskItem"]'),
-          body = item && item.querySelector(':scope > div');
-        box.setAttribute('type', 'checkbox');
-        box.setAttribute('class', CHECK_CLASS);
-        box.setAttribute('disabled', '');
-        if (n.hasAttribute('checked') || item && item.getAttribute('data-checked') === 'true') box.setAttribute('checked', 'checked');
-        box.setAttribute('aria-label', ((body ? body.textContent : '') || '').trim().slice(0, 200));
-        into.appendChild(box);
-        return;
-      }
-      const mention = tag === 'SPAN' && n.hasAttribute('data-mention');
-      const styles = (USER_STYLE[tag] || []).map(p => [p, n.style ? n.style.getPropertyValue(p) : '']).filter(s => s[1] && !/url\(|expression|[<>]/i.test(s[1]));
-      if (!ALLOWED[tag] || tag === 'SPAN' && !mention && !styles.length) {
-        copy(n, into, task);
-        return;
-      }
-      const el = document.createElement(tag.toLowerCase());
-      if (tag === 'A') {
-        const href = (n.getAttribute('href') || '').trim();
-        if (SAFE_HREF.test(href)) el.setAttribute('href', href);
-      }
-      if (tag === 'IMG') {
-        const src = (n.getAttribute('src') || '').trim();
-        if (!src || !SAFE_SRC.test(src)) return;
-        el.setAttribute('src', src);
-        el.setAttribute('alt', n.getAttribute('alt') || '');
-        if (n.getAttribute('title')) el.setAttribute('title', n.getAttribute('title'));
-      }
-      if (tag === 'OL' && /^\d+$/.test(n.getAttribute('start') || '') && n.getAttribute('start') !== '1') el.setAttribute('start', n.getAttribute('start'));
-      if (tag === 'TD' || tag === 'TH') ['colspan', 'rowspan'].forEach(a => {
-        const v = n.getAttribute(a);
-        if (/^\d+$/.test(v || '') && v !== '1') el.setAttribute(a, v);
-      });
-      if (tag === 'UL' && n.getAttribute('data-type') === 'taskList') el.setAttribute('data-type', 'taskList');
-      const isTask = tag === 'LI' && n.getAttribute('data-type') === 'taskItem';
-      if (isTask) {
-        el.setAttribute('data-type', 'taskItem');
-        el.setAttribute('data-checked', n.getAttribute('data-checked') === 'true' ? 'true' : 'false');
-      }
-      if (tag === 'MARK' && n.getAttribute('data-color')) el.setAttribute('data-color', n.getAttribute('data-color'));
-      if (mention) {
-        el.setAttribute('data-mention', n.getAttribute('data-mention'));
-        el.setAttribute('class', MENTION_CLASS);
-        el.setAttribute('contenteditable', 'false');
-      }
-      styles.forEach(s => el.style.setProperty(s[0], s[1]));
-      if (tag === 'LABEL') el.setAttribute('contenteditable', 'false');
-      if (tag === 'IMG' || tag === 'HR' || tag === 'BR') {
-        into.appendChild(el);
-        return;
-      }
-      copy(n, el, task || isTask);
-      into.appendChild(el);
-    });
-  };
-  const out = document.createElement('div');
-  copy(from.content, out, false);
-  return out.innerHTML;
-}
 
 // what the toolbar shows for the text at the caret, read from the editor
 const MARKS = {
@@ -42473,7 +42563,7 @@ function makeEditor(T, el, o) {
           rel: null,
           class: null
         },
-        isAllowedUri: url => SAFE_HREF.test(String(url || '').trim())
+        isAllowedUri: url => _richTextClean.SAFE_HREF.test(String(url || '').trim())
       }
     }), T.TaskList, PlenixTaskItem.configure({
       nested: true
@@ -42583,7 +42673,7 @@ function RichTextEditor({
   _react.default.useLayoutEffect(() => {
     const el = area.current;
     if (!el) return undefined;
-    const content = cleanRichText(defaultValue);
+    const content = (0, _richTextClean.cleanRichText)(defaultValue);
     el.innerHTML = content;
     let gone = false;
     (0, _tiptap.loadTiptap)(el.ownerDocument.defaultView).then(T => {
@@ -42682,7 +42772,7 @@ function RichTextEditor({
       ed.on('transaction', sync);
       ed.on('update', () => {
         const cb = live.current.onChange;
-        if (cb) cb(ed.isEmpty ? '' : cleanRichText(ed.getHTML()));
+        if (cb) cb(ed.isEmpty ? '' : (0, _richTextClean.cleanRichText)(ed.getHTML()));
       });
       ed.on('blur', () => setMention(null));
       sync();
@@ -42864,7 +42954,7 @@ function RichTextEditor({
       if (!v) return;
       let to = v;
       if (!/^[a-z][a-z0-9+.-]*:/i.test(to) && !/^[/#.]/.test(to)) to = 'https://' + to;
-      if (!SAFE_HREF.test(to)) return;
+      if (!_richTextClean.SAFE_HREF.test(to)) return;
       if (ed.state.selection.empty) ed.chain().focus().insertContent({
         type: 'text',
         text: v,
@@ -51786,7 +51876,7 @@ function SeriesChart({
       title: s.label,
       field: 's' + i,
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }))),
     data: data.map((row, c) => {
       const o = {
@@ -52286,7 +52376,7 @@ function HeatMap({
       title: vLabel,
       field: 'v',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }],
     data: cal.cells.filter(x => x.inside).map((x, i) => ({
       id: i + 1,
@@ -52307,7 +52397,7 @@ function HeatMap({
       title: vLabel,
       field: 'v',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }],
     data: [].concat.apply([], rowNames.map((rn, r) => columns.map((cn, c) => ({
       id: r * columns.length + c + 1,
@@ -52638,12 +52728,12 @@ function WaterfallChart({
       title: t.change,
       field: 'c',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }, {
       title: t.running,
       field: 'r',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }],
     data: bars.map((b, i) => ({
       id: i + 1,
@@ -52999,7 +53089,7 @@ function WordCloud({
       title: vLabel,
       field: 'v',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }]),
     data: sorted.map((w, i) => ({
       id: i + 1,
@@ -54371,7 +54461,7 @@ function BarChart({
       title: valueLabel || t.count,
       field: 'count',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }],
     data: bins.map((b, i) => ({
       id: i + 1,
@@ -54388,12 +54478,12 @@ function BarChart({
       title: s.label,
       field: 's' + si,
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }))).concat(mode !== 'grouped' && list.length > 1 ? [{
       title: t.total,
       field: 'total',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }] : []),
     data: cats.map((c, ci) => {
       const row = {
@@ -54759,12 +54849,12 @@ function ComboChart({
       title: s.label,
       field: 'b' + i,
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }))).concat(lns.map((s, i) => ({
       title: s.label,
       field: 'l' + i,
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }))),
     data: categories.map((c, ci) => {
       const row = {
@@ -55046,12 +55136,12 @@ function BulletChart({
       title: t.value,
       field: 'value',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }, {
       title: t.target,
       field: 'target',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }, {
       title: t.ranges,
       field: 'ranges',
@@ -55331,7 +55421,7 @@ function BoxPlot({
       title: t[k],
       field: k,
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }))).concat([{
       title: t.outliers,
       field: 'outliers',
@@ -55340,7 +55430,7 @@ function BoxPlot({
       title: t.n,
       field: 'n',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }]),
     data: list.map((g, i) => ({
       id: i + 1,
@@ -55581,7 +55671,7 @@ function RadarChart({
       title: s.label,
       field: 's' + si,
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }))),
     data: axes.map((a, ai) => {
       const row = {
@@ -55936,7 +56026,7 @@ function SankeyDiagram({
       title: t.value,
       field: 'value',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }],
     data: links.filter(l => nameOf[l.source] !== undefined && nameOf[l.target] !== undefined).map((l, i) => ({
       id: i + 1,
@@ -56705,7 +56795,7 @@ function LollipopChart({
       title: valueTitle || t.value,
       field: 'shown',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }],
     data: rows.map(r => ({
       id: r.id,
@@ -56997,17 +57087,17 @@ function ScatterChart({
     title: xTitle,
     field: 'x',
     kind: 'data',
-    hozAlign: 'right'
+    align: 'right'
   }, {
     title: yTitle,
     field: 'y',
     kind: 'data',
-    hozAlign: 'right'
+    align: 'right'
   }], v === 'bubble' ? [{
     title: sizeTitle || '',
     field: 'size',
     kind: 'data',
-    hozAlign: 'right'
+    align: 'right'
   }] : []);
   const table = {
     columns,
@@ -57248,17 +57338,17 @@ function FunnelChart({
       title: valueTitle || t.value,
       field: 'shown',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }, {
       title: t.kept,
       field: 'kept',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }, {
       title: t.ofFirst,
       field: 'share',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }],
     data: rows.map(r => ({
       id: r.id,
@@ -57592,12 +57682,12 @@ function Treemap({
       title: valueTitle || t.value,
       field: 'shown',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }, {
       title: t.share,
       field: 'share',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }]),
     data: tiles.map((p, i) => ({
       id: i + 1,
@@ -57860,7 +57950,7 @@ function GanttChart({
       title: t.progress,
       field: 'progress',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }, {
       title: t.status,
       field: 'status',
@@ -58201,7 +58291,7 @@ function GeoMap({
       title: valueTitle || t.value,
       field: 'shown',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }] : []),
     data: regions.map((r, i) => ({
       id: i + 1,
@@ -58218,12 +58308,12 @@ function GeoMap({
       title: t.latitude,
       field: 'lat',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }, {
       title: t.longitude,
       field: 'lon',
       kind: 'data',
-      hozAlign: 'right'
+      align: 'right'
     }],
     data: places.map((m, i) => ({
       id: i + 1,
@@ -61499,7 +61589,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      <Auth title="Create your account"><SignUpForm onSubmit={create} terms={<>I agree to the <Link href="/terms">terms</Link></>} /></Auth>
      <Auth title="Reset your password"><PasswordResetForm onRequest={send} onReset={save} signIn={{ href: '/auth/sign-in' }} /></Auth>
      <Auth title="Two-step verification"><MfaChallenge methods={METHODS} onVerify={verify} onResend={resend} recovery={{ onClick: recover }} /></Auth>
-     <Auth title="Recover your account"><AccountRecovery onCode={useCode} admin="Parish office (office@lighthouseway.org)" /></Auth>
+     <Auth title="Recover your account"><AccountRecovery onCode={useCode} admin="Parish office (office@example.com)" /></Auth>
    Props:
      Auth.title: the card's heading (h1 on a page of its own); Auth.description: one line under it
      Auth.page: the frame fills the window below the header and centers the card (a page of its own); default false
@@ -63946,7 +64036,7 @@ function PermissionsEditor({
     title: s.label,
     field: 'permission-' + s.id,
     kind: 'center',
-    headerSort: false,
+    sortable: false,
     render: cap => /*#__PURE__*/_react.default.createElement(_Checkbox.Checkbox, {
       label: s.label + ': ' + cap.label,
       checked: (value[s.id] || []).includes(cap.id),
@@ -65778,8 +65868,8 @@ function FileList({
       kind: 'data',
       type: 'number',
       sorter: 'number',
-      hozAlign: 'right',
-      headerHozAlign: 'right',
+      align: 'right',
+      headerAlign: 'right',
       render: f => sizeText(f)
     });
     if (facts.indexOf('modified') >= 0) cols.push({
@@ -71202,16 +71292,16 @@ function OrderManagement({
     field: 'count',
     kind: 'data',
     sorter: 'number',
-    hozAlign: 'right',
-    headerHozAlign: 'right',
+    align: 'right',
+    headerAlign: 'right',
     width: '--plx-ref-size-80px'
   }, {
     title: t.total,
     field: 'total',
     kind: 'data',
     sorter: 'number',
-    hozAlign: 'right',
-    headerHozAlign: 'right',
+    align: 'right',
+    headerAlign: 'right',
     render: o => (0, _shared.money)(o.total, o.currency || currency)
   }, {
     title: t.status,
@@ -71628,8 +71718,8 @@ function SubscriptionManagement({
     field: 'amount',
     kind: 'data',
     sorter: 'number',
-    hozAlign: 'right',
-    headerHozAlign: 'right',
+    align: 'right',
+    headerAlign: 'right',
     render: r => (0, _shared.money)(r.amount, r.currency || currency)
   }, {
     title: t.status,
@@ -71640,7 +71730,7 @@ function SubscriptionManagement({
     title: t.invoice,
     field: 'invoice',
     kind: 'center',
-    headerSort: false,
+    sortable: false,
     render: r => r.invoice ? /*#__PURE__*/_react.default.createElement(_Link.Link, {
       href: r.invoice,
       variant: "subtle"
@@ -72963,7 +73053,7 @@ function AuditLog({
     field: 'changes',
     title: t.changes,
     kind: 'center',
-    headerSort: false,
+    sortable: false,
     render: a => a.changes?.length ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
       size: "xs",
       onClick: () => setActive(a.id)
@@ -76072,7 +76162,7 @@ const Heading = exports.Heading = /*#__PURE__*/_react.default.forwardRef(functio
   }, rest), children);
 });
   } },
-  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/MetricCard/MetricCard.jsx":"platform/components/MetricCard/MetricCard.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/DataPill/DataPill.jsx":"platform/components/DataPill/DataPill.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/Surface.jsx":"platform/providers/Surface.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js","./components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","./components/RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","./components/Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","./components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","./components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","./components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","./components/MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","./components/Cascader/Cascader.jsx":"platform/components/Cascader/Cascader.jsx","./components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","./components/TimePicker/TimePicker.jsx":"platform/components/TimePicker/TimePicker.jsx","./components/RelativeDateInput/RelativeDateInput.jsx":"platform/components/RelativeDateInput/RelativeDateInput.jsx","./components/LoadMore/LoadMore.jsx":"platform/components/LoadMore/LoadMore.jsx","./patterns/ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","./patterns/AvatarUpload/AvatarUpload.jsx":"platform/patterns/AvatarUpload/AvatarUpload.jsx","./charts/scales.js":"platform/charts/scales.js","./charts/ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./components/TimeZoneSelect/TimeZoneSelect.jsx":"platform/components/TimeZoneSelect/TimeZoneSelect.jsx","./components/TreeSelect/TreeSelect.jsx":"platform/components/TreeSelect/TreeSelect.jsx","./components/TransferList/TransferList.jsx":"platform/components/TransferList/TransferList.jsx","./patterns/BottomSheetNav/BottomSheetNav.jsx":"platform/patterns/BottomSheetNav/BottomSheetNav.jsx","./patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","./patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","./patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","./patterns/GroupPanel/GroupPanel.jsx":"platform/patterns/GroupPanel/GroupPanel.jsx","./patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","./patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","./patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","./utils/fields.js":"platform/utils/fields.js","./hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","./charts/parts/position.js":"platform/charts/parts/position.js","./charts/parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./charts/parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./charts/parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./charts/parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./charts/parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./charts/parts/ReferenceLine.jsx":"platform/charts/parts/ReferenceLine.jsx","./charts/parts/ChartAnnotation.jsx":"platform/charts/parts/ChartAnnotation.jsx","./patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","./patterns/UserCard/UserCard.jsx":"platform/patterns/UserCard/UserCard.jsx","./components/VirtualList/VirtualList.jsx":"platform/components/VirtualList/VirtualList.jsx","./components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","./patterns/PeopleGroup/PeopleGroup.jsx":"platform/patterns/PeopleGroup/PeopleGroup.jsx","./patterns/PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","./patterns/QueryBuilder/QueryBuilder.jsx":"platform/patterns/QueryBuilder/QueryBuilder.jsx","./components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","./components/SearchResult/SearchResult.jsx":"platform/components/SearchResult/SearchResult.jsx","./components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","./patterns/ResourceList/ResourceList.jsx":"platform/patterns/ResourceList/ResourceList.jsx","./charts/interaction.js":"platform/charts/interaction.js","./charts/LineChart.jsx":"platform/charts/LineChart.jsx","./charts/AreaChart.jsx":"platform/charts/AreaChart.jsx","./charts/Gauge.jsx":"platform/charts/Gauge.jsx","./charts/HeatMap.jsx":"platform/charts/HeatMap.jsx","./charts/WaterfallChart.jsx":"platform/charts/WaterfallChart.jsx","./charts/WordCloud.jsx":"platform/charts/WordCloud.jsx","./charts/NetworkGraph.jsx":"platform/charts/NetworkGraph.jsx","./charts/Diagram.jsx":"platform/charts/Diagram.jsx","./charts/BarChart.jsx":"platform/charts/BarChart.jsx","./charts/ComboChart.jsx":"platform/charts/ComboChart.jsx","./charts/PieChart.jsx":"platform/charts/PieChart.jsx","./charts/BulletChart.jsx":"platform/charts/BulletChart.jsx","./charts/BoxPlot.jsx":"platform/charts/BoxPlot.jsx","./charts/RadarChart.jsx":"platform/charts/RadarChart.jsx","./charts/SankeyDiagram.jsx":"platform/charts/SankeyDiagram.jsx","./charts/TimelineChart.jsx":"platform/charts/TimelineChart.jsx","./patterns/ComparisonView/ComparisonView.jsx":"platform/patterns/ComparisonView/ComparisonView.jsx","./charts/a11y.js":"platform/charts/a11y.js","./charts/Sparkline.jsx":"platform/charts/Sparkline.jsx","./charts/LollipopChart.jsx":"platform/charts/LollipopChart.jsx","./charts/ScatterChart.jsx":"platform/charts/ScatterChart.jsx","./charts/FunnelChart.jsx":"platform/charts/FunnelChart.jsx","./charts/Treemap.jsx":"platform/charts/Treemap.jsx","./charts/GanttChart.jsx":"platform/charts/GanttChart.jsx","./charts/GeoMap.jsx":"platform/charts/GeoMap.jsx","./utils/dnd.js":"platform/utils/dnd.js","./components/DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","./patterns/SortableList/SortableList.jsx":"platform/patterns/SortableList/SortableList.jsx","./components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","./patterns/RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","./patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","./patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","./patterns/DuplicateAction/DuplicateAction.jsx":"platform/patterns/DuplicateAction/DuplicateAction.jsx","./patterns/Publish/Publish.jsx":"platform/patterns/Publish/Publish.jsx","./patterns/AssignControl/AssignControl.jsx":"platform/patterns/AssignControl/AssignControl.jsx","./patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","./patterns/WizardDialog/WizardDialog.jsx":"platform/patterns/WizardDialog/WizardDialog.jsx","./patterns/FormFlow/FormFlow.jsx":"platform/patterns/FormFlow/FormFlow.jsx","./patterns/Autosave/Autosave.jsx":"platform/patterns/Autosave/Autosave.jsx","./patterns/DraftState/DraftState.jsx":"platform/patterns/DraftState/DraftState.jsx","./patterns/SaveAs/SaveAs.jsx":"platform/patterns/SaveAs/SaveAs.jsx","./patterns/ArchiveRestore/ArchiveRestore.jsx":"platform/patterns/ArchiveRestore/ArchiveRestore.jsx","./components/File/File.jsx":"platform/components/File/File.jsx","./components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","./patterns/Auth/Auth.jsx":"platform/patterns/Auth/Auth.jsx","./patterns/SessionTimeout/SessionTimeout.jsx":"platform/patterns/SessionTimeout/SessionTimeout.jsx","./patterns/RoleManager/RoleManager.jsx":"platform/patterns/RoleManager/RoleManager.jsx","./patterns/ConnectedAccounts/ConnectedAccounts.jsx":"platform/patterns/ConnectedAccounts/ConnectedAccounts.jsx","./patterns/ShareDialog/ShareDialog.jsx":"platform/patterns/ShareDialog/ShareDialog.jsx","./patterns/PermissionsEditor/PermissionsEditor.jsx":"platform/patterns/PermissionsEditor/PermissionsEditor.jsx","./patterns/Tour/Tour.jsx":"platform/patterns/Tour/Tour.jsx","./components/Checklist/Checklist.jsx":"platform/components/Checklist/Checklist.jsx","./patterns/Onboarding/Onboarding.jsx":"platform/patterns/Onboarding/Onboarding.jsx","./patterns/FeatureIntro/FeatureIntro.jsx":"platform/patterns/FeatureIntro/FeatureIntro.jsx","./patterns/HelpPanel/HelpPanel.jsx":"platform/patterns/HelpPanel/HelpPanel.jsx","./patterns/ImportDialog/ImportDialog.jsx":"platform/patterns/ImportDialog/ImportDialog.jsx","./patterns/ImportWizard/ImportWizard.jsx":"platform/patterns/ImportWizard/ImportWizard.jsx","./patterns/ExportDialog/ExportDialog.jsx":"platform/patterns/ExportDialog/ExportDialog.jsx","./patterns/AccessRequest/AccessRequest.jsx":"platform/patterns/AccessRequest/AccessRequest.jsx","./patterns/TrialUpgrade/TrialUpgrade.jsx":"platform/patterns/TrialUpgrade/TrialUpgrade.jsx","./patterns/Offboarding/Offboarding.jsx":"platform/patterns/Offboarding/Offboarding.jsx","./patterns/ShortcutsDialog/ShortcutsDialog.jsx":"platform/patterns/ShortcutsDialog/ShortcutsDialog.jsx","./patterns/FileList/FileList.jsx":"platform/patterns/FileList/FileList.jsx","./patterns/FileBrowser/FileBrowser.jsx":"platform/patterns/FileBrowser/FileBrowser.jsx","./patterns/UploadManager/UploadManager.jsx":"platform/patterns/UploadManager/UploadManager.jsx","./patterns/VersionCompare/VersionCompare.jsx":"platform/patterns/VersionCompare/VersionCompare.jsx","./patterns/AssetGallery/AssetGallery.jsx":"platform/patterns/AssetGallery/AssetGallery.jsx","./patterns/DownloadManager/DownloadManager.jsx":"platform/patterns/DownloadManager/DownloadManager.jsx","./components/MediaPlayer/MediaPlayer.jsx":"platform/components/MediaPlayer/MediaPlayer.jsx","./patterns/MetadataEditor/MetadataEditor.jsx":"platform/patterns/MetadataEditor/MetadataEditor.jsx","./patterns/RelatedAssets/RelatedAssets.jsx":"platform/patterns/RelatedAssets/RelatedAssets.jsx","./patterns/AttachmentPicker/AttachmentPicker.jsx":"platform/patterns/AttachmentPicker/AttachmentPicker.jsx","./patterns/FilePicker/FilePicker.jsx":"platform/patterns/FilePicker/FilePicker.jsx","./patterns/RenditionList/RenditionList.jsx":"platform/patterns/RenditionList/RenditionList.jsx","./components/DocumentViewer/DocumentViewer.jsx":"platform/components/DocumentViewer/DocumentViewer.jsx","./patterns/VersionHistory/VersionHistory.jsx":"platform/patterns/VersionHistory/VersionHistory.jsx","./patterns/ProductCard/ProductCard.jsx":"platform/patterns/ProductCard/ProductCard.jsx","./components/ProductOptions/ProductOptions.jsx":"platform/components/ProductOptions/ProductOptions.jsx","./templates/Commerce/Commerce.jsx":"platform/templates/Commerce/Commerce.jsx","./components/Comment/Comment.jsx":"platform/components/Comment/Comment.jsx","./patterns/CommentThread/CommentThread.jsx":"platform/patterns/CommentThread/CommentThread.jsx","./patterns/ImageAnnotation/ImageAnnotation.jsx":"platform/patterns/ImageAnnotation/ImageAnnotation.jsx","./patterns/PresenceBar/PresenceBar.jsx":"platform/patterns/PresenceBar/PresenceBar.jsx","./components/MentionInput/MentionInput.jsx":"platform/components/MentionInput/MentionInput.jsx","./components/Announcement/Announcement.jsx":"platform/components/Announcement/Announcement.jsx","./patterns/AuditLog/AuditLog.jsx":"platform/patterns/AuditLog/AuditLog.jsx","./patterns/ApprovalWorkflow/ApprovalWorkflow.jsx":"platform/patterns/ApprovalWorkflow/ApprovalWorkflow.jsx","./components/PromptInput/PromptInput.jsx":"platform/components/PromptInput/PromptInput.jsx","./components/StreamingText/StreamingText.jsx":"platform/components/StreamingText/StreamingText.jsx","./patterns/AIChat/AIChat.jsx":"platform/patterns/AIChat/AIChat.jsx","./patterns/AssistantPanel/AssistantPanel.jsx":"platform/patterns/AssistantPanel/AssistantPanel.jsx","./components/AILabel/AILabel.jsx":"platform/components/AILabel/AILabel.jsx","./components/GeneratedContent/GeneratedContent.jsx":"platform/components/GeneratedContent/GeneratedContent.jsx","./patterns/PromptHistory/PromptHistory.jsx":"platform/patterns/PromptHistory/PromptHistory.jsx","./components/Citation/Citation.jsx":"platform/components/Citation/Citation.jsx","./components/SuggestedAction/SuggestedAction.jsx":"platform/components/SuggestedAction/SuggestedAction.jsx","./patterns/AISearch/AISearch.jsx":"platform/patterns/AISearch/AISearch.jsx","./patterns/Recommendation/Recommendation.jsx":"platform/patterns/Recommendation/Recommendation.jsx","./components/AIButton/AIButton.jsx":"platform/components/AIButton/AIButton.jsx","./components/AIDisclaimer/AIDisclaimer.jsx":"platform/components/AIDisclaimer/AIDisclaimer.jsx","./components/ConfidenceIndicator/ConfidenceIndicator.jsx":"platform/components/ConfidenceIndicator/ConfidenceIndicator.jsx","./patterns/AIExplanation/AIExplanation.jsx":"platform/patterns/AIExplanation/AIExplanation.jsx","./components/PromptSuggestions/PromptSuggestions.jsx":"platform/components/PromptSuggestions/PromptSuggestions.jsx","./components/SuggestedEdit/SuggestedEdit.jsx":"platform/components/SuggestedEdit/SuggestedEdit.jsx","./components/RefineMenu/RefineMenu.jsx":"platform/components/RefineMenu/RefineMenu.jsx","./providers/AnalyticsProvider.jsx":"platform/providers/AnalyticsProvider.jsx","./templates/templates/Templates.jsx":"platform/templates/templates/Templates.jsx","./utils/browserSupport.js":"platform/utils/browserSupport.js","./providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","./patterns/SplitView/SplitView.jsx":"platform/patterns/SplitView/SplitView.jsx","./components/Heading/Heading.jsx":"platform/components/Heading/Heading.jsx","./components/DataGrid/DataGridEngine.jsx":"platform/components/DataGrid/DataGridEngine.jsx"}, externals: {  }, run: function (module, exports, require) {
+  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/MetricCard/MetricCard.jsx":"platform/components/MetricCard/MetricCard.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/DataPill/DataPill.jsx":"platform/components/DataPill/DataPill.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/Surface.jsx":"platform/providers/Surface.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./utils/tokenSheet.js":"platform/utils/tokenSheet.js","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js","./components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","./components/RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","./components/Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","./components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","./components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","./components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","./components/MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","./components/Cascader/Cascader.jsx":"platform/components/Cascader/Cascader.jsx","./components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","./components/TimePicker/TimePicker.jsx":"platform/components/TimePicker/TimePicker.jsx","./components/RelativeDateInput/RelativeDateInput.jsx":"platform/components/RelativeDateInput/RelativeDateInput.jsx","./components/LoadMore/LoadMore.jsx":"platform/components/LoadMore/LoadMore.jsx","./patterns/ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","./patterns/AvatarUpload/AvatarUpload.jsx":"platform/patterns/AvatarUpload/AvatarUpload.jsx","./charts/scales.js":"platform/charts/scales.js","./charts/ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./components/TimeZoneSelect/TimeZoneSelect.jsx":"platform/components/TimeZoneSelect/TimeZoneSelect.jsx","./components/TreeSelect/TreeSelect.jsx":"platform/components/TreeSelect/TreeSelect.jsx","./components/TransferList/TransferList.jsx":"platform/components/TransferList/TransferList.jsx","./patterns/BottomSheetNav/BottomSheetNav.jsx":"platform/patterns/BottomSheetNav/BottomSheetNav.jsx","./patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","./patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","./patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","./patterns/GroupPanel/GroupPanel.jsx":"platform/patterns/GroupPanel/GroupPanel.jsx","./patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","./patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","./patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","./utils/fields.js":"platform/utils/fields.js","./hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","./charts/parts/position.js":"platform/charts/parts/position.js","./charts/parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./charts/parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./charts/parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./charts/parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./charts/parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./charts/parts/ReferenceLine.jsx":"platform/charts/parts/ReferenceLine.jsx","./charts/parts/ChartAnnotation.jsx":"platform/charts/parts/ChartAnnotation.jsx","./patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","./patterns/UserCard/UserCard.jsx":"platform/patterns/UserCard/UserCard.jsx","./components/VirtualList/VirtualList.jsx":"platform/components/VirtualList/VirtualList.jsx","./components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","./patterns/PeopleGroup/PeopleGroup.jsx":"platform/patterns/PeopleGroup/PeopleGroup.jsx","./patterns/PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","./patterns/QueryBuilder/QueryBuilder.jsx":"platform/patterns/QueryBuilder/QueryBuilder.jsx","./components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","./components/SearchResult/SearchResult.jsx":"platform/components/SearchResult/SearchResult.jsx","./components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","./patterns/ResourceList/ResourceList.jsx":"platform/patterns/ResourceList/ResourceList.jsx","./charts/interaction.js":"platform/charts/interaction.js","./charts/LineChart.jsx":"platform/charts/LineChart.jsx","./charts/AreaChart.jsx":"platform/charts/AreaChart.jsx","./charts/Gauge.jsx":"platform/charts/Gauge.jsx","./charts/HeatMap.jsx":"platform/charts/HeatMap.jsx","./charts/WaterfallChart.jsx":"platform/charts/WaterfallChart.jsx","./charts/WordCloud.jsx":"platform/charts/WordCloud.jsx","./charts/NetworkGraph.jsx":"platform/charts/NetworkGraph.jsx","./charts/Diagram.jsx":"platform/charts/Diagram.jsx","./charts/BarChart.jsx":"platform/charts/BarChart.jsx","./charts/ComboChart.jsx":"platform/charts/ComboChart.jsx","./charts/PieChart.jsx":"platform/charts/PieChart.jsx","./charts/BulletChart.jsx":"platform/charts/BulletChart.jsx","./charts/BoxPlot.jsx":"platform/charts/BoxPlot.jsx","./charts/RadarChart.jsx":"platform/charts/RadarChart.jsx","./charts/SankeyDiagram.jsx":"platform/charts/SankeyDiagram.jsx","./charts/TimelineChart.jsx":"platform/charts/TimelineChart.jsx","./patterns/ComparisonView/ComparisonView.jsx":"platform/patterns/ComparisonView/ComparisonView.jsx","./charts/a11y.js":"platform/charts/a11y.js","./charts/Sparkline.jsx":"platform/charts/Sparkline.jsx","./charts/LollipopChart.jsx":"platform/charts/LollipopChart.jsx","./charts/ScatterChart.jsx":"platform/charts/ScatterChart.jsx","./charts/FunnelChart.jsx":"platform/charts/FunnelChart.jsx","./charts/Treemap.jsx":"platform/charts/Treemap.jsx","./charts/GanttChart.jsx":"platform/charts/GanttChart.jsx","./charts/GeoMap.jsx":"platform/charts/GeoMap.jsx","./utils/dnd.js":"platform/utils/dnd.js","./components/DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","./patterns/SortableList/SortableList.jsx":"platform/patterns/SortableList/SortableList.jsx","./components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","./patterns/RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","./patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","./patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","./patterns/DuplicateAction/DuplicateAction.jsx":"platform/patterns/DuplicateAction/DuplicateAction.jsx","./patterns/Publish/Publish.jsx":"platform/patterns/Publish/Publish.jsx","./patterns/AssignControl/AssignControl.jsx":"platform/patterns/AssignControl/AssignControl.jsx","./patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","./patterns/WizardDialog/WizardDialog.jsx":"platform/patterns/WizardDialog/WizardDialog.jsx","./patterns/FormFlow/FormFlow.jsx":"platform/patterns/FormFlow/FormFlow.jsx","./patterns/Autosave/Autosave.jsx":"platform/patterns/Autosave/Autosave.jsx","./patterns/DraftState/DraftState.jsx":"platform/patterns/DraftState/DraftState.jsx","./patterns/SaveAs/SaveAs.jsx":"platform/patterns/SaveAs/SaveAs.jsx","./patterns/ArchiveRestore/ArchiveRestore.jsx":"platform/patterns/ArchiveRestore/ArchiveRestore.jsx","./components/File/File.jsx":"platform/components/File/File.jsx","./components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","./patterns/Auth/Auth.jsx":"platform/patterns/Auth/Auth.jsx","./patterns/SessionTimeout/SessionTimeout.jsx":"platform/patterns/SessionTimeout/SessionTimeout.jsx","./patterns/RoleManager/RoleManager.jsx":"platform/patterns/RoleManager/RoleManager.jsx","./patterns/ConnectedAccounts/ConnectedAccounts.jsx":"platform/patterns/ConnectedAccounts/ConnectedAccounts.jsx","./patterns/ShareDialog/ShareDialog.jsx":"platform/patterns/ShareDialog/ShareDialog.jsx","./patterns/PermissionsEditor/PermissionsEditor.jsx":"platform/patterns/PermissionsEditor/PermissionsEditor.jsx","./patterns/Tour/Tour.jsx":"platform/patterns/Tour/Tour.jsx","./components/Checklist/Checklist.jsx":"platform/components/Checklist/Checklist.jsx","./patterns/Onboarding/Onboarding.jsx":"platform/patterns/Onboarding/Onboarding.jsx","./patterns/FeatureIntro/FeatureIntro.jsx":"platform/patterns/FeatureIntro/FeatureIntro.jsx","./patterns/HelpPanel/HelpPanel.jsx":"platform/patterns/HelpPanel/HelpPanel.jsx","./patterns/ImportDialog/ImportDialog.jsx":"platform/patterns/ImportDialog/ImportDialog.jsx","./patterns/ImportWizard/ImportWizard.jsx":"platform/patterns/ImportWizard/ImportWizard.jsx","./patterns/ExportDialog/ExportDialog.jsx":"platform/patterns/ExportDialog/ExportDialog.jsx","./patterns/AccessRequest/AccessRequest.jsx":"platform/patterns/AccessRequest/AccessRequest.jsx","./patterns/TrialUpgrade/TrialUpgrade.jsx":"platform/patterns/TrialUpgrade/TrialUpgrade.jsx","./patterns/Offboarding/Offboarding.jsx":"platform/patterns/Offboarding/Offboarding.jsx","./patterns/ShortcutsDialog/ShortcutsDialog.jsx":"platform/patterns/ShortcutsDialog/ShortcutsDialog.jsx","./patterns/FileList/FileList.jsx":"platform/patterns/FileList/FileList.jsx","./patterns/FileBrowser/FileBrowser.jsx":"platform/patterns/FileBrowser/FileBrowser.jsx","./patterns/UploadManager/UploadManager.jsx":"platform/patterns/UploadManager/UploadManager.jsx","./patterns/VersionCompare/VersionCompare.jsx":"platform/patterns/VersionCompare/VersionCompare.jsx","./patterns/AssetGallery/AssetGallery.jsx":"platform/patterns/AssetGallery/AssetGallery.jsx","./patterns/DownloadManager/DownloadManager.jsx":"platform/patterns/DownloadManager/DownloadManager.jsx","./components/MediaPlayer/MediaPlayer.jsx":"platform/components/MediaPlayer/MediaPlayer.jsx","./patterns/MetadataEditor/MetadataEditor.jsx":"platform/patterns/MetadataEditor/MetadataEditor.jsx","./patterns/RelatedAssets/RelatedAssets.jsx":"platform/patterns/RelatedAssets/RelatedAssets.jsx","./patterns/AttachmentPicker/AttachmentPicker.jsx":"platform/patterns/AttachmentPicker/AttachmentPicker.jsx","./patterns/FilePicker/FilePicker.jsx":"platform/patterns/FilePicker/FilePicker.jsx","./patterns/RenditionList/RenditionList.jsx":"platform/patterns/RenditionList/RenditionList.jsx","./components/DocumentViewer/DocumentViewer.jsx":"platform/components/DocumentViewer/DocumentViewer.jsx","./patterns/VersionHistory/VersionHistory.jsx":"platform/patterns/VersionHistory/VersionHistory.jsx","./patterns/ProductCard/ProductCard.jsx":"platform/patterns/ProductCard/ProductCard.jsx","./components/ProductOptions/ProductOptions.jsx":"platform/components/ProductOptions/ProductOptions.jsx","./templates/Commerce/Commerce.jsx":"platform/templates/Commerce/Commerce.jsx","./components/Comment/Comment.jsx":"platform/components/Comment/Comment.jsx","./patterns/CommentThread/CommentThread.jsx":"platform/patterns/CommentThread/CommentThread.jsx","./patterns/ImageAnnotation/ImageAnnotation.jsx":"platform/patterns/ImageAnnotation/ImageAnnotation.jsx","./patterns/PresenceBar/PresenceBar.jsx":"platform/patterns/PresenceBar/PresenceBar.jsx","./components/MentionInput/MentionInput.jsx":"platform/components/MentionInput/MentionInput.jsx","./components/Announcement/Announcement.jsx":"platform/components/Announcement/Announcement.jsx","./patterns/AuditLog/AuditLog.jsx":"platform/patterns/AuditLog/AuditLog.jsx","./patterns/ApprovalWorkflow/ApprovalWorkflow.jsx":"platform/patterns/ApprovalWorkflow/ApprovalWorkflow.jsx","./components/PromptInput/PromptInput.jsx":"platform/components/PromptInput/PromptInput.jsx","./components/StreamingText/StreamingText.jsx":"platform/components/StreamingText/StreamingText.jsx","./patterns/AIChat/AIChat.jsx":"platform/patterns/AIChat/AIChat.jsx","./patterns/AssistantPanel/AssistantPanel.jsx":"platform/patterns/AssistantPanel/AssistantPanel.jsx","./components/AILabel/AILabel.jsx":"platform/components/AILabel/AILabel.jsx","./components/GeneratedContent/GeneratedContent.jsx":"platform/components/GeneratedContent/GeneratedContent.jsx","./patterns/PromptHistory/PromptHistory.jsx":"platform/patterns/PromptHistory/PromptHistory.jsx","./components/Citation/Citation.jsx":"platform/components/Citation/Citation.jsx","./components/SuggestedAction/SuggestedAction.jsx":"platform/components/SuggestedAction/SuggestedAction.jsx","./patterns/AISearch/AISearch.jsx":"platform/patterns/AISearch/AISearch.jsx","./patterns/Recommendation/Recommendation.jsx":"platform/patterns/Recommendation/Recommendation.jsx","./components/AIButton/AIButton.jsx":"platform/components/AIButton/AIButton.jsx","./components/AIDisclaimer/AIDisclaimer.jsx":"platform/components/AIDisclaimer/AIDisclaimer.jsx","./components/ConfidenceIndicator/ConfidenceIndicator.jsx":"platform/components/ConfidenceIndicator/ConfidenceIndicator.jsx","./patterns/AIExplanation/AIExplanation.jsx":"platform/patterns/AIExplanation/AIExplanation.jsx","./components/PromptSuggestions/PromptSuggestions.jsx":"platform/components/PromptSuggestions/PromptSuggestions.jsx","./components/SuggestedEdit/SuggestedEdit.jsx":"platform/components/SuggestedEdit/SuggestedEdit.jsx","./components/RefineMenu/RefineMenu.jsx":"platform/components/RefineMenu/RefineMenu.jsx","./providers/AnalyticsProvider.jsx":"platform/providers/AnalyticsProvider.jsx","./templates/templates/Templates.jsx":"platform/templates/templates/Templates.jsx","./utils/browserSupport.js":"platform/utils/browserSupport.js","./providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","./patterns/SplitView/SplitView.jsx":"platform/patterns/SplitView/SplitView.jsx","./components/Heading/Heading.jsx":"platform/components/Heading/Heading.jsx","./components/DataGrid/DataGridEngine.jsx":"platform/components/DataGrid/DataGridEngine.jsx"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -79084,6 +79174,12 @@ Object.defineProperty(exports, "pieSlices", {
     return _PieChart.pieSlices;
   }
 });
+Object.defineProperty(exports, "plenixTokens", {
+  enumerable: true,
+  get: function () {
+    return _tokenSheet.plenixTokens;
+  }
+});
 Object.defineProperty(exports, "productFields", {
   enumerable: true,
   get: function () {
@@ -79701,6 +79797,7 @@ var _Banner = require("./components/Banner/Banner.jsx");
 var _Scrim = require("./components/Scrim/Scrim.jsx");
 var _LoadingOverlay = require("./components/LoadingOverlay/LoadingOverlay.jsx");
 var _Time = require("./components/Time/Time.jsx");
+var _tokenSheet = require("./utils/tokenSheet.js");
 var _Popover = require("./components/Popover/Popover.jsx");
 var _ContextualHelp = require("./components/ContextualHelp/ContextualHelp.jsx");
 var _TeachingBubble = require("./components/TeachingBubble/TeachingBubble.jsx");

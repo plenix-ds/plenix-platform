@@ -1,0 +1,1467 @@
+[
+ {
+  "id": "content/text/1",
+  "title": "Should the Text overview list all of its text roles?",
+  "context": "The spec as it reads today (2026-10-24) already says this; the question was written against an older wording. The Text overview names seven roles. The Text component offers more: its code lists heading, eyebrow, accent, success, danger, link, display and lead as well.",
+  "current": [
+   {
+    "where": "Body text · Overview (inventory.js, rec.text)",
+    "text": "Text in one of the system’s roles (body, secondary, caption, data, label, strong, heading, title, display, lead, eyebrow, accent, success, danger, link), from the type tokens."
+   },
+   {
+    "where": "Text · Anatomy (inventory-docs.js, docs.anatomy[1])",
+    "text": "Style — `variant`: body, secondary, caption, data, label, strong, heading, title, display, lead, eyebrow, accent, success, danger or link (required; default body)"
+   },
+   {
+    "where": "Text.jsx (the code)",
+    "text": "variant: the text role: \"body\" (default) | \"secondary\" | \"caption\" | \"data\" | \"label\" | \"strong\" | \"heading\"",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Every role the component draws today",
+    "jsx": "h(P.Stack, { gap: 'sm' }, ...['body','secondary','caption','data','label','strong','heading','eyebrow','accent','success','danger','link','title','display','lead'].map(function(v){ return h(P.Text, { key: v, variant: v, as: 'div' }, v + ': The quick brown fox'); }))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "List every role the code has",
+    "recommended": true,
+    "text": "The overview names all roles in the code (fifteen today, including display and lead), grouped: text, emphasis, color, titles.",
+    "render": {
+     "caption": "All roles, grouped",
+     "jsx": "h(P.Table, { label: \"Text roles\", columns: [{\"title\":\"Group\",\"field\":\"c0\",\"kind\":\"wrap\",\"rowLabel\":true},{\"title\":\"Roles\",\"field\":\"c1\",\"kind\":\"wrap\",\"rowLabel\":false}], data: [{\"id\":1,\"c0\":\"Text\",\"c1\":\"body, secondary, caption, data, lead\"},{\"id\":2,\"c0\":\"Emphasis\",\"c1\":\"label, strong\"},{\"id\":3,\"c0\":\"Color\",\"c1\":\"accent, success, danger, link\"},{\"id\":4,\"c0\":\"Titles\",\"c1\":\"heading, eyebrow, title, display\"}] })"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Keep seven, mention the rest",
+    "text": "The overview keeps the seven common roles and says the others are listed under Variants.",
+    "render": {
+     "caption": "Seven common roles",
+     "jsx": "h(P.Stack, { gap: 'sm' }, ...['body','secondary','caption','data','label','strong','title'].map(function(v){ return h(P.Text, { key: v, variant: v, as: 'div' }, v); }))"
+    }
+   }
+  ],
+  "recommendation": "A: list every role the code offers. Material 3 and Carbon list the full type scale on one page so people can pick from all of it. A list that leaves roles out makes them look unsupported. Note: the code has fifteen roles, not thirteen (display and lead too).",
+  "sources": [
+   "Material 3 · Typography: the full type scale",
+   "IBM Carbon · Typography: type sets and tokens",
+   "Fluent 2 · Typography: type ramp"
+  ],
+  "settled": true
+ },
+ {
+  "id": "content/text/2",
+  "title": "Is data text on its own 11px or 12px?",
+  "context": "The spec as it reads today (2026-10-24) already says this; the question was written against an older wording. The Data style page says 11px; elsewhere data text is \"at the secondary size\" (12px). The code settles it: data is 12px on its own, and takes the size of the text around it inside other text.",
+  "current": [
+   {
+    "where": "Data text · variant page (inventory.js, rec.variantPages text)",
+    "text": "Text in the data font at the secondary size (12px) for technical values; inside a sentence it takes the size around it."
+   },
+   {
+    "where": "Text · Content (inventory-docs.js, docs.content.labels)",
+    "text": "data for technical values (IDs, file names and paths, versions, dates and times, sizes, counts, durations: the data font, Reddit Mono, at the secondary size on its own and at the size of the text around it inside a sentence)"
+   },
+   {
+    "where": "Text.jsx (the code)",
+    "text": "data: the data font, Reddit Mono, for technical values …; 12px on its own, the size of the text around it inside other text."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Data next to secondary and caption, as drawn today",
+    "jsx": "h(P.Stack, { gap: 'sm' }, h(P.Text, { variant: 'secondary', as: 'div' }, 'Secondary 12px: Last edited'), h(P.Text, { variant: 'data', as: 'div' }, 'IMG_2041.jpg · 2.4 MB'), h(P.Text, { variant: 'caption', as: 'div' }, 'Caption 11px: Updated today'))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "12px, as the code draws it",
+    "recommended": true,
+    "text": "The Data page says 12px on its own (the secondary size), and the size of the surrounding text inside a sentence.",
+    "render": {
+     "caption": "12px data under a 12px label",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h(P.Text, { variant: 'label', as: 'div' }, 'File name'), h(P.Text, { variant: 'data', as: 'div' }, 'IMG_2041.jpg'))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "11px, the caption size",
+    "text": "Data shrinks to the caption size. The code and its tokens would change, and file names become harder to read.",
+    "render": {
+     "caption": "11px (caption size) shown for comparison",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h(P.Text, { variant: 'label', as: 'div' }, 'File name'), h(P.Text, { variant: 'caption', as: 'div' }, 'IMG_2041.jpg'))"
+    }
+   }
+  ],
+  "recommendation": "A: 12px. The code already draws it, and mainstream systems keep code and technical values at a readable body-small size, not the smallest caption step (Carbon code-01/02 at 12–14px, Material 3 body small 12px). Mono text needs the extra size to stay legible.",
+  "sources": [
+   "IBM Carbon · Typography: code-01 and code-02",
+   "Material 3 · Type scale: body small 12",
+   "WCAG 2.2 · 1.4.4 Resize text"
+  ],
+  "settled": true
+ },
+ {
+  "id": "content/text/3",
+  "title": "Property list values: data font or label font with equal digits?",
+  "context": "The spec as it reads today (2026-10-24) already says this; the question was written against an older wording. The Text Data page says property list values use the label font with equal-width digits. The Property list page and its code say technical values there use the data font (Reddit Mono), at the value size.",
+  "current": [
+   {
+    "where": "Data text · When not to use (inventory.js, rec.variantPages avoid[0])",
+    "text": "Technical values in a property list: the item’s own data option sets the data font at the value size"
+   },
+   {
+    "where": "Property list · Anatomy (inventory-docs.js, docs.anatomy[4])",
+    "text": "Value — the definition (dd); with `data`, the data font (Reddit Mono) at the value size, on the same baseline as the label (required)"
+   },
+   {
+    "where": "PropertyList.jsx (the code)",
+    "text": "PropertyList.Item.data: the value is a technical value (a size, a date, an ID, a file name): the data font, Reddit Mono, at the value size, so it shares the label's baseline; names, descriptions and statuses stay DM Sans",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "How the property list draws today",
+    "jsx": "h(P.PropertyList, null, h(P.PropertyList.Item, { label: 'Owner' }, 'Maya Chen'), h(P.PropertyList.Item, { label: 'Size', data: true }, '2.4 MB'), h(P.PropertyList.Item, { label: 'ID', data: true }, 'AST-20419'))",
+    "width": "600"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Data font for technical values",
+    "recommended": true,
+    "text": "Fix the Text page: technical values in a property list use the data font; names and statuses stay DM Sans.",
+    "render": {
+     "caption": "Data font for size and ID",
+     "jsx": "h(P.PropertyList, null, h(P.PropertyList.Item, { label: 'Size', data: true }, '2.4 MB'), h(P.PropertyList.Item, { label: 'Modified', data: true }, 'Oct 8, 2026'))",
+     "width": "600"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Label font with equal digits",
+    "text": "Fix the Property list page and code: values stay DM Sans with tabular digits.",
+    "render": {
+     "caption": "DM Sans with tabular digits",
+     "jsx": "h(P.PropertyList, null, h(P.PropertyList.Item, { label: 'Size' }, h(P.Text, { tabular: true }, '2.4 MB')), h(P.PropertyList.Item, { label: 'Modified' }, h(P.Text, { tabular: true }, 'Oct 8, 2026')))",
+     "width": "600"
+    }
+   }
+  ],
+  "recommendation": "A: the data font. The code does this, and Plenix's font rule says technical values use Reddit Mono everywhere. Carbon and GitHub Primer also set IDs, sizes and paths in a mono font so they read as values.",
+  "sources": [
+   "IBM Carbon · Typography: code styles for technical values",
+   "GitHub Primer · monospace for IDs and paths",
+   "Plenix rule: Mono for code and technical values everywhere"
+  ],
+  "settled": true
+ },
+ {
+  "id": "content/text/4",
+  "title": "One shared write-up for the seven Text pages?",
+  "context": "The same write-up (purpose, parts, behavior, accessibility, content) is copied word for word on seven Text pages. It was left unchanged so the copies stay identical.",
+  "current": [
+   {
+    "where": "Text · Purpose (inventory-docs.js, docs.purpose), shown on Body text, Paragraph, Label, Caption, Helper text, Secondary text and Truncated text (parts/w00B.records.js: T('text', …))",
+    "text": "Sets every run of text in one of the system's text roles, so applications never choose a font, size, weight or color themselves.",
+    "conflict": true
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Rewrite once, shared by all",
+    "recommended": true,
+    "text": "One reviewed write-up for Text, shown on every page that uses it, so the copies never drift apart. Each page keeps its own overview and examples.",
+    "render": [
+     {
+      "caption": "The component every one of these pages shows, drawn live",
+      "jsx": "h(P.Stack, { gap: 'sm' }, h(P.Text, { as: 'p' }, 'Body: upload files into a category.'), h(P.Text, { variant: 'label', as: 'div' }, 'Label: Owner'), h(P.Text, { variant: 'caption', as: 'div' }, 'Caption: from the parish archive'), h(P.Text, { variant: 'secondary', as: 'div' }, 'Secondary: 84 assets · updated today'), h(P.Text, { truncate: true, as: 'div' }, 'Truncated: Coptic cross outline, gold leaf, high resolution.svg'))"
+     },
+     {
+      "caption": "One source, many pages",
+      "jsx": "h(P.Table, { label: \"Shared write-up\", columns: [{\"title\":\"Page\",\"field\":\"c0\",\"kind\":\"wrap\",\"rowLabel\":true},{\"title\":\"Overview\",\"field\":\"c1\",\"kind\":\"wrap\",\"rowLabel\":false},{\"title\":\"Write-up (purpose, parts, behavior, accessibility, content)\",\"field\":\"c2\",\"kind\":\"wrap\",\"rowLabel\":false}], data: [{\"id\":1,\"c0\":\"Body text\",\"c1\":\"Its own\",\"c2\":\"The one shared text\"},{\"id\":2,\"c0\":\"Paragraph\",\"c1\":\"Its own\",\"c2\":\"The one shared text\"},{\"id\":3,\"c0\":\"Label\",\"c1\":\"Its own\",\"c2\":\"The one shared text\"},{\"id\":4,\"c0\":\"Caption\",\"c1\":\"Its own\",\"c2\":\"The one shared text\"},{\"id\":5,\"c0\":\"Helper text\",\"c1\":\"Its own\",\"c2\":\"The one shared text\"},{\"id\":6,\"c0\":\"Secondary text\",\"c1\":\"Its own\",\"c2\":\"The one shared text\"},{\"id\":7,\"c0\":\"Truncated text\",\"c1\":\"Its own\",\"c2\":\"The one shared text\"}] })"
+     }
+    ]
+   },
+   {
+    "key": "B",
+    "label": "Leave it as it is",
+    "text": "The copies stay word for word as they are now; nothing is reviewed.",
+    "render": [
+     {
+      "caption": "The same drawing; only the text differs",
+      "jsx": "h(P.Stack, { gap: 'sm' }, h(P.Text, { as: 'p' }, 'Body: upload files into a category.'), h(P.Text, { variant: 'label', as: 'div' }, 'Label: Owner'), h(P.Text, { variant: 'caption', as: 'div' }, 'Caption: from the parish archive'), h(P.Text, { variant: 'secondary', as: 'div' }, 'Secondary: 84 assets · updated today'), h(P.Text, { truncate: true, as: 'div' }, 'Truncated: Coptic cross outline, gold leaf, high resolution.svg'))"
+     },
+     {
+      "caption": "Unchanged copies",
+      "jsx": "h(P.Table, { label: \"Copies today\", columns: [{\"title\":\"Page\",\"field\":\"c0\",\"kind\":\"wrap\",\"rowLabel\":true},{\"title\":\"Write-up\",\"field\":\"c1\",\"kind\":\"wrap\",\"rowLabel\":false}], data: [{\"id\":1,\"c0\":\"Body text\",\"c1\":\"Copy, not reviewed\"},{\"id\":2,\"c0\":\"Paragraph\",\"c1\":\"Copy, not reviewed\"},{\"id\":3,\"c0\":\"Label\",\"c1\":\"Copy, not reviewed\"},{\"id\":4,\"c0\":\"Caption\",\"c1\":\"Copy, not reviewed\"},{\"id\":5,\"c0\":\"Helper text\",\"c1\":\"Copy, not reviewed\"},{\"id\":6,\"c0\":\"Secondary text\",\"c1\":\"Copy, not reviewed\"},{\"id\":7,\"c0\":\"Truncated text\",\"c1\":\"Copy, not reviewed\"}] })"
+     }
+    ]
+   },
+   {
+    "key": "C",
+    "label": "A separate write-up per page",
+    "text": "Each page gets its own text. More to write and keep in step; worth it only where the pages really differ.",
+    "render": [
+     {
+      "caption": "Each page would describe this drawing in its own words",
+      "jsx": "h(P.Stack, { gap: 'sm' }, h(P.Text, { as: 'p' }, 'Body: upload files into a category.'), h(P.Text, { variant: 'label', as: 'div' }, 'Label: Owner'), h(P.Text, { variant: 'caption', as: 'div' }, 'Caption: from the parish archive'), h(P.Text, { variant: 'secondary', as: 'div' }, 'Secondary: 84 assets · updated today'), h(P.Text, { truncate: true, as: 'div' }, 'Truncated: Coptic cross outline, gold leaf, high resolution.svg'))"
+     },
+     {
+      "caption": "Separate texts",
+      "jsx": "h(P.Table, { label: \"Separate write-ups\", columns: [{\"title\":\"Page\",\"field\":\"c0\",\"kind\":\"wrap\",\"rowLabel\":true},{\"title\":\"Write-up\",\"field\":\"c1\",\"kind\":\"wrap\",\"rowLabel\":false}], data: [{\"id\":1,\"c0\":\"Body text\",\"c1\":\"Its own text\"},{\"id\":2,\"c0\":\"Paragraph\",\"c1\":\"Its own text\"},{\"id\":3,\"c0\":\"Label\",\"c1\":\"Its own text\"},{\"id\":4,\"c0\":\"Caption\",\"c1\":\"Its own text\"},{\"id\":5,\"c0\":\"Helper text\",\"c1\":\"Its own text\"},{\"id\":6,\"c0\":\"Secondary text\",\"c1\":\"Its own text\"},{\"id\":7,\"c0\":\"Truncated text\",\"c1\":\"Its own text\"}] })"
+     }
+    ]
+   }
+  ],
+  "recommendation": "A: write it once and share it. Mainstream systems document a component once and point its variant or alias pages at that one text (Carbon and Polaris keep one usage page per component; Material 3 shows variants under one component page). One reviewed copy cannot drift, and the owner reviews it a single time.",
+  "sources": [
+   "Material 3 · one page per component, variants inside",
+   "IBM Carbon · one usage page per component",
+   "Shopify Polaris · component pages with variant examples",
+   "Plenix rule: one page per component (2026-10-23)"
+  ],
+  "renders": [
+   {
+    "caption": "What these pages show, drawn live",
+    "jsx": "h(P.Stack, { gap: 'sm' }, h(P.Text, { as: 'p' }, 'Body: upload files into a category.'), h(P.Text, { variant: 'label', as: 'div' }, 'Label: Owner'), h(P.Text, { variant: 'caption', as: 'div' }, 'Caption: from the parish archive'), h(P.Text, { variant: 'secondary', as: 'div' }, 'Secondary: 84 assets · updated today'), h(P.Text, { truncate: true, as: 'div' }, 'Truncated: Coptic cross outline, gold leaf, high resolution.svg'))"
+   }
+  ]
+ },
+ {
+  "id": "content/heading/1",
+  "title": "Which heading sizes are right for levels 2 to 4?",
+  "context": "The spec as it reads today (2026-10-24) already says this; the question was written against an older wording. One usage point gives 18, 15 and 13px; another gives 13, 11 and 10px. Both are real: the first is Heading (page and section titles), the second is SectionHeading (the small uppercase label).",
+  "current": [
+   {
+    "where": "Heading · When to use (inventory.js, rec.use[0])",
+    "text": "Heading: the title of a page (level 1) or a section of it (levels 2–4: 18, 15, 13px); the level follows the outline, size= changes only the look"
+   },
+   {
+    "where": "Heading · When to use (inventory.js, rec.use[2])",
+    "text": "SectionHeading’s size follows its level from the outline: level 2 13px, level 3 11px, level 4 10px"
+   },
+   {
+    "where": "Heading.jsx (the code)",
+    "text": "level 1 20px bold (the page title), level 2 18px semibold (the record title's size), level 3 15px semibold, level 4 13px semibold"
+   },
+   {
+    "where": "SectionHeading.jsx (the code)",
+    "text": "2 (13px) is larger than 3 (11px), which is larger than 4 (10px)"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Both components at levels 2–4",
+    "jsx": "h(P.Stack, { gap: 'md' }, h(P.Heading, { level: 2 }, 'Heading level 2 (18px)'), h(P.Heading, { level: 3 }, 'Heading level 3 (15px)'), h(P.Heading, { level: 4 }, 'Heading level 4 (13px)'), h(P.SectionHeading, { level: 2 }, 'SectionHeading 2 (13px)'), h(P.SectionHeading, { level: 3 }, 'SectionHeading 3 (11px)'), h(P.SectionHeading, { level: 4 }, 'SectionHeading 4 (10px)'))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Both, each named",
+    "recommended": true,
+    "text": "Keep both lists, each labeled with its component: Heading 18/15/13px, SectionHeading 13/11/10px.",
+    "render": {
+     "caption": "Two named scales",
+     "jsx": "h(P.Table, { label: \"Heading sizes\", columns: [{\"title\":\"Level\",\"field\":\"c0\",\"kind\":\"wrap\",\"rowLabel\":true},{\"title\":\"Heading\",\"field\":\"c1\",\"kind\":\"wrap\",\"rowLabel\":false},{\"title\":\"SectionHeading\",\"field\":\"c2\",\"kind\":\"wrap\",\"rowLabel\":false}], data: [{\"id\":1,\"c0\":\"2\",\"c1\":\"18px semibold\",\"c2\":\"13px uppercase\"},{\"id\":2,\"c0\":\"3\",\"c1\":\"15px semibold\",\"c2\":\"11px uppercase\"},{\"id\":3,\"c0\":\"4\",\"c1\":\"13px semibold\",\"c2\":\"10px uppercase\"}] })"
+    }
+   },
+   {
+    "key": "B",
+    "label": "18, 15, 13px only",
+    "text": "The page lists only Heading's sizes and drops SectionHeading's.",
+    "render": {
+     "caption": "Heading only",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h(P.Heading, { level: 2 }, 'Level 2'), h(P.Heading, { level: 3 }, 'Level 3'), h(P.Heading, { level: 4 }, 'Level 4'))"
+    }
+   },
+   {
+    "key": "C",
+    "label": "13, 11, 10px only",
+    "text": "The page lists only SectionHeading's sizes; page titles would lose their sizes on this page.",
+    "render": {
+     "caption": "SectionHeading only",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h(P.SectionHeading, { level: 2 }, 'Level 2'), h(P.SectionHeading, { level: 3 }, 'Level 3'), h(P.SectionHeading, { level: 4 }, 'Level 4'))"
+    }
+   }
+  ],
+  "recommendation": "A: keep both, each named. The code has two components with two scales, and both numbers are correct for their component. Material 3 and Carbon show headline and label styles as separate named rows of one type scale so nobody mixes them up.",
+  "sources": [
+   "Material 3 · Type scale: headline vs label roles",
+   "IBM Carbon · Typography: productive heading sets",
+   "WAI · Headings tutorial: levels follow the outline"
+  ],
+  "settled": true
+ },
+ {
+  "id": "content/heading/2",
+  "title": "Should the Heading purpose cover page titles and section labels?",
+  "context": "The spec as it reads today (2026-10-24) already says this; the question was written against an older wording. The purpose describes only SectionHeading, the small uppercase label. The page also covers Heading (page and section titles, levels 1–4).",
+  "current": [
+   {
+    "where": "Heading · Purpose (inventory-docs.js, docs.purpose)",
+    "text": "Names a page or a section with a title at its level in the outline (Heading), or a group of content with a small uppercase label that can show or hide it (SectionHeading)."
+   },
+   {
+    "where": "Heading.jsx (the code)",
+    "text": "The title of a page or of a section in it, at a level of the document outline … SectionHeading stays the small uppercase label over a group of content.",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "What the page covers",
+    "jsx": "h(P.Stack, { gap: 'md' }, h(P.Heading, { level: 1 }, 'Posts'), h(P.Heading, { level: 2 }, 'Recent activity'), h(P.SectionHeading, { level: 3 }, 'Appearance'))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Cover both",
+    "recommended": true,
+    "text": "Purpose: \"Titles a page or a section on the outline (Heading), or names a group with a small uppercase label (SectionHeading).\"",
+    "render": {
+     "caption": "Both in one purpose",
+     "jsx": "h(P.Stack, { gap: 'sm' }, h(P.Heading, { level: 2 }, 'Billing'), h(P.SectionHeading, { level: 3 }, 'Payment methods'))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Keep the SectionHeading purpose",
+    "text": "The purpose stays as it is; Heading is described only in the overview.",
+    "render": {
+     "caption": "Label only",
+     "jsx": "h(P.SectionHeading, { level: 3 }, 'Payment methods')"
+    }
+   }
+  ],
+  "recommendation": "A: cover both. The purpose is the first thing people read; it should match everything the page shows. Carbon and Material 3 describe headings by their role on the page outline, which is what Heading does.",
+  "sources": [
+   "IBM Carbon · Typography: headings",
+   "Material 3 · Typography: headline and title roles",
+   "WAI-ARIA APG · Landmarks and headings"
+  ],
+  "settled": true
+ },
+ {
+  "id": "content/code-block/1",
+  "title": "Does code sit on the inverse surface or the default surface?",
+  "context": "The spec as it reads today (2026-10-24) already says this; the question was written against an older wording. The overview says inverse (dark); the parts list says the default surface. The code settles it: CodeBlock draws code \"on the page surface\".",
+  "current": [
+   {
+    "where": "Code block · Overview (inventory.js, rec.text)",
+    "text": "Code or a file’s source in the code font on the page surface, with a title and a Copy button."
+   },
+   {
+    "where": "Code block · Anatomy (inventory-docs.js, docs.anatomy)",
+    "text": "Code — a pre element in the code font on --plx-sys-surface-default, one Tab stop (required)"
+   },
+   {
+    "where": "CodeBlock.jsx (the code)",
+    "text": "Code or a file's source, in the code font (Reddit Mono) on the page surface, with a Copy button."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "How it draws today",
+    "jsx": "h(P.CodeBlock, { title: 'button.css' }, '.plx-button {\\n  padding: var(--plx-comp-button-padding);\\n}')",
+    "width": "600"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Default surface",
+    "recommended": true,
+    "text": "The overview says the page surface, as the parts list and the code do.",
+    "render": {
+     "caption": "On the page surface",
+     "jsx": "h(P.CodeBlock, { title: 'main.jsx' }, 'mountSuite(\\'notes\\');')",
+     "width": "600"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Inverse surface",
+    "text": "Code becomes a dark box. The component, its tokens and the code colors would all change.",
+    "render": {
+     "caption": "Not drawable today: the component has no inverse look",
+     "jsx": "h(P.Table, { label: \"Inverse surface\", columns: [{\"title\":\"Change\",\"field\":\"c0\",\"kind\":\"wrap\",\"rowLabel\":true},{\"title\":\"Effect\",\"field\":\"c1\",\"kind\":\"wrap\",\"rowLabel\":false}], data: [{\"id\":1,\"c0\":\"New surface\",\"c1\":\"Dark box in light mode\"},{\"id\":2,\"c0\":\"Code colors\",\"c1\":\"A second set needed\"}] })"
+    }
+   }
+  ],
+  "recommendation": "A: the default surface. The code already draws it, and its code colors are tuned for it. GitHub, Material 3 docs and Carbon's code snippet all use a light surface in light mode.",
+  "sources": [
+   "IBM Carbon · Code snippet: layer background",
+   "GitHub Primer · code blocks on the subtle canvas",
+   "WCAG 2.2 · 1.4.3 Contrast"
+  ],
+  "settled": true
+ },
+ {
+  "id": "content/avatar/1",
+  "title": "Should Avatar usage list the 2xs size (20px)?",
+  "context": "The spec as it reads today (2026-10-24) already says this; the question was written against an older wording. Usage names six sizes (xs to 2xl). The code has seven: 2xs is 20px, for inside a small control such as the pane footer's account row.",
+  "current": [
+   {
+    "where": "Avatar · When to use (inventory.js, rec.use[1])",
+    "text": "Sizes by name: 2xs 20 (inside a small control), xs 24, sm 28, md 32, lg 40, xl 48, 2xl 64"
+   },
+   {
+    "where": "Avatar.jsx (the code)",
+    "text": "size: \"2xs\" 20px | \"xs\" 24px | \"sm\" 28px (default) | \"md\" 32px | \"lg\" 40px | \"xl\" 48px | \"2xl\" 64px; \"2xs\" is for inside a small control",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "All seven sizes",
+    "jsx": "h(P.Inline, null, ...['2xs','xs','sm','md','lg','xl','2xl'].map(function(s){ return h(P.Avatar, { key: s, name: 'Maya Chen', size: s }); }))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "List seven, 2xs for small controls",
+    "recommended": true,
+    "text": "Usage lists 2xs too, and says it is only for inside a small control.",
+    "render": {
+     "caption": "2xs in an account row",
+     "jsx": "h(P.Inline, null, h(P.Avatar, { name: 'Maya Chen', size: '2xs' }), h(P.Text, null, 'Maya Chen'))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Keep six",
+    "text": "Usage stays at six; 2xs is mentioned only in Behavior.",
+    "render": {
+     "caption": "Six sizes",
+     "jsx": "h(P.Inline, null, ...['xs','sm','md','lg','xl','2xl'].map(function(s){ return h(P.Avatar, { key: s, name: 'Maya Chen', size: s }); }))"
+    }
+   }
+  ],
+  "recommendation": "A: list all seven. The code has 2xs and another page points at it. Fluent 2 and Atlassian list every avatar size with where each one belongs.",
+  "sources": [
+   "Fluent 2 · Avatar: sizes",
+   "Atlassian · Avatar: sizes",
+   "Material 3 · consistent sizing"
+  ],
+  "settled": true
+ },
+ {
+  "id": "content/avatar/2",
+  "title": "One shared write-up for Avatar and User identity?",
+  "context": "The Avatar write-up is copied word for word on the User identity page. It was left unchanged so both stay the same.",
+  "current": [
+   {
+    "where": "Avatar · Purpose (inventory-docs.js, docs.purpose), also shown on User identity (parts/w00B.records.js: T('avatar', …))",
+    "text": "Identifies a person at a glance with their picture or initials, in a rounded square beside their name.",
+    "conflict": true
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Rewrite once, shared by all",
+    "recommended": true,
+    "text": "One reviewed write-up for Avatar, shown on every page that uses it, so the copies never drift apart. Each page keeps its own overview and examples.",
+    "render": [
+     {
+      "caption": "The component every one of these pages shows, drawn live",
+      "jsx": "h(P.Stack, { gap: 'md' }, h(P.Inline, null, ...['xs','sm','md','lg'].map(function(s){ return h(P.Avatar, { key: s, name: 'Maya Chen', size: s }); })), h(P.Inline, null, h(P.Avatar, { name: 'Maya Chen', size: 'md' }), h(P.Stack, { gap: 'none' }, h(P.Text, { variant: 'strong' }, 'Maya Chen'), h(P.Text, { variant: 'secondary' }, 'Designer'))))"
+     },
+     {
+      "caption": "One source, many pages",
+      "jsx": "h(P.Table, { label: \"Shared write-up\", columns: [{\"title\":\"Page\",\"field\":\"c0\",\"kind\":\"wrap\",\"rowLabel\":true},{\"title\":\"Overview\",\"field\":\"c1\",\"kind\":\"wrap\",\"rowLabel\":false},{\"title\":\"Write-up (purpose, parts, behavior, accessibility, content)\",\"field\":\"c2\",\"kind\":\"wrap\",\"rowLabel\":false}], data: [{\"id\":1,\"c0\":\"Avatar\",\"c1\":\"Its own\",\"c2\":\"The one shared text\"},{\"id\":2,\"c0\":\"User identity\",\"c1\":\"Its own\",\"c2\":\"The one shared text\"}] })"
+     }
+    ]
+   },
+   {
+    "key": "B",
+    "label": "Leave it as it is",
+    "text": "The copies stay word for word as they are now; nothing is reviewed.",
+    "render": [
+     {
+      "caption": "The same drawing; only the text differs",
+      "jsx": "h(P.Stack, { gap: 'md' }, h(P.Inline, null, ...['xs','sm','md','lg'].map(function(s){ return h(P.Avatar, { key: s, name: 'Maya Chen', size: s }); })), h(P.Inline, null, h(P.Avatar, { name: 'Maya Chen', size: 'md' }), h(P.Stack, { gap: 'none' }, h(P.Text, { variant: 'strong' }, 'Maya Chen'), h(P.Text, { variant: 'secondary' }, 'Designer'))))"
+     },
+     {
+      "caption": "Unchanged copies",
+      "jsx": "h(P.Table, { label: \"Copies today\", columns: [{\"title\":\"Page\",\"field\":\"c0\",\"kind\":\"wrap\",\"rowLabel\":true},{\"title\":\"Write-up\",\"field\":\"c1\",\"kind\":\"wrap\",\"rowLabel\":false}], data: [{\"id\":1,\"c0\":\"Avatar\",\"c1\":\"Copy, not reviewed\"},{\"id\":2,\"c0\":\"User identity\",\"c1\":\"Copy, not reviewed\"}] })"
+     }
+    ]
+   },
+   {
+    "key": "C",
+    "label": "A separate write-up per page",
+    "text": "Each page gets its own text. More to write and keep in step; worth it only where the pages really differ.",
+    "render": [
+     {
+      "caption": "Each page would describe this drawing in its own words",
+      "jsx": "h(P.Stack, { gap: 'md' }, h(P.Inline, null, ...['xs','sm','md','lg'].map(function(s){ return h(P.Avatar, { key: s, name: 'Maya Chen', size: s }); })), h(P.Inline, null, h(P.Avatar, { name: 'Maya Chen', size: 'md' }), h(P.Stack, { gap: 'none' }, h(P.Text, { variant: 'strong' }, 'Maya Chen'), h(P.Text, { variant: 'secondary' }, 'Designer'))))"
+     },
+     {
+      "caption": "Separate texts",
+      "jsx": "h(P.Table, { label: \"Separate write-ups\", columns: [{\"title\":\"Page\",\"field\":\"c0\",\"kind\":\"wrap\",\"rowLabel\":true},{\"title\":\"Write-up\",\"field\":\"c1\",\"kind\":\"wrap\",\"rowLabel\":false}], data: [{\"id\":1,\"c0\":\"Avatar\",\"c1\":\"Its own text\"},{\"id\":2,\"c0\":\"User identity\",\"c1\":\"Its own text\"}] })"
+     }
+    ]
+   }
+  ],
+  "recommendation": "A: write it once and share it. Mainstream systems document a component once and point its variant or alias pages at that one text (Carbon and Polaris keep one usage page per component; Material 3 shows variants under one component page). One reviewed copy cannot drift, and the owner reviews it a single time.",
+  "sources": [
+   "Material 3 · one page per component, variants inside",
+   "IBM Carbon · one usage page per component",
+   "Shopify Polaris · component pages with variant examples",
+   "Plenix rule: one page per component (2026-10-23)"
+  ],
+  "renders": [
+   {
+    "caption": "What these pages show, drawn live",
+    "jsx": "h(P.Stack, { gap: 'md' }, h(P.Inline, null, ...['xs','sm','md','lg'].map(function(s){ return h(P.Avatar, { key: s, name: 'Maya Chen', size: s }); })), h(P.Inline, null, h(P.Avatar, { name: 'Maya Chen', size: 'md' }), h(P.Stack, { gap: 'none' }, h(P.Text, { variant: 'strong' }, 'Maya Chen'), h(P.Text, { variant: 'secondary' }, 'Designer'))))"
+   }
+  ]
+ },
+ {
+  "id": "content/property-list/1",
+  "title": "Does a technical value sit on the value's baseline or the label's?",
+  "context": "The spec as it reads today (2026-10-24) already says this; the question was written against an older wording. Usage says the value's baseline; the parts list says the label's. The code settles it: a data value shares the label's baseline.",
+  "current": [
+   {
+    "where": "Property list · When to use (inventory.js, rec.use[1])",
+    "text": "data on an item whose value is technical (a size, a date, an ID, a file name): Reddit Mono at the value size, on the same baseline as its label"
+   },
+   {
+    "where": "Property list · Anatomy (inventory-docs.js, docs.anatomy[4])",
+    "text": "Value — the definition (dd); with `data`, the data font (Reddit Mono) at the value size, on the same baseline as the label (required)"
+   },
+   {
+    "where": "PropertyList.jsx (the code)",
+    "text": "the data font, Reddit Mono, at the value size, so it shares the label's baseline"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Label and data value on one line",
+    "jsx": "h(P.PropertyList, null, h(P.PropertyList.Item, { label: 'Size', data: true }, '2.4 MB'), h(P.PropertyList.Item, { label: 'File', data: true }, 'IMG_2041.jpg'))",
+    "width": "600"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "The label's baseline",
+    "recommended": true,
+    "text": "Usage says the label's baseline, as the parts list and the code do.",
+    "render": {
+     "caption": "Shared baseline",
+     "jsx": "h(P.PropertyList, null, h(P.PropertyList.Item, { label: 'Version', data: true }, '0.69.5'))",
+     "width": "600"
+    }
+   },
+   {
+    "key": "B",
+    "label": "The value's baseline",
+    "text": "Keep usage; fix the parts list. This says nothing new: the value is on its own baseline.",
+    "render": {
+     "caption": "Same drawing: the wording is the only difference",
+     "jsx": "h(P.PropertyList, null, h(P.PropertyList.Item, { label: 'Version', data: true }, '0.69.5'))",
+     "width": "600"
+    }
+   }
+  ],
+  "recommendation": "A: the label's baseline. That is what the code aligns, and it is the useful rule: mixed fonts in a row line up on one baseline. Material 3 and Carbon align label and value on a shared baseline in lists.",
+  "sources": [
+   "Material 3 · Lists: baseline alignment",
+   "IBM Carbon · Structured list",
+   "Plenix rule: align on the baseline, no nudges"
+  ],
+  "settled": true
+ },
+ {
+  "id": "content/property-list/2",
+  "title": "Is a static name/value table a Table, not a DataGrid?",
+  "context": "The spec as it reads today (2026-10-24) already says this; the question was written against an older wording. The sentence moved from Accessibility to Content. The text says a name/value table is a DataGrid. Your table rule says DataGrid is for records people work with and Table for static ones. A name/value reference table is static.",
+  "current": [
+   {
+    "where": "Property list · Accessibility (inventory-docs.js, docs.a11y.contrast)",
+    "text": "Labels use --plx-sys-content-muted and values --plx-sys-content-default, defined for both themes."
+   },
+   {
+    "where": "Property list · Content (inventory-docs.js, docs.content.labels)",
+    "text": "A list of name and value facts shown as reference (a component's details) is a Table; a PropertyList is for one item's own details in a panel, such as an inspector or a form's summary."
+   },
+   {
+    "where": "Table.jsx (the code)",
+    "text": "Static reference information in rows and columns … use DataGrid for records people work with.",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "A static name/value table, drawn with Table",
+    "jsx": "h(P.Table, { label: \"Component facts\", columns: [{\"title\":\"Name\",\"field\":\"c0\",\"kind\":\"wrap\",\"rowLabel\":true},{\"title\":\"Value\",\"field\":\"c1\",\"kind\":\"wrap\",\"rowLabel\":false}], data: [{\"id\":1,\"c0\":\"Version\",\"c1\":\"0.69.5\"},{\"id\":2,\"c0\":\"Owner\",\"c1\":\"Platform\"},{\"id\":3,\"c0\":\"Status\",\"c1\":\"Stable\"}] })",
+    "width": "600"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Say Table",
+    "recommended": true,
+    "text": "It reads: \"a name/value table is a Table (static), not a PropertyList\".",
+    "render": {
+     "caption": "Table",
+     "jsx": "h(P.Table, { label: \"Facts\", columns: [{\"title\":\"Name\",\"field\":\"c0\",\"kind\":\"wrap\",\"rowLabel\":true},{\"title\":\"Value\",\"field\":\"c1\",\"kind\":\"wrap\",\"rowLabel\":false}], data: [{\"id\":1,\"c0\":\"Size\",\"c1\":\"2.4 MB\"},{\"id\":2,\"c0\":\"Format\",\"c1\":\"JPEG\"}] })",
+     "width": "600"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Say Table or DataGrid",
+    "text": "It names both: a Table when static, a DataGrid when people sort or edit it.",
+    "render": {
+     "caption": "Choice table",
+     "jsx": "h(P.Table, { label: \"Which one\", columns: [{\"title\":\"Case\",\"field\":\"c0\",\"kind\":\"wrap\",\"rowLabel\":true},{\"title\":\"Component\",\"field\":\"c1\",\"kind\":\"wrap\",\"rowLabel\":false}], data: [{\"id\":1,\"c0\":\"Read-only facts\",\"c1\":\"Table\"},{\"id\":2,\"c0\":\"Sorted, filtered or edited\",\"c1\":\"DataGrid\"}] })",
+     "width": "600"
+    }
+   },
+   {
+    "key": "C",
+    "label": "Keep DataGrid",
+    "text": "No change; it contradicts the table rule.",
+    "render": {
+     "caption": "Unchanged wording",
+     "jsx": "h(P.Text, { as: 'p' }, 'A name/value table is a DataGrid, not a PropertyList.')"
+    }
+   }
+  ],
+  "recommendation": "A: say Table. It follows your rule and the code. Carbon and Polaris also separate a static data table from an interactive data grid.",
+  "sources": [
+   "IBM Carbon · Data table vs structured list",
+   "Shopify Polaris · Data table (static) vs Index table",
+   "WAI-ARIA APG · Table vs Grid pattern",
+   "Plenix rule: Table static, DataGrid dynamic (2026-10-19)"
+  ],
+  "settled": true
+ },
+ {
+  "id": "content/property-list/3",
+  "title": "One shared write-up for the four Property list pages?",
+  "context": "The Property list write-up is copied word for word on Property list, Key-value pair, Attribute list and Description list.",
+  "current": [
+   {
+    "where": "Property list · Purpose (inventory-docs.js, docs.purpose), also shown on Key-value pair, Attribute list and Description list (parts/w00B.records.js: T('property-list', …))",
+    "text": "Shows the facts about one record as label and value pairs, so people can read details, metadata or a settings summary quickly.",
+    "conflict": true
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Rewrite once, shared by all",
+    "recommended": true,
+    "text": "One reviewed write-up for PropertyList, shown on every page that uses it, so the copies never drift apart. Each page keeps its own overview and examples.",
+    "render": [
+     {
+      "caption": "The component every one of these pages shows, drawn live",
+      "jsx": "h(P.Stack, { gap: 'md' }, h(P.PropertyList, null, h(P.PropertyList.Item, { label: 'Owner' }, 'Maya Chen'), h(P.PropertyList.Item, { label: 'Size', data: true }, '2.4 MB'), h(P.PropertyList.Item, { label: 'Modified', data: true }, 'Oct 8, 2026')), h(P.PropertyList, { layout: 'stacked' }, h(P.PropertyList.Item, { label: 'Path', data: true }, 'archive/2026/letterhead-v3.pdf')))"
+     },
+     {
+      "caption": "One source, many pages",
+      "jsx": "h(P.Table, { label: \"Shared write-up\", columns: [{\"title\":\"Page\",\"field\":\"c0\",\"kind\":\"wrap\",\"rowLabel\":true},{\"title\":\"Overview\",\"field\":\"c1\",\"kind\":\"wrap\",\"rowLabel\":false},{\"title\":\"Write-up (purpose, parts, behavior, accessibility, content)\",\"field\":\"c2\",\"kind\":\"wrap\",\"rowLabel\":false}], data: [{\"id\":1,\"c0\":\"Property list\",\"c1\":\"Its own\",\"c2\":\"The one shared text\"},{\"id\":2,\"c0\":\"Key-value pair\",\"c1\":\"Its own\",\"c2\":\"The one shared text\"},{\"id\":3,\"c0\":\"Attribute list\",\"c1\":\"Its own\",\"c2\":\"The one shared text\"},{\"id\":4,\"c0\":\"Description list\",\"c1\":\"Its own\",\"c2\":\"The one shared text\"}] })"
+     }
+    ]
+   },
+   {
+    "key": "B",
+    "label": "Leave it as it is",
+    "text": "The copies stay word for word as they are now; nothing is reviewed.",
+    "render": [
+     {
+      "caption": "The same drawing; only the text differs",
+      "jsx": "h(P.Stack, { gap: 'md' }, h(P.PropertyList, null, h(P.PropertyList.Item, { label: 'Owner' }, 'Maya Chen'), h(P.PropertyList.Item, { label: 'Size', data: true }, '2.4 MB'), h(P.PropertyList.Item, { label: 'Modified', data: true }, 'Oct 8, 2026')), h(P.PropertyList, { layout: 'stacked' }, h(P.PropertyList.Item, { label: 'Path', data: true }, 'archive/2026/letterhead-v3.pdf')))"
+     },
+     {
+      "caption": "Unchanged copies",
+      "jsx": "h(P.Table, { label: \"Copies today\", columns: [{\"title\":\"Page\",\"field\":\"c0\",\"kind\":\"wrap\",\"rowLabel\":true},{\"title\":\"Write-up\",\"field\":\"c1\",\"kind\":\"wrap\",\"rowLabel\":false}], data: [{\"id\":1,\"c0\":\"Property list\",\"c1\":\"Copy, not reviewed\"},{\"id\":2,\"c0\":\"Key-value pair\",\"c1\":\"Copy, not reviewed\"},{\"id\":3,\"c0\":\"Attribute list\",\"c1\":\"Copy, not reviewed\"},{\"id\":4,\"c0\":\"Description list\",\"c1\":\"Copy, not reviewed\"}] })"
+     }
+    ]
+   },
+   {
+    "key": "C",
+    "label": "A separate write-up per page",
+    "text": "Each page gets its own text. More to write and keep in step; worth it only where the pages really differ.",
+    "render": [
+     {
+      "caption": "Each page would describe this drawing in its own words",
+      "jsx": "h(P.Stack, { gap: 'md' }, h(P.PropertyList, null, h(P.PropertyList.Item, { label: 'Owner' }, 'Maya Chen'), h(P.PropertyList.Item, { label: 'Size', data: true }, '2.4 MB'), h(P.PropertyList.Item, { label: 'Modified', data: true }, 'Oct 8, 2026')), h(P.PropertyList, { layout: 'stacked' }, h(P.PropertyList.Item, { label: 'Path', data: true }, 'archive/2026/letterhead-v3.pdf')))"
+     },
+     {
+      "caption": "Separate texts",
+      "jsx": "h(P.Table, { label: \"Separate write-ups\", columns: [{\"title\":\"Page\",\"field\":\"c0\",\"kind\":\"wrap\",\"rowLabel\":true},{\"title\":\"Write-up\",\"field\":\"c1\",\"kind\":\"wrap\",\"rowLabel\":false}], data: [{\"id\":1,\"c0\":\"Property list\",\"c1\":\"Its own text\"},{\"id\":2,\"c0\":\"Key-value pair\",\"c1\":\"Its own text\"},{\"id\":3,\"c0\":\"Attribute list\",\"c1\":\"Its own text\"},{\"id\":4,\"c0\":\"Description list\",\"c1\":\"Its own text\"}] })"
+     }
+    ]
+   }
+  ],
+  "recommendation": "A: write it once and share it. Mainstream systems document a component once and point its variant or alias pages at that one text (Carbon and Polaris keep one usage page per component; Material 3 shows variants under one component page). One reviewed copy cannot drift, and the owner reviews it a single time.",
+  "sources": [
+   "Material 3 · one page per component, variants inside",
+   "IBM Carbon · one usage page per component",
+   "Shopify Polaris · component pages with variant examples",
+   "Plenix rule: one page per component (2026-10-23)"
+  ],
+  "renders": [
+   {
+    "caption": "What these pages show, drawn live",
+    "jsx": "h(P.Stack, { gap: 'md' }, h(P.PropertyList, null, h(P.PropertyList.Item, { label: 'Owner' }, 'Maya Chen'), h(P.PropertyList.Item, { label: 'Size', data: true }, '2.4 MB'), h(P.PropertyList.Item, { label: 'Modified', data: true }, 'Oct 8, 2026')), h(P.PropertyList, { layout: 'stacked' }, h(P.PropertyList.Item, { label: 'Path', data: true }, 'archive/2026/letterhead-v3.pdf')))"
+   }
+  ]
+ },
+ {
+  "id": "content/thumbnail/1",
+  "title": "When a picture fails to load, does the thumbnail show its icon?",
+  "context": "The spec as it reads today (2026-10-24) already says this; the question was written against an older wording. Behavior says a broken picture is not replaced by the icon; the Icon thumbnail page says it is. The code settles it: a picture that fails to load falls back to the icon.",
+  "current": [
+   {
+    "where": "Thumbnail · Behavior (inventory-docs.js, docs.behavior.error)",
+    "text": "No error state: a picture that fails to load shows the icon instead, as when there is none."
+   },
+   {
+    "where": "Thumbnail (parts/w00A.records.js, purpose)",
+    "text": "A small picture of a file or item beside its name, in a table cell or list row; an icon when there is no picture."
+   },
+   {
+    "where": "Thumbnail.jsx (the code)",
+    "text": "An image that fails to load falls back to the icon."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "No picture, and a picture that fails to load",
+    "jsx": "h(P.Inline, null, h(P.Thumbnail, { icon: 'document' }), h(P.Thumbnail, { icon: 'image' }))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "The icon shows",
+    "recommended": true,
+    "text": "Fix Behavior: a broken picture falls back to the icon, as with no picture.",
+    "render": {
+     "caption": "Fallback icon",
+     "jsx": "h(P.Inline, null, h(P.Thumbnail, { icon: 'image' }), h(P.Text, null, 'kitchen.jpg'))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "The broken picture stays",
+    "text": "The browser's broken-image mark stays; the code would change.",
+    "render": {
+     "caption": "What people would see instead",
+     "jsx": "h(P.Table, { label: \"Broken picture\", columns: [{\"title\":\"Case\",\"field\":\"c0\",\"kind\":\"wrap\",\"rowLabel\":true},{\"title\":\"Shown\",\"field\":\"c1\",\"kind\":\"wrap\",\"rowLabel\":false}], data: [{\"id\":1,\"c0\":\"Picture fails\",\"c1\":\"Browser's broken-image mark\"}] })"
+    }
+   }
+  ],
+  "recommendation": "A: show the icon. The code does it, and a broken-image mark looks like an error in a list. Material 3, Fluent 2 and Polaris thumbnails fall back to a placeholder icon.",
+  "sources": [
+   "Shopify Polaris · Thumbnail",
+   "Fluent 2 · Image: fallback",
+   "Material 3 · Imagery: placeholders"
+  ],
+  "settled": true
+ },
+ {
+  "id": "content/content-skip-link/1",
+  "title": "Should the Skip link page get its own purpose?",
+  "context": "The Skip link page shows the AppShell purpose and write-up (header, navigation pane, main region, inspector, footer), not the skip link's.",
+  "current": [
+   {
+    "where": "Skip link · Overview (parts/w00A.records.js, rec.text)",
+    "text": "Skip navigation lets keyboard users pass the header and navigation pane. It is the shell’s first focusable element: a link that moves focus to the main region, shown only while it has keyboard focus."
+   },
+   {
+    "where": "Skip link · Purpose, from AppShell (inventory-docs.js, application-shell docs.purpose)",
+    "text": "Gives every Plenix application the same frame: the header across the top, the navigation pane, the main region and the inspector between them, and the footer across the bottom. Pages fill only the main region.",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "A skip link: Tab into this box to see it first",
+    "jsx": "h('div', null, h(P.Link, { href: '#wz-main' }, 'Skip to main content'), h(P.Text, { as: 'p' }, 'Header and navigation …'), h('main', { id: 'wz-main', tabIndex: -1 }, h(P.Text, { as: 'p' }, 'Main content')))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Its own purpose",
+    "recommended": true,
+    "text": "Purpose: \"Lets keyboard users jump past the header and navigation to the main content.\" The write-up covers the link, its focus and its target.",
+    "render": {
+     "caption": "Proposed purpose",
+     "jsx": "h(P.Text, { as: 'p' }, 'Lets keyboard users jump past the header and navigation to the main content.')"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Keep the AppShell text",
+    "text": "The page keeps describing the frame the link lives in.",
+    "render": {
+     "caption": "Current purpose",
+     "jsx": "h(P.Text, { as: 'p' }, 'The application frame: header, navigation pane, main region, inspector, footer.')"
+    }
+   }
+  ],
+  "recommendation": "A: its own purpose. A skip link has its own rules (first Tab stop, shown on focus, moves focus to main). WCAG 2.4.1, GOV.UK and Carbon each document the skip link on its own.",
+  "sources": [
+   "WCAG 2.2 · 2.4.1 Bypass Blocks",
+   "GOV.UK Design System · Skip link",
+   "IBM Carbon · UI shell: skip to content"
+  ]
+ },
+ {
+  "id": "content/content-paragraph/1",
+  "title": "Does the \"lead\" text style exist?",
+  "context": "The spec as it reads today (2026-10-24) already says this; the question was written against an older wording. The Paragraph page uses a \"lead\" style; the Text style list on the spec does not include it. The code settles it: Text has variant \"lead\", 15px with a relaxed line height.",
+  "current": [
+   {
+    "where": "Paragraph · Overview (parts/w00B.records.js, rec.text)",
+    "text": "A paragraph is Text as=\"p\" in the body style (13px DM Sans), or a <p> inside RichText for longer reading. It has no margins; the Stack around it spaces paragraphs, and the lead variant opens a page with one larger paragraph."
+   },
+   {
+    "where": "Text · Anatomy (inventory-docs.js, docs.anatomy[1])",
+    "text": "Style — `variant`: body, secondary, caption, data, label, strong, heading, title, display, lead, eyebrow, accent, success, danger or link (required; default body)"
+   },
+   {
+    "where": "Text.jsx (the code)",
+    "text": "lead: body text one step up (15px) with a relaxed line height, for the opening paragraph of a page or an empty state"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Lead, then body",
+    "jsx": "h(P.Stack, { gap: 'sm' }, h(P.Text, { variant: 'lead', as: 'p' }, 'Assets keeps every picture, video and file your team uses in one place.'), h(P.Text, { as: 'p' }, 'Upload files, tag them and share collections with anyone.'))",
+    "width": "600"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Lead exists: add it to the Text list",
+    "recommended": true,
+    "text": "Keep the Paragraph mentions; the Text page lists lead (and display) with the other styles.",
+    "render": {
+     "caption": "Lead as a Text style",
+     "jsx": "h(P.Text, { variant: 'lead', as: 'p' }, 'An opening paragraph in the lead style.')",
+     "width": "600"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Drop lead",
+    "text": "The Paragraph page uses body for the opening paragraph; the lead variant is removed from the code.",
+    "render": {
+     "caption": "Body only",
+     "jsx": "h(P.Text, { as: 'p' }, 'An opening paragraph in body text.')",
+     "width": "600"
+    }
+   }
+  ],
+  "recommendation": "A: lead exists. The code has it, and a larger intro paragraph is common (Bootstrap .lead, Material 3 body large, GOV.UK lead paragraph). Listing it on Text closes the gap.",
+  "sources": [
+   "GOV.UK Design System · Lead paragraph",
+   "Material 3 · Type scale: body large",
+   "Bootstrap · Typography: lead"
+  ],
+  "settled": true
+ },
+ {
+  "id": "content/content-caption/1",
+  "title": "A caption: one line at most, or two?",
+  "context": "The spec as it reads today (2026-10-24) already says this; the question was written against an older wording. The Caption page says no more than two lines; the Caption style on the Body text page says one line.",
+  "current": [
+   {
+    "where": "Caption · When not to use (parts/w00B.records.js, rec.avoid[1])",
+    "text": "A caption longer than two lines"
+   },
+   {
+    "where": "Body text · Caption variant (inventory.js, variantPages avoid)",
+    "text": "A caption longer than two lines"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "A one-line and a two-line caption at a narrow width",
+    "jsx": "h(P.Stack, { gap: 'md' }, h(P.Text, { variant: 'caption', as: 'p' }, 'Updated 5 minutes ago'), h(P.Text, { variant: 'caption', as: 'p' }, 'Photo by Maya Chen at the Lisbon office, taken for the spring catalog and cleared for web use'))",
+    "width": "360"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Two lines at most",
+    "recommended": true,
+    "text": "Both pages say two lines; longer text belongs in body or helper text.",
+    "render": {
+     "caption": "Two-line caption",
+     "jsx": "h(P.Text, { variant: 'caption', as: 'p' }, 'Photo by Maya Chen, taken for the spring catalog and cleared for web use')",
+     "width": "360"
+    }
+   },
+   {
+    "key": "B",
+    "label": "One line at most",
+    "text": "Both pages say one line; anything longer moves to body text.",
+    "render": {
+     "caption": "One-line caption",
+     "jsx": "h(P.Text, { variant: 'caption', as: 'p' }, 'Updated 5 minutes ago')",
+     "width": "360"
+    }
+   }
+  ],
+  "recommendation": "A: two lines. Small text wraps on narrow screens, so a one-line rule breaks at 360px. Material 3 and Carbon keep captions short (a line or two) and move longer text into body.",
+  "sources": [
+   "Material 3 · Type scale: body small and label",
+   "IBM Carbon · Typography: helper and caption text",
+   "Apple HIG · Typography: footnote and caption"
+  ],
+  "settled": true
+ },
+ {
+  "id": "content/content-truncated-text/1",
+  "title": "Do line clamping and \"Show more\" belong to Text?",
+  "context": "The spec as it reads today (2026-10-24) already says this; the question was written against an older wording. The Truncated text page describes 2–4 line clamps and Show more; the Text parts list shows only one-line truncation. The code settles it: Text has lines (2, 3, 4) and expandable.",
+  "current": [
+   {
+    "where": "Truncated text · Overview (parts/w00B.records.js, rec.text)",
+    "text": "Text that does not fit is cut, never hidden: truncate keeps one line with an ellipsis, lines={2|3|4} clamps to that many, and expandable adds Show more. The whole text stays in the page, so search, copy and screen readers get all of it."
+   },
+   {
+    "where": "Text · Anatomy (inventory-docs.js, docs.anatomy[3])",
+    "text": "Lines — `lines`: at most 2, 3 or 4 lines, the last one cut with an ellipsis (optional)"
+   },
+   {
+    "where": "Text.jsx (the code)",
+    "text": "lines: 2 | 3 | 4 … expandable: with lines, a \"Show more\" button under the text while it is cut"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Text with lines={2} and expandable",
+    "jsx": "h(P.Text, { as: 'p', lines: 2, expandable: true }, 'The spring catalog shoot covers the new oak kitchen line in three finishes. Every picture is cleared for web and print use, and the raw files are kept in the archive collection for a year. Ask the studio before cropping the hero shots.')",
+    "width": "360"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Yes, on Text: add them to its parts",
+    "recommended": true,
+    "text": "The Text parts list adds lines and the Show more button.",
+    "render": {
+     "caption": "One line, then three lines",
+     "jsx": "h(P.Stack, { gap: 'md' }, h(P.Text, { as: 'p', truncate: true }, 'A long file description that is cut on one line with an ellipsis at the end.'), h(P.Text, { as: 'p', lines: 3 }, 'A long description clamped to three lines. The rest stays in the page for search, copy and screen readers, but only three lines are drawn on screen at this width.'))",
+     "width": "360"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Another component",
+    "text": "Move lines and expandable to a separate component; the Text code would change.",
+    "render": {
+     "caption": "Not in the code today",
+     "jsx": "h(P.Table, { label: \"Separate component\", columns: [{\"title\":\"Part\",\"field\":\"c0\",\"kind\":\"wrap\",\"rowLabel\":true},{\"title\":\"Where\",\"field\":\"c1\",\"kind\":\"wrap\",\"rowLabel\":false}], data: [{\"id\":1,\"c0\":\"truncate\",\"c1\":\"Text\"},{\"id\":2,\"c0\":\"lines, expandable\",\"c1\":\"A new component\"}] })"
+    }
+   }
+  ],
+  "recommendation": "A: they are on Text. The code has them, and keeping all truncation on one text component is common (Fluent 2 Text truncate, Atlassian line clamp). The Show more button follows the APG disclosure pattern.",
+  "sources": [
+   "WAI-ARIA APG · Disclosure pattern",
+   "Fluent 2 · Text: truncate and wrap",
+   "Material 3 · Content: truncation"
+  ],
+  "settled": true
+ },
+ {
+  "id": "content/content-online-status/1",
+  "title": "Should Online status get its own purpose?",
+  "context": "Online status shows availability in words, but its purpose and write-up are those of the presence dot on an avatar.",
+  "current": [
+   {
+    "where": "Online status · Overview (parts/w04B.records.js, rec.text)",
+    "text": "A person’s availability in words, with the matching dot before it: the same five states as presence (Online, Away, Busy, Do not disturb, Offline), in the same order. The words carry the state, so the dot is decorative; a short note may follow (“In a meeting until 3:00 PM”)."
+   },
+   {
+    "where": "Online status · Purpose, from Presence (parts/w04B.docs.js, presence purpose; docsFrom: 'presence')",
+    "text": "Shows on a person’s avatar whether they are available, where people decide whom to contact: chat, members, assignees.",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Dot on an avatar vs status in words",
+    "jsx": "h(P.Stack, { gap: 'md' }, h(P.Avatar, { name: 'Maya Chen', size: 'lg', presence: 'busy', label: 'Maya Chen' }), h(P.Inline, null, h(P.StatusDot, { tone: 'online', label: 'Online' }), h(P.Text, null, 'Online')))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Its own purpose",
+    "recommended": true,
+    "text": "Purpose: \"Shows a person's availability in words where an avatar dot is too small or missing.\"",
+    "render": {
+     "caption": "Availability in words",
+     "jsx": "h(P.Inline, null, h(P.StatusDot, { tone: 'away', label: 'Away' }), h(P.Text, null, 'Away, back at 2 PM'))"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Keep the presence text",
+    "text": "The page keeps the avatar dot's purpose.",
+    "render": {
+     "caption": "The avatar dot",
+     "jsx": "h(P.Avatar, { name: 'Maya Chen', size: 'lg', presence: 'online', label: 'Maya Chen' })"
+    }
+   }
+  ],
+  "recommendation": "A: its own purpose. Words and a dot serve different places, and the words also meet WCAG 1.4.1 (not by color alone). Fluent 2 and Teams document presence badges and status text separately.",
+  "sources": [
+   "Fluent 2 · Presence badge",
+   "WCAG 2.2 · 1.4.1 Use of Color",
+   "Atlassian · Presence"
+  ]
+ },
+ {
+  "id": "content/presence/1",
+  "title": "One shared write-up for Presence and Online status?",
+  "context": "The Presence write-up is copied word for word on the Online status page. If Online status gets its own purpose (previous question), only the shared parts would stay shared.",
+  "current": [
+   {
+    "where": "Presence · Purpose (parts/w04B.docs.js), also shown on Online status (docsFrom: 'presence')",
+    "text": "Shows on a person’s avatar whether they are available, where people decide whom to contact: chat, members, assignees.",
+    "conflict": true
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Rewrite once, shared by all",
+    "recommended": true,
+    "text": "One reviewed write-up for Presence, shown on every page that uses it, so the copies never drift apart. Each page keeps its own overview and examples.",
+    "render": [
+     {
+      "caption": "The component every one of these pages shows, drawn live",
+      "jsx": "h(P.Stack, { gap: 'md' }, h(P.Inline, null, ...['online','away','busy','dnd','offline'].map(function(t){ return h(P.Avatar, { key: t, name: 'Maya Chen', size: 'lg', presence: t, label: 'Maya Chen' }); })), h(P.Inline, null, h(P.StatusDot, { tone: 'busy', label: 'Busy' }), h(P.Text, null, 'Busy · In a meeting until 3:00 PM')))"
+     },
+     {
+      "caption": "One source, many pages",
+      "jsx": "h(P.Table, { label: \"Shared write-up\", columns: [{\"title\":\"Page\",\"field\":\"c0\",\"kind\":\"wrap\",\"rowLabel\":true},{\"title\":\"Overview\",\"field\":\"c1\",\"kind\":\"wrap\",\"rowLabel\":false},{\"title\":\"Write-up (purpose, parts, behavior, accessibility, content)\",\"field\":\"c2\",\"kind\":\"wrap\",\"rowLabel\":false}], data: [{\"id\":1,\"c0\":\"Presence\",\"c1\":\"Its own\",\"c2\":\"The one shared text\"},{\"id\":2,\"c0\":\"Online status\",\"c1\":\"Its own\",\"c2\":\"The one shared text\"}] })"
+     }
+    ]
+   },
+   {
+    "key": "B",
+    "label": "Leave it as it is",
+    "text": "The copies stay word for word as they are now; nothing is reviewed.",
+    "render": [
+     {
+      "caption": "The same drawing; only the text differs",
+      "jsx": "h(P.Stack, { gap: 'md' }, h(P.Inline, null, ...['online','away','busy','dnd','offline'].map(function(t){ return h(P.Avatar, { key: t, name: 'Maya Chen', size: 'lg', presence: t, label: 'Maya Chen' }); })), h(P.Inline, null, h(P.StatusDot, { tone: 'busy', label: 'Busy' }), h(P.Text, null, 'Busy · In a meeting until 3:00 PM')))"
+     },
+     {
+      "caption": "Unchanged copies",
+      "jsx": "h(P.Table, { label: \"Copies today\", columns: [{\"title\":\"Page\",\"field\":\"c0\",\"kind\":\"wrap\",\"rowLabel\":true},{\"title\":\"Write-up\",\"field\":\"c1\",\"kind\":\"wrap\",\"rowLabel\":false}], data: [{\"id\":1,\"c0\":\"Presence\",\"c1\":\"Copy, not reviewed\"},{\"id\":2,\"c0\":\"Online status\",\"c1\":\"Copy, not reviewed\"}] })"
+     }
+    ]
+   },
+   {
+    "key": "C",
+    "label": "A separate write-up per page",
+    "text": "Each page gets its own text. More to write and keep in step; worth it only where the pages really differ.",
+    "render": [
+     {
+      "caption": "Each page would describe this drawing in its own words",
+      "jsx": "h(P.Stack, { gap: 'md' }, h(P.Inline, null, ...['online','away','busy','dnd','offline'].map(function(t){ return h(P.Avatar, { key: t, name: 'Maya Chen', size: 'lg', presence: t, label: 'Maya Chen' }); })), h(P.Inline, null, h(P.StatusDot, { tone: 'busy', label: 'Busy' }), h(P.Text, null, 'Busy · In a meeting until 3:00 PM')))"
+     },
+     {
+      "caption": "Separate texts",
+      "jsx": "h(P.Table, { label: \"Separate write-ups\", columns: [{\"title\":\"Page\",\"field\":\"c0\",\"kind\":\"wrap\",\"rowLabel\":true},{\"title\":\"Write-up\",\"field\":\"c1\",\"kind\":\"wrap\",\"rowLabel\":false}], data: [{\"id\":1,\"c0\":\"Presence\",\"c1\":\"Its own text\"},{\"id\":2,\"c0\":\"Online status\",\"c1\":\"Its own text\"}] })"
+     }
+    ]
+   }
+  ],
+  "recommendation": "A: write it once and share it. Mainstream systems document a component once and point its variant or alias pages at that one text (Carbon and Polaris keep one usage page per component; Material 3 shows variants under one component page). One reviewed copy cannot drift, and the owner reviews it a single time. Online status keeps its own purpose on top.",
+  "sources": [
+   "Material 3 · one page per component, variants inside",
+   "IBM Carbon · one usage page per component",
+   "Shopify Polaris · component pages with variant examples",
+   "Plenix rule: one page per component (2026-10-23)"
+  ],
+  "renders": [
+   {
+    "caption": "What these pages show, drawn live",
+    "jsx": "h(P.Stack, { gap: 'md' }, h(P.Inline, null, ...['online','away','busy','dnd','offline'].map(function(t){ return h(P.Avatar, { key: t, name: 'Maya Chen', size: 'lg', presence: t, label: 'Maya Chen' }); })), h(P.Inline, null, h(P.StatusDot, { tone: 'busy', label: 'Busy' }), h(P.Text, null, 'Busy · In a meeting until 3:00 PM')))"
+   }
+  ]
+ },
+ {
+  "id": "content/swatch/1",
+  "title": "Can pages use a picking swatch on its own, outside ColorPicker?",
+  "context": "A ColorSwatch with onClick is a button with a ring on the chosen one. \"When not to use\" sends picking from a set to ColorPicker. The code allows both.",
+  "current": [
+   {
+    "where": "Color swatch · Overview (parts/w04C.records.js, rec.text)",
+    "text": "With showLabel, its name follows as text; as a button, it picks the color, and the chosen one shows a ring.",
+    "conflict": true
+   },
+   {
+    "where": "Color swatch · When not to use (parts/w04C.records.js, rec.avoid[2])",
+    "text": "Picking a color from a set: use ColorPicker, which groups these swatch buttons and marks the chosen one",
+    "conflict": true
+   },
+   {
+    "where": "Color swatch · Behavior (parts/w04C.docs.js, docs.behavior.keyboard)",
+    "text": "A picking swatch is a Tab stop; Space and Enter pick it."
+   },
+   {
+    "where": "ColorSwatch.jsx (the code)",
+    "text": "onClick(event): makes the swatch a button that picks the color … pressed: marks the chosen color (aria-pressed)"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "A ColorPicker, and one swatch button alone",
+    "jsx": "h(function Demo(){ const [c, s] = React.useState('blue'); const [p, sp] = React.useState(false); return h(P.Stack, { gap: 'md' }, h(P.ColorPicker, { value: c, onChange: s, label: 'Color' }), h(P.ColorSwatch, { color: 'green', label: 'Green', showLabel: true, pressed: p, onClick: function(){ sp(!p); } })); })"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Inside ColorPicker for a set; alone for one toggle",
+    "recommended": true,
+    "text": "Wording: pick from a set with ColorPicker. A single swatch button is fine on its own for one on/off choice, such as \"use this color\".",
+    "render": {
+     "caption": "A single toggle swatch",
+     "jsx": "h(function Demo(){ const [p, sp] = React.useState(true); return h(P.ColorSwatch, { color: 'purple', label: 'Use project color', showLabel: true, pressed: p, onClick: function(){ sp(!p); } }); })"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Only inside ColorPicker",
+    "text": "Wording: the button form is only for ColorPicker; pages never use a picking swatch alone.",
+    "render": {
+     "caption": "ColorPicker only",
+     "jsx": "h(function Demo(){ const [c, s] = React.useState('red'); return h(P.ColorPicker, { value: c, onChange: s, label: 'Color' }); })"
+    }
+   },
+   {
+    "key": "C",
+    "label": "Anywhere",
+    "text": "Pages may build their own sets of swatch buttons. Keyboard and grouping would differ page to page.",
+    "render": {
+     "caption": "A hand-made set (what this allows)",
+     "jsx": "h(P.Inline, null, h(P.ColorSwatch, { color: 'red', label: 'Red', onClick: function(){} }), h(P.ColorSwatch, { color: 'blue', label: 'Blue', pressed: true, onClick: function(){} }))"
+    }
+   }
+  ],
+  "recommendation": "A: sets go through ColorPicker, a single toggle may stand alone. A set needs one group name and consistent keys, which ColorPicker gives (APG radio group or toolbar). Polaris and Fluent 2 also offer swatch pickers as one control rather than loose buttons.",
+  "sources": [
+   "WAI-ARIA APG · Button (toggle) and Radio group",
+   "Fluent 2 · Swatch picker",
+   "Shopify Polaris · Color picker"
+  ]
+ },
+ {
+  "id": "content/timestamp/1",
+  "title": "Is every timestamp with a tooltip a Tab stop?",
+  "context": "The spec as it reads today (2026-10-24) already says this; the question was written against an older wording. The sentence is unclear. The code settles it: a timestamp is a Tab stop exactly when its tooltip is on. The tooltip is on by default for relative times and date labels, and can be turned on for any format.",
+  "current": [
+   {
+    "where": "Timestamp · Accessibility (parts/w04C.docs.js, docs.a11y.focus)",
+    "text": "A timestamp with its tooltip is a Tab stop, so keyboard users can reach the full date and time; the tooltip is on by default for relative times and date labels."
+   },
+   {
+    "where": "Timestamp · Behavior (parts/w04C.docs.js, docs.behavior.keyboard)",
+    "text": "With the tooltip it is a Tab stop; focus shows the full moment."
+   },
+   {
+    "where": "Time.jsx (the code)",
+    "text": "With the tooltip the <time> is a Tab stop, so keyboard users can reach the full value; the tooltip describes it."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Tab through: the first two are stops, the third is not",
+    "jsx": "h(P.Stack, { gap: 'sm' }, h(P.Time, { value: Date.now() - 300000, format: 'relative' }), h(P.Time, { value: Date.now() - 86400000, format: 'datetime', tooltip: true }), h(P.Time, { value: Date.now() - 86400000, format: 'datetime' }))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Tab stop when the tooltip is on",
+    "recommended": true,
+    "text": "Wording: \"A timestamp with its tooltip is a Tab stop, so keyboard users can reach the full date. The tooltip is on by default for relative times and date labels.\"",
+    "render": {
+     "caption": "Tooltip on, any format",
+     "jsx": "h(P.Time, { value: Date.now() - 86400000, format: 'date', tooltip: true })"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Only relative times and labels",
+    "text": "Wording ties focus to the format; a datetime with tooltip on would not be reachable, so the code would change.",
+    "render": {
+     "caption": "Relative only",
+     "jsx": "h(P.Time, { value: Date.now() - 300000, format: 'relative' })"
+    }
+   }
+  ],
+  "recommendation": "A: a Tab stop whenever the tooltip is on. That is what the code does, and WCAG 1.4.13 and the APG tooltip pattern require tooltip content to be reachable by keyboard focus.",
+  "sources": [
+   "WAI-ARIA APG · Tooltip pattern",
+   "WCAG 2.2 · 1.4.13 Content on Hover or Focus",
+   "WCAG 2.2 · 2.1.1 Keyboard"
+  ],
+  "settled": true
+ },
+ {
+  "id": "content/people-group/1",
+  "title": "Remove \"source\" from the Team page?",
+  "context": "The spec as it reads today (2026-10-24) already says this; the question was written against an older wording. The Team page says the \"source\" is cut with an ellipsis, but a team has no source part. Only a Group shows one (\"Synced from directory\").",
+  "current": [
+   {
+    "where": "Team · Behavior (parts/w08B.docs.js, people-group docs.behavior.responsive)",
+    "text": "The text takes the room left; the name and description are cut with an ellipsis and keep their full text in the title."
+   },
+   {
+    "where": "Group · Behavior (parts/w08B.docs.js, user-group docs.behavior.responsive)",
+    "text": "The text takes the room left; a long source is cut with an ellipsis and keeps its full text in the title."
+   }
+  ],
+  "renders": [
+   {
+    "caption": "A team and a group",
+    "jsx": "h(P.Table, { label: \"Parts\", columns: [{\"title\":\"Part\",\"field\":\"c0\",\"kind\":\"wrap\",\"rowLabel\":true},{\"title\":\"Team\",\"field\":\"c1\",\"kind\":\"wrap\",\"rowLabel\":false},{\"title\":\"Group\",\"field\":\"c2\",\"kind\":\"wrap\",\"rowLabel\":false}], data: [{\"id\":1,\"c0\":\"Name\",\"c1\":\"Yes\",\"c2\":\"Yes\"},{\"id\":2,\"c0\":\"Members\",\"c1\":\"Yes\",\"c2\":\"Yes\"},{\"id\":3,\"c0\":\"Source (\\\"Synced from directory\\\")\",\"c1\":\"No\",\"c2\":\"Yes\"}] })",
+    "width": "600"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Remove \"source\" from Team",
+    "recommended": true,
+    "text": "The Team page names only its own parts (name, members).",
+    "render": {
+     "caption": "Team without source",
+     "jsx": "h(P.Inline, null, h(P.Avatar, { name: 'Design Team', size: 'md' }), h(P.Text, { variant: 'strong', truncate: true }, 'Design Team'))",
+     "width": "360"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Give Team a source part",
+    "text": "Teams would show where they come from too; the component would change.",
+    "render": {
+     "caption": "Team with a source line",
+     "jsx": "h(P.Stack, { gap: 'none' }, h(P.Text, { variant: 'strong' }, 'Design Team'), h(P.Text, { variant: 'secondary', truncate: true }, 'Synced from directory'))",
+     "width": "360"
+    }
+   }
+  ],
+  "recommendation": "A: remove it. A page should describe only parts the component has. Carbon and Polaris write behavior per variant from its own anatomy.",
+  "sources": [
+   "IBM Carbon · Anatomy per component",
+   "Shopify Polaris · Content guidelines: describe what is there"
+  ],
+  "settled": true
+ },
+ {
+  "id": "content/image-gallery/1",
+  "title": "Should Image gallery get its own written text?",
+  "context": "When to use and When not to use have since been written for the gallery; the write-up (behavior, accessibility, content) is still the generic media text. The page has a generic media text. \"When to use\" repeats the overview, \"When not to use\" is an instruction, and Behavior, Accessibility and Content talk about forms, FileRow, Carousel and \"Save metadata\".",
+  "current": [
+   {
+    "where": "Image gallery · When to use (parts/w12B.records.js)",
+    "text": "Browsing many images to find one, such as a photo library or a set of renditions"
+   },
+   {
+    "where": "Image gallery · When not to use (parts/w12B.records.js)",
+    "text": "One image with a caption: use Figure"
+   },
+   {
+    "where": "Image gallery · Behavior (parts/w12B.docs.js, docs.behavior.focus)",
+    "text": "Preview restores focus to its opener. Form errors preserve the active editing context.",
+    "conflict": true
+   },
+   {
+    "where": "Image gallery · Content (parts/w12B.docs.js, docs.content.actions)",
+    "text": "Use Save metadata, Reset, Cancel and Try again for their respective actions.",
+    "conflict": true
+   }
+  ],
+  "renders": [
+   {
+    "caption": "A gallery of pictures",
+    "jsx": "h(P.Inline, null, ...['a','b','c'].map(function(k){ return h(P.Thumbnail, { key: k, icon: 'image' }); }))"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Its own text",
+    "recommended": true,
+    "text": "Written for a gallery: when to use (several pictures to browse), when not (one picture: Image; a sequence: Carousel), keyboard, alt text.",
+    "render": {
+     "caption": "Proposed When to use / When not",
+     "jsx": "h(P.Table, { label: \"Image gallery\", columns: [{\"title\":\"Section\",\"field\":\"c0\",\"kind\":\"wrap\",\"rowLabel\":true},{\"title\":\"Text\",\"field\":\"c1\",\"kind\":\"wrap\",\"rowLabel\":false}], data: [{\"id\":1,\"c0\":\"When to use\",\"c1\":\"Several pictures people browse and open\"},{\"id\":2,\"c0\":\"When not to use\",\"c1\":\"One picture: Image. A slide sequence: Carousel\"},{\"id\":3,\"c0\":\"Accessibility\",\"c1\":\"Every picture has alt text; arrows move between pictures\"}] })",
+     "width": "600"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Keep the generic media text",
+    "text": "No change; the page keeps text about forms and FileRow.",
+    "render": {
+     "caption": "Current text",
+     "jsx": "h(P.Text, { as: 'p' }, 'Keep sources and actions explicit.')"
+    }
+   }
+  ],
+  "recommendation": "A: its own text. Text about other components misleads, and \"When not to use\" should name cases. Material 3 and Carbon write each page's usage for that component.",
+  "sources": [
+   "Material 3 · Image lists",
+   "IBM Carbon · Usage guidance per component",
+   "WCAG 2.2 · 1.1.1 Non-text Content"
+  ]
+ },
+ {
+  "id": "content/video/1",
+  "title": "Should Video get its own text (Video versus Audio)?",
+  "context": "When to use and When not to use have since been written for Video (with Audio as the alternative); the write-up is still MediaPlayer's. Video shares its text word for word with Audio and other media pages. The code draws both with MediaPlayer (kind \"video\" or \"audio\").",
+  "current": [
+   {
+    "where": "Video · When to use (parts/w12B.records.js)",
+    "text": "A recording people watch, with captions and a transcript"
+   },
+   {
+    "where": "Video · When not to use (parts/w12B.records.js)",
+    "text": "Sound only, such as a podcast or a voice note: use Audio"
+   },
+   {
+    "where": "Video · Purpose, from MediaPlayer (parts/w12B.docs.js, media-player purpose)",
+    "text": "Lets people watch a video or listen to a recording, with a transcript they can jump through and speed control; videos also take captions.",
+    "conflict": true
+   },
+   {
+    "where": "MediaPlayer.jsx (the code)",
+    "text": "kind: video (default) | audio"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Video versus audio",
+    "jsx": "h(P.Table, { label: \"MediaPlayer kinds\", columns: [{\"title\":\"Kind\",\"field\":\"c0\",\"kind\":\"wrap\",\"rowLabel\":true},{\"title\":\"Shows\",\"field\":\"c1\",\"kind\":\"wrap\",\"rowLabel\":false},{\"title\":\"Has\",\"field\":\"c2\",\"kind\":\"wrap\",\"rowLabel\":false}], data: [{\"id\":1,\"c0\":\"video\",\"c1\":\"Picture and controls\",\"c2\":\"Captions, picture in picture\"},{\"id\":2,\"c0\":\"audio\",\"c1\":\"Controls only\",\"c2\":\"Transcript, no picture\"}] })",
+    "width": "600"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Its own text",
+    "recommended": true,
+    "text": "When to use Video (moving pictures, captions needed) versus Audio (sound only, transcript); when not (a still: Image).",
+    "render": {
+     "caption": "Proposed",
+     "jsx": "h(P.Table, { label: \"Video\", columns: [{\"title\":\"Section\",\"field\":\"c0\",\"kind\":\"wrap\",\"rowLabel\":true},{\"title\":\"Text\",\"field\":\"c1\",\"kind\":\"wrap\",\"rowLabel\":false}], data: [{\"id\":1,\"c0\":\"When to use\",\"c1\":\"Moving pictures, a walkthrough, a recording\"},{\"id\":2,\"c0\":\"When not to use\",\"c1\":\"Sound only: Audio. A still: Image\"},{\"id\":3,\"c0\":\"Accessibility\",\"c1\":\"Captions for speech; nothing autoplays\"}] })",
+     "width": "600"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Keep the shared text",
+    "text": "No change.",
+    "render": {
+     "caption": "Current text",
+     "jsx": "h(P.Text, { as: 'p' }, 'Keep sources and actions explicit.')"
+    }
+   }
+  ],
+  "recommendation": "A: its own text. Video has captions and picture in picture, audio does not; WCAG treats them differently (1.2.2 captions, 1.2.1 transcripts). Material 3 and Apple HIG document video playback on its own.",
+  "sources": [
+   "WCAG 2.2 · 1.2.1 and 1.2.2 Audio-only, Captions",
+   "Apple HIG · Playing video",
+   "Material 3 · Media"
+  ]
+ },
+ {
+  "id": "content/audio/1",
+  "title": "Should Audio get its own text without video parts?",
+  "context": "The Audio page shows the Video text: \"audio and video\", and parts that include picture in picture. In the code, picture in picture is a video feature.",
+  "current": [
+   {
+    "where": "Audio · Overview and When to use, from MediaPlayer (parts/w12B.records.js: text and use = d.purpose)",
+    "text": "Lets people watch a video or listen to a recording, with a transcript they can jump through and speed control; videos also take captions.",
+    "conflict": true
+   },
+   {
+    "where": "Audio · When not to use (parts/w12B.records.js, default avoid)",
+    "text": "Keep sources and actions explicit.",
+    "conflict": true
+   },
+   {
+    "where": "Audio · Anatomy, from MediaPlayer (parts/w12B.docs.js, docs.anatomy[4])",
+    "text": "Optional picture in picture",
+    "conflict": true
+   },
+   {
+    "where": "MediaPlayer.jsx (the code)",
+    "text": "pictureInPicture: offer the browser feature (default true) … audio: (video) separate sound URL for a silent video source"
+   }
+  ],
+  "renders": [
+   {
+    "caption": "Audio parts versus video parts",
+    "jsx": "h(P.Table, { label: \"Parts\", columns: [{\"title\":\"Part\",\"field\":\"c0\",\"kind\":\"wrap\",\"rowLabel\":true},{\"title\":\"Audio\",\"field\":\"c1\",\"kind\":\"wrap\",\"rowLabel\":false},{\"title\":\"Video\",\"field\":\"c2\",\"kind\":\"wrap\",\"rowLabel\":false}], data: [{\"id\":1,\"c0\":\"Play, seek, volume\",\"c1\":\"Yes\",\"c2\":\"Yes\"},{\"id\":2,\"c0\":\"Playback rate\",\"c1\":\"Yes\",\"c2\":\"Yes\"},{\"id\":3,\"c0\":\"Transcript\",\"c1\":\"Yes\",\"c2\":\"Yes\"},{\"id\":4,\"c0\":\"Captions\",\"c1\":\"No\",\"c2\":\"Yes\"},{\"id\":5,\"c0\":\"Picture in picture\",\"c1\":\"No\",\"c2\":\"Yes\"}] })",
+    "width": "600"
+   }
+  ],
+  "options": [
+   {
+    "key": "A",
+    "label": "Its own text, audio parts only",
+    "recommended": true,
+    "text": "Overview and parts describe audio: controls, rate, transcript. No picture in picture.",
+    "render": {
+     "caption": "Audio parts",
+     "jsx": "h(P.Table, { label: \"Audio parts\", columns: [{\"title\":\"Part\",\"field\":\"c0\",\"kind\":\"wrap\",\"rowLabel\":true}], data: [{\"id\":1,\"c0\":\"Play and pause\"},{\"id\":2,\"c0\":\"Seek and volume\"},{\"id\":3,\"c0\":\"Playback rate\"},{\"id\":4,\"c0\":\"Transcript\"}] })",
+     "width": "600"
+    }
+   },
+   {
+    "key": "B",
+    "label": "Keep the Video text",
+    "text": "No change; Audio keeps parts it does not have.",
+    "render": {
+     "caption": "Current parts",
+     "jsx": "h(P.Table, { label: \"Current parts\", columns: [{\"title\":\"Part\",\"field\":\"c0\",\"kind\":\"wrap\",\"rowLabel\":true}], data: [{\"id\":1,\"c0\":\"Controls\"},{\"id\":2,\"c0\":\"Captions\"},{\"id\":3,\"c0\":\"Picture in picture\"}] })",
+     "width": "600"
+    }
+   }
+  ],
+  "recommendation": "A: its own text with audio parts. A page should list only parts the component draws. WCAG asks audio-only content for a transcript, which is the part to stress here.",
+  "sources": [
+   "WCAG 2.2 · 1.2.1 Audio-only",
+   "Apple HIG · Audio",
+   "IBM Carbon · Anatomy per component"
+  ]
+ }
+]

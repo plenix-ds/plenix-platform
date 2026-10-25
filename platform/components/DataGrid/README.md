@@ -5,7 +5,7 @@ Its own Plenix markup and stylesheet use the existing table tokens and establish
 
 Public event callbacks receive records: onRowClick(record,event), onRowDoubleClick(record,event),
 onCellEdit(record,{field,value,previous,row}). Grouping uses groupBy; trees use tree, childrenField
-(default _children) and treeColumn. Existing callers retain a private compatibility adapter.
+(default children) and treeColumn. Existing callers retain a private compatibility adapter.
 
 Capabilities include virtual scrolling; saved sorting, column order, widths, visibility and collapsed groups;
 canonical selection; nested and multi-value grouping with summaries; tree rows; input/number editing;
@@ -23,4 +23,3 @@ Validation:
 - node tests/data-grid-next-capabilities.test.js: grouping, tree, editing, movement, copy and print.
 - node tests/data-grid-next-independent.test.js: standalone module graph and blocked legacy-engine access.
 - node tests/data-grid-next-perf.test.js: identical rich 600-row scenarios for both engines.
-- node tests/phase7-review.js: paired application review captures.

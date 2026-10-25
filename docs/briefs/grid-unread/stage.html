@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en" data-plx-mode="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unread stage · Plenix review</title>
+<!-- The stage for #287 pictures: a People list (CommandBar + DataGrid with unread rows and selection), drawn with the
+     Platform. ?v=today | a | b | c picks the bar; capture.js photographs each. -->
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<link rel="stylesheet" href="../review.css">
+<script src="../../../platform/vendor/react-loader.js"></script>
+<script src="../../../platform/dist/platform.js"></script>
+</head>
+<body class="rv-page">
+<div id="root" class="rv-doc"></div>
+<script>
+(function () {
+  const h = React.createElement, P = window.Plenix, v = new URLSearchParams(location.search).get('v') || 'today';
+  const rows = [
+    { id: 1, name: 'Maya Chen', company: 'Apex Co', status: 'Active' }, { id: 2, name: 'Jeff Torres', company: 'ABC Plumbing', status: 'Active' },
+    { id: 3, name: 'Luis Herrera', company: 'Herrera Tax', status: 'Waiting' }, { id: 4, name: 'James Whitfield', company: 'Apex Co', status: 'Active' },
+    { id: 5, name: 'Sarah Morgan', company: 'Morgan Studio', status: 'Draft' }];
+  const columns = [{ title: 'Name', field: 'name', kind: 'name' }, { title: 'Company', field: 'company' }, { title: 'Status', field: 'status' }];
+  function Stage() {
+    const [unread, setUnread] = React.useState([2, 4]), [only, setOnly] = React.useState(false), [sel, setSel] = React.useState(v === 'today' ? [] : [2]);
+    const shown = only ? rows.filter((r) => unread.includes(r.id)) : rows;
+    const mark = (value) => setUnread((u) => value ? [...new Set(u.concat(sel))] : u.filter((k) => !sel.includes(k)));
+    const selection = { count: sel.length, noun: 'person', plural: 'people', onClear: () => setSel([]),
+      actions: v === 'c' ? [{ id: 'delete', label: 'Delete', icon: 'trash', danger: true, onSelect: () => {} }]
+        : [{ id: 'read', label: 'Mark as read', icon: 'mail-open', onSelect: () => mark(false) }, { id: 'unread', label: 'Mark as unread', icon: 'mail', onSelect: () => mark(true) },
+           { id: 'delete', label: 'Delete', icon: 'trash', danger: true, onSelect: () => {} }] };
+    const actions = [{ id: 'add', label: 'Add person', icon: 'plus', onSelect: () => {} }]
+      .concat(v === 'a' ? [{ id: 'only', label: 'Unread only (' + unread.length + ')', icon: 'mail', toggle: true, pressed: only, onSelect: (next) => setOnly(next) }] : []);
+    const quickFilters = v === 'b' ? [{ id: 'read', label: 'Read status', options: [{ value: 'unread', label: 'Unread' }, { value: 'read', label: 'Read' }],
+      value: only ? ['unread'] : [], onChange: (x) => setOnly([].concat(x || []).includes('unread')), counts: new Map([['unread', unread.length], ['read', rows.length - unread.length]]) }] : undefined;
+    return h('div', { id: 'stage' },
+      h(P.CommandBar, { label: 'People', count: shown.length + ' people', actions, quickFilters, selection,
+        find: h(P.CommandBarSearch, { value: '', onChange: () => {}, onClear: () => {}, placeholder: 'Search people' }) }),
+      h(P.DataGrid, { label: 'People', data: shown, columns, selectable: true, selected: sel, onSelectionChange: (k) => setSel(k),
+        unreadKeys: unread, onUnreadChange: (k) => setUnread(k), height: '--plx-ref-size-320px' }));
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(h(Stage));
+})();
+</script>
+</body>
+</html>

@@ -73,8 +73,8 @@ export function ScatterChart({ title, description, series = [], variant = 'point
   const say = (p) => [many ? p.series.label : null, p.label].filter(Boolean).join(', ') + ': ' + xTitle + ' ' + fx(p.x) + ', ' + yTitle + ' ' + fy(p.y) + (v === 'bubble' && sizeTitle ? ', ' + sizeTitle + ' ' + fs(p.size) : '');
   const keys = useChartPoints({ count: all.length, describe: (i) => say(all[i]) });
   const columns = [].concat(many ? [{ title: t.series, field: 'series', kind: 'name' }] : [], named ? [{ title: t.item, field: 'item', kind: 'name', rowLabel: true }] : [],
-    [{ title: xTitle, field: 'x', kind: 'data', hozAlign: 'right' }, { title: yTitle, field: 'y', kind: 'data', hozAlign: 'right' }],
-    v === 'bubble' ? [{ title: sizeTitle || '', field: 'size', kind: 'data', hozAlign: 'right' }] : []);
+    [{ title: xTitle, field: 'x', kind: 'data', align: 'right' }, { title: yTitle, field: 'y', kind: 'data', align: 'right' }],
+    v === 'bubble' ? [{ title: sizeTitle || '', field: 'size', kind: 'data', align: 'right' }] : []);
   const table = { columns, data: all.map((p, i) => ({ id: i + 1, series: p.series.label, item: p.label, x: fx(p.x), y: fy(p.y), size: fs(p.size) })) };
   const legend = many ? <ChartLegend items={groups.map((g) => ({ id: g.id, label: g.label, color: g.color }))} /> : undefined;
   // the trend lines' ends count in the y range, so a line stays inside the plot
