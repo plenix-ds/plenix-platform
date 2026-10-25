@@ -1234,7 +1234,7 @@
   --plx-comp-data-grid-w-fill-flex-basis: var(--plx-ref-size-80px);
   --plx-comp-data-grid-w-fill-width: var(--plx-ref-size-80px);
   --plx-comp-data-grid-w-fill-min-width: var(--plx-ref-size-80px);
-  --plx-comp-data-grid-resize-width: var(--plx-ref-size-8px);
+  --plx-comp-data-grid-resize-width: var(--plx-ref-size-12px);
   --plx-comp-data-grid-resize-z-index: var(--plx-sys-layer-raised);
   --plx-comp-data-grid-resize-hover-background-image: linear-gradient(var(--plx-sys-data-grid-accent),var(--plx-sys-data-grid-accent));
   --plx-comp-data-grid-drop-shadow: inset 0 var(--plx-sys-border-width-medium) 0 0 var(--plx-sys-data-grid-accent);
@@ -3405,6 +3405,7 @@
   --plx-comp-data-grid-row-selected-bar-width: var(--plx-sys-border-width-thick);
   --plx-comp-data-grid-menu-button-hover-background: var(--plx-sys-data-grid-menu-button-hover);
   --plx-comp-data-grid-menu-button-padding-inline: var(--plx-ref-space-4px);
+  --plx-comp-data-grid-menu-button-min-width: var(--plx-ref-size-24px);
 }
 [data-plx-density="standard"],:root[data-plx-density-policy="standard"]:not([data-plx-density]),:root:not([data-plx-density], [data-plx-density-policy]){
   --plx-ctx-density-plx-comp-data-grid-text-line-height: var(--plx-ref-size-20px);
@@ -3622,7 +3623,7 @@
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-entity-header-tile-surface-background: var(--plx-sys-surface-default);
   --plx-comp-entity-header-tile-surface-text: var(--plx-sys-content-link);
-  --plx-comp-entity-header-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+  --plx-comp-entity-header-columns: minmax(63%, max-content) minmax(var(--plx-comp-entity-header-aside-min-width), 1fr);
   --plx-comp-entity-header-column-gap: var(--plx-ref-space-20px);
   --plx-comp-entity-header-heading-gap: var(--plx-sys-space-inline-md);
   --plx-comp-entity-header-media-size: var(--plx-ref-size-44px);
@@ -3776,6 +3777,8 @@
   --plx-comp-entity-header-streamlined-progress-value-text: var(--plx-sys-content-link);
   --plx-comp-entity-header-streamlined-progress-value-font-weight: var(--plx-ref-font-weight-bold-700);
   --plx-comp-entity-header-streamlined-tiles-margin: var(--plx-ref-space-12px);
+  --plx-comp-entity-header-aside-min-width: var(--plx-ref-size-220px);
+  --plx-comp-entity-header-states-background: var(--plx-ref-color-gray-75);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-entity-picker-max-width: var(--plx-ref-size-400px);
