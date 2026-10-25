@@ -17,7 +17,7 @@
 <script>
 (function () {
   const h = React.createElement, P = window.Plenix, q = new URLSearchParams(location.search), wrap = q.get('wrap') === '1', mock = q.get('mock');
-  const notes = ['Waiting on the signed copy from the client before we can send the final invoice and close the project.',
+  const notes = ['Waiting on the signed copy from the client before we can send the final invoice and close the project; the client asked for one more change to the delivery dates and a second review of the payment terms by their legal team.',
     'Short note', 'The proposal covers three phases; the second needs a site visit and a revised budget before approval.',
     'Approved on Monday', 'Draft started; the legal team asked for a review of the payment terms and the delivery dates.'];
   const rows = notes.map((n, i) => ({ id: i + 1, name: ['Northwind report', 'Contoso proposal', 'Fabrikam invoice', 'Apex brief', 'Litware contract'][i], owner: ['Maya Chen', 'Jeff Torres', 'Luis Herrera', 'Sarah Morgan', 'Ana Ruiz'][i], note: n }));

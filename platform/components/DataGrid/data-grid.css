@@ -120,6 +120,9 @@
 /* a row with a wrapping column (Wrap text, owner 2026-10-24): every cell starts at the top, at the reading line height
    with the wrap padding, so the first lines read across; rows without wrapping stay centered */
 .plx-data-grid__grid-row--wrap{--plx-comp-data-grid-context-cell-align:flex-start;--plx-comp-data-grid-context-cell-line-height:var(--plx-comp-data-grid-wrap-line-height);--plx-comp-data-grid-context-cell-pad-end:var(--plx-comp-data-grid-cell-wrap-padding-bottom);--plx-comp-data-grid-context-cell-pad-start:var(--plx-comp-data-grid-cell-wrap-padding-top);}
+/* cut text: the expand button at the cell's end, and the full text in its popover (owner, 2026-10-24) */
+.plx-data-grid__cut{display:inline-flex;flex-shrink:0;margin-inline-start:auto;}
+.plx-data-grid__full-text{overflow-wrap:anywhere;white-space:normal;}
 /* row hover R2 and selected rows S2 (owner, 2026-10-23): each keeps its lines in its own color, a selected row has a bar at its start */
 .plx-data-grid__grid-row.plx-data-grid__grid-selectable:hover:where(:not(.plx-data-grid__grid-selected)){--plx-comp-data-grid-context-row-fill:var(--plx-comp-data-grid-row-hover-background);--plx-comp-data-grid-context-row-line:var(--plx-comp-data-grid-row-hover-line);}
 .plx-data-grid__grid-row.plx-data-grid__grid-selected:where(:not(:hover)){--plx-comp-data-grid-context-row-fill:var(--plx-comp-data-grid-row-selected-background);--plx-comp-data-grid-context-row-line:var(--plx-comp-data-grid-row-selected-line);}
