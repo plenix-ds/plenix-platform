@@ -3026,17 +3026,31 @@ function ProjectContent({
       },
       subtitle: proj.desc,
       status: statusOf(proj.status),
-      facts: proj.tags[0] ? [{
-        label: 'Tag',
-        value: proj.tags[0]
-      }] : [],
+      facts: [{
+        label: 'Tasks',
+        value: pTasks.length - open.length + ' / ' + pTasks.length,
+        data: true
+      }, {
+        label: 'Files',
+        value: proj.files,
+        data: true
+      }],
+      next: open[0] ? {
+        title: open[0].title,
+        detail: 'Due ' + open[0].due
+      } : undefined,
       actions: [{
-        icon: 'flag',
-        label: 'Update status',
-        primary: true
+        icon: 'star',
+        label: 'Favorite'
       }, {
         icon: 'share',
         label: 'Share'
+      }, {
+        icon: 'pencil',
+        label: 'Edit'
+      }, {
+        icon: 'flag',
+        label: 'Update status'
       }]
     }), /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
       gap: "lg",

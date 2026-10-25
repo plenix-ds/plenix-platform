@@ -2391,13 +2391,25 @@ function MessagingScreen({
     },
     subtitle: thd.ch,
     facts: [{
-      label: 'Messages',
-      value: mList.length
+      label: 'Unread',
+      value: thd.unread || 0,
+      data: true
     }, {
+      label: 'Messages',
+      value: mList.length,
+      data: true
+    }].concat(thd.preview ? [] : [{
       label: 'Last',
       value: thd.time,
       data: true
-    }],
+    }]),
+    next: thd.preview ? {
+      label: 'Latest',
+      title: thd.preview,
+      detail: /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
+        variant: "data"
+      }, thd.time)
+    } : undefined,
     actions: [{
       icon: 'phone',
       label: 'Call'

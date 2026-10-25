@@ -77,7 +77,7 @@ exports.SYMBOLS = exports.NAMES = exports.LIBRARY_COMMIT = exports.LIBRARY = voi
      NAMES: each Plenix icon name (and its underscore alias) -> [symbol, 1 when its outline is the fill version]
      LIBRARY: the whole library's symbol names, space separated (their files load on demand)
      LIBRARY_COMMIT: the library's commit (the CDN keeps its files under /cdn/material/<commit>/) */
-const SYMBOLS = exports.SYMBOLS = "account_circle add add_box add_circle add_column_left add_column_right add_row_above add_row_below admin_panel_settings apps archive arrow_back arrow_downward arrow_drop_down arrow_drop_down_circle arrow_right arrow_upward article attach_file attach_money auto_awesome bar_chart bookmark build calendar_month call category center_focus_weak chat_bubble check_box check_circle check_small checklist chevron_left chevron_right close close_small cloud_off code code_blocks content_copy create_new_folder crop database dataset delete density_large density_medium density_small description do_not_disturb_on document_search download draft drag_indicator drive_file_move drive_file_rename_outline edit error event_repeat expand_less expand_more filter_alt filter_alt_off find_in_page fit_width flag flip folder folder_eye folder_open folder_zip format_align_center format_align_justify format_align_left format_align_right format_bold format_clear format_color_text format_italic format_list_bulleted format_list_numbered format_quote format_strikethrough format_underlined forward graphic_eq grid_view group headphones home horizontal_rule image indeterminate_check_box info ink_highlighter input keyboard_arrow_down left_panel_close left_panel_open library_add linear_scale link list list_alt lock logout mail mark_email_unread menu menu_book merge mic mic_off more_vert notes notifications numbers open_in_full open_in_new output perm_media person person_cancel person_female person_male photo_camera photo_filter photo_library picture_as_pdf push_pin record_voice_over redo refresh remove reply reply_all right_panel_close right_panel_open rotate_left rotate_right save save_as schedule search sell settings share smart_button snooze star stop subscript superscript swap_vert tab table table_rows text_fields title toggle_on tune undo upload view_agenda view_comfy view_module visibility visibility_off volume_off volume_up warning width_normal width_wide wifi_off work zoom_in zoom_out";
+const SYMBOLS = exports.SYMBOLS = "account_circle add add_box add_circle add_column_left add_column_right add_row_above add_row_below admin_panel_settings apps archive arrow_back arrow_downward arrow_drop_down arrow_drop_down_circle arrow_right arrow_upward article attach_file attach_money auto_awesome bar_chart bookmark build calendar_month call category center_focus_weak chat_bubble check_box check_circle check_small checklist chevron_left chevron_right close close_small cloud_off code code_blocks content_copy create_new_folder crop database dataset delete density_large density_medium density_small description do_not_disturb_on document_search download draft drag_indicator drive_file_move drive_file_rename_outline edit error event_repeat expand_less expand_more file_ai file_jpg file_pdf file_png file_psd file_svg filter_alt filter_alt_off find_in_page fit_width flag flip flip_vertical folder folder_eye folder_open folder_zip format_align_center format_align_justify format_align_left format_align_right format_bold format_clear format_color_text format_italic format_list_bulleted format_list_numbered format_quote format_strikethrough format_underlined forward git_branch git_merge git_pull_request graphic_eq grid_view group headphones home horizontal_rule image indeterminate_check_box info ink_highlighter input keyboard_arrow_down left_panel_close left_panel_open library_add linear_scale link list list_alt lock logout mail mark_email_unread menu menu_book merge mic mic_off more_vert notes notifications numbers open_in_full open_in_new output perm_media person person_cancel person_female person_male photo_camera photo_filter photo_library push_pin record_voice_over redo refresh remove reply reply_all right_panel_close right_panel_open rotate_left rotate_right save save_as schedule search sell settings share smart_button snooze star stop subscript superscript swap_vert tab table table_rows text_fields title toggle_on tune undo upload view_agenda view_comfy view_module visibility visibility_off volume_off volume_up warning width_normal width_wide wifi_off work zoom_in zoom_out";
 const NAMES = exports.NAMES = {
   "add": ["add", 0],
   "add-column-left": ["add_column_left", 0],
@@ -172,16 +172,24 @@ const NAMES = exports.NAMES = {
   "field-number": ["numbers", 0],
   "field-select": ["arrow_drop_down_circle", 0],
   "fields": ["list_alt", 0],
-  "file-ai": ["draft", 0],
-  "file-jpg": ["image", 0],
-  "file-pdf": ["picture_as_pdf", 0],
-  "file-png": ["image", 0],
-  "file-psd": ["draft", 0],
-  "file-svg": ["image", 0],
+  "file-ai": ["file_ai", 0],
+  "file_ai": ["file_ai", 0],
+  "file-jpg": ["file_jpg", 0],
+  "file_jpg": ["file_jpg", 0],
+  "file-pdf": ["file_pdf", 0],
+  "file_pdf": ["file_pdf", 0],
+  "file-png": ["file_png", 0],
+  "file_png": ["file_png", 0],
+  "file-psd": ["file_psd", 0],
+  "file_psd": ["file_psd", 0],
+  "file-svg": ["file_svg", 0],
+  "file_svg": ["file_svg", 0],
   "file-zip": ["folder_zip", 0],
   "filter": ["filter_alt", 0],
   "filter-off": ["filter_alt_off", 0],
   "flag": ["flag", 0],
+  "flip-vertical": ["flip_vertical", 0],
+  "flip_vertical": ["flip_vertical", 0],
   "folder": ["folder", 0],
   "folder-add": ["create_new_folder", 0],
   "folder-eye": ["folder_eye", 0],
@@ -206,6 +214,12 @@ const NAMES = exports.NAMES = {
   "format_underlined": ["format_underlined", 0],
   "forward": ["forward", 0],
   "gear": ["settings", 0],
+  "git-branch": ["git_branch", 0],
+  "git_branch": ["git_branch", 0],
+  "git-merge": ["git_merge", 0],
+  "git_merge": ["git_merge", 0],
+  "git-pull-request": ["git_pull_request", 0],
+  "git_pull_request": ["git_pull_request", 0],
   "grid-2x2": ["grid_view", 0],
   "grid-3x2": ["view_module", 0],
   "group-by": ["view_agenda", 0],
@@ -3486,286 +3500,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
 
 const SurfaceContext = exports.SurfaceContext = /*#__PURE__*/_react.default.createContext(null);
   } },
-  "platform/components/Button/Button.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../providers/Surface.jsx":"platform/providers/Surface.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Button = void 0;
-exports.ButtonGroup = ButtonGroup;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
-var _Icon = require("../Icon/Icon.jsx");
-var _Loading = require("../Loading/Loading.jsx");
-var _Surface = require("../../providers/Surface.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Button, ButtonGroup
-   Summary: A button for an action, in one of several emphasis levels and sizes; ButtonGroup joins buttons that act as a set.
-   Usage:
-     <Button variant="primary" icon="save" onClick={() => …}>Save</Button>
-     <Button iconOnly icon="more_horiz" label="More actions" caret expanded={open} />
-     <ButtonGroup label="Transfer"><Button>Import</Button><Button>Export</Button></ButtonGroup>
-   Props:
-     variant: "secondary" (default; white with a border, reversible actions) | "primary" (filled; the main action, usually one
-       per view) | "tertiary" (outlined in the action color, no fill; fills on hover) | "ghost" (no fill or border until
-       hovered; the lowest emphasis) | "danger" (filled red; destructive) | "danger-secondary"
-       (red outline, fills on hover). There is no link look: a link goes somewhere (Link), a button does something
-     truncate: the label fills the button from its start edge and ends in an ellipsis (a long choice)
-     stackedLabel: the label’s lines stack, start-aligned and wrapping; the gap is --plx-comp-button-context-label-gap (SuggestedAction)
-     labelRow: the label lays out a row of its own (an avatar and a name); the gap is
-       --plx-comp-button-context-label-row-gap (AppHeader’s account)
-     joined: { start, end }: "square" | "seam": its corners square where it meets a neighbor; a seam also drops that border (ButtonGroup, InputGroup and CopyButton set it)"md" (default; the standard control role) | "sm" (the toolbar role: compact text, gray) | "xs" (the inline-action
-       role: dense row and card actions, never in a toolbar) | "2xs" (the smallest: "Show more" under a list; 11px text, a blue
-       tint on hover) | "lg" (the prominent role: page actions)
-     icon: an <Icon> (or an icon name) before the label
-     iconEnd: an <Icon> (or an icon name) after the label
-     iconOnly: a square button with only its icon; give it a label (default false)
-     label: the accessible name (aria-label); an icon-only button falls back to string children
-     caret: the button opens a menu: the thin outline chevron (expand_more) after the label, in the muted color on the
-       unfilled variants (owner, 2026-10-14: it replaces the small filled triangle); default false
-     expanded: sets aria-expanded, for a button that opens a menu
-     pressed: makes a toggle button (aria-pressed): true when on, false when off (undefined: not a toggle)
-     selected: shows the selected state without a toggle role (default false)
-     loading: shows a spinner in place of the icon (default false)
-     disabled: the button does nothing (default false)
-     href: renders a link styled as a button
-     type: the button type (default "button")
-     onClick(event): runs when the button is clicked, unless disabled or loading
-     children: the button label
-     className: more classes on the button
-     strings: the words it announces, for other languages: { working: "Working" } (the loading spinner's name)
-     ref: forwarded to the <button> or <a>
-     ButtonGroup.label: the accessible name of the group
-     ButtonGroup.children: the buttons
-     ButtonGroup.className: more classes on the group
-   Behavior:
-     Placement can also set the role: a dialog footer gives its buttons the dialog role.
-     Selected, pressed and expanded all show the selected state.
-     A toggle button (pressed true or false) keeps its label and icon when it turns on or off: the label names the option
-       (Bold, Show grid), aria-pressed says whether it is on, and every variant shows "on" with the selected state.
-     Loading keeps the width and stays focusable but inert (aria-disabled, aria-busy).
-     A disabled link loses its href.
-   Notes:
-     Other props pass through to the <button> or <a> (and to ButtonGroup's <div>).
-     For one choice from several, use SegmentedControl instead of ButtonGroup.
-*/
-const STRINGS = {
-  working: 'Working'
-};
-
-// the icon takes the button's state as its own (Styling Standard 3.6): filled while the button is selected, pressed or
-// open; an Icon element the caller gives keeps its own fill when it sets one
-const asIcon = _Icon.stateIcon;
-const Button = exports.Button = /*#__PURE__*/_react.default.forwardRef(function Button({
-  variant = 'secondary',
-  size = 'md',
-  icon,
-  iconEnd,
-  iconOnly = false,
-  label,
-  caret = false,
-  expanded,
-  pressed,
-  selected = false,
-  loading = false,
-  disabled = false,
-  href,
-  type = 'button',
-  joined,
-  truncate = false,
-  stackedLabel = false,
-  labelRow = false,
-  className,
-  children,
-  onClick,
-  strings,
-  ...rest
-}, ref) {
-  (0, _devWarn.devWarn)('Button', {
-    variant,
-    size
-  }, {
-    variant: ['secondary', 'primary', 'tertiary', 'ghost', 'danger', 'danger-secondary', 'quiet'],
-    size: ['md', 'sm', 'xs', '2xs', 'lg']
-  });
-  const t = Object.assign({}, STRINGS, strings);
-  // a colored surface around the button (TeachingBubble, the accent AppHeader) gives it that surface's look
-  const surface = _react.default.useContext(_Surface.SurfaceContext);
-  const classes = (0, _cx.cx)('plx-button', 'plx-button--' + (variant === 'quiet' ? 'ghost' : variant), size !== 'md' && 'plx-button--size-' + size, iconOnly && 'plx-button--icon-only', caret && 'plx-button--caret', (selected || pressed || expanded) && 'is-selected', loading && 'is-loading', truncate && 'plx-button--truncate', stackedLabel && 'plx-button--stacked-label', labelRow && 'plx-button--label-row', joined && joined.start && 'plx-button--joined-start-' + joined.start, joined && joined.end && 'plx-button--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-button--joined', (surface === 'inverse' || surface === 'accent') && 'plx-button--on-' + surface, className);
-  // the parts take the button's state as their own classes (Styling Standard 3.6: no rule reaches from the button into them)
-  const v = variant === 'quiet' ? 'ghost' : variant;
-  const on = !!(selected || pressed || expanded);
-  const labelClass = (0, _cx.cx)('plx-button__label', truncate && 'plx-button__label--truncate', !truncate && stackedLabel && 'plx-button__label--stacked', !truncate && !stackedLabel && labelRow && 'plx-button__label--row');
-  const caretClass = (0, _cx.cx)('plx-button__caret', (v === 'primary' || v === 'danger' || disabled || loading) && 'plx-button__caret--current', expanded && 'plx-button__caret--open');
-  const content = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, loading ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-button__icon"
-  }, /*#__PURE__*/_react.default.createElement(_Loading.Spinner, {
-    size: "sm",
-    label: t.working
-  })) : icon ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-button__icon"
-  }, asIcon(icon, on)) : null, iconOnly ? null : children !== undefined && children !== null ? /*#__PURE__*/_react.default.createElement("span", {
-    className: labelClass
-  }, children) : null, iconEnd ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-button__icon"
-  }, asIcon(iconEnd, on)) : null, caret ? /*#__PURE__*/_react.default.createElement("span", {
-    className: caretClass,
-    "aria-hidden": "true"
-  }) : null);
-  const a11y = {
-    'aria-label': iconOnly ? label || (typeof children === 'string' ? children : undefined) : label,
-    'aria-expanded': expanded,
-    'aria-pressed': pressed,
-    'aria-disabled': disabled || loading ? true : undefined,
-    'aria-busy': loading || undefined
-  };
-  const handle = e => {
-    if (disabled || loading) {
-      e.preventDefault();
-      return;
-    }
-    if (onClick) onClick(e);
-  };
-  if (href) return /*#__PURE__*/_react.default.createElement("a", _extends({
-    ref: ref,
-    href: disabled ? undefined : href,
-    className: classes
-  }, a11y, {
-    onClick: handle
-  }, rest), content);
-  return /*#__PURE__*/_react.default.createElement("button", _extends({
-    ref: ref,
-    type: type,
-    className: classes,
-    disabled: disabled && !loading ? true : undefined
-  }, a11y, {
-    onClick: handle
-  }, rest), content);
-});
-
-/* ButtonGroup: joined buttons that act as a set (Import | Export). For one choice from several, use SegmentedControl. */
-function ButtonGroup({
-  label,
-  className,
-  children,
-  ...rest
-}) {
-  // its buttons meet: each passes on which of its sides is joined (the later button's start edge is the seam)
-  const all = _react.default.Children.toArray(children).filter(_react.default.isValidElement);
-  return /*#__PURE__*/_react.default.createElement("div", _extends({
-    role: "group",
-    "aria-label": label,
-    className: (0, _cx.cx)('plx-button-group', className)
-  }, rest), all.map((el, i) => /*#__PURE__*/_react.default.cloneElement(el, {
-    joined: {
-      start: i > 0 ? 'seam' : undefined,
-      end: i < all.length - 1 ? 'square' : undefined
-    }
-  })));
-}
-  } },
-  "platform/utils/portal.jsx": { deps: {"react":null,"react-dom":null,"./cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Portal = Portal;
-var _react = _interopRequireDefault(require("react"));
-var _reactDom = require("react-dom");
-var _cx = require("./cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · Portal
-   Summary: Draws its children outside their parent's layout, so an overlay is never clipped by a scroll area, a card or a pane and never sits under a stacking context: into one shared root at the end of the page, into the browser's top layer, or into a container you name. The density, theme and direction of the place it is written go with it.
-   Usage:
-     <Portal><div className="plx-toast-region">…</div></Portal>
-     <Portal layer="top"><div ref={panel} className="plx-menu">…</div></Portal>        // above every dialog and pane
-     <Portal container={sideRef}>…</Portal>                                          // into an element of the page
-   Props:
-     children: what to draw
-     layer ('page'): 'page' draws into the shared root at the end of <body> (plx-portal-root); 'top' into the browser's top layer (a manual popover over the whole window that lets the pointer through to the page except on its content)
-     container (null): an element, or a ref to one, to draw into instead of the shared root
-     className: more classes on the Portal's own container (plx-portal)
-   Behavior:
-     The Portal leaves an empty <template> where it is written and copies from its nearest ancestors the density (data-plx-density), the theme and mode of a theme zone (data-plx-theme, data-plx-mode), the direction (dir) and the language (lang) onto its own container, so the tokens and the reading direction inside are those of the place it came from. It copies them again on every render.
-     Its container is created with it and removed when it unmounts; the shared root stays.
-     Events from the content bubble through the React tree as if it were in place (React portals), not through the page.
-   Notes:
-     A Portal moves content, nothing else: focus into the content and back to its trigger, Escape and the modal veil are the overlay's (useLayer); the ARIA link between a trigger and its content (aria-controls, aria-describedby) is the component's, since the page order no longer shows it.
-     Do not portal content that belongs in the reading order of the page.
-     Dialog, Sheet, Toast and MediaViewer adopt it in their own tasks.
-*/
-
-const ROOT_ID = 'plx-portal-root';
-// what the Portal carries from where it is written: [attribute, the attributes that travel with it]
-const CARRIED = [['data-plx-density'], ['data-plx-mode', 'data-plx-theme'], ['dir'], ['lang']];
-const TOP_LAYER = typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
-
-// the shared root at the end of <body>, made once
-function sharedRoot() {
-  let root = document.getElementById(ROOT_ID);
-  if (!root) {
-    root = document.createElement('div');
-    root.id = ROOT_ID;
-    root.className = 'plx-portal-root';
-    document.body.appendChild(root);
-  }
-  return root;
-}
-
-// the origin's nearest ancestor (below <html>, whose attributes reach everything already) that sets each carried attribute
-function carry(origin, node) {
-  CARRIED.forEach(group => {
-    const from = origin && origin.parentElement ? origin.parentElement.closest('[' + group[0] + ']') : null;
-    const own = from && from !== document.documentElement ? from : null;
-    group.forEach(name => {
-      const v = own ? own.getAttribute(name) : null;
-      if (v == null) node.removeAttribute(name);else node.setAttribute(name, v);
-    });
-  });
-}
-function Portal({
-  children,
-  layer = 'page',
-  container = null,
-  className
-}) {
-  const origin = _react.default.useRef(null);
-  const [node] = _react.default.useState(() => typeof document === 'undefined' ? null : document.createElement('div'));
-  const top = layer === 'top';
-
-  // the container: placed in its parent while the Portal is mounted, in the top layer for layer="top"
-  _react.default.useLayoutEffect(() => {
-    if (!node) return undefined;
-    const target = container && 'current' in container ? container.current : container;
-    const parent = target || sharedRoot();
-    parent.appendChild(node);
-    if (top && TOP_LAYER) {
-      node.setAttribute('popover', 'manual');
-      if (node.showPopover && !node.matches(':popover-open')) node.showPopover();
-    }
-    return () => {
-      if (top && TOP_LAYER && node.matches(':popover-open')) node.hidePopover();
-      node.removeAttribute('popover');
-      if (node.parentNode) node.parentNode.removeChild(node);
-    };
-  }, [node, container, top]);
-
-  // its class and the density, theme and direction of where it is written, on every render
-  _react.default.useLayoutEffect(() => {
-    if (!node) return;
-    node.className = (0, _cx.cx)('plx-portal', top && 'plx-portal--top', className);
-    carry(origin.current, node);
-  });
-  if (!node) return null;
-  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("template", {
-    ref: origin,
-    "data-plx-portal-origin": ""
-  }), /*#__PURE__*/(0, _reactDom.createPortal)(children, node));
-}
-  } },
   "platform/utils/floating.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -3969,6 +3703,863 @@ function useFloating(anchorRef, floatingRef, options = {}) {
     placement: mode === 'anchor' ? wanted : used,
     mode
   };
+}
+  } },
+  "platform/components/Tooltip/Tooltip.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/floating.js":"platform/utils/floating.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.InTooltip = void 0;
+exports.Tooltip = Tooltip;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _floating = require("../../utils/floating.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Tooltip
+   Summary: A short label for a control, shown on hover, on keyboard focus and, on touch, on a long press. The rich
+     tooltip (09 Overlays › Contextual overlays › Rich tooltip) adds a title, a few sentences and, as a toggletip, one action.
+   Usage:
+     <Tooltip content="Upload files" placement="bottom"><Button …/></Tooltip>
+     <Tooltip title="Retention" content="Deleted files stay in the trash for 30 days."><Button …/></Tooltip>
+     <Tooltip title="Smart crop" content="…" action={<Link href="#crop" variant="standalone">About smart crop</Link>}><Button …/></Tooltip>
+   Props:
+     content: the tooltip text (in a rich tooltip, its body: one to three sentences)
+     placement: "bottom" (default) | "top" | "start" | "end" (start and end follow the writing direction)
+     title: a short title above the body; it makes the tooltip rich
+     action: one action under the body (a standalone Link, or a small Button); it makes the tooltip rich and a toggletip:
+       it opens on click (Enter or Space on the trigger) instead of on hover and focus
+     rich: the rich look without a title or an action (default false; true when title or action is given)
+     disabled: the tooltip neither shows nor describes the trigger (default false); for a label that is shown in full most of
+       the time and only needs its tooltip when it is cut short
+     className: more classes on the wrapper
+     children: the control it labels (one element)
+   Behavior:
+     It shows on hover (a mouse or a pen) and on keyboard focus, and hides on leave, on blur and with Escape.
+     On touch there is no hover (Platforms Standard 6.5): a long press (--plx-comp-tooltip-long-press-delay) shows it, and
+     it hides --plx-comp-tooltip-touch-dismiss-delay after the finger lifts, or when the finger moves away or is cancelled.
+     A tap does not show it (focus that follows a touch is ignored; mouse events emulated from touch are not listened to),
+     and the long press neither opens the browser's context menu nor activates the control (the click that may follow the
+     release is dropped): a long press asks what a control is, it does not use it.
+     The trigger is described by the tooltip (aria-describedby), added to any it already has.
+     Placement: where the browser has CSS anchor positioning (utils/floating.js) the bubble is placed against the trigger by
+       useFloating while it shows (offset sm), so no scroll area or pane clips it; elsewhere it is drawn inside the wrapper
+       on its side, as before. A tooltip with an arrow keeps its side; a rich tooltip (no arrow) flips and shifts to stay in
+       the window.
+     Rich: a text-only rich tooltip opens on hover and focus like a plain one and stays open while the pointer is over it
+       (it hides --plx-comp-tooltip-rich-close-delay after the pointer leaves both). With an action it is a toggletip: the
+       trigger toggles it (aria-expanded, aria-controls), Tab from the trigger reaches the action, and Escape, a click
+       outside or focus leaving it closes it (Escape returns focus to the trigger); a tap opens it on touch.
+   Notes:
+     An icon-only Button shows its name (and its shortcut) as a tooltip by itself; inside a Tooltip it leaves that to the
+       Tooltip (InTooltip), so a control never gets two.
+     An icon-only control still needs its own label (aria-label): the tooltip repeats it visually, it is never the only
+     way to learn the control's name.
+     Not for essential content. Only the rich tooltip holds an action, and then it opens on click: interactive content never
+     depends on hover.
+     The rich surface is the popover's (the overlay surface with its border, radius and shadow), with no arrow.
+*/
+
+const SIDES = ['bottom', 'top', 'start', 'end'];
+
+// true inside a Tooltip's trigger: a Button there does not add its own (an icon-only Button shows its name by itself)
+const InTooltip = exports.InTooltip = /*#__PURE__*/_react.default.createContext(false);
+
+// a duration token ("0.5s", "500ms") in milliseconds, read from the element's computed style
+const ms = (el, name) => {
+  const v = el ? getComputedStyle(el).getPropertyValue(name).trim() : '';
+  const n = parseFloat(v);
+  return isNaN(n) ? 0 : /ms$/.test(v) ? n : n * 1000;
+};
+
+// the last way the person reached for the page: a touch, or a mouse, pen or key. Focus that follows a tap does not open
+// the tooltip (a long press does); focus that follows a key does. One listener pair for every tooltip, added by the first.
+let lastInput = 'key',
+  listening = false;
+const listen = () => {
+  if (listening) return;
+  listening = true;
+  document.addEventListener('pointerdown', e => {
+    lastInput = e.pointerType === 'touch' ? 'touch' : 'pointer';
+  }, true);
+  document.addEventListener('keydown', () => {
+    lastInput = 'key';
+  }, true);
+};
+function Tooltip({
+  content,
+  placement = 'bottom',
+  title,
+  action,
+  rich = false,
+  disabled = false,
+  className,
+  children
+}) {
+  const id = 'plx-tt' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const [open, setOpen] = _react.default.useState(false);
+  const wrap = _react.default.useRef(null);
+  const bubble = _react.default.useRef(null);
+  const press = _react.default.useRef(null); // the long-press timer
+  const hide = _react.default.useRef(null); // the timer that hides a tooltip a long press (or a rich tooltip's leave) started
+  const pressed = _react.default.useRef(false); // this touch opened the tooltip by a long press
+  const isRich = !!(rich || title || action);
+  const toggle = !!action; // a toggletip: opened by a click on the trigger
+  const side = SIDES.indexOf(placement) >= 0 ? placement : 'bottom';
+  const clear = () => {
+    clearTimeout(press.current);
+    clearTimeout(hide.current);
+  };
+  _react.default.useEffect(() => {
+    listen();
+    return clear;
+  }, []);
+  // placed against the trigger by anchor positioning while it shows; the arrow keeps its side (no flip, no shift)
+  (0, _floating.useFloating)(wrap, bubble, {
+    open: open && !disabled && _floating.FLOATING_ANCHOR,
+    placement: side,
+    offset: 'sm',
+    flip: isRich,
+    shift: isRich
+  });
+  _react.default.useEffect(() => {
+    if (!open) return undefined;
+    const esc = e => {
+      if (e.key !== 'Escape') return;
+      const inside = wrap.current && wrap.current.contains(document.activeElement);
+      setOpen(false);
+      // a toggletip gives focus back to its trigger when Escape closes it from inside
+      if (toggle && inside && wrap.current.firstElementChild && wrap.current.firstElementChild.focus) wrap.current.firstElementChild.focus();
+    };
+    const outside = e => {
+      if (wrap.current && !wrap.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener('keydown', esc);
+    if (toggle) document.addEventListener('mousedown', outside);
+    return () => {
+      document.removeEventListener('keydown', esc);
+      document.removeEventListener('mousedown', outside);
+    };
+  }, [open, toggle]);
+  const child = _react.default.Children.only(children);
+  const described = {
+    'aria-describedby': [child.props['aria-describedby'], id].filter(Boolean).join(' ')
+  };
+  const trigger = disabled ? child : /*#__PURE__*/_react.default.cloneElement(child, toggle ? Object.assign(described, {
+    'aria-expanded': open,
+    'aria-controls': open ? id + 'b' : undefined,
+    onClick: e => {
+      if (child.props.onClick) child.props.onClick(e);
+      setOpen(!open);
+    }
+  }) : described);
+  if (disabled) return /*#__PURE__*/_react.default.createElement("span", {
+    className: (0, _cx.cx)('plx-tooltip', className)
+  }, /*#__PURE__*/_react.default.createElement(InTooltip.Provider, {
+    value: true
+  }, trigger));
+  const onPointerDown = e => {
+    if (e.pointerType !== 'touch' || toggle) return;
+    clear();
+    pressed.current = false;
+    press.current = setTimeout(() => {
+      pressed.current = true;
+      setOpen(true);
+    }, ms(wrap.current, '--plx-comp-tooltip-long-press-delay'));
+  };
+  const onPointerEnd = e => {
+    if (e.pointerType !== 'touch' || toggle) return;
+    clearTimeout(press.current);
+    if (pressed.current) hide.current = setTimeout(() => {
+      setOpen(false);
+      pressed.current = false;
+    }, e.type === 'pointercancel' ? 0 : ms(wrap.current, '--plx-comp-tooltip-touch-dismiss-delay'));
+  };
+  const onEnter = e => {
+    if (e.pointerType === 'touch' || toggle) return;
+    clearTimeout(hide.current);
+    setOpen(true);
+  };
+  const onLeave = e => {
+    if (e.pointerType === 'touch' || toggle) return;
+    // a rich tooltip waits a moment, so the pointer can move into it; a plain one hides at once
+    if (isRich) {
+      clearTimeout(hide.current);
+      hide.current = setTimeout(() => setOpen(false), ms(wrap.current, '--plx-comp-tooltip-rich-close-delay'));
+    } else setOpen(false);
+  };
+  const bubbleCls = (0, _cx.cx)('plx-tooltip__bubble', 'plx-tooltip__bubble--' + side, isRich && 'plx-tooltip__bubble--rich', open && 'is-open');
+  return /*#__PURE__*/_react.default.createElement("span", {
+    ref: wrap,
+    className: (0, _cx.cx)('plx-tooltip', className),
+    onPointerEnter: onEnter,
+    onPointerLeave: onLeave,
+    onPointerDown: onPointerDown,
+    onPointerUp: onPointerEnd,
+    onPointerCancel: onPointerEnd,
+    onContextMenu: e => {
+      if (pressed.current) e.preventDefault();
+    },
+    onClickCapture: e => {
+      if (pressed.current) {
+        e.preventDefault();
+        e.stopPropagation();
+        pressed.current = false;
+      }
+    },
+    onFocus: () => {
+      if (!toggle && lastInput !== 'touch') setOpen(true);
+    },
+    onBlur: e => {
+      if (!pressed.current && !(wrap.current && wrap.current.contains(e.relatedTarget))) setOpen(false);
+    }
+  }, /*#__PURE__*/_react.default.createElement(InTooltip.Provider, {
+    value: true
+  }, trigger), isRich ? /*#__PURE__*/_react.default.createElement("span", {
+    ref: bubble,
+    id: id + 'b',
+    className: bubbleCls
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    role: "tooltip",
+    id: id,
+    className: "plx-tooltip__content"
+  }, title ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-tooltip__title"
+  }, title) : null, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-tooltip__body"
+  }, content)), action ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-tooltip__action"
+  }, action) : null) : /*#__PURE__*/_react.default.createElement("span", {
+    ref: bubble,
+    role: "tooltip",
+    id: id,
+    className: bubbleCls
+  }, content));
+}
+  } },
+  "platform/components/Kbd/Kbd.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Kbd = Kbd;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Kbd
+   Summary: A key or shortcut ("Ctrl K").
+   Usage:
+     <Kbd>Ctrl K</Kbd>
+     <Kbd onAccent>/</Kbd>
+   Props:
+     onAccent: the version for the blue header (default false)
+     children: the key or shortcut text
+     className: more classes on the <kbd>
+   Notes:
+     It uses the data font at a 16px label height.
+     Other props pass through to the <kbd>.
+*/
+function Kbd({
+  onAccent = false,
+  className,
+  children,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement("kbd", _extends({
+    className: (0, _cx.cx)('plx-kbd', onAccent && 'plx-kbd--on-accent', className)
+  }, rest), children);
+}
+  } },
+  "platform/utils/hotkey.js": { deps: {"react":null,"./tokenTime.js":"platform/utils/tokenTime.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.hotkeyKeys = hotkeyKeys;
+exports.hotkeyLabel = hotkeyLabel;
+exports.hotkeyList = hotkeyList;
+exports.isMac = isMac;
+exports.parseHotkey = parseHotkey;
+exports.registerHotkey = registerHotkey;
+exports.setSingleKeyHotkeys = setSingleKeyHotkeys;
+exports.singleKeyHotkeys = singleKeyHotkeys;
+exports.subscribeHotkeys = subscribeHotkeys;
+exports.useHotkey = useHotkey;
+exports.useHotkeyList = useHotkeyList;
+var _react = _interopRequireDefault(require("react"));
+var _tokenTime = require("./tokenTime.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Hotkey (platform/utils/hotkey.js)
+   Summary: Keyboard shortcuts in one place: useHotkey binds a key, a chord (Mod K) or a sequence (G then I) to a command,
+     for the whole page or for one region, and every binding goes into one registry that the shortcuts dialog and the
+     menus read their hints from (Kbd draws the label).
+   Usage:
+     useHotkey('Mod+K', () => openSearch(), { label: 'Search', group: 'General' });
+     useHotkey('G I', () => goTo('inbox'), { label: 'Go to inbox', group: 'Navigation' });
+     useHotkey('Delete', removeSelected, { scope: listRef, label: 'Delete the selected files' });
+     <Kbd>{hotkeyLabel('Mod+K')}</Kbd>                     // "Ctrl K" on Windows and Linux, "⌘ K" on a Mac
+     const all = useHotkeyList();                         // [{ binding, label, group, keys }] for the shortcuts dialog
+   Props:
+     useHotkey(binding, handler, options): binds while the component is mounted; handler(event) runs on a match
+     binding: steps separated by spaces (a sequence: "G I"), each step keys joined by "+" ("Mod+Shift+P"); modifiers Mod
+       (Cmd on a Mac, Ctrl elsewhere), Ctrl, Meta, Alt, Shift; keys as KeyboardEvent.key names ("K", "Escape", "/", "?")
+     options.scope: a ref (or element) of the region the binding belongs to; it fires only when focus is inside it
+     options.enabled: false unbinds it without unmounting (default true)
+     options.allowInFields: also fire while focus is in a text field (default false)
+     options.label: what the command does, as written in its menu item; options.group: its group in the shortcuts dialog
+     registerHotkey(binding, handler, options): the same without React; returns the function that unbinds it
+     hotkeyLabel(binding, { mac }): the binding as people read it ("Ctrl Shift P", "G then I")
+     hotkeyList(): every labeled binding; useHotkeyList() the same, kept current; subscribeHotkeys(fn) for other code
+     setSingleKeyHotkeys(on): turns every single-key shortcut (no modifier) off or on (WCAG 2.2 SC 2.1.4)
+   Behavior:
+     One keydown listener for the page. The binding of the innermost scope that contains the focus wins; page-wide
+     bindings come last. A key that starts a sequence waits --plx-sys-hotkey-sequence-timeout for the next one.
+     Ignored while focus is in a text field, a select or editable content, unless allowInFields. Ignored when an earlier
+     handler called preventDefault. A match calls preventDefault, so the browser's own use of that key does not run.
+   Notes:
+     Never bind keys that assistive technology or the browser needs (Tab, the arrow keys outside a widget, Ctrl L, F6).
+     Use the same label here as in the menu item, so the dialog and the menu agree.
+*/
+
+const MODS = ['ctrl', 'meta', 'alt', 'shift'];
+const NAMES = {
+  esc: 'escape',
+  del: 'delete',
+  space: ' ',
+  spacebar: ' ',
+  return: 'enter',
+  up: 'arrowup',
+  down: 'arrowdown',
+  left: 'arrowleft',
+  right: 'arrowright',
+  cmd: 'meta',
+  command: 'meta',
+  option: 'alt',
+  control: 'ctrl'
+};
+const entries = [];
+const listeners = new Set();
+let singleKeys = true;
+let buffer = [],
+  bufferAt = 0,
+  installed = false,
+  nextId = 1;
+function isMac() {
+  if (typeof navigator === 'undefined') return false;
+  const p = navigator.userAgentData && navigator.userAgentData.platform || navigator.platform || '';
+  return /mac|iphone|ipad|ipod/i.test(p);
+}
+
+// "Mod+Shift+P" → { ctrl, meta, alt, shift, key: 'p' }
+function parseStep(step, mac) {
+  const parts = step.split('+').filter((x, i, all) => x !== '' || i === all.length - 1).map(x => x === '' ? '+' : x);
+  const s = {
+    ctrl: false,
+    meta: false,
+    alt: false,
+    shift: false,
+    key: ''
+  };
+  parts.forEach(raw => {
+    let p = raw.toLowerCase();
+    p = NAMES[p] || p;
+    if (p === 'mod') s[mac ? 'meta' : 'ctrl'] = true;else if (MODS.indexOf(p) >= 0) s[p] = true;else s.key = p;
+  });
+  return s;
+}
+function parseHotkey(binding, mac = isMac()) {
+  return String(binding || '').trim().split(/\s+/).filter(Boolean).map(st => parseStep(st, mac));
+}
+function matchStep(s, e) {
+  const key = (e.key || '').toLowerCase();
+  // a letter or digit typed with Alt (or Shift) on some layouts changes e.key: e.code still names the key
+  const code = /^Key([A-Z])$|^Digit(\d)$/.exec(e.code || '');
+  const sameKey = key === s.key || !!code && (code[1] || code[2]).toLowerCase() === s.key;
+  if (!sameKey) return false;
+  // a symbol that needs Shift ("?") is written without it: Shift is then not compared
+  const symbol = s.key.length === 1 && !/[a-z0-9]/.test(s.key);
+  return e.ctrlKey === s.ctrl && e.metaKey === s.meta && e.altKey === s.alt && (symbol || e.shiftKey === s.shift);
+}
+const isSingle = steps => steps.length >= 1 && steps.every(s => !s.ctrl && !s.meta && !s.alt) && steps[0].key.length === 1;
+function inField(el) {
+  if (!el || !el.tagName) return false;
+  if (el.isContentEditable) return true;
+  const t = el.tagName.toLowerCase();
+  if (t === 'textarea' || t === 'select') return true;
+  if (t !== 'input') return false;
+  return ['checkbox', 'radio', 'button', 'submit', 'reset', 'range', 'color', 'file', 'image'].indexOf((el.type || '').toLowerCase()) < 0;
+}
+const scopeOf = x => (x && 'current' in x ? x.current : x) || null;
+const depth = el => {
+  let n = 0;
+  for (let x = el; x; x = x.parentElement) n++;
+  return n;
+};
+function onKeyDown(e) {
+  if (e.defaultPrevented || e.isComposing || ['Control', 'Meta', 'Alt', 'Shift'].indexOf(e.key) >= 0) return;
+  const now = Date.now();
+  if (now - bufferAt > (0, _tokenTime.tokenMs)('--plx-sys-hotkey-sequence-timeout')) buffer = [];
+  const target = e.target,
+    field = inField(target);
+  const live = entries.filter(x => x.enabled && (!field || x.allowInFields) && (singleKeys || !isSingle(x.steps))).map(x => ({
+    x,
+    scope: scopeOf(x.scope)
+  })).filter(c => !c.x.scope || c.scope && c.scope.contains(target)).sort((a, b) => (b.scope ? depth(b.scope) : 0) - (a.scope ? depth(a.scope) : 0));
+  const step = buffer.length;
+  const fits = (c, at) => c.x.steps.length > at && buffer.slice(buffer.length - at).every((ev, i) => matchStep(c.x.steps[i], ev)) && matchStep(c.x.steps[at], e);
+  // the longest waiting sequence first, then a fresh start
+  for (const at of [step, 0].filter((v, i, all) => all.indexOf(v) === i)) {
+    const full = live.find(c => c.x.steps.length === at + 1 && fits(c, at));
+    if (full) {
+      buffer = [];
+      e.preventDefault();
+      full.x.handler(e);
+      return;
+    }
+    if (live.some(c => c.x.steps.length > at + 1 && fits(c, at))) {
+      buffer = buffer.slice(buffer.length - at).concat([{
+        key: e.key,
+        code: e.code,
+        ctrlKey: e.ctrlKey,
+        metaKey: e.metaKey,
+        altKey: e.altKey,
+        shiftKey: e.shiftKey
+      }]);
+      bufferAt = now;
+      return;
+    }
+  }
+  buffer = [];
+}
+function install() {
+  if (installed || typeof document === 'undefined') return;
+  document.addEventListener('keydown', onKeyDown);
+  installed = true;
+}
+const notify = () => listeners.forEach(fn => fn());
+function registerHotkey(binding, handler, options = {}) {
+  install();
+  const entry = {
+    id: nextId++,
+    binding,
+    steps: parseHotkey(binding),
+    handler,
+    scope: options.scope || null,
+    enabled: options.enabled !== false,
+    allowInFields: !!options.allowInFields,
+    label: options.label || '',
+    group: options.group || ''
+  };
+  entries.push(entry);
+  if (entry.label) notify();
+  return () => {
+    const i = entries.indexOf(entry);
+    if (i >= 0) {
+      entries.splice(i, 1);
+      if (entry.label) notify();
+    }
+  };
+}
+function useHotkey(binding, handler, options = {}) {
+  const ref = _react.default.useRef(handler);
+  ref.current = handler;
+  const {
+    scope,
+    enabled = true,
+    allowInFields = false,
+    label,
+    group
+  } = options;
+  _react.default.useEffect(() => {
+    if (!enabled || !binding) return undefined;
+    return registerHotkey(binding, e => ref.current && ref.current(e), {
+      scope,
+      allowInFields,
+      label,
+      group
+    });
+  }, [binding, scope, enabled, allowInFields, label, group]);
+}
+const MAC_NAMES = {
+  meta: '⌘',
+  ctrl: '⌃',
+  alt: '⌥',
+  shift: '⇧'
+};
+const PC_NAMES = {
+  meta: 'Win',
+  ctrl: 'Ctrl',
+  alt: 'Alt',
+  shift: 'Shift'
+};
+const KEY_NAMES = {
+  ' ': 'Space',
+  escape: 'Esc',
+  arrowup: '↑',
+  arrowdown: '↓',
+  arrowleft: '←',
+  arrowright: '→',
+  enter: 'Enter',
+  delete: 'Delete',
+  backspace: 'Backspace',
+  tab: 'Tab'
+};
+function hotkeyKeys(binding, {
+  mac = isMac()
+} = {}) {
+  const names = mac ? MAC_NAMES : PC_NAMES;
+  return parseHotkey(binding, mac).map(s => (mac ? ['ctrl', 'alt', 'shift', 'meta'] : ['ctrl', 'meta', 'alt', 'shift']).filter(m => s[m]).map(m => names[m]).concat([KEY_NAMES[s.key] || (s.key.length === 1 ? s.key.toUpperCase() : s.key.charAt(0).toUpperCase() + s.key.slice(1))]));
+}
+function hotkeyLabel(binding, options) {
+  return hotkeyKeys(binding, options).map(k => k.join(' ')).join(' then ');
+}
+function hotkeyList() {
+  return entries.filter(x => x.label).map(x => ({
+    binding: x.binding,
+    label: x.label,
+    group: x.group,
+    keys: hotkeyLabel(x.binding),
+    enabled: x.enabled
+  }));
+}
+function subscribeHotkeys(fn) {
+  listeners.add(fn);
+  return () => listeners.delete(fn);
+}
+function useHotkeyList() {
+  const [list, setList] = _react.default.useState(hotkeyList);
+  _react.default.useEffect(() => {
+    setList(hotkeyList());
+    return subscribeHotkeys(() => setList(hotkeyList()));
+  }, []);
+  return list;
+}
+function setSingleKeyHotkeys(on) {
+  singleKeys = !!on;
+  buffer = [];
+}
+function singleKeyHotkeys() {
+  return singleKeys;
+}
+  } },
+  "platform/components/Button/Button.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../providers/Surface.jsx":"platform/providers/Surface.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","../../utils/hotkey.js":"platform/utils/hotkey.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Button = void 0;
+exports.ButtonGroup = ButtonGroup;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _cx = require("../../utils/cx.js");
+var _Icon = require("../Icon/Icon.jsx");
+var _Loading = require("../Loading/Loading.jsx");
+var _Surface = require("../../providers/Surface.jsx");
+var _Tooltip = require("../Tooltip/Tooltip.jsx");
+var _Kbd = require("../Kbd/Kbd.jsx");
+var _hotkey = require("../../utils/hotkey.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Button, ButtonGroup
+   Summary: A button for an action, in one of several emphasis levels and sizes; ButtonGroup joins buttons that act as a set.
+   Usage:
+     <Button variant="primary" icon="save" onClick={() => …}>Save</Button>
+     <Button iconOnly icon="more_horiz" label="More actions" caret expanded={open} />
+     <ButtonGroup label="Transfer"><Button>Import</Button><Button>Export</Button></ButtonGroup>
+   Props:
+     variant: "secondary" (default; white with a border, reversible actions) | "primary" (filled; the main action, usually one
+       per view) | "tertiary" (outlined in the action color, no fill; fills on hover) | "ghost" (no fill or border until
+       hovered, when its icon turns the action color; the lowest emphasis) | "danger" (filled red; destructive) | "danger-secondary"
+       (red outline, fills on hover). There is no link look: a link goes somewhere (Link), a button does something
+     truncate: the label fills the button from its start edge and ends in an ellipsis (a long choice)
+     stackedLabel: the label’s lines stack, start-aligned and wrapping; the gap is --plx-comp-button-context-label-gap (SuggestedAction)
+     labelRow: the label lays out a row of its own (an avatar and a name); the gap is
+       --plx-comp-button-context-label-row-gap (AppHeader’s account)
+     joined: { start, end }: "square" | "seam": its corners square where it meets a neighbor; a seam also drops that border (ButtonGroup, InputGroup and CopyButton set it)"md" (default; the standard control role) | "sm" (the toolbar role: compact text, gray) | "xs" (the inline-action
+       role: dense row and card actions, never in a toolbar) | "2xs" (the smallest: "Show more" under a list; 11px text, a blue
+       tint on hover) | "lg" (the prominent role: page actions)
+     icon: an <Icon> (or an icon name) before the label
+     iconEnd: an <Icon> (or an icon name) after the label
+     iconOnly: a square button with only its icon; give it a label (default false)
+     label: the accessible name (aria-label); an icon-only button falls back to string children
+     tooltip: the tooltip it shows (default: an icon-only button shows its label; others none); false: none (Carbon,
+       Atlassian: every icon-only button names itself). Inside a Tooltip the button leaves it to that Tooltip
+     shortcut: its keyboard shortcut, as a hotkey binding ("Mod+Shift+A"): shown in its tooltip as keys (Ctrl or ⌘) and set as
+       aria-keyshortcuts. It only shows the shortcut: bind it with useHotkey
+     caret: the button opens a menu: the thin outline chevron (expand_more) after the label, in the muted color on the
+       unfilled variants (owner, 2026-10-14: it replaces the small filled triangle); default false
+     expanded: sets aria-expanded, for a button that opens a menu
+     pressed: makes a toggle button (aria-pressed): true when on, false when off (undefined: not a toggle)
+     selected: shows the selected state without a toggle role (default false)
+     loading: shows a spinner in place of the icon (default false)
+     disabled: the button does nothing (default false)
+     href: renders a link styled as a button
+     type: the button type (default "button")
+     onClick(event): runs when the button is clicked, unless disabled or loading
+     children: the button label
+     className: more classes on the button
+     strings: the words it announces, for other languages: { working: "Working" } (the loading spinner's name)
+     ref: forwarded to the <button> or <a>
+     ButtonGroup.label: the accessible name of the group
+     ButtonGroup.children: the buttons
+     ButtonGroup.className: more classes on the group
+   Behavior:
+     Placement can also set the role: a dialog footer gives its buttons the dialog role.
+     Selected, pressed and expanded all show the selected state.
+     A toggle button (pressed true or false) keeps its label and icon when it turns on or off: the label names the option
+       (Bold, Show grid), aria-pressed says whether it is on, and every variant shows "on" with the selected state.
+     Loading keeps the width and the name, and stays focusable but inert (aria-disabled, aria-busy): the spinner takes the
+       icon's place, or, with no icon, sits over the label, which stays (unseen) to hold the width and name the button.
+     A disabled link loses its href.
+   Notes:
+     Other props pass through to the <button> or <a> (and to ButtonGroup's <div>).
+     For one choice from several, use SegmentedControl instead of ButtonGroup.
+*/
+const STRINGS = {
+  working: 'Working'
+};
+
+// the icon takes the button's state as its own (Styling Standard 3.6): filled while the button is selected, pressed or
+// open; an Icon element the caller gives keeps its own fill when it sets one
+const asIcon = _Icon.stateIcon;
+
+// a one-step binding as aria-keyshortcuts ("Control+Shift+A"); a sequence has no ARIA form, so none
+const ARIA_MODS = [['ctrl', 'Control'], ['alt', 'Alt'], ['shift', 'Shift'], ['meta', 'Meta']];
+const ariaShortcut = binding => {
+  const steps = (0, _hotkey.parseHotkey)(binding);
+  if (steps.length !== 1 || !steps[0].key) return undefined;
+  const k = steps[0].key;
+  return ARIA_MODS.filter(([m]) => steps[0][m]).map(([, n]) => n).concat(k.length === 1 ? k.toUpperCase() : k.charAt(0).toUpperCase() + k.slice(1)).join('+');
+};
+const Button = exports.Button = /*#__PURE__*/_react.default.forwardRef(function Button({
+  variant = 'secondary',
+  size = 'md',
+  icon,
+  iconEnd,
+  iconOnly = false,
+  label,
+  caret = false,
+  expanded,
+  pressed,
+  selected = false,
+  loading = false,
+  disabled = false,
+  href,
+  type = 'button',
+  joined,
+  truncate = false,
+  stackedLabel = false,
+  labelRow = false,
+  tooltip,
+  shortcut,
+  className,
+  children,
+  onClick,
+  strings,
+  ...rest
+}, ref) {
+  (0, _devWarn.devWarn)('Button', {
+    variant,
+    size
+  }, {
+    variant: ['secondary', 'primary', 'tertiary', 'ghost', 'danger', 'danger-secondary', 'quiet'],
+    size: ['md', 'sm', 'xs', '2xs', 'lg']
+  });
+  const t = Object.assign({}, STRINGS, strings);
+  // a colored surface around the button (TeachingBubble, the accent AppHeader) gives it that surface's look
+  const surface = _react.default.useContext(_Surface.SurfaceContext);
+  const classes = (0, _cx.cx)('plx-button', 'plx-button--' + (variant === 'quiet' ? 'ghost' : variant), size !== 'md' && 'plx-button--size-' + size, iconOnly && 'plx-button--icon-only', caret && 'plx-button--caret', (selected || pressed || expanded) && 'is-selected', loading && 'is-loading', truncate && 'plx-button--truncate', stackedLabel && 'plx-button--stacked-label', labelRow && 'plx-button--label-row', joined && joined.start && 'plx-button--joined-start-' + joined.start, joined && joined.end && 'plx-button--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-button--joined', (surface === 'inverse' || surface === 'accent') && 'plx-button--on-' + surface, className);
+  // the parts take the button's state as their own classes (Styling Standard 3.6: no rule reaches from the button into them)
+  const v = variant === 'quiet' ? 'ghost' : variant;
+  const on = !!(selected || pressed || expanded);
+  const labelClass = (0, _cx.cx)('plx-button__label', truncate && 'plx-button__label--truncate', !truncate && stackedLabel && 'plx-button__label--stacked', !truncate && !stackedLabel && labelRow && 'plx-button__label--row');
+  const caretClass = (0, _cx.cx)('plx-button__caret', (v === 'primary' || v === 'danger' || disabled || loading) && 'plx-button__caret--current', expanded && 'plx-button__caret--open');
+  const hasLabel = !iconOnly && children !== undefined && children !== null;
+  // loading: the spinner takes the icon's place; with no icon it sits over the label, which keeps the width and the name
+  // (aria-busy says it is working, so the spinner itself is not read)
+  const over = loading && !icon && hasLabel;
+  const spinner = cls => /*#__PURE__*/_react.default.createElement("span", {
+    className: cls,
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement(_Loading.Spinner, {
+    size: "sm",
+    label: t.working
+  }));
+  const content = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, loading && !over ? spinner('plx-button__icon') : icon ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-button__icon"
+  }, asIcon(icon, on)) : null, over ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-button__stack"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: (0, _cx.cx)(labelClass, 'plx-button__label--waiting')
+  }, children), spinner('plx-button__icon plx-button__icon--over')) : hasLabel ? /*#__PURE__*/_react.default.createElement("span", {
+    className: labelClass
+  }, children) : null, iconEnd ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-button__icon"
+  }, asIcon(iconEnd, on)) : null, caret ? /*#__PURE__*/_react.default.createElement("span", {
+    className: caretClass,
+    "aria-hidden": "true"
+  }) : null);
+  const a11y = {
+    'aria-label': iconOnly ? label || (typeof children === 'string' ? children : undefined) : label,
+    'aria-expanded': expanded,
+    'aria-pressed': pressed,
+    'aria-disabled': disabled || loading ? true : undefined,
+    'aria-busy': loading || undefined,
+    'aria-keyshortcuts': shortcut ? ariaShortcut(shortcut) : undefined
+  };
+  const handle = e => {
+    if (disabled || loading) {
+      e.preventDefault();
+      return;
+    }
+    if (onClick) onClick(e);
+  };
+  const el = href ? /*#__PURE__*/_react.default.createElement("a", _extends({
+    ref: ref,
+    href: disabled ? undefined : href,
+    className: classes
+  }, a11y, {
+    onClick: handle
+  }, rest), content) : /*#__PURE__*/_react.default.createElement("button", _extends({
+    ref: ref,
+    type: type,
+    className: classes,
+    disabled: disabled && !loading ? true : undefined
+  }, a11y, {
+    onClick: handle
+  }, rest), content);
+  // its tooltip: the name of an icon-only button (or the tooltip it was given), with its shortcut's keys; none inside a
+  // Tooltip, which already names it
+  const inTooltip = _react.default.useContext(_Tooltip.InTooltip);
+  const tip = tooltip === false ? null : tooltip !== undefined ? tooltip : iconOnly ? a11y['aria-label'] : null;
+  if (!tip || inTooltip) return el;
+  return /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+    content: shortcut ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, tip, ' ', /*#__PURE__*/_react.default.createElement(_Kbd.Kbd, null, (0, _hotkey.hotkeyLabel)(shortcut))) : tip
+  }, el);
+});
+
+/* ButtonGroup: joined buttons that act as a set (Import | Export). For one choice from several, use SegmentedControl. */
+function ButtonGroup({
+  label,
+  className,
+  children,
+  ...rest
+}) {
+  // its buttons meet: each passes on which of its sides is joined (the later button's start edge is the seam)
+  const all = _react.default.Children.toArray(children).filter(_react.default.isValidElement);
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    role: "group",
+    "aria-label": label,
+    className: (0, _cx.cx)('plx-button-group', className)
+  }, rest), all.map((el, i) => /*#__PURE__*/_react.default.cloneElement(el, {
+    joined: {
+      start: i > 0 ? 'seam' : undefined,
+      end: i < all.length - 1 ? 'square' : undefined
+    }
+  })));
+}
+  } },
+  "platform/utils/portal.jsx": { deps: {"react":null,"react-dom":null,"./cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Portal = Portal;
+var _react = _interopRequireDefault(require("react"));
+var _reactDom = require("react-dom");
+var _cx = require("./cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Portal
+   Summary: Draws its children outside their parent's layout, so an overlay is never clipped by a scroll area, a card or a pane and never sits under a stacking context: into one shared root at the end of the page, into the browser's top layer, or into a container you name. The density, theme and direction of the place it is written go with it.
+   Usage:
+     <Portal><div className="plx-toast-region">…</div></Portal>
+     <Portal layer="top"><div ref={panel} className="plx-menu">…</div></Portal>        // above every dialog and pane
+     <Portal container={sideRef}>…</Portal>                                          // into an element of the page
+   Props:
+     children: what to draw
+     layer ('page'): 'page' draws into the shared root at the end of <body> (plx-portal-root); 'top' into the browser's top layer (a manual popover over the whole window that lets the pointer through to the page except on its content)
+     container (null): an element, or a ref to one, to draw into instead of the shared root
+     className: more classes on the Portal's own container (plx-portal)
+   Behavior:
+     The Portal leaves an empty <template> where it is written and copies from its nearest ancestors the density (data-plx-density), the theme and mode of a theme zone (data-plx-theme, data-plx-mode), the direction (dir) and the language (lang) onto its own container, so the tokens and the reading direction inside are those of the place it came from. It copies them again on every render.
+     Its container is created with it and removed when it unmounts; the shared root stays.
+     Events from the content bubble through the React tree as if it were in place (React portals), not through the page.
+   Notes:
+     A Portal moves content, nothing else: focus into the content and back to its trigger, Escape and the modal veil are the overlay's (useLayer); the ARIA link between a trigger and its content (aria-controls, aria-describedby) is the component's, since the page order no longer shows it.
+     Do not portal content that belongs in the reading order of the page.
+     Dialog, Sheet, Toast and MediaViewer adopt it in their own tasks.
+*/
+
+const ROOT_ID = 'plx-portal-root';
+// what the Portal carries from where it is written: [attribute, the attributes that travel with it]
+const CARRIED = [['data-plx-density'], ['data-plx-mode', 'data-plx-theme'], ['dir'], ['lang']];
+const TOP_LAYER = typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
+
+// the shared root at the end of <body>, made once
+function sharedRoot() {
+  let root = document.getElementById(ROOT_ID);
+  if (!root) {
+    root = document.createElement('div');
+    root.id = ROOT_ID;
+    root.className = 'plx-portal-root';
+    document.body.appendChild(root);
+  }
+  return root;
+}
+
+// the origin's nearest ancestor (below <html>, whose attributes reach everything already) that sets each carried attribute
+function carry(origin, node) {
+  CARRIED.forEach(group => {
+    const from = origin && origin.parentElement ? origin.parentElement.closest('[' + group[0] + ']') : null;
+    const own = from && from !== document.documentElement ? from : null;
+    group.forEach(name => {
+      const v = own ? own.getAttribute(name) : null;
+      if (v == null) node.removeAttribute(name);else node.setAttribute(name, v);
+    });
+  });
+}
+function Portal({
+  children,
+  layer = 'page',
+  container = null,
+  className
+}) {
+  const origin = _react.default.useRef(null);
+  const [node] = _react.default.useState(() => typeof document === 'undefined' ? null : document.createElement('div'));
+  const top = layer === 'top';
+
+  // the container: placed in its parent while the Portal is mounted, in the top layer for layer="top"
+  _react.default.useLayoutEffect(() => {
+    if (!node) return undefined;
+    const target = container && 'current' in container ? container.current : container;
+    const parent = target || sharedRoot();
+    parent.appendChild(node);
+    if (top && TOP_LAYER) {
+      node.setAttribute('popover', 'manual');
+      if (node.showPopover && !node.matches(':popover-open')) node.showPopover();
+    }
+    return () => {
+      if (top && TOP_LAYER && node.matches(':popover-open')) node.hidePopover();
+      node.removeAttribute('popover');
+      if (node.parentNode) node.parentNode.removeChild(node);
+    };
+  }, [node, container, top]);
+
+  // its class and the density, theme and direction of where it is written, on every render
+  _react.default.useLayoutEffect(() => {
+    if (!node) return;
+    node.className = (0, _cx.cx)('plx-portal', top && 'plx-portal--top', className);
+    carry(origin.current, node);
+  });
+  if (!node) return null;
+  return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("template", {
+    ref: origin,
+    "data-plx-portal-origin": ""
+  }), /*#__PURE__*/(0, _reactDom.createPortal)(children, node));
 }
   } },
   "platform/utils/direction.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
@@ -5120,229 +5711,6 @@ function useTruncated(ref) {
     return () => ro.disconnect();
   }, [ref]);
   return cut;
-}
-  } },
-  "platform/components/Tooltip/Tooltip.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/floating.js":"platform/utils/floating.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Tooltip = Tooltip;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _floating = require("../../utils/floating.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · Tooltip
-   Summary: A short label for a control, shown on hover, on keyboard focus and, on touch, on a long press. The rich
-     tooltip (09 Overlays › Contextual overlays › Rich tooltip) adds a title, a few sentences and, as a toggletip, one action.
-   Usage:
-     <Tooltip content="Upload files" placement="bottom"><Button …/></Tooltip>
-     <Tooltip title="Retention" content="Deleted files stay in the trash for 30 days."><Button …/></Tooltip>
-     <Tooltip title="Smart crop" content="…" action={<Link href="#crop" variant="standalone">About smart crop</Link>}><Button …/></Tooltip>
-   Props:
-     content: the tooltip text (in a rich tooltip, its body: one to three sentences)
-     placement: "bottom" (default) | "top" | "start" | "end" (start and end follow the writing direction)
-     title: a short title above the body; it makes the tooltip rich
-     action: one action under the body (a standalone Link, or a small Button); it makes the tooltip rich and a toggletip:
-       it opens on click (Enter or Space on the trigger) instead of on hover and focus
-     rich: the rich look without a title or an action (default false; true when title or action is given)
-     disabled: the tooltip neither shows nor describes the trigger (default false); for a label that is shown in full most of
-       the time and only needs its tooltip when it is cut short
-     className: more classes on the wrapper
-     children: the control it labels (one element)
-   Behavior:
-     It shows on hover (a mouse or a pen) and on keyboard focus, and hides on leave, on blur and with Escape.
-     On touch there is no hover (Platforms Standard 6.5): a long press (--plx-comp-tooltip-long-press-delay) shows it, and
-     it hides --plx-comp-tooltip-touch-dismiss-delay after the finger lifts, or when the finger moves away or is cancelled.
-     A tap does not show it (focus that follows a touch is ignored; mouse events emulated from touch are not listened to),
-     and the long press neither opens the browser's context menu nor activates the control (the click that may follow the
-     release is dropped): a long press asks what a control is, it does not use it.
-     The trigger is described by the tooltip (aria-describedby), added to any it already has.
-     Placement: where the browser has CSS anchor positioning (utils/floating.js) the bubble is placed against the trigger by
-       useFloating while it shows (offset sm), so no scroll area or pane clips it; elsewhere it is drawn inside the wrapper
-       on its side, as before. A tooltip with an arrow keeps its side; a rich tooltip (no arrow) flips and shifts to stay in
-       the window.
-     Rich: a text-only rich tooltip opens on hover and focus like a plain one and stays open while the pointer is over it
-       (it hides --plx-comp-tooltip-rich-close-delay after the pointer leaves both). With an action it is a toggletip: the
-       trigger toggles it (aria-expanded, aria-controls), Tab from the trigger reaches the action, and Escape, a click
-       outside or focus leaving it closes it (Escape returns focus to the trigger); a tap opens it on touch.
-   Notes:
-     An icon-only control still needs its own label (aria-label): the tooltip repeats it visually, it is never the only
-     way to learn the control's name.
-     Not for essential content. Only the rich tooltip holds an action, and then it opens on click: interactive content never
-     depends on hover.
-     The rich surface is the popover's (the overlay surface with its border, radius and shadow), with no arrow.
-*/
-
-const SIDES = ['bottom', 'top', 'start', 'end'];
-
-// a duration token ("0.5s", "500ms") in milliseconds, read from the element's computed style
-const ms = (el, name) => {
-  const v = el ? getComputedStyle(el).getPropertyValue(name).trim() : '';
-  const n = parseFloat(v);
-  return isNaN(n) ? 0 : /ms$/.test(v) ? n : n * 1000;
-};
-
-// the last way the person reached for the page: a touch, or a mouse, pen or key. Focus that follows a tap does not open
-// the tooltip (a long press does); focus that follows a key does. One listener pair for every tooltip, added by the first.
-let lastInput = 'key',
-  listening = false;
-const listen = () => {
-  if (listening) return;
-  listening = true;
-  document.addEventListener('pointerdown', e => {
-    lastInput = e.pointerType === 'touch' ? 'touch' : 'pointer';
-  }, true);
-  document.addEventListener('keydown', () => {
-    lastInput = 'key';
-  }, true);
-};
-function Tooltip({
-  content,
-  placement = 'bottom',
-  title,
-  action,
-  rich = false,
-  disabled = false,
-  className,
-  children
-}) {
-  const id = 'plx-tt' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
-  const [open, setOpen] = _react.default.useState(false);
-  const wrap = _react.default.useRef(null);
-  const bubble = _react.default.useRef(null);
-  const press = _react.default.useRef(null); // the long-press timer
-  const hide = _react.default.useRef(null); // the timer that hides a tooltip a long press (or a rich tooltip's leave) started
-  const pressed = _react.default.useRef(false); // this touch opened the tooltip by a long press
-  const isRich = !!(rich || title || action);
-  const toggle = !!action; // a toggletip: opened by a click on the trigger
-  const side = SIDES.indexOf(placement) >= 0 ? placement : 'bottom';
-  const clear = () => {
-    clearTimeout(press.current);
-    clearTimeout(hide.current);
-  };
-  _react.default.useEffect(() => {
-    listen();
-    return clear;
-  }, []);
-  // placed against the trigger by anchor positioning while it shows; the arrow keeps its side (no flip, no shift)
-  (0, _floating.useFloating)(wrap, bubble, {
-    open: open && !disabled && _floating.FLOATING_ANCHOR,
-    placement: side,
-    offset: 'sm',
-    flip: isRich,
-    shift: isRich
-  });
-  _react.default.useEffect(() => {
-    if (!open) return undefined;
-    const esc = e => {
-      if (e.key !== 'Escape') return;
-      const inside = wrap.current && wrap.current.contains(document.activeElement);
-      setOpen(false);
-      // a toggletip gives focus back to its trigger when Escape closes it from inside
-      if (toggle && inside && wrap.current.firstElementChild && wrap.current.firstElementChild.focus) wrap.current.firstElementChild.focus();
-    };
-    const outside = e => {
-      if (wrap.current && !wrap.current.contains(e.target)) setOpen(false);
-    };
-    document.addEventListener('keydown', esc);
-    if (toggle) document.addEventListener('mousedown', outside);
-    return () => {
-      document.removeEventListener('keydown', esc);
-      document.removeEventListener('mousedown', outside);
-    };
-  }, [open, toggle]);
-  const child = _react.default.Children.only(children);
-  const described = {
-    'aria-describedby': [child.props['aria-describedby'], id].filter(Boolean).join(' ')
-  };
-  const trigger = disabled ? child : /*#__PURE__*/_react.default.cloneElement(child, toggle ? Object.assign(described, {
-    'aria-expanded': open,
-    'aria-controls': open ? id + 'b' : undefined,
-    onClick: e => {
-      if (child.props.onClick) child.props.onClick(e);
-      setOpen(!open);
-    }
-  }) : described);
-  if (disabled) return /*#__PURE__*/_react.default.createElement("span", {
-    className: (0, _cx.cx)('plx-tooltip', className)
-  }, trigger);
-  const onPointerDown = e => {
-    if (e.pointerType !== 'touch' || toggle) return;
-    clear();
-    pressed.current = false;
-    press.current = setTimeout(() => {
-      pressed.current = true;
-      setOpen(true);
-    }, ms(wrap.current, '--plx-comp-tooltip-long-press-delay'));
-  };
-  const onPointerEnd = e => {
-    if (e.pointerType !== 'touch' || toggle) return;
-    clearTimeout(press.current);
-    if (pressed.current) hide.current = setTimeout(() => {
-      setOpen(false);
-      pressed.current = false;
-    }, e.type === 'pointercancel' ? 0 : ms(wrap.current, '--plx-comp-tooltip-touch-dismiss-delay'));
-  };
-  const onEnter = e => {
-    if (e.pointerType === 'touch' || toggle) return;
-    clearTimeout(hide.current);
-    setOpen(true);
-  };
-  const onLeave = e => {
-    if (e.pointerType === 'touch' || toggle) return;
-    // a rich tooltip waits a moment, so the pointer can move into it; a plain one hides at once
-    if (isRich) {
-      clearTimeout(hide.current);
-      hide.current = setTimeout(() => setOpen(false), ms(wrap.current, '--plx-comp-tooltip-rich-close-delay'));
-    } else setOpen(false);
-  };
-  const bubbleCls = (0, _cx.cx)('plx-tooltip__bubble', 'plx-tooltip__bubble--' + side, isRich && 'plx-tooltip__bubble--rich', open && 'is-open');
-  return /*#__PURE__*/_react.default.createElement("span", {
-    ref: wrap,
-    className: (0, _cx.cx)('plx-tooltip', className),
-    onPointerEnter: onEnter,
-    onPointerLeave: onLeave,
-    onPointerDown: onPointerDown,
-    onPointerUp: onPointerEnd,
-    onPointerCancel: onPointerEnd,
-    onContextMenu: e => {
-      if (pressed.current) e.preventDefault();
-    },
-    onClickCapture: e => {
-      if (pressed.current) {
-        e.preventDefault();
-        e.stopPropagation();
-        pressed.current = false;
-      }
-    },
-    onFocus: () => {
-      if (!toggle && lastInput !== 'touch') setOpen(true);
-    },
-    onBlur: e => {
-      if (!pressed.current && !(wrap.current && wrap.current.contains(e.relatedTarget))) setOpen(false);
-    }
-  }, trigger, isRich ? /*#__PURE__*/_react.default.createElement("span", {
-    ref: bubble,
-    id: id + 'b',
-    className: bubbleCls
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    role: "tooltip",
-    id: id,
-    className: "plx-tooltip__content"
-  }, title ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-tooltip__title"
-  }, title) : null, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-tooltip__body"
-  }, content)), action ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-tooltip__action"
-  }, action) : null) : /*#__PURE__*/_react.default.createElement("span", {
-    ref: bubble,
-    role: "tooltip",
-    id: id,
-    className: bubbleCls
-  }, content));
 }
   } },
   "platform/components/Field/Field.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -16313,40 +16681,6 @@ const Switch = exports.Switch = /*#__PURE__*/_react.default.forwardRef(function 
   }, label) : null);
 });
   } },
-  "platform/components/Kbd/Kbd.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Kbd = Kbd;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Kbd
-   Summary: A key or shortcut ("Ctrl K").
-   Usage:
-     <Kbd>Ctrl K</Kbd>
-     <Kbd onAccent>/</Kbd>
-   Props:
-     onAccent: the version for the blue header (default false)
-     children: the key or shortcut text
-     className: more classes on the <kbd>
-   Notes:
-     It uses the data font at a 16px label height.
-     Other props pass through to the <kbd>.
-*/
-function Kbd({
-  onAccent = false,
-  className,
-  children,
-  ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement("kbd", _extends({
-    className: (0, _cx.cx)('plx-kbd', onAccent && 'plx-kbd--on-accent', className)
-  }, rest), children);
-}
-  } },
   "platform/components/SearchField/SearchField.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -17949,7 +18283,9 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      strings: { find: "Find a {noun}", none: "No {noun} matches", clear: "Clear", presets: [{ value, label }…],
        custom: "Custom range", from: "From", to: "To" }
    Behavior:
-     The button keeps its label; while it filters it takes the tint and a count badge (the chosen values; 1 for a date).
+     The button shows the choice in force (a pop-up button, Apple HIG): its label alone while it does not filter; "Status:
+       Active" with one value, "Tags: Urgent +2" with more, "Modified: Last 7 days" for a date; it takes the tint while it
+       filters.
      The checklist's find field fills the panel (owner, 2026-10-14); each value is a checkbox with its pill. A date
      range typed by hand chooses Custom range. Clear (the panel's footer) empties it; it is disabled while nothing is
      chosen. A required single choice omits All and Clear.
@@ -17965,6 +18301,12 @@ const STRINGS = {
   custom: 'Custom range',
   from: 'From',
   to: 'To'
+};
+// the choice in force, in words: the first chosen value's label, "+N" for the rest
+const nameOf = (list, chosen) => {
+  if (!chosen || !chosen.length) return undefined;
+  const o = list.find(x => x.value === chosen[0]);
+  return String(o ? o.label : chosen[0]) + (chosen.length > 1 ? ' +' + (chosen.length - 1) : '');
 };
 const asOptions = options => (options || []).map((o, i) => typeof o === 'string' ? {
   value: o
@@ -18058,9 +18400,12 @@ function QuickFilter({
         to: ''
       })
     }, t.clear);
+    const preset = t.presets.find(x => x.value === d.preset);
+    const current = !on ? undefined : d.preset === 'custom' ? [d.from, d.to].filter(Boolean).join(' – ') || t.custom : preset ? preset.label : undefined;
     return /*#__PURE__*/_react.default.createElement(_panelParts.PanelTrigger, {
       icon: icon || 'calendar',
       label: label,
+      current: current,
       title: label,
       count: on ? 1 : 0,
       caret: true,
@@ -18100,6 +18445,7 @@ function QuickFilter({
     return /*#__PURE__*/_react.default.createElement(_panelParts.PanelTrigger, {
       icon: icon,
       label: label,
+      current: nameOf(list, chosen),
       title: label,
       count: chosen.length,
       caret: true,
@@ -18147,6 +18493,7 @@ function QuickFilter({
   return /*#__PURE__*/_react.default.createElement(_panelParts.PanelTrigger, {
     icon: icon,
     label: label,
+    current: nameOf(list, chosen),
     title: label,
     count: chosen.length,
     caret: true,
@@ -18695,11 +19042,13 @@ const toggle = (list, v) => list.indexOf(v) >= 0 ? list.filter(x => x !== v) : l
 exports.toggle = toggle;
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 
-// the bar button and its panel; inline: the body alone (a panel drawn open, or in a side panel)
+// the bar button and its panel; inline: the body alone (a panel drawn open, or in a side panel). current: the choice in
+// force, shown in the button ("Status: Active", a pop-up button in Apple's words) in place of the count badge
 exports.fill = fill;
 function PanelTrigger({
   icon,
   label,
+  current,
   count = 0,
   active,
   caret = false,
@@ -18727,7 +19076,15 @@ function PanelTrigger({
   if (inline) return /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-find-panel-frame"
   }, children);
-  const trigger = /*#__PURE__*/_react.default.createElement(_CommandBar.CommandBarButton, {
+  const words = current ? label + ': ' + current : label;
+  // icons only: no room for the words, so the count badge stays; the tooltip says the choice
+  const trigger = current && !ctx.iconOnly ? /*#__PURE__*/_react.default.createElement(_CommandBar.CommandBarButton, {
+    icon: icon,
+    label: label,
+    active: true,
+    caret: caret,
+    "aria-label": words
+  }, words) : /*#__PURE__*/_react.default.createElement(_CommandBar.CommandBarButton, {
     icon: icon,
     label: label,
     count: count,
@@ -18744,7 +19101,7 @@ function PanelTrigger({
     initialFocus: first
   }, body);
   return ctx.iconOnly ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
-    content: label
+    content: words
   }, pop) : pop;
 }
 function PanelHead({
@@ -20662,6 +21019,8 @@ const defaults = {
   perPage: 'Rows per page',
   view: 'View options',
   wrapHeaders: 'Wrap headers',
+  wrapText: 'Wrap text',
+  wrapAll: 'Wrap all columns',
   rowHeight: 'Row height',
   short: 'Short',
   medium: 'Medium',
@@ -21015,6 +21374,27 @@ function NextEngine(props) {
   }, [widthsSignal, !!props.onViewChange, columns]);
   const [rowHeight, setRowHeight] = _react.default.useState(initial.rowHeight),
     [wrapHeaders, setWrapHeaders] = _react.default.useState(initial.wrapHeaders);
+  // Wrap text, per column (owner, 2026-10-24): the column's wrap prop or kind "wrap" is the default; the column menu turns it on or off
+  const [wrapColumns, setWrapColumns] = _react.default.useState(() => props.wrapColumns || initial.wrapColumns || {});
+  const wrapOf = c => (props.wrapColumns || wrapColumns)[c.field] ?? (c.wrap === true || kinds(c).includes('wrap'));
+  const kindsOf = c => {
+    const k = kinds(c).filter(x => x !== 'wrap');
+    return wrapOf(c) ? k.concat('wrap') : k;
+  };
+  const changeWrap = next => {
+    setWrapColumns(next);
+    props.onViewChange?.({
+      wrapColumns: next
+    });
+    props.onWrapColumnsChange?.(next);
+    // wrapped text needs room: a Short grid moves to Medium (2 lines) when a column starts wrapping
+    if (Object.values(next).some(Boolean) && !props.rowHeight && (effectiveStep || 'short') === 'short') {
+      setRowHeight('medium');
+      props.onViewChange?.({
+        rowHeight: 'medium'
+      });
+    }
+  };
   const [filterField, setFilterField] = _react.default.useState(null),
     [managing, setManaging] = _react.default.useState(false);
   const [edited, setEdited] = _react.default.useState(null),
@@ -21762,6 +22142,7 @@ function NextEngine(props) {
       widths: Object.fromEntries(Object.entries(sizing).map(([k, v]) => [k, v + 'px'])),
       rowHeight: effectiveStep,
       wrapHeaders: effectiveWrap,
+      wrapColumns: props.wrapColumns || wrapColumns,
       groupBy,
       collapsed: [...collapsed]
     });
@@ -21958,7 +22339,13 @@ function NextEngine(props) {
       icon: "group-by",
       disabled: !grouped && c.groupable === false,
       onSelect: () => changeGroups(grouped ? others.length ? others : false : c.field)
-    }, grouped ? S.noGroup : S.group));
+    }, grouped ? S.noGroup : S.group), /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      checked: !!wrapOf(c),
+      onSelect: () => changeWrap({
+        ...(props.wrapColumns || wrapColumns),
+        [c.field]: !wrapOf(c)
+      })
+    }, S.wrapText));
   };
   // the header's right-click menu (Windows Explorer): size this column or every column to fit, every column with a check
   // (TanStack's visibility; a pinned column stays shown) and More… for the columns dialog (order, find, show all, hide all)
@@ -21966,7 +22353,14 @@ function NextEngine(props) {
     onSelect: () => fit(column.id)
   }, S.sizeToFit), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
     onSelect: () => table.getVisibleLeafColumns().forEach(col => fit(col.id))
-  }, S.sizeAllToFit), /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), chooserColumns().map(col => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+  }, S.sizeAllToFit), (() => {
+    const cols = table.getVisibleLeafColumns().map(col => col.columnDef.meta).filter(m => m && m.field && !kinds(m).includes('icon')),
+      all = cols.length > 0 && cols.every(wrapOf);
+    return /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      checked: all,
+      onSelect: () => changeWrap(Object.fromEntries(cols.map(m => [m.field, !all])))
+    }, S.wrapAll);
+  })(), /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), chooserColumns().map(col => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
     key: col.id,
     checked: col.getIsVisible(),
     disabled: frozen.has(col.id),
@@ -21983,7 +22377,20 @@ function NextEngine(props) {
     if (event.type === 'mousedown') event.preventDefault();
     event.stopPropagation();
     const head = table.getFlatHeaders().find(h => h.column.id === column.id);
-    head?.getResizeHandler(frame.current?.ownerDocument)(event);
+    const doc = frame.current?.ownerDocument || document,
+      cover = doc.createElement('div');
+    cover.className = B + '__resize-cover';
+    doc.body.appendChild(cover);
+    const end = () => {
+      cover.remove();
+      doc.removeEventListener('mouseup', end);
+      doc.removeEventListener('touchend', end);
+      doc.removeEventListener('touchcancel', end);
+    };
+    doc.addEventListener('mouseup', end);
+    doc.addEventListener('touchend', end);
+    doc.addEventListener('touchcancel', end);
+    head?.getResizeHandler(doc)(event);
   };
   const headerCell = column => {
     const c = column.columnDef.meta,
@@ -22007,7 +22414,7 @@ function NextEngine(props) {
       tabIndex: isStatic ? undefined : 0,
       "data-plx-field": c.field,
       "aria-sort": column.getIsSorted() ? column.getIsSorted() === 'desc' ? 'descending' : 'ascending' : undefined,
-      className: (0, _cx.cx)('' + B + '__grid-col', isStatic && B + '__grid-col--static', selectable && ordered.indexOf(column) === 0 && B + '__grid-col--after-lead', column.getCanSort() && B + '__grid-sortable', column.getCanSort() && B + '__grid-col-sorter-element', kinds(c).includes('icon') && B + '__cell--icon', kinds(c).includes('icon') && B + '__w-lead', column.getIsFiltered() && B + '__filtered', pinned && '' + B + '__grid-frozen', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', (c.headerAlign || c.type === 'bytes') && B + '__head-align-' + (c.headerAlign || 'right')),
+      className: (0, _cx.cx)('' + B + '__grid-col', isStatic && B + '__grid-col--static', selectable && ordered.indexOf(column) === 0 && B + '__grid-col--after-lead', ordered.indexOf(column) > 0 && ordered[ordered.indexOf(column) - 1].getIsPinned() === 'left' && column.getIsPinned() !== 'left' && B + '__grid-col--after-frozen', column.getCanSort() && B + '__grid-sortable', column.getCanSort() && B + '__grid-col-sorter-element', kinds(c).includes('icon') && B + '__cell--icon', kinds(c).includes('icon') && B + '__w-lead', column.getIsFiltered() && B + '__filtered', pinned && '' + B + '__grid-frozen', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', (c.headerAlign || c.type === 'bytes') && B + '__head-align-' + (c.headerAlign || 'right')),
       "data-plx-sticky": pinned && offset ? offset + 'px' : undefined,
       onClick: e => {
         if (!e.target.closest(interactive) && column.getCanSort()) column.toggleSorting();
@@ -22255,6 +22662,7 @@ function NextEngine(props) {
       emit('cellEdit', api.cell(key, field));
     }
   }, [source]);
+  const anyWrap = table.getVisibleLeafColumns().some(col => col.columnDef.meta && col.columnDef.meta.field && wrapOf(col.columnDef.meta));
   const rowNode = row => {
     if (row.__group) return groupNode(row.__group);
     if (row.__add) return /*#__PURE__*/_react.default.createElement("div", {
@@ -22301,7 +22709,7 @@ function NextEngine(props) {
       tabIndex: props.onRowClick || on.rowClick || options.selectableRows ? 0 : undefined,
       "aria-level": childField ? row.depth + 1 : undefined,
       "aria-expanded": row.getCanExpand?.() ? row.getIsExpanded() : undefined,
-      className: (0, _cx.cx)('' + B + '__grid-row', (selectable || options.selectableRows || props.onRowClick || on.rowClick) && B + '__grid-selectable', childField && '' + B + '__grid-tree-level-' + Math.min(12, row.depth), selection[row.id] && '' + B + '__grid-selected', isStatic && B + '__grid-row--static', isNarrow && B + '__grid-row--narrow', virtualized && B + '__grid-row--virtual'),
+      className: (0, _cx.cx)('' + B + '__grid-row', (selectable || options.selectableRows || props.onRowClick || on.rowClick) && B + '__grid-selectable', childField && '' + B + '__grid-tree-level-' + Math.min(12, row.depth), selection[row.id] && '' + B + '__grid-selected', isStatic && B + '__grid-row--static', anyWrap && !isNarrow && (isStatic || (effectiveStep || 'short') !== 'short') && B + '__grid-row--wrap', isNarrow && B + '__grid-row--narrow', virtualized && B + '__grid-row--virtual'),
       onClick: e => {
         if (e.target.closest(interactive)) return;
         if (selectable) pickCheckbox(row, {
@@ -22350,7 +22758,7 @@ function NextEngine(props) {
       onChange: e => pickCheckbox(row, e)
     })) : null, ordered.map(column => {
       const c = column.columnDef.meta,
-        k = kinds(c),
+        k = kindsOf(c),
         pinned = column.getIsPinned() === 'left',
         sticky = pinned ? pinStart(column) : 0;
       const cell = api.cell(row.id, c.field),
@@ -22360,7 +22768,7 @@ function NextEngine(props) {
         isEditing = editing?.key === row.id && editing.field === c.field,
         handled = c.rowHandle && (recordPositions.get(record) ?? -1) >= 0,
         actions = k.includes('actions');
-      const mods = (0, _cx.cx)(isStatic && B + '__value--static', k.includes('wrap') && B + '__value--wrap', sized && B + '__value--sized', lines && B + '__value--lines') || undefined,
+      const mods = (0, _cx.cx)(isStatic && B + '__value--static', k.includes('wrap') && B + '__value--wrap', sized && B + '__value--sized', lines && k.includes('wrap') && B + '__value--lines') || undefined,
         shown = (0, _cells.CellValue)({
           block: B,
           column: c,
@@ -22421,7 +22829,7 @@ function NextEngine(props) {
         },
         "data-plx-sticky": pinned && sticky ? sticky + 'px' : undefined,
         "data-plx-text-follow": c.rowLabel || columns.indexOf(c) <= pinnedAt ? 'size family weight' : 'size family',
-        className: (0, _cx.cx)('' + B + '__grid-cell', modes, !selectable && selection[row.id] && ordered.indexOf(column) === 0 && B + '__grid-cell--selected-start', bare && B + '__grid-cell--bare', selectable && ordered.indexOf(column) === 0 && B + '__grid-cell--after-lead', isTree && row.depth > 0 && B + '__tree-cell--level-' + Math.min(12, row.depth), editing?.key === row.id && editing.field === c.field && '' + B + '__grid-editing', k.map(kind => B + '__cell--' + kind).join(' '), (k.includes('data') || c.type === 'bytes') && B + '__grid-cell--data', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', c.type === 'bytes' && B + '__cell--data', c.rowHandle && B + '__cell--handle', childField && c.field === (props.treeColumn || columns[0]?.field) && B + '__tree-cell', pinned && '' + B + '__grid-frozen', (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + '__cell--row-label', k.includes('icon') && B + '__w-lead', keys.includes(c.field) && B + '__cell--key', keys[0] === c.field && B + '__cell--key-first', (c.align || c.type === 'bytes') && B + '__cell--align-' + (c.align || 'right'))
+        className: (0, _cx.cx)('' + B + '__grid-cell', modes, !selectable && selection[row.id] && ordered.indexOf(column) === 0 && B + '__grid-cell--selected-start', bare && B + '__grid-cell--bare', selectable && ordered.indexOf(column) === 0 && B + '__grid-cell--after-lead', ordered.indexOf(column) > 0 && ordered[ordered.indexOf(column) - 1].getIsPinned() === 'left' && column.getIsPinned() !== 'left' && B + '__grid-cell--after-frozen', isTree && row.depth > 0 && B + '__tree-cell--level-' + Math.min(12, row.depth), editing?.key === row.id && editing.field === c.field && '' + B + '__grid-editing', k.map(kind => B + '__cell--' + kind).join(' '), (k.includes('data') || c.type === 'bytes') && B + '__grid-cell--data', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', c.type === 'bytes' && B + '__cell--data', c.rowHandle && B + '__cell--handle', childField && c.field === (props.treeColumn || columns[0]?.field) && B + '__tree-cell', pinned && '' + B + '__grid-frozen', (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + '__cell--row-label', k.includes('icon') && B + '__w-lead', keys.includes(c.field) && B + '__cell--key', keys[0] === c.field && B + '__cell--key-first', (c.align || c.type === 'bytes') && B + '__cell--align-' + (c.align || 'right'))
       }, childField && c.field === (props.treeColumn || columns[0]?.field) ? /*#__PURE__*/_react.default.createElement("span", {
         className: B + '__tree-level',
         "data-plx-depth": 0
@@ -22503,7 +22911,7 @@ function NextEngine(props) {
       rowApi: rowApi
     })) : node;
   };
-  const rowVersion = _react.default.useMemo(() => ({}), [unread.keys, unreadOnly, props, source, model, editing, metrics, autoSizing, sizing, columnOrder, columnVisibility, sorting, expanded, page, pageSize, isNarrow, collapsed, printing, filterField, groupBy, loaded]);
+  const rowVersion = _react.default.useMemo(() => ({}), [wrapColumns, unread.keys, unreadOnly, props, source, model, editing, metrics, autoSizing, sizing, columnOrder, columnVisibility, sorting, expanded, page, pageSize, isNarrow, collapsed, printing, filterField, groupBy, loaded]);
   const renderRow = row => row.original ? /*#__PURE__*/_react.default.createElement(MemoGridRow, {
     key: row.displayKey || row.id,
     row: row,
@@ -22763,7 +23171,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
    Usage: <Table label="Fields" data={fields} columns={[{title:'Field',field:'name',rowLabel:true},{title:'Notes',field:'notes',kind:'wrap'}]} />
    Props:
      label: accessible table name (required); data: records; columns: title, field, kind, render(record), width,
-       minWidth, maxWidth, rowLabel, frozen, align and headerAlign. index identifies records (default "id").
+       minWidth, maxWidth, rowLabel, frozen, align, headerAlign and wrap (true: the column wraps its text; a row with a wrapping
+       column starts every cell at the top). Cells do not wrap otherwise; long text ends in an ellipsis. index identifies records (default "id").
      empty: no-record message; narrow: "table" by default; className.
      cells: "text" (default) | "pill": the pill view (owner, 2026-10-19): every value a DataPill with its column's type icon
        (type: text, number, currency, date, person …); a person's value.gender makes it blue or pink with the male or female
@@ -22803,7 +23212,8 @@ function Table({
     frozen,
     align,
     headerAlign,
-    empty
+    empty,
+    wrap
   }) => ({
     title,
     field,
@@ -22819,6 +23229,7 @@ function Table({
     align,
     headerAlign,
     empty,
+    wrap,
     sortable: false,
     resizable: false
   })), [columns]);
@@ -28574,6 +28985,10 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        { rows, total }; search: the page's search text
      storageKey: keeps the person's standalone view (sort, widths, order, hidden columns, row height, wrap, groups).
      onViewChange(patch): delegates view changes to an external controller; its presence disables the grid's own store.
+     columns[].wrap: true starts the column wrapped (as kind "wrap"); people turn Wrap text on or off in the column menu, and
+       Wrap all columns in the header's right-click menu. A row with a wrapping column starts every cell at the top, at the
+       reading line height; rows without one stay centered. wrapColumns ({ field: true|false }) and onWrapColumnsChange(next)
+       control it from outside; the saved view keeps it (owner, 2026-10-24)
        useCollectionView supplies this callback and columnWidths, so its collection state owns the view.
      narrow: "table" (default inside SplitView) | "list" (default elsewhere: under narrowAt, 600px, a list of keyColumns) | "auto"
      empty: shown when no row matches; error and onRetry(): the error state and its one recovery; strings: the words
@@ -31749,7 +32164,9 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        (hue: surface, a white tile); or an element. 44px square (32px in a section)
      status: the Status tile, first in the details, in its tone as a whole: { tone, label, icon } (tone: a Badge tone:
        neutral, success, active, waiting, action-required, negative; info, warning and danger still work)
-     facts: up to four fact tiles after the Status tile, each as wide as its content: [{ label, value, data, icon, action }]
+     facts: up to four fact tiles after the Status tile, each as wide as its content: [{ label, value, data, icon, action }];
+       dates, times and numbers in a value are set in the data font and its words in the normal font; data: true
+       sets the whole value in the data font, data: false none of it
        (data: a technical value, in the data font); a plain string or element is a tile with no label. icon: the fact's
        identifying icon, in a 40px square at its start. action (header style 2): { label, icon (default add), name,
        onClick, disabled }: the fact becomes a count box, its icon before the label, the value large, the action's button
@@ -31954,13 +32371,28 @@ function States({
 
 // a fact: label over value; with an icon, the icon in a square at its start; with an action (header style 2), the icon
 // before the label, the value large, and the action right after the value
+// numbers and dates in the data font, words in the normal font (owner, 2026-10-24): a fact's value is set in the
+// data role where it is a date, a time or a number (with its currency, percent, separators and units), word by word
+const MONTH = '(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\\.?';
+const DATUM = new RegExp('(\\d{4}-\\d{2}-\\d{2}(?:[ T]\\d{1,2}:\\d{2})?|' + MONTH + ' \\d{1,2}(?:, \\d{4})?|\\d{1,2}:\\d{2}(?:\\s?[AP]M)?|[$€£]?\\d[\\d,.]*(?:\\s?(?:%|[kKMB]\\b|KB|MB|GB|TB))?(?:\\s?[×x]\\s?\\d[\\d,.]*)?)', 'g');
+function dataText(value) {
+  if (typeof value === 'number') return /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data"
+  }, value);
+  if (typeof value !== 'string' || !/\d/.test(value)) return value;
+  const parts = value.split(DATUM);
+  return parts.map((p, i) => i % 2 ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    key: i,
+    variant: "data"
+  }, p) : p || null);
+}
 function Fact({
   f,
   iconOnly
 }) {
   const value = f.data ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
     variant: "data"
-  }, f.value) : f.value;
+  }, f.value) : f.data === false ? f.value : dataText(f.value);
   if (f.action) {
     const a = f.action;
     return /*#__PURE__*/_react.default.createElement("div", {
@@ -32044,7 +32476,7 @@ function Details({
     }, status.icon ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
       name: status.icon,
       size: "sm"
-    }) : null, status.label)));
+    }) : null, dataText(status.label))));
   }
   (facts || []).filter(Boolean).slice(0, 4).forEach((f, i) => {
     const plain = typeof f === 'string' || typeof f === 'number' || /*#__PURE__*/_react.default.isValidElement(f);
@@ -32053,7 +32485,7 @@ function Details({
       className: "plx-entity-header__fact"
     }, /*#__PURE__*/_react.default.createElement("dd", {
       className: "plx-entity-header__fact-value"
-    }, f)) : /*#__PURE__*/_react.default.createElement(Fact, {
+    }, dataText(f))) : /*#__PURE__*/_react.default.createElement(Fact, {
       key: 'f' + i,
       f: f,
       iconOnly: step >= 1
@@ -32306,7 +32738,9 @@ function Streamlined({
     className: "plx-entity-header__fact-label"
   }, f.label), /*#__PURE__*/_react.default.createElement("dd", {
     className: "plx-entity-header__fact-value"
-  }, f.value)) : /*#__PURE__*/_react.default.createElement(Fact, {
+  }, f.data ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data"
+  }, f.value) : dataText(f.value))) : /*#__PURE__*/_react.default.createElement(Fact, {
     key: i,
     f: f
   }))) : null) : null, (d.tags || []).map((t, i) => /*#__PURE__*/_react.default.createElement(_Tag.Tag, {
@@ -34616,279 +35050,6 @@ function useClipboard({
     error,
     reset
   };
-}
-  } },
-  "platform/utils/hotkey.js": { deps: {"react":null,"./tokenTime.js":"platform/utils/tokenTime.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.hotkeyKeys = hotkeyKeys;
-exports.hotkeyLabel = hotkeyLabel;
-exports.hotkeyList = hotkeyList;
-exports.isMac = isMac;
-exports.parseHotkey = parseHotkey;
-exports.registerHotkey = registerHotkey;
-exports.setSingleKeyHotkeys = setSingleKeyHotkeys;
-exports.singleKeyHotkeys = singleKeyHotkeys;
-exports.subscribeHotkeys = subscribeHotkeys;
-exports.useHotkey = useHotkey;
-exports.useHotkeyList = useHotkeyList;
-var _react = _interopRequireDefault(require("react"));
-var _tokenTime = require("./tokenTime.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · Hotkey (platform/utils/hotkey.js)
-   Summary: Keyboard shortcuts in one place: useHotkey binds a key, a chord (Mod K) or a sequence (G then I) to a command,
-     for the whole page or for one region, and every binding goes into one registry that the shortcuts dialog and the
-     menus read their hints from (Kbd draws the label).
-   Usage:
-     useHotkey('Mod+K', () => openSearch(), { label: 'Search', group: 'General' });
-     useHotkey('G I', () => goTo('inbox'), { label: 'Go to inbox', group: 'Navigation' });
-     useHotkey('Delete', removeSelected, { scope: listRef, label: 'Delete the selected files' });
-     <Kbd>{hotkeyLabel('Mod+K')}</Kbd>                     // "Ctrl K" on Windows and Linux, "⌘ K" on a Mac
-     const all = useHotkeyList();                         // [{ binding, label, group, keys }] for the shortcuts dialog
-   Props:
-     useHotkey(binding, handler, options): binds while the component is mounted; handler(event) runs on a match
-     binding: steps separated by spaces (a sequence: "G I"), each step keys joined by "+" ("Mod+Shift+P"); modifiers Mod
-       (Cmd on a Mac, Ctrl elsewhere), Ctrl, Meta, Alt, Shift; keys as KeyboardEvent.key names ("K", "Escape", "/", "?")
-     options.scope: a ref (or element) of the region the binding belongs to; it fires only when focus is inside it
-     options.enabled: false unbinds it without unmounting (default true)
-     options.allowInFields: also fire while focus is in a text field (default false)
-     options.label: what the command does, as written in its menu item; options.group: its group in the shortcuts dialog
-     registerHotkey(binding, handler, options): the same without React; returns the function that unbinds it
-     hotkeyLabel(binding, { mac }): the binding as people read it ("Ctrl Shift P", "G then I")
-     hotkeyList(): every labeled binding; useHotkeyList() the same, kept current; subscribeHotkeys(fn) for other code
-     setSingleKeyHotkeys(on): turns every single-key shortcut (no modifier) off or on (WCAG 2.2 SC 2.1.4)
-   Behavior:
-     One keydown listener for the page. The binding of the innermost scope that contains the focus wins; page-wide
-     bindings come last. A key that starts a sequence waits --plx-sys-hotkey-sequence-timeout for the next one.
-     Ignored while focus is in a text field, a select or editable content, unless allowInFields. Ignored when an earlier
-     handler called preventDefault. A match calls preventDefault, so the browser's own use of that key does not run.
-   Notes:
-     Never bind keys that assistive technology or the browser needs (Tab, the arrow keys outside a widget, Ctrl L, F6).
-     Use the same label here as in the menu item, so the dialog and the menu agree.
-*/
-
-const MODS = ['ctrl', 'meta', 'alt', 'shift'];
-const NAMES = {
-  esc: 'escape',
-  del: 'delete',
-  space: ' ',
-  spacebar: ' ',
-  return: 'enter',
-  up: 'arrowup',
-  down: 'arrowdown',
-  left: 'arrowleft',
-  right: 'arrowright',
-  cmd: 'meta',
-  command: 'meta',
-  option: 'alt',
-  control: 'ctrl'
-};
-const entries = [];
-const listeners = new Set();
-let singleKeys = true;
-let buffer = [],
-  bufferAt = 0,
-  installed = false,
-  nextId = 1;
-function isMac() {
-  if (typeof navigator === 'undefined') return false;
-  const p = navigator.userAgentData && navigator.userAgentData.platform || navigator.platform || '';
-  return /mac|iphone|ipad|ipod/i.test(p);
-}
-
-// "Mod+Shift+P" → { ctrl, meta, alt, shift, key: 'p' }
-function parseStep(step, mac) {
-  const parts = step.split('+').filter((x, i, all) => x !== '' || i === all.length - 1).map(x => x === '' ? '+' : x);
-  const s = {
-    ctrl: false,
-    meta: false,
-    alt: false,
-    shift: false,
-    key: ''
-  };
-  parts.forEach(raw => {
-    let p = raw.toLowerCase();
-    p = NAMES[p] || p;
-    if (p === 'mod') s[mac ? 'meta' : 'ctrl'] = true;else if (MODS.indexOf(p) >= 0) s[p] = true;else s.key = p;
-  });
-  return s;
-}
-function parseHotkey(binding, mac = isMac()) {
-  return String(binding || '').trim().split(/\s+/).filter(Boolean).map(st => parseStep(st, mac));
-}
-function matchStep(s, e) {
-  const key = (e.key || '').toLowerCase();
-  // a letter or digit typed with Alt (or Shift) on some layouts changes e.key: e.code still names the key
-  const code = /^Key([A-Z])$|^Digit(\d)$/.exec(e.code || '');
-  const sameKey = key === s.key || !!code && (code[1] || code[2]).toLowerCase() === s.key;
-  if (!sameKey) return false;
-  // a symbol that needs Shift ("?") is written without it: Shift is then not compared
-  const symbol = s.key.length === 1 && !/[a-z0-9]/.test(s.key);
-  return e.ctrlKey === s.ctrl && e.metaKey === s.meta && e.altKey === s.alt && (symbol || e.shiftKey === s.shift);
-}
-const isSingle = steps => steps.length >= 1 && steps.every(s => !s.ctrl && !s.meta && !s.alt) && steps[0].key.length === 1;
-function inField(el) {
-  if (!el || !el.tagName) return false;
-  if (el.isContentEditable) return true;
-  const t = el.tagName.toLowerCase();
-  if (t === 'textarea' || t === 'select') return true;
-  if (t !== 'input') return false;
-  return ['checkbox', 'radio', 'button', 'submit', 'reset', 'range', 'color', 'file', 'image'].indexOf((el.type || '').toLowerCase()) < 0;
-}
-const scopeOf = x => (x && 'current' in x ? x.current : x) || null;
-const depth = el => {
-  let n = 0;
-  for (let x = el; x; x = x.parentElement) n++;
-  return n;
-};
-function onKeyDown(e) {
-  if (e.defaultPrevented || e.isComposing || ['Control', 'Meta', 'Alt', 'Shift'].indexOf(e.key) >= 0) return;
-  const now = Date.now();
-  if (now - bufferAt > (0, _tokenTime.tokenMs)('--plx-sys-hotkey-sequence-timeout')) buffer = [];
-  const target = e.target,
-    field = inField(target);
-  const live = entries.filter(x => x.enabled && (!field || x.allowInFields) && (singleKeys || !isSingle(x.steps))).map(x => ({
-    x,
-    scope: scopeOf(x.scope)
-  })).filter(c => !c.x.scope || c.scope && c.scope.contains(target)).sort((a, b) => (b.scope ? depth(b.scope) : 0) - (a.scope ? depth(a.scope) : 0));
-  const step = buffer.length;
-  const fits = (c, at) => c.x.steps.length > at && buffer.slice(buffer.length - at).every((ev, i) => matchStep(c.x.steps[i], ev)) && matchStep(c.x.steps[at], e);
-  // the longest waiting sequence first, then a fresh start
-  for (const at of [step, 0].filter((v, i, all) => all.indexOf(v) === i)) {
-    const full = live.find(c => c.x.steps.length === at + 1 && fits(c, at));
-    if (full) {
-      buffer = [];
-      e.preventDefault();
-      full.x.handler(e);
-      return;
-    }
-    if (live.some(c => c.x.steps.length > at + 1 && fits(c, at))) {
-      buffer = buffer.slice(buffer.length - at).concat([{
-        key: e.key,
-        code: e.code,
-        ctrlKey: e.ctrlKey,
-        metaKey: e.metaKey,
-        altKey: e.altKey,
-        shiftKey: e.shiftKey
-      }]);
-      bufferAt = now;
-      return;
-    }
-  }
-  buffer = [];
-}
-function install() {
-  if (installed || typeof document === 'undefined') return;
-  document.addEventListener('keydown', onKeyDown);
-  installed = true;
-}
-const notify = () => listeners.forEach(fn => fn());
-function registerHotkey(binding, handler, options = {}) {
-  install();
-  const entry = {
-    id: nextId++,
-    binding,
-    steps: parseHotkey(binding),
-    handler,
-    scope: options.scope || null,
-    enabled: options.enabled !== false,
-    allowInFields: !!options.allowInFields,
-    label: options.label || '',
-    group: options.group || ''
-  };
-  entries.push(entry);
-  if (entry.label) notify();
-  return () => {
-    const i = entries.indexOf(entry);
-    if (i >= 0) {
-      entries.splice(i, 1);
-      if (entry.label) notify();
-    }
-  };
-}
-function useHotkey(binding, handler, options = {}) {
-  const ref = _react.default.useRef(handler);
-  ref.current = handler;
-  const {
-    scope,
-    enabled = true,
-    allowInFields = false,
-    label,
-    group
-  } = options;
-  _react.default.useEffect(() => {
-    if (!enabled || !binding) return undefined;
-    return registerHotkey(binding, e => ref.current && ref.current(e), {
-      scope,
-      allowInFields,
-      label,
-      group
-    });
-  }, [binding, scope, enabled, allowInFields, label, group]);
-}
-const MAC_NAMES = {
-  meta: '⌘',
-  ctrl: '⌃',
-  alt: '⌥',
-  shift: '⇧'
-};
-const PC_NAMES = {
-  meta: 'Win',
-  ctrl: 'Ctrl',
-  alt: 'Alt',
-  shift: 'Shift'
-};
-const KEY_NAMES = {
-  ' ': 'Space',
-  escape: 'Esc',
-  arrowup: '↑',
-  arrowdown: '↓',
-  arrowleft: '←',
-  arrowright: '→',
-  enter: 'Enter',
-  delete: 'Delete',
-  backspace: 'Backspace',
-  tab: 'Tab'
-};
-function hotkeyKeys(binding, {
-  mac = isMac()
-} = {}) {
-  const names = mac ? MAC_NAMES : PC_NAMES;
-  return parseHotkey(binding, mac).map(s => (mac ? ['ctrl', 'alt', 'shift', 'meta'] : ['ctrl', 'meta', 'alt', 'shift']).filter(m => s[m]).map(m => names[m]).concat([KEY_NAMES[s.key] || (s.key.length === 1 ? s.key.toUpperCase() : s.key.charAt(0).toUpperCase() + s.key.slice(1))]));
-}
-function hotkeyLabel(binding, options) {
-  return hotkeyKeys(binding, options).map(k => k.join(' ')).join(' then ');
-}
-function hotkeyList() {
-  return entries.filter(x => x.label).map(x => ({
-    binding: x.binding,
-    label: x.label,
-    group: x.group,
-    keys: hotkeyLabel(x.binding),
-    enabled: x.enabled
-  }));
-}
-function subscribeHotkeys(fn) {
-  listeners.add(fn);
-  return () => listeners.delete(fn);
-}
-function useHotkeyList() {
-  const [list, setList] = _react.default.useState(hotkeyList);
-  _react.default.useEffect(() => {
-    setList(hotkeyList());
-    return subscribeHotkeys(() => setList(hotkeyList()));
-  }, []);
-  return list;
-}
-function setSingleKeyHotkeys(on) {
-  singleKeys = !!on;
-  buffer = [];
-}
-function singleKeyHotkeys() {
-  return singleKeys;
 }
   } },
   "platform/hooks/useIntersection.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -48381,7 +48542,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        addAnother: "Add another sort", remove: "Remove the sort by {name}", removeTip: "Remove sort", field: "Field",
        direction: "Direction", moved, row, reorder, moveUp, moveDown }
    Behavior:
-     The bar button reads "Sort" (never reworded); with levels it takes the tint and a count badge.
+     The bar button shows the sort in force (a pop-up button, Apple HIG): "Sort" alone while there is none, "Sort: Name"
+       with one level, "Sort: Name +1" with more; it takes the tint while it sorts.
      Each row: the field (its type icon), the direction, remove (×) and the handle. A field is used once: the pickers
        offer the fields not yet used. Rows move by drag, the handle's menu or Alt + Arrow Up / Down, announced.
      The panel opens with the focus on its first row (else the Add button).
@@ -48478,9 +48640,11 @@ function SortPanel({
       dir: 'asc'
     }))
   }, levels.length ? t.addAnother : t.add)));
+  const current = levels.length ? (0, _fields.fieldOf)(fields, levels[0].field).label + (levels.length > 1 ? ' +' + (levels.length - 1) : '') : undefined;
   return /*#__PURE__*/_react.default.createElement(_panelParts.PanelTrigger, {
     icon: "sort",
     label: t.label,
+    current: current,
     count: levels.length,
     inline: inline
   }, body);

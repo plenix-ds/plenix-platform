@@ -151,7 +151,7 @@
   }
 }
 [data-plx-density="standard"],[data-plx-density="comfortable"],:root[data-plx-density-policy="standard"]:not([data-plx-density]),:root[data-plx-density-policy="comfortable"]:not([data-plx-density]),:root:not([data-plx-density], [data-plx-density-policy]){
-  --plx-ctx-density-plx-sys-radius-control: var(--plx-sys-radius-control-6px);
+  --plx-ctx-density-plx-sys-radius-control: var(--plx-sys-radius-control-4px);
 }
 :root,[data-plx-density="standard"]{
   --plx-sys-shell-nav-width: var(--plx-ref-size-240px);

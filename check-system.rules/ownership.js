@@ -23,13 +23,15 @@ const NAME = 'ownership';
 const ROOT = path.join(__dirname, '..');
 const EXCEPTIONS = path.join(ROOT, 'check-system.exceptions.json');
 const SKIP = /[\\/](node_modules|dist|vendor|release|\.claude)[\\/]/;
+// tested on the path inside the repository, so a checkout that itself lives under .claude/ (a worktree) is still read (#307)
+const skip = (p) => SKIP.test(path.sep + path.relative(ROOT, p) + path.sep);
 
 function cssFiles() {
   const out = [];
   const walk = (d) => { if (!fs.existsSync(d)) return; for (const e of fs.readdirSync(d, { withFileTypes: true })) {
     const p = path.join(d, e.name);
-    if (e.isDirectory()) { if (!SKIP.test(p + path.sep)) walk(p); }
-    else if (e.name.endsWith('.css') && !SKIP.test(p) && !/GENERATED/.test(fs.readFileSync(p, 'utf8').slice(0, 300))) out.push(p);
+    if (e.isDirectory()) { if (!skip(p + path.sep)) walk(p); }
+    else if (e.name.endsWith('.css') && !skip(p) && !/GENERATED/.test(fs.readFileSync(p, 'utf8').slice(0, 300))) out.push(p);
   } };
   walk(path.join(ROOT, 'platform')); walk(path.join(ROOT, 'services'));
   return out.sort();

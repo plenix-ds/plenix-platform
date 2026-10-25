@@ -2593,11 +2593,24 @@ function ContactsScreen({
       gender: contact.gender
     },
     subtitle: [contact.role, contact.co].filter(Boolean).join(' · '),
-    facts: [{
+    facts: [contact.co ? {
+      label: 'Company',
+      value: contact.co
+    } : null, contact.role ? {
+      label: 'Role',
+      value: contact.role
+    } : null, contact.msg ? null : {
       label: 'Last message',
       value: contact.last,
       data: true
-    }],
+    }].filter(Boolean),
+    next: contact.msg ? {
+      label: 'Last message',
+      title: contact.msg,
+      detail: /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
+        variant: "data"
+      }, contact.last)
+    } : undefined,
     actions: [{
       icon: 'phone',
       label: 'Call'
@@ -2605,12 +2618,11 @@ function ContactsScreen({
       icon: 'mail',
       label: 'Email'
     }, {
-      icon: 'message',
-      label: 'Message',
-      primary: true
-    }, {
       icon: 'pencil',
       label: 'Edit'
+    }, {
+      icon: 'message',
+      label: 'Message'
     }, {
       icon: 'trash',
       label: 'Delete'

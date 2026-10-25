@@ -8,7 +8,7 @@ const path = require('path');
 const { spawnSync } = require('child_process');
 
 const ALL = ['visual', 'density', 'layout', 'theme', 'pages', 'keyboard', 'a11y', 'data-grid', 'typography', 'labs', 'reflow', 'targets',
-  'contrast', 'formats', 'utilities', 'high-contrast', 'focus-order', 'semantic-html', 'navigation', 'brand-rules', 'login', 'selector-kinds', 'zero-overlap'];
+  'contrast', 'formats', 'utilities', 'high-contrast', 'focus-order', 'semantic-html', 'navigation', 'brand-rules', 'login', 'selector-kinds', 'zero-overlap', 'types'];
 const args = process.argv.slice(2);
 const full = args.includes('--full');
 const names = args.filter((a) => !/^--/.test(a));

@@ -67,6 +67,14 @@
       "$value": "{plx-ref.space-4px}",
       "$type": "dimension"
     },
+    "button-target-inset-block": {
+      "$value": "min(0px, calc((100% - {plx-sys.control-target-min}) / 2))",
+      "$type": "dimension"
+    },
+    "button-target-inset-inline": {
+      "$value": "min(0px, calc((100% - {plx-sys.control-target-min}) / 2))",
+      "$type": "dimension"
+    },
     "tag-remove-before-inset-block-end": {
       "$value": "min(0px, calc((100% - {plx-sys.control-target-min}) / 2))",
       "$type": "dimension"

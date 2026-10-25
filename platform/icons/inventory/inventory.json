@@ -1,0 +1,1628 @@
+{
+  "_about": "The Plenix icon inventory: candidate icons from other libraries, restyled to the icon guidance (platform/standards/icons.md). Separate from the working set (../map.json), which apps draw today. One record per candidate. state: found (picked from a library, not restyled yet) | restyled (restyle-icon.js made its four files; check results recorded) | approved (the owner chose it; only then may it join the working set). tools/icons/build-inventory.js restyles every record that is not 'found', checks it, and writes the results into this file (check, files) and inventory.js.",
+  "categories": [
+    "Actions",
+    "Editing",
+    "Files",
+    "Development",
+    "Navigation",
+    "Communication",
+    "Data",
+    "Media",
+    "People",
+    "Status",
+    "Objects"
+  ],
+  "icons": [
+    {
+      "id": "lucide/save",
+      "name": "save",
+      "aliases": [
+        "floppy-disk",
+        "diskette"
+      ],
+      "keywords": [
+        "save",
+        "store",
+        "keep",
+        "disk",
+        "floppy",
+        "write"
+      ],
+      "category": "Actions",
+      "library": "lucide",
+      "icon": "save",
+      "state": "restyled",
+      "replaces": "save",
+      "why": "The owner finds Material's save icon ugly (2026-10-24). One of four candidates.",
+      "sizes": [
+        "xs",
+        "sm",
+        "md",
+        "lg",
+        "xl"
+      ],
+      "license": "ISC",
+      "source": "npm @iconify-json/lucide@1.2.147",
+      "restyle": {
+        "20": {
+          "notes": [],
+          "shape": "square",
+          "scale": 0.806,
+          "fitBy": "keyline",
+          "fill": "generated: outer shapes solid, inner lines cut out"
+        },
+        "24": {
+          "notes": [],
+          "shape": "square",
+          "scale": 0.861,
+          "fitBy": "keyline",
+          "fill": "generated: outer shapes solid, inner lines cut out"
+        }
+      },
+      "files": {
+        "found": "svg/lucide/save.found.svg",
+        "outline20": "svg/lucide/save.svg",
+        "filled20": "svg/lucide/save-fill.svg",
+        "outline24": "svg/lucide/save-24.svg",
+        "filled24": "svg/lucide/save-24-fill.svg"
+      },
+      "check": {
+        "outline20": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "filled20": {
+          "pass": true,
+          "fail": [],
+          "warn": [
+            "line-weight"
+          ]
+        },
+        "outline24": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "filled24": {
+          "pass": true,
+          "fail": [],
+          "warn": [
+            "line-weight"
+          ]
+        },
+        "found": {
+          "pass": false,
+          "fail": [
+            "canvas",
+            "construction",
+            "line-weight",
+            "line-ends",
+            "sharp-corners"
+          ],
+          "warn": [
+            "keyline"
+          ]
+        }
+      },
+      "decision": "Owner, 2026-10-24: keep Material's save. Not used."
+    },
+    {
+      "id": "tabler/device-floppy",
+      "name": "save",
+      "aliases": [
+        "floppy-disk",
+        "diskette"
+      ],
+      "keywords": [
+        "save",
+        "store",
+        "keep",
+        "disk",
+        "floppy",
+        "write"
+      ],
+      "category": "Actions",
+      "library": "tabler",
+      "icon": "device-floppy",
+      "fillFrom": "device-floppy-filled",
+      "state": "restyled",
+      "replaces": "save",
+      "why": "The owner finds Material's save icon ugly (2026-10-24). One of four candidates; its filled version is Tabler's own.",
+      "sizes": [
+        "xs",
+        "sm",
+        "md",
+        "lg",
+        "xl"
+      ],
+      "license": "MIT",
+      "source": "npm @iconify-json/tabler@1.2.42",
+      "restyle": {
+        "20": {
+          "notes": [],
+          "shape": "square",
+          "scale": 0.906,
+          "fitBy": "keyline",
+          "fill": "from the library's filled version"
+        },
+        "24": {
+          "notes": [],
+          "shape": "square",
+          "scale": 0.969,
+          "fitBy": "keyline",
+          "fill": "from the library's filled version"
+        }
+      },
+      "files": {
+        "found": "svg/tabler/device-floppy.found.svg",
+        "outline20": "svg/tabler/device-floppy.svg",
+        "filled20": "svg/tabler/device-floppy-fill.svg",
+        "outline24": "svg/tabler/device-floppy-24.svg",
+        "filled24": "svg/tabler/device-floppy-24-fill.svg"
+      },
+      "check": {
+        "outline20": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "filled20": {
+          "pass": true,
+          "fail": [],
+          "warn": [
+            "line-weight"
+          ]
+        },
+        "outline24": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "filled24": {
+          "pass": true,
+          "fail": [],
+          "warn": [
+            "line-weight"
+          ]
+        },
+        "found": {
+          "pass": false,
+          "fail": [
+            "canvas",
+            "construction",
+            "line-weight",
+            "line-ends",
+            "sharp-corners"
+          ],
+          "warn": []
+        }
+      },
+      "decision": "Owner, 2026-10-24: keep Material's save. Not used."
+    },
+    {
+      "id": "iconoir/floppy-disk",
+      "name": "save",
+      "aliases": [
+        "floppy-disk",
+        "diskette"
+      ],
+      "keywords": [
+        "save",
+        "store",
+        "keep",
+        "disk",
+        "floppy",
+        "write"
+      ],
+      "category": "Actions",
+      "library": "iconoir",
+      "icon": "floppy-disk",
+      "state": "restyled",
+      "replaces": "save",
+      "why": "The owner finds Material's save icon ugly (2026-10-24). One of four candidates.",
+      "sizes": [
+        "xs",
+        "sm",
+        "md",
+        "lg",
+        "xl"
+      ],
+      "license": "MIT",
+      "source": "npm @iconify-json/iconoir@1.2.12",
+      "restyle": {
+        "20": {
+          "notes": [],
+          "shape": "square",
+          "scale": 0.806,
+          "fitBy": "keyline",
+          "fill": "generated: outer shapes solid, inner lines cut out"
+        },
+        "24": {
+          "notes": [],
+          "shape": "square",
+          "scale": 0.861,
+          "fitBy": "keyline",
+          "fill": "generated: outer shapes solid, inner lines cut out"
+        }
+      },
+      "files": {
+        "found": "svg/iconoir/floppy-disk.found.svg",
+        "outline20": "svg/iconoir/floppy-disk.svg",
+        "filled20": "svg/iconoir/floppy-disk-fill.svg",
+        "outline24": "svg/iconoir/floppy-disk-24.svg",
+        "filled24": "svg/iconoir/floppy-disk-24-fill.svg"
+      },
+      "check": {
+        "outline20": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "filled20": {
+          "pass": true,
+          "fail": [],
+          "warn": [
+            "line-weight"
+          ]
+        },
+        "outline24": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "filled24": {
+          "pass": true,
+          "fail": [],
+          "warn": [
+            "line-weight"
+          ]
+        },
+        "found": {
+          "pass": false,
+          "fail": [
+            "canvas",
+            "construction",
+            "sharp-corners"
+          ],
+          "warn": [
+            "keyline",
+            "edge-grid"
+          ]
+        }
+      },
+      "needs": "A thin gap runs between the label's sides and the frame (visible at 48px): Iconoir insets the label; merge the two lines before approval.",
+      "decision": "Owner, 2026-10-24: keep Material's save. Not used."
+    },
+    {
+      "id": "humble/save",
+      "name": "save",
+      "aliases": [
+        "floppy-disk",
+        "diskette"
+      ],
+      "keywords": [
+        "save",
+        "store",
+        "keep",
+        "disk",
+        "floppy",
+        "write"
+      ],
+      "category": "Actions",
+      "library": "humble",
+      "icon": "save",
+      "state": "restyled",
+      "replaces": "save",
+      "why": "The owner finds Material's save icon ugly (2026-10-24). One of four candidates.",
+      "sizes": [
+        "xs",
+        "sm",
+        "md",
+        "lg",
+        "xl"
+      ],
+      "license": "MIT",
+      "source": "npm @iconify-json/humbleicons@1.2.20",
+      "restyle": {
+        "20": {
+          "notes": [],
+          "shape": "square",
+          "scale": 0.906,
+          "fitBy": "keyline",
+          "fill": "none: no closed outer shape (the outline is used)"
+        },
+        "24": {
+          "notes": [],
+          "shape": "square",
+          "scale": 0.969,
+          "fitBy": "keyline",
+          "fill": "none: no closed outer shape (the outline is used)"
+        }
+      },
+      "files": {
+        "found": "svg/humble/save.found.svg",
+        "outline20": "svg/humble/save.svg",
+        "filled20": "svg/humble/save-fill.svg",
+        "outline24": "svg/humble/save-24.svg",
+        "filled24": "svg/humble/save-24-fill.svg"
+      },
+      "check": {
+        "outline20": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "filled20": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "outline24": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "filled24": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "found": {
+          "pass": false,
+          "fail": [
+            "canvas",
+            "construction",
+            "line-weight",
+            "line-ends",
+            "sharp-corners"
+          ],
+          "warn": []
+        }
+      },
+      "decision": "Owner, 2026-10-24: keep Material's save. Not used."
+    },
+    {
+      "id": "tabler/flip-vertical",
+      "name": "flip-vertical",
+      "aliases": [
+        "ed-flip-y",
+        "mirror-vertical"
+      ],
+      "keywords": [
+        "flip",
+        "mirror",
+        "vertical",
+        "upside down",
+        "image editor"
+      ],
+      "category": "Editing",
+      "library": "tabler",
+      "icon": "flip-vertical",
+      "state": "approved",
+      "why": "Material has one Flip (horizontal); the image editor's vertical flip has no icon (map.json flag ed-flip-y).",
+      "sizes": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "license": "MIT",
+      "source": "npm @iconify-json/tabler@1.2.42",
+      "restyle": {
+        "20": {
+          "notes": [],
+          "shape": "square",
+          "scale": 0.806,
+          "fitBy": "keyline",
+          "fill": "none: no closed outer shape (the outline is used)"
+        },
+        "24": {
+          "notes": [],
+          "shape": "square",
+          "scale": 0.861,
+          "fitBy": "keyline",
+          "fill": "none: no closed outer shape (the outline is used)"
+        }
+      },
+      "files": {
+        "found": "svg/tabler/flip-vertical.found.svg",
+        "outline20": "svg/tabler/flip-vertical.svg",
+        "filled20": "svg/tabler/flip-vertical-fill.svg",
+        "outline24": "svg/tabler/flip-vertical-24.svg",
+        "filled24": "svg/tabler/flip-vertical-24-fill.svg"
+      },
+      "check": {
+        "outline20": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "filled20": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "outline24": {
+          "pass": true,
+          "fail": [],
+          "warn": [
+            "edge-grid"
+          ]
+        },
+        "filled24": {
+          "pass": true,
+          "fail": [],
+          "warn": [
+            "edge-grid"
+          ]
+        },
+        "found": {
+          "pass": false,
+          "fail": [
+            "canvas",
+            "construction",
+            "line-weight",
+            "line-ends",
+            "sharp-corners"
+          ],
+          "warn": [
+            "keyline"
+          ]
+        }
+      },
+      "decision": "Owner, 2026-10-24: added to the icon set (platform/icons/custom, map.json flip-vertical)."
+    },
+    {
+      "id": "tabler/file-type-jpg",
+      "name": "file-jpg",
+      "aliases": [
+        "file-jpeg"
+      ],
+      "keywords": [
+        "jpg",
+        "jpeg",
+        "image",
+        "photo",
+        "file type",
+        "format"
+      ],
+      "category": "Files",
+      "library": "tabler",
+      "icon": "file-type-jpg",
+      "state": "found",
+      "why": "Material has no per-format file icons (map.json flag file-jpg).",
+      "sizes": [
+        "lg",
+        "xl"
+      ],
+      "license": "MIT",
+      "source": "npm @iconify-json/tabler@1.2.42",
+      "restyle": {
+        "20": {
+          "notes": [],
+          "shape": "portrait",
+          "scale": 0.807,
+          "fitBy": "keyline",
+          "fill": "none: no closed outer shape (the outline is used)"
+        },
+        "24": {
+          "notes": [],
+          "shape": "portrait",
+          "scale": 0.9,
+          "fitBy": "keyline",
+          "fill": "none: no closed outer shape (the outline is used)"
+        }
+      },
+      "files": {
+        "found": "svg/tabler/file-type-jpg.found.svg",
+        "outline20": "svg/tabler/file-type-jpg.svg",
+        "filled20": "svg/tabler/file-type-jpg-fill.svg",
+        "outline24": "svg/tabler/file-type-jpg-24.svg",
+        "filled24": "svg/tabler/file-type-jpg-24-fill.svg"
+      },
+      "check": {
+        "outline20": {
+          "pass": false,
+          "fail": [
+            "sharp-corners"
+          ],
+          "warn": []
+        },
+        "filled20": {
+          "pass": false,
+          "fail": [
+            "sharp-corners"
+          ],
+          "warn": []
+        },
+        "outline24": {
+          "pass": false,
+          "fail": [
+            "sharp-corners"
+          ],
+          "warn": [
+            "edge-grid"
+          ]
+        },
+        "filled24": {
+          "pass": false,
+          "fail": [
+            "sharp-corners"
+          ],
+          "warn": [
+            "edge-grid"
+          ]
+        },
+        "found": {
+          "pass": false,
+          "fail": [
+            "canvas",
+            "construction",
+            "line-weight",
+            "line-ends",
+            "sharp-corners"
+          ],
+          "warn": [
+            "keyline"
+          ]
+        }
+      },
+      "decision": "Owner, 2026-10-24: draw squared letters instead (plenix/file-jpg). Kept as found for comparison."
+    },
+    {
+      "id": "tabler/file-type-png",
+      "name": "file-png",
+      "aliases": [],
+      "keywords": [
+        "png",
+        "image",
+        "file type",
+        "format",
+        "transparent"
+      ],
+      "category": "Files",
+      "library": "tabler",
+      "icon": "file-type-png",
+      "state": "found",
+      "why": "Material has no per-format file icons (map.json flag file-png).",
+      "sizes": [
+        "lg",
+        "xl"
+      ],
+      "license": "MIT",
+      "source": "npm @iconify-json/tabler@1.2.42",
+      "restyle": {
+        "20": {
+          "notes": [],
+          "shape": "portrait",
+          "scale": 0.807,
+          "fitBy": "keyline",
+          "fill": "none: no closed outer shape (the outline is used)"
+        },
+        "24": {
+          "notes": [],
+          "shape": "portrait",
+          "scale": 0.9,
+          "fitBy": "keyline",
+          "fill": "none: no closed outer shape (the outline is used)"
+        }
+      },
+      "files": {
+        "found": "svg/tabler/file-type-png.found.svg",
+        "outline20": "svg/tabler/file-type-png.svg",
+        "filled20": "svg/tabler/file-type-png-fill.svg",
+        "outline24": "svg/tabler/file-type-png-24.svg",
+        "filled24": "svg/tabler/file-type-png-24-fill.svg"
+      },
+      "check": {
+        "outline20": {
+          "pass": false,
+          "fail": [
+            "sharp-corners"
+          ],
+          "warn": []
+        },
+        "filled20": {
+          "pass": false,
+          "fail": [
+            "sharp-corners"
+          ],
+          "warn": []
+        },
+        "outline24": {
+          "pass": false,
+          "fail": [
+            "sharp-corners"
+          ],
+          "warn": [
+            "edge-grid"
+          ]
+        },
+        "filled24": {
+          "pass": false,
+          "fail": [
+            "sharp-corners"
+          ],
+          "warn": [
+            "edge-grid"
+          ]
+        },
+        "found": {
+          "pass": false,
+          "fail": [
+            "canvas",
+            "construction",
+            "line-weight",
+            "line-ends",
+            "sharp-corners"
+          ],
+          "warn": [
+            "keyline"
+          ]
+        }
+      },
+      "decision": "Owner, 2026-10-24: draw squared letters instead (plenix/file-png). Kept as found for comparison."
+    },
+    {
+      "id": "tabler/file-type-svg",
+      "name": "file-svg",
+      "aliases": [],
+      "keywords": [
+        "svg",
+        "vector",
+        "image",
+        "file type",
+        "format"
+      ],
+      "category": "Files",
+      "library": "tabler",
+      "icon": "file-type-svg",
+      "state": "found",
+      "why": "Material has no per-format file icons (map.json flag file-svg).",
+      "sizes": [
+        "lg",
+        "xl"
+      ],
+      "license": "MIT",
+      "source": "npm @iconify-json/tabler@1.2.42",
+      "restyle": {
+        "20": {
+          "notes": [],
+          "shape": "square",
+          "scale": 0.806,
+          "fitBy": "keyline",
+          "fill": "none: no closed outer shape (the outline is used)"
+        },
+        "24": {
+          "notes": [],
+          "shape": "square",
+          "scale": 0.861,
+          "fitBy": "keyline",
+          "fill": "none: no closed outer shape (the outline is used)"
+        }
+      },
+      "files": {
+        "found": "svg/tabler/file-type-svg.found.svg",
+        "outline20": "svg/tabler/file-type-svg.svg",
+        "filled20": "svg/tabler/file-type-svg-fill.svg",
+        "outline24": "svg/tabler/file-type-svg-24.svg",
+        "filled24": "svg/tabler/file-type-svg-24-fill.svg"
+      },
+      "check": {
+        "outline20": {
+          "pass": false,
+          "fail": [
+            "sharp-corners"
+          ],
+          "warn": []
+        },
+        "filled20": {
+          "pass": false,
+          "fail": [
+            "sharp-corners"
+          ],
+          "warn": []
+        },
+        "outline24": {
+          "pass": false,
+          "fail": [
+            "sharp-corners",
+            "padding"
+          ],
+          "warn": [
+            "edge-grid"
+          ]
+        },
+        "filled24": {
+          "pass": false,
+          "fail": [
+            "sharp-corners",
+            "padding"
+          ],
+          "warn": [
+            "edge-grid"
+          ]
+        },
+        "found": {
+          "pass": false,
+          "fail": [
+            "canvas",
+            "construction",
+            "line-weight",
+            "line-ends",
+            "sharp-corners"
+          ],
+          "warn": [
+            "keyline"
+          ]
+        }
+      },
+      "decision": "Owner, 2026-10-24: draw squared letters instead (plenix/file-svg). Kept as found for comparison."
+    },
+    {
+      "id": "tabler/file-type-pdf",
+      "name": "file-pdf",
+      "aliases": [],
+      "keywords": [
+        "pdf",
+        "document",
+        "file type",
+        "format",
+        "acrobat"
+      ],
+      "category": "Files",
+      "library": "tabler",
+      "icon": "file-type-pdf",
+      "state": "found",
+      "why": "Same family as the other file types, so every format reads alike (Material's picture_as_pdf is drawn differently).",
+      "sizes": [
+        "lg",
+        "xl"
+      ],
+      "license": "MIT",
+      "source": "npm @iconify-json/tabler@1.2.42",
+      "restyle": {
+        "20": {
+          "notes": [],
+          "shape": "portrait",
+          "scale": 0.807,
+          "fitBy": "keyline",
+          "fill": "none: no closed outer shape (the outline is used)"
+        },
+        "24": {
+          "notes": [],
+          "shape": "portrait",
+          "scale": 0.9,
+          "fitBy": "keyline",
+          "fill": "none: no closed outer shape (the outline is used)"
+        }
+      },
+      "files": {
+        "found": "svg/tabler/file-type-pdf.found.svg",
+        "outline20": "svg/tabler/file-type-pdf.svg",
+        "filled20": "svg/tabler/file-type-pdf-fill.svg",
+        "outline24": "svg/tabler/file-type-pdf-24.svg",
+        "filled24": "svg/tabler/file-type-pdf-24-fill.svg"
+      },
+      "check": {
+        "outline20": {
+          "pass": false,
+          "fail": [
+            "sharp-corners"
+          ],
+          "warn": []
+        },
+        "filled20": {
+          "pass": false,
+          "fail": [
+            "sharp-corners"
+          ],
+          "warn": []
+        },
+        "outline24": {
+          "pass": false,
+          "fail": [
+            "sharp-corners"
+          ],
+          "warn": [
+            "edge-grid"
+          ]
+        },
+        "filled24": {
+          "pass": false,
+          "fail": [
+            "sharp-corners"
+          ],
+          "warn": [
+            "edge-grid"
+          ]
+        },
+        "found": {
+          "pass": false,
+          "fail": [
+            "canvas",
+            "construction",
+            "line-weight",
+            "line-ends",
+            "sharp-corners"
+          ],
+          "warn": [
+            "keyline"
+          ]
+        }
+      },
+      "decision": "Owner, 2026-10-24: draw squared letters instead (plenix/file-pdf). Kept as found for comparison."
+    },
+    {
+      "id": "lucide/git-branch",
+      "name": "git-branch",
+      "aliases": [
+        "branch"
+      ],
+      "keywords": [
+        "git",
+        "branch",
+        "version control",
+        "fork",
+        "code"
+      ],
+      "category": "Development",
+      "library": "lucide",
+      "icon": "git-branch",
+      "state": "approved",
+      "why": "Material Symbols has no branch icon (fork_right is a road sign).",
+      "sizes": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "license": "ISC",
+      "source": "npm @iconify-json/lucide@1.2.147",
+      "restyle": {
+        "20": {
+          "notes": [],
+          "shape": "circle",
+          "scale": 0.845,
+          "fitBy": "library",
+          "fill": "generated: outer shapes solid, inner lines cut out"
+        },
+        "24": {
+          "notes": [],
+          "shape": "circle",
+          "scale": 0.875,
+          "fitBy": "library",
+          "fill": "generated: outer shapes solid, inner lines cut out"
+        }
+      },
+      "files": {
+        "found": "svg/lucide/git-branch.found.svg",
+        "outline20": "svg/lucide/git-branch.svg",
+        "filled20": "svg/lucide/git-branch-fill.svg",
+        "outline24": "svg/lucide/git-branch-24.svg",
+        "filled24": "svg/lucide/git-branch-24-fill.svg"
+      },
+      "check": {
+        "outline20": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "filled20": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "outline24": {
+          "pass": true,
+          "fail": [],
+          "warn": [
+            "edge-grid"
+          ]
+        },
+        "filled24": {
+          "pass": true,
+          "fail": [],
+          "warn": [
+            "edge-grid"
+          ]
+        },
+        "found": {
+          "pass": false,
+          "fail": [
+            "canvas",
+            "construction",
+            "line-weight",
+            "line-ends",
+            "sharp-corners"
+          ],
+          "warn": [
+            "keyline"
+          ]
+        }
+      },
+      "decision": "Owner, 2026-10-24: added to the icon set (platform/icons/custom, map.json git-branch)."
+    },
+    {
+      "id": "lucide/git-merge",
+      "name": "git-merge",
+      "aliases": [],
+      "keywords": [
+        "git",
+        "merge",
+        "version control",
+        "join",
+        "code"
+      ],
+      "category": "Development",
+      "library": "lucide",
+      "icon": "git-merge",
+      "state": "approved",
+      "why": "Material's merge is a road-sign arrow; a version-control merge needs the branch drawing.",
+      "sizes": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "license": "ISC",
+      "source": "npm @iconify-json/lucide@1.2.147",
+      "restyle": {
+        "20": {
+          "notes": [],
+          "shape": "circle",
+          "scale": 0.845,
+          "fitBy": "library",
+          "fill": "generated: outer shapes solid, inner lines cut out"
+        },
+        "24": {
+          "notes": [],
+          "shape": "circle",
+          "scale": 0.875,
+          "fitBy": "library",
+          "fill": "generated: outer shapes solid, inner lines cut out"
+        }
+      },
+      "files": {
+        "found": "svg/lucide/git-merge.found.svg",
+        "outline20": "svg/lucide/git-merge.svg",
+        "filled20": "svg/lucide/git-merge-fill.svg",
+        "outline24": "svg/lucide/git-merge-24.svg",
+        "filled24": "svg/lucide/git-merge-24-fill.svg"
+      },
+      "check": {
+        "outline20": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "filled20": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "outline24": {
+          "pass": true,
+          "fail": [],
+          "warn": [
+            "edge-grid"
+          ]
+        },
+        "filled24": {
+          "pass": true,
+          "fail": [],
+          "warn": [
+            "edge-grid"
+          ]
+        },
+        "found": {
+          "pass": false,
+          "fail": [
+            "canvas",
+            "construction",
+            "line-weight",
+            "line-ends",
+            "sharp-corners"
+          ],
+          "warn": [
+            "keyline"
+          ]
+        }
+      },
+      "decision": "Owner, 2026-10-24: added to the icon set (platform/icons/custom, map.json git-merge)."
+    },
+    {
+      "id": "lucide/git-pull-request",
+      "name": "git-pull-request",
+      "aliases": [
+        "pull-request",
+        "merge-request"
+      ],
+      "keywords": [
+        "git",
+        "pull request",
+        "merge request",
+        "review",
+        "code"
+      ],
+      "category": "Development",
+      "library": "lucide",
+      "icon": "git-pull-request",
+      "state": "approved",
+      "why": "Material Symbols has no pull-request icon.",
+      "sizes": [
+        "sm",
+        "md",
+        "lg"
+      ],
+      "license": "ISC",
+      "source": "npm @iconify-json/lucide@1.2.147",
+      "restyle": {
+        "20": {
+          "notes": [],
+          "shape": "circle",
+          "scale": 0.845,
+          "fitBy": "library",
+          "fill": "generated: outer shapes solid, inner lines cut out"
+        },
+        "24": {
+          "notes": [],
+          "shape": "circle",
+          "scale": 0.875,
+          "fitBy": "library",
+          "fill": "generated: outer shapes solid, inner lines cut out"
+        }
+      },
+      "files": {
+        "found": "svg/lucide/git-pull-request.found.svg",
+        "outline20": "svg/lucide/git-pull-request.svg",
+        "filled20": "svg/lucide/git-pull-request-fill.svg",
+        "outline24": "svg/lucide/git-pull-request-24.svg",
+        "filled24": "svg/lucide/git-pull-request-24-fill.svg"
+      },
+      "check": {
+        "outline20": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "filled20": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "outline24": {
+          "pass": true,
+          "fail": [],
+          "warn": [
+            "edge-grid"
+          ]
+        },
+        "filled24": {
+          "pass": true,
+          "fail": [],
+          "warn": [
+            "edge-grid"
+          ]
+        },
+        "found": {
+          "pass": false,
+          "fail": [
+            "canvas",
+            "construction",
+            "line-weight",
+            "line-ends",
+            "sharp-corners"
+          ],
+          "warn": [
+            "keyline"
+          ]
+        }
+      },
+      "decision": "Owner, 2026-10-24: added to the icon set (platform/icons/custom, map.json git-pull-request)."
+    },
+    {
+      "id": "plenix/file-jpg",
+      "name": "file-jpg",
+      "aliases": [
+        "file-jpeg"
+      ],
+      "keywords": [
+        "jpg",
+        "jpeg",
+        "image",
+        "photo",
+        "file type",
+        "format"
+      ],
+      "category": "Files",
+      "library": "plenix",
+      "icon": "file-jpg",
+      "shape": "square",
+      "state": "approved",
+      "replaces": "file-jpg",
+      "why": "Owner, 2026-10-24: lettered file icons with squared letters in the sharp style (tools/icons/draw-file-types.js). Today the name draws a generic Material icon.",
+      "sizes": [
+        "lg",
+        "xl"
+      ],
+      "license": "Plenix (own drawing)",
+      "restyle": {
+        "20": {
+          "notes": [],
+          "shape": "square",
+          "scale": 0.935,
+          "fitBy": "keyline",
+          "fill": "none: no closed outer shape (the outline is used)"
+        },
+        "24": {
+          "notes": [],
+          "shape": "square",
+          "scale": 1,
+          "fitBy": "keyline",
+          "fill": "none: no closed outer shape (the outline is used)"
+        }
+      },
+      "files": {
+        "found": "svg/plenix/file-jpg.found.svg",
+        "outline20": "svg/plenix/file-jpg.svg",
+        "filled20": "svg/plenix/file-jpg-fill.svg",
+        "outline24": "svg/plenix/file-jpg-24.svg",
+        "filled24": "svg/plenix/file-jpg-24-fill.svg"
+      },
+      "check": {
+        "outline20": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "filled20": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "outline24": {
+          "pass": true,
+          "fail": [],
+          "warn": [
+            "edge-grid"
+          ]
+        },
+        "filled24": {
+          "pass": true,
+          "fail": [],
+          "warn": [
+            "edge-grid"
+          ]
+        },
+        "found": {
+          "pass": false,
+          "fail": [
+            "canvas",
+            "construction"
+          ],
+          "warn": [
+            "edge-grid"
+          ]
+        }
+      },
+      "decision": "Owner, 2026-10-24: the apps use it (platform/icons/custom, map.json file-jpg)."
+    },
+    {
+      "id": "plenix/file-png",
+      "name": "file-png",
+      "aliases": [],
+      "keywords": [
+        "png",
+        "image",
+        "transparent",
+        "file type",
+        "format"
+      ],
+      "category": "Files",
+      "library": "plenix",
+      "icon": "file-png",
+      "shape": "square",
+      "state": "approved",
+      "replaces": "file-png",
+      "why": "Owner, 2026-10-24: lettered file icons with squared letters in the sharp style (tools/icons/draw-file-types.js). Today the name draws a generic Material icon.",
+      "sizes": [
+        "lg",
+        "xl"
+      ],
+      "license": "Plenix (own drawing)",
+      "restyle": {
+        "20": {
+          "notes": [],
+          "shape": "square",
+          "scale": 0.935,
+          "fitBy": "keyline",
+          "fill": "none: no closed outer shape (the outline is used)"
+        },
+        "24": {
+          "notes": [],
+          "shape": "square",
+          "scale": 1,
+          "fitBy": "keyline",
+          "fill": "none: no closed outer shape (the outline is used)"
+        }
+      },
+      "files": {
+        "found": "svg/plenix/file-png.found.svg",
+        "outline20": "svg/plenix/file-png.svg",
+        "filled20": "svg/plenix/file-png-fill.svg",
+        "outline24": "svg/plenix/file-png-24.svg",
+        "filled24": "svg/plenix/file-png-24-fill.svg"
+      },
+      "check": {
+        "outline20": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "filled20": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "outline24": {
+          "pass": true,
+          "fail": [],
+          "warn": [
+            "edge-grid"
+          ]
+        },
+        "filled24": {
+          "pass": true,
+          "fail": [],
+          "warn": [
+            "edge-grid"
+          ]
+        },
+        "found": {
+          "pass": false,
+          "fail": [
+            "canvas",
+            "construction"
+          ],
+          "warn": [
+            "edge-grid"
+          ]
+        }
+      },
+      "decision": "Owner, 2026-10-24: the apps use it (platform/icons/custom, map.json file-png)."
+    },
+    {
+      "id": "plenix/file-svg",
+      "name": "file-svg",
+      "aliases": [],
+      "keywords": [
+        "svg",
+        "vector",
+        "image",
+        "file type",
+        "format"
+      ],
+      "category": "Files",
+      "library": "plenix",
+      "icon": "file-svg",
+      "shape": "square",
+      "state": "approved",
+      "replaces": "file-svg",
+      "why": "Owner, 2026-10-24: lettered file icons with squared letters in the sharp style (tools/icons/draw-file-types.js). Today the name draws a generic Material icon.",
+      "sizes": [
+        "lg",
+        "xl"
+      ],
+      "license": "Plenix (own drawing)",
+      "restyle": {
+        "20": {
+          "notes": [],
+          "shape": "square",
+          "scale": 0.935,
+          "fitBy": "keyline",
+          "fill": "none: no closed outer shape (the outline is used)"
+        },
+        "24": {
+          "notes": [],
+          "shape": "square",
+          "scale": 1,
+          "fitBy": "keyline",
+          "fill": "none: no closed outer shape (the outline is used)"
+        }
+      },
+      "files": {
+        "found": "svg/plenix/file-svg.found.svg",
+        "outline20": "svg/plenix/file-svg.svg",
+        "filled20": "svg/plenix/file-svg-fill.svg",
+        "outline24": "svg/plenix/file-svg-24.svg",
+        "filled24": "svg/plenix/file-svg-24-fill.svg"
+      },
+      "check": {
+        "outline20": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "filled20": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "outline24": {
+          "pass": true,
+          "fail": [],
+          "warn": [
+            "edge-grid"
+          ]
+        },
+        "filled24": {
+          "pass": true,
+          "fail": [],
+          "warn": [
+            "edge-grid"
+          ]
+        },
+        "found": {
+          "pass": false,
+          "fail": [
+            "canvas",
+            "construction"
+          ],
+          "warn": [
+            "edge-grid"
+          ]
+        }
+      },
+      "decision": "Owner, 2026-10-24: the apps use it (platform/icons/custom, map.json file-svg)."
+    },
+    {
+      "id": "plenix/file-pdf",
+      "name": "file-pdf",
+      "aliases": [],
+      "keywords": [
+        "pdf",
+        "document",
+        "acrobat",
+        "file type",
+        "format"
+      ],
+      "category": "Files",
+      "library": "plenix",
+      "icon": "file-pdf",
+      "shape": "square",
+      "state": "approved",
+      "replaces": "file-pdf",
+      "why": "Owner, 2026-10-24: lettered file icons with squared letters in the sharp style (tools/icons/draw-file-types.js). Today the name draws a generic Material icon.",
+      "sizes": [
+        "lg",
+        "xl"
+      ],
+      "license": "Plenix (own drawing)",
+      "restyle": {
+        "20": {
+          "notes": [],
+          "shape": "square",
+          "scale": 0.935,
+          "fitBy": "keyline",
+          "fill": "none: no closed outer shape (the outline is used)"
+        },
+        "24": {
+          "notes": [],
+          "shape": "square",
+          "scale": 1,
+          "fitBy": "keyline",
+          "fill": "none: no closed outer shape (the outline is used)"
+        }
+      },
+      "files": {
+        "found": "svg/plenix/file-pdf.found.svg",
+        "outline20": "svg/plenix/file-pdf.svg",
+        "filled20": "svg/plenix/file-pdf-fill.svg",
+        "outline24": "svg/plenix/file-pdf-24.svg",
+        "filled24": "svg/plenix/file-pdf-24-fill.svg"
+      },
+      "check": {
+        "outline20": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "filled20": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "outline24": {
+          "pass": true,
+          "fail": [],
+          "warn": [
+            "edge-grid"
+          ]
+        },
+        "filled24": {
+          "pass": true,
+          "fail": [],
+          "warn": [
+            "edge-grid"
+          ]
+        },
+        "found": {
+          "pass": false,
+          "fail": [
+            "canvas",
+            "construction"
+          ],
+          "warn": [
+            "edge-grid"
+          ]
+        }
+      },
+      "decision": "Owner, 2026-10-24: the apps use it (platform/icons/custom, map.json file-pdf)."
+    },
+    {
+      "id": "plenix/file-psd",
+      "name": "file-psd",
+      "aliases": [],
+      "keywords": [
+        "psd",
+        "photoshop",
+        "layered image",
+        "file type",
+        "format"
+      ],
+      "category": "Files",
+      "library": "plenix",
+      "icon": "file-psd",
+      "shape": "square",
+      "state": "approved",
+      "replaces": "file-psd",
+      "why": "Owner, 2026-10-24: lettered file icons with squared letters in the sharp style (tools/icons/draw-file-types.js). Today the name draws a generic Material icon.",
+      "sizes": [
+        "lg",
+        "xl"
+      ],
+      "license": "Plenix (own drawing)",
+      "restyle": {
+        "20": {
+          "notes": [],
+          "shape": "square",
+          "scale": 0.935,
+          "fitBy": "keyline",
+          "fill": "none: no closed outer shape (the outline is used)"
+        },
+        "24": {
+          "notes": [],
+          "shape": "square",
+          "scale": 1,
+          "fitBy": "keyline",
+          "fill": "none: no closed outer shape (the outline is used)"
+        }
+      },
+      "files": {
+        "found": "svg/plenix/file-psd.found.svg",
+        "outline20": "svg/plenix/file-psd.svg",
+        "filled20": "svg/plenix/file-psd-fill.svg",
+        "outline24": "svg/plenix/file-psd-24.svg",
+        "filled24": "svg/plenix/file-psd-24-fill.svg"
+      },
+      "check": {
+        "outline20": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "filled20": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "outline24": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "filled24": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "found": {
+          "pass": false,
+          "fail": [
+            "canvas",
+            "construction"
+          ],
+          "warn": [
+            "edge-grid"
+          ]
+        }
+      },
+      "decision": "Owner, 2026-10-24: the apps use it (platform/icons/custom, map.json file-psd)."
+    },
+    {
+      "id": "plenix/file-ai",
+      "name": "file-ai",
+      "aliases": [],
+      "keywords": [
+        "ai",
+        "illustrator",
+        "vector artwork",
+        "file type",
+        "format"
+      ],
+      "category": "Files",
+      "library": "plenix",
+      "icon": "file-ai",
+      "shape": "square",
+      "state": "approved",
+      "replaces": "file-ai",
+      "why": "Owner, 2026-10-24: lettered file icons with squared letters in the sharp style (tools/icons/draw-file-types.js). Today the name draws a generic Material icon.",
+      "sizes": [
+        "lg",
+        "xl"
+      ],
+      "license": "Plenix (own drawing)",
+      "restyle": {
+        "20": {
+          "notes": [],
+          "shape": "square",
+          "scale": 0.935,
+          "fitBy": "keyline",
+          "fill": "none: no closed outer shape (the outline is used)"
+        },
+        "24": {
+          "notes": [],
+          "shape": "square",
+          "scale": 1,
+          "fitBy": "keyline",
+          "fill": "none: no closed outer shape (the outline is used)"
+        }
+      },
+      "files": {
+        "found": "svg/plenix/file-ai.found.svg",
+        "outline20": "svg/plenix/file-ai.svg",
+        "filled20": "svg/plenix/file-ai-fill.svg",
+        "outline24": "svg/plenix/file-ai-24.svg",
+        "filled24": "svg/plenix/file-ai-24-fill.svg"
+      },
+      "check": {
+        "outline20": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "filled20": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "outline24": {
+          "pass": true,
+          "fail": [],
+          "warn": [
+            "edge-grid"
+          ]
+        },
+        "filled24": {
+          "pass": true,
+          "fail": [],
+          "warn": [
+            "edge-grid"
+          ]
+        },
+        "found": {
+          "pass": false,
+          "fail": [
+            "canvas",
+            "construction"
+          ],
+          "warn": [
+            "edge-grid"
+          ]
+        }
+      },
+      "decision": "Owner, 2026-10-24: the apps use it (platform/icons/custom, map.json file-ai)."
+    }
+  ],
+  "gaps": []
+}

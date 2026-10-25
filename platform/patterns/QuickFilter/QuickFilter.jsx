@@ -23,7 +23,9 @@
      strings: { find: "Find a {noun}", none: "No {noun} matches", clear: "Clear", presets: [{ value, label }…],
        custom: "Custom range", from: "From", to: "To" }
    Behavior:
-     The button keeps its label; while it filters it takes the tint and a count badge (the chosen values; 1 for a date).
+     The button shows the choice in force (a pop-up button, Apple HIG): its label alone while it does not filter; "Status:
+       Active" with one value, "Tags: Urgent +2" with more, "Modified: Last 7 days" for a date; it takes the tint while it
+       filters.
      The checklist's find field fills the panel (owner, 2026-10-14); each value is a checkbox with its pill. A date
      range typed by hand chooses Custom range. Clear (the panel's footer) empties it; it is disabled while nothing is
      chosen. A required single choice omits All and Clear.
@@ -43,6 +45,12 @@ import { PanelTrigger, Pill, toggle, fill } from '../CommandBar/panel-parts.jsx'
 import { DATE_PRESETS, CATEGORY_ORDER } from '../../utils/fields.js';
 
 const STRINGS = { find: 'Find a {noun}', none: 'No {noun} matches', clear: 'Clear', all: 'All', presets: DATE_PRESETS, custom: 'Custom range', from: 'From', to: 'To' };
+// the choice in force, in words: the first chosen value's label, "+N" for the rest
+const nameOf = (list, chosen) => {
+  if (!chosen || !chosen.length) return undefined;
+  const o = list.find((x) => x.value === chosen[0]);
+  return String(o ? o.label : chosen[0]) + (chosen.length > 1 ? ' +' + (chosen.length - 1) : '');
+};
 const asOptions = (options) => (options || []).map((o, i) => (typeof o === 'string' ? { value: o } : o)).map((o, i) => Object.assign({ label: o.value, color: CATEGORY_ORDER[i % CATEGORY_ORDER.length] }, o));
 
 export function QuickFilter({ kind = 'list', label, icon, noun = 'value', options, value, onChange, counts, required = false, inline = false, strings }) {
@@ -69,7 +77,9 @@ export function QuickFilter({ kind = 'list', label, icon, noun = 'value', option
       </div>
     );
     const footer = <Button size="sm" variant="ghost" icon="filter-off" disabled={!on} onClick={() => onChange({ preset: 'any', from: '', to: '' })}>{t.clear}</Button>;
-    return <PanelTrigger icon={icon || 'calendar'} label={label} title={label} count={on ? 1 : 0} caret size="sm" footer={footer} inline={inline}>{body}</PanelTrigger>;
+    const preset = t.presets.find((x) => x.value === d.preset);
+    const current = !on ? undefined : d.preset === 'custom' ? [d.from, d.to].filter(Boolean).join(' – ') || t.custom : preset ? preset.label : undefined;
+    return <PanelTrigger icon={icon || 'calendar'} label={label} current={current} title={label} count={on ? 1 : 0} caret size="sm" footer={footer} inline={inline}>{body}</PanelTrigger>;
   }
   const list = asOptions(options);
   if (kind === 'single') {
@@ -78,7 +88,7 @@ export function QuickFilter({ kind = 'list', label, icon, noun = 'value', option
     if (!required) choices.unshift({ value: '', label: t.all });
     const body = <div className="plx-find-panel"><RadioGroup label={label} value={chosen.length ? chosen[0] : ''} options={choices} onChange={v => onChange(v === '' ? [] : [v])} /></div>;
     const footer = required ? null : <Button size="sm" variant="ghost" icon="filter-off" disabled={!chosen.length} onClick={() => onChange([])}>{t.clear}</Button>;
-    return <PanelTrigger icon={icon} label={label} title={label} count={chosen.length} caret size="sm" footer={footer} inline={inline}>{body}</PanelTrigger>;
+    return <PanelTrigger icon={icon} label={label} current={nameOf(list, chosen)} title={label} count={chosen.length} caret size="sm" footer={footer} inline={inline}>{body}</PanelTrigger>;
   }
   const chosen = value || [];
   const shown = list.filter((o) => String(o.label).toLowerCase().indexOf(q.trim().toLowerCase()) >= 0);
@@ -92,5 +102,5 @@ export function QuickFilter({ kind = 'list', label, icon, noun = 'value', option
     </div>
   );
   const footer = <Button size="sm" variant="ghost" icon="filter-off" disabled={!chosen.length} onClick={() => onChange([])}>{t.clear}</Button>;
-  return <PanelTrigger icon={icon} label={label} title={label} count={chosen.length} caret size="sm" footer={footer} inline={inline}>{body}</PanelTrigger>;
+  return <PanelTrigger icon={icon} label={label} current={nameOf(list, chosen)} title={label} count={chosen.length} caret size="sm" footer={footer} inline={inline}>{body}</PanelTrigger>;
 }
