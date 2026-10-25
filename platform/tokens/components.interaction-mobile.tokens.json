@@ -8,6 +8,14 @@
     }
   },
   "plx-comp": {
+    "button-target-inset-block": {
+      "$value": "min(0px, calc((100% - {plx-sys.control-target-min}) / 2))",
+      "$type": "dimension"
+    },
+    "button-target-inset-inline": {
+      "$value": "min(0px, calc((100% - {plx-sys.control-target-min}) / 2))",
+      "$type": "dimension"
+    },
     "breadcrumbs-list-row-gap": {
       "$value": "calc({plx-sys.control-target-min} - 1lh)",
       "$type": "dimension",

@@ -599,6 +599,16 @@
       "$value": "{plx-sys.radius-control}",
       "$type": "dimension"
     },
+    "button-target-inset-block": {
+      "$value": "0px",
+      "$type": "dimension",
+      "$description": "Button: how far its hit area reaches past its top and bottom (0: the button itself; on touch, up to the target size)."
+    },
+    "button-target-inset-inline": {
+      "$value": "0px",
+      "$type": "dimension",
+      "$description": "Button: how far its hit area reaches past its sides (0: the button itself; on touch, up to the target size)."
+    },
     "button-font-family": {
       "$value": "{plx-sys.font-label}",
       "$type": "fontFamily"
