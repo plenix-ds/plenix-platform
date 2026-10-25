@@ -9,5 +9,9 @@ after the working set and before the library.
 |---|---|---|---|
 | `person-male` | `person_male` | the owner's silhouette (ctm-admin/assets/ico-gender-male.svg), scaled and centered to Material's person glyph, its color removed | owner, 2026-10-19 |
 | `person-female` | `person_female` | the owner's silhouette (ctm-admin/assets/ico-gender-female.svg), the same | owner, 2026-10-19 |
+| `flip-vertical` | `flip_vertical` | Tabler Icons `flip-vertical` (MIT), restyled to the icon guidance (`platform/icons/inventory/`) | owner, 2026-10-24 |
+| `git-branch` | `git_branch` | Lucide `git-branch` (ISC), restyled to the icon guidance | owner, 2026-10-24 |
+| `git-merge` | `git_merge` | Lucide `git-merge` (ISC), restyled to the icon guidance | owner, 2026-10-24 |
+| `git-pull-request` | `git_pull_request` | Lucide `git-pull-request` (ISC), restyled to the icon guidance | owner, 2026-10-24 |
 
-Both are filled drawings: the outline files carry the same shape.
+The person icons are filled drawings: their outline files carry the same shape. The others are icons from other libraries restyled by tools/icons/restyle-icon.js; their originals are in platform/icons/inventory/svg/.

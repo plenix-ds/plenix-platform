@@ -105,7 +105,8 @@
             "keyline"
           ]
         }
-      }
+      },
+      "decision": "Owner, 2026-10-24: keep Material's save. Not used."
     },
     {
       "id": "tabler/device-floppy",
@@ -197,7 +198,8 @@
           ],
           "warn": []
         }
-      }
+      },
+      "decision": "Owner, 2026-10-24: keep Material's save. Not used."
     },
     {
       "id": "iconoir/floppy-disk",
@@ -290,7 +292,8 @@
           ]
         }
       },
-      "needs": "A thin gap runs between the label's sides and the frame (visible at 48px): Iconoir insets the label; merge the two lines before approval."
+      "needs": "A thin gap runs between the label's sides and the frame (visible at 48px): Iconoir insets the label; merge the two lines before approval.",
+      "decision": "Owner, 2026-10-24: keep Material's save. Not used."
     },
     {
       "id": "humble/save",
@@ -377,7 +380,8 @@
           ],
           "warn": []
         }
-      }
+      },
+      "decision": "Owner, 2026-10-24: keep Material's save. Not used."
     },
     {
       "id": "tabler/flip-vertical",
@@ -396,7 +400,7 @@
       "category": "Editing",
       "library": "tabler",
       "icon": "flip-vertical",
-      "state": "restyled",
+      "state": "approved",
       "why": "Material has one Flip (horizontal); the image editor's vertical flip has no icon (map.json flag ed-flip-y).",
       "sizes": [
         "sm",
@@ -466,7 +470,8 @@
             "keyline"
           ]
         }
-      }
+      },
+      "decision": "Owner, 2026-10-24: added to the icon set (platform/icons/custom, map.json flip-vertical)."
     },
     {
       "id": "tabler/file-type-jpg",
@@ -865,7 +870,7 @@
       "category": "Development",
       "library": "lucide",
       "icon": "git-branch",
-      "state": "restyled",
+      "state": "approved",
       "why": "Material Symbols has no branch icon (fork_right is a road sign).",
       "sizes": [
         "sm",
@@ -935,7 +940,8 @@
             "keyline"
           ]
         }
-      }
+      },
+      "decision": "Owner, 2026-10-24: added to the icon set (platform/icons/custom, map.json git-branch)."
     },
     {
       "id": "lucide/git-merge",
@@ -951,7 +957,7 @@
       "category": "Development",
       "library": "lucide",
       "icon": "git-merge",
-      "state": "restyled",
+      "state": "approved",
       "why": "Material's merge is a road-sign arrow; a version-control merge needs the branch drawing.",
       "sizes": [
         "sm",
@@ -1021,7 +1027,8 @@
             "keyline"
           ]
         }
-      }
+      },
+      "decision": "Owner, 2026-10-24: added to the icon set (platform/icons/custom, map.json git-merge)."
     },
     {
       "id": "lucide/git-pull-request",
@@ -1040,7 +1047,7 @@
       "category": "Development",
       "library": "lucide",
       "icon": "git-pull-request",
-      "state": "restyled",
+      "state": "approved",
       "why": "Material Symbols has no pull-request icon.",
       "sizes": [
         "sm",
@@ -1110,7 +1117,8 @@
             "keyline"
           ]
         }
-      }
+      },
+      "decision": "Owner, 2026-10-24: added to the icon set (platform/icons/custom, map.json git-pull-request)."
     }
   ],
   "gaps": [
