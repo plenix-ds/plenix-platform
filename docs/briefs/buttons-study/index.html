@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en" data-plx-mode="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Buttons and menu commands · study</title>
+<!-- A study page for the owner (#298, the corner part of #299), not Platform code. Every button, bar and menu below is the
+     real Platform component, drawn live. The "proposed" column changes nothing in the Platform: it only points existing
+     component tokens at existing palette colors and radius roles, on this page, inside .bs-new. -->
+<script src="../../../platform/providers/theme-boot.js"></script>
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<link rel="stylesheet" href="../review.css">
+<script src="../../../platform/vendor/react-loader.js"></script>
+<script src="../../../platform/dist/platform.js"></script>
+<script src="corner-data.js"></script>
+<style>
+/* Proposed (Fluent 2 style, Plenix palette): 4px corners on every button, menu item and the bar; a light gray-300
+   border (Fluent colorNeutralStroke1 #d1d1d1); neutral hover, pressed and selected fills (gray-100, gray-200); no halo on
+   primary; in subtle (ghost) commands the icon turns the action blue on hover, as Fluent's subtle buttons do. */
+.bs-new{
+  --plx-comp-button-radius:var(--plx-sys-radius-control-4px);
+  --plx-comp-button-joined-radius:0px;
+  --plx-comp-button-secondary-border:var(--plx-ref-color-gray-300);
+  --plx-comp-button-size-md-hover-border:var(--plx-ref-color-gray-350);
+  --plx-comp-button-size-sm-hover-border:var(--plx-ref-color-gray-350);
+  --plx-comp-button-size-md-hover-background:var(--plx-ref-color-gray-100);
+  --plx-comp-button-size-sm-hover-background:var(--plx-ref-color-gray-100);
+  --plx-comp-button-size-md-pressed-background:var(--plx-ref-color-gray-200);
+  --plx-comp-button-size-sm-pressed-background:var(--plx-ref-color-gray-200);
+  --plx-comp-button-selected-background:var(--plx-ref-color-gray-200);
+  --plx-comp-button-size-md-selected-border:var(--plx-ref-color-gray-300);
+  --plx-comp-button-size-sm-selected-border:var(--plx-ref-color-gray-300);
+  --plx-comp-button-size-md-selected-text:var(--plx-sys-content-default);
+  --plx-comp-button-size-sm-selected-text:var(--plx-sys-content-default);
+  --plx-comp-button-size-md-primary-ring:none;
+  --plx-comp-button-size-sm-primary-ring:none;
+  --plx-comp-button-primary-border:var(--plx-sys-action-primary-background);
+  --plx-comp-button-disabled-border:var(--plx-ref-color-gray-200);
+  --plx-comp-command-bar-radius:var(--plx-sys-radius-surface-4px);
+  --plx-comp-menu-item-hover-background:var(--plx-ref-color-gray-100);
+}
+.bs-new .plx-button--ghost:is(:hover, .is-hover){--plx-comp-button-context-icon-color:var(--plx-sys-action-primary-background);}
+/* menu items: their own 4px corners (Fluent MenuItem borderRadiusMedium) instead of 4px menu minus 4px padding = 0px */
+/* menu items: the icon turns the action blue on hover (Fluent MenuItem); the Menu has no token for it yet */
+.bs-new .plx-menu__item:is(:hover, .is-hover, .is-focused) .plx-menu__icon{color:var(--plx-sys-action-primary-background);}
+.bs-new .plx-menu{--plx-sys-radius-outer:calc(var(--plx-sys-radius-surface-4px) + var(--plx-sys-space-inset-xs));}
+/* corner specimens: one change at a time */
+.bs-r4{--plx-comp-button-radius:var(--plx-sys-radius-control-4px);}
+.bs-light{--plx-comp-button-secondary-border:var(--plx-ref-color-gray-300);}
+.bs-row{align-items:center;display:flex;flex-wrap:wrap;gap:var(--plx-sys-space-inline-sm);}
+.bs-cols{display:grid;gap:var(--plx-sys-space-inline-md);grid-template-columns:repeat(auto-fit,minmax(var(--plx-ref-size-480px,30rem),1fr));}
+.bs-label{color:var(--plx-sys-content-muted);font-size:var(--plx-ref-font-size-12);margin:0;}
+.bs-states{display:grid;gap:var(--plx-sys-space-stack-xs) var(--plx-sys-space-inline-sm);grid-template-columns:max-content repeat(5, max-content);align-items:center;}
+.bs-specs{display:grid;gap:var(--plx-sys-space-inline-md);grid-template-columns:repeat(auto-fit,minmax(var(--plx-ref-size-220px,13.75rem),1fr));}
+.bs-bar{min-block-size:var(--plx-ref-size-320px,20rem);}
+.bs-zoom img{image-rendering:pixelated;}
+.bs-small{font-size:var(--plx-ref-font-size-12);}
+</style>
+</head>
+<body class="rv-page">
+<div id="root"></div>
+<script>
+(function () {
+  const h = React.createElement, P = window.Plenix, F = React.Fragment, C = window.BS_CORNER || null;
+  const noop = () => {};
+  const B = (props, label) => h(P.Button, Object.assign({ onClick: noop }, props), label);
+  const iconRow = (cls) => h('div', { className: 'bs-row ' + (cls || '') },
+    B({ iconOnly: true, icon: 'reply', label: 'Reply' }), B({ iconOnly: true, icon: 'forward', label: 'Forward' }),
+    B({ iconOnly: true, icon: 'archive', label: 'Archive' }), B({ iconOnly: true, icon: 'more', label: 'More actions' }));
+  // one row per variant: rest, hover, pressed, selected, disabled (hover and pressed drawn with the Button's own state classes)
+  const states = (variant, name, extra) => [
+    h('p', { key: name, className: 'bs-label' }, name),
+    B(Object.assign({ key: 'r', variant }, extra), 'Rest'),
+    B(Object.assign({ key: 'h', variant, className: 'is-hover' }, extra), 'Hover'),
+    B(Object.assign({ key: 'p', variant, className: 'is-pointer-down' }, extra), 'Pressed'),
+    variant === 'primary' ? h('span', { key: 's', className: 'bs-label' }, 'not used') : B(Object.assign({ key: 's', variant, selected: true }, extra), 'Selected'),
+    B(Object.assign({ key: 'd', variant, disabled: true }, extra), 'Disabled')];
+  const buttonsPanel = (cls) => h('div', { className: 'rv-stage ' + (cls || '') },
+    h('div', { className: 'bs-states' },
+      h('span'), ['Rest', 'Hover', 'Pressed', 'Selected', 'Disabled'].map((t) => h('p', { key: t, className: 'bs-label' }, t)),
+      states('primary', 'Primary', {}), states('secondary', 'Default', {}), states('ghost', 'Subtle', {})),
+    h('p', { className: 'bs-label' }, 'With icons'),
+    h('div', { className: 'bs-row' }, B({ variant: 'primary', icon: 'send' }, 'Send'), B({ icon: 'reply' }, 'Reply'), B({ variant: 'ghost', icon: 'edit' }, 'Edit'), B({ variant: 'ghost', icon: 'edit', className: 'is-hover' }, 'Edit (hover)')),
+    h('p', { className: 'bs-label' }, 'Icon-only (the header’s reply, forward, archive, more)'), iconRow(),
+    h('p', { className: 'bs-label' }, 'Toggle (off, on), menu button, split button, joined group'),
+    h('div', { className: 'bs-row' },
+      B({ icon: 'star', pressed: false }, 'Favorite'), B({ icon: 'star', pressed: true }, 'Favorite'),
+      h(P.Menu, { label: 'Sort', trigger: B({ caret: true, icon: 'sort' }, 'Sort') }, h(P.MenuItem, { onSelect: noop }, 'Name'), h(P.MenuItem, { onSelect: noop }, 'Date modified')),
+      h(P.SplitButton, { variant: 'primary', icon: 'save', label: 'Save', onClick: noop }, h(P.MenuItem, { icon: 'copy', onSelect: noop }, 'Save a copy'), h(P.MenuItem, { onSelect: noop }, 'Save as draft')),
+      h(P.ButtonGroup, { label: 'Transfer' }, B({}, 'Import'), B({}, 'Export'))));
+  const bar = (cls) => h('div', { className: 'bs-bar ' + (cls || ''), 'data-bar': cls ? 'new' : 'today' },
+    h(P.CommandBar, { label: 'Documents', count: '24 documents', position: 'static',
+      actions: [
+        { id: 'new', label: 'New', icon: 'plus', items: [{ id: 'doc', label: 'Document', icon: 'edit', onSelect: noop }, { id: 'folder', label: 'Folder', icon: 'folder-add', onSelect: noop }, { id: 'link', label: 'Link', icon: 'link', onSelect: noop }] },
+        { id: 'upload', label: 'Upload', icon: 'upload', onSelect: noop },
+        { id: 'share', label: 'Share', icon: 'share', onSelect: noop },
+        { id: 'pin', label: 'Pin', icon: 'pin', toggle: true, pressed: true, onSelect: noop },
+        { id: 'delete', label: 'Delete', icon: 'trash', danger: true, onSelect: noop }] }));
+  const pic = (src, cap) => h('figure', { className: 'rv-fig bs-zoom' }, h('img', { src, alt: cap }), h('figcaption', null, cap));
+  const table = (label, cols, data) => h(P.Table, { label, data: data.map((d, i) => Object.assign({ id: i + 1 }, d)), columns: cols });
+  const ref = (href, text) => h(P.Link, { href }, text);
+
+  const fluentRows = [
+    { part: 'Corners', fluent: '4px on every button size (borderRadiusMedium); 0px or round only as an explicit shape', plenix: '6px (4px in Compact density); the command bar frame 8px' },
+    { part: 'Default button', fluent: 'White; 1px border #d1d1d1 (colorNeutralStroke1); text #242424; semibold 14px', plenix: 'White; 1px border #8e9094 (gray-500, the strong border); text #000000; semibold 13px' },
+    { part: 'Disabled', fluent: 'Fill #f0f0f0, border #e0e0e0, gray text', plenix: 'Fill #f3f3f3, border #8e9094 (as dark as at rest), gray text' },
+    { part: 'Default: hover / pressed', fluent: 'Fill #f5f5f5 / #e0e0e0; border steps darker #c7c7c7 / #b3b3b3', plenix: 'Fill #f3f3f3 / #e8e9ec; border unchanged (#8e9094)' },
+    { part: 'Primary', fluent: 'Brand fill #0f6cbd, no border, no halo; hover #115ea3, pressed #0c3b5e', plenix: 'Fill #2a6fdb; border #1f5bb8; a 2px pale halo (#ebf0f7) around it' },
+    { part: 'Subtle (Plenix ghost)', fluent: 'No fill or border; text #424242; hover fill #f5f5f5 and the icon turns brand blue', plenix: 'No fill or border; text #56585e; hover fill #f3f3f3, icon stays gray' },
+    { part: 'Transparent', fluent: 'No fill even on hover; text and icon turn brand blue', plenix: 'None (Plenix has no link-looking buttons, by rule)' },
+    { part: 'Icon-only', fluent: '24 / 32 / 40px square; 20px icon (24px at large)', plenix: '28 / 32 / 40px square; 24px icon at md, 20px in the command bar' },
+    { part: 'Toggle, on', fluent: 'Neutral fill #ebebeb, the same #d1d1d1 border; subtle toggles add a brand-blue icon', plenix: 'Pale blue fill #ebf0f7, blue border #c8dff7, blue text' },
+    { part: 'Split button', fluent: 'Two halves, square where they meet; menu half at least 24px wide; a divider in the stroke color', plenix: 'The same model (square seam, divider)' },
+    { part: 'Sizes and spacing', fluent: 'small 24px / medium 32px / large 40px; padding 8 / 12 / 16px; icon gap 4 / 6 / 6px; minimum width 64 / 96 / 96px', plenix: 'sm 28px (toolbar) / md 32px / lg 40px; gap 4px; no minimum width' },
+    { part: 'Toolbar (command bar) items', fluent: 'ToolbarButton is the subtle button, medium (32px); the bar pads 4px 8px and has no frame', plenix: 'Ghost buttons, 28px, in a white framed bar with 8px corners' },
+    { part: 'Menu', fluent: '4px corners, 4px padding, 1px clear border and shadow16; items 32px high, 4px corners, 20px icons; the icon turns brand blue on hover', plenix: '4px corners, 4px padding; items square (0px) inside it; icon stays gray' },
+    { part: 'Focus', fluent: 'A 2px black ring inside the edge, following the 4px corner', plenix: 'A 2px blue ring 2px outside the edge (radius + 2px)' }];
+
+  const otherRows = [
+    { system: 'Material 3', idea: 'State layers: hover, focus and pressed are one see-through layer (8% / 10% / 10%) over any fill, so every variant steps the same way.', why: 'Plenix picks a separate color per state per variant; one rule would keep them consistent.', src: 'm3' },
+    { system: 'Material 3 · Apple HIG', idea: 'Touch targets of 48dp (Material) and 44pt (Apple) even when the button looks smaller.', why: 'Fluent stops at 24px. Plenix already has touch tokens; keep them for the 28px bar buttons.', src: 'hig' },
+    { system: 'Carbon · Atlassian', idea: 'Every icon-only button shows its name as a tooltip, with its shortcut.', why: 'Fluent leaves it to the app. The header’s four icon buttons need it.', src: 'carbon' },
+    { system: 'Apple HIG', idea: 'A pull-down button (actions) is not a pop-up button (a choice that shows the chosen value).', why: 'Sort and Status menus should show the current choice in the button.', src: 'hig-pull' },
+    { system: 'Polaris · Atlassian', idea: 'Loading keeps the button’s width and its accessible name; destructive actions come last and ask to confirm.', why: 'Plenix already puts Delete last; keep width steady while loading.', src: 'polaris' },
+    { system: 'Polaris · Carbon', idea: 'One primary button per view.', why: 'Fluent says it too, softly; make it a checked rule.', src: 'carbon-btn' }];
+  const otherSrc = { m3: 'https://m3.material.io/foundations/interaction/states/state-layers', hig: 'https://developer.apple.com/design/human-interface-guidelines/buttons',
+    carbon: 'https://carbondesignsystem.com/components/button/usage/#icon-only-buttons', 'hig-pull': 'https://developer.apple.com/design/human-interface-guidelines/pull-down-buttons',
+    polaris: 'https://polaris-react.shopify.com/components/actions/button', 'carbon-btn': 'https://carbondesignsystem.com/components/button/usage/' };
+
+  const cornerRows = C ? C.rows : [];
+  ReactDOM.createRoot(document.getElementById('root')).render(h('main', { className: 'rv-doc' },
+    h('h1', { className: 'rv-h1' }, 'Buttons and menu commands: a study'),
+    h('p', { className: 'rv-lead' }, 'Why some button corners look cut off, what Fluent 2 does for buttons, bars and menus, what other systems add, and Plenix today next to Plenix in the Fluent style. Every control on this page is the real Platform component. Nothing in the Platform has changed.'),
+
+    h('section', { className: 'rv-section', id: 'corner' },
+      h('h2', { className: 'rv-h2' }, '1. The corner that looks cut off'),
+      h('ul', { className: 'rv-list' },
+        h('li', null, 'Your picture is a 32px button at 150% screen scale: the corner is 6px (9 screen pixels), and the 1px border is drawn as 1 screen pixel (0.667px). At 125% it is also 1 screen pixel (0.8px).'),
+        h('li', null, 'The straight sides land exactly on screen pixels, so they draw as one solid line. The curve cannot: the screen smooths it across two half-tone pixels, so it draws about 30% paler than the sides, at every scale and every radius.'),
+        h('li', null, 'With today’s dark border (gray-500, #8e9094) that paleness is a big jump: about 31–36 levels of darkness (out of 255) between the solid side and the curve. In the middle of the curve the steps line up on a 45° diagonal, so the corner reads as a small straight cut, not a round.'),
+        h('li', null, 'A lighter border (gray-300) cuts the jump to 13–15 levels: the curve still draws paler, but the eye no longer sees the break. A 4px corner makes the curve shorter (6 screen pixels instead of 9 at 150%), so what is left of the cut is shorter too.'),
+        h('li', null, 'It is not a second layer: the fill and the border share one box and one radius, there is no shadow or outline on the default button, and the icon has no corner of its own (measured on the live header buttons).'),
+        h('li', null, 'Where it comes from: the radius role, 6px in Standard density (platform/tokens/semantic.density-standard-comfortable.tokens.json, line 12, radius-control → radius-control-6px), read by the button at platform/tokens/components.tokens.json line 553 (button-radius); and the border color, line 329 (button-secondary-border → control-border, gray-500). The command bar frame is 8px: platform/tokens/components/command-bar.tokens.json line 11.')),
+      h('div', { className: 'rv-grid' }, pic('owner-example.png', 'Your picture (the header’s reply, forward, archive, more at 150%): solid sides, a pale straight cut at each corner.')),
+      C ? h(F, null,
+        h('p', { className: 'rv-lead' }, 'Measured in Chrome at real 100%, 125% and 150% screen scales, on the specimens below (one change at a time) and on the live Messages header. Darkness is out of 255 (0 = white): the side is the straight border line, the curve is the average of where the curve crosses each pixel row and column, the jump is the difference you see.'),
+        table('Corner measurements', [{ title: 'Screen scale', field: 'scale' }, { title: 'Button', field: 'spec' }, { title: 'Border on screen', field: 'border' }, { title: 'Corner on screen', field: 'corner' }, { title: 'Side darkness', field: 'side' }, { title: 'Curve darkness', field: 'curve' }, { title: 'Jump', field: 'jump' }], cornerRows),
+        h('div', { className: 'rv-grid' }, C.pictures.map((p) => h(F, { key: p.src }, pic(p.src, p.caption))))) : h('p', { className: 'rv-lead' }, 'Run capture.js to add the measurements.'),
+      h('p', { className: 'bs-label' }, 'The same four specimens, live (one change at a time):'),
+      h('div', { className: 'bs-specs' },
+        [['', 'Today: 6px, gray-500 border'], ['bs-r4', '4px corner only'], ['bs-light', 'gray-300 border only'], ['bs-r4 bs-light', 'Proposed: 4px and gray-300']].map(([cls, cap], i) =>
+          h('div', { key: i, className: 'rv-stage ' + cls, 'data-spec': String(i) }, h('p', { className: 'bs-label' }, cap), iconRow(), h('div', { className: 'bs-row' }, B({ icon: 'reply' }, 'Reply'), B({ variant: 'primary', icon: 'send' }, 'Send'))))),
+      h('p', { className: 'rv-rec' }, 'Our recommendation: a gray-300 border on default buttons (the main fix: it halves the jump) and 4px corners on every button, menu item and bar (Fluent’s borderRadiusMedium; inside your 2–6px rule; a shorter curve). Together they remove the cut look at every screen scale. No setting can make a screen draw a 1-pixel curve as solid as a straight line; Fluent keeps its button border light (#d1d1d1) for the same reason the fix works.')),
+
+    h('section', { className: 'rv-section', id: 'fluent' },
+      h('h2', { className: 'rv-h2' }, '2. Fluent 2, value by value'),
+      h('p', { className: 'rv-lead' }, 'Fluent’s web components (React v9), read from their source; colors are Fluent’s light theme. Plenix values are measured on the live components in Standard density.'),
+      table('Fluent 2 and Plenix compared', [{ title: 'Part', field: 'part', rowLabel: true }, { title: 'Fluent 2', field: 'fluent' }, { title: 'Plenix today', field: 'plenix' }], fluentRows),
+      h('ul', { className: 'rv-list bs-small' },
+        h('li', null, ref('https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-button/library/src/components/Button/useButtonStyles.styles.ts', 'Button styles (appearances, sizes, icon-only, focus)')),
+        h('li', null, ref('https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-button/library/src/components/ToggleButton/useToggleButtonStyles.styles.ts', 'ToggleButton checked styles')),
+        h('li', null, ref('https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-button/library/src/components/SplitButton/useSplitButtonStyles.styles.ts', 'SplitButton (seam, divider, 24px menu half)')),
+        h('li', null, ref('https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-toolbar/library/src/components/ToolbarButton/useToolbarButton.ts', 'ToolbarButton (subtle, medium)'), ' · ', ref('https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-toolbar/library/src/components/Toolbar/useToolbarStyles.styles.ts', 'Toolbar padding')),
+        h('li', null, ref('https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-menu/library/src/components/MenuItem/useMenuItemStyles.styles.ts', 'MenuItem'), ' · ', ref('https://github.com/microsoft/fluentui/blob/master/packages/react-components/react-menu/library/src/components/MenuPopover/useMenuPopoverStyles.styles.ts', 'MenuPopover')),
+        h('li', null, ref('https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/borderRadius.ts', 'Radius tokens'), ' · ', ref('https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/alias/lightColor.ts', 'Light theme color aliases'), ' · ', ref('https://github.com/microsoft/fluentui/blob/master/packages/tokens/src/global/colors.ts', 'Gray ramp'), ' · ', ref('https://fluent2.microsoft.design/components/web/react/core/button/usage', 'Fluent 2 button guidance')))),
+
+    h('section', { className: 'rv-section', id: 'others' },
+      h('h2', { className: 'rv-h2' }, '3. What Fluent leaves out, and who does it well'),
+      table('Ideas from other systems', [{ title: 'From', field: 'system', rowLabel: true }, { title: 'What they do', field: 'idea' }, { title: 'For Plenix', field: 'why' }], otherRows),
+      h('ul', { className: 'rv-list bs-small' }, Object.keys(otherSrc).map((k) => h('li', { key: k }, ref(otherSrc[k], otherSrc[k].replace('https://', '')))))),
+
+    h('section', { className: 'rv-section', id: 'side-by-side' },
+      h('h2', { className: 'rv-h2' }, '4. Today and proposed, side by side'),
+      h('p', { className: 'rv-lead' }, 'Left: Plenix today. Right: the same components with the proposed values (only existing palette colors and radius roles). Hover the buttons, or open the menus; the bars below are live.'),
+      h('div', { className: 'bs-cols' },
+        h('div', { className: 'rv-section' }, h('h3', { className: 'rv-h2' }, 'Today'), buttonsPanel('')),
+        h('div', { className: 'rv-section bs-new' }, h('h3', { className: 'rv-h2' }, 'Proposed (Fluent style)'), buttonsPanel(''))),
+      h('h3', { className: 'rv-h2' }, 'Command bar with its menu open'),
+      h('div', { className: 'bs-cols' }, pic('bar-today.png', 'Today: 8px frame, 28px gray commands, square menu items'), pic('bar-new.png', 'Proposed: 4px frame and items, neutral hover, the icon turns blue on hover')),
+      h('div', { className: 'bs-cols' }, bar(''), bar('bs-new'))),
+
+    h('section', { className: 'rv-section', id: 'suggest' },
+      h('h2', { className: 'rv-h2' }, 'What we suggest (ours)'),
+      h('ul', { className: 'rv-list' },
+        h('li', null, 'Default button border gray-300 at rest, gray-350 on hover (Fluent #d1d1d1 / #c7c7c7): the main fix for the cut corner, and the border color you found inconsistent. The strong gray-500 stays for fields, where the border is the control.'),
+        h('li', null, '4px corners for buttons, menu items and the command bar (Fluent’s value; inside your 2–6px rule; today the bar is 8px, over the limit).'),
+        h('li', null, 'Neutral hover, pressed and selected fills (gray-100, gray-200), the same on every variant; selected toggles gray, not blue.'),
+        h('li', null, 'No halo around primary; its border is its fill.'),
+        h('li', null, 'Bar commands stay subtle (ghost); their icon turns the action blue on hover, as in Fluent. Menu items get their own 4px corners and the same blue icon on hover.'),
+        h('li', null, 'From the others: a tooltip with the shortcut on every icon-only button; a choice menu (Sort, Status) shows its current value; touch targets stay 44px on touch screens.')),
+      h('p', { className: 'rv-rec' }, 'If you approve, the change is token values only (button radius, border, fills, primary ring, command bar radius, menu item corners), plus one new Menu token for the hover icon color; no new colors and no component rewrite. Not done yet: the focus ring stays Plenix blue outside the edge (Fluent draws black inside); tell us if you want that too.'))));
+})();
+</script>
+</body>
+</html>
