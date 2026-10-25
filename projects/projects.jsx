@@ -109,8 +109,10 @@ export function ProjectContent({ proj, panel }) {
     return (
       <PageContent>
         <Stack gap="lg">
-          <EntityHeader title={proj.name} media={{ icon: 'briefcase', hue: proj.color }} subtitle={proj.desc} status={statusOf(proj.status)} facts={proj.tags[0] ? [{ label: 'Tag', value: proj.tags[0] }] : []}
-            actions={[{ icon: 'flag', label: 'Update status', primary: true }, { icon: 'share', label: 'Share' }]} />
+          <EntityHeader title={proj.name} media={{ icon: 'briefcase', hue: proj.color }} subtitle={proj.desc} status={statusOf(proj.status)}
+            facts={[{ label: 'Due', value: open[0] ? open[0].due : '—', data: true }, { label: 'Tasks', value: (pTasks.length - open.length) + ' / ' + pTasks.length, data: true }, { label: 'Files', value: proj.files, data: true }]}
+            next={open[0] ? { title: open[0].title, detail: 'Due ' + open[0].due } : undefined}
+            actions={[{ icon: 'star', label: 'Favorite' }, { icon: 'share', label: 'Share' }, { icon: 'pencil', label: 'Edit' }, { icon: 'flag', label: 'Update status' }]} />
           <Inline gap="lg" wrap align="end">
             <Stack grow><ProgressBar value={pct} color={proj.color} label="Progress" showValue /></Stack>
             <Metric.Group label="Project figures">

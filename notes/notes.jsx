@@ -49,7 +49,7 @@ export function NotesScreen({ screen }) {
         {note ? (
           <Stack gap="md" className="plx-motion-enter">
             <EntityHeader title={note.title} media={{ icon: 'doc-text', hue: 'brown' }} subtitle={note.folder}
-              status={dirty ? { tone: 'waiting', icon: 'pencil', label: 'Unsaved changes' } : { tone: 'success', icon: 'check', label: 'Saved' }} facts={[{ label: 'Edited', value: note.date, data: true }]}
+              status={dirty ? { tone: 'waiting', icon: 'pencil', label: 'Unsaved changes' } : { tone: 'success', icon: 'check', label: 'Saved' }} facts={[{ label: 'Edited', value: note.date, data: true }, { label: 'Folder', value: note.folder }, { label: 'Tags', value: (note.tags || []).length, data: true }]}
               actions={dirty
                 ? [{ icon: 'save', label: 'Save', primary: true, onClick: save }, { icon: 'circle-plus', label: 'Create tasks' }, { icon: 'trash', label: 'Delete' }, { icon: 'share', label: 'Share' }]
                 : [{ icon: 'circle-plus', label: 'Create tasks', primary: true }, { icon: 'pencil', label: 'Edit' }, { icon: 'trash', label: 'Delete' }, { icon: 'share', label: 'Share' }]} />
