@@ -22091,6 +22091,7 @@ function NextEngine(props) {
       }))
     }, headerItems(column))) : null), c.resizable !== false && !pinned && !kinds(c).includes('icon') ? /*#__PURE__*/_react.default.createElement("span", {
       className: `${B}__grid-col-resize-handle`,
+      "data-plx-target-equivalent": "",
       role: "separator",
       "aria-label": S.resize + ' ' + c.title,
       "aria-orientation": "vertical",
@@ -31775,7 +31776,9 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
    Behavior:
      A card. Its background follows the user's settings on the page root: data-plx-header-tint none (default: white) | gray
        | blue | warm | green | purple | red, and data-plx-header-tint-style fade (default) | flat.
-     Two columns, main 1.7 to aside 1, with a divider between them; with no next step and no actions there is no aside.
+     Two columns with a divider between them: the divider starts at 63% of the width (main 1.7 to aside 1) and moves
+       toward the end when the title needs the room; the aside keeps at least 220px (entity-header-aside-min-width), and
+       past that the title wraps and the actions fold into More. With no next step and no actions there is no aside.
      The accent rule runs 10% past the wider of the heading and the details.
      The tiles wrap on narrow screens; under 640px of the header's own width the aside moves under the main column (its
        divider above it, at the start edge).
@@ -31916,6 +31919,8 @@ function States({
   }, /*#__PURE__*/_react.default.createElement("dt", {
     className: "plx-entity-header__fact-label"
   }, states.label || label), /*#__PURE__*/_react.default.createElement("dd", {
+    className: "plx-entity-header__fact-line"
+  }, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-entity-header__states",
     role: "radiogroup",
     "aria-label": states.label || label
@@ -31944,7 +31949,7 @@ function States({
     })) : null, iconOnly && o.icon ? null : /*#__PURE__*/_react.default.createElement("span", {
       className: "plx-entity-header__state-label"
     }, o.label));
-  })));
+  }))));
 }
 
 // a fact: label over value; with an icon, the icon in a square at its start; with an action (header style 2), the icon
