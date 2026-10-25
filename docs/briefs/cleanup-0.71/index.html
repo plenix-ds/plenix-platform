@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en" data-plx-mode="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cleanup pass findings · Plenix review</title>
+<!-- Owner review for the cleanup pass on styling/phase-2 (2026-10-25): every failing check and every visual finding
+     since v0.69.5, with before/after pictures, the suggested fix and its size. Nothing has been fixed yet.
+     Pictures: headless Chrome, 1440x900, light mode, v0.69.5 (0b7af35d) on the left, the tip (def75d11) on the right. -->
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<link rel="stylesheet" href="../review.css">
+</head>
+<body class="rv-page">
+<main class="rv-doc">
+  <h1 class="rv-h1">Cleanup pass: what is wrong on styling/phase-2 since 0.69.5</h1>
+  <p class="rv-lead">Checked on the tip of styling/phase-2 (def75d11, 0.71.0) against 0.69.5. Nothing has been fixed.
+    Each finding says whether 0.70 caused it or whether it was already there, the fix we suggest, and how big that fix is.</p>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">In short</h2>
+    <ul class="rv-list">
+      <li><strong>The work streams collided in one place:</strong> the new Wrap text option (#309) changed how every static
+        Table lays out its rows. Labels and values no longer line up, and rows are about 50% taller. It shows on almost every
+        spec page. This is the main reason 0.70 looks sloppy (finding 1).</li>
+      <li><strong>One other change from 0.70 broke a check:</strong> in Windows high-contrast mode, a pressed button no
+        longer shows as selected (#311). The fix is ready in PR #327.</li>
+      <li><strong>Most red checks are older than 0.70.</strong> The CI run on the 0.69.5 release itself (run 40076934376)
+        already failed pages, targets, typography and the DataGrid check. Base CI has not been green since before 0.69.5.</li>
+      <li><strong>Header facts are applied unevenly:</strong> numbers and dates are in two different fonts in the same header,
+        and two headers show the same fact twice (findings 2 and 3).</li>
+      <li><strong>Two rules you approved on 2026-10-24 are not applied yet:</strong> no corner over 6px, and no icon in a box.
+        They were never part of a merge, so these are not collisions (findings 4 and 5).</li>
+      <li><strong>Everything else you approved looks as approved:</strong> Fluent buttons, 4px control corners, the header
+        divider, the status box, the Structured app headers, grid lines, the command bar, segmented controls and checkboxes.</li>
+    </ul>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">Suggested order</h2>
+    <ol class="rv-list">
+      <li>Merge the fixes that are already approved and ready: #327 (high contrast), #293 (DataGrid header middle), #315 (empty Table), #328 with spec #3 (Mono facts), #329 (dashboard date).</li>
+      <li>Fix finding 1 (Table rows): one CSS change. Since it changes pixels, you see the picture first.</li>
+      <li>Fix the test problems (iOS pages, targets accepted cases, check-system in worktrees), then re-record the stale baselines once.</li>
+      <li>Run the full suite once more. Release when it is green.</li>
+      <li>Findings 3 to 6 need your choice. They can wait until after the clean release.</li>
+    </ol>
+  </section>
+
+  <h2 class="rv-h2">Part 1 · Visual findings</h2>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">1 · Table rows: labels sit lower than their values, and rows grew about 50% taller (new in 0.70.0, from #309)</h2>
+    <div class="rv-grid">
+      <figure class="rv-fig"><img src="table-wrap-old.png" alt="Table at 0.69.5: Field, Type and Notes on one line in each row"><figcaption><span class="rv-tag">0.69.5</span> · the Table's own wrap example: every cell on one line</figcaption></figure>
+      <figure class="rv-fig"><img src="table-wrap-tip.png" alt="Table at the tip: the Notes text sits about 10px below Title and string, and the rows are taller"><figcaption><span class="rv-tag">TIP</span> · the Notes text sits about 10px lower than Title and string</figcaption></figure>
+    </div>
+    <div class="rv-grid">
+      <figure class="rv-fig"><img src="cmdbar-props-old.png" alt="Command bar props table at 0.69.5, rows compact and aligned"><figcaption><span class="rv-tag">0.69.5</span> · a props table on the Command bar page</figcaption></figure>
+      <figure class="rv-fig"><img src="cmdbar-props-tip.png" alt="Same table at the tip: rows much taller, descriptions lower than the prop names"><figcaption><span class="rv-tag">TIP</span> · the same table: taller rows, and each description is lower than its prop</figcaption></figure>
+    </div>
+    <div class="rv-grid">
+      <figure class="rv-fig"><img src="button-table-old.png" alt="Overview table at 0.69.5, Purpose label and value aligned"><figcaption><span class="rv-tag">0.69.5</span> · Overview and Purpose, Button page</figcaption></figure>
+      <figure class="rv-fig"><img src="button-table-tip.png" alt="Same table at the tip: the Purpose label is 8px below its value and the row has empty space"><figcaption><span class="rv-tag">TIP</span> · "Purpose" is 8px below its value</figcaption></figure>
+    </div>
+    <div class="rv-grid">
+      <figure class="rv-fig"><img src="glance-old.png" alt="At a glance table at 0.69.5, one-line rows centered"><figcaption><span class="rv-tag">0.69.5</span> · At a glance, spec home</figcaption></figure>
+      <figure class="rv-fig"><img src="glance-tip.png" alt="Same table at the tip: one-line rows sit at the top with empty space below"><figcaption><span class="rv-tag">TIP</span> · one-line rows sit at the top with empty space below</figcaption></figure>
+    </div>
+    <ul class="rv-list">
+      <li><strong>Where:</strong> the Table component, so every spec page (Overview, Props, Attributes, Lab, Anatomy tables) and any app Table with a wrapping column.
+        Spec pages are 5% to 12% longer because of it (Button, Checkbox, Card, Command bar measured).</li>
+      <li><strong>What you approved:</strong> "wrapped rows start at the top", with wrapped lines at the reading line height (Table wrap spacing, option A).</li>
+      <li><strong>What went wrong:</strong> the wrap padding is added twice, once on the cell and again on the text inside it.
+        A cell that has the inner text gets 8px to 10px more space above than its neighbors.
+        Measured on the Button page: label text at 465px, value text at 457px, in the same row.</li>
+      <li><strong>Also:</strong> the spec marks its text columns as wrapping, so every spec row counts as a wrapping row, even rows with one line.</li>
+      <li><strong>The typography test's main failure is the same problem</strong> (#256, kind 1: code cells vs "Drawn above").</li>
+      <li><strong>Suggested fix:</strong> keep the wrap padding in one place (the cell) and remove it from the text inside, in
+        <code>data-grid.css</code> (Table's stylesheet is generated from it). Every cell in a wrapped row then starts on the same line, as you approved.
+        Check the DataGrid's Wrap text option with the same pictures.</li>
+      <li><strong>Size:</strong> small (a few CSS lines, one stylesheet, regenerate Table). A pixel change, so you see before/after first.</li>
+    </ul>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">2 · Header facts: numbers and dates in two fonts (applied unevenly)</h2>
+    <div class="rv-grid">
+      <figure class="rv-fig"><img src="files-header-old.png" alt="Files header at 0.69.5 with one fact, Files 7"><figcaption><span class="rv-tag">0.69.5</span> · Files: one fact</figcaption></figure>
+      <figure class="rv-fig"><img src="files-header-tip.png" alt="Files header at the tip: 7 and Feb 28 in the normal font, 24.1 MB in Mono"><figcaption><span class="rv-tag">TIP</span> · "7" and "Feb 28" in the normal font, "24.1 MB" in Mono</figcaption></figure>
+    </div>
+    <div class="rv-grid">
+      <figure class="rv-fig"><img src="messages-header-old.png" alt="Messages header at 0.69.5"><figcaption><span class="rv-tag">0.69.5</span> · Messages</figcaption></figure>
+      <figure class="rv-fig"><img src="messages-header-tip.png" alt="Messages header at the tip: 10:24 AM in Mono in the fact, and in the normal font in the summary"><figcaption><span class="rv-tag">TIP</span> · "10:24 AM" twice: Mono in the fact, the normal font beside it</figcaption></figure>
+    </div>
+    <ul class="rv-list">
+      <li><strong>Where:</strong> the app page headers with facts (Structured headers, #317), for example Files, Messages and Tasks, and the record page in the spec.</li>
+      <li><strong>What you decided:</strong> numbers in Mono, words in the normal font (#260), and header fact dates and numbers in Mono (#256, 3A).</li>
+      <li><strong>Why it is uneven:</strong> the Structured headers (#317) shipped before the Mono fix (PR #328). Values that are already formatted (sizes, times) come out in Mono; plain counts and dates don't.</li>
+      <li><strong>Suggested fix:</strong> merge PR #328 and spec PR #3 (spec first). Also check the summary's time ("10:24 AM", "Feb 28") under the same rule.</li>
+      <li><strong>Size:</strong> small. Ready and approved; the summary line is one more small change.</li>
+    </ul>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">3 · The same fact shown twice in one header (new in 0.70.1, from #317)</h2>
+    <ul class="rv-list">
+      <li><strong>Files:</strong> the fact "Latest: Feb 28" and, beside it, "Latest file … Kitchen Reno · Feb 28".</li>
+      <li><strong>Messages:</strong> the fact "Last: 10:24 AM" and, beside it, "Latest … 10:24 AM". The summary also wraps, leaving "Friday." alone on its line (picture above).</li>
+      <li><strong>Options:</strong> A · drop the fact when the summary shows the same thing. B · keep both. C · shorten the summary to one line with an ellipsis.</li>
+      <li><strong>Size:</strong> small (app data in the two screens). Your choice.</li>
+    </ul>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">4 · Frames still have corners over 6px (older; your rule of 2026-10-24 is not applied yet)</h2>
+    <div class="rv-grid">
+      <figure class="rv-fig"><img src="radius-tip.png" alt="Messages header corner: the frame corner is 12px, the buttons inside are 4px"><figcaption><span class="rv-tag">TIP</span> · header frame 12px, buttons inside 4px</figcaption></figure>
+    </div>
+    <ul class="rv-list">
+      <li><strong>Measured on all 11 apps</strong> (identical at 0.69.5):
+        <ul class="rv-list">
+          <li>12px: page headers (EntityHeader), cards, chat bubbles, media cards in the Asset Manager.</li>
+          <li>8px: panels (dashboard), settings sections, the command bar frame, previews.</li>
+        </ul></li>
+      <li><strong>Controls are fine:</strong> buttons, fields, selects and the nav are all 4px or 6px. Avatars mix 4px and 6px.</li>
+      <li><strong>Suggested fix:</strong> point the frame radius tokens (card, panel, header, bubble, media) at the 6px value. Tokens only; no new values.</li>
+      <li><strong>Size:</strong> medium (one token pass, many surfaces change). A pixel change, so pictures first. Can come after the clean release.</li>
+    </ul>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">5 · Icons framed in a box in the app headers (older; your rule of 2026-10-24 is not applied yet)</h2>
+    <ul class="rv-list">
+      <li><strong>Where:</strong> the media tile of the app page headers that show an icon (the Files folder, the Tasks check). See the Files picture in finding 2.</li>
+      <li><strong>Rule:</strong> an icon is never framed in a box; it takes the box's full size (#314, a Start card in Governance, not started).</li>
+      <li><strong>Size:</strong> medium (EntityHeader media and IconTile). A pixel change. Can come after the clean release.</li>
+    </ul>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">6 · List rows touch the card edge (older, not from 0.70)</h2>
+    <div class="rv-grid">
+      <figure class="rv-fig"><img src="dash-rows.png" alt="Dashboard notifications: the last two rows start at the card's edge with no padding"><figcaption><span class="rv-tag">TIP</span> · dashboard: read notifications start at the card edge</figcaption></figure>
+    </div>
+    <ul class="rv-list">
+      <li><strong>Where:</strong> dashboard Notifications and Notes, and the Tasks list (checkboxes and due dates touch the frame). Same at 0.69.5.</li>
+      <li><strong>Size:</strong> small. A pixel change; can come after the clean release.</li>
+    </ul>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">Checked and fine (as you approved)</h2>
+    <ul class="rv-list">
+      <li>Buttons in the Fluent look: lighter border, 4px corners, pressed and disabled states (Button page, all apps).</li>
+      <li>The command bar, segmented control and checkbox: the same as 0.69.5 apart from the 4px corners. Measured: the command bar's buttons sit exactly in the middle (9px above and below).</li>
+      <li>DataGrid: the status badges now sit in the middle of their pill (better than 0.69.5); lines, header and selection as approved.</li>
+      <li>Structured headers in the apps, the header divider, the status box, Jordan Avery as the sample person.</li>
+      <li>The Asset Manager and Settings change only in their control corners.</li>
+    </ul>
+  </section>
+
+  <h2 class="rv-h2">Part 2 · The checks</h2>
+  <p class="rv-lead">"Older" means the same check failed the same way on the 0.69.5 release run (40076934376) or on runs before the first 0.70 merge.
+    The full CI run (40166073956) ran on 0.70.0. The full local run on the tip is still going, and its results will be added here.</p>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">Build, check-system, check-spec: green</h2>
+    <ul class="rv-list">
+      <li><strong>Build:</strong> OK. The bundle only differs in the path labels of node_modules when it is built from another folder (harmless).</li>
+      <li><strong>check-system:</strong> SYSTEM_OK in a clean copy, at the tip and at 0.69.5.</li>
+      <li><strong>check-system in a worktree (#307), cause found:</strong> it reports 783 false findings because its file walk skips every path that contains <code>.claude</code>.
+        Worktrees live in <code>.claude/worktrees/</code>, so it reads no files at all there. Fix: test the path relative to the repository. Size: small.</li>
+      <li><strong>check-spec:</strong> SPEC_OK (1,173 leaves, 689 records).</li>
+    </ul>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">Pages: the iOS spec pages are "empty" (older, a test problem)</h2>
+    <div class="rv-grid">
+      <figure class="rv-fig"><img src="ios-tip.png" alt="The iOS Foundations page at the tip, fully drawn"><figcaption><span class="rv-tag">TIP</span> · #/ios-foundations draws in full when opened</figcaption></figure>
+    </div>
+    <ul class="rv-list">
+      <li><strong>Fails:</strong> ios-foundations and ios-layout on every run since before 0.69.5; all 8 iOS pages in the full run.</li>
+      <li><strong>Cause:</strong> the test changes the address and waits 250ms. The first iOS page has to load the iOS files first, so it is still empty at 250ms. Opened on their own, the pages draw in full at both versions.</li>
+      <li><strong>Fix:</strong> the test waits until the page has text (up to a few seconds) before it calls it empty. Size: small, test only.</li>
+      <li><strong>Also seen once:</strong> #/page-structures/record-page/v/all threw "Cannot read properties of null (reading 'CSSStyleSheet')" in the full run. The page opens without errors on its own; the local full run will show whether it repeats.</li>
+    </ul>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">Targets and reflow (older; fewer findings than at 0.69.5)</h2>
+    <ul class="rv-list">
+      <li><strong>Count:</strong> 54 pages worse at 0.69.5, 32 on 0.70.0, 14 in the tip's sample. Reflow passes.</li>
+      <li><strong>Nav-pane splitter, 8px wide:</strong> your decision (#217) is to keep it. Fix: record it as an accepted case in the test so it stops failing. Size: small.</li>
+      <li><strong>DataGrid header cells (28px tall) and menu arrows (18 to 24px) on touch:</strong> 44px touch targets belong to #52. Fix: the same accepted list, pointing at #52. Size: small.</li>
+      <li><strong>Links alone in a spec table cell</strong> ("All buttons", 61×17px): flagged because nothing surrounds them, so the inline-link exception does not apply. Options: A · the test treats a link in a table cell as text; B · the spec gives these links a full-height row target. Size: small.</li>
+    </ul>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">Typography (older; analysed in #256)</h2>
+    <ul class="rv-list">
+      <li><strong>Kind 1, spec tables with code (50 of 54 checks):</strong> the same problem as visual finding 1. Fixed by that fix.</li>
+      <li><strong>Kind 2, dashboard due dates 3.5px off the label baseline:</strong> PR #329, approved.</li>
+      <li><strong>Kind 3, header fact dates in the normal font:</strong> PR #328 with spec #3, approved (finding 2).</li>
+      <li><strong>Then:</strong> re-record the baseline once (it dates from 0.31.40). Size: small after the three fixes.</li>
+    </ul>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">Behavior: DataGrid wrapped header 4px off middle (older)</h2>
+    <ul class="rv-list">
+      <li><strong>Cause:</strong> in Compact, the header titles of a view with wrapped headers sit 4px above the middle. It shows since the stale grid tests were fixed right after 0.69.5 (c9269360); the old test stopped earlier.</li>
+      <li><strong>Fix:</strong> PR #293, approved (titles stay left-aligned). Size: small, ready.</li>
+    </ul>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">Fixtures: high contrast, a pressed button (new in 0.70.0, from #311)</h2>
+    <ul class="rv-list">
+      <li><strong>Cause:</strong> in Windows high-contrast mode a pressed (selected) button keeps the Fluent see-through fill instead of the system's Highlight color.</li>
+      <li><strong>Fix:</strong> PR #327 (tokens only). Size: small, ready.</li>
+    </ul>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">Accessibility (full run only; all four also on 0.69.5)</h2>
+    <ul class="rv-list">
+      <li><strong>Empty static Table</strong> on #/foundations/icon: a row group with no rows. Fix: PR #315, approved. Small.</li>
+      <li><strong>Code block</strong> on #/data-display/card: the code box has a label that its element may not carry. Fix: give it a role or drop the label. Small.</li>
+      <li><strong>Number input</strong> on #/forms/input-group: the name is written as <code>label="Quantity"</code> on the field, which no screen reader reads. Fix: pass it as the field's accessible name. Small.</li>
+      <li><strong>EntityHeader facts list</strong> on #/specialized/commerce: the fix for this (c9897642) reached the record page but not the Commerce order header. Small.</li>
+      <li>Checked with axe on both versions; CI calls them "new" only because the full-run baseline is out of date.</li>
+    </ul>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">Passing</h2>
+    <ul class="rv-list">
+      <li>Labs (all shards), reflow, visual (5,058 buttons), density, layout, theme, keyboard, utilities, focus order, semantic HTML, navigation, and accessibility in changed mode.</li>
+    </ul>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">How this was checked</h2>
+    <ul class="rv-list">
+      <li>Two clean copies: v0.69.5 (0b7af35d, spec b3cfab7f) and the tip (def75d11, spec 7f9216ec), served side by side.</li>
+      <li>Every app and 18 spec pages captured at both versions, compared pixel by pixel, then the changed areas checked by eye and measured in the page.</li>
+      <li>CI read: the full run 40166073956 (0.70.0), the tip's run 40169144389, the 0.69.5 release run 40076934376, and four runs between them.</li>
+      <li>The full local test run is logged in <code>tools/agent/proof-log.md</code>.</li>
+    </ul>
+  </section>
+</main>
+</body>
+</html>
