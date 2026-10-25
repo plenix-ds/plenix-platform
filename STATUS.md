@@ -8,8 +8,8 @@ Start with [HANDOFF.md](HANDOFF.md) in a new session (Claude or Codex). TODO.md 
 
 - Branch: `styling/phase-2` in both repositories (`plenix-ds/plenix-platform` and its submodule
   `platform/design-system` = `plenix-ds/plenix-design-system`). `main` is behind it. Work continues on this branch.
-- Last release: 0.70.0 (2026-10-25, tag v0.70.0, live at /cdn/0.70.0/): buttons in the Fluent style and 4px control corners (#298, #299), grid and Table lines, wrap text and header targets (#256, #217, #305, #308), the page header divider and status box (#297, #300), the spec wording rewrite (#257), tokens.css (#158), safe RichText (#178). **Breaking:** the DataGrid and Table option renames (#294). Released by Governance on the owner's standing permission. Before it: 0.69.5 (DataGrid lines one screen pixel).
-- **Releases:** Governance releases whenever approved merges are ready (the owner's standing permission, 2026-10-24). Every merge still needs the owner's word. Approved after 0.70.0, next release: #317 (app headers), once merged.
+- Last release: 0.71.0 (2026-10-25, tag v0.71.0, live at /cdn/0.71.0/): iconography (four new icons, squared-letter file icons, icon rules and the inventory page, #301) and TypeScript declarations (#170, #171). The same day: 0.70.1 (the apps' page headers in Structured, #244) and 0.70.0 (Fluent buttons and 4px control corners, grid and Table lines and wrap, header divider and status box, spec wording; **breaking:** the DataGrid and Table option renames, #294). All released by Governance on the owner's standing permission.
+- **Releases:** Governance releases whenever approved merges are ready (the owner's standing permission, 2026-10-24). Every merge still needs the owner's word, typed in the Governance session. Open checks: the full typography run is 54 checks worse since 0.70.0 (#256, being traced); accessibility fails on the empty Table until #315 merges (#313).
 - CI on `styling/phase-2` fails in three suites (pages, targets and reflow, typography; #217, #256); every open PR inherits them.
 
 ## Who works on what
