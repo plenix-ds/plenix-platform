@@ -6,6 +6,11 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.70.1] - 2026-10-25
+
+### Changed (visual)
+- The suite apps' page headers use the Structured header style by default (#244, owner 2026-10-24): Projects, Contacts, Messages, Tasks, Notes and Files. Streamlined stays available through `headerStyle="streamlined"`, unchanged. The Platform library itself is unchanged.
+
 ## [0.70.0] - 2026-10-25
 
 ### Breaking

@@ -2391,13 +2391,23 @@ function MessagingScreen({
     },
     subtitle: thd.ch,
     facts: [{
+      label: 'Unread',
+      value: thd.unread || 0,
+      data: true
+    }, {
       label: 'Messages',
-      value: mList.length
+      value: mList.length,
+      data: true
     }, {
       label: 'Last',
       value: thd.time,
       data: true
     }],
+    next: thd.preview ? {
+      label: 'Latest',
+      title: thd.preview,
+      detail: thd.time
+    } : undefined,
     actions: [{
       icon: 'phone',
       label: 'Call'
