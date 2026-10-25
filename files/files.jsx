@@ -32,7 +32,7 @@ export function FilesScreen({ screen }) {
         <Stack gap="md">
           <EntityHeader title="Files" media={{ icon: 'folder', hue: 'gray' }}
             facts={[{ label: 'Files', value: ALL_FILES.length, data: true }, { label: 'Size', value: (ALL_FILES.reduce((n, f) => n + parseFloat(f.s) * (/GB/.test(f.s) ? 1024 : /KB/.test(f.s) ? 1 / 1024 : 1), 0)).toFixed(1) + ' MB', data: true }, { label: 'Latest', value: ALL_FILES[0] ? ALL_FILES[0].d : '—', data: true }]}
-            next={ALL_FILES[0] ? { label: 'Latest file', title: ALL_FILES[0].name, detail: ALL_FILES[0].folder + ' · ' + ALL_FILES[0].d } : undefined}
+            next={ALL_FILES[0] ? { label: 'Latest file', title: <Text variant="data">{ALL_FILES[0].name}</Text>, detail: ALL_FILES[0].folder + ' · ' + ALL_FILES[0].d } : undefined}
             actions={[{ icon: 'share', label: 'Share' }]} />
           {/* the capability's own action is the bar's (1A: the actions at the start, find and view at the end) */}
           <CommandBar label="Files" actions={[{ id: 'upload', label: 'Upload', icon: 'upload' }]} count={n + (n === 1 ? ' file' : ' files')}
