@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en" data-plx-mode="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Icon inventory, first batch · Plenix review</title>
+<!-- Owner review (#301): the first batch of the icon inventory. Material today, each candidate as its library draws it,
+     and the same icon restyled to the Plenix icon guidance. Nothing here changes an icon the apps draw. -->
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<link rel="stylesheet" href="../review.css">
+<link rel="stylesheet" href="iconography.css">
+</head>
+<body class="rv-page">
+<main class="rv-doc">
+  <h1 class="rv-h1">Icon inventory: the first batch, before and after the restyle</h1>
+  <p class="rv-lead">Icons from other libraries, restyled by tools/icons/restyle-icon.js to the Plenix icon guidance
+    (platform/standards/icons.md): the Material canvas, 1.08px lines at 20 and 1.5px at 24, flat ends, sharp corners,
+    the keylines and the half-pixel grid. The apps still draw Material; nothing changes until you choose.</p>
+  <ul class="rv-list">
+    <li>Save has four candidates (Lucide, Tabler, Iconoir, Humbleicons). Pick one, or none, to replace Material's save.</li>
+    <li>The other icons fill gaps Material has: a vertical flip, file types (JPG, PNG, SVG, PDF), and Git branch, merge and pull request.</li>
+    <li>The 4× views show the 24 drawing on its pixel grid, with its keyline dashed in red.</li>
+    <li>Filled versions: Tabler's floppy uses Tabler's own filled drawing; the others are generated (outer shape solid, inner lines cut out, dots solid) and need your look. Where no shape closes (Humbleicons' save, the flip, the file types), the filled version is the outline.</li>
+    <li>The four file types fail the check: their letters (J, G, S, P, D) keep round bends, and the S reaches into the padding. They need squared letters drawn, and they are too small to read under 24px. That is a decision for you: draw squared letters, or keep the generic file icon.</li>
+    <li>Eight candidates pass every rule: the four Save drawings, the flip and the three Git icons.</li>
+  </ul>
+  <table class="ig-table">
+    <thead><tr><th>Icon</th><th>Material today</th><th>As found</th><th>Restyled for Plenix</th><th>Check</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+</main>
+<script src="../../../platform/icons/inventory/inventory.js"></script>
+<script src="first-batch.js"></script>
+</body>
+</html>

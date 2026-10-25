@@ -1,0 +1,9 @@
+{
+  "name": "plenix-icon-tools",
+  "private": true,
+  "description": "Tools for the icon inventory (tools/icons/README.md). npm install here once; node_modules is not in git.",
+  "dependencies": {
+    "paper": "0.12.18",
+    "paperjs-offset": "1.0.8"
+  }
+}
