@@ -785,6 +785,11 @@
       "$value": "{plx-ref.size-220px}",
       "$type": "dimension",
       "$description": "EntityHeader: the aside’s smallest width (the next step and the actions); the title gives way to it."
+    },
+    "entity-header-states-background": {
+      "$value": "{plx-ref.color-gray-75}",
+      "$type": "color",
+      "$description": "EntityHeader: the status box’s inner background, gray 75; its outline stays the fact tiles’ gray 200 (owner, 2026-10-24, #300)."
     }
   }
 }
