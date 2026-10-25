@@ -218,6 +218,9 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
   final Color tableHeaderLine;
   final Color dataGridLine;
   final Color tableLine;
+  final Color dataGridFrozenEdge;
+  final Color dataGridMenuButtonHoverTop;
+  final Color dataGridMenuButtonHoverBottom;
   final Color dataGridBorder;
   final Color tableBorder;
   final Color dataGridText;
@@ -573,6 +576,9 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     required this.tableHeaderLine,
     required this.dataGridLine,
     required this.tableLine,
+    required this.dataGridFrozenEdge,
+    required this.dataGridMenuButtonHoverTop,
+    required this.dataGridMenuButtonHoverBottom,
     required this.dataGridBorder,
     required this.tableBorder,
     required this.dataGridText,
@@ -929,7 +935,10 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     tableHeaderLine: Color(0xFFD0D0D0),
     dataGridLine: Color(0xFFE8E9EC),
     tableLine: Color(0xFFE8E9EC),
-    dataGridBorder: Color(0xFFD0D0D0),
+    dataGridFrozenEdge: Color(0xFFA3A6AD),
+    dataGridMenuButtonHoverTop: Color(0xFFE8E9EC),
+    dataGridMenuButtonHoverBottom: Color(0xFFA3A6AD),
+    dataGridBorder: Color(0xFFA3A6AD),
     tableBorder: Color(0xFFD0D0D0),
     dataGridText: Color(0xFF000000),
     tableText: Color(0xFF000000),
@@ -1285,7 +1294,10 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     tableHeaderLine: Color(0xFF56585E),
     dataGridLine: Color(0xFF34363B),
     tableLine: Color(0xFF34363B),
-    dataGridBorder: Color(0xFF444444),
+    dataGridFrozenEdge: Color(0xFF56585E),
+    dataGridMenuButtonHoverTop: Color(0xFF56585E),
+    dataGridMenuButtonHoverBottom: Color(0xFF56585E),
+    dataGridBorder: Color(0xFF56585E),
     tableBorder: Color(0xFF444444),
     dataGridText: Color(0xFFE8E9EC),
     tableText: Color(0xFFE8E9EC),

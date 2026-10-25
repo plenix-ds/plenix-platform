@@ -20662,6 +20662,8 @@ const defaults = {
   perPage: 'Rows per page',
   view: 'View options',
   wrapHeaders: 'Wrap headers',
+  wrapText: 'Wrap text',
+  wrapAll: 'Wrap all columns',
   rowHeight: 'Row height',
   short: 'Short',
   medium: 'Medium',
@@ -21015,6 +21017,27 @@ function NextEngine(props) {
   }, [widthsSignal, !!props.onViewChange, columns]);
   const [rowHeight, setRowHeight] = _react.default.useState(initial.rowHeight),
     [wrapHeaders, setWrapHeaders] = _react.default.useState(initial.wrapHeaders);
+  // Wrap text, per column (owner, 2026-10-24): the column's wrap prop or kind "wrap" is the default; the column menu turns it on or off
+  const [wrapColumns, setWrapColumns] = _react.default.useState(() => props.wrapColumns || initial.wrapColumns || {});
+  const wrapOf = c => (props.wrapColumns || wrapColumns)[c.field] ?? (c.wrap === true || kinds(c).includes('wrap'));
+  const kindsOf = c => {
+    const k = kinds(c).filter(x => x !== 'wrap');
+    return wrapOf(c) ? k.concat('wrap') : k;
+  };
+  const changeWrap = next => {
+    setWrapColumns(next);
+    props.onViewChange?.({
+      wrapColumns: next
+    });
+    props.onWrapColumnsChange?.(next);
+    // wrapped text needs room: a Short grid moves to Medium (2 lines) when a column starts wrapping
+    if (Object.values(next).some(Boolean) && !props.rowHeight && (effectiveStep || 'short') === 'short') {
+      setRowHeight('medium');
+      props.onViewChange?.({
+        rowHeight: 'medium'
+      });
+    }
+  };
   const [filterField, setFilterField] = _react.default.useState(null),
     [managing, setManaging] = _react.default.useState(false);
   const [edited, setEdited] = _react.default.useState(null),
@@ -21762,6 +21785,7 @@ function NextEngine(props) {
       widths: Object.fromEntries(Object.entries(sizing).map(([k, v]) => [k, v + 'px'])),
       rowHeight: effectiveStep,
       wrapHeaders: effectiveWrap,
+      wrapColumns: props.wrapColumns || wrapColumns,
       groupBy,
       collapsed: [...collapsed]
     });
@@ -21958,7 +21982,13 @@ function NextEngine(props) {
       icon: "group-by",
       disabled: !grouped && c.groupable === false,
       onSelect: () => changeGroups(grouped ? others.length ? others : false : c.field)
-    }, grouped ? S.noGroup : S.group));
+    }, grouped ? S.noGroup : S.group), /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      checked: !!wrapOf(c),
+      onSelect: () => changeWrap({
+        ...(props.wrapColumns || wrapColumns),
+        [c.field]: !wrapOf(c)
+      })
+    }, S.wrapText));
   };
   // the header's right-click menu (Windows Explorer): size this column or every column to fit, every column with a check
   // (TanStack's visibility; a pinned column stays shown) and More… for the columns dialog (order, find, show all, hide all)
@@ -21966,7 +21996,14 @@ function NextEngine(props) {
     onSelect: () => fit(column.id)
   }, S.sizeToFit), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
     onSelect: () => table.getVisibleLeafColumns().forEach(col => fit(col.id))
-  }, S.sizeAllToFit), /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), chooserColumns().map(col => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+  }, S.sizeAllToFit), (() => {
+    const cols = table.getVisibleLeafColumns().map(col => col.columnDef.meta).filter(m => m && m.field && !kinds(m).includes('icon')),
+      all = cols.length > 0 && cols.every(wrapOf);
+    return /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      checked: all,
+      onSelect: () => changeWrap(Object.fromEntries(cols.map(m => [m.field, !all])))
+    }, S.wrapAll);
+  })(), /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), chooserColumns().map(col => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
     key: col.id,
     checked: col.getIsVisible(),
     disabled: frozen.has(col.id),
@@ -21983,7 +22020,20 @@ function NextEngine(props) {
     if (event.type === 'mousedown') event.preventDefault();
     event.stopPropagation();
     const head = table.getFlatHeaders().find(h => h.column.id === column.id);
-    head?.getResizeHandler(frame.current?.ownerDocument)(event);
+    const doc = frame.current?.ownerDocument || document,
+      cover = doc.createElement('div');
+    cover.className = B + '__resize-cover';
+    doc.body.appendChild(cover);
+    const end = () => {
+      cover.remove();
+      doc.removeEventListener('mouseup', end);
+      doc.removeEventListener('touchend', end);
+      doc.removeEventListener('touchcancel', end);
+    };
+    doc.addEventListener('mouseup', end);
+    doc.addEventListener('touchend', end);
+    doc.addEventListener('touchcancel', end);
+    head?.getResizeHandler(doc)(event);
   };
   const headerCell = column => {
     const c = column.columnDef.meta,
@@ -22007,7 +22057,7 @@ function NextEngine(props) {
       tabIndex: isStatic ? undefined : 0,
       "data-plx-field": c.field,
       "aria-sort": column.getIsSorted() ? column.getIsSorted() === 'desc' ? 'descending' : 'ascending' : undefined,
-      className: (0, _cx.cx)('' + B + '__grid-col', isStatic && B + '__grid-col--static', selectable && ordered.indexOf(column) === 0 && B + '__grid-col--after-lead', column.getCanSort() && B + '__grid-sortable', column.getCanSort() && B + '__grid-col-sorter-element', kinds(c).includes('icon') && B + '__cell--icon', kinds(c).includes('icon') && B + '__w-lead', column.getIsFiltered() && B + '__filtered', pinned && '' + B + '__grid-frozen', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', (c.headerAlign || c.type === 'bytes') && B + '__head-align-' + (c.headerAlign || 'right')),
+      className: (0, _cx.cx)('' + B + '__grid-col', isStatic && B + '__grid-col--static', selectable && ordered.indexOf(column) === 0 && B + '__grid-col--after-lead', ordered.indexOf(column) > 0 && ordered[ordered.indexOf(column) - 1].getIsPinned() === 'left' && column.getIsPinned() !== 'left' && B + '__grid-col--after-frozen', column.getCanSort() && B + '__grid-sortable', column.getCanSort() && B + '__grid-col-sorter-element', kinds(c).includes('icon') && B + '__cell--icon', kinds(c).includes('icon') && B + '__w-lead', column.getIsFiltered() && B + '__filtered', pinned && '' + B + '__grid-frozen', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', (c.headerAlign || c.type === 'bytes') && B + '__head-align-' + (c.headerAlign || 'right')),
       "data-plx-sticky": pinned && offset ? offset + 'px' : undefined,
       onClick: e => {
         if (!e.target.closest(interactive) && column.getCanSort()) column.toggleSorting();
@@ -22255,6 +22305,7 @@ function NextEngine(props) {
       emit('cellEdit', api.cell(key, field));
     }
   }, [source]);
+  const anyWrap = table.getVisibleLeafColumns().some(col => col.columnDef.meta && col.columnDef.meta.field && wrapOf(col.columnDef.meta));
   const rowNode = row => {
     if (row.__group) return groupNode(row.__group);
     if (row.__add) return /*#__PURE__*/_react.default.createElement("div", {
@@ -22301,7 +22352,7 @@ function NextEngine(props) {
       tabIndex: props.onRowClick || on.rowClick || options.selectableRows ? 0 : undefined,
       "aria-level": childField ? row.depth + 1 : undefined,
       "aria-expanded": row.getCanExpand?.() ? row.getIsExpanded() : undefined,
-      className: (0, _cx.cx)('' + B + '__grid-row', (selectable || options.selectableRows || props.onRowClick || on.rowClick) && B + '__grid-selectable', childField && '' + B + '__grid-tree-level-' + Math.min(12, row.depth), selection[row.id] && '' + B + '__grid-selected', isStatic && B + '__grid-row--static', isNarrow && B + '__grid-row--narrow', virtualized && B + '__grid-row--virtual'),
+      className: (0, _cx.cx)('' + B + '__grid-row', (selectable || options.selectableRows || props.onRowClick || on.rowClick) && B + '__grid-selectable', childField && '' + B + '__grid-tree-level-' + Math.min(12, row.depth), selection[row.id] && '' + B + '__grid-selected', isStatic && B + '__grid-row--static', anyWrap && !isNarrow && (isStatic || (effectiveStep || 'short') !== 'short') && B + '__grid-row--wrap', isNarrow && B + '__grid-row--narrow', virtualized && B + '__grid-row--virtual'),
       onClick: e => {
         if (e.target.closest(interactive)) return;
         if (selectable) pickCheckbox(row, {
@@ -22350,7 +22401,7 @@ function NextEngine(props) {
       onChange: e => pickCheckbox(row, e)
     })) : null, ordered.map(column => {
       const c = column.columnDef.meta,
-        k = kinds(c),
+        k = kindsOf(c),
         pinned = column.getIsPinned() === 'left',
         sticky = pinned ? pinStart(column) : 0;
       const cell = api.cell(row.id, c.field),
@@ -22360,7 +22411,7 @@ function NextEngine(props) {
         isEditing = editing?.key === row.id && editing.field === c.field,
         handled = c.rowHandle && (recordPositions.get(record) ?? -1) >= 0,
         actions = k.includes('actions');
-      const mods = (0, _cx.cx)(isStatic && B + '__value--static', k.includes('wrap') && B + '__value--wrap', sized && B + '__value--sized', lines && B + '__value--lines') || undefined,
+      const mods = (0, _cx.cx)(isStatic && B + '__value--static', k.includes('wrap') && B + '__value--wrap', sized && B + '__value--sized', lines && k.includes('wrap') && B + '__value--lines') || undefined,
         shown = (0, _cells.CellValue)({
           block: B,
           column: c,
@@ -22421,7 +22472,7 @@ function NextEngine(props) {
         },
         "data-plx-sticky": pinned && sticky ? sticky + 'px' : undefined,
         "data-plx-text-follow": c.rowLabel || columns.indexOf(c) <= pinnedAt ? 'size family weight' : 'size family',
-        className: (0, _cx.cx)('' + B + '__grid-cell', modes, !selectable && selection[row.id] && ordered.indexOf(column) === 0 && B + '__grid-cell--selected-start', bare && B + '__grid-cell--bare', selectable && ordered.indexOf(column) === 0 && B + '__grid-cell--after-lead', isTree && row.depth > 0 && B + '__tree-cell--level-' + Math.min(12, row.depth), editing?.key === row.id && editing.field === c.field && '' + B + '__grid-editing', k.map(kind => B + '__cell--' + kind).join(' '), (k.includes('data') || c.type === 'bytes') && B + '__grid-cell--data', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', c.type === 'bytes' && B + '__cell--data', c.rowHandle && B + '__cell--handle', childField && c.field === (props.treeColumn || columns[0]?.field) && B + '__tree-cell', pinned && '' + B + '__grid-frozen', (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + '__cell--row-label', k.includes('icon') && B + '__w-lead', keys.includes(c.field) && B + '__cell--key', keys[0] === c.field && B + '__cell--key-first', (c.align || c.type === 'bytes') && B + '__cell--align-' + (c.align || 'right'))
+        className: (0, _cx.cx)('' + B + '__grid-cell', modes, !selectable && selection[row.id] && ordered.indexOf(column) === 0 && B + '__grid-cell--selected-start', bare && B + '__grid-cell--bare', selectable && ordered.indexOf(column) === 0 && B + '__grid-cell--after-lead', ordered.indexOf(column) > 0 && ordered[ordered.indexOf(column) - 1].getIsPinned() === 'left' && column.getIsPinned() !== 'left' && B + '__grid-cell--after-frozen', isTree && row.depth > 0 && B + '__tree-cell--level-' + Math.min(12, row.depth), editing?.key === row.id && editing.field === c.field && '' + B + '__grid-editing', k.map(kind => B + '__cell--' + kind).join(' '), (k.includes('data') || c.type === 'bytes') && B + '__grid-cell--data', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', c.type === 'bytes' && B + '__cell--data', c.rowHandle && B + '__cell--handle', childField && c.field === (props.treeColumn || columns[0]?.field) && B + '__tree-cell', pinned && '' + B + '__grid-frozen', (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + '__cell--row-label', k.includes('icon') && B + '__w-lead', keys.includes(c.field) && B + '__cell--key', keys[0] === c.field && B + '__cell--key-first', (c.align || c.type === 'bytes') && B + '__cell--align-' + (c.align || 'right'))
       }, childField && c.field === (props.treeColumn || columns[0]?.field) ? /*#__PURE__*/_react.default.createElement("span", {
         className: B + '__tree-level',
         "data-plx-depth": 0
@@ -22503,7 +22554,7 @@ function NextEngine(props) {
       rowApi: rowApi
     })) : node;
   };
-  const rowVersion = _react.default.useMemo(() => ({}), [unread.keys, unreadOnly, props, source, model, editing, metrics, autoSizing, sizing, columnOrder, columnVisibility, sorting, expanded, page, pageSize, isNarrow, collapsed, printing, filterField, groupBy, loaded]);
+  const rowVersion = _react.default.useMemo(() => ({}), [wrapColumns, unread.keys, unreadOnly, props, source, model, editing, metrics, autoSizing, sizing, columnOrder, columnVisibility, sorting, expanded, page, pageSize, isNarrow, collapsed, printing, filterField, groupBy, loaded]);
   const renderRow = row => row.original ? /*#__PURE__*/_react.default.createElement(MemoGridRow, {
     key: row.displayKey || row.id,
     row: row,
@@ -22763,7 +22814,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
    Usage: <Table label="Fields" data={fields} columns={[{title:'Field',field:'name',rowLabel:true},{title:'Notes',field:'notes',kind:'wrap'}]} />
    Props:
      label: accessible table name (required); data: records; columns: title, field, kind, render(record), width,
-       minWidth, maxWidth, rowLabel, frozen, align and headerAlign. index identifies records (default "id").
+       minWidth, maxWidth, rowLabel, frozen, align, headerAlign and wrap (true: the column wraps its text; a row with a wrapping
+       column starts every cell at the top). Cells do not wrap otherwise; long text ends in an ellipsis. index identifies records (default "id").
      empty: no-record message; narrow: "table" by default; className.
      cells: "text" (default) | "pill": the pill view (owner, 2026-10-19): every value a DataPill with its column's type icon
        (type: text, number, currency, date, person …); a person's value.gender makes it blue or pink with the male or female
@@ -22803,7 +22855,8 @@ function Table({
     frozen,
     align,
     headerAlign,
-    empty
+    empty,
+    wrap
   }) => ({
     title,
     field,
@@ -22819,6 +22872,7 @@ function Table({
     align,
     headerAlign,
     empty,
+    wrap,
     sortable: false,
     resizable: false
   })), [columns]);
@@ -28574,6 +28628,10 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        { rows, total }; search: the page's search text
      storageKey: keeps the person's standalone view (sort, widths, order, hidden columns, row height, wrap, groups).
      onViewChange(patch): delegates view changes to an external controller; its presence disables the grid's own store.
+     columns[].wrap: true starts the column wrapped (as kind "wrap"); people turn Wrap text on or off in the column menu, and
+       Wrap all columns in the header's right-click menu. A row with a wrapping column starts every cell at the top, at the
+       reading line height; rows without one stay centered. wrapColumns ({ field: true|false }) and onWrapColumnsChange(next)
+       control it from outside; the saved view keeps it (owner, 2026-10-24)
        useCollectionView supplies this callback and columnWidths, so its collection state owns the view.
      narrow: "table" (default inside SplitView) | "list" (default elsewhere: under narrowAt, 600px, a list of keyColumns) | "auto"
      empty: shown when no row matches; error and onRetry(): the error state and its one recovery; strings: the words

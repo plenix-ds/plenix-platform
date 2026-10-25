@@ -3403,6 +3403,9 @@
   --plx-comp-data-grid-row-selected-line: var(--plx-sys-data-grid-row-selected-line);
   --plx-comp-data-grid-row-selected-bar: var(--plx-sys-data-grid-row-selected-bar);
   --plx-comp-data-grid-row-selected-bar-width: var(--plx-sys-border-width-thick);
+  --plx-comp-data-grid-frozen-edge: var(--plx-sys-data-grid-frozen-edge);
+  --plx-comp-data-grid-menu-button-hover-top: var(--plx-sys-data-grid-menu-button-hover-top);
+  --plx-comp-data-grid-menu-button-hover-bottom: var(--plx-sys-data-grid-menu-button-hover-bottom);
   --plx-comp-data-grid-menu-button-hover-background: var(--plx-sys-data-grid-menu-button-hover);
   --plx-comp-data-grid-menu-button-padding-inline: var(--plx-ref-space-4px);
   --plx-comp-data-grid-menu-button-min-width: var(--plx-ref-size-24px);
