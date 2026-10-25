@@ -841,6 +841,7 @@
       ],
       "web": [
         "foundations|Icon system",
+        "foundations|Icon inventory",
         "foundations|Icon sizes",
         "foundations|Icon alignment",
         "foundations|Icon accessibility"

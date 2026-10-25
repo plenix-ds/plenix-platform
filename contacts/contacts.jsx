@@ -38,9 +38,10 @@ export function ContactsScreen({ screen }) {
         {contact ? (
           <Stack gap="lg">
             <EntityHeader title={contact.name} media={{ person: contact.name, color: contact.avColor, gender: contact.gender }} subtitle={[contact.role, contact.co].filter(Boolean).join(' · ')}
-              facts={[{ label: 'Last message', value: contact.last, data: true }]}
-              actions={[{ icon: 'phone', label: 'Call' }, { icon: 'mail', label: 'Email' }, { icon: 'message', label: 'Message', primary: true },
-                { icon: 'pencil', label: 'Edit' }, { icon: 'trash', label: 'Delete' }, { icon: 'share', label: 'Share' }]} />
+              facts={[contact.co ? { label: 'Company', value: contact.co } : null, contact.role ? { label: 'Role', value: contact.role } : null, { label: 'Last message', value: contact.last, data: true }].filter(Boolean)}
+              next={contact.msg ? { label: 'Last message', title: contact.msg, detail: contact.last } : undefined}
+              actions={[{ icon: 'phone', label: 'Call' }, { icon: 'mail', label: 'Email' }, { icon: 'pencil', label: 'Edit' },
+                { icon: 'message', label: 'Message' }, { icon: 'trash', label: 'Delete' }, { icon: 'share', label: 'Share' }]} />
             <ClassificationWidget value={meta[contact.id]} onChange={(m) => setMeta((prev) => ({ ...prev, [contact.id]: m }))} />
           </Stack>
         ) : <EmptyState size="page" icon="person" title="Select a contact" />}

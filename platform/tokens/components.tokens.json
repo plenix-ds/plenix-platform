@@ -88,7 +88,7 @@
       "$type": "color"
     },
     "button-size-md-hover-border": {
-      "$value": "{plx-sys.border-strong}",
+      "$value": "{plx-ref.color-gray-350}",
       "$type": "color"
     },
     "button-size-md-pressed-background": {
@@ -96,15 +96,15 @@
       "$type": "color"
     },
     "button-size-md-selected-border": {
-      "$value": "{plx-sys.selected-border}",
+      "$value": "{plx-sys.border-default}",
       "$type": "color"
     },
     "button-size-md-selected-text": {
-      "$value": "{plx-sys.selected-content}",
+      "$value": "{plx-sys.content-default}",
       "$type": "color"
     },
     "button-size-md-primary-ring": {
-      "$value": "{plx-sys.shadow-ring-subtle}",
+      "$value": "none",
       "$type": "shadow"
     },
     "button-size-sm-font-size": {
@@ -136,23 +136,23 @@
       "$type": "color"
     },
     "button-size-sm-hover-background": {
-      "$value": "{plx-sys.fill-neutral-hover}",
+      "$value": "{plx-sys.state-hover}",
       "$type": "color"
     },
     "button-size-sm-hover-border": {
-      "$value": "{plx-sys.control-border}",
+      "$value": "{plx-ref.color-gray-350}",
       "$type": "color"
     },
     "button-size-sm-pressed-background": {
-      "$value": "{plx-sys.fill-neutral-pressed}",
+      "$value": "{plx-sys.state-pressed}",
       "$type": "color"
     },
     "button-size-sm-selected-border": {
-      "$value": "{plx-sys.action-primary-background}",
+      "$value": "{plx-sys.border-default}",
       "$type": "color"
     },
     "button-size-sm-selected-text": {
-      "$value": "{plx-sys.content-link}",
+      "$value": "{plx-sys.content-default}",
       "$type": "color"
     },
     "button-size-sm-primary-ring": {
@@ -188,23 +188,23 @@
       "$type": "color"
     },
     "button-size-xs-hover-background": {
-      "$value": "{plx-sys.fill-neutral-hover}",
+      "$value": "{plx-sys.state-hover}",
       "$type": "color"
     },
     "button-size-xs-hover-border": {
-      "$value": "{plx-sys.control-border}",
+      "$value": "{plx-ref.color-gray-350}",
       "$type": "color"
     },
     "button-size-xs-pressed-background": {
-      "$value": "{plx-sys.fill-neutral-pressed}",
+      "$value": "{plx-sys.state-pressed}",
       "$type": "color"
     },
     "button-size-xs-selected-border": {
-      "$value": "{plx-sys.action-primary-background}",
+      "$value": "{plx-sys.border-default}",
       "$type": "color"
     },
     "button-size-xs-selected-text": {
-      "$value": "{plx-sys.content-link}",
+      "$value": "{plx-sys.content-default}",
       "$type": "color"
     },
     "button-size-xs-primary-ring": {
@@ -296,7 +296,7 @@
       "$type": "color"
     },
     "button-size-lg-hover-border": {
-      "$value": "{plx-sys.border-strong}",
+      "$value": "{plx-ref.color-gray-350}",
       "$type": "color"
     },
     "button-size-lg-pressed-background": {
@@ -304,15 +304,15 @@
       "$type": "color"
     },
     "button-size-lg-selected-border": {
-      "$value": "{plx-sys.selected-border}",
+      "$value": "{plx-sys.border-default}",
       "$type": "color"
     },
     "button-size-lg-selected-text": {
-      "$value": "{plx-sys.selected-content}",
+      "$value": "{plx-sys.content-default}",
       "$type": "color"
     },
     "button-size-lg-primary-ring": {
-      "$value": "{plx-sys.shadow-ring-subtle}",
+      "$value": "none",
       "$type": "shadow"
     },
     "button-secondary-background": {
@@ -327,7 +327,7 @@
       }
     },
     "button-secondary-border": {
-      "$value": "{plx-sys.control-border}",
+      "$value": "{plx-sys.border-default}",
       "$type": "color"
     },
     "button-secondary-hover-text": {
@@ -418,6 +418,11 @@
       "$value": "{plx-sys.content-default}",
       "$type": "color"
     },
+    "button-ghost-hover-icon": {
+      "$value": "{plx-sys.action-primary-background}",
+      "$type": "color",
+      "$description": "Button, subtle (ghost): the icon on hover, in the action color (Fluent’s subtle buttons)."
+    },
     "button-danger-background": {
       "$value": "{plx-sys.action-danger-background}",
       "$type": "color"
@@ -481,7 +486,7 @@
       "$type": "color"
     },
     "button-selected-background": {
-      "$value": "{plx-sys.state-selected}",
+      "$value": "{plx-ref.color-gray-200}",
       "$type": "color",
       "$extensions": {
         "com.plenix": {
@@ -497,7 +502,7 @@
       "$type": "color"
     },
     "button-disabled-border": {
-      "$value": "{plx-sys.border-strong}",
+      "$value": "{plx-sys.border-subtle}",
       "$type": "color",
       "$extensions": {
         "com.plenix": {

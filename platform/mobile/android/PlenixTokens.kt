@@ -222,7 +222,10 @@ object PlenixColors {
     val tableHeaderLine = Pair(Color(0xFFD0D0D0), Color(0xFF56585E))
     val dataGridLine = Pair(Color(0xFFE8E9EC), Color(0xFF34363B))
     val tableLine = Pair(Color(0xFFE8E9EC), Color(0xFF34363B))
-    val dataGridBorder = Pair(Color(0xFFD0D0D0), Color(0xFF444444))
+    val dataGridFrozenEdge = Pair(Color(0xFFA3A6AD), Color(0xFF56585E))
+    val dataGridMenuButtonHoverTop = Pair(Color(0xFFE8E9EC), Color(0xFF56585E))
+    val dataGridMenuButtonHoverBottom = Pair(Color(0xFFA3A6AD), Color(0xFF56585E))
+    val dataGridBorder = Pair(Color(0xFFA3A6AD), Color(0xFF56585E))
     val tableBorder = Pair(Color(0xFFD0D0D0), Color(0xFF444444))
     val dataGridText = Pair(Color(0xFF000000), Color(0xFFE8E9EC))
     val tableText = Pair(Color(0xFF000000), Color(0xFFE8E9EC))
@@ -391,7 +394,7 @@ object PlenixRadius {
     val radiusAvatar6px = 6.dp
     val radiusAvatar8px = 8.dp
     val radiusAvatar12px = 12.dp
-    val radiusControl = 6.dp
+    val radiusControl = 4.dp
 }
 
 object PlenixSpace {
@@ -527,7 +530,7 @@ object PlenixComponent {
     val buttonClusterGap = 8.dp
     val buttonIconLabelGap = 4.dp
     val buttonPaddingInline = 12.dp
-    val buttonRadius = 6.dp
+    val buttonRadius = 4.dp
     val cardAccentBorderInlineStartWidth = 3.dp
     val cardBodyFontSize = 13.dp
     val cardBorderWidth = 1.dp
@@ -591,7 +594,7 @@ object PlenixComponent {
     val inputBorderWidth = 1.dp
     val inputMinHeight = 32.dp
     val inputPaddingInline = 12.dp
-    val inputRadius = 6.dp
+    val inputRadius = 4.dp
     val listItemFontSize = 13.dp
     val listItemGap = 8.dp
     val menuBorderWidth = 1.dp
@@ -617,7 +620,7 @@ object PlenixComponent {
     val navListItemGap = 8.dp
     val navListItemMinHeight = 32.dp
     val navListItemPaddingInline = 8.dp
-    val navListItemRadius = 6.dp
+    val navListItemRadius = 4.dp
     val navPaneWidth = 240.dp
     val productCardRadius = 12.dp
     const val progressBarFillDuration = 200
@@ -638,10 +641,10 @@ object PlenixComponent {
     val searchIconInsetInlineStart = 12.dp
     val searchInputBorderWidth = 1.dp
     val searchInputMinHeight = 28.dp
-    val searchInputRadius = 6.dp
+    val searchInputRadius = 4.dp
     val searchResultGap = 12.dp
     val segmentedItemMinHeight = 32.dp
-    val segmentedRadius = 6.dp
+    val segmentedRadius = 4.dp
     val selectAfterInsetInlineEnd = 12.dp
     val selectAfterWidth = 12.dp
     const val sliderInputDisabledOpacity = 0.5f

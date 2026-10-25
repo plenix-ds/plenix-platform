@@ -1,6 +1,8 @@
 // Builds the TypeScript definitions of @plenix-ds/react (packages/react/index.d.ts) from the source files' structured header
 // comments (Summary / Usage / Props) and the defaults in their code: the same reading the design system's API tables use.
-//   Prop types: quoted choices ("md" | "sm") become a union, true/false a boolean, a number default a number, on… a
+//   Prop types: a chain of quoted choices at the prop's own level ("md" (default) | "sm", "h1"–"h4") becomes a union (an
+//   open chain ending "| …" also takes any string); choices inside a shape ([{ kind: "a" | "b" }]) are a field's, so a
+//   prop written as an array or object shape is typed as one; true/false a boolean, a number default a number, on… a
 //   handler, children/label/title/icon/… a React node; anything the header does not pin down stays `any`.
 //   A component with "...rest" also takes the attributes of its element.
 // Called by build-packages.js; can run alone: node build-types.js
@@ -42,25 +44,69 @@ function defaultsOf(jsx, name) {
   return out;
 }
 const NODE = /^(children|label|title|description|icon|iconEnd|media|actions|footer|header|meta|prefix|suffix|start|end|empty|aside|topStart|bottomEnd|caption|eyebrow|help|error|hint|badge|avatar|trailing|leading)$/;
+// the text outside bracketed shapes ([{ … }], { … }): quoted choices inside a shape belong to its fields, not to the prop
+function topLevel(t) {
+  let out = '', depth = 0;
+  let paren = 0;   // a parenthesis that is not a choice's own note ("(default "value")", "(span: "1" | "2")") is left out too
+  for (let i = 0; i < t.length; i++) {
+    const ch = t[i];
+    if ('[{'.includes(ch)) { depth++; continue; }
+    if (']}'.includes(ch)) { depth = Math.max(0, depth - 1); continue; }
+    if (depth) continue;
+    if (ch === '(' && (paren || !/"\s*$/.test(out))) { paren++; continue; }
+    if (ch === ')' && paren) { paren--; continue; }
+    if (!paren) out += ch;
+  }
+  return out;
+}
+// chains of quoted choices: "a" (default; a note) | "b" a description | "h1"–"h4" | …  ->  { opts, open }. A chain right
+// after another name's label ("week: "bars" | "marks"") is that name's, not the prop's.
+const ITEM = String.raw`"[^"]+"(?:\s*[–-]\s*"[^"]+")?(?:\s*\([^)]*\))?(?:\s+default\b)?[^|;"]*`;
+const CHAIN = new RegExp(ITEM + String.raw`(?:\s*\|\s*` + ITEM + String.raw`)+(\s*\|\s*…)?`, 'g');
+function choicesOf(t) {
+  const opts = []; let open = false, found = false;
+  for (const m of t.matchAll(CHAIN)) {
+    if (found && /[A-Za-z]\w*:\s*$/.test(t.slice(0, m.index))) continue;
+    found = true; open = open || !!m[1];
+    const chain = m[0].replace(/\([^)]*\)/g, '');   // a choice's note may quote an example ("symbol" (default; "$"))
+    for (const q of chain.matchAll(/"([^"]+)"(?:\s*[–-]\s*"([^"]+)")?/g)) {
+      const a = q[2] && /^(\D*)(\d+)$/.exec(q[1]), b = q[2] && /^(\D*)(\d+)$/.exec(q[2]);
+      if (a && b && a[1] === b[1]) for (let i = +a[2]; i <= +b[2]; i++) opts.push(a[1] + i);
+      else opts.push(q[1], ...(q[2] ? [q[2]] : []));
+    }
+  }
+  return found ? { opts: [...new Set(opts)], open } : null;
+}
 function typeOf(name, text, def) {
   if (/^on[A-Z]/.test(name)) return '(...args: any[]) => void';
+  if (/^\s*\[/.test(text)) return 'any[]';   // the prop is written as an array shape: [{ title, field, … }]
+  if (/^\s*\{/.test(text)) return 'any';     // an object shape
+  if (def && /^\[/.test(def)) return 'any[]';   // an array by its default: a chain in its description is a field's
   const head = text.split(/[;(:]/)[0];
-  const choices = [...head.matchAll(/"([^"]+)"/g)].map((m) => m[1]);
-  const listed = [...text.matchAll(/(?:^|\|\s*)"([^"]+)"/g)].map((m) => m[1]);
-  const opts = [...new Set(listed.length > 1 ? listed : choices)];
-  if (opts.length > 1 && /\|/.test(text)) return opts.map((o) => JSON.stringify(o)).join(' | ') + (NODE.test(name) ? ' | React.ReactNode' : '');
+  const chain = choicesOf(topLevel(text)) || choicesOf(text.replace(/\[[^\]]*\]|\{[^}]*\}/g, ''));
+  if (chain && chain.opts.length > 1) return chain.opts.map((o) => JSON.stringify(o)).join(' | ') + (chain.open ? ' | (string & {})' : '') + (/\btrue\b/.test(text) || def === 'true' || def === 'false' ? ' | boolean' : '') + (NODE.test(name) ? ' | React.ReactNode' : '');
   if (def === 'true' || def === 'false' || /^(true|false)\b/.test(text) || /\btrue\b.*\bfalse\b|\bfalse\b.*\btrue\b/.test(head)) return 'boolean';
   if (def && /^-?\d+(\.\d+)?$/.test(def)) return 'number';
   if (NODE.test(name)) return 'React.ReactNode';
   if (def && /^['"`]/.test(def)) return 'string';
   if (def && /^\[/.test(def)) return 'any[]';
+  const shape = /:\s*([[{])/.exec(text);     // described, then shown: "the levels: [{ … }]", "the filter: { … }"
+  if (shape) return shape[1] === '[' ? 'any[]' : 'any';
   return 'any';
+}
+// a component: a capitalized (not ALL-CAPS) export defined as a function (plain, arrow, forwardRef or memo) in a file that
+// draws JSX; what it returns does not matter (a portal, null, a fragment)
+function isComponentIn(src, name) {
+  if (!/^[A-Z][a-z]/.test(name) || !/<[A-Za-z][\w.]*[\s/>]/.test(src)) return false;
+  return new RegExp(String.raw`export\s+(?:function\s+` + name + String.raw`\s*\(|const\s+` + name
+    + String.raw`\s*=\s*(?:React\.)?(?:(?:forwardRef|memo)\s*\(\s*)*(?:function\b|\([^)]*\)\s*=>|\w+\s*=>))`).test(src);
 }
 const doc = (t) => '  /** ' + t.replace(/\*\//g, '* /').replace(/\s+/g, ' ').trim() + ' */\n';
 
 module.exports = function buildTypes(outFile, version) {
   const index = fs.readFileSync(path.join(P, 'index.js'), 'utf8');
   const blocks = [], names = [];
+  const published = [...index.matchAll(/export \{([^}]+)\}/g)].map((x) => x[1]).join(',');
   for (const m of index.matchAll(/export \{([^}]+)\} from '([^']+)'/g)) {
     const file = path.join(P, m[2]);
     const src = fs.readFileSync(file, 'utf8');
@@ -69,18 +115,35 @@ module.exports = function buildTypes(outFile, version) {
     for (const raw of m[1].split(',').map((x) => x.trim()).filter(Boolean)) {
       // an export renamed in index.js ("PLACEMENTS as FLOATING_PLACEMENTS") is published, and typed, under its public name
       const as = /^(\w+)\s+as\s+(\w+)$/.exec(raw);
+      // the alias of a published component ("DataGrid as DataTable") has that component's type
+      if (as && isComponentIn(src, as[1]) && new RegExp('(^|[\\s,])' + as[1] + '([\\s,]|$)').test(published)) { names.push(as[2]); blocks.push('export declare const ' + as[2] + ': typeof ' + as[1] + ';'); continue; }
       if (as) { names.push(as[2]); blocks.push(/^use[A-Z]|^[a-z]/.test(as[2]) ? 'export declare function ' + as[2] + '(...args: any[]): any;' : 'export declare const ' + as[2] + ': any;'); continue; }
       const name = raw; names.push(name);
-      if (name === 'useCollectionView') { blocks.push(fs.readFileSync(path.join(P, 'hooks', 'useCollectionView.types.d.ts'), 'utf8')); continue; }
-      const isComponent = /^[A-Z]/.test(name) && /^[A-Z][a-z]/.test(name) && !/^[A-Z_]+$/.test(name) && new RegExp('export\\s+(const|function)\\s+' + name + '\\b').test(src) && /return\s*\(?\s*</.test(src);
+      // a signature the header cannot give (a hook's result) is written beside the source as <name>.types.d.ts
+      const adjacent = path.join(path.dirname(file), name + '.types.d.ts');
+      if (fs.existsSync(adjacent)) { blocks.push(fs.readFileSync(adjacent, 'utf8').trim()); continue; }
+      const isComponent = isComponentIn(src, name);
+      // a set of parts ("export const Chat = { Header, Thread }"): each part a component
+      const parts = /^[A-Z][a-z]/.test(name) && new RegExp(String.raw`export\s+const\s+` + name + String.raw`\s*=\s*\{([\w\s,:]+)\}`).exec(src);
+      if (parts) {
+        const keys = parts[1].split(',').map((x) => x.trim()).filter(Boolean).map((x) => x.split(':').map((y) => y.trim()));
+        if (keys.every(([k, v]) => new RegExp(String.raw`function\s+` + (v || k) + String.raw`\b|const\s+` + (v || k) + String.raw`\s*=`).test(src))) {
+          blocks.push('export declare const ' + name + ': {\n' + keys.map(([k]) => '  ' + k + ': React.ComponentType<{ [prop: string]: any }>;').join('\n') + '\n};');
+          continue;
+        }
+      }
       if (!isComponent) {
         // hooks, helpers and data: typed loosely (their headers describe behavior, not a signature)
         blocks.push(/^use[A-Z]|^[a-z]/.test(name) ? 'export declare function ' + name + '(...args: any[]): any;' : 'export declare const ' + name + ': any;');
         continue;
       }
       const defs = defaultsOf(src, name);
-      const firstOfFile = new RegExp('export\\s+(?:const|function)\\s+(\\w+)').exec(src);
-      const first = !!(firstOfFile && firstOfFile[1] === name);
+      // plain header props belong to the file's main component: the first name of the header's title line ("Plenix ·
+      // Panel, Card, MediaCard"), else the file's first exported component (a helper exported first, as Tabs'
+      // tabsPanelId, is not it)
+      const titled = (/Plenix\s*·\s*([A-Za-z_$][\w$]*)/.exec(hc) || [])[1];
+      const firstComponent = [...src.matchAll(/export\s+(?:const|function)\s+([A-Z]\w*)/g)].map((x) => x[1]).find((x) => isComponentIn(src, x));
+      const first = name === (titled && isComponentIn(src, titled) ? titled : firstComponent);
       // the header's props that are this export's: a plain name on the file's first component, "Name.prop" on the export
       // Name (StatusIcon.tone); a part's ("AppHeader.Item.href") or a field's ("items[].children") stay out (parts are
       // typed loosely below), and a name documented twice is typed once
@@ -98,6 +161,9 @@ module.exports = function buildTypes(outFile, version) {
         own.push(n);
         lines.push(doc(text + (d ? ' Default: ' + d + '.' : '')) + '  ' + n + '?: ' + typeOf(n, text, d) + ';');
       });
+      // a component whose function spreads the rest of its props (…, ...rest }) also takes its element's attributes
+      const params = new RegExp(String.raw`export\s+(?:function\s+` + name + String.raw`|const\s+` + name + String.raw`\s*=[^{(]*\(?\s*(?:function\s*\w*)?)\s*\(\s*\{([\s\S]*?)\}\s*[,)=]`).exec(src);
+      if (params && /\.\.\.\s*\w+\s*$/.test(params[1])) rest = true;
       if (!props.length) rest = true;   // a part or an undocumented component: its element's attributes and anything else
       const summary = first && head ? head.summary : '';
       // the element's attributes, less those the component gives its own meaning (a title that is a node, not a string)

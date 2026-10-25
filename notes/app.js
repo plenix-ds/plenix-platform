@@ -2619,6 +2619,13 @@ function NotesScreen({
       label: 'Edited',
       value: note.date,
       data: true
+    }, {
+      label: 'Folder',
+      value: note.folder
+    }, {
+      label: 'Tags',
+      value: (note.tags || []).length,
+      data: true
     }],
     actions: dirty ? [{
       icon: 'save',

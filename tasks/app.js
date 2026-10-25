@@ -2548,11 +2548,24 @@ function TasksScreen({
     },
     facts: [{
       label: 'Tasks',
-      value: _shared.ALL_TASKS.length
+      value: _shared.ALL_TASKS.length,
+      data: true
     }, {
       label: 'Open',
-      value: _shared.ALL_TASKS.filter(t => !t.done).length
+      value: _shared.ALL_TASKS.filter(t => !t.done).length,
+      data: true
+    }, {
+      label: 'High priority',
+      value: _shared.ALL_TASKS.filter(t => !t.done && t.pri === 'high').length,
+      data: true
     }],
+    next: (() => {
+      const t = _shared.ALL_TASKS.find(x => !x.done && x.pri === 'high') || _shared.ALL_TASKS.find(x => !x.done);
+      return t ? {
+        title: t.title,
+        detail: 'Due ' + t.due + ' · ' + t.proj
+      } : undefined;
+    })(),
     actions: [{
       icon: 'share',
       label: 'Share'
