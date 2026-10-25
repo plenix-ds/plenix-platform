@@ -271,6 +271,18 @@
   </section>
 
   <section class="rv-section">
+    <h2 class="rv-h2">The full local run on the tip (def75d11, 08:23 to 12:54 UTC)</h2>
+    <ul class="rv-list">
+      <li><strong>Same as CI:</strong> data-grid 40/42 (#293), typography 58 worse, targets 32 worse.</li>
+      <li><strong>Pages and accessibility:</strong> stopped at their 90-minute limit, because on one machine they run unsharded (CI splits them into 4 and 2 parts). No result; the CI full run is the one to read.</li>
+      <li><strong>zero-overlap (466), not run by any CI job:</strong> its stored Button styles still show the pre-Fluent look (border gray 142 instead of 208, selected text blue instead of black). The Fluent change (#311) is approved, so the stored values need re-recording; Governance's notes say PR #323 does that.</li>
+      <li><strong>Not real failures:</strong> types ("typescript" is in package.json but missing from the shared node_modules here; CI installs it) and high contrast (my own picture server was on its port).</li>
+      <li><strong>Passed:</strong> labs 302/302, visual, density, layout, theme, keyboard, reflow, contrast, formats, utilities, focus order, semantic HTML, navigation, brand rules, login, selector kinds.</li>
+      <li><strong>Before the release:</strong> one full run on the merged head, in CI (sharded), with the fix PRs in.</li>
+    </ul>
+  </section>
+
+  <section class="rv-section">
     <h2 class="rv-h2">Passing</h2>
     <ul class="rv-list">
       <li>Labs (all shards), reflow, visual (5,058 buttons), density, layout, theme, keyboard, utilities, focus order, semantic HTML, navigation, and accessibility in changed mode.</li>
