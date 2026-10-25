@@ -289,7 +289,8 @@
             "edge-grid"
           ]
         }
-      }
+      },
+      "needs": "A thin gap runs between the label's sides and the frame (visible at 48px): Iconoir insets the label; merge the two lines before approval."
     },
     {
       "id": "humble/save",
