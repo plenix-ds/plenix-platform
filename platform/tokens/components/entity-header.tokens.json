@@ -12,9 +12,9 @@
       "$description": "EntityHeader: the icon on the surface tile: the link blue, light on dark."
     },
     "entity-header-columns": {
-      "$value": "minmax(0, 1.7fr) minmax(0, 1fr)",
+      "$value": "minmax(63%, max-content) minmax({plx-comp.entity-header-aside-min-width}, 1fr)",
       "$type": "string",
-      "$description": "EntityHeader: the main column and the aside, 1.7 to 1."
+      "$description": "EntityHeader: the main column and the aside. The divider starts at 63% (1.7 to 1) and moves toward the end when the title needs the room; the aside keeps at least its minimum width, and past that the title wraps (owner, 2026-10-24, #297 option B)."
     },
     "entity-header-column-gap": {
       "$value": "{plx-ref.space-20px}",
@@ -780,6 +780,11 @@
       "$value": "{plx-ref.space-12px}",
       "$type": "dimension",
       "$description": "EntityHeader, header style Streamlined: above the fact tiles under the progress bar."
+    },
+    "entity-header-aside-min-width": {
+      "$value": "{plx-ref.size-220px}",
+      "$type": "dimension",
+      "$description": "EntityHeader: the aside’s smallest width (the next step and the actions); the title gives way to it."
     }
   }
 }
