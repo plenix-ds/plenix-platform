@@ -46,3 +46,12 @@ It is optional: `plenix.css` carries only the Plenix set as data: URIs (nothing 
 | A Material name that is also a Plenix name | draws the Plenix icon | `check` (check_small), `home` |
 
 build-icons.js fails when a name in map.json has no rule in icon.css.
+
+## The icon inventory and restyled icons (2026-10-24, #301)
+
+The rules above cover the Material Symbols files: they stay unedited. Icons from other libraries are a different
+thing: the owner asked for them to be restyled to the Plenix icon guidance (`platform/standards/icons.md`), and a
+restyled icon is a new Plenix drawing, not an edited Material file. They live in `inventory/` (see its README), apart
+from this folder, with each library's original kept beside it. Apps draw none of them until the owner approves one;
+it then joins the working set through `map.json` like any icon. Tools: `tools/icons/` (`check-icon.js` reports how an
+SVG is built against the guidance, `restyle-icon.js` refuses to write over the Material files).

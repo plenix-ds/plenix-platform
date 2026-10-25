@@ -36,6 +36,8 @@ const NAME = 'selector-kinds';
 const ROOT = path.join(__dirname, '..');
 const BACKLOG = path.join(ROOT, 'check-system.selector-kinds.json');
 const SKIP = /[\\/](node_modules|dist|vendor|release|\.claude|exports)[\\/]/;
+// tested on the path inside the repository, so a checkout that itself lives under .claude/ (a worktree) is still read (#307)
+const skip = (p) => SKIP.test(path.sep + path.relative(ROOT, p) + path.sep);
 const MODES = ['theme', 'mode', 'density', 'interaction'];
 // the conditions that change token values only (3.6, condition)
 const GLOBAL_CONDITION = /prefers-reduced-motion|forced-colors|prefers-contrast|inverted-colors/;
@@ -45,8 +47,8 @@ function cssFiles() {
   const out = [];
   const walk = (d) => { if (!fs.existsSync(d)) return; for (const e of fs.readdirSync(d, { withFileTypes: true })) {
     const p = path.join(d, e.name);
-    if (e.isDirectory()) { if (!SKIP.test(p + path.sep)) walk(p); }
-    else if (e.name.endsWith('.css') && !SKIP.test(p)) out.push(p);
+    if (e.isDirectory()) { if (!skip(p + path.sep)) walk(p); }
+    else if (e.name.endsWith('.css') && !skip(p)) out.push(p);
   } };
   walk(path.join(ROOT, 'platform')); walk(path.join(ROOT, 'services'));
   return out.sort();

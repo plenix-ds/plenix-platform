@@ -20,6 +20,10 @@
      iconEnd: an <Icon> (or an icon name) after the label
      iconOnly: a square button with only its icon; give it a label (default false)
      label: the accessible name (aria-label); an icon-only button falls back to string children
+     tooltip: the tooltip it shows (default: an icon-only button shows its label; others none); false: none (Carbon,
+       Atlassian: every icon-only button names itself). Inside a Tooltip the button leaves it to that Tooltip
+     shortcut: its keyboard shortcut, as a hotkey binding ("Mod+Shift+A"): shown in its tooltip as keys (Ctrl or ⌘) and set as
+       aria-keyshortcuts. It only shows the shortcut: bind it with useHotkey
      caret: the button opens a menu: the thin outline chevron (expand_more) after the label, in the muted color on the
        unfilled variants (owner, 2026-10-14: it replaces the small filled triangle); default false
      expanded: sets aria-expanded, for a button that opens a menu
@@ -42,7 +46,8 @@
      Selected, pressed and expanded all show the selected state.
      A toggle button (pressed true or false) keeps its label and icon when it turns on or off: the label names the option
        (Bold, Show grid), aria-pressed says whether it is on, and every variant shows "on" with the selected state.
-     Loading keeps the width and stays focusable but inert (aria-disabled, aria-busy).
+     Loading keeps the width and the name, and stays focusable but inert (aria-disabled, aria-busy): the spinner takes the
+       icon's place, or, with no icon, sits over the label, which stays (unseen) to hold the width and name the button.
      A disabled link loses its href.
    Notes:
      Other props pass through to the <button> or <a> (and to ButtonGroup's <div>).
@@ -54,6 +59,9 @@ import { cx } from '../../utils/cx.js';
 import { Icon, stateIcon } from '../Icon/Icon.jsx';
 import { Spinner } from '../Loading/Loading.jsx';
 import { SurfaceContext } from '../../providers/Surface.jsx';
+import { Tooltip, InTooltip } from '../Tooltip/Tooltip.jsx';
+import { Kbd } from '../Kbd/Kbd.jsx';
+import { parseHotkey, hotkeyLabel } from '../../utils/hotkey.js';
 
 const STRINGS = { working: 'Working' };
 
@@ -61,8 +69,17 @@ const STRINGS = { working: 'Working' };
 // open; an Icon element the caller gives keeps its own fill when it sets one
 const asIcon = stateIcon;
 
+// a one-step binding as aria-keyshortcuts ("Control+Shift+A"); a sequence has no ARIA form, so none
+const ARIA_MODS = [['ctrl', 'Control'], ['alt', 'Alt'], ['shift', 'Shift'], ['meta', 'Meta']];
+const ariaShortcut = (binding) => {
+  const steps = parseHotkey(binding);
+  if (steps.length !== 1 || !steps[0].key) return undefined;
+  const k = steps[0].key;
+  return ARIA_MODS.filter(([m]) => steps[0][m]).map(([, n]) => n).concat(k.length === 1 ? k.toUpperCase() : k.charAt(0).toUpperCase() + k.slice(1)).join('+');
+};
+
 export const Button = React.forwardRef(function Button({ variant = 'secondary', size = 'md', icon, iconEnd, iconOnly = false, label, caret = false,
-  expanded, pressed, selected = false, loading = false, disabled = false, href, type = 'button', joined, truncate = false, stackedLabel = false, labelRow = false, className, children, onClick, strings, ...rest }, ref) {
+  expanded, pressed, selected = false, loading = false, disabled = false, href, type = 'button', joined, truncate = false, stackedLabel = false, labelRow = false, tooltip, shortcut, className, children, onClick, strings, ...rest }, ref) {
   devWarn('Button', { variant, size }, { variant: ['secondary','primary','tertiary','ghost','danger','danger-secondary','quiet'], size: ['md','sm','xs','2xs','lg'] });
   const t = Object.assign({}, STRINGS, strings);
   // a colored surface around the button (TeachingBubble, the accent AppHeader) gives it that surface's look
@@ -74,19 +91,32 @@ export const Button = React.forwardRef(function Button({ variant = 'secondary', 
   const on = !!(selected || pressed || expanded);
   const labelClass = cx('plx-button__label', truncate && 'plx-button__label--truncate', !truncate && stackedLabel && 'plx-button__label--stacked', !truncate && !stackedLabel && labelRow && 'plx-button__label--row');
   const caretClass = cx('plx-button__caret', (v === 'primary' || v === 'danger' || disabled || loading) && 'plx-button__caret--current', expanded && 'plx-button__caret--open');
+  const hasLabel = !iconOnly && children !== undefined && children !== null;
+  // loading: the spinner takes the icon's place; with no icon it sits over the label, which keeps the width and the name
+  // (aria-busy says it is working, so the spinner itself is not read)
+  const over = loading && !icon && hasLabel;
+  const spinner = (cls) => <span className={cls} aria-hidden="true"><Spinner size="sm" label={t.working} /></span>;
   const content = (
     <>
-      {loading ? <span className="plx-button__icon"><Spinner size="sm" label={t.working} /></span> : (icon ? <span className="plx-button__icon">{asIcon(icon, on)}</span> : null)}
-      {iconOnly ? null : (children !== undefined && children !== null ? <span className={labelClass}>{children}</span> : null)}
+      {loading && !over ? spinner('plx-button__icon') : (icon ? <span className="plx-button__icon">{asIcon(icon, on)}</span> : null)}
+      {over ? <span className="plx-button__stack"><span className={cx(labelClass, 'plx-button__label--waiting')}>{children}</span>{spinner('plx-button__icon plx-button__icon--over')}</span>
+        : (hasLabel ? <span className={labelClass}>{children}</span> : null)}
       {iconEnd ? <span className="plx-button__icon">{asIcon(iconEnd, on)}</span> : null}
       {caret ? <span className={caretClass} aria-hidden="true" /> : null}
     </>
   );
   const a11y = { 'aria-label': iconOnly ? (label || (typeof children === 'string' ? children : undefined)) : label, 'aria-expanded': expanded,
-    'aria-pressed': pressed, 'aria-disabled': disabled || loading ? true : undefined, 'aria-busy': loading || undefined };
+    'aria-pressed': pressed, 'aria-disabled': disabled || loading ? true : undefined, 'aria-busy': loading || undefined,
+    'aria-keyshortcuts': shortcut ? ariaShortcut(shortcut) : undefined };
   const handle = (e) => { if (disabled || loading) { e.preventDefault(); return; } if (onClick) onClick(e); };
-  if (href) return <a ref={ref} href={disabled ? undefined : href} className={classes} {...a11y} onClick={handle} {...rest}>{content}</a>;
-  return <button ref={ref} type={type} className={classes} disabled={disabled && !loading ? true : undefined} {...a11y} onClick={handle} {...rest}>{content}</button>;
+  const el = href ? <a ref={ref} href={disabled ? undefined : href} className={classes} {...a11y} onClick={handle} {...rest}>{content}</a>
+    : <button ref={ref} type={type} className={classes} disabled={disabled && !loading ? true : undefined} {...a11y} onClick={handle} {...rest}>{content}</button>;
+  // its tooltip: the name of an icon-only button (or the tooltip it was given), with its shortcut's keys; none inside a
+  // Tooltip, which already names it
+  const inTooltip = React.useContext(InTooltip);
+  const tip = tooltip === false ? null : (tooltip !== undefined ? tooltip : (iconOnly ? a11y['aria-label'] : null));
+  if (!tip || inTooltip) return el;
+  return <Tooltip content={shortcut ? <>{tip}{' '}<Kbd>{hotkeyLabel(shortcut)}</Kbd></> : tip}>{el}</Tooltip>;
 });
 
 /* ButtonGroup: joined buttons that act as a set (Import | Export). For one choice from several, use SegmentedControl. */

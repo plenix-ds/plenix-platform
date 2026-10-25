@@ -55,7 +55,8 @@ export function MessagingScreen({ screen }) {
           <>
             <Stack inset="md">
               <EntityHeader title={thd.name} media={{ person: thd.name, color: thd.avColor }} subtitle={thd.ch}
-                facts={[{ label: 'Messages', value: mList.length }, { label: 'Last', value: thd.time, data: true }]}
+                facts={[{ label: 'Unread', value: thd.unread || 0, data: true }, { label: 'Messages', value: mList.length, data: true }].concat(thd.preview ? [] : [{ label: 'Last', value: thd.time, data: true }])}
+                next={thd.preview ? { label: 'Latest', title: thd.preview, detail: <Text variant="data">{thd.time}</Text> } : undefined}
                 actions={[{ icon: 'phone', label: 'Call' }, { icon: 'archive', label: 'Archive' }, { icon: 'mark-unread', label: 'Mark as unread' },
                   { icon: 'snooze', label: 'Snooze' }, { icon: 'trash', label: 'Delete' }]} />
             </Stack>

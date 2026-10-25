@@ -25,8 +25,6 @@
   --plx-comp-button-size-md-hover-background: var(--plx-sys-state-hover);
   --plx-comp-button-size-md-hover-border: var(--plx-ref-color-gray-350);
   --plx-comp-button-size-md-pressed-background: var(--plx-sys-state-pressed);
-  --plx-comp-button-size-md-selected-border: var(--plx-sys-border-default);
-  --plx-comp-button-size-md-selected-text: var(--plx-sys-content-default);
   --plx-comp-button-size-md-primary-ring: none;
   --plx-comp-button-size-sm-font-size: var(--plx-ref-font-size-12);
   --plx-comp-button-size-sm-font-weight: var(--plx-sys-font-weight-medium);
@@ -38,8 +36,6 @@
   --plx-comp-button-size-sm-hover-background: var(--plx-sys-state-hover);
   --plx-comp-button-size-sm-hover-border: var(--plx-ref-color-gray-350);
   --plx-comp-button-size-sm-pressed-background: var(--plx-sys-state-pressed);
-  --plx-comp-button-size-sm-selected-border: var(--plx-sys-border-default);
-  --plx-comp-button-size-sm-selected-text: var(--plx-sys-content-default);
   --plx-comp-button-size-sm-primary-ring: none;
   --plx-comp-button-size-xs-font-size: var(--plx-ref-font-size-12);
   --plx-comp-button-size-xs-font-weight: var(--plx-sys-font-weight-medium);
@@ -51,8 +47,6 @@
   --plx-comp-button-size-xs-hover-background: var(--plx-sys-state-hover);
   --plx-comp-button-size-xs-hover-border: var(--plx-ref-color-gray-350);
   --plx-comp-button-size-xs-pressed-background: var(--plx-sys-state-pressed);
-  --plx-comp-button-size-xs-selected-border: var(--plx-sys-border-default);
-  --plx-comp-button-size-xs-selected-text: var(--plx-sys-content-default);
   --plx-comp-button-size-xs-primary-ring: none;
   --plx-comp-button-size-2xs-font-size: var(--plx-ref-font-size-11);
   --plx-comp-button-size-2xs-font-weight: var(--plx-sys-font-weight-medium);
@@ -77,8 +71,6 @@
   --plx-comp-button-size-lg-hover-background: var(--plx-sys-state-hover);
   --plx-comp-button-size-lg-hover-border: var(--plx-ref-color-gray-350);
   --plx-comp-button-size-lg-pressed-background: var(--plx-sys-state-pressed);
-  --plx-comp-button-size-lg-selected-border: var(--plx-sys-border-default);
-  --plx-comp-button-size-lg-selected-text: var(--plx-sys-content-default);
   --plx-comp-button-size-lg-primary-ring: none;
   /* variants: rest and hover (secondary takes its text and hover from the size) */
   --plx-comp-button-secondary-background: var(--plx-sys-control-background);
@@ -2214,6 +2206,8 @@
   --plx-comp-copy-button-field-joined-radius: var(--plx-sys-shape-none);
 }
 :root,[data-plx-density],[data-plx-interaction]{
+  --plx-ctx-base-plx-comp-button-target-inset-block: 0px;
+  --plx-ctx-base-plx-comp-button-target-inset-inline: 0px;
   --plx-ctx-base-plx-comp-check-padding-block: var(--plx-sys-space-inset-xs);
   --plx-ctx-base-plx-comp-field-info-before-inset-block-end: calc(var(--plx-sys-space-inset-xs) * -1);
   --plx-ctx-base-plx-comp-field-info-before-inset-block-start: calc(var(--plx-sys-space-inset-xs) * -1);
@@ -2239,6 +2233,14 @@
 /* the person's contrast settings: forced colors, then more contrast, else the values above */
 @media not (forced-colors: active) {
   :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-button-size-md-selected-border: var(--plx-sys-border-default);
+    --plx-comp-button-size-md-selected-text: var(--plx-sys-content-default);
+    --plx-comp-button-size-sm-selected-border: var(--plx-sys-border-default);
+    --plx-comp-button-size-sm-selected-text: var(--plx-sys-content-default);
+    --plx-comp-button-size-xs-selected-border: var(--plx-sys-border-default);
+    --plx-comp-button-size-xs-selected-text: var(--plx-sys-content-default);
+    --plx-comp-button-size-lg-selected-border: var(--plx-sys-border-default);
+    --plx-comp-button-size-lg-selected-text: var(--plx-sys-content-default);
     --plx-comp-button-selected-background: var(--plx-ref-color-gray-200);
     --plx-comp-button-disabled-border: var(--plx-sys-border-subtle);
     --plx-comp-button-disabled-text: var(--plx-sys-content-disabled);
@@ -2303,6 +2305,14 @@
 }
 @media (forced-colors: active) {
   :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-button-size-md-selected-border: Highlight;
+    --plx-comp-button-size-md-selected-text: HighlightText;
+    --plx-comp-button-size-sm-selected-border: Highlight;
+    --plx-comp-button-size-sm-selected-text: HighlightText;
+    --plx-comp-button-size-xs-selected-border: Highlight;
+    --plx-comp-button-size-xs-selected-text: HighlightText;
+    --plx-comp-button-size-lg-selected-border: Highlight;
+    --plx-comp-button-size-lg-selected-text: HighlightText;
     --plx-comp-button-selected-background: Highlight;
     --plx-comp-button-disabled-border: GrayText;
     --plx-comp-button-disabled-text: GrayText;
@@ -2461,6 +2471,8 @@
   --plx-ctx-interaction-plx-comp-card-padding: var(--plx-ref-space-16px);
   --plx-ctx-interaction-plx-comp-panel-padding: var(--plx-ref-space-16px);
   --plx-ctx-interaction-plx-comp-app-header-utilities-gap: var(--plx-ref-space-4px);
+  --plx-ctx-interaction-plx-comp-button-target-inset-block: min(0px, calc((100% - var(--plx-sys-control-target-min)) / 2));
+  --plx-ctx-interaction-plx-comp-button-target-inset-inline: min(0px, calc((100% - var(--plx-sys-control-target-min)) / 2));
   --plx-ctx-interaction-plx-comp-tag-remove-before-inset-block-end: min(0px, calc((100% - var(--plx-sys-control-target-min)) / 2));
   --plx-ctx-interaction-plx-comp-tag-remove-before-inset-block-start: min(0px, calc((100% - var(--plx-sys-control-target-min)) / 2));
   --plx-ctx-interaction-plx-comp-tag-remove-before-inset-inline-end: min(0px, calc((100% - var(--plx-sys-control-target-min)) / 2));
@@ -2481,6 +2493,8 @@
   --plx-ctx-interaction-plx-comp-color-picker-slot-min-width: var(--plx-sys-control-target-min);
 }
 :root[data-plx-interaction="mobile"]{
+  --plx-ctx-interaction-plx-comp-button-target-inset-block: min(0px, calc((100% - var(--plx-sys-control-target-min)) / 2));
+  --plx-ctx-interaction-plx-comp-button-target-inset-inline: min(0px, calc((100% - var(--plx-sys-control-target-min)) / 2));
   --plx-ctx-interaction-plx-comp-breadcrumbs-list-row-gap: calc(var(--plx-sys-control-target-min) - 1lh);
   --plx-ctx-interaction-plx-comp-toolbar-control-gap: var(--plx-ref-space-8px);
   --plx-ctx-interaction-plx-comp-button-cluster-gap: var(--plx-ref-space-12px);
@@ -6085,6 +6099,8 @@
 }
 /* the tokens several sets declare (zero overlap: each set writes its layer; interaction, then density, then base) */
 :root,[data-plx-density],[data-plx-interaction]{
+  --plx-comp-button-target-inset-block: var(--plx-ctx-interaction-plx-comp-button-target-inset-block, var(--plx-ctx-base-plx-comp-button-target-inset-block));
+  --plx-comp-button-target-inset-inline: var(--plx-ctx-interaction-plx-comp-button-target-inset-inline, var(--plx-ctx-base-plx-comp-button-target-inset-inline));
   --plx-comp-check-padding-block: var(--plx-ctx-density-plx-comp-check-padding-block, var(--plx-ctx-base-plx-comp-check-padding-block));
   --plx-comp-field-info-before-inset-block-end: var(--plx-ctx-interaction-plx-comp-field-info-before-inset-block-end, var(--plx-ctx-base-plx-comp-field-info-before-inset-block-end));
   --plx-comp-field-info-before-inset-block-start: var(--plx-ctx-interaction-plx-comp-field-info-before-inset-block-start, var(--plx-ctx-base-plx-comp-field-info-before-inset-block-start));

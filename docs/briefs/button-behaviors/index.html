@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en" data-plx-mode="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Button behaviors · before and after</title>
+<!-- PR 4 of the buttons build (#298): the behaviors, before and after, photographed at 150% by capture.js. -->
+<script src="../../../platform/providers/theme-boot.js"></script>
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<link rel="stylesheet" href="../review.css">
+</head>
+<body class="rv-page">
+<main class="rv-doc">
+  <h1 class="rv-h1">Button behaviors: before and after</h1>
+  <p class="rv-lead">Your choices from the study (2026-10-24), taken from Carbon, Atlassian, Apple, Material and Polaris. Photographed at 150% screen scale.</p>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">Icon-only buttons name themselves, with their shortcut</h2>
+    <ul class="rv-list">
+      <li>Every icon-only button shows its name as a tooltip on hover, on keyboard focus and on a long press. Before, only the ones a page wrapped by hand did.</li>
+      <li>A button given a shortcut shows its keys in the tooltip (Ctrl or ⌘ as the computer uses) and tells screen readers the shortcut.</li>
+    </ul>
+    <div class="rv-pair">
+      <figure class="rv-fig"><img src="before-tips.png" alt="Icon-only buttons before"><figcaption>Before: hovering Reply shows nothing</figcaption></figure>
+      <figure class="rv-fig"><img src="after-tips.png" alt="Icon-only buttons after"><figcaption>After: “Reply” and its key, R</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">Loading keeps the width and the name</h2>
+    <p class="rv-lead">Each pair is a button at rest, then loading. A button with words and no icon used to grow (109 → 137px wide) and was read as “Working Save changes”. Now the spinner sits over the words: same width, and it is still read as “Save changes”, busy.</p>
+    <div class="rv-pair">
+      <figure class="rv-fig"><img src="before-loading.png" alt="Loading buttons before"><figcaption>Before: the first loading button grows</figcaption></figure>
+      <figure class="rv-fig"><img src="after-loading.png" alt="Loading buttons after"><figcaption>After: every button keeps its width</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">Sort and Status show the current choice</h2>
+    <p class="rv-lead">A menu that picks a value now shows it in the button (Apple’s pop-up button): “Status: In review”, “Sort: Updated”, and “+1” when there is more than one. With nothing chosen the button reads just “Status” or “Sort”.</p>
+    <div class="rv-pair">
+      <figure class="rv-fig"><img src="before-bar.png" alt="Command bar before"><figcaption>Before: “Status 1”, “Sort 1”</figcaption></figure>
+      <figure class="rv-fig"><img src="after-bar.png" alt="Command bar after"><figcaption>After: the choice itself</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">Touch: a 44px target even when a button looks smaller</h2>
+    <p class="rv-lead">On a touch screen every button already grows to 44px. Where a container keeps a button small (the app header, a dense row), its touch area now still reaches 44px around it, invisibly. Nothing changes with a mouse. The phone apps keep their own sizes (44pt on iPhone, 48dp on Android).</p>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">Still to come (after the command bar work in #274)</h2>
+    <ul class="rv-list">
+      <li>Delete and other destructive commands in the command bar ask to confirm before they act. Destructive commands already come last, after a line.</li>
+      <li>The bar re-fits as soon as a chosen value changes the length of “Status: …”.</li>
+    </ul>
+  </section>
+</main>
+</body>
+</html>
