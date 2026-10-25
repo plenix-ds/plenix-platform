@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en" data-plx-mode="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Command bar find fold · Plenix review</title>
+<!-- Owner review for #274 (RedSave P-55): the command bar's find side folds into one button when it does not fit.
+     Pictures of the real components (stage.html, capture.js). -->
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<link rel="stylesheet" href="../review.css">
+</head>
+<body class="rv-page">
+<main class="rv-doc">
+  <h1 class="rv-h1">Command bar: the find side folds when it does not fit (#274)</h1>
+  <p class="rv-lead">In a narrow pane, the command bar folded its commands into More, but the find side (the search,
+    Filter, Sort) stayed and ran past the bar. Your answer for narrow panels: fold into a drop-down or menu when it
+    doesn't fit, measured.</p>
+  <ul class="rv-list">
+    <li><strong>How:</strong> the find side is now the bar's last step. Once the commands, the end control and the quick filters have folded, the search, Filter and Sort fold into one <strong>Find and view</strong> button (the search icon).</li>
+    <li><strong>The button:</strong> it opens a popover with the same controls at full size: the search field open, Filter and Sort with their labels.</li>
+    <li><strong>With room:</strong> the bar is unchanged. Nothing in the bar is drawn outside it.</li>
+    <li><strong>Note:</strong> on 0.70.0 RedSave's own 360px panel already fits; the overflow shows in a 200px pane (pictured).</li>
+  </ul>
+  <section class="rv-section">
+    <h2 class="rv-h2">Built · 200px pane</h2>
+    <div class="rv-pair">
+      <figure class="rv-fig"><img src="before-tiny.png" alt="Before: More, then search, Filter and Sort; Sort runs past the bar's edge"><figcaption>Before: Sort runs past the bar's edge</figcaption></figure>
+      <figure class="rv-fig"><img src="after-tiny.png" alt="After: More and one Find and view button inside the bar"><figcaption>After: More and one <strong>Find and view</strong> button</figcaption></figure>
+    </div>
+    <figure class="rv-fig"><img src="after-tiny-open.png" alt="Find and view open: a popover with the search field, Filter and Sort"><figcaption>Find and view open: the search, Filter and Sort at full size</figcaption></figure>
+  </section>
+  <section class="rv-section">
+    <h2 class="rv-h2">Built · wide panel</h2>
+    <figure class="rv-fig"><img src="after-wide.png" alt="Wide: the bar with its labels, the search, Filter and Sort, as before"><figcaption>Room enough: the bar, unchanged</figcaption></figure>
+  </section>
+</main>
+</body>
+</html>
