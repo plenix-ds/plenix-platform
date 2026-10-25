@@ -18,7 +18,7 @@
   <section class="rv-section">
     <h2 class="rv-h2">What changes</h2>
     <ul class="rv-list">
-      <li>Corners are 4px on every control (buttons, fields, selects), in every density. This and the lighter border fix the corner that looked cut.</li>
+      <li>Corners are 4px on every control (buttons, fields, selects, comboboxes, navigation items), in every density. This and the lighter border fix the corner that looked cut.</li>
       <li>The default button’s border is light gray (gray-300), one step darker on hover (gray-350).</li>
       <li>Hover and pressed fills are the same light grays at every size.</li>
       <li>Selected and toggled-on buttons are gray with dark text, not pale blue.</li>
@@ -33,6 +33,20 @@
     <div class="rv-pair">
       <figure class="rv-fig"><img src="before-buttons.png" alt="Buttons before"><figcaption>Before</figcaption></figure>
       <figure class="rv-fig"><img src="after-buttons.png" alt="Buttons after"><figcaption>After</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">The 4px corner reaches every control, not only buttons</h2>
+    <p class="rv-lead">Buttons share one corner setting with the other controls, so this change moves them too. Measured on the live components:</p>
+    <ul class="rv-list">
+      <li>Changes from 6px to 4px: buttons, text fields, selects, comboboxes, navigation items (and every other control on the same setting).</li>
+      <li>Stays the same: the menu (4px) and its items (square, 0px). Their corners come from the menu, not from the control setting; the command bar step gives menu items their own 4px corners.</li>
+      <li>Compact density was already 4px, so nothing changes there.</li>
+    </ul>
+    <div class="rv-pair">
+      <figure class="rv-fig"><img src="before-controls.png" alt="Form row, navigation and menu before"><figcaption>Before: 6px fields, selects, combobox and navigation items</figcaption></figure>
+      <figure class="rv-fig"><img src="after-controls.png" alt="Form row, navigation and menu after"><figcaption>After: 4px; the menu unchanged</figcaption></figure>
     </div>
   </section>
 

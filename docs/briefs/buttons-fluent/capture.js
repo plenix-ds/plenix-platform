@@ -1,7 +1,8 @@
 /* Before/after pictures for PR 1 (buttons in the Fluent look, #298). Usage:
      node docs/briefs/buttons-fluent/capture.js <before-root> <after-root>
    Each root is a checkout of the repository (before: styling/phase-2; after: this branch, built). Both are served the
-   same way and photographed at a real 150% screen scale (the owner's screen): the sample's buttons, its command bar with
+   same way and photographed at a real 150% screen scale (the owner's screen): the sample's buttons, its other controls
+   (form row, nav list, an open menu: they share the control corner), its command bar with
    the New menu open, and the Messages header. The pictures land next to this script. */
 const fs = require('fs'), path = require('path'), http = require('http');
 const puppeteer = require('puppeteer-core');
@@ -31,6 +32,20 @@ const box = (el) => el.evaluate((e) => { const r = e.getBoundingClientRect(); re
         await page.goto(base + 'docs/briefs/buttons-fluent/sample.html', { waitUntil: 'domcontentloaded' });
         await page.waitForSelector('#bar .plx-command-bar'); await sleep(800);
         await page.screenshot({ path: path.join(__dirname, name + '-buttons.png'), clip: await box(await page.$('#buttons')) });
+        // the controls that share the control corner: a form row, a nav list and a menu, open, its first item hovered
+        const mt = await (await page.$('#menu button')).boundingBox(); await page.mouse.click(mt.x + mt.width / 2, mt.y + mt.height / 2); await sleep(400);
+        const mi = await (await page.$('#menu [role="menuitem"]')).boundingBox(); await page.mouse.move(mi.x + mi.width / 2, mi.y + mi.height / 2); await sleep(300);
+        await page.screenshot({ path: path.join(__dirname, name + '-controls.png'), clip: await box(await page.$('#controls')) });
+        const radii = await page.evaluate(() => {
+          const r = (sel) => { const e = document.querySelector(sel); return e ? getComputedStyle(e).borderTopLeftRadius : 'not found'; };
+          const field = (label) => { const f = [...document.querySelectorAll('#controls label')].find((l) => l.textContent.trim() === label);
+            const c = f && f.closest('.plx-field'); const box = c && [...c.querySelectorAll('*')].find((e) => parseFloat(getComputedStyle(e).borderTopWidth) > 0);
+            return box ? getComputedStyle(box).borderTopLeftRadius : 'not found'; };
+          return { button: r('#buttons .plx-button'), input: field('Title'), select: field('Format'), combobox: field('Owner'),
+            navItem: r('#controls .plx-nav-list__item, #controls [aria-current]'), menu: r('#menu .plx-menu'), menuItem: r('#menu [role="menuitem"]') };
+        });
+        console.log(name, JSON.stringify(radii));
+        await page.keyboard.press('Escape'); await page.mouse.click(2, 2); await sleep(300);
         const trigger = await page.evaluateHandle(() => [...document.querySelectorAll('#bar button')].find((b) => /^New/.test(b.textContent.trim())));
         const t = await trigger.boundingBox(); await page.mouse.click(t.x + t.width / 2, t.y + t.height / 2); await sleep(400);
         const item = await page.$('.plx-menu [role="menuitem"]'); const ib = await item.boundingBox();

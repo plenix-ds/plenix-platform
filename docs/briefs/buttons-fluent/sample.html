@@ -17,6 +17,7 @@
 .bf-label{color:var(--plx-sys-content-muted);font-size:var(--plx-ref-font-size-12);margin:0;}
 .bf-bar{min-block-size:var(--plx-ref-size-220px,13.75rem);}
 .bf-field{max-inline-size:var(--plx-ref-size-320px,20rem);}
+.bf-menu{min-block-size:var(--plx-ref-size-160px,10rem);}
 </style>
 </head>
 <body class="rv-page">
@@ -38,6 +39,16 @@
         h(P.SplitButton, { variant: 'primary', icon: 'save', label: 'Save', onClick: noop }, h(P.MenuItem, { onSelect: noop }, 'Save a copy')),
         h(P.ButtonGroup, { label: 'Transfer' }, B({}, 'Import'), B({}, 'Export'))),
       h('div', { className: 'bf-field' }, h(P.Field, { label: 'Name' }, h(P.Input, { defaultValue: 'Website relaunch' })))),
+    // the other controls that share the control corner (radius-control): a form row, a nav list and a menu
+    h('section', { className: 'rv-stage', id: 'controls' },
+      h('div', { className: 'bf-row' },
+        h('div', { className: 'bf-field' }, h(P.Field, { label: 'Title' }, h(P.Input, { defaultValue: 'Quarterly report' }))),
+        h('div', { className: 'bf-field' }, h(P.Field, { label: 'Format' }, h(P.Select, { defaultValue: 'pdf', options: [{ value: 'pdf', label: 'PDF' }, { value: 'docx', label: 'Word' }] }))),
+        h('div', { className: 'bf-field' }, h(P.Field, { label: 'Owner' }, h(P.Combobox, { label: 'Owner', value: 'mc', onChange: noop, options: [{ value: 'mc', label: 'Maya Chen' }, { value: 'jt', label: 'Jeff Torres' }] })))),
+      h('div', { className: 'bf-row' },
+        h('div', { className: 'bf-field' }, h(P.NavList, { label: 'Folders', value: 'inbox', onSelect: noop, items: [{ id: 'inbox', label: 'Inbox', icon: 'mail' }, { id: 'archive', label: 'Archive', icon: 'archive' }, { id: 'shared', label: 'Shared', icon: 'share' }] })),
+        h('div', { className: 'bf-menu', id: 'menu' }, h(P.Menu, { label: 'Actions', trigger: B({ caret: true }, 'Actions') },
+          h(P.MenuItem, { icon: 'edit', onSelect: noop }, 'Rename'), h(P.MenuItem, { icon: 'copy', onSelect: noop }, 'Duplicate'), h(P.MenuItem, { icon: 'trash', danger: true, onSelect: noop }, 'Delete'))))),
     h('section', { className: 'bf-bar', id: 'bar' },
       h(P.CommandBar, { label: 'Documents', count: '24 documents', position: 'static',
         actions: [{ id: 'new', label: 'New', icon: 'plus', items: [{ id: 'doc', label: 'Document', icon: 'edit', onSelect: noop }, { id: 'folder', label: 'Folder', icon: 'folder-add', onSelect: noop }] },
