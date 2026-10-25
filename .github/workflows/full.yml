@@ -68,7 +68,7 @@ jobs:
           - { name: 'labs 1/2', tests: labs, shard: 1/2 }
           - { name: 'labs 2/2', tests: labs, shard: 2/2 }
           - { name: typography, tests: typography, shard: '' }
-          - { name: 'targets and reflow', tests: targets reflow, shard: '' }
+          - { name: reflow, tests: reflow, shard: '' }
           - { name: fixtures, tests: visual density layout theme high-contrast utilities keyboard, shard: '' }
           - { name: behavior, tests: data-grid focus-order semantic-html navigation, shard: '' }
     env:

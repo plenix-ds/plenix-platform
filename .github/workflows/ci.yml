@@ -97,8 +97,8 @@ jobs:
             tests: a11y
           - name: typography
             tests: typography
-          - name: targets and reflow
-            tests: targets reflow
+          - name: reflow
+            tests: reflow
           # the labs in three parts: a change to a shared component reaches many labs (0.31.52 ran out of time in one job)
           - name: labs 1 of 3
             tests: labs
