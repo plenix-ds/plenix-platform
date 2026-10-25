@@ -28,7 +28,7 @@
   const fields = [{ value: 'name', label: 'Name', kind: 'text' }, { value: 'kind', label: 'Kind', kind: 'select', options: kinds },
     { value: 'owner', label: 'Owner', kind: 'select', options: owners }, { value: 'status', label: 'Status', kind: 'select', options: statuses },
     { value: 'amount', label: 'Amount', kind: 'number' }, { value: 'updated', label: 'Updated', kind: 'date' }];
-  const columns = [{ title: 'Name', field: 'name', kind: 'name', rowLabel: true }, { title: 'Kind', field: 'kind' }, { title: 'Owner', field: 'owner' },
+  const columns = [{ title: 'Name', field: 'name', kind: 'name', rowLabel: true, frozen: true }, { title: 'Kind', field: 'kind' }, { title: 'Owner', field: 'owner' },
     { title: 'Status', field: 'status' }, { title: 'Amount', field: 'amount', type: 'currency', align: 'right' }, { title: 'Updated', field: 'updated', type: 'date' }];
   const facts = [
     { id: 1, part: 'Header', both: 'Silver header, gray lines', grid: 'Click to sort, menu, resize, move', table: 'Titles only' },
@@ -57,7 +57,7 @@
       h('section', { className: 'rv-section' },
         h('h2', { className: 'rv-h2' }, 'Table: facts you read'),
         h('p', { className: 'rv-lead' }, 'Static: no sorting, filters, grouping, menus or selection. Every row is shown as given. It looks the same as the grid.'),
-        h(P.Table, { label: 'DataGrid and Table compared', data: facts, columns: [{ title: 'Part', field: 'part', rowLabel: true, width: '--plx-ref-size-160px' },
+        h(P.Table, { label: 'DataGrid and Table compared', data: facts, columns: [{ title: 'Part', field: 'part', rowLabel: true, frozen: true, width: '--plx-ref-size-160px' },
           { title: 'Both', field: 'both', width: '--plx-ref-size-320px' }, { title: 'DataGrid', field: 'grid', width: '--plx-ref-size-320px' }, { title: 'Table', field: 'table' }] })));
   }
   ReactDOM.createRoot(document.getElementById('root')).render(h(Page));
