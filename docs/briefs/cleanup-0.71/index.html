@@ -126,8 +126,23 @@
     <ul class="rv-list">
       <li><strong>Files:</strong> the fact "Latest: Feb 28" and, beside it, "Latest file … Kitchen Reno · Feb 28".</li>
       <li><strong>Messages:</strong> the fact "Last: 10:24 AM" and, beside it, "Latest … 10:24 AM". The summary also wraps, leaving "Friday." alone on its line (picture above).</li>
-      <li><strong>Options:</strong> A · drop the fact when the summary shows the same thing. B · keep both. C · shorten the summary to one line with an ellipsis.</li>
-      <li><strong>Size:</strong> small (app data in the two screens). Your choice.</li>
+      <li><strong>Your choice (2026-10-25):</strong> remove the duplicate facts. Done in PR #334, which also covers Contacts ("Last message") and Projects ("Due").</li>
+    </ul>
+    <p class="rv-lead">PR #334: the current base (with #328) on the left, the PR on the right.</p>
+    <figure class="rv-fig"><img src="hdr-files.png" alt="Files header: the Latest fact is gone"><figcaption><span class="rv-tag">FILES</span> · the "Latest" fact is gone; the summary shows the date</figcaption></figure>
+    <figure class="rv-fig"><img src="hdr-messages.png" alt="Messages header: the Last fact is gone"><figcaption><span class="rv-tag">MESSAGES</span> · the "Last" fact is gone; the summary shows the time</figcaption></figure>
+    <figure class="rv-fig"><img src="hdr-contact.png" alt="Contact header: the Last message fact is gone"><figcaption><span class="rv-tag">CONTACTS</span> · the "Last message" fact is gone</figcaption></figure>
+    <figure class="rv-fig"><img src="hdr-project.png" alt="Project header: the Due fact is gone"><figcaption><span class="rv-tag">PROJECTS</span> · the "Due" fact is gone; the next step shows "Due Mar 10"</figcaption></figure>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">Fix PRs (open, not merged)</h2>
+    <ul class="rv-list">
+      <li><strong>#331</strong> (DataGrid session): table wrap padding once. Verified above; it is the fix for finding 1.</li>
+      <li><strong>#332:</strong> check-system reads a checkout under .claude/ (#307).</li>
+      <li><strong>#333:</strong> pages test waits for the first iOS page to draw.</li>
+      <li><strong>#334:</strong> no header fact that repeats the summary.</li>
+      <li>#327 and #328 are merged.</li>
     </ul>
   </section>
 
