@@ -3,8 +3,9 @@
    a role. DERIVED radius is worked out, not picked: a surface inset inside another rounded surface follows it.
    Rules (checked by platform/dev/radius-audit.js):
    - Controls own their radius: buttons, inputs, selects, navigation items, menu items and toolbar actions use
-     --plx-sys-radius-control wherever they sit, and never take a radius from their container. --plx-sys-radius-control follows density:
-     6px (standard, comfortable), 4px in compact (a compact control takes the smaller corner). Checks, swatches, tabs and
+     --plx-sys-radius-control wherever they sit, and never take a radius from their container. --plx-sys-radius-control is
+     4px in every density (owner, 2026-10-24, issues 298 and 299: Fluent's borderRadiusMedium; at 6px a 1-screen-pixel border's
+     curve read as a cut corner at 125% and 150%). Checks, swatches, tabs and
      list rows keep their own roles.
    - Menus and dropdowns are containment surfaces at the lowest radius role (owner, batch 272): --plx-sys-radius-surface-4px
      (--plx-sys-radius-menu-8px stays defined, unused). A menu item is a control, not a nested surface;
