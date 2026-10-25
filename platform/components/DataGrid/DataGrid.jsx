@@ -37,7 +37,8 @@
          fits its content up to --plx-comp-data-grid-auto-max-width (360px; longer text ends in an ellipsis, the full
          text on hover) and the last such column takes the room left, so the grid fills its width; minWidth, maxWidth; frozen: pinned at the start; rowLabel: this and
          the columns before it are the row header (pinned and shaded)
-       align, headerAlign: "left" | "center" | "right"; sortable: false turns sorting off; resizable: false
+       align: "left" | "center" | "right" (the cells); every header label starts at the start edge, whatever the column's
+         align (owner rule), and headerAlign is ignored; sortable: false turns sorting off; resizable: false
        editor: "input" | "number" (a Plenix input; double-click or Enter edits, Escape cancels); editable(record): which
          rows may edit; rowHandle: true makes the column the drag handle for moving rows
      selectable: the checkbox column (select all in its header); selected (keys) with onSelectionChange(keys,
