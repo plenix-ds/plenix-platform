@@ -289,6 +289,71 @@
     </ul>
   </section>
 
+  <h2 class="rv-h2" id="gate">Part 3 · The release gate on the merged head (52a4dc27)</h2>
+  <p class="rv-lead">Full CI run 40198784659, after merging #323, #327, #328, #331, #332, #333 and #334. Six findings. Nothing has been fixed; each needs your choice.</p>
+
+  <!--CRASH-->
+
+  <section class="rv-section">
+    <h2 class="rv-h2">2 · DataGrid wrapped header 4px off middle (older)</h2>
+    <ul class="rv-list">
+      <li><strong>Cause:</strong> unchanged from Part 2. In Compact, the titles of a view with wrapped headers sit 4px above the middle.</li>
+      <li><strong>Fix:</strong> PR #293, approved and mergeable (9786133d). Size: small, ready.</li>
+    </ul>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">3 · Typography: 4 checks, Streamlined header values in the normal font (left over from #328)</h2>
+    <ul class="rv-list">
+      <li><strong>Where:</strong> #/page-structures/record-page, light and dark: "Apr 12, 2027", "3.2 MB", "3840 × 2160".</li>
+      <li><strong>Cause:</strong> the Streamlined header writes its subtitle as text with <code>**bold**</code> parts ("Uploaded **Apr 12, 2027** · **3.2 MB**"). #328 put fact values in the data font, but these bold parts are not facts, so they stay in the normal font.</li>
+      <li><strong>Options:</strong>
+        <ul class="rv-list">
+          <li>A · EntityHeader draws a bold part that is a date, number or size in the data font (the same test as the facts). Size: small, component.</li>
+          <li>B · The spec examples mark these values as data explicitly, and EntityHeader draws marked parts in the data font. Size: small, component and spec.</li>
+        </ul></li>
+      <li><strong>Suggested:</strong> A. It follows your rule (#260) without changing the examples.</li>
+    </ul>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">4 · Accessibility: 4 issues (all older, also on 0.69.5)</h2>
+    <ul class="rv-list">
+      <li><strong>Empty static Table</strong> (#/foundations/icon): PR #315, approved. Small, ready.</li>
+      <li><strong>Code block</strong> (#/data-display/card, ×5): the code box carries <code>aria-label</code>, which its element may not have. Options: A · give it <code>role="region"</code> with the label (it is a scrollable, focusable area); B · drop the label. Suggested: A. Small, component.</li>
+      <li><strong>Number input</strong> (#/forms/input-group, ×4): the spec's example passes <code>label: 'Quantity'</code> to NumberInput, which has no such option, so it lands on the field as an attribute nothing reads. Fix: the example uses <code>aria-label</code> (or a Field with a label), as NumberInput's own examples do. Small, spec only. A plain bug.</li>
+      <li><strong>Facts list in the Commerce order header</strong> (#/specialized/commerce): the dl fix (c9897642) did not reach this header's layout. Fix: the same fix in that layout. Small, component.</li>
+    </ul>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">5 · Targets: 32 pages (older; nothing new in kind)</h2>
+    <ul class="rv-list">
+      <li><strong>Nav-pane splitter</strong> (8px wide) on every app page at touch size. At mouse size you accepted it (#217). Touch size (44px) belongs to #52.</li>
+      <li><strong>DataGrid header cells</strong> (28px tall) and menu arrows on touch: #52.</li>
+      <li><strong>Spec links in tables</strong> ("All buttons", "Tokens"): links alone in a cell are counted as small targets.</li>
+      <li><strong>The baseline</strong> dates from 0.31.71, so every page counts as "worse".</li>
+      <li><strong>Options:</strong> A · record the accepted and #52 cases in the test so it fails only on new kinds, and re-record the baseline once. B · keep it failing until #52 is done.</li>
+      <li><strong>Suggested:</strong> A. Small, test only.</li>
+    </ul>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">6 · Reflow: the Files header's file name runs past the card at 320px wide</h2>
+    <figure class="rv-fig"><img src="reflow-files.png" alt="Files header at 320px wide: in 0.71.0 the file name is cut at the card's edge; on the merged head it runs past the edge"><figcaption><span class="rv-tag">0.71.0 · MERGED HEAD</span> · left: cut at the card edge; right: past the card edge</figcaption></figure>
+    <ul class="rv-list">
+      <li><strong>Cause:</strong> the latest file's name ("2026-02-28_KitchenReno_Quote_ABCPlumbing.pdf") has no spaces, so it cannot wrap.
+        It was already cut off in 0.71.0 (since the Structured headers, #317), but hidden at the card's edge.
+        Since #328 it is in the data font and runs past the card, so the test now sees it.</li>
+      <li><strong>Options:</strong>
+        <ul class="rv-list">
+          <li>A · Long names in the header summary may break anywhere (the whole name shows, on two or three lines). Size: small, component CSS.</li>
+          <li>B · The name stays on one line and ends in "…", with the full name in a tooltip. Size: small, component.</li>
+        </ul></li>
+      <li><strong>Suggested:</strong> B for file names (they are long), as the file list beside it already does.</li>
+    </ul>
+  </section>
+
   <section class="rv-section">
     <h2 class="rv-h2">How this was checked</h2>
     <ul class="rv-list">
