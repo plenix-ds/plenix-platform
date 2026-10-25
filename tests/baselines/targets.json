@@ -1,8 +1,56 @@
 {
- "dam/index.html": {
-  "coarse": 4
+ "dam/settings-system.html": {
+  "coarse": 6
+ },
+ "settings/index.html#/appearance": {
+  "coarse": 6
+ },
+ "dam/settings-myaccount.html#/preferences": {
+  "coarse": 3
+ },
+ "design-system home": {
+  "coarse": 689
+ },
+ "design-system #/foundations/design-tokens": {
+  "coarse": 5
+ },
+ "design-system #/layout/grid": {
+  "coarse": 6
+ },
+ "design-system #/content/text": {
+  "coarse": 23
+ },
+ "design-system #/actions/button": {
+  "coarse": 30
+ },
+ "design-system #/forms/fieldset": {
+  "coarse": 2
  },
  "design-system #/navigation/application-header": {
-  "coarse": 5
+  "coarse": 27
+ },
+ "design-system #/data-display/badge": {
+  "coarse": 2
+ },
+ "design-system #/specialized/preview": {
+  "coarse": 10
+ },
+ "design-system #/feedback/notice": {
+  "coarse": 13
+ },
+ "design-system #/overlays/dialog": {
+  "coarse": 23
+ },
+ "design-system #/patterns/bulk-selection": {
+  "coarse": 9
+ },
+ "design-system #/page-structures/application-shell": {
+  "coarse": 14
+ },
+ "design-system #/interaction/focus-ring": {
+  "coarse": 2
+ },
+ "design-system #/implementation/react": {
+  "coarse": 1
  }
 }

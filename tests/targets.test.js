@@ -2,7 +2,9 @@
 // interactive element on every app page and a sample of the design system's pages, measured by its target area: the
 // region where a pointer lands on it (hit-tested with elementFromPoint along its center lines, so an invisible extension
 // such as a ::before target counts; a visually hidden checkbox or radio is measured by its label).
-//   coarse   any coarse pointer (touch emulated: pointer and hover media, touch events; <html data-plx-interaction="touch">):
+//   coarse   a phone: a coarse pointer in a mobile layout (390x844, under the 600px Narrow width; touch emulated: pointer and
+//            hover media, touch events; <html data-plx-interaction="mobile">). Owner, 2026-10-25 (#52): touch sizes apply only when
+//            the layout changes for mobile; a touch pointer on a desktop-width layout is not measured at 44px.
 //            at least 44x44
 //   fine     a mouse: at least 24x24, or the spacing rule: a 24px circle centered on the undersized target touches no
 //            other target and no other undersized target's circle
@@ -48,7 +50,7 @@ function measure(min, spacing) {
     // Owner-accepted (#217, 2026-10-24: "No, leave the Collapse button where it is."): the nav pane's own splitter
     // (div.plx-panel-splitter.plx-panel-splitter--end, a direct child of .plx-nav-pane) stays 8px wide. It fails the mouse
     // check's spacing rule because the Collapse sidebar button and the nav rows sit 8px from its center (the rule needs 12px),
-    // on the spec pages and in the apps. Only the mouse check skips it; the touch check still measures it (#52).
+    // on the spec pages and in the apps. Only the mouse check skips it; the mobile check still measures it (#52).
     if (spacing && el.classList.contains('plx-panel-splitter--end') && el.parentElement && el.parentElement.classList.contains('plx-nav-pane')) continue;
     let t = el;
     const r0 = el.getBoundingClientRect();
@@ -107,7 +109,7 @@ function measure(min, spacing) {
   const browser = await launch();
   const found = {};
   const MODES = [
-    { mode: 'coarse', min: 44, spacing: false, width: 1280, height: 900 },
+    { mode: 'coarse', min: 44, spacing: false, width: 390, height: 844 },
     { mode: 'fine', min: 24, spacing: true, width: 1440, height: 1000 },
   ];
   let interactionOk = true;
@@ -119,7 +121,7 @@ function measure(min, spacing) {
       await cdp.send('Emulation.setEmulatedMedia', { features: [{ name: 'pointer', value: 'coarse' }, { name: 'any-pointer', value: 'coarse' }, { name: 'hover', value: 'none' }, { name: 'any-hover', value: 'none' }, { name: 'prefers-reduced-motion', value: 'reduce' }] });
     }
     const take = async (key) => {
-      if (M.mode === 'coarse' && (await page.evaluate(() => document.documentElement.getAttribute('data-plx-interaction'))) !== 'touch') interactionOk = false;
+      if (M.mode === 'coarse' && (await page.evaluate(() => document.documentElement.getAttribute('data-plx-interaction'))) !== 'mobile') interactionOk = false;
       const r = await page.evaluate(measure, M.min, M.spacing);
       (found[key] = found[key] || {})[M.mode] = r;
     };
@@ -135,7 +137,7 @@ function measure(min, spacing) {
     await page.close();
   }
   await browser.close(); server.close();
-  if (!interactionOk) { console.log('TARGETS_FAIL the coarse pointer was not emulated (data-plx-interaction is not "touch")'); process.exit(1); }
+  if (!interactionOk) { console.log('TARGETS_FAIL the mobile layout was not emulated (data-plx-interaction is not "mobile")'); process.exit(1); }
 
   const modes = MODES.map((m) => m.mode);
   const total = (m) => Object.keys(found).reduce((n, p) => n + found[p][m].fail.length, 0);
