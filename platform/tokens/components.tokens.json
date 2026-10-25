@@ -97,11 +97,21 @@
     },
     "button-size-md-selected-border": {
       "$value": "{plx-sys.border-default}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "com.plenix": {
+          "forcedColors": "Highlight"
+        }
+      }
     },
     "button-size-md-selected-text": {
       "$value": "{plx-sys.content-default}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "com.plenix": {
+          "forcedColors": "HighlightText"
+        }
+      }
     },
     "button-size-md-primary-ring": {
       "$value": "none",
@@ -149,11 +159,21 @@
     },
     "button-size-sm-selected-border": {
       "$value": "{plx-sys.border-default}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "com.plenix": {
+          "forcedColors": "Highlight"
+        }
+      }
     },
     "button-size-sm-selected-text": {
       "$value": "{plx-sys.content-default}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "com.plenix": {
+          "forcedColors": "HighlightText"
+        }
+      }
     },
     "button-size-sm-primary-ring": {
       "$value": "none",
@@ -201,11 +221,21 @@
     },
     "button-size-xs-selected-border": {
       "$value": "{plx-sys.border-default}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "com.plenix": {
+          "forcedColors": "Highlight"
+        }
+      }
     },
     "button-size-xs-selected-text": {
       "$value": "{plx-sys.content-default}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "com.plenix": {
+          "forcedColors": "HighlightText"
+        }
+      }
     },
     "button-size-xs-primary-ring": {
       "$value": "none",
@@ -305,11 +335,21 @@
     },
     "button-size-lg-selected-border": {
       "$value": "{plx-sys.border-default}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "com.plenix": {
+          "forcedColors": "Highlight"
+        }
+      }
     },
     "button-size-lg-selected-text": {
       "$value": "{plx-sys.content-default}",
-      "$type": "color"
+      "$type": "color",
+      "$extensions": {
+        "com.plenix": {
+          "forcedColors": "HighlightText"
+        }
+      }
     },
     "button-size-lg-primary-ring": {
       "$value": "none",
