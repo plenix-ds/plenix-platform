@@ -4,13 +4,18 @@
 .plx-tooltip__bubble.is-open{opacity:1;visibility:visible;}
 .plx-tooltip__bubble--bottom{inset-block-start:var(--plx-comp-tooltip-bubble-bottom-inset-block-start);}
 .plx-tooltip__bubble--top{inset-block-end:var(--plx-comp-tooltip-bubble-top-inset-block-end);}
-.plx-tooltip__bubble::before{border-bottom-color:transparent;border-bottom-style:solid;border-bottom-width:var(--plx-comp-tooltip-bubble-before-border-width);border-left-color:transparent;border-left-style:solid;border-left-width:var(--plx-comp-tooltip-bubble-before-border-width);border-right-color:transparent;border-right-style:solid;border-right-width:var(--plx-comp-tooltip-bubble-before-border-width);border-top-color:transparent;border-top-style:solid;border-top-width:var(--plx-comp-tooltip-bubble-before-border-width);content:"";inset-inline-start:50%;position:absolute;transform:translateX(-50%);}
-.plx-tooltip__bubble--bottom::before{border-bottom-color:var(--plx-comp-tooltip-bubble-bottom-arrow-color);inset-block-end:100%;}
-.plx-tooltip__bubble--top::before{border-top-color:var(--plx-comp-tooltip-bubble-top-arrow-color);inset-block-start:100%;}
+/* the arrow: one border triangle; each side's class sets only its state variable (zero overlap, Styling Standard 3.5) */
+@property --plx-state-tooltip-arrow-bottom{syntax:"*";inherits:false;}
+@property --plx-state-tooltip-arrow-top{syntax:"*";inherits:false;}
+@property --plx-state-tooltip-arrow-start{syntax:"*";inherits:false;}
+@property --plx-state-tooltip-arrow-end{syntax:"*";inherits:false;}
+.plx-tooltip__bubble::before{border-bottom-color:var(--plx-state-tooltip-arrow-bottom,transparent);border-bottom-style:solid;border-bottom-width:var(--plx-comp-tooltip-bubble-before-border-width);border-inline-start-color:var(--plx-state-tooltip-arrow-start,transparent);border-left-style:solid;border-left-width:var(--plx-comp-tooltip-bubble-before-border-width);border-inline-end-color:var(--plx-state-tooltip-arrow-end,transparent);border-right-style:solid;border-right-width:var(--plx-comp-tooltip-bubble-before-border-width);border-top-color:var(--plx-state-tooltip-arrow-top,transparent);border-top-style:solid;border-top-width:var(--plx-comp-tooltip-bubble-before-border-width);content:"";inset-inline-start:50%;position:absolute;transform:translateX(-50%);}
+.plx-tooltip__bubble--bottom::before{--plx-state-tooltip-arrow-bottom:var(--plx-comp-tooltip-bubble-bottom-arrow-color);inset-block-end:100%;}
+.plx-tooltip__bubble--top::before{--plx-state-tooltip-arrow-top:var(--plx-comp-tooltip-bubble-top-arrow-color);inset-block-start:100%;}
 .plx-tooltip__bubble--end{inset-block-start:50%;inset-inline-start:var(--plx-comp-tooltip-bubble-end-inset-inline-start);transform:translateY(-50%);}
-.plx-tooltip__bubble--end::before{border-inline-end-color:var(--plx-comp-tooltip-bubble-end-arrow-color);inset-block-start:50%;inset-inline-end:100%;inset-inline-start:auto;transform:translateY(-50%);}
+.plx-tooltip__bubble--end::before{--plx-state-tooltip-arrow-end:var(--plx-comp-tooltip-bubble-end-arrow-color);inset-block-start:50%;inset-inline-end:100%;inset-inline-start:auto;transform:translateY(-50%);}
 .plx-tooltip__bubble--start{inset-block-start:50%;inset-inline-end:var(--plx-comp-tooltip-bubble-start-inset-inline-end);inset-inline-start:auto;transform:translateY(-50%);}
-.plx-tooltip__bubble--start::before{border-inline-start-color:var(--plx-comp-tooltip-bubble-start-arrow-color);inset-block-start:50%;inset-inline-end:auto;inset-inline-start:100%;transform:translateY(-50%);}
+.plx-tooltip__bubble--start::before{--plx-state-tooltip-arrow-start:var(--plx-comp-tooltip-bubble-start-arrow-color);inset-block-start:50%;inset-inline-end:auto;inset-inline-start:100%;transform:translateY(-50%);}
 /* placed by anchor positioning (utils/floating.js writes data-plx-floating while it shows): system/floating.css places
    it against the trigger; the wrapper-relative insets and the centering shift of the rules above step aside */
 .plx-tooltip__bubble[data-plx-floating]{inset-block-end:auto;inset-block-start:auto;inset-inline-end:auto;inset-inline-start:auto;position:fixed;transform:none;}

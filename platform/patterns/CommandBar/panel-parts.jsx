@@ -27,17 +27,21 @@ import { CommandBarButton, useCommandBar } from './CommandBar.jsx';
 export const toggle = (list, v) => (list.indexOf(v) >= 0 ? list.filter((x) => x !== v) : list.concat(v));
 export const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 
-// the bar button and its panel; inline: the body alone (a panel drawn open, or in a side panel)
-export function PanelTrigger({ icon, label, count = 0, active, caret = false, size = 'auto', title, footer, inline = false, placement, className, children }) {
+// the bar button and its panel; inline: the body alone (a panel drawn open, or in a side panel). current: the choice in
+// force, shown in the button ("Status: Active", a pop-up button in Apple's words) in place of the count badge
+export function PanelTrigger({ icon, label, current, count = 0, active, caret = false, size = 'auto', title, footer, inline = false, placement, className, children }) {
   const ctx = useCommandBar();
   const box = React.useRef(null);
   // the focus goes to the panel's first row control, else its Add button: not the info button of its head
   const first = { get current() { const el = box.current; return el ? el.querySelector('[data-plx-panel-first] button:not([disabled]), [data-plx-panel-first] input, .plx-find-panel__rows button:not([disabled]), .plx-find-panel__rows input, .plx-find-panel__add button:not([disabled]), .plx-find-panel input') : null; } };
   const body = <div ref={box} className={cx('plx-find-panel-body', className)}>{children}</div>;
   if (inline) return <div className="plx-find-panel-frame">{children}</div>;
-  const trigger = <CommandBarButton icon={icon} label={label} count={count} active={active} caret={caret} />;
+  const words = current ? label + ': ' + current : label;
+  // icons only: no room for the words, so the count badge stays; the tooltip says the choice
+  const trigger = current && !ctx.iconOnly ? <CommandBarButton icon={icon} label={label} active caret={caret} aria-label={words}>{words}</CommandBarButton>
+    : <CommandBarButton icon={icon} label={label} count={count} active={active} caret={caret} />;
   const pop = <Popover label={title ? undefined : label} title={title} size={size} trigger={trigger} footer={footer} placement={placement} initialFocus={first}>{body}</Popover>;
-  return ctx.iconOnly ? <Tooltip content={label}>{pop}</Tooltip> : pop;
+  return ctx.iconOnly ? <Tooltip content={words}>{pop}</Tooltip> : pop;
 }
 
 export function PanelHead({ title, info, infoLabel, sub, actions }) {

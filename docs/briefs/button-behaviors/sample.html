@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en" data-plx-mode="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Button behaviors sample</title>
+<!-- The sample photographed for the PR 4 before/after (#298): the real Platform components, nothing restyled here. -->
+<script src="../../../platform/providers/theme-boot.js"></script>
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<link rel="stylesheet" href="../review.css">
+<script src="../../../platform/vendor/react-loader.js"></script>
+<script src="../../../platform/dist/platform.js"></script>
+<style>
+.bb-row{align-items:center;display:flex;flex-wrap:wrap;gap:var(--plx-sys-space-inline-sm);}
+.bb-tips{min-block-size:var(--plx-ref-size-80px,5rem);}
+.bb-bar{min-block-size:var(--plx-ref-size-80px,5rem);}
+.bb-label{color:var(--plx-sys-content-muted);font-size:var(--plx-ref-font-size-12);margin:0;}
+</style>
+</head>
+<body class="rv-page">
+<div id="root"></div>
+<script>
+(function () {
+  const h = React.createElement, P = window.Plenix, noop = () => {};
+  const B = (props, label) => h(P.Button, Object.assign({ onClick: noop }, props), label);
+  const statuses = ['Active', 'Draft', 'In review', 'Archived'];
+  const fields = [{ value: 'name', label: 'Name', kind: 'text' }, { value: 'updated', label: 'Updated', kind: 'date' }, { value: 'status', label: 'Status', kind: 'select', options: statuses }];
+  function Bar() {
+    const [sort, setSort] = React.useState([{ field: 'updated', dir: 'desc' }]);
+    const [status, setStatus] = React.useState(['In review']);
+    return h(P.CommandBar, { label: 'Documents', count: '24 documents', position: 'static',
+      actions: [{ id: 'new', label: 'New', icon: 'plus', onSelect: noop }],
+      quickFilters: [{ id: 'status', label: 'Status', noun: 'status', kind: 'single', options: statuses.map((s) => ({ value: s, label: s })), value: status, onChange: setStatus }],
+      view: h(P.SortPanel, { fields, value: sort, onChange: setSort }) });
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(h('main', { className: 'rv-doc' },
+    h('section', { className: 'rv-stage bb-tips', id: 'tips' },
+      h('p', { className: 'bb-label' }, 'Icon-only buttons (the first one hovered)'),
+      h('div', { className: 'bb-row' },
+        B({ iconOnly: true, icon: 'reply', label: 'Reply', shortcut: 'R' }), B({ iconOnly: true, icon: 'forward', label: 'Forward', shortcut: 'F' }),
+        B({ iconOnly: true, icon: 'archive', label: 'Archive', shortcut: 'E' }), B({ iconOnly: true, icon: 'more', label: 'More actions' }))),
+    h('section', { className: 'rv-stage', id: 'loading' },
+      h('p', { className: 'bb-label' }, 'Loading: each button at rest, then loading'),
+      h('div', { className: 'bb-row' },
+        B({ variant: 'primary' }, 'Save changes'), B({ variant: 'primary', loading: true }, 'Save changes'),
+        B({ icon: 'upload' }, 'Upload'), B({ icon: 'upload', loading: true }, 'Upload'),
+        B({ iconOnly: true, icon: 'archive', label: 'Archive' }), B({ iconOnly: true, icon: 'archive', label: 'Archive', loading: true }))),
+    h('section', { className: 'bb-bar', id: 'bar' }, h(Bar))));
+})();
+</script>
+</body>
+</html>

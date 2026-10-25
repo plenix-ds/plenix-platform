@@ -33,6 +33,8 @@
        trigger toggles it (aria-expanded, aria-controls), Tab from the trigger reaches the action, and Escape, a click
        outside or focus leaving it closes it (Escape returns focus to the trigger); a tap opens it on touch.
    Notes:
+     An icon-only Button shows its name (and its shortcut) as a tooltip by itself; inside a Tooltip it leaves that to the
+       Tooltip (InTooltip), so a control never gets two.
      An icon-only control still needs its own label (aria-label): the tooltip repeats it visually, it is never the only
      way to learn the control's name.
      Not for essential content. Only the rich tooltip holds an action, and then it opens on click: interactive content never
@@ -44,6 +46,9 @@ import { cx } from '../../utils/cx.js';
 import { useFloating, FLOATING_ANCHOR } from '../../utils/floating.js';
 
 const SIDES = ['bottom', 'top', 'start', 'end'];
+
+// true inside a Tooltip's trigger: a Button there does not add its own (an icon-only Button shows its name by itself)
+export const InTooltip = React.createContext(false);
 
 // a duration token ("0.5s", "500ms") in milliseconds, read from the element's computed style
 const ms = (el, name) => {
@@ -96,7 +101,7 @@ export function Tooltip({ content, placement = 'bottom', title, action, rich = f
     'aria-expanded': open, 'aria-controls': open ? id + 'b' : undefined,
     onClick: (e) => { if (child.props.onClick) child.props.onClick(e); setOpen(!open); },
   }) : described);
-  if (disabled) return <span className={cx('plx-tooltip', className)}>{trigger}</span>;
+  if (disabled) return <span className={cx('plx-tooltip', className)}><InTooltip.Provider value>{trigger}</InTooltip.Provider></span>;
   const onPointerDown = (e) => {
     if (e.pointerType !== 'touch' || toggle) return;
     clear(); pressed.current = false;
@@ -123,7 +128,7 @@ export function Tooltip({ content, placement = 'bottom', title, action, rich = f
       onClickCapture={(e) => { if (pressed.current) { e.preventDefault(); e.stopPropagation(); pressed.current = false; } }}
       onFocus={() => { if (!toggle && lastInput !== 'touch') setOpen(true); }}
       onBlur={(e) => { if (!pressed.current && !(wrap.current && wrap.current.contains(e.relatedTarget))) setOpen(false); }}>
-      {trigger}
+      <InTooltip.Provider value>{trigger}</InTooltip.Provider>
       {isRich ? (
         <span ref={bubble} id={id + 'b'} className={bubbleCls}>
           <span role="tooltip" id={id} className="plx-tooltip__content">
