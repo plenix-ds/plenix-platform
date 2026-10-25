@@ -3758,6 +3758,16 @@
       "$value": "{plx-sys.state-hover}",
       "$type": "color"
     },
+    "menu-item-hover-icon": {
+      "$value": "{plx-sys.action-primary-background}",
+      "$type": "color",
+      "$description": "Menu item: its icon on hover and focus, in the action color (Fluent menus); danger and disabled items keep theirs."
+    },
+    "menu-item-radius": {
+      "$value": "{plx-sys.radius-control}",
+      "$type": "dimension",
+      "$description": "Menu item: its own corner, the control corner (4px), as Fluent; items sit inside the menu's padding, so they never meet its edge."
+    },
     "menu-item-focus-outline-color": {
       "$value": "{plx-sys.focus-ring-color}",
       "$type": "color"
