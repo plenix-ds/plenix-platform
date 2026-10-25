@@ -5498,7 +5498,7 @@
       "$type": "dimension"
     },
     "data-grid-resize-width": {
-      "$value": "{plx-ref.size-8px}",
+      "$value": "{plx-ref.size-12px}",
       "$type": "dimension"
     },
     "data-grid-resize-z-index": {
