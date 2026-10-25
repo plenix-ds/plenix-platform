@@ -292,7 +292,18 @@
   <h2 class="rv-h2" id="gate">Part 3 · The release gate on the merged head (52a4dc27)</h2>
   <p class="rv-lead">Full CI run 40198784659, after merging #323, #327, #328, #331, #332, #333 and #334. Six findings. Nothing has been fixed; each needs your choice.</p>
 
-  <!--CRASH-->
+  <section class="rv-section">
+    <h2 class="rv-h2">1 · Three spec pages crash: "Cannot read properties of null (reading 'CSSStyleSheet')" (older, also in 0.71.0)</h2>
+    <ul class="rv-list">
+      <li><strong>Where:</strong> one page per pages shard in CI (#/layout/dashboard-grid, #/specialized/prompt-history, #/patterns/save-as). The 0.70.0 full run hit it once too (#/page-structures/record-page/v/all). The page that gets the blame changes with timing.</li>
+      <li><strong>Cause:</strong> the spec's sample code (<code>DS.varClass</code> in <code>ds.js</code>) builds its sample sheet through the page's window. When it runs for a preview frame that has already been removed, that window is gone (null), and it throws exactly this message. Proven directly: remove an iframe, then call <code>DS.varClass</code> on its document.</li>
+      <li><strong>Not from 0.70:</strong> this code is in 0.69.5, 0.70.0 and the released 0.71.0. It shows only with CI's timing; locally, all four page shards on the merged head ran without it.</li>
+      <li><strong>Not the suspects:</strong> plenixTokens (#158) and the Tooltip (#323) don't use this code path.</li>
+      <li><strong>Fix (a plain bug, PR ready):</strong> plenix-design-system#4. A closed frame has nothing left to draw, so the sample code skips it: 3 lines in <code>ds.js</code> and <code>component-lab.js</code>. SPEC_OK. Then the integrator moves the spec pointer.</li>
+      <li><strong>Option for later:</strong> a DataGrid drawn into a frame that is then removed fails the same way (another message, "innerHeight"). CI has not hit it. Options: A · the spec unmounts what it draws into a frame when the frame goes; B · the DataGrid ignores a closed document. Both small.</li>
+      <li><strong>Also seen once locally:</strong> #/specialized/document-viewer/v/document-viewer-text, "Worker was terminated" from the PDF viewer (pdf.js) when the page is left while a PDF loads. Timing; not in CI's run.</li>
+    </ul>
+  </section>
 
   <section class="rv-section">
     <h2 class="rv-h2">2 · DataGrid wrapped header 4px off middle (older)</h2>
@@ -328,6 +339,7 @@
 
   <section class="rv-section">
     <h2 class="rv-h2">5 · Targets: 32 pages (older; nothing new in kind)</h2>
+    <p class="rv-rec">Your decision (2026-10-25): "Remove tap areas from all tests." Done in PR #336, which replaces #335; the 871 mobile findings are on #52 as information only. The analysis below is kept for the record.</p>
     <ul class="rv-list">
       <li><strong>Nav-pane splitter</strong> (8px wide) on every app page at touch size. At mouse size you accepted it (#217). Touch size (44px) belongs to #52.</li>
       <li><strong>DataGrid header cells</strong> (28px tall) and menu arrows on touch: #52.</li>
