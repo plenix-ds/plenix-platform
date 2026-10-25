@@ -26,6 +26,8 @@ const VARIANTS = [['', 20, 'outline20'], ['-fill', 20, 'filled20'], ['-24', 24, 
 const dOf = (svg) => (svg.match(/\sd="([^"]+)"/) || [])[1] || '';
 
 function sourceFile(lib, icon) {
+  // Plenix's own drawings (tools/icons/draw-file-types.js): their source lives in the repository
+  if (lib === 'plenix') { const f = path.join(INV, 'source', icon + '.svg'); return fs.existsSync(f) ? { file: f, folder: 'source' } : null; }
   const L = libs[lib];
   if (!L || !L.sources) throw new Error(`library ${lib} is not in libraries.json`);
   for (const s of L.sources) {
@@ -39,14 +41,16 @@ function sourceFile(lib, icon) {
 let built = 0, failed = 0;
 for (const rec of inv.icons) {
   const L = libs[rec.library];
-  rec.license = L ? L.license : 'unknown';
+  rec.license = rec.library === 'plenix' ? 'Plenix (own drawing)' : L ? L.license : 'unknown';
   if (L && L.status === 'attribution') rec.attribution = `Icons by ${L.name} (${L.license})`;
   const ver = manifest && manifest.libraries[rec.library] && manifest.libraries[rec.library].sources.find((s) => s.version);
   if (ver) rec.source = ver.source;
   if (rec.state === 'found') continue;
   const dir = path.join(INV, 'svg', rec.library);
   const base = path.join(dir, rec.icon);
-  const src = sourceFile(rec.library, rec.icon);
+  // an approved icon keeps the files the owner approved: it is checked, never redrawn
+  const keep = rec.state === 'approved' && fs.existsSync(base + '.svg');
+  const src = keep ? null : sourceFile(rec.library, rec.icon);
   if (src) {
     const text = fs.readFileSync(src.file, 'utf8');
     const fillSrc = rec.fillFrom ? sourceFile(rec.library, rec.fillFrom) : null;
@@ -58,7 +62,7 @@ for (const rec of inv.icons) {
     for (const [suffix, t] of Object.entries(r.files)) fs.writeFileSync(base + suffix + '.svg', t);
     rec.restyle = { 20: r.report[20], 24: r.report[24] };
     built++;
-  } else if (!fs.existsSync(base + '.svg')) {
+  } else if (!keep && !fs.existsSync(base + '.svg')) {
     console.log(`${rec.id}: no source in the store and no files (run tools/icons/fetch-libraries.js)`);
     failed++;
     continue;

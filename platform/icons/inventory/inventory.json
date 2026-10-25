@@ -490,7 +490,7 @@
       "category": "Files",
       "library": "tabler",
       "icon": "file-type-jpg",
-      "state": "restyled",
+      "state": "found",
       "why": "Material has no per-format file icons (map.json flag file-jpg).",
       "sizes": [
         "lg",
@@ -568,7 +568,7 @@
           ]
         }
       },
-      "needs": "Squared letters: the J, G, S, P and D keep round bends (sharp-corners fails), and the letters cannot be read under 24px. Owner: draw squared letters, or keep the generic file icon."
+      "decision": "Owner, 2026-10-24: draw squared letters instead (plenix/file-jpg). Kept as found for comparison."
     },
     {
       "id": "tabler/file-type-png",
@@ -584,7 +584,7 @@
       "category": "Files",
       "library": "tabler",
       "icon": "file-type-png",
-      "state": "restyled",
+      "state": "found",
       "why": "Material has no per-format file icons (map.json flag file-png).",
       "sizes": [
         "lg",
@@ -662,7 +662,7 @@
           ]
         }
       },
-      "needs": "Squared letters: the J, G, S, P and D keep round bends (sharp-corners fails), and the letters cannot be read under 24px. Owner: draw squared letters, or keep the generic file icon."
+      "decision": "Owner, 2026-10-24: draw squared letters instead (plenix/file-png). Kept as found for comparison."
     },
     {
       "id": "tabler/file-type-svg",
@@ -678,7 +678,7 @@
       "category": "Files",
       "library": "tabler",
       "icon": "file-type-svg",
-      "state": "restyled",
+      "state": "found",
       "why": "Material has no per-format file icons (map.json flag file-svg).",
       "sizes": [
         "lg",
@@ -758,7 +758,7 @@
           ]
         }
       },
-      "needs": "Squared letters: the J, G, S, P and D keep round bends (sharp-corners fails), and the letters cannot be read under 24px. Owner: draw squared letters, or keep the generic file icon."
+      "decision": "Owner, 2026-10-24: draw squared letters instead (plenix/file-svg). Kept as found for comparison."
     },
     {
       "id": "tabler/file-type-pdf",
@@ -774,7 +774,7 @@
       "category": "Files",
       "library": "tabler",
       "icon": "file-type-pdf",
-      "state": "restyled",
+      "state": "found",
       "why": "Same family as the other file types, so every format reads alike (Material's picture_as_pdf is drawn differently).",
       "sizes": [
         "lg",
@@ -852,7 +852,7 @@
           ]
         }
       },
-      "needs": "Squared letters: the J, G, S, P and D keep round bends (sharp-corners fails), and the letters cannot be read under 24px. Owner: draw squared letters, or keep the generic file icon."
+      "decision": "Owner, 2026-10-24: draw squared letters instead (plenix/file-pdf). Kept as found for comparison."
     },
     {
       "id": "lucide/git-branch",
@@ -1119,16 +1119,504 @@
         }
       },
       "decision": "Owner, 2026-10-24: added to the icon set (platform/icons/custom, map.json git-pull-request)."
-    }
-  ],
-  "gaps": [
-    {
-      "name": "file-psd",
-      "why": "Material has no per-format file icons (map.json flag file-psd). No open library draws a generic PSD file; Tabler and Simple Icons have only Adobe's Photoshop logo, a trademark."
     },
     {
+      "id": "plenix/file-jpg",
+      "name": "file-jpg",
+      "aliases": [
+        "file-jpeg"
+      ],
+      "keywords": [
+        "jpg",
+        "jpeg",
+        "image",
+        "photo",
+        "file type",
+        "format"
+      ],
+      "category": "Files",
+      "library": "plenix",
+      "icon": "file-jpg",
+      "shape": "square",
+      "state": "restyled",
+      "replaces": "file-jpg",
+      "why": "Owner, 2026-10-24: lettered file icons with squared letters in the sharp style (tools/icons/draw-file-types.js). Today the name draws a generic Material icon.",
+      "sizes": [
+        "lg",
+        "xl"
+      ],
+      "license": "Plenix (own drawing)",
+      "restyle": {
+        "20": {
+          "notes": [],
+          "shape": "square",
+          "scale": 0.935,
+          "fitBy": "keyline",
+          "fill": "none: no closed outer shape (the outline is used)"
+        },
+        "24": {
+          "notes": [],
+          "shape": "square",
+          "scale": 1,
+          "fitBy": "keyline",
+          "fill": "none: no closed outer shape (the outline is used)"
+        }
+      },
+      "files": {
+        "found": "svg/plenix/file-jpg.found.svg",
+        "outline20": "svg/plenix/file-jpg.svg",
+        "filled20": "svg/plenix/file-jpg-fill.svg",
+        "outline24": "svg/plenix/file-jpg-24.svg",
+        "filled24": "svg/plenix/file-jpg-24-fill.svg"
+      },
+      "check": {
+        "outline20": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "filled20": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "outline24": {
+          "pass": true,
+          "fail": [],
+          "warn": [
+            "edge-grid"
+          ]
+        },
+        "filled24": {
+          "pass": true,
+          "fail": [],
+          "warn": [
+            "edge-grid"
+          ]
+        },
+        "found": {
+          "pass": false,
+          "fail": [
+            "canvas",
+            "construction"
+          ],
+          "warn": [
+            "edge-grid"
+          ]
+        }
+      }
+    },
+    {
+      "id": "plenix/file-png",
+      "name": "file-png",
+      "aliases": [],
+      "keywords": [
+        "png",
+        "image",
+        "transparent",
+        "file type",
+        "format"
+      ],
+      "category": "Files",
+      "library": "plenix",
+      "icon": "file-png",
+      "shape": "square",
+      "state": "restyled",
+      "replaces": "file-png",
+      "why": "Owner, 2026-10-24: lettered file icons with squared letters in the sharp style (tools/icons/draw-file-types.js). Today the name draws a generic Material icon.",
+      "sizes": [
+        "lg",
+        "xl"
+      ],
+      "license": "Plenix (own drawing)",
+      "restyle": {
+        "20": {
+          "notes": [],
+          "shape": "square",
+          "scale": 0.935,
+          "fitBy": "keyline",
+          "fill": "none: no closed outer shape (the outline is used)"
+        },
+        "24": {
+          "notes": [],
+          "shape": "square",
+          "scale": 1,
+          "fitBy": "keyline",
+          "fill": "none: no closed outer shape (the outline is used)"
+        }
+      },
+      "files": {
+        "found": "svg/plenix/file-png.found.svg",
+        "outline20": "svg/plenix/file-png.svg",
+        "filled20": "svg/plenix/file-png-fill.svg",
+        "outline24": "svg/plenix/file-png-24.svg",
+        "filled24": "svg/plenix/file-png-24-fill.svg"
+      },
+      "check": {
+        "outline20": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "filled20": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "outline24": {
+          "pass": true,
+          "fail": [],
+          "warn": [
+            "edge-grid"
+          ]
+        },
+        "filled24": {
+          "pass": true,
+          "fail": [],
+          "warn": [
+            "edge-grid"
+          ]
+        },
+        "found": {
+          "pass": false,
+          "fail": [
+            "canvas",
+            "construction"
+          ],
+          "warn": [
+            "edge-grid"
+          ]
+        }
+      }
+    },
+    {
+      "id": "plenix/file-svg",
+      "name": "file-svg",
+      "aliases": [],
+      "keywords": [
+        "svg",
+        "vector",
+        "image",
+        "file type",
+        "format"
+      ],
+      "category": "Files",
+      "library": "plenix",
+      "icon": "file-svg",
+      "shape": "square",
+      "state": "restyled",
+      "replaces": "file-svg",
+      "why": "Owner, 2026-10-24: lettered file icons with squared letters in the sharp style (tools/icons/draw-file-types.js). Today the name draws a generic Material icon.",
+      "sizes": [
+        "lg",
+        "xl"
+      ],
+      "license": "Plenix (own drawing)",
+      "restyle": {
+        "20": {
+          "notes": [],
+          "shape": "square",
+          "scale": 0.935,
+          "fitBy": "keyline",
+          "fill": "none: no closed outer shape (the outline is used)"
+        },
+        "24": {
+          "notes": [],
+          "shape": "square",
+          "scale": 1,
+          "fitBy": "keyline",
+          "fill": "none: no closed outer shape (the outline is used)"
+        }
+      },
+      "files": {
+        "found": "svg/plenix/file-svg.found.svg",
+        "outline20": "svg/plenix/file-svg.svg",
+        "filled20": "svg/plenix/file-svg-fill.svg",
+        "outline24": "svg/plenix/file-svg-24.svg",
+        "filled24": "svg/plenix/file-svg-24-fill.svg"
+      },
+      "check": {
+        "outline20": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "filled20": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "outline24": {
+          "pass": true,
+          "fail": [],
+          "warn": [
+            "edge-grid"
+          ]
+        },
+        "filled24": {
+          "pass": true,
+          "fail": [],
+          "warn": [
+            "edge-grid"
+          ]
+        },
+        "found": {
+          "pass": false,
+          "fail": [
+            "canvas",
+            "construction"
+          ],
+          "warn": [
+            "edge-grid"
+          ]
+        }
+      }
+    },
+    {
+      "id": "plenix/file-pdf",
+      "name": "file-pdf",
+      "aliases": [],
+      "keywords": [
+        "pdf",
+        "document",
+        "acrobat",
+        "file type",
+        "format"
+      ],
+      "category": "Files",
+      "library": "plenix",
+      "icon": "file-pdf",
+      "shape": "square",
+      "state": "restyled",
+      "replaces": "file-pdf",
+      "why": "Owner, 2026-10-24: lettered file icons with squared letters in the sharp style (tools/icons/draw-file-types.js). Today the name draws a generic Material icon.",
+      "sizes": [
+        "lg",
+        "xl"
+      ],
+      "license": "Plenix (own drawing)",
+      "restyle": {
+        "20": {
+          "notes": [],
+          "shape": "square",
+          "scale": 0.935,
+          "fitBy": "keyline",
+          "fill": "none: no closed outer shape (the outline is used)"
+        },
+        "24": {
+          "notes": [],
+          "shape": "square",
+          "scale": 1,
+          "fitBy": "keyline",
+          "fill": "none: no closed outer shape (the outline is used)"
+        }
+      },
+      "files": {
+        "found": "svg/plenix/file-pdf.found.svg",
+        "outline20": "svg/plenix/file-pdf.svg",
+        "filled20": "svg/plenix/file-pdf-fill.svg",
+        "outline24": "svg/plenix/file-pdf-24.svg",
+        "filled24": "svg/plenix/file-pdf-24-fill.svg"
+      },
+      "check": {
+        "outline20": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "filled20": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "outline24": {
+          "pass": true,
+          "fail": [],
+          "warn": [
+            "edge-grid"
+          ]
+        },
+        "filled24": {
+          "pass": true,
+          "fail": [],
+          "warn": [
+            "edge-grid"
+          ]
+        },
+        "found": {
+          "pass": false,
+          "fail": [
+            "canvas",
+            "construction"
+          ],
+          "warn": [
+            "edge-grid"
+          ]
+        }
+      }
+    },
+    {
+      "id": "plenix/file-psd",
+      "name": "file-psd",
+      "aliases": [],
+      "keywords": [
+        "psd",
+        "photoshop",
+        "layered image",
+        "file type",
+        "format"
+      ],
+      "category": "Files",
+      "library": "plenix",
+      "icon": "file-psd",
+      "shape": "square",
+      "state": "restyled",
+      "replaces": "file-psd",
+      "why": "Owner, 2026-10-24: lettered file icons with squared letters in the sharp style (tools/icons/draw-file-types.js). Today the name draws a generic Material icon.",
+      "sizes": [
+        "lg",
+        "xl"
+      ],
+      "license": "Plenix (own drawing)",
+      "restyle": {
+        "20": {
+          "notes": [],
+          "shape": "square",
+          "scale": 0.935,
+          "fitBy": "keyline",
+          "fill": "none: no closed outer shape (the outline is used)"
+        },
+        "24": {
+          "notes": [],
+          "shape": "square",
+          "scale": 1,
+          "fitBy": "keyline",
+          "fill": "none: no closed outer shape (the outline is used)"
+        }
+      },
+      "files": {
+        "found": "svg/plenix/file-psd.found.svg",
+        "outline20": "svg/plenix/file-psd.svg",
+        "filled20": "svg/plenix/file-psd-fill.svg",
+        "outline24": "svg/plenix/file-psd-24.svg",
+        "filled24": "svg/plenix/file-psd-24-fill.svg"
+      },
+      "check": {
+        "outline20": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "filled20": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "outline24": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "filled24": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "found": {
+          "pass": false,
+          "fail": [
+            "canvas",
+            "construction"
+          ],
+          "warn": [
+            "edge-grid"
+          ]
+        }
+      }
+    },
+    {
+      "id": "plenix/file-ai",
       "name": "file-ai",
-      "why": "Material has no per-format file icons (map.json flag file-ai). No open library draws a generic AI file; only Adobe's Illustrator logo exists, a trademark."
+      "aliases": [],
+      "keywords": [
+        "ai",
+        "illustrator",
+        "vector artwork",
+        "file type",
+        "format"
+      ],
+      "category": "Files",
+      "library": "plenix",
+      "icon": "file-ai",
+      "shape": "square",
+      "state": "restyled",
+      "replaces": "file-ai",
+      "why": "Owner, 2026-10-24: lettered file icons with squared letters in the sharp style (tools/icons/draw-file-types.js). Today the name draws a generic Material icon.",
+      "sizes": [
+        "lg",
+        "xl"
+      ],
+      "license": "Plenix (own drawing)",
+      "restyle": {
+        "20": {
+          "notes": [],
+          "shape": "square",
+          "scale": 0.935,
+          "fitBy": "keyline",
+          "fill": "none: no closed outer shape (the outline is used)"
+        },
+        "24": {
+          "notes": [],
+          "shape": "square",
+          "scale": 1,
+          "fitBy": "keyline",
+          "fill": "none: no closed outer shape (the outline is used)"
+        }
+      },
+      "files": {
+        "found": "svg/plenix/file-ai.found.svg",
+        "outline20": "svg/plenix/file-ai.svg",
+        "filled20": "svg/plenix/file-ai-fill.svg",
+        "outline24": "svg/plenix/file-ai-24.svg",
+        "filled24": "svg/plenix/file-ai-24-fill.svg"
+      },
+      "check": {
+        "outline20": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "filled20": {
+          "pass": true,
+          "fail": [],
+          "warn": []
+        },
+        "outline24": {
+          "pass": true,
+          "fail": [],
+          "warn": [
+            "edge-grid"
+          ]
+        },
+        "filled24": {
+          "pass": true,
+          "fail": [],
+          "warn": [
+            "edge-grid"
+          ]
+        },
+        "found": {
+          "pass": false,
+          "fail": [
+            "canvas",
+            "construction"
+          ],
+          "warn": [
+            "edge-grid"
+          ]
+        }
+      }
     }
-  ]
+  ],
+  "gaps": []
 }

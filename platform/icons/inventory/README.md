@@ -39,7 +39,7 @@ it waits for the owner's look at `docs/briefs/iconography/first-batch.html`.
 ## Adding a candidate
 
 1. Copy the libraries locally once: `npm install --prefix tools/icons`, then `node tools/icons/fetch-libraries.js`
-   (about 107,000 icons; the store is `C:/Users/Administrator/Documents/Plenix-icon-libraries`, outside git, with its
+   (about 96,000 icons; the store is `C:/Users/Administrator/Documents/Plenix-icon-libraries`, outside git, with its
    `manifest.json`).
 2. Find the icon in `<store>/<library>/<set>/svg/`. Check it as found: `node tools/icons/check-icon.js <file>`.
 3. Add a record to `inventory.json` (`state: "restyled"`, `library`, `icon`, and `fillFrom` when the library has its own
@@ -51,6 +51,6 @@ it waits for the owner's look at `docs/briefs/iconography/first-batch.html`.
 ## Licenses
 
 Every downloaded library allows use, change and redistribution (MIT, ISC, Apache-2.0, CC0-1.0). Keep each
-library's license file with any icon taken from it (the store holds them). Streamline's free sets are CC BY 4.0:
-none of them is approved until the owner accepts the credit line. Logos and flags keep their brands' rules and are never
-restyled.
+library's license file with any icon taken from it (the store holds them). No library that needs a visible credit
+line is used: Streamline was left out for that reason (owner, 2026-10-24). Logos and flags keep their brands' rules and
+are never restyled.

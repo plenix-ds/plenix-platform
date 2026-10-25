@@ -1,47 +1,470 @@
 {
-  "_about": "The icon libraries the owner listed (2026-10-24) and what Plenix may do with each. status: downloaded = open license that allows use, change and redistribution, copied to the local store by tools/icons/fetch-libraries.js; attribution = open license that requires credit (CC BY 4.0), downloaded, but nothing from it ships until the owner accepts the credit line; wrapper = a package that redraws or re-exports another set, so the wrapped set is used instead; local = already in the repository; decision = not downloaded, the owner decides (reason given). Versions and counts of the downloaded copies are in the local store's manifest.json.",
+  "_about": "The icon libraries the owner listed (2026-10-24) and what Plenix may do with each. status: downloaded = open license that allows use, change and redistribution, copied to the local store by tools/icons/fetch-libraries.js; wrapper = a package that redraws or re-exports another set, so the wrapped set is used instead; local = already in the repository; decision = not downloaded, the owner decides (reason given). Versions and counts of the downloaded copies are in the local store's manifest.json.",
   "store": "C:/Users/Administrator/Documents/Plenix-icon-libraries",
   "libraries": [
-    { "id": "akar", "name": "Akar Icons", "status": "downloaded", "license": "MIT", "sources": [{ "iconify": "akar-icons" }], "upstream": "https://github.com/artcoholic/akar-icons" },
-    { "id": "antd-icons", "name": "Ant Design Icons", "status": "downloaded", "license": "MIT", "sources": [{ "iconify": "ant-design" }], "upstream": "https://github.com/ant-design/ant-design-icons" },
-    { "id": "basicons", "name": "Basicons", "status": "downloaded", "license": "MIT", "sources": [{ "npm": "react-basicons", "dir": "svg" }], "upstream": "https://github.com/PreciousME/react-basicons", "note": "Not on Iconify; the SVG files come from the react-basicons package (MIT, by the Basicons authors)." },
-    { "id": "bootstrap-icons", "name": "Bootstrap Icons", "status": "downloaded", "license": "MIT", "sources": [{ "iconify": "bi" }], "upstream": "https://github.com/twbs/icons" },
-    { "id": "carbon", "name": "Carbon (IBM)", "status": "downloaded", "license": "Apache-2.0", "sources": [{ "iconify": "carbon" }], "upstream": "https://github.com/carbon-design-system/carbon" },
-    { "id": "chakra-icons", "name": "Chakra UI Icons", "status": "downloaded", "license": "MIT", "sources": [{ "npm": "@chakra-ui/icons", "chakra": true }], "upstream": "https://github.com/chakra-ui/chakra-ui", "note": "A small set of its own (about 60 icons, drawn as React components). Chakra UI v3 retired it and points to Lucide; the paths are extracted from the last package." },
-    { "id": "compose-material-icons", "name": "Jetpack Compose Material Icons", "status": "wrapper", "wraps": "material", "license": "Apache-2.0", "note": "androidx.compose.material:material-icons-extended re-exports Google's Material Icons (the older set, Iconify ic). Use material." },
-    { "id": "css-gg", "name": "css.gg", "status": "downloaded", "license": "MIT", "sources": [{ "iconify": "gg" }], "upstream": "https://github.com/astrit/css.gg" },
-    { "id": "devicons", "name": "Devicon", "status": "downloaded", "license": "MIT", "sources": [{ "iconify": "devicon" }, { "iconify": "devicon-plain" }], "upstream": "https://github.com/devicons/devicon", "note": "Logos of programming tools. The MIT license covers the drawings, not the trademarks: a logo is used as the brand's own mark, never restyled." },
-    { "id": "experience-japan", "name": "Experience Japan Pictograms (Nippon Design Center)", "status": "decision", "license": "Own terms (free, commercial use allowed)", "upstream": "https://ndc.co.jp/en/projects/ejp", "why": "The download asks for a name, an email and the intended use, then acceptance of the terms of use. Claude does not submit personal data or accept terms. The terms also need reading for redistribution and changes: they are pictograms for signage (about 280), not interface icons.", "allows": "If the owner downloads it and the terms allow changes and redistribution, the pictograms go into the store as a decision-cleared set." },
-    { "id": "expo-icons", "name": "@expo/vector-icons", "status": "wrapper", "wraps": "rn-vector-icons", "license": "MIT", "note": "Expo's re-export of react-native-vector-icons (Ionicons, Material Icons, Feather, FontAwesome, Ant Design and others). Use the wrapped sets." },
-    { "id": "feather", "name": "Feather", "status": "downloaded", "license": "MIT", "sources": [{ "iconify": "feather" }], "upstream": "https://github.com/feathericons/feather", "note": "Unmaintained since 2021; Lucide is its maintained fork." },
-    { "id": "flagpack", "name": "Flagpack", "status": "downloaded", "license": "MIT", "sources": [{ "iconify": "flagpack" }], "upstream": "https://github.com/Yummygum/flagpack-core", "note": "Country flags in color: kept as flags, never restyled to one color." },
-    { "id": "flowbite-icons", "name": "Flowbite Icons", "status": "downloaded", "license": "MIT", "sources": [{ "iconify": "flowbite" }], "upstream": "https://github.com/themesberg/flowbite-icons" },
-    { "id": "fluent", "name": "Fluent UI System Icons (Microsoft)", "status": "downloaded", "license": "MIT", "sources": [{ "iconify": "fluent" }], "upstream": "https://github.com/microsoft/fluentui-system-icons" },
-    { "id": "futicons", "name": "Futicons", "status": "decision", "license": "CC0-1.0 (stated on the Gumroad page)", "upstream": "https://vaisakhpradeep.gumroad.com/l/futicons", "why": "Only sold through Gumroad (pay what you want, with an email at checkout). Claude does not check out or enter personal data. CC0 would allow anything once the owner has the files.", "allows": "Everything (public domain), once the owner downloads it." },
-    { "id": "gluestack-icons", "name": "gluestack-ui icons", "status": "wrapper", "wraps": "lucide", "license": "MIT", "note": "gluestack-ui's Icon draws lucide-react-native icons. Use lucide." },
-    { "id": "heroicons", "name": "Heroicons", "status": "downloaded", "license": "MIT", "sources": [{ "iconify": "heroicons" }], "upstream": "https://github.com/tailwindlabs/heroicons" },
-    { "id": "humble", "name": "Humbleicons", "status": "downloaded", "license": "MIT", "sources": [{ "iconify": "humbleicons" }], "upstream": "https://github.com/zraly/humbleicons" },
-    { "id": "iconoir", "name": "Iconoir", "status": "downloaded", "license": "MIT", "sources": [{ "iconify": "iconoir" }], "upstream": "https://github.com/iconoir-icons/iconoir" },
-    { "id": "iconpark", "name": "IconPark (ByteDance)", "status": "downloaded", "license": "Apache-2.0", "sources": [{ "iconify": "icon-park-outline" }, { "iconify": "icon-park-solid" }], "upstream": "https://github.com/bytedance/IconPark", "note": "The outline and solid styles. The two-tone and multicolor styles are the same drawings in color and are left out." },
-    { "id": "iconsvg", "name": "ICONSVG (iconsvg.xyz)", "status": "decision", "license": "None stated", "upstream": "https://iconsvg.xyz/", "why": "The site (by Gaddafi Rusli) states no license and has no public repository. Without a license nothing may be copied or changed.", "allows": "Nothing until the author grants a license; the owner could ask them." },
-    { "id": "ionicons", "name": "Ionicons", "status": "downloaded", "license": "MIT", "sources": [{ "iconify": "ion" }], "upstream": "https://github.com/ionic-team/ionicons" },
-    { "id": "licons", "name": "Licons (Oval Line Interface Icons)", "status": "decision", "license": "Unknown", "upstream": "https://www.svgrepo.com/collection/licons-oval-line-interface-icons/", "why": "Found only as an SVG Repo collection (about 260 icons) with no original project or license file. The npm package licon (MIT) is a different thing: CSS-drawn shapes, not SVG files.", "allows": "Nothing until its source and license are known; the owner may know where it comes from." },
-    { "id": "line-awesome", "name": "Line Awesome (Icons8)", "status": "downloaded", "license": "Apache-2.0 (as packaged by Iconify; upstream: MIT code and the Good Boy License for the icons)", "sources": [{ "iconify": "la" }], "upstream": "https://github.com/icons8/line-awesome", "note": "Unmaintained." },
-    { "id": "lucide", "name": "Lucide", "status": "downloaded", "license": "ISC", "sources": [{ "iconify": "lucide" }], "upstream": "https://github.com/lucide-icons/lucide" },
-    { "id": "material", "name": "Material Symbols and Material Icons (Google)", "status": "local", "license": "Apache-2.0", "sources": [{ "iconify": "material-symbols" }, { "iconify": "ic" }], "upstream": "https://github.com/google/material-design-icons", "note": "Plenix's own set: Material Symbols Sharp weight 300 is already in platform/icons/library/ (all 4,150 symbols, unedited). The store adds every other style for reference: Material Symbols (weight 400, all styles) and the older Material Icons, which compose-material-icons and mui-icons wrap." },
-    { "id": "mingcute", "name": "MingCute", "status": "downloaded", "license": "Apache-2.0", "sources": [{ "iconify": "mingcute" }], "upstream": "https://github.com/Richard9394/MingCute" },
-    { "id": "mui-icons", "name": "@mui/icons-material", "status": "wrapper", "wraps": "material", "license": "MIT (the wrapper) / Apache-2.0 (the drawings)", "note": "MUI's React components for Google's Material Icons (Iconify ic). Use material." },
-    { "id": "phosphor", "name": "Phosphor", "status": "downloaded", "license": "MIT", "sources": [{ "iconify": "ph" }], "upstream": "https://github.com/phosphor-icons/core" },
-    { "id": "primeicons", "name": "PrimeIcons", "status": "downloaded", "license": "MIT", "sources": [{ "iconify": "prime" }], "upstream": "https://github.com/primefaces/primeicons" },
-    { "id": "radix-icons", "name": "Radix Icons", "status": "downloaded", "license": "MIT", "sources": [{ "iconify": "radix-icons" }], "upstream": "https://github.com/radix-ui/icons" },
-    { "id": "rn-vector-icons", "name": "react-native-vector-icons", "status": "wrapper", "wraps": "several", "license": "MIT (the wrapper); each bundled set keeps its own", "note": "Bundles fonts of other sets: Ant Design, Entypo (CC BY-SA 4.0), Evil Icons, Feather, Font Awesome 4/5/6 (OFL / CC BY 4.0), Fontisto, Foundation, Ionicons, Material Icons, Material Design Icons (community, Apache-2.0), Octicons, Simple Line Icons, Zocial. The ones on the owner's list are downloaded as themselves; the others are not, and can be added on request (Octicons MIT, Material Design Icons Apache-2.0 and Evil Icons MIT are open; Font Awesome and Entypo need credit, Entypo also share-alike)." },
-    { "id": "sargam", "name": "Sargam Icons", "status": "downloaded", "license": "MIT", "sources": [{ "iconify": "si" }], "upstream": "https://github.com/planetabhi/sargam-icons" },
-    { "id": "segoe-fluent", "name": "Segoe Fluent Icons (Microsoft)", "status": "decision", "license": "Microsoft font license", "upstream": "https://learn.microsoft.com/windows/apps/design/style/segoe-fluent-icons-font", "why": "A font shipped with Windows 11. Microsoft allows it only for designing and building Windows apps; it may not be redistributed, changed or used on other platforms. Its open counterpart is Fluent UI System Icons (fluent), which is downloaded.", "allows": "Nothing for Plenix; use fluent instead." },
-    { "id": "sf-symbols", "name": "SF Symbols (Apple)", "status": "decision", "license": "Apple license agreement", "upstream": "https://developer.apple.com/sf-symbols/", "why": "Apple allows SF Symbols only in mockups and apps on Apple platforms, and forbids changing them, using them in logos, or redistributing them. Plenix's iOS apps can draw them natively through the system (Image(systemName:)), which needs no copy.", "allows": "Native use inside iOS/macOS apps only, never as Plenix files." },
-    { "id": "simpleicons", "name": "Simple Icons", "status": "downloaded", "license": "CC0-1.0", "sources": [{ "iconify": "simple-icons" }], "upstream": "https://github.com/simple-icons/simple-icons", "note": "Brand logos. CC0 covers the drawings, not the trademarks: each brand's own guidelines apply, and logos are never restyled." },
-    { "id": "streamline", "name": "Streamline (free sets)", "status": "attribution", "license": "CC-BY-4.0 (the free sets); the full libraries are paid", "sources": [{ "iconify": "streamline" }, { "iconify": "streamline-sharp" }, { "iconify": "streamline-flex" }, { "iconify": "streamline-plump" }, { "iconify": "streamline-ultimate" }], "upstream": "https://www.streamlinehq.com/", "why": "The free sets allow use and changes with credit to Streamline (CC BY 4.0). The paid sets (most of Streamline) are not downloaded.", "allows": "Restyled icons, if Plenix shows the credit 'Icons by Streamline (CC BY 4.0)' where its licenses are listed. Owner to accept the credit line before any Streamline icon is approved." },
-    { "id": "tabler", "name": "Tabler Icons", "status": "downloaded", "license": "MIT", "sources": [{ "iconify": "tabler" }], "upstream": "https://github.com/tabler/tabler-icons" },
-    { "id": "tamagui-icons", "name": "@tamagui/lucide-icons", "status": "wrapper", "wraps": "lucide", "license": "MIT", "note": "Tamagui's icons are Lucide. Use lucide." },
-    { "id": "vzy", "name": "vzy icons", "status": "decision", "license": "Not stated (free tier: 50+ icons; Pro: paid)", "upstream": "https://evansakanno.gumroad.com/l/vzy-icons-free", "why": "Only sold through Gumroad, with an email at checkout, and the license of the free tier is not stated on the page. The Pro set (1,000+) is paid.", "allows": "Unknown until the owner reads the license that comes with the download." }
+    {
+      "id": "akar",
+      "name": "Akar Icons",
+      "status": "downloaded",
+      "license": "MIT",
+      "sources": [
+        {
+          "iconify": "akar-icons"
+        }
+      ],
+      "upstream": "https://github.com/artcoholic/akar-icons"
+    },
+    {
+      "id": "antd-icons",
+      "name": "Ant Design Icons",
+      "status": "downloaded",
+      "license": "MIT",
+      "sources": [
+        {
+          "iconify": "ant-design"
+        }
+      ],
+      "upstream": "https://github.com/ant-design/ant-design-icons"
+    },
+    {
+      "id": "basicons",
+      "name": "Basicons",
+      "status": "downloaded",
+      "license": "MIT",
+      "sources": [
+        {
+          "npm": "react-basicons",
+          "dir": "svg"
+        }
+      ],
+      "upstream": "https://github.com/PreciousME/react-basicons",
+      "note": "Not on Iconify; the SVG files come from the react-basicons package (MIT, by the Basicons authors)."
+    },
+    {
+      "id": "bootstrap-icons",
+      "name": "Bootstrap Icons",
+      "status": "downloaded",
+      "license": "MIT",
+      "sources": [
+        {
+          "iconify": "bi"
+        }
+      ],
+      "upstream": "https://github.com/twbs/icons"
+    },
+    {
+      "id": "carbon",
+      "name": "Carbon (IBM)",
+      "status": "downloaded",
+      "license": "Apache-2.0",
+      "sources": [
+        {
+          "iconify": "carbon"
+        }
+      ],
+      "upstream": "https://github.com/carbon-design-system/carbon"
+    },
+    {
+      "id": "chakra-icons",
+      "name": "Chakra UI Icons",
+      "status": "downloaded",
+      "license": "MIT",
+      "sources": [
+        {
+          "npm": "@chakra-ui/icons",
+          "chakra": true
+        }
+      ],
+      "upstream": "https://github.com/chakra-ui/chakra-ui",
+      "note": "A small set of its own (about 60 icons, drawn as React components). Chakra UI v3 retired it and points to Lucide; the paths are extracted from the last package."
+    },
+    {
+      "id": "compose-material-icons",
+      "name": "Jetpack Compose Material Icons",
+      "status": "wrapper",
+      "wraps": "material",
+      "license": "Apache-2.0",
+      "note": "androidx.compose.material:material-icons-extended re-exports Google's Material Icons (the older set, Iconify ic). Use material."
+    },
+    {
+      "id": "css-gg",
+      "name": "css.gg",
+      "status": "downloaded",
+      "license": "MIT",
+      "sources": [
+        {
+          "iconify": "gg"
+        }
+      ],
+      "upstream": "https://github.com/astrit/css.gg"
+    },
+    {
+      "id": "devicons",
+      "name": "Devicon",
+      "status": "downloaded",
+      "license": "MIT",
+      "sources": [
+        {
+          "iconify": "devicon"
+        },
+        {
+          "iconify": "devicon-plain"
+        }
+      ],
+      "upstream": "https://github.com/devicons/devicon",
+      "note": "Logos of programming tools. The MIT license covers the drawings, not the trademarks: a logo is used as the brand's own mark, never restyled."
+    },
+    {
+      "id": "experience-japan",
+      "name": "Experience Japan Pictograms (Nippon Design Center)",
+      "status": "decision",
+      "license": "Own terms (free, commercial use allowed)",
+      "upstream": "https://ndc.co.jp/en/projects/ejp",
+      "why": "The download asks for a name, an email and the intended use, then acceptance of the terms of use. Claude does not submit personal data or accept terms. The terms also need reading for redistribution and changes: they are pictograms for signage (about 280), not interface icons.",
+      "allows": "If the owner downloads it and the terms allow changes and redistribution, the pictograms go into the store as a decision-cleared set."
+    },
+    {
+      "id": "expo-icons",
+      "name": "@expo/vector-icons",
+      "status": "wrapper",
+      "wraps": "rn-vector-icons",
+      "license": "MIT",
+      "note": "Expo's re-export of react-native-vector-icons (Ionicons, Material Icons, Feather, FontAwesome, Ant Design and others). Use the wrapped sets."
+    },
+    {
+      "id": "feather",
+      "name": "Feather",
+      "status": "downloaded",
+      "license": "MIT",
+      "sources": [
+        {
+          "iconify": "feather"
+        }
+      ],
+      "upstream": "https://github.com/feathericons/feather",
+      "note": "Unmaintained since 2021; Lucide is its maintained fork."
+    },
+    {
+      "id": "flagpack",
+      "name": "Flagpack",
+      "status": "downloaded",
+      "license": "MIT",
+      "sources": [
+        {
+          "iconify": "flagpack"
+        }
+      ],
+      "upstream": "https://github.com/Yummygum/flagpack-core",
+      "note": "Country flags in color: kept as flags, never restyled to one color."
+    },
+    {
+      "id": "flowbite-icons",
+      "name": "Flowbite Icons",
+      "status": "downloaded",
+      "license": "MIT",
+      "sources": [
+        {
+          "iconify": "flowbite"
+        }
+      ],
+      "upstream": "https://github.com/themesberg/flowbite-icons"
+    },
+    {
+      "id": "fluent",
+      "name": "Fluent UI System Icons (Microsoft)",
+      "status": "downloaded",
+      "license": "MIT",
+      "sources": [
+        {
+          "iconify": "fluent"
+        }
+      ],
+      "upstream": "https://github.com/microsoft/fluentui-system-icons"
+    },
+    {
+      "id": "futicons",
+      "name": "Futicons",
+      "status": "decision",
+      "license": "CC0-1.0 (stated on the Gumroad page)",
+      "upstream": "https://vaisakhpradeep.gumroad.com/l/futicons",
+      "why": "Only sold through Gumroad (pay what you want, with an email at checkout). Claude does not check out or enter personal data. CC0 would allow anything once the owner has the files.",
+      "allows": "Everything (public domain), once the owner downloads it."
+    },
+    {
+      "id": "gluestack-icons",
+      "name": "gluestack-ui icons",
+      "status": "wrapper",
+      "wraps": "lucide",
+      "license": "MIT",
+      "note": "gluestack-ui's Icon draws lucide-react-native icons. Use lucide."
+    },
+    {
+      "id": "heroicons",
+      "name": "Heroicons",
+      "status": "downloaded",
+      "license": "MIT",
+      "sources": [
+        {
+          "iconify": "heroicons"
+        }
+      ],
+      "upstream": "https://github.com/tailwindlabs/heroicons"
+    },
+    {
+      "id": "humble",
+      "name": "Humbleicons",
+      "status": "downloaded",
+      "license": "MIT",
+      "sources": [
+        {
+          "iconify": "humbleicons"
+        }
+      ],
+      "upstream": "https://github.com/zraly/humbleicons"
+    },
+    {
+      "id": "iconoir",
+      "name": "Iconoir",
+      "status": "downloaded",
+      "license": "MIT",
+      "sources": [
+        {
+          "iconify": "iconoir"
+        }
+      ],
+      "upstream": "https://github.com/iconoir-icons/iconoir"
+    },
+    {
+      "id": "iconpark",
+      "name": "IconPark (ByteDance)",
+      "status": "downloaded",
+      "license": "Apache-2.0",
+      "sources": [
+        {
+          "iconify": "icon-park-outline"
+        },
+        {
+          "iconify": "icon-park-solid"
+        }
+      ],
+      "upstream": "https://github.com/bytedance/IconPark",
+      "note": "The outline and solid styles. The two-tone and multicolor styles are the same drawings in color and are left out."
+    },
+    {
+      "id": "iconsvg",
+      "name": "ICONSVG (iconsvg.xyz)",
+      "status": "decision",
+      "license": "None stated",
+      "upstream": "https://iconsvg.xyz/",
+      "why": "The site (by Gaddafi Rusli) states no license and has no public repository. Without a license nothing may be copied or changed.",
+      "allows": "Nothing until the author grants a license; the owner could ask them."
+    },
+    {
+      "id": "ionicons",
+      "name": "Ionicons",
+      "status": "downloaded",
+      "license": "MIT",
+      "sources": [
+        {
+          "iconify": "ion"
+        }
+      ],
+      "upstream": "https://github.com/ionic-team/ionicons"
+    },
+    {
+      "id": "licons",
+      "name": "Licons (Oval Line Interface Icons)",
+      "status": "decision",
+      "license": "Unknown",
+      "upstream": "https://www.svgrepo.com/collection/licons-oval-line-interface-icons/",
+      "why": "Found only as an SVG Repo collection (about 260 icons) with no original project or license file. The npm package licon (MIT) is a different thing: CSS-drawn shapes, not SVG files.",
+      "allows": "Nothing until its source and license are known; the owner may know where it comes from."
+    },
+    {
+      "id": "line-awesome",
+      "name": "Line Awesome (Icons8)",
+      "status": "downloaded",
+      "license": "Apache-2.0 (as packaged by Iconify; upstream: MIT code and the Good Boy License for the icons)",
+      "sources": [
+        {
+          "iconify": "la"
+        }
+      ],
+      "upstream": "https://github.com/icons8/line-awesome",
+      "note": "Unmaintained."
+    },
+    {
+      "id": "lucide",
+      "name": "Lucide",
+      "status": "downloaded",
+      "license": "ISC",
+      "sources": [
+        {
+          "iconify": "lucide"
+        }
+      ],
+      "upstream": "https://github.com/lucide-icons/lucide"
+    },
+    {
+      "id": "material",
+      "name": "Material Symbols and Material Icons (Google)",
+      "status": "local",
+      "license": "Apache-2.0",
+      "sources": [
+        {
+          "iconify": "material-symbols"
+        },
+        {
+          "iconify": "ic"
+        }
+      ],
+      "upstream": "https://github.com/google/material-design-icons",
+      "note": "Plenix's own set: Material Symbols Sharp weight 300 is already in platform/icons/library/ (all 4,150 symbols, unedited). The store adds every other style for reference: Material Symbols (weight 400, all styles) and the older Material Icons, which compose-material-icons and mui-icons wrap."
+    },
+    {
+      "id": "mingcute",
+      "name": "MingCute",
+      "status": "downloaded",
+      "license": "Apache-2.0",
+      "sources": [
+        {
+          "iconify": "mingcute"
+        }
+      ],
+      "upstream": "https://github.com/Richard9394/MingCute"
+    },
+    {
+      "id": "mui-icons",
+      "name": "@mui/icons-material",
+      "status": "wrapper",
+      "wraps": "material",
+      "license": "MIT (the wrapper) / Apache-2.0 (the drawings)",
+      "note": "MUI's React components for Google's Material Icons (Iconify ic). Use material."
+    },
+    {
+      "id": "phosphor",
+      "name": "Phosphor",
+      "status": "downloaded",
+      "license": "MIT",
+      "sources": [
+        {
+          "iconify": "ph"
+        }
+      ],
+      "upstream": "https://github.com/phosphor-icons/core"
+    },
+    {
+      "id": "primeicons",
+      "name": "PrimeIcons",
+      "status": "downloaded",
+      "license": "MIT",
+      "sources": [
+        {
+          "iconify": "prime"
+        }
+      ],
+      "upstream": "https://github.com/primefaces/primeicons"
+    },
+    {
+      "id": "radix-icons",
+      "name": "Radix Icons",
+      "status": "downloaded",
+      "license": "MIT",
+      "sources": [
+        {
+          "iconify": "radix-icons"
+        }
+      ],
+      "upstream": "https://github.com/radix-ui/icons"
+    },
+    {
+      "id": "rn-vector-icons",
+      "name": "react-native-vector-icons",
+      "status": "wrapper",
+      "wraps": "several",
+      "license": "MIT (the wrapper); each bundled set keeps its own",
+      "note": "Bundles fonts of other sets: Ant Design, Entypo (CC BY-SA 4.0), Evil Icons, Feather, Font Awesome 4/5/6 (OFL / CC BY 4.0), Fontisto, Foundation, Ionicons, Material Icons, Material Design Icons (community, Apache-2.0), Octicons, Simple Line Icons, Zocial. The ones on the owner's list are downloaded as themselves; the others are not, and can be added on request (Octicons MIT, Material Design Icons Apache-2.0 and Evil Icons MIT are open; Font Awesome and Entypo need credit, Entypo also share-alike)."
+    },
+    {
+      "id": "sargam",
+      "name": "Sargam Icons",
+      "status": "downloaded",
+      "license": "MIT",
+      "sources": [
+        {
+          "iconify": "si"
+        }
+      ],
+      "upstream": "https://github.com/planetabhi/sargam-icons"
+    },
+    {
+      "id": "segoe-fluent",
+      "name": "Segoe Fluent Icons (Microsoft)",
+      "status": "decision",
+      "license": "Microsoft font license",
+      "upstream": "https://learn.microsoft.com/windows/apps/design/style/segoe-fluent-icons-font",
+      "why": "A font shipped with Windows 11. Microsoft allows it only for designing and building Windows apps; it may not be redistributed, changed or used on other platforms. Its open counterpart is Fluent UI System Icons (fluent), which is downloaded.",
+      "allows": "Nothing for Plenix; use fluent instead."
+    },
+    {
+      "id": "sf-symbols",
+      "name": "SF Symbols (Apple)",
+      "status": "decision",
+      "license": "Apple license agreement",
+      "upstream": "https://developer.apple.com/sf-symbols/",
+      "why": "Apple allows SF Symbols only in mockups and apps on Apple platforms, and forbids changing them, using them in logos, or redistributing them. Plenix's iOS apps can draw them natively through the system (Image(systemName:)), which needs no copy.",
+      "allows": "Native use inside iOS/macOS apps only, never as Plenix files."
+    },
+    {
+      "id": "simpleicons",
+      "name": "Simple Icons",
+      "status": "downloaded",
+      "license": "CC0-1.0",
+      "sources": [
+        {
+          "iconify": "simple-icons"
+        }
+      ],
+      "upstream": "https://github.com/simple-icons/simple-icons",
+      "note": "Brand logos. CC0 covers the drawings, not the trademarks: each brand's own guidelines apply, and logos are never restyled."
+    },
+    {
+      "id": "streamline",
+      "name": "Streamline (free sets)",
+      "status": "decision",
+      "license": "CC-BY-4.0 (the free sets); the full libraries are paid",
+      "upstream": "https://www.streamlinehq.com/",
+      "why": "Owner, 2026-10-24: left out. The free sets (CC BY 4.0) need a visible credit line; the other libraries need none. The paid sets were never considered.",
+      "allows": "Nothing: not downloaded."
+    },
+    {
+      "id": "tabler",
+      "name": "Tabler Icons",
+      "status": "downloaded",
+      "license": "MIT",
+      "sources": [
+        {
+          "iconify": "tabler"
+        }
+      ],
+      "upstream": "https://github.com/tabler/tabler-icons"
+    },
+    {
+      "id": "tamagui-icons",
+      "name": "@tamagui/lucide-icons",
+      "status": "wrapper",
+      "wraps": "lucide",
+      "license": "MIT",
+      "note": "Tamagui's icons are Lucide. Use lucide."
+    },
+    {
+      "id": "vzy",
+      "name": "vzy icons",
+      "status": "decision",
+      "license": "Not stated (free tier: 50+ icons; Pro: paid)",
+      "upstream": "https://evansakanno.gumroad.com/l/vzy-icons-free",
+      "why": "Only sold through Gumroad, with an email at checkout, and the license of the free tier is not stated on the page. The Pro set (1,000+) is paid.",
+      "allows": "Unknown until the owner reads the license that comes with the download."
+    }
   ]
 }

@@ -169,7 +169,12 @@ function draw(shapes, optical, opts, transform) {
       report.notes.push('a dot drawn as a square');
       continue;
     }
-    outlines.push(PaperOffset.offsetStroke(it.path, w / 2, { cap: 'butt', join: 'miter', limit: 4, insert: false }));
+    // a sharp tip never reaches past the stroke's own box plus half a line: it is cut flat there
+    const box = new paper.Path.Rectangle({ rectangle: it.path.bounds.expand(w), insert: false });
+    const line = PaperOffset.offsetStroke(it.path, w / 2, { cap: 'butt', join: 'miter', limit: 4, insert: false });
+    const lb = line.bounds, bb = box.bounds;
+    const pokes = lb.left < bb.left - 0.5 || lb.top < bb.top - 0.5 || lb.right > bb.right + 0.5 || lb.bottom > bb.bottom + 0.5;
+    outlines.push(pokes ? line.intersect(box, { insert: false }) : line);
     if (it.fill) { const f = it.path.clone({ insert: false }); f.closed = true; outlines.push(f); }
   }
   const item = unite(outlines);
