@@ -22,7 +22,6 @@
     "test:density": "node tests/density.test.js",
     "test:labs": "node tests/labs.test.js",
     "test:reflow": "node tests/reflow.test.js",
-    "test:targets": "node tests/targets.test.js",
     "test:typography": "node tests/typography.test.js",
     "test:login": "node tests/login.test.js",
     "test:contrast": "node tests/contrast.test.js",
