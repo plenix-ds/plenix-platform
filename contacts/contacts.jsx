@@ -38,7 +38,7 @@ export function ContactsScreen({ screen }) {
         {contact ? (
           <Stack gap="lg">
             <EntityHeader title={contact.name} media={{ person: contact.name, color: contact.avColor, gender: contact.gender }} subtitle={[contact.role, contact.co].filter(Boolean).join(' · ')}
-              facts={[contact.co ? { label: 'Company', value: contact.co } : null, contact.role ? { label: 'Role', value: contact.role } : null, { label: 'Last message', value: contact.last, data: true }].filter(Boolean)}
+              facts={[contact.co ? { label: 'Company', value: contact.co } : null, contact.role ? { label: 'Role', value: contact.role } : null, contact.msg ? null : { label: 'Last message', value: contact.last, data: true }].filter(Boolean)}
               next={contact.msg ? { label: 'Last message', title: contact.msg, detail: <Text variant="data">{contact.last}</Text> } : undefined}
               actions={[{ icon: 'phone', label: 'Call' }, { icon: 'mail', label: 'Email' }, { icon: 'pencil', label: 'Edit' },
                 { icon: 'message', label: 'Message' }, { icon: 'trash', label: 'Delete' }, { icon: 'share', label: 'Share' }]} />
