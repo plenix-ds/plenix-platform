@@ -2406,7 +2406,9 @@ function MessagingScreen({
     next: thd.preview ? {
       label: 'Latest',
       title: thd.preview,
-      detail: thd.time
+      detail: /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
+        variant: "data"
+      }, thd.time)
     } : undefined,
     actions: [{
       icon: 'phone',

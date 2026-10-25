@@ -25,8 +25,6 @@
   --plx-comp-button-size-md-hover-background: var(--plx-sys-state-hover);
   --plx-comp-button-size-md-hover-border: var(--plx-ref-color-gray-350);
   --plx-comp-button-size-md-pressed-background: var(--plx-sys-state-pressed);
-  --plx-comp-button-size-md-selected-border: var(--plx-sys-border-default);
-  --plx-comp-button-size-md-selected-text: var(--plx-sys-content-default);
   --plx-comp-button-size-md-primary-ring: none;
   --plx-comp-button-size-sm-font-size: var(--plx-ref-font-size-12);
   --plx-comp-button-size-sm-font-weight: var(--plx-sys-font-weight-medium);
@@ -38,8 +36,6 @@
   --plx-comp-button-size-sm-hover-background: var(--plx-sys-state-hover);
   --plx-comp-button-size-sm-hover-border: var(--plx-ref-color-gray-350);
   --plx-comp-button-size-sm-pressed-background: var(--plx-sys-state-pressed);
-  --plx-comp-button-size-sm-selected-border: var(--plx-sys-border-default);
-  --plx-comp-button-size-sm-selected-text: var(--plx-sys-content-default);
   --plx-comp-button-size-sm-primary-ring: none;
   --plx-comp-button-size-xs-font-size: var(--plx-ref-font-size-12);
   --plx-comp-button-size-xs-font-weight: var(--plx-sys-font-weight-medium);
@@ -51,8 +47,6 @@
   --plx-comp-button-size-xs-hover-background: var(--plx-sys-state-hover);
   --plx-comp-button-size-xs-hover-border: var(--plx-ref-color-gray-350);
   --plx-comp-button-size-xs-pressed-background: var(--plx-sys-state-pressed);
-  --plx-comp-button-size-xs-selected-border: var(--plx-sys-border-default);
-  --plx-comp-button-size-xs-selected-text: var(--plx-sys-content-default);
   --plx-comp-button-size-xs-primary-ring: none;
   --plx-comp-button-size-2xs-font-size: var(--plx-ref-font-size-11);
   --plx-comp-button-size-2xs-font-weight: var(--plx-sys-font-weight-medium);
@@ -77,8 +71,6 @@
   --plx-comp-button-size-lg-hover-background: var(--plx-sys-state-hover);
   --plx-comp-button-size-lg-hover-border: var(--plx-ref-color-gray-350);
   --plx-comp-button-size-lg-pressed-background: var(--plx-sys-state-pressed);
-  --plx-comp-button-size-lg-selected-border: var(--plx-sys-border-default);
-  --plx-comp-button-size-lg-selected-text: var(--plx-sys-content-default);
   --plx-comp-button-size-lg-primary-ring: none;
   /* variants: rest and hover (secondary takes its text and hover from the size) */
   --plx-comp-button-secondary-background: var(--plx-sys-control-background);
@@ -2239,6 +2231,14 @@
 /* the person's contrast settings: forced colors, then more contrast, else the values above */
 @media not (forced-colors: active) {
   :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-button-size-md-selected-border: var(--plx-sys-border-default);
+    --plx-comp-button-size-md-selected-text: var(--plx-sys-content-default);
+    --plx-comp-button-size-sm-selected-border: var(--plx-sys-border-default);
+    --plx-comp-button-size-sm-selected-text: var(--plx-sys-content-default);
+    --plx-comp-button-size-xs-selected-border: var(--plx-sys-border-default);
+    --plx-comp-button-size-xs-selected-text: var(--plx-sys-content-default);
+    --plx-comp-button-size-lg-selected-border: var(--plx-sys-border-default);
+    --plx-comp-button-size-lg-selected-text: var(--plx-sys-content-default);
     --plx-comp-button-selected-background: var(--plx-ref-color-gray-200);
     --plx-comp-button-disabled-border: var(--plx-sys-border-subtle);
     --plx-comp-button-disabled-text: var(--plx-sys-content-disabled);
@@ -2303,6 +2303,14 @@
 }
 @media (forced-colors: active) {
   :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-button-size-md-selected-border: Highlight;
+    --plx-comp-button-size-md-selected-text: HighlightText;
+    --plx-comp-button-size-sm-selected-border: Highlight;
+    --plx-comp-button-size-sm-selected-text: HighlightText;
+    --plx-comp-button-size-xs-selected-border: Highlight;
+    --plx-comp-button-size-xs-selected-text: HighlightText;
+    --plx-comp-button-size-lg-selected-border: Highlight;
+    --plx-comp-button-size-lg-selected-text: HighlightText;
     --plx-comp-button-selected-background: Highlight;
     --plx-comp-button-disabled-border: GrayText;
     --plx-comp-button-disabled-text: GrayText;

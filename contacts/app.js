@@ -2607,7 +2607,9 @@ function ContactsScreen({
     next: contact.msg ? {
       label: 'Last message',
       title: contact.msg,
-      detail: contact.last
+      detail: /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
+        variant: "data"
+      }, contact.last)
     } : undefined,
     actions: [{
       icon: 'phone',

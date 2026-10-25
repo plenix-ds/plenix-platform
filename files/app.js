@@ -2604,7 +2604,9 @@ function FilesScreen({
     }],
     next: _shared.ALL_FILES[0] ? {
       label: 'Latest file',
-      title: _shared.ALL_FILES[0].name,
+      title: /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
+        variant: "data"
+      }, _shared.ALL_FILES[0].name),
       detail: _shared.ALL_FILES[0].folder + ' · ' + _shared.ALL_FILES[0].d
     } : undefined,
     actions: [{
