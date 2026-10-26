@@ -1,8 +1,8 @@
 // Plenix · tests/utilities.test.js: the behavioral utilities work in Chrome, on the St. John the Beloved test site (test-site/;
 // owner, 2026-10-25: the tests run on the site, not on the design spec):
 // virtualization (only the view rendered, true scroll length, positions, focus kept, grid columns, no style written),
-// hotkeys (single key, sequence, scope, ignored in fields), live regions (announce), the clipboard (Copied, announced) and
-// the style audit on user content (the person's own formatting allowed only inside .plx-user-content).
+// hotkeys (single key, sequence, scope, ignored in fields), live regions (announce) and the clipboard (Copied, announced).
+// (reset, owner 2026-10-26: the style audit is checked once, by Pages: pages.test.js)
 //   node tests/utilities.test.js       (UTILITIES_PORT or TEST_PORT picks the port; default 8831)   → UTILITIES_OK
 //   TEST_SCOPE=full: always; by default (tests/changed.js) when a utility, its page, a global file or this test changed
 const { serve, launch, sleep } = require('./lib.js');
@@ -108,24 +108,6 @@ const check = (name, ok, info) => { if (ok) passed++; else { failed++; console.l
         shown: !!b && (/Copied/.test(b.getAttribute('aria-label') || '') || !!b.querySelector('.plx-icon--check')) }; });
     check('copying fills the clipboard and shows it is copied', copied.clip === 'ANN-2026-104' && copied.shown, copied);
     check('announce writes into the polite region, hidden from sight', copied.said === 'Copied' && copied.live === 'polite' && copied.hidden, copied);
-
-    /* the style audit on user content (owner, 2026-10-14: the colors and fonts rule is the interface's, not the person's
-       content in the editor): inside .plx-user-content the person's color, background-color, font-family, font-size and
-       text-align pass; any other inline property there, and the same properties on the interface, are still checked */
-    // the audit is a development tool of this checkout (platform/dev/style-audit.js): on the Platform host page, not the site
-    await page.goto(BASE + 'tests/fixtures/platform-host.html', { waitUntil: 'networkidle0' });
-    if (!(await page.evaluate(() => !!window.PlenixStyleAudit))) await page.addScriptTag({ url: BASE + 'platform/dev/style-audit.js' });
-    const audit = await page.evaluate(() => {
-      const box = document.createElement('div');
-      box.innerHTML = '<div class="plx-user-content"><p style="text-align: center"><span style="color: rgb(230, 25, 75); background-color: rgb(255, 225, 25); font-family: Georgia, serif; font-size: 15px">user</span></p></div>'
-        + '<div class="plx-user-content"><span style="margin-top: 3px">stray</span></div><span style="font-family: Georgia, serif">interface font</span><span style="font-size: 15px">interface size</span>';
-      document.body.appendChild(box);
-      const found = window.PlenixStyleAudit.audit(box).map((f) => f.detail);
-      box.remove();
-      return found;
-    });
-    check('style audit: user formatting passes in user content; a stray style there and a font or off-grid size on the interface are caught',
-      audit.length === 3 && audit.some((d) => /margin-top/.test(d)) && audit.some((d) => /font-family/.test(d)) && audit.some((d) => /font-size/.test(d)), audit);
 
     check('no page errors', errors.length === 0, errors.slice(0, 5));
   } finally {

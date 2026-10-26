@@ -2,7 +2,7 @@
 // text; Reddit Mono only for code (--plx-sys-font-code) and technical values (--plx-sys-font-data: IDs, file names and paths,
 // versions, dates and times, sizes, counts, durations, measured percentages, coordinates), chosen by the value's kind, and
 // always at its neighbors' size and line height so Mono and Sans share a baseline. On every app page and every page of the
-// St. John the Beloved test site (test-site/), in light and dark, with the
+// St. John the Beloved test site (test-site/), in light mode (reset, owner 2026-10-26: dark mode comes last), with the
 // fonts loaded:
 //   role      an element marked as code or data (code, kbd, pre, samp, Text "data", a data field (Input/Textarea data), a DataGrid or
 //             Table column of kind "data", a PropertyList value marked data) computes to Reddit Mono
@@ -126,7 +126,7 @@ async function inspect() {
   const server = await serve(PORT);
   const browser = await launch();
   const found = {};
-  const MODES = ['light', 'dark'];
+  const MODES = ['light'];
   for (const mode of MODES) {
     const page = await browser.newPage(); await page.setViewport({ width: 1440, height: 1000 });
     await page.emulateMediaFeatures([{ name: 'prefers-color-scheme', value: mode }, { name: 'prefers-reduced-motion', value: 'reduce' }]);

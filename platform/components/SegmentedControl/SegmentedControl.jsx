@@ -14,10 +14,14 @@
      label: the group's accessible name
      size: "md" (default) | "sm"
      className: more classes on the group
+     fold: "auto" (default) | "never"
      ...rest: other attributes go on the group element
    Behavior:
      Arrow keys move to the next or previous option and choose it, wrapping around; Home and End go to the first and last.
      Only the chosen option is in the Tab order.
+     When the options do not fit their room, the control becomes a drop-down list (Select) with the same options, value
+       and onChange; it comes back once the room is wide enough. The room is measured, never a fixed breakpoint: the
+       control's own width, plus the free space of a row it sits in. fold="never" keeps the segments.
    Notes:
      To switch between panels of content, use Tabs (variant "segmented").
 */
@@ -26,10 +30,54 @@ import { devWarn } from '../../utils/devWarn.js';
 import { arrowStep } from '../../utils/direction.js';
 import { cx } from '../../utils/cx.js';
 import { stateIcon } from '../Icon/Icon.jsx';
+import { Select } from '../Input/Input.jsx';
 
-export function SegmentedControl({ options, value, onChange, label, size = 'md', className, ...rest }) {
-  devWarn('SegmentedControl', { size }, { size: ['md','sm'] });
+/* the room the control may take: its frame's width, plus the free space left in a flex row it sits in (the frame takes
+   its content's width there, so a folded control alone could never see the room come back) */
+function roomOf(frame) {
+  const width = frame.getBoundingClientRect().width, parent = frame.parentElement;
+  if (!parent) return width;
+  const cs = getComputedStyle(parent);
+  if (!/flex/.test(cs.display) || /column/.test(cs.flexDirection)) return width;
+  const inner = parent.clientWidth - parseFloat(cs.paddingLeft || 0) - parseFloat(cs.paddingRight || 0);
+  const kids = Array.prototype.filter.call(parent.children, (el) => { const k = getComputedStyle(el); return k.display !== 'none' && k.position !== 'absolute' && k.position !== 'fixed'; });
+  const used = kids.reduce((n, el) => { const k = getComputedStyle(el); return n + el.getBoundingClientRect().width + parseFloat(k.marginLeft || 0) + parseFloat(k.marginRight || 0); }, 0);
+  const gap = (parseFloat(cs.columnGap) || 0) * Math.max(0, kids.length - 1);
+  return width + Math.max(0, inner - used - gap);
+}
+
+/* folded: true while the segments' own width is more than the room. The segments' width is measured while they show and
+   kept while folded; a change of options or size unfolds to measure again. */
+function useFold(frameRef, groupRef, key, enabled) {
+  const [folded, setFolded] = React.useState(false);
+  const natural = React.useRef(0);
+  React.useLayoutEffect(() => { natural.current = 0; setFolded(false); }, [key]);
+  const check = React.useCallback(() => {
+    const frame = frameRef.current;
+    if (!frame || !enabled) return;
+    const group = groupRef.current;
+    if (group) natural.current = group.scrollWidth;
+    if (!natural.current) return;
+    setFolded(natural.current > roomOf(frame) + 0.5);
+  }, [enabled]);
+  React.useLayoutEffect(check);
+  React.useLayoutEffect(() => {
+    const frame = frameRef.current;
+    if (!frame || !enabled || typeof ResizeObserver === 'undefined') return undefined;
+    const ro = new ResizeObserver(check);
+    ro.observe(frame); if (frame.parentElement) ro.observe(frame.parentElement);
+    // the segments' own size too: it changes when the font arrives after the first measure
+    if (groupRef.current) ro.observe(groupRef.current);
+    return () => ro.disconnect();
+  }, [check, enabled, folded]);
+  return enabled && folded;
+}
+
+export function SegmentedControl({ options, value, onChange, label, size = 'md', fold = 'auto', className, ...rest }) {
+  devWarn('SegmentedControl', { size, fold }, { size: ['md','sm'], fold: ['auto','never'] });
   const refs = React.useRef([]);
+  const frame = React.useRef(null), group = React.useRef(null);
+  const folded = useFold(frame, group, size + '|' + options.map((o) => String(o.value) + ':' + (o.label || '') + ':' + (o.icon || '')).join('|'), fold !== 'never');
   const index = Math.max(0, options.findIndex((o) => o.value === value));
   const move = (e, i) => {
     let n = null;
@@ -41,8 +89,18 @@ export function SegmentedControl({ options, value, onChange, label, size = 'md',
     if (n === null) return;
     e.preventDefault(); onChange(options[n].value); if (refs.current[n]) refs.current[n].focus();
   };
-  return (
-    <div role="radiogroup" aria-label={label} className={cx('plx-segmented', size === 'sm' && 'plx-segmented--sm', className)} {...rest}>
+  if (folded) {
+    const at = options.findIndex((o) => o.value === value);
+    return (
+      <div ref={frame} className="plx-segmented-fit">
+        <Select aria-label={label} size={size} className={className} value={String(Math.max(0, at))}
+          options={options.map((o, i) => ({ value: String(i), label: o.label || o.ariaLabel || String(o.value) }))}
+          onChange={(e) => onChange(options[+e.target.value].value)} {...rest} />
+      </div>
+    );
+  }
+  const segments = (
+    <div ref={group} role="radiogroup" aria-label={label} className={cx('plx-segmented', size === 'sm' && 'plx-segmented--sm', className)} {...rest}>
       {options.map((o, i) => (
         <button key={o.value} ref={(el) => { refs.current[i] = el; }} type="button" role="radio" aria-checked={o.value === value} tabIndex={i === index ? 0 : -1}
           aria-label={o.icon && !o.label ? o.ariaLabel || String(o.value) : undefined}
@@ -52,4 +110,5 @@ export function SegmentedControl({ options, value, onChange, label, size = 'md',
       ))}
     </div>
   );
+  return fold === 'never' ? segments : <div ref={frame} className="plx-segmented-fit">{segments}</div>;
 }

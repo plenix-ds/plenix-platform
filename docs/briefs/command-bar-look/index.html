@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en" data-plx-mode="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Command bar look · before and after</title>
+<!-- PR 3 of the buttons build (#298): the command bar and menus, before and after, photographed at 150% by capture.js. -->
+<script src="../../../platform/providers/theme-boot.js"></script>
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<link rel="stylesheet" href="../review.css">
+</head>
+<body class="rv-page">
+<main class="rv-doc">
+  <h1 class="rv-h1">The command bar look: before and after</h1>
+  <p class="rv-lead">Your choice from the study (2026-10-24): “4px frame and items, neutral hover, the icon turns blue on hover”. Photographed at 150% screen scale, with the first menu item hovered.</p>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">What changes</h2>
+    <ul class="rv-list">
+      <li>The command bar’s frame has 4px corners (it was 8px, over your 2–6px limit).</li>
+      <li>Menu items have their own 4px corners (they were square). This applies to every menu: command bar menus, the More menu, split buttons, quick filters.</li>
+      <li>A hovered or focused menu item’s icon turns blue. Red items (Delete) and disabled items keep their own color.</li>
+      <li>Already in 0.70.0 and unchanged here: the neutral gray hover, the blue icon on hovered bar buttons, gray “on” toggles (Pin).</li>
+    </ul>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">A command bar with its menu open</h2>
+    <div class="rv-pair">
+      <figure class="rv-fig"><img src="before-bar.png" alt="Command bar before"><figcaption>Before: 8px frame, square menu items, gray icon</figcaption></figure>
+      <figure class="rv-fig"><img src="after-bar.png" alt="Command bar after"><figcaption>After: 4px frame and items, blue icon on the hovered item</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">A menu on its own</h2>
+    <div class="rv-pair">
+      <figure class="rv-fig"><img src="before-controls.png" alt="Menu before"><figcaption>Before</figcaption></figure>
+      <figure class="rv-fig"><img src="after-controls.png" alt="Menu after"><figcaption>After: the hovered item has 4px corners and a blue icon; Delete stays red</figcaption></figure>
+    </div>
+  </section>
+</main>
+</body>
+</html>

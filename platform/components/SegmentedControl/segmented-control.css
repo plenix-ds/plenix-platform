@@ -4,6 +4,9 @@
    with a raised white thumb is gone. The joins work as ButtonGroup's: every segment but the first drops its start edge, so
    one line separates two segments; the outer corners are the control radius, the joins square (logical, so right to left mirrors). */
 .plx-segmented{align-items:stretch;display:inline-flex;}
+/* the frame the control measures its room in: as wide as its line allows, never wider; the segments inside keep their own
+   width, and the frame shrinks in a crowded row so the room can be read */
+.plx-segmented-fit{display:flex;max-inline-size:100%;min-inline-size:0;}
 @property --plx-state-segmented-item-background{syntax:"*";inherits:false;}
 @property --plx-state-segmented-item-text{syntax:"*";inherits:false;}
 @property --plx-state-segmented-item-start-border-width{syntax:"*";inherits:false;}

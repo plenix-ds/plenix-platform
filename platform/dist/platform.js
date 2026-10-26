@@ -9776,7 +9776,7 @@ const DragHandle = exports.DragHandle = /*#__PURE__*/_react.default.forwardRef(f
   }));
 });
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/columnHelper.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/columnHelper.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -9846,7 +9846,7 @@ function createColumnHelper() {
 }
 exports.createColumnHelper = createColumnHelper;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -9956,7 +9956,7 @@ exports.makeStateUpdater = makeStateUpdater;
 exports.memo = memo;
 exports.noop = noop;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/core/cell.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/core/cell.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -9997,7 +9997,7 @@ function createCell(table, row, column, columnId) {
 }
 exports.createCell = createCell;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/core/column.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/core/column.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10076,7 +10076,7 @@ function createColumn(table, columnDef, depth, parent) {
 }
 exports.createColumn = createColumn;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/core/headers.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/core/headers.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10345,7 +10345,7 @@ function buildHeaderGroups(allColumns, columnsToGroup, table, headerFamily) {
 exports.Headers = Headers;
 exports.buildHeaderGroups = buildHeaderGroups;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/core/row.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./cell.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/cell.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/core/row.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./cell.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/core/cell.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10433,7 +10433,7 @@ const createRow = (table, id, original, rowIndex, depth, subRows, parentId) => {
 };
 exports.createRow = createRow;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10474,7 +10474,7 @@ const ColumnFaceting = {
 };
 exports.ColumnFaceting = ColumnFaceting;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/filterFns.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/filterFns.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10570,7 +10570,7 @@ function testFalsey(val) {
 }
 exports.filterFns = filterFns;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js": { deps: {"../filterFns.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/filterFns.js","../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js": { deps: {"../filterFns.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/filterFns.js","../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10722,7 +10722,7 @@ function shouldAutoRemoveFilter(filterFn, value, column) {
 exports.ColumnFiltering = ColumnFiltering;
 exports.shouldAutoRemoveFilter = shouldAutoRemoveFilter;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/aggregationFns.js": { deps: {"./utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/aggregationFns.js": { deps: {"./utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10829,7 +10829,7 @@ const aggregationFns = {
 };
 exports.aggregationFns = aggregationFns;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js": { deps: {"../aggregationFns.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/aggregationFns.js","../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js": { deps: {"../aggregationFns.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/aggregationFns.js","../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10971,7 +10971,7 @@ function orderColumns(leafColumns, grouping, groupedColumnMode) {
 exports.ColumnGrouping = ColumnGrouping;
 exports.orderColumns = orderColumns;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11070,7 +11070,7 @@ function _getVisibleLeafColumns(table, position) {
 exports.ColumnVisibility = ColumnVisibility;
 exports._getVisibleLeafColumns = _getVisibleLeafColumns;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./ColumnGrouping.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","./ColumnVisibility.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./ColumnGrouping.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","./ColumnVisibility.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11154,7 +11154,7 @@ const ColumnOrdering = {
 };
 exports.ColumnOrdering = ColumnOrdering;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11284,7 +11284,7 @@ const ColumnPinning = {
 };
 exports.ColumnPinning = ColumnPinning;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/document.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/document.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11302,7 +11302,7 @@ function safelyAccessDocument(_document) {
 }
 exports.safelyAccessDocument = safelyAccessDocument;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","../utils/document.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/document.js","./ColumnVisibility.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","../utils/document.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/document.js","./ColumnVisibility.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11573,7 +11573,7 @@ exports.ColumnSizing = ColumnSizing;
 exports.defaultColumnSizing = defaultColumnSizing;
 exports.passiveEventSupported = passiveEventSupported;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11614,7 +11614,7 @@ const GlobalFaceting = {
 };
 exports.GlobalFaceting = GlobalFaceting;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js": { deps: {"../filterFns.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/filterFns.js","../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js": { deps: {"../filterFns.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/filterFns.js","../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11677,7 +11677,7 @@ const GlobalFiltering = {
 };
 exports.GlobalFiltering = GlobalFiltering;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11850,7 +11850,7 @@ const RowExpanding = {
 };
 exports.RowExpanding = RowExpanding;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPagination.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPagination.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12019,7 +12019,7 @@ const RowPagination = {
 };
 exports.RowPagination = RowPagination;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPinning.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPinning.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12164,7 +12164,7 @@ const RowPinning = {
 };
 exports.RowPinning = RowPinning;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSelection.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSelection.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12555,7 +12555,7 @@ exports.isRowSelected = isRowSelected;
 exports.isSubRowSelected = isSubRowSelected;
 exports.selectRowsFn = selectRowsFn;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/sortingFns.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/sortingFns.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12675,7 +12675,7 @@ const sortingFns = {
 exports.reSplitAlphaNumeric = reSplitAlphaNumeric;
 exports.sortingFns = sortingFns;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSorting.js": { deps: {"../sortingFns.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/sortingFns.js","../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSorting.js": { deps: {"../sortingFns.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/sortingFns.js","../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12901,7 +12901,7 @@ const RowSorting = {
 };
 exports.RowSorting = RowSorting;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/core/table.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./column.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/column.js","./headers.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/headers.js","../features/ColumnFaceting.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js","../features/ColumnFiltering.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js","../features/ColumnGrouping.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","../features/ColumnOrdering.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js","../features/ColumnPinning.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js","../features/ColumnSizing.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js","../features/ColumnVisibility.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js","../features/GlobalFaceting.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js","../features/GlobalFiltering.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js","../features/RowExpanding.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js","../features/RowPagination.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPagination.js","../features/RowPinning.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPinning.js","../features/RowSelection.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSelection.js","../features/RowSorting.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSorting.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/core/table.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./column.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/core/column.js","./headers.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/core/headers.js","../features/ColumnFaceting.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js","../features/ColumnFiltering.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js","../features/ColumnGrouping.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","../features/ColumnOrdering.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js","../features/ColumnPinning.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js","../features/ColumnSizing.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js","../features/ColumnVisibility.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js","../features/GlobalFaceting.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js","../features/GlobalFiltering.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js","../features/RowExpanding.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js","../features/RowPagination.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPagination.js","../features/RowPinning.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPinning.js","../features/RowSelection.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSelection.js","../features/RowSorting.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSorting.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13112,7 +13112,7 @@ function createTable(options) {
 }
 exports.createTable = createTable;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getCoreRowModel.js": { deps: {"../core/row.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/row.js","../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getCoreRowModel.js": { deps: {"../core/row.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/core/row.js","../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13176,7 +13176,7 @@ function getCoreRowModel() {
 }
 exports.getCoreRowModel = getCoreRowModel;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13221,7 +13221,7 @@ function expandRows(rowModel) {
 exports.expandRows = expandRows;
 exports.getExpandedRowModel = getExpandedRowModel;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedMinMaxValues.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedMinMaxValues.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13256,7 +13256,7 @@ function getFacetedMinMaxValues() {
 }
 exports.getFacetedMinMaxValues = getFacetedMinMaxValues;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js": { deps: {"../core/row.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/row.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js": { deps: {"../core/row.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/core/row.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13366,7 +13366,7 @@ function filterRowModelFromRoot(rowsToFilter, filterRow, table) {
 }
 exports.filterRows = filterRows;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedRowModel.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./filterRowsUtils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedRowModel.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./filterRowsUtils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13401,7 +13401,7 @@ function getFacetedRowModel() {
 }
 exports.getFacetedRowModel = getFacetedRowModel;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedUniqueValues.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedUniqueValues.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13439,7 +13439,7 @@ function getFacetedUniqueValues() {
 }
 exports.getFacetedUniqueValues = getFacetedUniqueValues;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFilteredRowModel.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./filterRowsUtils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFilteredRowModel.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./filterRowsUtils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13549,7 +13549,7 @@ function getFilteredRowModel() {
 }
 exports.getFilteredRowModel = getFilteredRowModel;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getGroupedRowModel.js": { deps: {"../core/row.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/row.js","../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getGroupedRowModel.js": { deps: {"../core/row.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/core/row.js","../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13705,7 +13705,7 @@ function groupBy(rows, columnId) {
 }
 exports.getGroupedRowModel = getGroupedRowModel;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getPaginationRowModel.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./getExpandedRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getPaginationRowModel.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./getExpandedRowModel.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13764,7 +13764,7 @@ function getPaginationRowModel(opts) {
 }
 exports.getPaginationRowModel = getPaginationRowModel;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getSortedRowModel.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getSortedRowModel.js": { deps: {"../utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13865,7 +13865,7 @@ function getSortedRowModel() {
 }
 exports.getSortedRowModel = getSortedRowModel;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/index.js": { deps: {"./columnHelper.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/columnHelper.js","./core/cell.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/cell.js","./core/column.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/column.js","./core/headers.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/headers.js","./core/row.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/row.js","./core/table.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/table.js","./features/ColumnFaceting.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js","./features/ColumnFiltering.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js","./features/ColumnGrouping.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","./features/ColumnOrdering.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js","./features/ColumnPinning.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js","./features/ColumnSizing.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js","./features/ColumnVisibility.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js","./features/GlobalFaceting.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js","./features/GlobalFiltering.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js","./features/RowExpanding.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js","./features/RowPagination.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPagination.js","./features/RowPinning.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPinning.js","./features/RowSelection.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSelection.js","./features/RowSorting.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSorting.js","./utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./utils/getCoreRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getCoreRowModel.js","./utils/getExpandedRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js","./utils/getFacetedMinMaxValues.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedMinMaxValues.js","./utils/getFacetedRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedRowModel.js","./utils/getFacetedUniqueValues.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedUniqueValues.js","./utils/getFilteredRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFilteredRowModel.js","./utils/getGroupedRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getGroupedRowModel.js","./utils/getPaginationRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getPaginationRowModel.js","./utils/getSortedRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getSortedRowModel.js","./aggregationFns.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/aggregationFns.js","./filterFns.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/filterFns.js","./sortingFns.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/sortingFns.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/table-core/build/lib/index.js": { deps: {"./columnHelper.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/columnHelper.js","./core/cell.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/core/cell.js","./core/column.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/core/column.js","./core/headers.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/core/headers.js","./core/row.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/core/row.js","./core/table.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/core/table.js","./features/ColumnFaceting.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js","./features/ColumnFiltering.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js","./features/ColumnGrouping.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","./features/ColumnOrdering.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js","./features/ColumnPinning.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js","./features/ColumnSizing.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js","./features/ColumnVisibility.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js","./features/GlobalFaceting.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js","./features/GlobalFiltering.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js","./features/RowExpanding.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js","./features/RowPagination.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPagination.js","./features/RowPinning.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPinning.js","./features/RowSelection.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSelection.js","./features/RowSorting.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSorting.js","./utils.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./utils/getCoreRowModel.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getCoreRowModel.js","./utils/getExpandedRowModel.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js","./utils/getFacetedMinMaxValues.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedMinMaxValues.js","./utils/getFacetedRowModel.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedRowModel.js","./utils/getFacetedUniqueValues.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedUniqueValues.js","./utils/getFilteredRowModel.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFilteredRowModel.js","./utils/getGroupedRowModel.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getGroupedRowModel.js","./utils/getPaginationRowModel.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getPaginationRowModel.js","./utils/getSortedRowModel.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getSortedRowModel.js","./aggregationFns.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/aggregationFns.js","./filterFns.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/filterFns.js","./sortingFns.js":"../../Plenix/node_modules/@tanstack/table-core/build/lib/sortingFns.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13963,7 +13963,7 @@ exports.filterFns = filterFns.filterFns;
 exports.reSplitAlphaNumeric = sortingFns.reSplitAlphaNumeric;
 exports.sortingFns = sortingFns.sortingFns;
   } },
-  "../Plenix/node_modules/@tanstack/react-table/build/lib/index.js": { deps: {"react":null,"@tanstack/table-core":"../Plenix/node_modules/@tanstack/table-core/build/lib/index.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/react-table/build/lib/index.js": { deps: {"react":null,"@tanstack/table-core":"../../Plenix/node_modules/@tanstack/table-core/build/lib/index.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 /**
    * react-table
    *
@@ -14066,7 +14066,7 @@ Object.keys(tableCore).forEach(function (k) {
   });
 });
   } },
-  "../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/lazy-measurements.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/lazy-measurements.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -14108,7 +14108,7 @@ function createLazyMeasurementsView(cache, flat) {
 exports.createLazyMeasurementsView = createLazyMeasurementsView;
 exports.getMeasurementKey = getMeasurementKey;
   } },
-  "../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -14186,7 +14186,7 @@ exports.debounce = debounce;
 exports.memo = memo;
 exports.notUndefined = notUndefined;
   } },
-  "../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/scroll-classifier.cjs": { deps: {"./utils.cjs":"../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/scroll-classifier.cjs": { deps: {"./utils.cjs":"../../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -14279,7 +14279,7 @@ exports.externalRetiresCommand = externalRetiresCommand;
 exports.flingCaught = flingCaught;
 exports.flingSpedUp = flingSpedUp;
   } },
-  "../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/ios-gesture.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/ios-gesture.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -14410,7 +14410,7 @@ exports._resetIOSDetectionForTests = _resetIOSDetectionForTests;
 exports.iosMomentumOverridesWrites = iosMomentumOverridesWrites;
 exports.isIOSWebKit = isIOSWebKit;
   } },
-  "../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/index.cjs": { deps: {"./lazy-measurements.cjs":"../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/lazy-measurements.cjs","./utils.cjs":"../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs","./scroll-classifier.cjs":"../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/scroll-classifier.cjs","./ios-gesture.cjs":"../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/ios-gesture.cjs"}, externals: {  }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/index.cjs": { deps: {"./lazy-measurements.cjs":"../../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/lazy-measurements.cjs","./utils.cjs":"../../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs","./scroll-classifier.cjs":"../../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/scroll-classifier.cjs","./ios-gesture.cjs":"../../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/ios-gesture.cjs"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -15984,7 +15984,7 @@ exports.observeWindowOffset = observeWindowOffset;
 exports.observeWindowRect = observeWindowRect;
 exports.windowScroll = windowScroll;
   } },
-  "../Plenix/node_modules/@tanstack/react-virtual/dist/cjs/index.cjs": { deps: {"react":null,"react-dom":null,"@tanstack/virtual-core":"../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/index.cjs"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "../../Plenix/node_modules/@tanstack/react-virtual/dist/cjs/index.cjs": { deps: {"react":null,"react-dom":null,"@tanstack/virtual-core":"../../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/index.cjs"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -16456,7 +16456,7 @@ function tokenPixels(token, el) {
     const host = el || document.documentElement,
       doc = host.ownerDocument || document,
       win = doc.defaultView;
-    if (!win.CSS.supports('inline-size', String(token)) || !win.CSSStyleSheet || !('adoptedStyleSheets' in doc)) return 0;
+    if (!win || !win.CSS.supports('inline-size', String(token)) || !win.CSSStyleSheet || !('adoptedStyleSheets' in doc)) return 0;
     // a measured length is kept for the context it depends on (the font sizes, the window and, for a percentage, the
     // container's width): adding the probe's sheet restyles the whole document, so it runs once per length and context
     const text = String(token),
@@ -18560,7 +18560,7 @@ function SingleQuickFilterMenu({
   }));
 }
   } },
-  "platform/patterns/CommandBar/CommandBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/barFit.js":"platform/utils/barFit.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","../../components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./BarActions.jsx":"platform/patterns/CommandBar/BarActions.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","../QuickFilter/single-menu.jsx":"platform/patterns/QuickFilter/single-menu.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/fields.js":"platform/utils/fields.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/CommandBar/CommandBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/barFit.js":"platform/utils/barFit.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","../../components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./BarActions.jsx":"platform/patterns/CommandBar/BarActions.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","../QuickFilter/single-menu.jsx":"platform/patterns/QuickFilter/single-menu.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../../utils/fields.js":"platform/utils/fields.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -18585,6 +18585,7 @@ var _Menu = require("../../components/Menu/Menu.jsx");
 var _QuickFilter = require("../QuickFilter/QuickFilter.jsx");
 var _singleMenu = require("../QuickFilter/single-menu.jsx");
 var _Stack = require("../../components/Stack/Stack.jsx");
+var _Popover = require("../../components/Popover/Popover.jsx");
 var _fields = require("../../utils/fields.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · CommandBar, CommandBarButton, CommandBarSearch, useCommandBar
@@ -18659,7 +18660,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        the quick filters, Sort, Group, Columns, View); then the search becomes its icon, which opens the field across the
        bar, and the count and status step out; then the commands fold into "More actions" (⋮) one per step from the end,
        the danger commands last. More shows only
-       when something does not fit. A change of width, labels or counts starts again from icons and labels.
+       when something does not fit. Last, the find side (the search, Filter and the kept quick filters) folds into one
+       "Find and view" button that opens them, at full size, in a popover: nothing in the bar is drawn outside it. A change of width, labels or counts starts again from icons and labels.
      Sort, Filter, Group, View and Columns are never merged: each keeps its own button at every width.
      Commands are never hidden by state: they are disabled, with a tooltip saying why.
      Every button is ghost (no outline). The bar is white and framed (3A), never tinted while rows are selected.
@@ -18774,7 +18776,8 @@ function CommandBar({
   const ending = end && ! /*#__PURE__*/_react.default.isValidElement(end) && !Array.isArray(end) && typeof end === 'object' && ('content' in end || 'fold' in end) ? end : null;
   const endContent = ending ? ending.content : end;
   const endFold = !selecting && ending && ending.fold;
-  const folds = (0, _BarActions.foldOrder)(shown).length + quick.length + (endFold ? 1 : 0);
+  const finding = !!find || quick.length > 0;
+  const folds = (0, _BarActions.foldOrder)(shown).length + quick.length + (endFold ? 1 : 0) + (finding && !selecting ? 1 : 0);
   // the bar's search, opened across the bar: the bar holds its step while it is open
   const [searchOpen, setSearchOpen] = _react.default.useState(false);
   const key = [shape, narrow, selecting ? 'sel' : 'rest', shown.map(a => a.label + (a.disabled ? '0' : '') + (a.loading ? 'busy' : '')).join('|'), quickFilters.map(q => q.label + (q.value && q.value.length ? q.value.length : '')).join('|'), endFold && endFold.label].join('§');
@@ -18791,6 +18794,8 @@ function CommandBar({
   const fold = Math.min(foldAll, (0, _BarActions.foldOrder)(shown).length);
   const endAway = !!endFold && foldAll > fold;
   const quickAway = Math.min(quick.length, Math.max(0, foldAll - fold - (endAway ? 1 : 0)));
+  // the last step: the find side folds into its button (after every command, the end control and the quick filters)
+  const findAway = finding && !selecting && foldAll > fold + (endAway ? 1 : 0) + quickAway;
   const quickKept = quick.slice(0, quick.length - quickAway),
     quickFolded = quick.slice(quick.length - quickAway);
   const quickMenu = quickFolded.map(q => {
@@ -18925,9 +18930,32 @@ function CommandBar({
   const quickEls = quickKept.map(q => /*#__PURE__*/_react.default.createElement(_QuickFilter.QuickFilter, _extends({
     key: q.id || q.label
   }, q)));
-  const findEl = (find || quickEls.length) && !selecting ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
+  // folded, the find side opens from one button; inside the popover its controls show at full size (labels, the field open)
+  const fullCtx = _react.default.useMemo(() => ({
+    iconOnly: false,
+    collapsed: false,
+    step: 0,
+    searchOpen: false,
+    setSearchOpen
+  }), []);
+  const findEl = !(find || quickEls.length) || selecting ? null : findAway ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
     className: "plx-command-bar__find"
-  }, find, quickEls) : null;
+  }, /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
+    title: t.find,
+    placement: "bottom-end",
+    trigger: /*#__PURE__*/_react.default.createElement(CommandBarButton, {
+      icon: "search",
+      label: t.find,
+      iconOnly: true
+    })
+  }, /*#__PURE__*/_react.default.createElement(BarContext.Provider, {
+    value: fullCtx
+  }, /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
+    gap: "sm",
+    align: "start"
+  }, find, quickEls)))) : /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
+    className: "plx-command-bar__find"
+  }, find, quickEls);
   const viewEl = view ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
     className: "plx-command-bar__view"
   }, view) : null;
@@ -19021,7 +19049,7 @@ var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
 var _VisuallyHidden = require("../../components/VisuallyHidden/VisuallyHidden.jsx");
 var _CommandBar = require("./CommandBar.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · PanelTrigger, PanelHead, Pick, MultiPick, Pill, useReorder
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · PanelTrigger, PanelHead, Pick, MultiPick, Pill, useReorder
    (platform/patterns/CommandBar; internal, not part of the public API)
    Summary: The find-and-view panels' shared parts. FilterPanel, SortPanel, GroupPanel, ColumnsMenu and QuickFilter are built
      from these, so the panels share one row (owner, 2026-10-14: "Group, Sort and Filter panels share row geometry"): the
@@ -19037,13 +19065,13 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      Pill: a value in its category color
      useReorder: rows that move by drag, by their handle's Move up and Move down, or by Alt + Arrow Up / Down on a focused
        row; each move is announced (WCAG 2.5.7: a way without dragging) */
-
 const toggle = (list, v) => list.indexOf(v) >= 0 ? list.filter(x => x !== v) : list.concat(v);
 exports.toggle = toggle;
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 
 // the bar button and its panel; inline: the body alone (a panel drawn open, or in a side panel). current: the choice in
-// force, shown in the button ("Status: Active", a pop-up button in Apple's words) in place of the count badge
+// force, shown in the button ("Status: Active", a pop-up button in Apple's words) in place of the count badge; open and
+// onOpenChange control the panel from outside
 exports.fill = fill;
 function PanelTrigger({
   icon,
@@ -19058,6 +19086,8 @@ function PanelTrigger({
   inline = false,
   placement,
   className,
+  open,
+  onOpenChange,
   children
 }) {
   const ctx = (0, _CommandBar.useCommandBar)();
@@ -19091,7 +19121,7 @@ function PanelTrigger({
     active: active,
     caret: caret
   });
-  const pop = /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
+  const pop = /*#__PURE__*/_react.default.createElement(_Popover.Popover, _extends({
     label: title ? undefined : label,
     title: title,
     size: size,
@@ -19099,7 +19129,11 @@ function PanelTrigger({
     footer: footer,
     placement: placement,
     initialFocus: first
-  }, body);
+  }, open === undefined ? null : {
+    open
+  }, {
+    onOpenChange: onOpenChange
+  }), body);
   return ctx.iconOnly ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
     content: words
   }, pop) : pop;
@@ -20894,7 +20928,7 @@ function groupDisplay(groups, collapsed, add, gaps = true) {
   return display;
 }
   } },
-  "platform/components/DataGrid/DataGridEngine.jsx": { deps: {"react":null,"./unread.js":"platform/components/DataGrid/unread.js","./room.js":"platform/components/DataGrid/room.js","react-dom":null,"./scrollbars.jsx":"platform/components/DataGrid/scrollbars.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","@tanstack/react-table":"../Plenix/node_modules/@tanstack/react-table/build/lib/index.js","@tanstack/react-virtual":"../Plenix/node_modules/@tanstack/react-virtual/dist/cjs/index.cjs","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./environment.js":"platform/components/DataGrid/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataGrid/state.js","./adapter.js":"platform/components/DataGrid/adapter.js","./cells.jsx":"platform/components/DataGrid/cells.jsx","./records.js":"platform/components/DataGrid/records.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/DataGrid/DataGridEngine.jsx": { deps: {"react":null,"./unread.js":"platform/components/DataGrid/unread.js","./room.js":"platform/components/DataGrid/room.js","react-dom":null,"./scrollbars.jsx":"platform/components/DataGrid/scrollbars.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","@tanstack/react-table":"../../Plenix/node_modules/@tanstack/react-table/build/lib/index.js","@tanstack/react-virtual":"../../Plenix/node_modules/@tanstack/react-virtual/dist/cjs/index.cjs","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./environment.js":"platform/components/DataGrid/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataGrid/state.js","./adapter.js":"platform/components/DataGrid/adapter.js","./cells.jsx":"platform/components/DataGrid/cells.jsx","./records.js":"platform/components/DataGrid/records.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -21019,8 +21053,11 @@ const defaults = {
   perPage: 'Rows per page',
   view: 'View options',
   wrapHeaders: 'Wrap headers',
+  markRead: 'Mark as read',
+  markUnread: 'Mark as unread',
   wrapText: 'Wrap text',
   wrapAll: 'Wrap all columns',
+  fullText: 'Show the full text',
   rowHeight: 'Row height',
   short: 'Short',
   medium: 'Medium',
@@ -21375,6 +21412,9 @@ function NextEngine(props) {
   const [rowHeight, setRowHeight] = _react.default.useState(initial.rowHeight),
     [wrapHeaders, setWrapHeaders] = _react.default.useState(initial.wrapHeaders);
   // Wrap text, per column (owner, 2026-10-24): the column's wrap prop or kind "wrap" is the default; the column menu turns it on or off
+  // the cut cell under the pointer or focus ("rowId|field") and its popover (owner, 2026-10-24: a popover with the full text)
+  const [cutAt, setCutAt] = _react.default.useState(null),
+    cutOpen = _react.default.useRef(false);
   const [wrapColumns, setWrapColumns] = _react.default.useState(() => props.wrapColumns || initial.wrapColumns || {});
   const wrapOf = c => (props.wrapColumns || wrapColumns)[c.field] ?? (c.wrap === true || kinds(c).includes('wrap'));
   const kindsOf = c => {
@@ -21473,7 +21513,7 @@ function NextEngine(props) {
     filter: deferredFilter
   } : deferredFilter, [unreadOnly, unread.keys, deferredFilter]);
   const rowMenu = unread.enabled && !isStatic ? record => [...(typeof suppliedRowMenu === 'function' ? suppliedRowMenu(record) : suppliedRowMenu || []), {
-    label: unread.has(record) ? 'Mark as read' : 'Mark as unread',
+    label: unread.has(record) ? S.markRead : S.markUnread,
     onSelect: () => unread.mark([record], !unread.has(record))
   }] : suppliedRowMenu;
   const recordFilter = _react.default.useMemo(() => {
@@ -21741,7 +21781,7 @@ function NextEngine(props) {
   }, []);
   _react.default.useLayoutEffect(() => {
     const at = frame.current;
-    if (!at || typeof CSSStyleSheet === 'undefined') return undefined;
+    if (!at || typeof CSSStyleSheet === 'undefined' || !at.ownerDocument.defaultView) return undefined; // a closed document (its frame removed): nothing to measure
     const store = pillSheet(at.ownerDocument);
     if (!uniformPillWidths || cells !== 'pill' || !metrics.row) {
       if (store.rules.delete(gridKey)) store.flush();
@@ -22065,6 +22105,7 @@ function NextEngine(props) {
     let raf = 0;
     const measure = () => {
       raf = 0;
+      if (!doc.defaultView) return;
       const next = {
         step: (0, _grid.gridStep)(at),
         row: (0, _environment.tokenPixels)('--plx-comp-data-grid-record-height', at),
@@ -22334,7 +22375,7 @@ function NextEngine(props) {
     }, direction[1]), /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
       icon: "filter",
       disabled: !column.getCanFilter(),
-      onSelect: () => setFilterField(c.field)
+      onSelect: () => props.onFilterField ? props.onFilterField(c.field) : setFilterField(c.field)
     }, S.filterBy), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
       icon: "group-by",
       disabled: !grouped && c.groupable === false,
@@ -22399,7 +22440,6 @@ function NextEngine(props) {
       filtered = column.getIsFiltered(),
       icon = kinds(c).includes('icon'),
       hasFilter = !!(c.filter || filterField === c.field || filtered),
-      align = c.headerAlign || (c.type === 'bytes' ? 'right' : null),
       titleFixed = icon ? 'flush' : null,
       offset = pinned ? pinStart(column) : 0;
     const node = /*#__PURE__*/_react.default.createElement(Width, _extends({
@@ -22414,7 +22454,7 @@ function NextEngine(props) {
       tabIndex: isStatic ? undefined : 0,
       "data-plx-field": c.field,
       "aria-sort": column.getIsSorted() ? column.getIsSorted() === 'desc' ? 'descending' : 'ascending' : undefined,
-      className: (0, _cx.cx)('' + B + '__grid-col', isStatic && B + '__grid-col--static', selectable && ordered.indexOf(column) === 0 && B + '__grid-col--after-lead', ordered.indexOf(column) > 0 && ordered[ordered.indexOf(column) - 1].getIsPinned() === 'left' && column.getIsPinned() !== 'left' && B + '__grid-col--after-frozen', column.getCanSort() && B + '__grid-sortable', column.getCanSort() && B + '__grid-col-sorter-element', kinds(c).includes('icon') && B + '__cell--icon', kinds(c).includes('icon') && B + '__w-lead', column.getIsFiltered() && B + '__filtered', pinned && '' + B + '__grid-frozen', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', (c.headerAlign || c.type === 'bytes') && B + '__head-align-' + (c.headerAlign || 'right')),
+      className: (0, _cx.cx)('' + B + '__grid-col', isStatic && B + '__grid-col--static', selectable && ordered.indexOf(column) === 0 && B + '__grid-col--after-lead', ordered.indexOf(column) > 0 && ordered[ordered.indexOf(column) - 1].getIsPinned() === 'left' && column.getIsPinned() !== 'left' && B + '__grid-col--after-frozen', column.getCanSort() && B + '__grid-sortable', column.getCanSort() && B + '__grid-col-sorter-element', kinds(c).includes('icon') && B + '__cell--icon', kinds(c).includes('icon') && B + '__w-lead', column.getIsFiltered() && B + '__filtered', pinned && '' + B + '__grid-frozen', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped'),
       "data-plx-sticky": pinned && offset ? offset + 'px' : undefined,
       onClick: e => {
         if (!e.target.closest(interactive) && column.getCanSort()) column.toggleSorting();
@@ -22426,11 +22466,11 @@ function NextEngine(props) {
         }
       }
     }), /*#__PURE__*/_react.default.createElement("div", {
-      className: (0, _cx.cx)(B + '__grid-col-content', isStatic && B + '__grid-col-content--static', icon && B + '__grid-col-content--icon', !icon && align === 'center' && B + '__grid-col-content--center', effectiveWrap && B + '__grid-col-content--wrap')
+      className: (0, _cx.cx)(B + '__grid-col-content', isStatic && B + '__grid-col-content--static', icon && B + '__grid-col-content--icon', effectiveWrap && B + '__grid-col-content--wrap')
     }, /*#__PURE__*/_react.default.createElement("div", {
       className: (0, _cx.cx)(B + '__grid-col-title-holder', icon && B + '__grid-col-title-holder--flush')
     }, /*#__PURE__*/_react.default.createElement("div", {
-      className: (0, _cx.cx)(B + '__grid-col-title', isStatic && B + '__grid-col-title--static', titleFixed && B + '__grid-col-title--' + titleFixed, icon && B + '__grid-col-title--icon', align && B + '__grid-col-title--align-' + align),
+      className: (0, _cx.cx)(B + '__grid-col-title', isStatic && B + '__grid-col-title--static', titleFixed && B + '__grid-col-title--' + titleFixed, icon && B + '__grid-col-title--icon'),
       title: c.title
     }, kinds(c).includes('icon') ? /*#__PURE__*/_react.default.createElement("span", {
       className: B + '__header-icon'
@@ -22662,6 +22702,15 @@ function NextEngine(props) {
       emit('cellEdit', api.cell(key, field));
     }
   }, [source]);
+  const enterCut = (event, id) => {
+    if (cutOpen.current) return;
+    const v = event.currentTarget.querySelector('.' + B + '__value');
+    const cut = !!v && (v.scrollHeight > v.clientHeight + 1 || v.scrollWidth > v.clientWidth + 1);
+    setCutAt(cut ? id : null);
+  };
+  const leaveCut = id => {
+    if (!cutOpen.current) setCutAt(at => at === id ? null : at);
+  };
   const anyWrap = table.getVisibleLeafColumns().some(col => col.columnDef.meta && col.columnDef.meta.field && wrapOf(col.columnDef.meta));
   const rowNode = row => {
     if (row.__group) return groupNode(row.__group);
@@ -22781,14 +22830,19 @@ function NextEngine(props) {
           mods
         }); // a pill carries a type icon only when it says something (a date, a number)
       const bare = !isEditing && !handled && !c.render && !actions && !(pinned && !isStatic) && /*#__PURE__*/_react.default.isValidElement(shown) && shown.type === 'span' && String(shown.props.className).split(' ').includes(B + '__value');
-      return /*#__PURE__*/_react.default.createElement(Width, {
+      return /*#__PURE__*/_react.default.createElement(Width, _extends({
         key: c.field,
         width: isNarrow ? null : widths[c.field],
         frozenOffset: pinned && !isNarrow ? sticky : undefined,
         role: isStatic ? c.rowLabel ? 'rowheader' : 'cell' : 'gridcell',
         tabIndex: isStatic ? undefined : -1,
         "data-plx-field": c.field,
-        "data-plx-unread": unread.has(record) || undefined,
+        "data-plx-unread": unread.has(record) || undefined
+      }, !isStatic && !c.render && !actions && !isEditing ? {
+        onPointerEnter: e => enterCut(e, row.id + '|' + c.field),
+        onFocus: e => enterCut(e, row.id + '|' + c.field),
+        onPointerLeave: () => leaveCut(row.id + '|' + c.field)
+      } : null, {
         dir: pinned && !isStatic ? undefined : 'auto',
         onDoubleClick: () => {
           if (canEdit) setEditing({
@@ -22830,7 +22884,7 @@ function NextEngine(props) {
         "data-plx-sticky": pinned && sticky ? sticky + 'px' : undefined,
         "data-plx-text-follow": c.rowLabel || columns.indexOf(c) <= pinnedAt ? 'size family weight' : 'size family',
         className: (0, _cx.cx)('' + B + '__grid-cell', modes, !selectable && selection[row.id] && ordered.indexOf(column) === 0 && B + '__grid-cell--selected-start', bare && B + '__grid-cell--bare', selectable && ordered.indexOf(column) === 0 && B + '__grid-cell--after-lead', ordered.indexOf(column) > 0 && ordered[ordered.indexOf(column) - 1].getIsPinned() === 'left' && column.getIsPinned() !== 'left' && B + '__grid-cell--after-frozen', isTree && row.depth > 0 && B + '__tree-cell--level-' + Math.min(12, row.depth), editing?.key === row.id && editing.field === c.field && '' + B + '__grid-editing', k.map(kind => B + '__cell--' + kind).join(' '), (k.includes('data') || c.type === 'bytes') && B + '__grid-cell--data', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', c.type === 'bytes' && B + '__cell--data', c.rowHandle && B + '__cell--handle', childField && c.field === (props.treeColumn || columns[0]?.field) && B + '__tree-cell', pinned && '' + B + '__grid-frozen', (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + '__cell--row-label', k.includes('icon') && B + '__w-lead', keys.includes(c.field) && B + '__cell--key', keys[0] === c.field && B + '__cell--key-first', (c.align || c.type === 'bytes') && B + '__cell--align-' + (c.align || 'right'))
-      }, childField && c.field === (props.treeColumn || columns[0]?.field) ? /*#__PURE__*/_react.default.createElement("span", {
+      }), childField && c.field === (props.treeColumn || columns[0]?.field) ? /*#__PURE__*/_react.default.createElement("span", {
         className: B + '__tree-level',
         "data-plx-depth": 0
       }, row.getCanExpand() ? /*#__PURE__*/_react.default.createElement("button", {
@@ -22876,7 +22930,27 @@ function NextEngine(props) {
       })) : actions ? /*#__PURE__*/_react.default.createElement("span", {
         className: B + '__portal ' + B + '__portal--actions',
         dir: pinned && !isStatic ? 'auto' : undefined
-      }, shown) : cellDirection(pinned && !isStatic, shown));
+      }, shown) : cutAt === row.id + '|' + c.field ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, cellDirection(pinned && !isStatic, shown), /*#__PURE__*/_react.default.createElement("span", {
+        className: B + '__cut'
+      }, /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
+        label: c.title,
+        title: c.title,
+        size: "sm",
+        placement: "bottom-end",
+        onOpenChange: open => {
+          cutOpen.current = open;
+          if (!open) setCutAt(null);
+        },
+        trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+          variant: "ghost",
+          size: "xs",
+          iconOnly: true,
+          icon: "expand",
+          label: S.fullText
+        })
+      }, /*#__PURE__*/_react.default.createElement("div", {
+        className: B + '__full-text'
+      }, (0, _cells.valueText)(value))))) : cellDirection(pinned && !isStatic, shown));
     }), props.viewMenu ? /*#__PURE__*/_react.default.createElement("div", {
       className: (0, _cx.cx)(`${B}__grid-cell ${B}__w-view`, modes),
       role: "gridcell"
@@ -22911,7 +22985,7 @@ function NextEngine(props) {
       rowApi: rowApi
     })) : node;
   };
-  const rowVersion = _react.default.useMemo(() => ({}), [wrapColumns, unread.keys, unreadOnly, props, source, model, editing, metrics, autoSizing, sizing, columnOrder, columnVisibility, sorting, expanded, page, pageSize, isNarrow, collapsed, printing, filterField, groupBy, loaded]);
+  const rowVersion = _react.default.useMemo(() => ({}), [cutAt, wrapColumns, unread.keys, unreadOnly, props, source, model, editing, metrics, autoSizing, sizing, columnOrder, columnVisibility, sorting, expanded, page, pageSize, isNarrow, collapsed, printing, filterField, groupBy, loaded]);
   const renderRow = row => row.original ? /*#__PURE__*/_react.default.createElement(MemoGridRow, {
     key: row.displayKey || row.id,
     row: row,
@@ -22963,25 +23037,7 @@ function NextEngine(props) {
         onRetry?.();
       }
     }, S.retry) : null
-  }, String(failed === true ? '' : failed.message || failed)) : null, unread.enabled && !isStatic ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    variant: "ghost",
-    "aria-pressed": unreadOnly,
-    onClick: () => {
-      setUnreadOnly(!unreadOnly);
-      props.onUnreadOnlyChange?.(!unreadOnly);
-    }
-  }, "Show unread only (", unread.count, ")"), selectable ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-    label: "Change selected rows",
-    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      variant: "ghost"
-    }, "Change selected rows")
-  }, /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-    disabled: !Object.keys(selection).some(key => selection[key]),
-    onSelect: () => unread.mark(canonical.filter(record => selection[(0, _state.recordKey)(record[index])]), false)
-  }, "Mark as read"), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
-    disabled: !Object.keys(selection).some(key => selection[key]),
-    onSelect: () => unread.mark(canonical.filter(record => selection[(0, _state.recordKey)(record[index])]), true)
-  }, "Mark as unread")) : null) : null, /*#__PURE__*/_react.default.createElement("div", {
+  }, String(failed === true ? '' : failed.message || failed)) : null, /*#__PURE__*/_react.default.createElement("div", {
     className: (0, _cx.cx)(B + '__table', B + '__grid', height === '100%' && B + '__grid--fill', isStatic && B + '__grid--static'),
     role: isStatic ? 'table' : groups.length || childField ? 'treegrid' : 'grid',
     "aria-label": label,
@@ -23086,9 +23142,12 @@ function NextEngine(props) {
   }), shown.map(renderRow), /*#__PURE__*/_react.default.createElement(RowGap, {
     rows: model.slice(last)
   })), !model.length ? /*#__PURE__*/_react.default.createElement("div", {
-    className: (0, _cx.cx)(`${B}__grid-placeholder`, isStatic && B + '__grid-placeholder--static')
+    className: (0, _cx.cx)(`${B}__grid-placeholder`, isStatic && B + '__grid-placeholder--static'),
+    role: "row"
   }, /*#__PURE__*/_react.default.createElement("div", {
-    className: `${B}__grid-placeholder-contents`
+    className: `${B}__grid-placeholder-contents`,
+    role: isStatic ? 'cell' : 'gridcell',
+    "aria-colspan": Math.max(1, ordered.length)
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: B + '__empty'
   }, remoteMode && remoteBusy ? S.loading : empty || S.empty))) : null)), !isStatic ? /*#__PURE__*/_react.default.createElement(_scrollbars.Scrollbars, {
@@ -27110,7 +27169,7 @@ const RowButton = exports.RowButton = /*#__PURE__*/_react.default.forwardRef(fun
   }), children);
 });
   } },
-  "platform/components/SegmentedControl/SegmentedControl.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/SegmentedControl/SegmentedControl.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27122,6 +27181,7 @@ var _devWarn = require("../../utils/devWarn.js");
 var _direction = require("../../utils/direction.js");
 var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
+var _Input = require("../Input/Input.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · SegmentedControl
    Summary: One choice from a few short options, shown together (S | M | L; Light | Dark | System): a bordered group of
@@ -27139,28 +27199,89 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      label: the group's accessible name
      size: "md" (default) | "sm"
      className: more classes on the group
+     fold: "auto" (default) | "never"
      ...rest: other attributes go on the group element
    Behavior:
      Arrow keys move to the next or previous option and choose it, wrapping around; Home and End go to the first and last.
      Only the chosen option is in the Tab order.
+     When the options do not fit their room, the control becomes a drop-down list (Select) with the same options, value
+       and onChange; it comes back once the room is wide enough. The room is measured, never a fixed breakpoint: the
+       control's own width, plus the free space of a row it sits in. fold="never" keeps the segments.
    Notes:
      To switch between panels of content, use Tabs (variant "segmented").
 */
+/* the room the control may take: its frame's width, plus the free space left in a flex row it sits in (the frame takes
+   its content's width there, so a folded control alone could never see the room come back) */
+function roomOf(frame) {
+  const width = frame.getBoundingClientRect().width,
+    parent = frame.parentElement;
+  if (!parent) return width;
+  const cs = getComputedStyle(parent);
+  if (!/flex/.test(cs.display) || /column/.test(cs.flexDirection)) return width;
+  const inner = parent.clientWidth - parseFloat(cs.paddingLeft || 0) - parseFloat(cs.paddingRight || 0);
+  const kids = Array.prototype.filter.call(parent.children, el => {
+    const k = getComputedStyle(el);
+    return k.display !== 'none' && k.position !== 'absolute' && k.position !== 'fixed';
+  });
+  const used = kids.reduce((n, el) => {
+    const k = getComputedStyle(el);
+    return n + el.getBoundingClientRect().width + parseFloat(k.marginLeft || 0) + parseFloat(k.marginRight || 0);
+  }, 0);
+  const gap = (parseFloat(cs.columnGap) || 0) * Math.max(0, kids.length - 1);
+  return width + Math.max(0, inner - used - gap);
+}
+
+/* folded: true while the segments' own width is more than the room. The segments' width is measured while they show and
+   kept while folded; a change of options or size unfolds to measure again. */
+function useFold(frameRef, groupRef, key, enabled) {
+  const [folded, setFolded] = _react.default.useState(false);
+  const natural = _react.default.useRef(0);
+  _react.default.useLayoutEffect(() => {
+    natural.current = 0;
+    setFolded(false);
+  }, [key]);
+  const check = _react.default.useCallback(() => {
+    const frame = frameRef.current;
+    if (!frame || !enabled) return;
+    const group = groupRef.current;
+    if (group) natural.current = group.scrollWidth;
+    if (!natural.current) return;
+    setFolded(natural.current > roomOf(frame) + 0.5);
+  }, [enabled]);
+  _react.default.useLayoutEffect(check);
+  _react.default.useLayoutEffect(() => {
+    const frame = frameRef.current;
+    if (!frame || !enabled || typeof ResizeObserver === 'undefined') return undefined;
+    const ro = new ResizeObserver(check);
+    ro.observe(frame);
+    if (frame.parentElement) ro.observe(frame.parentElement);
+    // the segments' own size too: it changes when the font arrives after the first measure
+    if (groupRef.current) ro.observe(groupRef.current);
+    return () => ro.disconnect();
+  }, [check, enabled, folded]);
+  return enabled && folded;
+}
 function SegmentedControl({
   options,
   value,
   onChange,
   label,
   size = 'md',
+  fold = 'auto',
   className,
   ...rest
 }) {
   (0, _devWarn.devWarn)('SegmentedControl', {
-    size
+    size,
+    fold
   }, {
-    size: ['md', 'sm']
+    size: ['md', 'sm'],
+    fold: ['auto', 'never']
   });
   const refs = _react.default.useRef([]);
+  const frame = _react.default.useRef(null),
+    group = _react.default.useRef(null);
+  const folded = useFold(frame, group, size + '|' + options.map(o => String(o.value) + ':' + (o.label || '') + ':' + (o.icon || '')).join('|'), fold !== 'never');
   const index = Math.max(0, options.findIndex(o => o.value === value));
   const move = (e, i) => {
     let n = null;
@@ -27174,7 +27295,25 @@ function SegmentedControl({
     onChange(options[n].value);
     if (refs.current[n]) refs.current[n].focus();
   };
-  return /*#__PURE__*/_react.default.createElement("div", _extends({
+  if (folded) {
+    const at = options.findIndex(o => o.value === value);
+    return /*#__PURE__*/_react.default.createElement("div", {
+      ref: frame,
+      className: "plx-segmented-fit"
+    }, /*#__PURE__*/_react.default.createElement(_Input.Select, _extends({
+      "aria-label": label,
+      size: size,
+      className: className,
+      value: String(Math.max(0, at)),
+      options: options.map((o, i) => ({
+        value: String(i),
+        label: o.label || o.ariaLabel || String(o.value)
+      })),
+      onChange: e => onChange(options[+e.target.value].value)
+    }, rest)));
+  }
+  const segments = /*#__PURE__*/_react.default.createElement("div", _extends({
+    ref: group,
     role: "radiogroup",
     "aria-label": label,
     className: (0, _cx.cx)('plx-segmented', size === 'sm' && 'plx-segmented--sm', className)
@@ -27192,6 +27331,10 @@ function SegmentedControl({
     onClick: () => onChange(o.value),
     onKeyDown: e => move(e, i)
   }, o.icon ? (0, _Icon.stateIcon)(o.icon, o.value === value) : null, o.label ? /*#__PURE__*/_react.default.createElement("span", null, o.label) : null)));
+  return fold === 'never' ? segments : /*#__PURE__*/_react.default.createElement("div", {
+    ref: frame,
+    className: "plx-segmented-fit"
+  }, segments);
 }
   } },
   "platform/components/Combobox/Combobox.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -28243,6 +28386,77 @@ function useDataGridActions(actions, selection, strings) {
   return typeof actions === 'function' ? (...args) => (actions(...args) || []).map(wrap) : Array.isArray(actions) ? actions.map(wrap) : actions;
 }
   } },
+  "platform/components/DataGrid/unread-commands.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.unreadCommands = unreadCommands;
+/* Plenix · DataGrid.unreadCommands
+   Summary: The unread filter and the Mark as read / Mark as unread commands for an app's CommandBar, the Fluent (Outlook)
+     way: nothing is drawn above the grid's column headers (owner, 2026-10-24).
+   Usage:
+     const unread = DataGrid.unreadCommands({ unreadKeys, onUnreadChange: setUnreadKeys, selected, unreadOnly, onUnreadOnlyChange: setUnreadOnly });
+     <CommandBar actions={[...pageActions, unread.filter]} selection={{ count: selected.length, actions: [...unread.selection, ...others] }} />
+     <DataGrid unreadKeys={unreadKeys} onUnreadChange={setUnreadKeys} unreadOnly={unreadOnly} onUnreadOnlyChange={setUnreadOnly} … />
+   Props:
+     unreadKeys: the unread record keys; onUnreadChange(keys, { unreadCount }): the change
+     selected: the selected record keys (the selection commands act on them)
+     unreadOnly, onUnreadOnlyChange(next): the filter (the grid's own props of the same names)
+     strings: { unread: "Unread ({count})", markRead: "Mark as read", markUnread: "Mark as unread" }
+   Behavior: filter is a toggle command for the CommandBar ("Unread (2)", pressed while only unread rows show), as
+     Outlook's Unread filter; selection is two
+     commands, each disabled while it would change nothing (no selected unread row, no selected read row).
+   Notes: The row menu offers the same two commands for one row; the grid keeps unread rows bold with the start bar. */
+function unreadCommands({
+  unreadKeys = [],
+  onUnreadChange,
+  selected = [],
+  unreadOnly = false,
+  onUnreadOnlyChange,
+  strings
+} = {}) {
+  const t = Object.assign({
+    unread: 'Unread ({count})',
+    markRead: 'Mark as read',
+    markUnread: 'Mark as unread'
+  }, strings);
+  const keys = new Set(unreadKeys.map(String)),
+    picked = selected.map(String);
+  const change = next => {
+    const list = [...next];
+    onUnreadChange && onUnreadChange(list, {
+      unreadCount: list.length
+    });
+  };
+  const anyUnread = picked.some(k => keys.has(k)),
+    anyRead = picked.some(k => !keys.has(k));
+  return {
+    filter: {
+      id: 'unread',
+      label: t.unread.replace('{count}', String(keys.size)),
+      icon: 'mark-unread',
+      toggle: true,
+      pressed: !!unreadOnly,
+      onSelect: next => onUnreadOnlyChange && onUnreadOnlyChange(typeof next === 'boolean' ? next : !unreadOnly)
+    },
+    selection: [{
+      id: 'mark-read',
+      label: t.markRead,
+      icon: 'mail',
+      disabled: !anyUnread,
+      onSelect: () => change([...keys].filter(k => !picked.includes(k)))
+    }, {
+      id: 'mark-unread',
+      label: t.markUnread,
+      icon: 'mark-unread',
+      disabled: !anyRead,
+      onSelect: () => change(new Set([...keys, ...picked]))
+    }]
+  };
+}
+  } },
   "platform/components/Persona/Persona.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -28887,7 +29101,7 @@ function ReviewQueue({
   }));
 }
   } },
-  "platform/components/DataGrid/DataGrid.jsx": { deps: {"react":null,"./DataGridEngine.jsx":"platform/components/DataGrid/DataGridEngine.jsx","./actions.jsx":"platform/components/DataGrid/actions.jsx","../Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","../../patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/DataGrid/DataGrid.jsx": { deps: {"react":null,"./DataGridEngine.jsx":"platform/components/DataGrid/DataGridEngine.jsx","./actions.jsx":"platform/components/DataGrid/actions.jsx","./unread-commands.js":"platform/components/DataGrid/unread-commands.js","../Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","../../patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -28897,6 +29111,7 @@ exports.DataGrid = DataGrid;
 var _react = _interopRequireDefault(require("react"));
 var _DataGridEngine = require("./DataGridEngine.jsx");
 var _actions = require("./actions.jsx");
+var _unreadCommands = require("./unread-commands.js");
 var _Toast = require("../Toast/Toast.jsx");
 var _ReviewFlow = require("../../patterns/ReviewFlow/ReviewFlow.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -28939,14 +29154,16 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
          fits its content up to --plx-comp-data-grid-auto-max-width (360px; longer text ends in an ellipsis, the full
          text on hover) and the last such column takes the room left, so the grid fills its width; minWidth, maxWidth; frozen: pinned at the start; rowLabel: this and
          the columns before it are the row header (pinned and shaded)
-       align, headerAlign: "left" | "center" | "right"; sortable: false turns sorting off; resizable: false
+       align: "left" | "center" | "right" (the cells); every header label starts at the start edge, whatever the column's
+         align (owner rule), and headerAlign is ignored; sortable: false turns sorting off; resizable: false
        editor: "input" | "number" (a Plenix input; double-click or Enter edits, Escape cancels); editable(record): which
          rows may edit; rowHandle: true makes the column the drag handle for moving rows
      selectable: the checkbox column (select all in its header); selected (keys) with onSelectionChange(keys,
        { count, hidden }); keepHiddenSelection (default true) keeps rows a filter hides selected
      unread(record) or unreadKeys: unread records; onUnreadChange(keys, {unreadCount}) controls updates. Unread text is semibold with the accent start bar.
      markReadOnOpen (default true), readDelay (milliseconds, default 0): opening with click/Enter marks read. Row and selection menus also mark read/unread.
-     unreadOnly with onUnreadOnlyChange controls the unread filter. The controller exposes getUnreadCount(), markRead(keys), markUnread(keys).
+     unreadOnly with onUnreadOnlyChange controls the unread filter. Nothing is drawn above the headers (Fluent): the app
+       puts DataGrid.unreadCommands(...).filter in its CommandBar's quickFilters and .selection among its selection commands. The controller exposes getUnreadCount(), markRead(keys), markUnread(keys).
      onRowClick(record, event), onRowDoubleClick(record, event): with them rows are focusable and Enter clicks;
        onCellEdit(record, { field, value, previous })
      density: "compact" (default: tables start Compact, owner 2026-10-22) | "standard" | "comfortable" | "page" (follow the
@@ -28985,11 +29202,13 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        { rows, total }; search: the page's search text
      storageKey: keeps the person's standalone view (sort, widths, order, hidden columns, row height, wrap, groups).
      onViewChange(patch): delegates view changes to an external controller; its presence disables the grid's own store.
+       useCollectionView supplies this callback and columnWidths, so its collection state owns the view.
+     onFilterField(field): the header menu's "Filter by this field" calls it instead of opening the header filter box; useCollectionView
+       sets it so the command bar's Filter panel opens on that field (one filter state, shown in one place)
      columns[].wrap: true starts the column wrapped (as kind "wrap"); people turn Wrap text on or off in the column menu, and
        Wrap all columns in the header's right-click menu. A row with a wrapping column starts every cell at the top, at the
        reading line height; rows without one stay centered. wrapColumns ({ field: true|false }) and onWrapColumnsChange(next)
        control it from outside; the saved view keeps it (owner, 2026-10-24)
-       useCollectionView supplies this callback and columnWidths, so its collection state owns the view.
      narrow: "table" (default inside SplitView) | "list" (default elsewhere: under narrowAt, 600px, a list of keyColumns) | "auto"
      empty: shown when no row matches; error and onRetry(): the error state and its one recovery; strings: the words
      className: more classes on the frame
@@ -29026,6 +29245,7 @@ function DataGrid(props) {
   return toast ? /*#__PURE__*/_react.default.createElement(ActionTable, props) : /*#__PURE__*/_react.default.createElement(_Toast.ToastProvider, null, /*#__PURE__*/_react.default.createElement(ActionTable, props));
 }
 DataGrid.useActions = _actions.useDataGridActions;
+DataGrid.unreadCommands = _unreadCommands.unreadCommands;
 // nothing to load ahead: the engine is part of the Platform bundle (kept so pages that called it keep working)
 DataGrid.preload = () => {};
   } },
@@ -48252,6 +48472,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        { id, field, op, value }
      onChange(value): runs on every change
      inline: draws the panel alone (open, in a frame) instead of the bar button and its popover; default false
+     open, onOpenChange(open): the panel's open state, controlled (useCollectionView sets them)
+     request: { field, id }: open on one field (the grid's "Filter by this field"): a condition for that field is added when
+       the filter has none, and the focus goes to the first row; each new id is one request
      strings: the words, for other languages: { label: "Filter", info, sub: "In this view, show records", where: "Where",
        and: "and", or: "or", empty: "No conditions: every record is shown", addCondition: "Add condition",
        addGroup: "Add condition group", remove: "Remove {what}", condition: "condition", group: "condition group",
@@ -48460,7 +48683,10 @@ function FilterPanel({
   value,
   onChange,
   inline = false,
-  strings
+  strings,
+  open,
+  onOpenChange,
+  request
 }) {
   const t = Object.assign({}, STRINGS, strings);
   const node = value || {
@@ -48471,6 +48697,13 @@ function FilterPanel({
   const add = x => onChange(Object.assign({}, node, {
     items: node.items.concat(x)
   }));
+  const handled = _react.default.useRef(null);
+  _react.default.useEffect(() => {
+    if (!request || handled.current === request.id) return;
+    handled.current = request.id;
+    const f = fields.find(x => x.value === request.field);
+    if (f && !(0, _fields.conditionsOf)(node).some(c => c.field === f.value)) add((0, _fields.newCondition)(f));
+  }, [request]);
   const body = /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-find-panel plx-find-panel--filter"
   }, /*#__PURE__*/_react.default.createElement(_panelParts.PanelHead, {
@@ -48506,7 +48739,9 @@ function FilterPanel({
     icon: "filter",
     label: t.label,
     count: n,
-    inline: inline
+    inline: inline,
+    open: open,
+    onOpenChange: onOpenChange
   }, body);
 }
   } },
@@ -49000,7 +49235,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      { search, filter, quick, sort, group, columns, view, reset, setSearch, setFilter, setQuick(key, value), setSort, setGroup,
        setColumns, setView, test(row) (whether a row shows), count(rows) (how many show), table (a ref to the DataGrid's
        table controller), searchProps, filterProps, quickProps(key) (includes counts: Map of option values to faceted record counts), sortProps, groupProps, columnsProps, viewProps,
-       tableProps: { filter, sort, groupBy, columnOrder, hiddenColumns, rowHeight, columnWidths, collapsedGroups, onViewChange, onReady } }
+       tableProps: { filter, sort, groupBy, columnOrder, hiddenColumns, rowHeight, columnWidths, collapsedGroups, onViewChange, onReady, onFilterField } }
    Notes:
      tableProps delegates header changes back to this hook; a managed grid ignores its own storageKey.
      The groups' order follows their levels: tableProps.sort is the group levels, then the sort levels. "Hide empty groups"
@@ -49225,6 +49460,16 @@ function useCollectionView(fields, options = {}) {
       } : {})
     }));
   }, [fields, group]);
+  // the grid's "Filter by this field" opens the command bar's Filter panel on that field (one filter state, shown in one place)
+  const [filterOpen, setFilterOpen] = _react.default.useState(false),
+    [filterRequest, setFilterRequest] = _react.default.useState(null);
+  const onFilterField = _react.default.useCallback(field => {
+    setFilterRequest({
+      field,
+      id: Date.now() + Math.random()
+    });
+    setFilterOpen(true);
+  }, []);
   const groupable = fields.filter(f => f.groupable !== false);
   const sorters = group.map(g => ({
     field: g.field,
@@ -49257,7 +49502,10 @@ function useCollectionView(fields, options = {}) {
     filterProps: {
       fields,
       value: filter,
-      onChange: setFilter
+      onChange: setFilter,
+      open: filterOpen,
+      onOpenChange: setFilterOpen,
+      request: filterRequest
     },
     quickProps: k => ({
       kind: config(k).kind || 'list',
@@ -49307,7 +49555,8 @@ function useCollectionView(fields, options = {}) {
       columnWidths: view.widths,
       collapsedGroups: view.collapsed,
       onViewChange,
-      onReady
+      onReady,
+      onFilterField
     }
   };
 }
