@@ -3,7 +3,10 @@
 .plx-check__input{accent-color:var(--plx-comp-check-input-accent-color);block-size:var(--plx-comp-check-input-height);cursor:var(--plx-comp-check-context-cursor,pointer);flex-shrink:0;font-family:inherit;inline-size:var(--plx-comp-check-input-width);margin-block-end:0;margin-block-start:0;margin-block-start:var(--plx-comp-check-input-margin-block-start);margin-inline-end:0;margin-inline-start:0;}
 .plx-check__input:focus-visible,
 .plx-check__input.is-focus-visible{outline-color:var(--plx-comp-check-input-focus-outline-color);outline-offset:var(--plx-comp-check-input-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-check-input-focus-outline-width);}
-.plx-check__text{display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-check-text-row-gap);}
+/* the label sets the control's baseline: in a row aligned on the baseline (a to-do with its date) the label's text lines
+   up with its neighbors' text, not the box's bottom edge. Alone in its baseline group it stays at the start, so
+   nothing moves inside the control; a context that centers the control centers the text as before */
+.plx-check__text{align-self:var(--plx-comp-check-context-align,baseline);display:flex;flex-direction:column;min-inline-size:0;row-gap:var(--plx-comp-check-text-row-gap);}
 .plx-check__label{color:var(--plx-comp-check-label-text);}
 .plx-check__description{color:var(--plx-comp-check-description-text);font-size:var(--plx-comp-check-description-font-size);}
 .plx-check:has(.plx-check__input:disabled){cursor:not-allowed;opacity:var(--plx-comp-check-input-disabled-opacity);}

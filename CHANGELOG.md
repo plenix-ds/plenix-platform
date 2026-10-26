@@ -6,6 +6,38 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.72.0] - 2026-10-26
+
+### Changed (visual)
+- Buttons (#298):
+  - the command bar has a 4px frame and items; its menu icon turns blue on hover (#319)
+  - icon-only buttons show their name and shortcut as a tooltip (#323)
+  - a loading button keeps its width and accessible name (#323)
+  - touch layouts get 44pt and 48dp hit areas (#323)
+  - Sort and Status buttons show the current choice (#323)
+- DataGrid and Table:
+  - every column header label starts at the start, number columns included; `headerAlign` no longer moves the label, while cell alignment is unchanged (#326, #330)
+  - header titles stay in the vertical middle when another title wraps (#271, #293)
+  - in a wrapped row, every cell starts at the top (#256, #331)
+  - text cut by wrap shows an icon that opens the full text in a popover (#312)
+  - unread works the Fluent way: unread rows in bold with a marker, "Unread" as a filter, and Mark as read/unread in the selection commands and the row menu. The row of text above the headers is gone (#287, #318). **What an app should check:** apps using `unreadKeys` find these commands in the command bar and the row menu.
+  - with a CommandBar, "Filter by this field" opens the bar's Filter panel (#269, #295)
+- SegmentedControl becomes a drop-down list when its options don't fit (#276, #320). The CommandBar's find side folds the same way (#274, #322).
+- EntityHeader:
+  - dates and numbers in fact values and the subtitle use the data font (#260, #328, #339)
+  - a long summary title wraps inside its card on narrow screens (#340)
+  - the apps' headers no longer repeat the summary as a fact (#328, #334)
+- Checkbox: its label sets the baseline, so a date beside it lines up (#256, #329).
+
+### Fixed
+- In forced colors (Windows High Contrast), a pressed button shows Highlight with HighlightText (#325, #327).
+- An empty Table or DataGrid is valid ARIA: the empty message is a row (#313, #315).
+- DataGrid no longer throws when its document closes, for example a preview frame that is removed (#343). The same fix applies to the design spec's own script (plenix-design-system#4).
+
+### Added
+- Design spec guidance for buttons, the toolbar, action menus, the command bar, the sort panel and the quick filter (#298).
+- The icon audit report (#278, #292).
+
 ## [0.71.0] - 2026-10-25
 
 ### Added

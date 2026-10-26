@@ -932,6 +932,11 @@
       "$value": "#d0d0d0",
       "$type": "color"
     },
+    "color-gray-250": {
+      "$value": "#dcddde",
+      "$type": "color",
+      "$description": "Halfway between gray 200 and gray 300: the edge after a frozen DataGrid or Table column (owner, 2026-10-26)."
+    },
     "color-gray-200": {
       "$value": "#e8e9ec",
       "$type": "color"

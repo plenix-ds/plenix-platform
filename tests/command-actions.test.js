@@ -3,7 +3,7 @@ const assert = require('assert');
 const fs = require('fs'), path = require('path');
 const { serve, launch, sleep } = require('./lib.js');
 const ROOT = path.resolve(__dirname, '..');
-const BASE_PATH = '/Plenix/platform/design-system/';
+const BASE_PATH = '/Plenix/test-site/index.html';   // any page with React and Plenix: the test site's dashboard
 async function internalActions(page) {
   const esbuild = require('esbuild');
   const output = await esbuild.build({ entryPoints: [path.join(ROOT, 'platform/patterns/CommandBar/BarActions.jsx')], bundle: true, write: false, format: 'iife', globalName: 'CommandActionsTest',
@@ -142,7 +142,6 @@ module.exports.keyboard = async function keyboard(page) {
   return 5;
 };
 if (require.main === module) {
-  if (!fs.existsSync(path.join(ROOT, 'platform/design-system/index.html'))) { console.log('COMMAND_ACTIONS_SKIPPED (no design system)'); process.exit(0); }
   (async () => { const port = +process.env.TEST_PORT || 9120, server = await serve(port); let browser;
     try { browser = await launch(); const page = await browser.newPage(); await page.setViewport({ width: 1440, height: 1000 }); await page.goto('http://127.0.0.1:' + port + BASE_PATH, { waitUntil: 'networkidle0' });
       const count = await module.exports(page) + await module.exports.keyboard(page); console.log('COMMAND_ACTIONS_OK ' + count);

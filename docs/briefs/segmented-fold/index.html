@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en" data-plx-mode="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Segmented fold · Plenix review</title>
+<!-- Owner review for #276 (RedSave P-53): the segmented control turns into a drop-down list when its options do not fit.
+     Pictures of the real components (stage.html, capture.js). -->
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<link rel="stylesheet" href="../review.css">
+</head>
+<body class="rv-page">
+<main class="rv-doc">
+  <h1 class="rv-h1">Segmented control: a drop-down list when it does not fit (#276)</h1>
+  <p class="rv-lead">In RedSave's 360px side panel, the "Show: Everyone (17) / Not saved yet / Already saved" control ran
+    past its card. You said: turn it into a drop-down list when the options don't fit.</p>
+  <ul class="rv-list">
+    <li><strong>How:</strong> the control measures its room (its own width, plus the free space of the row it sits in) and compares it with the segments' width. No fixed breakpoint.</li>
+    <li><strong>Same control:</strong> the drop-down list has the same options, value, name and onChange; the segments come back once the room is wide enough.</li>
+    <li><strong>Opt out:</strong> <span class="rv-tag">fold="never"</span> keeps the segments.</li>
+  </ul>
+  <section class="rv-section">
+    <h2 class="rv-h2">Built · 360px side panel</h2>
+    <div class="rv-pair">
+      <figure class="rv-fig"><img src="before-narrow.png" alt="Before: the segments fill the card's padding, and in a row with a button the row runs past the card"><figcaption>Before: the segments run into the card's padding, and the row runs past the card</figcaption></figure>
+      <figure class="rv-fig"><img src="after-narrow.png" alt="After: both controls are drop-down lists showing Not saved yet"><figcaption>After: a drop-down list with the same choice</figcaption></figure>
+    </div>
+  </section>
+  <section class="rv-section">
+    <h2 class="rv-h2">Built · wide panel</h2>
+    <figure class="rv-fig"><img src="after-wide.png" alt="Wide: the segments as before"><figcaption>Room enough: the segments, unchanged</figcaption></figure>
+  </section>
+</main>
+</body>
+</html>

@@ -105,9 +105,8 @@ module.exports = async function groups(page) {
   });
 };
 if (require.main === module) {
-  if (!fs.existsSync(path.join(ROOT, 'platform/design-system/index.html'))) { console.log('MULTI_GROUPS_SKIPPED (no design system)'); process.exit(0); }
   (async () => { const port = +process.env.TEST_PORT || 9159, server = await serve(port); let browser;
-    try { browser = await launch(); const page = await browser.newPage(); page.on('pageerror', error => console.error('PAGE_ERROR',error.message)); page.on('console', message => {if(message.type()==='error')console.error('PAGE_CONSOLE',message.text());}); await page.setViewport({ width: 1440, height: 1000 }); await page.goto('http://127.0.0.1:' + port + '/Plenix/platform/design-system/', { waitUntil: 'networkidle0' }); console.log('MULTI_GROUPS_OK ' + await module.exports(page));
+    try { browser = await launch(); const page = await browser.newPage(); page.on('pageerror', error => console.error('PAGE_ERROR',error.message)); page.on('console', message => {if(message.type()==='error')console.error('PAGE_CONSOLE',message.text());}); await page.setViewport({ width: 1440, height: 1000 }); await page.goto('http://127.0.0.1:' + port + '/Plenix/test-site/index.html', { waitUntil: 'networkidle0' }); console.log('MULTI_GROUPS_OK ' + await module.exports(page));
     } finally { if (browser) await browser.close(); server.close(); }
   })().catch(error => { console.error(error); process.exitCode = 1; });
 }

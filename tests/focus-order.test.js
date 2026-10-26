@@ -1,9 +1,10 @@
 // Plenix tests · focus order (library plan wave 2, the Focus order foundation; WCAG 2.4.3, 2.4.1): with the dev overlay's
-// own check (platform/dev/focus-order.js, PlenixFocusOrder.check), on every application page:
+// own check (platform/dev/focus-order.js, PlenixFocusOrder.check), on every application page and every page of the St.
+// John the Beloved test site (test-site/):
 //   positive   no element has a positive tabindex (it would move ahead of the reading order)
 //   order      the Tab stops follow the reading order: none sits above the stop before it, or behind it on its line
 //   skip       on a page with a skip link, the skip link is the first stop
-// then, on the Focus order page of the design system, focus moves into a dialog when it opens and back to its trigger
+// then, on the test site's member page, focus moves into a dialog (Rename member) when it opens and back to its trigger
 // when it closes; and on a fixture page, the overlay finds what it must (a positive tabindex, a row drawn in reverse,
 // one stop per radio group) and draws one numbered badge per stop.
 // Known findings are kept in tests/baselines/focus-order.json (page -> check -> number); the test fails only when a page
@@ -20,12 +21,12 @@ const changed = require('./changed.js');
 const PORT = +process.env.FOCUS_PORT || +process.env.TEST_PORT || 8798, BASE = 'http://127.0.0.1:' + PORT + '/Plenix/';
 const BASELINE = path.join(__dirname, 'baselines', 'focus-order.json');
 const UPDATE = process.argv.includes('--update');
-const HAS_DS = fs.existsSync(path.join(__dirname, '..', 'platform', 'design-system', 'index.html'));
+const site = require('./site.js');
 changed.noPartialUpdate();
-const PAGES = changed.pages(APPS.map((a) => a + '/index.html'));
-const FIXTURE = changed.wants({}), DIALOG = HAS_DS && changed.wants({ ids: ['focus-order'], units: ['components/Dialog'] });
+const PAGES = changed.pages(APPS.map((a) => a + '/index.html').concat(site.urls()));
+const FIXTURE = changed.wants({}), DIALOG = changed.wants({ units: ['components/Dialog'] }) || changed.pages([site.url('member')]).length > 0;
 if (!PAGES.length && !FIXTURE && !DIALOG) changed.none('FOCUS_ORDER_OK (0 checks)');
-changed.report(PAGES.length + ' app pages' + (DIALOG ? ', the dialog' : '') + (FIXTURE ? ', the fixture' : ''));
+changed.report(PAGES.length + ' app and test-site pages' + (DIALOG ? ', the dialog' : '') + (FIXTURE ? ', the fixture' : ''));
 
 (async () => {
   const server = await serve(PORT);
@@ -75,17 +76,17 @@ changed.report(PAGES.length + ' app pages' + (DIALOG ? ', the dialog' : '') + (F
     }
   }
 
-  // ---- focus moves into an overlay and back (the Focus order page's dialog)
+  // ---- focus moves into an overlay and back (the member page's Rename member dialog)
   if (DIALOG) {
-    at('the dialog'); await page.goto(BASE + 'platform/design-system/index.html#/interaction/focus-order', { waitUntil: 'networkidle0' }); await sleep(1500);
-    const opened = await page.evaluate(() => { const b = [...document.querySelectorAll('main button')].find((x) => x.textContent.trim() === 'Rename project'); if (!b) return false; b.focus(); b.click(); return true; });
+    at('the dialog'); await page.goto(BASE + site.url('member'), { waitUntil: 'networkidle0' }); await sleep(1200);
+    const opened = await page.evaluate(() => { const b = [...document.querySelectorAll('main button')].find((x) => x.textContent.trim() === 'Rename member'); if (!b) return false; b.focus(); b.click(); return true; });
     await sleep(400);
     const inside = await page.evaluate(() => !!document.activeElement && !!document.activeElement.closest('[role="dialog"],dialog'));
     await page.keyboard.press('Escape'); await sleep(400);
     const back = await page.evaluate(() => (document.activeElement && document.activeElement.textContent || '').trim());
     check('dialog: focus moves into it when it opens', opened && inside, 'opened ' + opened);
-    check('dialog: focus returns to its trigger when it closes', back === 'Rename project', back);
-  } else if (!HAS_DS) console.log('NOTE: platform/design-system is not checked out; the dialog check is skipped');
+    check('dialog: focus returns to its trigger when it closes', back === 'Rename member', back);
+  }
 
   if (UPDATE) { fs.writeFileSync(BASELINE, JSON.stringify(found, null, 2) + '\n'); console.log('baseline written: ' + path.relative(process.cwd(), BASELINE)); }
   await browser.close(); server.close();

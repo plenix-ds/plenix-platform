@@ -1,5 +1,5 @@
-// Plenix tests · reflow (WCAG 2.2 SC 1.4.10, AA; Platforms Standard 3.5): every app page and a sample of the design
-// system's pages, in a window 320 CSS px wide (1280px at 400% zoom), scroll in one direction only. Three findings:
+// Plenix tests · reflow (WCAG 2.2 SC 1.4.10, AA; Platforms Standard 3.5): every app page and every page of the St. John
+// the Beloved test site (test-site/), in a window 320 CSS px wide (1280px at 400% zoom), scroll in one direction only. Three findings:
 //   page-scroll   the page itself scrolls sideways (the document is wider than the window)
 //   scroller      an area inside the page scrolls sideways (overflow-x auto or scroll, and wider content)
 //   cut-off       visible text or a control reaches past the window's edge where nothing scrolls to it (lost content)
@@ -24,9 +24,18 @@ const APP_PAGES = changed.pages(['dashboard', 'projects', 'messages', 'contacts'
   // the settings screens beyond each page's first (owner, 2026-10-13: every settings page is cards of rows; the settings-cards rule)
   .concat(['settings/index.html#/account', 'settings/index.html#/appearance', 'settings/index.html#/categories', 'settings/index.html#/docs/data-model',
     'dam/settings-system.html#/users', 'dam/settings-system.html#/permissions', 'dam/settings-myaccount.html#/preferences']));
-const HAS_DS = fs.existsSync(path.join(__dirname, '..', 'platform', 'design-system', 'index.html'));
+const site = require('./site.js');
+const SITE_PAGES = changed.pages(site.urls());
 changed.noPartialUpdate();
-if (!APP_PAGES.length && !(HAS_DS && changed.anyDS())) changed.none('REFLOW_OK 0 known findings on 0 pages at 320px (0 exempt two-dimensional scrollers)');
+// the controls that fold when their room is narrow (each the only check of its fix), when they changed: the command bar's
+// find side folds into "Find and view" (#274), a SegmentedControl folds into a Select (#276)
+if (changed.wants({ units: ['components/CommandBar', 'components/SegmentedControl'] })) {
+  for (const regression of ['commandbar-find-fold-274.test.js', 'segmented-fold-276.test.js']) {
+    const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, regression)], { stdio: 'inherit', env: process.env });
+    if (result.status !== 0) process.exit(result.status || 1);
+  }
+}
+if (!APP_PAGES.length && !SITE_PAGES.length) changed.none('REFLOW_OK 0 known findings on 0 pages at 320px (0 exempt two-dimensional scrollers)');
 // the two-dimensional content WCAG exempts (Understanding 1.4.10: data grids, maps, diagrams, images, editors' canvases),
 // and preformatted code (the CodeBlock's pre: code keeps its lines, Understanding 1.4.10 "Content exceptions")
 const EXEMPT = '.plx-data-grid, .plx-data-grid__grid, .plx-time-grid, .plx-image-editor__canvas, .plx-media-viewer, svg, canvas, img, video, .ds-sample-stage, .ds-wire__frame, .plx-code-block__pre';
@@ -75,16 +84,8 @@ function measure(EXEMPT) {
   const found = {};
   const take = async (key) => { found[key] = await page.evaluate(measure, EXEMPT); };
   for (const a of APP_PAGES) { at(a); await page.goto(BASE + a, { waitUntil: 'networkidle0' }); await sleep(800); await take(a); }
-  // the design system is a submodule: without it, only the apps are tested. A sample of its pages: its home and the
-  // first item of each section (the same each run)
-  if (!HAS_DS) console.log('NOTE: platform/design-system is not checked out; its pages are skipped');
-  if (HAS_DS && changed.anyDS()) {
-    at('design-system home'); await page.goto(BASE + 'platform/design-system/', { waitUntil: 'networkidle0' }); await sleep(1500); if (changed.dsHome()) await take('design-system home');
-    const sample = await page.evaluate(() => { const seen = {}; return window.DSInventory.filter((r) => !seen[r.sec] && (seen[r.sec] = true)).map((r) => '#/' + r.sec + '/' + r.id); });
-    const routes = await changed.routesIn(page, sample);
-    changed.report(APP_PAGES.length + ' app pages, ' + routes.length + ' of ' + sample.length + ' sampled design-system pages');
-    for (const r of routes) { at('design-system ' + r); await page.evaluate((h) => { location.hash = h; }, r); await sleep(500); await take('design-system ' + r); }
-  } else changed.report(APP_PAGES.length + ' app pages, 0 design-system pages');
+  changed.report(APP_PAGES.length + ' app pages, ' + SITE_PAGES.length + ' of ' + site.pages().length + ' test-site pages');
+  for (const r of SITE_PAGES) { at(r); await page.goto(BASE + r, { waitUntil: 'networkidle0' }); await sleep(800); await take(r); }
   await browser.close(); server.close();
 
   const KINDS = ['page-scroll', 'scroller', 'cut-off'];

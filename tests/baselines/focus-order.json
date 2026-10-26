@@ -53,5 +53,180 @@
     "positive": 0,
     "order": 2,
     "skip": 0
+  },
+  "test-site/index.html#/": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "test-site/index.html#/members": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "test-site/index.html#/member/m1": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "test-site/index.html#/members/new": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "test-site/index.html#/member/m1/edit": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "test-site/index.html#/families": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "test-site/index.html#/family/f1": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "test-site/index.html#/directory": {
+    "positive": 0,
+    "order": 1,
+    "skip": 0
+  },
+  "test-site/index.html#/ministries": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "test-site/index.html#/ministry/sunday-school": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "test-site/index.html#/servants": {
+    "positive": 0,
+    "order": 1,
+    "skip": 0
+  },
+  "test-site/index.html#/calendar": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "test-site/index.html#/event/e10": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "test-site/index.html#/planning": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "test-site/index.html#/readings": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "test-site/index.html#/giving": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "test-site/index.html#/gifts": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "test-site/index.html#/give": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "test-site/index.html#/bookstore": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "test-site/index.html#/announcements": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "test-site/index.html#/announcement/a1": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "test-site/index.html#/messages": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "test-site/index.html#/assistant": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "test-site/index.html#/documents": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "test-site/index.html#/document/d1": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "test-site/index.html#/media": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "test-site/index.html#/photo/v5": {
+    "positive": 0,
+    "order": 1,
+    "skip": 0
+  },
+  "test-site/index.html#/reports": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "test-site/index.html#/search?q=girgis": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "test-site/index.html#/settings/general": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "test-site/index.html#/account": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "test-site/index.html#/welcome": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "test-site/index.html#/sign-in": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "test-site/index.html#/visit": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
+  },
+  "test-site/index.html#/missing": {
+    "positive": 0,
+    "order": 0,
+    "skip": 0
   }
 }

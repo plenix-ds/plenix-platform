@@ -34,6 +34,7 @@ It writes only these generated files, each starting with `GENERATED FILE — DO 
 - `platform/components/Icon/glyphs.js`: the icon names the Icon component resolves (Plenix names, the Plenix symbols, the whole library's symbol names and commit; build-icons.js). The drawings stay in icon.css
 - `platform/dist/platform.js`: the Platform bundle; publishes the exports of `platform/index.js` on `window.Plenix`
 - `<app>/app.js`: each suite application's page script (dashboard, projects, messages, contacts, calendar, tasks, notes, bookmarks, files, settings), from `<app>/main.jsx`
+- `test-site/app.js`: the St. John the Beloved test site's page script, from `test-site/main.jsx` (the site every browser test runs on)
 - `dam/app/assets.js`: the Asset Manager's page script (React islands)
 
 Source files use `import`/`export`; `react`, `react-dom` and `plenix-platform` resolve to the scripts already on the page. React and ReactDOM are vendored in `platform/vendor/` (see its README), so nothing needs the network and the dashboard still opens from `file://`. The build fails and writes nothing if a file does not compile, an import does not resolve, or a public export is missing. Page script order: `platform.css`, `platform/vendor/react-loader.js` (production React; `?react=dev` for the development build), `platform/dist/platform.js`, then the application bundle. The DataGrid renderer and its dependencies are bundled with the Platform. CSS needs no build. The window.* data in `suite/plenix-app-data.js` needs no build.
@@ -73,6 +74,9 @@ Z:\Plenix\
 ├── tasks/  notes/           #   http://localhost:8767/Plenix/<app>/index.html; the header links every application.
 ├── bookmarks/  files/
 ├── settings/                # The suite's settings page (#<category>, #account for My Account)
+├── test-site/               # St. John the Beloved Coptic Orthodox Church: the test site (church database and membership,
+│                            #   made-up data) that uses every Platform component; every browser test runs here, not on
+│                            #   the design spec. pages.js (routes), main.jsx, site.jsx (chrome), data.js, screens/<page>.jsx
 ├── dam/                     # The Asset Manager: index.html, settings-system.html, settings-myaccount.html,
 │                            #   image-editor.html, app/ (source; app/assets.js GENERATED), assets/ (thumbnails, editor art).
 │                            #   Its history (audit/, handoff/, originals) stays in ../Plenix - DAM/ (see its MOVED.md)

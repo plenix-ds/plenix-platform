@@ -3,8 +3,9 @@
 # system and spec checks, the release build and the tests without a browser. The browser tests run in changed mode
 # (tests/changed.js: the push's before-SHA, or the pull request's base, to this commit) in parallel jobs, each its own
 # checkout and build (the build takes seconds, faster than passing it on as an artifact), each with a time limit.
-# The design system (platform/design-system) is a private submodule: with the DS_TOKEN secret (a token that can read
-# plenix-ds/plenix-design-system) it is checked out and tested too; without it, the apps and the Platform are tested.
+# The browser tests open the St. John the Beloved test site (test-site/) and the suite applications, never the design
+# spec (owner, 2026-10-25), so their jobs do not check the spec out. The design system (platform/design-system) is a
+# private submodule: with the DS_TOKEN secret the build job checks it out for the spec check.
 name: Checks
 
 on:
@@ -97,20 +98,13 @@ jobs:
             tests: typography
           - name: reflow
             tests: reflow
-          # the labs in three parts: a change to a shared component reaches many labs (0.31.52 ran out of time in one job)
-          - name: labs 1 of 3
-            tests: labs
-            shard: 1/3
-          - name: labs 2 of 3
-            tests: labs
-            shard: 2/3
-          - name: labs 3 of 3
-            tests: labs
-            shard: 3/3
+          # the component tokens on the site's real components (it replaces the design spec's labs)
+          - name: component tokens
+            tests: component-tokens
           - name: fixtures
-            tests: visual layout
+            tests: site-coverage visual layout
           - name: behavior
-            tests: data-grid keyboard focus-order semantic-html utilities navigation
+            tests: data-grid keyboard focus-order semantic-html utilities navigation one-primary
     env:
       TEST_TIMEOUT_MS: '1200000'
       TEST_SHARD: ${{ matrix.shard }}
@@ -119,26 +113,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Design system (submodule)
-        env:
-          DS_TOKEN: ${{ secrets.DS_TOKEN }}
-        run: |
-          if [ -n "$DS_TOKEN" ]; then
-            git config --global url."https://x-access-token:${DS_TOKEN}@github.com/".insteadOf "https://github.com/"
-            git submodule update --init --depth 1
-          else
-            echo "::notice::DS_TOKEN is not set: the design system's pages are skipped"
-          fi
-
       - uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: npm
 
       - run: npm ci
-
-      - name: Lane design-system files
-        run: node tools/agent/lane-overlay.js
 
       - name: Build
         run: |
