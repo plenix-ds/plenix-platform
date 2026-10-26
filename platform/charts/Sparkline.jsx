@@ -21,25 +21,30 @@
      className: more classes on the sparkline
    Behavior:
      It measures its own box and draws the values across it: the lowest value at the bottom, the highest at the top (bars
-       from zero); the latest dot sits inside the box.
+       from zero); the latest dot sits inside the box. Apache ECharts draws it (a line or bar chart with no axes, issue 353),
+       once the chart engine has loaded (the first chart on a page loads it).
      It is one image to assistive technology, named by label and a summary of the trend ("Up 40% from 40 to 56; lowest 39,
        highest 56."); decorative removes it from the reading order instead.
    Notes:
      No axes, grid lines or legend: a sparkline gives the shape; the number beside it gives the value. Use the same time
        range for every sparkline of a set. Its color is a data-viz step (data-plx-dataviz); sizes, the line and the dot are
-       --plx-comp-sparkline-* tokens. It keeps no "Show the data" table: it stands next to the number it describes, and its
+       --plx-comp-sparkline-* tokens, read by the ECharts theme (echarts/engine.js); no style is written here. It keeps no "Show the data" table: it stands next to the number it describes, and its
        name says the trend; link to the full chart (with its table) when there is one.
 */
 import React from 'react';
 import { cx } from '../utils/cx.js';
-import { scaleLinear, scaleBand } from './scales.js';
 import { summarizeSeries } from './a11y.js';
+import { scaleLinear, scaleBand } from './scales.js';
+import { EChartsHost } from './echarts/EChartsPlot.jsx';
 
-// the room kept inside the box so the line and the dot are not cut (SVG geometry, the 4px grid)
+// the room kept inside the box so the line and the dot are not cut (geometry, the 4px grid)
 const PAD = 4;
 const VARIANTS = ['line', 'area', 'bar'];
+// the gap between bars, a share of each bar's step (geometry: scaleBand's paddingInner)
+const BAR_GAP = 0.2;
+const NONE = Object.freeze([]);
 
-export function Sparkline({ values = [], variant = 'line', size = 'inline', showLast = false, color, label, labels, format, decorative = false, strings, className, ...rest }) {
+export function Sparkline({ values = NONE, variant = 'line', size = 'inline', showLast = false, color, label, labels, format, decorative = false, strings, className, ...rest }) {
   const ref = React.useRef(null);
   const [box, setBox] = React.useState({ width: 0, height: 0 });
   React.useLayoutEffect(() => {
@@ -61,33 +66,45 @@ export function Sparkline({ values = [], variant = 'line', size = 'inline', show
   const nums = values.map(Number).filter((x) => isFinite(x));
   const name = [label, nums.length ? summarizeSeries(values, { labels, format, strings }) : null].filter(Boolean).join(': ');
   const a11y = decorative ? { 'aria-hidden': true } : { role: 'img', 'aria-label': name };
-  let marks = null;
-  if (box.width > 0 && box.height > 0 && nums.length) {
+  const key = nums.join(',');
+  // a line or bar chart with no axes, on the same geometry as the SVG sparkline it replaces: the value range is
+  // scaleLinear's (a flat run widens to nice ticks, so a flat line keeps its place and an area its band); the line's
+  // points run from PAD to the width less PAD (a single value at the start edge); the bars sit where scaleBand put them (no
+  // outer gap)
+  const option = React.useCallback((tk, size) => {
+    const k = tk.sparkline, last = nums.length - 1, bar = v === 'bar';
     const lo = Math.min.apply(null, nums), hi = Math.max.apply(null, nums);
-    const W = box.width, H = box.height;
-    if (v === 'bar') {
-      const x = scaleBand({ domain: nums.map((n, i) => i), range: [0, W], paddingInner: 0.2, paddingOuter: 0 });
-      const y = scaleLinear({ domain: [Math.min(0, lo), Math.max(0, hi)], range: [H, 0] });
-      marks = nums.map((n, i) => {
-        const top = Math.min(y(n), y(0)), bottom = Math.max(y(n), y(0));
-        return <rect key={i} className="plx-sparkline__bar" x={x(i)} y={top} width={x.bandwidth()} height={Math.max(0, bottom - top)} />;
-      });
-    } else {
-      const x = scaleLinear({ domain: [0, Math.max(1, nums.length - 1)], range: [PAD, W - PAD] });
-      const y = scaleLinear({ domain: [lo, hi], range: [H - PAD, PAD] });
-      const line = nums.map((n, i) => (i ? 'L' : 'M') + x(i) + ',' + y(n)).join('');
-      const last = nums.length - 1;
-      marks = [
-        v === 'area' ? <path key="area" className="plx-sparkline__area" d={line + 'L' + x(last) + ',' + (H - PAD) + 'L' + x(0) + ',' + (H - PAD) + 'Z'} /> : null,
-        <path key="line" className="plx-sparkline__line" d={line} />,
-        showLast ? <circle key="last" className="plx-sparkline__last" cx={x(last)} cy={y(nums[last])} r={PAD} /> : null,
-      ];
+    if (bar) {
+      // the bars where scaleBand put them (paddingOuter 0): ECharts centers each bar in its band with half the gap on
+      // either side, so the grid reaches out by that half gap at both ends (outerBoundsMode none: past the box)
+      const x = scaleBand({ domain: nums.map((n, i) => i), range: [0, size.width], paddingInner: BAR_GAP, paddingOuter: 0 });
+      const y = scaleLinear({ domain: [Math.min(0, lo), Math.max(0, hi)] }).domain();
+      const left = x(0) - x.step() * BAR_GAP / 2, right = size.width - left - x.step() * nums.length;
+      return {
+        animationDuration: tk.motion, animationDurationUpdate: tk.motion,
+        grid: { left, right, top: 0, bottom: 0, outerBoundsMode: 'none' },
+        xAxis: { type: 'category', show: false, boundaryGap: true, data: nums.map((n, i) => i) },
+        yAxis: { type: 'value', show: false, min: y[0], max: y[1] },
+        series: [{ type: 'bar', silent: true, barCategoryGap: BAR_GAP * 100 + '%', itemStyle: { color: k.bar }, data: nums }],
+      };
     }
-  }
+    const y = scaleLinear({ domain: [lo, hi] }).domain();
+    return {
+      animationDuration: tk.motion, animationDurationUpdate: tk.motion,
+      grid: { left: PAD, right: PAD, top: PAD, bottom: PAD },
+      xAxis: { type: 'value', show: false, min: 0, max: Math.max(1, last) },
+      yAxis: { type: 'value', show: false, min: y[0], max: y[1] },
+      series: [{ type: 'line', silent: true, emphasis: { disabled: true }, lineStyle: { color: k.color, width: k.lineWidth, cap: 'round', join: 'round' },
+        areaStyle: v === 'area' ? { color: k.color, opacity: k.areaOpacity, origin: 'start' } : undefined,
+        data: nums.map((n, i) => (showLast && i === last
+          ? { value: [i, n], symbol: 'circle', symbolSize: k.last.r * 2, itemStyle: { color: k.color, borderColor: k.last.outline, borderWidth: k.last.outlineWidth } }
+          : { value: [i, n], symbol: 'none' })) }],
+    };
+  }, [key, v, showLast]);
   return (
     <span ref={ref} className={cx('plx-sparkline', 'plx-sparkline--' + v, 'plx-sparkline--' + s, className)} data-plx-dataviz={color || undefined} {...a11y} {...rest}>
-      {box.width > 0 && box.height > 0 ? (
-        <svg className="plx-sparkline__svg" width={box.width} height={box.height} viewBox={'0 0 ' + box.width + ' ' + box.height} focusable="false" aria-hidden="true">{marks}</svg>
+      {box.width > 0 && box.height > 0 && nums.length ? (
+        <EChartsHost width={box.width} height={box.height} option={option} />
       ) : null}
     </span>
   );

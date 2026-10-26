@@ -68,6 +68,7 @@ export function chartTokens(where) {
   const joined = mk('rect', 'plx-chart__mark plx-bar-chart__bar plx-bar-chart__bar--joined');
   const slice = mk('path', 'plx-chart__mark plx-pie-chart__slice');
   const swatch = mk('rect', 'plx-chart__mark');
+  const spark = { line: mk('path', 'plx-sparkline__line'), area: mk('path', 'plx-sparkline__area'), bar: mk('rect', 'plx-sparkline__bar'), last: mk('circle', 'plx-sparkline__last') };
   where.appendChild(svg);
   const cs = (e) => win.getComputedStyle(e);
   const font = (e) => { const s = cs(e); return { color: s.fill, fontFamily: s.fontFamily, fontSize: num(s.fontSize), fontWeight: s.fontWeight }; };
@@ -89,6 +90,9 @@ export function chartTokens(where) {
     tickOffset: len(prop('--plx-comp-chart-axis-tick-offset')),
     top: len(prop('--plx-comp-chart-margin-block-start')),
     rtl: host.direction === 'rtl',
+    // a sparkline's own look (its color follows the sparkline's data-viz step, where it is)
+    sparkline: { color: cs(spark.line).stroke, lineWidth: num(cs(spark.line).strokeWidth), areaOpacity: num(cs(spark.area).fillOpacity),
+      bar: cs(spark.bar).fill, last: { r: num(cs(spark.last).r), outline: cs(spark.last).stroke, outlineWidth: num(cs(spark.last).strokeWidth) } },
     // the values not in focus dim to the interaction's token; the drawing's animation is the motion token (reduced motion: 0)
     dim: num(prop('--plx-comp-chart-interaction-dim-opacity')) || 1,
     motion: ms(prop('--plx-sys-motion-duration-slow')),
