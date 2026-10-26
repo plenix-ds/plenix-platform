@@ -236,10 +236,10 @@
   --plx-sys-table-header-line: var(--plx-ref-color-gray-300);
   --plx-sys-data-grid-line: var(--plx-ref-color-gray-200);
   --plx-sys-table-line: var(--plx-ref-color-gray-200);
-  --plx-sys-data-grid-frozen-edge: var(--plx-ref-color-gray-400);
+  --plx-sys-data-grid-frozen-edge: var(--plx-ref-color-gray-250);
   --plx-sys-data-grid-menu-button-hover-top: var(--plx-ref-color-gray-200);
   --plx-sys-data-grid-menu-button-hover-bottom: var(--plx-ref-color-gray-400);
-  --plx-sys-data-grid-border: var(--plx-ref-color-gray-400);
+  --plx-sys-data-grid-border: var(--plx-ref-color-gray-300);
   --plx-sys-table-border: var(--plx-ref-color-gray-300);
   --plx-sys-data-grid-text: var(--plx-ref-color-black);
   --plx-sys-table-text: var(--plx-ref-color-black);
@@ -614,10 +614,10 @@
   --plx-sys-table-header-line: var(--plx-ref-color-gray-700);
   --plx-sys-data-grid-line: var(--plx-ref-color-gray-900);
   --plx-sys-table-line: var(--plx-ref-color-gray-900);
-  --plx-sys-data-grid-frozen-edge: var(--plx-ref-color-gray-700);
+  --plx-sys-data-grid-frozen-edge: var(--plx-ref-color-gray-900);
   --plx-sys-data-grid-menu-button-hover-top: var(--plx-ref-color-gray-700);
   --plx-sys-data-grid-menu-button-hover-bottom: var(--plx-ref-color-gray-700);
-  --plx-sys-data-grid-border: var(--plx-ref-color-gray-700);
+  --plx-sys-data-grid-border: var(--plx-ref-color-gray-800);
   --plx-sys-table-border: var(--plx-ref-color-gray-800);
   --plx-sys-data-grid-text: var(--plx-ref-color-gray-200);
   --plx-sys-table-text: var(--plx-ref-color-gray-200);
