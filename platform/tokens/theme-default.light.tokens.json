@@ -1905,6 +1905,16 @@
         }
       }
     },
+    "data-grid-frozen-edge": {
+      "$value": "{plx-ref.color-gray-250}",
+      "$type": "color",
+      "$extensions": {
+        "plenix": {
+          "group": "component",
+          "purpose": "DataGrid and Table: the edge after a frozen first column, one step darker than the inside lines (owner, 2026-10-26)."
+        }
+      }
+    },
     "data-grid-menu-button-hover-top": {
       "$value": "{plx-ref.color-gray-200}",
       "$type": "color",
