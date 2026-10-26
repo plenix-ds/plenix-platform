@@ -8,13 +8,13 @@ export PATH="$HOME/.local/bin:$HOME/.bun/bin:$PATH"
 S=team
 W=$HOME/work
 
-# role|window|display name|folder|extra folders
+# role|window|display name|folder|extra folders|extra flags (optional)
 AGENTS=(
   "owner-desk|desk|Plenix · Owner desk|$HOME/team/owner-desk|$W/plenix $W/st-john-test-site"
   "lead|lead|Plenix · Lead|$W/plenix|$W/st-john-test-site $W/plenix-b1 $W/plenix-b2"
   "builder-1|b1|Plenix · Builder 1|$W/plenix-b1|$W/st-john-test-site"
   "builder-2|b2|Plenix · Builder 2|$W/plenix-b2|$W/st-john-test-site"
-  "reviewer|review|Plenix · Reviewer|$W/plenix|$W/st-john-test-site"
+  "reviewer|review|Plenix · Reviewer|$W/plenix|$W/st-john-test-site|--plugin-dir $HOME/team/plugins/design-review"
 )
 
 case "${1:-start}" in
@@ -25,11 +25,11 @@ esac
 mkdir -p "$HOME/team/owner-desk"
 tmux has-session -t $S 2>/dev/null || tmux new-session -d -s $S -n shell -c "$HOME"
 for a in "${AGENTS[@]}"; do
-  IFS='|' read -r role win name dir extra <<<"$a"
+  IFS='|' read -r role win name dir extra flags <<<"$a"
   tmux list-windows -t $S -F '#W' | grep -qx "$win" && continue
   adds=""; for d in $extra; do adds="$adds --add-dir $d"; done
   tmux new-window -d -t $S -n "$win" -c "$dir" \
-    "PLENIX_ROLE=$role claude --agent $role --name '$name' --remote-control '$name' --permission-mode auto$adds; echo; echo '$name stopped. Press Enter to close.'; read"
+    "PLENIX_ROLE=$role claude --agent $role --name '$name' --remote-control '$name' --permission-mode auto$adds ${flags:-}; echo; echo '$name stopped. Press Enter to close.'; read"
 done
 [ -t 1 ] && [ -z "${TMUX:-}" ] && exec tmux attach -t $S
 tmux list-windows -t $S -F '#W'

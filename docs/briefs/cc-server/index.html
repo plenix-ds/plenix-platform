@@ -3,6 +3,39 @@
 <p>One server on our own Proxmox runs the Plenix agents. You reach it from the desktop app and from your phone. Nothing runs in Anthropic's cloud: the agents, the code and the memory stay on our machine. The agents still talk to Claude through your Claude account, as they do today.</p>
 <p>Plenix work stays on this Windows VM until you say to move it.</p>
 
+<h2>How you connect</h2>
+<ul>
+<li><b>Server:</b> VM 131 "cc-server", address 10.0.0.32, on the Proxmox node pve.</li>
+<li><b>Phone:</b> open the Claude app, then Code. The five sessions named "Plenix · …" are in the list. Tap one to talk to that agent.</li>
+<li><b>Desktop app or any browser:</b> the same five sessions are at claude.ai/code.</li>
+<li><b>Terminal on the Windows VM:</b> <code>ssh cc@10.0.0.32</code>, then <code>team</code> shows all five side by side (Ctrl+B then a number switches between them; Ctrl+B then D leaves them running).</li>
+<li><b>Desktop app over SSH (optional):</b> New environment, SSH tab, host <code>cc@10.0.0.32</code>, to start an extra session on the server.</li>
+<li><b>After a server restart</b> the team starts again by itself within a minute.</li>
+<li><b>If the agents stop answering:</b> the Claude sign-in may have expired. Connect by terminal, run <code>claude</code>, then <code>/login</code>.</li>
+</ul>
+
+<h2>The team</h2>
+<table>
+<tr><th>Agent</th><th>Model</th><th>Works in</th><th>Can</th></tr>
+<tr><td>Plenix · Owner desk</td><td>Sonnet 5.5</td><td>its own folder</td><td>Talk to you, add questions to the status page</td></tr>
+<tr><td>Plenix · Lead</td><td>Opus 5.5</td><td>~/work/plenix</td><td>Hand out work; the only one that merges, releases or deploys, after checking your tapped answer</td></tr>
+<tr><td>Plenix · Builder 1</td><td>Opus 5.5</td><td>~/work/plenix-b1</td><td>Make changes, open pull requests</td></tr>
+<tr><td>Plenix · Builder 2</td><td>Sonnet 5.5</td><td>~/work/plenix-b2</td><td>Make changes, open pull requests</td></tr>
+<tr><td>Plenix · Reviewer</td><td>Sonnet 5.5</td><td>~/work/plenix</td><td>Review, test, and review design (with the design reviewer)</td></tr>
+</table>
+<ul>
+<li>All five are in standby: they change nothing until you say the work moves to the server.</li>
+<li>Shared tools: claude-mem (memory) and Graphify (code map) for everyone; the design reviewer for the Reviewer only. headroom is installed but off.</li>
+</ul>
+
+<h2>Design reviewer (ui-ux-pro-max): installed for the Reviewer</h2>
+<ul>
+<li><b>Version:</b> 2.15.0 (August), read first. It is a set of design guidance tables searched by a small local program: no network, no other programs run.</li>
+<li><b>Only the one skill:</b> the package holds several skills (brand, styling and more); only the design reviewer is installed, and only the Reviewer loads it.</li>
+<li><b>Plenix's rules win:</b> the Reviewer uses it as a second opinion, drops any advice that conflicts with a Plenix rule and says which rule won. It never uses the skill's "save a design system" option, which could clash with Plenix's own.</li>
+<li><b>Tested</b> on the Badge component: three useful findings; it dropped the advice on touch size, text size, pill shape and screen-reader role, naming the Plenix rule each time. No files were written.</li>
+</ul>
+
 <h2>Built so far (2026-10-26)</h2>
 <ul>
 <li><b>Server:</b> VM 131 "cc-server" at 10.0.0.32 is running. Nightly backup at 02:00 to the new "backup-store" area; a test backup worked.</li>
