@@ -21057,6 +21057,7 @@ const defaults = {
   markUnread: 'Mark as unread',
   wrapText: 'Wrap text',
   wrapAll: 'Wrap all columns',
+  fullText: 'Show the full text',
   rowHeight: 'Row height',
   short: 'Short',
   medium: 'Medium',
@@ -21411,6 +21412,9 @@ function NextEngine(props) {
   const [rowHeight, setRowHeight] = _react.default.useState(initial.rowHeight),
     [wrapHeaders, setWrapHeaders] = _react.default.useState(initial.wrapHeaders);
   // Wrap text, per column (owner, 2026-10-24): the column's wrap prop or kind "wrap" is the default; the column menu turns it on or off
+  // the cut cell under the pointer or focus ("rowId|field") and its popover (owner, 2026-10-24: a popover with the full text)
+  const [cutAt, setCutAt] = _react.default.useState(null),
+    cutOpen = _react.default.useRef(false);
   const [wrapColumns, setWrapColumns] = _react.default.useState(() => props.wrapColumns || initial.wrapColumns || {});
   const wrapOf = c => (props.wrapColumns || wrapColumns)[c.field] ?? (c.wrap === true || kinds(c).includes('wrap'));
   const kindsOf = c => {
@@ -22698,6 +22702,15 @@ function NextEngine(props) {
       emit('cellEdit', api.cell(key, field));
     }
   }, [source]);
+  const enterCut = (event, id) => {
+    if (cutOpen.current) return;
+    const v = event.currentTarget.querySelector('.' + B + '__value');
+    const cut = !!v && (v.scrollHeight > v.clientHeight + 1 || v.scrollWidth > v.clientWidth + 1);
+    setCutAt(cut ? id : null);
+  };
+  const leaveCut = id => {
+    if (!cutOpen.current) setCutAt(at => at === id ? null : at);
+  };
   const anyWrap = table.getVisibleLeafColumns().some(col => col.columnDef.meta && col.columnDef.meta.field && wrapOf(col.columnDef.meta));
   const rowNode = row => {
     if (row.__group) return groupNode(row.__group);
@@ -22817,14 +22830,19 @@ function NextEngine(props) {
           mods
         }); // a pill carries a type icon only when it says something (a date, a number)
       const bare = !isEditing && !handled && !c.render && !actions && !(pinned && !isStatic) && /*#__PURE__*/_react.default.isValidElement(shown) && shown.type === 'span' && String(shown.props.className).split(' ').includes(B + '__value');
-      return /*#__PURE__*/_react.default.createElement(Width, {
+      return /*#__PURE__*/_react.default.createElement(Width, _extends({
         key: c.field,
         width: isNarrow ? null : widths[c.field],
         frozenOffset: pinned && !isNarrow ? sticky : undefined,
         role: isStatic ? c.rowLabel ? 'rowheader' : 'cell' : 'gridcell',
         tabIndex: isStatic ? undefined : -1,
         "data-plx-field": c.field,
-        "data-plx-unread": unread.has(record) || undefined,
+        "data-plx-unread": unread.has(record) || undefined
+      }, !isStatic && !c.render && !actions && !isEditing ? {
+        onPointerEnter: e => enterCut(e, row.id + '|' + c.field),
+        onFocus: e => enterCut(e, row.id + '|' + c.field),
+        onPointerLeave: () => leaveCut(row.id + '|' + c.field)
+      } : null, {
         dir: pinned && !isStatic ? undefined : 'auto',
         onDoubleClick: () => {
           if (canEdit) setEditing({
@@ -22866,7 +22884,7 @@ function NextEngine(props) {
         "data-plx-sticky": pinned && sticky ? sticky + 'px' : undefined,
         "data-plx-text-follow": c.rowLabel || columns.indexOf(c) <= pinnedAt ? 'size family weight' : 'size family',
         className: (0, _cx.cx)('' + B + '__grid-cell', modes, !selectable && selection[row.id] && ordered.indexOf(column) === 0 && B + '__grid-cell--selected-start', bare && B + '__grid-cell--bare', selectable && ordered.indexOf(column) === 0 && B + '__grid-cell--after-lead', ordered.indexOf(column) > 0 && ordered[ordered.indexOf(column) - 1].getIsPinned() === 'left' && column.getIsPinned() !== 'left' && B + '__grid-cell--after-frozen', isTree && row.depth > 0 && B + '__tree-cell--level-' + Math.min(12, row.depth), editing?.key === row.id && editing.field === c.field && '' + B + '__grid-editing', k.map(kind => B + '__cell--' + kind).join(' '), (k.includes('data') || c.type === 'bytes') && B + '__grid-cell--data', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', c.type === 'bytes' && B + '__cell--data', c.rowHandle && B + '__cell--handle', childField && c.field === (props.treeColumn || columns[0]?.field) && B + '__tree-cell', pinned && '' + B + '__grid-frozen', (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + '__cell--row-label', k.includes('icon') && B + '__w-lead', keys.includes(c.field) && B + '__cell--key', keys[0] === c.field && B + '__cell--key-first', (c.align || c.type === 'bytes') && B + '__cell--align-' + (c.align || 'right'))
-      }, childField && c.field === (props.treeColumn || columns[0]?.field) ? /*#__PURE__*/_react.default.createElement("span", {
+      }), childField && c.field === (props.treeColumn || columns[0]?.field) ? /*#__PURE__*/_react.default.createElement("span", {
         className: B + '__tree-level',
         "data-plx-depth": 0
       }, row.getCanExpand() ? /*#__PURE__*/_react.default.createElement("button", {
@@ -22912,7 +22930,27 @@ function NextEngine(props) {
       })) : actions ? /*#__PURE__*/_react.default.createElement("span", {
         className: B + '__portal ' + B + '__portal--actions',
         dir: pinned && !isStatic ? 'auto' : undefined
-      }, shown) : cellDirection(pinned && !isStatic, shown));
+      }, shown) : cutAt === row.id + '|' + c.field ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, cellDirection(pinned && !isStatic, shown), /*#__PURE__*/_react.default.createElement("span", {
+        className: B + '__cut'
+      }, /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
+        label: c.title,
+        title: c.title,
+        size: "sm",
+        placement: "bottom-end",
+        onOpenChange: open => {
+          cutOpen.current = open;
+          if (!open) setCutAt(null);
+        },
+        trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+          variant: "ghost",
+          size: "xs",
+          iconOnly: true,
+          icon: "expand",
+          label: S.fullText
+        })
+      }, /*#__PURE__*/_react.default.createElement("div", {
+        className: B + '__full-text'
+      }, (0, _cells.valueText)(value))))) : cellDirection(pinned && !isStatic, shown));
     }), props.viewMenu ? /*#__PURE__*/_react.default.createElement("div", {
       className: (0, _cx.cx)(`${B}__grid-cell ${B}__w-view`, modes),
       role: "gridcell"
@@ -22947,7 +22985,7 @@ function NextEngine(props) {
       rowApi: rowApi
     })) : node;
   };
-  const rowVersion = _react.default.useMemo(() => ({}), [wrapColumns, unread.keys, unreadOnly, props, source, model, editing, metrics, autoSizing, sizing, columnOrder, columnVisibility, sorting, expanded, page, pageSize, isNarrow, collapsed, printing, filterField, groupBy, loaded]);
+  const rowVersion = _react.default.useMemo(() => ({}), [cutAt, wrapColumns, unread.keys, unreadOnly, props, source, model, editing, metrics, autoSizing, sizing, columnOrder, columnVisibility, sorting, expanded, page, pageSize, isNarrow, collapsed, printing, filterField, groupBy, loaded]);
   const renderRow = row => row.original ? /*#__PURE__*/_react.default.createElement(MemoGridRow, {
     key: row.displayKey || row.id,
     row: row,
