@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en" data-plx-mode="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Header labels at the start · Plenix review</title>
+<!-- Owner review for #326: every column header label at the start edge, number columns included; the numbers in the
+     cells stay at the end. Pictures of the real components (stage.html, capture.js). -->
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<link rel="stylesheet" href="../review.css">
+</head>
+<body class="rv-page">
+<main class="rv-doc">
+  <h1 class="rv-h1">Column header labels: all at the start (#326)</h1>
+  <p class="rv-lead">You asked why "Quantity on the shelf" is right-aligned: all column header labels should be
+    consistent. Today a number column's label follows its numbers to the right; you see it most when the label wraps.</p>
+  <ul class="rv-list">
+    <li><strong>Cause:</strong> number columns set their header to align right (the column's <span class="rv-tag">headerAlign</span>, and file-size columns on their own).</li>
+    <li><strong>After:</strong> every header label starts at the start edge in DataGrid and Table, whatever the column says. The numbers in the cells stay at the end, as you said nothing about them.</li>
+    <li><strong>Test:</strong> a header label never takes its column's alignment (DataGrid and Table).</li>
+  </ul>
+  <section class="rv-section">
+    <h2 class="rv-h2">Before</h2>
+    <figure class="rv-fig"><img src="before.png" alt="Before: the wrapped Quantity on the shelf label sits at the right of its column"><figcaption>DataGrid (top, Wrap headers) and Table: the number label sits at the right</figcaption></figure>
+  </section>
+  <section class="rv-section">
+    <h2 class="rv-h2">After</h2>
+    <figure class="rv-fig"><img src="after.png" alt="After: Quantity on the shelf and Price labels start at the left; their numbers stay right"><figcaption>Every label at the start; the numbers still at the end</figcaption></figure>
+  </section>
+</main>
+</body>
+</html>

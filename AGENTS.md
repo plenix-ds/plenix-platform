@@ -100,7 +100,7 @@ node tools/agent/generated.js --restore
 `SPEC_OK`. For a library lane also run your labs (`LABS_ONLY=<lab ids> node tests/labs.test.js`) and
 `node tools/agent/native/check.js <your native fragments>` (`ALL OK`).
 
-The browser tests (pages, accessibility, keyboard, labs, contrast, …) run in CI on your pull request, in changed mode.
+The browser tests (pages, keyboard, labs, typography, …) run in CI on your pull request, in changed mode. Accessibility, high contrast, color contrast, themes and density are on-demand tests: only the owner runs them (`npm run test:on-demand`, or Actions › On-demand tests).
 Fix what they report. Run them locally only if Chrome is available (`CHROME_PATH`).
 
 ## Pull request

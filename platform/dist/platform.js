@@ -32136,7 +32136,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
    Props:
      headerStyle: "structured" (default: header style 1, the props below) | "streamlined" (the study's header style 2,
        Streamlined: one line of media, title with badges and subtitle, then people, inline progress and actions; under a
-       divider the details strip). Streamlined reads media (null: none), title, subtitle (**names** in bold), status (the
+       divider the details strip). Streamlined reads media (null: none), title, subtitle (**names** in bold; their dates and numbers in the data font), status (the
        first badge), and:
        badges: more badges after the status: [{ label, tone, icon }]
        people: { label, list: [{ name, src }], max (default 3), onMore }: an AvatarGroup (32px, stacked, +N)
@@ -32579,13 +32579,14 @@ function Actions({
   }, (0, _overflow.splitAt)(items, fit, more));
 }
 
-// a subtitle written with **names** in bold (a string); an element passes as it is
+// a subtitle written with **names** in bold (a string); an element passes as it is. A bold part's dates, times and
+// numbers are in the data font, as in the facts (#260)
 function strongText(text) {
   if (typeof text !== 'string' || text.indexOf('**') < 0) return text;
   return text.split('**').map((part, i) => i % 2 ? /*#__PURE__*/_react.default.createElement("strong", {
     key: i,
     className: "plx-entity-header__strong"
-  }, part) : part);
+  }, dataText(part)) : part);
 }
 const toneOf = t => TONES.indexOf(ALIASES[t] || t) >= 0 ? ALIASES[t] || t : 'neutral';
 

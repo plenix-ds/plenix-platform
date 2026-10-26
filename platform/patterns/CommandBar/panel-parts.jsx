@@ -28,8 +28,9 @@ export const toggle = (list, v) => (list.indexOf(v) >= 0 ? list.filter((x) => x 
 export const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 
 // the bar button and its panel; inline: the body alone (a panel drawn open, or in a side panel). current: the choice in
-// force, shown in the button ("Status: Active", a pop-up button in Apple's words) in place of the count badge
-export function PanelTrigger({ icon, label, current, count = 0, active, caret = false, size = 'auto', title, footer, inline = false, placement, className, children }) {
+// force, shown in the button ("Status: Active", a pop-up button in Apple's words) in place of the count badge; open and
+// onOpenChange control the panel from outside
+export function PanelTrigger({ icon, label, current, count = 0, active, caret = false, size = 'auto', title, footer, inline = false, placement, className, open, onOpenChange, children }) {
   const ctx = useCommandBar();
   const box = React.useRef(null);
   // the focus goes to the panel's first row control, else its Add button: not the info button of its head
@@ -40,7 +41,7 @@ export function PanelTrigger({ icon, label, current, count = 0, active, caret = 
   // icons only: no room for the words, so the count badge stays; the tooltip says the choice
   const trigger = current && !ctx.iconOnly ? <CommandBarButton icon={icon} label={label} active caret={caret} aria-label={words}>{words}</CommandBarButton>
     : <CommandBarButton icon={icon} label={label} count={count} active={active} caret={caret} />;
-  const pop = <Popover label={title ? undefined : label} title={title} size={size} trigger={trigger} footer={footer} placement={placement} initialFocus={first}>{body}</Popover>;
+  const pop = <Popover label={title ? undefined : label} title={title} size={size} trigger={trigger} footer={footer} placement={placement} initialFocus={first} {...(open === undefined ? null : { open })} onOpenChange={onOpenChange}>{body}</Popover>;
   return ctx.iconOnly ? <Tooltip content={words}>{pop}</Tooltip> : pop;
 }
 

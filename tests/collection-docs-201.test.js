@@ -13,7 +13,7 @@ const {serve,launch}=require('./lib');
   assert.ok(await page.evaluate(()=>document.querySelector('main').textContent.includes('Meeting notes')));
   assert.deepEqual(errors,[]);
   const root=path.resolve(__dirname,'..'),version=require('../package.json').version,docs=path.join(root,'release/cdn',version,'docs');
-  const index=JSON.parse(fs.readFileSync(path.join(docs,'index.json'))).records;
+  if(!fs.existsSync(path.join(docs,'index.json')))throw Error('The release docs are missing ('+docs+'): run node build-packages.js first (CI runs this test after the release build)');const index=JSON.parse(fs.readFileSync(path.join(docs,'index.json'))).records;
   assert.ok(index.find(r=>r.id==='use-collection-view').componentNames.includes('useCollectionView'));
   for(const name of ['app-shell.md','media-viewer.md','use-collection-view.md']) assert.ok(fs.existsSync(path.join(docs,name)),name);
   const text=fs.readFileSync(path.join(docs,'use-collection-view.md'),'utf8');for(const option of ['options.data','options.text','options.quick','options.columns','options.view','options.sort','options.storageKey','options.today','tableProps','quickProps'])assert.ok(text.includes(option),option);

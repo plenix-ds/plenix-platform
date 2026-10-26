@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en" data-plx-mode="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checkbox baseline · Plenix review</title>
+<!-- Owner review for #256 item 2: the dashboard's to-do dates sat 3.5px off their task's text. Pictures of the real
+     dashboard (capture.js). -->
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<link rel="stylesheet" href="../review.css">
+</head>
+<body class="rv-page">
+<main class="rv-doc">
+  <h1 class="rv-h1">To-do rows: one baseline (#256)</h1>
+  <p class="rv-lead">On the dashboard's To do panel, each task's priority and date sat 3.5px below the task's text.</p>
+  <ul class="rv-list">
+    <li><strong>Cause:</strong> a checkbox told its row that its baseline was the bottom of its box, not its label's text.</li>
+    <li><strong>Fix (geometry, no nudge):</strong> the label's text now sets the checkbox's baseline. Nothing moves inside the checkbox. Rows that align on the baseline line up on the text.</li>
+    <li><strong>Where it shows:</strong> any row that lines a checkbox up with text on the baseline. A checkbox placed on its own, or in a centered row, looks the same as before.</li>
+  </ul>
+  <section class="rv-section">
+    <h2 class="rv-h2">Built · dashboard To do</h2>
+    <div class="rv-pair">
+      <figure class="rv-fig"><img src="before.png" alt="Before: priority and date sit lower than the task text"><figcaption>Before: "High" and "Mar 10" sit below the task's text</figcaption></figure>
+      <figure class="rv-fig"><img src="after.png" alt="After: priority, task text and date on one line"><figcaption>After: one baseline</figcaption></figure>
+    </div>
+  </section>
+</main>
+</body>
+</html>

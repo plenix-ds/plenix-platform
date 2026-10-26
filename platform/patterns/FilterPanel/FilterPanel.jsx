@@ -14,6 +14,9 @@
        { id, field, op, value }
      onChange(value): runs on every change
      inline: draws the panel alone (open, in a frame) instead of the bar button and its popover; default false
+     open, onOpenChange(open): the panel's open state, controlled (useCollectionView sets them)
+     request: { field, id }: open on one field (the grid's "Filter by this field"): a condition for that field is added when
+       the filter has none, and the focus goes to the first row; each new id is one request
      strings: the words, for other languages: { label: "Filter", info, sub: "In this view, show records", where: "Where",
        and: "and", or: "or", empty: "No conditions: every record is shown", addCondition: "Add condition",
        addGroup: "Add condition group", remove: "Remove {what}", condition: "condition", group: "condition group",
@@ -104,11 +107,18 @@ function ConditionRows({ fields, node, setNode, nested, t }) {
   );
 }
 
-export function FilterPanel({ fields = [], value, onChange, inline = false, strings }) {
+export function FilterPanel({ fields = [], value, onChange, inline = false, strings, open, onOpenChange, request }) {
   const t = Object.assign({}, STRINGS, strings);
   const node = value || { join: 'and', items: [] };
   const n = conditionsOf(node).length;
   const add = (x) => onChange(Object.assign({}, node, { items: node.items.concat(x) }));
+  const handled = React.useRef(null);
+  React.useEffect(() => {
+    if (!request || handled.current === request.id) return;
+    handled.current = request.id;
+    const f = fields.find((x) => x.value === request.field);
+    if (f && !conditionsOf(node).some((c) => c.field === f.value)) add(newCondition(f));
+  }, [request]);
   const body = (
     <div className="plx-find-panel plx-find-panel--filter">
       <PanelHead title={t.label} info={t.info} sub={t.sub} />
@@ -119,5 +129,5 @@ export function FilterPanel({ fields = [], value, onChange, inline = false, stri
       </div>
     </div>
   );
-  return <PanelTrigger icon="filter" label={t.label} count={n} inline={inline}>{body}</PanelTrigger>;
+  return <PanelTrigger icon="filter" label={t.label} count={n} inline={inline} open={open} onOpenChange={onOpenChange}>{body}</PanelTrigger>;
 }

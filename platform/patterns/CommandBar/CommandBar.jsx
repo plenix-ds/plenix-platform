@@ -70,7 +70,8 @@
        the quick filters, Sort, Group, Columns, View); then the search becomes its icon, which opens the field across the
        bar, and the count and status step out; then the commands fold into "More actions" (⋮) one per step from the end,
        the danger commands last. More shows only
-       when something does not fit. A change of width, labels or counts starts again from icons and labels.
+       when something does not fit. Last, the find side (the search, Filter and the kept quick filters) folds into one
+       "Find and view" button that opens them, at full size, in a popover: nothing in the bar is drawn outside it. A change of width, labels or counts starts again from icons and labels.
      Sort, Filter, Group, View and Columns are never merged: each keeps its own button at every width.
      Commands are never hidden by state: they are disabled, with a tooltip saying why.
      Every button is ghost (no outline). The bar is white and framed (3A), never tinted while rows are selected.
@@ -97,7 +98,8 @@ import { BarActions, foldOrder } from './BarActions.jsx';
 import { MenuSub, MenuItem, MenuRadioGroup } from '../../components/Menu/Menu.jsx';
 import { QuickFilter } from '../QuickFilter/QuickFilter.jsx';
 import { SingleQuickFilterMenu } from '../QuickFilter/single-menu.jsx';
-import { Inline } from '../../components/Stack/Stack.jsx';
+import { Inline, Stack } from '../../components/Stack/Stack.jsx';
+import { Popover } from '../../components/Popover/Popover.jsx';
 import { DATE_PRESETS } from '../../utils/fields.js';
 
 const STRINGS = { more: 'More actions', actions: '{label} actions', find: 'Find and view', selected: '{n} selected', hidden: ' ({n} hidden by filters)',
@@ -147,7 +149,8 @@ export function CommandBar({ label, actions = [], find, quickFilters = [], view,
   const ending = end && !React.isValidElement(end) && !Array.isArray(end) && typeof end === 'object' && ('content' in end || 'fold' in end) ? end : null;
   const endContent = ending ? ending.content : end;
   const endFold = !selecting && ending && ending.fold;
-  const folds = foldOrder(shown).length + quick.length + (endFold ? 1 : 0);
+  const finding = !!find || quick.length > 0;
+  const folds = foldOrder(shown).length + quick.length + (endFold ? 1 : 0) + (finding && !selecting ? 1 : 0);
   // the bar's search, opened across the bar: the bar holds its step while it is open
   const [searchOpen, setSearchOpen] = React.useState(false);
   const key = [shape, narrow, selecting ? 'sel' : 'rest', shown.map((a) => a.label + (a.disabled ? '0' : '') + (a.loading ? 'busy' : '')).join('|'), quickFilters.map((q) => q.label + (q.value && q.value.length ? q.value.length : '')).join('|'), endFold && endFold.label].join('§');
@@ -158,6 +161,8 @@ export function CommandBar({ label, actions = [], find, quickFilters = [], view,
   const fold = Math.min(foldAll, foldOrder(shown).length);
   const endAway = !!endFold && foldAll > fold;
   const quickAway = Math.min(quick.length, Math.max(0, foldAll - fold - (endAway ? 1 : 0)));
+  // the last step: the find side folds into its button (after every command, the end control and the quick filters)
+  const findAway = finding && !selecting && foldAll > fold + (endAway ? 1 : 0) + quickAway;
   const quickKept = quick.slice(0, quick.length - quickAway), quickFolded = quick.slice(quick.length - quickAway);
   const quickMenu = quickFolded.map((q) => {
     const id = q.id || q.label;
@@ -219,7 +224,15 @@ export function CommandBar({ label, actions = [], find, quickFilters = [], view,
     </Toolbar.Group>
   ) : null;
   const quickEls = quickKept.map((q) => <QuickFilter key={q.id || q.label} {...q} />);
-  const findEl = (find || quickEls.length) && !selecting ? <Toolbar.Group className="plx-command-bar__find">{find}{quickEls}</Toolbar.Group> : null;
+  // folded, the find side opens from one button; inside the popover its controls show at full size (labels, the field open)
+  const fullCtx = React.useMemo(() => ({ iconOnly: false, collapsed: false, step: 0, searchOpen: false, setSearchOpen }), []);
+  const findEl = !(find || quickEls.length) || selecting ? null : findAway ? (
+    <Toolbar.Group className="plx-command-bar__find">
+      <Popover title={t.find} placement="bottom-end" trigger={<CommandBarButton icon="search" label={t.find} iconOnly />}>
+        <BarContext.Provider value={fullCtx}><Stack gap="sm" align="start">{find}{quickEls}</Stack></BarContext.Provider>
+      </Popover>
+    </Toolbar.Group>
+  ) : <Toolbar.Group className="plx-command-bar__find">{find}{quickEls}</Toolbar.Group>;
   const viewEl = view ? <Toolbar.Group className="plx-command-bar__view">{view}</Toolbar.Group> : null;
   const countEl = selecting || count === undefined || count === null || ctx.collapsed ? null
     : typeof count === 'string' || typeof count === 'number' ? <Text variant="data" className="plx-command-bar__count">{count}</Text> : count;

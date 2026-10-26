@@ -48,8 +48,8 @@ jobs:
           if [ -f platform/design-system/inventory.js ]; then node check-spec.js; fi
           node build-packages.js
 
-      - name: "Tests without a browser (contrast, formats, brand rules, login)"
-        run: node tests/run.js contrast formats brand-rules login types
+      - name: "Tests without a browser (formats, brand rules, login, types)"
+        run: node tests/run.js formats brand-rules login types
 
   browser:
     name: Full ${{ matrix.name }}
@@ -63,13 +63,11 @@ jobs:
           - { name: 'pages 2/4', tests: pages, shard: 2/4 }
           - { name: 'pages 3/4', tests: pages, shard: 3/4 }
           - { name: 'pages 4/4', tests: pages, shard: 4/4 }
-          - { name: 'accessibility 1/2', tests: a11y, shard: 1/2 }
-          - { name: 'accessibility 2/2', tests: a11y, shard: 2/2 }
           - { name: 'labs 1/2', tests: labs, shard: 1/2 }
           - { name: 'labs 2/2', tests: labs, shard: 2/2 }
           - { name: typography, tests: typography, shard: '' }
-          - { name: 'targets and reflow', tests: targets reflow, shard: '' }
-          - { name: fixtures, tests: visual density layout theme high-contrast utilities keyboard, shard: '' }
+          - { name: reflow, tests: reflow, shard: '' }
+          - { name: fixtures, tests: visual layout utilities keyboard, shard: '' }
           - { name: behavior, tests: data-grid focus-order semantic-html navigation, shard: '' }
     env:
       TEST_SHARD: ${{ matrix.shard }}

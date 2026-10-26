@@ -11,7 +11,7 @@ export function tokenPixels(token, el) {
   if (!m) {
     if (typeof token === 'number' || /^\d+(?:\.\d+)?px$/.test(String(token))) return parseFloat(token) || 0;
     const host = el || document.documentElement, doc = host.ownerDocument || document, win = doc.defaultView;
-    if (!win.CSS.supports('inline-size', String(token)) || !win.CSSStyleSheet || !('adoptedStyleSheets' in doc)) return 0;
+    if (!win || !win.CSS.supports('inline-size', String(token)) || !win.CSSStyleSheet || !('adoptedStyleSheets' in doc)) return 0;
     // a measured length is kept for the context it depends on (the font sizes, the window and, for a percentage, the
     // container's width): adding the probe's sheet restyles the whole document, so it runs once per length and context
     const text = String(token), rootFont = getComputedStyle(doc.documentElement).fontSize, ownFont = getComputedStyle(host).fontSize;
