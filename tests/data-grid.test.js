@@ -1,14 +1,12 @@
 // Plenix tests · every Table and DataGrid in the apps: each page (and the tab or view that shows its tables) is opened, the tables are
 // awaited until the bundled renderer is ready, and for each table: it is built, it has its rows or its empty
-// message, axe finds no WCAG 2.2 A/AA problem in it, the style audit finds nothing written inline by Plenix, and its rows
-// and header take the table tokens (row height, text size), and every piece of text in its rows has the table's own size and
-// the typeface of its kind: Reddit Mono in a column of kind "data" and for code and the data role, DM Sans elsewhere
+// message, it has a name, its rows take the table's row height, its cells sit in the middle and keep the minimum padding
 // (a grid in its error state counts as built: it shows what failed and Retry instead of its rows)
+// Not here (reset, owner 2026-10-26: each thing is checked once): the accessibility scan is on demand (a11y.test.js),
+// the typefaces and sizes are Text alignment's (typography.test.js), and inline styles are Pages' (pages.test.js).
 // The three modes (owner, 2026-10-14; the DataGrid record's variant pages): "fill" draws only the rows in view, "pages"
 // and "load-more" have a footer whose controls (the rows-per-page Select, the page buttons, Load more) follow the grid
 // body in the Tab order: Tab from the body reaches them, and none is out of the Tab order.
-// (owner: one size in tables, batch 247; typefaces by kind, 2026-10-11; badges, tags, chips, buttons and keys keep their
-// component sizes, and the design system's value previews (.ds-vis: an "Aa" at the size it documents) are specimens).
 //   node tests/data-grid.test.js            (TEST_PORT: another port)
 //   DT_ENGINE=next: the independent renderer; DT_ONLY selects individual views.
 //   TEST_SCOPE=full: every view; by default (tests/changed.js) the views of the apps and test-site pages that changed,
@@ -62,7 +60,6 @@ const KNOWN = {
   'test-site/index.html#/directory': /footer controls not keyboard reachable/,
   'test-site/index.html#/families': /footer controls not keyboard reachable/,
 };
-const TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
 // in scope: a view whose app or site page changed, or the DataGrid or Table changed
 const GRIDS = ['components/DataGrid', 'components/DataGridEngine', 'components/Table'];
 const APP_URLS = changed.pages(STATES.map((s) => s[0]));
@@ -72,7 +69,7 @@ const VIEWS = STATES.filter((s) => inScope(s[0]) && (!ONLY || ONLY.test(s[0])));
 if (!VIEWS.length) changed.none('DATA_GRIDS_OK 0/0 table views');
 changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
 if (!ONLY && changed.wants({ units: ['components/DataGrid'] })) {
-  for (const regression of ['data-grid-search-149.test.js', 'data-grid-window-184.test.js', 'data-grid-sort-185.test.js', 'data-grid-cell-187.test.js', 'data-grid-select-167.test.js', 'data-grid-pane-150.test.js', 'data-grid-narrow-168.test.js', 'data-grid-state-169.test.js', 'data-grid-view-169.test.js', 'data-grid-group-165.test.js', 'data-grid-group-browser-165.test.js', 'data-grid-unread-164.test.js', 'bar-fit-149.test.js']) {
+  for (const regression of ['data-grid-search-149.test.js', 'data-grid-window-184.test.js', 'data-grid-sort-185.test.js', 'data-grid-cell-187.test.js', 'data-grid-select-167.test.js', 'data-grid-pane-150.test.js', 'data-grid-narrow-168.test.js', 'data-grid-state-169.test.js', 'data-grid-view-169.test.js', 'data-grid-group-165.test.js', 'data-grid-group-browser-165.test.js', 'data-grid-unread-164.test.js']) {
   const result = require('child_process').spawnSync(process.execPath, [require('path').join(__dirname, regression)], { stdio: 'inherit', env: process.env });
   if (result.status !== 0) process.exit(result.status || 1);
   }
@@ -188,61 +185,25 @@ if (!ONLY && changed.wants({ units: ['components/DataGrid'] })) {
     }
     if (missing) { res.push([name, false, 'no control "' + missing + '"']); continue; }
     if (kind === 'table') {
-      // a static Table view: every shown Table drawn with its rows, then axe on them (Table's own rendering: static-table.test.js)
+      // a static Table view: every shown Table drawn with its rows
       try { await page.waitForFunction((n) => { const t = Array.from(document.querySelectorAll('.plx-table')).filter((g) => g.offsetParent); return t.length >= n && t.every((g) => g.querySelector('.plx-table__grid-row')); }, { timeout: 60000 }, want); }
       catch (e) { res.push([name, false, 'tables not built: ' + (await page.evaluate(() => Array.from(document.querySelectorAll('.plx-table')).filter((g) => g.offsetParent && g.querySelector('.plx-table__grid-row')).length)) + ' of ' + want]); continue; }
-      await sleep(600);
-      if (!(await page.evaluate(() => !!window.axe))) await page.addScriptTag({ url: BASE + 'node_modules/axe-core/axe.min.js' });
-      const v = await page.evaluate(async (TAGS) => { const t = Array.from(document.querySelectorAll('.plx-table')).filter((g) => g.offsetParent);
-        const ax = await window.axe.run({ include: t.map((g) => [g]) }, { runOnly: { type: 'tag', values: TAGS }, resultTypes: ['violations'] });
-        return { n: t.length, bad: ax.violations.map((x) => x.id + ' (' + x.nodes.length + ')') }; }, TAGS);
-      res.push([name + ' (' + v.n + ' Table' + (v.n === 1 ? '' : 's') + ')', !v.bad.length, v.bad.length ? 'axe: ' + v.bad.join(', ') : '']);
+      const n = await page.evaluate(() => Array.from(document.querySelectorAll('.plx-table')).filter((g) => g.offsetParent).length);
+      res.push([name + ' (' + n + ' Table' + (n === 1 ? '' : 's') + ')', true, '']);
       continue;
     }
     try { await page.waitForFunction((n) => Array.from(document.querySelectorAll('.plx-data-grid')).filter((g) => g.offsetParent).length >= n
       && Array.from(document.querySelectorAll('.plx-data-grid')).filter((g) => g.offsetParent).every((g) => g.querySelector('.plx-data-grid__grid-row, .plx-data-grid__grid-placeholder, .plx-data-grid__error')), { timeout: 60000 }, want); }
     catch (e) { res.push([name, false, 'tables not built: ' + (await page.evaluate(() => Array.from(document.querySelectorAll('.plx-data-grid')).filter((g) => g.offsetParent && g.querySelector('.plx-data-grid__grid-row, .plx-data-grid__grid-placeholder')).length)) + ' of ' + want + '; unready: ' + (await page.evaluate(() => Array.from(document.querySelectorAll('.plx-data-grid')).filter(g => g.offsetParent && !g.querySelector('.plx-data-grid__grid-row, .plx-data-grid__grid-placeholder, .plx-data-grid__error')).map(g => g.querySelector('[aria-label]')?.getAttribute('aria-label') || g.className).join(', ')))]); continue; }
     await sleep(600);
-    if (!(await page.evaluate(() => !!window.axe))) await page.addScriptTag({ url: BASE + 'node_modules/axe-core/axe.min.js' });
-    if (!(await page.evaluate(() => !!window.PlenixStyleAudit))) await page.addScriptTag({ url: BASE + 'platform/dev/style-audit.js' });
-    const r = await page.evaluate(async (TAGS) => {
+    const r = await page.evaluate(async () => {
       const grids = Array.from(document.querySelectorAll('.plx-data-grid')).filter((g) => g.offsetParent);
-      const ax = await window.axe.run({ include: grids.map((g) => [g]) }, { runOnly: { type: 'tag', values: TAGS }, resultTypes: ['violations'] });
-      const audit = (window.PlenixStyleAudit ? window.PlenixStyleAudit.audit() : []).filter((f) => f.element && grids.some((g) => g.querySelector('*') && document.querySelector(f.element) && g.contains(document.querySelector(f.element))));
       const root = getComputedStyle(document.documentElement);
       const sizes = grids.map((g) => {
         const row = g.querySelector('.plx-data-grid__grid-row:not(.plx-data-grid__grid-group)'), cs = getComputedStyle(g);
         const want = parseFloat(cs.getPropertyValue('--plx-sys-data-grid-row-height')) * (/rem/.test(cs.getPropertyValue('--plx-sys-data-grid-row-height')) ? parseFloat(root.fontSize) : 1);
         return { label: g.querySelector('.plx-data-grid__grid') && g.querySelector('.plx-data-grid__grid').getAttribute('aria-label'), rows: g.querySelectorAll('.plx-data-grid__grid-row').length,
-          rowHeight: row ? Math.round(row.getBoundingClientRect().height) : null, want: Math.round(want) + 1,
-          font: getComputedStyle(g.querySelector('.plx-data-grid__grid')).fontSize, wantFont: cs.getPropertyValue('--plx-comp-data-grid-font-size').trim() };
-      });
-      // typefaces by kind, one size (owner, 2026-10-11): each text in the body rows at the table's own size; in a column of
-      // kind "data" in Reddit Mono, elsewhere in DM Sans, except code and the data role (code, Text "data", token and class
-      // links), which are Reddit Mono wherever they are (component labels excepted)
-      const type = [];
-      const MARKED = 'code, samp, .plx-text--data, .plx-data-grid__group-count, .plx-data-grid__group-summary-value, [data-plx-kind="data"], .ds-code-link, .ds-mono, .ds-value, .ds-name';
-      grids.forEach((g) => {
-        if (!g.querySelector('.plx-data-grid__grid-row .plx-data-grid__grid-cell')) return;
-        const size = getComputedStyle(g.querySelector('.plx-data-grid__grid')).fontSize;
-        const w = document.createTreeWalker(g.querySelector('.plx-data-grid__grid-tableholder') || g, NodeFilter.SHOW_TEXT); let n;
-        while ((n = w.nextNode()) && type.length < 3) {
-          // (a group header's eyebrow and a summary's name are labels in the eyebrow style: the owner's group header, 2026-10-14)
-          // (a tooltip's bubble is the tooltip's own text, in its own size, and hidden until hover: not cell text (#323);
-          // nor is any text that is not drawn)
-          const el = n.parentElement; if (!n.textContent.trim() || el.closest('.plx-badge, .plx-tag, .plx-tag--chip, .plx-button, .plx-kbd, .plx-count, .plx-data-grid__grid-placeholder, .ds-vis, .plx-data-grid__group-eyebrow, .plx-data-grid__group-summary-name, .plx-tooltip__bubble, [role="tooltip"]') || !el.getClientRects().length) continue;
-          const c = getComputedStyle(el), fam = c.fontFamily.split(',')[0].replace(/"/g, '');
-          const mono = !!el.closest('[class*="__cell--data"]') || !!el.closest(MARKED), want = mono ? 'Reddit Mono' : 'DM Sans';
-          if (fam !== want || c.fontSize !== size) type.push('"' + n.textContent.trim().slice(0, 20) + '" is ' + fam + ' ' + c.fontSize + ', want ' + want + ' ' + size + (mono ? ' (a data value)' : ''));
-        }
-      });
-      // header weights (owner, batch 248): every header row title is 600 and every row-label cell's text 500
-      grids.forEach((g) => {
-        g.querySelectorAll('.plx-data-grid__grid-header .plx-data-grid__grid-col-title').forEach((t) => { const w = getComputedStyle(t).fontWeight; if (t.textContent.trim() && w !== '600' && type.length < 3) type.push('header "' + t.textContent.trim().slice(0, 16) + '" is ' + w + ', not 600'); });
-        g.querySelectorAll('.plx-data-grid__grid-row [class*="__cell--row-label"]').forEach((c) => {
-          const w = document.createTreeWalker(c, NodeFilter.SHOW_TEXT); let n;
-          while ((n = w.nextNode())) { const el = n.parentElement; if (!n.textContent.trim() || el.closest('.plx-badge, .plx-tag, .plx-tag--chip, .plx-button, .plx-kbd, .plx-count, .ds-vis')) continue; const fw = getComputedStyle(el).fontWeight; if (fw !== '500' && type.length < 3) type.push('row label "' + n.textContent.trim().slice(0, 16) + '" is ' + fw + ', not 500'); }
-        });
+          rowHeight: row ? Math.round(row.getBoundingClientRect().height) : null, want: Math.round(want) + 1 };
       });
       // vertical alignment: middle (owner, 2026-10-13): in every density, each cell's content (its text and
       // its boxes: avatars, badges, icons, checkboxes, buttons) has the same room above and below, within 1px, in the
@@ -361,8 +322,8 @@ if (!ONLY && changed.wants({ units: ['components/DataGrid'] })) {
       if (was === null) html.removeAttribute('data-plx-density'); else html.setAttribute('data-plx-density', was);
       // the modes: a grid that fills its room draws only some of its rows
       const modes = grids.map((g) => (g.hasAttribute('data-plx-fit') ? 'fill' + (g.classList.contains('plx-data-grid--load-more') ? ' load-more' : '') : g.classList.contains('plx-data-grid--pages') ? 'pages' : '') + (g.getAttribute('data-plx-render') === 'virtual' ? ' virtual' : '')).filter(Boolean);
-      return { type, mid, padBad, modes, violations: ax.violations.map((v) => v.id + ' (' + v.nodes.length + '): ' + v.nodes[0].target.join(' ')), audit: audit.map((f) => f.kind + ' ' + f.element + ' ' + f.detail), sizes };
-    }, TAGS);
+      return { mid, padBad, modes, sizes };
+    });
     const bad = [];
     // the footer's controls (pages, load-more) are keyboard reachable: Tab from the grid body lands in the footer, and
     // every control there is in the Tab order
@@ -378,9 +339,6 @@ if (!ONLY && changed.wants({ units: ['components/DataGrid'] })) {
       if (!from || !kb.inFooter || !kb.controls || kb.out) bad.push(kb.label + ': footer controls not keyboard reachable (' + JSON.stringify(kb) + ')');
       else r.modes.push('footer keyboard ok (' + kb.controls + ' controls)');
     }
-    if (r.violations.length) bad.push('axe: ' + r.violations.join('; '));
-    if (r.type.length) bad.push('typography: ' + r.type.join('; '));
-    if (r.audit.length) bad.push('style audit: ' + r.audit.slice(0, 3).join('; '));
     if (r.mid.length) bad.push('vertical alignment not middle: ' + r.mid.join('; '));
     if (r.padBad.length) bad.push('less than P above or below: ' + r.padBad.join('; '));
     r.sizes.forEach((s) => { if (!s.label) bad.push('a table has no name'); if (s.rowHeight !== null && s.rowHeight < s.want - 1) bad.push(s.label + ': row ' + s.rowHeight + 'px, the role ' + (s.want - 1) + 'px + its line'); });

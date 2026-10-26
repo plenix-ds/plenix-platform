@@ -8,10 +8,10 @@
 // each state is checked without a pointer. A rule's token counts as wired once it moves its property on any element of
 // any page (a variant's own rule can win over the base rule on one element and lose on another).
 // Fails when a token that a matched rule uses never moves its property anywhere on the site (a token that edits nothing),
-// except the known ones in tests/baselines/component-tokens.json (rule → reason), which can only go down. Also reports
-// the component tokens no site page reaches (its coverage).
+// except the known ones in tests/baselines/component-tokens.json (rule → reason), which can only go down. Which parts the
+// site uses is Site coverage's (site-coverage.test.js; reset, owner 2026-10-26: each part is checked once).
 //   node tests/component-tokens.test.js            the pages of what changed (tests/changed.js)
-//   TEST_SCOPE=full node tests/component-tokens.test.js   every site page   TOKENS_VERBOSE=1: list what is not reached
+//   TEST_SCOPE=full node tests/component-tokens.test.js   every site page
 //   node tests/component-tokens.test.js --update   record the current dead tokens as the baseline (TEST_SCOPE=full only)
 const fs = require('fs');
 const path = require('path');
@@ -51,7 +51,7 @@ function check(done) {
   const COLOR = /(^|-)(color|fill|stroke|shadow)$|^background$|^border(-(top|right|bottom|left|block|inline)(-(start|end))?)?$|^outline$|^text-decoration$|^caret-color$/;
   const MARKS = ['37px', '0.37', '9', '"Courier New"', '900', 'none', 'hidden', 'solid', 'dashed', 'translateX(7px)', '123px 45px', 'linear-gradient(rgb(1, 2, 3), rgb(1, 2, 3))'];
   const STATE = { hover: 'hover', 'focus-visible': 'focus', 'focus-within': 'within', focus: 'focus', active: 'active' };
-  const out = { wired: [], dead: {}, seen: [] };
+  const out = { wired: [], dead: {} };
   const rules = [];
   const walk = (list, media) => {
     for (const r of list) {
@@ -104,10 +104,7 @@ function check(done) {
       if (moved) break;
     }
     if (moved) out.wired.push(key); else if (matched) out.dead[key] = why;
-    out.seen.push(x.token);
   }
-  out.seen = [...new Set(out.seen)];
-  out.total = [...new Set(rules.map((r) => r.token))].length;
   return out;
 }
 
@@ -115,18 +112,25 @@ function check(done) {
   const server = await serve(PORT);
   const browser = await launch();
   const page = await browser.newPage(); await page.setViewport({ width: 1440, height: 1000 });
-  const wired = new Set(), dead = {}, reached = new Set(); let total = 0;
-  for (const r of PAGES) {
+  const wired = new Set(), dead = {};
+  const visit = async (r) => {
     at(r);
     await page.goto(BASE + r, { waitUntil: 'networkidle0' }); await sleep(600);
     await page.evaluate(prepare);
     const res = await page.evaluate(check, [...wired]);
     res.wired.forEach((k) => { wired.add(k); delete dead[k]; });
     Object.entries(res.dead).forEach(([k, why]) => { if (!wired.has(k)) dead[k] = dead[k] || (r + ': ' + why); });
-    total = Math.max(total, res.total);
-    // a token is reached when a rule using it matched an element (wired or not)
-    res.wired.concat(Object.keys(res.dead)).forEach((k) => reached.add(k.split(' | ')[2]));
     if (process.env.TOKENS_TRACE) console.log(r + ': ' + res.wired.length + ' wired, ' + Object.keys(res.dead).length + ' not moving');
+  };
+  for (const r of PAGES) await visit(r);
+  // a token counts as wired once it moves on any page: a partial run (the pages of what changed) that finds a token
+  // moving nothing confirms it on the other site pages before it fails
+  const known = !UPDATE && fs.existsSync(BASELINE) ? JSON.parse(fs.readFileSync(BASELINE, 'utf8')) : {};
+  const open = () => Object.keys(dead).some((k) => !wired.has(k) && !(k in known));
+  if (!UPDATE && open()) {
+    const rest = site.urls().filter((r) => PAGES.indexOf(r) < 0);
+    if (rest.length) console.log('  confirming on the other ' + rest.length + ' site pages');
+    for (const r of rest) { if (!open()) break; await visit(r); }
   }
   await browser.close(); server.close();
   const deadKeys = Object.keys(dead).filter((k) => !wired.has(k)).sort();
@@ -141,8 +145,6 @@ function check(done) {
   fresh.slice(0, 40).forEach((k) => console.log('  FAIL ' + k + '  (' + dead[k] + ')'));
   if (fresh.length > 40) console.log('  … and ' + (fresh.length - 40) + ' more');
   if (fixed) console.log('  ' + fixed + ' known rules are wired now: run with --update to lower the baseline');
-  console.log('  coverage: ' + wired.size + ' rule tokens wired; ' + reached.size + ' component tokens reached on the site'
-    + (changed.full ? ' (of ' + total + ' used in the stylesheets)' : ''));
   console.log((fresh.length ? 'COMPONENT_TOKENS_FAIL ' + fresh.length + ' rule tokens move nothing; ' : 'COMPONENT_TOKENS_OK ') + wired.size + ' wired on ' + PAGES.length + ' pages');
   process.exit(fresh.length ? 1 : 0);
 })().catch((e) => { console.error(e); process.exit(1); });

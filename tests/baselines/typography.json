@@ -2,40 +2,25 @@
  "test-site/index.html#/servants": {
   "light": {
    "baseline": 1
-  },
-  "dark": {
-   "baseline": 1
   }
  },
  "test-site/index.html#/announcements": {
   "light": {
-   "baseline": 1
-  },
-  "dark": {
    "baseline": 1
   }
  },
  "test-site/index.html#/announcement/a1": {
   "light": {
    "prose": 1
-  },
-  "dark": {
-   "prose": 1
   }
  },
  "test-site/index.html#/document/d1": {
   "light": {
    "prose": 4
-  },
-  "dark": {
-   "prose": 4
   }
  },
  "test-site/index.html#/reports": {
   "light": {
-   "pattern": 43
-  },
-  "dark": {
    "pattern": 43
   }
  }

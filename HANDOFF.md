@@ -57,6 +57,14 @@ One design system and the suite of applications built on it, owned by one person
   - A new Platform part must be placed on the site: `node tests/site-coverage.test.js` (SITE_COVERAGE_OK) and `node tests/site-check.js` (the site's rules).
   - The spec's component labs are spec-only (`node tests/run.js labs`); `tests/component-tokens.test.js` checks the tokens on the site's real components.
 - **No target-size test.** The owner removed it ("Remove tap areas from all tests", 2026-10-25).
+- **Each thing is checked once (reset, owner 2026-10-26).**
+  - Visual checks the buttons in light mode at the default density (Standard) only: 840 buttons and the group.
+  - Text alignment (`typography.test.js`) runs in light mode only; its baseline keeps only the light findings.
+  - Tables (`data-grid.test.js`) has no accessibility scan, no typeface or size check and no inline-style check.
+    Accessibility is on demand, typefaces are Text alignment's, and inline styles are Pages'.
+  - Utilities has no style-audit check (Pages runs the style audit on every page).
+  - Which Platform parts the test site uses is Site coverage's alone; Component settings checks only that each token works.
+  - Dark mode, the themes and the densities are checked only on demand (`theme`, `density`) until dark mode work starts (#205).
 - Gates before finishing any change: `node build-app.js`, `node check-system.js` (SYSTEM_OK), `node check-spec.js` (SPEC_OK).
   After a spec change, `node build-spec-parts.js` (build-app runs it).
 - Generated files (never edit by hand): `platform/dist/platform.js`, `<app>/app.js`, `platform/system/steps.css`,
@@ -96,6 +104,12 @@ Issue #252 lists everything. The current front of the work:
 
 ## Housekeeping you will meet
 
-- Many old worktrees under `.claude/worktrees/` and `../Plenix-*` copies (#258: remove the `node_modules` junctions first).
+- Old worktrees and `../Plenix-*` copies (#258). Remove each one's `node_modules` junction first (`rmdir`, or PowerShell
+  `(Get-Item <path>\node_modules).Delete()`), never a recursive delete through it, then `git worktree remove --force`.
+  - The 2026-10-26 reset listed 51 stale ones (about 5.2 GB), all merged or pushed; their uncommitted leftovers are saved
+    in `Archived/worktree-leftovers-2026-10-26/`. Their removal waits for the owner's approval.
+  - Keep the worktrees of live sessions and of open PRs.
+- Test files: every `tests/*.test.js` is in a list of `tests/run.js`, or started by another test or the package build,
+  or named in a component README. A one-off proof test is deleted once its work is merged (git history keeps it).
 - `memory/` in the repo root is a stray worktree folder, not project content; do not commit it.
 - The older handoff (2026-10-15) is in git history (`git log -p HANDOFF.md`).
