@@ -1918,12 +1918,12 @@
       }
     },
     "data-grid-frozen-edge": {
-      "$value": "{plx-ref.color-gray-700}",
+      "$value": "{plx-ref.color-gray-900}",
       "$type": "color",
       "$extensions": {
         "plenix": {
           "group": "component",
-          "purpose": "DataGrid and Table: the edge after a frozen first column, as dark as the frame and the heading line (owner, 2026-10-24)."
+          "purpose": "DataGrid and Table: the edge after a frozen first column, one step darker than the inside lines (owner, 2026-10-26)."
         }
       }
     },
@@ -1948,12 +1948,12 @@
       }
     },
     "data-grid-border": {
-      "$value": "{plx-ref.color-gray-700}",
+      "$value": "{plx-ref.color-gray-800}",
       "$type": "color",
       "$extensions": {
         "plenix": {
           "group": "component",
-          "purpose": "DataGrid and Table: the outer edge, the heading line\u2019s color (owner, 2026-10-24)."
+          "purpose": "DataGrid and Table: the outer edge, one step lighter than the heading line (owner, 2026-10-26)."
         }
       }
     },
