@@ -9776,7 +9776,7 @@ const DragHandle = exports.DragHandle = /*#__PURE__*/_react.default.forwardRef(f
   }));
 });
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/columnHelper.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/columnHelper.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -9846,7 +9846,7 @@ function createColumnHelper() {
 }
 exports.createColumnHelper = createColumnHelper;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/utils.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -9956,7 +9956,7 @@ exports.makeStateUpdater = makeStateUpdater;
 exports.memo = memo;
 exports.noop = noop;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/core/cell.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/core/cell.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -9997,7 +9997,7 @@ function createCell(table, row, column, columnId) {
 }
 exports.createCell = createCell;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/core/column.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/core/column.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10076,7 +10076,7 @@ function createColumn(table, columnDef, depth, parent) {
 }
 exports.createColumn = createColumn;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/core/headers.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/core/headers.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10345,7 +10345,7 @@ function buildHeaderGroups(allColumns, columnsToGroup, table, headerFamily) {
 exports.Headers = Headers;
 exports.buildHeaderGroups = buildHeaderGroups;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/core/row.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./cell.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/cell.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/core/row.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./cell.js":"node_modules/@tanstack/table-core/build/lib/core/cell.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10433,7 +10433,7 @@ const createRow = (table, id, original, rowIndex, depth, subRows, parentId) => {
 };
 exports.createRow = createRow;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10474,7 +10474,7 @@ const ColumnFaceting = {
 };
 exports.ColumnFaceting = ColumnFaceting;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/filterFns.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/filterFns.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10570,7 +10570,7 @@ function testFalsey(val) {
 }
 exports.filterFns = filterFns;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js": { deps: {"../filterFns.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/filterFns.js","../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js": { deps: {"../filterFns.js":"node_modules/@tanstack/table-core/build/lib/filterFns.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10722,7 +10722,7 @@ function shouldAutoRemoveFilter(filterFn, value, column) {
 exports.ColumnFiltering = ColumnFiltering;
 exports.shouldAutoRemoveFilter = shouldAutoRemoveFilter;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/aggregationFns.js": { deps: {"./utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/aggregationFns.js": { deps: {"./utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10829,7 +10829,7 @@ const aggregationFns = {
 };
 exports.aggregationFns = aggregationFns;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js": { deps: {"../aggregationFns.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/aggregationFns.js","../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js": { deps: {"../aggregationFns.js":"node_modules/@tanstack/table-core/build/lib/aggregationFns.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10971,7 +10971,7 @@ function orderColumns(leafColumns, grouping, groupedColumnMode) {
 exports.ColumnGrouping = ColumnGrouping;
 exports.orderColumns = orderColumns;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11070,7 +11070,7 @@ function _getVisibleLeafColumns(table, position) {
 exports.ColumnVisibility = ColumnVisibility;
 exports._getVisibleLeafColumns = _getVisibleLeafColumns;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./ColumnGrouping.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","./ColumnVisibility.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./ColumnGrouping.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","./ColumnVisibility.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11154,7 +11154,7 @@ const ColumnOrdering = {
 };
 exports.ColumnOrdering = ColumnOrdering;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11284,7 +11284,7 @@ const ColumnPinning = {
 };
 exports.ColumnPinning = ColumnPinning;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/document.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/utils/document.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11302,7 +11302,7 @@ function safelyAccessDocument(_document) {
 }
 exports.safelyAccessDocument = safelyAccessDocument;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","../utils/document.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/document.js","./ColumnVisibility.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","../utils/document.js":"node_modules/@tanstack/table-core/build/lib/utils/document.js","./ColumnVisibility.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11573,7 +11573,7 @@ exports.ColumnSizing = ColumnSizing;
 exports.defaultColumnSizing = defaultColumnSizing;
 exports.passiveEventSupported = passiveEventSupported;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11614,7 +11614,7 @@ const GlobalFaceting = {
 };
 exports.GlobalFaceting = GlobalFaceting;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js": { deps: {"../filterFns.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/filterFns.js","../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js": { deps: {"../filterFns.js":"node_modules/@tanstack/table-core/build/lib/filterFns.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11677,7 +11677,7 @@ const GlobalFiltering = {
 };
 exports.GlobalFiltering = GlobalFiltering;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11850,7 +11850,7 @@ const RowExpanding = {
 };
 exports.RowExpanding = RowExpanding;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPagination.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/features/RowPagination.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12019,7 +12019,7 @@ const RowPagination = {
 };
 exports.RowPagination = RowPagination;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPinning.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/features/RowPinning.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12164,7 +12164,7 @@ const RowPinning = {
 };
 exports.RowPinning = RowPinning;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSelection.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/features/RowSelection.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12555,7 +12555,7 @@ exports.isRowSelected = isRowSelected;
 exports.isSubRowSelected = isSubRowSelected;
 exports.selectRowsFn = selectRowsFn;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/sortingFns.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/sortingFns.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12675,7 +12675,7 @@ const sortingFns = {
 exports.reSplitAlphaNumeric = reSplitAlphaNumeric;
 exports.sortingFns = sortingFns;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSorting.js": { deps: {"../sortingFns.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/sortingFns.js","../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/features/RowSorting.js": { deps: {"../sortingFns.js":"node_modules/@tanstack/table-core/build/lib/sortingFns.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12901,7 +12901,7 @@ const RowSorting = {
 };
 exports.RowSorting = RowSorting;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/core/table.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./column.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/column.js","./headers.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/headers.js","../features/ColumnFaceting.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js","../features/ColumnFiltering.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js","../features/ColumnGrouping.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","../features/ColumnOrdering.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js","../features/ColumnPinning.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js","../features/ColumnSizing.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js","../features/ColumnVisibility.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js","../features/GlobalFaceting.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js","../features/GlobalFiltering.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js","../features/RowExpanding.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js","../features/RowPagination.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPagination.js","../features/RowPinning.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPinning.js","../features/RowSelection.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSelection.js","../features/RowSorting.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSorting.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/core/table.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./column.js":"node_modules/@tanstack/table-core/build/lib/core/column.js","./headers.js":"node_modules/@tanstack/table-core/build/lib/core/headers.js","../features/ColumnFaceting.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js","../features/ColumnFiltering.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js","../features/ColumnGrouping.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","../features/ColumnOrdering.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js","../features/ColumnPinning.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js","../features/ColumnSizing.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js","../features/ColumnVisibility.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js","../features/GlobalFaceting.js":"node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js","../features/GlobalFiltering.js":"node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js","../features/RowExpanding.js":"node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js","../features/RowPagination.js":"node_modules/@tanstack/table-core/build/lib/features/RowPagination.js","../features/RowPinning.js":"node_modules/@tanstack/table-core/build/lib/features/RowPinning.js","../features/RowSelection.js":"node_modules/@tanstack/table-core/build/lib/features/RowSelection.js","../features/RowSorting.js":"node_modules/@tanstack/table-core/build/lib/features/RowSorting.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13112,7 +13112,7 @@ function createTable(options) {
 }
 exports.createTable = createTable;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getCoreRowModel.js": { deps: {"../core/row.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/row.js","../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/utils/getCoreRowModel.js": { deps: {"../core/row.js":"node_modules/@tanstack/table-core/build/lib/core/row.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13176,7 +13176,7 @@ function getCoreRowModel() {
 }
 exports.getCoreRowModel = getCoreRowModel;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13221,7 +13221,7 @@ function expandRows(rowModel) {
 exports.expandRows = expandRows;
 exports.getExpandedRowModel = getExpandedRowModel;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedMinMaxValues.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/utils/getFacetedMinMaxValues.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13256,7 +13256,7 @@ function getFacetedMinMaxValues() {
 }
 exports.getFacetedMinMaxValues = getFacetedMinMaxValues;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js": { deps: {"../core/row.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/row.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js": { deps: {"../core/row.js":"node_modules/@tanstack/table-core/build/lib/core/row.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13366,7 +13366,7 @@ function filterRowModelFromRoot(rowsToFilter, filterRow, table) {
 }
 exports.filterRows = filterRows;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedRowModel.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./filterRowsUtils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/utils/getFacetedRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./filterRowsUtils.js":"node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13401,7 +13401,7 @@ function getFacetedRowModel() {
 }
 exports.getFacetedRowModel = getFacetedRowModel;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedUniqueValues.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/utils/getFacetedUniqueValues.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13439,7 +13439,7 @@ function getFacetedUniqueValues() {
 }
 exports.getFacetedUniqueValues = getFacetedUniqueValues;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFilteredRowModel.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./filterRowsUtils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/utils/getFilteredRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./filterRowsUtils.js":"node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13549,7 +13549,7 @@ function getFilteredRowModel() {
 }
 exports.getFilteredRowModel = getFilteredRowModel;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getGroupedRowModel.js": { deps: {"../core/row.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/row.js","../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/utils/getGroupedRowModel.js": { deps: {"../core/row.js":"node_modules/@tanstack/table-core/build/lib/core/row.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13705,7 +13705,7 @@ function groupBy(rows, columnId) {
 }
 exports.getGroupedRowModel = getGroupedRowModel;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getPaginationRowModel.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./getExpandedRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/utils/getPaginationRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./getExpandedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13764,7 +13764,7 @@ function getPaginationRowModel(opts) {
 }
 exports.getPaginationRowModel = getPaginationRowModel;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getSortedRowModel.js": { deps: {"../utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/utils/getSortedRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13865,7 +13865,7 @@ function getSortedRowModel() {
 }
 exports.getSortedRowModel = getSortedRowModel;
   } },
-  "../Plenix/node_modules/@tanstack/table-core/build/lib/index.js": { deps: {"./columnHelper.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/columnHelper.js","./core/cell.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/cell.js","./core/column.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/column.js","./core/headers.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/headers.js","./core/row.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/row.js","./core/table.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/core/table.js","./features/ColumnFaceting.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js","./features/ColumnFiltering.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js","./features/ColumnGrouping.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","./features/ColumnOrdering.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js","./features/ColumnPinning.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js","./features/ColumnSizing.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js","./features/ColumnVisibility.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js","./features/GlobalFaceting.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js","./features/GlobalFiltering.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js","./features/RowExpanding.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js","./features/RowPagination.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPagination.js","./features/RowPinning.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowPinning.js","./features/RowSelection.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSelection.js","./features/RowSorting.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/features/RowSorting.js","./utils.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./utils/getCoreRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getCoreRowModel.js","./utils/getExpandedRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js","./utils/getFacetedMinMaxValues.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedMinMaxValues.js","./utils/getFacetedRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedRowModel.js","./utils/getFacetedUniqueValues.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedUniqueValues.js","./utils/getFilteredRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getFilteredRowModel.js","./utils/getGroupedRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getGroupedRowModel.js","./utils/getPaginationRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getPaginationRowModel.js","./utils/getSortedRowModel.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/utils/getSortedRowModel.js","./aggregationFns.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/aggregationFns.js","./filterFns.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/filterFns.js","./sortingFns.js":"../Plenix/node_modules/@tanstack/table-core/build/lib/sortingFns.js"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/table-core/build/lib/index.js": { deps: {"./columnHelper.js":"node_modules/@tanstack/table-core/build/lib/columnHelper.js","./core/cell.js":"node_modules/@tanstack/table-core/build/lib/core/cell.js","./core/column.js":"node_modules/@tanstack/table-core/build/lib/core/column.js","./core/headers.js":"node_modules/@tanstack/table-core/build/lib/core/headers.js","./core/row.js":"node_modules/@tanstack/table-core/build/lib/core/row.js","./core/table.js":"node_modules/@tanstack/table-core/build/lib/core/table.js","./features/ColumnFaceting.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js","./features/ColumnFiltering.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js","./features/ColumnGrouping.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","./features/ColumnOrdering.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js","./features/ColumnPinning.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js","./features/ColumnSizing.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js","./features/ColumnVisibility.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js","./features/GlobalFaceting.js":"node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js","./features/GlobalFiltering.js":"node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js","./features/RowExpanding.js":"node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js","./features/RowPagination.js":"node_modules/@tanstack/table-core/build/lib/features/RowPagination.js","./features/RowPinning.js":"node_modules/@tanstack/table-core/build/lib/features/RowPinning.js","./features/RowSelection.js":"node_modules/@tanstack/table-core/build/lib/features/RowSelection.js","./features/RowSorting.js":"node_modules/@tanstack/table-core/build/lib/features/RowSorting.js","./utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./utils/getCoreRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getCoreRowModel.js","./utils/getExpandedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js","./utils/getFacetedMinMaxValues.js":"node_modules/@tanstack/table-core/build/lib/utils/getFacetedMinMaxValues.js","./utils/getFacetedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getFacetedRowModel.js","./utils/getFacetedUniqueValues.js":"node_modules/@tanstack/table-core/build/lib/utils/getFacetedUniqueValues.js","./utils/getFilteredRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getFilteredRowModel.js","./utils/getGroupedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getGroupedRowModel.js","./utils/getPaginationRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getPaginationRowModel.js","./utils/getSortedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getSortedRowModel.js","./aggregationFns.js":"node_modules/@tanstack/table-core/build/lib/aggregationFns.js","./filterFns.js":"node_modules/@tanstack/table-core/build/lib/filterFns.js","./sortingFns.js":"node_modules/@tanstack/table-core/build/lib/sortingFns.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13963,7 +13963,7 @@ exports.filterFns = filterFns.filterFns;
 exports.reSplitAlphaNumeric = sortingFns.reSplitAlphaNumeric;
 exports.sortingFns = sortingFns.sortingFns;
   } },
-  "../Plenix/node_modules/@tanstack/react-table/build/lib/index.js": { deps: {"react":null,"@tanstack/table-core":"../Plenix/node_modules/@tanstack/table-core/build/lib/index.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "node_modules/@tanstack/react-table/build/lib/index.js": { deps: {"react":null,"@tanstack/table-core":"node_modules/@tanstack/table-core/build/lib/index.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 /**
    * react-table
    *
@@ -14066,7 +14066,7 @@ Object.keys(tableCore).forEach(function (k) {
   });
 });
   } },
-  "../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/lazy-measurements.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/virtual-core/dist/cjs/lazy-measurements.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -14108,7 +14108,7 @@ function createLazyMeasurementsView(cache, flat) {
 exports.createLazyMeasurementsView = createLazyMeasurementsView;
 exports.getMeasurementKey = getMeasurementKey;
   } },
-  "../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -14186,7 +14186,7 @@ exports.debounce = debounce;
 exports.memo = memo;
 exports.notUndefined = notUndefined;
   } },
-  "../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/scroll-classifier.cjs": { deps: {"./utils.cjs":"../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/virtual-core/dist/cjs/scroll-classifier.cjs": { deps: {"./utils.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -14279,7 +14279,7 @@ exports.externalRetiresCommand = externalRetiresCommand;
 exports.flingCaught = flingCaught;
 exports.flingSpedUp = flingSpedUp;
   } },
-  "../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/ios-gesture.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/virtual-core/dist/cjs/ios-gesture.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -14410,7 +14410,7 @@ exports._resetIOSDetectionForTests = _resetIOSDetectionForTests;
 exports.iosMomentumOverridesWrites = iosMomentumOverridesWrites;
 exports.isIOSWebKit = isIOSWebKit;
   } },
-  "../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/index.cjs": { deps: {"./lazy-measurements.cjs":"../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/lazy-measurements.cjs","./utils.cjs":"../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs","./scroll-classifier.cjs":"../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/scroll-classifier.cjs","./ios-gesture.cjs":"../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/ios-gesture.cjs"}, externals: {  }, run: function (module, exports, require) {
+  "node_modules/@tanstack/virtual-core/dist/cjs/index.cjs": { deps: {"./lazy-measurements.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/lazy-measurements.cjs","./utils.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs","./scroll-classifier.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/scroll-classifier.cjs","./ios-gesture.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/ios-gesture.cjs"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -15984,7 +15984,7 @@ exports.observeWindowOffset = observeWindowOffset;
 exports.observeWindowRect = observeWindowRect;
 exports.windowScroll = windowScroll;
   } },
-  "../Plenix/node_modules/@tanstack/react-virtual/dist/cjs/index.cjs": { deps: {"react":null,"react-dom":null,"@tanstack/virtual-core":"../Plenix/node_modules/@tanstack/virtual-core/dist/cjs/index.cjs"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "node_modules/@tanstack/react-virtual/dist/cjs/index.cjs": { deps: {"react":null,"react-dom":null,"@tanstack/virtual-core":"node_modules/@tanstack/virtual-core/dist/cjs/index.cjs"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -20928,7 +20928,7 @@ function groupDisplay(groups, collapsed, add, gaps = true) {
   return display;
 }
   } },
-  "platform/components/DataGrid/DataGridEngine.jsx": { deps: {"react":null,"./unread.js":"platform/components/DataGrid/unread.js","./room.js":"platform/components/DataGrid/room.js","react-dom":null,"./scrollbars.jsx":"platform/components/DataGrid/scrollbars.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","@tanstack/react-table":"../Plenix/node_modules/@tanstack/react-table/build/lib/index.js","@tanstack/react-virtual":"../Plenix/node_modules/@tanstack/react-virtual/dist/cjs/index.cjs","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./environment.js":"platform/components/DataGrid/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataGrid/state.js","./adapter.js":"platform/components/DataGrid/adapter.js","./cells.jsx":"platform/components/DataGrid/cells.jsx","./records.js":"platform/components/DataGrid/records.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/DataGrid/DataGridEngine.jsx": { deps: {"react":null,"./unread.js":"platform/components/DataGrid/unread.js","./room.js":"platform/components/DataGrid/room.js","react-dom":null,"./scrollbars.jsx":"platform/components/DataGrid/scrollbars.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","@tanstack/react-table":"node_modules/@tanstack/react-table/build/lib/index.js","@tanstack/react-virtual":"node_modules/@tanstack/react-virtual/dist/cjs/index.cjs","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./environment.js":"platform/components/DataGrid/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataGrid/state.js","./adapter.js":"platform/components/DataGrid/adapter.js","./cells.jsx":"platform/components/DataGrid/cells.jsx","./records.js":"platform/components/DataGrid/records.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -24201,7 +24201,447 @@ function finite(v) {
   return isFinite(n) ? n : 0;
 }
   } },
-  "platform/charts/PieChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./chart-kit.js":"platform/charts/chart-kit.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/utils/vendorBase.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.vendorBase = vendorBase;
+/* Plenix · vendorBase
+   Summary: Resolves the shared vendor folder for optional engines.
+   Usage: vendorBase() + the engine path.
+   Props: window.PlenixVendorBase overrides the Platform script or versioned package URL.
+   Behavior: Captures the script address while the module runs; falls back to the package CDN.
+   Notes: Shared URL resolution only; loads no engine. */
+// the Platform script's own address, read while the bundle runs (document.currentScript is gone afterwards)
+const SCRIPT = typeof document !== 'undefined' && document.currentScript ? document.currentScript.src : '';
+
+// the same, found among the page's scripts when the bundle ran its modules later
+function platformScript() {
+  if (SCRIPT) return SCRIPT;
+  const s = Array.from(document.scripts).map(x => x.src).find(src => /\/(dist\/platform|plenix(\.global)?)(\.min)?\.js(\?|$)/.test(src));
+  return s || '';
+}
+
+// the vendor folder: the repository's
+// platform/dist/platform.js finds it at platform/vendor/; every other copy of the script has it beside itself (the CDN's
+// plenix.js: ./vendor/; the npm package's dist/plenix.global.js: dist/vendor/, where build-packages.js puts it)
+function vendorBase() {
+  if (typeof window !== 'undefined' && window.PlenixVendorBase) return String(window.PlenixVendorBase).replace(/\/?$/, '/');
+  const src = platformScript();
+  if (src) return new URL(/\/dist\/platform(\.min)?\.js(\?.*)?$/.test(src) ? '../vendor/' : './vendor/', src).href;
+  // the npm package: build-packages.js defines this release's CDN vendor folder (versioned, never changes)
+  if (typeof __PLENIX_VENDOR__ !== 'undefined') return __PLENIX_VENDOR__; // eslint-disable-line no-undef
+  return 'platform/vendor/';
+}
+  } },
+  "platform/charts/echarts/engine.js": { deps: {"../../utils/vendorBase.js":"platform/utils/vendorBase.js"}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.chartTokens = chartTokens;
+exports.loadECharts = loadECharts;
+exports.plenixTheme = plenixTheme;
+var _vendorBase = require("../../utils/vendorBase.js");
+/* Plenix · Chart engine (platform/charts/echarts/engine.js)
+   Summary: How a Plenix chart draws with Apache ECharts (issue 353, owner 2026-10-26): loads the vendored engine
+     (platform/vendor/echarts/echarts.min.js, window.PlenixECharts), reads the chart tokens where the chart is, and builds
+     the ECharts theme from them. The chart components keep their names, props and Plenix layer (ChartFrame, the
+     interaction, the live region, the legend, the tooltip, "Show the data"); ECharts draws the plot.
+   Usage:
+     loadECharts().then((E) => E.init(el, plenixTheme(chartTokens(el)), { renderer: 'svg', width, height }));
+     const t = chartTokens(el); t.color('categorical-2')   // a data-viz step as the color it is where el is
+   Props:
+     loadECharts(win): adds the engine's script to the page once (the given window's, default this one) and resolves with
+       that window's PlenixECharts ({ init, version })
+     chartTokens(el): the chart tokens as the Platform's own chart classes resolve them where el is (theme, density and
+       scope included): { color(step), colors, lineWidth, tick, title, axis, grid, point, separator, slice, area, dim, motion }
+     plenixTheme(tokens): the ECharts theme (colors in the categorical order of seriesColor, the axis and grid lines, the
+       data font for tick labels, the label font for axis titles, the line, point and bar styles)
+   Behavior:
+     Only the first chart on a page loads the engine; later charts reuse the same promise. Pages without a chart never
+       load it. A failed load rejects and is forgotten, so the next chart that mounts tries again.
+     The tokens are read through a hidden probe of the frame's own mark classes (plx-chart__line, plx-chart__mark,
+       plx-chart__tick-label, plx-chart-axis__label, plx-chart__axis-line, plx-chart__grid-line, …), so a token change
+       restyles both drawings; nothing here holds a color, width or font of its own.
+   Notes:
+     ECharts writes the sizes and fonts of what it draws on its own SVG elements (inside .plx-chart__engine); the values
+       are the tokens read here.
+     Dark mode: the charts read the tokens again when the page's mode, theme or density changes (EChartsPlot). */
+
+const loading = new WeakMap();
+function loadECharts(win) {
+  const w = win || (typeof window !== 'undefined' ? window : null);
+  if (!w) return Promise.reject(new Error('ECharts needs a browser'));
+  if (w.PlenixECharts) return Promise.resolve(w.PlenixECharts);
+  if (loading.has(w)) return loading.get(w);
+  const doc = w.document;
+  const p = new Promise((resolve, reject) => {
+    const script = doc.createElement('script');
+    script.src = (0, _vendorBase.vendorBase)() + 'echarts/echarts.min.js';
+    script.async = true;
+    script.setAttribute('data-plx-vendor', 'echarts');
+    script.onload = () => {
+      if (w.PlenixECharts) resolve(w.PlenixECharts);else {
+        loading.delete(w);
+        script.remove();
+        reject(new Error('ECharts did not load from ' + script.src));
+      }
+    };
+    script.onerror = () => {
+      loading.delete(w);
+      script.remove();
+      reject(new Error('ECharts could not be loaded from ' + script.src));
+    };
+    doc.head.appendChild(script);
+  });
+  loading.set(w, p);
+  return p;
+}
+const NS = 'http://www.w3.org/2000/svg';
+const num = v => parseFloat(v) || 0;
+// a duration token in milliseconds ("200ms" or "0.2s")
+const ms = v => {
+  const s = String(v).trim();
+  return /ms$/.test(s) ? num(s) : /s$/.test(s) ? num(s) * 1000 : num(s);
+};
+function chartTokens(where) {
+  const doc = where.ownerDocument,
+    win = doc.defaultView;
+  const svg = doc.createElementNS(NS, 'svg');
+  svg.setAttribute('class', 'plx-visually-hidden');
+  svg.setAttribute('aria-hidden', 'true');
+  const mk = (tag, cls, attrs) => {
+    const e = doc.createElementNS(NS, tag);
+    e.setAttribute('class', cls);
+    Object.keys(attrs || {}).forEach(k => e.setAttribute(k, attrs[k]));
+    svg.appendChild(e);
+    return e;
+  };
+  const line = mk('path', 'plx-chart__line', {
+    'data-plx-dataviz': 'categorical-1'
+  });
+  const tick = mk('text', 'plx-chart__tick-label'),
+    title = mk('text', 'plx-chart-axis__label');
+  const axis = mk('line', 'plx-chart__axis-line'),
+    grid = mk('line', 'plx-chart__grid-line');
+  const point = mk('circle', 'plx-chart__point plx-line-chart__point');
+  const joined = mk('rect', 'plx-chart__mark plx-bar-chart__bar plx-bar-chart__bar--joined');
+  const slice = mk('path', 'plx-chart__mark plx-pie-chart__slice');
+  const swatch = mk('rect', 'plx-chart__mark');
+  where.appendChild(svg);
+  const cs = e => win.getComputedStyle(e);
+  const font = e => {
+    const s = cs(e);
+    return {
+      color: s.fill,
+      fontFamily: s.fontFamily,
+      fontSize: num(s.fontSize),
+      fontWeight: s.fontWeight
+    };
+  };
+  const host = cs(where);
+  const prop = name => host.getPropertyValue(name).trim();
+  // a length token in pixels (px, or rem on the root's font size)
+  const len = v => /rem$/.test(v) ? num(v) * num(win.getComputedStyle(doc.documentElement).fontSize) : num(v);
+  const colorCache = {};
+  const t = {
+    lineWidth: num(cs(line).strokeWidth),
+    tick: font(tick),
+    title: font(title),
+    axis: {
+      color: cs(axis).stroke,
+      width: num(cs(axis).strokeWidth)
+    },
+    grid: {
+      color: cs(grid).stroke,
+      width: num(cs(grid).strokeWidth)
+    },
+    point: {
+      r: num(cs(point).r),
+      outline: cs(point).stroke,
+      outlineWidth: num(cs(point).strokeWidth)
+    },
+    separator: {
+      color: cs(joined).stroke,
+      width: num(cs(joined).strokeWidth)
+    },
+    slice: {
+      color: cs(slice).stroke,
+      width: num(cs(slice).strokeWidth)
+    },
+    area: {
+      opacity: num(prop('--plx-comp-area-chart-fill-opacity')),
+      stacked: num(prop('--plx-comp-area-chart-stacked-fill-opacity'))
+    },
+    // the gap between a tick label and its axis, and the room above the plot (half the top tick label)
+    tickOffset: len(prop('--plx-comp-chart-axis-tick-offset')),
+    top: len(prop('--plx-comp-chart-margin-block-start')),
+    rtl: host.direction === 'rtl',
+    // the values not in focus dim to the interaction's token; the drawing's animation is the motion token (reduced motion: 0)
+    dim: num(prop('--plx-comp-chart-interaction-dim-opacity')) || 1,
+    motion: ms(prop('--plx-sys-motion-duration-slow'))
+  };
+  // a data-viz step ("categorical-3", "sequential-5") as the color it is here
+  t.color = step => {
+    if (!step) step = 'categorical-1';
+    if (!(step in colorCache)) {
+      swatch.setAttribute('data-plx-dataviz', step);
+      const out = !svg.isConnected;
+      if (out) where.appendChild(svg);
+      colorCache[step] = cs(swatch).fill;
+      if (out) svg.remove();
+    }
+    return colorCache[step];
+  };
+  t.colors = [1, 2, 3, 4, 5, 6].map(i => t.color('categorical-' + i));
+  svg.remove();
+  return t;
+}
+function plenixTheme(t) {
+  const label = {
+    color: t.tick.color,
+    fontFamily: t.tick.fontFamily,
+    fontSize: t.tick.fontSize,
+    margin: t.tickOffset,
+    hideOverlap: true
+  };
+  const name = {
+    color: t.title.color,
+    fontFamily: t.title.fontFamily,
+    fontSize: t.title.fontSize,
+    fontWeight: t.title.fontWeight
+  };
+  const base = {
+    axisLabel: label,
+    nameTextStyle: name,
+    axisTick: {
+      show: false
+    }
+  };
+  const rule = {
+    show: true,
+    lineStyle: {
+      color: t.axis.color,
+      width: t.axis.width
+    }
+  };
+  const gridLines = {
+    show: true,
+    lineStyle: {
+      color: t.grid.color,
+      width: t.grid.width
+    }
+  };
+  return {
+    color: t.colors,
+    backgroundColor: 'transparent',
+    textStyle: {
+      fontFamily: t.tick.fontFamily,
+      color: t.tick.color,
+      fontSize: t.tick.fontSize
+    },
+    categoryAxis: Object.assign({}, base, {
+      axisLine: rule,
+      splitLine: {
+        show: false
+      }
+    }),
+    timeAxis: Object.assign({}, base, {
+      axisLine: rule,
+      splitLine: {
+        show: false
+      }
+    }),
+    valueAxis: Object.assign({}, base, {
+      axisLine: {
+        show: false
+      },
+      splitLine: gridLines
+    }),
+    line: {
+      symbol: 'circle',
+      symbolSize: t.point.r * 2,
+      lineStyle: {
+        width: t.lineWidth,
+        cap: 'round',
+        join: 'round'
+      },
+      itemStyle: {
+        borderColor: t.point.outline,
+        borderWidth: t.point.outlineWidth
+      }
+    },
+    bar: {
+      itemStyle: {
+        borderWidth: 0
+      }
+    },
+    pie: {
+      itemStyle: {
+        borderColor: t.slice.color,
+        borderWidth: t.slice.width,
+        borderJoin: 'round'
+      }
+    }
+  };
+}
+  } },
+  "platform/charts/echarts/EChartsPlot.jsx": { deps: {"react":null,"./engine.js":"platform/charts/echarts/engine.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.NO_MARGIN = void 0;
+exports.plotGrid = plotGrid;
+exports.useEChartsPlot = useEChartsPlot;
+var _react = _interopRequireDefault(require("react"));
+var _engine = require("./engine.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · EChartsPlot (platform/charts/echarts/EChartsPlot.jsx)
+   Summary: The ECharts drawing inside a chart's ChartFrame (issue 353): one ECharts instance per chart, drawn as SVG in the
+     frame's plot, under the chart's own Plenix layer (focus marks, crosshair, tooltip, labels: the frame's SVG on top).
+     Internal: used by the chart components, not public.
+   Usage:
+     const plot = useEChartsPlot();
+     const option = React.useCallback((t) => ({ grid: …, xAxis: …, yAxis: …, series: … }), [data, …]);
+     <ChartFrame … margin={NO_MARGIN}>{(dims) => [plot.layer(dims, option), plot.chart ? <g>…overlay…</g> : null]}</ChartFrame>
+   Props:
+     useEChartsPlot() → { chart, tokens, layer(dims, option) }:
+       layer(dims, option): the element that holds the drawing, the plot's full size (a foreignObject at 0,0); option(t, size)
+         returns the ECharts option from the chart tokens t (engine.js chartTokens) and the plot's { width, height }. Keep option stable (useCallback on
+         the data and props it reads) or the chart redraws on every render
+       chart: the ECharts instance once it has drawn (null before the engine loads), for its geometry (convertToPixel,
+         the grid's rectangle); the hook's component renders again after every draw, so the overlay follows
+       tokens: the chart tokens it was drawn with
+     plotGrid(chart): the grid's rectangle { x, y, width, height } in plot pixels (where the overlay goes)
+     NO_MARGIN: ChartFrame's margin for an ECharts chart (ECharts makes the room its labels need inside the plot)
+   Behavior:
+     The engine loads the first time a chart mounts (loadECharts); until then the plot is empty and the caption, the
+       legend and "Show the data" are already there.
+     The drawing follows the plot's size (ChartFrame measures it) and is drawn again when the page's mode, theme or
+       density changes, with the tokens read again.
+     The drawing takes no pointer events: the pointer and the keyboard belong to the frame's plot and the chart
+       interaction (interaction.js).
+   Notes:
+     ECharts writes the sizes and fonts of what it draws on its own SVG elements, inside .plx-chart__engine; the values
+       are the chart tokens. */
+
+const NO_MARGIN = exports.NO_MARGIN = Object.freeze({
+  top: 0,
+  end: 0,
+  bottom: 0,
+  start: 0
+});
+const LOOK = ['data-plx-mode', 'data-plx-theme', 'data-plx-density'];
+function EChartsHost({
+  width,
+  height,
+  option,
+  onDraw
+}) {
+  const ref = _react.default.useRef(null),
+    inst = _react.default.useRef(null),
+    tk = _react.default.useRef(null);
+  const [E, setE] = _react.default.useState(() => typeof window !== 'undefined' && window.PlenixECharts || null);
+  const [look, setLook] = _react.default.useState(0);
+  _react.default.useEffect(() => {
+    if (E) return undefined;
+    let live = true;
+    (0, _engine.loadECharts)().then(x => {
+      if (live) setE(x);
+    }, () => {});
+    return () => {
+      live = false;
+    };
+  }, [E]);
+  _react.default.useEffect(() => {
+    if (typeof MutationObserver === 'undefined') return undefined;
+    const mo = new MutationObserver(() => setLook(n => n + 1));
+    mo.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: LOOK
+    });
+    return () => mo.disconnect();
+  }, []);
+  _react.default.useEffect(() => {
+    if (!E || !ref.current) return undefined;
+    tk.current = (0, _engine.chartTokens)(ref.current);
+    const c = E.init(ref.current, (0, _engine.plenixTheme)(tk.current), {
+      renderer: 'svg',
+      width,
+      height
+    });
+    inst.current = c;
+    return () => {
+      c.dispose();
+      inst.current = null;
+    };
+  }, [E, look]);
+  _react.default.useEffect(() => {
+    const c = inst.current;
+    if (!c || c.isDisposed()) return;
+    c.resize({
+      width,
+      height,
+      animation: {
+        duration: 0
+      }
+    });
+    c.setOption(option(tk.current, {
+      width,
+      height
+    }), {
+      replaceMerge: ['series', 'xAxis', 'yAxis']
+    });
+    onDraw(c, tk.current);
+  }, [E, look, option, width, height]);
+  return /*#__PURE__*/_react.default.createElement("div", {
+    ref: ref,
+    className: "plx-chart__engine"
+  });
+}
+function useEChartsPlot() {
+  const [, redraw] = _react.default.useReducer(n => n + 1, 0);
+  const drawn = _react.default.useRef({
+    chart: null,
+    tokens: null
+  });
+  const onDraw = _react.default.useCallback((c, t) => {
+    drawn.current = {
+      chart: c,
+      tokens: t
+    };
+    redraw();
+  }, []);
+  const live = drawn.current.chart && !drawn.current.chart.isDisposed();
+  return {
+    chart: live ? drawn.current.chart : null,
+    tokens: live ? drawn.current.tokens : null,
+    layer: (dims, option) => /*#__PURE__*/_react.default.createElement("foreignObject", {
+      key: "plx-chart-engine",
+      x: 0,
+      y: 0,
+      width: dims.width,
+      height: dims.height
+    }, /*#__PURE__*/_react.default.createElement(EChartsHost, {
+      width: dims.width,
+      height: dims.height,
+      option: option,
+      onDraw: onDraw
+    }))
+  };
+}
+function plotGrid(chart) {
+  const grid = chart.getModel().getComponent('grid');
+  return grid && grid.coordinateSystem ? grid.coordinateSystem.getRect() : null;
+}
+  } },
+  "platform/charts/PieChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./interaction.js":"platform/charts/interaction.js","./chart-kit.js":"platform/charts/chart-kit.js","./echarts/EChartsPlot.jsx":"platform/charts/echarts/EChartsPlot.jsx","../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -24217,9 +24657,12 @@ var _scales = require("./scales.js");
 var _ChartLegend = require("./parts/ChartLegend.jsx");
 var _ChartTooltip = require("./parts/ChartTooltip.jsx");
 var _DataLabel = require("./parts/DataLabel.jsx");
+var _interaction = require("./interaction.js");
 var _chartKit = require("./chart-kit.js");
+var _EChartsPlot = require("./echarts/EChartsPlot.jsx");
+var _grid = require("../utils/grid.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · PieChart
+/* Plenix · PieChart
    Summary: The shares of a few parts in one whole (07 Data Display › Charts › Pie chart, Donut chart): a circle cut into
      slices from 12 o'clock, largest first, clockwise (pie); a ring with the total or a key value in its hollow center
      (donut); or a half ring across the top with its value under it (half). Small parts are grouped into Other. Drawn in
@@ -24244,16 +24687,24 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      showValues: writes each share on its slice when the slice is large enough (8% or more) (default false)
      legend: false hides the legend (default shown, each part with its share); legendPosition: ChartFrame's
      tooltip: shows the part under the pointer, its value and share (default true)
+     interactive: keyboard, pointer, tooltip and live region (default true)
      size, margin, hideCaption, className: ChartFrame's
      strings: { part: "Part", value: "Value", share: "Share", total: "Total", other: "Other" } and ChartFrame's strings
    Behavior:
      A part keeps its color by its order in the data, not by its size; Other takes the neutral categorical color.
-     Hover a slice: the tooltip shows its name, value and share. The legend and the data grid carry every part's value
-       and share: the chart's keyboard and screen reader view.
+     One Tab stop: the arrow keys move from slice to slice (clockwise with → and ↓), Home and End to the first and last;
+       the pointer does the same on hover. The slice in focus keeps its color and the others dim; the tooltip shows its
+       name, value and share, and the live region says it. The legend and the data grid carry every part's value and
+       share.
+     The plot draws once the chart engine has loaded (the first chart on a page loads it); the caption, legend and data
+       grid show at once.
    Notes:
      Two to five parts read best; for many parts or parts of similar size use a bar chart. Slices are parted by a thin line
-       in the surface color (pie-chart tokens); the hole is 60% of the radius (geometry).
+       in the surface color (pie-chart tokens); the hole is 60% of the radius (geometry). The slices are drawn by Apache
+       ECharts (issue 353) in the Plenix theme (echarts/engine.js); the center value, the shares and the tooltip are Plenix's.
+       No style is written here.
 */
+
 const STRINGS = {
   part: 'Part',
   value: 'Value',
@@ -24264,7 +24715,6 @@ const STRINGS = {
 const VARIANTS = ['pie', 'donut', 'half'];
 const HOLE = 0.6; // the hollow center's radius, a share of the ring's radius
 const LABEL_MIN = 0.08; // the least share written on its slice
-const FULL = Math.PI * 2 - 1e-6;
 const OTHER_COLOR = 'categorical-6';
 // px: a margin that keeps the ring off the frame's edges (on the 4px grid)
 const RING_MARGIN = {
@@ -24273,20 +24723,10 @@ const RING_MARGIN = {
   bottom: 8,
   start: 8
 };
+const TURN = Math.PI * 2;
 
 // the point at an angle (0 = 12 o'clock, clockwise) and a radius from the center
 const at = (cx0, cy0, r, a) => [cx0 + r * Math.sin(a), cy0 - r * Math.cos(a)];
-function arcPath(cx0, cy0, r0, r1, a0, a1) {
-  const span = Math.min(a1 - a0, FULL);
-  const end = a0 + span,
-    large = span > Math.PI ? 1 : 0;
-  const [x0, y0] = at(cx0, cy0, r1, a0),
-    [x1, y1] = at(cx0, cy0, r1, end);
-  if (r0 <= 0) return 'M' + cx0 + ',' + cy0 + 'L' + x0 + ',' + y0 + 'A' + r1 + ',' + r1 + ' 0 ' + large + ' 1 ' + x1 + ',' + y1 + 'Z';
-  const [x2, y2] = at(cx0, cy0, r0, end),
-    [x3, y3] = at(cx0, cy0, r0, a0);
-  return 'M' + x0 + ',' + y0 + 'A' + r1 + ',' + r1 + ' 0 ' + large + ' 1 ' + x1 + ',' + y1 + 'L' + x2 + ',' + y2 + 'A' + r0 + ',' + r0 + ' 0 ' + large + ' 0 ' + x3 + ',' + y3 + 'Z';
-}
 
 // the parts to draw: colors by the data's order, the smallest beyond maxSlices grouped into Other, sorted by size
 function pieSlices(data, {
@@ -24342,14 +24782,15 @@ function PieChart({
   legend,
   legendPosition,
   tooltip = true,
+  interactive = true,
   margin,
   strings,
   className
 }) {
   const t = Object.assign({}, STRINGS, strings);
   const v = VARIANTS.indexOf(variant) >= 0 ? variant : 'pie';
+  const half = v === 'half';
   const fmt = x => typeof format === 'function' ? format(x) : (0, _format.formatNumber)(x);
-  const [active, hover] = (0, _chartKit.useChartHover)();
   const slices = pieSlices(data, {
     sort,
     maxSlices,
@@ -24384,75 +24825,160 @@ function PieChart({
     items: (0, _chartKit.legendItems)(slices, d => (0, _format.formatPercent)(d.share)),
     orientation: legendPosition === 'end' ? 'vertical' : 'horizontal'
   });
-  const m = Object.assign({}, RING_MARGIN, margin);
   const center = v === 'pie' ? null : {
     value: centerValue === undefined ? fmt(total) : centerValue,
     label: centerLabel === undefined ? t.total : centerLabel
   };
-  return /*#__PURE__*/_react.default.createElement(_ChartFrame.ChartFrame, {
-    title: title,
-    description: description,
-    hideCaption: hideCaption,
-    size: size,
-    margin: m,
-    legend: key,
-    legendPosition: legendPosition,
-    table: table,
-    strings: strings,
-    className: (0, _cx.cx)('plx-pie-chart', 'plx-pie-chart--' + v, className)
-  }, ({
-    inner
-  }) => {
-    const half = v === 'half';
-    const r1 = Math.max(0, half ? Math.min(inner.width / 2, inner.height) : Math.min(inner.width, inner.height) / 2);
-    const r0 = v === 'pie' ? 0 : r1 * HOLE;
-    const cx0 = inner.width / 2,
-      cy0 = half ? inner.height : inner.height / 2;
-    const from = half ? -Math.PI / 2 : 0,
-      sweep = half ? Math.PI : Math.PI * 2;
-    let a = from;
-    const geo = slices.map(d => {
+  const tipOf = i => ({
+    title: slices[i].label,
+    items: [{
+      label: t.value,
+      value: fmt(slices[i].value) + ' · ' + (0, _format.formatPercent)(slices[i].share),
+      color: slices[i].color
+    }]
+  });
+
+  // one slice at a time: every arrow key steps around the ring (→ ↓ clockwise, ← ↑ back)
+  const ia = (0, _interaction.useChartInteraction)({
+    rows: 1,
+    columns: slices.length,
+    mode: 'point',
+    strings: undefined,
+    move: (cur, k) => ({
+      r: 0,
+      c: k === 'Home' ? 0 : k === 'End' ? slices.length - 1 : Math.max(0, Math.min(slices.length - 1, cur.c + (k === 'ArrowRight' || k === 'ArrowDown' ? 1 : -1)))
+    }),
+    labelOf: i => slices[i] ? slices[i].label : '',
+    describe: cell => slices[cell.c] ? (0, _ChartTooltip.chartTooltipText)(tipOf(cell.c)) : ''
+  });
+
+  // the ring's geometry in the plot (the same as before ECharts: the frame's plot less the ring's margin)
+  const m = {};
+  Object.keys(RING_MARGIN).forEach(k => {
+    m[k] = (0, _grid.snapToGrid)(margin && margin[k] !== undefined ? margin[k] : RING_MARGIN[k]);
+  });
+  const ring = dims => {
+    const w = Math.max(0, dims.width - m.start - m.end),
+      h = Math.max(0, dims.height - m.top - m.bottom);
+    const r1 = Math.max(0, half ? Math.min(w / 2, h) : Math.min(w, h) / 2);
+    return {
+      w,
+      h,
+      r1,
+      r0: v === 'pie' ? 0 : r1 * HOLE,
+      cx0: w / 2,
+      cy0: half ? h : h / 2,
+      from: half ? -Math.PI / 2 : 0,
+      sweep: half ? Math.PI : TURN
+    };
+  };
+  const angles = G => {
+    let a = G.from;
+    return slices.map(d => {
       const a0 = a;
-      a += d.share * sweep;
-      return {
-        d,
-        a0,
-        a1: a
-      };
+      a += d.share * G.sweep;
+      return [a0, a];
     });
-    let tip = null;
-    if (tooltip && active !== null) {
-      const g = geo.filter(x => x.d.id === active)[0];
-      if (g) {
-        const [px, py] = at(cx0, cy0, (r0 + r1) / 2, (g.a0 + g.a1) / 2);
-        tip = /*#__PURE__*/_react.default.createElement(_ChartTooltip.ChartTooltip, {
-          x: px,
-          y: py,
-          inner: inner,
-          title: g.d.label,
-          items: [{
-            label: t.value,
-            value: fmt(g.d.value) + ' · ' + (0, _format.formatPercent)(g.d.share),
-            color: g.d.color
-          }]
-        });
+  };
+  const plot = (0, _EChartsPlot.useEChartsPlot)();
+  const dataKey = slices.map(d => d.id + ':' + d.value + ':' + d.color).join('|');
+  const option = _react.default.useCallback((tk, dims) => {
+    const G = ring(dims);
+    return {
+      animationDuration: tk.motion,
+      animationDurationUpdate: tk.motion,
+      series: [{
+        type: 'pie',
+        id: 'parts',
+        silent: true,
+        center: [m.start + G.cx0, m.top + G.cy0],
+        radius: [G.r0, G.r1],
+        startAngle: half ? 180 : 90,
+        endAngle: half ? 0 : 'auto',
+        clockwise: true,
+        avoidLabelOverlap: false,
+        label: {
+          show: false
+        },
+        labelLine: {
+          show: false
+        },
+        emphasis: {
+          scale: false,
+          focus: 'self'
+        },
+        blur: {
+          itemStyle: {
+            opacity: tk.dim
+          }
+        },
+        data: slices.map(d => ({
+          name: d.label,
+          value: d.value,
+          itemStyle: {
+            color: tk.color(d.color)
+          }
+        }))
+      }]
+    };
+  }, [dataKey, v, m.top, m.end, m.bottom, m.start]);
+  const activeKey = ia.active ? String(ia.active.c) : '';
+  _react.default.useEffect(() => {
+    const c = plot.chart;
+    if (!c) return;
+    c.dispatchAction({
+      type: 'downplay',
+      seriesIndex: 0
+    });
+    if (ia.active) c.dispatchAction({
+      type: 'highlight',
+      seriesIndex: 0,
+      dataIndex: ia.active.c
+    });
+  }, [activeKey, plot.chart]);
+  const draw = dims => {
+    const layer = plot.layer(dims, option);
+    const G = ring(dims);
+    const A = angles(G);
+    ia.register({
+      nearest: (px, py) => {
+        const dx = px - m.start - G.cx0,
+          dy = py - m.top - G.cy0,
+          r = Math.sqrt(dx * dx + dy * dy);
+        if (r > G.r1 || r < G.r0) return null;
+        let a = Math.atan2(dx, -dy);
+        if (!half && a < 0) a += TURN;
+        const i = A.findIndex(([a0, a1]) => a >= a0 && a < a1);
+        return i < 0 ? null : {
+          r: 0,
+          c: i
+        };
       }
+    });
+    if (!plot.chart) return layer;
+    const inner = {
+      width: G.w,
+      height: G.h
+    };
+    const a = ia.active && slices[ia.active.c] ? ia.active.c : null;
+    let tip = null;
+    if (tooltip && a !== null) {
+      const [px, py] = at(G.cx0, G.cy0, (G.r0 + G.r1) / 2, (A[a][0] + A[a][1]) / 2),
+        tp = tipOf(a);
+      tip = /*#__PURE__*/_react.default.createElement(_ChartTooltip.ChartTooltip, {
+        x: px,
+        y: py,
+        inner: inner,
+        title: tp.title,
+        items: tp.items
+      });
     }
-    return /*#__PURE__*/_react.default.createElement("g", null, geo.map(({
-      d,
-      a0,
-      a1
-    }) => /*#__PURE__*/_react.default.createElement("path", _extends({
-      key: d.id,
-      className: "plx-chart__mark plx-pie-chart__slice",
-      "data-plx-dataviz": d.color,
-      d: arcPath(cx0, cy0, r0, r1, a0, a1)
-    }, tooltip ? hover(d.id) : {}))), showValues ? geo.filter(g => g.d.share >= LABEL_MIN).map(({
-      d,
-      a0,
-      a1
-    }) => {
-      const [px, py] = at(cx0, cy0, r0 ? (r0 + r1) / 2 : r1 * 0.62, (a0 + a1) / 2);
+    return [layer, /*#__PURE__*/_react.default.createElement("g", {
+      key: "plx-chart-overlay",
+      transform: 'translate(' + m.start + ',' + m.top + ')'
+    }, showValues ? slices.map((d, i) => {
+      if (d.share < LABEL_MIN) return null;
+      const [px, py] = at(G.cx0, G.cy0, G.r0 ? (G.r0 + G.r1) / 2 : G.r1 * 0.62, (A[i][0] + A[i][1]) / 2);
       return /*#__PURE__*/_react.default.createElement(_DataLabel.DataLabel, {
         key: 'l' + d.id,
         x: px,
@@ -24464,14 +24990,27 @@ function PieChart({
       className: "plx-pie-chart__center"
     }, /*#__PURE__*/_react.default.createElement("text", {
       className: "plx-pie-chart__center-value",
-      x: cx0,
-      y: cy0
+      x: G.cx0,
+      y: G.cy0
     }, center.value), center.label ? /*#__PURE__*/_react.default.createElement("text", {
       className: "plx-pie-chart__center-label",
-      x: cx0,
-      y: cy0
-    }, center.label) : null) : null, tip);
-  });
+      x: G.cx0,
+      y: G.cy0
+    }, center.label) : null) : null, tip)];
+  };
+  return /*#__PURE__*/_react.default.createElement(_ChartFrame.ChartFrame, {
+    title: title,
+    description: description,
+    hideCaption: hideCaption,
+    size: size,
+    margin: _EChartsPlot.NO_MARGIN,
+    legend: key,
+    legendPosition: legendPosition,
+    table: table,
+    interaction: interactive ? ia : undefined,
+    strings: strings,
+    className: (0, _cx.cx)('plx-pie-chart', 'plx-pie-chart--' + v, className)
+  }, draw);
 }
   } },
   "platform/components/MetricCard/MetricCard.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/format.js":"platform/utils/format.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../Count/Count.jsx":"platform/components/Count/Count.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","../ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../Table/Table.jsx":"platform/components/Table/Table.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../charts/Sparkline.jsx":"platform/charts/Sparkline.jsx","../../charts/Gauge.jsx":"platform/charts/Gauge.jsx","../../charts/PieChart.jsx":"platform/charts/PieChart.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -42348,41 +42887,6 @@ function InlineEdit({
   }, error) : null);
 }
   } },
-  "platform/utils/vendorBase.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.vendorBase = vendorBase;
-/* Plenix · vendorBase
-   Summary: Resolves the shared vendor folder for optional engines.
-   Usage: vendorBase() + the engine path.
-   Props: window.PlenixVendorBase overrides the Platform script or versioned package URL.
-   Behavior: Captures the script address while the module runs; falls back to the package CDN.
-   Notes: Shared URL resolution only; loads no engine. */
-// the Platform script's own address, read while the bundle runs (document.currentScript is gone afterwards)
-const SCRIPT = typeof document !== 'undefined' && document.currentScript ? document.currentScript.src : '';
-
-// the same, found among the page's scripts when the bundle ran its modules later
-function platformScript() {
-  if (SCRIPT) return SCRIPT;
-  const s = Array.from(document.scripts).map(x => x.src).find(src => /\/(dist\/platform|plenix(\.global)?)(\.min)?\.js(\?|$)/.test(src));
-  return s || '';
-}
-
-// the vendor folder: the repository's
-// platform/dist/platform.js finds it at platform/vendor/; every other copy of the script has it beside itself (the CDN's
-// plenix.js: ./vendor/; the npm package's dist/plenix.global.js: dist/vendor/, where build-packages.js puts it)
-function vendorBase() {
-  if (typeof window !== 'undefined' && window.PlenixVendorBase) return String(window.PlenixVendorBase).replace(/\/?$/, '/');
-  const src = platformScript();
-  if (src) return new URL(/\/dist\/platform(\.min)?\.js(\?.*)?$/.test(src) ? '../vendor/' : './vendor/', src).href;
-  // the npm package: build-packages.js defines this release's CDN vendor folder (versioned, never changes)
-  if (typeof __PLENIX_VENDOR__ !== 'undefined') return __PLENIX_VENDOR__; // eslint-disable-line no-undef
-  return 'platform/vendor/';
-}
-  } },
   "platform/components/RichTextEditor/tiptap.js": { deps: {"../../utils/vendorBase.js":"platform/utils/vendorBase.js"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
@@ -52070,7 +52574,7 @@ function ResourceList({
   }, items.map(row)));
 }
   } },
-  "platform/charts/LineChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/position.js":"platform/charts/parts/position.js","./parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./interaction.js":"platform/charts/interaction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/LineChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./interaction.js":"platform/charts/interaction.js","./echarts/EChartsPlot.jsx":"platform/charts/echarts/EChartsPlot.jsx","../utils/grid.js":"platform/utils/grid.js","./chart-kit.js":"platform/charts/chart-kit.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -52078,19 +52582,18 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.LineChart = LineChart;
 exports.SeriesChart = SeriesChart;
-exports.pathOf = void 0;
-exports.stepPoints = stepPoints;
+exports.gridRoom = void 0;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../utils/cx.js");
 var _format = require("../utils/format.js");
 var _ChartFrame = require("./ChartFrame.jsx");
 var _scales = require("./scales.js");
-var _position = require("./parts/position.js");
-var _Axis = require("./parts/Axis.jsx");
-var _GridLines = require("./parts/GridLines.jsx");
 var _ChartLegend = require("./parts/ChartLegend.jsx");
 var _ChartTooltip = require("./parts/ChartTooltip.jsx");
 var _interaction = require("./interaction.js");
+var _EChartsPlot = require("./echarts/EChartsPlot.jsx");
+var _grid = require("../utils/grid.js");
+var _chartKit = require("./chart-kit.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · LineChart
    Summary: A line chart (07 Data Display › Charts › Line chart, and its Step chart variant): one line per series through
@@ -52098,7 +52601,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      are straight between values (curve "linear") or hold each value until the next change (curve "step"); points mark
      the values when there are few of them. It is interactive: one Tab stop, the arrow keys and the pointer move a
      crosshair with the shared tooltip, the value is said in the live region, the legend shows and hides series, and a
-     brush can zoom to a range.
+     brush can zoom to a range. The plot is drawn by Apache ECharts (platform/charts/echarts, issue 353) in the Plenix theme.
    Usage:
      <LineChart title="Sign-ups by platform" description="Sign-ups grew on every platform; the web stays ahead."
        data={rows} x="month" series={[{ id: 'web', label: 'Web' }, { id: 'ios', label: 'iOS' }]} yLabel="Sign-ups" />
@@ -52119,14 +52622,15 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      yDomain: [min, max] of the value axis, instead of the data's
      format: (value) => text for values (ticks, tooltip, table), default formatNumber; formatX: (x) => text for x values
        (default: formatDate for time, formatNumber for numbers, the name for categories)
-     xLabel, yLabel: the axis titles (the measure and its unit); give margin room for them
-     size, margin, legendPosition: as ChartFrame
+     xLabel, yLabel: the axis titles (the measure and its unit); the plot makes room for them and for every tick label
+     size, legendPosition: as ChartFrame; margin: more room around the plot ({ top, end, bottom, start }, pixels on the
+       4px grid; default none: the labels' room is made inside the plot)
      legend: "auto" (default: a legend when there are two or more series; interactive toggles) | false | a node
      interactive: keyboard, pointer, tooltip and live region (default true)
      zoom: a brush (a drag, or Shift with the arrow keys) zooms to a range of x values; Reset zoom shows all (default false)
      onSelect({ r, c, row, series }): a click or Enter on a value selects it (the selected value keeps its ring)
-     overlay({ inner, x, y, at }): more SVG on top of the lines: reference lines, thresholds, annotations (x is the x
-       scale of the shown range, at(i) the x position of row i)
+     overlay({ inner, x, y, at }): more SVG on top of the lines: reference lines, thresholds, annotations (x and y place a
+       value in the plot, as scales do: y(250), y.ticks(); at(i) the x position of row i)
      strings: the words it shows, for other languages: { category: "Category" } (the table's first column without
        xLabel); the frame's and the interaction's words are theirs (frameStrings, interactionStrings)
      className: more classes on the figure
@@ -52136,57 +52640,54 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      A missing value is a gap: the line is not drawn across it, and the table shows a dash.
      The legend's toggles hide and show series (the last one shown stays); the value axis follows the series shown.
      With zoom, the axis shows the marked range only; the Reset zoom button above the plot brings back all values.
+     The plot draws once the chart engine has loaded (the first chart on a page loads it); the caption, legend and data
+       grid show at once.
    Notes:
-     Every color is a data-viz step (seriesColor by the series' order); lines, points and the focus ring take the frame's
-       and the chart-interaction tokens; the point radius is --plx-comp-line-chart-point-radius. No style is written.
+     Every color is a data-viz step (seriesColor by the series' order); the lines, points, axes, grid lines and labels
+       take the frame's chart tokens through the ECharts theme (echarts/engine.js); the focus ring, crosshair and tooltip
+       are the chart interaction's. No style is written in this file.
      Up to about five series; more lines tangle: use small multiples. Unordered categories: a bar or column chart.
 */
 const STRINGS = {
   category: 'Category'
 };
 const DASH = '—';
-// the room one tick label needs along the x axis, in pixels: fewer ticks on a narrow chart
-const TICK_ROOM = 64,
-  EDGE = TICK_ROOM / 2;
+// an empty list that stays the same between renders (the drawing redraws when its data changes)
+const NONE = Object.freeze([]);
+
+// the room one tick label needs along the x axis, in pixels: fewer date ticks on a narrow chart (as before ECharts)
+const TICK_ROOM = 64;
 const isNum = v => typeof v === 'number' && isFinite(v);
 const typeOf = v => v instanceof Date ? 'time' : typeof v === 'number' ? 'linear' : 'band';
-
-// a line's points made into a step path's corners: after (change at the next value) or before (at this value)
-function stepPoints(pts, step = 'after') {
-  const out = [];
-  pts.forEach((p, i) => {
-    if (i) {
-      const q = pts[i - 1];
-      out.push(step === 'before' ? [q[0], p[1]] : [p[0], q[1]]);
-    }
-    out.push(p);
-  });
-  return out;
-}
-const pathOf = pts => pts.map((p, i) => (i ? 'L' : 'M') + p[0] + ',' + p[1]).join('');
-// runs of consecutive present values (a missing value breaks a line or an area)
-exports.pathOf = pathOf;
-function runs(cols, has) {
-  const out = [];
-  let cur = [];
-  cols.forEach(c => {
-    if (has(c)) cur.push(c);else if (cur.length) {
-      out.push(cur);
-      cur = [];
-    }
-  });
-  if (cur.length) out.push(cur);
-  return out;
-}
+// the room around the plot, from ChartFrame's margin prop (pixels on the grid)
+const gridRoom = (margin, top) => {
+  const m = margin || {};
+  const at = (k, d) => (0, _grid.snapToGrid)(m[k] === undefined ? d : m[k]);
+  return {
+    top: at('top', top),
+    right: at('end', 0),
+    bottom: at('bottom', 0),
+    left: at('start', 0)
+  };
+};
+// ECharts' axis ticks, for an overlay's scale
+exports.gridRoom = gridRoom;
+const axisTicks = (chart, axis) => {
+  try {
+    return chart.getModel().getComponent(axis, 0).axis.scale.getTicks().map(t => t.value);
+  } catch (e) {
+    return [];
+  }
+};
 
 // the shared engine of LineChart and AreaChart (kind "area": filled down to the baseline or the series under it)
 function SeriesChart({
   kind = 'line',
   title,
   description,
-  data = [],
+  data = NONE,
   x = 'x',
-  series = [],
+  series = NONE,
   xType = 'auto',
   curve = 'linear',
   step = 'after',
@@ -52231,6 +52732,12 @@ function SeriesChart({
   const fmtX = typeof formatX === 'function' ? formatX : type === 'time' ? v => (0, _format.formatDate)(v) : type === 'linear' ? v => (0, _format.formatNumber)(v) : v => String(v);
   const fmtV = typeof format === 'function' ? format : v => (0, _format.formatNumber)(v);
   const shown = s => ia.visible(list[s].id);
+  // the formats the drawing calls, kept current without redrawing (a format written inline is a new function each render)
+  const fmts = _react.default.useRef(null);
+  fmts.current = {
+    fmtX,
+    fmtV
+  };
   const ia = (0, _interaction.useChartInteraction)({
     rows: list.length,
     columns: data.length,
@@ -52312,185 +52819,238 @@ function SeriesChart({
     })),
     shape: area ? 'square' : 'line'
   }, interactive ? ia.legendProps : {})) : null : legend || null;
-  const draw = ({
-    inner,
-    margin: m
-  }) => {
-    const [v0, v1] = ia.view();
+
+  // the drawing: the shown range of columns, the shown series; ECharts lays out the axes and their labels
+  const plot = (0, _EChartsPlot.useEChartsPlot)();
+  const [v0, v1] = ia.view();
+  const shownKey = list.map((s, i) => shown(i) ? '1' : '0').join('');
+  const domainKey = Array.isArray(yDomain) ? yDomain.join(':') : '';
+  const marginKey = margin ? [margin.top, margin.end, margin.bottom, margin.start].join(':') : '';
+  // the x value ECharts places column c at: its index in the shown range (categories), its time or its number
+  const xValue = c => type === 'band' ? c - v0 : type === 'time' ? +xs[c] : Number(xs[c]);
+  const option = _react.default.useCallback((tk, size) => {
     const cols = [];
     for (let c = v0; c <= v1; c++) cols.push(c);
-    if (!cols.length) return null;
-    // x: categories in bands (a value at each band's middle), or a continuous time or number scale
-    let xScale, posOf;
-    if (type === 'band') {
-      xScale = (0, _scales.scaleBand)({
-        domain: cols,
-        range: [0, inner.width],
-        paddingInner: 0,
-        paddingOuter: 0
-      });
-      posOf = c => (0, _position.scalePosition)(xScale, c);
-    }
-    // a continuous axis keeps half a tick label's room at each end, so the first and last labels stay inside the chart
-    else if (type === 'time') {
-      xScale = (0, _scales.scaleTime)({
+    // dates: the Platform's calendar ticks and their labels (Jun 2026, or the app's formatX), about one per TICK_ROOM
+    const timeLabels = sz => {
+      const ts = (0, _scales.scaleTime)({
         domain: [xs[v0], xs[v1]],
-        range: [EDGE, inner.width - EDGE]
+        range: [0, sz.width]
       });
-      posOf = c => xScale(xs[c]);
-    } else {
-      xScale = (0, _scales.scaleLinear)({
-        domain: [Number(xs[v0]), Number(xs[v1])],
-        range: [EDGE, inner.width - EDGE]
-      });
-      posOf = c => xScale(Number(xs[c]));
+      const count = Math.max(2, Math.floor(sz.width / TICK_ROOM));
+      const ticks = ts.ticks(count);
+      const text = v => typeof formatX === 'function' ? fmts.current.fmtX(new Date(v)) : ts.format(new Date(v), count);
+      return {
+        customValues: ticks.map(d => +d),
+        formatter: text,
+        last: ticks.length ? text(+ticks[ticks.length - 1]) : ''
+      };
+    };
+    const room = gridRoom(margin, tk.top);
+    // ECharts does not measure labels at its own tick values: the room under the plot and after it for the date labels
+    const dates = type === 'time' ? timeLabels(size) : null;
+    if (dates) {
+      room.bottom = Math.max(room.bottom, (0, _grid.snapToGrid)(tk.tickOffset + tk.tick.fontSize, {
+        round: 'up'
+      }));
+      room.right = Math.max(room.right, (0, _chartKit.halfRoom)(dates.last));
     }
-    // y: the shown series' values in the shown range (stacked: the tops; percent: 0 to 100%)
-    let lo = Infinity,
-      hi = -Infinity;
-    list.forEach((s, i) => {
-      if (!shown(i)) return;
-      cols.forEach(c => {
-        const l = level(i, c);
-        if (l) {
-          lo = Math.min(lo, l[1], stacked ? l[0] : l[1]);
-          hi = Math.max(hi, l[1]);
-        }
-      });
+    const named = {
+      nameLocation: 'middle',
+      nameMoveOverlap: true
+    };
+    const rule = {
+      show: true,
+      lineStyle: {
+        color: tk.axis.color,
+        width: tk.axis.width
+      }
+    };
+    const xAxis = Object.assign({
+      name: xLabel,
+      nameGap: tk.tickOffset * 2 + tk.tick.fontSize,
+      inverse: tk.rtl
+    }, named, type === 'band' ? {
+      type: 'category',
+      boundaryGap: false,
+      data: cols.map(c => fmts.current.fmtX(xs[c]))
+    } : {
+      type: type === 'time' ? 'time' : 'value',
+      min: xValue(v0),
+      max: xValue(v1),
+      axisLine: rule,
+      splitLine: {
+        show: false
+      },
+      axisLabel: dates ? {
+        customValues: dates.customValues,
+        formatter: dates.formatter
+      } : {
+        formatter: v => fmts.current.fmtX(v)
+      }
     });
-    if (!isFinite(lo)) {
-      lo = 0;
-      hi = 1;
-    }
-    if (zero || area) {
-      lo = Math.min(0, lo);
-      hi = Math.max(0, hi);
-    }
-    const dom = percent ? [0, 1] : Array.isArray(yDomain) ? yDomain : [lo, hi];
-    const y = (0, _scales.scaleLinear)({
-      domain: dom,
-      range: [inner.height, 0],
-      nice: !percent && !Array.isArray(yDomain),
-      count: Math.max(2, Math.min(5, Math.floor(inner.height / 40)))
+    const yAxis = Object.assign({
+      type: 'value',
+      name: yLabel,
+      nameGap: 0,
+      position: tk.rtl ? 'right' : 'left',
+      axisLabel: {
+        formatter: v => percent ? (0, _format.formatPercent)(v) : fmts.current.fmtV(v)
+      }
+    }, named, percent ? {
+      min: 0,
+      max: 1
+    } : Array.isArray(yDomain) ? {
+      min: yDomain[0],
+      max: yDomain[1]
+    } : {
+      scale: !(zero || area)
     });
-    const yFormat = percent ? v => (0, _format.formatPercent)(v) : typeof format === 'function' ? format : undefined;
-    const room = Math.max(2, Math.floor(inner.width / TICK_ROOM));
-    const every = Math.max(1, Math.ceil(cols.length / room));
-    const xTicks = type === 'band' ? cols.filter((c, k) => k % every === 0) : room;
-    const xFormat = type === 'band' ? c => fmtX(xs[c]) : typeof formatX === 'function' ? formatX : undefined;
-
+    const value = (i, c) => {
+      if (!stacked) return raw(i, c);
+      const l = level(i, c);
+      return percent ? l[1] - l[0] : raw(i, c) || 0;
+    };
+    return {
+      animationDuration: tk.motion,
+      animationDurationUpdate: tk.motion,
+      grid: Object.assign(room, {
+        outerBoundsMode: 'same',
+        outerBoundsContain: 'all'
+      }),
+      xAxis,
+      yAxis,
+      series: list.map((s, i) => {
+        const color = tk.color(s.color);
+        return {
+          type: 'line',
+          id: String(s.id),
+          name: s.label,
+          silent: true,
+          emphasis: {
+            disabled: true
+          },
+          showSymbol: !!points,
+          connectNulls: false,
+          stack: stacked ? 'total' : undefined,
+          step: curve === 'step' ? step === 'before' ? 'start' : 'end' : false,
+          lineStyle: {
+            color
+          },
+          itemStyle: {
+            color
+          },
+          areaStyle: area ? {
+            color,
+            opacity: stacked ? tk.area.stacked : tk.area.opacity
+          } : undefined,
+          data: shownKey[i] === '1' ? cols.map(c => type === 'band' ? value(i, c) : [xValue(c), value(i, c)]) : []
+        };
+      })
+    };
+  }, [data, series, x, type, curve, step, points, stack, zero, domainKey, xLabel, yLabel, shownKey, v0, v1, marginKey]);
+  const draw = dims => {
+    const layer = plot.layer(dims, option);
+    const c = plot.chart;
+    const g = c ? (0, _EChartsPlot.plotGrid)(c) : null;
+    if (!g) return layer;
+    const cols = [];
+    for (let k = v0; k <= v1; k++) cols.push(k);
+    const posOf = col => c.convertToPixel({
+      xAxisIndex: 0
+    }, xValue(col));
+    const yPx = v => c.convertToPixel({
+      yAxisIndex: 0
+    }, v);
     // the pointer's geometry: the nearest shown column, then the nearest series at it
-    const columnAt = px => cols.reduce((best, c) => Math.abs(posOf(c) - px) < Math.abs(posOf(best) - px) ? c : best, cols[0]);
+    const columnAt = px => cols.reduce((best, k) => Math.abs(posOf(k) - px) < Math.abs(posOf(best) - px) ? k : best, cols[0]);
     ia.register({
       columnAt,
       nearest: (px, py) => {
-        const c = columnAt(px);
+        const col = columnAt(px);
         let r = null,
           d = Infinity;
         list.forEach((s, i) => {
-          const l = shown(i) ? level(i, c) : null;
-          if (l && Math.abs(y(l[1]) - py) < d) {
-            d = Math.abs(y(l[1]) - py);
+          const l = shown(i) ? level(i, col) : null;
+          if (l && (stacked || raw(i, col) !== null) && Math.abs(yPx(l[1]) - py) < d) {
+            d = Math.abs(yPx(l[1]) - py);
             r = i;
           }
         });
         return r === null ? null : {
           r,
-          c
+          c: col
         };
       }
     });
-    const marks = list.map((s, i) => {
-      if (!shown(i)) return null;
-      const segs = runs(cols, c => stacked ? true : raw(i, c) !== null);
-      const top = seg => seg.map(c => [posOf(c), y(level(i, c)[1])]);
-      const bottom = seg => seg.map(c => [posOf(c), y(stacked ? level(i, c)[0] : 0)]);
-      const shape = pts => curve === 'step' ? stepPoints(pts, step) : pts;
-      return /*#__PURE__*/_react.default.createElement("g", {
-        key: s.id,
-        className: "plx-line-chart__series"
-      }, area ? segs.map((seg, k) => /*#__PURE__*/_react.default.createElement("path", {
-        key: 'a' + k,
-        className: "plx-chart__mark plx-area-chart__area",
-        "data-plx-dataviz": s.color,
-        d: pathOf(shape(top(seg)).concat(shape(bottom(seg)).reverse())) + 'Z'
-      })) : null, segs.map((seg, k) => /*#__PURE__*/_react.default.createElement("path", {
-        key: 'l' + k,
-        className: "plx-chart__line",
-        "data-plx-dataviz": s.color,
-        d: pathOf(shape(top(seg)))
-      })), points ? cols.map(c => {
-        const l = raw(i, c) === null ? null : level(i, c);
-        return l ? /*#__PURE__*/_react.default.createElement("circle", {
-          key: c,
-          className: "plx-chart__point plx-line-chart__point",
-          "data-plx-dataviz": s.color,
-          cx: posOf(c),
-          cy: y(l[1])
-        }) : null;
-      }) : null);
-    });
+    // the overlay works in the grid's own coordinates (its top left corner at 0,0), as the old plot's inner area
+    const inner = {
+      width: g.width,
+      height: g.height
+    };
+    const X = v => (type === 'band' ? posOf(xs.indexOf(v)) : c.convertToPixel({
+      xAxisIndex: 0
+    }, type === 'time' ? +new Date(v) : Number(v))) - g.x;
+    const Y = v => yPx(v) - g.y;
+    Y.ticks = () => axisTicks(c, 'yAxis');
+    Y.format = v => fmtV(v);
+    Y.domain = () => {
+      const tk = Y.ticks();
+      return [tk[0], tk[tk.length - 1]];
+    };
+    const at = col => posOf(col) - g.x;
     const a = ia.active && ia.active.c >= v0 && ia.active.c <= v1 ? ia.active : null;
     const sel = ia.selected && ia.selected.c >= v0 && ia.selected.c <= v1 && shown(ia.selected.r) ? ia.selected : null;
     const selLevel = sel && raw(sel.r, sel.c) !== null ? level(sel.r, sel.c) : null;
-    return /*#__PURE__*/_react.default.createElement("g", {
-      className: (0, _cx.cx)('plx-line-chart__plot', area && 'plx-area-chart__plot')
-    }, /*#__PURE__*/_react.default.createElement(_GridLines.GridLines, {
-      scale: y,
-      inner: inner,
-      ticks: y.ticks()
-    }), ia.brush ? /*#__PURE__*/_react.default.createElement(_interaction.ChartBrush, {
-      x0: posOf(ia.brush[0]),
-      x1: posOf(ia.brush[1]),
+    const top = (i, col) => {
+      const l = shown(i) && (stacked || raw(i, col) !== null) ? level(i, col) : null;
+      return l ? Y(l[1]) : null;
+    };
+    return [layer, /*#__PURE__*/_react.default.createElement("g", {
+      key: "plx-chart-overlay",
+      className: (0, _cx.cx)('plx-line-chart__plot', area && 'plx-area-chart__plot'),
+      transform: 'translate(' + g.x + ',' + g.y + ')'
+    }, ia.brush ? /*#__PURE__*/_react.default.createElement(_interaction.ChartBrush, {
+      x0: at(ia.brush[0]),
+      x1: at(ia.brush[1]),
       inner: inner
-    }) : null, marks, /*#__PURE__*/_react.default.createElement(_Axis.Axis, {
-      scale: y,
-      orient: "left",
-      inner: inner,
-      margin: m,
-      format: yFormat,
-      label: yLabel,
-      ticks: y.ticks()
-    }), /*#__PURE__*/_react.default.createElement(_Axis.Axis, {
-      scale: xScale,
-      orient: "bottom",
-      inner: inner,
-      margin: m,
-      format: xFormat,
-      label: xLabel,
-      ticks: xTicks
-    }), typeof overlay === 'function' ? overlay({
+    }) : null, typeof overlay === 'function' ? overlay({
       inner,
-      x: xScale,
-      y,
-      at: posOf
+      x: X,
+      y: Y,
+      at
     }) : null, selLevel ? /*#__PURE__*/_react.default.createElement(_interaction.ChartFocusMark, {
       className: "plx-chart-selected",
-      x: posOf(sel.c),
-      y: y(selLevel[1]),
+      x: at(sel.c),
+      y: Y(selLevel[1]),
       color: list[sel.r].color
     }) : null, a ? list.map((s, i) => {
-      const l = shown(i) && raw(i, a.c) !== null ? level(i, a.c) : null;
-      return l ? /*#__PURE__*/_react.default.createElement(_interaction.ChartFocusMark, {
+      const y = top(i, a.c);
+      return y === null ? null : /*#__PURE__*/_react.default.createElement(_interaction.ChartFocusMark, {
         key: s.id,
-        x: posOf(a.c),
-        y: y(l[1]),
+        x: at(a.c),
+        y: y,
         color: s.color
-      }) : null;
+      });
     }) : null, a ? /*#__PURE__*/_react.default.createElement(_ChartTooltip.ChartTooltip, {
       variant: "shared",
-      x: posOf(a.c),
+      x: at(a.c),
       inner: inner,
       title: fmtX(xs[a.c]),
       titleKind: type === 'band' ? 'text' : 'data',
       items: tipItems(a.c)
-    }) : null);
+    }) : null)];
   };
   return /*#__PURE__*/_react.default.createElement(_ChartFrame.ChartFrame, {
     title: title,
     description: description,
     size: size,
-    margin: margin,
+    margin: {
+      top: 0,
+      end: 0,
+      bottom: 0,
+      start: 0
+    },
     table: table,
     legend: legendNode,
     legendPosition: legendPosition,
@@ -54667,7 +55227,7 @@ function Diagram({
   }, draw);
 }
   } },
-  "platform/charts/BarChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./chart-kit.js":"platform/charts/chart-kit.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/BarChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./interaction.js":"platform/charts/interaction.js","./chart-kit.js":"platform/charts/chart-kit.js","./echarts/EChartsPlot.jsx":"platform/charts/echarts/EChartsPlot.jsx","./LineChart.jsx":"platform/charts/LineChart.jsx","../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -54680,12 +55240,14 @@ var _cx = require("../utils/cx.js");
 var _format = require("../utils/format.js");
 var _ChartFrame = require("./ChartFrame.jsx");
 var _scales = require("./scales.js");
-var _Axis = require("./parts/Axis.jsx");
-var _GridLines = require("./parts/GridLines.jsx");
 var _ChartLegend = require("./parts/ChartLegend.jsx");
 var _ChartTooltip = require("./parts/ChartTooltip.jsx");
 var _DataLabel = require("./parts/DataLabel.jsx");
+var _interaction = require("./interaction.js");
 var _chartKit = require("./chart-kit.js");
+var _EChartsPlot = require("./echarts/EChartsPlot.jsx");
+var _LineChart = require("./LineChart.jsx");
+var _grid = require("../utils/grid.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · BarChart
    Summary: Amounts compared as the lengths of bars (07 Data Display › Charts › Bar chart, Column chart, Stacked bar
@@ -54718,18 +55280,25 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      legend: true | false: the series' legend (default: shown when there are two series or more)
      legendPosition: "bottom" (default) | "top" | "end" (ChartFrame)
      tooltip: shows the values of the bar under the pointer (default true)
-     size, margin, hideCaption, className: ChartFrame's (margin wins over the room computed for the labels)
+     size, hideCaption, className: ChartFrame's; margin: more room around the plot ({ top, end, bottom, start }, pixels on the
+       4px grid; the labels' room is made inside the plot)
      strings: { category: "Category", total: "Total", range: "Range", count: "Count" } and ChartFrame's strings
    Behavior:
      The value axis starts at zero (negative values go the other way from a zero line); stacked bars stack positive values
        up and negative values down; percent stacks only positive values.
-     Hover a bar: the tooltip shows its value (grouped), its category's values (stacked, percent: with each share) or its
-       range and count (histogram). The data grid lists every value: the chart's keyboard and screen reader view.
+     One Tab stop: the arrow keys move between the bars (along the categories, and across the series: bars across, ↑ ↓
+       move down the categories and ← → across the series; columns, ← → along the categories and ↑ ↓ through the
+       series), Home and End to the first and last category; the pointer does the same on hover. The bar in focus keeps
+       its color and the others dim; its tooltip shows its value (grouped), its category's values (stacked, percent: with
+       each share) or its range and count (histogram), and the live region says it. The legend's toggles hide and show
+       series. The data grid lists every value.
      Histogram bins touch (no gap: the range is continuous) and have equal widths on round edges.
+     The plot draws once the chart engine has loaded (the first chart on a page loads it); the caption, legend and data
+       grid show at once.
    Notes:
      Colors come from the data-viz scales (seriesColor by the series' order); stacked segments and bins are parted by a
-       thin line in the surface color (bar-chart tokens). Geometry only in the markup.
-     Pointer interaction is the chart kit's minimal hover (chart-kit.js); the chart interaction foundation replaces it.
+       thin line in the surface color (bar-chart tokens); axes, grid lines and labels take the frame's chart tokens
+       through the ECharts theme (echarts/engine.js). The plot is drawn by Apache ECharts (issue 353); no style is written here.
 */
 const STRINGS = {
   category: 'Category',
@@ -54740,8 +55309,19 @@ const STRINGS = {
 const LAYOUTS = ['grouped', 'stacked', 'percent'];
 // px: the least room a segment needs for its share written inside it (percent)
 const INSIDE_LABEL_MIN = 32;
+// the gaps between bars, as shares of a category's band (geometry: the old scaleBand's paddings)
+// an empty list that stays the same between renders (the drawing redraws when its data changes)
+const NONE = Object.freeze([]);
+const CATEGORY_GAP = '20%',
+  SERIES_GAP = '10%';
 
-// equal bins on round edges: [{ x0, x1, count }]
+// a bar's box in plot pixels, whatever way ECharts measured it (a negative width or height for bars that go back)
+const boxOf = l => l && isFinite(l.x) && isFinite(l.width) ? {
+  x: Math.min(l.x, l.x + l.width),
+  y: Math.min(l.y, l.y + l.height),
+  width: Math.abs(l.width),
+  height: Math.abs(l.height)
+} : null;
 function binValues(values, {
   bins,
   domain
@@ -54771,8 +55351,8 @@ function BarChart({
   description,
   hideCaption,
   size,
-  categories = [],
-  series = [],
+  categories = NONE,
+  series = NONE,
   orientation = 'horizontal',
   layout = 'grouped',
   histogram,
@@ -54792,79 +55372,107 @@ function BarChart({
   const across = o === 'horizontal';
   const bins = histogram && Array.isArray(histogram.values) ? binValues(histogram.values, histogram) : null;
   const mode = bins ? 'histogram' : LAYOUTS.indexOf(layout) >= 0 ? layout : 'grouped';
+  const joined = mode !== 'grouped';
   const fmt = v => typeof format === 'function' ? format(v) : (0, _format.formatNumber)(v);
   const edgeFmt = v => bins && typeof histogram.format === 'function' ? histogram.format(v) : (0, _format.formatNumber)(v);
-  const [active, hover] = (0, _chartKit.useChartHover)();
-  const list = bins ? [{
+  const fmts = _react.default.useRef(null);
+  fmts.current = {
+    fmt,
+    edgeFmt
+  };
+  const list = bins ? (0, _chartKit.withColors)([{
     id: 'count',
     label: valueLabel || t.count,
-    values: bins.map(b => b.count),
-    color: (0, _scales.seriesColor)(0)
-  }] : (0, _chartKit.withColors)(series);
+    values: bins.map(b => b.count)
+  }]) : (0, _chartKit.withColors)(series);
   const cats = bins ? bins.map((b, i) => i) : categories;
   const val = (si, ci) => {
     const x = Number(list[si].values[ci]);
-    return isFinite(x) ? x : null;
+    return list[si].values[ci] !== null && list[si].values[ci] !== undefined && isFinite(x) ? x : null;
   };
-  const totals = cats.map((c, ci) => list.reduce((a, s, si) => a + Math.max(0, val(si, ci) || 0), 0));
-  // each bar's span on the value axis: spans[category][series] = [from, to]
-  const spans = cats.map((c, ci) => {
-    let pos = 0,
-      neg = 0;
-    return list.map((s, si) => {
-      const v = val(si, ci);
-      if (v === null) return null;
-      if (mode === 'percent') {
-        const from = pos;
-        pos += totals[ci] ? Math.max(0, v) / totals[ci] : 0;
-        return [from, pos];
-      }
-      if (mode === 'stacked') {
-        if (v >= 0) {
-          const from = pos;
-          pos += v;
-          return [from, pos];
-        }
-        const from = neg;
-        neg += v;
-        return [from, neg];
-      }
-      return [0, v];
-    });
-  });
-  let lo = 0,
-    hi = 0;
-  spans.forEach(row => row.forEach(sp => {
-    if (sp) {
-      lo = Math.min(lo, sp[0], sp[1]);
-      hi = Math.max(hi, sp[0], sp[1]);
-    }
-  }));
-  if (mode === 'percent') {
-    lo = 0;
-    hi = 1;
-  }
-  if (hi === lo) hi = lo + 1;
-  const tickFmt = mode === 'percent' ? v => (0, _format.formatPercent)(v) : typeof format === 'function' ? format : undefined;
-  const tickTexts = (0, _scales.niceTicks)(lo, hi, 5).ticks.map(v => tickFmt ? tickFmt(v) : (0, _format.formatNumber)(v));
-  const catTexts = bins ? bins.map(b => edgeFmt(b.x0)).concat([edgeFmt(bins.length ? bins[bins.length - 1].x1 : 0)]) : cats.map(String);
-  const endTexts = showValues && across ? mode === 'stacked' ? totals.map(fmt) : list.reduce((a, s, si) => a.concat(cats.map((c, ci) => val(si, ci) === null ? '' : fmt(val(si, ci)))), []) : [];
-  // the room the labels need: the category names (bars) or the value ticks (columns) before the plot, axis titles, values
-  const auto = across ? {
-    start: (0, _chartKit.labelRoom)(catTexts, categoryLabel ? _chartKit.AXIS_TITLE_ROOM : 0),
-    bottom: valueLabel ? 24 + _chartKit.AXIS_TITLE_ROOM : undefined,
-    end: Math.max(showValues && mode !== 'percent' ? (0, _chartKit.labelRoom)(endTexts) : 0, (0, _chartKit.halfRoom)(tickTexts[tickTexts.length - 1]))
-  } : {
-    start: (0, _chartKit.labelRoom)(tickTexts, valueLabel ? _chartKit.AXIS_TITLE_ROOM : 0),
-    bottom: categoryLabel ? 24 + _chartKit.AXIS_TITLE_ROOM : undefined,
-    top: showValues ? 24 : undefined,
-    end: bins ? (0, _chartKit.halfRoom)(catTexts[catTexts.length - 1]) : undefined
-  };
-  const m = Object.assign({}, auto, margin);
-  Object.keys(m).forEach(k => {
-    if (m[k] === undefined) delete m[k];
-  });
   const rangeText = b => edgeFmt(b.x0) + '–' + edgeFmt(b.x1);
+  const catName = ci => bins ? rangeText(bins[ci]) : String(cats[ci]);
+
+  // the series shown (the legend's toggles), and each category's total of the shown series' positive values
+  const showLegend = legend === undefined ? !bins && list.length > 1 : !!legend && !bins;
+  const ia = (0, _interaction.useChartInteraction)({
+    rows: list.length,
+    columns: cats.length,
+    mode: 'point',
+    series: list,
+    strings: undefined,
+    move: (cur, k) => step(cur, k),
+    labelOf: ci => catName(ci),
+    describe: cell => (0, _ChartTooltip.chartTooltipText)(tip(cell.c, cell.r))
+  });
+  const shown = si => ia.visible(list[si].id);
+  const total = ci => list.reduce((a, s, si) => a + (shown(si) ? Math.max(0, val(si, ci) || 0) : 0), 0);
+  const share = (si, ci) => total(ci) ? Math.max(0, val(si, ci) || 0) / total(ci) : 0;
+  // the keyboard: along the categories and across the series, in the directions they are drawn
+  function step(cur, k) {
+    const n = cats.length;
+    const alongPrev = across ? 'ArrowUp' : 'ArrowLeft',
+      alongNext = across ? 'ArrowDown' : 'ArrowRight';
+    if (k === alongPrev) return {
+      r: cur.r,
+      c: Math.max(0, cur.c - 1)
+    };
+    if (k === alongNext) return {
+      r: cur.r,
+      c: Math.min(n - 1, cur.c + 1)
+    };
+    if (k === 'Home') return {
+      r: cur.r,
+      c: 0
+    };
+    if (k === 'End') return {
+      r: cur.r,
+      c: n - 1
+    };
+    // across the series: stacked columns go up the stack; everything else in the series' order
+    const d = across ? k === 'ArrowRight' ? 1 : -1 : joined ? k === 'ArrowUp' ? 1 : -1 : k === 'ArrowDown' ? 1 : -1;
+    for (let r = cur.r + d; r >= 0 && r < list.length; r += d) if (shown(r)) return {
+      r,
+      c: cur.c
+    };
+    return cur;
+  }
+  // what the tooltip shows (and the live region says) for a bar: { title, items }
+  function tip(ci, si) {
+    if (bins) return {
+      title: rangeText(bins[ci]),
+      titleKind: 'data',
+      items: [{
+        label: valueLabel || t.count,
+        value: fmt(bins[ci].count),
+        color: list[0].color
+      }]
+    };
+    if (mode === 'grouped') return {
+      title: String(cats[ci]),
+      items: [{
+        label: list[si].label,
+        value: val(si, ci) === null ? '–' : fmt(val(si, ci)),
+        color: list[si].color
+      }]
+    };
+    const items = [];
+    list.forEach((s, i) => {
+      if (!shown(i)) return;
+      const v = val(i, ci);
+      items.push({
+        label: s.label,
+        value: v === null ? '–' : mode === 'percent' && total(ci) ? (0, _format.formatPercent)(share(i, ci)) : fmt(v),
+        color: s.color,
+        i
+      });
+    });
+    items.sort((a, b) => a.i === si ? -1 : b.i === si ? 1 : 0);
+    return {
+      title: String(cats[ci]) + ' · ' + fmt(total(ci)),
+      items
+    };
+  }
   const table = bins ? {
     columns: [{
       title: categoryLabel || t.range,
@@ -54900,108 +55508,220 @@ function BarChart({
       align: 'right'
     }] : []),
     data: cats.map((c, ci) => {
+      const all = list.reduce((a, s, si) => a + Math.max(0, val(si, ci) || 0), 0);
       const row = {
         id: ci + 1,
         category: String(c)
       };
       list.forEach((s, si) => {
         const v = val(si, ci);
-        row['s' + si] = v === null ? '' : mode === 'percent' && totals[ci] ? fmt(v) + ' (' + (0, _format.formatPercent)(Math.max(0, v) / totals[ci]) + ')' : fmt(v);
+        row['s' + si] = v === null ? '' : mode === 'percent' && all ? fmt(v) + ' (' + (0, _format.formatPercent)(Math.max(0, v) / all) + ')' : fmt(v);
       });
-      row.total = fmt(totals[ci]);
+      row.total = fmt(all);
       return row;
     })
   };
-  const showLegend = legend === undefined ? !bins && list.length > 1 : !!legend && !bins;
-  const key = showLegend ? /*#__PURE__*/_react.default.createElement(_ChartLegend.ChartLegend, {
+  const key = showLegend ? /*#__PURE__*/_react.default.createElement(_ChartLegend.ChartLegend, _extends({
     items: (0, _chartKit.legendItems)(list),
     orientation: legendPosition === 'end' ? 'vertical' : 'horizontal'
-  }) : null;
-  return /*#__PURE__*/_react.default.createElement(_ChartFrame.ChartFrame, {
-    title: title,
-    description: description,
-    hideCaption: hideCaption,
-    size: size,
-    margin: m,
-    legend: key,
-    legendPosition: legendPosition,
-    table: table,
-    strings: strings,
-    className: (0, _cx.cx)('plx-bar-chart', 'plx-bar-chart--' + o, 'plx-bar-chart--' + mode, className)
-  }, ({
-    inner,
-    margin: fm
-  }) => {
-    const L = across ? inner.height : inner.width; // the category axis's length
-    const V = across ? inner.width : inner.height; // the value axis's length
-    const vs = (0, _scales.scaleLinear)({
-      domain: [lo, hi],
-      range: across ? [0, V] : [V, 0],
-      nice: mode !== 'percent'
-    });
-    const band = bins ? null : (0, _scales.scaleBand)({
-      domain: cats,
-      range: [0, L],
-      paddingInner: 0.2,
-      paddingOuter: 0.1
-    });
-    const cs = bins ? (0, _scales.scaleLinear)({
-      domain: [bins[0].x0, bins[bins.length - 1].x1],
-      range: [0, L]
-    }) : null;
-    const sub = band && mode === 'grouped' ? (0, _scales.scaleBand)({
-      domain: list.map(s => s.id),
-      range: [0, band.bandwidth()],
-      paddingInner: list.length > 1 ? 0.1 : 0,
-      paddingOuter: 0
-    }) : null;
-    // a bar from a to b on the value axis, at start along the category axis with its thickness
-    const box = (start, thick, a, b) => {
-      const p0 = vs(a),
-        p1 = vs(b),
-        low = Math.min(p0, p1),
-        len = Math.abs(p1 - p0);
-      return across ? {
-        x: low,
-        y: start,
-        width: len,
-        height: thick
-      } : {
-        x: start,
-        y: low,
-        width: thick,
-        height: len
-      };
+  }, ia.legendProps)) : null;
+
+  // the drawing
+  const plot = (0, _EChartsPlot.useEChartsPlot)();
+  const shownKey = list.map((s, si) => shown(si) ? '1' : '0').join('');
+  const marginKey = margin ? [margin.top, margin.end, margin.bottom, margin.start].join(':') : '';
+  const value = (si, ci) => mode === 'percent' ? val(si, ci) === null ? null : share(si, ci) : val(si, ci);
+  const option = _react.default.useCallback(tk => {
+    // room for the values written at the bars' ends (across: after the longest; columns: a label's line above)
+    const room = (0, _LineChart.gridRoom)(margin, across ? 0 : tk.top);
+    if (showValues && mode !== 'percent') {
+      const ends = mode === 'stacked' ? cats.map((c, ci) => fmts.current.fmt(total(ci))) : list.reduce((a, s, si) => a.concat(cats.map((c, ci) => val(si, ci) === null ? '' : fmts.current.fmt(val(si, ci)))), []);
+      if (across) room.right = Math.max(room.right, (0, _chartKit.labelRoom)(ends));else room.top = Math.max(room.top, (0, _grid.snapToGrid)(tk.tick.fontSize + tk.tickOffset * 2, {
+        round: 'up'
+      }));
+    }
+    const named = {
+      nameLocation: 'middle',
+      nameMoveOverlap: true
     };
-    const place = (ci, si) => {
-      if (bins) return [cs(bins[ci].x0), cs(bins[ci].x1) - cs(bins[ci].x0)];
-      if (sub) return [band(cats[ci]) + sub(list[si].id), sub.bandwidth()];
-      return [band(cats[ci]), band.bandwidth()];
+    const valAxis = Object.assign({
+      type: 'value',
+      name: valueLabel,
+      nameGap: across ? tk.tickOffset * 2 + tk.tick.fontSize : 0,
+      inverse: across && tk.rtl,
+      axisLabel: {
+        formatter: v => mode === 'percent' ? (0, _format.formatPercent)(v) : fmts.current.fmt(v)
+      }
+    }, named, mode === 'percent' ? {
+      min: 0,
+      max: 1
+    } : {});
+    const catAxis = Object.assign({
+      type: 'category',
+      data: cats.map((c, ci) => bins ? String(ci) : String(c)),
+      inverse: across,
+      name: bins ? undefined : categoryLabel,
+      nameGap: across ? 0 : tk.tickOffset * 2 + tk.tick.fontSize,
+      position: across ? tk.rtl ? 'right' : 'left' : 'bottom',
+      axisLabel: bins ? {
+        show: false
+      } : {}
+    }, named);
+    // a histogram's range axis: the bins' edges on a number axis laid over the bins
+    const edges = bins ? Object.assign({
+      type: 'value',
+      min: bins[0].x0,
+      max: bins[bins.length - 1].x1,
+      interval: bins.length <= 12 ? bins[0].x1 - bins[0].x0 : undefined,
+      inverse: across,
+      position: across ? tk.rtl ? 'right' : 'left' : 'bottom',
+      name: categoryLabel,
+      nameGap: across ? 0 : tk.tickOffset * 2 + tk.tick.fontSize,
+      axisLine: {
+        show: false
+      },
+      splitLine: {
+        show: false
+      },
+      axisLabel: {
+        formatter: v => fmts.current.edgeFmt(v)
+      }
+    }, named) : null;
+    const cat = bins ? [catAxis, edges] : catAxis;
+    const sep = joined ? {
+      borderColor: tk.separator.color,
+      borderWidth: tk.separator.width
+    } : {};
+    return {
+      animationDuration: tk.motion,
+      animationDurationUpdate: tk.motion,
+      grid: Object.assign(room, {
+        outerBoundsMode: 'same',
+        outerBoundsContain: 'all'
+      }),
+      xAxis: across ? valAxis : cat,
+      yAxis: across ? cat : valAxis,
+      series: list.map((s, si) => ({
+        type: 'bar',
+        id: String(s.id),
+        name: s.label,
+        silent: true,
+        stack: mode === 'stacked' || mode === 'percent' ? 'total' : undefined,
+        barCategoryGap: bins ? '0%' : CATEGORY_GAP,
+        barGap: SERIES_GAP,
+        itemStyle: Object.assign({
+          color: tk.color(s.color)
+        }, sep),
+        emphasis: {
+          focus: 'self',
+          blurScope: 'coordinateSystem',
+          itemStyle: {
+            color: tk.color(s.color)
+          }
+        },
+        blur: {
+          itemStyle: {
+            opacity: tk.dim
+          }
+        },
+        data: shownKey[si] === '1' ? cats.map((c, ci) => value(si, ci)) : []
+      }))
     };
-    // the anchor of a bar's end: the middle of its thickness at the value's end
-    const endOf = (start, thick, v) => across ? {
-      x: vs(v),
-      y: start + thick / 2
+  }, [categories, series, histogram, mode, o, showValues, valueLabel, categoryLabel, shownKey, marginKey]);
+
+  // the bar in focus is ECharts' emphasis: the others dim to the interaction's dim token
+  const activeKey = ia.active ? ia.active.r + ':' + ia.active.c : '';
+  _react.default.useEffect(() => {
+    const c = plot.chart;
+    if (!c) return;
+    c.dispatchAction({
+      type: 'downplay'
+    });
+    if (ia.active) c.dispatchAction({
+      type: 'highlight',
+      seriesIndex: ia.active.r,
+      dataIndex: ia.active.c
+    });
+  }, [activeKey, plot.chart]);
+  const draw = dims => {
+    const layer = plot.layer(dims, option);
+    const c = plot.chart;
+    const g = c ? (0, _EChartsPlot.plotGrid)(c) : null;
+    if (!g) return layer;
+    const bar = (si, ci) => {
+      if (!shown(si) || value(si, ci) === null) return null;
+      const d = c.getModel().getSeriesByIndex(si);
+      return d ? boxOf(d.getData().getItemLayout(ci)) : null;
+    };
+    // the pointer: the category under it, then the bar nearest to it across the category
+    ia.register({
+      nearest: (px, py) => {
+        const at = c.convertFromPixel({
+          gridIndex: 0
+        }, [px, py]);
+        const ci = Math.max(0, Math.min(cats.length - 1, Math.round(at ? at[across ? 1 : 0] : 0)));
+        let best = null,
+          d = Infinity;
+        list.forEach((s, si) => {
+          const b = bar(si, ci);
+          if (!b) return;
+          const dist = mode === 'grouped' || bins ? Math.abs((across ? b.y + b.height / 2 : b.x + b.width / 2) - (across ? py : px)) : across ? px < b.x ? b.x - px : px > b.x + b.width ? px - b.x - b.width : 0 : py < b.y ? b.y - py : py > b.y + b.height ? py - b.y - b.height : 0;
+          if (dist < d) {
+            d = dist;
+            best = si;
+          }
+        });
+        return best === null ? null : {
+          r: best,
+          c: ci
+        };
+      }
+    });
+    const inner = {
+      width: g.width,
+      height: g.height
+    };
+    // a bar's end: the middle of its thickness at its far end (from zero), in the grid's coordinates
+    const endOf = (b, negative) => across ? {
+      x: (negative ? b.x : b.x + b.width) - g.x,
+      y: b.y + b.height / 2 - g.y
     } : {
-      x: start + thick / 2,
-      y: vs(v)
+      x: b.x + b.width / 2 - g.x,
+      y: (negative ? b.y + b.height : b.y) - g.y
     };
-    const joined = mode !== 'grouped';
-    const marks = [],
-      labels = [];
-    cats.forEach((c, ci) => list.forEach((s, si) => {
-      const sp = spans[ci][si];
-      if (!sp) return;
-      const [start, thick] = place(ci, si);
-      const k = mode === 'stacked' || mode === 'percent' ? String(ci) : ci + ':' + si;
-      marks.push(/*#__PURE__*/_react.default.createElement("rect", _extends({
-        key: ci + ':' + si,
-        className: (0, _cx.cx)('plx-chart__mark', 'plx-bar-chart__bar', joined && 'plx-bar-chart__bar--joined'),
-        "data-plx-dataviz": s.color
-      }, box(start, thick, sp[0], sp[1]), tooltip ? hover(k) : {})));
-      if (!showValues) return;
-      if (mode === 'grouped' || mode === 'histogram') {
-        const e = endOf(start, thick, Math.max(0, sp[1])); // a negative value's label sits on the empty side of the zero line
+    const labels = [];
+    if (showValues) cats.forEach((cname, ci) => {
+      if (mode === 'stacked') {
+        const tops = list.map((s, si) => val(si, ci) !== null && val(si, ci) >= 0 ? bar(si, ci) : null).filter(Boolean);
+        if (!tops.length) return;
+        const b = tops.reduce((a, x) => across ? x.x + x.width > a.x + a.width ? x : a : x.y < a.y ? x : a);
+        const e = endOf(b, false);
+        labels.push(/*#__PURE__*/_react.default.createElement(_DataLabel.DataLabel, {
+          key: 't' + ci,
+          x: e.x,
+          y: e.y,
+          value: fmt(total(ci)),
+          position: across ? 'end' : 'top'
+        }));
+        return;
+      }
+      list.forEach((s, si) => {
+        const b = bar(si, ci);
+        if (!b) return;
+        if (mode === 'percent') {
+          if ((across ? b.width : b.height) < INSIDE_LABEL_MIN) return;
+          labels.push(/*#__PURE__*/_react.default.createElement(_DataLabel.DataLabel, {
+            key: 'l' + ci + ':' + si,
+            x: b.x + b.width / 2 - g.x,
+            y: b.y + b.height / 2 - g.y,
+            value: (0, _format.formatPercent)(share(si, ci)),
+            position: "center"
+          }));
+          return;
+        }
+        // the far end from zero (bars across: the right end; columns: the top), so a negative value's label sits on the
+        // empty side of the zero line
+        const e = endOf(b, false);
         labels.push(/*#__PURE__*/_react.default.createElement(_DataLabel.DataLabel, {
           key: 'l' + ci + ':' + si,
           x: e.x,
@@ -55009,128 +55729,43 @@ function BarChart({
           value: fmt(val(si, ci)),
           position: across ? 'end' : 'top'
         }));
-      } else if (mode === 'percent' && Math.abs(vs(sp[1]) - vs(sp[0])) >= INSIDE_LABEL_MIN) {
-        const mid = endOf(start, thick, (sp[0] + sp[1]) / 2);
-        labels.push(/*#__PURE__*/_react.default.createElement(_DataLabel.DataLabel, {
-          key: 'l' + ci + ':' + si,
-          x: mid.x,
-          y: mid.y,
-          value: (0, _format.formatPercent)(sp[1] - sp[0]),
-          position: "center"
-        }));
-      }
-    }));
-    if (showValues && mode === 'stacked') cats.forEach((c, ci) => {
-      const [start, thick] = place(ci, 0);
-      const e = endOf(start, thick, totals[ci]);
-      labels.push(/*#__PURE__*/_react.default.createElement(_DataLabel.DataLabel, {
-        key: 't' + ci,
-        x: e.x,
-        y: e.y,
-        value: fmt(totals[ci]),
-        position: across ? 'end' : 'top'
-      }));
+      });
     });
-    // the tooltip of the bar (grouped, histogram) or the category (stacked, percent) under the pointer
-    let tip = null;
-    if (tooltip && active !== null) {
-      const [ci, si] = String(active).split(':').map(Number);
-      if (cats[ci] !== undefined) {
-        if (bins) {
-          const [start, thick] = place(ci, 0),
-            e = endOf(start, thick, bins[ci].count);
-          tip = /*#__PURE__*/_react.default.createElement(_ChartTooltip.ChartTooltip, {
-            x: e.x,
-            y: e.y,
-            inner: inner,
-            title: rangeText(bins[ci]),
-            titleKind: "data",
-            items: [{
-              label: valueLabel || t.count,
-              value: fmt(bins[ci].count),
-              color: list[0].color
-            }]
-          });
-        } else if (mode === 'grouped' && list[si]) {
-          const [start, thick] = place(ci, si),
-            v = val(si, ci),
-            e = endOf(start, thick, Math.max(0, v || 0));
-          tip = /*#__PURE__*/_react.default.createElement(_ChartTooltip.ChartTooltip, {
-            x: e.x,
-            y: e.y,
-            inner: inner,
-            title: String(cats[ci]),
-            items: [{
-              label: list[si].label,
-              value: fmt(v),
-              color: list[si].color
-            }]
-          });
-        } else {
-          const [start, thick] = place(ci, 0),
-            e = endOf(start, thick, mode === 'percent' ? 1 : totals[ci]);
-          tip = /*#__PURE__*/_react.default.createElement(_ChartTooltip.ChartTooltip, {
-            x: e.x,
-            y: e.y,
-            inner: inner,
-            title: String(cats[ci]) + ' · ' + fmt(totals[ci]),
-            titleKind: "text",
-            items: list.map((s, i) => {
-              const v = val(i, ci);
-              return {
-                label: s.label,
-                value: v === null ? '–' : mode === 'percent' && totals[ci] ? (0, _format.formatPercent)(Math.max(0, v) / totals[ci]) : fmt(v),
-                color: s.color
-              };
-            })
-          });
-        }
+    let tipNode = null;
+    const a = ia.active;
+    if (tooltip && a && cats[a.c] !== undefined && shown(a.r)) {
+      const b = mode === 'grouped' || bins ? bar(a.r, a.c) : list.map((s, si) => bar(si, a.c)).filter(Boolean).reduce((x, y) => !x ? y : across ? y.x + y.width > x.x + x.width ? y : x : y.y < x.y ? y : x, null);
+      if (b) {
+        const e = endOf(b, false),
+          tp = tip(a.c, a.r);
+        tipNode = /*#__PURE__*/_react.default.createElement(_ChartTooltip.ChartTooltip, {
+          x: e.x,
+          y: e.y,
+          inner: inner,
+          title: tp.title,
+          titleKind: tp.titleKind || 'text',
+          items: tp.items
+        });
       }
     }
-    const catAxis = bins ? /*#__PURE__*/_react.default.createElement(_Axis.Axis, {
-      scale: cs,
-      orient: across ? 'left' : 'bottom',
-      inner: inner,
-      margin: fm,
-      line: false,
-      ticks: bins.length <= 12 ? [bins[0].x0].concat(bins.map(b => b.x1)) : undefined,
-      format: edgeFmt,
-      label: categoryLabel
-    }) : /*#__PURE__*/_react.default.createElement(_Axis.Axis, {
-      scale: band,
-      orient: across ? 'left' : 'bottom',
-      inner: inner,
-      margin: fm,
-      line: false,
-      label: categoryLabel
-    });
-    const zero = vs(0);
-    return /*#__PURE__*/_react.default.createElement("g", null, /*#__PURE__*/_react.default.createElement(_GridLines.GridLines, {
-      scale: vs,
-      direction: across ? 'vertical' : 'horizontal',
-      inner: inner
-    }), marks, across ? /*#__PURE__*/_react.default.createElement("line", {
-      className: "plx-chart__axis-line",
-      x1: zero,
-      x2: zero,
-      y1: 0,
-      y2: inner.height
-    }) : /*#__PURE__*/_react.default.createElement("line", {
-      className: "plx-chart__axis-line",
-      x1: 0,
-      x2: inner.width,
-      y1: zero,
-      y2: zero
-    }), labels, /*#__PURE__*/_react.default.createElement(_Axis.Axis, {
-      scale: vs,
-      orient: across ? 'bottom' : 'left',
-      inner: inner,
-      margin: fm,
-      line: false,
-      format: tickFmt,
-      label: valueLabel
-    }), catAxis, tip);
-  });
+    return [layer, /*#__PURE__*/_react.default.createElement("g", {
+      key: "plx-chart-overlay",
+      transform: 'translate(' + g.x + ',' + g.y + ')'
+    }, labels, tipNode)];
+  };
+  return /*#__PURE__*/_react.default.createElement(_ChartFrame.ChartFrame, {
+    title: title,
+    description: description,
+    hideCaption: hideCaption,
+    size: size,
+    margin: _EChartsPlot.NO_MARGIN,
+    legend: key,
+    legendPosition: legendPosition,
+    table: table,
+    interaction: ia,
+    strings: strings,
+    className: (0, _cx.cx)('plx-bar-chart', 'plx-bar-chart--' + o, 'plx-bar-chart--' + mode, className)
+  }, draw);
 }
   } },
   "platform/charts/ComboChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./parts/position.js":"platform/charts/parts/position.js","./chart-kit.js":"platform/charts/chart-kit.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
