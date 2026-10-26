@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en" data-plx-mode="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Line, Area, Bar and Pie on ECharts · Plenix review</title>
+<!-- Owner review (#353, the first four charts, "show me"): the real Platform code for LineChart, AreaChart, BarChart and
+     PieChart drawing with ECharts, every variant next to today's. Pictures from preview.html (capture.js); the preview
+     bundles the new code on its own (build-preview.js): the Platform is not built. -->
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<link rel="stylesheet" href="../review.css">
+</head>
+<body class="rv-page">
+<main class="rv-doc">
+  <h1 class="rv-h1">Line, Area, Bar and Pie, now drawn by ECharts</h1>
+  <p class="rv-lead">As you decided on 2026-10-26: the first four charts, built for real in the Platform's code, shown before
+    anything ships. Each picture puts today's chart (left) next to the new one (right) with the same settings and the same
+    made-up St. John the Beloved numbers. Approve each chart on its own.</p>
+  <p class="rv-rec"><strong>In short:</strong> all four look like today's, with every label fitting. Bar and Pie gain the
+    keyboard (one Tab stop and the arrow keys) and the screen reader's live region, which only Line and Area had. One rule
+    needs your word before shipping: ECharts writes sizes and fonts onto its own drawing (decision 2 below).
+    <a href="preview.html">Open the live preview</a> to try every chart.</p>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">LineChart</h2>
+    <figure class="rv-fig"><img src="line-giving.png" alt="Giving by month: today's chart with overlapping dollar labels, the new one with every label clear"><figcaption><span class="rv-tag">THREE SERIES, DOLLARS, POINTS</span> today's labels run into the axis title; the new chart makes room, and names every month</figcaption></figure>
+    <figure class="rv-fig"><img src="line-step.png" alt="Servants on the Sunday rota as a step line, today and new"><figcaption><span class="rv-tag">STEP CURVE</span> the same steps; every week is named</figcaption></figure>
+    <div class="rv-pair">
+      <figure class="rv-fig"><img src="line-time.png" alt="Sunday Mass attendance over dates, with a gap for the missing Sunday, today and new"><figcaption><span class="rv-tag">DATES, A MISSING SUNDAY, ZOOM</span> the same month labels; the uncounted Sunday is a gap in both</figcaption></figure>
+      <figure class="rv-fig"><img src="line-time-keyboard.png" alt="The new chart in focus with the crosshair on the missing Sunday"><figcaption><span class="rv-tag">KEYBOARD</span> → ten times: the crosshair on July 5, the missing Sunday, shown as a dash</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">AreaChart</h2>
+    <figure class="rv-fig"><img src="area-none.png" alt="Families served and new families as overlapping areas, today and new"><figcaption><span class="rv-tag">OVERLAPPING</span> see-through areas, the same fill</figcaption></figure>
+    <div class="rv-pair">
+      <figure class="rv-fig"><img src="area-stacked.png" alt="Giving by fund as stacked areas, today and new"><figcaption><span class="rv-tag">STACKED</span> the top edge is the total</figcaption></figure>
+      <figure class="rv-fig"><img src="area-stacked-keyboard.png" alt="The new stacked area chart in focus on April, with the tooltip"><figcaption><span class="rv-tag">KEYBOARD</span> → four times: April, each fund ringed, the shared tooltip</figcaption></figure>
+    </div>
+    <figure class="rv-fig"><img src="area-percent.png" alt="Share of giving by fund as percent areas, today and new"><figcaption><span class="rv-tag">PERCENT</span> each month adds up to 100%</figcaption></figure>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">BarChart</h2>
+    <figure class="rv-fig"><img src="bar-grouped.png" alt="Servants by ministry as grouped bars, today and new"><figcaption><span class="rv-tag">BARS ACROSS, GROUPED</span> the same bars and gaps</figcaption></figure>
+    <div class="rv-pair">
+      <figure class="rv-fig"><img src="bar-stacked.png" alt="Mass attendance by Mass as stacked columns with totals, today and new"><figcaption><span class="rv-tag">COLUMNS, STACKED, WITH VALUES</span> each month's total on top</figcaption></figure>
+      <figure class="rv-fig"><img src="bar-stacked-keyboard.png" alt="The new stacked columns in focus on April's 10:00 Mass, the other bars dimmed"><figcaption><span class="rv-tag">KEYBOARD (NEW)</span> → to April, ↑ up the stack to the 10:00 Mass; the other bars dim</figcaption></figure>
+    </div>
+    <figure class="rv-fig"><img src="bar-percent.png" alt="How people give as percent bars, today and new"><figcaption><span class="rv-tag">PERCENT, WITH SHARES</span> the shares written inside the segments</figcaption></figure>
+    <figure class="rv-fig"><img src="bar-histogram.png" alt="Ages of servants as a histogram, today and new"><figcaption><span class="rv-tag">HISTOGRAM</span> touching columns on round age edges, with counts</figcaption></figure>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">PieChart</h2>
+    <figure class="rv-fig"><img src="pie-pie.png" alt="Gifts by fund as a pie with an Other slice and shares, today and new"><figcaption><span class="rv-tag">PIE</span> largest first from 12 o'clock; six small funds grouped as Other; shares on the large slices</figcaption></figure>
+    <div class="rv-pair">
+      <figure class="rv-fig"><img src="pie-donut.png" alt="Servants by ministry as a donut with the total in the middle, today and new"><figcaption><span class="rv-tag">DONUT</span> the total in the middle</figcaption></figure>
+      <figure class="rv-fig"><img src="pie-donut-keyboard.png" alt="The new donut in focus on Food pantry, the other slices dimmed"><figcaption><span class="rv-tag">KEYBOARD (NEW)</span> → twice: Food pantry, 21 servants, 24%; the other slices dim</figcaption></figure>
+    </div>
+    <figure class="rv-fig"><img src="pie-half.png" alt="Building fund goal as a half ring with 68% of $250,000, today and new"><figcaption><span class="rv-tag">HALF RING</span> the value under the middle</figcaption></figure>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">What changes for people</h2>
+    <ul class="rv-list">
+      <li><strong>Labels fit.</strong> ECharts makes room for every axis label, so amounts are never cut off, and each month or week is named when there is room.</li>
+      <li><strong>Bar and Pie work with the keyboard.</strong> One Tab stop, then the arrow keys move from bar to bar or slice to slice, and a screen reader hears each value. Today these two work with the pointer only. The donut in MetricCard gets this too.</li>
+      <li><strong>Bar's legend hides and shows series</strong>, as Line's and Area's already do.</li>
+      <li><strong>Lines start at the axis</strong> instead of half a step in, so the plot uses its full width.</li>
+      <li><strong>The engine loads with the first chart on a page</strong> (181 KB compressed, once). Until it arrives, a chart shows its title, legend and "Show the data"; pages without charts load nothing.</li>
+      <li>Apps change nothing: every name and setting is the same. Codex's chart PRs are closed, as you said.</li>
+    </ul>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">For you to decide</h2>
+    <ol class="rv-list">
+      <li><strong>Do LineChart, AreaChart, BarChart and PieChart each pass?</strong> Say which ones ship.</li>
+      <li><strong>Allow ECharts to write the sizes and fonts of its own drawing.</strong> Every value is a Plenix token, read
+        where the chart is, but ECharts writes it onto its SVG elements: the plot's size in pixels and the label fonts. That
+        is the same as the text editor's engine, which you allowed on 2026-10-14. The page checks would skip only the
+        chart's drawing box (<span class="rv-tag">.plx-chart__engine</span>); everything Plenix draws on top (tooltip,
+        rings, labels, center value) stays under every rule. Recommended: yes. Without it, the charts can't ship on ECharts.</li>
+    </ol>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">After your word ("ship it")</h2>
+    <ul class="rv-list">
+      <li>Build the Platform, run the system and spec checks and the tests, and update the design spec's chart pages and the TypeScript declarations (PieChart's new <span class="rv-tag">interactive</span> setting).</li>
+      <li>Then the next charts, in the order you approved: ComboChart, WaterfallChart and the rest, each shown to you first.</li>
+    </ul>
+  </section>
+</main>
+</body>
+</html>

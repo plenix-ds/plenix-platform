@@ -9,6 +9,15 @@ const fs = require('fs'), path = require('path');
 const { serve, launch, sleep } = require('./lib.js');
 const { audit } = require('./clash-audit.js');
 
+// Properties left out of the computed-style snapshot (#359), exactly these five. They differ between Chrome versions and
+// between Windows and Linux fonts, and the test's aim is that the styling rules did not change:
+//   text-decoration-skip-spaces  Chrome 156 no longer lists it (the baseline, made with an older Chrome, has it everywhere)
+//   width, inline-size           measured sizes (a text field's default width, text widths) change with the platform's fonts
+//   transform-origin, perspective-origin   derived from the measured size
+// Precedent: the Visual test (tests/visual.test.js) leaves out measured widths for the same reason. Not a general escape hatch.
+const SKIP = ['text-decoration-skip-spaces', 'width', 'inline-size', 'transform-origin', 'perspective-origin'];
+const without = (style) => style.split(';').filter((x) => !SKIP.includes(x.slice(0, x.indexOf(':')))).join(';');
+
 // forces the pseudo-classes named in data-force (hover, active, focus, focus-visible, focus-within) on their elements
 async function force(page) {
   const cdp = await page.target().createCDPSession();
@@ -55,15 +64,15 @@ async function force(page) {
         await force(page);
         const r = await page.evaluate(audit, false, 0, null, { strict: true, mark: true });
         cover = cover || []; cover.push(r.conditions);
-        const found = await page.evaluate((reduce) => {
+        const found = await page.evaluate((reduce, skip) => {
           const label = (e) => e.tagName.toLowerCase() + [...e.classList].slice(0, 3).map((c) => '.' + c).join('') + (e.getAttribute('data-force') ? ':' + e.getAttribute('data-force').replace(/ /g, ':') : '') + (e.closest('[data-plx-surface]') ? ' in ' + e.closest('[data-plx-surface]').getAttribute('data-plx-surface') : '');
           const els = [...document.querySelectorAll('[data-pilot-scope], [data-pilot-scope] *')].filter((e) => !e.closest('svg'));
           // standard properties only: every element inherits the custom properties (the icon glyphs alone are megabytes)
-          return els.map((e, i) => { const cs = getComputedStyle(e); const names = []; for (let j = 0; j < cs.length; j++) if (!cs[j].startsWith('--')) names.push(cs[j]);
+          return els.map((e, i) => { const cs = getComputedStyle(e); const names = []; for (let j = 0; j < cs.length; j++) if (!cs[j].startsWith('--') && !skip.includes(cs[j])) names.push(cs[j]);
             return { i, scope: e.closest('[data-pilot-scope]').getAttribute('data-pilot-scope'), el: label(e), got: e.getAttribute('data-audit-overlap'),
               moving: reduce ? [cs.transitionDuration, cs.animationDuration].join(',').split(',').some((d) => parseFloat(d) > 0) : false,
               style: reduce ? names.sort().map((p) => p + ':' + cs.getPropertyValue(p)).join(';') : null }; });
-        }, motion === 'reduce');
+        }, motion === 'reduce', SKIP);
         pilot = found.length;
         for (const f of found) {
           if (f.got) for (const p of f.got.split(',')) { const k = f.scope + ' | ' + p; (overlaps[k] = overlaps[k] || new Set()).add(f.el); }
@@ -77,6 +86,7 @@ async function force(page) {
       if (RECORD) { fs.writeFileSync(SNAP, JSON.stringify({ $description: 'The pilot page\'s computed styles under reduced motion, taken before the zero-overlap rewrite (tests/zero-overlap.test.js --record).', styles: snapshot }) + '\n'); console.log('Recorded ' + Object.keys(snapshot).length + ' computed styles to tests/baselines/pilot-computed.json'); }
       else if (fs.existsSync(SNAP)) {
         const before = JSON.parse(fs.readFileSync(SNAP, 'utf8')).styles;
+        for (const k of Object.keys(before)) { const [label, style] = before[k].split('\n'); before[k] = label + '\n' + without(style); }
         const keys = new Set([...Object.keys(before), ...Object.keys(snapshot)]);
         for (const k of keys) if (before[k] !== snapshot[k]) {
           if (!before[k] || !snapshot[k]) { wrong.push('pilot element ' + (before[k] ? 'gone' : 'new') + ': ' + k); continue; }

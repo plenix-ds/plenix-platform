@@ -4,7 +4,7 @@
      are straight between values (curve "linear") or hold each value until the next change (curve "step"); points mark
      the values when there are few of them. It is interactive: one Tab stop, the arrow keys and the pointer move a
      crosshair with the shared tooltip, the value is said in the live region, the legend shows and hides series, and a
-     brush can zoom to a range.
+     brush can zoom to a range. The plot is drawn by Apache ECharts (platform/charts/echarts, issue 353) in the Plenix theme.
    Usage:
      <LineChart title="Sign-ups by platform" description="Sign-ups grew on every platform; the web stays ahead."
        data={rows} x="month" series={[{ id: 'web', label: 'Web' }, { id: 'ios', label: 'iOS' }]} yLabel="Sign-ups" />
@@ -25,14 +25,15 @@
      yDomain: [min, max] of the value axis, instead of the data's
      format: (value) => text for values (ticks, tooltip, table), default formatNumber; formatX: (x) => text for x values
        (default: formatDate for time, formatNumber for numbers, the name for categories)
-     xLabel, yLabel: the axis titles (the measure and its unit); give margin room for them
-     size, margin, legendPosition: as ChartFrame
+     xLabel, yLabel: the axis titles (the measure and its unit); the plot makes room for them and for every tick label
+     size, legendPosition: as ChartFrame; margin: more room around the plot ({ top, end, bottom, start }, pixels on the
+       4px grid; default none: the labels' room is made inside the plot)
      legend: "auto" (default: a legend when there are two or more series; interactive toggles) | false | a node
      interactive: keyboard, pointer, tooltip and live region (default true)
      zoom: a brush (a drag, or Shift with the arrow keys) zooms to a range of x values; Reset zoom shows all (default false)
      onSelect({ r, c, row, series }): a click or Enter on a value selects it (the selected value keeps its ring)
-     overlay({ inner, x, y, at }): more SVG on top of the lines: reference lines, thresholds, annotations (x is the x
-       scale of the shown range, at(i) the x position of row i)
+     overlay({ inner, x, y, at }): more SVG on top of the lines: reference lines, thresholds, annotations (x and y place a
+       value in the plot, as scales do: y(250), y.ticks(); at(i) the x position of row i)
      strings: the words it shows, for other languages: { category: "Category" } (the table's first column without
        xLabel); the frame's and the interaction's words are theirs (frameStrings, interactionStrings)
      className: more classes on the figure
@@ -42,51 +43,49 @@
      A missing value is a gap: the line is not drawn across it, and the table shows a dash.
      The legend's toggles hide and show series (the last one shown stays); the value axis follows the series shown.
      With zoom, the axis shows the marked range only; the Reset zoom button above the plot brings back all values.
+     The plot draws once the chart engine has loaded (the first chart on a page loads it); the caption, legend and data
+       grid show at once.
    Notes:
-     Every color is a data-viz step (seriesColor by the series' order); lines, points and the focus ring take the frame's
-       and the chart-interaction tokens; the point radius is --plx-comp-line-chart-point-radius. No style is written.
+     Every color is a data-viz step (seriesColor by the series' order); the lines, points, axes, grid lines and labels
+       take the frame's chart tokens through the ECharts theme (echarts/engine.js); the focus ring, crosshair and tooltip
+       are the chart interaction's. No style is written in this file.
      Up to about five series; more lines tangle: use small multiples. Unordered categories: a bar or column chart.
 */
 import React from 'react';
 import { cx } from '../utils/cx.js';
 import { formatNumber, formatDate, formatPercent } from '../utils/format.js';
 import { ChartFrame } from './ChartFrame.jsx';
-import { scaleLinear, scaleBand, scaleTime, seriesColor } from './scales.js';
-import { scalePosition } from './parts/position.js';
-import { Axis } from './parts/Axis.jsx';
-import { GridLines } from './parts/GridLines.jsx';
+import { seriesColor, scaleTime } from './scales.js';
 import { ChartLegend } from './parts/ChartLegend.jsx';
 import { ChartTooltip, chartTooltipText } from './parts/ChartTooltip.jsx';
 import { useChartInteraction, ChartFocusMark, ChartBrush } from './interaction.js';
+import { useEChartsPlot, plotGrid } from './echarts/EChartsPlot.jsx';
+import { snapToGrid } from '../utils/grid.js';
+import { halfRoom } from './chart-kit.js';
 
 const STRINGS = { category: 'Category' };
 const DASH = '—';
-// the room one tick label needs along the x axis, in pixels: fewer ticks on a narrow chart
-const TICK_ROOM = 64, EDGE = TICK_ROOM / 2;
+// an empty list that stays the same between renders (the drawing redraws when its data changes)
+const NONE = Object.freeze([]);
+
+// the room one tick label needs along the x axis, in pixels: fewer date ticks on a narrow chart (as before ECharts)
+const TICK_ROOM = 64;
 
 const isNum = (v) => typeof v === 'number' && isFinite(v);
 const typeOf = (v) => (v instanceof Date ? 'time' : typeof v === 'number' ? 'linear' : 'band');
-
-// a line's points made into a step path's corners: after (change at the next value) or before (at this value)
-export function stepPoints(pts, step = 'after') {
-  const out = [];
-  pts.forEach((p, i) => {
-    if (i) { const q = pts[i - 1]; out.push(step === 'before' ? [q[0], p[1]] : [p[0], q[1]]); }
-    out.push(p);
-  });
-  return out;
-}
-export const pathOf = (pts) => pts.map((p, i) => (i ? 'L' : 'M') + p[0] + ',' + p[1]).join('');
-// runs of consecutive present values (a missing value breaks a line or an area)
-function runs(cols, has) {
-  const out = []; let cur = [];
-  cols.forEach((c) => { if (has(c)) cur.push(c); else if (cur.length) { out.push(cur); cur = []; } });
-  if (cur.length) out.push(cur);
-  return out;
-}
+// the room around the plot, from ChartFrame's margin prop (pixels on the grid)
+export const gridRoom = (margin, top) => {
+  const m = margin || {};
+  const at = (k, d) => snapToGrid(m[k] === undefined ? d : m[k]);
+  return { top: at('top', top), right: at('end', 0), bottom: at('bottom', 0), left: at('start', 0) };
+};
+// ECharts' axis ticks, for an overlay's scale
+const axisTicks = (chart, axis) => {
+  try { return chart.getModel().getComponent(axis, 0).axis.scale.getTicks().map((t) => t.value); } catch (e) { return []; }
+};
 
 // the shared engine of LineChart and AreaChart (kind "area": filled down to the baseline or the series under it)
-export function SeriesChart({ kind = 'line', title, description, data = [], x = 'x', series = [], xType = 'auto', curve = 'linear', step = 'after',
+export function SeriesChart({ kind = 'line', title, description, data = NONE, x = 'x', series = NONE, xType = 'auto', curve = 'linear', step = 'after',
   points = false, stack = 'none', zero = true, yDomain, format, formatX, xLabel, yLabel, size = 'md', margin, legend = 'auto', legendPosition = 'bottom',
   interactive = true, zoom = false, onSelect, overlay, strings, frameStrings, interactionStrings, className }) {
   const t = Object.assign({}, STRINGS, strings);
@@ -101,6 +100,9 @@ export function SeriesChart({ kind = 'line', title, description, data = [], x = 
   const fmtX = typeof formatX === 'function' ? formatX : type === 'time' ? (v) => formatDate(v) : type === 'linear' ? (v) => formatNumber(v) : (v) => String(v);
   const fmtV = typeof format === 'function' ? format : (v) => formatNumber(v);
   const shown = (s) => ia.visible(list[s].id);
+  // the formats the drawing calls, kept current without redrawing (a format written inline is a new function each render)
+  const fmts = React.useRef(null);
+  fmts.current = { fmtX, fmtV };
 
   const ia = useChartInteraction({
     rows: list.length, columns: data.length, mode: 'x', series: list, zoom, select: typeof onSelect === 'function',
@@ -140,74 +142,104 @@ export function SeriesChart({ kind = 'line', title, description, data = [], x = 
     ? <ChartLegend items={list.map((s) => ({ id: s.id, label: s.label, color: s.color }))} shape={area ? 'square' : 'line'} {...(interactive ? ia.legendProps : {})} />
     : null) : legend || null;
 
-  const draw = ({ inner, margin: m }) => {
-    const [v0, v1] = ia.view();
+  // the drawing: the shown range of columns, the shown series; ECharts lays out the axes and their labels
+  const plot = useEChartsPlot();
+  const [v0, v1] = ia.view();
+  const shownKey = list.map((s, i) => (shown(i) ? '1' : '0')).join('');
+  const domainKey = Array.isArray(yDomain) ? yDomain.join(':') : '';
+  const marginKey = margin ? [margin.top, margin.end, margin.bottom, margin.start].join(':') : '';
+  // the x value ECharts places column c at: its index in the shown range (categories), its time or its number
+  const xValue = (c) => (type === 'band' ? c - v0 : type === 'time' ? +xs[c] : Number(xs[c]));
+  const option = React.useCallback((tk, size) => {
     const cols = []; for (let c = v0; c <= v1; c++) cols.push(c);
-    if (!cols.length) return null;
-    // x: categories in bands (a value at each band's middle), or a continuous time or number scale
-    let xScale, posOf;
-    if (type === 'band') { xScale = scaleBand({ domain: cols, range: [0, inner.width], paddingInner: 0, paddingOuter: 0 }); posOf = (c) => scalePosition(xScale, c); }
-    // a continuous axis keeps half a tick label's room at each end, so the first and last labels stay inside the chart
-    else if (type === 'time') { xScale = scaleTime({ domain: [xs[v0], xs[v1]], range: [EDGE, inner.width - EDGE] }); posOf = (c) => xScale(xs[c]); }
-    else { xScale = scaleLinear({ domain: [Number(xs[v0]), Number(xs[v1])], range: [EDGE, inner.width - EDGE] }); posOf = (c) => xScale(Number(xs[c])); }
-    // y: the shown series' values in the shown range (stacked: the tops; percent: 0 to 100%)
-    let lo = Infinity, hi = -Infinity;
-    list.forEach((s, i) => { if (!shown(i)) return; cols.forEach((c) => { const l = level(i, c); if (l) { lo = Math.min(lo, l[1], stacked ? l[0] : l[1]); hi = Math.max(hi, l[1]); } }); });
-    if (!isFinite(lo)) { lo = 0; hi = 1; }
-    if (zero || area) { lo = Math.min(0, lo); hi = Math.max(0, hi); }
-    const dom = percent ? [0, 1] : Array.isArray(yDomain) ? yDomain : [lo, hi];
-    const y = scaleLinear({ domain: dom, range: [inner.height, 0], nice: !percent && !Array.isArray(yDomain), count: Math.max(2, Math.min(5, Math.floor(inner.height / 40))) });
-    const yFormat = percent ? (v) => formatPercent(v) : typeof format === 'function' ? format : undefined;
-    const room = Math.max(2, Math.floor(inner.width / TICK_ROOM));
-    const every = Math.max(1, Math.ceil(cols.length / room));
-    const xTicks = type === 'band' ? cols.filter((c, k) => k % every === 0) : room;
-    const xFormat = type === 'band' ? (c) => fmtX(xs[c]) : typeof formatX === 'function' ? formatX : undefined;
+    // dates: the Platform's calendar ticks and their labels (Jun 2026, or the app's formatX), about one per TICK_ROOM
+    const timeLabels = (sz) => {
+      const ts = scaleTime({ domain: [xs[v0], xs[v1]], range: [0, sz.width] });
+      const count = Math.max(2, Math.floor(sz.width / TICK_ROOM));
+      const ticks = ts.ticks(count);
+      const text = (v) => (typeof formatX === 'function' ? fmts.current.fmtX(new Date(v)) : ts.format(new Date(v), count));
+      return { customValues: ticks.map((d) => +d), formatter: text, last: ticks.length ? text(+ticks[ticks.length - 1]) : '' };
+    };
+    const room = gridRoom(margin, tk.top);
+    // ECharts does not measure labels at its own tick values: the room under the plot and after it for the date labels
+    const dates = type === 'time' ? timeLabels(size) : null;
+    if (dates) {
+      room.bottom = Math.max(room.bottom, snapToGrid(tk.tickOffset + tk.tick.fontSize, { round: 'up' }));
+      room.right = Math.max(room.right, halfRoom(dates.last));
+    }
+    const named = { nameLocation: 'middle', nameMoveOverlap: true };
+    const rule = { show: true, lineStyle: { color: tk.axis.color, width: tk.axis.width } };
+    const xAxis = Object.assign({ name: xLabel, nameGap: tk.tickOffset * 2 + tk.tick.fontSize, inverse: tk.rtl }, named,
+      type === 'band' ? { type: 'category', boundaryGap: false, data: cols.map((c) => fmts.current.fmtX(xs[c])) }
+        : { type: type === 'time' ? 'time' : 'value', min: xValue(v0), max: xValue(v1), axisLine: rule, splitLine: { show: false },
+          axisLabel: dates ? { customValues: dates.customValues, formatter: dates.formatter } : { formatter: (v) => fmts.current.fmtX(v) } });
+    const yAxis = Object.assign({ type: 'value', name: yLabel, nameGap: 0, position: tk.rtl ? 'right' : 'left',
+      axisLabel: { formatter: (v) => (percent ? formatPercent(v) : fmts.current.fmtV(v)) } }, named,
+      percent ? { min: 0, max: 1 } : Array.isArray(yDomain) ? { min: yDomain[0], max: yDomain[1] } : { scale: !(zero || area) });
+    const value = (i, c) => {
+      if (!stacked) return raw(i, c);
+      const l = level(i, c);
+      return percent ? l[1] - l[0] : raw(i, c) || 0;
+    };
+    return {
+      animationDuration: tk.motion, animationDurationUpdate: tk.motion,
+      grid: Object.assign(room, { outerBoundsMode: 'same', outerBoundsContain: 'all' }),
+      xAxis, yAxis,
+      series: list.map((s, i) => {
+        const color = tk.color(s.color);
+        return {
+          type: 'line', id: String(s.id), name: s.label, silent: true, emphasis: { disabled: true },
+          showSymbol: !!points, connectNulls: false, stack: stacked ? 'total' : undefined,
+          step: curve === 'step' ? (step === 'before' ? 'start' : 'end') : false,
+          lineStyle: { color }, itemStyle: { color },
+          areaStyle: area ? { color, opacity: stacked ? tk.area.stacked : tk.area.opacity } : undefined,
+          data: shownKey[i] === '1' ? cols.map((c) => (type === 'band' ? value(i, c) : [xValue(c), value(i, c)])) : [],
+        };
+      }),
+    };
+  }, [data, series, x, type, curve, step, points, stack, zero, domainKey, xLabel, yLabel, shownKey, v0, v1, marginKey]);
 
+  const draw = (dims) => {
+    const layer = plot.layer(dims, option);
+    const c = plot.chart;
+    const g = c ? plotGrid(c) : null;
+    if (!g) return layer;
+    const cols = []; for (let k = v0; k <= v1; k++) cols.push(k);
+    const posOf = (col) => c.convertToPixel({ xAxisIndex: 0 }, xValue(col));
+    const yPx = (v) => c.convertToPixel({ yAxisIndex: 0 }, v);
     // the pointer's geometry: the nearest shown column, then the nearest series at it
-    const columnAt = (px) => cols.reduce((best, c) => (Math.abs(posOf(c) - px) < Math.abs(posOf(best) - px) ? c : best), cols[0]);
+    const columnAt = (px) => cols.reduce((best, k) => (Math.abs(posOf(k) - px) < Math.abs(posOf(best) - px) ? k : best), cols[0]);
     ia.register({
       columnAt,
       nearest: (px, py) => {
-        const c = columnAt(px); let r = null, d = Infinity;
-        list.forEach((s, i) => { const l = shown(i) ? level(i, c) : null; if (l && Math.abs(y(l[1]) - py) < d) { d = Math.abs(y(l[1]) - py); r = i; } });
-        return r === null ? null : { r, c };
+        const col = columnAt(px); let r = null, d = Infinity;
+        list.forEach((s, i) => { const l = shown(i) ? level(i, col) : null; if (l && (stacked || raw(i, col) !== null) && Math.abs(yPx(l[1]) - py) < d) { d = Math.abs(yPx(l[1]) - py); r = i; } });
+        return r === null ? null : { r, c: col };
       },
     });
-
-    const marks = list.map((s, i) => {
-      if (!shown(i)) return null;
-      const segs = runs(cols, (c) => stacked ? true : raw(i, c) !== null);
-      const top = (seg) => seg.map((c) => [posOf(c), y(level(i, c)[1])]);
-      const bottom = (seg) => seg.map((c) => [posOf(c), y(stacked ? level(i, c)[0] : 0)]);
-      const shape = (pts) => (curve === 'step' ? stepPoints(pts, step) : pts);
-      return (
-        <g key={s.id} className="plx-line-chart__series">
-          {area ? segs.map((seg, k) => <path key={'a' + k} className="plx-chart__mark plx-area-chart__area" data-plx-dataviz={s.color} d={pathOf(shape(top(seg)).concat(shape(bottom(seg)).reverse())) + 'Z'} />) : null}
-          {segs.map((seg, k) => <path key={'l' + k} className="plx-chart__line" data-plx-dataviz={s.color} d={pathOf(shape(top(seg)))} />)}
-          {points ? cols.map((c) => { const l = raw(i, c) === null ? null : level(i, c); return l ? <circle key={c} className="plx-chart__point plx-line-chart__point" data-plx-dataviz={s.color} cx={posOf(c)} cy={y(l[1])} /> : null; }) : null}
-        </g>
-      );
-    });
+    // the overlay works in the grid's own coordinates (its top left corner at 0,0), as the old plot's inner area
+    const inner = { width: g.width, height: g.height };
+    const X = (v) => (type === 'band' ? posOf(xs.indexOf(v)) : c.convertToPixel({ xAxisIndex: 0 }, type === 'time' ? +new Date(v) : Number(v))) - g.x;
+    const Y = (v) => yPx(v) - g.y;
+    Y.ticks = () => axisTicks(c, 'yAxis'); Y.format = (v) => fmtV(v); Y.domain = () => { const tk = Y.ticks(); return [tk[0], tk[tk.length - 1]]; };
+    const at = (col) => posOf(col) - g.x;
     const a = ia.active && ia.active.c >= v0 && ia.active.c <= v1 ? ia.active : null;
     const sel = ia.selected && ia.selected.c >= v0 && ia.selected.c <= v1 && shown(ia.selected.r) ? ia.selected : null;
     const selLevel = sel && raw(sel.r, sel.c) !== null ? level(sel.r, sel.c) : null;
-    return (
-      <g className={cx('plx-line-chart__plot', area && 'plx-area-chart__plot')}>
-        <GridLines scale={y} inner={inner} ticks={y.ticks()} />
-        {ia.brush ? <ChartBrush x0={posOf(ia.brush[0])} x1={posOf(ia.brush[1])} inner={inner} /> : null}
-        {marks}
-        <Axis scale={y} orient="left" inner={inner} margin={m} format={yFormat} label={yLabel} ticks={y.ticks()} />
-        <Axis scale={xScale} orient="bottom" inner={inner} margin={m} format={xFormat} label={xLabel} ticks={xTicks} />
-        {typeof overlay === 'function' ? overlay({ inner, x: xScale, y, at: posOf }) : null}
-        {selLevel ? <ChartFocusMark className="plx-chart-selected" x={posOf(sel.c)} y={y(selLevel[1])} color={list[sel.r].color} /> : null}
-        {a ? list.map((s, i) => { const l = shown(i) && raw(i, a.c) !== null ? level(i, a.c) : null; return l ? <ChartFocusMark key={s.id} x={posOf(a.c)} y={y(l[1])} color={s.color} /> : null; }) : null}
-        {a ? <ChartTooltip variant="shared" x={posOf(a.c)} inner={inner} title={fmtX(xs[a.c])} titleKind={type === 'band' ? 'text' : 'data'} items={tipItems(a.c)} /> : null}
+    const top = (i, col) => { const l = shown(i) && (stacked || raw(i, col) !== null) ? level(i, col) : null; return l ? Y(l[1]) : null; };
+    return [layer, (
+      <g key="plx-chart-overlay" className={cx('plx-line-chart__plot', area && 'plx-area-chart__plot')} transform={'translate(' + g.x + ',' + g.y + ')'}>
+        {ia.brush ? <ChartBrush x0={at(ia.brush[0])} x1={at(ia.brush[1])} inner={inner} /> : null}
+        {typeof overlay === 'function' ? overlay({ inner, x: X, y: Y, at }) : null}
+        {selLevel ? <ChartFocusMark className="plx-chart-selected" x={at(sel.c)} y={Y(selLevel[1])} color={list[sel.r].color} /> : null}
+        {a ? list.map((s, i) => { const y = top(i, a.c); return y === null ? null : <ChartFocusMark key={s.id} x={at(a.c)} y={y} color={s.color} />; }) : null}
+        {a ? <ChartTooltip variant="shared" x={at(a.c)} inner={inner} title={fmtX(xs[a.c])} titleKind={type === 'band' ? 'text' : 'data'} items={tipItems(a.c)} /> : null}
       </g>
-    );
+    )];
   };
 
   return (
-    <ChartFrame title={title} description={description} size={size} margin={margin} table={table} legend={legendNode} legendPosition={legendPosition}
+    <ChartFrame title={title} description={description} size={size} margin={{ top: 0, end: 0, bottom: 0, start: 0 }} table={table} legend={legendNode} legendPosition={legendPosition}
       interaction={interactive ? ia : undefined} strings={frameStrings}
       className={cx(area ? 'plx-area-chart' : 'plx-line-chart', area && stacked && 'plx-area-chart--stacked', className)}>
       {draw}

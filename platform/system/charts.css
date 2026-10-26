@@ -11,6 +11,9 @@
 .plx-chart--sm{--plx-comp-chart-context-plot-height:var(--plx-comp-chart-plot-height-sm);}
 .plx-chart--lg{--plx-comp-chart-context-plot-height:var(--plx-comp-chart-plot-height-lg);}
 .plx-chart__svg{display:block;overflow:visible;}
+/* the chart engine's drawing (Apache ECharts, charts/echarts/): the plot's full size, under the frame's own layer; the pointer
+   and the keyboard belong to the plot and the chart interaction */
+.plx-chart__engine{block-size:100%;inline-size:100%;pointer-events:none;}
 .plx-chart__svg--clipped{overflow-x:hidden;overflow-y:hidden;}
 /* marks: filled shapes (bars, areas, slices), lines and points, colored by their data-viz step */
 .plx-chart__mark,.plx-chart__line,.plx-chart__point{--plx-comp-chart-mark-color:var(--plx-comp-chart-mark-default-color);}

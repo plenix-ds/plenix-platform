@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en" data-plx-mode="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Charts on ECharts · live preview · Plenix review</title>
+<!-- The live preview for the owner's review (#353 step 1): today's Plenix LineChart and BarChart (left) next to the same
+     props drawn by Apache ECharts inside Plenix's frame (right). Made-up St. John the Beloved data; made-up people only.
+     ECharts is loaded from vendor/ (built locally from the npm package; no remote code). -->
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<link rel="stylesheet" href="../review.css">
+<link rel="stylesheet" href="preview.css">
+<script src="../../../platform/vendor/react-loader.js"></script>
+<script src="../../../platform/dist/platform.js"></script>
+<script src="vendor/echarts-preview.min.js"></script>
+<script src="echarts-wrapper.js"></script>
+</head>
+<body class="rv-page">
+<main class="rv-doc">
+  <h1 class="rv-h1">Charts on ECharts: live preview</h1>
+  <p class="rv-lead">Left: today's Plenix chart. Right: the same props, drawn by Apache ECharts inside Plenix's frame. Try it:
+    press Tab to reach a chart, then the arrow keys; hover with the pointer; click a legend item to hide a series; open
+    "Show the data" under a chart. Every number is made up.</p>
+  <section class="rv-section" id="line">
+    <h2 class="rv-h2">LineChart</h2>
+    <div class="rv-pair">
+      <div class="rv-stage rv-ec-cell" id="line-today"><p class="rv-ec-label">Today (Plenix's own drawing)</p><div id="line-a"></div></div>
+      <div class="rv-stage rv-ec-cell" id="line-echarts"><p class="rv-ec-label">New (ECharts inside Plenix's frame)</p><div id="line-b"></div></div>
+    </div>
+  </section>
+  <section class="rv-section" id="bar">
+    <h2 class="rv-h2">BarChart</h2>
+    <div class="rv-pair">
+      <div class="rv-stage rv-ec-cell" id="bar-today"><p class="rv-ec-label">Today (Plenix's own drawing)</p><div id="bar-a"></div></div>
+      <div class="rv-stage rv-ec-cell" id="bar-echarts"><p class="rv-ec-label">New (ECharts inside Plenix's frame)</p><div id="bar-b"></div></div>
+    </div>
+  </section>
+</main>
+<script>
+(function () {
+  var h = React.createElement, P = window.Plenix, X = window.PlenixEChartsPreview;
+  var usd = function (v) { return P.formatCurrency(v, 'USD', { decimals: 0 }); };
+
+  // St. John the Beloved (made up): giving by month, January to October 2026
+  var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'];
+  var offertory = [18400, 17900, 19600, 24800, 21300, 20100, 18800, 19200, 21700, 22900];
+  var building = [6200, 5800, 6900, 8400, 7100, 6600, 5900, 6100, 7800, 8300];
+  var pantry = [2100, 1900, 2300, 2800, 2400, 2600, 2900, 3400, 4700, 5600];
+  var giving = months.map(function (m, i) { return { month: m, offertory: offertory[i], building: building[i], pantry: pantry[i] }; });
+  var line = {
+    title: 'Giving by month, 2026',
+    description: 'The offertory peaked at Easter in April; the food pantry fund more than doubled during the fall drive.',
+    data: giving, x: 'month', yLabel: 'Giving (USD)', format: usd, points: true,
+    series: [{ id: 'offertory', label: 'Offertory' }, { id: 'building', label: 'Building fund' }, { id: 'pantry', label: 'Food pantry' }],
+  };
+
+  // St. John the Beloved (made up): servants in each ministry, last year and this year
+  var bar = {
+    title: 'Servants by ministry',
+    description: 'Every ministry has more servants than last year; the food pantry grew the most.',
+    categories: ['Altar servers', 'Choir', 'Readers', 'Sunday school', 'Food pantry', 'Hospitality', 'Ushers'],
+    series: [{ id: 'y2025', label: '2025', values: [14, 22, 11, 9, 12, 8, 10] }, { id: 'y2026', label: '2026', values: [17, 24, 13, 12, 21, 10, 11] }],
+    valueLabel: 'Servants',
+  };
+
+  var mount = function (id, node) { ReactDOM.createRoot(document.getElementById(id)).render(node); };
+  mount('line-a', h(P.LineChart, line));
+  mount('line-b', h(X.ELineChart, line));
+  mount('bar-a', h(P.BarChart, bar));
+  mount('bar-b', h(X.EBarChart, bar));
+})();
+</script>
+</body>
+</html>

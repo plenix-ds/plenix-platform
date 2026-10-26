@@ -28,14 +28,6 @@
       "$value": "{plx-ref.space-4px}",
       "$type": "dimension"
     },
-    "form-field-gap": {
-      "$value": "{plx-ref.space-12px}",
-      "$type": "dimension"
-    },
-    "form-group-gap": {
-      "$value": "{plx-ref.space-16px}",
-      "$type": "dimension"
-    },
     "form-section-gap": {
       "$value": "{plx-ref.space-24px}",
       "$type": "dimension"
@@ -52,14 +44,6 @@
       "$value": "{plx-ref.space-12px}",
       "$type": "dimension"
     },
-    "toolbar-padding-block": {
-      "$value": "{plx-ref.space-8px}",
-      "$type": "dimension"
-    },
-    "toolbar-content-gap": {
-      "$value": "{plx-ref.space-8px}",
-      "$type": "dimension"
-    },
     "card-padding": {
       "$value": "{plx-ref.space-12px}",
       "$type": "dimension"
@@ -72,23 +56,7 @@
       "$value": "{plx-ref.space-12px}",
       "$type": "dimension"
     },
-    "card-stack-gap": {
-      "$value": "{plx-ref.space-12px}",
-      "$type": "dimension"
-    },
-    "panel-padding": {
-      "$value": "{plx-ref.space-12px}",
-      "$type": "dimension"
-    },
     "dialog-padding": {
-      "$value": "{plx-ref.space-16px}",
-      "$type": "dimension"
-    },
-    "dialog-title-body-gap": {
-      "$value": "{plx-ref.space-12px}",
-      "$type": "dimension"
-    },
-    "dialog-body-footer-gap": {
       "$value": "{plx-ref.space-16px}",
       "$type": "dimension"
     },
@@ -98,22 +66,6 @@
     },
     "drawer-padding": {
       "$value": "{plx-ref.space-12px}",
-      "$type": "dimension"
-    },
-    "metadata-item-gap": {
-      "$value": "{plx-ref.space-4px}",
-      "$type": "dimension"
-    },
-    "metadata-icon-gap": {
-      "$value": "{plx-ref.space-4px}",
-      "$type": "dimension"
-    },
-    "metadata-title-gap": {
-      "$value": "{plx-ref.space-4px}",
-      "$type": "dimension"
-    },
-    "metadata-group-gap": {
-      "$value": "{plx-ref.space-8px}",
       "$type": "dimension"
     },
     "check-padding-block": {
