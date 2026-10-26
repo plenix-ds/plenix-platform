@@ -25,6 +25,25 @@
 <li><b>Tested:</b> it recorded a decision, and a fresh session recalled it without reading any files.</li>
 </ul>
 
+<h2>headroom: tested, not turned on</h2>
+<ul>
+<li><b>Version:</b> 0.41.0 (14 October). Its code was read first.</li>
+<li><b>What it sends where:</b> it sits between Claude Code and Anthropic and forwards to Anthropic only. By default it also sends anonymous usage summaries to its makers, checks for updates daily, reads your Claude sign-in to watch your plan's usage, and keeps the uncompressed output on disk for 30 minutes. All of that was turned off for the test. Compression itself runs on the server; no content goes elsewhere.</li>
+<li><b>The catch:</b> it only works by standing between Claude Code and Anthropic, which turns off Remote Control for that agent. There is no mode that keeps Remote Control.</li>
+<li><b>The test:</b> a 2,000-line test log with six important details hidden in it, read by a test agent in eight parts, three times without headroom and three times with it (both its modes).</li>
+</ul>
+<table>
+<tr><th>Run</th><th>Tokens read</th><th>List-price cost</th><th>Details kept</th></tr>
+<tr><td>Without headroom (3 runs)</td><td>737,000 to 742,000</td><td>$0.57 to $0.58</td><td>6 of 6</td></tr>
+<tr><td>headroom, default mode</td><td>738,000</td><td>$0.62</td><td>6 of 6</td></tr>
+<tr><td>headroom, token mode (2 runs)</td><td>736,000 to 739,000</td><td>$0.57</td><td>6 of 6</td></tr>
+</table>
+<ul>
+<li><b>Result:</b> no saving. It never compressed the test output: when read from a file it protects it on purpose, and when it came from a test command it judged the saving too small. It only trimmed the tool descriptions (about 375 tokens per request, 0.4%). In its default mode it wrote more to the cache, so that run cost more.</li>
+<li><b>Details:</b> all six survived every run, because nothing was cut.</li>
+<li><b>Recommendation:</b> do not turn it on. It saves nothing on Plenix's kind of work and would cost Remote Control. It stays installed on the server, switched off, in case you want another test.</li>
+</ul>
+
 <h2>Moving your memory into claude-mem (when you say the work moves)</h2>
 <ul>
 <li><b>Until then</b> the files on the Windows VM stay the master copy; nothing is moved yet.</li>
