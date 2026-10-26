@@ -1,5 +1,6 @@
-// Plenix tests · visual snapshot: the computed styles of every Button (6 variants × 5 sizes × 7 states × 4 forms) in
-// light and dark and in the three densities, compared with the committed baseline (tests/baselines/button.json).
+// Plenix tests · visual snapshot: the computed styles of every Button (6 variants × 5 sizes × 7 states × 4 forms = 840) in
+// light mode at the default density (Standard), compared with the committed baseline (tests/baselines/button.json).
+// (reset, owner 2026-10-26: dark mode comes last; the themes and densities are on demand, theme.test.js and density.test.js)
 // Only values that do not depend on the operating system's fonts are compared (no measured widths), so the baseline
 // holds on Windows and on the Linux CI runner alike.
 //   node tests/visual.test.js            compare (fails on any difference)
@@ -39,7 +40,7 @@ const SUB = { '.plx-button__icon': ['block-size', 'inline-size', 'background-col
   const page = await browser.newPage();
   await page.goto('file://' + (file.startsWith('/') ? '' : '/') + file.replace(/\\/g, '/'));
   const snap = {};
-  for (const mode of ['light', 'dark']) for (const density of ['compact', 'standard', 'comfortable']) {
+  for (const mode of ['light']) for (const density of ['standard']) {
     const r = await page.evaluate((mode, density, PROPS, SUB) => {
       document.documentElement.setAttribute('data-plx-mode', mode); document.documentElement.setAttribute('data-plx-density', density);
       const out = {};
