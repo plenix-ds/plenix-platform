@@ -263,6 +263,10 @@ copy(path.join(P, 'vendor', 'react-dom.production.min.js'), path.join(CDN, 'vend
 // the RichTextEditor's engine (Tiptap, MIT): loaded by the editor from ./vendor/tiptap/ the same way, shipped in both places too
 copyDir(path.join(P, 'vendor', 'tiptap'), path.join(CDN, 'vendor', 'tiptap'));
 copyDir(path.join(P, 'vendor', 'tiptap'), path.join(R, 'dist', 'vendor', 'tiptap'));
+// the charts' engine (Apache ECharts 6.1.0, Apache-2.0: line, bar, pie, grid; #353): loaded by the first chart on a page
+// from ./vendor/echarts/ the same way (vendorBase), shipped in both places too
+copyDir(path.join(P, 'vendor', 'echarts'), path.join(CDN, 'vendor', 'echarts'));
+copyDir(path.join(P, 'vendor', 'echarts'), path.join(R, 'dist', 'vendor', 'echarts'));
 // the DocumentViewer's PDF engine (PDF.js 4.10.38, Apache-2.0: module, worker, LICENSE): loaded from ./vendor/pdfjs/ the
 // same way (vendorBase), shipped in both places too; the manifest hashes it with the rest of vendor/ (issue #238)
 copyDir(path.join(P, 'vendor', 'pdfjs'), path.join(CDN, 'vendor', 'pdfjs'));

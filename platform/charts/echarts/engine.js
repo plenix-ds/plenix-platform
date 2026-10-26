@@ -1,0 +1,131 @@
+/* Plenix · Chart engine (platform/charts/echarts/engine.js)
+   Summary: How a Plenix chart draws with Apache ECharts (issue 353, owner 2026-10-26): loads the vendored engine
+     (platform/vendor/echarts/echarts.min.js, window.PlenixECharts), reads the chart tokens where the chart is, and builds
+     the ECharts theme from them. The chart components keep their names, props and Plenix layer (ChartFrame, the
+     interaction, the live region, the legend, the tooltip, "Show the data"); ECharts draws the plot.
+   Usage:
+     loadECharts().then((E) => E.init(el, plenixTheme(chartTokens(el)), { renderer: 'svg', width, height }));
+     const t = chartTokens(el); t.color('categorical-2')   // a data-viz step as the color it is where el is
+   Props:
+     loadECharts(win): adds the engine's script to the page once (the given window's, default this one) and resolves with
+       that window's PlenixECharts ({ init, version })
+     chartTokens(el): the chart tokens as the Platform's own chart classes resolve them where el is (theme, density and
+       scope included): { color(step), colors, lineWidth, tick, title, axis, grid, point, separator, slice, area, dim, motion }
+     plenixTheme(tokens): the ECharts theme (colors in the categorical order of seriesColor, the axis and grid lines, the
+       data font for tick labels, the label font for axis titles, the line, point and bar styles)
+   Behavior:
+     Only the first chart on a page loads the engine; later charts reuse the same promise. Pages without a chart never
+       load it. A failed load rejects and is forgotten, so the next chart that mounts tries again.
+     The tokens are read through a hidden probe of the frame's own mark classes (plx-chart__line, plx-chart__mark,
+       plx-chart__tick-label, plx-chart-axis__label, plx-chart__axis-line, plx-chart__grid-line, …), so a token change
+       restyles both drawings; nothing here holds a color, width or font of its own.
+   Notes:
+     ECharts writes the sizes and fonts of what it draws on its own SVG elements (inside .plx-chart__engine); the values
+       are the tokens read here.
+     Dark mode: the charts read the tokens again when the page's mode, theme or density changes (EChartsPlot). */
+
+import { vendorBase } from '../../utils/vendorBase.js';
+
+const loading = new WeakMap();
+export function loadECharts(win) {
+  const w = win || (typeof window !== 'undefined' ? window : null);
+  if (!w) return Promise.reject(new Error('ECharts needs a browser'));
+  if (w.PlenixECharts) return Promise.resolve(w.PlenixECharts);
+  if (loading.has(w)) return loading.get(w);
+  const doc = w.document;
+  const p = new Promise((resolve, reject) => {
+    const script = doc.createElement('script');
+    script.src = vendorBase() + 'echarts/echarts.min.js'; script.async = true; script.setAttribute('data-plx-vendor', 'echarts');
+    script.onload = () => { if (w.PlenixECharts) resolve(w.PlenixECharts); else { loading.delete(w); script.remove(); reject(new Error('ECharts did not load from ' + script.src)); } };
+    script.onerror = () => { loading.delete(w); script.remove(); reject(new Error('ECharts could not be loaded from ' + script.src)); };
+    doc.head.appendChild(script);
+  });
+  loading.set(w, p);
+  return p;
+}
+
+const NS = 'http://www.w3.org/2000/svg';
+const num = (v) => parseFloat(v) || 0;
+// a duration token in milliseconds ("200ms" or "0.2s")
+const ms = (v) => { const s = String(v).trim(); return /ms$/.test(s) ? num(s) : /s$/.test(s) ? num(s) * 1000 : num(s); };
+
+export function chartTokens(where) {
+  const doc = where.ownerDocument, win = doc.defaultView;
+  const svg = doc.createElementNS(NS, 'svg');
+  svg.setAttribute('class', 'plx-visually-hidden');
+  svg.setAttribute('aria-hidden', 'true');
+  const mk = (tag, cls, attrs) => {
+    const e = doc.createElementNS(NS, tag);
+    e.setAttribute('class', cls);
+    Object.keys(attrs || {}).forEach((k) => e.setAttribute(k, attrs[k]));
+    svg.appendChild(e);
+    return e;
+  };
+  const line = mk('path', 'plx-chart__line', { 'data-plx-dataviz': 'categorical-1' });
+  const tick = mk('text', 'plx-chart__tick-label'), title = mk('text', 'plx-chart-axis__label');
+  const axis = mk('line', 'plx-chart__axis-line'), grid = mk('line', 'plx-chart__grid-line');
+  const point = mk('circle', 'plx-chart__point plx-line-chart__point');
+  const joined = mk('rect', 'plx-chart__mark plx-bar-chart__bar plx-bar-chart__bar--joined');
+  const slice = mk('path', 'plx-chart__mark plx-pie-chart__slice');
+  const swatch = mk('rect', 'plx-chart__mark');
+  where.appendChild(svg);
+  const cs = (e) => win.getComputedStyle(e);
+  const font = (e) => { const s = cs(e); return { color: s.fill, fontFamily: s.fontFamily, fontSize: num(s.fontSize), fontWeight: s.fontWeight }; };
+  const host = cs(where);
+  const prop = (name) => host.getPropertyValue(name).trim();
+  // a length token in pixels (px, or rem on the root's font size)
+  const len = (v) => (/rem$/.test(v) ? num(v) * num(win.getComputedStyle(doc.documentElement).fontSize) : num(v));
+  const colorCache = {};
+  const t = {
+    lineWidth: num(cs(line).strokeWidth),
+    tick: font(tick), title: font(title),
+    axis: { color: cs(axis).stroke, width: num(cs(axis).strokeWidth) },
+    grid: { color: cs(grid).stroke, width: num(cs(grid).strokeWidth) },
+    point: { r: num(cs(point).r), outline: cs(point).stroke, outlineWidth: num(cs(point).strokeWidth) },
+    separator: { color: cs(joined).stroke, width: num(cs(joined).strokeWidth) },
+    slice: { color: cs(slice).stroke, width: num(cs(slice).strokeWidth) },
+    area: { opacity: num(prop('--plx-comp-area-chart-fill-opacity')), stacked: num(prop('--plx-comp-area-chart-stacked-fill-opacity')) },
+    // the gap between a tick label and its axis, and the room above the plot (half the top tick label)
+    tickOffset: len(prop('--plx-comp-chart-axis-tick-offset')),
+    top: len(prop('--plx-comp-chart-margin-block-start')),
+    rtl: host.direction === 'rtl',
+    // the values not in focus dim to the interaction's token; the drawing's animation is the motion token (reduced motion: 0)
+    dim: num(prop('--plx-comp-chart-interaction-dim-opacity')) || 1,
+    motion: ms(prop('--plx-sys-motion-duration-slow')),
+  };
+  // a data-viz step ("categorical-3", "sequential-5") as the color it is here
+  t.color = (step) => {
+    if (!step) step = 'categorical-1';
+    if (!(step in colorCache)) {
+      swatch.setAttribute('data-plx-dataviz', step);
+      const out = !svg.isConnected;
+      if (out) where.appendChild(svg);
+      colorCache[step] = cs(swatch).fill;
+      if (out) svg.remove();
+    }
+    return colorCache[step];
+  };
+  t.colors = [1, 2, 3, 4, 5, 6].map((i) => t.color('categorical-' + i));
+  svg.remove();
+  return t;
+}
+
+export function plenixTheme(t) {
+  const label = { color: t.tick.color, fontFamily: t.tick.fontFamily, fontSize: t.tick.fontSize, margin: t.tickOffset, hideOverlap: true };
+  const name = { color: t.title.color, fontFamily: t.title.fontFamily, fontSize: t.title.fontSize, fontWeight: t.title.fontWeight };
+  const base = { axisLabel: label, nameTextStyle: name, axisTick: { show: false } };
+  const rule = { show: true, lineStyle: { color: t.axis.color, width: t.axis.width } };
+  const gridLines = { show: true, lineStyle: { color: t.grid.color, width: t.grid.width } };
+  return {
+    color: t.colors,
+    backgroundColor: 'transparent',
+    textStyle: { fontFamily: t.tick.fontFamily, color: t.tick.color, fontSize: t.tick.fontSize },
+    categoryAxis: Object.assign({}, base, { axisLine: rule, splitLine: { show: false } }),
+    timeAxis: Object.assign({}, base, { axisLine: rule, splitLine: { show: false } }),
+    valueAxis: Object.assign({}, base, { axisLine: { show: false }, splitLine: gridLines }),
+    line: { symbol: 'circle', symbolSize: t.point.r * 2, lineStyle: { width: t.lineWidth, cap: 'round', join: 'round' },
+      itemStyle: { borderColor: t.point.outline, borderWidth: t.point.outlineWidth } },
+    bar: { itemStyle: { borderWidth: 0 } },
+    pie: { itemStyle: { borderColor: t.slice.color, borderWidth: t.slice.width, borderJoin: 'round' } },
+  };
+}

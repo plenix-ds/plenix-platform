@@ -12,6 +12,12 @@
      the person's own formatting, as Tiptap stores it: color, background-color, font-family, font-size and text-align
      only (owner, 2026-10-14: "the colors and fonts rule is limited to just the UI, not the user in Tiptap"); any other
      property there is checked as everywhere else.
+     The chart engine's drawing (an element inside .plx-chart__engine: Apache ECharts, platform/charts/echarts/) may carry
+     the sizes and fonts ECharts writes on its own elements, read from the chart tokens (owner, 2026-10-26, issue 353: the
+     same exception as the text editor). Only these, on these elements (what ECharts writes for Line, Area, Bar and Pie):
+     its div: position, overflow-x, overflow-y, width, height; its svg: position, left, top, user-select; its text:
+     font-size, font-family. Any other inline property inside the engine, and everything Plenix draws on top of it, is
+     checked as everywhere else.
      5. off the grid: an inline length that is neither a Platform token reference (var) nor a whole number of grid steps (the base
         spacing token, --plx-ref-space-4px; utils/grid.js): "has to conform to fit into the grid system!!! important"
         (owner, 2026-10-13). A length in another unit than px (rem, em, vw…) is reported too; a percentage is a
@@ -81,12 +87,16 @@
   var USER_FORMAT = /^(color|background-color|font-family|font-size|text-align)$/;
   function userContent(el) { return !!(el.closest && el.closest('.plx-user-content')); }
   var DENSITY = /^(height|min-height|max-height|line-height|padding(-(top|right|bottom|left|block|inline)(-(start|end))?)?)$/;
+  // the chart engine's own sizes and fonts (owner, 2026-10-26, issue 353): these properties on these elements only
+  var ENGINE_OWN = { div: /^(position|overflow-x|overflow-y|width|height)$/, svg: /^(position|left|top|user-select)$/, text: /^(font-size|font-family)$/ };
+  function engineOwn(el, p) { var host = el.parentElement && el.parentElement.closest && el.parentElement.closest('.plx-chart__engine'), r = host && ENGINE_OWN[String(el.tagName).toLowerCase()]; return !!(r && r.test(p)); }
   function inlineFinding(el) {
     if (el.isConnected === false) return null;   // an element already gone from the page
     var st = el.style, bad = [], table = !!(el.matches && el.matches('.plx-data-grid .plx-data-grid__grid-row, .plx-data-grid .plx-data-grid__grid-cell')), user = userContent(el);
     for (var i = 0; i < st.length; i++) {
       var p = st[i], v = st.getPropertyValue(p);
       if (user && USER_FORMAT.test(p)) continue;
+      if (engineOwn(el, p)) continue;
       if (/^--/.test(p) ? !allowedVar(p) : (p === 'font-family' && !/^\s*var\(--plx-/.test(v)) || (table && DENSITY.test(p) && !tokenSize(v, el))) bad.push(p + ': ' + v);
       else { var off = offGrid(v, el, p); if (off) bad.push(p + ': ' + v + ' (' + off + ' is off the grid)'); }
     }
