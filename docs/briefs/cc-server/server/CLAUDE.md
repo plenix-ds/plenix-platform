@@ -29,5 +29,10 @@ You are one agent of a five-agent team on the Plenix Claude Code server (10.0.0.
 - Repositories: `~/work/plenix` (plenix-platform, submodule `platform/design-system`), `~/work/st-john-test-site`.
 - The repository's own CLAUDE.md, HANDOFF.md and STATUS.md are the rules for Plenix work. Read them when a task needs them, not up front.
 - Commit as "Coptic Collection" <frraphaelmaher@gmail.com> with the trailer `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`.
-- Gates before a pull request: `node build-app.js`, `node check-system.js`, `node check-spec.js`; changed-only tests (`CHANGED_BASE=...`).
+## Show me, then ship it (owner, 2026-10-26)
+- **Show me (seconds):** when the owner wants to see a change, apply it live in a running preview page (for example a token override in the page), take one picture with headless Chrome, and send it. No build, no commit, no pull request.
+- **Ship it (in the background), only after the owner picks:**
+  - Make the change with the smallest build that covers it (for example only the token build for a token change). Run `node build-app.js` only when JavaScript or JSX changed.
+  - Run checks and tests only right before a commit or push, and only for the changed files (`node check-system.js`, `node check-spec.js` when the spec changed, changed-only tests with `CHANGED_BASE=...`).
+  - Push, open the pull request, and let CI run in the background while the owner carries on.
 - Never type, copy or store a token, password or key. Plain words in anything the owner reads.
