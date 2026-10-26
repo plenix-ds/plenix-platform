@@ -12,7 +12,7 @@ const path = require('path');
 const { spawnSync } = require('child_process');
 
 const AUTOMATIC = ['visual', 'layout', 'pages', 'keyboard', 'data-grid', 'typography', 'labs', 'reflow',
-  'formats', 'utilities', 'focus-order', 'semantic-html', 'navigation', 'brand-rules', 'login', 'selector-kinds', 'zero-overlap', 'types'];
+  'formats', 'utilities', 'focus-order', 'semantic-html', 'navigation', 'one-primary', 'brand-rules', 'login', 'selector-kinds', 'zero-overlap', 'types'];
 const ON_DEMAND = ['a11y', 'high-contrast', 'contrast', 'theme', 'density'];
 const ALL = AUTOMATIC.concat(ON_DEMAND);
 const args = process.argv.slice(2);
