@@ -216,11 +216,6 @@
       "$type": "dimension",
       "$description": "DataGrid: the selected row’s start bar, 3px (the accent bar width the UI uses)."
     },
-    "data-grid-frozen-edge": {
-      "$value": "{plx-sys.data-grid-frozen-edge}",
-      "$type": "color",
-      "$description": "DataGrid and Table: the edge after a frozen first column (owner, 2026-10-24)."
-    },
     "data-grid-menu-button-hover-top": {
       "$value": "{plx-sys.data-grid-menu-button-hover-top}",
       "$type": "color",
