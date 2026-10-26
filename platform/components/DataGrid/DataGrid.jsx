@@ -44,7 +44,8 @@
        { count, hidden }); keepHiddenSelection (default true) keeps rows a filter hides selected
      unread(record) or unreadKeys: unread records; onUnreadChange(keys, {unreadCount}) controls updates. Unread text is semibold with the accent start bar.
      markReadOnOpen (default true), readDelay (milliseconds, default 0): opening with click/Enter marks read. Row and selection menus also mark read/unread.
-     unreadOnly with onUnreadOnlyChange controls the unread filter. The controller exposes getUnreadCount(), markRead(keys), markUnread(keys).
+     unreadOnly with onUnreadOnlyChange controls the unread filter. Nothing is drawn above the headers (Fluent): the app
+       puts DataGrid.unreadCommands(...).filter in its CommandBar's quickFilters and .selection among its selection commands. The controller exposes getUnreadCount(), markRead(keys), markUnread(keys).
      onRowClick(record, event), onRowDoubleClick(record, event): with them rows are focusable and Enter clicks;
        onCellEdit(record, { field, value, previous })
      density: "compact" (default: tables start Compact, owner 2026-10-22) | "standard" | "comfortable" | "page" (follow the
@@ -117,6 +118,7 @@
 import React from 'react';
 import { DataGridEngine } from './DataGridEngine.jsx';
 import { useDataGridActions } from './actions.jsx';
+import { unreadCommands } from './unread-commands.js';
 import { ToastProvider } from '../Toast/Toast.jsx';
 import { useOptionalToast } from '../../patterns/ReviewFlow/ReviewFlow.jsx';
 
@@ -125,5 +127,6 @@ function ActionTable(props) { const rowMenu = useDataGridActions(props.rowMenu, 
 
 export function DataGrid(props) { const toast = useOptionalToast(); return toast ? <ActionTable {...props} /> : <ToastProvider><ActionTable {...props} /></ToastProvider>; }
 DataGrid.useActions = useDataGridActions;
+DataGrid.unreadCommands = unreadCommands;
 // nothing to load ahead: the engine is part of the Platform bundle (kept so pages that called it keep working)
 DataGrid.preload = () => {};
