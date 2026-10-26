@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en" data-plx-mode="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Table spacing · Plenix review</title>
+<!-- Owner review: release 0.69.5 next to the table spacing fix (PR #331, merged), on #331's own tables: the stage Table,
+     the stage DataGrid with tall wrapped rows, and the spec's Color swatch States table, at Compact and Standard density.
+     Pictures: headless Chrome, light mode, 2x; 0.69.5 = 0b7af35d, the fix = styling/phase-2 at 8252f0f9. -->
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<link rel="stylesheet" href="../review.css">
+</head>
+<body class="rv-page">
+<main class="rv-doc">
+  <h1 class="rv-h1">Table spacing: release 0.69.5 next to the fix</h1>
+  <p class="rv-lead">The fix is PR #331 ("each cell gets its top spacing once"), merged on 2026-10-25. No other fix was made for this.
+    The pictures come from 0.69.5 and from styling/phase-2 today (8252f0f9), using the same tables #331's own page used.</p>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">In short</h2>
+    <ul class="rv-list">
+      <li><strong>In 0.69.5</strong>, a row of a static Table with wrapped text started its cells at different heights: the label in the middle, plain text a line lower than the code beside it.</li>
+      <li><strong>With the fix</strong>, every cell in such a row starts on the same top line, as you approved ("wrapped rows start at the top", wrap spacing option A).</li>
+      <li><strong>Measured</strong> (distance of each cell's first line from the row top, State / Looks / Set by / Changes):
+        <ul class="rv-list">
+          <li>0.69.5: 27 / 18 / 18 / 10px (Focus row), 27 / 18 / 26 / 10px (Hover row).</li>
+          <li>The fix: 10 / 10 / 10 / 10px in both rows.</li>
+        </ul></li>
+      <li><strong>The DataGrid</strong> with tall wrapped rows already started every cell at the top in 0.69.5 (10 / 10 / 10 / 10px), and still does.</li>
+      <li><strong>Compact and Standard</strong> look the same here: wrapped rows grow with their text, and the DataGrid's height is its own row-height setting (Tall), so display density does not change these tables.</li>
+      <li><strong>Other approved changes you will see</strong> in the "after" pictures: the shorter header row (#310, the Table header at the DataGrid's Compact height).</li>
+    </ul>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">1 · A static Table with wrapped text (Compact)</h2>
+    <figure class="rv-fig"><img src="before-compact-table.png" alt="0.69.5: Focus is in the middle of the row, Drawn above and Keyboard focus a line lower than the code"><figcaption><span class="rv-tag">0.69.5</span> · "Focus" in the middle, "Drawn above" and "Keyboard focus" lower than the code</figcaption></figure>
+    <figure class="rv-fig"><img src="after-compact-table.png" alt="The fix: every cell starts on the same top line"><figcaption><span class="rv-tag">FIX (#331)</span> · every cell starts on the same top line</figcaption></figure>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">2 · The same Table (Standard)</h2>
+    <figure class="rv-fig"><img src="before-standard-table.png" alt="0.69.5 at Standard density"><figcaption><span class="rv-tag">0.69.5</span> · Standard</figcaption></figure>
+    <figure class="rv-fig"><img src="after-standard-table.png" alt="The fix at Standard density"><figcaption><span class="rv-tag">FIX (#331)</span> · Standard</figcaption></figure>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">3 · A DataGrid with tall wrapped rows (Compact and Standard)</h2>
+    <figure class="rv-fig"><img src="before-compact-grid.png" alt="0.69.5 DataGrid with tall rows, every cell at the top"><figcaption><span class="rv-tag">0.69.5</span> · Compact: already at the top</figcaption></figure>
+    <figure class="rv-fig"><img src="after-compact-grid.png" alt="The fix: DataGrid unchanged, every cell at the top"><figcaption><span class="rv-tag">FIX (#331)</span> · Compact: unchanged, apart from the approved header</figcaption></figure>
+    <figure class="rv-fig"><img src="before-standard-grid.png" alt="0.69.5 DataGrid at Standard"><figcaption><span class="rv-tag">0.69.5</span> · Standard</figcaption></figure>
+    <figure class="rv-fig"><img src="after-standard-grid.png" alt="The fix: DataGrid at Standard"><figcaption><span class="rv-tag">FIX (#331)</span> · Standard</figcaption></figure>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">4 · The spec's Color swatch States table (Compact and Standard)</h2>
+    <p class="rv-lead">The first 520px of the Focus row. In 0.69.5 "Focus", "Drawn above" and "Keyboard focus" sit in the middle of this very tall row, out of view; with the fix they start at the top beside the code.</p>
+    <div class="rv-grid">
+      <figure class="rv-fig"><img src="before-compact-spec.png" alt="0.69.5: the row's top shows only the code; the labels are further down"><figcaption><span class="rv-tag">0.69.5</span> · Compact: only the code at the top</figcaption></figure>
+      <figure class="rv-fig"><img src="after-compact-spec.png" alt="The fix: Focus, Drawn above and Keyboard focus at the top beside the code"><figcaption><span class="rv-tag">FIX (#331)</span> · Compact: every cell at the top</figcaption></figure>
+      <figure class="rv-fig"><img src="before-standard-spec.png" alt="0.69.5 at Standard"><figcaption><span class="rv-tag">0.69.5</span> · Standard</figcaption></figure>
+      <figure class="rv-fig"><img src="after-standard-spec.png" alt="The fix at Standard"><figcaption><span class="rv-tag">FIX (#331)</span> · Standard</figcaption></figure>
+    </div>
+    <ul class="rv-list">
+      <li><strong>A separate, older problem in this table</strong> (same in 0.69.5): the Changes column is squeezed so narrow that the code breaks every few letters, while the State column is very wide. It is the spec's column widths, not the row spacing. It can be a follow-up if you want it fixed.</li>
+    </ul>
+  </section>
+</main>
+</body>
+</html>
