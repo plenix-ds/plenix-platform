@@ -98,7 +98,7 @@ module.exports = async function regressions(page) {
 };
 module.exports.warning = async function warning(page, base) {
   await page.setViewport({ width: 390, height: 800 });
-  await page.goto(base + 'platform/design-system/?react=dev', { waitUntil: 'networkidle0' });
+  await page.goto(base + 'test-site/index.html?react=dev', { waitUntil: 'networkidle0' });
   const result = await page.evaluate(async () => {
     const P = window.Plenix, R = window.React, D = window.ReactDOM, h = R.createElement;
     const host = document.createElement('div'); document.body.appendChild(host); const root = D.createRoot(host);
@@ -120,7 +120,7 @@ module.exports.warning = async function warning(page, base) {
 };
 if (require.main === module) (async () => {
   const port = +process.env.TEST_PORT || 9021, server = await serve(port); let browser;
-  try { browser = await launch(); const page = await browser.newPage(); await page.goto('http://127.0.0.1:' + port + '/Plenix/platform/design-system/', { waitUntil: 'networkidle0' });
+  try { browser = await launch(); const page = await browser.newPage(); await page.goto('http://127.0.0.1:' + port + '/Plenix/test-site/index.html', { waitUntil: 'networkidle0' });
     let count = await module.exports(page); count += await module.exports.warning(page, 'http://127.0.0.1:' + port + '/Plenix/'); assert(count >= 20); console.log('DT_HIGH_OK ' + count + ' regression checks');
   } finally { if (browser) await browser.close(); server.close(); }
 })().catch((e) => { console.error(e); process.exitCode = 1; });

@@ -1,4 +1,4 @@
-// Plenix tests · semantic HTML (library plan wave 2; the Semantic HTML page): every application page has the landmarks
+// Plenix tests · semantic HTML (library plan wave 2; the Semantic HTML page): every application page and test-site page has the landmarks
 // of the application shell, one of each (a banner, a main region, navigation), every navigation region that is not
 // alone has a name, there is at most one level 1 heading, and headings never skip a level going down. The static rule
 // (clickable elements without a role) is check-system.rules/semantic-html.js; this test reads the rendered pages.
@@ -7,15 +7,21 @@
 //   TEST_SCOPE=full node tests/semantic-html.test.js   every page (default: the pages of what changed, tests/changed.js)
 const { serve, launch, sleep, at } = require('./lib.js');
 const changed = require('./changed.js');
+const site = require('./site.js');
 const PORT = +process.env.SEMANTIC_PORT || +process.env.TEST_PORT || 8798, BASE = 'http://127.0.0.1:' + PORT + '/Plenix/';
 const PAGES = changed.pages(['dashboard', 'projects', 'messages', 'contacts', 'calendar', 'tasks', 'notes', 'bookmarks', 'files', 'settings'].map((a) => a + '/index.html')
-  .concat(['dam/index.html']));
+  .concat(['dam/index.html']).concat(site.urls()));
+// the site's pages without the site chrome (sign-in, the public page) have no banner or navigation to check
+const BARE = new Set(site.pages().filter((x) => x.chrome === false).map((x) => 'test-site/index.html#' + (x.open || x.path)));
 if (!PAGES.length) changed.none('SEMANTIC_HTML_PAGES_OK (0 pages)');
-changed.report(PAGES.length + ' app pages');
+changed.report(PAGES.length + ' app and test-site pages');
 // known findings, each to be fixed in its application (then removed here): a page listed here fails only on another finding
 const KNOWN = {
   'calendar/index.html': /^heading levels skipped: h1 → h3$/,
-  'bookmarks/index.html': /^heading levels skipped: h1 → h3$/
+  'bookmarks/index.html': /^heading levels skipped: h1 → h3$/,
+  // the test site's photo is a full-screen experience (no navigation by design); ImageAnnotation draws its notes' titles
+  // as h3 with no heading-level option (a Platform gap, reported)
+  'test-site/index.html#/photo/v5': /^(no navigation region|heading levels skipped: h1 → h3)$/
 };
 
 (async () => {
@@ -40,8 +46,8 @@ const KNOWN = {
     });
     const bad = [];
     if (r.mains !== 1) bad.push(r.mains + ' main regions (one expected)');
-    if (r.banners !== 1) bad.push(r.banners + ' banners (one expected)');
-    if (!r.navs) bad.push('no navigation region');
+    if (r.banners !== 1 && !BARE.has(p)) bad.push(r.banners + ' banners (one expected)');
+    if (!r.navs && !BARE.has(p)) bad.push('no navigation region');
     if (r.unnamed) bad.push(r.unnamed + ' of ' + r.navs + ' navigation regions without a name');
     if (r.h1 > 1) bad.push(r.h1 + ' level 1 headings');
     if (r.skips.length) bad.push('heading levels skipped: ' + r.skips.slice(0, 4).join(', '));

@@ -1,8 +1,8 @@
 // Plenix tests · typography (owner, 2026-10-04, restored 2026-10-11; Platforms Standard 3.4): DM Sans for all interface
 // text; Reddit Mono only for code (--plx-sys-font-code) and technical values (--plx-sys-font-data: IDs, file names and paths,
 // versions, dates and times, sizes, counts, durations, measured percentages, coordinates), chosen by the value's kind, and
-// always at its neighbors' size and line height so Mono and Sans share a baseline. On every app page and a sample of the
-// design system's pages (the first of each group and the pages of tokens, tables and values), in light and dark, with the
+// always at its neighbors' size and line height so Mono and Sans share a baseline. On every app page and every page of the
+// St. John the Beloved test site (test-site/), in light mode (reset, owner 2026-10-26: dark mode comes last), with the
 // fonts loaded:
 //   role      an element marked as code or data (code, kbd, pre, samp, Text "data", a data field (Input/Textarea data), a DataGrid or
 //             Table column of kind "data", a PropertyList value marked data) computes to Reddit Mono
@@ -32,12 +32,11 @@ const APP_PAGES = changed.pages(['dashboard', 'projects', 'messages', 'contacts'
   // the settings screens beyond each page's first (owner, 2026-10-13: every settings page is cards of rows; the settings-cards rule)
   .concat(['settings/index.html#/account', 'settings/index.html#/appearance', 'settings/index.html#/categories', 'settings/index.html#/docs/data-model',
     'dam/settings-system.html#/users', 'dam/settings-system.html#/permissions', 'dam/settings-myaccount.html#/preferences']));
-const HAS_DS = fs.existsSync(path.join(__dirname, '..', 'platform', 'design-system', 'index.html'));
+const site = require('./site.js');
+// every page of the St. John the Beloved test site (owner, 2026-10-25: the tests run there, not on the design spec)
+const SITE_PAGES = changed.pages(site.urls());
 changed.noPartialUpdate();
-if (!APP_PAGES.length && !(HAS_DS && changed.anyDS())) changed.none('TYPOGRAPHY_OK role 0, prose 0, pattern 0, baseline 0 on 0 pages');
-// design-system pages: the first item of each group (section and subgroup), and these, where tables of tokens, sizes and
-// values are
-const DS_TITLES = ['Typography', 'Design tokens', 'Color', 'Spacing', 'Radius', 'Text', 'Table', 'Data grid', 'Property list', 'Code block', 'Keyboard shortcut', 'Metric', 'Activity list', 'File list', 'Button', 'Badge'];
+if (!APP_PAGES.length && !SITE_PAGES.length) changed.none('TYPOGRAPHY_OK role 0, prose 0, pattern 0, baseline 0 on 0 pages');
 const CHECKS = ['role', 'prose', 'pattern', 'baseline'];
 
 // runs in the page: the findings of each check
@@ -127,7 +126,7 @@ async function inspect() {
   const server = await serve(PORT);
   const browser = await launch();
   const found = {};
-  const MODES = ['light', 'dark'];
+  const MODES = ['light'];
   for (const mode of MODES) {
     const page = await browser.newPage(); await page.setViewport({ width: 1440, height: 1000 });
     await page.emulateMediaFeatures([{ name: 'prefers-color-scheme', value: mode }, { name: 'prefers-reduced-motion', value: 'reduce' }]);
@@ -143,14 +142,11 @@ async function inspect() {
       await page.evaluate(() => { try { localStorage.clear(); } catch (e) { /* storage blocked */ } });
       await page.goto(BASE + a, { waitUntil: 'networkidle0' }); await sleep(900); await take(a);
     }
-    if (!HAS_DS && mode === 'light') console.log('NOTE: platform/design-system is not checked out; its pages are skipped');
-    if (HAS_DS && changed.anyDS() && (!ONLY || ONLY.test('design-system'))) {
-      at(mode + ' design-system home'); await page.goto(BASE + 'platform/design-system/', { waitUntil: 'networkidle0' }); await sleep(1500); if (changed.dsHome()) await take('design-system home');
-      const sample = await page.evaluate((TITLES) => { const seen = {}; return window.DSInventory.filter((r) => { const k = r.sec + '/' + (r.sub || ''); return (!seen[k] && (seen[k] = true)) || TITLES.indexOf(r.title) >= 0; }).map((r) => '#/' + r.sec + '/' + r.id); }, DS_TITLES);
-      const routes = await changed.routesIn(page, sample);
-      if (mode === 'light') changed.report(APP_PAGES.length + ' app pages, ' + routes.length + ' of ' + sample.length + ' sampled design-system pages');
-      for (const r of routes) { at(mode + ' design-system ' + r); await page.evaluate((h) => { location.hash = h; }, r); await sleep(1000); await take('design-system ' + r); }
-    } else if (mode === 'light') changed.report(APP_PAGES.length + ' app pages, 0 design-system pages');
+    if (mode === 'light') changed.report(APP_PAGES.length + ' app pages, ' + SITE_PAGES.length + ' of ' + site.pages().length + ' test-site pages');
+    for (const r of SITE_PAGES) {
+      if (ONLY && !ONLY.test(r)) continue;
+      at(mode + ' ' + r); await page.goto(BASE + r, { waitUntil: 'networkidle0' }); await sleep(900); await take(r);
+    }
     await page.close();
   }
   await browser.close(); server.close();

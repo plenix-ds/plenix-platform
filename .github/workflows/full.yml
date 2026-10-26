@@ -1,7 +1,8 @@
 # Plenix full suite: the final gate (owner, 2026-10-13), run by hand (Actions › Full suite › Run workflow) only when
 # everything is marked complete; never per push and never per release. Every test on every page (TEST_SCOPE=full), split
-# into parallel jobs: the long tests in shards (TEST_SHARD=<i>/<n>: every n-th page, route and lab), each job with a time
-# limit. The design system (platform/design-system) is checked out with the DS_TOKEN secret.
+# into parallel jobs, each with a time limit. The browser tests open the St. John the Beloved test site (test-site/) and
+# the suite applications, never the design spec (owner, 2026-10-25); the design system (platform/design-system) is checked
+# out with the DS_TOKEN secret for the spec check in the build job only.
 name: Full suite
 
 on:
@@ -54,35 +55,23 @@ jobs:
   browser:
     name: Full ${{ matrix.name }}
     runs-on: ubuntu-latest
-    timeout-minutes: 100
+    timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:
         include:
-          - { name: 'pages 1/4', tests: pages, shard: 1/4 }
-          - { name: 'pages 2/4', tests: pages, shard: 2/4 }
-          - { name: 'pages 3/4', tests: pages, shard: 3/4 }
-          - { name: 'pages 4/4', tests: pages, shard: 4/4 }
-          - { name: 'labs 1/2', tests: labs, shard: 1/2 }
-          - { name: 'labs 2/2', tests: labs, shard: 2/2 }
+          # the St. John the Beloved test site and the suite applications (owner, 2026-10-25: never the design spec)
+          - { name: pages, tests: pages, shard: '' }
+          - { name: 'component tokens', tests: component-tokens, shard: '' }
           - { name: typography, tests: typography, shard: '' }
           - { name: reflow, tests: reflow, shard: '' }
-          - { name: fixtures, tests: visual layout utilities keyboard, shard: '' }
+          - { name: fixtures, tests: site-coverage visual layout utilities keyboard, shard: '' }
           - { name: behavior, tests: data-grid focus-order semantic-html navigation, shard: '' }
     env:
       TEST_SHARD: ${{ matrix.shard }}
       TEST_TIMEOUT_MS: '5400000'
     steps:
       - uses: actions/checkout@v5
-
-      - name: Design system (submodule)
-        env:
-          DS_TOKEN: ${{ secrets.DS_TOKEN }}
-        run: |
-          if [ -n "$DS_TOKEN" ]; then
-            git config --global url."https://x-access-token:${DS_TOKEN}@github.com/".insteadOf "https://github.com/"
-            git submodule update --init --depth 1
-          fi
 
       - uses: actions/setup-node@v5
         with:

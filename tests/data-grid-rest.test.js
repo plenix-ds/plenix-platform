@@ -483,10 +483,6 @@ module.exports = async function rest(page) {
   });
 };
 if (require.main === module) {
-  if (!fs.existsSync(path.join(ROOT, 'platform/design-system/index.html'))) {
-    console.log('DATA_GRID_REST_SKIP no design system');
-    process.exit(0);
-  }
   const {
     serve,
     launch
@@ -498,7 +494,7 @@ if (require.main === module) {
     try {
       b = await launch();
       const p = await b.newPage();
-      await p.goto('http://127.0.0.1:' + port + '/Plenix/platform/design-system/', {
+      await p.goto('http://127.0.0.1:' + port + '/Plenix/test-site/index.html', {
         waitUntil: 'networkidle0'
       });
       console.log('DATA_GRID_REST_OK ' + (await module.exports(p)) + ' checks');

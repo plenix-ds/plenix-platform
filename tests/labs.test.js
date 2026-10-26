@@ -1,3 +1,6 @@
+// Spec only (owner, 2026-10-25): not in the automatic runs, the CI or the full suite. The browser tests run on the St. John
+// the Beloved test site; the token checks on real components are tests/component-tokens.test.js. This check of the spec's
+// Edit dialog belongs to the spec (platform/design-system), which loads Plenix from the CDN: node tests/run.js labs
 // Plenix tests · the design system's component labs (component-lab.js, form-labs.js; batches 252-256): for every lab, at
 // every size, variant, state and content, each property's token (spec.token) is set to a marker on the page and the
 // property its Edit dialog field names must take that marker. A field whose token does not move its property fails: the
@@ -23,7 +26,7 @@ if (!ONLY && !changed.anyDS()) changed.none('LABS_OK 0/0 labs');
   const server = await serve(PORT);
   const browser = await launch();
   const page = await browser.newPage(); await page.setViewport({ width: 1440, height: 1000 });
-  await page.goto('http://127.0.0.1:' + PORT + '/Plenix/platform/design-system/index.html', { waitUntil: 'networkidle0' }); await sleep(1500);
+  await page.goto('http://127.0.0.1:' + PORT + '/Plenix/platform/design-system/index.html?plenix=local', { waitUntil: 'networkidle0' }); await sleep(1500);   // ?plenix=local: the checkout's Platform, not the CDN release
   const every = (await page.evaluate(() => Object.keys(window.DS.labs || {}).filter((id) => id !== 'button'))).filter((id) => !ONLY || ONLY.includes(id));
   const ids = ONLY ? every : await changed.labsIn(page, every);
   changed.report(ids.length + ' of ' + every.length + ' labs');
