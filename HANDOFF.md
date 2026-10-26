@@ -44,6 +44,12 @@ One design system and the suite of applications built on it, owned by one person
 
 ## How to work
 
+- **Tests and checks only before a push (owner, 2026-10-26).** The owner's words: "so i want the tests checks to only be done on a PUSH!!!"
+  - Commit freely while working. Run the tests and checks (`node build-app.js`, `node check-system.js`, `node check-spec.js`, the tests that cover the change) only right before a push.
+  - The full suite runs on the release gate (the sharded CI full run on the release commit), not on each commit.
+- **Show me, then ship it (owner, 2026-10-26).**
+  - "Show me" comes first: a live preview and one picture, with no build, no tests and no PR.
+  - "Ship it" comes only after the owner picks: then build, check before the push, open the PR, and merge on the owner's word.
 - **On-demand tests (owner only, 2026-10-25).**
   - Accessibility, high contrast, color contrast, themes and density run only when the owner asks for them.
   - They are not in `npm test`, `npm run test:full`, the per-push CI or the full suite.
