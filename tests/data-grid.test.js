@@ -8,7 +8,7 @@
 // and "load-more" have a footer whose controls (the rows-per-page Select, the page buttons, Load more) follow the grid
 // body in the Tab order: Tab from the body reaches them, and none is out of the Tab order.
 // (owner: one size in tables, batch 247; typefaces by kind, 2026-10-11; badges, tags, chips, buttons and keys keep their
-// component sizes, as do tooltips (a row menu's tooltip waits hidden in the row), and the design system's value previews (.ds-vis: an "Aa" at the size it documents) are specimens).
+// component sizes, and the design system's value previews (.ds-vis: an "Aa" at the size it documents) are specimens).
 //   node tests/data-grid.test.js            (TEST_PORT: another port)
 //   DT_ENGINE=next: the independent renderer; DT_ONLY selects individual views.
 //   TEST_SCOPE=full: every view; by default (tests/changed.js) the views of the apps and test-site pages that changed,
@@ -228,7 +228,9 @@ if (!ONLY && changed.wants({ units: ['components/DataGrid'] })) {
         const w = document.createTreeWalker(g.querySelector('.plx-data-grid__grid-tableholder') || g, NodeFilter.SHOW_TEXT); let n;
         while ((n = w.nextNode()) && type.length < 3) {
           // (a group header's eyebrow and a summary's name are labels in the eyebrow style: the owner's group header, 2026-10-14)
-          const el = n.parentElement; if (!n.textContent.trim() || el.closest('.plx-badge, .plx-tag, .plx-tag--chip, .plx-button, .plx-kbd, .plx-count, .plx-tooltip, .plx-data-grid__grid-placeholder, .ds-vis, .plx-data-grid__group-eyebrow, .plx-data-grid__group-summary-name')) continue;
+          // (a tooltip's bubble is the tooltip's own text, in its own size, and hidden until hover: not cell text (#323);
+          // nor is any text that is not drawn)
+          const el = n.parentElement; if (!n.textContent.trim() || el.closest('.plx-badge, .plx-tag, .plx-tag--chip, .plx-button, .plx-kbd, .plx-count, .plx-data-grid__grid-placeholder, .ds-vis, .plx-data-grid__group-eyebrow, .plx-data-grid__group-summary-name, .plx-tooltip__bubble, [role="tooltip"]') || !el.getClientRects().length) continue;
           const c = getComputedStyle(el), fam = c.fontFamily.split(',')[0].replace(/"/g, '');
           const mono = !!el.closest('[class*="__cell--data"]') || !!el.closest(MARKED), want = mono ? 'Reddit Mono' : 'DM Sans';
           if (fam !== want || c.fontSize !== size) type.push('"' + n.textContent.trim().slice(0, 20) + '" is ' + fam + ' ' + c.fontSize + ', want ' + want + ' ' + size + (mono ? ' (a data value)' : ''));

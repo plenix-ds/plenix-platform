@@ -46,7 +46,6 @@
 .plx-table__grid-col-content{align-items:center;flex-grow:1;block-size:var(--plx-state-data-grid-content-block,var(--plx-comp-data-grid-header-height));max-block-size:var(--plx-state-data-grid-content-max-block,none);min-block-size:var(--plx-state-data-grid-content-min-block,0);display:var(--plx-state-data-grid-content-display,flex);justify-content:var(--plx-state-data-grid-content-justify,normal);padding-block-end:0;padding-block-start:0;padding-inline-end:var(--plx-comp-data-grid-cell-padding-inline);padding-inline-start:var(--plx-comp-data-grid-cell-padding-inline);position:var(--plx-state-data-grid-content-position,relative);}
 .plx-table__grid-col-content--row-header{--plx-state-data-grid-content-justify:center;--plx-state-data-grid-content-position:static;}
 .plx-table__grid-col-content--icon{--plx-state-data-grid-content-display:inline-flex;--plx-state-data-grid-content-justify:center;color:var(--plx-comp-data-grid-cell-icon-text);line-height:normal;}
-.plx-table__grid-col-content--center{--plx-state-data-grid-content-justify:center;}
 .plx-table__grid-col-content--wrap:where(:not(.plx-table__grid-col-content--static)){--plx-state-data-grid-content-block:auto;--plx-state-data-grid-content-max-block:var(--plx-comp-data-grid-header-wrap-height);--plx-state-data-grid-content-min-block:var(--plx-comp-data-grid-header-height);}
 @property --plx-state-data-grid-content-max-block{syntax:"*";inherits:false;}
 @property --plx-state-data-grid-content-min-block{syntax:"*";inherits:false;}
@@ -63,8 +62,6 @@
 .plx-table__grid-col-title--reserve{--plx-state-data-grid-title-fixed:var(--plx-comp-data-grid-title-reserve);}
 .plx-table__grid-col-title--flush{--plx-state-data-grid-title-fixed:0;}
 .plx-table__grid-col-title--icon{display:flex;}
-.plx-table__grid-col-title--align-right{text-align:end;}
-.plx-table__grid-col-title--align-center{text-align:center;}
 .plx-table__title{align-items:center;column-gap:var(--plx-comp-data-grid-header-type-icon-gap);display:flex;min-inline-size:0;}
 .plx-table__title-text{min-inline-size:0;overflow:hidden;text-overflow:ellipsis;white-space:var(--plx-state-data-grid-title-text-space,nowrap);}
 .plx-table__title-text--wrap{--plx-state-data-grid-title-text-space:normal;-webkit-box-orient:vertical;-webkit-line-clamp:2;display:-webkit-box;line-height:var(--plx-comp-data-grid-header-title-line-height);overflow-wrap:anywhere;}
@@ -119,6 +116,9 @@
 /* a wrap row pads every cell at the top and bottom already, so its wrapping values add none: every cell starts at the
    same top (owner, 2026-10-25: rows with a wrap start at the top) */
 .plx-table__grid-row--wrap{--plx-comp-data-grid-context-cell-align:flex-start;--plx-comp-data-grid-context-value-wrap-pad-end:0;--plx-comp-data-grid-context-value-wrap-pad-start:0;--plx-comp-data-grid-context-cell-line-height:var(--plx-comp-data-grid-wrap-line-height);--plx-comp-data-grid-context-cell-pad-end:var(--plx-comp-data-grid-cell-wrap-padding-bottom);--plx-comp-data-grid-context-cell-pad-start:var(--plx-comp-data-grid-cell-wrap-padding-top);}
+/* cut text: the expand button at the cell's end, and the full text in its popover (owner, 2026-10-24) */
+.plx-table__cut{display:inline-flex;flex-shrink:0;margin-inline-start:auto;}
+.plx-table__full-text{overflow-wrap:anywhere;white-space:normal;}
 /* row hover R2 and selected rows S2 (owner, 2026-10-23): each keeps its lines in its own color, a selected row has a bar at its start */
 .plx-table__grid-row.plx-table__grid-selectable:hover:where(:not(.plx-table__grid-selected)){--plx-comp-data-grid-context-row-fill:var(--plx-comp-data-grid-row-hover-background);--plx-comp-data-grid-context-row-line:var(--plx-comp-data-grid-row-hover-line);}
 .plx-table__grid-row.plx-table__grid-selected:where(:not(:hover)){--plx-comp-data-grid-context-row-fill:var(--plx-comp-data-grid-row-selected-background);--plx-comp-data-grid-context-row-line:var(--plx-comp-data-grid-row-selected-line);}

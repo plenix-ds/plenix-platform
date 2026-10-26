@@ -78,6 +78,9 @@ jobs:
       - name: Release build
         run: node build-packages.js
 
+      - name: "Collection docs (reads the release build; #271)"
+        run: node tests/collection-docs-201.test.js
+
       - name: What changed (the scope of the browser tests)
         run: node tests/changed.js
 
@@ -104,7 +107,7 @@ jobs:
           - name: fixtures
             tests: site-coverage visual layout
           - name: behavior
-            tests: data-grid keyboard focus-order semantic-html utilities navigation
+            tests: data-grid keyboard focus-order semantic-html utilities navigation one-primary
     env:
       TEST_TIMEOUT_MS: '1200000'
       TEST_SHARD: ${{ matrix.shard }}

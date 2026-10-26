@@ -25,7 +25,7 @@
      { search, filter, quick, sort, group, columns, view, reset, setSearch, setFilter, setQuick(key, value), setSort, setGroup,
        setColumns, setView, test(row) (whether a row shows), count(rows) (how many show), table (a ref to the DataGrid's
        table controller), searchProps, filterProps, quickProps(key) (includes counts: Map of option values to faceted record counts), sortProps, groupProps, columnsProps, viewProps,
-       tableProps: { filter, sort, groupBy, columnOrder, hiddenColumns, rowHeight, columnWidths, collapsedGroups, onViewChange, onReady } }
+       tableProps: { filter, sort, groupBy, columnOrder, hiddenColumns, rowHeight, columnWidths, collapsedGroups, onViewChange, onReady, onFilterField } }
    Notes:
      tableProps delegates header changes back to this hook; a managed grid ignores its own storageKey.
      The groups' order follows their levels: tableProps.sort is the group levels, then the sort levels. "Hide empty groups"
@@ -136,19 +136,22 @@ export function useCollectionView(fields, options = {}) {
     if('groupBy'in patch)setGroup(old=>[].concat(patch.groupBy||[]).map(value=>typeof value==='string'?{field:value}:value).filter(value=>known.has(value.field)).map(value=>({...old.find(level=>level.field===value.field),dir:'asc',...value})));
     if('rowHeight'in patch||'wrapHeaders'in patch||'widths'in patch||'collapsed'in patch)setView(old=>({...old,...('rowHeight'in patch?{height:patch.rowHeight}:{}),...('wrapHeaders'in patch?{wrapHeaders:patch.wrapHeaders}:{}),...('widths'in patch?{widths:patch.widths}:{}),...('collapsed'in patch?{collapsed:patch.collapsed}:{})}));
   },[fields,group]);
+  // the grid's "Filter by this field" opens the command bar's Filter panel on that field (one filter state, shown in one place)
+  const [filterOpen, setFilterOpen] = React.useState(false), [filterRequest, setFilterRequest] = React.useState(null);
+  const onFilterField = React.useCallback((field) => { setFilterRequest({ field, id: Date.now() + Math.random() }); setFilterOpen(true); }, []);
   const groupable = fields.filter((f) => f.groupable !== false);
   const sorters = group.map((g) => ({ field: g.field, dir: g.dir || 'asc' })).concat(sort.filter((s) => !group.some((g) => g.field === s.field)));
   return {
     search, filter, quick, sort, group, columns, view, reset, setSearch, setFilter, setQuick, setSort, setGroup, setColumns, setView, test, table,
     count: (rows) => rows.filter(test).length,
     searchProps: { value: search, onChange: (e) => setSearch(e.target.value), onClear: () => setSearch('') },
-    filterProps: { fields, value: filter, onChange: setFilter },
+    filterProps: { fields, value: filter, onChange: setFilter, open: filterOpen, onOpenChange: setFilterOpen, request: filterRequest },
     quickProps: (k) => ({ kind: config(k).kind || 'list', required: !!config(k).required, value: quick[k] || (config(k).kind === 'date' ? { preset: 'any', from: '', to: '' } : []), onChange: (v) => setQuick(k, v), counts: countsFor(k) }),
     sortProps: { fields, value: sort, onChange: setSort, grouped: group.length > 0 },
     groupProps: { fields: groupable, value: group, onChange: setGroup, table },
     columnsProps: { fields, value: columns, onChange: setColumns },
     viewProps: { value: view, onChange: setView, onReset: reset },
     tableProps: { filter: test, sort: sorters, groupBy: group.length ? group.map((g) => ({ ...g, interval: g.interval || (fields.find(f => f.value === g.field)?.kind === 'date' ? 'day' : undefined), range: g.range ?? fields.find(f => f.value === g.field)?.groupRange })) : false, columnOrder: columns.order, hiddenColumns: columns.hidden,
-      rowHeight: view.height, wrapHeaders: !!view.wrapHeaders, columnWidths: view.widths, collapsedGroups: view.collapsed, onViewChange, onReady },
+      rowHeight: view.height, wrapHeaders: !!view.wrapHeaders, columnWidths: view.widths, collapsedGroups: view.collapsed, onViewChange, onReady, onFilterField },
   };
 }
