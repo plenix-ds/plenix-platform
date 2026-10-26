@@ -19,7 +19,7 @@ cd "$(dirname "$0")/.."
 (cd Plenix && node build-packages.js >/dev/null) || { echo "build-packages failed: run node Plenix/build-packages.js"; exit 1; }
 VERSION=$(cd Plenix && node -p "require('./package.json').version")
 # the design spec runs on this release from the CDN (platform/design-system/plenix-source.js): it must name this version
-grep -q "var VERSION = '$VERSION'" Plenix/platform/design-system/plenix-source.js || { echo "The design spec pins another release: set VERSION in platform/design-system/plenix-source.js to $VERSION"; exit 1; }
+[ ! -f Plenix/platform/design-system/plenix-source.js ] || grep -q "var VERSION = '$VERSION'" Plenix/platform/design-system/plenix-source.js || { echo "The design spec pins another release: set VERSION in platform/design-system/plenix-source.js to $VERSION"; exit 1; }
 # the Material Symbols library, shared by every release (icons-all.css points at it): copied once per pinned commit
 MATERIAL=$(cd Plenix && node -p "require('./platform/icons/map.json')._commit.slice(0, 12)")
 

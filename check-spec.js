@@ -242,10 +242,12 @@ for (const dir of ['components', 'patterns', 'providers', 'hooks']) {
 // cdn: the spec is a consumer of the CDN (owner, 2026-10-25). plenix-source.js holds the one version setting, which is
 // package.json's version (it moves at a release, VERSIONING.md); every other spec file loads Plenix through it
 // (PlenixSource), never through a path into this checkout (../platform.css, ../dist/, ../system/, ../icons/ …)
-{
+// The rule applies from the spec version that has plenix-source.js (plenix-design-system#5); an older pointer is checked
+// as before, so this check and the spec can land in either order.
+const SPEC_ON_CDN = fs.existsSync(path.join(SPEC, 'plenix-source.js'));
+if (SPEC_ON_CDN) {
   const src = path.join(SPEC, 'plenix-source.js');
-  if (!fs.existsSync(src)) add('cdn', 'platform/design-system/plenix-source.js is missing: the spec has no CDN version setting');
-  else {
+  {
     const pinned = (/var VERSION = '([^']+)'/.exec(read(src)) || [])[1];
     const version = JSON.parse(read(path.join(__dirname, 'package.json'))).version;
     if (pinned !== version) add('cdn', 'plenix-source.js pins ' + pinned + ', package.json is ' + version + ': set VERSION to the release (VERSIONING.md, Releasing, step 2)');
