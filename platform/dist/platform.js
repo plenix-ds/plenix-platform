@@ -1753,390 +1753,6 @@ function MediaCard({
   }), card);
 }
   } },
-  "platform/utils/dataviz.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.DATAVIZ_STATUS = exports.DATAVIZ_SCALES = exports.DATAVIZ_ALERT = void 0;
-exports.datavizCategory = datavizCategory;
-exports.datavizStep = datavizStep;
-exports.datavizToken = datavizToken;
-/* Plenix · data visualization colors (platform/utils/dataviz.js): which chart color a series or a value takes.
-   Summary: The chart scales (--plx-sys-dataviz-*, platform/tokens/semantic/dataviz.tokens.json) by name: categorical (6
-     hues, the data colors in order), sequential (7 steps of one hue), diverging (7 steps, two hues around a neutral
-     midpoint), status (positive, caution, negative, informative, neutral) and alert (warning, critical). The helpers return
-     the step's name; data-plx-dataviz="<name>" on an element makes it the element's data color (system/dataviz.css sets
-     --plx-comp-data-color), so a chart part fills itself with var(--plx-comp-data-color) and no style is written.
-   Usage:
-     import { datavizCategory, datavizStep } from 'plenix-platform';
-     series.map((s, i) => <path key={s.id} className="my-line" data-plx-dataviz={datavizCategory(i)} />)
-     <rect data-plx-dataviz={datavizStep('sequential', value, 0, 100)} />     // "sequential-5"
-     <rect data-plx-dataviz={datavizStep('diverging', change, -10, 10)} />     // midpoint 0 -> "diverging-4"
-     <line data-plx-dataviz="alert-critical" />
-   Props:
-     DATAVIZ_SCALES: { categorical: 6, sequential: 7, diverging: 7 }, the number of steps of each scale
-     DATAVIZ_STATUS: ['positive', 'caution', 'negative', 'informative', 'neutral'] (data-plx-dataviz="status-<name>")
-     DATAVIZ_ALERT: ['warning', 'critical'] (data-plx-dataviz="alert-<name>")
-     datavizCategory(index): "categorical-1" to "categorical-6" for series index 0, 1, …; after six it starts again
-     datavizStep(scale, value, min?, max?): the step of "sequential" or "diverging" for a value between min and max
-       (default 0 and 1; values outside are clamped); for diverging the midpoint is halfway between min and max
-     datavizToken(name): the token of a step, "--plx-sys-dataviz-" + name
-   Behavior:
-     A series keeps its color in every view: assign by a stable order (the series' order in the data), never by rank.
-     The scales are the same in light and dark mode; marks keep 3:1 against the chart surface (the Contrast rules page).
-   Notes:
-     Color is never the only cue: label series directly or add markers and patterns (Use of color). Status and alert colors
-     only where the data is a status or a threshold, never for ordinary series. More than six categories: group or filter. */
-
-const DATAVIZ_SCALES = exports.DATAVIZ_SCALES = Object.freeze({
-  categorical: 6,
-  sequential: 7,
-  diverging: 7
-});
-const DATAVIZ_STATUS = exports.DATAVIZ_STATUS = Object.freeze(['positive', 'caution', 'negative', 'informative', 'neutral']);
-const DATAVIZ_ALERT = exports.DATAVIZ_ALERT = Object.freeze(['warning', 'critical']);
-function datavizCategory(index) {
-  const n = DATAVIZ_SCALES.categorical,
-    i = Math.floor(Number(index) || 0);
-  return 'categorical-' + ((i % n + n) % n + 1);
-}
-function datavizStep(scale, value, min = 0, max = 1) {
-  const steps = DATAVIZ_SCALES[scale];
-  if (!steps || scale === 'categorical') throw new Error('datavizStep: the scale is "sequential" or "diverging", not "' + scale + '"');
-  const span = max - min;
-  const t = span ? Math.min(1, Math.max(0, (Number(value) - min) / span)) : 0.5;
-  return scale + '-' + Math.min(steps, Math.floor(t * steps) + 1);
-}
-function datavizToken(name) {
-  return '--plx-sys-dataviz-' + name;
-}
-  } },
-  "platform/charts/scales.js": { deps: {"../utils/format.js":"platform/utils/format.js","../utils/dataviz.js":"platform/utils/dataviz.js"}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.niceTicks = niceTicks;
-exports.scaleBand = scaleBand;
-exports.scaleLinear = scaleLinear;
-exports.scaleLog = scaleLog;
-exports.scaleTime = scaleTime;
-exports.seriesColor = seriesColor;
-var _format = require("../utils/format.js");
-var _dataviz = require("../utils/dataviz.js");
-/* Plenix · Chart scales (platform/charts/scales.js)
-   Summary: The math every Plenix chart shares (07 Data Display › Charts › Chart foundations): scales that turn a value
-     into a position (linear, log, band, time), "nice" tick values on round numbers and calendar steps, tick labels in
-     the reader's locale (utils/format.js), and the series color of the data-viz scales (utils/dataviz.js). No
-     dependency: ChartFrame draws the SVG, the chart parts (wave 8) and the charts (wave 9) build on these.
-   Usage:
-     import { scaleLinear, scaleBand, scaleTime, scaleLog, niceTicks, seriesColor } from 'plenix-platform';
-     const y = scaleLinear({ domain: [0, max], range: [inner.height, 0], nice: true });
-     y(42)            // the position of 42
-     y.ticks()        // [0, 20, 40, 60, 80, 100]: about five round values inside the domain
-     y.format(20)     // "20", in the reader's locale with the ticks' precision
-     const x = scaleBand({ domain: ['Jan', 'Feb', 'Mar'], range: [0, inner.width] });
-     x('Feb'), x.bandwidth()
-     <rect className="plx-chart__mark" data-plx-dataviz={seriesColor(i)} … />
-   Props:
-     niceTicks(min, max, count?): { start, stop, step, ticks } on steps of 1, 2 or 5 × 10ⁿ, about count (default 5) of them,
-       start and stop widened to whole steps
-     scaleLinear({ domain, range, nice, clamp, count }): a continuous scale; nice widens the domain to whole tick steps
-       (count ticks, default 5); clamp keeps positions inside the range
-     scaleLog({ domain, range, base, clamp }): a logarithmic scale (domain above 0; base default 10); ticks are the powers
-       of the base, with 2 and 5 between them over two decades or less
-     scaleBand({ domain, range, paddingInner, paddingOuter, align }): one band per category, in the domain's order;
-       paddingInner (default 0.2) and paddingOuter (default 0.1) are fractions of a step; align (default 0.5) places the
-       bands when there is room left
-     scaleTime({ domain, range, nice, clamp, count }): a continuous scale over dates (Date or anything Date accepts);
-       ticks fall on calendar steps (seconds to years) in local time
-     Every continuous scale: scale(value) → position; scale.invert(position) → value; scale.ticks(count?);
-       scale.format(value, count?) → the tick label; scale.domain(), scale.range(); scale.type
-     A band scale: scale(key) → start of its band (undefined for an unknown key); scale.bandwidth(); scale.step();
-       scale.ticks() → the keys; scale.format(key) → String(key)
-     seriesColor(index): the categorical data-viz step of a series ("categorical-1" …), for data-plx-dataviz
-   Behavior:
-     Scales are plain functions: no state, no DOM. A domain of one value (min = max) is widened by half a step on each
-       side, so a flat series still sits in the middle.
-     Tick labels use the reader's locale and the same number of decimals for every tick of an axis (Numbers and units).
-   Notes:
-     A series keeps its color by its order in the data, never by rank (Data visualization colors). Positions are SVG user
-       units (pixels inside ChartFrame's plot).
-*/
-
-const E10 = Math.sqrt(50),
-  E5 = Math.sqrt(10),
-  E2 = Math.sqrt(2);
-// a step of 1, 2 or 5 × 10ⁿ for about count ticks over the span
-function tickStep(span, count) {
-  const raw = Math.abs(span) / Math.max(1, count);
-  if (!raw || !isFinite(raw)) return 1;
-  const pow = Math.pow(10, Math.floor(Math.log10(raw)));
-  const err = raw / pow;
-  return (err >= E10 ? 10 : err >= E5 ? 5 : err >= E2 ? 2 : 1) * pow;
-}
-const decimalsOf = step => Math.max(0, -Math.floor(Math.log10(Math.abs(step)) + 1e-9));
-const round = (v, d) => Number(v.toFixed(Math.min(20, d)));
-function niceTicks(min, max, count = 5) {
-  let lo = Number(min),
-    hi = Number(max);
-  if (lo > hi) {
-    const t = lo;
-    lo = hi;
-    hi = t;
-  }
-  if (lo === hi) {
-    const half = tickStep(Math.abs(lo) || 1, count) / 2;
-    lo -= half;
-    hi += half;
-  }
-  const step = tickStep(hi - lo, count),
-    d = decimalsOf(step);
-  const start = round(Math.floor(lo / step) * step, d),
-    stop = round(Math.ceil(hi / step) * step, d);
-  const ticks = [];
-  for (let v = start, i = 0; v <= stop + step / 2 && i < 1000; i++, v = start + i * step) ticks.push(round(v, d));
-  return {
-    start,
-    stop,
-    step,
-    ticks
-  };
-}
-const pair = (a, fallback) => Array.isArray(a) && a.length === 2 ? a.slice() : fallback.slice();
-const interpolate = (r0, r1, t) => r0 + (r1 - r0) * t;
-function scaleLinear({
-  domain = [0, 1],
-  range = [0, 1],
-  nice = false,
-  clamp = false,
-  count = 5
-} = {}) {
-  let d = pair(domain, [0, 1]).map(Number);
-  const r = pair(range, [0, 1]).map(Number);
-  if (d[0] === d[1]) {
-    const n = niceTicks(d[0], d[1], count);
-    d = [n.start, n.stop];
-  }
-  if (nice) {
-    const n = niceTicks(Math.min(d[0], d[1]), Math.max(d[0], d[1]), count);
-    d = d[0] <= d[1] ? [n.start, n.stop] : [n.stop, n.start];
-  }
-  const scale = v => {
-    let t = (Number(v) - d[0]) / (d[1] - d[0]);
-    if (clamp) t = Math.min(1, Math.max(0, t));
-    return interpolate(r[0], r[1], t);
-  };
-  scale.invert = p => d[0] + (Number(p) - r[0]) / (r[1] - r[0]) * (d[1] - d[0]);
-  scale.ticks = (n = count) => niceTicks(Math.min(d[0], d[1]), Math.max(d[0], d[1]), n).ticks.filter(v => v >= Math.min(d[0], d[1]) - 1e-9 && v <= Math.max(d[0], d[1]) + 1e-9);
-  scale.format = (v, n = count, o = {}) => (0, _format.formatNumber)(v, {
-    decimals: decimalsOf(tickStep(d[1] - d[0], n)),
-    locale: o.locale
-  });
-  scale.domain = () => d.slice();
-  scale.range = () => r.slice();
-  scale.type = 'linear';
-  return scale;
-}
-function scaleLog({
-  domain = [1, 10],
-  range = [0, 1],
-  base = 10,
-  clamp = false
-} = {}) {
-  const d = pair(domain, [1, 10]).map(v => Math.max(Number(v), Number.MIN_VALUE));
-  const r = pair(range, [0, 1]).map(Number);
-  const log = v => Math.log(v) / Math.log(base);
-  const l0 = log(d[0]),
-    l1 = log(d[1]);
-  const scale = v => {
-    let t = (log(Math.max(Number(v), Number.MIN_VALUE)) - l0) / (l1 - l0 || 1);
-    if (clamp) t = Math.min(1, Math.max(0, t));
-    return interpolate(r[0], r[1], t);
-  };
-  scale.invert = p => Math.pow(base, l0 + (Number(p) - r[0]) / (r[1] - r[0]) * (l1 - l0));
-  scale.ticks = () => {
-    const lo = Math.min(d[0], d[1]),
-      hi = Math.max(d[0], d[1]);
-    const e0 = Math.floor(log(lo)),
-      e1 = Math.ceil(log(hi));
-    const between = e1 - e0 <= 2 && base === 10 ? [1, 2, 5] : [1];
-    const out = [];
-    for (let e = e0; e <= e1; e++) between.forEach(m => {
-      const v = m * Math.pow(base, e);
-      if (v >= lo * (1 - 1e-9) && v <= hi * (1 + 1e-9)) out.push(Number(v.toPrecision(12)));
-    });
-    return out;
-  };
-  scale.format = (v, n, o = {}) => (0, _format.formatNumber)(v, {
-    decimals: v < 1 ? decimalsOf(v) : 0,
-    locale: o.locale
-  });
-  scale.domain = () => d.slice();
-  scale.range = () => r.slice();
-  scale.type = 'log';
-  return scale;
-}
-function scaleBand({
-  domain = [],
-  range = [0, 1],
-  paddingInner = 0.2,
-  paddingOuter = 0.1,
-  align = 0.5
-} = {}) {
-  const keys = Array.from(domain);
-  const r = pair(range, [0, 1]).map(Number);
-  const n = keys.length;
-  const reverse = r[1] < r[0];
-  const r0 = reverse ? r[1] : r[0],
-    r1 = reverse ? r[0] : r[1];
-  const step = (r1 - r0) / Math.max(1, n - paddingInner + paddingOuter * 2);
-  const start = r0 + (r1 - r0 - step * (n - paddingInner)) * align;
-  const band = step * (1 - paddingInner);
-  const scale = key => {
-    const i = keys.indexOf(key);
-    if (i < 0) return undefined;
-    return start + step * (reverse ? n - 1 - i : i);
-  };
-  scale.bandwidth = () => band;
-  scale.step = () => step;
-  scale.ticks = () => keys.slice();
-  scale.format = key => String(key);
-  scale.domain = () => keys.slice();
-  scale.range = () => r.slice();
-  scale.type = 'band';
-  return scale;
-}
-
-// calendar steps, shortest first: [unit, amount, approximate milliseconds]
-const S = 1000,
-  MIN = 60 * S,
-  H = 60 * MIN,
-  DAY = 24 * H;
-const TIME_STEPS = [['second', 1, S], ['second', 5, 5 * S], ['second', 15, 15 * S], ['second', 30, 30 * S], ['minute', 1, MIN], ['minute', 5, 5 * MIN], ['minute', 15, 15 * MIN], ['minute', 30, 30 * MIN], ['hour', 1, H], ['hour', 3, 3 * H], ['hour', 6, 6 * H], ['hour', 12, 12 * H], ['day', 1, DAY], ['day', 2, 2 * DAY], ['week', 1, 7 * DAY], ['month', 1, 30 * DAY], ['month', 3, 91 * DAY], ['year', 1, 365 * DAY]];
-const toTime = v => v instanceof Date ? v.getTime() : new Date(v).getTime();
-// the start of the step that holds t (local time)
-function floorTo(t, unit, amount) {
-  const x = new Date(t);
-  if (unit === 'second') {
-    x.setMilliseconds(0);
-    x.setSeconds(Math.floor(x.getSeconds() / amount) * amount);
-  } else if (unit === 'minute') {
-    x.setSeconds(0, 0);
-    x.setMinutes(Math.floor(x.getMinutes() / amount) * amount);
-  } else if (unit === 'hour') {
-    x.setMinutes(0, 0, 0);
-    x.setHours(Math.floor(x.getHours() / amount) * amount);
-  } else if (unit === 'day') {
-    x.setHours(0, 0, 0, 0);
-  } else if (unit === 'week') {
-    x.setHours(0, 0, 0, 0);
-    x.setDate(x.getDate() - x.getDay());
-  } else if (unit === 'month') {
-    x.setHours(0, 0, 0, 0);
-    x.setDate(1);
-    x.setMonth(Math.floor(x.getMonth() / amount) * amount);
-  } else {
-    x.setHours(0, 0, 0, 0);
-    x.setMonth(0, 1);
-    x.setFullYear(Math.floor(x.getFullYear() / amount) * amount);
-  }
-  return x;
-}
-function addTo(x, unit, amount) {
-  const y = new Date(x.getTime());
-  if (unit === 'second') y.setSeconds(y.getSeconds() + amount);else if (unit === 'minute') y.setMinutes(y.getMinutes() + amount);else if (unit === 'hour') y.setHours(y.getHours() + amount);else if (unit === 'day') y.setDate(y.getDate() + amount);else if (unit === 'week') y.setDate(y.getDate() + 7 * amount);else if (unit === 'month') y.setMonth(y.getMonth() + amount);else y.setFullYear(y.getFullYear() + amount);
-  return y;
-}
-function timeStep(span, count) {
-  const target = Math.abs(span) / Math.max(1, count);
-  if (target <= 365 * DAY) {
-    // the calendar step nearest the wanted one (by ratio)
-    const gap = s => Math.abs(Math.log(s[2] / Math.max(1, target)));
-    return TIME_STEPS.reduce((best, s) => gap(s) < gap(best) ? s : best, TIME_STEPS[0]);
-  }
-  const years = tickStep(target / (365 * DAY), 1);
-  return ['year', Math.max(1, years), years * 365 * DAY];
-}
-const TIME_LABELS = {
-  second: {
-    hour: 'numeric',
-    minute: '2-digit',
-    second: '2-digit'
-  },
-  minute: {
-    hour: 'numeric',
-    minute: '2-digit'
-  },
-  hour: {
-    hour: 'numeric',
-    minute: '2-digit'
-  },
-  day: {
-    month: 'short',
-    day: 'numeric'
-  },
-  week: {
-    month: 'short',
-    day: 'numeric'
-  },
-  month: {
-    month: 'short',
-    year: 'numeric'
-  },
-  year: {
-    year: 'numeric'
-  }
-};
-function scaleTime({
-  domain = [0, DAY],
-  range = [0, 1],
-  nice = false,
-  clamp = false,
-  count = 5
-} = {}) {
-  let d = pair(domain, [0, DAY]).map(toTime);
-  const r = pair(range, [0, 1]).map(Number);
-  if (d[0] === d[1]) d = [d[0] - DAY / 2, d[1] + DAY / 2];
-  if (nice) {
-    const [unit, amount] = timeStep(d[1] - d[0], count);
-    const lo = Math.min(d[0], d[1]),
-      hi = Math.max(d[0], d[1]);
-    const start = floorTo(lo, unit, amount).getTime();
-    let stop = floorTo(hi, unit, amount);
-    if (stop.getTime() < hi) stop = addTo(stop, unit, amount);
-    d = d[0] <= d[1] ? [start, stop.getTime()] : [stop.getTime(), start];
-  }
-  const scale = v => {
-    let t = (toTime(v) - d[0]) / (d[1] - d[0]);
-    if (clamp) t = Math.min(1, Math.max(0, t));
-    return interpolate(r[0], r[1], t);
-  };
-  scale.invert = p => new Date(d[0] + (Number(p) - r[0]) / (r[1] - r[0]) * (d[1] - d[0]));
-  scale.step = (n = count) => timeStep(d[1] - d[0], n);
-  scale.ticks = (n = count) => {
-    const [unit, amount] = timeStep(d[1] - d[0], n);
-    const lo = Math.min(d[0], d[1]),
-      hi = Math.max(d[0], d[1]);
-    const out = [];
-    let x = floorTo(lo, unit, amount);
-    if (x.getTime() < lo) x = addTo(x, unit, amount);
-    for (let i = 0; x.getTime() <= hi && i < 1000; i++, x = addTo(x, unit, amount)) out.push(new Date(x.getTime()));
-    return out;
-  };
-  scale.format = (v, n = count, o = {}) => new Intl.DateTimeFormat(o.locale || (0, _format.formatLocale)(), TIME_LABELS[timeStep(d[1] - d[0], n)[0]]).format(new Date(toTime(v)));
-  scale.domain = () => d.map(t => new Date(t));
-  scale.range = () => r.slice();
-  scale.type = 'time';
-  return scale;
-}
-function seriesColor(index) {
-  return (0, _dataviz.datavizCategory)(index);
-}
-  } },
   "platform/utils/tokenTime.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
@@ -2811,7 +2427,852 @@ function useChartPoints({
   };
 }
   } },
-  "platform/charts/Sparkline.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","./scales.js":"platform/charts/scales.js","./a11y.js":"platform/charts/a11y.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/utils/dataviz.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.DATAVIZ_STATUS = exports.DATAVIZ_SCALES = exports.DATAVIZ_ALERT = void 0;
+exports.datavizCategory = datavizCategory;
+exports.datavizStep = datavizStep;
+exports.datavizToken = datavizToken;
+/* Plenix · data visualization colors (platform/utils/dataviz.js): which chart color a series or a value takes.
+   Summary: The chart scales (--plx-sys-dataviz-*, platform/tokens/semantic/dataviz.tokens.json) by name: categorical (6
+     hues, the data colors in order), sequential (7 steps of one hue), diverging (7 steps, two hues around a neutral
+     midpoint), status (positive, caution, negative, informative, neutral) and alert (warning, critical). The helpers return
+     the step's name; data-plx-dataviz="<name>" on an element makes it the element's data color (system/dataviz.css sets
+     --plx-comp-data-color), so a chart part fills itself with var(--plx-comp-data-color) and no style is written.
+   Usage:
+     import { datavizCategory, datavizStep } from 'plenix-platform';
+     series.map((s, i) => <path key={s.id} className="my-line" data-plx-dataviz={datavizCategory(i)} />)
+     <rect data-plx-dataviz={datavizStep('sequential', value, 0, 100)} />     // "sequential-5"
+     <rect data-plx-dataviz={datavizStep('diverging', change, -10, 10)} />     // midpoint 0 -> "diverging-4"
+     <line data-plx-dataviz="alert-critical" />
+   Props:
+     DATAVIZ_SCALES: { categorical: 6, sequential: 7, diverging: 7 }, the number of steps of each scale
+     DATAVIZ_STATUS: ['positive', 'caution', 'negative', 'informative', 'neutral'] (data-plx-dataviz="status-<name>")
+     DATAVIZ_ALERT: ['warning', 'critical'] (data-plx-dataviz="alert-<name>")
+     datavizCategory(index): "categorical-1" to "categorical-6" for series index 0, 1, …; after six it starts again
+     datavizStep(scale, value, min?, max?): the step of "sequential" or "diverging" for a value between min and max
+       (default 0 and 1; values outside are clamped); for diverging the midpoint is halfway between min and max
+     datavizToken(name): the token of a step, "--plx-sys-dataviz-" + name
+   Behavior:
+     A series keeps its color in every view: assign by a stable order (the series' order in the data), never by rank.
+     The scales are the same in light and dark mode; marks keep 3:1 against the chart surface (the Contrast rules page).
+   Notes:
+     Color is never the only cue: label series directly or add markers and patterns (Use of color). Status and alert colors
+     only where the data is a status or a threshold, never for ordinary series. More than six categories: group or filter. */
+
+const DATAVIZ_SCALES = exports.DATAVIZ_SCALES = Object.freeze({
+  categorical: 6,
+  sequential: 7,
+  diverging: 7
+});
+const DATAVIZ_STATUS = exports.DATAVIZ_STATUS = Object.freeze(['positive', 'caution', 'negative', 'informative', 'neutral']);
+const DATAVIZ_ALERT = exports.DATAVIZ_ALERT = Object.freeze(['warning', 'critical']);
+function datavizCategory(index) {
+  const n = DATAVIZ_SCALES.categorical,
+    i = Math.floor(Number(index) || 0);
+  return 'categorical-' + ((i % n + n) % n + 1);
+}
+function datavizStep(scale, value, min = 0, max = 1) {
+  const steps = DATAVIZ_SCALES[scale];
+  if (!steps || scale === 'categorical') throw new Error('datavizStep: the scale is "sequential" or "diverging", not "' + scale + '"');
+  const span = max - min;
+  const t = span ? Math.min(1, Math.max(0, (Number(value) - min) / span)) : 0.5;
+  return scale + '-' + Math.min(steps, Math.floor(t * steps) + 1);
+}
+function datavizToken(name) {
+  return '--plx-sys-dataviz-' + name;
+}
+  } },
+  "platform/charts/scales.js": { deps: {"../utils/format.js":"platform/utils/format.js","../utils/dataviz.js":"platform/utils/dataviz.js"}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.niceTicks = niceTicks;
+exports.scaleBand = scaleBand;
+exports.scaleLinear = scaleLinear;
+exports.scaleLog = scaleLog;
+exports.scaleTime = scaleTime;
+exports.seriesColor = seriesColor;
+var _format = require("../utils/format.js");
+var _dataviz = require("../utils/dataviz.js");
+/* Plenix · Chart scales (platform/charts/scales.js)
+   Summary: The math every Plenix chart shares (07 Data Display › Charts › Chart foundations): scales that turn a value
+     into a position (linear, log, band, time), "nice" tick values on round numbers and calendar steps, tick labels in
+     the reader's locale (utils/format.js), and the series color of the data-viz scales (utils/dataviz.js). No
+     dependency: ChartFrame draws the SVG, the chart parts (wave 8) and the charts (wave 9) build on these.
+   Usage:
+     import { scaleLinear, scaleBand, scaleTime, scaleLog, niceTicks, seriesColor } from 'plenix-platform';
+     const y = scaleLinear({ domain: [0, max], range: [inner.height, 0], nice: true });
+     y(42)            // the position of 42
+     y.ticks()        // [0, 20, 40, 60, 80, 100]: about five round values inside the domain
+     y.format(20)     // "20", in the reader's locale with the ticks' precision
+     const x = scaleBand({ domain: ['Jan', 'Feb', 'Mar'], range: [0, inner.width] });
+     x('Feb'), x.bandwidth()
+     <rect className="plx-chart__mark" data-plx-dataviz={seriesColor(i)} … />
+   Props:
+     niceTicks(min, max, count?): { start, stop, step, ticks } on steps of 1, 2 or 5 × 10ⁿ, about count (default 5) of them,
+       start and stop widened to whole steps
+     scaleLinear({ domain, range, nice, clamp, count }): a continuous scale; nice widens the domain to whole tick steps
+       (count ticks, default 5); clamp keeps positions inside the range
+     scaleLog({ domain, range, base, clamp }): a logarithmic scale (domain above 0; base default 10); ticks are the powers
+       of the base, with 2 and 5 between them over two decades or less
+     scaleBand({ domain, range, paddingInner, paddingOuter, align }): one band per category, in the domain's order;
+       paddingInner (default 0.2) and paddingOuter (default 0.1) are fractions of a step; align (default 0.5) places the
+       bands when there is room left
+     scaleTime({ domain, range, nice, clamp, count }): a continuous scale over dates (Date or anything Date accepts);
+       ticks fall on calendar steps (seconds to years) in local time
+     Every continuous scale: scale(value) → position; scale.invert(position) → value; scale.ticks(count?);
+       scale.format(value, count?) → the tick label; scale.domain(), scale.range(); scale.type
+     A band scale: scale(key) → start of its band (undefined for an unknown key); scale.bandwidth(); scale.step();
+       scale.ticks() → the keys; scale.format(key) → String(key)
+     seriesColor(index): the categorical data-viz step of a series ("categorical-1" …), for data-plx-dataviz
+   Behavior:
+     Scales are plain functions: no state, no DOM. A domain of one value (min = max) is widened by half a step on each
+       side, so a flat series still sits in the middle.
+     Tick labels use the reader's locale and the same number of decimals for every tick of an axis (Numbers and units).
+   Notes:
+     A series keeps its color by its order in the data, never by rank (Data visualization colors). Positions are SVG user
+       units (pixels inside ChartFrame's plot).
+*/
+
+const E10 = Math.sqrt(50),
+  E5 = Math.sqrt(10),
+  E2 = Math.sqrt(2);
+// a step of 1, 2 or 5 × 10ⁿ for about count ticks over the span
+function tickStep(span, count) {
+  const raw = Math.abs(span) / Math.max(1, count);
+  if (!raw || !isFinite(raw)) return 1;
+  const pow = Math.pow(10, Math.floor(Math.log10(raw)));
+  const err = raw / pow;
+  return (err >= E10 ? 10 : err >= E5 ? 5 : err >= E2 ? 2 : 1) * pow;
+}
+const decimalsOf = step => Math.max(0, -Math.floor(Math.log10(Math.abs(step)) + 1e-9));
+const round = (v, d) => Number(v.toFixed(Math.min(20, d)));
+function niceTicks(min, max, count = 5) {
+  let lo = Number(min),
+    hi = Number(max);
+  if (lo > hi) {
+    const t = lo;
+    lo = hi;
+    hi = t;
+  }
+  if (lo === hi) {
+    const half = tickStep(Math.abs(lo) || 1, count) / 2;
+    lo -= half;
+    hi += half;
+  }
+  const step = tickStep(hi - lo, count),
+    d = decimalsOf(step);
+  const start = round(Math.floor(lo / step) * step, d),
+    stop = round(Math.ceil(hi / step) * step, d);
+  const ticks = [];
+  for (let v = start, i = 0; v <= stop + step / 2 && i < 1000; i++, v = start + i * step) ticks.push(round(v, d));
+  return {
+    start,
+    stop,
+    step,
+    ticks
+  };
+}
+const pair = (a, fallback) => Array.isArray(a) && a.length === 2 ? a.slice() : fallback.slice();
+const interpolate = (r0, r1, t) => r0 + (r1 - r0) * t;
+function scaleLinear({
+  domain = [0, 1],
+  range = [0, 1],
+  nice = false,
+  clamp = false,
+  count = 5
+} = {}) {
+  let d = pair(domain, [0, 1]).map(Number);
+  const r = pair(range, [0, 1]).map(Number);
+  if (d[0] === d[1]) {
+    const n = niceTicks(d[0], d[1], count);
+    d = [n.start, n.stop];
+  }
+  if (nice) {
+    const n = niceTicks(Math.min(d[0], d[1]), Math.max(d[0], d[1]), count);
+    d = d[0] <= d[1] ? [n.start, n.stop] : [n.stop, n.start];
+  }
+  const scale = v => {
+    let t = (Number(v) - d[0]) / (d[1] - d[0]);
+    if (clamp) t = Math.min(1, Math.max(0, t));
+    return interpolate(r[0], r[1], t);
+  };
+  scale.invert = p => d[0] + (Number(p) - r[0]) / (r[1] - r[0]) * (d[1] - d[0]);
+  scale.ticks = (n = count) => niceTicks(Math.min(d[0], d[1]), Math.max(d[0], d[1]), n).ticks.filter(v => v >= Math.min(d[0], d[1]) - 1e-9 && v <= Math.max(d[0], d[1]) + 1e-9);
+  scale.format = (v, n = count, o = {}) => (0, _format.formatNumber)(v, {
+    decimals: decimalsOf(tickStep(d[1] - d[0], n)),
+    locale: o.locale
+  });
+  scale.domain = () => d.slice();
+  scale.range = () => r.slice();
+  scale.type = 'linear';
+  return scale;
+}
+function scaleLog({
+  domain = [1, 10],
+  range = [0, 1],
+  base = 10,
+  clamp = false
+} = {}) {
+  const d = pair(domain, [1, 10]).map(v => Math.max(Number(v), Number.MIN_VALUE));
+  const r = pair(range, [0, 1]).map(Number);
+  const log = v => Math.log(v) / Math.log(base);
+  const l0 = log(d[0]),
+    l1 = log(d[1]);
+  const scale = v => {
+    let t = (log(Math.max(Number(v), Number.MIN_VALUE)) - l0) / (l1 - l0 || 1);
+    if (clamp) t = Math.min(1, Math.max(0, t));
+    return interpolate(r[0], r[1], t);
+  };
+  scale.invert = p => Math.pow(base, l0 + (Number(p) - r[0]) / (r[1] - r[0]) * (l1 - l0));
+  scale.ticks = () => {
+    const lo = Math.min(d[0], d[1]),
+      hi = Math.max(d[0], d[1]);
+    const e0 = Math.floor(log(lo)),
+      e1 = Math.ceil(log(hi));
+    const between = e1 - e0 <= 2 && base === 10 ? [1, 2, 5] : [1];
+    const out = [];
+    for (let e = e0; e <= e1; e++) between.forEach(m => {
+      const v = m * Math.pow(base, e);
+      if (v >= lo * (1 - 1e-9) && v <= hi * (1 + 1e-9)) out.push(Number(v.toPrecision(12)));
+    });
+    return out;
+  };
+  scale.format = (v, n, o = {}) => (0, _format.formatNumber)(v, {
+    decimals: v < 1 ? decimalsOf(v) : 0,
+    locale: o.locale
+  });
+  scale.domain = () => d.slice();
+  scale.range = () => r.slice();
+  scale.type = 'log';
+  return scale;
+}
+function scaleBand({
+  domain = [],
+  range = [0, 1],
+  paddingInner = 0.2,
+  paddingOuter = 0.1,
+  align = 0.5
+} = {}) {
+  const keys = Array.from(domain);
+  const r = pair(range, [0, 1]).map(Number);
+  const n = keys.length;
+  const reverse = r[1] < r[0];
+  const r0 = reverse ? r[1] : r[0],
+    r1 = reverse ? r[0] : r[1];
+  const step = (r1 - r0) / Math.max(1, n - paddingInner + paddingOuter * 2);
+  const start = r0 + (r1 - r0 - step * (n - paddingInner)) * align;
+  const band = step * (1 - paddingInner);
+  const scale = key => {
+    const i = keys.indexOf(key);
+    if (i < 0) return undefined;
+    return start + step * (reverse ? n - 1 - i : i);
+  };
+  scale.bandwidth = () => band;
+  scale.step = () => step;
+  scale.ticks = () => keys.slice();
+  scale.format = key => String(key);
+  scale.domain = () => keys.slice();
+  scale.range = () => r.slice();
+  scale.type = 'band';
+  return scale;
+}
+
+// calendar steps, shortest first: [unit, amount, approximate milliseconds]
+const S = 1000,
+  MIN = 60 * S,
+  H = 60 * MIN,
+  DAY = 24 * H;
+const TIME_STEPS = [['second', 1, S], ['second', 5, 5 * S], ['second', 15, 15 * S], ['second', 30, 30 * S], ['minute', 1, MIN], ['minute', 5, 5 * MIN], ['minute', 15, 15 * MIN], ['minute', 30, 30 * MIN], ['hour', 1, H], ['hour', 3, 3 * H], ['hour', 6, 6 * H], ['hour', 12, 12 * H], ['day', 1, DAY], ['day', 2, 2 * DAY], ['week', 1, 7 * DAY], ['month', 1, 30 * DAY], ['month', 3, 91 * DAY], ['year', 1, 365 * DAY]];
+const toTime = v => v instanceof Date ? v.getTime() : new Date(v).getTime();
+// the start of the step that holds t (local time)
+function floorTo(t, unit, amount) {
+  const x = new Date(t);
+  if (unit === 'second') {
+    x.setMilliseconds(0);
+    x.setSeconds(Math.floor(x.getSeconds() / amount) * amount);
+  } else if (unit === 'minute') {
+    x.setSeconds(0, 0);
+    x.setMinutes(Math.floor(x.getMinutes() / amount) * amount);
+  } else if (unit === 'hour') {
+    x.setMinutes(0, 0, 0);
+    x.setHours(Math.floor(x.getHours() / amount) * amount);
+  } else if (unit === 'day') {
+    x.setHours(0, 0, 0, 0);
+  } else if (unit === 'week') {
+    x.setHours(0, 0, 0, 0);
+    x.setDate(x.getDate() - x.getDay());
+  } else if (unit === 'month') {
+    x.setHours(0, 0, 0, 0);
+    x.setDate(1);
+    x.setMonth(Math.floor(x.getMonth() / amount) * amount);
+  } else {
+    x.setHours(0, 0, 0, 0);
+    x.setMonth(0, 1);
+    x.setFullYear(Math.floor(x.getFullYear() / amount) * amount);
+  }
+  return x;
+}
+function addTo(x, unit, amount) {
+  const y = new Date(x.getTime());
+  if (unit === 'second') y.setSeconds(y.getSeconds() + amount);else if (unit === 'minute') y.setMinutes(y.getMinutes() + amount);else if (unit === 'hour') y.setHours(y.getHours() + amount);else if (unit === 'day') y.setDate(y.getDate() + amount);else if (unit === 'week') y.setDate(y.getDate() + 7 * amount);else if (unit === 'month') y.setMonth(y.getMonth() + amount);else y.setFullYear(y.getFullYear() + amount);
+  return y;
+}
+function timeStep(span, count) {
+  const target = Math.abs(span) / Math.max(1, count);
+  if (target <= 365 * DAY) {
+    // the calendar step nearest the wanted one (by ratio)
+    const gap = s => Math.abs(Math.log(s[2] / Math.max(1, target)));
+    return TIME_STEPS.reduce((best, s) => gap(s) < gap(best) ? s : best, TIME_STEPS[0]);
+  }
+  const years = tickStep(target / (365 * DAY), 1);
+  return ['year', Math.max(1, years), years * 365 * DAY];
+}
+const TIME_LABELS = {
+  second: {
+    hour: 'numeric',
+    minute: '2-digit',
+    second: '2-digit'
+  },
+  minute: {
+    hour: 'numeric',
+    minute: '2-digit'
+  },
+  hour: {
+    hour: 'numeric',
+    minute: '2-digit'
+  },
+  day: {
+    month: 'short',
+    day: 'numeric'
+  },
+  week: {
+    month: 'short',
+    day: 'numeric'
+  },
+  month: {
+    month: 'short',
+    year: 'numeric'
+  },
+  year: {
+    year: 'numeric'
+  }
+};
+function scaleTime({
+  domain = [0, DAY],
+  range = [0, 1],
+  nice = false,
+  clamp = false,
+  count = 5
+} = {}) {
+  let d = pair(domain, [0, DAY]).map(toTime);
+  const r = pair(range, [0, 1]).map(Number);
+  if (d[0] === d[1]) d = [d[0] - DAY / 2, d[1] + DAY / 2];
+  if (nice) {
+    const [unit, amount] = timeStep(d[1] - d[0], count);
+    const lo = Math.min(d[0], d[1]),
+      hi = Math.max(d[0], d[1]);
+    const start = floorTo(lo, unit, amount).getTime();
+    let stop = floorTo(hi, unit, amount);
+    if (stop.getTime() < hi) stop = addTo(stop, unit, amount);
+    d = d[0] <= d[1] ? [start, stop.getTime()] : [stop.getTime(), start];
+  }
+  const scale = v => {
+    let t = (toTime(v) - d[0]) / (d[1] - d[0]);
+    if (clamp) t = Math.min(1, Math.max(0, t));
+    return interpolate(r[0], r[1], t);
+  };
+  scale.invert = p => new Date(d[0] + (Number(p) - r[0]) / (r[1] - r[0]) * (d[1] - d[0]));
+  scale.step = (n = count) => timeStep(d[1] - d[0], n);
+  scale.ticks = (n = count) => {
+    const [unit, amount] = timeStep(d[1] - d[0], n);
+    const lo = Math.min(d[0], d[1]),
+      hi = Math.max(d[0], d[1]);
+    const out = [];
+    let x = floorTo(lo, unit, amount);
+    if (x.getTime() < lo) x = addTo(x, unit, amount);
+    for (let i = 0; x.getTime() <= hi && i < 1000; i++, x = addTo(x, unit, amount)) out.push(new Date(x.getTime()));
+    return out;
+  };
+  scale.format = (v, n = count, o = {}) => new Intl.DateTimeFormat(o.locale || (0, _format.formatLocale)(), TIME_LABELS[timeStep(d[1] - d[0], n)[0]]).format(new Date(toTime(v)));
+  scale.domain = () => d.map(t => new Date(t));
+  scale.range = () => r.slice();
+  scale.type = 'time';
+  return scale;
+}
+function seriesColor(index) {
+  return (0, _dataviz.datavizCategory)(index);
+}
+  } },
+  "platform/utils/vendorBase.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.vendorBase = vendorBase;
+/* Plenix · vendorBase
+   Summary: Resolves the shared vendor folder for optional engines.
+   Usage: vendorBase() + the engine path.
+   Props: window.PlenixVendorBase overrides the Platform script or versioned package URL.
+   Behavior: Captures the script address while the module runs; falls back to the package CDN.
+   Notes: Shared URL resolution only; loads no engine. */
+// the Platform script's own address, read while the bundle runs (document.currentScript is gone afterwards)
+const SCRIPT = typeof document !== 'undefined' && document.currentScript ? document.currentScript.src : '';
+
+// the same, found among the page's scripts when the bundle ran its modules later
+function platformScript() {
+  if (SCRIPT) return SCRIPT;
+  const s = Array.from(document.scripts).map(x => x.src).find(src => /\/(dist\/platform|plenix(\.global)?)(\.min)?\.js(\?|$)/.test(src));
+  return s || '';
+}
+
+// the vendor folder: the repository's
+// platform/dist/platform.js finds it at platform/vendor/; every other copy of the script has it beside itself (the CDN's
+// plenix.js: ./vendor/; the npm package's dist/plenix.global.js: dist/vendor/, where build-packages.js puts it)
+function vendorBase() {
+  if (typeof window !== 'undefined' && window.PlenixVendorBase) return String(window.PlenixVendorBase).replace(/\/?$/, '/');
+  const src = platformScript();
+  if (src) return new URL(/\/dist\/platform(\.min)?\.js(\?.*)?$/.test(src) ? '../vendor/' : './vendor/', src).href;
+  // the npm package: build-packages.js defines this release's CDN vendor folder (versioned, never changes)
+  if (typeof __PLENIX_VENDOR__ !== 'undefined') return __PLENIX_VENDOR__; // eslint-disable-line no-undef
+  return 'platform/vendor/';
+}
+  } },
+  "platform/charts/echarts/engine.js": { deps: {"../../utils/vendorBase.js":"platform/utils/vendorBase.js"}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.chartTokens = chartTokens;
+exports.loadECharts = loadECharts;
+exports.plenixTheme = plenixTheme;
+var _vendorBase = require("../../utils/vendorBase.js");
+/* Plenix · Chart engine (platform/charts/echarts/engine.js)
+   Summary: How a Plenix chart draws with Apache ECharts (issue 353, owner 2026-10-26): loads the vendored engine
+     (platform/vendor/echarts/echarts.min.js, window.PlenixECharts), reads the chart tokens where the chart is, and builds
+     the ECharts theme from them. The chart components keep their names, props and Plenix layer (ChartFrame, the
+     interaction, the live region, the legend, the tooltip, "Show the data"); ECharts draws the plot.
+   Usage:
+     loadECharts().then((E) => E.init(el, plenixTheme(chartTokens(el)), { renderer: 'svg', width, height }));
+     const t = chartTokens(el); t.color('categorical-2')   // a data-viz step as the color it is where el is
+   Props:
+     loadECharts(win): adds the engine's script to the page once (the given window's, default this one) and resolves with
+       that window's PlenixECharts ({ init, version })
+     chartTokens(el): the chart tokens as the Platform's own chart classes resolve them where el is (theme, density and
+       scope included): { color(step), colors, lineWidth, tick, title, axis, grid, point, separator, slice, area, dim, motion }
+     plenixTheme(tokens): the ECharts theme (colors in the categorical order of seriesColor, the axis and grid lines, the
+       data font for tick labels, the label font for axis titles, the line, point and bar styles)
+   Behavior:
+     Only the first chart on a page loads the engine; later charts reuse the same promise. Pages without a chart never
+       load it. A failed load rejects and is forgotten, so the next chart that mounts tries again.
+     The tokens are read through a hidden probe of the frame's own mark classes (plx-chart__line, plx-chart__mark,
+       plx-chart__tick-label, plx-chart-axis__label, plx-chart__axis-line, plx-chart__grid-line, …), so a token change
+       restyles both drawings; nothing here holds a color, width or font of its own.
+   Notes:
+     ECharts writes the sizes and fonts of what it draws on its own SVG elements (inside .plx-chart__engine); the values
+       are the tokens read here.
+     Dark mode: the charts read the tokens again when the page's mode, theme or density changes (EChartsPlot). */
+
+const loading = new WeakMap();
+function loadECharts(win) {
+  const w = win || (typeof window !== 'undefined' ? window : null);
+  if (!w) return Promise.reject(new Error('ECharts needs a browser'));
+  if (w.PlenixECharts) return Promise.resolve(w.PlenixECharts);
+  if (loading.has(w)) return loading.get(w);
+  const doc = w.document;
+  const p = new Promise((resolve, reject) => {
+    const script = doc.createElement('script');
+    script.src = (0, _vendorBase.vendorBase)() + 'echarts/echarts.min.js';
+    script.async = true;
+    script.setAttribute('data-plx-vendor', 'echarts');
+    script.onload = () => {
+      if (w.PlenixECharts) resolve(w.PlenixECharts);else {
+        loading.delete(w);
+        script.remove();
+        reject(new Error('ECharts did not load from ' + script.src));
+      }
+    };
+    script.onerror = () => {
+      loading.delete(w);
+      script.remove();
+      reject(new Error('ECharts could not be loaded from ' + script.src));
+    };
+    doc.head.appendChild(script);
+  });
+  loading.set(w, p);
+  return p;
+}
+const NS = 'http://www.w3.org/2000/svg';
+const num = v => parseFloat(v) || 0;
+// a duration token in milliseconds ("200ms" or "0.2s")
+const ms = v => {
+  const s = String(v).trim();
+  return /ms$/.test(s) ? num(s) : /s$/.test(s) ? num(s) * 1000 : num(s);
+};
+function chartTokens(where) {
+  const doc = where.ownerDocument,
+    win = doc.defaultView;
+  const svg = doc.createElementNS(NS, 'svg');
+  svg.setAttribute('class', 'plx-visually-hidden');
+  svg.setAttribute('aria-hidden', 'true');
+  const mk = (tag, cls, attrs) => {
+    const e = doc.createElementNS(NS, tag);
+    e.setAttribute('class', cls);
+    Object.keys(attrs || {}).forEach(k => e.setAttribute(k, attrs[k]));
+    svg.appendChild(e);
+    return e;
+  };
+  const line = mk('path', 'plx-chart__line', {
+    'data-plx-dataviz': 'categorical-1'
+  });
+  const tick = mk('text', 'plx-chart__tick-label'),
+    title = mk('text', 'plx-chart-axis__label');
+  const axis = mk('line', 'plx-chart__axis-line'),
+    grid = mk('line', 'plx-chart__grid-line');
+  const point = mk('circle', 'plx-chart__point plx-line-chart__point');
+  const joined = mk('rect', 'plx-chart__mark plx-bar-chart__bar plx-bar-chart__bar--joined');
+  const slice = mk('path', 'plx-chart__mark plx-pie-chart__slice');
+  const swatch = mk('rect', 'plx-chart__mark');
+  const spark = {
+    line: mk('path', 'plx-sparkline__line'),
+    area: mk('path', 'plx-sparkline__area'),
+    bar: mk('rect', 'plx-sparkline__bar'),
+    last: mk('circle', 'plx-sparkline__last')
+  };
+  where.appendChild(svg);
+  const cs = e => win.getComputedStyle(e);
+  const font = e => {
+    const s = cs(e);
+    return {
+      color: s.fill,
+      fontFamily: s.fontFamily,
+      fontSize: num(s.fontSize),
+      fontWeight: s.fontWeight
+    };
+  };
+  const host = cs(where);
+  const prop = name => host.getPropertyValue(name).trim();
+  // a length token in pixels (px, or rem on the root's font size)
+  const len = v => /rem$/.test(v) ? num(v) * num(win.getComputedStyle(doc.documentElement).fontSize) : num(v);
+  const colorCache = {};
+  const t = {
+    lineWidth: num(cs(line).strokeWidth),
+    tick: font(tick),
+    title: font(title),
+    axis: {
+      color: cs(axis).stroke,
+      width: num(cs(axis).strokeWidth)
+    },
+    grid: {
+      color: cs(grid).stroke,
+      width: num(cs(grid).strokeWidth)
+    },
+    point: {
+      r: num(cs(point).r),
+      outline: cs(point).stroke,
+      outlineWidth: num(cs(point).strokeWidth)
+    },
+    separator: {
+      color: cs(joined).stroke,
+      width: num(cs(joined).strokeWidth)
+    },
+    slice: {
+      color: cs(slice).stroke,
+      width: num(cs(slice).strokeWidth)
+    },
+    area: {
+      opacity: num(prop('--plx-comp-area-chart-fill-opacity')),
+      stacked: num(prop('--plx-comp-area-chart-stacked-fill-opacity'))
+    },
+    // the gap between a tick label and its axis, and the room above the plot (half the top tick label)
+    tickOffset: len(prop('--plx-comp-chart-axis-tick-offset')),
+    top: len(prop('--plx-comp-chart-margin-block-start')),
+    rtl: host.direction === 'rtl',
+    // a sparkline's own look (its color follows the sparkline's data-viz step, where it is)
+    sparkline: {
+      color: cs(spark.line).stroke,
+      lineWidth: num(cs(spark.line).strokeWidth),
+      areaOpacity: num(cs(spark.area).fillOpacity),
+      bar: cs(spark.bar).fill,
+      last: {
+        r: num(cs(spark.last).r),
+        outline: cs(spark.last).stroke,
+        outlineWidth: num(cs(spark.last).strokeWidth)
+      }
+    },
+    // the values not in focus dim to the interaction's token; the drawing's animation is the motion token (reduced motion: 0)
+    dim: num(prop('--plx-comp-chart-interaction-dim-opacity')) || 1,
+    motion: ms(prop('--plx-sys-motion-duration-slow'))
+  };
+  // a data-viz step ("categorical-3", "sequential-5") as the color it is here
+  t.color = step => {
+    if (!step) step = 'categorical-1';
+    if (!(step in colorCache)) {
+      swatch.setAttribute('data-plx-dataviz', step);
+      const out = !svg.isConnected;
+      if (out) where.appendChild(svg);
+      colorCache[step] = cs(swatch).fill;
+      if (out) svg.remove();
+    }
+    return colorCache[step];
+  };
+  t.colors = [1, 2, 3, 4, 5, 6].map(i => t.color('categorical-' + i));
+  svg.remove();
+  return t;
+}
+function plenixTheme(t) {
+  const label = {
+    color: t.tick.color,
+    fontFamily: t.tick.fontFamily,
+    fontSize: t.tick.fontSize,
+    margin: t.tickOffset,
+    hideOverlap: true
+  };
+  const name = {
+    color: t.title.color,
+    fontFamily: t.title.fontFamily,
+    fontSize: t.title.fontSize,
+    fontWeight: t.title.fontWeight
+  };
+  const base = {
+    axisLabel: label,
+    nameTextStyle: name,
+    axisTick: {
+      show: false
+    }
+  };
+  const rule = {
+    show: true,
+    lineStyle: {
+      color: t.axis.color,
+      width: t.axis.width
+    }
+  };
+  const gridLines = {
+    show: true,
+    lineStyle: {
+      color: t.grid.color,
+      width: t.grid.width
+    }
+  };
+  return {
+    color: t.colors,
+    backgroundColor: 'transparent',
+    textStyle: {
+      fontFamily: t.tick.fontFamily,
+      color: t.tick.color,
+      fontSize: t.tick.fontSize
+    },
+    categoryAxis: Object.assign({}, base, {
+      axisLine: rule,
+      splitLine: {
+        show: false
+      }
+    }),
+    timeAxis: Object.assign({}, base, {
+      axisLine: rule,
+      splitLine: {
+        show: false
+      }
+    }),
+    valueAxis: Object.assign({}, base, {
+      axisLine: {
+        show: false
+      },
+      splitLine: gridLines
+    }),
+    line: {
+      symbol: 'circle',
+      symbolSize: t.point.r * 2,
+      lineStyle: {
+        width: t.lineWidth,
+        cap: 'round',
+        join: 'round'
+      },
+      itemStyle: {
+        borderColor: t.point.outline,
+        borderWidth: t.point.outlineWidth
+      }
+    },
+    bar: {
+      itemStyle: {
+        borderWidth: 0
+      }
+    },
+    pie: {
+      itemStyle: {
+        borderColor: t.slice.color,
+        borderWidth: t.slice.width,
+        borderJoin: 'round'
+      }
+    }
+  };
+}
+  } },
+  "platform/charts/echarts/EChartsPlot.jsx": { deps: {"react":null,"./engine.js":"platform/charts/echarts/engine.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.EChartsHost = EChartsHost;
+exports.NO_MARGIN = void 0;
+exports.plotGrid = plotGrid;
+exports.useEChartsPlot = useEChartsPlot;
+var _react = _interopRequireDefault(require("react"));
+var _engine = require("./engine.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · EChartsPlot (platform/charts/echarts/EChartsPlot.jsx)
+   Summary: The ECharts drawing inside a chart's ChartFrame (issue 353): one ECharts instance per chart, drawn as SVG in the
+     frame's plot, under the chart's own Plenix layer (focus marks, crosshair, tooltip, labels: the frame's SVG on top).
+     Internal: used by the chart components, not public.
+   Usage:
+     const plot = useEChartsPlot();
+     const option = React.useCallback((t) => ({ grid: …, xAxis: …, yAxis: …, series: … }), [data, …]);
+     <ChartFrame … margin={NO_MARGIN}>{(dims) => [plot.layer(dims, option), plot.chart ? <g>…overlay…</g> : null]}</ChartFrame>
+   Props:
+     EChartsHost({ width, height, option, onDraw }): the drawing alone, for a chart without a frame (Sparkline); the same
+       .plx-chart__engine element, so the page checks' engine allow-list applies to it unchanged
+     useEChartsPlot() → { chart, tokens, layer(dims, option) }:
+       layer(dims, option): the element that holds the drawing, the plot's full size (a foreignObject at 0,0); option(t, size)
+         returns the ECharts option from the chart tokens t (engine.js chartTokens) and the plot's { width, height }. Keep option stable (useCallback on
+         the data and props it reads) or the chart redraws on every render
+       chart: the ECharts instance once it has drawn (null before the engine loads), for its geometry (convertToPixel,
+         the grid's rectangle); the hook's component renders again after every draw, so the overlay follows
+       tokens: the chart tokens it was drawn with
+     plotGrid(chart): the grid's rectangle { x, y, width, height } in plot pixels (where the overlay goes)
+     NO_MARGIN: ChartFrame's margin for an ECharts chart (ECharts makes the room its labels need inside the plot)
+   Behavior:
+     The engine loads the first time a chart mounts (loadECharts); until then the plot is empty and the caption, the
+       legend and "Show the data" are already there.
+     The drawing follows the plot's size (ChartFrame measures it) and is drawn again when the page's mode, theme or
+       density changes, with the tokens read again.
+     The drawing takes no pointer events: the pointer and the keyboard belong to the frame's plot and the chart
+       interaction (interaction.js).
+   Notes:
+     ECharts writes the sizes and fonts of what it draws on its own SVG elements, inside .plx-chart__engine; the values
+       are the chart tokens. */
+
+const NO_MARGIN = exports.NO_MARGIN = Object.freeze({
+  top: 0,
+  end: 0,
+  bottom: 0,
+  start: 0
+});
+const LOOK = ['data-plx-mode', 'data-plx-theme', 'data-plx-density'];
+function EChartsHost({
+  width,
+  height,
+  option,
+  onDraw
+}) {
+  const ref = _react.default.useRef(null),
+    inst = _react.default.useRef(null),
+    tk = _react.default.useRef(null);
+  const [E, setE] = _react.default.useState(() => typeof window !== 'undefined' && window.PlenixECharts || null);
+  const [look, setLook] = _react.default.useState(0);
+  _react.default.useEffect(() => {
+    if (E) return undefined;
+    let live = true;
+    (0, _engine.loadECharts)().then(x => {
+      if (live) setE(x);
+    }, () => {});
+    return () => {
+      live = false;
+    };
+  }, [E]);
+  _react.default.useEffect(() => {
+    if (typeof MutationObserver === 'undefined') return undefined;
+    const mo = new MutationObserver(() => setLook(n => n + 1));
+    mo.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: LOOK
+    });
+    return () => mo.disconnect();
+  }, []);
+  _react.default.useEffect(() => {
+    if (!E || !ref.current) return undefined;
+    tk.current = (0, _engine.chartTokens)(ref.current);
+    const c = E.init(ref.current, (0, _engine.plenixTheme)(tk.current), {
+      renderer: 'svg',
+      width,
+      height
+    });
+    inst.current = c;
+    return () => {
+      c.dispose();
+      inst.current = null;
+    };
+  }, [E, look]);
+  _react.default.useEffect(() => {
+    const c = inst.current;
+    if (!c || c.isDisposed()) return;
+    c.resize({
+      width,
+      height,
+      animation: {
+        duration: 0
+      }
+    });
+    c.setOption(option(tk.current, {
+      width,
+      height
+    }), {
+      replaceMerge: ['series', 'xAxis', 'yAxis']
+    });
+    if (onDraw) onDraw(c, tk.current);
+  }, [E, look, option, width, height]);
+  return /*#__PURE__*/_react.default.createElement("div", {
+    ref: ref,
+    className: "plx-chart__engine"
+  });
+}
+function useEChartsPlot() {
+  const [, redraw] = _react.default.useReducer(n => n + 1, 0);
+  const drawn = _react.default.useRef({
+    chart: null,
+    tokens: null
+  });
+  const onDraw = _react.default.useCallback((c, t) => {
+    drawn.current = {
+      chart: c,
+      tokens: t
+    };
+    redraw();
+  }, []);
+  const live = drawn.current.chart && !drawn.current.chart.isDisposed();
+  return {
+    chart: live ? drawn.current.chart : null,
+    tokens: live ? drawn.current.tokens : null,
+    layer: (dims, option) => /*#__PURE__*/_react.default.createElement("foreignObject", {
+      key: "plx-chart-engine",
+      x: 0,
+      y: 0,
+      width: dims.width,
+      height: dims.height
+    }, /*#__PURE__*/_react.default.createElement(EChartsHost, {
+      width: dims.width,
+      height: dims.height,
+      option: option,
+      onDraw: onDraw
+    }))
+  };
+}
+function plotGrid(chart) {
+  const grid = chart.getModel().getComponent('grid');
+  return grid && grid.coordinateSystem ? grid.coordinateSystem.getRect() : null;
+}
+  } },
+  "platform/charts/Sparkline.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","./a11y.js":"platform/charts/a11y.js","./scales.js":"platform/charts/scales.js","./echarts/EChartsPlot.jsx":"platform/charts/echarts/EChartsPlot.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2820,8 +3281,9 @@ Object.defineProperty(exports, "__esModule", {
 exports.Sparkline = Sparkline;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../utils/cx.js");
-var _scales = require("./scales.js");
 var _a11y = require("./a11y.js");
+var _scales = require("./scales.js");
+var _EChartsPlot = require("./echarts/EChartsPlot.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Sparkline
    Summary: A word-sized chart without axes that shows the shape of a trend (07 Data Display › Charts › Sparkline): a line,
@@ -2846,20 +3308,24 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      className: more classes on the sparkline
    Behavior:
      It measures its own box and draws the values across it: the lowest value at the bottom, the highest at the top (bars
-       from zero); the latest dot sits inside the box.
+       from zero); the latest dot sits inside the box. Apache ECharts draws it (a line or bar chart with no axes, issue 353),
+       once the chart engine has loaded (the first chart on a page loads it).
      It is one image to assistive technology, named by label and a summary of the trend ("Up 40% from 40 to 56; lowest 39,
        highest 56."); decorative removes it from the reading order instead.
    Notes:
      No axes, grid lines or legend: a sparkline gives the shape; the number beside it gives the value. Use the same time
        range for every sparkline of a set. Its color is a data-viz step (data-plx-dataviz); sizes, the line and the dot are
-       --plx-comp-sparkline-* tokens. It keeps no "Show the data" table: it stands next to the number it describes, and its
+       --plx-comp-sparkline-* tokens, read by the ECharts theme (echarts/engine.js); no style is written here. It keeps no "Show the data" table: it stands next to the number it describes, and its
        name says the trend; link to the full chart (with its table) when there is one.
 */
-// the room kept inside the box so the line and the dot are not cut (SVG geometry, the 4px grid)
+// the room kept inside the box so the line and the dot are not cut (geometry, the 4px grid)
 const PAD = 4;
 const VARIANTS = ['line', 'area', 'bar'];
+// the gap between bars, a share of each bar's step (geometry: scaleBand's paddingInner)
+const BAR_GAP = 0.2;
+const NONE = Object.freeze([]);
 function Sparkline({
-  values = [],
+  values = NONE,
   variant = 'line',
   size = 'inline',
   showLast = false,
@@ -2908,75 +3374,130 @@ function Sparkline({
     role: 'img',
     'aria-label': name
   };
-  let marks = null;
-  if (box.width > 0 && box.height > 0 && nums.length) {
+  const key = nums.join(',');
+  // a line or bar chart with no axes, on the same geometry as the SVG sparkline it replaces: the value range is
+  // scaleLinear's (a flat run widens to nice ticks, so a flat line keeps its place and an area its band); the line's
+  // points run from PAD to the width less PAD (a single value at the start edge); the bars sit where scaleBand put them (no
+  // outer gap)
+  const option = _react.default.useCallback((tk, size) => {
+    const k = tk.sparkline,
+      last = nums.length - 1,
+      bar = v === 'bar';
     const lo = Math.min.apply(null, nums),
       hi = Math.max.apply(null, nums);
-    const W = box.width,
-      H = box.height;
-    if (v === 'bar') {
+    if (bar) {
+      // the bars where scaleBand put them (paddingOuter 0): ECharts centers each bar in its band with half the gap on
+      // either side, so the grid reaches out by that half gap at both ends (outerBoundsMode none: past the box)
       const x = (0, _scales.scaleBand)({
         domain: nums.map((n, i) => i),
-        range: [0, W],
-        paddingInner: 0.2,
+        range: [0, size.width],
+        paddingInner: BAR_GAP,
         paddingOuter: 0
       });
       const y = (0, _scales.scaleLinear)({
-        domain: [Math.min(0, lo), Math.max(0, hi)],
-        range: [H, 0]
-      });
-      marks = nums.map((n, i) => {
-        const top = Math.min(y(n), y(0)),
-          bottom = Math.max(y(n), y(0));
-        return /*#__PURE__*/_react.default.createElement("rect", {
-          key: i,
-          className: "plx-sparkline__bar",
-          x: x(i),
-          y: top,
-          width: x.bandwidth(),
-          height: Math.max(0, bottom - top)
-        });
-      });
-    } else {
-      const x = (0, _scales.scaleLinear)({
-        domain: [0, Math.max(1, nums.length - 1)],
-        range: [PAD, W - PAD]
-      });
-      const y = (0, _scales.scaleLinear)({
-        domain: [lo, hi],
-        range: [H - PAD, PAD]
-      });
-      const line = nums.map((n, i) => (i ? 'L' : 'M') + x(i) + ',' + y(n)).join('');
-      const last = nums.length - 1;
-      marks = [v === 'area' ? /*#__PURE__*/_react.default.createElement("path", {
-        key: "area",
-        className: "plx-sparkline__area",
-        d: line + 'L' + x(last) + ',' + (H - PAD) + 'L' + x(0) + ',' + (H - PAD) + 'Z'
-      }) : null, /*#__PURE__*/_react.default.createElement("path", {
-        key: "line",
-        className: "plx-sparkline__line",
-        d: line
-      }), showLast ? /*#__PURE__*/_react.default.createElement("circle", {
-        key: "last",
-        className: "plx-sparkline__last",
-        cx: x(last),
-        cy: y(nums[last]),
-        r: PAD
-      }) : null];
+        domain: [Math.min(0, lo), Math.max(0, hi)]
+      }).domain();
+      const left = x(0) - x.step() * BAR_GAP / 2,
+        right = size.width - left - x.step() * nums.length;
+      return {
+        animationDuration: tk.motion,
+        animationDurationUpdate: tk.motion,
+        grid: {
+          left,
+          right,
+          top: 0,
+          bottom: 0,
+          outerBoundsMode: 'none'
+        },
+        xAxis: {
+          type: 'category',
+          show: false,
+          boundaryGap: true,
+          data: nums.map((n, i) => i)
+        },
+        yAxis: {
+          type: 'value',
+          show: false,
+          min: y[0],
+          max: y[1]
+        },
+        series: [{
+          type: 'bar',
+          silent: true,
+          barCategoryGap: BAR_GAP * 100 + '%',
+          itemStyle: {
+            color: k.bar
+          },
+          data: nums
+        }]
+      };
     }
-  }
+    const y = (0, _scales.scaleLinear)({
+      domain: [lo, hi]
+    }).domain();
+    return {
+      animationDuration: tk.motion,
+      animationDurationUpdate: tk.motion,
+      grid: {
+        left: PAD,
+        right: PAD,
+        top: PAD,
+        bottom: PAD
+      },
+      xAxis: {
+        type: 'value',
+        show: false,
+        min: 0,
+        max: Math.max(1, last)
+      },
+      yAxis: {
+        type: 'value',
+        show: false,
+        min: y[0],
+        max: y[1]
+      },
+      series: [{
+        type: 'line',
+        silent: true,
+        emphasis: {
+          disabled: true
+        },
+        lineStyle: {
+          color: k.color,
+          width: k.lineWidth,
+          cap: 'round',
+          join: 'round'
+        },
+        areaStyle: v === 'area' ? {
+          color: k.color,
+          opacity: k.areaOpacity,
+          origin: 'start'
+        } : undefined,
+        data: nums.map((n, i) => showLast && i === last ? {
+          value: [i, n],
+          symbol: 'circle',
+          symbolSize: k.last.r * 2,
+          itemStyle: {
+            color: k.color,
+            borderColor: k.last.outline,
+            borderWidth: k.last.outlineWidth
+          }
+        } : {
+          value: [i, n],
+          symbol: 'none'
+        })
+      }]
+    };
+  }, [key, v, showLast]);
   return /*#__PURE__*/_react.default.createElement("span", _extends({
     ref: ref,
     className: (0, _cx.cx)('plx-sparkline', 'plx-sparkline--' + v, 'plx-sparkline--' + s, className),
     "data-plx-dataviz": color || undefined
-  }, a11y, rest), box.width > 0 && box.height > 0 ? /*#__PURE__*/_react.default.createElement("svg", {
-    className: "plx-sparkline__svg",
+  }, a11y, rest), box.width > 0 && box.height > 0 && nums.length ? /*#__PURE__*/_react.default.createElement(_EChartsPlot.EChartsHost, {
     width: box.width,
     height: box.height,
-    viewBox: '0 0 ' + box.width + ' ' + box.height,
-    focusable: "false",
-    "aria-hidden": "true"
-  }, marks) : null);
+    option: option
+  }) : null);
 }
   } },
   "platform/components/Metric/Metric.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Card/Card.jsx":"platform/components/Card/Card.jsx","../../charts/Sparkline.jsx":"platform/charts/Sparkline.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -24199,446 +24720,6 @@ function legendItems(series, value) {
 function finite(v) {
   const n = Number(v);
   return isFinite(n) ? n : 0;
-}
-  } },
-  "platform/utils/vendorBase.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.vendorBase = vendorBase;
-/* Plenix · vendorBase
-   Summary: Resolves the shared vendor folder for optional engines.
-   Usage: vendorBase() + the engine path.
-   Props: window.PlenixVendorBase overrides the Platform script or versioned package URL.
-   Behavior: Captures the script address while the module runs; falls back to the package CDN.
-   Notes: Shared URL resolution only; loads no engine. */
-// the Platform script's own address, read while the bundle runs (document.currentScript is gone afterwards)
-const SCRIPT = typeof document !== 'undefined' && document.currentScript ? document.currentScript.src : '';
-
-// the same, found among the page's scripts when the bundle ran its modules later
-function platformScript() {
-  if (SCRIPT) return SCRIPT;
-  const s = Array.from(document.scripts).map(x => x.src).find(src => /\/(dist\/platform|plenix(\.global)?)(\.min)?\.js(\?|$)/.test(src));
-  return s || '';
-}
-
-// the vendor folder: the repository's
-// platform/dist/platform.js finds it at platform/vendor/; every other copy of the script has it beside itself (the CDN's
-// plenix.js: ./vendor/; the npm package's dist/plenix.global.js: dist/vendor/, where build-packages.js puts it)
-function vendorBase() {
-  if (typeof window !== 'undefined' && window.PlenixVendorBase) return String(window.PlenixVendorBase).replace(/\/?$/, '/');
-  const src = platformScript();
-  if (src) return new URL(/\/dist\/platform(\.min)?\.js(\?.*)?$/.test(src) ? '../vendor/' : './vendor/', src).href;
-  // the npm package: build-packages.js defines this release's CDN vendor folder (versioned, never changes)
-  if (typeof __PLENIX_VENDOR__ !== 'undefined') return __PLENIX_VENDOR__; // eslint-disable-line no-undef
-  return 'platform/vendor/';
-}
-  } },
-  "platform/charts/echarts/engine.js": { deps: {"../../utils/vendorBase.js":"platform/utils/vendorBase.js"}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.chartTokens = chartTokens;
-exports.loadECharts = loadECharts;
-exports.plenixTheme = plenixTheme;
-var _vendorBase = require("../../utils/vendorBase.js");
-/* Plenix · Chart engine (platform/charts/echarts/engine.js)
-   Summary: How a Plenix chart draws with Apache ECharts (issue 353, owner 2026-10-26): loads the vendored engine
-     (platform/vendor/echarts/echarts.min.js, window.PlenixECharts), reads the chart tokens where the chart is, and builds
-     the ECharts theme from them. The chart components keep their names, props and Plenix layer (ChartFrame, the
-     interaction, the live region, the legend, the tooltip, "Show the data"); ECharts draws the plot.
-   Usage:
-     loadECharts().then((E) => E.init(el, plenixTheme(chartTokens(el)), { renderer: 'svg', width, height }));
-     const t = chartTokens(el); t.color('categorical-2')   // a data-viz step as the color it is where el is
-   Props:
-     loadECharts(win): adds the engine's script to the page once (the given window's, default this one) and resolves with
-       that window's PlenixECharts ({ init, version })
-     chartTokens(el): the chart tokens as the Platform's own chart classes resolve them where el is (theme, density and
-       scope included): { color(step), colors, lineWidth, tick, title, axis, grid, point, separator, slice, area, dim, motion }
-     plenixTheme(tokens): the ECharts theme (colors in the categorical order of seriesColor, the axis and grid lines, the
-       data font for tick labels, the label font for axis titles, the line, point and bar styles)
-   Behavior:
-     Only the first chart on a page loads the engine; later charts reuse the same promise. Pages without a chart never
-       load it. A failed load rejects and is forgotten, so the next chart that mounts tries again.
-     The tokens are read through a hidden probe of the frame's own mark classes (plx-chart__line, plx-chart__mark,
-       plx-chart__tick-label, plx-chart-axis__label, plx-chart__axis-line, plx-chart__grid-line, …), so a token change
-       restyles both drawings; nothing here holds a color, width or font of its own.
-   Notes:
-     ECharts writes the sizes and fonts of what it draws on its own SVG elements (inside .plx-chart__engine); the values
-       are the tokens read here.
-     Dark mode: the charts read the tokens again when the page's mode, theme or density changes (EChartsPlot). */
-
-const loading = new WeakMap();
-function loadECharts(win) {
-  const w = win || (typeof window !== 'undefined' ? window : null);
-  if (!w) return Promise.reject(new Error('ECharts needs a browser'));
-  if (w.PlenixECharts) return Promise.resolve(w.PlenixECharts);
-  if (loading.has(w)) return loading.get(w);
-  const doc = w.document;
-  const p = new Promise((resolve, reject) => {
-    const script = doc.createElement('script');
-    script.src = (0, _vendorBase.vendorBase)() + 'echarts/echarts.min.js';
-    script.async = true;
-    script.setAttribute('data-plx-vendor', 'echarts');
-    script.onload = () => {
-      if (w.PlenixECharts) resolve(w.PlenixECharts);else {
-        loading.delete(w);
-        script.remove();
-        reject(new Error('ECharts did not load from ' + script.src));
-      }
-    };
-    script.onerror = () => {
-      loading.delete(w);
-      script.remove();
-      reject(new Error('ECharts could not be loaded from ' + script.src));
-    };
-    doc.head.appendChild(script);
-  });
-  loading.set(w, p);
-  return p;
-}
-const NS = 'http://www.w3.org/2000/svg';
-const num = v => parseFloat(v) || 0;
-// a duration token in milliseconds ("200ms" or "0.2s")
-const ms = v => {
-  const s = String(v).trim();
-  return /ms$/.test(s) ? num(s) : /s$/.test(s) ? num(s) * 1000 : num(s);
-};
-function chartTokens(where) {
-  const doc = where.ownerDocument,
-    win = doc.defaultView;
-  const svg = doc.createElementNS(NS, 'svg');
-  svg.setAttribute('class', 'plx-visually-hidden');
-  svg.setAttribute('aria-hidden', 'true');
-  const mk = (tag, cls, attrs) => {
-    const e = doc.createElementNS(NS, tag);
-    e.setAttribute('class', cls);
-    Object.keys(attrs || {}).forEach(k => e.setAttribute(k, attrs[k]));
-    svg.appendChild(e);
-    return e;
-  };
-  const line = mk('path', 'plx-chart__line', {
-    'data-plx-dataviz': 'categorical-1'
-  });
-  const tick = mk('text', 'plx-chart__tick-label'),
-    title = mk('text', 'plx-chart-axis__label');
-  const axis = mk('line', 'plx-chart__axis-line'),
-    grid = mk('line', 'plx-chart__grid-line');
-  const point = mk('circle', 'plx-chart__point plx-line-chart__point');
-  const joined = mk('rect', 'plx-chart__mark plx-bar-chart__bar plx-bar-chart__bar--joined');
-  const slice = mk('path', 'plx-chart__mark plx-pie-chart__slice');
-  const swatch = mk('rect', 'plx-chart__mark');
-  where.appendChild(svg);
-  const cs = e => win.getComputedStyle(e);
-  const font = e => {
-    const s = cs(e);
-    return {
-      color: s.fill,
-      fontFamily: s.fontFamily,
-      fontSize: num(s.fontSize),
-      fontWeight: s.fontWeight
-    };
-  };
-  const host = cs(where);
-  const prop = name => host.getPropertyValue(name).trim();
-  // a length token in pixels (px, or rem on the root's font size)
-  const len = v => /rem$/.test(v) ? num(v) * num(win.getComputedStyle(doc.documentElement).fontSize) : num(v);
-  const colorCache = {};
-  const t = {
-    lineWidth: num(cs(line).strokeWidth),
-    tick: font(tick),
-    title: font(title),
-    axis: {
-      color: cs(axis).stroke,
-      width: num(cs(axis).strokeWidth)
-    },
-    grid: {
-      color: cs(grid).stroke,
-      width: num(cs(grid).strokeWidth)
-    },
-    point: {
-      r: num(cs(point).r),
-      outline: cs(point).stroke,
-      outlineWidth: num(cs(point).strokeWidth)
-    },
-    separator: {
-      color: cs(joined).stroke,
-      width: num(cs(joined).strokeWidth)
-    },
-    slice: {
-      color: cs(slice).stroke,
-      width: num(cs(slice).strokeWidth)
-    },
-    area: {
-      opacity: num(prop('--plx-comp-area-chart-fill-opacity')),
-      stacked: num(prop('--plx-comp-area-chart-stacked-fill-opacity'))
-    },
-    // the gap between a tick label and its axis, and the room above the plot (half the top tick label)
-    tickOffset: len(prop('--plx-comp-chart-axis-tick-offset')),
-    top: len(prop('--plx-comp-chart-margin-block-start')),
-    rtl: host.direction === 'rtl',
-    // the values not in focus dim to the interaction's token; the drawing's animation is the motion token (reduced motion: 0)
-    dim: num(prop('--plx-comp-chart-interaction-dim-opacity')) || 1,
-    motion: ms(prop('--plx-sys-motion-duration-slow'))
-  };
-  // a data-viz step ("categorical-3", "sequential-5") as the color it is here
-  t.color = step => {
-    if (!step) step = 'categorical-1';
-    if (!(step in colorCache)) {
-      swatch.setAttribute('data-plx-dataviz', step);
-      const out = !svg.isConnected;
-      if (out) where.appendChild(svg);
-      colorCache[step] = cs(swatch).fill;
-      if (out) svg.remove();
-    }
-    return colorCache[step];
-  };
-  t.colors = [1, 2, 3, 4, 5, 6].map(i => t.color('categorical-' + i));
-  svg.remove();
-  return t;
-}
-function plenixTheme(t) {
-  const label = {
-    color: t.tick.color,
-    fontFamily: t.tick.fontFamily,
-    fontSize: t.tick.fontSize,
-    margin: t.tickOffset,
-    hideOverlap: true
-  };
-  const name = {
-    color: t.title.color,
-    fontFamily: t.title.fontFamily,
-    fontSize: t.title.fontSize,
-    fontWeight: t.title.fontWeight
-  };
-  const base = {
-    axisLabel: label,
-    nameTextStyle: name,
-    axisTick: {
-      show: false
-    }
-  };
-  const rule = {
-    show: true,
-    lineStyle: {
-      color: t.axis.color,
-      width: t.axis.width
-    }
-  };
-  const gridLines = {
-    show: true,
-    lineStyle: {
-      color: t.grid.color,
-      width: t.grid.width
-    }
-  };
-  return {
-    color: t.colors,
-    backgroundColor: 'transparent',
-    textStyle: {
-      fontFamily: t.tick.fontFamily,
-      color: t.tick.color,
-      fontSize: t.tick.fontSize
-    },
-    categoryAxis: Object.assign({}, base, {
-      axisLine: rule,
-      splitLine: {
-        show: false
-      }
-    }),
-    timeAxis: Object.assign({}, base, {
-      axisLine: rule,
-      splitLine: {
-        show: false
-      }
-    }),
-    valueAxis: Object.assign({}, base, {
-      axisLine: {
-        show: false
-      },
-      splitLine: gridLines
-    }),
-    line: {
-      symbol: 'circle',
-      symbolSize: t.point.r * 2,
-      lineStyle: {
-        width: t.lineWidth,
-        cap: 'round',
-        join: 'round'
-      },
-      itemStyle: {
-        borderColor: t.point.outline,
-        borderWidth: t.point.outlineWidth
-      }
-    },
-    bar: {
-      itemStyle: {
-        borderWidth: 0
-      }
-    },
-    pie: {
-      itemStyle: {
-        borderColor: t.slice.color,
-        borderWidth: t.slice.width,
-        borderJoin: 'round'
-      }
-    }
-  };
-}
-  } },
-  "platform/charts/echarts/EChartsPlot.jsx": { deps: {"react":null,"./engine.js":"platform/charts/echarts/engine.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.NO_MARGIN = void 0;
-exports.plotGrid = plotGrid;
-exports.useEChartsPlot = useEChartsPlot;
-var _react = _interopRequireDefault(require("react"));
-var _engine = require("./engine.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · EChartsPlot (platform/charts/echarts/EChartsPlot.jsx)
-   Summary: The ECharts drawing inside a chart's ChartFrame (issue 353): one ECharts instance per chart, drawn as SVG in the
-     frame's plot, under the chart's own Plenix layer (focus marks, crosshair, tooltip, labels: the frame's SVG on top).
-     Internal: used by the chart components, not public.
-   Usage:
-     const plot = useEChartsPlot();
-     const option = React.useCallback((t) => ({ grid: …, xAxis: …, yAxis: …, series: … }), [data, …]);
-     <ChartFrame … margin={NO_MARGIN}>{(dims) => [plot.layer(dims, option), plot.chart ? <g>…overlay…</g> : null]}</ChartFrame>
-   Props:
-     useEChartsPlot() → { chart, tokens, layer(dims, option) }:
-       layer(dims, option): the element that holds the drawing, the plot's full size (a foreignObject at 0,0); option(t, size)
-         returns the ECharts option from the chart tokens t (engine.js chartTokens) and the plot's { width, height }. Keep option stable (useCallback on
-         the data and props it reads) or the chart redraws on every render
-       chart: the ECharts instance once it has drawn (null before the engine loads), for its geometry (convertToPixel,
-         the grid's rectangle); the hook's component renders again after every draw, so the overlay follows
-       tokens: the chart tokens it was drawn with
-     plotGrid(chart): the grid's rectangle { x, y, width, height } in plot pixels (where the overlay goes)
-     NO_MARGIN: ChartFrame's margin for an ECharts chart (ECharts makes the room its labels need inside the plot)
-   Behavior:
-     The engine loads the first time a chart mounts (loadECharts); until then the plot is empty and the caption, the
-       legend and "Show the data" are already there.
-     The drawing follows the plot's size (ChartFrame measures it) and is drawn again when the page's mode, theme or
-       density changes, with the tokens read again.
-     The drawing takes no pointer events: the pointer and the keyboard belong to the frame's plot and the chart
-       interaction (interaction.js).
-   Notes:
-     ECharts writes the sizes and fonts of what it draws on its own SVG elements, inside .plx-chart__engine; the values
-       are the chart tokens. */
-
-const NO_MARGIN = exports.NO_MARGIN = Object.freeze({
-  top: 0,
-  end: 0,
-  bottom: 0,
-  start: 0
-});
-const LOOK = ['data-plx-mode', 'data-plx-theme', 'data-plx-density'];
-function EChartsHost({
-  width,
-  height,
-  option,
-  onDraw
-}) {
-  const ref = _react.default.useRef(null),
-    inst = _react.default.useRef(null),
-    tk = _react.default.useRef(null);
-  const [E, setE] = _react.default.useState(() => typeof window !== 'undefined' && window.PlenixECharts || null);
-  const [look, setLook] = _react.default.useState(0);
-  _react.default.useEffect(() => {
-    if (E) return undefined;
-    let live = true;
-    (0, _engine.loadECharts)().then(x => {
-      if (live) setE(x);
-    }, () => {});
-    return () => {
-      live = false;
-    };
-  }, [E]);
-  _react.default.useEffect(() => {
-    if (typeof MutationObserver === 'undefined') return undefined;
-    const mo = new MutationObserver(() => setLook(n => n + 1));
-    mo.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: LOOK
-    });
-    return () => mo.disconnect();
-  }, []);
-  _react.default.useEffect(() => {
-    if (!E || !ref.current) return undefined;
-    tk.current = (0, _engine.chartTokens)(ref.current);
-    const c = E.init(ref.current, (0, _engine.plenixTheme)(tk.current), {
-      renderer: 'svg',
-      width,
-      height
-    });
-    inst.current = c;
-    return () => {
-      c.dispose();
-      inst.current = null;
-    };
-  }, [E, look]);
-  _react.default.useEffect(() => {
-    const c = inst.current;
-    if (!c || c.isDisposed()) return;
-    c.resize({
-      width,
-      height,
-      animation: {
-        duration: 0
-      }
-    });
-    c.setOption(option(tk.current, {
-      width,
-      height
-    }), {
-      replaceMerge: ['series', 'xAxis', 'yAxis']
-    });
-    onDraw(c, tk.current);
-  }, [E, look, option, width, height]);
-  return /*#__PURE__*/_react.default.createElement("div", {
-    ref: ref,
-    className: "plx-chart__engine"
-  });
-}
-function useEChartsPlot() {
-  const [, redraw] = _react.default.useReducer(n => n + 1, 0);
-  const drawn = _react.default.useRef({
-    chart: null,
-    tokens: null
-  });
-  const onDraw = _react.default.useCallback((c, t) => {
-    drawn.current = {
-      chart: c,
-      tokens: t
-    };
-    redraw();
-  }, []);
-  const live = drawn.current.chart && !drawn.current.chart.isDisposed();
-  return {
-    chart: live ? drawn.current.chart : null,
-    tokens: live ? drawn.current.tokens : null,
-    layer: (dims, option) => /*#__PURE__*/_react.default.createElement("foreignObject", {
-      key: "plx-chart-engine",
-      x: 0,
-      y: 0,
-      width: dims.width,
-      height: dims.height
-    }, /*#__PURE__*/_react.default.createElement(EChartsHost, {
-      width: dims.width,
-      height: dims.height,
-      option: option,
-      onDraw: onDraw
-    }))
-  };
-}
-function plotGrid(chart) {
-  const grid = chart.getModel().getComponent('grid');
-  return grid && grid.coordinateSystem ? grid.coordinateSystem.getRect() : null;
 }
   } },
   "platform/charts/PieChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./interaction.js":"platform/charts/interaction.js","./chart-kit.js":"platform/charts/chart-kit.js","./echarts/EChartsPlot.jsx":"platform/charts/echarts/EChartsPlot.jsx","../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
