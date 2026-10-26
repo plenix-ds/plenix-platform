@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en" data-plx-mode="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grid frame options · Plenix review</title>
+<!-- Owner review (2026-10-26): the DataGrid and Table outer frame against the line under the headers. Today (#310) both are
+     gray 400 at 1px, and the frame reads heavier. Option L: the frame one step lighter (gray 300), the frozen column's edge
+     light like the inside lines. Pictures of the grid-and-table sample, 2x, light mode; option L is drawn on today's code
+     with a picture-only style (no code changed). -->
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<link rel="stylesheet" href="../review.css">
+<link rel="stylesheet" href="page.css">
+</head>
+<body class="rv-page">
+<main class="rv-doc">
+  <h1 class="rv-h1">Grid and Table: the outer frame</h1>
+  <p class="rv-lead">Nothing has been changed yet. Option L is drawn on today's code for these pictures only.</p>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">What is measured today</h2>
+    <ul class="rv-list">
+      <li><strong>The outer frame</strong> and <strong>the line under the headers</strong> are the same: 1px, gray 400. This holds at 100%, 125% and 150% display scaling, on the same screen pixels.</li>
+      <li><strong>The frame still reads darker and thicker:</strong> it runs around all four sides against white, while the header line sits under the gray header shading and blends into it.</li>
+      <li><strong>The edge after the frozen first column</strong> ("Name") is also gray 400 today, as dark as the frame.</li>
+    </ul>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">The corner, zoomed 3×</h2>
+    <figure class="ts-shot"><img src="zoom.png" alt="Three corners side by side: today, option L, and the grid before #310"><figcaption class="ts-cap">Left: today. Middle: option L. Right: before #310 (the "top grid").</figcaption></figure>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">Today (#310): frame gray 400, the same as the header line; frozen edge gray 400</h2>
+    <div class="ts-stack">
+      <figure class="ts-shot"><img src="today-grid.png" alt="DataGrid today: dark frame, dark header line, dark edge after Name"><figcaption class="ts-cap">DataGrid</figcaption></figure>
+      <figure class="ts-shot"><img src="today-table.png" alt="Table today"><figcaption class="ts-cap">Table</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">Option L: frame one step lighter (gray 300); header line gray 400; frozen edge light like the inside lines</h2>
+    <div class="ts-stack">
+      <figure class="ts-shot"><img src="lighter-grid.png" alt="DataGrid with a lighter frame, the header line darker, the edge after Name light"><figcaption class="ts-cap">DataGrid</figcaption></figure>
+      <figure class="ts-shot"><img src="lighter-table.png" alt="Table with a lighter frame"><figcaption class="ts-cap">Table</figcaption></figure>
+    </div>
+    <ul class="rv-list">
+      <li><strong>Size if chosen:</strong> small. Two token values: the grid's frame color and the frozen edge color, for DataGrid and Table, from existing palette colors.</li>
+      <li>It reverses the frame and frozen-edge part of the #310 decision; the header line and the inside lines stay as they are.</li>
+    </ul>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">For reference: before #310 (the "top grid")</h2>
+    <p class="rv-lead">The same lines as option L, on the code of that day.</p>
+    <div class="ts-stack">
+      <figure class="ts-shot"><img src="top-grid.png" alt="DataGrid before #310"><figcaption class="ts-cap">DataGrid</figcaption></figure>
+      <figure class="ts-shot"><img src="top-table.png" alt="Table before #310"><figcaption class="ts-cap">Table</figcaption></figure>
+    </div>
+  </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,5 @@
+/* Grid lines review: each picture stands alone (no frame around it), its caption plain text under it. Tokens only. */
+.ts-shot{display:grid;margin:0;row-gap:var(--plx-sys-space-stack-xs);}
+.ts-shot img{block-size:auto;display:block;inline-size:100%;}
+.ts-cap{color:var(--plx-sys-content-muted);font-size:var(--plx-ref-font-size-13);}
+.ts-stack{display:grid;row-gap:var(--plx-sys-space-stack-lg);}
