@@ -1,3 +1,6 @@
 platform/components/Icon/icon.css
 platform/vendor/
 node_modules/
+platform/system/tokens/reference.css
+platform/system/tokens/semantic.css
+platform/system/tokens/components.css

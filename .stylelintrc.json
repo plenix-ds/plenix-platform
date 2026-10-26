@@ -5,7 +5,7 @@
     "color-no-hex": true,
     "function-disallowed-list": ["rgb", "rgba", "hsl", "hsla", "hwb", "lab", "lch", "oklab", "oklch"],
     "declaration-property-value-disallowed-list": {
-      "/^border(-.+)?-radius$/": ["/\\d(px|rem|em|%)/"]
+      "/^border(-.+)?-radius$/": ["/(^|[\\s(,])-?[0-9.]+(px|rem|em|%)/"]
     },
     "property-no-unknown": true,
     "no-duplicate-selectors": true,
