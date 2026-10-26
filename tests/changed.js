@@ -3,6 +3,8 @@
 // .github/workflows/full.yml). The changes: git diff from CHANGED_BASE (default HEAD~1; in CI the push's before-SHA) to the
 // working tree, untracked files included, and the design-system submodule's own diff between its recorded commits. Mapped:
 //   an app folder (dashboard, projects, settings, dam, …)     → that app's pages; suite/ → the first page of every app
+//   a test-site screen (test-site/screens/<name>.jsx)          → the site pages that draw it; the site's shared files
+//                                                                (main.jsx, site.jsx, data.js, pages.js) → every site page
 //   a design-system record, docs entry, guidance, part or lab  → only those records' pages and labs (the record ids the diff
 //                                                                hunks fall in; a part's stylesheet → its part's records)
 //   a Platform component or pattern (its folder, its export, its stylesheet import, its component tokens, by key)
@@ -25,7 +27,12 @@ const { execFileSync } = require('child_process');
 const ROOT = path.resolve(__dirname, '..');
 const DS_DIR = 'platform/design-system';
 const DS = path.join(ROOT, DS_DIR);
-const APPS = ['dashboard', 'projects', 'messages', 'contacts', 'calendar', 'tasks', 'notes', 'bookmarks', 'files', 'settings', 'dam'];
+const APPS = ['dashboard', 'projects', 'messages', 'contacts', 'calendar', 'tasks', 'notes', 'bookmarks', 'files', 'settings', 'dam', 'test-site'];
+// the test site (St. John the Beloved): each page's screen file, so a change reaches only the pages that draw it
+const SITE = 'test-site';
+let SITE_PAGES = null;
+const sitePages = () => (SITE_PAGES = SITE_PAGES || (() => { try { return require('./site.js').pages(); } catch (e) { return []; } })());
+const screenOfUrl = (u) => { const h = (u.split('#')[1] || '/').split('?')[0]; const p = sitePages().find((x) => (x.open || x.path).split('?')[0] === h); return p ? p.screen : null; };
 const FULL = process.env.TEST_SCOPE === 'full';
 const SHARD = /^(\d+)\/(\d+)$/.exec(process.env.TEST_SHARD || '') ? process.env.TEST_SHARD.split('/').map(Number) : null;
 const TEST = path.basename(process.argv[1] || '').replace(/\.test\.js$/, '').replace(/\.js$/, '');
@@ -105,9 +112,11 @@ function platform() {
   const units = new Set(Object.values(exportsOf).concat(['components', 'patterns'].flatMap((d) => fs.existsSync(path.join(P, d)) ? fs.readdirSync(path.join(P, d)).map((x) => d + '/' + x) : [])));
   // the apps that use each unit: their plenix-platform imports and the unit's plx- class in their sources (suite/ is shared by every suite app)
   const appsOf = {};
-  for (const app of APPS.concat('suite')) {
-    const text = walk(path.join(ROOT, app), (n) => /\.(jsx|html)$/.test(n)).map(read).join('\n');
-    const who = app === 'suite' ? APPS.filter((a) => a !== 'dam') : [app];
+  const sources = APPS.filter((a) => a !== SITE).concat('suite').map((app) => [app, walk(path.join(ROOT, app), (n) => /\.(jsx|html)$/.test(n)).map(read).join('\n')]);
+  // the site: one entry per screen file ('test-site:<screen>'), and its shared files for every page ('test-site')
+  walk(path.join(ROOT, SITE), (n) => /\.(jsx|html)$/.test(n)).forEach((f) => { const m = /screens[\\/]([\w-]+)\.jsx$/.exec(f); sources.push([m ? SITE + ':' + m[1] : SITE, read(f)]); });
+  for (const [app, text] of sources) {
+    const who = app === 'suite' ? APPS.filter((a) => a !== 'dam' && a !== SITE) : [app];
     const add = (u) => { appsOf[u] = appsOf[u] || new Set(); who.forEach((a) => appsOf[u].add(a)); };
     for (const m of text.matchAll(/import\s*\{([^}]*)\}\s*from\s*'plenix-platform'/g)) m[1].split(',').map((x) => x.trim().split(/\s+as\s+/)[0]).filter(Boolean).forEach((n) => { if (exportsOf[n]) add(exportsOf[n]); });
     units.forEach((u) => { const k = /^(components|patterns)\/(.+)$/.exec(u); if (k && new RegExp('plx-' + kebab(k[2]) + '(?![\\w-])').test(text)) add(u); });
@@ -141,7 +150,7 @@ function compute() {
   if (!base) { s.appSlice = s.dsSlice = true; return s; }
   const why = (f, what) => s.why.push(f + ' → ' + what);
   const globalFile = (f) => { s.appSlice = s.dsSlice = true; why(f, 'the slice'); };
-  const DERIVED = /^(platform\/dist\/|platform\/system\/tokens\/|platform\/system\/themes\/|platform\/providers\/themes\.js$|platform\/tokens\/tokens\.index\.json$|platform\/components\/Icon\/icon\.css$|platform\/design-system\/(usage|spec-parts)\.js$|platform\/exports\/index\.|(dashboard|projects|messages|contacts|calendar|tasks|notes|bookmarks|files|settings)\/app\.js$|dam\/app\/assets\.js$)/;
+  const DERIVED = /^(platform\/dist\/|platform\/system\/tokens\/|platform\/system\/themes\/|platform\/providers\/themes\.js$|platform\/tokens\/tokens\.index\.json$|platform\/components\/Icon\/icon\.css$|platform\/design-system\/(usage|spec-parts)\.js$|platform\/exports\/index\.|(dashboard|projects|messages|contacts|calendar|tasks|notes|bookmarks|files|settings|test-site)\/app\.js$|dam\/app\/assets\.js$)/;
   // lanes/<task>/design-system/: a task branch's design-system files, counted where tools/agent/lane-overlay.js copies them
   const IGNORED = /(\.md$|^docs\/|^lanes\/|^\.github\/|^\.gitignore$|^\.gitmodules$|^check-system\.js$|^check-system\.rules\/|^check-spec\.js$|^deploy\.sh$|^tokenize-component\.js$|^build-(docs|packages|exports|mobile|native-guidance|platforms|types|brand|spec-parts|steps)\.js$|^services\/(?!login\/|save\/)|^tests\/(compare|pixels|style-compare|a11y-report|data-grid-reference|run)\.js$|^platform\/mobile\/|^platform\/design-system\/(native\/.*\.png|.*\.md)$)/;
   const GLOBAL = /^(platform\/(platform\.css|plenix-system\.css|system\/|tokens\/|providers\/|vendor\/|fonts\/|icons\/|dev\/|standards\/|utils\/cx\.js)|tests\/(lib|changed|limit)\.js$|build-(app|tokens|standards|usage|icons)\.js$|package-lock\.json$)/;
@@ -201,6 +210,7 @@ function compute() {
     if (IGNORED.test(f)) continue;
     if (f === 'package.json') { const h = hunks(files.get(f)); if (h && h.changed.every((l) => /^\s*"version":/.test(l))) continue; globalFile(f); continue; }
     if (f.indexOf(DS_DIR + '/') === 0) { dsFile(f); continue; }
+    if (top === SITE) { const m = /^test-site\/screens\/([\w-]+)\.jsx$/.exec(f); s.apps.add(m ? SITE + ':' + m[1] : SITE); why(f, m ? 'the site pages of ' + m[1] : 'every site page'); continue; }
     if (APPS.includes(top)) { s.apps.add(top); why(f, top); continue; }
     if (top === 'suite') { s.appSlice = true; why(f, 'the first page of every app'); continue; }
     if (top === 'capabilities') { s.apps.add('settings'); why(f, 'settings'); continue; }
@@ -276,7 +286,13 @@ module.exports = {
   pages(list, test) {
     if (FULL) return shard(list);
     const s = scope(), slice = s.appSlice || own(test), seen = new Set();
-    return shard(list.filter((p) => { const a = appOf(p), first = !seen.has(a); seen.add(a); return s.apps.has(a) || (slice && first); }));
+    // a site page: its screen or a unit it draws changed, or the site's shared files; the slice: the first page of each group
+    const groupOf = (p) => { const sc = screenOfUrl(p), pg = sitePages().find((x) => x.screen === sc); return SITE + '/' + (pg ? pg.group : ''); };
+    return shard(list.filter((p) => {
+      const a = appOf(p);
+      if (a === SITE) { const g = groupOf(p), first = !seen.has(g); seen.add(g); return s.apps.has(SITE) || s.apps.has(SITE + ':' + screenOfUrl(p)) || (slice && first); }
+      const first = !seen.has(a); seen.add(a); return s.apps.has(a) || (slice && first);
+    }));
   },
   // whether a design-system page may be in scope (decided before the browser opens the design system), and its home page
   anyDS(test) { const s = scope(); return FULL || dsSlice(test) || s.ds.size > 0 || s.leaves.size > 0 || s.dsRoutes.size > 0 || s.direct.length > 0; },

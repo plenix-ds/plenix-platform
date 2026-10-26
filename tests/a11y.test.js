@@ -1,5 +1,5 @@
-// Plenix tests · accessibility: axe-core (WCAG 2.2 A and AA rules) on every app page and on the design system's pages
-// for the built components. Known issues are kept in tests/baselines/a11y.json (page → rule → number of elements); the
+// Plenix tests · accessibility: axe-core (WCAG 2.2 A and AA rules) on every app page and every page of the St. John the
+// Beloved test site (test-site/; owner, 2026-10-25: tests run there, not on the design spec). Known issues are kept in tests/baselines/a11y.json (page → rule → number of elements); the
 // test fails only on a rule that is new on a page or affects more elements than recorded, so issues can only go down.
 //   node tests/a11y.test.js            compare
 //   node tests/a11y.test.js --update   record the current issues as the baseline (after fixing some, to lower it; TEST_SCOPE=full only)
@@ -17,10 +17,10 @@ const APP_PAGES = changed.pages(['dashboard', 'projects', 'messages', 'contacts'
   // the settings screens beyond each page's first (owner, 2026-10-13: every settings page is cards of rows; the settings-cards rule)
   .concat(['settings/index.html#/account', 'settings/index.html#/appearance', 'settings/index.html#/categories', 'settings/index.html#/docs/data-model',
     'dam/settings-system.html#/users', 'dam/settings-system.html#/permissions', 'dam/settings-myaccount.html#/preferences']));
-// the design system is a submodule (plenix-design-system): without it, only the apps are tested
-const HAS_DS = fs.existsSync(path.join(__dirname, '..', 'platform', 'design-system', 'index.html'));
+const site = require('./site.js');
+const SITE_PAGES = changed.pages(site.urls());
 changed.noPartialUpdate();
-if (!APP_PAGES.length && !(HAS_DS && changed.anyDS())) changed.none('A11Y_OK 0 known elements on 0 pages');
+if (!APP_PAGES.length && !SITE_PAGES.length) changed.none('A11Y_OK 0 known elements on 0 pages');
 
 (async () => {
   const server = await serve(PORT);
@@ -38,14 +38,8 @@ if (!APP_PAGES.length && !(HAS_DS && changed.anyDS())) changed.none('A11Y_OK 0 k
   };
   const found = {};
   for (const a of APP_PAGES) { at(a); await page.goto(BASE + a, { waitUntil: 'networkidle0' }); await sleep(800); found[a] = await run(); }
-  if (!HAS_DS) console.log('NOTE: platform/design-system is not checked out; its pages are skipped');
-  const DS_OPEN = HAS_DS && changed.anyDS();
-  if (DS_OPEN) { at('design-system home'); await page.goto(BASE + 'platform/design-system/', { waitUntil: 'networkidle0' }); await sleep(1500); }
-  if (DS_OPEN && changed.dsHome()) found['design-system home'] = await run();
-  const all = !DS_OPEN ? [] : await page.evaluate(() => window.DSInventory.map((r) => '#/' + r.sec + '/' + r.id));
-  const routes = DS_OPEN ? await changed.routesIn(page, all) : [];
-  changed.report(APP_PAGES.length + ' app pages, ' + routes.length + ' of ' + all.length + ' design-system pages');
-  for (const r of routes) { at('design-system ' + r); await page.evaluate((h) => { location.hash = h; }, r); await sleep(500); found['design-system ' + r] = await run(); }
+  changed.report(APP_PAGES.length + ' app pages, ' + SITE_PAGES.length + ' of ' + site.pages().length + ' test-site pages');
+  for (const r of SITE_PAGES) { at(r); await page.goto(BASE + r, { waitUntil: 'networkidle0' }); await sleep(800); found[r] = await run(); }
   await browser.close(); server.close();
 
   const total = Object.values(found).reduce((n, p) => n + Object.values(p).reduce((m, v) => m + v.n, 0), 0);

@@ -1,4 +1,5 @@
-// Plenix tests · keyboard behavior, with real key presses on the components' live examples in the design system:
+// Plenix tests · keyboard behavior, with real key presses on the components of the St. John the Beloved test site
+// (test-site/; owner, 2026-10-25: the tests run on the site, not on the design spec):
 // a Toolbar is one Tab stop and its arrows follow reading order; Rating moves focus with the value; Tabs and
 // SegmentedControl arrows follow reading order (right to left reverses them); the Tree opens toward the reading end; a
 // collapsible settings section opens and closes with Enter and Space; the recent searches of a SearchField are a grid
@@ -8,17 +9,16 @@
 // a panel row moves with Alt + Arrow Down and the move is announced; the selection bar is one Tab stop and skips its
 // disabled commands.
 //   node tests/keyboard.test.js            (TEST_PORT: another port)
-//   TEST_SCOPE=full: every component; by default (tests/changed.js) those whose component or design-system page changed
-const fs = require('fs');
-const path = require('path');
+//   TEST_SCOPE=full: every component; by default (tests/changed.js) those whose component or site page changed
 const { serve, launch, sleep, at } = require('./lib.js');
 const changed = require('./changed.js');
-const PORT = +process.env.TEST_PORT || 8797, BASE = 'http://127.0.0.1:' + PORT + '/Plenix/platform/design-system/';
-if (!fs.existsSync(path.join(__dirname, '..', 'platform', 'design-system', 'index.html'))) { console.log('KEYBOARD_SKIPPED (no design system)'); process.exit(0); }
-// each component checked: its page's record id and its Platform unit
-const PARTS = { toolbar: ['toolbar', 'components/Toolbar'], rating: ['rating', 'components/Rating'], tabs: ['tabs', 'components/Tabs'], settings: ['settings-page', 'patterns/SettingsLayout'], recent: ['recent-searches', 'components/SearchField'],
-  cmdbar: ['command-bar', 'patterns/CommandBar'], panels: ['filter-panel', 'patterns/FilterPanel'], bulk: ['bulk-action-bar', 'patterns/BulkActions'] };
-const want = (k) => changed.wants({ ids: [PARTS[k][0]], units: [PARTS[k][1]] });
+const site = require('./site.js');
+const PORT = +process.env.TEST_PORT || 8797, BASE = 'http://127.0.0.1:' + PORT + '/Plenix/';
+// each component checked: the site page that draws it and its Platform unit
+const PARTS = { toolbar: ['readings', 'components/Toolbar'], rating: ['event', 'components/Rating'], tabs: ['member', 'components/Tabs'], settings: ['settings', 'patterns/SettingsLayout'], recent: ['search', 'components/SearchField'],
+  cmdbar: ['members', 'patterns/CommandBar'], panels: ['members', 'patterns/FilterPanel'], bulk: ['directory', 'patterns/BulkActions'] };
+const want = (k) => changed.wants({ units: [PARTS[k][1]] }) || changed.pages([site.url(PARTS[k][0])]).length > 0;
+const route = (k) => site.url(PARTS[k][0]);
 const WANTED = Object.keys(PARTS).filter(want);
 if (!WANTED.length) changed.none('KEYBOARD_OK 0/0');
 changed.report(WANTED.join(', '));
@@ -29,14 +29,14 @@ changed.report(WANTED.join(', '));
   const page = await browser.newPage(); await page.setViewport({ width: 1440, height: 1000 });
   const results = [];
   const check = (name, ok, detail) => { results.push([name, ok, detail]); };
-  const open = async (route) => { await page.goto(BASE + route, { waitUntil: 'networkidle0' }); await sleep(1200); };
+  const open = async (url) => { await page.goto(BASE + url, { waitUntil: 'networkidle0' }); await sleep(1200); };
   const focusFirst = (sel) => page.evaluate((s) => { const el = document.querySelector(s); if (el) el.focus(); return !!el; }, sel);
   const active = () => page.evaluate(() => { const a = document.activeElement; return a ? (a.getAttribute('aria-label') || a.textContent || '').trim().slice(0, 40) : ''; });
   const setDir = (sel, dir) => page.evaluate((s, d) => { const el = document.querySelector(s); if (el) el.closest('.ds-live, .ds-example, section, main').setAttribute('dir', d); }, sel, dir);
 
   // Toolbar: one Tab stop
   if (want('toolbar')) {
-  at('toolbar'); await open('#/actions/toolbar');
+  at('toolbar'); await open(route('toolbar'));
   const tb = await page.evaluate(() => { const t = document.querySelector('main [role="toolbar"]'); if (!t) return null; const items = [...t.querySelectorAll('button,input,select,a[href]')].filter((e) => e.offsetParent); return { n: items.length, tabbable: items.filter((e) => e.tabIndex === 0).length }; });
   check('Toolbar: exactly one control in the Tab order', tb && tb.n > 1 && tb.tabbable === 1, JSON.stringify(tb));
   if (tb) {
@@ -53,7 +53,7 @@ changed.report(WANTED.join(', '));
 
   // Rating: focus follows the value
   if (want('rating')) {
-  at('rating'); await open('#/forms/rating');
+  at('rating'); await open(route('rating'));
   const has = await page.evaluate(() => { const el = [...document.querySelectorAll('main [role="radiogroup"] [role="radio"]')].filter((e) => e.tabIndex === 0)[0]; if (el) el.focus(); return !!el; });
   if (has) {
     const r0 = await active(); await page.keyboard.press('ArrowRight'); await sleep(150); const r1 = await active();
@@ -64,7 +64,7 @@ changed.report(WANTED.join(', '));
 
   // Tabs: arrows in reading order
   if (want('tabs')) {
-  at('tabs'); await open('#/navigation/tabs');
+  at('tabs'); await open(route('tabs'));
   if (await focusFirst('main [role="tablist"] [role="tab"][aria-selected="true"]')) {
     const t0 = await active(); await page.keyboard.press('ArrowRight'); await sleep(100); const t1 = await active();
     check('Tabs: Arrow Right moves to the next tab', t0 !== t1, t0 + ' -> ' + t1);
@@ -77,7 +77,7 @@ changed.report(WANTED.join(', '));
   // a collapsible settings section (SettingsSection collapsible, 2026-10-13): its header is one button; Enter and Space
   // open and close it, aria-expanded follows and the rows are hidden with it
   if (want('settings')) {
-  at('settings section'); await open('#/page-structures/settings-page');
+  at('settings section'); await open(route('settings'));
   const sec = await page.evaluate(() => { const b = document.querySelector('main .plx-settings__section-toggle'); if (!b) return null; b.focus(); return { expanded: b.getAttribute('aria-expanded'), body: !!document.getElementById(b.getAttribute('aria-controls')) }; });
   if (sec) {
     const state = () => page.evaluate(() => { const b = document.activeElement; const body = document.getElementById(b.getAttribute('aria-controls')); return { cls: b.className, expanded: b.getAttribute('aria-expanded'), hidden: body ? body.hidden : null }; });
@@ -91,7 +91,7 @@ changed.report(WANTED.join(', '));
 
   // recent searches (owner, 2026-10-14): the combobox with grid popup; each row has a term cell and a remove cell
   if (want('recent')) {
-  at('recent searches'); await open('#/navigation/recent-searches');
+  at('recent searches'); await open(route('recent'));
   const field = 'main .plx-search input[aria-haspopup="grid"]';
   // (the field is marked once: after a search its popup is no longer a grid, and the selector would find another field)
   const st = () => page.evaluate(() => {
@@ -119,7 +119,9 @@ changed.report(WANTED.join(', '));
     check('Recent searches: Delete removes the active search', s6.rows === s5.rows - 1 && s6.focus, JSON.stringify(s6));
     if (s6.rows) {
       await page.keyboard.press('ArrowLeft'); const term = (await st()).cell;
-      await page.keyboard.press('Enter'); await sleep(250); const s7 = await st();
+      await page.keyboard.press('Enter'); await sleep(400);
+      // the search runs: on the site the results screen draws its field again (the marked field may be gone)
+      const s7 = (await st()) || (await page.evaluate(() => ({ value: [...document.querySelectorAll('main .plx-search input')].map((i) => i.value).find((v) => v) || '' })));
       check('Recent searches: Enter on a term searches it (its text in the field)', term && /^term:/.test(term) && s7.value === term.slice(5), JSON.stringify([term, s7]));
     }
   } else check('Recent searches: a field with removable recent searches is shown', false, 'none found');
@@ -127,7 +129,7 @@ changed.report(WANTED.join(', '));
 
   // the command bar: one Tab stop per bar; the arrows move; Enter on Filter opens its panel (focus inside), Escape returns
   if (want('cmdbar')) {
-  at('command bar'); await open('#/patterns/command-bar');
+  at('command bar'); await open(route('cmdbar'));
   // the page's live examples build their tables after the route changes: wait until every one is built (the bars measure
   // themselves again as the page settles)
   await page.waitForFunction(() => { const t = document.querySelectorAll('main .plx-data-grid'); return t.length > 0 && document.querySelectorAll('main .plx-data-grid .plx-data-grid__grid-tableholder').length >= t.length; }, { timeout: 15000 }).catch(() => {});
@@ -148,6 +150,9 @@ changed.report(WANTED.join(', '));
   } else check('Command bar: a Filter button is shown', false, 'none found');
   // the swap (owner, 2026-10-15): with rows selected the bar holds the selection's commands, keeps its height, and Escape
   // in the bar brings the normal bar back
+  // on the site nothing starts selected: check two members' rows first
+  await page.evaluate(() => { [...document.querySelectorAll('main .plx-data-grid [role="row"] input[type="checkbox"]')].filter((c) => !c.closest('[role="columnheader"]') && !c.closest('.plx-data-grid__grid-group')).slice(0, 2).forEach((c) => c.click()); });
+  await sleep(400);
   const sw = await page.evaluate(() => { const b = document.querySelector('main .plx-command-bar--selecting'); if (!b) return null; b.setAttribute('data-kb-swap', ''); const h = Math.round(b.getBoundingClientRect().height);
     const first = b.querySelector('.plx-command-bar__row button:not([disabled])'); if (first) first.focus(); return { h, clear: !!b.querySelector('.plx-command-bar__clear'), search: !!b.querySelector('.plx-search') }; });
   if (sw) {
@@ -160,7 +165,7 @@ changed.report(WANTED.join(', '));
 
   // Task #107: action forms use real keys, including Escape without clearing the selection.
   if (want('cmdbar')) {
-    at('command action forms'); await open('#/patterns/command-bar');
+    at('command action forms'); await open(route('cmdbar'));
     const contextual = require('./command-actions.test.js');
     const behavior = await contextual(page);
     check('Command actions: pending, help, contextual sticking and folded forms', behavior >= 18, String(behavior));
@@ -170,8 +175,11 @@ changed.report(WANTED.join(', '));
 
   // a panel row moves with Alt + Arrow Down; the move is announced
   if (want('panels')) {
-  at('filter panel'); await open('#/navigation/filter-panel');
-  const r = await page.evaluate(() => { const rows = [...document.querySelectorAll('main .plx-find-panel__rows--framed > [data-plx-row]')]; if (rows.length < 2) return null; rows[0].focus(); return rows.map((x) => x.getAttribute('aria-label')); });
+  at('filter panel'); await open(route('panels'));
+  // the members' Filter starts with two conditions: open its panel
+  await page.evaluate(() => { const b = [...document.querySelectorAll('main .plx-command-bar__row button')].find((x) => /^Filter/.test(x.getAttribute('aria-label') || x.textContent.trim())); if (b) b.click(); });
+  await sleep(500);
+  const r = await page.evaluate(() => { const rows = [...document.querySelectorAll('.plx-find-panel__rows--framed > [data-plx-row]')]; if (rows.length < 2) return null; rows[0].focus(); return rows.map((x) => x.getAttribute('aria-label')); });
   if (r) {
     await page.keyboard.down('Alt'); await page.keyboard.press('ArrowDown'); await page.keyboard.up('Alt'); await sleep(300);
     const after = await page.evaluate(() => { const box = document.activeElement.parentElement; return { focus: document.activeElement.getAttribute('aria-label'), first: box.querySelector(':scope > [data-plx-row]').getAttribute('aria-label'), status: (box.querySelector(':scope > [role="status"]') || {}).textContent }; });
@@ -181,7 +189,7 @@ changed.report(WANTED.join(', '));
 
   // the selection bar: one Tab stop; disabled commands are skipped by the arrows
   if (want('bulk')) {
-  at('selection bar'); await open('#/actions/bulk-action-bar');
+  at('selection bar'); await open(route('bulk'));
   const sb = await page.evaluate(() => { const t = document.querySelector('main .plx-bulk-actions--empty .plx-bulk-actions__row') || document.querySelector('main .plx-bulk-actions__row'); if (!t) return null; t.setAttribute('data-kb-bulk', ''); const all = [...t.querySelectorAll('button')].filter((e) => e.offsetParent); return { n: all.length, enabled: all.filter((e) => !e.disabled).map((e) => e.getAttribute('aria-label') || e.textContent.trim()), tabbable: all.filter((e) => e.tabIndex === 0 && !e.disabled).length }; });
   check('Selection bar: one Tab stop, the disabled commands are shown', sb && sb.n > sb.enabled.length && sb.tabbable === 1, JSON.stringify(sb));
   if (sb && sb.enabled.length > 1) {

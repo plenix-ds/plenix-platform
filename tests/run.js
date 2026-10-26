@@ -5,16 +5,21 @@
 //   node tests/run.js --full               every automatic test, every page (npm run test:full)
 //   node tests/run.js pages typography     only these tests (the CI matrix groups)
 //   node tests/run.js --on-demand          the on-demand tests only (npm run test:on-demand; add --full for every page)
+// Where (owner, 2026-10-25: "make the test site ... no longer using the design spec for testing"): the browser tests open the
+// St. John the Beloved test site (test-site/, tests/site.js) and the suite applications, never the design spec.
 // On demand (owner, 2026-10-25: "Reserve only for as on demand test by owner and take out from the tests"):
 // accessibility, high contrast, color contrast, themes and density run only when the owner asks for them, never in
 // the automatic runs (npm test, the per-push CI, the full suite). Each still runs by name: node tests/run.js a11y
 const path = require('path');
 const { spawnSync } = require('child_process');
 
-const AUTOMATIC = ['visual', 'layout', 'pages', 'keyboard', 'data-grid', 'typography', 'labs', 'reflow',
+const AUTOMATIC = ['site-coverage', 'visual', 'layout', 'pages', 'keyboard', 'data-grid', 'typography', 'component-tokens', 'reflow',
   'formats', 'utilities', 'focus-order', 'semantic-html', 'navigation', 'brand-rules', 'login', 'selector-kinds', 'zero-overlap', 'types'];
 const ON_DEMAND = ['a11y', 'high-contrast', 'contrast', 'theme', 'density'];
-const ALL = AUTOMATIC.concat(ON_DEMAND);
+// the design spec's own checks, by name only: the spec's component labs (its Edit dialog's tokens) belong to the spec
+// (platform/design-system), which loads Plenix from the CDN; the automatic runs never open the spec (owner, 2026-10-25)
+const SPEC_ONLY = ['labs'];
+const ALL = AUTOMATIC.concat(ON_DEMAND, SPEC_ONLY);
 const args = process.argv.slice(2);
 const full = args.includes('--full');
 const onDemand = args.includes('--on-demand');

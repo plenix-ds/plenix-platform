@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en" data-plx-mode="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>St. John test site · Plenix review</title>
+<!-- Owner review for #338: the St. John the Beloved test site, built, and the automatic tests moved onto it. Pictures from
+     capture.js; the component → page map from build-map.js (map.js); the tables are the Platform's own Table. -->
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<link rel="stylesheet" href="../review.css">
+<script src="../../../platform/vendor/react-loader.js"></script>
+<script src="../../../platform/dist/platform.js"></script>
+<script src="map.js"></script>
+</head>
+<body class="rv-page">
+<main class="rv-doc">
+  <h1 class="rv-h1">St. John the Beloved test site: built, and the tests run there now (#338)</h1>
+  <p class="rv-lead">You asked for a "dummy site" that uses every page, control and component, so the tests stop running on
+    the design spec. It is built: St. John the Beloved Coptic Orthodox Church, a church database and membership site with
+    35 pages. Every person, family and gift in it is made up. There are no sacrament records anywhere, and people who serve
+    are called servants.</p>
+  <ul class="rv-list">
+    <li><strong>Where:</strong> <span class="rv-tag">test-site/</span>, built by <span class="rv-tag">node build-app.js</span> like the other apps. Open it at <span class="rv-tag">/Plenix/test-site/index.html</span>.</li>
+    <li><strong>Everything is used:</strong> all 388 Platform parts that draw something (components, patterns, page templates, providers and the hooks apps call) are in real use on the site. A new test (site coverage) fails if a new part is added to Plenix and not placed on the site.</li>
+    <li><strong>The tests:</strong> every automatic browser test now opens the site and the suite apps, never the design spec. A full run takes about 24 minutes instead of about 5 hours.</li>
+    <li><strong>The spec:</strong> nothing in the spec was changed. It is now only a consumer of the CDN (the Spec on the CDN session's work).</li>
+  </ul>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">Time saved: the full run, before and after</h2>
+    <p class="rv-lead">Before: the full suite on GitHub, 2026-10-25 (run 40198784659). After: the same automatic tests on this computer, every page, one after another (on GitHub they run side by side, so the wait is shorter still).</p>
+    <div id="times"></div>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">The site</h2>
+    <div class="rv-grid">
+      <figure class="rv-fig"><img src="shots/home.png" alt="The parish office dashboard: metric cards, services and feasts, today's tasks, giving"><figcaption>Dashboard: metric cards, feasts and fasts, today's tasks</figcaption></figure>
+      <figure class="rv-fig"><img src="shots/members.png" alt="The member list: a command bar over a grid grouped by district"><figcaption>Members: command bar, filters, grid grouped by district</figcaption></figure>
+      <figure class="rv-fig"><img src="shots/member.png" alt="One member's page with a header, tabs and details"><figcaption>A member: header, tabs, member card with QR code</figcaption></figure>
+      <figure class="rv-fig"><img src="shots/families.png" alt="Families and households in a list and detail page"><figcaption>Families and households</figcaption></figure>
+      <figure class="rv-fig"><img src="shots/calendar.png" alt="The calendar with the month view and the day's services"><figcaption>Calendar: services and the liturgical feasts</figcaption></figure>
+      <figure class="rv-fig"><img src="shots/event.png" alt="The patron feast festival event with RSVP and feedback"><figcaption>Event: the Feast of St. John the Beloved festival</figcaption></figure>
+      <figure class="rv-fig"><img src="shots/giving.png" alt="Donations and pledges with charts"><figcaption>Donations and pledges</figcaption></figure>
+      <figure class="rv-fig"><img src="shots/reports.png" alt="The parish council's reports, every chart type"><figcaption>Reports: every chart type</figcaption></figure>
+      <figure class="rv-fig"><img src="shots/bookstore.png" alt="The church bookstore"><figcaption>Bookstore: the commerce pages</figcaption></figure>
+      <figure class="rv-fig"><img src="shots/announcement-edit.png" alt="Editing an announcement with the rich text editor"><figcaption>Editing an announcement</figcaption></figure>
+      <figure class="rv-fig"><img src="shots/assistant.png" alt="The parish assistant with AI parts"><figcaption>Parish assistant: the AI parts</figcaption></figure>
+      <figure class="rv-fig"><img src="shots/documents.png" alt="The document library"><figcaption>Documents: bulletins, curriculum, hymns</figcaption></figure>
+      <figure class="rv-fig"><img src="shots/photo.png" alt="A photo of the Nayrouz celebration with notes"><figcaption>A photo, full screen, with notes</figcaption></figure>
+      <figure class="rv-fig"><img src="shots/settings.png" alt="Parish settings in cards"><figcaption>Parish settings</figcaption></figure>
+      <figure class="rv-fig"><img src="shots/sign-in.png" alt="The sign-in page"><figcaption>Sign in (no site header)</figcaption></figure>
+      <figure class="rv-fig"><img src="shots/visit.png" alt="The public Visit us page"><figcaption>Visit us: the public page</figcaption></figure>
+      <figure class="rv-fig"><img src="shots/phone-home.png" alt="The dashboard on a phone"><figcaption>The dashboard on a phone</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">Each test: where it ran, and where it runs now</h2>
+    <div id="tests"></div>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">What the site found in Plenix (to fix in the Platform)</h2>
+    <p class="rv-lead">Real use turned up problems the spec's demos never showed. Each one is recorded in the test's known list, so the tests stay green now and fail if anything new appears.</p>
+    <ul class="rv-list">
+      <li><strong>Grid keyboard:</strong> a grid whose rows open on click puts every row in the Tab order, so the keyboard can't reach the page buttons under it (Directory, Families).</li>
+      <li><strong>Header shortcut:</strong> the header search's own Ctrl K listener also takes Ctrl Shift K and is missing from the shortcut list. The site's command palette uses Ctrl Shift P for now.</li>
+      <li><strong>ErrorPage</strong> takes no extra content (children or suggestions).</li>
+      <li><strong>Time</strong> shows a date with no time ("2026-10-18") as the day before in US time zones.</li>
+      <li><strong>Icon in a box:</strong> FeatureCard always draws an IconTile (an icon on a tinted square) unless it has a picture. This clashes with your no-icon-in-a-box rule.</li>
+      <li><strong>Heading levels:</strong> Announcement (card) and ImageAnnotation always draw level 3 headings, with no option to change it.</li>
+      <li><strong>Mono where it shouldn't be:</strong> CodeBlock's title and VersionCompare's prose lines are set in the Mono font. Chart data tables show dates in the normal font.</li>
+      <li><strong>Lines out of step:</strong> ActivityList's time sits off its line.</li>
+      <li><strong>Narrow screens:</strong> at phone width (320px), long Select options, TimePicker, MillerColumns and the page header's buttons stay too wide (16 pages listed).</li>
+      <li><strong>Other gaps:</strong> EventChip has no orange or teal. A Wizard field marked as required shows the browser's popup instead of the Wizard's message.</li>
+      <li><strong>Component tokens:</strong> 98 component token rules change nothing on the site, usually because a more specific rule always wins. They are listed in tests/baselines/component-tokens.json.</li>
+    </ul>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">Every Platform part and the pages that use it</h2>
+    <p class="rv-lead">388 parts. Two building blocks are not called by the site directly, because their own documentation keeps them out of app code. DataGridEngine draws every grid and table; Portal draws every dialog, menu and popover.</p>
+    <div id="map"></div>
+  </section>
+</main>
+<script>
+(function () {
+  var P = window.Plenix, h = React.createElement;
+  var mount = function (id, el) { ReactDOM.createRoot(document.getElementById(id)).render(el); };
+  var col = function (field, title, kind) { return kind ? { field: field, title: title, kind: kind } : { field: field, title: title }; };
+  mount('times', h(P.Table, { label: 'Full run, before and after', columns: [col('test', 'Test'), col('before', 'Before (spec, GitHub)', 'data'), col('after', 'After (site, this computer)', 'data')], data: [
+    { id: 1, test: 'Pages', before: '136 min (4 jobs)', after: '1.3 min' },
+    { id: 2, test: 'Component labs → component tokens', before: '126 min (2 jobs)', after: '0.7 min' },
+    { id: 3, test: 'Typography', before: '15 min', after: '5.3 min' },
+    { id: 4, test: 'Reflow (with tap areas, now removed)', before: '7 min', after: '2.0 min' },
+    { id: 5, test: 'Fixtures (visual, layout, utilities, keyboard)', before: '2 min', after: '1.4 min' },
+    { id: 6, test: 'Behavior (data grid, focus order, semantic HTML, navigation)', before: '9 min', after: '12.2 min' },
+    { id: 7, test: 'Total machine time', before: '295 min (4 h 55 min)', after: '23.6 min' },
+    { id: 8, test: 'Longest job (the wait on GitHub)', before: '84 min (labs 1 of 2)', after: 'about 8 min (data grid)' },
+    { id: 9, test: 'Accessibility (on demand only)', before: '132 min (2 jobs)', after: 'about 5 min' }] }));
+  mount('tests', h(P.Table, { label: 'Each test, before and after', columns: [col('test', 'Test'), col('before', 'Before'), col('after', 'After', 'wrap')], data: [
+    { id: 1, test: 'pages', before: '14 app pages and about 2,700 spec pages', after: '14 app pages and the site’s 35 pages' },
+    { id: 2, test: 'labs', before: 'every spec lab (the Edit dialog’s tokens)', after: 'Replaced by component tokens: each component token must change what it styles on the site’s real components (2,599 of 4,723 tokens reached). The spec’s own labs check stays with the spec, run by name only (node tests/run.js labs).' },
+    { id: 3, test: 'typography', before: 'app pages and a sample of spec pages', after: 'app pages and every site page, light and dark' },
+    { id: 4, test: 'reflow', before: 'app pages and the first spec page of each section', after: 'app pages and every site page at 320px' },
+    { id: 5, test: 'keyboard', before: 'the spec’s live examples', after: 'the site: Toolbar (readings), Rating (event), Tabs (member), settings sections, recent searches (search), command bar, filter panel and selection (members), selection bar (directory)' },
+    { id: 6, test: 'utilities', before: 'the spec’s demo pages', after: 'the site: 10,000 gifts and the notes list (virtual lists), its own shortcuts and command palette, Copy announcement ID (clipboard and announcement)' },
+    { id: 7, test: 'focus order', before: 'app pages and the spec’s dialog', after: 'app pages, every site page, and the member page’s Rename member dialog' },
+    { id: 8, test: 'data grid', before: 'app views and 14 spec grids', after: 'app views and the site’s grids (fill, pages, load more, grouped with summaries, wrapped headers, row heights, static Table)' },
+    { id: 9, test: 'semantic HTML', before: 'app pages', after: 'app pages and every site page' },
+    { id: 10, test: 'site coverage (new)', before: '—', after: 'every Platform part is used on the site; every route has its page' },
+    { id: 11, test: 'visual, layout, density, themes', before: 'their own test pages', after: 'unchanged (they never opened the spec)' },
+    { id: 12, test: 'accessibility, high contrast, contrast, themes, density', before: 'on demand', after: 'still on demand only; accessibility now checks the site’s pages, not the spec’s' },
+    { id: 13, test: 'tap areas', before: 'removed (#336)', after: 'still removed' }] }));
+  mount('map', h(P.Table, { label: 'Platform parts and their pages', columns: [col('name', 'Platform part', 'data'), col('pages', 'Pages that use it', 'wrap')], data: (window.SITE_MAP || []).map(function (r, i) { return { id: i, name: r.name, pages: r.pages }; }) }));
+})();
+</script>
+</body>
+</html>

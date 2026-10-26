@@ -1,5 +1,5 @@
-// Plenix tests · every page loads clean: each app page, the design system home, every built item (and its variant pages)
-// and every placeholder item. A console error (the style audit reports inline styles as errors), a page error, a
+// Plenix tests · every page loads clean: each app page and every page of the St. John the Beloved test site (test-site/;
+// owner, 2026-10-25: the tests run on the site, not on the design spec). A console error (the style audit reports inline styles as errors), a page error, a
 // failed request, a <table> that is not a DataGrid, or three framed boxes nested (owner, batch 250: containers nest two deep,
 // never three; the pattern chooses the unframed presentation) fails it. Only the work log is allowed to be missing: it lives outside this repository.
 //   node tests/pages.test.js                  the pages of what changed (tests/changed.js)
@@ -10,11 +10,11 @@ const PORT = +process.env.TEST_PORT || 8790, BASE = 'http://127.0.0.1:' + PORT +
 const ALLOWED_MISSING = /Plenix%20-%20DAM\/audit\/batches\//;
 const APP_PAGES = changed.pages(['dashboard', 'projects', 'messages', 'contacts', 'calendar', 'tasks', 'notes', 'bookmarks', 'files', 'settings'].map((a) => a + '/index.html')
   .concat(['dam/index.html', 'dam/settings-system.html', 'dam/settings-myaccount.html', 'dam/image-editor.html']));
-// the design system is a submodule (plenix-design-system): without it, only the apps are tested
-const HAS_DS = require('fs').existsSync(require('path').join(__dirname, '..', 'platform', 'design-system', 'index.html'));
-if (!APP_PAGES.length && !(HAS_DS && changed.anyDS())) changed.none('PAGES_OK 0/0');
+const site = require('./site.js');
+const SITE_PAGES = changed.pages(site.urls());
+if (!APP_PAGES.length && !SITE_PAGES.length) changed.none('PAGES_OK 0/0');
 
-let current = '';   // the design-system page being checked
+let current = '';   // the page being checked
 (async () => {
   const server = await serve(PORT);
   const browser = await launch();
@@ -83,31 +83,21 @@ let current = '';   // the design-system page being checked
 
   for (const a of APP_PAGES) { at(a); await page.goto(BASE + a, { waitUntil: 'networkidle0' }); await sleep(600); await tables(); await nesting(); await styles(); done(a); }
 
-  if (!HAS_DS) console.log('NOTE: platform/design-system is not checked out; its pages are skipped');
-  const DS_OPEN = HAS_DS && changed.anyDS();
-  if (DS_OPEN) { at('design system home'); await page.goto(BASE + 'platform/design-system/', { waitUntil: 'networkidle0' }); await sleep(1500); if (changed.dsHome()) done('design system home'); else errs = []; }
-  const all = !DS_OPEN ? [] : await page.evaluate(() => {
-    const out = new Set([...document.querySelectorAll('a[href^="#/"]')].map((a) => a.getAttribute('href')));
-    window.DSInventory.forEach((r) => { out.add('#/' + r.sec + '/' + r.id); if (r.lab) out.add('#/' + r.sec + '/' + r.id + '/v/all'); (r.variantPages || []).forEach((v) => out.add('#/' + r.sec + '/' + r.id + '/v/' + window.DS.slug(v.leaf))); });
-    Object.keys(window.DSGuidance || {}).forEach((k) => { const [sec, leaf] = k.split('|'); out.add('#/' + sec + '/leaf-' + sec + '-' + window.DS.slug(leaf)); });
-    return [...out];
-  });
-  const routes = DS_OPEN ? await changed.routesIn(page, all) : [];
-  changed.report(APP_PAGES.length + ' app pages, ' + routes.length + ' of ' + all.length + ' design-system pages');
-  for (const r of routes) {
-    current = r; at('design system ' + r);   // named in the error if this page hangs
+  changed.report(APP_PAGES.length + ' app pages, ' + SITE_PAGES.length + ' of ' + site.pages().length + ' test-site pages');
+  for (const r of SITE_PAGES) {
+    current = r; at(r);   // named in the error if this page hangs
     if (process.env.PAGES_TRACE) console.log('page ' + r);   // PAGES_TRACE=1: name each page as it loads (to find one that hangs)
-    await page.evaluate((h) => { location.hash = h; }, r); await sleep(250);
+    await page.goto(BASE + r, { waitUntil: 'networkidle0' });
     const isBlank = () => page.evaluate(() => !document.querySelector('main') || document.querySelector('main').innerText.trim().length < 20);
-    // the first page of another platform (iOS, Android) loads that platform's files first: 2 to 4 seconds with no main
     if (await isBlank()) await page.waitForFunction(() => document.querySelector('main') && document.querySelector('main').innerText.trim().length >= 20, { timeout: 8000 }).catch(() => {});
+    await sleep(300);
     if (await isBlank()) errs.push('empty page');
     await tables(); await nesting(); await styles();
-    done('design system ' + r);
+    done(r);
   }
 
   await browser.close(); server.close();
   failed.forEach(([name, e]) => { console.log('FAIL ' + name); e.forEach((x) => console.log('     ' + x)); });
   console.log((failed.length ? 'PAGES_FAIL ' : 'PAGES_OK ') + (n - failed.length) + '/' + n);
   process.exit(failed.length ? 1 : 0);
-})().catch((e) => { console.error((current ? 'stopped on design system ' + current + ': ' : '') + e.message); process.exit(1); });
+})().catch((e) => { console.error((current ? 'stopped on ' + current + ': ' : '') + e.message); process.exit(1); });

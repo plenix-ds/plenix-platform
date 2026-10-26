@@ -50,6 +50,12 @@ One design system and the suite of applications built on it, owned by one person
   - On this computer: `npm run test:on-demand` checks what changed; `npm run test:on-demand:full` checks every page (accessibility alone takes about two hours).
   - On GitHub: Actions › On-demand tests › Run workflow, then pick "full" or "changed".
   - One test by name: `node tests/run.js a11y` (or `high-contrast`, `contrast`, `theme`, `density`).
+- **The test site (owner, 2026-10-25).** Every automatic browser test runs on the St. John the Beloved Coptic Orthodox
+  Church test site (`test-site/`, built by `node build-app.js`) and the suite apps, never on the design spec.
+  - The site is a church database and membership app with made-up data (no sacrament records; "servants", never "volunteers").
+  - Its routes are `test-site/pages.js`; tests read them through `tests/site.js`.
+  - A new Platform part must be placed on the site: `node tests/site-coverage.test.js` (SITE_COVERAGE_OK) and `node tests/site-check.js` (the site's rules).
+  - The spec's component labs are spec-only (`node tests/run.js labs`); `tests/component-tokens.test.js` checks the tokens on the site's real components.
 - **No target-size test.** The owner removed it ("Remove tap areas from all tests", 2026-10-25).
 - Gates before finishing any change: `node build-app.js`, `node check-system.js` (SYSTEM_OK), `node check-spec.js` (SPEC_OK).
   After a spec change, `node build-spec-parts.js` (build-app runs it).
