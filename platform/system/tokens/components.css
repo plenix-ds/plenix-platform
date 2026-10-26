@@ -832,6 +832,8 @@
   --plx-comp-menu-item-min-height: var(--plx-sys-control-height-standard);
   --plx-comp-menu-item-padding-inline: var(--plx-sys-space-inset-sm);
   --plx-comp-menu-item-hover-background: var(--plx-sys-state-hover);
+  --plx-comp-menu-item-hover-icon: var(--plx-sys-action-primary-background);
+  --plx-comp-menu-item-radius: var(--plx-sys-radius-control);
   --plx-comp-menu-item-focus-outline-color: var(--plx-sys-focus-ring-color);
   --plx-comp-menu-item-focus-outline-offset: calc(var(--plx-sys-border-width-medium) * -1);
   --plx-comp-menu-item-focus-outline-width: var(--plx-sys-border-width-medium);
@@ -3180,7 +3182,7 @@
   --plx-comp-command-bar-background: var(--plx-sys-surface-default);
   --plx-comp-command-bar-border-color: var(--plx-sys-border-default);
   --plx-comp-command-bar-border-width: var(--plx-sys-border-width-thin);
-  --plx-comp-command-bar-radius: var(--plx-sys-radius-control-8px);
+  --plx-comp-command-bar-radius: var(--plx-sys-radius-surface-4px);
   --plx-comp-command-bar-padding-block: var(--plx-sys-space-inset-sm);
   --plx-comp-command-bar-padding-inline: var(--plx-sys-space-inset-sm);
   --plx-comp-command-bar-count-text: var(--plx-sys-content-muted);
