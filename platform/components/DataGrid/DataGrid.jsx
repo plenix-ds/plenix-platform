@@ -83,11 +83,13 @@
        { rows, total }; search: the page's search text
      storageKey: keeps the person's standalone view (sort, widths, order, hidden columns, row height, wrap, groups).
      onViewChange(patch): delegates view changes to an external controller; its presence disables the grid's own store.
+       useCollectionView supplies this callback and columnWidths, so its collection state owns the view.
+     onFilterField(field): the header menu's "Filter by this field" calls it instead of opening the header filter box; useCollectionView
+       sets it so the command bar's Filter panel opens on that field (one filter state, shown in one place)
      columns[].wrap: true starts the column wrapped (as kind "wrap"); people turn Wrap text on or off in the column menu, and
        Wrap all columns in the header's right-click menu. A row with a wrapping column starts every cell at the top, at the
        reading line height; rows without one stay centered. wrapColumns ({ field: true|false }) and onWrapColumnsChange(next)
        control it from outside; the saved view keeps it (owner, 2026-10-24)
-       useCollectionView supplies this callback and columnWidths, so its collection state owns the view.
      narrow: "table" (default inside SplitView) | "list" (default elsewhere: under narrowAt, 600px, a list of keyColumns) | "auto"
      empty: shown when no row matches; error and onRetry(): the error state and its one recovery; strings: the words
      className: more classes on the frame

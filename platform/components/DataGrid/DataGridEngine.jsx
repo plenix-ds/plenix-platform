@@ -396,7 +396,7 @@ function NextEngine(props) {
     const grouped=groupedBy(c.field),others=[].concat(groupBy||[]).filter(level=>(typeof level==='object'?level.field:level)!==c.field);return <>
     {menuItems(custom,c,api.column(c.field))}{custom.length?<MenuDivider/>:null}
     <MenuItem icon="sort-ascending" disabled={!column.getCanSort()} onSelect={()=>column.toggleSorting(false)}>{direction[0]}</MenuItem><MenuItem icon="sort-descending" disabled={!column.getCanSort()} onSelect={()=>column.toggleSorting(true)}>{direction[1]}</MenuItem><MenuDivider/>
-    <MenuItem icon="filter" disabled={!column.getCanFilter()} onSelect={()=>setFilterField(c.field)}>{S.filterBy}</MenuItem>
+    <MenuItem icon="filter" disabled={!column.getCanFilter()} onSelect={()=>props.onFilterField?props.onFilterField(c.field):setFilterField(c.field)}>{S.filterBy}</MenuItem>
     <MenuItem icon="group-by" disabled={!grouped&&c.groupable===false} onSelect={()=>changeGroups(grouped?(others.length?others:false):c.field)}>{grouped?S.noGroup:S.group}</MenuItem>
     <MenuDivider/><MenuItem checked={!!wrapOf(c)} onSelect={()=>changeWrap({...(props.wrapColumns||wrapColumns),[c.field]:!wrapOf(c)})}>{S.wrapText}</MenuItem>
   </>;};
