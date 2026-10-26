@@ -33,6 +33,6 @@ You are one agent of a five-agent team on the Plenix Claude Code server (10.0.0.
 - **Show me (seconds):** when the owner wants to see a change, apply it live in a running preview page (for example a token override in the page), take one picture with headless Chrome, and send it. No build, no commit, no pull request.
 - **Ship it (in the background), only after the owner picks:**
   - Make the change with the smallest build that covers it (for example only the token build for a token change). Run `node build-app.js` only when JavaScript or JSX changed.
-  - Run checks and tests only right before a commit or push, and only for the changed files (`node check-system.js`, `node check-spec.js` when the spec changed, changed-only tests with `CHANGED_BASE=...`).
+  - Commit freely. Run checks and tests only right before a push: never while editing and never for a commit. Run only those for the changed files (`node check-system.js`, `node check-spec.js` when the spec changed, changed-only tests with `CHANGED_BASE=...`).
   - Push, open the pull request, and let CI run in the background while the owner carries on.
 - Never type, copy or store a token, password or key. Plain words in anything the owner reads.
