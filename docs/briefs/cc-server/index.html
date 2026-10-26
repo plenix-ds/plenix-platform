@@ -3,6 +3,18 @@
 <p>One server on our own Proxmox runs the Plenix agents. You reach it from the desktop app and from your phone. Nothing runs in Anthropic's cloud: the agents, the code and the memory stay on our machine. The agents still talk to Claude through your Claude account, as they do today.</p>
 <p>Plenix work stays on this Windows VM until you say to move it.</p>
 
+<h2>Built so far (2026-10-26)</h2>
+<ul>
+<li><b>Server:</b> VM 131 "cc-server" at 10.0.0.32 is running. Nightly backup at 02:00 to the new "backup-store" area; a test backup worked.</li>
+<li><b>Sign-ins:</b> Claude (your Max account) and GitHub (account LighthouseCollection, through the browser, so it can reach all your repositories; a narrower token can replace it).</li>
+<li><b>Repositories:</b> cloned, with the builders' worktrees. The build, the system check and the spec check pass on the server.</li>
+<li><b>Claude Code:</b> 2.1.308, Anthropic's "stable" release, pinned (Opus 5.5 needs it).</li>
+<li><b>The team:</b> all five agents run in tmux with Remote Control on, in standby. Messaging between them works both ways. The Lead can read your answer records.</li>
+<li><b>Guard:</b> every session on the server runs a check before each command. Only the Lead can merge (also through the GitHub API), release, deploy or push to a main branch; nobody can force-push a main branch; no agent can write an answer record; only the Owner desk can write to the status page. Tested live.</li>
+<li><b>The guard is a check, not a wall:</b> an agent determined to get around it could. GitHub's own branch protection would be the hard stop; that is a GitHub setting for you to decide.</li>
+<li><b>Files:</b> the server's team files are in <code>server/</code> beside this page.</li>
+</ul>
+
 <h2>What you approve, in order</h2>
 <table>
 <tr><th>Step</th><th>What changes</th><th>Who does it</th></tr>
