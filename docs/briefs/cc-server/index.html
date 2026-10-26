@@ -15,6 +15,27 @@
 <li><b>Files:</b> the server's team files are in <code>server/</code> beside this page.</li>
 </ul>
 
+<h2>claude-mem: installed</h2>
+<ul>
+<li><b>Version:</b> 14.0.1 (17 October), installed from a checked copy on the server, so it never changes by itself. Its code was read before installing.</li>
+<li><b>Turned off:</b> its usage reporting (analytics), its cloud sync, and its add-on search engine (which would download more software).</li>
+<li><b>Secrets:</b> hiding of tokens and passwords is on, with extra patterns for Plenix's own (DS_TOKEN, Authentik, database passwords). Commands that print secrets (reading .env files, showing tokens, keys) are not recorded. Tested: a fake token was stored as "redacted" and appears nowhere in its files.</li>
+<li><b>Where it lives:</b> only on the server (<code>~/.claude-mem</code>), reachable only from the server itself. Raw command output is kept 30 days; the summaries are kept.</li>
+<li><b>Cost:</b> it writes its summaries with Claude Haiku, the cheapest model, on your Max plan. Every agent action adds a small Haiku call.</li>
+<li><b>Tested:</b> it recorded a decision, and a fresh session recalled it without reading any files.</li>
+</ul>
+
+<h2>Moving your memory into claude-mem (when you say the work moves)</h2>
+<ul>
+<li><b>Until then</b> the files on the Windows VM stay the master copy; nothing is moved yet.</li>
+<li><b>Memory files</b> (84 files, about 420 KB): copied to the server, checked for anything secret-looking, then loaded with claude-mem's own import (one memory per file, project "plenix"). A trial run first shows what would be stored.</li>
+<li><b>The Owner desk's decisions log</b> (85 lines): each decision becomes its own memory, tagged as a decision with its date and issue number, so any agent finds it by searching.</li>
+<li><b>Approvals stay where they are:</b> your taps on the status page remain the only approval record. The memory only helps agents remember what was decided; it never counts as an approval.</li>
+<li><b>Slim start-up:</b> after the import, the memory index the agents read at start shrinks to about 25 lines (who you are, the rules that apply to every change); everything else comes back from claude-mem only when it matters.</li>
+<li><b>One memory:</b> Claude Code's own automatic memory notes are switched off on the server, so claude-mem is the only memory.</li>
+<li><b>After the move</b> the Windows copies are kept as a read-only backup.</li>
+</ul>
+
 <h2>What you approve, in order</h2>
 <table>
 <tr><th>Step</th><th>What changes</th><th>Who does it</th></tr>

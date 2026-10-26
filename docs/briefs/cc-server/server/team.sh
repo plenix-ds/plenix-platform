@@ -4,7 +4,7 @@
 #   team status   list the agents' windows
 #   team stop     stop all agents
 set -u
-export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/.bun/bin:$PATH"
 S=team
 W=$HOME/work
 
