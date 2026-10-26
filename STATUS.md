@@ -1,4 +1,4 @@
-# Plenix: what is done and what is left (2026-10-24, governance check 21:40 UTC)
+# Plenix: what is done and what is left (2026-10-26, governance check after #355)
 
 Start with [HANDOFF.md](HANDOFF.md) in a new session (Claude or Codex). TODO.md now only points here: new work is a GitHub issue. Then read `AGENTS.md` (Codex) or `CLAUDE.md` and the memory index
 (Claude), and the issue for the task you take. Every remaining item below has a GitHub issue in
@@ -10,10 +10,11 @@ Start with [HANDOFF.md](HANDOFF.md) in a new session (Claude or Codex). TODO.md 
   `platform/design-system` = `plenix-ds/plenix-design-system`). `main` is behind it. Work continues on this branch.
 - Last release: 0.72.0 (2026-10-26, tag v0.72.0, live at /cdn/0.72.0/), the clean release after the cleanup pass. The full suite was green on the release code (run 40288705202), the first green full run since 0.69.5. It brings: Fluent buttons, the command bar look and behaviors; grid wrap, the cut-text popover, unread the Fluent way, start-aligned header labels; SegmentedControl and the CommandBar find side fold to fit; the header data font; and the forced-colors, ARIA and closed-document fixes. Before it: 0.71.0, 0.70.1, 0.70.0 (2026-10-25).
 - **Releases:** every merge needs the owner's word. A release needs one green full suite run on the release commit, plus zero-overlap locally. Governance's standing release permission stays paused until the owner says otherwise.
-- **Since 0.72.0 (merged, not released):** #345 (the St. John test site; the automatic tests run there), #348, #349, #350 (one check per behavior; 52 unused tests removed; the six newest fix checks kept), #346 (the real-site plan), #351 (table frame gray 300, frozen edge gray 250, a new palette step the owner asked for). The CI Collection-docs step was removed (it opened a spec page); #341 and plenix-design-system#5 (the design spec loads Plenix from the CDN, pinned to the release; `?plenix=local` previews unreleased work; each release publishes /cdn/<version>/source/, public by the owner's word). The spec source panels fill at the next release.
-- **Held:** #347 (tests use the real St. John site) until DS_TOKEN can read plenix-ds/st-john-test-site; the Codex PRs (#206–#235, #219, #248) were never approved.
+- **Since 0.72.0 (merged, not released):** #345 (the St. John test site; the automatic tests run there), #348, #349, #350 (one check per behavior; 52 unused tests removed; the six newest fix checks kept), #346 (the real-site plan), #351 (table frame gray 300, frozen edge gray 250, a new palette step the owner asked for). The CI Collection-docs step was removed (it opened a spec page); #341 and plenix-design-system#5 (the design spec loads Plenix from the CDN, pinned to the release; `?plenix=local` previews unreleased work; each release publishes /cdn/<version>/source/, public by the owner's word). The spec source panels fill at the next release. #347 (the tests use the real St. John site repository; DS_TOKEN fixed by the owner) and #355 (three grid tests open the empty Platform host page instead of the moved site; fixes the behavior check).
+- **Held:** the Codex PRs (#206–#235 except #222–#225, #219, #248): the owner approved updating them; each still needs its own merge word. #222–#225 closed (charts move to ECharts).
+- **Charts (#353, owner 2026-10-26):** charts draw with Apache ECharts. The look passed (#354). Line, Area, Bar and Pie come first, each shown to the owner before it ships; Sparkline, WordCloud and Diagram stay Plenix drawings.
 - **How to work (owner, 2026-10-26):** tests and checks only right before a push; "show me" (a live preview and one picture) before "ship it". See HANDOFF.md.
-- CI on `styling/phase-2` fails in three suites (pages, targets and reflow, typography; #217, #256); every open PR inherits them.
+- CI on `styling/phase-2`: the full suite was green at 0.72.0; the behavior failure after #347 is fixed by #355.
 
 ## Who works on what
 
@@ -44,7 +45,7 @@ The governance board in #252 maps every workstream to its session, issues and PR
 
 | # | Work | State |
 |---|---|---|
-| #207–#210 | Zero overlap for the rest: 137 stylesheets (Z1 charts and patterns 40, Z2 components A–L 39, Z3 M–Z and services 37, Z4 the design-system site 21) | 13 Z1 PRs (#222–#234) open, not merged |
+| #207–#210 | Zero overlap for the rest: 137 stylesheets (Z1 charts and patterns 40, Z2 components A–L 39, Z3 M–Z and services 37, Z4 the design-system site 21) | Z1 PRs #226–#234 open, not merged; chart PRs #222–#225 closed (ECharts, #353) |
 | #249 | Phase 5: cascade layers, and remove `!important` (413 in `utilities.css`, 44 in `services/auth/brand.css`) | not started |
 | #250 | Phase 7, rest: unused classes and duplicate utilities, with a check | not started |
 | #152 | Phase 8: shrink the 2 MB stylesheet bundle | not started |
