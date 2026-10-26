@@ -44,6 +44,16 @@
 <li><b>Recommendation:</b> do not turn it on. It saves nothing on Plenix's kind of work and would cost Remote Control. It stays installed on the server, switched off, in case you want another test.</li>
 </ul>
 
+<h2>Graphify: installed, Plenix map built</h2>
+<ul>
+<li><b>Version:</b> 0.9.92 (16 October), code read first. It has no usage reporting and no cloud upload; the map is built on the server without any AI calls.</li>
+<li><b>Set up to stay local:</b> its AI features are switched off, its map lives outside the repository (<code>~/graphs/plenix</code>), and its own setup commands (which would rewrite Claude's settings and add git hooks) are never used.</li>
+<li><b>The map:</b> about 14,900 code parts and 41,200 links between them, built in 28 seconds. A refresh after a merge takes about 35 seconds; the Lead runs it.</li>
+<li><b>One fix:</b> the apps load Platform parts by the name <code>plenix-platform</code>, which Graphify didn't understand, so the first map missed every app using a Platform part. A small alias file on the server's copy only (hidden from git, never committed) fixed it: EntityHeader now shows 7 of the 8 app screens that use it, with exact lines.</li>
+<li><b>How agents use it:</b> short commands that answer "what uses this part" and "what would this change touch" before reading whole folders. The team's rules say how.</li>
+<li><b>Not in the map:</b> the PRDs and other Markdown. Adding them needs Claude to read each document (costs tokens); it can be added later if you want it.</li>
+</ul>
+
 <h2>Moving your memory into claude-mem (when you say the work moves)</h2>
 <ul>
 <li><b>Until then</b> the files on the Windows VM stay the master copy; nothing is moved yet.</li>
