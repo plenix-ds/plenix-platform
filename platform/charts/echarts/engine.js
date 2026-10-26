@@ -1,5 +1,5 @@
 /* Plenix · Chart engine (platform/charts/echarts/engine.js)
-   Summary: How a Plenix chart draws with Apache ECharts (#353, owner 2026-10-26): loads the vendored engine
+   Summary: How a Plenix chart draws with Apache ECharts (issue 353, owner 2026-10-26): loads the vendored engine
      (platform/vendor/echarts/echarts.min.js, window.PlenixECharts), reads the chart tokens where the chart is, and builds
      the ECharts theme from them. The chart components keep their names, props and Plenix layer (ChartFrame, the
      interaction, the live region, the legend, the tooltip, "Show the data"); ECharts draws the plot.

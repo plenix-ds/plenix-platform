@@ -1,5 +1,5 @@
 /* Plenix · EChartsPlot (platform/charts/echarts/EChartsPlot.jsx)
-   Summary: The ECharts drawing inside a chart's ChartFrame (#353): one ECharts instance per chart, drawn as SVG in the
+   Summary: The ECharts drawing inside a chart's ChartFrame (issue 353): one ECharts instance per chart, drawn as SVG in the
      frame's plot, under the chart's own Plenix layer (focus marks, crosshair, tooltip, labels: the frame's SVG on top).
      Internal: used by the chart components, not public.
    Usage:

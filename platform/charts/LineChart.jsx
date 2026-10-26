@@ -4,7 +4,7 @@
      are straight between values (curve "linear") or hold each value until the next change (curve "step"); points mark
      the values when there are few of them. It is interactive: one Tab stop, the arrow keys and the pointer move a
      crosshair with the shared tooltip, the value is said in the live region, the legend shows and hides series, and a
-     brush can zoom to a range. The plot is drawn by Apache ECharts (platform/charts/echarts, #353) in the Plenix theme.
+     brush can zoom to a range. The plot is drawn by Apache ECharts (platform/charts/echarts, issue 353) in the Plenix theme.
    Usage:
      <LineChart title="Sign-ups by platform" description="Sign-ups grew on every platform; the web stays ahead."
        data={rows} x="month" series={[{ id: 'web', label: 'Web' }, { id: 'ios', label: 'iOS' }]} yLabel="Sign-ups" />

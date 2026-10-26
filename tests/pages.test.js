@@ -61,7 +61,8 @@ let current = '';   // the page being checked
   // inline-style). Here, in the page and its frames: no custom property that is not a Platform one (--plx-…; --ds-… on the
   // design system), no font family that is not a token, and no height, line height or padding on a DataGrid row or cell
   // (the density's), and every inline length a token or a whole number of grid steps (the base spacing token; owner: the
-  // output "has to conform to fit into the grid system")
+  // output "has to conform to fit into the grid system"). The chart engine's drawing (.plx-chart__engine) is skipped: ECharts
+  // writes the sizes and fonts of its own elements from the chart tokens (owner, 2026-10-26, issue 353)
   const styles = async () => { const r = await page.evaluate(() => {
     const docs = [document].concat([...document.querySelectorAll('iframe')].map((f) => { try { return f.contentDocument; } catch (e) { return null; } }).filter(Boolean));
     const out = { other: [] };
@@ -76,7 +77,7 @@ let current = '';   // the page being checked
     const wrong = (el) => { const table = el.matches('.plx-data-grid .plx-data-grid__grid-row, .plx-data-grid .plx-data-grid__grid-cell'), user = !!el.closest('.plx-user-content');
       return Array.from(el.style).filter((p) => !(user && USER_FORMAT.test(p)) && (/^--/.test(p) ? !(/^--plx-/.test(p) || (SPEC && /^--ds-/.test(p))) : (p === 'font-family' && !/^\s*var\(--plx-/.test(el.style.getPropertyValue(p))) || (table && DENSITY.test(p)))
         || offGrid(el, el.style.getPropertyValue(p))).map((p) => p + ': ' + el.style.getPropertyValue(p)); };
-    docs.forEach((d) => d.querySelectorAll('[style]').forEach((el) => { const bad = wrong(el); if (!bad.length || el.closest('[data-plx-probe]')) return; out.other.push(el.tagName.toLowerCase() + '.' + String(el.className).split(' ').slice(0, 2).join('.') + ' ' + bad.join(', ')); }));
+    docs.forEach((d) => d.querySelectorAll('[style]').forEach((el) => { const bad = wrong(el); if (!bad.length || el.closest('[data-plx-probe]') || el.closest('.plx-chart__engine')) return; out.other.push(el.tagName.toLowerCase() + '.' + String(el.className).split(' ').slice(0, 2).join('.') + ' ' + bad.join(', ')); }));
     return out; });
     if (r.other.length) errs.push(r.other.length + ' element(s) with an inline style the system does not allow: ' + r.other.slice(0, 2).join(' | ')); };
   const done = (name) => { n++; if (errs.length) failed.push([name, [...new Set(errs)].slice(0, 4)]); errs = []; };
