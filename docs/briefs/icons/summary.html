@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en" data-plx-theme="default" data-plx-mode="light" data-plx-density="compact">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Icon audit summary</title>
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<style>
+/* A summary page for the owner (not Platform code): PR #292, the icon audit (#278), in pictures. Plenix tokens only. */
+body{background:var(--plx-sys-surface-canvas);color:var(--plx-sys-content-default);font-family:var(--plx-sys-text-body-font-family);margin:0;padding:var(--plx-sys-space-layout-md);}
+main{margin-inline:auto;max-inline-size:var(--plx-ref-size-900px);}
+h1{font-size:var(--plx-sys-text-heading-font-size);margin:0 0 var(--plx-sys-space-stack-xs);}
+h2{font-size:var(--plx-sys-text-label-font-size);font-weight:var(--plx-sys-text-label-font-weight);margin:var(--plx-sys-space-layout-md) 0 var(--plx-sys-space-stack-sm);}
+p,li{line-height:var(--plx-ref-line-height-relaxed);}
+.lead{color:var(--plx-sys-content-muted);margin:0;}
+.box{background:var(--plx-sys-surface-default);border:var(--plx-sys-border-width-thin) solid var(--plx-sys-border-subtle);border-radius:var(--plx-sys-radius-surface-8px);padding:var(--plx-sys-space-inset-md);}
+.flow{display:grid;gap:var(--plx-sys-space-inline-sm);grid-template-columns:repeat(auto-fit,minmax(var(--plx-ref-size-200px),1fr));}
+.step{font-weight:var(--plx-sys-font-weight-semibold);margin:0 0 var(--plx-sys-space-stack-xs);}
+.note{color:var(--plx-sys-content-muted);font-size:var(--plx-sys-text-caption-font-size);margin:0;}
+.figs{display:grid;gap:var(--plx-sys-space-inline-sm);grid-template-columns:repeat(auto-fit,minmax(var(--plx-ref-size-200px),1fr));}
+.big{color:var(--plx-sys-action-primary-background);font-size:var(--plx-ref-font-size-24);font-weight:var(--plx-sys-font-weight-semibold);line-height:var(--plx-ref-line-height-tight);margin:0 0 var(--plx-sys-space-stack-xs);}
+ol,ul{margin:0;padding-inline-start:var(--plx-sys-space-layout-md);}
+</style>
+</head>
+<body>
+<main>
+<h1>Icons today: what we measured</h1>
+<p class="lead">PR #292 (issue #278) · the first step of the icon plan (#277)</p>
+
+<h2>How an icon gets to the screen today</h2>
+<div class="flow">
+  <div class="box"><p class="step">1. The page loads the style file</p><p class="note">The pictures of all 178 Plenix icons ride inside it, whether the page needs them or not.</p></div>
+  <div class="box"><p class="step">2. An app asks for an icon by name</p><p class="note">For example "folder". Plenix looks the name up in its list.</p></div>
+  <div class="box"><p class="step">3. Plenix copies the picture out of the style file</p><p class="note">Other Material icons (about 4,150 more) are downloaded one by one, only when asked for.</p></div>
+  <div class="box"><p class="step">4. The icon is drawn</p><p class="note">In the text color, at the size the place calls for.</p></div>
+</div>
+
+<h2>The numbers that matter</h2>
+<div class="figs">
+  <div class="box"><p class="big">25%</p><p class="note">of the style file's download is icon pictures (64 KB of 252 KB)</p></div>
+  <div class="box"><p class="big">66 of 178</p><p class="note">icons are used by the 11 apps; every page still downloads all 178</p></div>
+  <div class="box"><p class="big">13 ms</p><p class="note">extra wait the first time a page draws an icon, to copy the pictures out of the style file</p></div>
+  <div class="box"><p class="big">6 paths</p><p class="note">different ways an icon can reach the screen today; the plan brings them down to one</p></div>
+</div>
+
+<h2>What this PR changes</h2>
+<div class="box"><p>Nothing you can see. It adds only a written report and the script that took the measurements. No screen, color or icon changes.</p></div>
+
+<h2>What comes next</h2>
+<div class="box"><ol>
+  <li>#279: decide where the icon pictures live as files and how they are named.</li>
+  <li>#280: take the Plenix icon pictures out of the style file.</li>
+  <li>#281: one way to look up every icon, Plenix or Material.</li>
+  <li>#282: let apps include only the icons they use.</li>
+  <li>#283: download each icon once and keep it.</li>
+  <li>#284: make the offline and browser-extension copies carry every icon.</li>
+  <li>#285: treat downloaded icon files safely.</li>
+  <li>#286: compare before and after: size, speed and look (no visible change).</li>
+</ol></div>
+</main>
+</body>
+</html>
