@@ -1,0 +1,37 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "entry": [
+    "platform/index.js",
+    "*/main.jsx",
+    "dam/app/assets.jsx",
+    "build-*.js",
+    "build-packages.d/*.js",
+    "check-*.js",
+    // check-system.js loads these through readdir
+    "check-system.rules/*.js",
+    "tokenize-component.js",
+    "tests/**/*.js",
+    "tools/**/*.js",
+    "services/**/*.js",
+    // loaded by script tags in pages
+    "platform/dev/*.js",
+    "platform/providers/theme-boot.js",
+    "platform/icons/inventory/inventory.js"
+  ],
+  "project": ["**/*.{js,jsx,mjs,cjs}"],
+  // the build resolves this name to the script already on the page
+  "ignoreDependencies": ["plenix-platform"],
+  // written by build-packages.js into the package it builds
+  "ignoreUnresolved": ["./check-copy.js", "./index.cjs"],
+  "ignore": [
+    "platform/dist/**",
+    "*/app.js",
+    "dam/app/assets.js",
+    "platform/vendor/**",
+    "platform/design-system/**",
+    // hand-owned lane sources: build-exports.js reads them as text, so nothing imports them. Never delete.
+    "platform/exports/**",
+    "docs/**",
+    "tools/agent/**"
+  ]
+}
