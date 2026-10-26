@@ -239,7 +239,9 @@ if (!ONLY && changed.wants({ units: ['components/DataGrid'] })) {
         const w = document.createTreeWalker(g.querySelector('.plx-data-grid__grid-tableholder') || g, NodeFilter.SHOW_TEXT); let n;
         while ((n = w.nextNode()) && type.length < 3) {
           // (a group header's eyebrow and a summary's name are labels in the eyebrow style: the owner's group header, 2026-10-14)
-          const el = n.parentElement; if (!n.textContent.trim() || el.closest('.plx-badge, .plx-tag, .plx-tag--chip, .plx-button, .plx-kbd, .plx-count, .plx-data-grid__grid-placeholder, .ds-vis, .plx-data-grid__group-eyebrow, .plx-data-grid__group-summary-name')) continue;
+          // (a tooltip's bubble is the tooltip's own text, in its own size, and hidden until hover: not cell text (#323);
+          // nor is any text that is not drawn)
+          const el = n.parentElement; if (!n.textContent.trim() || el.closest('.plx-badge, .plx-tag, .plx-tag--chip, .plx-button, .plx-kbd, .plx-count, .plx-data-grid__grid-placeholder, .ds-vis, .plx-data-grid__group-eyebrow, .plx-data-grid__group-summary-name, .plx-tooltip__bubble, [role="tooltip"]') || !el.getClientRects().length) continue;
           const c = getComputedStyle(el), fam = c.fontFamily.split(',')[0].replace(/"/g, '');
           const mono = !!el.closest('[class*="__cell--data"]') || !!el.closest(MARKED), want = mono ? 'Reddit Mono' : 'DM Sans';
           if (fam !== want || c.fontSize !== size) type.push('"' + n.textContent.trim().slice(0, 20) + '" is ' + fam + ' ' + c.fontSize + ', want ' + want + ' ' + size + (mono ? ' (a data value)' : ''));
