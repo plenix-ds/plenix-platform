@@ -75,6 +75,16 @@ if (!ONLY && changed.wants({ units: ['components/DataGrid'] })) {
   }
 }
 
+// the regression tests of the grid fixes merged 2026-10-25 and 26 (each the only check of its fix), when the DataGrid or the
+// Table changed: cut text opens in a popover (#312), Filter by this field (#269), header labels at the start edge (#326),
+// an empty grid or table is a row with one cell (#313)
+if (!ONLY && changed.wants({ units: GRIDS })) {
+  for (const regression of ['cut-popover.test.js', 'filter-by-field-269.test.js', 'header-labels-start-326.test.js', 'empty-table-a11y-313.test.js']) {
+    const result = require('child_process').spawnSync(process.execPath, [require('path').join(__dirname, regression)], { stdio: 'inherit', env: process.env });
+    if (result.status !== 0) process.exit(result.status || 1);
+  }
+}
+
 // Keep the horizontal header/frozen-column regression in the behavior CI group.
 if (!ONLY && changed.wants({ units: ['components/DataGrid'] })) {
   const result = require('child_process').spawnSync(process.execPath, [require('path').join(__dirname, 'data-grid-scroll-147.test.js')], { stdio: 'inherit', env: process.env });
