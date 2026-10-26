@@ -18,6 +18,8 @@ cd "$(dirname "$0")/.."
 (cd Plenix && node check-system.js >/dev/null 2>&1) || { echo "check-system failed: fix it before publishing"; exit 1; }
 (cd Plenix && node build-packages.js >/dev/null) || { echo "build-packages failed: run node Plenix/build-packages.js"; exit 1; }
 VERSION=$(cd Plenix && node -p "require('./package.json').version")
+# the design spec runs on this release from the CDN (platform/design-system/plenix-source.js): it must name this version
+grep -q "var VERSION = '$VERSION'" Plenix/platform/design-system/plenix-source.js || { echo "The design spec pins another release: set VERSION in platform/design-system/plenix-source.js to $VERSION"; exit 1; }
 # the Material Symbols library, shared by every release (icons-all.css points at it): copied once per pinned commit
 MATERIAL=$(cd Plenix && node -p "require('./platform/icons/map.json')._commit.slice(0, 12)")
 
@@ -66,13 +68,11 @@ ssh "$HOST" "set -e
     sudo sed -i -e '/platform\/dev\//d' -e '/the radius audit (development)/d' \
       -e '/<meta name=\"viewport\"/a <link rel=\"preconnect\" href=\"https://design-system.lighthouseway.org\">' \"\$f\"
   done
-  # the design system loads one stylesheet (the source platform.css with its imports inlined, built by build-packages.js)
-  # instead of platform.css and its hundred imports; its labs still read platform.css itself (batch 237)
+  # the study pages load one stylesheet (the source platform.css with its imports inlined, built by build-packages.js)
+  # instead of platform.css and its hundred imports (batch 237); the design system loads the CDN release (plenix-source.js)
   sudo mv /srv/plenix/www.new/Plenix/packages/styles/plenix.css /srv/plenix/www.new/Plenix/platform/dist/platform.bundle.css
   sudo rm -rf /srv/plenix/www.new/Plenix/packages
   B=\$(sha256sum /srv/plenix/www.new/Plenix/platform/dist/platform.bundle.css | cut -c1-8)
-  sudo sed -i \"s|href=\\\"../platform.css?v=[0-9]*\\\"|href=\\\"../dist/platform.bundle.css?v=\$B\\\"|\" /srv/plenix/www.new/Plenix/platform/design-system/index.html
-  grep -q platform.bundle.css /srv/plenix/www.new/Plenix/platform/design-system/index.html && echo 'Design system on one stylesheet'
   # the study pages too: platform.css's two hundred imports trip the server's request limit (429) and the page shows unstyled
   for f in /srv/plenix/www.new/Plenix/docs/*/*.html; do
     sudo sed -i \"s|href=\\\"../../platform/platform.css\\\"|href=\\\"../../platform/dist/platform.bundle.css?v=\$B\\\"|\" \"\$f\"

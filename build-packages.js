@@ -289,6 +289,24 @@ for (const d of ['ios', 'android', 'flutter']) copyDir(path.join(P, 'mobile', d)
 for (const f of ['platform-ios.tokens.json', 'platform-android.tokens.json']) copy(path.join(P, 'tokens', f), path.join(CDN, 'tokens', f));
 copyDir(path.join(I, 'svg'), path.join(CDN, 'icons'));
 copy(path.join(I, 'icons.json'), path.join(CDN, 'icons', 'icons.json'));
+// the release's source as written, for the design spec, a consumer of this CDN (owner, 2026-10-25): its pages read each
+// component's JSX and CSS, the token files and the standards as text (platform/design-system/plenix-source.js). Laid out
+// like the repository: source/platform/… (every source folder; the runtime files dist, vendor, fonts, mobile and the icon
+// library are already in the release) plus the few repository files a spec page documents (src: '../…' in a record).
+{
+  const SRC = path.join(CDN, 'source');
+  for (const f of ['platform.css', 'plenix-system.css', 'index.js', path.join('tokens', 'tokens.index.json')]) copy(path.join(P, f), path.join(SRC, 'platform', f));
+  for (const d of ['components', 'patterns', 'hooks', 'providers', 'templates', 'utils', 'charts', 'i18n', 'exports', 'system', 'standards', 'brand', 'dev', path.join('icons', 'inventory')]) copyDir(path.join(P, d), path.join(SRC, 'platform', d), (n) => n !== 'node_modules');
+  const DSD = path.join(P, 'design-system'), outside = new Set();
+  for (const f of ['spec-parts.js', 'inventory.js'].map((x) => path.join(DSD, x)).filter((x) => fs.existsSync(x))) {
+    for (const m of fs.readFileSync(f, 'utf8').matchAll(/["']?(?:src|also)["']?\s*:\s*\[?\s*["']\.\.\/([\w./-]+)["']/g)) outside.add(m[1]);
+  }
+  for (const rel of [...outside, 'check-system.rules']) {
+    const from = path.join(ROOT, rel);
+    if (!fs.existsSync(from)) continue;   // a record that names a file no longer in the repository shows no source
+    if (fs.statSync(from).isDirectory()) copyDir(from, path.join(SRC, rel)); else copy(from, path.join(SRC, rel));
+  }
+}
 
 // Developer-facing CDN metadata, always available even when the private design system is absent.
 copy(path.join(ROOT, 'CHANGELOG.md'), path.join(CDN, 'CHANGELOG.md'));

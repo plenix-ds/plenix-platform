@@ -6,6 +6,12 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+### Added
+- `/cdn/<version>/source/`: the release's source as written (`source/platform/components/…`, the token files, the standards), so the design spec can read each component's JSX and CSS from the release it documents (owner, 2026-10-25).
+
+### Changed
+- The design spec runs on the CDN like any other application: `platform/design-system/plenix-source.js` names the release (the version in `package.json`); `?plenix=local` previews this checkout's unreleased Platform (owner, 2026-10-25).
+
 ## [0.71.0] - 2026-10-25
 
 ### Added
