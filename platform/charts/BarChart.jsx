@@ -29,37 +29,52 @@
      legend: true | false: the series' legend (default: shown when there are two series or more)
      legendPosition: "bottom" (default) | "top" | "end" (ChartFrame)
      tooltip: shows the values of the bar under the pointer (default true)
-     size, margin, hideCaption, className: ChartFrame's (margin wins over the room computed for the labels)
+     size, hideCaption, className: ChartFrame's; margin: more room around the plot ({ top, end, bottom, start }, pixels on the
+       4px grid; the labels' room is made inside the plot)
      strings: { category: "Category", total: "Total", range: "Range", count: "Count" } and ChartFrame's strings
    Behavior:
      The value axis starts at zero (negative values go the other way from a zero line); stacked bars stack positive values
        up and negative values down; percent stacks only positive values.
-     Hover a bar: the tooltip shows its value (grouped), its category's values (stacked, percent: with each share) or its
-       range and count (histogram). The data grid lists every value: the chart's keyboard and screen reader view.
+     One Tab stop: the arrow keys move between the bars (along the categories, and across the series: bars across, ↑ ↓
+       move down the categories and ← → across the series; columns, ← → along the categories and ↑ ↓ through the
+       series), Home and End to the first and last category; the pointer does the same on hover. The bar in focus keeps
+       its color and the others dim; its tooltip shows its value (grouped), its category's values (stacked, percent: with
+       each share) or its range and count (histogram), and the live region says it. The legend's toggles hide and show
+       series. The data grid lists every value.
      Histogram bins touch (no gap: the range is continuous) and have equal widths on round edges.
+     The plot draws once the chart engine has loaded (the first chart on a page loads it); the caption, legend and data
+       grid show at once.
    Notes:
      Colors come from the data-viz scales (seriesColor by the series' order); stacked segments and bins are parted by a
-       thin line in the surface color (bar-chart tokens). Geometry only in the markup.
-     Pointer interaction is the chart kit's minimal hover (chart-kit.js); the chart interaction foundation replaces it.
+       thin line in the surface color (bar-chart tokens); axes, grid lines and labels take the frame's chart tokens
+       through the ECharts theme (echarts/engine.js). The plot is drawn by Apache ECharts (issue 353); no style is written here.
 */
 import React from 'react';
 import { cx } from '../utils/cx.js';
 import { formatNumber, formatPercent } from '../utils/format.js';
 import { ChartFrame } from './ChartFrame.jsx';
-import { scaleBand, scaleLinear, niceTicks, seriesColor } from './scales.js';
-import { Axis } from './parts/Axis.jsx';
-import { GridLines } from './parts/GridLines.jsx';
+import { niceTicks } from './scales.js';
 import { ChartLegend } from './parts/ChartLegend.jsx';
-import { ChartTooltip } from './parts/ChartTooltip.jsx';
+import { ChartTooltip, chartTooltipText } from './parts/ChartTooltip.jsx';
 import { DataLabel } from './parts/DataLabel.jsx';
-import { useChartHover, labelRoom, halfRoom, withColors, legendItems, AXIS_TITLE_ROOM } from './chart-kit.js';
+import { useChartInteraction } from './interaction.js';
+import { labelRoom, withColors, legendItems } from './chart-kit.js';
+import { useEChartsPlot, plotGrid, NO_MARGIN } from './echarts/EChartsPlot.jsx';
+import { gridRoom } from './LineChart.jsx';
+import { snapToGrid } from '../utils/grid.js';
 
 const STRINGS = { category: 'Category', total: 'Total', range: 'Range', count: 'Count' };
 const LAYOUTS = ['grouped', 'stacked', 'percent'];
 // px: the least room a segment needs for its share written inside it (percent)
 const INSIDE_LABEL_MIN = 32;
+// the gaps between bars, as shares of a category's band (geometry: the old scaleBand's paddings)
+// an empty list that stays the same between renders (the drawing redraws when its data changes)
+const NONE = Object.freeze([]);
+const CATEGORY_GAP = '20%', SERIES_GAP = '10%';
 
-// equal bins on round edges: [{ x0, x1, count }]
+// a bar's box in plot pixels, whatever way ECharts measured it (a negative width or height for bars that go back)
+const boxOf = (l) => (l && isFinite(l.x) && isFinite(l.width) ? { x: Math.min(l.x, l.x + l.width), y: Math.min(l.y, l.y + l.height), width: Math.abs(l.width), height: Math.abs(l.height) } : null);
+
 export function binValues(values, { bins, domain } = {}) {
   const v = (values || []).map(Number).filter((x) => isFinite(x));
   if (!v.length) return [];
@@ -78,48 +93,58 @@ export function binValues(values, { bins, domain } = {}) {
   return out;
 }
 
-export function BarChart({ title, description, hideCaption, size, categories = [], series = [], orientation = 'horizontal', layout = 'grouped',
+export function BarChart({ title, description, hideCaption, size, categories = NONE, series = NONE, orientation = 'horizontal', layout = 'grouped',
   histogram, valueLabel, categoryLabel, format, showValues = false, legend, legendPosition, tooltip = true, margin, strings, className }) {
   const t = Object.assign({}, STRINGS, strings);
   const o = orientation === 'vertical' ? 'vertical' : 'horizontal';
   const across = o === 'horizontal';
   const bins = histogram && Array.isArray(histogram.values) ? binValues(histogram.values, histogram) : null;
   const mode = bins ? 'histogram' : LAYOUTS.indexOf(layout) >= 0 ? layout : 'grouped';
+  const joined = mode !== 'grouped';
   const fmt = (v) => (typeof format === 'function' ? format(v) : formatNumber(v));
   const edgeFmt = (v) => (bins && typeof histogram.format === 'function' ? histogram.format(v) : formatNumber(v));
-  const [active, hover] = useChartHover();
+  const fmts = React.useRef(null);
+  fmts.current = { fmt, edgeFmt };
 
-  const list = bins ? [{ id: 'count', label: valueLabel || t.count, values: bins.map((b) => b.count), color: seriesColor(0) }] : withColors(series);
+  const list = bins ? withColors([{ id: 'count', label: valueLabel || t.count, values: bins.map((b) => b.count) }]) : withColors(series);
   const cats = bins ? bins.map((b, i) => i) : categories;
-  const val = (si, ci) => { const x = Number(list[si].values[ci]); return isFinite(x) ? x : null; };
-  const totals = cats.map((c, ci) => list.reduce((a, s, si) => a + Math.max(0, val(si, ci) || 0), 0));
-  // each bar's span on the value axis: spans[category][series] = [from, to]
-  const spans = cats.map((c, ci) => {
-    let pos = 0, neg = 0;
-    return list.map((s, si) => {
-      const v = val(si, ci);
-      if (v === null) return null;
-      if (mode === 'percent') { const from = pos; pos += totals[ci] ? Math.max(0, v) / totals[ci] : 0; return [from, pos]; }
-      if (mode === 'stacked') { if (v >= 0) { const from = pos; pos += v; return [from, pos]; } const from = neg; neg += v; return [from, neg]; }
-      return [0, v];
-    });
-  });
-  let lo = 0, hi = 0;
-  spans.forEach((row) => row.forEach((sp) => { if (sp) { lo = Math.min(lo, sp[0], sp[1]); hi = Math.max(hi, sp[0], sp[1]); } }));
-  if (mode === 'percent') { lo = 0; hi = 1; }
-  if (hi === lo) hi = lo + 1;
-  const tickFmt = mode === 'percent' ? (v) => formatPercent(v) : typeof format === 'function' ? format : undefined;
-  const tickTexts = niceTicks(lo, hi, 5).ticks.map((v) => (tickFmt ? tickFmt(v) : formatNumber(v)));
-  const catTexts = bins ? bins.map((b) => edgeFmt(b.x0)).concat([edgeFmt(bins.length ? bins[bins.length - 1].x1 : 0)]) : cats.map(String);
-  const endTexts = showValues && across ? (mode === 'stacked' ? totals.map(fmt) : list.reduce((a, s, si) => a.concat(cats.map((c, ci) => (val(si, ci) === null ? '' : fmt(val(si, ci))))), [])) : [];
-  // the room the labels need: the category names (bars) or the value ticks (columns) before the plot, axis titles, values
-  const auto = across
-    ? { start: labelRoom(catTexts, categoryLabel ? AXIS_TITLE_ROOM : 0), bottom: valueLabel ? 24 + AXIS_TITLE_ROOM : undefined, end: Math.max(showValues && mode !== 'percent' ? labelRoom(endTexts) : 0, halfRoom(tickTexts[tickTexts.length - 1])) }
-    : { start: labelRoom(tickTexts, valueLabel ? AXIS_TITLE_ROOM : 0), bottom: categoryLabel ? 24 + AXIS_TITLE_ROOM : undefined, top: showValues ? 24 : undefined, end: bins ? halfRoom(catTexts[catTexts.length - 1]) : undefined };
-  const m = Object.assign({}, auto, margin);
-  Object.keys(m).forEach((k) => { if (m[k] === undefined) delete m[k]; });
-
+  const val = (si, ci) => { const x = Number(list[si].values[ci]); return list[si].values[ci] !== null && list[si].values[ci] !== undefined && isFinite(x) ? x : null; };
   const rangeText = (b) => edgeFmt(b.x0) + '–' + edgeFmt(b.x1);
+  const catName = (ci) => (bins ? rangeText(bins[ci]) : String(cats[ci]));
+
+  // the series shown (the legend's toggles), and each category's total of the shown series' positive values
+  const showLegend = legend === undefined ? !bins && list.length > 1 : !!legend && !bins;
+  const ia = useChartInteraction({
+    rows: list.length, columns: cats.length, mode: 'point', series: list, strings: undefined,
+    move: (cur, k) => step(cur, k), labelOf: (ci) => catName(ci),
+    describe: (cell) => chartTooltipText(tip(cell.c, cell.r)),
+  });
+  const shown = (si) => ia.visible(list[si].id);
+  const total = (ci) => list.reduce((a, s, si) => a + (shown(si) ? Math.max(0, val(si, ci) || 0) : 0), 0);
+  const share = (si, ci) => (total(ci) ? Math.max(0, val(si, ci) || 0) / total(ci) : 0);
+  // the keyboard: along the categories and across the series, in the directions they are drawn
+  function step(cur, k) {
+    const n = cats.length;
+    const alongPrev = across ? 'ArrowUp' : 'ArrowLeft', alongNext = across ? 'ArrowDown' : 'ArrowRight';
+    if (k === alongPrev) return { r: cur.r, c: Math.max(0, cur.c - 1) };
+    if (k === alongNext) return { r: cur.r, c: Math.min(n - 1, cur.c + 1) };
+    if (k === 'Home') return { r: cur.r, c: 0 };
+    if (k === 'End') return { r: cur.r, c: n - 1 };
+    // across the series: stacked columns go up the stack; everything else in the series' order
+    const d = across ? (k === 'ArrowRight' ? 1 : -1) : joined ? (k === 'ArrowUp' ? 1 : -1) : (k === 'ArrowDown' ? 1 : -1);
+    for (let r = cur.r + d; r >= 0 && r < list.length; r += d) if (shown(r)) return { r, c: cur.c };
+    return cur;
+  }
+  // what the tooltip shows (and the live region says) for a bar: { title, items }
+  function tip(ci, si) {
+    if (bins) return { title: rangeText(bins[ci]), titleKind: 'data', items: [{ label: valueLabel || t.count, value: fmt(bins[ci].count), color: list[0].color }] };
+    if (mode === 'grouped') return { title: String(cats[ci]), items: [{ label: list[si].label, value: val(si, ci) === null ? '–' : fmt(val(si, ci)), color: list[si].color }] };
+    const items = [];
+    list.forEach((s, i) => { if (!shown(i)) return; const v = val(i, ci); items.push({ label: s.label, value: v === null ? '–' : mode === 'percent' && total(ci) ? formatPercent(share(i, ci)) : fmt(v), color: s.color, i }); });
+    items.sort((a, b) => (a.i === si ? -1 : b.i === si ? 1 : 0));
+    return { title: String(cats[ci]) + ' · ' + fmt(total(ci)), items };
+  }
+
   const table = bins
     ? { columns: [{ title: categoryLabel || t.range, field: 'range', kind: 'data', rowLabel: true }, { title: valueLabel || t.count, field: 'count', kind: 'data', align: 'right' }],
       data: bins.map((b, i) => ({ id: i + 1, range: rangeText(b), count: fmt(b.count) })) }
@@ -127,95 +152,124 @@ export function BarChart({ title, description, hideCaption, size, categories = [
       .concat(list.map((s, si) => ({ title: s.label, field: 's' + si, kind: 'data', align: 'right' })))
       .concat(mode !== 'grouped' && list.length > 1 ? [{ title: t.total, field: 'total', kind: 'data', align: 'right' }] : []),
     data: cats.map((c, ci) => {
+      const all = list.reduce((a, s, si) => a + Math.max(0, val(si, ci) || 0), 0);
       const row = { id: ci + 1, category: String(c) };
-      list.forEach((s, si) => { const v = val(si, ci); row['s' + si] = v === null ? '' : mode === 'percent' && totals[ci] ? fmt(v) + ' (' + formatPercent(Math.max(0, v) / totals[ci]) + ')' : fmt(v); });
-      row.total = fmt(totals[ci]);
+      list.forEach((s, si) => { const v = val(si, ci); row['s' + si] = v === null ? '' : mode === 'percent' && all ? fmt(v) + ' (' + formatPercent(Math.max(0, v) / all) + ')' : fmt(v); });
+      row.total = fmt(all);
       return row;
     }) };
-  const showLegend = legend === undefined ? !bins && list.length > 1 : !!legend && !bins;
-  const key = showLegend ? <ChartLegend items={legendItems(list)} orientation={legendPosition === 'end' ? 'vertical' : 'horizontal'} /> : null;
+  const key = showLegend ? <ChartLegend items={legendItems(list)} orientation={legendPosition === 'end' ? 'vertical' : 'horizontal'} {...ia.legendProps} /> : null;
+
+  // the drawing
+  const plot = useEChartsPlot();
+  const shownKey = list.map((s, si) => (shown(si) ? '1' : '0')).join('');
+  const marginKey = margin ? [margin.top, margin.end, margin.bottom, margin.start].join(':') : '';
+  const value = (si, ci) => (mode === 'percent' ? (val(si, ci) === null ? null : share(si, ci)) : val(si, ci));
+  const option = React.useCallback((tk) => {
+    // room for the values written at the bars' ends (across: after the longest; columns: a label's line above)
+    const room = gridRoom(margin, across ? 0 : tk.top);
+    if (showValues && mode !== 'percent') {
+      const ends = mode === 'stacked' ? cats.map((c, ci) => fmts.current.fmt(total(ci))) : list.reduce((a, s, si) => a.concat(cats.map((c, ci) => (val(si, ci) === null ? '' : fmts.current.fmt(val(si, ci))))), []);
+      if (across) room.right = Math.max(room.right, labelRoom(ends));
+      else room.top = Math.max(room.top, snapToGrid(tk.tick.fontSize + tk.tickOffset * 2, { round: 'up' }));
+    }
+    const named = { nameLocation: 'middle', nameMoveOverlap: true };
+    const valAxis = Object.assign({ type: 'value', name: valueLabel, nameGap: across ? (tk.tickOffset * 2 + tk.tick.fontSize) : 0, inverse: across && tk.rtl,
+      axisLabel: { formatter: (v) => (mode === 'percent' ? formatPercent(v) : fmts.current.fmt(v)) } }, named, mode === 'percent' ? { min: 0, max: 1 } : {});
+    const catAxis = Object.assign({ type: 'category', data: cats.map((c, ci) => (bins ? String(ci) : String(c))), inverse: across, name: bins ? undefined : categoryLabel,
+      nameGap: across ? 0 : tk.tickOffset * 2 + tk.tick.fontSize, position: across ? (tk.rtl ? 'right' : 'left') : 'bottom', axisLabel: bins ? { show: false } : {} }, named);
+    // a histogram's range axis: the bins' edges on a number axis laid over the bins
+    const edges = bins ? Object.assign({ type: 'value', min: bins[0].x0, max: bins[bins.length - 1].x1, interval: bins.length <= 12 ? bins[0].x1 - bins[0].x0 : undefined,
+      inverse: across, position: across ? (tk.rtl ? 'right' : 'left') : 'bottom', name: categoryLabel, nameGap: across ? 0 : tk.tickOffset * 2 + tk.tick.fontSize,
+      axisLine: { show: false }, splitLine: { show: false }, axisLabel: { formatter: (v) => fmts.current.edgeFmt(v) } }, named) : null;
+    const cat = bins ? [catAxis, edges] : catAxis;
+    const sep = joined ? { borderColor: tk.separator.color, borderWidth: tk.separator.width } : {};
+    return {
+      animationDuration: tk.motion, animationDurationUpdate: tk.motion,
+      grid: Object.assign(room, { outerBoundsMode: 'same', outerBoundsContain: 'all' }),
+      xAxis: across ? valAxis : cat, yAxis: across ? cat : valAxis,
+      series: list.map((s, si) => ({
+        type: 'bar', id: String(s.id), name: s.label, silent: true, stack: mode === 'stacked' || mode === 'percent' ? 'total' : undefined,
+        barCategoryGap: bins ? '0%' : CATEGORY_GAP, barGap: SERIES_GAP,
+        itemStyle: Object.assign({ color: tk.color(s.color) }, sep),
+        emphasis: { focus: 'self', blurScope: 'coordinateSystem', itemStyle: { color: tk.color(s.color) } }, blur: { itemStyle: { opacity: tk.dim } },
+        data: shownKey[si] === '1' ? cats.map((c, ci) => value(si, ci)) : [],
+      })),
+    };
+  }, [categories, series, histogram, mode, o, showValues, valueLabel, categoryLabel, shownKey, marginKey]);
+
+  // the bar in focus is ECharts' emphasis: the others dim to the interaction's dim token
+  const activeKey = ia.active ? ia.active.r + ':' + ia.active.c : '';
+  React.useEffect(() => {
+    const c = plot.chart;
+    if (!c) return;
+    c.dispatchAction({ type: 'downplay' });
+    if (ia.active) c.dispatchAction({ type: 'highlight', seriesIndex: ia.active.r, dataIndex: ia.active.c });
+  }, [activeKey, plot.chart]);
+
+  const draw = (dims) => {
+    const layer = plot.layer(dims, option);
+    const c = plot.chart;
+    const g = c ? plotGrid(c) : null;
+    if (!g) return layer;
+    const bar = (si, ci) => { if (!shown(si) || value(si, ci) === null) return null; const d = c.getModel().getSeriesByIndex(si); return d ? boxOf(d.getData().getItemLayout(ci)) : null; };
+    // the pointer: the category under it, then the bar nearest to it across the category
+    ia.register({
+      nearest: (px, py) => {
+        const at = c.convertFromPixel({ gridIndex: 0 }, [px, py]);
+        const ci = Math.max(0, Math.min(cats.length - 1, Math.round(at ? at[across ? 1 : 0] : 0)));
+        let best = null, d = Infinity;
+        list.forEach((s, si) => {
+          const b = bar(si, ci); if (!b) return;
+          const dist = mode === 'grouped' || bins ? Math.abs((across ? b.y + b.height / 2 : b.x + b.width / 2) - (across ? py : px))
+            : (across ? (px < b.x ? b.x - px : px > b.x + b.width ? px - b.x - b.width : 0) : (py < b.y ? b.y - py : py > b.y + b.height ? py - b.y - b.height : 0));
+          if (dist < d) { d = dist; best = si; }
+        });
+        return best === null ? null : { r: best, c: ci };
+      },
+    });
+    const inner = { width: g.width, height: g.height };
+    // a bar's end: the middle of its thickness at its far end (from zero), in the grid's coordinates
+    const endOf = (b, negative) => (across ? { x: (negative ? b.x : b.x + b.width) - g.x, y: b.y + b.height / 2 - g.y } : { x: b.x + b.width / 2 - g.x, y: (negative ? b.y + b.height : b.y) - g.y });
+    const labels = [];
+    if (showValues) cats.forEach((cname, ci) => {
+      if (mode === 'stacked') {
+        const tops = list.map((s, si) => (val(si, ci) !== null && val(si, ci) >= 0 ? bar(si, ci) : null)).filter(Boolean);
+        if (!tops.length) return;
+        const b = tops.reduce((a, x) => (across ? (x.x + x.width > a.x + a.width ? x : a) : (x.y < a.y ? x : a)));
+        const e = endOf(b, false);
+        labels.push(<DataLabel key={'t' + ci} x={e.x} y={e.y} value={fmt(total(ci))} position={across ? 'end' : 'top'} />);
+        return;
+      }
+      list.forEach((s, si) => {
+        const b = bar(si, ci); if (!b) return;
+        if (mode === 'percent') {
+          if ((across ? b.width : b.height) < INSIDE_LABEL_MIN) return;
+          labels.push(<DataLabel key={'l' + ci + ':' + si} x={b.x + b.width / 2 - g.x} y={b.y + b.height / 2 - g.y} value={formatPercent(share(si, ci))} position="center" />);
+          return;
+        }
+        // the far end from zero (bars across: the right end; columns: the top), so a negative value's label sits on the
+        // empty side of the zero line
+        const e = endOf(b, false);
+        labels.push(<DataLabel key={'l' + ci + ':' + si} x={e.x} y={e.y} value={fmt(val(si, ci))} position={across ? 'end' : 'top'} />);
+      });
+    });
+    let tipNode = null;
+    const a = ia.active;
+    if (tooltip && a && cats[a.c] !== undefined && shown(a.r)) {
+      const b = mode === 'grouped' || bins ? bar(a.r, a.c) : list.map((s, si) => bar(si, a.c)).filter(Boolean).reduce((x, y) => (!x ? y : across ? (y.x + y.width > x.x + x.width ? y : x) : (y.y < x.y ? y : x)), null);
+      if (b) {
+        const e = endOf(b, false), tp = tip(a.c, a.r);
+        tipNode = <ChartTooltip x={e.x} y={e.y} inner={inner} title={tp.title} titleKind={tp.titleKind || 'text'} items={tp.items} />;
+      }
+    }
+    return [layer, <g key="plx-chart-overlay" transform={'translate(' + g.x + ',' + g.y + ')'}>{labels}{tipNode}</g>];
+  };
 
   return (
-    <ChartFrame title={title} description={description} hideCaption={hideCaption} size={size} margin={m} legend={key} legendPosition={legendPosition}
-      table={table} strings={strings} className={cx('plx-bar-chart', 'plx-bar-chart--' + o, 'plx-bar-chart--' + mode, className)}>
-      {({ inner, margin: fm }) => {
-        const L = across ? inner.height : inner.width;   // the category axis's length
-        const V = across ? inner.width : inner.height;   // the value axis's length
-        const vs = scaleLinear({ domain: [lo, hi], range: across ? [0, V] : [V, 0], nice: mode !== 'percent' });
-        const band = bins ? null : scaleBand({ domain: cats, range: [0, L], paddingInner: 0.2, paddingOuter: 0.1 });
-        const cs = bins ? scaleLinear({ domain: [bins[0].x0, bins[bins.length - 1].x1], range: [0, L] }) : null;
-        const sub = band && mode === 'grouped' ? scaleBand({ domain: list.map((s) => s.id), range: [0, band.bandwidth()], paddingInner: list.length > 1 ? 0.1 : 0, paddingOuter: 0 }) : null;
-        // a bar from a to b on the value axis, at start along the category axis with its thickness
-        const box = (start, thick, a, b) => {
-          const p0 = vs(a), p1 = vs(b), low = Math.min(p0, p1), len = Math.abs(p1 - p0);
-          return across ? { x: low, y: start, width: len, height: thick } : { x: start, y: low, width: thick, height: len };
-        };
-        const place = (ci, si) => {
-          if (bins) return [cs(bins[ci].x0), cs(bins[ci].x1) - cs(bins[ci].x0)];
-          if (sub) return [band(cats[ci]) + sub(list[si].id), sub.bandwidth()];
-          return [band(cats[ci]), band.bandwidth()];
-        };
-        // the anchor of a bar's end: the middle of its thickness at the value's end
-        const endOf = (start, thick, v) => (across ? { x: vs(v), y: start + thick / 2 } : { x: start + thick / 2, y: vs(v) });
-        const joined = mode !== 'grouped';
-        const marks = [], labels = [];
-        cats.forEach((c, ci) => list.forEach((s, si) => {
-          const sp = spans[ci][si];
-          if (!sp) return;
-          const [start, thick] = place(ci, si);
-          const k = mode === 'stacked' || mode === 'percent' ? String(ci) : ci + ':' + si;
-          marks.push(<rect key={ci + ':' + si} className={cx('plx-chart__mark', 'plx-bar-chart__bar', joined && 'plx-bar-chart__bar--joined')} data-plx-dataviz={s.color}
-            {...box(start, thick, sp[0], sp[1])} {...(tooltip ? hover(k) : {})} />);
-          if (!showValues) return;
-          if (mode === 'grouped' || mode === 'histogram') {
-            const e = endOf(start, thick, Math.max(0, sp[1]));   // a negative value's label sits on the empty side of the zero line
-            labels.push(<DataLabel key={'l' + ci + ':' + si} x={e.x} y={e.y} value={fmt(val(si, ci))} position={across ? 'end' : 'top'} />);
-          } else if (mode === 'percent' && Math.abs(vs(sp[1]) - vs(sp[0])) >= INSIDE_LABEL_MIN) {
-            const mid = endOf(start, thick, (sp[0] + sp[1]) / 2);
-            labels.push(<DataLabel key={'l' + ci + ':' + si} x={mid.x} y={mid.y} value={formatPercent(sp[1] - sp[0])} position="center" />);
-          }
-        }));
-        if (showValues && mode === 'stacked') cats.forEach((c, ci) => {
-          const [start, thick] = place(ci, 0);
-          const e = endOf(start, thick, totals[ci]);
-          labels.push(<DataLabel key={'t' + ci} x={e.x} y={e.y} value={fmt(totals[ci])} position={across ? 'end' : 'top'} />);
-        });
-        // the tooltip of the bar (grouped, histogram) or the category (stacked, percent) under the pointer
-        let tip = null;
-        if (tooltip && active !== null) {
-          const [ci, si] = String(active).split(':').map(Number);
-          if (cats[ci] !== undefined) {
-            if (bins) {
-              const [start, thick] = place(ci, 0), e = endOf(start, thick, bins[ci].count);
-              tip = <ChartTooltip x={e.x} y={e.y} inner={inner} title={rangeText(bins[ci])} titleKind="data" items={[{ label: valueLabel || t.count, value: fmt(bins[ci].count), color: list[0].color }]} />;
-            } else if (mode === 'grouped' && list[si]) {
-              const [start, thick] = place(ci, si), v = val(si, ci), e = endOf(start, thick, Math.max(0, v || 0));
-              tip = <ChartTooltip x={e.x} y={e.y} inner={inner} title={String(cats[ci])} items={[{ label: list[si].label, value: fmt(v), color: list[si].color }]} />;
-            } else {
-              const [start, thick] = place(ci, 0), e = endOf(start, thick, mode === 'percent' ? 1 : totals[ci]);
-              tip = <ChartTooltip x={e.x} y={e.y} inner={inner} title={String(cats[ci]) + ' · ' + fmt(totals[ci])} titleKind="text"
-                items={list.map((s, i) => { const v = val(i, ci); return { label: s.label, value: v === null ? '–' : mode === 'percent' && totals[ci] ? formatPercent(Math.max(0, v) / totals[ci]) : fmt(v), color: s.color }; })} />;
-            }
-          }
-        }
-        const catAxis = bins
-          ? <Axis scale={cs} orient={across ? 'left' : 'bottom'} inner={inner} margin={fm} line={false}
-            ticks={bins.length <= 12 ? [bins[0].x0].concat(bins.map((b) => b.x1)) : undefined} format={edgeFmt} label={categoryLabel} />
-          : <Axis scale={band} orient={across ? 'left' : 'bottom'} inner={inner} margin={fm} line={false} label={categoryLabel} />;
-        const zero = vs(0);
-        return (
-          <g>
-            <GridLines scale={vs} direction={across ? 'vertical' : 'horizontal'} inner={inner} />
-            {marks}
-            {across ? <line className="plx-chart__axis-line" x1={zero} x2={zero} y1={0} y2={inner.height} /> : <line className="plx-chart__axis-line" x1={0} x2={inner.width} y1={zero} y2={zero} />}
-            {labels}
-            <Axis scale={vs} orient={across ? 'bottom' : 'left'} inner={inner} margin={fm} line={false}
-              format={tickFmt} label={valueLabel} />
-            {catAxis}
-            {tip}
-          </g>
-        );
-      }}
+    <ChartFrame title={title} description={description} hideCaption={hideCaption} size={size} margin={NO_MARGIN} legend={key} legendPosition={legendPosition}
+      table={table} interaction={ia} strings={strings} className={cx('plx-bar-chart', 'plx-bar-chart--' + o, 'plx-bar-chart--' + mode, className)}>
+      {draw}
     </ChartFrame>
   );
 }
