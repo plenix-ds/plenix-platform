@@ -34,13 +34,14 @@
 import React from 'react';
 import { cx } from '../utils/cx.js';
 import { summarizeSeries } from './a11y.js';
+import { scaleLinear, scaleBand } from './scales.js';
 import { EChartsHost } from './echarts/EChartsPlot.jsx';
 
 // the room kept inside the box so the line and the dot are not cut (geometry, the 4px grid)
 const PAD = 4;
 const VARIANTS = ['line', 'area', 'bar'];
-// the gap between bars, a share of each bar's band (geometry: the old scaleBand's padding)
-const BAR_GAP = '20%';
+// the gap between bars, a share of each bar's step (geometry: scaleBand's paddingInner)
+const BAR_GAP = 0.2;
 const NONE = Object.freeze([]);
 
 export function Sparkline({ values = NONE, variant = 'line', size = 'inline', showLast = false, color, label, labels, format, decorative = false, strings, className, ...rest }) {
@@ -66,22 +67,38 @@ export function Sparkline({ values = NONE, variant = 'line', size = 'inline', sh
   const name = [label, nums.length ? summarizeSeries(values, { labels, format, strings }) : null].filter(Boolean).join(': ');
   const a11y = decorative ? { 'aria-hidden': true } : { role: 'img', 'aria-label': name };
   const key = nums.join(',');
-  // a line or bar chart with no axes: the lowest value at the bottom, the highest at the top (bars from zero)
-  const option = React.useCallback((tk) => {
+  // a line or bar chart with no axes, on the same geometry as the SVG sparkline it replaces: the value range is
+  // scaleLinear's (a flat run widens to nice ticks, so a flat line keeps its place and an area its band); the line's
+  // points run from PAD to the width less PAD (a single value at the start edge); the bars sit where scaleBand put them (no
+  // outer gap)
+  const option = React.useCallback((tk, size) => {
     const k = tk.sparkline, last = nums.length - 1, bar = v === 'bar';
     const lo = Math.min.apply(null, nums), hi = Math.max.apply(null, nums);
+    if (bar) {
+      // the bars where scaleBand put them (paddingOuter 0): ECharts centers each bar in its band with half the gap on
+      // either side, so the grid reaches out by that half gap at both ends (outerBoundsMode none: past the box)
+      const x = scaleBand({ domain: nums.map((n, i) => i), range: [0, size.width], paddingInner: BAR_GAP, paddingOuter: 0 });
+      const y = scaleLinear({ domain: [Math.min(0, lo), Math.max(0, hi)] }).domain();
+      const left = x(0) - x.step() * BAR_GAP / 2, right = size.width - left - x.step() * nums.length;
+      return {
+        animationDuration: tk.motion, animationDurationUpdate: tk.motion,
+        grid: { left, right, top: 0, bottom: 0, outerBoundsMode: 'none' },
+        xAxis: { type: 'category', show: false, boundaryGap: true, data: nums.map((n, i) => i) },
+        yAxis: { type: 'value', show: false, min: y[0], max: y[1] },
+        series: [{ type: 'bar', silent: true, barCategoryGap: BAR_GAP * 100 + '%', itemStyle: { color: k.bar }, data: nums }],
+      };
+    }
+    const y = scaleLinear({ domain: [lo, hi] }).domain();
     return {
       animationDuration: tk.motion, animationDurationUpdate: tk.motion,
-      grid: bar ? { left: 0, right: 0, top: 0, bottom: 0 } : { left: PAD, right: PAD, top: PAD, bottom: PAD },
-      xAxis: { type: 'category', show: false, boundaryGap: bar, data: nums.map((n, i) => i) },
-      yAxis: bar ? { type: 'value', show: false, min: Math.min(0, lo), max: Math.max(0, hi) } : { type: 'value', show: false, min: lo, max: hi === lo ? lo + 1 : hi },
-      series: [bar
-        ? { type: 'bar', silent: true, barCategoryGap: BAR_GAP, itemStyle: { color: k.bar }, data: nums }
-        : { type: 'line', silent: true, emphasis: { disabled: true }, lineStyle: { color: k.color, width: k.lineWidth, cap: 'round', join: 'round' },
-          areaStyle: v === 'area' ? { color: k.color, opacity: k.areaOpacity, origin: 'start' } : undefined,
-          data: nums.map((n, i) => (showLast && i === last
-            ? { value: n, symbol: 'circle', symbolSize: k.last.r * 2, itemStyle: { color: k.color, borderColor: k.last.outline, borderWidth: k.last.outlineWidth } }
-            : { value: n, symbol: 'none' })) }],
+      grid: { left: PAD, right: PAD, top: PAD, bottom: PAD },
+      xAxis: { type: 'value', show: false, min: 0, max: Math.max(1, last) },
+      yAxis: { type: 'value', show: false, min: y[0], max: y[1] },
+      series: [{ type: 'line', silent: true, emphasis: { disabled: true }, lineStyle: { color: k.color, width: k.lineWidth, cap: 'round', join: 'round' },
+        areaStyle: v === 'area' ? { color: k.color, opacity: k.areaOpacity, origin: 'start' } : undefined,
+        data: nums.map((n, i) => (showLast && i === last
+          ? { value: [i, n], symbol: 'circle', symbolSize: k.last.r * 2, itemStyle: { color: k.color, borderColor: k.last.outline, borderWidth: k.last.outlineWidth } }
+          : { value: [i, n], symbol: 'none' })) }],
     };
   }, [key, v, showLast]);
   return (
