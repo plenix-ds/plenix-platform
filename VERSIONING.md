@@ -42,7 +42,9 @@ under **Breaking** in the changelog, with what to do instead.
 1. Write the release's entries under **Unreleased** in `CHANGELOG.md` as the work is done: *Added*, *Changed*,
    *Changed (visual)*, *Fixed*, *Deprecated*, *Removed*, *Breaking*.
 2. Pick the version from the table above, rename **Unreleased** to `[x.y.z] - YYYY-MM-DD`, set `version` in
-   `package.json`, start a new empty **Unreleased**.
+   `package.json`, start a new empty **Unreleased**. Set the same version as `VERSION` in
+   `platform/design-system/plenix-source.js`: the design spec runs on that release from the CDN (`check-spec.js` and
+   `deploy.sh` stop when the two differ).
 3. `bash deploy.sh` publishes `/cdn/x.y.z/` (it never overwrites a published version) and refreshes the API; the apps
    move to the new version.
 4. Commit, then `git tag vx.y.z && git push origin main vx.y.z`. The Release workflow checks that the tag matches

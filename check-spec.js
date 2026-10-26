@@ -14,6 +14,7 @@
 //   variant-block  every variant has its Figma design (the variant block's first field; pending until the block is built)
 //   variants   every variant class a record's stylesheet defines (block--modifier) has its own variant card (decision 5)
 //   states     every interactive record has a States table (decision 6)
+//   cdn        the spec loads Plenix only through plenix-source.js, whose pinned version is package.json's
 //   api        every component, pattern, provider and hook file opens with the structured header comment (batch 162):
 //              "/* Plenix · Name", then Summary:, Usage:, Props: (and Behavior:, Notes:) at a 3-space indent
 const fs = require('fs');
@@ -238,9 +239,29 @@ for (const dir of ['components', 'patterns', 'providers', 'hooks']) {
   for (const [n, files] of Object.entries(seen)) add('sizes', n + ' is not a token (platform/tokens/reference.tokens.json), used in ' + [...files].slice(0, 4).join(', ') + (files.size > 4 ? ' and ' + (files.size - 4) + ' more' : ''));
 }
 
+// cdn: the spec is a consumer of the CDN (owner, 2026-10-25). plenix-source.js holds the one version setting, which is
+// package.json's version (it moves at a release, VERSIONING.md); every other spec file loads Plenix through it
+// (PlenixSource), never through a path into this checkout (../platform.css, ../dist/, ../system/, ../icons/ …)
+// The rule applies from the spec version that has plenix-source.js (plenix-design-system#5); an older pointer is checked
+// as before, so this check and the spec can land in either order.
+const SPEC_ON_CDN = fs.existsSync(path.join(SPEC, 'plenix-source.js'));
+if (SPEC_ON_CDN) {
+  const src = path.join(SPEC, 'plenix-source.js');
+  {
+    const pinned = (/var VERSION = '([^']+)'/.exec(read(src)) || [])[1];
+    const version = JSON.parse(read(path.join(__dirname, 'package.json'))).version;
+    if (pinned !== version) add('cdn', 'plenix-source.js pins ' + pinned + ', package.json is ' + version + ': set VERSION to the release (VERSIONING.md, Releasing, step 2)');
+  }
+  const LOCAL = /['"(]\.\.\/(platform\.css|plenix-system\.css|dist|vendor|providers|system|components|patterns|hooks|icons|brand|fonts|dev|standards|tokens|mobile)\//;
+  const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).flatMap((f) => f.isDirectory() ? (f.name === 'node_modules' ? [] : walk(path.join(d, f.name))) : [path.join(d, f.name)]);
+  for (const f of walk(SPEC).filter((x) => /\.(js|html|css)$/.test(x) && !/[\\/](plenix-source|native-guidance-full)\.js$/.test(x))) {
+    read(f).split('\n').forEach((line, i) => { const m = LOCAL.exec(line); if (m && !/^\s*(\/\/|\*|\/\*)/.test(line)) add('cdn', path.relative(PLATFORM, f).split(path.sep).join('/') + ':' + (i + 1) + ' loads ' + m[0].slice(1) + '… from this checkout: use PlenixSource (plenix-source.js)'); });
+  }
+}
+
 // report
 let failed = 0;
-for (const rule of ['taxonomy', 'records', 'parts', 'sidebar', 'order', 'template', 'variant-block', 'variants', 'states', 'api', 'sizes']) {
+for (const rule of ['taxonomy', 'records', 'parts', 'sidebar', 'order', 'template', 'variant-block', 'variants', 'states', 'api', 'sizes', 'cdn']) {
   const list = findings[rule] || [];
   const pending = PENDING[rule];
   if (!list.length) { console.log('ok       ' + rule); continue; }
