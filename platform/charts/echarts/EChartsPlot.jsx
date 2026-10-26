@@ -7,6 +7,8 @@
      const option = React.useCallback((t) => ({ grid: …, xAxis: …, yAxis: …, series: … }), [data, …]);
      <ChartFrame … margin={NO_MARGIN}>{(dims) => [plot.layer(dims, option), plot.chart ? <g>…overlay…</g> : null]}</ChartFrame>
    Props:
+     EChartsHost({ width, height, option, onDraw }): the drawing alone, for a chart without a frame (Sparkline); the same
+       .plx-chart__engine element, so the page checks' engine allow-list applies to it unchanged
      useEChartsPlot() → { chart, tokens, layer(dims, option) }:
        layer(dims, option): the element that holds the drawing, the plot's full size (a foreignObject at 0,0); option(t, size)
          returns the ECharts option from the chart tokens t (engine.js chartTokens) and the plot's { width, height }. Keep option stable (useCallback on
@@ -33,7 +35,7 @@ import { loadECharts, chartTokens, plenixTheme } from './engine.js';
 export const NO_MARGIN = Object.freeze({ top: 0, end: 0, bottom: 0, start: 0 });
 const LOOK = ['data-plx-mode', 'data-plx-theme', 'data-plx-density'];
 
-function EChartsHost({ width, height, option, onDraw }) {
+export function EChartsHost({ width, height, option, onDraw }) {
   const ref = React.useRef(null), inst = React.useRef(null), tk = React.useRef(null);
   const [E, setE] = React.useState(() => (typeof window !== 'undefined' && window.PlenixECharts) || null);
   const [look, setLook] = React.useState(0);
@@ -61,7 +63,7 @@ function EChartsHost({ width, height, option, onDraw }) {
     if (!c || c.isDisposed()) return;
     c.resize({ width, height, animation: { duration: 0 } });
     c.setOption(option(tk.current, { width, height }), { replaceMerge: ['series', 'xAxis', 'yAxis'] });
-    onDraw(c, tk.current);
+    if (onDraw) onDraw(c, tk.current);
   }, [E, look, option, width, height]);
   return <div ref={ref} className="plx-chart__engine" />;
 }
