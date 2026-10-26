@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en" data-plx-mode="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>St. John as a real website · Plenix review</title>
+<!-- Owner review (plan only, nothing built): the St. John the Beloved test site as a real web app with a PostgreSQL
+     database on the Plenix server, loading Plenix from the CDN like any outside app. The tables are the Platform's own Table. -->
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<link rel="stylesheet" href="../review.css">
+<script src="../../../platform/vendor/react-loader.js"></script>
+<script src="../../../platform/dist/platform.js"></script>
+</head>
+<body class="rv-page">
+<main class="rv-doc">
+  <h1 class="rv-h1">St. John the Beloved as a real website: the plan</h1>
+  <p class="rv-lead">You asked for the test site to be an actual website with a real database on your server, kept out of
+    the design spec, with its own address. This page is the plan only. Nothing on the server is built or changed until
+    you say go.</p>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">Your four points, answered</h2>
+    <ul class="rv-list">
+      <li><strong>1. A real website with PostgreSQL on the server:</strong> yes. A small app and a PostgreSQL database, each in a Docker container on the Plenix server (VM 130), next to the services already there.</li>
+      <li><strong>2. Loads Plenix the way any outside app does:</strong> from the CDN, so the tests check exactly what other projects get.</li>
+      <li><strong>3. Not in the design spec:</strong> it has its own repository and no ties to the spec. It is not in the spec today either; it sits in the Plenix repository's test-site folder on the PR #345 branch.</li>
+      <li><strong>4. The address:</strong> today it is local only, at <span class="rv-tag">http://localhost:8767/Plenix/test-site/index.html</span> once #345 is merged. The proposed web address is <span class="rv-tag">https://stjohn.lighthouseway.org</span>.</li>
+    </ul>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">Your decisions</h2>
+    <p class="rv-lead">Each row has a recommendation. Say "go with the recommendations", or name the rows to change.</p>
+    <div id="decisions"></div>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">How it fits together</h2>
+    <ul class="rv-list">
+      <li><strong>The pages:</strong> the 35 pages built in #345, unchanged in look. Today they read made-up data from a file; after this they ask the app for it, and the app reads PostgreSQL.</li>
+      <li><strong>The app:</strong> Node 22 with one library, the PostgreSQL driver. It serves the pages and a small JSON API (/api/members, /api/families, /api/events, /api/gifts, and so on). Changes are saved: a new member, a sign-up or a pledge stays in the database.</li>
+      <li><strong>The database:</strong> PostgreSQL 16. The tables are members, families, households, ministries, services, feasts, events, RSVPs, servants and sign-ups, funds, gifts, pledges, announcements, documents and media.</li>
+      <li><strong>No sacrament records:</strong> there is no table for them, so they can't be stored, even by mistake.</li>
+      <li><strong>Plenix:</strong> loaded from <span class="rv-tag">design-system.lighthouseway.org/cdn/&lt;version&gt;/</span>, the same four files every outside app uses. The version is one setting.</li>
+      <li><strong>On the server:</strong> two containers (st-john-app and st-john-db), the server's Nginx in front, and Nginx Proxy Manager for HTTPS, the same way plenix and design-system are set up.</li>
+    </ul>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">Which Plenix version the tests check</h2>
+    <div id="versions"></div>
+    <ul class="rv-list">
+      <li>The site has one setting, the Plenix address. The live site uses the version it is pinned to. Tests can point it at any other version without changing the site.</li>
+      <li>A test that finds a problem on a released version shows exactly what an outside app would see.</li>
+    </ul>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">Made-up data, seeded and reset</h2>
+    <ul class="rv-list">
+      <li><strong>Migrations:</strong> numbered SQL files (001-people.sql, 002-worship.sql, …), applied in order by a short script that records which have run.</li>
+      <li><strong>Seed:</strong> the same fixed generator as today: 120 families, about 400 members and 10,000 gifts, the same on every load, so the tests always see the same data.</li>
+      <li><strong>Reset:</strong> the live site goes back to the seed every night (and on request), so a visitor's changes never pile up. Tests start from a fresh copy every run.</li>
+      <li><strong>Backups:</strong> none needed. Everything can be made again from the seed, and you asked for no Proxmox backups.</li>
+    </ul>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">The tests on GitHub</h2>
+    <ul class="rv-list">
+      <li>Each browser job starts a throwaway PostgreSQL next to the tests (a GitHub "service container"), runs the migrations and the seed, starts the app, and runs the tests against it.</li>
+      <li>This adds about a minute to each job. The full run stays around 25 minutes instead of the old 5 hours.</li>
+      <li>The Plenix repository reads the St. John repository with a read-only token (one secret, like the spec's DS_TOKEN). The spec is never checked out for the tests.</li>
+    </ul>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">Putting it on the server (after your go)</h2>
+    <div id="deploy"></div>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">Order of work</h2>
+    <ul class="rv-list">
+      <li><strong>Now:</strong> merge #345 when you are ready. The tests leave the spec today, with the site as plain files.</li>
+      <li><strong>Step 1:</strong> create the St. John repository and move the site there, loading Plenix from the CDN.</li>
+      <li><strong>Step 2:</strong> add the app, the database, the migrations and the seed; the pages read the API.</li>
+      <li><strong>Step 3:</strong> GitHub runs the tests against the app with a throwaway database.</li>
+      <li><strong>Step 4:</strong> put it on the server at the address you choose, behind the sign-in you choose.</li>
+    </ul>
+  </section>
+</main>
+<script>
+(function () {
+  var P = window.Plenix, h = React.createElement;
+  var mount = function (id, el) { ReactDOM.createRoot(document.getElementById(id)).render(el); };
+  var col = function (field, title, kind) { return kind ? { field: field, title: title, kind: kind } : { field: field, title: title }; };
+  mount('decisions', h(P.Table, { label: 'Decisions', columns: [col('q', 'Decision'), col('rec', 'Recommendation', 'wrap'), col('alt', 'Other choice', 'wrap')], data: [
+    { id: 1, q: 'Where the code lives', rec: 'Its own private repository, plenix-ds/st-john-test-site. Nothing shared with the spec; it uses Plenix only from the CDN, like any outside app.', alt: 'A top-level folder in the Plenix repository (simpler, but the site would build from the repository instead of the CDN)' },
+    { id: 2, q: 'Its address', rec: 'stjohn.lighthouseway.org', alt: 'st-john.lighthouseway.org, or test.lighthouseway.org' },
+    { id: 3, q: 'Who can open it', rec: 'Behind Authentik, like the design system: only you and those you allow. The data is made up, but the names look real, and an open site anyone can write to invites misuse.', alt: 'Public and read-only (no saving), with the made-up data only' },
+    { id: 4, q: 'The site’s own sign-in page', rec: 'Kept as a page to test (made-up accounts only), behind Authentik', alt: 'Make it the real sign-in instead of Authentik' },
+    { id: 5, q: 'Nightly reset to the seed data', rec: 'Yes', alt: 'Keep visitors’ changes until a manual reset' },
+    { id: 6, q: 'The Plenix version on the live site', rec: 'The latest release, raised by Governance with each release', alt: 'A fixed version, raised by hand' }] }));
+  mount('versions', h(P.Table, { label: 'Which Plenix the tests use', columns: [col('when', 'When'), col('plenix', 'Plenix it loads', 'wrap')], data: [
+    { id: 1, when: 'The live site', plenix: 'The released version it is pinned to, from design-system.lighthouseway.org/cdn/<version>/' },
+    { id: 2, when: 'Tests on a Plenix pull request (unreleased work)', plenix: 'The pull request’s own build: the same four CDN files, built by build-packages.js and served beside the tests at /cdn/local/' },
+    { id: 3, when: 'Release check (before a version goes out)', plenix: 'The new version’s files, then once more from the live CDN after it is published' },
+    { id: 4, when: 'Tests in the St. John repository', plenix: 'The released version it is pinned to' }] }));
+  mount('deploy', h(P.Table, { label: 'Deploy steps', columns: [col('n', 'Step'), col('what', 'What happens', 'wrap'), col('who', 'Who')], data: [
+    { id: 1, n: '1', what: 'Create the private repository plenix-ds/st-john-test-site and a read-only token for the Plenix tests', who: 'Claude (your OK)' },
+    { id: 2, n: '2', what: 'On VM 130: the PostgreSQL container (data kept in /srv/st-john/db, port open only inside the server) and the app container (port 8790, inside the server only)', who: 'Claude, by deploy.sh' },
+    { id: 3, n: '3', what: 'The server’s Nginx: a site file for stjohn.lighthouseway.org that sends everything to the app', who: 'Claude' },
+    { id: 4, n: '4', what: 'DNS: stjohn.lighthouseway.org as a CNAME to npm.lighthouseway.org, like the other names', who: 'You, or Claude if you allow it' },
+    { id: 5, n: '5', what: 'Nginx Proxy Manager: a new proxy host with a Let’s Encrypt certificate, HTTPS forced, and Authentik in front if you choose it', who: 'Claude (your OK; the database is backed up first)' },
+    { id: 6, n: '6', what: 'Check: the address opens, a member saves, the nightly reset runs', who: 'Claude, with pictures for you' }] }));
+})();
+</script>
+</body>
+</html>
