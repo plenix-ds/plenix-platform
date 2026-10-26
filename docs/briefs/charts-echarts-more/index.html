@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en" data-plx-mode="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sparkline, WordCloud and Diagram · Plenix review</title>
+<!-- Owner review (#353, owner 2026-10-26: retire Diagram; Sparkline and WordCloud move to ECharts), "show me": pictures
+     from preview.html (capture.js), the sparkline timing from measure-sparklines.js, and the Diagram retirement plan.
+     The Platform is not built. -->
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<link rel="stylesheet" href="../review.css">
+</head>
+<body class="rv-page">
+<main class="rv-doc">
+  <h1 class="rv-h1">Sparkline and WordCloud on ECharts, and retiring Diagram</h1>
+  <p class="rv-lead">Your decision of 2026-10-26, shown before anything ships. Today's version is on the left of each
+    picture, the new one on the right, with made-up St. John the Beloved numbers and survey answers.
+    <a href="preview.html">Open the live preview</a>.</p>
+  <p class="rv-rec"><strong>In short:</strong> both look like today's. Two findings need your word. Sparklines on ECharts are
+    about 20 times slower to draw: 200 take 1.5 seconds instead of 0.07. And the St. John test site uses Diagram for its
+    ministries chart, while Plenix has no Tree chart to send it to yet.</p>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">Sparkline</h2>
+    <figure class="rv-fig"><img src="spark-inline.png" alt="Three word-sized sparklines in sentences: a line, an area with the latest dot, and bars; today and new look the same"><figcaption><span class="rv-tag">WORD-SIZED</span> line, area with the latest dot, bars: the same shapes, colors and sizes</figcaption></figure>
+    <figure class="rv-fig"><img src="spark-card.png" alt="A metric card with Weekly giving and its sparkline, today and new, the same"><figcaption><span class="rv-tag">IN A METRIC CARD</span> the full-width sparkline, unchanged</figcaption></figure>
+    <p class="rv-lead"><strong>Speed.</strong> Each sparkline is now its own small ECharts chart. Measured in the test browser,
+      200 sparklines (a long table with a trend column):</p>
+    <table class="plx-table">
+      <thead><tr><th>How it is drawn</th><th>Time to draw 200</th><th>Extra memory</th></tr></thead>
+      <tbody>
+        <tr><td>Today (Plenix's own drawing)</td><td class="rv-tag">0.07 s</td><td class="rv-tag">none</td></tr>
+        <tr><td>A · ECharts, a live chart each (built)</td><td class="rv-tag">1.5 s</td><td class="rv-tag">about 12 MB</td></tr>
+        <tr><td>B · ECharts, drawn as a picture each (measured, not built)</td><td class="rv-tag">0.2 s</td><td class="rv-tag">small</td></tr>
+      </tbody>
+    </table>
+    <ul class="rv-list">
+      <li><strong>A</strong> is what the pictures show. A table that draws only its visible rows (about 30) takes about 0.2 s.</li>
+      <li><strong>B</strong> still uses ECharts, but it turns each sparkline into a finished picture and keeps no live chart
+        behind it. Sparklines don't move or respond to the pointer anyway.</li>
+      <li>Either way, a page whose only charts are sparklines (a dashboard of metric cards) now loads the chart engine
+        (183 KB compressed, once).</li>
+    </ul>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">WordCloud</h2>
+    <figure class="rv-fig"><img src="cloud-spiral.png" alt="The survey word cloud, round, today and new: the same words, sizes and group colors in a different arrangement"><figcaption><span class="rv-tag">ROUND</span> the same 25 words, five sizes and four group colors; ECharts' extension arranges them its own way</figcaption></figure>
+    <div class="rv-pair">
+      <figure class="rv-fig"><img src="cloud-rect.png" alt="The survey word cloud, square layout, today and new"><figcaption><span class="rv-tag">SQUARE</span> every word placed, none overlapping</figcaption></figure>
+      <figure class="rv-fig"><img src="cloud-keyboard.png" alt="The new word cloud in focus on Confession times, the other words dimmed, with the tooltip"><figcaption><span class="rv-tag">KEYBOARD</span> the arrow keys go to the nearest word that way; the word in focus stays bright and the others dim (today it is underlined)</figcaption></figure>
+    </div>
+    <ul class="rv-list">
+      <li>The word cloud is ECharts' word-cloud extension (echarts-wordcloud 2.1.0). It comes from the original ECharts
+        team, though its own page calls it third-party. It is in its own small file (7 KB compressed), loaded only on pages
+        with a word cloud.</li>
+      <li>It was written for ECharts 5 and last updated in 2022. Two things needed fixing in Plenix for ECharts 6: the words
+        didn't appear until the chart was asked to repaint, and bold words could touch. Both are fixed.</li>
+    </ul>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">Retiring Diagram</h2>
+    <p class="rv-lead">Nothing is removed yet: it goes with the build, once you've answered decision 3. What goes:</p>
+    <ul class="rv-list">
+      <li><strong>The component:</strong> <span class="rv-tag">platform/charts/Diagram.jsx</span> and <span class="rv-tag">diagram.css</span>, its export (<span class="rv-tag">index.js</span>, <span class="rv-tag">exports/w09A</span>), its 26 tokens (<span class="rv-tag">diagram.tokens.json</span>), its text contracts, its native mapping, and its system-check entries.</li>
+      <li><strong>The design spec:</strong> the Diagram page, record, lab and docs (<span class="rv-tag">parts/w09A</span>), replaced by a note on the Charts overview page: "Diagram was retired on 2026-10-26: for a hierarchy use the Tree chart, for flows between steps the Sankey diagram, for connections the network graph. Process flowcharts are no longer in the library."</li>
+      <li><strong>The changelog</strong>, under Removed (breaking): "Diagram, its tokens (--plx-comp-diagram-*) and its classes (plx-diagram__*). Use TreeChart, SankeyDiagram or NetworkGraph; process flowcharts are no longer in the library (#353)."</li>
+      <li><strong>No suite app uses Diagram.</strong> The St. John test site does, on its Ministries page: a boxes-and-arrows chart of how the ministries report to the clergy. That page has to move before the release that removes Diagram.</li>
+      <li><strong>There is no Tree chart in Plenix today</strong> (Treemap is a different chart: nested rectangles). ECharts has one, its tree series: about 10 KB more in the engine. It draws exactly that reporting chart (clergy, then their ministries) and fits the order you set.</li>
+    </ul>
+  </section>
+
+  <section class="rv-section">
+    <h2 class="rv-h2">For you to decide</h2>
+    <ol class="rv-list">
+      <li><strong>Sparkline: A or B?</strong> A: a live ECharts chart each (built, 1.5 s for 200). B: ECharts draws each one as
+        a picture (0.2 s for 200; I'd build it and show you). Recommended: B, since sparklines often come by the hundred in tables.</li>
+      <li><strong>Does WordCloud pass</strong>, with the dimming in place of the underline?</li>
+      <li><strong>The Tree chart:</strong> add a TreeChart on ECharts' tree series and move the test site's ministries chart
+        to it, then remove Diagram. Recommended: yes. The other way is to point that page to the network graph's
+        hierarchical layout.</li>
+      <li>The rule from the first four charts applies here too: ECharts writes the sizes and fonts of its own drawing,
+        from the tokens.</li>
+    </ol>
+  </section>
+</main>
+</body>
+</html>

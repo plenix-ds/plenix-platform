@@ -7,29 +7,42 @@ slices, in an ECharts theme read from the Platform's chart tokens (`platform/cha
 
 | File | Package | Version | License | SHA-256 |
 |---|---|---|---|---|
-| `echarts.min.js` | echarts (with zrender 6.1.0, tslib 2.3.0) | 6.1.0 | Apache-2.0 (zrender BSD-3-Clause, tslib 0BSD) | `6a0f4705c675f119aca01cef9a61e06870af926dd3933eaff71eef711ba5c112` |
+| `echarts.min.js` | echarts (with zrender 6.1.0, tslib 2.3.0) | 6.1.0 | Apache-2.0 (zrender BSD-3-Clause, tslib 0BSD) | `440f98cca67a72f7b69fab0e441c5c96b3b12e2e6ffdd52f1bab6843f31f4fff` |
+| `echarts-wordcloud.min.js` | echarts-wordcloud (with wordcloud2.js) | 2.1.0 | ISC (wordcloud2.js MIT) | `b8dc0f5fb8016ca15d05dbe12065ae652966eaa891178a137ce868029aff7fe8` |
 | `LICENSE`, `NOTICE` | echarts | 6.1.0 | Apache-2.0 | `634293835b43a6dd2094fa39182a3d9a6b9ca43b7fdb9ac354e8037af2a3093a`, `d491d358344f842685c1b1585970999db65fe30ecf7ef3867af8814f4016c016` |
 | `LICENSE-zrender` | zrender | 6.1.0 | BSD-3-Clause | `a681e9d183c72b4af4856935893805eb48c08f0f5a3f260203db7444c20fb98a` |
+| `LICENSE-echarts-wordcloud` | echarts-wordcloud, wordcloud2.js | 2.1.0 | ISC, MIT | `202885d0b1cd7228e6bc4f7f018df2688b0adb48280bbd2b03a199f04362fc75` |
 | `LICENSE-tslib` | tslib | 2.3.0 | 0BSD | `0e8d2550baea17eb3072c4f919b36fbf9852bb49dba948549872e713863c0834` |
 
-Built on 2026-10-26: 525,691 bytes, 181,117 bytes gzipped (gzip -9). All of ECharts (`dist/echarts.min.js`) is 360 KB
+Built on 2026-10-26: `echarts.min.js` 529,719 bytes, 182,819 gzipped; `echarts-wordcloud.min.js` 17,422 bytes, 6,924 gzipped (gzip -9). All of ECharts (`dist/echarts.min.js`) is 360 KB
 gzipped: this file holds only what the Platform's charts use ("ship only what is used", #277).
 
 ## What it holds
 
 The modular build: ECharts' core, the SVG renderer (marks stay vector, crisp at every zoom and in print), the line, bar
-and pie charts and the cartesian grid. `window.PlenixECharts` exposes `init` and `version` only. The entry file:
+and pie charts and the cartesian grid. `window.PlenixECharts` exposes `init`, `version` and `extension` (the registration API an
+extension chart's own file uses). The entry file:
 
 ```js
-import { use, init, version } from 'echarts/core';
+import { use, init, version, List, extendChartView, extendSeriesModel, format, graphic, helper, number, registerLayout, registerPreprocessor, util } from 'echarts/core';
 import { SVGRenderer } from 'echarts/renderers';
 import { LineChart, BarChart, PieChart } from 'echarts/charts';
 import { GridComponent } from 'echarts/components';
 use([SVGRenderer, LineChart, BarChart, PieChart, GridComponent]);
-export { init, version };
+// what an extension chart (echarts-wordcloud) registers itself with, from its own file
+const extension = { List, extendChartView, extendSeriesModel, format, graphic, helper, number, registerLayout, registerPreprocessor, util };
+export { init, version, extension };
 ```
 
-The charts that use it: LineChart and AreaChart (line), BarChart (bar), PieChart (pie). ECharts' own legend, tooltip,
+The word cloud is an extension, in its own file so that only pages with a WordCloud load it: `echarts-wordcloud.min.js`
+bundles `import 'echarts-wordcloud'; window.PlenixECharts.wordCloudReady = true;` with `echarts/lib/echarts` resolved to `window.PlenixECharts.extension` (an esbuild
+plugin), so it registers the "wordCloud" series with the engine already on the page. echarts-wordcloud 2.1.0 (2022, from
+ecomfe, the original ECharts team; listed by Apache ECharts as an extension) declares ECharts 5 as its peer; it was
+installed with `--legacy-peer-deps` and checked with ECharts 6.1.0. It measures words on a canvas and adds
+`window.setImmediate` when the browser has none (wordcloud2.js).
+
+The charts that use it: LineChart and AreaChart (line), BarChart (bar), PieChart (pie), Sparkline (line, bar); WordCloud
+(the word-cloud extension). ECharts' own legend, tooltip,
 title, data zoom, toolbox and aria parts are not included: the Platform draws those. Later chart types add their
 ECharts chart (and only the parts they need) to the entry file.
 

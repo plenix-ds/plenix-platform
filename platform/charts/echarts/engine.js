@@ -7,6 +7,7 @@
      loadECharts().then((E) => E.init(el, plenixTheme(chartTokens(el)), { renderer: 'svg', width, height }));
      const t = chartTokens(el); t.color('categorical-2')   // a data-viz step as the color it is where el is
    Props:
+     loadEChartsWordCloud(win): the same, then the word-cloud extension's own file (echarts-wordcloud.min.js)
      loadECharts(win): adds the engine's script to the page once (the given window's, default this one) and resolves with
        that window's PlenixECharts ({ init, version })
      chartTokens(el): the chart tokens as the Platform's own chart classes resolve them where el is (theme, density and
@@ -26,22 +27,34 @@
 
 import { vendorBase } from '../../utils/vendorBase.js';
 
+// a vendored engine file, added to the page once per window; ready(w) says whether it has run
 const loading = new WeakMap();
-export function loadECharts(win) {
+function loadVendor(win, file, ready, name) {
   const w = win || (typeof window !== 'undefined' ? window : null);
-  if (!w) return Promise.reject(new Error('ECharts needs a browser'));
-  if (w.PlenixECharts) return Promise.resolve(w.PlenixECharts);
-  if (loading.has(w)) return loading.get(w);
+  if (!w) return Promise.reject(new Error(name + ' needs a browser'));
+  if (ready(w)) return Promise.resolve(w.PlenixECharts);
+  const map = loading.get(w) || {};
+  loading.set(w, map);
+  if (map[file]) return map[file];
   const doc = w.document;
-  const p = new Promise((resolve, reject) => {
+  map[file] = new Promise((resolve, reject) => {
     const script = doc.createElement('script');
-    script.src = vendorBase() + 'echarts/echarts.min.js'; script.async = true; script.setAttribute('data-plx-vendor', 'echarts');
-    script.onload = () => { if (w.PlenixECharts) resolve(w.PlenixECharts); else { loading.delete(w); script.remove(); reject(new Error('ECharts did not load from ' + script.src)); } };
-    script.onerror = () => { loading.delete(w); script.remove(); reject(new Error('ECharts could not be loaded from ' + script.src)); };
+    script.src = vendorBase() + 'echarts/' + file; script.async = true; script.setAttribute('data-plx-vendor', name);
+    const fail = (why) => { delete map[file]; script.remove(); reject(new Error(name + ' ' + why + ' ' + script.src)); };
+    script.onload = () => { if (ready(w)) resolve(w.PlenixECharts); else fail('did not load from'); };
+    script.onerror = () => fail('could not be loaded from');
     doc.head.appendChild(script);
   });
-  loading.set(w, p);
-  return p;
+  return map[file];
+}
+
+export function loadECharts(win) {
+  return loadVendor(win, 'echarts.min.js', (w) => !!w.PlenixECharts, 'echarts');
+}
+
+// the word-cloud extension (echarts-wordcloud): after the engine, its own file, only for pages with a WordCloud
+export function loadEChartsWordCloud(win) {
+  return loadECharts(win).then(() => loadVendor(win, 'echarts-wordcloud.min.js', (w) => !!(w.PlenixECharts && w.PlenixECharts.wordCloudReady), 'echarts-wordcloud'));
 }
 
 const NS = 'http://www.w3.org/2000/svg';
@@ -68,6 +81,8 @@ export function chartTokens(where) {
   const joined = mk('rect', 'plx-chart__mark plx-bar-chart__bar plx-bar-chart__bar--joined');
   const slice = mk('path', 'plx-chart__mark plx-pie-chart__slice');
   const swatch = mk('rect', 'plx-chart__mark');
+  const words = [1, 2, 3, 4, 5].map((n) => mk('text', 'plx-word-cloud__word plx-word-cloud__word--' + n));
+  const spark = { line: mk('path', 'plx-sparkline__line'), area: mk('path', 'plx-sparkline__area'), bar: mk('rect', 'plx-sparkline__bar'), last: mk('circle', 'plx-sparkline__last') };
   where.appendChild(svg);
   const cs = (e) => win.getComputedStyle(e);
   const font = (e) => { const s = cs(e); return { color: s.fill, fontFamily: s.fontFamily, fontSize: num(s.fontSize), fontWeight: s.fontWeight }; };
@@ -89,6 +104,11 @@ export function chartTokens(where) {
     tickOffset: len(prop('--plx-comp-chart-axis-tick-offset')),
     top: len(prop('--plx-comp-chart-margin-block-start')),
     rtl: host.direction === 'rtl',
+    // a word cloud's five word sizes (the type scale) and its words' color, font and weights
+    wordCloud: { sizes: words.map((w) => num(cs(w).fontSize)), weights: words.map((w) => cs(w).fontWeight), color: cs(words[0]).fill, fontFamily: cs(words[0]).fontFamily },
+    // a sparkline's own look (its color follows the sparkline's data-viz step, where it is)
+    sparkline: { color: cs(spark.line).stroke, lineWidth: num(cs(spark.line).strokeWidth), areaOpacity: num(cs(spark.area).fillOpacity),
+      bar: cs(spark.bar).fill, last: { r: num(cs(spark.last).r), outline: cs(spark.last).stroke, outlineWidth: num(cs(spark.last).strokeWidth) } },
     // the values not in focus dim to the interaction's token; the drawing's animation is the motion token (reduced motion: 0)
     dim: num(prop('--plx-comp-chart-interaction-dim-opacity')) || 1,
     motion: ms(prop('--plx-sys-motion-duration-slow')),

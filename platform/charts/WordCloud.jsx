@@ -21,13 +21,15 @@
      strings: { value: "Count", word: "Term", group: "Group" }
      className: more classes on the figure
    Behavior:
-     The words are measured in their own type (after the fonts load) and placed without overlapping; a word that does
-       not fit in the plot is left out of the picture (it stays in the table).
+     The words are placed by Apache ECharts' word-cloud extension (echarts-wordcloud, #353) in their own type, without
+       overlapping, the largest first; a word that does not fit in the plot is left out of the picture (it stays in the
+       table). The engine and the extension load the first time a word cloud mounts.
      One Tab stop: ← → ↑ ↓ move to the nearest word in that direction, Home and End to the largest and the smallest; each
-       says "<word>: <count>" in the live region and shows it in the tooltip; the other words step back.
+       says "<word>: <count>" in the live region and shows it in the tooltip; the other words step back (dim).
    Notes:
-     Sizes are the --plx-comp-word-cloud-size-1 … 5 tokens (the type scale); words without a group take the content
-       color, grouped words the categorical data-viz colors. Never use it to compare values exactly: a sorted bar chart.
+     Sizes are the --plx-comp-word-cloud-size-1 … 5 tokens (the type scale), read by the ECharts theme (echarts/engine.js);
+       words without a group take the content color, grouped words the categorical data-viz colors. No style is written
+       here. wordCloudLayout (Plenix's own placing) stays exported for code that places words itself. Never use it to compare values exactly: a sorted bar chart.
 */
 import React from 'react';
 import { cx } from '../utils/cx.js';
@@ -37,6 +39,9 @@ import { seriesColor } from './scales.js';
 import { ChartLegend } from './parts/ChartLegend.jsx';
 import { ChartTooltip, chartTooltipText } from './parts/ChartTooltip.jsx';
 import { useChartInteraction } from './interaction.js';
+import { useEChartsPlot, NO_MARGIN } from './echarts/EChartsPlot.jsx';
+import { loadEChartsWordCloud } from './echarts/engine.js';
+import { snapToGrid } from '../utils/grid.js';
 
 const STRINGS = { value: 'Count', word: 'Term', group: 'Group' };
 const STEPS = 5;
@@ -77,7 +82,14 @@ export function wordCloudLayout(boxes, width, height, layout = 'spiral') {
   return out;
 }
 
-export function WordCloud({ title, description, words = [], layout = 'spiral', groups, max = 50, valueLabel, format, size = 'md', margin, interactive = true, onSelect,
+// px: the room kept around the cloud (on the 4px grid)
+const ROOM = { top: 8, end: 8, bottom: 8, start: 8 };
+const NONE = Object.freeze([]);
+const wordCloudReady = (w) => !!(w.PlenixECharts && w.PlenixECharts.wordCloudReady);
+// frames the word count must hold still before the places are read (the extension places a word at a time)
+const SETTLE = 4;
+
+export function WordCloud({ title, description, words = NONE, layout = 'spiral', groups, max = 50, valueLabel, format, size = 'md', margin, interactive = true, onSelect,
   strings, frameStrings, interactionStrings, className }) {
   const t = Object.assign({}, STRINGS, strings);
   const fmt = typeof format === 'function' ? format : (v) => formatNumber(v);
@@ -90,17 +102,9 @@ export function WordCloud({ title, description, words = [], layout = 'spiral', g
   const stepOf = (v) => (hi === lo ? 3 : Math.min(STEPS, 1 + Math.floor(Math.sqrt((v - lo) / (hi - lo)) * STEPS)));
   const gIndex = (g) => (groups || []).findIndex((x) => x.id === g);
   const colorOf = (w) => (w.group !== undefined && gIndex(w.group) >= 0 ? seriesColor(gIndex(w.group)) : undefined);
-  const layer = React.useRef(null);
+  // where each word was placed (its box in plot pixels), once the extension has placed them; null when left out
   const where = React.useRef([]);
-  const [boxes, setBoxes] = React.useState({ key: '', list: [] });
-  const [fonts, setFonts] = React.useState(0);
-  const key = shown.map((w) => w.text + ':' + stepOf(w.value)).join('|') + '#' + fonts;
-  React.useEffect(() => { if (typeof document !== 'undefined' && document.fonts && document.fonts.ready) document.fonts.ready.then(() => setFonts(1)); }, []);
-  React.useLayoutEffect(() => {
-    if (!layer.current || boxes.key === key) return;
-    const list = Array.from(layer.current.querySelectorAll('.plx-word-cloud__word--measure')).map((el) => { const b = el.getBBox(); return { width: b.width, height: b.height }; });
-    if (list.length === shown.length) setBoxes({ key, list });
-  });
+  const [placed, setPlaced] = React.useState(0);
 
   const ia = useChartInteraction({
     rows: 1, columns: shown.length, mode: 'point', select: typeof onSelect === 'function', strings: interactionStrings,
@@ -131,32 +135,90 @@ export function WordCloud({ title, description, words = [], layout = 'spiral', g
   };
   const legendNode = groups && groups.length ? <ChartLegend items={groups.map((g, i) => ({ id: g.id, label: g.label, color: seriesColor(i) }))} /> : null;
 
-  const draw = ({ inner }) => {
-    const ready = boxes.key === key && boxes.list.length === shown.length;
-    const at = ready ? wordCloudLayout(boxes.list, inner.width, inner.height, layout === 'rectangular' ? 'rectangular' : 'spiral') : [];
-    where.current = at;
+  // the drawing: the extension's word-cloud series, horizontal words in five token sizes, the largest first
+  const plot = useEChartsPlot({ load: loadEChartsWordCloud, ready: wordCloudReady });
+  const m = {};
+  Object.keys(ROOM).forEach((k) => { m[k] = snapToGrid(margin && margin[k] !== undefined ? margin[k] : ROOM[k]); });
+  const key = shown.map((w) => w.text + ':' + w.value + ':' + (colorOf(w) || '')).join('|');
+  const option = React.useCallback((tk, dims) => {
+    const wc = tk.wordCloud;
+    return {
+      series: [{
+        type: 'wordCloud', silent: true, shape: layout === 'rectangular' ? 'square' : 'circle',
+        left: m.start, top: m.top, width: Math.max(0, dims.width - m.start - m.end), height: Math.max(0, dims.height - m.top - m.bottom),
+        rotationRange: [0, 0], gridSize: tk.tickOffset + PAD, drawOutOfBound: false, shrinkToFit: false, layoutAnimation: tk.motion > 0,
+        // the extension measures every word in the series' weight: the boldest step's, so bold words never touch
+        textStyle: { fontFamily: wc.fontFamily, fontWeight: wc.weights[STEPS - 1] },
+        emphasis: { focus: 'self' }, blur: { textStyle: { opacity: tk.dim } },
+        data: shown.map((w) => {
+          const step = stepOf(w.value);
+          return { name: w.text, value: w.value, textStyle: { fontSize: wc.sizes[step - 1], fontWeight: wc.weights[step - 1], color: colorOf(w) ? tk.color(colorOf(w)) : wc.color } };
+        }),
+      }],
+    };
+  }, [key, layout, m.top, m.end, m.bottom, m.start]);
+
+  // the words' places: read from the drawing once the extension has placed them
+  const c = plot.chart;
+  React.useEffect(() => {
+    if (!c) return undefined;
+    let frame = 0, last = -1, stable = 0, raf = 0;
+    const read = () => {
+      if (c.isDisposed()) return;
+      // the extension adds each word after ECharts has drawn (it was made for ECharts 5): ECharts 6 paints them only
+      // when asked, so the drawing is refreshed until every word is placed
+      c.getZr().refresh();
+      const series = c.getModel().getSeriesByIndex(0);
+      const data = series ? series.getData() : null;
+      const out = shown.map((w, i) => {
+        const el = data ? data.getItemGraphicEl(i) : null;
+        if (!el) return null;
+        const r = el.getBoundingRect().clone();
+        const tr = el.getComputedTransform();
+        if (tr) r.applyTransform(tr);
+        return { x: r.x + r.width / 2, y: r.y + r.height / 2, width: r.width, height: r.height };
+      });
+      const n = out.filter(Boolean).length;
+      stable = n === last ? stable + 1 : 0; last = n;
+      where.current = out;
+      // done when the count has held still for a few frames after the first word (or nothing to place), or after 10 s
+      if ((stable >= SETTLE && (n > 0 || !shown.length)) || ++frame > 600) { setPlaced((p) => p + 1); return; }
+      raf = requestAnimationFrame(read);
+    };
+    raf = requestAnimationFrame(read);
+    return () => cancelAnimationFrame(raf);
+  }, [c, option]);
+
+  // the word in focus is ECharts' emphasis: the others dim to the interaction's dim token
+  const activeKey = ia.active ? String(ia.active.c) : '';
+  React.useEffect(() => {
+    if (!c) return;
+    c.dispatchAction({ type: 'downplay', seriesIndex: 0 });
+    if (ia.active) c.dispatchAction({ type: 'highlight', seriesIndex: 0, dataIndex: ia.active.c });
+  }, [activeKey, c, placed]);
+
+  const draw = (dims) => {
+    const layer = plot.layer(dims, option);
+    const at = where.current;
     ia.register({
       nearest: (px, py) => {
         let best = null;
-        at.forEach((p, i) => { if (p && boxes.list[i] && Math.abs(px - p.x) <= boxes.list[i].width / 2 && Math.abs(py - p.y) <= boxes.list[i].height / 2) best = i; });
+        at.forEach((p, i) => { if (p && Math.abs(px - p.x) <= p.width / 2 && Math.abs(py - p.y) <= p.height / 2) best = i; });
         return best === null ? null : { r: 0, c: best };
       },
     });
-    const a = ia.active && at[ia.active.c] ? ia.active : null, sel = ia.selected;
-    return (
-      <g ref={layer} className="plx-word-cloud__plot">
-        {!ready ? shown.map((w, i) => <text key={'m' + i} className={cx('plx-word-cloud__word', 'plx-word-cloud__word--measure', 'plx-word-cloud__word--' + stepOf(w.value))} x={0} y={0}>{w.text}</text>) : null}
-        {ready ? shown.map((w, i) => (at[i] ? (
-          <text key={i} className={cx('plx-word-cloud__word', 'plx-word-cloud__word--' + stepOf(w.value), 'plx-chart-dim', a && a.c !== i && 'plx-chart-dim--off', a && a.c === i && 'plx-word-cloud__word--active', sel && sel.c === i && 'plx-word-cloud__word--selected')}
-            data-plx-dataviz={colorOf(w)} x={at[i].x} y={at[i].y}>{w.text}</text>
-        ) : null)) : null}
-        {a ? <ChartTooltip x={at[a.c].x + (at[a.c].x > inner.width / 2 ? -1 : 1) * boxes.list[a.c].width / 2} y={at[a.c].y} inner={inner} title={shown[a.c].text} items={[{ label: vLabel, value: fmt(shown[a.c].value), color: colorOf(shown[a.c]) }]} /> : null}
+    const a = ia.active && at[ia.active.c] ? ia.active : null;
+    if (!a || !c) return layer;
+    const p = at[a.c], inner = { width: dims.width, height: dims.height };
+    return [layer, (
+      <g key="plx-chart-overlay" className="plx-word-cloud__plot">
+        <ChartTooltip x={p.x + (p.x > dims.width / 2 ? -1 : 1) * p.width / 2} y={p.y} inner={inner} title={shown[a.c].text} items={[{ label: vLabel, value: fmt(shown[a.c].value), color: colorOf(shown[a.c]) }]} />
       </g>
-    );
+    )];
   };
 
   return (
-    <ChartFrame title={title} description={description} size={size} margin={Object.assign({ top: 8, end: 8, bottom: 8, start: 8 }, margin)} table={table} legend={legendNode}
+    <ChartFrame title={title} description={description} size={size} margin={NO_MARGIN} table={table} legend={legendNode}
       interaction={interactive ? ia : undefined} strings={frameStrings}
       className={cx('plx-word-cloud', 'plx-word-cloud--' + (layout === 'rectangular' ? 'rectangular' : 'spiral'), className)}>
       {draw}

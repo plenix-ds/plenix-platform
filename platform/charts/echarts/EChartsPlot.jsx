@@ -7,7 +7,9 @@
      const option = React.useCallback((t) => ({ grid: …, xAxis: …, yAxis: …, series: … }), [data, …]);
      <ChartFrame … margin={NO_MARGIN}>{(dims) => [plot.layer(dims, option), plot.chart ? <g>…overlay…</g> : null]}</ChartFrame>
    Props:
-     useEChartsPlot() → { chart, tokens, layer(dims, option) }:
+     EChartsHost({ width, height, option, onDraw, load, ready, className }): the drawing alone, for a chart without a frame
+       (Sparkline); load and ready name the engine files it needs (default loadECharts; WordCloud: loadEChartsWordCloud)
+     useEChartsPlot({ load, ready }) → { chart, tokens, layer(dims, option) }:
        layer(dims, option): the element that holds the drawing, the plot's full size (a foreignObject at 0,0); option(t, size)
          returns the ECharts option from the chart tokens t (engine.js chartTokens) and the plot's { width, height }. Keep option stable (useCallback on
          the data and props it reads) or the chart redraws on every render
@@ -31,16 +33,17 @@ import React from 'react';
 import { loadECharts, chartTokens, plenixTheme } from './engine.js';
 
 export const NO_MARGIN = Object.freeze({ top: 0, end: 0, bottom: 0, start: 0 });
+const isReady = (w) => !!w.PlenixECharts;
 const LOOK = ['data-plx-mode', 'data-plx-theme', 'data-plx-density'];
 
-function EChartsHost({ width, height, option, onDraw }) {
+export function EChartsHost({ width, height, option, onDraw, load = loadECharts, ready = isReady, className = 'plx-chart__engine' }) {
   const ref = React.useRef(null), inst = React.useRef(null), tk = React.useRef(null);
-  const [E, setE] = React.useState(() => (typeof window !== 'undefined' && window.PlenixECharts) || null);
+  const [E, setE] = React.useState(() => (typeof window !== 'undefined' && ready(window) ? window.PlenixECharts : null));
   const [look, setLook] = React.useState(0);
   React.useEffect(() => {
     if (E) return undefined;
     let live = true;
-    loadECharts().then((x) => { if (live) setE(x); }, () => {});
+    load().then((x) => { if (live) setE(x); }, () => {});
     return () => { live = false; };
   }, [E]);
   React.useEffect(() => {
@@ -61,12 +64,12 @@ function EChartsHost({ width, height, option, onDraw }) {
     if (!c || c.isDisposed()) return;
     c.resize({ width, height, animation: { duration: 0 } });
     c.setOption(option(tk.current, { width, height }), { replaceMerge: ['series', 'xAxis', 'yAxis'] });
-    onDraw(c, tk.current);
+    if (onDraw) onDraw(c, tk.current);
   }, [E, look, option, width, height]);
-  return <div ref={ref} className="plx-chart__engine" />;
+  return <div ref={ref} className={className} />;
 }
 
-export function useEChartsPlot() {
+export function useEChartsPlot({ load, ready } = {}) {
   const [, redraw] = React.useReducer((n) => n + 1, 0);
   const drawn = React.useRef({ chart: null, tokens: null });
   const onDraw = React.useCallback((c, t) => { drawn.current = { chart: c, tokens: t }; redraw(); }, []);
@@ -76,7 +79,7 @@ export function useEChartsPlot() {
     tokens: live ? drawn.current.tokens : null,
     layer: (dims, option) => (
       <foreignObject key="plx-chart-engine" x={0} y={0} width={dims.width} height={dims.height}>
-        <EChartsHost width={dims.width} height={dims.height} option={option} onDraw={onDraw} />
+        <EChartsHost width={dims.width} height={dims.height} option={option} onDraw={onDraw} load={load} ready={ready} />
       </foreignObject>
     ),
   };

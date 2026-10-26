@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en" data-plx-mode="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sparkline and WordCloud on ECharts · live preview · Plenix review</title>
+<!-- The live preview for the owner (#353, owner 2026-10-26: Sparkline and WordCloud move to ECharts): today's (left,
+     window.Plenix) next to the new Platform code (right, window.PlenixNext, bundled by build-preview.js; nothing else is
+     built). Made-up St. John the Beloved data. -->
+<link rel="stylesheet" href="../../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../../platform/platform.css">
+<link rel="stylesheet" href="../review.css">
+<link rel="stylesheet" href="../charts-echarts/preview.css">
+<script src="../../../platform/vendor/react-loader.js"></script>
+<script src="../../../platform/dist/platform.js"></script>
+<!-- the preview bundle sits in this folder, so it is told where the Platform's vendor folder is -->
+<script>window.PlenixVendorBase = new URL('../../../platform/vendor/', location.href).href;</script>
+<script src="next.js"></script>
+</head>
+<body class="rv-page">
+<main class="rv-doc" id="root"></main>
+<script>
+(function () {
+  var h = React.createElement, P = window.Plenix, N = window.PlenixNext;
+  var giving = [18400, 17900, 19600, 24800, 21300, 20100, 18800, 19200, 21700, 22900];
+  var pantry = [64, 61, 70, 74, 69, 72, 80, 88, 104, 118];
+  var servants = [12, 15, 14, 18, 17, 21, 20, 24];
+  var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'];
+  // what parishioners asked for in the fall survey (made up)
+  var asks = [['Adoration', 46, 'liturgy'], ['Choir', 41, 'liturgy'], ['Bible study', 38, 'formation'], ['Youth group', 35, 'formation'], ['Food pantry', 33, 'service'],
+    ['Parking', 30, 'parish'], ['Confession times', 28, 'liturgy'], ['Coffee hour', 26, 'parish'], ['Prison ministry', 22, 'service'], ['Sunday school', 21, 'formation'],
+    ['Livestream', 19, 'parish'], ['Rosary group', 18, 'liturgy'], ['Hospital visits', 16, 'service'], ['Men’s group', 15, 'formation'], ['Choir robes', 13, 'liturgy'],
+    ['Parish picnic', 12, 'parish'], ['Soup kitchen', 11, 'service'], ['Altar servers', 10, 'liturgy'], ['Book club', 9, 'formation'], ['Bake sale', 8, 'parish'],
+    ['Pilgrimage', 8, 'formation'], ['Sign language', 7, 'parish'], ['Nursery', 6, 'parish'], ['Grief group', 6, 'service'], ['Organ', 5, 'liturgy']];
+  var words = asks.map(function (a) { return { text: a[0], value: a[1], group: a[2] }; });
+  var groups = [{ id: 'liturgy', label: 'Liturgy' }, { id: 'formation', label: 'Formation' }, { id: 'service', label: 'Service' }, { id: 'parish', label: 'Parish life' }];
+
+  var stage = function (id, label, node) { return h('div', { className: 'rv-stage rv-ec-cell', id: id }, h('p', { className: 'rv-ec-label' }, label), node); };
+  var pair = function (id, label, today, next) { return h('div', { key: id, className: 'rv-section', id: id }, h('p', { className: 'rv-ec-label' }, label), h('div', { className: 'rv-pair' }, stage(id + '-today', 'Today', today), stage(id + '-new', 'New (ECharts)', next))); };
+  // a row of word-sized sparklines in a sentence, as people meet them in a table cell
+  var inline = function (S) {
+    return h('div', { className: 'rv-list' },
+      h('p', null, 'Giving ', h(S, { values: giving, label: 'Giving, January to October' }), ' up 24% this year'),
+      h('p', null, 'Families served ', h(S, { values: pantry, variant: 'area', showLast: true, label: 'Families served, January to October' }), ' 118 in October'),
+      h('p', null, 'Servants trained ', h(S, { values: servants, variant: 'bar', color: 'categorical-2', label: 'Servants trained, last 8 weeks' }), ' 24 this week'));
+  };
+  var card = function (M) { return h(M, { type: 'trend', title: 'Weekly giving', value: '$22,900', change: 0.06, goodWhen: 'up', trend: giving, trendLabel: 'Giving, January to October' }); };
+  var cloud = function (W, layout) { return h(W, { title: 'What parishioners asked for', description: 'Adoration and the choir lead the fall survey; requests for service grew.', words: words, groups: groups, valueLabel: 'Mentions', layout: layout }); };
+
+  ReactDOM.createRoot(document.getElementById('root')).render(h(React.Fragment, null,
+    h('h1', { className: 'rv-h1' }, 'Sparkline and WordCloud on ECharts: live preview'),
+    h('p', { className: 'rv-lead' }, 'Left: today’s. Right: the new Platform code, drawn by ECharts. Every number and every survey answer is made up.'),
+    h('section', { className: 'rv-section', id: 'sparkline' }, h('h2', { className: 'rv-h2' }, 'Sparkline'),
+      pair('spark-inline', 'Line, area with the latest dot, bars: word-sized, in a sentence', inline(P.Sparkline), inline(N.Sparkline)),
+      pair('spark-card', 'In a metric card (size "fill")', card(P.MetricCard), card(N.MetricCard))),
+    h('section', { className: 'rv-section', id: 'wordcloud' }, h('h2', { className: 'rv-h2' }, 'WordCloud'),
+      pair('cloud-spiral', 'Round (layout "spiral"), four groups', cloud(P.WordCloud, 'spiral'), cloud(N.WordCloud, 'spiral')),
+      pair('cloud-rect', 'Square (layout "rectangular")', cloud(P.WordCloud, 'rectangular'), cloud(N.WordCloud, 'rectangular')))));
+})();
+</script>
+</body>
+</html>
