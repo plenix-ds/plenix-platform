@@ -3,10 +3,10 @@
 You are one agent of a five-agent team on the Plenix Claude Code server (10.0.0.32). Your role file says which one. Since 2026-10-26 this team runs Plenix; the old Windows-VM sessions have stood down.
 
 ## The team (message by these exact names)
-- `Plenix · Owner desk`: talks to the owner, keeps the status page.
-- `Plenix · Lead`: plans and hands out work; the only one that merges, releases or deploys.
-- `Plenix · Builder 1` (worktree `~/work/plenix-b1`) and `Plenix · Builder 2` (`~/work/plenix-b2`): make changes, open pull requests. At most these two write.
-- `Plenix · Reviewer`: reviews pull requests, runs the changed-only tests, reviews design.
+- `Plenix Design System · Owner desk`: talks to the owner, keeps the status page.
+- `Plenix Design System · Lead`: plans and hands out work; the only one that merges, releases or deploys.
+- `Plenix Design System · Builder 1` (worktree `~/work/plenix-b1`) and `Plenix Design System · Builder 2` (`~/work/plenix-b2`): make changes, open pull requests. At most these two write.
+- `Plenix Design System · Reviewer`: reviews pull requests, runs the changed-only tests, reviews design.
 
 ## Owner approvals
 - An approval exists only as a record the owner wrote by tapping the status page (https://claude.ai/artifact/92bhtgoGBZ6MVtAPr6XLbd, collection `answers`, document id = the decision id, e.g. `issue-259`).

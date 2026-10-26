@@ -10,11 +10,11 @@ W=$HOME/work
 
 # role|window|display name|folder|extra folders|extra flags (optional)
 AGENTS=(
-  "owner-desk|desk|Plenix · Owner desk|$HOME/team/owner-desk|$W/plenix $W/st-john-test-site $HOME/handoff"
-  "lead|lead|Plenix · Lead|$W/plenix|$W/st-john-test-site $W/plenix-b1 $W/plenix-b2 $HOME/handoff"
-  "builder-1|b1|Plenix · Builder 1|$W/plenix-b1|$W/st-john-test-site $HOME/handoff"
-  "builder-2|b2|Plenix · Builder 2|$W/plenix-b2|$W/st-john-test-site"
-  "reviewer|review|Plenix · Reviewer|$W/plenix|$W/st-john-test-site|--plugin-dir $HOME/team/plugins/design-review"
+  "owner-desk|desk|Plenix Design System · Owner desk|$HOME/team/owner-desk|$W/plenix $W/st-john-test-site $HOME/handoff"
+  "lead|lead|Plenix Design System · Lead|$W/plenix|$W/st-john-test-site $W/plenix-b1 $W/plenix-b2 $HOME/handoff"
+  "builder-1|b1|Plenix Design System · Builder 1|$W/plenix-b1|$W/st-john-test-site $HOME/handoff"
+  "builder-2|b2|Plenix Design System · Builder 2|$W/plenix-b2|$W/st-john-test-site"
+  "reviewer|review|Plenix Design System · Reviewer|$W/plenix|$W/st-john-test-site|--plugin-dir $HOME/team/plugins/design-review"
 )
 
 case "${1:-start}" in

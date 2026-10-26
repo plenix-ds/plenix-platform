@@ -13,6 +13,13 @@
 <li><b>Your decisions:</b> the Owner desk updated your status page for the new server; the choices waiting for you are there to tap.</li>
 </ul>
 
+<h2>Fresh team (2026-10-26, evening)</h2>
+<ul>
+<li>At your request the first five agents were replaced with new ones. Before stopping, each pushed its work to GitHub and the old Lead wrote down the exact state of every task (<code>~/handoff/state-2026-10-26.md</code>). Their chat records are kept in <code>~/archive/team-2026-10-26</code> on the server.</li>
+<li>The new agents are named "Plenix Design System · Owner desk", "· Lead", "· Builder 1", "· Builder 2" and "· Reviewer", so they sit together on your phone and at claude.ai/code. They picked up from the state note.</li>
+<li>Chats run from the desktop app over SSH were considered and rejected: they stop when the desktop app or the Windows VM is closed, and lose phone access then. The server agents run 24/7 on their own.</li>
+</ul>
+
 <h2>How you connect</h2>
 <ul>
 <li><b>Server:</b> VM 131 "cc-server", address 10.0.0.32, on the Proxmox node pve.</li>
@@ -27,11 +34,11 @@
 <h2>The team</h2>
 <table>
 <tr><th>Agent</th><th>Model</th><th>Works in</th><th>Can</th></tr>
-<tr><td>Plenix · Owner desk</td><td>Sonnet 5.5</td><td>its own folder</td><td>Talk to you, add questions to the status page</td></tr>
-<tr><td>Plenix · Lead</td><td>Opus 5.5</td><td>~/work/plenix</td><td>Hand out work; the only one that merges, releases or deploys, after checking your tapped answer</td></tr>
-<tr><td>Plenix · Builder 1</td><td>Opus 5.5</td><td>~/work/plenix-b1</td><td>Make changes, open pull requests</td></tr>
-<tr><td>Plenix · Builder 2</td><td>Sonnet 5.5</td><td>~/work/plenix-b2</td><td>Make changes, open pull requests</td></tr>
-<tr><td>Plenix · Reviewer</td><td>Sonnet 5.5</td><td>~/work/plenix</td><td>Review, test, and review design (with the design reviewer)</td></tr>
+<tr><td>Plenix Design System · Owner desk</td><td>Sonnet 5.5</td><td>its own folder</td><td>Talk to you, add questions to the status page</td></tr>
+<tr><td>Plenix Design System · Lead</td><td>Opus 5.5</td><td>~/work/plenix</td><td>Hand out work; the only one that merges, releases or deploys, after checking your tapped answer</td></tr>
+<tr><td>Plenix Design System · Builder 1</td><td>Opus 5.5</td><td>~/work/plenix-b1</td><td>Make changes, open pull requests</td></tr>
+<tr><td>Plenix Design System · Builder 2</td><td>Sonnet 5.5</td><td>~/work/plenix-b2</td><td>Make changes, open pull requests</td></tr>
+<tr><td>Plenix Design System · Reviewer</td><td>Sonnet 5.5</td><td>~/work/plenix</td><td>Review, test, and review design (with the design reviewer)</td></tr>
 </table>
 <ul>
 <li>All five are in standby: they change nothing until you say the work moves to the server.</li>
