@@ -67,10 +67,6 @@
       "$value": "{plx-ref.space-16px}",
       "$type": "dimension"
     },
-    "panel-padding": {
-      "$value": "{plx-ref.space-16px}",
-      "$type": "dimension"
-    },
     "dialog-padding": {
       "$value": "{plx-ref.space-16px}",
       "$type": "dimension"
