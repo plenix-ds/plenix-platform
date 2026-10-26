@@ -88,10 +88,9 @@
       <li><strong>Tests that open the spec.</strong> About 20 tests open spec pages. Without ?plenix=local they would
         check the published release, not the change under test. The St. John test-site session is moving tests off
         the spec. Merge that first, or have the remaining spec tests add ?plenix=local. tests/ was not touched here.</li>
-      <li><strong>The source becomes public.</strong> /cdn/ is outside Authentik, so each release's JSX and CSS
-        source can be read by anyone. The compiled forms (plenix.js, plenix.esm.js, plenix.css) were already public.
-        Your call: if the source must stay private, source/ needs Authentik in front of it, and the spec then works
-        only when signed in.</li>
+      <li><strong>The source is public (decided, owner 2026-10-25).</strong> /cdn/ is outside Authentik, so each
+        release's JSX and CSS source can be read by anyone, like the compiled forms (plenix.js, plenix.esm.js,
+        plenix.css) already were. This has no effect on GitHub access or CI, which build from the repository.</li>
       <li><strong>Many requests in the labs.</strong> The Radius, Motion and Layout labs read platform.css and its
         roughly 200 imported files, as they do on the live site today. deploy.sh notes that the server limits request
         bursts (429) for study pages. If /cdn/ has the same limit, those labs could show partial counts. This is not
@@ -105,7 +104,8 @@
   </section>
 
   <p class="rv-rec"><strong>Merge order:</strong> the St. John test move, then the plenix-design-system PR and the
-    plenix-platform PR together (the second moves the pointer), then the next release. Nothing has been merged or released.</p>
+    plenix-platform PR together (the integrator moves the pointer and writes the changelog entry), then the next
+    release. Nothing has been merged or released.</p>
 </main>
 </body>
 </html>
