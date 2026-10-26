@@ -132,11 +132,11 @@ jobs:
 
       - run: npm ci
 
-      - name: The St. John test site (its own repository; SITE_TOKEN reads it)
+      - name: The St. John test site (its own repository; DS_TOKEN reads it)
         uses: actions/checkout@v5
         with:
           repository: plenix-ds/st-john-test-site
-          token: ${{ secrets.SITE_TOKEN }}
+          token: ${{ secrets.DS_TOKEN }}
           path: st-john-test-site
 
       - name: The site's packages and build

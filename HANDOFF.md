@@ -55,7 +55,7 @@ One design system and the suite of applications built on it, owned by one person
   - The site is its own web app and repository: github.com/plenix-ds/st-john-test-site (Node 22 + PostgreSQL 16, Plenix from the CDN), live at https://stjohn.lighthouseway.org behind Authentik.
   - Clone it beside this repository (`../st-john-test-site`, or set `SITE_DIR`). The tests start it on their own server at `/Plenix/test-site/` with a fresh database (PGlite on a computer, the job's PostgreSQL in CI) and point it at this checkout's CDN files at `/cdn/local/`: run `node build-app.js` and `node build-packages.js` first.
   - It is a church database and membership app with made-up data (no sacrament records; "servants", never "volunteers"). Its routes are its `site/pages.js`; tests read them through `tests/site.js`.
-  - CI reads the site's repository with the `SITE_TOKEN` secret (a token that can read plenix-ds/st-john-test-site).
+  - CI reads the site's repository with the `DS_TOKEN` secret (owner, 2026-10-26: reuse it; it also reads the spec).
   - A new Platform part must be placed on the site: `node tests/site-coverage.test.js` (SITE_COVERAGE_OK) and `node tests/site-check.js` (the site's rules).
   - The spec's component labs are spec-only (`node tests/run.js labs`); `tests/component-tokens.test.js` checks the tokens on the site's real components.
 - **No target-size test.** The owner removed it ("Remove tap areas from all tests", 2026-10-25).
