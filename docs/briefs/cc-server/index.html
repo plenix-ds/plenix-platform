@@ -3,6 +3,16 @@
 <p>One server on our own Proxmox runs the Plenix agents. You reach it from the desktop app and from your phone. Nothing runs in Anthropic's cloud: the agents, the code and the memory stay on our machine. The agents still talk to Claude through your Claude account, as they do today.</p>
 <p>Plenix work stays on this Windows VM until you say to move it.</p>
 
+<h2>Live since 2026-10-26</h2>
+<ul>
+<li><b>The move:</b> on your word, Plenix work moved to the server and standby ended. The team runs Plenix now.</li>
+<li><b>Memory:</b> all 87 memory notes and all 79 decisions from the Owner desk's log are in claude-mem (171 memories for Plenix), after a secrets scan (nothing found) and a trial run. Claude Code's own automatic memory is off; agents record new decisions in claude-mem. Memory never counts as an approval.</li>
+<li><b>Start-up reading:</b> the team rules (4.7 KB, with your standing rules in short) plus the repository's own CLAUDE.md, down from about 23 KB.</li>
+<li><b>Code:</b> the latest styling/phase-2 and the spec are on the server; the code map is refreshed.</li>
+<li><b>Work handed out:</b> the Lead has the "approved but not started" and "waiting on you" lists and gave Builder 2 the test-set package for the outside review (#356). Builder 1 takes Charts on ECharts as soon as the old Charts session pushes its branch, which so far exists only on the Windows VM.</li>
+<li><b>Your decisions:</b> the Owner desk updated your status page for the new server; the choices waiting for you are there to tap.</li>
+</ul>
+
 <h2>How you connect</h2>
 <ul>
 <li><b>Server:</b> VM 131 "cc-server", address 10.0.0.32, on the Proxmox node pve.</li>
