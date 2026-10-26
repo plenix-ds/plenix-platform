@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="../../../platform/system/fonts.css">
 <link rel="stylesheet" href="../../../platform/platform.css">
 <link rel="stylesheet" href="../review.css">
+<link rel="stylesheet" href="page.css">
 </head>
 <body class="rv-page">
 <main class="rv-doc">
@@ -35,32 +36,32 @@
 
   <section class="rv-section">
     <h2 class="rv-h2">1 · A static Table with wrapped text (Compact)</h2>
-    <figure class="rv-fig"><img src="before-compact-table.png" alt="0.69.5: Focus is in the middle of the row, Drawn above and Keyboard focus a line lower than the code"><figcaption><span class="rv-tag">0.69.5</span> · "Focus" in the middle, "Drawn above" and "Keyboard focus" lower than the code</figcaption></figure>
-    <figure class="rv-fig"><img src="after-compact-table.png" alt="The fix: every cell starts on the same top line"><figcaption><span class="rv-tag">FIX (#331)</span> · every cell starts on the same top line</figcaption></figure>
+    <figure class="ts-shot"><img src="before-compact-table.png" alt="0.69.5: Focus is in the middle of the row, Drawn above and Keyboard focus a line lower than the code"><figcaption class="ts-cap"><span class="rv-tag">0.69.5</span> · "Focus" in the middle, "Drawn above" and "Keyboard focus" lower than the code</figcaption></figure>
+    <figure class="ts-shot"><img src="after-compact-table.png" alt="The fix: every cell starts on the same top line"><figcaption class="ts-cap"><span class="rv-tag">FIX (#331)</span> · every cell starts on the same top line</figcaption></figure>
   </section>
 
   <section class="rv-section">
     <h2 class="rv-h2">2 · The same Table (Standard)</h2>
-    <figure class="rv-fig"><img src="before-standard-table.png" alt="0.69.5 at Standard density"><figcaption><span class="rv-tag">0.69.5</span> · Standard</figcaption></figure>
-    <figure class="rv-fig"><img src="after-standard-table.png" alt="The fix at Standard density"><figcaption><span class="rv-tag">FIX (#331)</span> · Standard</figcaption></figure>
+    <figure class="ts-shot"><img src="before-standard-table.png" alt="0.69.5 at Standard density"><figcaption class="ts-cap"><span class="rv-tag">0.69.5</span> · Standard</figcaption></figure>
+    <figure class="ts-shot"><img src="after-standard-table.png" alt="The fix at Standard density"><figcaption class="ts-cap"><span class="rv-tag">FIX (#331)</span> · Standard</figcaption></figure>
   </section>
 
   <section class="rv-section">
     <h2 class="rv-h2">3 · A DataGrid with tall wrapped rows (Compact and Standard)</h2>
-    <figure class="rv-fig"><img src="before-compact-grid.png" alt="0.69.5 DataGrid with tall rows, every cell at the top"><figcaption><span class="rv-tag">0.69.5</span> · Compact: already at the top</figcaption></figure>
-    <figure class="rv-fig"><img src="after-compact-grid.png" alt="The fix: DataGrid unchanged, every cell at the top"><figcaption><span class="rv-tag">FIX (#331)</span> · Compact: unchanged, apart from the approved header</figcaption></figure>
-    <figure class="rv-fig"><img src="before-standard-grid.png" alt="0.69.5 DataGrid at Standard"><figcaption><span class="rv-tag">0.69.5</span> · Standard</figcaption></figure>
-    <figure class="rv-fig"><img src="after-standard-grid.png" alt="The fix: DataGrid at Standard"><figcaption><span class="rv-tag">FIX (#331)</span> · Standard</figcaption></figure>
+    <figure class="ts-shot"><img src="before-compact-grid.png" alt="0.69.5 DataGrid with tall rows, every cell at the top"><figcaption class="ts-cap"><span class="rv-tag">0.69.5</span> · Compact: already at the top</figcaption></figure>
+    <figure class="ts-shot"><img src="after-compact-grid.png" alt="The fix: DataGrid unchanged, every cell at the top"><figcaption class="ts-cap"><span class="rv-tag">FIX (#331)</span> · Compact: unchanged, apart from the approved header</figcaption></figure>
+    <figure class="ts-shot"><img src="before-standard-grid.png" alt="0.69.5 DataGrid at Standard"><figcaption class="ts-cap"><span class="rv-tag">0.69.5</span> · Standard</figcaption></figure>
+    <figure class="ts-shot"><img src="after-standard-grid.png" alt="The fix: DataGrid at Standard"><figcaption class="ts-cap"><span class="rv-tag">FIX (#331)</span> · Standard</figcaption></figure>
   </section>
 
   <section class="rv-section">
     <h2 class="rv-h2">4 · The spec's Color swatch States table (Compact and Standard)</h2>
     <p class="rv-lead">The first 520px of the Focus row. In 0.69.5 "Focus", "Drawn above" and "Keyboard focus" sit in the middle of this very tall row, out of view; with the fix they start at the top beside the code.</p>
     <div class="rv-grid">
-      <figure class="rv-fig"><img src="before-compact-spec.png" alt="0.69.5: the row's top shows only the code; the labels are further down"><figcaption><span class="rv-tag">0.69.5</span> · Compact: only the code at the top</figcaption></figure>
-      <figure class="rv-fig"><img src="after-compact-spec.png" alt="The fix: Focus, Drawn above and Keyboard focus at the top beside the code"><figcaption><span class="rv-tag">FIX (#331)</span> · Compact: every cell at the top</figcaption></figure>
-      <figure class="rv-fig"><img src="before-standard-spec.png" alt="0.69.5 at Standard"><figcaption><span class="rv-tag">0.69.5</span> · Standard</figcaption></figure>
-      <figure class="rv-fig"><img src="after-standard-spec.png" alt="The fix at Standard"><figcaption><span class="rv-tag">FIX (#331)</span> · Standard</figcaption></figure>
+      <figure class="ts-shot"><img src="before-compact-spec.png" alt="0.69.5: the row's top shows only the code; the labels are further down"><figcaption class="ts-cap"><span class="rv-tag">0.69.5</span> · Compact: only the code at the top</figcaption></figure>
+      <figure class="ts-shot"><img src="after-compact-spec.png" alt="The fix: Focus, Drawn above and Keyboard focus at the top beside the code"><figcaption class="ts-cap"><span class="rv-tag">FIX (#331)</span> · Compact: every cell at the top</figcaption></figure>
+      <figure class="ts-shot"><img src="before-standard-spec.png" alt="0.69.5 at Standard"><figcaption class="ts-cap"><span class="rv-tag">0.69.5</span> · Standard</figcaption></figure>
+      <figure class="ts-shot"><img src="after-standard-spec.png" alt="The fix at Standard"><figcaption class="ts-cap"><span class="rv-tag">FIX (#331)</span> · Standard</figcaption></figure>
     </div>
     <ul class="rv-list">
       <li><strong>A separate, older problem in this table</strong> (same in 0.69.5): the Changes column is squeezed so narrow that the code breaks every few letters, while the State column is very wide. It is the spec's column widths, not the row spacing. It can be a follow-up if you want it fixed.</li>
