@@ -96,6 +96,12 @@ Issue #252 lists everything. The current front of the work:
 
 ## Housekeeping you will meet
 
-- Many old worktrees under `.claude/worktrees/` and `../Plenix-*` copies (#258: remove the `node_modules` junctions first).
+- Old worktrees and `../Plenix-*` copies (#258). Remove each one's `node_modules` junction first (`rmdir`, or PowerShell
+  `(Get-Item <path>\node_modules).Delete()`), never a recursive delete through it, then `git worktree remove --force`.
+  - The 2026-10-26 reset listed 51 stale ones (about 5.2 GB), all merged or pushed; their uncommitted leftovers are saved
+    in `Archived/worktree-leftovers-2026-10-26/`. Their removal waits for the owner's approval.
+  - Keep the worktrees of live sessions and of open PRs.
+- Test files: every `tests/*.test.js` is in a list of `tests/run.js`, or started by another test or the package build,
+  or named in a component README. A one-off proof test is deleted once its work is merged (git history keeps it).
 - `memory/` in the repo root is a stray worktree folder, not project content; do not commit it.
 - The older handoff (2026-10-15) is in git history (`git log -p HANDOFF.md`).
