@@ -53,17 +53,25 @@ The tests themselves are not copied here. Read them in `tests/`.
 
 ## The owner's test rules (deliberate; do not report as defects)
 
-Verbatim records are in [356-owner-test-rules.md](356-owner-test-rules.md). In short:
+Verbatim records are in [356-owner-test-rules.md](356-owner-test-rules.md). Only these are owner decisions:
 
-- Tests run on the St. John test site and the suite apps, never on the design spec.
-- Each thing is checked by one test only.
-- Accessibility, color contrast, high contrast, themes and density run only when the owner asks.
-- No tap-area (touch target) tests.
-- Light mode, Standard density by default. Dark mode comes last.
-- Tests and checks run only right before a push, never on a commit or while editing.
-- During work and for releases only the checks for what changed run (changed mode). The full suite is a manual final gate.
-- Known problems may be recorded in a baseline, but the baseline can only shrink; a worse page fails.
-- Measured widths are left out of visual checks so Windows and GitHub's Linux give the same result.
+- Tests run on the St. John test site and the suite apps, never on the design spec (2026-10-25).
+- Accessibility, color contrast, high contrast, themes and density run only when the owner asks (2026-10-25).
+- No tap-area (touch target) tests (2026-10-25).
+- Tests and checks run only right before a push, never on a commit or while editing (2026-10-26).
+- During work and for releases only the checks for what changed run (changed mode); the full suite is a manual final gate (2026-10-13).
+- Dark mode comes last.
+- The reset plan (agreed "yes to all") includes fixing test conflicts and duplicates before the outside review (2026-10-26; the log's wording, not a quote).
+
+## From the tests page / test code (Codex may question these)
+
+These describe how the tests work today. They are not owner decisions. Challenge them if they look wrong.
+
+- "Each thing is checked by one test only" is how the tests page describes the cleanup; the owner's wording is the line above about conflicts and duplicates.
+- Known problems are recorded in a baseline that can only shrink; a worse page fails (`tests/baselines/`).
+- Visual checks leave out measured widths so Windows and GitHub's Linux agree (`tests/visual.test.js`).
+- Light mode at Standard density is the default for the automatic tests.
+- Counts on the tests page (388 required parts; 35 keyboard, 34 navigation, 16 layout and 16 utilities checks; 98, 50, 28 and 5 known problems; 28 in 16 places; run times) are **unconfirmed**: they come from the page, not recounted from the code. Recount before relying on them.
 
 ## Facts to verify (found while writing this brief; unconfirmed)
 
@@ -71,8 +79,11 @@ Check each, then report in the normal format if it holds:
 
 1. `tests/run.js` lists 20 automatic names. `ci.yml` runs 17 of them (its groups: `formats brand-rules login types`; `pages`; `typography`; `reflow`; `component-tokens`; `site-coverage visual layout`; `data-grid keyboard focus-order semantic-html utilities navigation one-primary`). `selector-kinds` and `zero-overlap` appear in no workflow. STATUS.md says zero-overlap is a local release check.
 2. `full.yml` has no `one-primary`, `selector-kinds` or `zero-overlap`, though `ci.yml` runs `one-primary` per push.
-3. The tests page the owner reads lists 18 tests and no "One primary" card; `selector-kinds` and `zero-overlap` are shown as one card (Style rules).
-4. Files in `tests/` that no other test, workflow or package script names: `cdn-devx.test.js`, `w15c-packages.test.js`, `a11y-report.js`, `site-check.js`, `pixels.js`, `next-engine.js` and `next-source.js` (the last two are required by `data-grid.test.js` only under a `NEXT` flag; check), `data-grid-perf.test.js`, `data-grid-next-*.test.js`, `perf.test.js`. Say which are dead, which are on-demand by hand, and which hide a gap.
+3. The tests page the owner reads (read 2026-10-26) lists 18 cards and no "One primary" card; `selector-kinds` and `zero-overlap` are shown as one card (Style rules). Confirmed from the page itself; the page is not in this repository.
+4. Files in `tests/` that `tests/run.js` does not run:
+   - **Run by `build-packages`, not by `tests/run.js`** (confirmed): `w15c-packages.test.js` and `perf.test.js` (`build-packages.d/web-components.js`, lines 156-157, part of ci.yml's "Release build" step); `cdn-devx.test.js` (named in `build-packages.js`, line 57); `a11y-report.js` (in the ignore list of `tests/changed.js`, line 156).
+   - **Unconfirmed** (no reference found by searching `tests/`, `.github/` and `package.json` only): `site-check.js`, `pixels.js`, `next-engine.js` and `next-source.js` (`data-grid.test.js` may use the last two under a `NEXT` flag; check), `data-grid-perf.test.js`, `data-grid-next-*.test.js`.
+   Say which are dead, which are run by hand, and which hide a gap.
 5. `typography` fails on the dashboard today (known: issue #256, 7 dates off the baseline). A test that is red on every run trains people to ignore red. Say how it affects the signal.
 6. Changed mode maps a change to pages by import and class scans (`tests/changed.js`). Look for changes that map to no test (the "nothing relevant" branch prints OK with 0 checks).
 7. `tests/data-grid.test.js` starts 17 regression files as child processes and loads others in-page. Check that a failure in a child fails the parent, and that a skipped child is visible.

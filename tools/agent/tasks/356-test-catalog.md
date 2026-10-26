@@ -1,6 +1,6 @@
 # Catalog of the automatic tests (for the #356 review)
 
-From the owner's tests page (2026-10-26, after #348, #349, #350), checked against `tests/run.js`. Counts are what the tests and baselines held on that date. Chips: **strict** = any problem fails; **baseline** = known problems recorded, a worse page fails, the record can only shrink; **no browser** = reads files only.
+From the owner's tests page (2026-10-26, after #348, #349, #350), checked against `tests/run.js`. Counts are copied from the page and not recounted from the code (unconfirmed). Chips: **strict** = any problem fails; **baseline** = known problems recorded, a worse page fails, the record can only shrink; **no browser** = reads files only.
 
 Runner: `tests/run.js`. Automatic names (20): site-coverage, visual, layout, pages, keyboard, data-grid, typography, component-tokens, reflow, formats, utilities, focus-order, semantic-html, navigation, one-primary, brand-rules, login, selector-kinds, zero-overlap, types. On demand (5): a11y, high-contrast, contrast, theme, density. Spec only (1): labs.
 

@@ -11,12 +11,12 @@ Source: the owner decisions log (`owner-decisions-log.md`, kept by the Owner des
 | 10-25 | "make the test site", "make the design spec a consumer of the cdn". |
 | 10-25 | Real site: "the test site should be an actual website.. postgre etc... on the server"; "test site should not be in the design spec". |
 | 10-25 | Pause: "One cleanup pass on styling/phase-2: get every check green, run the full test suite, and do a visual sweep ... Show me what you find before fixing, then release a clean version." |
-| 10-26 | Reset plan: clean up scratch copies, worktrees and about 70 unused tests; "Fix test conflicts and duplicates before the outside review." |
-| 10-26 | Outside review: Codex does it ("codex doesnt know this in detail.. just parts it knows"), so it gives an independent view. |
+| 10-26 | Reset plan (agreed "yes to all"; the log's wording): clean up scratch copies, worktrees and about 70 unused tests; fix test conflicts and duplicates before the outside review. |
+| 10-26 | Outside review: Codex does it ("codex doesnt know this in detail.. just parts it knows"). The independent view is the reason for choosing Codex, not the owner's words. |
 | 10-26 | Fast lane: "show me" first (live preview and a picture, no build); tests and checks only right before a commit or push. |
 | 10-26 | Tests timing: "Tests and checks ONLY on a push, never on commits or while editing." |
-| 10-26 | Standing rule from the repo: during work and for releases only the checks for what changed run; the full suite runs only as the manual final gate (owner, 2026-10-13). |
-| 10-26 | A release needs one green full suite run on the release commit, plus zero-overlap locally (STATUS.md). |
+| 10-13 | Standing rule (owner, 2026-10-13, from the header of `tests/changed.js`): during work and for releases only the checks for what changed run; the full suite runs only as the manual final gate (owner, 2026-10-13). |
+| from the repo | Not from the log: STATUS.md (line 17) says a release needs one green full suite run on the release commit, plus zero-overlap locally. |
 
 Defaults the tests assume (from the tests page, 2026-10-26): light mode, Standard density. Dark mode comes last (owner).
 
