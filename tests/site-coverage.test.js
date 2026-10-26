@@ -1,16 +1,17 @@
 // Plenix tests · the test site uses the whole Platform (owner, 2026-10-25: "a dummy site that utilizes all the defined pages,
 // controls, components"). Every public export of platform/index.js that draws something (a component, pattern, page
 // template or provider: a name that starts with a capital letter) and every hook an application calls itself (APP_HOOKS)
-// must be imported by the St. John the Beloved test site (test-site/**/*.jsx) and used there. Not required: data, plain
+// must be imported by the St. John the Beloved test site (its repository's site/**/*.jsx, tests/site.js) and used there. Not required: data, plain
 // functions and constants (formatDate, DATA_COLORS), and the building hooks the components are made of.
-// Also: every screen named in test-site/pages.js exists, and every screen file is a route.
+// Also: every screen named in the site's pages.js exists, and every screen file is a route.
 //   node tests/site-coverage.test.js          SITE_COVERAGE_OK, or the names the site does not use and exit 1
 //   node tests/site-coverage.test.js --list   every required name and the screens that use it (the component -> page map)
 const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
-const SITE = path.join(ROOT, 'test-site');
+const SITE = path.join(require('./site.js').DIR, 'site');
+if (!fs.existsSync(SITE)) { console.log('SITE_COVERAGE_FAIL the St. John test site is not at ' + SITE + ' (clone github.com/plenix-ds/st-john-test-site beside this repository, or set SITE_DIR)'); process.exit(1); }
 const read = (f) => fs.readFileSync(f, 'utf8');
 const site = require('./site.js');
 

@@ -1,4 +1,4 @@
-// Plenix tests · every page loads clean: each app page and every page of the St. John the Beloved test site (test-site/;
+// Plenix tests · every page loads clean: each app page and every page of the St. John the Beloved test site (plenix-ds/st-john-test-site, served at /Plenix/test-site/;
 // owner, 2026-10-25: the tests run on the site, not on the design spec). A console error (the style audit reports inline styles as errors), a page error, a
 // failed request, a <table> that is not a DataGrid, or three framed boxes nested (owner, batch 250: containers nest two deep,
 // never three; the pattern chooses the unframed presentation) fails it. Only the work log is allowed to be missing: it lives outside this repository.

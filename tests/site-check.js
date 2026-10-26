@@ -1,15 +1,16 @@
-// Plenix tests · a quick static check of the test site's source (test-site/**/*.jsx), without building: each file compiles,
+// Plenix tests · a quick static check of the test site's source (the St. John repository's site/**/*.jsx), without building: each file compiles,
 // every name it imports from plenix-platform is a public export, its relative imports resolve, and it keeps the site's
 // rules: no style attribute or style prop, no color or pixel literal, a className only with plx-u- utilities that exist (and, in a custom chart, ChartFrame's mark classes),
 // no "volunteer" (the site says servants) and no sacrament records.
 //   node tests/site-check.js                       every file of the site
-//   node tests/site-check.js test-site/screens/members.jsx …   only these files
+//   node tests/site-check.js ../st-john-test-site/site/screens/members.jsx …   only these files
 const fs = require('fs');
 const path = require('path');
 const Babel = require('@babel/standalone');
 
 const ROOT = path.resolve(__dirname, '..');
-const SITE = path.join(ROOT, 'test-site');
+const SITE = path.join(require('./site.js').DIR, 'site');
+if (!fs.existsSync(SITE)) { console.log('SITE_CHECK_FAIL the St. John test site is not at ' + SITE + ' (clone github.com/plenix-ds/st-john-test-site beside this repository, or set SITE_DIR)'); process.exit(1); }
 const exportsText = fs.readFileSync(path.join(ROOT, 'platform', 'index.js'), 'utf8');
 const PUBLIC = new Set();
 for (const m of exportsText.matchAll(/export\s*\{([^}]*)\}/g)) m[1].split(',').map((x) => x.trim().split(/\s+as\s+/).pop()).filter(Boolean).forEach((n) => PUBLIC.add(n));

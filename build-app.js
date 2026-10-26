@@ -5,7 +5,6 @@
 //   Platform       platform/index.js               → platform/dist/platform.js       publishes its exports on window.Plenix
 //   Applications   <folder>/main.jsx               → <folder>/app.js                  one per suite application (dashboard,
 //                  projects, messages, contacts, calendar, tasks, notes, bookmarks, files, settings); they share suite/
-//   Test site      test-site/main.jsx              → test-site/app.js                 St. John the Beloved, where the tests run
 //   Asset Manager  dam/app/assets.jsx              → dam/app/assets.js
 //   Library parts  platform/exports/*, design-system/parts/* → index.js / platform.css blocks, spec-parts.js (build-exports.js, build-spec-parts.js)
 //
@@ -26,8 +25,6 @@ const ROOT = __dirname;
 const DAM = path.join(ROOT, 'dam');
 // the suite's applications: one folder each, beside platform/ (batch 149)
 const SUITE = ['dashboard', 'projects', 'messages', 'contacts', 'calendar', 'tasks', 'notes', 'bookmarks', 'files', 'settings'];
-// the test site, St. John the Beloved Coptic Orthodox Church (test-site/main.jsx -> test-site/app.js): the tests run there
-const SITE = 'test-site';
 // the library parts first (library plan, wave 0): the lanes' exports and stylesheets into the generated block of index.js and
 // platform.css (build-exports.js), and their records, labs and docs into the design system's spec-parts.js (build-spec-parts.js)
 const EXPORTS = require('./build-exports.js')(ROOT);
@@ -65,11 +62,11 @@ console.log('Built platform/system/steps.css (' + STEPS.rules + ' rules' + (STEP
 const ALLOWED_OUTPUTS = [
   path.join(ROOT, 'platform', 'dist', 'platform.js'),
   path.join(DAM, 'app', 'assets.js'),
-].concat(SUITE.concat(SITE).map((f) => path.join(ROOT, f, 'app.js')));
+].concat(SUITE.map((f) => path.join(ROOT, f, 'app.js')));
 const TARGETS = [
   { name: 'Platform', entry: path.join(ROOT, 'platform', 'index.js'), out: ALLOWED_OUTPUTS[0], publish: true, strict: true },
   { name: 'Asset Manager', entry: path.join(DAM, 'app', 'assets.jsx'), out: ALLOWED_OUTPUTS[1], publish: false, strict: true },
-].concat(SUITE.concat(SITE).map((f, i) => ({ name: f, entry: path.join(ROOT, f, 'main.jsx'), out: ALLOWED_OUTPUTS[2 + i], publish: false, strict: false })));
+].concat(SUITE.map((f, i) => ({ name: f, entry: path.join(ROOT, f, 'main.jsx'), out: ALLOWED_OUTPUTS[2 + i], publish: false, strict: false })));
 const EXTERNALS = {
   'react': 'window.React',
   'react-dom': 'window.ReactDOM',

@@ -97,12 +97,12 @@ node tools/agent/generated.js --restore
 ```
 
 `node --check` on every JavaScript file you wrote. `check-system.js` must print `SYSTEM_OK` and `check-spec.js`
-`SPEC_OK`. For a library lane also place every new component on the St. John the Beloved test site (`test-site/`;
+`SPEC_OK`. For a library lane also place every new component on the St. John the Beloved test site (github.com/plenix-ds/st-john-test-site, cloned beside this repository;
 `node tests/site-coverage.test.js` must print `SITE_COVERAGE_OK`) and run
 `node tools/agent/native/check.js <your native fragments>` (`ALL OK`).
 
 The browser tests (pages, keyboard, component tokens, typography, …) open the St. John the Beloved test site
-(`test-site/`) and the suite applications, never the design spec, and run in CI on your pull request, in changed mode. Accessibility, high contrast, color contrast, themes and density are on-demand tests: only the owner runs them (`npm run test:on-demand`, or Actions › On-demand tests).
+(its own repository, started by the tests) and the suite applications, never the design spec, and run in CI on your pull request, in changed mode. Accessibility, high contrast, color contrast, themes and density are on-demand tests: only the owner runs them (`npm run test:on-demand`, or Actions › On-demand tests).
 Fix what they report. Run them locally only if Chrome is available (`CHROME_PATH`).
 
 ## Pull request
