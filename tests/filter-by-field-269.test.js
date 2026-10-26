@@ -10,7 +10,7 @@ const assert = require('assert/strict'), { serve, launch } = require('./lib');
     browser = await launch(); const page = await browser.newPage(); const errors = [];
     page.on('pageerror', (e) => errors.push(e.message));
     await page.setViewport({ width: 1280, height: 900 });
-    await page.goto('http://localhost:' + PORT + '/Plenix/platform/design-system/index.html', { waitUntil: 'domcontentloaded' });
+    await page.goto('http://localhost:' + PORT + '/Plenix/test-site/index.html', { waitUntil: 'domcontentloaded' });
     await page.waitForFunction(() => window.Plenix && window.Plenix.useCollectionView && window.ReactDOM, { timeout: 60000 });
     const mount = (withBar) => page.evaluate(async (withBar) => {
       document.body.innerHTML = '<div id="t"></div>';

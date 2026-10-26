@@ -9,7 +9,7 @@ const assert = require('assert/strict'), { serve, launch } = require('./lib');
     browser = await launch(); const page = await browser.newPage(); const errors = [];
     page.on('pageerror', (e) => errors.push(e.message));
     await page.setViewport({ width: 1280, height: 900 });
-    await page.goto('http://localhost:' + PORT + '/Plenix/platform/design-system/index.html', { waitUntil: 'domcontentloaded' });
+    await page.goto('http://localhost:' + PORT + '/Plenix/test-site/index.html', { waitUntil: 'domcontentloaded' });
     await page.waitForFunction(() => window.Plenix && window.ReactDOM, { timeout: 60000 });
     const long = 'Waiting on the signed copy from the client before we can send the final invoice, close the project and archive every file it has';
     await page.evaluate(async (long) => {

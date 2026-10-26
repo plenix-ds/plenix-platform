@@ -27,6 +27,14 @@ const APP_PAGES = changed.pages(['dashboard', 'projects', 'messages', 'contacts'
 const site = require('./site.js');
 const SITE_PAGES = changed.pages(site.urls());
 changed.noPartialUpdate();
+// the controls that fold when their room is narrow (each the only check of its fix), when they changed: the command bar's
+// find side folds into "Find and view" (#274), a SegmentedControl folds into a Select (#276)
+if (changed.wants({ units: ['components/CommandBar', 'components/SegmentedControl'] })) {
+  for (const regression of ['commandbar-find-fold-274.test.js', 'segmented-fold-276.test.js']) {
+    const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, regression)], { stdio: 'inherit', env: process.env });
+    if (result.status !== 0) process.exit(result.status || 1);
+  }
+}
 if (!APP_PAGES.length && !SITE_PAGES.length) changed.none('REFLOW_OK 0 known findings on 0 pages at 320px (0 exempt two-dimensional scrollers)');
 // the two-dimensional content WCAG exempts (Understanding 1.4.10: data grids, maps, diagrams, images, editors' canvases),
 // and preformatted code (the CodeBlock's pre: code keeps its lines, Understanding 1.4.10 "Content exceptions")
