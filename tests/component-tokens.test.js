@@ -113,7 +113,7 @@ function check(done) {
   const browser = await launch();
   const page = await browser.newPage(); await page.setViewport({ width: 1440, height: 1000 });
   const wired = new Set(), dead = {};
-  for (const r of PAGES) {
+  const visit = async (r) => {
     at(r);
     await page.goto(BASE + r, { waitUntil: 'networkidle0' }); await sleep(600);
     await page.evaluate(prepare);
@@ -121,6 +121,16 @@ function check(done) {
     res.wired.forEach((k) => { wired.add(k); delete dead[k]; });
     Object.entries(res.dead).forEach(([k, why]) => { if (!wired.has(k)) dead[k] = dead[k] || (r + ': ' + why); });
     if (process.env.TOKENS_TRACE) console.log(r + ': ' + res.wired.length + ' wired, ' + Object.keys(res.dead).length + ' not moving');
+  };
+  for (const r of PAGES) await visit(r);
+  // a token counts as wired once it moves on any page: a partial run (the pages of what changed) that finds a token
+  // moving nothing confirms it on the other site pages before it fails
+  const known = !UPDATE && fs.existsSync(BASELINE) ? JSON.parse(fs.readFileSync(BASELINE, 'utf8')) : {};
+  const open = () => Object.keys(dead).some((k) => !wired.has(k) && !(k in known));
+  if (!UPDATE && open()) {
+    const rest = site.urls().filter((r) => PAGES.indexOf(r) < 0);
+    if (rest.length) console.log('  confirming on the other ' + rest.length + ' site pages');
+    for (const r of rest) { if (!open()) break; await visit(r); }
   }
   await browser.close(); server.close();
   const deadKeys = Object.keys(dead).filter((k) => !wired.has(k)).sort();
