@@ -19,26 +19,6 @@
         }
       }
     },
-    "button-height-sm": {
-      "$value": "{plx-ref.control-size-28px}",
-      "$type": "dimension"
-    },
-    "button-height-md": {
-      "$value": "{plx-ref.control-size-32px}",
-      "$type": "dimension"
-    },
-    "button-height-lg": {
-      "$value": "{plx-ref.control-size-36px}",
-      "$type": "dimension"
-    },
-    "button-height-xl": {
-      "$value": "{plx-ref.control-size-40px}",
-      "$type": "dimension"
-    },
-    "button-height-2xl": {
-      "$value": "{plx-ref.control-size-44px}",
-      "$type": "dimension"
-    },
     "button-height-3xl": {
       "$value": "{plx-ref.control-size-48px}",
       "$type": "dimension"
@@ -1375,15 +1355,7 @@
       "$value": "{plx-sys.border-width-thin}",
       "$type": "dimension"
     },
-    "table-border-width": {
-      "$value": "{plx-sys.border-width-thin}",
-      "$type": "dimension"
-    },
     "data-grid-font-family": {
-      "$value": "{plx-sys.typeface-sans}",
-      "$type": "fontFamily"
-    },
-    "table-font-family": {
       "$value": "{plx-sys.typeface-sans}",
       "$type": "fontFamily"
     },
@@ -1392,24 +1364,11 @@
       "$type": "fontFamily",
       "$description": "A column of kind \"data\" (IDs, file names, paths, versions, dates, sizes, counts): the data font, Reddit Mono, at the table's own size and line height so it shares the row's baseline (owner, 2026-10-11)"
     },
-    "table-data-font-family": {
-      "$value": "{plx-sys.font-data}",
-      "$type": "fontFamily",
-      "$description": "A column of kind \"data\": the data font, Reddit Mono, at the table's own size and line height (owner, 2026-10-11)"
-    },
     "data-grid-font-size": {
       "$value": "{plx-sys.data-grid-font-size}",
       "$type": "dimension"
     },
-    "table-font-size": {
-      "$value": "{plx-sys.table-font-size}",
-      "$type": "dimension"
-    },
     "data-grid-header-font-size": {
-      "$value": "{plx-ref.font-size-12}",
-      "$type": "dimension"
-    },
-    "table-header-font-size": {
       "$value": "{plx-ref.font-size-12}",
       "$type": "dimension"
     },
@@ -1425,23 +1384,11 @@
       "$value": "{plx-sys.data-grid-font-size}",
       "$type": "dimension"
     },
-    "table-data-font-size": {
-      "$value": "{plx-sys.table-font-size}",
-      "$type": "dimension"
-    },
     "data-grid-name-font-weight": {
       "$value": "{plx-sys.font-weight-medium}",
       "$type": "fontWeight"
     },
-    "table-name-font-weight": {
-      "$value": "{plx-sys.font-weight-medium}",
-      "$type": "fontWeight"
-    },
     "data-grid-wrap-line-height": {
-      "$value": "{plx-ref.line-height-snug}",
-      "$type": "number"
-    },
-    "table-wrap-line-height": {
       "$value": "{plx-ref.line-height-snug}",
       "$type": "number"
     },
@@ -1458,17 +1405,7 @@
       "$type": "dimension",
       "$description": "0: the column lines run the full height of each cell (owner, 2026-10-09: full inside borders; was a short line inset from the top and bottom)."
     },
-    "table-header-line-inset": {
-      "$value": "0",
-      "$type": "dimension",
-      "$description": "0: the column lines run the full height of each cell (owner, 2026-10-09: full inside borders; was a short line inset from the top and bottom)."
-    },
     "data-grid-column-line-inset": {
-      "$value": "0",
-      "$type": "dimension",
-      "$description": "0: the column lines run the full height of each cell (owner, 2026-10-09: full inside borders; was a short line inset from the top and bottom)."
-    },
-    "table-column-line-inset": {
       "$value": "0",
       "$type": "dimension",
       "$description": "0: the column lines run the full height of each cell (owner, 2026-10-09: full inside borders; was a short line inset from the top and bottom)."
@@ -1489,10 +1426,6 @@
       "$value": "{plx-ref.size-16px}",
       "$type": "dimension"
     },
-    "table-mark-size": {
-      "$value": "{plx-ref.size-16px}",
-      "$type": "dimension"
-    },
     "data-grid-header-icon-size": {
       "$value": "{plx-ref.glyph-size-14px}",
       "$type": "dimension"
@@ -1506,17 +1439,9 @@
       "$description": "DataGrid header: the column menu button's distance from the column's end; while hovered it carries the sort direction, so the arrow does not need room beside it (owner, 2026-10-22).",
       "$type": "dimension"
     },
-    "data-grid-popup-button-radius": {
-      "$value": "{plx-sys.shape-xs}",
-      "$type": "dimension"
-    },
     "data-grid-title-reserve": {
       "$value": "calc({plx-comp.data-grid-popup-button-inset} + {plx-comp.data-grid-cell-padding-inline} + {plx-comp.data-grid-header-icon-size} + {plx-ref.space-4px})",
       "$description": "DataGrid header: the room the title leaves at its end for the menu button (the button's inset and width, less the cell padding the title area already stops short by, plus a 4px gap).",
-      "$type": "dimension"
-    },
-    "data-grid-resize-mark-width": {
-      "$value": "{plx-sys.border-width-medium}",
       "$type": "dimension"
     },
     "data-grid-duration": {
@@ -1547,59 +1472,7 @@
       "$value": "{plx-sys.font-weight-semibold}",
       "$type": "fontWeight"
     },
-    "data-grid-group-count-gap": {
-      "$value": "{plx-ref.space-6px}",
-      "$type": "dimension"
-    },
-    "data-grid-menu-radius": {
-      "$value": "{plx-sys.shape-md}",
-      "$type": "dimension"
-    },
-    "data-grid-menu-padding": {
-      "$value": "{plx-ref.space-4px}",
-      "$type": "dimension"
-    },
-    "data-grid-menu-font-size": {
-      "$value": "{plx-ref.font-size-13}",
-      "$type": "dimension"
-    },
-    "data-grid-menu-item-radius": {
-      "$value": "{plx-sys.shape-xs}",
-      "$type": "dimension"
-    },
-    "data-grid-menu-item-padding-block": {
-      "$value": "{plx-ref.space-6px}",
-      "$type": "dimension"
-    },
-    "data-grid-menu-item-padding-inline-start": {
-      "$value": "{plx-ref.space-8px}",
-      "$type": "dimension"
-    },
-    "data-grid-menu-item-padding-inline-end": {
-      "$value": "{plx-ref.space-12px}",
-      "$type": "dimension"
-    },
-    "data-grid-menu-item-gap": {
-      "$value": "{plx-ref.space-10px}",
-      "$type": "dimension"
-    },
-    "data-grid-menu-icon-size": {
-      "$value": "{plx-ref.size-16px}",
-      "$type": "dimension"
-    },
-    "data-grid-menu-separator-margin": {
-      "$value": "{plx-ref.space-4px}",
-      "$type": "dimension"
-    },
-    "data-grid-menu-disabled-opacity": {
-      "$value": "{plx-ref.opacity-45}",
-      "$type": "number"
-    },
     "data-grid-placeholder-font-size": {
-      "$value": "{plx-ref.font-size-14}",
-      "$type": "dimension"
-    },
-    "table-placeholder-font-size": {
       "$value": "{plx-ref.font-size-14}",
       "$type": "dimension"
     },
@@ -1607,32 +1480,8 @@
       "$value": "{plx-sys.font-weight-medium}",
       "$type": "fontWeight"
     },
-    "table-placeholder-font-weight": {
-      "$value": "{plx-sys.font-weight-medium}",
-      "$type": "fontWeight"
-    },
-    "data-grid-footer-font-weight": {
-      "$value": "{plx-sys.font-weight-medium}",
-      "$type": "fontWeight"
-    },
-    "data-grid-filter-gap": {
-      "$value": "{plx-ref.space-6px}",
-      "$type": "dimension"
-    },
-    "data-grid-filter-padding": {
-      "$value": "{plx-ref.space-6px}",
-      "$type": "dimension"
-    },
-    "data-grid-filter-min-width": {
-      "$value": "{plx-ref.size-220px}",
-      "$type": "dimension"
-    },
     "data-grid-filter-label-font-size": {
       "$value": "{plx-ref.font-size-11}",
-      "$type": "dimension"
-    },
-    "data-grid-filter-label-letter-spacing": {
-      "$value": "{plx-sys.letter-spacing-caps}",
       "$type": "dimension"
     },
     "action-bar-background": {
@@ -2894,25 +2743,9 @@
       "$value": "{plx-sys.space-inline-sm}",
       "$type": "dimension"
     },
-    "tabs-tab-font-size": {
-      "$value": "{plx-ref.font-size-13}",
-      "$type": "dimension"
-    },
     "tabs-tab-font-weight": {
       "$value": "{plx-sys.font-weight-medium}",
       "$type": "fontWeight"
-    },
-    "tabs-tab-min-height": {
-      "$value": "{plx-sys.control-height-standard}",
-      "$type": "dimension"
-    },
-    "tabs-tab-padding-inline": {
-      "$value": "{plx-sys.space-inset-md}",
-      "$type": "dimension"
-    },
-    "tabs-tab-hover-text": {
-      "$value": "{plx-sys.content-default}",
-      "$type": "color"
     },
     "tabs-tab-disabled-text": {
       "$value": "{plx-sys.content-disabled}",
@@ -5042,10 +4875,6 @@
       "$value": "{plx-sys.space-inset-sm}",
       "$type": "dimension"
     },
-    "collapsible-section-chevron-size": {
-      "$value": "{plx-sys.icon-size-sm}",
-      "$type": "dimension"
-    },
     "collapsible-section-chevron-icon-mask-size": {
       "$value": "{plx-sys.icon-size-sm}",
       "$type": "dimension"
@@ -5167,10 +4996,6 @@
     "combobox-multiple-field-padding-inline-start": {
       "$value": "{plx-sys.space-inset-xs}",
       "$type": "dimension"
-    },
-    "combobox-field-focus-border-color": {
-      "$value": "{plx-sys.focus-ring-color}",
-      "$type": "color"
     },
     "combobox-input-flex-basis": {
       "$value": "{plx-ref.size-60px}",
@@ -5306,19 +5131,6 @@
       "$value": "{plx-sys.space-inset-md}",
       "$type": "dimension"
     },
-    "combobox-disabled-field-background": {
-      "$value": "{plx-sys.fill-neutral}",
-      "$type": "color"
-    },
-    "combobox-disabled-field-text": {
-      "$value": "{plx-sys.content-disabled}",
-      "$type": "color",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "GrayText"
-        }
-      }
-    },
     "combobox-group-text": {
       "$value": "{plx-sys.content-muted}",
       "$type": "color"
@@ -5383,14 +5195,6 @@
       "$value": "{plx-sys.data-grid-header-line}",
       "$type": "color"
     },
-    "data-grid-height": {
-      "$value": "{plx-sys.data-grid-row-height}",
-      "$type": "dimension"
-    },
-    "data-grid-hover-background": {
-      "$value": "{plx-sys.data-grid-line}",
-      "$type": "color"
-    },
     "data-grid-sort-arrow-color": {
       "$value": "{plx-sys.data-grid-text-subtle}",
       "$type": "color"
@@ -5413,10 +5217,6 @@
     },
     "data-grid-hover-text": {
       "$value": "{plx-sys.data-grid-text}",
-      "$type": "color"
-    },
-    "data-grid-hover-background-image": {
-      "$value": "linear-gradient({plx-sys.data-grid-accent},{plx-sys.data-grid-accent})",
       "$type": "color"
     },
     "data-grid-row-line": {
@@ -5466,10 +5266,6 @@
       "$value": "{plx-sys.data-grid-accent}",
       "$type": "color"
     },
-    "data-grid-invalid-outline-color": {
-      "$value": "{plx-sys.data-grid-danger}",
-      "$type": "color"
-    },
     "data-grid-checkbox-accent-color": {
       "$value": "{plx-sys.data-grid-accent}",
       "$type": "color"
@@ -5494,20 +5290,12 @@
       "$value": "{plx-sys.data-grid-header-background}",
       "$type": "color"
     },
-    "data-grid-row-label-border-right-color": {
-      "$value": "{plx-sys.data-grid-header-line}",
-      "$type": "color"
-    },
     "data-grid-row-label-name-text": {
       "$value": "{plx-sys.data-grid-row-selected-text}",
       "$type": "color"
     },
     "data-grid-tree-control-mark": {
       "$value": "{plx-sys.data-grid-text-muted}",
-      "$type": "color"
-    },
-    "data-grid-tree-branch-color": {
-      "$value": "{plx-sys.data-grid-header-line}",
       "$type": "color"
     },
     "data-grid-group-count-text": {
@@ -5518,50 +5306,6 @@
       "$value": "{plx-sys.font-weight-regular}",
       "$type": "fontWeight"
     },
-    "data-grid-border-left-color": {
-      "$value": "{plx-sys.data-grid-text-muted}",
-      "$type": "color"
-    },
-    "data-grid-border-top-color": {
-      "$value": "{plx-sys.data-grid-text-muted}",
-      "$type": "color"
-    },
-    "data-grid-footer-line": {
-      "$value": "{plx-sys.data-grid-line}",
-      "$type": "color"
-    },
-    "data-grid-moving-row-border-color": {
-      "$value": "{plx-sys.data-grid-accent}",
-      "$type": "color"
-    },
-    "data-grid-shadow": {
-      "$value": "{plx-sys.data-grid-menu-shadow}",
-      "$type": "shadow"
-    },
-    "data-grid-menu-icon-text": {
-      "$value": "{plx-sys.data-grid-text-muted}",
-      "$type": "color"
-    },
-    "data-grid-menu-item-danger-text": {
-      "$value": "{plx-sys.data-grid-danger}",
-      "$type": "color"
-    },
-    "data-grid-filter-label-text": {
-      "$value": "{plx-sys.data-grid-text-muted}",
-      "$type": "color"
-    },
-    "data-grid-w-fill-flex-basis": {
-      "$value": "{plx-ref.size-80px}",
-      "$type": "dimension"
-    },
-    "data-grid-w-fill-width": {
-      "$value": "{plx-ref.size-80px}",
-      "$type": "dimension"
-    },
-    "data-grid-w-fill-min-width": {
-      "$value": "{plx-ref.size-80px}",
-      "$type": "dimension"
-    },
     "data-grid-resize-width": {
       "$value": "{plx-ref.size-12px}",
       "$type": "dimension"
@@ -5569,18 +5313,6 @@
     "data-grid-resize-z-index": {
       "$value": "{plx-sys.layer-raised}",
       "$type": "number"
-    },
-    "data-grid-resize-hover-background-image": {
-      "$value": "linear-gradient({plx-sys.data-grid-accent},{plx-sys.data-grid-accent})",
-      "$type": "color"
-    },
-    "data-grid-drop-shadow": {
-      "$value": "inset 0 {plx-sys.border-width-medium} 0 0 {plx-sys.data-grid-accent}",
-      "$type": "shadow"
-    },
-    "data-grid-column-drop-shadow": {
-      "$value": "inset {plx-sys.border-width-medium} 0 0 0 {plx-sys.data-grid-accent}",
-      "$type": "shadow"
     },
     "data-grid-list-intrinsic-width": {
       "$value": "{plx-ref.size-720px}",
@@ -5606,11 +5338,6 @@
       "$value": "{plx-sys.data-grid-text-muted}",
       "$type": "color",
       "$description": "A Narrow grid's list item: the lines under the title (the key columns after the first)."
-    },
-    "data-grid-resize-focus-outline-width": {
-      "$value": "{plx-sys.border-width-medium}",
-      "$type": "dimension",
-      "$description": "A column's resize grip while it has the keyboard focus: the width of its outline."
     },
     "date-badge-row-gap": {
       "$value": "{plx-sys.space-stack-xs}",
@@ -7520,14 +7247,6 @@
       "$value": "{plx-sys.table-surface}",
       "$type": "color"
     },
-    "table-border-color": {
-      "$value": "{plx-sys.table-border}",
-      "$type": "color"
-    },
-    "table-empty-text": {
-      "$value": "{plx-sys.table-text-muted}",
-      "$type": "color"
-    },
     "table-text": {
       "$value": "{plx-sys.table-text}",
       "$type": "color"
@@ -7536,69 +7255,13 @@
       "$value": "{plx-sys.table-header-background}",
       "$type": "color"
     },
-    "table-border-bottom-color": {
-      "$value": "{plx-sys.table-header-line}",
-      "$type": "color"
-    },
     "table-header-text": {
       "$value": "{plx-sys.table-text-muted}",
       "$type": "color"
     },
-    "table-header-column-line": {
-      "$value": "{plx-sys.table-header-line}",
-      "$type": "color"
-    },
-    "table-height": {
-      "$value": "{plx-sys.table-row-height}",
-      "$type": "dimension"
-    },
-    "table-row-line": {
-      "$value": "{plx-sys.table-line}",
-      "$type": "color"
-    },
-    "table-min-height": {
-      "$value": "{plx-sys.table-row-height}",
-      "$type": "dimension"
-    },
-    "table-line-height": {
-      "$value": "{plx-sys.table-row-height}",
-      "$type": "number"
-    },
     "table-column-line": {
       "$value": "{plx-sys.table-line}",
       "$type": "color"
-    },
-    "table-cell-icon-text": {
-      "$value": "{plx-sys.table-text-muted}",
-      "$type": "color"
-    },
-    "table-cell-wrap-padding-bottom": {
-      "$value": "calc(({plx-sys.table-row-height} - 1lh) / 2)",
-      "$type": "dimension"
-    },
-    "table-cell-wrap-padding-top": {
-      "$value": "calc(({plx-sys.table-row-height} - 1lh) / 2)",
-      "$type": "dimension"
-    },
-    "table-row-label-background": {
-      "$value": "{plx-sys.table-header-background}",
-      "$type": "color"
-    },
-    "table-row-label-border-right-color": {
-      "$value": "{plx-sys.table-header-line}",
-      "$type": "color"
-    },
-    "table-w-fill-flex-basis": {
-      "$value": "{plx-ref.size-80px}",
-      "$type": "dimension"
-    },
-    "table-w-fill-width": {
-      "$value": "{plx-ref.size-80px}",
-      "$type": "dimension"
-    },
-    "table-w-fill-min-width": {
-      "$value": "{plx-ref.size-80px}",
-      "$type": "dimension"
     },
     "text-body-text": {
       "$value": "{plx-sys.content-default}",
@@ -8261,11 +7924,6 @@
     "bulk-actions-divider-border-inline-start-width": {
       "$value": "{plx-sys.border-width-thin}",
       "$type": "dimension"
-    },
-    "bulk-actions-list-gap": {
-      "$value": "{plx-sys.space-cluster-xs}",
-      "$type": "dimension",
-      "$description": "The space between the commands, Select all and Clear (ghost buttons sit close, as in the command bar)."
     },
     "bulk-actions-empty-background": {
       "$value": "{plx-sys.surface-default}",
@@ -9047,22 +8705,6 @@
     },
     "search-ws-active-row-gap": {
       "$value": "{plx-sys.space-inline-xs}",
-      "$type": "dimension"
-    },
-    "search-ws-bar-border-bottom-color": {
-      "$value": "{plx-sys.border-divider}",
-      "$type": "color"
-    },
-    "search-ws-bar-border-bottom-width": {
-      "$value": "{plx-sys.border-width-thin}",
-      "$type": "dimension"
-    },
-    "search-ws-bar-gap": {
-      "$value": "{plx-sys.space-inline-sm}",
-      "$type": "dimension"
-    },
-    "search-ws-bar-padding-block-end": {
-      "$value": "{plx-sys.space-inset-sm}",
       "$type": "dimension"
     },
     "search-ws-body-row-gap": {

@@ -21,11 +21,6 @@
       "$type": "dimension",
       "$description": "IconTile size sm: the tile’s corners."
     },
-    "icon-tile-sm-icon-size": {
-      "$value": "{plx-sys.icon-size-sm}",
-      "$type": "dimension",
-      "$description": "IconTile size sm: the icon (16px)."
-    },
     "icon-tile-md-size": {
       "$value": "{plx-ref.size-40px}",
       "$type": "dimension",
@@ -36,11 +31,6 @@
       "$type": "dimension",
       "$description": "IconTile size md: the tile’s corners."
     },
-    "icon-tile-md-icon-size": {
-      "$value": "{plx-sys.icon-size-md}",
-      "$type": "dimension",
-      "$description": "IconTile size md: the icon (20px)."
-    },
     "icon-tile-lg-size": {
       "$value": "{plx-ref.size-48px}",
       "$type": "dimension",
@@ -50,11 +40,6 @@
       "$value": "{plx-sys.radius-avatar-8px}",
       "$type": "dimension",
       "$description": "IconTile size lg: the tile’s corners."
-    },
-    "icon-tile-lg-icon-size": {
-      "$value": "{plx-sys.icon-size-lg}",
-      "$type": "dimension",
-      "$description": "IconTile size lg: the icon (24px)."
     },
     "icon-tile-blue-background": {
       "$value": "{plx-sys.data-color-blue-soft}",

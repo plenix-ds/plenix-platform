@@ -59,10 +59,6 @@
       "$value": "{plx-ref.space-16px}",
       "$type": "dimension"
     },
-    "panel-padding": {
-      "$value": "{plx-ref.space-16px}",
-      "$type": "dimension"
-    },
     "app-header-utilities-gap": {
       "$value": "{plx-ref.space-4px}",
       "$type": "dimension"

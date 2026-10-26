@@ -231,11 +231,6 @@
       "$type": "color",
       "$description": "DataGrid header: the options part under the pointer, bottom of its shade (owner, 2026-10-24)."
     },
-    "data-grid-menu-button-hover-background": {
-      "$value": "{plx-sys.data-grid-menu-button-hover}",
-      "$type": "color",
-      "$description": "DataGrid header: the options button under the pointer, gray 200 (owner, 2026-10-23)."
-    },
     "data-grid-menu-button-padding-inline": {
       "$value": "{plx-ref.space-4px}",
       "$type": "dimension",
