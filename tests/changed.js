@@ -3,8 +3,8 @@
 // .github/workflows/full.yml). The changes: git diff from CHANGED_BASE (default HEAD~1; in CI the push's before-SHA) to the
 // working tree, untracked files included, and the design-system submodule's own diff between its recorded commits. Mapped:
 //   an app folder (dashboard, projects, settings, dam, …)     → that app's pages; suite/ → the first page of every app
-//   a test-site screen (test-site/screens/<name>.jsx)          → the site pages that draw it; the site's shared files
-//                                                                (main.jsx, site.jsx, data.js, pages.js) → every site page
+//   the St. John test site lives in its own repository (tests/site.js): its pages are mapped like an app's, by the Platform
+//                                                                units each screen draws (site/screens/<name>.jsx there)
 //   a design-system record, docs entry, guidance, part or lab  → only those records' pages and labs (the record ids the diff
 //                                                                hunks fall in; a part's stylesheet → its part's records)
 //   a Platform component or pattern (its folder, its export, its stylesheet import, its component tokens, by key)
@@ -28,6 +28,7 @@ const ROOT = path.resolve(__dirname, '..');
 const DS_DIR = 'platform/design-system';
 const DS = path.join(ROOT, DS_DIR);
 const APPS = ['dashboard', 'projects', 'messages', 'contacts', 'calendar', 'tasks', 'notes', 'bookmarks', 'files', 'settings', 'dam', 'test-site'];
+const SITE_DIR = (() => { try { return path.join(require('./site.js').DIR, 'site'); } catch (e) { return null; } })();
 // the test site (St. John the Beloved): each page's screen file, so a change reaches only the pages that draw it
 const SITE = 'test-site';
 let SITE_PAGES = null;
@@ -114,7 +115,7 @@ function platform() {
   const appsOf = {};
   const sources = APPS.filter((a) => a !== SITE).concat('suite').map((app) => [app, walk(path.join(ROOT, app), (n) => /\.(jsx|html)$/.test(n)).map(read).join('\n')]);
   // the site: one entry per screen file ('test-site:<screen>'), and its shared files for every page ('test-site')
-  walk(path.join(ROOT, SITE), (n) => /\.(jsx|html)$/.test(n)).forEach((f) => { const m = /screens[\\/]([\w-]+)\.jsx$/.exec(f); sources.push([m ? SITE + ':' + m[1] : SITE, read(f)]); });
+  if (SITE_DIR) walk(SITE_DIR, (n) => /\.(jsx|html)$/.test(n)).forEach((f) => { const m = /screens[\\/]([\w-]+)\.jsx$/.exec(f); sources.push([m ? SITE + ':' + m[1] : SITE, read(f)]); });
   for (const [app, text] of sources) {
     const who = app === 'suite' ? APPS.filter((a) => a !== 'dam' && a !== SITE) : [app];
     const add = (u) => { appsOf[u] = appsOf[u] || new Set(); who.forEach((a) => appsOf[u].add(a)); };

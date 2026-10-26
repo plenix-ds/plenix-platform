@@ -101,11 +101,11 @@ if (!ONLY && changed.wants({ units: ['components/DataGrid'] })) {
     // Each focused source bundle gets its own page; focused fixtures stay isolated from the app-view checks.
     for (const [label, file] of [['Faceted quick-filter counts', './collection-facets.test.js'], ['Canonical multi-value groups', './multi-groups.test.js'], ['Remaining DataGrid contracts', './data-grid-rest.test.js']]) {
       const focused = await browser.newPage();
-      try { await focused.goto(BASE + 'test-site/index.html', { waitUntil: 'domcontentloaded' }); const count = await require(file)(focused); res.push([label + ' (' + count + ' checks)', true]); }
+      try { await focused.goto(BASE + 'tests/fixtures/platform-host.html', { waitUntil: 'domcontentloaded' }); const count = await require(file)(focused); res.push([label + ' (' + count + ' checks)', true]); }
       catch (error) { res.push([label, false, error.message]); }
       finally { await focused.close(); }
     }
-    await page.goto(BASE + 'test-site/index.html', { waitUntil: 'domcontentloaded' });
+    await page.goto(BASE + 'tests/fixtures/platform-host.html', { waitUntil: 'domcontentloaded' });
     const viewChecks = await page.evaluate(async () => {
       const h=React.createElement,host=document.createElement('div');document.body.appendChild(host);
       const root=ReactDOM.createRoot(host),key='dt126-saved-view',storage='plx-data-grid:'+key,wait=()=>new Promise(r=>setTimeout(r,100));let table,count=0;

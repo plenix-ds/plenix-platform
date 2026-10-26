@@ -10,10 +10,30 @@ const ROOT = path.resolve(__dirname, '..');
 const TYPES = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.jsx': 'text/plain; charset=utf-8',
   '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.woff2': 'font/woff2', '.md': 'text/plain; charset=utf-8' };
 
-// serves ROOT at /Plenix/ (directories answer with index.html); everything else is 404
+// serves ROOT at /Plenix/ (directories answer with index.html); everything else is 404. Two more places (tests/site.js):
+//   /Plenix/test-site/…   the St. John the Beloved test site, started on first use and passed on (its own server and database)
+//   /cdn/local/…          this checkout's build of the CDN files (release/cdn/<version>/), the Plenix the site loads in tests
 function serve(port) {
+  let site = null;
+  const toSite = (req, res) => {
+    const site_ = require('./site.js');
+    site = site || site_.start(port);
+    site.then(({ origin }) => {
+      const body = [];
+      req.on('data', (d) => body.push(d));
+      req.on('end', () => {
+        const up = http.request(origin + req.url.slice('/Plenix/test-site'.length).replace(/^\/index\.html/, '/').replace(/^$/, '/'), { method: req.method, headers: Object.assign({}, req.headers, { host: new URL(origin).host }) }, (r) => {
+          res.writeHead(r.statusCode, r.headers); r.pipe(res);
+        });
+        up.on('error', (e) => { res.writeHead(502); res.end('The test site did not answer: ' + e.message); });
+        up.end(Buffer.concat(body));
+      });
+    }, (e) => { res.writeHead(502); res.end(e.message); });
+  };
   const server = http.createServer((req, res) => {
     let rel = decodeURIComponent(req.url.split('?')[0]);
+    if (rel === '/Plenix/test-site' || rel.startsWith('/Plenix/test-site/')) { toSite(req, res); return; }
+    if (rel.startsWith('/cdn/local/')) rel = '/Plenix/' + path.relative(ROOT, require('./site.js').CDN_LOCAL).split(path.sep).join('/') + '/' + rel.slice('/cdn/local/'.length);
     if (!rel.startsWith('/Plenix/')) { res.writeHead(404); res.end('Not found'); return; }
     let file = path.join(ROOT, rel.slice('/Plenix/'.length));
     if (!file.startsWith(ROOT)) { res.writeHead(403); res.end(); return; }
@@ -22,6 +42,9 @@ function serve(port) {
     res.writeHead(200, { 'Content-Type': TYPES[path.extname(file).toLowerCase()] || 'application/octet-stream', 'Cache-Control': 'no-store' });
     fs.createReadStream(file).pipe(res);
   });
+  // closing the test server stops its site too
+  const close = server.close.bind(server);
+  server.close = (...a) => { if (site) site.then((s) => s.stop(), () => {}); return close(...a); };
   return new Promise((resolve) => server.listen(port, '127.0.0.1', () => resolve(server)));
 }
 

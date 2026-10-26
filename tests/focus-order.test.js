@@ -1,6 +1,6 @@
 // Plenix tests · focus order (library plan wave 2, the Focus order foundation; WCAG 2.4.3, 2.4.1): with the dev overlay's
 // own check (platform/dev/focus-order.js, PlenixFocusOrder.check), on every application page and every page of the St.
-// John the Beloved test site (test-site/):
+// John the Beloved test site (plenix-ds/st-john-test-site, served at /Plenix/test-site/):
 //   positive   no element has a positive tabindex (it would move ahead of the reading order)
 //   order      the Tab stops follow the reading order: none sits above the stop before it, or behind it on its line
 //   skip       on a page with a skip link, the skip link is the first stop

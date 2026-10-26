@@ -494,7 +494,7 @@ if (require.main === module) {
     try {
       b = await launch();
       const p = await b.newPage();
-      await p.goto('http://127.0.0.1:' + port + '/Plenix/test-site/index.html', {
+      await p.goto('http://127.0.0.1:' + port + '/Plenix/tests/fixtures/platform-host.html', {
         waitUntil: 'networkidle0'
       });
       console.log('DATA_GRID_REST_OK ' + (await module.exports(p)) + ' checks');

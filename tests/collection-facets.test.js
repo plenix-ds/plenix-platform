@@ -69,7 +69,7 @@ module.exports = async function facets(page) {
 };
 if (require.main === module) {
   (async () => { const port = +process.env.TEST_PORT || 9158, server = await serve(port); let browser;
-    try { browser = await launch(); const page = await browser.newPage(); await page.setViewport({ width: 1440, height: 1000 }); await page.goto('http://127.0.0.1:' + port + '/Plenix/test-site/index.html', { waitUntil: 'networkidle0' });
+    try { browser = await launch(); const page = await browser.newPage(); await page.setViewport({ width: 1440, height: 1000 }); await page.goto('http://127.0.0.1:' + port + '/Plenix/tests/fixtures/platform-host.html', { waitUntil: 'networkidle0' });
       const count = await module.exports(page); assert(count >= 20); console.log('COLLECTION_FACETS_OK ' + count);
     } finally { if (browser) await browser.close(); server.close(); }
   })().catch(e => { console.error(e); process.exitCode = 1; });
