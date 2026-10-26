@@ -3,7 +3,7 @@ const assert = require('assert');
 const fs = require('fs'), path = require('path');
 const { serve, launch, sleep } = require('./lib.js');
 const ROOT = path.resolve(__dirname, '..');
-const BASE_PATH = '/Plenix/test-site/index.html';   // any page with React and Plenix: the test site's dashboard
+const BASE_PATH = '/Plenix/tests/fixtures/platform-host.html';   // an empty page with this checkout's Platform
 async function internalActions(page) {
   const esbuild = require('esbuild');
   const output = await esbuild.build({ entryPoints: [path.join(ROOT, 'platform/patterns/CommandBar/BarActions.jsx')], bundle: true, write: false, format: 'iife', globalName: 'CommandActionsTest',

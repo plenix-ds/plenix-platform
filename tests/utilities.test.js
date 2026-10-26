@@ -112,6 +112,9 @@ const check = (name, ok, info) => { if (ok) passed++; else { failed++; console.l
     /* the style audit on user content (owner, 2026-10-14: the colors and fonts rule is the interface's, not the person's
        content in the editor): inside .plx-user-content the person's color, background-color, font-family, font-size and
        text-align pass; any other inline property there, and the same properties on the interface, are still checked */
+    // the audit is a development tool of this checkout (platform/dev/style-audit.js): on the Platform host page, not the site
+    await page.goto(BASE + 'tests/fixtures/platform-host.html', { waitUntil: 'networkidle0' });
+    if (!(await page.evaluate(() => !!window.PlenixStyleAudit))) await page.addScriptTag({ url: BASE + 'platform/dev/style-audit.js' });
     const audit = await page.evaluate(() => {
       const box = document.createElement('div');
       box.innerHTML = '<div class="plx-user-content"><p style="text-align: center"><span style="color: rgb(230, 25, 75); background-color: rgb(255, 225, 25); font-family: Georgia, serif; font-size: 15px">user</span></p></div>'
