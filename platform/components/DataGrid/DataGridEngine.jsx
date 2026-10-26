@@ -237,7 +237,7 @@ function NextEngine(props) {
   const gridKey=React.useId(),[fontsReady,setFontsReady]=React.useState(0);
   React.useEffect(()=>{const fonts=frame.current?.ownerDocument.fonts;if(fonts&&fonts.ready)fonts.ready.then(()=>setFontsReady(n=>n+1));},[]);
   React.useLayoutEffect(()=>{
-    const at=frame.current;if(!at||typeof CSSStyleSheet==='undefined')return undefined;
+    const at=frame.current;if(!at||typeof CSSStyleSheet==='undefined'||!at.ownerDocument.defaultView)return undefined;   // a closed document (its frame removed): nothing to measure
     const store=pillSheet(at.ownerDocument);
     if(!uniformPillWidths||cells!=='pill'||!metrics.row){if(store.rules.delete(gridKey))store.flush();return undefined;}
     const ctx=at.ownerDocument.createElement('canvas').getContext('2d'),faces={data:pillFont(at,ctx,true),text:pillFont(at,ctx,false)},px=(name)=>tokenPixels(name,at),step=gridStep(at);
@@ -347,7 +347,7 @@ function NextEngine(props) {
   React.useLayoutEffect(()=>{
     const at=frame.current;if(!at)return;const doc=at.ownerDocument;
     let raf=0;
-    const measure=()=>{raf=0;const next={step:gridStep(at),row:tokenPixels('--plx-comp-data-grid-record-height',at),line:tokenPixels('--plx-comp-data-grid-line-width',at),lead:tokenPixels('--plx-comp-data-grid-lead-column-width',at),menu:tokenPixels('--plx-comp-data-grid-row-menu-width',at),min:tokenPixels('--plx-ref-size-80px',at),space:tokenPixels('--plx-comp-data-grid-cell-padding-inline',at),room:at.clientWidth,add:tokenPixels('--plx-sys-data-grid-row-height',at),group:tokenPixels('--plx-comp-data-grid-group-header-height',at),groupGap:tokenPixels('--plx-comp-data-grid-group-gap',at)};
+    const measure=()=>{raf=0;if(!doc.defaultView)return;const next={step:gridStep(at),row:tokenPixels('--plx-comp-data-grid-record-height',at),line:tokenPixels('--plx-comp-data-grid-line-width',at),lead:tokenPixels('--plx-comp-data-grid-lead-column-width',at),menu:tokenPixels('--plx-comp-data-grid-row-menu-width',at),min:tokenPixels('--plx-ref-size-80px',at),space:tokenPixels('--plx-comp-data-grid-cell-padding-inline',at),room:at.clientWidth,add:tokenPixels('--plx-sys-data-grid-row-height',at),group:tokenPixels('--plx-comp-data-grid-group-header-height',at),groupGap:tokenPixels('--plx-comp-data-grid-group-gap',at)};
       setMetrics(old=>Object.keys(next).every(k=>next[k]===old[k])?old:next);
       const threshold=narrow==='auto'?keys.reduce((sum,field)=>sum+(live.current.table?.getColumn(field)?.getSize()||next.min),selectable?next.lead:0):tokenPixels(narrowAt,at),want=listed&&at.clientWidth>0&&at.clientWidth<threshold;setNarrow(want);
       if(!isStatic&&!height&&mode!=='pages'&&holder.current){const top=holder.current.getBoundingClientRect().top,room=at.getBoundingClientRect().bottom-top;holder.current.style.maxBlockSize=gridPx(inPane?Math.max(0,room):Math.max(next.row*8,doc.defaultView.innerHeight-top),{round:'down',el:at});}
