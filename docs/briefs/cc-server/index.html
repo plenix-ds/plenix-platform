@@ -38,9 +38,9 @@
 <h2>What gets installed</h2>
 <ul>
 <li>Node 22 LTS, git, GitHub CLI (gh), Docker, tmux.</li>
-<li>Playwright and its Chromium browser, for the tests.</li>
-<li>Claude Code, at one fixed version; updates happen when the Lead chooses, not by themselves.</li>
-<li>Two users: <code>admin</code> (setup, can use sudo) and <code>cc</code> (runs the agents, no sudo).</li>
+<li>Google Chrome, for the tests. Both repositories test with Chrome (through puppeteer), so Playwright's browser is not needed.</li>
+<li>Claude Code, at one fixed version (2.1.229); updates happen when the Lead chooses, not by themselves.</li>
+<li>Two users: <code>ccadmin</code> (setup, can use sudo) and <code>cc</code> (runs the agents, no sudo, not in the Docker group).</li>
 </ul>
 
 <h2>The repositories</h2>
