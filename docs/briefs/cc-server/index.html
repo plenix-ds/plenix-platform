@@ -1,0 +1,119 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Claude Code server plan</title><link rel="stylesheet" href="../../../platform/platform.css"><style>body{background:var(--plx-sys-surface-canvas);color:var(--plx-sys-text-primary);font-family:var(--plx-sys-text-body-font-family);margin:0;padding:var(--plx-sys-space-layout-md);max-inline-size:60rem;}h1{margin:0 0 var(--plx-sys-space-stack-sm);}h2{margin:var(--plx-sys-space-stack-lg) 0 var(--plx-sys-space-stack-xs);}li{margin-block:var(--plx-sys-space-stack-xs);}table{border-collapse:collapse;inline-size:100%;}th,td{border:var(--plx-sys-border-width-thin) solid var(--plx-sys-border-default);padding:var(--plx-sys-space-inset-xs) var(--plx-sys-space-inset-sm);text-align:start;vertical-align:top;}code{font-family:var(--plx-sys-text-code-font-family);}</style></head><body>
+<h1>Claude Code server: the plan</h1>
+<p>One server on our own Proxmox runs the Plenix agents. You reach it from the desktop app and from your phone. Nothing runs in Anthropic's cloud: the agents, the code and the memory stay on our machine. The agents still talk to Claude through your Claude account, as they do today.</p>
+<p>Plenix work stays on this Windows VM until you say to move it.</p>
+
+<h2>What you approve, in order</h2>
+<table>
+<tr><th>Step</th><th>What changes</th><th>Who does it</th></tr>
+<tr><td>A. Create the VM</td><td>Download the Ubuntu 24.04 LTS cloud image to the Proxmox host; create VM 131 "cc-server"</td><td>Claude, after your yes</td></tr>
+<tr><td>B. Backups</td><td>A backup area on the Proxmox host and a nightly backup job for VM 131</td><td>Claude, after your yes</td></tr>
+<tr><td>C. Sign-ins</td><td>Claude Code login and GitHub login on the server</td><td>You (Claude prepares the commands)</td></tr>
+<tr><td>D. Each agent tool</td><td>claude-mem, then headroom, then Graphify, then the design reviewer; one at a time</td><td>Claude, after your yes for each</td></tr>
+<tr><td>E. Moving the work</td><td>Plenix work moves to the server</td><td>Only when you say so</td></tr>
+</table>
+<p>No DNS, no Nginx Proxy Manager change and no open port to the internet is needed.</p>
+
+<h2>The VM</h2>
+<ul>
+<li><b>Host:</b> the one Proxmox node, <code>pve</code> (10.0.0.50). Its CPU is an AMD Ryzen 9 9900X, so the faulty Intel i9 in your PC is not involved.</li>
+<li><b>Name and ID:</b> VM 131, "cc-server", beside VM 130 Plenix.</li>
+<li><b>System:</b> Ubuntu 24.04 LTS (cloud image), updated automatically for security fixes.</li>
+<li><b>CPU:</b> 8 cores.</li>
+<li><b>Memory:</b> 16 GB. The host has 123 GB and about 28 GB free today, so this leaves about 12 GB spare. If the host gets tight, stopping VM 112 or 107 when unused helps.</li>
+<li><b>Disk:</b> 120 GB on the Storage pool (it has about 1 TB free).</li>
+<li><b>Address:</b> 10.0.0.32 (fixed), gateway 10.0.0.1. Claude checks the address is unused just before creating the VM.</li>
+<li><b>Starts on boot:</b> yes.</li>
+<li><b>Firewall:</b> SSH only, from the home network (10.0.0.0/22), key-only. Nothing is reachable from the internet.</li>
+</ul>
+
+<h2>How you reach it</h2>
+<ul>
+<li><b>The agents, from anywhere:</b> Remote Control. Each agent runs with Remote Control on, under its own name ("Plenix · Lead" and so on). It shows up in the Claude app on your phone, at claude.ai/code and in the desktop app's session list. The server only makes outgoing connections, so nothing is opened to the internet. As today, the conversation text passes through your Claude account.</li>
+<li><b>Desktop app over SSH:</b> an SSH connection in the desktop app to <code>cc@10.0.0.32</code>, for starting an extra session on the server or looking at its files. These are new sessions; the standing agents are opened through Remote Control.</li>
+<li><b>tmux:</b> every agent runs in its own tmux window, so it keeps working when you close the app or lose the connection. One command (<code>team</code>) starts or shows them all.</li>
+<li><b>Sign-in renewals:</b> the Claude sign-in expires now and then (Claude warns three days ahead). When it does, you sign in again on the server; the agents stop until then.</li>
+</ul>
+
+<h2>What gets installed</h2>
+<ul>
+<li>Node 22 LTS, git, GitHub CLI (gh), Docker, tmux.</li>
+<li>Playwright and its Chromium browser, for the tests.</li>
+<li>Claude Code, at one fixed version; updates happen when the Lead chooses, not by themselves.</li>
+<li>Two users: <code>admin</code> (setup, can use sudo) and <code>cc</code> (runs the agents, no sudo).</li>
+</ul>
+
+<h2>The repositories</h2>
+<ul>
+<li><code>plenix-ds/plenix-platform</code> with its submodule <code>plenix-ds/plenix-design-system</code>, in <code>~/work/plenix</code>.</li>
+<li><code>plenix-ds/st-john-test-site</code>, in <code>~/work/st-john-test-site</code>.</li>
+<li>Each builder gets its own worktree (<code>~/work/plenix-b1</code>, <code>~/work/plenix-b2</code>), so their builds and tests never mix.</li>
+</ul>
+
+<h2>Secrets</h2>
+<ul>
+<li>You type every password and token yourself, in the server's terminal. Claude never sees or copies them.</li>
+<li><b>GitHub:</b> one fine-grained token for the three repositories only: code, pull requests and issues (read and write), workflows read. No admin, no delete, no other repositories.</li>
+<li><b>Claude:</b> you sign in with your Claude account (the normal sign-in, which Remote Control needs; not a long-lived token).</li>
+<li>Tokens live in the tools' own protected files on the server (readable by <code>cc</code> only). They never go into a repository, a memory, a log or a message.</li>
+<li>The memory system is set to skip anything that looks like a token, password or key.</li>
+</ul>
+
+<h2>Backups</h2>
+<ul>
+<li>Today there are no Proxmox backups at all, and the only backup area (<code>local</code>) has about 65 GB free.</li>
+<li>Plan: a 300 GB backup area on the Storage pool, and a nightly backup of VM 131 at 02:00 that keeps the last 3 nights and 2 weeks.</li>
+<li>The code itself is safe on GitHub; the backup protects the server's setup and its memory database.</li>
+<li>These backups sit on the same machine. They protect against a bad change, not a broken disk. A second place (a NAS or Proxmox Backup Server) can come later.</li>
+<li>VM 130 Plenix, Nginx Proxy Manager and Authentik are not part of this step; you said server backups are a separate matter.</li>
+</ul>
+
+<h2>The agent team</h2>
+<p>Each agent is its own Claude Code session with its own window (desktop app and phone), its own role file and its own model. They message each other directly.</p>
+<table>
+<tr><th>Agent</th><th>Does</th><th>May</th><th>Model</th></tr>
+<tr><td>Owner desk</td><td>Talks to you; keeps the status page; turns your answers into approval records</td><td>Read everything; write the status page</td><td>Sonnet</td></tr>
+<tr><td>Lead</td><td>Plans the work, hands it out, merges and releases</td><td>The only one that merges or releases, and only after checking your approval record</td><td>Opus</td></tr>
+<tr><td>Builder 1</td><td>Makes changes in worktree b1; opens pull requests</td><td>Push branches; never merge</td><td>Opus for design work, Sonnet for routine</td></tr>
+<tr><td>Builder 2</td><td>Same, in worktree b2</td><td>Same</td><td>Sonnet</td></tr>
+<tr><td>Reviewer and tester</td><td>Reviews pull requests, runs the changed-only tests, reviews design with the design reviewer</td><td>Comment and approve; never merge</td><td>Sonnet; Haiku for routine test runs</td></tr>
+</table>
+<ul>
+<li>They message each other with Claude Code's own messaging between sessions on one machine. It stays inside the server, and a message can never count as your approval.</li>
+<li>At most two writers at a time (the two builders), as now.</li>
+<li>Every agent has a short role file that says what it does and what it must not do.</li>
+<li>The model can be changed per agent at any time.</li>
+</ul>
+
+<h2>Your approvals: one tap, recorded once</h2>
+<ul>
+<li>You answer on the status page (buttons) or in the Owner desk. The Owner desk saves each answer as a record in the status page's database (collection "answers", one record per decision, for example <code>issue-259</code>).</li>
+<li>Only you can write to that page; it is private to your account.</li>
+<li>Before any merge or release, the Lead reads the record itself and checks it names that exact change. No record, no merge.</li>
+<li>Messages that say "the owner approved" no longer count for anything. This is what makes approvals travel without being asked twice.</li>
+</ul>
+
+<h2>Faster start-up</h2>
+<ul>
+<li>Today every session reads about 23 KB before it starts (CLAUDE.md 9 KB, the memory index 14 KB).</li>
+<li>On the server: a short CLAUDE.md (the rules that apply to every change, about 2 KB) that points to longer pages to read only when needed.</li>
+<li>A slim memory index (about 25 lines); the rest moves into the memory system below and comes back only when it matters.</li>
+<li>Each agent's role file holds only what that role needs.</li>
+</ul>
+
+<h2>Agent tools, one at a time</h2>
+<p>Each tool is pinned to one exact release (by its commit), at least a week old, and updated only on purpose.</p>
+<table>
+<tr><th>Tool</th><th>For</th><th>Before it is turned on</th></tr>
+<tr><td>claude-mem</td><td>The one memory for all agents</td><td>Set to skip secrets. The Owner desk's decisions log and today's memory files are imported into it; the files stay as the backup copy.</td></tr>
+<tr><td>headroom</td><td>Shrinks long tool output before it goes to Claude</td><td>Claude reads its code first and reports exactly what it sends where. Then a test on one agent: tokens before and after, and whether test-log details survive. Turned on for all only if both are good. Note: run as a proxy in front of Claude, it switches Remote Control off for that agent, so it would run in its tool mode instead, or only on an agent you don't open from the phone.</td></tr>
+<tr><td>Graphify</td><td>A map of Plenix's code and docs, so agents find things without reading whole folders</td><td>Built from the repositories; rebuilt after merges.</td></tr>
+<tr><td>ui-ux-pro-max</td><td>The Reviewer's design reviewer</td><td>Plenix's own rules always win over its advice.</td></tr>
+</table>
+
+<h2>What you get at the end</h2>
+<ul>
+<li>The server's address and the exact steps to connect from the desktop app and the phone.</li>
+<li>The team list: each agent, its model, and how to open it.</li>
+</ul>
+</body></html>
