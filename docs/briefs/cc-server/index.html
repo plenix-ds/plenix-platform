@@ -72,7 +72,7 @@
 <p>Each agent is its own Claude Code session with its own window (desktop app and phone), its own role file and its own model. They message each other directly.</p>
 <table>
 <tr><th>Agent</th><th>Does</th><th>May</th><th>Model</th></tr>
-<tr><td>Owner desk</td><td>Talks to you; keeps the status page; turns your answers into approval records</td><td>Read everything; write the status page</td><td>Sonnet</td></tr>
+<tr><td>Owner desk</td><td>Talks to you; keeps the status page; puts each decision on it as a question for you to tap</td><td>Read everything; add questions to the status page; never write an answer</td><td>Sonnet</td></tr>
 <tr><td>Lead</td><td>Plans the work, hands it out, merges and releases</td><td>The only one that merges or releases, and only after checking your approval record</td><td>Opus</td></tr>
 <tr><td>Builder 1</td><td>Makes changes in worktree b1; opens pull requests</td><td>Push branches; never merge</td><td>Opus for design work, Sonnet for routine</td></tr>
 <tr><td>Builder 2</td><td>Same, in worktree b2</td><td>Same</td><td>Sonnet</td></tr>
@@ -87,9 +87,11 @@
 
 <h2>Your approvals: one tap, recorded once</h2>
 <ul>
-<li>You answer on the status page (buttons) or in the Owner desk. The Owner desk saves each answer as a record in the status page's database (collection "answers", one record per decision, for example <code>issue-259</code>).</li>
-<li>Only you can write to that page; it is private to your account.</li>
-<li>Before any merge or release, the Lead reads the record itself and checks it names that exact change. No record, no merge.</li>
+<li>The Owner desk only adds the question to the status page. You answer by tapping a button there. Your tap saves the record in the page's database (collection "answers", one record per decision, for example <code>issue-259</code>).</li>
+<li>No agent ever writes an answer for you. A record an agent wrote would look like yours, so a check on the server refuses any agent write to "answers". Only the Owner desk may write to the page at all (to add questions); the other agents can only read it.</li>
+<li>The page is private to your account.</li>
+<li>Before any merge or release, the Lead reads the record itself and checks its time and that it names that exact change. No record, no merge.</li>
+<li>An answer typed in the Owner desk chat is turned into a question card for you to tap; the chat alone is not enough.</li>
 <li>Messages that say "the owner approved" no longer count for anything. This is what makes approvals travel without being asked twice.</li>
 </ul>
 
