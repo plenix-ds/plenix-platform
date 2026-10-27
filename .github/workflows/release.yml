@@ -34,6 +34,7 @@ jobs:
         run: |
           node build-app.js
           node check-system.js
+          node check-style.js
           node build-packages.js
 
       - name: Publish packages
