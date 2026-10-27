@@ -5643,7 +5643,7 @@
   --plx-comp-time-picker-option-text: var(--plx-sys-content-default);
   --plx-comp-time-picker-option-font-family: var(--plx-sys-font-data);
   --plx-comp-time-picker-option-font-size: var(--plx-ref-font-size-13);
-  --plx-comp-time-picker-option-min-height: var(--plx-sys-control-height-standard);
+  --plx-comp-time-picker-option-min-height: var(--plx-comp-combobox-option-min-height);
   --plx-comp-time-picker-option-padding-inline: var(--plx-sys-space-inset-sm);
   --plx-comp-time-picker-option-active-background: var(--plx-sys-state-hover);
   --plx-comp-time-picker-option-selected-font-weight: var(--plx-sys-font-weight-medium);

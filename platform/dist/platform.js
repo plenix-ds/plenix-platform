@@ -51177,7 +51177,7 @@ const EntityPicker = exports.EntityPicker = /*#__PURE__*/_react.default.forwardR
   })) : null))) : null);
 });
   } },
-  "platform/components/TimePicker/TimePicker.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/digits.js":"platform/utils/digits.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/TimePicker/TimePicker.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/floating.js":"platform/utils/floating.js","../../utils/digits.js":"platform/utils/digits.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -51188,6 +51188,7 @@ var _react = _interopRequireDefault(require("react"));
 var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _format = require("../../utils/format.js");
+var _floating = require("../../utils/floating.js");
 var _digits = require("../../utils/digits.js");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -51208,6 +51209,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      variant: "list" (default: a field people type in, with the times at each step in a list under it) | "segments"
        (spin buttons for the hour, the minute and the period)
      hourCycle: "12" | "24": the clock shown; default the reader's locale's clock
+     The list of times opens in the browser's top layer, below the field (or above it near an edge), as wide as the field: no dialog, drawer or scroll area clips it;
+       its rows are the shared list row height (28px at the compact density), the times in the data font (owner, timepicker-rows-37)
      Digits: in Arabic the times are written Arabic-Indic (٢:٣٠), and a time typed in Arabic-Indic digits reads the same (owner, arabic-digits-35)
      step: the minutes between times in the list, and the minute segment's step (default 15 for the list, 1 for segments);
        a value that divides 60 (5, 10, 15, 30)
@@ -51233,6 +51236,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      For a date and a time together, place a date picker beside it. For a duration, use a number input with a unit.
      Show the time zone in the description when people in several zones use the data.
 */
+// the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
+const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 const STRINGS = {
   hour: 'Hour',
   minute: 'Minute',
@@ -51385,6 +51390,16 @@ const ListPicker = /*#__PURE__*/_react.default.forwardRef(function ListPicker({
   const wrap = _react.default.useRef(null),
     input = _react.default.useRef(null),
     list = _react.default.useRef(null);
+  // the list opens in the top layer, placed against the field by the floating layer (flips up near an edge, follows scroll and resize): no dialog, drawer or scroll area clips it
+  (0, _floating.useFloating)(wrap, list, {
+    open,
+    placement: 'bottom-start',
+    matchWidth: true
+  });
+  _react.default.useLayoutEffect(() => {
+    const el = list.current;
+    if (open && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+  }, [open]);
   _react.default.useImperativeHandle(ref, () => input.current);
   const times = [];
   for (let n = Math.ceil(lo / step) * step; n <= hi; n += step) times.push(n);
@@ -51501,6 +51516,8 @@ const ListPicker = /*#__PURE__*/_react.default.forwardRef(function ListPicker({
     className: "plx-time-picker__list",
     id: auto + '-list',
     role: "listbox",
+    popover: TOP_LAYER ? 'manual' : undefined,
+    onMouseDown: e => e.preventDefault(),
     "aria-label": label ? label + ', ' + t.times : t.times
   }, times.map((n, i) => /*#__PURE__*/_react.default.createElement("li", {
     key: n,

@@ -15,6 +15,8 @@
      variant: "list" (default: a field people type in, with the times at each step in a list under it) | "segments"
        (spin buttons for the hour, the minute and the period)
      hourCycle: "12" | "24": the clock shown; default the reader's locale's clock
+     The list of times opens in the browser's top layer, below the field (or above it near an edge), as wide as the field: no dialog, drawer or scroll area clips it;
+       its rows are the shared list row height (28px at the compact density), the times in the data font (owner, timepicker-rows-37)
      Digits: in Arabic the times are written Arabic-Indic (٢:٣٠), and a time typed in Arabic-Indic digits reads the same (owner, arabic-digits-35)
      step: the minutes between times in the list, and the minute segment's step (default 15 for the list, 1 for segments);
        a value that divides 60 (5, 10, 15, 30)
@@ -44,8 +46,12 @@ import React from 'react';
 import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { formatLocale } from '../../utils/format.js';
+import { useFloating, FLOATING_ANCHOR } from '../../utils/floating.js';
 import { localDigits, toLatinDigits } from '../../utils/digits.js';
 import { useDigits } from '../../providers/LocaleProvider.jsx';
+
+// the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
+const TOP_LAYER = FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 
 const STRINGS = { hour: 'Hour', minute: 'Minute', period: 'AM or PM', am: 'AM', pm: 'PM', times: 'Times', empty: '--' };
 const pad = (n) => String(n).padStart(2, '0');
@@ -102,6 +108,9 @@ const ListPicker = React.forwardRef(function ListPicker({ t, cycle, step, curren
   const [text, setText] = React.useState(null);   // the text while typing; null shows the value
   const [active, setActive] = React.useState(0);
   const wrap = React.useRef(null), input = React.useRef(null), list = React.useRef(null);
+  // the list opens in the top layer, placed against the field by the floating layer (flips up near an edge, follows scroll and resize): no dialog, drawer or scroll area clips it
+  useFloating(wrap, list, { open, placement: 'bottom-start', matchWidth: true });
+  React.useLayoutEffect(() => { const el = list.current; if (open && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover(); }, [open]);
   React.useImperativeHandle(ref, () => input.current);
   const times = [];
   for (let n = Math.ceil(lo / step) * step; n <= hi; n += step) times.push(n);
@@ -147,7 +156,7 @@ const ListPicker = React.forwardRef(function ListPicker({ t, cycle, step, curren
         <span className="plx-time-picker__icon" aria-hidden="true" />
       </div>
       {open ? (
-        <ul ref={list} className="plx-time-picker__list" id={auto + '-list'} role="listbox" aria-label={label ? label + ', ' + t.times : t.times}>
+        <ul ref={list} className="plx-time-picker__list" id={auto + '-list'} role="listbox" popover={TOP_LAYER ? 'manual' : undefined} onMouseDown={(e) => e.preventDefault()} aria-label={label ? label + ', ' + t.times : t.times}>
           {times.map((n, i) => (
             <li key={n} id={optId(i)} data-plx-index={i} role="option" aria-selected={n === mins}
               className={cx('plx-time-picker__option', i === active && 'is-active', n === mins && 'is-selected')}
