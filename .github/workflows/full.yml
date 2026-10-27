@@ -99,7 +99,7 @@ jobs:
           repository: plenix-ds/st-john-test-site
           # the site's revision, pinned (#382 F8): the same Platform commit always meets the same site. Bump it here and
           # in the other workflow (ci.yml, full.yml) when the site changes, in the pull request that needs the change
-          ref: e9a3c7471e7c997a61de50ea81404e1a96bbad3c
+          ref: 2be689dee857920f99c9f23bc2ec682670343a8e
           token: ${{ secrets.DS_TOKEN }}
           path: st-john-test-site
 
