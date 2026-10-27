@@ -3,6 +3,9 @@
   "reasons": {
     "grid": {
       "shadow-*": "optical blur/ring width; owner to decide (the owner: everything should be on the grid)"
+    },
+    "corners": {
+      "chart-interaction-focus-mark-radius, network-graph-node-radius, focus-order-badge-radius": "an SVG circle's radius (CSS r:), not a corner; found when the rule began following references (2026-10-27); owner to decide"
     }
   },
   "colors": {
@@ -203,5 +206,9 @@
     "shadow-ring-subtle": "0 0 0 2px {plx-ref.color-blue-100}",
     "shadow-underline-focus": "0 1px 0 {plx-ref.color-blue-400}"
   },
-  "corners": {}
+  "corners": {
+    "chart-interaction-focus-mark-radius": "{plx-ref.size-8px} (ends at 8px)",
+    "network-graph-node-radius": "{plx-ref.size-12px} (ends at 12px)",
+    "focus-order-badge-radius": "{plx-ref.size-12px} (ends at 12px)"
+  }
 }
