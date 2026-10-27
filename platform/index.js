@@ -345,7 +345,7 @@ export { RefineMenu } from './components/RefineMenu/RefineMenu.jsx';
 export { AnalyticsProvider, useAnalytics, track } from './providers/AnalyticsProvider.jsx';
 export { ListingPage, ContentManagementPage, LandingPage, HomePage, CreatePage, EditPage, MasterDetailPage, SplitWorkspace, SinglePaneWorkspace, FullScreenWorkspace, FullScreenExperience, DetailPage, SearchResultsPage, AuthenticationPage, ErrorPage } from './templates/templates/Templates.jsx';
 export { browserSupport } from './utils/browserSupport.js';
-export { LocaleProvider, useLocale, createTranslator } from './providers/LocaleProvider.jsx';
+export { LocaleProvider, useLocale, useStrings, createTranslator } from './providers/LocaleProvider.jsx';
 export { SplitView, ReadingPane } from './patterns/SplitView/SplitView.jsx';
 export { Heading } from './components/Heading/Heading.jsx';
 export { TreeChart } from './charts/TreeChart.jsx';

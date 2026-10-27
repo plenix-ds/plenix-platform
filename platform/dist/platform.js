@@ -761,7 +761,4704 @@ function VisuallyHidden({
   }, rest), children);
 }
   } },
-  "platform/components/Isolate/Isolate.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/utils/direction.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.RTL_LANGUAGES = void 0;
+exports.arrowStep = arrowStep;
+exports.directionOf = directionOf;
+exports.getDirection = getDirection;
+exports.isRtl = isRtl;
+exports.physicalSide = physicalSide;
+/* Plenix · Writing direction (platform/utils/direction.js)
+   Summary: Right-to-left and left-to-right in script: the direction of an element or a language, the arrow keys in reading
+     order, and the physical side of a logical one. In a right-to-left page Arrow Right moves back and Arrow Left forward,
+     as the eye reads; Up and Down are the same in both directions.
+   Usage:
+     const step = arrowStep(e, e.currentTarget);   // +1, -1 or 0
+     if (step) { e.preventDefault(); move(index + step); }
+     directionOf('ar-EG')          // "rtl"
+     physicalSide('start', 'rtl')  // "right"
+   Props:
+     isRtl(el): true when the element is laid out right to left (its computed direction)
+     arrowStep(event, el, { vertical }): +1 for the next item, -1 for the previous one, 0 for another key; with vertical:
+       false, Up and Down are ignored (a horizontal-only control)
+     getDirection(el): "rtl" | "ltr", the element's computed direction (the document's when no element is given)
+     directionOf(locale): "rtl" for a language written right to left (Arabic, Hebrew, Persian, Urdu and the others in
+       RTL_LANGUAGES), else "ltr"
+     physicalSide(side, dir): "left" | "right" for a logical "start" or "end" in that direction (for a measurement API that
+       only speaks physical sides, such as a pointer's clientX); "left" and "right" come back as they are
+     RTL_LANGUAGES: the language subtags written right to left
+   Behavior:
+     The direction comes from the dir attribute on the element or an ancestor (<html dir="rtl">, a DirectionProvider):
+       stylesheets use logical properties (inline-start, inline-end), so the layout mirrors on its own; script reads the
+       computed direction only where it measures or handles arrow keys.
+*/
+const RTL_LANGUAGES = exports.RTL_LANGUAGES = ['ar', 'arc', 'ckb', 'dv', 'fa', 'he', 'iw', 'ps', 'sd', 'syr', 'ug', 'ur', 'yi'];
+function isRtl(el) {
+  return !!el && typeof window !== 'undefined' && window.getComputedStyle(el).direction === 'rtl';
+}
+function getDirection(el) {
+  if (typeof window === 'undefined') return 'ltr';
+  return isRtl(el || document.documentElement) ? 'rtl' : 'ltr';
+}
+function directionOf(locale) {
+  const lang = String(locale || '').toLowerCase().split(/[-_]/)[0];
+  return RTL_LANGUAGES.indexOf(lang) >= 0 ? 'rtl' : 'ltr';
+}
+function physicalSide(side, dir) {
+  if (side !== 'start' && side !== 'end') return side;
+  return side === 'start' === (dir !== 'rtl') ? 'left' : 'right';
+}
+function arrowStep(event, el, opts) {
+  const vertical = !opts || opts.vertical !== false;
+  const rtl = isRtl(el);
+  switch (event.key) {
+    case 'ArrowRight':
+      return rtl ? -1 : 1;
+    case 'ArrowLeft':
+      return rtl ? 1 : -1;
+    case 'ArrowDown':
+      return vertical ? 1 : 0;
+    case 'ArrowUp':
+      return vertical ? -1 : 0;
+    default:
+      return 0;
+  }
+}
+  } },
+  "platform/providers/DirectionProvider.jsx": { deps: {"react":null,"../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.DirectionContext = void 0;
+exports.DirectionProvider = DirectionProvider;
+exports.useDirection = useDirection;
+var _react = _interopRequireDefault(require("react"));
+var _direction = require("../utils/direction.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · DirectionProvider, useDirection
+   Summary: Sets the writing direction (left to right or right to left) of an application or of one region, and tells
+     React components which it is.
+   Usage:
+     <DirectionProvider dir="rtl" lang="ar">{app}</DirectionProvider>
+     <DirectionProvider locale="he-IL" root>{app}</DirectionProvider>   // on <html>: the whole page
+     const { dir, setDir } = useDirection();
+   Props:
+     dir: "ltr" | "rtl"; without it, the direction of locale, else of the page
+     locale: a language tag ("ar-EG", "en-US"); it sets lang and, without dir, the direction (directionOf)
+     lang: the lang attribute, when it is not the locale
+     root: set dir and lang on <html> instead of a region (default false): the page, its portals and its scrollbars mirror
+     children: the application root or the region it wraps
+     useDirection(): { dir, rtl, setDir(dir) }: the nearest provider's direction (outside one, the page's), and a way to
+       change it
+   Behavior:
+     A region: a wrapper (div.plx-direction, display: contents, so it adds no box) with dir and lang; everything inside
+       it lays out in that direction, as the stylesheets use logical properties.
+     With root, the attributes go on <html> and are put back as they were when the provider unmounts.
+     Overlays drawn in a Portal take the direction of where they were written (the Portal copies dir and lang).
+   Notes:
+     Mirror the layout, not the content: text, numbers, media controls, clocks and the icons that are not directional
+       keep their shape; the icon set mirrors its directional icons (arrows, chevrons, undo and redo) by itself.
+     Script reads the direction where it measures or handles arrow keys (utils/direction.js: arrowStep, physicalSide).
+*/
+
+const DirectionContext = exports.DirectionContext = /*#__PURE__*/_react.default.createContext(null);
+function DirectionProvider({
+  dir,
+  locale,
+  lang,
+  root = false,
+  children
+}) {
+  const wanted = dir || (locale ? (0, _direction.directionOf)(locale) : null);
+  const [own, setOwn] = _react.default.useState(wanted);
+  _react.default.useEffect(() => {
+    setOwn(wanted);
+  }, [wanted]);
+  const current = own || (typeof document !== 'undefined' ? (0, _direction.getDirection)() : 'ltr');
+  const language = lang || locale || undefined;
+  _react.default.useLayoutEffect(() => {
+    if (!root) return undefined;
+    const html = document.documentElement,
+      before = {
+        dir: html.getAttribute('dir'),
+        lang: html.getAttribute('lang')
+      };
+    html.setAttribute('dir', current);
+    if (language) html.setAttribute('lang', language);
+    return () => {
+      if (before.dir == null) html.removeAttribute('dir');else html.setAttribute('dir', before.dir);
+      if (language) {
+        if (before.lang == null) html.removeAttribute('lang');else html.setAttribute('lang', before.lang);
+      }
+    };
+  }, [root, current, language]);
+  const value = _react.default.useMemo(() => ({
+    dir: current,
+    rtl: current === 'rtl',
+    setDir: d => setOwn(d === 'rtl' ? 'rtl' : 'ltr')
+  }), [current]);
+  return /*#__PURE__*/_react.default.createElement(DirectionContext.Provider, {
+    value: value
+  }, root ? children : /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-direction",
+    dir: current,
+    lang: language
+  }, children));
+}
+function useDirection() {
+  const ctx = _react.default.useContext(DirectionContext);
+  const [page, setPage] = _react.default.useState(() => typeof document !== 'undefined' ? (0, _direction.getDirection)() : 'ltr');
+  _react.default.useEffect(() => {
+    if (ctx) return undefined;
+    const observer = new MutationObserver(() => setPage((0, _direction.getDirection)()));
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['dir']
+    });
+    return () => observer.disconnect();
+  }, [ctx]);
+  if (ctx) return ctx;
+  return {
+    dir: page,
+    rtl: page === 'rtl',
+    setDir: d => document.documentElement.setAttribute('dir', d === 'rtl' ? 'rtl' : 'ltr')
+  };
+}
+  } },
+  "platform/utils/format.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.FORMATS = void 0;
+exports.dateTimeAttr = dateTimeAttr;
+exports.digitsOf = digitsOf;
+exports.formatAddress = formatAddress;
+exports.formatBytes = formatBytes;
+exports.formatCompact = formatCompact;
+exports.formatCurrency = formatCurrency;
+exports.formatDate = formatDate;
+exports.formatDateTime = formatDateTime;
+exports.formatDuration = formatDuration;
+exports.formatList = formatList;
+exports.formatLocale = formatLocale;
+exports.formatNumber = formatNumber;
+exports.formatPercent = formatPercent;
+exports.formatPersonName = formatPersonName;
+exports.formatPhone = formatPhone;
+exports.formatRange = formatRange;
+exports.formatRelative = formatRelative;
+exports.formatTime = formatTime;
+exports.formatUnit = formatUnit;
+exports.numeralLocale = numeralLocale;
+exports.regionName = regionName;
+/* Plenix · Formatting (platform/utils/format.js)
+   Summary: Numbers, units, dates, times, money, percentages, names, addresses and phone numbers written the same way on
+     every page, in the reader's locale, on the browser's Intl formatters (NumberFormat, DateTimeFormat,
+     RelativeTimeFormat, ListFormat, DisplayNames). The rules (precision, when relative time ends, address layouts, phone
+     groupings) are the Formats standard, platform/standards/formats.json; FORMATS below is the same data (the format test
+     keeps the two equal).
+   Usage:
+     formatNumber(1234.5)                         // "1,234.5"
+     formatBytes(1200000)                         // "1.2 MB"
+     formatCompact(1234)                          // "1.2K"
+     formatDate(date, { dateStyle: 'long' })          // "March 4, 2026"
+     formatRelative(date)                         // "5 minutes ago" (an absolute date after 7 days)
+     formatCurrency(12.5, 'EUR')                  // "€12.50"
+     formatPercent(0.256)                         // "26%"
+     formatPhone('+14155550123')                  // "+1 415 555 0123"
+   Props:
+     every function takes an options object last; options.locale overrides the reader's locale (formatLocale())
+     formatLocale(): the page's language (<html lang>), else the browser's, else "en-US"
+     digitsOf(locale): "arab" (Arabic-Indic ٠-٩) for Arabic locales, else "latn"; an explicit -u-nu-latn keeps Latin (owner, arabic-digits-35)
+     numeralLocale(locale, digits): the locale tag with its digits explicit (-u-nu-arab), for Intl; every format function here uses it
+     formatNumber(value, { decimals, signed }): a plain number; decimals fixes the precision (keep it the same in a column)
+     formatUnit(value, unit, { display, decimals }): a measurement with an Intl unit ("kilometer", "celsius", "megabyte");
+       display "short" (default), "long" or "narrow"
+     formatBytes(bytes, { decimals }): a file size in B, kB, MB, GB or TB (powers of 1000)
+     formatDuration(seconds, { display }): "1 hr, 5 min" (display "short", default), "1 hour, 5 minutes" ("long") or "1:05:00" ("clock")
+     formatCompact(value, { decimals }): "1.2K", "3.4M": only where space is tight, with the full value beside it (title, tooltip)
+     formatDate(date, { dateStyle, timeZone }): dateStyle "short" ("Mar 4"; the year when it is not this year), "medium"
+       ("Mar 4, 2026", default), "long" ("March 4, 2026") or "full" ("Wednesday, March 4, 2026")
+     formatTime(date, { seconds, timeZone, timeZoneName }): "2:05 PM"; timeZoneName "short" adds the zone ("2:05 PM PST")
+     formatDateTime(date, { dateStyle, timeZone, timeZoneName }): the date (medium) and the time together
+     formatRelative(date, { now, untilDays }): "5 minutes ago", "in 2 days", "yesterday"; after untilDays (FORMATS) the date
+     formatRange(from, to, { kind, dateStyle }): two dates ("Mar 4 – 6, 2026", kind "date", default) or numbers ("3–5", kind "number")
+     formatCurrency(amount, currency, { display, decimals, signed }): money in an ISO 4217 currency ("USD"); display
+       "symbol" (default, "$12.50") or "code" ("USD 12.50", for pages that mix currencies)
+     formatPercent(ratio, { decimals, signed }): a ratio as a percentage, 0.256 → "26%" (signed: "+3%", for changes)
+     formatList(items, { type }): "A, B, and C"; type "conjunction" (default), "disjunction" ("A, B, or C") or "unit"
+     formatPersonName(person, { display }): a name as the person wrote it; person is a string or { full, preferred };
+       display "full" (default), "preferred" (the preferred name, else the full one) or "initials"
+     formatAddress(address, { country, includeCountry }): the lines of a postal address in its country's order; address
+       is { name, organization, street (a string or lines), locality, region, postalCode, country (ISO 3166 code) }
+     regionName(code): a country's name in the reader's language ("DE" → "Germany")
+     formatPhone(e164, { display }):a phone number stored as E.164 ("+14155550123"), "international" (default) or
+       "national" ("(415) 555-0123")
+     dateTimeAttr(date): the machine-readable value for <time dateTime={…}>
+     FORMATS: the standard's data (see platform/standards/formats.json)
+   Behavior:
+     Nothing is cached per locale beyond the Intl formatter objects; every call reads the locale unless one is given.
+     Bare YYYY-MM-DD values represent local calendar dates; timestamps with a zone retain their instant.
+     A value that is not a finite number or a valid date comes back as an empty string, never "NaN" or "Invalid Date".
+   Notes:
+     Never build a separator, a symbol position or a date order by hand: these functions are the only place they are made.
+     Phone numbers and addresses follow FORMATS for the countries it lists; others fall back to a neutral layout.
+*/
+
+// The Formats standard (platform/standards/formats.json): edit both together; the format test compares them.
+const FORMATS = exports.FORMATS = {
+  number: {
+    decimals: {
+      default: 0,
+      ratio: 0,
+      compact: 1,
+      bytes: 1
+    }
+  },
+  bytes: {
+    base: 1000,
+    units: ['byte', 'kilobyte', 'megabyte', 'gigabyte', 'terabyte']
+  },
+  relative: {
+    untilDays: 7
+  },
+  currency: {
+    display: 'symbol',
+    mixedDisplay: 'code'
+  },
+  date: {
+    default: 'medium'
+  },
+  address: {
+    default: ['name', 'organization', 'street', 'locality region postalCode', 'country'],
+    US: ['name', 'organization', 'street', 'locality, region postalCode', 'country'],
+    CA: ['name', 'organization', 'street', 'locality region postalCode', 'country'],
+    GB: ['name', 'organization', 'street', 'locality', 'postalCode', 'country'],
+    DE: ['name', 'organization', 'street', 'postalCode locality', 'country'],
+    FR: ['name', 'organization', 'street', 'postalCode locality', 'country'],
+    IT: ['name', 'organization', 'street', 'postalCode locality region', 'country'],
+    JP: ['country', 'postalCode', 'region locality', 'street', 'organization', 'name']
+  },
+  phone: {
+    '1': {
+      national: '(###) ###-####',
+      international: '+1 ### ### ####'
+    },
+    '33': {
+      national: '0# ## ## ## ##',
+      international: '+33 # ## ## ## ##'
+    },
+    '44': {
+      national: '0#### ######',
+      international: '+44 #### ######'
+    },
+    '49': {
+      national: '0### #######',
+      international: '+49 ### #######'
+    },
+    '61': {
+      national: '0# #### ####',
+      international: '+61 # #### ####'
+    }
+  }
+};
+const ok = n => typeof n === 'number' && isFinite(n);
+// A date-only value is a calendar date in the reader's zone, not midnight UTC (DT-7).
+const toDate = d => {
+  if (typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d)) {
+    const [year, month, day] = d.split('-').map(Number),
+      x = new Date(0);
+    x.setFullYear(year, month - 1, day);
+    x.setHours(0, 0, 0, 0);
+    return x.getFullYear() === year && x.getMonth() === month - 1 && x.getDate() === day ? x : null;
+  }
+  const x = d instanceof Date ? d : new Date(d);
+  return isNaN(x.getTime()) ? null : x;
+};
+function formatLocale() {
+  const lang = typeof document !== 'undefined' && document.documentElement && document.documentElement.getAttribute('lang');
+  if (lang) return lang;
+  if (typeof navigator !== 'undefined' && navigator.language) return navigator.language;
+  return 'en-US';
+}
+/* the digits a locale writes (owner, arabic-digits-35 and arabic-ids-35): Arabic text uses Arabic-Indic digits (٠-٩) everywhere,
+   whichever Arabic region the tag names (the browser alone writes Latin digits for "ar" and "ar-AE"); an explicit -u-nu-latn keeps Latin */
+function digitsOf(locale) {
+  try {
+    const l = new Intl.Locale(locale || formatLocale());
+    return l.numberingSystem === 'latn' ? 'latn' : l.numberingSystem === 'arab' || l.language === 'ar' ? 'arab' : 'latn';
+  } catch (e) {
+    return 'latn';
+  }
+}
+// the locale tag with its digits made explicit (-u-nu-arab or -u-nu-latn), for Intl; a language that is not Arabic is left as it is
+function numeralLocale(locale, digits) {
+  const tag = locale || formatLocale();
+  try {
+    const l = new Intl.Locale(tag),
+      want = digits === 'arab' || digits === 'latn' ? digits : l.language === 'ar' ? digitsOf(tag) : null;
+    return want ? new Intl.Locale(l.toString(), {
+      numberingSystem: want
+    }).toString() : l.toString();
+  } catch (e) {
+    return tag;
+  }
+}
+const loc = o => numeralLocale(o && o.locale || formatLocale());
+const digits = d => d === undefined ? {} : {
+  minimumFractionDigits: d,
+  maximumFractionDigits: d
+};
+function formatNumber(value, o = {}) {
+  if (!ok(value)) return '';
+  return new Intl.NumberFormat(loc(o), {
+    ...digits(o.decimals),
+    signDisplay: o.signed ? 'exceptZero' : 'auto'
+  }).format(value);
+}
+function formatUnit(value, unit, o = {}) {
+  if (!ok(value)) return '';
+  return new Intl.NumberFormat(loc(o), {
+    style: 'unit',
+    unit,
+    unitDisplay: o.display || 'short',
+    ...digits(o.decimals)
+  }).format(value);
+}
+function formatBytes(bytes, o = {}) {
+  if (!ok(bytes)) return '';
+  const {
+    base,
+    units
+  } = FORMATS.bytes;
+  let i = 0,
+    v = Math.abs(bytes);
+  while (v >= base && i < units.length - 1) {
+    v /= base;
+    i++;
+  }
+  const d = o.decimals !== undefined ? o.decimals : i === 0 ? 0 : FORMATS.number.decimals.bytes;
+  return new Intl.NumberFormat(loc(o), {
+    style: 'unit',
+    unit: units[i],
+    unitDisplay: 'short',
+    maximumFractionDigits: d
+  }).format(Math.sign(bytes) * v);
+}
+function formatDuration(seconds, o = {}) {
+  if (!ok(seconds)) return '';
+  const s = Math.round(Math.abs(seconds)),
+    h = Math.floor(s / 3600),
+    m = Math.floor(s % 3600 / 60),
+    r = s % 60;
+  if (o.display === 'clock') {
+    const two = n => String(n).padStart(2, '0');
+    return (seconds < 0 ? '-' : '') + (h ? h + ':' + two(m) : String(m)) + ':' + two(r);
+  }
+  const display = o.display === 'long' ? 'long' : 'short';
+  const parts = [[h, 'hour'], [m, 'minute'], [r, 'second']].filter(([n], i, all) => n || i === 2 && !all[0][0] && !all[1][0]);
+  return formatList(parts.map(([n, unit]) => formatUnit(n, unit, {
+    locale: o.locale,
+    display
+  })), {
+    locale: o.locale,
+    type: 'unit'
+  });
+}
+function formatCompact(value, o = {}) {
+  if (!ok(value)) return '';
+  return new Intl.NumberFormat(loc(o), {
+    notation: 'compact',
+    maximumFractionDigits: o.decimals !== undefined ? o.decimals : FORMATS.number.decimals.compact
+  }).format(value);
+}
+const DATE_STYLES = {
+  medium: {
+    dateStyle: 'medium'
+  },
+  long: {
+    dateStyle: 'long'
+  },
+  full: {
+    dateStyle: 'full'
+  }
+};
+function formatDate(date, o = {}) {
+  const d = toDate(date);
+  if (!d) return '';
+  const style = o.dateStyle || FORMATS.date.default;
+  if (style === 'short') {
+    const thisYear = d.getFullYear() === new Date().getFullYear();
+    return new Intl.DateTimeFormat(loc(o), {
+      month: 'short',
+      day: 'numeric',
+      year: thisYear ? undefined : 'numeric',
+      timeZone: o.timeZone
+    }).format(d);
+  }
+  return new Intl.DateTimeFormat(loc(o), {
+    ...(DATE_STYLES[style] || DATE_STYLES.medium),
+    timeZone: o.timeZone
+  }).format(d);
+}
+function formatTime(date, o = {}) {
+  const d = toDate(date);
+  if (!d) return '';
+  return new Intl.DateTimeFormat(loc(o), {
+    hour: 'numeric',
+    minute: '2-digit',
+    second: o.seconds ? '2-digit' : undefined,
+    timeZone: o.timeZone,
+    timeZoneName: o.timeZoneName
+  }).format(d);
+}
+function formatDateTime(date, o = {}) {
+  const d = toDate(date);
+  if (!d) return '';
+  const style = o.dateStyle && DATE_STYLES[o.dateStyle] ? o.dateStyle : FORMATS.date.default;
+  if (o.timeZoneName) return new Intl.DateTimeFormat(loc(o), {
+    ...(style === 'medium' ? {
+      month: 'short'
+    } : {
+      month: 'long'
+    }),
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    timeZone: o.timeZone,
+    timeZoneName: o.timeZoneName
+  }).format(d);
+  return new Intl.DateTimeFormat(loc(o), {
+    dateStyle: style,
+    timeStyle: 'short',
+    timeZone: o.timeZone
+  }).format(d);
+}
+const STEPS = [['second', 60], ['minute', 60], ['hour', 24], ['day', 7]];
+function formatRelative(date, o = {}) {
+  const d = toDate(date);
+  if (!d) return '';
+  const now = toDate(o.now || Date.now());
+  const until = o.untilDays !== undefined ? o.untilDays : FORMATS.relative.untilDays;
+  let diff = (d.getTime() - now.getTime()) / 1000;
+  if (Math.abs(diff) >= until * 86400) return formatDate(d, {
+    locale: o.locale,
+    dateStyle: 'medium',
+    timeZone: o.timeZone
+  });
+  const rtf = new Intl.RelativeTimeFormat(loc(o), {
+    numeric: 'auto'
+  });
+  for (const [unit, size] of STEPS) {
+    if (Math.abs(diff) < size || unit === 'day') return rtf.format(Math.round(diff), unit);
+    diff /= size;
+  }
+  return '';
+}
+function formatRange(from, to, o = {}) {
+  if (o.kind === 'number') {
+    if (!ok(from) || !ok(to)) return '';
+    return new Intl.NumberFormat(loc(o), digits(o.decimals)).formatRange(from, to);
+  }
+  const a = toDate(from),
+    b = toDate(to);
+  if (!a || !b) return '';
+  return new Intl.DateTimeFormat(loc(o), {
+    ...(DATE_STYLES[o.dateStyle] || DATE_STYLES.medium),
+    timeZone: o.timeZone
+  }).formatRange(a, b);
+}
+function formatCurrency(amount, currency, o = {}) {
+  if (!ok(amount) || !currency) return '';
+  return new Intl.NumberFormat(loc(o), {
+    style: 'currency',
+    currency,
+    currencyDisplay: o.display || FORMATS.currency.display,
+    ...digits(o.decimals),
+    signDisplay: o.signed ? 'exceptZero' : 'auto'
+  }).format(amount);
+}
+function formatPercent(ratio, o = {}) {
+  if (!ok(ratio)) return '';
+  const d = o.decimals !== undefined ? o.decimals : FORMATS.number.decimals.ratio;
+  return new Intl.NumberFormat(loc(o), {
+    style: 'percent',
+    ...digits(d),
+    signDisplay: o.signed ? 'exceptZero' : 'auto'
+  }).format(ratio);
+}
+function formatList(items, o = {}) {
+  const list = (items || []).filter(x => x !== undefined && x !== null && x !== '').map(String);
+  return new Intl.ListFormat(loc(o), o.type === 'unit' ? {
+    type: 'unit',
+    style: 'short'
+  } : {
+    type: o.type || 'conjunction'
+  }).format(list);
+}
+function formatPersonName(person, o = {}) {
+  const p = typeof person === 'string' ? {
+    full: person
+  } : person || {};
+  const full = String(p.full || '').trim();
+  if (o.display === 'preferred') return String(p.preferred || '').trim() || full;
+  if (o.display === 'initials') {
+    const words = full.split(/\s+/).filter(Boolean);
+    const pick = words.length > 1 ? [words[0], words[words.length - 1]] : words;
+    return pick.map(w => Array.from(w)[0].toLocaleUpperCase(loc(o))).join('');
+  }
+  return full;
+}
+function regionName(code, o = {}) {
+  if (!code) return '';
+  try {
+    return new Intl.DisplayNames(loc(o), {
+      type: 'region'
+    }).of(code) || code;
+  } catch (e) {
+    return code;
+  }
+}
+function formatAddress(address, o = {}) {
+  const a = address || {};
+  const country = (o.country || a.country || '').toUpperCase();
+  const layout = FORMATS.address[country] || FORMATS.address.default;
+  const readerRegion = (loc(o).split('-')[1] || '').toUpperCase();
+  const includeCountry = o.includeCountry !== undefined ? o.includeCountry : !!country && country !== readerRegion;
+  const value = k => {
+    if (k === 'country') return includeCountry ? regionName(country, o) : '';
+    if (k === 'street') return [].concat(a.street || []).filter(Boolean).join('\n');
+    return a[k] ? String(a[k]) : '';
+  };
+  const lines = [];
+  layout.forEach(pattern => {
+    // a pattern line: field names with the punctuation between them; a separator is written only between two values
+    let text = '',
+      sep = '';
+    for (const [, field, between] of pattern.matchAll(/([A-Za-z]+)|([^A-Za-z]+)/g)) {
+      if (between) {
+        sep = between;
+        continue;
+      }
+      const v = value(field);
+      if (!v) continue;
+      text += (text ? sep : '') + v;
+      sep = '';
+    }
+    text.split('\n').forEach(l => {
+      if (l.trim()) lines.push(l.trim());
+    });
+  });
+  return lines;
+}
+function formatPhone(e164, o = {}) {
+  const raw = String(e164 || '').trim();
+  const num = raw.replace(/[^\d+]/g, '');
+  if (!/^\+\d{4,15}$/.test(num)) return raw;
+  const all = num.slice(1);
+  const code = Object.keys(FORMATS.phone).sort((x, y) => y.length - x.length).find(c => all.startsWith(c));
+  const display = o.display === 'national' ? 'national' : 'international';
+  if (code) {
+    const rest = all.slice(code.length),
+      pattern = FORMATS.phone[code][display];
+    if ((pattern.match(/#/g) || []).length === rest.length) {
+      let i = 0;
+      return pattern.replace(/#/g, () => rest[i++]);
+    }
+  }
+  // a country Formats does not list (or a length its pattern does not fit): the country code when it is known, then the
+  // digits in groups of three, the last group taking up to four
+  const groups = [];
+  let rest = code ? all.slice(code.length) : all;
+  while (rest.length > 4) {
+    groups.push(rest.slice(0, 3));
+    rest = rest.slice(3);
+  }
+  groups.push(rest);
+  return '+' + (code ? code + ' ' : '') + groups.join(' ');
+}
+function dateTimeAttr(date) {
+  const d = toDate(date);
+  return d ? d.toISOString() : '';
+}
+  } },
+  "platform/i18n/en.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// Browser mirror of en.json, the one source of Plenix's built-in English words (components read them with useStrings; owner, arabic-words-37). The repository module loader accepts JavaScript only; the W15C catalog test and check-system's built-in-words rule check parity.
+var _default = exports.default = {
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "retry": "Retry",
+    "next": "Next",
+    "back": "Back"
+  },
+  "collection": {
+    "selected": {
+      "=0": "Nothing selected",
+      "one": "{count} item selected",
+      "other": "{count} items selected"
+    }
+  },
+  "wizard": {
+    "next": "Next",
+    "back": "Back",
+    "finish": "Finish",
+    "cancel": "Cancel",
+    "step": "Step {n} of {total}",
+    "error": "Could not save. Try again.",
+    "complete": "Finish",
+    "summary": "Review",
+    "invalid": "Check this step before continuing.",
+    "failed": "Could not save. Try again.",
+    "steps": "Steps"
+  },
+  "dialog": {
+    "close": "Close",
+    "confirmLabel": "Confirm",
+    "cancelLabel": "Cancel",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "save": "Save"
+  },
+  "text": {
+    "more": "Show more",
+    "less": "Show less"
+  },
+  "emptyState": {
+    "title": "No items yet",
+    "description": "Create an item to get started.",
+    "action": "Create item",
+    "offline": {
+      "title": "You’re offline",
+      "text": "Check your connection. This page updates when you’re back online."
+    },
+    "degraded": {
+      "title": "Some features aren’t working",
+      "text": "A service is slow or not responding, so what you see may be out of date."
+    },
+    "permission-denied": {
+      "title": "You don’t have access",
+      "text": "Ask the owner to share it with you."
+    },
+    "not-found": {
+      "title": "This page doesn’t exist",
+      "text": "It may have been moved or deleted. Check the address or go back."
+    },
+    "maintenance": {
+      "title": "Down for maintenance",
+      "text": "This service is being updated. Try again in a few minutes."
+    },
+    "completion": {
+      "title": "All done",
+      "text": "There’s nothing left to do here."
+    }
+  },
+  "pagination": {
+    "label": "Pages",
+    "range": "{first}–{last} of {total}",
+    "previous": "Previous page",
+    "next": "Next page",
+    "page": "Page {n}",
+    "perPage": "Per page"
+  },
+  "accessRequest": {
+    "title": "Request access",
+    "description": "Ask the owner for access to this resource.",
+    "message": "Message to the owner",
+    "request": "Request access",
+    "pending": "Access requested",
+    "approved": "Access approved",
+    "denied": "Access denied",
+    "open": "Open resource",
+    "failed": "Could not send your request. Try again."
+  },
+  "actionBar": {
+    "label": "Actions"
+  },
+  "aiButton": {
+    "label": "AI actions",
+    "failed": "Could not complete this action. Try again.",
+    "working": "Working"
+  },
+  "aiDisclaimer": {
+    "message": "AI-generated content may be inaccurate. Review important details.",
+    "learn": "About AI-generated content"
+  },
+  "aiExplanation": {
+    "label": "Why this?",
+    "title": "AI explanation",
+    "close": "Close"
+  },
+  "aiSearch": {
+    "label": "AI search",
+    "query": "Search query",
+    "search": "Search",
+    "semantic": "Use semantic search",
+    "results": "Search results",
+    "empty": "No results.",
+    "failed": "Search failed. Try again.",
+    "pending": "Searching"
+  },
+  "announcement": {
+    "dismiss": "Dismiss announcement",
+    "failed": "Could not dismiss this announcement. Try again."
+  },
+  "appHeader": {
+    "aria-label": "Search"
+  },
+  "appShell": {
+    "skip": "Skip to main content"
+  },
+  "approvalWorkflow": {
+    "approve": "Approve",
+    "changes": "Request changes",
+    "reject": "Reject",
+    "comment": "Comment",
+    "reason": "Explain why this needs changes.",
+    "failed": "Could not save this decision. Your comment is still available.",
+    "steps": "Approval stages",
+    "recorded": "Decision recorded"
+  },
+  "archiveRestore": {
+    "archive": "Archive",
+    "restore": "Restore",
+    "archived": "Archived",
+    "message": "Restore this record to make it active again.",
+    "failed": "Could not update the record. Try again."
+  },
+  "assetGallery": {
+    "empty": "No images",
+    "preview": "Image preview"
+  },
+  "assignControl": {
+    "assign": "Assign",
+    "assignToMe": "Assign to me",
+    "reassign": "Reassign",
+    "unassign": "Unassign",
+    "unassigned": "Unassigned",
+    "cancel": "Cancel",
+    "assigned": "Assigned to {name}",
+    "cleared": "{label} removed",
+    "delegate": "Delegate",
+    "change": "Change",
+    "end": "End delegation",
+    "delegateTitle": "Delegate {label}",
+    "to": "Delegate to",
+    "dates": "Dates",
+    "note": "Note",
+    "noteHint": "Shown to the person you delegate to.",
+    "needPerson": "Choose a person.",
+    "needDates": "Choose the first and last day.",
+    "delegatedTo": "Delegated to {name}",
+    "notDelegated": "Not delegated",
+    "ended": "Delegation ended",
+    "label": "Assignee"
+  },
+  "attachmentPicker": {
+    "label": "Attachments",
+    "remove": "Remove {name}",
+    "invalid": "Choose a supported file within the size limit.",
+    "limit": "Too many attachments.",
+    "empty": "No attachments."
+  },
+  "auditLog": {
+    "actor": "Actor",
+    "at": "Time",
+    "action": "Action",
+    "target": "Target",
+    "changes": "Changes",
+    "view": "View changes",
+    "field": "Field",
+    "before": "Before",
+    "after": "After",
+    "close": "Close"
+  },
+  "autosave": {
+    "saving": "Saving",
+    "saved": "Saved",
+    "offline": "Offline",
+    "failed": "Save failed",
+    "retry": "Retry"
+  },
+  "avatar": {
+    "online": "Online",
+    "away": "Away",
+    "busy": "Busy",
+    "dnd": "Do not disturb",
+    "offline": "Offline"
+  },
+  "avatarGroup": {
+    "more": "+{n}",
+    "moreLabel": "{n} more"
+  },
+  "avatarUpload": {
+    "change": "Change photo",
+    "add": "Add photo",
+    "remove": "Remove photo",
+    "tooLarge": "The picture is larger than {max}",
+    "notImage": "Choose an image file",
+    "picture": "{name}’s photo"
+  },
+  "backToTop": {
+    "label": "Back to top"
+  },
+  "banner": {
+    "dismiss": "Dismiss"
+  },
+  "barcode": {
+    "label": "Barcode {format}: {value}",
+    "invalid": "Not a valid {format} code",
+    "formats": {
+      "code128": "Code 128",
+      "ean13": "EAN-13",
+      "upca": "UPC-A"
+    }
+  },
+  "bottomSheetNav": {
+    "title": "Navigation",
+    "close": "Close"
+  },
+  "brand": {
+    "name": "Plenix"
+  },
+  "breadcrumbs": {
+    "label": "Breadcrumb"
+  },
+  "bulkActions": {
+    "selected": "{n} selected",
+    "selectAll": "Select all",
+    "clear": "Clear",
+    "allSelected": "Every {noun} is selected",
+    "nothingToClear": "Nothing to clear: select {plural} first",
+    "why": "Select {plural} to {action}",
+    "single": "Select one {noun} to {action}",
+    "label": "Selection actions",
+    "more": "More actions",
+    "noun": "item"
+  },
+  "button": {
+    "working": "Working"
+  },
+  "calendar": {
+    "label": "Calendar",
+    "previous": "Previous month",
+    "next": "Next month",
+    "week": "Week",
+    "weekShort": "Wk",
+    "today": "Today"
+  },
+  "carousel": {
+    "slide": "{n} of {total}",
+    "previous": "Previous slide",
+    "next": "Next slide",
+    "goTo": "Go to slide {n}",
+    "goToPage": "Go to page {n}",
+    "pages": "Slides",
+    "pause": "Pause",
+    "play": "Play",
+    "pauseLabel": "Pause the slides",
+    "playLabel": "Play the slides",
+    "strip": "Slides"
+  },
+  "cascader": {
+    "placeholder": "Choose",
+    "separator": " / ",
+    "search": "Search",
+    "noMatches": "No matches",
+    "empty": "No items",
+    "remove": "Remove {label}",
+    "columns": "Options"
+  },
+  "chart": {
+    "barChart": {
+      "category": "Category",
+      "total": "Total",
+      "range": "Range",
+      "count": "Count"
+    },
+    "boxPlot": {
+      "group": "Group",
+      "min": "Minimum",
+      "q1": "First quartile",
+      "median": "Median",
+      "q3": "Third quartile",
+      "max": "Maximum",
+      "outliers": "Outliers",
+      "n": "Values"
+    },
+    "bulletChart": {
+      "measure": "Measure",
+      "value": "Value",
+      "target": "Target",
+      "ranges": "Ranges",
+      "poor": "Poor",
+      "fair": "Fair",
+      "good": "Good"
+    },
+    "chartFrame": {
+      "showData": "Show the data",
+      "table": "{title}: data"
+    },
+    "chartLegend": {
+      "legend": "Legend"
+    },
+    "comboChart": {
+      "category": "Category",
+      "bars": "Columns",
+      "lines": "Lines"
+    },
+    "diagram": {
+      "step": "Step",
+      "kind": "Kind",
+      "next": "Leads to",
+      "previous": "Comes from",
+      "process": "Step",
+      "decision": "Decision",
+      "terminal": "Start or end",
+      "data": "Data",
+      "box": "Part",
+      "group": "Group",
+      "end": "End"
+    },
+    "funnelChart": {
+      "stage": "Stage",
+      "value": "Count",
+      "kept": "Kept from the step before",
+      "ofFirst": "Of the first step"
+    },
+    "ganttChart": {
+      "task": "Task",
+      "progress": "Done",
+      "dependsOn": "Waits for",
+      "status": "Status",
+      "today": "Today",
+      "milestone": "Milestone",
+      "start": "Start",
+      "end": "End"
+    },
+    "gauge": {
+      "showData": "Show the data",
+      "table": "{title}: data",
+      "measure": "Measure",
+      "value": "Value",
+      "min": "Minimum",
+      "max": "Maximum",
+      "ok": ""
+    },
+    "geoMap": {
+      "region": "Region",
+      "place": "Place",
+      "value": "Value",
+      "noData": "No data",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "zoom": "Zoom",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "reset": "Show the whole map"
+    },
+    "heatMap": {
+      "value": "Value",
+      "row": "Row",
+      "column": "Column",
+      "date": "Date",
+      "missing": "No data",
+      "low": "Low",
+      "high": "High",
+      "scale": "Color scale"
+    },
+    "lineChart": {
+      "category": "Category"
+    },
+    "lollipopChart": {
+      "category": "Category",
+      "value": "Value"
+    },
+    "networkGraph": {
+      "node": "Node",
+      "group": "Group",
+      "links": "Connected to",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "fit": "Fit",
+      "hintZoom": " Plus and minus zoom, 0 fits the graph.",
+      "none": "None"
+    },
+    "pieChart": {
+      "part": "Part",
+      "value": "Value",
+      "share": "Share",
+      "total": "Total",
+      "other": "Other"
+    },
+    "radarChart": {
+      "measure": "Measure"
+    },
+    "sankeyDiagram": {
+      "source": "Source",
+      "target": "Target",
+      "value": "Value",
+      "total": "Total"
+    },
+    "scatterChart": {
+      "series": "Series",
+      "item": "Item"
+    },
+    "timelineChart": {
+      "item": "Item",
+      "lane": "Lane",
+      "today": "Today",
+      "date": "Date",
+      "dates": "Dates",
+      "start": "Start",
+      "end": "End"
+    },
+    "treeChart": {
+      "name": "Name",
+      "detail": "Detail",
+      "parent": "Reports to",
+      "level": "Level",
+      "folded": "folded",
+      "open": "open"
+    },
+    "treemap": {
+      "group": "Group",
+      "item": "Part",
+      "value": "Value",
+      "share": "Share"
+    },
+    "waterfallChart": {
+      "step": "Step",
+      "change": "Change",
+      "total": "Total",
+      "running": "Running total",
+      "increase": "Increase",
+      "decrease": "Decrease",
+      "end": "End"
+    },
+    "wordCloud": {
+      "value": "Count",
+      "word": "Term",
+      "group": "Group"
+    }
+  },
+  "chat": {
+    "thinking": "Thinking",
+    "label": "Conversation",
+    "placeholder": "Write a message",
+    "sendLabel": "Send"
+  },
+  "checklist": {
+    "dismiss": "Dismiss checklist",
+    "progress": "Tasks completed"
+  },
+  "codeBlock": {
+    "code": "Code",
+    "copy": "Copy",
+    "copied": "Copied",
+    "failed": "Could not copy"
+  },
+  "codeEditor": {
+    "hint": "Tab indents. Press Escape, then Tab, to leave the editor."
+  },
+  "colorSwatch": {
+    "label": "Color"
+  },
+  "columnsMenu": {
+    "label": "Columns",
+    "manage": "Manage columns",
+    "first": "First column",
+    "makeFirst": "Make first column",
+    "moveUp": "Move {name} up",
+    "moveDown": "Move {name} down",
+    "up": "Move up",
+    "down": "Move down",
+    "find": "Find a column",
+    "showAll": "Show all",
+    "hideAll": "Hide all",
+    "apply": "Apply",
+    "cancel": "Cancel",
+    "shown": "{name} shown",
+    "hidden": "{name} hidden",
+    "isFirst": "{name} is the first column",
+    "moved": "{name}, position {position} of {total}",
+    "row": "{name}{first}. Alt + Arrow Up or Down moves it",
+    "firstMark": ", first column",
+    "none": "No column matches"
+  },
+  "combobox": {
+    "loading": "Loading…",
+    "error": "The options could not be loaded"
+  },
+  "commandBar": {
+    "more": "More actions",
+    "actions": "{label} actions",
+    "find": "Find and view",
+    "selected": "{n} selected",
+    "hidden": " ({n} hidden by filters)",
+    "clear": "Clear the selection",
+    "clearName": "{n} selected, clear the selection",
+    "swapped": "{n} selected. Selection actions available.",
+    "cleared": "Selection cleared.",
+    "why": "Select {plural} to {action}",
+    "single": "Select one {noun} to {action}",
+    "preset": "any",
+    "moreLabel": "More actions"
+  },
+  "commandMenu": {
+    "label": "Commands",
+    "placeholder": "Type a command or search",
+    "empty": "No results for “{query}”",
+    "loading": "Loading",
+    "back": "Back",
+    "results": "{count} results"
+  },
+  "commandPalette": {
+    "title": "Commands",
+    "close": "Close"
+  },
+  "comment": {
+    "edit": "Edit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "resolve": "Resolve",
+    "reopen": "Reopen",
+    "edited": "Edited",
+    "resolved": "Resolved",
+    "message": "Comment",
+    "empty": "Enter a comment.",
+    "failed": "Could not save. Try again."
+  },
+  "commentThread": {
+    "title": "Comments",
+    "reply": "Reply",
+    "send": "Send reply",
+    "resolve": "Resolve thread",
+    "reopen": "Reopen thread",
+    "resolved": "Resolved",
+    "empty": "Enter a reply.",
+    "failed": "Could not save. Try again."
+  },
+  "comparisonView": {
+    "label": "Comparison",
+    "modes": "View",
+    "columns": "Side by side",
+    "matrix": "Table",
+    "slider": "Slider",
+    "onlyDifferences": "Show only differences",
+    "changed": "Changed",
+    "attribute": "Attribute",
+    "position": "Position",
+    "none": "No differences",
+    "one": "1 difference",
+    "many": "{n} differences",
+    "empty": "—"
+  },
+  "confidenceIndicator": {
+    "high": "High confidence",
+    "medium": "Medium confidence",
+    "low": "Low confidence",
+    "unknown": "Confidence unavailable",
+    "label": "Confidence"
+  },
+  "connectedAccounts": {
+    "label": "Connected accounts",
+    "connect": "Connect",
+    "disconnect": "Disconnect",
+    "reconnect": "Reconnect",
+    "cancel": "Cancel",
+    "connected": "Connected",
+    "disconnected": "Not connected",
+    "error": "Connection error",
+    "as": "As {account}",
+    "since": "since {date}",
+    "connectTitle": "Connect {service}?",
+    "connectMessage": "You’ll sign in to {service} to allow this. Plenix will be able to:",
+    "continue": "Continue to {service}",
+    "disconnectTitle": "Disconnect {service}?",
+    "disconnectMessage": "You can connect it again at any time.",
+    "done": "{service} connected",
+    "undone": "{service} disconnected"
+  },
+  "contextualHelp": {
+    "more": "More about {title}",
+    "moreUntitled": "More information"
+  },
+  "copyButton": {
+    "copy": "Copy",
+    "copied": "Copied",
+    "failed": "Couldn’t copy. Select the text and copy it by hand."
+  },
+  "countrySelect": {
+    "country": "Choose a country or region",
+    "language": "Choose a language",
+    "locale": "Choose a language and region",
+    "suggested": "Suggested",
+    "all": "All"
+  },
+  "dataGrid": {
+    "empty": "Nothing to show",
+    "failed": "The table could not load",
+    "retry": "Retry",
+    "selectAll": "Select all rows",
+    "selectRow": "Select row",
+    "rowActions": "Row actions",
+    "clearSort": "Clear sort",
+    "hide": "Hide field",
+    "showAll": "Show all fields",
+    "narrower": "Narrower",
+    "wider": "Wider",
+    "fit": "Fit to content",
+    "deleted": "Deleted",
+    "moveLeft": "Move left",
+    "moveRight": "Move right",
+    "perPage": "Rows per page",
+    "view": "View options",
+    "wrapHeaders": "Wrap headers",
+    "markRead": "Mark as read",
+    "markUnread": "Mark as unread",
+    "wrapText": "Wrap text",
+    "wrapAll": "Wrap all columns",
+    "fullText": "Show the full text",
+    "rowHeight": "Row height",
+    "short": "Short",
+    "medium": "Medium",
+    "tall": "Tall",
+    "extra-tall": "Extra tall",
+    "filter": "Filter",
+    "clearFilter": "Clear filter",
+    "groupBy": "Group by this field",
+    "ungroup": "Ungroup",
+    "noGroup": "Don’t group by this field",
+    "sizeToFit": "Size column to fit",
+    "sizeAllToFit": "Size all columns to fit",
+    "moreColumns": "More…",
+    "columns": "Columns",
+    "loadMore": "Load more",
+    "loading": "Loading records",
+    "group": "Group by this field",
+    "filterBy": "Filter by this field",
+    "any": "Any",
+    "contains": "Contains…",
+    "moveRow": "Move row",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "moveTop": "Move to top",
+    "moveBottom": "Move to bottom",
+    "resize": "Resize",
+    "range": "{first}–{last} of {total}",
+    "count": "{shown} of {total}",
+    "pages": "{label} pages",
+    "loaded": "{n} more rows loaded, {shown} of {total}",
+    "noValue": "(Empty)",
+    "addTo": "Add a record to {value}",
+    "groupRow": "{value}, group, {count} {records}",
+    "record": "record",
+    "records": "records",
+    "expanded": "expanded",
+    "collapsed": "collapsed",
+    "sum": "Sum",
+    "countOf": "Count",
+    "average": "Average",
+    "min": "Min",
+    "max": "Max",
+    "sortText": ["Sort A → Z", "Sort Z → A"],
+    "sortNumber": ["Sort 1 → 9", "Sort 9 → 1"],
+    "sortDate": ["Sort oldest → newest", "Sort newest → oldest"],
+    "sortCheck": ["Sort unchecked → checked", "Sort checked → unchecked"],
+    "unread": "Unread ({count})"
+  },
+  "dataPill": {
+    "male": "male",
+    "female": "female"
+  },
+  "datePicker": {
+    "open": "Choose date",
+    "dialog": "Choose date",
+    "time": "Time",
+    "presets": "Presets",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "nextWeek": "In a week",
+    "last7": "Last 7 days",
+    "last30": "Last 30 days",
+    "thisMonth": "This month",
+    "lastMonth": "Last month"
+  },
+  "deleteFlow": {
+    "title": "Delete {name}?",
+    "titleMany": "Delete {count} {plural}?",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "permanent": "This cannot be undone.",
+    "more": "and {count} more",
+    "typeLabel": "Type {phrase} to confirm",
+    "typeError": "Type {phrase} exactly as shown.",
+    "phraseMany": "delete {count} {plural}",
+    "deleted": "{what} deleted",
+    "trashed": "{what} moved to the trash",
+    "undo": "Undo",
+    "retention": "Restore {them} from the trash within {days} days.",
+    "it": "it",
+    "them": "them",
+    "names": "Deleted",
+    "noun": "item"
+  },
+  "documentViewer": {
+    "document": "Document",
+    "previous": "Previous page",
+    "next": "Next page",
+    "page": "Page",
+    "zoom": "Zoom",
+    "thumbnails": "Page thumbnails",
+    "loading": "Loading document",
+    "failed": "The document could not be opened.",
+    "failedEngine": "The document viewer could not start. Try again later.",
+    "failedAccess": "The document could not be opened. It may have moved, or you may not have access to it.",
+    "failedParse": "This file could not be read as a PDF.",
+    "failedRender": "This page could not be shown.",
+    "empty": "No document.",
+    "retry": "Try again"
+  },
+  "downloadButton": {
+    "download": "Download",
+    "downloading": "Downloading",
+    "ready": "Download ready"
+  },
+  "downloadManager": {
+    "title": "Downloads",
+    "empty": "No downloads",
+    "queued": "Queued",
+    "progress": "Downloading",
+    "ready": "Ready",
+    "failed": "Download failed",
+    "actionFailed": "Could not complete the download action. Try again."
+  },
+  "draftState": {
+    "draft": "Draft",
+    "resume": "Resume draft",
+    "discard": "Discard draft",
+    "confirm": "Discard this draft?",
+    "message": "This draft will be permanently removed.",
+    "cancel": "Keep draft",
+    "failed": "Could not update the draft. Try again."
+  },
+  "duplicateAction": {
+    "duplicate": "Duplicate",
+    "copyOf": "Copy of {name}",
+    "numbered": "{name} ({n})",
+    "title": "Duplicate {noun}",
+    "name": "Name",
+    "from": "From {name}",
+    "also": "Also copy",
+    "empty": "Enter a name.",
+    "taken": "A {noun} named {name} already exists.",
+    "done": "Duplicated as {name}",
+    "undo": "Undo",
+    "cancel": "Cancel",
+    "noun": "item"
+  },
+  "entityPicker": {
+    "placeholderPeople": "Search by name or email",
+    "placeholder": "Search {entityName}",
+    "empty": "No {entityName} found",
+    "browse": "Browse all {entityName}",
+    "loading": "Loading…",
+    "error": "The results could not be loaded",
+    "remove": "Remove {label}"
+  },
+  "errorSummary": {
+    "one": "There is a problem",
+    "many": "There are {count} problems"
+  },
+  "exportDialog": {
+    "title": "Export",
+    "format": "Format",
+    "scope": "Scope",
+    "all": "All records",
+    "selection": "Selected records",
+    "background": "Export in the background",
+    "export": "Export",
+    "cancel": "Cancel",
+    "invalid": "Choose an available format and scope.",
+    "failed": "Could not export. Try again.",
+    "ready": "Export ready",
+    "queued": "Export queued",
+    "download": "Download export",
+    "done": "Done"
+  },
+  "featureIntro": {
+    "new": "New",
+    "whatsNew": "What is new",
+    "gotIt": "Got it",
+    "later": "Not now",
+    "close": "Close"
+  },
+  "file": {
+    "folder": "folder",
+    "items": "{n} items",
+    "item": "{n} item"
+  },
+  "fileBrowser": {
+    "label": "Files",
+    "root": "Library",
+    "newFolder": "New folder",
+    "folderName": "Folder name",
+    "create": "Create",
+    "upload": "Upload",
+    "search": "Search this folder",
+    "folders": "Folders",
+    "path": "Location",
+    "count": "{n} items",
+    "one": "1 item",
+    "empty": "This folder is empty",
+    "emptyText": "Upload files or create a folder.",
+    "noMatch": "Nothing matches “{q}”",
+    "download": "Download",
+    "moveTo": "Move to",
+    "delete": "Delete",
+    "noun": "item",
+    "plural": "items",
+    "drop": "Drop files to upload to {folder}",
+    "nameTaken": "A file or folder named “{name}” is already here.",
+    "nameEmpty": "Give the folder a name.",
+    "items": "{n} items",
+    "item": "{n} item"
+  },
+  "fileInput": {
+    "choose": "Choose file",
+    "chooseMany": "Choose files",
+    "none": "No file chosen",
+    "count": "{count} files",
+    "remove": "Remove {name}"
+  },
+  "fileList": {
+    "sort": "Sort",
+    "sortBy": "Sort by {field}",
+    "field": "Sort by",
+    "order": "Order",
+    "asc": "Ascending",
+    "desc": "Descending",
+    "name": "Name",
+    "size": "Size",
+    "modified": "Modified",
+    "owner": "Owner",
+    "status": "Status",
+    "count": "{n} items",
+    "one": "1 item",
+    "empty": "Nothing here yet",
+    "open": "Open",
+    "download": "Download",
+    "rename": "Rename…",
+    "delete": "Delete",
+    "moveTo": "Move to",
+    "file": "file",
+    "files": "files",
+    "folder": "folder",
+    "folders": "folders",
+    "items": "{n} items",
+    "item": "{n} item"
+  },
+  "filePicker": {
+    "title": "Choose files",
+    "all": "All files",
+    "folders": "Folders",
+    "search": "Search files",
+    "empty": "No matching files.",
+    "pick": "Choose",
+    "cancel": "Cancel",
+    "failed": "Files could not be chosen. Try again."
+  },
+  "fileRow": {
+    "select": "Select {name}",
+    "more": "More actions for {name}",
+    "download": "Download {name}",
+    "rename": "Rename…",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "retry": "Try again",
+    "transfer": "{label} {name}",
+    "uploading": "Uploading",
+    "file": "file",
+    "files": "files",
+    "folder": "folder",
+    "folders": "folders",
+    "items": "{n} items",
+    "item": "{n} item"
+  },
+  "filterBar": {
+    "label": "Filters",
+    "more": "More filters",
+    "clearAll": "Clear all",
+    "one": "{label}: {value}",
+    "several": "{label} · {count}"
+  },
+  "filterPanel": {
+    "label": "Filter",
+    "info": "Only the records that meet the conditions are shown; a condition left unfinished does not filter.",
+    "sub": "In this view, show records",
+    "where": "Where",
+    "and": "and",
+    "or": "or",
+    "empty": "No conditions: every record is shown.",
+    "addCondition": "Add condition",
+    "addGroup": "Add condition group",
+    "remove": "Remove {what}",
+    "condition": "condition",
+    "group": "condition group",
+    "value": "Enter a value",
+    "choose": "Choose options",
+    "field": "Field",
+    "operator": "Operator",
+    "join": "And or or"
+  },
+  "form": {
+    "label": "Form actions"
+  },
+  "formFlow": {
+    "create": "Create",
+    "save": "Save changes",
+    "cancel": "Cancel",
+    "failed": "Could not save. Try again.",
+    "invalid": "Check the fields before saving.",
+    "saved": "Saved",
+    "unsaved": "Your changes will be lost.",
+    "close": "Close"
+  },
+  "generatedContent": {
+    "label": "Generated content",
+    "helpful": "Helpful",
+    "unhelpful": "Not helpful",
+    "regenerate": "Regenerate",
+    "previous": "Previous version",
+    "next": "Next version",
+    "version": "Version",
+    "feedbackSaved": "Feedback saved",
+    "failed": "The action failed. Try again.",
+    "pending": "Working"
+  },
+  "groupPanel": {
+    "label": "Group",
+    "title": "Group by",
+    "info": "Rows with the same value are gathered under one header; a subgroup splits each group again.",
+    "empty": "Gather the rows that share a value under one header.",
+    "add": "Add group",
+    "addSub": "Add subgroup",
+    "collapseAll": "Collapse all",
+    "expandAll": "Expand all",
+    "more": "More for {name}",
+    "hideEmpty": "Hide empty groups",
+    "remove": "Remove the grouping by {name}",
+    "removeTip": "Remove group",
+    "field": "Field",
+    "order": "Order"
+  },
+  "helpPanel": {
+    "title": "Help",
+    "search": "Search help",
+    "empty": "No matching articles",
+    "back": "Back to articles",
+    "read": "Read full article",
+    "close": "Collapse help"
+  },
+  "image": {
+    "error": "Image not available"
+  },
+  "imageAnnotation": {
+    "title": "Image annotations",
+    "pin": "Pin",
+    "region": "Region",
+    "location": "Location",
+    "comment": "Comment",
+    "kind": "Annotation type",
+    "add": "Add annotation",
+    "empty": "Enter a location and comment.",
+    "failed": "Could not save. Try again.",
+    "none": "No annotations"
+  },
+  "importDialog": {
+    "title": "Import",
+    "file": "File",
+    "paste": "Paste data",
+    "url": "URL",
+    "choose": "Choose source file",
+    "drop": "Drop a file here or choose it below.",
+    "none": "No file chosen",
+    "import": "Import",
+    "cancel": "Cancel",
+    "invalid": "Choose a supported file, paste data, or enter an HTTP URL.",
+    "failed": "Could not import. Your source is still available.",
+    "unsaved": "Your import source will be lost."
+  },
+  "importWizard": {
+    "title": "Import records",
+    "mapping": "Map columns",
+    "review": "Review",
+    "results": "Results",
+    "column": "Source column",
+    "choose": "Choose a column",
+    "missing": "Map every required field.",
+    "invalid": "The source has no usable columns or rows.",
+    "done": "Done",
+    "imported": "Import complete",
+    "source": "Source",
+    "cancel": "Cancel",
+    "unsaved": "Your import mapping will be lost."
+  },
+  "inlineEdit": {
+    "edit": "edit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "empty": "Add a value",
+    "saved": "Saved",
+    "failed": "The change could not be saved"
+  },
+  "link": {
+    "newTab": "opens in a new tab"
+  },
+  "loadMore": {
+    "more": "Load more",
+    "moreCount": "Show {n} more",
+    "loading": "Loading…",
+    "end": "You’ve reached the end",
+    "count": "{shown} of {total}",
+    "added": {
+      "one": "{n} more item loaded",
+      "other": "{n} more items loaded"
+    }
+  },
+  "loading": {
+    "label": "Loading"
+  },
+  "loadingOverlay": {
+    "loading": "Loading",
+    "cancel": "Cancel"
+  },
+  "mediaPlayer": {
+    "rate": "Playback speed",
+    "transcript": "Show transcript",
+    "hideTranscript": "Hide transcript",
+    "pip": "Picture in picture",
+    "exitPip": "Exit picture in picture",
+    "unsupported": "Picture in picture is unavailable.",
+    "failed": "This media could not be played.",
+    "pipFailed": "Could not change picture in picture. Try again.",
+    "seek": "Seek to {time}",
+    "fallback": "Open media file",
+    "volume": "Volume",
+    "mute": "Mute",
+    "audioFailed": "The separate sound track could not be played. Video is playing muted."
+  },
+  "mediaViewer": {
+    "label": "Preview",
+    "close": "Close preview",
+    "previous": "Previous",
+    "next": "Next",
+    "counter": "{index} of {total}"
+  },
+  "mentionInput": {
+    "add": "Add mention",
+    "choose": "Choose a person to mention"
+  },
+  "metadataEditor": {
+    "save": "Save metadata",
+    "reset": "Reset",
+    "apply": "Apply {field}",
+    "required": "Enter a value.",
+    "failed": "Metadata could not be saved. Your changes are still available.",
+    "saved": "Metadata saved",
+    "unsaved": "Your metadata changes will be lost."
+  },
+  "metricCard": {
+    "more": "More for {title}",
+    "up": "Up",
+    "down": "Down",
+    "good": "good",
+    "bad": "bad",
+    "vs": "vs",
+    "empty": "No data",
+    "loading": "Loading {title}",
+    "error": "Couldn’t load the figures.",
+    "retry": "Try again",
+    "stale": "Out of date",
+    "rank": "#{n}",
+    "toCome": "to come",
+    "hit": "hit",
+    "missed": "missed",
+    "weekdays": ["M", "T", "W", "T", "F", "S", "S"],
+    "weekdayNames": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+    "month": "{done} of {days} working days so far",
+    "parts": "{label} {share}",
+    "compare": "{a} {av}, {b} {bv}"
+  },
+  "millerColumns": {
+    "empty": "No items",
+    "resize": "Resize the {label} column",
+    "preview": "Preview of {label}"
+  },
+  "navList": {
+    "pin": "Pin",
+    "unpin": "Unpin",
+    "pinItem": "Pin {label}",
+    "unpinItem": "Unpin {label}"
+  },
+  "navPane": {
+    "browse": "Browse"
+  },
+  "notice": {
+    "dismiss": "Dismiss"
+  },
+  "notificationList": {
+    "label": "Notifications",
+    "empty": "No notifications",
+    "markAllRead": "Mark all read",
+    "viewAll": "View all"
+  },
+  "numberInput": {
+    "decrease": "Decrease",
+    "increase": "Increase"
+  },
+  "onboarding": {
+    "start": "Get started",
+    "skip": "Skip welcome",
+    "tour": "Take a tour",
+    "checklist": "Get started",
+    "close": "Close"
+  },
+  "otpInput": {
+    "cell": "character {n} of {total}"
+  },
+  "peopleGroup": {
+    "team": "Team",
+    "group": "Group",
+    "members": "{n} members",
+    "member": "{n} member",
+    "showMembers": "Show members",
+    "membersOf": "Members of {name}"
+  },
+  "permissionSummary": {
+    "can": "Can",
+    "cannot": "Cannot",
+    "manage": "Manage access",
+    "canSentence": "Can {list}",
+    "cannotSentence": "Cannot {list}"
+  },
+  "permissionsEditor": {
+    "label": "Permissions",
+    "capability": "Capability",
+    "subject": "Show permissions for",
+    "save": "Save permissions",
+    "failed": "Could not save permissions. Try again.",
+    "unsaved": "Your permission changes have not been saved."
+  },
+  "persona": {
+    "online": "Online",
+    "away": "Away",
+    "busy": "Busy",
+    "dnd": "Do not disturb",
+    "offline": "Offline"
+  },
+  "popconfirm": {
+    "cancel": "Cancel"
+  },
+  "popover": {
+    "close": "Close"
+  },
+  "presenceBar": {
+    "viewers": "Viewing",
+    "editors": "Editing",
+    "cursors": "Cursors",
+    "empty": "No one else here",
+    "view": "View person"
+  },
+  "productCard": {
+    "sale": "Sale",
+    "outOfStock": "Out of stock",
+    "addToCart": "Add to cart",
+    "addToCartFor": "Add {title} to cart",
+    "now": "Now",
+    "was": "Was",
+    "rating": "Rating",
+    "reviews": "{n} reviews",
+    "review": "1 review",
+    "soldOut": "{title} is out of stock"
+  },
+  "productOptions": {
+    "chosen": "{label}:",
+    "unavailable": "Out of stock",
+    "quantity": "Quantity",
+    "quantityOf": "Quantity, {product}",
+    "unavailableName": "{label}, out of stock",
+    "none": "None chosen"
+  },
+  "progressSteps": {
+    "step": "Step {n} of {total}",
+    "complete": "Complete",
+    "current": "Current step",
+    "upcoming": "Not started",
+    "error": "Needs attention"
+  },
+  "promptSuggestions": {
+    "label": "Prompt suggestions",
+    "empty": "No prompt suggestions",
+    "failed": "Could not use this suggestion. Try again."
+  },
+  "providers": {
+    "UnsavedGuard": {
+      "title": "Leave without saving?",
+      "message": "Your changes will be lost.",
+      "leave": "Leave",
+      "stay": "Keep editing"
+    },
+    "theme-boot": {
+      "compact": "Compact",
+      "standard": "Standard",
+      "comfortable": "Comfortable"
+    }
+  },
+  "publish": {
+    "publish": "Publish",
+    "publishNow": "Publish now",
+    "schedule": "Schedule",
+    "cancelSchedule": "Cancel schedule",
+    "unpublish": "Unpublish",
+    "cancel": "Cancel",
+    "publishTitle": "Publish {name}?",
+    "publishMessage": "It becomes visible to {audience}.",
+    "unpublishTitle": "Unpublish {name}?",
+    "unpublishMessage": "It is hidden from {audience}. You can publish it again.",
+    "scheduleTitle": "Schedule {name}",
+    "when": "Publish on",
+    "whenHint": "Date and time, in your time zone.",
+    "past": "Choose a time in the future.",
+    "empty": "Choose a date and time.",
+    "publishedLine": "Published {at}",
+    "publishedBy": "Published {at} by {by}",
+    "scheduledLine": "Publishes {at}",
+    "scheduledBy": "Publishes {at}, scheduled by {by}",
+    "draftLine": "Not published",
+    "published": "{name} published",
+    "scheduled": "{name} scheduled for {at}",
+    "unpublished": "{name} unpublished",
+    "undo": "Undo",
+    "everyone": "everyone with access",
+    "actions": "Publishing"
+  },
+  "queryBuilder": {
+    "builder": "Builder",
+    "text": "Text",
+    "viewLabel": "View",
+    "where": "Where",
+    "and": "And",
+    "or": "Or",
+    "andWord": "and",
+    "orWord": "or",
+    "join": "Match",
+    "all": "All rules",
+    "any": "Any rule",
+    "addRule": "Add rule",
+    "addGroup": "Add group",
+    "removeRule": "Remove rule",
+    "removeGroup": "Remove group",
+    "field": "Field",
+    "operator": "Operator",
+    "value": "Value",
+    "rule": "Rule {n}",
+    "group": "Group {n}",
+    "empty": "No rules: every record matches.",
+    "everything": "Every record",
+    "matches": "{n} matches",
+    "match": "{n} match",
+    "textTitle": "Query",
+    "added": "Rule added",
+    "groupAdded": "Group added",
+    "removed": "Rule removed",
+    "groupRemoved": "Group removed"
+  },
+  "quickFilter": {
+    "preset": "any"
+  },
+  "rating": {
+    "label": "Rating"
+  },
+  "refineMenu": {
+    "label": "Refine",
+    "shorter": "Make shorter",
+    "longer": "Make longer",
+    "tone": "Change tone",
+    "formal": "Formal",
+    "casual": "Casual",
+    "neutral": "Neutral",
+    "custom": "Custom instruction",
+    "prompt": "Instruction",
+    "apply": "Apply instruction",
+    "cancel": "Cancel",
+    "empty": "Enter an instruction.",
+    "failed": "Could not refine this text. Try again."
+  },
+  "relatedAssets": {
+    "empty": "No related assets"
+  },
+  "relativeDateInput": {
+    "custom": "Custom",
+    "none": "Any time",
+    "amount": "Amount",
+    "unit": "Unit",
+    "direction": "Direction",
+    "past": "Last",
+    "future": "Next",
+    "units": {
+      "day": ["day", "days"],
+      "week": ["week", "weeks"],
+      "month": ["month", "months"],
+      "year": ["year", "years"]
+    },
+    "presets": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "last-7-days": "Last 7 days",
+      "last-30-days": "Last 30 days",
+      "last-90-days": "Last 90 days",
+      "last-12-months": "Last 12 months",
+      "tomorrow": "Tomorrow",
+      "next-7-days": "Next 7 days",
+      "next-30-days": "Next 30 days",
+      "next-90-days": "Next 90 days",
+      "next-12-months": "Next 12 months"
+    }
+  },
+  "renameAction": {
+    "label": "Name",
+    "rename": "Rename",
+    "open": "Rename…",
+    "title": "Rename {name}",
+    "cancel": "Cancel",
+    "empty": "Enter a name",
+    "slash": "A name can’t contain / or \\",
+    "taken": "There’s already an item named {name} here",
+    "tooLong": "Use {max} characters or fewer",
+    "renamed": "Renamed to {name}",
+    "failed": "The name could not be changed"
+  },
+  "renditionList": {
+    "label": "Renditions",
+    "name": "Name",
+    "format": "Format",
+    "size": "Size",
+    "download": "Download",
+    "empty": "No renditions."
+  },
+  "resizable": {
+    "width": "{label} width",
+    "height": "{label} height"
+  },
+  "resourceList": {
+    "item": "item",
+    "selectAll": "Select all {n} {nouns}",
+    "select": "Select {name}",
+    "count": "{n} {nouns}",
+    "selected": "{n} of {total} selected"
+  },
+  "retry": {
+    "title": "Couldn’t load",
+    "retry": "Retry",
+    "retryNow": "Retry now",
+    "retrying": "Retrying…",
+    "waiting": "Retrying in {time}",
+    "attempt": "Attempt {attempt} of {attempts}",
+    "stopped": "Stopped after {attempts} attempts",
+    "dismiss": "Dismiss",
+    "status": "failed"
+  },
+  "reviewFlow": {
+    "label": "Waiting for review",
+    "noun": "item"
+  },
+  "richTextEditor": {
+    "toolbar": "Formatting",
+    "more": "More formatting",
+    "bold": "Bold",
+    "italic": "Italic",
+    "underline": "Underline",
+    "strike": "Strikethrough",
+    "code": "Inline code",
+    "subscript": "Subscript",
+    "superscript": "Superscript",
+    "link": "Link",
+    "bulleted": "Bulleted list",
+    "numbered": "Numbered list",
+    "tasks": "Task list",
+    "quote": "Quote",
+    "codeBlock": "Code block",
+    "rule": "Horizontal rule",
+    "image": "Image",
+    "table": "Table",
+    "color": "Text color",
+    "highlight": "Highlight",
+    "alignLeft": "Align left",
+    "alignCenter": "Align center",
+    "alignRight": "Align right",
+    "alignJustify": "Justify",
+    "clear": "Clear formatting",
+    "undo": "Undo",
+    "redo": "Redo",
+    "textStyle": "Text style",
+    "paragraph": "Paragraph",
+    "font": "Font",
+    "defaultFont": "Default font",
+    "size": "Size",
+    "defaultSize": "Default size",
+    "custom": "Custom…",
+    "customFont": "Font family",
+    "customSize": "Font size",
+    "insertTable": "Insert table",
+    "rowBefore": "Add row above",
+    "rowAfter": "Add row below",
+    "columnBefore": "Add column before",
+    "columnAfter": "Add column after",
+    "deleteRow": "Delete row",
+    "deleteColumn": "Delete column",
+    "headerRow": "Header row",
+    "deleteTable": "Delete table",
+    "linkAddress": "Link address",
+    "addLink": "Add link",
+    "imageAddress": "Image address",
+    "imageAlt": "Description",
+    "addImage": "Add image",
+    "swatches": "Suggested colors",
+    "customColor": "Custom color",
+    "hex": "Hex value",
+    "apply": "Apply",
+    "remove": "Remove",
+    "cancel": "Cancel",
+    "mentions": "Suggestions",
+    "groupMarks": "Text",
+    "groupColor": "Color",
+    "groupAlign": "Alignment",
+    "groupLists": "Lists",
+    "groupInsert": "Insert",
+    "groupHistory": "History",
+    "leave": "Press Tab or Shift+Tab to leave the editor",
+    "hint": "Escape, then Tab, leaves the editor"
+  },
+  "roleLabel": {
+    "owner": "Owner",
+    "editor": "Editor",
+    "viewer": "Viewer"
+  },
+  "roleManager": {
+    "roles": "Roles",
+    "create": "Create role",
+    "createTitle": "Create role",
+    "name": "Name",
+    "description": "Description",
+    "descriptionHint": "One sentence on what people with this role can do.",
+    "startFrom": "Start with the permissions of",
+    "empty": "Enter a name.",
+    "taken": "A role named {name} already exists.",
+    "back": "All roles",
+    "members": "Members",
+    "member": "member",
+    "membersCount": "{n} members",
+    "memberCount": "{n} member",
+    "builtIn": "Built-in",
+    "custom": "Custom",
+    "permissions": "Permissions",
+    "builtInNote": "Built-in roles can’t be changed. Duplicate one to make your own.",
+    "addMember": "Add a member",
+    "remove": "Remove {name}",
+    "lastMember": "{role} needs at least one member. Add someone else first.",
+    "noMembers": "Nobody has this role yet.",
+    "role": "role",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "added": "{name} added to {role}",
+    "removed": "{name} removed from {role}",
+    "created": "{name} created",
+    "access": "People with the {role} role",
+    "people": "{n} people",
+    "peopleOne": "{n} person",
+    "allowed": "{permission} allowed for {role}",
+    "denied": "{permission} no longer allowed for {role}"
+  },
+  "saveAs": {
+    "title": "Save as",
+    "name": "Name",
+    "location": "Location",
+    "format": "Format",
+    "save": "Save copy",
+    "cancel": "Cancel",
+    "required": "Enter a name and choose a location.",
+    "failed": "Could not save the copy. Try again.",
+    "unsaved": "Your changes will be lost."
+  },
+  "searchField": {
+    "suggestions": "Suggestions",
+    "recent": "Recent searches",
+    "clearRecent": "Clear recent searches",
+    "clear": "Clear search",
+    "results": "{n} suggestions",
+    "removed": "{query} removed from recent searches",
+    "remove": "Remove {query}",
+    "placeholder": "Search",
+    "label": "Search"
+  },
+  "searchWorkspace": {
+    "title": "Search",
+    "selectAll": "Select all",
+    "allSelected": "Every {noun} is selected",
+    "placeholder": "Search…",
+    "result": "result",
+    "results": "results",
+    "searchField": "Search {nouns}",
+    "save": "Save search",
+    "filters": "Filters",
+    "activeFilters": "Active filters",
+    "chip": "{label}: {value}",
+    "remove": "Remove {text}",
+    "clearAll": "Clear all",
+    "view": "View",
+    "grid": "Grid",
+    "table": "Table",
+    "sort": "Sort",
+    "sortValue": "Sort: {value}",
+    "noMatchQuery": "Nothing matches “{query}”.",
+    "noMatchQueryFilters": "Nothing matches “{query}” with these filters.",
+    "noMatchFilters": "Nothing matches these filters."
+  },
+  "secondaryPane": {
+    "expand": "Expand {name}",
+    "collapse": "Collapse {name}",
+    "resize": "Resize {name}",
+    "close": "Close {name}",
+    "back": "Back to {name}"
+  },
+  "sessionTimeout": {
+    "warningTitle": "Your session is about to end",
+    "warning": "You’ll be signed out in {time} because you haven’t been active.",
+    "stay": "Stay signed in",
+    "signOut": "Sign out",
+    "signedOutTitle": "You were signed out",
+    "signedOut": "For your security, you were signed out after {minutes} minutes without activity.",
+    "signedOutShort": "For your security, you were signed out because you weren’t active.",
+    "saved": "Your changes are saved.",
+    "signIn": "Sign in again",
+    "left": "{time} left",
+    "ended": "Signed out"
+  },
+  "shareDialog": {
+    "title": "Share",
+    "people": "People",
+    "link": "Link",
+    "person": "Person",
+    "role": "Role",
+    "add": "Add person",
+    "remove": "Remove",
+    "save": "Save access",
+    "cancel": "Cancel",
+    "copy": "Copy link",
+    "access": "Link access",
+    "restricted": "Only people with access",
+    "anyone": "Anyone with the link can view",
+    "nativeShare": "Share using device",
+    "failed": "Could not share. Try again.",
+    "invalid": "Choose a person and an available role.",
+    "unsaved": "Your access changes will be lost."
+  },
+  "sheet": {
+    "expand": "Expand sheet",
+    "shrink": "Shrink sheet",
+    "doneLabel": "Done",
+    "cancelLabel": "Cancel",
+    "closeLabel": "Close",
+    "done": "Done",
+    "cancel": "Cancel",
+    "close": "Close"
+  },
+  "shortcutsDialog": {
+    "title": "Keyboard shortcuts",
+    "search": "Search shortcuts",
+    "general": "General",
+    "empty": "No matching shortcuts",
+    "close": "Close"
+  },
+  "slider": {
+    "minimum": "Minimum",
+    "maximum": "Maximum"
+  },
+  "sortPanel": {
+    "label": "Sort",
+    "title": "Sort by",
+    "within": "Sort within groups by",
+    "info": "The rows are ordered by the first field, then by the next where the first is the same.",
+    "empty": "No sort: the rows keep their own order.",
+    "add": "Add a sort",
+    "addAnother": "Add another sort",
+    "remove": "Remove the sort by {name}",
+    "removeTip": "Remove sort",
+    "field": "Field",
+    "direction": "Direction"
+  },
+  "sortableList": {
+    "moveMenu": "Move {name}",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "moveEarlier": "Move earlier",
+    "moveLater": "Move later",
+    "moveFirst": "Move to the start",
+    "moveLast": "Move to the end",
+    "moveUpNamed": "Move {name} up",
+    "moveDownNamed": "Move {name} down"
+  },
+  "splitButton": {
+    "more": "More {label} options"
+  },
+  "suggestedEdit": {
+    "label": "Suggested edits",
+    "before": "Before",
+    "after": "After",
+    "accept": "Accept",
+    "reject": "Reject",
+    "acceptAll": "Accept all",
+    "accepted": "Accepted",
+    "rejected": "Rejected",
+    "empty": "No suggested edits",
+    "failed": "Could not save this decision. Try again."
+  },
+  "tabs": {
+    "more": "More",
+    "moreLabel": "More tabs"
+  },
+  "tag": {
+    "label": "Add a tag"
+  },
+  "teachingBubble": {
+    "close": "Close",
+    "step": "{current} of {total}"
+  },
+  "templates": {
+    "Commerce": {
+      "Storefront": {
+        "layout": "gallery"
+      }
+    },
+    "templates": {
+      "Templates": {
+        "empty": "No records yet",
+        "emptyDescription": "Create a record to get started.",
+        "pane": "Records",
+        "sections": "On this page",
+        "retry": "Try again",
+        "home": "Go home",
+        "search": "Search results",
+        "tools": "Tools",
+        "inspector": "Options",
+        "detail": "Details",
+        "noSelection": "Nothing selected",
+        "noSelectionDescription": "Choose an item to see it here."
+      }
+    }
+  },
+  "time": {
+    "now": "Just now"
+  },
+  "timePicker": {
+    "hour": "Hour",
+    "minute": "Minute",
+    "period": "AM or PM",
+    "am": "AM",
+    "pm": "PM",
+    "times": "Times",
+    "empty": "--"
+  },
+  "timeZoneSelect": {
+    "placeholder": "Choose a time zone",
+    "empty": "No matches",
+    "utc": "Coordinated Universal Time",
+    "other": "Other",
+    "regions": {
+      "Africa": "Africa",
+      "America": "Americas",
+      "Antarctica": "Antarctica",
+      "Arctic": "Arctic",
+      "Asia": "Asia",
+      "Atlantic": "Atlantic",
+      "Australia": "Australia",
+      "Europe": "Europe",
+      "Indian": "Indian Ocean",
+      "Pacific": "Pacific"
+    }
+  },
+  "toast": {
+    "aria-label": "Dismiss",
+    "undo": "Undo",
+    "dismiss": "Dismiss"
+  },
+  "tour": {
+    "next": "Next",
+    "back": "Back",
+    "finish": "Finish tour",
+    "skip": "Skip tour",
+    "resume": "Resume tour",
+    "close": "Close",
+    "step": "{current} of {total}"
+  },
+  "transferList": {
+    "source": "Available",
+    "target": "Chosen",
+    "add": "Add",
+    "addAll": "Add all",
+    "remove": "Remove",
+    "removeAll": "Remove all",
+    "up": "Move up",
+    "down": "Move down",
+    "search": "Search {title}",
+    "selectAll": "Check every item in {title}",
+    "count": "{checked} of {total} checked",
+    "moved": "{n} moved to {title}",
+    "empty": "No items",
+    "noMatch": "No matches",
+    "moves": "Move items"
+  },
+  "treeSelect": {
+    "placeholder": "Choose",
+    "search": "Search",
+    "choose": "Choose an item",
+    "more": "{list} and {n} more",
+    "empty": "No matches"
+  },
+  "trialUpgrade": {
+    "trial": "Trial",
+    "compare": "Compare plans",
+    "title": "Choose a plan",
+    "plan": "Plan",
+    "upgrade": "Upgrade",
+    "cancel": "Cancel",
+    "failed": "Could not upgrade. Try again.",
+    "upgraded": "Plan updated"
+  },
+  "uploadManager": {
+    "dialogTitle": "Upload files",
+    "queue": "Uploads",
+    "drop": "Drag and drop files or folders here",
+    "or": "or",
+    "chooseFiles": "Choose files",
+    "chooseFolder": "Choose a folder",
+    "uploading": "Uploading {n} files",
+    "uploadingOne": "Uploading 1 file",
+    "done": "{n} uploads complete",
+    "doneOne": "1 upload complete",
+    "failed": "{n} uploads failed",
+    "failedOne": "1 upload failed",
+    "none": "No uploads",
+    "progress": "{done} of {total} uploaded",
+    "overall": "Overall progress",
+    "waiting": "Waiting",
+    "uploaded": "Uploaded",
+    "canceled": "Canceled",
+    "cancelAll": "Cancel all",
+    "clear": "Clear finished",
+    "hide": "Hide the uploads",
+    "show": "Show the uploads",
+    "close": "Close",
+    "finish": "Done",
+    "remove": "Remove from the list",
+    "again": "Upload again",
+    "tooLarge": "This file is larger than {max}.",
+    "wrongType": "This type of file can’t be uploaded here.",
+    "error": "The upload failed. Try again.",
+    "failedNamed": "{name} failed: {reason}",
+    "status": "canceled"
+  },
+  "userCard": {
+    "online": "Online",
+    "away": "Away",
+    "busy": "Busy",
+    "dnd": "Do not disturb",
+    "offline": "Offline"
+  },
+  "utils": {
+    "clipboard": {
+      "copied": "Copied",
+      "failed": "Couldn’t copy. Select the text and copy it by hand."
+    }
+  },
+  "versionCompare": {
+    "label": "Version comparison",
+    "compare": "Compare",
+    "with": "With",
+    "swap": "Swap",
+    "swapLabel": "Swap the two versions",
+    "view": "View",
+    "columns": "Side by side",
+    "slider": "Slider",
+    "text": "Text",
+    "by": "by {author}",
+    "diff": "Changes from {base} to {target}",
+    "added": "Added",
+    "removed": "Removed",
+    "same": "No changes in the text",
+    "summary": "{added} added, {removed} removed",
+    "lines": "{n} lines",
+    "line": "1 line",
+    "previous": "Previous change",
+    "next": "Next change",
+    "at": "Change {n} of {total}",
+    "unchanged": "Show {n} unchanged lines",
+    "empty": "Choose two versions to compare."
+  },
+  "versionHistory": {
+    "label": "Version history",
+    "preview": "Preview",
+    "restore": "Restore",
+    "confirm": "Restore this version?",
+    "cancel": "Cancel",
+    "failed": "The version could not be restored. Try again.",
+    "restored": "Version restored",
+    "empty": "No versions."
+  },
+  "versionLabel": {
+    "version": "Version",
+    "prefix": "v",
+    "latest": "Latest",
+    "draft": "Draft"
+  },
+  "viewMenu": {
+    "reset": "Reset view",
+    "label": "View",
+    "layout": "Layout",
+    "list": "List",
+    "gallery": "Gallery",
+    "size": "Card size (gallery)",
+    "s": "Small",
+    "m": "Medium",
+    "l": "Large",
+    "height": "Row height (list)",
+    "short": "Short",
+    "medium": "Medium",
+    "tall": "Tall",
+    "extra-tall": "Extra tall"
+  },
+  "virtualList": {
+    "loading": "Loading…",
+    "empty": "No items",
+    "count": {
+      "one": "{n} item",
+      "other": "{n} items"
+    },
+    "group": {
+      "one": "{n} item",
+      "other": "{n} items"
+    }
+  },
+  "widgetGrid": {
+    "widget": "Widget",
+    "widgetLower": "widget",
+    "move": "Move {title} (arrow keys)",
+    "position": "{title}, position {index} of {total}",
+    "earlier": "Move earlier",
+    "later": "Move later",
+    "first": "Move to the start",
+    "last": "Move to the end"
+  },
+  "wizardDialog": {
+    "close": "Close",
+    "unsaved": "Your changes will be lost."
+  }
+};
+  } },
+  "platform/i18n/ar.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// Plenix's built-in Arabic words (owner, arabic-batch4-36, arabic-words-37; issue 427): every section of en.js in Arabic, a draft
+// (Builder 02's table, ~/handoff/i18n/strings.md) for the owner's review. LocaleProvider uses them for an Arabic locale after the
+// application's own catalog and before English; a part's strings prop still wins.
+var _default = exports.default = {
+  "pagination": {
+    "label": "الصفحات",
+    "range": "{first} إلى {last} من {total}",
+    "previous": "الصفحة السابقة",
+    "next": "الصفحة التالية",
+    "page": "الصفحة {n}",
+    "perPage": "لكل صفحة"
+  },
+  "chart": {
+    "barChart": {
+      "category": "الفئة",
+      "total": "الإجمالي",
+      "range": "النطاق",
+      "count": "العدد"
+    },
+    "boxPlot": {
+      "group": "المجموعة",
+      "min": "الحد الأدنى",
+      "q1": "الربع الأول",
+      "median": "الوسيط",
+      "q3": "الربع الثالث",
+      "max": "الحد الأقصى",
+      "outliers": "القيم الشاذة",
+      "n": "القيم"
+    },
+    "bulletChart": {
+      "measure": "المقياس",
+      "value": "القيمة",
+      "target": "الهدف",
+      "ranges": "النطاقات",
+      "poor": "ضعيف",
+      "fair": "مقبول",
+      "good": "جيد"
+    },
+    "chartFrame": {
+      "showData": "عرض البيانات",
+      "table": "{title}: البيانات"
+    },
+    "comboChart": {
+      "category": "الفئة",
+      "bars": "الأعمدة",
+      "lines": "الخطوط"
+    },
+    "diagram": {
+      "step": "الخطوة",
+      "kind": "النوع",
+      "next": "يؤدي إلى",
+      "previous": "يأتي من",
+      "process": "الخطوة",
+      "decision": "قرار",
+      "terminal": "بداية أو نهاية",
+      "data": "البيانات",
+      "box": "الجزء",
+      "group": "المجموعة",
+      "end": "النهاية"
+    },
+    "funnelChart": {
+      "stage": "المرحلة",
+      "value": "العدد",
+      "kept": "المتبقي من الخطوة السابقة",
+      "ofFirst": "من الخطوة الأولى"
+    },
+    "ganttChart": {
+      "task": "المهمة",
+      "progress": "تم",
+      "dependsOn": "بانتظار",
+      "status": "الحالة",
+      "today": "اليوم",
+      "milestone": "مَعلَم",
+      "start": "البداية",
+      "end": "النهاية"
+    },
+    "gauge": {
+      "showData": "عرض البيانات",
+      "table": "{title}: البيانات",
+      "measure": "المقياس",
+      "value": "القيمة",
+      "min": "الحد الأدنى",
+      "max": "الحد الأقصى",
+      "ok": ""
+    },
+    "geoMap": {
+      "region": "المنطقة",
+      "place": "المكان",
+      "value": "القيمة",
+      "noData": "لا توجد بيانات",
+      "latitude": "خط العرض",
+      "longitude": "خط الطول",
+      "zoom": "التكبير",
+      "zoomIn": "تكبير",
+      "zoomOut": "تصغير",
+      "reset": "عرض الخريطة كاملة"
+    },
+    "heatMap": {
+      "value": "القيمة",
+      "row": "الصف",
+      "column": "العمود",
+      "date": "التاريخ",
+      "missing": "لا توجد بيانات",
+      "low": "منخفض",
+      "high": "مرتفع",
+      "scale": "مقياس الألوان"
+    },
+    "lineChart": {
+      "category": "الفئة"
+    },
+    "lollipopChart": {
+      "category": "الفئة",
+      "value": "القيمة"
+    },
+    "networkGraph": {
+      "node": "العقدة",
+      "group": "المجموعة",
+      "links": "متصل بـ",
+      "zoomIn": "تكبير",
+      "zoomOut": "تصغير",
+      "fit": "ملاءمة",
+      "hintZoom": " الأزرار +/- للتكبير والتصغير، والرقم 0 يناسب الرسم.",
+      "none": "لا شيء"
+    },
+    "pieChart": {
+      "part": "الجزء",
+      "value": "القيمة",
+      "share": "الحصة",
+      "total": "الإجمالي",
+      "other": "أخرى"
+    },
+    "radarChart": {
+      "measure": "المقياس"
+    },
+    "sankeyDiagram": {
+      "source": "المصدر",
+      "target": "الهدف",
+      "value": "القيمة",
+      "total": "الإجمالي"
+    },
+    "scatterChart": {
+      "series": "السلسلة",
+      "item": "العنصر"
+    },
+    "timelineChart": {
+      "item": "العنصر",
+      "lane": "المسار",
+      "today": "اليوم",
+      "date": "التاريخ",
+      "dates": "التواريخ",
+      "start": "البداية",
+      "end": "النهاية"
+    },
+    "treeChart": {
+      "name": "الاسم",
+      "detail": "التفاصيل",
+      "parent": "يتبع لـ",
+      "level": "المستوى",
+      "folded": "مطوي",
+      "open": "مفتوح"
+    },
+    "treemap": {
+      "group": "المجموعة",
+      "item": "الجزء",
+      "value": "القيمة",
+      "share": "الحصة"
+    },
+    "waterfallChart": {
+      "step": "الخطوة",
+      "change": "التغيير",
+      "total": "الإجمالي",
+      "running": "المجموع التراكمي",
+      "increase": "زيادة",
+      "decrease": "نقصان",
+      "end": "النهاية"
+    },
+    "wordCloud": {
+      "value": "العدد",
+      "word": "المصطلح",
+      "group": "المجموعة"
+    },
+    "chartLegend": {
+      "legend": "دليل الرسم"
+    }
+  },
+  "avatar": {
+    "online": "متصل",
+    "away": "غائب",
+    "busy": "مشغول",
+    "dnd": "عدم الإزعاج",
+    "offline": "غير متصل"
+  },
+  "avatarGroup": {
+    "more": "+{n}",
+    "moreLabel": "{n} إضافية"
+  },
+  "backToTop": {
+    "label": "العودة إلى الأعلى"
+  },
+  "barcode": {
+    "label": "الباركود {format}: {value}",
+    "invalid": "رمز {format} غير صالح",
+    "formats": {
+      "code128": "Code 128",
+      "ean13": "EAN-13",
+      "upca": "UPC-A"
+    }
+  },
+  "brand": {
+    "name": "Plenix"
+  },
+  "button": {
+    "working": "جارٍ العمل"
+  },
+  "calendar": {
+    "label": "التقويم",
+    "previous": "الشهر السابق",
+    "next": "الشهر التالي",
+    "week": "الأسبوع",
+    "weekShort": "أسبوع",
+    "today": "اليوم"
+  },
+  "carousel": {
+    "slide": "{n} من {total}",
+    "previous": "الشريحة السابقة",
+    "next": "الشريحة التالية",
+    "goTo": "الانتقال إلى الشريحة {n}",
+    "goToPage": "الانتقال إلى الصفحة {n}",
+    "pages": "الشرائح",
+    "pause": "إيقاف مؤقت",
+    "play": "تشغيل",
+    "pauseLabel": "إيقاف الشرائح مؤقتًا",
+    "playLabel": "تشغيل الشرائح",
+    "strip": "الشرائح"
+  },
+  "cascader": {
+    "placeholder": "اختيار",
+    "separator": " / ",
+    "search": "بحث",
+    "noMatches": "لا توجد نتائج مطابقة",
+    "empty": "لا توجد عناصر",
+    "remove": "إزالة {label}",
+    "columns": "الخيارات"
+  },
+  "codeBlock": {
+    "code": "الرمز",
+    "copy": "نسخ",
+    "copied": "تم النسخ",
+    "failed": "تعذّر النسخ"
+  },
+  "codeEditor": {
+    "hint": "مفتاح Tab يضيف مسافة بادئة. اضغط Escape ثم Tab للخروج من المحرّر."
+  },
+  "combobox": {
+    "loading": "جارٍ التحميل…",
+    "error": "تعذّر تحميل الخيارات"
+  },
+  "commandMenu": {
+    "label": "الأوامر",
+    "placeholder": "اكتب أمرًا أو ابحث",
+    "empty": "لا توجد نتائج لـ «{query}»",
+    "loading": "جارٍ التحميل",
+    "back": "رجوع",
+    "results": "{count} نتيجة"
+  },
+  "contextualHelp": {
+    "more": "المزيد عن {title}",
+    "moreUntitled": "مزيد من المعلومات"
+  },
+  "copyButton": {
+    "copy": "نسخ",
+    "copied": "تم النسخ",
+    "failed": "تعذّر النسخ. حدّد النص وانسخه يدويًا."
+  },
+  "countrySelect": {
+    "country": "اختر بلدًا أو منطقة",
+    "language": "اختر لغة",
+    "locale": "اختر لغة ومنطقة",
+    "suggested": "مقترح",
+    "all": "الكل"
+  },
+  "dataGrid": {
+    "empty": "لا يوجد شيء للعرض",
+    "failed": "تعذّر تحميل الجدول",
+    "retry": "إعادة المحاولة",
+    "selectAll": "تحديد كل الصفوف",
+    "selectRow": "تحديد الصف",
+    "rowActions": "إجراءات الصف",
+    "clearSort": "إلغاء الفرز",
+    "hide": "إخفاء الحقل",
+    "showAll": "إظهار كل الحقول",
+    "narrower": "أضيق",
+    "wider": "أعرض",
+    "fit": "ملاءمة المحتوى",
+    "deleted": "محذوف",
+    "moveLeft": "نقل إلى اليسار",
+    "moveRight": "نقل إلى اليمين",
+    "perPage": "الصفوف في كل صفحة",
+    "view": "خيارات العرض",
+    "wrapHeaders": "التفاف العناوين",
+    "markRead": "وضع علامة مقروء",
+    "markUnread": "وضع علامة غير مقروء",
+    "wrapText": "التفاف النص",
+    "wrapAll": "التفاف كل الأعمدة",
+    "fullText": "عرض النص كاملًا",
+    "rowHeight": "ارتفاع الصف",
+    "short": "قصير",
+    "medium": "متوسط",
+    "tall": "طويل",
+    "extra-tall": "طويل جدًا",
+    "filter": "تصفية",
+    "clearFilter": "مسح التصفية",
+    "groupBy": "التجميع حسب هذا الحقل",
+    "ungroup": "إلغاء التجميع",
+    "noGroup": "عدم التجميع حسب هذا الحقل",
+    "sizeToFit": "ملاءمة عرض العمود",
+    "sizeAllToFit": "ملاءمة عرض كل الأعمدة",
+    "moreColumns": "المزيد…",
+    "columns": "الأعمدة",
+    "loadMore": "تحميل المزيد",
+    "loading": "جارٍ تحميل السجلات",
+    "group": "التجميع حسب هذا الحقل",
+    "filterBy": "التصفية حسب هذا الحقل",
+    "any": "أي قيمة",
+    "contains": "يحتوي على…",
+    "moveRow": "نقل الصف",
+    "moveUp": "نقل لأعلى",
+    "moveDown": "نقل لأسفل",
+    "moveTop": "نقل إلى الأعلى",
+    "moveBottom": "نقل إلى الأسفل",
+    "resize": "تغيير الحجم",
+    "range": "{first}–{last} من {total}",
+    "count": "{shown} من {total}",
+    "pages": "صفحات {label}",
+    "loaded": "تم تحميل {n} صفوف إضافية، {shown} من {total}",
+    "noValue": "(فارغ)",
+    "addTo": "إضافة سجل إلى {value}",
+    "groupRow": "{value}، مجموعة، {count} {records}",
+    "record": "سجل",
+    "records": "سجلات",
+    "expanded": "موسّع",
+    "collapsed": "مطوي",
+    "sum": "المجموع",
+    "countOf": "العدد",
+    "average": "المتوسط",
+    "min": "الأدنى",
+    "max": "الأقصى",
+    "sortText": ["فرز من أ إلى ي", "فرز من ي إلى أ"],
+    "sortNumber": ["فرز من 1 إلى 9", "فرز من 9 إلى 1"],
+    "sortDate": ["فرز من الأقدم إلى الأحدث", "فرز من الأحدث إلى الأقدم"],
+    "sortCheck": ["فرز من غير المحدد إلى المحدد", "فرز من المحدد إلى غير المحدد"],
+    "unread": "غير مقروء ({count})"
+  },
+  "dataPill": {
+    "male": "ذكر",
+    "female": "أنثى"
+  },
+  "datePicker": {
+    "open": "اختيار التاريخ",
+    "dialog": "اختيار التاريخ",
+    "time": "الوقت",
+    "presets": "الإعدادات المسبقة",
+    "today": "اليوم",
+    "tomorrow": "غدًا",
+    "nextWeek": "بعد أسبوع",
+    "last7": "آخر 7 أيام",
+    "last30": "آخر 30 يومًا",
+    "thisMonth": "هذا الشهر",
+    "lastMonth": "الشهر الماضي"
+  },
+  "documentViewer": {
+    "document": "المستند",
+    "previous": "الصفحة السابقة",
+    "next": "الصفحة التالية",
+    "page": "الصفحة",
+    "zoom": "التكبير",
+    "thumbnails": "مصغّرات الصفحات",
+    "loading": "جارٍ تحميل المستند",
+    "failed": "تعذّر فتح المستند.",
+    "failedEngine": "تعذّر تشغيل عارض المستندات. حاول مرة أخرى لاحقًا.",
+    "failedAccess": "تعذّر فتح المستند. ربما نُقل أو لا تملك صلاحية الوصول إليه.",
+    "failedParse": "تعذّرت قراءة هذا الملف كملف PDF.",
+    "failedRender": "تعذّر عرض هذه الصفحة.",
+    "empty": "لا يوجد مستند.",
+    "retry": "حاول مرة أخرى"
+  },
+  "downloadButton": {
+    "download": "تنزيل",
+    "downloading": "جارٍ التنزيل",
+    "ready": "التنزيل جاهز"
+  },
+  "emptyState": {
+    "offline": {
+      "title": "أنت غير متصل بالإنترنت",
+      "text": "تحقق من اتصالك. ستُحدَّث هذه الصفحة عند عودتك إلى الاتصال."
+    },
+    "degraded": {
+      "title": "بعض الميزات لا تعمل",
+      "text": "هناك خدمة بطيئة أو لا تستجيب، لذا قد تكون المعلومات المعروضة غير محدّثة."
+    },
+    "permission-denied": {
+      "title": "لا تملك صلاحية الوصول",
+      "text": "اطلب من المالك مشاركتها معك."
+    },
+    "not-found": {
+      "title": "هذه الصفحة غير موجودة",
+      "text": "ربما نُقلت أو حُذفت. تحقق من العنوان أو ارجع إلى الصفحة السابقة."
+    },
+    "maintenance": {
+      "title": "متوقف للصيانة",
+      "text": "يجري تحديث هذه الخدمة. حاول مرة أخرى بعد بضع دقائق."
+    },
+    "completion": {
+      "title": "اكتمل كل شيء",
+      "text": "لم يتبقَّ شيء لإنجازه هنا."
+    }
+  },
+  "entityPicker": {
+    "placeholderPeople": "ابحث بالاسم أو البريد الإلكتروني",
+    "placeholder": "ابحث في {entityName}",
+    "empty": "لم يتم العثور على {entityName}",
+    "browse": "تصفح كل {entityName}",
+    "loading": "جارٍ التحميل…",
+    "error": "تعذّر تحميل النتائج",
+    "remove": "إزالة {label}"
+  },
+  "errorSummary": {
+    "one": "توجد مشكلة",
+    "many": "توجد {count} مشكلات"
+  },
+  "file": {
+    "folder": "مجلد",
+    "items": "{n} عناصر",
+    "item": "{n} عنصر"
+  },
+  "fileInput": {
+    "choose": "اختيار ملف",
+    "chooseMany": "اختيار ملفات",
+    "none": "لم يتم اختيار ملف",
+    "count": "{count} ملفات",
+    "remove": "إزالة {name}"
+  },
+  "fileRow": {
+    "select": "تحديد {name}",
+    "more": "المزيد من الإجراءات لـ {name}",
+    "download": "تنزيل {name}",
+    "rename": "إعادة تسمية…",
+    "delete": "حذف",
+    "cancel": "إلغاء",
+    "retry": "حاول مرة أخرى",
+    "transfer": "{label} {name}",
+    "uploading": "جارٍ الرفع",
+    "file": "ملف",
+    "files": "ملفات",
+    "folder": "مجلد",
+    "folders": "مجلدات",
+    "items": "{n} عناصر",
+    "item": "{n} عنصر"
+  },
+  "generatedContent": {
+    "label": "محتوى مُنشأ",
+    "helpful": "مفيد",
+    "unhelpful": "غير مفيد",
+    "regenerate": "إعادة الإنشاء",
+    "previous": "الإصدار السابق",
+    "next": "الإصدار التالي",
+    "version": "الإصدار",
+    "feedbackSaved": "تم حفظ الملاحظات",
+    "failed": "فشل الإجراء. حاول مرة أخرى.",
+    "pending": "جارٍ العمل"
+  },
+  "image": {
+    "error": "الصورة غير متاحة"
+  },
+  "inlineEdit": {
+    "edit": "تعديل",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "empty": "إضافة قيمة",
+    "saved": "تم الحفظ",
+    "failed": "تعذّر حفظ التغيير"
+  },
+  "link": {
+    "newTab": "يفتح في علامة تبويب جديدة"
+  },
+  "loadMore": {
+    "more": "تحميل المزيد",
+    "moreCount": "عرض {n} إضافية",
+    "loading": "جارٍ التحميل…",
+    "end": "وصلت إلى النهاية",
+    "count": "{shown} من {total}",
+    "added": {
+      "zero": "لم يتم تحميل عناصر إضافية",
+      "one": "تم تحميل عنصر إضافي واحد",
+      "two": "تم تحميل عنصرين إضافيين",
+      "few": "تم تحميل {n} عناصر إضافية",
+      "many": "تم تحميل {n} عنصرًا إضافيًا",
+      "other": "تم تحميل {n} عنصر إضافي"
+    }
+  },
+  "mediaViewer": {
+    "label": "معاينة",
+    "close": "إغلاق المعاينة",
+    "previous": "السابق",
+    "next": "التالي",
+    "counter": "{index} من {total}"
+  },
+  "metricCard": {
+    "more": "المزيد لـ {title}",
+    "up": "لأعلى",
+    "down": "لأسفل",
+    "good": "جيد",
+    "bad": "سيئ",
+    "vs": "مقابل",
+    "empty": "لا توجد بيانات",
+    "loading": "جارٍ تحميل {title}",
+    "error": "تعذّر تحميل الأرقام.",
+    "retry": "حاول مرة أخرى",
+    "stale": "قديم",
+    "rank": "#{n}",
+    "toCome": "قادم",
+    "hit": "تحقق الهدف",
+    "missed": "لم يتحقق",
+    "weekdays": ["ن", "ث", "ر", "خ", "ج", "س", "ح"],
+    "weekdayNames": ["الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت", "الأحد"],
+    "month": "{done} من {days} أيام عمل حتى الآن",
+    "parts": "{label} {share}",
+    "compare": "{a} {av}، {b} {bv}"
+  },
+  "millerColumns": {
+    "empty": "لا توجد عناصر",
+    "resize": "تغيير عرض العمود {label}",
+    "preview": "معاينة {label}"
+  },
+  "navList": {
+    "pin": "تثبيت",
+    "unpin": "إلغاء التثبيت",
+    "pinItem": "تثبيت {label}",
+    "unpinItem": "إلغاء تثبيت {label}"
+  },
+  "notice": {
+    "dismiss": "تجاهل"
+  },
+  "numberInput": {
+    "decrease": "نقصان",
+    "increase": "زيادة"
+  },
+  "otpInput": {
+    "cell": "الحرف {n} من {total}"
+  },
+  "persona": {
+    "online": "متصل",
+    "away": "غائب",
+    "busy": "مشغول",
+    "dnd": "عدم الإزعاج",
+    "offline": "غير متصل"
+  },
+  "popover": {
+    "close": "إغلاق"
+  },
+  "productOptions": {
+    "chosen": "{label}:",
+    "unavailable": "غير متوفر في المخزون",
+    "quantity": "الكمية",
+    "quantityOf": "الكمية، {product}",
+    "unavailableName": "{label}، غير متوفر في المخزون",
+    "none": "لم يتم اختيار شيء"
+  },
+  "progressSteps": {
+    "step": "الخطوة {n} من {total}",
+    "complete": "مكتملة",
+    "current": "الخطوة الحالية",
+    "upcoming": "لم تبدأ",
+    "error": "تحتاج إلى انتباه"
+  },
+  "relativeDateInput": {
+    "custom": "مخصص",
+    "none": "أي وقت",
+    "amount": "المبلغ",
+    "unit": "الوحدة",
+    "direction": "الاتجاه",
+    "past": "الأخيرة",
+    "future": "التالي",
+    "units": {
+      "day": ["يوم", "أيام"],
+      "week": ["أسبوع", "أسابيع"],
+      "month": ["شهر", "أشهر"],
+      "year": ["سنة", "سنوات"]
+    },
+    "presets": {
+      "today": "اليوم",
+      "yesterday": "أمس",
+      "last-7-days": "آخر 7 أيام",
+      "last-30-days": "آخر 30 يومًا",
+      "last-90-days": "آخر 90 يومًا",
+      "last-12-months": "آخر 12 شهرًا",
+      "tomorrow": "غدًا",
+      "next-7-days": "الأيام السبعة القادمة",
+      "next-30-days": "الأيام الثلاثون القادمة",
+      "next-90-days": "الأيام التسعون القادمة",
+      "next-12-months": "الأشهر الاثنا عشر القادمة"
+    }
+  },
+  "resizable": {
+    "width": "عرض {label}",
+    "height": "ارتفاع {label}"
+  },
+  "richTextEditor": {
+    "toolbar": "التنسيق",
+    "more": "مزيد من التنسيق",
+    "bold": "غامق",
+    "italic": "مائل",
+    "underline": "تسطير",
+    "strike": "يتوسطه خط",
+    "code": "رمز مضمّن",
+    "subscript": "نص سفلي",
+    "superscript": "نص علوي",
+    "link": "رابط",
+    "bulleted": "قائمة نقطية",
+    "numbered": "قائمة مرقّمة",
+    "tasks": "قائمة مهام",
+    "quote": "اقتباس",
+    "codeBlock": "كتلة رمز",
+    "rule": "خط أفقي",
+    "image": "صورة",
+    "table": "جدول",
+    "color": "لون النص",
+    "highlight": "تمييز",
+    "alignLeft": "محاذاة إلى اليسار",
+    "alignCenter": "محاذاة إلى الوسط",
+    "alignRight": "محاذاة إلى اليمين",
+    "alignJustify": "ضبط",
+    "clear": "مسح التنسيق",
+    "undo": "تراجع",
+    "redo": "إعادة",
+    "textStyle": "نمط النص",
+    "paragraph": "فقرة",
+    "font": "الخط",
+    "defaultFont": "الخط الافتراضي",
+    "size": "الحجم",
+    "defaultSize": "الحجم الافتراضي",
+    "custom": "مخصص…",
+    "customFont": "عائلة الخط",
+    "customSize": "حجم الخط",
+    "insertTable": "إدراج جدول",
+    "rowBefore": "إضافة صف أعلاه",
+    "rowAfter": "إضافة صف أدناه",
+    "columnBefore": "إضافة عمود قبله",
+    "columnAfter": "إضافة عمود بعده",
+    "deleteRow": "حذف الصف",
+    "deleteColumn": "حذف العمود",
+    "headerRow": "صف العناوين",
+    "deleteTable": "حذف الجدول",
+    "linkAddress": "عنوان الرابط",
+    "addLink": "إضافة رابط",
+    "imageAddress": "عنوان الصورة",
+    "imageAlt": "الوصف",
+    "addImage": "إضافة صورة",
+    "swatches": "ألوان مقترحة",
+    "customColor": "لون مخصص",
+    "hex": "قيمة سداسية عشرية",
+    "apply": "تطبيق",
+    "remove": "إزالة",
+    "cancel": "إلغاء",
+    "mentions": "اقتراحات",
+    "groupMarks": "النص",
+    "groupColor": "اللون",
+    "groupAlign": "المحاذاة",
+    "groupLists": "القوائم",
+    "groupInsert": "إدراج",
+    "groupHistory": "السجل",
+    "leave": "اضغط Tab أو Shift+Tab للخروج من المحرّر",
+    "hint": "Escape ثم Tab للخروج من المحرّر"
+  },
+  "roleLabel": {
+    "owner": "المالك",
+    "editor": "محرّر",
+    "viewer": "مشاهد"
+  },
+  "searchField": {
+    "suggestions": "اقتراحات",
+    "recent": "عمليات البحث الأخيرة",
+    "clearRecent": "مسح عمليات البحث الأخيرة",
+    "clear": "مسح البحث",
+    "results": "{n} اقتراحات",
+    "removed": "تمت إزالة {query} من عمليات البحث الأخيرة",
+    "remove": "إزالة {query}",
+    "placeholder": "بحث",
+    "label": "بحث"
+  },
+  "sheet": {
+    "expand": "توسيع اللوحة",
+    "shrink": "تصغير اللوحة",
+    "doneLabel": "تم",
+    "cancelLabel": "إلغاء",
+    "closeLabel": "إغلاق",
+    "done": "تم",
+    "cancel": "إلغاء",
+    "close": "إغلاق"
+  },
+  "slider": {
+    "minimum": "الحد الأدنى",
+    "maximum": "الحد الأقصى"
+  },
+  "splitButton": {
+    "more": "مزيد من خيارات {label}"
+  },
+  "tabs": {
+    "more": "المزيد",
+    "moreLabel": "مزيد من علامات التبويب"
+  },
+  "teachingBubble": {
+    "close": "إغلاق",
+    "step": "{current} من {total}"
+  },
+  "text": {
+    "more": "عرض المزيد",
+    "less": "عرض أقل"
+  },
+  "timePicker": {
+    "hour": "الساعة",
+    "minute": "الدقيقة",
+    "period": "ص أو م",
+    "am": "ص",
+    "pm": "م",
+    "times": "الأوقات",
+    "empty": "--"
+  },
+  "timeZoneSelect": {
+    "placeholder": "اختر منطقة زمنية",
+    "empty": "لا توجد نتائج مطابقة",
+    "utc": "التوقيت العالمي المنسق",
+    "other": "أخرى",
+    "regions.Africa": "أفريقيا",
+    "regions.America": "الأمريكتان",
+    "regions.Antarctica": "القارة القطبية الجنوبية",
+    "regions.Arctic": "القطب الشمالي",
+    "regions.Asia": "آسيا",
+    "regions.Atlantic": "المحيط الأطلسي",
+    "regions.Australia": "أستراليا",
+    "regions.Europe": "أوروبا",
+    "regions.Indian": "المحيط الهندي",
+    "regions.Pacific": "المحيط الهادئ",
+    "regions": {
+      "Africa": "أفريقيا",
+      "America": "الأمريكتان",
+      "Antarctica": "القارة القطبية الجنوبية",
+      "Arctic": "القطب الشمالي",
+      "Asia": "آسيا",
+      "Atlantic": "المحيط الأطلسي",
+      "Australia": "أستراليا",
+      "Europe": "أوروبا",
+      "Indian": "المحيط الهندي",
+      "Pacific": "المحيط الهادئ"
+    }
+  },
+  "transferList": {
+    "source": "المتاح",
+    "target": "المختار",
+    "add": "إضافة",
+    "addAll": "إضافة الكل",
+    "remove": "إزالة",
+    "removeAll": "إزالة الكل",
+    "up": "نقل لأعلى",
+    "down": "نقل لأسفل",
+    "search": "بحث في {title}",
+    "selectAll": "تحديد كل عناصر {title}",
+    "count": "تم تحديد {checked} من {total}",
+    "moved": "تم نقل {n} إلى {title}",
+    "empty": "لا توجد عناصر",
+    "noMatch": "لا توجد نتائج مطابقة",
+    "moves": "نقل العناصر"
+  },
+  "treeSelect": {
+    "placeholder": "اختيار",
+    "search": "بحث",
+    "choose": "اختر عنصرًا",
+    "more": "{list} و{n} أخرى",
+    "empty": "لا توجد نتائج مطابقة"
+  },
+  "versionLabel": {
+    "version": "الإصدار",
+    "prefix": "إ",
+    "latest": "الأحدث",
+    "draft": "مسودة"
+  },
+  "virtualList": {
+    "loading": "جارٍ التحميل…",
+    "empty": "لا توجد عناصر",
+    "count": {
+      "zero": "لا توجد عناصر",
+      "one": "عنصر واحد",
+      "two": "عنصران",
+      "few": "{n} عناصر",
+      "many": "{n} عنصرًا",
+      "other": "{n} عنصر"
+    },
+    "group": {
+      "zero": "لا توجد عناصر",
+      "one": "عنصر واحد",
+      "two": "عنصران",
+      "few": "{n} عناصر",
+      "many": "{n} عنصرًا",
+      "other": "{n} عنصر"
+    }
+  },
+  "aiSearch": {
+    "label": "بحث بالذكاء الاصطناعي",
+    "query": "عبارة البحث",
+    "search": "بحث",
+    "semantic": "استخدام البحث الدلالي",
+    "results": "نتائج البحث",
+    "empty": "لا توجد نتائج.",
+    "failed": "فشل البحث. حاول مرة أخرى.",
+    "pending": "جارٍ البحث"
+  },
+  "appShell": {
+    "skip": "تخطّي إلى المحتوى الرئيسي"
+  },
+  "assignControl": {
+    "assign": "إسناد",
+    "assignToMe": "إسناد إليّ",
+    "reassign": "إعادة الإسناد",
+    "unassign": "إلغاء الإسناد",
+    "unassigned": "غير مُسنَد",
+    "cancel": "إلغاء",
+    "assigned": "مُسنَد إلى {name}",
+    "cleared": "تمت إزالة {label}",
+    "delegate": "تفويض",
+    "change": "التغيير",
+    "end": "إنهاء التفويض",
+    "delegateTitle": "تفويض {label}",
+    "to": "التفويض إلى",
+    "dates": "التواريخ",
+    "note": "ملاحظة",
+    "noteHint": "تظهر للشخص الذي تفوّضه.",
+    "needPerson": "اختر شخصًا.",
+    "needDates": "اختر اليوم الأول والأخير.",
+    "delegatedTo": "تم التفويض إلى {name}",
+    "notDelegated": "غير مفوَّض",
+    "ended": "انتهى التفويض",
+    "label": "المُسنَد إليه"
+  },
+  "attachmentPicker": {
+    "label": "المرفقات",
+    "remove": "إزالة {name}",
+    "invalid": "اختر ملفًا مدعومًا ضمن الحد المسموح للحجم.",
+    "limit": "عدد المرفقات كبير جدًا.",
+    "empty": "لا توجد مرفقات."
+  },
+  "autosave": {
+    "saving": "جارٍ الحفظ",
+    "saved": "تم الحفظ",
+    "offline": "غير متصل",
+    "failed": "فشل الحفظ",
+    "retry": "إعادة المحاولة"
+  },
+  "avatarUpload": {
+    "change": "تغيير الصورة",
+    "add": "إضافة صورة",
+    "remove": "إزالة الصورة",
+    "tooLarge": "الصورة أكبر من {max}",
+    "notImage": "اختر ملف صورة",
+    "picture": "صورة {name}"
+  },
+  "bottomSheetNav": {
+    "title": "التنقل",
+    "close": "إغلاق"
+  },
+  "bulkActions": {
+    "selected": "تم تحديد {n}",
+    "selectAll": "تحديد الكل",
+    "clear": "مسح",
+    "allSelected": "كل {noun} محدد",
+    "nothingToClear": "لا شيء لمسحه: حدّد {plural} أولًا",
+    "why": "حدّد {plural} لـ {action}",
+    "single": "حدّد {noun} واحدًا لـ {action}",
+    "label": "إجراءات التحديد",
+    "more": "المزيد من الإجراءات",
+    "noun": "عنصر"
+  },
+  "columnsMenu": {
+    "label": "الأعمدة",
+    "manage": "إدارة الأعمدة",
+    "first": "العمود الأول",
+    "makeFirst": "جعله العمود الأول",
+    "moveUp": "نقل {name} لأعلى",
+    "moveDown": "نقل {name} لأسفل",
+    "up": "نقل لأعلى",
+    "down": "نقل لأسفل",
+    "find": "البحث عن عمود",
+    "showAll": "إظهار الكل",
+    "hideAll": "إخفاء الكل",
+    "apply": "تطبيق",
+    "cancel": "إلغاء",
+    "shown": "تم إظهار {name}",
+    "hidden": "تم إخفاء {name}",
+    "isFirst": "{name} هو العمود الأول",
+    "moved": "{name}، الموضع {position} من {total}",
+    "row": "{name}{first}. المفتاحان Alt + السهم لأعلى أو لأسفل ينقلانه",
+    "firstMark": "، العمود الأول",
+    "none": "لا يوجد عمود مطابق"
+  },
+  "commandBar": {
+    "more": "المزيد من الإجراءات",
+    "actions": "إجراءات {label}",
+    "find": "بحث وعرض",
+    "selected": "تم تحديد {n}",
+    "hidden": " (مخفي {n} بسبب التصفيات)",
+    "clear": "مسح التحديد",
+    "clearName": "تم تحديد {n}، مسح التحديد",
+    "swapped": "تم تحديد {n}. إجراءات التحديد متاحة.",
+    "cleared": "تم مسح التحديد.",
+    "why": "حدّد {plural} لـ {action}",
+    "single": "حدّد {noun} واحدًا لـ {action}",
+    "preset": "أي",
+    "moreLabel": "المزيد من الإجراءات"
+  },
+  "commandPalette": {
+    "title": "الأوامر",
+    "close": "إغلاق"
+  },
+  "comparisonView": {
+    "label": "المقارنة",
+    "modes": "العرض",
+    "columns": "جنبًا إلى جنب",
+    "matrix": "جدول",
+    "slider": "شريط التمرير",
+    "onlyDifferences": "عرض الاختلافات فقط",
+    "changed": "تم تغييره",
+    "attribute": "السمة",
+    "position": "الموضع",
+    "none": "لا توجد اختلافات",
+    "one": "اختلاف واحد",
+    "many": "{n} اختلافات",
+    "empty": "—"
+  },
+  "connectedAccounts": {
+    "label": "الحسابات المتصلة",
+    "connect": "اتصال",
+    "disconnect": "قطع الاتصال",
+    "reconnect": "إعادة الاتصال",
+    "cancel": "إلغاء",
+    "connected": "متصل",
+    "disconnected": "غير متصل",
+    "error": "خطأ في الاتصال",
+    "as": "بصفة {account}",
+    "since": "منذ {date}",
+    "connectTitle": "الاتصال بـ {service}؟",
+    "connectMessage": "ستسجّل الدخول إلى {service} للسماح بذلك. سيتمكن Plenix من:",
+    "continue": "المتابعة إلى {service}",
+    "disconnectTitle": "قطع الاتصال بـ {service}؟",
+    "disconnectMessage": "يمكنك الاتصال به مرة أخرى في أي وقت.",
+    "done": "تم الاتصال بـ {service}",
+    "undone": "تم قطع الاتصال بـ {service}"
+  },
+  "deleteFlow": {
+    "title": "حذف {name}؟",
+    "titleMany": "حذف {count} {plural}؟",
+    "delete": "حذف",
+    "cancel": "إلغاء",
+    "permanent": "لا يمكن التراجع عن هذا.",
+    "more": "و{count} أخرى",
+    "typeLabel": "اكتب {phrase} للتأكيد",
+    "typeError": "اكتب {phrase} تمامًا كما هو معروض.",
+    "phraseMany": "حذف {count} {plural}",
+    "deleted": "تم حذف {what}",
+    "trashed": "تم نقل {what} إلى سلة المحذوفات",
+    "undo": "تراجع",
+    "retention": "استعد {them} من سلة المحذوفات خلال {days} يومًا.",
+    "it": "ه",
+    "them": "هم",
+    "names": "محذوف",
+    "noun": "عنصر"
+  },
+  "duplicateAction": {
+    "duplicate": "تكرار",
+    "copyOf": "نسخة من {name}",
+    "numbered": "{name} ({n})",
+    "title": "تكرار {noun}",
+    "name": "الاسم",
+    "from": "من {name}",
+    "also": "انسخ أيضًا",
+    "empty": "أدخل اسمًا.",
+    "taken": "يوجد {noun} باسم {name} بالفعل.",
+    "done": "تم التكرار باسم {name}",
+    "undo": "تراجع",
+    "cancel": "إلغاء",
+    "noun": "عنصر"
+  },
+  "fileBrowser": {
+    "label": "الملفات",
+    "root": "المكتبة",
+    "newFolder": "مجلد جديد",
+    "folderName": "اسم المجلد",
+    "create": "إنشاء",
+    "upload": "رفع",
+    "search": "البحث في هذا المجلد",
+    "folders": "المجلدات",
+    "path": "الموقع",
+    "count": "{n} عناصر",
+    "one": "عنصر واحد",
+    "empty": "هذا المجلد فارغ",
+    "emptyText": "ارفع ملفات أو أنشئ مجلدًا.",
+    "noMatch": "لا شيء يطابق «{q}»",
+    "download": "تنزيل",
+    "moveTo": "نقل إلى",
+    "delete": "حذف",
+    "noun": "عنصر",
+    "plural": "عناصر",
+    "drop": "أفلت الملفات لرفعها إلى {folder}",
+    "nameTaken": "يوجد ملف أو مجلد باسم «{name}» هنا بالفعل.",
+    "nameEmpty": "أعطِ المجلد اسمًا.",
+    "items": "{n} عناصر",
+    "item": "{n} عنصر"
+  },
+  "fileList": {
+    "sort": "ترتيب",
+    "sortBy": "الترتيب حسب {field}",
+    "field": "الترتيب حسب",
+    "order": "الترتيب",
+    "asc": "تصاعدي",
+    "desc": "تنازلي",
+    "name": "الاسم",
+    "size": "الحجم",
+    "modified": "تاريخ التعديل",
+    "owner": "المالك",
+    "status": "الحالة",
+    "count": "{n} عناصر",
+    "one": "عنصر واحد",
+    "empty": "لا يوجد شيء هنا بعد",
+    "open": "فتح",
+    "download": "تنزيل",
+    "rename": "إعادة تسمية…",
+    "delete": "حذف",
+    "moveTo": "نقل إلى",
+    "file": "ملف",
+    "files": "ملفات",
+    "folder": "مجلد",
+    "folders": "مجلدات",
+    "items": "{n} عناصر",
+    "item": "{n} عنصر"
+  },
+  "filePicker": {
+    "title": "اختيار ملفات",
+    "all": "كل الملفات",
+    "folders": "المجلدات",
+    "search": "البحث في الملفات",
+    "empty": "لا توجد ملفات مطابقة.",
+    "pick": "اختيار",
+    "cancel": "إلغاء",
+    "failed": "تعذّر اختيار الملفات. حاول مرة أخرى."
+  },
+  "filterBar": {
+    "label": "عوامل التصفية",
+    "more": "مزيد من عوامل التصفية",
+    "clearAll": "مسح الكل",
+    "one": "{label}: {value}",
+    "several": "{label} · {count}"
+  },
+  "navPane": {
+    "browse": "استعراض"
+  },
+  "notificationList": {
+    "label": "الإشعارات",
+    "empty": "لا توجد إشعارات",
+    "markAllRead": "تعليم الكل كمقروء",
+    "viewAll": "عرض الكل"
+  },
+  "peopleGroup": {
+    "team": "الفريق",
+    "group": "المجموعة",
+    "members": "{n} أعضاء",
+    "member": "{n} عضو",
+    "showMembers": "عرض الأعضاء",
+    "membersOf": "أعضاء {name}"
+  },
+  "permissionSummary": {
+    "can": "يمكنه",
+    "cannot": "لا يمكنه",
+    "manage": "إدارة الوصول",
+    "canSentence": "يمكنه {list}",
+    "cannotSentence": "لا يمكنه {list}"
+  },
+  "popconfirm": {
+    "cancel": "إلغاء"
+  },
+  "productCard": {
+    "sale": "تخفيض",
+    "outOfStock": "غير متوفر في المخزون",
+    "addToCart": "أضف إلى السلة",
+    "addToCartFor": "أضف {title} إلى السلة",
+    "now": "الآن",
+    "was": "كان",
+    "rating": "التقييم",
+    "reviews": "{n} مراجعات",
+    "review": "مراجعة واحدة",
+    "soldOut": "{title} غير متوفر في المخزون"
+  },
+  "publish": {
+    "publish": "نشر",
+    "publishNow": "النشر الآن",
+    "schedule": "جدولة",
+    "cancelSchedule": "إلغاء الجدولة",
+    "unpublish": "إلغاء النشر",
+    "cancel": "إلغاء",
+    "publishTitle": "نشر {name}؟",
+    "publishMessage": "سيصبح مرئيًا لـ {audience}.",
+    "unpublishTitle": "إلغاء نشر {name}؟",
+    "unpublishMessage": "سيُخفى عن {audience}. يمكنك نشره مرة أخرى.",
+    "scheduleTitle": "جدولة {name}",
+    "when": "النشر في",
+    "whenHint": "التاريخ والوقت، بحسب منطقتك الزمنية.",
+    "past": "اختر وقتًا في المستقبل.",
+    "empty": "اختر التاريخ والوقت.",
+    "publishedLine": "نُشر {at}",
+    "publishedBy": "نُشر {at} بواسطة {by}",
+    "scheduledLine": "سيُنشر {at}",
+    "scheduledBy": "سيُنشر {at}، جدولة {by}",
+    "draftLine": "غير منشور",
+    "published": "تم نشر {name}",
+    "scheduled": "تمت جدولة {name} في {at}",
+    "unpublished": "تم إلغاء نشر {name}",
+    "undo": "تراجع",
+    "everyone": "كل من لديه صلاحية الوصول",
+    "actions": "جارٍ النشر"
+  },
+  "queryBuilder": {
+    "builder": "المنشئ",
+    "text": "النص",
+    "viewLabel": "العرض",
+    "where": "حيث",
+    "and": "و",
+    "or": "أو",
+    "andWord": "و",
+    "orWord": "أو",
+    "join": "المطابقة",
+    "all": "كل القواعد",
+    "any": "أي قاعدة",
+    "addRule": "إضافة قاعدة",
+    "addGroup": "إضافة مجموعة",
+    "removeRule": "إزالة القاعدة",
+    "removeGroup": "إزالة المجموعة",
+    "field": "الحقل",
+    "operator": "العامل",
+    "value": "القيمة",
+    "rule": "القاعدة {n}",
+    "group": "المجموعة {n}",
+    "empty": "لا توجد قواعد: كل السجلات مطابقة.",
+    "everything": "كل سجل",
+    "matches": "{n} مطابقات",
+    "match": "{n} مطابقة",
+    "textTitle": "استعلام",
+    "added": "تمت إضافة القاعدة",
+    "groupAdded": "تمت إضافة المجموعة",
+    "removed": "تمت إزالة القاعدة",
+    "groupRemoved": "تمت إزالة المجموعة"
+  },
+  "renameAction": {
+    "label": "الاسم",
+    "rename": "إعادة تسمية",
+    "open": "إعادة تسمية…",
+    "title": "إعادة تسمية {name}",
+    "cancel": "إلغاء",
+    "empty": "أدخل اسمًا",
+    "slash": "لا يمكن أن يحتوي الاسم على / أو \\",
+    "taken": "يوجد عنصر باسم {name} هنا بالفعل",
+    "tooLong": "استخدم {max} حرفًا أو أقل",
+    "renamed": "تمت إعادة التسمية إلى {name}",
+    "failed": "تعذّر تغيير الاسم"
+  },
+  "renditionList": {
+    "label": "الصيغ المشتقة",
+    "name": "الاسم",
+    "format": "الصيغة",
+    "size": "الحجم",
+    "download": "تنزيل",
+    "empty": "لا توجد صيغ مشتقة."
+  },
+  "resourceList": {
+    "item": "عنصر",
+    "selectAll": "تحديد كل {nouns} ({n})",
+    "select": "تحديد {name}",
+    "count": "{n} {nouns}",
+    "selected": "تم تحديد {n} من {total}"
+  },
+  "retry": {
+    "title": "تعذّر التحميل",
+    "retry": "إعادة المحاولة",
+    "retryNow": "إعادة المحاولة الآن",
+    "retrying": "جارٍ إعادة المحاولة…",
+    "waiting": "إعادة المحاولة خلال {time}",
+    "attempt": "المحاولة {attempt} من {attempts}",
+    "stopped": "توقفت بعد {attempts} محاولات",
+    "dismiss": "تجاهل",
+    "status": "فشل"
+  },
+  "roleManager": {
+    "roles": "الأدوار",
+    "create": "إنشاء دور",
+    "createTitle": "إنشاء دور",
+    "name": "الاسم",
+    "description": "الوصف",
+    "descriptionHint": "جملة واحدة عمّا يستطيع أصحاب هذا الدور فعله.",
+    "startFrom": "البدء بصلاحيات",
+    "empty": "أدخل اسمًا.",
+    "taken": "يوجد دور باسم {name} بالفعل.",
+    "back": "كل الأدوار",
+    "members": "الأعضاء",
+    "member": "عضو",
+    "membersCount": "{n} أعضاء",
+    "memberCount": "{n} عضو",
+    "builtIn": "مدمج",
+    "custom": "مخصص",
+    "permissions": "الصلاحيات",
+    "builtInNote": "لا يمكن تغيير الأدوار المدمجة. انسخ أحدها لإنشاء دور خاص بك.",
+    "addMember": "إضافة عضو",
+    "remove": "إزالة {name}",
+    "lastMember": "يحتاج {role} إلى عضو واحد على الأقل. أضف شخصًا آخر أولًا.",
+    "noMembers": "لا أحد لديه هذا الدور بعد.",
+    "role": "دور",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "added": "تمت إضافة {name} إلى {role}",
+    "removed": "تمت إزالة {name} من {role}",
+    "created": "تم إنشاء {name}",
+    "access": "أصحاب دور {role}",
+    "people": "{n} أشخاص",
+    "peopleOne": "{n} شخص",
+    "allowed": "تم السماح بـ {permission} لدور {role}",
+    "denied": "لم يعد {permission} مسموحًا لدور {role}"
+  },
+  "searchWorkspace": {
+    "title": "بحث",
+    "selectAll": "تحديد الكل",
+    "allSelected": "كل {noun} محدد",
+    "placeholder": "بحث…",
+    "result": "نتيجة",
+    "results": "نتائج",
+    "searchField": "بحث في {nouns}",
+    "save": "حفظ البحث",
+    "filters": "عوامل التصفية",
+    "activeFilters": "عوامل التصفية النشطة",
+    "chip": "{label}: {value}",
+    "remove": "إزالة {text}",
+    "clearAll": "مسح الكل",
+    "view": "العرض",
+    "grid": "شبكة",
+    "table": "جدول",
+    "sort": "ترتيب",
+    "sortValue": "الترتيب: {value}",
+    "noMatchQuery": "لا شيء يطابق «{query}».",
+    "noMatchQueryFilters": "لا شيء يطابق «{query}» مع عوامل التصفية هذه.",
+    "noMatchFilters": "لا شيء يطابق عوامل التصفية هذه."
+  },
+  "secondaryPane": {
+    "expand": "توسيع {name}",
+    "collapse": "طيّ {name}",
+    "resize": "تغيير حجم {name}",
+    "close": "إغلاق {name}",
+    "back": "العودة إلى {name}"
+  },
+  "sessionTimeout": {
+    "warningTitle": "جلستك على وشك الانتهاء",
+    "warning": "سيتم تسجيل خروجك خلال {time} لأنك لم تكن نشطًا.",
+    "stay": "البقاء متصلًا",
+    "signOut": "تسجيل الخروج",
+    "signedOutTitle": "تم تسجيل خروجك",
+    "signedOut": "حفاظًا على أمانك، تم تسجيل خروجك بعد {minutes} دقيقة دون نشاط.",
+    "signedOutShort": "حفاظًا على أمانك، تم تسجيل خروجك لأنك لم تكن نشطًا.",
+    "saved": "تم حفظ تغييراتك.",
+    "signIn": "تسجيل الدخول مرة أخرى",
+    "left": "متبقي {time}",
+    "ended": "تم تسجيل الخروج"
+  },
+  "sortableList": {
+    "moveMenu": "نقل {name}",
+    "moveUp": "نقل لأعلى",
+    "moveDown": "نقل لأسفل",
+    "moveEarlier": "نقل لوقت أبكر",
+    "moveLater": "نقل لوقت أحدث",
+    "moveFirst": "نقل إلى البداية",
+    "moveLast": "نقل إلى النهاية",
+    "moveUpNamed": "نقل {name} لأعلى",
+    "moveDownNamed": "نقل {name} لأسفل"
+  },
+  "uploadManager": {
+    "dialogTitle": "رفع ملفات",
+    "queue": "عمليات الرفع",
+    "drop": "اسحب الملفات أو المجلدات وأفلتها هنا",
+    "or": "أو",
+    "chooseFiles": "اختيار ملفات",
+    "chooseFolder": "اختر مجلدًا",
+    "uploading": "جارٍ رفع {n} ملفات",
+    "uploadingOne": "جارٍ رفع ملف واحد",
+    "done": "اكتمل {n} عمليات رفع",
+    "doneOne": "اكتملت عملية رفع واحدة",
+    "failed": "فشلت {n} عمليات رفع",
+    "failedOne": "فشلت عملية رفع واحدة",
+    "none": "لا توجد عمليات رفع",
+    "progress": "تم رفع {done} من {total}",
+    "overall": "التقدم الإجمالي",
+    "waiting": "بالانتظار",
+    "uploaded": "تم الرفع",
+    "canceled": "أُلغي",
+    "cancelAll": "إلغاء الكل",
+    "clear": "مسح المكتملة",
+    "hide": "إخفاء عمليات الرفع",
+    "show": "إظهار عمليات الرفع",
+    "close": "إغلاق",
+    "finish": "تم",
+    "remove": "إزالة من القائمة",
+    "again": "الرفع مرة أخرى",
+    "tooLarge": "هذا الملف أكبر من {max}.",
+    "wrongType": "لا يمكن رفع هذا النوع من الملفات هنا.",
+    "error": "فشل الرفع. حاول مرة أخرى.",
+    "failedNamed": "فشل {name}: {reason}",
+    "status": "أُلغي"
+  },
+  "userCard": {
+    "online": "متصل",
+    "away": "غائب",
+    "busy": "مشغول",
+    "dnd": "عدم الإزعاج",
+    "offline": "غير متصل"
+  },
+  "versionCompare": {
+    "label": "مقارنة الإصدارات",
+    "compare": "مقارنة",
+    "with": "مع",
+    "swap": "تبديل",
+    "swapLabel": "تبديل الإصدارين",
+    "view": "العرض",
+    "columns": "جنبًا إلى جنب",
+    "slider": "شريط التمرير",
+    "text": "النص",
+    "by": "بواسطة {author}",
+    "diff": "التغييرات من {base} إلى {target}",
+    "added": "مضاف",
+    "removed": "محذوف",
+    "same": "لا توجد تغييرات في النص",
+    "summary": "أُضيف {added}، وحُذف {removed}",
+    "lines": "{n} أسطر",
+    "line": "سطر واحد",
+    "previous": "التغيير السابق",
+    "next": "التغيير التالي",
+    "at": "التغيير {n} من {total}",
+    "unchanged": "عرض {n} أسطر لم تتغير",
+    "empty": "اختر إصدارين للمقارنة."
+  },
+  "versionHistory": {
+    "label": "سجل الإصدارات",
+    "preview": "معاينة",
+    "restore": "استعادة",
+    "confirm": "استعادة هذا الإصدار؟",
+    "cancel": "إلغاء",
+    "failed": "تعذّرت استعادة الإصدار. حاول مرة أخرى.",
+    "restored": "تمت استعادة الإصدار",
+    "empty": "لا توجد إصدارات."
+  },
+  "viewMenu": {
+    "reset": "إعادة ضبط العرض",
+    "label": "العرض",
+    "layout": "التخطيط",
+    "list": "قائمة",
+    "gallery": "معرض",
+    "size": "حجم البطاقة (المعرض)",
+    "s": "صغير",
+    "m": "متوسط",
+    "l": "كبير",
+    "height": "ارتفاع الصف (القائمة)",
+    "short": "قصير",
+    "medium": "متوسط",
+    "tall": "طويل",
+    "extra-tall": "طويل جدًا"
+  },
+  "widgetGrid": {
+    "widget": "أداة",
+    "widgetLower": "أداة",
+    "move": "نقل {title} (مفاتيح الأسهم)",
+    "position": "{title}، الموضع {index} من {total}",
+    "earlier": "نقل لوقت أبكر",
+    "later": "نقل لوقت أحدث",
+    "first": "نقل إلى البداية",
+    "last": "نقل إلى النهاية"
+  },
+  "providers": {
+    "UnsavedGuard": {
+      "title": "المغادرة دون حفظ؟",
+      "message": "ستفقد تغييراتك.",
+      "leave": "مغادرة",
+      "stay": "متابعة التحرير"
+    },
+    "theme-boot": {
+      "compact": "مضغوط",
+      "standard": "قياسي",
+      "comfortable": "مريح"
+    }
+  },
+  "templates": {
+    "templates": {
+      "Templates": {
+        "empty": "لا توجد سجلات بعد",
+        "emptyDescription": "أنشئ سجلًا للبدء.",
+        "pane": "السجلات",
+        "sections": "في هذه الصفحة",
+        "retry": "حاول مرة أخرى",
+        "home": "الذهاب إلى الصفحة الرئيسية",
+        "search": "نتائج البحث",
+        "tools": "الأدوات",
+        "inspector": "الخيارات",
+        "detail": "التفاصيل",
+        "noSelection": "لم يتم تحديد شيء",
+        "noSelectionDescription": "اختر عنصرًا لعرضه هنا."
+      }
+    },
+    "Commerce": {
+      "Storefront": {
+        "layout": "معرض"
+      }
+    }
+  },
+  "utils": {
+    "clipboard": {
+      "copied": "تم النسخ",
+      "failed": "تعذّر النسخ. حدّد النص وانسخه يدويًا."
+    }
+  },
+  "aiButton": {
+    "label": "إجراءات الذكاء الاصطناعي",
+    "failed": "تعذّر إكمال هذا الإجراء. حاول مرة أخرى.",
+    "working": "جارٍ العمل"
+  },
+  "aiDisclaimer": {
+    "message": "قد يكون المحتوى المُنشأ بالذكاء الاصطناعي غير دقيق. راجع التفاصيل المهمة.",
+    "learn": "حول المحتوى المُنشأ بالذكاء الاصطناعي"
+  },
+  "announcement": {
+    "dismiss": "تجاهل الإعلان",
+    "failed": "تعذّر تجاهل هذا الإعلان. حاول مرة أخرى."
+  },
+  "banner": {
+    "dismiss": "تجاهل"
+  },
+  "chat": {
+    "thinking": "جارٍ التفكير",
+    "label": "الرسالة",
+    "placeholder": "اكتب رسالة",
+    "sendLabel": "إرسال"
+  },
+  "checklist": {
+    "dismiss": "تجاهل قائمة المهام",
+    "progress": "المهام المكتملة"
+  },
+  "comment": {
+    "edit": "تعديل",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "resolve": "حلّ",
+    "reopen": "إعادة فتح",
+    "edited": "مُعدَّل",
+    "resolved": "تمت معالجته",
+    "message": "تعليق",
+    "empty": "أدخل تعليقًا.",
+    "failed": "تعذّر الحفظ. حاول مرة أخرى."
+  },
+  "confidenceIndicator": {
+    "high": "ثقة عالية",
+    "medium": "ثقة متوسطة",
+    "low": "ثقة منخفضة",
+    "unknown": "درجة الثقة غير متاحة",
+    "label": "الثقة"
+  },
+  "loadingOverlay": {
+    "loading": "جارٍ التحميل",
+    "cancel": "إلغاء"
+  },
+  "mediaPlayer": {
+    "rate": "سرعة التشغيل",
+    "transcript": "عرض النص المكتوب",
+    "hideTranscript": "إخفاء النص المكتوب",
+    "pip": "صورة داخل صورة",
+    "exitPip": "الخروج من صورة داخل صورة",
+    "unsupported": "ميزة صورة داخل صورة غير متاحة.",
+    "failed": "تعذّر تشغيل هذا الملف.",
+    "pipFailed": "تعذّر تغيير وضع صورة داخل صورة. حاول مرة أخرى.",
+    "seek": "الانتقال إلى {time}",
+    "fallback": "فتح ملف الوسائط",
+    "volume": "مستوى الصوت",
+    "mute": "كتم الصوت",
+    "audioFailed": "تعذّر تشغيل مسار الصوت المنفصل. يُشغَّل الفيديو دون صوت."
+  },
+  "mentionInput": {
+    "add": "إضافة إشارة",
+    "choose": "اختر شخصًا لإشارته"
+  },
+  "promptSuggestions": {
+    "label": "اقتراحات الأوامر",
+    "empty": "لا توجد اقتراحات",
+    "failed": "تعذّر استخدام هذا الاقتراح. حاول مرة أخرى."
+  },
+  "refineMenu": {
+    "label": "تحسين",
+    "shorter": "اختصار النص",
+    "longer": "إطالة النص",
+    "tone": "تغيير النبرة",
+    "formal": "رسمية",
+    "casual": "عفوية",
+    "neutral": "محايدة",
+    "custom": "تعليمات مخصصة",
+    "prompt": "التعليمات",
+    "apply": "تطبيق التعليمات",
+    "cancel": "إلغاء",
+    "empty": "أدخل تعليمات.",
+    "failed": "تعذّر تحسين هذا النص. حاول مرة أخرى."
+  },
+  "suggestedEdit": {
+    "label": "تعديلات مقترحة",
+    "before": "قبل",
+    "after": "بعد",
+    "accept": "قبول",
+    "reject": "رفض",
+    "acceptAll": "قبول الكل",
+    "accepted": "مقبول",
+    "rejected": "مرفوض",
+    "empty": "لا توجد تعديلات مقترحة",
+    "failed": "تعذّر حفظ هذا القرار. حاول مرة أخرى."
+  },
+  "time": {
+    "now": "الآن"
+  },
+  "aiExplanation": {
+    "label": "لماذا هذا؟",
+    "title": "شرح الذكاء الاصطناعي",
+    "close": "إغلاق"
+  },
+  "accessRequest": {
+    "title": "طلب الوصول",
+    "description": "اطلب من المالك صلاحية الوصول إلى هذا المورد.",
+    "message": "رسالة إلى المالك",
+    "request": "طلب الوصول",
+    "pending": "تم طلب الوصول",
+    "approved": "تمت الموافقة على الوصول",
+    "denied": "تم رفض الوصول",
+    "open": "فتح المورد",
+    "failed": "تعذّر إرسال طلبك. حاول مرة أخرى."
+  },
+  "approvalWorkflow": {
+    "approve": "موافقة",
+    "changes": "طلب تعديلات",
+    "reject": "رفض",
+    "comment": "تعليق",
+    "reason": "اشرح سبب الحاجة إلى تعديلات.",
+    "failed": "تعذّر حفظ هذا القرار. تعليقك ما زال محفوظًا.",
+    "steps": "مراحل الموافقة",
+    "recorded": "تم تسجيل القرار"
+  },
+  "archiveRestore": {
+    "archive": "أرشفة",
+    "restore": "استعادة",
+    "archived": "مؤرشف",
+    "message": "استعد هذا السجل ليصبح نشطًا مرة أخرى.",
+    "failed": "تعذّر تحديث السجل. حاول مرة أخرى."
+  },
+  "assetGallery": {
+    "empty": "لا توجد صور",
+    "preview": "معاينة الصورة"
+  },
+  "auditLog": {
+    "actor": "المنفّذ",
+    "at": "الوقت",
+    "action": "الإجراء",
+    "target": "الهدف",
+    "changes": "التغييرات",
+    "view": "عرض التغييرات",
+    "field": "الحقل",
+    "before": "قبل",
+    "after": "بعد",
+    "close": "إغلاق"
+  },
+  "commentThread": {
+    "title": "التعليقات",
+    "reply": "رد",
+    "send": "إرسال الرد",
+    "resolve": "إغلاق النقاش",
+    "reopen": "إعادة فتح النقاش",
+    "resolved": "تمت معالجته",
+    "empty": "أدخل ردًا.",
+    "failed": "تعذّر الحفظ. حاول مرة أخرى."
+  },
+  "downloadManager": {
+    "title": "التنزيلات",
+    "empty": "لا توجد تنزيلات",
+    "queued": "في الانتظار",
+    "progress": "جارٍ التنزيل",
+    "ready": "جاهز",
+    "failed": "فشل التنزيل",
+    "actionFailed": "تعذّر إكمال إجراء التنزيل. حاول مرة أخرى."
+  },
+  "draftState": {
+    "draft": "مسودة",
+    "resume": "استئناف المسودة",
+    "discard": "تجاهل المسودة",
+    "confirm": "تجاهل هذه المسودة؟",
+    "message": "ستُزال هذه المسودة نهائيًا.",
+    "cancel": "الاحتفاظ بالمسودة",
+    "failed": "تعذّر تحديث المسودة. حاول مرة أخرى."
+  },
+  "exportDialog": {
+    "title": "تصدير",
+    "format": "الصيغة",
+    "scope": "النطاق",
+    "all": "كل السجلات",
+    "selection": "السجلات المحددة",
+    "background": "التصدير في الخلفية",
+    "export": "تصدير",
+    "cancel": "إلغاء",
+    "invalid": "اختر صيغة ونطاقًا متاحين.",
+    "failed": "تعذّر التصدير. حاول مرة أخرى.",
+    "ready": "التصدير جاهز",
+    "queued": "التصدير في قائمة الانتظار",
+    "download": "تنزيل ملف التصدير",
+    "done": "تم"
+  },
+  "featureIntro": {
+    "new": "جديد",
+    "whatsNew": "ما الجديد",
+    "gotIt": "فهمت",
+    "later": "ليس الآن",
+    "close": "إغلاق"
+  },
+  "filterPanel": {
+    "label": "تصفية",
+    "info": "تُعرض فقط السجلات التي تستوفي الشروط؛ والشرط غير المكتمل لا يؤثر في التصفية.",
+    "sub": "في هذا العرض، أظهر السجلات",
+    "where": "حيث",
+    "and": "و",
+    "or": "أو",
+    "empty": "لا شروط: تُعرض كل السجلات.",
+    "addCondition": "إضافة شرط",
+    "addGroup": "إضافة مجموعة شروط",
+    "remove": "إزالة {what}",
+    "condition": "شرط",
+    "group": "مجموعة شروط",
+    "value": "أدخل قيمة",
+    "choose": "اختر خيارات",
+    "field": "الحقل",
+    "operator": "العامل",
+    "join": "و أو أو"
+  },
+  "formFlow": {
+    "create": "إنشاء",
+    "save": "حفظ التغييرات",
+    "cancel": "إلغاء",
+    "failed": "تعذّر الحفظ. حاول مرة أخرى.",
+    "invalid": "تحقق من الحقول قبل الحفظ.",
+    "saved": "تم الحفظ",
+    "unsaved": "ستفقد تغييراتك.",
+    "close": "إغلاق"
+  },
+  "groupPanel": {
+    "label": "المجموعة",
+    "title": "التجميع حسب",
+    "info": "تُجمَّع الصفوف ذات القيمة نفسها تحت عنوان واحد؛ والمجموعة الفرعية تقسّم كل مجموعة مرة أخرى.",
+    "empty": "اجمع الصفوف التي تشترك في قيمة تحت عنوان واحد.",
+    "add": "إضافة مجموعة",
+    "addSub": "إضافة مجموعة فرعية",
+    "collapseAll": "طيّ الكل",
+    "expandAll": "توسيع الكل",
+    "more": "المزيد لـ {name}",
+    "hideEmpty": "إخفاء المجموعات الفارغة",
+    "remove": "إزالة التجميع حسب {name}",
+    "removeTip": "إزالة المجموعة",
+    "field": "الحقل",
+    "order": "الترتيب"
+  },
+  "helpPanel": {
+    "title": "مساعدة",
+    "search": "البحث في المساعدة",
+    "empty": "لا توجد مقالات مطابقة",
+    "back": "العودة إلى المقالات",
+    "read": "قراءة المقال كاملًا",
+    "close": "طيّ المساعدة"
+  },
+  "imageAnnotation": {
+    "title": "تعليقات توضيحية على الصورة",
+    "pin": "تثبيت",
+    "region": "المنطقة",
+    "location": "الموقع",
+    "comment": "تعليق",
+    "kind": "نوع التعليق التوضيحي",
+    "add": "إضافة تعليق توضيحي",
+    "empty": "أدخل موقعًا وتعليقًا.",
+    "failed": "تعذّر الحفظ. حاول مرة أخرى.",
+    "none": "لا توجد تعليقات توضيحية"
+  },
+  "importDialog": {
+    "title": "استيراد",
+    "file": "ملف",
+    "paste": "لصق البيانات",
+    "url": "رابط URL",
+    "choose": "اختر الملف المصدر",
+    "drop": "أفلت ملفًا هنا أو اخترْه أدناه.",
+    "none": "لم يتم اختيار ملف",
+    "import": "استيراد",
+    "cancel": "إلغاء",
+    "invalid": "اختر ملفًا مدعومًا أو الصق بيانات أو أدخل رابط HTTP.",
+    "failed": "تعذّر الاستيراد. مصدرك ما زال متاحًا.",
+    "unsaved": "سيُفقد مصدر الاستيراد."
+  },
+  "importWizard": {
+    "title": "استيراد السجلات",
+    "mapping": "مطابقة الأعمدة",
+    "review": "مراجعة",
+    "results": "النتائج",
+    "column": "عمود المصدر",
+    "choose": "اختر عمودًا",
+    "missing": "طابق كل الحقول المطلوبة.",
+    "invalid": "لا يحتوي المصدر على أعمدة أو صفوف صالحة للاستخدام.",
+    "done": "تم",
+    "imported": "اكتمل الاستيراد",
+    "source": "المصدر",
+    "cancel": "إلغاء",
+    "unsaved": "ستُفقد مطابقة الاستيراد."
+  },
+  "metadataEditor": {
+    "save": "حفظ البيانات الوصفية",
+    "reset": "إعادة ضبط",
+    "apply": "تطبيق {field}",
+    "required": "أدخل قيمة.",
+    "failed": "تعذّر حفظ البيانات الوصفية. تغييراتك ما زالت متاحة.",
+    "saved": "تم حفظ البيانات الوصفية",
+    "unsaved": "ستُفقد تغييرات البيانات الوصفية."
+  },
+  "onboarding": {
+    "start": "ابدأ",
+    "skip": "تخطّي الترحيب",
+    "tour": "جولة تعريفية",
+    "checklist": "ابدأ",
+    "close": "إغلاق"
+  },
+  "permissionsEditor": {
+    "label": "الصلاحيات",
+    "capability": "الإمكانية",
+    "subject": "عرض الصلاحيات لـ",
+    "save": "حفظ الصلاحيات",
+    "failed": "تعذّر حفظ الصلاحيات. حاول مرة أخرى.",
+    "unsaved": "لم يتم حفظ تغييرات الصلاحيات."
+  },
+  "presenceBar": {
+    "viewers": "يعرض",
+    "editors": "يحرّر",
+    "cursors": "المؤشرات",
+    "empty": "لا أحد غيرك هنا",
+    "view": "عرض الشخص"
+  },
+  "quickFilter": {
+    "preset": "أي"
+  },
+  "relatedAssets": {
+    "empty": "لا توجد أصول مرتبطة"
+  },
+  "saveAs": {
+    "title": "حفظ باسم",
+    "name": "الاسم",
+    "location": "الموقع",
+    "format": "الصيغة",
+    "save": "حفظ نسخة",
+    "cancel": "إلغاء",
+    "required": "أدخل اسمًا واختر موقعًا.",
+    "failed": "تعذّر حفظ النسخة. حاول مرة أخرى.",
+    "unsaved": "ستفقد تغييراتك."
+  },
+  "shareDialog": {
+    "title": "الحصة",
+    "people": "الأشخاص",
+    "link": "رابط",
+    "person": "الشخص",
+    "role": "الدور",
+    "add": "إضافة شخص",
+    "remove": "إزالة",
+    "save": "حفظ الوصول",
+    "cancel": "إلغاء",
+    "copy": "نسخ الرابط",
+    "access": "الوصول عبر الرابط",
+    "restricted": "فقط من لديهم صلاحية الوصول",
+    "anyone": "يمكن لأي شخص لديه الرابط العرض",
+    "nativeShare": "المشاركة عبر الجهاز",
+    "failed": "تعذّرت المشاركة. حاول مرة أخرى.",
+    "invalid": "اختر شخصًا ودورًا متاحًا.",
+    "unsaved": "ستُفقد تغييرات الوصول."
+  },
+  "shortcutsDialog": {
+    "title": "اختصارات لوحة المفاتيح",
+    "search": "البحث في الاختصارات",
+    "general": "عام",
+    "empty": "لا توجد اختصارات مطابقة",
+    "close": "إغلاق"
+  },
+  "sortPanel": {
+    "label": "ترتيب",
+    "title": "الترتيب حسب",
+    "within": "الترتيب داخل المجموعات حسب",
+    "info": "تُرتَّب الصفوف حسب الحقل الأول، ثم حسب الحقل التالي عند تساوي الأول.",
+    "empty": "لا ترتيب: تحتفظ الصفوف بترتيبها.",
+    "add": "إضافة ترتيب",
+    "addAnother": "إضافة ترتيب آخر",
+    "remove": "إزالة الترتيب حسب {name}",
+    "removeTip": "إزالة الترتيب",
+    "field": "الحقل",
+    "direction": "الاتجاه"
+  },
+  "tour": {
+    "next": "التالي",
+    "back": "رجوع",
+    "finish": "إنهاء الجولة",
+    "skip": "تخطّي الجولة",
+    "resume": "استئناف الجولة",
+    "close": "إغلاق",
+    "step": "{current} من {total}"
+  },
+  "trialUpgrade": {
+    "trial": "تجربة",
+    "compare": "مقارنة الخطط",
+    "title": "اختر خطة",
+    "plan": "الخطة",
+    "upgrade": "ترقية",
+    "cancel": "إلغاء",
+    "failed": "تعذّرت الترقية. حاول مرة أخرى.",
+    "upgraded": "تم تحديث الخطة"
+  },
+  "wizard": {
+    "back": "رجوع",
+    "next": "التالي",
+    "complete": "إنهاء",
+    "cancel": "إلغاء",
+    "summary": "مراجعة",
+    "invalid": "تحقق من هذه الخطوة قبل المتابعة.",
+    "failed": "تعذّر الحفظ. حاول مرة أخرى.",
+    "steps": "الخطوات"
+  },
+  "wizardDialog": {
+    "close": "إغلاق",
+    "unsaved": "ستفقد تغييراتك."
+  },
+  "breadcrumbs": {
+    "label": "مسار التنقل"
+  },
+  "colorSwatch": {
+    "label": "اللون"
+  },
+  "dialog": {
+    "confirmLabel": "حفظ",
+    "cancelLabel": "إلغاء",
+    "confirm": "تأكيد",
+    "cancel": "إلغاء",
+    "save": "حفظ"
+  },
+  "loading": {
+    "label": "جارٍ التحميل"
+  },
+  "rating": {
+    "label": "التقييم"
+  },
+  "tag": {
+    "label": "إضافة وسم"
+  },
+  "toast": {
+    "aria-label": "تجاهل",
+    "undo": "تراجع",
+    "dismiss": "تجاهل"
+  },
+  "actionBar": {
+    "label": "الإجراءات"
+  },
+  "appHeader": {
+    "aria-label": "التطبيقات"
+  },
+  "form": {
+    "label": "إجراءات النموذج"
+  },
+  "reviewFlow": {
+    "label": "بانتظار المراجعة",
+    "noun": "عنصر"
+  },
+  "collection": {
+    "selected": {
+      "=0": "لم يتم تحديد أي عنصر",
+      "one": "تم تحديد عنصر واحد",
+      "two": "تم تحديد عنصرين",
+      "few": "تم تحديد {count} عناصر",
+      "many": "تم تحديد {count} عنصرًا",
+      "other": "تم تحديد {count} عنصر"
+    }
+  }
+};
+  } },
+  "platform/providers/LocaleProvider.jsx": { deps: {"react":null,"./DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","../utils/direction.js":"platform/utils/direction.js","../utils/format.js":"platform/utils/format.js","../i18n/en.js":"platform/i18n/en.js","../i18n/ar.js":"platform/i18n/ar.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.LocaleProvider = LocaleProvider;
+exports.createTranslator = createTranslator;
+exports.useDigits = useDigits;
+exports.useLocale = useLocale;
+exports.useStrings = useStrings;
+var _react = _interopRequireDefault(require("react"));
+var _DirectionProvider = require("./DirectionProvider.jsx");
+var _direction = require("../utils/direction.js");
+var F = _interopRequireWildcard(require("../utils/format.js"));
+var _en = _interopRequireDefault(require("../i18n/en.js"));
+var _ar = _interopRequireDefault(require("../i18n/ar.js"));
+function _interopRequireWildcard(e, t) { if ("function" == typeof WeakMap) var r = new WeakMap(), n = new WeakMap(); return (_interopRequireWildcard = function (e, t) { if (!t && e && e.__esModule) return e; var o, i, f = { __proto__: null, default: e }; if (null === e || "object" != typeof e && "function" != typeof e) return f; if (o = t ? n : r) { if (o.has(e)) return o.get(e); o.set(e, f); } for (const t in e) "default" !== t && {}.hasOwnProperty.call(e, t) && ((i = (o = Object.defineProperty) && Object.getOwnPropertyDescriptor(e, t)) && (i.get || i.set) ? o(f, t, i) : f[t] = e[t]); return f; })(e, t); }
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · LocaleProvider, useLocale, createTranslator
+   Summary: Locale-scoped message catalogs, plural rules, formatting and writing direction. Existing components receive
+     their strings explicitly from the catalog; a region never changes another region's locale.
+   Usage:
+     <LocaleProvider locale="fr-FR" catalogs={{ fr: french }}><App /></LocaleProvider>
+     const { t, strings, format } = useLocale();
+     <Wizard strings={strings('wizard')} />; t('collection.selected', { count: 2 }); format.date('2026-03-08');
+   Props:
+     locale: a BCP 47 language tag; default the page's formatLocale()
+     catalogs: messages by locale, with flat dot keys or nested sections; Plenix's built-in words for the language come after
+       them (i18n/ar.js: Arabic, owner arabic-batch4-36), and English is always the last fallback
+     messages: the current locale's catalog, as a convenience
+     fallbackLocale: locale searched after the requested locale and its language; default "en"
+     timeZone: optional Intl time zone for this provider's date/time formatters
+     dir: explicit "ltr" or "rtl"; otherwise directionOf(locale)
+     digits: "auto" (default: Arabic-Indic ٠-٩ for an Arabic locale, Latin for every other) | "arab" | "latn" (owner, arabic-digits-35):
+       every format helper writes its digits so, and Isolate and Text write the digits of their text so; emails and web addresses keep Latin
+     root: set the page's lang and dir through DirectionProvider; default false (a scoped region)
+     children: the region's content
+     useDigits(): "arab" or "latn", the digits of the nearest LocaleProvider (the page's language when there is none)
+     useLocale(): { locale, dir, digits, t, strings, plural, format }; format has number, unit, bytes, duration, compact, date,
+       time, dateTime, relative, range, currency, percent, list, personName, address, phone and regionName
+     createTranslator(locale, catalogs, fallbackLocale): the same t/strings/plural API outside React, plus section(name): a
+       whole section merged across the catalogs
+     useStrings(section, strings): a component's words: its catalog section for the locale (the app's catalog, Plenix's
+       built-in language, English), with its strings prop on top (owner, arabic-words-37). Every built-in word lives in
+       i18n/en.js; check-system's built-in-words rule keeps English literals out of the components
+   Behavior:
+     Fallback: exact locale, language, configured fallback, then English. Missing messages return their key.
+     Messages interpolate {name} as plain text. Plural messages are objects with one/other (or any Intl category),
+     optional "=0" exact-count keys; t(key, { count }) selects them with Intl.PluralRules. t's third argument may
+     set ordinal:true. Missing interpolation values keep their placeholder. No HTML is parsed.
+     strings(section, values) combines that section across fallbacks for a component's strings prop.
+   Notes:
+     Translators never mutate catalogs or global Intl state. Pass the bound format helpers to localized content;
+     unmodified components keep their existing defaults. Catalog translations are application-owned. */
+
+// Plenix's own words in other languages: used after the application's catalog for the same language, before English
+const BUILT_IN = {
+  ar: _ar.default
+};
+const canonical = (value, fallback = 'en') => {
+  try {
+    return Intl.getCanonicalLocales(value || fallback)[0] || fallback;
+  } catch (e) {
+    return fallback;
+  }
+};
+const own = (value, key) => value && Object.prototype.hasOwnProperty.call(value, key);
+const messageAt = (catalog, key) => {
+  if (own(catalog, key)) return catalog[key];
+  return String(key).split('.').reduce((node, part) => own(node, part) ? node[part] : undefined, catalog);
+};
+const text = (message, values) => String(message).replace(/\{(\w+)\}/g, (match, key) => own(values, key) ? String(values[key]) : match);
+
+// a plural message: an object whose keys are only plural categories (zero, one, two, few, many, other) or exact counts ("=0"),
+// with "other"; a section that merely has a key named "other" (TimeZoneSelect's "Other") is not one
+const PLURAL_KEY = /^(zero|one|two|few|many|other|=\d+)$/;
+const pluralMessage = v => !!v && typeof v === 'object' && !Array.isArray(v) && own(v, 'other') && Object.keys(v).every(k => PLURAL_KEY.test(k));
+function createTranslator(locale = 'en', catalogs = {}, fallbackLocale = 'en') {
+  const language = canonical(locale),
+    fallback = canonical(fallbackLocale);
+  const normalized = Object.fromEntries(Object.entries(catalogs || {}).map(([key, value]) => [canonical(key), value]));
+  const chain = [...new Set([language, language.split('-')[0], fallback, fallback.split('-')[0], 'en'])];
+  const sources = chain.flatMap(key => [normalized[key], BUILT_IN[key]]).filter(Boolean).concat(_en.default);
+  const cardinal = new Intl.PluralRules(language),
+    ordinal = new Intl.PluralRules(language, {
+      type: 'ordinal'
+    });
+  const plural = (count, options = {}) => (options.ordinal ? ordinal : cardinal).select(Number(count));
+  const choose = (value, values, options) => {
+    if (typeof value === 'string' || typeof value === 'number') return text(value, values);
+    if (!value || typeof value !== 'object' || Array.isArray(value)) return undefined;
+    const exact = '=' + Number(values.count),
+      category = plural(values.count, options);
+    const item = own(value, exact) ? value[exact] : value[category] !== undefined ? value[category] : value.other;
+    return typeof item === 'string' || typeof item === 'number' ? text(item, values) : undefined;
+  };
+  const t = (key, values = {}, options = {}) => {
+    for (const source of sources) {
+      const result = choose(messageAt(source, key), values, options);
+      if (result !== undefined) return result;
+    }
+    return String(key);
+  };
+  const strings = (section, values = {}) => {
+    const keys = new Set();
+    sources.forEach(source => {
+      const node = messageAt(source, section);
+      if (node && typeof node === 'object' && !Array.isArray(node)) Object.keys(node).forEach(key => keys.add(key));
+      Object.keys(source).filter(key => key.startsWith(section + '.') && !key.slice(section.length + 1).includes('.')).forEach(key => keys.add(key.slice(section.length + 1)));
+    });
+    return Object.fromEntries([...keys].map(key => [key, t(section + '.' + key, values)]));
+  };
+  // a component's words: the whole section, merged across the catalogs (English at the bottom, the language on top); nested
+  // sections merge key by key, a plural message (an object with "other") is kept whole, so two languages never mix
+  const isPlural = pluralMessage;
+  const merge = (a, b) => {
+    if (!b || typeof b !== 'object' || Array.isArray(b) || isPlural(b)) return b === undefined ? a : b;
+    const out = Object.assign({}, a && typeof a === 'object' && !isPlural(a) ? a : {});
+    Object.keys(b).forEach(k => {
+      out[k] = merge(out[k], b[k]);
+    });
+    return out;
+  };
+  const section = name => sources.slice().reverse().reduce((acc, source) => merge(acc, messageAt(source, name)), {});
+  return {
+    locale: language,
+    dir: (0, _direction.directionOf)(language),
+    t,
+    strings,
+    plural,
+    section
+  };
+}
+const FORMATTERS = {
+  number: ['formatNumber', 1],
+  unit: ['formatUnit', 2],
+  bytes: ['formatBytes', 1],
+  duration: ['formatDuration', 1],
+  compact: ['formatCompact', 1],
+  date: ['formatDate', 1],
+  time: ['formatTime', 1],
+  dateTime: ['formatDateTime', 1],
+  relative: ['formatRelative', 1],
+  range: ['formatRange', 2],
+  currency: ['formatCurrency', 2],
+  percent: ['formatPercent', 1],
+  list: ['formatList', 1],
+  personName: ['formatPersonName', 1],
+  address: ['formatAddress', 1],
+  phone: ['formatPhone', 1],
+  regionName: ['regionName', 1]
+};
+const bind = (locale, timeZone, digits) => {
+  const tag = F.numeralLocale(locale, digits);
+  return Object.fromEntries(Object.entries(FORMATTERS).map(([name, [fn, count]]) => [name, (...args) => F[fn](...Array.from({
+    length: count
+  }, (_, index) => args[index]), Object.assign({
+    locale: tag,
+    timeZone
+  }, args[count]))]));
+};
+const LocaleContext = /*#__PURE__*/_react.default.createContext(null);
+function LocaleProvider({
+  locale,
+  catalogs,
+  messages,
+  fallbackLocale = 'en',
+  timeZone,
+  dir,
+  digits = 'auto',
+  root = false,
+  children
+}) {
+  const language = canonical(locale || F.formatLocale());
+  const value = _react.default.useMemo(() => {
+    const sources = Object.assign({}, catalogs, messages ? {
+      [language]: messages
+    } : {});
+    return Object.assign(createTranslator(language, sources, fallbackLocale), {
+      dir: dir || (0, _direction.directionOf)(language),
+      digits: F.digitsOf(F.numeralLocale(language, digits === 'auto' ? undefined : digits)),
+      format: bind(language, timeZone, digits === 'auto' ? undefined : digits)
+    });
+  }, [language, catalogs, messages, fallbackLocale, timeZone, dir, digits]);
+  return /*#__PURE__*/_react.default.createElement(LocaleContext.Provider, {
+    value: value
+  }, /*#__PURE__*/_react.default.createElement(_DirectionProvider.DirectionProvider, {
+    locale: language,
+    dir: value.dir,
+    root: root
+  }, children));
+}
+
+// a component's words (owner, arabic-words-37): its section of the catalogs for the locale, with the component's strings
+// prop on top (an app's own words still win). useStrings('pagination', strings) -> { label, range, previous, … }
+function useStrings(name, strings) {
+  const loc = useLocale();
+  return _react.default.useMemo(() => {
+    const base = loc.section(name);
+    if (!strings) return base;
+    const out = Object.assign({}, base);
+    Object.keys(strings).forEach(k => {
+      const v = strings[k],
+        b = base[k];
+      out[k] = v && typeof v === 'object' && !Array.isArray(v) && b && typeof b === 'object' && !Array.isArray(b) && !pluralMessage(v) ? Object.assign({}, b, v) : v;
+    });
+    return out;
+  }, [loc, name, strings]);
+}
+function useLocale() {
+  const value = _react.default.useContext(LocaleContext);
+  const language = canonical(F.formatLocale());
+  const fallback = _react.default.useMemo(() => Object.assign(createTranslator(language), {
+    format: bind(language)
+  }), [language]);
+  return value || fallback;
+}
+
+// the digits the text around uses ("arab" or "latn"): the nearest LocaleProvider's, else the page's language (cheap: no translator is built)
+function useDigits() {
+  const value = _react.default.useContext(LocaleContext);
+  return value ? value.digits : F.digitsOf(F.formatLocale());
+}
+  } },
+  "platform/utils/digits.js": { deps: {"./format.js":"platform/utils/format.js"}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.localDigits = localDigits;
+exports.toArabicIndic = toArabicIndic;
+exports.toLatinDigits = void 0;
+var _format = require("./format.js");
+/* Plenix · Digits (platform/utils/digits.js)
+   Summary: Writes the digits of a text in the reader's numerals: Arabic-Indic (٠-٩) in Arabic, Latin elsewhere (owner,
+     arabic-digits-35, arabic-ids-35, arabic-digits-risk-36). Emails and web addresses keep their Latin digits.
+   Usage:
+     localDigits('Case 20261020-01 on 20 October')            // in Arabic: "Case ٢٠٢٦١٠٢٠-٠١ on ٢٠ October"
+     localDigits('write to office2026@example.org')            // email kept: "office2026@example.org"
+     toArabicIndic('2026')                                     // "٢٠٢٦"
+   Props:
+     localDigits(text, { digits, locale }): the text with its ASCII digits changed to the locale's; digits "arab" | "latn" |
+       "auto" (default: from the locale, formatLocale() when none)
+     toArabicIndic(text): the text with every ASCII digit changed to Arabic-Indic, except inside an email or a web address
+     toLatinDigits(text): the text with Arabic-Indic (٠-٩) and Persian (۰-۹) digits changed to ASCII, for reading what a person typed
+   Behavior:
+     An email (name@host) and a web address (http://, https://, www.) are left as written. Anything else changes, including
+       case numbers, IDs, dates and phone numbers written as text. Only digits change; the order of characters never does.
+     Copying a changed ID copies the Arabic-Indic digits (owner, arabic-digits-risk-36).
+   Notes:
+     Formatted numbers and dates change through the locale instead (format.js numeralLocale), not through this. */
+
+const KEEP = /([^\s@<>()]+@[^\s@<>()]+|(?:https?:\/\/|www\.)[^\s<>()]+)/gi;
+const ARAB = d => String.fromCharCode(0x660 + Number(d));
+function toArabicIndic(text) {
+  return String(text).split(KEEP).map((part, i) => i % 2 ? part : part.replace(/[0-9]/g, ARAB)).join('');
+}
+const toLatinDigits = text => String(text).replace(/[\u0660-\u0669]/g, d => String(d.charCodeAt(0) - 0x660)).replace(/[\u06F0-\u06F9]/g, d => String(d.charCodeAt(0) - 0x6F0));
+exports.toLatinDigits = toLatinDigits;
+function localDigits(text, {
+  digits = 'auto',
+  locale
+} = {}) {
+  if (text === null || text === undefined) return text;
+  const want = digits === 'arab' || digits === 'latn' ? digits : (0, _format.digitsOf)(locale);
+  return want === 'arab' ? toArabicIndic(text) : String(text);
+}
+  } },
+  "platform/components/Isolate/Isolate.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/digits.js":"platform/utils/digits.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -770,6 +5467,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.Isolate = Isolate;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _digits = require("../../utils/digits.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Isolate
    Summary: Keeps a piece of text in its own writing direction inside text of the other direction (bidirectional
@@ -780,6 +5479,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      <Isolate dir="auto">{fileName}</Isolate>          // a value that may be in either direction: its first letter decides
    Props:
      dir: "ltr" (default: IDs, numbers, emails, URLs, code) | "rtl" | "auto" (the first strong letter decides)
+     kind: "email" | "url": keeps its Latin digits when the page writes Arabic-Indic digits (owner, arabic-digits-risk-36); any other
+       value (an ID, a case number, a phone number, code) takes the page's digits, ٠-٩ in Arabic
      as: the element; default "bdi"
      className: more classes on the element
      children: the text
@@ -788,9 +5489,10 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The element is isolated (unicode-bidi: isolate, as <bdi> is): the text inside never reorders the text around it,
        and the text around it never reorders it. In an Arabic sentence "20261020-01" stays "20261020-01" (without it,
        the two numbers swap places: "01-20261020").
-     It keeps the order of its characters, not their digits: when Arabic-Indic digits are on (LocaleProvider, issue 413 step 5),
-       the digits of an ID, a case number or an email inside it change too, and still read in the right order (owner,
-       arabic-ids-35).
+     Digits: in Arabic (LocaleProvider digits, "auto" for an Arabic locale) the digits of its text are written Arabic-Indic, case
+       numbers and IDs included, and an email or a web address (kind) keeps Latin (owner, arabic-ids-35, arabic-digits-risk-36).
+     A left-to-right island overrides the order (unicode-bidi: isolate-override): Arabic-Indic digits would otherwise let a hyphen
+       swap the two numbers around it ("٢٠٢٦١٠٢٠-٠١" reads "٠١-٢٠٢٦١٠٢٠"). The order of its characters is kept as written.
      It is inline and adds no box: alignment, wrapping and the ellipsis stay the container's.
    Notes:
      Plenix isolates by itself where it knows the value is technical: DataGrid and Table cells of kind data, id, email,
@@ -800,14 +5502,21 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
 function Isolate({
   dir = 'ltr',
   as: Tag = 'bdi',
+  kind,
   className,
   children,
   ...rest
 }) {
+  const digits = (0, _LocaleProvider.useDigits)();
+  // an email or a web address keeps its Latin digits; any other value takes the page's digits (Arabic-Indic in Arabic)
+  const own = kind === 'email' || kind === 'url' ? 'latn' : digits;
+  const shown = _react.default.Children.map(children, child => typeof child === 'string' || typeof child === 'number' ? (0, _digits.localDigits)(String(child), {
+    digits: own
+  }) : child);
   return /*#__PURE__*/_react.default.createElement(Tag, _extends({
     className: (0, _cx.cx)('plx-isolate', className),
     dir: dir
-  }, rest), children);
+  }, rest), shown);
 }
   } },
   "platform/components/StatusDot/StatusDot.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -2224,7 +6933,7 @@ function useUid(prefix) {
   return prefix + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
 }
   } },
-  "platform/components/Text/Text.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Text/Text.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/digits.js":"platform/utils/digits.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2236,6 +6945,8 @@ var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
 var _Button = require("../Button/Button.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _digits = require("../../utils/digits.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Text
    Summary: A run of text in one of the system's text roles, from the type tokens.
@@ -2292,6 +7003,11 @@ const STRINGS = {
 
 // a text's classes: its role, how it overflows (one line, or at most `clamp` lines while folded) and its figures
 const textClass = (variant, truncate, clamp, open, tabular, className) => (0, _cx.cx)('plx-text', 'plx-text--' + variant, truncate && !clamp && 'plx-text--truncate', clamp && !open && 'plx-text--lines-' + clamp, tabular && 'plx-text--tabular', className);
+
+// the digits of a text's strings: Arabic-Indic in an Arabic page, emails and web addresses kept (owner, arabic-digits-35)
+const shownDigits = (children, digits) => digits === 'arab' ? _react.default.Children.map(children, c => typeof c === 'string' || typeof c === 'number' ? (0, _digits.localDigits)(String(c), {
+  digits
+}) : c) : children;
 function Text({
   as: As = 'span',
   variant = 'body',
@@ -2310,6 +7026,7 @@ function Text({
   }, {
     variant: ['body', 'secondary', 'caption', 'data', 'label', 'strong', 'heading', 'accent', 'success', 'eyebrow', 'danger', 'link', 'title', 'display', 'lead']
   });
+  const digits = (0, _LocaleProvider.useDigits)();
   const clamp = LINES.indexOf(Number(lines)) >= 0 ? Number(lines) : null;
   if (expandable && clamp) {
     return /*#__PURE__*/_react.default.createElement(ExpandableText, {
@@ -2326,7 +7043,7 @@ function Text({
   return /*#__PURE__*/_react.default.createElement(As, _extends({
     dir: "auto",
     className: textClass(variant, truncate, clamp, false, tabular, className)
-  }, rest), children);
+  }, rest), shownDigits(children, digits));
 }
 
 // a clamped text and its Show more button: the button shows while the text is cut, and while it is unfolded
@@ -2620,439 +7337,6 @@ function Count({
     className: (0, _cx.cx)('plx-count', 'plx-count--' + variant, variant === 'pill' ? 'plx-count--' + tone : null, className),
     "aria-label": label || (typeof max === 'number' && Number(value) > max ? moreThan.replace('{max}', String(max)) : undefined)
   }, rest), shown);
-}
-  } },
-  "platform/utils/format.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.FORMATS = void 0;
-exports.dateTimeAttr = dateTimeAttr;
-exports.formatAddress = formatAddress;
-exports.formatBytes = formatBytes;
-exports.formatCompact = formatCompact;
-exports.formatCurrency = formatCurrency;
-exports.formatDate = formatDate;
-exports.formatDateTime = formatDateTime;
-exports.formatDuration = formatDuration;
-exports.formatList = formatList;
-exports.formatLocale = formatLocale;
-exports.formatNumber = formatNumber;
-exports.formatPercent = formatPercent;
-exports.formatPersonName = formatPersonName;
-exports.formatPhone = formatPhone;
-exports.formatRange = formatRange;
-exports.formatRelative = formatRelative;
-exports.formatTime = formatTime;
-exports.formatUnit = formatUnit;
-exports.regionName = regionName;
-/* Plenix · Formatting (platform/utils/format.js)
-   Summary: Numbers, units, dates, times, money, percentages, names, addresses and phone numbers written the same way on
-     every page, in the reader's locale, on the browser's Intl formatters (NumberFormat, DateTimeFormat,
-     RelativeTimeFormat, ListFormat, DisplayNames). The rules (precision, when relative time ends, address layouts, phone
-     groupings) are the Formats standard, platform/standards/formats.json; FORMATS below is the same data (the format test
-     keeps the two equal).
-   Usage:
-     formatNumber(1234.5)                         // "1,234.5"
-     formatBytes(1200000)                         // "1.2 MB"
-     formatCompact(1234)                          // "1.2K"
-     formatDate(date, { dateStyle: 'long' })          // "March 4, 2026"
-     formatRelative(date)                         // "5 minutes ago" (an absolute date after 7 days)
-     formatCurrency(12.5, 'EUR')                  // "€12.50"
-     formatPercent(0.256)                         // "26%"
-     formatPhone('+14155550123')                  // "+1 415 555 0123"
-   Props:
-     every function takes an options object last; options.locale overrides the reader's locale (formatLocale())
-     formatLocale(): the page's language (<html lang>), else the browser's, else "en-US"
-     formatNumber(value, { decimals, signed }): a plain number; decimals fixes the precision (keep it the same in a column)
-     formatUnit(value, unit, { display, decimals }): a measurement with an Intl unit ("kilometer", "celsius", "megabyte");
-       display "short" (default), "long" or "narrow"
-     formatBytes(bytes, { decimals }): a file size in B, kB, MB, GB or TB (powers of 1000)
-     formatDuration(seconds, { display }): "1 hr, 5 min" (display "short", default), "1 hour, 5 minutes" ("long") or "1:05:00" ("clock")
-     formatCompact(value, { decimals }): "1.2K", "3.4M": only where space is tight, with the full value beside it (title, tooltip)
-     formatDate(date, { dateStyle, timeZone }): dateStyle "short" ("Mar 4"; the year when it is not this year), "medium"
-       ("Mar 4, 2026", default), "long" ("March 4, 2026") or "full" ("Wednesday, March 4, 2026")
-     formatTime(date, { seconds, timeZone, timeZoneName }): "2:05 PM"; timeZoneName "short" adds the zone ("2:05 PM PST")
-     formatDateTime(date, { dateStyle, timeZone, timeZoneName }): the date (medium) and the time together
-     formatRelative(date, { now, untilDays }): "5 minutes ago", "in 2 days", "yesterday"; after untilDays (FORMATS) the date
-     formatRange(from, to, { kind, dateStyle }): two dates ("Mar 4 – 6, 2026", kind "date", default) or numbers ("3–5", kind "number")
-     formatCurrency(amount, currency, { display, decimals, signed }): money in an ISO 4217 currency ("USD"); display
-       "symbol" (default, "$12.50") or "code" ("USD 12.50", for pages that mix currencies)
-     formatPercent(ratio, { decimals, signed }): a ratio as a percentage, 0.256 → "26%" (signed: "+3%", for changes)
-     formatList(items, { type }): "A, B, and C"; type "conjunction" (default), "disjunction" ("A, B, or C") or "unit"
-     formatPersonName(person, { display }): a name as the person wrote it; person is a string or { full, preferred };
-       display "full" (default), "preferred" (the preferred name, else the full one) or "initials"
-     formatAddress(address, { country, includeCountry }): the lines of a postal address in its country's order; address
-       is { name, organization, street (a string or lines), locality, region, postalCode, country (ISO 3166 code) }
-     regionName(code): a country's name in the reader's language ("DE" → "Germany")
-     formatPhone(e164, { display }):a phone number stored as E.164 ("+14155550123"), "international" (default) or
-       "national" ("(415) 555-0123")
-     dateTimeAttr(date): the machine-readable value for <time dateTime={…}>
-     FORMATS: the standard's data (see platform/standards/formats.json)
-   Behavior:
-     Nothing is cached per locale beyond the Intl formatter objects; every call reads the locale unless one is given.
-     Bare YYYY-MM-DD values represent local calendar dates; timestamps with a zone retain their instant.
-     A value that is not a finite number or a valid date comes back as an empty string, never "NaN" or "Invalid Date".
-   Notes:
-     Never build a separator, a symbol position or a date order by hand: these functions are the only place they are made.
-     Phone numbers and addresses follow FORMATS for the countries it lists; others fall back to a neutral layout.
-*/
-
-// The Formats standard (platform/standards/formats.json): edit both together; the format test compares them.
-const FORMATS = exports.FORMATS = {
-  number: {
-    decimals: {
-      default: 0,
-      ratio: 0,
-      compact: 1,
-      bytes: 1
-    }
-  },
-  bytes: {
-    base: 1000,
-    units: ['byte', 'kilobyte', 'megabyte', 'gigabyte', 'terabyte']
-  },
-  relative: {
-    untilDays: 7
-  },
-  currency: {
-    display: 'symbol',
-    mixedDisplay: 'code'
-  },
-  date: {
-    default: 'medium'
-  },
-  address: {
-    default: ['name', 'organization', 'street', 'locality region postalCode', 'country'],
-    US: ['name', 'organization', 'street', 'locality, region postalCode', 'country'],
-    CA: ['name', 'organization', 'street', 'locality region postalCode', 'country'],
-    GB: ['name', 'organization', 'street', 'locality', 'postalCode', 'country'],
-    DE: ['name', 'organization', 'street', 'postalCode locality', 'country'],
-    FR: ['name', 'organization', 'street', 'postalCode locality', 'country'],
-    IT: ['name', 'organization', 'street', 'postalCode locality region', 'country'],
-    JP: ['country', 'postalCode', 'region locality', 'street', 'organization', 'name']
-  },
-  phone: {
-    '1': {
-      national: '(###) ###-####',
-      international: '+1 ### ### ####'
-    },
-    '33': {
-      national: '0# ## ## ## ##',
-      international: '+33 # ## ## ## ##'
-    },
-    '44': {
-      national: '0#### ######',
-      international: '+44 #### ######'
-    },
-    '49': {
-      national: '0### #######',
-      international: '+49 ### #######'
-    },
-    '61': {
-      national: '0# #### ####',
-      international: '+61 # #### ####'
-    }
-  }
-};
-const ok = n => typeof n === 'number' && isFinite(n);
-// A date-only value is a calendar date in the reader's zone, not midnight UTC (DT-7).
-const toDate = d => {
-  if (typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d)) {
-    const [year, month, day] = d.split('-').map(Number),
-      x = new Date(0);
-    x.setFullYear(year, month - 1, day);
-    x.setHours(0, 0, 0, 0);
-    return x.getFullYear() === year && x.getMonth() === month - 1 && x.getDate() === day ? x : null;
-  }
-  const x = d instanceof Date ? d : new Date(d);
-  return isNaN(x.getTime()) ? null : x;
-};
-function formatLocale() {
-  const lang = typeof document !== 'undefined' && document.documentElement && document.documentElement.getAttribute('lang');
-  if (lang) return lang;
-  if (typeof navigator !== 'undefined' && navigator.language) return navigator.language;
-  return 'en-US';
-}
-const loc = o => o && o.locale || formatLocale();
-const digits = d => d === undefined ? {} : {
-  minimumFractionDigits: d,
-  maximumFractionDigits: d
-};
-function formatNumber(value, o = {}) {
-  if (!ok(value)) return '';
-  return new Intl.NumberFormat(loc(o), {
-    ...digits(o.decimals),
-    signDisplay: o.signed ? 'exceptZero' : 'auto'
-  }).format(value);
-}
-function formatUnit(value, unit, o = {}) {
-  if (!ok(value)) return '';
-  return new Intl.NumberFormat(loc(o), {
-    style: 'unit',
-    unit,
-    unitDisplay: o.display || 'short',
-    ...digits(o.decimals)
-  }).format(value);
-}
-function formatBytes(bytes, o = {}) {
-  if (!ok(bytes)) return '';
-  const {
-    base,
-    units
-  } = FORMATS.bytes;
-  let i = 0,
-    v = Math.abs(bytes);
-  while (v >= base && i < units.length - 1) {
-    v /= base;
-    i++;
-  }
-  const d = o.decimals !== undefined ? o.decimals : i === 0 ? 0 : FORMATS.number.decimals.bytes;
-  return new Intl.NumberFormat(loc(o), {
-    style: 'unit',
-    unit: units[i],
-    unitDisplay: 'short',
-    maximumFractionDigits: d
-  }).format(Math.sign(bytes) * v);
-}
-function formatDuration(seconds, o = {}) {
-  if (!ok(seconds)) return '';
-  const s = Math.round(Math.abs(seconds)),
-    h = Math.floor(s / 3600),
-    m = Math.floor(s % 3600 / 60),
-    r = s % 60;
-  if (o.display === 'clock') {
-    const two = n => String(n).padStart(2, '0');
-    return (seconds < 0 ? '-' : '') + (h ? h + ':' + two(m) : String(m)) + ':' + two(r);
-  }
-  const display = o.display === 'long' ? 'long' : 'short';
-  const parts = [[h, 'hour'], [m, 'minute'], [r, 'second']].filter(([n], i, all) => n || i === 2 && !all[0][0] && !all[1][0]);
-  return formatList(parts.map(([n, unit]) => formatUnit(n, unit, {
-    locale: o.locale,
-    display
-  })), {
-    locale: o.locale,
-    type: 'unit'
-  });
-}
-function formatCompact(value, o = {}) {
-  if (!ok(value)) return '';
-  return new Intl.NumberFormat(loc(o), {
-    notation: 'compact',
-    maximumFractionDigits: o.decimals !== undefined ? o.decimals : FORMATS.number.decimals.compact
-  }).format(value);
-}
-const DATE_STYLES = {
-  medium: {
-    dateStyle: 'medium'
-  },
-  long: {
-    dateStyle: 'long'
-  },
-  full: {
-    dateStyle: 'full'
-  }
-};
-function formatDate(date, o = {}) {
-  const d = toDate(date);
-  if (!d) return '';
-  const style = o.dateStyle || FORMATS.date.default;
-  if (style === 'short') {
-    const thisYear = d.getFullYear() === new Date().getFullYear();
-    return new Intl.DateTimeFormat(loc(o), {
-      month: 'short',
-      day: 'numeric',
-      year: thisYear ? undefined : 'numeric',
-      timeZone: o.timeZone
-    }).format(d);
-  }
-  return new Intl.DateTimeFormat(loc(o), {
-    ...(DATE_STYLES[style] || DATE_STYLES.medium),
-    timeZone: o.timeZone
-  }).format(d);
-}
-function formatTime(date, o = {}) {
-  const d = toDate(date);
-  if (!d) return '';
-  return new Intl.DateTimeFormat(loc(o), {
-    hour: 'numeric',
-    minute: '2-digit',
-    second: o.seconds ? '2-digit' : undefined,
-    timeZone: o.timeZone,
-    timeZoneName: o.timeZoneName
-  }).format(d);
-}
-function formatDateTime(date, o = {}) {
-  const d = toDate(date);
-  if (!d) return '';
-  const style = o.dateStyle && DATE_STYLES[o.dateStyle] ? o.dateStyle : FORMATS.date.default;
-  if (o.timeZoneName) return new Intl.DateTimeFormat(loc(o), {
-    ...(style === 'medium' ? {
-      month: 'short'
-    } : {
-      month: 'long'
-    }),
-    day: 'numeric',
-    year: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-    timeZone: o.timeZone,
-    timeZoneName: o.timeZoneName
-  }).format(d);
-  return new Intl.DateTimeFormat(loc(o), {
-    dateStyle: style,
-    timeStyle: 'short',
-    timeZone: o.timeZone
-  }).format(d);
-}
-const STEPS = [['second', 60], ['minute', 60], ['hour', 24], ['day', 7]];
-function formatRelative(date, o = {}) {
-  const d = toDate(date);
-  if (!d) return '';
-  const now = toDate(o.now || Date.now());
-  const until = o.untilDays !== undefined ? o.untilDays : FORMATS.relative.untilDays;
-  let diff = (d.getTime() - now.getTime()) / 1000;
-  if (Math.abs(diff) >= until * 86400) return formatDate(d, {
-    locale: o.locale,
-    dateStyle: 'medium',
-    timeZone: o.timeZone
-  });
-  const rtf = new Intl.RelativeTimeFormat(loc(o), {
-    numeric: 'auto'
-  });
-  for (const [unit, size] of STEPS) {
-    if (Math.abs(diff) < size || unit === 'day') return rtf.format(Math.round(diff), unit);
-    diff /= size;
-  }
-  return '';
-}
-function formatRange(from, to, o = {}) {
-  if (o.kind === 'number') {
-    if (!ok(from) || !ok(to)) return '';
-    return new Intl.NumberFormat(loc(o), digits(o.decimals)).formatRange(from, to);
-  }
-  const a = toDate(from),
-    b = toDate(to);
-  if (!a || !b) return '';
-  return new Intl.DateTimeFormat(loc(o), {
-    ...(DATE_STYLES[o.dateStyle] || DATE_STYLES.medium),
-    timeZone: o.timeZone
-  }).formatRange(a, b);
-}
-function formatCurrency(amount, currency, o = {}) {
-  if (!ok(amount) || !currency) return '';
-  return new Intl.NumberFormat(loc(o), {
-    style: 'currency',
-    currency,
-    currencyDisplay: o.display || FORMATS.currency.display,
-    ...digits(o.decimals),
-    signDisplay: o.signed ? 'exceptZero' : 'auto'
-  }).format(amount);
-}
-function formatPercent(ratio, o = {}) {
-  if (!ok(ratio)) return '';
-  const d = o.decimals !== undefined ? o.decimals : FORMATS.number.decimals.ratio;
-  return new Intl.NumberFormat(loc(o), {
-    style: 'percent',
-    ...digits(d),
-    signDisplay: o.signed ? 'exceptZero' : 'auto'
-  }).format(ratio);
-}
-function formatList(items, o = {}) {
-  const list = (items || []).filter(x => x !== undefined && x !== null && x !== '').map(String);
-  return new Intl.ListFormat(loc(o), o.type === 'unit' ? {
-    type: 'unit',
-    style: 'short'
-  } : {
-    type: o.type || 'conjunction'
-  }).format(list);
-}
-function formatPersonName(person, o = {}) {
-  const p = typeof person === 'string' ? {
-    full: person
-  } : person || {};
-  const full = String(p.full || '').trim();
-  if (o.display === 'preferred') return String(p.preferred || '').trim() || full;
-  if (o.display === 'initials') {
-    const words = full.split(/\s+/).filter(Boolean);
-    const pick = words.length > 1 ? [words[0], words[words.length - 1]] : words;
-    return pick.map(w => Array.from(w)[0].toLocaleUpperCase(loc(o))).join('');
-  }
-  return full;
-}
-function regionName(code, o = {}) {
-  if (!code) return '';
-  try {
-    return new Intl.DisplayNames(loc(o), {
-      type: 'region'
-    }).of(code) || code;
-  } catch (e) {
-    return code;
-  }
-}
-function formatAddress(address, o = {}) {
-  const a = address || {};
-  const country = (o.country || a.country || '').toUpperCase();
-  const layout = FORMATS.address[country] || FORMATS.address.default;
-  const readerRegion = (loc(o).split('-')[1] || '').toUpperCase();
-  const includeCountry = o.includeCountry !== undefined ? o.includeCountry : !!country && country !== readerRegion;
-  const value = k => {
-    if (k === 'country') return includeCountry ? regionName(country, o) : '';
-    if (k === 'street') return [].concat(a.street || []).filter(Boolean).join('\n');
-    return a[k] ? String(a[k]) : '';
-  };
-  const lines = [];
-  layout.forEach(pattern => {
-    // a pattern line: field names with the punctuation between them; a separator is written only between two values
-    let text = '',
-      sep = '';
-    for (const [, field, between] of pattern.matchAll(/([A-Za-z]+)|([^A-Za-z]+)/g)) {
-      if (between) {
-        sep = between;
-        continue;
-      }
-      const v = value(field);
-      if (!v) continue;
-      text += (text ? sep : '') + v;
-      sep = '';
-    }
-    text.split('\n').forEach(l => {
-      if (l.trim()) lines.push(l.trim());
-    });
-  });
-  return lines;
-}
-function formatPhone(e164, o = {}) {
-  const raw = String(e164 || '').trim();
-  const num = raw.replace(/[^\d+]/g, '');
-  if (!/^\+\d{4,15}$/.test(num)) return raw;
-  const all = num.slice(1);
-  const code = Object.keys(FORMATS.phone).sort((x, y) => y.length - x.length).find(c => all.startsWith(c));
-  const display = o.display === 'national' ? 'national' : 'international';
-  if (code) {
-    const rest = all.slice(code.length),
-      pattern = FORMATS.phone[code][display];
-    if ((pattern.match(/#/g) || []).length === rest.length) {
-      let i = 0;
-      return pattern.replace(/#/g, () => rest[i++]);
-    }
-  }
-  // a country Formats does not list (or a length its pattern does not fit): the country code when it is known, then the
-  // digits in groups of three, the last group taking up to four
-  const groups = [];
-  let rest = code ? all.slice(code.length) : all;
-  while (rest.length > 4) {
-    groups.push(rest.slice(0, 3));
-    rest = rest.slice(3);
-  }
-  groups.push(rest);
-  return '+' + (code ? code + ' ' : '') + groups.join(' ');
-}
-function dateTimeAttr(date) {
-  const d = toDate(date);
-  return d ? d.toISOString() : '';
 }
   } },
   "platform/components/Card/Card.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -4494,7 +8778,7 @@ function scaleTime({
     for (let i = 0; x.getTime() <= hi && i < 1000; i++, x = addTo(x, unit, amount)) out.push(new Date(x.getTime()));
     return out;
   };
-  scale.format = (v, n = count, o = {}) => new Intl.DateTimeFormat(o.locale || (0, _format.formatLocale)(), TIME_LABELS[timeStep(d[1] - d[0], n)[0]]).format(new Date(toTime(v)));
+  scale.format = (v, n = count, o = {}) => new Intl.DateTimeFormat((0, _format.numeralLocale)(o.locale || (0, _format.formatLocale)()), TIME_LABELS[timeStep(d[1] - d[0], n)[0]]).format(new Date(toTime(v)));
   scale.domain = () => d.map(t => new Date(t));
   scale.range = () => r.slice();
   scale.type = 'time';
@@ -4548,6 +8832,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.chartTokens = chartTokens;
 exports.loadECharts = loadECharts;
 exports.plenixTheme = plenixTheme;
+exports.tickLineHeight = tickLineHeight;
 var _vendorBase = require("../../utils/vendorBase.js");
 /* Plenix · Chart engine (platform/charts/echarts/engine.js)
    Summary: How a Plenix chart draws with Apache ECharts (issue 353, owner 2026-10-26): loads the vendored engine
@@ -4611,6 +8896,26 @@ const ms = v => {
   const s = String(v).trim();
   return /ms$/.test(s) ? num(s) : /s$/.test(s) ? num(s) * 1000 : num(s);
 };
+
+// a tick label's line height (owner, arabic-font-35; issue 413): the font size, unless a label is in a script whose letters
+// reach below it (Arabic); then the deepest such label, measured, so ECharts keeps room for it under the axis. Latin labels
+// are never measured, so their charts do not change.
+const DEEP_SCRIPT = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
+function tickLineHeight(t, texts) {
+  const size = t.tick.fontSize,
+    deep = (texts || []).map(String).filter(x => DEEP_SCRIPT.test(x));
+  if (!deep.length || typeof document === 'undefined') return size;
+  const ctx = document.createElement('canvas').getContext('2d');
+  if (!ctx) return size;
+  ctx.font = (t.tick.fontWeight || 400) + ' ' + size + 'px ' + t.tick.fontFamily;
+  ctx.textBaseline = 'top';
+  let h = size;
+  for (const x of deep) {
+    const m = ctx.measureText(x);
+    h = Math.max(h, Math.ceil(m.actualBoundingBoxDescent - Math.min(0, -m.actualBoundingBoxAscent)));
+  }
+  return h;
+}
 function chartTokens(where) {
   const doc = where.ownerDocument,
     win = doc.defaultView;
@@ -5524,75 +9829,6 @@ function Portal({
     ref: origin,
     "data-plx-portal-origin": ""
   }), /*#__PURE__*/(0, _reactDom.createPortal)(children, node));
-}
-  } },
-  "platform/utils/direction.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.RTL_LANGUAGES = void 0;
-exports.arrowStep = arrowStep;
-exports.directionOf = directionOf;
-exports.getDirection = getDirection;
-exports.isRtl = isRtl;
-exports.physicalSide = physicalSide;
-/* Plenix · Writing direction (platform/utils/direction.js)
-   Summary: Right-to-left and left-to-right in script: the direction of an element or a language, the arrow keys in reading
-     order, and the physical side of a logical one. In a right-to-left page Arrow Right moves back and Arrow Left forward,
-     as the eye reads; Up and Down are the same in both directions.
-   Usage:
-     const step = arrowStep(e, e.currentTarget);   // +1, -1 or 0
-     if (step) { e.preventDefault(); move(index + step); }
-     directionOf('ar-EG')          // "rtl"
-     physicalSide('start', 'rtl')  // "right"
-   Props:
-     isRtl(el): true when the element is laid out right to left (its computed direction)
-     arrowStep(event, el, { vertical }): +1 for the next item, -1 for the previous one, 0 for another key; with vertical:
-       false, Up and Down are ignored (a horizontal-only control)
-     getDirection(el): "rtl" | "ltr", the element's computed direction (the document's when no element is given)
-     directionOf(locale): "rtl" for a language written right to left (Arabic, Hebrew, Persian, Urdu and the others in
-       RTL_LANGUAGES), else "ltr"
-     physicalSide(side, dir): "left" | "right" for a logical "start" or "end" in that direction (for a measurement API that
-       only speaks physical sides, such as a pointer's clientX); "left" and "right" come back as they are
-     RTL_LANGUAGES: the language subtags written right to left
-   Behavior:
-     The direction comes from the dir attribute on the element or an ancestor (<html dir="rtl">, a DirectionProvider):
-       stylesheets use logical properties (inline-start, inline-end), so the layout mirrors on its own; script reads the
-       computed direction only where it measures or handles arrow keys.
-*/
-const RTL_LANGUAGES = exports.RTL_LANGUAGES = ['ar', 'arc', 'ckb', 'dv', 'fa', 'he', 'iw', 'ps', 'sd', 'syr', 'ug', 'ur', 'yi'];
-function isRtl(el) {
-  return !!el && typeof window !== 'undefined' && window.getComputedStyle(el).direction === 'rtl';
-}
-function getDirection(el) {
-  if (typeof window === 'undefined') return 'ltr';
-  return isRtl(el || document.documentElement) ? 'rtl' : 'ltr';
-}
-function directionOf(locale) {
-  const lang = String(locale || '').toLowerCase().split(/[-_]/)[0];
-  return RTL_LANGUAGES.indexOf(lang) >= 0 ? 'rtl' : 'ltr';
-}
-function physicalSide(side, dir) {
-  if (side !== 'start' && side !== 'end') return side;
-  return side === 'start' === (dir !== 'rtl') ? 'left' : 'right';
-}
-function arrowStep(event, el, opts) {
-  const vertical = !opts || opts.vertical !== false;
-  const rtl = isRtl(el);
-  switch (event.key) {
-    case 'ArrowRight':
-      return rtl ? -1 : 1;
-    case 'ArrowLeft':
-      return rtl ? 1 : -1;
-    case 'ArrowDown':
-      return vertical ? 1 : 0;
-    case 'ArrowUp':
-      return vertical ? -1 : 0;
-    default:
-      return 0;
-  }
 }
   } },
   "platform/hooks/useGesture.js": { deps: {"react":null,"../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -9395,7 +13631,7 @@ function ContextualHelp({
   }, more('standalone')) : null));
 }
   } },
-  "platform/components/ProgressBar/ProgressBar.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/ProgressBar/ProgressBar.jsx": { deps: {"react":null,"../../utils/format.js":"platform/utils/format.js","../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -9403,6 +13639,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ProgressBar = ProgressBar;
 var _react = _interopRequireDefault(require("react"));
+var _format = require("../../utils/format.js");
 var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -9453,7 +13690,7 @@ function ProgressBar({
     tone: ['info', 'success', 'warning', 'danger', 'neutral'],
     size: ['sm', 'md']
   });
-  const loc = locale || typeof document !== 'undefined' && document.documentElement.lang || undefined;
+  const loc = (0, _format.numeralLocale)(locale || typeof document !== 'undefined' && document.documentElement.lang || undefined);
   const known = typeof value === 'number' && !Number.isNaN(value);
   const pct = known ? Math.max(0, Math.min(100, value / (max || 100) * 100)) : null;
   const id = 'plx-pb' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
@@ -20853,7 +25090,7 @@ function ManageColumnsDialog({
   }))));
 }
   } },
-  "platform/components/Pagination/Pagination.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Pagination/Pagination.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -20862,6 +25099,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.Pagination = Pagination;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Pagination
    Summary: Page buttons, an optional summary ("1–30 of 120") and an optional per-page choice.
@@ -20878,7 +25116,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      onPerPageChange(n): runs when another per-page number is chosen
      label: the accessible name of the navigation; default strings.label: "Pages"
      className: more classes on the navigation
-     strings: the words it shows and announces, for other languages: { label: "Pages", range: "{first}–{last} of {total}",
+     strings: the words it shows and announces, for other languages (default: the locale's, through LocaleProvider; Arabic is
+       built in): { label: "Pages", range: "{first}–{last} of {total}",
        previous: "Previous page", next: "Next page", page: "Page {n}", perPage: "Per page" }
      ...rest: other attributes go on the navigation element
    Behavior:
@@ -20886,14 +25125,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Previous is disabled on the first page; Next on the last.
      The current page carries aria-current="page".
 */
-const STRINGS = {
-  label: 'Pages',
-  range: '{first}–{last} of {total}',
-  previous: 'Previous page',
-  next: 'Next page',
-  page: 'Page {n}',
-  perPage: 'Per page'
-};
 const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
 function pagesToShow(page, count) {
   const set = new Set([1, count, page - 1, page, page + 1].filter(p => p >= 1 && p <= count));
@@ -20918,7 +25149,9 @@ function Pagination({
   className,
   ...rest
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  // the words: the catalog's for the locale (i18n/en.js, and Arabic says the range its own way: "31 إلى 60 من 120"),
+  // then the strings prop
+  const t = (0, _LocaleProvider.useStrings)('pagination', strings);
   const go = p => {
     if (p >= 1 && p <= pageCount && p !== page && onPageChange) onPageChange(p);
   };
@@ -21560,7 +25793,7 @@ function DataPill({
   }, ', ' + t[gender]) : null);
 }
   } },
-  "platform/components/DataGrid/cells.jsx": { deps: {"react":null,"../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../DataPill/DataPill.jsx":"platform/components/DataPill/DataPill.jsx","../../utils/format.js":"platform/utils/format.js","../Isolate/Isolate.jsx":"platform/components/Isolate/Isolate.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/DataGrid/cells.jsx": { deps: {"react":null,"../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../DataPill/DataPill.jsx":"platform/components/DataPill/DataPill.jsx","../../utils/format.js":"platform/utils/format.js","../Isolate/Isolate.jsx":"platform/components/Isolate/Isolate.jsx","../../utils/digits.js":"platform/utils/digits.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -21578,6 +25811,7 @@ var _Tag = require("../Tag/Tag.jsx");
 var _DataPill = require("../DataPill/DataPill.jsx");
 var _format = require("../../utils/format.js");
 var _Isolate = require("../Isolate/Isolate.jsx");
+var _digits = require("../../utils/digits.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · DataGridEngine cells
    Summary: Existing Platform rich-cell parts rendered directly by React.
@@ -21705,12 +25939,13 @@ function CellValue({
     className: own,
     onMouseEnter: fullText
   }, /*#__PURE__*/_react.default.createElement(_Isolate.Isolate, {
-    dir: island === 'data' ? 'auto' : 'ltr'
+    dir: island === 'data' ? 'auto' : 'ltr',
+    kind: island === 'email' || island === 'url' ? island : undefined
   }, valueText(value)));
   return /*#__PURE__*/_react.default.createElement("span", {
     className: own,
     onMouseEnter: fullText
-  }, valueText(value));
+  }, (0, _digits.localDigits)(valueText(value)));
 }
 const ISLANDS = ['id', 'email', 'url', 'phone', 'code', 'data'];
 function fullText(event) {
@@ -28598,7 +32833,7 @@ function SegmentedControl({
   }, segments);
 }
   } },
-  "platform/components/Combobox/Combobox.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Combobox/Combobox.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -28610,6 +32845,7 @@ var _cx = require("../../utils/cx.js");
 var _Tag = require("../Tag/Tag.jsx");
 var _Loading = require("../Loading/Loading.jsx");
 var _announce = require("../../utils/announce.jsx");
+var _floating = require("../../utils/floating.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Combobox
    Summary: A field with a list to choose from, filtered as you type (an ARIA combobox with a listbox).
@@ -28647,7 +32883,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      className: more classes on the combobox
      ref: forwarded to the <input>
    Behavior:
-     The list opens on focus and on typing, and closes on a click outside.
+     The list opens on focus and on typing, and closes on a click outside. It opens in the browser's top layer, below the field
+       (or above it near an edge), at least as wide as the field, placed like a Menu: no dialog, drawer or scroll area clips it.
      ↓ / ↑ move, Enter chooses, Escape closes.
      Backspace in an empty multiple field removes the last value.
      A single choice closes the list; with multiple, the list stays open after each choice.
@@ -28665,6 +32902,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The list is a menu surface: border only, no shadow (D9).
      Other props pass through to the <input>.
 */
+// the top layer and CSS anchor positioning (as Menu, Popover and Select), checked once
+const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 const STRINGS = {
   loading: 'Loading…',
   error: 'The options could not be loaded',
@@ -28702,7 +32941,18 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
   const [text, setText] = _react.default.useState('');
   const [active, setActive] = _react.default.useState(0);
   const wrap = _react.default.useRef(null),
-    input = _react.default.useRef(null);
+    input = _react.default.useRef(null),
+    list = _react.default.useRef(null);
+  // the list opens in the top layer, placed against the field by the floating layer (flips up near an edge, follows scroll and resize): no dialog, drawer or scroll area clips it
+  (0, _floating.useFloating)(wrap, list, {
+    open,
+    placement: 'bottom-start',
+    matchWidth: true
+  });
+  _react.default.useLayoutEffect(() => {
+    const el = list.current;
+    if (open && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+  }, [open]);
   _react.default.useImperativeHandle(ref, () => input.current);
   // async select: the options of the last load, the loads in flight (only the newest is shown) and every option seen
   const [loaded, setLoaded] = _react.default.useState([]);
@@ -28861,9 +33111,12 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
     className: "plx-combobox__chevron",
     "aria-hidden": "true"
   })), open ? /*#__PURE__*/_react.default.createElement("ul", {
+    ref: list,
     className: "plx-combobox__list",
     id: listId,
     role: "listbox",
+    popover: TOP_LAYER ? 'manual' : undefined,
+    onMouseDown: e => e.preventDefault(),
     "aria-multiselectable": multiple || undefined,
     "aria-busy": isLoading || undefined
   }, items.length ? items.map((it, i) => it.kind === 'create' ? /*#__PURE__*/_react.default.createElement("li", {
@@ -30558,7 +34811,7 @@ function ActionBar({
   }, children);
 }
   } },
-  "platform/components/NavList/NavList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/NavList/NavList.jsx": { deps: {"react":null,"../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -30566,6 +34819,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.NavList = NavList;
 var _react = _interopRequireDefault(require("react"));
+var _format = require("../../utils/format.js");
 var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
 var _Icon = require("../Icon/Icon.jsx");
@@ -30787,7 +35041,7 @@ function NavList({
   className
 }) {
   const t = Object.assign({}, STRINGS, strings);
-  const loc = locale || typeof document !== 'undefined' && document.documentElement.lang || undefined;
+  const loc = (0, _format.numeralLocale)(locale || typeof document !== 'undefined' && document.documentElement.lang || undefined);
   const all = groups || [{
     heading: null,
     items: items || []
@@ -32736,7 +36990,7 @@ function FilterBar({
   }, actions) : null);
 }
   } },
-  "platform/patterns/SearchWorkspace/SearchWorkspace.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","../../utils/layer.js":"platform/utils/layer.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/SearchWorkspace/SearchWorkspace.jsx": { deps: {"react":null,"../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","../../utils/layer.js":"platform/utils/layer.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -32744,6 +36998,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.SearchWorkspace = SearchWorkspace;
 var _react = _interopRequireDefault(require("react"));
+var _format = require("../../utils/format.js");
 var _cx = require("../../utils/cx.js");
 var _Button = require("../../components/Button/Button.jsx");
 var _SearchField = require("../../components/SearchField/SearchField.jsx");
@@ -32851,7 +37106,7 @@ function SearchWorkspace({
   children
 }) {
   const t = Object.assign({}, STRINGS, strings);
-  const loc = locale || typeof document !== 'undefined' && document.documentElement.lang || undefined;
+  const loc = (0, _format.numeralLocale)(locale || typeof document !== 'undefined' && document.documentElement.lang || undefined);
   const id = (0, _layer.useUid)('plx-search-ws');
   const field = _react.default.useRef(null);
   // the query typed here is applied as the person types; Enter keeps focus in the field
@@ -33691,6 +37946,9 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      Header style 2 follows the button rule of a command bar: while the facts would wrap, first the count buttons show
        their icon only, then the states too, each with its words as its tooltip and name; past that the boxes wrap.
    Notes:
+     Writing direction (owner, arabic-batch4-36): title, subtitle and summary are plain text. In a right-to-left page an app
+       wraps an ID or a case number in them in <Isolate> (subtitle={['القضية ', <Isolate>20261020-01</Isolate>]}), or it reads
+       backwards (01-20261020); Plenix does not guess. The same goes for a fact's value.
      Not for settings screens: use RecordPage.Header. A small uppercase group label is SectionHeading.
 */
 
@@ -37578,108 +41836,6 @@ function RichText({
   }), html != null ? undefined : children);
 }
   } },
-  "platform/providers/DirectionProvider.jsx": { deps: {"react":null,"../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.DirectionContext = void 0;
-exports.DirectionProvider = DirectionProvider;
-exports.useDirection = useDirection;
-var _react = _interopRequireDefault(require("react"));
-var _direction = require("../utils/direction.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · DirectionProvider, useDirection
-   Summary: Sets the writing direction (left to right or right to left) of an application or of one region, and tells
-     React components which it is.
-   Usage:
-     <DirectionProvider dir="rtl" lang="ar">{app}</DirectionProvider>
-     <DirectionProvider locale="he-IL" root>{app}</DirectionProvider>   // on <html>: the whole page
-     const { dir, setDir } = useDirection();
-   Props:
-     dir: "ltr" | "rtl"; without it, the direction of locale, else of the page
-     locale: a language tag ("ar-EG", "en-US"); it sets lang and, without dir, the direction (directionOf)
-     lang: the lang attribute, when it is not the locale
-     root: set dir and lang on <html> instead of a region (default false): the page, its portals and its scrollbars mirror
-     children: the application root or the region it wraps
-     useDirection(): { dir, rtl, setDir(dir) }: the nearest provider's direction (outside one, the page's), and a way to
-       change it
-   Behavior:
-     A region: a wrapper (div.plx-direction, display: contents, so it adds no box) with dir and lang; everything inside
-       it lays out in that direction, as the stylesheets use logical properties.
-     With root, the attributes go on <html> and are put back as they were when the provider unmounts.
-     Overlays drawn in a Portal take the direction of where they were written (the Portal copies dir and lang).
-   Notes:
-     Mirror the layout, not the content: text, numbers, media controls, clocks and the icons that are not directional
-       keep their shape; the icon set mirrors its directional icons (arrows, chevrons, undo and redo) by itself.
-     Script reads the direction where it measures or handles arrow keys (utils/direction.js: arrowStep, physicalSide).
-*/
-
-const DirectionContext = exports.DirectionContext = /*#__PURE__*/_react.default.createContext(null);
-function DirectionProvider({
-  dir,
-  locale,
-  lang,
-  root = false,
-  children
-}) {
-  const wanted = dir || (locale ? (0, _direction.directionOf)(locale) : null);
-  const [own, setOwn] = _react.default.useState(wanted);
-  _react.default.useEffect(() => {
-    setOwn(wanted);
-  }, [wanted]);
-  const current = own || (typeof document !== 'undefined' ? (0, _direction.getDirection)() : 'ltr');
-  const language = lang || locale || undefined;
-  _react.default.useLayoutEffect(() => {
-    if (!root) return undefined;
-    const html = document.documentElement,
-      before = {
-        dir: html.getAttribute('dir'),
-        lang: html.getAttribute('lang')
-      };
-    html.setAttribute('dir', current);
-    if (language) html.setAttribute('lang', language);
-    return () => {
-      if (before.dir == null) html.removeAttribute('dir');else html.setAttribute('dir', before.dir);
-      if (language) {
-        if (before.lang == null) html.removeAttribute('lang');else html.setAttribute('lang', before.lang);
-      }
-    };
-  }, [root, current, language]);
-  const value = _react.default.useMemo(() => ({
-    dir: current,
-    rtl: current === 'rtl',
-    setDir: d => setOwn(d === 'rtl' ? 'rtl' : 'ltr')
-  }), [current]);
-  return /*#__PURE__*/_react.default.createElement(DirectionContext.Provider, {
-    value: value
-  }, root ? children : /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-direction",
-    dir: current,
-    lang: language
-  }, children));
-}
-function useDirection() {
-  const ctx = _react.default.useContext(DirectionContext);
-  const [page, setPage] = _react.default.useState(() => typeof document !== 'undefined' ? (0, _direction.getDirection)() : 'ltr');
-  _react.default.useEffect(() => {
-    if (ctx) return undefined;
-    const observer = new MutationObserver(() => setPage((0, _direction.getDirection)()));
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['dir']
-    });
-    return () => observer.disconnect();
-  }, [ctx]);
-  if (ctx) return ctx;
-  return {
-    dir: page,
-    rtl: page === 'rtl',
-    setDir: d => document.documentElement.setAttribute('dir', d === 'rtl' ? 'rtl' : 'ltr')
-  };
-}
-  } },
   "platform/hooks/usePressable.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -39443,7 +43599,7 @@ function RetryNotice({
   }, count) : null) : null);
 }
   } },
-  "platform/components/ProgressCircle/ProgressCircle.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/ProgressCircle/ProgressCircle.jsx": { deps: {"react":null,"../../utils/format.js":"platform/utils/format.js","../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -39451,6 +43607,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ProgressCircle = ProgressCircle;
 var _react = _interopRequireDefault(require("react"));
+var _format = require("../../utils/format.js");
 var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -39516,7 +43673,7 @@ function ProgressCircle({
   const t = TONES.indexOf(tone) >= 0 ? tone : 'info';
   const known = typeof value === 'number' && !Number.isNaN(value);
   const pct = known ? Math.max(0, Math.min(100, value / (max || 100) * 100)) : null;
-  const loc = locale || typeof document !== 'undefined' && document.documentElement.lang || undefined;
+  const loc = (0, _format.numeralLocale)(locale || typeof document !== 'undefined' && document.documentElement.lang || undefined);
   return /*#__PURE__*/_react.default.createElement("span", _extends({
     className: (0, _cx.cx)('plx-progress-circle', 'plx-progress-circle--' + s, 'plx-progress-circle--' + t, !known && 'is-indeterminate', className),
     role: "progressbar",
@@ -40392,7 +44549,7 @@ function dayLabel(d, now, o) {
     timeZone: o.timeZone,
     locale: o.locale
   });
-  const lang = o.locale || (0, _format.formatLocale)();
+  const lang = (0, _format.numeralLocale)(o.locale || (0, _format.formatLocale)());
   const w = new Intl.RelativeTimeFormat(lang, {
     numeric: 'auto'
   }).format(days, 'day');
@@ -42415,7 +46572,7 @@ const NumberInput = exports.NumberInput = /*#__PURE__*/_react.default.forwardRef
   ...rest
 }, ref) {
   const t = Object.assign({}, STRINGS, strings);
-  const locale = (0, _format.formatLocale)();
+  const locale = (0, _format.numeralLocale)((0, _format.formatLocale)());
   const aff = _react.default.useMemo(() => affix(format, currency, currencyDisplay, locale), [format, currency, currencyDisplay, locale]);
   const places = decimals !== undefined ? decimals : aff && aff.decimals !== undefined ? aff.decimals : undefined;
   const controlled = value !== undefined;
@@ -45157,7 +49314,7 @@ const Calendar = exports.Calendar = /*#__PURE__*/_react.default.forwardRef(funct
   ...rest
 }, ref) {
   const t = Object.assign({}, STRINGS, strings);
-  const locale = localeProp || (0, _format.formatLocale)();
+  const locale = (0, _format.numeralLocale)(localeProp || (0, _format.formatLocale)());
   const today = todayProp || todayIso();
   const range = mode === 'range';
   const [ownValue, setOwnValue] = _react.default.useState(defaultValue !== undefined ? defaultValue : range ? {
@@ -45244,8 +49401,9 @@ const Calendar = exports.Calendar = /*#__PURE__*/_react.default.forwardRef(funct
     month: 'long',
     year: 'numeric'
   });
+  // Arabic weekday names are too long for a column: one letter each, as Arabic calendars do (owner, arabic-batch4-36)
   const weekdayShort = new Intl.DateTimeFormat(locale, {
-    weekday: 'short'
+    weekday: /^ar\b/i.test(locale) ? 'narrow' : 'short'
   });
   const weekdayLong = new Intl.DateTimeFormat(locale, {
     weekday: 'long'
@@ -45554,7 +49712,7 @@ const DatePicker = exports.DatePicker = /*#__PURE__*/_react.default.forwardRef(f
   ...rest
 }, ref) {
   const t = Object.assign({}, STRINGS, strings);
-  const locale = localeProp || (0, _format.formatLocale)();
+  const locale = (0, _format.numeralLocale)(localeProp || (0, _format.formatLocale)());
   const form = numericForm(locale);
   const range = mode === 'range',
     dateTime = mode === 'date-time';
@@ -46337,7 +50495,7 @@ const MillerColumns = exports.MillerColumns = /*#__PURE__*/_react.default.forwar
   }, renderPreview(preview)) : null);
 });
   } },
-  "platform/components/Cascader/Cascader.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Cascader/Cascader.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -46349,6 +50507,7 @@ var _cx = require("../../utils/cx.js");
 var _Tag = require("../Tag/Tag.jsx");
 var _MillerColumns = require("../MillerColumns/MillerColumns.jsx");
 var _announce = require("../../utils/announce.jsx");
+var _floating = require("../../utils/floating.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Cascader
    Summary: A form field whose value is a leaf of a hierarchy, chosen level by level in columns that open under the field
@@ -46376,6 +50535,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        columns: "Options" }
      className: more classes on the cascader
    Behavior:
+     The popup opens in the browser's top layer, below the field or above it near an edge: no dialog, drawer or scroll area clips it.
      The field is a button (aria-haspopup="dialog", aria-expanded) that opens the columns under it; focus moves into the
        first column, on the chosen path. The columns are MillerColumns: Arrow Up and Down in a column, Right into the
        children, Left back, Enter on a leaf chooses it (a click too). A single choice closes the list and returns focus to
@@ -46390,6 +50550,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      For a hierarchy people should see whole, use a tree select; for two or three short levels, consider plain Selects.
      The list is a menu surface (8px corners, the menu elevation); its columns take the narrowest width step (160px).
 */
+// the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
+const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 const STRINGS = {
   placeholder: 'Choose',
   separator: ' / ',
@@ -46439,7 +50601,17 @@ const Cascader = exports.Cascader = /*#__PURE__*/_react.default.forwardRef(funct
   const wrap = _react.default.useRef(null),
     button = _react.default.useRef(null),
     search = _react.default.useRef(null),
-    cols = _react.default.useRef(null);
+    cols = _react.default.useRef(null),
+    popup = _react.default.useRef(null);
+  // the popup opens in the top layer, placed against the field by the floating layer (flips up near an edge, follows scroll and resize): no dialog, drawer or scroll area clips it
+  (0, _floating.useFloating)(wrap, popup, {
+    open,
+    placement: 'bottom-start'
+  });
+  _react.default.useLayoutEffect(() => {
+    const el = popup.current;
+    if (open && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+  }, [open]);
   _react.default.useImperativeHandle(ref, () => button.current);
   const chosen = multiple ? values || [] : value !== undefined && value !== null && value !== '' ? [value] : [];
   const pathLabel = trail => trail.map(x => x.label).join(t.separator);
@@ -46552,9 +50724,11 @@ const Cascader = exports.Cascader = /*#__PURE__*/_react.default.forwardRef(funct
     className: "plx-cascader__chevron",
     "aria-hidden": "true"
   }))), open ? /*#__PURE__*/_react.default.createElement("div", {
+    ref: popup,
     className: "plx-cascader__popup",
     id: auto + '-pop',
     role: "dialog",
+    popover: TOP_LAYER ? 'manual' : undefined,
     "aria-label": label || t.columns
   }, searchable ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-cascader__search"
@@ -46614,7 +50788,7 @@ const Cascader = exports.Cascader = /*#__PURE__*/_react.default.forwardRef(funct
   }))) : null);
 });
   } },
-  "platform/components/EntityPicker/EntityPicker.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/EntityPicker/EntityPicker.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -46629,6 +50803,7 @@ var _IconTile = require("../IconTile/IconTile.jsx");
 var _Icon = require("../Icon/Icon.jsx");
 var _Loading = require("../Loading/Loading.jsx");
 var _announce = require("../../utils/announce.jsx");
+var _floating = require("../../utils/floating.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · EntityPicker
    Summary: A search-and-choose field for records of one kind (people, teams, projects, assets), each suggestion with its
@@ -46668,12 +50843,16 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      A single choice shows the chosen record's picture or icon before its name in the field and closes the list; with
        multiple, choosing adds or removes a tag and the list stays open; Backspace in the empty field removes the last
        tag; each tag has a remove button named "Remove <name>".
+     The list opens in the browser's top layer, below the field or above it near an edge, as wide as the field at least: no dialog,
+       drawer or scroll area clips it.
      The number of results is announced politely after each search; while loadOptions runs the list is busy and shows
        a spinner; a failed load says so in the list.
    Notes:
      The picture in each suggestion is decorative: the name and the detail are the option's text.
      For a few known choices use Select; for anything that is not a record, Combobox.
 */
+// the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
+const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 const STRINGS = {
   placeholderPeople: 'Search by name or email',
   placeholder: 'Search {entityName}',
@@ -46719,7 +50898,8 @@ const EntityPicker = exports.EntityPicker = /*#__PURE__*/_react.default.forwardR
   const [text, setText] = _react.default.useState('');
   const [active, setActive] = _react.default.useState(0);
   const wrap = _react.default.useRef(null),
-    input = _react.default.useRef(null);
+    input = _react.default.useRef(null),
+    list = _react.default.useRef(null);
   _react.default.useImperativeHandle(ref, () => input.current);
   const [loaded, setLoaded] = _react.default.useState([]);
   const [busy, setBusy] = _react.default.useState(false);
@@ -46848,6 +51028,16 @@ const EntityPicker = exports.EntityPicker = /*#__PURE__*/_react.default.forwardR
     entityName: noun
   }));
   const showList = open && (items.length || busy || failed || q);
+  // the list opens in the top layer, placed against the field by the floating layer (flips up near an edge, follows scroll and resize): no dialog, drawer or scroll area clips it
+  (0, _floating.useFloating)(wrap, list, {
+    open: !!showList,
+    placement: 'bottom-start',
+    matchWidth: true
+  });
+  _react.default.useLayoutEffect(() => {
+    const el = list.current;
+    if (showList && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+  }, [showList]);
   return /*#__PURE__*/_react.default.createElement("div", {
     ref: wrap,
     className: (0, _cx.cx)('plx-entity-picker', 'plx-entity-picker--' + kind, multiple && 'plx-entity-picker--multiple', open && 'is-open', disabled && 'is-disabled', className)
@@ -46895,9 +51085,12 @@ const EntityPicker = exports.EntityPicker = /*#__PURE__*/_react.default.forwardR
   }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
     name: "search"
   }))), showList ? /*#__PURE__*/_react.default.createElement("ul", {
+    ref: list,
     className: "plx-entity-picker__list",
     id: listId,
     role: "listbox",
+    popover: TOP_LAYER ? 'manual' : undefined,
+    onMouseDown: e => e.preventDefault(),
     "aria-label": label || noun,
     "aria-multiselectable": multiple || undefined,
     "aria-busy": busy || undefined
@@ -46962,7 +51155,7 @@ const EntityPicker = exports.EntityPicker = /*#__PURE__*/_react.default.forwardR
   })) : null))) : null);
 });
   } },
-  "platform/components/TimePicker/TimePicker.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/TimePicker/TimePicker.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/digits.js":"platform/utils/digits.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -46973,6 +51166,8 @@ var _react = _interopRequireDefault(require("react"));
 var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _format = require("../../utils/format.js");
+var _digits = require("../../utils/digits.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · TimePicker
    Summary: A time of day, typed or chosen: a field with a list of times at a set step (the default), or segments for the
@@ -46991,6 +51186,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      variant: "list" (default: a field people type in, with the times at each step in a list under it) | "segments"
        (spin buttons for the hour, the minute and the period)
      hourCycle: "12" | "24": the clock shown; default the reader's locale's clock
+     Digits: in Arabic the times are written Arabic-Indic (٢:٣٠), and a time typed in Arabic-Indic digits reads the same (owner, arabic-digits-35)
      step: the minutes between times in the list, and the minute segment's step (default 15 for the list, 1 for segments);
        a value that divides 60 (5, 10, 15, 30)
      min, max: the earliest and the latest time ("HH:MM"); the list holds only times between them
@@ -47042,7 +51238,7 @@ const localeCycle = () => {
 };
 // "2", "2pm", "2:30 pm", "14:30", "1430", "230p" → minutes after midnight, or null
 const parseTime = (text, cycle) => {
-  const s = String(text || '').trim().toLowerCase().replace(/\./g, '');
+  const s = (0, _digits.toLatinDigits)(String(text || '')).trim().toLowerCase().replace(/\./g, ''); // what a person typed in Arabic-Indic digits reads the same
   if (!s) return null;
   const m = /^(\d{1,2})(?::?(\d{2}))?\s*(a|am|p|pm)?$/.exec(s);
   if (!m) return null;
@@ -47057,11 +51253,13 @@ const parseTime = (text, cycle) => {
   return h * 60 + min;
 };
 exports.parseTime = parseTime;
-const show = (mins, cycle, t) => {
+const show = (mins, cycle, t, digits) => {
   if (mins === null) return '';
   const h = Math.floor(mins / 60),
     m = mins % 60;
-  return cycle === '12' ? (h % 12 || 12) + ':' + pad(m) + ' ' + (h < 12 ? t.am : t.pm) : pad(h) + ':' + pad(m);
+  return (0, _digits.localDigits)(cycle === '12' ? (h % 12 || 12) + ':' + pad(m) + ' ' + (h < 12 ? t.am : t.pm) : pad(h) + ':' + pad(m), {
+    digits
+  }); // the page's digits (Arabic-Indic in Arabic)
 };
 const TimePicker = exports.TimePicker = /*#__PURE__*/_react.default.forwardRef(function TimePicker({
   value,
@@ -47099,6 +51297,7 @@ const TimePicker = exports.TimePicker = /*#__PURE__*/_react.default.forwardRef(f
     if (value === undefined) setOwn(v);
     if (onChange && v !== current) onChange(v);
   };
+  const digits = (0, _LocaleProvider.useDigits)();
   const cls = (0, _cx.cx)('plx-time-picker', 'plx-time-picker--' + variant, width && 'plx-time-picker--width-' + width, disabled && 'is-disabled', className);
   const hidden = name ? /*#__PURE__*/_react.default.createElement("input", {
     type: "hidden",
@@ -47156,6 +51355,7 @@ const ListPicker = /*#__PURE__*/_react.default.forwardRef(function ListPicker({
   hidden,
   rest
 }, ref) {
+  const digits = (0, _LocaleProvider.useDigits)();
   const auto = 'plx-tp' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
   const [open, setOpen] = _react.default.useState(false);
   const [text, setText] = _react.default.useState(null); // the text while typing; null shows the value
@@ -47257,7 +51457,7 @@ const ListPicker = /*#__PURE__*/_react.default.forwardRef(function ListPicker({
     disabled: disabled,
     autoComplete: "off",
     inputMode: "text",
-    value: text !== null ? text : show(mins, cycle, t),
+    value: text !== null ? text : show(mins, cycle, t, digits),
     placeholder: cycle === '12' ? '9:00 ' + t.am : '09:00',
     onChange: e => {
       setText(e.target.value);
@@ -47290,7 +51490,7 @@ const ListPicker = /*#__PURE__*/_react.default.forwardRef(function ListPicker({
     onMouseDown: e => e.preventDefault(),
     onClick: () => choose(i),
     onMouseEnter: () => setActive(i)
-  }, show(n, cycle, t)))) : null, hidden);
+  }, show(n, cycle, t, digits)))) : null, hidden);
 });
 const Segments = /*#__PURE__*/_react.default.forwardRef(function Segments({
   t,
@@ -47308,6 +51508,7 @@ const Segments = /*#__PURE__*/_react.default.forwardRef(function Segments({
   hidden,
   rest
 }, ref) {
+  const digits = (0, _LocaleProvider.useDigits)();
   const mins = toMin(current);
   // the parts being edited: hour on the clock shown (1–12 or 0–23), minute, period ('am' | 'pm'); null = empty
   const fromValue = () => mins === null ? {
@@ -47418,7 +51619,9 @@ const Segments = /*#__PURE__*/_react.default.forwardRef(function Segments({
     m: t.minute,
     p: t.period
   };
-  const text = k => parts[k] === null ? t.empty : k === 'p' ? parts.p === 'am' ? t.am : t.pm : k === 'h' && cycle === '12' ? String(parts.h) : pad(parts[k]);
+  const text = k => parts[k] === null ? t.empty : k === 'p' ? parts.p === 'am' ? t.am : t.pm : (0, _digits.localDigits)(k === 'h' && cycle === '12' ? String(parts.h) : pad(parts[k]), {
+    digits
+  });
   return /*#__PURE__*/_react.default.createElement("div", {
     className: cls
   }, /*#__PURE__*/_react.default.createElement("div", _extends({
@@ -48502,7 +52705,7 @@ function AvatarUpload({
   }, error) : null);
 }
   } },
-  "platform/components/TimeZoneSelect/TimeZoneSelect.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/announce.jsx":"platform/utils/announce.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/TimeZoneSelect/TimeZoneSelect.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/digits.js":"platform/utils/digits.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../Isolate/Isolate.jsx":"platform/components/Isolate/Isolate.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -48513,7 +52716,11 @@ exports.timeZoneOptions = timeZoneOptions;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _format = require("../../utils/format.js");
+var _digits = require("../../utils/digits.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _Isolate = require("../Isolate/Isolate.jsx");
 var _announce = require("../../utils/announce.jsx");
+var _floating = require("../../utils/floating.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · TimeZoneSelect
    Summary: A field for choosing a time zone (05 Forms › Date, time, and color › Time-zone selector): a combobox over
@@ -48529,6 +52736,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      onChange(zone): runs with the chosen zone's IANA name
      grouped: list the zones under their region (Africa, Americas, Asia…), by city (default true); false lists them in
        one list ordered by offset, west to east
+     Digits: in Arabic the offsets are written Arabic-Indic; typing Arabic-Indic digits finds the same zones (owner, arabic-digits-35)
      showOffset: each zone's offset from UTC ("UTC−08:00") at the end of its option and of the field (default true)
      zones: the IANA names to offer (default: every zone the browser supports, and UTC)
      date: the moment the offsets are for (default now): offsets change with daylight saving time
@@ -48543,6 +52751,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      className: more classes on the field
      ref: forwarded to the <input>; other props pass through to it
    Behavior:
+     The list opens in the browser's top layer like the Combobox's: no dialog, drawer or scroll area clips it.
      The Combobox's behavior and look (its classes and tokens): the list opens on focus and on typing; ↓ and ↑ move,
      Enter chooses, Escape closes, a click outside closes. The active option stays in view.
      Typing filters by city, region, IANA name, the zone's long name in the reader's language and the offset; the number
@@ -48553,6 +52762,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Offsets are technical values: the data font (Reddit Mono). The city comes from the IANA name ("Buenos Aires, Argentina");
      the long name ("Pacific Standard Time") is only searched, never shown, so the list stays short.
 */
+// the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
+const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 const STRINGS = {
   placeholder: 'Choose a time zone',
   empty: 'No matches',
@@ -48640,7 +52851,7 @@ function timeZoneOptions({
 }
 
 // the search text: an offset typed as "+5", "-08", "5:30" or "utc+1" matches "UTC+05:00"
-const fold = s => String(s).toLowerCase().replace(/[−–]/g, '-').replace(/_/g, ' ');
+const fold = s => (0, _digits.toLatinDigits)(String(s)).toLowerCase().replace(/[−–]/g, '-').replace(/_/g, ' ');
 const offsetKeys = o => {
   const sign = o.minutes < 0 ? '-' : '+',
     a = Math.abs(o.minutes),
@@ -48666,6 +52877,7 @@ const TimeZoneSelect = exports.TimeZoneSelect = /*#__PURE__*/_react.default.forw
   ...rest
 }, ref) {
   const t = Object.assign({}, STRINGS, strings);
+  const digits = (0, _LocaleProvider.useDigits)();
   const auto = 'plx-tz' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
   const listId = auto + '-list';
   const [open, setOpen] = _react.default.useState(false);
@@ -48674,6 +52886,16 @@ const TimeZoneSelect = exports.TimeZoneSelect = /*#__PURE__*/_react.default.forw
   const wrap = _react.default.useRef(null),
     input = _react.default.useRef(null),
     list = _react.default.useRef(null);
+  // the list opens in the top layer, placed against the field by the floating layer (flips up near an edge, follows scroll and resize): no dialog, drawer or scroll area clips it
+  (0, _floating.useFloating)(wrap, list, {
+    open: open,
+    placement: 'bottom-start',
+    matchWidth: true
+  });
+  _react.default.useLayoutEffect(() => {
+    const el = list.current;
+    if (open && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+  }, [open]);
   _react.default.useImperativeHandle(ref, () => input.current);
   const day = date ? new Date(date).toDateString() : new Date().toDateString();
   const zoneKey = zones ? zones.join('|') : '';
@@ -48792,7 +53014,9 @@ const TimeZoneSelect = exports.TimeZoneSelect = /*#__PURE__*/_react.default.forw
     "aria-label": label,
     disabled: disabled,
     autoComplete: "off",
-    "aria-description": current && showOffset ? current.offset : undefined,
+    "aria-description": current && showOffset ? (0, _digits.localDigits)(current.offset, {
+      digits
+    }) : undefined,
     value: open ? text : current ? current.label : '',
     placeholder: current && open ? current.label : placeholder || t.placeholder,
     onChange: e => {
@@ -48804,7 +53028,7 @@ const TimeZoneSelect = exports.TimeZoneSelect = /*#__PURE__*/_react.default.forw
   }, rest)), showOffset && current && !open ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-time-zone-select__field-offset",
     "aria-hidden": "true"
-  }, current.offset) : null, /*#__PURE__*/_react.default.createElement("span", {
+  }, /*#__PURE__*/_react.default.createElement(_Isolate.Isolate, null, current.offset)) : null, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-combobox__chevron",
     "aria-hidden": "true"
   })), open ? /*#__PURE__*/_react.default.createElement("ul", {
@@ -48812,7 +53036,9 @@ const TimeZoneSelect = exports.TimeZoneSelect = /*#__PURE__*/_react.default.forw
     className: "plx-combobox__list plx-time-zone-select__list",
     id: listId,
     role: "listbox",
-    "aria-label": label
+    "aria-label": label,
+    popover: TOP_LAYER ? 'manual' : undefined,
+    onMouseDown: e => e.preventDefault()
   }, shown.length ? shown.map((o, i) => [grouped && (i === 0 || shown[i - 1].region !== o.region) ? /*#__PURE__*/_react.default.createElement("li", {
     key: 'g-' + o.region,
     className: "plx-combobox__group",
@@ -48830,7 +53056,7 @@ const TimeZoneSelect = exports.TimeZoneSelect = /*#__PURE__*/_react.default.forw
     className: "plx-time-zone-select__city"
   }, o.label), showOffset ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-time-zone-select__offset"
-  }, o.offset) : null)]) : /*#__PURE__*/_react.default.createElement("li", {
+  }, /*#__PURE__*/_react.default.createElement(_Isolate.Isolate, null, o.offset)) : null)]) : /*#__PURE__*/_react.default.createElement("li", {
     className: "plx-combobox__empty",
     role: "presentation"
   }, t.empty)) : null);
@@ -53311,7 +57537,7 @@ function ResourceList({
   }, items.map(row)));
 }
   } },
-  "platform/charts/LineChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./interaction.js":"platform/charts/interaction.js","./echarts/EChartsPlot.jsx":"platform/charts/echarts/EChartsPlot.jsx","../utils/grid.js":"platform/utils/grid.js","./chart-kit.js":"platform/charts/chart-kit.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/LineChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./interaction.js":"platform/charts/interaction.js","./echarts/EChartsPlot.jsx":"platform/charts/echarts/EChartsPlot.jsx","./echarts/engine.js":"platform/charts/echarts/engine.js","../utils/grid.js":"platform/utils/grid.js","./chart-kit.js":"platform/charts/chart-kit.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -53329,6 +57555,7 @@ var _ChartLegend = require("./parts/ChartLegend.jsx");
 var _ChartTooltip = require("./parts/ChartTooltip.jsx");
 var _interaction = require("./interaction.js");
 var _EChartsPlot = require("./echarts/EChartsPlot.jsx");
+var _engine = require("./echarts/engine.js");
 var _grid = require("../utils/grid.js");
 var _chartKit = require("./chart-kit.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -53586,8 +57813,11 @@ function SeriesChart({
     const room = gridRoom(margin, tk.top);
     // ECharts does not measure labels at its own tick values: the room under the plot and after it for the date labels
     const dates = type === 'time' ? timeLabels(size) : null;
+    // the x labels' line height: the font size, or more for Arabic labels (tickLineHeight)
+    const xTexts = type === 'band' ? cols.map(c => fmts.current.fmtX(xs[c])) : dates ? dates.customValues.map(dates.formatter) : [];
+    const xLine = (0, _engine.tickLineHeight)(tk, xTexts);
     if (dates) {
-      room.bottom = Math.max(room.bottom, (0, _grid.snapToGrid)(tk.tickOffset + tk.tick.fontSize, {
+      room.bottom = Math.max(room.bottom, (0, _grid.snapToGrid)(tk.tickOffset + xLine, {
         round: 'up'
       }));
       room.right = Math.max(room.right, (0, _chartKit.halfRoom)(dates.last));
@@ -53605,13 +57835,17 @@ function SeriesChart({
     };
     const xAxis = Object.assign({
       name: xLabel,
-      nameGap: tk.tickOffset * 2 + tk.tick.fontSize,
+      nameGap: tk.tickOffset * 2 + xLine,
       inverse: tk.rtl
-    }, named, type === 'band' ? {
+    }, named, type === 'band' ? Object.assign({
       type: 'category',
       boundaryGap: false,
-      data: cols.map(c => fmts.current.fmtX(xs[c]))
-    } : {
+      data: xTexts
+    }, xLine > tk.tick.fontSize ? {
+      axisLabel: {
+        lineHeight: xLine
+      }
+    } : {}) : {
       type: type === 'time' ? 'time' : 'value',
       min: xValue(v0),
       max: xValue(v1),
@@ -53994,7 +58228,7 @@ function HeatMap({
   const calendar = variant === 'calendar';
   const fmt = typeof format === 'function' ? format : v => (0, _format.formatNumber)(v);
   const vLabel = valueLabel || t.value;
-  const locale = (0, _format.formatLocale)();
+  const locale = (0, _format.numeralLocale)((0, _format.formatLocale)());
   const cal = calendar ? calendarGrid(data) : null;
   const weekday = r => new Intl.DateTimeFormat(locale, {
     weekday: 'short'
@@ -55964,7 +60198,7 @@ function Diagram({
   }, draw);
 }
   } },
-  "platform/charts/BarChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./interaction.js":"platform/charts/interaction.js","./chart-kit.js":"platform/charts/chart-kit.js","./echarts/EChartsPlot.jsx":"platform/charts/echarts/EChartsPlot.jsx","./LineChart.jsx":"platform/charts/LineChart.jsx","../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/BarChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./interaction.js":"platform/charts/interaction.js","./chart-kit.js":"platform/charts/chart-kit.js","./echarts/EChartsPlot.jsx":"platform/charts/echarts/EChartsPlot.jsx","./echarts/engine.js":"platform/charts/echarts/engine.js","./LineChart.jsx":"platform/charts/LineChart.jsx","../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -55983,6 +60217,7 @@ var _DataLabel = require("./parts/DataLabel.jsx");
 var _interaction = require("./interaction.js");
 var _chartKit = require("./chart-kit.js");
 var _EChartsPlot = require("./echarts/EChartsPlot.jsx");
+var _engine = require("./echarts/engine.js");
 var _LineChart = require("./LineChart.jsx");
 var _grid = require("../utils/grid.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -56293,15 +60528,19 @@ function BarChart({
       min: 0,
       max: 1
     } : {});
+    // the category labels' line height under columns: the font size, or more for Arabic labels (tickLineHeight)
+    const catLine = across || bins ? tk.tick.fontSize : (0, _engine.tickLineHeight)(tk, cats.map(String));
     const catAxis = Object.assign({
       type: 'category',
       data: cats.map((c, ci) => bins ? String(ci) : String(c)),
       inverse: across,
       name: bins ? undefined : categoryLabel,
-      nameGap: across ? 0 : tk.tickOffset * 2 + tk.tick.fontSize,
+      nameGap: across ? 0 : tk.tickOffset * 2 + catLine,
       position: across ? tk.rtl ? 'right' : 'left' : 'bottom',
       axisLabel: bins ? {
         show: false
+      } : catLine > tk.tick.fontSize ? {
+        lineHeight: catLine
       } : {}
     }, named);
     // a histogram's range axis: the bins' edges on a number axis laid over the bins
@@ -77700,216 +81939,6 @@ function browserSupport(environment = typeof window === 'undefined' ? {} : windo
   };
 }
   } },
-  "platform/i18n/en.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-// Browser mirror of en.json: the repository module loader accepts JavaScript only. The W15C catalog test checks parity.
-var _default = exports.default = {
-  "common": {
-    "save": "Save",
-    "cancel": "Cancel",
-    "close": "Close",
-    "retry": "Retry",
-    "next": "Next",
-    "back": "Back"
-  },
-  "collection": {
-    "selected": {
-      "=0": "Nothing selected",
-      "one": "{count} item selected",
-      "other": "{count} items selected"
-    }
-  },
-  "wizard": {
-    "next": "Next",
-    "back": "Back",
-    "finish": "Finish",
-    "cancel": "Cancel",
-    "step": "Step {n} of {total}",
-    "error": "Could not save. Try again."
-  },
-  "dialog": {
-    "close": "Close"
-  },
-  "text": {
-    "more": "Show more",
-    "less": "Show less"
-  },
-  "emptyState": {
-    "title": "No items yet",
-    "description": "Create an item to get started.",
-    "action": "Create item"
-  }
-};
-  } },
-  "platform/providers/LocaleProvider.jsx": { deps: {"react":null,"./DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","../utils/direction.js":"platform/utils/direction.js","../utils/format.js":"platform/utils/format.js","../i18n/en.js":"platform/i18n/en.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.LocaleProvider = LocaleProvider;
-exports.createTranslator = createTranslator;
-exports.useLocale = useLocale;
-var _react = _interopRequireDefault(require("react"));
-var _DirectionProvider = require("./DirectionProvider.jsx");
-var _direction = require("../utils/direction.js");
-var F = _interopRequireWildcard(require("../utils/format.js"));
-var _en = _interopRequireDefault(require("../i18n/en.js"));
-function _interopRequireWildcard(e, t) { if ("function" == typeof WeakMap) var r = new WeakMap(), n = new WeakMap(); return (_interopRequireWildcard = function (e, t) { if (!t && e && e.__esModule) return e; var o, i, f = { __proto__: null, default: e }; if (null === e || "object" != typeof e && "function" != typeof e) return f; if (o = t ? n : r) { if (o.has(e)) return o.get(e); o.set(e, f); } for (const t in e) "default" !== t && {}.hasOwnProperty.call(e, t) && ((i = (o = Object.defineProperty) && Object.getOwnPropertyDescriptor(e, t)) && (i.get || i.set) ? o(f, t, i) : f[t] = e[t]); return f; })(e, t); }
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · LocaleProvider, useLocale, createTranslator
-   Summary: Locale-scoped message catalogs, plural rules, formatting and writing direction. Existing components receive
-     their strings explicitly from the catalog; a region never changes another region's locale.
-   Usage:
-     <LocaleProvider locale="fr-FR" catalogs={{ fr: french }}><App /></LocaleProvider>
-     const { t, strings, format } = useLocale();
-     <Wizard strings={strings('wizard')} />; t('collection.selected', { count: 2 }); format.date('2026-03-08');
-   Props:
-     locale: a BCP 47 language tag; default the page's formatLocale()
-     catalogs: messages by locale, with flat dot keys or nested sections; English is always the last fallback
-     messages: the current locale's catalog, as a convenience
-     fallbackLocale: locale searched after the requested locale and its language; default "en"
-     timeZone: optional Intl time zone for this provider's date/time formatters
-     dir: explicit "ltr" or "rtl"; otherwise directionOf(locale)
-     root: set the page's lang and dir through DirectionProvider; default false (a scoped region)
-     children: the region's content
-     useLocale(): { locale, dir, t, strings, plural, format }; format has number, unit, bytes, duration, compact, date,
-       time, dateTime, relative, range, currency, percent, list, personName, address, phone and regionName
-     createTranslator(locale, catalogs, fallbackLocale): the same t/strings/plural API outside React
-   Behavior:
-     Fallback: exact locale, language, configured fallback, then English. Missing messages return their key.
-     Messages interpolate {name} as plain text. Plural messages are objects with one/other (or any Intl category),
-     optional "=0" exact-count keys; t(key, { count }) selects them with Intl.PluralRules. t's third argument may
-     set ordinal:true. Missing interpolation values keep their placeholder. No HTML is parsed.
-     strings(section, values) combines that section across fallbacks for a component's strings prop.
-   Notes:
-     Translators never mutate catalogs or global Intl state. Pass the bound format helpers to localized content;
-     unmodified components keep their existing defaults. Catalog translations are application-owned. */
-
-const canonical = (value, fallback = 'en') => {
-  try {
-    return Intl.getCanonicalLocales(value || fallback)[0] || fallback;
-  } catch (e) {
-    return fallback;
-  }
-};
-const own = (value, key) => value && Object.prototype.hasOwnProperty.call(value, key);
-const messageAt = (catalog, key) => {
-  if (own(catalog, key)) return catalog[key];
-  return String(key).split('.').reduce((node, part) => own(node, part) ? node[part] : undefined, catalog);
-};
-const text = (message, values) => String(message).replace(/\{(\w+)\}/g, (match, key) => own(values, key) ? String(values[key]) : match);
-function createTranslator(locale = 'en', catalogs = {}, fallbackLocale = 'en') {
-  const language = canonical(locale),
-    fallback = canonical(fallbackLocale);
-  const normalized = Object.fromEntries(Object.entries(catalogs || {}).map(([key, value]) => [canonical(key), value]));
-  const chain = [...new Set([language, language.split('-')[0], fallback, fallback.split('-')[0], 'en'])];
-  const sources = chain.map(key => normalized[key]).filter(Boolean).concat(_en.default);
-  const cardinal = new Intl.PluralRules(language),
-    ordinal = new Intl.PluralRules(language, {
-      type: 'ordinal'
-    });
-  const plural = (count, options = {}) => (options.ordinal ? ordinal : cardinal).select(Number(count));
-  const choose = (value, values, options) => {
-    if (typeof value === 'string' || typeof value === 'number') return text(value, values);
-    if (!value || typeof value !== 'object' || Array.isArray(value)) return undefined;
-    const exact = '=' + Number(values.count),
-      category = plural(values.count, options);
-    const item = own(value, exact) ? value[exact] : value[category] !== undefined ? value[category] : value.other;
-    return typeof item === 'string' || typeof item === 'number' ? text(item, values) : undefined;
-  };
-  const t = (key, values = {}, options = {}) => {
-    for (const source of sources) {
-      const result = choose(messageAt(source, key), values, options);
-      if (result !== undefined) return result;
-    }
-    return String(key);
-  };
-  const strings = (section, values = {}) => {
-    const keys = new Set();
-    sources.forEach(source => {
-      const node = messageAt(source, section);
-      if (node && typeof node === 'object' && !Array.isArray(node)) Object.keys(node).forEach(key => keys.add(key));
-      Object.keys(source).filter(key => key.startsWith(section + '.') && !key.slice(section.length + 1).includes('.')).forEach(key => keys.add(key.slice(section.length + 1)));
-    });
-    return Object.fromEntries([...keys].map(key => [key, t(section + '.' + key, values)]));
-  };
-  return {
-    locale: language,
-    dir: (0, _direction.directionOf)(language),
-    t,
-    strings,
-    plural
-  };
-}
-const FORMATTERS = {
-  number: ['formatNumber', 1],
-  unit: ['formatUnit', 2],
-  bytes: ['formatBytes', 1],
-  duration: ['formatDuration', 1],
-  compact: ['formatCompact', 1],
-  date: ['formatDate', 1],
-  time: ['formatTime', 1],
-  dateTime: ['formatDateTime', 1],
-  relative: ['formatRelative', 1],
-  range: ['formatRange', 2],
-  currency: ['formatCurrency', 2],
-  percent: ['formatPercent', 1],
-  list: ['formatList', 1],
-  personName: ['formatPersonName', 1],
-  address: ['formatAddress', 1],
-  phone: ['formatPhone', 1],
-  regionName: ['regionName', 1]
-};
-const bind = (locale, timeZone) => Object.fromEntries(Object.entries(FORMATTERS).map(([name, [fn, count]]) => [name, (...args) => F[fn](...Array.from({
-  length: count
-}, (_, index) => args[index]), Object.assign({
-  locale,
-  timeZone
-}, args[count]))]));
-const LocaleContext = /*#__PURE__*/_react.default.createContext(null);
-function LocaleProvider({
-  locale,
-  catalogs,
-  messages,
-  fallbackLocale = 'en',
-  timeZone,
-  dir,
-  root = false,
-  children
-}) {
-  const language = canonical(locale || F.formatLocale());
-  const value = _react.default.useMemo(() => {
-    const sources = Object.assign({}, catalogs, messages ? {
-      [language]: messages
-    } : {});
-    return Object.assign(createTranslator(language, sources, fallbackLocale), {
-      dir: dir || (0, _direction.directionOf)(language),
-      format: bind(language, timeZone)
-    });
-  }, [language, catalogs, messages, fallbackLocale, timeZone, dir]);
-  return /*#__PURE__*/_react.default.createElement(LocaleContext.Provider, {
-    value: value
-  }, /*#__PURE__*/_react.default.createElement(_DirectionProvider.DirectionProvider, {
-    locale: language,
-    dir: value.dir,
-    root: root
-  }, children));
-}
-function useLocale() {
-  const value = _react.default.useContext(LocaleContext);
-  const language = canonical(F.formatLocale());
-  const fallback = _react.default.useMemo(() => Object.assign(createTranslator(language), {
-    format: bind(language)
-  }), [language]);
-  return value || fallback;
-}
-  } },
   "platform/components/Heading/Heading.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -81972,6 +86001,12 @@ Object.defineProperty(exports, "useSortable", {
   enumerable: true,
   get: function () {
     return _dnd.useSortable;
+  }
+});
+Object.defineProperty(exports, "useStrings", {
+  enumerable: true,
+  get: function () {
+    return _LocaleProvider.useStrings;
   }
 });
 Object.defineProperty(exports, "useTheme", {

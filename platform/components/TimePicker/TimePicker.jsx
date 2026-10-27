@@ -15,6 +15,7 @@
      variant: "list" (default: a field people type in, with the times at each step in a list under it) | "segments"
        (spin buttons for the hour, the minute and the period)
      hourCycle: "12" | "24": the clock shown; default the reader's locale's clock
+     Digits: in Arabic the times are written Arabic-Indic (٢:٣٠), and a time typed in Arabic-Indic digits reads the same (owner, arabic-digits-35)
      step: the minutes between times in the list, and the minute segment's step (default 15 for the list, 1 for segments);
        a value that divides 60 (5, 10, 15, 30)
      min, max: the earliest and the latest time ("HH:MM"); the list holds only times between them
@@ -43,6 +44,8 @@ import React from 'react';
 import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { formatLocale } from '../../utils/format.js';
+import { localDigits, toLatinDigits } from '../../utils/digits.js';
+import { useDigits } from '../../providers/LocaleProvider.jsx';
 
 const STRINGS = { hour: 'Hour', minute: 'Minute', period: 'AM or PM', am: 'AM', pm: 'PM', times: 'Times', empty: '--' };
 const pad = (n) => String(n).padStart(2, '0');
@@ -54,7 +57,7 @@ const localeCycle = () => {
 };
 // "2", "2pm", "2:30 pm", "14:30", "1430", "230p" → minutes after midnight, or null
 export const parseTime = (text, cycle) => {
-  const s = String(text || '').trim().toLowerCase().replace(/\./g, '');
+  const s = toLatinDigits(String(text || '')).trim().toLowerCase().replace(/\./g, '');   // what a person typed in Arabic-Indic digits reads the same
   if (!s) return null;
   const m = /^(\d{1,2})(?::?(\d{2}))?\s*(a|am|p|pm)?$/.exec(s);
   if (!m) return null;
@@ -65,10 +68,10 @@ export const parseTime = (text, cycle) => {
   else if (cycle === '12' && h >= 1 && h <= 6 && !m[2]) h += 12;   // "2" on a 12-hour clock means the afternoon
   return h * 60 + min;
 };
-const show = (mins, cycle, t) => {
+const show = (mins, cycle, t, digits) => {
   if (mins === null) return '';
   const h = Math.floor(mins / 60), m = mins % 60;
-  return cycle === '12' ? ((h % 12) || 12) + ':' + pad(m) + ' ' + (h < 12 ? t.am : t.pm) : pad(h) + ':' + pad(m);
+  return localDigits(cycle === '12' ? ((h % 12) || 12) + ':' + pad(m) + ' ' + (h < 12 ? t.am : t.pm) : pad(h) + ':' + pad(m), { digits });   // the page's digits (Arabic-Indic in Arabic)
 };
 
 export const TimePicker = React.forwardRef(function TimePicker({ value, defaultValue = '', onChange, variant = 'list', hourCycle, step, min, max, label, width,
@@ -85,6 +88,7 @@ export const TimePicker = React.forwardRef(function TimePicker({ value, defaultV
     if (value === undefined) setOwn(v);
     if (onChange && v !== current) onChange(v);
   };
+  const digits = useDigits();
   const cls = cx('plx-time-picker', 'plx-time-picker--' + variant, width && 'plx-time-picker--width-' + width, disabled && 'is-disabled', className);
   const hidden = name ? <input type="hidden" name={name} value={current || ''} /> : null;
   if (variant === 'segments') return <Segments ref={ref} {...{ t, cycle, step: step || 1, current, commit, lo, hi, label, invalid, disabled, id, cls, hidden, rest }} />;
@@ -92,6 +96,7 @@ export const TimePicker = React.forwardRef(function TimePicker({ value, defaultV
 });
 
 const ListPicker = React.forwardRef(function ListPicker({ t, cycle, step, current, commit, lo, hi, label, invalid, disabled, id, cls, hidden, rest }, ref) {
+  const digits = useDigits();
   const auto = 'plx-tp' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const [open, setOpen] = React.useState(false);
   const [text, setText] = React.useState(null);   // the text while typing; null shows the value
@@ -136,7 +141,7 @@ const ListPicker = React.forwardRef(function ListPicker({ t, cycle, step, curren
       <div className="plx-time-picker__field plx-input" aria-invalid={invalid || undefined}>
         <input ref={input} id={id} className="plx-time-picker__input" role="combobox" aria-expanded={open} aria-controls={auto + '-list'} aria-autocomplete="none"
           aria-activedescendant={open && times[active] !== undefined ? optId(active) : undefined} aria-label={label} disabled={disabled} autoComplete="off" inputMode="text"
-          value={text !== null ? text : show(mins, cycle, t)} placeholder={cycle === '12' ? '9:00 ' + t.am : '09:00'}
+          value={text !== null ? text : show(mins, cycle, t, digits)} placeholder={cycle === '12' ? '9:00 ' + t.am : '09:00'}
           onChange={(e) => { setText(e.target.value); const n = parseTime(e.target.value, cycle); if (n !== null) setActive(nearest(n)); }}
           onBlur={() => { settle(); }} onClick={() => { if (!open && !disabled) openAt(mins); }} onKeyDown={onKey} {...rest} />
         <span className="plx-time-picker__icon" aria-hidden="true" />
@@ -146,7 +151,7 @@ const ListPicker = React.forwardRef(function ListPicker({ t, cycle, step, curren
           {times.map((n, i) => (
             <li key={n} id={optId(i)} data-plx-index={i} role="option" aria-selected={n === mins}
               className={cx('plx-time-picker__option', i === active && 'is-active', n === mins && 'is-selected')}
-              onMouseDown={(e) => e.preventDefault()} onClick={() => choose(i)} onMouseEnter={() => setActive(i)}>{show(n, cycle, t)}</li>
+              onMouseDown={(e) => e.preventDefault()} onClick={() => choose(i)} onMouseEnter={() => setActive(i)}>{show(n, cycle, t, digits)}</li>
           ))}
         </ul>
       ) : null}
@@ -156,6 +161,7 @@ const ListPicker = React.forwardRef(function ListPicker({ t, cycle, step, curren
 });
 
 const Segments = React.forwardRef(function Segments({ t, cycle, step, current, commit, lo, hi, label, invalid, disabled, id, cls, hidden, rest }, ref) {
+  const digits = useDigits();
   const mins = toMin(current);
   // the parts being edited: hour on the clock shown (1–12 or 0–23), minute, period ('am' | 'pm'); null = empty
   const fromValue = () => (mins === null ? { h: null, m: null, p: null }
@@ -201,7 +207,7 @@ const Segments = React.forwardRef(function Segments({ t, cycle, step, current, c
     }
   };
   const lbl = { h: t.hour, m: t.minute, p: t.period };
-  const text = (k) => (parts[k] === null ? t.empty : k === 'p' ? (parts.p === 'am' ? t.am : t.pm) : k === 'h' && cycle === '12' ? String(parts.h) : pad(parts[k]));
+  const text = (k) => (parts[k] === null ? t.empty : k === 'p' ? (parts.p === 'am' ? t.am : t.pm) : localDigits(k === 'h' && cycle === '12' ? String(parts.h) : pad(parts[k]), { digits }));
   return (
     <div className={cls}>
       <div role="group" aria-label={label} className="plx-time-picker__field plx-time-picker__segments plx-input" aria-invalid={invalid || undefined} {...rest}>

@@ -35,7 +35,7 @@
 */
 import React from 'react';
 import { cx } from '../utils/cx.js';
-import { formatNumber, formatDate, formatLocale } from '../utils/format.js';
+import { formatNumber, formatDate, formatLocale, numeralLocale } from '../utils/format.js';
 import { datavizStep, DATAVIZ_SCALES } from '../utils/dataviz.js';
 import { ChartFrame } from './ChartFrame.jsx';
 import { scaleBand } from './scales.js';
@@ -76,7 +76,7 @@ export function HeatMap({ title, description, variant = 'matrix', rows = [], col
   const calendar = variant === 'calendar';
   const fmt = typeof format === 'function' ? format : (v) => formatNumber(v);
   const vLabel = valueLabel || t.value;
-  const locale = formatLocale();
+  const locale = numeralLocale(formatLocale());
   const cal = calendar ? calendarGrid(data) : null;
   const weekday = (r) => new Intl.DateTimeFormat(locale, { weekday: 'short' }).format(new Date(2026, 0, 4 + r));   // Jan 4 2026 is a Sunday
   const rowNames = calendar ? [0, 1, 2, 3, 4, 5, 6].map(weekday) : rows;

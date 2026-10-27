@@ -49,7 +49,7 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
-import { formatLocale, formatNumber, formatCurrency } from '../../utils/format.js';
+import { formatLocale, numeralLocale, formatNumber, formatCurrency } from '../../utils/format.js';
 import { Input } from '../Input/Input.jsx';
 import { Button } from '../Button/Button.jsx';
 import { InputGroup } from '../InputGroup/InputGroup.jsx';
@@ -93,7 +93,7 @@ export const NumberInput = React.forwardRef(function NumberInput({ value, defaul
   format = 'number', currency, currencyDisplay = 'symbol', unit, stepper = 'none', width, invalid, disabled, readOnly, required, id,
   'aria-describedby': describedBy, strings, className, onFocus, onBlur, onKeyDown, ...rest }, ref) {
   const t = Object.assign({}, STRINGS, strings);
-  const locale = formatLocale();
+  const locale = numeralLocale(formatLocale());
   const aff = React.useMemo(() => affix(format, currency, currencyDisplay, locale), [format, currency, currencyDisplay, locale]);
   const places = decimals !== undefined ? decimals : aff && aff.decimals !== undefined ? aff.decimals : undefined;
   const controlled = value !== undefined;

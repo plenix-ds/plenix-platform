@@ -16,6 +16,7 @@ import { Tag } from '../Tag/Tag.jsx';
 import { DataPill } from '../DataPill/DataPill.jsx';
 import { formatBytes } from '../../utils/format.js';
 import { Isolate } from '../Isolate/Isolate.jsx';
+import { localDigits } from '../../utils/digits.js';
 export const valueText=value=>value==null?'':Array.isArray(value)?value.map(valueText).join(', '):typeof value==='object'?String(value.label??value.name??''):String(value);
 export function textFilter(row,field,search) {return valueText(row.getValue(field)).toLocaleLowerCase().includes(String(search??'').toLocaleLowerCase());}
 export function listFilter(row,field,search) {const value=row.getValue(field);return [].concat(value??[]).some(item=>valueText(item).toLocaleLowerCase()===String(search??'').toLocaleLowerCase());}
@@ -52,8 +53,8 @@ export function CellValue({ column, value, strings, record, pill = false, pillFi
   // a technical value keeps its own direction inside a right-to-left table (owner, ctm-needs-34): ids, emails, URLs, phone
   // numbers and code read left to right; any other data value by its first strong letter
   const island=ISLANDS.find(k=>kinds.includes(k));
-  if (island) return <span className={own} onMouseEnter={fullText}><Isolate dir={island==='data'?'auto':'ltr'}>{valueText(value)}</Isolate></span>;
-  return <span className={own} onMouseEnter={fullText}>{valueText(value)}</span>;
+  if (island) return <span className={own} onMouseEnter={fullText}><Isolate dir={island==='data'?'auto':'ltr'} kind={island==='email'||island==='url'?island:undefined}>{valueText(value)}</Isolate></span>;
+  return <span className={own} onMouseEnter={fullText}>{localDigits(valueText(value))}</span>;
 }
 const ISLANDS=['id','email','url','phone','code','data'];
 function fullText(event) { const el = event.currentTarget; if (el.scrollWidth > el.clientWidth) el.title = el.textContent; else el.removeAttribute('title'); }
