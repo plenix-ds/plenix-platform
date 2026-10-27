@@ -43,6 +43,10 @@ import React from 'react';
 import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { formatLocale } from '../../utils/format.js';
+import { useFloating, FLOATING_ANCHOR } from '../../utils/floating.js';
+
+// the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
+const TOP_LAYER = FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 
 const STRINGS = { hour: 'Hour', minute: 'Minute', period: 'AM or PM', am: 'AM', pm: 'PM', times: 'Times', empty: '--' };
 const pad = (n) => String(n).padStart(2, '0');
@@ -97,6 +101,9 @@ const ListPicker = React.forwardRef(function ListPicker({ t, cycle, step, curren
   const [text, setText] = React.useState(null);   // the text while typing; null shows the value
   const [active, setActive] = React.useState(0);
   const wrap = React.useRef(null), input = React.useRef(null), list = React.useRef(null);
+  // the list opens in the top layer, placed against the field by the floating layer (flips up near an edge, follows scroll and resize): no dialog, drawer or scroll area clips it
+  useFloating(wrap, list, { open, placement: 'bottom-start', matchWidth: true });
+  React.useLayoutEffect(() => { const el = list.current; if (open && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover(); }, [open]);
   React.useImperativeHandle(ref, () => input.current);
   const times = [];
   for (let n = Math.ceil(lo / step) * step; n <= hi; n += step) times.push(n);
@@ -142,7 +149,7 @@ const ListPicker = React.forwardRef(function ListPicker({ t, cycle, step, curren
         <span className="plx-time-picker__icon" aria-hidden="true" />
       </div>
       {open ? (
-        <ul ref={list} className="plx-time-picker__list" id={auto + '-list'} role="listbox" aria-label={label ? label + ', ' + t.times : t.times}>
+        <ul ref={list} className="plx-time-picker__list" id={auto + '-list'} role="listbox" popover={TOP_LAYER ? 'manual' : undefined} onMouseDown={(e) => e.preventDefault()} aria-label={label ? label + ', ' + t.times : t.times}>
           {times.map((n, i) => (
             <li key={n} id={optId(i)} data-plx-index={i} role="option" aria-selected={n === mins}
               className={cx('plx-time-picker__option', i === active && 'is-active', n === mins && 'is-selected')}
