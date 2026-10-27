@@ -6,6 +6,9 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+### Added
+- Writing direction on the text and form parts (owner, ctm-needs-34; #413 batch 2): `dir` and `lang` on Checkbox, Radio and Switch now go on the row (the label), so the box and its text change sides together; Field, Fieldset, RadioGroup, ChoiceList, Heading and Text already put them on their outer element, and their header comments now say so. An Arabic question with its options can sit inside an English page, or the reverse, with no styles of its own: `<Fieldset dir="rtl" lang="ar" legend="…">`. Use the `dir` attribute, not the CSS `direction` property: the `:dir(rtl)` rules answer only to the attribute.
+
 ## [0.73.0] - 2026-10-27
 
 ### Added

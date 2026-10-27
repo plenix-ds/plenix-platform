@@ -44,6 +44,8 @@
      There are no margins in any case, whatever the element.
      The expand button has the look of ShowMore (CollapsibleSection): the smallest button, its chevron after the
        label, down to show more and up to show less.
+     Writing direction (owner, ctm-needs-34): the element is dir="auto" (its first strong letter decides); dir="rtl" or "ltr" and
+       lang override it, for text in the other direction than the page (an Arabic question in an English page).
 */
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.js';

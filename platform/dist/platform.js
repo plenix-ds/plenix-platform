@@ -6319,6 +6319,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        left or over are announced politely, once typing pauses (announce).
    Notes:
      Other props pass through to the <div>.
+     Writing direction (owner, ctm-needs-34): dir ("ltr" | "rtl") and lang on the Field go on the <div>, so the label, the control,
+       the description and the error all take that direction: an Arabic field in an English page, or the reverse. Use
+       the dir attribute, never the CSS direction property: the :dir(rtl) rules answer only to the attribute.
 */
 // the layout a Form gives the fields inside it (Form's layout "two-column" makes them inline); a Field's own layout wins
 const FieldLayoutContext = exports.FieldLayoutContext = /*#__PURE__*/_react.default.createContext(null);
@@ -17138,12 +17141,19 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The Switch track is 36 × 20px and the knob 16px, centered: (track − knob) / 2.
      Checkbox, Radio and Switch pass other props (checked, onChange, name, value, disabled, …) and their ref to the <input>.
      RadioGroup and ChoiceList pass other props to the <fieldset>.
+     Writing direction (owner, ctm-needs-34): dir ("ltr" | "rtl") and lang ("ar", "en", …) on Checkbox, Radio and Switch go on
+       the row (the <label>), so the box and its text change sides together; on RadioGroup and ChoiceList they go on the
+       <fieldset>, so the legend and every option follow. An Arabic question can sit in an English page (and the reverse):
+       <Fieldset dir="rtl" lang="ar" legend="بيانات الحضور"><RadioGroup … /><Checkbox label="…" /></Fieldset>.
+       Use the dir attribute, never the CSS direction property: the :dir(rtl) rules answer only to the attribute.
 */
 const Checkbox = exports.Checkbox = /*#__PURE__*/_react.default.forwardRef(function Checkbox({
   label,
   description,
   indeterminate = false,
   className,
+  dir,
+  lang,
   ...rest
 }, ref) {
   const inner = _react.default.useRef(null);
@@ -17152,7 +17162,9 @@ const Checkbox = exports.Checkbox = /*#__PURE__*/_react.default.forwardRef(funct
     if (inner.current) inner.current.indeterminate = indeterminate;
   }, [indeterminate]);
   return /*#__PURE__*/_react.default.createElement("label", {
-    className: (0, _cx.cx)('plx-check', className)
+    className: (0, _cx.cx)('plx-check', className),
+    dir: dir,
+    lang: lang
   }, /*#__PURE__*/_react.default.createElement("input", _extends({
     ref: inner,
     type: "checkbox",
@@ -17169,10 +17181,14 @@ const Radio = exports.Radio = /*#__PURE__*/_react.default.forwardRef(function Ra
   label,
   description,
   className,
+  dir,
+  lang,
   ...rest
 }, ref) {
   return /*#__PURE__*/_react.default.createElement("label", {
-    className: (0, _cx.cx)('plx-check', className)
+    className: (0, _cx.cx)('plx-check', className),
+    dir: dir,
+    lang: lang
   }, /*#__PURE__*/_react.default.createElement("input", _extends({
     ref: ref,
     type: "radio",
@@ -17248,10 +17264,14 @@ const Switch = exports.Switch = /*#__PURE__*/_react.default.forwardRef(function 
   label,
   labelHidden = false,
   className,
+  dir,
+  lang,
   ...rest
 }, ref) {
   return /*#__PURE__*/_react.default.createElement("label", {
-    className: (0, _cx.cx)('plx-switch', className)
+    className: (0, _cx.cx)('plx-switch', className),
+    dir: dir,
+    lang: lang
   }, /*#__PURE__*/_react.default.createElement("input", _extends({
     ref: ref,
     type: "checkbox",
@@ -17782,6 +17802,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      There are no margins in any case, whatever the element.
      The expand button has the look of ShowMore (CollapsibleSection): the smallest button, its chevron after the
        label, down to show more and up to show less.
+     Writing direction (owner, ctm-needs-34): the element is dir="auto" (its first strong letter decides); dir="rtl" or "ltr" and
+       lang override it, for text in the other direction than the page (an Arabic question in an English page).
 */
 const LINES = [2, 3, 4];
 const STRINGS = {
@@ -26748,6 +26770,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      A row keeps its controls aligned at their tops (their labels on one line) and wraps when it runs out of room.
    Notes:
      Other props pass through to the <fieldset> (disabled turns every control in it off).
+     Writing direction (owner, ctm-needs-34): dir ("ltr" | "rtl") and lang on the Fieldset go on the <fieldset>, so the legend and
+       every control in it follow: an Arabic question with its checkboxes and options inside an English page, or the
+       reverse (<Fieldset dir="rtl" lang="ar" legend="…">). Use the dir attribute, never the CSS direction property.
 */
 function Fieldset({
   legend,
@@ -77353,6 +77378,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Notes:
      One level 1 per page. Skip no level going down the outline. Never uppercase (that is SectionHeading's job); never
        a heading made of bold text. Every value is a --plx-comp-heading-* token.
+     Writing direction (owner, ctm-needs-34): dir and lang go on the heading element (other props pass through), for a heading in
+       the other direction than the page.
 */
 const Heading = exports.Heading = /*#__PURE__*/_react.default.forwardRef(function Heading({
   level = 2,

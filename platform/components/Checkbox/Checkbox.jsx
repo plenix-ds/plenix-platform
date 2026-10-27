@@ -44,25 +44,30 @@
      The Switch track is 36 × 20px and the knob 16px, centered: (track − knob) / 2.
      Checkbox, Radio and Switch pass other props (checked, onChange, name, value, disabled, …) and their ref to the <input>.
      RadioGroup and ChoiceList pass other props to the <fieldset>.
+     Writing direction (owner, ctm-needs-34): dir ("ltr" | "rtl") and lang ("ar", "en", …) on Checkbox, Radio and Switch go on
+       the row (the <label>), so the box and its text change sides together; on RadioGroup and ChoiceList they go on the
+       <fieldset>, so the legend and every option follow. An Arabic question can sit in an English page (and the reverse):
+       <Fieldset dir="rtl" lang="ar" legend="بيانات الحضور"><RadioGroup … /><Checkbox label="…" /></Fieldset>.
+       Use the dir attribute, never the CSS direction property: the :dir(rtl) rules answer only to the attribute.
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
 
-export const Checkbox = React.forwardRef(function Checkbox({ label, description, indeterminate = false, className, ...rest }, ref) {
+export const Checkbox = React.forwardRef(function Checkbox({ label, description, indeterminate = false, className, dir, lang, ...rest }, ref) {
   const inner = React.useRef(null);
   React.useImperativeHandle(ref, () => inner.current);
   React.useEffect(() => { if (inner.current) inner.current.indeterminate = indeterminate; }, [indeterminate]);
   return (
-    <label className={cx('plx-check', className)}>
+    <label className={cx('plx-check', className)} dir={dir} lang={lang}>
       <input ref={inner} type="checkbox" className="plx-check__input" {...rest} />
       {label || description ? <span className="plx-check__text"><span className="plx-check__label">{label}</span>{description ? <span className="plx-check__description">{description}</span> : null}</span> : null}
     </label>
   );
 });
 
-export const Radio = React.forwardRef(function Radio({ label, description, className, ...rest }, ref) {
+export const Radio = React.forwardRef(function Radio({ label, description, className, dir, lang, ...rest }, ref) {
   return (
-    <label className={cx('plx-check', className)}>
+    <label className={cx('plx-check', className)} dir={dir} lang={lang}>
       <input ref={ref} type="radio" className="plx-check__input" {...rest} />
       {label ? <span className="plx-check__text"><span className="plx-check__label">{label}</span>{description ? <span className="plx-check__description">{description}</span> : null}</span> : null}
     </label>
@@ -94,9 +99,9 @@ export function ChoiceList({ legend, name, value, onChange, options, className, 
   );
 }
 
-export const Switch = React.forwardRef(function Switch({ label, labelHidden = false, className, ...rest }, ref) {
+export const Switch = React.forwardRef(function Switch({ label, labelHidden = false, className, dir, lang, ...rest }, ref) {
   return (
-    <label className={cx('plx-switch', className)}>
+    <label className={cx('plx-switch', className)} dir={dir} lang={lang}>
       <input ref={ref} type="checkbox" role="switch" className="plx-switch__input" aria-label={labelHidden ? label : undefined} {...rest} />
       <span className="plx-switch__track" aria-hidden="true" />
       {label && !labelHidden ? <span className="plx-switch__label">{label}</span> : null}
