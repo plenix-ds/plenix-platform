@@ -1,0 +1,23 @@
+{
+  "$description": "TreeChart (platform/charts/TreeChart.jsx; owner, 2026-10-26, charts-tree-26): a hierarchy drawn by Apache ECharts' tree, left to right or top to bottom, its branches folding. The ECharts theme reads these through the chart's probe classes (echarts/engine.js chartTokens: tree).",
+  "plx-comp": {
+    "tree-chart-link-color": { "$value": "{plx-sys.border-strong}", "$type": "color", "$description": "The lines from a node to its children (the chart's axis-line role)." },
+    "tree-chart-link-width": { "$value": "{plx-sys.border-width-thin}", "$type": "dimension", "$description": "The lines from a node to its children." },
+    "tree-chart-node-color": { "$value": "{plx-sys.dataviz-categorical-1}", "$type": "color", "$description": "A node's ring, and the fill of a node whose branch is folded." },
+    "tree-chart-node-fill": { "$value": "{plx-sys.surface-default}", "$type": "color", "$description": "The inside of an open node or a leaf." },
+    "tree-chart-node-radius": { "$value": "{plx-ref.size-4px}", "$type": "dimension", "$description": "A node's radius (an 8px dot on the grid)." },
+    "tree-chart-node-outline-width": { "$value": "{plx-sys.border-width-thin}", "$type": "dimension", "$description": "A node's ring." },
+    "tree-chart-focus-color": { "$value": "{plx-sys.focus-ring-color}", "$type": "color", "$description": "The ring of the node in keyboard focus." },
+    "tree-chart-focus-width": { "$value": "{plx-sys.border-width-thick}", "$type": "dimension", "$description": "The ring of the node in keyboard focus." },
+    "tree-chart-name-color": { "$value": "{plx-sys.content-default}", "$type": "color", "$description": "A node's name." },
+    "tree-chart-name-font-family": { "$value": "{plx-sys.font-label}", "$type": "fontFamily", "$description": "A node's name and detail." },
+    "tree-chart-name-font-size": { "$value": "{plx-sys.text-label-font-size}", "$type": "dimension", "$description": "A node's name." },
+    "tree-chart-name-font-weight": { "$value": "{plx-sys.font-weight-regular}", "$type": "fontWeight", "$description": "A node's name." },
+    "tree-chart-name-focus-font-weight": { "$value": "{plx-sys.font-weight-semibold}", "$type": "fontWeight", "$description": "The name of the node in keyboard focus." },
+    "tree-chart-detail-color": { "$value": "{plx-sys.content-muted}", "$type": "color", "$description": "The line under a node's name (its role, its count)." },
+    "tree-chart-detail-font-size": { "$value": "{plx-sys.text-caption-font-size}", "$type": "dimension", "$description": "The line under a node's name." },
+    "tree-chart-label-gap": { "$value": "{plx-ref.space-8px}", "$type": "dimension", "$description": "Between a node and its label." },
+    "tree-chart-leaf-spacing": { "$value": "{plx-ref.size-40px}", "$type": "dimension", "$description": "Left to right: the height each leaf takes (two lines of label and room between)." },
+    "tree-chart-level-spacing": { "$value": "{plx-ref.size-80px}", "$type": "dimension", "$description": "Top to bottom: the height each level takes." }
+  }
+}
