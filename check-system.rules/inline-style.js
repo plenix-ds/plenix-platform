@@ -27,7 +27,7 @@
 // Owner decisions that stay: a DataGrid's row height and cell padding are the density's (tokens and classes); no code
 // writes them (the style audit and the pages test check the DataGrid at run time).
 // A line of prose that names the rule (documentation) carries plx-allow-style (check-system.js leaves it alone).
-// The rule is a module check-system.js runs (every file of check-system.rules/):
+// The rule is a module check-style.js runs (a style rule: check-common.js, STYLE_MODULES) (every file of check-system.rules/):
 //   require('./check-system.rules/inline-style.js').check({ files, add })   files: [{ file }], add(rule, file, line, text)
 // Alone: node check-system.rules/inline-style.js     -> INLINE_STYLE_OK, or the findings and exit 1
 const fs = require('fs');

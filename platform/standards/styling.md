@@ -541,10 +541,10 @@ one owner, instead of once per page. Pages then have nothing to override, so the
 | Specificity ceiling | Stylelint (`selector-max-specificity: 0,2,0`, `selector-max-id: 0`) | Any authored selector above 0,2,0 not in the rollout backlog |
 | Public hooks | Project rule | A `--plx-comp-*` set outside its component that is not on the public list |
 | Component contract | Project rule | A component record without its contract (typography, layout integration, hooks, variants, states, spacing, specificity) |
-| Duplicate declarations | Stylelint and project rule | The same property set twice in one rule, or the same selector and property repeated across sheets |
+| Duplicate declarations | Stylelint (`declaration-block-no-duplicate-properties`, `no-duplicate-selectors`) and the runtime overlap audit | The same property set twice in one rule, or the same selector and property repeated across sheets |
 | Unused classes | Project rule | A `plx-` class no source uses (see the definitions below) |
-| `!important` | Project rule | Any, except the listed vendor files until they are removed |
-| Unlayered production CSS | Project rule | A sheet not assigned to a layer |
+| `!important` | Stylelint (`declaration-no-important`) | Any, except the listed vendor files until they are removed |
+| Unlayered production CSS | Project rule (`cascade-layers`, check-style.js) | A sheet not assigned to a layer |
 | Text contracts | Project rule | A text role change without its boundary properties; a component without a declared contract |
 | Base element scope | Project rule | An element rule outside the content scope setting a property a component owns |
 | Outer margins on components | Project rule | A component root with an outer margin, unless an exception is documented |

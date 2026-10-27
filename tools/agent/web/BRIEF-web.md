@@ -23,6 +23,8 @@ You fix the items in your task, in the files your task names. Other writers work
 ## Check your work (all must pass)
 - node build-app.js (then the generated files are current)
 - node check-system.js   → SYSTEM_OK
+- node check-style.js    → STYLE_OK
+- npm run lint:css       → no errors
 - node check-spec.js     → SPEC_OK
 - node tests/pages.test.js → PAGES_OK (slow: run once at the end)
 - the tests for what you touched: tests/keyboard.test.js, tests/layout.test.js, tests/data-grid.test.js,

@@ -86,4 +86,4 @@ The governance board in #252 maps every workstream to its session, issues and PR
 - No exceptions to the Styling Standard; no `!important`; no inline styles; tokens only; no new colors.
 - Pixel changes wait for the owner. Dark mode comes last.
 - Other sessions edit the same folder: commit only your own files, and build generated files in a clean copy.
-- Before finishing: `node build-app.js`, `node check-system.js`, `node check-spec.js`.
+- Before finishing: `node build-app.js`, `node check-system.js`, `node check-style.js`, `npm run lint:css`, `node check-spec.js`.

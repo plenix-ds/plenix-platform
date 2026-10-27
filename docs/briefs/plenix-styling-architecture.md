@@ -472,7 +472,7 @@ one owner, instead of once per page. Pages then have nothing to override, so the
 
 | Check | Where | Fails on |
 |---|---|---|
-| Cross-component selector | Project rule (check-system) | A selector into another block's classes |
+| Cross-component selector | Project rule (`selector-kinds`, check-style.js) | A selector into another block's classes |
 | Page composition | Project rule (composition check) | A page region built from components placed directly instead of the pattern the template names; a page without a template |
 | Flat selectors | Project rule | A descendant chain inside a block that is not on the component's documented list |
 | Application CSS scope | Project rule | An application rule for a component's classes, a non-layout property, or a rule outside the product's own layer |

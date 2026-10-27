@@ -4,7 +4,8 @@
 // The style rules are not here (owner, style-plan-30: every style rule in exactly one place): Stylelint checks each
 // stylesheet (.stylelintrc.json, tools/stylelint/plenix.mjs) and check-style.js holds the Plenix style rules Stylelint
 // cannot check (tokens, hex, font sizes and other values in code, inline styles, defined tokens, cascade layers, selector
-// kinds, text contracts, the token-source rules). Both checks read the same files (check-common.js).
+// kinds, text contracts, the token-source rules: no new colors, the 4px grid, corners 2 to 6px). Both checks read the same
+// files (check-common.js).
 //
 //   imports     every component and pattern stylesheet is imported by platform.css
 //   legacy      the retired files stay gone (suite/, tokens/legacy.css, the asset app's plenix.css and demo.css, system/nesting.css)
@@ -23,7 +24,7 @@
 //   icon-names  (check-system.rules/icon-names.js) every icon named in source (<Icon name=…>, icon=…, icon: …, plx-icon--…)
 //               is in the Plenix set (platform/icons/map.json); an unknown name draws nothing
 //   and the other modules of check-system.rules/ that are not style rules (check-common.js, STYLE_MODULES): composition,
-//   links-not-buttons, semantic-html, settings-cards, table-geometry, use-of-color, copy, token-definitions
+//   links-not-buttons, semantic-html, settings-cards, table-geometry, use-of-color, copy
 const fs = require('fs');
 const path = require('path');
 const { ROOT, DAM, SPEC_PAGE, STYLE_MODULES, collect, reporter } = require('./check-common.js');

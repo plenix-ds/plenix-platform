@@ -10,7 +10,7 @@
 // What already breaks a rule when the rule began is the frozen backlog in the same JSON (grid, corners): by token, with its value.
 // It only shrinks: a token that is not listed fails; a listed token that now passes (or is gone) fails until it is removed
 // (node check-system.rules/token-definitions.js --shrink). Changing such a token would change the page: that waits for the owner.
-// The rule is a module check-system.js runs: require('./check-system.rules/token-definitions.js').check({ add })
+// The rule is a module check-style.js runs (a style rule: check-common.js, STYLE_MODULES): require('./check-system.rules/token-definitions.js').check({ add })
 // Alone: node check-system.rules/token-definitions.js [--shrink | --baseline]   -> TOKEN_DEFINITIONS_OK, or the findings and exit 1
 const fs = require('fs');
 const path = require('path');

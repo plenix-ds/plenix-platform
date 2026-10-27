@@ -7,7 +7,7 @@
 //   - any other production stylesheet (platform/, services/) with a style rule outside an @layer fails, unless it is listed
 //     in UNLAYERED with the reason. Not read: vendor files, the design system (platform/design-system, its own
 //     repository: lanes/), the generated library parts list (platform/exports), docs and tests.
-// The rule is a module check-system.js runs: require('./check-system.rules/cascade-layers.js').check({ add })
+// The rule is a module check-style.js runs (a style rule: check-common.js, STYLE_MODULES): require('./check-system.rules/cascade-layers.js').check({ add })
 // Alone: node check-system.rules/cascade-layers.js   -> CASCADE_LAYERS_OK, or the findings and exit 1
 const fs = require('fs');
 const path = require('path');
