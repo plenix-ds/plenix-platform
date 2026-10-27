@@ -20647,7 +20647,345 @@ function ManageColumnsDialog({
   }))));
 }
   } },
-  "platform/components/Pagination/Pagination.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/providers/DirectionProvider.jsx": { deps: {"react":null,"../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.DirectionContext = void 0;
+exports.DirectionProvider = DirectionProvider;
+exports.useDirection = useDirection;
+var _react = _interopRequireDefault(require("react"));
+var _direction = require("../utils/direction.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · DirectionProvider, useDirection
+   Summary: Sets the writing direction (left to right or right to left) of an application or of one region, and tells
+     React components which it is.
+   Usage:
+     <DirectionProvider dir="rtl" lang="ar">{app}</DirectionProvider>
+     <DirectionProvider locale="he-IL" root>{app}</DirectionProvider>   // on <html>: the whole page
+     const { dir, setDir } = useDirection();
+   Props:
+     dir: "ltr" | "rtl"; without it, the direction of locale, else of the page
+     locale: a language tag ("ar-EG", "en-US"); it sets lang and, without dir, the direction (directionOf)
+     lang: the lang attribute, when it is not the locale
+     root: set dir and lang on <html> instead of a region (default false): the page, its portals and its scrollbars mirror
+     children: the application root or the region it wraps
+     useDirection(): { dir, rtl, setDir(dir) }: the nearest provider's direction (outside one, the page's), and a way to
+       change it
+   Behavior:
+     A region: a wrapper (div.plx-direction, display: contents, so it adds no box) with dir and lang; everything inside
+       it lays out in that direction, as the stylesheets use logical properties.
+     With root, the attributes go on <html> and are put back as they were when the provider unmounts.
+     Overlays drawn in a Portal take the direction of where they were written (the Portal copies dir and lang).
+   Notes:
+     Mirror the layout, not the content: text, numbers, media controls, clocks and the icons that are not directional
+       keep their shape; the icon set mirrors its directional icons (arrows, chevrons, undo and redo) by itself.
+     Script reads the direction where it measures or handles arrow keys (utils/direction.js: arrowStep, physicalSide).
+*/
+
+const DirectionContext = exports.DirectionContext = /*#__PURE__*/_react.default.createContext(null);
+function DirectionProvider({
+  dir,
+  locale,
+  lang,
+  root = false,
+  children
+}) {
+  const wanted = dir || (locale ? (0, _direction.directionOf)(locale) : null);
+  const [own, setOwn] = _react.default.useState(wanted);
+  _react.default.useEffect(() => {
+    setOwn(wanted);
+  }, [wanted]);
+  const current = own || (typeof document !== 'undefined' ? (0, _direction.getDirection)() : 'ltr');
+  const language = lang || locale || undefined;
+  _react.default.useLayoutEffect(() => {
+    if (!root) return undefined;
+    const html = document.documentElement,
+      before = {
+        dir: html.getAttribute('dir'),
+        lang: html.getAttribute('lang')
+      };
+    html.setAttribute('dir', current);
+    if (language) html.setAttribute('lang', language);
+    return () => {
+      if (before.dir == null) html.removeAttribute('dir');else html.setAttribute('dir', before.dir);
+      if (language) {
+        if (before.lang == null) html.removeAttribute('lang');else html.setAttribute('lang', before.lang);
+      }
+    };
+  }, [root, current, language]);
+  const value = _react.default.useMemo(() => ({
+    dir: current,
+    rtl: current === 'rtl',
+    setDir: d => setOwn(d === 'rtl' ? 'rtl' : 'ltr')
+  }), [current]);
+  return /*#__PURE__*/_react.default.createElement(DirectionContext.Provider, {
+    value: value
+  }, root ? children : /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-direction",
+    dir: current,
+    lang: language
+  }, children));
+}
+function useDirection() {
+  const ctx = _react.default.useContext(DirectionContext);
+  const [page, setPage] = _react.default.useState(() => typeof document !== 'undefined' ? (0, _direction.getDirection)() : 'ltr');
+  _react.default.useEffect(() => {
+    if (ctx) return undefined;
+    const observer = new MutationObserver(() => setPage((0, _direction.getDirection)()));
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['dir']
+    });
+    return () => observer.disconnect();
+  }, [ctx]);
+  if (ctx) return ctx;
+  return {
+    dir: page,
+    rtl: page === 'rtl',
+    setDir: d => document.documentElement.setAttribute('dir', d === 'rtl' ? 'rtl' : 'ltr')
+  };
+}
+  } },
+  "platform/i18n/en.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// Browser mirror of en.json: the repository module loader accepts JavaScript only. The W15C catalog test checks parity.
+var _default = exports.default = {
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "retry": "Retry",
+    "next": "Next",
+    "back": "Back"
+  },
+  "collection": {
+    "selected": {
+      "=0": "Nothing selected",
+      "one": "{count} item selected",
+      "other": "{count} items selected"
+    }
+  },
+  "wizard": {
+    "next": "Next",
+    "back": "Back",
+    "finish": "Finish",
+    "cancel": "Cancel",
+    "step": "Step {n} of {total}",
+    "error": "Could not save. Try again."
+  },
+  "dialog": {
+    "close": "Close"
+  },
+  "text": {
+    "more": "Show more",
+    "less": "Show less"
+  },
+  "emptyState": {
+    "title": "No items yet",
+    "description": "Create an item to get started.",
+    "action": "Create item"
+  }
+};
+  } },
+  "platform/i18n/ar.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// Plenix's built-in Arabic words (owner, arabic-batch4-36; the start of issue 427). LocaleProvider uses them for an Arabic
+// locale after the application's own catalog and before English; a part's strings prop still wins.
+var _default = exports.default = {
+  "pagination": {
+    "label": "الصفحات",
+    "range": "{first} إلى {last} من {total}",
+    "previous": "الصفحة السابقة",
+    "next": "الصفحة التالية",
+    "page": "الصفحة {n}",
+    "perPage": "لكل صفحة"
+  }
+};
+  } },
+  "platform/providers/LocaleProvider.jsx": { deps: {"react":null,"./DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","../utils/direction.js":"platform/utils/direction.js","../utils/format.js":"platform/utils/format.js","../i18n/en.js":"platform/i18n/en.js","../i18n/ar.js":"platform/i18n/ar.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.LocaleProvider = LocaleProvider;
+exports.createTranslator = createTranslator;
+exports.useLocale = useLocale;
+var _react = _interopRequireDefault(require("react"));
+var _DirectionProvider = require("./DirectionProvider.jsx");
+var _direction = require("../utils/direction.js");
+var F = _interopRequireWildcard(require("../utils/format.js"));
+var _en = _interopRequireDefault(require("../i18n/en.js"));
+var _ar = _interopRequireDefault(require("../i18n/ar.js"));
+function _interopRequireWildcard(e, t) { if ("function" == typeof WeakMap) var r = new WeakMap(), n = new WeakMap(); return (_interopRequireWildcard = function (e, t) { if (!t && e && e.__esModule) return e; var o, i, f = { __proto__: null, default: e }; if (null === e || "object" != typeof e && "function" != typeof e) return f; if (o = t ? n : r) { if (o.has(e)) return o.get(e); o.set(e, f); } for (const t in e) "default" !== t && {}.hasOwnProperty.call(e, t) && ((i = (o = Object.defineProperty) && Object.getOwnPropertyDescriptor(e, t)) && (i.get || i.set) ? o(f, t, i) : f[t] = e[t]); return f; })(e, t); }
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · LocaleProvider, useLocale, createTranslator
+   Summary: Locale-scoped message catalogs, plural rules, formatting and writing direction. Existing components receive
+     their strings explicitly from the catalog; a region never changes another region's locale.
+   Usage:
+     <LocaleProvider locale="fr-FR" catalogs={{ fr: french }}><App /></LocaleProvider>
+     const { t, strings, format } = useLocale();
+     <Wizard strings={strings('wizard')} />; t('collection.selected', { count: 2 }); format.date('2026-03-08');
+   Props:
+     locale: a BCP 47 language tag; default the page's formatLocale()
+     catalogs: messages by locale, with flat dot keys or nested sections; Plenix's built-in words for the language come after
+       them (i18n/ar.js: Arabic, owner arabic-batch4-36), and English is always the last fallback
+     messages: the current locale's catalog, as a convenience
+     fallbackLocale: locale searched after the requested locale and its language; default "en"
+     timeZone: optional Intl time zone for this provider's date/time formatters
+     dir: explicit "ltr" or "rtl"; otherwise directionOf(locale)
+     root: set the page's lang and dir through DirectionProvider; default false (a scoped region)
+     children: the region's content
+     useLocale(): { locale, dir, t, strings, plural, format }; format has number, unit, bytes, duration, compact, date,
+       time, dateTime, relative, range, currency, percent, list, personName, address, phone and regionName
+     createTranslator(locale, catalogs, fallbackLocale): the same t/strings/plural API outside React
+   Behavior:
+     Fallback: exact locale, language, configured fallback, then English. Missing messages return their key.
+     Messages interpolate {name} as plain text. Plural messages are objects with one/other (or any Intl category),
+     optional "=0" exact-count keys; t(key, { count }) selects them with Intl.PluralRules. t's third argument may
+     set ordinal:true. Missing interpolation values keep their placeholder. No HTML is parsed.
+     strings(section, values) combines that section across fallbacks for a component's strings prop.
+   Notes:
+     Translators never mutate catalogs or global Intl state. Pass the bound format helpers to localized content;
+     unmodified components keep their existing defaults. Catalog translations are application-owned. */
+
+// Plenix's own words in other languages: used after the application's catalog for the same language, before English
+const BUILT_IN = {
+  ar: _ar.default
+};
+const canonical = (value, fallback = 'en') => {
+  try {
+    return Intl.getCanonicalLocales(value || fallback)[0] || fallback;
+  } catch (e) {
+    return fallback;
+  }
+};
+const own = (value, key) => value && Object.prototype.hasOwnProperty.call(value, key);
+const messageAt = (catalog, key) => {
+  if (own(catalog, key)) return catalog[key];
+  return String(key).split('.').reduce((node, part) => own(node, part) ? node[part] : undefined, catalog);
+};
+const text = (message, values) => String(message).replace(/\{(\w+)\}/g, (match, key) => own(values, key) ? String(values[key]) : match);
+function createTranslator(locale = 'en', catalogs = {}, fallbackLocale = 'en') {
+  const language = canonical(locale),
+    fallback = canonical(fallbackLocale);
+  const normalized = Object.fromEntries(Object.entries(catalogs || {}).map(([key, value]) => [canonical(key), value]));
+  const chain = [...new Set([language, language.split('-')[0], fallback, fallback.split('-')[0], 'en'])];
+  const sources = chain.flatMap(key => [normalized[key], BUILT_IN[key]]).filter(Boolean).concat(_en.default);
+  const cardinal = new Intl.PluralRules(language),
+    ordinal = new Intl.PluralRules(language, {
+      type: 'ordinal'
+    });
+  const plural = (count, options = {}) => (options.ordinal ? ordinal : cardinal).select(Number(count));
+  const choose = (value, values, options) => {
+    if (typeof value === 'string' || typeof value === 'number') return text(value, values);
+    if (!value || typeof value !== 'object' || Array.isArray(value)) return undefined;
+    const exact = '=' + Number(values.count),
+      category = plural(values.count, options);
+    const item = own(value, exact) ? value[exact] : value[category] !== undefined ? value[category] : value.other;
+    return typeof item === 'string' || typeof item === 'number' ? text(item, values) : undefined;
+  };
+  const t = (key, values = {}, options = {}) => {
+    for (const source of sources) {
+      const result = choose(messageAt(source, key), values, options);
+      if (result !== undefined) return result;
+    }
+    return String(key);
+  };
+  const strings = (section, values = {}) => {
+    const keys = new Set();
+    sources.forEach(source => {
+      const node = messageAt(source, section);
+      if (node && typeof node === 'object' && !Array.isArray(node)) Object.keys(node).forEach(key => keys.add(key));
+      Object.keys(source).filter(key => key.startsWith(section + '.') && !key.slice(section.length + 1).includes('.')).forEach(key => keys.add(key.slice(section.length + 1)));
+    });
+    return Object.fromEntries([...keys].map(key => [key, t(section + '.' + key, values)]));
+  };
+  return {
+    locale: language,
+    dir: (0, _direction.directionOf)(language),
+    t,
+    strings,
+    plural
+  };
+}
+const FORMATTERS = {
+  number: ['formatNumber', 1],
+  unit: ['formatUnit', 2],
+  bytes: ['formatBytes', 1],
+  duration: ['formatDuration', 1],
+  compact: ['formatCompact', 1],
+  date: ['formatDate', 1],
+  time: ['formatTime', 1],
+  dateTime: ['formatDateTime', 1],
+  relative: ['formatRelative', 1],
+  range: ['formatRange', 2],
+  currency: ['formatCurrency', 2],
+  percent: ['formatPercent', 1],
+  list: ['formatList', 1],
+  personName: ['formatPersonName', 1],
+  address: ['formatAddress', 1],
+  phone: ['formatPhone', 1],
+  regionName: ['regionName', 1]
+};
+const bind = (locale, timeZone) => Object.fromEntries(Object.entries(FORMATTERS).map(([name, [fn, count]]) => [name, (...args) => F[fn](...Array.from({
+  length: count
+}, (_, index) => args[index]), Object.assign({
+  locale,
+  timeZone
+}, args[count]))]));
+const LocaleContext = /*#__PURE__*/_react.default.createContext(null);
+function LocaleProvider({
+  locale,
+  catalogs,
+  messages,
+  fallbackLocale = 'en',
+  timeZone,
+  dir,
+  root = false,
+  children
+}) {
+  const language = canonical(locale || F.formatLocale());
+  const value = _react.default.useMemo(() => {
+    const sources = Object.assign({}, catalogs, messages ? {
+      [language]: messages
+    } : {});
+    return Object.assign(createTranslator(language, sources, fallbackLocale), {
+      dir: dir || (0, _direction.directionOf)(language),
+      format: bind(language, timeZone)
+    });
+  }, [language, catalogs, messages, fallbackLocale, timeZone, dir]);
+  return /*#__PURE__*/_react.default.createElement(LocaleContext.Provider, {
+    value: value
+  }, /*#__PURE__*/_react.default.createElement(_DirectionProvider.DirectionProvider, {
+    locale: language,
+    dir: value.dir,
+    root: root
+  }, children));
+}
+function useLocale() {
+  const value = _react.default.useContext(LocaleContext);
+  const language = canonical(F.formatLocale());
+  const fallback = _react.default.useMemo(() => Object.assign(createTranslator(language), {
+    format: bind(language)
+  }), [language]);
+  return value || fallback;
+}
+  } },
+  "platform/components/Pagination/Pagination.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -20656,6 +20994,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.Pagination = Pagination;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Pagination
    Summary: Page buttons, an optional summary ("1–30 of 120") and an optional per-page choice.
@@ -20672,7 +21011,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      onPerPageChange(n): runs when another per-page number is chosen
      label: the accessible name of the navigation; default strings.label: "Pages"
      className: more classes on the navigation
-     strings: the words it shows and announces, for other languages: { label: "Pages", range: "{first}–{last} of {total}",
+     strings: the words it shows and announces, for other languages (default: the locale's, through LocaleProvider; Arabic is
+       built in): { label: "Pages", range: "{first}–{last} of {total}",
        previous: "Previous page", next: "Next page", page: "Page {n}", perPage: "Per page" }
      ...rest: other attributes go on the navigation element
    Behavior:
@@ -20712,7 +21052,8 @@ function Pagination({
   className,
   ...rest
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  // the words: the built-in ones, then the locale's (Arabic says the range its own way: "31 إلى 60 من 120"), then strings
+  const t = Object.assign({}, STRINGS, (0, _LocaleProvider.useLocale)().strings('pagination'), strings);
   const go = p => {
     if (p >= 1 && p <= pageCount && p !== page && onPageChange) onPageChange(p);
   };
@@ -33485,6 +33826,9 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      Header style 2 follows the button rule of a command bar: while the facts would wrap, first the count buttons show
        their icon only, then the states too, each with its words as its tooltip and name; past that the boxes wrap.
    Notes:
+     Writing direction (owner, arabic-batch4-36): title, subtitle and summary are plain text. In a right-to-left page an app
+       wraps an ID or a case number in them in <Isolate> (subtitle={['القضية ', <Isolate>20261020-01</Isolate>]}), or it reads
+       backwards (01-20261020); Plenix does not guess. The same goes for a fact's value.
      Not for settings screens: use RecordPage.Header. A small uppercase group label is SectionHeading.
 */
 
@@ -37370,108 +37714,6 @@ function RichText({
   }, content, rest, {
     className: (0, _cx.cx)('plx-rich-text', 'plx-rich-text--' + (variant === 'compact' ? 'compact' : 'article'), html != null && 'plx-user-content', className)
   }), html != null ? undefined : children);
-}
-  } },
-  "platform/providers/DirectionProvider.jsx": { deps: {"react":null,"../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.DirectionContext = void 0;
-exports.DirectionProvider = DirectionProvider;
-exports.useDirection = useDirection;
-var _react = _interopRequireDefault(require("react"));
-var _direction = require("../utils/direction.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · DirectionProvider, useDirection
-   Summary: Sets the writing direction (left to right or right to left) of an application or of one region, and tells
-     React components which it is.
-   Usage:
-     <DirectionProvider dir="rtl" lang="ar">{app}</DirectionProvider>
-     <DirectionProvider locale="he-IL" root>{app}</DirectionProvider>   // on <html>: the whole page
-     const { dir, setDir } = useDirection();
-   Props:
-     dir: "ltr" | "rtl"; without it, the direction of locale, else of the page
-     locale: a language tag ("ar-EG", "en-US"); it sets lang and, without dir, the direction (directionOf)
-     lang: the lang attribute, when it is not the locale
-     root: set dir and lang on <html> instead of a region (default false): the page, its portals and its scrollbars mirror
-     children: the application root or the region it wraps
-     useDirection(): { dir, rtl, setDir(dir) }: the nearest provider's direction (outside one, the page's), and a way to
-       change it
-   Behavior:
-     A region: a wrapper (div.plx-direction, display: contents, so it adds no box) with dir and lang; everything inside
-       it lays out in that direction, as the stylesheets use logical properties.
-     With root, the attributes go on <html> and are put back as they were when the provider unmounts.
-     Overlays drawn in a Portal take the direction of where they were written (the Portal copies dir and lang).
-   Notes:
-     Mirror the layout, not the content: text, numbers, media controls, clocks and the icons that are not directional
-       keep their shape; the icon set mirrors its directional icons (arrows, chevrons, undo and redo) by itself.
-     Script reads the direction where it measures or handles arrow keys (utils/direction.js: arrowStep, physicalSide).
-*/
-
-const DirectionContext = exports.DirectionContext = /*#__PURE__*/_react.default.createContext(null);
-function DirectionProvider({
-  dir,
-  locale,
-  lang,
-  root = false,
-  children
-}) {
-  const wanted = dir || (locale ? (0, _direction.directionOf)(locale) : null);
-  const [own, setOwn] = _react.default.useState(wanted);
-  _react.default.useEffect(() => {
-    setOwn(wanted);
-  }, [wanted]);
-  const current = own || (typeof document !== 'undefined' ? (0, _direction.getDirection)() : 'ltr');
-  const language = lang || locale || undefined;
-  _react.default.useLayoutEffect(() => {
-    if (!root) return undefined;
-    const html = document.documentElement,
-      before = {
-        dir: html.getAttribute('dir'),
-        lang: html.getAttribute('lang')
-      };
-    html.setAttribute('dir', current);
-    if (language) html.setAttribute('lang', language);
-    return () => {
-      if (before.dir == null) html.removeAttribute('dir');else html.setAttribute('dir', before.dir);
-      if (language) {
-        if (before.lang == null) html.removeAttribute('lang');else html.setAttribute('lang', before.lang);
-      }
-    };
-  }, [root, current, language]);
-  const value = _react.default.useMemo(() => ({
-    dir: current,
-    rtl: current === 'rtl',
-    setDir: d => setOwn(d === 'rtl' ? 'rtl' : 'ltr')
-  }), [current]);
-  return /*#__PURE__*/_react.default.createElement(DirectionContext.Provider, {
-    value: value
-  }, root ? children : /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-direction",
-    dir: current,
-    lang: language
-  }, children));
-}
-function useDirection() {
-  const ctx = _react.default.useContext(DirectionContext);
-  const [page, setPage] = _react.default.useState(() => typeof document !== 'undefined' ? (0, _direction.getDirection)() : 'ltr');
-  _react.default.useEffect(() => {
-    if (ctx) return undefined;
-    const observer = new MutationObserver(() => setPage((0, _direction.getDirection)()));
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['dir']
-    });
-    return () => observer.disconnect();
-  }, [ctx]);
-  if (ctx) return ctx;
-  return {
-    dir: page,
-    rtl: page === 'rtl',
-    setDir: d => document.documentElement.setAttribute('dir', d === 'rtl' ? 'rtl' : 'ltr')
-  };
 }
   } },
   "platform/hooks/usePressable.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -45038,8 +45280,9 @@ const Calendar = exports.Calendar = /*#__PURE__*/_react.default.forwardRef(funct
     month: 'long',
     year: 'numeric'
   });
+  // Arabic weekday names are too long for a column: one letter each, as Arabic calendars do (owner, arabic-batch4-36)
   const weekdayShort = new Intl.DateTimeFormat(locale, {
-    weekday: 'short'
+    weekday: /^ar\b/i.test(locale) ? 'narrow' : 'short'
   });
   const weekdayLong = new Intl.DateTimeFormat(locale, {
     weekday: 'long'
@@ -77492,216 +77735,6 @@ function browserSupport(environment = typeof window === 'undefined' ? {} : windo
     features,
     missing: Object.keys(features).filter(key => !features[key])
   };
-}
-  } },
-  "platform/i18n/en.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-// Browser mirror of en.json: the repository module loader accepts JavaScript only. The W15C catalog test checks parity.
-var _default = exports.default = {
-  "common": {
-    "save": "Save",
-    "cancel": "Cancel",
-    "close": "Close",
-    "retry": "Retry",
-    "next": "Next",
-    "back": "Back"
-  },
-  "collection": {
-    "selected": {
-      "=0": "Nothing selected",
-      "one": "{count} item selected",
-      "other": "{count} items selected"
-    }
-  },
-  "wizard": {
-    "next": "Next",
-    "back": "Back",
-    "finish": "Finish",
-    "cancel": "Cancel",
-    "step": "Step {n} of {total}",
-    "error": "Could not save. Try again."
-  },
-  "dialog": {
-    "close": "Close"
-  },
-  "text": {
-    "more": "Show more",
-    "less": "Show less"
-  },
-  "emptyState": {
-    "title": "No items yet",
-    "description": "Create an item to get started.",
-    "action": "Create item"
-  }
-};
-  } },
-  "platform/providers/LocaleProvider.jsx": { deps: {"react":null,"./DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","../utils/direction.js":"platform/utils/direction.js","../utils/format.js":"platform/utils/format.js","../i18n/en.js":"platform/i18n/en.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.LocaleProvider = LocaleProvider;
-exports.createTranslator = createTranslator;
-exports.useLocale = useLocale;
-var _react = _interopRequireDefault(require("react"));
-var _DirectionProvider = require("./DirectionProvider.jsx");
-var _direction = require("../utils/direction.js");
-var F = _interopRequireWildcard(require("../utils/format.js"));
-var _en = _interopRequireDefault(require("../i18n/en.js"));
-function _interopRequireWildcard(e, t) { if ("function" == typeof WeakMap) var r = new WeakMap(), n = new WeakMap(); return (_interopRequireWildcard = function (e, t) { if (!t && e && e.__esModule) return e; var o, i, f = { __proto__: null, default: e }; if (null === e || "object" != typeof e && "function" != typeof e) return f; if (o = t ? n : r) { if (o.has(e)) return o.get(e); o.set(e, f); } for (const t in e) "default" !== t && {}.hasOwnProperty.call(e, t) && ((i = (o = Object.defineProperty) && Object.getOwnPropertyDescriptor(e, t)) && (i.get || i.set) ? o(f, t, i) : f[t] = e[t]); return f; })(e, t); }
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · LocaleProvider, useLocale, createTranslator
-   Summary: Locale-scoped message catalogs, plural rules, formatting and writing direction. Existing components receive
-     their strings explicitly from the catalog; a region never changes another region's locale.
-   Usage:
-     <LocaleProvider locale="fr-FR" catalogs={{ fr: french }}><App /></LocaleProvider>
-     const { t, strings, format } = useLocale();
-     <Wizard strings={strings('wizard')} />; t('collection.selected', { count: 2 }); format.date('2026-03-08');
-   Props:
-     locale: a BCP 47 language tag; default the page's formatLocale()
-     catalogs: messages by locale, with flat dot keys or nested sections; English is always the last fallback
-     messages: the current locale's catalog, as a convenience
-     fallbackLocale: locale searched after the requested locale and its language; default "en"
-     timeZone: optional Intl time zone for this provider's date/time formatters
-     dir: explicit "ltr" or "rtl"; otherwise directionOf(locale)
-     root: set the page's lang and dir through DirectionProvider; default false (a scoped region)
-     children: the region's content
-     useLocale(): { locale, dir, t, strings, plural, format }; format has number, unit, bytes, duration, compact, date,
-       time, dateTime, relative, range, currency, percent, list, personName, address, phone and regionName
-     createTranslator(locale, catalogs, fallbackLocale): the same t/strings/plural API outside React
-   Behavior:
-     Fallback: exact locale, language, configured fallback, then English. Missing messages return their key.
-     Messages interpolate {name} as plain text. Plural messages are objects with one/other (or any Intl category),
-     optional "=0" exact-count keys; t(key, { count }) selects them with Intl.PluralRules. t's third argument may
-     set ordinal:true. Missing interpolation values keep their placeholder. No HTML is parsed.
-     strings(section, values) combines that section across fallbacks for a component's strings prop.
-   Notes:
-     Translators never mutate catalogs or global Intl state. Pass the bound format helpers to localized content;
-     unmodified components keep their existing defaults. Catalog translations are application-owned. */
-
-const canonical = (value, fallback = 'en') => {
-  try {
-    return Intl.getCanonicalLocales(value || fallback)[0] || fallback;
-  } catch (e) {
-    return fallback;
-  }
-};
-const own = (value, key) => value && Object.prototype.hasOwnProperty.call(value, key);
-const messageAt = (catalog, key) => {
-  if (own(catalog, key)) return catalog[key];
-  return String(key).split('.').reduce((node, part) => own(node, part) ? node[part] : undefined, catalog);
-};
-const text = (message, values) => String(message).replace(/\{(\w+)\}/g, (match, key) => own(values, key) ? String(values[key]) : match);
-function createTranslator(locale = 'en', catalogs = {}, fallbackLocale = 'en') {
-  const language = canonical(locale),
-    fallback = canonical(fallbackLocale);
-  const normalized = Object.fromEntries(Object.entries(catalogs || {}).map(([key, value]) => [canonical(key), value]));
-  const chain = [...new Set([language, language.split('-')[0], fallback, fallback.split('-')[0], 'en'])];
-  const sources = chain.map(key => normalized[key]).filter(Boolean).concat(_en.default);
-  const cardinal = new Intl.PluralRules(language),
-    ordinal = new Intl.PluralRules(language, {
-      type: 'ordinal'
-    });
-  const plural = (count, options = {}) => (options.ordinal ? ordinal : cardinal).select(Number(count));
-  const choose = (value, values, options) => {
-    if (typeof value === 'string' || typeof value === 'number') return text(value, values);
-    if (!value || typeof value !== 'object' || Array.isArray(value)) return undefined;
-    const exact = '=' + Number(values.count),
-      category = plural(values.count, options);
-    const item = own(value, exact) ? value[exact] : value[category] !== undefined ? value[category] : value.other;
-    return typeof item === 'string' || typeof item === 'number' ? text(item, values) : undefined;
-  };
-  const t = (key, values = {}, options = {}) => {
-    for (const source of sources) {
-      const result = choose(messageAt(source, key), values, options);
-      if (result !== undefined) return result;
-    }
-    return String(key);
-  };
-  const strings = (section, values = {}) => {
-    const keys = new Set();
-    sources.forEach(source => {
-      const node = messageAt(source, section);
-      if (node && typeof node === 'object' && !Array.isArray(node)) Object.keys(node).forEach(key => keys.add(key));
-      Object.keys(source).filter(key => key.startsWith(section + '.') && !key.slice(section.length + 1).includes('.')).forEach(key => keys.add(key.slice(section.length + 1)));
-    });
-    return Object.fromEntries([...keys].map(key => [key, t(section + '.' + key, values)]));
-  };
-  return {
-    locale: language,
-    dir: (0, _direction.directionOf)(language),
-    t,
-    strings,
-    plural
-  };
-}
-const FORMATTERS = {
-  number: ['formatNumber', 1],
-  unit: ['formatUnit', 2],
-  bytes: ['formatBytes', 1],
-  duration: ['formatDuration', 1],
-  compact: ['formatCompact', 1],
-  date: ['formatDate', 1],
-  time: ['formatTime', 1],
-  dateTime: ['formatDateTime', 1],
-  relative: ['formatRelative', 1],
-  range: ['formatRange', 2],
-  currency: ['formatCurrency', 2],
-  percent: ['formatPercent', 1],
-  list: ['formatList', 1],
-  personName: ['formatPersonName', 1],
-  address: ['formatAddress', 1],
-  phone: ['formatPhone', 1],
-  regionName: ['regionName', 1]
-};
-const bind = (locale, timeZone) => Object.fromEntries(Object.entries(FORMATTERS).map(([name, [fn, count]]) => [name, (...args) => F[fn](...Array.from({
-  length: count
-}, (_, index) => args[index]), Object.assign({
-  locale,
-  timeZone
-}, args[count]))]));
-const LocaleContext = /*#__PURE__*/_react.default.createContext(null);
-function LocaleProvider({
-  locale,
-  catalogs,
-  messages,
-  fallbackLocale = 'en',
-  timeZone,
-  dir,
-  root = false,
-  children
-}) {
-  const language = canonical(locale || F.formatLocale());
-  const value = _react.default.useMemo(() => {
-    const sources = Object.assign({}, catalogs, messages ? {
-      [language]: messages
-    } : {});
-    return Object.assign(createTranslator(language, sources, fallbackLocale), {
-      dir: dir || (0, _direction.directionOf)(language),
-      format: bind(language, timeZone)
-    });
-  }, [language, catalogs, messages, fallbackLocale, timeZone, dir]);
-  return /*#__PURE__*/_react.default.createElement(LocaleContext.Provider, {
-    value: value
-  }, /*#__PURE__*/_react.default.createElement(_DirectionProvider.DirectionProvider, {
-    locale: language,
-    dir: value.dir,
-    root: root
-  }, children));
-}
-function useLocale() {
-  const value = _react.default.useContext(LocaleContext);
-  const language = canonical(F.formatLocale());
-  const fallback = _react.default.useMemo(() => Object.assign(createTranslator(language), {
-    format: bind(language)
-  }), [language]);
-  return value || fallback;
 }
   } },
   "platform/components/Heading/Heading.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
