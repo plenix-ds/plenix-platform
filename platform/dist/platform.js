@@ -6328,1728 +6328,6 @@ function useTruncated(ref) {
   return cut;
 }
   } },
-  "platform/components/Field/Field.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Field = Field;
-exports.FieldLayoutContext = void 0;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _overflow = require("../../utils/overflow.js");
-var _Tooltip = require("../Tooltip/Tooltip.jsx");
-var _announce = require("../../utils/announce.jsx");
-var _format = require("../../utils/format.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Field
-   Summary: A label, the control, and its help or error, connected for assistive technology.
-   Usage:
-     <Field label="Name" description="Shown on the asset" error={msg} required info={<…/>} layout="inline">
-       <Input …/>
-     </Field>
-   Props:
-     label: the label text
-     hideLabel: the label is read by screen readers and still labels the control, but is not drawn (a title field, a search
-       box whose purpose is plain from where it sits); default false (owner, 2026-10-16, the composition standard)
-     description: help text under the control (under the label with "row")
-     error: the error message under the control; it marks the field invalid
-     required: marks the field and the control required; the label shows " *" (default false)
-     info: content for a small (i) button next to the label
-     infoLabel: the accessible name of the (i) button (default "About " + the label)
-     layout: "stacked" (default; label above) | "inline" (label beside the control: settings rows, a 160px label column) |
-       "row" (the description under the label and the control at the end); without it, the layout of the Form around the
-       field (FieldLayoutContext: a two-column Form makes its fields inline), else "stacked"
-     counter: a character counter at the end of the help line: true (the limit is the control's maxLength) or the limit
-       as a number; default none
-     strings: the counter's words for screen readers: { left: '{n} characters left', over: '{n} characters too many' }
-     labelWidth: the width of the label column, as a size name (adds plx-field--label-<value>)
-     type, inputMode, autoComplete, enterKeyHint: keyboard and autofill hints handed to the control (Platforms Standard 3.5),
-       unless it sets its own
-     children: exactly one control
-     className: more classes on the field
-   Behavior:
-     The child control gets id, aria-describedby, invalid and required, unless it sets its own.
-     The error is announced (role="alert").
-     The (i) button shows and hides the info text under the control (aria-expanded).
-     counter: the count updates as people type ("12/100", in the data font) and is part of the control's description.
-       People may type past the limit: the native maxLength is not set, so nothing is cut off; past it the count and the
-       control turn invalid (the danger color, aria-invalid). Near the limit (the last tenth) and past it, the characters
-       left or over are announced politely, once typing pauses (announce).
-   Notes:
-     Other props pass through to the <div>.
-*/
-// the layout a Form gives the fields inside it (Form's layout "two-column" makes them inline); a Field's own layout wins
-const FieldLayoutContext = exports.FieldLayoutContext = /*#__PURE__*/_react.default.createContext(null);
-const COUNTER_STRINGS = {
-  left: '{n} characters left',
-  over: '{n} characters too many'
-};
-const fill = (t, n) => String(t).replace('{n}', (0, _format.formatNumber)(n));
-function Field({
-  label,
-  hideLabel = false,
-  description,
-  error,
-  required = false,
-  info,
-  infoLabel,
-  layout,
-  labelWidth,
-  counter,
-  strings,
-  type,
-  inputMode,
-  autoComplete,
-  enterKeyHint,
-  className,
-  children,
-  ...rest
-}) {
-  const id = _react.default.useId();
-  const formLayout = _react.default.useContext(FieldLayoutContext);
-  const lay = layout || formLayout || 'stacked';
-  const controlId = 'plx-f' + id.replace(/[^a-zA-Z0-9]/g, '');
-  const descId = description ? controlId + '-d' : undefined,
-    errId = error ? controlId + '-e' : undefined;
-  const [showInfo, setShowInfo] = _react.default.useState(false);
-  const labelRef = _react.default.useRef(null);
-  const cut = (0, _overflow.useTruncated)(labelRef);
-  const child = _react.default.Children.only(children);
-  // the character counter: the limit, the length (the control's value, else what was typed), what is left
-  const max = counter ? typeof counter === 'number' ? counter : Number(child.props.maxLength) || 0 : 0;
-  const [typed, setTyped] = _react.default.useState(() => String(child.props.defaultValue == null ? '' : child.props.defaultValue).length);
-  const length = child.props.value != null ? String(child.props.value).length : typed;
-  const over = max > 0 && length > max;
-  const t = Object.assign({}, COUNTER_STRINGS, strings);
-  const countId = max ? controlId + '-c' : undefined;
-  const near = max > 0 && max - length <= Math.ceil(max / 10);
-  const said = _react.default.useRef(null);
-  _react.default.useEffect(() => {
-    if (!max || !near || said.current === null) {
-      said.current = length;
-      return;
-    }
-    if (said.current !== length) {
-      said.current = length;
-      (0, _announce.announce)(over ? fill(t.over, length - max) : fill(t.left, max - length));
-    }
-  }, [length, max, near, over, t.over, t.left]);
-  const props = {
-    id: child.props.id || controlId,
-    'aria-describedby': [child.props['aria-describedby'], descId, countId, errId].filter(Boolean).join(' ') || undefined,
-    invalid: child.props.invalid !== undefined ? child.props.invalid : error || over ? true : undefined,
-    required: child.props.required !== undefined ? child.props.required : required || undefined
-  };
-  if (max) {
-    // people may type past the limit (the count shows it); the length is followed for an uncontrolled control
-    props.maxLength = undefined;
-    props.onChange = e => {
-      setTyped(e.target.value.length);
-      if (child.props.onChange) child.props.onChange(e);
-    };
-  }
-  // keyboard hints given on the Field reach the control, unless it has its own
-  const hints = {
-    type,
-    inputMode,
-    autoComplete,
-    enterKeyHint
-  };
-  Object.keys(hints).forEach(k => {
-    if (hints[k] !== undefined && child.props[k] === undefined) props[k] = hints[k];
-  });
-  const control = /*#__PURE__*/_react.default.cloneElement(child, props);
-  return /*#__PURE__*/_react.default.createElement("div", _extends({
-    className: (0, _cx.cx)('plx-field', 'plx-field--' + lay, labelWidth && 'plx-field--label-' + labelWidth, error && 'is-invalid', className)
-  }, rest), /*#__PURE__*/_react.default.createElement("div", {
-    className: (0, _cx.cx)('plx-field__head', hideLabel && 'plx-visually-hidden')
-  }, /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
-    content: label,
-    disabled: !cut,
-    className: "plx-field__label-tip"
-  }, /*#__PURE__*/_react.default.createElement("label", {
-    ref: labelRef,
-    className: "plx-field__label",
-    htmlFor: child.props.id || controlId
-  }, label, required ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-field__required",
-    "aria-hidden": "true"
-  }, " *") : null)), info ? /*#__PURE__*/_react.default.createElement("button", {
-    type: "button",
-    className: "plx-field__info",
-    "aria-label": infoLabel || 'About ' + label,
-    "aria-expanded": showInfo,
-    onClick: () => setShowInfo(!showInfo)
-  }, "i") : null, lay === 'row' && description ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-field__description",
-    id: descId
-  }, description) : null), /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-field__control"
-  }, control, max ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-field__foot"
-  }, lay !== 'row' && description ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-field__description",
-    id: descId
-  }, description) : null, /*#__PURE__*/_react.default.createElement("div", {
-    className: (0, _cx.cx)('plx-field__counter', over && 'is-over')
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-field__count",
-    "aria-hidden": "true"
-  }, (0, _format.formatNumber)(length) + '/' + (0, _format.formatNumber)(max)), /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-visually-hidden",
-    id: countId
-  }, over ? fill(t.over, length - max) : fill(t.left, max - length)))) : lay !== 'row' && description ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-field__description",
-    id: descId
-  }, description) : null, error ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-field__error",
-    id: errId,
-    role: "alert"
-  }, error) : null, info && showInfo ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-field__info-text"
-  }, info) : null));
-}
-  } },
-  "platform/utils/grid.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.gridPx = exports.GRID_TOKEN = void 0;
-exports.gridStep = gridStep;
-exports.gridWithin = gridWithin;
-exports.onGrid = onGrid;
-exports.snapToGrid = snapToGrid;
-/* Plenix · grid (platform/utils/grid.js)
-   Summary: Puts a length that JavaScript writes inline on the Plenix grid (owner, 2026-10-13: an on-the-spot offset "has
-     to conform to fit into the grid system!!! important"). The grid step is the base spacing token (--plx-ref-space-4px),
-     read from the page, never written as a number. A size with steps of its own takes them (Resizable's steps); a dragged
-     pane or box lands on the grid (gridWithin).
-   Usage:
-     import { snapToGrid, gridPx } from '../../utils/grid.js';
-     el.style.insetBlockStart = gridPx(anchor.bottom + tokenPx('--plx-sys-space-stack-xs'));   // a measured anchor plus a token
-     column.setWidth(snapToGrid(measured, { round: 'up' }));                                    // a measured width, on the grid
-   Props:
-     gridStep(el): the grid step in pixels (the base spacing token where el is; default the page's root)
-     snapToGrid(px, { round, el }): px on the grid: round "nearest" (default) | "up" | "down"
-     gridPx(px, { round, el }): the same, as a CSS length ("12px"), for an inline style
-     onGrid(px, el): true when px is a whole number of grid steps (within half a pixel's rounding)
-     gridWithin(px, min, max, { el }): the grid line nearest px inside [min, max] (each limit taken to the nearest grid line
-       inside it): a dragged pane's or box's size, one grid line at a time (owner, 2026-10-26: "only after a user positions
-       the menu, it would automatically reposition itself to the nearest grid line")
-   Behavior:
-     A measured anchor (where a trigger is) is layout, not an invented value: snap the result, not the anchor. Offsets and
-     gaps added to it come from tokens. 0 stays 0; a negative length snaps the same way as a positive one.
-   Notes:
-     The run-time style audit (platform/dev/style-audit.js) reports an inline length that is neither a Platform token (var)
-     reference nor a whole number of grid steps; check-system (rule inline-style) reports style-writing code whose
-     length is neither a token nor passed through this helper (or the size steps).
-*/
-
-const GRID_TOKEN = exports.GRID_TOKEN = '--plx-ref-space-4px';
-
-// the base spacing token in pixels where el is (a rem token follows the root font size)
-function gridStep(el) {
-  if (typeof document === 'undefined') return 4;
-  const at = el || document.documentElement,
-    win = at.ownerDocument.defaultView;
-  // a document without a window (a preview frame already removed): nothing to read, the base step
-  if (!win) return 4;
-  const v = win.getComputedStyle(at).getPropertyValue(GRID_TOKEN).trim();
-  const px = /rem$/.test(v) ? parseFloat(v) * (parseFloat(win.getComputedStyle(at.ownerDocument.documentElement).fontSize) || 16) : parseFloat(v);
-  return px > 0 ? px : 4;
-}
-function snapToGrid(px, opts) {
-  const o = opts || {},
-    step = o.step || gridStep(o.el),
-    n = Number(px) || 0; // opts.step: a step already read (a loop reads it once)
-  const f = o.round === 'up' ? Math.ceil : o.round === 'down' ? Math.floor : Math.round;
-  const q = n / step;
-  return f(Math.abs(q - Math.round(q)) < 1e-6 ? Math.round(q) : q) * step;
-}
-const gridPx = (px, opts) => snapToGrid(px, opts) + 'px';
-exports.gridPx = gridPx;
-function onGrid(px, el) {
-  const step = gridStep(el),
-    q = Math.abs(Number(px) || 0) / step;
-  return Math.abs(q - Math.round(q)) * step <= 0.5;
-}
-function gridWithin(px, min, max, opts) {
-  const o = opts || {},
-    step = o.step || gridStep(o.el);
-  const lo = snapToGrid(min, {
-      step,
-      round: 'up'
-    }),
-    hi = Math.max(lo, snapToGrid(max, {
-      step,
-      round: 'down'
-    }));
-  return Math.max(lo, Math.min(hi, snapToGrid(px, {
-    step
-  })));
-}
-  } },
-  "platform/components/Input/Input.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/floating.js":"platform/utils/floating.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Textarea = exports.Select = exports.Input = void 0;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _grid = require("../../utils/grid.js");
-var _floating = require("../../utils/floating.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Input, Textarea, Select
-   Summary: The text field family, at the standard control height.
-   Usage:
-     <Input value={name} onChange={(e) => …} width="md" />
-     <Textarea rows={5} value={notes} onChange={(e) => …} />
-     <Select value={fmt} onChange={(e) => …} options={[{ value: 'png', label: 'PNG' }, { value: 'jpg', label: 'JPG' }]} />
-     <Input appearance="filled" … />               <Textarea autoGrow … />
-   Props:
-     Input.size: "sm" uses the existing toolbar control height; omitted or "md" keeps today’s standard height; numeric values retain the native size attribute.
-     Select.size: as Input.size; a number above 1 (or multiple) keeps the browser's own list box.
-     Input.invalid: marks the field (aria-invalid); put the message in Field's error
-     Input.width: "xs" | "sm" | "md" | "lg" (a field narrower than its row, --plx-sys-field-width-*) | "fill" (the whole width)
-       A date or a time (type date, time, datetime-local, month, week) is never narrower than its value, whatever the width:
-       leave width out in a Field (it fills the column) or use "lg"; "xs", "sm" and "md" are for numbers and short codes
-     Select.width: the same values
-     Input.data: the data font, for codes, hex values, links to copy (default false)
-     Input.emphasis: semibold, for a record's title (default false)
-     Input.type: the input type (default "text"); "color" gives the color well: a square swatch the field's height, no border
-       (owner, batch 275); the system sizes it, so it takes no width or utility
-     Input.inputMode, autoComplete, enterKeyHint, autoCapitalize, spellCheck: the on-screen keyboard and autofill hints
-       (Platforms Standard 3.5 and 6.2); a type of "email", "url", "tel" or "search" brings its matching defaults (below)
-     Input.appearance: "outline" (default; a border on every side) | "filled" (the same border and corners, a gray fill and
-       the value in dark gray); one appearance per form. There is no underline field (owner, 2026-10-16)
-     Input.className: more classes on the <input>
-     Textarea.invalid: marks the field (aria-invalid)
-     Textarea.rows: the visible lines (default 3); an autoGrow text area starts at its minimum height and grows from there
-     Textarea.autoGrow: grows with its text, a line at a time, up to --plx-comp-textarea-auto-grow-max-height, then
-       scrolls inside; it cannot be resized by hand (default false)
-     Textarea.appearance: as Input.appearance
-     Textarea.data: technical text (lists of extensions, paths, codes) in the data font, as Input.data
-     Textarea.className: more classes on the <textarea>
-     Select.invalid: marks the field (aria-invalid)
-     Select.options: the choices: [{ value, label, disabled }]; or pass <option>s (and <optgroup>s) as children
-     Select.value, defaultValue, onChange(event), name, required, disabled, form, ref: as on a native select (event.target.value is the choice);
-       the ref is the hidden native <select>
-     Select.block: the select takes its own line, as wide as its room (InlineEdit)
-     Select.joined: { start, end }: "square" | "seam": its corners square where it meets a neighbor (InputGroup sets it)
-     Select.children: <option>s, when there are no options
-     Select.appearance: as Input.appearance (on the <select>)
-     Select.className: more classes on the wrapper
-   Behavior:
-     Select.data applies the same technical-value font variant as Input.data to the field.
-     Select is drawn by Plenix (owner, dropdown-look-36): a field and a list in the Menu's look, over a hidden native <select> that
-     stays the source of truth (options, value, form, reset, label). The field is role="combobox" and the list role="listbox"; a
-     <label for> or Field names and focuses it. The arrow is the form-icon size (--plx-sys-control-icon-inline), like the Combobox's.
-     Keyboard: ↓ / ↑ / Enter / Space open the list; ↓ / ↑ move; Home and End jump to the first and last row; typing a letter
-     goes to the next row that starts with it; Enter chooses; Alt+↑ chooses and closes; Escape closes; Tab chooses the row
-     and moves on. Rows are the Menu's height and text size; the chosen row is blue and semibold; a disabled row is skipped.
-     A value set straight on the native select through the ref shows on the next render. The options are compared after every
-     render (length, then each value, label and state), so a list of hundreds costs a little each time.
-     The box is as wide as the widest option. The list opens in the browser's top layer, below the field (or above it near an
-     edge), at least as wide as the field, placed like a Menu: no dialog, drawer, table cell or scroll area clips it.
-     Inside a Field, the label, description and error are connected for you.
-     Every appearance keeps the same states: hover and focus change only the color of its border, never a ring outside
-     it; invalid draws a 2px danger border (the border and a line inside it, so the value does not move) on the lightest
-     red fill; read-only and disabled keep their fills.
-     autoGrow: the browser sizes the text area to its content (field-sizing: content); where it cannot, the text area
-     measures its content on each change and sets its height on the 4px grid (gridPx), the one inline style it writes.
-     Keyboard hints by type, each overridden by its own prop: email and url get their inputMode, no capitals and no spell
-     check; tel gets inputMode "tel"; search gets inputMode "search" and enterKeyHint "search".
-   Notes:
-     They take every native attribute (value, onChange, placeholder, disabled, readOnly, required…).
-     All three forward their ref to the native element.
-*/
-// the top layer and CSS anchor positioning (as Menu and Popover), checked once
-const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
-
-// the keyboard a type brings on a touch screen (Platforms Standard 3.5: the right type, inputmode and autocomplete)
-const TYPE_HINTS = {
-  email: {
-    inputMode: 'email',
-    autoCapitalize: 'off',
-    spellCheck: false
-  },
-  url: {
-    inputMode: 'url',
-    autoCapitalize: 'off',
-    spellCheck: false
-  },
-  tel: {
-    inputMode: 'tel'
-  },
-  search: {
-    inputMode: 'search',
-    enterKeyHint: 'search'
-  }
-};
-
-// the appearance class (outline is the base look: no class)
-const look = appearance => appearance === 'filled' && 'plx-input--filled';
-const Input = exports.Input = /*#__PURE__*/_react.default.forwardRef(function Input({
-  invalid,
-  width,
-  data = false,
-  emphasis = false,
-  appearance,
-  size,
-  className,
-  type = 'text',
-  ...rest
-}, ref) {
-  return /*#__PURE__*/_react.default.createElement("input", _extends({
-    ref: ref,
-    type: type,
-    size: size === 'sm' || size === 'md' ? undefined : size,
-    className: (0, _cx.cx)('plx-input', size === 'sm' && 'plx-input--size-sm', width && 'plx-input--width-' + width, data && 'plx-input--data', emphasis && 'plx-input--emphasis', look(appearance), className),
-    "aria-invalid": invalid || undefined
-  }, TYPE_HINTS[type], rest));
-});
-
-// can the browser size a text area to its content? (field-sizing: Chrome 123, Safari 26)
-const SIZES_ITSELF = typeof CSS !== 'undefined' && !!CSS.supports && CSS.supports('field-sizing', 'content');
-const Textarea = exports.Textarea = /*#__PURE__*/_react.default.forwardRef(function Textarea({
-  invalid,
-  appearance,
-  autoGrow = false,
-  data = false,
-  className,
-  rows = 3,
-  onInput,
-  ...rest
-}, ref) {
-  const own = _react.default.useRef(null);
-  const setRef = _react.default.useCallback(el => {
-    own.current = el;
-    if (typeof ref === 'function') ref(el);else if (ref) ref.current = el;
-  }, [ref]);
-  // the fallback: measure the content and set the height on the grid (the stylesheet caps it at the maximum)
-  const fit = _react.default.useCallback(() => {
-    const el = own.current;
-    if (!el || !autoGrow || SIZES_ITSELF) return;
-    el.style.blockSize = '';
-    const edge = el.offsetHeight - el.clientHeight;
-    el.style.blockSize = (0, _grid.gridPx)(el.scrollHeight + edge, {
-      round: 'up',
-      el
-    });
-  }, [autoGrow]);
-  _react.default.useLayoutEffect(() => {
-    fit();
-  });
-  return /*#__PURE__*/_react.default.createElement("textarea", _extends({
-    ref: setRef,
-    rows: rows,
-    className: (0, _cx.cx)('plx-input', 'plx-input--textarea', data && 'plx-input--data', autoGrow && 'plx-input--auto-grow', look(appearance), className),
-    "aria-invalid": invalid || undefined,
-    onInput: e => {
-      fit();
-      if (onInput) onInput(e);
-    }
-  }, rest));
-});
-
-/* the native control: a list box (multiple, or a size above 1) keeps the browser's own select */
-const SelectNative = /*#__PURE__*/_react.default.forwardRef(function SelectNative({
-  invalid,
-  options,
-  appearance,
-  size,
-  joined,
-  data = false,
-  block = false,
-  width,
-  className,
-  children,
-  ...rest
-}, ref) {
-  return /*#__PURE__*/_react.default.createElement("span", {
-    className: (0, _cx.cx)('plx-select', size === 'sm' && 'plx-select--size-sm', width && 'plx-select--width-' + width, block && 'plx-select--block', joined && joined.start && 'plx-select--joined-start-' + joined.start, joined && joined.end && 'plx-select--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-select--joined', className)
-  }, /*#__PURE__*/_react.default.createElement("select", _extends({
-    ref: ref,
-    size: size === 'sm' || size === 'md' ? undefined : size,
-    className: (0, _cx.cx)('plx-input', 'plx-select__control', data && 'plx-input--data', look(appearance)),
-    "aria-invalid": invalid || undefined
-  }, rest), options ? options.map(o => /*#__PURE__*/_react.default.createElement("option", {
-    key: o.value,
-    value: o.value,
-    disabled: o.disabled
-  }, o.label)) : children));
-});
-
-/* the Plenix-drawn dropdown (owner, dropdown-look-36): a field (role combobox) and a list (role listbox) drawn by Plenix over a
-   hidden native <select>, which stays the source of truth: the options, the value, the form, the ref and onChange(event) all
-   come from it, so a form posts, a reset resets and e.target.value works as before. */
-const SelectList = /*#__PURE__*/_react.default.forwardRef(function SelectList({
-  invalid,
-  options,
-  appearance,
-  size,
-  joined,
-  data = false,
-  block = false,
-  width,
-  className,
-  children,
-  id,
-  onFocus,
-  onBlur,
-  onKeyDown,
-  'aria-label': ariaLabel,
-  'aria-labelledby': labelledBy,
-  'aria-describedby': describedBy,
-  'aria-errormessage': errorMessage,
-  ...rest
-}, ref) {
-  const native = _react.default.useRef(null),
-    field = _react.default.useRef(null),
-    wrap = _react.default.useRef(null),
-    list = _react.default.useRef(null),
-    last = _react.default.useRef(null),
-    buffer = _react.default.useRef(''),
-    timer = _react.default.useRef(0);
-  const setNative = _react.default.useCallback(el => {
-    native.current = el;
-    if (typeof ref === 'function') ref(el);else if (ref) ref.current = el;
-  }, [ref]);
-  const auto = _react.default.useId();
-  const [items, setItems] = _react.default.useState([]);
-  const [chosen, setChosen] = _react.default.useState(0);
-  const [open, setOpen] = _react.default.useState(false);
-  const [active, setActive] = _react.default.useState(-1);
-  const [labelId, setLabelId] = _react.default.useState(null);
-  const [, redraw] = _react.default.useReducer(n => n + 1, 0);
-  const disabled = !!rest.disabled;
-  // the list opens in the top layer, placed against the field by the floating layer (flips up near an edge, follows scroll and resize), so no dialog, drawer, table cell or scroll area clips it
-  (0, _floating.useFloating)(wrap, list, {
-    open,
-    placement: 'bottom-start',
-    matchWidth: true
-  });
-  _react.default.useLayoutEffect(() => {
-    const el = list.current;
-    if (open && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
-  }, [open]);
-  const listId = auto + '-list',
-    optId = i => auto + '-o' + i;
-  // read the native select (its options, in order, and its chosen one) after every render
-  const read = _react.default.useCallback(() => {
-    const el = native.current;
-    if (!el) return;
-    const next = Array.from(el.options).map(o => ({
-      value: o.value,
-      label: o.text,
-      disabled: o.disabled || o.parentElement && o.parentElement.disabled === true,
-      group: o.parentElement && o.parentElement.tagName === 'OPTGROUP' ? o.parentElement.label : null
-    }));
-    const prev = last.current; // the same options? a length and field-by-field comparison, cheap for a long list
-    if (!prev || prev.length !== next.length || next.some((o, i) => o.value !== prev[i].value || o.label !== prev[i].label || o.disabled !== prev[i].disabled || o.group !== prev[i].group)) {
-      last.current = next;
-      setItems(next);
-    }
-    setChosen(el.selectedIndex);
-  }, []);
-  _react.default.useLayoutEffect(read);
-  _react.default.useEffect(() => {
-    // a form reset puts the first choice back
-    const form = native.current && native.current.form;
-    if (!form) return undefined;
-    const reset = () => setTimeout(read, 0);
-    form.addEventListener('reset', reset);
-    return () => form.removeEventListener('reset', reset);
-  }, [read]);
-  _react.default.useEffect(() => {
-    // a <label for="id"> names the field and focuses it
-    if (!id || labelledBy || typeof document === 'undefined') return undefined;
-    const label = document.querySelector('label[for="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"]');
-    if (!label) return undefined;
-    if (!label.id) label.id = id + '-label';
-    setLabelId(label.id);
-    const focus = () => {
-      if (field.current) field.current.focus();
-    };
-    label.addEventListener('click', focus);
-    return () => label.removeEventListener('click', focus);
-  }, [id, labelledBy]);
-  _react.default.useEffect(() => {
-    // keep the row under the arrow keys in view
-    if (!open || active < 0) return;
-    const el = document.getElementById(optId(active));
-    if (el && el.scrollIntoView) el.scrollIntoView({
-      block: 'nearest'
-    });
-  }, [open, active]);
-  const step = (from, dir) => {
-    for (let i = from; i >= 0 && i < items.length; i += dir) if (!items[i].disabled) return i;
-    return -1;
-  };
-  const show = at => {
-    setActive(at !== undefined ? at : chosen >= 0 && !(items[chosen] && items[chosen].disabled) ? chosen : step(0, 1));
-    setOpen(true);
-  };
-  const choose = i => {
-    const el = native.current,
-      it = items[i];
-    if (!el || !it || it.disabled) return;
-    setOpen(false);
-    if (i !== el.selectedIndex) {
-      el.selectedIndex = i;
-      el.dispatchEvent(new Event('input', {
-        bubbles: true
-      }));
-      el.dispatchEvent(new Event('change', {
-        bubbles: true
-      }));
-    }
-    redraw();
-    setTimeout(read, 0);
-  };
-  const onKey = e => {
-    if (onKeyDown) onKeyDown(e);
-    if (e.defaultPrevented || disabled) return;
-    const k = e.key;
-    if (k === 'ArrowDown' || k === 'ArrowUp') {
-      e.preventDefault();
-      if (!open) {
-        show();
-        return;
-      }
-      if (e.altKey && k === 'ArrowUp') {
-        choose(active);
-        return;
-      }
-      const j = step(active + (k === 'ArrowDown' ? 1 : -1), k === 'ArrowDown' ? 1 : -1);
-      if (j >= 0) setActive(j);
-    } else if (k === 'Home' || k === 'End') {
-      e.preventDefault();
-      const j = k === 'Home' ? step(0, 1) : step(items.length - 1, -1);
-      if (open) setActive(j);else show(j);
-    } else if ((k === 'Enter' || k === ' ') && !(k === ' ' && buffer.current)) {
-      e.preventDefault();
-      if (open) choose(active);else show();
-    } else if (k === 'Escape') {
-      if (open) {
-        e.preventDefault();
-        e.stopPropagation();
-        setOpen(false);
-      }
-    } else if (k === 'Tab') {
-      if (open && active >= 0) choose(active);else setOpen(false);
-    } else if (k.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
-      // type-ahead: the next row that starts with what was typed
-      clearTimeout(timer.current);
-      buffer.current += k.toLowerCase();
-      timer.current = setTimeout(() => {
-        buffer.current = '';
-      }, 700);
-      const from = (open ? active : chosen) + (buffer.current.length === 1 ? 1 : 0);
-      const order = items.map((it, i) => i).slice(Math.max(0, from)).concat(items.map((it, i) => i).slice(0, Math.max(0, from)));
-      const j = order.find(i => !items[i].disabled && items[i].label.toLowerCase().indexOf(buffer.current) === 0);
-      if (j !== undefined) {
-        if (open) setActive(j);else show(j);
-      }
-    }
-  };
-  const current = items[chosen];
-  const grouped = []; // the rows in order, a group's rows together (an <optgroup>)
-  items.forEach((it, i) => {
-    const g = grouped[grouped.length - 1];
-    if (g && g.name === it.group && it.group != null) g.rows.push({
-      it,
-      i
-    });else grouped.push({
-      name: it.group,
-      rows: [{
-        it,
-        i
-      }]
-    });
-  });
-  return /*#__PURE__*/_react.default.createElement("span", {
-    ref: wrap,
-    className: (0, _cx.cx)('plx-select', 'plx-select--list', size === 'sm' && 'plx-select--size-sm', width && 'plx-select--width-' + width, block && 'plx-select--block', joined && joined.start && 'plx-select--joined-start-' + joined.start, joined && joined.end && 'plx-select--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-select--joined', open && 'is-open', disabled && 'is-disabled', className)
-  }, /*#__PURE__*/_react.default.createElement("select", _extends({
-    ref: setNative,
-    tabIndex: -1,
-    "aria-hidden": "true",
-    className: (0, _cx.cx)('plx-input', 'plx-select__control', 'plx-select__native', data && 'plx-input--data', look(appearance)),
-    onFocus: () => {
-      if (field.current) field.current.focus();
-    }
-  }, rest), options ? options.map(o => /*#__PURE__*/_react.default.createElement("option", {
-    key: o.value,
-    value: o.value,
-    disabled: o.disabled
-  }, o.label)) : children), /*#__PURE__*/_react.default.createElement("div", {
-    ref: field,
-    id: id,
-    role: "combobox",
-    tabIndex: disabled ? -1 : 0,
-    "aria-haspopup": "listbox",
-    "aria-expanded": open,
-    "aria-controls": open ? listId : undefined,
-    "aria-activedescendant": open && active >= 0 ? optId(active) : undefined,
-    "aria-label": ariaLabel,
-    "aria-labelledby": labelledBy || (ariaLabel ? undefined : labelId || undefined),
-    "aria-describedby": describedBy,
-    "aria-errormessage": errorMessage,
-    "aria-invalid": invalid || undefined,
-    "aria-required": rest.required || undefined,
-    "aria-disabled": disabled || undefined,
-    className: (0, _cx.cx)('plx-input', 'plx-select__field', data && 'plx-input--data', look(appearance), disabled && 'is-disabled'),
-    onClick: () => {
-      if (disabled) return;
-      if (open) setOpen(false);else show();
-    },
-    onKeyDown: onKey,
-    onFocus: onFocus,
-    onBlur: e => {
-      setOpen(false);
-      if (onBlur) onBlur(e);
-    }
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-select__value"
-  }, current ? current.label : '')), open ? /*#__PURE__*/_react.default.createElement("ul", {
-    ref: list,
-    id: listId,
-    role: "listbox",
-    popover: TOP_LAYER ? 'manual' : undefined,
-    "aria-label": ariaLabel,
-    "aria-labelledby": labelledBy || (ariaLabel ? undefined : labelId || undefined),
-    className: "plx-select__list",
-    onMouseDown: e => e.preventDefault()
-  }, grouped.map((g, gi) => {
-    const rows = g.rows.map(({
-      it,
-      i
-    }) => /*#__PURE__*/_react.default.createElement("li", {
-      key: 'o' + i,
-      id: optId(i),
-      role: "option",
-      "aria-selected": i === chosen,
-      "aria-disabled": it.disabled || undefined,
-      className: (0, _cx.cx)('plx-select__option', i === active && 'is-active', i === chosen && 'is-selected', it.disabled && 'is-disabled'),
-      onMouseDown: e => e.preventDefault(),
-      onClick: () => choose(i),
-      onMouseEnter: () => {
-        if (!it.disabled) setActive(i);
-      }
-    }, it.label));
-    return g.name == null ? rows : /*#__PURE__*/_react.default.createElement("li", {
-      key: 'g' + gi,
-      role: "group",
-      "aria-labelledby": auto + '-g' + gi,
-      className: "plx-select__group-wrap"
-    }, /*#__PURE__*/_react.default.createElement("div", {
-      id: auto + '-g' + gi,
-      role: "presentation",
-      className: "plx-select__group"
-    }, g.name), /*#__PURE__*/_react.default.createElement("ul", {
-      role: "presentation",
-      className: "plx-select__group-list"
-    }, rows));
-  })) : null);
-});
-
-/* options: [{ value, label }] or children <option>s */
-const Select = exports.Select = /*#__PURE__*/_react.default.forwardRef(function Select(props, ref) {
-  const listBox = props.multiple || typeof props.size === 'number' && props.size > 1;
-  return listBox ? /*#__PURE__*/_react.default.createElement(SelectNative, _extends({}, props, {
-    ref: ref
-  })) : /*#__PURE__*/_react.default.createElement(SelectList, _extends({}, props, {
-    ref: ref
-  }));
-});
-  } },
-  "platform/components/Dialog/Dialog.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Field/Field.jsx":"platform/components/Field/Field.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.ConfirmDialog = ConfirmDialog;
-exports.Dialog = Dialog;
-exports.Drawer = Drawer;
-exports.PromptDialog = PromptDialog;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _reactDom = require("react-dom");
-var _cx = require("../../utils/cx.js");
-var _layer = require("../../utils/layer.js");
-var _Icon = require("../Icon/Icon.jsx");
-var _Button = require("../Button/Button.jsx");
-var _Field = require("../Field/Field.jsx");
-var _Input = require("../Input/Input.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Dialog, ConfirmDialog, PromptDialog, Drawer
-   Summary: Modal layers. Dialog is a centered window (or, with modal={false}, a non-modal one beside the page);
-     ConfirmDialog is an alert dialog that asks to confirm an action; PromptDialog asks for one short value; Drawer is the
-     same shell, docked to a side.
-   Usage:
-     <Dialog open={open} onClose={close} title="Rename" description="…" size="sm" footer={<>…</>}>…</Dialog>
-     <Dialog open={open} onClose={close} title="Find and replace" modal={false} size="sm">…</Dialog>
-     <ConfirmDialog open={open} title="Delete 3 assets?" message="…" confirmLabel="Delete" destructive
-       onConfirm={() => …} onCancel={() => …} />
-     <PromptDialog open={open} title="Rename asset" label="Name" defaultValue="Cross 014" confirmLabel="Rename"
-       validate={(v) => (v.trim() ? '' : 'Enter a name.')} onSubmit={(value) => …} onCancel={() => …} />
-     <Drawer open={open} onClose={close} title="Details" side="end" size="md" footer={<>…</>}>…</Drawer>
-   Props:
-     Dialog.open: whether the layer is shown
-     Dialog.modal: false makes it non-modal (default true): no veil, the page behind stays usable, focus is not trapped
-       and the page scrolls (09 Overlays › Dialogs › Non-modal dialog)
-     Dialog.onClose(): runs from the close button, Escape and a click on the veil
-     Dialog.title: the title at the start of the header; it names the dialog
-     Dialog.description: a paragraph at the top of the body; it describes the dialog
-     Dialog.icon: an <Icon> (or an icon name) before the title
-     Dialog.size: "sm" | "md" (default) | "lg" | "xl" | "full"
-     Dialog.footer: the footer actions (their height is the dialog role)
-     Dialog.initialFocus: a ref to the element that takes focus when the layer opens
-     Dialog.closeLabel: the accessible name of the close button (default "Close")
-     Dialog.dismissible: false turns off Escape and the veil click, and hides the close button (default true)
-     Dialog.flush: true removes the body padding (default false)
-     Dialog.className: more classes on the dialog
-     Dialog.children: the body
-     Drawer.side: "end" (default) | "start"
-     Drawer.size: "sm" | "md" (default) | "lg"
-     ConfirmDialog.open: whether the dialog is shown
-     ConfirmDialog.title: the question
-     ConfirmDialog.message: the explanation under the title
-     ConfirmDialog.confirmLabel: the confirm button text (default "Confirm")
-     ConfirmDialog.cancelLabel: the cancel button text (default "Cancel")
-     ConfirmDialog.destructive: the action destroys something (default false)
-     ConfirmDialog.onConfirm(): runs from the confirm button
-     ConfirmDialog.onCancel(): runs from the cancel button, the close button, Escape and the veil
-     ConfirmDialog.children: more content in the body
-     PromptDialog.open: whether the dialog is shown
-     PromptDialog.title: the action, as a title ("Rename asset")
-     PromptDialog.message: a sentence under the title (optional)
-     PromptDialog.label: the field's visible label
-     PromptDialog.defaultValue: the value the field starts with when the dialog opens (default "")
-     PromptDialog.placeholder: a hint in the empty field (never in place of the label)
-     PromptDialog.description: help text under the field
-     PromptDialog.confirmLabel: the confirm button text, the action's verb (default "Save")
-     PromptDialog.cancelLabel: the cancel button text (default "Cancel")
-     PromptDialog.validate(value): returns an error message, or "" when the value is fine; it runs on submit
-     PromptDialog.onSubmit(value): runs with the value when it is submitted and valid
-     PromptDialog.onCancel(): runs from Cancel, the close button, Escape and the veil
-     PromptDialog.inputProps: more props for the Input (maxLength, inputMode, autoComplete…)
-     PromptDialog.size: as Dialog.size (default "sm")
-   Behavior:
-     Focus moves in (initialFocus, else the first control in the body, else the first footer action) and returns to the opener.
-     Tab stays inside the layer.
-     Escape and a click on the veil close it, unless dismissible is false.
-     The page does not scroll while the layer is open.
-     A destructive ConfirmDialog starts on Cancel, uses a danger confirm button and the destructive dialog role.
-     Non-modal (modal={false}): the same window and place, with no veil; the page behind stays usable and scrolls. Focus
-       moves in when it opens but is not trapped; F6 moves focus between the dialog and the element that opened it;
-       Escape closes it while focus is inside it, and focus returns to the opener when it closes from inside.
-       aria-modal is not set.
-     PromptDialog: a form with one field. The field takes focus with its text selected; Enter submits; validate runs on
-       submit, and an error keeps the dialog open with the message under the field (announced); nothing is disabled.
-       The value starts again from defaultValue each time it opens.
-   Notes:
-     Drawer takes every Dialog prop (open, onClose, title, description, icon, footer, initialFocus, closeLabel, dismissible,
-       flush, className, children), with its own side and size.
-     Modal layers follow D3, option C.
-     Full-screen dialog (09 Overlays › Dialogs › Full-screen dialog) is size="full": the whole modal layer, inside the
-       layout inset.
-     Header and footer are filled bands (--plx-sys-surface-dialog-chrome) with hairline dividers, always shown; the body is white.
-     The title is at the start of the header, the close button at its end, the actions in the footer.
-     The layer renders in a portal on document.body.
-*/
-const asIcon = i => typeof i === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-  name: i
-}) : i;
-
-// a non-modal dialog: focus moves in when it opens (not trapped), F6 moves between it and its opener, and focus goes back
-// to the opener when it closes from inside (useLayer does this only for modal layers)
-function useNonModalFocus(ref, open, active, firstFocus) {
-  const inside = _react.default.useRef(false);
-  _react.default.useEffect(() => {
-    if (!open || !active) return undefined;
-    const opener = document.activeElement;
-    const root = ref.current;
-    const first = firstFocus() || root;
-    if (first) first.focus({
-      preventScroll: true
-    });
-    inside.current = true;
-    const f6 = e => {
-      if (e.key !== 'F6' || e.ctrlKey || e.metaKey || e.altKey || !ref.current) return;
-      const into = !ref.current.contains(document.activeElement);
-      const target = into ? firstFocus() || ref.current : opener;
-      if (target && target.focus && document.contains(target)) {
-        e.preventDefault();
-        target.focus({
-          preventScroll: true
-        });
-      }
-    };
-    document.addEventListener('keydown', f6);
-    return () => {
-      document.removeEventListener('keydown', f6);
-      const a = document.activeElement;
-      if (inside.current && (!a || a === document.body) && opener && opener.focus && document.contains(opener)) opener.focus({
-        preventScroll: true
-      });
-    };
-  }, [open, active]);
-  return inside;
-}
-function ModalShell({
-  kind,
-  open,
-  onClose,
-  title,
-  description,
-  icon,
-  size,
-  side,
-  role = 'dialog',
-  footer,
-  initialFocus,
-  closeLabel = 'Close',
-  dismissible = true,
-  flush = false,
-  modal = true,
-  className,
-  children
-}) {
-  const ref = _react.default.useRef(null);
-  const id = (0, _layer.useUid)('plx-dlg');
-  const firstFocus = () => {
-    if (initialFocus && initialFocus.current) return initialFocus.current;
-    const root = ref.current;
-    return (0, _layer.focusables)(root.querySelector('.plx-dialog__body'))[0] || (0, _layer.focusables)(root.querySelector('.plx-dialog__footer'))[0] || null;
-  };
-  (0, _layer.useLayer)(ref, open, {
-    modal,
-    onEscape: dismissible && modal ? onClose : null,
-    initialFocus: firstFocus
-  });
-  const inside = useNonModalFocus(ref, open, !modal, firstFocus);
-  if (!open) return null;
-  const onVeil = e => {
-    if (modal && dismissible && e.target === e.currentTarget && onClose) onClose();
-  };
-  // non-modal: Escape closes it only while focus is inside it (a menu inside it closes first: its layer stops the key)
-  const onKeyDown = !modal && dismissible ? e => {
-    if (e.key === 'Escape' && onClose) {
-      e.stopPropagation();
-      onClose();
-    }
-  } : undefined;
-  const track = !modal ? {
-    onFocus: () => {
-      inside.current = true;
-    },
-    onBlur: e => {
-      inside.current = !!(ref.current && ref.current.contains(e.relatedTarget));
-    }
-  } : {};
-  return /*#__PURE__*/(0, _reactDom.createPortal)(/*#__PURE__*/_react.default.createElement("div", {
-    className: (0, _cx.cx)('plx-modal-layer', 'plx-modal-layer--' + kind, side && 'plx-modal-layer--' + side, !modal && 'plx-modal-layer--non-modal'),
-    onMouseDown: onVeil
-  }, /*#__PURE__*/_react.default.createElement("div", _extends({
-    ref: ref,
-    role: role,
-    "aria-modal": modal ? 'true' : undefined,
-    "aria-labelledby": id + 't',
-    "aria-describedby": description ? id + 'd' : undefined,
-    tabIndex: -1,
-    className: (0, _cx.cx)('plx-dialog', kind === 'drawer' && 'plx-drawer', kind === 'drawer' && side === 'start' && 'plx-drawer--start', !modal && 'plx-dialog--non-modal', 'plx-' + kind + '--' + size, className),
-    onKeyDown: onKeyDown
-  }, track), /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-dialog__header"
-  }, icon ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-dialog__icon"
-  }, asIcon(icon)) : null, /*#__PURE__*/_react.default.createElement("h2", {
-    id: id + 't',
-    className: "plx-dialog__title"
-  }, title), dismissible ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    variant: "ghost",
-    iconOnly: true,
-    icon: "close",
-    label: closeLabel,
-    className: "plx-dialog__close",
-    onClick: onClose
-  }) : null), /*#__PURE__*/_react.default.createElement("div", {
-    className: (0, _cx.cx)('plx-dialog__body', flush && 'plx-dialog__body--flush')
-  }, description ? /*#__PURE__*/_react.default.createElement("p", {
-    id: id + 'd',
-    className: "plx-dialog__description"
-  }, description) : null, children), footer ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-dialog__footer"
-  }, footer) : null)), document.body);
-}
-function Dialog({
-  size = 'md',
-  ...props
-}) {
-  (0, _devWarn.devWarn)('Dialog', {
-    size
-  }, {
-    size: ['sm', 'md', 'lg', 'xl', 'full']
-  });
-  return /*#__PURE__*/_react.default.createElement(ModalShell, _extends({
-    kind: "dialog",
-    size: size
-  }, props));
-}
-function Drawer({
-  size = 'md',
-  side = 'end',
-  ...props
-}) {
-  (0, _devWarn.devWarn)('Drawer', {
-    size
-  }, {
-    size: ['sm', 'md', 'lg']
-  });
-  return /*#__PURE__*/_react.default.createElement(ModalShell, _extends({
-    kind: "drawer",
-    size: size,
-    side: side
-  }, props));
-}
-function ConfirmDialog({
-  open,
-  title,
-  message,
-  confirmLabel = 'Confirm',
-  cancelLabel = 'Cancel',
-  destructive = false,
-  onConfirm,
-  onCancel,
-  children
-}) {
-  const cancel = _react.default.useRef(null);
-  return /*#__PURE__*/_react.default.createElement(ModalShell, {
-    kind: "dialog",
-    size: "sm",
-    role: "alertdialog",
-    open: open,
-    onClose: onCancel,
-    title: title,
-    description: message,
-    initialFocus: destructive ? cancel : undefined,
-    className: destructive ? 'plx-dialog--destructive' : undefined,
-    footer: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      ref: cancel,
-      onClick: onCancel
-    }, cancelLabel), /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      variant: destructive ? 'danger' : 'primary',
-      onClick: onConfirm
-    }, confirmLabel))
-  }, children);
-}
-function PromptDialog({
-  open,
-  title,
-  message,
-  label,
-  defaultValue = '',
-  placeholder,
-  description,
-  confirmLabel = 'Save',
-  cancelLabel = 'Cancel',
-  validate,
-  onSubmit,
-  onCancel,
-  inputProps,
-  size = 'sm'
-}) {
-  (0, _devWarn.devWarn)('PromptDialog', {
-    size
-  }, {
-    size: ['sm', 'md', 'lg', 'xl', 'full']
-  });
-  const formId = (0, _layer.useUid)('plx-prompt');
-  const input = _react.default.useRef(null);
-  const [value, setValue] = _react.default.useState(defaultValue);
-  const [error, setError] = _react.default.useState('');
-  // each time it opens: the value starts again from defaultValue, with no error, and its text is selected
-  _react.default.useEffect(() => {
-    if (open) {
-      setValue(defaultValue);
-      setError('');
-    }
-  }, [open]);
-  _react.default.useEffect(() => {
-    if (open && input.current && input.current.select) input.current.select();
-  }, [open]);
-  const submit = e => {
-    e.preventDefault();
-    const problem = validate ? validate(value) || '' : '';
-    setError(problem);
-    if (problem) {
-      if (input.current) input.current.focus();
-      return;
-    }
-    if (onSubmit) onSubmit(value);
-  };
-  return /*#__PURE__*/_react.default.createElement(ModalShell, {
-    kind: "dialog",
-    size: size,
-    open: open,
-    onClose: onCancel,
-    title: title,
-    description: message,
-    initialFocus: input,
-    footer: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      onClick: onCancel
-    }, cancelLabel), /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      variant: "primary",
-      type: "submit",
-      form: formId
-    }, confirmLabel))
-  }, /*#__PURE__*/_react.default.createElement("form", {
-    id: formId,
-    noValidate: true,
-    onSubmit: submit
-  }, /*#__PURE__*/_react.default.createElement(_Field.Field, {
-    label: label,
-    description: description,
-    error: error || undefined
-  }, /*#__PURE__*/_react.default.createElement(_Input.Input, _extends({
-    ref: input,
-    value: value,
-    placeholder: placeholder,
-    onChange: e => {
-      setValue(e.target.value);
-      if (error) setError('');
-    }
-  }, inputProps)))));
-}
-  } },
-  "platform/providers/pageLayouts.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.PAGE_REGIONS = exports.PAGE_LAYOUTS = exports.FIELD_RULES = exports.DEFAULT_PAGE = exports.COMPOSITION_GUIDE = void 0;
-exports.pageLayout = pageLayout;
-/* Plenix · Page layouts (platform/providers/pageLayouts.js)
-   GENERATED by build-standards.js from platform/standards/layout.json (the design system's layout standard): edit the
-   JSON, never this file.
-   Summary: Which layout each kind of page gets. An application says what a page is; the standard decides how it is laid out.
-   Usage:
-     <AppShell page="settings">…</AppShell>    (or a pattern that is that kind of page, such as SettingsLayout)
-     pageLayout("settings")                   // "contained"
-   Props:
-     PAGE_LAYOUTS: { <kind>: { layout, use } } from the standard
-     DEFAULT_PAGE: the kind of page when none is given
-     pageLayout(kind): the layout mode of a kind of page (the default kind's for an unknown kind)
-*/
-const PAGE_LAYOUTS = exports.PAGE_LAYOUTS = {
-  workspace: {
-    layout: "fluid",
-    use: "Lists, grids, browse and search: most application screens (the default)",
-    regions: ["page-header", "command-bar", "collection"]
-  },
-  dashboard: {
-    layout: "fluid",
-    use: "An overview of widgets and sections",
-    regions: ["page-header", "widgets"]
-  },
-  settings: {
-    layout: "contained",
-    use: "Settings and preferences (every SettingsLayout page)",
-    regions: ["settings"]
-  },
-  form: {
-    layout: "contained",
-    use: "A form on its own page: create or edit one thing",
-    regions: ["page-header", "form"]
-  },
-  detail: {
-    layout: "hybrid",
-    use: "One record or document, with text to read",
-    regions: ["entity-header", "record-sections"]
-  },
-  "master-detail": {
-    layout: "multi-pane",
-    use: "A list beside the chosen item, each scrolling on its own (mail, chat)",
-    regions: ["command-bar", "split"]
-  },
-  editor: {
-    layout: "focus",
-    use: "One task that needs all the room (image editor)",
-    regions: ["canvas"]
-  }
-};
-const DEFAULT_PAGE = exports.DEFAULT_PAGE = "workspace";
-function pageLayout(kind) {
-  return (PAGE_LAYOUTS[kind] || PAGE_LAYOUTS[DEFAULT_PAGE]).layout;
-}
-
-// the composition standard: what each region is for and the patterns it is built from; the guide; the fields rule
-const PAGE_REGIONS = exports.PAGE_REGIONS = {
-  "page-header": {
-    "use": "The page’s title and its own actions",
-    "patterns": ["EntityHeader", "PageContent"]
-  },
-  "entity-header": {
-    "use": "One record’s context, name, facts and its own actions (three parts)",
-    "patterns": ["EntityHeader"]
-  },
-  "command-bar": {
-    "use": "Acting on a list, and narrowing it (search, filters, sort, group, view): one bar that swaps to the selection’s commands",
-    "patterns": ["CommandBar"]
-  },
-  "collection": {
-    "use": "The list itself: a table, cards, or a grid of media",
-    "patterns": ["DataGrid", "ContentGrid", "Card"]
-  },
-  "split": {
-    "use": "A list beside the item chosen in it, each scrolling on its own",
-    "patterns": ["SplitView"]
-  },
-  "form": {
-    "use": "Collecting input: one thing to create or edit, in one or two columns",
-    "patterns": ["Form", "FormSection", "Fieldset", "Field", "FormActions", "Wizard"]
-  },
-  "settings": {
-    "use": "Settings and preferences, grouped in cards",
-    "patterns": ["SettingsLayout", "SettingsSection", "SettingsRow"]
-  },
-  "record-sections": {
-    "use": "A record’s content under its header: facts, activity, related lists",
-    "patterns": ["RecordPage", "Panel", "PropertyList", "ActivityList", "DataGrid"]
-  },
-  "widgets": {
-    "use": "An overview of independent summaries",
-    "patterns": ["WidgetGrid", "Panel", "Card"]
-  },
-  "canvas": {
-    "use": "One task that needs all the room, with its tools",
-    "patterns": ["Toolbar", "ActionBar"]
-  }
-};
-const COMPOSITION_GUIDE = exports.COMPOSITION_GUIDE = [{
-  "question": "Is it collecting input (create or edit one thing)?",
-  "region": "form",
-  "build": "Form, with a chosen number of columns (1 or 2)"
-}, {
-  "question": "Is it narrowing a list (search, filters, sort, group, view)?",
-  "region": "command-bar",
-  "build": "The CommandBar’s find side"
-}, {
-  "question": "Is it acting on a list or on its selected rows?",
-  "region": "command-bar",
-  "build": "The CommandBar, swapping to the selection’s commands"
-}, {
-  "question": "Is it a list beside the item chosen in it?",
-  "region": "split",
-  "build": "SplitView (side by side or stacked) with a ReadingPane"
-}, {
-  "question": "Is it a set of commands with no list?",
-  "region": null,
-  "build": "A Menu (or the page header’s actions)"
-}, {
-  "question": "Is it one record?",
-  "region": "record-sections",
-  "build": "RecordPage: the EntityHeader, then its sections"
-}, {
-  "question": "Is it settings?",
-  "region": "settings",
-  "build": "SettingsLayout with SettingsSection cards"
-}, {
-  "question": "Is it an overview?",
-  "region": "widgets",
-  "build": "WidgetGrid of Panels"
-}];
-const FIELD_RULES = exports.FIELD_RULES = {
-  "components": ["Input", "Select", "Combobox", "SearchField", "NumberInput", "Textarea", "DatePicker", "TimePicker", "TreeSelect", "CountrySelect", "TimeZoneSelect", "EntityPicker", "RelativeDateInput", "InputGroup", "FileInput", "MentionInput"],
-  "stretch": ["Form", "FormSection", "Fieldset", "Field", "SettingsRow", "Dialog", "PromptDialog", "ConfirmDialog", "Drawer", "Sheet", "SidePanel", "Popover", "InlineEdit", "FilterPanel", "SortPanel", "GroupPanel", "Wizard"],
-  "content": ["CommandBar", "Toolbar", "DataToolbar", "FilterBar", "ActionBar", "AppHeader"],
-  "row": ["ResourceList"]
-};
-  } },
-  "platform/utils/sizeSteps.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.SIZE_STEPS = exports.GRID_PANE_MAX = exports.GRID_MIN = exports.GRID_BOX_MAX = void 0;
-exports.snapSize = snapSize;
-exports.stepSize = stepSize;
-/* Plenix · SIZE_STEPS
-   Summary: The size tokens in pixels, GENERATED by build-steps.js from the --plx-ref-size-* tokens (do not edit): the widths a pane snaps to.
-   Usage:
-     import { SIZE_STEPS, snapSize } from '../../utils/sizeSteps.js';
-     snapSize(250, 140, 320)   // 240: the nearest size token within the limits
-   Props:
-     none: SIZE_STEPS lists the sizes in pixels, smallest first; snapSize(px, min, max) and stepSize(px, dir, min, max)
-*/
-const SIZE_STEPS = exports.SIZE_STEPS = [4, 8, 12, 16, 18, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 80, 88, 92, 96, 100, 112, 120, 128, 132, 140, 152, 160, 180, 200, 220, 240, 260, 280, 300, 320, 360, 380, 400, 420, 440, 460, 480, 500, 520, 560, 600, 640, 720, 760, 800, 860, 900];
-// the grid lines system/steps.css has a rule for (build-steps.js): a pane is drawn from GRID_MIN to GRID_PANE_MAX, a Resizable box to GRID_BOX_MAX
-const GRID_MIN = exports.GRID_MIN = 4,
-  GRID_PANE_MAX = exports.GRID_PANE_MAX = 960,
-  GRID_BOX_MAX = exports.GRID_BOX_MAX = 1600;
-const within = (min, max) => SIZE_STEPS.filter(s => s >= min && s <= max);
-// the size token nearest to px within [min, max] (the limit itself when no token lies between them)
-function snapSize(px, min, max) {
-  const c = within(min, max);
-  if (!c.length) return Math.max(min, Math.min(max, px));
-  return c.reduce((a, b) => Math.abs(b - px) < Math.abs(a - px) ? b : a);
-}
-// the next size token from px in a direction (+1 wider, -1 narrower), within [min, max]
-function stepSize(px, dir, min, max) {
-  const c = within(min, max);
-  if (!c.length) return px;
-  const cur = snapSize(px, min, max);
-  const i = c.indexOf(cur) + (dir > 0 ? 1 : -1);
-  return c[Math.max(0, Math.min(c.length - 1, i))];
-}
-  } },
-  "platform/components/Resizable/resize-scale.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.resizeScale = resizeScale;
-/* Plenix · resizeScale
-   Summary: Pointer values stay continuous; settled values use the 4px grid or caller steps.
-   Usage: resizeScale(steps, min, max, keyboardSteps) returns clamp, snap, step and limits.
-   Props: steps: allowed settled values; min/max: bounds; keyboardSteps: existing token steps.
-   Behavior: Sorts and deduplicates explicit steps, clamps live values and supports limits beyond the token scale.
-   Notes: No DOM or side effects. */
-function resizeScale(steps, min, max, keyboardSteps = []) {
-  const clamp = value => Math.max(min, Math.min(max, Number.isFinite(value) ? value : min));
-  const values = Array.isArray(steps) ? [...new Set(steps.filter(Number.isFinite).filter(value => value >= min && value <= max))].sort((a, b) => a - b) : [];
-  const snap = value => values.length ? values.reduce((a, b) => Math.abs(b - value) < Math.abs(a - value) ? b : a) : clamp(Math.round(clamp(value) / 4) * 4);
-  const step = (value, dir) => {
-    if (values.length) return values[Math.max(0, Math.min(values.length - 1, values.indexOf(snap(value)) + (dir > 0 ? 1 : -1)))];
-    const keys = keyboardSteps.filter(size => size >= min && size <= max);
-    const last = keyboardSteps.length ? Math.max(...keyboardSteps) : min;
-    if (value > last || value === last && dir > 0 || !keys.length) return snap(value + (dir > 0 ? 4 : -4));
-    const candidates = keys.filter(size => dir > 0 ? size > value : size < value);
-    return candidates.length ? dir > 0 ? Math.min(...candidates) : Math.max(...candidates) : dir > 0 ? max : min;
-  };
-  return {
-    clamp,
-    snap,
-    step,
-    lo: values.length ? values[0] : min,
-    hi: values.length ? values[values.length - 1] : max
-  };
-}
-  } },
-  "platform/components/Resizable/Resizable.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../utils/grid.js":"platform/utils/grid.js","./resize-scale.js":"platform/components/Resizable/resize-scale.js","../../utils/floating.js":"platform/utils/floating.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.PanelSplitter = PanelSplitter;
-exports.Resizable = Resizable;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _direction = require("../../utils/direction.js");
-var _sizeSteps = require("../../utils/sizeSteps.js");
-var _grid = require("../../utils/grid.js");
-var _resizeScale = require("./resize-scale.js");
-var _floating = require("../../utils/floating.js");
-var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Resizable, PanelSplitter
-   Summary: An area people make wider or taller by dragging its edge (10 Patterns › Selection and organization › Resize):
-     Resizable is a box with a resize edge on its end (horizontal), its bottom (vertical) or both
-     for those who do not drag; PanelSplitter is the same edge on a pane of the application shell (the navigation pane,
-     a secondary pane, the inspector), promoted here from AppShell, which imports and re-exports it. Every size is on the
-     4px grid: a drag moves one grid line at a time and lands on one when let go (owner, 2026-10-26), and a list of steps
-     narrows the settled sizes further. Sizes are honoured from 4px up to 1600px (GRID_BOX_MAX; a pane of the shell up to
-     960px, GRID_PANE_MAX): each grid line has a rule in the stylesheet up to there, and a larger size lands on the largest.
-   Usage:
-     <Resizable label="Preview" axis="horizontal" defaultWidth={320} minWidth={200} maxWidth={560}>…</Resizable>
-     <Resizable label="Notes" axis="vertical" height={h} onResize={({ height }) => setH(height)} minHeight={120} maxHeight={400}>…</Resizable>
-     <Resizable label="Image" axis="both" defaultWidth={240} defaultHeight={160} …>…</Resizable>
-     <Resizable label="Panel" axis="horizontal" steps={[240, 320, 400, 560]} defaultWidth={320}>…</Resizable>   // snapped to steps
-     <PanelSplitter label="Resize navigation" value={w} min={140} max={() => 320} onChange={setW} edge="end" />
-   Props:
-     label: what is resized ("Preview"): the edges' names ("Preview width", "Preview height") (required)
-     variant: "default" (a hover line on the edge) | "divider" (the edge is the whole gap to the next panel: a line down
-       its middle and a pill on it; its size is the container's --plx-comp-resizable-divider-size: SplitView)
-     fill: the content is a column whose children fill it; default false
-     axis: "horizontal" (default; the end edge changes the width) | "vertical" (the bottom edge changes the height) |
-       "both" (both edges, and a corner the pointer drags in both directions)
-     width, height: the size in pixels when the page keeps it; onResize({ width,
-       height }) runs with each live size and the snapped release size
-     defaultWidth, defaultHeight: the starting size when the box keeps it itself
-     minWidth, maxWidth, minHeight, maxHeight: the limits in pixels (defaults: the tokens --plx-comp-resizable-min-width,
-       -max-width, -min-height and -max-height: 120 to 560 wide, 80 to 400 high)
-     steps: the only sizes allowed, smallest first (each a size token): an array for the resized axis, or { width: [],
-       height: [] }; without it the settled size is on the 4px grid within the limits
-     strings: the words it says, for other languages: { width: "{label} width", height: "{label} height" }
-       "Reset size" }
-     strings.minWidth, maxWidth, minHeight, maxHeight: optional explanations at those limits.
-     className: more classes on the box; children: its content
-     PanelSplitter.label, value, min, max() (a function: the widest it can be now), onChange(width), onCollapse(),
-       defaultValue, edge: "end" (an area at the start) | "start" (an area at the end)
-   Behavior:
-     Pointer: drag an edge (or the corner); the size follows the pointer one grid line (4px) at a time within the limits
-       and, when let go, stays on that grid line or settles on the nearest of the supplied steps; the page shows the
-       resize pointer.
-     Keyboard: each edge is a separator (aria-valuenow, -valuemin, -valuemax) in the Tab order: Arrow Left / Right (the
-       end edge, mirrored in a right-to-left page) or Arrow Up / Down (the bottom edge) step to the next size, Home and End
-       to the limits. aria-valuemin and -valuemax are the limits it can reach (within GRID_MIN to GRID_BOX_MAX, a pane's
-       to GRID_PANE_MAX), so a maxWidth past 1600 reports 1600.
-     No size menu (owner, 2026-10-16: removed, also for touch): the edge is dragged, or moved with the keyboard.
-     PanelSplitter: drag (one grid line at a time, within min and max), or the arrow keys (--plx-sys-shell-splitter-step),
-       Home and End; double-click or Enter collapses the area when it can collapse (onCollapse: the navigation pane folds
-       to its rail).
-   Notes:
-     The size reaches the stylesheet as data-plx-width and data-plx-height with one rule per size token and one per grid
-       line (system/steps.css; never a style attribute or a style element). The content fits itself: it wraps, or scrolls in a region of its own.
-     Limit hints appear beside the divider, announce once per limit per drag, and dismiss on release, blur or Escape.
-     Motion uses the existing duration token and is skipped when reduced motion is requested.
-     A table's column widths are the DataGrid's own; a pane of the shell uses PanelSplitter through its pattern.
-*/
-const useSizeEffect = typeof window === 'undefined' ? _react.default.useEffect : _react.default.useLayoutEffect;
-
-/* the drag handle on a resizable area's inner edge: drag, or the arrow keys (--plx-sys-shell-splitter-step), Home and End;
-   double-click or Enter collapses the area when it can collapse. While dragged the width moves one grid line at a time
-   (the base spacing token, 4px) within the limits, so it lands on the grid when let go (owner, 2026-10-26). edge: "end" (an area at the start: dragging toward the end widens it) or
-   "start" (an area at the end). In a right-to-left page the start is on the right, so the drag and Arrow Left / Right
-   are mirrored (arrowStep gives the step in reading order). No size menu (owner, 2026-10-16). */
-function PanelSplitter({
-  label,
-  value,
-  min,
-  max,
-  onChange,
-  onCollapse,
-  edge = 'end'
-}) {
-  const dir = edge === 'end' ? 1 : -1;
-  // a width is always on the 4px grid (owner, 2026-10-26: smooth, then "the nearest grid line"), within the limits
-  // (and within the grid lines the stylesheet draws a pane at: GRID_MIN to GRID_PANE_MAX)
-  const clamp = w => (0, _grid.gridWithin)(w, Math.max(min, _sizeSteps.GRID_MIN), Math.min(max(), _sizeSteps.GRID_PANE_MAX));
-  const onPointerDown = e => {
-    if (e.button !== 0) return;
-    e.preventDefault();
-    const x0 = e.clientX,
-      w0 = value,
-      flip = (0, _direction.isRtl)(e.currentTarget) ? -1 : 1;
-    const move = ev => onChange(clamp(w0 + (ev.clientX - x0) * dir * flip));
-    const up = () => {
-      document.removeEventListener('pointermove', move);
-      document.removeEventListener('pointerup', up);
-      document.documentElement.classList.remove('is-resizing-columns');
-    };
-    document.addEventListener('pointermove', move);
-    document.addEventListener('pointerup', up);
-    document.documentElement.classList.add('is-resizing-columns');
-  };
-  const onKeyDown = e => {
-    const step = (0, _direction.arrowStep)(e, e.currentTarget, {
-      vertical: false
-    }) * dir;
-    if (step) {
-      e.preventDefault();
-      onChange(clamp(value + step * (tokenPx('--plx-sys-shell-splitter-step') || (0, _grid.gridStep)())));
-    } else if (e.key === 'Home') {
-      e.preventDefault();
-      onChange(clamp(min));
-    } else if (e.key === 'End') {
-      e.preventDefault();
-      onChange(clamp(max()));
-    } else if (e.key === 'Enter' && onCollapse) {
-      e.preventDefault();
-      onCollapse();
-    }
-  };
-  const top = clamp(max());
-  return /*#__PURE__*/_react.default.createElement("div", {
-    role: "separator",
-    "aria-orientation": "vertical",
-    "aria-label": label,
-    "aria-valuenow": value,
-    "aria-valuemin": clamp(min),
-    "aria-valuemax": top,
-    tabIndex: 0,
-    className: (0, _cx.cx)('plx-panel-splitter', 'plx-panel-splitter--' + edge),
-    onPointerDown: onPointerDown,
-    onKeyDown: onKeyDown,
-    onDoubleClick: onCollapse || undefined
-  });
-}
-
-/* ── Resizable: a box with its own resize edges ── */
-const STRINGS = {
-  width: '{label} width',
-  height: '{label} height'
-};
-const fill = (s, vars) => String(s).replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
-// the default limits are the component's tokens (--plx-comp-resizable-min-width …), read from the page
-const tokenPx = name => typeof document === 'undefined' ? 0 : parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name)) || 0;
-const limit = (v, name) => v != null ? v : tokenPx('--plx-comp-resizable-' + name);
-// One axis's settled sizes: caller steps, or the 4px grid; while dragged the size moves one grid line at a time.
-function Resizable({
-  label,
-  variant = 'default',
-  fill: fillContent = false,
-  axis = 'horizontal',
-  width,
-  height,
-  onResize,
-  defaultWidth,
-  defaultHeight,
-  minWidth: minW,
-  maxWidth: maxW,
-  minHeight: minH,
-  maxHeight: maxH,
-  steps,
-  strings,
-  className,
-  children,
-  ...rest
-}) {
-  const t = Object.assign({}, STRINGS, strings);
-  const minWidth = limit(minW, 'min-width'),
-    maxWidth = limit(maxW, 'max-width'),
-    minHeight = limit(minH, 'min-height'),
-    maxHeight = limit(maxH, 'max-height');
-  const doW = axis !== 'vertical',
-    doH = axis !== 'horizontal';
-  const wSteps = Array.isArray(steps) ? doW ? steps : null : steps && steps.width;
-  const hSteps = Array.isArray(steps) ? doW ? null : steps : steps && steps.height;
-  const W = (0, _resizeScale.resizeScale)(wSteps, minWidth, maxWidth, _sizeSteps.SIZE_STEPS),
-    H = (0, _resizeScale.resizeScale)(hSteps, minHeight, maxHeight, _sizeSteps.SIZE_STEPS);
-  const [own, setOwn] = _react.default.useState(() => ({
-    width: defaultWidth != null ? W.snap(defaultWidth) : W.snap((minWidth + maxWidth) / 2),
-    height: defaultHeight != null ? H.snap(defaultHeight) : H.snap((minHeight + maxHeight) / 2)
-  }));
-  const [dragging, setDragging] = _react.default.useState(false);
-  // live (dragging): one grid line at a time within the limits; settled: the steps, or the grid
-  // every size within the grid lines the stylesheet draws a box at (GRID_MIN to GRID_BOX_MAX): a larger one lands on the
-  // largest, never on the default size
-  const cap = v => Math.max(_sizeSteps.GRID_MIN, Math.min(_sizeSteps.GRID_BOX_MAX, v));
-  const live = (S, v) => cap((0, _grid.gridWithin)(v, S.lo, S.hi));
-  // the limits it can actually reach (the separator's aria-valuemin / -valuemax and the limit hint): each scale's own,
-  // settled and held within GRID_MIN to GRID_BOX_MAX, so a maxWidth past 1600 reports 1600
-  const reach = S => ({
-    lo: cap(S.snap(S.lo)),
-    hi: cap(S.snap(S.hi))
-  });
-  const WR = reach(W),
-    HR = reach(H);
-  const size = {
-    width: width != null ? dragging ? live(W, width) : cap(W.snap(width)) : live(W, own.width),
-    height: height != null ? dragging ? live(H, height) : cap(H.snap(height)) : live(H, own.height)
-  };
-  const root = _react.default.useRef(null);
-  // a size reaches the stylesheet as data-plx-width / data-plx-height: one rule per size token (resizable.css) and one per
-  // grid line (system/steps.css, build-steps.js), never a style attribute or a style element
-  const latest = _react.default.useRef(size);
-  latest.current = size;
-  const dragCleanup = _react.default.useRef(null),
-    motion = _react.default.useRef([]);
-  const stopMotion = () => {
-    motion.current.forEach(animation => animation.cancel());
-    motion.current = [];
-  };
-  const animate = (element, frames) => {
-    const win = element && element.ownerDocument.defaultView;
-    if (!win || !element.animate || win.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const duration = win.getComputedStyle(element).getPropertyValue('--plx-comp-resizable-edge-duration').trim();
-    const milliseconds = parseFloat(duration) * (duration.endsWith('ms') ? 1 : 1000);
-    if (milliseconds > 0) motion.current.push(element.animate(frames, {
-      duration: milliseconds
-    }));
-  };
-  _react.default.useEffect(() => () => {
-    if (dragCleanup.current) dragCleanup.current();
-    stopMotion();
-  }, []);
-  const [notice, setNotice] = _react.default.useState(''),
-    [announcement, setAnnouncement] = _react.default.useState('');
-  const input = _react.default.useRef('pointer');
-  const announced = _react.default.useRef(new Set()),
-    anchor = _react.default.useRef(null),
-    bubble = _react.default.useRef(null);
-  (0, _floating.useFloating)(anchor, bubble, {
-    open: !!notice,
-    placement: 'end',
-    offset: 'sm'
-  });
-  useSizeEffect(() => {
-    const element = bubble.current;
-    if (!notice || !element || !element.showPopover) return;
-    element.showPopover();
-    return () => {
-      if (element.matches(':popover-open')) element.hidePopover();
-    };
-  }, [notice]);
-  const reportLimit = next => {
-    let message = '';
-    for (const [which, scale, active] of [['width', WR, doW], ['height', HR, doH]]) {
-      if (!active || next[which] > scale.lo && next[which] < scale.hi) continue;
-      const smallest = next[which] <= scale.lo,
-        value = smallest ? scale.lo : scale.hi;
-      message = t[(smallest ? 'min' : 'max') + (which === 'width' ? 'Width' : 'Height')] || (smallest ? 'Smallest ' : 'Largest ') + which + ' for ' + label + ' (' + value + 'px)';
-      break;
-    }
-    setNotice(message);
-    if (message && !announced.current.has(message)) {
-      announced.current.add(message);
-      setAnnouncement(message);
-      const handle = anchor.current;
-      const transform = handle && handle.classList.contains('plx-resizable__edge--block') ? 'translateY' : 'translateX';
-      if (handle) animate(handle, [{
-        transform: transform + '(0)'
-      }, {
-        transform: transform + '(var(--plx-ref-size-4px))'
-      }, {
-        transform: transform + '(0)'
-      }]);
-    }
-  };
-  const set = (next, settle = true) => {
-    reportLimit(next);
-    const s = {
-      width: doW ? settle ? cap(W.snap(next.width)) : live(W, next.width) : latest.current.width,
-      height: doH ? settle ? cap(H.snap(next.height)) : live(H, next.height) : latest.current.height
-    };
-    if (s.width === latest.current.width && s.height === latest.current.height) return;
-    latest.current = s;
-    if (width == null || height == null) setOwn(s);
-    if (onResize) onResize(s);
-  };
-  const drag = (dx, dy) => e => {
-    if (e.pointerType === 'mouse' && e.button !== 0) return;
-    e.preventDefault();
-    input.current = 'pointer';
-    anchor.current = e.currentTarget;
-    const x0 = e.clientX,
-      y0 = e.clientY,
-      w0 = latest.current.width,
-      h0 = latest.current.height,
-      flip = (0, _direction.isRtl)(e.currentTarget) ? -1 : 1;
-    stopMotion();
-    announced.current.clear();
-    setAnnouncement('');
-    setDragging(true);
-    const cls = dx && dy ? 'is-resizing-both' : dy ? 'is-resizing-rows' : 'is-resizing-columns';
-    const move = ev => set({
-      width: w0 + (ev.clientX - x0) * flip * dx,
-      height: h0 + (ev.clientY - y0) * dy
-    }, false);
-    const doc = e.currentTarget.ownerDocument;
-    if (dragCleanup.current) dragCleanup.current();
-    const clear = () => {
-      doc.removeEventListener('pointermove', move);
-      doc.removeEventListener('pointerup', up);
-      doc.removeEventListener('pointercancel', up);
-      doc.documentElement.classList.remove(cls);
-      dragCleanup.current = null;
-    };
-    const up = () => {
-      const raw = latest.current,
-        settled = {
-          width: W.snap(raw.width),
-          height: H.snap(raw.height)
-        };
-      const before = {},
-        after = {};
-      if (doW) {
-        before.inlineSize = raw.width + 'px';
-        after.inlineSize = settled.width + 'px';
-      }
-      if (doH) {
-        before.blockSize = raw.height + 'px';
-        after.blockSize = settled.height + 'px';
-      }
-      if (raw.width !== settled.width || raw.height !== settled.height) animate(root.current, [before, after]);
-      set(raw);
-      setNotice('');
-      setDragging(false);
-      clear();
-    };
-    dragCleanup.current = clear;
-    doc.addEventListener('pointermove', move);
-    doc.addEventListener('pointerup', up);
-    doc.addEventListener('pointercancel', up);
-    doc.documentElement.classList.add(cls);
-  };
-  const keys = which => e => {
-    input.current = 'keyboard';
-    if (e.key === 'Escape') {
-      setNotice('');
-      return;
-    }
-    anchor.current = e.currentTarget;
-    const S = which === 'width' ? W : H;
-    const step = which === 'width' ? (0, _direction.arrowStep)(e, e.currentTarget, {
-      vertical: false
-    }) : e.key === 'ArrowDown' ? 1 : e.key === 'ArrowUp' ? -1 : 0;
-    const cur = latest.current[which];
-    let next = null;
-    if (step) next = S.step(cur, step);else if (e.key === 'Home') next = S.lo;else if (e.key === 'End') next = S.hi;
-    if (next == null) return;
-    e.preventDefault();
-    set(Object.assign({}, latest.current, {
-      [which]: next
-    }));
-  };
-  const edge = which => {
-    const R = which === 'width' ? WR : HR;
-    return /*#__PURE__*/_react.default.createElement("div", {
-      role: "separator",
-      tabIndex: 0,
-      "aria-orientation": which === 'width' ? 'vertical' : 'horizontal',
-      "aria-label": fill(t[which], {
-        label
-      }),
-      "aria-valuenow": size[which],
-      "aria-valuemin": R.lo,
-      "aria-valuemax": R.hi,
-      title: notice || undefined,
-      className: (0, _cx.cx)('plx-resizable__edge', 'plx-resizable__edge--' + (which === 'width' ? 'inline' : 'block'), variant === 'divider' && 'plx-resizable__edge--divider'),
-      onPointerDown: which === 'width' ? drag(1, 0) : drag(0, 1),
-      onKeyDown: keys(which),
-      onBlur: () => setNotice(''),
-      onPointerLeave: () => {
-        if (!dragging && input.current === 'pointer') setNotice('');
-      }
-    });
-  };
-  return /*#__PURE__*/_react.default.createElement("div", _extends({}, rest, {
-    ref: root,
-    className: (0, _cx.cx)('plx-resizable', 'plx-resizable--' + (doW && doH ? 'both' : doH ? 'vertical' : 'horizontal'), steps && 'plx-resizable--steps', variant === 'divider' && 'plx-resizable--divider', fillContent && 'plx-resizable--fill', className),
-    "data-plx-width": doW ? size.width + 'px' : undefined,
-    "data-plx-height": doH ? size.height + 'px' : undefined
-  }), /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-resizable__content"
-  }, children), notice ? /*#__PURE__*/_react.default.createElement("span", {
-    ref: bubble,
-    role: "tooltip",
-    popover: "manual",
-    className: "plx-resizable-limit"
-  }, notice) : null, /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, {
-    role: "status",
-    "aria-live": "polite",
-    "aria-atomic": "true"
-  }, announcement), doW ? edge('width') : null, doH ? edge('height') : null, doW && doH ? /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-resizable__corner",
-    "aria-hidden": "true",
-    onPointerDown: drag(1, 1)
-  }) : null);
-}
-  } },
   "platform/providers/DirectionProvider.jsx": { deps: {"react":null,"../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -8365,7 +6643,8 @@ var _default = exports.default = {
     "saved": "Saved",
     "offline": "Offline",
     "failed": "Save failed",
-    "retry": "Retry"
+    "retry": "Retry",
+    "unsaved": "Your changes have not been saved."
   },
   "avatar": {
     "online": "Online",
@@ -10101,6 +8380,14 @@ var _default = exports.default = {
   "splitView": {
     "firstLabel": "First panel",
     "maxWidth": "The other pane needs at least {n}px"
+  },
+  "field": {
+    "left": "{n} characters left",
+    "over": "{n} characters too many",
+    "about": "About {label}"
+  },
+  "barActions": {
+    "moreLabel": "More actions"
   }
 };
   } },
@@ -10969,7 +9256,8 @@ var _default = exports.default = {
     "saved": "تم الحفظ",
     "offline": "غير متصل",
     "failed": "فشل الحفظ",
-    "retry": "إعادة المحاولة"
+    "retry": "إعادة المحاولة",
+    "unsaved": "لم تُحفظ تغييراتك."
   },
   "avatarUpload": {
     "change": "تغيير الصورة",
@@ -12069,6 +10357,14 @@ var _default = exports.default = {
   "splitView": {
     "firstLabel": "اللوحة الأولى",
     "maxWidth": "تحتاج اللوحة الأخرى إلى {n} بكسل على الأقل"
+  },
+  "field": {
+    "left": "الأحرف المتبقية: {n}",
+    "over": "أحرف زائدة: {n}",
+    "about": "معلومات عن {label}"
+  },
+  "barActions": {
+    "moreLabel": "المزيد من الإجراءات"
   }
 };
   } },
@@ -12280,6 +10576,1725 @@ function useLocale() {
     format: bind(language)
   }), [language]);
   return value || fallback;
+}
+  } },
+  "platform/components/Field/Field.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Field = Field;
+exports.FieldLayoutContext = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _overflow = require("../../utils/overflow.js");
+var _Tooltip = require("../Tooltip/Tooltip.jsx");
+var _announce = require("../../utils/announce.jsx");
+var _format = require("../../utils/format.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Field
+   Summary: A label, the control, and its help or error, connected for assistive technology.
+   Usage:
+     <Field label="Name" description="Shown on the asset" error={msg} required info={<…/>} layout="inline">
+       <Input …/>
+     </Field>
+   Props:
+     label: the label text
+     hideLabel: the label is read by screen readers and still labels the control, but is not drawn (a title field, a search
+       box whose purpose is plain from where it sits); default false (owner, 2026-10-16, the composition standard)
+     description: help text under the control (under the label with "row")
+     error: the error message under the control; it marks the field invalid
+     required: marks the field and the control required; the label shows " *" (default false)
+     info: content for a small (i) button next to the label
+     infoLabel: the accessible name of the (i) button (default "About " + the label)
+     layout: "stacked" (default; label above) | "inline" (label beside the control: settings rows, a 160px label column) |
+       "row" (the description under the label and the control at the end); without it, the layout of the Form around the
+       field (FieldLayoutContext: a two-column Form makes its fields inline), else "stacked"
+     counter: a character counter at the end of the help line: true (the limit is the control's maxLength) or the limit
+       as a number; default none
+     strings: its words, from the catalog's field section (useStrings): { left: '{n} characters left', over: '{n} characters too many', about: 'About {label}' }
+     labelWidth: the width of the label column, as a size name (adds plx-field--label-<value>)
+     type, inputMode, autoComplete, enterKeyHint: keyboard and autofill hints handed to the control (Platforms Standard 3.5),
+       unless it sets its own
+     children: exactly one control
+     className: more classes on the field
+   Behavior:
+     The child control gets id, aria-describedby, invalid and required, unless it sets its own.
+     The error is announced (role="alert").
+     The (i) button shows and hides the info text under the control (aria-expanded).
+     counter: the count updates as people type ("12/100", in the data font) and is part of the control's description.
+       People may type past the limit: the native maxLength is not set, so nothing is cut off; past it the count and the
+       control turn invalid (the danger color, aria-invalid). Near the limit (the last tenth) and past it, the characters
+       left or over are announced politely, once typing pauses (announce).
+   Notes:
+     Other props pass through to the <div>.
+*/
+// the layout a Form gives the fields inside it (Form's layout "two-column" makes them inline); a Field's own layout wins
+const FieldLayoutContext = exports.FieldLayoutContext = /*#__PURE__*/_react.default.createContext(null);
+const fill = (t, n) => String(t).replace('{n}', (0, _format.formatNumber)(n));
+function Field({
+  label,
+  hideLabel = false,
+  description,
+  error,
+  required = false,
+  info,
+  infoLabel,
+  layout,
+  labelWidth,
+  counter,
+  strings,
+  type,
+  inputMode,
+  autoComplete,
+  enterKeyHint,
+  className,
+  children,
+  ...rest
+}) {
+  const id = _react.default.useId();
+  const formLayout = _react.default.useContext(FieldLayoutContext);
+  const lay = layout || formLayout || 'stacked';
+  const controlId = 'plx-f' + id.replace(/[^a-zA-Z0-9]/g, '');
+  const descId = description ? controlId + '-d' : undefined,
+    errId = error ? controlId + '-e' : undefined;
+  const [showInfo, setShowInfo] = _react.default.useState(false);
+  const labelRef = _react.default.useRef(null);
+  const cut = (0, _overflow.useTruncated)(labelRef);
+  const child = _react.default.Children.only(children);
+  // the character counter: the limit, the length (the control's value, else what was typed), what is left
+  const max = counter ? typeof counter === 'number' ? counter : Number(child.props.maxLength) || 0 : 0;
+  const [typed, setTyped] = _react.default.useState(() => String(child.props.defaultValue == null ? '' : child.props.defaultValue).length);
+  const length = child.props.value != null ? String(child.props.value).length : typed;
+  const over = max > 0 && length > max;
+  const t = (0, _LocaleProvider.useStrings)('field', strings);
+  const countId = max ? controlId + '-c' : undefined;
+  const near = max > 0 && max - length <= Math.ceil(max / 10);
+  const said = _react.default.useRef(null);
+  _react.default.useEffect(() => {
+    if (!max || !near || said.current === null) {
+      said.current = length;
+      return;
+    }
+    if (said.current !== length) {
+      said.current = length;
+      (0, _announce.announce)(over ? fill(t.over, length - max) : fill(t.left, max - length));
+    }
+  }, [length, max, near, over, t.over, t.left]);
+  const props = {
+    id: child.props.id || controlId,
+    'aria-describedby': [child.props['aria-describedby'], descId, countId, errId].filter(Boolean).join(' ') || undefined,
+    invalid: child.props.invalid !== undefined ? child.props.invalid : error || over ? true : undefined,
+    required: child.props.required !== undefined ? child.props.required : required || undefined
+  };
+  if (max) {
+    // people may type past the limit (the count shows it); the length is followed for an uncontrolled control
+    props.maxLength = undefined;
+    props.onChange = e => {
+      setTyped(e.target.value.length);
+      if (child.props.onChange) child.props.onChange(e);
+    };
+  }
+  // keyboard hints given on the Field reach the control, unless it has its own
+  const hints = {
+    type,
+    inputMode,
+    autoComplete,
+    enterKeyHint
+  };
+  Object.keys(hints).forEach(k => {
+    if (hints[k] !== undefined && child.props[k] === undefined) props[k] = hints[k];
+  });
+  const control = /*#__PURE__*/_react.default.cloneElement(child, props);
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    className: (0, _cx.cx)('plx-field', 'plx-field--' + lay, labelWidth && 'plx-field--label-' + labelWidth, error && 'is-invalid', className)
+  }, rest), /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-field__head', hideLabel && 'plx-visually-hidden')
+  }, /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+    content: label,
+    disabled: !cut,
+    className: "plx-field__label-tip"
+  }, /*#__PURE__*/_react.default.createElement("label", {
+    ref: labelRef,
+    className: "plx-field__label",
+    htmlFor: child.props.id || controlId
+  }, label, required ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-field__required",
+    "aria-hidden": "true"
+  }, " *") : null)), info ? /*#__PURE__*/_react.default.createElement("button", {
+    type: "button",
+    className: "plx-field__info",
+    "aria-label": infoLabel || t.about.replace('{label}', label),
+    "aria-expanded": showInfo,
+    onClick: () => setShowInfo(!showInfo)
+  }, "i") : null, lay === 'row' && description ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-field__description",
+    id: descId
+  }, description) : null), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-field__control"
+  }, control, max ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-field__foot"
+  }, lay !== 'row' && description ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-field__description",
+    id: descId
+  }, description) : null, /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-field__counter', over && 'is-over')
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-field__count",
+    "aria-hidden": "true"
+  }, (0, _format.formatNumber)(length) + '/' + (0, _format.formatNumber)(max)), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-visually-hidden",
+    id: countId
+  }, over ? fill(t.over, length - max) : fill(t.left, max - length)))) : lay !== 'row' && description ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-field__description",
+    id: descId
+  }, description) : null, error ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-field__error",
+    id: errId,
+    role: "alert"
+  }, error) : null, info && showInfo ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-field__info-text"
+  }, info) : null));
+}
+  } },
+  "platform/utils/grid.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.gridPx = exports.GRID_TOKEN = void 0;
+exports.gridStep = gridStep;
+exports.gridWithin = gridWithin;
+exports.onGrid = onGrid;
+exports.snapToGrid = snapToGrid;
+/* Plenix · grid (platform/utils/grid.js)
+   Summary: Puts a length that JavaScript writes inline on the Plenix grid (owner, 2026-10-13: an on-the-spot offset "has
+     to conform to fit into the grid system!!! important"). The grid step is the base spacing token (--plx-ref-space-4px),
+     read from the page, never written as a number. A size with steps of its own takes them (Resizable's steps); a dragged
+     pane or box lands on the grid (gridWithin).
+   Usage:
+     import { snapToGrid, gridPx } from '../../utils/grid.js';
+     el.style.insetBlockStart = gridPx(anchor.bottom + tokenPx('--plx-sys-space-stack-xs'));   // a measured anchor plus a token
+     column.setWidth(snapToGrid(measured, { round: 'up' }));                                    // a measured width, on the grid
+   Props:
+     gridStep(el): the grid step in pixels (the base spacing token where el is; default the page's root)
+     snapToGrid(px, { round, el }): px on the grid: round "nearest" (default) | "up" | "down"
+     gridPx(px, { round, el }): the same, as a CSS length ("12px"), for an inline style
+     onGrid(px, el): true when px is a whole number of grid steps (within half a pixel's rounding)
+     gridWithin(px, min, max, { el }): the grid line nearest px inside [min, max] (each limit taken to the nearest grid line
+       inside it): a dragged pane's or box's size, one grid line at a time (owner, 2026-10-26: "only after a user positions
+       the menu, it would automatically reposition itself to the nearest grid line")
+   Behavior:
+     A measured anchor (where a trigger is) is layout, not an invented value: snap the result, not the anchor. Offsets and
+     gaps added to it come from tokens. 0 stays 0; a negative length snaps the same way as a positive one.
+   Notes:
+     The run-time style audit (platform/dev/style-audit.js) reports an inline length that is neither a Platform token (var)
+     reference nor a whole number of grid steps; check-system (rule inline-style) reports style-writing code whose
+     length is neither a token nor passed through this helper (or the size steps).
+*/
+
+const GRID_TOKEN = exports.GRID_TOKEN = '--plx-ref-space-4px';
+
+// the base spacing token in pixels where el is (a rem token follows the root font size)
+function gridStep(el) {
+  if (typeof document === 'undefined') return 4;
+  const at = el || document.documentElement,
+    win = at.ownerDocument.defaultView;
+  // a document without a window (a preview frame already removed): nothing to read, the base step
+  if (!win) return 4;
+  const v = win.getComputedStyle(at).getPropertyValue(GRID_TOKEN).trim();
+  const px = /rem$/.test(v) ? parseFloat(v) * (parseFloat(win.getComputedStyle(at.ownerDocument.documentElement).fontSize) || 16) : parseFloat(v);
+  return px > 0 ? px : 4;
+}
+function snapToGrid(px, opts) {
+  const o = opts || {},
+    step = o.step || gridStep(o.el),
+    n = Number(px) || 0; // opts.step: a step already read (a loop reads it once)
+  const f = o.round === 'up' ? Math.ceil : o.round === 'down' ? Math.floor : Math.round;
+  const q = n / step;
+  return f(Math.abs(q - Math.round(q)) < 1e-6 ? Math.round(q) : q) * step;
+}
+const gridPx = (px, opts) => snapToGrid(px, opts) + 'px';
+exports.gridPx = gridPx;
+function onGrid(px, el) {
+  const step = gridStep(el),
+    q = Math.abs(Number(px) || 0) / step;
+  return Math.abs(q - Math.round(q)) * step <= 0.5;
+}
+function gridWithin(px, min, max, opts) {
+  const o = opts || {},
+    step = o.step || gridStep(o.el);
+  const lo = snapToGrid(min, {
+      step,
+      round: 'up'
+    }),
+    hi = Math.max(lo, snapToGrid(max, {
+      step,
+      round: 'down'
+    }));
+  return Math.max(lo, Math.min(hi, snapToGrid(px, {
+    step
+  })));
+}
+  } },
+  "platform/components/Input/Input.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/floating.js":"platform/utils/floating.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Textarea = exports.Select = exports.Input = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _grid = require("../../utils/grid.js");
+var _floating = require("../../utils/floating.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Input, Textarea, Select
+   Summary: The text field family, at the standard control height.
+   Usage:
+     <Input value={name} onChange={(e) => …} width="md" />
+     <Textarea rows={5} value={notes} onChange={(e) => …} />
+     <Select value={fmt} onChange={(e) => …} options={[{ value: 'png', label: 'PNG' }, { value: 'jpg', label: 'JPG' }]} />
+     <Input appearance="filled" … />               <Textarea autoGrow … />
+   Props:
+     Input.size: "sm" uses the existing toolbar control height; omitted or "md" keeps today’s standard height; numeric values retain the native size attribute.
+     Select.size: as Input.size; a number above 1 (or multiple) keeps the browser's own list box.
+     Input.invalid: marks the field (aria-invalid); put the message in Field's error
+     Input.width: "xs" | "sm" | "md" | "lg" (a field narrower than its row, --plx-sys-field-width-*) | "fill" (the whole width)
+       A date or a time (type date, time, datetime-local, month, week) is never narrower than its value, whatever the width:
+       leave width out in a Field (it fills the column) or use "lg"; "xs", "sm" and "md" are for numbers and short codes
+     Select.width: the same values
+     Input.data: the data font, for codes, hex values, links to copy (default false)
+     Input.emphasis: semibold, for a record's title (default false)
+     Input.type: the input type (default "text"); "color" gives the color well: a square swatch the field's height, no border
+       (owner, batch 275); the system sizes it, so it takes no width or utility
+     Input.inputMode, autoComplete, enterKeyHint, autoCapitalize, spellCheck: the on-screen keyboard and autofill hints
+       (Platforms Standard 3.5 and 6.2); a type of "email", "url", "tel" or "search" brings its matching defaults (below)
+     Input.appearance: "outline" (default; a border on every side) | "filled" (the same border and corners, a gray fill and
+       the value in dark gray); one appearance per form. There is no underline field (owner, 2026-10-16)
+     Input.className: more classes on the <input>
+     Textarea.invalid: marks the field (aria-invalid)
+     Textarea.rows: the visible lines (default 3); an autoGrow text area starts at its minimum height and grows from there
+     Textarea.autoGrow: grows with its text, a line at a time, up to --plx-comp-textarea-auto-grow-max-height, then
+       scrolls inside; it cannot be resized by hand (default false)
+     Textarea.appearance: as Input.appearance
+     Textarea.data: technical text (lists of extensions, paths, codes) in the data font, as Input.data
+     Textarea.className: more classes on the <textarea>
+     Select.invalid: marks the field (aria-invalid)
+     Select.options: the choices: [{ value, label, disabled }]; or pass <option>s (and <optgroup>s) as children
+     Select.value, defaultValue, onChange(event), name, required, disabled, form, ref: as on a native select (event.target.value is the choice);
+       the ref is the hidden native <select>
+     Select.block: the select takes its own line, as wide as its room (InlineEdit)
+     Select.joined: { start, end }: "square" | "seam": its corners square where it meets a neighbor (InputGroup sets it)
+     Select.children: <option>s, when there are no options
+     Select.appearance: as Input.appearance (on the <select>)
+     Select.className: more classes on the wrapper
+   Behavior:
+     Select.data applies the same technical-value font variant as Input.data to the field.
+     Select is drawn by Plenix (owner, dropdown-look-36): a field and a list in the Menu's look, over a hidden native <select> that
+     stays the source of truth (options, value, form, reset, label). The field is role="combobox" and the list role="listbox"; a
+     <label for> or Field names and focuses it. The arrow is the form-icon size (--plx-sys-control-icon-inline), like the Combobox's.
+     Keyboard: ↓ / ↑ / Enter / Space open the list; ↓ / ↑ move; Home and End jump to the first and last row; typing a letter
+     goes to the next row that starts with it; Enter chooses; Alt+↑ chooses and closes; Escape closes; Tab chooses the row
+     and moves on. Rows are the Menu's height and text size; the chosen row is blue and semibold; a disabled row is skipped.
+     A value set straight on the native select through the ref shows on the next render. The options are compared after every
+     render (length, then each value, label and state), so a list of hundreds costs a little each time.
+     The box is as wide as the widest option. The list opens in the browser's top layer, below the field (or above it near an
+     edge), at least as wide as the field, placed like a Menu: no dialog, drawer, table cell or scroll area clips it.
+     Inside a Field, the label, description and error are connected for you.
+     Every appearance keeps the same states: hover and focus change only the color of its border, never a ring outside
+     it; invalid draws a 2px danger border (the border and a line inside it, so the value does not move) on the lightest
+     red fill; read-only and disabled keep their fills.
+     autoGrow: the browser sizes the text area to its content (field-sizing: content); where it cannot, the text area
+     measures its content on each change and sets its height on the 4px grid (gridPx), the one inline style it writes.
+     Keyboard hints by type, each overridden by its own prop: email and url get their inputMode, no capitals and no spell
+     check; tel gets inputMode "tel"; search gets inputMode "search" and enterKeyHint "search".
+   Notes:
+     They take every native attribute (value, onChange, placeholder, disabled, readOnly, required…).
+     All three forward their ref to the native element.
+*/
+// the top layer and CSS anchor positioning (as Menu and Popover), checked once
+const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
+
+// the keyboard a type brings on a touch screen (Platforms Standard 3.5: the right type, inputmode and autocomplete)
+const TYPE_HINTS = {
+  email: {
+    inputMode: 'email',
+    autoCapitalize: 'off',
+    spellCheck: false
+  },
+  url: {
+    inputMode: 'url',
+    autoCapitalize: 'off',
+    spellCheck: false
+  },
+  tel: {
+    inputMode: 'tel'
+  },
+  search: {
+    inputMode: 'search',
+    enterKeyHint: 'search'
+  }
+};
+
+// the appearance class (outline is the base look: no class)
+const look = appearance => appearance === 'filled' && 'plx-input--filled';
+const Input = exports.Input = /*#__PURE__*/_react.default.forwardRef(function Input({
+  invalid,
+  width,
+  data = false,
+  emphasis = false,
+  appearance,
+  size,
+  className,
+  type = 'text',
+  ...rest
+}, ref) {
+  return /*#__PURE__*/_react.default.createElement("input", _extends({
+    ref: ref,
+    type: type,
+    size: size === 'sm' || size === 'md' ? undefined : size,
+    className: (0, _cx.cx)('plx-input', size === 'sm' && 'plx-input--size-sm', width && 'plx-input--width-' + width, data && 'plx-input--data', emphasis && 'plx-input--emphasis', look(appearance), className),
+    "aria-invalid": invalid || undefined
+  }, TYPE_HINTS[type], rest));
+});
+
+// can the browser size a text area to its content? (field-sizing: Chrome 123, Safari 26)
+const SIZES_ITSELF = typeof CSS !== 'undefined' && !!CSS.supports && CSS.supports('field-sizing', 'content');
+const Textarea = exports.Textarea = /*#__PURE__*/_react.default.forwardRef(function Textarea({
+  invalid,
+  appearance,
+  autoGrow = false,
+  data = false,
+  className,
+  rows = 3,
+  onInput,
+  ...rest
+}, ref) {
+  const own = _react.default.useRef(null);
+  const setRef = _react.default.useCallback(el => {
+    own.current = el;
+    if (typeof ref === 'function') ref(el);else if (ref) ref.current = el;
+  }, [ref]);
+  // the fallback: measure the content and set the height on the grid (the stylesheet caps it at the maximum)
+  const fit = _react.default.useCallback(() => {
+    const el = own.current;
+    if (!el || !autoGrow || SIZES_ITSELF) return;
+    el.style.blockSize = '';
+    const edge = el.offsetHeight - el.clientHeight;
+    el.style.blockSize = (0, _grid.gridPx)(el.scrollHeight + edge, {
+      round: 'up',
+      el
+    });
+  }, [autoGrow]);
+  _react.default.useLayoutEffect(() => {
+    fit();
+  });
+  return /*#__PURE__*/_react.default.createElement("textarea", _extends({
+    ref: setRef,
+    rows: rows,
+    className: (0, _cx.cx)('plx-input', 'plx-input--textarea', data && 'plx-input--data', autoGrow && 'plx-input--auto-grow', look(appearance), className),
+    "aria-invalid": invalid || undefined,
+    onInput: e => {
+      fit();
+      if (onInput) onInput(e);
+    }
+  }, rest));
+});
+
+/* the native control: a list box (multiple, or a size above 1) keeps the browser's own select */
+const SelectNative = /*#__PURE__*/_react.default.forwardRef(function SelectNative({
+  invalid,
+  options,
+  appearance,
+  size,
+  joined,
+  data = false,
+  block = false,
+  width,
+  className,
+  children,
+  ...rest
+}, ref) {
+  return /*#__PURE__*/_react.default.createElement("span", {
+    className: (0, _cx.cx)('plx-select', size === 'sm' && 'plx-select--size-sm', width && 'plx-select--width-' + width, block && 'plx-select--block', joined && joined.start && 'plx-select--joined-start-' + joined.start, joined && joined.end && 'plx-select--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-select--joined', className)
+  }, /*#__PURE__*/_react.default.createElement("select", _extends({
+    ref: ref,
+    size: size === 'sm' || size === 'md' ? undefined : size,
+    className: (0, _cx.cx)('plx-input', 'plx-select__control', data && 'plx-input--data', look(appearance)),
+    "aria-invalid": invalid || undefined
+  }, rest), options ? options.map(o => /*#__PURE__*/_react.default.createElement("option", {
+    key: o.value,
+    value: o.value,
+    disabled: o.disabled
+  }, o.label)) : children));
+});
+
+/* the Plenix-drawn dropdown (owner, dropdown-look-36): a field (role combobox) and a list (role listbox) drawn by Plenix over a
+   hidden native <select>, which stays the source of truth: the options, the value, the form, the ref and onChange(event) all
+   come from it, so a form posts, a reset resets and e.target.value works as before. */
+const SelectList = /*#__PURE__*/_react.default.forwardRef(function SelectList({
+  invalid,
+  options,
+  appearance,
+  size,
+  joined,
+  data = false,
+  block = false,
+  width,
+  className,
+  children,
+  id,
+  onFocus,
+  onBlur,
+  onKeyDown,
+  'aria-label': ariaLabel,
+  'aria-labelledby': labelledBy,
+  'aria-describedby': describedBy,
+  'aria-errormessage': errorMessage,
+  ...rest
+}, ref) {
+  const native = _react.default.useRef(null),
+    field = _react.default.useRef(null),
+    wrap = _react.default.useRef(null),
+    list = _react.default.useRef(null),
+    last = _react.default.useRef(null),
+    buffer = _react.default.useRef(''),
+    timer = _react.default.useRef(0);
+  const setNative = _react.default.useCallback(el => {
+    native.current = el;
+    if (typeof ref === 'function') ref(el);else if (ref) ref.current = el;
+  }, [ref]);
+  const auto = _react.default.useId();
+  const [items, setItems] = _react.default.useState([]);
+  const [chosen, setChosen] = _react.default.useState(0);
+  const [open, setOpen] = _react.default.useState(false);
+  const [active, setActive] = _react.default.useState(-1);
+  const [labelId, setLabelId] = _react.default.useState(null);
+  const [, redraw] = _react.default.useReducer(n => n + 1, 0);
+  const disabled = !!rest.disabled;
+  // the list opens in the top layer, placed against the field by the floating layer (flips up near an edge, follows scroll and resize), so no dialog, drawer, table cell or scroll area clips it
+  (0, _floating.useFloating)(wrap, list, {
+    open,
+    placement: 'bottom-start',
+    matchWidth: true
+  });
+  _react.default.useLayoutEffect(() => {
+    const el = list.current;
+    if (open && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+  }, [open]);
+  const listId = auto + '-list',
+    optId = i => auto + '-o' + i;
+  // read the native select (its options, in order, and its chosen one) after every render
+  const read = _react.default.useCallback(() => {
+    const el = native.current;
+    if (!el) return;
+    const next = Array.from(el.options).map(o => ({
+      value: o.value,
+      label: o.text,
+      disabled: o.disabled || o.parentElement && o.parentElement.disabled === true,
+      group: o.parentElement && o.parentElement.tagName === 'OPTGROUP' ? o.parentElement.label : null
+    }));
+    const prev = last.current; // the same options? a length and field-by-field comparison, cheap for a long list
+    if (!prev || prev.length !== next.length || next.some((o, i) => o.value !== prev[i].value || o.label !== prev[i].label || o.disabled !== prev[i].disabled || o.group !== prev[i].group)) {
+      last.current = next;
+      setItems(next);
+    }
+    setChosen(el.selectedIndex);
+  }, []);
+  _react.default.useLayoutEffect(read);
+  _react.default.useEffect(() => {
+    // a form reset puts the first choice back
+    const form = native.current && native.current.form;
+    if (!form) return undefined;
+    const reset = () => setTimeout(read, 0);
+    form.addEventListener('reset', reset);
+    return () => form.removeEventListener('reset', reset);
+  }, [read]);
+  _react.default.useEffect(() => {
+    // a <label for="id"> names the field and focuses it
+    if (!id || labelledBy || typeof document === 'undefined') return undefined;
+    const label = document.querySelector('label[for="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"]');
+    if (!label) return undefined;
+    if (!label.id) label.id = id + '-label';
+    setLabelId(label.id);
+    const focus = () => {
+      if (field.current) field.current.focus();
+    };
+    label.addEventListener('click', focus);
+    return () => label.removeEventListener('click', focus);
+  }, [id, labelledBy]);
+  _react.default.useEffect(() => {
+    // keep the row under the arrow keys in view
+    if (!open || active < 0) return;
+    const el = document.getElementById(optId(active));
+    if (el && el.scrollIntoView) el.scrollIntoView({
+      block: 'nearest'
+    });
+  }, [open, active]);
+  const step = (from, dir) => {
+    for (let i = from; i >= 0 && i < items.length; i += dir) if (!items[i].disabled) return i;
+    return -1;
+  };
+  const show = at => {
+    setActive(at !== undefined ? at : chosen >= 0 && !(items[chosen] && items[chosen].disabled) ? chosen : step(0, 1));
+    setOpen(true);
+  };
+  const choose = i => {
+    const el = native.current,
+      it = items[i];
+    if (!el || !it || it.disabled) return;
+    setOpen(false);
+    if (i !== el.selectedIndex) {
+      el.selectedIndex = i;
+      el.dispatchEvent(new Event('input', {
+        bubbles: true
+      }));
+      el.dispatchEvent(new Event('change', {
+        bubbles: true
+      }));
+    }
+    redraw();
+    setTimeout(read, 0);
+  };
+  const onKey = e => {
+    if (onKeyDown) onKeyDown(e);
+    if (e.defaultPrevented || disabled) return;
+    const k = e.key;
+    if (k === 'ArrowDown' || k === 'ArrowUp') {
+      e.preventDefault();
+      if (!open) {
+        show();
+        return;
+      }
+      if (e.altKey && k === 'ArrowUp') {
+        choose(active);
+        return;
+      }
+      const j = step(active + (k === 'ArrowDown' ? 1 : -1), k === 'ArrowDown' ? 1 : -1);
+      if (j >= 0) setActive(j);
+    } else if (k === 'Home' || k === 'End') {
+      e.preventDefault();
+      const j = k === 'Home' ? step(0, 1) : step(items.length - 1, -1);
+      if (open) setActive(j);else show(j);
+    } else if ((k === 'Enter' || k === ' ') && !(k === ' ' && buffer.current)) {
+      e.preventDefault();
+      if (open) choose(active);else show();
+    } else if (k === 'Escape') {
+      if (open) {
+        e.preventDefault();
+        e.stopPropagation();
+        setOpen(false);
+      }
+    } else if (k === 'Tab') {
+      if (open && active >= 0) choose(active);else setOpen(false);
+    } else if (k.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      // type-ahead: the next row that starts with what was typed
+      clearTimeout(timer.current);
+      buffer.current += k.toLowerCase();
+      timer.current = setTimeout(() => {
+        buffer.current = '';
+      }, 700);
+      const from = (open ? active : chosen) + (buffer.current.length === 1 ? 1 : 0);
+      const order = items.map((it, i) => i).slice(Math.max(0, from)).concat(items.map((it, i) => i).slice(0, Math.max(0, from)));
+      const j = order.find(i => !items[i].disabled && items[i].label.toLowerCase().indexOf(buffer.current) === 0);
+      if (j !== undefined) {
+        if (open) setActive(j);else show(j);
+      }
+    }
+  };
+  const current = items[chosen];
+  const grouped = []; // the rows in order, a group's rows together (an <optgroup>)
+  items.forEach((it, i) => {
+    const g = grouped[grouped.length - 1];
+    if (g && g.name === it.group && it.group != null) g.rows.push({
+      it,
+      i
+    });else grouped.push({
+      name: it.group,
+      rows: [{
+        it,
+        i
+      }]
+    });
+  });
+  return /*#__PURE__*/_react.default.createElement("span", {
+    ref: wrap,
+    className: (0, _cx.cx)('plx-select', 'plx-select--list', size === 'sm' && 'plx-select--size-sm', width && 'plx-select--width-' + width, block && 'plx-select--block', joined && joined.start && 'plx-select--joined-start-' + joined.start, joined && joined.end && 'plx-select--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-select--joined', open && 'is-open', disabled && 'is-disabled', className)
+  }, /*#__PURE__*/_react.default.createElement("select", _extends({
+    ref: setNative,
+    tabIndex: -1,
+    "aria-hidden": "true",
+    className: (0, _cx.cx)('plx-input', 'plx-select__control', 'plx-select__native', data && 'plx-input--data', look(appearance)),
+    onFocus: () => {
+      if (field.current) field.current.focus();
+    }
+  }, rest), options ? options.map(o => /*#__PURE__*/_react.default.createElement("option", {
+    key: o.value,
+    value: o.value,
+    disabled: o.disabled
+  }, o.label)) : children), /*#__PURE__*/_react.default.createElement("div", {
+    ref: field,
+    id: id,
+    role: "combobox",
+    tabIndex: disabled ? -1 : 0,
+    "aria-haspopup": "listbox",
+    "aria-expanded": open,
+    "aria-controls": open ? listId : undefined,
+    "aria-activedescendant": open && active >= 0 ? optId(active) : undefined,
+    "aria-label": ariaLabel,
+    "aria-labelledby": labelledBy || (ariaLabel ? undefined : labelId || undefined),
+    "aria-describedby": describedBy,
+    "aria-errormessage": errorMessage,
+    "aria-invalid": invalid || undefined,
+    "aria-required": rest.required || undefined,
+    "aria-disabled": disabled || undefined,
+    className: (0, _cx.cx)('plx-input', 'plx-select__field', data && 'plx-input--data', look(appearance), disabled && 'is-disabled'),
+    onClick: () => {
+      if (disabled) return;
+      if (open) setOpen(false);else show();
+    },
+    onKeyDown: onKey,
+    onFocus: onFocus,
+    onBlur: e => {
+      setOpen(false);
+      if (onBlur) onBlur(e);
+    }
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-select__value"
+  }, current ? current.label : '')), open ? /*#__PURE__*/_react.default.createElement("ul", {
+    ref: list,
+    id: listId,
+    role: "listbox",
+    popover: TOP_LAYER ? 'manual' : undefined,
+    "aria-label": ariaLabel,
+    "aria-labelledby": labelledBy || (ariaLabel ? undefined : labelId || undefined),
+    className: "plx-select__list",
+    onMouseDown: e => e.preventDefault()
+  }, grouped.map((g, gi) => {
+    const rows = g.rows.map(({
+      it,
+      i
+    }) => /*#__PURE__*/_react.default.createElement("li", {
+      key: 'o' + i,
+      id: optId(i),
+      role: "option",
+      "aria-selected": i === chosen,
+      "aria-disabled": it.disabled || undefined,
+      className: (0, _cx.cx)('plx-select__option', i === active && 'is-active', i === chosen && 'is-selected', it.disabled && 'is-disabled'),
+      onMouseDown: e => e.preventDefault(),
+      onClick: () => choose(i),
+      onMouseEnter: () => {
+        if (!it.disabled) setActive(i);
+      }
+    }, it.label));
+    return g.name == null ? rows : /*#__PURE__*/_react.default.createElement("li", {
+      key: 'g' + gi,
+      role: "group",
+      "aria-labelledby": auto + '-g' + gi,
+      className: "plx-select__group-wrap"
+    }, /*#__PURE__*/_react.default.createElement("div", {
+      id: auto + '-g' + gi,
+      role: "presentation",
+      className: "plx-select__group"
+    }, g.name), /*#__PURE__*/_react.default.createElement("ul", {
+      role: "presentation",
+      className: "plx-select__group-list"
+    }, rows));
+  })) : null);
+});
+
+/* options: [{ value, label }] or children <option>s */
+const Select = exports.Select = /*#__PURE__*/_react.default.forwardRef(function Select(props, ref) {
+  const listBox = props.multiple || typeof props.size === 'number' && props.size > 1;
+  return listBox ? /*#__PURE__*/_react.default.createElement(SelectNative, _extends({}, props, {
+    ref: ref
+  })) : /*#__PURE__*/_react.default.createElement(SelectList, _extends({}, props, {
+    ref: ref
+  }));
+});
+  } },
+  "platform/components/Dialog/Dialog.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Field/Field.jsx":"platform/components/Field/Field.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ConfirmDialog = ConfirmDialog;
+exports.Dialog = Dialog;
+exports.Drawer = Drawer;
+exports.PromptDialog = PromptDialog;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _reactDom = require("react-dom");
+var _cx = require("../../utils/cx.js");
+var _layer = require("../../utils/layer.js");
+var _Icon = require("../Icon/Icon.jsx");
+var _Button = require("../Button/Button.jsx");
+var _Field = require("../Field/Field.jsx");
+var _Input = require("../Input/Input.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Dialog, ConfirmDialog, PromptDialog, Drawer
+   Summary: Modal layers. Dialog is a centered window (or, with modal={false}, a non-modal one beside the page);
+     ConfirmDialog is an alert dialog that asks to confirm an action; PromptDialog asks for one short value; Drawer is the
+     same shell, docked to a side.
+   Usage:
+     <Dialog open={open} onClose={close} title="Rename" description="…" size="sm" footer={<>…</>}>…</Dialog>
+     <Dialog open={open} onClose={close} title="Find and replace" modal={false} size="sm">…</Dialog>
+     <ConfirmDialog open={open} title="Delete 3 assets?" message="…" confirmLabel="Delete" destructive
+       onConfirm={() => …} onCancel={() => …} />
+     <PromptDialog open={open} title="Rename asset" label="Name" defaultValue="Cross 014" confirmLabel="Rename"
+       validate={(v) => (v.trim() ? '' : 'Enter a name.')} onSubmit={(value) => …} onCancel={() => …} />
+     <Drawer open={open} onClose={close} title="Details" side="end" size="md" footer={<>…</>}>…</Drawer>
+   Props:
+     Dialog.open: whether the layer is shown
+     Dialog.modal: false makes it non-modal (default true): no veil, the page behind stays usable, focus is not trapped
+       and the page scrolls (09 Overlays › Dialogs › Non-modal dialog)
+     Dialog.onClose(): runs from the close button, Escape and a click on the veil
+     Dialog.title: the title at the start of the header; it names the dialog
+     Dialog.description: a paragraph at the top of the body; it describes the dialog
+     Dialog.icon: an <Icon> (or an icon name) before the title
+     Dialog.size: "sm" | "md" (default) | "lg" | "xl" | "full"
+     Dialog.footer: the footer actions (their height is the dialog role)
+     Dialog.initialFocus: a ref to the element that takes focus when the layer opens
+     Dialog.closeLabel: the accessible name of the close button (default "Close")
+     Dialog.dismissible: false turns off Escape and the veil click, and hides the close button (default true)
+     Dialog.flush: true removes the body padding (default false)
+     Dialog.className: more classes on the dialog
+     Dialog.children: the body
+     Drawer.side: "end" (default) | "start"
+     Drawer.size: "sm" | "md" (default) | "lg"
+     ConfirmDialog.open: whether the dialog is shown
+     ConfirmDialog.title: the question
+     ConfirmDialog.message: the explanation under the title
+     ConfirmDialog.confirmLabel: the confirm button text (default "Confirm")
+     ConfirmDialog.cancelLabel: the cancel button text (default "Cancel")
+     ConfirmDialog.destructive: the action destroys something (default false)
+     ConfirmDialog.onConfirm(): runs from the confirm button
+     ConfirmDialog.onCancel(): runs from the cancel button, the close button, Escape and the veil
+     ConfirmDialog.children: more content in the body
+     PromptDialog.open: whether the dialog is shown
+     PromptDialog.title: the action, as a title ("Rename asset")
+     PromptDialog.message: a sentence under the title (optional)
+     PromptDialog.label: the field's visible label
+     PromptDialog.defaultValue: the value the field starts with when the dialog opens (default "")
+     PromptDialog.placeholder: a hint in the empty field (never in place of the label)
+     PromptDialog.description: help text under the field
+     PromptDialog.confirmLabel: the confirm button text, the action's verb (default "Save")
+     PromptDialog.cancelLabel: the cancel button text (default "Cancel")
+     PromptDialog.validate(value): returns an error message, or "" when the value is fine; it runs on submit
+     PromptDialog.onSubmit(value): runs with the value when it is submitted and valid
+     PromptDialog.onCancel(): runs from Cancel, the close button, Escape and the veil
+     PromptDialog.inputProps: more props for the Input (maxLength, inputMode, autoComplete…)
+     PromptDialog.size: as Dialog.size (default "sm")
+   Behavior:
+     Focus moves in (initialFocus, else the first control in the body, else the first footer action) and returns to the opener.
+     Tab stays inside the layer.
+     Escape and a click on the veil close it, unless dismissible is false.
+     The page does not scroll while the layer is open.
+     A destructive ConfirmDialog starts on Cancel, uses a danger confirm button and the destructive dialog role.
+     Non-modal (modal={false}): the same window and place, with no veil; the page behind stays usable and scrolls. Focus
+       moves in when it opens but is not trapped; F6 moves focus between the dialog and the element that opened it;
+       Escape closes it while focus is inside it, and focus returns to the opener when it closes from inside.
+       aria-modal is not set.
+     PromptDialog: a form with one field. The field takes focus with its text selected; Enter submits; validate runs on
+       submit, and an error keeps the dialog open with the message under the field (announced); nothing is disabled.
+       The value starts again from defaultValue each time it opens.
+   Notes:
+     Drawer takes every Dialog prop (open, onClose, title, description, icon, footer, initialFocus, closeLabel, dismissible,
+       flush, className, children), with its own side and size.
+     Modal layers follow D3, option C.
+     Full-screen dialog (09 Overlays › Dialogs › Full-screen dialog) is size="full": the whole modal layer, inside the
+       layout inset.
+     Header and footer are filled bands (--plx-sys-surface-dialog-chrome) with hairline dividers, always shown; the body is white.
+     The title is at the start of the header, the close button at its end, the actions in the footer.
+     The layer renders in a portal on document.body.
+*/
+const asIcon = i => typeof i === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+  name: i
+}) : i;
+
+// a non-modal dialog: focus moves in when it opens (not trapped), F6 moves between it and its opener, and focus goes back
+// to the opener when it closes from inside (useLayer does this only for modal layers)
+function useNonModalFocus(ref, open, active, firstFocus) {
+  const inside = _react.default.useRef(false);
+  _react.default.useEffect(() => {
+    if (!open || !active) return undefined;
+    const opener = document.activeElement;
+    const root = ref.current;
+    const first = firstFocus() || root;
+    if (first) first.focus({
+      preventScroll: true
+    });
+    inside.current = true;
+    const f6 = e => {
+      if (e.key !== 'F6' || e.ctrlKey || e.metaKey || e.altKey || !ref.current) return;
+      const into = !ref.current.contains(document.activeElement);
+      const target = into ? firstFocus() || ref.current : opener;
+      if (target && target.focus && document.contains(target)) {
+        e.preventDefault();
+        target.focus({
+          preventScroll: true
+        });
+      }
+    };
+    document.addEventListener('keydown', f6);
+    return () => {
+      document.removeEventListener('keydown', f6);
+      const a = document.activeElement;
+      if (inside.current && (!a || a === document.body) && opener && opener.focus && document.contains(opener)) opener.focus({
+        preventScroll: true
+      });
+    };
+  }, [open, active]);
+  return inside;
+}
+function ModalShell({
+  kind,
+  open,
+  onClose,
+  title,
+  description,
+  icon,
+  size,
+  side,
+  role = 'dialog',
+  footer,
+  initialFocus,
+  closeLabel = 'Close',
+  dismissible = true,
+  flush = false,
+  modal = true,
+  className,
+  children
+}) {
+  const ref = _react.default.useRef(null);
+  const id = (0, _layer.useUid)('plx-dlg');
+  const firstFocus = () => {
+    if (initialFocus && initialFocus.current) return initialFocus.current;
+    const root = ref.current;
+    return (0, _layer.focusables)(root.querySelector('.plx-dialog__body'))[0] || (0, _layer.focusables)(root.querySelector('.plx-dialog__footer'))[0] || null;
+  };
+  (0, _layer.useLayer)(ref, open, {
+    modal,
+    onEscape: dismissible && modal ? onClose : null,
+    initialFocus: firstFocus
+  });
+  const inside = useNonModalFocus(ref, open, !modal, firstFocus);
+  if (!open) return null;
+  const onVeil = e => {
+    if (modal && dismissible && e.target === e.currentTarget && onClose) onClose();
+  };
+  // non-modal: Escape closes it only while focus is inside it (a menu inside it closes first: its layer stops the key)
+  const onKeyDown = !modal && dismissible ? e => {
+    if (e.key === 'Escape' && onClose) {
+      e.stopPropagation();
+      onClose();
+    }
+  } : undefined;
+  const track = !modal ? {
+    onFocus: () => {
+      inside.current = true;
+    },
+    onBlur: e => {
+      inside.current = !!(ref.current && ref.current.contains(e.relatedTarget));
+    }
+  } : {};
+  return /*#__PURE__*/(0, _reactDom.createPortal)(/*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-modal-layer', 'plx-modal-layer--' + kind, side && 'plx-modal-layer--' + side, !modal && 'plx-modal-layer--non-modal'),
+    onMouseDown: onVeil
+  }, /*#__PURE__*/_react.default.createElement("div", _extends({
+    ref: ref,
+    role: role,
+    "aria-modal": modal ? 'true' : undefined,
+    "aria-labelledby": id + 't',
+    "aria-describedby": description ? id + 'd' : undefined,
+    tabIndex: -1,
+    className: (0, _cx.cx)('plx-dialog', kind === 'drawer' && 'plx-drawer', kind === 'drawer' && side === 'start' && 'plx-drawer--start', !modal && 'plx-dialog--non-modal', 'plx-' + kind + '--' + size, className),
+    onKeyDown: onKeyDown
+  }, track), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-dialog__header"
+  }, icon ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-dialog__icon"
+  }, asIcon(icon)) : null, /*#__PURE__*/_react.default.createElement("h2", {
+    id: id + 't',
+    className: "plx-dialog__title"
+  }, title), dismissible ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "ghost",
+    iconOnly: true,
+    icon: "close",
+    label: closeLabel,
+    className: "plx-dialog__close",
+    onClick: onClose
+  }) : null), /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-dialog__body', flush && 'plx-dialog__body--flush')
+  }, description ? /*#__PURE__*/_react.default.createElement("p", {
+    id: id + 'd',
+    className: "plx-dialog__description"
+  }, description) : null, children), footer ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-dialog__footer"
+  }, footer) : null)), document.body);
+}
+function Dialog({
+  size = 'md',
+  ...props
+}) {
+  (0, _devWarn.devWarn)('Dialog', {
+    size
+  }, {
+    size: ['sm', 'md', 'lg', 'xl', 'full']
+  });
+  return /*#__PURE__*/_react.default.createElement(ModalShell, _extends({
+    kind: "dialog",
+    size: size
+  }, props));
+}
+function Drawer({
+  size = 'md',
+  side = 'end',
+  ...props
+}) {
+  (0, _devWarn.devWarn)('Drawer', {
+    size
+  }, {
+    size: ['sm', 'md', 'lg']
+  });
+  return /*#__PURE__*/_react.default.createElement(ModalShell, _extends({
+    kind: "drawer",
+    size: size,
+    side: side
+  }, props));
+}
+function ConfirmDialog({
+  open,
+  title,
+  message,
+  confirmLabel = 'Confirm',
+  cancelLabel = 'Cancel',
+  destructive = false,
+  onConfirm,
+  onCancel,
+  children
+}) {
+  const cancel = _react.default.useRef(null);
+  return /*#__PURE__*/_react.default.createElement(ModalShell, {
+    kind: "dialog",
+    size: "sm",
+    role: "alertdialog",
+    open: open,
+    onClose: onCancel,
+    title: title,
+    description: message,
+    initialFocus: destructive ? cancel : undefined,
+    className: destructive ? 'plx-dialog--destructive' : undefined,
+    footer: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      ref: cancel,
+      onClick: onCancel
+    }, cancelLabel), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: destructive ? 'danger' : 'primary',
+      onClick: onConfirm
+    }, confirmLabel))
+  }, children);
+}
+function PromptDialog({
+  open,
+  title,
+  message,
+  label,
+  defaultValue = '',
+  placeholder,
+  description,
+  confirmLabel = 'Save',
+  cancelLabel = 'Cancel',
+  validate,
+  onSubmit,
+  onCancel,
+  inputProps,
+  size = 'sm'
+}) {
+  (0, _devWarn.devWarn)('PromptDialog', {
+    size
+  }, {
+    size: ['sm', 'md', 'lg', 'xl', 'full']
+  });
+  const formId = (0, _layer.useUid)('plx-prompt');
+  const input = _react.default.useRef(null);
+  const [value, setValue] = _react.default.useState(defaultValue);
+  const [error, setError] = _react.default.useState('');
+  // each time it opens: the value starts again from defaultValue, with no error, and its text is selected
+  _react.default.useEffect(() => {
+    if (open) {
+      setValue(defaultValue);
+      setError('');
+    }
+  }, [open]);
+  _react.default.useEffect(() => {
+    if (open && input.current && input.current.select) input.current.select();
+  }, [open]);
+  const submit = e => {
+    e.preventDefault();
+    const problem = validate ? validate(value) || '' : '';
+    setError(problem);
+    if (problem) {
+      if (input.current) input.current.focus();
+      return;
+    }
+    if (onSubmit) onSubmit(value);
+  };
+  return /*#__PURE__*/_react.default.createElement(ModalShell, {
+    kind: "dialog",
+    size: size,
+    open: open,
+    onClose: onCancel,
+    title: title,
+    description: message,
+    initialFocus: input,
+    footer: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      onClick: onCancel
+    }, cancelLabel), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "primary",
+      type: "submit",
+      form: formId
+    }, confirmLabel))
+  }, /*#__PURE__*/_react.default.createElement("form", {
+    id: formId,
+    noValidate: true,
+    onSubmit: submit
+  }, /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: label,
+    description: description,
+    error: error || undefined
+  }, /*#__PURE__*/_react.default.createElement(_Input.Input, _extends({
+    ref: input,
+    value: value,
+    placeholder: placeholder,
+    onChange: e => {
+      setValue(e.target.value);
+      if (error) setError('');
+    }
+  }, inputProps)))));
+}
+  } },
+  "platform/providers/pageLayouts.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.PAGE_REGIONS = exports.PAGE_LAYOUTS = exports.FIELD_RULES = exports.DEFAULT_PAGE = exports.COMPOSITION_GUIDE = void 0;
+exports.pageLayout = pageLayout;
+/* Plenix · Page layouts (platform/providers/pageLayouts.js)
+   GENERATED by build-standards.js from platform/standards/layout.json (the design system's layout standard): edit the
+   JSON, never this file.
+   Summary: Which layout each kind of page gets. An application says what a page is; the standard decides how it is laid out.
+   Usage:
+     <AppShell page="settings">…</AppShell>    (or a pattern that is that kind of page, such as SettingsLayout)
+     pageLayout("settings")                   // "contained"
+   Props:
+     PAGE_LAYOUTS: { <kind>: { layout, use } } from the standard
+     DEFAULT_PAGE: the kind of page when none is given
+     pageLayout(kind): the layout mode of a kind of page (the default kind's for an unknown kind)
+*/
+const PAGE_LAYOUTS = exports.PAGE_LAYOUTS = {
+  workspace: {
+    layout: "fluid",
+    use: "Lists, grids, browse and search: most application screens (the default)",
+    regions: ["page-header", "command-bar", "collection"]
+  },
+  dashboard: {
+    layout: "fluid",
+    use: "An overview of widgets and sections",
+    regions: ["page-header", "widgets"]
+  },
+  settings: {
+    layout: "contained",
+    use: "Settings and preferences (every SettingsLayout page)",
+    regions: ["settings"]
+  },
+  form: {
+    layout: "contained",
+    use: "A form on its own page: create or edit one thing",
+    regions: ["page-header", "form"]
+  },
+  detail: {
+    layout: "hybrid",
+    use: "One record or document, with text to read",
+    regions: ["entity-header", "record-sections"]
+  },
+  "master-detail": {
+    layout: "multi-pane",
+    use: "A list beside the chosen item, each scrolling on its own (mail, chat)",
+    regions: ["command-bar", "split"]
+  },
+  editor: {
+    layout: "focus",
+    use: "One task that needs all the room (image editor)",
+    regions: ["canvas"]
+  }
+};
+const DEFAULT_PAGE = exports.DEFAULT_PAGE = "workspace";
+function pageLayout(kind) {
+  return (PAGE_LAYOUTS[kind] || PAGE_LAYOUTS[DEFAULT_PAGE]).layout;
+}
+
+// the composition standard: what each region is for and the patterns it is built from; the guide; the fields rule
+const PAGE_REGIONS = exports.PAGE_REGIONS = {
+  "page-header": {
+    "use": "The page’s title and its own actions",
+    "patterns": ["EntityHeader", "PageContent"]
+  },
+  "entity-header": {
+    "use": "One record’s context, name, facts and its own actions (three parts)",
+    "patterns": ["EntityHeader"]
+  },
+  "command-bar": {
+    "use": "Acting on a list, and narrowing it (search, filters, sort, group, view): one bar that swaps to the selection’s commands",
+    "patterns": ["CommandBar"]
+  },
+  "collection": {
+    "use": "The list itself: a table, cards, or a grid of media",
+    "patterns": ["DataGrid", "ContentGrid", "Card"]
+  },
+  "split": {
+    "use": "A list beside the item chosen in it, each scrolling on its own",
+    "patterns": ["SplitView"]
+  },
+  "form": {
+    "use": "Collecting input: one thing to create or edit, in one or two columns",
+    "patterns": ["Form", "FormSection", "Fieldset", "Field", "FormActions", "Wizard"]
+  },
+  "settings": {
+    "use": "Settings and preferences, grouped in cards",
+    "patterns": ["SettingsLayout", "SettingsSection", "SettingsRow"]
+  },
+  "record-sections": {
+    "use": "A record’s content under its header: facts, activity, related lists",
+    "patterns": ["RecordPage", "Panel", "PropertyList", "ActivityList", "DataGrid"]
+  },
+  "widgets": {
+    "use": "An overview of independent summaries",
+    "patterns": ["WidgetGrid", "Panel", "Card"]
+  },
+  "canvas": {
+    "use": "One task that needs all the room, with its tools",
+    "patterns": ["Toolbar", "ActionBar"]
+  }
+};
+const COMPOSITION_GUIDE = exports.COMPOSITION_GUIDE = [{
+  "question": "Is it collecting input (create or edit one thing)?",
+  "region": "form",
+  "build": "Form, with a chosen number of columns (1 or 2)"
+}, {
+  "question": "Is it narrowing a list (search, filters, sort, group, view)?",
+  "region": "command-bar",
+  "build": "The CommandBar’s find side"
+}, {
+  "question": "Is it acting on a list or on its selected rows?",
+  "region": "command-bar",
+  "build": "The CommandBar, swapping to the selection’s commands"
+}, {
+  "question": "Is it a list beside the item chosen in it?",
+  "region": "split",
+  "build": "SplitView (side by side or stacked) with a ReadingPane"
+}, {
+  "question": "Is it a set of commands with no list?",
+  "region": null,
+  "build": "A Menu (or the page header’s actions)"
+}, {
+  "question": "Is it one record?",
+  "region": "record-sections",
+  "build": "RecordPage: the EntityHeader, then its sections"
+}, {
+  "question": "Is it settings?",
+  "region": "settings",
+  "build": "SettingsLayout with SettingsSection cards"
+}, {
+  "question": "Is it an overview?",
+  "region": "widgets",
+  "build": "WidgetGrid of Panels"
+}];
+const FIELD_RULES = exports.FIELD_RULES = {
+  "components": ["Input", "Select", "Combobox", "SearchField", "NumberInput", "Textarea", "DatePicker", "TimePicker", "TreeSelect", "CountrySelect", "TimeZoneSelect", "EntityPicker", "RelativeDateInput", "InputGroup", "FileInput", "MentionInput"],
+  "stretch": ["Form", "FormSection", "Fieldset", "Field", "SettingsRow", "Dialog", "PromptDialog", "ConfirmDialog", "Drawer", "Sheet", "SidePanel", "Popover", "InlineEdit", "FilterPanel", "SortPanel", "GroupPanel", "Wizard"],
+  "content": ["CommandBar", "Toolbar", "DataToolbar", "FilterBar", "ActionBar", "AppHeader"],
+  "row": ["ResourceList"]
+};
+  } },
+  "platform/utils/sizeSteps.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SIZE_STEPS = exports.GRID_PANE_MAX = exports.GRID_MIN = exports.GRID_BOX_MAX = void 0;
+exports.snapSize = snapSize;
+exports.stepSize = stepSize;
+/* Plenix · SIZE_STEPS
+   Summary: The size tokens in pixels, GENERATED by build-steps.js from the --plx-ref-size-* tokens (do not edit): the widths a pane snaps to.
+   Usage:
+     import { SIZE_STEPS, snapSize } from '../../utils/sizeSteps.js';
+     snapSize(250, 140, 320)   // 240: the nearest size token within the limits
+   Props:
+     none: SIZE_STEPS lists the sizes in pixels, smallest first; snapSize(px, min, max) and stepSize(px, dir, min, max)
+*/
+const SIZE_STEPS = exports.SIZE_STEPS = [4, 8, 12, 16, 18, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 80, 88, 92, 96, 100, 112, 120, 128, 132, 140, 152, 160, 180, 200, 220, 240, 260, 280, 300, 320, 360, 380, 400, 420, 440, 460, 480, 500, 520, 560, 600, 640, 720, 760, 800, 860, 900];
+// the grid lines system/steps.css has a rule for (build-steps.js): a pane is drawn from GRID_MIN to GRID_PANE_MAX, a Resizable box to GRID_BOX_MAX
+const GRID_MIN = exports.GRID_MIN = 4,
+  GRID_PANE_MAX = exports.GRID_PANE_MAX = 960,
+  GRID_BOX_MAX = exports.GRID_BOX_MAX = 1600;
+const within = (min, max) => SIZE_STEPS.filter(s => s >= min && s <= max);
+// the size token nearest to px within [min, max] (the limit itself when no token lies between them)
+function snapSize(px, min, max) {
+  const c = within(min, max);
+  if (!c.length) return Math.max(min, Math.min(max, px));
+  return c.reduce((a, b) => Math.abs(b - px) < Math.abs(a - px) ? b : a);
+}
+// the next size token from px in a direction (+1 wider, -1 narrower), within [min, max]
+function stepSize(px, dir, min, max) {
+  const c = within(min, max);
+  if (!c.length) return px;
+  const cur = snapSize(px, min, max);
+  const i = c.indexOf(cur) + (dir > 0 ? 1 : -1);
+  return c[Math.max(0, Math.min(c.length - 1, i))];
+}
+  } },
+  "platform/components/Resizable/resize-scale.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.resizeScale = resizeScale;
+/* Plenix · resizeScale
+   Summary: Pointer values stay continuous; settled values use the 4px grid or caller steps.
+   Usage: resizeScale(steps, min, max, keyboardSteps) returns clamp, snap, step and limits.
+   Props: steps: allowed settled values; min/max: bounds; keyboardSteps: existing token steps.
+   Behavior: Sorts and deduplicates explicit steps, clamps live values and supports limits beyond the token scale.
+   Notes: No DOM or side effects. */
+function resizeScale(steps, min, max, keyboardSteps = []) {
+  const clamp = value => Math.max(min, Math.min(max, Number.isFinite(value) ? value : min));
+  const values = Array.isArray(steps) ? [...new Set(steps.filter(Number.isFinite).filter(value => value >= min && value <= max))].sort((a, b) => a - b) : [];
+  const snap = value => values.length ? values.reduce((a, b) => Math.abs(b - value) < Math.abs(a - value) ? b : a) : clamp(Math.round(clamp(value) / 4) * 4);
+  const step = (value, dir) => {
+    if (values.length) return values[Math.max(0, Math.min(values.length - 1, values.indexOf(snap(value)) + (dir > 0 ? 1 : -1)))];
+    const keys = keyboardSteps.filter(size => size >= min && size <= max);
+    const last = keyboardSteps.length ? Math.max(...keyboardSteps) : min;
+    if (value > last || value === last && dir > 0 || !keys.length) return snap(value + (dir > 0 ? 4 : -4));
+    const candidates = keys.filter(size => dir > 0 ? size > value : size < value);
+    return candidates.length ? dir > 0 ? Math.min(...candidates) : Math.max(...candidates) : dir > 0 ? max : min;
+  };
+  return {
+    clamp,
+    snap,
+    step,
+    lo: values.length ? values[0] : min,
+    hi: values.length ? values[values.length - 1] : max
+  };
+}
+  } },
+  "platform/components/Resizable/Resizable.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../utils/grid.js":"platform/utils/grid.js","./resize-scale.js":"platform/components/Resizable/resize-scale.js","../../utils/floating.js":"platform/utils/floating.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.PanelSplitter = PanelSplitter;
+exports.Resizable = Resizable;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _direction = require("../../utils/direction.js");
+var _sizeSteps = require("../../utils/sizeSteps.js");
+var _grid = require("../../utils/grid.js");
+var _resizeScale = require("./resize-scale.js");
+var _floating = require("../../utils/floating.js");
+var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Resizable, PanelSplitter
+   Summary: An area people make wider or taller by dragging its edge (10 Patterns › Selection and organization › Resize):
+     Resizable is a box with a resize edge on its end (horizontal), its bottom (vertical) or both
+     for those who do not drag; PanelSplitter is the same edge on a pane of the application shell (the navigation pane,
+     a secondary pane, the inspector), promoted here from AppShell, which imports and re-exports it. Every size is on the
+     4px grid: a drag moves one grid line at a time and lands on one when let go (owner, 2026-10-26), and a list of steps
+     narrows the settled sizes further. Sizes are honoured from 4px up to 1600px (GRID_BOX_MAX; a pane of the shell up to
+     960px, GRID_PANE_MAX): each grid line has a rule in the stylesheet up to there, and a larger size lands on the largest.
+   Usage:
+     <Resizable label="Preview" axis="horizontal" defaultWidth={320} minWidth={200} maxWidth={560}>…</Resizable>
+     <Resizable label="Notes" axis="vertical" height={h} onResize={({ height }) => setH(height)} minHeight={120} maxHeight={400}>…</Resizable>
+     <Resizable label="Image" axis="both" defaultWidth={240} defaultHeight={160} …>…</Resizable>
+     <Resizable label="Panel" axis="horizontal" steps={[240, 320, 400, 560]} defaultWidth={320}>…</Resizable>   // snapped to steps
+     <PanelSplitter label="Resize navigation" value={w} min={140} max={() => 320} onChange={setW} edge="end" />
+   Props:
+     label: what is resized ("Preview"): the edges' names ("Preview width", "Preview height") (required)
+     variant: "default" (a hover line on the edge) | "divider" (the edge is the whole gap to the next panel: a line down
+       its middle and a pill on it; its size is the container's --plx-comp-resizable-divider-size: SplitView)
+     fill: the content is a column whose children fill it; default false
+     axis: "horizontal" (default; the end edge changes the width) | "vertical" (the bottom edge changes the height) |
+       "both" (both edges, and a corner the pointer drags in both directions)
+     width, height: the size in pixels when the page keeps it; onResize({ width,
+       height }) runs with each live size and the snapped release size
+     defaultWidth, defaultHeight: the starting size when the box keeps it itself
+     minWidth, maxWidth, minHeight, maxHeight: the limits in pixels (defaults: the tokens --plx-comp-resizable-min-width,
+       -max-width, -min-height and -max-height: 120 to 560 wide, 80 to 400 high)
+     steps: the only sizes allowed, smallest first (each a size token): an array for the resized axis, or { width: [],
+       height: [] }; without it the settled size is on the 4px grid within the limits
+     strings: the words it says, for other languages: { width: "{label} width", height: "{label} height" }
+       "Reset size" }
+     strings.minWidth, maxWidth, minHeight, maxHeight: optional explanations at those limits.
+     className: more classes on the box; children: its content
+     PanelSplitter.label, value, min, max() (a function: the widest it can be now), onChange(width), onCollapse(),
+       defaultValue, edge: "end" (an area at the start) | "start" (an area at the end)
+   Behavior:
+     Pointer: drag an edge (or the corner); the size follows the pointer one grid line (4px) at a time within the limits
+       and, when let go, stays on that grid line or settles on the nearest of the supplied steps; the page shows the
+       resize pointer.
+     Keyboard: each edge is a separator (aria-valuenow, -valuemin, -valuemax) in the Tab order: Arrow Left / Right (the
+       end edge, mirrored in a right-to-left page) or Arrow Up / Down (the bottom edge) step to the next size, Home and End
+       to the limits. aria-valuemin and -valuemax are the limits it can reach (within GRID_MIN to GRID_BOX_MAX, a pane's
+       to GRID_PANE_MAX), so a maxWidth past 1600 reports 1600.
+     No size menu (owner, 2026-10-16: removed, also for touch): the edge is dragged, or moved with the keyboard.
+     PanelSplitter: drag (one grid line at a time, within min and max), or the arrow keys (--plx-sys-shell-splitter-step),
+       Home and End; double-click or Enter collapses the area when it can collapse (onCollapse: the navigation pane folds
+       to its rail).
+   Notes:
+     The size reaches the stylesheet as data-plx-width and data-plx-height with one rule per size token and one per grid
+       line (system/steps.css; never a style attribute or a style element). The content fits itself: it wraps, or scrolls in a region of its own.
+     Limit hints appear beside the divider, announce once per limit per drag, and dismiss on release, blur or Escape.
+     Motion uses the existing duration token and is skipped when reduced motion is requested.
+     A table's column widths are the DataGrid's own; a pane of the shell uses PanelSplitter through its pattern.
+*/
+const useSizeEffect = typeof window === 'undefined' ? _react.default.useEffect : _react.default.useLayoutEffect;
+
+/* the drag handle on a resizable area's inner edge: drag, or the arrow keys (--plx-sys-shell-splitter-step), Home and End;
+   double-click or Enter collapses the area when it can collapse. While dragged the width moves one grid line at a time
+   (the base spacing token, 4px) within the limits, so it lands on the grid when let go (owner, 2026-10-26). edge: "end" (an area at the start: dragging toward the end widens it) or
+   "start" (an area at the end). In a right-to-left page the start is on the right, so the drag and Arrow Left / Right
+   are mirrored (arrowStep gives the step in reading order). No size menu (owner, 2026-10-16). */
+function PanelSplitter({
+  label,
+  value,
+  min,
+  max,
+  onChange,
+  onCollapse,
+  edge = 'end'
+}) {
+  const dir = edge === 'end' ? 1 : -1;
+  // a width is always on the 4px grid (owner, 2026-10-26: smooth, then "the nearest grid line"), within the limits
+  // (and within the grid lines the stylesheet draws a pane at: GRID_MIN to GRID_PANE_MAX)
+  const clamp = w => (0, _grid.gridWithin)(w, Math.max(min, _sizeSteps.GRID_MIN), Math.min(max(), _sizeSteps.GRID_PANE_MAX));
+  const onPointerDown = e => {
+    if (e.button !== 0) return;
+    e.preventDefault();
+    const x0 = e.clientX,
+      w0 = value,
+      flip = (0, _direction.isRtl)(e.currentTarget) ? -1 : 1;
+    const move = ev => onChange(clamp(w0 + (ev.clientX - x0) * dir * flip));
+    const up = () => {
+      document.removeEventListener('pointermove', move);
+      document.removeEventListener('pointerup', up);
+      document.documentElement.classList.remove('is-resizing-columns');
+    };
+    document.addEventListener('pointermove', move);
+    document.addEventListener('pointerup', up);
+    document.documentElement.classList.add('is-resizing-columns');
+  };
+  const onKeyDown = e => {
+    const step = (0, _direction.arrowStep)(e, e.currentTarget, {
+      vertical: false
+    }) * dir;
+    if (step) {
+      e.preventDefault();
+      onChange(clamp(value + step * (tokenPx('--plx-sys-shell-splitter-step') || (0, _grid.gridStep)())));
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      onChange(clamp(min));
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      onChange(clamp(max()));
+    } else if (e.key === 'Enter' && onCollapse) {
+      e.preventDefault();
+      onCollapse();
+    }
+  };
+  const top = clamp(max());
+  return /*#__PURE__*/_react.default.createElement("div", {
+    role: "separator",
+    "aria-orientation": "vertical",
+    "aria-label": label,
+    "aria-valuenow": value,
+    "aria-valuemin": clamp(min),
+    "aria-valuemax": top,
+    tabIndex: 0,
+    className: (0, _cx.cx)('plx-panel-splitter', 'plx-panel-splitter--' + edge),
+    onPointerDown: onPointerDown,
+    onKeyDown: onKeyDown,
+    onDoubleClick: onCollapse || undefined
+  });
+}
+
+/* ── Resizable: a box with its own resize edges ── */
+const STRINGS = {
+  width: '{label} width',
+  height: '{label} height'
+};
+const fill = (s, vars) => String(s).replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
+// the default limits are the component's tokens (--plx-comp-resizable-min-width …), read from the page
+const tokenPx = name => typeof document === 'undefined' ? 0 : parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name)) || 0;
+const limit = (v, name) => v != null ? v : tokenPx('--plx-comp-resizable-' + name);
+// One axis's settled sizes: caller steps, or the 4px grid; while dragged the size moves one grid line at a time.
+function Resizable({
+  label,
+  variant = 'default',
+  fill: fillContent = false,
+  axis = 'horizontal',
+  width,
+  height,
+  onResize,
+  defaultWidth,
+  defaultHeight,
+  minWidth: minW,
+  maxWidth: maxW,
+  minHeight: minH,
+  maxHeight: maxH,
+  steps,
+  strings,
+  className,
+  children,
+  ...rest
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const minWidth = limit(minW, 'min-width'),
+    maxWidth = limit(maxW, 'max-width'),
+    minHeight = limit(minH, 'min-height'),
+    maxHeight = limit(maxH, 'max-height');
+  const doW = axis !== 'vertical',
+    doH = axis !== 'horizontal';
+  const wSteps = Array.isArray(steps) ? doW ? steps : null : steps && steps.width;
+  const hSteps = Array.isArray(steps) ? doW ? null : steps : steps && steps.height;
+  const W = (0, _resizeScale.resizeScale)(wSteps, minWidth, maxWidth, _sizeSteps.SIZE_STEPS),
+    H = (0, _resizeScale.resizeScale)(hSteps, minHeight, maxHeight, _sizeSteps.SIZE_STEPS);
+  const [own, setOwn] = _react.default.useState(() => ({
+    width: defaultWidth != null ? W.snap(defaultWidth) : W.snap((minWidth + maxWidth) / 2),
+    height: defaultHeight != null ? H.snap(defaultHeight) : H.snap((minHeight + maxHeight) / 2)
+  }));
+  const [dragging, setDragging] = _react.default.useState(false);
+  // live (dragging): one grid line at a time within the limits; settled: the steps, or the grid
+  // every size within the grid lines the stylesheet draws a box at (GRID_MIN to GRID_BOX_MAX): a larger one lands on the
+  // largest, never on the default size
+  const cap = v => Math.max(_sizeSteps.GRID_MIN, Math.min(_sizeSteps.GRID_BOX_MAX, v));
+  const live = (S, v) => cap((0, _grid.gridWithin)(v, S.lo, S.hi));
+  // the limits it can actually reach (the separator's aria-valuemin / -valuemax and the limit hint): each scale's own,
+  // settled and held within GRID_MIN to GRID_BOX_MAX, so a maxWidth past 1600 reports 1600
+  const reach = S => ({
+    lo: cap(S.snap(S.lo)),
+    hi: cap(S.snap(S.hi))
+  });
+  const WR = reach(W),
+    HR = reach(H);
+  const size = {
+    width: width != null ? dragging ? live(W, width) : cap(W.snap(width)) : live(W, own.width),
+    height: height != null ? dragging ? live(H, height) : cap(H.snap(height)) : live(H, own.height)
+  };
+  const root = _react.default.useRef(null);
+  // a size reaches the stylesheet as data-plx-width / data-plx-height: one rule per size token (resizable.css) and one per
+  // grid line (system/steps.css, build-steps.js), never a style attribute or a style element
+  const latest = _react.default.useRef(size);
+  latest.current = size;
+  const dragCleanup = _react.default.useRef(null),
+    motion = _react.default.useRef([]);
+  const stopMotion = () => {
+    motion.current.forEach(animation => animation.cancel());
+    motion.current = [];
+  };
+  const animate = (element, frames) => {
+    const win = element && element.ownerDocument.defaultView;
+    if (!win || !element.animate || win.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const duration = win.getComputedStyle(element).getPropertyValue('--plx-comp-resizable-edge-duration').trim();
+    const milliseconds = parseFloat(duration) * (duration.endsWith('ms') ? 1 : 1000);
+    if (milliseconds > 0) motion.current.push(element.animate(frames, {
+      duration: milliseconds
+    }));
+  };
+  _react.default.useEffect(() => () => {
+    if (dragCleanup.current) dragCleanup.current();
+    stopMotion();
+  }, []);
+  const [notice, setNotice] = _react.default.useState(''),
+    [announcement, setAnnouncement] = _react.default.useState('');
+  const input = _react.default.useRef('pointer');
+  const announced = _react.default.useRef(new Set()),
+    anchor = _react.default.useRef(null),
+    bubble = _react.default.useRef(null);
+  (0, _floating.useFloating)(anchor, bubble, {
+    open: !!notice,
+    placement: 'end',
+    offset: 'sm'
+  });
+  useSizeEffect(() => {
+    const element = bubble.current;
+    if (!notice || !element || !element.showPopover) return;
+    element.showPopover();
+    return () => {
+      if (element.matches(':popover-open')) element.hidePopover();
+    };
+  }, [notice]);
+  const reportLimit = next => {
+    let message = '';
+    for (const [which, scale, active] of [['width', WR, doW], ['height', HR, doH]]) {
+      if (!active || next[which] > scale.lo && next[which] < scale.hi) continue;
+      const smallest = next[which] <= scale.lo,
+        value = smallest ? scale.lo : scale.hi;
+      message = t[(smallest ? 'min' : 'max') + (which === 'width' ? 'Width' : 'Height')] || (smallest ? 'Smallest ' : 'Largest ') + which + ' for ' + label + ' (' + value + 'px)';
+      break;
+    }
+    setNotice(message);
+    if (message && !announced.current.has(message)) {
+      announced.current.add(message);
+      setAnnouncement(message);
+      const handle = anchor.current;
+      const transform = handle && handle.classList.contains('plx-resizable__edge--block') ? 'translateY' : 'translateX';
+      if (handle) animate(handle, [{
+        transform: transform + '(0)'
+      }, {
+        transform: transform + '(var(--plx-ref-size-4px))'
+      }, {
+        transform: transform + '(0)'
+      }]);
+    }
+  };
+  const set = (next, settle = true) => {
+    reportLimit(next);
+    const s = {
+      width: doW ? settle ? cap(W.snap(next.width)) : live(W, next.width) : latest.current.width,
+      height: doH ? settle ? cap(H.snap(next.height)) : live(H, next.height) : latest.current.height
+    };
+    if (s.width === latest.current.width && s.height === latest.current.height) return;
+    latest.current = s;
+    if (width == null || height == null) setOwn(s);
+    if (onResize) onResize(s);
+  };
+  const drag = (dx, dy) => e => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    e.preventDefault();
+    input.current = 'pointer';
+    anchor.current = e.currentTarget;
+    const x0 = e.clientX,
+      y0 = e.clientY,
+      w0 = latest.current.width,
+      h0 = latest.current.height,
+      flip = (0, _direction.isRtl)(e.currentTarget) ? -1 : 1;
+    stopMotion();
+    announced.current.clear();
+    setAnnouncement('');
+    setDragging(true);
+    const cls = dx && dy ? 'is-resizing-both' : dy ? 'is-resizing-rows' : 'is-resizing-columns';
+    const move = ev => set({
+      width: w0 + (ev.clientX - x0) * flip * dx,
+      height: h0 + (ev.clientY - y0) * dy
+    }, false);
+    const doc = e.currentTarget.ownerDocument;
+    if (dragCleanup.current) dragCleanup.current();
+    const clear = () => {
+      doc.removeEventListener('pointermove', move);
+      doc.removeEventListener('pointerup', up);
+      doc.removeEventListener('pointercancel', up);
+      doc.documentElement.classList.remove(cls);
+      dragCleanup.current = null;
+    };
+    const up = () => {
+      const raw = latest.current,
+        settled = {
+          width: W.snap(raw.width),
+          height: H.snap(raw.height)
+        };
+      const before = {},
+        after = {};
+      if (doW) {
+        before.inlineSize = raw.width + 'px';
+        after.inlineSize = settled.width + 'px';
+      }
+      if (doH) {
+        before.blockSize = raw.height + 'px';
+        after.blockSize = settled.height + 'px';
+      }
+      if (raw.width !== settled.width || raw.height !== settled.height) animate(root.current, [before, after]);
+      set(raw);
+      setNotice('');
+      setDragging(false);
+      clear();
+    };
+    dragCleanup.current = clear;
+    doc.addEventListener('pointermove', move);
+    doc.addEventListener('pointerup', up);
+    doc.addEventListener('pointercancel', up);
+    doc.documentElement.classList.add(cls);
+  };
+  const keys = which => e => {
+    input.current = 'keyboard';
+    if (e.key === 'Escape') {
+      setNotice('');
+      return;
+    }
+    anchor.current = e.currentTarget;
+    const S = which === 'width' ? W : H;
+    const step = which === 'width' ? (0, _direction.arrowStep)(e, e.currentTarget, {
+      vertical: false
+    }) : e.key === 'ArrowDown' ? 1 : e.key === 'ArrowUp' ? -1 : 0;
+    const cur = latest.current[which];
+    let next = null;
+    if (step) next = S.step(cur, step);else if (e.key === 'Home') next = S.lo;else if (e.key === 'End') next = S.hi;
+    if (next == null) return;
+    e.preventDefault();
+    set(Object.assign({}, latest.current, {
+      [which]: next
+    }));
+  };
+  const edge = which => {
+    const R = which === 'width' ? WR : HR;
+    return /*#__PURE__*/_react.default.createElement("div", {
+      role: "separator",
+      tabIndex: 0,
+      "aria-orientation": which === 'width' ? 'vertical' : 'horizontal',
+      "aria-label": fill(t[which], {
+        label
+      }),
+      "aria-valuenow": size[which],
+      "aria-valuemin": R.lo,
+      "aria-valuemax": R.hi,
+      title: notice || undefined,
+      className: (0, _cx.cx)('plx-resizable__edge', 'plx-resizable__edge--' + (which === 'width' ? 'inline' : 'block'), variant === 'divider' && 'plx-resizable__edge--divider'),
+      onPointerDown: which === 'width' ? drag(1, 0) : drag(0, 1),
+      onKeyDown: keys(which),
+      onBlur: () => setNotice(''),
+      onPointerLeave: () => {
+        if (!dragging && input.current === 'pointer') setNotice('');
+      }
+    });
+  };
+  return /*#__PURE__*/_react.default.createElement("div", _extends({}, rest, {
+    ref: root,
+    className: (0, _cx.cx)('plx-resizable', 'plx-resizable--' + (doW && doH ? 'both' : doH ? 'vertical' : 'horizontal'), steps && 'plx-resizable--steps', variant === 'divider' && 'plx-resizable--divider', fillContent && 'plx-resizable--fill', className),
+    "data-plx-width": doW ? size.width + 'px' : undefined,
+    "data-plx-height": doH ? size.height + 'px' : undefined
+  }), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-resizable__content"
+  }, children), notice ? /*#__PURE__*/_react.default.createElement("span", {
+    ref: bubble,
+    role: "tooltip",
+    popover: "manual",
+    className: "plx-resizable-limit"
+  }, notice) : null, /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, {
+    role: "status",
+    "aria-live": "polite",
+    "aria-atomic": "true"
+  }, announcement), doW ? edge('width') : null, doH ? edge('height') : null, doW && doH ? /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-resizable__corner",
+    "aria-hidden": "true",
+    onPointerDown: drag(1, 1)
+  }) : null);
 }
   } },
   "platform/patterns/AppShell/AppShell.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../providers/pageLayouts.js":"platform/providers/pageLayouts.js","../../components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
@@ -22732,7 +22747,7 @@ function Divider({
   }, rest));
 }
   } },
-  "platform/patterns/CommandBar/BarActions.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../../components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/layer.js":"platform/utils/layer.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/CommandBar/BarActions.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../../components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/layer.js":"platform/utils/layer.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -22748,6 +22763,7 @@ var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
 var _Popover = require("../../components/Popover/Popover.jsx");
 var _Loading = require("../../components/Loading/Loading.jsx");
 var _layer = require("../../utils/layer.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · BarActions
    (platform/patterns/CommandBar; internal, not part of the public API: the commands of a bar, shared by CommandBar, the
@@ -22917,11 +22933,13 @@ function BarActions({
   fold = 0,
   off = a => !!a.disabled,
   why = a => a.why,
-  moreLabel = 'More actions',
+  moreLabel,
   dangerClass,
   size = 'sm',
   extra = []
 }) {
+  const tw = (0, _LocaleProvider.useStrings)('barActions');
+  if (moreLabel === undefined) moreLabel = tw.moreLabel;
   const folded = new Set(foldOrder(actions).slice(0, fold).map(a => a.id || a.label));
   const kept = actions.filter(a => !folded.has(a.id || a.label));
   const away = actions.filter(a => folded.has(a.id || a.label));
@@ -34538,7 +34556,7 @@ DataGrid.unreadCommands = _unreadCommands.unreadCommands;
 // nothing to load ahead: the engine is part of the Platform bundle (kept so pages that called it keep working)
 DataGrid.preload = () => {};
   } },
-  "platform/patterns/ActionBar/ActionBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ActionBar/ActionBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -34547,6 +34565,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.ActionBar = ActionBar;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · ActionBar
    Summary: A page's or a form's buttons in one bar on the right, kept in view at the bottom of the page while it scrolls.
@@ -34572,11 +34591,13 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
 */
 
 function ActionBar({
-  label = 'Actions',
+  label,
   sticky = true,
   className,
   children
 }) {
+  const tw = (0, _LocaleProvider.useStrings)('actionBar');
+  if (label === undefined) label = tw.label;
   return /*#__PURE__*/_react.default.createElement("div", {
     role: "group",
     "aria-label": label,
@@ -36619,7 +36640,7 @@ AppHeader.Switcher = function AppHeaderSwitcher({
   }, apps.filter(a => pinnedApps.indexOf(a.id) < 0).map(tile))) : null) : null);
 };
   } },
-  "platform/patterns/FilterBar/FilterBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/FilterBar/FilterBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36631,6 +36652,7 @@ var _cx = require("../../utils/cx.js");
 var _overflow = require("../../utils/overflow.js");
 var _Button = require("../../components/Button/Button.jsx");
 var _Menu = require("../../components/Menu/Menu.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · FilterBar
    Summary: A row of filters above a list or grid; each filter opens a menu of choices.
@@ -36655,13 +36677,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
 */
 
 const isSet = f => f.multiple ? (f.value || []).length > 0 : f.value !== null && f.value !== undefined && f.value !== '';
-const STRINGS = {
-  label: 'Filters',
-  more: 'More filters',
-  clearAll: 'Clear all',
-  one: '{label}: {value}',
-  several: '{label} · {count}'
-};
 const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
 const summary = (f, t) => {
   if (!isSet(f)) return f.label;
@@ -36708,7 +36723,7 @@ function FilterBar({
   strings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('filterBar', strings);
   const list = _react.default.useRef(null);
   const fit = (0, _overflow.useOverflow)(list, filters.length, filters.map(f => summary(f, t)).join('|'));
   const hidden = filters.slice(fit);
@@ -45670,7 +45685,7 @@ const CommandMenu = exports.CommandMenu = /*#__PURE__*/_react.default.forwardRef
   }, count));
 });
   } },
-  "platform/patterns/CommandPalette/CommandPalette.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/hotkey.js":"platform/utils/hotkey.js","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/CommandPalette/CommandPalette.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/hotkey.js":"platform/utils/hotkey.js","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -45682,6 +45697,7 @@ var _cx = require("../../utils/cx.js");
 var _hotkey = require("../../utils/hotkey.js");
 var _Dialog = require("../../components/Dialog/Dialog.jsx");
 var _CommandMenu = require("../../components/CommandMenu/CommandMenu.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · CommandPalette
    Summary: The command menu in a dialog, opened with a shortcut (04 Actions & Commands › Menus and commands › Command
@@ -45716,11 +45732,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      Built only from Platform parts: Dialog, CommandMenu and useHotkey.
 */
 
-const STRINGS = {
-  title: 'Commands',
-  close: 'Close'
-};
-
 // a one-step binding as aria-keyshortcuts writes it (Mod+K: Control+K, or Meta+K on a Mac)
 const keyshortcut = b => /\s/.test(String(b).trim()) ? undefined : String(b).trim().split('+').map(k => /^mod$/i.test(k) ? (0, _hotkey.isMac)() ? 'Meta' : 'Control' : /^ctrl$/i.test(k) ? 'Control' : k).join('+');
 function CommandPalette({
@@ -45741,7 +45752,7 @@ function CommandPalette({
   strings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('commandPalette', strings);
   const controlled = openProp !== undefined;
   const [own, setOwn] = _react.default.useState(!!defaultOpen);
   const open = controlled ? !!openProp : own;
@@ -55604,7 +55615,7 @@ function Carousel({
   }) : null) : null);
 }
   } },
-  "platform/patterns/PeopleGroup/PeopleGroup.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","../../components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/PeopleGroup/PeopleGroup.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","../../components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -55620,6 +55631,7 @@ var _IconTile = require("../../components/IconTile/IconTile.jsx");
 var _Link = require("../../components/Link/Link.jsx");
 var _Button = require("../../components/Button/Button.jsx");
 var _VisuallyHidden = require("../../components/VisuallyHidden/VisuallyHidden.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · PeopleGroup
    Summary: A set of people shown as one identity in a single row: a team (its own picture or initials, its name, what it
@@ -55652,14 +55664,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      A list of people with no shared identity is an AvatarGroup. A single person is a Persona. Granting a team or a group
        access shows it with a role (PermissionSummary for what that role allows).
 */
-const STRINGS = {
-  team: 'Team',
-  group: 'Group',
-  members: '{n} members',
-  member: '{n} member',
-  showMembers: 'Show members',
-  membersOf: 'Members of {name}'
-};
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 
 // "8 members" with the number in the data font
@@ -55690,7 +55694,7 @@ function PeopleGroup({
   className,
   ...rest
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('peopleGroup', strings);
   const group = kind === 'group';
   const kindWord = group ? t.group : t.team;
   const showAvatars = !group && members && members.length;
@@ -65793,7 +65797,7 @@ function Wizard({
   }, at === all.length - 1 ? t.complete : t.next)));
 }
   } },
-  "platform/patterns/WizardDialog/WizardDialog.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/WizardDialog/WizardDialog.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -65805,6 +65809,7 @@ var _devWarn = require("../../utils/devWarn.js");
 var _Dialog = require("../../components/Dialog/Dialog.jsx");
 var _Wizard = require("../Wizard/Wizard.jsx");
 var _UnsavedGuard = require("../../providers/UnsavedGuard.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · WizardDialog
    Summary: A Wizard in a medium, large or full-screen Platform Dialog.
@@ -65833,10 +65838,7 @@ function WizardDialog({
   }, {
     size: ['md', 'lg', 'full']
   });
-  const t = Object.assign({
-    close: 'Close',
-    unsaved: 'Your changes will be lost.'
-  }, strings);
+  const t = (0, _LocaleProvider.useStrings)('wizardDialog', strings);
   const [busy, setBusy] = _react.default.useState(false);
   const guard = (0, _UnsavedGuard.useUnsavedGuard)(open && dirty, t.unsaved);
   const close = guard(() => {
@@ -66017,7 +66019,7 @@ function FormFlow({
   }, open ? body : null);
 }
   } },
-  "platform/patterns/Autosave/Autosave.jsx": { deps: {"react":null,"../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/Autosave/Autosave.jsx": { deps: {"react":null,"../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -66032,6 +66034,7 @@ var _Button = require("../../components/Button/Button.jsx");
 var _Stack = require("../../components/Stack/Stack.jsx");
 var _UnsavedGuard = require("../../providers/UnsavedGuard.jsx");
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · Autosave, SaveStatus, useAutosave
    Summary: Debounced serialized persistence and icon Badges for saving, saved, offline and failed work.
@@ -66100,8 +66103,10 @@ function Autosave({
 function useAutosave(value, onSave, {
   delay = 600,
   enabled = true,
-  unsavedMessage = 'Your changes have not been saved.'
+  unsavedMessage
 } = {}) {
+  const tw = (0, _LocaleProvider.useStrings)('autosave');
+  if (unsavedMessage === undefined) unsavedMessage = tw.unsaved;
   const [snapshot, setSnapshot] = _react.default.useState({
     state: 'saved',
     error: null,
