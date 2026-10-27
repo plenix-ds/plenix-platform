@@ -641,7 +641,7 @@ object PlenixComponent {
     val segmentedItemMinHeight = 32.dp
     val segmentedRadius = 4.dp
     val selectAfterInsetInlineEnd = 12.dp
-    val selectAfterWidth = 12.dp
+    val selectAfterWidth = 20.dp
     const val sliderInputDisabledOpacity = 0.5f
     val sliderInputHeight = 28.dp
     val sliderRowGap = 4.dp
