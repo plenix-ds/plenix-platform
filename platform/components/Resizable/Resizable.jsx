@@ -4,7 +4,8 @@
      for those who do not drag; PanelSplitter is the same edge on a pane of the application shell (the navigation pane,
      a secondary pane, the inspector), promoted here from AppShell, which imports and re-exports it. Every size is on the
      4px grid: a drag moves one grid line at a time and lands on one when let go (owner, 2026-10-26), and a list of steps
-     narrows the settled sizes further.
+     narrows the settled sizes further. Sizes are honoured from 4px up to 1600px (GRID_BOX_MAX; a pane of the shell up to
+     960px, GRID_PANE_MAX): each grid line has a rule in the stylesheet up to there, and a larger size lands on the largest.
    Usage:
      <Resizable label="Preview" axis="horizontal" defaultWidth={320} minWidth={200} maxWidth={560}>…</Resizable>
      <Resizable label="Notes" axis="vertical" height={h} onResize={({ height }) => setH(height)} minHeight={120} maxHeight={400}>…</Resizable>
@@ -52,7 +53,7 @@
 import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { arrowStep, isRtl } from '../../utils/direction.js';
-import { SIZE_STEPS } from '../../utils/sizeSteps.js';
+import { SIZE_STEPS, GRID_MIN, GRID_PANE_MAX, GRID_BOX_MAX } from '../../utils/sizeSteps.js';
 import { gridStep, gridWithin } from '../../utils/grid.js';
 import { resizeScale } from './resize-scale.js';
 import { useFloating } from '../../utils/floating.js';
@@ -67,7 +68,8 @@ const useSizeEffect = typeof window === 'undefined' ? React.useEffect : React.us
 export function PanelSplitter({ label, value, min, max, onChange, onCollapse, edge = 'end' }) {
   const dir = edge === 'end' ? 1 : -1;
   // a width is always on the 4px grid (owner, 2026-10-26: smooth, then "the nearest grid line"), within the limits
-  const clamp = (w) => gridWithin(w, min, max());
+  // (and within the grid lines the stylesheet draws a pane at: GRID_MIN to GRID_PANE_MAX)
+  const clamp = (w) => gridWithin(w, Math.max(min, GRID_MIN), Math.min(max(), GRID_PANE_MAX));
   const onPointerDown = (e) => {
     if (e.button !== 0) return;
     e.preventDefault();
@@ -109,8 +111,11 @@ export function Resizable({ label, variant = 'default', fill: fillContent = fals
   const [own, setOwn] = React.useState(() => ({ width: defaultWidth != null ? W.snap(defaultWidth) : W.snap((minWidth + maxWidth) / 2), height: defaultHeight != null ? H.snap(defaultHeight) : H.snap((minHeight + maxHeight) / 2) }));
   const [dragging, setDragging] = React.useState(false);
   // live (dragging): one grid line at a time within the limits; settled: the steps, or the grid
-  const live = (S, v) => gridWithin(v, S.lo, S.hi);
-  const size = { width: width != null ? (dragging ? live(W, width) : W.snap(width)) : live(W, own.width), height: height != null ? (dragging ? live(H, height) : H.snap(height)) : live(H, own.height) };
+  // every size within the grid lines the stylesheet draws a box at (GRID_MIN to GRID_BOX_MAX): a larger one lands on the
+  // largest, never on the default size
+  const cap = (v) => Math.max(GRID_MIN, Math.min(GRID_BOX_MAX, v));
+  const live = (S, v) => cap(gridWithin(v, S.lo, S.hi));
+  const size = { width: width != null ? (dragging ? live(W, width) : cap(W.snap(width))) : live(W, own.width), height: height != null ? (dragging ? live(H, height) : cap(H.snap(height))) : live(H, own.height) };
   const root = React.useRef(null);
   // a size reaches the stylesheet as data-plx-width / data-plx-height: one rule per size token (resizable.css) and one per
   // grid line (system/steps.css, build-steps.js), never a style attribute or a style element
@@ -153,7 +158,7 @@ export function Resizable({ label, variant = 'default', fill: fillContent = fals
   };
   const set = (next, settle = true) => {
     reportLimit(next);
-    const s = { width: doW ? (settle ? W.snap(next.width) : live(W, next.width)) : latest.current.width, height: doH ? (settle ? H.snap(next.height) : live(H, next.height)) : latest.current.height };
+    const s = { width: doW ? (settle ? cap(W.snap(next.width)) : live(W, next.width)) : latest.current.width, height: doH ? (settle ? cap(H.snap(next.height)) : live(H, next.height)) : latest.current.height };
     if (s.width === latest.current.width && s.height === latest.current.height) return;
     latest.current = s;
     if (width == null || height == null) setOwn(s);

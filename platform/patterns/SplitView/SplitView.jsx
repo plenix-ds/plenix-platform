@@ -33,7 +33,8 @@
        line on each side, a light fill and a grip of three short lines in the middle; the gutter tints on hover, and its
        lines and grip take the focus color while focused or dragged. Stacked, the same turned a quarter.
      Dragging: the divider moves one grid line (4px) at a time within the limits and stays on the grid when let go, or
-       settles on the nearest of the steps when there are steps.
+       settles on the nearest of the steps when there are steps. Sizes are honoured up to 1600px (Resizable's
+       GRID_BOX_MAX): a larger size or maxSize lands on 1600px.
      Keyboard: the divider is a separator in the Tab order; the arrow keys step to the next size, Home and End to the
        limits. There is no size menu (owner, 2026-10-16).
      Stacked when there is no room side by side: under 900px of the split view's own width the panels stack (container

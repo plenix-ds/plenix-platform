@@ -52,6 +52,7 @@ import { Button } from '../../components/Button/Button.jsx';
 import { ToolRail, BarContext } from '../ToolRail/ToolRail.jsx';
 import { useAppLayout, PanelSplitter, tokenPx } from '../AppShell/AppShell.jsx';
 import { gridWithin } from '../../utils/grid.js';
+import { GRID_PANE_MAX } from '../../utils/sizeSteps.js';
 
 const STRINGS = { browse: 'Browse' };
 // the rail's items out of their fragments (the bar draws destinations, never dividers)
@@ -113,7 +114,7 @@ export function NavPane({ label, title, actions, as = 'nav', header, footer, rai
 
   // a width only the page or the person knows (the width prop, or the splitter's) reaches the stylesheet as the pane's width, on the grid
   const w = mode === 'static' ? width : narrow ? null : layout.width;
-  const paneWidth = w ? gridWithin(parseInt(w, 10), tokenPx('--plx-sys-shell-nav-min-width'), tokenPx('--plx-sys-shell-nav-max-width')) + 'px' : undefined;
+  const paneWidth = w ? gridWithin(parseInt(w, 10), tokenPx('--plx-sys-shell-nav-min-width'), Math.min(tokenPx('--plx-sys-shell-nav-max-width'), GRID_PANE_MAX)) + 'px' : undefined;
   const collapse = mode === 'static' || narrow ? null : (
     <span className={cx('plx-nav-pane__collapse', 'plx-nav-pane__collapse--' + collapseAt)}>
       <Button size="sm" variant="ghost" iconOnly icon="panel-left-close" label="Collapse sidebar" onClick={layout.toggle} />
