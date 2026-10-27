@@ -7,7 +7,8 @@
      <Wizard strings={strings('wizard')} />; t('collection.selected', { count: 2 }); format.date('2026-03-08');
    Props:
      locale: a BCP 47 language tag; default the page's formatLocale()
-     catalogs: messages by locale, with flat dot keys or nested sections; English is always the last fallback
+     catalogs: messages by locale, with flat dot keys or nested sections; Plenix's built-in words for the language come after
+       them (i18n/ar.js: Arabic, owner arabic-batch4-36), and English is always the last fallback
      messages: the current locale's catalog, as a convenience
      fallbackLocale: locale searched after the requested locale and its language; default "en"
      timeZone: optional Intl time zone for this provider's date/time formatters
@@ -34,6 +35,10 @@ import { DirectionProvider } from './DirectionProvider.jsx';
 import { directionOf } from '../utils/direction.js';
 import * as F from '../utils/format.js';
 import english from '../i18n/en.js';
+import arabic from '../i18n/ar.js';
+
+// Plenix's own words in other languages: used after the application's catalog for the same language, before English
+const BUILT_IN = { ar: arabic };
 
 const canonical = (value, fallback = 'en') => { try { return Intl.getCanonicalLocales(value || fallback)[0] || fallback; } catch (e) { return fallback; } };
 const own = (value, key) => value && Object.prototype.hasOwnProperty.call(value, key);
@@ -47,7 +52,7 @@ export function createTranslator(locale = 'en', catalogs = {}, fallbackLocale = 
   const language = canonical(locale), fallback = canonical(fallbackLocale);
   const normalized = Object.fromEntries(Object.entries(catalogs || {}).map(([key, value]) => [canonical(key), value]));
   const chain = [...new Set([language, language.split('-')[0], fallback, fallback.split('-')[0], 'en'])];
-  const sources = chain.map((key) => normalized[key]).filter(Boolean).concat(english);
+  const sources = chain.flatMap((key) => [normalized[key], BUILT_IN[key]]).filter(Boolean).concat(english);
   const cardinal = new Intl.PluralRules(language), ordinal = new Intl.PluralRules(language, { type: 'ordinal' });
   const plural = (count, options = {}) => (options.ordinal ? ordinal : cardinal).select(Number(count));
   const choose = (value, values, options) => {
