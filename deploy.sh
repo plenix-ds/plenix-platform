@@ -24,6 +24,10 @@ VERSION=$(node -p "require('./package.json').version")
 [ ! -f platform/design-system/plenix-source.js ] || grep -q "var VERSION = '$VERSION'" platform/design-system/plenix-source.js || { echo "The design spec pins another release: set VERSION in platform/design-system/plenix-source.js to $VERSION"; exit 1; }
 # the Material Symbols library, shared by every release (icons-all.css points at it): copied once per pinned commit
 MATERIAL=$(node -p "require('./platform/icons/map.json')._commit.slice(0, 12)")
+# what /version.json says on each site (owner, version-json-33): the commit of the published tree ("-dirty" when the
+# working tree has changes that are not committed) and the time of the publish
+COMMIT=$(git rev-parse --short HEAD)$(git diff --quiet HEAD -- || echo -dirty)
+PUBLISHED=$(date -u +%Y-%m-%dT%H:%M:%SZ)
 
 # the site keeps its Plenix/ folder: every path is packed under Plenix/ (not symlink targets)
 PKG=$(mktemp -u).tgz
@@ -87,6 +91,11 @@ ssh "${SSH_OPTS[@]}" "$HOST" "set -e
   pinned=\$(grep -l \"cdn/$VERSION/plenix.js\" /srv/plenix/www.new/Plenix/*/index.html /srv/plenix/www.new/Plenix/dam/*.html | wc -l)
   echo \"Apps on release $VERSION: \$pinned pages\"
   ls /srv/plenix/cdn | grep -E '^[0-9]+[.][0-9]+[.][0-9]+' | sort -V | python3 -c 'import sys,json; v=[l.strip() for l in sys.stdin if l.strip()]; print(json.dumps({\"versions\": v, \"latest\": v[-1]}))' | sudo tee /srv/plenix/cdn/index.json >/dev/null
+  # /version.json on each site (owner, version-json-33): name, version, commit and time only. Each name serves its own
+  # folder (the header above): plenix.lighthouseway.org is Plenix/dashboard/, design-system.lighthouseway.org is Plenix/platform/design-system/
+  printf '{\"name\": \"Plenix apps\", \"version\": \"$VERSION\", \"commit\": \"$COMMIT\", \"publishedAt\": \"$PUBLISHED\"}\n' | sudo tee /srv/plenix/www.new/Plenix/dashboard/version.json >/dev/null
+  printf '{\"name\": \"Design spec\", \"version\": \"$VERSION\", \"commit\": \"$COMMIT\", \"publishedAt\": \"$PUBLISHED\"}\n' | sudo tee /srv/plenix/www.new/Plenix/platform/design-system/version.json >/dev/null
+  sudo chmod 644 /srv/plenix/www.new/Plenix/dashboard/version.json /srv/plenix/www.new/Plenix/platform/design-system/version.json
   sudo mv /srv/plenix/www /srv/plenix/www.old
   sudo mv /srv/plenix/www.new /srv/plenix/www"
 echo "Published: https://plenix.lighthouseway.org/  https://design-system.lighthouseway.org/  (CDN /cdn/$VERSION/, API /api/v1/)"

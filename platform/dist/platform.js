@@ -788,8 +788,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The element is isolated (unicode-bidi: isolate, as <bdi> is): the text inside never reorders the text around it,
        and the text around it never reorders it. In an Arabic sentence "20261020-01" stays "20261020-01" (without it,
        the two numbers swap places: "01-20261020").
-     The text is shown as written: number formatting (LocaleProvider's digits) never rewrites it, so an ID or a case
-       number keeps its own digits in an Arabic page.
+     It keeps the order of its characters, not their digits: when Arabic-Indic digits are on (LocaleProvider, #413 step 5),
+       the digits of an ID, a case number or an email inside it change too, and still read in the right order (owner,
+       arabic-ids-35).
      It is inline and adds no box: alignment, wrapping and the ellipsis stay the container's.
    Notes:
      Plenix isolates by itself where it knows the value is technical: DataGrid and Table cells of kind data, id, email,
@@ -21663,7 +21664,7 @@ function pillFont(at, ctx, data) {
     wordSpacing: ctx.wordSpacing
   };
 }
-// uniformPillWidths: the widths live in one constructed sheet per document, one entry per grid
+// uniform pill widths: the widths live in one constructed sheet per document, one entry per grid
 function pillSheet(doc) {
   if (doc.__plxPillWidths) return doc.__plxPillWidths;
   const sheet = new doc.defaultView.CSSStyleSheet(),
@@ -22000,7 +22001,7 @@ function NextEngine(props) {
     headerMenu = true,
     typeIcons: typeIconsProp,
     density = 'compact',
-    uniformPillWidths = false,
+    uniformPillWidths: _uniformPillWidths,
     rowMenu: suppliedRowMenu,
     rowMenuButton = true,
     columnMenu,
@@ -22419,8 +22420,9 @@ function NextEngine(props) {
     autoResetPageIndex: false
   });
   const allRows = (printing ? table.getPrePaginationRowModel() : table.getRowModel()).rows;
-  // uniformPillWidths (CTM, 2026-10-22): every standard pill of a column as wide as the column's widest pill in the current
-  // view (the filtered, sorted page, every row of it, not only the rows drawn), so scrolling a long list never changes it.
+  // uniform pill widths (CTM, 2026-10-22; always on, owner uniform-pills-always-35): every standard pill of a column as wide as the
+  // column's widest pill in the current view (the filtered, sorted page, every row of it, not only the rows drawn), so scrolling
+  // a long list never changes it. The uniformPillWidths prop is accepted and ignored (deprecated).
   // Measured like the column widths (the pill's font, weight, sides, border and icon), snapped up to the grid.
   const gridKey = _react.default.useId(),
     [fontsReady, setFontsReady] = _react.default.useState(0);
@@ -22432,7 +22434,7 @@ function NextEngine(props) {
     const at = frame.current;
     if (!at || typeof CSSStyleSheet === 'undefined' || !at.ownerDocument.defaultView) return undefined; // a closed document (its frame removed): nothing to measure
     const store = pillSheet(at.ownerDocument);
-    if (!uniformPillWidths || cells !== 'pill' || !metrics.row) {
+    if (cells !== 'pill' || !metrics.row) {
       if (store.rules.delete(gridKey)) store.flush();
       return undefined;
     }
@@ -22472,7 +22474,7 @@ function NextEngine(props) {
     store.rules.set(gridKey, rules.join('\n'));
     store.flush();
     return undefined;
-  }, [uniformPillWidths, cells, columns, allRows, metrics.row, metrics.space, showTypes, fontsReady]);
+  }, [cells, columns, allRows, metrics.row, metrics.space, showTypes, fontsReady]);
   _react.default.useEffect(() => () => {
     const doc = frame.current?.ownerDocument || (typeof document !== 'undefined' ? document : null);
     if (doc && doc.__plxPillWidths && doc.__plxPillWidths.rules.delete(gridKey)) doc.__plxPillWidths.flush();
@@ -23474,7 +23476,7 @@ function NextEngine(props) {
           strings: S,
           record,
           pill: cells === 'pill',
-          pillField: uniformPillWidths ? c.field : undefined,
+          pillField: c.field,
           icon: showTypes && typeOf(c) !== 'text' ? typeIcons[typeOf(c)] : undefined,
           mods
         }); // a pill carries a type icon only when it says something (a date, a number)
@@ -23668,7 +23670,7 @@ function NextEngine(props) {
     ref: frame,
     className: (0, _cx.cx)(B, isStatic && B + '--static', pinnedAt >= 0 && B + '--row-header', listed && B + '--list', isNarrow && B + '--narrow', height === '100%' && B + '--fill', mode === 'pages' && B + '--pages', mode === 'load-more' && B + '--load-more', className),
     "data-plx-engine": "next",
-    "data-plx-grid-key": uniformPillWidths ? gridKey : undefined,
+    "data-plx-grid-key": cells === 'pill' ? gridKey : undefined,
     "data-plx-density": density === 'page' ? undefined : density,
     "data-plx-render": virtualized ? 'virtual' : undefined,
     "data-plx-row-height": !isStatic && !isNarrow ? effectiveStep : undefined,
@@ -23885,7 +23887,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      cells: "text" (default) | "pill": the pill view (owner, 2026-10-19): every value a DataPill with its column's type icon
        (type: text, number, currency, date, person …); a person's value.gender makes it blue or pink with the male or female
        icon; a column chooses per value with pill(value, record) → { tone, icon, variant, data, gender } or opts out with
-       pill: false (as DataGrid).
+       pill: false (as DataGrid). Every standard pill of a column is as wide as that column's widest pill (as DataGrid; owner,
+       uniform-pills-always-35); custom cells, tags and badges keep their own widths.
      Table.preload(): compatibility no-op; the renderer is already bundled.
    Props: unread(record), unreadKeys and onUnreadChange match DataGrid; static rows never mark themselves read.
    Behavior: Every row is drawn. No sorting, filters, menus, selection, resizing, moving, editing or row hover.
@@ -29918,8 +29921,10 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        onCellEdit(record, { field, value, previous })
      density: "compact" (default: tables start Compact, owner 2026-10-22) | "standard" | "comfortable" | "page" (follow the
        page's density); set on the grid itself, so its rows (36 / 40 / 48px), header and pills follow it
-     uniformPillWidths: with cells="pill", every standard pill of a column as wide as that column's widest pill in the
-       current view (filtered and sorted, the current page, every row of it); columns stay independent; default false
+     uniformPillWidths: deprecated, ignored (owner, uniform-pills-always-35): with cells="pill", every standard pill of a
+       column is always as wide as that column's widest pill in the current view (filtered and sorted, the current page, every
+       row of it); columns stay independent; custom cells, tags and badges keep their own widths. Remove the prop; it goes
+       in a later release
      typeIcons: the column type icon before each header title (default: on in a DataGrid, off in the static Table);
        false hides them
      headerMenu (default true): a click on a title sorts; the options button at a header's end edge opens the column menu
@@ -32825,7 +32830,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      PropertyList.Item.description: a line under the label
      PropertyList.Item.data: the value is a technical value (a size, a date, an ID, a file name): the data font, Reddit Mono,
        at the value size, so it shares the label's baseline; names, descriptions and statuses stay DM Sans; default false.
-       It keeps its own writing direction in a right-to-left page (Isolate dir="auto")
+       It keeps its own writing direction in a right-to-left page (Isolate dir="auto"); a data value is text only (no links,
+       controls or other parts inside it)
      PropertyList.Item.className: more classes on the pair
      PropertyList.Item.children: the value
    Notes:

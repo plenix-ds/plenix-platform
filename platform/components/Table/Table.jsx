@@ -9,7 +9,8 @@
      cells: "text" (default) | "pill": the pill view (owner, 2026-10-19): every value a DataPill with its column's type icon
        (type: text, number, currency, date, person …); a person's value.gender makes it blue or pink with the male or female
        icon; a column chooses per value with pill(value, record) → { tone, icon, variant, data, gender } or opts out with
-       pill: false (as DataGrid).
+       pill: false (as DataGrid). Every standard pill of a column is as wide as that column's widest pill (as DataGrid; owner,
+       uniform-pills-always-35); custom cells, tags and badges keep their own widths.
      Table.preload(): compatibility no-op; the renderer is already bundled.
    Props: unread(record), unreadKeys and onUnreadChange match DataGrid; static rows never mark themselves read.
    Behavior: Every row is drawn. No sorting, filters, menus, selection, resizing, moving, editing or row hover.

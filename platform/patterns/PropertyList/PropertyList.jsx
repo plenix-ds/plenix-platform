@@ -13,7 +13,8 @@
      PropertyList.Item.description: a line under the label
      PropertyList.Item.data: the value is a technical value (a size, a date, an ID, a file name): the data font, Reddit Mono,
        at the value size, so it shares the label's baseline; names, descriptions and statuses stay DM Sans; default false.
-       It keeps its own writing direction in a right-to-left page (Isolate dir="auto")
+       It keeps its own writing direction in a right-to-left page (Isolate dir="auto"); a data value is text only (no links,
+       controls or other parts inside it)
      PropertyList.Item.className: more classes on the pair
      PropertyList.Item.children: the value
    Notes:
