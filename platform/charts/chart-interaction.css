@@ -11,7 +11,7 @@
 .plx-chart__actions{align-items:center;column-gap:var(--plx-comp-chart-interaction-actions-gap);display:flex;flex-wrap:wrap;justify-content:flex-end;min-inline-size:0;}
 
 /* the value in focus or under the pointer: a dot in the series' color with a ring of the surface around it */
-.plx-chart-focus{--plx-comp-chart-interaction-focus-mark-color:var(--plx-comp-chart-mark-default-color);fill:var(--plx-comp-chart-interaction-focus-mark-color);pointer-events:none;r:var(--plx-comp-chart-interaction-focus-mark-radius);stroke:var(--plx-comp-chart-interaction-focus-mark-outline);stroke-width:var(--plx-comp-chart-interaction-focus-mark-outline-width);}
+.plx-chart-focus{--plx-comp-chart-interaction-focus-mark-color:var(--plx-comp-chart-mark-default-color);fill:var(--plx-comp-chart-interaction-focus-mark-color);pointer-events:none;r:var(--plx-comp-chart-interaction-focus-mark-size);stroke:var(--plx-comp-chart-interaction-focus-mark-outline);stroke-width:var(--plx-comp-chart-interaction-focus-mark-outline-width);}
 .plx-chart-focus[data-plx-dataviz]{--plx-comp-chart-interaction-focus-mark-color:var(--plx-comp-data-color);}
 
 /* the brush: the range marked for a zoom, shaded down the plot */

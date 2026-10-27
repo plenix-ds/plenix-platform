@@ -6,6 +6,14 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+### Breaking
+- Four circle sizes are renamed from `-radius` to `-size`, so the corner rule (2 to 6px) covers only real corners (owner, dot-radius-names-34). Each still holds the circle's radius (SVG `r`), so nothing on screen changes. A theme or page that set an old name must use the new one:
+  - `--plx-comp-chart-interaction-focus-mark-radius` → `--plx-comp-chart-interaction-focus-mark-size`
+  - `--plx-comp-network-graph-node-radius` → `--plx-comp-network-graph-node-size`
+  - `--plx-sys-focus-order-badge-radius` → `--plx-sys-focus-order-badge-size`
+  - `--plx-comp-tree-chart-node-radius` → `--plx-comp-tree-chart-node-size` (TreeChart, 4px)
+  - The native names follow: iOS `chartInteractionFocusMarkRadius` → `chartInteractionFocusMarkSize`; Android `chartInteractionFocusMarkRadius` → `chartInteractionFocusMarkSize` and `plx_component_chart_interaction_focus_mark_radius` → `plx_component_chart_interaction_focus_mark_size`.
+
 ### Added
 - Isolate (owner, ctm-needs-34; #413 batch 3): keeps an ID, a case number, an email, a URL, a phone number or code in its own writing direction inside text of the other direction, so "20261020-01" no longer reads "01-20261020" in an Arabic sentence. `<Isolate>` is a `<bdi>` with `dir="ltr"` by default (`"rtl"`, `"auto"`) and the class `plx-isolate` (`unicode-bidi: isolate`). Only the order is kept: when Arabic-Indic digits are on (#413 step 5), the digits inside an island change too (owner, arabic-ids-35).
 - Automatic islands: DataGrid and Table cells of kind `id`, `email`, `url`, `phone` and `code` (left to right) and `data` (its own direction); DataPill with `data`; PropertyList.Item with `data`; Code, Kbd and CodeBlock (always left to right). Text was already `dir="auto"`.

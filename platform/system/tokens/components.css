@@ -2867,7 +2867,7 @@
   --plx-comp-chart-interaction-focus-border-color: var(--plx-sys-focus-ring-color);
   --plx-comp-chart-interaction-focus-radius: var(--plx-sys-shape-xs);
   --plx-comp-chart-interaction-actions-gap: var(--plx-sys-space-inline-sm);
-  --plx-comp-chart-interaction-focus-mark-radius: var(--plx-ref-size-8px);
+  --plx-comp-chart-interaction-focus-mark-size: var(--plx-ref-size-8px);
   --plx-comp-chart-interaction-focus-mark-outline: var(--plx-sys-surface-default);
   --plx-comp-chart-interaction-focus-mark-outline-width: var(--plx-sys-border-width-medium);
   --plx-comp-chart-interaction-brush-background: var(--plx-sys-state-selected);
@@ -4551,7 +4551,7 @@
   }
 }
 :root,[data-plx-density],[data-plx-interaction] {
-  --plx-comp-network-graph-node-radius: var(--plx-ref-size-12px);
+  --plx-comp-network-graph-node-size: var(--plx-ref-size-12px);
   --plx-comp-network-graph-node-outline: var(--plx-sys-surface-default);
   --plx-comp-network-graph-node-outline-width: var(--plx-sys-border-width-medium);
   --plx-comp-network-graph-label-text: var(--plx-sys-content-default);
@@ -5761,7 +5761,7 @@
   --plx-comp-tree-chart-link-width: var(--plx-sys-border-width-thin);
   --plx-comp-tree-chart-node-color: var(--plx-sys-dataviz-categorical-1);
   --plx-comp-tree-chart-node-fill: var(--plx-sys-surface-default);
-  --plx-comp-tree-chart-node-radius: var(--plx-ref-size-4px);
+  --plx-comp-tree-chart-node-size: var(--plx-ref-size-4px);
   --plx-comp-tree-chart-node-outline-width: var(--plx-sys-border-width-thin);
   --plx-comp-tree-chart-focus-color: var(--plx-sys-focus-ring-color);
   --plx-comp-tree-chart-focus-width: var(--plx-sys-border-width-thick);
