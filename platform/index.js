@@ -3,6 +3,7 @@
    "plenix-platform". Add a component here only when it is ready for both applications. */
 export { Badge } from './components/Badge/Badge.jsx';
 export { VisuallyHidden } from './components/VisuallyHidden/VisuallyHidden.jsx';
+export { Isolate } from './components/Isolate/Isolate.jsx';
 export { Count } from './components/Count/Count.jsx';
 export { Metric } from './components/Metric/Metric.jsx';
 export { MetricCard } from './components/MetricCard/MetricCard.jsx';

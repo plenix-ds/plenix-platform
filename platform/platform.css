@@ -6,6 +6,7 @@
 @import url("system/base.css") layer(plx.reset);   /* the page base: reset, body font, canvas and text color */
 @import url("components/Badge/badge.css") layer(plx.components);
 @import url("components/VisuallyHidden/visually-hidden.css") layer(plx.components);
+@import url("components/Isolate/isolate.css") layer(plx.components);
 @import url("components/Count/count.css") layer(plx.components);
 @import url("components/Metric/metric.css") layer(plx.components);
 @import url("components/MetricCard/metric-card.css") layer(plx.components);
