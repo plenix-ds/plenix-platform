@@ -62,7 +62,16 @@ const launch = async () => {
   return browser;
 };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+// a page is ready when it has loaded, its fonts have loaded and its main region shows its content, then two frames for the
+// last render (#382 F8: an observable condition, not a fixed wait); a page with no main region: its body's content
+const ready = async (page, { timeout = 15000 } = {}) => {
+  await page.waitForFunction(() => {
+    const m = document.querySelector('main') || document.body;
+    return document.readyState === 'complete' && document.fonts.status === 'loaded' && !!m && m.innerText.trim().length >= 20;
+  }, { timeout, polling: 50 });
+  await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
+};
 const APPS = ['dashboard', 'projects', 'messages', 'contacts', 'calendar', 'tasks', 'notes', 'bookmarks', 'files', 'settings', 'dam'];
 
 // at(step): the step a timeout names
-module.exports = { ROOT, serve, launch, sleep, APPS, at: limit.at };
+module.exports = { ROOT, serve, launch, sleep, ready, APPS, at: limit.at };

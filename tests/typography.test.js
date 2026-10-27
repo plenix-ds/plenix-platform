@@ -12,6 +12,12 @@
 //             keep their component's typography; a title or heading keeps the heading typography)
 //   baseline  Reddit Mono and DM Sans text on the same line of the same row (a table row, a PropertyList item, a flex row,
 //             a line of running text) sit on one baseline, within 0.5px
+//   table     in every DataGrid and Table (put back from the grid test, #382 F2; owner: one size in tables, batch 247;
+//             typefaces by kind, 2026-10-11; header weights, batch 248): the grid's text size is its token
+//             (--plx-comp-data-grid-font-size); every text in the body rows is at that size, in Reddit Mono in a column
+//             of kind "data" and for code and the data role, in DM Sans elsewhere; every header title is weight 600 and
+//             every row-label cell's text 500. Badges, tags, chips, buttons, keys, counts, avatars, tooltips, the placeholder,
+//             a group header's eyebrow and a summary's name, and the design system's specimens keep their own type.
 // Known findings are kept in tests/baselines/typography.json (page -> mode -> check -> number); the test fails only when
 // a page and mode has more findings than recorded, so they can only go down (aim: none).
 //   node tests/typography.test.js            compare
@@ -22,7 +28,7 @@
 //   TYPO_PORT=8863 (or TEST_PORT) node tests/typography.test.js   another port
 const fs = require('fs');
 const path = require('path');
-const { serve, launch, sleep, at } = require('./lib.js');
+const { serve, launch, ready, at } = require('./lib.js');
 const changed = require('./changed.js');
 const PORT = +process.env.TYPO_PORT || +process.env.TEST_PORT || 8861, BASE = 'http://127.0.0.1:' + PORT + '/Plenix/';
 const BASELINE = path.join(__dirname, 'baselines', 'typography.json');
@@ -36,8 +42,8 @@ const site = require('./site.js');
 // every page of the St. John the Beloved test site (owner, 2026-10-25: the tests run there, not on the design spec)
 const SITE_PAGES = changed.pages(site.urls());
 changed.noPartialUpdate();
-if (!APP_PAGES.length && !SITE_PAGES.length) changed.none('TYPOGRAPHY_OK role 0, prose 0, pattern 0, baseline 0 on 0 pages');
-const CHECKS = ['role', 'prose', 'pattern', 'baseline'];
+if (!APP_PAGES.length && !SITE_PAGES.length) changed.none('TYPOGRAPHY_OK role 0, prose 0, pattern 0, baseline 0, table 0 on 0 pages');
+const CHECKS = ['role', 'prose', 'pattern', 'baseline', 'table'];
 
 // runs in the page: the findings of each check
 async function inspect() {
@@ -69,7 +75,7 @@ async function inspect() {
   const TECH = new RegExp('^(?:' + ONE.join('|') + ')(?:\\s*[·,–-]\\s*(?:' + ONE.join('|') + '))*$', 'i');
   // a sentence: four or more words of letters (with ordinary punctuation), none of the characters of code or values
   const prose = (t) => { const w = t.split(/\s+/).filter(Boolean); return w.length >= 4 && !/[=<>{}()[\]\/\\_#@$`|*+~^"]|--|\d/.test(t) && w.every((x) => /^[A-Za-z][a-z'’]*[,.!?:;]?$/.test(x)); };
-  const out = { role: [], prose: [], pattern: [], baseline: [] };
+  const out = { role: [], prose: [], pattern: [], baseline: [], table: [] };
   const texts = [];
   const walk = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
   let n;
@@ -119,6 +125,33 @@ async function inspect() {
       if (d > 0.5) { out.baseline.push(say(m.el, m.t) + ' vs ' + say(s.el, s.t) + ': ' + d.toFixed(2) + 'px'); seen.add(row); break; }
     }
   }
+  // table: the grids' own size, typefaces by kind and header weights (both the DataGrid and the static Table, whose classes
+  // are the grid's under plx-table)
+  const px = (v) => { v = String(v).trim(); return /rem$/.test(v) ? parseFloat(v) * parseFloat(getComputedStyle(document.documentElement).fontSize) : parseFloat(v); };
+  // (an avatar's initials are the avatar's own type, as in the other checks' OWN)
+  const KEEP = '.plx-badge, .plx-tag, .plx-tag--chip, .plx-button, .plx-kbd, .plx-count, .plx-avatar, .plx-tooltip, [role="tooltip"], .ds-vis';
+  for (const B of ['plx-data-grid', 'plx-table']) {
+    const MARKED = 'code, samp, .plx-text--data, .' + B + '__group-count, .' + B + '__group-summary-value, [data-plx-kind="data"], .ds-code-link, .ds-mono, .ds-value, .ds-name';
+    document.querySelectorAll('.' + B).forEach((g) => {
+      if (!shown(g)) return;
+      const grid = g.querySelector('.' + B + '__grid'); if (!grid || !g.querySelector('.' + B + '__grid-row .' + B + '__grid-cell')) return;
+      const size = getComputedStyle(grid).fontSize, want = px(getComputedStyle(g).getPropertyValue('--plx-comp-data-grid-font-size'));
+      if (want && Math.abs(parseFloat(size) - want) > 0.01) out.table.push(B + ' text is ' + size + ', its token is ' + want + 'px');
+      const w = document.createTreeWalker(g.querySelector('.' + B + '__grid-tableholder') || g, NodeFilter.SHOW_TEXT); let n;
+      while ((n = w.nextNode())) {
+        const el = n.parentElement;
+        if (!el || !n.textContent.trim() || !shown(el) || el.closest('.' + B + '__grid-header') || el.closest(KEEP + ', .' + B + '__grid-placeholder, .' + B + '__group-eyebrow, .' + B + '__group-summary-name')) continue;
+        const c = getComputedStyle(el), family = c.fontFamily.split(',')[0].replace(/"/g, '').trim();
+        const mono = !!el.closest('[class*="__cell--data"]') || !!el.closest(MARKED), wantFamily = mono ? 'Reddit Mono' : 'DM Sans';
+        if (family !== wantFamily || c.fontSize !== size) out.table.push(say(el, n.textContent.trim()) + ': want ' + wantFamily + ' ' + size + (mono ? ' (a data value)' : ''));
+      }
+      g.querySelectorAll('.' + B + '__grid-header .' + B + '__grid-col-title').forEach((t) => { const fw = getComputedStyle(t).fontWeight; if (t.textContent.trim() && shown(t) && fw !== '600') out.table.push('header ' + say(t, t.textContent.trim()) + ' is weight ' + fw + ', not 600'); });
+      g.querySelectorAll('.' + B + '__grid-row [class*="__cell--row-label"]').forEach((cell) => {
+        const tw = document.createTreeWalker(cell, NodeFilter.SHOW_TEXT); let m;
+        while ((m = tw.nextNode())) { const el = m.parentElement; if (!el || !m.textContent.trim() || el.closest(KEEP)) continue; const fw = getComputedStyle(el).fontWeight; if (fw !== '500') out.table.push('row label ' + say(el, m.textContent.trim()) + ' is weight ' + fw + ', not 500'); }
+      });
+    });
+  }
   return out;
 }
 
@@ -140,12 +173,12 @@ async function inspect() {
       if (ONLY && !ONLY.test(a)) continue;
       at(mode + ' ' + a); await page.goto(BASE + a, { waitUntil: 'networkidle0' });
       await page.evaluate(() => { try { localStorage.clear(); } catch (e) { /* storage blocked */ } });
-      await page.goto(BASE + a, { waitUntil: 'networkidle0' }); await sleep(900); await take(a);
+      await page.goto(BASE + a, { waitUntil: 'networkidle0' }); await ready(page); await take(a);
     }
     if (mode === 'light') changed.report(APP_PAGES.length + ' app pages, ' + SITE_PAGES.length + ' of ' + site.pages().length + ' test-site pages');
     for (const r of SITE_PAGES) {
       if (ONLY && !ONLY.test(r)) continue;
-      at(mode + ' ' + r); await page.goto(BASE + r, { waitUntil: 'networkidle0' }); await sleep(900); await take(r);
+      at(mode + ' ' + r); await page.goto(BASE + r, { waitUntil: 'networkidle0' }); await ready(page); await take(r);
     }
     await page.close();
   }
@@ -157,6 +190,7 @@ async function inspect() {
   if (process.env.TYPO_VERBOSE || process.argv.includes('--update')) Object.keys(found).forEach((p) => MODES.forEach((m) => CHECKS.forEach((c) => { const l = list(p, m, c); if (l.length) console.log('  ' + p + ' · ' + m + ' · ' + c + ': ' + l.length + ' · ' + l.slice(0, process.env.TYPO_VERBOSE ? 99 : 3).join(' | ')); })));
   if (process.argv.includes('--update')) {
     const base = {}; Object.keys(found).forEach((p) => MODES.forEach((m) => CHECKS.forEach((c) => { const k = list(p, m, c).length; if (k) ((base[p] = base[p] || {})[m] = base[p][m] || {})[c] = k; })));
+    changed.shrinkOnly(BASELINE, base);
     fs.mkdirSync(path.dirname(BASELINE), { recursive: true }); fs.writeFileSync(BASELINE, JSON.stringify(base, null, 1) + '\n');
     console.log('TYPOGRAPHY_BASELINE written: ' + summary + ' on ' + Object.keys(found).length + ' pages');
     return;

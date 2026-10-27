@@ -135,7 +135,9 @@ function check(done) {
   await browser.close(); server.close();
   const deadKeys = Object.keys(dead).filter((k) => !wired.has(k)).sort();
   if (UPDATE) {
-    fs.writeFileSync(BASELINE, JSON.stringify(Object.fromEntries(deadKeys.map((k) => [k, dead[k]])), null, 1) + '\n');
+    const next = Object.fromEntries(deadKeys.map((k) => [k, dead[k]]));
+    changed.shrinkOnly(BASELINE, next, 'component-tokens');
+    fs.writeFileSync(BASELINE, JSON.stringify(next, null, 1) + '\n');
     console.log('COMPONENT_TOKENS_BASELINE written: ' + deadKeys.length + ' rules whose token moves nothing on the site');
     return;
   }
