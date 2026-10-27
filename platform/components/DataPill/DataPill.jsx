@@ -33,6 +33,7 @@
      The text never wraps; a value too long for a filled pill ends in an ellipsis and its full text is the tooltip (title).
      The pill is not interactive: a value that opens something is a Link inside it, or the cell's own action.
    Notes:
+     Writing direction (owner, ctm-needs-34): with data, the value keeps its own direction (dir="auto") in a right-to-left page.
      Not a Tag (a keyword next to content, 10px) and not a Badge (a status): a DataPill is the value itself.
      DataGrid: a column's pill option draws each value as a DataPill (DataGrid.jsx).
 */
@@ -54,7 +55,7 @@ export function DataPill({ children, tone, variant = 'soft', size, icon, data = 
   return (
     <span className={cx('plx-data-pill', size === 'md' && variant !== 'plain' && 'plx-data-pill--md', 'plx-data-pill--' + variant, data && 'plx-data-pill--data', fill && 'plx-data-pill--fill', className)} data-plx-category={color} title={title} {...rest}>
       {glyph ? <Icon name={glyph} size="sm" className="plx-data-pill__icon" filled={!!g} /> : null}
-      <span className="plx-data-pill__value">{children}</span>
+      <span className="plx-data-pill__value" dir={data ? 'auto' : undefined}>{children}</span>
       {g ? <span className="plx-visually-hidden">{', ' + t[gender]}</span> : null}
     </span>
   );

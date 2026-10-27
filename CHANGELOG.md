@@ -6,6 +6,10 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+### Added
+- Isolate (owner, ctm-needs-34; #413 batch 3): keeps an ID, a case number, an email, a URL, a phone number or code in its own writing direction inside text of the other direction, so "20261020-01" no longer reads "01-20261020" in an Arabic sentence. `<Isolate>` is a `<bdi>` with `dir="ltr"` by default (`"rtl"`, `"auto"`) and the class `plx-isolate` (`unicode-bidi: isolate`). Its text is shown as written: number formatting never rewrites its digits.
+- Automatic islands: DataGrid and Table cells of kind `id`, `email`, `url`, `phone` and `code` (left to right) and `data` (its own direction); DataPill with `data`; PropertyList.Item with `data`; Code, Kbd and CodeBlock (always left to right). Text was already `dir="auto"`.
+
 ## [0.73.0] - 2026-10-27
 
 ### Added
