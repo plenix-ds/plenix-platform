@@ -5761,7 +5761,7 @@
   --plx-comp-tree-chart-link-width: var(--plx-sys-border-width-thin);
   --plx-comp-tree-chart-node-color: var(--plx-sys-dataviz-categorical-1);
   --plx-comp-tree-chart-node-fill: var(--plx-sys-surface-default);
-  --plx-comp-tree-chart-node-radius: var(--plx-ref-size-4px);
+  --plx-comp-tree-chart-node-size: var(--plx-ref-size-4px);
   --plx-comp-tree-chart-node-outline-width: var(--plx-sys-border-width-thin);
   --plx-comp-tree-chart-focus-color: var(--plx-sys-focus-ring-color);
   --plx-comp-tree-chart-focus-width: var(--plx-sys-border-width-thick);

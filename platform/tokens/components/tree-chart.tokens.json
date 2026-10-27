@@ -5,7 +5,7 @@
     "tree-chart-link-width": { "$value": "{plx-sys.border-width-thin}", "$type": "dimension", "$description": "The lines from a node to its children." },
     "tree-chart-node-color": { "$value": "{plx-sys.dataviz-categorical-1}", "$type": "color", "$description": "A node's ring, and the fill of a node whose branch is folded." },
     "tree-chart-node-fill": { "$value": "{plx-sys.surface-default}", "$type": "color", "$description": "The inside of an open node or a leaf." },
-    "tree-chart-node-radius": { "$value": "{plx-ref.size-4px}", "$type": "dimension", "$description": "A node's radius (an 8px dot on the grid)." },
+    "tree-chart-node-size": { "$value": "{plx-ref.size-4px}", "$type": "dimension", "$description": "A node's size, given as its radius (SVG r; an 8px dot on the grid). A size, not a corner (owner, dot-radius-names-34)." },
     "tree-chart-node-outline-width": { "$value": "{plx-sys.border-width-thin}", "$type": "dimension", "$description": "A node's ring." },
     "tree-chart-focus-color": { "$value": "{plx-sys.focus-ring-color}", "$type": "color", "$description": "The ring of the node in keyboard focus." },
     "tree-chart-focus-width": { "$value": "{plx-sys.border-width-thick}", "$type": "dimension", "$description": "The ring of the node in keyboard focus." },
