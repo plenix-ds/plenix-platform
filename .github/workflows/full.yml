@@ -46,6 +46,7 @@ jobs:
           node build-app.js
           node build-usage.js
           node check-system.js
+          npx stylelint "platform/**/*.css" "services/**/*.css"
           if [ -f platform/design-system/inventory.js ]; then node check-spec.js; fi
           node build-packages.js
 

@@ -6,12 +6,12 @@
 //                       .plx-app-header__item .plx-avatar { … }     finding (app-header styles avatar)
 //                       .plx-card .plx-card__title { … }            ok (its own anatomy; flat selectors are section 9)
 //                       [data-theme="dark"] .plx-button { … }       ok (no other block)
-//   important         an !important declaration. Cascade layers order the categories instead (section 8).
+//   (an !important declaration is Stylelint's now: declaration-no-important, an error; .stylelintrc.json. Cascade layers order the categories instead, section 8.)
 // What it reads: every CSS file of the Platform, the design-system site and the services, not the generated ones (a
 // "GENERATED" header), the vendored ones (platform/vendor) or the studies (docs/). Comments and the contents of
 // functional pseudo-classes (:not(), :is(), :where(), :has()) are not read.
-// The backlog: check-system.exceptions.json lists, by file, the selectors (with their count) and the !important count
-// that existed when the gate began (2026-10-18). A finding not in the list fails; an entry that no longer occurs also
+// The backlog: check-system.exceptions.json lists, by file, the selectors (with their count) that
+// existed when the gate began (2026-10-18). A finding not in the list fails; an entry that no longer occurs also
 // fails, until it is removed. Shrink the list after a repair with: node check-system.rules/ownership.js --shrink
 // (it only removes or lowers entries, never adds).
 // The rule is a module check-system.js runs: require('./check-system.rules/ownership.js').check({ add })
@@ -60,7 +60,7 @@ function scan(text) {
   return out;
 }
 function measure() {
-  const found = { 'cross-component': {}, important: {} }, where = [];
+  const found = { 'cross-component': {} }, where = [];
   for (const f of cssFiles()) {
     const r = rel(f), rules = scan(fs.readFileSync(f, 'utf8'));
     for (const x of rules) {
@@ -69,16 +69,14 @@ function measure() {
         const k = found['cross-component'][r] = found['cross-component'][r] || {};
         k[s] = (k[s] || 0) + 1; where.push({ kind: 'cross-component', file: r, key: s, line: x.line, text: s + '  (' + c + ')' });
       }
-      const n = (x.body.match(/!\s*important/g) || []).length;
-      if (n) { found.important[r] = (found.important[r] || 0) + n; where.push({ kind: 'important', file: r, line: x.line, text: n + ' !important in ' + x.sel.slice(0, 80) }); }
     }
   }
   return { found, where };
 }
-const readExceptions = () => (fs.existsSync(EXCEPTIONS) ? JSON.parse(fs.readFileSync(EXCEPTIONS, 'utf8')) : { 'cross-component': {}, important: {} });
+const readExceptions = () => (fs.existsSync(EXCEPTIONS) ? JSON.parse(fs.readFileSync(EXCEPTIONS, 'utf8')) : { 'cross-component': {} });
 function check({ add }) {
   const { found, where } = measure(), ex = readExceptions();
-  const exCross = ex['cross-component'] || {}, exImp = ex.important || {};
+  const exCross = ex['cross-component'] || {};
   // new cross-component selectors (beyond the listed count)
   const seen = {};
   for (const w of where.filter((x) => x.kind === 'cross-component')) {
@@ -91,28 +89,21 @@ function check({ add }) {
     const now = ((found['cross-component'][file] || {})[s] || 0);
     if (now < exCross[file][s]) add(NAME, 'check-system.exceptions.json', 0, 'repaired, still listed: ' + file + ' ' + s + ' (run node check-system.rules/ownership.js --shrink)');
   }
-  // !important: no more than listed, and the list follows every removal
-  for (const file of new Set([...Object.keys(found.important), ...Object.keys(exImp).filter(here)])) {
-    const now = found.important[file] || 0, allowed = exImp[file] || 0;
-    if (now > allowed) where.filter((x) => x.kind === 'important' && x.file === file).slice(0, 3).forEach((w) => add(NAME, file, w.line, '!important (section 8 of the Styling Standard): ' + now + ' in the file, ' + allowed + ' allowed; ' + w.text));
-    else if (now < allowed) add(NAME, 'check-system.exceptions.json', 0, file + ': ' + now + ' !important now, ' + allowed + ' listed (run node check-system.rules/ownership.js --shrink)');
-  }
 }
 // rewrite the list to what still occurs, never above what it allowed
 function shrink() {
-  const { found } = measure(), ex = readExceptions(), out = { $description: ex.$description, 'cross-component': {}, important: {} };
+  const { found } = measure(), ex = readExceptions(), out = { $description: ex.$description, 'cross-component': {} };
   for (const file of Object.keys(ex['cross-component'] || {})) for (const s of Object.keys(ex['cross-component'][file])) {
     const n = !fs.existsSync(path.join(ROOT, file)) ? (file.startsWith('platform/components/DataGrid/') ? 0 : ex['cross-component'][file][s]) : Math.min(ex['cross-component'][file][s], (found['cross-component'][file] || {})[s] || 0);
     if (n) (out['cross-component'][file] = out['cross-component'][file] || {})[s] = n;
   }
-  for (const file of Object.keys(ex.important || {})) { const n = !fs.existsSync(path.join(ROOT, file)) ? (file.startsWith('platform/components/DataGrid/') ? 0 : ex.important[file]) : Math.min(ex.important[file], found.important[file] || 0); if (n) out.important[file] = n; }
   fs.writeFileSync(EXCEPTIONS, JSON.stringify(out, null, 2) + '\n');
   return out;
 }
 module.exports = { check, measure, NAME };
 
 if (require.main === module) {
-  if (process.argv.includes('--shrink')) { const o = shrink(); console.log('exceptions: ' + Object.values(o['cross-component']).reduce((a, x) => a + Object.values(x).reduce((p, q) => p + q, 0), 0) + ' cross-component selectors, ' + Object.values(o.important).reduce((a, b) => a + b, 0) + ' !important'); }
+  if (process.argv.includes('--shrink')) { const o = shrink(); console.log('exceptions: ' + Object.values(o['cross-component']).reduce((a, x) => a + Object.values(x).reduce((p, q) => p + q, 0), 0) + ' cross-component selectors'); }
   const found = [];
   check({ add: (rule, file, line, text) => found.push(file + ':' + line + '  ' + text) });
   if (!found.length) { console.log('OWNERSHIP_OK'); process.exit(0); }
