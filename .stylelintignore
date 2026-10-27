@@ -1,11 +1,6 @@
-# generated stylesheets (edit the source, never these)
 platform/components/Icon/icon.css
+platform/vendor/
+node_modules/
 platform/system/tokens/reference.css
 platform/system/tokens/semantic.css
 platform/system/tokens/components.css
-platform/system/themes/
-# vendored
-platform/vendor/
-node_modules/
-# generated from the Plenix tokens (services/auth/brand-css.js) and pasted into Authentik, which cannot load Plenix tokens: it carries the values (issue 365)
-services/auth/brand.css

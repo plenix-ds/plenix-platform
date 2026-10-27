@@ -71,9 +71,6 @@ jobs:
       - name: System check
         run: node check-system.js
 
-      - name: Style check (Stylelint, the main style checker)
-        run: npx stylelint "platform/**/*.css" "services/**/*.css"
-
       - name: Spec check
         run: |
           if [ -f platform/design-system/inventory.js ]; then node check-spec.js; else echo "skipped: no design system"; fi

@@ -4,8 +4,8 @@
 //
 //   tokens      every var(--…) is a Platform token (--plx-ref-, --plx-sys-, --plx-comp-) or a custom property the same
 //               file declares for itself (e.g. --ds-r on the spec page); no old names
-//   hex         no raw hex colors written in code (JavaScript, JSX and HTML; colors come from tokens). Stylesheets: Stylelint (color-no-hex)
-//   font-size   no font size written as a number in code: font sizes come from --plx-ref-font-size-* tokens. Stylesheets: Stylelint (raw lengths)
+//   hex         no raw hex colors outside the reference token file and the themes (colors come from tokens)
+//   font-size   no font size written as a number: font sizes come from --plx-ref-font-size-* tokens
 //   classes     every class a Platform stylesheet defines starts with plx- (state classes is-… excepted; the DataGrid's
 //               stylesheets (DataGrid, Table) style the classes their renderer writes, there only)
 //   imports     every component and pattern stylesheet is imported by platform.css
@@ -29,7 +29,7 @@
 //   palette     a stylesheet takes colors from roles (--plx-sys-, --plx-comp-), never from the palette (--plx-ref-color-)
 //   themeable   a stylesheet takes typefaces, weights, letter spacing, radius, border widths and styles, motion and opacity
 //               from the theme's scales (--plx-sys-typeface-, -shape-, -border-width-…), never the reference scales (batch 220)
-//   (raw-value, no length, time or color written as a number in a stylesheet declaration, is Stylelint's now: .stylelintrc.json; owner, tools-follow-up-26)
+//   raw-value   no length, time or color written as a number in a stylesheet declaration (tokens only; 0 excepted)
 //   palette-class an application never colors with a palette utility class (plx-u-text-gray-700…): components only
 //   audit       every page loads platform/dev/style-audit.js, which rejects inline styles and style blocks at run time
 //   page-layout an application never sets a page's layout mode (AppShell layout=, data-plx-layout): it says what the page is
@@ -84,6 +84,7 @@ for (const s of SOURCES) for (const f of walk(s.dir, s.flat, [])) {
   if (!files.some((x) => x.file === f)) files.push({ file: f, app: s.app });
 }
 
+const TOKEN_FILES = /platform[\\/]system[\\/](tokens[\\/]reference\.css|themes[\\/])/;
 const TOKEN_SOURCE = /platform[\\/]system[\\/](tokens|themes)[\\/]/;   // the generated token stylesheets
 // custom properties the applications declare for themselves (--ds-r on the spec page, set by a lab's script); the
 // retired legacy token file does not count, so its old names stay findings
@@ -160,7 +161,7 @@ for (const { file } of files) {
     }
     // hex colors: a # with 3, 4, 6 or 8 hex digits where a value starts (after : ( , = or a quote), not in comments or
     // prose (an issue number); a color a person chose, kept as data, carries a plx-allow-hex comment on its line
-    if (isCode && !/plx-allow-hex/.test(line)) {
+    if (!TOKEN_FILES.test(file) && !/plx-allow-hex/.test(line)) {
       const code = line.replace(/\/\*.*?\*\/|\/\/.*$/g, '');
       for (const m of code.matchAll(/(?:[:(,'"=]\s*)#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})\b(?![\w-])/g)) {
         if (/href=|id=|url\(/.test(code.slice(Math.max(0, m.index - 12), m.index + 1))) continue;
@@ -175,6 +176,15 @@ for (const { file } of files) {
       // themeable: the foundations a theme decides come from the theme's scales (--plx-sys-typeface-, -font-weight-,
       // -letter-spacing-, -shape-, -border-width-, -border-style-, -motion-, -opacity-), never the reference scales (batch 220)
       for (const m of code.matchAll(/var\(\s*(--plx-ref-(?:font-sans|font-mono|font-weight|letter-spacing|radius|border-width|border-style|motion|opacity)[\w-]*)/g)) add('themeable', file, n, m[1] + ' in: ' + line + ' (use the theme scale, e.g. --plx-sys-shape-xs)');
+      // raw-value: no length, time or color written as a number in a declaration (0 and unitless numbers excepted);
+      // media and container queries cannot read custom properties, so their conditions are excepted
+      if (!/^\s*@(media|container|supports)/.test(code)) {
+        const decl = code.replace(/^[^{]*\{/, '').replace(/var\(--[\w-]+/g, 'V');
+        for (const m of decl.matchAll(/(?<![\w-])(\d*\.?\d+)(px|rem|em|ms|s|vh|vw|ch|pt)\b|\b(rgba?|hsla?)\(/g)) {
+          if (m[1] !== undefined && Number(m[1]) === 0) continue;
+          add('raw-value', file, n, m[0] + ' in: ' + line);
+        }
+      }
     }
     // icon sizes written as numbers (Platform and applications)
     if (isCode && /<(Icon|Ico|Avatar)\b[^>]*\bsize=\{\s*\d+\s*\}/.test(line)) add('icon-size', file, n, line);
@@ -182,6 +192,7 @@ for (const { file } of files) {
     if (isCode && !/theme-boot\.js$/.test(file) && /(useMedia|matchMedia)\(\s*['"][^'"]*\d+(px|rem|em)/.test(line)) add('media', file, n, line);
     // font sizes written as numbers
     if (!/tokens[\\/]/.test(file)) {
+      if (isCss && /font-size\s*:\s*[0-9.]+(px|rem|em|pt)/.test(line)) add('font-size', file, n, line);
       if (isCode && /fontSize\s*[:=]\s*['"]?[0-9.]+(px|rem|em|pt)?['"]?\s*[,}]/.test(line)) add('font-size', file, n, line);
       if (isCode && /font-size\s*:\s*[0-9.]+(px|rem|em|pt)/.test(line)) add('font-size', file, n, line);
     }
