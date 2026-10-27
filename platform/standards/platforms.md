@@ -585,7 +585,7 @@ versions, and its conformance results.
 | Consistent help | Help appears in the same place on every screen (WCAG 3.2.6) | Screen review |
 | Navigation | Back, parent, deep links and guards behave as 4.3 | Scripted navigation tests |
 | Restoration | The app returns to its screen and state after suspension, rotation and resizing | Lifecycle tests |
-| Tokens | Every value comes from a token; generated outputs match the token JSON | `check-system.js`, token build diff |
+| Tokens | Every value comes from a token; generated outputs match the token JSON | Stylelint and `check-style.js` (values), `check-system.js` (generated outputs), token build diff |
 | Semantics | Every control has a name, role and state for screen readers (WCAG 4.1.2) | Accessibility inspector (VoiceOver, TalkBack, axe) |
 | Versions | The checks pass on the oldest supported OS version and the current release; Android apps target API 36 | Test matrix |
 
