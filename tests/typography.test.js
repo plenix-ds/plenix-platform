@@ -16,7 +16,7 @@
 //             typefaces by kind, 2026-10-11; header weights, batch 248): the grid's text size is its token
 //             (--plx-comp-data-grid-font-size); every text in the body rows is at that size, in Reddit Mono in a column
 //             of kind "data" and for code and the data role, in DM Sans elsewhere; every header title is weight 600 and
-//             every row-label cell's text 500. Badges, tags, chips, buttons, keys, counts, tooltips, the placeholder,
+//             every row-label cell's text 500. Badges, tags, chips, buttons, keys, counts, avatars, tooltips, the placeholder,
 //             a group header's eyebrow and a summary's name, and the design system's specimens keep their own type.
 // Known findings are kept in tests/baselines/typography.json (page -> mode -> check -> number); the test fails only when
 // a page and mode has more findings than recorded, so they can only go down (aim: none).
@@ -128,7 +128,8 @@ async function inspect() {
   // table: the grids' own size, typefaces by kind and header weights (both the DataGrid and the static Table, whose classes
   // are the grid's under plx-table)
   const px = (v) => { v = String(v).trim(); return /rem$/.test(v) ? parseFloat(v) * parseFloat(getComputedStyle(document.documentElement).fontSize) : parseFloat(v); };
-  const KEEP = '.plx-badge, .plx-tag, .plx-tag--chip, .plx-button, .plx-kbd, .plx-count, .plx-tooltip, [role="tooltip"], .ds-vis';
+  // (an avatar's initials are the avatar's own type, as in the other checks' OWN)
+  const KEEP = '.plx-badge, .plx-tag, .plx-tag--chip, .plx-button, .plx-kbd, .plx-count, .plx-avatar, .plx-tooltip, [role="tooltip"], .ds-vis';
   for (const B of ['plx-data-grid', 'plx-table']) {
     const MARKED = 'code, samp, .plx-text--data, .' + B + '__group-count, .' + B + '__group-summary-value, [data-plx-kind="data"], .ds-code-link, .ds-mono, .ds-value, .ds-name';
     document.querySelectorAll('.' + B).forEach((g) => {
