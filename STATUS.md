@@ -29,9 +29,9 @@ The governance board in #252 maps every workstream to its session, issues and PR
 
 | Work | Where |
 |---|---|
-| Styling Standard written and enforced (Phase 0) | `platform/standards/styling.md`; check-system rule `ownership` (0.55.0) |
+| Styling Standard written and enforced (Phase 0) | `platform/standards/styling.md`; check-system rule `ownership` (0.55.0), folded into `selector-kinds` (style-plan-30, step 1) |
 | App Header slice (Phase 1) | 0.55.x |
-| No component styles another one (Phase 2) | 0.59.0; `check-system.exceptions.json` has 0 cross-component entries |
+| No component styles another one (Phase 2) | 0.59.0; 0 cross-component selectors (now enforced by `selector-kinds`) |
 | Redundant declarations, order and element styles (Phase 3) | proof logged 2026-10-19 |
 | Typography roles as tokens, text contracts per component (Phase 4; 22 parts left, #253) | 0.59.0; `platform/standards/text-contracts.json`, rule `text-contract` |
 | Framing: containers nest two deep, never three (Phase 6) | `nesting.css` retired 2026-10-20; `tests/pages.test.js` fails a third frame |
