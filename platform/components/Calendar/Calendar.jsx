@@ -55,7 +55,7 @@
 import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { arrowStep } from '../../utils/direction.js';
-import { formatLocale } from '../../utils/format.js';
+import { formatLocale, numeralLocale } from '../../utils/format.js';
 import { Button } from '../Button/Button.jsx';
 
 const STRINGS = { label: 'Calendar', previous: 'Previous month', next: 'Next month', week: 'Week', weekShort: 'Wk', today: 'Today' };
@@ -116,7 +116,7 @@ export const Calendar = React.forwardRef(function Calendar({ mode = 'single', va
   months = 1, weekNumbers = false, min, max, isDateDisabled, today: todayProp, firstDayOfWeek, locale: localeProp, label, focusRef,
   strings, className, ...rest }, ref) {
   const t = Object.assign({}, STRINGS, strings);
-  const locale = localeProp || formatLocale();
+  const locale = numeralLocale(localeProp || formatLocale());
   const today = todayProp || todayIso();
   const range = mode === 'range';
   const [ownValue, setOwnValue] = React.useState(defaultValue !== undefined ? defaultValue : (range ? { start: null, end: null } : null));
@@ -185,7 +185,8 @@ export const Calendar = React.forwardRef(function Calendar({ mode = 'single', va
   const fullName = new Intl.DateTimeFormat(locale, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
   const dayNumber = new Intl.DateTimeFormat(locale, { day: 'numeric' });
   const monthName = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' });
-  const weekdayShort = new Intl.DateTimeFormat(locale, { weekday: 'short' });
+  // Arabic weekday names are too long for a column: one letter each, as Arabic calendars do (owner, arabic-batch4-36)
+  const weekdayShort = new Intl.DateTimeFormat(locale, { weekday: /^ar\b/i.test(locale) ? 'narrow' : 'short' });
   const weekdayLong = new Intl.DateTimeFormat(locale, { weekday: 'long' });
   const weekNumber = new Intl.NumberFormat(locale);
   const weekdays = Array.from({ length: 7 }, (_, i) => { const d = new Date(2026, 1, 1 + ((first + i) % 7), 12); return { short: weekdayShort.format(d), long: weekdayLong.format(d) }; });   // Feb 1, 2026 was a Sunday

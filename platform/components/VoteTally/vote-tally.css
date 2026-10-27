@@ -1,0 +1,21 @@
+/* Plenix · VoteTally (platform/components/VoteTally): a live vote as a list of members, each with an avatar, the name and
+   role, and three icon-only choices (Button tone: green, red, gray when chosen); a turned-off member's lock badge; the
+   totals under the list. Every value is a --plx-comp-vote-tally-* token; the colors are Button's and Badge's. */
+.plx-vote-tally{container-type:inline-size;display:flex;flex-direction:column;row-gap:var(--plx-comp-vote-tally-gap);}
+.plx-vote-tally__list,.plx-vote-tally__totals{background-color:var(--plx-comp-vote-tally-background);border-color:var(--plx-comp-vote-tally-border-color);border-radius:var(--plx-comp-vote-tally-radius);border-style:solid;border-width:var(--plx-comp-vote-tally-border-width);}
+.plx-vote-tally__list{list-style-type:none;margin-block-end:0;margin-block-start:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
+.plx-vote-tally__member{align-items:center;column-gap:var(--plx-comp-vote-tally-row-gap);display:flex;padding-block:var(--plx-comp-vote-tally-row-padding-block);padding-inline:var(--plx-comp-vote-tally-row-padding-inline);row-gap:var(--plx-comp-vote-tally-choices-gap);}
+.plx-vote-tally__member:not(:first-child){border-block-start-color:var(--plx-comp-vote-tally-divider-color);border-block-start-style:solid;border-block-start-width:var(--plx-comp-vote-tally-border-width);}
+.plx-vote-tally__who{display:flex;flex:1 1 auto;flex-direction:column;min-inline-size:0;}
+.plx-vote-tally__choices{column-gap:var(--plx-comp-vote-tally-choices-gap);display:flex;flex-shrink:0;}
+.plx-vote-tally__totals{align-items:center;column-gap:var(--plx-comp-vote-tally-totals-gap);display:flex;flex-wrap:wrap;padding-block:var(--plx-comp-vote-tally-totals-padding);padding-inline:var(--plx-comp-vote-tally-totals-padding);row-gap:var(--plx-comp-vote-tally-totals-gap);}
+.plx-vote-tally__quorum{margin-inline-start:auto;}
+/* narrow: the name and role above the choices */
+@container (width < 400px){
+  .plx-vote-tally__member{flex-wrap:wrap;}
+  .plx-vote-tally__choices{margin-inline-start:auto;}
+}
+/* a row whose vote just changed (live) flashes once: its tint fades back to the surface. Under reduced motion the
+   duration token is 0s (system/tokens), so there is no flash */
+@keyframes plx-vote-tally-flash{from{background-color:var(--plx-comp-vote-tally-flash-background);}}
+.plx-vote-tally__member.is-changed{animation-duration:var(--plx-comp-vote-tally-flash-duration);animation-name:plx-vote-tally-flash;animation-timing-function:var(--plx-comp-vote-tally-flash-easing);}

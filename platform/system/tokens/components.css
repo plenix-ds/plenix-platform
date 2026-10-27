@@ -109,6 +109,16 @@
   --plx-comp-button-danger-secondary-pressed-background: var(--plx-sys-action-danger-background-pressed);
   --plx-comp-button-danger-secondary-pressed-border: var(--plx-sys-action-danger-background-pressed);
   /* states: selected (its border and text come from the size), disabled, focus */
+  /* tone: a toggle's chosen (pressed) state in a feedback color; its rest state stays the variant's (owner, vote-screen-37) */
+  --plx-comp-button-tone-success-selected-background: var(--plx-sys-feedback-success-solid);
+  --plx-comp-button-tone-success-selected-border: var(--plx-sys-feedback-success-solid-border);
+  --plx-comp-button-tone-success-selected-text: var(--plx-sys-feedback-success-on-solid);
+  --plx-comp-button-tone-danger-selected-background: var(--plx-sys-feedback-danger-solid);
+  --plx-comp-button-tone-danger-selected-border: var(--plx-sys-feedback-danger-solid-border);
+  --plx-comp-button-tone-danger-selected-text: var(--plx-sys-feedback-danger-on-solid);
+  --plx-comp-button-tone-neutral-selected-background: var(--plx-sys-feedback-neutral-solid);
+  --plx-comp-button-tone-neutral-selected-border: var(--plx-sys-feedback-neutral-solid-border);
+  --plx-comp-button-tone-neutral-selected-text: var(--plx-sys-feedback-neutral-on-solid);
   --plx-comp-button-disabled-background: var(--plx-sys-fill-neutral);
   --plx-comp-button-disabled-quiet-background: transparent;
   --plx-comp-button-focus-ring-color: var(--plx-sys-focus-ring-color);
@@ -5974,6 +5984,23 @@
   --plx-comp-virtual-list-unread-font-weight: var(--plx-sys-font-weight-semibold);
   --plx-comp-virtual-list-unread-bar-width: var(--plx-sys-border-width-thick);
   --plx-comp-virtual-list-unread-bar-color: var(--plx-sys-action-primary-background);
+}
+:root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-vote-tally-background: var(--plx-sys-surface-default);
+  --plx-comp-vote-tally-border-color: var(--plx-sys-border-default);
+  --plx-comp-vote-tally-border-width: var(--plx-sys-border-width-thin);
+  --plx-comp-vote-tally-radius: var(--plx-sys-shape-md);
+  --plx-comp-vote-tally-divider-color: var(--plx-sys-border-subtle);
+  --plx-comp-vote-tally-gap: var(--plx-ref-space-12px);
+  --plx-comp-vote-tally-row-padding-block: var(--plx-ref-space-12px);
+  --plx-comp-vote-tally-row-padding-inline: var(--plx-ref-space-16px);
+  --plx-comp-vote-tally-row-gap: var(--plx-ref-space-12px);
+  --plx-comp-vote-tally-choices-gap: var(--plx-ref-space-8px);
+  --plx-comp-vote-tally-totals-padding: var(--plx-ref-space-12px);
+  --plx-comp-vote-tally-totals-gap: var(--plx-ref-space-8px);
+  --plx-comp-vote-tally-flash-background: var(--plx-sys-data-grid-row-selected);
+  --plx-comp-vote-tally-flash-duration: var(--plx-sys-motion-duration-slow);
+  --plx-comp-vote-tally-flash-easing: var(--plx-sys-motion-ease-standard);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-waterfall-chart-connector-color: var(--plx-sys-border-strong);

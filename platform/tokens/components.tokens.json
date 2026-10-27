@@ -517,6 +517,49 @@
         }
       }
     },
+    "button-tone-success-selected-background": {
+      "$value": "{plx-sys.feedback-success-solid}",
+      "$type": "color",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* tone: a toggle's chosen (pressed) state in a feedback color; its rest state stays the variant's (owner, vote-screen-37) */"
+          ]
+        }
+      }
+    },
+    "button-tone-success-selected-border": {
+      "$value": "{plx-sys.feedback-success-solid-border}",
+      "$type": "color"
+    },
+    "button-tone-success-selected-text": {
+      "$value": "{plx-sys.feedback-success-on-solid}",
+      "$type": "color"
+    },
+    "button-tone-danger-selected-background": {
+      "$value": "{plx-sys.feedback-danger-solid}",
+      "$type": "color"
+    },
+    "button-tone-danger-selected-border": {
+      "$value": "{plx-sys.feedback-danger-solid-border}",
+      "$type": "color"
+    },
+    "button-tone-danger-selected-text": {
+      "$value": "{plx-sys.feedback-danger-on-solid}",
+      "$type": "color"
+    },
+    "button-tone-neutral-selected-background": {
+      "$value": "{plx-sys.feedback-neutral-solid}",
+      "$type": "color"
+    },
+    "button-tone-neutral-selected-border": {
+      "$value": "{plx-sys.feedback-neutral-solid-border}",
+      "$type": "color"
+    },
+    "button-tone-neutral-selected-text": {
+      "$value": "{plx-sys.feedback-neutral-on-solid}",
+      "$type": "color"
+    },
     "button-disabled-background": {
       "$value": "{plx-sys.fill-neutral}",
       "$type": "color"

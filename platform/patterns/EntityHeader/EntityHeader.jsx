@@ -91,6 +91,9 @@
      Header style 2 follows the button rule of a command bar: while the facts would wrap, first the count buttons show
        their icon only, then the states too, each with its words as its tooltip and name; past that the boxes wrap.
    Notes:
+     Writing direction (owner, arabic-batch4-36): title, subtitle and summary are plain text. In a right-to-left page an app
+       wraps an ID or a case number in them in <Isolate> (subtitle={['القضية ', <Isolate>20261020-01</Isolate>]}), or it reads
+       backwards (01-20261020); Plenix does not guess. The same goes for a fact's value.
      Not for settings screens: use RecordPage.Header. A small uppercase group label is SectionHeading.
 */
 import React from 'react';

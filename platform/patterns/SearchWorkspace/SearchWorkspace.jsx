@@ -43,6 +43,7 @@
      Pressing Enter in the header search opens it with the query kept.
 */
 import React from 'react';
+import { numeralLocale } from '../../utils/format.js';
 import { cx } from '../../utils/cx.js';
 import { Button } from '../../components/Button/Button.jsx';
 import { SearchField } from '../../components/SearchField/SearchField.jsx';
@@ -83,7 +84,7 @@ const label = (f, v) => { const o = (f.options || []).find((x) => x.value === v)
 export function SearchWorkspace({ title, query = '', onQueryChange, placeholder, filters = [], onFilterChange, onClearAll,
   count = 0, noun, plural, sort, view, onSave, headStart, headEnd, selection, bulk, locale, strings, className, children }) {
   const t = Object.assign({}, STRINGS, strings);
-  const loc = locale || (typeof document !== 'undefined' && document.documentElement.lang) || undefined;
+  const loc = numeralLocale(locale || (typeof document !== 'undefined' && document.documentElement.lang) || undefined);
   const id = useUid('plx-search-ws');
   const field = React.useRef(null);
   // the query typed here is applied as the person types; Enter keeps focus in the field
