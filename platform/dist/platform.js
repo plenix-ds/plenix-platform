@@ -788,7 +788,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The element is isolated (unicode-bidi: isolate, as <bdi> is): the text inside never reorders the text around it,
        and the text around it never reorders it. In an Arabic sentence "20261020-01" stays "20261020-01" (without it,
        the two numbers swap places: "01-20261020").
-     It keeps the order of its characters, not their digits: when Arabic-Indic digits are on (LocaleProvider, #413 step 5),
+     It keeps the order of its characters, not their digits: when Arabic-Indic digits are on (LocaleProvider, issue 413 step 5),
        the digits of an ID, a case number or an email inside it change too, and still read in the right order (owner,
        arabic-ids-35).
      It is inline and adds no box: alignment, wrapping and the ellipsis stay the container's.
