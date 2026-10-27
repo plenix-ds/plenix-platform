@@ -3054,7 +3054,9 @@ function chartTokens(where) {
     // the gap between a tick label and its axis, and the room above the plot (half the top tick label)
     tickOffset: len(prop('--plx-comp-chart-axis-tick-offset')),
     top: len(prop('--plx-comp-chart-margin-block-start')),
-    rtl: host.direction === 'rtl',
+    // the page's writing direction from the dir attribute (:dir), not the computed direction: the engine element itself
+    // is drawn left to right (system/charts.css) so the engine's anchors hold, and the chart mirrors through its options
+    rtl: typeof where.matches === 'function' && where.matches(':dir(rtl)'),
     // a sparkline's own look (its color follows the sparkline's data-viz step, where it is)
     sparkline: {
       color: cs(spark.line).stroke,
@@ -77720,13 +77722,16 @@ function TreeChart({
       // the root's label before it, the leaves' after them, the others above their node; each label within its room
       const rootW = Math.min(fits(nodes[0], T.nameFocus), W * 0.25);
       const leafW = Math.min(leafNodes.reduce((m, n) => Math.max(m, fits(n, T.nameFocus)), 0), W * 0.35);
+      // the root's room on its side, the leaves' on theirs: in right to left the root is at the right (#413 batch 4)
+      const rootRoom = (0, _grid.snapToGrid)(rootW + gap * 2, {
+          round: 'up'
+        }),
+        leafRoom = (0, _grid.snapToGrid)(leafW + gap * 2, {
+          round: 'up'
+        });
       box = {
-        left: (0, _grid.snapToGrid)(rootW + gap * 2, {
-          round: 'up'
-        }),
-        right: (0, _grid.snapToGrid)(leafW + gap * 2, {
-          round: 'up'
-        }),
+        left: tk.rtl ? leafRoom : rootRoom,
+        right: tk.rtl ? rootRoom : leafRoom,
         top: (0, _grid.snapToGrid)(T.leaf / 2, {
           round: 'up'
         }),

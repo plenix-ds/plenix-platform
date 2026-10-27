@@ -6,6 +6,9 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+### Fixed
+- Charts in a right-to-left page (owner, ctm-needs-34; #413 batch 4): labels drawn by ECharts no longer grow the wrong way from their point. The engine's own element is always left to right (`.plx-chart__engine`), and the chart reads the page's direction from the `dir` attribute (`:dir(rtl)`), so it still mirrors: TreeChart's labels now sit beside their dots instead of over them, and a line or bar chart's value labels sit outside the axis. TreeChart also keeps its root label's room on the root's side in right to left, so the root's name is no longer cut off. Left to right is unchanged.
+
 ### Breaking
 - Four circle sizes are renamed from `-radius` to `-size`, so the corner rule (2 to 6px) covers only real corners (owner, dot-radius-names-34). Each still holds the circle's radius (SVG `r`), so nothing on screen changes. A theme or page that set an old name must use the new one:
   - `--plx-comp-chart-interaction-focus-mark-radius` → `--plx-comp-chart-interaction-focus-mark-size`

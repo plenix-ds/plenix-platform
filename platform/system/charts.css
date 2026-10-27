@@ -13,7 +13,10 @@
 .plx-chart__svg{display:block;overflow:visible;}
 /* the chart engine's drawing (Apache ECharts, charts/echarts/): the plot's full size, under the frame's own layer; the pointer
    and the keyboard belong to the plot and the chart interaction */
-.plx-chart__engine{block-size:100%;inline-size:100%;pointer-events:none;}
+/* the engine places every label by its own pixel positions and anchors (start, end): in a right-to-left page the SVG's
+   inherited direction would turn start and end around, so a label grows the wrong way from its point (owner, ctm-needs-34;
+   #413 batch 4). The engine's drawing is always left to right; the chart mirrors through its own options. */
+.plx-chart__engine{block-size:100%;direction:ltr;inline-size:100%;pointer-events:none;}
 .plx-chart__svg--clipped{overflow-x:hidden;overflow-y:hidden;}
 /* marks: filled shapes (bars, areas, slices), lines and points, colored by their data-viz step */
 .plx-chart__mark,.plx-chart__line,.plx-chart__point{--plx-comp-chart-mark-color:var(--plx-comp-chart-mark-default-color);}
