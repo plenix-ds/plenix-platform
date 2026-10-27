@@ -20,7 +20,7 @@ One design system and the suite of applications built on it, owned by one person
 | Design spec | `platform/design-system/` (a **submodule**, private repo `plenix-ds/plenix-design-system`) | The living spec: 688 records, 1,172 taxonomy leaves; `inventory.js` + `parts/*.records.js|docs.js|labs.js`; one page per component (the duplicate merge is permanent, no redirects) |
 | Standards | `platform/standards/` | `styling.md` (the Styling Standard: ownership, zero overlap, text contracts, layers), `text-contracts.json`, themes, layout, native design |
 | Apps | `dashboard/ projects/ messages/ contacts/ calendar/ tasks/ notes/ bookmarks/ files/ settings/ dam/` | The suite, each `main.jsx` → generated `app.js` |
-| Checks | `check-system.js` (+ `check-system.rules/`), `check-style.js`, `check-spec.js`; `tests/` | The gates (the tests run only when the owner starts them) |
+| Checks | `check-system.js` (+ `check-system.rules/`), `check-style.js`, `check-spec.js`, `check-bundle.js` (+ `check-bundle.baseline.json`); `tests/` | The gates (the tests run only when the owner starts them) |
 | Agent tools | `tools/agent/` | Work notes, proof log (`proof-log.md`), release script (`release.sh`), the spec-merge record |
 
 ## Where things stand
@@ -82,6 +82,12 @@ One design system and the suite of applications built on it, owned by one person
   - Dark mode, the themes and the densities are checked only on demand (`theme`, `density`) until dark mode work starts (#205).
 - Gates before finishing any change: `node build-app.js`, `node check-system.js` (SYSTEM_OK), `node check-style.js` (STYLE_OK), `npm run lint:css` (no errors), `node check-spec.js` (SPEC_OK).
   After a spec change, `node build-spec-parts.js` (build-app runs it).
+- Bundle rules (`node check-bundle.js`, `npm run lint:bundle`; owner, bundle-check-27; #456 to #461):
+  - It reads the built CDN files in `release/cdn/<version>/` (`plenix.js`, `plenix.css`) and never builds them; CI runs it after "Release build" and the release after `build-packages.js`. Advisory, like the other checks.
+  - It counts runtime addresses (P-38), injected scripts (P-45), page prefetch (P-46), raw HTML outside the rich-text engine (P-47) and CSS outside the supported browsers with no `@supports` fallback (P-48), and holds `plenix.css` to its size in KB (P-36). The header of `check-bundle.js` defines each rule.
+  - It fails (BUNDLE_FAIL) when any count or the size goes up from `check-bundle.baseline.json`. When one goes down, lower the baseline in the same pull request with `node check-bundle.js --update`.
+  - Never raise the baseline to pass. `--list` shows where each finding comes from: the source module, or the CSS rule.
+  - `node build-packages.js` currently runs tests (#466), so do not run it to refresh the files; read what is there, or let CI build them.
 - Generated files (never edit by hand): `platform/dist/platform.js`, `<app>/app.js`, `platform/system/steps.css`,
   `platform/system/tokens/*.css`, `platform/tokens/tokens.index.json`, `platform/components/Icon/icon.css`,
   `platform/design-system/spec-parts.js`, `reviewed.js`, `usage.js`.

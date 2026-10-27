@@ -8,6 +8,7 @@
     "lint:system": "node check-system.js",
     "lint:style": "node check-style.js",
     "lint:spec": "node check-spec.js",
+    "lint:bundle": "node check-bundle.js",
     "build:docs": "node build-docs.js",
     "build:packages": "node build-packages.js",
     "release:build": "node build-app.js && node build-usage.js && node check-system.js && node check-style.js && node build-packages.js",
