@@ -1,5 +1,10 @@
 {
   "$description": "Frozen at 2026-10-27 for check-system.rules/token-definitions.js: the reference palette (name and value; a new or changed color needs the owner; gray 250 is in), and the tokens that were off the 4px grid or outside the 2 to 6px corners when the rule began. The grid and corners lists only shrink: node check-system.rules/token-definitions.js --shrink.",
+  "reasons": {
+    "grid": {
+      "shadow-*": "optical blur/ring width; owner to decide (the owner: everything should be on the grid)"
+    }
+  },
   "colors": {
     "color-black-alpha-50": "#00000080",
     "color-black-alpha-14": "#00000024",
@@ -183,7 +188,20 @@
     "glyph-size-6px": "6px",
     "glyph-size-10px": "10px",
     "glyph-size-14px": "14px",
-    "glyph-size-18px": "18px"
+    "glyph-size-18px": "18px",
+    "shadow-sm": "0 0 2px {plx-ref.color-black-alpha-14}, 0 0 0 1px {plx-ref.color-gray-200}",
+    "shadow-md": "0 0 8px {plx-ref.color-black-alpha-14}, 0 0 2px {plx-ref.color-black-alpha-14}, 0 0 0 1px {plx-ref.color-gray-200}",
+    "shadow-lg": "0 0 32px {plx-ref.color-black-alpha-14}, 0 0 8px {plx-ref.color-black-alpha-14}, 0 0 0 1px {plx-ref.color-gray-200}",
+    "shadow-card": "0 0 4px {plx-ref.color-black-alpha-14}, 0 0 0 1px {plx-ref.color-gray-200}",
+    "shadow-raised": "0 0 16px {plx-ref.color-black-alpha-14}, 0 0 4px {plx-ref.color-black-alpha-14}, 0 0 0 1px {plx-ref.color-gray-200}",
+    "shadow-menu": "0 0 40px {plx-ref.color-black-alpha-14}, 0 0 8px {plx-ref.color-black-alpha-14}, 0 0 0 1px {plx-ref.color-gray-200}",
+    "shadow-lifted": "0 0 1px {plx-ref.color-black-alpha-20}, 0 0 2px {plx-ref.color-black-alpha-14}, 0 0 5px {plx-ref.color-black-alpha-12}",
+    "shadow-halo": "0 0 1px {plx-ref.color-black-alpha-20}, 0 0 1px {plx-ref.color-black-alpha-14}, 0 0 3px {plx-ref.color-black-alpha-12}",
+    "shadow-floating": "0 0 1px {plx-ref.color-black-alpha-20}, 0 0 3px {plx-ref.color-black-alpha-14}, 0 0 6px {plx-ref.color-black-alpha-12}",
+    "shadow-modal": "0 0 40px {plx-ref.color-gray-800}, 0 0 0 1px {plx-ref.color-gray-800}",
+    "shadow-ring": "0 0 0 2px {plx-ref.color-blue-400}",
+    "shadow-ring-subtle": "0 0 0 2px {plx-ref.color-blue-100}",
+    "shadow-underline-focus": "0 1px 0 {plx-ref.color-blue-400}"
   },
   "corners": {
     "radius-8px": "8px",

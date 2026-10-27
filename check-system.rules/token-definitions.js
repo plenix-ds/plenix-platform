@@ -6,6 +6,7 @@
 //   grid     Everything on the 4px grid. A token whose value is a literal length (px or rem, as 16px) is a multiple of 4. Exempt only
 //            what GRID_EXEMPT names, with the reason for each; the corner radii have their own rule.
 //   corners  Corners are 2 to 6px (and 0). A radius token (a key with "radius") with a literal length outside that fails.
+// (The box shadows, 13 tokens with 1, 2, 3 and 5px blur or ring widths, are in the backlog with the reason "optical blur/ring width; owner to decide", not exempt.)
 // What already breaks a rule when the rule began is the frozen backlog in the same JSON (grid, corners): by token, with its value.
 // It only shrinks: a token that is not listed fails; a listed token that now passes (or is gone) fails until it is removed
 // (node check-system.rules/token-definitions.js --shrink). Changing such a token would change the page: that waits for the owner.
@@ -23,7 +24,6 @@ const GRID_EXEMPT = [
   ['border-width-', 'hairline widths (1, 2 and 3px): a line is thinner than the grid'],
   ['focus-ring-offset', 'an outline offset (2px): a gap between a control and its focus ring, not a space in the layout'],
   ['font-size-', 'type sizes come from the type scale, not the grid'],
-  ['shadow-', 'box shadows: the blur and ring widths (1, 2, 3 and 5px) are optical, not spacing; seen now that every part of a compound value is read'],
 ];
 const CORNERS = [0, 6];   // px: 0, and 2 to 6 (the scale has no 1px and no 5px corner)
 const LEN = /^(-?[\d.]+)(px|rem)$/;
@@ -84,9 +84,9 @@ const DESCRIPTION = 'Frozen at 2026-10-27 for check-system.rules/token-definitio
 module.exports = { check, measure, NAME };
 
 if (require.main === module) {
-  if (process.argv.includes('--baseline')) { const m = measure(); write({ $description: DESCRIPTION, colors: m.colors, grid: m.grid, corners: m.corners }); console.log('baseline written: ' + Object.keys(m.colors).length + ' colors, ' + Object.keys(m.grid).length + ' off the grid, ' + Object.keys(m.corners).length + ' corners'); }
+  if (process.argv.includes('--baseline')) { const m = measure(); write({ $description: DESCRIPTION, reasons: readFrozen().reasons || {}, colors: m.colors, grid: m.grid, corners: m.corners }); console.log('baseline written: ' + Object.keys(m.colors).length + ' colors, ' + Object.keys(m.grid).length + ' off the grid, ' + Object.keys(m.corners).length + ' corners'); }
   if (process.argv.includes('--shrink')) {
-    const m = measure(), fz = readFrozen(), o = { $description: fz.$description || DESCRIPTION, colors: {}, grid: {}, corners: {} };
+    const m = measure(), fz = readFrozen(), o = { $description: fz.$description || DESCRIPTION, reasons: fz.reasons || {}, colors: {}, grid: {}, corners: {} };
     for (const k of Object.keys(fz.colors)) if (k in m.colors) o.colors[k] = fz.colors[k];
     for (const kind of ['grid', 'corners']) for (const k of Object.keys(fz[kind])) if (k in m[kind]) o[kind][k] = fz[kind][k];
     write(o); console.log('frozen list: ' + Object.keys(o.colors).length + ' colors, ' + Object.keys(o.grid).length + ' off the grid, ' + Object.keys(o.corners).length + ' corners');
