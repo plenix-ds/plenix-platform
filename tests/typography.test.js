@@ -190,6 +190,7 @@ async function inspect() {
   if (process.env.TYPO_VERBOSE || process.argv.includes('--update')) Object.keys(found).forEach((p) => MODES.forEach((m) => CHECKS.forEach((c) => { const l = list(p, m, c); if (l.length) console.log('  ' + p + ' · ' + m + ' · ' + c + ': ' + l.length + ' · ' + l.slice(0, process.env.TYPO_VERBOSE ? 99 : 3).join(' | ')); })));
   if (process.argv.includes('--update')) {
     const base = {}; Object.keys(found).forEach((p) => MODES.forEach((m) => CHECKS.forEach((c) => { const k = list(p, m, c).length; if (k) ((base[p] = base[p] || {})[m] = base[p][m] || {})[c] = k; })));
+    changed.shrinkOnly(BASELINE, base);
     fs.mkdirSync(path.dirname(BASELINE), { recursive: true }); fs.writeFileSync(BASELINE, JSON.stringify(base, null, 1) + '\n');
     console.log('TYPOGRAPHY_BASELINE written: ' + summary + ' on ' + Object.keys(found).length + ' pages');
     return;

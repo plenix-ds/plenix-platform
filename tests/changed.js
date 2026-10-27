@@ -375,8 +375,34 @@ module.exports = {
   },
   // nothing to load: the test's OK line, with 0, and exit 0
   none(line) { console.log(line + ' (nothing in scope)'); process.exit(0); },
-  // --update writes a baseline: only from a full run
-  noPartialUpdate(test) { if (process.argv.includes('--update') && !FULL) { console.log((test || TEST).toUpperCase().replace(/-/g, '_') + '_FAIL --update needs TEST_SCOPE=full (a baseline is never written from a partial run)'); process.exit(1); } },
+  // --update writes a baseline: only from a whole full run (not changed mode, not a shard, not filtered by a *_ONLY setting;
+  // #382 F6)
+  noPartialUpdate(test) {
+    if (!process.argv.includes('--update')) return;
+    const name = (test || TEST).toUpperCase().replace(/-/g, '_');
+    const filters = Object.keys(process.env).filter((k) => /_ONLY$/.test(k) && process.env[k]);
+    const why = !FULL ? 'it needs TEST_SCOPE=full' : SHARD ? 'TEST_SHARD makes it a part of the pages' : filters.length ? filters.join(', ') + ' filters it' : '';
+    if (why) { console.log(name + '_FAIL --update refused: ' + why + ' (a baseline is never written from a partial run)'); process.exit(1); }
+  },
+  // a baseline only shrinks (#382 F6): before --update writes, every entry of the new one must be in the old one, with a
+  // count no larger (numbers, at any depth; other values: the key must exist already). The first baseline is written.
+  shrinkOnly(file, next, test) {
+    let old = null; try { old = JSON.parse(fs.readFileSync(file, 'utf8')); } catch (e) { return; }
+    const grew = [];
+    // a new entry grows the baseline when it holds a finding: a count above 0, or any other value (a new page whose counts
+    // are all 0 adds nothing)
+    const findings = (v) => (v && typeof v === 'object' ? Object.keys(v).some((k) => findings(v[k])) : !(typeof v === 'number' && v === 0));
+    const walk = (a, b, at) => {
+      if (b && typeof b === 'object') { Object.keys(b).forEach((k) => { const p = at ? at + ' · ' + k : k; if (!a || typeof a !== 'object' || !(k in a)) { if (findings(b[k])) grew.push(p + ': new'); } else walk(a[k], b[k], p); }); return; }
+      if (typeof b === 'number' && typeof a === 'number' && b > a) grew.push(at + ': ' + a + ' -> ' + b);
+    };
+    walk(old, next, '');
+    if (grew.length) {
+      console.log((test || TEST).toUpperCase().replace(/-/g, '_') + '_FAIL --update refused: the baseline would grow (' + grew.length + '): ' + grew.slice(0, 5).join(' | ') + (grew.length > 5 ? ' | …' : ''));
+      console.log('  a baseline only shrinks: fix the new findings, or ask the owner before accepting them');
+      process.exit(1);
+    }
+  },
 };
 
 if (require.main === module) {

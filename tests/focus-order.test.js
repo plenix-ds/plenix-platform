@@ -88,7 +88,7 @@ changed.report(PAGES.length + ' app and test-site pages' + (DIALOG ? ', the dial
     check('dialog: focus returns to its trigger when it closes', back === 'Rename member', back);
   }
 
-  if (UPDATE) { fs.writeFileSync(BASELINE, JSON.stringify(found, null, 2) + '\n'); console.log('baseline written: ' + path.relative(process.cwd(), BASELINE)); }
+  if (UPDATE) { changed.shrinkOnly(BASELINE, found); fs.writeFileSync(BASELINE, JSON.stringify(found, null, 2) + '\n'); console.log('baseline written: ' + path.relative(process.cwd(), BASELINE)); }
   await browser.close(); server.close();
   const bad = results.filter((r) => !r[1]);
   results.forEach(([n, ok, d]) => console.log((ok ? 'ok   ' : 'FAIL ') + n + (d && !ok ? '  ' + d : '')));

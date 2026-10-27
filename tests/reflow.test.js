@@ -97,6 +97,7 @@ function measure(EXEMPT) {
   const total = Object.keys(found).reduce((n, p) => n + KINDS.reduce((m, k) => m + found[p][k].length, 0), 0);
   if (process.argv.includes('--update')) {
     const base = {}; Object.keys(found).forEach((p) => { const c = counts(p); if (Object.keys(c).length) base[p] = c; });
+    changed.shrinkOnly(BASELINE, base);
     fs.mkdirSync(path.dirname(BASELINE), { recursive: true }); fs.writeFileSync(BASELINE, JSON.stringify(base, null, 1) + '\n');
     Object.keys(found).forEach((p) => KINDS.forEach((k) => { if (found[p][k].length) console.log('  ' + p + ' · ' + k + ': ' + found[p][k].length + ' · e.g. ' + found[p][k].slice(0, 2).join(' | ')); }));
     console.log('REFLOW_BASELINE written: ' + total + ' findings on ' + Object.keys(base).length + ' of ' + Object.keys(found).length + ' pages (' + exempt + ' exempt two-dimensional scrollers)');
