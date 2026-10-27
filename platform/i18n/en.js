@@ -140,7 +140,10 @@ export default {
     "scope": "In {scope}",
     "pin": "Pin {app} to the header",
     "unpin": "Unpin {app} from the header",
-    "switchApp": "{app}, switch application"
+    "switchApp": "{app}, switch application",
+    "cancel": "Cancel",
+    "searchHint": "Type what you are looking for, then press Enter.",
+    "pinnedHeading": "Pinned to the header"
   },
   "appShell": {
     "skip": "Skip to main content"

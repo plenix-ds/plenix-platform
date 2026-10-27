@@ -1,6 +1,7 @@
 {
-  "$description": "The rollout backlog of check-system.rules/built-in-words.js (owner, arabic-words-37; issue 427), recorded 2026-10-27: per component file, how many built-in English words it still writes in its code (STRINGS objects, default arguments with words, literal aria-label/title/placeholder/alt). Wiring a file to useStrings brings it to 0. It only shrinks: node check-system.rules/built-in-words.js --shrink.",
+  "$description": "The rollout backlog of check-system.rules/built-in-words.js (owner, arabic-words-37; issue 427), recorded 2026-10-27, and again when the rule widened to English built in code (joined, template, braced, text): per component file, how many built-in English words it still writes in its code (STRINGS objects, inline defaults, default arguments with words, literal aria-label/title/placeholder/alt, English joined or templated in code, braced literals, JSX text). Wiring a file to useStrings brings it to 0. It only shrinks: node check-system.rules/built-in-words.js --shrink.",
   "files": {
-    "platform/components/DatePicker/DatePicker.jsx": 11
+    "platform/components/DatePicker/DatePicker.jsx": 11,
+    "platform/components/Field/Field.jsx": 1
   }
 }
