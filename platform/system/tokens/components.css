@@ -5986,6 +5986,20 @@
   --plx-comp-virtual-list-unread-bar-color: var(--plx-sys-action-primary-background);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-vote-tally-background: var(--plx-sys-surface-default);
+  --plx-comp-vote-tally-border-color: var(--plx-sys-border-default);
+  --plx-comp-vote-tally-border-width: var(--plx-sys-border-width-thin);
+  --plx-comp-vote-tally-radius: var(--plx-sys-shape-md);
+  --plx-comp-vote-tally-divider-color: var(--plx-sys-border-subtle);
+  --plx-comp-vote-tally-gap: var(--plx-ref-space-12px);
+  --plx-comp-vote-tally-row-padding-block: var(--plx-ref-space-12px);
+  --plx-comp-vote-tally-row-padding-inline: var(--plx-ref-space-16px);
+  --plx-comp-vote-tally-row-gap: var(--plx-ref-space-12px);
+  --plx-comp-vote-tally-choices-gap: var(--plx-ref-space-8px);
+  --plx-comp-vote-tally-totals-padding: var(--plx-ref-space-12px);
+  --plx-comp-vote-tally-totals-gap: var(--plx-ref-space-8px);
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-waterfall-chart-connector-color: var(--plx-sys-border-strong);
   --plx-comp-waterfall-chart-connector-width: var(--plx-sys-border-width-thin);
   --plx-comp-waterfall-chart-connector-dash: var(--plx-ref-size-4px);

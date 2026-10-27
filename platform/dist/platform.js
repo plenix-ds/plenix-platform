@@ -810,58 +810,1321 @@ function Isolate({
   }, rest), children);
 }
   } },
-  "platform/components/Count/Count.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/StatusDot/StatusDot.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Count = Count;
+exports.StatusDot = StatusDot;
 var _react = _interopRequireDefault(require("react"));
 var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
+var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+var _Icon = require("../Icon/Icon.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Count
-   Summary: A number shown on its own.
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · StatusDot
+   Summary: A 6px dot that marks a state (active, paused, priority), or a person's availability (online, away, busy, do
+     not disturb, offline) in the Status colors.
    Usage:
-     <Count value={24} />
-     <Count variant="pill" value={unread} max={99} label={unread + ' unread notifications'} />
+     <StatusDot tone="success" label="Active" />
+     <StatusDot tone="busy" label="Busy" />
+     <StatusDot tone="dnd" size="md" icon label="Do not disturb" />
+     <StatusDot tone="away" size="md" icon label="Away" />
    Props:
-     value: the number; with no value nothing renders
-     variant: "plain" (default; muted tabular figures, e.g. a list row's item count) | "pill" (a 16px soft pill for unread
-       or pending counts: the status pill look, shade 100 background, shade 300 border, dark text, 4px corners)
-     tone: the pill color: "neutral" (gray) | "info" (blue) | "success" (green) | "warning" (yellow) | "danger" (red;
-       default), on the same roles as Badge's neutral, active, success, waiting and negative
-     max: above it the count shows max + "+" (e.g. "99+")
-     label: the accessible name when the number alone is unclear ("3 unread notifications")
-     moreThan: what screen readers hear for a capped count without a label (default "More than {max}")
-     className: more classes on the count
+     tone: "neutral" (default) | "info" | "success" | "warning" | "danger"; for a person's availability (the presence
+       roles of the Status colors, library wave 4): "online" | "away" | "busy" | "dnd" (do not disturb) |
+       "offline"
+     size: "sm" (default, 6px) | "md" (12px) | "lg" (16px): the larger dots carry a glyph (icon) and sit on an avatar
+     icon: draws the availability's shape inside a md or lg dot, so it never rests on color alone: online a check, away a
+       clock, busy a solid dot with nothing cut out, do not disturb a minus (remove), offline a cross; busy and do not
+       disturb share a color and differ by shape (default false; presence tones only)
+     label: the state in words, read by assistive technology
+     className: more classes on the dot
+     ...rest: other attributes go on the dot element
+   Behavior:
+     Without a label the dot is decorative and hidden from assistive technology.
+     The glyph is drawn in the surface color, cut out of the dot; a sm dot has no room for one and ignores icon.
    Notes:
-     Other props pass through to the <span>.
+     Without a label, pair the dot with visible text.
+     Avatar's presence prop draws this dot at the avatar's corner.
 */
-function Count({
-  value,
-  max,
-  variant = 'plain',
-  tone = 'danger',
+const PRESENCE = ['online', 'away', 'busy', 'dnd', 'offline'];
+const GLYPHS = {
+  online: 'check',
+  away: 'clock',
+  dnd: 'remove',
+  offline: 'close-2'
+}; // busy is the solid dot: nothing cut out
+const SIZES = ['md', 'lg'];
+function StatusDot({
+  tone = 'neutral',
+  size = 'sm',
+  icon = false,
   label,
-  moreThan = 'More than {max}',
   className,
   ...rest
 }) {
-  (0, _devWarn.devWarn)('Count', {
-    variant,
-    tone
+  (0, _devWarn.devWarn)('StatusDot', {
+    tone,
+    size
   }, {
-    variant: ['plain', 'pill'],
-    tone: ['info', 'success', 'warning', 'danger', 'neutral']
+    tone: ['info', 'success', 'warning', 'danger', 'neutral', 'online', 'away', 'busy', 'dnd', 'offline'],
+    size: ['sm', 'md', 'lg']
   });
-  if (value === null || value === undefined || value === '') return null;
-  const shown = typeof max === 'number' && Number(value) > max ? max + '+' : String(value);
+  const s = SIZES.indexOf(size) >= 0 ? size : null;
+  const glyph = icon && s && PRESENCE.indexOf(tone) >= 0 && GLYPHS[tone];
   return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: (0, _cx.cx)('plx-count', 'plx-count--' + variant, variant === 'pill' ? 'plx-count--' + tone : null, className),
-    "aria-label": label || (typeof max === 'number' && Number(value) > max ? moreThan.replace('{max}', String(max)) : undefined)
-  }, rest), shown);
+    className: (0, _cx.cx)('plx-status-dot', 'plx-status-dot--' + tone, s && 'plx-status-dot--' + s, glyph && 'plx-status-dot--glyph', className),
+    "aria-hidden": label ? undefined : true
+  }, rest), glyph ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: glyph,
+    className: "plx-status-dot__glyph"
+  }) : null, label ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, label) : null);
+}
+  } },
+  "platform/components/Avatar/Avatar.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Avatar = Avatar;
+exports.initialsOf = initialsOf;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _cx = require("../../utils/cx.js");
+var _Icon = require("../Icon/Icon.jsx");
+var _StatusDot = require("../StatusDot/StatusDot.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Avatar
+   Summary: A person's picture, or their initials, in a rounded square (never a circle), inside a 1px media border (owner,
+     2026-10-19: every avatar and picture placeholder has the same border).
+   Usage:
+     <Avatar name="Maya Chen" size="md" />
+     <Avatar name="Maya Chen" src="/people/mc.jpg" label="Maya Chen" />
+   Props:
+     name: the person's name; without a picture the avatar shows its initials, from initialsOf(name)
+     src: the URL of the person's picture; it replaces the initials
+     initials: the text to show, only when there is no name to work from
+     size: "2xs" 20px | "xs" 24px | "sm" 28px (default) | "md" 32px | "lg" 40px | "xl" 48px | "2xl" 64px; "2xs" is for inside a small control
+       (the account row in a pane footer)
+     color: the person's own color when the data has one, a data color: a hue name (blue, green, purple, red, brown, gray: the --plx-sys-data-color-<hue> tokens), set as data-plx-color; no value is written (batch 280): its soft fill with
+       its text color (otherwise the theme's avatar colors)
+     category: instead of color, a category color by name (an avatar standing for a category): the color as its fill,
+       black or white text (batch 290)
+     gender: "male" | "female": with no picture, the person-male or person-female icon on soft blue or soft pink (the
+       category palette) instead of the initials; any other value keeps the initials (owner, 2026-10-19)
+     label: the person's name for assistive technology when no visible name is nearby; without it the avatar is hidden from
+       assistive technology
+     presence: the person's availability (library wave 4): "online" | "away" | "busy" | "dnd" (do not disturb)
+       | "offline", a StatusDot at the avatar's bottom end corner in the presence roles of the Status colors, ringed in the surface color;
+       its size follows the avatar (a 6px dot up to 32px, 12px at 40 and 48px, 16px at 64px), and from 40px it carries the
+       availability's shape (a check, a clock, busy the solid dot, do not disturb a minus, a cross) so it never rests on
+       color alone
+     strings: the words of presence, for other languages: { online: "Online", away: "Away", busy: "Busy",
+       dnd: "Do not disturb", offline: "Offline" }
+     className: more classes on the avatar
+   Behavior:
+     A picture that fails to load falls back to the initials. The picture loads lazily and decodes off the main thread
+     (loading="lazy", decoding="async"), so a long list or table of avatars fetches only the ones near the view.
+     The corner and the text size follow the size.
+     Initials are the first letters of the first and last name ("Maya Chen" → MC).
+     Titles such as "Fr." or "Dr." and parenthesized parts are skipped; one word gives one letter.
+     With a label the avatar is an image (role="img") named by the label; with presence too, the name and the state ("Maya Chen, Busy").
+     Without a label the presence dot is hidden with the avatar: the page says the state in words next to it.
+   Notes:
+     Other props pass through to the <span>.
+     initialsOf(name) is also exported for pages that need the same initials. A name with no Latin letter (an Arabic name)
+       takes each word's first letter; two Arabic initials are kept apart so they do not join (owner, ctm-needs-34).
+*/
+const SIZES = [20, 24, 28, 32, 40, 48, 64]; // the scale its classes define (plx-avatar--24 …)
+// the names pages use: 2xs 20 (inside a small control: the account row in a pane footer), xs 24, sm 28, md 32, lg 40, xl 48, 2xl 64 (numbers are rejected by the system check)
+const NAMED = {
+  '2xs': 20,
+  xs: 24,
+  sm: 28,
+  md: 32,
+  lg: 40,
+  xl: 48,
+  '2xl': 64
+};
+// presence (library wave 4): the availability tones, the dot's size for each avatar size, and the words
+const PRESENCE = ['online', 'away', 'busy', 'dnd', 'offline'];
+const DOT = {
+  20: 'sm',
+  24: 'sm',
+  28: 'sm',
+  32: 'sm',
+  40: 'md',
+  48: 'md',
+  64: 'lg'
+};
+const STRINGS = {
+  online: 'Online',
+  away: 'Away',
+  busy: 'Busy',
+  dnd: 'Do not disturb',
+  offline: 'Offline'
+};
+
+// first- and last-name initials: titles (a word ending in a period, e.g. "Fr.") and parenthesized parts are skipped.
+// A word's initial is its first Latin letter or digit, as always; a word with none (an Arabic name, owner ctm-needs-34) takes
+// its first letter of any script. Two Arabic initials are kept apart (a zero-width non-joiner), so they do not join into a word.
+const LATIN = /[A-Za-z0-9]/,
+  ANY = /[\p{L}\p{N}]/u,
+  JOINING = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/;
+const initialOf = w => (w.match(LATIN) || w.match(ANY) || [''])[0];
+function initialsOf(name) {
+  const words = String(name || '').replace(/\([^)]*\)/g, ' ').split(/\s+/).filter(w => w && !/\.$/.test(w) && initialOf(w));
+  if (!words.length) return '';
+  const first = initialOf(words[0]),
+    last = words.length > 1 ? initialOf(words[words.length - 1]) : '';
+  return (first + (JOINING.test(first) && JOINING.test(last) ? '\u200C' : '') + last).toUpperCase();
+}
+const GENDER = {
+  male: {
+    tone: 'blue',
+    icon: 'person-male'
+  },
+  female: {
+    tone: 'pink',
+    icon: 'person-female'
+  }
+};
+function Avatar({
+  name,
+  src,
+  initials,
+  size = 'sm',
+  color,
+  category,
+  gender,
+  label,
+  presence,
+  strings,
+  className,
+  ...rest
+}) {
+  (0, _devWarn.devWarn)('Avatar', {
+    size
+  }, {
+    size: ['2xs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl']
+  });
+  const n = NAMED[size] || size;
+  const s = SIZES.indexOf(n) >= 0 ? n : NAMED.sm;
+  const text = name ? initialsOf(name) : initials;
+  const p = PRESENCE.indexOf(presence) >= 0 ? presence : null;
+  const words = Object.assign({}, STRINGS, strings);
+  const named = label && p ? label + ', ' + words[p] : label;
+  // a picture that fails to load falls back to the initials (batch 215)
+  const [failed, setFailed] = _react.default.useState(false);
+  _react.default.useEffect(() => {
+    setFailed(false);
+  }, [src]);
+  const picture = src && !failed;
+  const g = !picture ? GENDER[gender] : null; // no picture and a known gender: the gender icon
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: (0, _cx.cx)('plx-avatar', 'plx-avatar--' + s, p && 'plx-avatar--presence', g && 'plx-avatar--gender', className),
+    "data-plx-avatar": "",
+    "data-plx-color": g ? undefined : color || undefined,
+    "data-plx-category": g ? g.tone : category || undefined,
+    role: label ? 'img' : undefined,
+    "aria-label": named,
+    "aria-hidden": label ? undefined : true
+  }, rest), picture ? /*#__PURE__*/_react.default.createElement("img", {
+    className: "plx-avatar__image",
+    src: src,
+    alt: "",
+    loading: "lazy",
+    decoding: "async",
+    onError: () => setFailed(true)
+  }) : g ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: g.icon,
+    filled: true,
+    className: "plx-avatar__gender"
+  }) : text, p ? /*#__PURE__*/_react.default.createElement(_StatusDot.StatusDot, {
+    tone: p,
+    size: DOT[s],
+    icon: DOT[s] !== 'sm',
+    className: "plx-avatar__presence"
+  }) : null);
+}
+  } },
+  "platform/components/Loading/Loading.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Skeleton = Skeleton;
+exports.Spinner = Spinner;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _cx = require("../../utils/cx.js");
+var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Skeleton, Spinner
+   Summary: Loading indicators. Skeleton is a placeholder block with a shimmer; Spinner is a turning ring. (The typing
+     dots are a Chat variant: Chat.Typing.)
+   Usage:
+     <Skeleton width="160px" height="16px" />
+     <Spinner size="sm" label="Saving" />
+   Props:
+     Skeleton.width: the block width, a size token's name ("200px" for --plx-ref-size-200px); none: as wide as its place
+     Skeleton.height: the block height, a size token's name ("16px")
+     Skeleton.className: more classes on the block
+     Spinner.size: "sm" | "md" (default) | "lg"
+     Spinner.label: the text announced to assistive technology (default "Loading")
+     Spinner.className: more classes on the ring
+   Behavior:
+     The Skeleton shimmer runs left to right; the block is decorative (aria-hidden).
+     Spinner is a status region (role="status"), so its label is announced.
+     People who ask their system for less motion see the indicators still.
+   Notes:
+     Other props pass through to the <span>.
+     The old text listed a radius prop for Skeleton; the code takes none (set it with a class).
+*/
+// a size token's name from "200px" (or the older "var(--plx-ref-size-200px)"); the rule per size is in system/steps.css
+const sizeName = v => v ? String(v).replace(/^var\(--plx-ref-size-|\)$/g, '') : undefined;
+function Skeleton({
+  width,
+  height,
+  className,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: (0, _cx.cx)('plx-skeleton', className),
+    "aria-hidden": "true",
+    "data-plx-width": sizeName(width),
+    "data-plx-height": sizeName(height)
+  }, rest));
+}
+function Spinner({
+  size = 'md',
+  label = 'Loading',
+  className,
+  ...rest
+}) {
+  (0, _devWarn.devWarn)('Spinner', {
+    size
+  }, {
+    size: ['sm', 'md', 'lg']
+  });
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: (0, _cx.cx)('plx-spinner', 'plx-spinner--' + size, className),
+    role: "status"
+  }, rest), /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, label));
+}
+  } },
+  "platform/providers/Surface.jsx": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SurfaceContext = void 0;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · SurfaceContext
+   Summary: Tells the components inside a colored surface which surface they sit on, so they take its look from their own
+     classes: no rule reaches into the surface (Styling Standard 3.6).
+   Usage:
+     <SurfaceContext.Provider value="inverse">…</SurfaceContext.Provider>
+   Props:
+     value: "inverse" (a dark surface: TeachingBubble) | "accent" (the accent AppHeader) | null (the page's own surface)
+   Behavior:
+     TeachingBubble and the accent AppHeader provide it. A Button inside takes plx-button--on-inverse or
+       plx-button--on-accent.
+     A component that draws a colored surface of its own provides it for its content.
+*/
+
+const SurfaceContext = exports.SurfaceContext = /*#__PURE__*/_react.default.createContext(null);
+  } },
+  "platform/utils/floating.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.PLACEMENTS = exports.FLOATING_POINTER = exports.FLOATING_ANCHOR = void 0;
+exports.useFloating = useFloating;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · useFloating
+   Summary: Places a floating element (a menu, popover, tooltip, combobox list or date picker) beside its anchor and keeps it in view: a named placement, an offset step, flip, shift, the anchor's width, or a point (a context menu at the pointer). It writes data attributes only; system/floating.css places the element, so no position is ever written as a style.
+   Usage:
+     const anchor = React.useRef(null), panel = React.useRef(null);
+     const { placement } = useFloating(anchor, panel, { open, placement: 'bottom-start' });
+     <button ref={anchor} aria-expanded={open} aria-controls="list">Sort</button>
+     {open ? <div ref={panel} id="list" popover="manual" className="plx-menu">…</div> : null}
+     useFloating(anchor, panel, { open, placement: 'bottom-start', matchWidth: true })      // a select or combobox list
+     useFloating(row, panel, { open, virtual: { x: event.clientX, y: event.clientY } })     // a context menu at the pointer
+   Props:
+     anchorRef: a ref to the element the floating element is placed against
+     floatingRef: a ref to the floating element (best in the top layer: popover="manual", or inside a Portal)
+     options.open (true): placed while open; the anchor slot is released when it closes or unmounts
+     options.placement ('bottom-start'): top | bottom | start | end (the side; start and end follow the writing direction), centered or aligned: top-start, top-end, bottom-start, bottom-end, start-top, start-bottom, end-top, end-bottom
+     options.offset ('xs'): the gap to the anchor: 'none' | 'xs' | 'sm' | 'md' (--plx-sys-floating-offset-*)
+     options.flip (true): moves to the opposite side when there is no room
+     options.shift (true): swaps the alignment (start to end) to stay in the window; a centered placement aligns to an edge
+     options.matchWidth (false): at least as wide as the anchor
+     options.virtual (null): { x, y } in window pixels (event.clientX / clientY): placed at that point, flipped and kept inside the window; the anchor is used where the browser cannot place a point
+     returns { placement (the side and alignment in use where useFloating measures it), mode: 'anchor' | 'pointer' | 'inline' }
+   Behavior:
+     anchor: with CSS anchor positioning (Chrome 125, Safari 26, Firefox 147) the browser places the element, flips and shifts it, and follows the anchor on scroll and resize: nothing is measured.
+     pointer: with typed attr() (Chrome 133) a virtual anchor is a point: useFloating measures the element, flips it to the other side of the point and keeps it --plx-sys-floating-viewport-margin inside the window, then writes the point (data-plx-floating-x / -y).
+     inline: without anchor positioning the element is placed inside the anchor's parent (data-plx-floating-host) on its side; useFloating measures the room and flips or shifts the placement. Render the element next to its anchor for this fallback.
+     The pair shares one of 16 anchor names while open (data-plx-floating-anchor / data-plx-floating), so each floating element finds its own anchor anywhere in the page.
+   Notes:
+     It positions only. Opening, Escape, focus and outside clicks are the overlay's (useLayer), the top layer is popover="manual" or Portal layer="top", and the ARIA link (aria-expanded, aria-controls, aria-describedby) is the component's.
+     Menu, Tooltip and Popover adopt it in their own tasks.
+*/
+
+const SLOTS = 16;
+const taken = new Array(SLOTS + 1).fill(false);
+const take = () => {
+  for (let i = 1; i <= SLOTS; i++) if (!taken[i]) {
+    taken[i] = true;
+    return i;
+  }
+  return 0;
+};
+const release = i => {
+  if (i) taken[i] = false;
+};
+
+// what the browser can do, checked once
+const supports = decl => typeof CSS !== 'undefined' && !!CSS.supports && CSS.supports(decl);
+const FLOATING_ANCHOR = exports.FLOATING_ANCHOR = supports('anchor-name: --plx-a');
+const FLOATING_POINTER = exports.FLOATING_POINTER = supports('inset-block-start: attr(data-plx-floating-y px, 0px)');
+const PLACEMENTS = exports.PLACEMENTS = ['top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'start', 'start-top', 'start-bottom', 'end', 'end-top', 'end-bottom'];
+const OFFSETS = {
+  none: null,
+  xs: '--plx-sys-floating-offset-xs',
+  sm: '--plx-sys-floating-offset-sm',
+  md: '--plx-sys-floating-offset-md'
+};
+const ATTRS = ['data-plx-floating', 'data-plx-floating-placement', 'data-plx-floating-offset', 'data-plx-floating-flip', 'data-plx-floating-shift', 'data-plx-floating-match', 'data-plx-floating-pointer', 'data-plx-floating-x', 'data-plx-floating-y'];
+
+// a length token in pixels (the tokens are written in rem; a custom property's computed value has its var() resolved)
+function tokenPixels(name) {
+  if (!name || typeof document === 'undefined') return 0;
+  const root = document.documentElement,
+    v = getComputedStyle(root).getPropertyValue(name).trim(),
+    n = parseFloat(v) || 0;
+  return /rem$/.test(v) ? n * parseFloat(getComputedStyle(root).fontSize) : n;
+}
+const set = (el, name, value) => {
+  if (value == null || value === false) el.removeAttribute(name);else el.setAttribute(name, String(value));
+};
+const isRtl = el => getComputedStyle(el).direction === 'rtl';
+
+// the inline fallback: the side with room (flip) and the alignment that stays in the window (shift), from the anchor's box
+function measured(anchor, floating, placement, flip, shift, gap) {
+  const a = anchor.getBoundingClientRect(),
+    f = floating.getBoundingClientRect();
+  const W = window.innerWidth,
+    H = window.innerHeight,
+    rtl = isRtl(anchor);
+  let [side, align] = placement.split('-');
+  const room = {
+    top: a.top - gap,
+    bottom: H - a.bottom - gap,
+    start: rtl ? W - a.right - gap : a.left - gap,
+    end: rtl ? a.left - gap : W - a.right - gap
+  };
+  const need = side === 'top' || side === 'bottom' ? f.height : f.width;
+  const opposite = {
+    top: 'bottom',
+    bottom: 'top',
+    start: 'end',
+    end: 'start'
+  }[side];
+  if (flip && room[side] < need && room[opposite] > room[side]) side = opposite;
+  if (shift && align && (side === 'top' || side === 'bottom')) {
+    // aligned to the inline start, the element runs toward the inline end: does it leave the window there?
+    const startEdge = rtl ? a.right : a.left,
+      endRoom = rtl ? startEdge : W - startEdge;
+    const endEdge = rtl ? a.left : a.right,
+      startRoom = rtl ? W - endEdge : endEdge;
+    if (align === 'start' && endRoom < f.width && startRoom > endRoom) align = 'end';else if (align === 'end' && startRoom < f.width && endRoom > startRoom) align = 'start';
+  }
+  if (shift && align && (side === 'start' || side === 'end')) {
+    if (align === 'top' && H - a.top < f.height && a.bottom > H - a.top) align = 'bottom';else if (align === 'bottom' && a.bottom < f.height && H - a.top > a.bottom) align = 'top';
+  }
+  return align ? side + '-' + align : side;
+}
+
+// a point: the element's corner at the point, flipped to the other side of it when it does not fit, then kept inside the window
+function pointAt(floating, x, y) {
+  const f = floating.getBoundingClientRect(),
+    W = window.innerWidth,
+    H = window.innerHeight,
+    m = tokenPixels('--plx-sys-floating-viewport-margin');
+  const rtl = isRtl(floating);
+  // the inline-start inset of the point, measured from the window's inline-start edge
+  let ix = rtl ? W - x : x,
+    iy = y;
+  if (ix + f.width > W - m && ix - f.width >= m) ix -= f.width;
+  if (iy + f.height > H - m && iy - f.height >= m) iy -= f.height;
+  ix = Math.max(m, Math.min(ix, W - m - f.width));
+  iy = Math.max(m, Math.min(iy, H - m - f.height));
+  return [Math.round(ix), Math.round(iy)];
+}
+function useFloating(anchorRef, floatingRef, options = {}) {
+  const {
+    open = true,
+    placement = 'bottom-start',
+    offset = 'xs',
+    flip = true,
+    shift = true,
+    matchWidth = false,
+    virtual = null
+  } = options;
+  const wanted = PLACEMENTS.indexOf(placement) >= 0 ? placement : 'bottom-start';
+  const pointer = !!(virtual && FLOATING_POINTER);
+  const mode = pointer ? 'pointer' : FLOATING_ANCHOR ? 'anchor' : 'inline';
+  const [used, setUsed] = _react.default.useState(wanted);
+  const slot = _react.default.useRef(0);
+  const vx = virtual ? virtual.x : null,
+    vy = virtual ? virtual.y : null;
+  _react.default.useLayoutEffect(() => {
+    const anchor = anchorRef && anchorRef.current,
+      floating = floatingRef && floatingRef.current;
+    if (!open || !floating) return undefined;
+    const host = !pointer && mode === 'inline' && anchor ? anchor.parentElement : null;
+    if (pointer) {
+      set(floating, 'data-plx-floating-pointer', '');
+      const [ix, iy] = pointAt(floating, vx, vy);
+      set(floating, 'data-plx-floating-x', ix);
+      set(floating, 'data-plx-floating-y', iy);
+    } else if (anchor) {
+      if (!slot.current) slot.current = take();
+      set(anchor, 'data-plx-floating-anchor', slot.current || null);
+      set(floating, 'data-plx-floating', slot.current || 'inline');
+      set(floating, 'data-plx-floating-offset', offset === 'xs' || !(offset in OFFSETS) ? null : offset);
+      set(floating, 'data-plx-floating-flip', flip ? null : 'off');
+      set(floating, 'data-plx-floating-shift', shift ? null : 'off');
+      set(floating, 'data-plx-floating-match', matchWidth ? 'width' : null);
+      if (host) set(host, 'data-plx-floating-host', '');
+      set(floating, 'data-plx-floating-placement', wanted);
+      let next = wanted;
+      if (mode === 'inline') {
+        next = measured(anchor, floating, wanted, flip, shift, tokenPixels(OFFSETS[offset] || null));
+        set(floating, 'data-plx-floating-placement', next);
+      }
+      setUsed(next);
+    }
+    return () => {
+      ATTRS.forEach(n => floating.removeAttribute(n));
+      if (anchor) anchor.removeAttribute('data-plx-floating-anchor');
+      if (host) host.removeAttribute('data-plx-floating-host');
+      release(slot.current);
+      slot.current = 0;
+    };
+  }, [open, wanted, offset, flip, shift, matchWidth, pointer, mode, vx, vy, anchorRef, floatingRef]);
+
+  // the inline fallback measures again when the window changes size
+  _react.default.useEffect(() => {
+    if (!open || mode !== 'inline' || typeof window === 'undefined') return undefined;
+    const again = () => {
+      const anchor = anchorRef.current,
+        floating = floatingRef.current;
+      if (!anchor || !floating) return;
+      set(floating, 'data-plx-floating-placement', wanted);
+      const next = measured(anchor, floating, wanted, flip, shift, tokenPixels(OFFSETS[offset] || null));
+      set(floating, 'data-plx-floating-placement', next);
+      setUsed(next);
+    };
+    window.addEventListener('resize', again);
+    return () => window.removeEventListener('resize', again);
+  }, [open, mode, wanted, flip, shift, offset, anchorRef, floatingRef]);
+  return {
+    placement: mode === 'anchor' ? wanted : used,
+    mode
+  };
+}
+  } },
+  "platform/components/Tooltip/Tooltip.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/floating.js":"platform/utils/floating.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.InTooltip = void 0;
+exports.Tooltip = Tooltip;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _floating = require("../../utils/floating.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Tooltip
+   Summary: A short label for a control, shown on hover, on keyboard focus and, on touch, on a long press. The rich
+     tooltip (09 Overlays › Contextual overlays › Rich tooltip) adds a title, a few sentences and, as a toggletip, one action.
+   Usage:
+     <Tooltip content="Upload files" placement="bottom"><Button …/></Tooltip>
+     <Tooltip title="Retention" content="Deleted files stay in the trash for 30 days."><Button …/></Tooltip>
+     <Tooltip title="Smart crop" content="…" action={<Link href="#crop" variant="standalone">About smart crop</Link>}><Button …/></Tooltip>
+   Props:
+     content: the tooltip text (in a rich tooltip, its body: one to three sentences)
+     placement: "bottom" (default) | "top" | "start" | "end" (start and end follow the writing direction)
+     title: a short title above the body; it makes the tooltip rich
+     action: one action under the body (a standalone Link, or a small Button); it makes the tooltip rich and a toggletip:
+       it opens on click (Enter or Space on the trigger) instead of on hover and focus
+     rich: the rich look without a title or an action (default false; true when title or action is given)
+     disabled: the tooltip neither shows nor describes the trigger (default false); for a label that is shown in full most of
+       the time and only needs its tooltip when it is cut short
+     className: more classes on the wrapper
+     children: the control it labels (one element)
+   Behavior:
+     It shows on hover (a mouse or a pen) and on keyboard focus, and hides on leave, on blur and with Escape.
+     On touch there is no hover (Platforms Standard 6.5): a long press (--plx-comp-tooltip-long-press-delay) shows it, and
+     it hides --plx-comp-tooltip-touch-dismiss-delay after the finger lifts, or when the finger moves away or is cancelled.
+     A tap does not show it (focus that follows a touch is ignored; mouse events emulated from touch are not listened to),
+     and the long press neither opens the browser's context menu nor activates the control (the click that may follow the
+     release is dropped): a long press asks what a control is, it does not use it.
+     The trigger is described by the tooltip (aria-describedby), added to any it already has.
+     Placement: where the browser has CSS anchor positioning (utils/floating.js) the bubble is placed against the trigger by
+       useFloating while it shows (offset sm), so no scroll area or pane clips it; elsewhere it is drawn inside the wrapper
+       on its side, as before. A tooltip with an arrow keeps its side; a rich tooltip (no arrow) flips and shifts to stay in
+       the window.
+     Rich: a text-only rich tooltip opens on hover and focus like a plain one and stays open while the pointer is over it
+       (it hides --plx-comp-tooltip-rich-close-delay after the pointer leaves both). With an action it is a toggletip: the
+       trigger toggles it (aria-expanded, aria-controls), Tab from the trigger reaches the action, and Escape, a click
+       outside or focus leaving it closes it (Escape returns focus to the trigger); a tap opens it on touch.
+   Notes:
+     An icon-only Button shows its name (and its shortcut) as a tooltip by itself; inside a Tooltip it leaves that to the
+       Tooltip (InTooltip), so a control never gets two.
+     An icon-only control still needs its own label (aria-label): the tooltip repeats it visually, it is never the only
+     way to learn the control's name.
+     Not for essential content. Only the rich tooltip holds an action, and then it opens on click: interactive content never
+     depends on hover.
+     The rich surface is the popover's (the overlay surface with its border, radius and shadow), with no arrow.
+*/
+
+const SIDES = ['bottom', 'top', 'start', 'end'];
+
+// true inside a Tooltip's trigger: a Button there does not add its own (an icon-only Button shows its name by itself)
+const InTooltip = exports.InTooltip = /*#__PURE__*/_react.default.createContext(false);
+
+// a duration token ("0.5s", "500ms") in milliseconds, read from the element's computed style
+const ms = (el, name) => {
+  const v = el ? getComputedStyle(el).getPropertyValue(name).trim() : '';
+  const n = parseFloat(v);
+  return isNaN(n) ? 0 : /ms$/.test(v) ? n : n * 1000;
+};
+
+// the last way the person reached for the page: a touch, or a mouse, pen or key. Focus that follows a tap does not open
+// the tooltip (a long press does); focus that follows a key does. One listener pair for every tooltip, added by the first.
+let lastInput = 'key',
+  listening = false;
+const listen = () => {
+  if (listening) return;
+  listening = true;
+  document.addEventListener('pointerdown', e => {
+    lastInput = e.pointerType === 'touch' ? 'touch' : 'pointer';
+  }, true);
+  document.addEventListener('keydown', () => {
+    lastInput = 'key';
+  }, true);
+};
+function Tooltip({
+  content,
+  placement = 'bottom',
+  title,
+  action,
+  rich = false,
+  disabled = false,
+  className,
+  children
+}) {
+  const id = 'plx-tt' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const [open, setOpen] = _react.default.useState(false);
+  const wrap = _react.default.useRef(null);
+  const bubble = _react.default.useRef(null);
+  const press = _react.default.useRef(null); // the long-press timer
+  const hide = _react.default.useRef(null); // the timer that hides a tooltip a long press (or a rich tooltip's leave) started
+  const pressed = _react.default.useRef(false); // this touch opened the tooltip by a long press
+  const isRich = !!(rich || title || action);
+  const toggle = !!action; // a toggletip: opened by a click on the trigger
+  const side = SIDES.indexOf(placement) >= 0 ? placement : 'bottom';
+  const clear = () => {
+    clearTimeout(press.current);
+    clearTimeout(hide.current);
+  };
+  _react.default.useEffect(() => {
+    listen();
+    return clear;
+  }, []);
+  // placed against the trigger by anchor positioning while it shows; the arrow keeps its side (no flip, no shift)
+  (0, _floating.useFloating)(wrap, bubble, {
+    open: open && !disabled && _floating.FLOATING_ANCHOR,
+    placement: side,
+    offset: 'sm',
+    flip: isRich,
+    shift: isRich
+  });
+  _react.default.useEffect(() => {
+    if (!open) return undefined;
+    const esc = e => {
+      if (e.key !== 'Escape') return;
+      const inside = wrap.current && wrap.current.contains(document.activeElement);
+      setOpen(false);
+      // a toggletip gives focus back to its trigger when Escape closes it from inside
+      if (toggle && inside && wrap.current.firstElementChild && wrap.current.firstElementChild.focus) wrap.current.firstElementChild.focus();
+    };
+    const outside = e => {
+      if (wrap.current && !wrap.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener('keydown', esc);
+    if (toggle) document.addEventListener('mousedown', outside);
+    return () => {
+      document.removeEventListener('keydown', esc);
+      document.removeEventListener('mousedown', outside);
+    };
+  }, [open, toggle]);
+  const child = _react.default.Children.only(children);
+  const described = {
+    'aria-describedby': [child.props['aria-describedby'], id].filter(Boolean).join(' ')
+  };
+  const trigger = disabled ? child : /*#__PURE__*/_react.default.cloneElement(child, toggle ? Object.assign(described, {
+    'aria-expanded': open,
+    'aria-controls': open ? id + 'b' : undefined,
+    onClick: e => {
+      if (child.props.onClick) child.props.onClick(e);
+      setOpen(!open);
+    }
+  }) : described);
+  if (disabled) return /*#__PURE__*/_react.default.createElement("span", {
+    className: (0, _cx.cx)('plx-tooltip', className)
+  }, /*#__PURE__*/_react.default.createElement(InTooltip.Provider, {
+    value: true
+  }, trigger));
+  const onPointerDown = e => {
+    if (e.pointerType !== 'touch' || toggle) return;
+    clear();
+    pressed.current = false;
+    press.current = setTimeout(() => {
+      pressed.current = true;
+      setOpen(true);
+    }, ms(wrap.current, '--plx-comp-tooltip-long-press-delay'));
+  };
+  const onPointerEnd = e => {
+    if (e.pointerType !== 'touch' || toggle) return;
+    clearTimeout(press.current);
+    if (pressed.current) hide.current = setTimeout(() => {
+      setOpen(false);
+      pressed.current = false;
+    }, e.type === 'pointercancel' ? 0 : ms(wrap.current, '--plx-comp-tooltip-touch-dismiss-delay'));
+  };
+  const onEnter = e => {
+    if (e.pointerType === 'touch' || toggle) return;
+    clearTimeout(hide.current);
+    setOpen(true);
+  };
+  const onLeave = e => {
+    if (e.pointerType === 'touch' || toggle) return;
+    // a rich tooltip waits a moment, so the pointer can move into it; a plain one hides at once
+    if (isRich) {
+      clearTimeout(hide.current);
+      hide.current = setTimeout(() => setOpen(false), ms(wrap.current, '--plx-comp-tooltip-rich-close-delay'));
+    } else setOpen(false);
+  };
+  const bubbleCls = (0, _cx.cx)('plx-tooltip__bubble', 'plx-tooltip__bubble--' + side, isRich && 'plx-tooltip__bubble--rich', open && 'is-open');
+  return /*#__PURE__*/_react.default.createElement("span", {
+    ref: wrap,
+    className: (0, _cx.cx)('plx-tooltip', className),
+    onPointerEnter: onEnter,
+    onPointerLeave: onLeave,
+    onPointerDown: onPointerDown,
+    onPointerUp: onPointerEnd,
+    onPointerCancel: onPointerEnd,
+    onContextMenu: e => {
+      if (pressed.current) e.preventDefault();
+    },
+    onClickCapture: e => {
+      if (pressed.current) {
+        e.preventDefault();
+        e.stopPropagation();
+        pressed.current = false;
+      }
+    },
+    onFocus: () => {
+      if (!toggle && lastInput !== 'touch') setOpen(true);
+    },
+    onBlur: e => {
+      if (!pressed.current && !(wrap.current && wrap.current.contains(e.relatedTarget))) setOpen(false);
+    }
+  }, /*#__PURE__*/_react.default.createElement(InTooltip.Provider, {
+    value: true
+  }, trigger), isRich ? /*#__PURE__*/_react.default.createElement("span", {
+    ref: bubble,
+    id: id + 'b',
+    className: bubbleCls
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    role: "tooltip",
+    id: id,
+    className: "plx-tooltip__content"
+  }, title ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-tooltip__title"
+  }, title) : null, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-tooltip__body"
+  }, content)), action ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-tooltip__action"
+  }, action) : null) : /*#__PURE__*/_react.default.createElement("span", {
+    ref: bubble,
+    role: "tooltip",
+    id: id,
+    className: bubbleCls
+  }, content));
+}
+  } },
+  "platform/components/Kbd/Kbd.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Kbd = Kbd;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Kbd
+   Summary: A key or shortcut ("Ctrl K").
+   Usage:
+     <Kbd>Ctrl K</Kbd>
+     <Kbd onAccent>/</Kbd>
+   Props:
+     onAccent: the version for the blue header (default false)
+     children: the key or shortcut text
+     className: more classes on the <kbd>
+   Notes:
+     Writing direction (owner, ctm-needs-34): always left to right (dir="ltr", which also isolates it), also in a right-to-left page.
+     It uses the data font at a 16px label height.
+     Other props pass through to the <kbd>.
+*/
+function Kbd({
+  onAccent = false,
+  className,
+  children,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement("kbd", _extends({
+    className: (0, _cx.cx)('plx-kbd', onAccent && 'plx-kbd--on-accent', className),
+    dir: "ltr"
+  }, rest), children);
+}
+  } },
+  "platform/utils/tokenTime.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.tokenMs = tokenMs;
+// Plenix · tokenMs: a duration token's value in milliseconds ("4s", "250ms"), read from the element (or the root), so
+// behavior that waits (a toast leaving, a delay) takes its time from the tokens like the stylesheets do (batch 341).
+// Returns the fallback when the token is not set (no document, or the token stylesheet not loaded).
+function tokenMs(name, fallback = 0, el) {
+  if (typeof document === 'undefined') return fallback;
+  const v = getComputedStyle(el || document.documentElement).getPropertyValue(name).trim();
+  const m = /^(-?[\d.]+)(ms|s)$/.exec(v);
+  return m ? parseFloat(m[1]) * (m[2] === 's' ? 1000 : 1) : fallback;
+}
+  } },
+  "platform/utils/hotkey.js": { deps: {"react":null,"./tokenTime.js":"platform/utils/tokenTime.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.hotkeyKeys = hotkeyKeys;
+exports.hotkeyLabel = hotkeyLabel;
+exports.hotkeyList = hotkeyList;
+exports.isMac = isMac;
+exports.parseHotkey = parseHotkey;
+exports.registerHotkey = registerHotkey;
+exports.setSingleKeyHotkeys = setSingleKeyHotkeys;
+exports.singleKeyHotkeys = singleKeyHotkeys;
+exports.subscribeHotkeys = subscribeHotkeys;
+exports.useHotkey = useHotkey;
+exports.useHotkeyList = useHotkeyList;
+var _react = _interopRequireDefault(require("react"));
+var _tokenTime = require("./tokenTime.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Hotkey (platform/utils/hotkey.js)
+   Summary: Keyboard shortcuts in one place: useHotkey binds a key, a chord (Mod K) or a sequence (G then I) to a command,
+     for the whole page or for one region, and every binding goes into one registry that the shortcuts dialog and the
+     menus read their hints from (Kbd draws the label).
+   Usage:
+     useHotkey('Mod+K', () => openSearch(), { label: 'Search', group: 'General' });
+     useHotkey('G I', () => goTo('inbox'), { label: 'Go to inbox', group: 'Navigation' });
+     useHotkey('Delete', removeSelected, { scope: listRef, label: 'Delete the selected files' });
+     <Kbd>{hotkeyLabel('Mod+K')}</Kbd>                     // "Ctrl K" on Windows and Linux, "⌘ K" on a Mac
+     const all = useHotkeyList();                         // [{ binding, label, group, keys }] for the shortcuts dialog
+   Props:
+     useHotkey(binding, handler, options): binds while the component is mounted; handler(event) runs on a match
+     binding: steps separated by spaces (a sequence: "G I"), each step keys joined by "+" ("Mod+Shift+P"); modifiers Mod
+       (Cmd on a Mac, Ctrl elsewhere), Ctrl, Meta, Alt, Shift; keys as KeyboardEvent.key names ("K", "Escape", "/", "?")
+     options.scope: a ref (or element) of the region the binding belongs to; it fires only when focus is inside it
+     options.enabled: false unbinds it without unmounting (default true)
+     options.allowInFields: also fire while focus is in a text field (default false)
+     options.label: what the command does, as written in its menu item; options.group: its group in the shortcuts dialog
+     registerHotkey(binding, handler, options): the same without React; returns the function that unbinds it
+     hotkeyLabel(binding, { mac }): the binding as people read it ("Ctrl Shift P", "G then I")
+     hotkeyList(): every labeled binding; useHotkeyList() the same, kept current; subscribeHotkeys(fn) for other code
+     setSingleKeyHotkeys(on): turns every single-key shortcut (no modifier) off or on (WCAG 2.2 SC 2.1.4)
+   Behavior:
+     One keydown listener for the page. The binding of the innermost scope that contains the focus wins; page-wide
+     bindings come last. A key that starts a sequence waits --plx-sys-hotkey-sequence-timeout for the next one.
+     Ignored while focus is in a text field, a select or editable content, unless allowInFields. Ignored when an earlier
+     handler called preventDefault. A match calls preventDefault, so the browser's own use of that key does not run.
+   Notes:
+     Never bind keys that assistive technology or the browser needs (Tab, the arrow keys outside a widget, Ctrl L, F6).
+     Use the same label here as in the menu item, so the dialog and the menu agree.
+*/
+
+const MODS = ['ctrl', 'meta', 'alt', 'shift'];
+const NAMES = {
+  esc: 'escape',
+  del: 'delete',
+  space: ' ',
+  spacebar: ' ',
+  return: 'enter',
+  up: 'arrowup',
+  down: 'arrowdown',
+  left: 'arrowleft',
+  right: 'arrowright',
+  cmd: 'meta',
+  command: 'meta',
+  option: 'alt',
+  control: 'ctrl'
+};
+const entries = [];
+const listeners = new Set();
+let singleKeys = true;
+let buffer = [],
+  bufferAt = 0,
+  installed = false,
+  nextId = 1;
+function isMac() {
+  if (typeof navigator === 'undefined') return false;
+  const p = navigator.userAgentData && navigator.userAgentData.platform || navigator.platform || '';
+  return /mac|iphone|ipad|ipod/i.test(p);
+}
+
+// "Mod+Shift+P" → { ctrl, meta, alt, shift, key: 'p' }
+function parseStep(step, mac) {
+  const parts = step.split('+').filter((x, i, all) => x !== '' || i === all.length - 1).map(x => x === '' ? '+' : x);
+  const s = {
+    ctrl: false,
+    meta: false,
+    alt: false,
+    shift: false,
+    key: ''
+  };
+  parts.forEach(raw => {
+    let p = raw.toLowerCase();
+    p = NAMES[p] || p;
+    if (p === 'mod') s[mac ? 'meta' : 'ctrl'] = true;else if (MODS.indexOf(p) >= 0) s[p] = true;else s.key = p;
+  });
+  return s;
+}
+function parseHotkey(binding, mac = isMac()) {
+  return String(binding || '').trim().split(/\s+/).filter(Boolean).map(st => parseStep(st, mac));
+}
+function matchStep(s, e) {
+  const key = (e.key || '').toLowerCase();
+  // a letter or digit typed with Alt (or Shift) on some layouts changes e.key: e.code still names the key
+  const code = /^Key([A-Z])$|^Digit(\d)$/.exec(e.code || '');
+  const sameKey = key === s.key || !!code && (code[1] || code[2]).toLowerCase() === s.key;
+  if (!sameKey) return false;
+  // a symbol that needs Shift ("?") is written without it: Shift is then not compared
+  const symbol = s.key.length === 1 && !/[a-z0-9]/.test(s.key);
+  return e.ctrlKey === s.ctrl && e.metaKey === s.meta && e.altKey === s.alt && (symbol || e.shiftKey === s.shift);
+}
+const isSingle = steps => steps.length >= 1 && steps.every(s => !s.ctrl && !s.meta && !s.alt) && steps[0].key.length === 1;
+function inField(el) {
+  if (!el || !el.tagName) return false;
+  if (el.isContentEditable) return true;
+  const t = el.tagName.toLowerCase();
+  if (t === 'textarea' || t === 'select') return true;
+  if (t !== 'input') return false;
+  return ['checkbox', 'radio', 'button', 'submit', 'reset', 'range', 'color', 'file', 'image'].indexOf((el.type || '').toLowerCase()) < 0;
+}
+const scopeOf = x => (x && 'current' in x ? x.current : x) || null;
+const depth = el => {
+  let n = 0;
+  for (let x = el; x; x = x.parentElement) n++;
+  return n;
+};
+function onKeyDown(e) {
+  if (e.defaultPrevented || e.isComposing || ['Control', 'Meta', 'Alt', 'Shift'].indexOf(e.key) >= 0) return;
+  const now = Date.now();
+  if (now - bufferAt > (0, _tokenTime.tokenMs)('--plx-sys-hotkey-sequence-timeout')) buffer = [];
+  const target = e.target,
+    field = inField(target);
+  const live = entries.filter(x => x.enabled && (!field || x.allowInFields) && (singleKeys || !isSingle(x.steps))).map(x => ({
+    x,
+    scope: scopeOf(x.scope)
+  })).filter(c => !c.x.scope || c.scope && c.scope.contains(target)).sort((a, b) => (b.scope ? depth(b.scope) : 0) - (a.scope ? depth(a.scope) : 0));
+  const step = buffer.length;
+  const fits = (c, at) => c.x.steps.length > at && buffer.slice(buffer.length - at).every((ev, i) => matchStep(c.x.steps[i], ev)) && matchStep(c.x.steps[at], e);
+  // the longest waiting sequence first, then a fresh start
+  for (const at of [step, 0].filter((v, i, all) => all.indexOf(v) === i)) {
+    const full = live.find(c => c.x.steps.length === at + 1 && fits(c, at));
+    if (full) {
+      buffer = [];
+      e.preventDefault();
+      full.x.handler(e);
+      return;
+    }
+    if (live.some(c => c.x.steps.length > at + 1 && fits(c, at))) {
+      buffer = buffer.slice(buffer.length - at).concat([{
+        key: e.key,
+        code: e.code,
+        ctrlKey: e.ctrlKey,
+        metaKey: e.metaKey,
+        altKey: e.altKey,
+        shiftKey: e.shiftKey
+      }]);
+      bufferAt = now;
+      return;
+    }
+  }
+  buffer = [];
+}
+function install() {
+  if (installed || typeof document === 'undefined') return;
+  document.addEventListener('keydown', onKeyDown);
+  installed = true;
+}
+const notify = () => listeners.forEach(fn => fn());
+function registerHotkey(binding, handler, options = {}) {
+  install();
+  const entry = {
+    id: nextId++,
+    binding,
+    steps: parseHotkey(binding),
+    handler,
+    scope: options.scope || null,
+    enabled: options.enabled !== false,
+    allowInFields: !!options.allowInFields,
+    label: options.label || '',
+    group: options.group || ''
+  };
+  entries.push(entry);
+  if (entry.label) notify();
+  return () => {
+    const i = entries.indexOf(entry);
+    if (i >= 0) {
+      entries.splice(i, 1);
+      if (entry.label) notify();
+    }
+  };
+}
+function useHotkey(binding, handler, options = {}) {
+  const ref = _react.default.useRef(handler);
+  ref.current = handler;
+  const {
+    scope,
+    enabled = true,
+    allowInFields = false,
+    label,
+    group
+  } = options;
+  _react.default.useEffect(() => {
+    if (!enabled || !binding) return undefined;
+    return registerHotkey(binding, e => ref.current && ref.current(e), {
+      scope,
+      allowInFields,
+      label,
+      group
+    });
+  }, [binding, scope, enabled, allowInFields, label, group]);
+}
+const MAC_NAMES = {
+  meta: '⌘',
+  ctrl: '⌃',
+  alt: '⌥',
+  shift: '⇧'
+};
+const PC_NAMES = {
+  meta: 'Win',
+  ctrl: 'Ctrl',
+  alt: 'Alt',
+  shift: 'Shift'
+};
+const KEY_NAMES = {
+  ' ': 'Space',
+  escape: 'Esc',
+  arrowup: '↑',
+  arrowdown: '↓',
+  arrowleft: '←',
+  arrowright: '→',
+  enter: 'Enter',
+  delete: 'Delete',
+  backspace: 'Backspace',
+  tab: 'Tab'
+};
+function hotkeyKeys(binding, {
+  mac = isMac()
+} = {}) {
+  const names = mac ? MAC_NAMES : PC_NAMES;
+  return parseHotkey(binding, mac).map(s => (mac ? ['ctrl', 'alt', 'shift', 'meta'] : ['ctrl', 'meta', 'alt', 'shift']).filter(m => s[m]).map(m => names[m]).concat([KEY_NAMES[s.key] || (s.key.length === 1 ? s.key.toUpperCase() : s.key.charAt(0).toUpperCase() + s.key.slice(1))]));
+}
+function hotkeyLabel(binding, options) {
+  return hotkeyKeys(binding, options).map(k => k.join(' ')).join(' then ');
+}
+function hotkeyList() {
+  return entries.filter(x => x.label).map(x => ({
+    binding: x.binding,
+    label: x.label,
+    group: x.group,
+    keys: hotkeyLabel(x.binding),
+    enabled: x.enabled
+  }));
+}
+function subscribeHotkeys(fn) {
+  listeners.add(fn);
+  return () => listeners.delete(fn);
+}
+function useHotkeyList() {
+  const [list, setList] = _react.default.useState(hotkeyList);
+  _react.default.useEffect(() => {
+    setList(hotkeyList());
+    return subscribeHotkeys(() => setList(hotkeyList()));
+  }, []);
+  return list;
+}
+function setSingleKeyHotkeys(on) {
+  singleKeys = !!on;
+  buffer = [];
+}
+function singleKeyHotkeys() {
+  return singleKeys;
+}
+  } },
+  "platform/components/Button/Button.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../providers/Surface.jsx":"platform/providers/Surface.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","../../utils/hotkey.js":"platform/utils/hotkey.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Button = void 0;
+exports.ButtonGroup = ButtonGroup;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _cx = require("../../utils/cx.js");
+var _Icon = require("../Icon/Icon.jsx");
+var _Loading = require("../Loading/Loading.jsx");
+var _Surface = require("../../providers/Surface.jsx");
+var _Tooltip = require("../Tooltip/Tooltip.jsx");
+var _Kbd = require("../Kbd/Kbd.jsx");
+var _hotkey = require("../../utils/hotkey.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Button, ButtonGroup
+   Summary: A button for an action, in one of several emphasis levels and sizes; ButtonGroup joins buttons that act as a set.
+   Usage:
+     <Button variant="primary" icon="save" onClick={() => …}>Save</Button>
+     <Button iconOnly icon="more_horiz" label="More actions" caret expanded={open} />
+     <ButtonGroup label="Transfer"><Button>Import</Button><Button>Export</Button></ButtonGroup>
+   Props:
+     variant: "secondary" (default; white with a border, reversible actions) | "primary" (filled; the main action, usually one
+       per view) | "tertiary" (outlined in the action color, no fill; fills on hover) | "ghost" (no fill or border until
+       hovered, when its icon turns the action color; the lowest emphasis) | "danger" (filled red; destructive) | "danger-secondary"
+       (red outline, fills on hover). There is no link look: a link goes somewhere (Link), a button does something
+     truncate: the label fills the button from its start edge and ends in an ellipsis (a long choice)
+     stackedLabel: the label’s lines stack, start-aligned and wrapping; the gap is --plx-comp-button-context-label-gap (SuggestedAction)
+     labelRow: the label lays out a row of its own (an avatar and a name); the gap is
+       --plx-comp-button-context-label-row-gap (AppHeader’s account)
+     joined: { start, end }: "square" | "seam": its corners square where it meets a neighbor; a seam also drops that border (ButtonGroup, InputGroup and CopyButton set it)"md" (default; the standard control role) | "sm" (the toolbar role: compact text, gray) | "xs" (the inline-action
+       role: dense row and card actions, never in a toolbar) | "2xs" (the smallest: "Show more" under a list; 11px text, a blue
+       tint on hover) | "lg" (the prominent role: page actions)
+     icon: an <Icon> (or an icon name) before the label
+     iconEnd: an <Icon> (or an icon name) after the label
+     iconOnly: a square button with only its icon; give it a label (default false)
+     label: the accessible name (aria-label); an icon-only button falls back to string children
+     tooltip: the tooltip it shows (default: an icon-only button shows its label; others none); false: none (Carbon,
+       Atlassian: every icon-only button names itself). Inside a Tooltip the button leaves it to that Tooltip
+     shortcut: its keyboard shortcut, as a hotkey binding ("Mod+Shift+A"): shown in its tooltip as keys (Ctrl or ⌘) and set as
+       aria-keyshortcuts. It only shows the shortcut: bind it with useHotkey
+     caret: the button opens a menu: the thin outline chevron (expand_more) after the label, in the muted color on the
+       unfilled variants (owner, 2026-10-14: it replaces the small filled triangle); default false
+     expanded: sets aria-expanded, for a button that opens a menu
+     pressed: makes a toggle button (aria-pressed): true when on, false when off (undefined: not a toggle)
+     tone: "success" | "danger" | "neutral": the chosen state (pressed or selected) fills in that feedback color (green, red,
+       gray) instead of the selected gray; the rest state stays the variant's, so a choice not taken is the plain button
+       (owner, vote-screen-37: a vote's Approve, Deny and Abstain). Default none
+     selected: shows the selected state without a toggle role (default false)
+     loading: shows a spinner in place of the icon (default false)
+     disabled: the button does nothing (default false)
+     href: renders a link styled as a button
+     type: the button type (default "button")
+     onClick(event): runs when the button is clicked, unless disabled or loading
+     children: the button label
+     className: more classes on the button
+     strings: the words it announces, for other languages: { working: "Working" } (the loading spinner's name)
+     ref: forwarded to the <button> or <a>
+     ButtonGroup.label: the accessible name of the group
+     ButtonGroup.children: the buttons
+     ButtonGroup.className: more classes on the group
+   Behavior:
+     Placement can also set the role: a dialog footer gives its buttons the dialog role.
+     Selected, pressed and expanded all show the selected state.
+     A toggle button (pressed true or false) keeps its label and icon when it turns on or off: the label names the option
+       (Bold, Show grid), aria-pressed says whether it is on, and every variant shows "on" with the selected state.
+     Loading keeps the width and the name, and stays focusable but inert (aria-disabled, aria-busy): the spinner takes the
+       icon's place, or, with no icon, sits over the label, which stays (unseen) to hold the width and name the button.
+     A disabled link loses its href.
+   Notes:
+     Other props pass through to the <button> or <a> (and to ButtonGroup's <div>).
+     For one choice from several, use SegmentedControl instead of ButtonGroup.
+*/
+const TONES = ['success', 'danger', 'neutral'];
+const STRINGS = {
+  working: 'Working'
+};
+
+// the icon takes the button's state as its own (Styling Standard 3.6): filled while the button is selected, pressed or
+// open; an Icon element the caller gives keeps its own fill when it sets one
+const asIcon = _Icon.stateIcon;
+
+// a one-step binding as aria-keyshortcuts ("Control+Shift+A"); a sequence has no ARIA form, so none
+const ARIA_MODS = [['ctrl', 'Control'], ['alt', 'Alt'], ['shift', 'Shift'], ['meta', 'Meta']];
+const ariaShortcut = binding => {
+  const steps = (0, _hotkey.parseHotkey)(binding);
+  if (steps.length !== 1 || !steps[0].key) return undefined;
+  const k = steps[0].key;
+  return ARIA_MODS.filter(([m]) => steps[0][m]).map(([, n]) => n).concat(k.length === 1 ? k.toUpperCase() : k.charAt(0).toUpperCase() + k.slice(1)).join('+');
+};
+const Button = exports.Button = /*#__PURE__*/_react.default.forwardRef(function Button({
+  variant = 'secondary',
+  size = 'md',
+  icon,
+  iconEnd,
+  iconOnly = false,
+  label,
+  caret = false,
+  expanded,
+  pressed,
+  selected = false,
+  tone,
+  loading = false,
+  disabled = false,
+  href,
+  type = 'button',
+  joined,
+  truncate = false,
+  stackedLabel = false,
+  labelRow = false,
+  tooltip,
+  shortcut,
+  className,
+  children,
+  onClick,
+  strings,
+  ...rest
+}, ref) {
+  (0, _devWarn.devWarn)('Button', {
+    variant,
+    size
+  }, {
+    variant: ['secondary', 'primary', 'tertiary', 'ghost', 'danger', 'danger-secondary', 'quiet'],
+    size: ['md', 'sm', 'xs', '2xs', 'lg']
+  });
+  const t = Object.assign({}, STRINGS, strings);
+  // a colored surface around the button (TeachingBubble, the accent AppHeader) gives it that surface's look
+  const surface = _react.default.useContext(_Surface.SurfaceContext);
+  const classes = (0, _cx.cx)('plx-button', 'plx-button--' + (variant === 'quiet' ? 'ghost' : variant), size !== 'md' && 'plx-button--size-' + size, iconOnly && 'plx-button--icon-only', caret && 'plx-button--caret', TONES.includes(tone) && 'plx-button--tone-' + tone, (selected || pressed || expanded) && 'is-selected', loading && 'is-loading', truncate && 'plx-button--truncate', stackedLabel && 'plx-button--stacked-label', labelRow && 'plx-button--label-row', joined && joined.start && 'plx-button--joined-start-' + joined.start, joined && joined.end && 'plx-button--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-button--joined', (surface === 'inverse' || surface === 'accent') && 'plx-button--on-' + surface, className);
+  // the parts take the button's state as their own classes (Styling Standard 3.6: no rule reaches from the button into them)
+  const v = variant === 'quiet' ? 'ghost' : variant;
+  const on = !!(selected || pressed || expanded);
+  const labelClass = (0, _cx.cx)('plx-button__label', truncate && 'plx-button__label--truncate', !truncate && stackedLabel && 'plx-button__label--stacked', !truncate && !stackedLabel && labelRow && 'plx-button__label--row');
+  const caretClass = (0, _cx.cx)('plx-button__caret', (v === 'primary' || v === 'danger' || disabled || loading) && 'plx-button__caret--current', expanded && 'plx-button__caret--open');
+  const hasLabel = !iconOnly && children !== undefined && children !== null;
+  // loading: the spinner takes the icon's place; with no icon it sits over the label, which keeps the width and the name
+  // (aria-busy says it is working, so the spinner itself is not read)
+  const over = loading && !icon && hasLabel;
+  const spinner = cls => /*#__PURE__*/_react.default.createElement("span", {
+    className: cls,
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement(_Loading.Spinner, {
+    size: "sm",
+    label: t.working
+  }));
+  const content = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, loading && !over ? spinner('plx-button__icon') : icon ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-button__icon"
+  }, asIcon(icon, on)) : null, over ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-button__stack"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: (0, _cx.cx)(labelClass, 'plx-button__label--waiting')
+  }, children), spinner('plx-button__icon plx-button__icon--over')) : hasLabel ? /*#__PURE__*/_react.default.createElement("span", {
+    className: labelClass
+  }, children) : null, iconEnd ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-button__icon"
+  }, asIcon(iconEnd, on)) : null, caret ? /*#__PURE__*/_react.default.createElement("span", {
+    className: caretClass,
+    "aria-hidden": "true"
+  }) : null);
+  const a11y = {
+    'aria-label': iconOnly ? label || (typeof children === 'string' ? children : undefined) : label,
+    'aria-expanded': expanded,
+    'aria-pressed': pressed,
+    'aria-disabled': disabled || loading ? true : undefined,
+    'aria-busy': loading || undefined,
+    'aria-keyshortcuts': shortcut ? ariaShortcut(shortcut) : undefined
+  };
+  const handle = e => {
+    if (disabled || loading) {
+      e.preventDefault();
+      return;
+    }
+    if (onClick) onClick(e);
+  };
+  const el = href ? /*#__PURE__*/_react.default.createElement("a", _extends({
+    ref: ref,
+    href: disabled ? undefined : href,
+    className: classes
+  }, a11y, {
+    onClick: handle
+  }, rest), content) : /*#__PURE__*/_react.default.createElement("button", _extends({
+    ref: ref,
+    type: type,
+    className: classes,
+    disabled: disabled && !loading ? true : undefined
+  }, a11y, {
+    onClick: handle
+  }, rest), content);
+  // its tooltip: the name of an icon-only button (or the tooltip it was given), with its shortcut's keys; none inside a
+  // Tooltip, which already names it
+  const inTooltip = _react.default.useContext(_Tooltip.InTooltip);
+  const tip = tooltip === false ? null : tooltip !== undefined ? tooltip : iconOnly ? a11y['aria-label'] : null;
+  if (!tip || inTooltip) return el;
+  return /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+    content: shortcut ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, tip, ' ', /*#__PURE__*/_react.default.createElement(_Kbd.Kbd, null, (0, _hotkey.hotkeyLabel)(shortcut))) : tip
+  }, el);
+});
+
+/* ButtonGroup: joined buttons that act as a set (Import | Export). For one choice from several, use SegmentedControl. */
+function ButtonGroup({
+  label,
+  className,
+  children,
+  ...rest
+}) {
+  // its buttons meet: each passes on which of its sides is joined (the later button's start edge is the seam)
+  const all = _react.default.Children.toArray(children).filter(_react.default.isValidElement);
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    role: "group",
+    "aria-label": label,
+    className: (0, _cx.cx)('plx-button-group', className)
+  }, rest), all.map((el, i) => /*#__PURE__*/_react.default.cloneElement(el, {
+    joined: {
+      start: i > 0 ? 'seam' : undefined,
+      end: i < all.length - 1 ? 'square' : undefined
+    }
+  })));
 }
   } },
   "platform/utils/layer.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -959,6 +2222,404 @@ function useLayer(ref, open, {
 }
 function useUid(prefix) {
   return prefix + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+}
+  } },
+  "platform/components/Text/Text.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Text = Text;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _cx = require("../../utils/cx.js");
+var _layer = require("../../utils/layer.js");
+var _Button = require("../Button/Button.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Text
+   Summary: A run of text in one of the system's text roles, from the type tokens.
+   Usage:
+     <Text variant="secondary" as="p" truncate>Last edited 2 days ago</Text>
+     <Text variant="display" as="h1">1,284 assets</Text>
+     <Text as="p" lines={3} expandable>A long description…</Text>
+     <Text variant="secondary" tabular>12:40</Text>
+   Props:
+     variant: the text role: "body" (default) | "secondary" | "caption" | "data" | "label" | "strong" | "heading"
+       | "accent" (a highlighted term, step number or key figure: the accent color) | "success" (a good outcome, the new value in a change)
+       | "eyebrow" | "danger" | "link" | "title" | "display" | "lead".
+       body: the UI text. secondary: muted, 12px (counts, hints, descriptions). caption: subtle, 11px.
+       data: the data font, Reddit Mono, for technical values (IDs, file names and paths, versions, dates and
+       times, sizes, counts, durations); 12px on its own, the size of the text around it inside other text.
+       label: semibold 12px. strong: semibold, the current size.
+       heading: a group's title inside a page or dialog, semibold 13px.
+       eyebrow: a small uppercase title over a tool panel, 11px, bold, widest spacing, muted.
+       danger: the danger color (a required marker). link: the link color, normal weight (the color only: a link is the Link component).
+       title: a page title, the heading font, 20px, bold.
+       display: the largest style, for one key figure or a sign-in or welcome heading: the heading font at the top
+         step of the type scale, semibold, with a tight line height and letter spacing (library wave 2).
+       lead: body text one step up (15px) with a relaxed line height, for the opening paragraph of a page or an
+         empty state (body-lg; library wave 2).
+     as: the element; "span" (default) | "p" | "div" | "h1"–"h4" | "dt" | "dd" | "label" | …
+     truncate: one line, cut with an ellipsis; default false (lines wins when both are set)
+     lines: 2 | 3 | 4: at most that many lines, the last one cut with an ellipsis (line clamp); default none
+     expandable: with lines, a "Show more" button under the text while it is cut; it shows the rest and reads
+       "Show less" to fold it again; default false
+     defaultExpanded: an expandable text starts unfolded; default false
+     tabular: digits of equal width (tabular figures), so numbers line up down a column and do not shift as they
+       change; default false
+     strings: the words of the expand button: { more: 'Show more', less: 'Show less' }
+     className: more classes on the text
+     children: the text
+     ...rest: other attributes go on the element
+   Behavior:
+     lines clamps with the line-clamp property; the whole text stays in the page, so search, copy and screen readers
+       get all of it.
+     expandable measures the text: the button shows only while the text is cut (and while it is unfolded). It is a
+       button with aria-expanded that points at the text (aria-controls); it measures again when the width changes.
+     display and lead are type styles only: the element (as) gives the heading level.
+   Notes:
+     Applications never set a font, size, weight or color themselves.
+     There are no margins in any case, whatever the element.
+     The expand button has the look of ShowMore (CollapsibleSection): the smallest button, its chevron after the
+       label, down to show more and up to show less.
+*/
+const LINES = [2, 3, 4];
+const STRINGS = {
+  more: 'Show more',
+  less: 'Show less'
+};
+
+// a text's classes: its role, how it overflows (one line, or at most `clamp` lines while folded) and its figures
+const textClass = (variant, truncate, clamp, open, tabular, className) => (0, _cx.cx)('plx-text', 'plx-text--' + variant, truncate && !clamp && 'plx-text--truncate', clamp && !open && 'plx-text--lines-' + clamp, tabular && 'plx-text--tabular', className);
+function Text({
+  as: As = 'span',
+  variant = 'body',
+  truncate = false,
+  lines,
+  expandable = false,
+  defaultExpanded = false,
+  tabular = false,
+  strings,
+  className,
+  children,
+  ...rest
+}) {
+  (0, _devWarn.devWarn)('Text', {
+    variant
+  }, {
+    variant: ['body', 'secondary', 'caption', 'data', 'label', 'strong', 'heading', 'accent', 'success', 'eyebrow', 'danger', 'link', 'title', 'display', 'lead']
+  });
+  const clamp = LINES.indexOf(Number(lines)) >= 0 ? Number(lines) : null;
+  if (expandable && clamp) {
+    return /*#__PURE__*/_react.default.createElement(ExpandableText, {
+      As: As,
+      variant: variant,
+      clamp: clamp,
+      defaultExpanded: defaultExpanded,
+      tabular: tabular,
+      strings: strings,
+      className: className,
+      rest: rest
+    }, children);
+  }
+  return /*#__PURE__*/_react.default.createElement(As, _extends({
+    dir: "auto",
+    className: textClass(variant, truncate, clamp, false, tabular, className)
+  }, rest), children);
+}
+
+// a clamped text and its Show more button: the button shows while the text is cut, and while it is unfolded
+function ExpandableText({
+  As,
+  variant,
+  clamp,
+  defaultExpanded,
+  tabular,
+  strings,
+  className,
+  rest,
+  children
+}) {
+  const own = (0, _layer.useUid)('plx-text');
+  const id = rest.id || own;
+  const ref = _react.default.useRef(null);
+  const [open, setOpen] = _react.default.useState(defaultExpanded);
+  const [cut, setCut] = _react.default.useState(false);
+  _react.default.useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el || open) return undefined;
+    const measure = () => setCut(el.scrollHeight > el.clientHeight);
+    measure();
+    if (typeof ResizeObserver === 'undefined') return undefined;
+    const watch = new ResizeObserver(measure);
+    watch.observe(el);
+    return () => watch.disconnect();
+  }, [open, children]);
+  const words = Object.assign({}, STRINGS, strings);
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-text-expand"
+  }, /*#__PURE__*/_react.default.createElement(As, _extends({
+    dir: "auto"
+  }, rest, {
+    ref: ref,
+    id: id,
+    className: textClass(variant, false, clamp, open, tabular, className)
+  }), children), open || cut ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "2xs",
+    iconEnd: open ? 'chevron-up' : 'chevron-down',
+    "aria-expanded": open,
+    "aria-controls": id,
+    onClick: () => setOpen(!open)
+  }, open ? words.less : words.more) : null);
+}
+  } },
+  "platform/components/VoteTally/VoteTally.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.VoteTally = VoteTally;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Avatar = require("../Avatar/Avatar.jsx");
+var _Badge = require("../Badge/Badge.jsx");
+var _Button = require("../Button/Button.jsx");
+var _Text = require("../Text/Text.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · VoteTally
+   Summary: A live vote: the members as a list, each with an avatar, the name and role, and three icon-only choices
+     (Approve, Deny, Abstain); a turned-off member's lock badge in place of the choices; the totals, the quorum and the
+     result under the list (owner, vote-live-36, vote-screen-36/37; the vote kit's shapes, packages/vote-kit).
+   Usage:
+     <VoteTally label="Motion 14: approve the 2027 budget" members={event.members} outcome={event.outcome}
+       settings={event.settings} status={event.status} onVote={(memberId, option) => put(memberId, option)} />
+   Props:
+     label: the vote's name (the list's accessible name) (required)
+     members: [{ memberId, name, role, picture, disabledReason, vote: "approve" | "deny" | "abstain" | null, voteHidden }]
+       (the kit's member shape; disabledReason "Recused", "Absent" … turns the member off; voteHidden: the service holds
+       this member's choice back from the viewer)
+     outcome: { approve, deny, abstain, notVoted, turnedOff, present, quorum: { needed, present, met }, result } from the
+       kit's counting; without it the part counts the three choices itself and shows no quorum or result
+     settings: the vote's settings: labels { approve, deny, abstain, turnedOff } (the choices' words), liveVisibility
+       ("totals" | "hidden-until-closed": the words shown for a held-back vote), changeVote ("final": a cast vote cannot be
+       cleared)
+     status: "open" (default) | "closed": closed, every choice is read-only
+     readOnly: the choices only show the votes (default false)
+     connection: "live" (default) | "reconnecting": while reconnecting a badge says so and the choices are read-only, so
+       no vote is sent blind; the last totals stay
+     onVote(memberId, option): a choice pressed; option null when the chosen one is pressed again (unless changeVote is
+       "final")
+     strings: the words, for other languages (the settings' labels win for the three choices)
+     className: more classes on the section
+   Behavior:
+     Each member's choices are a group named "Vote of <name>": three toggle buttons (aria-pressed), each with its name and
+       tooltip. The chosen one fills green, red or gray (Button tone); the others are plain buttons. While the choices are
+       read-only (closed, readOnly, reconnecting) the chosen one keeps its color and the others are disabled.
+     The totals show only the counts they are given: a vote that holds the choices back sends none for the three.
+     A turned-off member shows a Badge with a lock and the reason, and is counted nowhere.
+     A held-back vote (voteHidden) shows "Hidden until the vote closes" or "Totals only" in place of the choices.
+     The totals row is a polite live region: a new result is announced.
+     Narrow (under the stack width): the name and role above the choices.
+   Notes:
+     The part draws; it does not count the quorum or the result (the kit's rules do, the same function in the service).
+     Every value is a --plx-comp-vote-tally-* token; the colors are Button's tone and Badge's.
+*/
+
+const STRINGS = {
+  approve: 'Approve',
+  deny: 'Deny',
+  abstain: 'Abstain',
+  turnedOff: 'turned off',
+  notVoted: 'Not voted',
+  voteOf: 'Vote of {name}',
+  hiddenUntilClosed: 'Hidden until the vote closes',
+  totalsOnly: 'Totals only',
+  reconnecting: 'Reconnecting',
+  quorum: 'Quorum: {present} present, {needed} needed ({state})',
+  met: 'met',
+  notMet: 'not met',
+  result: {
+    open: 'Open',
+    passing: 'Passing',
+    failing: 'Failing',
+    passed: 'Passed',
+    failed: 'Failed',
+    tied: 'Tied',
+    'no-quorum': 'No quorum'
+  }
+};
+const OPTIONS = [['approve', 'check', 'success'], ['deny', 'close', 'danger'], ['abstain', 'remove', 'neutral']];
+const RESULT_TONE = {
+  open: 'neutral',
+  passing: 'active',
+  failing: 'action-required',
+  passed: 'success',
+  failed: 'negative',
+  tied: 'waiting',
+  'no-quorum': 'waiting'
+};
+const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] === undefined || v[k] === null ? m : v[k]);
+
+// the three counts when the app gives no outcome: only the members who are not turned off
+function countOf(members) {
+  const c = {
+    approve: 0,
+    deny: 0,
+    abstain: 0,
+    notVoted: 0,
+    turnedOff: 0
+  };
+  members.forEach(m => {
+    if (m.disabledReason) c.turnedOff += 1;else if (m.vote && c[m.vote] !== undefined) c[m.vote] += 1;else if (!m.voteHidden) c.notVoted += 1;
+  });
+  return c;
+}
+function VoteTally({
+  label,
+  members = [],
+  outcome,
+  settings = {},
+  status = 'open',
+  readOnly = false,
+  connection = 'live',
+  onVote,
+  strings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings, settings.labels || {});
+  const words = Object.assign({}, STRINGS.result, strings && strings.result);
+  const o = outcome || countOf(members);
+  const locked = readOnly || status === 'closed' || connection === 'reconnecting' || typeof onVote !== 'function';
+  const hiddenText = settings.liveVisibility === 'totals' ? t.totalsOnly : t.hiddenUntilClosed;
+  const choose = (m, option) => {
+    if (!locked) onVote(m.memberId, m.vote === option && settings.changeVote !== 'final' ? null : option);
+  };
+  return /*#__PURE__*/_react.default.createElement("section", {
+    className: (0, _cx.cx)('plx-vote-tally', className),
+    "aria-label": label
+  }, /*#__PURE__*/_react.default.createElement("ul", {
+    className: "plx-vote-tally__list"
+  }, members.map(m => /*#__PURE__*/_react.default.createElement("li", {
+    key: m.memberId,
+    className: "plx-vote-tally__member"
+  }, /*#__PURE__*/_react.default.createElement(_Avatar.Avatar, {
+    name: m.name,
+    src: m.picture || undefined
+  }), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-vote-tally__who"
+  }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "strong"
+  }, m.name), m.role ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "secondary"
+  }, m.role) : null), m.disabledReason ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "neutral",
+    icon: "lock"
+  }, m.disabledReason + ' (' + t.turnedOff + ')') : m.voteHidden ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "neutral",
+    icon: "visibility-off"
+  }, hiddenText) : /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-vote-tally__choices",
+    role: "group",
+    "aria-label": fill(t.voteOf, {
+      name: m.name
+    })
+  }, OPTIONS.map(([option, icon, tone]) => /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    key: option,
+    iconOnly: true,
+    icon: icon,
+    label: t[option],
+    tone: tone,
+    pressed: m.vote === option,
+    disabled: locked && m.vote !== option,
+    onClick: () => choose(m, option)
+  })))))), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-vote-tally__totals",
+    "aria-live": "polite"
+  }, o.approve !== undefined ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "success",
+    icon: "check"
+  }, t.approve + ' ' + o.approve) : null, o.deny !== undefined ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "negative",
+    icon: "close"
+  }, t.deny + ' ' + o.deny) : null, o.abstain !== undefined ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "neutral",
+    icon: "remove"
+  }, t.abstain + ' ' + o.abstain) : null, o.notVoted !== undefined ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "waiting",
+    icon: "schedule"
+  }, t.notVoted + ' ' + o.notVoted) : null, o.turnedOff ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "neutral",
+    icon: "lock"
+  }, t.turnedOff.charAt(0).toUpperCase() + t.turnedOff.slice(1) + ' ' + o.turnedOff) : null, o.result ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: RESULT_TONE[o.result] || 'neutral',
+    icon: o.result === 'passed' || o.result === 'passing' ? 'check' : 'schedule'
+  }, words[o.result] || o.result) : null, connection === 'reconnecting' ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "waiting",
+    icon: "schedule"
+  }, t.reconnecting) : null, o.quorum && o.quorum.needed ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "secondary",
+    className: "plx-vote-tally__quorum"
+  }, fill(t.quorum, {
+    present: o.quorum.present,
+    needed: o.quorum.needed,
+    state: o.quorum.met ? t.met : t.notMet
+  })) : null));
+}
+  } },
+  "platform/components/Count/Count.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Count = Count;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Count
+   Summary: A number shown on its own.
+   Usage:
+     <Count value={24} />
+     <Count variant="pill" value={unread} max={99} label={unread + ' unread notifications'} />
+   Props:
+     value: the number; with no value nothing renders
+     variant: "plain" (default; muted tabular figures, e.g. a list row's item count) | "pill" (a 16px soft pill for unread
+       or pending counts: the status pill look, shade 100 background, shade 300 border, dark text, 4px corners)
+     tone: the pill color: "neutral" (gray) | "info" (blue) | "success" (green) | "warning" (yellow) | "danger" (red;
+       default), on the same roles as Badge's neutral, active, success, waiting and negative
+     max: above it the count shows max + "+" (e.g. "99+")
+     label: the accessible name when the number alone is unclear ("3 unread notifications")
+     moreThan: what screen readers hear for a capped count without a label (default "More than {max}")
+     className: more classes on the count
+   Notes:
+     Other props pass through to the <span>.
+*/
+function Count({
+  value,
+  max,
+  variant = 'plain',
+  tone = 'danger',
+  label,
+  moreThan = 'More than {max}',
+  className,
+  ...rest
+}) {
+  (0, _devWarn.devWarn)('Count', {
+    variant,
+    tone
+  }, {
+    variant: ['plain', 'pill'],
+    tone: ['info', 'success', 'warning', 'danger', 'neutral']
+  });
+  if (value === null || value === undefined || value === '') return null;
+  const shown = typeof max === 'number' && Number(value) > max ? max + '+' : String(value);
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: (0, _cx.cx)('plx-count', 'plx-count--' + variant, variant === 'pill' ? 'plx-count--' + tone : null, className),
+    "aria-label": label || (typeof max === 'number' && Number(value) > max ? moreThan.replace('{max}', String(max)) : undefined)
+  }, rest), shown);
 }
   } },
   "platform/utils/format.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
@@ -1800,23 +3461,6 @@ function MediaCard({
     className: "plx-media-card-stack__middle",
     "aria-hidden": "true"
   }), card);
-}
-  } },
-  "platform/utils/tokenTime.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.tokenMs = tokenMs;
-// Plenix · tokenMs: a duration token's value in milliseconds ("4s", "250ms"), read from the element (or the root), so
-// behavior that waits (a toast leaving, a delay) takes its time from the tokens like the stylesheets do (batch 341).
-// Returns the fallback when the token is not set (no document, or the token stylesheet not loaded).
-function tokenMs(name, fallback = 0, el) {
-  if (typeof document === 'undefined') return fallback;
-  const v = getComputedStyle(el || document.documentElement).getPropertyValue(name).trim();
-  const m = /^(-?[\d.]+)(ms|s)$/.exec(v);
-  return m ? parseFloat(m[1]) * (m[2] === 's' ? 1000 : 1) : fallback;
 }
   } },
   "platform/utils/announce.jsx": { deps: {"react":null,"./cx.js":"platform/utils/cx.js","./tokenTime.js":"platform/utils/tokenTime.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -3712,247 +5356,6 @@ Metric.Group = function MetricGroup({
   }, c) : null));
 };
   } },
-  "platform/components/StatusDot/StatusDot.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.StatusDot = StatusDot;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
-var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
-var _Icon = require("../Icon/Icon.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · StatusDot
-   Summary: A 6px dot that marks a state (active, paused, priority), or a person's availability (online, away, busy, do
-     not disturb, offline) in the Status colors.
-   Usage:
-     <StatusDot tone="success" label="Active" />
-     <StatusDot tone="busy" label="Busy" />
-     <StatusDot tone="dnd" size="md" icon label="Do not disturb" />
-     <StatusDot tone="away" size="md" icon label="Away" />
-   Props:
-     tone: "neutral" (default) | "info" | "success" | "warning" | "danger"; for a person's availability (the presence
-       roles of the Status colors, library wave 4): "online" | "away" | "busy" | "dnd" (do not disturb) |
-       "offline"
-     size: "sm" (default, 6px) | "md" (12px) | "lg" (16px): the larger dots carry a glyph (icon) and sit on an avatar
-     icon: draws the availability's shape inside a md or lg dot, so it never rests on color alone: online a check, away a
-       clock, busy a solid dot with nothing cut out, do not disturb a minus (remove), offline a cross; busy and do not
-       disturb share a color and differ by shape (default false; presence tones only)
-     label: the state in words, read by assistive technology
-     className: more classes on the dot
-     ...rest: other attributes go on the dot element
-   Behavior:
-     Without a label the dot is decorative and hidden from assistive technology.
-     The glyph is drawn in the surface color, cut out of the dot; a sm dot has no room for one and ignores icon.
-   Notes:
-     Without a label, pair the dot with visible text.
-     Avatar's presence prop draws this dot at the avatar's corner.
-*/
-const PRESENCE = ['online', 'away', 'busy', 'dnd', 'offline'];
-const GLYPHS = {
-  online: 'check',
-  away: 'clock',
-  dnd: 'remove',
-  offline: 'close-2'
-}; // busy is the solid dot: nothing cut out
-const SIZES = ['md', 'lg'];
-function StatusDot({
-  tone = 'neutral',
-  size = 'sm',
-  icon = false,
-  label,
-  className,
-  ...rest
-}) {
-  (0, _devWarn.devWarn)('StatusDot', {
-    tone,
-    size
-  }, {
-    tone: ['info', 'success', 'warning', 'danger', 'neutral', 'online', 'away', 'busy', 'dnd', 'offline'],
-    size: ['sm', 'md', 'lg']
-  });
-  const s = SIZES.indexOf(size) >= 0 ? size : null;
-  const glyph = icon && s && PRESENCE.indexOf(tone) >= 0 && GLYPHS[tone];
-  return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: (0, _cx.cx)('plx-status-dot', 'plx-status-dot--' + tone, s && 'plx-status-dot--' + s, glyph && 'plx-status-dot--glyph', className),
-    "aria-hidden": label ? undefined : true
-  }, rest), glyph ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: glyph,
-    className: "plx-status-dot__glyph"
-  }) : null, label ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, label) : null);
-}
-  } },
-  "platform/components/Avatar/Avatar.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Avatar = Avatar;
-exports.initialsOf = initialsOf;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
-var _Icon = require("../Icon/Icon.jsx");
-var _StatusDot = require("../StatusDot/StatusDot.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Avatar
-   Summary: A person's picture, or their initials, in a rounded square (never a circle), inside a 1px media border (owner,
-     2026-10-19: every avatar and picture placeholder has the same border).
-   Usage:
-     <Avatar name="Maya Chen" size="md" />
-     <Avatar name="Maya Chen" src="/people/mc.jpg" label="Maya Chen" />
-   Props:
-     name: the person's name; without a picture the avatar shows its initials, from initialsOf(name)
-     src: the URL of the person's picture; it replaces the initials
-     initials: the text to show, only when there is no name to work from
-     size: "2xs" 20px | "xs" 24px | "sm" 28px (default) | "md" 32px | "lg" 40px | "xl" 48px | "2xl" 64px; "2xs" is for inside a small control
-       (the account row in a pane footer)
-     color: the person's own color when the data has one, a data color: a hue name (blue, green, purple, red, brown, gray: the --plx-sys-data-color-<hue> tokens), set as data-plx-color; no value is written (batch 280): its soft fill with
-       its text color (otherwise the theme's avatar colors)
-     category: instead of color, a category color by name (an avatar standing for a category): the color as its fill,
-       black or white text (batch 290)
-     gender: "male" | "female": with no picture, the person-male or person-female icon on soft blue or soft pink (the
-       category palette) instead of the initials; any other value keeps the initials (owner, 2026-10-19)
-     label: the person's name for assistive technology when no visible name is nearby; without it the avatar is hidden from
-       assistive technology
-     presence: the person's availability (library wave 4): "online" | "away" | "busy" | "dnd" (do not disturb)
-       | "offline", a StatusDot at the avatar's bottom end corner in the presence roles of the Status colors, ringed in the surface color;
-       its size follows the avatar (a 6px dot up to 32px, 12px at 40 and 48px, 16px at 64px), and from 40px it carries the
-       availability's shape (a check, a clock, busy the solid dot, do not disturb a minus, a cross) so it never rests on
-       color alone
-     strings: the words of presence, for other languages: { online: "Online", away: "Away", busy: "Busy",
-       dnd: "Do not disturb", offline: "Offline" }
-     className: more classes on the avatar
-   Behavior:
-     A picture that fails to load falls back to the initials. The picture loads lazily and decodes off the main thread
-     (loading="lazy", decoding="async"), so a long list or table of avatars fetches only the ones near the view.
-     The corner and the text size follow the size.
-     Initials are the first letters of the first and last name ("Maya Chen" → MC).
-     Titles such as "Fr." or "Dr." and parenthesized parts are skipped; one word gives one letter.
-     With a label the avatar is an image (role="img") named by the label; with presence too, the name and the state ("Maya Chen, Busy").
-     Without a label the presence dot is hidden with the avatar: the page says the state in words next to it.
-   Notes:
-     Other props pass through to the <span>.
-     initialsOf(name) is also exported for pages that need the same initials. A name with no Latin letter (an Arabic name)
-       takes each word's first letter; two Arabic initials are kept apart so they do not join (owner, ctm-needs-34).
-*/
-const SIZES = [20, 24, 28, 32, 40, 48, 64]; // the scale its classes define (plx-avatar--24 …)
-// the names pages use: 2xs 20 (inside a small control: the account row in a pane footer), xs 24, sm 28, md 32, lg 40, xl 48, 2xl 64 (numbers are rejected by the system check)
-const NAMED = {
-  '2xs': 20,
-  xs: 24,
-  sm: 28,
-  md: 32,
-  lg: 40,
-  xl: 48,
-  '2xl': 64
-};
-// presence (library wave 4): the availability tones, the dot's size for each avatar size, and the words
-const PRESENCE = ['online', 'away', 'busy', 'dnd', 'offline'];
-const DOT = {
-  20: 'sm',
-  24: 'sm',
-  28: 'sm',
-  32: 'sm',
-  40: 'md',
-  48: 'md',
-  64: 'lg'
-};
-const STRINGS = {
-  online: 'Online',
-  away: 'Away',
-  busy: 'Busy',
-  dnd: 'Do not disturb',
-  offline: 'Offline'
-};
-
-// first- and last-name initials: titles (a word ending in a period, e.g. "Fr.") and parenthesized parts are skipped.
-// A word's initial is its first Latin letter or digit, as always; a word with none (an Arabic name, owner ctm-needs-34) takes
-// its first letter of any script. Two Arabic initials are kept apart (a zero-width non-joiner), so they do not join into a word.
-const LATIN = /[A-Za-z0-9]/,
-  ANY = /[\p{L}\p{N}]/u,
-  JOINING = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/;
-const initialOf = w => (w.match(LATIN) || w.match(ANY) || [''])[0];
-function initialsOf(name) {
-  const words = String(name || '').replace(/\([^)]*\)/g, ' ').split(/\s+/).filter(w => w && !/\.$/.test(w) && initialOf(w));
-  if (!words.length) return '';
-  const first = initialOf(words[0]),
-    last = words.length > 1 ? initialOf(words[words.length - 1]) : '';
-  return (first + (JOINING.test(first) && JOINING.test(last) ? '\u200C' : '') + last).toUpperCase();
-}
-const GENDER = {
-  male: {
-    tone: 'blue',
-    icon: 'person-male'
-  },
-  female: {
-    tone: 'pink',
-    icon: 'person-female'
-  }
-};
-function Avatar({
-  name,
-  src,
-  initials,
-  size = 'sm',
-  color,
-  category,
-  gender,
-  label,
-  presence,
-  strings,
-  className,
-  ...rest
-}) {
-  (0, _devWarn.devWarn)('Avatar', {
-    size
-  }, {
-    size: ['2xs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl']
-  });
-  const n = NAMED[size] || size;
-  const s = SIZES.indexOf(n) >= 0 ? n : NAMED.sm;
-  const text = name ? initialsOf(name) : initials;
-  const p = PRESENCE.indexOf(presence) >= 0 ? presence : null;
-  const words = Object.assign({}, STRINGS, strings);
-  const named = label && p ? label + ', ' + words[p] : label;
-  // a picture that fails to load falls back to the initials (batch 215)
-  const [failed, setFailed] = _react.default.useState(false);
-  _react.default.useEffect(() => {
-    setFailed(false);
-  }, [src]);
-  const picture = src && !failed;
-  const g = !picture ? GENDER[gender] : null; // no picture and a known gender: the gender icon
-  return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: (0, _cx.cx)('plx-avatar', 'plx-avatar--' + s, p && 'plx-avatar--presence', g && 'plx-avatar--gender', className),
-    "data-plx-avatar": "",
-    "data-plx-color": g ? undefined : color || undefined,
-    "data-plx-category": g ? g.tone : category || undefined,
-    role: label ? 'img' : undefined,
-    "aria-label": named,
-    "aria-hidden": label ? undefined : true
-  }, rest), picture ? /*#__PURE__*/_react.default.createElement("img", {
-    className: "plx-avatar__image",
-    src: src,
-    alt: "",
-    loading: "lazy",
-    decoding: "async",
-    onError: () => setFailed(true)
-  }) : g ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: g.icon,
-    filled: true,
-    className: "plx-avatar__gender"
-  }) : text, p ? /*#__PURE__*/_react.default.createElement(_StatusDot.StatusDot, {
-    tone: p,
-    size: DOT[s],
-    icon: DOT[s] !== 'sm',
-    className: "plx-avatar__presence"
-  }) : null);
-}
-  } },
   "platform/components/IconTile/IconTile.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -4021,1065 +5424,6 @@ function IconTile({
     size: s,
     filled: filled
   }));
-}
-  } },
-  "platform/components/Loading/Loading.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Skeleton = Skeleton;
-exports.Spinner = Spinner;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
-var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Skeleton, Spinner
-   Summary: Loading indicators. Skeleton is a placeholder block with a shimmer; Spinner is a turning ring. (The typing
-     dots are a Chat variant: Chat.Typing.)
-   Usage:
-     <Skeleton width="160px" height="16px" />
-     <Spinner size="sm" label="Saving" />
-   Props:
-     Skeleton.width: the block width, a size token's name ("200px" for --plx-ref-size-200px); none: as wide as its place
-     Skeleton.height: the block height, a size token's name ("16px")
-     Skeleton.className: more classes on the block
-     Spinner.size: "sm" | "md" (default) | "lg"
-     Spinner.label: the text announced to assistive technology (default "Loading")
-     Spinner.className: more classes on the ring
-   Behavior:
-     The Skeleton shimmer runs left to right; the block is decorative (aria-hidden).
-     Spinner is a status region (role="status"), so its label is announced.
-     People who ask their system for less motion see the indicators still.
-   Notes:
-     Other props pass through to the <span>.
-     The old text listed a radius prop for Skeleton; the code takes none (set it with a class).
-*/
-// a size token's name from "200px" (or the older "var(--plx-ref-size-200px)"); the rule per size is in system/steps.css
-const sizeName = v => v ? String(v).replace(/^var\(--plx-ref-size-|\)$/g, '') : undefined;
-function Skeleton({
-  width,
-  height,
-  className,
-  ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: (0, _cx.cx)('plx-skeleton', className),
-    "aria-hidden": "true",
-    "data-plx-width": sizeName(width),
-    "data-plx-height": sizeName(height)
-  }, rest));
-}
-function Spinner({
-  size = 'md',
-  label = 'Loading',
-  className,
-  ...rest
-}) {
-  (0, _devWarn.devWarn)('Spinner', {
-    size
-  }, {
-    size: ['sm', 'md', 'lg']
-  });
-  return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: (0, _cx.cx)('plx-spinner', 'plx-spinner--' + size, className),
-    role: "status"
-  }, rest), /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, label));
-}
-  } },
-  "platform/providers/Surface.jsx": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.SurfaceContext = void 0;
-var _react = _interopRequireDefault(require("react"));
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · SurfaceContext
-   Summary: Tells the components inside a colored surface which surface they sit on, so they take its look from their own
-     classes: no rule reaches into the surface (Styling Standard 3.6).
-   Usage:
-     <SurfaceContext.Provider value="inverse">…</SurfaceContext.Provider>
-   Props:
-     value: "inverse" (a dark surface: TeachingBubble) | "accent" (the accent AppHeader) | null (the page's own surface)
-   Behavior:
-     TeachingBubble and the accent AppHeader provide it. A Button inside takes plx-button--on-inverse or
-       plx-button--on-accent.
-     A component that draws a colored surface of its own provides it for its content.
-*/
-
-const SurfaceContext = exports.SurfaceContext = /*#__PURE__*/_react.default.createContext(null);
-  } },
-  "platform/utils/floating.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.PLACEMENTS = exports.FLOATING_POINTER = exports.FLOATING_ANCHOR = void 0;
-exports.useFloating = useFloating;
-var _react = _interopRequireDefault(require("react"));
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · useFloating
-   Summary: Places a floating element (a menu, popover, tooltip, combobox list or date picker) beside its anchor and keeps it in view: a named placement, an offset step, flip, shift, the anchor's width, or a point (a context menu at the pointer). It writes data attributes only; system/floating.css places the element, so no position is ever written as a style.
-   Usage:
-     const anchor = React.useRef(null), panel = React.useRef(null);
-     const { placement } = useFloating(anchor, panel, { open, placement: 'bottom-start' });
-     <button ref={anchor} aria-expanded={open} aria-controls="list">Sort</button>
-     {open ? <div ref={panel} id="list" popover="manual" className="plx-menu">…</div> : null}
-     useFloating(anchor, panel, { open, placement: 'bottom-start', matchWidth: true })      // a select or combobox list
-     useFloating(row, panel, { open, virtual: { x: event.clientX, y: event.clientY } })     // a context menu at the pointer
-   Props:
-     anchorRef: a ref to the element the floating element is placed against
-     floatingRef: a ref to the floating element (best in the top layer: popover="manual", or inside a Portal)
-     options.open (true): placed while open; the anchor slot is released when it closes or unmounts
-     options.placement ('bottom-start'): top | bottom | start | end (the side; start and end follow the writing direction), centered or aligned: top-start, top-end, bottom-start, bottom-end, start-top, start-bottom, end-top, end-bottom
-     options.offset ('xs'): the gap to the anchor: 'none' | 'xs' | 'sm' | 'md' (--plx-sys-floating-offset-*)
-     options.flip (true): moves to the opposite side when there is no room
-     options.shift (true): swaps the alignment (start to end) to stay in the window; a centered placement aligns to an edge
-     options.matchWidth (false): at least as wide as the anchor
-     options.virtual (null): { x, y } in window pixels (event.clientX / clientY): placed at that point, flipped and kept inside the window; the anchor is used where the browser cannot place a point
-     returns { placement (the side and alignment in use where useFloating measures it), mode: 'anchor' | 'pointer' | 'inline' }
-   Behavior:
-     anchor: with CSS anchor positioning (Chrome 125, Safari 26, Firefox 147) the browser places the element, flips and shifts it, and follows the anchor on scroll and resize: nothing is measured.
-     pointer: with typed attr() (Chrome 133) a virtual anchor is a point: useFloating measures the element, flips it to the other side of the point and keeps it --plx-sys-floating-viewport-margin inside the window, then writes the point (data-plx-floating-x / -y).
-     inline: without anchor positioning the element is placed inside the anchor's parent (data-plx-floating-host) on its side; useFloating measures the room and flips or shifts the placement. Render the element next to its anchor for this fallback.
-     The pair shares one of 16 anchor names while open (data-plx-floating-anchor / data-plx-floating), so each floating element finds its own anchor anywhere in the page.
-   Notes:
-     It positions only. Opening, Escape, focus and outside clicks are the overlay's (useLayer), the top layer is popover="manual" or Portal layer="top", and the ARIA link (aria-expanded, aria-controls, aria-describedby) is the component's.
-     Menu, Tooltip and Popover adopt it in their own tasks.
-*/
-
-const SLOTS = 16;
-const taken = new Array(SLOTS + 1).fill(false);
-const take = () => {
-  for (let i = 1; i <= SLOTS; i++) if (!taken[i]) {
-    taken[i] = true;
-    return i;
-  }
-  return 0;
-};
-const release = i => {
-  if (i) taken[i] = false;
-};
-
-// what the browser can do, checked once
-const supports = decl => typeof CSS !== 'undefined' && !!CSS.supports && CSS.supports(decl);
-const FLOATING_ANCHOR = exports.FLOATING_ANCHOR = supports('anchor-name: --plx-a');
-const FLOATING_POINTER = exports.FLOATING_POINTER = supports('inset-block-start: attr(data-plx-floating-y px, 0px)');
-const PLACEMENTS = exports.PLACEMENTS = ['top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'start', 'start-top', 'start-bottom', 'end', 'end-top', 'end-bottom'];
-const OFFSETS = {
-  none: null,
-  xs: '--plx-sys-floating-offset-xs',
-  sm: '--plx-sys-floating-offset-sm',
-  md: '--plx-sys-floating-offset-md'
-};
-const ATTRS = ['data-plx-floating', 'data-plx-floating-placement', 'data-plx-floating-offset', 'data-plx-floating-flip', 'data-plx-floating-shift', 'data-plx-floating-match', 'data-plx-floating-pointer', 'data-plx-floating-x', 'data-plx-floating-y'];
-
-// a length token in pixels (the tokens are written in rem; a custom property's computed value has its var() resolved)
-function tokenPixels(name) {
-  if (!name || typeof document === 'undefined') return 0;
-  const root = document.documentElement,
-    v = getComputedStyle(root).getPropertyValue(name).trim(),
-    n = parseFloat(v) || 0;
-  return /rem$/.test(v) ? n * parseFloat(getComputedStyle(root).fontSize) : n;
-}
-const set = (el, name, value) => {
-  if (value == null || value === false) el.removeAttribute(name);else el.setAttribute(name, String(value));
-};
-const isRtl = el => getComputedStyle(el).direction === 'rtl';
-
-// the inline fallback: the side with room (flip) and the alignment that stays in the window (shift), from the anchor's box
-function measured(anchor, floating, placement, flip, shift, gap) {
-  const a = anchor.getBoundingClientRect(),
-    f = floating.getBoundingClientRect();
-  const W = window.innerWidth,
-    H = window.innerHeight,
-    rtl = isRtl(anchor);
-  let [side, align] = placement.split('-');
-  const room = {
-    top: a.top - gap,
-    bottom: H - a.bottom - gap,
-    start: rtl ? W - a.right - gap : a.left - gap,
-    end: rtl ? a.left - gap : W - a.right - gap
-  };
-  const need = side === 'top' || side === 'bottom' ? f.height : f.width;
-  const opposite = {
-    top: 'bottom',
-    bottom: 'top',
-    start: 'end',
-    end: 'start'
-  }[side];
-  if (flip && room[side] < need && room[opposite] > room[side]) side = opposite;
-  if (shift && align && (side === 'top' || side === 'bottom')) {
-    // aligned to the inline start, the element runs toward the inline end: does it leave the window there?
-    const startEdge = rtl ? a.right : a.left,
-      endRoom = rtl ? startEdge : W - startEdge;
-    const endEdge = rtl ? a.left : a.right,
-      startRoom = rtl ? W - endEdge : endEdge;
-    if (align === 'start' && endRoom < f.width && startRoom > endRoom) align = 'end';else if (align === 'end' && startRoom < f.width && endRoom > startRoom) align = 'start';
-  }
-  if (shift && align && (side === 'start' || side === 'end')) {
-    if (align === 'top' && H - a.top < f.height && a.bottom > H - a.top) align = 'bottom';else if (align === 'bottom' && a.bottom < f.height && H - a.top > a.bottom) align = 'top';
-  }
-  return align ? side + '-' + align : side;
-}
-
-// a point: the element's corner at the point, flipped to the other side of it when it does not fit, then kept inside the window
-function pointAt(floating, x, y) {
-  const f = floating.getBoundingClientRect(),
-    W = window.innerWidth,
-    H = window.innerHeight,
-    m = tokenPixels('--plx-sys-floating-viewport-margin');
-  const rtl = isRtl(floating);
-  // the inline-start inset of the point, measured from the window's inline-start edge
-  let ix = rtl ? W - x : x,
-    iy = y;
-  if (ix + f.width > W - m && ix - f.width >= m) ix -= f.width;
-  if (iy + f.height > H - m && iy - f.height >= m) iy -= f.height;
-  ix = Math.max(m, Math.min(ix, W - m - f.width));
-  iy = Math.max(m, Math.min(iy, H - m - f.height));
-  return [Math.round(ix), Math.round(iy)];
-}
-function useFloating(anchorRef, floatingRef, options = {}) {
-  const {
-    open = true,
-    placement = 'bottom-start',
-    offset = 'xs',
-    flip = true,
-    shift = true,
-    matchWidth = false,
-    virtual = null
-  } = options;
-  const wanted = PLACEMENTS.indexOf(placement) >= 0 ? placement : 'bottom-start';
-  const pointer = !!(virtual && FLOATING_POINTER);
-  const mode = pointer ? 'pointer' : FLOATING_ANCHOR ? 'anchor' : 'inline';
-  const [used, setUsed] = _react.default.useState(wanted);
-  const slot = _react.default.useRef(0);
-  const vx = virtual ? virtual.x : null,
-    vy = virtual ? virtual.y : null;
-  _react.default.useLayoutEffect(() => {
-    const anchor = anchorRef && anchorRef.current,
-      floating = floatingRef && floatingRef.current;
-    if (!open || !floating) return undefined;
-    const host = !pointer && mode === 'inline' && anchor ? anchor.parentElement : null;
-    if (pointer) {
-      set(floating, 'data-plx-floating-pointer', '');
-      const [ix, iy] = pointAt(floating, vx, vy);
-      set(floating, 'data-plx-floating-x', ix);
-      set(floating, 'data-plx-floating-y', iy);
-    } else if (anchor) {
-      if (!slot.current) slot.current = take();
-      set(anchor, 'data-plx-floating-anchor', slot.current || null);
-      set(floating, 'data-plx-floating', slot.current || 'inline');
-      set(floating, 'data-plx-floating-offset', offset === 'xs' || !(offset in OFFSETS) ? null : offset);
-      set(floating, 'data-plx-floating-flip', flip ? null : 'off');
-      set(floating, 'data-plx-floating-shift', shift ? null : 'off');
-      set(floating, 'data-plx-floating-match', matchWidth ? 'width' : null);
-      if (host) set(host, 'data-plx-floating-host', '');
-      set(floating, 'data-plx-floating-placement', wanted);
-      let next = wanted;
-      if (mode === 'inline') {
-        next = measured(anchor, floating, wanted, flip, shift, tokenPixels(OFFSETS[offset] || null));
-        set(floating, 'data-plx-floating-placement', next);
-      }
-      setUsed(next);
-    }
-    return () => {
-      ATTRS.forEach(n => floating.removeAttribute(n));
-      if (anchor) anchor.removeAttribute('data-plx-floating-anchor');
-      if (host) host.removeAttribute('data-plx-floating-host');
-      release(slot.current);
-      slot.current = 0;
-    };
-  }, [open, wanted, offset, flip, shift, matchWidth, pointer, mode, vx, vy, anchorRef, floatingRef]);
-
-  // the inline fallback measures again when the window changes size
-  _react.default.useEffect(() => {
-    if (!open || mode !== 'inline' || typeof window === 'undefined') return undefined;
-    const again = () => {
-      const anchor = anchorRef.current,
-        floating = floatingRef.current;
-      if (!anchor || !floating) return;
-      set(floating, 'data-plx-floating-placement', wanted);
-      const next = measured(anchor, floating, wanted, flip, shift, tokenPixels(OFFSETS[offset] || null));
-      set(floating, 'data-plx-floating-placement', next);
-      setUsed(next);
-    };
-    window.addEventListener('resize', again);
-    return () => window.removeEventListener('resize', again);
-  }, [open, mode, wanted, flip, shift, offset, anchorRef, floatingRef]);
-  return {
-    placement: mode === 'anchor' ? wanted : used,
-    mode
-  };
-}
-  } },
-  "platform/components/Tooltip/Tooltip.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/floating.js":"platform/utils/floating.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.InTooltip = void 0;
-exports.Tooltip = Tooltip;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _floating = require("../../utils/floating.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · Tooltip
-   Summary: A short label for a control, shown on hover, on keyboard focus and, on touch, on a long press. The rich
-     tooltip (09 Overlays › Contextual overlays › Rich tooltip) adds a title, a few sentences and, as a toggletip, one action.
-   Usage:
-     <Tooltip content="Upload files" placement="bottom"><Button …/></Tooltip>
-     <Tooltip title="Retention" content="Deleted files stay in the trash for 30 days."><Button …/></Tooltip>
-     <Tooltip title="Smart crop" content="…" action={<Link href="#crop" variant="standalone">About smart crop</Link>}><Button …/></Tooltip>
-   Props:
-     content: the tooltip text (in a rich tooltip, its body: one to three sentences)
-     placement: "bottom" (default) | "top" | "start" | "end" (start and end follow the writing direction)
-     title: a short title above the body; it makes the tooltip rich
-     action: one action under the body (a standalone Link, or a small Button); it makes the tooltip rich and a toggletip:
-       it opens on click (Enter or Space on the trigger) instead of on hover and focus
-     rich: the rich look without a title or an action (default false; true when title or action is given)
-     disabled: the tooltip neither shows nor describes the trigger (default false); for a label that is shown in full most of
-       the time and only needs its tooltip when it is cut short
-     className: more classes on the wrapper
-     children: the control it labels (one element)
-   Behavior:
-     It shows on hover (a mouse or a pen) and on keyboard focus, and hides on leave, on blur and with Escape.
-     On touch there is no hover (Platforms Standard 6.5): a long press (--plx-comp-tooltip-long-press-delay) shows it, and
-     it hides --plx-comp-tooltip-touch-dismiss-delay after the finger lifts, or when the finger moves away or is cancelled.
-     A tap does not show it (focus that follows a touch is ignored; mouse events emulated from touch are not listened to),
-     and the long press neither opens the browser's context menu nor activates the control (the click that may follow the
-     release is dropped): a long press asks what a control is, it does not use it.
-     The trigger is described by the tooltip (aria-describedby), added to any it already has.
-     Placement: where the browser has CSS anchor positioning (utils/floating.js) the bubble is placed against the trigger by
-       useFloating while it shows (offset sm), so no scroll area or pane clips it; elsewhere it is drawn inside the wrapper
-       on its side, as before. A tooltip with an arrow keeps its side; a rich tooltip (no arrow) flips and shifts to stay in
-       the window.
-     Rich: a text-only rich tooltip opens on hover and focus like a plain one and stays open while the pointer is over it
-       (it hides --plx-comp-tooltip-rich-close-delay after the pointer leaves both). With an action it is a toggletip: the
-       trigger toggles it (aria-expanded, aria-controls), Tab from the trigger reaches the action, and Escape, a click
-       outside or focus leaving it closes it (Escape returns focus to the trigger); a tap opens it on touch.
-   Notes:
-     An icon-only Button shows its name (and its shortcut) as a tooltip by itself; inside a Tooltip it leaves that to the
-       Tooltip (InTooltip), so a control never gets two.
-     An icon-only control still needs its own label (aria-label): the tooltip repeats it visually, it is never the only
-     way to learn the control's name.
-     Not for essential content. Only the rich tooltip holds an action, and then it opens on click: interactive content never
-     depends on hover.
-     The rich surface is the popover's (the overlay surface with its border, radius and shadow), with no arrow.
-*/
-
-const SIDES = ['bottom', 'top', 'start', 'end'];
-
-// true inside a Tooltip's trigger: a Button there does not add its own (an icon-only Button shows its name by itself)
-const InTooltip = exports.InTooltip = /*#__PURE__*/_react.default.createContext(false);
-
-// a duration token ("0.5s", "500ms") in milliseconds, read from the element's computed style
-const ms = (el, name) => {
-  const v = el ? getComputedStyle(el).getPropertyValue(name).trim() : '';
-  const n = parseFloat(v);
-  return isNaN(n) ? 0 : /ms$/.test(v) ? n : n * 1000;
-};
-
-// the last way the person reached for the page: a touch, or a mouse, pen or key. Focus that follows a tap does not open
-// the tooltip (a long press does); focus that follows a key does. One listener pair for every tooltip, added by the first.
-let lastInput = 'key',
-  listening = false;
-const listen = () => {
-  if (listening) return;
-  listening = true;
-  document.addEventListener('pointerdown', e => {
-    lastInput = e.pointerType === 'touch' ? 'touch' : 'pointer';
-  }, true);
-  document.addEventListener('keydown', () => {
-    lastInput = 'key';
-  }, true);
-};
-function Tooltip({
-  content,
-  placement = 'bottom',
-  title,
-  action,
-  rich = false,
-  disabled = false,
-  className,
-  children
-}) {
-  const id = 'plx-tt' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
-  const [open, setOpen] = _react.default.useState(false);
-  const wrap = _react.default.useRef(null);
-  const bubble = _react.default.useRef(null);
-  const press = _react.default.useRef(null); // the long-press timer
-  const hide = _react.default.useRef(null); // the timer that hides a tooltip a long press (or a rich tooltip's leave) started
-  const pressed = _react.default.useRef(false); // this touch opened the tooltip by a long press
-  const isRich = !!(rich || title || action);
-  const toggle = !!action; // a toggletip: opened by a click on the trigger
-  const side = SIDES.indexOf(placement) >= 0 ? placement : 'bottom';
-  const clear = () => {
-    clearTimeout(press.current);
-    clearTimeout(hide.current);
-  };
-  _react.default.useEffect(() => {
-    listen();
-    return clear;
-  }, []);
-  // placed against the trigger by anchor positioning while it shows; the arrow keeps its side (no flip, no shift)
-  (0, _floating.useFloating)(wrap, bubble, {
-    open: open && !disabled && _floating.FLOATING_ANCHOR,
-    placement: side,
-    offset: 'sm',
-    flip: isRich,
-    shift: isRich
-  });
-  _react.default.useEffect(() => {
-    if (!open) return undefined;
-    const esc = e => {
-      if (e.key !== 'Escape') return;
-      const inside = wrap.current && wrap.current.contains(document.activeElement);
-      setOpen(false);
-      // a toggletip gives focus back to its trigger when Escape closes it from inside
-      if (toggle && inside && wrap.current.firstElementChild && wrap.current.firstElementChild.focus) wrap.current.firstElementChild.focus();
-    };
-    const outside = e => {
-      if (wrap.current && !wrap.current.contains(e.target)) setOpen(false);
-    };
-    document.addEventListener('keydown', esc);
-    if (toggle) document.addEventListener('mousedown', outside);
-    return () => {
-      document.removeEventListener('keydown', esc);
-      document.removeEventListener('mousedown', outside);
-    };
-  }, [open, toggle]);
-  const child = _react.default.Children.only(children);
-  const described = {
-    'aria-describedby': [child.props['aria-describedby'], id].filter(Boolean).join(' ')
-  };
-  const trigger = disabled ? child : /*#__PURE__*/_react.default.cloneElement(child, toggle ? Object.assign(described, {
-    'aria-expanded': open,
-    'aria-controls': open ? id + 'b' : undefined,
-    onClick: e => {
-      if (child.props.onClick) child.props.onClick(e);
-      setOpen(!open);
-    }
-  }) : described);
-  if (disabled) return /*#__PURE__*/_react.default.createElement("span", {
-    className: (0, _cx.cx)('plx-tooltip', className)
-  }, /*#__PURE__*/_react.default.createElement(InTooltip.Provider, {
-    value: true
-  }, trigger));
-  const onPointerDown = e => {
-    if (e.pointerType !== 'touch' || toggle) return;
-    clear();
-    pressed.current = false;
-    press.current = setTimeout(() => {
-      pressed.current = true;
-      setOpen(true);
-    }, ms(wrap.current, '--plx-comp-tooltip-long-press-delay'));
-  };
-  const onPointerEnd = e => {
-    if (e.pointerType !== 'touch' || toggle) return;
-    clearTimeout(press.current);
-    if (pressed.current) hide.current = setTimeout(() => {
-      setOpen(false);
-      pressed.current = false;
-    }, e.type === 'pointercancel' ? 0 : ms(wrap.current, '--plx-comp-tooltip-touch-dismiss-delay'));
-  };
-  const onEnter = e => {
-    if (e.pointerType === 'touch' || toggle) return;
-    clearTimeout(hide.current);
-    setOpen(true);
-  };
-  const onLeave = e => {
-    if (e.pointerType === 'touch' || toggle) return;
-    // a rich tooltip waits a moment, so the pointer can move into it; a plain one hides at once
-    if (isRich) {
-      clearTimeout(hide.current);
-      hide.current = setTimeout(() => setOpen(false), ms(wrap.current, '--plx-comp-tooltip-rich-close-delay'));
-    } else setOpen(false);
-  };
-  const bubbleCls = (0, _cx.cx)('plx-tooltip__bubble', 'plx-tooltip__bubble--' + side, isRich && 'plx-tooltip__bubble--rich', open && 'is-open');
-  return /*#__PURE__*/_react.default.createElement("span", {
-    ref: wrap,
-    className: (0, _cx.cx)('plx-tooltip', className),
-    onPointerEnter: onEnter,
-    onPointerLeave: onLeave,
-    onPointerDown: onPointerDown,
-    onPointerUp: onPointerEnd,
-    onPointerCancel: onPointerEnd,
-    onContextMenu: e => {
-      if (pressed.current) e.preventDefault();
-    },
-    onClickCapture: e => {
-      if (pressed.current) {
-        e.preventDefault();
-        e.stopPropagation();
-        pressed.current = false;
-      }
-    },
-    onFocus: () => {
-      if (!toggle && lastInput !== 'touch') setOpen(true);
-    },
-    onBlur: e => {
-      if (!pressed.current && !(wrap.current && wrap.current.contains(e.relatedTarget))) setOpen(false);
-    }
-  }, /*#__PURE__*/_react.default.createElement(InTooltip.Provider, {
-    value: true
-  }, trigger), isRich ? /*#__PURE__*/_react.default.createElement("span", {
-    ref: bubble,
-    id: id + 'b',
-    className: bubbleCls
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    role: "tooltip",
-    id: id,
-    className: "plx-tooltip__content"
-  }, title ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-tooltip__title"
-  }, title) : null, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-tooltip__body"
-  }, content)), action ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-tooltip__action"
-  }, action) : null) : /*#__PURE__*/_react.default.createElement("span", {
-    ref: bubble,
-    role: "tooltip",
-    id: id,
-    className: bubbleCls
-  }, content));
-}
-  } },
-  "platform/components/Kbd/Kbd.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Kbd = Kbd;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Kbd
-   Summary: A key or shortcut ("Ctrl K").
-   Usage:
-     <Kbd>Ctrl K</Kbd>
-     <Kbd onAccent>/</Kbd>
-   Props:
-     onAccent: the version for the blue header (default false)
-     children: the key or shortcut text
-     className: more classes on the <kbd>
-   Notes:
-     Writing direction (owner, ctm-needs-34): always left to right (dir="ltr", which also isolates it), also in a right-to-left page.
-     It uses the data font at a 16px label height.
-     Other props pass through to the <kbd>.
-*/
-function Kbd({
-  onAccent = false,
-  className,
-  children,
-  ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement("kbd", _extends({
-    className: (0, _cx.cx)('plx-kbd', onAccent && 'plx-kbd--on-accent', className),
-    dir: "ltr"
-  }, rest), children);
-}
-  } },
-  "platform/utils/hotkey.js": { deps: {"react":null,"./tokenTime.js":"platform/utils/tokenTime.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.hotkeyKeys = hotkeyKeys;
-exports.hotkeyLabel = hotkeyLabel;
-exports.hotkeyList = hotkeyList;
-exports.isMac = isMac;
-exports.parseHotkey = parseHotkey;
-exports.registerHotkey = registerHotkey;
-exports.setSingleKeyHotkeys = setSingleKeyHotkeys;
-exports.singleKeyHotkeys = singleKeyHotkeys;
-exports.subscribeHotkeys = subscribeHotkeys;
-exports.useHotkey = useHotkey;
-exports.useHotkeyList = useHotkeyList;
-var _react = _interopRequireDefault(require("react"));
-var _tokenTime = require("./tokenTime.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · Hotkey (platform/utils/hotkey.js)
-   Summary: Keyboard shortcuts in one place: useHotkey binds a key, a chord (Mod K) or a sequence (G then I) to a command,
-     for the whole page or for one region, and every binding goes into one registry that the shortcuts dialog and the
-     menus read their hints from (Kbd draws the label).
-   Usage:
-     useHotkey('Mod+K', () => openSearch(), { label: 'Search', group: 'General' });
-     useHotkey('G I', () => goTo('inbox'), { label: 'Go to inbox', group: 'Navigation' });
-     useHotkey('Delete', removeSelected, { scope: listRef, label: 'Delete the selected files' });
-     <Kbd>{hotkeyLabel('Mod+K')}</Kbd>                     // "Ctrl K" on Windows and Linux, "⌘ K" on a Mac
-     const all = useHotkeyList();                         // [{ binding, label, group, keys }] for the shortcuts dialog
-   Props:
-     useHotkey(binding, handler, options): binds while the component is mounted; handler(event) runs on a match
-     binding: steps separated by spaces (a sequence: "G I"), each step keys joined by "+" ("Mod+Shift+P"); modifiers Mod
-       (Cmd on a Mac, Ctrl elsewhere), Ctrl, Meta, Alt, Shift; keys as KeyboardEvent.key names ("K", "Escape", "/", "?")
-     options.scope: a ref (or element) of the region the binding belongs to; it fires only when focus is inside it
-     options.enabled: false unbinds it without unmounting (default true)
-     options.allowInFields: also fire while focus is in a text field (default false)
-     options.label: what the command does, as written in its menu item; options.group: its group in the shortcuts dialog
-     registerHotkey(binding, handler, options): the same without React; returns the function that unbinds it
-     hotkeyLabel(binding, { mac }): the binding as people read it ("Ctrl Shift P", "G then I")
-     hotkeyList(): every labeled binding; useHotkeyList() the same, kept current; subscribeHotkeys(fn) for other code
-     setSingleKeyHotkeys(on): turns every single-key shortcut (no modifier) off or on (WCAG 2.2 SC 2.1.4)
-   Behavior:
-     One keydown listener for the page. The binding of the innermost scope that contains the focus wins; page-wide
-     bindings come last. A key that starts a sequence waits --plx-sys-hotkey-sequence-timeout for the next one.
-     Ignored while focus is in a text field, a select or editable content, unless allowInFields. Ignored when an earlier
-     handler called preventDefault. A match calls preventDefault, so the browser's own use of that key does not run.
-   Notes:
-     Never bind keys that assistive technology or the browser needs (Tab, the arrow keys outside a widget, Ctrl L, F6).
-     Use the same label here as in the menu item, so the dialog and the menu agree.
-*/
-
-const MODS = ['ctrl', 'meta', 'alt', 'shift'];
-const NAMES = {
-  esc: 'escape',
-  del: 'delete',
-  space: ' ',
-  spacebar: ' ',
-  return: 'enter',
-  up: 'arrowup',
-  down: 'arrowdown',
-  left: 'arrowleft',
-  right: 'arrowright',
-  cmd: 'meta',
-  command: 'meta',
-  option: 'alt',
-  control: 'ctrl'
-};
-const entries = [];
-const listeners = new Set();
-let singleKeys = true;
-let buffer = [],
-  bufferAt = 0,
-  installed = false,
-  nextId = 1;
-function isMac() {
-  if (typeof navigator === 'undefined') return false;
-  const p = navigator.userAgentData && navigator.userAgentData.platform || navigator.platform || '';
-  return /mac|iphone|ipad|ipod/i.test(p);
-}
-
-// "Mod+Shift+P" → { ctrl, meta, alt, shift, key: 'p' }
-function parseStep(step, mac) {
-  const parts = step.split('+').filter((x, i, all) => x !== '' || i === all.length - 1).map(x => x === '' ? '+' : x);
-  const s = {
-    ctrl: false,
-    meta: false,
-    alt: false,
-    shift: false,
-    key: ''
-  };
-  parts.forEach(raw => {
-    let p = raw.toLowerCase();
-    p = NAMES[p] || p;
-    if (p === 'mod') s[mac ? 'meta' : 'ctrl'] = true;else if (MODS.indexOf(p) >= 0) s[p] = true;else s.key = p;
-  });
-  return s;
-}
-function parseHotkey(binding, mac = isMac()) {
-  return String(binding || '').trim().split(/\s+/).filter(Boolean).map(st => parseStep(st, mac));
-}
-function matchStep(s, e) {
-  const key = (e.key || '').toLowerCase();
-  // a letter or digit typed with Alt (or Shift) on some layouts changes e.key: e.code still names the key
-  const code = /^Key([A-Z])$|^Digit(\d)$/.exec(e.code || '');
-  const sameKey = key === s.key || !!code && (code[1] || code[2]).toLowerCase() === s.key;
-  if (!sameKey) return false;
-  // a symbol that needs Shift ("?") is written without it: Shift is then not compared
-  const symbol = s.key.length === 1 && !/[a-z0-9]/.test(s.key);
-  return e.ctrlKey === s.ctrl && e.metaKey === s.meta && e.altKey === s.alt && (symbol || e.shiftKey === s.shift);
-}
-const isSingle = steps => steps.length >= 1 && steps.every(s => !s.ctrl && !s.meta && !s.alt) && steps[0].key.length === 1;
-function inField(el) {
-  if (!el || !el.tagName) return false;
-  if (el.isContentEditable) return true;
-  const t = el.tagName.toLowerCase();
-  if (t === 'textarea' || t === 'select') return true;
-  if (t !== 'input') return false;
-  return ['checkbox', 'radio', 'button', 'submit', 'reset', 'range', 'color', 'file', 'image'].indexOf((el.type || '').toLowerCase()) < 0;
-}
-const scopeOf = x => (x && 'current' in x ? x.current : x) || null;
-const depth = el => {
-  let n = 0;
-  for (let x = el; x; x = x.parentElement) n++;
-  return n;
-};
-function onKeyDown(e) {
-  if (e.defaultPrevented || e.isComposing || ['Control', 'Meta', 'Alt', 'Shift'].indexOf(e.key) >= 0) return;
-  const now = Date.now();
-  if (now - bufferAt > (0, _tokenTime.tokenMs)('--plx-sys-hotkey-sequence-timeout')) buffer = [];
-  const target = e.target,
-    field = inField(target);
-  const live = entries.filter(x => x.enabled && (!field || x.allowInFields) && (singleKeys || !isSingle(x.steps))).map(x => ({
-    x,
-    scope: scopeOf(x.scope)
-  })).filter(c => !c.x.scope || c.scope && c.scope.contains(target)).sort((a, b) => (b.scope ? depth(b.scope) : 0) - (a.scope ? depth(a.scope) : 0));
-  const step = buffer.length;
-  const fits = (c, at) => c.x.steps.length > at && buffer.slice(buffer.length - at).every((ev, i) => matchStep(c.x.steps[i], ev)) && matchStep(c.x.steps[at], e);
-  // the longest waiting sequence first, then a fresh start
-  for (const at of [step, 0].filter((v, i, all) => all.indexOf(v) === i)) {
-    const full = live.find(c => c.x.steps.length === at + 1 && fits(c, at));
-    if (full) {
-      buffer = [];
-      e.preventDefault();
-      full.x.handler(e);
-      return;
-    }
-    if (live.some(c => c.x.steps.length > at + 1 && fits(c, at))) {
-      buffer = buffer.slice(buffer.length - at).concat([{
-        key: e.key,
-        code: e.code,
-        ctrlKey: e.ctrlKey,
-        metaKey: e.metaKey,
-        altKey: e.altKey,
-        shiftKey: e.shiftKey
-      }]);
-      bufferAt = now;
-      return;
-    }
-  }
-  buffer = [];
-}
-function install() {
-  if (installed || typeof document === 'undefined') return;
-  document.addEventListener('keydown', onKeyDown);
-  installed = true;
-}
-const notify = () => listeners.forEach(fn => fn());
-function registerHotkey(binding, handler, options = {}) {
-  install();
-  const entry = {
-    id: nextId++,
-    binding,
-    steps: parseHotkey(binding),
-    handler,
-    scope: options.scope || null,
-    enabled: options.enabled !== false,
-    allowInFields: !!options.allowInFields,
-    label: options.label || '',
-    group: options.group || ''
-  };
-  entries.push(entry);
-  if (entry.label) notify();
-  return () => {
-    const i = entries.indexOf(entry);
-    if (i >= 0) {
-      entries.splice(i, 1);
-      if (entry.label) notify();
-    }
-  };
-}
-function useHotkey(binding, handler, options = {}) {
-  const ref = _react.default.useRef(handler);
-  ref.current = handler;
-  const {
-    scope,
-    enabled = true,
-    allowInFields = false,
-    label,
-    group
-  } = options;
-  _react.default.useEffect(() => {
-    if (!enabled || !binding) return undefined;
-    return registerHotkey(binding, e => ref.current && ref.current(e), {
-      scope,
-      allowInFields,
-      label,
-      group
-    });
-  }, [binding, scope, enabled, allowInFields, label, group]);
-}
-const MAC_NAMES = {
-  meta: '⌘',
-  ctrl: '⌃',
-  alt: '⌥',
-  shift: '⇧'
-};
-const PC_NAMES = {
-  meta: 'Win',
-  ctrl: 'Ctrl',
-  alt: 'Alt',
-  shift: 'Shift'
-};
-const KEY_NAMES = {
-  ' ': 'Space',
-  escape: 'Esc',
-  arrowup: '↑',
-  arrowdown: '↓',
-  arrowleft: '←',
-  arrowright: '→',
-  enter: 'Enter',
-  delete: 'Delete',
-  backspace: 'Backspace',
-  tab: 'Tab'
-};
-function hotkeyKeys(binding, {
-  mac = isMac()
-} = {}) {
-  const names = mac ? MAC_NAMES : PC_NAMES;
-  return parseHotkey(binding, mac).map(s => (mac ? ['ctrl', 'alt', 'shift', 'meta'] : ['ctrl', 'meta', 'alt', 'shift']).filter(m => s[m]).map(m => names[m]).concat([KEY_NAMES[s.key] || (s.key.length === 1 ? s.key.toUpperCase() : s.key.charAt(0).toUpperCase() + s.key.slice(1))]));
-}
-function hotkeyLabel(binding, options) {
-  return hotkeyKeys(binding, options).map(k => k.join(' ')).join(' then ');
-}
-function hotkeyList() {
-  return entries.filter(x => x.label).map(x => ({
-    binding: x.binding,
-    label: x.label,
-    group: x.group,
-    keys: hotkeyLabel(x.binding),
-    enabled: x.enabled
-  }));
-}
-function subscribeHotkeys(fn) {
-  listeners.add(fn);
-  return () => listeners.delete(fn);
-}
-function useHotkeyList() {
-  const [list, setList] = _react.default.useState(hotkeyList);
-  _react.default.useEffect(() => {
-    setList(hotkeyList());
-    return subscribeHotkeys(() => setList(hotkeyList()));
-  }, []);
-  return list;
-}
-function setSingleKeyHotkeys(on) {
-  singleKeys = !!on;
-  buffer = [];
-}
-function singleKeyHotkeys() {
-  return singleKeys;
-}
-  } },
-  "platform/components/Button/Button.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../providers/Surface.jsx":"platform/providers/Surface.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","../../utils/hotkey.js":"platform/utils/hotkey.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Button = void 0;
-exports.ButtonGroup = ButtonGroup;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
-var _Icon = require("../Icon/Icon.jsx");
-var _Loading = require("../Loading/Loading.jsx");
-var _Surface = require("../../providers/Surface.jsx");
-var _Tooltip = require("../Tooltip/Tooltip.jsx");
-var _Kbd = require("../Kbd/Kbd.jsx");
-var _hotkey = require("../../utils/hotkey.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Button, ButtonGroup
-   Summary: A button for an action, in one of several emphasis levels and sizes; ButtonGroup joins buttons that act as a set.
-   Usage:
-     <Button variant="primary" icon="save" onClick={() => …}>Save</Button>
-     <Button iconOnly icon="more_horiz" label="More actions" caret expanded={open} />
-     <ButtonGroup label="Transfer"><Button>Import</Button><Button>Export</Button></ButtonGroup>
-   Props:
-     variant: "secondary" (default; white with a border, reversible actions) | "primary" (filled; the main action, usually one
-       per view) | "tertiary" (outlined in the action color, no fill; fills on hover) | "ghost" (no fill or border until
-       hovered, when its icon turns the action color; the lowest emphasis) | "danger" (filled red; destructive) | "danger-secondary"
-       (red outline, fills on hover). There is no link look: a link goes somewhere (Link), a button does something
-     truncate: the label fills the button from its start edge and ends in an ellipsis (a long choice)
-     stackedLabel: the label’s lines stack, start-aligned and wrapping; the gap is --plx-comp-button-context-label-gap (SuggestedAction)
-     labelRow: the label lays out a row of its own (an avatar and a name); the gap is
-       --plx-comp-button-context-label-row-gap (AppHeader’s account)
-     joined: { start, end }: "square" | "seam": its corners square where it meets a neighbor; a seam also drops that border (ButtonGroup, InputGroup and CopyButton set it)"md" (default; the standard control role) | "sm" (the toolbar role: compact text, gray) | "xs" (the inline-action
-       role: dense row and card actions, never in a toolbar) | "2xs" (the smallest: "Show more" under a list; 11px text, a blue
-       tint on hover) | "lg" (the prominent role: page actions)
-     icon: an <Icon> (or an icon name) before the label
-     iconEnd: an <Icon> (or an icon name) after the label
-     iconOnly: a square button with only its icon; give it a label (default false)
-     label: the accessible name (aria-label); an icon-only button falls back to string children
-     tooltip: the tooltip it shows (default: an icon-only button shows its label; others none); false: none (Carbon,
-       Atlassian: every icon-only button names itself). Inside a Tooltip the button leaves it to that Tooltip
-     shortcut: its keyboard shortcut, as a hotkey binding ("Mod+Shift+A"): shown in its tooltip as keys (Ctrl or ⌘) and set as
-       aria-keyshortcuts. It only shows the shortcut: bind it with useHotkey
-     caret: the button opens a menu: the thin outline chevron (expand_more) after the label, in the muted color on the
-       unfilled variants (owner, 2026-10-14: it replaces the small filled triangle); default false
-     expanded: sets aria-expanded, for a button that opens a menu
-     pressed: makes a toggle button (aria-pressed): true when on, false when off (undefined: not a toggle)
-     tone: "success" | "danger" | "neutral": the chosen state (pressed or selected) fills in that feedback color (green, red,
-       gray) instead of the selected gray; the rest state stays the variant's, so a choice not taken is the plain button
-       (owner, vote-screen-37: a vote's Approve, Deny and Abstain). Default none
-     selected: shows the selected state without a toggle role (default false)
-     loading: shows a spinner in place of the icon (default false)
-     disabled: the button does nothing (default false)
-     href: renders a link styled as a button
-     type: the button type (default "button")
-     onClick(event): runs when the button is clicked, unless disabled or loading
-     children: the button label
-     className: more classes on the button
-     strings: the words it announces, for other languages: { working: "Working" } (the loading spinner's name)
-     ref: forwarded to the <button> or <a>
-     ButtonGroup.label: the accessible name of the group
-     ButtonGroup.children: the buttons
-     ButtonGroup.className: more classes on the group
-   Behavior:
-     Placement can also set the role: a dialog footer gives its buttons the dialog role.
-     Selected, pressed and expanded all show the selected state.
-     A toggle button (pressed true or false) keeps its label and icon when it turns on or off: the label names the option
-       (Bold, Show grid), aria-pressed says whether it is on, and every variant shows "on" with the selected state.
-     Loading keeps the width and the name, and stays focusable but inert (aria-disabled, aria-busy): the spinner takes the
-       icon's place, or, with no icon, sits over the label, which stays (unseen) to hold the width and name the button.
-     A disabled link loses its href.
-   Notes:
-     Other props pass through to the <button> or <a> (and to ButtonGroup's <div>).
-     For one choice from several, use SegmentedControl instead of ButtonGroup.
-*/
-const TONES = ['success', 'danger', 'neutral'];
-const STRINGS = {
-  working: 'Working'
-};
-
-// the icon takes the button's state as its own (Styling Standard 3.6): filled while the button is selected, pressed or
-// open; an Icon element the caller gives keeps its own fill when it sets one
-const asIcon = _Icon.stateIcon;
-
-// a one-step binding as aria-keyshortcuts ("Control+Shift+A"); a sequence has no ARIA form, so none
-const ARIA_MODS = [['ctrl', 'Control'], ['alt', 'Alt'], ['shift', 'Shift'], ['meta', 'Meta']];
-const ariaShortcut = binding => {
-  const steps = (0, _hotkey.parseHotkey)(binding);
-  if (steps.length !== 1 || !steps[0].key) return undefined;
-  const k = steps[0].key;
-  return ARIA_MODS.filter(([m]) => steps[0][m]).map(([, n]) => n).concat(k.length === 1 ? k.toUpperCase() : k.charAt(0).toUpperCase() + k.slice(1)).join('+');
-};
-const Button = exports.Button = /*#__PURE__*/_react.default.forwardRef(function Button({
-  variant = 'secondary',
-  size = 'md',
-  icon,
-  iconEnd,
-  iconOnly = false,
-  label,
-  caret = false,
-  expanded,
-  pressed,
-  selected = false,
-  tone,
-  loading = false,
-  disabled = false,
-  href,
-  type = 'button',
-  joined,
-  truncate = false,
-  stackedLabel = false,
-  labelRow = false,
-  tooltip,
-  shortcut,
-  className,
-  children,
-  onClick,
-  strings,
-  ...rest
-}, ref) {
-  (0, _devWarn.devWarn)('Button', {
-    variant,
-    size
-  }, {
-    variant: ['secondary', 'primary', 'tertiary', 'ghost', 'danger', 'danger-secondary', 'quiet'],
-    size: ['md', 'sm', 'xs', '2xs', 'lg']
-  });
-  const t = Object.assign({}, STRINGS, strings);
-  // a colored surface around the button (TeachingBubble, the accent AppHeader) gives it that surface's look
-  const surface = _react.default.useContext(_Surface.SurfaceContext);
-  const classes = (0, _cx.cx)('plx-button', 'plx-button--' + (variant === 'quiet' ? 'ghost' : variant), size !== 'md' && 'plx-button--size-' + size, iconOnly && 'plx-button--icon-only', caret && 'plx-button--caret', TONES.includes(tone) && 'plx-button--tone-' + tone, (selected || pressed || expanded) && 'is-selected', loading && 'is-loading', truncate && 'plx-button--truncate', stackedLabel && 'plx-button--stacked-label', labelRow && 'plx-button--label-row', joined && joined.start && 'plx-button--joined-start-' + joined.start, joined && joined.end && 'plx-button--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-button--joined', (surface === 'inverse' || surface === 'accent') && 'plx-button--on-' + surface, className);
-  // the parts take the button's state as their own classes (Styling Standard 3.6: no rule reaches from the button into them)
-  const v = variant === 'quiet' ? 'ghost' : variant;
-  const on = !!(selected || pressed || expanded);
-  const labelClass = (0, _cx.cx)('plx-button__label', truncate && 'plx-button__label--truncate', !truncate && stackedLabel && 'plx-button__label--stacked', !truncate && !stackedLabel && labelRow && 'plx-button__label--row');
-  const caretClass = (0, _cx.cx)('plx-button__caret', (v === 'primary' || v === 'danger' || disabled || loading) && 'plx-button__caret--current', expanded && 'plx-button__caret--open');
-  const hasLabel = !iconOnly && children !== undefined && children !== null;
-  // loading: the spinner takes the icon's place; with no icon it sits over the label, which keeps the width and the name
-  // (aria-busy says it is working, so the spinner itself is not read)
-  const over = loading && !icon && hasLabel;
-  const spinner = cls => /*#__PURE__*/_react.default.createElement("span", {
-    className: cls,
-    "aria-hidden": "true"
-  }, /*#__PURE__*/_react.default.createElement(_Loading.Spinner, {
-    size: "sm",
-    label: t.working
-  }));
-  const content = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, loading && !over ? spinner('plx-button__icon') : icon ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-button__icon"
-  }, asIcon(icon, on)) : null, over ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-button__stack"
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    className: (0, _cx.cx)(labelClass, 'plx-button__label--waiting')
-  }, children), spinner('plx-button__icon plx-button__icon--over')) : hasLabel ? /*#__PURE__*/_react.default.createElement("span", {
-    className: labelClass
-  }, children) : null, iconEnd ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-button__icon"
-  }, asIcon(iconEnd, on)) : null, caret ? /*#__PURE__*/_react.default.createElement("span", {
-    className: caretClass,
-    "aria-hidden": "true"
-  }) : null);
-  const a11y = {
-    'aria-label': iconOnly ? label || (typeof children === 'string' ? children : undefined) : label,
-    'aria-expanded': expanded,
-    'aria-pressed': pressed,
-    'aria-disabled': disabled || loading ? true : undefined,
-    'aria-busy': loading || undefined,
-    'aria-keyshortcuts': shortcut ? ariaShortcut(shortcut) : undefined
-  };
-  const handle = e => {
-    if (disabled || loading) {
-      e.preventDefault();
-      return;
-    }
-    if (onClick) onClick(e);
-  };
-  const el = href ? /*#__PURE__*/_react.default.createElement("a", _extends({
-    ref: ref,
-    href: disabled ? undefined : href,
-    className: classes
-  }, a11y, {
-    onClick: handle
-  }, rest), content) : /*#__PURE__*/_react.default.createElement("button", _extends({
-    ref: ref,
-    type: type,
-    className: classes,
-    disabled: disabled && !loading ? true : undefined
-  }, a11y, {
-    onClick: handle
-  }, rest), content);
-  // its tooltip: the name of an icon-only button (or the tooltip it was given), with its shortcut's keys; none inside a
-  // Tooltip, which already names it
-  const inTooltip = _react.default.useContext(_Tooltip.InTooltip);
-  const tip = tooltip === false ? null : tooltip !== undefined ? tooltip : iconOnly ? a11y['aria-label'] : null;
-  if (!tip || inTooltip) return el;
-  return /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
-    content: shortcut ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, tip, ' ', /*#__PURE__*/_react.default.createElement(_Kbd.Kbd, null, (0, _hotkey.hotkeyLabel)(shortcut))) : tip
-  }, el);
-});
-
-/* ButtonGroup: joined buttons that act as a set (Import | Export). For one choice from several, use SegmentedControl. */
-function ButtonGroup({
-  label,
-  className,
-  children,
-  ...rest
-}) {
-  // its buttons meet: each passes on which of its sides is joined (the later button's start edge is the seam)
-  const all = _react.default.Children.toArray(children).filter(_react.default.isValidElement);
-  return /*#__PURE__*/_react.default.createElement("div", _extends({
-    role: "group",
-    "aria-label": label,
-    className: (0, _cx.cx)('plx-button-group', className)
-  }, rest), all.map((el, i) => /*#__PURE__*/_react.default.cloneElement(el, {
-    joined: {
-      start: i > 0 ? 'seam' : undefined,
-      end: i < all.length - 1 ? 'square' : undefined
-    }
-  })));
 }
   } },
   "platform/utils/portal.jsx": { deps: {"react":null,"react-dom":null,"./cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
@@ -18087,156 +18431,6 @@ const SearchField = exports.SearchField = /*#__PURE__*/_react.default.forwardRef
     ref: ref
   }, props));
 });
-  } },
-  "platform/components/Text/Text.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Text = Text;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
-var _layer = require("../../utils/layer.js");
-var _Button = require("../Button/Button.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Text
-   Summary: A run of text in one of the system's text roles, from the type tokens.
-   Usage:
-     <Text variant="secondary" as="p" truncate>Last edited 2 days ago</Text>
-     <Text variant="display" as="h1">1,284 assets</Text>
-     <Text as="p" lines={3} expandable>A long description…</Text>
-     <Text variant="secondary" tabular>12:40</Text>
-   Props:
-     variant: the text role: "body" (default) | "secondary" | "caption" | "data" | "label" | "strong" | "heading"
-       | "accent" (a highlighted term, step number or key figure: the accent color) | "success" (a good outcome, the new value in a change)
-       | "eyebrow" | "danger" | "link" | "title" | "display" | "lead".
-       body: the UI text. secondary: muted, 12px (counts, hints, descriptions). caption: subtle, 11px.
-       data: the data font, Reddit Mono, for technical values (IDs, file names and paths, versions, dates and
-       times, sizes, counts, durations); 12px on its own, the size of the text around it inside other text.
-       label: semibold 12px. strong: semibold, the current size.
-       heading: a group's title inside a page or dialog, semibold 13px.
-       eyebrow: a small uppercase title over a tool panel, 11px, bold, widest spacing, muted.
-       danger: the danger color (a required marker). link: the link color, normal weight (the color only: a link is the Link component).
-       title: a page title, the heading font, 20px, bold.
-       display: the largest style, for one key figure or a sign-in or welcome heading: the heading font at the top
-         step of the type scale, semibold, with a tight line height and letter spacing (library wave 2).
-       lead: body text one step up (15px) with a relaxed line height, for the opening paragraph of a page or an
-         empty state (body-lg; library wave 2).
-     as: the element; "span" (default) | "p" | "div" | "h1"–"h4" | "dt" | "dd" | "label" | …
-     truncate: one line, cut with an ellipsis; default false (lines wins when both are set)
-     lines: 2 | 3 | 4: at most that many lines, the last one cut with an ellipsis (line clamp); default none
-     expandable: with lines, a "Show more" button under the text while it is cut; it shows the rest and reads
-       "Show less" to fold it again; default false
-     defaultExpanded: an expandable text starts unfolded; default false
-     tabular: digits of equal width (tabular figures), so numbers line up down a column and do not shift as they
-       change; default false
-     strings: the words of the expand button: { more: 'Show more', less: 'Show less' }
-     className: more classes on the text
-     children: the text
-     ...rest: other attributes go on the element
-   Behavior:
-     lines clamps with the line-clamp property; the whole text stays in the page, so search, copy and screen readers
-       get all of it.
-     expandable measures the text: the button shows only while the text is cut (and while it is unfolded). It is a
-       button with aria-expanded that points at the text (aria-controls); it measures again when the width changes.
-     display and lead are type styles only: the element (as) gives the heading level.
-   Notes:
-     Applications never set a font, size, weight or color themselves.
-     There are no margins in any case, whatever the element.
-     The expand button has the look of ShowMore (CollapsibleSection): the smallest button, its chevron after the
-       label, down to show more and up to show less.
-*/
-const LINES = [2, 3, 4];
-const STRINGS = {
-  more: 'Show more',
-  less: 'Show less'
-};
-
-// a text's classes: its role, how it overflows (one line, or at most `clamp` lines while folded) and its figures
-const textClass = (variant, truncate, clamp, open, tabular, className) => (0, _cx.cx)('plx-text', 'plx-text--' + variant, truncate && !clamp && 'plx-text--truncate', clamp && !open && 'plx-text--lines-' + clamp, tabular && 'plx-text--tabular', className);
-function Text({
-  as: As = 'span',
-  variant = 'body',
-  truncate = false,
-  lines,
-  expandable = false,
-  defaultExpanded = false,
-  tabular = false,
-  strings,
-  className,
-  children,
-  ...rest
-}) {
-  (0, _devWarn.devWarn)('Text', {
-    variant
-  }, {
-    variant: ['body', 'secondary', 'caption', 'data', 'label', 'strong', 'heading', 'accent', 'success', 'eyebrow', 'danger', 'link', 'title', 'display', 'lead']
-  });
-  const clamp = LINES.indexOf(Number(lines)) >= 0 ? Number(lines) : null;
-  if (expandable && clamp) {
-    return /*#__PURE__*/_react.default.createElement(ExpandableText, {
-      As: As,
-      variant: variant,
-      clamp: clamp,
-      defaultExpanded: defaultExpanded,
-      tabular: tabular,
-      strings: strings,
-      className: className,
-      rest: rest
-    }, children);
-  }
-  return /*#__PURE__*/_react.default.createElement(As, _extends({
-    dir: "auto",
-    className: textClass(variant, truncate, clamp, false, tabular, className)
-  }, rest), children);
-}
-
-// a clamped text and its Show more button: the button shows while the text is cut, and while it is unfolded
-function ExpandableText({
-  As,
-  variant,
-  clamp,
-  defaultExpanded,
-  tabular,
-  strings,
-  className,
-  rest,
-  children
-}) {
-  const own = (0, _layer.useUid)('plx-text');
-  const id = rest.id || own;
-  const ref = _react.default.useRef(null);
-  const [open, setOpen] = _react.default.useState(defaultExpanded);
-  const [cut, setCut] = _react.default.useState(false);
-  _react.default.useLayoutEffect(() => {
-    const el = ref.current;
-    if (!el || open) return undefined;
-    const measure = () => setCut(el.scrollHeight > el.clientHeight);
-    measure();
-    if (typeof ResizeObserver === 'undefined') return undefined;
-    const watch = new ResizeObserver(measure);
-    watch.observe(el);
-    return () => watch.disconnect();
-  }, [open, children]);
-  const words = Object.assign({}, STRINGS, strings);
-  return /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-text-expand"
-  }, /*#__PURE__*/_react.default.createElement(As, _extends({
-    dir: "auto"
-  }, rest, {
-    ref: ref,
-    id: id,
-    className: textClass(variant, false, clamp, open, tabular, className)
-  }), children), open || cut ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    size: "2xs",
-    iconEnd: open ? 'chevron-up' : 'chevron-down',
-    "aria-expanded": open,
-    "aria-controls": id,
-    onClick: () => setOpen(!open)
-  }, open ? words.less : words.more) : null);
-}
   } },
   "platform/utils/barFit.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
@@ -78318,7 +78512,7 @@ function TreeChart({
   }, draw);
 }
   } },
-  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Isolate/Isolate.jsx":"platform/components/Isolate/Isolate.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/MetricCard/MetricCard.jsx":"platform/components/MetricCard/MetricCard.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/DataPill/DataPill.jsx":"platform/components/DataPill/DataPill.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/Surface.jsx":"platform/providers/Surface.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./utils/tokenSheet.js":"platform/utils/tokenSheet.js","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js","./components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","./components/RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","./components/Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","./components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","./components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","./components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","./components/MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","./components/Cascader/Cascader.jsx":"platform/components/Cascader/Cascader.jsx","./components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","./components/TimePicker/TimePicker.jsx":"platform/components/TimePicker/TimePicker.jsx","./components/RelativeDateInput/RelativeDateInput.jsx":"platform/components/RelativeDateInput/RelativeDateInput.jsx","./components/LoadMore/LoadMore.jsx":"platform/components/LoadMore/LoadMore.jsx","./patterns/ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","./patterns/AvatarUpload/AvatarUpload.jsx":"platform/patterns/AvatarUpload/AvatarUpload.jsx","./charts/scales.js":"platform/charts/scales.js","./charts/ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./components/TimeZoneSelect/TimeZoneSelect.jsx":"platform/components/TimeZoneSelect/TimeZoneSelect.jsx","./components/TreeSelect/TreeSelect.jsx":"platform/components/TreeSelect/TreeSelect.jsx","./components/TransferList/TransferList.jsx":"platform/components/TransferList/TransferList.jsx","./patterns/BottomSheetNav/BottomSheetNav.jsx":"platform/patterns/BottomSheetNav/BottomSheetNav.jsx","./patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","./patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","./patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","./patterns/GroupPanel/GroupPanel.jsx":"platform/patterns/GroupPanel/GroupPanel.jsx","./patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","./patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","./patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","./utils/fields.js":"platform/utils/fields.js","./hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","./charts/parts/position.js":"platform/charts/parts/position.js","./charts/parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./charts/parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./charts/parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./charts/parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./charts/parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./charts/parts/ReferenceLine.jsx":"platform/charts/parts/ReferenceLine.jsx","./charts/parts/ChartAnnotation.jsx":"platform/charts/parts/ChartAnnotation.jsx","./patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","./patterns/UserCard/UserCard.jsx":"platform/patterns/UserCard/UserCard.jsx","./components/VirtualList/VirtualList.jsx":"platform/components/VirtualList/VirtualList.jsx","./components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","./patterns/PeopleGroup/PeopleGroup.jsx":"platform/patterns/PeopleGroup/PeopleGroup.jsx","./patterns/PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","./patterns/QueryBuilder/QueryBuilder.jsx":"platform/patterns/QueryBuilder/QueryBuilder.jsx","./components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","./components/SearchResult/SearchResult.jsx":"platform/components/SearchResult/SearchResult.jsx","./components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","./patterns/ResourceList/ResourceList.jsx":"platform/patterns/ResourceList/ResourceList.jsx","./charts/interaction.js":"platform/charts/interaction.js","./charts/LineChart.jsx":"platform/charts/LineChart.jsx","./charts/AreaChart.jsx":"platform/charts/AreaChart.jsx","./charts/Gauge.jsx":"platform/charts/Gauge.jsx","./charts/HeatMap.jsx":"platform/charts/HeatMap.jsx","./charts/WaterfallChart.jsx":"platform/charts/WaterfallChart.jsx","./charts/WordCloud.jsx":"platform/charts/WordCloud.jsx","./charts/NetworkGraph.jsx":"platform/charts/NetworkGraph.jsx","./charts/Diagram.jsx":"platform/charts/Diagram.jsx","./charts/BarChart.jsx":"platform/charts/BarChart.jsx","./charts/ComboChart.jsx":"platform/charts/ComboChart.jsx","./charts/PieChart.jsx":"platform/charts/PieChart.jsx","./charts/BulletChart.jsx":"platform/charts/BulletChart.jsx","./charts/BoxPlot.jsx":"platform/charts/BoxPlot.jsx","./charts/RadarChart.jsx":"platform/charts/RadarChart.jsx","./charts/SankeyDiagram.jsx":"platform/charts/SankeyDiagram.jsx","./charts/TimelineChart.jsx":"platform/charts/TimelineChart.jsx","./patterns/ComparisonView/ComparisonView.jsx":"platform/patterns/ComparisonView/ComparisonView.jsx","./charts/a11y.js":"platform/charts/a11y.js","./charts/Sparkline.jsx":"platform/charts/Sparkline.jsx","./charts/LollipopChart.jsx":"platform/charts/LollipopChart.jsx","./charts/ScatterChart.jsx":"platform/charts/ScatterChart.jsx","./charts/FunnelChart.jsx":"platform/charts/FunnelChart.jsx","./charts/Treemap.jsx":"platform/charts/Treemap.jsx","./charts/GanttChart.jsx":"platform/charts/GanttChart.jsx","./charts/GeoMap.jsx":"platform/charts/GeoMap.jsx","./utils/dnd.js":"platform/utils/dnd.js","./components/DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","./patterns/SortableList/SortableList.jsx":"platform/patterns/SortableList/SortableList.jsx","./components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","./patterns/RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","./patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","./patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","./patterns/DuplicateAction/DuplicateAction.jsx":"platform/patterns/DuplicateAction/DuplicateAction.jsx","./patterns/Publish/Publish.jsx":"platform/patterns/Publish/Publish.jsx","./patterns/AssignControl/AssignControl.jsx":"platform/patterns/AssignControl/AssignControl.jsx","./patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","./patterns/WizardDialog/WizardDialog.jsx":"platform/patterns/WizardDialog/WizardDialog.jsx","./patterns/FormFlow/FormFlow.jsx":"platform/patterns/FormFlow/FormFlow.jsx","./patterns/Autosave/Autosave.jsx":"platform/patterns/Autosave/Autosave.jsx","./patterns/DraftState/DraftState.jsx":"platform/patterns/DraftState/DraftState.jsx","./patterns/SaveAs/SaveAs.jsx":"platform/patterns/SaveAs/SaveAs.jsx","./patterns/ArchiveRestore/ArchiveRestore.jsx":"platform/patterns/ArchiveRestore/ArchiveRestore.jsx","./components/File/File.jsx":"platform/components/File/File.jsx","./components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","./patterns/Auth/Auth.jsx":"platform/patterns/Auth/Auth.jsx","./patterns/SessionTimeout/SessionTimeout.jsx":"platform/patterns/SessionTimeout/SessionTimeout.jsx","./patterns/RoleManager/RoleManager.jsx":"platform/patterns/RoleManager/RoleManager.jsx","./patterns/ConnectedAccounts/ConnectedAccounts.jsx":"platform/patterns/ConnectedAccounts/ConnectedAccounts.jsx","./patterns/ShareDialog/ShareDialog.jsx":"platform/patterns/ShareDialog/ShareDialog.jsx","./patterns/PermissionsEditor/PermissionsEditor.jsx":"platform/patterns/PermissionsEditor/PermissionsEditor.jsx","./patterns/Tour/Tour.jsx":"platform/patterns/Tour/Tour.jsx","./components/Checklist/Checklist.jsx":"platform/components/Checklist/Checklist.jsx","./patterns/Onboarding/Onboarding.jsx":"platform/patterns/Onboarding/Onboarding.jsx","./patterns/FeatureIntro/FeatureIntro.jsx":"platform/patterns/FeatureIntro/FeatureIntro.jsx","./patterns/HelpPanel/HelpPanel.jsx":"platform/patterns/HelpPanel/HelpPanel.jsx","./patterns/ImportDialog/ImportDialog.jsx":"platform/patterns/ImportDialog/ImportDialog.jsx","./patterns/ImportWizard/ImportWizard.jsx":"platform/patterns/ImportWizard/ImportWizard.jsx","./patterns/ExportDialog/ExportDialog.jsx":"platform/patterns/ExportDialog/ExportDialog.jsx","./patterns/AccessRequest/AccessRequest.jsx":"platform/patterns/AccessRequest/AccessRequest.jsx","./patterns/TrialUpgrade/TrialUpgrade.jsx":"platform/patterns/TrialUpgrade/TrialUpgrade.jsx","./patterns/Offboarding/Offboarding.jsx":"platform/patterns/Offboarding/Offboarding.jsx","./patterns/ShortcutsDialog/ShortcutsDialog.jsx":"platform/patterns/ShortcutsDialog/ShortcutsDialog.jsx","./patterns/FileList/FileList.jsx":"platform/patterns/FileList/FileList.jsx","./patterns/FileBrowser/FileBrowser.jsx":"platform/patterns/FileBrowser/FileBrowser.jsx","./patterns/UploadManager/UploadManager.jsx":"platform/patterns/UploadManager/UploadManager.jsx","./patterns/VersionCompare/VersionCompare.jsx":"platform/patterns/VersionCompare/VersionCompare.jsx","./patterns/AssetGallery/AssetGallery.jsx":"platform/patterns/AssetGallery/AssetGallery.jsx","./patterns/DownloadManager/DownloadManager.jsx":"platform/patterns/DownloadManager/DownloadManager.jsx","./components/MediaPlayer/MediaPlayer.jsx":"platform/components/MediaPlayer/MediaPlayer.jsx","./patterns/MetadataEditor/MetadataEditor.jsx":"platform/patterns/MetadataEditor/MetadataEditor.jsx","./patterns/RelatedAssets/RelatedAssets.jsx":"platform/patterns/RelatedAssets/RelatedAssets.jsx","./patterns/AttachmentPicker/AttachmentPicker.jsx":"platform/patterns/AttachmentPicker/AttachmentPicker.jsx","./patterns/FilePicker/FilePicker.jsx":"platform/patterns/FilePicker/FilePicker.jsx","./patterns/RenditionList/RenditionList.jsx":"platform/patterns/RenditionList/RenditionList.jsx","./components/DocumentViewer/DocumentViewer.jsx":"platform/components/DocumentViewer/DocumentViewer.jsx","./patterns/VersionHistory/VersionHistory.jsx":"platform/patterns/VersionHistory/VersionHistory.jsx","./patterns/ProductCard/ProductCard.jsx":"platform/patterns/ProductCard/ProductCard.jsx","./components/ProductOptions/ProductOptions.jsx":"platform/components/ProductOptions/ProductOptions.jsx","./templates/Commerce/Commerce.jsx":"platform/templates/Commerce/Commerce.jsx","./components/Comment/Comment.jsx":"platform/components/Comment/Comment.jsx","./patterns/CommentThread/CommentThread.jsx":"platform/patterns/CommentThread/CommentThread.jsx","./patterns/ImageAnnotation/ImageAnnotation.jsx":"platform/patterns/ImageAnnotation/ImageAnnotation.jsx","./patterns/PresenceBar/PresenceBar.jsx":"platform/patterns/PresenceBar/PresenceBar.jsx","./components/MentionInput/MentionInput.jsx":"platform/components/MentionInput/MentionInput.jsx","./components/Announcement/Announcement.jsx":"platform/components/Announcement/Announcement.jsx","./patterns/AuditLog/AuditLog.jsx":"platform/patterns/AuditLog/AuditLog.jsx","./patterns/ApprovalWorkflow/ApprovalWorkflow.jsx":"platform/patterns/ApprovalWorkflow/ApprovalWorkflow.jsx","./components/PromptInput/PromptInput.jsx":"platform/components/PromptInput/PromptInput.jsx","./components/StreamingText/StreamingText.jsx":"platform/components/StreamingText/StreamingText.jsx","./patterns/AIChat/AIChat.jsx":"platform/patterns/AIChat/AIChat.jsx","./patterns/AssistantPanel/AssistantPanel.jsx":"platform/patterns/AssistantPanel/AssistantPanel.jsx","./components/AILabel/AILabel.jsx":"platform/components/AILabel/AILabel.jsx","./components/GeneratedContent/GeneratedContent.jsx":"platform/components/GeneratedContent/GeneratedContent.jsx","./patterns/PromptHistory/PromptHistory.jsx":"platform/patterns/PromptHistory/PromptHistory.jsx","./components/Citation/Citation.jsx":"platform/components/Citation/Citation.jsx","./components/SuggestedAction/SuggestedAction.jsx":"platform/components/SuggestedAction/SuggestedAction.jsx","./patterns/AISearch/AISearch.jsx":"platform/patterns/AISearch/AISearch.jsx","./patterns/Recommendation/Recommendation.jsx":"platform/patterns/Recommendation/Recommendation.jsx","./components/AIButton/AIButton.jsx":"platform/components/AIButton/AIButton.jsx","./components/AIDisclaimer/AIDisclaimer.jsx":"platform/components/AIDisclaimer/AIDisclaimer.jsx","./components/ConfidenceIndicator/ConfidenceIndicator.jsx":"platform/components/ConfidenceIndicator/ConfidenceIndicator.jsx","./patterns/AIExplanation/AIExplanation.jsx":"platform/patterns/AIExplanation/AIExplanation.jsx","./components/PromptSuggestions/PromptSuggestions.jsx":"platform/components/PromptSuggestions/PromptSuggestions.jsx","./components/SuggestedEdit/SuggestedEdit.jsx":"platform/components/SuggestedEdit/SuggestedEdit.jsx","./components/RefineMenu/RefineMenu.jsx":"platform/components/RefineMenu/RefineMenu.jsx","./providers/AnalyticsProvider.jsx":"platform/providers/AnalyticsProvider.jsx","./templates/templates/Templates.jsx":"platform/templates/templates/Templates.jsx","./utils/browserSupport.js":"platform/utils/browserSupport.js","./providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","./patterns/SplitView/SplitView.jsx":"platform/patterns/SplitView/SplitView.jsx","./components/Heading/Heading.jsx":"platform/components/Heading/Heading.jsx","./charts/TreeChart.jsx":"platform/charts/TreeChart.jsx","./components/DataGrid/DataGridEngine.jsx":"platform/components/DataGrid/DataGridEngine.jsx"}, externals: {  }, run: function (module, exports, require) {
+  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Isolate/Isolate.jsx":"platform/components/Isolate/Isolate.jsx","./components/VoteTally/VoteTally.jsx":"platform/components/VoteTally/VoteTally.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/MetricCard/MetricCard.jsx":"platform/components/MetricCard/MetricCard.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/DataPill/DataPill.jsx":"platform/components/DataPill/DataPill.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/Surface.jsx":"platform/providers/Surface.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./utils/tokenSheet.js":"platform/utils/tokenSheet.js","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js","./components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","./components/RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","./components/Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","./components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","./components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","./components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","./components/MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","./components/Cascader/Cascader.jsx":"platform/components/Cascader/Cascader.jsx","./components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","./components/TimePicker/TimePicker.jsx":"platform/components/TimePicker/TimePicker.jsx","./components/RelativeDateInput/RelativeDateInput.jsx":"platform/components/RelativeDateInput/RelativeDateInput.jsx","./components/LoadMore/LoadMore.jsx":"platform/components/LoadMore/LoadMore.jsx","./patterns/ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","./patterns/AvatarUpload/AvatarUpload.jsx":"platform/patterns/AvatarUpload/AvatarUpload.jsx","./charts/scales.js":"platform/charts/scales.js","./charts/ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./components/TimeZoneSelect/TimeZoneSelect.jsx":"platform/components/TimeZoneSelect/TimeZoneSelect.jsx","./components/TreeSelect/TreeSelect.jsx":"platform/components/TreeSelect/TreeSelect.jsx","./components/TransferList/TransferList.jsx":"platform/components/TransferList/TransferList.jsx","./patterns/BottomSheetNav/BottomSheetNav.jsx":"platform/patterns/BottomSheetNav/BottomSheetNav.jsx","./patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","./patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","./patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","./patterns/GroupPanel/GroupPanel.jsx":"platform/patterns/GroupPanel/GroupPanel.jsx","./patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","./patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","./patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","./utils/fields.js":"platform/utils/fields.js","./hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","./charts/parts/position.js":"platform/charts/parts/position.js","./charts/parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./charts/parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./charts/parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./charts/parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./charts/parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./charts/parts/ReferenceLine.jsx":"platform/charts/parts/ReferenceLine.jsx","./charts/parts/ChartAnnotation.jsx":"platform/charts/parts/ChartAnnotation.jsx","./patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","./patterns/UserCard/UserCard.jsx":"platform/patterns/UserCard/UserCard.jsx","./components/VirtualList/VirtualList.jsx":"platform/components/VirtualList/VirtualList.jsx","./components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","./patterns/PeopleGroup/PeopleGroup.jsx":"platform/patterns/PeopleGroup/PeopleGroup.jsx","./patterns/PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","./patterns/QueryBuilder/QueryBuilder.jsx":"platform/patterns/QueryBuilder/QueryBuilder.jsx","./components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","./components/SearchResult/SearchResult.jsx":"platform/components/SearchResult/SearchResult.jsx","./components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","./patterns/ResourceList/ResourceList.jsx":"platform/patterns/ResourceList/ResourceList.jsx","./charts/interaction.js":"platform/charts/interaction.js","./charts/LineChart.jsx":"platform/charts/LineChart.jsx","./charts/AreaChart.jsx":"platform/charts/AreaChart.jsx","./charts/Gauge.jsx":"platform/charts/Gauge.jsx","./charts/HeatMap.jsx":"platform/charts/HeatMap.jsx","./charts/WaterfallChart.jsx":"platform/charts/WaterfallChart.jsx","./charts/WordCloud.jsx":"platform/charts/WordCloud.jsx","./charts/NetworkGraph.jsx":"platform/charts/NetworkGraph.jsx","./charts/Diagram.jsx":"platform/charts/Diagram.jsx","./charts/BarChart.jsx":"platform/charts/BarChart.jsx","./charts/ComboChart.jsx":"platform/charts/ComboChart.jsx","./charts/PieChart.jsx":"platform/charts/PieChart.jsx","./charts/BulletChart.jsx":"platform/charts/BulletChart.jsx","./charts/BoxPlot.jsx":"platform/charts/BoxPlot.jsx","./charts/RadarChart.jsx":"platform/charts/RadarChart.jsx","./charts/SankeyDiagram.jsx":"platform/charts/SankeyDiagram.jsx","./charts/TimelineChart.jsx":"platform/charts/TimelineChart.jsx","./patterns/ComparisonView/ComparisonView.jsx":"platform/patterns/ComparisonView/ComparisonView.jsx","./charts/a11y.js":"platform/charts/a11y.js","./charts/Sparkline.jsx":"platform/charts/Sparkline.jsx","./charts/LollipopChart.jsx":"platform/charts/LollipopChart.jsx","./charts/ScatterChart.jsx":"platform/charts/ScatterChart.jsx","./charts/FunnelChart.jsx":"platform/charts/FunnelChart.jsx","./charts/Treemap.jsx":"platform/charts/Treemap.jsx","./charts/GanttChart.jsx":"platform/charts/GanttChart.jsx","./charts/GeoMap.jsx":"platform/charts/GeoMap.jsx","./utils/dnd.js":"platform/utils/dnd.js","./components/DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","./patterns/SortableList/SortableList.jsx":"platform/patterns/SortableList/SortableList.jsx","./components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","./patterns/RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","./patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","./patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","./patterns/DuplicateAction/DuplicateAction.jsx":"platform/patterns/DuplicateAction/DuplicateAction.jsx","./patterns/Publish/Publish.jsx":"platform/patterns/Publish/Publish.jsx","./patterns/AssignControl/AssignControl.jsx":"platform/patterns/AssignControl/AssignControl.jsx","./patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","./patterns/WizardDialog/WizardDialog.jsx":"platform/patterns/WizardDialog/WizardDialog.jsx","./patterns/FormFlow/FormFlow.jsx":"platform/patterns/FormFlow/FormFlow.jsx","./patterns/Autosave/Autosave.jsx":"platform/patterns/Autosave/Autosave.jsx","./patterns/DraftState/DraftState.jsx":"platform/patterns/DraftState/DraftState.jsx","./patterns/SaveAs/SaveAs.jsx":"platform/patterns/SaveAs/SaveAs.jsx","./patterns/ArchiveRestore/ArchiveRestore.jsx":"platform/patterns/ArchiveRestore/ArchiveRestore.jsx","./components/File/File.jsx":"platform/components/File/File.jsx","./components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","./patterns/Auth/Auth.jsx":"platform/patterns/Auth/Auth.jsx","./patterns/SessionTimeout/SessionTimeout.jsx":"platform/patterns/SessionTimeout/SessionTimeout.jsx","./patterns/RoleManager/RoleManager.jsx":"platform/patterns/RoleManager/RoleManager.jsx","./patterns/ConnectedAccounts/ConnectedAccounts.jsx":"platform/patterns/ConnectedAccounts/ConnectedAccounts.jsx","./patterns/ShareDialog/ShareDialog.jsx":"platform/patterns/ShareDialog/ShareDialog.jsx","./patterns/PermissionsEditor/PermissionsEditor.jsx":"platform/patterns/PermissionsEditor/PermissionsEditor.jsx","./patterns/Tour/Tour.jsx":"platform/patterns/Tour/Tour.jsx","./components/Checklist/Checklist.jsx":"platform/components/Checklist/Checklist.jsx","./patterns/Onboarding/Onboarding.jsx":"platform/patterns/Onboarding/Onboarding.jsx","./patterns/FeatureIntro/FeatureIntro.jsx":"platform/patterns/FeatureIntro/FeatureIntro.jsx","./patterns/HelpPanel/HelpPanel.jsx":"platform/patterns/HelpPanel/HelpPanel.jsx","./patterns/ImportDialog/ImportDialog.jsx":"platform/patterns/ImportDialog/ImportDialog.jsx","./patterns/ImportWizard/ImportWizard.jsx":"platform/patterns/ImportWizard/ImportWizard.jsx","./patterns/ExportDialog/ExportDialog.jsx":"platform/patterns/ExportDialog/ExportDialog.jsx","./patterns/AccessRequest/AccessRequest.jsx":"platform/patterns/AccessRequest/AccessRequest.jsx","./patterns/TrialUpgrade/TrialUpgrade.jsx":"platform/patterns/TrialUpgrade/TrialUpgrade.jsx","./patterns/Offboarding/Offboarding.jsx":"platform/patterns/Offboarding/Offboarding.jsx","./patterns/ShortcutsDialog/ShortcutsDialog.jsx":"platform/patterns/ShortcutsDialog/ShortcutsDialog.jsx","./patterns/FileList/FileList.jsx":"platform/patterns/FileList/FileList.jsx","./patterns/FileBrowser/FileBrowser.jsx":"platform/patterns/FileBrowser/FileBrowser.jsx","./patterns/UploadManager/UploadManager.jsx":"platform/patterns/UploadManager/UploadManager.jsx","./patterns/VersionCompare/VersionCompare.jsx":"platform/patterns/VersionCompare/VersionCompare.jsx","./patterns/AssetGallery/AssetGallery.jsx":"platform/patterns/AssetGallery/AssetGallery.jsx","./patterns/DownloadManager/DownloadManager.jsx":"platform/patterns/DownloadManager/DownloadManager.jsx","./components/MediaPlayer/MediaPlayer.jsx":"platform/components/MediaPlayer/MediaPlayer.jsx","./patterns/MetadataEditor/MetadataEditor.jsx":"platform/patterns/MetadataEditor/MetadataEditor.jsx","./patterns/RelatedAssets/RelatedAssets.jsx":"platform/patterns/RelatedAssets/RelatedAssets.jsx","./patterns/AttachmentPicker/AttachmentPicker.jsx":"platform/patterns/AttachmentPicker/AttachmentPicker.jsx","./patterns/FilePicker/FilePicker.jsx":"platform/patterns/FilePicker/FilePicker.jsx","./patterns/RenditionList/RenditionList.jsx":"platform/patterns/RenditionList/RenditionList.jsx","./components/DocumentViewer/DocumentViewer.jsx":"platform/components/DocumentViewer/DocumentViewer.jsx","./patterns/VersionHistory/VersionHistory.jsx":"platform/patterns/VersionHistory/VersionHistory.jsx","./patterns/ProductCard/ProductCard.jsx":"platform/patterns/ProductCard/ProductCard.jsx","./components/ProductOptions/ProductOptions.jsx":"platform/components/ProductOptions/ProductOptions.jsx","./templates/Commerce/Commerce.jsx":"platform/templates/Commerce/Commerce.jsx","./components/Comment/Comment.jsx":"platform/components/Comment/Comment.jsx","./patterns/CommentThread/CommentThread.jsx":"platform/patterns/CommentThread/CommentThread.jsx","./patterns/ImageAnnotation/ImageAnnotation.jsx":"platform/patterns/ImageAnnotation/ImageAnnotation.jsx","./patterns/PresenceBar/PresenceBar.jsx":"platform/patterns/PresenceBar/PresenceBar.jsx","./components/MentionInput/MentionInput.jsx":"platform/components/MentionInput/MentionInput.jsx","./components/Announcement/Announcement.jsx":"platform/components/Announcement/Announcement.jsx","./patterns/AuditLog/AuditLog.jsx":"platform/patterns/AuditLog/AuditLog.jsx","./patterns/ApprovalWorkflow/ApprovalWorkflow.jsx":"platform/patterns/ApprovalWorkflow/ApprovalWorkflow.jsx","./components/PromptInput/PromptInput.jsx":"platform/components/PromptInput/PromptInput.jsx","./components/StreamingText/StreamingText.jsx":"platform/components/StreamingText/StreamingText.jsx","./patterns/AIChat/AIChat.jsx":"platform/patterns/AIChat/AIChat.jsx","./patterns/AssistantPanel/AssistantPanel.jsx":"platform/patterns/AssistantPanel/AssistantPanel.jsx","./components/AILabel/AILabel.jsx":"platform/components/AILabel/AILabel.jsx","./components/GeneratedContent/GeneratedContent.jsx":"platform/components/GeneratedContent/GeneratedContent.jsx","./patterns/PromptHistory/PromptHistory.jsx":"platform/patterns/PromptHistory/PromptHistory.jsx","./components/Citation/Citation.jsx":"platform/components/Citation/Citation.jsx","./components/SuggestedAction/SuggestedAction.jsx":"platform/components/SuggestedAction/SuggestedAction.jsx","./patterns/AISearch/AISearch.jsx":"platform/patterns/AISearch/AISearch.jsx","./patterns/Recommendation/Recommendation.jsx":"platform/patterns/Recommendation/Recommendation.jsx","./components/AIButton/AIButton.jsx":"platform/components/AIButton/AIButton.jsx","./components/AIDisclaimer/AIDisclaimer.jsx":"platform/components/AIDisclaimer/AIDisclaimer.jsx","./components/ConfidenceIndicator/ConfidenceIndicator.jsx":"platform/components/ConfidenceIndicator/ConfidenceIndicator.jsx","./patterns/AIExplanation/AIExplanation.jsx":"platform/patterns/AIExplanation/AIExplanation.jsx","./components/PromptSuggestions/PromptSuggestions.jsx":"platform/components/PromptSuggestions/PromptSuggestions.jsx","./components/SuggestedEdit/SuggestedEdit.jsx":"platform/components/SuggestedEdit/SuggestedEdit.jsx","./components/RefineMenu/RefineMenu.jsx":"platform/components/RefineMenu/RefineMenu.jsx","./providers/AnalyticsProvider.jsx":"platform/providers/AnalyticsProvider.jsx","./templates/templates/Templates.jsx":"platform/templates/templates/Templates.jsx","./utils/browserSupport.js":"platform/utils/browserSupport.js","./providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","./patterns/SplitView/SplitView.jsx":"platform/patterns/SplitView/SplitView.jsx","./components/Heading/Heading.jsx":"platform/components/Heading/Heading.jsx","./charts/TreeChart.jsx":"platform/charts/TreeChart.jsx","./components/DataGrid/DataGridEngine.jsx":"platform/components/DataGrid/DataGridEngine.jsx"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -80730,6 +80924,12 @@ Object.defineProperty(exports, "VisuallyHidden", {
     return _VisuallyHidden.VisuallyHidden;
   }
 });
+Object.defineProperty(exports, "VoteTally", {
+  enumerable: true,
+  get: function () {
+    return _VoteTally.VoteTally;
+  }
+});
 Object.defineProperty(exports, "WORKFLOW_STATUSES", {
   enumerable: true,
   get: function () {
@@ -81831,6 +82031,7 @@ Object.defineProperty(exports, "wordCloudLayout", {
 var _Badge = require("./components/Badge/Badge.jsx");
 var _VisuallyHidden = require("./components/VisuallyHidden/VisuallyHidden.jsx");
 var _Isolate = require("./components/Isolate/Isolate.jsx");
+var _VoteTally = require("./components/VoteTally/VoteTally.jsx");
 var _Count = require("./components/Count/Count.jsx");
 var _Metric = require("./components/Metric/Metric.jsx");
 var _MetricCard = require("./components/MetricCard/MetricCard.jsx");
