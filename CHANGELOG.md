@@ -6,6 +6,12 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+### Changed
+- DataGrid and Table: with `cells="pill"`, every standard pill of a column is always as wide as that column's widest pill in the current view; there is no switch (owner, uniform-pills-always-35). Columns stay independent; custom cells, tags and badges keep their own widths. Table now does it too: it never received the switch.
+
+### Deprecated
+- DataGrid `uniformPillWidths`: accepted and ignored, since uniform widths are always on. Remove it from your pages; it goes in a later release.
+
 ## [0.73.0] - 2026-10-27
 
 ### Added
