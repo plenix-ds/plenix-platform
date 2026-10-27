@@ -19,7 +19,7 @@ window.DSDocs = {
    "responsive": "Density roles are declared on :root and on every [data-plx-density] context, and touch and mobile override them, so a region can be denser than its page and the environment still wins. Spacing and control sizes are in rem, so they follow the person's font settings.",
    "motion": "None of its own; the motion tokens (--plx-ref-motion-duration-*, --plx-sys-motion-ease-standard) feed every transition.",
    "loading": "Not applicable: tokens are static values.",
-   "error": "Not applicable: tokens have no state. node check-system.js fails the build when a stylesheet uses a raw value, an undeclared token or a palette color directly."
+   "error": "Not applicable: tokens have no state. Stylelint (npm run lint:css) fails the build when a stylesheet uses a raw value or a palette color directly, and node check-style.js when a file uses an undeclared token."
   },
   "a11y": {
    "name": "Not applicable: tokens are not rendered elements.",
@@ -3807,7 +3807,7 @@ window.DSDocs = {
    "responsive": "Not applicable: components read breakpoints from tokens with below() and useMedia.",
    "motion": "Not applicable: motion is in CSS with motion tokens.",
    "loading": "Not applicable: an implementation standard.",
-   "error": "Not applicable: build and lint errors come from build-app.js and check-system.js."
+   "error": "Not applicable: build and lint errors come from build-app.js, check-system.js, check-style.js and Stylelint."
   },
   "a11y": {
    "name": "Each component takes its name from props such as `label`; document them in the header comment.",
@@ -3839,7 +3839,7 @@ window.DSDocs = {
    "responsive": "Use logical properties (inline/block) and breakpoint tokens; system/interaction.css sets pointer, touch and mobile environments.",
    "motion": "Motion comes from motion tokens; system/motion.css holds the reduced-motion rule.",
    "loading": "Not applicable: an implementation standard.",
-   "error": "check-system.js fails on unknown tokens, raw hex, raw values, palette colors in stylesheets, non-plx classes, missing imports and inline styles."
+   "error": "Stylelint fails on raw hex, raw values, palette colors and non-plx classes in stylesheets; check-style.js on unknown tokens and inline styles; check-system.js on missing imports."
   },
   "a11y": {
    "name": "Not applicable: an implementation standard.",
@@ -3889,7 +3889,7 @@ window.DSDocs = {
  "testing": {
   "purpose": "Catches any change that breaks the system's rules before it is logged, so both applications keep to one Platform.",
   "anatomy": [
-   "System lint — node check-system.js (or npm run lint:system) in Plenix/ (required)",
+   "System and style lint — node check-system.js, node check-style.js and npm run lint:css in Plenix/ (required)",
    "Rules — tokens, hex, font-size, classes, imports, legacy, embedded, icon-size, defined, inline-style, generated, palette, raw-value, palette-class, audit, media (required)",
    "Runtime audit — platform/dev/style-audit.js, loaded by every page, rejects inline styles at run time (required)",
    "Browser checks — the suites for both applications, the radius audit and the icon-grid audit (required)"
