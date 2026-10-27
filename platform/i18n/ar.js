@@ -1,5 +1,6 @@
-// Plenix's built-in Arabic words (owner, arabic-batch4-36; the start of issue 427). LocaleProvider uses them for an Arabic
-// locale after the application's own catalog and before English; a part's strings prop still wins.
+// Plenix's built-in Arabic words (owner, arabic-batch4-36, arabic-words-37; issue 427): every section of en.js in Arabic, a draft
+// (Builder 02's table, ~/handoff/i18n/strings.md) for the owner's review. LocaleProvider uses them for an Arabic locale after the
+// application's own catalog and before English; a part's strings prop still wins.
 export default {
   "pagination": {
     "label": "الصفحات",
@@ -8,5 +9,1826 @@ export default {
     "next": "الصفحة التالية",
     "page": "الصفحة {n}",
     "perPage": "لكل صفحة"
+  },
+  "chart": {
+    "barChart": {
+      "category": "الفئة",
+      "total": "الإجمالي",
+      "range": "النطاق",
+      "count": "العدد"
+    },
+    "boxPlot": {
+      "group": "المجموعة",
+      "min": "الحد الأدنى",
+      "q1": "الربع الأول",
+      "median": "الوسيط",
+      "q3": "الربع الثالث",
+      "max": "الحد الأقصى",
+      "outliers": "القيم الشاذة",
+      "n": "القيم"
+    },
+    "bulletChart": {
+      "measure": "المقياس",
+      "value": "القيمة",
+      "target": "الهدف",
+      "ranges": "النطاقات",
+      "poor": "ضعيف",
+      "fair": "مقبول",
+      "good": "جيد"
+    },
+    "chartFrame": {
+      "showData": "عرض البيانات",
+      "table": "{title}: البيانات"
+    },
+    "comboChart": {
+      "category": "الفئة",
+      "bars": "الأعمدة",
+      "lines": "الخطوط"
+    },
+    "diagram": {
+      "step": "الخطوة",
+      "kind": "النوع",
+      "next": "يؤدي إلى",
+      "previous": "يأتي من",
+      "process": "الخطوة",
+      "decision": "قرار",
+      "terminal": "بداية أو نهاية",
+      "data": "البيانات",
+      "box": "الجزء",
+      "group": "المجموعة"
+    },
+    "funnelChart": {
+      "stage": "المرحلة",
+      "value": "العدد",
+      "kept": "المتبقي من الخطوة السابقة",
+      "ofFirst": "من الخطوة الأولى"
+    },
+    "ganttChart": {
+      "task": "المهمة",
+      "progress": "تم",
+      "dependsOn": "بانتظار",
+      "status": "الحالة",
+      "today": "اليوم",
+      "milestone": "مَعلَم"
+    },
+    "gauge": {
+      "showData": "عرض البيانات",
+      "table": "{title}: البيانات",
+      "measure": "المقياس",
+      "value": "القيمة",
+      "min": "الحد الأدنى",
+      "max": "الحد الأقصى"
+    },
+    "geoMap": {
+      "region": "المنطقة",
+      "place": "المكان",
+      "value": "القيمة",
+      "noData": "لا توجد بيانات",
+      "latitude": "خط العرض",
+      "longitude": "خط الطول",
+      "zoom": "التكبير",
+      "zoomIn": "تكبير",
+      "zoomOut": "تصغير",
+      "reset": "عرض الخريطة كاملة"
+    },
+    "heatMap": {
+      "value": "القيمة",
+      "row": "الصف",
+      "column": "العمود",
+      "date": "التاريخ",
+      "missing": "لا توجد بيانات",
+      "low": "منخفض",
+      "high": "مرتفع",
+      "scale": "مقياس الألوان"
+    },
+    "lineChart": {
+      "category": "الفئة"
+    },
+    "lollipopChart": {
+      "category": "الفئة",
+      "value": "القيمة"
+    },
+    "networkGraph": {
+      "node": "العقدة",
+      "group": "المجموعة",
+      "links": "متصل بـ",
+      "zoomIn": "تكبير",
+      "zoomOut": "تصغير",
+      "fit": "ملاءمة",
+      "hintZoom": " الأزرار +/- للتكبير والتصغير، والرقم 0 يناسب الرسم."
+    },
+    "pieChart": {
+      "part": "الجزء",
+      "value": "القيمة",
+      "share": "الحصة",
+      "total": "الإجمالي",
+      "other": "أخرى"
+    },
+    "radarChart": {
+      "measure": "المقياس"
+    },
+    "sankeyDiagram": {
+      "source": "المصدر",
+      "target": "الهدف",
+      "value": "القيمة",
+      "total": "الإجمالي"
+    },
+    "scatterChart": {
+      "series": "السلسلة",
+      "item": "العنصر"
+    },
+    "timelineChart": {
+      "item": "العنصر",
+      "lane": "المسار",
+      "today": "اليوم",
+      "date": "التاريخ",
+      "dates": "التواريخ"
+    },
+    "treeChart": {
+      "name": "الاسم",
+      "detail": "التفاصيل",
+      "parent": "يتبع لـ",
+      "level": "المستوى",
+      "folded": "مطوي",
+      "open": "مفتوح"
+    },
+    "treemap": {
+      "group": "المجموعة",
+      "item": "الجزء",
+      "value": "القيمة",
+      "share": "الحصة"
+    },
+    "waterfallChart": {
+      "step": "الخطوة",
+      "change": "التغيير",
+      "total": "الإجمالي",
+      "running": "المجموع التراكمي",
+      "increase": "زيادة",
+      "decrease": "نقصان"
+    },
+    "wordCloud": {
+      "value": "العدد",
+      "word": "المصطلح",
+      "group": "المجموعة"
+    },
+    "chartLegend": {
+      "legend": "دليل الرسم"
+    }
+  },
+  "avatar": {
+    "online": "متصل",
+    "away": "غائب",
+    "busy": "مشغول",
+    "dnd": "عدم الإزعاج",
+    "offline": "غير متصل"
+  },
+  "avatarGroup": {
+    "more": "+{n}",
+    "moreLabel": "{n} إضافية"
+  },
+  "backToTop": {
+    "label": "العودة إلى الأعلى"
+  },
+  "barcode": {
+    "label": "الباركود {format}: {value}",
+    "invalid": "رمز {format} غير صالح",
+    "formats": {
+      "code128": "Code 128",
+      "ean13": "EAN-13",
+      "upca": "UPC-A"
+    }
+  },
+  "brand": {
+    "name": "Plenix"
+  },
+  "button": {
+    "working": "جارٍ العمل"
+  },
+  "calendar": {
+    "label": "التقويم",
+    "previous": "الشهر السابق",
+    "next": "الشهر التالي",
+    "week": "الأسبوع",
+    "weekShort": "أسبوع",
+    "today": "اليوم"
+  },
+  "carousel": {
+    "slide": "{n} من {total}",
+    "previous": "الشريحة السابقة",
+    "next": "الشريحة التالية",
+    "goTo": "الانتقال إلى الشريحة {n}",
+    "goToPage": "الانتقال إلى الصفحة {n}",
+    "pages": "الشرائح",
+    "pause": "إيقاف مؤقت",
+    "play": "تشغيل",
+    "pauseLabel": "إيقاف الشرائح مؤقتًا",
+    "playLabel": "تشغيل الشرائح",
+    "strip": "الشرائح"
+  },
+  "cascader": {
+    "placeholder": "اختيار",
+    "separator": " / ",
+    "search": "بحث",
+    "noMatches": "لا توجد نتائج مطابقة",
+    "empty": "لا توجد عناصر",
+    "remove": "إزالة {label}",
+    "columns": "الخيارات"
+  },
+  "codeBlock": {
+    "code": "الرمز",
+    "copy": "نسخ",
+    "copied": "تم النسخ",
+    "failed": "تعذّر النسخ"
+  },
+  "codeEditor": {
+    "hint": "مفتاح Tab يضيف مسافة بادئة. اضغط Escape ثم Tab للخروج من المحرّر."
+  },
+  "combobox": {
+    "loading": "جارٍ التحميل…",
+    "error": "تعذّر تحميل الخيارات"
+  },
+  "commandMenu": {
+    "label": "الأوامر",
+    "placeholder": "اكتب أمرًا أو ابحث",
+    "empty": "لا توجد نتائج لـ «{query}»",
+    "loading": "جارٍ التحميل",
+    "back": "رجوع",
+    "results": "{count} نتيجة"
+  },
+  "contextualHelp": {
+    "more": "المزيد عن {title}",
+    "moreUntitled": "مزيد من المعلومات"
+  },
+  "copyButton": {
+    "copy": "نسخ",
+    "copied": "تم النسخ",
+    "failed": "تعذّر النسخ. حدّد النص وانسخه يدويًا."
+  },
+  "countrySelect": {
+    "country": "اختر بلدًا أو منطقة",
+    "language": "اختر لغة",
+    "locale": "اختر لغة ومنطقة",
+    "suggested": "مقترح",
+    "all": "الكل"
+  },
+  "dataGrid": {
+    "empty": "لا يوجد شيء للعرض",
+    "failed": "تعذّر تحميل الجدول",
+    "retry": "إعادة المحاولة",
+    "selectAll": "تحديد كل الصفوف",
+    "selectRow": "تحديد الصف",
+    "rowActions": "إجراءات الصف",
+    "clearSort": "إلغاء الفرز",
+    "hide": "إخفاء الحقل",
+    "showAll": "إظهار كل الحقول",
+    "narrower": "أضيق",
+    "wider": "أعرض",
+    "fit": "ملاءمة المحتوى",
+    "deleted": "محذوف",
+    "moveLeft": "نقل إلى اليسار",
+    "moveRight": "نقل إلى اليمين",
+    "perPage": "الصفوف في كل صفحة",
+    "view": "خيارات العرض",
+    "wrapHeaders": "التفاف العناوين",
+    "markRead": "وضع علامة مقروء",
+    "markUnread": "وضع علامة غير مقروء",
+    "wrapText": "التفاف النص",
+    "wrapAll": "التفاف كل الأعمدة",
+    "fullText": "عرض النص كاملًا",
+    "rowHeight": "ارتفاع الصف",
+    "short": "قصير",
+    "medium": "متوسط",
+    "tall": "طويل",
+    "extra-tall": "طويل جدًا",
+    "filter": "تصفية",
+    "clearFilter": "مسح التصفية",
+    "groupBy": "التجميع حسب هذا الحقل",
+    "ungroup": "إلغاء التجميع",
+    "noGroup": "عدم التجميع حسب هذا الحقل",
+    "sizeToFit": "ملاءمة عرض العمود",
+    "sizeAllToFit": "ملاءمة عرض كل الأعمدة",
+    "moreColumns": "المزيد…",
+    "columns": "الأعمدة",
+    "loadMore": "تحميل المزيد",
+    "loading": "جارٍ تحميل السجلات",
+    "group": "التجميع حسب هذا الحقل",
+    "filterBy": "التصفية حسب هذا الحقل",
+    "any": "أي قيمة",
+    "contains": "يحتوي على…",
+    "moveRow": "نقل الصف",
+    "moveUp": "نقل لأعلى",
+    "moveDown": "نقل لأسفل",
+    "moveTop": "نقل إلى الأعلى",
+    "moveBottom": "نقل إلى الأسفل",
+    "resize": "تغيير الحجم",
+    "range": "{first}–{last} من {total}",
+    "count": "{shown} من {total}",
+    "pages": "صفحات {label}",
+    "loaded": "تم تحميل {n} صفوف إضافية، {shown} من {total}",
+    "noValue": "(فارغ)",
+    "addTo": "إضافة سجل إلى {value}",
+    "groupRow": "{value}، مجموعة، {count} {records}",
+    "record": "سجل",
+    "records": "سجلات",
+    "expanded": "موسّع",
+    "collapsed": "مطوي",
+    "sum": "المجموع",
+    "countOf": "العدد",
+    "average": "المتوسط",
+    "min": "الأدنى",
+    "max": "الأقصى",
+    "sortText": "[\"فرز من أ إلى ي\",\"فرز من ي إلى أ\"]",
+    "sortNumber": "[\"فرز من 1 إلى 9\",\"فرز من 9 إلى 1\"]",
+    "sortDate": "[\"فرز من الأقدم إلى الأحدث\",\"فرز من الأحدث إلى الأقدم\"]",
+    "sortCheck": "[\"فرز من غير المحدد إلى المحدد\",\"فرز من المحدد إلى غير المحدد\"]",
+    "unread": "غير مقروء ({count})"
+  },
+  "dataPill": {
+    "male": "ذكر",
+    "female": "أنثى"
+  },
+  "datePicker": {
+    "open": "اختيار التاريخ",
+    "dialog": "اختيار التاريخ",
+    "time": "الوقت",
+    "presets": "الإعدادات المسبقة",
+    "today": "اليوم",
+    "tomorrow": "غدًا",
+    "nextWeek": "بعد أسبوع",
+    "last7": "آخر 7 أيام",
+    "last30": "آخر 30 يومًا",
+    "thisMonth": "هذا الشهر",
+    "lastMonth": "الشهر الماضي"
+  },
+  "documentViewer": {
+    "document": "المستند",
+    "previous": "الصفحة السابقة",
+    "next": "الصفحة التالية",
+    "page": "الصفحة",
+    "zoom": "التكبير",
+    "thumbnails": "مصغّرات الصفحات",
+    "loading": "جارٍ تحميل المستند",
+    "failed": "تعذّر فتح المستند.",
+    "failedEngine": "تعذّر تشغيل عارض المستندات. حاول مرة أخرى لاحقًا.",
+    "failedAccess": "تعذّر فتح المستند. ربما نُقل أو لا تملك صلاحية الوصول إليه.",
+    "failedParse": "تعذّرت قراءة هذا الملف كملف PDF.",
+    "failedRender": "تعذّر عرض هذه الصفحة.",
+    "empty": "لا يوجد مستند.",
+    "retry": "حاول مرة أخرى"
+  },
+  "downloadButton": {
+    "download": "تنزيل",
+    "downloading": "جارٍ التنزيل",
+    "ready": "التنزيل جاهز"
+  },
+  "emptyState": {
+    "offline": {
+      "title": "أنت غير متصل بالإنترنت",
+      "text": "تحقق من اتصالك. ستُحدَّث هذه الصفحة عند عودتك إلى الاتصال."
+    },
+    "degraded": {
+      "title": "بعض الميزات لا تعمل",
+      "text": "هناك خدمة بطيئة أو لا تستجيب، لذا قد تكون المعلومات المعروضة غير محدّثة."
+    },
+    "permission-denied": {
+      "title": "لا تملك صلاحية الوصول",
+      "text": "اطلب من المالك مشاركتها معك."
+    },
+    "not-found": {
+      "title": "هذه الصفحة غير موجودة",
+      "text": "ربما نُقلت أو حُذفت. تحقق من العنوان أو ارجع إلى الصفحة السابقة."
+    },
+    "maintenance": {
+      "title": "متوقف للصيانة",
+      "text": "يجري تحديث هذه الخدمة. حاول مرة أخرى بعد بضع دقائق."
+    },
+    "completion": {
+      "title": "اكتمل كل شيء",
+      "text": "لم يتبقَّ شيء لإنجازه هنا."
+    }
+  },
+  "entityPicker": {
+    "placeholderPeople": "ابحث بالاسم أو البريد الإلكتروني",
+    "placeholder": "ابحث في {entityName}",
+    "empty": "لم يتم العثور على {entityName}",
+    "browse": "تصفح كل {entityName}",
+    "loading": "جارٍ التحميل…",
+    "error": "تعذّر تحميل النتائج",
+    "remove": "إزالة {label}"
+  },
+  "errorSummary": {
+    "one": "توجد مشكلة",
+    "many": "توجد {count} مشكلات"
+  },
+  "file": {
+    "folder": "مجلد",
+    "items": "{n} عناصر",
+    "item": "{n} عنصر"
+  },
+  "fileInput": {
+    "choose": "اختيار ملف",
+    "chooseMany": "اختيار ملفات",
+    "none": "لم يتم اختيار ملف",
+    "count": "{count} ملفات",
+    "remove": "إزالة {name}"
+  },
+  "fileRow": {
+    "select": "تحديد {name}",
+    "more": "المزيد من الإجراءات لـ {name}",
+    "download": "تنزيل {name}",
+    "rename": "إعادة تسمية…",
+    "delete": "حذف",
+    "cancel": "إلغاء",
+    "retry": "حاول مرة أخرى",
+    "transfer": "{label} {name}",
+    "uploading": "جارٍ الرفع",
+    "file": "ملف",
+    "files": "ملفات",
+    "folder": "مجلد",
+    "folders": "مجلدات",
+    "items": "{n} عناصر",
+    "item": "{n} عنصر"
+  },
+  "generatedContent": {
+    "label": "محتوى مُنشأ",
+    "helpful": "مفيد",
+    "unhelpful": "غير مفيد",
+    "regenerate": "إعادة الإنشاء",
+    "previous": "الإصدار السابق",
+    "next": "الإصدار التالي",
+    "version": "الإصدار",
+    "feedbackSaved": "تم حفظ الملاحظات",
+    "failed": "فشل الإجراء. حاول مرة أخرى.",
+    "pending": "جارٍ العمل"
+  },
+  "image": {
+    "error": "الصورة غير متاحة"
+  },
+  "inlineEdit": {
+    "edit": "تعديل",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "empty": "إضافة قيمة",
+    "saved": "تم الحفظ",
+    "failed": "تعذّر حفظ التغيير"
+  },
+  "link": {
+    "newTab": "يفتح في علامة تبويب جديدة"
+  },
+  "loadMore": {
+    "more": "تحميل المزيد",
+    "moreCount": "عرض {n} إضافية",
+    "loading": "جارٍ التحميل…",
+    "end": "وصلت إلى النهاية",
+    "count": "{shown} من {total}"
+  },
+  "mediaViewer": {
+    "label": "معاينة",
+    "close": "إغلاق المعاينة",
+    "previous": "السابق",
+    "next": "التالي",
+    "counter": "{index} من {total}"
+  },
+  "metricCard": {
+    "more": "المزيد لـ {title}",
+    "up": "لأعلى",
+    "down": "لأسفل",
+    "good": "جيد",
+    "bad": "سيئ",
+    "vs": "مقابل",
+    "empty": "لا توجد بيانات",
+    "loading": "جارٍ تحميل {title}",
+    "error": "تعذّر تحميل الأرقام.",
+    "retry": "حاول مرة أخرى",
+    "stale": "قديم",
+    "rank": "#{n}",
+    "toCome": "قادم",
+    "hit": "تحقق الهدف",
+    "missed": "لم يتحقق",
+    "weekdays": "[\"ن\",\"ث\",\"ر\",\"خ\",\"ج\",\"س\",\"ح\"]",
+    "weekdayNames": "[\"الاثنين\",\"الثلاثاء\",\"الأربعاء\",\"الخميس\",\"الجمعة\",\"السبت\",\"الأحد\"]",
+    "month": "{done} من {days} أيام عمل حتى الآن",
+    "parts": "{label} {share}",
+    "compare": "{a} {av}، {b} {bv}"
+  },
+  "millerColumns": {
+    "empty": "لا توجد عناصر",
+    "resize": "تغيير عرض العمود {label}",
+    "preview": "معاينة {label}"
+  },
+  "navList": {
+    "pin": "تثبيت",
+    "unpin": "إلغاء التثبيت",
+    "pinItem": "تثبيت {label}",
+    "unpinItem": "إلغاء تثبيت {label}"
+  },
+  "notice": {
+    "dismiss": "تجاهل"
+  },
+  "numberInput": {
+    "decrease": "نقصان",
+    "increase": "زيادة"
+  },
+  "otpInput": {
+    "cell": "الحرف {n} من {total}"
+  },
+  "persona": {
+    "online": "متصل",
+    "away": "غائب",
+    "busy": "مشغول",
+    "dnd": "عدم الإزعاج",
+    "offline": "غير متصل"
+  },
+  "popover": {
+    "close": "إغلاق"
+  },
+  "productOptions": {
+    "chosen": "{label}:",
+    "unavailable": "غير متوفر في المخزون",
+    "quantity": "الكمية",
+    "quantityOf": "الكمية، {product}",
+    "unavailableName": "{label}، غير متوفر في المخزون",
+    "none": "لم يتم اختيار شيء"
+  },
+  "progressSteps": {
+    "step": "الخطوة {n} من {total}",
+    "complete": "مكتملة",
+    "current": "الخطوة الحالية",
+    "upcoming": "لم تبدأ",
+    "error": "تحتاج إلى انتباه"
+  },
+  "relativeDateInput": {
+    "custom": "مخصص",
+    "none": "أي وقت",
+    "amount": "المبلغ",
+    "unit": "الوحدة",
+    "direction": "الاتجاه",
+    "past": "الأخيرة",
+    "future": "التالي",
+    "units": {
+      "day": "[\"يوم\",\"أيام\"]",
+      "week": "[\"أسبوع\",\"أسابيع\"]",
+      "month": "[\"شهر\",\"أشهر\"]",
+      "year": "[\"سنة\",\"سنوات\"]"
+    },
+    "presets": {
+      "today": "اليوم",
+      "yesterday": "أمس",
+      "last-7-days": "آخر 7 أيام",
+      "last-30-days": "آخر 30 يومًا",
+      "last-90-days": "آخر 90 يومًا",
+      "last-12-months": "آخر 12 شهرًا",
+      "tomorrow": "غدًا",
+      "next-7-days": "الأيام السبعة القادمة",
+      "next-30-days": "الأيام الثلاثون القادمة",
+      "next-90-days": "الأيام التسعون القادمة",
+      "next-12-months": "الأشهر الاثنا عشر القادمة"
+    }
+  },
+  "resizable": {
+    "width": "عرض {label}",
+    "height": "ارتفاع {label}"
+  },
+  "richTextEditor": {
+    "toolbar": "التنسيق",
+    "more": "مزيد من التنسيق",
+    "bold": "غامق",
+    "italic": "مائل",
+    "underline": "تسطير",
+    "strike": "يتوسطه خط",
+    "code": "رمز مضمّن",
+    "subscript": "نص سفلي",
+    "superscript": "نص علوي",
+    "link": "رابط",
+    "bulleted": "قائمة نقطية",
+    "numbered": "قائمة مرقّمة",
+    "tasks": "قائمة مهام",
+    "quote": "اقتباس",
+    "codeBlock": "كتلة رمز",
+    "rule": "خط أفقي",
+    "image": "صورة",
+    "table": "جدول",
+    "color": "لون النص",
+    "highlight": "تمييز",
+    "alignLeft": "محاذاة إلى اليسار",
+    "alignCenter": "محاذاة إلى الوسط",
+    "alignRight": "محاذاة إلى اليمين",
+    "alignJustify": "ضبط",
+    "clear": "مسح التنسيق",
+    "undo": "تراجع",
+    "redo": "إعادة",
+    "textStyle": "نمط النص",
+    "paragraph": "فقرة",
+    "font": "الخط",
+    "defaultFont": "الخط الافتراضي",
+    "size": "الحجم",
+    "defaultSize": "الحجم الافتراضي",
+    "custom": "مخصص…",
+    "customFont": "عائلة الخط",
+    "customSize": "حجم الخط",
+    "insertTable": "إدراج جدول",
+    "rowBefore": "إضافة صف أعلاه",
+    "rowAfter": "إضافة صف أدناه",
+    "columnBefore": "إضافة عمود قبله",
+    "columnAfter": "إضافة عمود بعده",
+    "deleteRow": "حذف الصف",
+    "deleteColumn": "حذف العمود",
+    "headerRow": "صف العناوين",
+    "deleteTable": "حذف الجدول",
+    "linkAddress": "عنوان الرابط",
+    "addLink": "إضافة رابط",
+    "imageAddress": "عنوان الصورة",
+    "imageAlt": "الوصف",
+    "addImage": "إضافة صورة",
+    "swatches": "ألوان مقترحة",
+    "customColor": "لون مخصص",
+    "hex": "قيمة سداسية عشرية",
+    "apply": "تطبيق",
+    "remove": "إزالة",
+    "cancel": "إلغاء",
+    "mentions": "اقتراحات",
+    "groupMarks": "النص",
+    "groupColor": "اللون",
+    "groupAlign": "المحاذاة",
+    "groupLists": "القوائم",
+    "groupInsert": "إدراج",
+    "groupHistory": "السجل",
+    "leave": "اضغط Tab أو Shift+Tab للخروج من المحرّر",
+    "hint": "Escape ثم Tab للخروج من المحرّر"
+  },
+  "roleLabel": {
+    "owner": "المالك",
+    "editor": "محرّر",
+    "viewer": "مشاهد"
+  },
+  "searchField": {
+    "suggestions": "اقتراحات",
+    "recent": "عمليات البحث الأخيرة",
+    "clearRecent": "مسح عمليات البحث الأخيرة",
+    "clear": "مسح البحث",
+    "results": "{n} اقتراحات",
+    "removed": "تمت إزالة {query} من عمليات البحث الأخيرة",
+    "remove": "إزالة {query}",
+    "placeholder": "بحث",
+    "label": "بحث"
+  },
+  "sheet": {
+    "expand": "توسيع اللوحة",
+    "shrink": "تصغير اللوحة",
+    "doneLabel": "تم",
+    "cancelLabel": "إلغاء",
+    "closeLabel": "إغلاق"
+  },
+  "slider": {
+    "minimum": "الحد الأدنى",
+    "maximum": "الحد الأقصى"
+  },
+  "splitButton": {
+    "more": "مزيد من خيارات {label}"
+  },
+  "tabs": {
+    "more": "المزيد",
+    "moreLabel": "مزيد من علامات التبويب"
+  },
+  "teachingBubble": {
+    "close": "إغلاق",
+    "step": "{current} من {total}"
+  },
+  "text": {
+    "more": "عرض المزيد",
+    "less": "عرض أقل"
+  },
+  "timePicker": {
+    "hour": "الساعة",
+    "minute": "الدقيقة",
+    "period": "ص أو م",
+    "am": "ص",
+    "pm": "م",
+    "times": "الأوقات",
+    "empty": "--"
+  },
+  "timeZoneSelect": {
+    "placeholder": "اختر منطقة زمنية",
+    "empty": "لا توجد نتائج مطابقة",
+    "utc": "التوقيت العالمي المنسق",
+    "other": "أخرى",
+    "regions.Africa": "أفريقيا",
+    "regions.America": "الأمريكتان",
+    "regions.Antarctica": "القارة القطبية الجنوبية",
+    "regions.Arctic": "القطب الشمالي",
+    "regions.Asia": "آسيا",
+    "regions.Atlantic": "المحيط الأطلسي",
+    "regions.Australia": "أستراليا",
+    "regions.Europe": "أوروبا",
+    "regions.Indian": "المحيط الهندي",
+    "regions.Pacific": "المحيط الهادئ"
+  },
+  "transferList": {
+    "source": "المتاح",
+    "target": "المختار",
+    "add": "إضافة",
+    "addAll": "إضافة الكل",
+    "remove": "إزالة",
+    "removeAll": "إزالة الكل",
+    "up": "نقل لأعلى",
+    "down": "نقل لأسفل",
+    "search": "بحث في {title}",
+    "selectAll": "تحديد كل عناصر {title}",
+    "count": "تم تحديد {checked} من {total}",
+    "moved": "تم نقل {n} إلى {title}",
+    "empty": "لا توجد عناصر",
+    "noMatch": "لا توجد نتائج مطابقة",
+    "moves": "نقل العناصر"
+  },
+  "treeSelect": {
+    "placeholder": "اختيار",
+    "search": "بحث",
+    "choose": "اختر عنصرًا",
+    "more": "{list} و{n} أخرى",
+    "empty": "لا توجد نتائج مطابقة"
+  },
+  "versionLabel": {
+    "version": "الإصدار",
+    "prefix": "إ",
+    "latest": "الأحدث",
+    "draft": "مسودة"
+  },
+  "virtualList": {
+    "loading": "جارٍ التحميل…",
+    "empty": "لا توجد عناصر"
+  },
+  "aiSearch": {
+    "label": "بحث بالذكاء الاصطناعي",
+    "query": "عبارة البحث",
+    "search": "بحث",
+    "semantic": "استخدام البحث الدلالي",
+    "results": "نتائج البحث",
+    "empty": "لا توجد نتائج.",
+    "failed": "فشل البحث. حاول مرة أخرى.",
+    "pending": "جارٍ البحث"
+  },
+  "appShell": {
+    "skip": "تخطّي إلى المحتوى الرئيسي"
+  },
+  "assignControl": {
+    "assign": "إسناد",
+    "assignToMe": "إسناد إليّ",
+    "reassign": "إعادة الإسناد",
+    "unassign": "إلغاء الإسناد",
+    "unassigned": "غير مُسنَد",
+    "cancel": "إلغاء",
+    "assigned": "مُسنَد إلى {name}",
+    "cleared": "تمت إزالة {label}",
+    "delegate": "تفويض",
+    "change": "التغيير",
+    "end": "إنهاء التفويض",
+    "delegateTitle": "تفويض {label}",
+    "to": "التفويض إلى",
+    "dates": "التواريخ",
+    "note": "ملاحظة",
+    "noteHint": "تظهر للشخص الذي تفوّضه.",
+    "needPerson": "اختر شخصًا.",
+    "needDates": "اختر اليوم الأول والأخير.",
+    "delegatedTo": "تم التفويض إلى {name}",
+    "notDelegated": "غير مفوَّض",
+    "ended": "انتهى التفويض",
+    "label": "المُسنَد إليه"
+  },
+  "attachmentPicker": {
+    "label": "المرفقات",
+    "remove": "إزالة {name}",
+    "invalid": "اختر ملفًا مدعومًا ضمن الحد المسموح للحجم.",
+    "limit": "عدد المرفقات كبير جدًا.",
+    "empty": "لا توجد مرفقات."
+  },
+  "autosave": {
+    "saving": "جارٍ الحفظ",
+    "saved": "تم الحفظ",
+    "offline": "غير متصل",
+    "failed": "فشل الحفظ",
+    "retry": "إعادة المحاولة"
+  },
+  "avatarUpload": {
+    "change": "تغيير الصورة",
+    "add": "إضافة صورة",
+    "remove": "إزالة الصورة",
+    "tooLarge": "الصورة أكبر من {max}",
+    "notImage": "اختر ملف صورة",
+    "picture": "صورة {name}"
+  },
+  "bottomSheetNav": {
+    "title": "التنقل",
+    "close": "إغلاق"
+  },
+  "bulkActions": {
+    "selected": "تم تحديد {n}",
+    "selectAll": "تحديد الكل",
+    "clear": "مسح",
+    "allSelected": "كل {noun} محدد",
+    "nothingToClear": "لا شيء لمسحه: حدّد {plural} أولًا",
+    "why": "حدّد {plural} لـ {action}",
+    "single": "حدّد {noun} واحدًا لـ {action}",
+    "label": "إجراءات التحديد",
+    "more": "المزيد من الإجراءات",
+    "noun": "عنصر"
+  },
+  "columnsMenu": {
+    "label": "الأعمدة",
+    "manage": "إدارة الأعمدة",
+    "first": "العمود الأول",
+    "makeFirst": "جعله العمود الأول",
+    "moveUp": "نقل {name} لأعلى",
+    "moveDown": "نقل {name} لأسفل",
+    "up": "نقل لأعلى",
+    "down": "نقل لأسفل",
+    "find": "البحث عن عمود",
+    "showAll": "إظهار الكل",
+    "hideAll": "إخفاء الكل",
+    "apply": "تطبيق",
+    "cancel": "إلغاء",
+    "shown": "تم إظهار {name}",
+    "hidden": "تم إخفاء {name}",
+    "isFirst": "{name} هو العمود الأول",
+    "moved": "{name}، الموضع {position} من {total}",
+    "row": "{name}{first}. المفتاحان Alt + السهم لأعلى أو لأسفل ينقلانه",
+    "firstMark": "، العمود الأول",
+    "none": "لا يوجد عمود مطابق"
+  },
+  "commandBar": {
+    "more": "المزيد من الإجراءات",
+    "actions": "إجراءات {label}",
+    "find": "بحث وعرض",
+    "selected": "تم تحديد {n}",
+    "hidden": " (مخفي {n} بسبب التصفيات)",
+    "clear": "مسح التحديد",
+    "clearName": "تم تحديد {n}، مسح التحديد",
+    "swapped": "تم تحديد {n}. إجراءات التحديد متاحة.",
+    "cleared": "تم مسح التحديد.",
+    "why": "حدّد {plural} لـ {action}",
+    "single": "حدّد {noun} واحدًا لـ {action}",
+    "preset": "أي",
+    "moreLabel": "المزيد من الإجراءات"
+  },
+  "commandPalette": {
+    "title": "الأوامر",
+    "close": "إغلاق"
+  },
+  "comparisonView": {
+    "label": "المقارنة",
+    "modes": "العرض",
+    "columns": "جنبًا إلى جنب",
+    "matrix": "جدول",
+    "slider": "شريط التمرير",
+    "onlyDifferences": "عرض الاختلافات فقط",
+    "changed": "تم تغييره",
+    "attribute": "السمة",
+    "position": "الموضع",
+    "none": "لا توجد اختلافات",
+    "one": "اختلاف واحد",
+    "many": "{n} اختلافات",
+    "empty": "—"
+  },
+  "connectedAccounts": {
+    "label": "الحسابات المتصلة",
+    "connect": "اتصال",
+    "disconnect": "قطع الاتصال",
+    "reconnect": "إعادة الاتصال",
+    "cancel": "إلغاء",
+    "connected": "متصل",
+    "disconnected": "غير متصل",
+    "error": "خطأ في الاتصال",
+    "as": "بصفة {account}",
+    "since": "منذ {date}",
+    "connectTitle": "الاتصال بـ {service}؟",
+    "connectMessage": "ستسجّل الدخول إلى {service} للسماح بذلك. سيتمكن Plenix من:",
+    "continue": "المتابعة إلى {service}",
+    "disconnectTitle": "قطع الاتصال بـ {service}؟",
+    "disconnectMessage": "يمكنك الاتصال به مرة أخرى في أي وقت.",
+    "done": "تم الاتصال بـ {service}",
+    "undone": "تم قطع الاتصال بـ {service}"
+  },
+  "deleteFlow": {
+    "title": "حذف {name}؟",
+    "titleMany": "حذف {count} {plural}؟",
+    "delete": "حذف",
+    "cancel": "إلغاء",
+    "permanent": "لا يمكن التراجع عن هذا.",
+    "more": "و{count} أخرى",
+    "typeLabel": "اكتب {phrase} للتأكيد",
+    "typeError": "اكتب {phrase} تمامًا كما هو معروض.",
+    "phraseMany": "حذف {count} {plural}",
+    "deleted": "تم حذف {what}",
+    "trashed": "تم نقل {what} إلى سلة المحذوفات",
+    "undo": "تراجع",
+    "retention": "استعد {them} من سلة المحذوفات خلال {days} يومًا.",
+    "it": "ه",
+    "them": "هم",
+    "names": "محذوف",
+    "noun": "عنصر"
+  },
+  "duplicateAction": {
+    "duplicate": "تكرار",
+    "copyOf": "نسخة من {name}",
+    "numbered": "{name} ({n})",
+    "title": "تكرار {noun}",
+    "name": "الاسم",
+    "from": "من {name}",
+    "also": "انسخ أيضًا",
+    "empty": "أدخل اسمًا.",
+    "taken": "يوجد {noun} باسم {name} بالفعل.",
+    "done": "تم التكرار باسم {name}",
+    "undo": "تراجع",
+    "cancel": "إلغاء",
+    "noun": "عنصر"
+  },
+  "fileBrowser": {
+    "label": "الملفات",
+    "root": "المكتبة",
+    "newFolder": "مجلد جديد",
+    "folderName": "اسم المجلد",
+    "create": "إنشاء",
+    "upload": "رفع",
+    "search": "البحث في هذا المجلد",
+    "folders": "المجلدات",
+    "path": "الموقع",
+    "count": "{n} عناصر",
+    "one": "عنصر واحد",
+    "empty": "هذا المجلد فارغ",
+    "emptyText": "ارفع ملفات أو أنشئ مجلدًا.",
+    "noMatch": "لا شيء يطابق «{q}»",
+    "download": "تنزيل",
+    "moveTo": "نقل إلى",
+    "delete": "حذف",
+    "noun": "عنصر",
+    "plural": "عناصر",
+    "drop": "أفلت الملفات لرفعها إلى {folder}",
+    "nameTaken": "يوجد ملف أو مجلد باسم «{name}» هنا بالفعل.",
+    "nameEmpty": "أعطِ المجلد اسمًا.",
+    "items": "{n} عناصر",
+    "item": "{n} عنصر"
+  },
+  "fileList": {
+    "sort": "ترتيب",
+    "sortBy": "الترتيب حسب {field}",
+    "field": "الترتيب حسب",
+    "order": "الترتيب",
+    "asc": "تصاعدي",
+    "desc": "تنازلي",
+    "name": "الاسم",
+    "size": "الحجم",
+    "modified": "تاريخ التعديل",
+    "owner": "المالك",
+    "status": "الحالة",
+    "count": "{n} عناصر",
+    "one": "عنصر واحد",
+    "empty": "لا يوجد شيء هنا بعد",
+    "open": "فتح",
+    "download": "تنزيل",
+    "rename": "إعادة تسمية…",
+    "delete": "حذف",
+    "moveTo": "نقل إلى",
+    "file": "ملف",
+    "files": "ملفات",
+    "folder": "مجلد",
+    "folders": "مجلدات",
+    "items": "{n} عناصر",
+    "item": "{n} عنصر"
+  },
+  "filePicker": {
+    "title": "اختيار ملفات",
+    "all": "كل الملفات",
+    "folders": "المجلدات",
+    "search": "البحث في الملفات",
+    "empty": "لا توجد ملفات مطابقة.",
+    "pick": "اختيار",
+    "cancel": "إلغاء",
+    "failed": "تعذّر اختيار الملفات. حاول مرة أخرى."
+  },
+  "filterBar": {
+    "label": "عوامل التصفية",
+    "more": "مزيد من عوامل التصفية",
+    "clearAll": "مسح الكل",
+    "one": "{label}: {value}",
+    "several": "{label} · {count}"
+  },
+  "navPane": {
+    "browse": "استعراض"
+  },
+  "notificationList": {
+    "label": "الإشعارات",
+    "empty": "لا توجد إشعارات",
+    "markAllRead": "تعليم الكل كمقروء",
+    "viewAll": "عرض الكل"
+  },
+  "peopleGroup": {
+    "team": "الفريق",
+    "group": "المجموعة",
+    "members": "{n} أعضاء",
+    "member": "{n} عضو",
+    "showMembers": "عرض الأعضاء",
+    "membersOf": "أعضاء {name}"
+  },
+  "permissionSummary": {
+    "can": "يمكنه",
+    "cannot": "لا يمكنه",
+    "manage": "إدارة الوصول",
+    "canSentence": "يمكنه {list}",
+    "cannotSentence": "لا يمكنه {list}"
+  },
+  "popconfirm": {
+    "cancel": "إلغاء"
+  },
+  "productCard": {
+    "sale": "تخفيض",
+    "outOfStock": "غير متوفر في المخزون",
+    "addToCart": "أضف إلى السلة",
+    "addToCartFor": "أضف {title} إلى السلة",
+    "now": "الآن",
+    "was": "كان",
+    "rating": "التقييم",
+    "reviews": "{n} مراجعات",
+    "review": "مراجعة واحدة",
+    "soldOut": "{title} غير متوفر في المخزون"
+  },
+  "publish": {
+    "publish": "نشر",
+    "publishNow": "النشر الآن",
+    "schedule": "جدولة",
+    "cancelSchedule": "إلغاء الجدولة",
+    "unpublish": "إلغاء النشر",
+    "cancel": "إلغاء",
+    "publishTitle": "نشر {name}؟",
+    "publishMessage": "سيصبح مرئيًا لـ {audience}.",
+    "unpublishTitle": "إلغاء نشر {name}؟",
+    "unpublishMessage": "سيُخفى عن {audience}. يمكنك نشره مرة أخرى.",
+    "scheduleTitle": "جدولة {name}",
+    "when": "النشر في",
+    "whenHint": "التاريخ والوقت، بحسب منطقتك الزمنية.",
+    "past": "اختر وقتًا في المستقبل.",
+    "empty": "اختر التاريخ والوقت.",
+    "publishedLine": "نُشر {at}",
+    "publishedBy": "نُشر {at} بواسطة {by}",
+    "scheduledLine": "سيُنشر {at}",
+    "scheduledBy": "سيُنشر {at}، جدولة {by}",
+    "draftLine": "غير منشور",
+    "published": "تم نشر {name}",
+    "scheduled": "تمت جدولة {name} في {at}",
+    "unpublished": "تم إلغاء نشر {name}",
+    "undo": "تراجع",
+    "everyone": "كل من لديه صلاحية الوصول",
+    "actions": "جارٍ النشر"
+  },
+  "queryBuilder": {
+    "builder": "المنشئ",
+    "text": "النص",
+    "viewLabel": "العرض",
+    "where": "حيث",
+    "and": "و",
+    "or": "أو",
+    "andWord": "و",
+    "orWord": "أو",
+    "join": "المطابقة",
+    "all": "كل القواعد",
+    "any": "أي قاعدة",
+    "addRule": "إضافة قاعدة",
+    "addGroup": "إضافة مجموعة",
+    "removeRule": "إزالة القاعدة",
+    "removeGroup": "إزالة المجموعة",
+    "field": "الحقل",
+    "operator": "العامل",
+    "value": "القيمة",
+    "rule": "القاعدة {n}",
+    "group": "المجموعة {n}",
+    "empty": "لا توجد قواعد: كل السجلات مطابقة.",
+    "everything": "كل سجل",
+    "matches": "{n} مطابقات",
+    "match": "{n} مطابقة",
+    "textTitle": "استعلام",
+    "added": "تمت إضافة القاعدة",
+    "groupAdded": "تمت إضافة المجموعة",
+    "removed": "تمت إزالة القاعدة",
+    "groupRemoved": "تمت إزالة المجموعة"
+  },
+  "renameAction": {
+    "label": "الاسم",
+    "rename": "إعادة تسمية",
+    "open": "إعادة تسمية…",
+    "title": "إعادة تسمية {name}",
+    "cancel": "إلغاء",
+    "empty": "أدخل اسمًا",
+    "slash": "لا يمكن أن يحتوي الاسم على / أو \\",
+    "taken": "يوجد عنصر باسم {name} هنا بالفعل",
+    "tooLong": "استخدم {max} حرفًا أو أقل",
+    "renamed": "تمت إعادة التسمية إلى {name}",
+    "failed": "تعذّر تغيير الاسم"
+  },
+  "renditionList": {
+    "label": "الصيغ المشتقة",
+    "name": "الاسم",
+    "format": "الصيغة",
+    "size": "الحجم",
+    "download": "تنزيل",
+    "empty": "لا توجد صيغ مشتقة."
+  },
+  "resourceList": {
+    "item": "عنصر",
+    "selectAll": "تحديد كل {nouns} ({n})",
+    "select": "تحديد {name}",
+    "count": "{n} {nouns}",
+    "selected": "تم تحديد {n} من {total}"
+  },
+  "retry": {
+    "title": "تعذّر التحميل",
+    "retry": "إعادة المحاولة",
+    "retryNow": "إعادة المحاولة الآن",
+    "retrying": "جارٍ إعادة المحاولة…",
+    "waiting": "إعادة المحاولة خلال {time}",
+    "attempt": "المحاولة {attempt} من {attempts}",
+    "stopped": "توقفت بعد {attempts} محاولات",
+    "dismiss": "تجاهل",
+    "status": "فشل"
+  },
+  "roleManager": {
+    "roles": "الأدوار",
+    "create": "إنشاء دور",
+    "createTitle": "إنشاء دور",
+    "name": "الاسم",
+    "description": "الوصف",
+    "descriptionHint": "جملة واحدة عمّا يستطيع أصحاب هذا الدور فعله.",
+    "startFrom": "البدء بصلاحيات",
+    "empty": "أدخل اسمًا.",
+    "taken": "يوجد دور باسم {name} بالفعل.",
+    "back": "كل الأدوار",
+    "members": "الأعضاء",
+    "member": "عضو",
+    "membersCount": "{n} أعضاء",
+    "memberCount": "{n} عضو",
+    "builtIn": "مدمج",
+    "custom": "مخصص",
+    "permissions": "الصلاحيات",
+    "builtInNote": "لا يمكن تغيير الأدوار المدمجة. انسخ أحدها لإنشاء دور خاص بك.",
+    "addMember": "إضافة عضو",
+    "remove": "إزالة {name}",
+    "lastMember": "يحتاج {role} إلى عضو واحد على الأقل. أضف شخصًا آخر أولًا.",
+    "noMembers": "لا أحد لديه هذا الدور بعد.",
+    "role": "دور",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "added": "تمت إضافة {name} إلى {role}",
+    "removed": "تمت إزالة {name} من {role}",
+    "created": "تم إنشاء {name}",
+    "access": "أصحاب دور {role}",
+    "people": "{n} أشخاص",
+    "peopleOne": "{n} شخص",
+    "allowed": "تم السماح بـ {permission} لدور {role}",
+    "denied": "لم يعد {permission} مسموحًا لدور {role}"
+  },
+  "searchWorkspace": {
+    "title": "بحث",
+    "selectAll": "تحديد الكل",
+    "allSelected": "كل {noun} محدد",
+    "placeholder": "بحث…",
+    "result": "نتيجة",
+    "results": "نتائج",
+    "searchField": "بحث في {nouns}",
+    "save": "حفظ البحث",
+    "filters": "عوامل التصفية",
+    "activeFilters": "عوامل التصفية النشطة",
+    "chip": "{label}: {value}",
+    "remove": "إزالة {text}",
+    "clearAll": "مسح الكل",
+    "view": "العرض",
+    "grid": "شبكة",
+    "table": "جدول",
+    "sort": "ترتيب",
+    "sortValue": "الترتيب: {value}",
+    "noMatchQuery": "لا شيء يطابق «{query}».",
+    "noMatchQueryFilters": "لا شيء يطابق «{query}» مع عوامل التصفية هذه.",
+    "noMatchFilters": "لا شيء يطابق عوامل التصفية هذه."
+  },
+  "secondaryPane": {
+    "expand": "توسيع {name}",
+    "collapse": "طيّ {name}",
+    "resize": "تغيير حجم {name}",
+    "close": "إغلاق {name}",
+    "back": "العودة إلى {name}"
+  },
+  "sessionTimeout": {
+    "warningTitle": "جلستك على وشك الانتهاء",
+    "warning": "سيتم تسجيل خروجك خلال {time} لأنك لم تكن نشطًا.",
+    "stay": "البقاء متصلًا",
+    "signOut": "تسجيل الخروج",
+    "signedOutTitle": "تم تسجيل خروجك",
+    "signedOut": "حفاظًا على أمانك، تم تسجيل خروجك بعد {minutes} دقيقة دون نشاط.",
+    "signedOutShort": "حفاظًا على أمانك، تم تسجيل خروجك لأنك لم تكن نشطًا.",
+    "saved": "تم حفظ تغييراتك.",
+    "signIn": "تسجيل الدخول مرة أخرى",
+    "left": "متبقي {time}",
+    "ended": "تم تسجيل الخروج"
+  },
+  "sortableList": {
+    "moveMenu": "نقل {name}",
+    "moveUp": "نقل لأعلى",
+    "moveDown": "نقل لأسفل",
+    "moveEarlier": "نقل لوقت أبكر",
+    "moveLater": "نقل لوقت أحدث",
+    "moveFirst": "نقل إلى البداية",
+    "moveLast": "نقل إلى النهاية",
+    "moveUpNamed": "نقل {name} لأعلى",
+    "moveDownNamed": "نقل {name} لأسفل"
+  },
+  "uploadManager": {
+    "dialogTitle": "رفع ملفات",
+    "queue": "عمليات الرفع",
+    "drop": "اسحب الملفات أو المجلدات وأفلتها هنا",
+    "or": "أو",
+    "chooseFiles": "اختيار ملفات",
+    "chooseFolder": "اختر مجلدًا",
+    "uploading": "جارٍ رفع {n} ملفات",
+    "uploadingOne": "جارٍ رفع ملف واحد",
+    "done": "اكتمل {n} عمليات رفع",
+    "doneOne": "اكتملت عملية رفع واحدة",
+    "failed": "فشلت {n} عمليات رفع",
+    "failedOne": "فشلت عملية رفع واحدة",
+    "none": "لا توجد عمليات رفع",
+    "progress": "تم رفع {done} من {total}",
+    "overall": "التقدم الإجمالي",
+    "waiting": "بالانتظار",
+    "uploaded": "تم الرفع",
+    "canceled": "أُلغي",
+    "cancelAll": "إلغاء الكل",
+    "clear": "مسح المكتملة",
+    "hide": "إخفاء عمليات الرفع",
+    "show": "إظهار عمليات الرفع",
+    "close": "إغلاق",
+    "finish": "تم",
+    "remove": "إزالة من القائمة",
+    "again": "الرفع مرة أخرى",
+    "tooLarge": "هذا الملف أكبر من {max}.",
+    "wrongType": "لا يمكن رفع هذا النوع من الملفات هنا.",
+    "error": "فشل الرفع. حاول مرة أخرى.",
+    "failedNamed": "فشل {name}: {reason}",
+    "status": "أُلغي"
+  },
+  "userCard": {
+    "online": "متصل",
+    "away": "غائب",
+    "busy": "مشغول",
+    "dnd": "عدم الإزعاج",
+    "offline": "غير متصل"
+  },
+  "versionCompare": {
+    "label": "مقارنة الإصدارات",
+    "compare": "مقارنة",
+    "with": "مع",
+    "swap": "تبديل",
+    "swapLabel": "تبديل الإصدارين",
+    "view": "العرض",
+    "columns": "جنبًا إلى جنب",
+    "slider": "شريط التمرير",
+    "text": "النص",
+    "by": "بواسطة {author}",
+    "diff": "التغييرات من {base} إلى {target}",
+    "added": "مضاف",
+    "removed": "محذوف",
+    "same": "لا توجد تغييرات في النص",
+    "summary": "أُضيف {added}، وحُذف {removed}",
+    "lines": "{n} أسطر",
+    "line": "سطر واحد",
+    "previous": "التغيير السابق",
+    "next": "التغيير التالي",
+    "at": "التغيير {n} من {total}",
+    "unchanged": "عرض {n} أسطر لم تتغير",
+    "empty": "اختر إصدارين للمقارنة."
+  },
+  "versionHistory": {
+    "label": "سجل الإصدارات",
+    "preview": "معاينة",
+    "restore": "استعادة",
+    "confirm": "استعادة هذا الإصدار؟",
+    "cancel": "إلغاء",
+    "failed": "تعذّرت استعادة الإصدار. حاول مرة أخرى.",
+    "restored": "تمت استعادة الإصدار",
+    "empty": "لا توجد إصدارات."
+  },
+  "viewMenu": {
+    "reset": "إعادة ضبط العرض",
+    "label": "العرض",
+    "layout": "التخطيط",
+    "list": "قائمة",
+    "gallery": "معرض",
+    "size": "حجم البطاقة (المعرض)",
+    "s": "صغير",
+    "m": "متوسط",
+    "l": "كبير",
+    "height": "ارتفاع الصف (القائمة)",
+    "short": "قصير",
+    "medium": "متوسط",
+    "tall": "طويل",
+    "extra-tall": "طويل جدًا"
+  },
+  "widgetGrid": {
+    "widget": "أداة",
+    "widgetLower": "أداة",
+    "move": "نقل {title} (مفاتيح الأسهم)",
+    "position": "{title}، الموضع {index} من {total}",
+    "earlier": "نقل لوقت أبكر",
+    "later": "نقل لوقت أحدث",
+    "first": "نقل إلى البداية",
+    "last": "نقل إلى النهاية"
+  },
+  "providers": {
+    "UnsavedGuard": {
+      "title": "المغادرة دون حفظ؟",
+      "message": "ستفقد تغييراتك.",
+      "leave": "مغادرة",
+      "stay": "متابعة التحرير"
+    },
+    "theme-boot": {
+      "compact": "مضغوط",
+      "standard": "قياسي",
+      "comfortable": "مريح"
+    }
+  },
+  "templates": {
+    "templates": {
+      "Templates": {
+        "empty": "لا توجد سجلات بعد",
+        "emptyDescription": "أنشئ سجلًا للبدء.",
+        "pane": "السجلات",
+        "sections": "في هذه الصفحة",
+        "retry": "حاول مرة أخرى",
+        "home": "الذهاب إلى الصفحة الرئيسية",
+        "search": "نتائج البحث",
+        "tools": "الأدوات",
+        "inspector": "الخيارات",
+        "detail": "التفاصيل",
+        "noSelection": "لم يتم تحديد شيء",
+        "noSelectionDescription": "اختر عنصرًا لعرضه هنا."
+      }
+    },
+    "Commerce": {
+      "Storefront": {
+        "layout": "معرض"
+      }
+    }
+  },
+  "utils": {
+    "clipboard": {
+      "copied": "تم النسخ",
+      "failed": "تعذّر النسخ. حدّد النص وانسخه يدويًا."
+    }
+  },
+  "aiButton": {
+    "label": "إجراءات الذكاء الاصطناعي",
+    "failed": "تعذّر إكمال هذا الإجراء. حاول مرة أخرى.",
+    "working": "جارٍ العمل"
+  },
+  "aiDisclaimer": {
+    "message": "قد يكون المحتوى المُنشأ بالذكاء الاصطناعي غير دقيق. راجع التفاصيل المهمة.",
+    "learn": "حول المحتوى المُنشأ بالذكاء الاصطناعي"
+  },
+  "announcement": {
+    "dismiss": "تجاهل الإعلان",
+    "failed": "تعذّر تجاهل هذا الإعلان. حاول مرة أخرى."
+  },
+  "banner": {
+    "dismiss": "تجاهل"
+  },
+  "chat": {
+    "thinking": "جارٍ التفكير",
+    "label": "الرسالة",
+    "placeholder": "اكتب رسالة",
+    "sendLabel": "إرسال"
+  },
+  "checklist": {
+    "dismiss": "تجاهل قائمة المهام",
+    "progress": "المهام المكتملة"
+  },
+  "comment": {
+    "edit": "تعديل",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "resolve": "حلّ",
+    "reopen": "إعادة فتح",
+    "edited": "مُعدَّل",
+    "resolved": "تمت معالجته",
+    "message": "تعليق",
+    "empty": "أدخل تعليقًا.",
+    "failed": "تعذّر الحفظ. حاول مرة أخرى."
+  },
+  "confidenceIndicator": {
+    "high": "ثقة عالية",
+    "medium": "ثقة متوسطة",
+    "low": "ثقة منخفضة",
+    "unknown": "درجة الثقة غير متاحة",
+    "label": "الثقة"
+  },
+  "loadingOverlay": {
+    "loading": "جارٍ التحميل",
+    "cancel": "إلغاء"
+  },
+  "mediaPlayer": {
+    "rate": "سرعة التشغيل",
+    "transcript": "عرض النص المكتوب",
+    "hideTranscript": "إخفاء النص المكتوب",
+    "pip": "صورة داخل صورة",
+    "exitPip": "الخروج من صورة داخل صورة",
+    "unsupported": "ميزة صورة داخل صورة غير متاحة.",
+    "failed": "تعذّر تشغيل هذا الملف.",
+    "pipFailed": "تعذّر تغيير وضع صورة داخل صورة. حاول مرة أخرى.",
+    "seek": "الانتقال إلى {time}",
+    "fallback": "فتح ملف الوسائط",
+    "volume": "مستوى الصوت",
+    "mute": "كتم الصوت",
+    "audioFailed": "تعذّر تشغيل مسار الصوت المنفصل. يُشغَّل الفيديو دون صوت."
+  },
+  "mentionInput": {
+    "add": "إضافة إشارة",
+    "choose": "اختر شخصًا لإشارته"
+  },
+  "promptSuggestions": {
+    "label": "اقتراحات الأوامر",
+    "empty": "لا توجد اقتراحات",
+    "failed": "تعذّر استخدام هذا الاقتراح. حاول مرة أخرى."
+  },
+  "refineMenu": {
+    "label": "تحسين",
+    "shorter": "اختصار النص",
+    "longer": "إطالة النص",
+    "tone": "تغيير النبرة",
+    "formal": "رسمية",
+    "casual": "عفوية",
+    "neutral": "محايدة",
+    "custom": "تعليمات مخصصة",
+    "prompt": "التعليمات",
+    "apply": "تطبيق التعليمات",
+    "cancel": "إلغاء",
+    "empty": "أدخل تعليمات.",
+    "failed": "تعذّر تحسين هذا النص. حاول مرة أخرى."
+  },
+  "suggestedEdit": {
+    "label": "تعديلات مقترحة",
+    "before": "قبل",
+    "after": "بعد",
+    "accept": "قبول",
+    "reject": "رفض",
+    "acceptAll": "قبول الكل",
+    "accepted": "مقبول",
+    "rejected": "مرفوض",
+    "empty": "لا توجد تعديلات مقترحة",
+    "failed": "تعذّر حفظ هذا القرار. حاول مرة أخرى."
+  },
+  "time": {
+    "now": "الآن"
+  },
+  "aiExplanation": {
+    "label": "لماذا هذا؟",
+    "title": "شرح الذكاء الاصطناعي",
+    "close": "إغلاق"
+  },
+  "accessRequest": {
+    "title": "طلب الوصول",
+    "description": "اطلب من المالك صلاحية الوصول إلى هذا المورد.",
+    "message": "رسالة إلى المالك",
+    "request": "طلب الوصول",
+    "pending": "تم طلب الوصول",
+    "approved": "تمت الموافقة على الوصول",
+    "denied": "تم رفض الوصول",
+    "open": "فتح المورد",
+    "failed": "تعذّر إرسال طلبك. حاول مرة أخرى."
+  },
+  "approvalWorkflow": {
+    "approve": "موافقة",
+    "changes": "طلب تعديلات",
+    "reject": "رفض",
+    "comment": "تعليق",
+    "reason": "اشرح سبب الحاجة إلى تعديلات.",
+    "failed": "تعذّر حفظ هذا القرار. تعليقك ما زال محفوظًا.",
+    "steps": "مراحل الموافقة",
+    "recorded": "تم تسجيل القرار"
+  },
+  "archiveRestore": {
+    "archive": "أرشفة",
+    "restore": "استعادة",
+    "archived": "مؤرشف",
+    "message": "استعد هذا السجل ليصبح نشطًا مرة أخرى.",
+    "failed": "تعذّر تحديث السجل. حاول مرة أخرى."
+  },
+  "assetGallery": {
+    "empty": "لا توجد صور",
+    "preview": "معاينة الصورة"
+  },
+  "auditLog": {
+    "actor": "المنفّذ",
+    "at": "الوقت",
+    "action": "الإجراء",
+    "target": "الهدف",
+    "changes": "التغييرات",
+    "view": "عرض التغييرات",
+    "field": "الحقل",
+    "before": "قبل",
+    "after": "بعد",
+    "close": "إغلاق"
+  },
+  "commentThread": {
+    "title": "التعليقات",
+    "reply": "رد",
+    "send": "إرسال الرد",
+    "resolve": "إغلاق النقاش",
+    "reopen": "إعادة فتح النقاش",
+    "resolved": "تمت معالجته",
+    "empty": "أدخل ردًا.",
+    "failed": "تعذّر الحفظ. حاول مرة أخرى."
+  },
+  "downloadManager": {
+    "title": "التنزيلات",
+    "empty": "لا توجد تنزيلات",
+    "queued": "في الانتظار",
+    "progress": "جارٍ التنزيل",
+    "ready": "جاهز",
+    "failed": "فشل التنزيل",
+    "actionFailed": "تعذّر إكمال إجراء التنزيل. حاول مرة أخرى."
+  },
+  "draftState": {
+    "draft": "مسودة",
+    "resume": "استئناف المسودة",
+    "discard": "تجاهل المسودة",
+    "confirm": "تجاهل هذه المسودة؟",
+    "message": "ستُزال هذه المسودة نهائيًا.",
+    "cancel": "الاحتفاظ بالمسودة",
+    "failed": "تعذّر تحديث المسودة. حاول مرة أخرى."
+  },
+  "exportDialog": {
+    "title": "تصدير",
+    "format": "الصيغة",
+    "scope": "النطاق",
+    "all": "كل السجلات",
+    "selection": "السجلات المحددة",
+    "background": "التصدير في الخلفية",
+    "export": "تصدير",
+    "cancel": "إلغاء",
+    "invalid": "اختر صيغة ونطاقًا متاحين.",
+    "failed": "تعذّر التصدير. حاول مرة أخرى.",
+    "ready": "التصدير جاهز",
+    "queued": "التصدير في قائمة الانتظار",
+    "download": "تنزيل ملف التصدير",
+    "done": "تم"
+  },
+  "featureIntro": {
+    "new": "جديد",
+    "whatsNew": "ما الجديد",
+    "gotIt": "فهمت",
+    "later": "ليس الآن",
+    "close": "إغلاق"
+  },
+  "filterPanel": {
+    "label": "تصفية",
+    "info": "تُعرض فقط السجلات التي تستوفي الشروط؛ والشرط غير المكتمل لا يؤثر في التصفية.",
+    "sub": "في هذا العرض، أظهر السجلات",
+    "where": "حيث",
+    "and": "و",
+    "or": "أو",
+    "empty": "لا شروط: تُعرض كل السجلات.",
+    "addCondition": "إضافة شرط",
+    "addGroup": "إضافة مجموعة شروط",
+    "remove": "إزالة {what}",
+    "condition": "شرط",
+    "group": "مجموعة شروط",
+    "value": "أدخل قيمة",
+    "choose": "اختر خيارات",
+    "field": "الحقل",
+    "operator": "العامل",
+    "join": "و أو أو"
+  },
+  "formFlow": {
+    "create": "إنشاء",
+    "save": "حفظ التغييرات",
+    "cancel": "إلغاء",
+    "failed": "تعذّر الحفظ. حاول مرة أخرى.",
+    "invalid": "تحقق من الحقول قبل الحفظ.",
+    "saved": "تم الحفظ",
+    "unsaved": "ستفقد تغييراتك.",
+    "close": "إغلاق"
+  },
+  "groupPanel": {
+    "label": "المجموعة",
+    "title": "التجميع حسب",
+    "info": "تُجمَّع الصفوف ذات القيمة نفسها تحت عنوان واحد؛ والمجموعة الفرعية تقسّم كل مجموعة مرة أخرى.",
+    "empty": "اجمع الصفوف التي تشترك في قيمة تحت عنوان واحد.",
+    "add": "إضافة مجموعة",
+    "addSub": "إضافة مجموعة فرعية",
+    "collapseAll": "طيّ الكل",
+    "expandAll": "توسيع الكل",
+    "more": "المزيد لـ {name}",
+    "hideEmpty": "إخفاء المجموعات الفارغة",
+    "remove": "إزالة التجميع حسب {name}",
+    "removeTip": "إزالة المجموعة",
+    "field": "الحقل",
+    "order": "الترتيب"
+  },
+  "helpPanel": {
+    "title": "مساعدة",
+    "search": "البحث في المساعدة",
+    "empty": "لا توجد مقالات مطابقة",
+    "back": "العودة إلى المقالات",
+    "read": "قراءة المقال كاملًا",
+    "close": "طيّ المساعدة"
+  },
+  "imageAnnotation": {
+    "title": "تعليقات توضيحية على الصورة",
+    "pin": "تثبيت",
+    "region": "المنطقة",
+    "location": "الموقع",
+    "comment": "تعليق",
+    "kind": "نوع التعليق التوضيحي",
+    "add": "إضافة تعليق توضيحي",
+    "empty": "أدخل موقعًا وتعليقًا.",
+    "failed": "تعذّر الحفظ. حاول مرة أخرى.",
+    "none": "لا توجد تعليقات توضيحية"
+  },
+  "importDialog": {
+    "title": "استيراد",
+    "file": "ملف",
+    "paste": "لصق البيانات",
+    "url": "رابط URL",
+    "choose": "اختر الملف المصدر",
+    "drop": "أفلت ملفًا هنا أو اخترْه أدناه.",
+    "none": "لم يتم اختيار ملف",
+    "import": "استيراد",
+    "cancel": "إلغاء",
+    "invalid": "اختر ملفًا مدعومًا أو الصق بيانات أو أدخل رابط HTTP.",
+    "failed": "تعذّر الاستيراد. مصدرك ما زال متاحًا.",
+    "unsaved": "سيُفقد مصدر الاستيراد."
+  },
+  "importWizard": {
+    "title": "استيراد السجلات",
+    "mapping": "مطابقة الأعمدة",
+    "review": "مراجعة",
+    "results": "النتائج",
+    "column": "عمود المصدر",
+    "choose": "اختر عمودًا",
+    "missing": "طابق كل الحقول المطلوبة.",
+    "invalid": "لا يحتوي المصدر على أعمدة أو صفوف صالحة للاستخدام.",
+    "done": "تم",
+    "imported": "اكتمل الاستيراد",
+    "source": "المصدر",
+    "cancel": "إلغاء",
+    "unsaved": "ستُفقد مطابقة الاستيراد."
+  },
+  "metadataEditor": {
+    "save": "حفظ البيانات الوصفية",
+    "reset": "إعادة ضبط",
+    "apply": "تطبيق {field}",
+    "required": "أدخل قيمة.",
+    "failed": "تعذّر حفظ البيانات الوصفية. تغييراتك ما زالت متاحة.",
+    "saved": "تم حفظ البيانات الوصفية",
+    "unsaved": "ستُفقد تغييرات البيانات الوصفية."
+  },
+  "onboarding": {
+    "start": "ابدأ",
+    "skip": "تخطّي الترحيب",
+    "tour": "جولة تعريفية",
+    "checklist": "ابدأ",
+    "close": "إغلاق"
+  },
+  "permissionsEditor": {
+    "label": "الصلاحيات",
+    "capability": "الإمكانية",
+    "subject": "عرض الصلاحيات لـ",
+    "save": "حفظ الصلاحيات",
+    "failed": "تعذّر حفظ الصلاحيات. حاول مرة أخرى.",
+    "unsaved": "لم يتم حفظ تغييرات الصلاحيات."
+  },
+  "presenceBar": {
+    "viewers": "يعرض",
+    "editors": "يحرّر",
+    "cursors": "المؤشرات",
+    "empty": "لا أحد غيرك هنا",
+    "view": "عرض الشخص"
+  },
+  "quickFilter": {
+    "preset": "أي"
+  },
+  "relatedAssets": {
+    "empty": "لا توجد أصول مرتبطة"
+  },
+  "saveAs": {
+    "title": "حفظ باسم",
+    "name": "الاسم",
+    "location": "الموقع",
+    "format": "الصيغة",
+    "save": "حفظ نسخة",
+    "cancel": "إلغاء",
+    "required": "أدخل اسمًا واختر موقعًا.",
+    "failed": "تعذّر حفظ النسخة. حاول مرة أخرى.",
+    "unsaved": "ستفقد تغييراتك."
+  },
+  "shareDialog": {
+    "title": "الحصة",
+    "people": "الأشخاص",
+    "link": "رابط",
+    "person": "الشخص",
+    "role": "الدور",
+    "add": "إضافة شخص",
+    "remove": "إزالة",
+    "save": "حفظ الوصول",
+    "cancel": "إلغاء",
+    "copy": "نسخ الرابط",
+    "access": "الوصول عبر الرابط",
+    "restricted": "فقط من لديهم صلاحية الوصول",
+    "anyone": "يمكن لأي شخص لديه الرابط العرض",
+    "nativeShare": "المشاركة عبر الجهاز",
+    "failed": "تعذّرت المشاركة. حاول مرة أخرى.",
+    "invalid": "اختر شخصًا ودورًا متاحًا.",
+    "unsaved": "ستُفقد تغييرات الوصول."
+  },
+  "shortcutsDialog": {
+    "title": "اختصارات لوحة المفاتيح",
+    "search": "البحث في الاختصارات",
+    "general": "عام",
+    "empty": "لا توجد اختصارات مطابقة",
+    "close": "إغلاق"
+  },
+  "sortPanel": {
+    "label": "ترتيب",
+    "title": "الترتيب حسب",
+    "within": "الترتيب داخل المجموعات حسب",
+    "info": "تُرتَّب الصفوف حسب الحقل الأول، ثم حسب الحقل التالي عند تساوي الأول.",
+    "empty": "لا ترتيب: تحتفظ الصفوف بترتيبها.",
+    "add": "إضافة ترتيب",
+    "addAnother": "إضافة ترتيب آخر",
+    "remove": "إزالة الترتيب حسب {name}",
+    "removeTip": "إزالة الترتيب",
+    "field": "الحقل",
+    "direction": "الاتجاه"
+  },
+  "tour": {
+    "next": "التالي",
+    "back": "رجوع",
+    "finish": "إنهاء الجولة",
+    "skip": "تخطّي الجولة",
+    "resume": "استئناف الجولة",
+    "close": "إغلاق",
+    "step": "{current} من {total}"
+  },
+  "trialUpgrade": {
+    "trial": "تجربة",
+    "compare": "مقارنة الخطط",
+    "title": "اختر خطة",
+    "plan": "الخطة",
+    "upgrade": "ترقية",
+    "cancel": "إلغاء",
+    "failed": "تعذّرت الترقية. حاول مرة أخرى.",
+    "upgraded": "تم تحديث الخطة"
+  },
+  "wizard": {
+    "back": "رجوع",
+    "next": "التالي",
+    "complete": "إنهاء",
+    "cancel": "إلغاء",
+    "summary": "مراجعة",
+    "invalid": "تحقق من هذه الخطوة قبل المتابعة.",
+    "failed": "تعذّر الحفظ. حاول مرة أخرى.",
+    "steps": "الخطوات"
+  },
+  "wizardDialog": {
+    "close": "إغلاق",
+    "unsaved": "ستفقد تغييراتك."
+  },
+  "breadcrumbs": {
+    "label": "مسار التنقل"
+  },
+  "colorSwatch": {
+    "label": "اللون"
+  },
+  "dialog": {
+    "confirmLabel": "حفظ",
+    "cancelLabel": "إلغاء"
+  },
+  "loading": {
+    "label": "جارٍ التحميل"
+  },
+  "rating": {
+    "label": "التقييم"
+  },
+  "tag": {
+    "label": "إضافة وسم"
+  },
+  "toast": {
+    "aria-label": "تجاهل"
+  },
+  "actionBar": {
+    "label": "الإجراءات"
+  },
+  "appHeader": {
+    "aria-label": "التطبيقات"
+  },
+  "form": {
+    "label": "إجراءات النموذج"
+  },
+  "reviewFlow": {
+    "label": "بانتظار المراجعة",
+    "noun": "عنصر"
   }
 };
