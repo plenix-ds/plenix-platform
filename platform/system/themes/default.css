@@ -20,10 +20,10 @@
   --plx-sys-shape-2xs: var(--plx-ref-radius-2px);
   --plx-sys-shape-xs: var(--plx-ref-radius-4px);
   --plx-sys-shape-sm: var(--plx-ref-radius-6px);
-  --plx-sys-shape-md: var(--plx-ref-radius-8px);
-  --plx-sys-shape-lg: var(--plx-ref-radius-12px);
-  --plx-sys-shape-xl: var(--plx-ref-radius-16px);
-  --plx-sys-shape-pill: var(--plx-ref-radius-pill);
+  --plx-sys-shape-md: var(--plx-ref-radius-6px);
+  --plx-sys-shape-lg: var(--plx-ref-radius-6px);
+  --plx-sys-shape-xl: var(--plx-ref-radius-6px);
+  --plx-sys-shape-pill: var(--plx-ref-radius-6px);
   /* lines: border widths and styles */
   --plx-sys-border-width-thin: var(--plx-ref-border-width-1px);
   --plx-sys-border-width-medium: var(--plx-ref-border-width-2px);

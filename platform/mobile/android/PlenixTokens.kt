@@ -378,22 +378,17 @@ object PlenixRadius {
     val radiusPill4px = 4.dp
     val radiusControl4px = 4.dp
     val radiusControl6px = 6.dp
-    val radiusControl8px = 8.dp
-    val radiusControl12px = 12.dp
     val radiusMedia4px = 4.dp
-    val radiusMedia12px = 12.dp
+    val radiusMedia6px = 6.dp
     val radiusSurface4px = 4.dp
-    val radiusSurface8px = 8.dp
+    val radiusSurface6px = 6.dp
     val radiusCard4px = 4.dp
     val radiusCard6px = 6.dp
-    val radiusCard12px = 12.dp
     val radiusTable2px = 2.dp
-    val radiusMenu8px = 8.dp
-    val radiusDialog8px = 8.dp
+    val radiusMenu6px = 6.dp
+    val radiusDialog6px = 6.dp
     val radiusAvatar4px = 4.dp
     val radiusAvatar6px = 6.dp
-    val radiusAvatar8px = 8.dp
-    val radiusAvatar12px = 12.dp
     val radiusControl = 4.dp
 }
 
@@ -463,10 +458,10 @@ object PlenixShape {
     val shape2xs = 2.dp
     val shapeXs = 4.dp
     val shapeSm = 6.dp
-    val shapeMd = 8.dp
-    val shapeLg = 12.dp
-    val shapeXl = 16.dp
-    val shapePill = 9999.dp
+    val shapeMd = 6.dp
+    val shapeLg = 6.dp
+    val shapeXl = 6.dp
+    val shapePill = 6.dp
 }
 
 object PlenixShell {
@@ -502,7 +497,7 @@ object PlenixMotion {
 /** The component values the Plenix native designs use (dp; durations in milliseconds). */
 object PlenixComponent {
     val activityListItemBorderBottomWidth = 1.dp
-    val authCardRadius = 8.dp
+    val authCardRadius = 6.dp
     val authTitleFontSize = 20.dp
     val avatar20FontSize = 10.dp
     val avatar20Radius = 4.dp
@@ -520,10 +515,10 @@ object PlenixComponent {
     val avatar40Radius = 6.dp
     val avatar40Width = 40.dp
     val avatar48FontSize = 18.dp
-    val avatar48Radius = 8.dp
+    val avatar48Radius = 6.dp
     val avatar48Width = 48.dp
     val avatar64FontSize = 20.dp
-    val avatar64Radius = 8.dp
+    val avatar64Radius = 6.dp
     val avatar64Width = 64.dp
     const val avatarLineHeight = 1f
     val buttonBorderWidth = 1.dp
@@ -538,7 +533,7 @@ object PlenixComponent {
     val cardInteractiveOpenerFocusOutlineWidth = 2.dp
     val cardMetaFontSize = 12.dp
     val cardPadding = 16.dp
-    val cardRadius = 12.dp
+    val cardRadius = 6.dp
     val cardTitleContentGap = 12.dp
     val cardTitleFontSize = 13.dp
     const val carouselAutoplayInterval = 6000
@@ -562,7 +557,7 @@ object PlenixComponent {
     val colorSwatchMdHeight = 20.dp
     val colorSwatchMdWidth = 20.dp
     val colorSwatchRadius = 2.dp
-    val colorSwatchRoundRadius = 9999.dp
+    val colorSwatchRoundRadius = 6.dp
     val comboboxListMarginBlockStart = 4.dp
     val comboboxOptionPaddingInline = 12.dp
     val comparisonViewPaneGap = 12.dp
@@ -584,7 +579,7 @@ object PlenixComponent {
     val dialogHeaderPaddingInlineEnd = 8.dp
     val dialogHeaderPaddingInlineStart = 16.dp
     val dialogPadding = 24.dp
-    val dialogRadius = 8.dp
+    val dialogRadius = 6.dp
     val dialogSmMaxWidth = 400.dp
     val dialogTitleFontSize = 15.dp
     val dragHandleSize = 28.dp
@@ -622,19 +617,19 @@ object PlenixComponent {
     val navListItemPaddingInline = 8.dp
     val navListItemRadius = 4.dp
     val navPaneWidth = 240.dp
-    val productCardRadius = 12.dp
+    val productCardRadius = 6.dp
     const val progressBarFillDuration = 200
-    val progressBarFillRadius = 9999.dp
+    val progressBarFillRadius = 6.dp
     const val progressBarIndeterminateFillAnimationDuration = 1400
     val progressBarLabelFontSize = 12.dp
     val progressBarRowGap = 4.dp
     val progressBarSmTrackHeight = 4.dp
     val progressBarTrackHeight = 8.dp
-    val progressBarTrackRadius = 9999.dp
+    val progressBarTrackRadius = 6.dp
     val radioGroupRowGap = 12.dp
     val radioTileBorderWidth = 1.dp
     const val radioTileDisabledOpacity = 0.5f
-    val radioTileRadius = 8.dp
+    val radioTileRadius = 6.dp
     val roleLabelIconSize = 12.dp
     val rowButtonFocusOutlineWidth = 2.dp
     val searchClearWidth = 28.dp
