@@ -1456,22 +1456,17 @@ class PlenixRadius {
   static const double radiusPill4px = 4;
   static const double radiusControl4px = 4;
   static const double radiusControl6px = 6;
-  static const double radiusControl8px = 8;
-  static const double radiusControl12px = 12;
   static const double radiusMedia4px = 4;
-  static const double radiusMedia12px = 12;
+  static const double radiusMedia6px = 6;
   static const double radiusSurface4px = 4;
-  static const double radiusSurface8px = 8;
+  static const double radiusSurface6px = 6;
   static const double radiusCard4px = 4;
   static const double radiusCard6px = 6;
-  static const double radiusCard12px = 12;
   static const double radiusTable2px = 2;
-  static const double radiusMenu8px = 8;
-  static const double radiusDialog8px = 8;
+  static const double radiusMenu6px = 6;
+  static const double radiusDialog6px = 6;
   static const double radiusAvatar4px = 4;
   static const double radiusAvatar6px = 6;
-  static const double radiusAvatar8px = 8;
-  static const double radiusAvatar12px = 12;
   static const double radiusControl = 4;
 }
 
