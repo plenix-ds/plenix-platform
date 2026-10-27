@@ -10,7 +10,7 @@
 // disabled commands.
 //   node tests/keyboard.test.js            (TEST_PORT: another port)
 //   TEST_SCOPE=full: every component; by default (tests/changed.js) those whose component or site page changed
-const { serve, launch, sleep, at } = require('./lib.js');
+const { serve, launch, sleep, ready, at } = require('./lib.js');
 const changed = require('./changed.js');
 const site = require('./site.js');
 const PORT = +process.env.TEST_PORT || 8797, BASE = 'http://127.0.0.1:' + PORT + '/Plenix/';
@@ -30,7 +30,8 @@ changed.report(WANTED.join(', '));
   const page = await browser.newPage(); await page.setViewport({ width: 1440, height: 1000 });
   const results = [];
   const check = (name, ok, detail) => { results.push([name, ok, detail]); };
-  const open = async (url) => { await page.goto(BASE + url, { waitUntil: 'networkidle0' }); await sleep(1200); };
+  // each part's page: loaded and drawn (lib.ready), not a fixed wait (#382 F8)
+  const open = async (url) => { await page.goto(BASE + url, { waitUntil: 'networkidle0' }); await ready(page); };
   const focusFirst = (sel) => page.evaluate((s) => { const el = document.querySelector(s); if (el) el.focus(); return !!el; }, sel);
   const active = () => page.evaluate(() => { const a = document.activeElement; return a ? (a.getAttribute('aria-label') || a.textContent || '').trim().slice(0, 40) : ''; });
   const setDir = (sel, dir) => page.evaluate((s, d) => { const el = document.querySelector(s); if (el) el.closest('.ds-live, .ds-example, section, main').setAttribute('dir', d); }, sel, dir);

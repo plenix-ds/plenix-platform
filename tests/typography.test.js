@@ -28,7 +28,7 @@
 //   TYPO_PORT=8863 (or TEST_PORT) node tests/typography.test.js   another port
 const fs = require('fs');
 const path = require('path');
-const { serve, launch, sleep, at } = require('./lib.js');
+const { serve, launch, ready, at } = require('./lib.js');
 const changed = require('./changed.js');
 const PORT = +process.env.TYPO_PORT || +process.env.TEST_PORT || 8861, BASE = 'http://127.0.0.1:' + PORT + '/Plenix/';
 const BASELINE = path.join(__dirname, 'baselines', 'typography.json');
@@ -173,12 +173,12 @@ async function inspect() {
       if (ONLY && !ONLY.test(a)) continue;
       at(mode + ' ' + a); await page.goto(BASE + a, { waitUntil: 'networkidle0' });
       await page.evaluate(() => { try { localStorage.clear(); } catch (e) { /* storage blocked */ } });
-      await page.goto(BASE + a, { waitUntil: 'networkidle0' }); await sleep(900); await take(a);
+      await page.goto(BASE + a, { waitUntil: 'networkidle0' }); await ready(page); await take(a);
     }
     if (mode === 'light') changed.report(APP_PAGES.length + ' app pages, ' + SITE_PAGES.length + ' of ' + site.pages().length + ' test-site pages');
     for (const r of SITE_PAGES) {
       if (ONLY && !ONLY.test(r)) continue;
-      at(mode + ' ' + r); await page.goto(BASE + r, { waitUntil: 'networkidle0' }); await sleep(900); await take(r);
+      at(mode + ' ' + r); await page.goto(BASE + r, { waitUntil: 'networkidle0' }); await ready(page); await take(r);
     }
     await page.close();
   }

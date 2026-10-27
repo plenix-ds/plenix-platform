@@ -37,6 +37,12 @@ function start(port) {
   if (!fs.existsSync(path.join(CDN_LOCAL, 'plenix.js'))) throw new Error('No local Plenix build at release/cdn/' + VERSION + '/: run node build-app.js and node build-packages.js');
   if (!fs.existsSync(path.join(DIR, 'public', 'app.js'))) execFileSync(process.execPath, [path.join(DIR, 'build.js')], { cwd: DIR, stdio: 'ignore' });
   const sitePort = port + 2000;
+  const origin = 'http://127.0.0.1:' + sitePort;
+  // the healthy site must be the one started here (#382 F8): nothing may answer on its port before it starts, and when the
+  // health check answers, this child must still run and have said it listens on that port
+  return fetch(origin + '/healthz').then(() => { throw new Error('Port ' + sitePort + ' already answers (another St. John site or server): the test site cannot start there. Stop it, or use another TEST_PORT.'); }, () => launchSite(sitePort, origin));
+}
+function launchSite(sitePort, origin) {
   const child = spawn(process.execPath, [path.join(DIR, 'server', 'server.js')], {
     cwd: DIR, stdio: ['ignore', 'pipe', 'pipe'],
     env: Object.assign({}, process.env, { PORT: String(sitePort), HOST: '127.0.0.1', DATABASE_URL: process.env.SITE_DATABASE_URL || 'pglite:memory', PLENIX_BASE: '/cdn/local/',
@@ -44,10 +50,10 @@ function start(port) {
   });
   let log = '';
   child.stdout.on('data', (d) => { log += d; }); child.stderr.on('data', (d) => { log += d; });
-  const origin = 'http://127.0.0.1:' + sitePort;
+  const mine = () => child.exitCode === null && log.indexOf('on port ' + sitePort + ' ') >= 0;
   return new Promise((resolve, reject) => {
     const t0 = Date.now();
-    const poll = () => fetch(origin + '/healthz').then((r) => (r.ok ? resolve({ origin, stop: () => child.kill() }) : again()), again);
+    const poll = () => fetch(origin + '/healthz').then((r) => (r.ok && mine() ? resolve({ origin, stop: () => child.kill() }) : again()), again);
     const again = () => { if (child.exitCode !== null || Date.now() - t0 > 60000) { child.kill(); reject(new Error('The St. John test site did not start:\n' + log.slice(-800))); } else setTimeout(poll, 300); };
     poll();
   });
