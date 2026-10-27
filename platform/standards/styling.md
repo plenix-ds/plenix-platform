@@ -563,9 +563,9 @@ one owner, instead of once per page. Pages then have nothing to override, so the
   (`check-system.selector-kinds.json`, the audit's baseline). It may only shrink: an
   entry that no longer occurs fails the check until it is removed, and the rollout ends when it is empty.
 - **Coverage per change:**
-  - an ownership repair runs the audit on the affected components' pages, in their states, light and dark;
+  - an ownership repair runs the audit on the affected components' pages, in their states, light and dark (the owner runs the audit; see HANDOFF.md, No tests);
   - a foundational change (layers, token generation, text roles, element baseline) runs it on all applications and
-    key design-system pages, in every state and mode.
+    key design-system pages, in every state and mode (the owner runs the audit; see HANDOFF.md, No tests).
 - **Visual changes:** an intended visual change is approved by the owner before release and recorded in the changelog
   with before and after captures. Anything else visible is a regression.
 
