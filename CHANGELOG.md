@@ -21,6 +21,7 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
   - `--plx-ref-font-sans` adds "IBM Plex Sans Arabic"; the new `--plx-ref-font-sans-title` ("DM Sans", "Readex Pro", …) and `--plx-sys-typeface-sans-title` feed `--plx-sys-font-heading`, so every heading and title role (Heading, Text title, heading and display, dialog and panel titles) uses it.
 
 ### Changed
+- Form pickers' lists open in the browser's top layer, placed against their field like a Menu (flip up near an edge, follow scroll and resize, 4px from the field, at least as wide as it; a mouse down on the list, such as its scrollbar, no longer closes it), so no dialog, drawer, table cell or scroll area cuts them off: Combobox (and CountrySelect, which uses it), TimeZoneSelect, EntityPicker and Cascader's popup. TreeSelect and DatePicker already used a Popover. No other visible change.
 - DataGrid and Table: with `cells="pill"`, every standard pill of a column is always as wide as that column's widest pill in the current view; there is no switch (owner, uniform-pills-always-35). Columns stay independent; custom cells, tags and badges keep their own widths. Table now does it too: it never received the switch.
 
 ### Deprecated

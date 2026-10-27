@@ -28090,7 +28090,7 @@ function SegmentedControl({
   }, segments);
 }
   } },
-  "platform/components/Combobox/Combobox.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Combobox/Combobox.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -28102,6 +28102,7 @@ var _cx = require("../../utils/cx.js");
 var _Tag = require("../Tag/Tag.jsx");
 var _Loading = require("../Loading/Loading.jsx");
 var _announce = require("../../utils/announce.jsx");
+var _floating = require("../../utils/floating.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Combobox
    Summary: A field with a list to choose from, filtered as you type (an ARIA combobox with a listbox).
@@ -28139,7 +28140,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      className: more classes on the combobox
      ref: forwarded to the <input>
    Behavior:
-     The list opens on focus and on typing, and closes on a click outside.
+     The list opens on focus and on typing, and closes on a click outside. It opens in the browser's top layer, below the field
+       (or above it near an edge), at least as wide as the field, placed like a Menu: no dialog, drawer or scroll area clips it.
      ↓ / ↑ move, Enter chooses, Escape closes.
      Backspace in an empty multiple field removes the last value.
      A single choice closes the list; with multiple, the list stays open after each choice.
@@ -28157,6 +28159,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The list is a menu surface: border only, no shadow (D9).
      Other props pass through to the <input>.
 */
+// the top layer and CSS anchor positioning (as Menu, Popover and Select), checked once
+const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 const STRINGS = {
   loading: 'Loading…',
   error: 'The options could not be loaded',
@@ -28194,7 +28198,18 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
   const [text, setText] = _react.default.useState('');
   const [active, setActive] = _react.default.useState(0);
   const wrap = _react.default.useRef(null),
-    input = _react.default.useRef(null);
+    input = _react.default.useRef(null),
+    list = _react.default.useRef(null);
+  // the list opens in the top layer, placed against the field by the floating layer (flips up near an edge, follows scroll and resize): no dialog, drawer or scroll area clips it
+  (0, _floating.useFloating)(wrap, list, {
+    open,
+    placement: 'bottom-start',
+    matchWidth: true
+  });
+  _react.default.useLayoutEffect(() => {
+    const el = list.current;
+    if (open && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+  }, [open]);
   _react.default.useImperativeHandle(ref, () => input.current);
   // async select: the options of the last load, the loads in flight (only the newest is shown) and every option seen
   const [loaded, setLoaded] = _react.default.useState([]);
@@ -28353,9 +28368,12 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
     className: "plx-combobox__chevron",
     "aria-hidden": "true"
   })), open ? /*#__PURE__*/_react.default.createElement("ul", {
+    ref: list,
     className: "plx-combobox__list",
     id: listId,
     role: "listbox",
+    popover: TOP_LAYER ? 'manual' : undefined,
+    onMouseDown: e => e.preventDefault(),
     "aria-multiselectable": multiple || undefined,
     "aria-busy": isLoading || undefined
   }, items.length ? items.map((it, i) => it.kind === 'create' ? /*#__PURE__*/_react.default.createElement("li", {
@@ -45829,7 +45847,7 @@ const MillerColumns = exports.MillerColumns = /*#__PURE__*/_react.default.forwar
   }, renderPreview(preview)) : null);
 });
   } },
-  "platform/components/Cascader/Cascader.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Cascader/Cascader.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -45841,6 +45859,7 @@ var _cx = require("../../utils/cx.js");
 var _Tag = require("../Tag/Tag.jsx");
 var _MillerColumns = require("../MillerColumns/MillerColumns.jsx");
 var _announce = require("../../utils/announce.jsx");
+var _floating = require("../../utils/floating.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Cascader
    Summary: A form field whose value is a leaf of a hierarchy, chosen level by level in columns that open under the field
@@ -45868,6 +45887,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        columns: "Options" }
      className: more classes on the cascader
    Behavior:
+     The popup opens in the browser's top layer, below the field or above it near an edge: no dialog, drawer or scroll area clips it.
      The field is a button (aria-haspopup="dialog", aria-expanded) that opens the columns under it; focus moves into the
        first column, on the chosen path. The columns are MillerColumns: Arrow Up and Down in a column, Right into the
        children, Left back, Enter on a leaf chooses it (a click too). A single choice closes the list and returns focus to
@@ -45882,6 +45902,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      For a hierarchy people should see whole, use a tree select; for two or three short levels, consider plain Selects.
      The list is a menu surface (8px corners, the menu elevation); its columns take the narrowest width step (160px).
 */
+// the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
+const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 const STRINGS = {
   placeholder: 'Choose',
   separator: ' / ',
@@ -45931,7 +45953,17 @@ const Cascader = exports.Cascader = /*#__PURE__*/_react.default.forwardRef(funct
   const wrap = _react.default.useRef(null),
     button = _react.default.useRef(null),
     search = _react.default.useRef(null),
-    cols = _react.default.useRef(null);
+    cols = _react.default.useRef(null),
+    popup = _react.default.useRef(null);
+  // the popup opens in the top layer, placed against the field by the floating layer (flips up near an edge, follows scroll and resize): no dialog, drawer or scroll area clips it
+  (0, _floating.useFloating)(wrap, popup, {
+    open,
+    placement: 'bottom-start'
+  });
+  _react.default.useLayoutEffect(() => {
+    const el = popup.current;
+    if (open && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+  }, [open]);
   _react.default.useImperativeHandle(ref, () => button.current);
   const chosen = multiple ? values || [] : value !== undefined && value !== null && value !== '' ? [value] : [];
   const pathLabel = trail => trail.map(x => x.label).join(t.separator);
@@ -46044,9 +46076,11 @@ const Cascader = exports.Cascader = /*#__PURE__*/_react.default.forwardRef(funct
     className: "plx-cascader__chevron",
     "aria-hidden": "true"
   }))), open ? /*#__PURE__*/_react.default.createElement("div", {
+    ref: popup,
     className: "plx-cascader__popup",
     id: auto + '-pop',
     role: "dialog",
+    popover: TOP_LAYER ? 'manual' : undefined,
     "aria-label": label || t.columns
   }, searchable ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-cascader__search"
@@ -46106,7 +46140,7 @@ const Cascader = exports.Cascader = /*#__PURE__*/_react.default.forwardRef(funct
   }))) : null);
 });
   } },
-  "platform/components/EntityPicker/EntityPicker.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/EntityPicker/EntityPicker.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -46121,6 +46155,7 @@ var _IconTile = require("../IconTile/IconTile.jsx");
 var _Icon = require("../Icon/Icon.jsx");
 var _Loading = require("../Loading/Loading.jsx");
 var _announce = require("../../utils/announce.jsx");
+var _floating = require("../../utils/floating.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · EntityPicker
    Summary: A search-and-choose field for records of one kind (people, teams, projects, assets), each suggestion with its
@@ -46160,12 +46195,16 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      A single choice shows the chosen record's picture or icon before its name in the field and closes the list; with
        multiple, choosing adds or removes a tag and the list stays open; Backspace in the empty field removes the last
        tag; each tag has a remove button named "Remove <name>".
+     The list opens in the browser's top layer, below the field or above it near an edge, as wide as the field at least: no dialog,
+       drawer or scroll area clips it.
      The number of results is announced politely after each search; while loadOptions runs the list is busy and shows
        a spinner; a failed load says so in the list.
    Notes:
      The picture in each suggestion is decorative: the name and the detail are the option's text.
      For a few known choices use Select; for anything that is not a record, Combobox.
 */
+// the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
+const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 const STRINGS = {
   placeholderPeople: 'Search by name or email',
   placeholder: 'Search {entityName}',
@@ -46211,7 +46250,8 @@ const EntityPicker = exports.EntityPicker = /*#__PURE__*/_react.default.forwardR
   const [text, setText] = _react.default.useState('');
   const [active, setActive] = _react.default.useState(0);
   const wrap = _react.default.useRef(null),
-    input = _react.default.useRef(null);
+    input = _react.default.useRef(null),
+    list = _react.default.useRef(null);
   _react.default.useImperativeHandle(ref, () => input.current);
   const [loaded, setLoaded] = _react.default.useState([]);
   const [busy, setBusy] = _react.default.useState(false);
@@ -46340,6 +46380,16 @@ const EntityPicker = exports.EntityPicker = /*#__PURE__*/_react.default.forwardR
     entityName: noun
   }));
   const showList = open && (items.length || busy || failed || q);
+  // the list opens in the top layer, placed against the field by the floating layer (flips up near an edge, follows scroll and resize): no dialog, drawer or scroll area clips it
+  (0, _floating.useFloating)(wrap, list, {
+    open: !!showList,
+    placement: 'bottom-start',
+    matchWidth: true
+  });
+  _react.default.useLayoutEffect(() => {
+    const el = list.current;
+    if (showList && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+  }, [showList]);
   return /*#__PURE__*/_react.default.createElement("div", {
     ref: wrap,
     className: (0, _cx.cx)('plx-entity-picker', 'plx-entity-picker--' + kind, multiple && 'plx-entity-picker--multiple', open && 'is-open', disabled && 'is-disabled', className)
@@ -46387,9 +46437,12 @@ const EntityPicker = exports.EntityPicker = /*#__PURE__*/_react.default.forwardR
   }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
     name: "search"
   }))), showList ? /*#__PURE__*/_react.default.createElement("ul", {
+    ref: list,
     className: "plx-entity-picker__list",
     id: listId,
     role: "listbox",
+    popover: TOP_LAYER ? 'manual' : undefined,
+    onMouseDown: e => e.preventDefault(),
     "aria-label": label || noun,
     "aria-multiselectable": multiple || undefined,
     "aria-busy": busy || undefined
@@ -47994,7 +48047,7 @@ function AvatarUpload({
   }, error) : null);
 }
   } },
-  "platform/components/TimeZoneSelect/TimeZoneSelect.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/announce.jsx":"platform/utils/announce.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/TimeZoneSelect/TimeZoneSelect.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -48006,6 +48059,7 @@ var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _format = require("../../utils/format.js");
 var _announce = require("../../utils/announce.jsx");
+var _floating = require("../../utils/floating.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · TimeZoneSelect
    Summary: A field for choosing a time zone (05 Forms › Date, time, and color › Time-zone selector): a combobox over
@@ -48035,6 +48089,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      className: more classes on the field
      ref: forwarded to the <input>; other props pass through to it
    Behavior:
+     The list opens in the browser's top layer like the Combobox's: no dialog, drawer or scroll area clips it.
      The Combobox's behavior and look (its classes and tokens): the list opens on focus and on typing; ↓ and ↑ move,
      Enter chooses, Escape closes, a click outside closes. The active option stays in view.
      Typing filters by city, region, IANA name, the zone's long name in the reader's language and the offset; the number
@@ -48045,6 +48100,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Offsets are technical values: the data font (Reddit Mono). The city comes from the IANA name ("Buenos Aires, Argentina");
      the long name ("Pacific Standard Time") is only searched, never shown, so the list stays short.
 */
+// the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
+const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 const STRINGS = {
   placeholder: 'Choose a time zone',
   empty: 'No matches',
@@ -48166,6 +48223,16 @@ const TimeZoneSelect = exports.TimeZoneSelect = /*#__PURE__*/_react.default.forw
   const wrap = _react.default.useRef(null),
     input = _react.default.useRef(null),
     list = _react.default.useRef(null);
+  // the list opens in the top layer, placed against the field by the floating layer (flips up near an edge, follows scroll and resize): no dialog, drawer or scroll area clips it
+  (0, _floating.useFloating)(wrap, list, {
+    open: open,
+    placement: 'bottom-start',
+    matchWidth: true
+  });
+  _react.default.useLayoutEffect(() => {
+    const el = list.current;
+    if (open && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+  }, [open]);
   _react.default.useImperativeHandle(ref, () => input.current);
   const day = date ? new Date(date).toDateString() : new Date().toDateString();
   const zoneKey = zones ? zones.join('|') : '';
@@ -48304,7 +48371,9 @@ const TimeZoneSelect = exports.TimeZoneSelect = /*#__PURE__*/_react.default.forw
     className: "plx-combobox__list plx-time-zone-select__list",
     id: listId,
     role: "listbox",
-    "aria-label": label
+    "aria-label": label,
+    popover: TOP_LAYER ? 'manual' : undefined,
+    onMouseDown: e => e.preventDefault()
   }, shown.length ? shown.map((o, i) => [grouped && (i === 0 || shown[i - 1].region !== o.region) ? /*#__PURE__*/_react.default.createElement("li", {
     key: 'g-' + o.region,
     className: "plx-combobox__group",

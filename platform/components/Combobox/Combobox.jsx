@@ -34,7 +34,8 @@
      className: more classes on the combobox
      ref: forwarded to the <input>
    Behavior:
-     The list opens on focus and on typing, and closes on a click outside.
+     The list opens on focus and on typing, and closes on a click outside. It opens in the browser's top layer, below the field
+       (or above it near an edge), at least as wide as the field, placed like a Menu: no dialog, drawer or scroll area clips it.
      ↓ / ↑ move, Enter chooses, Escape closes.
      Backspace in an empty multiple field removes the last value.
      A single choice closes the list; with multiple, the list stays open after each choice.
@@ -57,6 +58,10 @@ import { cx } from '../../utils/cx.js';
 import { Tag } from '../Tag/Tag.jsx';
 import { Spinner } from '../Loading/Loading.jsx';
 import { announce } from '../../utils/announce.jsx';
+import { useFloating, FLOATING_ANCHOR } from '../../utils/floating.js';
+
+// the top layer and CSS anchor positioning (as Menu, Popover and Select), checked once
+const TOP_LAYER = FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 
 const STRINGS = { loading: 'Loading…', error: 'The options could not be loaded', results: (n) => n + (n === 1 ? ' option' : ' options') };
 
@@ -69,7 +74,10 @@ export const Combobox = React.forwardRef(function Combobox({ options = [], value
   const [open, setOpen] = React.useState(false);
   const [text, setText] = React.useState('');
   const [active, setActive] = React.useState(0);
-  const wrap = React.useRef(null), input = React.useRef(null);
+  const wrap = React.useRef(null), input = React.useRef(null), list = React.useRef(null);
+  // the list opens in the top layer, placed against the field by the floating layer (flips up near an edge, follows scroll and resize): no dialog, drawer or scroll area clips it
+  useFloating(wrap, list, { open, placement: 'bottom-start', matchWidth: true });
+  React.useLayoutEffect(() => { const el = list.current; if (open && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover(); }, [open]);
   React.useImperativeHandle(ref, () => input.current);
   // async select: the options of the last load, the loads in flight (only the newest is shown) and every option seen
   const [loaded, setLoaded] = React.useState([]);
@@ -144,7 +152,7 @@ export const Combobox = React.forwardRef(function Combobox({ options = [], value
         <span className="plx-combobox__chevron" aria-hidden="true" />
       </div>
       {open ? (
-        <ul className="plx-combobox__list" id={listId} role="listbox" aria-multiselectable={multiple || undefined} aria-busy={isLoading || undefined}>
+        <ul ref={list} className="plx-combobox__list" id={listId} role="listbox" popover={TOP_LAYER ? 'manual' : undefined} onMouseDown={(e) => e.preventDefault()} aria-multiselectable={multiple || undefined} aria-busy={isLoading || undefined}>
           {items.length ? items.map((it, i) => it.kind === 'create'
             ? <li key="create" id={optId(i)} role="option" aria-selected={false} className={cx('plx-combobox__option', 'plx-combobox__create', i === active && 'is-active')}
                 onMouseDown={(e) => e.preventDefault()} onClick={() => choose(it)} onMouseEnter={() => setActive(i)}>Create “{text.trim()}”</li>
