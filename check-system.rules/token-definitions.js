@@ -5,8 +5,8 @@
 //            color fails: a color needs the owner. A hex color written in any other token file fails too.
 //   grid     Everything on the 4px grid. A token whose value is a literal length (px or rem, as 16px) is a multiple of 4. Exempt only
 //            what GRID_EXEMPT names, with the reason for each; the corner radii have their own rule.
-//   corners  Corners are 2 to 6px (and 0). A radius token (a key with "radius") must be a reference, 0, a calc() of references, or a px/rem length of 2 to 6px;
-//            anything else (50%, 0.5em, 9999em, 100vh, a keyword) fails, unless RADIUS_EXEMPT names the token and its value with the reason.
+//   corners  Corners are 2 to 6px (and 0). A radius token (a key with "radius") must be a reference, 0, or a px/rem length of 2 to 6px;
+//            anything else (50%, 0.5em, 9999em, 100vh, a keyword) fails, unless RADIUS_EXEMPT names the token and its exact value with the reason (the spinner, and four card inner corners).
 // (The box shadows, 13 tokens with 1, 2, 3 and 5px blur or ring widths, are in the backlog with the reason "optical blur/ring width; owner to decide", not exempt.)
 // What already breaks a rule when the rule began is the frozen backlog in the same JSON (grid, corners): by token, with its value.
 // It only shrinks: a token that is not listed fails; a listed token that now passes (or is gone) fails until it is removed
@@ -26,10 +26,15 @@ const GRID_EXEMPT = [
   ['focus-ring-offset', 'an outline offset (2px): a gap between a control and its focus ring, not a space in the layout'],
   ['font-size-', 'type sizes come from the type scale, not the grid'],
 ];
-// a corner token (a key with "radius") may hold 0, a reference, or a length of 2 to 6px; anything else (50%, 0.5em, 9999em, 100vh, calc(), a keyword)
+// a corner token (a key with "radius") may hold 0, a reference, or a length of 2 to 6px; anything else (50%, 0.5em, 9999em, 100vh, any calc(), a keyword)
 // fails, unless it is named here with its value and the reason
 const RADIUS_EXEMPT = [
   ['spinner-radius', '50%', 'owner, spinner-round-29 (2026-10-27): a spinner is a circle, not a corner'],
+  // a card's media or cover sits inside the card's border, so its outer corner is the card's corner minus the border (an inner corner; never above the card's)
+  ['feature-card-media-radius', 'calc({plx-comp.card-radius} - {plx-comp.card-border-width})', 'inner corner: card radius minus border width'],
+  ['user-card-cover-radius', 'calc({plx-comp.card-radius} - {plx-comp.card-border-width})', 'inner corner: card radius minus border width'],
+  ['media-card-media-border-top-left-radius', 'calc({plx-sys.radius-card-6px} - {plx-sys.border-width-thin})', 'inner corner: card radius minus border width'],
+  ['media-card-media-border-top-right-radius', 'calc({plx-sys.radius-card-6px} - {plx-sys.border-width-thin})', 'inner corner: card radius minus border width'],
 ];
 const radiusExempt = (key, value) => RADIUS_EXEMPT.some(([n, v]) => n === key && v === String(value).trim());
 const CORNERS = [0, 6];   // px: 0, and 2 to 6 (the scale has no 1px and no 5px corner)
@@ -59,10 +64,8 @@ function tokens() {
   walkDir(TOKENS);
   return out;
 }
-// a radius value passes when every part is a reference, 0, or a px or rem length of 2 to 6px; a calc() of references only (a corner worked out from
-// other corner and border tokens, such as card radius minus border width) passes too: it adds no value of its own
-const CALC_REFS = /^calc\(\s*\{[^}]+\}(\s+[-+]\s+\{[^}]+\})*\s*\)$/;
-const radiusOk = (v) => CALC_REFS.test(String(v).trim()) || String(v).trim().split(/\s+/).every((p) => /^\{[^}]+\}$/.test(p) || /^0(px|rem)?$/.test(p) || (one(p) !== null && one(p) >= 2 && one(p) <= CORNERS[1]));
+// a radius value passes when every part is a reference, 0, or a px or rem length of 2 to 6px
+const radiusOk = (v) => String(v).trim().split(/\s+/).every((p) => /^\{[^}]+\}$/.test(p) || /^0(px|rem)?$/.test(p) || (one(p) !== null && one(p) >= 2 && one(p) <= CORNERS[1]));
 function measure() {
   const all = tokens(), colors = {}, grid = {}, corners = {}, hex = [];
   for (const t of all) {
