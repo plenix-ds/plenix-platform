@@ -27,7 +27,7 @@
       "$description": "IconTile size md: the tile’s width and height (40px)."
     },
     "icon-tile-md-radius": {
-      "$value": "{plx-sys.radius-avatar-8px}",
+      "$value": "{plx-sys.radius-avatar-6px}",
       "$type": "dimension",
       "$description": "IconTile size md: the tile’s corners."
     },
@@ -37,7 +37,7 @@
       "$description": "IconTile size lg: the tile’s width and height (48px)."
     },
     "icon-tile-lg-radius": {
-      "$value": "{plx-sys.radius-avatar-8px}",
+      "$value": "{plx-sys.radius-avatar-6px}",
       "$type": "dimension",
       "$description": "IconTile size lg: the tile’s corners."
     },

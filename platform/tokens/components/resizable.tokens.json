@@ -74,6 +74,6 @@
     "resizable-divider-active-color": { "$value": "{plx-sys.focus-ring-color}", "$type": "color", "$description": "Resizable divider: line and pill while the divider is focused or dragged." },
     "resizable-divider-handle-length": { "$value": "{plx-ref.size-32px}", "$type": "dimension", "$description": "Resizable divider: the pill's length along the line." },
     "resizable-divider-handle-thickness": { "$value": "{plx-ref.size-8px}", "$type": "dimension", "$description": "Resizable divider: the pill's thickness across the line." },
-    "resizable-divider-handle-radius": { "$value": "{plx-ref.radius-pill}", "$type": "dimension", "$description": "Resizable divider: the pill's rounded ends." }
+    "resizable-divider-handle-radius": { "$value": "{plx-ref.radius-6px}", "$type": "dimension", "$description": "Resizable divider: the pill's rounded ends." }
   }
 }

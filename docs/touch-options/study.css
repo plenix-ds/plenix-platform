@@ -3,7 +3,7 @@
 
 .study-page{background-color:var(--plx-sys-surface-page);margin-inline:auto;max-inline-size:var(--plx-ref-size-900px);padding-block:var(--plx-ref-space-32px);padding-inline:var(--plx-ref-space-16px);}
 .study-option{display:flex;flex-direction:column;gap:var(--plx-ref-space-12px);}
-.study-frame{border-color:var(--plx-sys-border-default);border-radius:var(--plx-sys-radius-surface-8px);border-style:solid;border-width:var(--plx-sys-border-width-default);overflow-x:auto;padding:var(--plx-ref-space-16px);}
+.study-frame{border-color:var(--plx-sys-border-default);border-radius:var(--plx-sys-radius-surface-6px);border-style:solid;border-width:var(--plx-sys-border-width-default);overflow-x:auto;padding:var(--plx-ref-space-16px);}
 .study-notes{display:grid;gap:var(--plx-ref-space-16px);grid-template-columns:repeat(auto-fit,minmax(var(--plx-ref-size-280px),1fr));}
 .study-list{margin-block:0;padding-inline-start:var(--plx-ref-space-20px);}
 

@@ -685,22 +685,6 @@
       "$value": "6px",
       "$type": "dimension"
     },
-    "radius-8px": {
-      "$value": "8px",
-      "$type": "dimension"
-    },
-    "radius-12px": {
-      "$value": "12px",
-      "$type": "dimension"
-    },
-    "radius-16px": {
-      "$value": "16px",
-      "$type": "dimension"
-    },
-    "radius-pill": {
-      "$value": "9999px",
-      "$type": "dimension"
-    },
     "breakpoint-600px": {
       "$value": "600px",
       "$type": "dimension",
