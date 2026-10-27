@@ -20,8 +20,8 @@
   },
   "overrides": [
     { "files": ["platform/system/**/*.css", "platform/components/**/*.css", "platform/patterns/**/*.css"],
-      "rules": { "selector-class-pattern": ["^(plx-|is-)", { "severity": "error", "message": ".%s is not a plx- class: a Platform stylesheet defines plx- classes (state classes is-…)" }] } },
+      "rules": { "selector-class-pattern": ["^(plx-|is-)", { "severity": "error", "message": "%s is not a plx- class: a Platform stylesheet defines plx- classes (state classes is-…)" }] } },
     { "files": ["platform/components/RichTextEditor/rich-text-editor.css"],
-      "rules": { "selector-class-pattern": ["^(plx-|is-|ProseMirror-(separator|hideselection|selectednode)$|selectedCell$)", { "severity": "error", "message": ".%s is not a plx- class (only the editor engine's ProseMirror-separator, -hideselection, -selectednode and selectedCell are allowed here)" }] } }
+      "rules": { "selector-class-pattern": ["^(plx-|is-|ProseMirror-(separator|hideselection|selectednode)$|selectedCell$)", { "severity": "error", "message": "%s is not a plx- class (only the editor engine's ProseMirror-separator, -hideselection, -selectednode and selectedCell are allowed here)" }] } }
   ]
 }
