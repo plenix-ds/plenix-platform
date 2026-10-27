@@ -26,12 +26,13 @@
      Other props pass through to the wrapper.
 */
 import React from 'react';
+import { numeralLocale } from '../../utils/format.js';
 import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 
 export function ProgressBar({ value, max = 100, label, labelHidden = false, showValue = false, tone = 'info', color, size = 'md', locale, className, ...rest }) {
   devWarn('ProgressBar', { tone, size }, { tone: ['info','success','warning','danger','neutral'], size: ['sm','md'] });
-  const loc = locale || (typeof document !== 'undefined' && document.documentElement.lang) || undefined;
+  const loc = numeralLocale(locale || (typeof document !== 'undefined' && document.documentElement.lang) || undefined);
   const known = typeof value === 'number' && !Number.isNaN(value);
   const pct = known ? Math.max(0, Math.min(100, (value / (max || 100)) * 100)) : null;
   const id = 'plx-pb' + React.useId().replace(/[^a-zA-Z0-9]/g, '');

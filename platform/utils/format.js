@@ -16,6 +16,8 @@
    Props:
      every function takes an options object last; options.locale overrides the reader's locale (formatLocale())
      formatLocale(): the page's language (<html lang>), else the browser's, else "en-US"
+     digitsOf(locale): "arab" (Arabic-Indic ٠-٩) for Arabic locales, else "latn"; an explicit -u-nu-latn keeps Latin (owner, arabic-digits-35)
+     numeralLocale(locale, digits): the locale tag with its digits explicit (-u-nu-arab), for Intl; every format function here uses it
      formatNumber(value, { decimals, signed }): a plain number; decimals fixes the precision (keep it the same in a column)
      formatUnit(value, unit, { display, decimals }): a measurement with an Intl unit ("kilometer", "celsius", "megabyte");
        display "short" (default), "long" or "narrow"
@@ -93,7 +95,20 @@ export function formatLocale() {
   if (typeof navigator !== 'undefined' && navigator.language) return navigator.language;
   return 'en-US';
 }
-const loc = (o) => (o && o.locale) || formatLocale();
+/* the digits a locale writes (owner, arabic-digits-35 and arabic-ids-35): Arabic text uses Arabic-Indic digits (٠-٩) everywhere,
+   whichever Arabic region the tag names (the browser alone writes Latin digits for "ar" and "ar-AE"); an explicit -u-nu-latn keeps Latin */
+export function digitsOf(locale) {
+  try { const l = new Intl.Locale(locale || formatLocale()); return l.numberingSystem === 'latn' ? 'latn' : l.numberingSystem === 'arab' || l.language === 'ar' ? 'arab' : 'latn'; } catch (e) { return 'latn'; }
+}
+// the locale tag with its digits made explicit (-u-nu-arab or -u-nu-latn), for Intl; a language that is not Arabic is left as it is
+export function numeralLocale(locale, digits) {
+  const tag = locale || formatLocale();
+  try {
+    const l = new Intl.Locale(tag), want = digits === 'arab' || digits === 'latn' ? digits : (l.language === 'ar' ? digitsOf(tag) : null);
+    return want ? new Intl.Locale(l.toString(), { numberingSystem: want }).toString() : l.toString();
+  } catch (e) { return tag; }
+}
+const loc = (o) => numeralLocale((o && o.locale) || formatLocale());
 const digits = (d) => (d === undefined ? {} : { minimumFractionDigits: d, maximumFractionDigits: d });
 
 export function formatNumber(value, o = {}) {

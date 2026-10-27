@@ -56,7 +56,7 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
-import { formatLocale } from '../../utils/format.js';
+import { formatLocale, numeralLocale } from '../../utils/format.js';
 import { Button } from '../Button/Button.jsx';
 import { Input } from '../Input/Input.jsx';
 import { InputGroup } from '../InputGroup/InputGroup.jsx';
@@ -97,7 +97,7 @@ export const DatePicker = React.forwardRef(function DatePicker({ mode = 'single'
   isDateDisabled, weekNumbers = false, defaultTime = '09:00', timeZoneName = 'short', invalid, disabled, required, id,
   'aria-describedby': describedBy, locale: localeProp, strings, className, ...rest }, ref) {
   const t = Object.assign({}, STRINGS, strings);
-  const locale = localeProp || formatLocale();
+  const locale = numeralLocale(localeProp || formatLocale());
   const form = numericForm(locale);
   const range = mode === 'range', dateTime = mode === 'date-time';
   const [own, setOwn] = React.useState(defaultValue !== undefined ? defaultValue : null);

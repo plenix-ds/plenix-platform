@@ -41,6 +41,7 @@
      item.actions are siblings of the row's own button, never inside it.
 */
 import React from 'react';
+import { numeralLocale } from '../../utils/format.js';
 import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
 import { Icon, stateIcon } from '../Icon/Icon.jsx';
@@ -124,7 +125,7 @@ function Group({ heading, items, current, onSelect, collapsible = true, icon, de
 
 export function NavList({ label, items, groups, value, onSelect, locale, strings, className }) {
   const t = Object.assign({}, STRINGS, strings);
-  const loc = locale || (typeof document !== 'undefined' && document.documentElement.lang) || undefined;
+  const loc = numeralLocale(locale || (typeof document !== 'undefined' && document.documentElement.lang) || undefined);
   const all = groups || [{ heading: null, items: items || [] }];
   return (
     <nav aria-label={label} className={cx('plx-nav-list', className)}>

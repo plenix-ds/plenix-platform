@@ -55,7 +55,7 @@
 import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { arrowStep } from '../../utils/direction.js';
-import { formatLocale } from '../../utils/format.js';
+import { formatLocale, numeralLocale } from '../../utils/format.js';
 import { Button } from '../Button/Button.jsx';
 
 const STRINGS = { label: 'Calendar', previous: 'Previous month', next: 'Next month', week: 'Week', weekShort: 'Wk', today: 'Today' };
@@ -116,7 +116,7 @@ export const Calendar = React.forwardRef(function Calendar({ mode = 'single', va
   months = 1, weekNumbers = false, min, max, isDateDisabled, today: todayProp, firstDayOfWeek, locale: localeProp, label, focusRef,
   strings, className, ...rest }, ref) {
   const t = Object.assign({}, STRINGS, strings);
-  const locale = localeProp || formatLocale();
+  const locale = numeralLocale(localeProp || formatLocale());
   const today = todayProp || todayIso();
   const range = mode === 'range';
   const [ownValue, setOwnValue] = React.useState(defaultValue !== undefined ? defaultValue : (range ? { start: null, end: null } : null));
