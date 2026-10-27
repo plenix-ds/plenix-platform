@@ -1,3 +1,5 @@
+No tests: see HANDOFF.md (the owner runs them)
+
 # Task #118: RedSave general fixes (Codex)
 
 Tracker: https://github.com/plenix-ds/plenix-platform/issues/118 · Plan of record: https://github.com/plenix-ds/plenix-platform/issues/3

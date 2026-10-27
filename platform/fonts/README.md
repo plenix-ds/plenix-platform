@@ -19,4 +19,4 @@ Downloaded 2026-10-08 from Google Fonts (the woff2 files and unicode ranges it s
 The licenses are from github.com/google/fonts (ofl/dmsans).
 
 To update: fetch that CSS with a current browser's user agent, download each latin and latin-ext woff2 to the names
-above, copy their `unicode-range` into fonts.css, build, and run the tests.
+above, copy their `unicode-range` into fonts.css and build. No tests: see HANDOFF.md (the owner runs them).

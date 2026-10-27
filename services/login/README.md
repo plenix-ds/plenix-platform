@@ -19,7 +19,7 @@ A small sign-in service for plenix.lighthouseway.org and design-system.lighthous
 - `login.css`: the page's layout. It uses Plenix tokens only.
 - `Dockerfile`, `deploy.sh`: the container, built in the save service's style. They are written but have not been run.
 - `nginx-example.conf`: how the VM's Nginx would use the service.
-- The tests are in `tests/login.test.js` (`npm run test:login`).
+- The tests are in `tests/login.test.js` (`npm run test:login`). No tests: see HANDOFF.md (the owner runs them).
 
 The data lives in `DATA` (`/srv/plenix/login` on the VM, mounted at `/data`):
 

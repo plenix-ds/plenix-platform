@@ -1,3 +1,5 @@
+No tests: see HANDOFF.md (the owner runs them)
+
 # Task #126: DataTable on the legacy grid the normal way, option B (Codex)
 
 Tracker: https://github.com/plenix-ds/plenix-platform/issues/126 · Plan of record: https://github.com/plenix-ds/plenix-platform/issues/3

@@ -1,3 +1,5 @@
+No tests: see HANDOFF.md (the owner runs them)
+
 # Task #48: Retire BulkActions (#48) (Codex)
 
 Tracker: https://github.com/plenix-ds/plenix-platform/issues/48 · Plan of record: https://github.com/plenix-ds/plenix-platform/issues/3

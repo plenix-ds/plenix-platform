@@ -53,15 +53,16 @@ One design system and the suite of applications built on it, owned by one person
   - This is the one statement of the rule; every other file points here.
   - Commit freely while working. Right before a push run only the build and the static checks: `node build-app.js`, `node check-system.js`, `node check-style.js`, `npm run lint:css`, `node check-spec.js`.
   - The full suite and the on-demand tests are started by the owner. CI is a separate owner decision.
+  - The owner starts tests with a run-tests issue in plenix-ds/owner-requests, which `~/team/test-runner.sh` runs. No agent opens, edits or comments on those issues.
 - **Show me, then ship it (owner, 2026-10-26).**
   - "Show me" comes first: a live preview and one picture, with no build, no tests and no PR.
   - "Ship it" comes only after the owner picks: then build, check before the push, open the PR, and merge on the owner's word.
-- **On-demand tests (owner only, 2026-10-25).**
+- **On-demand tests (owner only, 2026-10-25; the owner runs them, see No tests).**
   - Accessibility, high contrast, color contrast, themes and density run only when the owner asks for them.
-  - They are not in `npm test`, `npm run test:full`, the per-push CI or the full suite.
-  - On this computer: `npm run test:on-demand` checks what changed; `npm run test:on-demand:full` checks every page (accessibility alone takes about two hours).
-  - On GitHub: Actions › On-demand tests › Run workflow, then pick "full" or "changed".
-  - One test by name: `node tests/run.js a11y` (or `high-contrast`, `contrast`, `theme`, `density`).
+  - They are not in `npm test` (the owner runs it), `npm run test:full`, the per-push CI or the full suite.
+  - The owner runs, on this computer: `npm run test:on-demand` checks what changed; `npm run test:on-demand:full` checks every page (accessibility alone takes about two hours).
+  - The owner runs, on GitHub: Actions › On-demand tests › Run workflow, then pick "full" or "changed".
+  - One test by name (the owner runs): `node tests/run.js a11y` (or `high-contrast`, `contrast`, `theme`, `density`).
 - **The test site (owner, 2026-10-25).** Every automatic browser test runs on the St. John the Beloved Coptic Orthodox
   Church test site and the suite apps, never on the design spec.
   - The site is its own web app and repository: github.com/plenix-ds/st-john-test-site (Node 22 + PostgreSQL 16, Plenix from the CDN), live at https://stjohn.lighthouseway.org behind Authentik.
@@ -69,7 +70,7 @@ One design system and the suite of applications built on it, owned by one person
   - It is a church database and membership app with made-up data (no sacrament records; "servants", never "volunteers"). Its routes are its `site/pages.js`; tests read them through `tests/site.js`.
   - CI reads the site's repository with the `DS_TOKEN` secret (owner, 2026-10-26: reuse it; it also reads the spec).
   - A new Platform part must be placed on the site. The owner starts `node tests/site-coverage.test.js` (SITE_COVERAGE_OK) and `node tests/site-check.js` (the site's rules); you do not run them.
-  - The spec's component labs are spec-only (`node tests/run.js labs`); `tests/component-tokens.test.js` checks the tokens on the site's real components.
+  - The spec's component labs are spec-only (`node tests/run.js labs`, the owner runs); `tests/component-tokens.test.js` (the owner runs) checks the tokens on the site's real components.
 - **No target-size test.** The owner removed it ("Remove tap areas from all tests", 2026-10-25).
 - **Each thing is checked once (reset, owner 2026-10-26).**
   - Visual checks the buttons in light mode at the default density (Standard) only: 840 buttons and the group.

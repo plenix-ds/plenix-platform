@@ -1,3 +1,5 @@
+No tests: see HANDOFF.md (the owner runs them)
+
 # Task #128: DataTableNext, a TanStack Table trial (Codex)
 
 Tracker: https://github.com/plenix-ds/plenix-platform/issues/128 · Plan of record: https://github.com/plenix-ds/plenix-platform/issues/3

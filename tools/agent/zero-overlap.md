@@ -15,7 +15,7 @@ properties included. Inheritance is not an overlap. There are no exceptions; wha
   base, condition). `node check-system.rules/selector-kinds.js` fails on anything new; after a repair run
   `node check-system.rules/selector-kinds.js --shrink`. Never run `--baseline`: Claude records it.
 - `tests/baselines/overlap-strict.json`: every runtime overlap on the 14 application pages.
-  `node tests/clash-audit.js --strict --check --pages <names>` fails on anything new and lists what is gone.
+  `node tests/clash-audit.js --strict --check --pages <names>` (the owner runs; see HANDOFF.md, No tests) fails on anything new and lists what is gone.
 
 ## How to repair a component
 
