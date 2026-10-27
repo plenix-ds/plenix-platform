@@ -2421,6 +2421,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      A turned-off member shows a Badge with a lock and the reason, and is counted nowhere.
      A held-back vote (voteHidden) shows "Hidden until the vote closes" or "Totals only" in place of the choices.
      The totals row is a polite live region: a new result is announced.
+     A row whose vote changes (a live update or a press) flashes once: its tint fades back. Not on the first render; under
+       reduced motion there is no flash.
      Narrow (under the stack width): the name and role above the choices.
    Notes:
      The part draws; it does not count the quorum or the result (the kit's rules do, the same function in the service).
@@ -2496,6 +2498,25 @@ function VoteTally({
   const choose = (m, option) => {
     if (!locked) onVote(m.memberId, m.vote === option && settings.changeVote !== 'final' ? null : option);
   };
+  // a row whose vote changed since the last render flashes once (not on the first render); the class goes when it ends
+  const before = _react.default.useRef(null),
+    [changed, setChanged] = _react.default.useState(() => new Set());
+  _react.default.useEffect(() => {
+    const now = new Map(members.map(m => [m.memberId, (m.vote || '') + '|' + (m.disabledReason || '') + '|' + (m.voteHidden ? 1 : 0)]));
+    if (before.current) {
+      const ids = [...now].filter(([id, v]) => before.current.has(id) && before.current.get(id) !== v).map(([id]) => id);
+      // under reduced motion there is no flash, so no row is marked (a 0s animation may not report its end)
+      const still = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (ids.length && !still) setChanged(s => new Set([...s, ...ids]));
+    }
+    before.current = now;
+  }, [members]);
+  const settled = id => setChanged(s => {
+    if (!s.has(id)) return s;
+    const n = new Set(s);
+    n.delete(id);
+    return n;
+  });
   return /*#__PURE__*/_react.default.createElement("section", {
     className: (0, _cx.cx)('plx-vote-tally', className),
     "aria-label": label
@@ -2503,7 +2524,8 @@ function VoteTally({
     className: "plx-vote-tally__list"
   }, members.map(m => /*#__PURE__*/_react.default.createElement("li", {
     key: m.memberId,
-    className: "plx-vote-tally__member"
+    className: (0, _cx.cx)('plx-vote-tally__member', changed.has(m.memberId) && 'is-changed'),
+    onAnimationEnd: changed.has(m.memberId) ? () => settled(m.memberId) : undefined
   }, /*#__PURE__*/_react.default.createElement(_Avatar.Avatar, {
     name: m.name,
     src: m.picture || undefined
