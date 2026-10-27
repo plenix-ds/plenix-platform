@@ -71,6 +71,9 @@ jobs:
       - name: System check
         run: node check-system.js
 
+      - name: Style check (Stylelint, the main style checker)
+        run: npx stylelint "platform/**/*.css" "services/**/*.css"
+
       - name: Spec check
         run: |
           if [ -f platform/design-system/inventory.js ]; then node check-spec.js; else echo "skipped: no design system"; fi
@@ -102,7 +105,7 @@ jobs:
           - name: component tokens
             tests: component-tokens
           - name: fixtures
-            tests: site-coverage visual layout
+            tests: site-coverage visual layout charts-echarts-353 sparkline-echarts-353
           - name: behavior
             tests: data-grid keyboard focus-order semantic-html utilities navigation one-primary
     services:
@@ -136,6 +139,9 @@ jobs:
         uses: actions/checkout@v5
         with:
           repository: plenix-ds/st-john-test-site
+          # the site's revision, pinned (#382 F8): the same Platform commit always meets the same site. Bump it here and
+          # in the other workflow (ci.yml, full.yml) when the site changes, in the pull request that needs the change
+          ref: e9a3c7471e7c997a61de50ea81404e1a96bbad3c
           token: ${{ secrets.DS_TOKEN }}
           path: st-john-test-site
 

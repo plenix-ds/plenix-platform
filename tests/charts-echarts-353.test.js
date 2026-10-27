@@ -4,6 +4,10 @@
      only the engine's own drawing may carry the sizes and fonts ECharts writes.
    Usage: node tests/charts-echarts-353.test.js */
 const assert = require('assert/strict'), { serve, launch } = require('./lib');
+// in the automatic set (owner, codex-q3-27): changed mode runs it when the charts, the engine, a global file or this test
+// changed (a chart file is global to tests/changed.js: the slice), TEST_SCOPE=full always
+const changed = require('./changed');
+if (!changed.wants({})) changed.none('CHARTS_ECHARTS_353_OK');
 (async () => {
   const PORT = +process.env.TEST_PORT || 9612, server = await serve(PORT); let browser;
   try {

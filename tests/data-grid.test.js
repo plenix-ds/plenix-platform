@@ -66,10 +66,11 @@ const APP_URLS = changed.pages(STATES.map((s) => s[0]));
 const inScope = (url) => changed.wants({ units: GRIDS }) || APP_URLS.includes(url);
 const VIEWS = STATES.filter((s) => inScope(s[0]) && (!ONLY || ONLY.test(s[0])));
 
-if (!VIEWS.length) changed.none('DATA_GRIDS_OK 0/0 table views');
-changed.report(VIEWS.length + ' of ' + STATES.length + ' table views');
-if (!ONLY && changed.wants({ units: ['components/DataGrid'] })) {
-  for (const regression of ['data-grid-search-149.test.js', 'data-grid-window-184.test.js', 'data-grid-sort-185.test.js', 'data-grid-cell-187.test.js', 'data-grid-select-167.test.js', 'data-grid-pane-150.test.js', 'data-grid-narrow-168.test.js', 'data-grid-state-169.test.js', 'data-grid-view-169.test.js', 'data-grid-group-165.test.js', 'data-grid-group-browser-165.test.js', 'data-grid-unread-164.test.js']) {
+// a child regression runs when what it covers changed, or the child itself (or a fixture it loads) did (#382 F1)
+const runs = (regression, units) => changed.wants({ units }) || changed.child(regression);
+changed.report(VIEWS.length + ' of ' + STATES.length + ' table views' + (changed.childrenOf().length ? ' · children on: ' + changed.childrenOf().join(', ') : ''));
+if (!ONLY) {
+  for (const regression of ['data-grid-search-149.test.js', 'data-grid-window-184.test.js', 'data-grid-sort-185.test.js', 'data-grid-cell-187.test.js', 'data-grid-select-167.test.js', 'data-grid-pane-150.test.js', 'data-grid-narrow-168.test.js', 'data-grid-state-169.test.js', 'data-grid-view-169.test.js', 'data-grid-group-165.test.js', 'data-grid-group-browser-165.test.js', 'data-grid-unread-164.test.js'].filter((r) => runs(r, ['components/DataGrid']))) {
   const result = require('child_process').spawnSync(process.execPath, [require('path').join(__dirname, regression)], { stdio: 'inherit', env: process.env });
   if (result.status !== 0) process.exit(result.status || 1);
   }
@@ -78,18 +79,22 @@ if (!ONLY && changed.wants({ units: ['components/DataGrid'] })) {
 // the regression tests of the grid fixes merged 2026-10-25 and 26 (each the only check of its fix), when the DataGrid or the
 // Table changed: cut text opens in a popover (#312), Filter by this field (#269), header labels at the start edge (#326),
 // an empty grid or table is a row with one cell (#313)
-if (!ONLY && changed.wants({ units: GRIDS })) {
-  for (const regression of ['cut-popover.test.js', 'filter-by-field-269.test.js', 'header-labels-start-326.test.js', 'empty-table-a11y-313.test.js']) {
+if (!ONLY) {
+  for (const regression of ['cut-popover.test.js', 'filter-by-field-269.test.js', 'header-labels-start-326.test.js', 'empty-table-a11y-313.test.js'].filter((r) => runs(r, GRIDS))) {
     const result = require('child_process').spawnSync(process.execPath, [require('path').join(__dirname, regression)], { stdio: 'inherit', env: process.env });
     if (result.status !== 0) process.exit(result.status || 1);
   }
 }
 
 // Keep the horizontal header/frozen-column regression in the behavior CI group.
-if (!ONLY && changed.wants({ units: ['components/DataGrid'] })) {
+if (!ONLY && runs('data-grid-scroll-147.test.js', ['components/DataGrid'])) {
   const result = require('child_process').spawnSync(process.execPath, [require('path').join(__dirname, 'data-grid-scroll-147.test.js')], { stdio: 'inherit', env: process.env });
   if (result.status !== 0) process.exit(result.status || 1);
 }
+
+// the modules this test loads into its page (focused fixtures and the high-impact regressions) run with it
+const IN_PAGE = ['collection-facets', 'multi-groups', 'data-grid-rest', 'data-grid-high'];
+if (!VIEWS.length && !IN_PAGE.some((m) => changed.child(m))) changed.none('DATA_GRIDS_OK 0/0 table views');
 
 (async () => {
   const server = await serve(PORT);
