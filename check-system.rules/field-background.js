@@ -11,7 +11,7 @@
 // So:
 //   "search-input-background": { "$value": "{plx-sys.field-background}" }     ok
 //   "search-input-background": { "$value": "{plx-sys.fill-neutral}" }         finding
-// The rule is a module check-system.js runs (it loads every file in check-system.rules/):
+// The rule is a module check-style.js runs (a style rule: check-common.js, STYLE_MODULES) (it loads every file in check-system.rules/):
 //   require('./check-system.rules/field-background.js').check({ add })   add(rule, file, line, text)
 // Alone: node check-system.rules/field-background.js     -> FIELD_BACKGROUND_OK, or the findings and exit 1
 const fs = require('fs');
