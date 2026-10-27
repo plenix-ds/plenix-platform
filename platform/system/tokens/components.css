@@ -3394,6 +3394,8 @@
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-date-picker-width: var(--plx-ref-size-160px);
+  --plx-comp-date-picker-box-padding-inline-end: var(--plx-sys-space-inset-xs);
+  --plx-comp-date-picker-control-margin-block: calc(var(--plx-comp-input-border-width) * -1);
   --plx-comp-date-picker-range-width: var(--plx-ref-size-280px);
   --plx-comp-date-picker-time-width: var(--plx-ref-size-160px);
   --plx-comp-date-picker-field-gap: var(--plx-sys-space-inline-sm);
