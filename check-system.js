@@ -6,8 +6,8 @@
 //               file declares for itself (e.g. --ds-r on the spec page); no old names
 //   hex         no raw hex colors written in code (JavaScript, JSX and HTML; colors come from tokens). Stylesheets: Stylelint (color-no-hex)
 //   font-size   no font size written as a number in code: font sizes come from --plx-ref-font-size-* tokens. Stylesheets: Stylelint (raw lengths)
-//   classes     every class a Platform stylesheet defines starts with plx- (state classes is-… excepted; the DataGrid's
-//               stylesheets (DataGrid, Table) style the classes their renderer writes, there only)
+//   (classes, every class a Platform stylesheet defines starts with plx- or is-, is Stylelint's: selector-class-pattern in
+//   .stylelintrc.json; style-plan-30, step 2)
 //   imports     every component and pattern stylesheet is imported by platform.css
 //   legacy      the retired files stay gone (suite/, tokens/legacy.css, the asset app's plenix.css and demo.css, system/nesting.css)
 //   embedded    the asset app has no embedded SVG and no data: URIs (icons are files)
@@ -26,9 +26,9 @@
 //               the token stylesheets are exactly what build-tokens.js writes from the token source (platform/tokens/*.tokens.json):
 //               tokens are edited in the JSON, never in the CSS (batch 158); the library parts' bundles (spec-parts.js,
 //               ds-sample-parts.css) and the library block of index.js and platform.css match their part files
-//   palette     a stylesheet takes colors from roles (--plx-sys-, --plx-comp-), never from the palette (--plx-ref-color-)
-//   themeable   a stylesheet takes typefaces, weights, letter spacing, radius, border widths and styles, motion and opacity
-//               from the theme's scales (--plx-sys-typeface-, -shape-, -border-width-…), never the reference scales (batch 220)
+//   (palette and themeable, a stylesheet takes colors from roles and typefaces, weights, letter spacing, radius, borders,
+//   motion and opacity from the theme's scales, never --plx-ref-color- or the reference scales (batch 220), are Stylelint's:
+//   declaration-property-value-disallowed-list in .stylelintrc.json; style-plan-30, step 2)
 //   (raw-value, no length, time or color written as a number in a stylesheet declaration, is Stylelint's now: .stylelintrc.json; owner, tools-follow-up-26)
 //   palette-class an application never colors with a palette utility class (plx-u-text-gray-700…): components only
 //   audit       every page loads platform/dev/style-audit.js, which rejects inline styles and style blocks at run time
@@ -36,7 +36,7 @@
 //               (<AppShell page="settings">) and the design system's layout standard (providers/pageLayouts.js) decides
 //   tables      every table is a DataGrid (the React renderer in the Plenix table style): no <table>, no table element made in code, no
 //               PropertyList table variant: every table is a Table (static) or a DataGrid, both on the React renderer (batches
-//               226, 229, 234)
+//               226, 229, 234). In stylesheets (no rule for the retired variant's class): Stylelint, selector-disallowed-list
 //   fonts       no call to Google Fonts: DM Sans and Reddit Mono are hosted with the Platform (platform/fonts, batch 227)
 //   media       no breakpoint written as a number in code (useMedia / matchMedia): the shell reads the breakpoint tokens
 //               (below('--plx-sys-shell-rail-below')); the theme boot script, which runs before the tokens load, excepted
@@ -84,7 +84,6 @@ for (const s of SOURCES) for (const f of walk(s.dir, s.flat, [])) {
   if (!files.some((x) => x.file === f)) files.push({ file: f, app: s.app });
 }
 
-const TOKEN_SOURCE = /platform[\\/]system[\\/](tokens|themes)[\\/]/;   // the generated token stylesheets
 // custom properties the applications declare for themselves (--ds-r on the spec page, set by a lab's script); the
 // retired legacy token file does not count, so its old names stay findings
 const DECLARED = new Set();
@@ -100,13 +99,6 @@ for (const { file } of files) {
   const text = fs.readFileSync(file, 'utf8');
   for (const m of text.matchAll(/(--plx-[\w-]+)\s*:/g)) PLX.add(m[1]);
   for (const m of text.matchAll(/["'](--plx-[\w-]+)["']\s*[:,)]/g)) PLX.add(m[1]);
-}
-// tables, in stylesheets: no rule for the retired PropertyList table variant (every table is a Table or a DataGrid on
-// the React renderer, batches 226, 229, 234)
-for (const { file } of files) {
-  if (!/\.css$/.test(file)) continue;
-  const text = fs.readFileSync(file, 'utf8');
-  for (const m of text.matchAll(/\.plx-property-list--table\b/g)) add('tables', file, text.slice(0, m.index).split('\n').length, 'a retired table class: ' + m[0]);
 }
 // inline-style: the rule is check-system.rules/inline-style.js (see its description above)
 const INLINE_STYLE_PENDING = [];   // every application converted (batches 150-151)
@@ -142,10 +134,8 @@ for (const { file } of files) {
 for (const { file } of files) {
   const text = fs.readFileSync(file, 'utf8');
   const lines = text.split(/\r?\n/);
-  // a stylesheet's lines with its comments blanked (a comment may span lines), for the rules that read declarations
-  const cssLines = /\.css$/.test(file) ? text.replace(/\/\*[\s\S]*?\*\//g, (c) => c.replace(/[^\n]/g, ' ')).split(/\r?\n/) : [];
   const own = DECLARED;
-  const isCss = /\.css$/.test(file), isCode = /\.(js|jsx|html)$/.test(file);
+  const isCode = /\.(js|jsx|html)$/.test(file);
   lines.forEach((line, i) => {
     const n = i + 1;
     // defined: a used token exists (a name ending in "-" is built in code, e.g. 'var(--plx-ref-radius-' + n + 'px)')
@@ -167,15 +157,6 @@ for (const { file } of files) {
         add('hex', file, n, '#' + m[1] + ' in: ' + line);
       }
     }
-    // palette: a stylesheet takes colors from roles (--plx-sys-…, --plx-comp-…), never straight from the palette
-    // (--plx-ref-color-…); only the token files and the themes map palette colors to roles
-    if (isCss && !TOKEN_SOURCE.test(file)) {
-      const code = cssLines[i];
-      for (const m of code.matchAll(/var\(\s*(--plx-ref-color-[\w-]+)/g)) add('palette', file, n, m[1] + ' in: ' + line);
-      // themeable: the foundations a theme decides come from the theme's scales (--plx-sys-typeface-, -font-weight-,
-      // -letter-spacing-, -shape-, -border-width-, -border-style-, -motion-, -opacity-), never the reference scales (batch 220)
-      for (const m of code.matchAll(/var\(\s*(--plx-ref-(?:font-sans|font-mono|font-weight|letter-spacing|radius|border-width|border-style|motion|opacity)[\w-]*)/g)) add('themeable', file, n, m[1] + ' in: ' + line + ' (use the theme scale, e.g. --plx-sys-shape-xs)');
-    }
     // icon sizes written as numbers (Platform and applications)
     if (isCode && /<(Icon|Ico|Avatar)\b[^>]*\bsize=\{\s*\d+\s*\}/.test(line)) add('icon-size', file, n, line);
     // breakpoints written as numbers in code
@@ -186,19 +167,6 @@ for (const { file } of files) {
       if (isCode && /font-size\s*:\s*[0-9.]+(px|rem|em|pt)/.test(line)) add('font-size', file, n, line);
     }
   });
-  // classes a Platform stylesheet defines
-  if (isCss && /[\\/]platform[\\/](system|components|patterns)[\\/]/.test(file)) {
-    const css = text.replace(/\/\*[\s\S]*?\*\//g, '').replace(/url\([^)]*\)/g, '');
-    const sel = css.replace(/\{[^{}]*\}/g, '{}');
-    for (const m of sel.matchAll(/\.(-?[_a-zA-Z][\w-]*)/g)) {
-      if (/^(plx-|is-)/.test(m[1])) continue;
-      // the DataGrid's stylesheet restyles the classes its engine writes (the React renderer): there only
-      // the RichTextEditor's stylesheet styles the classes its engine writes (ProseMirror and prosemirror-tables, platform/vendor/tiptap):
-      // the separator image, the hidden selection, a selected node and the cells of a table selection; there only
-      if (/^(ProseMirror-(separator|hideselection|selectednode)|selectedCell)$/.test(m[1]) && /[\\/]components[\\/]RichTextEditor[\\/]rich-text-editor\.css$/.test(file)) continue;
-      add('classes', file, 0, '.' + m[1] + ' is not a plx- class');
-    }
-  }
   // the asset app: no embedded pictures
   if (/[\\/]Plenix[\\/]dam[\\/]/.test(file)) {
     lines.forEach((line, i) => {
