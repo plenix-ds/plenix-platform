@@ -31,7 +31,10 @@ export default {
   "dialog": {
     "close": "Close",
     "confirmLabel": "Confirm",
-    "cancelLabel": "Cancel"
+    "cancelLabel": "Cancel",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "save": "Save"
   },
   "text": {
     "more": "Show more",
@@ -667,10 +670,22 @@ export default {
     "average": "Average",
     "min": "Min",
     "max": "Max",
-    "sortText": "[\"Sort A → Z\",\"Sort Z → A\"]",
-    "sortNumber": "[\"Sort 1 → 9\",\"Sort 9 → 1\"]",
-    "sortDate": "[\"Sort oldest → newest\",\"Sort newest → oldest\"]",
-    "sortCheck": "[\"Sort unchecked → checked\",\"Sort checked → unchecked\"]",
+    "sortText": [
+      "Sort A → Z",
+      "Sort Z → A"
+    ],
+    "sortNumber": [
+      "Sort 1 → 9",
+      "Sort 9 → 1"
+    ],
+    "sortDate": [
+      "Sort oldest → newest",
+      "Sort newest → oldest"
+    ],
+    "sortCheck": [
+      "Sort unchecked → checked",
+      "Sort checked → unchecked"
+    ],
     "unread": "Unread ({count})"
   },
   "dataPill": {
@@ -1026,7 +1041,11 @@ export default {
     "moreCount": "Show {n} more",
     "loading": "Loading…",
     "end": "You’ve reached the end",
-    "count": "{shown} of {total}"
+    "count": "{shown} of {total}",
+    "added": {
+      "one": "{n} more item loaded",
+      "other": "{n} more items loaded"
+    }
   },
   "loading": {
     "label": "Loading"
@@ -1086,8 +1105,24 @@ export default {
     "toCome": "to come",
     "hit": "hit",
     "missed": "missed",
-    "weekdays": "[\"M\",\"T\",\"W\",\"T\",\"F\",\"S\",\"S\"]",
-    "weekdayNames": "[\"Monday\",\"Tuesday\",\"Wednesday\",\"Thursday\",\"Friday\",\"Saturday\",\"Sunday\"]",
+    "weekdays": [
+      "M",
+      "T",
+      "W",
+      "T",
+      "F",
+      "S",
+      "S"
+    ],
+    "weekdayNames": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday"
+    ],
     "month": "{done} of {days} working days so far",
     "parts": "{label} {share}",
     "compare": "{a} {av}, {b} {bv}"
@@ -1309,10 +1344,22 @@ export default {
     "past": "Last",
     "future": "Next",
     "units": {
-      "day": "[\"day\",\"days\"]",
-      "week": "[\"week\",\"weeks\"]",
-      "month": "[\"month\",\"months\"]",
-      "year": "[\"year\",\"years\"]"
+      "day": [
+        "day",
+        "days"
+      ],
+      "week": [
+        "week",
+        "weeks"
+      ],
+      "month": [
+        "month",
+        "months"
+      ],
+      "year": [
+        "year",
+        "years"
+      ]
     },
     "presets": {
       "today": "Today",
@@ -1571,7 +1618,10 @@ export default {
     "shrink": "Shrink sheet",
     "doneLabel": "Done",
     "cancelLabel": "Cancel",
-    "closeLabel": "Close"
+    "closeLabel": "Close",
+    "done": "Done",
+    "cancel": "Cancel",
+    "close": "Close"
   },
   "shortcutsDialog": {
     "title": "Keyboard shortcuts",
@@ -1688,7 +1738,9 @@ export default {
     }
   },
   "toast": {
-    "aria-label": "Dismiss"
+    "aria-label": "Dismiss",
+    "undo": "Undo",
+    "dismiss": "Dismiss"
   },
   "tour": {
     "next": "Next",
@@ -1837,7 +1889,15 @@ export default {
   },
   "virtualList": {
     "loading": "Loading…",
-    "empty": "No items"
+    "empty": "No items",
+    "count": {
+      "one": "{n} item",
+      "other": "{n} items"
+    },
+    "group": {
+      "one": "{n} item",
+      "other": "{n} items"
+    }
   },
   "widgetGrid": {
     "widget": "Widget",

@@ -20796,7 +20796,10 @@ var _default = exports.default = {
   "dialog": {
     "close": "Close",
     "confirmLabel": "Confirm",
-    "cancelLabel": "Cancel"
+    "cancelLabel": "Cancel",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "save": "Save"
   },
   "text": {
     "more": "Show more",
@@ -21432,10 +21435,10 @@ var _default = exports.default = {
     "average": "Average",
     "min": "Min",
     "max": "Max",
-    "sortText": "[\"Sort A → Z\",\"Sort Z → A\"]",
-    "sortNumber": "[\"Sort 1 → 9\",\"Sort 9 → 1\"]",
-    "sortDate": "[\"Sort oldest → newest\",\"Sort newest → oldest\"]",
-    "sortCheck": "[\"Sort unchecked → checked\",\"Sort checked → unchecked\"]",
+    "sortText": ["Sort A → Z", "Sort Z → A"],
+    "sortNumber": ["Sort 1 → 9", "Sort 9 → 1"],
+    "sortDate": ["Sort oldest → newest", "Sort newest → oldest"],
+    "sortCheck": ["Sort unchecked → checked", "Sort checked → unchecked"],
     "unread": "Unread ({count})"
   },
   "dataPill": {
@@ -21791,7 +21794,11 @@ var _default = exports.default = {
     "moreCount": "Show {n} more",
     "loading": "Loading…",
     "end": "You’ve reached the end",
-    "count": "{shown} of {total}"
+    "count": "{shown} of {total}",
+    "added": {
+      "one": "{n} more item loaded",
+      "other": "{n} more items loaded"
+    }
   },
   "loading": {
     "label": "Loading"
@@ -21851,8 +21858,8 @@ var _default = exports.default = {
     "toCome": "to come",
     "hit": "hit",
     "missed": "missed",
-    "weekdays": "[\"M\",\"T\",\"W\",\"T\",\"F\",\"S\",\"S\"]",
-    "weekdayNames": "[\"Monday\",\"Tuesday\",\"Wednesday\",\"Thursday\",\"Friday\",\"Saturday\",\"Sunday\"]",
+    "weekdays": ["M", "T", "W", "T", "F", "S", "S"],
+    "weekdayNames": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
     "month": "{done} of {days} working days so far",
     "parts": "{label} {share}",
     "compare": "{a} {av}, {b} {bv}"
@@ -22074,10 +22081,10 @@ var _default = exports.default = {
     "past": "Last",
     "future": "Next",
     "units": {
-      "day": "[\"day\",\"days\"]",
-      "week": "[\"week\",\"weeks\"]",
-      "month": "[\"month\",\"months\"]",
-      "year": "[\"year\",\"years\"]"
+      "day": ["day", "days"],
+      "week": ["week", "weeks"],
+      "month": ["month", "months"],
+      "year": ["year", "years"]
     },
     "presets": {
       "today": "Today",
@@ -22336,7 +22343,10 @@ var _default = exports.default = {
     "shrink": "Shrink sheet",
     "doneLabel": "Done",
     "cancelLabel": "Cancel",
-    "closeLabel": "Close"
+    "closeLabel": "Close",
+    "done": "Done",
+    "cancel": "Cancel",
+    "close": "Close"
   },
   "shortcutsDialog": {
     "title": "Keyboard shortcuts",
@@ -22453,7 +22463,9 @@ var _default = exports.default = {
     }
   },
   "toast": {
-    "aria-label": "Dismiss"
+    "aria-label": "Dismiss",
+    "undo": "Undo",
+    "dismiss": "Dismiss"
   },
   "tour": {
     "next": "Next",
@@ -22602,7 +22614,15 @@ var _default = exports.default = {
   },
   "virtualList": {
     "loading": "Loading…",
-    "empty": "No items"
+    "empty": "No items",
+    "count": {
+      "one": "{n} item",
+      "other": "{n} items"
+    },
+    "group": {
+      "one": "{n} item",
+      "other": "{n} items"
+    }
   },
   "widgetGrid": {
     "widget": "Widget",
@@ -22966,10 +22986,10 @@ var _default = exports.default = {
     "average": "المتوسط",
     "min": "الأدنى",
     "max": "الأقصى",
-    "sortText": "[\"فرز من أ إلى ي\",\"فرز من ي إلى أ\"]",
-    "sortNumber": "[\"فرز من 1 إلى 9\",\"فرز من 9 إلى 1\"]",
-    "sortDate": "[\"فرز من الأقدم إلى الأحدث\",\"فرز من الأحدث إلى الأقدم\"]",
-    "sortCheck": "[\"فرز من غير المحدد إلى المحدد\",\"فرز من المحدد إلى غير المحدد\"]",
+    "sortText": ["فرز من أ إلى ي", "فرز من ي إلى أ"],
+    "sortNumber": ["فرز من 1 إلى 9", "فرز من 9 إلى 1"],
+    "sortDate": ["فرز من الأقدم إلى الأحدث", "فرز من الأحدث إلى الأقدم"],
+    "sortCheck": ["فرز من غير المحدد إلى المحدد", "فرز من المحدد إلى غير المحدد"],
     "unread": "غير مقروء ({count})"
   },
   "dataPill": {
@@ -23109,7 +23129,15 @@ var _default = exports.default = {
     "moreCount": "عرض {n} إضافية",
     "loading": "جارٍ التحميل…",
     "end": "وصلت إلى النهاية",
-    "count": "{shown} من {total}"
+    "count": "{shown} من {total}",
+    "added": {
+      "zero": "لم يتم تحميل عناصر إضافية",
+      "one": "تم تحميل عنصر إضافي واحد",
+      "two": "تم تحميل عنصرين إضافيين",
+      "few": "تم تحميل {n} عناصر إضافية",
+      "many": "تم تحميل {n} عنصرًا إضافيًا",
+      "other": "تم تحميل {n} عنصر إضافي"
+    }
   },
   "mediaViewer": {
     "label": "معاينة",
@@ -23134,8 +23162,8 @@ var _default = exports.default = {
     "toCome": "قادم",
     "hit": "تحقق الهدف",
     "missed": "لم يتحقق",
-    "weekdays": "[\"ن\",\"ث\",\"ر\",\"خ\",\"ج\",\"س\",\"ح\"]",
-    "weekdayNames": "[\"الاثنين\",\"الثلاثاء\",\"الأربعاء\",\"الخميس\",\"الجمعة\",\"السبت\",\"الأحد\"]",
+    "weekdays": ["ن", "ث", "ر", "خ", "ج", "س", "ح"],
+    "weekdayNames": ["الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت", "الأحد"],
     "month": "{done} من {days} أيام عمل حتى الآن",
     "parts": "{label} {share}",
     "compare": "{a} {av}، {b} {bv}"
@@ -23195,10 +23223,10 @@ var _default = exports.default = {
     "past": "الأخيرة",
     "future": "التالي",
     "units": {
-      "day": "[\"يوم\",\"أيام\"]",
-      "week": "[\"أسبوع\",\"أسابيع\"]",
-      "month": "[\"شهر\",\"أشهر\"]",
-      "year": "[\"سنة\",\"سنوات\"]"
+      "day": ["يوم", "أيام"],
+      "week": ["أسبوع", "أسابيع"],
+      "month": ["شهر", "أشهر"],
+      "year": ["سنة", "سنوات"]
     },
     "presets": {
       "today": "اليوم",
@@ -23306,7 +23334,10 @@ var _default = exports.default = {
     "shrink": "تصغير اللوحة",
     "doneLabel": "تم",
     "cancelLabel": "إلغاء",
-    "closeLabel": "إغلاق"
+    "closeLabel": "إغلاق",
+    "done": "تم",
+    "cancel": "إلغاء",
+    "close": "إغلاق"
   },
   "slider": {
     "minimum": "الحد الأدنى",
@@ -23384,7 +23415,23 @@ var _default = exports.default = {
   },
   "virtualList": {
     "loading": "جارٍ التحميل…",
-    "empty": "لا توجد عناصر"
+    "empty": "لا توجد عناصر",
+    "count": {
+      "zero": "لا توجد عناصر",
+      "one": "عنصر واحد",
+      "two": "عنصران",
+      "few": "{n} عناصر",
+      "many": "{n} عنصرًا",
+      "other": "{n} عنصر"
+    },
+    "group": {
+      "zero": "لا توجد عناصر",
+      "one": "عنصر واحد",
+      "two": "عنصران",
+      "few": "{n} عناصر",
+      "many": "{n} عنصرًا",
+      "other": "{n} عنصر"
+    }
   },
   "aiSearch": {
     "label": "بحث بالذكاء الاصطناعي",
@@ -24433,7 +24480,10 @@ var _default = exports.default = {
   },
   "dialog": {
     "confirmLabel": "حفظ",
-    "cancelLabel": "إلغاء"
+    "cancelLabel": "إلغاء",
+    "confirm": "تأكيد",
+    "cancel": "إلغاء",
+    "save": "حفظ"
   },
   "loading": {
     "label": "جارٍ التحميل"
@@ -24445,7 +24495,9 @@ var _default = exports.default = {
     "label": "إضافة وسم"
   },
   "toast": {
-    "aria-label": "تجاهل"
+    "aria-label": "تجاهل",
+    "undo": "تراجع",
+    "dismiss": "تجاهل"
   },
   "actionBar": {
     "label": "الإجراءات"
