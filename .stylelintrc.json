@@ -1,6 +1,9 @@
 {
   "defaultSeverity": "warning",
+  "plugins": ["./tools/stylelint/plenix.mjs"],
   "rules": {
+    "plenix/token-tiers": [true, { "severity": "error", "allowedPattern": "^--ds-sample-[a-z-]+$", "allowedIn": "^platform/design-system/" }],
+    "plenix/logical-properties": [true, { "severity": "error", "files": "^platform/(components|patterns|templates)/" }],
     "declaration-no-important": [true, { "severity": "error" }],
     "color-no-hex": [true, { "severity": "error" }],
     "function-disallowed-list": [["rgb", "rgba", "hsl", "hsla", "hwb", "lab", "lch", "oklab", "oklch"], { "severity": "error" }],
