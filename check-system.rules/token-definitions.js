@@ -1,0 +1,99 @@
+// Plenix · check-system rule "token-definitions" (owner standing rules; tools-follow-up-26): the token source (platform/tokens/**/*.tokens.json)
+// follows three rules the owner set, so a stylesheet check never has to:
+//   colors   No new colors. The reference palette (every --plx-ref-color-* in reference.tokens.json) is frozen at its list in
+//            check-system.token-definitions.json (name and value; gray 250 is the one addition, already in it). A new or changed
+//            color fails: a color needs the owner. A hex color written in any other token file fails too.
+//   grid     Everything on the 4px grid. A token whose value is a literal length (px or rem, as 16px) is a multiple of 4. Exempt only
+//            what GRID_EXEMPT names, with the reason for each; the corner radii have their own rule.
+//   corners  Corners are 2 to 6px (and 0). A radius token (a key with "radius") with a literal length outside that fails.
+// (The box shadows, 13 tokens with 1, 2, 3 and 5px blur or ring widths, are in the backlog with the reason "optical blur/ring width; owner to decide", not exempt.)
+// What already breaks a rule when the rule began is the frozen backlog in the same JSON (grid, corners): by token, with its value.
+// It only shrinks: a token that is not listed fails; a listed token that now passes (or is gone) fails until it is removed
+// (node check-system.rules/token-definitions.js --shrink). Changing such a token would change the page: that waits for the owner.
+// The rule is a module check-system.js runs: require('./check-system.rules/token-definitions.js').check({ add })
+// Alone: node check-system.rules/token-definitions.js [--shrink | --baseline]   -> TOKEN_DEFINITIONS_OK, or the findings and exit 1
+const fs = require('fs');
+const path = require('path');
+
+const NAME = 'token-definitions';
+const ROOT = path.join(__dirname, '..');
+const TOKENS = path.join(ROOT, 'platform', 'tokens');
+const FROZEN = path.join(ROOT, 'check-system.token-definitions.json');
+// off the 4px grid on purpose: a name (or a name prefix ending in -) and why
+const GRID_EXEMPT = [
+  ['border-width-', 'hairline widths (1, 2 and 3px): a line is thinner than the grid'],
+  ['focus-ring-offset', 'an outline offset (2px): a gap between a control and its focus ring, not a space in the layout'],
+  ['font-size-', 'type sizes come from the type scale, not the grid'],
+];
+const CORNERS = [0, 6];   // px: 0, and 2 to 6 (the scale has no 1px and no 5px corner)
+const LEN = /^(-?[\d.]+)(px|rem)$/;
+const one = (w) => { const m = String(w).match(LEN); return m ? (m[2] === 'rem' ? Number(m[1]) * 16 : Number(m[1])) : null; };
+// every length in a value, each part of a compound ("4px 7px"): [] when the value has none (a reference, a keyword, a number)
+const lengths = (v) => String(v).split(/\s+/).map(one).filter((n) => n !== null);
+const exempt = (key) => GRID_EXEMPT.find(([n]) => (n.endsWith('-') ? key.startsWith(n) : key === n));
+
+// every token of the source: { key, value, file, ref } (ref: the file is reference.tokens.json)
+function tokens() {
+  const out = [];
+  const walkDir = (d) => { for (const e of fs.readdirSync(d, { withFileTypes: true })) {
+    const p = path.join(d, e.name);
+    if (e.isDirectory()) walkDir(p); else if (/\.tokens\.json$/.test(e.name)) read(p);
+  } };
+  const read = (f) => {
+    let j; try { j = JSON.parse(fs.readFileSync(f, 'utf8')); } catch (e) { return; }
+    const ref = path.basename(f) === 'reference.tokens.json', file = path.relative(ROOT, f).split(path.sep).join('/');
+    const walk = (o) => { for (const k of Object.keys(o)) {
+      if (k.charAt(0) === '$') continue;
+      const v = o[k]; if (!v || typeof v !== 'object') continue;
+      if (v.$value !== undefined) { if (typeof v.$value === 'string') out.push({ key: k, value: v.$value, file, ref }); } else walk(v);
+    } };
+    walk(j);
+  };
+  walkDir(TOKENS);
+  return out;
+}
+function measure() {
+  const all = tokens(), colors = {}, grid = {}, corners = {}, hex = [];
+  for (const t of all) {
+    if (t.ref && (/^color-/.test(t.key) || /^#[0-9a-f]{3,8}$/i.test(t.value))) colors[t.key] = t.value;   // a hex value is a color under any key
+    else if (!t.ref && /^#[0-9a-f]{3,8}$/i.test(t.value)) hex.push(t);
+    const ns = lengths(t.value); if (!ns.length) continue;
+    if (/radius/.test(t.key)) { if (ns.some((n) => n !== 0 && (n < 2 || n > CORNERS[1]))) corners[t.key] = t.value; continue; }
+    if (ns.some((n) => n !== 0 && n % 4 !== 0) && !exempt(t.key)) grid[t.key] = t.value;
+  }
+  // a radius with no unit-length value (the pill, 9999px) is a length too: px() read it above
+  return { colors, grid, corners, hex };
+}
+const readFrozen = () => (fs.existsSync(FROZEN) ? JSON.parse(fs.readFileSync(FROZEN, 'utf8')) : { colors: {}, grid: {}, corners: {} });
+
+function check({ add }) {
+  const m = measure(), fz = readFrozen(), at = FROZEN;
+  for (const t of m.hex) add(NAME, path.join(ROOT, t.file), 0, '--plx-' + t.key + ' is a hex color outside the reference palette: colors need the owner');
+  for (const k of Object.keys(m.colors)) {
+    if (!(k in fz.colors)) add(NAME, path.join(ROOT, 'platform/tokens/reference.tokens.json'), 0, '--plx-ref-' + k + ' is a new color: the palette is frozen, and a color needs the owner');
+    else if (fz.colors[k] !== m.colors[k]) add(NAME, path.join(ROOT, 'platform/tokens/reference.tokens.json'), 0, '--plx-ref-' + k + ' changed from ' + fz.colors[k] + ' to ' + m.colors[k] + ': a color needs the owner');
+  }
+  for (const k of Object.keys(fz.colors)) if (!(k in m.colors)) add(NAME, at, 0, 'repaired, still listed: color ' + k + ' (run node check-system.rules/token-definitions.js --shrink)');
+  for (const [kind, what, hint] of [['grid', 'is off the 4px grid', 'a multiple of 4, or named in GRID_EXEMPT with its reason'], ['corners', 'is a corner outside 2 to 6px (or 0)', 'between 2 and 6px']]) {
+    for (const k of Object.keys(m[kind])) if (!(k in fz[kind])) add(NAME, path.join(ROOT, 'platform/tokens'), 0, '--plx-*-' + k + ' = ' + m[kind][k] + ' ' + what + ' (needs ' + hint + ')');
+    for (const k of Object.keys(fz[kind])) if (!(k in m[kind])) add(NAME, at, 0, 'repaired, still listed: ' + kind + ' ' + k + ' (run node check-system.rules/token-definitions.js --shrink)');
+  }
+}
+function write(o) { fs.writeFileSync(FROZEN, JSON.stringify(o, null, 2) + '\n'); }
+const DESCRIPTION = 'Frozen at 2026-10-27 for check-system.rules/token-definitions.js: the reference palette (name and value; a new or changed color needs the owner; gray 250 is in), and the tokens that were off the 4px grid or outside the 2 to 6px corners when the rule began. The grid and corners lists only shrink: node check-system.rules/token-definitions.js --shrink.';
+module.exports = { check, measure, NAME };
+
+if (require.main === module) {
+  if (process.argv.includes('--baseline')) { const m = measure(); write({ $description: DESCRIPTION, reasons: readFrozen().reasons || {}, colors: m.colors, grid: m.grid, corners: m.corners }); console.log('baseline written: ' + Object.keys(m.colors).length + ' colors, ' + Object.keys(m.grid).length + ' off the grid, ' + Object.keys(m.corners).length + ' corners'); }
+  if (process.argv.includes('--shrink')) {
+    const m = measure(), fz = readFrozen(), o = { $description: fz.$description || DESCRIPTION, reasons: fz.reasons || {}, colors: {}, grid: {}, corners: {} };
+    for (const k of Object.keys(fz.colors)) if (k in m.colors) o.colors[k] = fz.colors[k];
+    for (const kind of ['grid', 'corners']) for (const k of Object.keys(fz[kind])) if (k in m[kind]) o[kind][k] = fz[kind][k];
+    write(o); console.log('frozen list: ' + Object.keys(o.colors).length + ' colors, ' + Object.keys(o.grid).length + ' off the grid, ' + Object.keys(o.corners).length + ' corners');
+  }
+  const out = [];
+  check({ add: (rule, file, line, text) => out.push(path.relative(ROOT, file) + '  ' + text) });
+  out.forEach((l) => console.log('  ' + l));
+  console.log(out.length ? 'TOKEN_DEFINITIONS_FAIL (' + out.length + ')' : 'TOKEN_DEFINITIONS_OK');
+  process.exit(out.length ? 1 : 0);
+}
