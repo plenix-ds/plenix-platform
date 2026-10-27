@@ -9,7 +9,7 @@
 //   - another component token's value refers to it ("{plx-comp.name}") and that token is read;
 //   - it belongs to a family JavaScript builds the name of at run time (DYNAMIC below).
 // A token read by some other means is listed in ALLOWED with the reason.
-// The rule is a module check-system.js runs: require('./check-system.rules/unused-component-tokens.js').check({ add })
+// The rule is a module check-style.js runs (a style rule: check-common.js, STYLE_MODULES): require('./check-system.rules/unused-component-tokens.js').check({ add })
 // Alone: node check-system.rules/unused-component-tokens.js   -> UNUSED_COMPONENT_TOKENS_OK, or the tokens and exit 1
 const fs = require('fs');
 const path = require('path');

@@ -109,6 +109,8 @@ git clone --recurse-submodules https://github.com/plenix-ds/plenix-platform.git 
 npm install
 node build-app.js
 node check-system.js
+node check-style.js
+npm run lint:css
 node check-spec.js
 bash deploy.sh
 ```

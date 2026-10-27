@@ -74,6 +74,9 @@ jobs:
       - name: Style check (Stylelint, the main style checker)
         run: npx stylelint "platform/**/*.css" "services/**/*.css"
 
+      - name: Plenix style check (the style rules Stylelint cannot check; style-plan-30)
+        run: node check-style.js
+
       - name: Spec check
         run: |
           if [ -f platform/design-system/inventory.js ]; then node check-spec.js; else echo "skipped: no design system"; fi

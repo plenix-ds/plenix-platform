@@ -6,10 +6,11 @@
   "scripts": {
     "build:app": "node build-app.js && node build-usage.js",
     "lint:system": "node check-system.js",
+    "lint:style": "node check-style.js",
     "lint:spec": "node check-spec.js",
     "build:docs": "node build-docs.js",
     "build:packages": "node build-packages.js",
-    "release:build": "node build-app.js && node build-usage.js && node check-system.js && node build-packages.js",
+    "release:build": "node build-app.js && node build-usage.js && node check-system.js && node check-style.js && node build-packages.js",
     "test": "node tests/run.js",
     "test:full": "node tests/run.js --full",
     "test:on-demand": "node tests/run.js --on-demand",

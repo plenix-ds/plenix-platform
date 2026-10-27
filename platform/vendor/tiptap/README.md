@@ -72,6 +72,6 @@ ProseMirror classes there and nowhere else.
 4. Rebuild `LICENSES.txt` from the license file of every package in the bundle (esbuild's metafile lists them).
 5. Record the version, sizes and SHA-256 values (`sha256sum tiptap.min.js LICENSES.txt`) and the date here and in
    `../README.md`, and the version in the RichTextEditor's header, `tiptap.js` and its design-system record and docs.
-6. Run `node build-app.js`, `node check-system.js`, `node check-spec.js`, the tests, and drive an editor in Chrome
+6. Run `node build-app.js`, `node check-system.js`, `node check-style.js`, `npm run lint:css`, `node check-spec.js`, the tests, and drive an editor in Chrome
    (every toolbar option and shortcut, Tab in lists and tables, Escape then Tab, Markdown and typography, colors, fonts,
    sizes, tables, images, task lists, paste, a mention, undo and redo, read-only, the overflow at a narrow width).

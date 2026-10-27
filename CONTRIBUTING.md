@@ -46,7 +46,7 @@ before 1.0, the next MAJOR after), *Archived*. See `VERSIONING.md`.
 ## Review checklist (every pull request)
 
 - [ ] `node build-app.js` and `node build-usage.js` succeed (check the exit code)
-- [ ] `node check-system.js` and `node check-spec.js` pass
+- [ ] `node check-system.js`, `node check-style.js`, `npm run lint:css` and `node check-spec.js` pass
 - [ ] `npm test` passes: the checks for what changed (visual snapshot, pages, typography); `npm run test:full` only as the final gate. Accessibility, contrast, high contrast, themes and density are on demand (`npm run test:on-demand`), run by the owner
 - [ ] A change meant to look different: the visual baseline was updated on purpose (`node tests/visual.test.js --update`)
       and the change is listed under *Changed (visual)*

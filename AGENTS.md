@@ -92,6 +92,8 @@ Quick gates (seconds), every time:
 node tools/agent/lane-overlay.js
 node build-app.js
 node check-system.js
+node check-style.js
+npm run lint:css
 node check-spec.js
 node tools/agent/generated.js --restore
 ```

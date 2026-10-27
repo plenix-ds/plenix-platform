@@ -9,7 +9,7 @@
 //   a role whose group differs between a theme's light and dark sets (one role, one group)                                finding
 // Roles are never renamed or merged to fit a group (semantic tokens stay, even when same-valued). build-tokens.js copies the
 // group and purpose into tokens.index.json; the Color pages of the design system list each group's roles from there.
-// The rule is a module check-system.js runs (it loads every file in check-system.rules/):
+// The rule is a module check-style.js runs (a style rule: check-common.js, STYLE_MODULES) (it loads every file in check-system.rules/):
 //   require('./check-system.rules/color-groups.js').check({ files, add })   add(rule, file, line, text)
 // Alone: node check-system.rules/color-groups.js     -> COLOR_GROUPS_OK, or the findings and exit 1
 const fs = require('fs');

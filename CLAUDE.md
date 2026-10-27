@@ -40,7 +40,7 @@ Source files use `import`/`export`; `react`, `react-dom` and `plenix-platform` r
 
 ## System Rules
 
-Every application uses only the Plenix Platform: React components and patterns from `platform/`, `plx-` class names, and tokens in three tiers (`--plx-ref-` values, `--plx-sys-` roles, `--plx-comp-` component settings). Run `node check-system.js` before finishing any change to a stylesheet, a component or an application screen; it fails on old token names, raw hex colors, font sizes written as numbers, classes without the `plx-` prefix, a component stylesheet missing from `platform.css`, retired files coming back, and embedded pictures in the asset app. The master design spec (`platform/design-system/`) reads its descriptions from each component's header comment, so keep that comment current.
+Every application uses only the Plenix Platform: React components and patterns from `platform/`, `plx-` class names, and tokens in three tiers (`--plx-ref-` values, `--plx-sys-` roles, `--plx-comp-` component settings). Before finishing any change to a stylesheet, a component or an application screen, run the three checks; each style rule lives in exactly one of them. `npm run lint:css` (Stylelint, `.stylelintrc.json` and its plugin `tools/stylelint/plenix.mjs`) checks each stylesheet: raw values and colors, palette colors, `plx-` class names, token tiers, logical properties and `!important`. `node check-style.js` checks the style rules Stylelint cannot: values written in code, inline styles, undeclared tokens, cascade layers, selector kinds, text contracts and the token source (no new colors, the 4px grid, corners 2 to 6px). `node check-system.js` fails on a component stylesheet missing from `platform.css`, retired files coming back, embedded pictures in the asset app, generated files that differ from their source, and markup rules (tables, icon names, semantic HTML). The master design spec (`platform/design-system/`) reads its descriptions from each component's header comment, so keep that comment current.
 
 ## Project Structure
 
@@ -50,7 +50,9 @@ Z:\Plenix\
 ├── build-docs.js            # Build script — reads capabilities/, writes docs/plenix-docs.html
 ├── build-app.js             # The single build: icon stylesheet, Platform bundle, every application's page script
 ├── build-icons.js           # platform/icons/ -> platform/components/Icon/icon.css (run by build-app.js)
-├── check-system.js          # The system check (npm run lint:system): tokens, colors, font sizes, plx- classes, imports
+├── check-system.js          # The system check (npm run lint:system): imports, retired files, generated code, markup rules
+├── check-style.js           # The Plenix style check, beside Stylelint (.stylelintrc.json): the style rules Stylelint cannot check
+├── check-common.js          # What the two checks share: the files they read, the reporter, which rules are style rules
 ├── package.json             # npm scripts + @babel/standalone (dev dependency of build-app.js)
 ├── platform/                # The Plenix Platform design system (canonical documentation: Plenix-Platform-Canonical-Documentation.md)
 │   ├── plenix-system.css    # Foundations only (tokens, theme, layout layers); platform.css imports it first

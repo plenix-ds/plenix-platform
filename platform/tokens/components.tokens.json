@@ -1916,8 +1916,9 @@
       "$type": "color"
     },
     "spinner-radius": {
-      "$value": "{plx-sys.shape-pill}",
-      "$type": "dimension"
+      "$value": "50%",
+      "$type": "dimension",
+      "$description": "Spinner (all sizes): a circle. 50% of its own box, not the 6px shape role: the owner ruled a spinner is a circle, not a corner (spinner-round-29, 2026-10-27)."
     },
     "spinner-border-left-color": {
       "$value": "{plx-sys.action-primary-background}",

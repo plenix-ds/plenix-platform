@@ -18,12 +18,21 @@
                            exception"); check-system no longer runs it. Option files: the stylesheets it reads (a path pattern).
 */
 import { createRequire } from 'node:module';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import stylelint from 'stylelint';
 
 const { createPlugin, utils: { report, ruleMessages, validateOptions } } = stylelint;
 const isString = (v) => typeof v === 'string';
-// the stylesheet's path from the repository root, with forward slashes ('' for code passed without a file)
-const fileOf = (root) => ((root.source && root.source.input && root.source.input.file) || '').split('\\').join('/').replace(/^.*?\/(?=(platform|services)\/)/, '');
+// the stylesheet's path from the repository root (the folder of .stylelintrc.json, two levels above this plugin), with
+// forward slashes ('' for code passed without a file); a file outside the repository keeps its absolute path
+const REPO = fileURLToPath(new URL('../../', import.meta.url));
+const fileOf = (root) => {
+  const file = root.source && root.source.input && root.source.input.file;
+  if (!file) return '';
+  const r = path.relative(REPO, file);
+  return (r.startsWith('..') || path.isAbsolute(r) ? file : r).split(path.sep).join('/');
+};
 
 /* ── plenix/token-tiers ── */
 const TIERS = 'plenix/token-tiers';
