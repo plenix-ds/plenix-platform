@@ -14,8 +14,9 @@
      <PanelSplitter label="Resize navigation" value={w} min={140} max={() => 320} onChange={setW} edge="end" />
    Props:
      label: what is resized ("Preview"): the edges' names ("Preview width", "Preview height") (required)
-     variant: "default" (a hover line on the edge) | "divider" (the edge is the whole gap to the next panel: a line down
-       its middle and a pill on it; its size is the container's --plx-comp-resizable-divider-size: SplitView)
+     variant: "default" (a hover line on the edge) | "divider" (the edge is the whole gap to the next panel, 8px: a thin
+       line on each side, a light fill and a grip of three short lines in the middle; its size is the container's
+       --plx-comp-resizable-divider-size: SplitView)
      fill: the content is a column whose children fill it; default false
      axis: "horizontal" (default; the end edge changes the width) | "vertical" (the bottom edge changes the height) |
        "both" (both edges, and a corner the pointer drags in both directions)
