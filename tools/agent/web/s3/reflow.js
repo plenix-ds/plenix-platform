@@ -8,6 +8,7 @@
 // CodeBlock), and the design system's specimen stages. Each exempt sideways scroller is listed under "exempt" so it stays visible in the report.
 // Known findings are kept in tests/baselines/reflow.json (page -> finding -> number of elements); the test fails only on a
 // finding that is new on a page or affects more elements than recorded, so they can only go down.
+// The owner runs these (no tests for agents: see HANDOFF.md, No tests):
 //   node tests/reflow.test.js            compare
 //   node tests/reflow.test.js --update   record the current findings as the baseline (after fixing some, to lower it)
 //   REFLOW_PORT=8851 node tests/reflow.test.js   another port (several runs side by side)

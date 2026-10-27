@@ -1,3 +1,5 @@
+No tests: see HANDOFF.md (the owner runs them)
+
 # Task #145: Styling Standard, Phase 7: the applications off LegacyDataTable, the legacy grid removed (Codex)
 
 Tracker: https://github.com/plenix-ds/plenix-platform/issues/145 · Plan of record: https://github.com/plenix-ds/plenix-platform/issues/3 ·

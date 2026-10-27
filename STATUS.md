@@ -18,7 +18,7 @@ Start with [HANDOFF.md](HANDOFF.md) in a new session (Claude or Codex). TODO.md 
 - **Since 0.72.0 (merged, not released):** #345 (the St. John test site; the automatic tests run there), #348, #349, #350 (one check per behavior; 52 unused tests removed; the six newest fix checks kept), #346 (the real-site plan), #351 (table frame gray 300, frozen edge gray 250, a new palette step the owner asked for). The CI Collection-docs step was removed (it opened a spec page); #341 and plenix-design-system#5 (the design spec loads Plenix from the CDN, pinned to the release; `?plenix=local` previews unreleased work; each release publishes /cdn/<version>/source/, public by the owner's word). The spec source panels fill at the next release. #347 (the tests use the real St. John site repository; DS_TOKEN fixed by the owner) and #355 (three grid tests open the empty Platform host page instead of the moved site; fixes the behavior check).
 - **Held:** the Codex PRs (#206–#235 except #222–#225, #219, #248): the owner approved updating them; each still needs its own merge word. #222–#225 closed (charts move to ECharts).
 - **Charts (#353, owner 2026-10-26):** charts draw with Apache ECharts. The look passed (#354). Line, Area, Bar and Pie were shown and approved to ship (owner: "ship all four ... Ship it"); ECharts may write its own sizes and fonts from token values inside `.plx-chart__engine` (an exception, like the text editor). Every chart moves to ECharts, Sparkline and WordCloud included. **Diagram is retired** (owner; an exception to the complete-library rule): use the tree chart, SankeyDiagram or NetworkGraph; process flowcharts leave the library. **Breaking for consumers:** the `Diagram` export is removed; the release that carries it lists it under Removed (breaking) in CHANGELOG.md.
-- **How to work (owner, 2026-10-26):** tests and checks only right before a push; "show me" (a live preview and one picture) before "ship it". See HANDOFF.md.
+- **How to work (owner, 2026-10-26):** no tests (the owner starts them; HANDOFF.md, "No tests"), static checks only right before a push; "show me" (a live preview and one picture) before "ship it". See HANDOFF.md.
 - CI on `styling/phase-2`: the full suite was green at 0.72.0; green again after #355 (run 40389886058, all six browser suites).
 
 ## Who works on what
@@ -81,8 +81,7 @@ The governance board in #252 maps every workstream to its session, issues and PR
 
 ## How to work (the owner's rules)
 
-- Prove only the pages you touch (`tests/clash-audit.js --check --pages …`, `tests/compare-styles.js`); dispatch the
-  styling-proof CI with **full** commit hashes, log it in `tools/agent/proof-log.md`, and never wait for it.
+- Run no proof tests (`tests/clash-audit.js`, `tests/compare-styles.js`; HANDOFF.md, "No tests"); say in the pull request which pages the change touches.
 - No exceptions to the Styling Standard; no `!important`; no inline styles; tokens only; no new colors.
 - Pixel changes wait for the owner. Dark mode comes last.
 - Other sessions edit the same folder: commit only your own files, and build generated files in a clean copy.

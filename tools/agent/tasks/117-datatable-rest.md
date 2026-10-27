@@ -1,3 +1,5 @@
+No tests: see HANDOFF.md (the owner runs them)
+
 # Task #117: DataTable fixes for RedSave, the rest (Codex)
 
 Tracker: https://github.com/plenix-ds/plenix-platform/issues/117 · Plan of record: https://github.com/plenix-ds/plenix-platform/issues/3

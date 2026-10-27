@@ -1,3 +1,5 @@
+No tests: see HANDOFF.md (the owner runs them)
+
 # Task #50: Command bar adoption in the other apps (#50) (Codex)
 
 Tracker: https://github.com/plenix-ds/plenix-platform/issues/50 · Plan of record: https://github.com/plenix-ds/plenix-platform/issues/3

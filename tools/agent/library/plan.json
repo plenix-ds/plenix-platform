@@ -617,7 +617,7 @@
    "docs in parts/wNNL.docs.js (purpose, anatomy, behavior pointer/keyboard/focus/responsive/motion/loading/error, a11y), moved from its inventory-guidance.js entry",
    "a lab in parts/wNNL.labs.js (DS.registerLab: sizes, variants, states, content, props with a cat from the labs test MARK list, token(), html() with real classes and no style=)",
    "native counterparts in platform/standards/web-native-map.d/wNNL.json",
-   "done = node --check, check-system, check-spec, LABS_ONLY=<id> LABS_PORT=<lane port> node tests/labs.test.js ok, one screenshot of its page light + dark"
+   "done = node --check, check-system, check-spec, one screenshot of its page light + dark (no tests: the owner runs the labs test; see HANDOFF.md)"
   ],
   "pattern": [
    "as component, under platform/patterns/<Name>/, composed only of Platform components (no new primitives inside a pattern; a missing primitive is its own component task first)",

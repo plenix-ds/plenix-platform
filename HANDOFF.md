@@ -20,7 +20,7 @@ One design system and the suite of applications built on it, owned by one person
 | Design spec | `platform/design-system/` (a **submodule**, private repo `plenix-ds/plenix-design-system`) | The living spec: 688 records, 1,172 taxonomy leaves; `inventory.js` + `parts/*.records.js|docs.js|labs.js`; one page per component (the duplicate merge is permanent, no redirects) |
 | Standards | `platform/standards/` | `styling.md` (the Styling Standard: ownership, zero overlap, text contracts, layers), `text-contracts.json`, themes, layout, native design |
 | Apps | `dashboard/ projects/ messages/ contacts/ calendar/ tasks/ notes/ bookmarks/ files/ settings/ dam/` | The suite, each `main.jsx` → generated `app.js` |
-| Checks | `check-system.js` (+ `check-system.rules/`), `check-spec.js`, `tests/` | The gates |
+| Checks | `check-system.js` (+ `check-system.rules/`), `check-style.js`, `check-spec.js`; `tests/` | The gates (the tests run only when the owner starts them) |
 | Agent tools | `tools/agent/` | Work notes, proof log (`proof-log.md`), release script (`release.sh`), the spec-merge record |
 
 ## Where things stand
@@ -43,32 +43,34 @@ One design system and the suite of applications built on it, owned by one person
 - **Dark mode last** (#205). American English. Statuses are badges with an icon, never a dot. No action links.
 - Write documentation as definitive rules, plain words, bullets for two sentences or more.
 - **Other sessions share this folder.** Commit only your own files; build generated files in a clean copy; never `git add -A`.
-- Proofs: prove only the pages you touch (`tests/clash-audit.js --check --pages …`, `tests/compare-styles.js`), log
-  them in `tools/agent/proof-log.md`, never wait on them; the full suite (#58) only at the very end.
+- Proofs: do not run `tests/clash-audit.js` or `tests/compare-styles.js` (see "No tests"); say in the pull request which pages the change touches.
+  The full suite (#58) is the owner's, at the very end.
 - Commits: author "Coptic Collection" <frraphaelmaher@gmail.com>, trailer `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`. The global git identity is set to this author (owner, 2026-10-24).
 
 ## How to work
 
-- **Tests and checks only before a push (owner, 2026-10-26).** The owner's words: "so i want the tests checks to only be done on a PUSH!!!"
-  - Commit freely while working. Run the tests and checks (`node build-app.js`, `node check-system.js`, `node check-style.js`, `npm run lint:css`, `node check-spec.js`, the tests that cover the change) only right before a push.
-  - The full suite runs on the release gate (the sharded CI full run on the release commit), not on each commit.
+- **No tests (owner, 2026-10-27).** Never run a test. Tests run only when the owner starts them himself. Reading the code and the quick static checks (check-system, check-style, lint) are fine.
+  - This is the one statement of the rule; every other file points here.
+  - Commit freely while working. Right before a push run only the build and the static checks: `node build-app.js`, `node check-system.js`, `node check-style.js`, `npm run lint:css`, `node check-spec.js`.
+  - The full suite and the on-demand tests are started by the owner. CI is a separate owner decision.
+  - The owner starts tests with a run-tests issue in plenix-ds/owner-requests, which `~/team/test-runner.sh` runs. No agent opens, edits or comments on those issues.
 - **Show me, then ship it (owner, 2026-10-26).**
   - "Show me" comes first: a live preview and one picture, with no build, no tests and no PR.
   - "Ship it" comes only after the owner picks: then build, check before the push, open the PR, and merge on the owner's word.
-- **On-demand tests (owner only, 2026-10-25).**
+- **On-demand tests (owner only, 2026-10-25; the owner runs them, see No tests).**
   - Accessibility, high contrast, color contrast, themes and density run only when the owner asks for them.
-  - They are not in `npm test`, `npm run test:full`, the per-push CI or the full suite.
-  - On this computer: `npm run test:on-demand` checks what changed; `npm run test:on-demand:full` checks every page (accessibility alone takes about two hours).
-  - On GitHub: Actions › On-demand tests › Run workflow, then pick "full" or "changed".
-  - One test by name: `node tests/run.js a11y` (or `high-contrast`, `contrast`, `theme`, `density`).
+  - They are not in `npm test` (the owner runs it), `npm run test:full`, the per-push CI or the full suite.
+  - The owner runs, on this computer: `npm run test:on-demand` checks what changed; `npm run test:on-demand:full` checks every page (accessibility alone takes about two hours).
+  - The owner runs, on GitHub: Actions › On-demand tests › Run workflow, then pick "full" or "changed".
+  - One test by name (the owner runs): `node tests/run.js a11y` (or `high-contrast`, `contrast`, `theme`, `density`).
 - **The test site (owner, 2026-10-25).** Every automatic browser test runs on the St. John the Beloved Coptic Orthodox
   Church test site and the suite apps, never on the design spec.
   - The site is its own web app and repository: github.com/plenix-ds/st-john-test-site (Node 22 + PostgreSQL 16, Plenix from the CDN), live at https://stjohn.lighthouseway.org behind Authentik.
   - Clone it beside this repository (`../st-john-test-site`, or set `SITE_DIR`). The tests start it on their own server at `/Plenix/test-site/` with a fresh database (PGlite on a computer, the job's PostgreSQL in CI) and point it at this checkout's CDN files at `/cdn/local/`: run `node build-app.js` and `node build-packages.js` first.
   - It is a church database and membership app with made-up data (no sacrament records; "servants", never "volunteers"). Its routes are its `site/pages.js`; tests read them through `tests/site.js`.
   - CI reads the site's repository with the `DS_TOKEN` secret (owner, 2026-10-26: reuse it; it also reads the spec).
-  - A new Platform part must be placed on the site: `node tests/site-coverage.test.js` (SITE_COVERAGE_OK) and `node tests/site-check.js` (the site's rules).
-  - The spec's component labs are spec-only (`node tests/run.js labs`); `tests/component-tokens.test.js` checks the tokens on the site's real components.
+  - A new Platform part must be placed on the site. The owner starts `node tests/site-coverage.test.js` (SITE_COVERAGE_OK) and `node tests/site-check.js` (the site's rules); you do not run them.
+  - The spec's component labs are spec-only (`node tests/run.js labs`, the owner runs); `tests/component-tokens.test.js` (the owner runs) checks the tokens on the site's real components.
 - **No target-size test.** The owner removed it ("Remove tap areas from all tests", 2026-10-25).
 - **Each thing is checked once (reset, owner 2026-10-26).**
   - Visual checks the buttons in light mode at the default density (Standard) only: 840 buttons and the group.
