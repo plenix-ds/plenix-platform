@@ -6,6 +6,6 @@
 .plx-tree-chart__node{fill:var(--plx-comp-tree-chart-node-fill);r:var(--plx-comp-tree-chart-node-radius);stroke:var(--plx-comp-tree-chart-node-color);stroke-width:var(--plx-comp-tree-chart-node-outline-width);}
 .plx-tree-chart__node--folded{fill:var(--plx-comp-tree-chart-node-color);}
 .plx-tree-chart__node--focus{stroke:var(--plx-comp-tree-chart-focus-color);stroke-width:var(--plx-comp-tree-chart-focus-width);}
-.plx-tree-chart__name{fill:var(--plx-comp-tree-chart-name-color);font-family:var(--plx-comp-tree-chart-name-font-family);font-size:var(--plx-comp-tree-chart-name-font-size);font-weight:var(--plx-comp-tree-chart-name-font-weight);}
+.plx-tree-chart__name{fill:var(--plx-comp-tree-chart-name-color);font-family:var(--plx-comp-tree-chart-name-font-family);font-size:var(--plx-comp-tree-chart-name-font-size);font-weight:var(--plx-comp-tree-chart-name-font-weight);letter-spacing:var(--plx-sys-text-label-letter-spacing);line-height:var(--plx-sys-text-label-line-height);word-spacing:normal;}
 .plx-tree-chart__name--focus{font-weight:var(--plx-comp-tree-chart-name-focus-font-weight);}
-.plx-tree-chart__detail{fill:var(--plx-comp-tree-chart-detail-color);font-family:var(--plx-comp-tree-chart-name-font-family);font-size:var(--plx-comp-tree-chart-detail-font-size);}
+.plx-tree-chart__detail{fill:var(--plx-comp-tree-chart-detail-color);font-family:var(--plx-comp-tree-chart-name-font-family);font-size:var(--plx-comp-tree-chart-detail-font-size);font-weight:var(--plx-sys-text-caption-font-weight);letter-spacing:var(--plx-sys-text-caption-letter-spacing);line-height:var(--plx-sys-text-caption-line-height);word-spacing:normal;}
