@@ -891,9 +891,9 @@
       "$description": "Select: a row corners."
     },
     "select-option-active-background": {
-      "$value": "{plx-comp.menu-item-hover-background}",
+      "$value": "{plx-sys.state-selected}",
       "$type": "color",
-      "$description": "Select: the row under the pointer or the arrow keys."
+      "$description": "Select: the row under the pointer or the arrow keys (the light blue tint of the proposal picture, as the Combobox's)."
     },
     "select-option-selected-text": {
       "$value": "{plx-sys.content-link}",

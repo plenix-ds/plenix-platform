@@ -92,11 +92,14 @@
 .plx-select__field{align-items:center;display:flex;inset-block:0;inset-inline:0;position:absolute;}
 .plx-select__field:where(:not(.is-disabled)){cursor:pointer;}
 .plx-select__value{flex:1 1 auto;min-inline-size:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.plx-select__list{background-color:var(--plx-comp-select-list-background);border-color:var(--plx-comp-select-list-border-color);border-radius:var(--plx-comp-select-list-radius);border-style:solid;border-width:var(--plx-comp-select-list-border-width);box-shadow:var(--plx-comp-select-list-shadow);inset-block-start:100%;inset-inline:0;list-style:none;margin-block:var(--plx-comp-select-list-margin-block-start) 0;margin-inline:0;max-block-size:var(--plx-comp-select-list-max-height);min-inline-size:max-content;overflow-y:auto;padding-block:var(--plx-comp-select-list-padding);padding-inline:var(--plx-comp-select-list-padding);position:absolute;z-index:var(--plx-comp-select-list-z-index);}
+.plx-select__list{background-color:var(--plx-comp-select-list-background);border-color:var(--plx-comp-select-list-border-color);border-radius:var(--plx-comp-select-list-radius);border-style:solid;border-width:var(--plx-comp-select-list-border-width);box-shadow:var(--plx-comp-select-list-shadow);list-style:none;margin-block:0;margin-inline:0;max-block-size:var(--plx-comp-select-list-max-height);overflow-y:auto;padding-block:var(--plx-comp-select-list-padding);padding-inline:var(--plx-comp-select-list-padding);}
+/* in the top layer, placed by system/floating.css; without it (no anchor positioning) the list hangs below the field */
+.plx-select__list:not([data-plx-floating]){inset-block-start:100%;inset-inline:0;margin-block-start:var(--plx-comp-select-list-margin-block-start);min-inline-size:max-content;position:absolute;z-index:var(--plx-comp-select-list-z-index);}
 .plx-select__option{align-items:center;border-radius:var(--plx-comp-select-option-radius);color:var(--plx-comp-select-option-text);cursor:pointer;display:flex;font-size:var(--plx-comp-select-option-font-size);min-block-size:var(--plx-comp-select-option-min-height);padding-inline:var(--plx-comp-select-option-padding-inline);}
 .plx-select__option.is-active{background-color:var(--plx-comp-select-option-active-background);}
 .plx-select__option.is-selected{color:var(--plx-comp-select-option-selected-text);font-weight:var(--plx-comp-select-option-selected-font-weight);}
 .plx-select__option.is-disabled{color:var(--plx-comp-select-option-disabled-text);cursor:default;}
+.plx-select__group-wrap,.plx-select__group-list{list-style:none;margin-block:0;margin-inline:0;padding-block:0;padding-inline:0;}
 .plx-select__group{color:var(--plx-comp-select-group-text);font-size:var(--plx-comp-select-group-font-size);font-weight:var(--plx-comp-select-group-font-weight);padding-block:var(--plx-comp-select-group-padding-block);padding-inline:var(--plx-comp-select-group-padding-inline);}
 /* Optional small fields follow the existing small Button role; default sizes are unchanged. */
 .plx-select--size-sm{--plx-comp-input-context-min-height:var(--plx-comp-select-small-min-height);}

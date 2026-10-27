@@ -46,7 +46,10 @@
      Keyboard: ↓ / ↑ / Enter / Space open the list; ↓ / ↑ move; Home and End jump to the first and last row; typing a letter
      goes to the next row that starts with it; Enter chooses; Alt+↑ chooses and closes; Escape closes; Tab chooses the row
      and moves on. Rows are the Menu's height and text size; the chosen row is blue and semibold; a disabled row is skipped.
-     The box is as wide as the widest option; the list opens below it, as wide as the field at least.
+     A value set straight on the native select through the ref shows on the next render. The options are compared after every
+     render (length, then each value, label and state), so a list of hundreds costs a little each time.
+     The box is as wide as the widest option. The list opens in the browser's top layer, below the field (or above it near an
+     edge), at least as wide as the field, placed like a Menu: no dialog, drawer, table cell or scroll area clips it.
      Inside a Field, the label, description and error are connected for you.
      Every appearance keeps the same states: hover and focus change only the color of its border, never a ring outside
      it; invalid draws a 2px danger border (the border and a line inside it, so the value does not move) on the lightest
@@ -62,6 +65,10 @@
 import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { gridPx } from '../../utils/grid.js';
+import { useFloating, FLOATING_ANCHOR } from '../../utils/floating.js';
+
+// the top layer and CSS anchor positioning (as Menu and Popover), checked once
+const TOP_LAYER = FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 
 // the keyboard a type brings on a touch screen (Platforms Standard 3.5: the right type, inputmode and autocomplete)
 const TYPE_HINTS = {
@@ -113,7 +120,7 @@ const SelectNative = React.forwardRef(function SelectNative({ invalid, options, 
    come from it, so a form posts, a reset resets and e.target.value works as before. */
 const SelectList = React.forwardRef(function SelectList({ invalid, options, appearance, size, joined, data = false, block = false, width, className, children, id, onFocus, onBlur, onKeyDown,
   'aria-label': ariaLabel, 'aria-labelledby': labelledBy, 'aria-describedby': describedBy, 'aria-errormessage': errorMessage, ...rest }, ref) {
-  const native = React.useRef(null), field = React.useRef(null), last = React.useRef(''), buffer = React.useRef(''), timer = React.useRef(0);
+  const native = React.useRef(null), field = React.useRef(null), wrap = React.useRef(null), list = React.useRef(null), last = React.useRef(null), buffer = React.useRef(''), timer = React.useRef(0);
   const setNative = React.useCallback((el) => { native.current = el; if (typeof ref === 'function') ref(el); else if (ref) ref.current = el; }, [ref]);
   const auto = React.useId();
   const [items, setItems] = React.useState([]);
@@ -123,14 +130,17 @@ const SelectList = React.forwardRef(function SelectList({ invalid, options, appe
   const [labelId, setLabelId] = React.useState(null);
   const [, redraw] = React.useReducer((n) => n + 1, 0);
   const disabled = !!rest.disabled;
+  // the list opens in the top layer, placed against the field by the floating layer (flips up near an edge, follows scroll and resize), so no dialog, drawer, table cell or scroll area clips it
+  useFloating(wrap, list, { open, placement: 'bottom-start', matchWidth: true });
+  React.useLayoutEffect(() => { const el = list.current; if (open && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover(); }, [open]);
   const listId = auto + '-list', optId = (i) => auto + '-o' + i;
   // read the native select (its options, in order, and its chosen one) after every render
   const read = React.useCallback(() => {
     const el = native.current;
     if (!el) return;
     const next = Array.from(el.options).map((o) => ({ value: o.value, label: o.text, disabled: o.disabled || (o.parentElement && o.parentElement.disabled === true), group: o.parentElement && o.parentElement.tagName === 'OPTGROUP' ? o.parentElement.label : null }));
-    const key = JSON.stringify(next);
-    if (key !== last.current) { last.current = key; setItems(next); }
+    const prev = last.current;   // the same options? a length and field-by-field comparison, cheap for a long list
+    if (!prev || prev.length !== next.length || next.some((o, i) => o.value !== prev[i].value || o.label !== prev[i].label || o.disabled !== prev[i].disabled || o.group !== prev[i].group)) { last.current = next; setItems(next); }
     setChosen(el.selectedIndex);
   }, []);
   React.useLayoutEffect(read);
@@ -203,8 +213,10 @@ const SelectList = React.forwardRef(function SelectList({ invalid, options, appe
     }
   };
   const current = items[chosen];
+  const grouped = [];   // the rows in order, a group's rows together (an <optgroup>)
+  items.forEach((it, i) => { const g = grouped[grouped.length - 1]; if (g && g.name === it.group && it.group != null) g.rows.push({ it, i }); else grouped.push({ name: it.group, rows: [{ it, i }] }); });
   return (
-    <span className={cx('plx-select', 'plx-select--list', size === 'sm' && 'plx-select--size-sm', width && 'plx-select--width-' + width, block && 'plx-select--block', joined && joined.start && 'plx-select--joined-start-' + joined.start, joined && joined.end && 'plx-select--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-select--joined', open && 'is-open', disabled && 'is-disabled', className)}>
+    <span ref={wrap} className={cx('plx-select', 'plx-select--list', size === 'sm' && 'plx-select--size-sm', width && 'plx-select--width-' + width, block && 'plx-select--block', joined && joined.start && 'plx-select--joined-start-' + joined.start, joined && joined.end && 'plx-select--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-select--joined', open && 'is-open', disabled && 'is-disabled', className)}>
       <select ref={setNative} tabIndex={-1} aria-hidden="true" className={cx('plx-input', 'plx-select__control', 'plx-select__native', data && 'plx-input--data', look(appearance))}
         onFocus={() => { if (field.current) field.current.focus(); }} {...rest}>
         {options ? options.map((o) => <option key={o.value} value={o.value} disabled={o.disabled}>{o.label}</option>) : children}
@@ -218,12 +230,17 @@ const SelectList = React.forwardRef(function SelectList({ invalid, options, appe
         <span className="plx-select__value">{current ? current.label : ''}</span>
       </div>
       {open ? (
-        <ul id={listId} role="listbox" aria-label={ariaLabel} aria-labelledby={labelledBy || (ariaLabel ? undefined : labelId || undefined)} className="plx-select__list">
-          {items.map((it, i) => [
-            it.group && (i === 0 || items[i - 1].group !== it.group) ? <li key={'g' + i} role="presentation" className="plx-select__group">{it.group}</li> : null,
-            <li key={'o' + i} id={optId(i)} role="option" aria-selected={i === chosen} aria-disabled={it.disabled || undefined}
+        <ul ref={list} id={listId} role="listbox" popover={TOP_LAYER ? 'manual' : undefined} aria-label={ariaLabel} aria-labelledby={labelledBy || (ariaLabel ? undefined : labelId || undefined)} className="plx-select__list" onMouseDown={(e) => e.preventDefault()}>
+          {grouped.map((g, gi) => {
+            const rows = g.rows.map(({ it, i }) => <li key={'o' + i} id={optId(i)} role="option" aria-selected={i === chosen} aria-disabled={it.disabled || undefined}
               className={cx('plx-select__option', i === active && 'is-active', i === chosen && 'is-selected', it.disabled && 'is-disabled')}
-              onMouseDown={(e) => e.preventDefault()} onClick={() => choose(i)} onMouseEnter={() => { if (!it.disabled) setActive(i); }}>{it.label}</li>])}
+              onMouseDown={(e) => e.preventDefault()} onClick={() => choose(i)} onMouseEnter={() => { if (!it.disabled) setActive(i); }}>{it.label}</li>);
+            return g.name == null ? rows : (
+              <li key={'g' + gi} role="group" aria-labelledby={auto + '-g' + gi} className="plx-select__group-wrap">
+                <div id={auto + '-g' + gi} role="presentation" className="plx-select__group">{g.name}</div>
+                <ul role="presentation" className="plx-select__group-list">{rows}</ul>
+              </li>);
+          })}
         </ul>
       ) : null}
     </span>

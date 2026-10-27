@@ -184,7 +184,7 @@
   --plx-comp-select-option-min-height: var(--plx-comp-menu-item-min-height);
   --plx-comp-select-option-padding-inline: var(--plx-comp-menu-item-padding-inline);
   --plx-comp-select-option-radius: var(--plx-comp-menu-item-radius);
-  --plx-comp-select-option-active-background: var(--plx-comp-menu-item-hover-background);
+  --plx-comp-select-option-active-background: var(--plx-sys-state-selected);
   --plx-comp-select-option-selected-text: var(--plx-sys-content-link);
   --plx-comp-select-option-selected-font-weight: var(--plx-sys-font-weight-semibold);
   --plx-comp-select-option-disabled-text: var(--plx-comp-menu-item-disabled-text);

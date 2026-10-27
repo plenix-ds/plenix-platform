@@ -6584,7 +6584,7 @@ function gridWithin(px, min, max, opts) {
   })));
 }
   } },
-  "platform/components/Input/Input.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Input/Input.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/floating.js":"platform/utils/floating.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -6594,6 +6594,7 @@ exports.Textarea = exports.Select = exports.Input = void 0;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _grid = require("../../utils/grid.js");
+var _floating = require("../../utils/floating.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Input, Textarea, Select
    Summary: The text field family, at the standard control height.
@@ -6643,7 +6644,10 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Keyboard: ↓ / ↑ / Enter / Space open the list; ↓ / ↑ move; Home and End jump to the first and last row; typing a letter
      goes to the next row that starts with it; Enter chooses; Alt+↑ chooses and closes; Escape closes; Tab chooses the row
      and moves on. Rows are the Menu's height and text size; the chosen row is blue and semibold; a disabled row is skipped.
-     The box is as wide as the widest option; the list opens below it, as wide as the field at least.
+     A value set straight on the native select through the ref shows on the next render. The options are compared after every
+     render (length, then each value, label and state), so a list of hundreds costs a little each time.
+     The box is as wide as the widest option. The list opens in the browser's top layer, below the field (or above it near an
+     edge), at least as wide as the field, placed like a Menu: no dialog, drawer, table cell or scroll area clips it.
      Inside a Field, the label, description and error are connected for you.
      Every appearance keeps the same states: hover and focus change only the color of its border, never a ring outside
      it; invalid draws a 2px danger border (the border and a line inside it, so the value does not move) on the lightest
@@ -6656,6 +6660,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      They take every native attribute (value, onChange, placeholder, disabled, readOnly, required…).
      All three forward their ref to the native element.
 */
+// the top layer and CSS anchor positioning (as Menu and Popover), checked once
+const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
+
 // the keyboard a type brings on a touch screen (Platforms Standard 3.5: the right type, inputmode and autocomplete)
 const TYPE_HINTS = {
   email: {
@@ -6796,7 +6803,9 @@ const SelectList = /*#__PURE__*/_react.default.forwardRef(function SelectList({
 }, ref) {
   const native = _react.default.useRef(null),
     field = _react.default.useRef(null),
-    last = _react.default.useRef(''),
+    wrap = _react.default.useRef(null),
+    list = _react.default.useRef(null),
+    last = _react.default.useRef(null),
     buffer = _react.default.useRef(''),
     timer = _react.default.useRef(0);
   const setNative = _react.default.useCallback(el => {
@@ -6811,6 +6820,16 @@ const SelectList = /*#__PURE__*/_react.default.forwardRef(function SelectList({
   const [labelId, setLabelId] = _react.default.useState(null);
   const [, redraw] = _react.default.useReducer(n => n + 1, 0);
   const disabled = !!rest.disabled;
+  // the list opens in the top layer, placed against the field by the floating layer (flips up near an edge, follows scroll and resize), so no dialog, drawer, table cell or scroll area clips it
+  (0, _floating.useFloating)(wrap, list, {
+    open,
+    placement: 'bottom-start',
+    matchWidth: true
+  });
+  _react.default.useLayoutEffect(() => {
+    const el = list.current;
+    if (open && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+  }, [open]);
   const listId = auto + '-list',
     optId = i => auto + '-o' + i;
   // read the native select (its options, in order, and its chosen one) after every render
@@ -6823,9 +6842,9 @@ const SelectList = /*#__PURE__*/_react.default.forwardRef(function SelectList({
       disabled: o.disabled || o.parentElement && o.parentElement.disabled === true,
       group: o.parentElement && o.parentElement.tagName === 'OPTGROUP' ? o.parentElement.label : null
     }));
-    const key = JSON.stringify(next);
-    if (key !== last.current) {
-      last.current = key;
+    const prev = last.current; // the same options? a length and field-by-field comparison, cheap for a long list
+    if (!prev || prev.length !== next.length || next.some((o, i) => o.value !== prev[i].value || o.label !== prev[i].label || o.disabled !== prev[i].disabled || o.group !== prev[i].group)) {
+      last.current = next;
       setItems(next);
     }
     setChosen(el.selectedIndex);
@@ -6932,7 +6951,22 @@ const SelectList = /*#__PURE__*/_react.default.forwardRef(function SelectList({
     }
   };
   const current = items[chosen];
+  const grouped = []; // the rows in order, a group's rows together (an <optgroup>)
+  items.forEach((it, i) => {
+    const g = grouped[grouped.length - 1];
+    if (g && g.name === it.group && it.group != null) g.rows.push({
+      it,
+      i
+    });else grouped.push({
+      name: it.group,
+      rows: [{
+        it,
+        i
+      }]
+    });
+  });
   return /*#__PURE__*/_react.default.createElement("span", {
+    ref: wrap,
     className: (0, _cx.cx)('plx-select', 'plx-select--list', size === 'sm' && 'plx-select--size-sm', width && 'plx-select--width-' + width, block && 'plx-select--block', joined && joined.start && 'plx-select--joined-start-' + joined.start, joined && joined.end && 'plx-select--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-select--joined', open && 'is-open', disabled && 'is-disabled', className)
   }, /*#__PURE__*/_react.default.createElement("select", _extends({
     ref: setNative,
@@ -6976,28 +7010,45 @@ const SelectList = /*#__PURE__*/_react.default.forwardRef(function SelectList({
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-select__value"
   }, current ? current.label : '')), open ? /*#__PURE__*/_react.default.createElement("ul", {
+    ref: list,
     id: listId,
     role: "listbox",
+    popover: TOP_LAYER ? 'manual' : undefined,
     "aria-label": ariaLabel,
     "aria-labelledby": labelledBy || (ariaLabel ? undefined : labelId || undefined),
-    className: "plx-select__list"
-  }, items.map((it, i) => [it.group && (i === 0 || items[i - 1].group !== it.group) ? /*#__PURE__*/_react.default.createElement("li", {
-    key: 'g' + i,
-    role: "presentation",
-    className: "plx-select__group"
-  }, it.group) : null, /*#__PURE__*/_react.default.createElement("li", {
-    key: 'o' + i,
-    id: optId(i),
-    role: "option",
-    "aria-selected": i === chosen,
-    "aria-disabled": it.disabled || undefined,
-    className: (0, _cx.cx)('plx-select__option', i === active && 'is-active', i === chosen && 'is-selected', it.disabled && 'is-disabled'),
-    onMouseDown: e => e.preventDefault(),
-    onClick: () => choose(i),
-    onMouseEnter: () => {
-      if (!it.disabled) setActive(i);
-    }
-  }, it.label)])) : null);
+    className: "plx-select__list",
+    onMouseDown: e => e.preventDefault()
+  }, grouped.map((g, gi) => {
+    const rows = g.rows.map(({
+      it,
+      i
+    }) => /*#__PURE__*/_react.default.createElement("li", {
+      key: 'o' + i,
+      id: optId(i),
+      role: "option",
+      "aria-selected": i === chosen,
+      "aria-disabled": it.disabled || undefined,
+      className: (0, _cx.cx)('plx-select__option', i === active && 'is-active', i === chosen && 'is-selected', it.disabled && 'is-disabled'),
+      onMouseDown: e => e.preventDefault(),
+      onClick: () => choose(i),
+      onMouseEnter: () => {
+        if (!it.disabled) setActive(i);
+      }
+    }, it.label));
+    return g.name == null ? rows : /*#__PURE__*/_react.default.createElement("li", {
+      key: 'g' + gi,
+      role: "group",
+      "aria-labelledby": auto + '-g' + gi,
+      className: "plx-select__group-wrap"
+    }, /*#__PURE__*/_react.default.createElement("div", {
+      id: auto + '-g' + gi,
+      role: "presentation",
+      className: "plx-select__group"
+    }, g.name), /*#__PURE__*/_react.default.createElement("ul", {
+      role: "presentation",
+      className: "plx-select__group-list"
+    }, rows));
+  })) : null);
 });
 
 /* options: [{ value, label }] or children <option>s */
