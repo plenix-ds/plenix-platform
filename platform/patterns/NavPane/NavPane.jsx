@@ -20,7 +20,9 @@
      className: more classes on the pane
      children: the body: NavList groups (whose headings are collapsible section headers), a filter field, buttons
    Behavior:
-     Its size follows the Layout grid's shell: --plx-sys-shell-nav-width (240px), resizable 140–320px with the splitter on its edge.
+     Its size follows the Layout grid's shell: --plx-sys-shell-nav-width (240px), resizable 140–320px with the splitter on its
+       edge: dragged, it moves one grid line (4px) at a time and stays on the grid; the arrow keys move it by
+       --plx-sys-shell-splitter-step; Enter or a double-click on the edge folds the pane to its rail.
      The first row is the same on every pane: the title, the actions, then the Collapse button at the row's end, on the side
        that faces the main region.
      Collapsed, it is a rail (ToolRail) of the page's rail items with Expand always first, at the top, then a divider.
@@ -49,7 +51,8 @@ import { useLayer } from '../../utils/layer.js';
 import { Button } from '../../components/Button/Button.jsx';
 import { ToolRail, BarContext } from '../ToolRail/ToolRail.jsx';
 import { useAppLayout, PanelSplitter, tokenPx } from '../AppShell/AppShell.jsx';
-import { snapSize } from '../../utils/sizeSteps.js';
+import { gridWithin } from '../../utils/grid.js';
+import { GRID_PANE_MAX } from '../../utils/sizeSteps.js';
 
 const STRINGS = { browse: 'Browse' };
 // the rail's items out of their fragments (the bar draws destinations, never dividers)
@@ -109,9 +112,9 @@ export function NavPane({ label, title, actions, as = 'nav', header, footer, rai
     if (mode === 'bar') return narrowEl;
   }
 
-  // a width only the page or the person knows (the width prop, or the splitter's) reaches the stylesheet as the pane's width token
+  // a width only the page or the person knows (the width prop, or the splitter's) reaches the stylesheet as the pane's width, on the grid
   const w = mode === 'static' ? width : narrow ? null : layout.width;
-  const paneWidth = w ? snapSize(parseInt(w, 10), tokenPx('--plx-sys-shell-nav-min-width'), tokenPx('--plx-sys-shell-nav-max-width')) + 'px' : undefined;
+  const paneWidth = w ? gridWithin(parseInt(w, 10), tokenPx('--plx-sys-shell-nav-min-width'), Math.min(tokenPx('--plx-sys-shell-nav-max-width'), GRID_PANE_MAX)) + 'px' : undefined;
   const collapse = mode === 'static' || narrow ? null : (
     <span className={cx('plx-nav-pane__collapse', 'plx-nav-pane__collapse--' + collapseAt)}>
       <Button size="sm" variant="ghost" iconOnly icon="panel-left-close" label="Collapse sidebar" onClick={layout.toggle} />
@@ -131,7 +134,8 @@ export function NavPane({ label, title, actions, as = 'nav', header, footer, rai
       <div className="plx-nav-pane__body" onClick={onChoose}>{children}</div>
       {footer ? <div className="plx-nav-pane__footer">{footer}</div> : null}
       {mode === 'inline' ? <PanelSplitter label={'Resize ' + (label || 'navigation')} value={layout.width || tokenPx('--plx-sys-shell-nav-width')}
-        min={tokenPx('--plx-sys-shell-nav-min-width')} max={() => tokenPx('--plx-sys-shell-nav-max-width')} onChange={layout.setWidth} edge="end" /> : null}
+        min={tokenPx('--plx-sys-shell-nav-min-width')} max={() => tokenPx('--plx-sys-shell-nav-max-width')} onChange={layout.setWidth}
+        onCollapse={layout.toggle} edge="end" /> : null}
     </Tag>
   );
   // Narrow: the pane is a screen over the main region, with the bar still below it

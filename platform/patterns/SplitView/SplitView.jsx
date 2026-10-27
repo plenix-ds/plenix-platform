@@ -29,15 +29,25 @@
    Behavior:
      Claims master-detail through useAppLayout().claimPage while mounted inside AppShell; cleanup restores the shell page.
      Each panel scrolls on its own; the page never scrolls as a whole (the multi-pane page kind). The divider is the whole
-       gap between the panels: the resize pointer anywhere along it, a thin line down its middle and a small pill
-       centered on the line; the pill darkens on hover, line and pill take the focus color while focused or dragged.
+       8px gutter between the panels (owner, 2026-10-26: the uiwjs look): the resize pointer anywhere along it, a thin
+       line on each side, a light fill and a grip of three short lines in the middle; the gutter tints on hover, and its
+       lines and grip take the focus color while focused or dragged. Stacked, the same turned a quarter.
+     Dragging: the divider moves one grid line (4px) at a time within the limits and stays on the grid when let go, or
+       settles on the nearest of the steps when there are steps. Sizes are honoured up to 1600px (Resizable's
+       GRID_BOX_MAX): a larger size or maxSize lands on 1600px.
      Keyboard: the divider is a separator in the Tab order; the arrow keys step to the next size, Home and End to the
        limits. There is no size menu (owner, 2026-10-16).
      Stacked when there is no room side by side: under 900px of the split view's own width the panels stack (container
        query), whatever the orientation.
+     Room and corners (owner, 2026-10-27, splitview-design-29): the split view keeps 16px of room all around
+       (--plx-comp-split-view-padding), so its panels never touch the rest of the screen. Both panels round their outer
+       corners by the same 6px (--plx-comp-split-view-radius, shape-md), and the corners at the divider are square, side
+       by side and stacked: each panel hands its corners to its content as context tokens
+       (--plx-comp-data-grid-context-<corner>-radius, --plx-comp-reading-pane-context-<corner>-radius).
    Notes:
-     Built on Resizable (the first panel); the divider's look is SplitView's (split-view.css). Colors, sizes and spacing
-     are --plx-comp-split-view-* and --plx-comp-reading-pane-* tokens on existing roles; the reading pane's frame is the
+     Built on Resizable (the first panel); the divider is Resizable's divider variant (resizable.css,
+     --plx-comp-resizable-divider-* tokens), its size SplitView's gap (--plx-comp-split-view-gap). Colors, sizes and
+     spacing are --plx-comp-split-view-*, --plx-comp-resizable-divider-* and --plx-comp-reading-pane-* tokens on existing roles; the reading pane's frame is the
      data grid's (data-grid-border, shape-md, border-width-thin).
 */
 import React from 'react';
@@ -84,8 +94,8 @@ export function SplitView({ orientation = 'side-by-side', first, second, label, 
   return (
     <GridPane.Provider value={true}><div ref={container} role="group" aria-label={label} className={cx('plx-split-view', 'plx-split-view--' + (side ? 'side-by-side' : 'stacked'), className)} {...rest}>
       <div className="plx-split-view__panels">
-        <Resizable label={firstLabel} steps={steps} variant="divider" fill className="plx-split-view__first" {...box}>{first}</Resizable>
-        <div className="plx-split-view__second">{second}</div>
+        <Resizable label={firstLabel} steps={steps} variant="divider" fill className={cx('plx-split-view__first', 'plx-split-view__first--' + (side ? 'side-by-side' : 'stacked'))} {...box}>{first}</Resizable>
+        <div className={cx('plx-split-view__second', 'plx-split-view__second--' + (side ? 'side-by-side' : 'stacked'))}>{second}</div>
       </div>
     </div></GridPane.Provider>
   );

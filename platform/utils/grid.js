@@ -1,8 +1,8 @@
 /* Plenix · grid (platform/utils/grid.js)
    Summary: Puts a length that JavaScript writes inline on the Plenix grid (owner, 2026-10-13: an on-the-spot offset "has
      to conform to fit into the grid system!!! important"). The grid step is the base spacing token (--plx-ref-space-4px),
-     read from the page, never written as a number. A size that has a scale (a column, a pane, a box) takes the size tokens
-     instead: snapSize and stepSize in utils/sizeSteps.js.
+     read from the page, never written as a number. A size with steps of its own takes them (Resizable's steps); a dragged
+     pane or box lands on the grid (gridWithin).
    Usage:
      import { snapToGrid, gridPx } from '../../utils/grid.js';
      el.style.insetBlockStart = gridPx(anchor.bottom + tokenPx('--plx-sys-space-stack-xs'));   // a measured anchor plus a token
@@ -12,6 +12,9 @@
      snapToGrid(px, { round, el }): px on the grid: round "nearest" (default) | "up" | "down"
      gridPx(px, { round, el }): the same, as a CSS length ("12px"), for an inline style
      onGrid(px, el): true when px is a whole number of grid steps (within half a pixel's rounding)
+     gridWithin(px, min, max, { el }): the grid line nearest px inside [min, max] (each limit taken to the nearest grid line
+       inside it): a dragged pane's or box's size, one grid line at a time (owner, 2026-10-26: "only after a user positions
+       the menu, it would automatically reposition itself to the nearest grid line")
    Behavior:
      A measured anchor (where a trigger is) is layout, not an invented value: snap the result, not the anchor. Offsets and
      gaps added to it come from tokens. 0 stays 0; a negative length snaps the same way as a positive one.
@@ -46,4 +49,10 @@ export const gridPx = (px, opts) => snapToGrid(px, opts) + 'px';
 export function onGrid(px, el) {
   const step = gridStep(el), q = Math.abs(Number(px) || 0) / step;
   return Math.abs(q - Math.round(q)) * step <= 0.5;
+}
+
+export function gridWithin(px, min, max, opts) {
+  const o = opts || {}, step = o.step || gridStep(o.el);
+  const lo = snapToGrid(min, { step, round: 'up' }), hi = Math.max(lo, snapToGrid(max, { step, round: 'down' }));
+  return Math.max(lo, Math.min(hi, snapToGrid(px, { step })));
 }
