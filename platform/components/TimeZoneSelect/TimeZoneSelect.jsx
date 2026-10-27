@@ -26,6 +26,7 @@
      className: more classes on the field
      ref: forwarded to the <input>; other props pass through to it
    Behavior:
+     The list opens in the browser's top layer like the Combobox's: no dialog, drawer or scroll area clips it.
      The Combobox's behavior and look (its classes and tokens): the list opens on focus and on typing; ↓ and ↑ move,
      Enter chooses, Escape closes, a click outside closes. The active option stays in view.
      Typing filters by city, region, IANA name, the zone's long name in the reader's language and the offset; the number
@@ -40,6 +41,10 @@ import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { formatLocale } from '../../utils/format.js';
 import { announce } from '../../utils/announce.jsx';
+import { useFloating, FLOATING_ANCHOR } from '../../utils/floating.js';
+
+// the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
+const TOP_LAYER = FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 
 const STRINGS = {
   placeholder: 'Choose a time zone', empty: 'No matches', utc: 'Coordinated Universal Time', other: 'Other',
@@ -95,6 +100,9 @@ export const TimeZoneSelect = React.forwardRef(function TimeZoneSelect({ value, 
   const [text, setText] = React.useState('');
   const [active, setActive] = React.useState(0);
   const wrap = React.useRef(null), input = React.useRef(null), list = React.useRef(null);
+  // the list opens in the top layer, placed against the field by the floating layer (flips up near an edge, follows scroll and resize): no dialog, drawer or scroll area clips it
+  useFloating(wrap, list, { open: open, placement: 'bottom-start', matchWidth: true });
+  React.useLayoutEffect(() => { const el = list.current; if (open && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover(); }, [open]);
   React.useImperativeHandle(ref, () => input.current);
   const day = date ? new Date(date).toDateString() : new Date().toDateString();
   const zoneKey = zones ? zones.join('|') : '';
@@ -157,7 +165,7 @@ export const TimeZoneSelect = React.forwardRef(function TimeZoneSelect({ value, 
         <span className="plx-combobox__chevron" aria-hidden="true" />
       </div>
       {open ? (
-        <ul ref={list} className="plx-combobox__list plx-time-zone-select__list" id={listId} role="listbox" aria-label={label}>
+        <ul ref={list} className="plx-combobox__list plx-time-zone-select__list" id={listId} role="listbox" aria-label={label} popover={TOP_LAYER ? 'manual' : undefined} onMouseDown={(e) => e.preventDefault()}>
           {shown.length ? shown.map((o, i) => [
             grouped && (i === 0 || shown[i - 1].region !== o.region) ? <li key={'g-' + o.region} className="plx-combobox__group" role="presentation">{o.region}</li> : null,
             <li key={o.value} id={optId(i)} role="option" aria-selected={o.value === value}

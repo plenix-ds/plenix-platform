@@ -36,6 +36,8 @@
      A single choice shows the chosen record's picture or icon before its name in the field and closes the list; with
        multiple, choosing adds or removes a tag and the list stays open; Backspace in the empty field removes the last
        tag; each tag has a remove button named "Remove <name>".
+     The list opens in the browser's top layer, below the field or above it near an edge, as wide as the field at least: no dialog,
+       drawer or scroll area clips it.
      The number of results is announced politely after each search; while loadOptions runs the list is busy and shows
        a spinner; a failed load says so in the list.
    Notes:
@@ -50,6 +52,10 @@ import { IconTile } from '../IconTile/IconTile.jsx';
 import { Icon } from '../Icon/Icon.jsx';
 import { Spinner } from '../Loading/Loading.jsx';
 import { announce } from '../../utils/announce.jsx';
+import { useFloating, FLOATING_ANCHOR } from '../../utils/floating.js';
+
+// the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
+const TOP_LAYER = FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 
 const STRINGS = { placeholderPeople: 'Search by name or email', placeholder: 'Search {entityName}', empty: 'No {entityName} found', browse: 'Browse all {entityName}',
   loading: 'Loading…', error: 'The results could not be loaded', results: (n) => n + (n === 1 ? ' result' : ' results'), remove: 'Remove {label}' };
@@ -65,7 +71,7 @@ export const EntityPicker = React.forwardRef(function EntityPicker({ kind = 'rec
   const [open, setOpen] = React.useState(false);
   const [text, setText] = React.useState('');
   const [active, setActive] = React.useState(0);
-  const wrap = React.useRef(null), input = React.useRef(null);
+  const wrap = React.useRef(null), input = React.useRef(null), list = React.useRef(null);
   React.useImperativeHandle(ref, () => input.current);
   const [loaded, setLoaded] = React.useState([]);
   const [busy, setBusy] = React.useState(false);
@@ -132,6 +138,9 @@ export const EntityPicker = React.forwardRef(function EntityPicker({ kind = 'rec
   const optId = (i) => auto + '-o' + i;
   const hint = placeholder || (kind === 'people' && !entityName ? t.placeholderPeople : fill(t.placeholder, { entityName: noun }));
   const showList = open && (items.length || busy || failed || q);
+  // the list opens in the top layer, placed against the field by the floating layer (flips up near an edge, follows scroll and resize): no dialog, drawer or scroll area clips it
+  useFloating(wrap, list, { open: !!showList, placement: 'bottom-start', matchWidth: true });
+  React.useLayoutEffect(() => { const el = list.current; if (showList && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover(); }, [showList]);
   return (
     <div ref={wrap} className={cx('plx-entity-picker', 'plx-entity-picker--' + kind, multiple && 'plx-entity-picker--multiple', open && 'is-open', disabled && 'is-disabled', className)}>
       <div className="plx-entity-picker__field plx-input" aria-invalid={invalid || undefined}>
@@ -145,7 +154,7 @@ export const EntityPicker = React.forwardRef(function EntityPicker({ kind = 'rec
         <span className="plx-entity-picker__search" aria-hidden="true"><Icon name="search" /></span>
       </div>
       {showList ? (
-        <ul className="plx-entity-picker__list" id={listId} role="listbox" aria-label={label || noun} aria-multiselectable={multiple || undefined} aria-busy={busy || undefined}>
+        <ul ref={list} className="plx-entity-picker__list" id={listId} role="listbox" popover={TOP_LAYER ? 'manual' : undefined} onMouseDown={(e) => e.preventDefault()} aria-label={label || noun} aria-multiselectable={multiple || undefined} aria-busy={busy || undefined}>
           {busy ? <li className="plx-entity-picker__status" role="presentation"><Spinner size="sm" label={t.loading} /><span aria-hidden="true">{t.loading}</span></li>
             : failed ? <li className="plx-entity-picker__status plx-entity-picker__error" role="presentation">{t.error}</li>
             : null}
