@@ -65,7 +65,7 @@ jobs:
           - { name: 'component tokens', tests: component-tokens, shard: '' }
           - { name: typography, tests: typography, shard: '' }
           - { name: reflow, tests: reflow, shard: '' }
-          - { name: fixtures, tests: site-coverage visual layout utilities keyboard charts-echarts-353 sparkline-echarts-353, shard: '' }
+          - { name: fixtures, tests: site-coverage visual layout utilities keyboard charts-echarts-353 sparkline-echarts-353 treechart-echarts, shard: '' }
           - { name: behavior, tests: data-grid focus-order semantic-html navigation one-primary, shard: '' }
     services:
       postgres:

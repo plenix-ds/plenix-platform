@@ -102,7 +102,7 @@ jobs:
           - name: component tokens
             tests: component-tokens
           - name: fixtures
-            tests: site-coverage visual layout charts-echarts-353 sparkline-echarts-353
+            tests: site-coverage visual layout charts-echarts-353 sparkline-echarts-353 treechart-echarts
           - name: behavior
             tests: data-grid keyboard focus-order semantic-html utilities navigation one-primary
     services:

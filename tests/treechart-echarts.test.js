@@ -7,6 +7,10 @@
      priest folds his branch and the chart gets shorter; the style audit reports nothing (font weights from the tokens).
    Usage: node tests/treechart-echarts.test.js */
 const assert = require('assert/strict'), { serve, launch } = require('./lib');
+// in the automatic set with the other chart tests (owner, codex-q3-27): changed mode runs it when the charts, the engine, a
+// global file or this test changed; TEST_SCOPE=full always
+const changed = require('./changed');
+if (!changed.wants({})) changed.none('TREECHART_ECHARTS_OK');
 const CLERGY = [['c1', 'Fr. Daniel Boulos', 'Parish priest'], ['c2', 'Fr. Antony Wahba', 'Associate priest']];
 const MINISTRIES = [['sunday-school', 'Sunday School', 'Marina Girgis', 'Education'], ['youth', 'Youth Meeting', 'Mina Habib', 'Education'],
   ['deacons', 'Deacons’ School', 'Kirollos Tadros', 'Worship'], ['choir', 'Hymns and Choir', 'Demiana Wassef', 'Worship'],
