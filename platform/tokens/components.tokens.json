@@ -805,11 +805,11 @@
       "$type": "color"
     },
     "select-after-height": {
-      "$value": "{plx-ref.size-12px}",
+      "$value": "{plx-sys.control-icon-inline}",
       "$type": "dimension"
     },
     "select-after-width": {
-      "$value": "{plx-ref.size-12px}",
+      "$value": "{plx-sys.control-icon-inline}",
       "$type": "dimension"
     },
     "select-after-inset-inline-end": {
@@ -819,6 +819,126 @@
     "select-control-padding-inline-end": {
       "$value": "{plx-ref.space-32px}",
       "$type": "dimension"
+    },
+    "select-list-background": {
+      "$value": "{plx-comp.menu-background}",
+      "$type": "color",
+      "$description": "Select: the open list, the same surface as a Menu."
+    },
+    "select-list-border-color": {
+      "$value": "{plx-comp.menu-border-color}",
+      "$type": "color",
+      "$description": "Select: the open list border."
+    },
+    "select-list-border-width": {
+      "$value": "{plx-comp.menu-border-width}",
+      "$type": "dimension",
+      "$description": "Select: the open list border width."
+    },
+    "select-list-radius": {
+      "$value": "{plx-comp.menu-radius}",
+      "$type": "dimension",
+      "$description": "Select: the open list corners."
+    },
+    "select-list-shadow": {
+      "$value": "{plx-comp.menu-shadow}",
+      "$type": "shadow",
+      "$description": "Select: the open list shadow."
+    },
+    "select-list-margin-block-start": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "Select: the space between the field and its list."
+    },
+    "select-list-max-height": {
+      "$value": "{plx-ref.size-320px}",
+      "$type": "dimension",
+      "$description": "Select: the list scrolls past this height."
+    },
+    "select-list-padding": {
+      "$value": "{plx-comp.menu-padding-block}",
+      "$type": "dimension",
+      "$description": "Select: the space inside the list around its rows."
+    },
+    "select-list-z-index": {
+      "$value": "{plx-comp.menu-z-index}",
+      "$type": "number",
+      "$description": "Select: the list layer."
+    },
+    "select-option-text": {
+      "$value": "{plx-comp.menu-item-text}",
+      "$type": "color",
+      "$description": "Select: a row text color."
+    },
+    "select-option-font-size": {
+      "$value": "{plx-comp.combobox-option-font-size}",
+      "$type": "dimension",
+      "$description": "Select: a row text size, the Combobox's (the approved picture)."
+    },
+    "select-option-min-height": {
+      "$value": "{plx-comp.combobox-option-min-height}",
+      "$type": "dimension",
+      "$description": "Select: a row height, the Combobox's: 28px at the compact density (the approved picture)."
+    },
+    "select-option-padding-inline": {
+      "$value": "{plx-comp.combobox-option-padding-inline}",
+      "$type": "dimension",
+      "$description": "Select: the space at a row start and end."
+    },
+    "select-option-radius": {
+      "$value": "{plx-comp.menu-item-radius}",
+      "$type": "dimension",
+      "$description": "Select: a row corners."
+    },
+    "select-option-active-background": {
+      "$value": "{plx-comp.menu-item-hover-background}",
+      "$type": "color",
+      "$description": "Select: the row under the pointer or the arrow keys, the same gray as a Menu row."
+    },
+    "select-option-selected-background": {
+      "$value": "{plx-sys.state-selected}",
+      "$type": "color",
+      "$description": "Select: the chosen row's light blue tint (the Combobox's active tint), also while the row is active."
+    },
+    "select-option-selected-text": {
+      "$value": "{plx-sys.content-link}",
+      "$type": "color",
+      "$description": "Select: the chosen row text color."
+    },
+    "select-option-selected-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "Select: the chosen row weight."
+    },
+    "select-option-disabled-text": {
+      "$value": "{plx-comp.menu-item-disabled-text}",
+      "$type": "color",
+      "$description": "Select: a disabled row text color."
+    },
+    "select-group-text": {
+      "$value": "{plx-comp.menu-group-label-text}",
+      "$type": "color",
+      "$description": "Select: a group heading color."
+    },
+    "select-group-font-size": {
+      "$value": "{plx-comp.menu-group-label-font-size}",
+      "$type": "dimension",
+      "$description": "Select: a group heading size."
+    },
+    "select-group-font-weight": {
+      "$value": "{plx-comp.menu-group-label-font-weight}",
+      "$type": "fontWeight",
+      "$description": "Select: a group heading weight."
+    },
+    "select-group-padding-block": {
+      "$value": "{plx-comp.menu-group-label-padding-block}",
+      "$type": "dimension",
+      "$description": "Select: a group heading vertical space."
+    },
+    "select-group-padding-inline": {
+      "$value": "{plx-comp.menu-group-label-padding-inline}",
+      "$type": "dimension",
+      "$description": "Select: a group heading horizontal space."
     },
     "input-width-xs-width": {
       "$value": "{plx-sys.field-width-xs}",
@@ -5020,11 +5140,11 @@
       "$type": "color"
     },
     "combobox-chevron-height": {
-      "$value": "{plx-ref.size-12px}",
+      "$value": "{plx-sys.control-icon-inline}",
       "$type": "dimension"
     },
     "combobox-chevron-width": {
-      "$value": "{plx-ref.size-12px}",
+      "$value": "{plx-sys.control-icon-inline}",
       "$type": "dimension"
     },
     "combobox-chevron-inset-inline-end": {

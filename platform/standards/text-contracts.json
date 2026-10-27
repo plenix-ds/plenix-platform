@@ -2717,6 +2717,20 @@
     "line-height"
    ]
   },
+  "plx-select__group": {
+   "contract": "adjusts",
+   "props": [
+    "font-size",
+    "font-weight"
+   ]
+  },
+  "plx-select__option": {
+   "contract": "adjusts",
+   "props": [
+    "font-size",
+    "font-weight"
+   ]
+  },
   "plx-selection-summary__count": {
    "contract": "adjusts",
    "props": [

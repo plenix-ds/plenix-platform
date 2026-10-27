@@ -634,7 +634,7 @@ public enum Plenix {
         public static let segmentedItemMinHeight: CGFloat = 32
         public static let segmentedRadius: CGFloat = 4
         public static let selectAfterInsetInlineEnd: CGFloat = 12
-        public static let selectAfterWidth: CGFloat = 12
+        public static let selectAfterWidth: CGFloat = 20
         public static let sliderInputDisabledOpacity: Double = 0.5
         public static let sliderInputHeight: CGFloat = 28
         public static let sliderRowGap: CGFloat = 4
