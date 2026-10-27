@@ -1,0 +1,77 @@
+openapi: 3.0.3
+info:
+  title: Plenix vote service (the contract each app's own service keeps)
+  version: 0.1.0
+  description: >
+    Each app runs its own vote service and its own Postgres database (owner, vote-live-36). Paths are under the app's own origin;
+    the app's own sign-in applies and the service reads who the caller is from the app's session. The kit asks the app for two
+    functions: canVote(caller, memberId) and canManage(caller, eventId). Every change returns the full outcome, so a screen never
+    guesses a total.
+paths:
+  /vote/events/{id}:
+    get:
+      summary: The event, its members with their current choices, its settings and its outcome (cut to what the caller may see).
+      parameters: [{ $ref: '#/components/parameters/id' }]
+      responses:
+        '200': { description: ok, content: { application/json: { schema: { $ref: '#/components/schemas/EventView' } } } }
+        '404': { description: no such event }
+  /vote/events/{id}/ballots/{memberId}:
+    put:
+      summary: Cast, change or clear one member's vote.
+      parameters: [{ $ref: '#/components/parameters/id' }, { $ref: '#/components/parameters/memberId' }]
+      requestBody:
+        content: { application/json: { schema: { type: object, required: [option], properties: { option: { type: string, enum: [approve, deny, abstain], nullable: true, description: null clears the vote }, reason: { type: string } } } } }
+      responses:
+        '200': { description: the new row and the outcome, content: { application/json: { schema: { $ref: '#/components/schemas/BallotResult' } } } }
+        '403': { description: the caller may not vote for this member (whoRecords) }
+        '409': { description: the event is closed, or the ballot is locked or final (changeVote) }
+  /vote/events/{id}/close:
+    post:
+      summary: Close the event and write its result. Needs canManage.
+      parameters: [{ $ref: '#/components/parameters/id' }]
+      responses: { '200': { description: the closed EventView }, '403': { description: not a manager }, '409': { description: already closed } }
+  /vote/events/{id}/reopen:
+    post:
+      summary: Reopen a closed event (settings.reopen decides who may). Always recorded in the history.
+      parameters: [{ $ref: '#/components/parameters/id' }]
+      requestBody: { content: { application/json: { schema: { type: object, properties: { reason: { type: string } } } } } }
+      responses: { '200': { description: the open EventView }, '403': { description: not allowed by settings.reopen } }
+  /vote/events/{id}/history:
+    get:
+      summary: The change history, oldest first (who, when, what, why). Needs canManage, or settings.liveVisibility "named".
+      parameters: [{ $ref: '#/components/parameters/id' }, { name: after, in: query, schema: { type: integer }, description: only changes after this version }]
+      responses: { '200': { description: ok, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/Change' } } } } } }
+  /vote/events/{id}/stream:
+    get:
+      summary: The live connection (server-sent events). See events.md for the events, versions, reconnect and catch-up.
+      parameters: [{ $ref: '#/components/parameters/id' }, { name: Last-Event-ID, in: header, schema: { type: integer } }]
+      responses: { '200': { description: text/event-stream } }
+components:
+  parameters:
+    id: { name: id, in: path, required: true, schema: { type: string } }
+    memberId: { name: memberId, in: path, required: true, schema: { type: string } }
+  schemas:
+    Member:
+      type: object
+      properties: { memberId: { type: string }, name: { type: string }, role: { type: string }, picture: { type: string, nullable: true }, disabledReason: { type: string, nullable: true }, weight: { type: number }, present: { type: boolean }, vote: { type: string, enum: [approve, deny, abstain], nullable: true } }
+    Outcome:
+      type: object
+      description: The result of count() in src/count.js (cut down for the caller by viewFor()).
+      properties:
+        approve: { type: integer }
+        deny: { type: integer }
+        abstain: { type: integer }
+        notVoted: { type: integer }
+        turnedOff: { type: integer }
+        present: { type: integer }
+        quorum: { type: object, properties: { needed: { type: integer, nullable: true }, present: { type: integer }, met: { type: boolean } } }
+        result: { type: string, enum: [open, passing, failing, tied, no-quorum, passed, failed] }
+    EventView:
+      type: object
+      properties: { id: { type: string }, title: { type: string }, status: { type: string, enum: [open, closed, cancelled] }, version: { type: integer }, settings: { type: object }, members: { type: array, items: { $ref: '#/components/schemas/Member' } }, outcome: { $ref: '#/components/schemas/Outcome' } }
+    BallotResult:
+      type: object
+      properties: { version: { type: integer }, member: { $ref: '#/components/schemas/Member' }, outcome: { $ref: '#/components/schemas/Outcome' } }
+    Change:
+      type: object
+      properties: { version: { type: integer }, kind: { type: string, enum: [ballot, member, status, settings] }, memberId: { type: string, nullable: true }, option: { type: string, nullable: true }, detail: { type: object, nullable: true }, at: { type: string, format: date-time }, by: { type: string }, reason: { type: string, nullable: true } }
