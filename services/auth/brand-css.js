@@ -4,13 +4,14 @@
 // standard density) and DM Sans from the CDN. Run: node services/auth/brand-css.js [version]; apply with ak-brand.py.
 const fs = require('fs');
 const path = require('path');
+const { withoutImportant } = require('./no-important.js');   // no !important: rules win by specificity (issue 249)
 
 const ROOT = path.join(__dirname, '..', '..');
 const VERSION = process.argv[2] || JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8')).version;
 const CDN = 'https://design-system.lighthouseway.org/cdn/' + VERSION;
 const index = JSON.parse(fs.readFileSync(path.join(ROOT, 'platform', 'tokens', 'tokens.index.json'), 'utf8')).tokens;
 const byName = new Map(index.map((t) => [t.name, t.resolved]));
-const v = (name, mode) => {
+const v = (name, mode = 'light') => {
   const r = byName.get(name);
   if (!r) throw new Error('no token ' + name);
   const val = r.all !== undefined ? r.all : r[mode + '/standard'];
@@ -31,25 +32,28 @@ const roles = (mode) => ({
   headerText: v('--plx-comp-app-header-brand', mode),
   scrollbar: v('--plx-sys-scrollbar-thumb', mode),
 });
-const fixed = {
-  font: v('--plx-sys-font-body'),
-  primary: v('--plx-sys-action-primary-background'),
-  primaryHover: v('--plx-sys-action-primary-background-hover'),
-  primaryPressed: v('--plx-sys-action-primary-background-pressed'),
-  onPrimary: v('--plx-sys-action-primary-content'),
-  focus: v('--plx-sys-focus-ring-color'),
-  radius: v('--plx-sys-radius-control', 'light'),
-  cardRadius: v('--plx-sys-radius-card-12px'),
-  height: v('--plx-sys-control-height-dialog', 'light'),
-  borderWidth: v('--plx-comp-input-border-width'),
-  semibold: v('--plx-sys-font-weight-semibold'),
-  medium: v('--plx-sys-font-weight-medium'),
-  bold: v('--plx-sys-font-weight-bold'),
-  headerHeight: v('--plx-sys-shell-header-height', 'light'),
-  headerInset: v('--plx-sys-space-inset-md', 'light'),
-  brandSize: v('--plx-ref-font-size-20'),   // the largest type size in the tokens (owner: "Plenix in the blue header")
-  gap: v('--plx-sys-space-layout-xl', 'light'),
-};
+const fixedOf = (mode) => ({
+  font: v('--plx-sys-font-body', mode),
+  primary: v('--plx-sys-action-primary-background', mode),
+  primaryHover: v('--plx-sys-action-primary-background-hover', mode),
+  primaryPressed: v('--plx-sys-action-primary-background-pressed', mode),
+  onPrimary: v('--plx-sys-action-primary-content', mode),
+  focus: v('--plx-sys-focus-ring-color', mode),
+  radius: v('--plx-sys-radius-control', mode),
+  cardRadius: v('--plx-sys-radius-card-12px', mode),
+  height: v('--plx-sys-control-height-dialog', mode),
+  borderWidth: v('--plx-comp-input-border-width', mode),
+  semibold: v('--plx-sys-font-weight-semibold', mode),
+  medium: v('--plx-sys-font-weight-medium', mode),
+  bold: v('--plx-sys-font-weight-bold', mode),
+  headerHeight: v('--plx-sys-shell-header-height', mode),
+  headerInset: v('--plx-sys-space-inset-md', mode),
+  brandSize: v('--plx-ref-font-size-20', mode),   // the largest type size in the tokens (owner: "Plenix in the blue header")
+  gap: v('--plx-sys-space-layout-xl', mode),
+});
+const fixed = fixedOf('light');
+// a value that is not the same in dark (the focus ring) goes in the dark block too
+const darkFixed = (() => { const d = fixedOf('dark'), o = {}; for (const k of Object.keys(d)) if (d[k].split(' /*')[0] !== fixed[k].split(' /*')[0]) o[k] = d[k]; return o; })();
 // the brand (platform/brand/brand.json, batch 278): its name and the kit's mark for a blue background, never named here
 const BRAND_DIR = path.join(ROOT, 'platform', 'brand');
 const BRAND = JSON.parse(fs.readFileSync(path.join(BRAND_DIR, 'brand.json'), 'utf8'));
@@ -78,7 +82,7 @@ ${vars(fixed)}
 }
 @media (prefers-color-scheme: dark) {
   :root, :host {
-${vars(roles('dark')).replace(/^/gm, '  ')}
+${vars(Object.assign(roles('dark'), darkFixed)).replace(/^/gm, '  ')}
   }
 }
 /* the page: the canvas, no photo, no authentik logo or footer */
@@ -128,6 +132,6 @@ html, body, .pf-c-drawer__body, .pf-c-drawer__content, .pf-c-page__main { overfl
 .pf-c-button.pf-m-primary::after { display: none !important; }
 `;
 // custom properties take names, not the camelCase keys
-const out = css.replace(/--plenix-([a-zA-Z]+)/g, (m, k) => '--plenix-' + k.replace(/[A-Z]/g, (c) => '-' + c.toLowerCase()));
+const out = withoutImportant(css).replace(/--plenix-([a-zA-Z]+)/g, (m, k) => '--plenix-' + k.replace(/[A-Z]/g, (c) => '-' + c.toLowerCase()));
 fs.writeFileSync(path.join(__dirname, 'brand.css'), out);
 console.log('Wrote services/auth/brand.css (' + out.length + ' characters, release ' + VERSION + ')');

@@ -14,7 +14,9 @@ const path = require('path');
 const { spawnSync } = require('child_process');
 
 const AUTOMATIC = ['site-coverage', 'visual', 'layout', 'pages', 'keyboard', 'data-grid', 'typography', 'component-tokens', 'reflow',
-  'formats', 'utilities', 'focus-order', 'semantic-html', 'navigation', 'one-primary', 'brand-rules', 'login', 'selector-kinds', 'zero-overlap', 'types'];
+  'formats', 'utilities', 'focus-order', 'semantic-html', 'navigation', 'one-primary', 'brand-rules', 'login', 'selector-kinds', 'zero-overlap', 'types',
+  // the ECharts charts and sparklines (owner, codex-q3-27: they join the automatic check; #382 F9)
+  'charts-echarts-353', 'sparkline-echarts-353', 'treechart-echarts'];
 const ON_DEMAND = ['a11y', 'high-contrast', 'contrast', 'theme', 'density'];
 // the design spec's own checks, by name only: the spec's component labs (its Edit dialog's tokens) belong to the spec
 // (platform/design-system), which loads Plenix from the CDN; the automatic runs never open the spec (owner, 2026-10-25)

@@ -3670,6 +3670,27 @@
    "props": [
     "font-weight"
    ]
+  },
+  "plx-tree-chart__name": {
+   "contract": "establishes",
+   "role": "label",
+   "font": "sans",
+   "adjusts": [
+    "font-weight"
+   ]
+  },
+  "plx-tree-chart__name--focus": {
+   "contract": "establishes",
+   "role": "label",
+   "font": "sans",
+   "adjusts": [
+    "font-weight"
+   ]
+  },
+  "plx-tree-chart__detail": {
+   "contract": "establishes",
+   "role": "caption",
+   "font": "sans"
   }
  }
 }

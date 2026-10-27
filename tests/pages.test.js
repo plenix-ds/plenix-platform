@@ -2,6 +2,7 @@
 // owner, 2026-10-25: the tests run on the site, not on the design spec). A console error (the style audit reports inline styles as errors), a page error, a
 // failed request, a <table> that is not a DataGrid, or three framed boxes nested (owner, batch 250: containers nest two deep,
 // never three; the pattern chooses the unframed presentation) fails it. Only the work log is allowed to be missing: it lives outside this repository.
+// First, the style audit's own fixture: the person's formatting passes in user content, three forbidden styles are caught.
 //   node tests/pages.test.js                  the pages of what changed (tests/changed.js)
 //   TEST_SCOPE=full node tests/pages.test.js  every page (the final gate)   TEST_PORT=8901: another port
 const { serve, launch, sleep, at } = require('./lib.js');
@@ -64,7 +65,8 @@ let current = '';   // the page being checked
   // output "has to conform to fit into the grid system"). Inside the chart engine (.plx-chart__engine), ECharts may write
   // the sizes and fonts of its own elements from the chart tokens (owner, 2026-10-26, issue 353), only these: its div
   // position, overflow-x, overflow-y, width, height; its svg position, left, top, user-select; its text font-size,
-  // font-family. Any other inline property there is checked as everywhere else
+  // font-family, and font-weight (TreeChart's name in focus; charts-tree-26) only when it equals a --plx-sys-font-weight-*
+  // token's value. Any other inline property there is checked as everywhere else
   const styles = async () => { const r = await page.evaluate(() => {
     const docs = [document].concat([...document.querySelectorAll('iframe')].map((f) => { try { return f.contentDocument; } catch (e) { return null; } }).filter(Boolean));
     const out = { other: [] };
@@ -76,8 +78,9 @@ let current = '';   // the page being checked
     // user content (.plx-user-content: the rich-text editor's area, RichText showing saved HTML) keeps the person's own
     // formatting, as Tiptap stores it: these properties only (owner, 2026-10-14)
     const USER_FORMAT = /^(color|background-color|font-family|font-size|text-align)$/;
-    const ENGINE_OWN = { div: /^(position|overflow-x|overflow-y|width|height)$/, svg: /^(position|left|top|user-select)$/, text: /^(font-size|font-family)$/ };
-    const engineOwn = (el, p) => { const r = el.parentElement && el.parentElement.closest('.plx-chart__engine') && ENGINE_OWN[el.tagName.toLowerCase()]; return !!(r && r.test(p)); };
+    const ENGINE_OWN = { div: /^(position|overflow-x|overflow-y|width|height)$/, svg: /^(position|left|top|user-select)$/, text: /^(font-size|font-family|font-weight)$/ };
+    const weightToken = (el, v) => { const cs = getComputedStyle(el.ownerDocument.documentElement); return ['regular', 'medium', 'semibold', 'bold'].some((w) => cs.getPropertyValue('--plx-sys-font-weight-' + w).trim() === String(v).trim()); };
+    const engineOwn = (el, p) => { const r = el.parentElement && el.parentElement.closest('.plx-chart__engine') && ENGINE_OWN[el.tagName.toLowerCase()]; return !!(r && r.test(p) && (p !== 'font-weight' || weightToken(el, el.style.getPropertyValue(p)))); };
     const wrong = (el) => { const table = el.matches('.plx-data-grid .plx-data-grid__grid-row, .plx-data-grid .plx-data-grid__grid-cell'), user = !!el.closest('.plx-user-content');
       return Array.from(el.style).filter((p) => !engineOwn(el, p) && (!(user && USER_FORMAT.test(p)) && (/^--/.test(p) ? !(/^--plx-/.test(p) || (SPEC && /^--ds-/.test(p))) : (p === 'font-family' && !/^\s*var\(--plx-/.test(el.style.getPropertyValue(p))) || (table && DENSITY.test(p)))
         || offGrid(el, el.style.getPropertyValue(p)))).map((p) => p + ': ' + el.style.getPropertyValue(p)); };
@@ -85,6 +88,27 @@ let current = '';   // the page being checked
     return out; });
     if (r.other.length) errs.push(r.other.length + ' element(s) with an inline style the system does not allow: ' + r.other.slice(0, 2).join(' | ')); };
   const done = (name) => { n++; if (errs.length) failed.push([name, [...new Set(errs)].slice(0, 4)]); errs = []; };
+
+  // the style audit tells the allowed from the forbidden (put back from utilities, #382 F7; owner, 2026-10-14: the colors
+  // and fonts rule is the interface's, not the person's content): inside .plx-user-content the person's color,
+  // background-color, font-family, font-size and text-align pass; a stray margin there, and a font family and an off-grid
+  // size on the interface, are caught: exactly 3 findings
+  at('the style audit fixture');
+  await page.goto(BASE + 'tests/fixtures/platform-host.html', { waitUntil: 'domcontentloaded' });
+  if (!(await page.evaluate(() => !!window.PlenixStyleAudit))) await page.addScriptTag({ url: BASE + 'platform/dev/style-audit.js' });
+  const audit = await page.evaluate(() => {
+    const box = document.createElement('div');
+    box.innerHTML = '<div class="plx-user-content"><p style="text-align: center"><span style="color: rgb(230, 25, 75); background-color: rgb(255, 225, 25); font-family: Georgia, serif; font-size: 15px">user</span></p></div>'
+      + '<div class="plx-user-content"><span style="margin-top: 3px">stray</span></div><span style="font-family: Georgia, serif">interface font</span><span style="font-size: 15px">interface size</span>';
+    document.body.appendChild(box);
+    const found = window.PlenixStyleAudit.audit(box).map((f) => f.detail);
+    box.remove();
+    return found;
+  });
+  errs = [];   // the page's own audit reports the three strays too, on purpose
+  if (!(audit.length === 3 && audit.some((d) => /margin-top/.test(d)) && audit.some((d) => /font-family/.test(d)) && audit.some((d) => /font-size/.test(d))))
+    errs.push('the style audit found ' + audit.length + ' (want exactly 3: the stray margin in user content, the interface font, the off-grid size): ' + audit.join(' | '));
+  done('the style audit fixture');
 
   for (const a of APP_PAGES) { at(a); await page.goto(BASE + a, { waitUntil: 'networkidle0' }); await sleep(600); await tables(); await nesting(); await styles(); done(a); }
 

@@ -45,6 +45,7 @@ if (!APP_PAGES.length && !SITE_PAGES.length) changed.none('A11Y_OK 0 known eleme
   const total = Object.values(found).reduce((n, p) => n + Object.values(p).reduce((m, v) => m + v.n, 0), 0);
   if (process.argv.includes('--update')) {
     const base = {}; Object.keys(found).forEach((p) => { if (Object.keys(found[p]).length) base[p] = Object.fromEntries(Object.entries(found[p]).map(([k, v]) => [k, v.n])); });
+    changed.shrinkOnly(BASELINE, base);
     fs.mkdirSync(path.dirname(BASELINE), { recursive: true }); fs.writeFileSync(BASELINE, JSON.stringify(base, null, 1) + '\n');
     const rules = {}; Object.values(found).forEach((p) => Object.entries(p).forEach(([k, v]) => { rules[k] = rules[k] || { n: 0, pages: 0, impact: v.impact, help: v.help }; rules[k].n += v.n; rules[k].pages++; }));
     Object.entries(rules).sort((a, b) => b[1].n - a[1].n).forEach(([k, v]) => console.log('  ' + k + ' (' + v.impact + '): ' + v.n + ' elements on ' + v.pages + ' pages · ' + v.help));
