@@ -120,7 +120,14 @@ export default {
     "failed": "Could not dismiss this announcement. Try again."
   },
   "appHeader": {
-    "aria-label": "Search"
+    "aria-label": "Search",
+    "navLabel": "Pinned applications",
+    "applications": "Applications",
+    "search": "Search",
+    "scope": "In {scope}",
+    "pin": "Pin {app} to the header",
+    "unpin": "Unpin {app} from the header",
+    "switchApp": "{app}, switch application"
   },
   "appShell": {
     "skip": "Skip to main content"
@@ -478,7 +485,32 @@ export default {
     "hint": "Tab indents. Press Escape, then Tab, to leave the editor."
   },
   "colorSwatch": {
-    "label": "Color"
+    "label": "Color",
+    "more": "More colors",
+    "moreChosen": "More colors, {name} chosen",
+    "colors": {
+      "red": "Red",
+      "green": "Green",
+      "yellow": "Yellow",
+      "blue": "Blue",
+      "orange": "Orange",
+      "purple": "Purple",
+      "cyan": "Cyan",
+      "magenta": "Magenta",
+      "lime": "Lime",
+      "pink": "Pink",
+      "teal": "Teal",
+      "lavender": "Lavender",
+      "beige": "Beige",
+      "maroon": "Maroon",
+      "mint": "Mint",
+      "olive": "Olive",
+      "apricot": "Apricot",
+      "navy": "Navy",
+      "grey": "Grey",
+      "brown": "Brown",
+      "gray": "Gray"
+    }
   },
   "columnsMenu": {
     "label": "Columns",
@@ -504,7 +536,9 @@ export default {
   },
   "combobox": {
     "loading": "Loading…",
-    "error": "The options could not be loaded"
+    "error": "The options could not be loaded",
+    "emptyText": "No matches",
+    "removeItem": "Remove {label}"
   },
   "commandBar": {
     "more": "More actions",
@@ -1147,7 +1181,11 @@ export default {
     "unpinItem": "Unpin {label}"
   },
   "navPane": {
-    "browse": "Browse"
+    "browse": "Browse",
+    "expand": "Expand sidebar",
+    "collapse": "Collapse sidebar",
+    "resize": "Resize {name}",
+    "resizeNavigation": "Resize navigation"
   },
   "notice": {
     "dismiss": "Dismiss"
@@ -1323,7 +1361,12 @@ export default {
     "preset": "any"
   },
   "rating": {
-    "label": "Rating"
+    "label": "Rating",
+    "value": "{label}: {value} of {max}",
+    "stars": {
+      "one": "{count} star",
+      "other": "{count} stars"
+    }
   },
   "refineMenu": {
     "label": "Refine",
@@ -1557,7 +1600,8 @@ export default {
     "removed": "{query} removed from recent searches",
     "remove": "Remove {query}",
     "placeholder": "Search",
-    "label": "Search"
+    "label": "Search",
+    "searching": "Searching"
   },
   "searchWorkspace": {
     "title": "Search",
@@ -1686,7 +1730,12 @@ export default {
     "moreLabel": "More tabs"
   },
   "tag": {
-    "label": "Add a tag"
+    "label": "Add a tag",
+    "rename": "Rename {label}",
+    "renameTag": "Rename tag",
+    "remove": "Remove {label}",
+    "removeTag": "Remove tag",
+    "removeFilter": "Remove filter"
   },
   "teachingBubble": {
     "close": "Close",
@@ -1920,5 +1969,13 @@ export default {
   "wizardDialog": {
     "close": "Close",
     "unsaved": "Your changes will be lost."
+  },
+  "sidePanel": {
+    "expand": "Expand panel",
+    "pane": "{name} pane"
+  },
+  "splitView": {
+    "firstLabel": "First panel",
+    "maxWidth": "The other pane needs at least {n}px"
   }
 };

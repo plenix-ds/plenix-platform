@@ -17,9 +17,9 @@ import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { Tree } from '../../components/Tree/Tree.jsx';
 import { FileRow,FileRowList } from '../../components/FileRow/FileRow.jsx';
 import { SearchField } from '../../components/SearchField/SearchField.jsx';
-const STRINGS={title:'Choose files',all:'All files',folders:'Folders',search:'Search files',empty:'No matching files.',pick:'Choose',cancel:'Cancel',failed:'Files could not be chosen. Try again.'};
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 export function FilePicker({open=false,onClose,items=[],folders=[],mode='files',multiple=false,initialSelected=[],onPick,strings,className}){
- const t={...STRINGS,...strings},[selected,setSelected]=React.useState(initialSelected),[folder,setFolder]=React.useState(null),[query,setQuery]=React.useState(''),[busy,setBusy]=React.useState(false),[error,setError]=React.useState('');
+ const t=useStrings('filePicker',strings),[selected,setSelected]=React.useState(initialSelected),[folder,setFolder]=React.useState(null),[query,setQuery]=React.useState(''),[busy,setBusy]=React.useState(false),[error,setError]=React.useState('');
  const lock=React.useRef(false),epoch=React.useRef(0);
  React.useEffect(()=>{epoch.current++;lock.current=false;setBusy(false);setError('');setQuery('');setFolder(null);setSelected(initialSelected);return()=>{epoch.current++;};},[open]);
  const eligible=items.filter(f=>f.kind!=='folder'&&!f.disabled&&(mode!=='media'||/^(image|video|audio)\//.test(f.type||''))&&(mode!=='assets'||f.asset===true||f.kind==='asset'));

@@ -55,11 +55,14 @@ import { GridPane } from '../../components/DataGrid/room.js';
 import { useAppLayout } from '../AppShell/AppShell.jsx';
 import { cx } from '../../utils/cx.js';
 import { Resizable } from '../../components/Resizable/Resizable.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 const LIMITS = { 'side-by-side': [360, 720, 560], stacked: [200, 500, 320] };
 
-export function SplitView({ orientation = 'side-by-side', first, second, label, firstLabel = 'First panel', defaultSize, size, onSizeChange,
+export function SplitView({ orientation = 'side-by-side', first, second, label, firstLabel, defaultSize, size, onSizeChange,
   minSize, maxSize, steps, className, ...rest }) {
+  const tw = useStrings('splitView');
+  if (firstLabel === undefined) firstLabel = tw.firstLabel;
   const shell = useAppLayout();
   const claim = shell && shell.claimPage;
   React.useEffect(() => (claim ? claim('master-detail') : undefined), [claim]);
@@ -89,7 +92,7 @@ export function SplitView({ orientation = 'side-by-side', first, second, label, 
   const constrained = side && available && available.max < requestedMax;
   const widthMax = constrained ? available.max : requestedMax;
   const box = side
-    ? { axis: 'horizontal', defaultWidth: defaultSize != null ? defaultSize : start, width: size, minWidth: minSize || lo, maxWidth: widthMax, strings: constrained ? { maxWidth: "The other pane needs at least " + available.minimum + "px" } : undefined, onResize: onSizeChange ? (s) => onSizeChange(s.width) : undefined }
+    ? { axis: 'horizontal', defaultWidth: defaultSize != null ? defaultSize : start, width: size, minWidth: minSize || lo, maxWidth: widthMax, strings: constrained ? { maxWidth: tw.maxWidth.replace('{n}', available.minimum) } : undefined, onResize: onSizeChange ? (s) => onSizeChange(s.width) : undefined }
     : { axis: 'vertical', defaultHeight: defaultSize != null ? defaultSize : start, height: size, minHeight: minSize || lo, maxHeight: maxSize || hi, onResize: onSizeChange ? (s) => onSizeChange(s.height) : undefined };
   return (
     <GridPane.Provider value={true}><div ref={container} role="group" aria-label={label} className={cx('plx-split-view', 'plx-split-view--' + (side ? 'side-by-side' : 'stacked'), className)} {...rest}>

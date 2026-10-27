@@ -61,13 +61,12 @@ import { PanelSplitter, tokenPx, below, useMedia, useAppLayout } from '../AppShe
 import { focusables } from '../../utils/layer.js';
 import { gridWithin } from '../../utils/grid.js';
 import { GRID_PANE_MAX } from '../../utils/sizeSteps.js';
-
-const STRINGS = { expand: 'Expand {name}', collapse: 'Collapse {name}', resize: 'Resize {name}', close: 'Close {name}', back: 'Back to {name}' };
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function SecondaryPane({ title, label, icon, actions, side = 'start', width = 'md', collapsible = false, collapsed, defaultCollapsed = false,
   onCollapsedChange, rail, resizable = false, size: sizeProp, defaultSize = null, onSizeChange, detailOpen, onBack, scrollTop, onScrollChange,
   onClose, strings, className, children, ...rest }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('secondaryPane', strings);
   const [ownCollapsed, setOwnCollapsed] = React.useState(defaultCollapsed);
   const narrow = useMedia(below('--plx-sys-shell-phone-below'));
   const listDetail = detailOpen !== undefined;

@@ -84,8 +84,8 @@ import { createPortal } from 'react-dom';
 import { cx } from '../../utils/cx.js';
 import { pageLayout } from '../../providers/pageLayouts.js';
 import { PanelSplitter } from '../../components/Resizable/Resizable.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { skip: 'Skip to main content' };
 // the five layout modes (the Layout foundation; app-shell.css draws them)
 const LAYOUTS = ['fluid', 'contained', 'hybrid', 'multi-pane', 'focus'];
 
@@ -118,7 +118,7 @@ export function AppShell({ header, sideNav, panel, footer, page = 'workspace', m
   const [claimed, setClaimed] = React.useState(null);
   const claimPage = React.useCallback((kind) => { setClaimed(kind); return () => setClaimed((k) => (k === kind ? null : k)); }, []);
   const layout = pageLayout(claimed || page);   // the design system's layout standard decides the mode
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('appShell', strings);
   const small = useMedia(below('--plx-sys-shell-rail-below'));
   const narrow = useMedia(below('--plx-sys-shell-phone-below'));
   const [barEl, setBarEl] = React.useState(null);         // where NavPane puts the bottom navigation bar at Narrow

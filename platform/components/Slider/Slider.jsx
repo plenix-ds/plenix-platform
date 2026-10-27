@@ -38,8 +38,8 @@ import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
 import { gridPx } from '../../utils/grid.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { minimum: 'Minimum', maximum: 'Maximum' };
 const MAX_STEP_MARKS = 12;
 
 // the marks to draw: [{ value, label }] inside [min, max]
@@ -57,7 +57,7 @@ function marksOf(marks, min, max, step) {
 export function Slider({ label, value, min = 0, max = 100, step = 1, unit = '', range = false, marks, onChange, onCommit, disabled = false,
   strings, className, ...rest }) {
   const id = useUid('plx-slider');
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('slider', strings);
   const drawn = marksOf(marks, min, max, step);
   const custom = range || drawn.length > 0;
   const span = React.useRef(null);

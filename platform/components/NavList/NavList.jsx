@@ -45,8 +45,7 @@ import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
 import { Icon, stateIcon } from '../Icon/Icon.jsx';
 import { CollapsibleSection } from '../CollapsibleSection/CollapsibleSection.jsx';
-
-const STRINGS = { pin: 'Pin', unpin: 'Unpin', pinItem: 'Pin {label}', unpinItem: 'Unpin {label}' };
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 // the icon takes the row's state as its own (Styling Standard 3.6): filled on the current row; an Icon element the caller
 // gives keeps its own fill when it sets one
@@ -123,7 +122,7 @@ function Group({ heading, items, current, onSelect, collapsible = true, icon, de
 }
 
 export function NavList({ label, items, groups, value, onSelect, locale, strings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('navList', strings);
   const loc = locale || (typeof document !== 'undefined' && document.documentElement.lang) || undefined;
   const all = groups || [{ heading: null, items: items || [] }];
   return (

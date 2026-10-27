@@ -55,12 +55,14 @@ import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { Icon } from '../Icon/Icon.jsx';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 function RemoveButton({ label, onClick }) {
   return <button type="button" className="plx-tag__remove" aria-label={label} onClick={onClick}><span aria-hidden="true">×</span></button>;
 }
 
 export function Tag({ category, onRemove, removeLabel, onRename, renameLabel, className, children, ...rest }) {
+  const tw = useStrings('tag');
   const [editing, setEditing] = React.useState(false);
   const [draft, setDraft] = React.useState('');
   const text = typeof children === 'string' ? children : '';
@@ -68,23 +70,24 @@ export function Tag({ category, onRemove, removeLabel, onRename, renameLabel, cl
   return (
     <span className={cx('plx-tag', onRename && 'plx-tag--renamable', editing && 'is-editing', className)} data-plx-category={(category === 'brown' ? 'orange' : category) || undefined} {...rest}>
       {onRename && editing ? (
-        <input className="plx-tag__input" value={draft} aria-label={renameLabel || 'Rename ' + (text || 'tag')} autoFocus size={Math.max(4, draft.length)}
+        <input className="plx-tag__input" value={draft} aria-label={renameLabel || (text ? tw.rename.replace('{label}', text) : tw.renameTag)} autoFocus size={Math.max(4, draft.length)}
           onChange={(e) => setDraft(e.target.value)} onBlur={() => done(true)}
           onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); done(true); } else if (e.key === 'Escape') { e.preventDefault(); done(false); } }} />
       ) : onRename ? (
-        <button type="button" className="plx-tag__label plx-tag__rename" aria-label={renameLabel || 'Rename ' + (text || 'tag')} onClick={() => { setDraft(text); setEditing(true); }}>{children}</button>
+        <button type="button" className="plx-tag__label plx-tag__rename" aria-label={renameLabel || (text ? tw.rename.replace('{label}', text) : tw.renameTag)} onClick={() => { setDraft(text); setEditing(true); }}>{children}</button>
       ) : <span className="plx-tag__label">{children}</span>}
-      {onRemove ? <RemoveButton label={removeLabel || 'Remove ' + (typeof children === 'string' ? children : 'tag')} onClick={onRemove} /> : null}
+      {onRemove ? <RemoveButton label={removeLabel || (typeof children === 'string' ? tw.remove.replace('{label}', children) : tw.removeTag)} onClick={onRemove} /> : null}
     </span>
   );
 }
 
 export function Chip({ selected = false, onRemove, removeLabel, className, children, ...rest }) {
+  const tw = useStrings('tag');
   if (onRemove) {
     return (
       <span className={cx('plx-tag', 'plx-tag--chip', selected && 'plx-tag--selected', className)}>
         <button type="button" className="plx-tag__toggle" aria-pressed={selected} {...rest}>{children}</button>
-        <RemoveButton label={removeLabel || 'Remove ' + (typeof children === 'string' ? children : 'filter')} onClick={onRemove} />
+        <RemoveButton label={removeLabel || (typeof children === 'string' ? tw.remove.replace('{label}', children) : tw.removeFilter)} onClick={onRemove} />
       </span>
     );
   }
@@ -95,7 +98,9 @@ export function TagList({ className, children, label, ...rest }) {
   return <div className={cx('plx-tag-list', className)} role={label ? 'group' : undefined} aria-label={label} {...rest}>{children}</div>;
 }
 
-export const TagInput = React.forwardRef(function TagInput({ onAdd, onKeyDown, value, onChange, label = 'Add a tag', collapsible = true, id, className, onBlur, ...rest }, ref) {
+export const TagInput = React.forwardRef(function TagInput({ onAdd, onKeyDown, value, onChange, label, collapsible = true, id, className, onBlur, ...rest }, ref) {
+  const tw = useStrings('tag');
+  if (label === undefined) label = tw.label;
   const [own, setOwn] = React.useState('');
   const [open, setOpen] = React.useState(!collapsible);
   const text = value !== undefined ? value : own;

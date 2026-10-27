@@ -253,7 +253,9 @@ export default {
   },
   "combobox": {
     "loading": "جارٍ التحميل…",
-    "error": "تعذّر تحميل الخيارات"
+    "error": "تعذّر تحميل الخيارات",
+    "emptyText": "لا توجد نتائج مطابقة",
+    "removeItem": "إزالة {label}"
   },
   "commandMenu": {
     "label": "الأوامر",
@@ -726,7 +728,8 @@ export default {
     "removed": "تمت إزالة {query} من عمليات البحث الأخيرة",
     "remove": "إزالة {query}",
     "placeholder": "بحث",
-    "label": "بحث"
+    "label": "بحث",
+    "searching": "جارٍ البحث"
   },
   "sheet": {
     "expand": "توسيع اللوحة",
@@ -1099,7 +1102,11 @@ export default {
     "several": "{label} · {count}"
   },
   "navPane": {
-    "browse": "استعراض"
+    "browse": "استعراض",
+    "expand": "توسيع الشريط الجانبي",
+    "collapse": "طي الشريط الجانبي",
+    "resize": "تغيير حجم {name}",
+    "resizeNavigation": "تغيير حجم شريط التنقل"
   },
   "notificationList": {
     "label": "الإشعارات",
@@ -1887,7 +1894,32 @@ export default {
     "label": "مسار التنقل"
   },
   "colorSwatch": {
-    "label": "اللون"
+    "label": "اللون",
+    "more": "ألوان أخرى",
+    "moreChosen": "ألوان أخرى، تم اختيار {name}",
+    "colors": {
+      "red": "أحمر",
+      "green": "أخضر",
+      "yellow": "أصفر",
+      "blue": "أزرق",
+      "orange": "برتقالي",
+      "purple": "بنفسجي",
+      "cyan": "سماوي",
+      "magenta": "أرجواني",
+      "lime": "ليموني",
+      "pink": "وردي",
+      "teal": "أزرق مخضر",
+      "lavender": "خزامي",
+      "beige": "بيج",
+      "maroon": "عنابي",
+      "mint": "نعناعي",
+      "olive": "زيتوني",
+      "apricot": "مشمشي",
+      "navy": "كحلي",
+      "grey": "رمادي",
+      "brown": "بني",
+      "gray": "رمادي"
+    }
   },
   "dialog": {
     "confirmLabel": "حفظ",
@@ -1900,10 +1932,24 @@ export default {
     "label": "جارٍ التحميل"
   },
   "rating": {
-    "label": "التقييم"
+    "label": "التقييم",
+    "value": "{label}: {value} من {max}",
+    "stars": {
+      "zero": "لا نجوم",
+      "one": "نجمة واحدة",
+      "two": "نجمتان",
+      "few": "{count} نجوم",
+      "many": "{count} نجمة",
+      "other": "{count} نجمة"
+    }
   },
   "tag": {
-    "label": "إضافة وسم"
+    "label": "إضافة وسم",
+    "rename": "إعادة تسمية {label}",
+    "renameTag": "إعادة تسمية الوسم",
+    "remove": "إزالة {label}",
+    "removeTag": "إزالة الوسم",
+    "removeFilter": "إزالة عامل التصفية"
   },
   "toast": {
     "aria-label": "تجاهل",
@@ -1914,7 +1960,14 @@ export default {
     "label": "الإجراءات"
   },
   "appHeader": {
-    "aria-label": "التطبيقات"
+    "aria-label": "التطبيقات",
+    "navLabel": "التطبيقات المثبتة",
+    "applications": "التطبيقات",
+    "search": "بحث",
+    "scope": "في {scope}",
+    "pin": "تثبيت {app} في الشريط العلوي",
+    "unpin": "إلغاء تثبيت {app} من الشريط العلوي",
+    "switchApp": "{app}، تبديل التطبيق"
   },
   "form": {
     "label": "إجراءات النموذج"
@@ -1932,5 +1985,13 @@ export default {
       "many": "تم تحديد {count} عنصرًا",
       "other": "تم تحديد {count} عنصر"
     }
+  },
+  "sidePanel": {
+    "expand": "توسيع اللوحة",
+    "pane": "لوحة {name}"
+  },
+  "splitView": {
+    "firstLabel": "اللوحة الأولى",
+    "maxWidth": "تحتاج اللوحة الأخرى إلى {n} بكسل على الأقل"
   }
 };

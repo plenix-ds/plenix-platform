@@ -67,9 +67,8 @@ import { Icon } from '../Icon/Icon.jsx';
 import { Kbd } from '../Kbd/Kbd.jsx';
 import { Spinner } from '../Loading/Loading.jsx';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { suggestions: 'Suggestions', recent: 'Recent searches', clearRecent: 'Clear recent searches', clear: 'Clear search',
-  results: '{n} suggestions', removed: '{query} removed from recent searches', remove: 'Remove {query}' };
 const asItem = (kind) => (x) => (typeof x === 'string' ? { value: x, label: x, kind } : Object.assign({ label: x.value }, x, { kind }));
 
 // the label with the part that matches the text in bold (the first match, ignoring case)
@@ -81,9 +80,11 @@ function marked(label, text) {
 }
 
 // the field itself (width "auto", "bar" or "fill")
-const SearchInput = React.forwardRef(function SearchInput({ value, onChange, onClear, placeholder = 'Search', label = 'Search', shortcut, loading = false,
+const SearchInput = React.forwardRef(function SearchInput({ value, onChange, onClear, placeholder, label, shortcut, loading = false,
   onAccent = false, suggestions, recent, onSelect, onSubmitSearch, onRemoveRecent, onClearRecent, strings, className, onKeyDown, onFocus, width = 'auto', size, ...rest }, ref) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('searchField', strings);
+  if (placeholder === undefined) placeholder = t.placeholder;
+  if (label === undefined) label = t.label;
   const auto = 'plx-sf' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const listId = auto + '-list';
   const wrap = React.useRef(null), input = React.useRef(null), list = React.useRef(null);
@@ -153,7 +154,7 @@ const SearchInput = React.forwardRef(function SearchInput({ value, onChange, onC
     'aria-activedescendant': shown && active >= 0 ? (grid ? cellId(active, cell) : optId(active)) : undefined } : {};
   return (
     <div ref={wrap} className={cx('plx-search', size === 'sm' && 'plx-search--size-sm', width === 'bar' && 'plx-search--bar', width === 'fill' && 'plx-search--fill', ['xs', 'sm', 'md', 'lg'].includes(width) && 'plx-search--width-' + width, onAccent && 'plx-search--on-accent', shown && 'is-open', className)} role="search">
-      <span className="plx-search__icon" aria-hidden="true">{loading ? <Spinner size="sm" label="Searching" /> : <Icon name="search" />}</span>
+      <span className="plx-search__icon" aria-hidden="true">{loading ? <Spinner size="sm" label={t.searching} /> : <Icon name="search" />}</span>
       <input ref={input} size={size === 'sm' || size === 'md' ? undefined : size} type="search" inputMode="search" enterKeyHint="search" autoComplete="off" className="plx-search__input" aria-label={label} placeholder={placeholder} value={value}
         onChange={(e) => { if (hasList) setOpen(true); if (onChange) onChange(e); }} onKeyDown={keys}
         onFocus={(e) => { if (hasList) setOpen(true); if (onFocus) onFocus(e); }} {...comboProps} {...rest} />
@@ -206,7 +207,9 @@ const SearchInput = React.forwardRef(function SearchInput({ value, onChange, onC
 });
 
 // the narrow bar's search (owner, 2026-10-14): the search icon in the field's place; it opens the field across the bar
-function CollapsedSearch({ value, label = 'Search', onKeyDown, onBlur, className, open: openProp, onOpenChange, ...rest }, ref) {
+function CollapsedSearch({ value, label, onKeyDown, onBlur, className, open: openProp, onOpenChange, ...rest }, ref) {
+  const tw = useStrings('searchField');
+  if (label === undefined) label = tw.label;
   const [own, setOwn] = React.useState(false);
   const open = openProp === undefined ? own : openProp;
   const setOpen = (v) => { setOwn(v); if (onOpenChange) onOpenChange(v); };

@@ -17,8 +17,11 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-export function Breadcrumbs({ items = [], label = 'Breadcrumb', className }) {
+export function Breadcrumbs({ items = [], label, className }) {
+  const tw = useStrings('breadcrumbs');
+  if (label === undefined) label = tw.label;
   return (
     <nav aria-label={label} className={cx('plx-breadcrumbs', className)}>
       <ol className="plx-breadcrumbs__list">

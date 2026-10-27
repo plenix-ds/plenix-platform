@@ -57,8 +57,7 @@ import { cx } from '../../utils/cx.js';
 import { arrowStep } from '../../utils/direction.js';
 import { formatLocale } from '../../utils/format.js';
 import { Button } from '../Button/Button.jsx';
-
-const STRINGS = { label: 'Calendar', previous: 'Previous month', next: 'Next month', week: 'Week', weekShort: 'Wk', today: 'Today' };
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 /* ---- calendar dates: "YYYY-MM-DD" strings; arithmetic on local dates at noon, so no daylight-saving change moves a day */
 const pad = (n, w) => String(n).padStart(w || 2, '0');
@@ -115,7 +114,7 @@ function weeksOf(ym, first) {
 export const Calendar = React.forwardRef(function Calendar({ mode = 'single', value, defaultValue, onChange, month, defaultMonth, onMonthChange,
   months = 1, weekNumbers = false, min, max, isDateDisabled, today: todayProp, firstDayOfWeek, locale: localeProp, label, focusRef,
   strings, className, ...rest }, ref) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('calendar', strings);
   const locale = localeProp || formatLocale();
   const today = todayProp || todayIso();
   const range = mode === 'range';

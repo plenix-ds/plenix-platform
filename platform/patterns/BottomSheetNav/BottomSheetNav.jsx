@@ -38,11 +38,10 @@ import { Sheet } from '../../components/Sheet/Sheet.jsx';
 import { NavList } from '../../components/NavList/NavList.jsx';
 import { RowButton } from '../../components/RowButton/RowButton.jsx';
 import { Icon } from '../../components/Icon/Icon.jsx';
-
-const STRINGS = { title: 'Navigation', close: 'Close' };
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function BottomSheetNav({ open, onClose, title, items, groups, value, onSelect, layout = 'list', detent = 'medium', footer, strings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('bottomSheetNav', strings);
   const name = title || t.title;
   const choose = (id) => { if (onSelect) onSelect(id); if (onClose) onClose(); };
   const body = layout === 'grid' ? (
