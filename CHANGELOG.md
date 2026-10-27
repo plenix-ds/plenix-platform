@@ -14,6 +14,10 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
   - `--plx-comp-tree-chart-node-radius` → `--plx-comp-tree-chart-node-size` (TreeChart, 4px)
   - The native names follow: iOS `chartInteractionFocusMarkRadius` → `chartInteractionFocusMarkSize`; Android `chartInteractionFocusMarkRadius` → `chartInteractionFocusMarkSize` and `plx_component_chart_interaction_focus_mark_radius` → `plx_component_chart_interaction_focus_mark_size`.
 
+### Added
+- Isolate (owner, ctm-needs-34; #413 batch 3): keeps an ID, a case number, an email, a URL, a phone number or code in its own writing direction inside text of the other direction, so "20261020-01" no longer reads "01-20261020" in an Arabic sentence. `<Isolate>` is a `<bdi>` with `dir="ltr"` by default (`"rtl"`, `"auto"`) and the class `plx-isolate` (`unicode-bidi: isolate`). Only the order is kept: when Arabic-Indic digits are on (#413 step 5), the digits inside an island change too (owner, arabic-ids-35).
+- Automatic islands: DataGrid and Table cells of kind `id`, `email`, `url`, `phone` and `code` (left to right) and `data` (its own direction); DataPill with `data`; PropertyList.Item with `data`; Code, Kbd and CodeBlock (always left to right). Text was already `dir="auto"`.
+
 ### Changed
 - DataGrid and Table: with `cells="pill"`, every standard pill of a column is always as wide as that column's widest pill in the current view; there is no switch (owner, uniform-pills-always-35). Columns stay independent; custom cells, tags and badges keep their own widths. Table now does it too: it never received the switch.
 
