@@ -1,3 +1,5 @@
+No tests: see HANDOFF.md (the owner runs them)
+
 # Task #208: Zero overlap lane Z2: components A–L (Codex)
 
 Tracker: https://github.com/plenix-ds/plenix-platform/issues/208 · Plan of record: https://github.com/plenix-ds/plenix-platform/issues/3

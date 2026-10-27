@@ -1,3 +1,5 @@
+No tests: see HANDOFF.md (the owner runs them)
+
 # Task #140: the TanStack table becomes Plenix's DataTable (Codex)
 
 Tracker: https://github.com/plenix-ds/plenix-platform/issues/140 · Plan of record: https://github.com/plenix-ds/plenix-platform/issues/3

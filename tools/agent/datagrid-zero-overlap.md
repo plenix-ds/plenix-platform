@@ -12,7 +12,7 @@ On 2026-10-21, after lane A (#214), #213 and #216 merged, the backlog (`check-sy
 
 Most DataGrid selectors start with `.plx-data-grid[data-plx-engine="next"] `, the scope from the engine migration, and then
 reach through the grid, the header or a row into a part. They come out in batches by part. Every batch has no visual change,
-is proved with `node tests/clash-audit.js --strict --check` and a styling proof (`tools/agent/proof-log.md`), and shrinks
+is described in the pull request (no test is run; HANDOFF.md, "No tests"), and shrinks
 the backlog (`node check-system.rules/selector-kinds.js --shrink`).
 
 ## Batches

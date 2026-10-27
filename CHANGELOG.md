@@ -7,11 +7,18 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 ## [Unreleased]
 
 ### Breaking
-- Three circle sizes are renamed from `-radius` to `-size`, so the corner rule (2 to 6px) covers only real corners (owner, dot-radius-names-34). Each still holds the circle's radius (SVG `r`), so nothing on screen changes. A theme or page that set an old name must use the new one:
+- Four circle sizes are renamed from `-radius` to `-size`, so the corner rule (2 to 6px) covers only real corners (owner, dot-radius-names-34). Each still holds the circle's radius (SVG `r`), so nothing on screen changes. A theme or page that set an old name must use the new one:
   - `--plx-comp-chart-interaction-focus-mark-radius` → `--plx-comp-chart-interaction-focus-mark-size`
   - `--plx-comp-network-graph-node-radius` → `--plx-comp-network-graph-node-size`
   - `--plx-sys-focus-order-badge-radius` → `--plx-sys-focus-order-badge-size`
+  - `--plx-comp-tree-chart-node-radius` → `--plx-comp-tree-chart-node-size` (TreeChart, 4px)
   - The native names follow: iOS `chartInteractionFocusMarkRadius` → `chartInteractionFocusMarkSize`; Android `chartInteractionFocusMarkRadius` → `chartInteractionFocusMarkSize` and `plx_component_chart_interaction_focus_mark_radius` → `plx_component_chart_interaction_focus_mark_size`.
+
+### Changed
+- DataGrid and Table: with `cells="pill"`, every standard pill of a column is always as wide as that column's widest pill in the current view; there is no switch (owner, uniform-pills-always-35). Columns stay independent; custom cells, tags and badges keep their own widths. Table now does it too: it never received the switch.
+
+### Deprecated
+- DataGrid `uniformPillWidths`: accepted and ignored, since uniform widths are always on. Remove it from your pages; it goes in a later release.
 
 ## [0.73.0] - 2026-10-27
 

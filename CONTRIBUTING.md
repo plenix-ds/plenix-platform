@@ -47,9 +47,8 @@ before 1.0, the next MAJOR after), *Archived*. See `VERSIONING.md`.
 
 - [ ] `node build-app.js` and `node build-usage.js` succeed (check the exit code)
 - [ ] `node check-system.js`, `node check-style.js`, `npm run lint:css` and `node check-spec.js` pass
-- [ ] `npm test` passes: the checks for what changed (visual snapshot, pages, typography); `npm run test:full` only as the final gate. Accessibility, contrast, high contrast, themes and density are on demand (`npm run test:on-demand`), run by the owner
-- [ ] A change meant to look different: the visual baseline was updated on purpose (`node tests/visual.test.js --update`)
-      and the change is listed under *Changed (visual)*
+- [ ] No test was run by the author: tests run only when the owner starts them (HANDOFF.md, "No tests")
+- [ ] A change meant to look different: it is listed under *Changed (visual)* with a picture; the owner updates the visual baseline himself
 - [ ] The design system page is complete: no "Not written yet" on a built item
 - [ ] `CHANGELOG.md` has an entry under **Unreleased**
 - [ ] The work is logged as a batch (Plenix - DAM/audit/batches/), with what changed and how it was verified

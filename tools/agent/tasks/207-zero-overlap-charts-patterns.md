@@ -1,3 +1,5 @@
+No tests: see HANDOFF.md (the owner runs them)
+
 # Task #207: Zero overlap lane Z1: charts and patterns (Codex)
 
 Tracker: https://github.com/plenix-ds/plenix-platform/issues/207 · Plan of record: https://github.com/plenix-ds/plenix-platform/issues/3

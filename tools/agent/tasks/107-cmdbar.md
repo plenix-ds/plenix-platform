@@ -1,3 +1,5 @@
+No tests: see HANDOFF.md (the owner runs them)
+
 # Task #107: Command bar fixes for RedSave (#68, #69, #70, #71) (Codex)
 
 Tracker: https://github.com/plenix-ds/plenix-platform/issues/107 · Plan of record: https://github.com/plenix-ds/plenix-platform/issues/3

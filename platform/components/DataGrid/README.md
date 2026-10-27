@@ -17,7 +17,7 @@ The public DataGrid entry point retains its action/Undo provider. The private ad
 application row/cell/column calls; plug-in modules and imperative DOM formatting are not a public API.
 Rows and rendered cells remain owned by React.
 
-Validation:
+Validation (No tests: see HANDOFF.md; the owner runs them):
 - node tests/data-grid.test.js: the common table-view assertions.
 - node tests/data-grid-rest.test.js: existing rich-cell and action contracts.
 - node tests/data-grid-next-capabilities.test.js: grouping, tree, editing, movement, copy and print.

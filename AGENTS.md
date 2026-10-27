@@ -39,7 +39,7 @@ merges, builds, releases and deploys.
 `<app>/app.js`, `platform/index.js`, `platform/platform.css`, …). Every branch would change them, so every pull request
 would conflict with the next. The list is `tools/agent/generated.js`.
 
-- Build as often as you like to test, but before every commit run `node tools/agent/generated.js --restore`.
+- Build as often as you like to look at your change, but before every commit run `node tools/agent/generated.js --restore`.
 - CI fails a pull request that changes one (`GENERATED_FAIL`). The integrator rebuilds them when it merges.
 - `CHANGELOG.md` and `package.json` are written by the release: describe your change in the pull request instead.
 
@@ -100,12 +100,10 @@ node tools/agent/generated.js --restore
 
 `node --check` on every JavaScript file you wrote. `check-system.js` must print `SYSTEM_OK` and `check-spec.js`
 `SPEC_OK`. For a library lane also place every new component on the St. John the Beloved test site (github.com/plenix-ds/st-john-test-site, cloned beside this repository;
-`node tests/site-coverage.test.js` must print `SITE_COVERAGE_OK`) and run
+site coverage is checked by the owner's test, which you do not run) and run
 `node tools/agent/native/check.js <your native fragments>` (`ALL OK`).
 
-The browser tests (pages, keyboard, component tokens, typography, …) open the St. John the Beloved test site
-(its own repository, started by the tests) and the suite applications, never the design spec, and run in CI on your pull request, in changed mode. Accessibility, high contrast, color contrast, themes and density are on-demand tests: only the owner runs them (`npm run test:on-demand`, or Actions › On-demand tests).
-Fix what they report. Run them locally only if Chrome is available (`CHROME_PATH`).
+**No tests.** Never run a test. Tests run only when the owner starts them himself. Reading the code and the quick static checks (check-system, check-style, lint) are fine. See `HANDOFF.md`, "No tests", which states the rule once. The browser tests open the St. John the Beloved test site (its own repository) and the suite applications, never the design spec; CI runs them on a pull request, and you read what it reports but never run them yourself.
 
 ## Pull request
 

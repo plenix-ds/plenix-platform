@@ -30,7 +30,7 @@ function App() {
       h(P.Text, null, 'Hover a header: its whole title stays readable. Drag or use the arrow keys on a column edge to resize. Each pill column shares one width.'),
       h(P.Inline, null, h(P.Switch, { label: 'Right to left', checked: rtl, onChange: (e) => setRtl(e.target.checked) }))),
     ['compact', 'standard', 'comfortable'].map((d) => h(P.Stack, { gap: 'sm', key: d }, h(P.SectionHeading, { level: 2 }, d + ' (wrapped headers, uniform pills)'),
-      h(P.DataGrid, { label: 'Cases, ' + d, density: d, cells: 'pill', uniformPillWidths: true, wrapHeaders: true, columns: cols, data: rows }))),
+      h(P.DataGrid, { label: 'Cases, ' + d, density: d, cells: 'pill', wrapHeaders: true, columns: cols, data: rows }))),
     h(P.Stack, { gap: 'sm' }, h(P.SectionHeading, { level: 2 }, 'Static table'), h(P.Table, { label: 'Cases, static', columns: cols, data: rows })),
     h(P.Stack, { gap: 'sm' }, h(P.SectionHeading, { level: 2 }, 'Icon names (dashes, underscores, the whole library)'),
       h(P.Inline, { wrap: true, gap: 'md' }, icons.map((n) => h(P.Inline, { key: n, gap: 'xs' }, h(P.Icon, { name: n }), h(P.Text, { variant: 'data' }, n))))));
