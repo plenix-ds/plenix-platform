@@ -23,13 +23,13 @@ const GRID_EXEMPT = [
   ['border-width-', 'hairline widths (1, 2 and 3px): a line is thinner than the grid'],
   ['focus-ring-offset', 'an outline offset (2px): a gap between a control and its focus ring, not a space in the layout'],
   ['font-size-', 'type sizes come from the type scale, not the grid'],
-  ['line-height-', 'line heights come from the type scale, not the grid'],
-  ['letter-spacing-', 'letter spacing is a fraction of the type size'],
-  ['word-spacing-', 'word spacing is a fraction of the type size'],
+  ['shadow-', 'box shadows: the blur and ring widths (1, 2, 3 and 5px) are optical, not spacing; seen now that every part of a compound value is read'],
 ];
 const CORNERS = [0, 6];   // px: 0, and 2 to 6 (the scale has no 1px and no 5px corner)
 const LEN = /^(-?[\d.]+)(px|rem)$/;
-const px = (v) => { const m = String(v).match(LEN); return m ? (m[2] === 'rem' ? Number(m[1]) * 16 : Number(m[1])) : null; };
+const one = (w) => { const m = String(w).match(LEN); return m ? (m[2] === 'rem' ? Number(m[1]) * 16 : Number(m[1])) : null; };
+// every length in a value, each part of a compound ("4px 7px"): [] when the value has none (a reference, a keyword, a number)
+const lengths = (v) => String(v).split(/\s+/).map(one).filter((n) => n !== null);
 const exempt = (key) => GRID_EXEMPT.find(([n]) => (n.endsWith('-') ? key.startsWith(n) : key === n));
 
 // every token of the source: { key, value, file, ref } (ref: the file is reference.tokens.json)
@@ -55,11 +55,11 @@ function tokens() {
 function measure() {
   const all = tokens(), colors = {}, grid = {}, corners = {}, hex = [];
   for (const t of all) {
-    if (t.ref && /^color-/.test(t.key)) colors[t.key] = t.value;
+    if (t.ref && (/^color-/.test(t.key) || /^#[0-9a-f]{3,8}$/i.test(t.value))) colors[t.key] = t.value;   // a hex value is a color under any key
     else if (!t.ref && /^#[0-9a-f]{3,8}$/i.test(t.value)) hex.push(t);
-    const n = px(t.value); if (n === null) continue;
-    if (/radius/.test(t.key)) { if (n !== 0 && (n < 2 || n > CORNERS[1])) corners[t.key] = t.value; continue; }
-    if (n !== 0 && n % 4 !== 0 && !exempt(t.key)) grid[t.key] = t.value;
+    const ns = lengths(t.value); if (!ns.length) continue;
+    if (/radius/.test(t.key)) { if (ns.some((n) => n !== 0 && (n < 2 || n > CORNERS[1]))) corners[t.key] = t.value; continue; }
+    if (ns.some((n) => n !== 0 && n % 4 !== 0) && !exempt(t.key)) grid[t.key] = t.value;
   }
   // a radius with no unit-length value (the pill, 9999px) is a length too: px() read it above
   return { colors, grid, corners, hex };
