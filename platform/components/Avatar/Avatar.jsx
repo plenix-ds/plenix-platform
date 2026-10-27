@@ -36,7 +36,8 @@
      Without a label the presence dot is hidden with the avatar: the page says the state in words next to it.
    Notes:
      Other props pass through to the <span>.
-     initialsOf(name) is also exported for pages that need the same initials.
+     initialsOf(name) is also exported for pages that need the same initials. A name with no Latin letter (an Arabic name)
+       takes each word's first letter; two Arabic initials are kept apart so they do not join (owner, ctm-needs-34).
 */
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.js';
@@ -52,12 +53,16 @@ const PRESENCE = ['online', 'away', 'busy', 'dnd', 'offline'];
 const DOT = { 20: 'sm', 24: 'sm', 28: 'sm', 32: 'sm', 40: 'md', 48: 'md', 64: 'lg' };
 const STRINGS = { online: 'Online', away: 'Away', busy: 'Busy', dnd: 'Do not disturb', offline: 'Offline' };
 
-// first- and last-name initials: titles (a word ending in a period, e.g. "Fr.") and parenthesized parts are skipped
+// first- and last-name initials: titles (a word ending in a period, e.g. "Fr.") and parenthesized parts are skipped.
+// A word's initial is its first Latin letter or digit, as always; a word with none (an Arabic name, owner ctm-needs-34) takes
+// its first letter of any script. Two Arabic initials are kept apart (a zero-width non-joiner), so they do not join into a word.
+const LATIN = /[A-Za-z0-9]/, ANY = /[\p{L}\p{N}]/u, JOINING = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/;
+const initialOf = (w) => (w.match(LATIN) || w.match(ANY) || [''])[0];
 export function initialsOf(name) {
-  const words = String(name || '').replace(/\([^)]*\)/g, ' ').split(/\s+/).filter((w) => w && !/\.$/.test(w) && /[A-Za-z0-9]/.test(w));
+  const words = String(name || '').replace(/\([^)]*\)/g, ' ').split(/\s+/).filter((w) => w && !/\.$/.test(w) && initialOf(w));
   if (!words.length) return '';
-  const first = words[0].match(/[A-Za-z0-9]/)[0], last = words.length > 1 ? words[words.length - 1].match(/[A-Za-z0-9]/)[0] : '';
-  return (first + last).toUpperCase();
+  const first = initialOf(words[0]), last = words.length > 1 ? initialOf(words[words.length - 1]) : '';
+  return (first + (JOINING.test(first) && JOINING.test(last) ? '\u200C' : '') + last).toUpperCase();
 }
 
 const GENDER = { male: { tone: 'blue', icon: 'person-male' }, female: { tone: 'pink', icon: 'person-female' } };
