@@ -761,204 +761,175 @@ function VisuallyHidden({
   }, rest), children);
 }
   } },
-  "platform/components/Isolate/Isolate.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/utils/direction.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Isolate = Isolate;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Isolate
-   Summary: Keeps a piece of text in its own writing direction inside text of the other direction (bidirectional
-     isolation): an ID, a case number (20261020-01), an email, a URL, a phone number or code inside an Arabic sentence,
-     so it reads as written and the words around it keep their places (owner, ctm-needs-34; #413 batch 3).
+exports.RTL_LANGUAGES = void 0;
+exports.arrowStep = arrowStep;
+exports.directionOf = directionOf;
+exports.getDirection = getDirection;
+exports.isRtl = isRtl;
+exports.physicalSide = physicalSide;
+/* Plenix · Writing direction (platform/utils/direction.js)
+   Summary: Right-to-left and left-to-right in script: the direction of an element or a language, the arrow keys in reading
+     order, and the physical side of a logical one. In a right-to-left page Arrow Right moves back and Arrow Left forward,
+     as the eye reads; Up and Down are the same in both directions.
    Usage:
-     <Text as="p">تم تسجيل القضية رقم <Isolate>20261020-01</Isolate> وستصل الإشعارات إلى <Isolate>office@example.org</Isolate>.</Text>
-     <Isolate dir="auto">{fileName}</Isolate>          // a value that may be in either direction: its first letter decides
+     const step = arrowStep(e, e.currentTarget);   // +1, -1 or 0
+     if (step) { e.preventDefault(); move(index + step); }
+     directionOf('ar-EG')          // "rtl"
+     physicalSide('start', 'rtl')  // "right"
    Props:
-     dir: "ltr" (default: IDs, numbers, emails, URLs, code) | "rtl" | "auto" (the first strong letter decides)
-     as: the element; default "bdi"
-     className: more classes on the element
-     children: the text
-     ...rest: other attributes go on the element
+     isRtl(el): true when the element is laid out right to left (its computed direction)
+     arrowStep(event, el, { vertical }): +1 for the next item, -1 for the previous one, 0 for another key; with vertical:
+       false, Up and Down are ignored (a horizontal-only control)
+     getDirection(el): "rtl" | "ltr", the element's computed direction (the document's when no element is given)
+     directionOf(locale): "rtl" for a language written right to left (Arabic, Hebrew, Persian, Urdu and the others in
+       RTL_LANGUAGES), else "ltr"
+     physicalSide(side, dir): "left" | "right" for a logical "start" or "end" in that direction (for a measurement API that
+       only speaks physical sides, such as a pointer's clientX); "left" and "right" come back as they are
+     RTL_LANGUAGES: the language subtags written right to left
    Behavior:
-     The element is isolated (unicode-bidi: isolate, as <bdi> is): the text inside never reorders the text around it,
-       and the text around it never reorders it. In an Arabic sentence "20261020-01" stays "20261020-01" (without it,
-       the two numbers swap places: "01-20261020").
-     It keeps the order of its characters, not their digits: when Arabic-Indic digits are on (LocaleProvider, issue 413 step 5),
-       the digits of an ID, a case number or an email inside it change too, and still read in the right order (owner,
-       arabic-ids-35).
-     It is inline and adds no box: alignment, wrapping and the ellipsis stay the container's.
-   Notes:
-     Plenix isolates by itself where it knows the value is technical: DataGrid and Table cells of kind data, id, email,
-       url, phone and code; DataPill with data; PropertyList.Item with data; Code, Kbd and CodeBlock (always left to
-       right); Text, which is dir="auto". Use Isolate for such a value inside running text.
+     The direction comes from the dir attribute on the element or an ancestor (<html dir="rtl">, a DirectionProvider):
+       stylesheets use logical properties (inline-start, inline-end), so the layout mirrors on its own; script reads the
+       computed direction only where it measures or handles arrow keys.
 */
-function Isolate({
-  dir = 'ltr',
-  as: Tag = 'bdi',
-  className,
-  children,
-  ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement(Tag, _extends({
-    className: (0, _cx.cx)('plx-isolate', className),
-    dir: dir
-  }, rest), children);
+const RTL_LANGUAGES = exports.RTL_LANGUAGES = ['ar', 'arc', 'ckb', 'dv', 'fa', 'he', 'iw', 'ps', 'sd', 'syr', 'ug', 'ur', 'yi'];
+function isRtl(el) {
+  return !!el && typeof window !== 'undefined' && window.getComputedStyle(el).direction === 'rtl';
+}
+function getDirection(el) {
+  if (typeof window === 'undefined') return 'ltr';
+  return isRtl(el || document.documentElement) ? 'rtl' : 'ltr';
+}
+function directionOf(locale) {
+  const lang = String(locale || '').toLowerCase().split(/[-_]/)[0];
+  return RTL_LANGUAGES.indexOf(lang) >= 0 ? 'rtl' : 'ltr';
+}
+function physicalSide(side, dir) {
+  if (side !== 'start' && side !== 'end') return side;
+  return side === 'start' === (dir !== 'rtl') ? 'left' : 'right';
+}
+function arrowStep(event, el, opts) {
+  const vertical = !opts || opts.vertical !== false;
+  const rtl = isRtl(el);
+  switch (event.key) {
+    case 'ArrowRight':
+      return rtl ? -1 : 1;
+    case 'ArrowLeft':
+      return rtl ? 1 : -1;
+    case 'ArrowDown':
+      return vertical ? 1 : 0;
+    case 'ArrowUp':
+      return vertical ? -1 : 0;
+    default:
+      return 0;
+  }
 }
   } },
-  "platform/components/Count/Count.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/providers/DirectionProvider.jsx": { deps: {"react":null,"../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Count = Count;
+exports.DirectionContext = void 0;
+exports.DirectionProvider = DirectionProvider;
+exports.useDirection = useDirection;
 var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
+var _direction = require("../utils/direction.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Count
-   Summary: A number shown on its own.
+/* Plenix · DirectionProvider, useDirection
+   Summary: Sets the writing direction (left to right or right to left) of an application or of one region, and tells
+     React components which it is.
    Usage:
-     <Count value={24} />
-     <Count variant="pill" value={unread} max={99} label={unread + ' unread notifications'} />
+     <DirectionProvider dir="rtl" lang="ar">{app}</DirectionProvider>
+     <DirectionProvider locale="he-IL" root>{app}</DirectionProvider>   // on <html>: the whole page
+     const { dir, setDir } = useDirection();
    Props:
-     value: the number; with no value nothing renders
-     variant: "plain" (default; muted tabular figures, e.g. a list row's item count) | "pill" (a 16px soft pill for unread
-       or pending counts: the status pill look, shade 100 background, shade 300 border, dark text, 4px corners)
-     tone: the pill color: "neutral" (gray) | "info" (blue) | "success" (green) | "warning" (yellow) | "danger" (red;
-       default), on the same roles as Badge's neutral, active, success, waiting and negative
-     max: above it the count shows max + "+" (e.g. "99+")
-     label: the accessible name when the number alone is unclear ("3 unread notifications")
-     moreThan: what screen readers hear for a capped count without a label (default "More than {max}")
-     className: more classes on the count
+     dir: "ltr" | "rtl"; without it, the direction of locale, else of the page
+     locale: a language tag ("ar-EG", "en-US"); it sets lang and, without dir, the direction (directionOf)
+     lang: the lang attribute, when it is not the locale
+     root: set dir and lang on <html> instead of a region (default false): the page, its portals and its scrollbars mirror
+     children: the application root or the region it wraps
+     useDirection(): { dir, rtl, setDir(dir) }: the nearest provider's direction (outside one, the page's), and a way to
+       change it
+   Behavior:
+     A region: a wrapper (div.plx-direction, display: contents, so it adds no box) with dir and lang; everything inside
+       it lays out in that direction, as the stylesheets use logical properties.
+     With root, the attributes go on <html> and are put back as they were when the provider unmounts.
+     Overlays drawn in a Portal take the direction of where they were written (the Portal copies dir and lang).
    Notes:
-     Other props pass through to the <span>.
+     Mirror the layout, not the content: text, numbers, media controls, clocks and the icons that are not directional
+       keep their shape; the icon set mirrors its directional icons (arrows, chevrons, undo and redo) by itself.
+     Script reads the direction where it measures or handles arrow keys (utils/direction.js: arrowStep, physicalSide).
 */
-function Count({
-  value,
-  max,
-  variant = 'plain',
-  tone = 'danger',
-  label,
-  moreThan = 'More than {max}',
-  className,
-  ...rest
+
+const DirectionContext = exports.DirectionContext = /*#__PURE__*/_react.default.createContext(null);
+function DirectionProvider({
+  dir,
+  locale,
+  lang,
+  root = false,
+  children
 }) {
-  (0, _devWarn.devWarn)('Count', {
-    variant,
-    tone
-  }, {
-    variant: ['plain', 'pill'],
-    tone: ['info', 'success', 'warning', 'danger', 'neutral']
-  });
-  if (value === null || value === undefined || value === '') return null;
-  const shown = typeof max === 'number' && Number(value) > max ? max + '+' : String(value);
-  return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: (0, _cx.cx)('plx-count', 'plx-count--' + variant, variant === 'pill' ? 'plx-count--' + tone : null, className),
-    "aria-label": label || (typeof max === 'number' && Number(value) > max ? moreThan.replace('{max}', String(max)) : undefined)
-  }, rest), shown);
-}
-  } },
-  "platform/utils/layer.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.focusables = focusables;
-exports.useLayer = useLayer;
-exports.useUid = useUid;
-var _react = _interopRequireDefault(require("react"));
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · layers (platform/utils/layer.js). Internal; not part of the public API.
-   Every open menu, dialog, drawer and media viewer is a layer. Escape closes only the topmost layer, so Escape in a menu
-   inside a dialog closes the menu first. A modal layer also keeps Tab inside itself, locks page scroll, moves focus in
-   when it opens (initialFocus: a ref, or a function that returns the element) and returns focus to the element that opened it when it closes. */
-
-const stack = [];
-let modalCount = 0;
-const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]):not([type="hidden"]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
-function focusables(root) {
-  if (!root) return [];
-  return Array.prototype.filter.call(root.querySelectorAll(FOCUSABLE), el => !el.closest('[hidden]') && el.getClientRects().length > 0);
-}
-function useLayer(ref, open, {
-  modal = false,
-  onEscape,
-  initialFocus
-} = {}) {
-  const escape = _react.default.useRef(onEscape);
-  escape.current = onEscape;
+  const wanted = dir || (locale ? (0, _direction.directionOf)(locale) : null);
+  const [own, setOwn] = _react.default.useState(wanted);
   _react.default.useEffect(() => {
-    if (!open) return undefined;
-    const entry = {
-      modal
-    };
-    stack.push(entry);
-    const opener = document.activeElement;
-    if (modal) {
-      if (modalCount === 0) document.documentElement.classList.add('is-scroll-locked');
-      modalCount += 1;
-      const root = ref.current;
-      const wanted = typeof initialFocus === 'function' ? initialFocus() : initialFocus && initialFocus.current;
-      const first = wanted || focusables(root)[0] || root;
-      if (first) first.focus({
-        preventScroll: true
-      });
-    }
-    const onKey = e => {
-      if (stack[stack.length - 1] !== entry) return;
-      if (e.key === 'Escape') {
-        if (escape.current) {
-          e.preventDefault();
-          e.stopPropagation();
-          escape.current();
-        }
-        return;
-      }
-      if (!modal || e.key !== 'Tab') return;
-      const root = ref.current;
-      const items = focusables(root);
-      if (!items.length) {
-        e.preventDefault();
-        root.focus();
-        return;
-      }
-      const first = items[0],
-        last = items[items.length - 1],
-        active = document.activeElement;
-      if (!root.contains(active)) {
-        e.preventDefault();
-        first.focus();
-      } else if (e.shiftKey && (active === first || active === root)) {
-        e.preventDefault();
-        last.focus();
-      } else if (!e.shiftKey && active === last) {
-        e.preventDefault();
-        first.focus();
-      }
-    };
-    document.addEventListener('keydown', onKey, true);
+    setOwn(wanted);
+  }, [wanted]);
+  const current = own || (typeof document !== 'undefined' ? (0, _direction.getDirection)() : 'ltr');
+  const language = lang || locale || undefined;
+  _react.default.useLayoutEffect(() => {
+    if (!root) return undefined;
+    const html = document.documentElement,
+      before = {
+        dir: html.getAttribute('dir'),
+        lang: html.getAttribute('lang')
+      };
+    html.setAttribute('dir', current);
+    if (language) html.setAttribute('lang', language);
     return () => {
-      document.removeEventListener('keydown', onKey, true);
-      stack.splice(stack.indexOf(entry), 1);
-      if (modal) {
-        modalCount -= 1;
-        if (modalCount === 0) document.documentElement.classList.remove('is-scroll-locked');
-        if (opener && opener.focus && document.contains(opener)) opener.focus({
-          preventScroll: true
-        });
+      if (before.dir == null) html.removeAttribute('dir');else html.setAttribute('dir', before.dir);
+      if (language) {
+        if (before.lang == null) html.removeAttribute('lang');else html.setAttribute('lang', before.lang);
       }
     };
-  }, [open]);
+  }, [root, current, language]);
+  const value = _react.default.useMemo(() => ({
+    dir: current,
+    rtl: current === 'rtl',
+    setDir: d => setOwn(d === 'rtl' ? 'rtl' : 'ltr')
+  }), [current]);
+  return /*#__PURE__*/_react.default.createElement(DirectionContext.Provider, {
+    value: value
+  }, root ? children : /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-direction",
+    dir: current,
+    lang: language
+  }, children));
 }
-function useUid(prefix) {
-  return prefix + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+function useDirection() {
+  const ctx = _react.default.useContext(DirectionContext);
+  const [page, setPage] = _react.default.useState(() => typeof document !== 'undefined' ? (0, _direction.getDirection)() : 'ltr');
+  _react.default.useEffect(() => {
+    if (ctx) return undefined;
+    const observer = new MutationObserver(() => setPage((0, _direction.getDirection)()));
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['dir']
+    });
+    return () => observer.disconnect();
+  }, [ctx]);
+  if (ctx) return ctx;
+  return {
+    dir: page,
+    rtl: page === 'rtl',
+    setDir: d => document.documentElement.setAttribute('dir', d === 'rtl' ? 'rtl' : 'ltr')
+  };
 }
   } },
   "platform/utils/format.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
@@ -969,6 +940,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.FORMATS = void 0;
 exports.dateTimeAttr = dateTimeAttr;
+exports.digitsOf = digitsOf;
 exports.formatAddress = formatAddress;
 exports.formatBytes = formatBytes;
 exports.formatCompact = formatCompact;
@@ -986,6 +958,7 @@ exports.formatRange = formatRange;
 exports.formatRelative = formatRelative;
 exports.formatTime = formatTime;
 exports.formatUnit = formatUnit;
+exports.numeralLocale = numeralLocale;
 exports.regionName = regionName;
 /* Plenix · Formatting (platform/utils/format.js)
    Summary: Numbers, units, dates, times, money, percentages, names, addresses and phone numbers written the same way on
@@ -1005,6 +978,8 @@ exports.regionName = regionName;
    Props:
      every function takes an options object last; options.locale overrides the reader's locale (formatLocale())
      formatLocale(): the page's language (<html lang>), else the browser's, else "en-US"
+     digitsOf(locale): "arab" (Arabic-Indic ٠-٩) for Arabic locales, else "latn"; an explicit -u-nu-latn keeps Latin (owner, arabic-digits-35)
+     numeralLocale(locale, digits): the locale tag with its digits explicit (-u-nu-arab), for Intl; every format function here uses it
      formatNumber(value, { decimals, signed }): a plain number; decimals fixes the precision (keep it the same in a column)
      formatUnit(value, unit, { display, decimals }): a measurement with an Intl unit ("kilometer", "celsius", "megabyte");
        display "short" (default), "long" or "narrow"
@@ -1115,7 +1090,30 @@ function formatLocale() {
   if (typeof navigator !== 'undefined' && navigator.language) return navigator.language;
   return 'en-US';
 }
-const loc = o => o && o.locale || formatLocale();
+/* the digits a locale writes (owner, arabic-digits-35 and arabic-ids-35): Arabic text uses Arabic-Indic digits (٠-٩) everywhere,
+   whichever Arabic region the tag names (the browser alone writes Latin digits for "ar" and "ar-AE"); an explicit -u-nu-latn keeps Latin */
+function digitsOf(locale) {
+  try {
+    const l = new Intl.Locale(locale || formatLocale());
+    return l.numberingSystem === 'latn' ? 'latn' : l.numberingSystem === 'arab' || l.language === 'ar' ? 'arab' : 'latn';
+  } catch (e) {
+    return 'latn';
+  }
+}
+// the locale tag with its digits made explicit (-u-nu-arab or -u-nu-latn), for Intl; a language that is not Arabic is left as it is
+function numeralLocale(locale, digits) {
+  const tag = locale || formatLocale();
+  try {
+    const l = new Intl.Locale(tag),
+      want = digits === 'arab' || digits === 'latn' ? digits : l.language === 'ar' ? digitsOf(tag) : null;
+    return want ? new Intl.Locale(l.toString(), {
+      numberingSystem: want
+    }).toString() : l.toString();
+  } catch (e) {
+    return tag;
+  }
+}
+const loc = o => numeralLocale(o && o.locale || formatLocale());
 const digits = d => d === undefined ? {} : {
   minimumFractionDigits: d,
   maximumFractionDigits: d
@@ -1392,6 +1390,484 @@ function formatPhone(e164, o = {}) {
 function dateTimeAttr(date) {
   const d = toDate(date);
   return d ? d.toISOString() : '';
+}
+  } },
+  "platform/i18n/en.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// Browser mirror of en.json: the repository module loader accepts JavaScript only. The W15C catalog test checks parity.
+var _default = exports.default = {
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "retry": "Retry",
+    "next": "Next",
+    "back": "Back"
+  },
+  "collection": {
+    "selected": {
+      "=0": "Nothing selected",
+      "one": "{count} item selected",
+      "other": "{count} items selected"
+    }
+  },
+  "wizard": {
+    "next": "Next",
+    "back": "Back",
+    "finish": "Finish",
+    "cancel": "Cancel",
+    "step": "Step {n} of {total}",
+    "error": "Could not save. Try again."
+  },
+  "dialog": {
+    "close": "Close"
+  },
+  "text": {
+    "more": "Show more",
+    "less": "Show less"
+  },
+  "emptyState": {
+    "title": "No items yet",
+    "description": "Create an item to get started.",
+    "action": "Create item"
+  }
+};
+  } },
+  "platform/providers/LocaleProvider.jsx": { deps: {"react":null,"./DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","../utils/direction.js":"platform/utils/direction.js","../utils/format.js":"platform/utils/format.js","../i18n/en.js":"platform/i18n/en.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.LocaleProvider = LocaleProvider;
+exports.createTranslator = createTranslator;
+exports.useDigits = useDigits;
+exports.useLocale = useLocale;
+var _react = _interopRequireDefault(require("react"));
+var _DirectionProvider = require("./DirectionProvider.jsx");
+var _direction = require("../utils/direction.js");
+var F = _interopRequireWildcard(require("../utils/format.js"));
+var _en = _interopRequireDefault(require("../i18n/en.js"));
+function _interopRequireWildcard(e, t) { if ("function" == typeof WeakMap) var r = new WeakMap(), n = new WeakMap(); return (_interopRequireWildcard = function (e, t) { if (!t && e && e.__esModule) return e; var o, i, f = { __proto__: null, default: e }; if (null === e || "object" != typeof e && "function" != typeof e) return f; if (o = t ? n : r) { if (o.has(e)) return o.get(e); o.set(e, f); } for (const t in e) "default" !== t && {}.hasOwnProperty.call(e, t) && ((i = (o = Object.defineProperty) && Object.getOwnPropertyDescriptor(e, t)) && (i.get || i.set) ? o(f, t, i) : f[t] = e[t]); return f; })(e, t); }
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · LocaleProvider, useLocale, createTranslator
+   Summary: Locale-scoped message catalogs, plural rules, formatting and writing direction. Existing components receive
+     their strings explicitly from the catalog; a region never changes another region's locale.
+   Usage:
+     <LocaleProvider locale="fr-FR" catalogs={{ fr: french }}><App /></LocaleProvider>
+     const { t, strings, format } = useLocale();
+     <Wizard strings={strings('wizard')} />; t('collection.selected', { count: 2 }); format.date('2026-03-08');
+   Props:
+     locale: a BCP 47 language tag; default the page's formatLocale()
+     catalogs: messages by locale, with flat dot keys or nested sections; English is always the last fallback
+     messages: the current locale's catalog, as a convenience
+     fallbackLocale: locale searched after the requested locale and its language; default "en"
+     timeZone: optional Intl time zone for this provider's date/time formatters
+     dir: explicit "ltr" or "rtl"; otherwise directionOf(locale)
+     digits: "auto" (default: Arabic-Indic ٠-٩ for an Arabic locale, Latin for every other) | "arab" | "latn" (owner, arabic-digits-35):
+       every format helper writes its digits so, and Isolate and Text write the digits of their text so; emails and web addresses keep Latin
+     root: set the page's lang and dir through DirectionProvider; default false (a scoped region)
+     children: the region's content
+     useDigits(): "arab" or "latn", the digits of the nearest LocaleProvider (the page's language when there is none)
+     useLocale(): { locale, dir, digits, t, strings, plural, format }; format has number, unit, bytes, duration, compact, date,
+       time, dateTime, relative, range, currency, percent, list, personName, address, phone and regionName
+     createTranslator(locale, catalogs, fallbackLocale): the same t/strings/plural API outside React
+   Behavior:
+     Fallback: exact locale, language, configured fallback, then English. Missing messages return their key.
+     Messages interpolate {name} as plain text. Plural messages are objects with one/other (or any Intl category),
+     optional "=0" exact-count keys; t(key, { count }) selects them with Intl.PluralRules. t's third argument may
+     set ordinal:true. Missing interpolation values keep their placeholder. No HTML is parsed.
+     strings(section, values) combines that section across fallbacks for a component's strings prop.
+   Notes:
+     Translators never mutate catalogs or global Intl state. Pass the bound format helpers to localized content;
+     unmodified components keep their existing defaults. Catalog translations are application-owned. */
+
+const canonical = (value, fallback = 'en') => {
+  try {
+    return Intl.getCanonicalLocales(value || fallback)[0] || fallback;
+  } catch (e) {
+    return fallback;
+  }
+};
+const own = (value, key) => value && Object.prototype.hasOwnProperty.call(value, key);
+const messageAt = (catalog, key) => {
+  if (own(catalog, key)) return catalog[key];
+  return String(key).split('.').reduce((node, part) => own(node, part) ? node[part] : undefined, catalog);
+};
+const text = (message, values) => String(message).replace(/\{(\w+)\}/g, (match, key) => own(values, key) ? String(values[key]) : match);
+function createTranslator(locale = 'en', catalogs = {}, fallbackLocale = 'en') {
+  const language = canonical(locale),
+    fallback = canonical(fallbackLocale);
+  const normalized = Object.fromEntries(Object.entries(catalogs || {}).map(([key, value]) => [canonical(key), value]));
+  const chain = [...new Set([language, language.split('-')[0], fallback, fallback.split('-')[0], 'en'])];
+  const sources = chain.map(key => normalized[key]).filter(Boolean).concat(_en.default);
+  const cardinal = new Intl.PluralRules(language),
+    ordinal = new Intl.PluralRules(language, {
+      type: 'ordinal'
+    });
+  const plural = (count, options = {}) => (options.ordinal ? ordinal : cardinal).select(Number(count));
+  const choose = (value, values, options) => {
+    if (typeof value === 'string' || typeof value === 'number') return text(value, values);
+    if (!value || typeof value !== 'object' || Array.isArray(value)) return undefined;
+    const exact = '=' + Number(values.count),
+      category = plural(values.count, options);
+    const item = own(value, exact) ? value[exact] : value[category] !== undefined ? value[category] : value.other;
+    return typeof item === 'string' || typeof item === 'number' ? text(item, values) : undefined;
+  };
+  const t = (key, values = {}, options = {}) => {
+    for (const source of sources) {
+      const result = choose(messageAt(source, key), values, options);
+      if (result !== undefined) return result;
+    }
+    return String(key);
+  };
+  const strings = (section, values = {}) => {
+    const keys = new Set();
+    sources.forEach(source => {
+      const node = messageAt(source, section);
+      if (node && typeof node === 'object' && !Array.isArray(node)) Object.keys(node).forEach(key => keys.add(key));
+      Object.keys(source).filter(key => key.startsWith(section + '.') && !key.slice(section.length + 1).includes('.')).forEach(key => keys.add(key.slice(section.length + 1)));
+    });
+    return Object.fromEntries([...keys].map(key => [key, t(section + '.' + key, values)]));
+  };
+  return {
+    locale: language,
+    dir: (0, _direction.directionOf)(language),
+    t,
+    strings,
+    plural
+  };
+}
+const FORMATTERS = {
+  number: ['formatNumber', 1],
+  unit: ['formatUnit', 2],
+  bytes: ['formatBytes', 1],
+  duration: ['formatDuration', 1],
+  compact: ['formatCompact', 1],
+  date: ['formatDate', 1],
+  time: ['formatTime', 1],
+  dateTime: ['formatDateTime', 1],
+  relative: ['formatRelative', 1],
+  range: ['formatRange', 2],
+  currency: ['formatCurrency', 2],
+  percent: ['formatPercent', 1],
+  list: ['formatList', 1],
+  personName: ['formatPersonName', 1],
+  address: ['formatAddress', 1],
+  phone: ['formatPhone', 1],
+  regionName: ['regionName', 1]
+};
+const bind = (locale, timeZone, digits) => {
+  const tag = F.numeralLocale(locale, digits);
+  return Object.fromEntries(Object.entries(FORMATTERS).map(([name, [fn, count]]) => [name, (...args) => F[fn](...Array.from({
+    length: count
+  }, (_, index) => args[index]), Object.assign({
+    locale: tag,
+    timeZone
+  }, args[count]))]));
+};
+const LocaleContext = /*#__PURE__*/_react.default.createContext(null);
+function LocaleProvider({
+  locale,
+  catalogs,
+  messages,
+  fallbackLocale = 'en',
+  timeZone,
+  dir,
+  digits = 'auto',
+  root = false,
+  children
+}) {
+  const language = canonical(locale || F.formatLocale());
+  const value = _react.default.useMemo(() => {
+    const sources = Object.assign({}, catalogs, messages ? {
+      [language]: messages
+    } : {});
+    return Object.assign(createTranslator(language, sources, fallbackLocale), {
+      dir: dir || (0, _direction.directionOf)(language),
+      digits: F.digitsOf(F.numeralLocale(language, digits === 'auto' ? undefined : digits)),
+      format: bind(language, timeZone, digits === 'auto' ? undefined : digits)
+    });
+  }, [language, catalogs, messages, fallbackLocale, timeZone, dir, digits]);
+  return /*#__PURE__*/_react.default.createElement(LocaleContext.Provider, {
+    value: value
+  }, /*#__PURE__*/_react.default.createElement(_DirectionProvider.DirectionProvider, {
+    locale: language,
+    dir: value.dir,
+    root: root
+  }, children));
+}
+function useLocale() {
+  const value = _react.default.useContext(LocaleContext);
+  const language = canonical(F.formatLocale());
+  const fallback = _react.default.useMemo(() => Object.assign(createTranslator(language), {
+    format: bind(language)
+  }), [language]);
+  return value || fallback;
+}
+
+// the digits the text around uses ("arab" or "latn"): the nearest LocaleProvider's, else the page's language (cheap: no translator is built)
+function useDigits() {
+  const value = _react.default.useContext(LocaleContext);
+  return value ? value.digits : F.digitsOf(F.formatLocale());
+}
+  } },
+  "platform/utils/digits.js": { deps: {"./format.js":"platform/utils/format.js"}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.localDigits = localDigits;
+exports.toArabicIndic = toArabicIndic;
+var _format = require("./format.js");
+/* Plenix · Digits (platform/utils/digits.js)
+   Summary: Writes the digits of a text in the reader's numerals: Arabic-Indic (٠-٩) in Arabic, Latin elsewhere (owner,
+     arabic-digits-35, arabic-ids-35, arabic-digits-risk-36). Emails and web addresses keep their Latin digits.
+   Usage:
+     localDigits('Case 20261020-01 on 20 October')            // in Arabic: "Case ٢٠٢٦١٠٢٠-٠١ on ٢٠ October"
+     localDigits('write to office2026@example.org')            // email kept: "office2026@example.org"
+     toArabicIndic('2026')                                     // "٢٠٢٦"
+   Props:
+     localDigits(text, { digits, locale }): the text with its ASCII digits changed to the locale's; digits "arab" | "latn" |
+       "auto" (default: from the locale, formatLocale() when none)
+     toArabicIndic(text): the text with every ASCII digit changed to Arabic-Indic, except inside an email or a web address
+   Behavior:
+     An email (name@host) and a web address (http://, https://, www.) are left as written. Anything else changes, including
+       case numbers, IDs, dates and phone numbers written as text. Only digits change; the order of characters never does.
+     Copying a changed ID copies the Arabic-Indic digits (owner, arabic-digits-risk-36).
+   Notes:
+     Formatted numbers and dates change through the locale instead (format.js numeralLocale), not through this. */
+
+const KEEP = /([^\s@<>()]+@[^\s@<>()]+|(?:https?:\/\/|www\.)[^\s<>()]+)/gi;
+const ARAB = d => String.fromCharCode(0x660 + Number(d));
+function toArabicIndic(text) {
+  return String(text).split(KEEP).map((part, i) => i % 2 ? part : part.replace(/[0-9]/g, ARAB)).join('');
+}
+function localDigits(text, {
+  digits = 'auto',
+  locale
+} = {}) {
+  if (text === null || text === undefined) return text;
+  const want = digits === 'arab' || digits === 'latn' ? digits : (0, _format.digitsOf)(locale);
+  return want === 'arab' ? toArabicIndic(text) : String(text);
+}
+  } },
+  "platform/components/Isolate/Isolate.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/digits.js":"platform/utils/digits.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Isolate = Isolate;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _digits = require("../../utils/digits.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Isolate
+   Summary: Keeps a piece of text in its own writing direction inside text of the other direction (bidirectional
+     isolation): an ID, a case number (20261020-01), an email, a URL, a phone number or code inside an Arabic sentence,
+     so it reads as written and the words around it keep their places (owner, ctm-needs-34; #413 batch 3).
+   Usage:
+     <Text as="p">تم تسجيل القضية رقم <Isolate>20261020-01</Isolate> وستصل الإشعارات إلى <Isolate>office@example.org</Isolate>.</Text>
+     <Isolate dir="auto">{fileName}</Isolate>          // a value that may be in either direction: its first letter decides
+   Props:
+     dir: "ltr" (default: IDs, numbers, emails, URLs, code) | "rtl" | "auto" (the first strong letter decides)
+     kind: "email" | "url": keeps its Latin digits when the page writes Arabic-Indic digits (owner, arabic-digits-risk-36); any other
+       value (an ID, a case number, a phone number, code) takes the page's digits, ٠-٩ in Arabic
+     as: the element; default "bdi"
+     className: more classes on the element
+     children: the text
+     ...rest: other attributes go on the element
+   Behavior:
+     The element is isolated (unicode-bidi: isolate, as <bdi> is): the text inside never reorders the text around it,
+       and the text around it never reorders it. In an Arabic sentence "20261020-01" stays "20261020-01" (without it,
+       the two numbers swap places: "01-20261020").
+     Digits: in Arabic (LocaleProvider digits, "auto" for an Arabic locale) the digits of its text are written Arabic-Indic, case
+       numbers and IDs included, and an email or a web address (kind) keeps Latin (owner, arabic-ids-35, arabic-digits-risk-36).
+     A left-to-right island overrides the order (unicode-bidi: isolate-override): Arabic-Indic digits would otherwise let a hyphen
+       swap the two numbers around it ("٢٠٢٦١٠٢٠-٠١" reads "٠١-٢٠٢٦١٠٢٠"). The order of its characters is kept as written.
+     It is inline and adds no box: alignment, wrapping and the ellipsis stay the container's.
+   Notes:
+     Plenix isolates by itself where it knows the value is technical: DataGrid and Table cells of kind data, id, email,
+       url, phone and code; DataPill with data; PropertyList.Item with data; Code, Kbd and CodeBlock (always left to
+       right); Text, which is dir="auto". Use Isolate for such a value inside running text.
+*/
+function Isolate({
+  dir = 'ltr',
+  as: Tag = 'bdi',
+  kind,
+  className,
+  children,
+  ...rest
+}) {
+  const digits = (0, _LocaleProvider.useDigits)();
+  // an email or a web address keeps its Latin digits; any other value takes the page's digits (Arabic-Indic in Arabic)
+  const own = kind === 'email' || kind === 'url' ? 'latn' : digits;
+  const shown = _react.default.Children.map(children, child => typeof child === 'string' || typeof child === 'number' ? (0, _digits.localDigits)(String(child), {
+    digits: own
+  }) : child);
+  return /*#__PURE__*/_react.default.createElement(Tag, _extends({
+    className: (0, _cx.cx)('plx-isolate', className),
+    dir: dir
+  }, rest), shown);
+}
+  } },
+  "platform/components/Count/Count.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Count = Count;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Count
+   Summary: A number shown on its own.
+   Usage:
+     <Count value={24} />
+     <Count variant="pill" value={unread} max={99} label={unread + ' unread notifications'} />
+   Props:
+     value: the number; with no value nothing renders
+     variant: "plain" (default; muted tabular figures, e.g. a list row's item count) | "pill" (a 16px soft pill for unread
+       or pending counts: the status pill look, shade 100 background, shade 300 border, dark text, 4px corners)
+     tone: the pill color: "neutral" (gray) | "info" (blue) | "success" (green) | "warning" (yellow) | "danger" (red;
+       default), on the same roles as Badge's neutral, active, success, waiting and negative
+     max: above it the count shows max + "+" (e.g. "99+")
+     label: the accessible name when the number alone is unclear ("3 unread notifications")
+     moreThan: what screen readers hear for a capped count without a label (default "More than {max}")
+     className: more classes on the count
+   Notes:
+     Other props pass through to the <span>.
+*/
+function Count({
+  value,
+  max,
+  variant = 'plain',
+  tone = 'danger',
+  label,
+  moreThan = 'More than {max}',
+  className,
+  ...rest
+}) {
+  (0, _devWarn.devWarn)('Count', {
+    variant,
+    tone
+  }, {
+    variant: ['plain', 'pill'],
+    tone: ['info', 'success', 'warning', 'danger', 'neutral']
+  });
+  if (value === null || value === undefined || value === '') return null;
+  const shown = typeof max === 'number' && Number(value) > max ? max + '+' : String(value);
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: (0, _cx.cx)('plx-count', 'plx-count--' + variant, variant === 'pill' ? 'plx-count--' + tone : null, className),
+    "aria-label": label || (typeof max === 'number' && Number(value) > max ? moreThan.replace('{max}', String(max)) : undefined)
+  }, rest), shown);
+}
+  } },
+  "platform/utils/layer.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.focusables = focusables;
+exports.useLayer = useLayer;
+exports.useUid = useUid;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · layers (platform/utils/layer.js). Internal; not part of the public API.
+   Every open menu, dialog, drawer and media viewer is a layer. Escape closes only the topmost layer, so Escape in a menu
+   inside a dialog closes the menu first. A modal layer also keeps Tab inside itself, locks page scroll, moves focus in
+   when it opens (initialFocus: a ref, or a function that returns the element) and returns focus to the element that opened it when it closes. */
+
+const stack = [];
+let modalCount = 0;
+const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]):not([type="hidden"]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+function focusables(root) {
+  if (!root) return [];
+  return Array.prototype.filter.call(root.querySelectorAll(FOCUSABLE), el => !el.closest('[hidden]') && el.getClientRects().length > 0);
+}
+function useLayer(ref, open, {
+  modal = false,
+  onEscape,
+  initialFocus
+} = {}) {
+  const escape = _react.default.useRef(onEscape);
+  escape.current = onEscape;
+  _react.default.useEffect(() => {
+    if (!open) return undefined;
+    const entry = {
+      modal
+    };
+    stack.push(entry);
+    const opener = document.activeElement;
+    if (modal) {
+      if (modalCount === 0) document.documentElement.classList.add('is-scroll-locked');
+      modalCount += 1;
+      const root = ref.current;
+      const wanted = typeof initialFocus === 'function' ? initialFocus() : initialFocus && initialFocus.current;
+      const first = wanted || focusables(root)[0] || root;
+      if (first) first.focus({
+        preventScroll: true
+      });
+    }
+    const onKey = e => {
+      if (stack[stack.length - 1] !== entry) return;
+      if (e.key === 'Escape') {
+        if (escape.current) {
+          e.preventDefault();
+          e.stopPropagation();
+          escape.current();
+        }
+        return;
+      }
+      if (!modal || e.key !== 'Tab') return;
+      const root = ref.current;
+      const items = focusables(root);
+      if (!items.length) {
+        e.preventDefault();
+        root.focus();
+        return;
+      }
+      const first = items[0],
+        last = items[items.length - 1],
+        active = document.activeElement;
+      if (!root.contains(active)) {
+        e.preventDefault();
+        first.focus();
+      } else if (e.shiftKey && (active === first || active === root)) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener('keydown', onKey, true);
+    return () => {
+      document.removeEventListener('keydown', onKey, true);
+      stack.splice(stack.indexOf(entry), 1);
+      if (modal) {
+        modalCount -= 1;
+        if (modalCount === 0) document.documentElement.classList.remove('is-scroll-locked');
+        if (opener && opener.focus && document.contains(opener)) opener.focus({
+          preventScroll: true
+        });
+      }
+    };
+  }, [open]);
+}
+function useUid(prefix) {
+  return prefix + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
 }
   } },
   "platform/components/Card/Card.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -5175,75 +5651,6 @@ function Portal({
     ref: origin,
     "data-plx-portal-origin": ""
   }), /*#__PURE__*/(0, _reactDom.createPortal)(children, node));
-}
-  } },
-  "platform/utils/direction.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.RTL_LANGUAGES = void 0;
-exports.arrowStep = arrowStep;
-exports.directionOf = directionOf;
-exports.getDirection = getDirection;
-exports.isRtl = isRtl;
-exports.physicalSide = physicalSide;
-/* Plenix · Writing direction (platform/utils/direction.js)
-   Summary: Right-to-left and left-to-right in script: the direction of an element or a language, the arrow keys in reading
-     order, and the physical side of a logical one. In a right-to-left page Arrow Right moves back and Arrow Left forward,
-     as the eye reads; Up and Down are the same in both directions.
-   Usage:
-     const step = arrowStep(e, e.currentTarget);   // +1, -1 or 0
-     if (step) { e.preventDefault(); move(index + step); }
-     directionOf('ar-EG')          // "rtl"
-     physicalSide('start', 'rtl')  // "right"
-   Props:
-     isRtl(el): true when the element is laid out right to left (its computed direction)
-     arrowStep(event, el, { vertical }): +1 for the next item, -1 for the previous one, 0 for another key; with vertical:
-       false, Up and Down are ignored (a horizontal-only control)
-     getDirection(el): "rtl" | "ltr", the element's computed direction (the document's when no element is given)
-     directionOf(locale): "rtl" for a language written right to left (Arabic, Hebrew, Persian, Urdu and the others in
-       RTL_LANGUAGES), else "ltr"
-     physicalSide(side, dir): "left" | "right" for a logical "start" or "end" in that direction (for a measurement API that
-       only speaks physical sides, such as a pointer's clientX); "left" and "right" come back as they are
-     RTL_LANGUAGES: the language subtags written right to left
-   Behavior:
-     The direction comes from the dir attribute on the element or an ancestor (<html dir="rtl">, a DirectionProvider):
-       stylesheets use logical properties (inline-start, inline-end), so the layout mirrors on its own; script reads the
-       computed direction only where it measures or handles arrow keys.
-*/
-const RTL_LANGUAGES = exports.RTL_LANGUAGES = ['ar', 'arc', 'ckb', 'dv', 'fa', 'he', 'iw', 'ps', 'sd', 'syr', 'ug', 'ur', 'yi'];
-function isRtl(el) {
-  return !!el && typeof window !== 'undefined' && window.getComputedStyle(el).direction === 'rtl';
-}
-function getDirection(el) {
-  if (typeof window === 'undefined') return 'ltr';
-  return isRtl(el || document.documentElement) ? 'rtl' : 'ltr';
-}
-function directionOf(locale) {
-  const lang = String(locale || '').toLowerCase().split(/[-_]/)[0];
-  return RTL_LANGUAGES.indexOf(lang) >= 0 ? 'rtl' : 'ltr';
-}
-function physicalSide(side, dir) {
-  if (side !== 'start' && side !== 'end') return side;
-  return side === 'start' === (dir !== 'rtl') ? 'left' : 'right';
-}
-function arrowStep(event, el, opts) {
-  const vertical = !opts || opts.vertical !== false;
-  const rtl = isRtl(el);
-  switch (event.key) {
-    case 'ArrowRight':
-      return rtl ? -1 : 1;
-    case 'ArrowLeft':
-      return rtl ? 1 : -1;
-    case 'ArrowDown':
-      return vertical ? 1 : 0;
-    case 'ArrowUp':
-      return vertical ? -1 : 0;
-    default:
-      return 0;
-  }
 }
   } },
   "platform/hooks/useGesture.js": { deps: {"react":null,"../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -9046,7 +9453,7 @@ function ContextualHelp({
   }, more('standalone')) : null));
 }
   } },
-  "platform/components/ProgressBar/ProgressBar.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/ProgressBar/ProgressBar.jsx": { deps: {"react":null,"../../utils/format.js":"platform/utils/format.js","../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -9054,6 +9461,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ProgressBar = ProgressBar;
 var _react = _interopRequireDefault(require("react"));
+var _format = require("../../utils/format.js");
 var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -9104,7 +9512,7 @@ function ProgressBar({
     tone: ['info', 'success', 'warning', 'danger', 'neutral'],
     size: ['sm', 'md']
   });
-  const loc = locale || typeof document !== 'undefined' && document.documentElement.lang || undefined;
+  const loc = (0, _format.numeralLocale)(locale || typeof document !== 'undefined' && document.documentElement.lang || undefined);
   const known = typeof value === 'number' && !Number.isNaN(value);
   const pct = known ? Math.max(0, Math.min(100, value / (max || 100) * 100)) : null;
   const id = 'plx-pb' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
@@ -18083,7 +18491,7 @@ const SearchField = exports.SearchField = /*#__PURE__*/_react.default.forwardRef
   }, props));
 });
   } },
-  "platform/components/Text/Text.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Text/Text.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/digits.js":"platform/utils/digits.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -18095,6 +18503,8 @@ var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
 var _Button = require("../Button/Button.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _digits = require("../../utils/digits.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Text
    Summary: A run of text in one of the system's text roles, from the type tokens.
@@ -18151,6 +18561,11 @@ const STRINGS = {
 
 // a text's classes: its role, how it overflows (one line, or at most `clamp` lines while folded) and its figures
 const textClass = (variant, truncate, clamp, open, tabular, className) => (0, _cx.cx)('plx-text', 'plx-text--' + variant, truncate && !clamp && 'plx-text--truncate', clamp && !open && 'plx-text--lines-' + clamp, tabular && 'plx-text--tabular', className);
+
+// the digits of a text's strings: Arabic-Indic in an Arabic page, emails and web addresses kept (owner, arabic-digits-35)
+const shownDigits = (children, digits) => digits === 'arab' ? _react.default.Children.map(children, c => typeof c === 'string' || typeof c === 'number' ? (0, _digits.localDigits)(String(c), {
+  digits
+}) : c) : children;
 function Text({
   as: As = 'span',
   variant = 'body',
@@ -18169,6 +18584,7 @@ function Text({
   }, {
     variant: ['body', 'secondary', 'caption', 'data', 'label', 'strong', 'heading', 'accent', 'success', 'eyebrow', 'danger', 'link', 'title', 'display', 'lead']
   });
+  const digits = (0, _LocaleProvider.useDigits)();
   const clamp = LINES.indexOf(Number(lines)) >= 0 ? Number(lines) : null;
   if (expandable && clamp) {
     return /*#__PURE__*/_react.default.createElement(ExpandableText, {
@@ -18185,7 +18601,7 @@ function Text({
   return /*#__PURE__*/_react.default.createElement(As, _extends({
     dir: "auto",
     className: textClass(variant, truncate, clamp, false, tabular, className)
-  }, rest), children);
+  }, rest), shownDigits(children, digits));
 }
 
 // a clamped text and its Show more button: the button shows while the text is cut, and while it is unfolded
@@ -21361,7 +21777,7 @@ function DataPill({
   }, ', ' + t[gender]) : null);
 }
   } },
-  "platform/components/DataGrid/cells.jsx": { deps: {"react":null,"../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../DataPill/DataPill.jsx":"platform/components/DataPill/DataPill.jsx","../../utils/format.js":"platform/utils/format.js","../Isolate/Isolate.jsx":"platform/components/Isolate/Isolate.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/DataGrid/cells.jsx": { deps: {"react":null,"../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../DataPill/DataPill.jsx":"platform/components/DataPill/DataPill.jsx","../../utils/format.js":"platform/utils/format.js","../Isolate/Isolate.jsx":"platform/components/Isolate/Isolate.jsx","../../utils/digits.js":"platform/utils/digits.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -21379,6 +21795,7 @@ var _Tag = require("../Tag/Tag.jsx");
 var _DataPill = require("../DataPill/DataPill.jsx");
 var _format = require("../../utils/format.js");
 var _Isolate = require("../Isolate/Isolate.jsx");
+var _digits = require("../../utils/digits.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · DataGridEngine cells
    Summary: Existing Platform rich-cell parts rendered directly by React.
@@ -21506,12 +21923,13 @@ function CellValue({
     className: own,
     onMouseEnter: fullText
   }, /*#__PURE__*/_react.default.createElement(_Isolate.Isolate, {
-    dir: island === 'data' ? 'auto' : 'ltr'
+    dir: island === 'data' ? 'auto' : 'ltr',
+    kind: island === 'email' || island === 'url' ? island : undefined
   }, valueText(value)));
   return /*#__PURE__*/_react.default.createElement("span", {
     className: own,
     onMouseEnter: fullText
-  }, valueText(value));
+  }, (0, _digits.localDigits)(valueText(value)));
 }
 const ISLANDS = ['id', 'email', 'url', 'phone', 'code', 'data'];
 function fullText(event) {
@@ -30377,7 +30795,7 @@ function ActionBar({
   }, children);
 }
   } },
-  "platform/components/NavList/NavList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/NavList/NavList.jsx": { deps: {"react":null,"../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -30385,6 +30803,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.NavList = NavList;
 var _react = _interopRequireDefault(require("react"));
+var _format = require("../../utils/format.js");
 var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
 var _Icon = require("../Icon/Icon.jsx");
@@ -30606,7 +31025,7 @@ function NavList({
   className
 }) {
   const t = Object.assign({}, STRINGS, strings);
-  const loc = locale || typeof document !== 'undefined' && document.documentElement.lang || undefined;
+  const loc = (0, _format.numeralLocale)(locale || typeof document !== 'undefined' && document.documentElement.lang || undefined);
   const all = groups || [{
     heading: null,
     items: items || []
@@ -32555,7 +32974,7 @@ function FilterBar({
   }, actions) : null);
 }
   } },
-  "platform/patterns/SearchWorkspace/SearchWorkspace.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","../../utils/layer.js":"platform/utils/layer.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/SearchWorkspace/SearchWorkspace.jsx": { deps: {"react":null,"../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","../../utils/layer.js":"platform/utils/layer.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -32563,6 +32982,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.SearchWorkspace = SearchWorkspace;
 var _react = _interopRequireDefault(require("react"));
+var _format = require("../../utils/format.js");
 var _cx = require("../../utils/cx.js");
 var _Button = require("../../components/Button/Button.jsx");
 var _SearchField = require("../../components/SearchField/SearchField.jsx");
@@ -32670,7 +33090,7 @@ function SearchWorkspace({
   children
 }) {
   const t = Object.assign({}, STRINGS, strings);
-  const loc = locale || typeof document !== 'undefined' && document.documentElement.lang || undefined;
+  const loc = (0, _format.numeralLocale)(locale || typeof document !== 'undefined' && document.documentElement.lang || undefined);
   const id = (0, _layer.useUid)('plx-search-ws');
   const field = _react.default.useRef(null);
   // the query typed here is applied as the person types; Enter keeps focus in the field
@@ -37397,108 +37817,6 @@ function RichText({
   }), html != null ? undefined : children);
 }
   } },
-  "platform/providers/DirectionProvider.jsx": { deps: {"react":null,"../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.DirectionContext = void 0;
-exports.DirectionProvider = DirectionProvider;
-exports.useDirection = useDirection;
-var _react = _interopRequireDefault(require("react"));
-var _direction = require("../utils/direction.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · DirectionProvider, useDirection
-   Summary: Sets the writing direction (left to right or right to left) of an application or of one region, and tells
-     React components which it is.
-   Usage:
-     <DirectionProvider dir="rtl" lang="ar">{app}</DirectionProvider>
-     <DirectionProvider locale="he-IL" root>{app}</DirectionProvider>   // on <html>: the whole page
-     const { dir, setDir } = useDirection();
-   Props:
-     dir: "ltr" | "rtl"; without it, the direction of locale, else of the page
-     locale: a language tag ("ar-EG", "en-US"); it sets lang and, without dir, the direction (directionOf)
-     lang: the lang attribute, when it is not the locale
-     root: set dir and lang on <html> instead of a region (default false): the page, its portals and its scrollbars mirror
-     children: the application root or the region it wraps
-     useDirection(): { dir, rtl, setDir(dir) }: the nearest provider's direction (outside one, the page's), and a way to
-       change it
-   Behavior:
-     A region: a wrapper (div.plx-direction, display: contents, so it adds no box) with dir and lang; everything inside
-       it lays out in that direction, as the stylesheets use logical properties.
-     With root, the attributes go on <html> and are put back as they were when the provider unmounts.
-     Overlays drawn in a Portal take the direction of where they were written (the Portal copies dir and lang).
-   Notes:
-     Mirror the layout, not the content: text, numbers, media controls, clocks and the icons that are not directional
-       keep their shape; the icon set mirrors its directional icons (arrows, chevrons, undo and redo) by itself.
-     Script reads the direction where it measures or handles arrow keys (utils/direction.js: arrowStep, physicalSide).
-*/
-
-const DirectionContext = exports.DirectionContext = /*#__PURE__*/_react.default.createContext(null);
-function DirectionProvider({
-  dir,
-  locale,
-  lang,
-  root = false,
-  children
-}) {
-  const wanted = dir || (locale ? (0, _direction.directionOf)(locale) : null);
-  const [own, setOwn] = _react.default.useState(wanted);
-  _react.default.useEffect(() => {
-    setOwn(wanted);
-  }, [wanted]);
-  const current = own || (typeof document !== 'undefined' ? (0, _direction.getDirection)() : 'ltr');
-  const language = lang || locale || undefined;
-  _react.default.useLayoutEffect(() => {
-    if (!root) return undefined;
-    const html = document.documentElement,
-      before = {
-        dir: html.getAttribute('dir'),
-        lang: html.getAttribute('lang')
-      };
-    html.setAttribute('dir', current);
-    if (language) html.setAttribute('lang', language);
-    return () => {
-      if (before.dir == null) html.removeAttribute('dir');else html.setAttribute('dir', before.dir);
-      if (language) {
-        if (before.lang == null) html.removeAttribute('lang');else html.setAttribute('lang', before.lang);
-      }
-    };
-  }, [root, current, language]);
-  const value = _react.default.useMemo(() => ({
-    dir: current,
-    rtl: current === 'rtl',
-    setDir: d => setOwn(d === 'rtl' ? 'rtl' : 'ltr')
-  }), [current]);
-  return /*#__PURE__*/_react.default.createElement(DirectionContext.Provider, {
-    value: value
-  }, root ? children : /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-direction",
-    dir: current,
-    lang: language
-  }, children));
-}
-function useDirection() {
-  const ctx = _react.default.useContext(DirectionContext);
-  const [page, setPage] = _react.default.useState(() => typeof document !== 'undefined' ? (0, _direction.getDirection)() : 'ltr');
-  _react.default.useEffect(() => {
-    if (ctx) return undefined;
-    const observer = new MutationObserver(() => setPage((0, _direction.getDirection)()));
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['dir']
-    });
-    return () => observer.disconnect();
-  }, [ctx]);
-  if (ctx) return ctx;
-  return {
-    dir: page,
-    rtl: page === 'rtl',
-    setDir: d => document.documentElement.setAttribute('dir', d === 'rtl' ? 'rtl' : 'ltr')
-  };
-}
-  } },
   "platform/hooks/usePressable.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -39262,7 +39580,7 @@ function RetryNotice({
   }, count) : null) : null);
 }
   } },
-  "platform/components/ProgressCircle/ProgressCircle.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/ProgressCircle/ProgressCircle.jsx": { deps: {"react":null,"../../utils/format.js":"platform/utils/format.js","../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -39270,6 +39588,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ProgressCircle = ProgressCircle;
 var _react = _interopRequireDefault(require("react"));
+var _format = require("../../utils/format.js");
 var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -39335,7 +39654,7 @@ function ProgressCircle({
   const t = TONES.indexOf(tone) >= 0 ? tone : 'info';
   const known = typeof value === 'number' && !Number.isNaN(value);
   const pct = known ? Math.max(0, Math.min(100, value / (max || 100) * 100)) : null;
-  const loc = locale || typeof document !== 'undefined' && document.documentElement.lang || undefined;
+  const loc = (0, _format.numeralLocale)(locale || typeof document !== 'undefined' && document.documentElement.lang || undefined);
   return /*#__PURE__*/_react.default.createElement("span", _extends({
     className: (0, _cx.cx)('plx-progress-circle', 'plx-progress-circle--' + s, 'plx-progress-circle--' + t, !known && 'is-indeterminate', className),
     role: "progressbar",
@@ -42234,7 +42553,7 @@ const NumberInput = exports.NumberInput = /*#__PURE__*/_react.default.forwardRef
   ...rest
 }, ref) {
   const t = Object.assign({}, STRINGS, strings);
-  const locale = (0, _format.formatLocale)();
+  const locale = (0, _format.numeralLocale)((0, _format.formatLocale)());
   const aff = _react.default.useMemo(() => affix(format, currency, currencyDisplay, locale), [format, currency, currencyDisplay, locale]);
   const places = decimals !== undefined ? decimals : aff && aff.decimals !== undefined ? aff.decimals : undefined;
   const controlled = value !== undefined;
@@ -44976,7 +45295,7 @@ const Calendar = exports.Calendar = /*#__PURE__*/_react.default.forwardRef(funct
   ...rest
 }, ref) {
   const t = Object.assign({}, STRINGS, strings);
-  const locale = localeProp || (0, _format.formatLocale)();
+  const locale = (0, _format.numeralLocale)(localeProp || (0, _format.formatLocale)());
   const today = todayProp || todayIso();
   const range = mode === 'range';
   const [ownValue, setOwnValue] = _react.default.useState(defaultValue !== undefined ? defaultValue : range ? {
@@ -45373,7 +45692,7 @@ const DatePicker = exports.DatePicker = /*#__PURE__*/_react.default.forwardRef(f
   ...rest
 }, ref) {
   const t = Object.assign({}, STRINGS, strings);
-  const locale = localeProp || (0, _format.formatLocale)();
+  const locale = (0, _format.numeralLocale)(localeProp || (0, _format.formatLocale)());
   const form = numericForm(locale);
   const range = mode === 'range',
     dateTime = mode === 'date-time';
@@ -77568,216 +77887,6 @@ function browserSupport(environment = typeof window === 'undefined' ? {} : windo
     features,
     missing: Object.keys(features).filter(key => !features[key])
   };
-}
-  } },
-  "platform/i18n/en.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-// Browser mirror of en.json: the repository module loader accepts JavaScript only. The W15C catalog test checks parity.
-var _default = exports.default = {
-  "common": {
-    "save": "Save",
-    "cancel": "Cancel",
-    "close": "Close",
-    "retry": "Retry",
-    "next": "Next",
-    "back": "Back"
-  },
-  "collection": {
-    "selected": {
-      "=0": "Nothing selected",
-      "one": "{count} item selected",
-      "other": "{count} items selected"
-    }
-  },
-  "wizard": {
-    "next": "Next",
-    "back": "Back",
-    "finish": "Finish",
-    "cancel": "Cancel",
-    "step": "Step {n} of {total}",
-    "error": "Could not save. Try again."
-  },
-  "dialog": {
-    "close": "Close"
-  },
-  "text": {
-    "more": "Show more",
-    "less": "Show less"
-  },
-  "emptyState": {
-    "title": "No items yet",
-    "description": "Create an item to get started.",
-    "action": "Create item"
-  }
-};
-  } },
-  "platform/providers/LocaleProvider.jsx": { deps: {"react":null,"./DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","../utils/direction.js":"platform/utils/direction.js","../utils/format.js":"platform/utils/format.js","../i18n/en.js":"platform/i18n/en.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.LocaleProvider = LocaleProvider;
-exports.createTranslator = createTranslator;
-exports.useLocale = useLocale;
-var _react = _interopRequireDefault(require("react"));
-var _DirectionProvider = require("./DirectionProvider.jsx");
-var _direction = require("../utils/direction.js");
-var F = _interopRequireWildcard(require("../utils/format.js"));
-var _en = _interopRequireDefault(require("../i18n/en.js"));
-function _interopRequireWildcard(e, t) { if ("function" == typeof WeakMap) var r = new WeakMap(), n = new WeakMap(); return (_interopRequireWildcard = function (e, t) { if (!t && e && e.__esModule) return e; var o, i, f = { __proto__: null, default: e }; if (null === e || "object" != typeof e && "function" != typeof e) return f; if (o = t ? n : r) { if (o.has(e)) return o.get(e); o.set(e, f); } for (const t in e) "default" !== t && {}.hasOwnProperty.call(e, t) && ((i = (o = Object.defineProperty) && Object.getOwnPropertyDescriptor(e, t)) && (i.get || i.set) ? o(f, t, i) : f[t] = e[t]); return f; })(e, t); }
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · LocaleProvider, useLocale, createTranslator
-   Summary: Locale-scoped message catalogs, plural rules, formatting and writing direction. Existing components receive
-     their strings explicitly from the catalog; a region never changes another region's locale.
-   Usage:
-     <LocaleProvider locale="fr-FR" catalogs={{ fr: french }}><App /></LocaleProvider>
-     const { t, strings, format } = useLocale();
-     <Wizard strings={strings('wizard')} />; t('collection.selected', { count: 2 }); format.date('2026-03-08');
-   Props:
-     locale: a BCP 47 language tag; default the page's formatLocale()
-     catalogs: messages by locale, with flat dot keys or nested sections; English is always the last fallback
-     messages: the current locale's catalog, as a convenience
-     fallbackLocale: locale searched after the requested locale and its language; default "en"
-     timeZone: optional Intl time zone for this provider's date/time formatters
-     dir: explicit "ltr" or "rtl"; otherwise directionOf(locale)
-     root: set the page's lang and dir through DirectionProvider; default false (a scoped region)
-     children: the region's content
-     useLocale(): { locale, dir, t, strings, plural, format }; format has number, unit, bytes, duration, compact, date,
-       time, dateTime, relative, range, currency, percent, list, personName, address, phone and regionName
-     createTranslator(locale, catalogs, fallbackLocale): the same t/strings/plural API outside React
-   Behavior:
-     Fallback: exact locale, language, configured fallback, then English. Missing messages return their key.
-     Messages interpolate {name} as plain text. Plural messages are objects with one/other (or any Intl category),
-     optional "=0" exact-count keys; t(key, { count }) selects them with Intl.PluralRules. t's third argument may
-     set ordinal:true. Missing interpolation values keep their placeholder. No HTML is parsed.
-     strings(section, values) combines that section across fallbacks for a component's strings prop.
-   Notes:
-     Translators never mutate catalogs or global Intl state. Pass the bound format helpers to localized content;
-     unmodified components keep their existing defaults. Catalog translations are application-owned. */
-
-const canonical = (value, fallback = 'en') => {
-  try {
-    return Intl.getCanonicalLocales(value || fallback)[0] || fallback;
-  } catch (e) {
-    return fallback;
-  }
-};
-const own = (value, key) => value && Object.prototype.hasOwnProperty.call(value, key);
-const messageAt = (catalog, key) => {
-  if (own(catalog, key)) return catalog[key];
-  return String(key).split('.').reduce((node, part) => own(node, part) ? node[part] : undefined, catalog);
-};
-const text = (message, values) => String(message).replace(/\{(\w+)\}/g, (match, key) => own(values, key) ? String(values[key]) : match);
-function createTranslator(locale = 'en', catalogs = {}, fallbackLocale = 'en') {
-  const language = canonical(locale),
-    fallback = canonical(fallbackLocale);
-  const normalized = Object.fromEntries(Object.entries(catalogs || {}).map(([key, value]) => [canonical(key), value]));
-  const chain = [...new Set([language, language.split('-')[0], fallback, fallback.split('-')[0], 'en'])];
-  const sources = chain.map(key => normalized[key]).filter(Boolean).concat(_en.default);
-  const cardinal = new Intl.PluralRules(language),
-    ordinal = new Intl.PluralRules(language, {
-      type: 'ordinal'
-    });
-  const plural = (count, options = {}) => (options.ordinal ? ordinal : cardinal).select(Number(count));
-  const choose = (value, values, options) => {
-    if (typeof value === 'string' || typeof value === 'number') return text(value, values);
-    if (!value || typeof value !== 'object' || Array.isArray(value)) return undefined;
-    const exact = '=' + Number(values.count),
-      category = plural(values.count, options);
-    const item = own(value, exact) ? value[exact] : value[category] !== undefined ? value[category] : value.other;
-    return typeof item === 'string' || typeof item === 'number' ? text(item, values) : undefined;
-  };
-  const t = (key, values = {}, options = {}) => {
-    for (const source of sources) {
-      const result = choose(messageAt(source, key), values, options);
-      if (result !== undefined) return result;
-    }
-    return String(key);
-  };
-  const strings = (section, values = {}) => {
-    const keys = new Set();
-    sources.forEach(source => {
-      const node = messageAt(source, section);
-      if (node && typeof node === 'object' && !Array.isArray(node)) Object.keys(node).forEach(key => keys.add(key));
-      Object.keys(source).filter(key => key.startsWith(section + '.') && !key.slice(section.length + 1).includes('.')).forEach(key => keys.add(key.slice(section.length + 1)));
-    });
-    return Object.fromEntries([...keys].map(key => [key, t(section + '.' + key, values)]));
-  };
-  return {
-    locale: language,
-    dir: (0, _direction.directionOf)(language),
-    t,
-    strings,
-    plural
-  };
-}
-const FORMATTERS = {
-  number: ['formatNumber', 1],
-  unit: ['formatUnit', 2],
-  bytes: ['formatBytes', 1],
-  duration: ['formatDuration', 1],
-  compact: ['formatCompact', 1],
-  date: ['formatDate', 1],
-  time: ['formatTime', 1],
-  dateTime: ['formatDateTime', 1],
-  relative: ['formatRelative', 1],
-  range: ['formatRange', 2],
-  currency: ['formatCurrency', 2],
-  percent: ['formatPercent', 1],
-  list: ['formatList', 1],
-  personName: ['formatPersonName', 1],
-  address: ['formatAddress', 1],
-  phone: ['formatPhone', 1],
-  regionName: ['regionName', 1]
-};
-const bind = (locale, timeZone) => Object.fromEntries(Object.entries(FORMATTERS).map(([name, [fn, count]]) => [name, (...args) => F[fn](...Array.from({
-  length: count
-}, (_, index) => args[index]), Object.assign({
-  locale,
-  timeZone
-}, args[count]))]));
-const LocaleContext = /*#__PURE__*/_react.default.createContext(null);
-function LocaleProvider({
-  locale,
-  catalogs,
-  messages,
-  fallbackLocale = 'en',
-  timeZone,
-  dir,
-  root = false,
-  children
-}) {
-  const language = canonical(locale || F.formatLocale());
-  const value = _react.default.useMemo(() => {
-    const sources = Object.assign({}, catalogs, messages ? {
-      [language]: messages
-    } : {});
-    return Object.assign(createTranslator(language, sources, fallbackLocale), {
-      dir: dir || (0, _direction.directionOf)(language),
-      format: bind(language, timeZone)
-    });
-  }, [language, catalogs, messages, fallbackLocale, timeZone, dir]);
-  return /*#__PURE__*/_react.default.createElement(LocaleContext.Provider, {
-    value: value
-  }, /*#__PURE__*/_react.default.createElement(_DirectionProvider.DirectionProvider, {
-    locale: language,
-    dir: value.dir,
-    root: root
-  }, children));
-}
-function useLocale() {
-  const value = _react.default.useContext(LocaleContext);
-  const language = canonical(F.formatLocale());
-  const fallback = _react.default.useMemo(() => Object.assign(createTranslator(language), {
-    format: bind(language)
-  }), [language]);
-  return value || fallback;
 }
   } },
   "platform/components/Heading/Heading.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {

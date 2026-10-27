@@ -50,6 +50,8 @@ import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
 import { Button } from '../Button/Button.jsx';
+import { useDigits } from '../../providers/LocaleProvider.jsx';
+import { localDigits } from '../../utils/digits.js';
 
 const LINES = [2, 3, 4];
 const STRINGS = { more: 'Show more', less: 'Show less' };
@@ -58,13 +60,17 @@ const STRINGS = { more: 'Show more', less: 'Show less' };
 const textClass = (variant, truncate, clamp, open, tabular, className) => cx('plx-text', 'plx-text--' + variant,
   truncate && !clamp && 'plx-text--truncate', clamp && !open && 'plx-text--lines-' + clamp, tabular && 'plx-text--tabular', className);
 
+// the digits of a text's strings: Arabic-Indic in an Arabic page, emails and web addresses kept (owner, arabic-digits-35)
+const shownDigits = (children, digits) => (digits === 'arab' ? React.Children.map(children, (c) => (typeof c === 'string' || typeof c === 'number' ? localDigits(String(c), { digits }) : c)) : children);
+
 export function Text({ as: As = 'span', variant = 'body', truncate = false, lines, expandable = false, defaultExpanded = false, tabular = false, strings, className, children, ...rest }) {
   devWarn('Text', { variant }, { variant: ['body','secondary','caption','data','label','strong','heading','accent','success','eyebrow','danger','link','title','display','lead'] });
+  const digits = useDigits();
   const clamp = LINES.indexOf(Number(lines)) >= 0 ? Number(lines) : null;
   if (expandable && clamp) {
     return <ExpandableText As={As} variant={variant} clamp={clamp} defaultExpanded={defaultExpanded} tabular={tabular} strings={strings} className={className} rest={rest}>{children}</ExpandableText>;
   }
-  return <As dir="auto" className={textClass(variant, truncate, clamp, false, tabular, className)} {...rest}>{children}</As>;
+  return <As dir="auto" className={textClass(variant, truncate, clamp, false, tabular, className)} {...rest}>{shownDigits(children, digits)}</As>;
 }
 
 // a clamped text and its Show more button: the button shows while the text is cut, and while it is unfolded

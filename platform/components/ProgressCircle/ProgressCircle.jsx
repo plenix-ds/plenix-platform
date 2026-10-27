@@ -26,6 +26,7 @@
      Other props pass through to the wrapper.
 */
 import React from 'react';
+import { numeralLocale } from '../../utils/format.js';
 import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 
@@ -47,7 +48,7 @@ export function ProgressCircle({ value, max = 100, label, size = 'md', tone = 'i
   const t = TONES.indexOf(tone) >= 0 ? tone : 'info';
   const known = typeof value === 'number' && !Number.isNaN(value);
   const pct = known ? Math.max(0, Math.min(100, (value / (max || 100)) * 100)) : null;
-  const loc = locale || (typeof document !== 'undefined' && document.documentElement.lang) || undefined;
+  const loc = numeralLocale(locale || (typeof document !== 'undefined' && document.documentElement.lang) || undefined);
   return (
     <span className={cx('plx-progress-circle', 'plx-progress-circle--' + s, 'plx-progress-circle--' + t, !known && 'is-indeterminate', className)}
       role="progressbar" aria-label={label} aria-valuemin={known ? 0 : undefined} aria-valuemax={known ? 100 : undefined} aria-valuenow={known ? Math.round(pct) : undefined} {...rest}>
