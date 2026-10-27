@@ -16532,7 +16532,7 @@
     },
     {
      "state": "Focused value (VoiceOver)",
-     "token": "plx-comp-chart-interaction-focus-mark-radius, plx-comp-chart-tooltip-background",
+     "token": "plx-comp-chart-interaction-focus-mark-size, plx-comp-chart-tooltip-background",
      "swiftui": "The mark VoiceOver is on reads its label and value; the selection shows the Plenix tooltip",
      "uikit": "The same on the hosted SwiftUI Chart",
      "appkit": "The same on the hosted SwiftUI Chart"

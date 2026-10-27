@@ -6,6 +6,13 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+### Breaking
+- Three circle sizes are renamed from `-radius` to `-size`, so the corner rule (2 to 6px) covers only real corners (owner, dot-radius-names-34). Each still holds the circle's radius (SVG `r`), so nothing on screen changes. A theme or page that set an old name must use the new one:
+  - `--plx-comp-chart-interaction-focus-mark-radius` → `--plx-comp-chart-interaction-focus-mark-size`
+  - `--plx-comp-network-graph-node-radius` → `--plx-comp-network-graph-node-size`
+  - `--plx-sys-focus-order-badge-radius` → `--plx-sys-focus-order-badge-size`
+  - The native names follow: iOS `chartInteractionFocusMarkRadius` → `chartInteractionFocusMarkSize`; Android `chartInteractionFocusMarkRadius` → `chartInteractionFocusMarkSize` and `plx_component_chart_interaction_focus_mark_radius` → `plx_component_chart_interaction_focus_mark_size`.
+
 ## [0.73.0] - 2026-10-27
 
 ### Added

@@ -50,10 +50,10 @@
       "$type": "dimension",
       "$description": "Focus order overlay: the width of a stop’s outline and of the path."
     },
-    "focus-order-badge-radius": {
+    "focus-order-badge-size": {
       "$value": "{plx-ref.size-12px}",
       "$type": "dimension",
-      "$description": "Focus order overlay: the radius of a number’s badge (24px across)."
+      "$description": "Focus order overlay: the size of a number’s badge, given as its radius (SVG r; 24px across). A size, not a corner (owner, dot-radius-names-34)."
     },
     "focus-order-font-family": {
       "$value": "{plx-sys.font-label}",

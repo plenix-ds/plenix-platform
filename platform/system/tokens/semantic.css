@@ -375,7 +375,7 @@
   --plx-sys-focus-order-warning-color: var(--plx-sys-feedback-danger-solid);
   --plx-sys-focus-order-warning-on-color: var(--plx-sys-feedback-danger-on-solid);
   --plx-sys-focus-order-stroke-width: var(--plx-sys-focus-ring-width);
-  --plx-sys-focus-order-badge-radius: var(--plx-ref-size-12px);
+  --plx-sys-focus-order-badge-size: var(--plx-ref-size-12px);
   --plx-sys-focus-order-font-family: var(--plx-sys-font-label);
   --plx-sys-focus-order-font-size: var(--plx-ref-font-size-11);
   --plx-sys-focus-order-font-weight: var(--plx-sys-font-weight-semibold);
