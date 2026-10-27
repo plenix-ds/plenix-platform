@@ -417,7 +417,7 @@
   --plx-comp-skeleton-radius: var(--plx-sys-radius-compact-4px);
   --plx-comp-spinner-animation-duration: var(--plx-sys-motion-duration-loop-fast);
   --plx-comp-spinner-border-bottom-color: var(--plx-sys-action-primary-background);
-  --plx-comp-spinner-radius: var(--plx-sys-shape-pill);
+  --plx-comp-spinner-radius: 50%;
   --plx-comp-spinner-border-left-color: var(--plx-sys-action-primary-background);
   --plx-comp-spinner-border-right-color: var(--plx-sys-action-primary-background);
   --plx-comp-spinner-sm-height: var(--plx-ref-size-12px);
