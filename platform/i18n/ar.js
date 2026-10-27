@@ -2273,7 +2273,8 @@ export default {
     "counter": {
       "left": "بقي {n} حرفًا",
       "over": "زاد {n} حرفًا"
-    }
+    },
+    "about": "معلومات عن {label}"
   },
   "icon": {
     "status": {

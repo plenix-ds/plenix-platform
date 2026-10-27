@@ -2209,7 +2209,8 @@ export default {
     "counter": {
       "left": "{n} characters left",
       "over": "{n} characters too many"
-    }
+    },
+    "about": "About {label}"
   },
   "icon": {
     "status": {
