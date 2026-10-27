@@ -6591,7 +6591,7 @@ function gridWithin(px, min, max, opts) {
   })));
 }
   } },
-  "platform/components/Input/Input.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Input/Input.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/floating.js":"platform/utils/floating.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -6601,6 +6601,7 @@ exports.Textarea = exports.Select = exports.Input = void 0;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _grid = require("../../utils/grid.js");
+var _floating = require("../../utils/floating.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Input, Textarea, Select
    Summary: The text field family, at the standard control height.
@@ -6611,7 +6612,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      <Input appearance="filled" … />               <Textarea autoGrow … />
    Props:
      Input.size: "sm" uses the existing toolbar control height; omitted or "md" keeps today’s standard height; numeric values retain the native size attribute.
-     Select.size: as Input.size; numeric values retain the native select size attribute.
+     Select.size: as Input.size; a number above 1 (or multiple) keeps the browser's own list box.
      Input.invalid: marks the field (aria-invalid); put the message in Field's error
      Input.width: "xs" | "sm" | "md" | "lg" (a field narrower than its row, --plx-sys-field-width-*) | "fill" (the whole width)
        A date or a time (type date, time, datetime-local, month, week) is never narrower than its value, whatever the width:
@@ -6634,14 +6635,26 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Textarea.data: technical text (lists of extensions, paths, codes) in the data font, as Input.data
      Textarea.className: more classes on the <textarea>
      Select.invalid: marks the field (aria-invalid)
-     Select.options: the choices: [{ value, label, disabled }]; or pass <option>s as children
+     Select.options: the choices: [{ value, label, disabled }]; or pass <option>s (and <optgroup>s) as children
+     Select.value, defaultValue, onChange(event), name, required, disabled, form, ref: as on a native select (event.target.value is the choice);
+       the ref is the hidden native <select>
      Select.block: the select takes its own line, as wide as its room (InlineEdit)
      Select.joined: { start, end }: "square" | "seam": its corners square where it meets a neighbor (InputGroup sets it)
      Select.children: <option>s, when there are no options
      Select.appearance: as Input.appearance (on the <select>)
      Select.className: more classes on the wrapper
    Behavior:
-     Select.data applies the same technical-value font variant as Input.data to its native control.
+     Select.data applies the same technical-value font variant as Input.data to the field.
+     Select is drawn by Plenix (owner, dropdown-look-36): a field and a list in the Menu's look, over a hidden native <select> that
+     stays the source of truth (options, value, form, reset, label). The field is role="combobox" and the list role="listbox"; a
+     <label for> or Field names and focuses it. The arrow is the form-icon size (--plx-sys-control-icon-inline), like the Combobox's.
+     Keyboard: ↓ / ↑ / Enter / Space open the list; ↓ / ↑ move; Home and End jump to the first and last row; typing a letter
+     goes to the next row that starts with it; Enter chooses; Alt+↑ chooses and closes; Escape closes; Tab chooses the row
+     and moves on. Rows are the Menu's height and text size; the chosen row is blue and semibold; a disabled row is skipped.
+     A value set straight on the native select through the ref shows on the next render. The options are compared after every
+     render (length, then each value, label and state), so a list of hundreds costs a little each time.
+     The box is as wide as the widest option. The list opens in the browser's top layer, below the field (or above it near an
+     edge), at least as wide as the field, placed like a Menu: no dialog, drawer, table cell or scroll area clips it.
      Inside a Field, the label, description and error are connected for you.
      Every appearance keeps the same states: hover and focus change only the color of its border, never a ring outside
      it; invalid draws a 2px danger border (the border and a line inside it, so the value does not move) on the lightest
@@ -6654,6 +6667,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      They take every native attribute (value, onChange, placeholder, disabled, readOnly, required…).
      All three forward their ref to the native element.
 */
+// the top layer and CSS anchor positioning (as Menu and Popover), checked once
+const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
+
 // the keyboard a type brings on a touch screen (Platforms Standard 3.5: the right type, inputmode and autocomplete)
 const TYPE_HINTS = {
   email: {
@@ -6740,8 +6756,8 @@ const Textarea = exports.Textarea = /*#__PURE__*/_react.default.forwardRef(funct
   }, rest));
 });
 
-/* options: [{ value, label }] or children <option>s */
-const Select = exports.Select = /*#__PURE__*/_react.default.forwardRef(function Select({
+/* the native control: a list box (multiple, or a size above 1) keeps the browser's own select */
+const SelectNative = /*#__PURE__*/_react.default.forwardRef(function SelectNative({
   invalid,
   options,
   appearance,
@@ -6766,6 +6782,290 @@ const Select = exports.Select = /*#__PURE__*/_react.default.forwardRef(function 
     value: o.value,
     disabled: o.disabled
   }, o.label)) : children));
+});
+
+/* the Plenix-drawn dropdown (owner, dropdown-look-36): a field (role combobox) and a list (role listbox) drawn by Plenix over a
+   hidden native <select>, which stays the source of truth: the options, the value, the form, the ref and onChange(event) all
+   come from it, so a form posts, a reset resets and e.target.value works as before. */
+const SelectList = /*#__PURE__*/_react.default.forwardRef(function SelectList({
+  invalid,
+  options,
+  appearance,
+  size,
+  joined,
+  data = false,
+  block = false,
+  width,
+  className,
+  children,
+  id,
+  onFocus,
+  onBlur,
+  onKeyDown,
+  'aria-label': ariaLabel,
+  'aria-labelledby': labelledBy,
+  'aria-describedby': describedBy,
+  'aria-errormessage': errorMessage,
+  ...rest
+}, ref) {
+  const native = _react.default.useRef(null),
+    field = _react.default.useRef(null),
+    wrap = _react.default.useRef(null),
+    list = _react.default.useRef(null),
+    last = _react.default.useRef(null),
+    buffer = _react.default.useRef(''),
+    timer = _react.default.useRef(0);
+  const setNative = _react.default.useCallback(el => {
+    native.current = el;
+    if (typeof ref === 'function') ref(el);else if (ref) ref.current = el;
+  }, [ref]);
+  const auto = _react.default.useId();
+  const [items, setItems] = _react.default.useState([]);
+  const [chosen, setChosen] = _react.default.useState(0);
+  const [open, setOpen] = _react.default.useState(false);
+  const [active, setActive] = _react.default.useState(-1);
+  const [labelId, setLabelId] = _react.default.useState(null);
+  const [, redraw] = _react.default.useReducer(n => n + 1, 0);
+  const disabled = !!rest.disabled;
+  // the list opens in the top layer, placed against the field by the floating layer (flips up near an edge, follows scroll and resize), so no dialog, drawer, table cell or scroll area clips it
+  (0, _floating.useFloating)(wrap, list, {
+    open,
+    placement: 'bottom-start',
+    matchWidth: true
+  });
+  _react.default.useLayoutEffect(() => {
+    const el = list.current;
+    if (open && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+  }, [open]);
+  const listId = auto + '-list',
+    optId = i => auto + '-o' + i;
+  // read the native select (its options, in order, and its chosen one) after every render
+  const read = _react.default.useCallback(() => {
+    const el = native.current;
+    if (!el) return;
+    const next = Array.from(el.options).map(o => ({
+      value: o.value,
+      label: o.text,
+      disabled: o.disabled || o.parentElement && o.parentElement.disabled === true,
+      group: o.parentElement && o.parentElement.tagName === 'OPTGROUP' ? o.parentElement.label : null
+    }));
+    const prev = last.current; // the same options? a length and field-by-field comparison, cheap for a long list
+    if (!prev || prev.length !== next.length || next.some((o, i) => o.value !== prev[i].value || o.label !== prev[i].label || o.disabled !== prev[i].disabled || o.group !== prev[i].group)) {
+      last.current = next;
+      setItems(next);
+    }
+    setChosen(el.selectedIndex);
+  }, []);
+  _react.default.useLayoutEffect(read);
+  _react.default.useEffect(() => {
+    // a form reset puts the first choice back
+    const form = native.current && native.current.form;
+    if (!form) return undefined;
+    const reset = () => setTimeout(read, 0);
+    form.addEventListener('reset', reset);
+    return () => form.removeEventListener('reset', reset);
+  }, [read]);
+  _react.default.useEffect(() => {
+    // a <label for="id"> names the field and focuses it
+    if (!id || labelledBy || typeof document === 'undefined') return undefined;
+    const label = document.querySelector('label[for="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"]');
+    if (!label) return undefined;
+    if (!label.id) label.id = id + '-label';
+    setLabelId(label.id);
+    const focus = () => {
+      if (field.current) field.current.focus();
+    };
+    label.addEventListener('click', focus);
+    return () => label.removeEventListener('click', focus);
+  }, [id, labelledBy]);
+  _react.default.useEffect(() => {
+    // keep the row under the arrow keys in view
+    if (!open || active < 0) return;
+    const el = document.getElementById(optId(active));
+    if (el && el.scrollIntoView) el.scrollIntoView({
+      block: 'nearest'
+    });
+  }, [open, active]);
+  const step = (from, dir) => {
+    for (let i = from; i >= 0 && i < items.length; i += dir) if (!items[i].disabled) return i;
+    return -1;
+  };
+  const show = at => {
+    setActive(at !== undefined ? at : chosen >= 0 && !(items[chosen] && items[chosen].disabled) ? chosen : step(0, 1));
+    setOpen(true);
+  };
+  const choose = i => {
+    const el = native.current,
+      it = items[i];
+    if (!el || !it || it.disabled) return;
+    setOpen(false);
+    if (i !== el.selectedIndex) {
+      el.selectedIndex = i;
+      el.dispatchEvent(new Event('input', {
+        bubbles: true
+      }));
+      el.dispatchEvent(new Event('change', {
+        bubbles: true
+      }));
+    }
+    redraw();
+    setTimeout(read, 0);
+  };
+  const onKey = e => {
+    if (onKeyDown) onKeyDown(e);
+    if (e.defaultPrevented || disabled) return;
+    const k = e.key;
+    if (k === 'ArrowDown' || k === 'ArrowUp') {
+      e.preventDefault();
+      if (!open) {
+        show();
+        return;
+      }
+      if (e.altKey && k === 'ArrowUp') {
+        choose(active);
+        return;
+      }
+      const j = step(active + (k === 'ArrowDown' ? 1 : -1), k === 'ArrowDown' ? 1 : -1);
+      if (j >= 0) setActive(j);
+    } else if (k === 'Home' || k === 'End') {
+      e.preventDefault();
+      const j = k === 'Home' ? step(0, 1) : step(items.length - 1, -1);
+      if (open) setActive(j);else show(j);
+    } else if ((k === 'Enter' || k === ' ') && !(k === ' ' && buffer.current)) {
+      e.preventDefault();
+      if (open) choose(active);else show();
+    } else if (k === 'Escape') {
+      if (open) {
+        e.preventDefault();
+        e.stopPropagation();
+        setOpen(false);
+      }
+    } else if (k === 'Tab') {
+      if (open && active >= 0) choose(active);else setOpen(false);
+    } else if (k.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      // type-ahead: the next row that starts with what was typed
+      clearTimeout(timer.current);
+      buffer.current += k.toLowerCase();
+      timer.current = setTimeout(() => {
+        buffer.current = '';
+      }, 700);
+      const from = (open ? active : chosen) + (buffer.current.length === 1 ? 1 : 0);
+      const order = items.map((it, i) => i).slice(Math.max(0, from)).concat(items.map((it, i) => i).slice(0, Math.max(0, from)));
+      const j = order.find(i => !items[i].disabled && items[i].label.toLowerCase().indexOf(buffer.current) === 0);
+      if (j !== undefined) {
+        if (open) setActive(j);else show(j);
+      }
+    }
+  };
+  const current = items[chosen];
+  const grouped = []; // the rows in order, a group's rows together (an <optgroup>)
+  items.forEach((it, i) => {
+    const g = grouped[grouped.length - 1];
+    if (g && g.name === it.group && it.group != null) g.rows.push({
+      it,
+      i
+    });else grouped.push({
+      name: it.group,
+      rows: [{
+        it,
+        i
+      }]
+    });
+  });
+  return /*#__PURE__*/_react.default.createElement("span", {
+    ref: wrap,
+    className: (0, _cx.cx)('plx-select', 'plx-select--list', size === 'sm' && 'plx-select--size-sm', width && 'plx-select--width-' + width, block && 'plx-select--block', joined && joined.start && 'plx-select--joined-start-' + joined.start, joined && joined.end && 'plx-select--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-select--joined', open && 'is-open', disabled && 'is-disabled', className)
+  }, /*#__PURE__*/_react.default.createElement("select", _extends({
+    ref: setNative,
+    tabIndex: -1,
+    "aria-hidden": "true",
+    className: (0, _cx.cx)('plx-input', 'plx-select__control', 'plx-select__native', data && 'plx-input--data', look(appearance)),
+    onFocus: () => {
+      if (field.current) field.current.focus();
+    }
+  }, rest), options ? options.map(o => /*#__PURE__*/_react.default.createElement("option", {
+    key: o.value,
+    value: o.value,
+    disabled: o.disabled
+  }, o.label)) : children), /*#__PURE__*/_react.default.createElement("div", {
+    ref: field,
+    id: id,
+    role: "combobox",
+    tabIndex: disabled ? -1 : 0,
+    "aria-haspopup": "listbox",
+    "aria-expanded": open,
+    "aria-controls": open ? listId : undefined,
+    "aria-activedescendant": open && active >= 0 ? optId(active) : undefined,
+    "aria-label": ariaLabel,
+    "aria-labelledby": labelledBy || (ariaLabel ? undefined : labelId || undefined),
+    "aria-describedby": describedBy,
+    "aria-errormessage": errorMessage,
+    "aria-invalid": invalid || undefined,
+    "aria-required": rest.required || undefined,
+    "aria-disabled": disabled || undefined,
+    className: (0, _cx.cx)('plx-input', 'plx-select__field', data && 'plx-input--data', look(appearance), disabled && 'is-disabled'),
+    onClick: () => {
+      if (disabled) return;
+      if (open) setOpen(false);else show();
+    },
+    onKeyDown: onKey,
+    onFocus: onFocus,
+    onBlur: e => {
+      setOpen(false);
+      if (onBlur) onBlur(e);
+    }
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-select__value"
+  }, current ? current.label : '')), open ? /*#__PURE__*/_react.default.createElement("ul", {
+    ref: list,
+    id: listId,
+    role: "listbox",
+    popover: TOP_LAYER ? 'manual' : undefined,
+    "aria-label": ariaLabel,
+    "aria-labelledby": labelledBy || (ariaLabel ? undefined : labelId || undefined),
+    className: "plx-select__list",
+    onMouseDown: e => e.preventDefault()
+  }, grouped.map((g, gi) => {
+    const rows = g.rows.map(({
+      it,
+      i
+    }) => /*#__PURE__*/_react.default.createElement("li", {
+      key: 'o' + i,
+      id: optId(i),
+      role: "option",
+      "aria-selected": i === chosen,
+      "aria-disabled": it.disabled || undefined,
+      className: (0, _cx.cx)('plx-select__option', i === active && 'is-active', i === chosen && 'is-selected', it.disabled && 'is-disabled'),
+      onMouseDown: e => e.preventDefault(),
+      onClick: () => choose(i),
+      onMouseEnter: () => {
+        if (!it.disabled) setActive(i);
+      }
+    }, it.label));
+    return g.name == null ? rows : /*#__PURE__*/_react.default.createElement("li", {
+      key: 'g' + gi,
+      role: "group",
+      "aria-labelledby": auto + '-g' + gi,
+      className: "plx-select__group-wrap"
+    }, /*#__PURE__*/_react.default.createElement("div", {
+      id: auto + '-g' + gi,
+      role: "presentation",
+      className: "plx-select__group"
+    }, g.name), /*#__PURE__*/_react.default.createElement("ul", {
+      role: "presentation",
+      className: "plx-select__group-list"
+    }, rows));
+  })) : null);
+});
+
+/* options: [{ value, label }] or children <option>s */
+const Select = exports.Select = /*#__PURE__*/_react.default.forwardRef(function Select(props, ref) {
+  const listBox = props.multiple || typeof props.size === 'number' && props.size > 1;
+  return listBox ? /*#__PURE__*/_react.default.createElement(SelectNative, _extends({}, props, {
+    ref: ref
+  })) : /*#__PURE__*/_react.default.createElement(SelectList, _extends({}, props, {
+    ref: ref
+  }));
 });
   } },
   "platform/components/Dialog/Dialog.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Field/Field.jsx":"platform/components/Field/Field.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
