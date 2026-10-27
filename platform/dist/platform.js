@@ -21043,7 +21043,7 @@ var _default = exports.default = {
   },
   "cascader": {
     "placeholder": "Choose",
-    "separator": "/",
+    "separator": " / ",
     "search": "Search",
     "noMatches": "No matches",
     "empty": "No items",
@@ -21098,7 +21098,8 @@ var _default = exports.default = {
       "terminal": "Start or end",
       "data": "Data",
       "box": "Part",
-      "group": "Group"
+      "group": "Group",
+      "end": "End"
     },
     "funnelChart": {
       "stage": "Stage",
@@ -21112,7 +21113,9 @@ var _default = exports.default = {
       "dependsOn": "Waits for",
       "status": "Status",
       "today": "Today",
-      "milestone": "Milestone"
+      "milestone": "Milestone",
+      "start": "Start",
+      "end": "End"
     },
     "gauge": {
       "showData": "Show the data",
@@ -21120,7 +21123,8 @@ var _default = exports.default = {
       "measure": "Measure",
       "value": "Value",
       "min": "Minimum",
-      "max": "Maximum"
+      "max": "Maximum",
+      "ok": ""
     },
     "geoMap": {
       "region": "Region",
@@ -21158,7 +21162,8 @@ var _default = exports.default = {
       "zoomIn": "Zoom in",
       "zoomOut": "Zoom out",
       "fit": "Fit",
-      "hintZoom": "Plus and minus zoom, 0 fits the graph."
+      "hintZoom": " Plus and minus zoom, 0 fits the graph.",
+      "none": "None"
     },
     "pieChart": {
       "part": "Part",
@@ -21185,7 +21190,9 @@ var _default = exports.default = {
       "lane": "Lane",
       "today": "Today",
       "date": "Date",
-      "dates": "Dates"
+      "dates": "Dates",
+      "start": "Start",
+      "end": "End"
     },
     "treeChart": {
       "name": "Name",
@@ -21207,7 +21214,8 @@ var _default = exports.default = {
       "total": "Total",
       "running": "Running total",
       "increase": "Increase",
-      "decrease": "Decrease"
+      "decrease": "Decrease",
+      "end": "End"
     },
     "wordCloud": {
       "value": "Count",
@@ -21268,7 +21276,7 @@ var _default = exports.default = {
     "actions": "{label} actions",
     "find": "Find and view",
     "selected": "{n} selected",
-    "hidden": "({n} hidden by filters)",
+    "hidden": " ({n} hidden by filters)",
     "clear": "Clear the selection",
     "clearName": "{n} selected, clear the selection",
     "swapped": "{n} selected. Selection actions available.",
@@ -22704,7 +22712,8 @@ var _default = exports.default = {
       "terminal": "بداية أو نهاية",
       "data": "البيانات",
       "box": "الجزء",
-      "group": "المجموعة"
+      "group": "المجموعة",
+      "end": "النهاية"
     },
     "funnelChart": {
       "stage": "المرحلة",
@@ -22718,7 +22727,9 @@ var _default = exports.default = {
       "dependsOn": "بانتظار",
       "status": "الحالة",
       "today": "اليوم",
-      "milestone": "مَعلَم"
+      "milestone": "مَعلَم",
+      "start": "البداية",
+      "end": "النهاية"
     },
     "gauge": {
       "showData": "عرض البيانات",
@@ -22726,7 +22737,8 @@ var _default = exports.default = {
       "measure": "المقياس",
       "value": "القيمة",
       "min": "الحد الأدنى",
-      "max": "الحد الأقصى"
+      "max": "الحد الأقصى",
+      "ok": ""
     },
     "geoMap": {
       "region": "المنطقة",
@@ -22764,7 +22776,8 @@ var _default = exports.default = {
       "zoomIn": "تكبير",
       "zoomOut": "تصغير",
       "fit": "ملاءمة",
-      "hintZoom": " الأزرار +/- للتكبير والتصغير، والرقم 0 يناسب الرسم."
+      "hintZoom": " الأزرار +/- للتكبير والتصغير، والرقم 0 يناسب الرسم.",
+      "none": "لا شيء"
     },
     "pieChart": {
       "part": "الجزء",
@@ -22791,7 +22804,9 @@ var _default = exports.default = {
       "lane": "المسار",
       "today": "اليوم",
       "date": "التاريخ",
-      "dates": "التواريخ"
+      "dates": "التواريخ",
+      "start": "البداية",
+      "end": "النهاية"
     },
     "treeChart": {
       "name": "الاسم",
@@ -22813,7 +22828,8 @@ var _default = exports.default = {
       "total": "الإجمالي",
       "running": "المجموع التراكمي",
       "increase": "زيادة",
-      "decrease": "نقصان"
+      "decrease": "نقصان",
+      "end": "النهاية"
     },
     "wordCloud": {
       "value": "العدد",

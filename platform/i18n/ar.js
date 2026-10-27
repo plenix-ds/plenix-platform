@@ -55,7 +55,8 @@ export default {
       "terminal": "بداية أو نهاية",
       "data": "البيانات",
       "box": "الجزء",
-      "group": "المجموعة"
+      "group": "المجموعة",
+      "end": "النهاية"
     },
     "funnelChart": {
       "stage": "المرحلة",
@@ -69,7 +70,9 @@ export default {
       "dependsOn": "بانتظار",
       "status": "الحالة",
       "today": "اليوم",
-      "milestone": "مَعلَم"
+      "milestone": "مَعلَم",
+      "start": "البداية",
+      "end": "النهاية"
     },
     "gauge": {
       "showData": "عرض البيانات",
@@ -77,7 +80,8 @@ export default {
       "measure": "المقياس",
       "value": "القيمة",
       "min": "الحد الأدنى",
-      "max": "الحد الأقصى"
+      "max": "الحد الأقصى",
+      "ok": ""
     },
     "geoMap": {
       "region": "المنطقة",
@@ -115,7 +119,8 @@ export default {
       "zoomIn": "تكبير",
       "zoomOut": "تصغير",
       "fit": "ملاءمة",
-      "hintZoom": " الأزرار +/- للتكبير والتصغير، والرقم 0 يناسب الرسم."
+      "hintZoom": " الأزرار +/- للتكبير والتصغير، والرقم 0 يناسب الرسم.",
+      "none": "لا شيء"
     },
     "pieChart": {
       "part": "الجزء",
@@ -142,7 +147,9 @@ export default {
       "lane": "المسار",
       "today": "اليوم",
       "date": "التاريخ",
-      "dates": "التواريخ"
+      "dates": "التواريخ",
+      "start": "البداية",
+      "end": "النهاية"
     },
     "treeChart": {
       "name": "الاسم",
@@ -164,7 +171,8 @@ export default {
       "total": "الإجمالي",
       "running": "المجموع التراكمي",
       "increase": "زيادة",
-      "decrease": "نقصان"
+      "decrease": "نقصان",
+      "end": "النهاية"
     },
     "wordCloud": {
       "value": "العدد",

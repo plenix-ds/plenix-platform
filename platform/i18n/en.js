@@ -278,7 +278,7 @@ export default {
   },
   "cascader": {
     "placeholder": "Choose",
-    "separator": "/",
+    "separator": " / ",
     "search": "Search",
     "noMatches": "No matches",
     "empty": "No items",
@@ -333,7 +333,8 @@ export default {
       "terminal": "Start or end",
       "data": "Data",
       "box": "Part",
-      "group": "Group"
+      "group": "Group",
+      "end": "End"
     },
     "funnelChart": {
       "stage": "Stage",
@@ -347,7 +348,9 @@ export default {
       "dependsOn": "Waits for",
       "status": "Status",
       "today": "Today",
-      "milestone": "Milestone"
+      "milestone": "Milestone",
+      "start": "Start",
+      "end": "End"
     },
     "gauge": {
       "showData": "Show the data",
@@ -355,7 +358,8 @@ export default {
       "measure": "Measure",
       "value": "Value",
       "min": "Minimum",
-      "max": "Maximum"
+      "max": "Maximum",
+      "ok": ""
     },
     "geoMap": {
       "region": "Region",
@@ -393,7 +397,8 @@ export default {
       "zoomIn": "Zoom in",
       "zoomOut": "Zoom out",
       "fit": "Fit",
-      "hintZoom": "Plus and minus zoom, 0 fits the graph."
+      "hintZoom": " Plus and minus zoom, 0 fits the graph.",
+      "none": "None"
     },
     "pieChart": {
       "part": "Part",
@@ -420,7 +425,9 @@ export default {
       "lane": "Lane",
       "today": "Today",
       "date": "Date",
-      "dates": "Dates"
+      "dates": "Dates",
+      "start": "Start",
+      "end": "End"
     },
     "treeChart": {
       "name": "Name",
@@ -442,7 +449,8 @@ export default {
       "total": "Total",
       "running": "Running total",
       "increase": "Increase",
-      "decrease": "Decrease"
+      "decrease": "Decrease",
+      "end": "End"
     },
     "wordCloud": {
       "value": "Count",
@@ -503,7 +511,7 @@ export default {
     "actions": "{label} actions",
     "find": "Find and view",
     "selected": "{n} selected",
-    "hidden": "({n} hidden by filters)",
+    "hidden": " ({n} hidden by filters)",
     "clear": "Clear the selection",
     "clearName": "{n} selected, clear the selection",
     "swapped": "{n} selected. Selection actions available.",
