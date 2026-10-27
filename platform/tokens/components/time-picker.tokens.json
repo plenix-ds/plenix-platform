@@ -137,9 +137,9 @@
       "$description": "TimePicker option: font size (font-size-13)."
     },
     "time-picker-option-min-height": {
-      "$value": "{plx-sys.control-height-standard}",
+      "$value": "{plx-comp.combobox-option-min-height}",
       "$type": "dimension",
-      "$description": "TimePicker option: minimum height (control-height-standard)."
+      "$description": "TimePicker option: minimum height, the shared list row height (the Combobox's, as the Select's; owner, timepicker-rows-37)."
     },
     "time-picker-option-padding-inline": {
       "$value": "{plx-sys.space-inset-sm}",

@@ -46793,7 +46793,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      variant: "list" (default: a field people type in, with the times at each step in a list under it) | "segments"
        (spin buttons for the hour, the minute and the period)
      hourCycle: "12" | "24": the clock shown; default the reader's locale's clock
-     The list of times opens in the browser's top layer, below the field (or above it near an edge), as wide as the field: no dialog, drawer or scroll area clips it
+     The list of times opens in the browser's top layer, below the field (or above it near an edge), as wide as the field: no dialog, drawer or scroll area clips it;
+       its rows are the shared list row height (28px at the compact density), the times in the data font (owner, timepicker-rows-37)
      step: the minutes between times in the list, and the minute segment's step (default 15 for the list, 1 for segments);
        a value that divides 60 (5, 10, 15, 30)
      min, max: the earliest and the latest time ("HH:MM"); the list holds only times between them
