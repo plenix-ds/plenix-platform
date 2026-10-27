@@ -152,7 +152,8 @@ write(path.join(T, 'css', 'all.css'), ['reference.css', 'semantic.css', 'compone
       return lead + space + (hosts.length ? sels.map((x) => x.trim()).concat(hosts).join(',') : prelude.trim()) + '{';
     })
     .replace(/\n\s*\n+/g, '\n');
-  write(path.join(T, 'css', 'tokens.css'), '/* Plenix ' + VERSION + ' · tokens.css: every --plx-* token, light and dark, on :root and :host; no @import (adoptable: plenixTokens()). Generated. */\n' + css.trim() + '\n');
+  write(path.join(T, 'css', 'tokens.css'), '/* Plenix ' + VERSION + ' · tokens.css: every --plx-* token, light and dark, on :root and :host; no @import (adoptable: plenixTokens()). In layer plx.tokens, with the order declared as plenix.css does (#249), so loaded with plenix.css its values do not beat the layered themes and density. Generated. */\n'
+    + '@layer ' + JSON.parse(fs.readFileSync(path.join(P, 'system', 'layers.json'), 'utf8')).order.map((n) => 'plx.' + n).join(', ') + ';\n@layer plx.tokens {\n' + css.trim() + '\n}\n');
 }
 json(path.join(T, 'package.json'), manifest('tokens', 'Plenix design tokens: the source JSON, CSS custom properties (--plx-…) and a JS module.', {
   type: 'module', main: 'index.js', types: 'index.d.ts',
@@ -277,6 +278,7 @@ copy(path.join(ROOT, 'docs', 'integration', 'acceptance.html'), path.join(CDN, '
 // name (<Icon name="person_cancel">), outline and filled, optical sizes 20 and 24, drawn from /cdn/material/<commit>/
 // (deploy.sh copies platform/icons/library there once: it never changes). Plenix's own names keep their meaning: a symbol
 // whose name is already a Plenix name is left out. Optional: a page links it after plenix.css.
+// Unlayered on purpose (#249): 4,078 per-icon classes, each naming its own icon and setting only that icon's custom properties, so nothing competes with them and a layer would add nothing.
 {
   const ICONS = path.join(P, 'icons'), map = JSON.parse(fs.readFileSync(path.join(ICONS, 'map.json'), 'utf8'));
   const lib = JSON.parse(fs.readFileSync(path.join(ICONS, 'library', 'index.json'), 'utf8'));

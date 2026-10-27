@@ -17,6 +17,7 @@ const ROOT = path.join(__dirname, '..');
 const MAP = path.join(ROOT, 'platform', 'system', 'layers.json');
 // a sheet that may hold unlayered rules, and why
 const UNLAYERED = {
+  // TODO (#249): the first release that ships layers also changes login.css: after it, this sheet's unlayered rules beat the layered Platform, so wrap it in `@layer app` (after `@layer plx, app;`) in that release and remove this entry
   'services/login/login.css': 'served with the released CDN stylesheet, which has no layers until the release that ships them',
   'services/auth/brand.css': 'pasted into Authentik, whose own CSS is unlayered: a layer would lose to it, so it wins by specificity (no !important)',
 };
