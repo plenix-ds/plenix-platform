@@ -70,22 +70,26 @@ import { useToast } from '../../components/Toast/Toast.jsx';
 import { ActivityList } from '../ActivityList/ActivityList.jsx';
 import { CommandBar } from '../CommandBar/CommandBar.jsx';
 import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
+import english from '../../i18n/en.js';
 
 // the workflow statuses: a Badge variant by meaning, and its icon (owner, 2026-10-15)
+// the labels are the catalog's (reviewFlow.statuses): this constant keeps its shape and its English labels for apps that read it
+const STATUS_LABELS = english.reviewFlow.statuses;
 export const WORKFLOW_STATUSES = {
-  draft: { tone: 'neutral', icon: 'pencil', label: 'Draft' },
-  'in-review': { tone: 'active', icon: 'doc-search', label: 'In review' },
-  approved: { tone: 'success', icon: 'circle-check', label: 'Approved' },
-  'changes-requested': { tone: 'action-required', icon: 'alert', label: 'Changes requested' },
-  rejected: { tone: 'negative', icon: 'close', label: 'Rejected' },
-  published: { tone: 'success', icon: 'visibility', label: 'Published' },
-  scheduled: { tone: 'waiting', icon: 'schedule', label: 'Scheduled' },
+  draft: { tone: 'neutral', icon: 'pencil', label: STATUS_LABELS.draft },
+  'in-review': { tone: 'active', icon: 'doc-search', label: STATUS_LABELS['in-review'] },
+  approved: { tone: 'success', icon: 'circle-check', label: STATUS_LABELS.approved },
+  'changes-requested': { tone: 'action-required', icon: 'alert', label: STATUS_LABELS['changes-requested'] },
+  rejected: { tone: 'negative', icon: 'close', label: STATUS_LABELS.rejected },
+  published: { tone: 'success', icon: 'visibility', label: STATUS_LABELS.published },
+  scheduled: { tone: 'waiting', icon: 'schedule', label: STATUS_LABELS.scheduled },
 };
 
 export function WorkflowStatus({ status = 'draft', label, size, strings, className, ...rest }) {
   devWarn('WorkflowStatus', { size }, { size: ['md','sm'] });
   const s = WORKFLOW_STATUSES[status] || WORKFLOW_STATUSES.draft;
-  const words = label || (strings && strings[status]) || s.label;
+  const names = useStrings('reviewFlow.statuses');
+  const words = label || (strings && strings[status]) || names[status] || s.label;
   return <Badge tone={s.tone} icon={s.icon} size={size} className={cx('plx-workflow-status', className)} {...rest}>{words}</Badge>;
 }
 
@@ -108,7 +112,8 @@ export function ReviewFlow({ status = 'in-review', title, headingLevel = 3, deta
   const [error, setError] = React.useState('');
   const field = React.useRef(null);
   const H = 'h' + Math.min(6, Math.max(2, headingLevel));
-  const word = (d) => (t[d] || WORKFLOW_STATUSES[d].label);
+  const names = useStrings('reviewFlow.statuses');
+  const word = (d) => (t[d] || names[d] || WORKFLOW_STATUSES[d].label);
   const decide = (d) => {
     if (reasonFor.indexOf(d) >= 0 && !comment.trim()) { setError(t.needReason); if (field.current) field.current.focus(); return; }
     setError('');
@@ -170,6 +175,7 @@ export function ReviewFlow({ status = 'in-review', title, headingLevel = 3, deta
 export function ReviewQueue({ items = [], label, noun, plural, onDecision, selected, onSelectionChange,
   strings, className, ...rest }) {
   const t = useStrings('reviewFlow.queue', strings);
+  const names = useStrings('reviewFlow.statuses');
   const loc = useLocale();
   const builtIn = !noun && !plural;   // the default words: whole counted phrases with the Arabic plural forms, from the catalog
   const many = plural || (noun ? noun + 's' : t.plural);   // the default words come from the catalog
@@ -186,7 +192,7 @@ export function ReviewQueue({ items = [], label, noun, plural, onDecision, selec
     const ids = sel.slice();
     if (onDecision) onDecision(ids, decision, reason || '');
     setSel([]); setAsk(null);
-    const said = fill(t.done, { what: what(ids.length), decision: WORKFLOW_STATUSES[decision].label.toLowerCase() });
+    const said = fill(t.done, { what: what(ids.length), decision: names[decision].toLowerCase() });
     if (toast) toast.show(said, { tone: decision === 'approved' ? 'success' : 'info' }); else announce(said);
   };
   const columns = [

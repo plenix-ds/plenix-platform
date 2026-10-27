@@ -1535,6 +1535,15 @@ export default {
         "one": "{n} item",
         "other": "{n} items"
       }
+    },
+    "statuses": {
+      "draft": "Draft",
+      "in-review": "In review",
+      "approved": "Approved",
+      "changes-requested": "Changes requested",
+      "rejected": "Rejected",
+      "published": "Published",
+      "scheduled": "Scheduled"
     }
   },
   "richTextEditor": {

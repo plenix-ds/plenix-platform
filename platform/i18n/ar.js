@@ -2050,6 +2050,15 @@ export default {
         "many": "{n} عنصرًا",
         "other": "{n} عنصر"
       }
+    },
+    "statuses": {
+      "draft": "مسودة",
+      "in-review": "قيد المراجعة",
+      "approved": "تمت الموافقة",
+      "changes-requested": "مطلوب تعديلات",
+      "rejected": "مرفوض",
+      "published": "منشور",
+      "scheduled": "مجدول"
     }
   },
   "collection": {
