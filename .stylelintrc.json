@@ -6,7 +6,7 @@
     "function-disallowed-list": [["rgb", "rgba", "hsl", "hsla", "hwb", "lab", "lch", "oklab", "oklch"], { "severity": "error" }],
     "declaration-property-value-disallowed-list": [{
       "/^border(-.+)?-radius$/": ["/(^|[\\s(,])-?(?!0+(\\.0+)?(px|rem|em|%)(?![\\w-]))[0-9.]+(px|rem|em|%)/"],
-      "/.*/": ["/(?<![\\w-])(?!0+(\\.0+)?(px|rem|em|ms|s|vh|vw|ch|pt)(?![\\w-]))(\\d*\\.?\\d+)(px|rem|em|ms|s|vh|vw|ch|pt)(?![\\w-])/"]
+      "/.*/": ["/(?<!\\w)(?<!\\w-)(?!-?0+(\\.0+)?(px|rem|em|ms|s|vh|vw|ch|pt)(?![\\w-]))-?\\d*\\.?\\d+(px|rem|em|ms|s|vh|vw|ch|pt)(?![\\w-])/"]
     }, { "severity": "error" }],
     "property-no-unknown": true,
     "no-duplicate-selectors": true,
