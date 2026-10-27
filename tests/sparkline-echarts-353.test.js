@@ -9,6 +9,10 @@
      rather than a speed goal (the owner accepted about 1.5 seconds; a throttled CPU takes about 6).
    Usage: node tests/sparkline-echarts-353.test.js */
 const assert = require('assert/strict'), { serve, launch } = require('./lib');
+// in the automatic set (owner, codex-q3-27): changed mode runs it when the charts, the engine, a global file or this test
+// changed (a chart file is global to tests/changed.js: the slice), TEST_SCOPE=full always
+const changed = require('./changed');
+if (!changed.wants({})) changed.none('SPARKLINE_ECHARTS_353_OK');
 const N = 200, LIMIT_MS = 10000;
 (async () => {
   const PORT = +process.env.TEST_PORT || 9613, server = await serve(PORT); let browser;
