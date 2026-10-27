@@ -2,10 +2,10 @@
    field (plx-input) in the data font, with the calendar button inside at its end; a date-time picker puts the time field beside
    it. The popover holds the presets (a column of ghost buttons, divided from the calendar) and the Calendar. */
 .plx-date-picker{display:flex;max-inline-size:100%;min-inline-size:0;}
-.plx-date-picker__anchor{display:flex;max-inline-size:100%;min-inline-size:0;}
-.plx-date-picker__field{column-gap:var(--plx-comp-date-picker-field-gap);display:flex;flex-wrap:wrap;max-inline-size:100%;min-inline-size:0;row-gap:var(--plx-comp-date-picker-field-gap);}
-.plx-date-picker__date{--plx-comp-input-context-padding-inline-end:var(--plx-comp-date-picker-box-padding-inline-end);align-items:center;display:flex;flex-shrink:1;inline-size:var(--plx-comp-date-picker-width);min-inline-size:0;}
-.plx-date-picker__date--range{inline-size:var(--plx-comp-date-picker-range-width);}
+.plx-date-picker__anchor{display:flex;flex:1 1 auto;max-inline-size:100%;min-inline-size:0;}
+.plx-date-picker__field{flex:1 1 auto;column-gap:var(--plx-comp-date-picker-field-gap);display:flex;flex-wrap:wrap;max-inline-size:100%;min-inline-size:0;row-gap:var(--plx-comp-date-picker-field-gap);}
+.plx-date-picker__date{--plx-comp-input-context-padding-inline-end:var(--plx-comp-date-picker-box-padding-inline-end);align-items:center;display:flex;flex:1 1 var(--plx-comp-date-picker-width);min-inline-size:0;}
+.plx-date-picker__date--range{flex-basis:var(--plx-comp-date-picker-range-width);}
 /* the date box is one field like the text field (owner, form-controls-37): the borderless input fills it, the calendar button sits inside at its end */
 .plx-date-picker__input{align-self:stretch;background-color:transparent;border-style:none;border-width:0;color:inherit;flex:1 1 0%;font-family:inherit;font-size:inherit;margin-block:var(--plx-comp-date-picker-control-margin-block);min-inline-size:0;outline-style:none;padding-block:0;padding-inline:0;}
 .plx-date-picker__button{margin-block:var(--plx-comp-date-picker-control-margin-block);}
