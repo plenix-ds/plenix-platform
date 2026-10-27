@@ -8,9 +8,55 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ### Added
 - `/cdn/<version>/source/`: the release's source as written, so the design spec can read each component's JSX and CSS from the release it documents (#341).
+- TreeChart: one root and its branches, drawn on ECharts' tree (#377).
+  - `orientation` is `"left-to-right"` (default) or `"top-to-bottom"`; the arrow keys follow it.
+  - A click folds and opens a branch (`defaultFolded`, or `folded` with `onFoldedChange`); the path to the root stands out under the pointer or focus.
+  - Labels never collide; on a phone, left to right shortens the middle names, and the full names stay in the live region and "Show the data".
+- Stylelint is the main style checker for stylesheets (`npm run lint:css`), with a Plenix plugin for token tiers and logical properties (#362, #385, #389, #393, #394).
+- `check-style.js`: the Plenix style check beside Stylelint, for the style rules Stylelint cannot check (#395).
+- `check-common.js`: what the two checks share (#395).
+- The token-definitions rule: no new colors (the reference palette is frozen, gray 250 included), everything on the 4px grid, corners 2 to 6px (#386, #396).
+- Knip reports unused files and exports (report-only) (#364).
 
 ### Changed
 - The design spec runs on the CDN. `platform/design-system/plenix-source.js` names the release (package.json's version), and `?plenix=local` previews unreleased Platform work (#341, plenix-design-system#5).
+- Every Platform stylesheet is in a cascade layer, in one declared order: `plx.vendor, plx.reset, plx.tokens, plx.elements, plx.layout, plx.components, plx.patterns, plx.utilities` (#374).
+  - CSS that is not in a layer now wins over every Platform layer; keep an application's own styles in its own layer when order matters.
+- No Platform stylesheet uses `!important`: the utility classes lost all 413 (#376, #378, #379, #380), and the sign-in theme (`services/auth/brand.css`) wins by specificity (#383).
+- Each style rule lives in exactly one of three checks: `npm run lint:css` (Stylelint) for stylesheets, `node check-style.js` for the style rules Stylelint cannot check, `node check-system.js` for everything that is not style (#392, #393, #394, #395, #396).
+  - The ownership rule is retired; `selector-kinds` already rejects the same selectors (#392).
+  - The palette, themeable, classes and tables rules moved into Stylelint (#393).
+  - Token tiers and logical properties are Stylelint rules in the Plenix plugin (#394).
+  - The raw-length rule catches negative lengths (#389).
+  - The documentation names the checker for each rule (#396).
+- The chart content guidance has the owner's six wording answers (#388).
+
+### Changed (visual)
+- Every corner above 6px is 6px, and the round shape is 6px too, so round marks and large surfaces get 6px corners (#391).
+  - `--plx-sys-shape-md`, `-lg`, `-xl` and `-pill` keep their names and now take `--plx-ref-radius-6px`.
+  - Affected parts: cards, dialogs, menus, surfaces, avatars (4px up to 24px, 6px above), pills, Slider track and thumb, Resizable divider handle, DataGrid scroll thumb, Diagram terminal shape, List, MetricCard split bar, Pictogram, Spotlight beacon, Timeline marker and FloatingActionButton.
+  - Dots that are 12px or smaller stay circles, because 6px is half their size.
+- Spinners are round again, at every size: `--plx-comp-spinner-radius` is `50%`, the one named exception to the corner rule (#397).
+- The sign-in theme uses today's tokens (release 0.72.0): darker input borders, a darker required asterisk, 4px corners on the fields and the Log in button, and a light blue focus ring in dark mode (#390).
+- Line, Area, Bar and Pie draw their plot with Apache ECharts 6.1.0; names and props are unchanged (#358).
+- Sparkline draws with ECharts: a line, area or bar with no axes, one live chart each (#367).
+- TreeChart (new, see Added) is the chart for trees such as the St. John ministries (#377).
+
+### Fixed
+- The sign-in theme generator reads today's tokens again (#384, #390).
+
+### Breaking
+- The corner tokens are renamed to 6px names (#391). Use the new name in place of the old one:
+  - `--plx-ref-radius-8px`, `--plx-ref-radius-12px`, `--plx-ref-radius-16px` and `--plx-ref-radius-pill` are removed: use `--plx-ref-radius-6px`, or the role `--plx-sys-shape-sm`.
+  - `--plx-sys-radius-control-8px` and `-12px` are now `--plx-sys-radius-control-6px`.
+  - `--plx-sys-radius-media-12px` is now `--plx-sys-radius-media-6px`.
+  - `--plx-sys-radius-surface-8px` is now `--plx-sys-radius-surface-6px`.
+  - `--plx-sys-radius-card-12px` is now `--plx-sys-radius-card-6px`.
+  - `--plx-sys-radius-menu-8px` is now `--plx-sys-radius-menu-6px`.
+  - `--plx-sys-radius-dialog-8px` is now `--plx-sys-radius-dialog-6px`.
+  - `--plx-sys-radius-avatar-8px` and `-12px` are now `--plx-sys-radius-avatar-6px`.
+  - The utility class `.plx-u-radius-surface-8px` is now `.plx-u-radius-surface-6px`.
+  - A shape that must stay round sets its own value (a component setting), as the spinner does.
 
 ## [0.72.0] - 2026-10-26
 
