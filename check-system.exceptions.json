@@ -2,6 +2,5 @@
   "$description": "The backlog of the Plenix Styling Standard (platform/standards/styling.md), recorded 2026-10-18: by file, the selectors that reach into another component (with their count) and the !important count. check-system.rules/ownership.js fails on anything new and on any entry that no longer occurs. The list only shrinks: node check-system.rules/ownership.js --shrink.",
   "cross-component": {},
   "important": {
-    "platform/system/utilities.css": 135
   }
 }
