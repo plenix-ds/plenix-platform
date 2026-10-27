@@ -3281,6 +3281,29 @@ var _default = exports.default = {
   "wizardDialog": {
     "close": "Close",
     "unsaved": "Your changes will be lost."
+  },
+  "voteTally": {
+    "approve": "Approve",
+    "deny": "Deny",
+    "abstain": "Abstain",
+    "turnedOff": "turned off",
+    "notVoted": "Not voted",
+    "voteOf": "Vote of {name}",
+    "hiddenUntilClosed": "Hidden until the vote closes",
+    "totalsOnly": "Totals only",
+    "reconnecting": "Reconnecting",
+    "quorum": "Quorum: {present} present, {needed} needed ({state})",
+    "met": "met",
+    "notMet": "not met",
+    "result": {
+      "open": "Open",
+      "passing": "Passing",
+      "failing": "Failing",
+      "passed": "Passed",
+      "failed": "Failed",
+      "tied": "Tied",
+      "no-quorum": "No quorum"
+    }
   }
 };
   } },
@@ -7091,7 +7114,7 @@ function ExpandableText({
   }, open ? words.less : words.more) : null);
 }
   } },
-  "platform/components/VoteTally/VoteTally.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/VoteTally/VoteTally.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -7104,6 +7127,7 @@ var _Avatar = require("../Avatar/Avatar.jsx");
 var _Badge = require("../Badge/Badge.jsx");
 var _Button = require("../Button/Button.jsx");
 var _Text = require("../Text/Text.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · VoteTally
    Summary: A live vote: the members as a list, each with an avatar, the name and role, and three icon-only choices
@@ -7128,7 +7152,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        no vote is sent blind; the last totals stay
      onVote(memberId, option): a choice pressed; option null when the chosen one is pressed again (unless changeVote is
        "final")
-     strings: the words, for other languages (the settings' labels win for the three choices)
+     strings: the words, for other languages (default: the locale's voteTally words, through LocaleProvider; the settings'
+       labels win for the three choices)
      className: more classes on the section
    Behavior:
      Each member's choices are a group named "Vote of <name>": three toggle buttons (aria-pressed), each with its name and
@@ -7146,29 +7171,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      Every value is a --plx-comp-vote-tally-* token; the colors are Button's tone and Badge's.
 */
 
-const STRINGS = {
-  approve: 'Approve',
-  deny: 'Deny',
-  abstain: 'Abstain',
-  turnedOff: 'turned off',
-  notVoted: 'Not voted',
-  voteOf: 'Vote of {name}',
-  hiddenUntilClosed: 'Hidden until the vote closes',
-  totalsOnly: 'Totals only',
-  reconnecting: 'Reconnecting',
-  quorum: 'Quorum: {present} present, {needed} needed ({state})',
-  met: 'met',
-  notMet: 'not met',
-  result: {
-    open: 'Open',
-    passing: 'Passing',
-    failing: 'Failing',
-    passed: 'Passed',
-    failed: 'Failed',
-    tied: 'Tied',
-    'no-quorum': 'No quorum'
-  }
-};
 const OPTIONS = [['approve', 'check', 'success'], ['deny', 'close', 'danger'], ['abstain', 'remove', 'neutral']];
 const RESULT_TONE = {
   open: 'neutral',
@@ -7207,8 +7209,10 @@ function VoteTally({
   strings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings, settings.labels || {});
-  const words = Object.assign({}, STRINGS.result, strings && strings.result);
+  // the words: the locale's voteTally section (platform/i18n), then the strings prop, then the vote's own labels for the choices
+  const base = (0, _LocaleProvider.useStrings)('voteTally', strings);
+  const t = Object.assign({}, base, settings.labels || {});
+  const words = base.result || {};
   const o = outcome || countOf(members);
   const locked = readOnly || status === 'closed' || connection === 'reconnecting' || typeof onVote !== 'function';
   const hiddenText = settings.liveVisibility === 'totals' ? t.totalsOnly : t.hiddenUntilClosed;
@@ -15329,7 +15333,7 @@ const DragHandle = exports.DragHandle = /*#__PURE__*/_react.default.forwardRef(f
   }));
 });
   } },
-  "node_modules/@tanstack/table-core/build/lib/columnHelper.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/columnHelper.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -15399,7 +15403,7 @@ function createColumnHelper() {
 }
 exports.createColumnHelper = createColumnHelper;
   } },
-  "node_modules/@tanstack/table-core/build/lib/utils.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -15509,7 +15513,7 @@ exports.makeStateUpdater = makeStateUpdater;
 exports.memo = memo;
 exports.noop = noop;
   } },
-  "node_modules/@tanstack/table-core/build/lib/core/cell.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/core/cell.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -15550,7 +15554,7 @@ function createCell(table, row, column, columnId) {
 }
 exports.createCell = createCell;
   } },
-  "node_modules/@tanstack/table-core/build/lib/core/column.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/core/column.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -15629,7 +15633,7 @@ function createColumn(table, columnDef, depth, parent) {
 }
 exports.createColumn = createColumn;
   } },
-  "node_modules/@tanstack/table-core/build/lib/core/headers.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/core/headers.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -15898,7 +15902,7 @@ function buildHeaderGroups(allColumns, columnsToGroup, table, headerFamily) {
 exports.Headers = Headers;
 exports.buildHeaderGroups = buildHeaderGroups;
   } },
-  "node_modules/@tanstack/table-core/build/lib/core/row.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./cell.js":"node_modules/@tanstack/table-core/build/lib/core/cell.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/core/row.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./cell.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/core/cell.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -15986,7 +15990,7 @@ const createRow = (table, id, original, rowIndex, depth, subRows, parentId) => {
 };
 exports.createRow = createRow;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -16027,7 +16031,7 @@ const ColumnFaceting = {
 };
 exports.ColumnFaceting = ColumnFaceting;
   } },
-  "node_modules/@tanstack/table-core/build/lib/filterFns.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/filterFns.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -16123,7 +16127,7 @@ function testFalsey(val) {
 }
 exports.filterFns = filterFns;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js": { deps: {"../filterFns.js":"node_modules/@tanstack/table-core/build/lib/filterFns.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js": { deps: {"../filterFns.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/filterFns.js","../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -16275,7 +16279,7 @@ function shouldAutoRemoveFilter(filterFn, value, column) {
 exports.ColumnFiltering = ColumnFiltering;
 exports.shouldAutoRemoveFilter = shouldAutoRemoveFilter;
   } },
-  "node_modules/@tanstack/table-core/build/lib/aggregationFns.js": { deps: {"./utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/aggregationFns.js": { deps: {"./utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -16382,7 +16386,7 @@ const aggregationFns = {
 };
 exports.aggregationFns = aggregationFns;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js": { deps: {"../aggregationFns.js":"node_modules/@tanstack/table-core/build/lib/aggregationFns.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js": { deps: {"../aggregationFns.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/aggregationFns.js","../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -16524,7 +16528,7 @@ function orderColumns(leafColumns, grouping, groupedColumnMode) {
 exports.ColumnGrouping = ColumnGrouping;
 exports.orderColumns = orderColumns;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -16623,7 +16627,7 @@ function _getVisibleLeafColumns(table, position) {
 exports.ColumnVisibility = ColumnVisibility;
 exports._getVisibleLeafColumns = _getVisibleLeafColumns;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./ColumnGrouping.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","./ColumnVisibility.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./ColumnGrouping.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","./ColumnVisibility.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -16707,7 +16711,7 @@ const ColumnOrdering = {
 };
 exports.ColumnOrdering = ColumnOrdering;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -16837,7 +16841,7 @@ const ColumnPinning = {
 };
 exports.ColumnPinning = ColumnPinning;
   } },
-  "node_modules/@tanstack/table-core/build/lib/utils/document.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/utils/document.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -16855,7 +16859,7 @@ function safelyAccessDocument(_document) {
 }
 exports.safelyAccessDocument = safelyAccessDocument;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","../utils/document.js":"node_modules/@tanstack/table-core/build/lib/utils/document.js","./ColumnVisibility.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js","../utils/document.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils/document.js","./ColumnVisibility.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -17126,7 +17130,7 @@ exports.ColumnSizing = ColumnSizing;
 exports.defaultColumnSizing = defaultColumnSizing;
 exports.passiveEventSupported = passiveEventSupported;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -17167,7 +17171,7 @@ const GlobalFaceting = {
 };
 exports.GlobalFaceting = GlobalFaceting;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js": { deps: {"../filterFns.js":"node_modules/@tanstack/table-core/build/lib/filterFns.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js": { deps: {"../filterFns.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/filterFns.js","../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -17230,7 +17234,7 @@ const GlobalFiltering = {
 };
 exports.GlobalFiltering = GlobalFiltering;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -17403,7 +17407,7 @@ const RowExpanding = {
 };
 exports.RowExpanding = RowExpanding;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/RowPagination.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/features/RowPagination.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -17572,7 +17576,7 @@ const RowPagination = {
 };
 exports.RowPagination = RowPagination;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/RowPinning.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/features/RowPinning.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -17717,7 +17721,7 @@ const RowPinning = {
 };
 exports.RowPinning = RowPinning;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/RowSelection.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/features/RowSelection.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -18108,7 +18112,7 @@ exports.isRowSelected = isRowSelected;
 exports.isSubRowSelected = isSubRowSelected;
 exports.selectRowsFn = selectRowsFn;
   } },
-  "node_modules/@tanstack/table-core/build/lib/sortingFns.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/sortingFns.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -18228,7 +18232,7 @@ const sortingFns = {
 exports.reSplitAlphaNumeric = reSplitAlphaNumeric;
 exports.sortingFns = sortingFns;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/RowSorting.js": { deps: {"../sortingFns.js":"node_modules/@tanstack/table-core/build/lib/sortingFns.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/features/RowSorting.js": { deps: {"../sortingFns.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/sortingFns.js","../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -18454,7 +18458,7 @@ const RowSorting = {
 };
 exports.RowSorting = RowSorting;
   } },
-  "node_modules/@tanstack/table-core/build/lib/core/table.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./column.js":"node_modules/@tanstack/table-core/build/lib/core/column.js","./headers.js":"node_modules/@tanstack/table-core/build/lib/core/headers.js","../features/ColumnFaceting.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js","../features/ColumnFiltering.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js","../features/ColumnGrouping.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","../features/ColumnOrdering.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js","../features/ColumnPinning.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js","../features/ColumnSizing.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js","../features/ColumnVisibility.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js","../features/GlobalFaceting.js":"node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js","../features/GlobalFiltering.js":"node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js","../features/RowExpanding.js":"node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js","../features/RowPagination.js":"node_modules/@tanstack/table-core/build/lib/features/RowPagination.js","../features/RowPinning.js":"node_modules/@tanstack/table-core/build/lib/features/RowPinning.js","../features/RowSelection.js":"node_modules/@tanstack/table-core/build/lib/features/RowSelection.js","../features/RowSorting.js":"node_modules/@tanstack/table-core/build/lib/features/RowSorting.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/core/table.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./column.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/core/column.js","./headers.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/core/headers.js","../features/ColumnFaceting.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js","../features/ColumnFiltering.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js","../features/ColumnGrouping.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","../features/ColumnOrdering.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js","../features/ColumnPinning.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js","../features/ColumnSizing.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js","../features/ColumnVisibility.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js","../features/GlobalFaceting.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js","../features/GlobalFiltering.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js","../features/RowExpanding.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js","../features/RowPagination.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/RowPagination.js","../features/RowPinning.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/RowPinning.js","../features/RowSelection.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/RowSelection.js","../features/RowSorting.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/RowSorting.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -18665,7 +18669,7 @@ function createTable(options) {
 }
 exports.createTable = createTable;
   } },
-  "node_modules/@tanstack/table-core/build/lib/utils/getCoreRowModel.js": { deps: {"../core/row.js":"node_modules/@tanstack/table-core/build/lib/core/row.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/utils/getCoreRowModel.js": { deps: {"../core/row.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/core/row.js","../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -18729,7 +18733,7 @@ function getCoreRowModel() {
 }
 exports.getCoreRowModel = getCoreRowModel;
   } },
-  "node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -18774,7 +18778,7 @@ function expandRows(rowModel) {
 exports.expandRows = expandRows;
 exports.getExpandedRowModel = getExpandedRowModel;
   } },
-  "node_modules/@tanstack/table-core/build/lib/utils/getFacetedMinMaxValues.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedMinMaxValues.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -18809,7 +18813,7 @@ function getFacetedMinMaxValues() {
 }
 exports.getFacetedMinMaxValues = getFacetedMinMaxValues;
   } },
-  "node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js": { deps: {"../core/row.js":"node_modules/@tanstack/table-core/build/lib/core/row.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js": { deps: {"../core/row.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/core/row.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -18919,7 +18923,7 @@ function filterRowModelFromRoot(rowsToFilter, filterRow, table) {
 }
 exports.filterRows = filterRows;
   } },
-  "node_modules/@tanstack/table-core/build/lib/utils/getFacetedRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./filterRowsUtils.js":"node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedRowModel.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./filterRowsUtils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -18954,7 +18958,7 @@ function getFacetedRowModel() {
 }
 exports.getFacetedRowModel = getFacetedRowModel;
   } },
-  "node_modules/@tanstack/table-core/build/lib/utils/getFacetedUniqueValues.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedUniqueValues.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -18992,7 +18996,7 @@ function getFacetedUniqueValues() {
 }
 exports.getFacetedUniqueValues = getFacetedUniqueValues;
   } },
-  "node_modules/@tanstack/table-core/build/lib/utils/getFilteredRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./filterRowsUtils.js":"node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/utils/getFilteredRowModel.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./filterRowsUtils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -19102,7 +19106,7 @@ function getFilteredRowModel() {
 }
 exports.getFilteredRowModel = getFilteredRowModel;
   } },
-  "node_modules/@tanstack/table-core/build/lib/utils/getGroupedRowModel.js": { deps: {"../core/row.js":"node_modules/@tanstack/table-core/build/lib/core/row.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/utils/getGroupedRowModel.js": { deps: {"../core/row.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/core/row.js","../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -19258,7 +19262,7 @@ function groupBy(rows, columnId) {
 }
 exports.getGroupedRowModel = getGroupedRowModel;
   } },
-  "node_modules/@tanstack/table-core/build/lib/utils/getPaginationRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./getExpandedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/utils/getPaginationRowModel.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./getExpandedRowModel.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -19317,7 +19321,7 @@ function getPaginationRowModel(opts) {
 }
 exports.getPaginationRowModel = getPaginationRowModel;
   } },
-  "node_modules/@tanstack/table-core/build/lib/utils/getSortedRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/utils/getSortedRowModel.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -19418,7 +19422,7 @@ function getSortedRowModel() {
 }
 exports.getSortedRowModel = getSortedRowModel;
   } },
-  "node_modules/@tanstack/table-core/build/lib/index.js": { deps: {"./columnHelper.js":"node_modules/@tanstack/table-core/build/lib/columnHelper.js","./core/cell.js":"node_modules/@tanstack/table-core/build/lib/core/cell.js","./core/column.js":"node_modules/@tanstack/table-core/build/lib/core/column.js","./core/headers.js":"node_modules/@tanstack/table-core/build/lib/core/headers.js","./core/row.js":"node_modules/@tanstack/table-core/build/lib/core/row.js","./core/table.js":"node_modules/@tanstack/table-core/build/lib/core/table.js","./features/ColumnFaceting.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js","./features/ColumnFiltering.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js","./features/ColumnGrouping.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","./features/ColumnOrdering.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js","./features/ColumnPinning.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js","./features/ColumnSizing.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js","./features/ColumnVisibility.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js","./features/GlobalFaceting.js":"node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js","./features/GlobalFiltering.js":"node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js","./features/RowExpanding.js":"node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js","./features/RowPagination.js":"node_modules/@tanstack/table-core/build/lib/features/RowPagination.js","./features/RowPinning.js":"node_modules/@tanstack/table-core/build/lib/features/RowPinning.js","./features/RowSelection.js":"node_modules/@tanstack/table-core/build/lib/features/RowSelection.js","./features/RowSorting.js":"node_modules/@tanstack/table-core/build/lib/features/RowSorting.js","./utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./utils/getCoreRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getCoreRowModel.js","./utils/getExpandedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js","./utils/getFacetedMinMaxValues.js":"node_modules/@tanstack/table-core/build/lib/utils/getFacetedMinMaxValues.js","./utils/getFacetedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getFacetedRowModel.js","./utils/getFacetedUniqueValues.js":"node_modules/@tanstack/table-core/build/lib/utils/getFacetedUniqueValues.js","./utils/getFilteredRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getFilteredRowModel.js","./utils/getGroupedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getGroupedRowModel.js","./utils/getPaginationRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getPaginationRowModel.js","./utils/getSortedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getSortedRowModel.js","./aggregationFns.js":"node_modules/@tanstack/table-core/build/lib/aggregationFns.js","./filterFns.js":"node_modules/@tanstack/table-core/build/lib/filterFns.js","./sortingFns.js":"node_modules/@tanstack/table-core/build/lib/sortingFns.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/index.js": { deps: {"./columnHelper.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/columnHelper.js","./core/cell.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/core/cell.js","./core/column.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/core/column.js","./core/headers.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/core/headers.js","./core/row.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/core/row.js","./core/table.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/core/table.js","./features/ColumnFaceting.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js","./features/ColumnFiltering.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js","./features/ColumnGrouping.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","./features/ColumnOrdering.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js","./features/ColumnPinning.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js","./features/ColumnSizing.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js","./features/ColumnVisibility.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js","./features/GlobalFaceting.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js","./features/GlobalFiltering.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js","./features/RowExpanding.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js","./features/RowPagination.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/RowPagination.js","./features/RowPinning.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/RowPinning.js","./features/RowSelection.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/RowSelection.js","./features/RowSorting.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/RowSorting.js","./utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./utils/getCoreRowModel.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils/getCoreRowModel.js","./utils/getExpandedRowModel.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js","./utils/getFacetedMinMaxValues.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedMinMaxValues.js","./utils/getFacetedRowModel.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedRowModel.js","./utils/getFacetedUniqueValues.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedUniqueValues.js","./utils/getFilteredRowModel.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils/getFilteredRowModel.js","./utils/getGroupedRowModel.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils/getGroupedRowModel.js","./utils/getPaginationRowModel.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils/getPaginationRowModel.js","./utils/getSortedRowModel.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils/getSortedRowModel.js","./aggregationFns.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/aggregationFns.js","./filterFns.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/filterFns.js","./sortingFns.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/sortingFns.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -19516,7 +19520,7 @@ exports.filterFns = filterFns.filterFns;
 exports.reSplitAlphaNumeric = sortingFns.reSplitAlphaNumeric;
 exports.sortingFns = sortingFns.sortingFns;
   } },
-  "node_modules/@tanstack/react-table/build/lib/index.js": { deps: {"react":null,"@tanstack/table-core":"node_modules/@tanstack/table-core/build/lib/index.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/react-table/build/lib/index.js": { deps: {"react":null,"@tanstack/table-core":"../../plenix/node_modules/@tanstack/table-core/build/lib/index.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 /**
    * react-table
    *
@@ -19619,7 +19623,7 @@ Object.keys(tableCore).forEach(function (k) {
   });
 });
   } },
-  "node_modules/@tanstack/virtual-core/dist/cjs/lazy-measurements.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/virtual-core/dist/cjs/lazy-measurements.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -19661,7 +19665,7 @@ function createLazyMeasurementsView(cache, flat) {
 exports.createLazyMeasurementsView = createLazyMeasurementsView;
 exports.getMeasurementKey = getMeasurementKey;
   } },
-  "node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -19739,7 +19743,7 @@ exports.debounce = debounce;
 exports.memo = memo;
 exports.notUndefined = notUndefined;
   } },
-  "node_modules/@tanstack/virtual-core/dist/cjs/scroll-classifier.cjs": { deps: {"./utils.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/virtual-core/dist/cjs/scroll-classifier.cjs": { deps: {"./utils.cjs":"../../plenix/node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -19832,7 +19836,7 @@ exports.externalRetiresCommand = externalRetiresCommand;
 exports.flingCaught = flingCaught;
 exports.flingSpedUp = flingSpedUp;
   } },
-  "node_modules/@tanstack/virtual-core/dist/cjs/ios-gesture.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/virtual-core/dist/cjs/ios-gesture.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -19963,7 +19967,7 @@ exports._resetIOSDetectionForTests = _resetIOSDetectionForTests;
 exports.iosMomentumOverridesWrites = iosMomentumOverridesWrites;
 exports.isIOSWebKit = isIOSWebKit;
   } },
-  "node_modules/@tanstack/virtual-core/dist/cjs/index.cjs": { deps: {"./lazy-measurements.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/lazy-measurements.cjs","./utils.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs","./scroll-classifier.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/scroll-classifier.cjs","./ios-gesture.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/ios-gesture.cjs"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/virtual-core/dist/cjs/index.cjs": { deps: {"./lazy-measurements.cjs":"../../plenix/node_modules/@tanstack/virtual-core/dist/cjs/lazy-measurements.cjs","./utils.cjs":"../../plenix/node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs","./scroll-classifier.cjs":"../../plenix/node_modules/@tanstack/virtual-core/dist/cjs/scroll-classifier.cjs","./ios-gesture.cjs":"../../plenix/node_modules/@tanstack/virtual-core/dist/cjs/ios-gesture.cjs"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -21537,7 +21541,7 @@ exports.observeWindowOffset = observeWindowOffset;
 exports.observeWindowRect = observeWindowRect;
 exports.windowScroll = windowScroll;
   } },
-  "node_modules/@tanstack/react-virtual/dist/cjs/index.cjs": { deps: {"react":null,"react-dom":null,"@tanstack/virtual-core":"node_modules/@tanstack/virtual-core/dist/cjs/index.cjs"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/react-virtual/dist/cjs/index.cjs": { deps: {"react":null,"react-dom":null,"@tanstack/virtual-core":"../../plenix/node_modules/@tanstack/virtual-core/dist/cjs/index.cjs"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -26343,7 +26347,7 @@ function groupDisplay(groups, collapsed, add, gaps = true) {
   return display;
 }
   } },
-  "platform/components/DataGrid/DataGridEngine.jsx": { deps: {"react":null,"./unread.js":"platform/components/DataGrid/unread.js","./room.js":"platform/components/DataGrid/room.js","react-dom":null,"./scrollbars.jsx":"platform/components/DataGrid/scrollbars.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","@tanstack/react-table":"node_modules/@tanstack/react-table/build/lib/index.js","@tanstack/react-virtual":"node_modules/@tanstack/react-virtual/dist/cjs/index.cjs","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./environment.js":"platform/components/DataGrid/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataGrid/state.js","./adapter.js":"platform/components/DataGrid/adapter.js","./cells.jsx":"platform/components/DataGrid/cells.jsx","./records.js":"platform/components/DataGrid/records.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/DataGrid/DataGridEngine.jsx": { deps: {"react":null,"./unread.js":"platform/components/DataGrid/unread.js","./room.js":"platform/components/DataGrid/room.js","react-dom":null,"./scrollbars.jsx":"platform/components/DataGrid/scrollbars.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","@tanstack/react-table":"../../plenix/node_modules/@tanstack/react-table/build/lib/index.js","@tanstack/react-virtual":"../../plenix/node_modules/@tanstack/react-virtual/dist/cjs/index.cjs","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./environment.js":"platform/components/DataGrid/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataGrid/state.js","./adapter.js":"platform/components/DataGrid/adapter.js","./cells.jsx":"platform/components/DataGrid/cells.jsx","./records.js":"platform/components/DataGrid/records.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
