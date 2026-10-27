@@ -2,8 +2,9 @@
    Summary: An area people make wider or taller by dragging its edge (10 Patterns › Selection and organization › Resize):
      Resizable is a box with a resize edge on its end (horizontal), its bottom (vertical) or both
      for those who do not drag; PanelSplitter is the same edge on a pane of the application shell (the navigation pane,
-     a secondary pane, the inspector), promoted here from AppShell, which imports and re-exports it. Every size is a size
-     token: a drag follows the pointer and snaps on release, the arrow keys step through them, and a list of steps narrows them further.
+     a secondary pane, the inspector), promoted here from AppShell, which imports and re-exports it. Every size is on the
+     4px grid: a drag moves one grid line at a time and lands on one when let go (owner, 2026-10-26), and a list of steps
+     narrows the settled sizes further.
    Usage:
      <Resizable label="Preview" axis="horizontal" defaultWidth={320} minWidth={200} maxWidth={560}>…</Resizable>
      <Resizable label="Notes" axis="vertical" height={h} onResize={({ height }) => setH(height)} minHeight={120} maxHeight={400}>…</Resizable>
@@ -31,15 +32,19 @@
      PanelSplitter.label, value, min, max() (a function: the widest it can be now), onChange(width), onCollapse(),
        defaultValue, edge: "end" (an area at the start) | "start" (an area at the end)
    Behavior:
-     Pointer: drag an edge (or the corner); the size follows the pointer within the limits and snaps on release to 4px or the supplied steps; the page shows the resize pointer.
+     Pointer: drag an edge (or the corner); the size follows the pointer one grid line (4px) at a time within the limits
+       and, when let go, stays on that grid line or settles on the nearest of the supplied steps; the page shows the
+       resize pointer.
      Keyboard: each edge is a separator (aria-valuenow, -valuemin, -valuemax) in the Tab order: Arrow Left / Right (the
        end edge, mirrored in a right-to-left page) or Arrow Up / Down (the bottom edge) step to the next size, Home and End
        to the limits.
      No size menu (owner, 2026-10-16: removed, also for touch): the edge is dragged, or moved with the keyboard.
-     PanelSplitter: drag, or the arrow keys, Home and End; double-click or Enter collapses the area when it can collapse.
+     PanelSplitter: drag (one grid line at a time, within min and max), or the arrow keys (--plx-sys-shell-splitter-step),
+       Home and End; double-click or Enter collapses the area when it can collapse (onCollapse: the navigation pane folds
+       to its rail).
    Notes:
-     The size reaches the stylesheet as data-plx-width and data-plx-height with one rule per size token (never a style
-       attribute). The content fits itself: it wraps, or scrolls in a region of its own.
+     The size reaches the stylesheet as data-plx-width and data-plx-height with one rule per size token and one per grid
+       line (system/steps.css; never a style attribute or a style element). The content fits itself: it wraps, or scrolls in a region of its own.
      Limit hints appear beside the divider, announce once per limit per drag, and dismiss on release, blur or Escape.
      Motion uses the existing duration token and is skipped when reduced motion is requested.
      A table's column widths are the DataGrid's own; a pane of the shell uses PanelSplitter through its pattern.
@@ -47,20 +52,22 @@
 import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { arrowStep, isRtl } from '../../utils/direction.js';
-import { snapSize, stepSize, SIZE_STEPS } from '../../utils/sizeSteps.js';
+import { SIZE_STEPS } from '../../utils/sizeSteps.js';
+import { gridStep, gridWithin } from '../../utils/grid.js';
 import { resizeScale } from './resize-scale.js';
 import { useFloating } from '../../utils/floating.js';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
 const useSizeEffect = typeof window === 'undefined' ? React.useEffect : React.useLayoutEffect;
 
-/* the drag handle on a resizable area's inner edge: drag, or the arrow keys (16px), Home and End; double-click or Enter
-   collapses the area when it can collapse. edge: "end" (an area at the start: dragging toward the end widens it) or
+/* the drag handle on a resizable area's inner edge: drag, or the arrow keys (--plx-sys-shell-splitter-step), Home and End;
+   double-click or Enter collapses the area when it can collapse. While dragged the width moves one grid line at a time
+   (the base spacing token, 4px) within the limits, so it lands on the grid when let go (owner, 2026-10-26). edge: "end" (an area at the start: dragging toward the end widens it) or
    "start" (an area at the end). In a right-to-left page the start is on the right, so the drag and Arrow Left / Right
    are mirrored (arrowStep gives the step in reading order). No size menu (owner, 2026-10-16). */
 export function PanelSplitter({ label, value, min, max, onChange, onCollapse, edge = 'end' }) {
   const dir = edge === 'end' ? 1 : -1;
-  // a width is always a size token (batch 281: Strict DS): dragging snaps to the nearest, the arrow keys step through them
-  const clamp = (w) => snapSize(w, min, max());
+  // a width is always on the 4px grid (owner, 2026-10-26: smooth, then "the nearest grid line"), within the limits
+  const clamp = (w) => gridWithin(w, min, max());
   const onPointerDown = (e) => {
     if (e.button !== 0) return;
     e.preventDefault();
@@ -71,7 +78,7 @@ export function PanelSplitter({ label, value, min, max, onChange, onCollapse, ed
   };
   const onKeyDown = (e) => {
     const step = arrowStep(e, e.currentTarget, { vertical: false }) * dir;
-    if (step) { e.preventDefault(); onChange(stepSize(value, step, min, max())); }
+    if (step) { e.preventDefault(); onChange(clamp(value + step * (tokenPx('--plx-sys-shell-splitter-step') || gridStep()))); }
     else if (e.key === 'Home') { e.preventDefault(); onChange(clamp(min)); }
     else if (e.key === 'End') { e.preventDefault(); onChange(clamp(max())); }
     else if (e.key === 'Enter' && onCollapse) { e.preventDefault(); onCollapse(); }
@@ -90,7 +97,7 @@ const fill = (s, vars) => String(s).replace(/\{(\w+)\}/g, (m, k) => (k in vars ?
 // the default limits are the component's tokens (--plx-comp-resizable-min-width …), read from the page
 const tokenPx = (name) => (typeof document === 'undefined' ? 0 : parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name)) || 0);
 const limit = (v, name) => (v != null ? v : tokenPx('--plx-comp-resizable-' + name));
-// One axis's settled sizes: caller steps, or the 4px grid; the live pointer remains continuous.
+// One axis's settled sizes: caller steps, or the 4px grid; while dragged the size moves one grid line at a time.
 export function Resizable({ label, variant = 'default', fill: fillContent = false, axis = 'horizontal', width, height, onResize, defaultWidth, defaultHeight, minWidth: minW, maxWidth: maxW,
   minHeight: minH, maxHeight: maxH, steps, strings, className, children, ...rest }) {
   const t = Object.assign({}, STRINGS, strings);
@@ -101,23 +108,12 @@ export function Resizable({ label, variant = 'default', fill: fillContent = fals
   const W = resizeScale(wSteps, minWidth, maxWidth, SIZE_STEPS), H = resizeScale(hSteps, minHeight, maxHeight, SIZE_STEPS);
   const [own, setOwn] = React.useState(() => ({ width: defaultWidth != null ? W.snap(defaultWidth) : W.snap((minWidth + maxWidth) / 2), height: defaultHeight != null ? H.snap(defaultHeight) : H.snap((minHeight + maxHeight) / 2) }));
   const [dragging, setDragging] = React.useState(false);
-  const size = { width: width != null ? (dragging ? W.clamp(width) : W.snap(width)) : W.clamp(own.width), height: height != null ? (dragging ? H.clamp(height) : H.snap(height)) : H.clamp(own.height) };
-  const root = React.useRef(null), sizeId = React.useId();
-  // Data dimensions use scoped CSS rules, never style attributes. Existing size-token selectors remain exclusive.
-  useSizeEffect(() => {
-    const doc = root.current && root.current.ownerDocument;
-    if (!doc) return;
-    const rules = [];
-    for (const [axis, value] of Object.entries(size)) {
-      if (!(axis === 'width' ? doW : doH) || SIZE_STEPS.includes(value)) continue;
-      const selector = '.plx-resizable[data-plx-' + axis + '="' + value + 'px"]:where([data-plx-resize-id=' + JSON.stringify(sizeId) + '])';
-      rules.push(selector + '{--plx-comp-resizable-' + axis + ':calc(var(--plx-ref-size-4px) * ' + (value / 4) + ')}');
-    }
-    if (!rules.length) return;
-    const sheet = doc.createElement('style');
-    sheet.setAttribute('data-plx-resize-rules', sizeId); sheet.textContent = rules.join('\n'); doc.head.appendChild(sheet);
-    return () => sheet.remove();
-  }, [size.width, size.height, doW, doH, sizeId]);
+  // live (dragging): one grid line at a time within the limits; settled: the steps, or the grid
+  const live = (S, v) => gridWithin(v, S.lo, S.hi);
+  const size = { width: width != null ? (dragging ? live(W, width) : W.snap(width)) : live(W, own.width), height: height != null ? (dragging ? live(H, height) : H.snap(height)) : live(H, own.height) };
+  const root = React.useRef(null);
+  // a size reaches the stylesheet as data-plx-width / data-plx-height: one rule per size token (resizable.css) and one per
+  // grid line (system/steps.css, build-steps.js), never a style attribute or a style element
   const latest = React.useRef(size); latest.current = size;
   const dragCleanup = React.useRef(null), motion = React.useRef([]);
   const stopMotion = () => { motion.current.forEach(animation => animation.cancel()); motion.current = []; };
@@ -157,7 +153,7 @@ export function Resizable({ label, variant = 'default', fill: fillContent = fals
   };
   const set = (next, settle = true) => {
     reportLimit(next);
-    const s = { width: doW ? (settle ? W.snap(next.width) : W.clamp(next.width)) : latest.current.width, height: doH ? (settle ? H.snap(next.height) : H.clamp(next.height)) : latest.current.height };
+    const s = { width: doW ? (settle ? W.snap(next.width) : live(W, next.width)) : latest.current.width, height: doH ? (settle ? H.snap(next.height) : live(H, next.height)) : latest.current.height };
     if (s.width === latest.current.width && s.height === latest.current.height) return;
     latest.current = s;
     if (width == null || height == null) setOwn(s);
@@ -211,7 +207,7 @@ export function Resizable({ label, variant = 'default', fill: fillContent = fals
     );
   };
   return (
-    <div {...rest} ref={root} data-plx-resize-id={sizeId} className={cx('plx-resizable', 'plx-resizable--' + (doW && doH ? 'both' : doH ? 'vertical' : 'horizontal'), steps && 'plx-resizable--steps', variant === 'divider' && 'plx-resizable--divider', fillContent && 'plx-resizable--fill', className)}
+    <div {...rest} ref={root} className={cx('plx-resizable', 'plx-resizable--' + (doW && doH ? 'both' : doH ? 'vertical' : 'horizontal'), steps && 'plx-resizable--steps', variant === 'divider' && 'plx-resizable--divider', fillContent && 'plx-resizable--fill', className)}
       data-plx-width={doW ? size.width + 'px' : undefined} data-plx-height={doH ? size.height + 'px' : undefined}>
       <div className="plx-resizable__content">{children}</div>
       {notice ? <span ref={bubble} role="tooltip" popover="manual" className="plx-resizable-limit">{notice}</span> : null}

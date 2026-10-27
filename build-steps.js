@@ -8,8 +8,11 @@
 //   Data color  [data-plx-color="<hue>"] on any element: --plx-comp-data-color (solid), -soft and -on-soft, for every
 //               --plx-sys-data-color-<hue> in the theme tokens (batch 280)
 //   Pane width  [data-plx-width="<size>"] on NavPane, SecondaryPane and SidePanel, and :root[data-plx-panel-<name>-width]
-//               for the inspector and filter panels: every --plx-ref-size-* token (batch 281: dragging snaps to them);
-//               utils/sizeSteps.js lists them for the splitter
+//               for the inspector and filter panels: every --plx-ref-size-* token (batch 281), and for the three panes
+//               every 4px grid line up to GRID_PANE_MAX as calc(--plx-ref-size-4px × n) (owner, 2026-10-26: a dragged
+//               edge moves one grid line at a time and stays on the grid); utils/sizeSteps.js lists the tokens
+//   Resizable   [data-plx-width] and [data-plx-height]: every 4px grid line up to GRID_BOX_MAX, and every size token,
+//               that components/Resizable/resizable.css does not already set (it holds the size tokens by hand)
 //   ImageEditor the frame's zoom, the picture's filter parts, preset, crop ratio, rotation and flips, a text's font and
 //               top, an overlay's opacity and scale: platform/patterns/ImageEditor/image-editor.steps.json (batch 282)
 //   DataGrid   a pinned column's data-plx-sticky offset, a tree row's level indent and the grid's data-plx-height, for both
@@ -25,6 +28,7 @@ const fs = require('fs');
 const path = require('path');
 
 const LEVELS = 12;
+const GRID_PANE_MAX = 960, GRID_BOX_MAX = 1600;   // the widest grid line a pane and a Resizable box get a rule for
 const ASPECTS = [['4/3', '4 / 3'], ['3/2', '3 / 2'], ['1/1', '1 / 1'], ['16/9', '16 / 9']];
 
 module.exports = function buildSteps(root) {
@@ -53,6 +57,21 @@ module.exports = function buildSteps(root) {
     out.push('.plx-secondary-pane[data-plx-width="' + s + '"]{--plx-comp-secondary-pane-width:var(--plx-ref-size-' + s + ');}');
     out.push('.plx-side-panel[data-plx-width="' + s + '"]{--plx-comp-side-panel-width:var(--plx-ref-size-' + s + ');}');
     ['inspector', 'filter'].forEach((p) => out.push(':root[data-plx-panel-' + p + '-width="' + s + '"]{--plx-sys-panel-' + p + '-width:var(--plx-ref-size-' + s + ');}'));
+  });
+  // grid lines (owner, 2026-10-26): a dragged pane or box moves one 4px grid line at a time, so each line has a rule;
+  // a size token keeps its own rule (above, and resizable.css), so no step is defined twice
+  const tokenPx = new Set(sizes.map((x) => parseInt(x, 10)));
+  const onGrid = (n) => 'calc(var(--plx-ref-size-4px) * ' + n / 4 + ')';
+  for (let v = 4; v <= GRID_PANE_MAX; v += 4) {
+    if (tokenPx.has(v)) continue;
+    ['nav-pane', 'secondary-pane', 'side-panel'].forEach((c) => out.push('.plx-' + c + '[data-plx-width="' + v + 'px"]{--plx-comp-' + c + '-width:' + onGrid(v) + ';}'));
+  }
+  const resizableCss = fs.readFileSync(path.join(P, 'components', 'Resizable', 'resizable.css'), 'utf8');
+  const has = (axis) => new Set([...resizableCss.matchAll(new RegExp('\\.plx-resizable\\[data-plx-' + axis + '="(\\d+)px"\\]', 'g'))].map((m) => +m[1]));
+  [['width', has('width')], ['height', has('height')]].forEach(([axis, set]) => {
+    const values = new Set([...tokenPx]); for (let v = 4; v <= GRID_BOX_MAX; v += 4) values.add(v);
+    [...values].sort((x, y) => x - y).filter((v) => !set.has(v)).forEach((v) => out.push('.plx-resizable[data-plx-' + axis + '="' + v + 'px"]{--plx-comp-resizable-' + axis + ':'
+      + (tokenPx.has(v) ? 'var(--plx-ref-size-' + v + 'px)' : onGrid(v)) + ';}'));
   });
   const bootFile = path.join(P, 'providers', 'theme-boot.js');
   const boot = fs.readFileSync(bootFile, 'utf8');

@@ -59,7 +59,7 @@ import { Button } from '../../components/Button/Button.jsx';
 import { ToolRail } from '../ToolRail/ToolRail.jsx';
 import { PanelSplitter, tokenPx, below, useMedia, useAppLayout } from '../AppShell/AppShell.jsx';
 import { focusables } from '../../utils/layer.js';
-import { snapSize } from '../../utils/sizeSteps.js';
+import { gridWithin } from '../../utils/grid.js';
 
 const STRINGS = { expand: 'Expand {name}', collapse: 'Collapse {name}', resize: 'Resize {name}', close: 'Close {name}', back: 'Back to {name}' };
 
@@ -133,7 +133,7 @@ export function SecondaryPane({ title, label, icon, actions, side = 'start', wid
   const pane = (
     <aside aria-label={name} className={cx('plx-secondary-pane', 'plx-secondary-pane--' + side, 'plx-secondary-pane--' + width, sized && 'plx-secondary-pane--resized',
       narrow && listDetail && (stepAside ? 'plx-secondary-pane--aside' : 'plx-secondary-pane--list'), className)}
-      data-plx-width={sized ? snapSize(size, min(), max()) + 'px' : undefined} {...rest}>
+      data-plx-width={sized ? gridWithin(size, min(), max()) + 'px' : undefined} {...rest}>
       <div className="plx-secondary-pane__header">
         {icon ? (typeof icon === 'string' ? <Icon name={icon} /> : icon) : null}
         <span className="plx-secondary-pane__title">{title}</span>

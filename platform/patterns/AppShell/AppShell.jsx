@@ -46,11 +46,12 @@
      The header and the footer always span the full width, above and below both side areas.
      The side areas live between the header and the footer, also when they open as overlays.
      Navigation: --plx-sys-shell-nav-width (240px), resizable 140–320px with the splitter on its edge; the width is remembered.
-     A dragged width snaps to the size tokens (--plx-ref-size-*) and the arrow keys step through them (batch 281).
+     While dragged the edge moves one grid line (4px) at a time and stays on the grid when let go (owner, 2026-10-26); the
+       arrow keys move it by --plx-sys-shell-splitter-step, Home and End go to the limits.
      The splitters follow the writing direction: in a right-to-left page the edges are mirrored, so dragging and Arrow Left /
        Right move the edge the mirrored way (the key toward the outside widens the area).
-     The navigation's own Collapse button (in the pane's header) or Ctrl+[ collapses it to a rail whose Expand button opens
-       it again; this is remembered.
+     The navigation's own Collapse button (in the pane's header), Ctrl+[, or Enter or a double-click on its edge collapses it
+       to a rail whose Expand button opens it again; this is remembered.
      The window classes (Platforms Standard 3.3) decide the navigation's form (4.1): Wide (840px and up, from
        --plx-sys-shell-rail-below) the pane beside the main region; Medium (600-839px) a rail whose Expand opens the
        expanded rail over the main region (Escape or a click outside closes it); Narrow (under 600px,

@@ -119,19 +119,21 @@
 .plx-resizable--fill{display:flex;flex-direction:column;}
 .plx-resizable--fill>.plx-resizable__content{display:flex;flex:1 1 0%;flex-direction:column;min-block-size:0;}
 .plx-resizable--fill>.plx-resizable__content>*{flex:1 1 0%;min-block-size:0;}
-/* divider: the whole edge is a gap between two panels, a thin line down its middle and a pill centered on it (SplitView).
-   Its size is a context hook: the container sets --plx-comp-resizable-divider-size on its own element (SplitView: its gap).
-   Resizable's own ::after is its hover line, offset into the edge: the pill takes none of its offsets. */
+/* divider: the whole edge is the gutter between two panels (SplitView; owner, 2026-10-26: the uiwjs look): a thin line on
+   each side, a light fill, and a grip of three short lines in the middle, one grid step apart. Hovered the gutter tints;
+   focused or dragged its lines and grip take the focus color. Its size is a context hook: the container sets
+   --plx-comp-resizable-divider-size on its own element (SplitView: its gap). Stacked, the same turned a quarter. */
 .plx-resizable--divider>.plx-resizable__edge{align-items:center;display:flex;justify-content:center;}
 .plx-resizable--divider>.plx-resizable__edge--inline{cursor:col-resize;inline-size:var(--plx-comp-resizable-divider-size);inset-block-end:0;inset-block-start:0;inset-inline-end:calc(-1 * var(--plx-comp-resizable-divider-size));}
 .plx-resizable--divider>.plx-resizable__edge--block{block-size:var(--plx-comp-resizable-divider-size);cursor:row-resize;inset-block-end:calc(-1 * var(--plx-comp-resizable-divider-size));inset-inline-end:0;inset-inline-start:0;}
-.plx-resizable--divider>.plx-resizable__edge::before{background-color:var(--plx-comp-resizable-divider-line-color);content:"";position:absolute;}
-.plx-resizable--divider>.plx-resizable__edge--inline::before{block-size:100%;inline-size:var(--plx-comp-resizable-divider-line-width);}
-.plx-resizable--divider>.plx-resizable__edge--block::before{block-size:var(--plx-comp-resizable-divider-line-width);inline-size:100%;}
-.plx-resizable--divider>.plx-resizable__edge::after{background-color:var(--plx-comp-resizable-divider-handle-color);border-radius:var(--plx-comp-resizable-divider-handle-radius);content:"";inset:auto;position:relative;}
-.plx-resizable--divider>.plx-resizable__edge--inline::after{block-size:var(--plx-comp-resizable-divider-handle-length);inline-size:var(--plx-comp-resizable-divider-handle-thickness);}
-.plx-resizable--divider>.plx-resizable__edge--block::after{block-size:var(--plx-comp-resizable-divider-handle-thickness);inline-size:var(--plx-comp-resizable-divider-handle-length);}
-.plx-resizable--divider>.plx-resizable__edge:hover::after,.plx-resizable--divider>.plx-resizable__edge.is-hover::after{background-color:var(--plx-comp-resizable-divider-handle-hover-color);}
-.plx-resizable--divider>.plx-resizable__edge:focus-visible::before,.plx-resizable--divider>.plx-resizable__edge:active::before,
-.plx-resizable--divider>.plx-resizable__edge:focus-visible::after,.plx-resizable--divider>.plx-resizable__edge:active::after{background-color:var(--plx-comp-resizable-divider-active-color);}
+.plx-resizable--divider>.plx-resizable__edge::before{background-color:var(--plx-comp-resizable-divider-background);border-color:var(--plx-comp-resizable-divider-line-color);border-style:solid;border-width:0;box-sizing:border-box;content:"";inset:0;position:absolute;transition-duration:var(--plx-comp-resizable-edge-duration);transition-property:background-color,border-color;}
+.plx-resizable--divider>.plx-resizable__edge--inline::before{border-inline-width:var(--plx-comp-resizable-divider-line-width);}
+.plx-resizable--divider>.plx-resizable__edge--block::before{border-block-width:var(--plx-comp-resizable-divider-line-width);}
+.plx-resizable--divider>.plx-resizable__edge::after{background-color:transparent;content:"";inset:auto;position:relative;}
+.plx-resizable--divider>.plx-resizable__edge--inline::after{background-image:repeating-linear-gradient(to bottom,var(--plx-comp-resizable-divider-line-color) 0 var(--plx-comp-resizable-divider-line-width),transparent var(--plx-comp-resizable-divider-line-width) var(--plx-comp-resizable-divider-grip-gap));block-size:calc(var(--plx-comp-resizable-divider-grip-gap) * 2 + var(--plx-comp-resizable-divider-line-width));inline-size:calc(100% - var(--plx-comp-resizable-divider-line-width) * 2);}
+.plx-resizable--divider>.plx-resizable__edge--block::after{background-image:repeating-linear-gradient(to right,var(--plx-comp-resizable-divider-line-color) 0 var(--plx-comp-resizable-divider-line-width),transparent var(--plx-comp-resizable-divider-line-width) var(--plx-comp-resizable-divider-grip-gap));block-size:calc(100% - var(--plx-comp-resizable-divider-line-width) * 2);inline-size:calc(var(--plx-comp-resizable-divider-grip-gap) * 2 + var(--plx-comp-resizable-divider-line-width));}
+.plx-resizable--divider>.plx-resizable__edge:hover::before,.plx-resizable--divider>.plx-resizable__edge.is-hover::before,.plx-resizable--divider>.plx-resizable__edge:focus-visible::before,.plx-resizable--divider>.plx-resizable__edge:active::before{background-color:var(--plx-comp-resizable-divider-hover-background);}
+.plx-resizable--divider>.plx-resizable__edge:focus-visible::before,.plx-resizable--divider>.plx-resizable__edge:active::before{border-color:var(--plx-comp-resizable-divider-active-color);}
+.plx-resizable--divider>.plx-resizable__edge--inline:focus-visible::after,.plx-resizable--divider>.plx-resizable__edge--inline:active::after{background-image:repeating-linear-gradient(to bottom,var(--plx-comp-resizable-divider-active-color) 0 var(--plx-comp-resizable-divider-line-width),transparent var(--plx-comp-resizable-divider-line-width) var(--plx-comp-resizable-divider-grip-gap));}
+.plx-resizable--divider>.plx-resizable__edge--block:focus-visible::after,.plx-resizable--divider>.plx-resizable__edge--block:active::after{background-image:repeating-linear-gradient(to right,var(--plx-comp-resizable-divider-active-color) 0 var(--plx-comp-resizable-divider-line-width),transparent var(--plx-comp-resizable-divider-line-width) var(--plx-comp-resizable-divider-grip-gap));}
 .plx-resizable--divider>.plx-resizable__edge:focus-visible{outline-style:none;}
