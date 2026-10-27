@@ -60,6 +60,7 @@ import { DataLabel } from './parts/DataLabel.jsx';
 import { useChartInteraction } from './interaction.js';
 import { labelRoom, withColors, legendItems } from './chart-kit.js';
 import { useEChartsPlot, plotGrid, NO_MARGIN } from './echarts/EChartsPlot.jsx';
+import { tickLineHeight } from './echarts/engine.js';
 import { gridRoom } from './LineChart.jsx';
 import { snapToGrid } from '../utils/grid.js';
 
@@ -176,8 +177,11 @@ export function BarChart({ title, description, hideCaption, size, categories = N
     const named = { nameLocation: 'middle', nameMoveOverlap: true };
     const valAxis = Object.assign({ type: 'value', name: valueLabel, nameGap: across ? (tk.tickOffset * 2 + tk.tick.fontSize) : 0, inverse: across && tk.rtl,
       axisLabel: { formatter: (v) => (mode === 'percent' ? formatPercent(v) : fmts.current.fmt(v)) } }, named, mode === 'percent' ? { min: 0, max: 1 } : {});
+    // the category labels' line height under columns: the font size, or more for Arabic labels (tickLineHeight)
+    const catLine = across || bins ? tk.tick.fontSize : tickLineHeight(tk, cats.map(String));
     const catAxis = Object.assign({ type: 'category', data: cats.map((c, ci) => (bins ? String(ci) : String(c))), inverse: across, name: bins ? undefined : categoryLabel,
-      nameGap: across ? 0 : tk.tickOffset * 2 + tk.tick.fontSize, position: across ? (tk.rtl ? 'right' : 'left') : 'bottom', axisLabel: bins ? { show: false } : {} }, named);
+      nameGap: across ? 0 : tk.tickOffset * 2 + catLine, position: across ? (tk.rtl ? 'right' : 'left') : 'bottom',
+      axisLabel: bins ? { show: false } : catLine > tk.tick.fontSize ? { lineHeight: catLine } : {} }, named);
     // a histogram's range axis: the bins' edges on a number axis laid over the bins
     const edges = bins ? Object.assign({ type: 'value', min: bins[0].x0, max: bins[bins.length - 1].x1, interval: bins.length <= 12 ? bins[0].x1 - bins[0].x0 : undefined,
       inverse: across, position: across ? (tk.rtl ? 'right' : 'left') : 'bottom', name: categoryLabel, nameGap: across ? 0 : tk.tickOffset * 2 + tk.tick.fontSize,

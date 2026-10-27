@@ -37,7 +37,7 @@
      A series keeps its color by its order in the data, never by rank (Data visualization colors). Positions are SVG user
        units (pixels inside ChartFrame's plot).
 */
-import { formatNumber, formatLocale } from '../utils/format.js';
+import { formatNumber, formatLocale, numeralLocale } from '../utils/format.js';
 import { datavizCategory } from '../utils/dataviz.js';
 
 const E10 = Math.sqrt(50), E5 = Math.sqrt(10), E2 = Math.sqrt(2);
@@ -203,7 +203,7 @@ export function scaleTime({ domain = [0, DAY], range = [0, 1], nice = false, cla
     for (let i = 0; x.getTime() <= hi && i < 1000; i++, x = addTo(x, unit, amount)) out.push(new Date(x.getTime()));
     return out;
   };
-  scale.format = (v, n = count, o = {}) => new Intl.DateTimeFormat(o.locale || formatLocale(), TIME_LABELS[timeStep(d[1] - d[0], n)[0]]).format(new Date(toTime(v)));
+  scale.format = (v, n = count, o = {}) => new Intl.DateTimeFormat(numeralLocale(o.locale || formatLocale()), TIME_LABELS[timeStep(d[1] - d[0], n)[0]]).format(new Date(toTime(v)));
   scale.domain = () => d.map((t) => new Date(t));
   scale.range = () => r.slice();
   scale.type = 'time';
