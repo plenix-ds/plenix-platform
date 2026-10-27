@@ -24,9 +24,8 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
-import { useLocale } from '../../providers/LocaleProvider.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { label: 'Pages', range: '{first}–{last} of {total}', previous: 'Previous page', next: 'Next page', page: 'Page {n}', perPage: 'Per page' };
 const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m));
 
 function pagesToShow(page, count) {
@@ -37,8 +36,9 @@ function pagesToShow(page, count) {
 }
 
 export function Pagination({ page = 1, pageCount = 1, onPageChange, total, perPage, perPageOptions, onPerPageChange, label, strings, className, ...rest }) {
-  // the words: the built-in ones, then the locale's (Arabic says the range its own way: "31 إلى 60 من 120"), then strings
-  const t = Object.assign({}, STRINGS, useLocale().strings('pagination'), strings);
+  // the words: the catalog's for the locale (i18n/en.js, and Arabic says the range its own way: "31 إلى 60 من 120"),
+  // then the strings prop
+  const t = useStrings('pagination', strings);
   const go = (p) => { if (p >= 1 && p <= pageCount && p !== page && onPageChange) onPageChange(p); };
   const first = total ? (page - 1) * (perPage || 0) + 1 : null;
   const last = total ? Math.min(total, page * (perPage || total)) : null;

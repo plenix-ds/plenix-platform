@@ -21183,7 +21183,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-// Browser mirror of en.json: the repository module loader accepts JavaScript only. The W15C catalog test checks parity.
+// Browser mirror of en.json, the one source of Plenix's built-in English words (components read them with useStrings; owner, arabic-words-37). The repository module loader accepts JavaScript only; the W15C catalog test and check-system's built-in-words rule check parity.
 var _default = exports.default = {
   "common": {
     "save": "Save",
@@ -21206,10 +21206,20 @@ var _default = exports.default = {
     "finish": "Finish",
     "cancel": "Cancel",
     "step": "Step {n} of {total}",
-    "error": "Could not save. Try again."
+    "error": "Could not save. Try again.",
+    "complete": "Finish",
+    "summary": "Review",
+    "invalid": "Check this step before continuing.",
+    "failed": "Could not save. Try again.",
+    "steps": "Steps"
   },
   "dialog": {
-    "close": "Close"
+    "close": "Close",
+    "confirmLabel": "Confirm",
+    "cancelLabel": "Cancel",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "save": "Save"
   },
   "text": {
     "more": "Show more",
@@ -21218,7 +21228,1843 @@ var _default = exports.default = {
   "emptyState": {
     "title": "No items yet",
     "description": "Create an item to get started.",
-    "action": "Create item"
+    "action": "Create item",
+    "offline": {
+      "title": "You’re offline",
+      "text": "Check your connection. This page updates when you’re back online."
+    },
+    "degraded": {
+      "title": "Some features aren’t working",
+      "text": "A service is slow or not responding, so what you see may be out of date."
+    },
+    "permission-denied": {
+      "title": "You don’t have access",
+      "text": "Ask the owner to share it with you."
+    },
+    "not-found": {
+      "title": "This page doesn’t exist",
+      "text": "It may have been moved or deleted. Check the address or go back."
+    },
+    "maintenance": {
+      "title": "Down for maintenance",
+      "text": "This service is being updated. Try again in a few minutes."
+    },
+    "completion": {
+      "title": "All done",
+      "text": "There’s nothing left to do here."
+    }
+  },
+  "pagination": {
+    "label": "Pages",
+    "range": "{first}–{last} of {total}",
+    "previous": "Previous page",
+    "next": "Next page",
+    "page": "Page {n}",
+    "perPage": "Per page"
+  },
+  "accessRequest": {
+    "title": "Request access",
+    "description": "Ask the owner for access to this resource.",
+    "message": "Message to the owner",
+    "request": "Request access",
+    "pending": "Access requested",
+    "approved": "Access approved",
+    "denied": "Access denied",
+    "open": "Open resource",
+    "failed": "Could not send your request. Try again."
+  },
+  "actionBar": {
+    "label": "Actions"
+  },
+  "aiButton": {
+    "label": "AI actions",
+    "failed": "Could not complete this action. Try again.",
+    "working": "Working"
+  },
+  "aiDisclaimer": {
+    "message": "AI-generated content may be inaccurate. Review important details.",
+    "learn": "About AI-generated content"
+  },
+  "aiExplanation": {
+    "label": "Why this?",
+    "title": "AI explanation",
+    "close": "Close"
+  },
+  "aiSearch": {
+    "label": "AI search",
+    "query": "Search query",
+    "search": "Search",
+    "semantic": "Use semantic search",
+    "results": "Search results",
+    "empty": "No results.",
+    "failed": "Search failed. Try again.",
+    "pending": "Searching"
+  },
+  "announcement": {
+    "dismiss": "Dismiss announcement",
+    "failed": "Could not dismiss this announcement. Try again."
+  },
+  "appHeader": {
+    "aria-label": "Search"
+  },
+  "appShell": {
+    "skip": "Skip to main content"
+  },
+  "approvalWorkflow": {
+    "approve": "Approve",
+    "changes": "Request changes",
+    "reject": "Reject",
+    "comment": "Comment",
+    "reason": "Explain why this needs changes.",
+    "failed": "Could not save this decision. Your comment is still available.",
+    "steps": "Approval stages",
+    "recorded": "Decision recorded"
+  },
+  "archiveRestore": {
+    "archive": "Archive",
+    "restore": "Restore",
+    "archived": "Archived",
+    "message": "Restore this record to make it active again.",
+    "failed": "Could not update the record. Try again."
+  },
+  "assetGallery": {
+    "empty": "No images",
+    "preview": "Image preview"
+  },
+  "assignControl": {
+    "assign": "Assign",
+    "assignToMe": "Assign to me",
+    "reassign": "Reassign",
+    "unassign": "Unassign",
+    "unassigned": "Unassigned",
+    "cancel": "Cancel",
+    "assigned": "Assigned to {name}",
+    "cleared": "{label} removed",
+    "delegate": "Delegate",
+    "change": "Change",
+    "end": "End delegation",
+    "delegateTitle": "Delegate {label}",
+    "to": "Delegate to",
+    "dates": "Dates",
+    "note": "Note",
+    "noteHint": "Shown to the person you delegate to.",
+    "needPerson": "Choose a person.",
+    "needDates": "Choose the first and last day.",
+    "delegatedTo": "Delegated to {name}",
+    "notDelegated": "Not delegated",
+    "ended": "Delegation ended",
+    "label": "Assignee"
+  },
+  "attachmentPicker": {
+    "label": "Attachments",
+    "remove": "Remove {name}",
+    "invalid": "Choose a supported file within the size limit.",
+    "limit": "Too many attachments.",
+    "empty": "No attachments."
+  },
+  "auditLog": {
+    "actor": "Actor",
+    "at": "Time",
+    "action": "Action",
+    "target": "Target",
+    "changes": "Changes",
+    "view": "View changes",
+    "field": "Field",
+    "before": "Before",
+    "after": "After",
+    "close": "Close"
+  },
+  "autosave": {
+    "saving": "Saving",
+    "saved": "Saved",
+    "offline": "Offline",
+    "failed": "Save failed",
+    "retry": "Retry"
+  },
+  "avatar": {
+    "online": "Online",
+    "away": "Away",
+    "busy": "Busy",
+    "dnd": "Do not disturb",
+    "offline": "Offline"
+  },
+  "avatarGroup": {
+    "more": "+{n}",
+    "moreLabel": "{n} more"
+  },
+  "avatarUpload": {
+    "change": "Change photo",
+    "add": "Add photo",
+    "remove": "Remove photo",
+    "tooLarge": "The picture is larger than {max}",
+    "notImage": "Choose an image file",
+    "picture": "{name}’s photo"
+  },
+  "backToTop": {
+    "label": "Back to top"
+  },
+  "banner": {
+    "dismiss": "Dismiss"
+  },
+  "barcode": {
+    "label": "Barcode {format}: {value}",
+    "invalid": "Not a valid {format} code",
+    "formats": {
+      "code128": "Code 128",
+      "ean13": "EAN-13",
+      "upca": "UPC-A"
+    }
+  },
+  "bottomSheetNav": {
+    "title": "Navigation",
+    "close": "Close"
+  },
+  "brand": {
+    "name": "Plenix"
+  },
+  "breadcrumbs": {
+    "label": "Breadcrumb"
+  },
+  "bulkActions": {
+    "selected": "{n} selected",
+    "selectAll": "Select all",
+    "clear": "Clear",
+    "allSelected": "Every {noun} is selected",
+    "nothingToClear": "Nothing to clear: select {plural} first",
+    "why": "Select {plural} to {action}",
+    "single": "Select one {noun} to {action}",
+    "label": "Selection actions",
+    "more": "More actions",
+    "noun": "item"
+  },
+  "button": {
+    "working": "Working"
+  },
+  "calendar": {
+    "label": "Calendar",
+    "previous": "Previous month",
+    "next": "Next month",
+    "week": "Week",
+    "weekShort": "Wk",
+    "today": "Today"
+  },
+  "carousel": {
+    "slide": "{n} of {total}",
+    "previous": "Previous slide",
+    "next": "Next slide",
+    "goTo": "Go to slide {n}",
+    "goToPage": "Go to page {n}",
+    "pages": "Slides",
+    "pause": "Pause",
+    "play": "Play",
+    "pauseLabel": "Pause the slides",
+    "playLabel": "Play the slides",
+    "strip": "Slides"
+  },
+  "cascader": {
+    "placeholder": "Choose",
+    "separator": " / ",
+    "search": "Search",
+    "noMatches": "No matches",
+    "empty": "No items",
+    "remove": "Remove {label}",
+    "columns": "Options"
+  },
+  "chart": {
+    "barChart": {
+      "category": "Category",
+      "total": "Total",
+      "range": "Range",
+      "count": "Count"
+    },
+    "boxPlot": {
+      "group": "Group",
+      "min": "Minimum",
+      "q1": "First quartile",
+      "median": "Median",
+      "q3": "Third quartile",
+      "max": "Maximum",
+      "outliers": "Outliers",
+      "n": "Values"
+    },
+    "bulletChart": {
+      "measure": "Measure",
+      "value": "Value",
+      "target": "Target",
+      "ranges": "Ranges",
+      "poor": "Poor",
+      "fair": "Fair",
+      "good": "Good"
+    },
+    "chartFrame": {
+      "showData": "Show the data",
+      "table": "{title}: data"
+    },
+    "chartLegend": {
+      "legend": "Legend"
+    },
+    "comboChart": {
+      "category": "Category",
+      "bars": "Columns",
+      "lines": "Lines"
+    },
+    "diagram": {
+      "step": "Step",
+      "kind": "Kind",
+      "next": "Leads to",
+      "previous": "Comes from",
+      "process": "Step",
+      "decision": "Decision",
+      "terminal": "Start or end",
+      "data": "Data",
+      "box": "Part",
+      "group": "Group",
+      "end": "End"
+    },
+    "funnelChart": {
+      "stage": "Stage",
+      "value": "Count",
+      "kept": "Kept from the step before",
+      "ofFirst": "Of the first step"
+    },
+    "ganttChart": {
+      "task": "Task",
+      "progress": "Done",
+      "dependsOn": "Waits for",
+      "status": "Status",
+      "today": "Today",
+      "milestone": "Milestone",
+      "start": "Start",
+      "end": "End"
+    },
+    "gauge": {
+      "showData": "Show the data",
+      "table": "{title}: data",
+      "measure": "Measure",
+      "value": "Value",
+      "min": "Minimum",
+      "max": "Maximum",
+      "ok": ""
+    },
+    "geoMap": {
+      "region": "Region",
+      "place": "Place",
+      "value": "Value",
+      "noData": "No data",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "zoom": "Zoom",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "reset": "Show the whole map"
+    },
+    "heatMap": {
+      "value": "Value",
+      "row": "Row",
+      "column": "Column",
+      "date": "Date",
+      "missing": "No data",
+      "low": "Low",
+      "high": "High",
+      "scale": "Color scale"
+    },
+    "lineChart": {
+      "category": "Category"
+    },
+    "lollipopChart": {
+      "category": "Category",
+      "value": "Value"
+    },
+    "networkGraph": {
+      "node": "Node",
+      "group": "Group",
+      "links": "Connected to",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "fit": "Fit",
+      "hintZoom": " Plus and minus zoom, 0 fits the graph.",
+      "none": "None"
+    },
+    "pieChart": {
+      "part": "Part",
+      "value": "Value",
+      "share": "Share",
+      "total": "Total",
+      "other": "Other"
+    },
+    "radarChart": {
+      "measure": "Measure"
+    },
+    "sankeyDiagram": {
+      "source": "Source",
+      "target": "Target",
+      "value": "Value",
+      "total": "Total"
+    },
+    "scatterChart": {
+      "series": "Series",
+      "item": "Item"
+    },
+    "timelineChart": {
+      "item": "Item",
+      "lane": "Lane",
+      "today": "Today",
+      "date": "Date",
+      "dates": "Dates",
+      "start": "Start",
+      "end": "End"
+    },
+    "treeChart": {
+      "name": "Name",
+      "detail": "Detail",
+      "parent": "Reports to",
+      "level": "Level",
+      "folded": "folded",
+      "open": "open"
+    },
+    "treemap": {
+      "group": "Group",
+      "item": "Part",
+      "value": "Value",
+      "share": "Share"
+    },
+    "waterfallChart": {
+      "step": "Step",
+      "change": "Change",
+      "total": "Total",
+      "running": "Running total",
+      "increase": "Increase",
+      "decrease": "Decrease",
+      "end": "End"
+    },
+    "wordCloud": {
+      "value": "Count",
+      "word": "Term",
+      "group": "Group"
+    }
+  },
+  "chat": {
+    "thinking": "Thinking",
+    "label": "Conversation",
+    "placeholder": "Write a message",
+    "sendLabel": "Send"
+  },
+  "checklist": {
+    "dismiss": "Dismiss checklist",
+    "progress": "Tasks completed"
+  },
+  "codeBlock": {
+    "code": "Code",
+    "copy": "Copy",
+    "copied": "Copied",
+    "failed": "Could not copy"
+  },
+  "codeEditor": {
+    "hint": "Tab indents. Press Escape, then Tab, to leave the editor."
+  },
+  "colorSwatch": {
+    "label": "Color"
+  },
+  "columnsMenu": {
+    "label": "Columns",
+    "manage": "Manage columns",
+    "first": "First column",
+    "makeFirst": "Make first column",
+    "moveUp": "Move {name} up",
+    "moveDown": "Move {name} down",
+    "up": "Move up",
+    "down": "Move down",
+    "find": "Find a column",
+    "showAll": "Show all",
+    "hideAll": "Hide all",
+    "apply": "Apply",
+    "cancel": "Cancel",
+    "shown": "{name} shown",
+    "hidden": "{name} hidden",
+    "isFirst": "{name} is the first column",
+    "moved": "{name}, position {position} of {total}",
+    "row": "{name}{first}. Alt + Arrow Up or Down moves it",
+    "firstMark": ", first column",
+    "none": "No column matches"
+  },
+  "combobox": {
+    "loading": "Loading…",
+    "error": "The options could not be loaded"
+  },
+  "commandBar": {
+    "more": "More actions",
+    "actions": "{label} actions",
+    "find": "Find and view",
+    "selected": "{n} selected",
+    "hidden": " ({n} hidden by filters)",
+    "clear": "Clear the selection",
+    "clearName": "{n} selected, clear the selection",
+    "swapped": "{n} selected. Selection actions available.",
+    "cleared": "Selection cleared.",
+    "why": "Select {plural} to {action}",
+    "single": "Select one {noun} to {action}",
+    "preset": "any",
+    "moreLabel": "More actions"
+  },
+  "commandMenu": {
+    "label": "Commands",
+    "placeholder": "Type a command or search",
+    "empty": "No results for “{query}”",
+    "loading": "Loading",
+    "back": "Back",
+    "results": "{count} results"
+  },
+  "commandPalette": {
+    "title": "Commands",
+    "close": "Close"
+  },
+  "comment": {
+    "edit": "Edit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "resolve": "Resolve",
+    "reopen": "Reopen",
+    "edited": "Edited",
+    "resolved": "Resolved",
+    "message": "Comment",
+    "empty": "Enter a comment.",
+    "failed": "Could not save. Try again."
+  },
+  "commentThread": {
+    "title": "Comments",
+    "reply": "Reply",
+    "send": "Send reply",
+    "resolve": "Resolve thread",
+    "reopen": "Reopen thread",
+    "resolved": "Resolved",
+    "empty": "Enter a reply.",
+    "failed": "Could not save. Try again."
+  },
+  "comparisonView": {
+    "label": "Comparison",
+    "modes": "View",
+    "columns": "Side by side",
+    "matrix": "Table",
+    "slider": "Slider",
+    "onlyDifferences": "Show only differences",
+    "changed": "Changed",
+    "attribute": "Attribute",
+    "position": "Position",
+    "none": "No differences",
+    "one": "1 difference",
+    "many": "{n} differences",
+    "empty": "—"
+  },
+  "confidenceIndicator": {
+    "high": "High confidence",
+    "medium": "Medium confidence",
+    "low": "Low confidence",
+    "unknown": "Confidence unavailable",
+    "label": "Confidence"
+  },
+  "connectedAccounts": {
+    "label": "Connected accounts",
+    "connect": "Connect",
+    "disconnect": "Disconnect",
+    "reconnect": "Reconnect",
+    "cancel": "Cancel",
+    "connected": "Connected",
+    "disconnected": "Not connected",
+    "error": "Connection error",
+    "as": "As {account}",
+    "since": "since {date}",
+    "connectTitle": "Connect {service}?",
+    "connectMessage": "You’ll sign in to {service} to allow this. Plenix will be able to:",
+    "continue": "Continue to {service}",
+    "disconnectTitle": "Disconnect {service}?",
+    "disconnectMessage": "You can connect it again at any time.",
+    "done": "{service} connected",
+    "undone": "{service} disconnected"
+  },
+  "contextualHelp": {
+    "more": "More about {title}",
+    "moreUntitled": "More information"
+  },
+  "copyButton": {
+    "copy": "Copy",
+    "copied": "Copied",
+    "failed": "Couldn’t copy. Select the text and copy it by hand."
+  },
+  "countrySelect": {
+    "country": "Choose a country or region",
+    "language": "Choose a language",
+    "locale": "Choose a language and region",
+    "suggested": "Suggested",
+    "all": "All"
+  },
+  "dataGrid": {
+    "empty": "Nothing to show",
+    "failed": "The table could not load",
+    "retry": "Retry",
+    "selectAll": "Select all rows",
+    "selectRow": "Select row",
+    "rowActions": "Row actions",
+    "clearSort": "Clear sort",
+    "hide": "Hide field",
+    "showAll": "Show all fields",
+    "narrower": "Narrower",
+    "wider": "Wider",
+    "fit": "Fit to content",
+    "deleted": "Deleted",
+    "moveLeft": "Move left",
+    "moveRight": "Move right",
+    "perPage": "Rows per page",
+    "view": "View options",
+    "wrapHeaders": "Wrap headers",
+    "markRead": "Mark as read",
+    "markUnread": "Mark as unread",
+    "wrapText": "Wrap text",
+    "wrapAll": "Wrap all columns",
+    "fullText": "Show the full text",
+    "rowHeight": "Row height",
+    "short": "Short",
+    "medium": "Medium",
+    "tall": "Tall",
+    "extra-tall": "Extra tall",
+    "filter": "Filter",
+    "clearFilter": "Clear filter",
+    "groupBy": "Group by this field",
+    "ungroup": "Ungroup",
+    "noGroup": "Don’t group by this field",
+    "sizeToFit": "Size column to fit",
+    "sizeAllToFit": "Size all columns to fit",
+    "moreColumns": "More…",
+    "columns": "Columns",
+    "loadMore": "Load more",
+    "loading": "Loading records",
+    "group": "Group by this field",
+    "filterBy": "Filter by this field",
+    "any": "Any",
+    "contains": "Contains…",
+    "moveRow": "Move row",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "moveTop": "Move to top",
+    "moveBottom": "Move to bottom",
+    "resize": "Resize",
+    "range": "{first}–{last} of {total}",
+    "count": "{shown} of {total}",
+    "pages": "{label} pages",
+    "loaded": "{n} more rows loaded, {shown} of {total}",
+    "noValue": "(Empty)",
+    "addTo": "Add a record to {value}",
+    "groupRow": "{value}, group, {count} {records}",
+    "record": "record",
+    "records": "records",
+    "expanded": "expanded",
+    "collapsed": "collapsed",
+    "sum": "Sum",
+    "countOf": "Count",
+    "average": "Average",
+    "min": "Min",
+    "max": "Max",
+    "sortText": ["Sort A → Z", "Sort Z → A"],
+    "sortNumber": ["Sort 1 → 9", "Sort 9 → 1"],
+    "sortDate": ["Sort oldest → newest", "Sort newest → oldest"],
+    "sortCheck": ["Sort unchecked → checked", "Sort checked → unchecked"],
+    "unread": "Unread ({count})"
+  },
+  "dataPill": {
+    "male": "male",
+    "female": "female"
+  },
+  "datePicker": {
+    "open": "Choose date",
+    "dialog": "Choose date",
+    "time": "Time",
+    "presets": "Presets",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "nextWeek": "In a week",
+    "last7": "Last 7 days",
+    "last30": "Last 30 days",
+    "thisMonth": "This month",
+    "lastMonth": "Last month"
+  },
+  "deleteFlow": {
+    "title": "Delete {name}?",
+    "titleMany": "Delete {count} {plural}?",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "permanent": "This cannot be undone.",
+    "more": "and {count} more",
+    "typeLabel": "Type {phrase} to confirm",
+    "typeError": "Type {phrase} exactly as shown.",
+    "phraseMany": "delete {count} {plural}",
+    "deleted": "{what} deleted",
+    "trashed": "{what} moved to the trash",
+    "undo": "Undo",
+    "retention": "Restore {them} from the trash within {days} days.",
+    "it": "it",
+    "them": "them",
+    "names": "Deleted",
+    "noun": "item"
+  },
+  "documentViewer": {
+    "document": "Document",
+    "previous": "Previous page",
+    "next": "Next page",
+    "page": "Page",
+    "zoom": "Zoom",
+    "thumbnails": "Page thumbnails",
+    "loading": "Loading document",
+    "failed": "The document could not be opened.",
+    "failedEngine": "The document viewer could not start. Try again later.",
+    "failedAccess": "The document could not be opened. It may have moved, or you may not have access to it.",
+    "failedParse": "This file could not be read as a PDF.",
+    "failedRender": "This page could not be shown.",
+    "empty": "No document.",
+    "retry": "Try again"
+  },
+  "downloadButton": {
+    "download": "Download",
+    "downloading": "Downloading",
+    "ready": "Download ready"
+  },
+  "downloadManager": {
+    "title": "Downloads",
+    "empty": "No downloads",
+    "queued": "Queued",
+    "progress": "Downloading",
+    "ready": "Ready",
+    "failed": "Download failed",
+    "actionFailed": "Could not complete the download action. Try again."
+  },
+  "draftState": {
+    "draft": "Draft",
+    "resume": "Resume draft",
+    "discard": "Discard draft",
+    "confirm": "Discard this draft?",
+    "message": "This draft will be permanently removed.",
+    "cancel": "Keep draft",
+    "failed": "Could not update the draft. Try again."
+  },
+  "duplicateAction": {
+    "duplicate": "Duplicate",
+    "copyOf": "Copy of {name}",
+    "numbered": "{name} ({n})",
+    "title": "Duplicate {noun}",
+    "name": "Name",
+    "from": "From {name}",
+    "also": "Also copy",
+    "empty": "Enter a name.",
+    "taken": "A {noun} named {name} already exists.",
+    "done": "Duplicated as {name}",
+    "undo": "Undo",
+    "cancel": "Cancel",
+    "noun": "item"
+  },
+  "entityPicker": {
+    "placeholderPeople": "Search by name or email",
+    "placeholder": "Search {entityName}",
+    "empty": "No {entityName} found",
+    "browse": "Browse all {entityName}",
+    "loading": "Loading…",
+    "error": "The results could not be loaded",
+    "remove": "Remove {label}"
+  },
+  "errorSummary": {
+    "one": "There is a problem",
+    "many": "There are {count} problems"
+  },
+  "exportDialog": {
+    "title": "Export",
+    "format": "Format",
+    "scope": "Scope",
+    "all": "All records",
+    "selection": "Selected records",
+    "background": "Export in the background",
+    "export": "Export",
+    "cancel": "Cancel",
+    "invalid": "Choose an available format and scope.",
+    "failed": "Could not export. Try again.",
+    "ready": "Export ready",
+    "queued": "Export queued",
+    "download": "Download export",
+    "done": "Done"
+  },
+  "featureIntro": {
+    "new": "New",
+    "whatsNew": "What is new",
+    "gotIt": "Got it",
+    "later": "Not now",
+    "close": "Close"
+  },
+  "file": {
+    "folder": "folder",
+    "items": "{n} items",
+    "item": "{n} item"
+  },
+  "fileBrowser": {
+    "label": "Files",
+    "root": "Library",
+    "newFolder": "New folder",
+    "folderName": "Folder name",
+    "create": "Create",
+    "upload": "Upload",
+    "search": "Search this folder",
+    "folders": "Folders",
+    "path": "Location",
+    "count": "{n} items",
+    "one": "1 item",
+    "empty": "This folder is empty",
+    "emptyText": "Upload files or create a folder.",
+    "noMatch": "Nothing matches “{q}”",
+    "download": "Download",
+    "moveTo": "Move to",
+    "delete": "Delete",
+    "noun": "item",
+    "plural": "items",
+    "drop": "Drop files to upload to {folder}",
+    "nameTaken": "A file or folder named “{name}” is already here.",
+    "nameEmpty": "Give the folder a name.",
+    "items": "{n} items",
+    "item": "{n} item"
+  },
+  "fileInput": {
+    "choose": "Choose file",
+    "chooseMany": "Choose files",
+    "none": "No file chosen",
+    "count": "{count} files",
+    "remove": "Remove {name}"
+  },
+  "fileList": {
+    "sort": "Sort",
+    "sortBy": "Sort by {field}",
+    "field": "Sort by",
+    "order": "Order",
+    "asc": "Ascending",
+    "desc": "Descending",
+    "name": "Name",
+    "size": "Size",
+    "modified": "Modified",
+    "owner": "Owner",
+    "status": "Status",
+    "count": "{n} items",
+    "one": "1 item",
+    "empty": "Nothing here yet",
+    "open": "Open",
+    "download": "Download",
+    "rename": "Rename…",
+    "delete": "Delete",
+    "moveTo": "Move to",
+    "file": "file",
+    "files": "files",
+    "folder": "folder",
+    "folders": "folders",
+    "items": "{n} items",
+    "item": "{n} item"
+  },
+  "filePicker": {
+    "title": "Choose files",
+    "all": "All files",
+    "folders": "Folders",
+    "search": "Search files",
+    "empty": "No matching files.",
+    "pick": "Choose",
+    "cancel": "Cancel",
+    "failed": "Files could not be chosen. Try again."
+  },
+  "fileRow": {
+    "select": "Select {name}",
+    "more": "More actions for {name}",
+    "download": "Download {name}",
+    "rename": "Rename…",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "retry": "Try again",
+    "transfer": "{label} {name}",
+    "uploading": "Uploading",
+    "file": "file",
+    "files": "files",
+    "folder": "folder",
+    "folders": "folders",
+    "items": "{n} items",
+    "item": "{n} item"
+  },
+  "filterBar": {
+    "label": "Filters",
+    "more": "More filters",
+    "clearAll": "Clear all",
+    "one": "{label}: {value}",
+    "several": "{label} · {count}"
+  },
+  "filterPanel": {
+    "label": "Filter",
+    "info": "Only the records that meet the conditions are shown; a condition left unfinished does not filter.",
+    "sub": "In this view, show records",
+    "where": "Where",
+    "and": "and",
+    "or": "or",
+    "empty": "No conditions: every record is shown.",
+    "addCondition": "Add condition",
+    "addGroup": "Add condition group",
+    "remove": "Remove {what}",
+    "condition": "condition",
+    "group": "condition group",
+    "value": "Enter a value",
+    "choose": "Choose options",
+    "field": "Field",
+    "operator": "Operator",
+    "join": "And or or"
+  },
+  "form": {
+    "label": "Form actions"
+  },
+  "formFlow": {
+    "create": "Create",
+    "save": "Save changes",
+    "cancel": "Cancel",
+    "failed": "Could not save. Try again.",
+    "invalid": "Check the fields before saving.",
+    "saved": "Saved",
+    "unsaved": "Your changes will be lost.",
+    "close": "Close"
+  },
+  "generatedContent": {
+    "label": "Generated content",
+    "helpful": "Helpful",
+    "unhelpful": "Not helpful",
+    "regenerate": "Regenerate",
+    "previous": "Previous version",
+    "next": "Next version",
+    "version": "Version",
+    "feedbackSaved": "Feedback saved",
+    "failed": "The action failed. Try again.",
+    "pending": "Working"
+  },
+  "groupPanel": {
+    "label": "Group",
+    "title": "Group by",
+    "info": "Rows with the same value are gathered under one header; a subgroup splits each group again.",
+    "empty": "Gather the rows that share a value under one header.",
+    "add": "Add group",
+    "addSub": "Add subgroup",
+    "collapseAll": "Collapse all",
+    "expandAll": "Expand all",
+    "more": "More for {name}",
+    "hideEmpty": "Hide empty groups",
+    "remove": "Remove the grouping by {name}",
+    "removeTip": "Remove group",
+    "field": "Field",
+    "order": "Order"
+  },
+  "helpPanel": {
+    "title": "Help",
+    "search": "Search help",
+    "empty": "No matching articles",
+    "back": "Back to articles",
+    "read": "Read full article",
+    "close": "Collapse help"
+  },
+  "image": {
+    "error": "Image not available"
+  },
+  "imageAnnotation": {
+    "title": "Image annotations",
+    "pin": "Pin",
+    "region": "Region",
+    "location": "Location",
+    "comment": "Comment",
+    "kind": "Annotation type",
+    "add": "Add annotation",
+    "empty": "Enter a location and comment.",
+    "failed": "Could not save. Try again.",
+    "none": "No annotations"
+  },
+  "importDialog": {
+    "title": "Import",
+    "file": "File",
+    "paste": "Paste data",
+    "url": "URL",
+    "choose": "Choose source file",
+    "drop": "Drop a file here or choose it below.",
+    "none": "No file chosen",
+    "import": "Import",
+    "cancel": "Cancel",
+    "invalid": "Choose a supported file, paste data, or enter an HTTP URL.",
+    "failed": "Could not import. Your source is still available.",
+    "unsaved": "Your import source will be lost."
+  },
+  "importWizard": {
+    "title": "Import records",
+    "mapping": "Map columns",
+    "review": "Review",
+    "results": "Results",
+    "column": "Source column",
+    "choose": "Choose a column",
+    "missing": "Map every required field.",
+    "invalid": "The source has no usable columns or rows.",
+    "done": "Done",
+    "imported": "Import complete",
+    "source": "Source",
+    "cancel": "Cancel",
+    "unsaved": "Your import mapping will be lost."
+  },
+  "inlineEdit": {
+    "edit": "edit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "empty": "Add a value",
+    "saved": "Saved",
+    "failed": "The change could not be saved"
+  },
+  "link": {
+    "newTab": "opens in a new tab"
+  },
+  "loadMore": {
+    "more": "Load more",
+    "moreCount": "Show {n} more",
+    "loading": "Loading…",
+    "end": "You’ve reached the end",
+    "count": "{shown} of {total}",
+    "added": {
+      "one": "{n} more item loaded",
+      "other": "{n} more items loaded"
+    }
+  },
+  "loading": {
+    "label": "Loading"
+  },
+  "loadingOverlay": {
+    "loading": "Loading",
+    "cancel": "Cancel"
+  },
+  "mediaPlayer": {
+    "rate": "Playback speed",
+    "transcript": "Show transcript",
+    "hideTranscript": "Hide transcript",
+    "pip": "Picture in picture",
+    "exitPip": "Exit picture in picture",
+    "unsupported": "Picture in picture is unavailable.",
+    "failed": "This media could not be played.",
+    "pipFailed": "Could not change picture in picture. Try again.",
+    "seek": "Seek to {time}",
+    "fallback": "Open media file",
+    "volume": "Volume",
+    "mute": "Mute",
+    "audioFailed": "The separate sound track could not be played. Video is playing muted."
+  },
+  "mediaViewer": {
+    "label": "Preview",
+    "close": "Close preview",
+    "previous": "Previous",
+    "next": "Next",
+    "counter": "{index} of {total}"
+  },
+  "mentionInput": {
+    "add": "Add mention",
+    "choose": "Choose a person to mention"
+  },
+  "metadataEditor": {
+    "save": "Save metadata",
+    "reset": "Reset",
+    "apply": "Apply {field}",
+    "required": "Enter a value.",
+    "failed": "Metadata could not be saved. Your changes are still available.",
+    "saved": "Metadata saved",
+    "unsaved": "Your metadata changes will be lost."
+  },
+  "metricCard": {
+    "more": "More for {title}",
+    "up": "Up",
+    "down": "Down",
+    "good": "good",
+    "bad": "bad",
+    "vs": "vs",
+    "empty": "No data",
+    "loading": "Loading {title}",
+    "error": "Couldn’t load the figures.",
+    "retry": "Try again",
+    "stale": "Out of date",
+    "rank": "#{n}",
+    "toCome": "to come",
+    "hit": "hit",
+    "missed": "missed",
+    "weekdays": ["M", "T", "W", "T", "F", "S", "S"],
+    "weekdayNames": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+    "month": "{done} of {days} working days so far",
+    "parts": "{label} {share}",
+    "compare": "{a} {av}, {b} {bv}"
+  },
+  "millerColumns": {
+    "empty": "No items",
+    "resize": "Resize the {label} column",
+    "preview": "Preview of {label}"
+  },
+  "navList": {
+    "pin": "Pin",
+    "unpin": "Unpin",
+    "pinItem": "Pin {label}",
+    "unpinItem": "Unpin {label}"
+  },
+  "navPane": {
+    "browse": "Browse"
+  },
+  "notice": {
+    "dismiss": "Dismiss"
+  },
+  "notificationList": {
+    "label": "Notifications",
+    "empty": "No notifications",
+    "markAllRead": "Mark all read",
+    "viewAll": "View all"
+  },
+  "numberInput": {
+    "decrease": "Decrease",
+    "increase": "Increase"
+  },
+  "onboarding": {
+    "start": "Get started",
+    "skip": "Skip welcome",
+    "tour": "Take a tour",
+    "checklist": "Get started",
+    "close": "Close"
+  },
+  "otpInput": {
+    "cell": "character {n} of {total}"
+  },
+  "peopleGroup": {
+    "team": "Team",
+    "group": "Group",
+    "members": "{n} members",
+    "member": "{n} member",
+    "showMembers": "Show members",
+    "membersOf": "Members of {name}"
+  },
+  "permissionSummary": {
+    "can": "Can",
+    "cannot": "Cannot",
+    "manage": "Manage access",
+    "canSentence": "Can {list}",
+    "cannotSentence": "Cannot {list}"
+  },
+  "permissionsEditor": {
+    "label": "Permissions",
+    "capability": "Capability",
+    "subject": "Show permissions for",
+    "save": "Save permissions",
+    "failed": "Could not save permissions. Try again.",
+    "unsaved": "Your permission changes have not been saved."
+  },
+  "persona": {
+    "online": "Online",
+    "away": "Away",
+    "busy": "Busy",
+    "dnd": "Do not disturb",
+    "offline": "Offline"
+  },
+  "popconfirm": {
+    "cancel": "Cancel"
+  },
+  "popover": {
+    "close": "Close"
+  },
+  "presenceBar": {
+    "viewers": "Viewing",
+    "editors": "Editing",
+    "cursors": "Cursors",
+    "empty": "No one else here",
+    "view": "View person"
+  },
+  "productCard": {
+    "sale": "Sale",
+    "outOfStock": "Out of stock",
+    "addToCart": "Add to cart",
+    "addToCartFor": "Add {title} to cart",
+    "now": "Now",
+    "was": "Was",
+    "rating": "Rating",
+    "reviews": "{n} reviews",
+    "review": "1 review",
+    "soldOut": "{title} is out of stock"
+  },
+  "productOptions": {
+    "chosen": "{label}:",
+    "unavailable": "Out of stock",
+    "quantity": "Quantity",
+    "quantityOf": "Quantity, {product}",
+    "unavailableName": "{label}, out of stock",
+    "none": "None chosen"
+  },
+  "progressSteps": {
+    "step": "Step {n} of {total}",
+    "complete": "Complete",
+    "current": "Current step",
+    "upcoming": "Not started",
+    "error": "Needs attention"
+  },
+  "promptSuggestions": {
+    "label": "Prompt suggestions",
+    "empty": "No prompt suggestions",
+    "failed": "Could not use this suggestion. Try again."
+  },
+  "providers": {
+    "UnsavedGuard": {
+      "title": "Leave without saving?",
+      "message": "Your changes will be lost.",
+      "leave": "Leave",
+      "stay": "Keep editing"
+    },
+    "theme-boot": {
+      "compact": "Compact",
+      "standard": "Standard",
+      "comfortable": "Comfortable"
+    }
+  },
+  "publish": {
+    "publish": "Publish",
+    "publishNow": "Publish now",
+    "schedule": "Schedule",
+    "cancelSchedule": "Cancel schedule",
+    "unpublish": "Unpublish",
+    "cancel": "Cancel",
+    "publishTitle": "Publish {name}?",
+    "publishMessage": "It becomes visible to {audience}.",
+    "unpublishTitle": "Unpublish {name}?",
+    "unpublishMessage": "It is hidden from {audience}. You can publish it again.",
+    "scheduleTitle": "Schedule {name}",
+    "when": "Publish on",
+    "whenHint": "Date and time, in your time zone.",
+    "past": "Choose a time in the future.",
+    "empty": "Choose a date and time.",
+    "publishedLine": "Published {at}",
+    "publishedBy": "Published {at} by {by}",
+    "scheduledLine": "Publishes {at}",
+    "scheduledBy": "Publishes {at}, scheduled by {by}",
+    "draftLine": "Not published",
+    "published": "{name} published",
+    "scheduled": "{name} scheduled for {at}",
+    "unpublished": "{name} unpublished",
+    "undo": "Undo",
+    "everyone": "everyone with access",
+    "actions": "Publishing"
+  },
+  "queryBuilder": {
+    "builder": "Builder",
+    "text": "Text",
+    "viewLabel": "View",
+    "where": "Where",
+    "and": "And",
+    "or": "Or",
+    "andWord": "and",
+    "orWord": "or",
+    "join": "Match",
+    "all": "All rules",
+    "any": "Any rule",
+    "addRule": "Add rule",
+    "addGroup": "Add group",
+    "removeRule": "Remove rule",
+    "removeGroup": "Remove group",
+    "field": "Field",
+    "operator": "Operator",
+    "value": "Value",
+    "rule": "Rule {n}",
+    "group": "Group {n}",
+    "empty": "No rules: every record matches.",
+    "everything": "Every record",
+    "matches": "{n} matches",
+    "match": "{n} match",
+    "textTitle": "Query",
+    "added": "Rule added",
+    "groupAdded": "Group added",
+    "removed": "Rule removed",
+    "groupRemoved": "Group removed"
+  },
+  "quickFilter": {
+    "preset": "any"
+  },
+  "rating": {
+    "label": "Rating"
+  },
+  "refineMenu": {
+    "label": "Refine",
+    "shorter": "Make shorter",
+    "longer": "Make longer",
+    "tone": "Change tone",
+    "formal": "Formal",
+    "casual": "Casual",
+    "neutral": "Neutral",
+    "custom": "Custom instruction",
+    "prompt": "Instruction",
+    "apply": "Apply instruction",
+    "cancel": "Cancel",
+    "empty": "Enter an instruction.",
+    "failed": "Could not refine this text. Try again."
+  },
+  "relatedAssets": {
+    "empty": "No related assets"
+  },
+  "relativeDateInput": {
+    "custom": "Custom",
+    "none": "Any time",
+    "amount": "Amount",
+    "unit": "Unit",
+    "direction": "Direction",
+    "past": "Last",
+    "future": "Next",
+    "units": {
+      "day": ["day", "days"],
+      "week": ["week", "weeks"],
+      "month": ["month", "months"],
+      "year": ["year", "years"]
+    },
+    "presets": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "last-7-days": "Last 7 days",
+      "last-30-days": "Last 30 days",
+      "last-90-days": "Last 90 days",
+      "last-12-months": "Last 12 months",
+      "tomorrow": "Tomorrow",
+      "next-7-days": "Next 7 days",
+      "next-30-days": "Next 30 days",
+      "next-90-days": "Next 90 days",
+      "next-12-months": "Next 12 months"
+    }
+  },
+  "renameAction": {
+    "label": "Name",
+    "rename": "Rename",
+    "open": "Rename…",
+    "title": "Rename {name}",
+    "cancel": "Cancel",
+    "empty": "Enter a name",
+    "slash": "A name can’t contain / or \\",
+    "taken": "There’s already an item named {name} here",
+    "tooLong": "Use {max} characters or fewer",
+    "renamed": "Renamed to {name}",
+    "failed": "The name could not be changed"
+  },
+  "renditionList": {
+    "label": "Renditions",
+    "name": "Name",
+    "format": "Format",
+    "size": "Size",
+    "download": "Download",
+    "empty": "No renditions."
+  },
+  "resizable": {
+    "width": "{label} width",
+    "height": "{label} height"
+  },
+  "resourceList": {
+    "item": "item",
+    "selectAll": "Select all {n} {nouns}",
+    "select": "Select {name}",
+    "count": "{n} {nouns}",
+    "selected": "{n} of {total} selected"
+  },
+  "retry": {
+    "title": "Couldn’t load",
+    "retry": "Retry",
+    "retryNow": "Retry now",
+    "retrying": "Retrying…",
+    "waiting": "Retrying in {time}",
+    "attempt": "Attempt {attempt} of {attempts}",
+    "stopped": "Stopped after {attempts} attempts",
+    "dismiss": "Dismiss",
+    "status": "failed"
+  },
+  "reviewFlow": {
+    "label": "Waiting for review",
+    "noun": "item"
+  },
+  "richTextEditor": {
+    "toolbar": "Formatting",
+    "more": "More formatting",
+    "bold": "Bold",
+    "italic": "Italic",
+    "underline": "Underline",
+    "strike": "Strikethrough",
+    "code": "Inline code",
+    "subscript": "Subscript",
+    "superscript": "Superscript",
+    "link": "Link",
+    "bulleted": "Bulleted list",
+    "numbered": "Numbered list",
+    "tasks": "Task list",
+    "quote": "Quote",
+    "codeBlock": "Code block",
+    "rule": "Horizontal rule",
+    "image": "Image",
+    "table": "Table",
+    "color": "Text color",
+    "highlight": "Highlight",
+    "alignLeft": "Align left",
+    "alignCenter": "Align center",
+    "alignRight": "Align right",
+    "alignJustify": "Justify",
+    "clear": "Clear formatting",
+    "undo": "Undo",
+    "redo": "Redo",
+    "textStyle": "Text style",
+    "paragraph": "Paragraph",
+    "font": "Font",
+    "defaultFont": "Default font",
+    "size": "Size",
+    "defaultSize": "Default size",
+    "custom": "Custom…",
+    "customFont": "Font family",
+    "customSize": "Font size",
+    "insertTable": "Insert table",
+    "rowBefore": "Add row above",
+    "rowAfter": "Add row below",
+    "columnBefore": "Add column before",
+    "columnAfter": "Add column after",
+    "deleteRow": "Delete row",
+    "deleteColumn": "Delete column",
+    "headerRow": "Header row",
+    "deleteTable": "Delete table",
+    "linkAddress": "Link address",
+    "addLink": "Add link",
+    "imageAddress": "Image address",
+    "imageAlt": "Description",
+    "addImage": "Add image",
+    "swatches": "Suggested colors",
+    "customColor": "Custom color",
+    "hex": "Hex value",
+    "apply": "Apply",
+    "remove": "Remove",
+    "cancel": "Cancel",
+    "mentions": "Suggestions",
+    "groupMarks": "Text",
+    "groupColor": "Color",
+    "groupAlign": "Alignment",
+    "groupLists": "Lists",
+    "groupInsert": "Insert",
+    "groupHistory": "History",
+    "leave": "Press Tab or Shift+Tab to leave the editor",
+    "hint": "Escape, then Tab, leaves the editor"
+  },
+  "roleLabel": {
+    "owner": "Owner",
+    "editor": "Editor",
+    "viewer": "Viewer"
+  },
+  "roleManager": {
+    "roles": "Roles",
+    "create": "Create role",
+    "createTitle": "Create role",
+    "name": "Name",
+    "description": "Description",
+    "descriptionHint": "One sentence on what people with this role can do.",
+    "startFrom": "Start with the permissions of",
+    "empty": "Enter a name.",
+    "taken": "A role named {name} already exists.",
+    "back": "All roles",
+    "members": "Members",
+    "member": "member",
+    "membersCount": "{n} members",
+    "memberCount": "{n} member",
+    "builtIn": "Built-in",
+    "custom": "Custom",
+    "permissions": "Permissions",
+    "builtInNote": "Built-in roles can’t be changed. Duplicate one to make your own.",
+    "addMember": "Add a member",
+    "remove": "Remove {name}",
+    "lastMember": "{role} needs at least one member. Add someone else first.",
+    "noMembers": "Nobody has this role yet.",
+    "role": "role",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "added": "{name} added to {role}",
+    "removed": "{name} removed from {role}",
+    "created": "{name} created",
+    "access": "People with the {role} role",
+    "people": "{n} people",
+    "peopleOne": "{n} person",
+    "allowed": "{permission} allowed for {role}",
+    "denied": "{permission} no longer allowed for {role}"
+  },
+  "saveAs": {
+    "title": "Save as",
+    "name": "Name",
+    "location": "Location",
+    "format": "Format",
+    "save": "Save copy",
+    "cancel": "Cancel",
+    "required": "Enter a name and choose a location.",
+    "failed": "Could not save the copy. Try again.",
+    "unsaved": "Your changes will be lost."
+  },
+  "searchField": {
+    "suggestions": "Suggestions",
+    "recent": "Recent searches",
+    "clearRecent": "Clear recent searches",
+    "clear": "Clear search",
+    "results": "{n} suggestions",
+    "removed": "{query} removed from recent searches",
+    "remove": "Remove {query}",
+    "placeholder": "Search",
+    "label": "Search"
+  },
+  "searchWorkspace": {
+    "title": "Search",
+    "selectAll": "Select all",
+    "allSelected": "Every {noun} is selected",
+    "placeholder": "Search…",
+    "result": "result",
+    "results": "results",
+    "searchField": "Search {nouns}",
+    "save": "Save search",
+    "filters": "Filters",
+    "activeFilters": "Active filters",
+    "chip": "{label}: {value}",
+    "remove": "Remove {text}",
+    "clearAll": "Clear all",
+    "view": "View",
+    "grid": "Grid",
+    "table": "Table",
+    "sort": "Sort",
+    "sortValue": "Sort: {value}",
+    "noMatchQuery": "Nothing matches “{query}”.",
+    "noMatchQueryFilters": "Nothing matches “{query}” with these filters.",
+    "noMatchFilters": "Nothing matches these filters."
+  },
+  "secondaryPane": {
+    "expand": "Expand {name}",
+    "collapse": "Collapse {name}",
+    "resize": "Resize {name}",
+    "close": "Close {name}",
+    "back": "Back to {name}"
+  },
+  "sessionTimeout": {
+    "warningTitle": "Your session is about to end",
+    "warning": "You’ll be signed out in {time} because you haven’t been active.",
+    "stay": "Stay signed in",
+    "signOut": "Sign out",
+    "signedOutTitle": "You were signed out",
+    "signedOut": "For your security, you were signed out after {minutes} minutes without activity.",
+    "signedOutShort": "For your security, you were signed out because you weren’t active.",
+    "saved": "Your changes are saved.",
+    "signIn": "Sign in again",
+    "left": "{time} left",
+    "ended": "Signed out"
+  },
+  "shareDialog": {
+    "title": "Share",
+    "people": "People",
+    "link": "Link",
+    "person": "Person",
+    "role": "Role",
+    "add": "Add person",
+    "remove": "Remove",
+    "save": "Save access",
+    "cancel": "Cancel",
+    "copy": "Copy link",
+    "access": "Link access",
+    "restricted": "Only people with access",
+    "anyone": "Anyone with the link can view",
+    "nativeShare": "Share using device",
+    "failed": "Could not share. Try again.",
+    "invalid": "Choose a person and an available role.",
+    "unsaved": "Your access changes will be lost."
+  },
+  "sheet": {
+    "expand": "Expand sheet",
+    "shrink": "Shrink sheet",
+    "doneLabel": "Done",
+    "cancelLabel": "Cancel",
+    "closeLabel": "Close",
+    "done": "Done",
+    "cancel": "Cancel",
+    "close": "Close"
+  },
+  "shortcutsDialog": {
+    "title": "Keyboard shortcuts",
+    "search": "Search shortcuts",
+    "general": "General",
+    "empty": "No matching shortcuts",
+    "close": "Close"
+  },
+  "slider": {
+    "minimum": "Minimum",
+    "maximum": "Maximum"
+  },
+  "sortPanel": {
+    "label": "Sort",
+    "title": "Sort by",
+    "within": "Sort within groups by",
+    "info": "The rows are ordered by the first field, then by the next where the first is the same.",
+    "empty": "No sort: the rows keep their own order.",
+    "add": "Add a sort",
+    "addAnother": "Add another sort",
+    "remove": "Remove the sort by {name}",
+    "removeTip": "Remove sort",
+    "field": "Field",
+    "direction": "Direction"
+  },
+  "sortableList": {
+    "moveMenu": "Move {name}",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "moveEarlier": "Move earlier",
+    "moveLater": "Move later",
+    "moveFirst": "Move to the start",
+    "moveLast": "Move to the end",
+    "moveUpNamed": "Move {name} up",
+    "moveDownNamed": "Move {name} down"
+  },
+  "splitButton": {
+    "more": "More {label} options"
+  },
+  "suggestedEdit": {
+    "label": "Suggested edits",
+    "before": "Before",
+    "after": "After",
+    "accept": "Accept",
+    "reject": "Reject",
+    "acceptAll": "Accept all",
+    "accepted": "Accepted",
+    "rejected": "Rejected",
+    "empty": "No suggested edits",
+    "failed": "Could not save this decision. Try again."
+  },
+  "tabs": {
+    "more": "More",
+    "moreLabel": "More tabs"
+  },
+  "tag": {
+    "label": "Add a tag"
+  },
+  "teachingBubble": {
+    "close": "Close",
+    "step": "{current} of {total}"
+  },
+  "templates": {
+    "Commerce": {
+      "Storefront": {
+        "layout": "gallery"
+      }
+    },
+    "templates": {
+      "Templates": {
+        "empty": "No records yet",
+        "emptyDescription": "Create a record to get started.",
+        "pane": "Records",
+        "sections": "On this page",
+        "retry": "Try again",
+        "home": "Go home",
+        "search": "Search results",
+        "tools": "Tools",
+        "inspector": "Options",
+        "detail": "Details",
+        "noSelection": "Nothing selected",
+        "noSelectionDescription": "Choose an item to see it here."
+      }
+    }
+  },
+  "time": {
+    "now": "Just now"
+  },
+  "timePicker": {
+    "hour": "Hour",
+    "minute": "Minute",
+    "period": "AM or PM",
+    "am": "AM",
+    "pm": "PM",
+    "times": "Times",
+    "empty": "--"
+  },
+  "timeZoneSelect": {
+    "placeholder": "Choose a time zone",
+    "empty": "No matches",
+    "utc": "Coordinated Universal Time",
+    "other": "Other",
+    "regions": {
+      "Africa": "Africa",
+      "America": "Americas",
+      "Antarctica": "Antarctica",
+      "Arctic": "Arctic",
+      "Asia": "Asia",
+      "Atlantic": "Atlantic",
+      "Australia": "Australia",
+      "Europe": "Europe",
+      "Indian": "Indian Ocean",
+      "Pacific": "Pacific"
+    }
+  },
+  "toast": {
+    "aria-label": "Dismiss",
+    "undo": "Undo",
+    "dismiss": "Dismiss"
+  },
+  "tour": {
+    "next": "Next",
+    "back": "Back",
+    "finish": "Finish tour",
+    "skip": "Skip tour",
+    "resume": "Resume tour",
+    "close": "Close",
+    "step": "{current} of {total}"
+  },
+  "transferList": {
+    "source": "Available",
+    "target": "Chosen",
+    "add": "Add",
+    "addAll": "Add all",
+    "remove": "Remove",
+    "removeAll": "Remove all",
+    "up": "Move up",
+    "down": "Move down",
+    "search": "Search {title}",
+    "selectAll": "Check every item in {title}",
+    "count": "{checked} of {total} checked",
+    "moved": "{n} moved to {title}",
+    "empty": "No items",
+    "noMatch": "No matches",
+    "moves": "Move items"
+  },
+  "treeSelect": {
+    "placeholder": "Choose",
+    "search": "Search",
+    "choose": "Choose an item",
+    "more": "{list} and {n} more",
+    "empty": "No matches"
+  },
+  "trialUpgrade": {
+    "trial": "Trial",
+    "compare": "Compare plans",
+    "title": "Choose a plan",
+    "plan": "Plan",
+    "upgrade": "Upgrade",
+    "cancel": "Cancel",
+    "failed": "Could not upgrade. Try again.",
+    "upgraded": "Plan updated"
+  },
+  "uploadManager": {
+    "dialogTitle": "Upload files",
+    "queue": "Uploads",
+    "drop": "Drag and drop files or folders here",
+    "or": "or",
+    "chooseFiles": "Choose files",
+    "chooseFolder": "Choose a folder",
+    "uploading": "Uploading {n} files",
+    "uploadingOne": "Uploading 1 file",
+    "done": "{n} uploads complete",
+    "doneOne": "1 upload complete",
+    "failed": "{n} uploads failed",
+    "failedOne": "1 upload failed",
+    "none": "No uploads",
+    "progress": "{done} of {total} uploaded",
+    "overall": "Overall progress",
+    "waiting": "Waiting",
+    "uploaded": "Uploaded",
+    "canceled": "Canceled",
+    "cancelAll": "Cancel all",
+    "clear": "Clear finished",
+    "hide": "Hide the uploads",
+    "show": "Show the uploads",
+    "close": "Close",
+    "finish": "Done",
+    "remove": "Remove from the list",
+    "again": "Upload again",
+    "tooLarge": "This file is larger than {max}.",
+    "wrongType": "This type of file can’t be uploaded here.",
+    "error": "The upload failed. Try again.",
+    "failedNamed": "{name} failed: {reason}",
+    "status": "canceled"
+  },
+  "userCard": {
+    "online": "Online",
+    "away": "Away",
+    "busy": "Busy",
+    "dnd": "Do not disturb",
+    "offline": "Offline"
+  },
+  "utils": {
+    "clipboard": {
+      "copied": "Copied",
+      "failed": "Couldn’t copy. Select the text and copy it by hand."
+    }
+  },
+  "versionCompare": {
+    "label": "Version comparison",
+    "compare": "Compare",
+    "with": "With",
+    "swap": "Swap",
+    "swapLabel": "Swap the two versions",
+    "view": "View",
+    "columns": "Side by side",
+    "slider": "Slider",
+    "text": "Text",
+    "by": "by {author}",
+    "diff": "Changes from {base} to {target}",
+    "added": "Added",
+    "removed": "Removed",
+    "same": "No changes in the text",
+    "summary": "{added} added, {removed} removed",
+    "lines": "{n} lines",
+    "line": "1 line",
+    "previous": "Previous change",
+    "next": "Next change",
+    "at": "Change {n} of {total}",
+    "unchanged": "Show {n} unchanged lines",
+    "empty": "Choose two versions to compare."
+  },
+  "versionHistory": {
+    "label": "Version history",
+    "preview": "Preview",
+    "restore": "Restore",
+    "confirm": "Restore this version?",
+    "cancel": "Cancel",
+    "failed": "The version could not be restored. Try again.",
+    "restored": "Version restored",
+    "empty": "No versions."
+  },
+  "versionLabel": {
+    "version": "Version",
+    "prefix": "v",
+    "latest": "Latest",
+    "draft": "Draft"
+  },
+  "viewMenu": {
+    "reset": "Reset view",
+    "label": "View",
+    "layout": "Layout",
+    "list": "List",
+    "gallery": "Gallery",
+    "size": "Card size (gallery)",
+    "s": "Small",
+    "m": "Medium",
+    "l": "Large",
+    "height": "Row height (list)",
+    "short": "Short",
+    "medium": "Medium",
+    "tall": "Tall",
+    "extra-tall": "Extra tall"
+  },
+  "virtualList": {
+    "loading": "Loading…",
+    "empty": "No items",
+    "count": {
+      "one": "{n} item",
+      "other": "{n} items"
+    },
+    "group": {
+      "one": "{n} item",
+      "other": "{n} items"
+    }
+  },
+  "widgetGrid": {
+    "widget": "Widget",
+    "widgetLower": "widget",
+    "move": "Move {title} (arrow keys)",
+    "position": "{title}, position {index} of {total}",
+    "earlier": "Move earlier",
+    "later": "Move later",
+    "first": "Move to the start",
+    "last": "Move to the end"
+  },
+  "wizardDialog": {
+    "close": "Close",
+    "unsaved": "Your changes will be lost."
   }
 };
   } },
@@ -21229,8 +23075,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-// Plenix's built-in Arabic words (owner, arabic-batch4-36; the start of issue 427). LocaleProvider uses them for an Arabic
-// locale after the application's own catalog and before English; a part's strings prop still wins.
+// Plenix's built-in Arabic words (owner, arabic-batch4-36, arabic-words-37; issue 427): every section of en.js in Arabic, a draft
+// (Builder 02's table, ~/handoff/i18n/strings.md) for the owner's review. LocaleProvider uses them for an Arabic locale after the
+// application's own catalog and before English; a part's strings prop still wins.
 var _default = exports.default = {
   "pagination": {
     "label": "الصفحات",
@@ -21239,6 +23086,1889 @@ var _default = exports.default = {
     "next": "الصفحة التالية",
     "page": "الصفحة {n}",
     "perPage": "لكل صفحة"
+  },
+  "chart": {
+    "barChart": {
+      "category": "الفئة",
+      "total": "الإجمالي",
+      "range": "النطاق",
+      "count": "العدد"
+    },
+    "boxPlot": {
+      "group": "المجموعة",
+      "min": "الحد الأدنى",
+      "q1": "الربع الأول",
+      "median": "الوسيط",
+      "q3": "الربع الثالث",
+      "max": "الحد الأقصى",
+      "outliers": "القيم الشاذة",
+      "n": "القيم"
+    },
+    "bulletChart": {
+      "measure": "المقياس",
+      "value": "القيمة",
+      "target": "الهدف",
+      "ranges": "النطاقات",
+      "poor": "ضعيف",
+      "fair": "مقبول",
+      "good": "جيد"
+    },
+    "chartFrame": {
+      "showData": "عرض البيانات",
+      "table": "{title}: البيانات"
+    },
+    "comboChart": {
+      "category": "الفئة",
+      "bars": "الأعمدة",
+      "lines": "الخطوط"
+    },
+    "diagram": {
+      "step": "الخطوة",
+      "kind": "النوع",
+      "next": "يؤدي إلى",
+      "previous": "يأتي من",
+      "process": "الخطوة",
+      "decision": "قرار",
+      "terminal": "بداية أو نهاية",
+      "data": "البيانات",
+      "box": "الجزء",
+      "group": "المجموعة",
+      "end": "النهاية"
+    },
+    "funnelChart": {
+      "stage": "المرحلة",
+      "value": "العدد",
+      "kept": "المتبقي من الخطوة السابقة",
+      "ofFirst": "من الخطوة الأولى"
+    },
+    "ganttChart": {
+      "task": "المهمة",
+      "progress": "تم",
+      "dependsOn": "بانتظار",
+      "status": "الحالة",
+      "today": "اليوم",
+      "milestone": "مَعلَم",
+      "start": "البداية",
+      "end": "النهاية"
+    },
+    "gauge": {
+      "showData": "عرض البيانات",
+      "table": "{title}: البيانات",
+      "measure": "المقياس",
+      "value": "القيمة",
+      "min": "الحد الأدنى",
+      "max": "الحد الأقصى",
+      "ok": ""
+    },
+    "geoMap": {
+      "region": "المنطقة",
+      "place": "المكان",
+      "value": "القيمة",
+      "noData": "لا توجد بيانات",
+      "latitude": "خط العرض",
+      "longitude": "خط الطول",
+      "zoom": "التكبير",
+      "zoomIn": "تكبير",
+      "zoomOut": "تصغير",
+      "reset": "عرض الخريطة كاملة"
+    },
+    "heatMap": {
+      "value": "القيمة",
+      "row": "الصف",
+      "column": "العمود",
+      "date": "التاريخ",
+      "missing": "لا توجد بيانات",
+      "low": "منخفض",
+      "high": "مرتفع",
+      "scale": "مقياس الألوان"
+    },
+    "lineChart": {
+      "category": "الفئة"
+    },
+    "lollipopChart": {
+      "category": "الفئة",
+      "value": "القيمة"
+    },
+    "networkGraph": {
+      "node": "العقدة",
+      "group": "المجموعة",
+      "links": "متصل بـ",
+      "zoomIn": "تكبير",
+      "zoomOut": "تصغير",
+      "fit": "ملاءمة",
+      "hintZoom": " الأزرار +/- للتكبير والتصغير، والرقم 0 يناسب الرسم.",
+      "none": "لا شيء"
+    },
+    "pieChart": {
+      "part": "الجزء",
+      "value": "القيمة",
+      "share": "الحصة",
+      "total": "الإجمالي",
+      "other": "أخرى"
+    },
+    "radarChart": {
+      "measure": "المقياس"
+    },
+    "sankeyDiagram": {
+      "source": "المصدر",
+      "target": "الهدف",
+      "value": "القيمة",
+      "total": "الإجمالي"
+    },
+    "scatterChart": {
+      "series": "السلسلة",
+      "item": "العنصر"
+    },
+    "timelineChart": {
+      "item": "العنصر",
+      "lane": "المسار",
+      "today": "اليوم",
+      "date": "التاريخ",
+      "dates": "التواريخ",
+      "start": "البداية",
+      "end": "النهاية"
+    },
+    "treeChart": {
+      "name": "الاسم",
+      "detail": "التفاصيل",
+      "parent": "يتبع لـ",
+      "level": "المستوى",
+      "folded": "مطوي",
+      "open": "مفتوح"
+    },
+    "treemap": {
+      "group": "المجموعة",
+      "item": "الجزء",
+      "value": "القيمة",
+      "share": "الحصة"
+    },
+    "waterfallChart": {
+      "step": "الخطوة",
+      "change": "التغيير",
+      "total": "الإجمالي",
+      "running": "المجموع التراكمي",
+      "increase": "زيادة",
+      "decrease": "نقصان",
+      "end": "النهاية"
+    },
+    "wordCloud": {
+      "value": "العدد",
+      "word": "المصطلح",
+      "group": "المجموعة"
+    },
+    "chartLegend": {
+      "legend": "دليل الرسم"
+    }
+  },
+  "avatar": {
+    "online": "متصل",
+    "away": "غائب",
+    "busy": "مشغول",
+    "dnd": "عدم الإزعاج",
+    "offline": "غير متصل"
+  },
+  "avatarGroup": {
+    "more": "+{n}",
+    "moreLabel": "{n} إضافية"
+  },
+  "backToTop": {
+    "label": "العودة إلى الأعلى"
+  },
+  "barcode": {
+    "label": "الباركود {format}: {value}",
+    "invalid": "رمز {format} غير صالح",
+    "formats": {
+      "code128": "Code 128",
+      "ean13": "EAN-13",
+      "upca": "UPC-A"
+    }
+  },
+  "brand": {
+    "name": "Plenix"
+  },
+  "button": {
+    "working": "جارٍ العمل"
+  },
+  "calendar": {
+    "label": "التقويم",
+    "previous": "الشهر السابق",
+    "next": "الشهر التالي",
+    "week": "الأسبوع",
+    "weekShort": "أسبوع",
+    "today": "اليوم"
+  },
+  "carousel": {
+    "slide": "{n} من {total}",
+    "previous": "الشريحة السابقة",
+    "next": "الشريحة التالية",
+    "goTo": "الانتقال إلى الشريحة {n}",
+    "goToPage": "الانتقال إلى الصفحة {n}",
+    "pages": "الشرائح",
+    "pause": "إيقاف مؤقت",
+    "play": "تشغيل",
+    "pauseLabel": "إيقاف الشرائح مؤقتًا",
+    "playLabel": "تشغيل الشرائح",
+    "strip": "الشرائح"
+  },
+  "cascader": {
+    "placeholder": "اختيار",
+    "separator": " / ",
+    "search": "بحث",
+    "noMatches": "لا توجد نتائج مطابقة",
+    "empty": "لا توجد عناصر",
+    "remove": "إزالة {label}",
+    "columns": "الخيارات"
+  },
+  "codeBlock": {
+    "code": "الرمز",
+    "copy": "نسخ",
+    "copied": "تم النسخ",
+    "failed": "تعذّر النسخ"
+  },
+  "codeEditor": {
+    "hint": "مفتاح Tab يضيف مسافة بادئة. اضغط Escape ثم Tab للخروج من المحرّر."
+  },
+  "combobox": {
+    "loading": "جارٍ التحميل…",
+    "error": "تعذّر تحميل الخيارات"
+  },
+  "commandMenu": {
+    "label": "الأوامر",
+    "placeholder": "اكتب أمرًا أو ابحث",
+    "empty": "لا توجد نتائج لـ «{query}»",
+    "loading": "جارٍ التحميل",
+    "back": "رجوع",
+    "results": "{count} نتيجة"
+  },
+  "contextualHelp": {
+    "more": "المزيد عن {title}",
+    "moreUntitled": "مزيد من المعلومات"
+  },
+  "copyButton": {
+    "copy": "نسخ",
+    "copied": "تم النسخ",
+    "failed": "تعذّر النسخ. حدّد النص وانسخه يدويًا."
+  },
+  "countrySelect": {
+    "country": "اختر بلدًا أو منطقة",
+    "language": "اختر لغة",
+    "locale": "اختر لغة ومنطقة",
+    "suggested": "مقترح",
+    "all": "الكل"
+  },
+  "dataGrid": {
+    "empty": "لا يوجد شيء للعرض",
+    "failed": "تعذّر تحميل الجدول",
+    "retry": "إعادة المحاولة",
+    "selectAll": "تحديد كل الصفوف",
+    "selectRow": "تحديد الصف",
+    "rowActions": "إجراءات الصف",
+    "clearSort": "إلغاء الفرز",
+    "hide": "إخفاء الحقل",
+    "showAll": "إظهار كل الحقول",
+    "narrower": "أضيق",
+    "wider": "أعرض",
+    "fit": "ملاءمة المحتوى",
+    "deleted": "محذوف",
+    "moveLeft": "نقل إلى اليسار",
+    "moveRight": "نقل إلى اليمين",
+    "perPage": "الصفوف في كل صفحة",
+    "view": "خيارات العرض",
+    "wrapHeaders": "التفاف العناوين",
+    "markRead": "وضع علامة مقروء",
+    "markUnread": "وضع علامة غير مقروء",
+    "wrapText": "التفاف النص",
+    "wrapAll": "التفاف كل الأعمدة",
+    "fullText": "عرض النص كاملًا",
+    "rowHeight": "ارتفاع الصف",
+    "short": "قصير",
+    "medium": "متوسط",
+    "tall": "طويل",
+    "extra-tall": "طويل جدًا",
+    "filter": "تصفية",
+    "clearFilter": "مسح التصفية",
+    "groupBy": "التجميع حسب هذا الحقل",
+    "ungroup": "إلغاء التجميع",
+    "noGroup": "عدم التجميع حسب هذا الحقل",
+    "sizeToFit": "ملاءمة عرض العمود",
+    "sizeAllToFit": "ملاءمة عرض كل الأعمدة",
+    "moreColumns": "المزيد…",
+    "columns": "الأعمدة",
+    "loadMore": "تحميل المزيد",
+    "loading": "جارٍ تحميل السجلات",
+    "group": "التجميع حسب هذا الحقل",
+    "filterBy": "التصفية حسب هذا الحقل",
+    "any": "أي قيمة",
+    "contains": "يحتوي على…",
+    "moveRow": "نقل الصف",
+    "moveUp": "نقل لأعلى",
+    "moveDown": "نقل لأسفل",
+    "moveTop": "نقل إلى الأعلى",
+    "moveBottom": "نقل إلى الأسفل",
+    "resize": "تغيير الحجم",
+    "range": "{first}–{last} من {total}",
+    "count": "{shown} من {total}",
+    "pages": "صفحات {label}",
+    "loaded": "تم تحميل {n} صفوف إضافية، {shown} من {total}",
+    "noValue": "(فارغ)",
+    "addTo": "إضافة سجل إلى {value}",
+    "groupRow": "{value}، مجموعة، {count} {records}",
+    "record": "سجل",
+    "records": "سجلات",
+    "expanded": "موسّع",
+    "collapsed": "مطوي",
+    "sum": "المجموع",
+    "countOf": "العدد",
+    "average": "المتوسط",
+    "min": "الأدنى",
+    "max": "الأقصى",
+    "sortText": ["فرز من أ إلى ي", "فرز من ي إلى أ"],
+    "sortNumber": ["فرز من 1 إلى 9", "فرز من 9 إلى 1"],
+    "sortDate": ["فرز من الأقدم إلى الأحدث", "فرز من الأحدث إلى الأقدم"],
+    "sortCheck": ["فرز من غير المحدد إلى المحدد", "فرز من المحدد إلى غير المحدد"],
+    "unread": "غير مقروء ({count})"
+  },
+  "dataPill": {
+    "male": "ذكر",
+    "female": "أنثى"
+  },
+  "datePicker": {
+    "open": "اختيار التاريخ",
+    "dialog": "اختيار التاريخ",
+    "time": "الوقت",
+    "presets": "الإعدادات المسبقة",
+    "today": "اليوم",
+    "tomorrow": "غدًا",
+    "nextWeek": "بعد أسبوع",
+    "last7": "آخر 7 أيام",
+    "last30": "آخر 30 يومًا",
+    "thisMonth": "هذا الشهر",
+    "lastMonth": "الشهر الماضي"
+  },
+  "documentViewer": {
+    "document": "المستند",
+    "previous": "الصفحة السابقة",
+    "next": "الصفحة التالية",
+    "page": "الصفحة",
+    "zoom": "التكبير",
+    "thumbnails": "مصغّرات الصفحات",
+    "loading": "جارٍ تحميل المستند",
+    "failed": "تعذّر فتح المستند.",
+    "failedEngine": "تعذّر تشغيل عارض المستندات. حاول مرة أخرى لاحقًا.",
+    "failedAccess": "تعذّر فتح المستند. ربما نُقل أو لا تملك صلاحية الوصول إليه.",
+    "failedParse": "تعذّرت قراءة هذا الملف كملف PDF.",
+    "failedRender": "تعذّر عرض هذه الصفحة.",
+    "empty": "لا يوجد مستند.",
+    "retry": "حاول مرة أخرى"
+  },
+  "downloadButton": {
+    "download": "تنزيل",
+    "downloading": "جارٍ التنزيل",
+    "ready": "التنزيل جاهز"
+  },
+  "emptyState": {
+    "offline": {
+      "title": "أنت غير متصل بالإنترنت",
+      "text": "تحقق من اتصالك. ستُحدَّث هذه الصفحة عند عودتك إلى الاتصال."
+    },
+    "degraded": {
+      "title": "بعض الميزات لا تعمل",
+      "text": "هناك خدمة بطيئة أو لا تستجيب، لذا قد تكون المعلومات المعروضة غير محدّثة."
+    },
+    "permission-denied": {
+      "title": "لا تملك صلاحية الوصول",
+      "text": "اطلب من المالك مشاركتها معك."
+    },
+    "not-found": {
+      "title": "هذه الصفحة غير موجودة",
+      "text": "ربما نُقلت أو حُذفت. تحقق من العنوان أو ارجع إلى الصفحة السابقة."
+    },
+    "maintenance": {
+      "title": "متوقف للصيانة",
+      "text": "يجري تحديث هذه الخدمة. حاول مرة أخرى بعد بضع دقائق."
+    },
+    "completion": {
+      "title": "اكتمل كل شيء",
+      "text": "لم يتبقَّ شيء لإنجازه هنا."
+    }
+  },
+  "entityPicker": {
+    "placeholderPeople": "ابحث بالاسم أو البريد الإلكتروني",
+    "placeholder": "ابحث في {entityName}",
+    "empty": "لم يتم العثور على {entityName}",
+    "browse": "تصفح كل {entityName}",
+    "loading": "جارٍ التحميل…",
+    "error": "تعذّر تحميل النتائج",
+    "remove": "إزالة {label}"
+  },
+  "errorSummary": {
+    "one": "توجد مشكلة",
+    "many": "توجد {count} مشكلات"
+  },
+  "file": {
+    "folder": "مجلد",
+    "items": "{n} عناصر",
+    "item": "{n} عنصر"
+  },
+  "fileInput": {
+    "choose": "اختيار ملف",
+    "chooseMany": "اختيار ملفات",
+    "none": "لم يتم اختيار ملف",
+    "count": "{count} ملفات",
+    "remove": "إزالة {name}"
+  },
+  "fileRow": {
+    "select": "تحديد {name}",
+    "more": "المزيد من الإجراءات لـ {name}",
+    "download": "تنزيل {name}",
+    "rename": "إعادة تسمية…",
+    "delete": "حذف",
+    "cancel": "إلغاء",
+    "retry": "حاول مرة أخرى",
+    "transfer": "{label} {name}",
+    "uploading": "جارٍ الرفع",
+    "file": "ملف",
+    "files": "ملفات",
+    "folder": "مجلد",
+    "folders": "مجلدات",
+    "items": "{n} عناصر",
+    "item": "{n} عنصر"
+  },
+  "generatedContent": {
+    "label": "محتوى مُنشأ",
+    "helpful": "مفيد",
+    "unhelpful": "غير مفيد",
+    "regenerate": "إعادة الإنشاء",
+    "previous": "الإصدار السابق",
+    "next": "الإصدار التالي",
+    "version": "الإصدار",
+    "feedbackSaved": "تم حفظ الملاحظات",
+    "failed": "فشل الإجراء. حاول مرة أخرى.",
+    "pending": "جارٍ العمل"
+  },
+  "image": {
+    "error": "الصورة غير متاحة"
+  },
+  "inlineEdit": {
+    "edit": "تعديل",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "empty": "إضافة قيمة",
+    "saved": "تم الحفظ",
+    "failed": "تعذّر حفظ التغيير"
+  },
+  "link": {
+    "newTab": "يفتح في علامة تبويب جديدة"
+  },
+  "loadMore": {
+    "more": "تحميل المزيد",
+    "moreCount": "عرض {n} إضافية",
+    "loading": "جارٍ التحميل…",
+    "end": "وصلت إلى النهاية",
+    "count": "{shown} من {total}",
+    "added": {
+      "zero": "لم يتم تحميل عناصر إضافية",
+      "one": "تم تحميل عنصر إضافي واحد",
+      "two": "تم تحميل عنصرين إضافيين",
+      "few": "تم تحميل {n} عناصر إضافية",
+      "many": "تم تحميل {n} عنصرًا إضافيًا",
+      "other": "تم تحميل {n} عنصر إضافي"
+    }
+  },
+  "mediaViewer": {
+    "label": "معاينة",
+    "close": "إغلاق المعاينة",
+    "previous": "السابق",
+    "next": "التالي",
+    "counter": "{index} من {total}"
+  },
+  "metricCard": {
+    "more": "المزيد لـ {title}",
+    "up": "لأعلى",
+    "down": "لأسفل",
+    "good": "جيد",
+    "bad": "سيئ",
+    "vs": "مقابل",
+    "empty": "لا توجد بيانات",
+    "loading": "جارٍ تحميل {title}",
+    "error": "تعذّر تحميل الأرقام.",
+    "retry": "حاول مرة أخرى",
+    "stale": "قديم",
+    "rank": "#{n}",
+    "toCome": "قادم",
+    "hit": "تحقق الهدف",
+    "missed": "لم يتحقق",
+    "weekdays": ["ن", "ث", "ر", "خ", "ج", "س", "ح"],
+    "weekdayNames": ["الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت", "الأحد"],
+    "month": "{done} من {days} أيام عمل حتى الآن",
+    "parts": "{label} {share}",
+    "compare": "{a} {av}، {b} {bv}"
+  },
+  "millerColumns": {
+    "empty": "لا توجد عناصر",
+    "resize": "تغيير عرض العمود {label}",
+    "preview": "معاينة {label}"
+  },
+  "navList": {
+    "pin": "تثبيت",
+    "unpin": "إلغاء التثبيت",
+    "pinItem": "تثبيت {label}",
+    "unpinItem": "إلغاء تثبيت {label}"
+  },
+  "notice": {
+    "dismiss": "تجاهل"
+  },
+  "numberInput": {
+    "decrease": "نقصان",
+    "increase": "زيادة"
+  },
+  "otpInput": {
+    "cell": "الحرف {n} من {total}"
+  },
+  "persona": {
+    "online": "متصل",
+    "away": "غائب",
+    "busy": "مشغول",
+    "dnd": "عدم الإزعاج",
+    "offline": "غير متصل"
+  },
+  "popover": {
+    "close": "إغلاق"
+  },
+  "productOptions": {
+    "chosen": "{label}:",
+    "unavailable": "غير متوفر في المخزون",
+    "quantity": "الكمية",
+    "quantityOf": "الكمية، {product}",
+    "unavailableName": "{label}، غير متوفر في المخزون",
+    "none": "لم يتم اختيار شيء"
+  },
+  "progressSteps": {
+    "step": "الخطوة {n} من {total}",
+    "complete": "مكتملة",
+    "current": "الخطوة الحالية",
+    "upcoming": "لم تبدأ",
+    "error": "تحتاج إلى انتباه"
+  },
+  "relativeDateInput": {
+    "custom": "مخصص",
+    "none": "أي وقت",
+    "amount": "المبلغ",
+    "unit": "الوحدة",
+    "direction": "الاتجاه",
+    "past": "الأخيرة",
+    "future": "التالي",
+    "units": {
+      "day": ["يوم", "أيام"],
+      "week": ["أسبوع", "أسابيع"],
+      "month": ["شهر", "أشهر"],
+      "year": ["سنة", "سنوات"]
+    },
+    "presets": {
+      "today": "اليوم",
+      "yesterday": "أمس",
+      "last-7-days": "آخر 7 أيام",
+      "last-30-days": "آخر 30 يومًا",
+      "last-90-days": "آخر 90 يومًا",
+      "last-12-months": "آخر 12 شهرًا",
+      "tomorrow": "غدًا",
+      "next-7-days": "الأيام السبعة القادمة",
+      "next-30-days": "الأيام الثلاثون القادمة",
+      "next-90-days": "الأيام التسعون القادمة",
+      "next-12-months": "الأشهر الاثنا عشر القادمة"
+    }
+  },
+  "resizable": {
+    "width": "عرض {label}",
+    "height": "ارتفاع {label}"
+  },
+  "richTextEditor": {
+    "toolbar": "التنسيق",
+    "more": "مزيد من التنسيق",
+    "bold": "غامق",
+    "italic": "مائل",
+    "underline": "تسطير",
+    "strike": "يتوسطه خط",
+    "code": "رمز مضمّن",
+    "subscript": "نص سفلي",
+    "superscript": "نص علوي",
+    "link": "رابط",
+    "bulleted": "قائمة نقطية",
+    "numbered": "قائمة مرقّمة",
+    "tasks": "قائمة مهام",
+    "quote": "اقتباس",
+    "codeBlock": "كتلة رمز",
+    "rule": "خط أفقي",
+    "image": "صورة",
+    "table": "جدول",
+    "color": "لون النص",
+    "highlight": "تمييز",
+    "alignLeft": "محاذاة إلى اليسار",
+    "alignCenter": "محاذاة إلى الوسط",
+    "alignRight": "محاذاة إلى اليمين",
+    "alignJustify": "ضبط",
+    "clear": "مسح التنسيق",
+    "undo": "تراجع",
+    "redo": "إعادة",
+    "textStyle": "نمط النص",
+    "paragraph": "فقرة",
+    "font": "الخط",
+    "defaultFont": "الخط الافتراضي",
+    "size": "الحجم",
+    "defaultSize": "الحجم الافتراضي",
+    "custom": "مخصص…",
+    "customFont": "عائلة الخط",
+    "customSize": "حجم الخط",
+    "insertTable": "إدراج جدول",
+    "rowBefore": "إضافة صف أعلاه",
+    "rowAfter": "إضافة صف أدناه",
+    "columnBefore": "إضافة عمود قبله",
+    "columnAfter": "إضافة عمود بعده",
+    "deleteRow": "حذف الصف",
+    "deleteColumn": "حذف العمود",
+    "headerRow": "صف العناوين",
+    "deleteTable": "حذف الجدول",
+    "linkAddress": "عنوان الرابط",
+    "addLink": "إضافة رابط",
+    "imageAddress": "عنوان الصورة",
+    "imageAlt": "الوصف",
+    "addImage": "إضافة صورة",
+    "swatches": "ألوان مقترحة",
+    "customColor": "لون مخصص",
+    "hex": "قيمة سداسية عشرية",
+    "apply": "تطبيق",
+    "remove": "إزالة",
+    "cancel": "إلغاء",
+    "mentions": "اقتراحات",
+    "groupMarks": "النص",
+    "groupColor": "اللون",
+    "groupAlign": "المحاذاة",
+    "groupLists": "القوائم",
+    "groupInsert": "إدراج",
+    "groupHistory": "السجل",
+    "leave": "اضغط Tab أو Shift+Tab للخروج من المحرّر",
+    "hint": "Escape ثم Tab للخروج من المحرّر"
+  },
+  "roleLabel": {
+    "owner": "المالك",
+    "editor": "محرّر",
+    "viewer": "مشاهد"
+  },
+  "searchField": {
+    "suggestions": "اقتراحات",
+    "recent": "عمليات البحث الأخيرة",
+    "clearRecent": "مسح عمليات البحث الأخيرة",
+    "clear": "مسح البحث",
+    "results": "{n} اقتراحات",
+    "removed": "تمت إزالة {query} من عمليات البحث الأخيرة",
+    "remove": "إزالة {query}",
+    "placeholder": "بحث",
+    "label": "بحث"
+  },
+  "sheet": {
+    "expand": "توسيع اللوحة",
+    "shrink": "تصغير اللوحة",
+    "doneLabel": "تم",
+    "cancelLabel": "إلغاء",
+    "closeLabel": "إغلاق",
+    "done": "تم",
+    "cancel": "إلغاء",
+    "close": "إغلاق"
+  },
+  "slider": {
+    "minimum": "الحد الأدنى",
+    "maximum": "الحد الأقصى"
+  },
+  "splitButton": {
+    "more": "مزيد من خيارات {label}"
+  },
+  "tabs": {
+    "more": "المزيد",
+    "moreLabel": "مزيد من علامات التبويب"
+  },
+  "teachingBubble": {
+    "close": "إغلاق",
+    "step": "{current} من {total}"
+  },
+  "text": {
+    "more": "عرض المزيد",
+    "less": "عرض أقل"
+  },
+  "timePicker": {
+    "hour": "الساعة",
+    "minute": "الدقيقة",
+    "period": "ص أو م",
+    "am": "ص",
+    "pm": "م",
+    "times": "الأوقات",
+    "empty": "--"
+  },
+  "timeZoneSelect": {
+    "placeholder": "اختر منطقة زمنية",
+    "empty": "لا توجد نتائج مطابقة",
+    "utc": "التوقيت العالمي المنسق",
+    "other": "أخرى",
+    "regions.Africa": "أفريقيا",
+    "regions.America": "الأمريكتان",
+    "regions.Antarctica": "القارة القطبية الجنوبية",
+    "regions.Arctic": "القطب الشمالي",
+    "regions.Asia": "آسيا",
+    "regions.Atlantic": "المحيط الأطلسي",
+    "regions.Australia": "أستراليا",
+    "regions.Europe": "أوروبا",
+    "regions.Indian": "المحيط الهندي",
+    "regions.Pacific": "المحيط الهادئ",
+    "regions": {
+      "Africa": "أفريقيا",
+      "America": "الأمريكتان",
+      "Antarctica": "القارة القطبية الجنوبية",
+      "Arctic": "القطب الشمالي",
+      "Asia": "آسيا",
+      "Atlantic": "المحيط الأطلسي",
+      "Australia": "أستراليا",
+      "Europe": "أوروبا",
+      "Indian": "المحيط الهندي",
+      "Pacific": "المحيط الهادئ"
+    }
+  },
+  "transferList": {
+    "source": "المتاح",
+    "target": "المختار",
+    "add": "إضافة",
+    "addAll": "إضافة الكل",
+    "remove": "إزالة",
+    "removeAll": "إزالة الكل",
+    "up": "نقل لأعلى",
+    "down": "نقل لأسفل",
+    "search": "بحث في {title}",
+    "selectAll": "تحديد كل عناصر {title}",
+    "count": "تم تحديد {checked} من {total}",
+    "moved": "تم نقل {n} إلى {title}",
+    "empty": "لا توجد عناصر",
+    "noMatch": "لا توجد نتائج مطابقة",
+    "moves": "نقل العناصر"
+  },
+  "treeSelect": {
+    "placeholder": "اختيار",
+    "search": "بحث",
+    "choose": "اختر عنصرًا",
+    "more": "{list} و{n} أخرى",
+    "empty": "لا توجد نتائج مطابقة"
+  },
+  "versionLabel": {
+    "version": "الإصدار",
+    "prefix": "إ",
+    "latest": "الأحدث",
+    "draft": "مسودة"
+  },
+  "virtualList": {
+    "loading": "جارٍ التحميل…",
+    "empty": "لا توجد عناصر",
+    "count": {
+      "zero": "لا توجد عناصر",
+      "one": "عنصر واحد",
+      "two": "عنصران",
+      "few": "{n} عناصر",
+      "many": "{n} عنصرًا",
+      "other": "{n} عنصر"
+    },
+    "group": {
+      "zero": "لا توجد عناصر",
+      "one": "عنصر واحد",
+      "two": "عنصران",
+      "few": "{n} عناصر",
+      "many": "{n} عنصرًا",
+      "other": "{n} عنصر"
+    }
+  },
+  "aiSearch": {
+    "label": "بحث بالذكاء الاصطناعي",
+    "query": "عبارة البحث",
+    "search": "بحث",
+    "semantic": "استخدام البحث الدلالي",
+    "results": "نتائج البحث",
+    "empty": "لا توجد نتائج.",
+    "failed": "فشل البحث. حاول مرة أخرى.",
+    "pending": "جارٍ البحث"
+  },
+  "appShell": {
+    "skip": "تخطّي إلى المحتوى الرئيسي"
+  },
+  "assignControl": {
+    "assign": "إسناد",
+    "assignToMe": "إسناد إليّ",
+    "reassign": "إعادة الإسناد",
+    "unassign": "إلغاء الإسناد",
+    "unassigned": "غير مُسنَد",
+    "cancel": "إلغاء",
+    "assigned": "مُسنَد إلى {name}",
+    "cleared": "تمت إزالة {label}",
+    "delegate": "تفويض",
+    "change": "التغيير",
+    "end": "إنهاء التفويض",
+    "delegateTitle": "تفويض {label}",
+    "to": "التفويض إلى",
+    "dates": "التواريخ",
+    "note": "ملاحظة",
+    "noteHint": "تظهر للشخص الذي تفوّضه.",
+    "needPerson": "اختر شخصًا.",
+    "needDates": "اختر اليوم الأول والأخير.",
+    "delegatedTo": "تم التفويض إلى {name}",
+    "notDelegated": "غير مفوَّض",
+    "ended": "انتهى التفويض",
+    "label": "المُسنَد إليه"
+  },
+  "attachmentPicker": {
+    "label": "المرفقات",
+    "remove": "إزالة {name}",
+    "invalid": "اختر ملفًا مدعومًا ضمن الحد المسموح للحجم.",
+    "limit": "عدد المرفقات كبير جدًا.",
+    "empty": "لا توجد مرفقات."
+  },
+  "autosave": {
+    "saving": "جارٍ الحفظ",
+    "saved": "تم الحفظ",
+    "offline": "غير متصل",
+    "failed": "فشل الحفظ",
+    "retry": "إعادة المحاولة"
+  },
+  "avatarUpload": {
+    "change": "تغيير الصورة",
+    "add": "إضافة صورة",
+    "remove": "إزالة الصورة",
+    "tooLarge": "الصورة أكبر من {max}",
+    "notImage": "اختر ملف صورة",
+    "picture": "صورة {name}"
+  },
+  "bottomSheetNav": {
+    "title": "التنقل",
+    "close": "إغلاق"
+  },
+  "bulkActions": {
+    "selected": "تم تحديد {n}",
+    "selectAll": "تحديد الكل",
+    "clear": "مسح",
+    "allSelected": "كل {noun} محدد",
+    "nothingToClear": "لا شيء لمسحه: حدّد {plural} أولًا",
+    "why": "حدّد {plural} لـ {action}",
+    "single": "حدّد {noun} واحدًا لـ {action}",
+    "label": "إجراءات التحديد",
+    "more": "المزيد من الإجراءات",
+    "noun": "عنصر"
+  },
+  "columnsMenu": {
+    "label": "الأعمدة",
+    "manage": "إدارة الأعمدة",
+    "first": "العمود الأول",
+    "makeFirst": "جعله العمود الأول",
+    "moveUp": "نقل {name} لأعلى",
+    "moveDown": "نقل {name} لأسفل",
+    "up": "نقل لأعلى",
+    "down": "نقل لأسفل",
+    "find": "البحث عن عمود",
+    "showAll": "إظهار الكل",
+    "hideAll": "إخفاء الكل",
+    "apply": "تطبيق",
+    "cancel": "إلغاء",
+    "shown": "تم إظهار {name}",
+    "hidden": "تم إخفاء {name}",
+    "isFirst": "{name} هو العمود الأول",
+    "moved": "{name}، الموضع {position} من {total}",
+    "row": "{name}{first}. المفتاحان Alt + السهم لأعلى أو لأسفل ينقلانه",
+    "firstMark": "، العمود الأول",
+    "none": "لا يوجد عمود مطابق"
+  },
+  "commandBar": {
+    "more": "المزيد من الإجراءات",
+    "actions": "إجراءات {label}",
+    "find": "بحث وعرض",
+    "selected": "تم تحديد {n}",
+    "hidden": " (مخفي {n} بسبب التصفيات)",
+    "clear": "مسح التحديد",
+    "clearName": "تم تحديد {n}، مسح التحديد",
+    "swapped": "تم تحديد {n}. إجراءات التحديد متاحة.",
+    "cleared": "تم مسح التحديد.",
+    "why": "حدّد {plural} لـ {action}",
+    "single": "حدّد {noun} واحدًا لـ {action}",
+    "preset": "أي",
+    "moreLabel": "المزيد من الإجراءات"
+  },
+  "commandPalette": {
+    "title": "الأوامر",
+    "close": "إغلاق"
+  },
+  "comparisonView": {
+    "label": "المقارنة",
+    "modes": "العرض",
+    "columns": "جنبًا إلى جنب",
+    "matrix": "جدول",
+    "slider": "شريط التمرير",
+    "onlyDifferences": "عرض الاختلافات فقط",
+    "changed": "تم تغييره",
+    "attribute": "السمة",
+    "position": "الموضع",
+    "none": "لا توجد اختلافات",
+    "one": "اختلاف واحد",
+    "many": "{n} اختلافات",
+    "empty": "—"
+  },
+  "connectedAccounts": {
+    "label": "الحسابات المتصلة",
+    "connect": "اتصال",
+    "disconnect": "قطع الاتصال",
+    "reconnect": "إعادة الاتصال",
+    "cancel": "إلغاء",
+    "connected": "متصل",
+    "disconnected": "غير متصل",
+    "error": "خطأ في الاتصال",
+    "as": "بصفة {account}",
+    "since": "منذ {date}",
+    "connectTitle": "الاتصال بـ {service}؟",
+    "connectMessage": "ستسجّل الدخول إلى {service} للسماح بذلك. سيتمكن Plenix من:",
+    "continue": "المتابعة إلى {service}",
+    "disconnectTitle": "قطع الاتصال بـ {service}؟",
+    "disconnectMessage": "يمكنك الاتصال به مرة أخرى في أي وقت.",
+    "done": "تم الاتصال بـ {service}",
+    "undone": "تم قطع الاتصال بـ {service}"
+  },
+  "deleteFlow": {
+    "title": "حذف {name}؟",
+    "titleMany": "حذف {count} {plural}؟",
+    "delete": "حذف",
+    "cancel": "إلغاء",
+    "permanent": "لا يمكن التراجع عن هذا.",
+    "more": "و{count} أخرى",
+    "typeLabel": "اكتب {phrase} للتأكيد",
+    "typeError": "اكتب {phrase} تمامًا كما هو معروض.",
+    "phraseMany": "حذف {count} {plural}",
+    "deleted": "تم حذف {what}",
+    "trashed": "تم نقل {what} إلى سلة المحذوفات",
+    "undo": "تراجع",
+    "retention": "استعد {them} من سلة المحذوفات خلال {days} يومًا.",
+    "it": "ه",
+    "them": "هم",
+    "names": "محذوف",
+    "noun": "عنصر"
+  },
+  "duplicateAction": {
+    "duplicate": "تكرار",
+    "copyOf": "نسخة من {name}",
+    "numbered": "{name} ({n})",
+    "title": "تكرار {noun}",
+    "name": "الاسم",
+    "from": "من {name}",
+    "also": "انسخ أيضًا",
+    "empty": "أدخل اسمًا.",
+    "taken": "يوجد {noun} باسم {name} بالفعل.",
+    "done": "تم التكرار باسم {name}",
+    "undo": "تراجع",
+    "cancel": "إلغاء",
+    "noun": "عنصر"
+  },
+  "fileBrowser": {
+    "label": "الملفات",
+    "root": "المكتبة",
+    "newFolder": "مجلد جديد",
+    "folderName": "اسم المجلد",
+    "create": "إنشاء",
+    "upload": "رفع",
+    "search": "البحث في هذا المجلد",
+    "folders": "المجلدات",
+    "path": "الموقع",
+    "count": "{n} عناصر",
+    "one": "عنصر واحد",
+    "empty": "هذا المجلد فارغ",
+    "emptyText": "ارفع ملفات أو أنشئ مجلدًا.",
+    "noMatch": "لا شيء يطابق «{q}»",
+    "download": "تنزيل",
+    "moveTo": "نقل إلى",
+    "delete": "حذف",
+    "noun": "عنصر",
+    "plural": "عناصر",
+    "drop": "أفلت الملفات لرفعها إلى {folder}",
+    "nameTaken": "يوجد ملف أو مجلد باسم «{name}» هنا بالفعل.",
+    "nameEmpty": "أعطِ المجلد اسمًا.",
+    "items": "{n} عناصر",
+    "item": "{n} عنصر"
+  },
+  "fileList": {
+    "sort": "ترتيب",
+    "sortBy": "الترتيب حسب {field}",
+    "field": "الترتيب حسب",
+    "order": "الترتيب",
+    "asc": "تصاعدي",
+    "desc": "تنازلي",
+    "name": "الاسم",
+    "size": "الحجم",
+    "modified": "تاريخ التعديل",
+    "owner": "المالك",
+    "status": "الحالة",
+    "count": "{n} عناصر",
+    "one": "عنصر واحد",
+    "empty": "لا يوجد شيء هنا بعد",
+    "open": "فتح",
+    "download": "تنزيل",
+    "rename": "إعادة تسمية…",
+    "delete": "حذف",
+    "moveTo": "نقل إلى",
+    "file": "ملف",
+    "files": "ملفات",
+    "folder": "مجلد",
+    "folders": "مجلدات",
+    "items": "{n} عناصر",
+    "item": "{n} عنصر"
+  },
+  "filePicker": {
+    "title": "اختيار ملفات",
+    "all": "كل الملفات",
+    "folders": "المجلدات",
+    "search": "البحث في الملفات",
+    "empty": "لا توجد ملفات مطابقة.",
+    "pick": "اختيار",
+    "cancel": "إلغاء",
+    "failed": "تعذّر اختيار الملفات. حاول مرة أخرى."
+  },
+  "filterBar": {
+    "label": "عوامل التصفية",
+    "more": "مزيد من عوامل التصفية",
+    "clearAll": "مسح الكل",
+    "one": "{label}: {value}",
+    "several": "{label} · {count}"
+  },
+  "navPane": {
+    "browse": "استعراض"
+  },
+  "notificationList": {
+    "label": "الإشعارات",
+    "empty": "لا توجد إشعارات",
+    "markAllRead": "تعليم الكل كمقروء",
+    "viewAll": "عرض الكل"
+  },
+  "peopleGroup": {
+    "team": "الفريق",
+    "group": "المجموعة",
+    "members": "{n} أعضاء",
+    "member": "{n} عضو",
+    "showMembers": "عرض الأعضاء",
+    "membersOf": "أعضاء {name}"
+  },
+  "permissionSummary": {
+    "can": "يمكنه",
+    "cannot": "لا يمكنه",
+    "manage": "إدارة الوصول",
+    "canSentence": "يمكنه {list}",
+    "cannotSentence": "لا يمكنه {list}"
+  },
+  "popconfirm": {
+    "cancel": "إلغاء"
+  },
+  "productCard": {
+    "sale": "تخفيض",
+    "outOfStock": "غير متوفر في المخزون",
+    "addToCart": "أضف إلى السلة",
+    "addToCartFor": "أضف {title} إلى السلة",
+    "now": "الآن",
+    "was": "كان",
+    "rating": "التقييم",
+    "reviews": "{n} مراجعات",
+    "review": "مراجعة واحدة",
+    "soldOut": "{title} غير متوفر في المخزون"
+  },
+  "publish": {
+    "publish": "نشر",
+    "publishNow": "النشر الآن",
+    "schedule": "جدولة",
+    "cancelSchedule": "إلغاء الجدولة",
+    "unpublish": "إلغاء النشر",
+    "cancel": "إلغاء",
+    "publishTitle": "نشر {name}؟",
+    "publishMessage": "سيصبح مرئيًا لـ {audience}.",
+    "unpublishTitle": "إلغاء نشر {name}؟",
+    "unpublishMessage": "سيُخفى عن {audience}. يمكنك نشره مرة أخرى.",
+    "scheduleTitle": "جدولة {name}",
+    "when": "النشر في",
+    "whenHint": "التاريخ والوقت، بحسب منطقتك الزمنية.",
+    "past": "اختر وقتًا في المستقبل.",
+    "empty": "اختر التاريخ والوقت.",
+    "publishedLine": "نُشر {at}",
+    "publishedBy": "نُشر {at} بواسطة {by}",
+    "scheduledLine": "سيُنشر {at}",
+    "scheduledBy": "سيُنشر {at}، جدولة {by}",
+    "draftLine": "غير منشور",
+    "published": "تم نشر {name}",
+    "scheduled": "تمت جدولة {name} في {at}",
+    "unpublished": "تم إلغاء نشر {name}",
+    "undo": "تراجع",
+    "everyone": "كل من لديه صلاحية الوصول",
+    "actions": "جارٍ النشر"
+  },
+  "queryBuilder": {
+    "builder": "المنشئ",
+    "text": "النص",
+    "viewLabel": "العرض",
+    "where": "حيث",
+    "and": "و",
+    "or": "أو",
+    "andWord": "و",
+    "orWord": "أو",
+    "join": "المطابقة",
+    "all": "كل القواعد",
+    "any": "أي قاعدة",
+    "addRule": "إضافة قاعدة",
+    "addGroup": "إضافة مجموعة",
+    "removeRule": "إزالة القاعدة",
+    "removeGroup": "إزالة المجموعة",
+    "field": "الحقل",
+    "operator": "العامل",
+    "value": "القيمة",
+    "rule": "القاعدة {n}",
+    "group": "المجموعة {n}",
+    "empty": "لا توجد قواعد: كل السجلات مطابقة.",
+    "everything": "كل سجل",
+    "matches": "{n} مطابقات",
+    "match": "{n} مطابقة",
+    "textTitle": "استعلام",
+    "added": "تمت إضافة القاعدة",
+    "groupAdded": "تمت إضافة المجموعة",
+    "removed": "تمت إزالة القاعدة",
+    "groupRemoved": "تمت إزالة المجموعة"
+  },
+  "renameAction": {
+    "label": "الاسم",
+    "rename": "إعادة تسمية",
+    "open": "إعادة تسمية…",
+    "title": "إعادة تسمية {name}",
+    "cancel": "إلغاء",
+    "empty": "أدخل اسمًا",
+    "slash": "لا يمكن أن يحتوي الاسم على / أو \\",
+    "taken": "يوجد عنصر باسم {name} هنا بالفعل",
+    "tooLong": "استخدم {max} حرفًا أو أقل",
+    "renamed": "تمت إعادة التسمية إلى {name}",
+    "failed": "تعذّر تغيير الاسم"
+  },
+  "renditionList": {
+    "label": "الصيغ المشتقة",
+    "name": "الاسم",
+    "format": "الصيغة",
+    "size": "الحجم",
+    "download": "تنزيل",
+    "empty": "لا توجد صيغ مشتقة."
+  },
+  "resourceList": {
+    "item": "عنصر",
+    "selectAll": "تحديد كل {nouns} ({n})",
+    "select": "تحديد {name}",
+    "count": "{n} {nouns}",
+    "selected": "تم تحديد {n} من {total}"
+  },
+  "retry": {
+    "title": "تعذّر التحميل",
+    "retry": "إعادة المحاولة",
+    "retryNow": "إعادة المحاولة الآن",
+    "retrying": "جارٍ إعادة المحاولة…",
+    "waiting": "إعادة المحاولة خلال {time}",
+    "attempt": "المحاولة {attempt} من {attempts}",
+    "stopped": "توقفت بعد {attempts} محاولات",
+    "dismiss": "تجاهل",
+    "status": "فشل"
+  },
+  "roleManager": {
+    "roles": "الأدوار",
+    "create": "إنشاء دور",
+    "createTitle": "إنشاء دور",
+    "name": "الاسم",
+    "description": "الوصف",
+    "descriptionHint": "جملة واحدة عمّا يستطيع أصحاب هذا الدور فعله.",
+    "startFrom": "البدء بصلاحيات",
+    "empty": "أدخل اسمًا.",
+    "taken": "يوجد دور باسم {name} بالفعل.",
+    "back": "كل الأدوار",
+    "members": "الأعضاء",
+    "member": "عضو",
+    "membersCount": "{n} أعضاء",
+    "memberCount": "{n} عضو",
+    "builtIn": "مدمج",
+    "custom": "مخصص",
+    "permissions": "الصلاحيات",
+    "builtInNote": "لا يمكن تغيير الأدوار المدمجة. انسخ أحدها لإنشاء دور خاص بك.",
+    "addMember": "إضافة عضو",
+    "remove": "إزالة {name}",
+    "lastMember": "يحتاج {role} إلى عضو واحد على الأقل. أضف شخصًا آخر أولًا.",
+    "noMembers": "لا أحد لديه هذا الدور بعد.",
+    "role": "دور",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "added": "تمت إضافة {name} إلى {role}",
+    "removed": "تمت إزالة {name} من {role}",
+    "created": "تم إنشاء {name}",
+    "access": "أصحاب دور {role}",
+    "people": "{n} أشخاص",
+    "peopleOne": "{n} شخص",
+    "allowed": "تم السماح بـ {permission} لدور {role}",
+    "denied": "لم يعد {permission} مسموحًا لدور {role}"
+  },
+  "searchWorkspace": {
+    "title": "بحث",
+    "selectAll": "تحديد الكل",
+    "allSelected": "كل {noun} محدد",
+    "placeholder": "بحث…",
+    "result": "نتيجة",
+    "results": "نتائج",
+    "searchField": "بحث في {nouns}",
+    "save": "حفظ البحث",
+    "filters": "عوامل التصفية",
+    "activeFilters": "عوامل التصفية النشطة",
+    "chip": "{label}: {value}",
+    "remove": "إزالة {text}",
+    "clearAll": "مسح الكل",
+    "view": "العرض",
+    "grid": "شبكة",
+    "table": "جدول",
+    "sort": "ترتيب",
+    "sortValue": "الترتيب: {value}",
+    "noMatchQuery": "لا شيء يطابق «{query}».",
+    "noMatchQueryFilters": "لا شيء يطابق «{query}» مع عوامل التصفية هذه.",
+    "noMatchFilters": "لا شيء يطابق عوامل التصفية هذه."
+  },
+  "secondaryPane": {
+    "expand": "توسيع {name}",
+    "collapse": "طيّ {name}",
+    "resize": "تغيير حجم {name}",
+    "close": "إغلاق {name}",
+    "back": "العودة إلى {name}"
+  },
+  "sessionTimeout": {
+    "warningTitle": "جلستك على وشك الانتهاء",
+    "warning": "سيتم تسجيل خروجك خلال {time} لأنك لم تكن نشطًا.",
+    "stay": "البقاء متصلًا",
+    "signOut": "تسجيل الخروج",
+    "signedOutTitle": "تم تسجيل خروجك",
+    "signedOut": "حفاظًا على أمانك، تم تسجيل خروجك بعد {minutes} دقيقة دون نشاط.",
+    "signedOutShort": "حفاظًا على أمانك، تم تسجيل خروجك لأنك لم تكن نشطًا.",
+    "saved": "تم حفظ تغييراتك.",
+    "signIn": "تسجيل الدخول مرة أخرى",
+    "left": "متبقي {time}",
+    "ended": "تم تسجيل الخروج"
+  },
+  "sortableList": {
+    "moveMenu": "نقل {name}",
+    "moveUp": "نقل لأعلى",
+    "moveDown": "نقل لأسفل",
+    "moveEarlier": "نقل لوقت أبكر",
+    "moveLater": "نقل لوقت أحدث",
+    "moveFirst": "نقل إلى البداية",
+    "moveLast": "نقل إلى النهاية",
+    "moveUpNamed": "نقل {name} لأعلى",
+    "moveDownNamed": "نقل {name} لأسفل"
+  },
+  "uploadManager": {
+    "dialogTitle": "رفع ملفات",
+    "queue": "عمليات الرفع",
+    "drop": "اسحب الملفات أو المجلدات وأفلتها هنا",
+    "or": "أو",
+    "chooseFiles": "اختيار ملفات",
+    "chooseFolder": "اختر مجلدًا",
+    "uploading": "جارٍ رفع {n} ملفات",
+    "uploadingOne": "جارٍ رفع ملف واحد",
+    "done": "اكتمل {n} عمليات رفع",
+    "doneOne": "اكتملت عملية رفع واحدة",
+    "failed": "فشلت {n} عمليات رفع",
+    "failedOne": "فشلت عملية رفع واحدة",
+    "none": "لا توجد عمليات رفع",
+    "progress": "تم رفع {done} من {total}",
+    "overall": "التقدم الإجمالي",
+    "waiting": "بالانتظار",
+    "uploaded": "تم الرفع",
+    "canceled": "أُلغي",
+    "cancelAll": "إلغاء الكل",
+    "clear": "مسح المكتملة",
+    "hide": "إخفاء عمليات الرفع",
+    "show": "إظهار عمليات الرفع",
+    "close": "إغلاق",
+    "finish": "تم",
+    "remove": "إزالة من القائمة",
+    "again": "الرفع مرة أخرى",
+    "tooLarge": "هذا الملف أكبر من {max}.",
+    "wrongType": "لا يمكن رفع هذا النوع من الملفات هنا.",
+    "error": "فشل الرفع. حاول مرة أخرى.",
+    "failedNamed": "فشل {name}: {reason}",
+    "status": "أُلغي"
+  },
+  "userCard": {
+    "online": "متصل",
+    "away": "غائب",
+    "busy": "مشغول",
+    "dnd": "عدم الإزعاج",
+    "offline": "غير متصل"
+  },
+  "versionCompare": {
+    "label": "مقارنة الإصدارات",
+    "compare": "مقارنة",
+    "with": "مع",
+    "swap": "تبديل",
+    "swapLabel": "تبديل الإصدارين",
+    "view": "العرض",
+    "columns": "جنبًا إلى جنب",
+    "slider": "شريط التمرير",
+    "text": "النص",
+    "by": "بواسطة {author}",
+    "diff": "التغييرات من {base} إلى {target}",
+    "added": "مضاف",
+    "removed": "محذوف",
+    "same": "لا توجد تغييرات في النص",
+    "summary": "أُضيف {added}، وحُذف {removed}",
+    "lines": "{n} أسطر",
+    "line": "سطر واحد",
+    "previous": "التغيير السابق",
+    "next": "التغيير التالي",
+    "at": "التغيير {n} من {total}",
+    "unchanged": "عرض {n} أسطر لم تتغير",
+    "empty": "اختر إصدارين للمقارنة."
+  },
+  "versionHistory": {
+    "label": "سجل الإصدارات",
+    "preview": "معاينة",
+    "restore": "استعادة",
+    "confirm": "استعادة هذا الإصدار؟",
+    "cancel": "إلغاء",
+    "failed": "تعذّرت استعادة الإصدار. حاول مرة أخرى.",
+    "restored": "تمت استعادة الإصدار",
+    "empty": "لا توجد إصدارات."
+  },
+  "viewMenu": {
+    "reset": "إعادة ضبط العرض",
+    "label": "العرض",
+    "layout": "التخطيط",
+    "list": "قائمة",
+    "gallery": "معرض",
+    "size": "حجم البطاقة (المعرض)",
+    "s": "صغير",
+    "m": "متوسط",
+    "l": "كبير",
+    "height": "ارتفاع الصف (القائمة)",
+    "short": "قصير",
+    "medium": "متوسط",
+    "tall": "طويل",
+    "extra-tall": "طويل جدًا"
+  },
+  "widgetGrid": {
+    "widget": "أداة",
+    "widgetLower": "أداة",
+    "move": "نقل {title} (مفاتيح الأسهم)",
+    "position": "{title}، الموضع {index} من {total}",
+    "earlier": "نقل لوقت أبكر",
+    "later": "نقل لوقت أحدث",
+    "first": "نقل إلى البداية",
+    "last": "نقل إلى النهاية"
+  },
+  "providers": {
+    "UnsavedGuard": {
+      "title": "المغادرة دون حفظ؟",
+      "message": "ستفقد تغييراتك.",
+      "leave": "مغادرة",
+      "stay": "متابعة التحرير"
+    },
+    "theme-boot": {
+      "compact": "مضغوط",
+      "standard": "قياسي",
+      "comfortable": "مريح"
+    }
+  },
+  "templates": {
+    "templates": {
+      "Templates": {
+        "empty": "لا توجد سجلات بعد",
+        "emptyDescription": "أنشئ سجلًا للبدء.",
+        "pane": "السجلات",
+        "sections": "في هذه الصفحة",
+        "retry": "حاول مرة أخرى",
+        "home": "الذهاب إلى الصفحة الرئيسية",
+        "search": "نتائج البحث",
+        "tools": "الأدوات",
+        "inspector": "الخيارات",
+        "detail": "التفاصيل",
+        "noSelection": "لم يتم تحديد شيء",
+        "noSelectionDescription": "اختر عنصرًا لعرضه هنا."
+      }
+    },
+    "Commerce": {
+      "Storefront": {
+        "layout": "معرض"
+      }
+    }
+  },
+  "utils": {
+    "clipboard": {
+      "copied": "تم النسخ",
+      "failed": "تعذّر النسخ. حدّد النص وانسخه يدويًا."
+    }
+  },
+  "aiButton": {
+    "label": "إجراءات الذكاء الاصطناعي",
+    "failed": "تعذّر إكمال هذا الإجراء. حاول مرة أخرى.",
+    "working": "جارٍ العمل"
+  },
+  "aiDisclaimer": {
+    "message": "قد يكون المحتوى المُنشأ بالذكاء الاصطناعي غير دقيق. راجع التفاصيل المهمة.",
+    "learn": "حول المحتوى المُنشأ بالذكاء الاصطناعي"
+  },
+  "announcement": {
+    "dismiss": "تجاهل الإعلان",
+    "failed": "تعذّر تجاهل هذا الإعلان. حاول مرة أخرى."
+  },
+  "banner": {
+    "dismiss": "تجاهل"
+  },
+  "chat": {
+    "thinking": "جارٍ التفكير",
+    "label": "الرسالة",
+    "placeholder": "اكتب رسالة",
+    "sendLabel": "إرسال"
+  },
+  "checklist": {
+    "dismiss": "تجاهل قائمة المهام",
+    "progress": "المهام المكتملة"
+  },
+  "comment": {
+    "edit": "تعديل",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "resolve": "حلّ",
+    "reopen": "إعادة فتح",
+    "edited": "مُعدَّل",
+    "resolved": "تمت معالجته",
+    "message": "تعليق",
+    "empty": "أدخل تعليقًا.",
+    "failed": "تعذّر الحفظ. حاول مرة أخرى."
+  },
+  "confidenceIndicator": {
+    "high": "ثقة عالية",
+    "medium": "ثقة متوسطة",
+    "low": "ثقة منخفضة",
+    "unknown": "درجة الثقة غير متاحة",
+    "label": "الثقة"
+  },
+  "loadingOverlay": {
+    "loading": "جارٍ التحميل",
+    "cancel": "إلغاء"
+  },
+  "mediaPlayer": {
+    "rate": "سرعة التشغيل",
+    "transcript": "عرض النص المكتوب",
+    "hideTranscript": "إخفاء النص المكتوب",
+    "pip": "صورة داخل صورة",
+    "exitPip": "الخروج من صورة داخل صورة",
+    "unsupported": "ميزة صورة داخل صورة غير متاحة.",
+    "failed": "تعذّر تشغيل هذا الملف.",
+    "pipFailed": "تعذّر تغيير وضع صورة داخل صورة. حاول مرة أخرى.",
+    "seek": "الانتقال إلى {time}",
+    "fallback": "فتح ملف الوسائط",
+    "volume": "مستوى الصوت",
+    "mute": "كتم الصوت",
+    "audioFailed": "تعذّر تشغيل مسار الصوت المنفصل. يُشغَّل الفيديو دون صوت."
+  },
+  "mentionInput": {
+    "add": "إضافة إشارة",
+    "choose": "اختر شخصًا لإشارته"
+  },
+  "promptSuggestions": {
+    "label": "اقتراحات الأوامر",
+    "empty": "لا توجد اقتراحات",
+    "failed": "تعذّر استخدام هذا الاقتراح. حاول مرة أخرى."
+  },
+  "refineMenu": {
+    "label": "تحسين",
+    "shorter": "اختصار النص",
+    "longer": "إطالة النص",
+    "tone": "تغيير النبرة",
+    "formal": "رسمية",
+    "casual": "عفوية",
+    "neutral": "محايدة",
+    "custom": "تعليمات مخصصة",
+    "prompt": "التعليمات",
+    "apply": "تطبيق التعليمات",
+    "cancel": "إلغاء",
+    "empty": "أدخل تعليمات.",
+    "failed": "تعذّر تحسين هذا النص. حاول مرة أخرى."
+  },
+  "suggestedEdit": {
+    "label": "تعديلات مقترحة",
+    "before": "قبل",
+    "after": "بعد",
+    "accept": "قبول",
+    "reject": "رفض",
+    "acceptAll": "قبول الكل",
+    "accepted": "مقبول",
+    "rejected": "مرفوض",
+    "empty": "لا توجد تعديلات مقترحة",
+    "failed": "تعذّر حفظ هذا القرار. حاول مرة أخرى."
+  },
+  "time": {
+    "now": "الآن"
+  },
+  "aiExplanation": {
+    "label": "لماذا هذا؟",
+    "title": "شرح الذكاء الاصطناعي",
+    "close": "إغلاق"
+  },
+  "accessRequest": {
+    "title": "طلب الوصول",
+    "description": "اطلب من المالك صلاحية الوصول إلى هذا المورد.",
+    "message": "رسالة إلى المالك",
+    "request": "طلب الوصول",
+    "pending": "تم طلب الوصول",
+    "approved": "تمت الموافقة على الوصول",
+    "denied": "تم رفض الوصول",
+    "open": "فتح المورد",
+    "failed": "تعذّر إرسال طلبك. حاول مرة أخرى."
+  },
+  "approvalWorkflow": {
+    "approve": "موافقة",
+    "changes": "طلب تعديلات",
+    "reject": "رفض",
+    "comment": "تعليق",
+    "reason": "اشرح سبب الحاجة إلى تعديلات.",
+    "failed": "تعذّر حفظ هذا القرار. تعليقك ما زال محفوظًا.",
+    "steps": "مراحل الموافقة",
+    "recorded": "تم تسجيل القرار"
+  },
+  "archiveRestore": {
+    "archive": "أرشفة",
+    "restore": "استعادة",
+    "archived": "مؤرشف",
+    "message": "استعد هذا السجل ليصبح نشطًا مرة أخرى.",
+    "failed": "تعذّر تحديث السجل. حاول مرة أخرى."
+  },
+  "assetGallery": {
+    "empty": "لا توجد صور",
+    "preview": "معاينة الصورة"
+  },
+  "auditLog": {
+    "actor": "المنفّذ",
+    "at": "الوقت",
+    "action": "الإجراء",
+    "target": "الهدف",
+    "changes": "التغييرات",
+    "view": "عرض التغييرات",
+    "field": "الحقل",
+    "before": "قبل",
+    "after": "بعد",
+    "close": "إغلاق"
+  },
+  "commentThread": {
+    "title": "التعليقات",
+    "reply": "رد",
+    "send": "إرسال الرد",
+    "resolve": "إغلاق النقاش",
+    "reopen": "إعادة فتح النقاش",
+    "resolved": "تمت معالجته",
+    "empty": "أدخل ردًا.",
+    "failed": "تعذّر الحفظ. حاول مرة أخرى."
+  },
+  "downloadManager": {
+    "title": "التنزيلات",
+    "empty": "لا توجد تنزيلات",
+    "queued": "في الانتظار",
+    "progress": "جارٍ التنزيل",
+    "ready": "جاهز",
+    "failed": "فشل التنزيل",
+    "actionFailed": "تعذّر إكمال إجراء التنزيل. حاول مرة أخرى."
+  },
+  "draftState": {
+    "draft": "مسودة",
+    "resume": "استئناف المسودة",
+    "discard": "تجاهل المسودة",
+    "confirm": "تجاهل هذه المسودة؟",
+    "message": "ستُزال هذه المسودة نهائيًا.",
+    "cancel": "الاحتفاظ بالمسودة",
+    "failed": "تعذّر تحديث المسودة. حاول مرة أخرى."
+  },
+  "exportDialog": {
+    "title": "تصدير",
+    "format": "الصيغة",
+    "scope": "النطاق",
+    "all": "كل السجلات",
+    "selection": "السجلات المحددة",
+    "background": "التصدير في الخلفية",
+    "export": "تصدير",
+    "cancel": "إلغاء",
+    "invalid": "اختر صيغة ونطاقًا متاحين.",
+    "failed": "تعذّر التصدير. حاول مرة أخرى.",
+    "ready": "التصدير جاهز",
+    "queued": "التصدير في قائمة الانتظار",
+    "download": "تنزيل ملف التصدير",
+    "done": "تم"
+  },
+  "featureIntro": {
+    "new": "جديد",
+    "whatsNew": "ما الجديد",
+    "gotIt": "فهمت",
+    "later": "ليس الآن",
+    "close": "إغلاق"
+  },
+  "filterPanel": {
+    "label": "تصفية",
+    "info": "تُعرض فقط السجلات التي تستوفي الشروط؛ والشرط غير المكتمل لا يؤثر في التصفية.",
+    "sub": "في هذا العرض، أظهر السجلات",
+    "where": "حيث",
+    "and": "و",
+    "or": "أو",
+    "empty": "لا شروط: تُعرض كل السجلات.",
+    "addCondition": "إضافة شرط",
+    "addGroup": "إضافة مجموعة شروط",
+    "remove": "إزالة {what}",
+    "condition": "شرط",
+    "group": "مجموعة شروط",
+    "value": "أدخل قيمة",
+    "choose": "اختر خيارات",
+    "field": "الحقل",
+    "operator": "العامل",
+    "join": "و أو أو"
+  },
+  "formFlow": {
+    "create": "إنشاء",
+    "save": "حفظ التغييرات",
+    "cancel": "إلغاء",
+    "failed": "تعذّر الحفظ. حاول مرة أخرى.",
+    "invalid": "تحقق من الحقول قبل الحفظ.",
+    "saved": "تم الحفظ",
+    "unsaved": "ستفقد تغييراتك.",
+    "close": "إغلاق"
+  },
+  "groupPanel": {
+    "label": "المجموعة",
+    "title": "التجميع حسب",
+    "info": "تُجمَّع الصفوف ذات القيمة نفسها تحت عنوان واحد؛ والمجموعة الفرعية تقسّم كل مجموعة مرة أخرى.",
+    "empty": "اجمع الصفوف التي تشترك في قيمة تحت عنوان واحد.",
+    "add": "إضافة مجموعة",
+    "addSub": "إضافة مجموعة فرعية",
+    "collapseAll": "طيّ الكل",
+    "expandAll": "توسيع الكل",
+    "more": "المزيد لـ {name}",
+    "hideEmpty": "إخفاء المجموعات الفارغة",
+    "remove": "إزالة التجميع حسب {name}",
+    "removeTip": "إزالة المجموعة",
+    "field": "الحقل",
+    "order": "الترتيب"
+  },
+  "helpPanel": {
+    "title": "مساعدة",
+    "search": "البحث في المساعدة",
+    "empty": "لا توجد مقالات مطابقة",
+    "back": "العودة إلى المقالات",
+    "read": "قراءة المقال كاملًا",
+    "close": "طيّ المساعدة"
+  },
+  "imageAnnotation": {
+    "title": "تعليقات توضيحية على الصورة",
+    "pin": "تثبيت",
+    "region": "المنطقة",
+    "location": "الموقع",
+    "comment": "تعليق",
+    "kind": "نوع التعليق التوضيحي",
+    "add": "إضافة تعليق توضيحي",
+    "empty": "أدخل موقعًا وتعليقًا.",
+    "failed": "تعذّر الحفظ. حاول مرة أخرى.",
+    "none": "لا توجد تعليقات توضيحية"
+  },
+  "importDialog": {
+    "title": "استيراد",
+    "file": "ملف",
+    "paste": "لصق البيانات",
+    "url": "رابط URL",
+    "choose": "اختر الملف المصدر",
+    "drop": "أفلت ملفًا هنا أو اخترْه أدناه.",
+    "none": "لم يتم اختيار ملف",
+    "import": "استيراد",
+    "cancel": "إلغاء",
+    "invalid": "اختر ملفًا مدعومًا أو الصق بيانات أو أدخل رابط HTTP.",
+    "failed": "تعذّر الاستيراد. مصدرك ما زال متاحًا.",
+    "unsaved": "سيُفقد مصدر الاستيراد."
+  },
+  "importWizard": {
+    "title": "استيراد السجلات",
+    "mapping": "مطابقة الأعمدة",
+    "review": "مراجعة",
+    "results": "النتائج",
+    "column": "عمود المصدر",
+    "choose": "اختر عمودًا",
+    "missing": "طابق كل الحقول المطلوبة.",
+    "invalid": "لا يحتوي المصدر على أعمدة أو صفوف صالحة للاستخدام.",
+    "done": "تم",
+    "imported": "اكتمل الاستيراد",
+    "source": "المصدر",
+    "cancel": "إلغاء",
+    "unsaved": "ستُفقد مطابقة الاستيراد."
+  },
+  "metadataEditor": {
+    "save": "حفظ البيانات الوصفية",
+    "reset": "إعادة ضبط",
+    "apply": "تطبيق {field}",
+    "required": "أدخل قيمة.",
+    "failed": "تعذّر حفظ البيانات الوصفية. تغييراتك ما زالت متاحة.",
+    "saved": "تم حفظ البيانات الوصفية",
+    "unsaved": "ستُفقد تغييرات البيانات الوصفية."
+  },
+  "onboarding": {
+    "start": "ابدأ",
+    "skip": "تخطّي الترحيب",
+    "tour": "جولة تعريفية",
+    "checklist": "ابدأ",
+    "close": "إغلاق"
+  },
+  "permissionsEditor": {
+    "label": "الصلاحيات",
+    "capability": "الإمكانية",
+    "subject": "عرض الصلاحيات لـ",
+    "save": "حفظ الصلاحيات",
+    "failed": "تعذّر حفظ الصلاحيات. حاول مرة أخرى.",
+    "unsaved": "لم يتم حفظ تغييرات الصلاحيات."
+  },
+  "presenceBar": {
+    "viewers": "يعرض",
+    "editors": "يحرّر",
+    "cursors": "المؤشرات",
+    "empty": "لا أحد غيرك هنا",
+    "view": "عرض الشخص"
+  },
+  "quickFilter": {
+    "preset": "أي"
+  },
+  "relatedAssets": {
+    "empty": "لا توجد أصول مرتبطة"
+  },
+  "saveAs": {
+    "title": "حفظ باسم",
+    "name": "الاسم",
+    "location": "الموقع",
+    "format": "الصيغة",
+    "save": "حفظ نسخة",
+    "cancel": "إلغاء",
+    "required": "أدخل اسمًا واختر موقعًا.",
+    "failed": "تعذّر حفظ النسخة. حاول مرة أخرى.",
+    "unsaved": "ستفقد تغييراتك."
+  },
+  "shareDialog": {
+    "title": "الحصة",
+    "people": "الأشخاص",
+    "link": "رابط",
+    "person": "الشخص",
+    "role": "الدور",
+    "add": "إضافة شخص",
+    "remove": "إزالة",
+    "save": "حفظ الوصول",
+    "cancel": "إلغاء",
+    "copy": "نسخ الرابط",
+    "access": "الوصول عبر الرابط",
+    "restricted": "فقط من لديهم صلاحية الوصول",
+    "anyone": "يمكن لأي شخص لديه الرابط العرض",
+    "nativeShare": "المشاركة عبر الجهاز",
+    "failed": "تعذّرت المشاركة. حاول مرة أخرى.",
+    "invalid": "اختر شخصًا ودورًا متاحًا.",
+    "unsaved": "ستُفقد تغييرات الوصول."
+  },
+  "shortcutsDialog": {
+    "title": "اختصارات لوحة المفاتيح",
+    "search": "البحث في الاختصارات",
+    "general": "عام",
+    "empty": "لا توجد اختصارات مطابقة",
+    "close": "إغلاق"
+  },
+  "sortPanel": {
+    "label": "ترتيب",
+    "title": "الترتيب حسب",
+    "within": "الترتيب داخل المجموعات حسب",
+    "info": "تُرتَّب الصفوف حسب الحقل الأول، ثم حسب الحقل التالي عند تساوي الأول.",
+    "empty": "لا ترتيب: تحتفظ الصفوف بترتيبها.",
+    "add": "إضافة ترتيب",
+    "addAnother": "إضافة ترتيب آخر",
+    "remove": "إزالة الترتيب حسب {name}",
+    "removeTip": "إزالة الترتيب",
+    "field": "الحقل",
+    "direction": "الاتجاه"
+  },
+  "tour": {
+    "next": "التالي",
+    "back": "رجوع",
+    "finish": "إنهاء الجولة",
+    "skip": "تخطّي الجولة",
+    "resume": "استئناف الجولة",
+    "close": "إغلاق",
+    "step": "{current} من {total}"
+  },
+  "trialUpgrade": {
+    "trial": "تجربة",
+    "compare": "مقارنة الخطط",
+    "title": "اختر خطة",
+    "plan": "الخطة",
+    "upgrade": "ترقية",
+    "cancel": "إلغاء",
+    "failed": "تعذّرت الترقية. حاول مرة أخرى.",
+    "upgraded": "تم تحديث الخطة"
+  },
+  "wizard": {
+    "back": "رجوع",
+    "next": "التالي",
+    "complete": "إنهاء",
+    "cancel": "إلغاء",
+    "summary": "مراجعة",
+    "invalid": "تحقق من هذه الخطوة قبل المتابعة.",
+    "failed": "تعذّر الحفظ. حاول مرة أخرى.",
+    "steps": "الخطوات"
+  },
+  "wizardDialog": {
+    "close": "إغلاق",
+    "unsaved": "ستفقد تغييراتك."
+  },
+  "breadcrumbs": {
+    "label": "مسار التنقل"
+  },
+  "colorSwatch": {
+    "label": "اللون"
+  },
+  "dialog": {
+    "confirmLabel": "حفظ",
+    "cancelLabel": "إلغاء",
+    "confirm": "تأكيد",
+    "cancel": "إلغاء",
+    "save": "حفظ"
+  },
+  "loading": {
+    "label": "جارٍ التحميل"
+  },
+  "rating": {
+    "label": "التقييم"
+  },
+  "tag": {
+    "label": "إضافة وسم"
+  },
+  "toast": {
+    "aria-label": "تجاهل",
+    "undo": "تراجع",
+    "dismiss": "تجاهل"
+  },
+  "actionBar": {
+    "label": "الإجراءات"
+  },
+  "appHeader": {
+    "aria-label": "التطبيقات"
+  },
+  "form": {
+    "label": "إجراءات النموذج"
+  },
+  "reviewFlow": {
+    "label": "بانتظار المراجعة",
+    "noun": "عنصر"
+  },
+  "collection": {
+    "selected": {
+      "=0": "لم يتم تحديد أي عنصر",
+      "one": "تم تحديد عنصر واحد",
+      "two": "تم تحديد عنصرين",
+      "few": "تم تحديد {count} عناصر",
+      "many": "تم تحديد {count} عنصرًا",
+      "other": "تم تحديد {count} عنصر"
+    }
   }
 };
   } },
@@ -21251,6 +24981,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.LocaleProvider = LocaleProvider;
 exports.createTranslator = createTranslator;
 exports.useLocale = useLocale;
+exports.useStrings = useStrings;
 var _react = _interopRequireDefault(require("react"));
 var _DirectionProvider = require("./DirectionProvider.jsx");
 var _direction = require("../utils/direction.js");
@@ -21278,7 +25009,11 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      children: the region's content
      useLocale(): { locale, dir, t, strings, plural, format }; format has number, unit, bytes, duration, compact, date,
        time, dateTime, relative, range, currency, percent, list, personName, address, phone and regionName
-     createTranslator(locale, catalogs, fallbackLocale): the same t/strings/plural API outside React
+     createTranslator(locale, catalogs, fallbackLocale): the same t/strings/plural API outside React, plus section(name): a
+       whole section merged across the catalogs
+     useStrings(section, strings): a component's words: its catalog section for the locale (the app's catalog, Plenix's
+       built-in language, English), with its strings prop on top (owner, arabic-words-37). Every built-in word lives in
+       i18n/en.js; check-system's built-in-words rule keeps English literals out of the components
    Behavior:
      Fallback: exact locale, language, configured fallback, then English. Missing messages return their key.
      Messages interpolate {name} as plain text. Plural messages are objects with one/other (or any Intl category),
@@ -21306,6 +25041,11 @@ const messageAt = (catalog, key) => {
   return String(key).split('.').reduce((node, part) => own(node, part) ? node[part] : undefined, catalog);
 };
 const text = (message, values) => String(message).replace(/\{(\w+)\}/g, (match, key) => own(values, key) ? String(values[key]) : match);
+
+// a plural message: an object whose keys are only plural categories (zero, one, two, few, many, other) or exact counts ("=0"),
+// with "other"; a section that merely has a key named "other" (TimeZoneSelect's "Other") is not one
+const PLURAL_KEY = /^(zero|one|two|few|many|other|=\d+)$/;
+const pluralMessage = v => !!v && typeof v === 'object' && !Array.isArray(v) && own(v, 'other') && Object.keys(v).every(k => PLURAL_KEY.test(k));
 function createTranslator(locale = 'en', catalogs = {}, fallbackLocale = 'en') {
   const language = canonical(locale),
     fallback = canonical(fallbackLocale);
@@ -21341,12 +25081,25 @@ function createTranslator(locale = 'en', catalogs = {}, fallbackLocale = 'en') {
     });
     return Object.fromEntries([...keys].map(key => [key, t(section + '.' + key, values)]));
   };
+  // a component's words: the whole section, merged across the catalogs (English at the bottom, the language on top); nested
+  // sections merge key by key, a plural message (an object with "other") is kept whole, so two languages never mix
+  const isPlural = pluralMessage;
+  const merge = (a, b) => {
+    if (!b || typeof b !== 'object' || Array.isArray(b) || isPlural(b)) return b === undefined ? a : b;
+    const out = Object.assign({}, a && typeof a === 'object' && !isPlural(a) ? a : {});
+    Object.keys(b).forEach(k => {
+      out[k] = merge(out[k], b[k]);
+    });
+    return out;
+  };
+  const section = name => sources.slice().reverse().reduce((acc, source) => merge(acc, messageAt(source, name)), {});
   return {
     locale: language,
     dir: (0, _direction.directionOf)(language),
     t,
     strings,
-    plural
+    plural,
+    section
   };
 }
 const FORMATTERS = {
@@ -21403,6 +25156,23 @@ function LocaleProvider({
     root: root
   }, children));
 }
+
+// a component's words (owner, arabic-words-37): its section of the catalogs for the locale, with the component's strings
+// prop on top (an app's own words still win). useStrings('pagination', strings) -> { label, range, previous, … }
+function useStrings(name, strings) {
+  const loc = useLocale();
+  return _react.default.useMemo(() => {
+    const base = loc.section(name);
+    if (!strings) return base;
+    const out = Object.assign({}, base);
+    Object.keys(strings).forEach(k => {
+      const v = strings[k],
+        b = base[k];
+      out[k] = v && typeof v === 'object' && !Array.isArray(v) && b && typeof b === 'object' && !Array.isArray(b) && !pluralMessage(v) ? Object.assign({}, b, v) : v;
+    });
+    return out;
+  }, [loc, name, strings]);
+}
 function useLocale() {
   const value = _react.default.useContext(LocaleContext);
   const language = canonical(F.formatLocale());
@@ -21447,14 +25217,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Previous is disabled on the first page; Next on the last.
      The current page carries aria-current="page".
 */
-const STRINGS = {
-  label: 'Pages',
-  range: '{first}–{last} of {total}',
-  previous: 'Previous page',
-  next: 'Next page',
-  page: 'Page {n}',
-  perPage: 'Per page'
-};
 const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
 function pagesToShow(page, count) {
   const set = new Set([1, count, page - 1, page, page + 1].filter(p => p >= 1 && p <= count));
@@ -21479,8 +25241,9 @@ function Pagination({
   className,
   ...rest
 }) {
-  // the words: the built-in ones, then the locale's (Arabic says the range its own way: "31 إلى 60 من 120"), then strings
-  const t = Object.assign({}, STRINGS, (0, _LocaleProvider.useLocale)().strings('pagination'), strings);
+  // the words: the catalog's for the locale (i18n/en.js, and Arabic says the range its own way: "31 إلى 60 من 120"),
+  // then the strings prop
+  const t = (0, _LocaleProvider.useStrings)('pagination', strings);
   const go = p => {
     if (p >= 1 && p <= pageCount && p !== page && onPageChange) onPageChange(p);
   };
@@ -82311,6 +86074,12 @@ Object.defineProperty(exports, "useSortable", {
   enumerable: true,
   get: function () {
     return _dnd.useSortable;
+  }
+});
+Object.defineProperty(exports, "useStrings", {
+  enumerable: true,
+  get: function () {
+    return _LocaleProvider.useStrings;
   }
 });
 Object.defineProperty(exports, "useTheme", {

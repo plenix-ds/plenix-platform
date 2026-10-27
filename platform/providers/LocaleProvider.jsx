@@ -20,7 +20,11 @@
      useDigits(): "arab" or "latn", the digits of the nearest LocaleProvider (the page's language when there is none)
      useLocale(): { locale, dir, digits, t, strings, plural, format }; format has number, unit, bytes, duration, compact, date,
        time, dateTime, relative, range, currency, percent, list, personName, address, phone and regionName
-     createTranslator(locale, catalogs, fallbackLocale): the same t/strings/plural API outside React
+     createTranslator(locale, catalogs, fallbackLocale): the same t/strings/plural API outside React, plus section(name): a
+       whole section merged across the catalogs
+     useStrings(section, strings): a component's words: its catalog section for the locale (the app's catalog, Plenix's
+       built-in language, English), with its strings prop on top (owner, arabic-words-37). Every built-in word lives in
+       i18n/en.js; check-system's built-in-words rule keeps English literals out of the components
    Behavior:
      Fallback: exact locale, language, configured fallback, then English. Missing messages return their key.
      Messages interpolate {name} as plain text. Plural messages are objects with one/other (or any Intl category),
@@ -47,6 +51,11 @@ const messageAt = (catalog, key) => {
   return String(key).split('.').reduce((node, part) => own(node, part) ? node[part] : undefined, catalog);
 };
 const text = (message, values) => String(message).replace(/\{(\w+)\}/g, (match, key) => own(values, key) ? String(values[key]) : match);
+
+// a plural message: an object whose keys are only plural categories (zero, one, two, few, many, other) or exact counts ("=0"),
+// with "other"; a section that merely has a key named "other" (TimeZoneSelect's "Other") is not one
+const PLURAL_KEY = /^(zero|one|two|few|many|other|=\d+)$/;
+const pluralMessage = (v) => !!v && typeof v === 'object' && !Array.isArray(v) && own(v, 'other') && Object.keys(v).every((k) => PLURAL_KEY.test(k));
 
 export function createTranslator(locale = 'en', catalogs = {}, fallbackLocale = 'en') {
   const language = canonical(locale), fallback = canonical(fallbackLocale);
@@ -75,7 +84,17 @@ export function createTranslator(locale = 'en', catalogs = {}, fallbackLocale = 
     });
     return Object.fromEntries([...keys].map((key) => [key, t(section + '.' + key, values)]));
   };
-  return { locale: language, dir: directionOf(language), t, strings, plural };
+  // a component's words: the whole section, merged across the catalogs (English at the bottom, the language on top); nested
+  // sections merge key by key, a plural message (an object with "other") is kept whole, so two languages never mix
+  const isPlural = pluralMessage;
+  const merge = (a, b) => {
+    if (!b || typeof b !== 'object' || Array.isArray(b) || isPlural(b)) return b === undefined ? a : b;
+    const out = Object.assign({}, a && typeof a === 'object' && !isPlural(a) ? a : {});
+    Object.keys(b).forEach((k) => { out[k] = merge(out[k], b[k]); });
+    return out;
+  };
+  const section = (name) => sources.slice().reverse().reduce((acc, source) => merge(acc, messageAt(source, name)), {});
+  return { locale: language, dir: directionOf(language), t, strings, plural, section };
 }
 
 const FORMATTERS = { number: ['formatNumber', 1], unit: ['formatUnit', 2], bytes: ['formatBytes', 1], duration: ['formatDuration', 1],
@@ -93,6 +112,22 @@ export function LocaleProvider({ locale, catalogs, messages, fallbackLocale = 'e
     return Object.assign(createTranslator(language, sources, fallbackLocale), { dir: dir || directionOf(language), digits: F.digitsOf(F.numeralLocale(language, digits === 'auto' ? undefined : digits)), format: bind(language, timeZone, digits === 'auto' ? undefined : digits) });
   }, [language, catalogs, messages, fallbackLocale, timeZone, dir, digits]);
   return <LocaleContext.Provider value={value}><DirectionProvider locale={language} dir={value.dir} root={root}>{children}</DirectionProvider></LocaleContext.Provider>;
+}
+
+// a component's words (owner, arabic-words-37): its section of the catalogs for the locale, with the component's strings
+// prop on top (an app's own words still win). useStrings('pagination', strings) -> { label, range, previous, … }
+export function useStrings(name, strings) {
+  const loc = useLocale();
+  return React.useMemo(() => {
+    const base = loc.section(name);
+    if (!strings) return base;
+    const out = Object.assign({}, base);
+    Object.keys(strings).forEach((k) => {
+      const v = strings[k], b = base[k];
+      out[k] = v && typeof v === 'object' && !Array.isArray(v) && b && typeof b === 'object' && !Array.isArray(b) && !pluralMessage(v) ? Object.assign({}, b, v) : v;
+    });
+    return out;
+  }, [loc, name, strings]);
 }
 
 export function useLocale() {
