@@ -1,109 +1,36 @@
-// Checks that both Plenix applications keep to the one Platform system. One command, no dependencies:
+// Checks that both Plenix applications keep to the one Platform system: structure, markup, files and generated code.
 //   node check-system.js        (or: npm run lint:system)
 // Exits with 1 and lists every finding when a rule is broken, so it can run in CI next to the build.
+// The style rules are not here (owner, style-plan-30: every style rule in exactly one place): Stylelint checks each
+// stylesheet (.stylelintrc.json, tools/stylelint/plenix.mjs) and check-style.js holds the Plenix style rules Stylelint
+// cannot check (tokens, hex, font sizes and other values in code, inline styles, defined tokens, cascade layers, selector
+// kinds, text contracts, the token-source rules). Both checks read the same files (check-common.js).
 //
-//   tokens      in code (JavaScript, JSX, HTML) every var(--…) is a Platform token (--plx-ref-, --plx-sys-, --plx-comp-) or a
-//               custom property the source declares; no old names. Stylesheets: Stylelint (plenix/token-tiers, style-plan-30)
-//   hex         no raw hex colors written in code (JavaScript, JSX and HTML; colors come from tokens). Stylesheets: Stylelint (color-no-hex)
-//   font-size   no font size written as a number in code: font sizes come from --plx-ref-font-size-* tokens. Stylesheets: Stylelint (raw lengths)
-//   (classes, every class a Platform stylesheet defines starts with plx- or is-, is Stylelint's: selector-class-pattern in
-//   .stylelintrc.json; style-plan-30, step 2)
 //   imports     every component and pattern stylesheet is imported by platform.css
 //   legacy      the retired files stay gone (suite/, tokens/legacy.css, the asset app's plenix.css and demo.css, system/nesting.css)
 //   embedded    the asset app has no embedded SVG and no data: URIs (icons are files)
-//   icon-size   no icon size written as a number (<Icon size={14}>, <Ico size={13}>, <Avatar size={28}>): an icon takes its
-//               control's grid icon (--plx-sys-control-icon-<role>) or a size token from CSS, so it sits on the 4px grid
-//   defined     every var(--plx-…) a file uses is declared somewhere (a renamed or removed token leaves no dangling use)
-//   inline-style (check-system.rules/inline-style.js; owner, 2026-10-13, replacing "no exceptions", batch 283): no style
-//               written in markup (style="…" in an HTML file, an HTML string or a JSX string attribute; a <style> block),
-//               and no hard-coded design value written by code (a color, a length with a unit, a font, a bare number) in
-//               el.style.x =, style.setProperty(…), setAttribute('style', …), cssText, style={{…}} or style: {…}. A
-//               JavaScript adjustment is allowed anywhere (React's style prop included): a var(--plx-…) reference or a value
-//               computed from tokens, defined styles or measured layout. A DataGrid's row height and cell padding stay the
-//               density's (tokens and classes): the style audit and the pages test check them at run time.
 //   generated   the token stylesheets and the standards' code (build-standards.js: providers/pageLayouts.js, system/layout-modes.css)
 //               are exactly what is generated from their JSON (platform/tokens/*.tokens.json, platform/standards/*.json);
 //               the token stylesheets are exactly what build-tokens.js writes from the token source (platform/tokens/*.tokens.json):
 //               tokens are edited in the JSON, never in the CSS (batch 158); the library parts' bundles (spec-parts.js,
 //               ds-sample-parts.css) and the library block of index.js and platform.css match their part files
-//   (palette and themeable, a stylesheet takes colors from roles and typefaces, weights, letter spacing, radius, borders,
-//   motion and opacity from the theme's scales, never --plx-ref-color- or the reference scales (batch 220), are Stylelint's:
-//   declaration-property-value-disallowed-list in .stylelintrc.json; style-plan-30, step 2)
-//   (raw-value, no length, time or color written as a number in a stylesheet declaration, is Stylelint's now: .stylelintrc.json; owner, tools-follow-up-26)
-//   palette-class an application never colors with a palette utility class (plx-u-text-gray-700…): components only
 //   audit       every page loads platform/dev/style-audit.js, which rejects inline styles and style blocks at run time
 //   page-layout an application never sets a page's layout mode (AppShell layout=, data-plx-layout): it says what the page is
 //               (<AppShell page="settings">) and the design system's layout standard (providers/pageLayouts.js) decides
 //   tables      every table is a DataGrid (the React renderer in the Plenix table style): no <table>, no table element made in code, no
 //               PropertyList table variant: every table is a Table (static) or a DataGrid, both on the React renderer (batches
 //               226, 229, 234). In stylesheets (no rule for the retired variant's class): Stylelint, selector-disallowed-list
-//   fonts       no call to Google Fonts: DM Sans and Reddit Mono are hosted with the Platform (platform/fonts, batch 227)
-//   media       no breakpoint written as a number in code (useMedia / matchMedia): the shell reads the breakpoint tokens
-//               (below('--plx-sys-shell-rail-below')); the theme boot script, which runs before the tokens load, excepted
 //   icon-names  (check-system.rules/icon-names.js) every icon named in source (<Icon name=…>, icon=…, icon: …, plx-icon--…)
 //               is in the Plenix set (platform/icons/map.json); an unknown name draws nothing
+//   and the other modules of check-system.rules/ that are not style rules (check-common.js, STYLE_MODULES): composition,
+//   links-not-buttons, semantic-html, settings-cards, table-geometry, use-of-color, copy, token-definitions
 const fs = require('fs');
 const path = require('path');
+const { ROOT, DAM, SPEC_PAGE, STYLE_MODULES, collect, reporter } = require('./check-common.js');
 
-const ROOT = __dirname;
-const DAM = path.join(ROOT, 'dam');
-const SUITE = ['dashboard', 'projects', 'messages', 'contacts', 'calendar', 'tasks', 'notes', 'bookmarks', 'files', 'settings'];
-const SKIP = /[\\/](node_modules|dist|vendor|Archived|archive|backups|audit|docs|handoff|capabilities|architecture|metadata|AI_CONTEXT|shared - Copy|Original 2026-09-23)([\\/]|$)/;
-// files that are not part of either application (kept for reference, never loaded)
-const NOT_LOADED = new Set([]);
-const SOURCES = [
-  // native-guidance.js is generated data: its code samples are Swift, Kotlin and Android XML (UIAlertAction style:,
-  // <style name=…>), shown as text in a code block, never markup a page renders (batch 341)
-  { dir: path.join(ROOT, 'platform'), app: 'platform', skip: /[\\/]design-system[\\/]native-guidance(-full)?\.js$/ },
-  { dir: path.join(ROOT, 'suite'), app: 'suite' },
-  ...SUITE.map((f) => ({ dir: path.join(ROOT, f), app: f, skip: /[\\/]app\.js$/ })),
-  { dir: path.join(DAM, 'app'), app: 'asset manager', skip: /[\\/]app[\\/]assets\.js$/ },
-  { dir: DAM, app: 'asset manager', flat: true },
-];
-const findings = [];
-const ALL = process.argv.includes('--all');   // list every finding, not the first 25 of each rule
-const rel = (f) => path.relative(path.dirname(ROOT), f).split(path.sep).join('/');
-const lineText = (file, n) => { try { return fs.readFileSync(file, 'utf8').split('\n')[n - 1] || ''; } catch { return ''; } };
-// a line of prose that names the rule (documentation in the design system) carries plx-allow-style
-const add = (rule, file, line, text) => (rule === 'inline-style' && line && /plx-allow-style/.test(lineText(file, line))) ? null : findings.push({ rule, where: rel(file) + (line ? ':' + line : ''), text: text.trim().slice(0, 140) });
+const files = collect();
+const { add, runModules, finish } = reporter();
 
-function walk(dir, flat, out) {
-  if (!fs.existsSync(dir)) return out;
-  for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
-    const f = path.join(dir, e.name);
-    if (SKIP.test(f)) continue;
-    if (e.isDirectory()) { if (!flat) walk(f, false, out); }
-    else if (/\.(css|js|jsx|html)$/.test(e.name)) out.push(f);
-  }
-  return out;
-}
-const files = [];
-for (const s of SOURCES) for (const f of walk(s.dir, s.flat, [])) {
-  if (s.skip && s.skip.test(f)) continue;
-  if (NOT_LOADED.has(path.relative(ROOT, f).split(path.sep).join('/'))) continue;
-  if (!files.some((x) => x.file === f)) files.push({ file: f, app: s.app });
-}
-
-// custom properties the applications declare for themselves (--ds-r on the spec page, set by a lab's script); the
-// retired legacy token file does not count, so its old names stay findings
-const DECLARED = new Set();
-for (const { file } of files) {
-  if (/tokens[\\/]legacy\.css$/.test(file)) continue;
-  const text = fs.readFileSync(file, 'utf8');
-  for (const m of text.matchAll(/(?:^|[;{\s'"])(--[a-z][a-z0-9-]*)\s*:/g)) if (!/^--plx-/.test(m[1])) DECLARED.add(m[1]);
-  for (const m of text.matchAll(/setProperty\(\s*['"](--[a-z][a-z0-9-]*)/g)) DECLARED.add(m[1]);
-}
-// every Platform token declared anywhere (token files, themes, component stylesheets, style objects that set one)
-const PLX = new Set();
-for (const { file } of files) {
-  const text = fs.readFileSync(file, 'utf8');
-  for (const m of text.matchAll(/(--plx-[\w-]+)\s*:/g)) PLX.add(m[1]);
-  for (const m of text.matchAll(/["'](--plx-[\w-]+)["']\s*[:,)]/g)) PLX.add(m[1]);
-}
-// inline-style: the rule is check-system.rules/inline-style.js (see its description above)
-const INLINE_STYLE_PENDING = [];   // every application converted (batches 150-151)
-const pendingStyles = {};
-const SPEC_PAGE = /[\\/]platform[\\/]design-system[\\/]/;
 for (const { file } of files) {
   if (!/\.(jsx|js|html)$/.test(file)) continue;
   const text = fs.readFileSync(file, 'utf8');
@@ -124,64 +51,16 @@ for (const { file } of files) {
       add('tables', file, lineOf(m.index), 'not a DataGrid: ' + text.slice(m.index, m.index + 60).split('\n')[0]);
     }
   }
-  // fonts: the typefaces are hosted with the Platform (platform/fonts, system/fonts.css, batch 227): no page calls Google
-  if (!/[\\/]dist[\\/]|(^|[\\/])(app|assets)\.js$/.test(file)) {
-    for (const m of text.matchAll(/fonts\.(googleapis|gstatic)\.com/g)) add('fonts', file, lineOf(m.index), 'a call to Google Fonts: ' + text.slice(Math.max(0, m.index - 20), m.index + 40).split('\n')[0]);
-  }
-  // inline-style: check-system.rules/inline-style.js (style in markup and hard-coded values; JavaScript adjustments from tokens allowed)
 }
 
+// the asset app: no embedded pictures
 for (const { file } of files) {
-  const text = fs.readFileSync(file, 'utf8');
-  const lines = text.split(/\r?\n/);
-  const own = DECLARED;
-  const isCode = /\.(js|jsx|html)$/.test(file);
-  lines.forEach((line, i) => {
-    const n = i + 1;
-    // defined: a used token exists (a name ending in "-" is built in code, e.g. 'var(--plx-ref-radius-' + n + 'px)')
-    for (const m of line.matchAll(/var\(\s*(--plx-[a-z0-9-]*[a-z0-9])(?![\w-])/g)) if (!PLX.has(m[1])) add('defined', file, n, m[1] + ' is not declared anywhere');
-    // tokens, in code (a stylesheet's are Stylelint's: plenix/token-tiers)
-    if (!/\.css$/.test(file)) for (const m of line.matchAll(/var\(\s*(--[a-z][a-z0-9-]*)/g)) {
-      // the design system's samples (--ds-sample-<property>) are set at run time by DS.sample (ds.js)
-      // the three token tiers, the state variables (Styling Standard 4.1: --plx-state-<component>-…, never inherited) and the
-      // token layers build-tokens.js writes (--plx-ctx-<interaction|density|base>-<token>: one rule per context picks)
-      if (/^--plx-(ref|sys|comp|state|ctx)-/.test(m[1]) || own.has(m[1]) || (SPEC_PAGE.test(file) && /^--ds-sample-[a-z-]+$/.test(m[1]))) continue;
-      add('tokens', file, n, m[1] + ' in: ' + line);
-    }
-    // hex colors: a # with 3, 4, 6 or 8 hex digits where a value starts (after : ( , = or a quote), not in comments or
-    // prose (an issue number); a color a person chose, kept as data, carries a plx-allow-hex comment on its line
-    if (isCode && !/plx-allow-hex/.test(line)) {
-      const code = line.replace(/\/\*.*?\*\/|\/\/.*$/g, '');
-      for (const m of code.matchAll(/(?:[:(,'"=]\s*)#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})\b(?![\w-])/g)) {
-        if (/href=|id=|url\(/.test(code.slice(Math.max(0, m.index - 12), m.index + 1))) continue;
-        add('hex', file, n, '#' + m[1] + ' in: ' + line);
-      }
-    }
-    // icon sizes written as numbers (Platform and applications)
-    if (isCode && /<(Icon|Ico|Avatar)\b[^>]*\bsize=\{\s*\d+\s*\}/.test(line)) add('icon-size', file, n, line);
-    // breakpoints written as numbers in code
-    if (isCode && !/theme-boot\.js$/.test(file) && /(useMedia|matchMedia)\(\s*['"][^'"]*\d+(px|rem|em)/.test(line)) add('media', file, n, line);
-    // font sizes written as numbers
-    if (!/tokens[\\/]/.test(file)) {
-      if (isCode && /fontSize\s*[:=]\s*['"]?[0-9.]+(px|rem|em|pt)?['"]?\s*[,}]/.test(line)) add('font-size', file, n, line);
-      if (isCode && /font-size\s*:\s*[0-9.]+(px|rem|em|pt)/.test(line)) add('font-size', file, n, line);
-    }
-  });
-  // the asset app: no embedded pictures
   if (/[\\/]Plenix[\\/]dam[\\/]/.test(file)) {
-    lines.forEach((line, i) => {
+    fs.readFileSync(file, 'utf8').split(/\r?\n/).forEach((line, i) => {
       if (/data:(image|font|application)\//.test(line)) add('embedded', file, i + 1, 'data: URI in: ' + line);
       if (/<svg[\s>]/.test(line)) add('embedded', file, i + 1, 'embedded SVG in: ' + line);
     });
   }
-}
-
-// palette-class: an application never colors with a palette utility (plx-u-text-gray-700, plx-u-bg-white…): its look comes
-// from Platform components and their tokens (the owner, batches 199–202)
-for (const { file, app } of files) {
-  if (app === 'platform' || !/\.(jsx|js|html)$/.test(file)) continue;
-  const text = fs.readFileSync(file, 'utf8');
-  for (const m of text.matchAll(/plx-u-(?:bg|text|border|border-[trbl]|accent|outline)-(?:white|black|gray-\d+|blue-\d+|red-\d+|green-\d+|brown-\d+|purple-\d+)(?![\w-])/g)) add('palette-class', file, text.slice(0, m.index).split('\n').length, m[0]);
 }
 // audit: every page loads the style audit (platform/dev/style-audit.js), which rejects at run time any style that does
 // not come from the design system
@@ -212,21 +91,8 @@ for (const f of [path.join(ROOT, 'shared'), path.join(ROOT, 'platform', 'system'
   if (fs.existsSync(f)) add('legacy', f, 0, 'retired file or folder is back');
 }
 
-// rules kept as their own modules (check-system.rules/<name>.js: { check({ files, add }) }; the library waves, batch 347)
-const RULES_DIR = path.join(ROOT, 'check-system.rules');
-// a module without check() is run elsewhere: logical-properties.js by Stylelint (tools/stylelint/plenix.mjs; style-plan-30)
-if (fs.existsSync(RULES_DIR)) for (const f of fs.readdirSync(RULES_DIR).filter((x) => /\.js$/.test(x)).sort()) {
-  const rule = require(path.join(RULES_DIR, f));
-  if (typeof rule.check === 'function') rule.check({ files, add });
-}
+// rules kept as their own modules (check-system.rules/<name>.js: { check({ files, add }) }; the library waves, batch 347),
+// except the style rules (check-common.js, STYLE_MODULES), which check-style.js runs
+runModules(files, (name) => !STYLE_MODULES.includes(name));
 
-const byRule = {};
-for (const f of findings) (byRule[f.rule] = byRule[f.rule] || []).push(f);
-for (const rule of Object.keys(byRule)) {
-  console.log(rule + ': ' + byRule[rule].length);
-  byRule[rule].slice(0, ALL ? undefined : 25).forEach((f) => console.log('  ' + f.where + '  ' + f.text));
-  if (!ALL && byRule[rule].length > 25) console.log('  … and ' + (byRule[rule].length - 25) + ' more');
-}
-if (Object.keys(pendingStyles).length) console.log('inline styles still to convert (INLINE_STYLE_PENDING): ' + Object.keys(pendingStyles).map((a) => a + ' ' + pendingStyles[a]).join(', '));
-console.log(findings.length ? 'SYSTEM_FAIL (' + findings.length + ' findings in ' + files.length + ' files)' : 'SYSTEM_OK (' + files.length + ' files)');
-process.exit(findings.length ? 1 : 0);
+finish('SYSTEM_OK', 'SYSTEM_FAIL', files.length);
