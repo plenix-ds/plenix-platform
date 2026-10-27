@@ -204,7 +204,8 @@ export default {
     "saved": "Saved",
     "offline": "Offline",
     "failed": "Save failed",
-    "retry": "Retry"
+    "retry": "Retry",
+    "unsaved": "Your changes have not been saved."
   },
   "avatar": {
     "online": "Online",
@@ -1980,5 +1981,13 @@ export default {
   "splitView": {
     "firstLabel": "First panel",
     "maxWidth": "The other pane needs at least {n}px"
+  },
+  "field": {
+    "left": "{n} characters left",
+    "over": "{n} characters too many",
+    "about": "About {label}"
+  },
+  "barActions": {
+    "moreLabel": "More actions"
   }
 };

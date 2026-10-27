@@ -22,7 +22,10 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-export function ActionBar({ label = 'Actions', sticky = true, className, children }) {
+export function ActionBar({ label, sticky = true, className, children }) {
+  const tw = useStrings('actionBar');
+  if (label === undefined) label = tw.label;
   return <div role="group" aria-label={label} className={cx('plx-action-bar', !sticky && 'plx-action-bar--static', className)}>{children}</div>;
 }

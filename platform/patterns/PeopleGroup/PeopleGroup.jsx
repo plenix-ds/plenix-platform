@@ -38,8 +38,8 @@ import { IconTile } from '../../components/IconTile/IconTile.jsx';
 import { Link } from '../../components/Link/Link.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { VisuallyHidden } from '../../components/VisuallyHidden/VisuallyHidden.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { team: 'Team', group: 'Group', members: '{n} members', member: '{n} member', showMembers: 'Show members', membersOf: 'Members of {name}' };
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 
 // "8 members" with the number in the data font
@@ -50,7 +50,7 @@ function Members({ n, t }) {
 }
 
 export function PeopleGroup({ name, kind = 'team', description, members, count, max = 4, src, source, href, onShowMembers, strings, className, ...rest }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('peopleGroup', strings);
   const group = kind === 'group';
   const kindWord = group ? t.group : t.team;
   const showAvatars = !group && members && members.length;

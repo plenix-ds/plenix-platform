@@ -35,15 +35,14 @@ import { cx } from '../../utils/cx.js';
 import { useHotkey, isMac } from '../../utils/hotkey.js';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { CommandMenu } from '../../components/CommandMenu/CommandMenu.jsx';
-
-const STRINGS = { title: 'Commands', close: 'Close' };
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 // a one-step binding as aria-keyshortcuts writes it (Mod+K: Control+K, or Meta+K on a Mac)
 const keyshortcut = (b) => (/\s/.test(String(b).trim()) ? undefined : String(b).trim().split('+').map((k) => (/^mod$/i.test(k) ? (isMac() ? 'Meta' : 'Control') : /^ctrl$/i.test(k) ? 'Control' : k)).join('+'));
 
 export function CommandPalette({ items = [], hotkey = 'Mod+K', scope, trigger, open: openProp, defaultOpen = false, onOpenChange, title, placeholder,
   loading, query, onQueryChange, filter, onSelect, strings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('commandPalette', strings);
   const controlled = openProp !== undefined;
   const [own, setOwn] = React.useState(!!defaultOpen);
   const open = controlled ? !!openProp : own;

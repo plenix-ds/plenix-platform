@@ -896,7 +896,8 @@ export default {
     "saved": "تم الحفظ",
     "offline": "غير متصل",
     "failed": "فشل الحفظ",
-    "retry": "إعادة المحاولة"
+    "retry": "إعادة المحاولة",
+    "unsaved": "لم تُحفظ تغييراتك."
   },
   "avatarUpload": {
     "change": "تغيير الصورة",
@@ -1996,5 +1997,13 @@ export default {
   "splitView": {
     "firstLabel": "اللوحة الأولى",
     "maxWidth": "تحتاج اللوحة الأخرى إلى {n} بكسل على الأقل"
+  },
+  "field": {
+    "left": "الأحرف المتبقية: {n}",
+    "over": "أحرف زائدة: {n}",
+    "about": "معلومات عن {label}"
+  },
+  "barActions": {
+    "moreLabel": "المزيد من الإجراءات"
   }
 };

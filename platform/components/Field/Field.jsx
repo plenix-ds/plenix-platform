@@ -18,7 +18,7 @@
        field (FieldLayoutContext: a two-column Form makes its fields inline), else "stacked"
      counter: a character counter at the end of the help line: true (the limit is the control's maxLength) or the limit
        as a number; default none
-     strings: the counter's words for screen readers: { left: '{n} characters left', over: '{n} characters too many' }
+     strings: its words, from the catalog's field section (useStrings): { left: '{n} characters left', over: '{n} characters too many', about: 'About {label}' }
      labelWidth: the width of the label column, as a size name (adds plx-field--label-<value>)
      type, inputMode, autoComplete, enterKeyHint: keyboard and autofill hints handed to the control (Platforms Standard 3.5),
        unless it sets its own
@@ -41,11 +41,11 @@ import { useTruncated } from '../../utils/overflow.js';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';
 import { announce } from '../../utils/announce.jsx';
 import { formatNumber } from '../../utils/format.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 // the layout a Form gives the fields inside it (Form's layout "two-column" makes them inline); a Field's own layout wins
 export const FieldLayoutContext = React.createContext(null);
 
-const COUNTER_STRINGS = { left: '{n} characters left', over: '{n} characters too many' };
 const fill = (t, n) => String(t).replace('{n}', formatNumber(n));
 
 export function Field({ label, hideLabel = false, description, error, required = false, info, infoLabel, layout, labelWidth, counter, strings, type, inputMode, autoComplete, enterKeyHint, className, children, ...rest }) {
@@ -63,7 +63,7 @@ export function Field({ label, hideLabel = false, description, error, required =
   const [typed, setTyped] = React.useState(() => String(child.props.defaultValue == null ? '' : child.props.defaultValue).length);
   const length = child.props.value != null ? String(child.props.value).length : typed;
   const over = max > 0 && length > max;
-  const t = Object.assign({}, COUNTER_STRINGS, strings);
+  const t = useStrings('field', strings);
   const countId = max ? controlId + '-c' : undefined;
   const near = max > 0 && max - length <= Math.ceil(max / 10);
   const said = React.useRef(null);
@@ -92,7 +92,7 @@ export function Field({ label, hideLabel = false, description, error, required =
         <Tooltip content={label} disabled={!cut} className="plx-field__label-tip">
           <label ref={labelRef} className="plx-field__label" htmlFor={child.props.id || controlId}>{label}{required ? <span className="plx-field__required" aria-hidden="true"> *</span> : null}</label>
         </Tooltip>
-        {info ? <button type="button" className="plx-field__info" aria-label={infoLabel || 'About ' + label} aria-expanded={showInfo} onClick={() => setShowInfo(!showInfo)}>i</button> : null}
+        {info ? <button type="button" className="plx-field__info" aria-label={infoLabel || t.about.replace('{label}', label)} aria-expanded={showInfo} onClick={() => setShowInfo(!showInfo)}>i</button> : null}
         {lay === 'row' && description ? <div className="plx-field__description" id={descId}>{description}</div> : null}
       </div>
       <div className="plx-field__control">
