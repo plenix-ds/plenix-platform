@@ -50,7 +50,7 @@ One design system and the suite of applications built on it, owned by one person
 ## How to work
 
 - **Tests and checks only before a push (owner, 2026-10-26).** The owner's words: "so i want the tests checks to only be done on a PUSH!!!"
-  - Commit freely while working. Run the tests and checks (`node build-app.js`, `node check-system.js`, `node check-spec.js`, the tests that cover the change) only right before a push.
+  - Commit freely while working. Run the tests and checks (`node build-app.js`, `node check-system.js`, `node check-style.js`, `npm run lint:css`, `node check-spec.js`, the tests that cover the change) only right before a push.
   - The full suite runs on the release gate (the sharded CI full run on the release commit), not on each commit.
 - **Show me, then ship it (owner, 2026-10-26).**
   - "Show me" comes first: a live preview and one picture, with no build, no tests and no PR.
@@ -78,7 +78,7 @@ One design system and the suite of applications built on it, owned by one person
   - Utilities has no style-audit check (Pages runs the style audit on every page).
   - Which Platform parts the test site uses is Site coverage's alone; Component settings checks only that each token works.
   - Dark mode, the themes and the densities are checked only on demand (`theme`, `density`) until dark mode work starts (#205).
-- Gates before finishing any change: `node build-app.js`, `node check-system.js` (SYSTEM_OK), `node check-spec.js` (SPEC_OK).
+- Gates before finishing any change: `node build-app.js`, `node check-system.js` (SYSTEM_OK), `node check-style.js` (STYLE_OK), `npm run lint:css` (no errors), `node check-spec.js` (SPEC_OK).
   After a spec change, `node build-spec-parts.js` (build-app runs it).
 - Generated files (never edit by hand): `platform/dist/platform.js`, `<app>/app.js`, `platform/system/steps.css`,
   `platform/system/tokens/*.css`, `platform/tokens/tokens.index.json`, `platform/components/Icon/icon.css`,

@@ -59,5 +59,5 @@ to the CDN (`/cdn/<version>/vendor/echarts/`) and the React package (`dist/vendo
    (as `LICENSE-tslib`).
 5. Record the versions, sizes and SHA-256 values (`sha256sum echarts.min.js LICENSE* NOTICE`) and the date here and in
    `../README.md`.
-6. Run `node build-app.js`, `node check-system.js`, `node check-spec.js`, the tests, and look at every chart page of the
+6. Run `node build-app.js`, `node check-system.js`, `node check-style.js`, `npm run lint:css`, `node check-spec.js`, the tests, and look at every chart page of the
    design spec.

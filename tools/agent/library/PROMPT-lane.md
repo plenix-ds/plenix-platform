@@ -23,7 +23,7 @@ Before building a leaf, check it is not already answered: grep platform/design-s
 - Never kill processes you did not start. Temporary scripts go in YOUR OWN session scratchpad.
 
 ## Checks (all must pass in your worktree before you report)
-node --check on every .js you wrote; node build-app.js; node check-system.js → SYSTEM_OK; node check-spec.js → SPEC_OK; LABS_ONLY=<your lab ids> LABS_PORT={LP} node tests/labs.test.js; with CHANGED_BASE=HEAD and your ports: tests/typography.test.js and tests/pages.test.js once at the end (accessibility is on demand, owner only); node tools/agent/native/check.js on your native fragments → ALL OK; look at each new page (light and dark) with a small puppeteer script (tests/lib.js serve/launch, your own port).
+node --check on every .js you wrote; node build-app.js; node check-system.js → SYSTEM_OK; node check-style.js → STYLE_OK; npm run lint:css → no errors; node check-spec.js → SPEC_OK; LABS_ONLY=<your lab ids> LABS_PORT={LP} node tests/labs.test.js; with CHANGED_BASE=HEAD and your ports: tests/typography.test.js and tests/pages.test.js once at the end (accessibility is on demand, owner only); node tools/agent/native/check.js on your native fragments → ALL OK; look at each new page (light and dark) with a small puppeteer script (tests/lib.js serve/launch, your own port).
 
 ## Do not
 Commit, push, release or deploy. Edit the main checkout (C:\Users\Administrator\Documents\Plenix). Edit the shared files listed in BRIEF-lane.md "Never edit".

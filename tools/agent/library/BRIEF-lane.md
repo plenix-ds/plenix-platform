@@ -121,7 +121,7 @@ An extended component's new tokens go in components/<component>.tokens.json too 
 ## Checks (all must pass before you report)
 - node --check on every .js you wrote
 - node build-app.js (it runs build-exports.js and build-spec-parts.js first)
-- node check-system.js → SYSTEM_OK
+- node check-system.js → SYSTEM_OK; node check-style.js → STYLE_OK; npm run lint:css → no errors
 - node check-spec.js → SPEC_OK (rules records, parts, variants, states, api)
 - LABS_ONLY=<your lab ids> LABS_PORT=<8831 lane A | 8832 lane B | 8833 lane C> node tests/labs.test.js → ok for each
 - the tests for what you touched (BRIEF-web.md list), with your own ports; node tests/pages.test.js once at the end

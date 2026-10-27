@@ -75,7 +75,7 @@ properties included. Inheritance is not an overlap. There are no exceptions; wha
 
 ## Proof (for every change)
 
-- `node build-app.js`, `node check-system.js` (SYSTEM_OK, apart from findings that are not yours), `node check-spec.js`
+- `node build-app.js`, `node check-system.js` and `node check-style.js` (SYSTEM_OK, STYLE_OK, apart from findings that are not yours), `npm run lint:css`, `node check-spec.js`
   (a new modifier needs a variant card or a `NOT_VARIANTS` reason).
 - `node tests/selector-kinds.test.js` and `node tests/zero-overlap.test.js` stay OK.
 - `node tests/clash-audit.js --strict --check --pages <the pages that use it>`.
