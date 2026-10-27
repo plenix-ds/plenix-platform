@@ -179,8 +179,12 @@ function measure() {
   for (const f of cssFiles()) {
     const r = rel(f), { rules, props } = parse(fs.readFileSync(f, 'utf8'));
     sheets.push({ file: r, rules, props });
+    let prev = null;   // brand.css splits a rule that mixed !important and plain declarations in two (same selectors, the first weighed): count the pair once
     for (const x of rules) {
-      for (const s of splitList(x.sel)) {
+      const plain = x.sel.replace(/:not\(#plenix\)/g, ''), isPair = prev !== null && prev === plain && x.sel === plain; prev = x.sel !== plain ? plain : null;
+      if (isPair) continue;
+      // services/auth/brand.css weighs its rules with :not(#plenix) instead of !important (issue 249): that is weight, not structure
+      for (const s of splitList(x.sel).map((t) => t.replace(/:not\(#plenix\)/g, ''))) {
         const c = classify(s, x); if (!c.problem) continue;
         const key = c.problem + ' | ' + s;
         const k = found[r] = found[r] || {}; k[key] = (k[key] || 0) + 1;
