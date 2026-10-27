@@ -53,7 +53,7 @@ components:
   schemas:
     Member:
       type: object
-      properties: { memberId: { type: string }, name: { type: string }, role: { type: string }, picture: { type: string, nullable: true }, disabledReason: { type: string, nullable: true }, weight: { type: number }, present: { type: boolean }, vote: { type: string, enum: [approve, deny, abstain], nullable: true } }
+      properties: { memberId: { type: string }, name: { type: string }, role: { type: string }, picture: { type: string, nullable: true }, disabledReason: { type: string, nullable: true }, weight: { type: number }, present: { type: boolean }, vote: { type: string, enum: [approve, deny, abstain], nullable: true }, voteHidden: { type: boolean, description: true when this member's choice is held back from the caller (settings.liveVisibility); vote is then null and the screen says it is hidden, not that nobody voted } }
     Outcome:
       type: object
       description: The result of count() in src/count.js (cut down for the caller by viewFor()).
@@ -68,7 +68,7 @@ components:
         result: { type: string, enum: [open, passing, failing, tied, no-quorum, passed, failed] }
     EventView:
       type: object
-      properties: { id: { type: string }, title: { type: string }, status: { type: string, enum: [open, closed, cancelled] }, version: { type: integer }, settings: { type: object }, members: { type: array, items: { $ref: '#/components/schemas/Member' } }, outcome: { $ref: '#/components/schemas/Outcome' } }
+      properties: { id: { type: string }, title: { type: string }, status: { type: string, enum: [open, closed, cancelled] }, version: { type: integer }, settings: { type: object }, votesHidden: { type: boolean, description: true when other members' choices are held back from this caller }, members: { type: array, items: { $ref: '#/components/schemas/Member' } }, outcome: { $ref: '#/components/schemas/Outcome' } }
     BallotResult:
       type: object
       properties: { version: { type: integer }, member: { $ref: '#/components/schemas/Member' }, outcome: { $ref: '#/components/schemas/Outcome' } }

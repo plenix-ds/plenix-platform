@@ -27,8 +27,8 @@ export function createVoteService({ canVote = () => true, canManage = () => true
   const viewOf = (ev, caller) => {
     const st = settingsOf(ev), full = outcomeOf(ev), v = viewFor(full, ballotList(ev), st, { status: ev.status, memberId: caller.id, canManage: canManage(caller, ev.id) });
     const votes = new Map(v.ballots.map((b) => [b.memberId, b.option]));
-    return { id: ev.id, title: ev.title, status: ev.status, version: ev.version, settings: st, outcome: v.outcome,
-      members: [...ev.members.values()].map((m) => Object.assign({}, m, { vote: votes.get(m.memberId) || null })) };
+    return { id: ev.id, title: ev.title, status: ev.status, version: ev.version, settings: st, outcome: v.outcome, votesHidden: v.votesHidden,
+      members: [...ev.members.values()].map((m) => Object.assign({}, m, { vote: votes.get(m.memberId) || null, voteHidden: v.votesHidden && m.memberId !== caller.id && !m.disabledReason })) };
   };
   const send = (res, id, name, data) => res.write((id !== null ? 'id: ' + id + '\n' : '') + 'event: ' + name + '\ndata: ' + JSON.stringify(data) + '\n\n');
   const note = (ev, change) => {

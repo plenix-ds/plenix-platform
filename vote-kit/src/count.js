@@ -10,7 +10,8 @@
        returns { approve, deny, abstain, notVoted, turnedOff, present, weights: { approve, deny, abstain }, quorum: { needed, present, met },
        majority, result }
        result while open: "open" | "passing" | "failing" | "tied" | "no-quorum"; closed: "passed" | "failed" | "tied" | "no-quorum"
-     viewFor(outcome, ballots, settings, caller): { outcome, ballots } cut down to what the caller may see (liveVisibility)
+     viewFor(outcome, ballots, settings, caller): { outcome, ballots, votesHidden } cut down to what the caller may see (liveVisibility);
+       votesHidden is true when other members' choices are held back from this caller (the screen says "Hidden until the vote closes" instead of showing empty buttons)
    Behavior:
      Turned-off members (disabledReason) are counted nowhere. present is every member who is not turned off, or, with
        settings.present "list", those marked present; a ballot from anyone else is ignored.
@@ -66,8 +67,8 @@ export function count(event, members, ballots, settings) {
 export function viewFor(outcome, ballots, settings, caller) {
   const c = caller || {};
   const closed = c.status === 'closed';
-  if (c.canManage || closed || settings.liveVisibility === 'named') return { outcome, ballots };
+  if (c.canManage || closed || settings.liveVisibility === 'named') return { outcome, ballots, votesHidden: false };
   const own = (ballots || []).filter((b) => b.memberId === c.memberId);
-  if (settings.liveVisibility === 'totals') return { outcome, ballots: own };
-  return { outcome: { notVoted: outcome.notVoted, turnedOff: outcome.turnedOff, present: outcome.present, quorum: outcome.quorum, result: 'open' }, ballots: own };
+  if (settings.liveVisibility === 'totals') return { outcome, ballots: own, votesHidden: true };
+  return { outcome: { notVoted: outcome.notVoted, turnedOff: outcome.turnedOff, present: outcome.present, quorum: outcome.quorum, result: 'open' }, ballots: own, votesHidden: true };
 }

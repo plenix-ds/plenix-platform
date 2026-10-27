@@ -16,6 +16,7 @@ Each event has `id: <version>`, an `event:` name and a JSON `data:` line.
 | `ping` | `{}` | every 20 seconds, so a silent connection is noticed |
 
 - Every event except `ping` carries the event's `version`: one counter per vote event that grows by one with each change (the history table's `version`).
+- The EventView carries `settings` (so the screen knows `liveVisibility` and the labels), `votesHidden` and, per member, `voteHidden`: when they are true the member's `vote` is null because it is held back, not because nobody voted, and the screen says "Hidden until the vote closes" (or "Totals only") instead of showing empty buttons.
 - What a caller is sent follows `settings.liveVisibility`: with `totals` or `hidden-until-closed` the `ballot` events about other members are not sent, and with `hidden-until-closed` the `outcome` is held back until `status` closed. A manager is sent everything.
 
 ## Reconnect and catch-up
