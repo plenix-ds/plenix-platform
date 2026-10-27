@@ -4,6 +4,7 @@
 // standard density) and DM Sans from the CDN. Run: node services/auth/brand-css.js [version]; apply with ak-brand.py.
 const fs = require('fs');
 const path = require('path');
+const { withoutImportant } = require('./no-important.js');   // no !important: rules win by specificity (issue 249)
 
 const ROOT = path.join(__dirname, '..', '..');
 const VERSION = process.argv[2] || JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8')).version;
@@ -128,6 +129,6 @@ html, body, .pf-c-drawer__body, .pf-c-drawer__content, .pf-c-page__main { overfl
 .pf-c-button.pf-m-primary::after { display: none !important; }
 `;
 // custom properties take names, not the camelCase keys
-const out = css.replace(/--plenix-([a-zA-Z]+)/g, (m, k) => '--plenix-' + k.replace(/[A-Z]/g, (c) => '-' + c.toLowerCase()));
+const out = withoutImportant(css).replace(/--plenix-([a-zA-Z]+)/g, (m, k) => '--plenix-' + k.replace(/[A-Z]/g, (c) => '-' + c.toLowerCase()));
 fs.writeFileSync(path.join(__dirname, 'brand.css'), out);
 console.log('Wrote services/auth/brand.css (' + out.length + ' characters, release ' + VERSION + ')');
