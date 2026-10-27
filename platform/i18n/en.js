@@ -1536,6 +1536,20 @@ export default {
       "items": {
         "one": "{n} item",
         "other": "{n} items"
+      },
+      "doneItems": {
+        "approved": {
+          "one": "{n} item approved",
+          "other": "{n} items approved"
+        },
+        "rejected": {
+          "one": "{n} item rejected",
+          "other": "{n} items rejected"
+        },
+        "changes-requested": {
+          "one": "Changes requested on {n} item",
+          "other": "Changes requested on {n} items"
+        }
       }
     },
     "statuses": {

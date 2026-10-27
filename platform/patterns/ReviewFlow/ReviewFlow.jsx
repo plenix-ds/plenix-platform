@@ -192,7 +192,10 @@ export function ReviewQueue({ items = [], label, noun, plural, onDecision, selec
     const ids = sel.slice();
     if (onDecision) onDecision(ids, decision, reason || '');
     setSel([]); setAsk(null);
-    const said = fill(t.done, { what: what(ids.length), decision: names[decision].toLowerCase() });
+    // the default words: one whole counted sentence per decision (Arabic plural forms); an app's own noun keeps the pieces
+    const whole = builtIn && t.doneItems && t.doneItems[decision];
+    const said = whole ? loc.t('reviewFlow.queue.doneItems.' + decision, { count: ids.length, n: formatNumber(ids.length) })
+      : fill(t.done, { what: what(ids.length), decision: names[decision].toLowerCase() });
     if (toast) toast.show(said, { tone: decision === 'approved' ? 'success' : 'info' }); else announce(said);
   };
   const columns = [
