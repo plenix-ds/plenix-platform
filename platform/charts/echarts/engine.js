@@ -69,6 +69,9 @@ export function chartTokens(where) {
   const slice = mk('path', 'plx-chart__mark plx-pie-chart__slice');
   const swatch = mk('rect', 'plx-chart__mark');
   const spark = { line: mk('path', 'plx-sparkline__line'), area: mk('path', 'plx-sparkline__area'), bar: mk('rect', 'plx-sparkline__bar'), last: mk('circle', 'plx-sparkline__last') };
+  const tree = { link: mk('path', 'plx-tree-chart__link'), node: mk('circle', 'plx-tree-chart__node'), folded: mk('circle', 'plx-tree-chart__node plx-tree-chart__node--folded'),
+    focus: mk('circle', 'plx-tree-chart__node plx-tree-chart__node--focus'), name: mk('text', 'plx-tree-chart__name'),
+    nameFocus: mk('text', 'plx-tree-chart__name plx-tree-chart__name--focus'), detail: mk('text', 'plx-tree-chart__detail') };
   where.appendChild(svg);
   const cs = (e) => win.getComputedStyle(e);
   const font = (e) => { const s = cs(e); return { color: s.fill, fontFamily: s.fontFamily, fontSize: num(s.fontSize), fontWeight: s.fontWeight }; };
@@ -93,6 +96,13 @@ export function chartTokens(where) {
     // a sparkline's own look (its color follows the sparkline's data-viz step, where it is)
     sparkline: { color: cs(spark.line).stroke, lineWidth: num(cs(spark.line).strokeWidth), areaOpacity: num(cs(spark.area).fillOpacity),
       bar: cs(spark.bar).fill, last: { r: num(cs(spark.last).r), outline: cs(spark.last).stroke, outlineWidth: num(cs(spark.last).strokeWidth) } },
+    // a tree's look (TreeChart): its lines, a node's ring and fill (filled when folded), the node in focus, the name and
+    // detail fonts, and its room: the gap beside a label, a leaf's height across, a level's height down
+    tree: { link: { color: cs(tree.link).stroke, width: num(cs(tree.link).strokeWidth) },
+      node: { r: num(cs(tree.node).r), fill: cs(tree.node).fill, color: cs(tree.node).stroke, width: num(cs(tree.node).strokeWidth) },
+      folded: cs(tree.folded).fill, focus: { color: cs(tree.focus).stroke, width: num(cs(tree.focus).strokeWidth) },
+      name: font(tree.name), nameFocus: font(tree.nameFocus), detail: font(tree.detail),
+      gap: len(prop('--plx-comp-tree-chart-label-gap')), leaf: len(prop('--plx-comp-tree-chart-leaf-spacing')), level: len(prop('--plx-comp-tree-chart-level-spacing')) },
     // the values not in focus dim to the interaction's token; the drawing's animation is the motion token (reduced motion: 0)
     dim: num(prop('--plx-comp-chart-interaction-dim-opacity')) || 1,
     motion: ms(prop('--plx-sys-motion-duration-slow')),

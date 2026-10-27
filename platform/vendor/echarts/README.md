@@ -7,29 +7,31 @@ slices, in an ECharts theme read from the Platform's chart tokens (`platform/cha
 
 | File | Package | Version | License | SHA-256 |
 |---|---|---|---|---|
-| `echarts.min.js` | echarts (with zrender 6.1.0, tslib 2.3.0) | 6.1.0 | Apache-2.0 (zrender BSD-3-Clause, tslib 0BSD) | `6a0f4705c675f119aca01cef9a61e06870af926dd3933eaff71eef711ba5c112` |
+| `echarts.min.js` | echarts (with zrender 6.1.0, tslib 2.3.0) | 6.1.0 | Apache-2.0 (zrender BSD-3-Clause, tslib 0BSD) | `1730e8e813cc0b3141d592310c79f0b08344adc52bf08bbc0dcf8ee5683ccb4e` |
 | `LICENSE`, `NOTICE` | echarts | 6.1.0 | Apache-2.0 | `634293835b43a6dd2094fa39182a3d9a6b9ca43b7fdb9ac354e8037af2a3093a`, `d491d358344f842685c1b1585970999db65fe30ecf7ef3867af8814f4016c016` |
 | `LICENSE-zrender` | zrender | 6.1.0 | BSD-3-Clause | `a681e9d183c72b4af4856935893805eb48c08f0f5a3f260203db7444c20fb98a` |
 | `LICENSE-tslib` | tslib | 2.3.0 | 0BSD | `0e8d2550baea17eb3072c4f919b36fbf9852bb49dba948549872e713863c0834` |
 
-Built on 2026-10-26: 525,691 bytes, 181,117 bytes gzipped (gzip -9). All of ECharts (`dist/echarts.min.js`) is 360 KB
+Built on 2026-10-27: 554,462 bytes, 190,945 bytes gzipped (gzip -9); the tree chart added 28,771 bytes (9,828 gzipped)
+to the 2026-10-26 build (525,691 bytes), which this recipe rebuilds byte for byte. All of ECharts (`dist/echarts.min.js`) is 360 KB
 gzipped: this file holds only what the Platform's charts use ("ship only what is used", #277).
 
 ## What it holds
 
-The modular build: ECharts' core, the SVG renderer (marks stay vector, crisp at every zoom and in print), the line, bar
-and pie charts and the cartesian grid. `window.PlenixECharts` exposes `init` and `version` only. The entry file:
+The modular build: ECharts' core, the SVG renderer (marks stay vector, crisp at every zoom and in print), the line, bar,
+pie and tree charts and the cartesian grid. `window.PlenixECharts` exposes `init` and `version` only. The entry file:
 
 ```js
 import { use, init, version } from 'echarts/core';
 import { SVGRenderer } from 'echarts/renderers';
-import { LineChart, BarChart, PieChart } from 'echarts/charts';
+import { LineChart, BarChart, PieChart, TreeChart } from 'echarts/charts';
 import { GridComponent } from 'echarts/components';
-use([SVGRenderer, LineChart, BarChart, PieChart, GridComponent]);
+use([SVGRenderer, LineChart, BarChart, PieChart, TreeChart, GridComponent]);
 export { init, version };
 ```
 
-The charts that use it: LineChart and AreaChart (line), BarChart (bar), PieChart (pie). ECharts' own legend, tooltip,
+The charts that use it: LineChart, AreaChart and Sparkline (line; Sparkline's bars: bar), BarChart (bar), PieChart (pie),
+TreeChart (tree; owner, 2026-10-26, charts-tree-26). ECharts' own legend, tooltip,
 title, data zoom, toolbox and aria parts are not included: the Platform draws those. Later chart types add their
 ECharts chart (and only the parts they need) to the entry file.
 
@@ -48,7 +50,11 @@ to the CDN (`/cdn/<version>/vendor/echarts/`) and the React package (`dist/vendo
    licenses (echarts Apache-2.0, zrender BSD-3-Clause, tslib 0BSD).
 3. Bundle the entry file above with esbuild (the repository's devDependency): `bundle: true, minify: true, format:
    'iife', globalName: 'PlenixECharts', target: 'es2019', legalComments: 'none'`, `define: { 'process.env.NODE_ENV':
-   '"production"', __DEV__: 'false' }`, and a banner naming the version and this folder's licenses.
+   '"production"', __DEV__: 'false' }`, and a banner naming the version, the parts and this folder's licenses:
+   `/*! Apache ECharts <v> (Apache-2.0, https://echarts.apache.org): core, SVG renderer, line, bar, pie, tree, grid.
+   Built for Plenix; see LICENSE and NOTICE in this folder. */` (one line). With esbuild 0.25.10 and echarts 6.1.0 the
+   result is byte for byte the file recorded above; a different checksum means a different input.
+   Adding a chart type: add its `…Chart` to the import and to `use([…])` (nothing else), list it in the banner and here.
 4. Copy `LICENSE` and `NOTICE` from echarts, `LICENSE` from zrender (as `LICENSE-zrender`) and `LICENSE.txt` from tslib
    (as `LICENSE-tslib`).
 5. Record the versions, sizes and SHA-256 values (`sha256sum echarts.min.js LICENSE* NOTICE`) and the date here and in

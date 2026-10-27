@@ -66,7 +66,7 @@ jobs:
           - { name: 'component tokens', tests: component-tokens, shard: '' }
           - { name: typography, tests: typography, shard: '' }
           - { name: reflow, tests: reflow, shard: '' }
-          - { name: fixtures, tests: site-coverage visual layout utilities keyboard charts-echarts-353 sparkline-echarts-353, shard: '' }
+          - { name: fixtures, tests: site-coverage visual layout utilities keyboard charts-echarts-353 sparkline-echarts-353 treechart-echarts, shard: '' }
           - { name: behavior, tests: data-grid focus-order semantic-html navigation one-primary, shard: '' }
     services:
       postgres:
@@ -99,7 +99,7 @@ jobs:
           repository: plenix-ds/st-john-test-site
           # the site's revision, pinned (#382 F8): the same Platform commit always meets the same site. Bump it here and
           # in the other workflow (ci.yml, full.yml) when the site changes, in the pull request that needs the change
-          ref: e9a3c7471e7c997a61de50ea81404e1a96bbad3c
+          ref: 2be689dee857920f99c9f23bc2ec682670343a8e
           token: ${{ secrets.DS_TOKEN }}
           path: st-john-test-site
 

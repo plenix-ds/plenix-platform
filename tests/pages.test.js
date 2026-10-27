@@ -65,7 +65,8 @@ let current = '';   // the page being checked
   // output "has to conform to fit into the grid system"). Inside the chart engine (.plx-chart__engine), ECharts may write
   // the sizes and fonts of its own elements from the chart tokens (owner, 2026-10-26, issue 353), only these: its div
   // position, overflow-x, overflow-y, width, height; its svg position, left, top, user-select; its text font-size,
-  // font-family. Any other inline property there is checked as everywhere else
+  // font-family, and font-weight (TreeChart's name in focus; charts-tree-26) only when it equals a --plx-sys-font-weight-*
+  // token's value. Any other inline property there is checked as everywhere else
   const styles = async () => { const r = await page.evaluate(() => {
     const docs = [document].concat([...document.querySelectorAll('iframe')].map((f) => { try { return f.contentDocument; } catch (e) { return null; } }).filter(Boolean));
     const out = { other: [] };
@@ -77,8 +78,9 @@ let current = '';   // the page being checked
     // user content (.plx-user-content: the rich-text editor's area, RichText showing saved HTML) keeps the person's own
     // formatting, as Tiptap stores it: these properties only (owner, 2026-10-14)
     const USER_FORMAT = /^(color|background-color|font-family|font-size|text-align)$/;
-    const ENGINE_OWN = { div: /^(position|overflow-x|overflow-y|width|height)$/, svg: /^(position|left|top|user-select)$/, text: /^(font-size|font-family)$/ };
-    const engineOwn = (el, p) => { const r = el.parentElement && el.parentElement.closest('.plx-chart__engine') && ENGINE_OWN[el.tagName.toLowerCase()]; return !!(r && r.test(p)); };
+    const ENGINE_OWN = { div: /^(position|overflow-x|overflow-y|width|height)$/, svg: /^(position|left|top|user-select)$/, text: /^(font-size|font-family|font-weight)$/ };
+    const weightToken = (el, v) => { const cs = getComputedStyle(el.ownerDocument.documentElement); return ['regular', 'medium', 'semibold', 'bold'].some((w) => cs.getPropertyValue('--plx-sys-font-weight-' + w).trim() === String(v).trim()); };
+    const engineOwn = (el, p) => { const r = el.parentElement && el.parentElement.closest('.plx-chart__engine') && ENGINE_OWN[el.tagName.toLowerCase()]; return !!(r && r.test(p) && (p !== 'font-weight' || weightToken(el, el.style.getPropertyValue(p)))); };
     const wrong = (el) => { const table = el.matches('.plx-data-grid .plx-data-grid__grid-row, .plx-data-grid .plx-data-grid__grid-cell'), user = !!el.closest('.plx-user-content');
       return Array.from(el.style).filter((p) => !engineOwn(el, p) && (!(user && USER_FORMAT.test(p)) && (/^--/.test(p) ? !(/^--plx-/.test(p) || (SPEC && /^--ds-/.test(p))) : (p === 'font-family' && !/^\s*var\(--plx-/.test(el.style.getPropertyValue(p))) || (table && DENSITY.test(p)))
         || offGrid(el, el.style.getPropertyValue(p)))).map((p) => p + ': ' + el.style.getPropertyValue(p)); };
