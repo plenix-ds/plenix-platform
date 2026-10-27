@@ -162,7 +162,9 @@ export function TreeChart({ title, description, hideCaption, data, orientation =
       // the root's label before it, the leaves' after them, the others above their node; each label within its room
       const rootW = Math.min(fits(nodes[0], T.nameFocus), W * 0.25);
       const leafW = Math.min(leafNodes.reduce((m, n) => Math.max(m, fits(n, T.nameFocus)), 0), W * 0.35);
-      box = { left: snapToGrid(rootW + gap * 2, { round: 'up' }), right: snapToGrid(leafW + gap * 2, { round: 'up' }), top: snapToGrid(T.leaf / 2, { round: 'up' }), bottom: snapToGrid(T.leaf / 2, { round: 'up' }) };
+      // the root's room on its side, the leaves' on theirs: in right to left the root is at the right (#413 batch 4)
+      const rootRoom = snapToGrid(rootW + gap * 2, { round: 'up' }), leafRoom = snapToGrid(leafW + gap * 2, { round: 'up' });
+      box = { left: tk.rtl ? leafRoom : rootRoom, right: tk.rtl ? rootRoom : leafRoom, top: snapToGrid(T.leaf / 2, { round: 'up' }), bottom: snapToGrid(T.leaf / 2, { round: 'up' }) };
       const step = depth ? (W - box.left - box.right) / depth : W;
       labelFor = (n, leafish) => (n.depth === 0 ? Object.assign({ position: tk.rtl ? 'right' : 'left', align: tk.rtl ? 'left' : 'right', verticalAlign: 'middle' }, ellipsis(T.name, rootW))
         : leafish ? Object.assign({ position: tk.rtl ? 'left' : 'right', align: tk.rtl ? 'right' : 'left', verticalAlign: 'middle' }, ellipsis(T.name, leafW))
