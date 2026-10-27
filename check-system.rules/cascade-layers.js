@@ -18,7 +18,7 @@ const MAP = path.join(ROOT, 'platform', 'system', 'layers.json');
 // a sheet that may hold unlayered rules, and why
 const UNLAYERED = {
   'services/login/login.css': 'served with the released CDN stylesheet, which has no layers until the release that ships them',
-  'services/auth/brand.css': 'pasted into Authentik, whose own CSS is unlayered: it must beat that CSS',
+  'services/auth/brand.css': 'pasted into Authentik, whose own CSS is unlayered: a layer would lose to it, so it wins by specificity (no !important)',
 };
 const SKIP_DIR = /^(node_modules|\.git|vendor|dist|design-system|exports|docs|tests|release|packages|dev)$/;
 
