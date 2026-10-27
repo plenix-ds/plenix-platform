@@ -1625,6 +1625,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.localDigits = localDigits;
 exports.toArabicIndic = toArabicIndic;
+exports.toLatinDigits = void 0;
 var _format = require("./format.js");
 /* Plenix · Digits (platform/utils/digits.js)
    Summary: Writes the digits of a text in the reader's numerals: Arabic-Indic (٠-٩) in Arabic, Latin elsewhere (owner,
@@ -1637,6 +1638,7 @@ var _format = require("./format.js");
      localDigits(text, { digits, locale }): the text with its ASCII digits changed to the locale's; digits "arab" | "latn" |
        "auto" (default: from the locale, formatLocale() when none)
      toArabicIndic(text): the text with every ASCII digit changed to Arabic-Indic, except inside an email or a web address
+     toLatinDigits(text): the text with Arabic-Indic (٠-٩) and Persian (۰-۹) digits changed to ASCII, for reading what a person typed
    Behavior:
      An email (name@host) and a web address (http://, https://, www.) are left as written. Anything else changes, including
        case numbers, IDs, dates and phone numbers written as text. Only digits change; the order of characters never does.
@@ -1649,6 +1651,8 @@ const ARAB = d => String.fromCharCode(0x660 + Number(d));
 function toArabicIndic(text) {
   return String(text).split(KEEP).map((part, i) => i % 2 ? part : part.replace(/[0-9]/g, ARAB)).join('');
 }
+const toLatinDigits = text => String(text).replace(/[\u0660-\u0669]/g, d => String(d.charCodeAt(0) - 0x660)).replace(/[\u06F0-\u06F9]/g, d => String(d.charCodeAt(0) - 0x6F0));
+exports.toLatinDigits = toLatinDigits;
 function localDigits(text, {
   digits = 'auto',
   locale
@@ -3326,7 +3330,7 @@ function scaleTime({
     for (let i = 0; x.getTime() <= hi && i < 1000; i++, x = addTo(x, unit, amount)) out.push(new Date(x.getTime()));
     return out;
   };
-  scale.format = (v, n = count, o = {}) => new Intl.DateTimeFormat(o.locale || (0, _format.formatLocale)(), TIME_LABELS[timeStep(d[1] - d[0], n)[0]]).format(new Date(toTime(v)));
+  scale.format = (v, n = count, o = {}) => new Intl.DateTimeFormat((0, _format.numeralLocale)(o.locale || (0, _format.formatLocale)()), TIME_LABELS[timeStep(d[1] - d[0], n)[0]]).format(new Date(toTime(v)));
   scale.domain = () => d.map(t => new Date(t));
   scale.range = () => r.slice();
   scale.type = 'time';
@@ -40530,7 +40534,7 @@ function dayLabel(d, now, o) {
     timeZone: o.timeZone,
     locale: o.locale
   });
-  const lang = o.locale || (0, _format.formatLocale)();
+  const lang = (0, _format.numeralLocale)(o.locale || (0, _format.formatLocale)());
   const w = new Intl.RelativeTimeFormat(lang, {
     numeric: 'auto'
   }).format(days, 'day');
@@ -47135,7 +47139,7 @@ const EntityPicker = exports.EntityPicker = /*#__PURE__*/_react.default.forwardR
   })) : null))) : null);
 });
   } },
-  "platform/components/TimePicker/TimePicker.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/TimePicker/TimePicker.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/digits.js":"platform/utils/digits.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -47146,6 +47150,8 @@ var _react = _interopRequireDefault(require("react"));
 var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _format = require("../../utils/format.js");
+var _digits = require("../../utils/digits.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · TimePicker
    Summary: A time of day, typed or chosen: a field with a list of times at a set step (the default), or segments for the
@@ -47164,6 +47170,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      variant: "list" (default: a field people type in, with the times at each step in a list under it) | "segments"
        (spin buttons for the hour, the minute and the period)
      hourCycle: "12" | "24": the clock shown; default the reader's locale's clock
+     Digits: in Arabic the times are written Arabic-Indic (٢:٣٠), and a time typed in Arabic-Indic digits reads the same (owner, arabic-digits-35)
      step: the minutes between times in the list, and the minute segment's step (default 15 for the list, 1 for segments);
        a value that divides 60 (5, 10, 15, 30)
      min, max: the earliest and the latest time ("HH:MM"); the list holds only times between them
@@ -47215,7 +47222,7 @@ const localeCycle = () => {
 };
 // "2", "2pm", "2:30 pm", "14:30", "1430", "230p" → minutes after midnight, or null
 const parseTime = (text, cycle) => {
-  const s = String(text || '').trim().toLowerCase().replace(/\./g, '');
+  const s = (0, _digits.toLatinDigits)(String(text || '')).trim().toLowerCase().replace(/\./g, ''); // what a person typed in Arabic-Indic digits reads the same
   if (!s) return null;
   const m = /^(\d{1,2})(?::?(\d{2}))?\s*(a|am|p|pm)?$/.exec(s);
   if (!m) return null;
@@ -47230,11 +47237,13 @@ const parseTime = (text, cycle) => {
   return h * 60 + min;
 };
 exports.parseTime = parseTime;
-const show = (mins, cycle, t) => {
+const show = (mins, cycle, t, digits) => {
   if (mins === null) return '';
   const h = Math.floor(mins / 60),
     m = mins % 60;
-  return cycle === '12' ? (h % 12 || 12) + ':' + pad(m) + ' ' + (h < 12 ? t.am : t.pm) : pad(h) + ':' + pad(m);
+  return (0, _digits.localDigits)(cycle === '12' ? (h % 12 || 12) + ':' + pad(m) + ' ' + (h < 12 ? t.am : t.pm) : pad(h) + ':' + pad(m), {
+    digits
+  }); // the page's digits (Arabic-Indic in Arabic)
 };
 const TimePicker = exports.TimePicker = /*#__PURE__*/_react.default.forwardRef(function TimePicker({
   value,
@@ -47272,6 +47281,7 @@ const TimePicker = exports.TimePicker = /*#__PURE__*/_react.default.forwardRef(f
     if (value === undefined) setOwn(v);
     if (onChange && v !== current) onChange(v);
   };
+  const digits = (0, _LocaleProvider.useDigits)();
   const cls = (0, _cx.cx)('plx-time-picker', 'plx-time-picker--' + variant, width && 'plx-time-picker--width-' + width, disabled && 'is-disabled', className);
   const hidden = name ? /*#__PURE__*/_react.default.createElement("input", {
     type: "hidden",
@@ -47329,6 +47339,7 @@ const ListPicker = /*#__PURE__*/_react.default.forwardRef(function ListPicker({
   hidden,
   rest
 }, ref) {
+  const digits = (0, _LocaleProvider.useDigits)();
   const auto = 'plx-tp' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
   const [open, setOpen] = _react.default.useState(false);
   const [text, setText] = _react.default.useState(null); // the text while typing; null shows the value
@@ -47430,7 +47441,7 @@ const ListPicker = /*#__PURE__*/_react.default.forwardRef(function ListPicker({
     disabled: disabled,
     autoComplete: "off",
     inputMode: "text",
-    value: text !== null ? text : show(mins, cycle, t),
+    value: text !== null ? text : show(mins, cycle, t, digits),
     placeholder: cycle === '12' ? '9:00 ' + t.am : '09:00',
     onChange: e => {
       setText(e.target.value);
@@ -47463,7 +47474,7 @@ const ListPicker = /*#__PURE__*/_react.default.forwardRef(function ListPicker({
     onMouseDown: e => e.preventDefault(),
     onClick: () => choose(i),
     onMouseEnter: () => setActive(i)
-  }, show(n, cycle, t)))) : null, hidden);
+  }, show(n, cycle, t, digits)))) : null, hidden);
 });
 const Segments = /*#__PURE__*/_react.default.forwardRef(function Segments({
   t,
@@ -47481,6 +47492,7 @@ const Segments = /*#__PURE__*/_react.default.forwardRef(function Segments({
   hidden,
   rest
 }, ref) {
+  const digits = (0, _LocaleProvider.useDigits)();
   const mins = toMin(current);
   // the parts being edited: hour on the clock shown (1–12 or 0–23), minute, period ('am' | 'pm'); null = empty
   const fromValue = () => mins === null ? {
@@ -47591,7 +47603,9 @@ const Segments = /*#__PURE__*/_react.default.forwardRef(function Segments({
     m: t.minute,
     p: t.period
   };
-  const text = k => parts[k] === null ? t.empty : k === 'p' ? parts.p === 'am' ? t.am : t.pm : k === 'h' && cycle === '12' ? String(parts.h) : pad(parts[k]);
+  const text = k => parts[k] === null ? t.empty : k === 'p' ? parts.p === 'am' ? t.am : t.pm : (0, _digits.localDigits)(k === 'h' && cycle === '12' ? String(parts.h) : pad(parts[k]), {
+    digits
+  });
   return /*#__PURE__*/_react.default.createElement("div", {
     className: cls
   }, /*#__PURE__*/_react.default.createElement("div", _extends({
@@ -48675,7 +48689,7 @@ function AvatarUpload({
   }, error) : null);
 }
   } },
-  "platform/components/TimeZoneSelect/TimeZoneSelect.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/TimeZoneSelect/TimeZoneSelect.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/digits.js":"platform/utils/digits.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../Isolate/Isolate.jsx":"platform/components/Isolate/Isolate.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -48686,6 +48700,9 @@ exports.timeZoneOptions = timeZoneOptions;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _format = require("../../utils/format.js");
+var _digits = require("../../utils/digits.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _Isolate = require("../Isolate/Isolate.jsx");
 var _announce = require("../../utils/announce.jsx");
 var _floating = require("../../utils/floating.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -48703,6 +48720,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      onChange(zone): runs with the chosen zone's IANA name
      grouped: list the zones under their region (Africa, Americas, Asia…), by city (default true); false lists them in
        one list ordered by offset, west to east
+     Digits: in Arabic the offsets are written Arabic-Indic; typing Arabic-Indic digits finds the same zones (owner, arabic-digits-35)
      showOffset: each zone's offset from UTC ("UTC−08:00") at the end of its option and of the field (default true)
      zones: the IANA names to offer (default: every zone the browser supports, and UTC)
      date: the moment the offsets are for (default now): offsets change with daylight saving time
@@ -48817,7 +48835,7 @@ function timeZoneOptions({
 }
 
 // the search text: an offset typed as "+5", "-08", "5:30" or "utc+1" matches "UTC+05:00"
-const fold = s => String(s).toLowerCase().replace(/[−–]/g, '-').replace(/_/g, ' ');
+const fold = s => (0, _digits.toLatinDigits)(String(s)).toLowerCase().replace(/[−–]/g, '-').replace(/_/g, ' ');
 const offsetKeys = o => {
   const sign = o.minutes < 0 ? '-' : '+',
     a = Math.abs(o.minutes),
@@ -48843,6 +48861,7 @@ const TimeZoneSelect = exports.TimeZoneSelect = /*#__PURE__*/_react.default.forw
   ...rest
 }, ref) {
   const t = Object.assign({}, STRINGS, strings);
+  const digits = (0, _LocaleProvider.useDigits)();
   const auto = 'plx-tz' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
   const listId = auto + '-list';
   const [open, setOpen] = _react.default.useState(false);
@@ -48979,7 +48998,9 @@ const TimeZoneSelect = exports.TimeZoneSelect = /*#__PURE__*/_react.default.forw
     "aria-label": label,
     disabled: disabled,
     autoComplete: "off",
-    "aria-description": current && showOffset ? current.offset : undefined,
+    "aria-description": current && showOffset ? (0, _digits.localDigits)(current.offset, {
+      digits
+    }) : undefined,
     value: open ? text : current ? current.label : '',
     placeholder: current && open ? current.label : placeholder || t.placeholder,
     onChange: e => {
@@ -48991,7 +49012,7 @@ const TimeZoneSelect = exports.TimeZoneSelect = /*#__PURE__*/_react.default.forw
   }, rest)), showOffset && current && !open ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-time-zone-select__field-offset",
     "aria-hidden": "true"
-  }, current.offset) : null, /*#__PURE__*/_react.default.createElement("span", {
+  }, /*#__PURE__*/_react.default.createElement(_Isolate.Isolate, null, current.offset)) : null, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-combobox__chevron",
     "aria-hidden": "true"
   })), open ? /*#__PURE__*/_react.default.createElement("ul", {
@@ -49019,7 +49040,7 @@ const TimeZoneSelect = exports.TimeZoneSelect = /*#__PURE__*/_react.default.forw
     className: "plx-time-zone-select__city"
   }, o.label), showOffset ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-time-zone-select__offset"
-  }, o.offset) : null)]) : /*#__PURE__*/_react.default.createElement("li", {
+  }, /*#__PURE__*/_react.default.createElement(_Isolate.Isolate, null, o.offset)) : null)]) : /*#__PURE__*/_react.default.createElement("li", {
     className: "plx-combobox__empty",
     role: "presentation"
   }, t.empty)) : null);
@@ -54183,7 +54204,7 @@ function HeatMap({
   const calendar = variant === 'calendar';
   const fmt = typeof format === 'function' ? format : v => (0, _format.formatNumber)(v);
   const vLabel = valueLabel || t.value;
-  const locale = (0, _format.formatLocale)();
+  const locale = (0, _format.numeralLocale)((0, _format.formatLocale)());
   const cal = calendar ? calendarGrid(data) : null;
   const weekday = r => new Intl.DateTimeFormat(locale, {
     weekday: 'short'

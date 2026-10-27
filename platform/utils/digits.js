@@ -9,6 +9,7 @@
      localDigits(text, { digits, locale }): the text with its ASCII digits changed to the locale's; digits "arab" | "latn" |
        "auto" (default: from the locale, formatLocale() when none)
      toArabicIndic(text): the text with every ASCII digit changed to Arabic-Indic, except inside an email or a web address
+     toLatinDigits(text): the text with Arabic-Indic (٠-٩) and Persian (۰-۹) digits changed to ASCII, for reading what a person typed
    Behavior:
      An email (name@host) and a web address (http://, https://, www.) are left as written. Anything else changes, including
        case numbers, IDs, dates and phone numbers written as text. Only digits change; the order of characters never does.
@@ -23,6 +24,8 @@ const ARAB = (d) => String.fromCharCode(0x660 + Number(d));
 export function toArabicIndic(text) {
   return String(text).split(KEEP).map((part, i) => (i % 2 ? part : part.replace(/[0-9]/g, ARAB))).join('');
 }
+
+export const toLatinDigits = (text) => String(text).replace(/[\u0660-\u0669]/g, (d) => String(d.charCodeAt(0) - 0x660)).replace(/[\u06F0-\u06F9]/g, (d) => String(d.charCodeAt(0) - 0x6F0));
 
 export function localDigits(text, { digits = 'auto', locale } = {}) {
   if (text === null || text === undefined) return text;

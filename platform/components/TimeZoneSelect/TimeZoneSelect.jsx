@@ -12,6 +12,7 @@
      onChange(zone): runs with the chosen zone's IANA name
      grouped: list the zones under their region (Africa, Americas, Asia…), by city (default true); false lists them in
        one list ordered by offset, west to east
+     Digits: in Arabic the offsets are written Arabic-Indic; typing Arabic-Indic digits finds the same zones (owner, arabic-digits-35)
      showOffset: each zone's offset from UTC ("UTC−08:00") at the end of its option and of the field (default true)
      zones: the IANA names to offer (default: every zone the browser supports, and UTC)
      date: the moment the offsets are for (default now): offsets change with daylight saving time
@@ -40,6 +41,9 @@
 import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { formatLocale } from '../../utils/format.js';
+import { localDigits, toLatinDigits } from '../../utils/digits.js';
+import { useDigits } from '../../providers/LocaleProvider.jsx';
+import { Isolate } from '../Isolate/Isolate.jsx';
 import { announce } from '../../utils/announce.jsx';
 import { useFloating, FLOATING_ANCHOR } from '../../utils/floating.js';
 
@@ -87,13 +91,14 @@ export function timeZoneOptions({ zones, date = new Date(), locale, strings } = 
 }
 
 // the search text: an offset typed as "+5", "-08", "5:30" or "utc+1" matches "UTC+05:00"
-const fold = (s) => String(s).toLowerCase().replace(/[−–]/g, '-').replace(/_/g, ' ');
+const fold = (s) => toLatinDigits(String(s)).toLowerCase().replace(/[−–]/g, '-').replace(/_/g, ' ');
 const offsetKeys = (o) => { const sign = o.minutes < 0 ? '-' : '+', a = Math.abs(o.minutes), h = Math.floor(a / 60), m = a % 60;
   return [fold(o.offset), sign + h, sign + String(h).padStart(2, '0'), sign + h + ':' + String(m).padStart(2, '0'), 'utc' + sign + h, 'gmt' + sign + h].join(' '); };
 
 export const TimeZoneSelect = React.forwardRef(function TimeZoneSelect({ value, onChange, grouped = true, showOffset = true, zones, date, placeholder,
   label, invalid, disabled, locale, strings, id, className, ...rest }, ref) {
   const t = Object.assign({}, STRINGS, strings);
+  const digits = useDigits();
   const auto = 'plx-tz' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const listId = auto + '-list';
   const [open, setOpen] = React.useState(false);
@@ -158,10 +163,10 @@ export const TimeZoneSelect = React.forwardRef(function TimeZoneSelect({ value, 
       <div className="plx-combobox__field plx-input" aria-invalid={invalid || undefined}>
         <input ref={input} id={id} className="plx-combobox__input" role="combobox" aria-expanded={open} aria-controls={listId} aria-autocomplete="list"
           aria-activedescendant={open && shown[active] ? optId(active) : undefined} aria-label={label} disabled={disabled} autoComplete="off"
-          aria-description={current && showOffset ? current.offset : undefined}
+          aria-description={current && showOffset ? localDigits(current.offset, { digits }) : undefined}
           value={open ? text : (current ? current.label : '')} placeholder={current && open ? current.label : (placeholder || t.placeholder)}
           onChange={(e) => { setText(e.target.value); setOpen(true); }} onFocus={() => setOpen(true)} onKeyDown={onKey} {...rest} />
-        {showOffset && current && !open ? <span className="plx-time-zone-select__field-offset" aria-hidden="true">{current.offset}</span> : null}
+        {showOffset && current && !open ? <span className="plx-time-zone-select__field-offset" aria-hidden="true"><Isolate>{current.offset}</Isolate></span> : null}
         <span className="plx-combobox__chevron" aria-hidden="true" />
       </div>
       {open ? (
@@ -172,7 +177,7 @@ export const TimeZoneSelect = React.forwardRef(function TimeZoneSelect({ value, 
               className={cx('plx-combobox__option', 'plx-time-zone-select__option', i === active && 'is-active', o.value === value && 'is-selected')}
               onMouseDown={(e) => e.preventDefault()} onClick={() => choose(o)} onMouseEnter={() => setActive(i)}>
               <span className="plx-time-zone-select__city">{o.label}</span>
-              {showOffset ? <span className="plx-time-zone-select__offset">{o.offset}</span> : null}
+              {showOffset ? <span className="plx-time-zone-select__offset"><Isolate>{o.offset}</Isolate></span> : null}
             </li>])
             : <li className="plx-combobox__empty" role="presentation">{t.empty}</li>}
         </ul>
