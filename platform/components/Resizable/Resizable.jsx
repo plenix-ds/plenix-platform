@@ -201,7 +201,7 @@ export function Resizable({ label, variant = 'default', fill: fillContent = fals
     return (
       <div role="separator" tabIndex={0} aria-orientation={which === 'width' ? 'vertical' : 'horizontal'} aria-label={fill(t[which], { label })}
         aria-valuenow={size[which]} aria-valuemin={S.lo} aria-valuemax={S.hi} title={notice || undefined}
-        className={cx('plx-resizable__edge', 'plx-resizable__edge--' + (which === 'width' ? 'inline' : 'block'))}
+        className={cx('plx-resizable__edge', 'plx-resizable__edge--' + (which === 'width' ? 'inline' : 'block'), variant === 'divider' && 'plx-resizable__edge--divider')}
         onPointerDown={which === 'width' ? drag(1, 0) : drag(0, 1)} onKeyDown={keys(which)}
         onBlur={() => setNotice('')} onPointerLeave={() => { if (!dragging && input.current === 'pointer') setNotice(''); }} />
     );
