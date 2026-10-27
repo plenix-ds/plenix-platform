@@ -29,6 +29,10 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 ### Deprecated
 - DataGrid `uniformPillWidths`: accepted and ignored, since uniform widths are always on. Remove it from your pages; it goes in a later release.
 
+### Fixed
+- Arabic in the data font (owner, arabic-font-35; #413): `--plx-ref-font-mono` adds "IBM Plex Sans Arabic" after Reddit Mono (Arabic letters only, from the existing @font-face), so Arabic in data text, data columns, PropertyList data values and chart axis labels is drawn joined, not letter by letter in a system monospace font. Latin is unchanged.
+- Charts in a right-to-left page (owner, ctm-needs-34; #413 batch 4): labels drawn by ECharts no longer grow the wrong way from their point. The engine's own element is always left to right (`.plx-chart__engine`), and the chart reads the page's direction from the `dir` attribute (`:dir(rtl)`), so it still mirrors: TreeChart's labels now sit beside their dots instead of over them, and a line or bar chart's value labels sit outside the axis. TreeChart also keeps its root label's room on the root's side in right to left, so the root's name is no longer cut off. Left to right is unchanged.
+
 ## [0.73.0] - 2026-10-27
 
 ### Added

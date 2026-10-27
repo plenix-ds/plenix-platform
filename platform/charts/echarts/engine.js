@@ -92,7 +92,9 @@ export function chartTokens(where) {
     // the gap between a tick label and its axis, and the room above the plot (half the top tick label)
     tickOffset: len(prop('--plx-comp-chart-axis-tick-offset')),
     top: len(prop('--plx-comp-chart-margin-block-start')),
-    rtl: host.direction === 'rtl',
+    // the page's writing direction from the dir attribute (:dir), not the computed direction: the engine element itself
+    // is drawn left to right (system/charts.css) so the engine's anchors hold, and the chart mirrors through its options
+    rtl: typeof where.matches === 'function' && where.matches(':dir(rtl)'),
     // a sparkline's own look (its color follows the sparkline's data-viz step, where it is)
     sparkline: { color: cs(spark.line).stroke, lineWidth: num(cs(spark.line).strokeWidth), areaOpacity: num(cs(spark.area).fillOpacity),
       bar: cs(spark.bar).fill, last: { r: num(cs(spark.last).r), outline: cs(spark.last).stroke, outlineWidth: num(cs(spark.last).strokeWidth) } },
