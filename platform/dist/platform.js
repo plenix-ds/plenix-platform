@@ -761,204 +761,175 @@ function VisuallyHidden({
   }, rest), children);
 }
   } },
-  "platform/components/Isolate/Isolate.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/utils/direction.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Isolate = Isolate;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Isolate
-   Summary: Keeps a piece of text in its own writing direction inside text of the other direction (bidirectional
-     isolation): an ID, a case number (20261020-01), an email, a URL, a phone number or code inside an Arabic sentence,
-     so it reads as written and the words around it keep their places (owner, ctm-needs-34; #413 batch 3).
+exports.RTL_LANGUAGES = void 0;
+exports.arrowStep = arrowStep;
+exports.directionOf = directionOf;
+exports.getDirection = getDirection;
+exports.isRtl = isRtl;
+exports.physicalSide = physicalSide;
+/* Plenix · Writing direction (platform/utils/direction.js)
+   Summary: Right-to-left and left-to-right in script: the direction of an element or a language, the arrow keys in reading
+     order, and the physical side of a logical one. In a right-to-left page Arrow Right moves back and Arrow Left forward,
+     as the eye reads; Up and Down are the same in both directions.
    Usage:
-     <Text as="p">تم تسجيل القضية رقم <Isolate>20261020-01</Isolate> وستصل الإشعارات إلى <Isolate>office@example.org</Isolate>.</Text>
-     <Isolate dir="auto">{fileName}</Isolate>          // a value that may be in either direction: its first letter decides
+     const step = arrowStep(e, e.currentTarget);   // +1, -1 or 0
+     if (step) { e.preventDefault(); move(index + step); }
+     directionOf('ar-EG')          // "rtl"
+     physicalSide('start', 'rtl')  // "right"
    Props:
-     dir: "ltr" (default: IDs, numbers, emails, URLs, code) | "rtl" | "auto" (the first strong letter decides)
-     as: the element; default "bdi"
-     className: more classes on the element
-     children: the text
-     ...rest: other attributes go on the element
+     isRtl(el): true when the element is laid out right to left (its computed direction)
+     arrowStep(event, el, { vertical }): +1 for the next item, -1 for the previous one, 0 for another key; with vertical:
+       false, Up and Down are ignored (a horizontal-only control)
+     getDirection(el): "rtl" | "ltr", the element's computed direction (the document's when no element is given)
+     directionOf(locale): "rtl" for a language written right to left (Arabic, Hebrew, Persian, Urdu and the others in
+       RTL_LANGUAGES), else "ltr"
+     physicalSide(side, dir): "left" | "right" for a logical "start" or "end" in that direction (for a measurement API that
+       only speaks physical sides, such as a pointer's clientX); "left" and "right" come back as they are
+     RTL_LANGUAGES: the language subtags written right to left
    Behavior:
-     The element is isolated (unicode-bidi: isolate, as <bdi> is): the text inside never reorders the text around it,
-       and the text around it never reorders it. In an Arabic sentence "20261020-01" stays "20261020-01" (without it,
-       the two numbers swap places: "01-20261020").
-     It keeps the order of its characters, not their digits: when Arabic-Indic digits are on (LocaleProvider, issue 413 step 5),
-       the digits of an ID, a case number or an email inside it change too, and still read in the right order (owner,
-       arabic-ids-35).
-     It is inline and adds no box: alignment, wrapping and the ellipsis stay the container's.
-   Notes:
-     Plenix isolates by itself where it knows the value is technical: DataGrid and Table cells of kind data, id, email,
-       url, phone and code; DataPill with data; PropertyList.Item with data; Code, Kbd and CodeBlock (always left to
-       right); Text, which is dir="auto". Use Isolate for such a value inside running text.
+     The direction comes from the dir attribute on the element or an ancestor (<html dir="rtl">, a DirectionProvider):
+       stylesheets use logical properties (inline-start, inline-end), so the layout mirrors on its own; script reads the
+       computed direction only where it measures or handles arrow keys.
 */
-function Isolate({
-  dir = 'ltr',
-  as: Tag = 'bdi',
-  className,
-  children,
-  ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement(Tag, _extends({
-    className: (0, _cx.cx)('plx-isolate', className),
-    dir: dir
-  }, rest), children);
+const RTL_LANGUAGES = exports.RTL_LANGUAGES = ['ar', 'arc', 'ckb', 'dv', 'fa', 'he', 'iw', 'ps', 'sd', 'syr', 'ug', 'ur', 'yi'];
+function isRtl(el) {
+  return !!el && typeof window !== 'undefined' && window.getComputedStyle(el).direction === 'rtl';
+}
+function getDirection(el) {
+  if (typeof window === 'undefined') return 'ltr';
+  return isRtl(el || document.documentElement) ? 'rtl' : 'ltr';
+}
+function directionOf(locale) {
+  const lang = String(locale || '').toLowerCase().split(/[-_]/)[0];
+  return RTL_LANGUAGES.indexOf(lang) >= 0 ? 'rtl' : 'ltr';
+}
+function physicalSide(side, dir) {
+  if (side !== 'start' && side !== 'end') return side;
+  return side === 'start' === (dir !== 'rtl') ? 'left' : 'right';
+}
+function arrowStep(event, el, opts) {
+  const vertical = !opts || opts.vertical !== false;
+  const rtl = isRtl(el);
+  switch (event.key) {
+    case 'ArrowRight':
+      return rtl ? -1 : 1;
+    case 'ArrowLeft':
+      return rtl ? 1 : -1;
+    case 'ArrowDown':
+      return vertical ? 1 : 0;
+    case 'ArrowUp':
+      return vertical ? -1 : 0;
+    default:
+      return 0;
+  }
 }
   } },
-  "platform/components/Count/Count.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/providers/DirectionProvider.jsx": { deps: {"react":null,"../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Count = Count;
+exports.DirectionContext = void 0;
+exports.DirectionProvider = DirectionProvider;
+exports.useDirection = useDirection;
 var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
+var _direction = require("../utils/direction.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Count
-   Summary: A number shown on its own.
+/* Plenix · DirectionProvider, useDirection
+   Summary: Sets the writing direction (left to right or right to left) of an application or of one region, and tells
+     React components which it is.
    Usage:
-     <Count value={24} />
-     <Count variant="pill" value={unread} max={99} label={unread + ' unread notifications'} />
+     <DirectionProvider dir="rtl" lang="ar">{app}</DirectionProvider>
+     <DirectionProvider locale="he-IL" root>{app}</DirectionProvider>   // on <html>: the whole page
+     const { dir, setDir } = useDirection();
    Props:
-     value: the number; with no value nothing renders
-     variant: "plain" (default; muted tabular figures, e.g. a list row's item count) | "pill" (a 16px soft pill for unread
-       or pending counts: the status pill look, shade 100 background, shade 300 border, dark text, 4px corners)
-     tone: the pill color: "neutral" (gray) | "info" (blue) | "success" (green) | "warning" (yellow) | "danger" (red;
-       default), on the same roles as Badge's neutral, active, success, waiting and negative
-     max: above it the count shows max + "+" (e.g. "99+")
-     label: the accessible name when the number alone is unclear ("3 unread notifications")
-     moreThan: what screen readers hear for a capped count without a label (default "More than {max}")
-     className: more classes on the count
+     dir: "ltr" | "rtl"; without it, the direction of locale, else of the page
+     locale: a language tag ("ar-EG", "en-US"); it sets lang and, without dir, the direction (directionOf)
+     lang: the lang attribute, when it is not the locale
+     root: set dir and lang on <html> instead of a region (default false): the page, its portals and its scrollbars mirror
+     children: the application root or the region it wraps
+     useDirection(): { dir, rtl, setDir(dir) }: the nearest provider's direction (outside one, the page's), and a way to
+       change it
+   Behavior:
+     A region: a wrapper (div.plx-direction, display: contents, so it adds no box) with dir and lang; everything inside
+       it lays out in that direction, as the stylesheets use logical properties.
+     With root, the attributes go on <html> and are put back as they were when the provider unmounts.
+     Overlays drawn in a Portal take the direction of where they were written (the Portal copies dir and lang).
    Notes:
-     Other props pass through to the <span>.
+     Mirror the layout, not the content: text, numbers, media controls, clocks and the icons that are not directional
+       keep their shape; the icon set mirrors its directional icons (arrows, chevrons, undo and redo) by itself.
+     Script reads the direction where it measures or handles arrow keys (utils/direction.js: arrowStep, physicalSide).
 */
-function Count({
-  value,
-  max,
-  variant = 'plain',
-  tone = 'danger',
-  label,
-  moreThan = 'More than {max}',
-  className,
-  ...rest
+
+const DirectionContext = exports.DirectionContext = /*#__PURE__*/_react.default.createContext(null);
+function DirectionProvider({
+  dir,
+  locale,
+  lang,
+  root = false,
+  children
 }) {
-  (0, _devWarn.devWarn)('Count', {
-    variant,
-    tone
-  }, {
-    variant: ['plain', 'pill'],
-    tone: ['info', 'success', 'warning', 'danger', 'neutral']
-  });
-  if (value === null || value === undefined || value === '') return null;
-  const shown = typeof max === 'number' && Number(value) > max ? max + '+' : String(value);
-  return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: (0, _cx.cx)('plx-count', 'plx-count--' + variant, variant === 'pill' ? 'plx-count--' + tone : null, className),
-    "aria-label": label || (typeof max === 'number' && Number(value) > max ? moreThan.replace('{max}', String(max)) : undefined)
-  }, rest), shown);
-}
-  } },
-  "platform/utils/layer.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.focusables = focusables;
-exports.useLayer = useLayer;
-exports.useUid = useUid;
-var _react = _interopRequireDefault(require("react"));
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · layers (platform/utils/layer.js). Internal; not part of the public API.
-   Every open menu, dialog, drawer and media viewer is a layer. Escape closes only the topmost layer, so Escape in a menu
-   inside a dialog closes the menu first. A modal layer also keeps Tab inside itself, locks page scroll, moves focus in
-   when it opens (initialFocus: a ref, or a function that returns the element) and returns focus to the element that opened it when it closes. */
-
-const stack = [];
-let modalCount = 0;
-const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]):not([type="hidden"]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
-function focusables(root) {
-  if (!root) return [];
-  return Array.prototype.filter.call(root.querySelectorAll(FOCUSABLE), el => !el.closest('[hidden]') && el.getClientRects().length > 0);
-}
-function useLayer(ref, open, {
-  modal = false,
-  onEscape,
-  initialFocus
-} = {}) {
-  const escape = _react.default.useRef(onEscape);
-  escape.current = onEscape;
+  const wanted = dir || (locale ? (0, _direction.directionOf)(locale) : null);
+  const [own, setOwn] = _react.default.useState(wanted);
   _react.default.useEffect(() => {
-    if (!open) return undefined;
-    const entry = {
-      modal
-    };
-    stack.push(entry);
-    const opener = document.activeElement;
-    if (modal) {
-      if (modalCount === 0) document.documentElement.classList.add('is-scroll-locked');
-      modalCount += 1;
-      const root = ref.current;
-      const wanted = typeof initialFocus === 'function' ? initialFocus() : initialFocus && initialFocus.current;
-      const first = wanted || focusables(root)[0] || root;
-      if (first) first.focus({
-        preventScroll: true
-      });
-    }
-    const onKey = e => {
-      if (stack[stack.length - 1] !== entry) return;
-      if (e.key === 'Escape') {
-        if (escape.current) {
-          e.preventDefault();
-          e.stopPropagation();
-          escape.current();
-        }
-        return;
-      }
-      if (!modal || e.key !== 'Tab') return;
-      const root = ref.current;
-      const items = focusables(root);
-      if (!items.length) {
-        e.preventDefault();
-        root.focus();
-        return;
-      }
-      const first = items[0],
-        last = items[items.length - 1],
-        active = document.activeElement;
-      if (!root.contains(active)) {
-        e.preventDefault();
-        first.focus();
-      } else if (e.shiftKey && (active === first || active === root)) {
-        e.preventDefault();
-        last.focus();
-      } else if (!e.shiftKey && active === last) {
-        e.preventDefault();
-        first.focus();
-      }
-    };
-    document.addEventListener('keydown', onKey, true);
+    setOwn(wanted);
+  }, [wanted]);
+  const current = own || (typeof document !== 'undefined' ? (0, _direction.getDirection)() : 'ltr');
+  const language = lang || locale || undefined;
+  _react.default.useLayoutEffect(() => {
+    if (!root) return undefined;
+    const html = document.documentElement,
+      before = {
+        dir: html.getAttribute('dir'),
+        lang: html.getAttribute('lang')
+      };
+    html.setAttribute('dir', current);
+    if (language) html.setAttribute('lang', language);
     return () => {
-      document.removeEventListener('keydown', onKey, true);
-      stack.splice(stack.indexOf(entry), 1);
-      if (modal) {
-        modalCount -= 1;
-        if (modalCount === 0) document.documentElement.classList.remove('is-scroll-locked');
-        if (opener && opener.focus && document.contains(opener)) opener.focus({
-          preventScroll: true
-        });
+      if (before.dir == null) html.removeAttribute('dir');else html.setAttribute('dir', before.dir);
+      if (language) {
+        if (before.lang == null) html.removeAttribute('lang');else html.setAttribute('lang', before.lang);
       }
     };
-  }, [open]);
+  }, [root, current, language]);
+  const value = _react.default.useMemo(() => ({
+    dir: current,
+    rtl: current === 'rtl',
+    setDir: d => setOwn(d === 'rtl' ? 'rtl' : 'ltr')
+  }), [current]);
+  return /*#__PURE__*/_react.default.createElement(DirectionContext.Provider, {
+    value: value
+  }, root ? children : /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-direction",
+    dir: current,
+    lang: language
+  }, children));
 }
-function useUid(prefix) {
-  return prefix + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+function useDirection() {
+  const ctx = _react.default.useContext(DirectionContext);
+  const [page, setPage] = _react.default.useState(() => typeof document !== 'undefined' ? (0, _direction.getDirection)() : 'ltr');
+  _react.default.useEffect(() => {
+    if (ctx) return undefined;
+    const observer = new MutationObserver(() => setPage((0, _direction.getDirection)()));
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['dir']
+    });
+    return () => observer.disconnect();
+  }, [ctx]);
+  if (ctx) return ctx;
+  return {
+    dir: page,
+    rtl: page === 'rtl',
+    setDir: d => document.documentElement.setAttribute('dir', d === 'rtl' ? 'rtl' : 'ltr')
+  };
 }
   } },
   "platform/utils/format.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
@@ -969,6 +940,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.FORMATS = void 0;
 exports.dateTimeAttr = dateTimeAttr;
+exports.digitsOf = digitsOf;
 exports.formatAddress = formatAddress;
 exports.formatBytes = formatBytes;
 exports.formatCompact = formatCompact;
@@ -986,6 +958,7 @@ exports.formatRange = formatRange;
 exports.formatRelative = formatRelative;
 exports.formatTime = formatTime;
 exports.formatUnit = formatUnit;
+exports.numeralLocale = numeralLocale;
 exports.regionName = regionName;
 /* Plenix · Formatting (platform/utils/format.js)
    Summary: Numbers, units, dates, times, money, percentages, names, addresses and phone numbers written the same way on
@@ -1005,6 +978,8 @@ exports.regionName = regionName;
    Props:
      every function takes an options object last; options.locale overrides the reader's locale (formatLocale())
      formatLocale(): the page's language (<html lang>), else the browser's, else "en-US"
+     digitsOf(locale): "arab" (Arabic-Indic ٠-٩) for Arabic locales, else "latn"; an explicit -u-nu-latn keeps Latin (owner, arabic-digits-35)
+     numeralLocale(locale, digits): the locale tag with its digits explicit (-u-nu-arab), for Intl; every format function here uses it
      formatNumber(value, { decimals, signed }): a plain number; decimals fixes the precision (keep it the same in a column)
      formatUnit(value, unit, { display, decimals }): a measurement with an Intl unit ("kilometer", "celsius", "megabyte");
        display "short" (default), "long" or "narrow"
@@ -1115,7 +1090,30 @@ function formatLocale() {
   if (typeof navigator !== 'undefined' && navigator.language) return navigator.language;
   return 'en-US';
 }
-const loc = o => o && o.locale || formatLocale();
+/* the digits a locale writes (owner, arabic-digits-35 and arabic-ids-35): Arabic text uses Arabic-Indic digits (٠-٩) everywhere,
+   whichever Arabic region the tag names (the browser alone writes Latin digits for "ar" and "ar-AE"); an explicit -u-nu-latn keeps Latin */
+function digitsOf(locale) {
+  try {
+    const l = new Intl.Locale(locale || formatLocale());
+    return l.numberingSystem === 'latn' ? 'latn' : l.numberingSystem === 'arab' || l.language === 'ar' ? 'arab' : 'latn';
+  } catch (e) {
+    return 'latn';
+  }
+}
+// the locale tag with its digits made explicit (-u-nu-arab or -u-nu-latn), for Intl; a language that is not Arabic is left as it is
+function numeralLocale(locale, digits) {
+  const tag = locale || formatLocale();
+  try {
+    const l = new Intl.Locale(tag),
+      want = digits === 'arab' || digits === 'latn' ? digits : l.language === 'ar' ? digitsOf(tag) : null;
+    return want ? new Intl.Locale(l.toString(), {
+      numberingSystem: want
+    }).toString() : l.toString();
+  } catch (e) {
+    return tag;
+  }
+}
+const loc = o => numeralLocale(o && o.locale || formatLocale());
 const digits = d => d === undefined ? {} : {
   minimumFractionDigits: d,
   maximumFractionDigits: d
@@ -1392,6 +1390,5975 @@ function formatPhone(e164, o = {}) {
 function dateTimeAttr(date) {
   const d = toDate(date);
   return d ? d.toISOString() : '';
+}
+  } },
+  "platform/i18n/en.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// Browser mirror of en.json, the one source of Plenix's built-in English words (components read them with useStrings; owner, arabic-words-37). The repository module loader accepts JavaScript only; the W15C catalog test and check-system's built-in-words rule check parity.
+var _default = exports.default = {
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "retry": "Retry",
+    "next": "Next",
+    "back": "Back"
+  },
+  "collection": {
+    "selected": {
+      "=0": "Nothing selected",
+      "one": "{count} item selected",
+      "other": "{count} items selected"
+    }
+  },
+  "wizard": {
+    "next": "Next",
+    "back": "Back",
+    "finish": "Finish",
+    "cancel": "Cancel",
+    "step": "Step {n} of {total}",
+    "error": "Could not save. Try again.",
+    "complete": "Finish",
+    "summary": "Review",
+    "invalid": "Check this step before continuing.",
+    "failed": "Could not save. Try again.",
+    "steps": "Steps"
+  },
+  "dialog": {
+    "close": "Close",
+    "confirmLabel": "Confirm",
+    "cancelLabel": "Cancel",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "save": "Save"
+  },
+  "text": {
+    "more": "Show more",
+    "less": "Show less"
+  },
+  "emptyState": {
+    "title": "No items yet",
+    "description": "Create an item to get started.",
+    "action": "Create item",
+    "offline": {
+      "title": "You’re offline",
+      "text": "Check your connection. This page updates when you’re back online."
+    },
+    "degraded": {
+      "title": "Some features aren’t working",
+      "text": "A service is slow or not responding, so what you see may be out of date."
+    },
+    "permission-denied": {
+      "title": "You don’t have access",
+      "text": "Ask the owner to share it with you."
+    },
+    "not-found": {
+      "title": "This page doesn’t exist",
+      "text": "It may have been moved or deleted. Check the address or go back."
+    },
+    "maintenance": {
+      "title": "Down for maintenance",
+      "text": "This service is being updated. Try again in a few minutes."
+    },
+    "completion": {
+      "title": "All done",
+      "text": "There’s nothing left to do here."
+    }
+  },
+  "pagination": {
+    "label": "Pages",
+    "range": "{first}–{last} of {total}",
+    "previous": "Previous page",
+    "next": "Next page",
+    "page": "Page {n}",
+    "perPage": "Per page"
+  },
+  "accessRequest": {
+    "title": "Request access",
+    "description": "Ask the owner for access to this resource.",
+    "message": "Message to the owner",
+    "request": "Request access",
+    "pending": "Access requested",
+    "approved": "Access approved",
+    "denied": "Access denied",
+    "open": "Open resource",
+    "failed": "Could not send your request. Try again."
+  },
+  "actionBar": {
+    "label": "Actions"
+  },
+  "aiButton": {
+    "label": "AI actions",
+    "failed": "Could not complete this action. Try again.",
+    "working": "Working"
+  },
+  "aiDisclaimer": {
+    "message": "AI-generated content may be inaccurate. Review important details.",
+    "learn": "About AI-generated content"
+  },
+  "aiExplanation": {
+    "label": "Why this?",
+    "title": "AI explanation",
+    "close": "Close"
+  },
+  "aiSearch": {
+    "label": "AI search",
+    "query": "Search query",
+    "search": "Search",
+    "semantic": "Use semantic search",
+    "results": "Search results",
+    "empty": "No results.",
+    "failed": "Search failed. Try again.",
+    "pending": "Searching"
+  },
+  "announcement": {
+    "dismiss": "Dismiss announcement",
+    "failed": "Could not dismiss this announcement. Try again."
+  },
+  "appHeader": {
+    "aria-label": "Search"
+  },
+  "appShell": {
+    "skip": "Skip to main content"
+  },
+  "approvalWorkflow": {
+    "approve": "Approve",
+    "changes": "Request changes",
+    "reject": "Reject",
+    "comment": "Comment",
+    "reason": "Explain why this needs changes.",
+    "failed": "Could not save this decision. Your comment is still available.",
+    "steps": "Approval stages",
+    "recorded": "Decision recorded"
+  },
+  "archiveRestore": {
+    "archive": "Archive",
+    "restore": "Restore",
+    "archived": "Archived",
+    "message": "Restore this record to make it active again.",
+    "failed": "Could not update the record. Try again."
+  },
+  "assetGallery": {
+    "empty": "No images",
+    "preview": "Image preview"
+  },
+  "assignControl": {
+    "assign": "Assign",
+    "assignToMe": "Assign to me",
+    "reassign": "Reassign",
+    "unassign": "Unassign",
+    "unassigned": "Unassigned",
+    "cancel": "Cancel",
+    "assigned": "Assigned to {name}",
+    "cleared": "{label} removed",
+    "delegate": "Delegate",
+    "change": "Change",
+    "end": "End delegation",
+    "delegateTitle": "Delegate {label}",
+    "to": "Delegate to",
+    "dates": "Dates",
+    "note": "Note",
+    "noteHint": "Shown to the person you delegate to.",
+    "needPerson": "Choose a person.",
+    "needDates": "Choose the first and last day.",
+    "delegatedTo": "Delegated to {name}",
+    "notDelegated": "Not delegated",
+    "ended": "Delegation ended",
+    "label": "Assignee"
+  },
+  "attachmentPicker": {
+    "label": "Attachments",
+    "remove": "Remove {name}",
+    "invalid": "Choose a supported file within the size limit.",
+    "limit": "Too many attachments.",
+    "empty": "No attachments."
+  },
+  "auditLog": {
+    "actor": "Actor",
+    "at": "Time",
+    "action": "Action",
+    "target": "Target",
+    "changes": "Changes",
+    "view": "View changes",
+    "field": "Field",
+    "before": "Before",
+    "after": "After",
+    "close": "Close"
+  },
+  "autosave": {
+    "saving": "Saving",
+    "saved": "Saved",
+    "offline": "Offline",
+    "failed": "Save failed",
+    "retry": "Retry"
+  },
+  "avatar": {
+    "online": "Online",
+    "away": "Away",
+    "busy": "Busy",
+    "dnd": "Do not disturb",
+    "offline": "Offline"
+  },
+  "avatarGroup": {
+    "more": "+{n}",
+    "moreLabel": "{n} more"
+  },
+  "avatarUpload": {
+    "change": "Change photo",
+    "add": "Add photo",
+    "remove": "Remove photo",
+    "tooLarge": "The picture is larger than {max}",
+    "notImage": "Choose an image file",
+    "picture": "{name}’s photo"
+  },
+  "backToTop": {
+    "label": "Back to top"
+  },
+  "banner": {
+    "dismiss": "Dismiss"
+  },
+  "barcode": {
+    "label": "Barcode {format}: {value}",
+    "invalid": "Not a valid {format} code",
+    "formats": {
+      "code128": "Code 128",
+      "ean13": "EAN-13",
+      "upca": "UPC-A"
+    }
+  },
+  "bottomSheetNav": {
+    "title": "Navigation",
+    "close": "Close"
+  },
+  "brand": {
+    "name": "Plenix"
+  },
+  "breadcrumbs": {
+    "label": "Breadcrumb"
+  },
+  "bulkActions": {
+    "selected": "{n} selected",
+    "selectAll": "Select all",
+    "clear": "Clear",
+    "allSelected": "Every {noun} is selected",
+    "nothingToClear": "Nothing to clear: select {plural} first",
+    "why": "Select {plural} to {action}",
+    "single": "Select one {noun} to {action}",
+    "label": "Selection actions",
+    "more": "More actions",
+    "noun": "item"
+  },
+  "button": {
+    "working": "Working"
+  },
+  "calendar": {
+    "label": "Calendar",
+    "previous": "Previous month",
+    "next": "Next month",
+    "week": "Week",
+    "weekShort": "Wk",
+    "today": "Today"
+  },
+  "carousel": {
+    "slide": "{n} of {total}",
+    "previous": "Previous slide",
+    "next": "Next slide",
+    "goTo": "Go to slide {n}",
+    "goToPage": "Go to page {n}",
+    "pages": "Slides",
+    "pause": "Pause",
+    "play": "Play",
+    "pauseLabel": "Pause the slides",
+    "playLabel": "Play the slides",
+    "strip": "Slides"
+  },
+  "cascader": {
+    "placeholder": "Choose",
+    "separator": " / ",
+    "search": "Search",
+    "noMatches": "No matches",
+    "empty": "No items",
+    "remove": "Remove {label}",
+    "columns": "Options"
+  },
+  "chart": {
+    "barChart": {
+      "category": "Category",
+      "total": "Total",
+      "range": "Range",
+      "count": "Count"
+    },
+    "boxPlot": {
+      "group": "Group",
+      "min": "Minimum",
+      "q1": "First quartile",
+      "median": "Median",
+      "q3": "Third quartile",
+      "max": "Maximum",
+      "outliers": "Outliers",
+      "n": "Values"
+    },
+    "bulletChart": {
+      "measure": "Measure",
+      "value": "Value",
+      "target": "Target",
+      "ranges": "Ranges",
+      "poor": "Poor",
+      "fair": "Fair",
+      "good": "Good"
+    },
+    "chartFrame": {
+      "showData": "Show the data",
+      "table": "{title}: data"
+    },
+    "chartLegend": {
+      "legend": "Legend"
+    },
+    "comboChart": {
+      "category": "Category",
+      "bars": "Columns",
+      "lines": "Lines"
+    },
+    "diagram": {
+      "step": "Step",
+      "kind": "Kind",
+      "next": "Leads to",
+      "previous": "Comes from",
+      "process": "Step",
+      "decision": "Decision",
+      "terminal": "Start or end",
+      "data": "Data",
+      "box": "Part",
+      "group": "Group",
+      "end": "End"
+    },
+    "funnelChart": {
+      "stage": "Stage",
+      "value": "Count",
+      "kept": "Kept from the step before",
+      "ofFirst": "Of the first step"
+    },
+    "ganttChart": {
+      "task": "Task",
+      "progress": "Done",
+      "dependsOn": "Waits for",
+      "status": "Status",
+      "today": "Today",
+      "milestone": "Milestone",
+      "start": "Start",
+      "end": "End"
+    },
+    "gauge": {
+      "showData": "Show the data",
+      "table": "{title}: data",
+      "measure": "Measure",
+      "value": "Value",
+      "min": "Minimum",
+      "max": "Maximum",
+      "ok": ""
+    },
+    "geoMap": {
+      "region": "Region",
+      "place": "Place",
+      "value": "Value",
+      "noData": "No data",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "zoom": "Zoom",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "reset": "Show the whole map"
+    },
+    "heatMap": {
+      "value": "Value",
+      "row": "Row",
+      "column": "Column",
+      "date": "Date",
+      "missing": "No data",
+      "low": "Low",
+      "high": "High",
+      "scale": "Color scale"
+    },
+    "lineChart": {
+      "category": "Category"
+    },
+    "lollipopChart": {
+      "category": "Category",
+      "value": "Value"
+    },
+    "networkGraph": {
+      "node": "Node",
+      "group": "Group",
+      "links": "Connected to",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "fit": "Fit",
+      "hintZoom": " Plus and minus zoom, 0 fits the graph.",
+      "none": "None"
+    },
+    "pieChart": {
+      "part": "Part",
+      "value": "Value",
+      "share": "Share",
+      "total": "Total",
+      "other": "Other"
+    },
+    "radarChart": {
+      "measure": "Measure"
+    },
+    "sankeyDiagram": {
+      "source": "Source",
+      "target": "Target",
+      "value": "Value",
+      "total": "Total"
+    },
+    "scatterChart": {
+      "series": "Series",
+      "item": "Item"
+    },
+    "timelineChart": {
+      "item": "Item",
+      "lane": "Lane",
+      "today": "Today",
+      "date": "Date",
+      "dates": "Dates",
+      "start": "Start",
+      "end": "End"
+    },
+    "treeChart": {
+      "name": "Name",
+      "detail": "Detail",
+      "parent": "Reports to",
+      "level": "Level",
+      "folded": "folded",
+      "open": "open"
+    },
+    "treemap": {
+      "group": "Group",
+      "item": "Part",
+      "value": "Value",
+      "share": "Share"
+    },
+    "waterfallChart": {
+      "step": "Step",
+      "change": "Change",
+      "total": "Total",
+      "running": "Running total",
+      "increase": "Increase",
+      "decrease": "Decrease",
+      "end": "End"
+    },
+    "wordCloud": {
+      "value": "Count",
+      "word": "Term",
+      "group": "Group"
+    }
+  },
+  "chat": {
+    "thinking": "Thinking",
+    "label": "Conversation",
+    "placeholder": "Write a message",
+    "sendLabel": "Send"
+  },
+  "checklist": {
+    "dismiss": "Dismiss checklist",
+    "progress": "Tasks completed"
+  },
+  "codeBlock": {
+    "code": "Code",
+    "copy": "Copy",
+    "copied": "Copied",
+    "failed": "Could not copy"
+  },
+  "codeEditor": {
+    "hint": "Tab indents. Press Escape, then Tab, to leave the editor."
+  },
+  "colorSwatch": {
+    "label": "Color"
+  },
+  "columnsMenu": {
+    "label": "Columns",
+    "manage": "Manage columns",
+    "first": "First column",
+    "makeFirst": "Make first column",
+    "moveUp": "Move {name} up",
+    "moveDown": "Move {name} down",
+    "up": "Move up",
+    "down": "Move down",
+    "find": "Find a column",
+    "showAll": "Show all",
+    "hideAll": "Hide all",
+    "apply": "Apply",
+    "cancel": "Cancel",
+    "shown": "{name} shown",
+    "hidden": "{name} hidden",
+    "isFirst": "{name} is the first column",
+    "moved": "{name}, position {position} of {total}",
+    "row": "{name}{first}. Alt + Arrow Up or Down moves it",
+    "firstMark": ", first column",
+    "none": "No column matches"
+  },
+  "combobox": {
+    "loading": "Loading…",
+    "error": "The options could not be loaded"
+  },
+  "commandBar": {
+    "more": "More actions",
+    "actions": "{label} actions",
+    "find": "Find and view",
+    "selected": "{n} selected",
+    "hidden": " ({n} hidden by filters)",
+    "clear": "Clear the selection",
+    "clearName": "{n} selected, clear the selection",
+    "swapped": "{n} selected. Selection actions available.",
+    "cleared": "Selection cleared.",
+    "why": "Select {plural} to {action}",
+    "single": "Select one {noun} to {action}",
+    "preset": "any",
+    "moreLabel": "More actions"
+  },
+  "commandMenu": {
+    "label": "Commands",
+    "placeholder": "Type a command or search",
+    "empty": "No results for “{query}”",
+    "loading": "Loading",
+    "back": "Back",
+    "results": "{count} results"
+  },
+  "commandPalette": {
+    "title": "Commands",
+    "close": "Close"
+  },
+  "comment": {
+    "edit": "Edit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "resolve": "Resolve",
+    "reopen": "Reopen",
+    "edited": "Edited",
+    "resolved": "Resolved",
+    "message": "Comment",
+    "empty": "Enter a comment.",
+    "failed": "Could not save. Try again."
+  },
+  "commentThread": {
+    "title": "Comments",
+    "reply": "Reply",
+    "send": "Send reply",
+    "resolve": "Resolve thread",
+    "reopen": "Reopen thread",
+    "resolved": "Resolved",
+    "empty": "Enter a reply.",
+    "failed": "Could not save. Try again."
+  },
+  "comparisonView": {
+    "label": "Comparison",
+    "modes": "View",
+    "columns": "Side by side",
+    "matrix": "Table",
+    "slider": "Slider",
+    "onlyDifferences": "Show only differences",
+    "changed": "Changed",
+    "attribute": "Attribute",
+    "position": "Position",
+    "none": "No differences",
+    "one": "1 difference",
+    "many": "{n} differences",
+    "empty": "—"
+  },
+  "confidenceIndicator": {
+    "high": "High confidence",
+    "medium": "Medium confidence",
+    "low": "Low confidence",
+    "unknown": "Confidence unavailable",
+    "label": "Confidence"
+  },
+  "connectedAccounts": {
+    "label": "Connected accounts",
+    "connect": "Connect",
+    "disconnect": "Disconnect",
+    "reconnect": "Reconnect",
+    "cancel": "Cancel",
+    "connected": "Connected",
+    "disconnected": "Not connected",
+    "error": "Connection error",
+    "as": "As {account}",
+    "since": "since {date}",
+    "connectTitle": "Connect {service}?",
+    "connectMessage": "You’ll sign in to {service} to allow this. Plenix will be able to:",
+    "continue": "Continue to {service}",
+    "disconnectTitle": "Disconnect {service}?",
+    "disconnectMessage": "You can connect it again at any time.",
+    "done": "{service} connected",
+    "undone": "{service} disconnected"
+  },
+  "contextualHelp": {
+    "more": "More about {title}",
+    "moreUntitled": "More information"
+  },
+  "copyButton": {
+    "copy": "Copy",
+    "copied": "Copied",
+    "failed": "Couldn’t copy. Select the text and copy it by hand."
+  },
+  "countrySelect": {
+    "country": "Choose a country or region",
+    "language": "Choose a language",
+    "locale": "Choose a language and region",
+    "suggested": "Suggested",
+    "all": "All"
+  },
+  "dataGrid": {
+    "empty": "Nothing to show",
+    "failed": "The table could not load",
+    "retry": "Retry",
+    "selectAll": "Select all rows",
+    "selectRow": "Select row",
+    "rowActions": "Row actions",
+    "clearSort": "Clear sort",
+    "hide": "Hide field",
+    "showAll": "Show all fields",
+    "narrower": "Narrower",
+    "wider": "Wider",
+    "fit": "Fit to content",
+    "deleted": "Deleted",
+    "moveLeft": "Move left",
+    "moveRight": "Move right",
+    "perPage": "Rows per page",
+    "view": "View options",
+    "wrapHeaders": "Wrap headers",
+    "markRead": "Mark as read",
+    "markUnread": "Mark as unread",
+    "wrapText": "Wrap text",
+    "wrapAll": "Wrap all columns",
+    "fullText": "Show the full text",
+    "rowHeight": "Row height",
+    "short": "Short",
+    "medium": "Medium",
+    "tall": "Tall",
+    "extra-tall": "Extra tall",
+    "filter": "Filter",
+    "clearFilter": "Clear filter",
+    "groupBy": "Group by this field",
+    "ungroup": "Ungroup",
+    "noGroup": "Don’t group by this field",
+    "sizeToFit": "Size column to fit",
+    "sizeAllToFit": "Size all columns to fit",
+    "moreColumns": "More…",
+    "columns": "Columns",
+    "loadMore": "Load more",
+    "loading": "Loading records",
+    "group": "Group by this field",
+    "filterBy": "Filter by this field",
+    "any": "Any",
+    "contains": "Contains…",
+    "moveRow": "Move row",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "moveTop": "Move to top",
+    "moveBottom": "Move to bottom",
+    "resize": "Resize",
+    "range": "{first}–{last} of {total}",
+    "count": "{shown} of {total}",
+    "pages": "{label} pages",
+    "loaded": "{n} more rows loaded, {shown} of {total}",
+    "noValue": "(Empty)",
+    "addTo": "Add a record to {value}",
+    "groupRow": "{value}, group, {count} {records}",
+    "record": "record",
+    "records": "records",
+    "expanded": "expanded",
+    "collapsed": "collapsed",
+    "sum": "Sum",
+    "countOf": "Count",
+    "average": "Average",
+    "min": "Min",
+    "max": "Max",
+    "sortText": ["Sort A → Z", "Sort Z → A"],
+    "sortNumber": ["Sort 1 → 9", "Sort 9 → 1"],
+    "sortDate": ["Sort oldest → newest", "Sort newest → oldest"],
+    "sortCheck": ["Sort unchecked → checked", "Sort checked → unchecked"],
+    "unread": "Unread ({count})"
+  },
+  "dataPill": {
+    "male": "male",
+    "female": "female"
+  },
+  "datePicker": {
+    "open": "Choose date",
+    "dialog": "Choose date",
+    "time": "Time",
+    "presets": "Presets",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "nextWeek": "In a week",
+    "last7": "Last 7 days",
+    "last30": "Last 30 days",
+    "thisMonth": "This month",
+    "lastMonth": "Last month"
+  },
+  "deleteFlow": {
+    "title": "Delete {name}?",
+    "titleMany": "Delete {count} {plural}?",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "permanent": "This cannot be undone.",
+    "more": "and {count} more",
+    "typeLabel": "Type {phrase} to confirm",
+    "typeError": "Type {phrase} exactly as shown.",
+    "phraseMany": "delete {count} {plural}",
+    "deleted": "{what} deleted",
+    "trashed": "{what} moved to the trash",
+    "undo": "Undo",
+    "retention": "Restore {them} from the trash within {days} days.",
+    "it": "it",
+    "them": "them",
+    "names": "Deleted",
+    "noun": "item"
+  },
+  "documentViewer": {
+    "document": "Document",
+    "previous": "Previous page",
+    "next": "Next page",
+    "page": "Page",
+    "zoom": "Zoom",
+    "thumbnails": "Page thumbnails",
+    "loading": "Loading document",
+    "failed": "The document could not be opened.",
+    "failedEngine": "The document viewer could not start. Try again later.",
+    "failedAccess": "The document could not be opened. It may have moved, or you may not have access to it.",
+    "failedParse": "This file could not be read as a PDF.",
+    "failedRender": "This page could not be shown.",
+    "empty": "No document.",
+    "retry": "Try again"
+  },
+  "downloadButton": {
+    "download": "Download",
+    "downloading": "Downloading",
+    "ready": "Download ready"
+  },
+  "downloadManager": {
+    "title": "Downloads",
+    "empty": "No downloads",
+    "queued": "Queued",
+    "progress": "Downloading",
+    "ready": "Ready",
+    "failed": "Download failed",
+    "actionFailed": "Could not complete the download action. Try again."
+  },
+  "draftState": {
+    "draft": "Draft",
+    "resume": "Resume draft",
+    "discard": "Discard draft",
+    "confirm": "Discard this draft?",
+    "message": "This draft will be permanently removed.",
+    "cancel": "Keep draft",
+    "failed": "Could not update the draft. Try again."
+  },
+  "duplicateAction": {
+    "duplicate": "Duplicate",
+    "copyOf": "Copy of {name}",
+    "numbered": "{name} ({n})",
+    "title": "Duplicate {noun}",
+    "name": "Name",
+    "from": "From {name}",
+    "also": "Also copy",
+    "empty": "Enter a name.",
+    "taken": "A {noun} named {name} already exists.",
+    "done": "Duplicated as {name}",
+    "undo": "Undo",
+    "cancel": "Cancel",
+    "noun": "item"
+  },
+  "entityPicker": {
+    "placeholderPeople": "Search by name or email",
+    "placeholder": "Search {entityName}",
+    "empty": "No {entityName} found",
+    "browse": "Browse all {entityName}",
+    "loading": "Loading…",
+    "error": "The results could not be loaded",
+    "remove": "Remove {label}"
+  },
+  "errorSummary": {
+    "one": "There is a problem",
+    "many": "There are {count} problems"
+  },
+  "exportDialog": {
+    "title": "Export",
+    "format": "Format",
+    "scope": "Scope",
+    "all": "All records",
+    "selection": "Selected records",
+    "background": "Export in the background",
+    "export": "Export",
+    "cancel": "Cancel",
+    "invalid": "Choose an available format and scope.",
+    "failed": "Could not export. Try again.",
+    "ready": "Export ready",
+    "queued": "Export queued",
+    "download": "Download export",
+    "done": "Done"
+  },
+  "featureIntro": {
+    "new": "New",
+    "whatsNew": "What is new",
+    "gotIt": "Got it",
+    "later": "Not now",
+    "close": "Close"
+  },
+  "file": {
+    "folder": "folder",
+    "items": "{n} items",
+    "item": "{n} item"
+  },
+  "fileBrowser": {
+    "label": "Files",
+    "root": "Library",
+    "newFolder": "New folder",
+    "folderName": "Folder name",
+    "create": "Create",
+    "upload": "Upload",
+    "search": "Search this folder",
+    "folders": "Folders",
+    "path": "Location",
+    "count": "{n} items",
+    "one": "1 item",
+    "empty": "This folder is empty",
+    "emptyText": "Upload files or create a folder.",
+    "noMatch": "Nothing matches “{q}”",
+    "download": "Download",
+    "moveTo": "Move to",
+    "delete": "Delete",
+    "noun": "item",
+    "plural": "items",
+    "drop": "Drop files to upload to {folder}",
+    "nameTaken": "A file or folder named “{name}” is already here.",
+    "nameEmpty": "Give the folder a name.",
+    "items": "{n} items",
+    "item": "{n} item"
+  },
+  "fileInput": {
+    "choose": "Choose file",
+    "chooseMany": "Choose files",
+    "none": "No file chosen",
+    "count": "{count} files",
+    "remove": "Remove {name}"
+  },
+  "fileList": {
+    "sort": "Sort",
+    "sortBy": "Sort by {field}",
+    "field": "Sort by",
+    "order": "Order",
+    "asc": "Ascending",
+    "desc": "Descending",
+    "name": "Name",
+    "size": "Size",
+    "modified": "Modified",
+    "owner": "Owner",
+    "status": "Status",
+    "count": "{n} items",
+    "one": "1 item",
+    "empty": "Nothing here yet",
+    "open": "Open",
+    "download": "Download",
+    "rename": "Rename…",
+    "delete": "Delete",
+    "moveTo": "Move to",
+    "file": "file",
+    "files": "files",
+    "folder": "folder",
+    "folders": "folders",
+    "items": "{n} items",
+    "item": "{n} item"
+  },
+  "filePicker": {
+    "title": "Choose files",
+    "all": "All files",
+    "folders": "Folders",
+    "search": "Search files",
+    "empty": "No matching files.",
+    "pick": "Choose",
+    "cancel": "Cancel",
+    "failed": "Files could not be chosen. Try again."
+  },
+  "fileRow": {
+    "select": "Select {name}",
+    "more": "More actions for {name}",
+    "download": "Download {name}",
+    "rename": "Rename…",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "retry": "Try again",
+    "transfer": "{label} {name}",
+    "uploading": "Uploading",
+    "file": "file",
+    "files": "files",
+    "folder": "folder",
+    "folders": "folders",
+    "items": "{n} items",
+    "item": "{n} item"
+  },
+  "filterBar": {
+    "label": "Filters",
+    "more": "More filters",
+    "clearAll": "Clear all",
+    "one": "{label}: {value}",
+    "several": "{label} · {count}"
+  },
+  "filterPanel": {
+    "label": "Filter",
+    "info": "Only the records that meet the conditions are shown; a condition left unfinished does not filter.",
+    "sub": "In this view, show records",
+    "where": "Where",
+    "and": "and",
+    "or": "or",
+    "empty": "No conditions: every record is shown.",
+    "addCondition": "Add condition",
+    "addGroup": "Add condition group",
+    "remove": "Remove {what}",
+    "condition": "condition",
+    "group": "condition group",
+    "value": "Enter a value",
+    "choose": "Choose options",
+    "field": "Field",
+    "operator": "Operator",
+    "join": "And or or"
+  },
+  "form": {
+    "label": "Form actions"
+  },
+  "formFlow": {
+    "create": "Create",
+    "save": "Save changes",
+    "cancel": "Cancel",
+    "failed": "Could not save. Try again.",
+    "invalid": "Check the fields before saving.",
+    "saved": "Saved",
+    "unsaved": "Your changes will be lost.",
+    "close": "Close"
+  },
+  "generatedContent": {
+    "label": "Generated content",
+    "helpful": "Helpful",
+    "unhelpful": "Not helpful",
+    "regenerate": "Regenerate",
+    "previous": "Previous version",
+    "next": "Next version",
+    "version": "Version",
+    "feedbackSaved": "Feedback saved",
+    "failed": "The action failed. Try again.",
+    "pending": "Working"
+  },
+  "groupPanel": {
+    "label": "Group",
+    "title": "Group by",
+    "info": "Rows with the same value are gathered under one header; a subgroup splits each group again.",
+    "empty": "Gather the rows that share a value under one header.",
+    "add": "Add group",
+    "addSub": "Add subgroup",
+    "collapseAll": "Collapse all",
+    "expandAll": "Expand all",
+    "more": "More for {name}",
+    "hideEmpty": "Hide empty groups",
+    "remove": "Remove the grouping by {name}",
+    "removeTip": "Remove group",
+    "field": "Field",
+    "order": "Order"
+  },
+  "helpPanel": {
+    "title": "Help",
+    "search": "Search help",
+    "empty": "No matching articles",
+    "back": "Back to articles",
+    "read": "Read full article",
+    "close": "Collapse help"
+  },
+  "image": {
+    "error": "Image not available"
+  },
+  "imageAnnotation": {
+    "title": "Image annotations",
+    "pin": "Pin",
+    "region": "Region",
+    "location": "Location",
+    "comment": "Comment",
+    "kind": "Annotation type",
+    "add": "Add annotation",
+    "empty": "Enter a location and comment.",
+    "failed": "Could not save. Try again.",
+    "none": "No annotations"
+  },
+  "importDialog": {
+    "title": "Import",
+    "file": "File",
+    "paste": "Paste data",
+    "url": "URL",
+    "choose": "Choose source file",
+    "drop": "Drop a file here or choose it below.",
+    "none": "No file chosen",
+    "import": "Import",
+    "cancel": "Cancel",
+    "invalid": "Choose a supported file, paste data, or enter an HTTP URL.",
+    "failed": "Could not import. Your source is still available.",
+    "unsaved": "Your import source will be lost."
+  },
+  "importWizard": {
+    "title": "Import records",
+    "mapping": "Map columns",
+    "review": "Review",
+    "results": "Results",
+    "column": "Source column",
+    "choose": "Choose a column",
+    "missing": "Map every required field.",
+    "invalid": "The source has no usable columns or rows.",
+    "done": "Done",
+    "imported": "Import complete",
+    "source": "Source",
+    "cancel": "Cancel",
+    "unsaved": "Your import mapping will be lost."
+  },
+  "inlineEdit": {
+    "edit": "edit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "empty": "Add a value",
+    "saved": "Saved",
+    "failed": "The change could not be saved"
+  },
+  "link": {
+    "newTab": "opens in a new tab"
+  },
+  "loadMore": {
+    "more": "Load more",
+    "moreCount": "Show {n} more",
+    "loading": "Loading…",
+    "end": "You’ve reached the end",
+    "count": "{shown} of {total}",
+    "added": {
+      "one": "{n} more item loaded",
+      "other": "{n} more items loaded"
+    }
+  },
+  "loading": {
+    "label": "Loading"
+  },
+  "loadingOverlay": {
+    "loading": "Loading",
+    "cancel": "Cancel"
+  },
+  "mediaPlayer": {
+    "rate": "Playback speed",
+    "transcript": "Show transcript",
+    "hideTranscript": "Hide transcript",
+    "pip": "Picture in picture",
+    "exitPip": "Exit picture in picture",
+    "unsupported": "Picture in picture is unavailable.",
+    "failed": "This media could not be played.",
+    "pipFailed": "Could not change picture in picture. Try again.",
+    "seek": "Seek to {time}",
+    "fallback": "Open media file",
+    "volume": "Volume",
+    "mute": "Mute",
+    "audioFailed": "The separate sound track could not be played. Video is playing muted."
+  },
+  "mediaViewer": {
+    "label": "Preview",
+    "close": "Close preview",
+    "previous": "Previous",
+    "next": "Next",
+    "counter": "{index} of {total}"
+  },
+  "mentionInput": {
+    "add": "Add mention",
+    "choose": "Choose a person to mention"
+  },
+  "metadataEditor": {
+    "save": "Save metadata",
+    "reset": "Reset",
+    "apply": "Apply {field}",
+    "required": "Enter a value.",
+    "failed": "Metadata could not be saved. Your changes are still available.",
+    "saved": "Metadata saved",
+    "unsaved": "Your metadata changes will be lost."
+  },
+  "metricCard": {
+    "more": "More for {title}",
+    "up": "Up",
+    "down": "Down",
+    "good": "good",
+    "bad": "bad",
+    "vs": "vs",
+    "empty": "No data",
+    "loading": "Loading {title}",
+    "error": "Couldn’t load the figures.",
+    "retry": "Try again",
+    "stale": "Out of date",
+    "rank": "#{n}",
+    "toCome": "to come",
+    "hit": "hit",
+    "missed": "missed",
+    "weekdays": ["M", "T", "W", "T", "F", "S", "S"],
+    "weekdayNames": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+    "month": "{done} of {days} working days so far",
+    "parts": "{label} {share}",
+    "compare": "{a} {av}, {b} {bv}"
+  },
+  "millerColumns": {
+    "empty": "No items",
+    "resize": "Resize the {label} column",
+    "preview": "Preview of {label}"
+  },
+  "navList": {
+    "pin": "Pin",
+    "unpin": "Unpin",
+    "pinItem": "Pin {label}",
+    "unpinItem": "Unpin {label}"
+  },
+  "navPane": {
+    "browse": "Browse"
+  },
+  "notice": {
+    "dismiss": "Dismiss"
+  },
+  "notificationList": {
+    "label": "Notifications",
+    "empty": "No notifications",
+    "markAllRead": "Mark all read",
+    "viewAll": "View all"
+  },
+  "numberInput": {
+    "decrease": "Decrease",
+    "increase": "Increase"
+  },
+  "onboarding": {
+    "start": "Get started",
+    "skip": "Skip welcome",
+    "tour": "Take a tour",
+    "checklist": "Get started",
+    "close": "Close"
+  },
+  "otpInput": {
+    "cell": "character {n} of {total}"
+  },
+  "peopleGroup": {
+    "team": "Team",
+    "group": "Group",
+    "members": "{n} members",
+    "member": "{n} member",
+    "showMembers": "Show members",
+    "membersOf": "Members of {name}"
+  },
+  "permissionSummary": {
+    "can": "Can",
+    "cannot": "Cannot",
+    "manage": "Manage access",
+    "canSentence": "Can {list}",
+    "cannotSentence": "Cannot {list}"
+  },
+  "permissionsEditor": {
+    "label": "Permissions",
+    "capability": "Capability",
+    "subject": "Show permissions for",
+    "save": "Save permissions",
+    "failed": "Could not save permissions. Try again.",
+    "unsaved": "Your permission changes have not been saved."
+  },
+  "persona": {
+    "online": "Online",
+    "away": "Away",
+    "busy": "Busy",
+    "dnd": "Do not disturb",
+    "offline": "Offline"
+  },
+  "popconfirm": {
+    "cancel": "Cancel"
+  },
+  "popover": {
+    "close": "Close"
+  },
+  "presenceBar": {
+    "viewers": "Viewing",
+    "editors": "Editing",
+    "cursors": "Cursors",
+    "empty": "No one else here",
+    "view": "View person"
+  },
+  "productCard": {
+    "sale": "Sale",
+    "outOfStock": "Out of stock",
+    "addToCart": "Add to cart",
+    "addToCartFor": "Add {title} to cart",
+    "now": "Now",
+    "was": "Was",
+    "rating": "Rating",
+    "reviews": "{n} reviews",
+    "review": "1 review",
+    "soldOut": "{title} is out of stock"
+  },
+  "productOptions": {
+    "chosen": "{label}:",
+    "unavailable": "Out of stock",
+    "quantity": "Quantity",
+    "quantityOf": "Quantity, {product}",
+    "unavailableName": "{label}, out of stock",
+    "none": "None chosen"
+  },
+  "progressSteps": {
+    "step": "Step {n} of {total}",
+    "complete": "Complete",
+    "current": "Current step",
+    "upcoming": "Not started",
+    "error": "Needs attention"
+  },
+  "promptSuggestions": {
+    "label": "Prompt suggestions",
+    "empty": "No prompt suggestions",
+    "failed": "Could not use this suggestion. Try again."
+  },
+  "providers": {
+    "UnsavedGuard": {
+      "title": "Leave without saving?",
+      "message": "Your changes will be lost.",
+      "leave": "Leave",
+      "stay": "Keep editing"
+    },
+    "theme-boot": {
+      "compact": "Compact",
+      "standard": "Standard",
+      "comfortable": "Comfortable"
+    }
+  },
+  "publish": {
+    "publish": "Publish",
+    "publishNow": "Publish now",
+    "schedule": "Schedule",
+    "cancelSchedule": "Cancel schedule",
+    "unpublish": "Unpublish",
+    "cancel": "Cancel",
+    "publishTitle": "Publish {name}?",
+    "publishMessage": "It becomes visible to {audience}.",
+    "unpublishTitle": "Unpublish {name}?",
+    "unpublishMessage": "It is hidden from {audience}. You can publish it again.",
+    "scheduleTitle": "Schedule {name}",
+    "when": "Publish on",
+    "whenHint": "Date and time, in your time zone.",
+    "past": "Choose a time in the future.",
+    "empty": "Choose a date and time.",
+    "publishedLine": "Published {at}",
+    "publishedBy": "Published {at} by {by}",
+    "scheduledLine": "Publishes {at}",
+    "scheduledBy": "Publishes {at}, scheduled by {by}",
+    "draftLine": "Not published",
+    "published": "{name} published",
+    "scheduled": "{name} scheduled for {at}",
+    "unpublished": "{name} unpublished",
+    "undo": "Undo",
+    "everyone": "everyone with access",
+    "actions": "Publishing"
+  },
+  "queryBuilder": {
+    "builder": "Builder",
+    "text": "Text",
+    "viewLabel": "View",
+    "where": "Where",
+    "and": "And",
+    "or": "Or",
+    "andWord": "and",
+    "orWord": "or",
+    "join": "Match",
+    "all": "All rules",
+    "any": "Any rule",
+    "addRule": "Add rule",
+    "addGroup": "Add group",
+    "removeRule": "Remove rule",
+    "removeGroup": "Remove group",
+    "field": "Field",
+    "operator": "Operator",
+    "value": "Value",
+    "rule": "Rule {n}",
+    "group": "Group {n}",
+    "empty": "No rules: every record matches.",
+    "everything": "Every record",
+    "matches": "{n} matches",
+    "match": "{n} match",
+    "textTitle": "Query",
+    "added": "Rule added",
+    "groupAdded": "Group added",
+    "removed": "Rule removed",
+    "groupRemoved": "Group removed"
+  },
+  "quickFilter": {
+    "preset": "any"
+  },
+  "rating": {
+    "label": "Rating"
+  },
+  "refineMenu": {
+    "label": "Refine",
+    "shorter": "Make shorter",
+    "longer": "Make longer",
+    "tone": "Change tone",
+    "formal": "Formal",
+    "casual": "Casual",
+    "neutral": "Neutral",
+    "custom": "Custom instruction",
+    "prompt": "Instruction",
+    "apply": "Apply instruction",
+    "cancel": "Cancel",
+    "empty": "Enter an instruction.",
+    "failed": "Could not refine this text. Try again."
+  },
+  "relatedAssets": {
+    "empty": "No related assets"
+  },
+  "relativeDateInput": {
+    "custom": "Custom",
+    "none": "Any time",
+    "amount": "Amount",
+    "unit": "Unit",
+    "direction": "Direction",
+    "past": "Last",
+    "future": "Next",
+    "units": {
+      "day": ["day", "days"],
+      "week": ["week", "weeks"],
+      "month": ["month", "months"],
+      "year": ["year", "years"]
+    },
+    "presets": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "last-7-days": "Last 7 days",
+      "last-30-days": "Last 30 days",
+      "last-90-days": "Last 90 days",
+      "last-12-months": "Last 12 months",
+      "tomorrow": "Tomorrow",
+      "next-7-days": "Next 7 days",
+      "next-30-days": "Next 30 days",
+      "next-90-days": "Next 90 days",
+      "next-12-months": "Next 12 months"
+    }
+  },
+  "renameAction": {
+    "label": "Name",
+    "rename": "Rename",
+    "open": "Rename…",
+    "title": "Rename {name}",
+    "cancel": "Cancel",
+    "empty": "Enter a name",
+    "slash": "A name can’t contain / or \\",
+    "taken": "There’s already an item named {name} here",
+    "tooLong": "Use {max} characters or fewer",
+    "renamed": "Renamed to {name}",
+    "failed": "The name could not be changed"
+  },
+  "renditionList": {
+    "label": "Renditions",
+    "name": "Name",
+    "format": "Format",
+    "size": "Size",
+    "download": "Download",
+    "empty": "No renditions."
+  },
+  "resizable": {
+    "width": "{label} width",
+    "height": "{label} height"
+  },
+  "resourceList": {
+    "item": "item",
+    "selectAll": "Select all {n} {nouns}",
+    "select": "Select {name}",
+    "count": "{n} {nouns}",
+    "selected": "{n} of {total} selected"
+  },
+  "retry": {
+    "title": "Couldn’t load",
+    "retry": "Retry",
+    "retryNow": "Retry now",
+    "retrying": "Retrying…",
+    "waiting": "Retrying in {time}",
+    "attempt": "Attempt {attempt} of {attempts}",
+    "stopped": "Stopped after {attempts} attempts",
+    "dismiss": "Dismiss",
+    "status": "failed"
+  },
+  "reviewFlow": {
+    "label": "Waiting for review",
+    "noun": "item"
+  },
+  "richTextEditor": {
+    "toolbar": "Formatting",
+    "more": "More formatting",
+    "bold": "Bold",
+    "italic": "Italic",
+    "underline": "Underline",
+    "strike": "Strikethrough",
+    "code": "Inline code",
+    "subscript": "Subscript",
+    "superscript": "Superscript",
+    "link": "Link",
+    "bulleted": "Bulleted list",
+    "numbered": "Numbered list",
+    "tasks": "Task list",
+    "quote": "Quote",
+    "codeBlock": "Code block",
+    "rule": "Horizontal rule",
+    "image": "Image",
+    "table": "Table",
+    "color": "Text color",
+    "highlight": "Highlight",
+    "alignLeft": "Align left",
+    "alignCenter": "Align center",
+    "alignRight": "Align right",
+    "alignJustify": "Justify",
+    "clear": "Clear formatting",
+    "undo": "Undo",
+    "redo": "Redo",
+    "textStyle": "Text style",
+    "paragraph": "Paragraph",
+    "font": "Font",
+    "defaultFont": "Default font",
+    "size": "Size",
+    "defaultSize": "Default size",
+    "custom": "Custom…",
+    "customFont": "Font family",
+    "customSize": "Font size",
+    "insertTable": "Insert table",
+    "rowBefore": "Add row above",
+    "rowAfter": "Add row below",
+    "columnBefore": "Add column before",
+    "columnAfter": "Add column after",
+    "deleteRow": "Delete row",
+    "deleteColumn": "Delete column",
+    "headerRow": "Header row",
+    "deleteTable": "Delete table",
+    "linkAddress": "Link address",
+    "addLink": "Add link",
+    "imageAddress": "Image address",
+    "imageAlt": "Description",
+    "addImage": "Add image",
+    "swatches": "Suggested colors",
+    "customColor": "Custom color",
+    "hex": "Hex value",
+    "apply": "Apply",
+    "remove": "Remove",
+    "cancel": "Cancel",
+    "mentions": "Suggestions",
+    "groupMarks": "Text",
+    "groupColor": "Color",
+    "groupAlign": "Alignment",
+    "groupLists": "Lists",
+    "groupInsert": "Insert",
+    "groupHistory": "History",
+    "leave": "Press Tab or Shift+Tab to leave the editor",
+    "hint": "Escape, then Tab, leaves the editor"
+  },
+  "roleLabel": {
+    "owner": "Owner",
+    "editor": "Editor",
+    "viewer": "Viewer"
+  },
+  "roleManager": {
+    "roles": "Roles",
+    "create": "Create role",
+    "createTitle": "Create role",
+    "name": "Name",
+    "description": "Description",
+    "descriptionHint": "One sentence on what people with this role can do.",
+    "startFrom": "Start with the permissions of",
+    "empty": "Enter a name.",
+    "taken": "A role named {name} already exists.",
+    "back": "All roles",
+    "members": "Members",
+    "member": "member",
+    "membersCount": "{n} members",
+    "memberCount": "{n} member",
+    "builtIn": "Built-in",
+    "custom": "Custom",
+    "permissions": "Permissions",
+    "builtInNote": "Built-in roles can’t be changed. Duplicate one to make your own.",
+    "addMember": "Add a member",
+    "remove": "Remove {name}",
+    "lastMember": "{role} needs at least one member. Add someone else first.",
+    "noMembers": "Nobody has this role yet.",
+    "role": "role",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "added": "{name} added to {role}",
+    "removed": "{name} removed from {role}",
+    "created": "{name} created",
+    "access": "People with the {role} role",
+    "people": "{n} people",
+    "peopleOne": "{n} person",
+    "allowed": "{permission} allowed for {role}",
+    "denied": "{permission} no longer allowed for {role}"
+  },
+  "saveAs": {
+    "title": "Save as",
+    "name": "Name",
+    "location": "Location",
+    "format": "Format",
+    "save": "Save copy",
+    "cancel": "Cancel",
+    "required": "Enter a name and choose a location.",
+    "failed": "Could not save the copy. Try again.",
+    "unsaved": "Your changes will be lost."
+  },
+  "searchField": {
+    "suggestions": "Suggestions",
+    "recent": "Recent searches",
+    "clearRecent": "Clear recent searches",
+    "clear": "Clear search",
+    "results": "{n} suggestions",
+    "removed": "{query} removed from recent searches",
+    "remove": "Remove {query}",
+    "placeholder": "Search",
+    "label": "Search"
+  },
+  "searchWorkspace": {
+    "title": "Search",
+    "selectAll": "Select all",
+    "allSelected": "Every {noun} is selected",
+    "placeholder": "Search…",
+    "result": "result",
+    "results": "results",
+    "searchField": "Search {nouns}",
+    "save": "Save search",
+    "filters": "Filters",
+    "activeFilters": "Active filters",
+    "chip": "{label}: {value}",
+    "remove": "Remove {text}",
+    "clearAll": "Clear all",
+    "view": "View",
+    "grid": "Grid",
+    "table": "Table",
+    "sort": "Sort",
+    "sortValue": "Sort: {value}",
+    "noMatchQuery": "Nothing matches “{query}”.",
+    "noMatchQueryFilters": "Nothing matches “{query}” with these filters.",
+    "noMatchFilters": "Nothing matches these filters."
+  },
+  "secondaryPane": {
+    "expand": "Expand {name}",
+    "collapse": "Collapse {name}",
+    "resize": "Resize {name}",
+    "close": "Close {name}",
+    "back": "Back to {name}"
+  },
+  "sessionTimeout": {
+    "warningTitle": "Your session is about to end",
+    "warning": "You’ll be signed out in {time} because you haven’t been active.",
+    "stay": "Stay signed in",
+    "signOut": "Sign out",
+    "signedOutTitle": "You were signed out",
+    "signedOut": "For your security, you were signed out after {minutes} minutes without activity.",
+    "signedOutShort": "For your security, you were signed out because you weren’t active.",
+    "saved": "Your changes are saved.",
+    "signIn": "Sign in again",
+    "left": "{time} left",
+    "ended": "Signed out"
+  },
+  "shareDialog": {
+    "title": "Share",
+    "people": "People",
+    "link": "Link",
+    "person": "Person",
+    "role": "Role",
+    "add": "Add person",
+    "remove": "Remove",
+    "save": "Save access",
+    "cancel": "Cancel",
+    "copy": "Copy link",
+    "access": "Link access",
+    "restricted": "Only people with access",
+    "anyone": "Anyone with the link can view",
+    "nativeShare": "Share using device",
+    "failed": "Could not share. Try again.",
+    "invalid": "Choose a person and an available role.",
+    "unsaved": "Your access changes will be lost."
+  },
+  "sheet": {
+    "expand": "Expand sheet",
+    "shrink": "Shrink sheet",
+    "doneLabel": "Done",
+    "cancelLabel": "Cancel",
+    "closeLabel": "Close",
+    "done": "Done",
+    "cancel": "Cancel",
+    "close": "Close"
+  },
+  "shortcutsDialog": {
+    "title": "Keyboard shortcuts",
+    "search": "Search shortcuts",
+    "general": "General",
+    "empty": "No matching shortcuts",
+    "close": "Close"
+  },
+  "slider": {
+    "minimum": "Minimum",
+    "maximum": "Maximum"
+  },
+  "sortPanel": {
+    "label": "Sort",
+    "title": "Sort by",
+    "within": "Sort within groups by",
+    "info": "The rows are ordered by the first field, then by the next where the first is the same.",
+    "empty": "No sort: the rows keep their own order.",
+    "add": "Add a sort",
+    "addAnother": "Add another sort",
+    "remove": "Remove the sort by {name}",
+    "removeTip": "Remove sort",
+    "field": "Field",
+    "direction": "Direction"
+  },
+  "sortableList": {
+    "moveMenu": "Move {name}",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "moveEarlier": "Move earlier",
+    "moveLater": "Move later",
+    "moveFirst": "Move to the start",
+    "moveLast": "Move to the end",
+    "moveUpNamed": "Move {name} up",
+    "moveDownNamed": "Move {name} down"
+  },
+  "splitButton": {
+    "more": "More {label} options"
+  },
+  "suggestedEdit": {
+    "label": "Suggested edits",
+    "before": "Before",
+    "after": "After",
+    "accept": "Accept",
+    "reject": "Reject",
+    "acceptAll": "Accept all",
+    "accepted": "Accepted",
+    "rejected": "Rejected",
+    "empty": "No suggested edits",
+    "failed": "Could not save this decision. Try again."
+  },
+  "tabs": {
+    "more": "More",
+    "moreLabel": "More tabs"
+  },
+  "tag": {
+    "label": "Add a tag"
+  },
+  "teachingBubble": {
+    "close": "Close",
+    "step": "{current} of {total}"
+  },
+  "templates": {
+    "Commerce": {
+      "Storefront": {
+        "layout": "gallery"
+      }
+    },
+    "templates": {
+      "Templates": {
+        "empty": "No records yet",
+        "emptyDescription": "Create a record to get started.",
+        "pane": "Records",
+        "sections": "On this page",
+        "retry": "Try again",
+        "home": "Go home",
+        "search": "Search results",
+        "tools": "Tools",
+        "inspector": "Options",
+        "detail": "Details",
+        "noSelection": "Nothing selected",
+        "noSelectionDescription": "Choose an item to see it here."
+      }
+    }
+  },
+  "time": {
+    "now": "Just now"
+  },
+  "timePicker": {
+    "hour": "Hour",
+    "minute": "Minute",
+    "period": "AM or PM",
+    "am": "AM",
+    "pm": "PM",
+    "times": "Times",
+    "empty": "--"
+  },
+  "timeZoneSelect": {
+    "placeholder": "Choose a time zone",
+    "empty": "No matches",
+    "utc": "Coordinated Universal Time",
+    "other": "Other",
+    "regions": {
+      "Africa": "Africa",
+      "America": "Americas",
+      "Antarctica": "Antarctica",
+      "Arctic": "Arctic",
+      "Asia": "Asia",
+      "Atlantic": "Atlantic",
+      "Australia": "Australia",
+      "Europe": "Europe",
+      "Indian": "Indian Ocean",
+      "Pacific": "Pacific"
+    }
+  },
+  "toast": {
+    "aria-label": "Dismiss",
+    "undo": "Undo",
+    "dismiss": "Dismiss"
+  },
+  "tour": {
+    "next": "Next",
+    "back": "Back",
+    "finish": "Finish tour",
+    "skip": "Skip tour",
+    "resume": "Resume tour",
+    "close": "Close",
+    "step": "{current} of {total}"
+  },
+  "transferList": {
+    "source": "Available",
+    "target": "Chosen",
+    "add": "Add",
+    "addAll": "Add all",
+    "remove": "Remove",
+    "removeAll": "Remove all",
+    "up": "Move up",
+    "down": "Move down",
+    "search": "Search {title}",
+    "selectAll": "Check every item in {title}",
+    "count": "{checked} of {total} checked",
+    "moved": "{n} moved to {title}",
+    "empty": "No items",
+    "noMatch": "No matches",
+    "moves": "Move items"
+  },
+  "treeSelect": {
+    "placeholder": "Choose",
+    "search": "Search",
+    "choose": "Choose an item",
+    "more": "{list} and {n} more",
+    "empty": "No matches"
+  },
+  "trialUpgrade": {
+    "trial": "Trial",
+    "compare": "Compare plans",
+    "title": "Choose a plan",
+    "plan": "Plan",
+    "upgrade": "Upgrade",
+    "cancel": "Cancel",
+    "failed": "Could not upgrade. Try again.",
+    "upgraded": "Plan updated"
+  },
+  "uploadManager": {
+    "dialogTitle": "Upload files",
+    "queue": "Uploads",
+    "drop": "Drag and drop files or folders here",
+    "or": "or",
+    "chooseFiles": "Choose files",
+    "chooseFolder": "Choose a folder",
+    "uploading": "Uploading {n} files",
+    "uploadingOne": "Uploading 1 file",
+    "done": "{n} uploads complete",
+    "doneOne": "1 upload complete",
+    "failed": "{n} uploads failed",
+    "failedOne": "1 upload failed",
+    "none": "No uploads",
+    "progress": "{done} of {total} uploaded",
+    "overall": "Overall progress",
+    "waiting": "Waiting",
+    "uploaded": "Uploaded",
+    "canceled": "Canceled",
+    "cancelAll": "Cancel all",
+    "clear": "Clear finished",
+    "hide": "Hide the uploads",
+    "show": "Show the uploads",
+    "close": "Close",
+    "finish": "Done",
+    "remove": "Remove from the list",
+    "again": "Upload again",
+    "tooLarge": "This file is larger than {max}.",
+    "wrongType": "This type of file can’t be uploaded here.",
+    "error": "The upload failed. Try again.",
+    "failedNamed": "{name} failed: {reason}",
+    "status": "canceled"
+  },
+  "userCard": {
+    "online": "Online",
+    "away": "Away",
+    "busy": "Busy",
+    "dnd": "Do not disturb",
+    "offline": "Offline"
+  },
+  "utils": {
+    "clipboard": {
+      "copied": "Copied",
+      "failed": "Couldn’t copy. Select the text and copy it by hand."
+    }
+  },
+  "versionCompare": {
+    "label": "Version comparison",
+    "compare": "Compare",
+    "with": "With",
+    "swap": "Swap",
+    "swapLabel": "Swap the two versions",
+    "view": "View",
+    "columns": "Side by side",
+    "slider": "Slider",
+    "text": "Text",
+    "by": "by {author}",
+    "diff": "Changes from {base} to {target}",
+    "added": "Added",
+    "removed": "Removed",
+    "same": "No changes in the text",
+    "summary": "{added} added, {removed} removed",
+    "lines": "{n} lines",
+    "line": "1 line",
+    "previous": "Previous change",
+    "next": "Next change",
+    "at": "Change {n} of {total}",
+    "unchanged": "Show {n} unchanged lines",
+    "empty": "Choose two versions to compare."
+  },
+  "versionHistory": {
+    "label": "Version history",
+    "preview": "Preview",
+    "restore": "Restore",
+    "confirm": "Restore this version?",
+    "cancel": "Cancel",
+    "failed": "The version could not be restored. Try again.",
+    "restored": "Version restored",
+    "empty": "No versions."
+  },
+  "versionLabel": {
+    "version": "Version",
+    "prefix": "v",
+    "latest": "Latest",
+    "draft": "Draft"
+  },
+  "viewMenu": {
+    "reset": "Reset view",
+    "label": "View",
+    "layout": "Layout",
+    "list": "List",
+    "gallery": "Gallery",
+    "size": "Card size (gallery)",
+    "s": "Small",
+    "m": "Medium",
+    "l": "Large",
+    "height": "Row height (list)",
+    "short": "Short",
+    "medium": "Medium",
+    "tall": "Tall",
+    "extra-tall": "Extra tall"
+  },
+  "virtualList": {
+    "loading": "Loading…",
+    "empty": "No items",
+    "count": {
+      "one": "{n} item",
+      "other": "{n} items"
+    },
+    "group": {
+      "one": "{n} item",
+      "other": "{n} items"
+    }
+  },
+  "widgetGrid": {
+    "widget": "Widget",
+    "widgetLower": "widget",
+    "move": "Move {title} (arrow keys)",
+    "position": "{title}, position {index} of {total}",
+    "earlier": "Move earlier",
+    "later": "Move later",
+    "first": "Move to the start",
+    "last": "Move to the end"
+  },
+  "wizardDialog": {
+    "close": "Close",
+    "unsaved": "Your changes will be lost."
+  }
+};
+  } },
+  "platform/i18n/ar.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// Plenix's built-in Arabic words (owner, arabic-batch4-36, arabic-words-37; issue 427): every section of en.js in Arabic, a draft
+// (Builder 02's table, ~/handoff/i18n/strings.md) for the owner's review. LocaleProvider uses them for an Arabic locale after the
+// application's own catalog and before English; a part's strings prop still wins.
+var _default = exports.default = {
+  "pagination": {
+    "label": "الصفحات",
+    "range": "{first} إلى {last} من {total}",
+    "previous": "الصفحة السابقة",
+    "next": "الصفحة التالية",
+    "page": "الصفحة {n}",
+    "perPage": "لكل صفحة"
+  },
+  "chart": {
+    "barChart": {
+      "category": "الفئة",
+      "total": "الإجمالي",
+      "range": "النطاق",
+      "count": "العدد"
+    },
+    "boxPlot": {
+      "group": "المجموعة",
+      "min": "الحد الأدنى",
+      "q1": "الربع الأول",
+      "median": "الوسيط",
+      "q3": "الربع الثالث",
+      "max": "الحد الأقصى",
+      "outliers": "القيم الشاذة",
+      "n": "القيم"
+    },
+    "bulletChart": {
+      "measure": "المقياس",
+      "value": "القيمة",
+      "target": "الهدف",
+      "ranges": "النطاقات",
+      "poor": "ضعيف",
+      "fair": "مقبول",
+      "good": "جيد"
+    },
+    "chartFrame": {
+      "showData": "عرض البيانات",
+      "table": "{title}: البيانات"
+    },
+    "comboChart": {
+      "category": "الفئة",
+      "bars": "الأعمدة",
+      "lines": "الخطوط"
+    },
+    "diagram": {
+      "step": "الخطوة",
+      "kind": "النوع",
+      "next": "يؤدي إلى",
+      "previous": "يأتي من",
+      "process": "الخطوة",
+      "decision": "قرار",
+      "terminal": "بداية أو نهاية",
+      "data": "البيانات",
+      "box": "الجزء",
+      "group": "المجموعة",
+      "end": "النهاية"
+    },
+    "funnelChart": {
+      "stage": "المرحلة",
+      "value": "العدد",
+      "kept": "المتبقي من الخطوة السابقة",
+      "ofFirst": "من الخطوة الأولى"
+    },
+    "ganttChart": {
+      "task": "المهمة",
+      "progress": "تم",
+      "dependsOn": "بانتظار",
+      "status": "الحالة",
+      "today": "اليوم",
+      "milestone": "مَعلَم",
+      "start": "البداية",
+      "end": "النهاية"
+    },
+    "gauge": {
+      "showData": "عرض البيانات",
+      "table": "{title}: البيانات",
+      "measure": "المقياس",
+      "value": "القيمة",
+      "min": "الحد الأدنى",
+      "max": "الحد الأقصى",
+      "ok": ""
+    },
+    "geoMap": {
+      "region": "المنطقة",
+      "place": "المكان",
+      "value": "القيمة",
+      "noData": "لا توجد بيانات",
+      "latitude": "خط العرض",
+      "longitude": "خط الطول",
+      "zoom": "التكبير",
+      "zoomIn": "تكبير",
+      "zoomOut": "تصغير",
+      "reset": "عرض الخريطة كاملة"
+    },
+    "heatMap": {
+      "value": "القيمة",
+      "row": "الصف",
+      "column": "العمود",
+      "date": "التاريخ",
+      "missing": "لا توجد بيانات",
+      "low": "منخفض",
+      "high": "مرتفع",
+      "scale": "مقياس الألوان"
+    },
+    "lineChart": {
+      "category": "الفئة"
+    },
+    "lollipopChart": {
+      "category": "الفئة",
+      "value": "القيمة"
+    },
+    "networkGraph": {
+      "node": "العقدة",
+      "group": "المجموعة",
+      "links": "متصل بـ",
+      "zoomIn": "تكبير",
+      "zoomOut": "تصغير",
+      "fit": "ملاءمة",
+      "hintZoom": " الأزرار +/- للتكبير والتصغير، والرقم 0 يناسب الرسم.",
+      "none": "لا شيء"
+    },
+    "pieChart": {
+      "part": "الجزء",
+      "value": "القيمة",
+      "share": "الحصة",
+      "total": "الإجمالي",
+      "other": "أخرى"
+    },
+    "radarChart": {
+      "measure": "المقياس"
+    },
+    "sankeyDiagram": {
+      "source": "المصدر",
+      "target": "الهدف",
+      "value": "القيمة",
+      "total": "الإجمالي"
+    },
+    "scatterChart": {
+      "series": "السلسلة",
+      "item": "العنصر"
+    },
+    "timelineChart": {
+      "item": "العنصر",
+      "lane": "المسار",
+      "today": "اليوم",
+      "date": "التاريخ",
+      "dates": "التواريخ",
+      "start": "البداية",
+      "end": "النهاية"
+    },
+    "treeChart": {
+      "name": "الاسم",
+      "detail": "التفاصيل",
+      "parent": "يتبع لـ",
+      "level": "المستوى",
+      "folded": "مطوي",
+      "open": "مفتوح"
+    },
+    "treemap": {
+      "group": "المجموعة",
+      "item": "الجزء",
+      "value": "القيمة",
+      "share": "الحصة"
+    },
+    "waterfallChart": {
+      "step": "الخطوة",
+      "change": "التغيير",
+      "total": "الإجمالي",
+      "running": "المجموع التراكمي",
+      "increase": "زيادة",
+      "decrease": "نقصان",
+      "end": "النهاية"
+    },
+    "wordCloud": {
+      "value": "العدد",
+      "word": "المصطلح",
+      "group": "المجموعة"
+    },
+    "chartLegend": {
+      "legend": "دليل الرسم"
+    }
+  },
+  "avatar": {
+    "online": "متصل",
+    "away": "غائب",
+    "busy": "مشغول",
+    "dnd": "عدم الإزعاج",
+    "offline": "غير متصل"
+  },
+  "avatarGroup": {
+    "more": "+{n}",
+    "moreLabel": "{n} إضافية"
+  },
+  "backToTop": {
+    "label": "العودة إلى الأعلى"
+  },
+  "barcode": {
+    "label": "الباركود {format}: {value}",
+    "invalid": "رمز {format} غير صالح",
+    "formats": {
+      "code128": "Code 128",
+      "ean13": "EAN-13",
+      "upca": "UPC-A"
+    }
+  },
+  "brand": {
+    "name": "Plenix"
+  },
+  "button": {
+    "working": "جارٍ العمل"
+  },
+  "calendar": {
+    "label": "التقويم",
+    "previous": "الشهر السابق",
+    "next": "الشهر التالي",
+    "week": "الأسبوع",
+    "weekShort": "أسبوع",
+    "today": "اليوم"
+  },
+  "carousel": {
+    "slide": "{n} من {total}",
+    "previous": "الشريحة السابقة",
+    "next": "الشريحة التالية",
+    "goTo": "الانتقال إلى الشريحة {n}",
+    "goToPage": "الانتقال إلى الصفحة {n}",
+    "pages": "الشرائح",
+    "pause": "إيقاف مؤقت",
+    "play": "تشغيل",
+    "pauseLabel": "إيقاف الشرائح مؤقتًا",
+    "playLabel": "تشغيل الشرائح",
+    "strip": "الشرائح"
+  },
+  "cascader": {
+    "placeholder": "اختيار",
+    "separator": " / ",
+    "search": "بحث",
+    "noMatches": "لا توجد نتائج مطابقة",
+    "empty": "لا توجد عناصر",
+    "remove": "إزالة {label}",
+    "columns": "الخيارات"
+  },
+  "codeBlock": {
+    "code": "الرمز",
+    "copy": "نسخ",
+    "copied": "تم النسخ",
+    "failed": "تعذّر النسخ"
+  },
+  "codeEditor": {
+    "hint": "مفتاح Tab يضيف مسافة بادئة. اضغط Escape ثم Tab للخروج من المحرّر."
+  },
+  "combobox": {
+    "loading": "جارٍ التحميل…",
+    "error": "تعذّر تحميل الخيارات"
+  },
+  "commandMenu": {
+    "label": "الأوامر",
+    "placeholder": "اكتب أمرًا أو ابحث",
+    "empty": "لا توجد نتائج لـ «{query}»",
+    "loading": "جارٍ التحميل",
+    "back": "رجوع",
+    "results": "{count} نتيجة"
+  },
+  "contextualHelp": {
+    "more": "المزيد عن {title}",
+    "moreUntitled": "مزيد من المعلومات"
+  },
+  "copyButton": {
+    "copy": "نسخ",
+    "copied": "تم النسخ",
+    "failed": "تعذّر النسخ. حدّد النص وانسخه يدويًا."
+  },
+  "countrySelect": {
+    "country": "اختر بلدًا أو منطقة",
+    "language": "اختر لغة",
+    "locale": "اختر لغة ومنطقة",
+    "suggested": "مقترح",
+    "all": "الكل"
+  },
+  "dataGrid": {
+    "empty": "لا يوجد شيء للعرض",
+    "failed": "تعذّر تحميل الجدول",
+    "retry": "إعادة المحاولة",
+    "selectAll": "تحديد كل الصفوف",
+    "selectRow": "تحديد الصف",
+    "rowActions": "إجراءات الصف",
+    "clearSort": "إلغاء الفرز",
+    "hide": "إخفاء الحقل",
+    "showAll": "إظهار كل الحقول",
+    "narrower": "أضيق",
+    "wider": "أعرض",
+    "fit": "ملاءمة المحتوى",
+    "deleted": "محذوف",
+    "moveLeft": "نقل إلى اليسار",
+    "moveRight": "نقل إلى اليمين",
+    "perPage": "الصفوف في كل صفحة",
+    "view": "خيارات العرض",
+    "wrapHeaders": "التفاف العناوين",
+    "markRead": "وضع علامة مقروء",
+    "markUnread": "وضع علامة غير مقروء",
+    "wrapText": "التفاف النص",
+    "wrapAll": "التفاف كل الأعمدة",
+    "fullText": "عرض النص كاملًا",
+    "rowHeight": "ارتفاع الصف",
+    "short": "قصير",
+    "medium": "متوسط",
+    "tall": "طويل",
+    "extra-tall": "طويل جدًا",
+    "filter": "تصفية",
+    "clearFilter": "مسح التصفية",
+    "groupBy": "التجميع حسب هذا الحقل",
+    "ungroup": "إلغاء التجميع",
+    "noGroup": "عدم التجميع حسب هذا الحقل",
+    "sizeToFit": "ملاءمة عرض العمود",
+    "sizeAllToFit": "ملاءمة عرض كل الأعمدة",
+    "moreColumns": "المزيد…",
+    "columns": "الأعمدة",
+    "loadMore": "تحميل المزيد",
+    "loading": "جارٍ تحميل السجلات",
+    "group": "التجميع حسب هذا الحقل",
+    "filterBy": "التصفية حسب هذا الحقل",
+    "any": "أي قيمة",
+    "contains": "يحتوي على…",
+    "moveRow": "نقل الصف",
+    "moveUp": "نقل لأعلى",
+    "moveDown": "نقل لأسفل",
+    "moveTop": "نقل إلى الأعلى",
+    "moveBottom": "نقل إلى الأسفل",
+    "resize": "تغيير الحجم",
+    "range": "{first}–{last} من {total}",
+    "count": "{shown} من {total}",
+    "pages": "صفحات {label}",
+    "loaded": "تم تحميل {n} صفوف إضافية، {shown} من {total}",
+    "noValue": "(فارغ)",
+    "addTo": "إضافة سجل إلى {value}",
+    "groupRow": "{value}، مجموعة، {count} {records}",
+    "record": "سجل",
+    "records": "سجلات",
+    "expanded": "موسّع",
+    "collapsed": "مطوي",
+    "sum": "المجموع",
+    "countOf": "العدد",
+    "average": "المتوسط",
+    "min": "الأدنى",
+    "max": "الأقصى",
+    "sortText": ["فرز من أ إلى ي", "فرز من ي إلى أ"],
+    "sortNumber": ["فرز من 1 إلى 9", "فرز من 9 إلى 1"],
+    "sortDate": ["فرز من الأقدم إلى الأحدث", "فرز من الأحدث إلى الأقدم"],
+    "sortCheck": ["فرز من غير المحدد إلى المحدد", "فرز من المحدد إلى غير المحدد"],
+    "unread": "غير مقروء ({count})"
+  },
+  "dataPill": {
+    "male": "ذكر",
+    "female": "أنثى"
+  },
+  "datePicker": {
+    "open": "اختيار التاريخ",
+    "dialog": "اختيار التاريخ",
+    "time": "الوقت",
+    "presets": "الإعدادات المسبقة",
+    "today": "اليوم",
+    "tomorrow": "غدًا",
+    "nextWeek": "بعد أسبوع",
+    "last7": "آخر 7 أيام",
+    "last30": "آخر 30 يومًا",
+    "thisMonth": "هذا الشهر",
+    "lastMonth": "الشهر الماضي"
+  },
+  "documentViewer": {
+    "document": "المستند",
+    "previous": "الصفحة السابقة",
+    "next": "الصفحة التالية",
+    "page": "الصفحة",
+    "zoom": "التكبير",
+    "thumbnails": "مصغّرات الصفحات",
+    "loading": "جارٍ تحميل المستند",
+    "failed": "تعذّر فتح المستند.",
+    "failedEngine": "تعذّر تشغيل عارض المستندات. حاول مرة أخرى لاحقًا.",
+    "failedAccess": "تعذّر فتح المستند. ربما نُقل أو لا تملك صلاحية الوصول إليه.",
+    "failedParse": "تعذّرت قراءة هذا الملف كملف PDF.",
+    "failedRender": "تعذّر عرض هذه الصفحة.",
+    "empty": "لا يوجد مستند.",
+    "retry": "حاول مرة أخرى"
+  },
+  "downloadButton": {
+    "download": "تنزيل",
+    "downloading": "جارٍ التنزيل",
+    "ready": "التنزيل جاهز"
+  },
+  "emptyState": {
+    "offline": {
+      "title": "أنت غير متصل بالإنترنت",
+      "text": "تحقق من اتصالك. ستُحدَّث هذه الصفحة عند عودتك إلى الاتصال."
+    },
+    "degraded": {
+      "title": "بعض الميزات لا تعمل",
+      "text": "هناك خدمة بطيئة أو لا تستجيب، لذا قد تكون المعلومات المعروضة غير محدّثة."
+    },
+    "permission-denied": {
+      "title": "لا تملك صلاحية الوصول",
+      "text": "اطلب من المالك مشاركتها معك."
+    },
+    "not-found": {
+      "title": "هذه الصفحة غير موجودة",
+      "text": "ربما نُقلت أو حُذفت. تحقق من العنوان أو ارجع إلى الصفحة السابقة."
+    },
+    "maintenance": {
+      "title": "متوقف للصيانة",
+      "text": "يجري تحديث هذه الخدمة. حاول مرة أخرى بعد بضع دقائق."
+    },
+    "completion": {
+      "title": "اكتمل كل شيء",
+      "text": "لم يتبقَّ شيء لإنجازه هنا."
+    }
+  },
+  "entityPicker": {
+    "placeholderPeople": "ابحث بالاسم أو البريد الإلكتروني",
+    "placeholder": "ابحث في {entityName}",
+    "empty": "لم يتم العثور على {entityName}",
+    "browse": "تصفح كل {entityName}",
+    "loading": "جارٍ التحميل…",
+    "error": "تعذّر تحميل النتائج",
+    "remove": "إزالة {label}"
+  },
+  "errorSummary": {
+    "one": "توجد مشكلة",
+    "many": "توجد {count} مشكلات"
+  },
+  "file": {
+    "folder": "مجلد",
+    "items": "{n} عناصر",
+    "item": "{n} عنصر"
+  },
+  "fileInput": {
+    "choose": "اختيار ملف",
+    "chooseMany": "اختيار ملفات",
+    "none": "لم يتم اختيار ملف",
+    "count": "{count} ملفات",
+    "remove": "إزالة {name}"
+  },
+  "fileRow": {
+    "select": "تحديد {name}",
+    "more": "المزيد من الإجراءات لـ {name}",
+    "download": "تنزيل {name}",
+    "rename": "إعادة تسمية…",
+    "delete": "حذف",
+    "cancel": "إلغاء",
+    "retry": "حاول مرة أخرى",
+    "transfer": "{label} {name}",
+    "uploading": "جارٍ الرفع",
+    "file": "ملف",
+    "files": "ملفات",
+    "folder": "مجلد",
+    "folders": "مجلدات",
+    "items": "{n} عناصر",
+    "item": "{n} عنصر"
+  },
+  "generatedContent": {
+    "label": "محتوى مُنشأ",
+    "helpful": "مفيد",
+    "unhelpful": "غير مفيد",
+    "regenerate": "إعادة الإنشاء",
+    "previous": "الإصدار السابق",
+    "next": "الإصدار التالي",
+    "version": "الإصدار",
+    "feedbackSaved": "تم حفظ الملاحظات",
+    "failed": "فشل الإجراء. حاول مرة أخرى.",
+    "pending": "جارٍ العمل"
+  },
+  "image": {
+    "error": "الصورة غير متاحة"
+  },
+  "inlineEdit": {
+    "edit": "تعديل",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "empty": "إضافة قيمة",
+    "saved": "تم الحفظ",
+    "failed": "تعذّر حفظ التغيير"
+  },
+  "link": {
+    "newTab": "يفتح في علامة تبويب جديدة"
+  },
+  "loadMore": {
+    "more": "تحميل المزيد",
+    "moreCount": "عرض {n} إضافية",
+    "loading": "جارٍ التحميل…",
+    "end": "وصلت إلى النهاية",
+    "count": "{shown} من {total}",
+    "added": {
+      "zero": "لم يتم تحميل عناصر إضافية",
+      "one": "تم تحميل عنصر إضافي واحد",
+      "two": "تم تحميل عنصرين إضافيين",
+      "few": "تم تحميل {n} عناصر إضافية",
+      "many": "تم تحميل {n} عنصرًا إضافيًا",
+      "other": "تم تحميل {n} عنصر إضافي"
+    }
+  },
+  "mediaViewer": {
+    "label": "معاينة",
+    "close": "إغلاق المعاينة",
+    "previous": "السابق",
+    "next": "التالي",
+    "counter": "{index} من {total}"
+  },
+  "metricCard": {
+    "more": "المزيد لـ {title}",
+    "up": "لأعلى",
+    "down": "لأسفل",
+    "good": "جيد",
+    "bad": "سيئ",
+    "vs": "مقابل",
+    "empty": "لا توجد بيانات",
+    "loading": "جارٍ تحميل {title}",
+    "error": "تعذّر تحميل الأرقام.",
+    "retry": "حاول مرة أخرى",
+    "stale": "قديم",
+    "rank": "#{n}",
+    "toCome": "قادم",
+    "hit": "تحقق الهدف",
+    "missed": "لم يتحقق",
+    "weekdays": ["ن", "ث", "ر", "خ", "ج", "س", "ح"],
+    "weekdayNames": ["الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت", "الأحد"],
+    "month": "{done} من {days} أيام عمل حتى الآن",
+    "parts": "{label} {share}",
+    "compare": "{a} {av}، {b} {bv}"
+  },
+  "millerColumns": {
+    "empty": "لا توجد عناصر",
+    "resize": "تغيير عرض العمود {label}",
+    "preview": "معاينة {label}"
+  },
+  "navList": {
+    "pin": "تثبيت",
+    "unpin": "إلغاء التثبيت",
+    "pinItem": "تثبيت {label}",
+    "unpinItem": "إلغاء تثبيت {label}"
+  },
+  "notice": {
+    "dismiss": "تجاهل"
+  },
+  "numberInput": {
+    "decrease": "نقصان",
+    "increase": "زيادة"
+  },
+  "otpInput": {
+    "cell": "الحرف {n} من {total}"
+  },
+  "persona": {
+    "online": "متصل",
+    "away": "غائب",
+    "busy": "مشغول",
+    "dnd": "عدم الإزعاج",
+    "offline": "غير متصل"
+  },
+  "popover": {
+    "close": "إغلاق"
+  },
+  "productOptions": {
+    "chosen": "{label}:",
+    "unavailable": "غير متوفر في المخزون",
+    "quantity": "الكمية",
+    "quantityOf": "الكمية، {product}",
+    "unavailableName": "{label}، غير متوفر في المخزون",
+    "none": "لم يتم اختيار شيء"
+  },
+  "progressSteps": {
+    "step": "الخطوة {n} من {total}",
+    "complete": "مكتملة",
+    "current": "الخطوة الحالية",
+    "upcoming": "لم تبدأ",
+    "error": "تحتاج إلى انتباه"
+  },
+  "relativeDateInput": {
+    "custom": "مخصص",
+    "none": "أي وقت",
+    "amount": "المبلغ",
+    "unit": "الوحدة",
+    "direction": "الاتجاه",
+    "past": "الأخيرة",
+    "future": "التالي",
+    "units": {
+      "day": ["يوم", "أيام"],
+      "week": ["أسبوع", "أسابيع"],
+      "month": ["شهر", "أشهر"],
+      "year": ["سنة", "سنوات"]
+    },
+    "presets": {
+      "today": "اليوم",
+      "yesterday": "أمس",
+      "last-7-days": "آخر 7 أيام",
+      "last-30-days": "آخر 30 يومًا",
+      "last-90-days": "آخر 90 يومًا",
+      "last-12-months": "آخر 12 شهرًا",
+      "tomorrow": "غدًا",
+      "next-7-days": "الأيام السبعة القادمة",
+      "next-30-days": "الأيام الثلاثون القادمة",
+      "next-90-days": "الأيام التسعون القادمة",
+      "next-12-months": "الأشهر الاثنا عشر القادمة"
+    }
+  },
+  "resizable": {
+    "width": "عرض {label}",
+    "height": "ارتفاع {label}"
+  },
+  "richTextEditor": {
+    "toolbar": "التنسيق",
+    "more": "مزيد من التنسيق",
+    "bold": "غامق",
+    "italic": "مائل",
+    "underline": "تسطير",
+    "strike": "يتوسطه خط",
+    "code": "رمز مضمّن",
+    "subscript": "نص سفلي",
+    "superscript": "نص علوي",
+    "link": "رابط",
+    "bulleted": "قائمة نقطية",
+    "numbered": "قائمة مرقّمة",
+    "tasks": "قائمة مهام",
+    "quote": "اقتباس",
+    "codeBlock": "كتلة رمز",
+    "rule": "خط أفقي",
+    "image": "صورة",
+    "table": "جدول",
+    "color": "لون النص",
+    "highlight": "تمييز",
+    "alignLeft": "محاذاة إلى اليسار",
+    "alignCenter": "محاذاة إلى الوسط",
+    "alignRight": "محاذاة إلى اليمين",
+    "alignJustify": "ضبط",
+    "clear": "مسح التنسيق",
+    "undo": "تراجع",
+    "redo": "إعادة",
+    "textStyle": "نمط النص",
+    "paragraph": "فقرة",
+    "font": "الخط",
+    "defaultFont": "الخط الافتراضي",
+    "size": "الحجم",
+    "defaultSize": "الحجم الافتراضي",
+    "custom": "مخصص…",
+    "customFont": "عائلة الخط",
+    "customSize": "حجم الخط",
+    "insertTable": "إدراج جدول",
+    "rowBefore": "إضافة صف أعلاه",
+    "rowAfter": "إضافة صف أدناه",
+    "columnBefore": "إضافة عمود قبله",
+    "columnAfter": "إضافة عمود بعده",
+    "deleteRow": "حذف الصف",
+    "deleteColumn": "حذف العمود",
+    "headerRow": "صف العناوين",
+    "deleteTable": "حذف الجدول",
+    "linkAddress": "عنوان الرابط",
+    "addLink": "إضافة رابط",
+    "imageAddress": "عنوان الصورة",
+    "imageAlt": "الوصف",
+    "addImage": "إضافة صورة",
+    "swatches": "ألوان مقترحة",
+    "customColor": "لون مخصص",
+    "hex": "قيمة سداسية عشرية",
+    "apply": "تطبيق",
+    "remove": "إزالة",
+    "cancel": "إلغاء",
+    "mentions": "اقتراحات",
+    "groupMarks": "النص",
+    "groupColor": "اللون",
+    "groupAlign": "المحاذاة",
+    "groupLists": "القوائم",
+    "groupInsert": "إدراج",
+    "groupHistory": "السجل",
+    "leave": "اضغط Tab أو Shift+Tab للخروج من المحرّر",
+    "hint": "Escape ثم Tab للخروج من المحرّر"
+  },
+  "roleLabel": {
+    "owner": "المالك",
+    "editor": "محرّر",
+    "viewer": "مشاهد"
+  },
+  "searchField": {
+    "suggestions": "اقتراحات",
+    "recent": "عمليات البحث الأخيرة",
+    "clearRecent": "مسح عمليات البحث الأخيرة",
+    "clear": "مسح البحث",
+    "results": "{n} اقتراحات",
+    "removed": "تمت إزالة {query} من عمليات البحث الأخيرة",
+    "remove": "إزالة {query}",
+    "placeholder": "بحث",
+    "label": "بحث"
+  },
+  "sheet": {
+    "expand": "توسيع اللوحة",
+    "shrink": "تصغير اللوحة",
+    "doneLabel": "تم",
+    "cancelLabel": "إلغاء",
+    "closeLabel": "إغلاق",
+    "done": "تم",
+    "cancel": "إلغاء",
+    "close": "إغلاق"
+  },
+  "slider": {
+    "minimum": "الحد الأدنى",
+    "maximum": "الحد الأقصى"
+  },
+  "splitButton": {
+    "more": "مزيد من خيارات {label}"
+  },
+  "tabs": {
+    "more": "المزيد",
+    "moreLabel": "مزيد من علامات التبويب"
+  },
+  "teachingBubble": {
+    "close": "إغلاق",
+    "step": "{current} من {total}"
+  },
+  "text": {
+    "more": "عرض المزيد",
+    "less": "عرض أقل"
+  },
+  "timePicker": {
+    "hour": "الساعة",
+    "minute": "الدقيقة",
+    "period": "ص أو م",
+    "am": "ص",
+    "pm": "م",
+    "times": "الأوقات",
+    "empty": "--"
+  },
+  "timeZoneSelect": {
+    "placeholder": "اختر منطقة زمنية",
+    "empty": "لا توجد نتائج مطابقة",
+    "utc": "التوقيت العالمي المنسق",
+    "other": "أخرى",
+    "regions.Africa": "أفريقيا",
+    "regions.America": "الأمريكتان",
+    "regions.Antarctica": "القارة القطبية الجنوبية",
+    "regions.Arctic": "القطب الشمالي",
+    "regions.Asia": "آسيا",
+    "regions.Atlantic": "المحيط الأطلسي",
+    "regions.Australia": "أستراليا",
+    "regions.Europe": "أوروبا",
+    "regions.Indian": "المحيط الهندي",
+    "regions.Pacific": "المحيط الهادئ",
+    "regions": {
+      "Africa": "أفريقيا",
+      "America": "الأمريكتان",
+      "Antarctica": "القارة القطبية الجنوبية",
+      "Arctic": "القطب الشمالي",
+      "Asia": "آسيا",
+      "Atlantic": "المحيط الأطلسي",
+      "Australia": "أستراليا",
+      "Europe": "أوروبا",
+      "Indian": "المحيط الهندي",
+      "Pacific": "المحيط الهادئ"
+    }
+  },
+  "transferList": {
+    "source": "المتاح",
+    "target": "المختار",
+    "add": "إضافة",
+    "addAll": "إضافة الكل",
+    "remove": "إزالة",
+    "removeAll": "إزالة الكل",
+    "up": "نقل لأعلى",
+    "down": "نقل لأسفل",
+    "search": "بحث في {title}",
+    "selectAll": "تحديد كل عناصر {title}",
+    "count": "تم تحديد {checked} من {total}",
+    "moved": "تم نقل {n} إلى {title}",
+    "empty": "لا توجد عناصر",
+    "noMatch": "لا توجد نتائج مطابقة",
+    "moves": "نقل العناصر"
+  },
+  "treeSelect": {
+    "placeholder": "اختيار",
+    "search": "بحث",
+    "choose": "اختر عنصرًا",
+    "more": "{list} و{n} أخرى",
+    "empty": "لا توجد نتائج مطابقة"
+  },
+  "versionLabel": {
+    "version": "الإصدار",
+    "prefix": "إ",
+    "latest": "الأحدث",
+    "draft": "مسودة"
+  },
+  "virtualList": {
+    "loading": "جارٍ التحميل…",
+    "empty": "لا توجد عناصر",
+    "count": {
+      "zero": "لا توجد عناصر",
+      "one": "عنصر واحد",
+      "two": "عنصران",
+      "few": "{n} عناصر",
+      "many": "{n} عنصرًا",
+      "other": "{n} عنصر"
+    },
+    "group": {
+      "zero": "لا توجد عناصر",
+      "one": "عنصر واحد",
+      "two": "عنصران",
+      "few": "{n} عناصر",
+      "many": "{n} عنصرًا",
+      "other": "{n} عنصر"
+    }
+  },
+  "aiSearch": {
+    "label": "بحث بالذكاء الاصطناعي",
+    "query": "عبارة البحث",
+    "search": "بحث",
+    "semantic": "استخدام البحث الدلالي",
+    "results": "نتائج البحث",
+    "empty": "لا توجد نتائج.",
+    "failed": "فشل البحث. حاول مرة أخرى.",
+    "pending": "جارٍ البحث"
+  },
+  "appShell": {
+    "skip": "تخطّي إلى المحتوى الرئيسي"
+  },
+  "assignControl": {
+    "assign": "إسناد",
+    "assignToMe": "إسناد إليّ",
+    "reassign": "إعادة الإسناد",
+    "unassign": "إلغاء الإسناد",
+    "unassigned": "غير مُسنَد",
+    "cancel": "إلغاء",
+    "assigned": "مُسنَد إلى {name}",
+    "cleared": "تمت إزالة {label}",
+    "delegate": "تفويض",
+    "change": "التغيير",
+    "end": "إنهاء التفويض",
+    "delegateTitle": "تفويض {label}",
+    "to": "التفويض إلى",
+    "dates": "التواريخ",
+    "note": "ملاحظة",
+    "noteHint": "تظهر للشخص الذي تفوّضه.",
+    "needPerson": "اختر شخصًا.",
+    "needDates": "اختر اليوم الأول والأخير.",
+    "delegatedTo": "تم التفويض إلى {name}",
+    "notDelegated": "غير مفوَّض",
+    "ended": "انتهى التفويض",
+    "label": "المُسنَد إليه"
+  },
+  "attachmentPicker": {
+    "label": "المرفقات",
+    "remove": "إزالة {name}",
+    "invalid": "اختر ملفًا مدعومًا ضمن الحد المسموح للحجم.",
+    "limit": "عدد المرفقات كبير جدًا.",
+    "empty": "لا توجد مرفقات."
+  },
+  "autosave": {
+    "saving": "جارٍ الحفظ",
+    "saved": "تم الحفظ",
+    "offline": "غير متصل",
+    "failed": "فشل الحفظ",
+    "retry": "إعادة المحاولة"
+  },
+  "avatarUpload": {
+    "change": "تغيير الصورة",
+    "add": "إضافة صورة",
+    "remove": "إزالة الصورة",
+    "tooLarge": "الصورة أكبر من {max}",
+    "notImage": "اختر ملف صورة",
+    "picture": "صورة {name}"
+  },
+  "bottomSheetNav": {
+    "title": "التنقل",
+    "close": "إغلاق"
+  },
+  "bulkActions": {
+    "selected": "تم تحديد {n}",
+    "selectAll": "تحديد الكل",
+    "clear": "مسح",
+    "allSelected": "كل {noun} محدد",
+    "nothingToClear": "لا شيء لمسحه: حدّد {plural} أولًا",
+    "why": "حدّد {plural} لـ {action}",
+    "single": "حدّد {noun} واحدًا لـ {action}",
+    "label": "إجراءات التحديد",
+    "more": "المزيد من الإجراءات",
+    "noun": "عنصر"
+  },
+  "columnsMenu": {
+    "label": "الأعمدة",
+    "manage": "إدارة الأعمدة",
+    "first": "العمود الأول",
+    "makeFirst": "جعله العمود الأول",
+    "moveUp": "نقل {name} لأعلى",
+    "moveDown": "نقل {name} لأسفل",
+    "up": "نقل لأعلى",
+    "down": "نقل لأسفل",
+    "find": "البحث عن عمود",
+    "showAll": "إظهار الكل",
+    "hideAll": "إخفاء الكل",
+    "apply": "تطبيق",
+    "cancel": "إلغاء",
+    "shown": "تم إظهار {name}",
+    "hidden": "تم إخفاء {name}",
+    "isFirst": "{name} هو العمود الأول",
+    "moved": "{name}، الموضع {position} من {total}",
+    "row": "{name}{first}. المفتاحان Alt + السهم لأعلى أو لأسفل ينقلانه",
+    "firstMark": "، العمود الأول",
+    "none": "لا يوجد عمود مطابق"
+  },
+  "commandBar": {
+    "more": "المزيد من الإجراءات",
+    "actions": "إجراءات {label}",
+    "find": "بحث وعرض",
+    "selected": "تم تحديد {n}",
+    "hidden": " (مخفي {n} بسبب التصفيات)",
+    "clear": "مسح التحديد",
+    "clearName": "تم تحديد {n}، مسح التحديد",
+    "swapped": "تم تحديد {n}. إجراءات التحديد متاحة.",
+    "cleared": "تم مسح التحديد.",
+    "why": "حدّد {plural} لـ {action}",
+    "single": "حدّد {noun} واحدًا لـ {action}",
+    "preset": "أي",
+    "moreLabel": "المزيد من الإجراءات"
+  },
+  "commandPalette": {
+    "title": "الأوامر",
+    "close": "إغلاق"
+  },
+  "comparisonView": {
+    "label": "المقارنة",
+    "modes": "العرض",
+    "columns": "جنبًا إلى جنب",
+    "matrix": "جدول",
+    "slider": "شريط التمرير",
+    "onlyDifferences": "عرض الاختلافات فقط",
+    "changed": "تم تغييره",
+    "attribute": "السمة",
+    "position": "الموضع",
+    "none": "لا توجد اختلافات",
+    "one": "اختلاف واحد",
+    "many": "{n} اختلافات",
+    "empty": "—"
+  },
+  "connectedAccounts": {
+    "label": "الحسابات المتصلة",
+    "connect": "اتصال",
+    "disconnect": "قطع الاتصال",
+    "reconnect": "إعادة الاتصال",
+    "cancel": "إلغاء",
+    "connected": "متصل",
+    "disconnected": "غير متصل",
+    "error": "خطأ في الاتصال",
+    "as": "بصفة {account}",
+    "since": "منذ {date}",
+    "connectTitle": "الاتصال بـ {service}؟",
+    "connectMessage": "ستسجّل الدخول إلى {service} للسماح بذلك. سيتمكن Plenix من:",
+    "continue": "المتابعة إلى {service}",
+    "disconnectTitle": "قطع الاتصال بـ {service}؟",
+    "disconnectMessage": "يمكنك الاتصال به مرة أخرى في أي وقت.",
+    "done": "تم الاتصال بـ {service}",
+    "undone": "تم قطع الاتصال بـ {service}"
+  },
+  "deleteFlow": {
+    "title": "حذف {name}؟",
+    "titleMany": "حذف {count} {plural}؟",
+    "delete": "حذف",
+    "cancel": "إلغاء",
+    "permanent": "لا يمكن التراجع عن هذا.",
+    "more": "و{count} أخرى",
+    "typeLabel": "اكتب {phrase} للتأكيد",
+    "typeError": "اكتب {phrase} تمامًا كما هو معروض.",
+    "phraseMany": "حذف {count} {plural}",
+    "deleted": "تم حذف {what}",
+    "trashed": "تم نقل {what} إلى سلة المحذوفات",
+    "undo": "تراجع",
+    "retention": "استعد {them} من سلة المحذوفات خلال {days} يومًا.",
+    "it": "ه",
+    "them": "هم",
+    "names": "محذوف",
+    "noun": "عنصر"
+  },
+  "duplicateAction": {
+    "duplicate": "تكرار",
+    "copyOf": "نسخة من {name}",
+    "numbered": "{name} ({n})",
+    "title": "تكرار {noun}",
+    "name": "الاسم",
+    "from": "من {name}",
+    "also": "انسخ أيضًا",
+    "empty": "أدخل اسمًا.",
+    "taken": "يوجد {noun} باسم {name} بالفعل.",
+    "done": "تم التكرار باسم {name}",
+    "undo": "تراجع",
+    "cancel": "إلغاء",
+    "noun": "عنصر"
+  },
+  "fileBrowser": {
+    "label": "الملفات",
+    "root": "المكتبة",
+    "newFolder": "مجلد جديد",
+    "folderName": "اسم المجلد",
+    "create": "إنشاء",
+    "upload": "رفع",
+    "search": "البحث في هذا المجلد",
+    "folders": "المجلدات",
+    "path": "الموقع",
+    "count": "{n} عناصر",
+    "one": "عنصر واحد",
+    "empty": "هذا المجلد فارغ",
+    "emptyText": "ارفع ملفات أو أنشئ مجلدًا.",
+    "noMatch": "لا شيء يطابق «{q}»",
+    "download": "تنزيل",
+    "moveTo": "نقل إلى",
+    "delete": "حذف",
+    "noun": "عنصر",
+    "plural": "عناصر",
+    "drop": "أفلت الملفات لرفعها إلى {folder}",
+    "nameTaken": "يوجد ملف أو مجلد باسم «{name}» هنا بالفعل.",
+    "nameEmpty": "أعطِ المجلد اسمًا.",
+    "items": "{n} عناصر",
+    "item": "{n} عنصر"
+  },
+  "fileList": {
+    "sort": "ترتيب",
+    "sortBy": "الترتيب حسب {field}",
+    "field": "الترتيب حسب",
+    "order": "الترتيب",
+    "asc": "تصاعدي",
+    "desc": "تنازلي",
+    "name": "الاسم",
+    "size": "الحجم",
+    "modified": "تاريخ التعديل",
+    "owner": "المالك",
+    "status": "الحالة",
+    "count": "{n} عناصر",
+    "one": "عنصر واحد",
+    "empty": "لا يوجد شيء هنا بعد",
+    "open": "فتح",
+    "download": "تنزيل",
+    "rename": "إعادة تسمية…",
+    "delete": "حذف",
+    "moveTo": "نقل إلى",
+    "file": "ملف",
+    "files": "ملفات",
+    "folder": "مجلد",
+    "folders": "مجلدات",
+    "items": "{n} عناصر",
+    "item": "{n} عنصر"
+  },
+  "filePicker": {
+    "title": "اختيار ملفات",
+    "all": "كل الملفات",
+    "folders": "المجلدات",
+    "search": "البحث في الملفات",
+    "empty": "لا توجد ملفات مطابقة.",
+    "pick": "اختيار",
+    "cancel": "إلغاء",
+    "failed": "تعذّر اختيار الملفات. حاول مرة أخرى."
+  },
+  "filterBar": {
+    "label": "عوامل التصفية",
+    "more": "مزيد من عوامل التصفية",
+    "clearAll": "مسح الكل",
+    "one": "{label}: {value}",
+    "several": "{label} · {count}"
+  },
+  "navPane": {
+    "browse": "استعراض"
+  },
+  "notificationList": {
+    "label": "الإشعارات",
+    "empty": "لا توجد إشعارات",
+    "markAllRead": "تعليم الكل كمقروء",
+    "viewAll": "عرض الكل"
+  },
+  "peopleGroup": {
+    "team": "الفريق",
+    "group": "المجموعة",
+    "members": "{n} أعضاء",
+    "member": "{n} عضو",
+    "showMembers": "عرض الأعضاء",
+    "membersOf": "أعضاء {name}"
+  },
+  "permissionSummary": {
+    "can": "يمكنه",
+    "cannot": "لا يمكنه",
+    "manage": "إدارة الوصول",
+    "canSentence": "يمكنه {list}",
+    "cannotSentence": "لا يمكنه {list}"
+  },
+  "popconfirm": {
+    "cancel": "إلغاء"
+  },
+  "productCard": {
+    "sale": "تخفيض",
+    "outOfStock": "غير متوفر في المخزون",
+    "addToCart": "أضف إلى السلة",
+    "addToCartFor": "أضف {title} إلى السلة",
+    "now": "الآن",
+    "was": "كان",
+    "rating": "التقييم",
+    "reviews": "{n} مراجعات",
+    "review": "مراجعة واحدة",
+    "soldOut": "{title} غير متوفر في المخزون"
+  },
+  "publish": {
+    "publish": "نشر",
+    "publishNow": "النشر الآن",
+    "schedule": "جدولة",
+    "cancelSchedule": "إلغاء الجدولة",
+    "unpublish": "إلغاء النشر",
+    "cancel": "إلغاء",
+    "publishTitle": "نشر {name}؟",
+    "publishMessage": "سيصبح مرئيًا لـ {audience}.",
+    "unpublishTitle": "إلغاء نشر {name}؟",
+    "unpublishMessage": "سيُخفى عن {audience}. يمكنك نشره مرة أخرى.",
+    "scheduleTitle": "جدولة {name}",
+    "when": "النشر في",
+    "whenHint": "التاريخ والوقت، بحسب منطقتك الزمنية.",
+    "past": "اختر وقتًا في المستقبل.",
+    "empty": "اختر التاريخ والوقت.",
+    "publishedLine": "نُشر {at}",
+    "publishedBy": "نُشر {at} بواسطة {by}",
+    "scheduledLine": "سيُنشر {at}",
+    "scheduledBy": "سيُنشر {at}، جدولة {by}",
+    "draftLine": "غير منشور",
+    "published": "تم نشر {name}",
+    "scheduled": "تمت جدولة {name} في {at}",
+    "unpublished": "تم إلغاء نشر {name}",
+    "undo": "تراجع",
+    "everyone": "كل من لديه صلاحية الوصول",
+    "actions": "جارٍ النشر"
+  },
+  "queryBuilder": {
+    "builder": "المنشئ",
+    "text": "النص",
+    "viewLabel": "العرض",
+    "where": "حيث",
+    "and": "و",
+    "or": "أو",
+    "andWord": "و",
+    "orWord": "أو",
+    "join": "المطابقة",
+    "all": "كل القواعد",
+    "any": "أي قاعدة",
+    "addRule": "إضافة قاعدة",
+    "addGroup": "إضافة مجموعة",
+    "removeRule": "إزالة القاعدة",
+    "removeGroup": "إزالة المجموعة",
+    "field": "الحقل",
+    "operator": "العامل",
+    "value": "القيمة",
+    "rule": "القاعدة {n}",
+    "group": "المجموعة {n}",
+    "empty": "لا توجد قواعد: كل السجلات مطابقة.",
+    "everything": "كل سجل",
+    "matches": "{n} مطابقات",
+    "match": "{n} مطابقة",
+    "textTitle": "استعلام",
+    "added": "تمت إضافة القاعدة",
+    "groupAdded": "تمت إضافة المجموعة",
+    "removed": "تمت إزالة القاعدة",
+    "groupRemoved": "تمت إزالة المجموعة"
+  },
+  "renameAction": {
+    "label": "الاسم",
+    "rename": "إعادة تسمية",
+    "open": "إعادة تسمية…",
+    "title": "إعادة تسمية {name}",
+    "cancel": "إلغاء",
+    "empty": "أدخل اسمًا",
+    "slash": "لا يمكن أن يحتوي الاسم على / أو \\",
+    "taken": "يوجد عنصر باسم {name} هنا بالفعل",
+    "tooLong": "استخدم {max} حرفًا أو أقل",
+    "renamed": "تمت إعادة التسمية إلى {name}",
+    "failed": "تعذّر تغيير الاسم"
+  },
+  "renditionList": {
+    "label": "الصيغ المشتقة",
+    "name": "الاسم",
+    "format": "الصيغة",
+    "size": "الحجم",
+    "download": "تنزيل",
+    "empty": "لا توجد صيغ مشتقة."
+  },
+  "resourceList": {
+    "item": "عنصر",
+    "selectAll": "تحديد كل {nouns} ({n})",
+    "select": "تحديد {name}",
+    "count": "{n} {nouns}",
+    "selected": "تم تحديد {n} من {total}"
+  },
+  "retry": {
+    "title": "تعذّر التحميل",
+    "retry": "إعادة المحاولة",
+    "retryNow": "إعادة المحاولة الآن",
+    "retrying": "جارٍ إعادة المحاولة…",
+    "waiting": "إعادة المحاولة خلال {time}",
+    "attempt": "المحاولة {attempt} من {attempts}",
+    "stopped": "توقفت بعد {attempts} محاولات",
+    "dismiss": "تجاهل",
+    "status": "فشل"
+  },
+  "roleManager": {
+    "roles": "الأدوار",
+    "create": "إنشاء دور",
+    "createTitle": "إنشاء دور",
+    "name": "الاسم",
+    "description": "الوصف",
+    "descriptionHint": "جملة واحدة عمّا يستطيع أصحاب هذا الدور فعله.",
+    "startFrom": "البدء بصلاحيات",
+    "empty": "أدخل اسمًا.",
+    "taken": "يوجد دور باسم {name} بالفعل.",
+    "back": "كل الأدوار",
+    "members": "الأعضاء",
+    "member": "عضو",
+    "membersCount": "{n} أعضاء",
+    "memberCount": "{n} عضو",
+    "builtIn": "مدمج",
+    "custom": "مخصص",
+    "permissions": "الصلاحيات",
+    "builtInNote": "لا يمكن تغيير الأدوار المدمجة. انسخ أحدها لإنشاء دور خاص بك.",
+    "addMember": "إضافة عضو",
+    "remove": "إزالة {name}",
+    "lastMember": "يحتاج {role} إلى عضو واحد على الأقل. أضف شخصًا آخر أولًا.",
+    "noMembers": "لا أحد لديه هذا الدور بعد.",
+    "role": "دور",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "added": "تمت إضافة {name} إلى {role}",
+    "removed": "تمت إزالة {name} من {role}",
+    "created": "تم إنشاء {name}",
+    "access": "أصحاب دور {role}",
+    "people": "{n} أشخاص",
+    "peopleOne": "{n} شخص",
+    "allowed": "تم السماح بـ {permission} لدور {role}",
+    "denied": "لم يعد {permission} مسموحًا لدور {role}"
+  },
+  "searchWorkspace": {
+    "title": "بحث",
+    "selectAll": "تحديد الكل",
+    "allSelected": "كل {noun} محدد",
+    "placeholder": "بحث…",
+    "result": "نتيجة",
+    "results": "نتائج",
+    "searchField": "بحث في {nouns}",
+    "save": "حفظ البحث",
+    "filters": "عوامل التصفية",
+    "activeFilters": "عوامل التصفية النشطة",
+    "chip": "{label}: {value}",
+    "remove": "إزالة {text}",
+    "clearAll": "مسح الكل",
+    "view": "العرض",
+    "grid": "شبكة",
+    "table": "جدول",
+    "sort": "ترتيب",
+    "sortValue": "الترتيب: {value}",
+    "noMatchQuery": "لا شيء يطابق «{query}».",
+    "noMatchQueryFilters": "لا شيء يطابق «{query}» مع عوامل التصفية هذه.",
+    "noMatchFilters": "لا شيء يطابق عوامل التصفية هذه."
+  },
+  "secondaryPane": {
+    "expand": "توسيع {name}",
+    "collapse": "طيّ {name}",
+    "resize": "تغيير حجم {name}",
+    "close": "إغلاق {name}",
+    "back": "العودة إلى {name}"
+  },
+  "sessionTimeout": {
+    "warningTitle": "جلستك على وشك الانتهاء",
+    "warning": "سيتم تسجيل خروجك خلال {time} لأنك لم تكن نشطًا.",
+    "stay": "البقاء متصلًا",
+    "signOut": "تسجيل الخروج",
+    "signedOutTitle": "تم تسجيل خروجك",
+    "signedOut": "حفاظًا على أمانك، تم تسجيل خروجك بعد {minutes} دقيقة دون نشاط.",
+    "signedOutShort": "حفاظًا على أمانك، تم تسجيل خروجك لأنك لم تكن نشطًا.",
+    "saved": "تم حفظ تغييراتك.",
+    "signIn": "تسجيل الدخول مرة أخرى",
+    "left": "متبقي {time}",
+    "ended": "تم تسجيل الخروج"
+  },
+  "sortableList": {
+    "moveMenu": "نقل {name}",
+    "moveUp": "نقل لأعلى",
+    "moveDown": "نقل لأسفل",
+    "moveEarlier": "نقل لوقت أبكر",
+    "moveLater": "نقل لوقت أحدث",
+    "moveFirst": "نقل إلى البداية",
+    "moveLast": "نقل إلى النهاية",
+    "moveUpNamed": "نقل {name} لأعلى",
+    "moveDownNamed": "نقل {name} لأسفل"
+  },
+  "uploadManager": {
+    "dialogTitle": "رفع ملفات",
+    "queue": "عمليات الرفع",
+    "drop": "اسحب الملفات أو المجلدات وأفلتها هنا",
+    "or": "أو",
+    "chooseFiles": "اختيار ملفات",
+    "chooseFolder": "اختر مجلدًا",
+    "uploading": "جارٍ رفع {n} ملفات",
+    "uploadingOne": "جارٍ رفع ملف واحد",
+    "done": "اكتمل {n} عمليات رفع",
+    "doneOne": "اكتملت عملية رفع واحدة",
+    "failed": "فشلت {n} عمليات رفع",
+    "failedOne": "فشلت عملية رفع واحدة",
+    "none": "لا توجد عمليات رفع",
+    "progress": "تم رفع {done} من {total}",
+    "overall": "التقدم الإجمالي",
+    "waiting": "بالانتظار",
+    "uploaded": "تم الرفع",
+    "canceled": "أُلغي",
+    "cancelAll": "إلغاء الكل",
+    "clear": "مسح المكتملة",
+    "hide": "إخفاء عمليات الرفع",
+    "show": "إظهار عمليات الرفع",
+    "close": "إغلاق",
+    "finish": "تم",
+    "remove": "إزالة من القائمة",
+    "again": "الرفع مرة أخرى",
+    "tooLarge": "هذا الملف أكبر من {max}.",
+    "wrongType": "لا يمكن رفع هذا النوع من الملفات هنا.",
+    "error": "فشل الرفع. حاول مرة أخرى.",
+    "failedNamed": "فشل {name}: {reason}",
+    "status": "أُلغي"
+  },
+  "userCard": {
+    "online": "متصل",
+    "away": "غائب",
+    "busy": "مشغول",
+    "dnd": "عدم الإزعاج",
+    "offline": "غير متصل"
+  },
+  "versionCompare": {
+    "label": "مقارنة الإصدارات",
+    "compare": "مقارنة",
+    "with": "مع",
+    "swap": "تبديل",
+    "swapLabel": "تبديل الإصدارين",
+    "view": "العرض",
+    "columns": "جنبًا إلى جنب",
+    "slider": "شريط التمرير",
+    "text": "النص",
+    "by": "بواسطة {author}",
+    "diff": "التغييرات من {base} إلى {target}",
+    "added": "مضاف",
+    "removed": "محذوف",
+    "same": "لا توجد تغييرات في النص",
+    "summary": "أُضيف {added}، وحُذف {removed}",
+    "lines": "{n} أسطر",
+    "line": "سطر واحد",
+    "previous": "التغيير السابق",
+    "next": "التغيير التالي",
+    "at": "التغيير {n} من {total}",
+    "unchanged": "عرض {n} أسطر لم تتغير",
+    "empty": "اختر إصدارين للمقارنة."
+  },
+  "versionHistory": {
+    "label": "سجل الإصدارات",
+    "preview": "معاينة",
+    "restore": "استعادة",
+    "confirm": "استعادة هذا الإصدار؟",
+    "cancel": "إلغاء",
+    "failed": "تعذّرت استعادة الإصدار. حاول مرة أخرى.",
+    "restored": "تمت استعادة الإصدار",
+    "empty": "لا توجد إصدارات."
+  },
+  "viewMenu": {
+    "reset": "إعادة ضبط العرض",
+    "label": "العرض",
+    "layout": "التخطيط",
+    "list": "قائمة",
+    "gallery": "معرض",
+    "size": "حجم البطاقة (المعرض)",
+    "s": "صغير",
+    "m": "متوسط",
+    "l": "كبير",
+    "height": "ارتفاع الصف (القائمة)",
+    "short": "قصير",
+    "medium": "متوسط",
+    "tall": "طويل",
+    "extra-tall": "طويل جدًا"
+  },
+  "widgetGrid": {
+    "widget": "أداة",
+    "widgetLower": "أداة",
+    "move": "نقل {title} (مفاتيح الأسهم)",
+    "position": "{title}، الموضع {index} من {total}",
+    "earlier": "نقل لوقت أبكر",
+    "later": "نقل لوقت أحدث",
+    "first": "نقل إلى البداية",
+    "last": "نقل إلى النهاية"
+  },
+  "providers": {
+    "UnsavedGuard": {
+      "title": "المغادرة دون حفظ؟",
+      "message": "ستفقد تغييراتك.",
+      "leave": "مغادرة",
+      "stay": "متابعة التحرير"
+    },
+    "theme-boot": {
+      "compact": "مضغوط",
+      "standard": "قياسي",
+      "comfortable": "مريح"
+    }
+  },
+  "templates": {
+    "templates": {
+      "Templates": {
+        "empty": "لا توجد سجلات بعد",
+        "emptyDescription": "أنشئ سجلًا للبدء.",
+        "pane": "السجلات",
+        "sections": "في هذه الصفحة",
+        "retry": "حاول مرة أخرى",
+        "home": "الذهاب إلى الصفحة الرئيسية",
+        "search": "نتائج البحث",
+        "tools": "الأدوات",
+        "inspector": "الخيارات",
+        "detail": "التفاصيل",
+        "noSelection": "لم يتم تحديد شيء",
+        "noSelectionDescription": "اختر عنصرًا لعرضه هنا."
+      }
+    },
+    "Commerce": {
+      "Storefront": {
+        "layout": "معرض"
+      }
+    }
+  },
+  "utils": {
+    "clipboard": {
+      "copied": "تم النسخ",
+      "failed": "تعذّر النسخ. حدّد النص وانسخه يدويًا."
+    }
+  },
+  "aiButton": {
+    "label": "إجراءات الذكاء الاصطناعي",
+    "failed": "تعذّر إكمال هذا الإجراء. حاول مرة أخرى.",
+    "working": "جارٍ العمل"
+  },
+  "aiDisclaimer": {
+    "message": "قد يكون المحتوى المُنشأ بالذكاء الاصطناعي غير دقيق. راجع التفاصيل المهمة.",
+    "learn": "حول المحتوى المُنشأ بالذكاء الاصطناعي"
+  },
+  "announcement": {
+    "dismiss": "تجاهل الإعلان",
+    "failed": "تعذّر تجاهل هذا الإعلان. حاول مرة أخرى."
+  },
+  "banner": {
+    "dismiss": "تجاهل"
+  },
+  "chat": {
+    "thinking": "جارٍ التفكير",
+    "label": "الرسالة",
+    "placeholder": "اكتب رسالة",
+    "sendLabel": "إرسال"
+  },
+  "checklist": {
+    "dismiss": "تجاهل قائمة المهام",
+    "progress": "المهام المكتملة"
+  },
+  "comment": {
+    "edit": "تعديل",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "resolve": "حلّ",
+    "reopen": "إعادة فتح",
+    "edited": "مُعدَّل",
+    "resolved": "تمت معالجته",
+    "message": "تعليق",
+    "empty": "أدخل تعليقًا.",
+    "failed": "تعذّر الحفظ. حاول مرة أخرى."
+  },
+  "confidenceIndicator": {
+    "high": "ثقة عالية",
+    "medium": "ثقة متوسطة",
+    "low": "ثقة منخفضة",
+    "unknown": "درجة الثقة غير متاحة",
+    "label": "الثقة"
+  },
+  "loadingOverlay": {
+    "loading": "جارٍ التحميل",
+    "cancel": "إلغاء"
+  },
+  "mediaPlayer": {
+    "rate": "سرعة التشغيل",
+    "transcript": "عرض النص المكتوب",
+    "hideTranscript": "إخفاء النص المكتوب",
+    "pip": "صورة داخل صورة",
+    "exitPip": "الخروج من صورة داخل صورة",
+    "unsupported": "ميزة صورة داخل صورة غير متاحة.",
+    "failed": "تعذّر تشغيل هذا الملف.",
+    "pipFailed": "تعذّر تغيير وضع صورة داخل صورة. حاول مرة أخرى.",
+    "seek": "الانتقال إلى {time}",
+    "fallback": "فتح ملف الوسائط",
+    "volume": "مستوى الصوت",
+    "mute": "كتم الصوت",
+    "audioFailed": "تعذّر تشغيل مسار الصوت المنفصل. يُشغَّل الفيديو دون صوت."
+  },
+  "mentionInput": {
+    "add": "إضافة إشارة",
+    "choose": "اختر شخصًا لإشارته"
+  },
+  "promptSuggestions": {
+    "label": "اقتراحات الأوامر",
+    "empty": "لا توجد اقتراحات",
+    "failed": "تعذّر استخدام هذا الاقتراح. حاول مرة أخرى."
+  },
+  "refineMenu": {
+    "label": "تحسين",
+    "shorter": "اختصار النص",
+    "longer": "إطالة النص",
+    "tone": "تغيير النبرة",
+    "formal": "رسمية",
+    "casual": "عفوية",
+    "neutral": "محايدة",
+    "custom": "تعليمات مخصصة",
+    "prompt": "التعليمات",
+    "apply": "تطبيق التعليمات",
+    "cancel": "إلغاء",
+    "empty": "أدخل تعليمات.",
+    "failed": "تعذّر تحسين هذا النص. حاول مرة أخرى."
+  },
+  "suggestedEdit": {
+    "label": "تعديلات مقترحة",
+    "before": "قبل",
+    "after": "بعد",
+    "accept": "قبول",
+    "reject": "رفض",
+    "acceptAll": "قبول الكل",
+    "accepted": "مقبول",
+    "rejected": "مرفوض",
+    "empty": "لا توجد تعديلات مقترحة",
+    "failed": "تعذّر حفظ هذا القرار. حاول مرة أخرى."
+  },
+  "time": {
+    "now": "الآن"
+  },
+  "aiExplanation": {
+    "label": "لماذا هذا؟",
+    "title": "شرح الذكاء الاصطناعي",
+    "close": "إغلاق"
+  },
+  "accessRequest": {
+    "title": "طلب الوصول",
+    "description": "اطلب من المالك صلاحية الوصول إلى هذا المورد.",
+    "message": "رسالة إلى المالك",
+    "request": "طلب الوصول",
+    "pending": "تم طلب الوصول",
+    "approved": "تمت الموافقة على الوصول",
+    "denied": "تم رفض الوصول",
+    "open": "فتح المورد",
+    "failed": "تعذّر إرسال طلبك. حاول مرة أخرى."
+  },
+  "approvalWorkflow": {
+    "approve": "موافقة",
+    "changes": "طلب تعديلات",
+    "reject": "رفض",
+    "comment": "تعليق",
+    "reason": "اشرح سبب الحاجة إلى تعديلات.",
+    "failed": "تعذّر حفظ هذا القرار. تعليقك ما زال محفوظًا.",
+    "steps": "مراحل الموافقة",
+    "recorded": "تم تسجيل القرار"
+  },
+  "archiveRestore": {
+    "archive": "أرشفة",
+    "restore": "استعادة",
+    "archived": "مؤرشف",
+    "message": "استعد هذا السجل ليصبح نشطًا مرة أخرى.",
+    "failed": "تعذّر تحديث السجل. حاول مرة أخرى."
+  },
+  "assetGallery": {
+    "empty": "لا توجد صور",
+    "preview": "معاينة الصورة"
+  },
+  "auditLog": {
+    "actor": "المنفّذ",
+    "at": "الوقت",
+    "action": "الإجراء",
+    "target": "الهدف",
+    "changes": "التغييرات",
+    "view": "عرض التغييرات",
+    "field": "الحقل",
+    "before": "قبل",
+    "after": "بعد",
+    "close": "إغلاق"
+  },
+  "commentThread": {
+    "title": "التعليقات",
+    "reply": "رد",
+    "send": "إرسال الرد",
+    "resolve": "إغلاق النقاش",
+    "reopen": "إعادة فتح النقاش",
+    "resolved": "تمت معالجته",
+    "empty": "أدخل ردًا.",
+    "failed": "تعذّر الحفظ. حاول مرة أخرى."
+  },
+  "downloadManager": {
+    "title": "التنزيلات",
+    "empty": "لا توجد تنزيلات",
+    "queued": "في الانتظار",
+    "progress": "جارٍ التنزيل",
+    "ready": "جاهز",
+    "failed": "فشل التنزيل",
+    "actionFailed": "تعذّر إكمال إجراء التنزيل. حاول مرة أخرى."
+  },
+  "draftState": {
+    "draft": "مسودة",
+    "resume": "استئناف المسودة",
+    "discard": "تجاهل المسودة",
+    "confirm": "تجاهل هذه المسودة؟",
+    "message": "ستُزال هذه المسودة نهائيًا.",
+    "cancel": "الاحتفاظ بالمسودة",
+    "failed": "تعذّر تحديث المسودة. حاول مرة أخرى."
+  },
+  "exportDialog": {
+    "title": "تصدير",
+    "format": "الصيغة",
+    "scope": "النطاق",
+    "all": "كل السجلات",
+    "selection": "السجلات المحددة",
+    "background": "التصدير في الخلفية",
+    "export": "تصدير",
+    "cancel": "إلغاء",
+    "invalid": "اختر صيغة ونطاقًا متاحين.",
+    "failed": "تعذّر التصدير. حاول مرة أخرى.",
+    "ready": "التصدير جاهز",
+    "queued": "التصدير في قائمة الانتظار",
+    "download": "تنزيل ملف التصدير",
+    "done": "تم"
+  },
+  "featureIntro": {
+    "new": "جديد",
+    "whatsNew": "ما الجديد",
+    "gotIt": "فهمت",
+    "later": "ليس الآن",
+    "close": "إغلاق"
+  },
+  "filterPanel": {
+    "label": "تصفية",
+    "info": "تُعرض فقط السجلات التي تستوفي الشروط؛ والشرط غير المكتمل لا يؤثر في التصفية.",
+    "sub": "في هذا العرض، أظهر السجلات",
+    "where": "حيث",
+    "and": "و",
+    "or": "أو",
+    "empty": "لا شروط: تُعرض كل السجلات.",
+    "addCondition": "إضافة شرط",
+    "addGroup": "إضافة مجموعة شروط",
+    "remove": "إزالة {what}",
+    "condition": "شرط",
+    "group": "مجموعة شروط",
+    "value": "أدخل قيمة",
+    "choose": "اختر خيارات",
+    "field": "الحقل",
+    "operator": "العامل",
+    "join": "و أو أو"
+  },
+  "formFlow": {
+    "create": "إنشاء",
+    "save": "حفظ التغييرات",
+    "cancel": "إلغاء",
+    "failed": "تعذّر الحفظ. حاول مرة أخرى.",
+    "invalid": "تحقق من الحقول قبل الحفظ.",
+    "saved": "تم الحفظ",
+    "unsaved": "ستفقد تغييراتك.",
+    "close": "إغلاق"
+  },
+  "groupPanel": {
+    "label": "المجموعة",
+    "title": "التجميع حسب",
+    "info": "تُجمَّع الصفوف ذات القيمة نفسها تحت عنوان واحد؛ والمجموعة الفرعية تقسّم كل مجموعة مرة أخرى.",
+    "empty": "اجمع الصفوف التي تشترك في قيمة تحت عنوان واحد.",
+    "add": "إضافة مجموعة",
+    "addSub": "إضافة مجموعة فرعية",
+    "collapseAll": "طيّ الكل",
+    "expandAll": "توسيع الكل",
+    "more": "المزيد لـ {name}",
+    "hideEmpty": "إخفاء المجموعات الفارغة",
+    "remove": "إزالة التجميع حسب {name}",
+    "removeTip": "إزالة المجموعة",
+    "field": "الحقل",
+    "order": "الترتيب"
+  },
+  "helpPanel": {
+    "title": "مساعدة",
+    "search": "البحث في المساعدة",
+    "empty": "لا توجد مقالات مطابقة",
+    "back": "العودة إلى المقالات",
+    "read": "قراءة المقال كاملًا",
+    "close": "طيّ المساعدة"
+  },
+  "imageAnnotation": {
+    "title": "تعليقات توضيحية على الصورة",
+    "pin": "تثبيت",
+    "region": "المنطقة",
+    "location": "الموقع",
+    "comment": "تعليق",
+    "kind": "نوع التعليق التوضيحي",
+    "add": "إضافة تعليق توضيحي",
+    "empty": "أدخل موقعًا وتعليقًا.",
+    "failed": "تعذّر الحفظ. حاول مرة أخرى.",
+    "none": "لا توجد تعليقات توضيحية"
+  },
+  "importDialog": {
+    "title": "استيراد",
+    "file": "ملف",
+    "paste": "لصق البيانات",
+    "url": "رابط URL",
+    "choose": "اختر الملف المصدر",
+    "drop": "أفلت ملفًا هنا أو اخترْه أدناه.",
+    "none": "لم يتم اختيار ملف",
+    "import": "استيراد",
+    "cancel": "إلغاء",
+    "invalid": "اختر ملفًا مدعومًا أو الصق بيانات أو أدخل رابط HTTP.",
+    "failed": "تعذّر الاستيراد. مصدرك ما زال متاحًا.",
+    "unsaved": "سيُفقد مصدر الاستيراد."
+  },
+  "importWizard": {
+    "title": "استيراد السجلات",
+    "mapping": "مطابقة الأعمدة",
+    "review": "مراجعة",
+    "results": "النتائج",
+    "column": "عمود المصدر",
+    "choose": "اختر عمودًا",
+    "missing": "طابق كل الحقول المطلوبة.",
+    "invalid": "لا يحتوي المصدر على أعمدة أو صفوف صالحة للاستخدام.",
+    "done": "تم",
+    "imported": "اكتمل الاستيراد",
+    "source": "المصدر",
+    "cancel": "إلغاء",
+    "unsaved": "ستُفقد مطابقة الاستيراد."
+  },
+  "metadataEditor": {
+    "save": "حفظ البيانات الوصفية",
+    "reset": "إعادة ضبط",
+    "apply": "تطبيق {field}",
+    "required": "أدخل قيمة.",
+    "failed": "تعذّر حفظ البيانات الوصفية. تغييراتك ما زالت متاحة.",
+    "saved": "تم حفظ البيانات الوصفية",
+    "unsaved": "ستُفقد تغييرات البيانات الوصفية."
+  },
+  "onboarding": {
+    "start": "ابدأ",
+    "skip": "تخطّي الترحيب",
+    "tour": "جولة تعريفية",
+    "checklist": "ابدأ",
+    "close": "إغلاق"
+  },
+  "permissionsEditor": {
+    "label": "الصلاحيات",
+    "capability": "الإمكانية",
+    "subject": "عرض الصلاحيات لـ",
+    "save": "حفظ الصلاحيات",
+    "failed": "تعذّر حفظ الصلاحيات. حاول مرة أخرى.",
+    "unsaved": "لم يتم حفظ تغييرات الصلاحيات."
+  },
+  "presenceBar": {
+    "viewers": "يعرض",
+    "editors": "يحرّر",
+    "cursors": "المؤشرات",
+    "empty": "لا أحد غيرك هنا",
+    "view": "عرض الشخص"
+  },
+  "quickFilter": {
+    "preset": "أي"
+  },
+  "relatedAssets": {
+    "empty": "لا توجد أصول مرتبطة"
+  },
+  "saveAs": {
+    "title": "حفظ باسم",
+    "name": "الاسم",
+    "location": "الموقع",
+    "format": "الصيغة",
+    "save": "حفظ نسخة",
+    "cancel": "إلغاء",
+    "required": "أدخل اسمًا واختر موقعًا.",
+    "failed": "تعذّر حفظ النسخة. حاول مرة أخرى.",
+    "unsaved": "ستفقد تغييراتك."
+  },
+  "shareDialog": {
+    "title": "الحصة",
+    "people": "الأشخاص",
+    "link": "رابط",
+    "person": "الشخص",
+    "role": "الدور",
+    "add": "إضافة شخص",
+    "remove": "إزالة",
+    "save": "حفظ الوصول",
+    "cancel": "إلغاء",
+    "copy": "نسخ الرابط",
+    "access": "الوصول عبر الرابط",
+    "restricted": "فقط من لديهم صلاحية الوصول",
+    "anyone": "يمكن لأي شخص لديه الرابط العرض",
+    "nativeShare": "المشاركة عبر الجهاز",
+    "failed": "تعذّرت المشاركة. حاول مرة أخرى.",
+    "invalid": "اختر شخصًا ودورًا متاحًا.",
+    "unsaved": "ستُفقد تغييرات الوصول."
+  },
+  "shortcutsDialog": {
+    "title": "اختصارات لوحة المفاتيح",
+    "search": "البحث في الاختصارات",
+    "general": "عام",
+    "empty": "لا توجد اختصارات مطابقة",
+    "close": "إغلاق"
+  },
+  "sortPanel": {
+    "label": "ترتيب",
+    "title": "الترتيب حسب",
+    "within": "الترتيب داخل المجموعات حسب",
+    "info": "تُرتَّب الصفوف حسب الحقل الأول، ثم حسب الحقل التالي عند تساوي الأول.",
+    "empty": "لا ترتيب: تحتفظ الصفوف بترتيبها.",
+    "add": "إضافة ترتيب",
+    "addAnother": "إضافة ترتيب آخر",
+    "remove": "إزالة الترتيب حسب {name}",
+    "removeTip": "إزالة الترتيب",
+    "field": "الحقل",
+    "direction": "الاتجاه"
+  },
+  "tour": {
+    "next": "التالي",
+    "back": "رجوع",
+    "finish": "إنهاء الجولة",
+    "skip": "تخطّي الجولة",
+    "resume": "استئناف الجولة",
+    "close": "إغلاق",
+    "step": "{current} من {total}"
+  },
+  "trialUpgrade": {
+    "trial": "تجربة",
+    "compare": "مقارنة الخطط",
+    "title": "اختر خطة",
+    "plan": "الخطة",
+    "upgrade": "ترقية",
+    "cancel": "إلغاء",
+    "failed": "تعذّرت الترقية. حاول مرة أخرى.",
+    "upgraded": "تم تحديث الخطة"
+  },
+  "wizard": {
+    "back": "رجوع",
+    "next": "التالي",
+    "complete": "إنهاء",
+    "cancel": "إلغاء",
+    "summary": "مراجعة",
+    "invalid": "تحقق من هذه الخطوة قبل المتابعة.",
+    "failed": "تعذّر الحفظ. حاول مرة أخرى.",
+    "steps": "الخطوات"
+  },
+  "wizardDialog": {
+    "close": "إغلاق",
+    "unsaved": "ستفقد تغييراتك."
+  },
+  "breadcrumbs": {
+    "label": "مسار التنقل"
+  },
+  "colorSwatch": {
+    "label": "اللون"
+  },
+  "dialog": {
+    "confirmLabel": "حفظ",
+    "cancelLabel": "إلغاء",
+    "confirm": "تأكيد",
+    "cancel": "إلغاء",
+    "save": "حفظ"
+  },
+  "loading": {
+    "label": "جارٍ التحميل"
+  },
+  "rating": {
+    "label": "التقييم"
+  },
+  "tag": {
+    "label": "إضافة وسم"
+  },
+  "toast": {
+    "aria-label": "تجاهل",
+    "undo": "تراجع",
+    "dismiss": "تجاهل"
+  },
+  "actionBar": {
+    "label": "الإجراءات"
+  },
+  "appHeader": {
+    "aria-label": "التطبيقات"
+  },
+  "form": {
+    "label": "إجراءات النموذج"
+  },
+  "reviewFlow": {
+    "label": "بانتظار المراجعة",
+    "noun": "عنصر"
+  },
+  "collection": {
+    "selected": {
+      "=0": "لم يتم تحديد أي عنصر",
+      "one": "تم تحديد عنصر واحد",
+      "two": "تم تحديد عنصرين",
+      "few": "تم تحديد {count} عناصر",
+      "many": "تم تحديد {count} عنصرًا",
+      "other": "تم تحديد {count} عنصر"
+    }
+  }
+};
+  } },
+  "platform/providers/LocaleProvider.jsx": { deps: {"react":null,"./DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","../utils/direction.js":"platform/utils/direction.js","../utils/format.js":"platform/utils/format.js","../i18n/en.js":"platform/i18n/en.js","../i18n/ar.js":"platform/i18n/ar.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.LocaleProvider = LocaleProvider;
+exports.createTranslator = createTranslator;
+exports.useDigits = useDigits;
+exports.useLocale = useLocale;
+exports.useStrings = useStrings;
+var _react = _interopRequireDefault(require("react"));
+var _DirectionProvider = require("./DirectionProvider.jsx");
+var _direction = require("../utils/direction.js");
+var F = _interopRequireWildcard(require("../utils/format.js"));
+var _en = _interopRequireDefault(require("../i18n/en.js"));
+var _ar = _interopRequireDefault(require("../i18n/ar.js"));
+function _interopRequireWildcard(e, t) { if ("function" == typeof WeakMap) var r = new WeakMap(), n = new WeakMap(); return (_interopRequireWildcard = function (e, t) { if (!t && e && e.__esModule) return e; var o, i, f = { __proto__: null, default: e }; if (null === e || "object" != typeof e && "function" != typeof e) return f; if (o = t ? n : r) { if (o.has(e)) return o.get(e); o.set(e, f); } for (const t in e) "default" !== t && {}.hasOwnProperty.call(e, t) && ((i = (o = Object.defineProperty) && Object.getOwnPropertyDescriptor(e, t)) && (i.get || i.set) ? o(f, t, i) : f[t] = e[t]); return f; })(e, t); }
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · LocaleProvider, useLocale, createTranslator
+   Summary: Locale-scoped message catalogs, plural rules, formatting and writing direction. Existing components receive
+     their strings explicitly from the catalog; a region never changes another region's locale.
+   Usage:
+     <LocaleProvider locale="fr-FR" catalogs={{ fr: french }}><App /></LocaleProvider>
+     const { t, strings, format } = useLocale();
+     <Wizard strings={strings('wizard')} />; t('collection.selected', { count: 2 }); format.date('2026-03-08');
+   Props:
+     locale: a BCP 47 language tag; default the page's formatLocale()
+     catalogs: messages by locale, with flat dot keys or nested sections; Plenix's built-in words for the language come after
+       them (i18n/ar.js: Arabic, owner arabic-batch4-36), and English is always the last fallback
+     messages: the current locale's catalog, as a convenience
+     fallbackLocale: locale searched after the requested locale and its language; default "en"
+     timeZone: optional Intl time zone for this provider's date/time formatters
+     dir: explicit "ltr" or "rtl"; otherwise directionOf(locale)
+     digits: "auto" (default: Arabic-Indic ٠-٩ for an Arabic locale, Latin for every other) | "arab" | "latn" (owner, arabic-digits-35):
+       every format helper writes its digits so, and Isolate and Text write the digits of their text so; emails and web addresses keep Latin
+     root: set the page's lang and dir through DirectionProvider; default false (a scoped region)
+     children: the region's content
+     useDigits(): "arab" or "latn", the digits of the nearest LocaleProvider (the page's language when there is none)
+     useLocale(): { locale, dir, digits, t, strings, plural, format }; format has number, unit, bytes, duration, compact, date,
+       time, dateTime, relative, range, currency, percent, list, personName, address, phone and regionName
+     createTranslator(locale, catalogs, fallbackLocale): the same t/strings/plural API outside React, plus section(name): a
+       whole section merged across the catalogs
+     useStrings(section, strings): a component's words: its catalog section for the locale (the app's catalog, Plenix's
+       built-in language, English), with its strings prop on top (owner, arabic-words-37). Every built-in word lives in
+       i18n/en.js; check-system's built-in-words rule keeps English literals out of the components
+   Behavior:
+     Fallback: exact locale, language, configured fallback, then English. Missing messages return their key.
+     Messages interpolate {name} as plain text. Plural messages are objects with one/other (or any Intl category),
+     optional "=0" exact-count keys; t(key, { count }) selects them with Intl.PluralRules. t's third argument may
+     set ordinal:true. Missing interpolation values keep their placeholder. No HTML is parsed.
+     strings(section, values) combines that section across fallbacks for a component's strings prop.
+   Notes:
+     Translators never mutate catalogs or global Intl state. Pass the bound format helpers to localized content;
+     unmodified components keep their existing defaults. Catalog translations are application-owned. */
+
+// Plenix's own words in other languages: used after the application's catalog for the same language, before English
+const BUILT_IN = {
+  ar: _ar.default
+};
+const canonical = (value, fallback = 'en') => {
+  try {
+    return Intl.getCanonicalLocales(value || fallback)[0] || fallback;
+  } catch (e) {
+    return fallback;
+  }
+};
+const own = (value, key) => value && Object.prototype.hasOwnProperty.call(value, key);
+const messageAt = (catalog, key) => {
+  if (own(catalog, key)) return catalog[key];
+  return String(key).split('.').reduce((node, part) => own(node, part) ? node[part] : undefined, catalog);
+};
+const text = (message, values) => String(message).replace(/\{(\w+)\}/g, (match, key) => own(values, key) ? String(values[key]) : match);
+
+// a plural message: an object whose keys are only plural categories (zero, one, two, few, many, other) or exact counts ("=0"),
+// with "other"; a section that merely has a key named "other" (TimeZoneSelect's "Other") is not one
+const PLURAL_KEY = /^(zero|one|two|few|many|other|=\d+)$/;
+const pluralMessage = v => !!v && typeof v === 'object' && !Array.isArray(v) && own(v, 'other') && Object.keys(v).every(k => PLURAL_KEY.test(k));
+function createTranslator(locale = 'en', catalogs = {}, fallbackLocale = 'en') {
+  const language = canonical(locale),
+    fallback = canonical(fallbackLocale);
+  const normalized = Object.fromEntries(Object.entries(catalogs || {}).map(([key, value]) => [canonical(key), value]));
+  const chain = [...new Set([language, language.split('-')[0], fallback, fallback.split('-')[0], 'en'])];
+  const sources = chain.flatMap(key => [normalized[key], BUILT_IN[key]]).filter(Boolean).concat(_en.default);
+  const cardinal = new Intl.PluralRules(language),
+    ordinal = new Intl.PluralRules(language, {
+      type: 'ordinal'
+    });
+  const plural = (count, options = {}) => (options.ordinal ? ordinal : cardinal).select(Number(count));
+  const choose = (value, values, options) => {
+    if (typeof value === 'string' || typeof value === 'number') return text(value, values);
+    if (!value || typeof value !== 'object' || Array.isArray(value)) return undefined;
+    const exact = '=' + Number(values.count),
+      category = plural(values.count, options);
+    const item = own(value, exact) ? value[exact] : value[category] !== undefined ? value[category] : value.other;
+    return typeof item === 'string' || typeof item === 'number' ? text(item, values) : undefined;
+  };
+  const t = (key, values = {}, options = {}) => {
+    for (const source of sources) {
+      const result = choose(messageAt(source, key), values, options);
+      if (result !== undefined) return result;
+    }
+    return String(key);
+  };
+  const strings = (section, values = {}) => {
+    const keys = new Set();
+    sources.forEach(source => {
+      const node = messageAt(source, section);
+      if (node && typeof node === 'object' && !Array.isArray(node)) Object.keys(node).forEach(key => keys.add(key));
+      Object.keys(source).filter(key => key.startsWith(section + '.') && !key.slice(section.length + 1).includes('.')).forEach(key => keys.add(key.slice(section.length + 1)));
+    });
+    return Object.fromEntries([...keys].map(key => [key, t(section + '.' + key, values)]));
+  };
+  // a component's words: the whole section, merged across the catalogs (English at the bottom, the language on top); nested
+  // sections merge key by key, a plural message (an object with "other") is kept whole, so two languages never mix
+  const isPlural = pluralMessage;
+  const merge = (a, b) => {
+    if (!b || typeof b !== 'object' || Array.isArray(b) || isPlural(b)) return b === undefined ? a : b;
+    const out = Object.assign({}, a && typeof a === 'object' && !isPlural(a) ? a : {});
+    Object.keys(b).forEach(k => {
+      out[k] = merge(out[k], b[k]);
+    });
+    return out;
+  };
+  const section = name => sources.slice().reverse().reduce((acc, source) => merge(acc, messageAt(source, name)), {});
+  return {
+    locale: language,
+    dir: (0, _direction.directionOf)(language),
+    t,
+    strings,
+    plural,
+    section
+  };
+}
+const FORMATTERS = {
+  number: ['formatNumber', 1],
+  unit: ['formatUnit', 2],
+  bytes: ['formatBytes', 1],
+  duration: ['formatDuration', 1],
+  compact: ['formatCompact', 1],
+  date: ['formatDate', 1],
+  time: ['formatTime', 1],
+  dateTime: ['formatDateTime', 1],
+  relative: ['formatRelative', 1],
+  range: ['formatRange', 2],
+  currency: ['formatCurrency', 2],
+  percent: ['formatPercent', 1],
+  list: ['formatList', 1],
+  personName: ['formatPersonName', 1],
+  address: ['formatAddress', 1],
+  phone: ['formatPhone', 1],
+  regionName: ['regionName', 1]
+};
+const bind = (locale, timeZone, digits) => {
+  const tag = F.numeralLocale(locale, digits);
+  return Object.fromEntries(Object.entries(FORMATTERS).map(([name, [fn, count]]) => [name, (...args) => F[fn](...Array.from({
+    length: count
+  }, (_, index) => args[index]), Object.assign({
+    locale: tag,
+    timeZone
+  }, args[count]))]));
+};
+const LocaleContext = /*#__PURE__*/_react.default.createContext(null);
+function LocaleProvider({
+  locale,
+  catalogs,
+  messages,
+  fallbackLocale = 'en',
+  timeZone,
+  dir,
+  digits = 'auto',
+  root = false,
+  children
+}) {
+  const language = canonical(locale || F.formatLocale());
+  const value = _react.default.useMemo(() => {
+    const sources = Object.assign({}, catalogs, messages ? {
+      [language]: messages
+    } : {});
+    return Object.assign(createTranslator(language, sources, fallbackLocale), {
+      dir: dir || (0, _direction.directionOf)(language),
+      digits: F.digitsOf(F.numeralLocale(language, digits === 'auto' ? undefined : digits)),
+      format: bind(language, timeZone, digits === 'auto' ? undefined : digits)
+    });
+  }, [language, catalogs, messages, fallbackLocale, timeZone, dir, digits]);
+  return /*#__PURE__*/_react.default.createElement(LocaleContext.Provider, {
+    value: value
+  }, /*#__PURE__*/_react.default.createElement(_DirectionProvider.DirectionProvider, {
+    locale: language,
+    dir: value.dir,
+    root: root
+  }, children));
+}
+
+// a component's words (owner, arabic-words-37): its section of the catalogs for the locale, with the component's strings
+// prop on top (an app's own words still win). useStrings('pagination', strings) -> { label, range, previous, … }
+function useStrings(name, strings) {
+  const loc = useLocale();
+  return _react.default.useMemo(() => {
+    const base = loc.section(name);
+    if (!strings) return base;
+    const out = Object.assign({}, base);
+    Object.keys(strings).forEach(k => {
+      const v = strings[k],
+        b = base[k];
+      out[k] = v && typeof v === 'object' && !Array.isArray(v) && b && typeof b === 'object' && !Array.isArray(b) && !pluralMessage(v) ? Object.assign({}, b, v) : v;
+    });
+    return out;
+  }, [loc, name, strings]);
+}
+function useLocale() {
+  const value = _react.default.useContext(LocaleContext);
+  const language = canonical(F.formatLocale());
+  const fallback = _react.default.useMemo(() => Object.assign(createTranslator(language), {
+    format: bind(language)
+  }), [language]);
+  return value || fallback;
+}
+
+// the digits the text around uses ("arab" or "latn"): the nearest LocaleProvider's, else the page's language (cheap: no translator is built)
+function useDigits() {
+  const value = _react.default.useContext(LocaleContext);
+  return value ? value.digits : F.digitsOf(F.formatLocale());
+}
+  } },
+  "platform/utils/digits.js": { deps: {"./format.js":"platform/utils/format.js"}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.localDigits = localDigits;
+exports.toArabicIndic = toArabicIndic;
+exports.toLatinDigits = void 0;
+var _format = require("./format.js");
+/* Plenix · Digits (platform/utils/digits.js)
+   Summary: Writes the digits of a text in the reader's numerals: Arabic-Indic (٠-٩) in Arabic, Latin elsewhere (owner,
+     arabic-digits-35, arabic-ids-35, arabic-digits-risk-36). Emails and web addresses keep their Latin digits.
+   Usage:
+     localDigits('Case 20261020-01 on 20 October')            // in Arabic: "Case ٢٠٢٦١٠٢٠-٠١ on ٢٠ October"
+     localDigits('write to office2026@example.org')            // email kept: "office2026@example.org"
+     toArabicIndic('2026')                                     // "٢٠٢٦"
+   Props:
+     localDigits(text, { digits, locale }): the text with its ASCII digits changed to the locale's; digits "arab" | "latn" |
+       "auto" (default: from the locale, formatLocale() when none)
+     toArabicIndic(text): the text with every ASCII digit changed to Arabic-Indic, except inside an email or a web address
+     toLatinDigits(text): the text with Arabic-Indic (٠-٩) and Persian (۰-۹) digits changed to ASCII, for reading what a person typed
+   Behavior:
+     An email (name@host) and a web address (http://, https://, www.) are left as written. Anything else changes, including
+       case numbers, IDs, dates and phone numbers written as text. Only digits change; the order of characters never does.
+     Copying a changed ID copies the Arabic-Indic digits (owner, arabic-digits-risk-36).
+   Notes:
+     Formatted numbers and dates change through the locale instead (format.js numeralLocale), not through this. */
+
+const KEEP = /([^\s@<>()]+@[^\s@<>()]+|(?:https?:\/\/|www\.)[^\s<>()]+)/gi;
+const ARAB = d => String.fromCharCode(0x660 + Number(d));
+function toArabicIndic(text) {
+  return String(text).split(KEEP).map((part, i) => i % 2 ? part : part.replace(/[0-9]/g, ARAB)).join('');
+}
+const toLatinDigits = text => String(text).replace(/[\u0660-\u0669]/g, d => String(d.charCodeAt(0) - 0x660)).replace(/[\u06F0-\u06F9]/g, d => String(d.charCodeAt(0) - 0x6F0));
+exports.toLatinDigits = toLatinDigits;
+function localDigits(text, {
+  digits = 'auto',
+  locale
+} = {}) {
+  if (text === null || text === undefined) return text;
+  const want = digits === 'arab' || digits === 'latn' ? digits : (0, _format.digitsOf)(locale);
+  return want === 'arab' ? toArabicIndic(text) : String(text);
+}
+  } },
+  "platform/components/Isolate/Isolate.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/digits.js":"platform/utils/digits.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Isolate = Isolate;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _digits = require("../../utils/digits.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Isolate
+   Summary: Keeps a piece of text in its own writing direction inside text of the other direction (bidirectional
+     isolation): an ID, a case number (20261020-01), an email, a URL, a phone number or code inside an Arabic sentence,
+     so it reads as written and the words around it keep their places (owner, ctm-needs-34; #413 batch 3).
+   Usage:
+     <Text as="p">تم تسجيل القضية رقم <Isolate>20261020-01</Isolate> وستصل الإشعارات إلى <Isolate>office@example.org</Isolate>.</Text>
+     <Isolate dir="auto">{fileName}</Isolate>          // a value that may be in either direction: its first letter decides
+   Props:
+     dir: "ltr" (default: IDs, numbers, emails, URLs, code) | "rtl" | "auto" (the first strong letter decides)
+     kind: "email" | "url": keeps its Latin digits when the page writes Arabic-Indic digits (owner, arabic-digits-risk-36); any other
+       value (an ID, a case number, a phone number, code) takes the page's digits, ٠-٩ in Arabic
+     as: the element; default "bdi"
+     className: more classes on the element
+     children: the text
+     ...rest: other attributes go on the element
+   Behavior:
+     The element is isolated (unicode-bidi: isolate, as <bdi> is): the text inside never reorders the text around it,
+       and the text around it never reorders it. In an Arabic sentence "20261020-01" stays "20261020-01" (without it,
+       the two numbers swap places: "01-20261020").
+     Digits: in Arabic (LocaleProvider digits, "auto" for an Arabic locale) the digits of its text are written Arabic-Indic, case
+       numbers and IDs included, and an email or a web address (kind) keeps Latin (owner, arabic-ids-35, arabic-digits-risk-36).
+     A left-to-right island overrides the order (unicode-bidi: isolate-override): Arabic-Indic digits would otherwise let a hyphen
+       swap the two numbers around it ("٢٠٢٦١٠٢٠-٠١" reads "٠١-٢٠٢٦١٠٢٠"). The order of its characters is kept as written.
+     It is inline and adds no box: alignment, wrapping and the ellipsis stay the container's.
+   Notes:
+     Plenix isolates by itself where it knows the value is technical: DataGrid and Table cells of kind data, id, email,
+       url, phone and code; DataPill with data; PropertyList.Item with data; Code, Kbd and CodeBlock (always left to
+       right); Text, which is dir="auto". Use Isolate for such a value inside running text.
+*/
+function Isolate({
+  dir = 'ltr',
+  as: Tag = 'bdi',
+  kind,
+  className,
+  children,
+  ...rest
+}) {
+  const digits = (0, _LocaleProvider.useDigits)();
+  // an email or a web address keeps its Latin digits; any other value takes the page's digits (Arabic-Indic in Arabic)
+  const own = kind === 'email' || kind === 'url' ? 'latn' : digits;
+  const shown = _react.default.Children.map(children, child => typeof child === 'string' || typeof child === 'number' ? (0, _digits.localDigits)(String(child), {
+    digits: own
+  }) : child);
+  return /*#__PURE__*/_react.default.createElement(Tag, _extends({
+    className: (0, _cx.cx)('plx-isolate', className),
+    dir: dir
+  }, rest), shown);
+}
+  } },
+  "platform/components/StatusDot/StatusDot.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.StatusDot = StatusDot;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _cx = require("../../utils/cx.js");
+var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+var _Icon = require("../Icon/Icon.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · StatusDot
+   Summary: A 6px dot that marks a state (active, paused, priority), or a person's availability (online, away, busy, do
+     not disturb, offline) in the Status colors.
+   Usage:
+     <StatusDot tone="success" label="Active" />
+     <StatusDot tone="busy" label="Busy" />
+     <StatusDot tone="dnd" size="md" icon label="Do not disturb" />
+     <StatusDot tone="away" size="md" icon label="Away" />
+   Props:
+     tone: "neutral" (default) | "info" | "success" | "warning" | "danger"; for a person's availability (the presence
+       roles of the Status colors, library wave 4): "online" | "away" | "busy" | "dnd" (do not disturb) |
+       "offline"
+     size: "sm" (default, 6px) | "md" (12px) | "lg" (16px): the larger dots carry a glyph (icon) and sit on an avatar
+     icon: draws the availability's shape inside a md or lg dot, so it never rests on color alone: online a check, away a
+       clock, busy a solid dot with nothing cut out, do not disturb a minus (remove), offline a cross; busy and do not
+       disturb share a color and differ by shape (default false; presence tones only)
+     label: the state in words, read by assistive technology
+     className: more classes on the dot
+     ...rest: other attributes go on the dot element
+   Behavior:
+     Without a label the dot is decorative and hidden from assistive technology.
+     The glyph is drawn in the surface color, cut out of the dot; a sm dot has no room for one and ignores icon.
+   Notes:
+     Without a label, pair the dot with visible text.
+     Avatar's presence prop draws this dot at the avatar's corner.
+*/
+const PRESENCE = ['online', 'away', 'busy', 'dnd', 'offline'];
+const GLYPHS = {
+  online: 'check',
+  away: 'clock',
+  dnd: 'remove',
+  offline: 'close-2'
+}; // busy is the solid dot: nothing cut out
+const SIZES = ['md', 'lg'];
+function StatusDot({
+  tone = 'neutral',
+  size = 'sm',
+  icon = false,
+  label,
+  className,
+  ...rest
+}) {
+  (0, _devWarn.devWarn)('StatusDot', {
+    tone,
+    size
+  }, {
+    tone: ['info', 'success', 'warning', 'danger', 'neutral', 'online', 'away', 'busy', 'dnd', 'offline'],
+    size: ['sm', 'md', 'lg']
+  });
+  const s = SIZES.indexOf(size) >= 0 ? size : null;
+  const glyph = icon && s && PRESENCE.indexOf(tone) >= 0 && GLYPHS[tone];
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: (0, _cx.cx)('plx-status-dot', 'plx-status-dot--' + tone, s && 'plx-status-dot--' + s, glyph && 'plx-status-dot--glyph', className),
+    "aria-hidden": label ? undefined : true
+  }, rest), glyph ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: glyph,
+    className: "plx-status-dot__glyph"
+  }) : null, label ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, label) : null);
+}
+  } },
+  "platform/components/Avatar/Avatar.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Avatar = Avatar;
+exports.initialsOf = initialsOf;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _cx = require("../../utils/cx.js");
+var _Icon = require("../Icon/Icon.jsx");
+var _StatusDot = require("../StatusDot/StatusDot.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Avatar
+   Summary: A person's picture, or their initials, in a rounded square (never a circle), inside a 1px media border (owner,
+     2026-10-19: every avatar and picture placeholder has the same border).
+   Usage:
+     <Avatar name="Maya Chen" size="md" />
+     <Avatar name="Maya Chen" src="/people/mc.jpg" label="Maya Chen" />
+   Props:
+     name: the person's name; without a picture the avatar shows its initials, from initialsOf(name)
+     src: the URL of the person's picture; it replaces the initials
+     initials: the text to show, only when there is no name to work from
+     size: "2xs" 20px | "xs" 24px | "sm" 28px (default) | "md" 32px | "lg" 40px | "xl" 48px | "2xl" 64px; "2xs" is for inside a small control
+       (the account row in a pane footer)
+     color: the person's own color when the data has one, a data color: a hue name (blue, green, purple, red, brown, gray: the --plx-sys-data-color-<hue> tokens), set as data-plx-color; no value is written (batch 280): its soft fill with
+       its text color (otherwise the theme's avatar colors)
+     category: instead of color, a category color by name (an avatar standing for a category): the color as its fill,
+       black or white text (batch 290)
+     gender: "male" | "female": with no picture, the person-male or person-female icon on soft blue or soft pink (the
+       category palette) instead of the initials; any other value keeps the initials (owner, 2026-10-19)
+     label: the person's name for assistive technology when no visible name is nearby; without it the avatar is hidden from
+       assistive technology
+     presence: the person's availability (library wave 4): "online" | "away" | "busy" | "dnd" (do not disturb)
+       | "offline", a StatusDot at the avatar's bottom end corner in the presence roles of the Status colors, ringed in the surface color;
+       its size follows the avatar (a 6px dot up to 32px, 12px at 40 and 48px, 16px at 64px), and from 40px it carries the
+       availability's shape (a check, a clock, busy the solid dot, do not disturb a minus, a cross) so it never rests on
+       color alone
+     strings: the words of presence, for other languages: { online: "Online", away: "Away", busy: "Busy",
+       dnd: "Do not disturb", offline: "Offline" }
+     className: more classes on the avatar
+   Behavior:
+     A picture that fails to load falls back to the initials. The picture loads lazily and decodes off the main thread
+     (loading="lazy", decoding="async"), so a long list or table of avatars fetches only the ones near the view.
+     The corner and the text size follow the size.
+     Initials are the first letters of the first and last name ("Maya Chen" → MC).
+     Titles such as "Fr." or "Dr." and parenthesized parts are skipped; one word gives one letter.
+     With a label the avatar is an image (role="img") named by the label; with presence too, the name and the state ("Maya Chen, Busy").
+     Without a label the presence dot is hidden with the avatar: the page says the state in words next to it.
+   Notes:
+     Other props pass through to the <span>.
+     initialsOf(name) is also exported for pages that need the same initials. A name with no Latin letter (an Arabic name)
+       takes each word's first letter; two Arabic initials are kept apart so they do not join (owner, ctm-needs-34).
+*/
+const SIZES = [20, 24, 28, 32, 40, 48, 64]; // the scale its classes define (plx-avatar--24 …)
+// the names pages use: 2xs 20 (inside a small control: the account row in a pane footer), xs 24, sm 28, md 32, lg 40, xl 48, 2xl 64 (numbers are rejected by the system check)
+const NAMED = {
+  '2xs': 20,
+  xs: 24,
+  sm: 28,
+  md: 32,
+  lg: 40,
+  xl: 48,
+  '2xl': 64
+};
+// presence (library wave 4): the availability tones, the dot's size for each avatar size, and the words
+const PRESENCE = ['online', 'away', 'busy', 'dnd', 'offline'];
+const DOT = {
+  20: 'sm',
+  24: 'sm',
+  28: 'sm',
+  32: 'sm',
+  40: 'md',
+  48: 'md',
+  64: 'lg'
+};
+const STRINGS = {
+  online: 'Online',
+  away: 'Away',
+  busy: 'Busy',
+  dnd: 'Do not disturb',
+  offline: 'Offline'
+};
+
+// first- and last-name initials: titles (a word ending in a period, e.g. "Fr.") and parenthesized parts are skipped.
+// A word's initial is its first Latin letter or digit, as always; a word with none (an Arabic name, owner ctm-needs-34) takes
+// its first letter of any script. Two Arabic initials are kept apart (a zero-width non-joiner), so they do not join into a word.
+const LATIN = /[A-Za-z0-9]/,
+  ANY = /[\p{L}\p{N}]/u,
+  JOINING = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/;
+const initialOf = w => (w.match(LATIN) || w.match(ANY) || [''])[0];
+function initialsOf(name) {
+  const words = String(name || '').replace(/\([^)]*\)/g, ' ').split(/\s+/).filter(w => w && !/\.$/.test(w) && initialOf(w));
+  if (!words.length) return '';
+  const first = initialOf(words[0]),
+    last = words.length > 1 ? initialOf(words[words.length - 1]) : '';
+  return (first + (JOINING.test(first) && JOINING.test(last) ? '\u200C' : '') + last).toUpperCase();
+}
+const GENDER = {
+  male: {
+    tone: 'blue',
+    icon: 'person-male'
+  },
+  female: {
+    tone: 'pink',
+    icon: 'person-female'
+  }
+};
+function Avatar({
+  name,
+  src,
+  initials,
+  size = 'sm',
+  color,
+  category,
+  gender,
+  label,
+  presence,
+  strings,
+  className,
+  ...rest
+}) {
+  (0, _devWarn.devWarn)('Avatar', {
+    size
+  }, {
+    size: ['2xs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl']
+  });
+  const n = NAMED[size] || size;
+  const s = SIZES.indexOf(n) >= 0 ? n : NAMED.sm;
+  const text = name ? initialsOf(name) : initials;
+  const p = PRESENCE.indexOf(presence) >= 0 ? presence : null;
+  const words = Object.assign({}, STRINGS, strings);
+  const named = label && p ? label + ', ' + words[p] : label;
+  // a picture that fails to load falls back to the initials (batch 215)
+  const [failed, setFailed] = _react.default.useState(false);
+  _react.default.useEffect(() => {
+    setFailed(false);
+  }, [src]);
+  const picture = src && !failed;
+  const g = !picture ? GENDER[gender] : null; // no picture and a known gender: the gender icon
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: (0, _cx.cx)('plx-avatar', 'plx-avatar--' + s, p && 'plx-avatar--presence', g && 'plx-avatar--gender', className),
+    "data-plx-avatar": "",
+    "data-plx-color": g ? undefined : color || undefined,
+    "data-plx-category": g ? g.tone : category || undefined,
+    role: label ? 'img' : undefined,
+    "aria-label": named,
+    "aria-hidden": label ? undefined : true
+  }, rest), picture ? /*#__PURE__*/_react.default.createElement("img", {
+    className: "plx-avatar__image",
+    src: src,
+    alt: "",
+    loading: "lazy",
+    decoding: "async",
+    onError: () => setFailed(true)
+  }) : g ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: g.icon,
+    filled: true,
+    className: "plx-avatar__gender"
+  }) : text, p ? /*#__PURE__*/_react.default.createElement(_StatusDot.StatusDot, {
+    tone: p,
+    size: DOT[s],
+    icon: DOT[s] !== 'sm',
+    className: "plx-avatar__presence"
+  }) : null);
+}
+  } },
+  "platform/components/Loading/Loading.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Skeleton = Skeleton;
+exports.Spinner = Spinner;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _cx = require("../../utils/cx.js");
+var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Skeleton, Spinner
+   Summary: Loading indicators. Skeleton is a placeholder block with a shimmer; Spinner is a turning ring. (The typing
+     dots are a Chat variant: Chat.Typing.)
+   Usage:
+     <Skeleton width="160px" height="16px" />
+     <Spinner size="sm" label="Saving" />
+   Props:
+     Skeleton.width: the block width, a size token's name ("200px" for --plx-ref-size-200px); none: as wide as its place
+     Skeleton.height: the block height, a size token's name ("16px")
+     Skeleton.className: more classes on the block
+     Spinner.size: "sm" | "md" (default) | "lg"
+     Spinner.label: the text announced to assistive technology (default "Loading")
+     Spinner.className: more classes on the ring
+   Behavior:
+     The Skeleton shimmer runs left to right; the block is decorative (aria-hidden).
+     Spinner is a status region (role="status"), so its label is announced.
+     People who ask their system for less motion see the indicators still.
+   Notes:
+     Other props pass through to the <span>.
+     The old text listed a radius prop for Skeleton; the code takes none (set it with a class).
+*/
+// a size token's name from "200px" (or the older "var(--plx-ref-size-200px)"); the rule per size is in system/steps.css
+const sizeName = v => v ? String(v).replace(/^var\(--plx-ref-size-|\)$/g, '') : undefined;
+function Skeleton({
+  width,
+  height,
+  className,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: (0, _cx.cx)('plx-skeleton', className),
+    "aria-hidden": "true",
+    "data-plx-width": sizeName(width),
+    "data-plx-height": sizeName(height)
+  }, rest));
+}
+function Spinner({
+  size = 'md',
+  label = 'Loading',
+  className,
+  ...rest
+}) {
+  (0, _devWarn.devWarn)('Spinner', {
+    size
+  }, {
+    size: ['sm', 'md', 'lg']
+  });
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: (0, _cx.cx)('plx-spinner', 'plx-spinner--' + size, className),
+    role: "status"
+  }, rest), /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, label));
+}
+  } },
+  "platform/providers/Surface.jsx": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SurfaceContext = void 0;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · SurfaceContext
+   Summary: Tells the components inside a colored surface which surface they sit on, so they take its look from their own
+     classes: no rule reaches into the surface (Styling Standard 3.6).
+   Usage:
+     <SurfaceContext.Provider value="inverse">…</SurfaceContext.Provider>
+   Props:
+     value: "inverse" (a dark surface: TeachingBubble) | "accent" (the accent AppHeader) | null (the page's own surface)
+   Behavior:
+     TeachingBubble and the accent AppHeader provide it. A Button inside takes plx-button--on-inverse or
+       plx-button--on-accent.
+     A component that draws a colored surface of its own provides it for its content.
+*/
+
+const SurfaceContext = exports.SurfaceContext = /*#__PURE__*/_react.default.createContext(null);
+  } },
+  "platform/utils/floating.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.PLACEMENTS = exports.FLOATING_POINTER = exports.FLOATING_ANCHOR = void 0;
+exports.useFloating = useFloating;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · useFloating
+   Summary: Places a floating element (a menu, popover, tooltip, combobox list or date picker) beside its anchor and keeps it in view: a named placement, an offset step, flip, shift, the anchor's width, or a point (a context menu at the pointer). It writes data attributes only; system/floating.css places the element, so no position is ever written as a style.
+   Usage:
+     const anchor = React.useRef(null), panel = React.useRef(null);
+     const { placement } = useFloating(anchor, panel, { open, placement: 'bottom-start' });
+     <button ref={anchor} aria-expanded={open} aria-controls="list">Sort</button>
+     {open ? <div ref={panel} id="list" popover="manual" className="plx-menu">…</div> : null}
+     useFloating(anchor, panel, { open, placement: 'bottom-start', matchWidth: true })      // a select or combobox list
+     useFloating(row, panel, { open, virtual: { x: event.clientX, y: event.clientY } })     // a context menu at the pointer
+   Props:
+     anchorRef: a ref to the element the floating element is placed against
+     floatingRef: a ref to the floating element (best in the top layer: popover="manual", or inside a Portal)
+     options.open (true): placed while open; the anchor slot is released when it closes or unmounts
+     options.placement ('bottom-start'): top | bottom | start | end (the side; start and end follow the writing direction), centered or aligned: top-start, top-end, bottom-start, bottom-end, start-top, start-bottom, end-top, end-bottom
+     options.offset ('xs'): the gap to the anchor: 'none' | 'xs' | 'sm' | 'md' (--plx-sys-floating-offset-*)
+     options.flip (true): moves to the opposite side when there is no room
+     options.shift (true): swaps the alignment (start to end) to stay in the window; a centered placement aligns to an edge
+     options.matchWidth (false): at least as wide as the anchor
+     options.virtual (null): { x, y } in window pixels (event.clientX / clientY): placed at that point, flipped and kept inside the window; the anchor is used where the browser cannot place a point
+     returns { placement (the side and alignment in use where useFloating measures it), mode: 'anchor' | 'pointer' | 'inline' }
+   Behavior:
+     anchor: with CSS anchor positioning (Chrome 125, Safari 26, Firefox 147) the browser places the element, flips and shifts it, and follows the anchor on scroll and resize: nothing is measured.
+     pointer: with typed attr() (Chrome 133) a virtual anchor is a point: useFloating measures the element, flips it to the other side of the point and keeps it --plx-sys-floating-viewport-margin inside the window, then writes the point (data-plx-floating-x / -y).
+     inline: without anchor positioning the element is placed inside the anchor's parent (data-plx-floating-host) on its side; useFloating measures the room and flips or shifts the placement. Render the element next to its anchor for this fallback.
+     The pair shares one of 16 anchor names while open (data-plx-floating-anchor / data-plx-floating), so each floating element finds its own anchor anywhere in the page.
+   Notes:
+     It positions only. Opening, Escape, focus and outside clicks are the overlay's (useLayer), the top layer is popover="manual" or Portal layer="top", and the ARIA link (aria-expanded, aria-controls, aria-describedby) is the component's.
+     Menu, Tooltip and Popover adopt it in their own tasks.
+*/
+
+const SLOTS = 16;
+const taken = new Array(SLOTS + 1).fill(false);
+const take = () => {
+  for (let i = 1; i <= SLOTS; i++) if (!taken[i]) {
+    taken[i] = true;
+    return i;
+  }
+  return 0;
+};
+const release = i => {
+  if (i) taken[i] = false;
+};
+
+// what the browser can do, checked once
+const supports = decl => typeof CSS !== 'undefined' && !!CSS.supports && CSS.supports(decl);
+const FLOATING_ANCHOR = exports.FLOATING_ANCHOR = supports('anchor-name: --plx-a');
+const FLOATING_POINTER = exports.FLOATING_POINTER = supports('inset-block-start: attr(data-plx-floating-y px, 0px)');
+const PLACEMENTS = exports.PLACEMENTS = ['top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'start', 'start-top', 'start-bottom', 'end', 'end-top', 'end-bottom'];
+const OFFSETS = {
+  none: null,
+  xs: '--plx-sys-floating-offset-xs',
+  sm: '--plx-sys-floating-offset-sm',
+  md: '--plx-sys-floating-offset-md'
+};
+const ATTRS = ['data-plx-floating', 'data-plx-floating-placement', 'data-plx-floating-offset', 'data-plx-floating-flip', 'data-plx-floating-shift', 'data-plx-floating-match', 'data-plx-floating-pointer', 'data-plx-floating-x', 'data-plx-floating-y'];
+
+// a length token in pixels (the tokens are written in rem; a custom property's computed value has its var() resolved)
+function tokenPixels(name) {
+  if (!name || typeof document === 'undefined') return 0;
+  const root = document.documentElement,
+    v = getComputedStyle(root).getPropertyValue(name).trim(),
+    n = parseFloat(v) || 0;
+  return /rem$/.test(v) ? n * parseFloat(getComputedStyle(root).fontSize) : n;
+}
+const set = (el, name, value) => {
+  if (value == null || value === false) el.removeAttribute(name);else el.setAttribute(name, String(value));
+};
+const isRtl = el => getComputedStyle(el).direction === 'rtl';
+
+// the inline fallback: the side with room (flip) and the alignment that stays in the window (shift), from the anchor's box
+function measured(anchor, floating, placement, flip, shift, gap) {
+  const a = anchor.getBoundingClientRect(),
+    f = floating.getBoundingClientRect();
+  const W = window.innerWidth,
+    H = window.innerHeight,
+    rtl = isRtl(anchor);
+  let [side, align] = placement.split('-');
+  const room = {
+    top: a.top - gap,
+    bottom: H - a.bottom - gap,
+    start: rtl ? W - a.right - gap : a.left - gap,
+    end: rtl ? a.left - gap : W - a.right - gap
+  };
+  const need = side === 'top' || side === 'bottom' ? f.height : f.width;
+  const opposite = {
+    top: 'bottom',
+    bottom: 'top',
+    start: 'end',
+    end: 'start'
+  }[side];
+  if (flip && room[side] < need && room[opposite] > room[side]) side = opposite;
+  if (shift && align && (side === 'top' || side === 'bottom')) {
+    // aligned to the inline start, the element runs toward the inline end: does it leave the window there?
+    const startEdge = rtl ? a.right : a.left,
+      endRoom = rtl ? startEdge : W - startEdge;
+    const endEdge = rtl ? a.left : a.right,
+      startRoom = rtl ? W - endEdge : endEdge;
+    if (align === 'start' && endRoom < f.width && startRoom > endRoom) align = 'end';else if (align === 'end' && startRoom < f.width && endRoom > startRoom) align = 'start';
+  }
+  if (shift && align && (side === 'start' || side === 'end')) {
+    if (align === 'top' && H - a.top < f.height && a.bottom > H - a.top) align = 'bottom';else if (align === 'bottom' && a.bottom < f.height && H - a.top > a.bottom) align = 'top';
+  }
+  return align ? side + '-' + align : side;
+}
+
+// a point: the element's corner at the point, flipped to the other side of it when it does not fit, then kept inside the window
+function pointAt(floating, x, y) {
+  const f = floating.getBoundingClientRect(),
+    W = window.innerWidth,
+    H = window.innerHeight,
+    m = tokenPixels('--plx-sys-floating-viewport-margin');
+  const rtl = isRtl(floating);
+  // the inline-start inset of the point, measured from the window's inline-start edge
+  let ix = rtl ? W - x : x,
+    iy = y;
+  if (ix + f.width > W - m && ix - f.width >= m) ix -= f.width;
+  if (iy + f.height > H - m && iy - f.height >= m) iy -= f.height;
+  ix = Math.max(m, Math.min(ix, W - m - f.width));
+  iy = Math.max(m, Math.min(iy, H - m - f.height));
+  return [Math.round(ix), Math.round(iy)];
+}
+function useFloating(anchorRef, floatingRef, options = {}) {
+  const {
+    open = true,
+    placement = 'bottom-start',
+    offset = 'xs',
+    flip = true,
+    shift = true,
+    matchWidth = false,
+    virtual = null
+  } = options;
+  const wanted = PLACEMENTS.indexOf(placement) >= 0 ? placement : 'bottom-start';
+  const pointer = !!(virtual && FLOATING_POINTER);
+  const mode = pointer ? 'pointer' : FLOATING_ANCHOR ? 'anchor' : 'inline';
+  const [used, setUsed] = _react.default.useState(wanted);
+  const slot = _react.default.useRef(0);
+  const vx = virtual ? virtual.x : null,
+    vy = virtual ? virtual.y : null;
+  _react.default.useLayoutEffect(() => {
+    const anchor = anchorRef && anchorRef.current,
+      floating = floatingRef && floatingRef.current;
+    if (!open || !floating) return undefined;
+    const host = !pointer && mode === 'inline' && anchor ? anchor.parentElement : null;
+    if (pointer) {
+      set(floating, 'data-plx-floating-pointer', '');
+      const [ix, iy] = pointAt(floating, vx, vy);
+      set(floating, 'data-plx-floating-x', ix);
+      set(floating, 'data-plx-floating-y', iy);
+    } else if (anchor) {
+      if (!slot.current) slot.current = take();
+      set(anchor, 'data-plx-floating-anchor', slot.current || null);
+      set(floating, 'data-plx-floating', slot.current || 'inline');
+      set(floating, 'data-plx-floating-offset', offset === 'xs' || !(offset in OFFSETS) ? null : offset);
+      set(floating, 'data-plx-floating-flip', flip ? null : 'off');
+      set(floating, 'data-plx-floating-shift', shift ? null : 'off');
+      set(floating, 'data-plx-floating-match', matchWidth ? 'width' : null);
+      if (host) set(host, 'data-plx-floating-host', '');
+      set(floating, 'data-plx-floating-placement', wanted);
+      let next = wanted;
+      if (mode === 'inline') {
+        next = measured(anchor, floating, wanted, flip, shift, tokenPixels(OFFSETS[offset] || null));
+        set(floating, 'data-plx-floating-placement', next);
+      }
+      setUsed(next);
+    }
+    return () => {
+      ATTRS.forEach(n => floating.removeAttribute(n));
+      if (anchor) anchor.removeAttribute('data-plx-floating-anchor');
+      if (host) host.removeAttribute('data-plx-floating-host');
+      release(slot.current);
+      slot.current = 0;
+    };
+  }, [open, wanted, offset, flip, shift, matchWidth, pointer, mode, vx, vy, anchorRef, floatingRef]);
+
+  // the inline fallback measures again when the window changes size
+  _react.default.useEffect(() => {
+    if (!open || mode !== 'inline' || typeof window === 'undefined') return undefined;
+    const again = () => {
+      const anchor = anchorRef.current,
+        floating = floatingRef.current;
+      if (!anchor || !floating) return;
+      set(floating, 'data-plx-floating-placement', wanted);
+      const next = measured(anchor, floating, wanted, flip, shift, tokenPixels(OFFSETS[offset] || null));
+      set(floating, 'data-plx-floating-placement', next);
+      setUsed(next);
+    };
+    window.addEventListener('resize', again);
+    return () => window.removeEventListener('resize', again);
+  }, [open, mode, wanted, flip, shift, offset, anchorRef, floatingRef]);
+  return {
+    placement: mode === 'anchor' ? wanted : used,
+    mode
+  };
+}
+  } },
+  "platform/components/Tooltip/Tooltip.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/floating.js":"platform/utils/floating.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.InTooltip = void 0;
+exports.Tooltip = Tooltip;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _floating = require("../../utils/floating.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Tooltip
+   Summary: A short label for a control, shown on hover, on keyboard focus and, on touch, on a long press. The rich
+     tooltip (09 Overlays › Contextual overlays › Rich tooltip) adds a title, a few sentences and, as a toggletip, one action.
+   Usage:
+     <Tooltip content="Upload files" placement="bottom"><Button …/></Tooltip>
+     <Tooltip title="Retention" content="Deleted files stay in the trash for 30 days."><Button …/></Tooltip>
+     <Tooltip title="Smart crop" content="…" action={<Link href="#crop" variant="standalone">About smart crop</Link>}><Button …/></Tooltip>
+   Props:
+     content: the tooltip text (in a rich tooltip, its body: one to three sentences)
+     placement: "bottom" (default) | "top" | "start" | "end" (start and end follow the writing direction)
+     title: a short title above the body; it makes the tooltip rich
+     action: one action under the body (a standalone Link, or a small Button); it makes the tooltip rich and a toggletip:
+       it opens on click (Enter or Space on the trigger) instead of on hover and focus
+     rich: the rich look without a title or an action (default false; true when title or action is given)
+     disabled: the tooltip neither shows nor describes the trigger (default false); for a label that is shown in full most of
+       the time and only needs its tooltip when it is cut short
+     className: more classes on the wrapper
+     children: the control it labels (one element)
+   Behavior:
+     It shows on hover (a mouse or a pen) and on keyboard focus, and hides on leave, on blur and with Escape.
+     On touch there is no hover (Platforms Standard 6.5): a long press (--plx-comp-tooltip-long-press-delay) shows it, and
+     it hides --plx-comp-tooltip-touch-dismiss-delay after the finger lifts, or when the finger moves away or is cancelled.
+     A tap does not show it (focus that follows a touch is ignored; mouse events emulated from touch are not listened to),
+     and the long press neither opens the browser's context menu nor activates the control (the click that may follow the
+     release is dropped): a long press asks what a control is, it does not use it.
+     The trigger is described by the tooltip (aria-describedby), added to any it already has.
+     Placement: where the browser has CSS anchor positioning (utils/floating.js) the bubble is placed against the trigger by
+       useFloating while it shows (offset sm), so no scroll area or pane clips it; elsewhere it is drawn inside the wrapper
+       on its side, as before. A tooltip with an arrow keeps its side; a rich tooltip (no arrow) flips and shifts to stay in
+       the window.
+     Rich: a text-only rich tooltip opens on hover and focus like a plain one and stays open while the pointer is over it
+       (it hides --plx-comp-tooltip-rich-close-delay after the pointer leaves both). With an action it is a toggletip: the
+       trigger toggles it (aria-expanded, aria-controls), Tab from the trigger reaches the action, and Escape, a click
+       outside or focus leaving it closes it (Escape returns focus to the trigger); a tap opens it on touch.
+   Notes:
+     An icon-only Button shows its name (and its shortcut) as a tooltip by itself; inside a Tooltip it leaves that to the
+       Tooltip (InTooltip), so a control never gets two.
+     An icon-only control still needs its own label (aria-label): the tooltip repeats it visually, it is never the only
+     way to learn the control's name.
+     Not for essential content. Only the rich tooltip holds an action, and then it opens on click: interactive content never
+     depends on hover.
+     The rich surface is the popover's (the overlay surface with its border, radius and shadow), with no arrow.
+*/
+
+const SIDES = ['bottom', 'top', 'start', 'end'];
+
+// true inside a Tooltip's trigger: a Button there does not add its own (an icon-only Button shows its name by itself)
+const InTooltip = exports.InTooltip = /*#__PURE__*/_react.default.createContext(false);
+
+// a duration token ("0.5s", "500ms") in milliseconds, read from the element's computed style
+const ms = (el, name) => {
+  const v = el ? getComputedStyle(el).getPropertyValue(name).trim() : '';
+  const n = parseFloat(v);
+  return isNaN(n) ? 0 : /ms$/.test(v) ? n : n * 1000;
+};
+
+// the last way the person reached for the page: a touch, or a mouse, pen or key. Focus that follows a tap does not open
+// the tooltip (a long press does); focus that follows a key does. One listener pair for every tooltip, added by the first.
+let lastInput = 'key',
+  listening = false;
+const listen = () => {
+  if (listening) return;
+  listening = true;
+  document.addEventListener('pointerdown', e => {
+    lastInput = e.pointerType === 'touch' ? 'touch' : 'pointer';
+  }, true);
+  document.addEventListener('keydown', () => {
+    lastInput = 'key';
+  }, true);
+};
+function Tooltip({
+  content,
+  placement = 'bottom',
+  title,
+  action,
+  rich = false,
+  disabled = false,
+  className,
+  children
+}) {
+  const id = 'plx-tt' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const [open, setOpen] = _react.default.useState(false);
+  const wrap = _react.default.useRef(null);
+  const bubble = _react.default.useRef(null);
+  const press = _react.default.useRef(null); // the long-press timer
+  const hide = _react.default.useRef(null); // the timer that hides a tooltip a long press (or a rich tooltip's leave) started
+  const pressed = _react.default.useRef(false); // this touch opened the tooltip by a long press
+  const isRich = !!(rich || title || action);
+  const toggle = !!action; // a toggletip: opened by a click on the trigger
+  const side = SIDES.indexOf(placement) >= 0 ? placement : 'bottom';
+  const clear = () => {
+    clearTimeout(press.current);
+    clearTimeout(hide.current);
+  };
+  _react.default.useEffect(() => {
+    listen();
+    return clear;
+  }, []);
+  // placed against the trigger by anchor positioning while it shows; the arrow keeps its side (no flip, no shift)
+  (0, _floating.useFloating)(wrap, bubble, {
+    open: open && !disabled && _floating.FLOATING_ANCHOR,
+    placement: side,
+    offset: 'sm',
+    flip: isRich,
+    shift: isRich
+  });
+  _react.default.useEffect(() => {
+    if (!open) return undefined;
+    const esc = e => {
+      if (e.key !== 'Escape') return;
+      const inside = wrap.current && wrap.current.contains(document.activeElement);
+      setOpen(false);
+      // a toggletip gives focus back to its trigger when Escape closes it from inside
+      if (toggle && inside && wrap.current.firstElementChild && wrap.current.firstElementChild.focus) wrap.current.firstElementChild.focus();
+    };
+    const outside = e => {
+      if (wrap.current && !wrap.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener('keydown', esc);
+    if (toggle) document.addEventListener('mousedown', outside);
+    return () => {
+      document.removeEventListener('keydown', esc);
+      document.removeEventListener('mousedown', outside);
+    };
+  }, [open, toggle]);
+  const child = _react.default.Children.only(children);
+  const described = {
+    'aria-describedby': [child.props['aria-describedby'], id].filter(Boolean).join(' ')
+  };
+  const trigger = disabled ? child : /*#__PURE__*/_react.default.cloneElement(child, toggle ? Object.assign(described, {
+    'aria-expanded': open,
+    'aria-controls': open ? id + 'b' : undefined,
+    onClick: e => {
+      if (child.props.onClick) child.props.onClick(e);
+      setOpen(!open);
+    }
+  }) : described);
+  if (disabled) return /*#__PURE__*/_react.default.createElement("span", {
+    className: (0, _cx.cx)('plx-tooltip', className)
+  }, /*#__PURE__*/_react.default.createElement(InTooltip.Provider, {
+    value: true
+  }, trigger));
+  const onPointerDown = e => {
+    if (e.pointerType !== 'touch' || toggle) return;
+    clear();
+    pressed.current = false;
+    press.current = setTimeout(() => {
+      pressed.current = true;
+      setOpen(true);
+    }, ms(wrap.current, '--plx-comp-tooltip-long-press-delay'));
+  };
+  const onPointerEnd = e => {
+    if (e.pointerType !== 'touch' || toggle) return;
+    clearTimeout(press.current);
+    if (pressed.current) hide.current = setTimeout(() => {
+      setOpen(false);
+      pressed.current = false;
+    }, e.type === 'pointercancel' ? 0 : ms(wrap.current, '--plx-comp-tooltip-touch-dismiss-delay'));
+  };
+  const onEnter = e => {
+    if (e.pointerType === 'touch' || toggle) return;
+    clearTimeout(hide.current);
+    setOpen(true);
+  };
+  const onLeave = e => {
+    if (e.pointerType === 'touch' || toggle) return;
+    // a rich tooltip waits a moment, so the pointer can move into it; a plain one hides at once
+    if (isRich) {
+      clearTimeout(hide.current);
+      hide.current = setTimeout(() => setOpen(false), ms(wrap.current, '--plx-comp-tooltip-rich-close-delay'));
+    } else setOpen(false);
+  };
+  const bubbleCls = (0, _cx.cx)('plx-tooltip__bubble', 'plx-tooltip__bubble--' + side, isRich && 'plx-tooltip__bubble--rich', open && 'is-open');
+  return /*#__PURE__*/_react.default.createElement("span", {
+    ref: wrap,
+    className: (0, _cx.cx)('plx-tooltip', className),
+    onPointerEnter: onEnter,
+    onPointerLeave: onLeave,
+    onPointerDown: onPointerDown,
+    onPointerUp: onPointerEnd,
+    onPointerCancel: onPointerEnd,
+    onContextMenu: e => {
+      if (pressed.current) e.preventDefault();
+    },
+    onClickCapture: e => {
+      if (pressed.current) {
+        e.preventDefault();
+        e.stopPropagation();
+        pressed.current = false;
+      }
+    },
+    onFocus: () => {
+      if (!toggle && lastInput !== 'touch') setOpen(true);
+    },
+    onBlur: e => {
+      if (!pressed.current && !(wrap.current && wrap.current.contains(e.relatedTarget))) setOpen(false);
+    }
+  }, /*#__PURE__*/_react.default.createElement(InTooltip.Provider, {
+    value: true
+  }, trigger), isRich ? /*#__PURE__*/_react.default.createElement("span", {
+    ref: bubble,
+    id: id + 'b',
+    className: bubbleCls
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    role: "tooltip",
+    id: id,
+    className: "plx-tooltip__content"
+  }, title ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-tooltip__title"
+  }, title) : null, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-tooltip__body"
+  }, content)), action ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-tooltip__action"
+  }, action) : null) : /*#__PURE__*/_react.default.createElement("span", {
+    ref: bubble,
+    role: "tooltip",
+    id: id,
+    className: bubbleCls
+  }, content));
+}
+  } },
+  "platform/components/Kbd/Kbd.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Kbd = Kbd;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Kbd
+   Summary: A key or shortcut ("Ctrl K").
+   Usage:
+     <Kbd>Ctrl K</Kbd>
+     <Kbd onAccent>/</Kbd>
+   Props:
+     onAccent: the version for the blue header (default false)
+     children: the key or shortcut text
+     className: more classes on the <kbd>
+   Notes:
+     Writing direction (owner, ctm-needs-34): always left to right (dir="ltr", which also isolates it), also in a right-to-left page.
+     It uses the data font at a 16px label height.
+     Other props pass through to the <kbd>.
+*/
+function Kbd({
+  onAccent = false,
+  className,
+  children,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement("kbd", _extends({
+    className: (0, _cx.cx)('plx-kbd', onAccent && 'plx-kbd--on-accent', className),
+    dir: "ltr"
+  }, rest), children);
+}
+  } },
+  "platform/utils/tokenTime.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.tokenMs = tokenMs;
+// Plenix · tokenMs: a duration token's value in milliseconds ("4s", "250ms"), read from the element (or the root), so
+// behavior that waits (a toast leaving, a delay) takes its time from the tokens like the stylesheets do (batch 341).
+// Returns the fallback when the token is not set (no document, or the token stylesheet not loaded).
+function tokenMs(name, fallback = 0, el) {
+  if (typeof document === 'undefined') return fallback;
+  const v = getComputedStyle(el || document.documentElement).getPropertyValue(name).trim();
+  const m = /^(-?[\d.]+)(ms|s)$/.exec(v);
+  return m ? parseFloat(m[1]) * (m[2] === 's' ? 1000 : 1) : fallback;
+}
+  } },
+  "platform/utils/hotkey.js": { deps: {"react":null,"./tokenTime.js":"platform/utils/tokenTime.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.hotkeyKeys = hotkeyKeys;
+exports.hotkeyLabel = hotkeyLabel;
+exports.hotkeyList = hotkeyList;
+exports.isMac = isMac;
+exports.parseHotkey = parseHotkey;
+exports.registerHotkey = registerHotkey;
+exports.setSingleKeyHotkeys = setSingleKeyHotkeys;
+exports.singleKeyHotkeys = singleKeyHotkeys;
+exports.subscribeHotkeys = subscribeHotkeys;
+exports.useHotkey = useHotkey;
+exports.useHotkeyList = useHotkeyList;
+var _react = _interopRequireDefault(require("react"));
+var _tokenTime = require("./tokenTime.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Hotkey (platform/utils/hotkey.js)
+   Summary: Keyboard shortcuts in one place: useHotkey binds a key, a chord (Mod K) or a sequence (G then I) to a command,
+     for the whole page or for one region, and every binding goes into one registry that the shortcuts dialog and the
+     menus read their hints from (Kbd draws the label).
+   Usage:
+     useHotkey('Mod+K', () => openSearch(), { label: 'Search', group: 'General' });
+     useHotkey('G I', () => goTo('inbox'), { label: 'Go to inbox', group: 'Navigation' });
+     useHotkey('Delete', removeSelected, { scope: listRef, label: 'Delete the selected files' });
+     <Kbd>{hotkeyLabel('Mod+K')}</Kbd>                     // "Ctrl K" on Windows and Linux, "⌘ K" on a Mac
+     const all = useHotkeyList();                         // [{ binding, label, group, keys }] for the shortcuts dialog
+   Props:
+     useHotkey(binding, handler, options): binds while the component is mounted; handler(event) runs on a match
+     binding: steps separated by spaces (a sequence: "G I"), each step keys joined by "+" ("Mod+Shift+P"); modifiers Mod
+       (Cmd on a Mac, Ctrl elsewhere), Ctrl, Meta, Alt, Shift; keys as KeyboardEvent.key names ("K", "Escape", "/", "?")
+     options.scope: a ref (or element) of the region the binding belongs to; it fires only when focus is inside it
+     options.enabled: false unbinds it without unmounting (default true)
+     options.allowInFields: also fire while focus is in a text field (default false)
+     options.label: what the command does, as written in its menu item; options.group: its group in the shortcuts dialog
+     registerHotkey(binding, handler, options): the same without React; returns the function that unbinds it
+     hotkeyLabel(binding, { mac }): the binding as people read it ("Ctrl Shift P", "G then I")
+     hotkeyList(): every labeled binding; useHotkeyList() the same, kept current; subscribeHotkeys(fn) for other code
+     setSingleKeyHotkeys(on): turns every single-key shortcut (no modifier) off or on (WCAG 2.2 SC 2.1.4)
+   Behavior:
+     One keydown listener for the page. The binding of the innermost scope that contains the focus wins; page-wide
+     bindings come last. A key that starts a sequence waits --plx-sys-hotkey-sequence-timeout for the next one.
+     Ignored while focus is in a text field, a select or editable content, unless allowInFields. Ignored when an earlier
+     handler called preventDefault. A match calls preventDefault, so the browser's own use of that key does not run.
+   Notes:
+     Never bind keys that assistive technology or the browser needs (Tab, the arrow keys outside a widget, Ctrl L, F6).
+     Use the same label here as in the menu item, so the dialog and the menu agree.
+*/
+
+const MODS = ['ctrl', 'meta', 'alt', 'shift'];
+const NAMES = {
+  esc: 'escape',
+  del: 'delete',
+  space: ' ',
+  spacebar: ' ',
+  return: 'enter',
+  up: 'arrowup',
+  down: 'arrowdown',
+  left: 'arrowleft',
+  right: 'arrowright',
+  cmd: 'meta',
+  command: 'meta',
+  option: 'alt',
+  control: 'ctrl'
+};
+const entries = [];
+const listeners = new Set();
+let singleKeys = true;
+let buffer = [],
+  bufferAt = 0,
+  installed = false,
+  nextId = 1;
+function isMac() {
+  if (typeof navigator === 'undefined') return false;
+  const p = navigator.userAgentData && navigator.userAgentData.platform || navigator.platform || '';
+  return /mac|iphone|ipad|ipod/i.test(p);
+}
+
+// "Mod+Shift+P" → { ctrl, meta, alt, shift, key: 'p' }
+function parseStep(step, mac) {
+  const parts = step.split('+').filter((x, i, all) => x !== '' || i === all.length - 1).map(x => x === '' ? '+' : x);
+  const s = {
+    ctrl: false,
+    meta: false,
+    alt: false,
+    shift: false,
+    key: ''
+  };
+  parts.forEach(raw => {
+    let p = raw.toLowerCase();
+    p = NAMES[p] || p;
+    if (p === 'mod') s[mac ? 'meta' : 'ctrl'] = true;else if (MODS.indexOf(p) >= 0) s[p] = true;else s.key = p;
+  });
+  return s;
+}
+function parseHotkey(binding, mac = isMac()) {
+  return String(binding || '').trim().split(/\s+/).filter(Boolean).map(st => parseStep(st, mac));
+}
+function matchStep(s, e) {
+  const key = (e.key || '').toLowerCase();
+  // a letter or digit typed with Alt (or Shift) on some layouts changes e.key: e.code still names the key
+  const code = /^Key([A-Z])$|^Digit(\d)$/.exec(e.code || '');
+  const sameKey = key === s.key || !!code && (code[1] || code[2]).toLowerCase() === s.key;
+  if (!sameKey) return false;
+  // a symbol that needs Shift ("?") is written without it: Shift is then not compared
+  const symbol = s.key.length === 1 && !/[a-z0-9]/.test(s.key);
+  return e.ctrlKey === s.ctrl && e.metaKey === s.meta && e.altKey === s.alt && (symbol || e.shiftKey === s.shift);
+}
+const isSingle = steps => steps.length >= 1 && steps.every(s => !s.ctrl && !s.meta && !s.alt) && steps[0].key.length === 1;
+function inField(el) {
+  if (!el || !el.tagName) return false;
+  if (el.isContentEditable) return true;
+  const t = el.tagName.toLowerCase();
+  if (t === 'textarea' || t === 'select') return true;
+  if (t !== 'input') return false;
+  return ['checkbox', 'radio', 'button', 'submit', 'reset', 'range', 'color', 'file', 'image'].indexOf((el.type || '').toLowerCase()) < 0;
+}
+const scopeOf = x => (x && 'current' in x ? x.current : x) || null;
+const depth = el => {
+  let n = 0;
+  for (let x = el; x; x = x.parentElement) n++;
+  return n;
+};
+function onKeyDown(e) {
+  if (e.defaultPrevented || e.isComposing || ['Control', 'Meta', 'Alt', 'Shift'].indexOf(e.key) >= 0) return;
+  const now = Date.now();
+  if (now - bufferAt > (0, _tokenTime.tokenMs)('--plx-sys-hotkey-sequence-timeout')) buffer = [];
+  const target = e.target,
+    field = inField(target);
+  const live = entries.filter(x => x.enabled && (!field || x.allowInFields) && (singleKeys || !isSingle(x.steps))).map(x => ({
+    x,
+    scope: scopeOf(x.scope)
+  })).filter(c => !c.x.scope || c.scope && c.scope.contains(target)).sort((a, b) => (b.scope ? depth(b.scope) : 0) - (a.scope ? depth(a.scope) : 0));
+  const step = buffer.length;
+  const fits = (c, at) => c.x.steps.length > at && buffer.slice(buffer.length - at).every((ev, i) => matchStep(c.x.steps[i], ev)) && matchStep(c.x.steps[at], e);
+  // the longest waiting sequence first, then a fresh start
+  for (const at of [step, 0].filter((v, i, all) => all.indexOf(v) === i)) {
+    const full = live.find(c => c.x.steps.length === at + 1 && fits(c, at));
+    if (full) {
+      buffer = [];
+      e.preventDefault();
+      full.x.handler(e);
+      return;
+    }
+    if (live.some(c => c.x.steps.length > at + 1 && fits(c, at))) {
+      buffer = buffer.slice(buffer.length - at).concat([{
+        key: e.key,
+        code: e.code,
+        ctrlKey: e.ctrlKey,
+        metaKey: e.metaKey,
+        altKey: e.altKey,
+        shiftKey: e.shiftKey
+      }]);
+      bufferAt = now;
+      return;
+    }
+  }
+  buffer = [];
+}
+function install() {
+  if (installed || typeof document === 'undefined') return;
+  document.addEventListener('keydown', onKeyDown);
+  installed = true;
+}
+const notify = () => listeners.forEach(fn => fn());
+function registerHotkey(binding, handler, options = {}) {
+  install();
+  const entry = {
+    id: nextId++,
+    binding,
+    steps: parseHotkey(binding),
+    handler,
+    scope: options.scope || null,
+    enabled: options.enabled !== false,
+    allowInFields: !!options.allowInFields,
+    label: options.label || '',
+    group: options.group || ''
+  };
+  entries.push(entry);
+  if (entry.label) notify();
+  return () => {
+    const i = entries.indexOf(entry);
+    if (i >= 0) {
+      entries.splice(i, 1);
+      if (entry.label) notify();
+    }
+  };
+}
+function useHotkey(binding, handler, options = {}) {
+  const ref = _react.default.useRef(handler);
+  ref.current = handler;
+  const {
+    scope,
+    enabled = true,
+    allowInFields = false,
+    label,
+    group
+  } = options;
+  _react.default.useEffect(() => {
+    if (!enabled || !binding) return undefined;
+    return registerHotkey(binding, e => ref.current && ref.current(e), {
+      scope,
+      allowInFields,
+      label,
+      group
+    });
+  }, [binding, scope, enabled, allowInFields, label, group]);
+}
+const MAC_NAMES = {
+  meta: '⌘',
+  ctrl: '⌃',
+  alt: '⌥',
+  shift: '⇧'
+};
+const PC_NAMES = {
+  meta: 'Win',
+  ctrl: 'Ctrl',
+  alt: 'Alt',
+  shift: 'Shift'
+};
+const KEY_NAMES = {
+  ' ': 'Space',
+  escape: 'Esc',
+  arrowup: '↑',
+  arrowdown: '↓',
+  arrowleft: '←',
+  arrowright: '→',
+  enter: 'Enter',
+  delete: 'Delete',
+  backspace: 'Backspace',
+  tab: 'Tab'
+};
+function hotkeyKeys(binding, {
+  mac = isMac()
+} = {}) {
+  const names = mac ? MAC_NAMES : PC_NAMES;
+  return parseHotkey(binding, mac).map(s => (mac ? ['ctrl', 'alt', 'shift', 'meta'] : ['ctrl', 'meta', 'alt', 'shift']).filter(m => s[m]).map(m => names[m]).concat([KEY_NAMES[s.key] || (s.key.length === 1 ? s.key.toUpperCase() : s.key.charAt(0).toUpperCase() + s.key.slice(1))]));
+}
+function hotkeyLabel(binding, options) {
+  return hotkeyKeys(binding, options).map(k => k.join(' ')).join(' then ');
+}
+function hotkeyList() {
+  return entries.filter(x => x.label).map(x => ({
+    binding: x.binding,
+    label: x.label,
+    group: x.group,
+    keys: hotkeyLabel(x.binding),
+    enabled: x.enabled
+  }));
+}
+function subscribeHotkeys(fn) {
+  listeners.add(fn);
+  return () => listeners.delete(fn);
+}
+function useHotkeyList() {
+  const [list, setList] = _react.default.useState(hotkeyList);
+  _react.default.useEffect(() => {
+    setList(hotkeyList());
+    return subscribeHotkeys(() => setList(hotkeyList()));
+  }, []);
+  return list;
+}
+function setSingleKeyHotkeys(on) {
+  singleKeys = !!on;
+  buffer = [];
+}
+function singleKeyHotkeys() {
+  return singleKeys;
+}
+  } },
+  "platform/components/Button/Button.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../providers/Surface.jsx":"platform/providers/Surface.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","../../utils/hotkey.js":"platform/utils/hotkey.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Button = void 0;
+exports.ButtonGroup = ButtonGroup;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _cx = require("../../utils/cx.js");
+var _Icon = require("../Icon/Icon.jsx");
+var _Loading = require("../Loading/Loading.jsx");
+var _Surface = require("../../providers/Surface.jsx");
+var _Tooltip = require("../Tooltip/Tooltip.jsx");
+var _Kbd = require("../Kbd/Kbd.jsx");
+var _hotkey = require("../../utils/hotkey.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Button, ButtonGroup
+   Summary: A button for an action, in one of several emphasis levels and sizes; ButtonGroup joins buttons that act as a set.
+   Usage:
+     <Button variant="primary" icon="save" onClick={() => …}>Save</Button>
+     <Button iconOnly icon="more_horiz" label="More actions" caret expanded={open} />
+     <ButtonGroup label="Transfer"><Button>Import</Button><Button>Export</Button></ButtonGroup>
+   Props:
+     variant: "secondary" (default; white with a border, reversible actions) | "primary" (filled; the main action, usually one
+       per view) | "tertiary" (outlined in the action color, no fill; fills on hover) | "ghost" (no fill or border until
+       hovered, when its icon turns the action color; the lowest emphasis) | "danger" (filled red; destructive) | "danger-secondary"
+       (red outline, fills on hover). There is no link look: a link goes somewhere (Link), a button does something
+     truncate: the label fills the button from its start edge and ends in an ellipsis (a long choice)
+     stackedLabel: the label’s lines stack, start-aligned and wrapping; the gap is --plx-comp-button-context-label-gap (SuggestedAction)
+     labelRow: the label lays out a row of its own (an avatar and a name); the gap is
+       --plx-comp-button-context-label-row-gap (AppHeader’s account)
+     joined: { start, end }: "square" | "seam": its corners square where it meets a neighbor; a seam also drops that border (ButtonGroup, InputGroup and CopyButton set it)"md" (default; the standard control role) | "sm" (the toolbar role: compact text, gray) | "xs" (the inline-action
+       role: dense row and card actions, never in a toolbar) | "2xs" (the smallest: "Show more" under a list; 11px text, a blue
+       tint on hover) | "lg" (the prominent role: page actions)
+     icon: an <Icon> (or an icon name) before the label
+     iconEnd: an <Icon> (or an icon name) after the label
+     iconOnly: a square button with only its icon; give it a label (default false)
+     label: the accessible name (aria-label); an icon-only button falls back to string children
+     tooltip: the tooltip it shows (default: an icon-only button shows its label; others none); false: none (Carbon,
+       Atlassian: every icon-only button names itself). Inside a Tooltip the button leaves it to that Tooltip
+     shortcut: its keyboard shortcut, as a hotkey binding ("Mod+Shift+A"): shown in its tooltip as keys (Ctrl or ⌘) and set as
+       aria-keyshortcuts. It only shows the shortcut: bind it with useHotkey
+     caret: the button opens a menu: the thin outline chevron (expand_more) after the label, in the muted color on the
+       unfilled variants (owner, 2026-10-14: it replaces the small filled triangle); default false
+     expanded: sets aria-expanded, for a button that opens a menu
+     pressed: makes a toggle button (aria-pressed): true when on, false when off (undefined: not a toggle)
+     tone: "success" | "danger" | "neutral": the chosen state (pressed or selected) fills in that feedback color (green, red,
+       gray) instead of the selected gray; the rest state stays the variant's, so a choice not taken is the plain button
+       (owner, vote-screen-37: a vote's Approve, Deny and Abstain). Default none
+     selected: shows the selected state without a toggle role (default false)
+     loading: shows a spinner in place of the icon (default false)
+     disabled: the button does nothing (default false)
+     href: renders a link styled as a button
+     type: the button type (default "button")
+     onClick(event): runs when the button is clicked, unless disabled or loading
+     children: the button label
+     className: more classes on the button
+     strings: the words it announces, for other languages: { working: "Working" } (the loading spinner's name)
+     ref: forwarded to the <button> or <a>
+     ButtonGroup.label: the accessible name of the group
+     ButtonGroup.children: the buttons
+     ButtonGroup.className: more classes on the group
+   Behavior:
+     Placement can also set the role: a dialog footer gives its buttons the dialog role.
+     Selected, pressed and expanded all show the selected state.
+     A toggle button (pressed true or false) keeps its label and icon when it turns on or off: the label names the option
+       (Bold, Show grid), aria-pressed says whether it is on, and every variant shows "on" with the selected state.
+     Loading keeps the width and the name, and stays focusable but inert (aria-disabled, aria-busy): the spinner takes the
+       icon's place, or, with no icon, sits over the label, which stays (unseen) to hold the width and name the button.
+     A disabled link loses its href.
+   Notes:
+     Other props pass through to the <button> or <a> (and to ButtonGroup's <div>).
+     For one choice from several, use SegmentedControl instead of ButtonGroup.
+*/
+const TONES = ['success', 'danger', 'neutral'];
+const STRINGS = {
+  working: 'Working'
+};
+
+// the icon takes the button's state as its own (Styling Standard 3.6): filled while the button is selected, pressed or
+// open; an Icon element the caller gives keeps its own fill when it sets one
+const asIcon = _Icon.stateIcon;
+
+// a one-step binding as aria-keyshortcuts ("Control+Shift+A"); a sequence has no ARIA form, so none
+const ARIA_MODS = [['ctrl', 'Control'], ['alt', 'Alt'], ['shift', 'Shift'], ['meta', 'Meta']];
+const ariaShortcut = binding => {
+  const steps = (0, _hotkey.parseHotkey)(binding);
+  if (steps.length !== 1 || !steps[0].key) return undefined;
+  const k = steps[0].key;
+  return ARIA_MODS.filter(([m]) => steps[0][m]).map(([, n]) => n).concat(k.length === 1 ? k.toUpperCase() : k.charAt(0).toUpperCase() + k.slice(1)).join('+');
+};
+const Button = exports.Button = /*#__PURE__*/_react.default.forwardRef(function Button({
+  variant = 'secondary',
+  size = 'md',
+  icon,
+  iconEnd,
+  iconOnly = false,
+  label,
+  caret = false,
+  expanded,
+  pressed,
+  selected = false,
+  tone,
+  loading = false,
+  disabled = false,
+  href,
+  type = 'button',
+  joined,
+  truncate = false,
+  stackedLabel = false,
+  labelRow = false,
+  tooltip,
+  shortcut,
+  className,
+  children,
+  onClick,
+  strings,
+  ...rest
+}, ref) {
+  (0, _devWarn.devWarn)('Button', {
+    variant,
+    size
+  }, {
+    variant: ['secondary', 'primary', 'tertiary', 'ghost', 'danger', 'danger-secondary', 'quiet'],
+    size: ['md', 'sm', 'xs', '2xs', 'lg']
+  });
+  const t = Object.assign({}, STRINGS, strings);
+  // a colored surface around the button (TeachingBubble, the accent AppHeader) gives it that surface's look
+  const surface = _react.default.useContext(_Surface.SurfaceContext);
+  const classes = (0, _cx.cx)('plx-button', 'plx-button--' + (variant === 'quiet' ? 'ghost' : variant), size !== 'md' && 'plx-button--size-' + size, iconOnly && 'plx-button--icon-only', caret && 'plx-button--caret', TONES.includes(tone) && 'plx-button--tone-' + tone, (selected || pressed || expanded) && 'is-selected', loading && 'is-loading', truncate && 'plx-button--truncate', stackedLabel && 'plx-button--stacked-label', labelRow && 'plx-button--label-row', joined && joined.start && 'plx-button--joined-start-' + joined.start, joined && joined.end && 'plx-button--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-button--joined', (surface === 'inverse' || surface === 'accent') && 'plx-button--on-' + surface, className);
+  // the parts take the button's state as their own classes (Styling Standard 3.6: no rule reaches from the button into them)
+  const v = variant === 'quiet' ? 'ghost' : variant;
+  const on = !!(selected || pressed || expanded);
+  const labelClass = (0, _cx.cx)('plx-button__label', truncate && 'plx-button__label--truncate', !truncate && stackedLabel && 'plx-button__label--stacked', !truncate && !stackedLabel && labelRow && 'plx-button__label--row');
+  const caretClass = (0, _cx.cx)('plx-button__caret', (v === 'primary' || v === 'danger' || disabled || loading) && 'plx-button__caret--current', expanded && 'plx-button__caret--open');
+  const hasLabel = !iconOnly && children !== undefined && children !== null;
+  // loading: the spinner takes the icon's place; with no icon it sits over the label, which keeps the width and the name
+  // (aria-busy says it is working, so the spinner itself is not read)
+  const over = loading && !icon && hasLabel;
+  const spinner = cls => /*#__PURE__*/_react.default.createElement("span", {
+    className: cls,
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement(_Loading.Spinner, {
+    size: "sm",
+    label: t.working
+  }));
+  const content = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, loading && !over ? spinner('plx-button__icon') : icon ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-button__icon"
+  }, asIcon(icon, on)) : null, over ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-button__stack"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: (0, _cx.cx)(labelClass, 'plx-button__label--waiting')
+  }, children), spinner('plx-button__icon plx-button__icon--over')) : hasLabel ? /*#__PURE__*/_react.default.createElement("span", {
+    className: labelClass
+  }, children) : null, iconEnd ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-button__icon"
+  }, asIcon(iconEnd, on)) : null, caret ? /*#__PURE__*/_react.default.createElement("span", {
+    className: caretClass,
+    "aria-hidden": "true"
+  }) : null);
+  const a11y = {
+    'aria-label': iconOnly ? label || (typeof children === 'string' ? children : undefined) : label,
+    'aria-expanded': expanded,
+    'aria-pressed': pressed,
+    'aria-disabled': disabled || loading ? true : undefined,
+    'aria-busy': loading || undefined,
+    'aria-keyshortcuts': shortcut ? ariaShortcut(shortcut) : undefined
+  };
+  const handle = e => {
+    if (disabled || loading) {
+      e.preventDefault();
+      return;
+    }
+    if (onClick) onClick(e);
+  };
+  const el = href ? /*#__PURE__*/_react.default.createElement("a", _extends({
+    ref: ref,
+    href: disabled ? undefined : href,
+    className: classes
+  }, a11y, {
+    onClick: handle
+  }, rest), content) : /*#__PURE__*/_react.default.createElement("button", _extends({
+    ref: ref,
+    type: type,
+    className: classes,
+    disabled: disabled && !loading ? true : undefined
+  }, a11y, {
+    onClick: handle
+  }, rest), content);
+  // its tooltip: the name of an icon-only button (or the tooltip it was given), with its shortcut's keys; none inside a
+  // Tooltip, which already names it
+  const inTooltip = _react.default.useContext(_Tooltip.InTooltip);
+  const tip = tooltip === false ? null : tooltip !== undefined ? tooltip : iconOnly ? a11y['aria-label'] : null;
+  if (!tip || inTooltip) return el;
+  return /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+    content: shortcut ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, tip, ' ', /*#__PURE__*/_react.default.createElement(_Kbd.Kbd, null, (0, _hotkey.hotkeyLabel)(shortcut))) : tip
+  }, el);
+});
+
+/* ButtonGroup: joined buttons that act as a set (Import | Export). For one choice from several, use SegmentedControl. */
+function ButtonGroup({
+  label,
+  className,
+  children,
+  ...rest
+}) {
+  // its buttons meet: each passes on which of its sides is joined (the later button's start edge is the seam)
+  const all = _react.default.Children.toArray(children).filter(_react.default.isValidElement);
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    role: "group",
+    "aria-label": label,
+    className: (0, _cx.cx)('plx-button-group', className)
+  }, rest), all.map((el, i) => /*#__PURE__*/_react.default.cloneElement(el, {
+    joined: {
+      start: i > 0 ? 'seam' : undefined,
+      end: i < all.length - 1 ? 'square' : undefined
+    }
+  })));
+}
+  } },
+  "platform/utils/layer.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.focusables = focusables;
+exports.useLayer = useLayer;
+exports.useUid = useUid;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · layers (platform/utils/layer.js). Internal; not part of the public API.
+   Every open menu, dialog, drawer and media viewer is a layer. Escape closes only the topmost layer, so Escape in a menu
+   inside a dialog closes the menu first. A modal layer also keeps Tab inside itself, locks page scroll, moves focus in
+   when it opens (initialFocus: a ref, or a function that returns the element) and returns focus to the element that opened it when it closes. */
+
+const stack = [];
+let modalCount = 0;
+const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]):not([type="hidden"]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+function focusables(root) {
+  if (!root) return [];
+  return Array.prototype.filter.call(root.querySelectorAll(FOCUSABLE), el => !el.closest('[hidden]') && el.getClientRects().length > 0);
+}
+function useLayer(ref, open, {
+  modal = false,
+  onEscape,
+  initialFocus
+} = {}) {
+  const escape = _react.default.useRef(onEscape);
+  escape.current = onEscape;
+  _react.default.useEffect(() => {
+    if (!open) return undefined;
+    const entry = {
+      modal
+    };
+    stack.push(entry);
+    const opener = document.activeElement;
+    if (modal) {
+      if (modalCount === 0) document.documentElement.classList.add('is-scroll-locked');
+      modalCount += 1;
+      const root = ref.current;
+      const wanted = typeof initialFocus === 'function' ? initialFocus() : initialFocus && initialFocus.current;
+      const first = wanted || focusables(root)[0] || root;
+      if (first) first.focus({
+        preventScroll: true
+      });
+    }
+    const onKey = e => {
+      if (stack[stack.length - 1] !== entry) return;
+      if (e.key === 'Escape') {
+        if (escape.current) {
+          e.preventDefault();
+          e.stopPropagation();
+          escape.current();
+        }
+        return;
+      }
+      if (!modal || e.key !== 'Tab') return;
+      const root = ref.current;
+      const items = focusables(root);
+      if (!items.length) {
+        e.preventDefault();
+        root.focus();
+        return;
+      }
+      const first = items[0],
+        last = items[items.length - 1],
+        active = document.activeElement;
+      if (!root.contains(active)) {
+        e.preventDefault();
+        first.focus();
+      } else if (e.shiftKey && (active === first || active === root)) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener('keydown', onKey, true);
+    return () => {
+      document.removeEventListener('keydown', onKey, true);
+      stack.splice(stack.indexOf(entry), 1);
+      if (modal) {
+        modalCount -= 1;
+        if (modalCount === 0) document.documentElement.classList.remove('is-scroll-locked');
+        if (opener && opener.focus && document.contains(opener)) opener.focus({
+          preventScroll: true
+        });
+      }
+    };
+  }, [open]);
+}
+function useUid(prefix) {
+  return prefix + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+}
+  } },
+  "platform/components/Text/Text.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/digits.js":"platform/utils/digits.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Text = Text;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _cx = require("../../utils/cx.js");
+var _layer = require("../../utils/layer.js");
+var _Button = require("../Button/Button.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _digits = require("../../utils/digits.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Text
+   Summary: A run of text in one of the system's text roles, from the type tokens.
+   Usage:
+     <Text variant="secondary" as="p" truncate>Last edited 2 days ago</Text>
+     <Text variant="display" as="h1">1,284 assets</Text>
+     <Text as="p" lines={3} expandable>A long description…</Text>
+     <Text variant="secondary" tabular>12:40</Text>
+   Props:
+     variant: the text role: "body" (default) | "secondary" | "caption" | "data" | "label" | "strong" | "heading"
+       | "accent" (a highlighted term, step number or key figure: the accent color) | "success" (a good outcome, the new value in a change)
+       | "eyebrow" | "danger" | "link" | "title" | "display" | "lead".
+       body: the UI text. secondary: muted, 12px (counts, hints, descriptions). caption: subtle, 11px.
+       data: the data font, Reddit Mono, for technical values (IDs, file names and paths, versions, dates and
+       times, sizes, counts, durations); 12px on its own, the size of the text around it inside other text.
+       label: semibold 12px. strong: semibold, the current size.
+       heading: a group's title inside a page or dialog, semibold 13px.
+       eyebrow: a small uppercase title over a tool panel, 11px, bold, widest spacing, muted.
+       danger: the danger color (a required marker). link: the link color, normal weight (the color only: a link is the Link component).
+       title: a page title, the heading font, 20px, bold.
+       display: the largest style, for one key figure or a sign-in or welcome heading: the heading font at the top
+         step of the type scale, semibold, with a tight line height and letter spacing (library wave 2).
+       lead: body text one step up (15px) with a relaxed line height, for the opening paragraph of a page or an
+         empty state (body-lg; library wave 2).
+     as: the element; "span" (default) | "p" | "div" | "h1"–"h4" | "dt" | "dd" | "label" | …
+     truncate: one line, cut with an ellipsis; default false (lines wins when both are set)
+     lines: 2 | 3 | 4: at most that many lines, the last one cut with an ellipsis (line clamp); default none
+     expandable: with lines, a "Show more" button under the text while it is cut; it shows the rest and reads
+       "Show less" to fold it again; default false
+     defaultExpanded: an expandable text starts unfolded; default false
+     tabular: digits of equal width (tabular figures), so numbers line up down a column and do not shift as they
+       change; default false
+     strings: the words of the expand button: { more: 'Show more', less: 'Show less' }
+     className: more classes on the text
+     children: the text
+     ...rest: other attributes go on the element
+   Behavior:
+     lines clamps with the line-clamp property; the whole text stays in the page, so search, copy and screen readers
+       get all of it.
+     expandable measures the text: the button shows only while the text is cut (and while it is unfolded). It is a
+       button with aria-expanded that points at the text (aria-controls); it measures again when the width changes.
+     display and lead are type styles only: the element (as) gives the heading level.
+   Notes:
+     Applications never set a font, size, weight or color themselves.
+     There are no margins in any case, whatever the element.
+     The expand button has the look of ShowMore (CollapsibleSection): the smallest button, its chevron after the
+       label, down to show more and up to show less.
+*/
+const LINES = [2, 3, 4];
+const STRINGS = {
+  more: 'Show more',
+  less: 'Show less'
+};
+
+// a text's classes: its role, how it overflows (one line, or at most `clamp` lines while folded) and its figures
+const textClass = (variant, truncate, clamp, open, tabular, className) => (0, _cx.cx)('plx-text', 'plx-text--' + variant, truncate && !clamp && 'plx-text--truncate', clamp && !open && 'plx-text--lines-' + clamp, tabular && 'plx-text--tabular', className);
+
+// the digits of a text's strings: Arabic-Indic in an Arabic page, emails and web addresses kept (owner, arabic-digits-35)
+const shownDigits = (children, digits) => digits === 'arab' ? _react.default.Children.map(children, c => typeof c === 'string' || typeof c === 'number' ? (0, _digits.localDigits)(String(c), {
+  digits
+}) : c) : children;
+function Text({
+  as: As = 'span',
+  variant = 'body',
+  truncate = false,
+  lines,
+  expandable = false,
+  defaultExpanded = false,
+  tabular = false,
+  strings,
+  className,
+  children,
+  ...rest
+}) {
+  (0, _devWarn.devWarn)('Text', {
+    variant
+  }, {
+    variant: ['body', 'secondary', 'caption', 'data', 'label', 'strong', 'heading', 'accent', 'success', 'eyebrow', 'danger', 'link', 'title', 'display', 'lead']
+  });
+  const digits = (0, _LocaleProvider.useDigits)();
+  const clamp = LINES.indexOf(Number(lines)) >= 0 ? Number(lines) : null;
+  if (expandable && clamp) {
+    return /*#__PURE__*/_react.default.createElement(ExpandableText, {
+      As: As,
+      variant: variant,
+      clamp: clamp,
+      defaultExpanded: defaultExpanded,
+      tabular: tabular,
+      strings: strings,
+      className: className,
+      rest: rest
+    }, children);
+  }
+  return /*#__PURE__*/_react.default.createElement(As, _extends({
+    dir: "auto",
+    className: textClass(variant, truncate, clamp, false, tabular, className)
+  }, rest), shownDigits(children, digits));
+}
+
+// a clamped text and its Show more button: the button shows while the text is cut, and while it is unfolded
+function ExpandableText({
+  As,
+  variant,
+  clamp,
+  defaultExpanded,
+  tabular,
+  strings,
+  className,
+  rest,
+  children
+}) {
+  const own = (0, _layer.useUid)('plx-text');
+  const id = rest.id || own;
+  const ref = _react.default.useRef(null);
+  const [open, setOpen] = _react.default.useState(defaultExpanded);
+  const [cut, setCut] = _react.default.useState(false);
+  _react.default.useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el || open) return undefined;
+    const measure = () => setCut(el.scrollHeight > el.clientHeight);
+    measure();
+    if (typeof ResizeObserver === 'undefined') return undefined;
+    const watch = new ResizeObserver(measure);
+    watch.observe(el);
+    return () => watch.disconnect();
+  }, [open, children]);
+  const words = Object.assign({}, STRINGS, strings);
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-text-expand"
+  }, /*#__PURE__*/_react.default.createElement(As, _extends({
+    dir: "auto"
+  }, rest, {
+    ref: ref,
+    id: id,
+    className: textClass(variant, false, clamp, open, tabular, className)
+  }), children), open || cut ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "2xs",
+    iconEnd: open ? 'chevron-up' : 'chevron-down',
+    "aria-expanded": open,
+    "aria-controls": id,
+    onClick: () => setOpen(!open)
+  }, open ? words.less : words.more) : null);
+}
+  } },
+  "platform/components/VoteTally/VoteTally.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.VoteTally = VoteTally;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Avatar = require("../Avatar/Avatar.jsx");
+var _Badge = require("../Badge/Badge.jsx");
+var _Button = require("../Button/Button.jsx");
+var _Text = require("../Text/Text.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · VoteTally
+   Summary: A live vote: the members as a list, each with an avatar, the name and role, and three icon-only choices
+     (Approve, Deny, Abstain); a turned-off member's lock badge in place of the choices; the totals, the quorum and the
+     result under the list (owner, vote-live-36, vote-screen-36/37; the vote kit's shapes, packages/vote-kit).
+   Usage:
+     <VoteTally label="Motion 14: approve the 2027 budget" members={event.members} outcome={event.outcome}
+       settings={event.settings} status={event.status} onVote={(memberId, option) => put(memberId, option)} />
+   Props:
+     label: the vote's name (the list's accessible name) (required)
+     members: [{ memberId, name, role, picture, disabledReason, vote: "approve" | "deny" | "abstain" | null, voteHidden }]
+       (the kit's member shape; disabledReason "Recused", "Absent" … turns the member off; voteHidden: the service holds
+       this member's choice back from the viewer)
+     outcome: { approve, deny, abstain, notVoted, turnedOff, present, quorum: { needed, present, met }, result } from the
+       kit's counting; without it the part counts the three choices itself and shows no quorum or result
+     settings: the vote's settings: labels { approve, deny, abstain, turnedOff } (the choices' words), liveVisibility
+       ("totals" | "hidden-until-closed": the words shown for a held-back vote), changeVote ("final": a cast vote cannot be
+       cleared)
+     status: "open" (default) | "closed": closed, every choice is read-only
+     readOnly: the choices only show the votes (default false)
+     connection: "live" (default) | "reconnecting": while reconnecting a badge says so and the choices are read-only, so
+       no vote is sent blind; the last totals stay
+     onVote(memberId, option): a choice pressed; option null when the chosen one is pressed again (unless changeVote is
+       "final")
+     strings: the words, for other languages (the settings' labels win for the three choices)
+     className: more classes on the section
+   Behavior:
+     Each member's choices are a group named "Vote of <name>": three toggle buttons (aria-pressed), each with its name and
+       tooltip. The chosen one fills green, red or gray (Button tone); the others are plain buttons. While the choices are
+       read-only (closed, readOnly, reconnecting) the chosen one keeps its color and the others are disabled.
+     The totals show only the counts they are given: a vote that holds the choices back sends none for the three.
+     A turned-off member shows a Badge with a lock and the reason, and is counted nowhere.
+     A held-back vote (voteHidden) shows "Hidden until the vote closes" or "Totals only" in place of the choices.
+     The totals row is a polite live region: a new result is announced.
+     A row whose vote changes (a live update or a press) flashes once: its tint fades back. Not on the first render; under
+       reduced motion there is no flash.
+     Narrow (under the stack width): the name and role above the choices.
+   Notes:
+     The part draws; it does not count the quorum or the result (the kit's rules do, the same function in the service).
+     Every value is a --plx-comp-vote-tally-* token; the colors are Button's tone and Badge's.
+*/
+
+const STRINGS = {
+  approve: 'Approve',
+  deny: 'Deny',
+  abstain: 'Abstain',
+  turnedOff: 'turned off',
+  notVoted: 'Not voted',
+  voteOf: 'Vote of {name}',
+  hiddenUntilClosed: 'Hidden until the vote closes',
+  totalsOnly: 'Totals only',
+  reconnecting: 'Reconnecting',
+  quorum: 'Quorum: {present} present, {needed} needed ({state})',
+  met: 'met',
+  notMet: 'not met',
+  result: {
+    open: 'Open',
+    passing: 'Passing',
+    failing: 'Failing',
+    passed: 'Passed',
+    failed: 'Failed',
+    tied: 'Tied',
+    'no-quorum': 'No quorum'
+  }
+};
+const OPTIONS = [['approve', 'check', 'success'], ['deny', 'close', 'danger'], ['abstain', 'remove', 'neutral']];
+const RESULT_TONE = {
+  open: 'neutral',
+  passing: 'active',
+  failing: 'action-required',
+  passed: 'success',
+  failed: 'negative',
+  tied: 'waiting',
+  'no-quorum': 'waiting'
+};
+const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] === undefined || v[k] === null ? m : v[k]);
+
+// the three counts when the app gives no outcome: only the members who are not turned off
+function countOf(members) {
+  const c = {
+    approve: 0,
+    deny: 0,
+    abstain: 0,
+    notVoted: 0,
+    turnedOff: 0
+  };
+  members.forEach(m => {
+    if (m.disabledReason) c.turnedOff += 1;else if (m.vote && c[m.vote] !== undefined) c[m.vote] += 1;else if (!m.voteHidden) c.notVoted += 1;
+  });
+  return c;
+}
+function VoteTally({
+  label,
+  members = [],
+  outcome,
+  settings = {},
+  status = 'open',
+  readOnly = false,
+  connection = 'live',
+  onVote,
+  strings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings, settings.labels || {});
+  const words = Object.assign({}, STRINGS.result, strings && strings.result);
+  const o = outcome || countOf(members);
+  const locked = readOnly || status === 'closed' || connection === 'reconnecting' || typeof onVote !== 'function';
+  const hiddenText = settings.liveVisibility === 'totals' ? t.totalsOnly : t.hiddenUntilClosed;
+  const choose = (m, option) => {
+    if (!locked) onVote(m.memberId, m.vote === option && settings.changeVote !== 'final' ? null : option);
+  };
+  // a row whose vote changed since the last render flashes once (not on the first render); the class goes when it ends
+  const before = _react.default.useRef(null),
+    [changed, setChanged] = _react.default.useState(() => new Set());
+  _react.default.useEffect(() => {
+    const now = new Map(members.map(m => [m.memberId, (m.vote || '') + '|' + (m.disabledReason || '') + '|' + (m.voteHidden ? 1 : 0)]));
+    if (before.current) {
+      const ids = [...now].filter(([id, v]) => before.current.has(id) && before.current.get(id) !== v).map(([id]) => id);
+      // under reduced motion there is no flash, so no row is marked (a 0s animation may not report its end)
+      const still = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (ids.length && !still) setChanged(s => new Set([...s, ...ids]));
+    }
+    before.current = now;
+  }, [members]);
+  const settled = id => setChanged(s => {
+    if (!s.has(id)) return s;
+    const n = new Set(s);
+    n.delete(id);
+    return n;
+  });
+  return /*#__PURE__*/_react.default.createElement("section", {
+    className: (0, _cx.cx)('plx-vote-tally', className),
+    "aria-label": label
+  }, /*#__PURE__*/_react.default.createElement("ul", {
+    className: "plx-vote-tally__list"
+  }, members.map(m => /*#__PURE__*/_react.default.createElement("li", {
+    key: m.memberId,
+    className: (0, _cx.cx)('plx-vote-tally__member', changed.has(m.memberId) && 'is-changed'),
+    onAnimationEnd: changed.has(m.memberId) ? () => settled(m.memberId) : undefined
+  }, /*#__PURE__*/_react.default.createElement(_Avatar.Avatar, {
+    name: m.name,
+    src: m.picture || undefined
+  }), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-vote-tally__who"
+  }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "strong"
+  }, m.name), m.role ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "secondary"
+  }, m.role) : null), m.disabledReason ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "neutral",
+    icon: "lock"
+  }, m.disabledReason + ' (' + t.turnedOff + ')') : m.voteHidden ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "neutral",
+    icon: "visibility-off"
+  }, hiddenText) : /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-vote-tally__choices",
+    role: "group",
+    "aria-label": fill(t.voteOf, {
+      name: m.name
+    })
+  }, OPTIONS.map(([option, icon, tone]) => /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    key: option,
+    iconOnly: true,
+    icon: icon,
+    label: t[option],
+    tone: tone,
+    pressed: m.vote === option,
+    disabled: locked && m.vote !== option,
+    onClick: () => choose(m, option)
+  })))))), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-vote-tally__totals",
+    "aria-live": "polite"
+  }, o.approve !== undefined ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "success",
+    icon: "check"
+  }, t.approve + ' ' + o.approve) : null, o.deny !== undefined ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "negative",
+    icon: "close"
+  }, t.deny + ' ' + o.deny) : null, o.abstain !== undefined ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "neutral",
+    icon: "remove"
+  }, t.abstain + ' ' + o.abstain) : null, o.notVoted !== undefined ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "waiting",
+    icon: "schedule"
+  }, t.notVoted + ' ' + o.notVoted) : null, o.turnedOff ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "neutral",
+    icon: "lock"
+  }, t.turnedOff.charAt(0).toUpperCase() + t.turnedOff.slice(1) + ' ' + o.turnedOff) : null, o.result ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: RESULT_TONE[o.result] || 'neutral',
+    icon: o.result === 'passed' || o.result === 'passing' ? 'check' : 'schedule'
+  }, words[o.result] || o.result) : null, connection === 'reconnecting' ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "waiting",
+    icon: "schedule"
+  }, t.reconnecting) : null, o.quorum && o.quorum.needed ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "secondary",
+    className: "plx-vote-tally__quorum"
+  }, fill(t.quorum, {
+    present: o.quorum.present,
+    needed: o.quorum.needed,
+    state: o.quorum.met ? t.met : t.notMet
+  })) : null));
+}
+  } },
+  "platform/components/Count/Count.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Count = Count;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Count
+   Summary: A number shown on its own.
+   Usage:
+     <Count value={24} />
+     <Count variant="pill" value={unread} max={99} label={unread + ' unread notifications'} />
+   Props:
+     value: the number; with no value nothing renders
+     variant: "plain" (default; muted tabular figures, e.g. a list row's item count) | "pill" (a 16px soft pill for unread
+       or pending counts: the status pill look, shade 100 background, shade 300 border, dark text, 4px corners)
+     tone: the pill color: "neutral" (gray) | "info" (blue) | "success" (green) | "warning" (yellow) | "danger" (red;
+       default), on the same roles as Badge's neutral, active, success, waiting and negative
+     max: above it the count shows max + "+" (e.g. "99+")
+     label: the accessible name when the number alone is unclear ("3 unread notifications")
+     moreThan: what screen readers hear for a capped count without a label (default "More than {max}")
+     className: more classes on the count
+   Notes:
+     Other props pass through to the <span>.
+*/
+function Count({
+  value,
+  max,
+  variant = 'plain',
+  tone = 'danger',
+  label,
+  moreThan = 'More than {max}',
+  className,
+  ...rest
+}) {
+  (0, _devWarn.devWarn)('Count', {
+    variant,
+    tone
+  }, {
+    variant: ['plain', 'pill'],
+    tone: ['info', 'success', 'warning', 'danger', 'neutral']
+  });
+  if (value === null || value === undefined || value === '') return null;
+  const shown = typeof max === 'number' && Number(value) > max ? max + '+' : String(value);
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: (0, _cx.cx)('plx-count', 'plx-count--' + variant, variant === 'pill' ? 'plx-count--' + tone : null, className),
+    "aria-label": label || (typeof max === 'number' && Number(value) > max ? moreThan.replace('{max}', String(max)) : undefined)
+  }, rest), shown);
 }
   } },
   "platform/components/Card/Card.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -1800,23 +7767,6 @@ function MediaCard({
     className: "plx-media-card-stack__middle",
     "aria-hidden": "true"
   }), card);
-}
-  } },
-  "platform/utils/tokenTime.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.tokenMs = tokenMs;
-// Plenix · tokenMs: a duration token's value in milliseconds ("4s", "250ms"), read from the element (or the root), so
-// behavior that waits (a toast leaving, a delay) takes its time from the tokens like the stylesheets do (batch 341).
-// Returns the fallback when the token is not set (no document, or the token stylesheet not loaded).
-function tokenMs(name, fallback = 0, el) {
-  if (typeof document === 'undefined') return fallback;
-  const v = getComputedStyle(el || document.documentElement).getPropertyValue(name).trim();
-  const m = /^(-?[\d.]+)(ms|s)$/.exec(v);
-  return m ? parseFloat(m[1]) * (m[2] === 's' ? 1000 : 1) : fallback;
 }
   } },
   "platform/utils/announce.jsx": { deps: {"react":null,"./cx.js":"platform/utils/cx.js","./tokenTime.js":"platform/utils/tokenTime.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -2850,7 +8800,7 @@ function scaleTime({
     for (let i = 0; x.getTime() <= hi && i < 1000; i++, x = addTo(x, unit, amount)) out.push(new Date(x.getTime()));
     return out;
   };
-  scale.format = (v, n = count, o = {}) => new Intl.DateTimeFormat(o.locale || (0, _format.formatLocale)(), TIME_LABELS[timeStep(d[1] - d[0], n)[0]]).format(new Date(toTime(v)));
+  scale.format = (v, n = count, o = {}) => new Intl.DateTimeFormat((0, _format.numeralLocale)(o.locale || (0, _format.formatLocale)()), TIME_LABELS[timeStep(d[1] - d[0], n)[0]]).format(new Date(toTime(v)));
   scale.domain = () => d.map(t => new Date(t));
   scale.range = () => r.slice();
   scale.type = 'time';
@@ -2904,6 +8854,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.chartTokens = chartTokens;
 exports.loadECharts = loadECharts;
 exports.plenixTheme = plenixTheme;
+exports.tickLineHeight = tickLineHeight;
 var _vendorBase = require("../../utils/vendorBase.js");
 /* Plenix · Chart engine (platform/charts/echarts/engine.js)
    Summary: How a Plenix chart draws with Apache ECharts (issue 353, owner 2026-10-26): loads the vendored engine
@@ -2967,6 +8918,26 @@ const ms = v => {
   const s = String(v).trim();
   return /ms$/.test(s) ? num(s) : /s$/.test(s) ? num(s) * 1000 : num(s);
 };
+
+// a tick label's line height (owner, arabic-font-35; issue 413): the font size, unless a label is in a script whose letters
+// reach below it (Arabic); then the deepest such label, measured, so ECharts keeps room for it under the axis. Latin labels
+// are never measured, so their charts do not change.
+const DEEP_SCRIPT = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
+function tickLineHeight(t, texts) {
+  const size = t.tick.fontSize,
+    deep = (texts || []).map(String).filter(x => DEEP_SCRIPT.test(x));
+  if (!deep.length || typeof document === 'undefined') return size;
+  const ctx = document.createElement('canvas').getContext('2d');
+  if (!ctx) return size;
+  ctx.font = (t.tick.fontWeight || 400) + ' ' + size + 'px ' + t.tick.fontFamily;
+  ctx.textBaseline = 'top';
+  let h = size;
+  for (const x of deep) {
+    const m = ctx.measureText(x);
+    h = Math.max(h, Math.ceil(m.actualBoundingBoxDescent - Math.min(0, -m.actualBoundingBoxAscent)));
+  }
+  return h;
+}
 function chartTokens(where) {
   const doc = where.ownerDocument,
     win = doc.defaultView;
@@ -3712,247 +9683,6 @@ Metric.Group = function MetricGroup({
   }, c) : null));
 };
   } },
-  "platform/components/StatusDot/StatusDot.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.StatusDot = StatusDot;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
-var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
-var _Icon = require("../Icon/Icon.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · StatusDot
-   Summary: A 6px dot that marks a state (active, paused, priority), or a person's availability (online, away, busy, do
-     not disturb, offline) in the Status colors.
-   Usage:
-     <StatusDot tone="success" label="Active" />
-     <StatusDot tone="busy" label="Busy" />
-     <StatusDot tone="dnd" size="md" icon label="Do not disturb" />
-     <StatusDot tone="away" size="md" icon label="Away" />
-   Props:
-     tone: "neutral" (default) | "info" | "success" | "warning" | "danger"; for a person's availability (the presence
-       roles of the Status colors, library wave 4): "online" | "away" | "busy" | "dnd" (do not disturb) |
-       "offline"
-     size: "sm" (default, 6px) | "md" (12px) | "lg" (16px): the larger dots carry a glyph (icon) and sit on an avatar
-     icon: draws the availability's shape inside a md or lg dot, so it never rests on color alone: online a check, away a
-       clock, busy a solid dot with nothing cut out, do not disturb a minus (remove), offline a cross; busy and do not
-       disturb share a color and differ by shape (default false; presence tones only)
-     label: the state in words, read by assistive technology
-     className: more classes on the dot
-     ...rest: other attributes go on the dot element
-   Behavior:
-     Without a label the dot is decorative and hidden from assistive technology.
-     The glyph is drawn in the surface color, cut out of the dot; a sm dot has no room for one and ignores icon.
-   Notes:
-     Without a label, pair the dot with visible text.
-     Avatar's presence prop draws this dot at the avatar's corner.
-*/
-const PRESENCE = ['online', 'away', 'busy', 'dnd', 'offline'];
-const GLYPHS = {
-  online: 'check',
-  away: 'clock',
-  dnd: 'remove',
-  offline: 'close-2'
-}; // busy is the solid dot: nothing cut out
-const SIZES = ['md', 'lg'];
-function StatusDot({
-  tone = 'neutral',
-  size = 'sm',
-  icon = false,
-  label,
-  className,
-  ...rest
-}) {
-  (0, _devWarn.devWarn)('StatusDot', {
-    tone,
-    size
-  }, {
-    tone: ['info', 'success', 'warning', 'danger', 'neutral', 'online', 'away', 'busy', 'dnd', 'offline'],
-    size: ['sm', 'md', 'lg']
-  });
-  const s = SIZES.indexOf(size) >= 0 ? size : null;
-  const glyph = icon && s && PRESENCE.indexOf(tone) >= 0 && GLYPHS[tone];
-  return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: (0, _cx.cx)('plx-status-dot', 'plx-status-dot--' + tone, s && 'plx-status-dot--' + s, glyph && 'plx-status-dot--glyph', className),
-    "aria-hidden": label ? undefined : true
-  }, rest), glyph ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: glyph,
-    className: "plx-status-dot__glyph"
-  }) : null, label ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, label) : null);
-}
-  } },
-  "platform/components/Avatar/Avatar.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Avatar = Avatar;
-exports.initialsOf = initialsOf;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
-var _Icon = require("../Icon/Icon.jsx");
-var _StatusDot = require("../StatusDot/StatusDot.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Avatar
-   Summary: A person's picture, or their initials, in a rounded square (never a circle), inside a 1px media border (owner,
-     2026-10-19: every avatar and picture placeholder has the same border).
-   Usage:
-     <Avatar name="Maya Chen" size="md" />
-     <Avatar name="Maya Chen" src="/people/mc.jpg" label="Maya Chen" />
-   Props:
-     name: the person's name; without a picture the avatar shows its initials, from initialsOf(name)
-     src: the URL of the person's picture; it replaces the initials
-     initials: the text to show, only when there is no name to work from
-     size: "2xs" 20px | "xs" 24px | "sm" 28px (default) | "md" 32px | "lg" 40px | "xl" 48px | "2xl" 64px; "2xs" is for inside a small control
-       (the account row in a pane footer)
-     color: the person's own color when the data has one, a data color: a hue name (blue, green, purple, red, brown, gray: the --plx-sys-data-color-<hue> tokens), set as data-plx-color; no value is written (batch 280): its soft fill with
-       its text color (otherwise the theme's avatar colors)
-     category: instead of color, a category color by name (an avatar standing for a category): the color as its fill,
-       black or white text (batch 290)
-     gender: "male" | "female": with no picture, the person-male or person-female icon on soft blue or soft pink (the
-       category palette) instead of the initials; any other value keeps the initials (owner, 2026-10-19)
-     label: the person's name for assistive technology when no visible name is nearby; without it the avatar is hidden from
-       assistive technology
-     presence: the person's availability (library wave 4): "online" | "away" | "busy" | "dnd" (do not disturb)
-       | "offline", a StatusDot at the avatar's bottom end corner in the presence roles of the Status colors, ringed in the surface color;
-       its size follows the avatar (a 6px dot up to 32px, 12px at 40 and 48px, 16px at 64px), and from 40px it carries the
-       availability's shape (a check, a clock, busy the solid dot, do not disturb a minus, a cross) so it never rests on
-       color alone
-     strings: the words of presence, for other languages: { online: "Online", away: "Away", busy: "Busy",
-       dnd: "Do not disturb", offline: "Offline" }
-     className: more classes on the avatar
-   Behavior:
-     A picture that fails to load falls back to the initials. The picture loads lazily and decodes off the main thread
-     (loading="lazy", decoding="async"), so a long list or table of avatars fetches only the ones near the view.
-     The corner and the text size follow the size.
-     Initials are the first letters of the first and last name ("Maya Chen" → MC).
-     Titles such as "Fr." or "Dr." and parenthesized parts are skipped; one word gives one letter.
-     With a label the avatar is an image (role="img") named by the label; with presence too, the name and the state ("Maya Chen, Busy").
-     Without a label the presence dot is hidden with the avatar: the page says the state in words next to it.
-   Notes:
-     Other props pass through to the <span>.
-     initialsOf(name) is also exported for pages that need the same initials. A name with no Latin letter (an Arabic name)
-       takes each word's first letter; two Arabic initials are kept apart so they do not join (owner, ctm-needs-34).
-*/
-const SIZES = [20, 24, 28, 32, 40, 48, 64]; // the scale its classes define (plx-avatar--24 …)
-// the names pages use: 2xs 20 (inside a small control: the account row in a pane footer), xs 24, sm 28, md 32, lg 40, xl 48, 2xl 64 (numbers are rejected by the system check)
-const NAMED = {
-  '2xs': 20,
-  xs: 24,
-  sm: 28,
-  md: 32,
-  lg: 40,
-  xl: 48,
-  '2xl': 64
-};
-// presence (library wave 4): the availability tones, the dot's size for each avatar size, and the words
-const PRESENCE = ['online', 'away', 'busy', 'dnd', 'offline'];
-const DOT = {
-  20: 'sm',
-  24: 'sm',
-  28: 'sm',
-  32: 'sm',
-  40: 'md',
-  48: 'md',
-  64: 'lg'
-};
-const STRINGS = {
-  online: 'Online',
-  away: 'Away',
-  busy: 'Busy',
-  dnd: 'Do not disturb',
-  offline: 'Offline'
-};
-
-// first- and last-name initials: titles (a word ending in a period, e.g. "Fr.") and parenthesized parts are skipped.
-// A word's initial is its first Latin letter or digit, as always; a word with none (an Arabic name, owner ctm-needs-34) takes
-// its first letter of any script. Two Arabic initials are kept apart (a zero-width non-joiner), so they do not join into a word.
-const LATIN = /[A-Za-z0-9]/,
-  ANY = /[\p{L}\p{N}]/u,
-  JOINING = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/;
-const initialOf = w => (w.match(LATIN) || w.match(ANY) || [''])[0];
-function initialsOf(name) {
-  const words = String(name || '').replace(/\([^)]*\)/g, ' ').split(/\s+/).filter(w => w && !/\.$/.test(w) && initialOf(w));
-  if (!words.length) return '';
-  const first = initialOf(words[0]),
-    last = words.length > 1 ? initialOf(words[words.length - 1]) : '';
-  return (first + (JOINING.test(first) && JOINING.test(last) ? '\u200C' : '') + last).toUpperCase();
-}
-const GENDER = {
-  male: {
-    tone: 'blue',
-    icon: 'person-male'
-  },
-  female: {
-    tone: 'pink',
-    icon: 'person-female'
-  }
-};
-function Avatar({
-  name,
-  src,
-  initials,
-  size = 'sm',
-  color,
-  category,
-  gender,
-  label,
-  presence,
-  strings,
-  className,
-  ...rest
-}) {
-  (0, _devWarn.devWarn)('Avatar', {
-    size
-  }, {
-    size: ['2xs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl']
-  });
-  const n = NAMED[size] || size;
-  const s = SIZES.indexOf(n) >= 0 ? n : NAMED.sm;
-  const text = name ? initialsOf(name) : initials;
-  const p = PRESENCE.indexOf(presence) >= 0 ? presence : null;
-  const words = Object.assign({}, STRINGS, strings);
-  const named = label && p ? label + ', ' + words[p] : label;
-  // a picture that fails to load falls back to the initials (batch 215)
-  const [failed, setFailed] = _react.default.useState(false);
-  _react.default.useEffect(() => {
-    setFailed(false);
-  }, [src]);
-  const picture = src && !failed;
-  const g = !picture ? GENDER[gender] : null; // no picture and a known gender: the gender icon
-  return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: (0, _cx.cx)('plx-avatar', 'plx-avatar--' + s, p && 'plx-avatar--presence', g && 'plx-avatar--gender', className),
-    "data-plx-avatar": "",
-    "data-plx-color": g ? undefined : color || undefined,
-    "data-plx-category": g ? g.tone : category || undefined,
-    role: label ? 'img' : undefined,
-    "aria-label": named,
-    "aria-hidden": label ? undefined : true
-  }, rest), picture ? /*#__PURE__*/_react.default.createElement("img", {
-    className: "plx-avatar__image",
-    src: src,
-    alt: "",
-    loading: "lazy",
-    decoding: "async",
-    onError: () => setFailed(true)
-  }) : g ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: g.icon,
-    filled: true,
-    className: "plx-avatar__gender"
-  }) : text, p ? /*#__PURE__*/_react.default.createElement(_StatusDot.StatusDot, {
-    tone: p,
-    size: DOT[s],
-    icon: DOT[s] !== 'sm',
-    className: "plx-avatar__presence"
-  }) : null);
-}
-  } },
   "platform/components/IconTile/IconTile.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -4021,1060 +9751,6 @@ function IconTile({
     size: s,
     filled: filled
   }));
-}
-  } },
-  "platform/components/Loading/Loading.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Skeleton = Skeleton;
-exports.Spinner = Spinner;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
-var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Skeleton, Spinner
-   Summary: Loading indicators. Skeleton is a placeholder block with a shimmer; Spinner is a turning ring. (The typing
-     dots are a Chat variant: Chat.Typing.)
-   Usage:
-     <Skeleton width="160px" height="16px" />
-     <Spinner size="sm" label="Saving" />
-   Props:
-     Skeleton.width: the block width, a size token's name ("200px" for --plx-ref-size-200px); none: as wide as its place
-     Skeleton.height: the block height, a size token's name ("16px")
-     Skeleton.className: more classes on the block
-     Spinner.size: "sm" | "md" (default) | "lg"
-     Spinner.label: the text announced to assistive technology (default "Loading")
-     Spinner.className: more classes on the ring
-   Behavior:
-     The Skeleton shimmer runs left to right; the block is decorative (aria-hidden).
-     Spinner is a status region (role="status"), so its label is announced.
-     People who ask their system for less motion see the indicators still.
-   Notes:
-     Other props pass through to the <span>.
-     The old text listed a radius prop for Skeleton; the code takes none (set it with a class).
-*/
-// a size token's name from "200px" (or the older "var(--plx-ref-size-200px)"); the rule per size is in system/steps.css
-const sizeName = v => v ? String(v).replace(/^var\(--plx-ref-size-|\)$/g, '') : undefined;
-function Skeleton({
-  width,
-  height,
-  className,
-  ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: (0, _cx.cx)('plx-skeleton', className),
-    "aria-hidden": "true",
-    "data-plx-width": sizeName(width),
-    "data-plx-height": sizeName(height)
-  }, rest));
-}
-function Spinner({
-  size = 'md',
-  label = 'Loading',
-  className,
-  ...rest
-}) {
-  (0, _devWarn.devWarn)('Spinner', {
-    size
-  }, {
-    size: ['sm', 'md', 'lg']
-  });
-  return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: (0, _cx.cx)('plx-spinner', 'plx-spinner--' + size, className),
-    role: "status"
-  }, rest), /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, label));
-}
-  } },
-  "platform/providers/Surface.jsx": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.SurfaceContext = void 0;
-var _react = _interopRequireDefault(require("react"));
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · SurfaceContext
-   Summary: Tells the components inside a colored surface which surface they sit on, so they take its look from their own
-     classes: no rule reaches into the surface (Styling Standard 3.6).
-   Usage:
-     <SurfaceContext.Provider value="inverse">…</SurfaceContext.Provider>
-   Props:
-     value: "inverse" (a dark surface: TeachingBubble) | "accent" (the accent AppHeader) | null (the page's own surface)
-   Behavior:
-     TeachingBubble and the accent AppHeader provide it. A Button inside takes plx-button--on-inverse or
-       plx-button--on-accent.
-     A component that draws a colored surface of its own provides it for its content.
-*/
-
-const SurfaceContext = exports.SurfaceContext = /*#__PURE__*/_react.default.createContext(null);
-  } },
-  "platform/utils/floating.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.PLACEMENTS = exports.FLOATING_POINTER = exports.FLOATING_ANCHOR = void 0;
-exports.useFloating = useFloating;
-var _react = _interopRequireDefault(require("react"));
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · useFloating
-   Summary: Places a floating element (a menu, popover, tooltip, combobox list or date picker) beside its anchor and keeps it in view: a named placement, an offset step, flip, shift, the anchor's width, or a point (a context menu at the pointer). It writes data attributes only; system/floating.css places the element, so no position is ever written as a style.
-   Usage:
-     const anchor = React.useRef(null), panel = React.useRef(null);
-     const { placement } = useFloating(anchor, panel, { open, placement: 'bottom-start' });
-     <button ref={anchor} aria-expanded={open} aria-controls="list">Sort</button>
-     {open ? <div ref={panel} id="list" popover="manual" className="plx-menu">…</div> : null}
-     useFloating(anchor, panel, { open, placement: 'bottom-start', matchWidth: true })      // a select or combobox list
-     useFloating(row, panel, { open, virtual: { x: event.clientX, y: event.clientY } })     // a context menu at the pointer
-   Props:
-     anchorRef: a ref to the element the floating element is placed against
-     floatingRef: a ref to the floating element (best in the top layer: popover="manual", or inside a Portal)
-     options.open (true): placed while open; the anchor slot is released when it closes or unmounts
-     options.placement ('bottom-start'): top | bottom | start | end (the side; start and end follow the writing direction), centered or aligned: top-start, top-end, bottom-start, bottom-end, start-top, start-bottom, end-top, end-bottom
-     options.offset ('xs'): the gap to the anchor: 'none' | 'xs' | 'sm' | 'md' (--plx-sys-floating-offset-*)
-     options.flip (true): moves to the opposite side when there is no room
-     options.shift (true): swaps the alignment (start to end) to stay in the window; a centered placement aligns to an edge
-     options.matchWidth (false): at least as wide as the anchor
-     options.virtual (null): { x, y } in window pixels (event.clientX / clientY): placed at that point, flipped and kept inside the window; the anchor is used where the browser cannot place a point
-     returns { placement (the side and alignment in use where useFloating measures it), mode: 'anchor' | 'pointer' | 'inline' }
-   Behavior:
-     anchor: with CSS anchor positioning (Chrome 125, Safari 26, Firefox 147) the browser places the element, flips and shifts it, and follows the anchor on scroll and resize: nothing is measured.
-     pointer: with typed attr() (Chrome 133) a virtual anchor is a point: useFloating measures the element, flips it to the other side of the point and keeps it --plx-sys-floating-viewport-margin inside the window, then writes the point (data-plx-floating-x / -y).
-     inline: without anchor positioning the element is placed inside the anchor's parent (data-plx-floating-host) on its side; useFloating measures the room and flips or shifts the placement. Render the element next to its anchor for this fallback.
-     The pair shares one of 16 anchor names while open (data-plx-floating-anchor / data-plx-floating), so each floating element finds its own anchor anywhere in the page.
-   Notes:
-     It positions only. Opening, Escape, focus and outside clicks are the overlay's (useLayer), the top layer is popover="manual" or Portal layer="top", and the ARIA link (aria-expanded, aria-controls, aria-describedby) is the component's.
-     Menu, Tooltip and Popover adopt it in their own tasks.
-*/
-
-const SLOTS = 16;
-const taken = new Array(SLOTS + 1).fill(false);
-const take = () => {
-  for (let i = 1; i <= SLOTS; i++) if (!taken[i]) {
-    taken[i] = true;
-    return i;
-  }
-  return 0;
-};
-const release = i => {
-  if (i) taken[i] = false;
-};
-
-// what the browser can do, checked once
-const supports = decl => typeof CSS !== 'undefined' && !!CSS.supports && CSS.supports(decl);
-const FLOATING_ANCHOR = exports.FLOATING_ANCHOR = supports('anchor-name: --plx-a');
-const FLOATING_POINTER = exports.FLOATING_POINTER = supports('inset-block-start: attr(data-plx-floating-y px, 0px)');
-const PLACEMENTS = exports.PLACEMENTS = ['top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'start', 'start-top', 'start-bottom', 'end', 'end-top', 'end-bottom'];
-const OFFSETS = {
-  none: null,
-  xs: '--plx-sys-floating-offset-xs',
-  sm: '--plx-sys-floating-offset-sm',
-  md: '--plx-sys-floating-offset-md'
-};
-const ATTRS = ['data-plx-floating', 'data-plx-floating-placement', 'data-plx-floating-offset', 'data-plx-floating-flip', 'data-plx-floating-shift', 'data-plx-floating-match', 'data-plx-floating-pointer', 'data-plx-floating-x', 'data-plx-floating-y'];
-
-// a length token in pixels (the tokens are written in rem; a custom property's computed value has its var() resolved)
-function tokenPixels(name) {
-  if (!name || typeof document === 'undefined') return 0;
-  const root = document.documentElement,
-    v = getComputedStyle(root).getPropertyValue(name).trim(),
-    n = parseFloat(v) || 0;
-  return /rem$/.test(v) ? n * parseFloat(getComputedStyle(root).fontSize) : n;
-}
-const set = (el, name, value) => {
-  if (value == null || value === false) el.removeAttribute(name);else el.setAttribute(name, String(value));
-};
-const isRtl = el => getComputedStyle(el).direction === 'rtl';
-
-// the inline fallback: the side with room (flip) and the alignment that stays in the window (shift), from the anchor's box
-function measured(anchor, floating, placement, flip, shift, gap) {
-  const a = anchor.getBoundingClientRect(),
-    f = floating.getBoundingClientRect();
-  const W = window.innerWidth,
-    H = window.innerHeight,
-    rtl = isRtl(anchor);
-  let [side, align] = placement.split('-');
-  const room = {
-    top: a.top - gap,
-    bottom: H - a.bottom - gap,
-    start: rtl ? W - a.right - gap : a.left - gap,
-    end: rtl ? a.left - gap : W - a.right - gap
-  };
-  const need = side === 'top' || side === 'bottom' ? f.height : f.width;
-  const opposite = {
-    top: 'bottom',
-    bottom: 'top',
-    start: 'end',
-    end: 'start'
-  }[side];
-  if (flip && room[side] < need && room[opposite] > room[side]) side = opposite;
-  if (shift && align && (side === 'top' || side === 'bottom')) {
-    // aligned to the inline start, the element runs toward the inline end: does it leave the window there?
-    const startEdge = rtl ? a.right : a.left,
-      endRoom = rtl ? startEdge : W - startEdge;
-    const endEdge = rtl ? a.left : a.right,
-      startRoom = rtl ? W - endEdge : endEdge;
-    if (align === 'start' && endRoom < f.width && startRoom > endRoom) align = 'end';else if (align === 'end' && startRoom < f.width && endRoom > startRoom) align = 'start';
-  }
-  if (shift && align && (side === 'start' || side === 'end')) {
-    if (align === 'top' && H - a.top < f.height && a.bottom > H - a.top) align = 'bottom';else if (align === 'bottom' && a.bottom < f.height && H - a.top > a.bottom) align = 'top';
-  }
-  return align ? side + '-' + align : side;
-}
-
-// a point: the element's corner at the point, flipped to the other side of it when it does not fit, then kept inside the window
-function pointAt(floating, x, y) {
-  const f = floating.getBoundingClientRect(),
-    W = window.innerWidth,
-    H = window.innerHeight,
-    m = tokenPixels('--plx-sys-floating-viewport-margin');
-  const rtl = isRtl(floating);
-  // the inline-start inset of the point, measured from the window's inline-start edge
-  let ix = rtl ? W - x : x,
-    iy = y;
-  if (ix + f.width > W - m && ix - f.width >= m) ix -= f.width;
-  if (iy + f.height > H - m && iy - f.height >= m) iy -= f.height;
-  ix = Math.max(m, Math.min(ix, W - m - f.width));
-  iy = Math.max(m, Math.min(iy, H - m - f.height));
-  return [Math.round(ix), Math.round(iy)];
-}
-function useFloating(anchorRef, floatingRef, options = {}) {
-  const {
-    open = true,
-    placement = 'bottom-start',
-    offset = 'xs',
-    flip = true,
-    shift = true,
-    matchWidth = false,
-    virtual = null
-  } = options;
-  const wanted = PLACEMENTS.indexOf(placement) >= 0 ? placement : 'bottom-start';
-  const pointer = !!(virtual && FLOATING_POINTER);
-  const mode = pointer ? 'pointer' : FLOATING_ANCHOR ? 'anchor' : 'inline';
-  const [used, setUsed] = _react.default.useState(wanted);
-  const slot = _react.default.useRef(0);
-  const vx = virtual ? virtual.x : null,
-    vy = virtual ? virtual.y : null;
-  _react.default.useLayoutEffect(() => {
-    const anchor = anchorRef && anchorRef.current,
-      floating = floatingRef && floatingRef.current;
-    if (!open || !floating) return undefined;
-    const host = !pointer && mode === 'inline' && anchor ? anchor.parentElement : null;
-    if (pointer) {
-      set(floating, 'data-plx-floating-pointer', '');
-      const [ix, iy] = pointAt(floating, vx, vy);
-      set(floating, 'data-plx-floating-x', ix);
-      set(floating, 'data-plx-floating-y', iy);
-    } else if (anchor) {
-      if (!slot.current) slot.current = take();
-      set(anchor, 'data-plx-floating-anchor', slot.current || null);
-      set(floating, 'data-plx-floating', slot.current || 'inline');
-      set(floating, 'data-plx-floating-offset', offset === 'xs' || !(offset in OFFSETS) ? null : offset);
-      set(floating, 'data-plx-floating-flip', flip ? null : 'off');
-      set(floating, 'data-plx-floating-shift', shift ? null : 'off');
-      set(floating, 'data-plx-floating-match', matchWidth ? 'width' : null);
-      if (host) set(host, 'data-plx-floating-host', '');
-      set(floating, 'data-plx-floating-placement', wanted);
-      let next = wanted;
-      if (mode === 'inline') {
-        next = measured(anchor, floating, wanted, flip, shift, tokenPixels(OFFSETS[offset] || null));
-        set(floating, 'data-plx-floating-placement', next);
-      }
-      setUsed(next);
-    }
-    return () => {
-      ATTRS.forEach(n => floating.removeAttribute(n));
-      if (anchor) anchor.removeAttribute('data-plx-floating-anchor');
-      if (host) host.removeAttribute('data-plx-floating-host');
-      release(slot.current);
-      slot.current = 0;
-    };
-  }, [open, wanted, offset, flip, shift, matchWidth, pointer, mode, vx, vy, anchorRef, floatingRef]);
-
-  // the inline fallback measures again when the window changes size
-  _react.default.useEffect(() => {
-    if (!open || mode !== 'inline' || typeof window === 'undefined') return undefined;
-    const again = () => {
-      const anchor = anchorRef.current,
-        floating = floatingRef.current;
-      if (!anchor || !floating) return;
-      set(floating, 'data-plx-floating-placement', wanted);
-      const next = measured(anchor, floating, wanted, flip, shift, tokenPixels(OFFSETS[offset] || null));
-      set(floating, 'data-plx-floating-placement', next);
-      setUsed(next);
-    };
-    window.addEventListener('resize', again);
-    return () => window.removeEventListener('resize', again);
-  }, [open, mode, wanted, flip, shift, offset, anchorRef, floatingRef]);
-  return {
-    placement: mode === 'anchor' ? wanted : used,
-    mode
-  };
-}
-  } },
-  "platform/components/Tooltip/Tooltip.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/floating.js":"platform/utils/floating.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.InTooltip = void 0;
-exports.Tooltip = Tooltip;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _floating = require("../../utils/floating.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · Tooltip
-   Summary: A short label for a control, shown on hover, on keyboard focus and, on touch, on a long press. The rich
-     tooltip (09 Overlays › Contextual overlays › Rich tooltip) adds a title, a few sentences and, as a toggletip, one action.
-   Usage:
-     <Tooltip content="Upload files" placement="bottom"><Button …/></Tooltip>
-     <Tooltip title="Retention" content="Deleted files stay in the trash for 30 days."><Button …/></Tooltip>
-     <Tooltip title="Smart crop" content="…" action={<Link href="#crop" variant="standalone">About smart crop</Link>}><Button …/></Tooltip>
-   Props:
-     content: the tooltip text (in a rich tooltip, its body: one to three sentences)
-     placement: "bottom" (default) | "top" | "start" | "end" (start and end follow the writing direction)
-     title: a short title above the body; it makes the tooltip rich
-     action: one action under the body (a standalone Link, or a small Button); it makes the tooltip rich and a toggletip:
-       it opens on click (Enter or Space on the trigger) instead of on hover and focus
-     rich: the rich look without a title or an action (default false; true when title or action is given)
-     disabled: the tooltip neither shows nor describes the trigger (default false); for a label that is shown in full most of
-       the time and only needs its tooltip when it is cut short
-     className: more classes on the wrapper
-     children: the control it labels (one element)
-   Behavior:
-     It shows on hover (a mouse or a pen) and on keyboard focus, and hides on leave, on blur and with Escape.
-     On touch there is no hover (Platforms Standard 6.5): a long press (--plx-comp-tooltip-long-press-delay) shows it, and
-     it hides --plx-comp-tooltip-touch-dismiss-delay after the finger lifts, or when the finger moves away or is cancelled.
-     A tap does not show it (focus that follows a touch is ignored; mouse events emulated from touch are not listened to),
-     and the long press neither opens the browser's context menu nor activates the control (the click that may follow the
-     release is dropped): a long press asks what a control is, it does not use it.
-     The trigger is described by the tooltip (aria-describedby), added to any it already has.
-     Placement: where the browser has CSS anchor positioning (utils/floating.js) the bubble is placed against the trigger by
-       useFloating while it shows (offset sm), so no scroll area or pane clips it; elsewhere it is drawn inside the wrapper
-       on its side, as before. A tooltip with an arrow keeps its side; a rich tooltip (no arrow) flips and shifts to stay in
-       the window.
-     Rich: a text-only rich tooltip opens on hover and focus like a plain one and stays open while the pointer is over it
-       (it hides --plx-comp-tooltip-rich-close-delay after the pointer leaves both). With an action it is a toggletip: the
-       trigger toggles it (aria-expanded, aria-controls), Tab from the trigger reaches the action, and Escape, a click
-       outside or focus leaving it closes it (Escape returns focus to the trigger); a tap opens it on touch.
-   Notes:
-     An icon-only Button shows its name (and its shortcut) as a tooltip by itself; inside a Tooltip it leaves that to the
-       Tooltip (InTooltip), so a control never gets two.
-     An icon-only control still needs its own label (aria-label): the tooltip repeats it visually, it is never the only
-     way to learn the control's name.
-     Not for essential content. Only the rich tooltip holds an action, and then it opens on click: interactive content never
-     depends on hover.
-     The rich surface is the popover's (the overlay surface with its border, radius and shadow), with no arrow.
-*/
-
-const SIDES = ['bottom', 'top', 'start', 'end'];
-
-// true inside a Tooltip's trigger: a Button there does not add its own (an icon-only Button shows its name by itself)
-const InTooltip = exports.InTooltip = /*#__PURE__*/_react.default.createContext(false);
-
-// a duration token ("0.5s", "500ms") in milliseconds, read from the element's computed style
-const ms = (el, name) => {
-  const v = el ? getComputedStyle(el).getPropertyValue(name).trim() : '';
-  const n = parseFloat(v);
-  return isNaN(n) ? 0 : /ms$/.test(v) ? n : n * 1000;
-};
-
-// the last way the person reached for the page: a touch, or a mouse, pen or key. Focus that follows a tap does not open
-// the tooltip (a long press does); focus that follows a key does. One listener pair for every tooltip, added by the first.
-let lastInput = 'key',
-  listening = false;
-const listen = () => {
-  if (listening) return;
-  listening = true;
-  document.addEventListener('pointerdown', e => {
-    lastInput = e.pointerType === 'touch' ? 'touch' : 'pointer';
-  }, true);
-  document.addEventListener('keydown', () => {
-    lastInput = 'key';
-  }, true);
-};
-function Tooltip({
-  content,
-  placement = 'bottom',
-  title,
-  action,
-  rich = false,
-  disabled = false,
-  className,
-  children
-}) {
-  const id = 'plx-tt' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
-  const [open, setOpen] = _react.default.useState(false);
-  const wrap = _react.default.useRef(null);
-  const bubble = _react.default.useRef(null);
-  const press = _react.default.useRef(null); // the long-press timer
-  const hide = _react.default.useRef(null); // the timer that hides a tooltip a long press (or a rich tooltip's leave) started
-  const pressed = _react.default.useRef(false); // this touch opened the tooltip by a long press
-  const isRich = !!(rich || title || action);
-  const toggle = !!action; // a toggletip: opened by a click on the trigger
-  const side = SIDES.indexOf(placement) >= 0 ? placement : 'bottom';
-  const clear = () => {
-    clearTimeout(press.current);
-    clearTimeout(hide.current);
-  };
-  _react.default.useEffect(() => {
-    listen();
-    return clear;
-  }, []);
-  // placed against the trigger by anchor positioning while it shows; the arrow keeps its side (no flip, no shift)
-  (0, _floating.useFloating)(wrap, bubble, {
-    open: open && !disabled && _floating.FLOATING_ANCHOR,
-    placement: side,
-    offset: 'sm',
-    flip: isRich,
-    shift: isRich
-  });
-  _react.default.useEffect(() => {
-    if (!open) return undefined;
-    const esc = e => {
-      if (e.key !== 'Escape') return;
-      const inside = wrap.current && wrap.current.contains(document.activeElement);
-      setOpen(false);
-      // a toggletip gives focus back to its trigger when Escape closes it from inside
-      if (toggle && inside && wrap.current.firstElementChild && wrap.current.firstElementChild.focus) wrap.current.firstElementChild.focus();
-    };
-    const outside = e => {
-      if (wrap.current && !wrap.current.contains(e.target)) setOpen(false);
-    };
-    document.addEventListener('keydown', esc);
-    if (toggle) document.addEventListener('mousedown', outside);
-    return () => {
-      document.removeEventListener('keydown', esc);
-      document.removeEventListener('mousedown', outside);
-    };
-  }, [open, toggle]);
-  const child = _react.default.Children.only(children);
-  const described = {
-    'aria-describedby': [child.props['aria-describedby'], id].filter(Boolean).join(' ')
-  };
-  const trigger = disabled ? child : /*#__PURE__*/_react.default.cloneElement(child, toggle ? Object.assign(described, {
-    'aria-expanded': open,
-    'aria-controls': open ? id + 'b' : undefined,
-    onClick: e => {
-      if (child.props.onClick) child.props.onClick(e);
-      setOpen(!open);
-    }
-  }) : described);
-  if (disabled) return /*#__PURE__*/_react.default.createElement("span", {
-    className: (0, _cx.cx)('plx-tooltip', className)
-  }, /*#__PURE__*/_react.default.createElement(InTooltip.Provider, {
-    value: true
-  }, trigger));
-  const onPointerDown = e => {
-    if (e.pointerType !== 'touch' || toggle) return;
-    clear();
-    pressed.current = false;
-    press.current = setTimeout(() => {
-      pressed.current = true;
-      setOpen(true);
-    }, ms(wrap.current, '--plx-comp-tooltip-long-press-delay'));
-  };
-  const onPointerEnd = e => {
-    if (e.pointerType !== 'touch' || toggle) return;
-    clearTimeout(press.current);
-    if (pressed.current) hide.current = setTimeout(() => {
-      setOpen(false);
-      pressed.current = false;
-    }, e.type === 'pointercancel' ? 0 : ms(wrap.current, '--plx-comp-tooltip-touch-dismiss-delay'));
-  };
-  const onEnter = e => {
-    if (e.pointerType === 'touch' || toggle) return;
-    clearTimeout(hide.current);
-    setOpen(true);
-  };
-  const onLeave = e => {
-    if (e.pointerType === 'touch' || toggle) return;
-    // a rich tooltip waits a moment, so the pointer can move into it; a plain one hides at once
-    if (isRich) {
-      clearTimeout(hide.current);
-      hide.current = setTimeout(() => setOpen(false), ms(wrap.current, '--plx-comp-tooltip-rich-close-delay'));
-    } else setOpen(false);
-  };
-  const bubbleCls = (0, _cx.cx)('plx-tooltip__bubble', 'plx-tooltip__bubble--' + side, isRich && 'plx-tooltip__bubble--rich', open && 'is-open');
-  return /*#__PURE__*/_react.default.createElement("span", {
-    ref: wrap,
-    className: (0, _cx.cx)('plx-tooltip', className),
-    onPointerEnter: onEnter,
-    onPointerLeave: onLeave,
-    onPointerDown: onPointerDown,
-    onPointerUp: onPointerEnd,
-    onPointerCancel: onPointerEnd,
-    onContextMenu: e => {
-      if (pressed.current) e.preventDefault();
-    },
-    onClickCapture: e => {
-      if (pressed.current) {
-        e.preventDefault();
-        e.stopPropagation();
-        pressed.current = false;
-      }
-    },
-    onFocus: () => {
-      if (!toggle && lastInput !== 'touch') setOpen(true);
-    },
-    onBlur: e => {
-      if (!pressed.current && !(wrap.current && wrap.current.contains(e.relatedTarget))) setOpen(false);
-    }
-  }, /*#__PURE__*/_react.default.createElement(InTooltip.Provider, {
-    value: true
-  }, trigger), isRich ? /*#__PURE__*/_react.default.createElement("span", {
-    ref: bubble,
-    id: id + 'b',
-    className: bubbleCls
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    role: "tooltip",
-    id: id,
-    className: "plx-tooltip__content"
-  }, title ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-tooltip__title"
-  }, title) : null, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-tooltip__body"
-  }, content)), action ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-tooltip__action"
-  }, action) : null) : /*#__PURE__*/_react.default.createElement("span", {
-    ref: bubble,
-    role: "tooltip",
-    id: id,
-    className: bubbleCls
-  }, content));
-}
-  } },
-  "platform/components/Kbd/Kbd.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Kbd = Kbd;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Kbd
-   Summary: A key or shortcut ("Ctrl K").
-   Usage:
-     <Kbd>Ctrl K</Kbd>
-     <Kbd onAccent>/</Kbd>
-   Props:
-     onAccent: the version for the blue header (default false)
-     children: the key or shortcut text
-     className: more classes on the <kbd>
-   Notes:
-     Writing direction (owner, ctm-needs-34): always left to right (dir="ltr", which also isolates it), also in a right-to-left page.
-     It uses the data font at a 16px label height.
-     Other props pass through to the <kbd>.
-*/
-function Kbd({
-  onAccent = false,
-  className,
-  children,
-  ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement("kbd", _extends({
-    className: (0, _cx.cx)('plx-kbd', onAccent && 'plx-kbd--on-accent', className),
-    dir: "ltr"
-  }, rest), children);
-}
-  } },
-  "platform/utils/hotkey.js": { deps: {"react":null,"./tokenTime.js":"platform/utils/tokenTime.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.hotkeyKeys = hotkeyKeys;
-exports.hotkeyLabel = hotkeyLabel;
-exports.hotkeyList = hotkeyList;
-exports.isMac = isMac;
-exports.parseHotkey = parseHotkey;
-exports.registerHotkey = registerHotkey;
-exports.setSingleKeyHotkeys = setSingleKeyHotkeys;
-exports.singleKeyHotkeys = singleKeyHotkeys;
-exports.subscribeHotkeys = subscribeHotkeys;
-exports.useHotkey = useHotkey;
-exports.useHotkeyList = useHotkeyList;
-var _react = _interopRequireDefault(require("react"));
-var _tokenTime = require("./tokenTime.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · Hotkey (platform/utils/hotkey.js)
-   Summary: Keyboard shortcuts in one place: useHotkey binds a key, a chord (Mod K) or a sequence (G then I) to a command,
-     for the whole page or for one region, and every binding goes into one registry that the shortcuts dialog and the
-     menus read their hints from (Kbd draws the label).
-   Usage:
-     useHotkey('Mod+K', () => openSearch(), { label: 'Search', group: 'General' });
-     useHotkey('G I', () => goTo('inbox'), { label: 'Go to inbox', group: 'Navigation' });
-     useHotkey('Delete', removeSelected, { scope: listRef, label: 'Delete the selected files' });
-     <Kbd>{hotkeyLabel('Mod+K')}</Kbd>                     // "Ctrl K" on Windows and Linux, "⌘ K" on a Mac
-     const all = useHotkeyList();                         // [{ binding, label, group, keys }] for the shortcuts dialog
-   Props:
-     useHotkey(binding, handler, options): binds while the component is mounted; handler(event) runs on a match
-     binding: steps separated by spaces (a sequence: "G I"), each step keys joined by "+" ("Mod+Shift+P"); modifiers Mod
-       (Cmd on a Mac, Ctrl elsewhere), Ctrl, Meta, Alt, Shift; keys as KeyboardEvent.key names ("K", "Escape", "/", "?")
-     options.scope: a ref (or element) of the region the binding belongs to; it fires only when focus is inside it
-     options.enabled: false unbinds it without unmounting (default true)
-     options.allowInFields: also fire while focus is in a text field (default false)
-     options.label: what the command does, as written in its menu item; options.group: its group in the shortcuts dialog
-     registerHotkey(binding, handler, options): the same without React; returns the function that unbinds it
-     hotkeyLabel(binding, { mac }): the binding as people read it ("Ctrl Shift P", "G then I")
-     hotkeyList(): every labeled binding; useHotkeyList() the same, kept current; subscribeHotkeys(fn) for other code
-     setSingleKeyHotkeys(on): turns every single-key shortcut (no modifier) off or on (WCAG 2.2 SC 2.1.4)
-   Behavior:
-     One keydown listener for the page. The binding of the innermost scope that contains the focus wins; page-wide
-     bindings come last. A key that starts a sequence waits --plx-sys-hotkey-sequence-timeout for the next one.
-     Ignored while focus is in a text field, a select or editable content, unless allowInFields. Ignored when an earlier
-     handler called preventDefault. A match calls preventDefault, so the browser's own use of that key does not run.
-   Notes:
-     Never bind keys that assistive technology or the browser needs (Tab, the arrow keys outside a widget, Ctrl L, F6).
-     Use the same label here as in the menu item, so the dialog and the menu agree.
-*/
-
-const MODS = ['ctrl', 'meta', 'alt', 'shift'];
-const NAMES = {
-  esc: 'escape',
-  del: 'delete',
-  space: ' ',
-  spacebar: ' ',
-  return: 'enter',
-  up: 'arrowup',
-  down: 'arrowdown',
-  left: 'arrowleft',
-  right: 'arrowright',
-  cmd: 'meta',
-  command: 'meta',
-  option: 'alt',
-  control: 'ctrl'
-};
-const entries = [];
-const listeners = new Set();
-let singleKeys = true;
-let buffer = [],
-  bufferAt = 0,
-  installed = false,
-  nextId = 1;
-function isMac() {
-  if (typeof navigator === 'undefined') return false;
-  const p = navigator.userAgentData && navigator.userAgentData.platform || navigator.platform || '';
-  return /mac|iphone|ipad|ipod/i.test(p);
-}
-
-// "Mod+Shift+P" → { ctrl, meta, alt, shift, key: 'p' }
-function parseStep(step, mac) {
-  const parts = step.split('+').filter((x, i, all) => x !== '' || i === all.length - 1).map(x => x === '' ? '+' : x);
-  const s = {
-    ctrl: false,
-    meta: false,
-    alt: false,
-    shift: false,
-    key: ''
-  };
-  parts.forEach(raw => {
-    let p = raw.toLowerCase();
-    p = NAMES[p] || p;
-    if (p === 'mod') s[mac ? 'meta' : 'ctrl'] = true;else if (MODS.indexOf(p) >= 0) s[p] = true;else s.key = p;
-  });
-  return s;
-}
-function parseHotkey(binding, mac = isMac()) {
-  return String(binding || '').trim().split(/\s+/).filter(Boolean).map(st => parseStep(st, mac));
-}
-function matchStep(s, e) {
-  const key = (e.key || '').toLowerCase();
-  // a letter or digit typed with Alt (or Shift) on some layouts changes e.key: e.code still names the key
-  const code = /^Key([A-Z])$|^Digit(\d)$/.exec(e.code || '');
-  const sameKey = key === s.key || !!code && (code[1] || code[2]).toLowerCase() === s.key;
-  if (!sameKey) return false;
-  // a symbol that needs Shift ("?") is written without it: Shift is then not compared
-  const symbol = s.key.length === 1 && !/[a-z0-9]/.test(s.key);
-  return e.ctrlKey === s.ctrl && e.metaKey === s.meta && e.altKey === s.alt && (symbol || e.shiftKey === s.shift);
-}
-const isSingle = steps => steps.length >= 1 && steps.every(s => !s.ctrl && !s.meta && !s.alt) && steps[0].key.length === 1;
-function inField(el) {
-  if (!el || !el.tagName) return false;
-  if (el.isContentEditable) return true;
-  const t = el.tagName.toLowerCase();
-  if (t === 'textarea' || t === 'select') return true;
-  if (t !== 'input') return false;
-  return ['checkbox', 'radio', 'button', 'submit', 'reset', 'range', 'color', 'file', 'image'].indexOf((el.type || '').toLowerCase()) < 0;
-}
-const scopeOf = x => (x && 'current' in x ? x.current : x) || null;
-const depth = el => {
-  let n = 0;
-  for (let x = el; x; x = x.parentElement) n++;
-  return n;
-};
-function onKeyDown(e) {
-  if (e.defaultPrevented || e.isComposing || ['Control', 'Meta', 'Alt', 'Shift'].indexOf(e.key) >= 0) return;
-  const now = Date.now();
-  if (now - bufferAt > (0, _tokenTime.tokenMs)('--plx-sys-hotkey-sequence-timeout')) buffer = [];
-  const target = e.target,
-    field = inField(target);
-  const live = entries.filter(x => x.enabled && (!field || x.allowInFields) && (singleKeys || !isSingle(x.steps))).map(x => ({
-    x,
-    scope: scopeOf(x.scope)
-  })).filter(c => !c.x.scope || c.scope && c.scope.contains(target)).sort((a, b) => (b.scope ? depth(b.scope) : 0) - (a.scope ? depth(a.scope) : 0));
-  const step = buffer.length;
-  const fits = (c, at) => c.x.steps.length > at && buffer.slice(buffer.length - at).every((ev, i) => matchStep(c.x.steps[i], ev)) && matchStep(c.x.steps[at], e);
-  // the longest waiting sequence first, then a fresh start
-  for (const at of [step, 0].filter((v, i, all) => all.indexOf(v) === i)) {
-    const full = live.find(c => c.x.steps.length === at + 1 && fits(c, at));
-    if (full) {
-      buffer = [];
-      e.preventDefault();
-      full.x.handler(e);
-      return;
-    }
-    if (live.some(c => c.x.steps.length > at + 1 && fits(c, at))) {
-      buffer = buffer.slice(buffer.length - at).concat([{
-        key: e.key,
-        code: e.code,
-        ctrlKey: e.ctrlKey,
-        metaKey: e.metaKey,
-        altKey: e.altKey,
-        shiftKey: e.shiftKey
-      }]);
-      bufferAt = now;
-      return;
-    }
-  }
-  buffer = [];
-}
-function install() {
-  if (installed || typeof document === 'undefined') return;
-  document.addEventListener('keydown', onKeyDown);
-  installed = true;
-}
-const notify = () => listeners.forEach(fn => fn());
-function registerHotkey(binding, handler, options = {}) {
-  install();
-  const entry = {
-    id: nextId++,
-    binding,
-    steps: parseHotkey(binding),
-    handler,
-    scope: options.scope || null,
-    enabled: options.enabled !== false,
-    allowInFields: !!options.allowInFields,
-    label: options.label || '',
-    group: options.group || ''
-  };
-  entries.push(entry);
-  if (entry.label) notify();
-  return () => {
-    const i = entries.indexOf(entry);
-    if (i >= 0) {
-      entries.splice(i, 1);
-      if (entry.label) notify();
-    }
-  };
-}
-function useHotkey(binding, handler, options = {}) {
-  const ref = _react.default.useRef(handler);
-  ref.current = handler;
-  const {
-    scope,
-    enabled = true,
-    allowInFields = false,
-    label,
-    group
-  } = options;
-  _react.default.useEffect(() => {
-    if (!enabled || !binding) return undefined;
-    return registerHotkey(binding, e => ref.current && ref.current(e), {
-      scope,
-      allowInFields,
-      label,
-      group
-    });
-  }, [binding, scope, enabled, allowInFields, label, group]);
-}
-const MAC_NAMES = {
-  meta: '⌘',
-  ctrl: '⌃',
-  alt: '⌥',
-  shift: '⇧'
-};
-const PC_NAMES = {
-  meta: 'Win',
-  ctrl: 'Ctrl',
-  alt: 'Alt',
-  shift: 'Shift'
-};
-const KEY_NAMES = {
-  ' ': 'Space',
-  escape: 'Esc',
-  arrowup: '↑',
-  arrowdown: '↓',
-  arrowleft: '←',
-  arrowright: '→',
-  enter: 'Enter',
-  delete: 'Delete',
-  backspace: 'Backspace',
-  tab: 'Tab'
-};
-function hotkeyKeys(binding, {
-  mac = isMac()
-} = {}) {
-  const names = mac ? MAC_NAMES : PC_NAMES;
-  return parseHotkey(binding, mac).map(s => (mac ? ['ctrl', 'alt', 'shift', 'meta'] : ['ctrl', 'meta', 'alt', 'shift']).filter(m => s[m]).map(m => names[m]).concat([KEY_NAMES[s.key] || (s.key.length === 1 ? s.key.toUpperCase() : s.key.charAt(0).toUpperCase() + s.key.slice(1))]));
-}
-function hotkeyLabel(binding, options) {
-  return hotkeyKeys(binding, options).map(k => k.join(' ')).join(' then ');
-}
-function hotkeyList() {
-  return entries.filter(x => x.label).map(x => ({
-    binding: x.binding,
-    label: x.label,
-    group: x.group,
-    keys: hotkeyLabel(x.binding),
-    enabled: x.enabled
-  }));
-}
-function subscribeHotkeys(fn) {
-  listeners.add(fn);
-  return () => listeners.delete(fn);
-}
-function useHotkeyList() {
-  const [list, setList] = _react.default.useState(hotkeyList);
-  _react.default.useEffect(() => {
-    setList(hotkeyList());
-    return subscribeHotkeys(() => setList(hotkeyList()));
-  }, []);
-  return list;
-}
-function setSingleKeyHotkeys(on) {
-  singleKeys = !!on;
-  buffer = [];
-}
-function singleKeyHotkeys() {
-  return singleKeys;
-}
-  } },
-  "platform/components/Button/Button.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../providers/Surface.jsx":"platform/providers/Surface.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","../../utils/hotkey.js":"platform/utils/hotkey.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Button = void 0;
-exports.ButtonGroup = ButtonGroup;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
-var _Icon = require("../Icon/Icon.jsx");
-var _Loading = require("../Loading/Loading.jsx");
-var _Surface = require("../../providers/Surface.jsx");
-var _Tooltip = require("../Tooltip/Tooltip.jsx");
-var _Kbd = require("../Kbd/Kbd.jsx");
-var _hotkey = require("../../utils/hotkey.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Button, ButtonGroup
-   Summary: A button for an action, in one of several emphasis levels and sizes; ButtonGroup joins buttons that act as a set.
-   Usage:
-     <Button variant="primary" icon="save" onClick={() => …}>Save</Button>
-     <Button iconOnly icon="more_horiz" label="More actions" caret expanded={open} />
-     <ButtonGroup label="Transfer"><Button>Import</Button><Button>Export</Button></ButtonGroup>
-   Props:
-     variant: "secondary" (default; white with a border, reversible actions) | "primary" (filled; the main action, usually one
-       per view) | "tertiary" (outlined in the action color, no fill; fills on hover) | "ghost" (no fill or border until
-       hovered, when its icon turns the action color; the lowest emphasis) | "danger" (filled red; destructive) | "danger-secondary"
-       (red outline, fills on hover). There is no link look: a link goes somewhere (Link), a button does something
-     truncate: the label fills the button from its start edge and ends in an ellipsis (a long choice)
-     stackedLabel: the label’s lines stack, start-aligned and wrapping; the gap is --plx-comp-button-context-label-gap (SuggestedAction)
-     labelRow: the label lays out a row of its own (an avatar and a name); the gap is
-       --plx-comp-button-context-label-row-gap (AppHeader’s account)
-     joined: { start, end }: "square" | "seam": its corners square where it meets a neighbor; a seam also drops that border (ButtonGroup, InputGroup and CopyButton set it)"md" (default; the standard control role) | "sm" (the toolbar role: compact text, gray) | "xs" (the inline-action
-       role: dense row and card actions, never in a toolbar) | "2xs" (the smallest: "Show more" under a list; 11px text, a blue
-       tint on hover) | "lg" (the prominent role: page actions)
-     icon: an <Icon> (or an icon name) before the label
-     iconEnd: an <Icon> (or an icon name) after the label
-     iconOnly: a square button with only its icon; give it a label (default false)
-     label: the accessible name (aria-label); an icon-only button falls back to string children
-     tooltip: the tooltip it shows (default: an icon-only button shows its label; others none); false: none (Carbon,
-       Atlassian: every icon-only button names itself). Inside a Tooltip the button leaves it to that Tooltip
-     shortcut: its keyboard shortcut, as a hotkey binding ("Mod+Shift+A"): shown in its tooltip as keys (Ctrl or ⌘) and set as
-       aria-keyshortcuts. It only shows the shortcut: bind it with useHotkey
-     caret: the button opens a menu: the thin outline chevron (expand_more) after the label, in the muted color on the
-       unfilled variants (owner, 2026-10-14: it replaces the small filled triangle); default false
-     expanded: sets aria-expanded, for a button that opens a menu
-     pressed: makes a toggle button (aria-pressed): true when on, false when off (undefined: not a toggle)
-     selected: shows the selected state without a toggle role (default false)
-     loading: shows a spinner in place of the icon (default false)
-     disabled: the button does nothing (default false)
-     href: renders a link styled as a button
-     type: the button type (default "button")
-     onClick(event): runs when the button is clicked, unless disabled or loading
-     children: the button label
-     className: more classes on the button
-     strings: the words it announces, for other languages: { working: "Working" } (the loading spinner's name)
-     ref: forwarded to the <button> or <a>
-     ButtonGroup.label: the accessible name of the group
-     ButtonGroup.children: the buttons
-     ButtonGroup.className: more classes on the group
-   Behavior:
-     Placement can also set the role: a dialog footer gives its buttons the dialog role.
-     Selected, pressed and expanded all show the selected state.
-     A toggle button (pressed true or false) keeps its label and icon when it turns on or off: the label names the option
-       (Bold, Show grid), aria-pressed says whether it is on, and every variant shows "on" with the selected state.
-     Loading keeps the width and the name, and stays focusable but inert (aria-disabled, aria-busy): the spinner takes the
-       icon's place, or, with no icon, sits over the label, which stays (unseen) to hold the width and name the button.
-     A disabled link loses its href.
-   Notes:
-     Other props pass through to the <button> or <a> (and to ButtonGroup's <div>).
-     For one choice from several, use SegmentedControl instead of ButtonGroup.
-*/
-const STRINGS = {
-  working: 'Working'
-};
-
-// the icon takes the button's state as its own (Styling Standard 3.6): filled while the button is selected, pressed or
-// open; an Icon element the caller gives keeps its own fill when it sets one
-const asIcon = _Icon.stateIcon;
-
-// a one-step binding as aria-keyshortcuts ("Control+Shift+A"); a sequence has no ARIA form, so none
-const ARIA_MODS = [['ctrl', 'Control'], ['alt', 'Alt'], ['shift', 'Shift'], ['meta', 'Meta']];
-const ariaShortcut = binding => {
-  const steps = (0, _hotkey.parseHotkey)(binding);
-  if (steps.length !== 1 || !steps[0].key) return undefined;
-  const k = steps[0].key;
-  return ARIA_MODS.filter(([m]) => steps[0][m]).map(([, n]) => n).concat(k.length === 1 ? k.toUpperCase() : k.charAt(0).toUpperCase() + k.slice(1)).join('+');
-};
-const Button = exports.Button = /*#__PURE__*/_react.default.forwardRef(function Button({
-  variant = 'secondary',
-  size = 'md',
-  icon,
-  iconEnd,
-  iconOnly = false,
-  label,
-  caret = false,
-  expanded,
-  pressed,
-  selected = false,
-  loading = false,
-  disabled = false,
-  href,
-  type = 'button',
-  joined,
-  truncate = false,
-  stackedLabel = false,
-  labelRow = false,
-  tooltip,
-  shortcut,
-  className,
-  children,
-  onClick,
-  strings,
-  ...rest
-}, ref) {
-  (0, _devWarn.devWarn)('Button', {
-    variant,
-    size
-  }, {
-    variant: ['secondary', 'primary', 'tertiary', 'ghost', 'danger', 'danger-secondary', 'quiet'],
-    size: ['md', 'sm', 'xs', '2xs', 'lg']
-  });
-  const t = Object.assign({}, STRINGS, strings);
-  // a colored surface around the button (TeachingBubble, the accent AppHeader) gives it that surface's look
-  const surface = _react.default.useContext(_Surface.SurfaceContext);
-  const classes = (0, _cx.cx)('plx-button', 'plx-button--' + (variant === 'quiet' ? 'ghost' : variant), size !== 'md' && 'plx-button--size-' + size, iconOnly && 'plx-button--icon-only', caret && 'plx-button--caret', (selected || pressed || expanded) && 'is-selected', loading && 'is-loading', truncate && 'plx-button--truncate', stackedLabel && 'plx-button--stacked-label', labelRow && 'plx-button--label-row', joined && joined.start && 'plx-button--joined-start-' + joined.start, joined && joined.end && 'plx-button--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-button--joined', (surface === 'inverse' || surface === 'accent') && 'plx-button--on-' + surface, className);
-  // the parts take the button's state as their own classes (Styling Standard 3.6: no rule reaches from the button into them)
-  const v = variant === 'quiet' ? 'ghost' : variant;
-  const on = !!(selected || pressed || expanded);
-  const labelClass = (0, _cx.cx)('plx-button__label', truncate && 'plx-button__label--truncate', !truncate && stackedLabel && 'plx-button__label--stacked', !truncate && !stackedLabel && labelRow && 'plx-button__label--row');
-  const caretClass = (0, _cx.cx)('plx-button__caret', (v === 'primary' || v === 'danger' || disabled || loading) && 'plx-button__caret--current', expanded && 'plx-button__caret--open');
-  const hasLabel = !iconOnly && children !== undefined && children !== null;
-  // loading: the spinner takes the icon's place; with no icon it sits over the label, which keeps the width and the name
-  // (aria-busy says it is working, so the spinner itself is not read)
-  const over = loading && !icon && hasLabel;
-  const spinner = cls => /*#__PURE__*/_react.default.createElement("span", {
-    className: cls,
-    "aria-hidden": "true"
-  }, /*#__PURE__*/_react.default.createElement(_Loading.Spinner, {
-    size: "sm",
-    label: t.working
-  }));
-  const content = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, loading && !over ? spinner('plx-button__icon') : icon ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-button__icon"
-  }, asIcon(icon, on)) : null, over ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-button__stack"
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    className: (0, _cx.cx)(labelClass, 'plx-button__label--waiting')
-  }, children), spinner('plx-button__icon plx-button__icon--over')) : hasLabel ? /*#__PURE__*/_react.default.createElement("span", {
-    className: labelClass
-  }, children) : null, iconEnd ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-button__icon"
-  }, asIcon(iconEnd, on)) : null, caret ? /*#__PURE__*/_react.default.createElement("span", {
-    className: caretClass,
-    "aria-hidden": "true"
-  }) : null);
-  const a11y = {
-    'aria-label': iconOnly ? label || (typeof children === 'string' ? children : undefined) : label,
-    'aria-expanded': expanded,
-    'aria-pressed': pressed,
-    'aria-disabled': disabled || loading ? true : undefined,
-    'aria-busy': loading || undefined,
-    'aria-keyshortcuts': shortcut ? ariaShortcut(shortcut) : undefined
-  };
-  const handle = e => {
-    if (disabled || loading) {
-      e.preventDefault();
-      return;
-    }
-    if (onClick) onClick(e);
-  };
-  const el = href ? /*#__PURE__*/_react.default.createElement("a", _extends({
-    ref: ref,
-    href: disabled ? undefined : href,
-    className: classes
-  }, a11y, {
-    onClick: handle
-  }, rest), content) : /*#__PURE__*/_react.default.createElement("button", _extends({
-    ref: ref,
-    type: type,
-    className: classes,
-    disabled: disabled && !loading ? true : undefined
-  }, a11y, {
-    onClick: handle
-  }, rest), content);
-  // its tooltip: the name of an icon-only button (or the tooltip it was given), with its shortcut's keys; none inside a
-  // Tooltip, which already names it
-  const inTooltip = _react.default.useContext(_Tooltip.InTooltip);
-  const tip = tooltip === false ? null : tooltip !== undefined ? tooltip : iconOnly ? a11y['aria-label'] : null;
-  if (!tip || inTooltip) return el;
-  return /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
-    content: shortcut ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, tip, ' ', /*#__PURE__*/_react.default.createElement(_Kbd.Kbd, null, (0, _hotkey.hotkeyLabel)(shortcut))) : tip
-  }, el);
-});
-
-/* ButtonGroup: joined buttons that act as a set (Import | Export). For one choice from several, use SegmentedControl. */
-function ButtonGroup({
-  label,
-  className,
-  children,
-  ...rest
-}) {
-  // its buttons meet: each passes on which of its sides is joined (the later button's start edge is the seam)
-  const all = _react.default.Children.toArray(children).filter(_react.default.isValidElement);
-  return /*#__PURE__*/_react.default.createElement("div", _extends({
-    role: "group",
-    "aria-label": label,
-    className: (0, _cx.cx)('plx-button-group', className)
-  }, rest), all.map((el, i) => /*#__PURE__*/_react.default.cloneElement(el, {
-    joined: {
-      start: i > 0 ? 'seam' : undefined,
-      end: i < all.length - 1 ? 'square' : undefined
-    }
-  })));
 }
   } },
   "platform/utils/portal.jsx": { deps: {"react":null,"react-dom":null,"./cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
@@ -5175,75 +9851,6 @@ function Portal({
     ref: origin,
     "data-plx-portal-origin": ""
   }), /*#__PURE__*/(0, _reactDom.createPortal)(children, node));
-}
-  } },
-  "platform/utils/direction.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.RTL_LANGUAGES = void 0;
-exports.arrowStep = arrowStep;
-exports.directionOf = directionOf;
-exports.getDirection = getDirection;
-exports.isRtl = isRtl;
-exports.physicalSide = physicalSide;
-/* Plenix · Writing direction (platform/utils/direction.js)
-   Summary: Right-to-left and left-to-right in script: the direction of an element or a language, the arrow keys in reading
-     order, and the physical side of a logical one. In a right-to-left page Arrow Right moves back and Arrow Left forward,
-     as the eye reads; Up and Down are the same in both directions.
-   Usage:
-     const step = arrowStep(e, e.currentTarget);   // +1, -1 or 0
-     if (step) { e.preventDefault(); move(index + step); }
-     directionOf('ar-EG')          // "rtl"
-     physicalSide('start', 'rtl')  // "right"
-   Props:
-     isRtl(el): true when the element is laid out right to left (its computed direction)
-     arrowStep(event, el, { vertical }): +1 for the next item, -1 for the previous one, 0 for another key; with vertical:
-       false, Up and Down are ignored (a horizontal-only control)
-     getDirection(el): "rtl" | "ltr", the element's computed direction (the document's when no element is given)
-     directionOf(locale): "rtl" for a language written right to left (Arabic, Hebrew, Persian, Urdu and the others in
-       RTL_LANGUAGES), else "ltr"
-     physicalSide(side, dir): "left" | "right" for a logical "start" or "end" in that direction (for a measurement API that
-       only speaks physical sides, such as a pointer's clientX); "left" and "right" come back as they are
-     RTL_LANGUAGES: the language subtags written right to left
-   Behavior:
-     The direction comes from the dir attribute on the element or an ancestor (<html dir="rtl">, a DirectionProvider):
-       stylesheets use logical properties (inline-start, inline-end), so the layout mirrors on its own; script reads the
-       computed direction only where it measures or handles arrow keys.
-*/
-const RTL_LANGUAGES = exports.RTL_LANGUAGES = ['ar', 'arc', 'ckb', 'dv', 'fa', 'he', 'iw', 'ps', 'sd', 'syr', 'ug', 'ur', 'yi'];
-function isRtl(el) {
-  return !!el && typeof window !== 'undefined' && window.getComputedStyle(el).direction === 'rtl';
-}
-function getDirection(el) {
-  if (typeof window === 'undefined') return 'ltr';
-  return isRtl(el || document.documentElement) ? 'rtl' : 'ltr';
-}
-function directionOf(locale) {
-  const lang = String(locale || '').toLowerCase().split(/[-_]/)[0];
-  return RTL_LANGUAGES.indexOf(lang) >= 0 ? 'rtl' : 'ltr';
-}
-function physicalSide(side, dir) {
-  if (side !== 'start' && side !== 'end') return side;
-  return side === 'start' === (dir !== 'rtl') ? 'left' : 'right';
-}
-function arrowStep(event, el, opts) {
-  const vertical = !opts || opts.vertical !== false;
-  const rtl = isRtl(el);
-  switch (event.key) {
-    case 'ArrowRight':
-      return rtl ? -1 : 1;
-    case 'ArrowLeft':
-      return rtl ? 1 : -1;
-    case 'ArrowDown':
-      return vertical ? 1 : 0;
-    case 'ArrowUp':
-      return vertical ? -1 : 0;
-    default:
-      return 0;
-  }
 }
   } },
   "platform/hooks/useGesture.js": { deps: {"react":null,"../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -9046,7 +13653,7 @@ function ContextualHelp({
   }, more('standalone')) : null));
 }
   } },
-  "platform/components/ProgressBar/ProgressBar.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/ProgressBar/ProgressBar.jsx": { deps: {"react":null,"../../utils/format.js":"platform/utils/format.js","../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -9054,6 +13661,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ProgressBar = ProgressBar;
 var _react = _interopRequireDefault(require("react"));
+var _format = require("../../utils/format.js");
 var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -9104,7 +13712,7 @@ function ProgressBar({
     tone: ['info', 'success', 'warning', 'danger', 'neutral'],
     size: ['sm', 'md']
   });
-  const loc = locale || typeof document !== 'undefined' && document.documentElement.lang || undefined;
+  const loc = (0, _format.numeralLocale)(locale || typeof document !== 'undefined' && document.documentElement.lang || undefined);
   const known = typeof value === 'number' && !Number.isNaN(value);
   const pct = known ? Math.max(0, Math.min(100, value / (max || 100) * 100)) : null;
   const id = 'plx-pb' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
@@ -18083,156 +22691,6 @@ const SearchField = exports.SearchField = /*#__PURE__*/_react.default.forwardRef
   }, props));
 });
   } },
-  "platform/components/Text/Text.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Text = Text;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
-var _layer = require("../../utils/layer.js");
-var _Button = require("../Button/Button.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Text
-   Summary: A run of text in one of the system's text roles, from the type tokens.
-   Usage:
-     <Text variant="secondary" as="p" truncate>Last edited 2 days ago</Text>
-     <Text variant="display" as="h1">1,284 assets</Text>
-     <Text as="p" lines={3} expandable>A long description…</Text>
-     <Text variant="secondary" tabular>12:40</Text>
-   Props:
-     variant: the text role: "body" (default) | "secondary" | "caption" | "data" | "label" | "strong" | "heading"
-       | "accent" (a highlighted term, step number or key figure: the accent color) | "success" (a good outcome, the new value in a change)
-       | "eyebrow" | "danger" | "link" | "title" | "display" | "lead".
-       body: the UI text. secondary: muted, 12px (counts, hints, descriptions). caption: subtle, 11px.
-       data: the data font, Reddit Mono, for technical values (IDs, file names and paths, versions, dates and
-       times, sizes, counts, durations); 12px on its own, the size of the text around it inside other text.
-       label: semibold 12px. strong: semibold, the current size.
-       heading: a group's title inside a page or dialog, semibold 13px.
-       eyebrow: a small uppercase title over a tool panel, 11px, bold, widest spacing, muted.
-       danger: the danger color (a required marker). link: the link color, normal weight (the color only: a link is the Link component).
-       title: a page title, the heading font, 20px, bold.
-       display: the largest style, for one key figure or a sign-in or welcome heading: the heading font at the top
-         step of the type scale, semibold, with a tight line height and letter spacing (library wave 2).
-       lead: body text one step up (15px) with a relaxed line height, for the opening paragraph of a page or an
-         empty state (body-lg; library wave 2).
-     as: the element; "span" (default) | "p" | "div" | "h1"–"h4" | "dt" | "dd" | "label" | …
-     truncate: one line, cut with an ellipsis; default false (lines wins when both are set)
-     lines: 2 | 3 | 4: at most that many lines, the last one cut with an ellipsis (line clamp); default none
-     expandable: with lines, a "Show more" button under the text while it is cut; it shows the rest and reads
-       "Show less" to fold it again; default false
-     defaultExpanded: an expandable text starts unfolded; default false
-     tabular: digits of equal width (tabular figures), so numbers line up down a column and do not shift as they
-       change; default false
-     strings: the words of the expand button: { more: 'Show more', less: 'Show less' }
-     className: more classes on the text
-     children: the text
-     ...rest: other attributes go on the element
-   Behavior:
-     lines clamps with the line-clamp property; the whole text stays in the page, so search, copy and screen readers
-       get all of it.
-     expandable measures the text: the button shows only while the text is cut (and while it is unfolded). It is a
-       button with aria-expanded that points at the text (aria-controls); it measures again when the width changes.
-     display and lead are type styles only: the element (as) gives the heading level.
-   Notes:
-     Applications never set a font, size, weight or color themselves.
-     There are no margins in any case, whatever the element.
-     The expand button has the look of ShowMore (CollapsibleSection): the smallest button, its chevron after the
-       label, down to show more and up to show less.
-*/
-const LINES = [2, 3, 4];
-const STRINGS = {
-  more: 'Show more',
-  less: 'Show less'
-};
-
-// a text's classes: its role, how it overflows (one line, or at most `clamp` lines while folded) and its figures
-const textClass = (variant, truncate, clamp, open, tabular, className) => (0, _cx.cx)('plx-text', 'plx-text--' + variant, truncate && !clamp && 'plx-text--truncate', clamp && !open && 'plx-text--lines-' + clamp, tabular && 'plx-text--tabular', className);
-function Text({
-  as: As = 'span',
-  variant = 'body',
-  truncate = false,
-  lines,
-  expandable = false,
-  defaultExpanded = false,
-  tabular = false,
-  strings,
-  className,
-  children,
-  ...rest
-}) {
-  (0, _devWarn.devWarn)('Text', {
-    variant
-  }, {
-    variant: ['body', 'secondary', 'caption', 'data', 'label', 'strong', 'heading', 'accent', 'success', 'eyebrow', 'danger', 'link', 'title', 'display', 'lead']
-  });
-  const clamp = LINES.indexOf(Number(lines)) >= 0 ? Number(lines) : null;
-  if (expandable && clamp) {
-    return /*#__PURE__*/_react.default.createElement(ExpandableText, {
-      As: As,
-      variant: variant,
-      clamp: clamp,
-      defaultExpanded: defaultExpanded,
-      tabular: tabular,
-      strings: strings,
-      className: className,
-      rest: rest
-    }, children);
-  }
-  return /*#__PURE__*/_react.default.createElement(As, _extends({
-    dir: "auto",
-    className: textClass(variant, truncate, clamp, false, tabular, className)
-  }, rest), children);
-}
-
-// a clamped text and its Show more button: the button shows while the text is cut, and while it is unfolded
-function ExpandableText({
-  As,
-  variant,
-  clamp,
-  defaultExpanded,
-  tabular,
-  strings,
-  className,
-  rest,
-  children
-}) {
-  const own = (0, _layer.useUid)('plx-text');
-  const id = rest.id || own;
-  const ref = _react.default.useRef(null);
-  const [open, setOpen] = _react.default.useState(defaultExpanded);
-  const [cut, setCut] = _react.default.useState(false);
-  _react.default.useLayoutEffect(() => {
-    const el = ref.current;
-    if (!el || open) return undefined;
-    const measure = () => setCut(el.scrollHeight > el.clientHeight);
-    measure();
-    if (typeof ResizeObserver === 'undefined') return undefined;
-    const watch = new ResizeObserver(measure);
-    watch.observe(el);
-    return () => watch.disconnect();
-  }, [open, children]);
-  const words = Object.assign({}, STRINGS, strings);
-  return /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-text-expand"
-  }, /*#__PURE__*/_react.default.createElement(As, _extends({
-    dir: "auto"
-  }, rest, {
-    ref: ref,
-    id: id,
-    className: textClass(variant, false, clamp, open, tabular, className)
-  }), children), open || cut ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    size: "2xs",
-    iconEnd: open ? 'chevron-up' : 'chevron-down',
-    "aria-expanded": open,
-    "aria-controls": id,
-    onClick: () => setOpen(!open)
-  }, open ? words.less : words.more) : null);
-}
-  } },
   "platform/utils/barFit.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -20654,7 +25112,7 @@ function ManageColumnsDialog({
   }))));
 }
   } },
-  "platform/components/Pagination/Pagination.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Pagination/Pagination.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -20663,6 +25121,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.Pagination = Pagination;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Pagination
    Summary: Page buttons, an optional summary ("1–30 of 120") and an optional per-page choice.
@@ -20679,7 +25138,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      onPerPageChange(n): runs when another per-page number is chosen
      label: the accessible name of the navigation; default strings.label: "Pages"
      className: more classes on the navigation
-     strings: the words it shows and announces, for other languages: { label: "Pages", range: "{first}–{last} of {total}",
+     strings: the words it shows and announces, for other languages (default: the locale's, through LocaleProvider; Arabic is
+       built in): { label: "Pages", range: "{first}–{last} of {total}",
        previous: "Previous page", next: "Next page", page: "Page {n}", perPage: "Per page" }
      ...rest: other attributes go on the navigation element
    Behavior:
@@ -20687,14 +25147,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Previous is disabled on the first page; Next on the last.
      The current page carries aria-current="page".
 */
-const STRINGS = {
-  label: 'Pages',
-  range: '{first}–{last} of {total}',
-  previous: 'Previous page',
-  next: 'Next page',
-  page: 'Page {n}',
-  perPage: 'Per page'
-};
 const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
 function pagesToShow(page, count) {
   const set = new Set([1, count, page - 1, page, page + 1].filter(p => p >= 1 && p <= count));
@@ -20719,7 +25171,9 @@ function Pagination({
   className,
   ...rest
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  // the words: the catalog's for the locale (i18n/en.js, and Arabic says the range its own way: "31 إلى 60 من 120"),
+  // then the strings prop
+  const t = (0, _LocaleProvider.useStrings)('pagination', strings);
   const go = p => {
     if (p >= 1 && p <= pageCount && p !== page && onPageChange) onPageChange(p);
   };
@@ -21361,7 +25815,7 @@ function DataPill({
   }, ', ' + t[gender]) : null);
 }
   } },
-  "platform/components/DataGrid/cells.jsx": { deps: {"react":null,"../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../DataPill/DataPill.jsx":"platform/components/DataPill/DataPill.jsx","../../utils/format.js":"platform/utils/format.js","../Isolate/Isolate.jsx":"platform/components/Isolate/Isolate.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/DataGrid/cells.jsx": { deps: {"react":null,"../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../DataPill/DataPill.jsx":"platform/components/DataPill/DataPill.jsx","../../utils/format.js":"platform/utils/format.js","../Isolate/Isolate.jsx":"platform/components/Isolate/Isolate.jsx","../../utils/digits.js":"platform/utils/digits.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -21379,6 +25833,7 @@ var _Tag = require("../Tag/Tag.jsx");
 var _DataPill = require("../DataPill/DataPill.jsx");
 var _format = require("../../utils/format.js");
 var _Isolate = require("../Isolate/Isolate.jsx");
+var _digits = require("../../utils/digits.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · DataGridEngine cells
    Summary: Existing Platform rich-cell parts rendered directly by React.
@@ -21506,12 +25961,13 @@ function CellValue({
     className: own,
     onMouseEnter: fullText
   }, /*#__PURE__*/_react.default.createElement(_Isolate.Isolate, {
-    dir: island === 'data' ? 'auto' : 'ltr'
+    dir: island === 'data' ? 'auto' : 'ltr',
+    kind: island === 'email' || island === 'url' ? island : undefined
   }, valueText(value)));
   return /*#__PURE__*/_react.default.createElement("span", {
     className: own,
     onMouseEnter: fullText
-  }, valueText(value));
+  }, (0, _digits.localDigits)(valueText(value)));
 }
 const ISLANDS = ['id', 'email', 'url', 'phone', 'code', 'data'];
 function fullText(event) {
@@ -28399,7 +32855,7 @@ function SegmentedControl({
   }, segments);
 }
   } },
-  "platform/components/Combobox/Combobox.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Combobox/Combobox.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -28411,6 +32867,7 @@ var _cx = require("../../utils/cx.js");
 var _Tag = require("../Tag/Tag.jsx");
 var _Loading = require("../Loading/Loading.jsx");
 var _announce = require("../../utils/announce.jsx");
+var _floating = require("../../utils/floating.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Combobox
    Summary: A field with a list to choose from, filtered as you type (an ARIA combobox with a listbox).
@@ -28448,7 +32905,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      className: more classes on the combobox
      ref: forwarded to the <input>
    Behavior:
-     The list opens on focus and on typing, and closes on a click outside.
+     The list opens on focus and on typing, and closes on a click outside. It opens in the browser's top layer, below the field
+       (or above it near an edge), at least as wide as the field, placed like a Menu: no dialog, drawer or scroll area clips it.
      ↓ / ↑ move, Enter chooses, Escape closes.
      Backspace in an empty multiple field removes the last value.
      A single choice closes the list; with multiple, the list stays open after each choice.
@@ -28466,6 +32924,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The list is a menu surface: border only, no shadow (D9).
      Other props pass through to the <input>.
 */
+// the top layer and CSS anchor positioning (as Menu, Popover and Select), checked once
+const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 const STRINGS = {
   loading: 'Loading…',
   error: 'The options could not be loaded',
@@ -28503,7 +32963,18 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
   const [text, setText] = _react.default.useState('');
   const [active, setActive] = _react.default.useState(0);
   const wrap = _react.default.useRef(null),
-    input = _react.default.useRef(null);
+    input = _react.default.useRef(null),
+    list = _react.default.useRef(null);
+  // the list opens in the top layer, placed against the field by the floating layer (flips up near an edge, follows scroll and resize): no dialog, drawer or scroll area clips it
+  (0, _floating.useFloating)(wrap, list, {
+    open,
+    placement: 'bottom-start',
+    matchWidth: true
+  });
+  _react.default.useLayoutEffect(() => {
+    const el = list.current;
+    if (open && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+  }, [open]);
   _react.default.useImperativeHandle(ref, () => input.current);
   // async select: the options of the last load, the loads in flight (only the newest is shown) and every option seen
   const [loaded, setLoaded] = _react.default.useState([]);
@@ -28662,9 +33133,12 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
     className: "plx-combobox__chevron",
     "aria-hidden": "true"
   })), open ? /*#__PURE__*/_react.default.createElement("ul", {
+    ref: list,
     className: "plx-combobox__list",
     id: listId,
     role: "listbox",
+    popover: TOP_LAYER ? 'manual' : undefined,
+    onMouseDown: e => e.preventDefault(),
     "aria-multiselectable": multiple || undefined,
     "aria-busy": isLoading || undefined
   }, items.length ? items.map((it, i) => it.kind === 'create' ? /*#__PURE__*/_react.default.createElement("li", {
@@ -30359,7 +34833,7 @@ function ActionBar({
   }, children);
 }
   } },
-  "platform/components/NavList/NavList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/NavList/NavList.jsx": { deps: {"react":null,"../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -30367,6 +34841,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.NavList = NavList;
 var _react = _interopRequireDefault(require("react"));
+var _format = require("../../utils/format.js");
 var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
 var _Icon = require("../Icon/Icon.jsx");
@@ -30588,7 +35063,7 @@ function NavList({
   className
 }) {
   const t = Object.assign({}, STRINGS, strings);
-  const loc = locale || typeof document !== 'undefined' && document.documentElement.lang || undefined;
+  const loc = (0, _format.numeralLocale)(locale || typeof document !== 'undefined' && document.documentElement.lang || undefined);
   const all = groups || [{
     heading: null,
     items: items || []
@@ -32537,7 +37012,7 @@ function FilterBar({
   }, actions) : null);
 }
   } },
-  "platform/patterns/SearchWorkspace/SearchWorkspace.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","../../utils/layer.js":"platform/utils/layer.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/SearchWorkspace/SearchWorkspace.jsx": { deps: {"react":null,"../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","../../utils/layer.js":"platform/utils/layer.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -32545,6 +37020,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.SearchWorkspace = SearchWorkspace;
 var _react = _interopRequireDefault(require("react"));
+var _format = require("../../utils/format.js");
 var _cx = require("../../utils/cx.js");
 var _Button = require("../../components/Button/Button.jsx");
 var _SearchField = require("../../components/SearchField/SearchField.jsx");
@@ -32652,7 +37128,7 @@ function SearchWorkspace({
   children
 }) {
   const t = Object.assign({}, STRINGS, strings);
-  const loc = locale || typeof document !== 'undefined' && document.documentElement.lang || undefined;
+  const loc = (0, _format.numeralLocale)(locale || typeof document !== 'undefined' && document.documentElement.lang || undefined);
   const id = (0, _layer.useUid)('plx-search-ws');
   const field = _react.default.useRef(null);
   // the query typed here is applied as the person types; Enter keeps focus in the field
@@ -33492,6 +37968,9 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      Header style 2 follows the button rule of a command bar: while the facts would wrap, first the count buttons show
        their icon only, then the states too, each with its words as its tooltip and name; past that the boxes wrap.
    Notes:
+     Writing direction (owner, arabic-batch4-36): title, subtitle and summary are plain text. In a right-to-left page an app
+       wraps an ID or a case number in them in <Isolate> (subtitle={['القضية ', <Isolate>20261020-01</Isolate>]}), or it reads
+       backwards (01-20261020); Plenix does not guess. The same goes for a fact's value.
      Not for settings screens: use RecordPage.Header. A small uppercase group label is SectionHeading.
 */
 
@@ -37379,108 +41858,6 @@ function RichText({
   }), html != null ? undefined : children);
 }
   } },
-  "platform/providers/DirectionProvider.jsx": { deps: {"react":null,"../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.DirectionContext = void 0;
-exports.DirectionProvider = DirectionProvider;
-exports.useDirection = useDirection;
-var _react = _interopRequireDefault(require("react"));
-var _direction = require("../utils/direction.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · DirectionProvider, useDirection
-   Summary: Sets the writing direction (left to right or right to left) of an application or of one region, and tells
-     React components which it is.
-   Usage:
-     <DirectionProvider dir="rtl" lang="ar">{app}</DirectionProvider>
-     <DirectionProvider locale="he-IL" root>{app}</DirectionProvider>   // on <html>: the whole page
-     const { dir, setDir } = useDirection();
-   Props:
-     dir: "ltr" | "rtl"; without it, the direction of locale, else of the page
-     locale: a language tag ("ar-EG", "en-US"); it sets lang and, without dir, the direction (directionOf)
-     lang: the lang attribute, when it is not the locale
-     root: set dir and lang on <html> instead of a region (default false): the page, its portals and its scrollbars mirror
-     children: the application root or the region it wraps
-     useDirection(): { dir, rtl, setDir(dir) }: the nearest provider's direction (outside one, the page's), and a way to
-       change it
-   Behavior:
-     A region: a wrapper (div.plx-direction, display: contents, so it adds no box) with dir and lang; everything inside
-       it lays out in that direction, as the stylesheets use logical properties.
-     With root, the attributes go on <html> and are put back as they were when the provider unmounts.
-     Overlays drawn in a Portal take the direction of where they were written (the Portal copies dir and lang).
-   Notes:
-     Mirror the layout, not the content: text, numbers, media controls, clocks and the icons that are not directional
-       keep their shape; the icon set mirrors its directional icons (arrows, chevrons, undo and redo) by itself.
-     Script reads the direction where it measures or handles arrow keys (utils/direction.js: arrowStep, physicalSide).
-*/
-
-const DirectionContext = exports.DirectionContext = /*#__PURE__*/_react.default.createContext(null);
-function DirectionProvider({
-  dir,
-  locale,
-  lang,
-  root = false,
-  children
-}) {
-  const wanted = dir || (locale ? (0, _direction.directionOf)(locale) : null);
-  const [own, setOwn] = _react.default.useState(wanted);
-  _react.default.useEffect(() => {
-    setOwn(wanted);
-  }, [wanted]);
-  const current = own || (typeof document !== 'undefined' ? (0, _direction.getDirection)() : 'ltr');
-  const language = lang || locale || undefined;
-  _react.default.useLayoutEffect(() => {
-    if (!root) return undefined;
-    const html = document.documentElement,
-      before = {
-        dir: html.getAttribute('dir'),
-        lang: html.getAttribute('lang')
-      };
-    html.setAttribute('dir', current);
-    if (language) html.setAttribute('lang', language);
-    return () => {
-      if (before.dir == null) html.removeAttribute('dir');else html.setAttribute('dir', before.dir);
-      if (language) {
-        if (before.lang == null) html.removeAttribute('lang');else html.setAttribute('lang', before.lang);
-      }
-    };
-  }, [root, current, language]);
-  const value = _react.default.useMemo(() => ({
-    dir: current,
-    rtl: current === 'rtl',
-    setDir: d => setOwn(d === 'rtl' ? 'rtl' : 'ltr')
-  }), [current]);
-  return /*#__PURE__*/_react.default.createElement(DirectionContext.Provider, {
-    value: value
-  }, root ? children : /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-direction",
-    dir: current,
-    lang: language
-  }, children));
-}
-function useDirection() {
-  const ctx = _react.default.useContext(DirectionContext);
-  const [page, setPage] = _react.default.useState(() => typeof document !== 'undefined' ? (0, _direction.getDirection)() : 'ltr');
-  _react.default.useEffect(() => {
-    if (ctx) return undefined;
-    const observer = new MutationObserver(() => setPage((0, _direction.getDirection)()));
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['dir']
-    });
-    return () => observer.disconnect();
-  }, [ctx]);
-  if (ctx) return ctx;
-  return {
-    dir: page,
-    rtl: page === 'rtl',
-    setDir: d => document.documentElement.setAttribute('dir', d === 'rtl' ? 'rtl' : 'ltr')
-  };
-}
-  } },
   "platform/hooks/usePressable.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -39244,7 +43621,7 @@ function RetryNotice({
   }, count) : null) : null);
 }
   } },
-  "platform/components/ProgressCircle/ProgressCircle.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/ProgressCircle/ProgressCircle.jsx": { deps: {"react":null,"../../utils/format.js":"platform/utils/format.js","../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -39252,6 +43629,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ProgressCircle = ProgressCircle;
 var _react = _interopRequireDefault(require("react"));
+var _format = require("../../utils/format.js");
 var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -39317,7 +43695,7 @@ function ProgressCircle({
   const t = TONES.indexOf(tone) >= 0 ? tone : 'info';
   const known = typeof value === 'number' && !Number.isNaN(value);
   const pct = known ? Math.max(0, Math.min(100, value / (max || 100) * 100)) : null;
-  const loc = locale || typeof document !== 'undefined' && document.documentElement.lang || undefined;
+  const loc = (0, _format.numeralLocale)(locale || typeof document !== 'undefined' && document.documentElement.lang || undefined);
   return /*#__PURE__*/_react.default.createElement("span", _extends({
     className: (0, _cx.cx)('plx-progress-circle', 'plx-progress-circle--' + s, 'plx-progress-circle--' + t, !known && 'is-indeterminate', className),
     role: "progressbar",
@@ -40193,7 +44571,7 @@ function dayLabel(d, now, o) {
     timeZone: o.timeZone,
     locale: o.locale
   });
-  const lang = o.locale || (0, _format.formatLocale)();
+  const lang = (0, _format.numeralLocale)(o.locale || (0, _format.formatLocale)());
   const w = new Intl.RelativeTimeFormat(lang, {
     numeric: 'auto'
   }).format(days, 'day');
@@ -42216,7 +46594,7 @@ const NumberInput = exports.NumberInput = /*#__PURE__*/_react.default.forwardRef
   ...rest
 }, ref) {
   const t = Object.assign({}, STRINGS, strings);
-  const locale = (0, _format.formatLocale)();
+  const locale = (0, _format.numeralLocale)((0, _format.formatLocale)());
   const aff = _react.default.useMemo(() => affix(format, currency, currencyDisplay, locale), [format, currency, currencyDisplay, locale]);
   const places = decimals !== undefined ? decimals : aff && aff.decimals !== undefined ? aff.decimals : undefined;
   const controlled = value !== undefined;
@@ -44958,7 +49336,7 @@ const Calendar = exports.Calendar = /*#__PURE__*/_react.default.forwardRef(funct
   ...rest
 }, ref) {
   const t = Object.assign({}, STRINGS, strings);
-  const locale = localeProp || (0, _format.formatLocale)();
+  const locale = (0, _format.numeralLocale)(localeProp || (0, _format.formatLocale)());
   const today = todayProp || todayIso();
   const range = mode === 'range';
   const [ownValue, setOwnValue] = _react.default.useState(defaultValue !== undefined ? defaultValue : range ? {
@@ -45045,8 +49423,9 @@ const Calendar = exports.Calendar = /*#__PURE__*/_react.default.forwardRef(funct
     month: 'long',
     year: 'numeric'
   });
+  // Arabic weekday names are too long for a column: one letter each, as Arabic calendars do (owner, arabic-batch4-36)
   const weekdayShort = new Intl.DateTimeFormat(locale, {
-    weekday: 'short'
+    weekday: /^ar\b/i.test(locale) ? 'narrow' : 'short'
   });
   const weekdayLong = new Intl.DateTimeFormat(locale, {
     weekday: 'long'
@@ -45358,7 +49737,7 @@ const DatePicker = exports.DatePicker = /*#__PURE__*/_react.default.forwardRef(f
   ...rest
 }, ref) {
   const t = Object.assign({}, STRINGS, strings);
-  const locale = localeProp || (0, _format.formatLocale)();
+  const locale = (0, _format.numeralLocale)(localeProp || (0, _format.formatLocale)());
   const form = numericForm(locale);
   const range = mode === 'range',
     dateTime = mode === 'date-time';
@@ -46150,7 +50529,7 @@ const MillerColumns = exports.MillerColumns = /*#__PURE__*/_react.default.forwar
   }, renderPreview(preview)) : null);
 });
   } },
-  "platform/components/Cascader/Cascader.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Cascader/Cascader.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -46162,6 +50541,7 @@ var _cx = require("../../utils/cx.js");
 var _Tag = require("../Tag/Tag.jsx");
 var _MillerColumns = require("../MillerColumns/MillerColumns.jsx");
 var _announce = require("../../utils/announce.jsx");
+var _floating = require("../../utils/floating.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Cascader
    Summary: A form field whose value is a leaf of a hierarchy, chosen level by level in columns that open under the field
@@ -46189,6 +50569,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        columns: "Options" }
      className: more classes on the cascader
    Behavior:
+     The popup opens in the browser's top layer, below the field or above it near an edge: no dialog, drawer or scroll area clips it.
      The field is a button (aria-haspopup="dialog", aria-expanded) that opens the columns under it; focus moves into the
        first column, on the chosen path. The columns are MillerColumns: Arrow Up and Down in a column, Right into the
        children, Left back, Enter on a leaf chooses it (a click too). A single choice closes the list and returns focus to
@@ -46203,6 +50584,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      For a hierarchy people should see whole, use a tree select; for two or three short levels, consider plain Selects.
      The list is a menu surface (8px corners, the menu elevation); its columns take the narrowest width step (160px).
 */
+// the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
+const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 const STRINGS = {
   placeholder: 'Choose',
   separator: ' / ',
@@ -46252,7 +50635,17 @@ const Cascader = exports.Cascader = /*#__PURE__*/_react.default.forwardRef(funct
   const wrap = _react.default.useRef(null),
     button = _react.default.useRef(null),
     search = _react.default.useRef(null),
-    cols = _react.default.useRef(null);
+    cols = _react.default.useRef(null),
+    popup = _react.default.useRef(null);
+  // the popup opens in the top layer, placed against the field by the floating layer (flips up near an edge, follows scroll and resize): no dialog, drawer or scroll area clips it
+  (0, _floating.useFloating)(wrap, popup, {
+    open,
+    placement: 'bottom-start'
+  });
+  _react.default.useLayoutEffect(() => {
+    const el = popup.current;
+    if (open && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+  }, [open]);
   _react.default.useImperativeHandle(ref, () => button.current);
   const chosen = multiple ? values || [] : value !== undefined && value !== null && value !== '' ? [value] : [];
   const pathLabel = trail => trail.map(x => x.label).join(t.separator);
@@ -46365,9 +50758,11 @@ const Cascader = exports.Cascader = /*#__PURE__*/_react.default.forwardRef(funct
     className: "plx-cascader__chevron",
     "aria-hidden": "true"
   }))), open ? /*#__PURE__*/_react.default.createElement("div", {
+    ref: popup,
     className: "plx-cascader__popup",
     id: auto + '-pop',
     role: "dialog",
+    popover: TOP_LAYER ? 'manual' : undefined,
     "aria-label": label || t.columns
   }, searchable ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-cascader__search"
@@ -46427,7 +50822,7 @@ const Cascader = exports.Cascader = /*#__PURE__*/_react.default.forwardRef(funct
   }))) : null);
 });
   } },
-  "platform/components/EntityPicker/EntityPicker.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/EntityPicker/EntityPicker.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -46442,6 +50837,7 @@ var _IconTile = require("../IconTile/IconTile.jsx");
 var _Icon = require("../Icon/Icon.jsx");
 var _Loading = require("../Loading/Loading.jsx");
 var _announce = require("../../utils/announce.jsx");
+var _floating = require("../../utils/floating.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · EntityPicker
    Summary: A search-and-choose field for records of one kind (people, teams, projects, assets), each suggestion with its
@@ -46481,12 +50877,16 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      A single choice shows the chosen record's picture or icon before its name in the field and closes the list; with
        multiple, choosing adds or removes a tag and the list stays open; Backspace in the empty field removes the last
        tag; each tag has a remove button named "Remove <name>".
+     The list opens in the browser's top layer, below the field or above it near an edge, as wide as the field at least: no dialog,
+       drawer or scroll area clips it.
      The number of results is announced politely after each search; while loadOptions runs the list is busy and shows
        a spinner; a failed load says so in the list.
    Notes:
      The picture in each suggestion is decorative: the name and the detail are the option's text.
      For a few known choices use Select; for anything that is not a record, Combobox.
 */
+// the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
+const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 const STRINGS = {
   placeholderPeople: 'Search by name or email',
   placeholder: 'Search {entityName}',
@@ -46532,7 +50932,8 @@ const EntityPicker = exports.EntityPicker = /*#__PURE__*/_react.default.forwardR
   const [text, setText] = _react.default.useState('');
   const [active, setActive] = _react.default.useState(0);
   const wrap = _react.default.useRef(null),
-    input = _react.default.useRef(null);
+    input = _react.default.useRef(null),
+    list = _react.default.useRef(null);
   _react.default.useImperativeHandle(ref, () => input.current);
   const [loaded, setLoaded] = _react.default.useState([]);
   const [busy, setBusy] = _react.default.useState(false);
@@ -46661,6 +51062,16 @@ const EntityPicker = exports.EntityPicker = /*#__PURE__*/_react.default.forwardR
     entityName: noun
   }));
   const showList = open && (items.length || busy || failed || q);
+  // the list opens in the top layer, placed against the field by the floating layer (flips up near an edge, follows scroll and resize): no dialog, drawer or scroll area clips it
+  (0, _floating.useFloating)(wrap, list, {
+    open: !!showList,
+    placement: 'bottom-start',
+    matchWidth: true
+  });
+  _react.default.useLayoutEffect(() => {
+    const el = list.current;
+    if (showList && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+  }, [showList]);
   return /*#__PURE__*/_react.default.createElement("div", {
     ref: wrap,
     className: (0, _cx.cx)('plx-entity-picker', 'plx-entity-picker--' + kind, multiple && 'plx-entity-picker--multiple', open && 'is-open', disabled && 'is-disabled', className)
@@ -46708,9 +51119,12 @@ const EntityPicker = exports.EntityPicker = /*#__PURE__*/_react.default.forwardR
   }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
     name: "search"
   }))), showList ? /*#__PURE__*/_react.default.createElement("ul", {
+    ref: list,
     className: "plx-entity-picker__list",
     id: listId,
     role: "listbox",
+    popover: TOP_LAYER ? 'manual' : undefined,
+    onMouseDown: e => e.preventDefault(),
     "aria-label": label || noun,
     "aria-multiselectable": multiple || undefined,
     "aria-busy": busy || undefined
@@ -46775,7 +51189,7 @@ const EntityPicker = exports.EntityPicker = /*#__PURE__*/_react.default.forwardR
   })) : null))) : null);
 });
   } },
-  "platform/components/TimePicker/TimePicker.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/TimePicker/TimePicker.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/floating.js":"platform/utils/floating.js","../../utils/digits.js":"platform/utils/digits.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -46786,6 +51200,9 @@ var _react = _interopRequireDefault(require("react"));
 var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _format = require("../../utils/format.js");
+var _floating = require("../../utils/floating.js");
+var _digits = require("../../utils/digits.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · TimePicker
    Summary: A time of day, typed or chosen: a field with a list of times at a set step (the default), or segments for the
@@ -46804,6 +51221,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      variant: "list" (default: a field people type in, with the times at each step in a list under it) | "segments"
        (spin buttons for the hour, the minute and the period)
      hourCycle: "12" | "24": the clock shown; default the reader's locale's clock
+     The list of times opens in the browser's top layer, below the field (or above it near an edge), as wide as the field: no dialog, drawer or scroll area clips it;
+       its rows are the shared list row height (28px at the compact density), the times in the data font (owner, timepicker-rows-37)
+     Digits: in Arabic the times are written Arabic-Indic (٢:٣٠), and a time typed in Arabic-Indic digits reads the same (owner, arabic-digits-35)
      step: the minutes between times in the list, and the minute segment's step (default 15 for the list, 1 for segments);
        a value that divides 60 (5, 10, 15, 30)
      min, max: the earliest and the latest time ("HH:MM"); the list holds only times between them
@@ -46828,6 +51248,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      For a date and a time together, place a date picker beside it. For a duration, use a number input with a unit.
      Show the time zone in the description when people in several zones use the data.
 */
+// the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
+const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 const STRINGS = {
   hour: 'Hour',
   minute: 'Minute',
@@ -46855,7 +51277,7 @@ const localeCycle = () => {
 };
 // "2", "2pm", "2:30 pm", "14:30", "1430", "230p" → minutes after midnight, or null
 const parseTime = (text, cycle) => {
-  const s = String(text || '').trim().toLowerCase().replace(/\./g, '');
+  const s = (0, _digits.toLatinDigits)(String(text || '')).trim().toLowerCase().replace(/\./g, ''); // what a person typed in Arabic-Indic digits reads the same
   if (!s) return null;
   const m = /^(\d{1,2})(?::?(\d{2}))?\s*(a|am|p|pm)?$/.exec(s);
   if (!m) return null;
@@ -46870,11 +51292,13 @@ const parseTime = (text, cycle) => {
   return h * 60 + min;
 };
 exports.parseTime = parseTime;
-const show = (mins, cycle, t) => {
+const show = (mins, cycle, t, digits) => {
   if (mins === null) return '';
   const h = Math.floor(mins / 60),
     m = mins % 60;
-  return cycle === '12' ? (h % 12 || 12) + ':' + pad(m) + ' ' + (h < 12 ? t.am : t.pm) : pad(h) + ':' + pad(m);
+  return (0, _digits.localDigits)(cycle === '12' ? (h % 12 || 12) + ':' + pad(m) + ' ' + (h < 12 ? t.am : t.pm) : pad(h) + ':' + pad(m), {
+    digits
+  }); // the page's digits (Arabic-Indic in Arabic)
 };
 const TimePicker = exports.TimePicker = /*#__PURE__*/_react.default.forwardRef(function TimePicker({
   value,
@@ -46912,6 +51336,7 @@ const TimePicker = exports.TimePicker = /*#__PURE__*/_react.default.forwardRef(f
     if (value === undefined) setOwn(v);
     if (onChange && v !== current) onChange(v);
   };
+  const digits = (0, _LocaleProvider.useDigits)();
   const cls = (0, _cx.cx)('plx-time-picker', 'plx-time-picker--' + variant, width && 'plx-time-picker--width-' + width, disabled && 'is-disabled', className);
   const hidden = name ? /*#__PURE__*/_react.default.createElement("input", {
     type: "hidden",
@@ -46969,6 +51394,7 @@ const ListPicker = /*#__PURE__*/_react.default.forwardRef(function ListPicker({
   hidden,
   rest
 }, ref) {
+  const digits = (0, _LocaleProvider.useDigits)();
   const auto = 'plx-tp' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
   const [open, setOpen] = _react.default.useState(false);
   const [text, setText] = _react.default.useState(null); // the text while typing; null shows the value
@@ -46976,6 +51402,16 @@ const ListPicker = /*#__PURE__*/_react.default.forwardRef(function ListPicker({
   const wrap = _react.default.useRef(null),
     input = _react.default.useRef(null),
     list = _react.default.useRef(null);
+  // the list opens in the top layer, placed against the field by the floating layer (flips up near an edge, follows scroll and resize): no dialog, drawer or scroll area clips it
+  (0, _floating.useFloating)(wrap, list, {
+    open,
+    placement: 'bottom-start',
+    matchWidth: true
+  });
+  _react.default.useLayoutEffect(() => {
+    const el = list.current;
+    if (open && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+  }, [open]);
   _react.default.useImperativeHandle(ref, () => input.current);
   const times = [];
   for (let n = Math.ceil(lo / step) * step; n <= hi; n += step) times.push(n);
@@ -47070,7 +51506,7 @@ const ListPicker = /*#__PURE__*/_react.default.forwardRef(function ListPicker({
     disabled: disabled,
     autoComplete: "off",
     inputMode: "text",
-    value: text !== null ? text : show(mins, cycle, t),
+    value: text !== null ? text : show(mins, cycle, t, digits),
     placeholder: cycle === '12' ? '9:00 ' + t.am : '09:00',
     onChange: e => {
       setText(e.target.value);
@@ -47092,6 +51528,8 @@ const ListPicker = /*#__PURE__*/_react.default.forwardRef(function ListPicker({
     className: "plx-time-picker__list",
     id: auto + '-list',
     role: "listbox",
+    popover: TOP_LAYER ? 'manual' : undefined,
+    onMouseDown: e => e.preventDefault(),
     "aria-label": label ? label + ', ' + t.times : t.times
   }, times.map((n, i) => /*#__PURE__*/_react.default.createElement("li", {
     key: n,
@@ -47103,7 +51541,7 @@ const ListPicker = /*#__PURE__*/_react.default.forwardRef(function ListPicker({
     onMouseDown: e => e.preventDefault(),
     onClick: () => choose(i),
     onMouseEnter: () => setActive(i)
-  }, show(n, cycle, t)))) : null, hidden);
+  }, show(n, cycle, t, digits)))) : null, hidden);
 });
 const Segments = /*#__PURE__*/_react.default.forwardRef(function Segments({
   t,
@@ -47121,6 +51559,7 @@ const Segments = /*#__PURE__*/_react.default.forwardRef(function Segments({
   hidden,
   rest
 }, ref) {
+  const digits = (0, _LocaleProvider.useDigits)();
   const mins = toMin(current);
   // the parts being edited: hour on the clock shown (1–12 or 0–23), minute, period ('am' | 'pm'); null = empty
   const fromValue = () => mins === null ? {
@@ -47231,7 +51670,9 @@ const Segments = /*#__PURE__*/_react.default.forwardRef(function Segments({
     m: t.minute,
     p: t.period
   };
-  const text = k => parts[k] === null ? t.empty : k === 'p' ? parts.p === 'am' ? t.am : t.pm : k === 'h' && cycle === '12' ? String(parts.h) : pad(parts[k]);
+  const text = k => parts[k] === null ? t.empty : k === 'p' ? parts.p === 'am' ? t.am : t.pm : (0, _digits.localDigits)(k === 'h' && cycle === '12' ? String(parts.h) : pad(parts[k]), {
+    digits
+  });
   return /*#__PURE__*/_react.default.createElement("div", {
     className: cls
   }, /*#__PURE__*/_react.default.createElement("div", _extends({
@@ -48315,7 +52756,7 @@ function AvatarUpload({
   }, error) : null);
 }
   } },
-  "platform/components/TimeZoneSelect/TimeZoneSelect.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/announce.jsx":"platform/utils/announce.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/TimeZoneSelect/TimeZoneSelect.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/digits.js":"platform/utils/digits.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../Isolate/Isolate.jsx":"platform/components/Isolate/Isolate.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -48326,7 +52767,11 @@ exports.timeZoneOptions = timeZoneOptions;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _format = require("../../utils/format.js");
+var _digits = require("../../utils/digits.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _Isolate = require("../Isolate/Isolate.jsx");
 var _announce = require("../../utils/announce.jsx");
+var _floating = require("../../utils/floating.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · TimeZoneSelect
    Summary: A field for choosing a time zone (05 Forms › Date, time, and color › Time-zone selector): a combobox over
@@ -48342,6 +52787,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      onChange(zone): runs with the chosen zone's IANA name
      grouped: list the zones under their region (Africa, Americas, Asia…), by city (default true); false lists them in
        one list ordered by offset, west to east
+     Digits: in Arabic the offsets are written Arabic-Indic; typing Arabic-Indic digits finds the same zones (owner, arabic-digits-35)
      showOffset: each zone's offset from UTC ("UTC−08:00") at the end of its option and of the field (default true)
      zones: the IANA names to offer (default: every zone the browser supports, and UTC)
      date: the moment the offsets are for (default now): offsets change with daylight saving time
@@ -48356,6 +52802,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      className: more classes on the field
      ref: forwarded to the <input>; other props pass through to it
    Behavior:
+     The list opens in the browser's top layer like the Combobox's: no dialog, drawer or scroll area clips it.
      The Combobox's behavior and look (its classes and tokens): the list opens on focus and on typing; ↓ and ↑ move,
      Enter chooses, Escape closes, a click outside closes. The active option stays in view.
      Typing filters by city, region, IANA name, the zone's long name in the reader's language and the offset; the number
@@ -48366,6 +52813,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Offsets are technical values: the data font (Reddit Mono). The city comes from the IANA name ("Buenos Aires, Argentina");
      the long name ("Pacific Standard Time") is only searched, never shown, so the list stays short.
 */
+// the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
+const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 const STRINGS = {
   placeholder: 'Choose a time zone',
   empty: 'No matches',
@@ -48453,7 +52902,7 @@ function timeZoneOptions({
 }
 
 // the search text: an offset typed as "+5", "-08", "5:30" or "utc+1" matches "UTC+05:00"
-const fold = s => String(s).toLowerCase().replace(/[−–]/g, '-').replace(/_/g, ' ');
+const fold = s => (0, _digits.toLatinDigits)(String(s)).toLowerCase().replace(/[−–]/g, '-').replace(/_/g, ' ');
 const offsetKeys = o => {
   const sign = o.minutes < 0 ? '-' : '+',
     a = Math.abs(o.minutes),
@@ -48479,6 +52928,7 @@ const TimeZoneSelect = exports.TimeZoneSelect = /*#__PURE__*/_react.default.forw
   ...rest
 }, ref) {
   const t = Object.assign({}, STRINGS, strings);
+  const digits = (0, _LocaleProvider.useDigits)();
   const auto = 'plx-tz' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
   const listId = auto + '-list';
   const [open, setOpen] = _react.default.useState(false);
@@ -48487,6 +52937,16 @@ const TimeZoneSelect = exports.TimeZoneSelect = /*#__PURE__*/_react.default.forw
   const wrap = _react.default.useRef(null),
     input = _react.default.useRef(null),
     list = _react.default.useRef(null);
+  // the list opens in the top layer, placed against the field by the floating layer (flips up near an edge, follows scroll and resize): no dialog, drawer or scroll area clips it
+  (0, _floating.useFloating)(wrap, list, {
+    open: open,
+    placement: 'bottom-start',
+    matchWidth: true
+  });
+  _react.default.useLayoutEffect(() => {
+    const el = list.current;
+    if (open && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+  }, [open]);
   _react.default.useImperativeHandle(ref, () => input.current);
   const day = date ? new Date(date).toDateString() : new Date().toDateString();
   const zoneKey = zones ? zones.join('|') : '';
@@ -48605,7 +53065,9 @@ const TimeZoneSelect = exports.TimeZoneSelect = /*#__PURE__*/_react.default.forw
     "aria-label": label,
     disabled: disabled,
     autoComplete: "off",
-    "aria-description": current && showOffset ? current.offset : undefined,
+    "aria-description": current && showOffset ? (0, _digits.localDigits)(current.offset, {
+      digits
+    }) : undefined,
     value: open ? text : current ? current.label : '',
     placeholder: current && open ? current.label : placeholder || t.placeholder,
     onChange: e => {
@@ -48617,7 +53079,7 @@ const TimeZoneSelect = exports.TimeZoneSelect = /*#__PURE__*/_react.default.forw
   }, rest)), showOffset && current && !open ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-time-zone-select__field-offset",
     "aria-hidden": "true"
-  }, current.offset) : null, /*#__PURE__*/_react.default.createElement("span", {
+  }, /*#__PURE__*/_react.default.createElement(_Isolate.Isolate, null, current.offset)) : null, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-combobox__chevron",
     "aria-hidden": "true"
   })), open ? /*#__PURE__*/_react.default.createElement("ul", {
@@ -48625,7 +53087,9 @@ const TimeZoneSelect = exports.TimeZoneSelect = /*#__PURE__*/_react.default.forw
     className: "plx-combobox__list plx-time-zone-select__list",
     id: listId,
     role: "listbox",
-    "aria-label": label
+    "aria-label": label,
+    popover: TOP_LAYER ? 'manual' : undefined,
+    onMouseDown: e => e.preventDefault()
   }, shown.length ? shown.map((o, i) => [grouped && (i === 0 || shown[i - 1].region !== o.region) ? /*#__PURE__*/_react.default.createElement("li", {
     key: 'g-' + o.region,
     className: "plx-combobox__group",
@@ -48643,7 +53107,7 @@ const TimeZoneSelect = exports.TimeZoneSelect = /*#__PURE__*/_react.default.forw
     className: "plx-time-zone-select__city"
   }, o.label), showOffset ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-time-zone-select__offset"
-  }, o.offset) : null)]) : /*#__PURE__*/_react.default.createElement("li", {
+  }, /*#__PURE__*/_react.default.createElement(_Isolate.Isolate, null, o.offset)) : null)]) : /*#__PURE__*/_react.default.createElement("li", {
     className: "plx-combobox__empty",
     role: "presentation"
   }, t.empty)) : null);
@@ -53124,7 +57588,7 @@ function ResourceList({
   }, items.map(row)));
 }
   } },
-  "platform/charts/LineChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./interaction.js":"platform/charts/interaction.js","./echarts/EChartsPlot.jsx":"platform/charts/echarts/EChartsPlot.jsx","../utils/grid.js":"platform/utils/grid.js","./chart-kit.js":"platform/charts/chart-kit.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/LineChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./interaction.js":"platform/charts/interaction.js","./echarts/EChartsPlot.jsx":"platform/charts/echarts/EChartsPlot.jsx","./echarts/engine.js":"platform/charts/echarts/engine.js","../utils/grid.js":"platform/utils/grid.js","./chart-kit.js":"platform/charts/chart-kit.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -53142,6 +57606,7 @@ var _ChartLegend = require("./parts/ChartLegend.jsx");
 var _ChartTooltip = require("./parts/ChartTooltip.jsx");
 var _interaction = require("./interaction.js");
 var _EChartsPlot = require("./echarts/EChartsPlot.jsx");
+var _engine = require("./echarts/engine.js");
 var _grid = require("../utils/grid.js");
 var _chartKit = require("./chart-kit.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -53399,8 +57864,11 @@ function SeriesChart({
     const room = gridRoom(margin, tk.top);
     // ECharts does not measure labels at its own tick values: the room under the plot and after it for the date labels
     const dates = type === 'time' ? timeLabels(size) : null;
+    // the x labels' line height: the font size, or more for Arabic labels (tickLineHeight)
+    const xTexts = type === 'band' ? cols.map(c => fmts.current.fmtX(xs[c])) : dates ? dates.customValues.map(dates.formatter) : [];
+    const xLine = (0, _engine.tickLineHeight)(tk, xTexts);
     if (dates) {
-      room.bottom = Math.max(room.bottom, (0, _grid.snapToGrid)(tk.tickOffset + tk.tick.fontSize, {
+      room.bottom = Math.max(room.bottom, (0, _grid.snapToGrid)(tk.tickOffset + xLine, {
         round: 'up'
       }));
       room.right = Math.max(room.right, (0, _chartKit.halfRoom)(dates.last));
@@ -53418,13 +57886,17 @@ function SeriesChart({
     };
     const xAxis = Object.assign({
       name: xLabel,
-      nameGap: tk.tickOffset * 2 + tk.tick.fontSize,
+      nameGap: tk.tickOffset * 2 + xLine,
       inverse: tk.rtl
-    }, named, type === 'band' ? {
+    }, named, type === 'band' ? Object.assign({
       type: 'category',
       boundaryGap: false,
-      data: cols.map(c => fmts.current.fmtX(xs[c]))
-    } : {
+      data: xTexts
+    }, xLine > tk.tick.fontSize ? {
+      axisLabel: {
+        lineHeight: xLine
+      }
+    } : {}) : {
       type: type === 'time' ? 'time' : 'value',
       min: xValue(v0),
       max: xValue(v1),
@@ -53807,7 +58279,7 @@ function HeatMap({
   const calendar = variant === 'calendar';
   const fmt = typeof format === 'function' ? format : v => (0, _format.formatNumber)(v);
   const vLabel = valueLabel || t.value;
-  const locale = (0, _format.formatLocale)();
+  const locale = (0, _format.numeralLocale)((0, _format.formatLocale)());
   const cal = calendar ? calendarGrid(data) : null;
   const weekday = r => new Intl.DateTimeFormat(locale, {
     weekday: 'short'
@@ -55777,7 +60249,7 @@ function Diagram({
   }, draw);
 }
   } },
-  "platform/charts/BarChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./interaction.js":"platform/charts/interaction.js","./chart-kit.js":"platform/charts/chart-kit.js","./echarts/EChartsPlot.jsx":"platform/charts/echarts/EChartsPlot.jsx","./LineChart.jsx":"platform/charts/LineChart.jsx","../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/BarChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./interaction.js":"platform/charts/interaction.js","./chart-kit.js":"platform/charts/chart-kit.js","./echarts/EChartsPlot.jsx":"platform/charts/echarts/EChartsPlot.jsx","./echarts/engine.js":"platform/charts/echarts/engine.js","./LineChart.jsx":"platform/charts/LineChart.jsx","../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -55796,6 +60268,7 @@ var _DataLabel = require("./parts/DataLabel.jsx");
 var _interaction = require("./interaction.js");
 var _chartKit = require("./chart-kit.js");
 var _EChartsPlot = require("./echarts/EChartsPlot.jsx");
+var _engine = require("./echarts/engine.js");
 var _LineChart = require("./LineChart.jsx");
 var _grid = require("../utils/grid.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -56106,15 +60579,19 @@ function BarChart({
       min: 0,
       max: 1
     } : {});
+    // the category labels' line height under columns: the font size, or more for Arabic labels (tickLineHeight)
+    const catLine = across || bins ? tk.tick.fontSize : (0, _engine.tickLineHeight)(tk, cats.map(String));
     const catAxis = Object.assign({
       type: 'category',
       data: cats.map((c, ci) => bins ? String(ci) : String(c)),
       inverse: across,
       name: bins ? undefined : categoryLabel,
-      nameGap: across ? 0 : tk.tickOffset * 2 + tk.tick.fontSize,
+      nameGap: across ? 0 : tk.tickOffset * 2 + catLine,
       position: across ? tk.rtl ? 'right' : 'left' : 'bottom',
       axisLabel: bins ? {
         show: false
+      } : catLine > tk.tick.fontSize ? {
+        lineHeight: catLine
       } : {}
     }, named);
     // a histogram's range axis: the bins' edges on a number axis laid over the bins
@@ -77513,216 +81990,6 @@ function browserSupport(environment = typeof window === 'undefined' ? {} : windo
   };
 }
   } },
-  "platform/i18n/en.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-// Browser mirror of en.json: the repository module loader accepts JavaScript only. The W15C catalog test checks parity.
-var _default = exports.default = {
-  "common": {
-    "save": "Save",
-    "cancel": "Cancel",
-    "close": "Close",
-    "retry": "Retry",
-    "next": "Next",
-    "back": "Back"
-  },
-  "collection": {
-    "selected": {
-      "=0": "Nothing selected",
-      "one": "{count} item selected",
-      "other": "{count} items selected"
-    }
-  },
-  "wizard": {
-    "next": "Next",
-    "back": "Back",
-    "finish": "Finish",
-    "cancel": "Cancel",
-    "step": "Step {n} of {total}",
-    "error": "Could not save. Try again."
-  },
-  "dialog": {
-    "close": "Close"
-  },
-  "text": {
-    "more": "Show more",
-    "less": "Show less"
-  },
-  "emptyState": {
-    "title": "No items yet",
-    "description": "Create an item to get started.",
-    "action": "Create item"
-  }
-};
-  } },
-  "platform/providers/LocaleProvider.jsx": { deps: {"react":null,"./DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","../utils/direction.js":"platform/utils/direction.js","../utils/format.js":"platform/utils/format.js","../i18n/en.js":"platform/i18n/en.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.LocaleProvider = LocaleProvider;
-exports.createTranslator = createTranslator;
-exports.useLocale = useLocale;
-var _react = _interopRequireDefault(require("react"));
-var _DirectionProvider = require("./DirectionProvider.jsx");
-var _direction = require("../utils/direction.js");
-var F = _interopRequireWildcard(require("../utils/format.js"));
-var _en = _interopRequireDefault(require("../i18n/en.js"));
-function _interopRequireWildcard(e, t) { if ("function" == typeof WeakMap) var r = new WeakMap(), n = new WeakMap(); return (_interopRequireWildcard = function (e, t) { if (!t && e && e.__esModule) return e; var o, i, f = { __proto__: null, default: e }; if (null === e || "object" != typeof e && "function" != typeof e) return f; if (o = t ? n : r) { if (o.has(e)) return o.get(e); o.set(e, f); } for (const t in e) "default" !== t && {}.hasOwnProperty.call(e, t) && ((i = (o = Object.defineProperty) && Object.getOwnPropertyDescriptor(e, t)) && (i.get || i.set) ? o(f, t, i) : f[t] = e[t]); return f; })(e, t); }
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · LocaleProvider, useLocale, createTranslator
-   Summary: Locale-scoped message catalogs, plural rules, formatting and writing direction. Existing components receive
-     their strings explicitly from the catalog; a region never changes another region's locale.
-   Usage:
-     <LocaleProvider locale="fr-FR" catalogs={{ fr: french }}><App /></LocaleProvider>
-     const { t, strings, format } = useLocale();
-     <Wizard strings={strings('wizard')} />; t('collection.selected', { count: 2 }); format.date('2026-03-08');
-   Props:
-     locale: a BCP 47 language tag; default the page's formatLocale()
-     catalogs: messages by locale, with flat dot keys or nested sections; English is always the last fallback
-     messages: the current locale's catalog, as a convenience
-     fallbackLocale: locale searched after the requested locale and its language; default "en"
-     timeZone: optional Intl time zone for this provider's date/time formatters
-     dir: explicit "ltr" or "rtl"; otherwise directionOf(locale)
-     root: set the page's lang and dir through DirectionProvider; default false (a scoped region)
-     children: the region's content
-     useLocale(): { locale, dir, t, strings, plural, format }; format has number, unit, bytes, duration, compact, date,
-       time, dateTime, relative, range, currency, percent, list, personName, address, phone and regionName
-     createTranslator(locale, catalogs, fallbackLocale): the same t/strings/plural API outside React
-   Behavior:
-     Fallback: exact locale, language, configured fallback, then English. Missing messages return their key.
-     Messages interpolate {name} as plain text. Plural messages are objects with one/other (or any Intl category),
-     optional "=0" exact-count keys; t(key, { count }) selects them with Intl.PluralRules. t's third argument may
-     set ordinal:true. Missing interpolation values keep their placeholder. No HTML is parsed.
-     strings(section, values) combines that section across fallbacks for a component's strings prop.
-   Notes:
-     Translators never mutate catalogs or global Intl state. Pass the bound format helpers to localized content;
-     unmodified components keep their existing defaults. Catalog translations are application-owned. */
-
-const canonical = (value, fallback = 'en') => {
-  try {
-    return Intl.getCanonicalLocales(value || fallback)[0] || fallback;
-  } catch (e) {
-    return fallback;
-  }
-};
-const own = (value, key) => value && Object.prototype.hasOwnProperty.call(value, key);
-const messageAt = (catalog, key) => {
-  if (own(catalog, key)) return catalog[key];
-  return String(key).split('.').reduce((node, part) => own(node, part) ? node[part] : undefined, catalog);
-};
-const text = (message, values) => String(message).replace(/\{(\w+)\}/g, (match, key) => own(values, key) ? String(values[key]) : match);
-function createTranslator(locale = 'en', catalogs = {}, fallbackLocale = 'en') {
-  const language = canonical(locale),
-    fallback = canonical(fallbackLocale);
-  const normalized = Object.fromEntries(Object.entries(catalogs || {}).map(([key, value]) => [canonical(key), value]));
-  const chain = [...new Set([language, language.split('-')[0], fallback, fallback.split('-')[0], 'en'])];
-  const sources = chain.map(key => normalized[key]).filter(Boolean).concat(_en.default);
-  const cardinal = new Intl.PluralRules(language),
-    ordinal = new Intl.PluralRules(language, {
-      type: 'ordinal'
-    });
-  const plural = (count, options = {}) => (options.ordinal ? ordinal : cardinal).select(Number(count));
-  const choose = (value, values, options) => {
-    if (typeof value === 'string' || typeof value === 'number') return text(value, values);
-    if (!value || typeof value !== 'object' || Array.isArray(value)) return undefined;
-    const exact = '=' + Number(values.count),
-      category = plural(values.count, options);
-    const item = own(value, exact) ? value[exact] : value[category] !== undefined ? value[category] : value.other;
-    return typeof item === 'string' || typeof item === 'number' ? text(item, values) : undefined;
-  };
-  const t = (key, values = {}, options = {}) => {
-    for (const source of sources) {
-      const result = choose(messageAt(source, key), values, options);
-      if (result !== undefined) return result;
-    }
-    return String(key);
-  };
-  const strings = (section, values = {}) => {
-    const keys = new Set();
-    sources.forEach(source => {
-      const node = messageAt(source, section);
-      if (node && typeof node === 'object' && !Array.isArray(node)) Object.keys(node).forEach(key => keys.add(key));
-      Object.keys(source).filter(key => key.startsWith(section + '.') && !key.slice(section.length + 1).includes('.')).forEach(key => keys.add(key.slice(section.length + 1)));
-    });
-    return Object.fromEntries([...keys].map(key => [key, t(section + '.' + key, values)]));
-  };
-  return {
-    locale: language,
-    dir: (0, _direction.directionOf)(language),
-    t,
-    strings,
-    plural
-  };
-}
-const FORMATTERS = {
-  number: ['formatNumber', 1],
-  unit: ['formatUnit', 2],
-  bytes: ['formatBytes', 1],
-  duration: ['formatDuration', 1],
-  compact: ['formatCompact', 1],
-  date: ['formatDate', 1],
-  time: ['formatTime', 1],
-  dateTime: ['formatDateTime', 1],
-  relative: ['formatRelative', 1],
-  range: ['formatRange', 2],
-  currency: ['formatCurrency', 2],
-  percent: ['formatPercent', 1],
-  list: ['formatList', 1],
-  personName: ['formatPersonName', 1],
-  address: ['formatAddress', 1],
-  phone: ['formatPhone', 1],
-  regionName: ['regionName', 1]
-};
-const bind = (locale, timeZone) => Object.fromEntries(Object.entries(FORMATTERS).map(([name, [fn, count]]) => [name, (...args) => F[fn](...Array.from({
-  length: count
-}, (_, index) => args[index]), Object.assign({
-  locale,
-  timeZone
-}, args[count]))]));
-const LocaleContext = /*#__PURE__*/_react.default.createContext(null);
-function LocaleProvider({
-  locale,
-  catalogs,
-  messages,
-  fallbackLocale = 'en',
-  timeZone,
-  dir,
-  root = false,
-  children
-}) {
-  const language = canonical(locale || F.formatLocale());
-  const value = _react.default.useMemo(() => {
-    const sources = Object.assign({}, catalogs, messages ? {
-      [language]: messages
-    } : {});
-    return Object.assign(createTranslator(language, sources, fallbackLocale), {
-      dir: dir || (0, _direction.directionOf)(language),
-      format: bind(language, timeZone)
-    });
-  }, [language, catalogs, messages, fallbackLocale, timeZone, dir]);
-  return /*#__PURE__*/_react.default.createElement(LocaleContext.Provider, {
-    value: value
-  }, /*#__PURE__*/_react.default.createElement(_DirectionProvider.DirectionProvider, {
-    locale: language,
-    dir: value.dir,
-    root: root
-  }, children));
-}
-function useLocale() {
-  const value = _react.default.useContext(LocaleContext);
-  const language = canonical(F.formatLocale());
-  const fallback = _react.default.useMemo(() => Object.assign(createTranslator(language), {
-    format: bind(language)
-  }), [language]);
-  return value || fallback;
-}
-  } },
   "platform/components/Heading/Heading.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -78325,7 +82592,7 @@ function TreeChart({
   }, draw);
 }
   } },
-  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Isolate/Isolate.jsx":"platform/components/Isolate/Isolate.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/MetricCard/MetricCard.jsx":"platform/components/MetricCard/MetricCard.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/DataPill/DataPill.jsx":"platform/components/DataPill/DataPill.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/Surface.jsx":"platform/providers/Surface.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./utils/tokenSheet.js":"platform/utils/tokenSheet.js","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js","./components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","./components/RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","./components/Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","./components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","./components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","./components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","./components/MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","./components/Cascader/Cascader.jsx":"platform/components/Cascader/Cascader.jsx","./components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","./components/TimePicker/TimePicker.jsx":"platform/components/TimePicker/TimePicker.jsx","./components/RelativeDateInput/RelativeDateInput.jsx":"platform/components/RelativeDateInput/RelativeDateInput.jsx","./components/LoadMore/LoadMore.jsx":"platform/components/LoadMore/LoadMore.jsx","./patterns/ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","./patterns/AvatarUpload/AvatarUpload.jsx":"platform/patterns/AvatarUpload/AvatarUpload.jsx","./charts/scales.js":"platform/charts/scales.js","./charts/ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./components/TimeZoneSelect/TimeZoneSelect.jsx":"platform/components/TimeZoneSelect/TimeZoneSelect.jsx","./components/TreeSelect/TreeSelect.jsx":"platform/components/TreeSelect/TreeSelect.jsx","./components/TransferList/TransferList.jsx":"platform/components/TransferList/TransferList.jsx","./patterns/BottomSheetNav/BottomSheetNav.jsx":"platform/patterns/BottomSheetNav/BottomSheetNav.jsx","./patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","./patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","./patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","./patterns/GroupPanel/GroupPanel.jsx":"platform/patterns/GroupPanel/GroupPanel.jsx","./patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","./patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","./patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","./utils/fields.js":"platform/utils/fields.js","./hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","./charts/parts/position.js":"platform/charts/parts/position.js","./charts/parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./charts/parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./charts/parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./charts/parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./charts/parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./charts/parts/ReferenceLine.jsx":"platform/charts/parts/ReferenceLine.jsx","./charts/parts/ChartAnnotation.jsx":"platform/charts/parts/ChartAnnotation.jsx","./patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","./patterns/UserCard/UserCard.jsx":"platform/patterns/UserCard/UserCard.jsx","./components/VirtualList/VirtualList.jsx":"platform/components/VirtualList/VirtualList.jsx","./components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","./patterns/PeopleGroup/PeopleGroup.jsx":"platform/patterns/PeopleGroup/PeopleGroup.jsx","./patterns/PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","./patterns/QueryBuilder/QueryBuilder.jsx":"platform/patterns/QueryBuilder/QueryBuilder.jsx","./components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","./components/SearchResult/SearchResult.jsx":"platform/components/SearchResult/SearchResult.jsx","./components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","./patterns/ResourceList/ResourceList.jsx":"platform/patterns/ResourceList/ResourceList.jsx","./charts/interaction.js":"platform/charts/interaction.js","./charts/LineChart.jsx":"platform/charts/LineChart.jsx","./charts/AreaChart.jsx":"platform/charts/AreaChart.jsx","./charts/Gauge.jsx":"platform/charts/Gauge.jsx","./charts/HeatMap.jsx":"platform/charts/HeatMap.jsx","./charts/WaterfallChart.jsx":"platform/charts/WaterfallChart.jsx","./charts/WordCloud.jsx":"platform/charts/WordCloud.jsx","./charts/NetworkGraph.jsx":"platform/charts/NetworkGraph.jsx","./charts/Diagram.jsx":"platform/charts/Diagram.jsx","./charts/BarChart.jsx":"platform/charts/BarChart.jsx","./charts/ComboChart.jsx":"platform/charts/ComboChart.jsx","./charts/PieChart.jsx":"platform/charts/PieChart.jsx","./charts/BulletChart.jsx":"platform/charts/BulletChart.jsx","./charts/BoxPlot.jsx":"platform/charts/BoxPlot.jsx","./charts/RadarChart.jsx":"platform/charts/RadarChart.jsx","./charts/SankeyDiagram.jsx":"platform/charts/SankeyDiagram.jsx","./charts/TimelineChart.jsx":"platform/charts/TimelineChart.jsx","./patterns/ComparisonView/ComparisonView.jsx":"platform/patterns/ComparisonView/ComparisonView.jsx","./charts/a11y.js":"platform/charts/a11y.js","./charts/Sparkline.jsx":"platform/charts/Sparkline.jsx","./charts/LollipopChart.jsx":"platform/charts/LollipopChart.jsx","./charts/ScatterChart.jsx":"platform/charts/ScatterChart.jsx","./charts/FunnelChart.jsx":"platform/charts/FunnelChart.jsx","./charts/Treemap.jsx":"platform/charts/Treemap.jsx","./charts/GanttChart.jsx":"platform/charts/GanttChart.jsx","./charts/GeoMap.jsx":"platform/charts/GeoMap.jsx","./utils/dnd.js":"platform/utils/dnd.js","./components/DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","./patterns/SortableList/SortableList.jsx":"platform/patterns/SortableList/SortableList.jsx","./components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","./patterns/RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","./patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","./patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","./patterns/DuplicateAction/DuplicateAction.jsx":"platform/patterns/DuplicateAction/DuplicateAction.jsx","./patterns/Publish/Publish.jsx":"platform/patterns/Publish/Publish.jsx","./patterns/AssignControl/AssignControl.jsx":"platform/patterns/AssignControl/AssignControl.jsx","./patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","./patterns/WizardDialog/WizardDialog.jsx":"platform/patterns/WizardDialog/WizardDialog.jsx","./patterns/FormFlow/FormFlow.jsx":"platform/patterns/FormFlow/FormFlow.jsx","./patterns/Autosave/Autosave.jsx":"platform/patterns/Autosave/Autosave.jsx","./patterns/DraftState/DraftState.jsx":"platform/patterns/DraftState/DraftState.jsx","./patterns/SaveAs/SaveAs.jsx":"platform/patterns/SaveAs/SaveAs.jsx","./patterns/ArchiveRestore/ArchiveRestore.jsx":"platform/patterns/ArchiveRestore/ArchiveRestore.jsx","./components/File/File.jsx":"platform/components/File/File.jsx","./components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","./patterns/Auth/Auth.jsx":"platform/patterns/Auth/Auth.jsx","./patterns/SessionTimeout/SessionTimeout.jsx":"platform/patterns/SessionTimeout/SessionTimeout.jsx","./patterns/RoleManager/RoleManager.jsx":"platform/patterns/RoleManager/RoleManager.jsx","./patterns/ConnectedAccounts/ConnectedAccounts.jsx":"platform/patterns/ConnectedAccounts/ConnectedAccounts.jsx","./patterns/ShareDialog/ShareDialog.jsx":"platform/patterns/ShareDialog/ShareDialog.jsx","./patterns/PermissionsEditor/PermissionsEditor.jsx":"platform/patterns/PermissionsEditor/PermissionsEditor.jsx","./patterns/Tour/Tour.jsx":"platform/patterns/Tour/Tour.jsx","./components/Checklist/Checklist.jsx":"platform/components/Checklist/Checklist.jsx","./patterns/Onboarding/Onboarding.jsx":"platform/patterns/Onboarding/Onboarding.jsx","./patterns/FeatureIntro/FeatureIntro.jsx":"platform/patterns/FeatureIntro/FeatureIntro.jsx","./patterns/HelpPanel/HelpPanel.jsx":"platform/patterns/HelpPanel/HelpPanel.jsx","./patterns/ImportDialog/ImportDialog.jsx":"platform/patterns/ImportDialog/ImportDialog.jsx","./patterns/ImportWizard/ImportWizard.jsx":"platform/patterns/ImportWizard/ImportWizard.jsx","./patterns/ExportDialog/ExportDialog.jsx":"platform/patterns/ExportDialog/ExportDialog.jsx","./patterns/AccessRequest/AccessRequest.jsx":"platform/patterns/AccessRequest/AccessRequest.jsx","./patterns/TrialUpgrade/TrialUpgrade.jsx":"platform/patterns/TrialUpgrade/TrialUpgrade.jsx","./patterns/Offboarding/Offboarding.jsx":"platform/patterns/Offboarding/Offboarding.jsx","./patterns/ShortcutsDialog/ShortcutsDialog.jsx":"platform/patterns/ShortcutsDialog/ShortcutsDialog.jsx","./patterns/FileList/FileList.jsx":"platform/patterns/FileList/FileList.jsx","./patterns/FileBrowser/FileBrowser.jsx":"platform/patterns/FileBrowser/FileBrowser.jsx","./patterns/UploadManager/UploadManager.jsx":"platform/patterns/UploadManager/UploadManager.jsx","./patterns/VersionCompare/VersionCompare.jsx":"platform/patterns/VersionCompare/VersionCompare.jsx","./patterns/AssetGallery/AssetGallery.jsx":"platform/patterns/AssetGallery/AssetGallery.jsx","./patterns/DownloadManager/DownloadManager.jsx":"platform/patterns/DownloadManager/DownloadManager.jsx","./components/MediaPlayer/MediaPlayer.jsx":"platform/components/MediaPlayer/MediaPlayer.jsx","./patterns/MetadataEditor/MetadataEditor.jsx":"platform/patterns/MetadataEditor/MetadataEditor.jsx","./patterns/RelatedAssets/RelatedAssets.jsx":"platform/patterns/RelatedAssets/RelatedAssets.jsx","./patterns/AttachmentPicker/AttachmentPicker.jsx":"platform/patterns/AttachmentPicker/AttachmentPicker.jsx","./patterns/FilePicker/FilePicker.jsx":"platform/patterns/FilePicker/FilePicker.jsx","./patterns/RenditionList/RenditionList.jsx":"platform/patterns/RenditionList/RenditionList.jsx","./components/DocumentViewer/DocumentViewer.jsx":"platform/components/DocumentViewer/DocumentViewer.jsx","./patterns/VersionHistory/VersionHistory.jsx":"platform/patterns/VersionHistory/VersionHistory.jsx","./patterns/ProductCard/ProductCard.jsx":"platform/patterns/ProductCard/ProductCard.jsx","./components/ProductOptions/ProductOptions.jsx":"platform/components/ProductOptions/ProductOptions.jsx","./templates/Commerce/Commerce.jsx":"platform/templates/Commerce/Commerce.jsx","./components/Comment/Comment.jsx":"platform/components/Comment/Comment.jsx","./patterns/CommentThread/CommentThread.jsx":"platform/patterns/CommentThread/CommentThread.jsx","./patterns/ImageAnnotation/ImageAnnotation.jsx":"platform/patterns/ImageAnnotation/ImageAnnotation.jsx","./patterns/PresenceBar/PresenceBar.jsx":"platform/patterns/PresenceBar/PresenceBar.jsx","./components/MentionInput/MentionInput.jsx":"platform/components/MentionInput/MentionInput.jsx","./components/Announcement/Announcement.jsx":"platform/components/Announcement/Announcement.jsx","./patterns/AuditLog/AuditLog.jsx":"platform/patterns/AuditLog/AuditLog.jsx","./patterns/ApprovalWorkflow/ApprovalWorkflow.jsx":"platform/patterns/ApprovalWorkflow/ApprovalWorkflow.jsx","./components/PromptInput/PromptInput.jsx":"platform/components/PromptInput/PromptInput.jsx","./components/StreamingText/StreamingText.jsx":"platform/components/StreamingText/StreamingText.jsx","./patterns/AIChat/AIChat.jsx":"platform/patterns/AIChat/AIChat.jsx","./patterns/AssistantPanel/AssistantPanel.jsx":"platform/patterns/AssistantPanel/AssistantPanel.jsx","./components/AILabel/AILabel.jsx":"platform/components/AILabel/AILabel.jsx","./components/GeneratedContent/GeneratedContent.jsx":"platform/components/GeneratedContent/GeneratedContent.jsx","./patterns/PromptHistory/PromptHistory.jsx":"platform/patterns/PromptHistory/PromptHistory.jsx","./components/Citation/Citation.jsx":"platform/components/Citation/Citation.jsx","./components/SuggestedAction/SuggestedAction.jsx":"platform/components/SuggestedAction/SuggestedAction.jsx","./patterns/AISearch/AISearch.jsx":"platform/patterns/AISearch/AISearch.jsx","./patterns/Recommendation/Recommendation.jsx":"platform/patterns/Recommendation/Recommendation.jsx","./components/AIButton/AIButton.jsx":"platform/components/AIButton/AIButton.jsx","./components/AIDisclaimer/AIDisclaimer.jsx":"platform/components/AIDisclaimer/AIDisclaimer.jsx","./components/ConfidenceIndicator/ConfidenceIndicator.jsx":"platform/components/ConfidenceIndicator/ConfidenceIndicator.jsx","./patterns/AIExplanation/AIExplanation.jsx":"platform/patterns/AIExplanation/AIExplanation.jsx","./components/PromptSuggestions/PromptSuggestions.jsx":"platform/components/PromptSuggestions/PromptSuggestions.jsx","./components/SuggestedEdit/SuggestedEdit.jsx":"platform/components/SuggestedEdit/SuggestedEdit.jsx","./components/RefineMenu/RefineMenu.jsx":"platform/components/RefineMenu/RefineMenu.jsx","./providers/AnalyticsProvider.jsx":"platform/providers/AnalyticsProvider.jsx","./templates/templates/Templates.jsx":"platform/templates/templates/Templates.jsx","./utils/browserSupport.js":"platform/utils/browserSupport.js","./providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","./patterns/SplitView/SplitView.jsx":"platform/patterns/SplitView/SplitView.jsx","./components/Heading/Heading.jsx":"platform/components/Heading/Heading.jsx","./charts/TreeChart.jsx":"platform/charts/TreeChart.jsx","./components/DataGrid/DataGridEngine.jsx":"platform/components/DataGrid/DataGridEngine.jsx"}, externals: {  }, run: function (module, exports, require) {
+  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Isolate/Isolate.jsx":"platform/components/Isolate/Isolate.jsx","./components/VoteTally/VoteTally.jsx":"platform/components/VoteTally/VoteTally.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/MetricCard/MetricCard.jsx":"platform/components/MetricCard/MetricCard.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/DataPill/DataPill.jsx":"platform/components/DataPill/DataPill.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/Surface.jsx":"platform/providers/Surface.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./utils/tokenSheet.js":"platform/utils/tokenSheet.js","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js","./components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","./components/RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","./components/Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","./components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","./components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","./components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","./components/MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","./components/Cascader/Cascader.jsx":"platform/components/Cascader/Cascader.jsx","./components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","./components/TimePicker/TimePicker.jsx":"platform/components/TimePicker/TimePicker.jsx","./components/RelativeDateInput/RelativeDateInput.jsx":"platform/components/RelativeDateInput/RelativeDateInput.jsx","./components/LoadMore/LoadMore.jsx":"platform/components/LoadMore/LoadMore.jsx","./patterns/ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","./patterns/AvatarUpload/AvatarUpload.jsx":"platform/patterns/AvatarUpload/AvatarUpload.jsx","./charts/scales.js":"platform/charts/scales.js","./charts/ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./components/TimeZoneSelect/TimeZoneSelect.jsx":"platform/components/TimeZoneSelect/TimeZoneSelect.jsx","./components/TreeSelect/TreeSelect.jsx":"platform/components/TreeSelect/TreeSelect.jsx","./components/TransferList/TransferList.jsx":"platform/components/TransferList/TransferList.jsx","./patterns/BottomSheetNav/BottomSheetNav.jsx":"platform/patterns/BottomSheetNav/BottomSheetNav.jsx","./patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","./patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","./patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","./patterns/GroupPanel/GroupPanel.jsx":"platform/patterns/GroupPanel/GroupPanel.jsx","./patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","./patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","./patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","./utils/fields.js":"platform/utils/fields.js","./hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","./charts/parts/position.js":"platform/charts/parts/position.js","./charts/parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./charts/parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./charts/parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./charts/parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./charts/parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./charts/parts/ReferenceLine.jsx":"platform/charts/parts/ReferenceLine.jsx","./charts/parts/ChartAnnotation.jsx":"platform/charts/parts/ChartAnnotation.jsx","./patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","./patterns/UserCard/UserCard.jsx":"platform/patterns/UserCard/UserCard.jsx","./components/VirtualList/VirtualList.jsx":"platform/components/VirtualList/VirtualList.jsx","./components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","./patterns/PeopleGroup/PeopleGroup.jsx":"platform/patterns/PeopleGroup/PeopleGroup.jsx","./patterns/PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","./patterns/QueryBuilder/QueryBuilder.jsx":"platform/patterns/QueryBuilder/QueryBuilder.jsx","./components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","./components/SearchResult/SearchResult.jsx":"platform/components/SearchResult/SearchResult.jsx","./components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","./patterns/ResourceList/ResourceList.jsx":"platform/patterns/ResourceList/ResourceList.jsx","./charts/interaction.js":"platform/charts/interaction.js","./charts/LineChart.jsx":"platform/charts/LineChart.jsx","./charts/AreaChart.jsx":"platform/charts/AreaChart.jsx","./charts/Gauge.jsx":"platform/charts/Gauge.jsx","./charts/HeatMap.jsx":"platform/charts/HeatMap.jsx","./charts/WaterfallChart.jsx":"platform/charts/WaterfallChart.jsx","./charts/WordCloud.jsx":"platform/charts/WordCloud.jsx","./charts/NetworkGraph.jsx":"platform/charts/NetworkGraph.jsx","./charts/Diagram.jsx":"platform/charts/Diagram.jsx","./charts/BarChart.jsx":"platform/charts/BarChart.jsx","./charts/ComboChart.jsx":"platform/charts/ComboChart.jsx","./charts/PieChart.jsx":"platform/charts/PieChart.jsx","./charts/BulletChart.jsx":"platform/charts/BulletChart.jsx","./charts/BoxPlot.jsx":"platform/charts/BoxPlot.jsx","./charts/RadarChart.jsx":"platform/charts/RadarChart.jsx","./charts/SankeyDiagram.jsx":"platform/charts/SankeyDiagram.jsx","./charts/TimelineChart.jsx":"platform/charts/TimelineChart.jsx","./patterns/ComparisonView/ComparisonView.jsx":"platform/patterns/ComparisonView/ComparisonView.jsx","./charts/a11y.js":"platform/charts/a11y.js","./charts/Sparkline.jsx":"platform/charts/Sparkline.jsx","./charts/LollipopChart.jsx":"platform/charts/LollipopChart.jsx","./charts/ScatterChart.jsx":"platform/charts/ScatterChart.jsx","./charts/FunnelChart.jsx":"platform/charts/FunnelChart.jsx","./charts/Treemap.jsx":"platform/charts/Treemap.jsx","./charts/GanttChart.jsx":"platform/charts/GanttChart.jsx","./charts/GeoMap.jsx":"platform/charts/GeoMap.jsx","./utils/dnd.js":"platform/utils/dnd.js","./components/DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","./patterns/SortableList/SortableList.jsx":"platform/patterns/SortableList/SortableList.jsx","./components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","./patterns/RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","./patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","./patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","./patterns/DuplicateAction/DuplicateAction.jsx":"platform/patterns/DuplicateAction/DuplicateAction.jsx","./patterns/Publish/Publish.jsx":"platform/patterns/Publish/Publish.jsx","./patterns/AssignControl/AssignControl.jsx":"platform/patterns/AssignControl/AssignControl.jsx","./patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","./patterns/WizardDialog/WizardDialog.jsx":"platform/patterns/WizardDialog/WizardDialog.jsx","./patterns/FormFlow/FormFlow.jsx":"platform/patterns/FormFlow/FormFlow.jsx","./patterns/Autosave/Autosave.jsx":"platform/patterns/Autosave/Autosave.jsx","./patterns/DraftState/DraftState.jsx":"platform/patterns/DraftState/DraftState.jsx","./patterns/SaveAs/SaveAs.jsx":"platform/patterns/SaveAs/SaveAs.jsx","./patterns/ArchiveRestore/ArchiveRestore.jsx":"platform/patterns/ArchiveRestore/ArchiveRestore.jsx","./components/File/File.jsx":"platform/components/File/File.jsx","./components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","./patterns/Auth/Auth.jsx":"platform/patterns/Auth/Auth.jsx","./patterns/SessionTimeout/SessionTimeout.jsx":"platform/patterns/SessionTimeout/SessionTimeout.jsx","./patterns/RoleManager/RoleManager.jsx":"platform/patterns/RoleManager/RoleManager.jsx","./patterns/ConnectedAccounts/ConnectedAccounts.jsx":"platform/patterns/ConnectedAccounts/ConnectedAccounts.jsx","./patterns/ShareDialog/ShareDialog.jsx":"platform/patterns/ShareDialog/ShareDialog.jsx","./patterns/PermissionsEditor/PermissionsEditor.jsx":"platform/patterns/PermissionsEditor/PermissionsEditor.jsx","./patterns/Tour/Tour.jsx":"platform/patterns/Tour/Tour.jsx","./components/Checklist/Checklist.jsx":"platform/components/Checklist/Checklist.jsx","./patterns/Onboarding/Onboarding.jsx":"platform/patterns/Onboarding/Onboarding.jsx","./patterns/FeatureIntro/FeatureIntro.jsx":"platform/patterns/FeatureIntro/FeatureIntro.jsx","./patterns/HelpPanel/HelpPanel.jsx":"platform/patterns/HelpPanel/HelpPanel.jsx","./patterns/ImportDialog/ImportDialog.jsx":"platform/patterns/ImportDialog/ImportDialog.jsx","./patterns/ImportWizard/ImportWizard.jsx":"platform/patterns/ImportWizard/ImportWizard.jsx","./patterns/ExportDialog/ExportDialog.jsx":"platform/patterns/ExportDialog/ExportDialog.jsx","./patterns/AccessRequest/AccessRequest.jsx":"platform/patterns/AccessRequest/AccessRequest.jsx","./patterns/TrialUpgrade/TrialUpgrade.jsx":"platform/patterns/TrialUpgrade/TrialUpgrade.jsx","./patterns/Offboarding/Offboarding.jsx":"platform/patterns/Offboarding/Offboarding.jsx","./patterns/ShortcutsDialog/ShortcutsDialog.jsx":"platform/patterns/ShortcutsDialog/ShortcutsDialog.jsx","./patterns/FileList/FileList.jsx":"platform/patterns/FileList/FileList.jsx","./patterns/FileBrowser/FileBrowser.jsx":"platform/patterns/FileBrowser/FileBrowser.jsx","./patterns/UploadManager/UploadManager.jsx":"platform/patterns/UploadManager/UploadManager.jsx","./patterns/VersionCompare/VersionCompare.jsx":"platform/patterns/VersionCompare/VersionCompare.jsx","./patterns/AssetGallery/AssetGallery.jsx":"platform/patterns/AssetGallery/AssetGallery.jsx","./patterns/DownloadManager/DownloadManager.jsx":"platform/patterns/DownloadManager/DownloadManager.jsx","./components/MediaPlayer/MediaPlayer.jsx":"platform/components/MediaPlayer/MediaPlayer.jsx","./patterns/MetadataEditor/MetadataEditor.jsx":"platform/patterns/MetadataEditor/MetadataEditor.jsx","./patterns/RelatedAssets/RelatedAssets.jsx":"platform/patterns/RelatedAssets/RelatedAssets.jsx","./patterns/AttachmentPicker/AttachmentPicker.jsx":"platform/patterns/AttachmentPicker/AttachmentPicker.jsx","./patterns/FilePicker/FilePicker.jsx":"platform/patterns/FilePicker/FilePicker.jsx","./patterns/RenditionList/RenditionList.jsx":"platform/patterns/RenditionList/RenditionList.jsx","./components/DocumentViewer/DocumentViewer.jsx":"platform/components/DocumentViewer/DocumentViewer.jsx","./patterns/VersionHistory/VersionHistory.jsx":"platform/patterns/VersionHistory/VersionHistory.jsx","./patterns/ProductCard/ProductCard.jsx":"platform/patterns/ProductCard/ProductCard.jsx","./components/ProductOptions/ProductOptions.jsx":"platform/components/ProductOptions/ProductOptions.jsx","./templates/Commerce/Commerce.jsx":"platform/templates/Commerce/Commerce.jsx","./components/Comment/Comment.jsx":"platform/components/Comment/Comment.jsx","./patterns/CommentThread/CommentThread.jsx":"platform/patterns/CommentThread/CommentThread.jsx","./patterns/ImageAnnotation/ImageAnnotation.jsx":"platform/patterns/ImageAnnotation/ImageAnnotation.jsx","./patterns/PresenceBar/PresenceBar.jsx":"platform/patterns/PresenceBar/PresenceBar.jsx","./components/MentionInput/MentionInput.jsx":"platform/components/MentionInput/MentionInput.jsx","./components/Announcement/Announcement.jsx":"platform/components/Announcement/Announcement.jsx","./patterns/AuditLog/AuditLog.jsx":"platform/patterns/AuditLog/AuditLog.jsx","./patterns/ApprovalWorkflow/ApprovalWorkflow.jsx":"platform/patterns/ApprovalWorkflow/ApprovalWorkflow.jsx","./components/PromptInput/PromptInput.jsx":"platform/components/PromptInput/PromptInput.jsx","./components/StreamingText/StreamingText.jsx":"platform/components/StreamingText/StreamingText.jsx","./patterns/AIChat/AIChat.jsx":"platform/patterns/AIChat/AIChat.jsx","./patterns/AssistantPanel/AssistantPanel.jsx":"platform/patterns/AssistantPanel/AssistantPanel.jsx","./components/AILabel/AILabel.jsx":"platform/components/AILabel/AILabel.jsx","./components/GeneratedContent/GeneratedContent.jsx":"platform/components/GeneratedContent/GeneratedContent.jsx","./patterns/PromptHistory/PromptHistory.jsx":"platform/patterns/PromptHistory/PromptHistory.jsx","./components/Citation/Citation.jsx":"platform/components/Citation/Citation.jsx","./components/SuggestedAction/SuggestedAction.jsx":"platform/components/SuggestedAction/SuggestedAction.jsx","./patterns/AISearch/AISearch.jsx":"platform/patterns/AISearch/AISearch.jsx","./patterns/Recommendation/Recommendation.jsx":"platform/patterns/Recommendation/Recommendation.jsx","./components/AIButton/AIButton.jsx":"platform/components/AIButton/AIButton.jsx","./components/AIDisclaimer/AIDisclaimer.jsx":"platform/components/AIDisclaimer/AIDisclaimer.jsx","./components/ConfidenceIndicator/ConfidenceIndicator.jsx":"platform/components/ConfidenceIndicator/ConfidenceIndicator.jsx","./patterns/AIExplanation/AIExplanation.jsx":"platform/patterns/AIExplanation/AIExplanation.jsx","./components/PromptSuggestions/PromptSuggestions.jsx":"platform/components/PromptSuggestions/PromptSuggestions.jsx","./components/SuggestedEdit/SuggestedEdit.jsx":"platform/components/SuggestedEdit/SuggestedEdit.jsx","./components/RefineMenu/RefineMenu.jsx":"platform/components/RefineMenu/RefineMenu.jsx","./providers/AnalyticsProvider.jsx":"platform/providers/AnalyticsProvider.jsx","./templates/templates/Templates.jsx":"platform/templates/templates/Templates.jsx","./utils/browserSupport.js":"platform/utils/browserSupport.js","./providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","./patterns/SplitView/SplitView.jsx":"platform/patterns/SplitView/SplitView.jsx","./components/Heading/Heading.jsx":"platform/components/Heading/Heading.jsx","./charts/TreeChart.jsx":"platform/charts/TreeChart.jsx","./components/DataGrid/DataGridEngine.jsx":"platform/components/DataGrid/DataGridEngine.jsx"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -80737,6 +85004,12 @@ Object.defineProperty(exports, "VisuallyHidden", {
     return _VisuallyHidden.VisuallyHidden;
   }
 });
+Object.defineProperty(exports, "VoteTally", {
+  enumerable: true,
+  get: function () {
+    return _VoteTally.VoteTally;
+  }
+});
 Object.defineProperty(exports, "WORKFLOW_STATUSES", {
   enumerable: true,
   get: function () {
@@ -81781,6 +86054,12 @@ Object.defineProperty(exports, "useSortable", {
     return _dnd.useSortable;
   }
 });
+Object.defineProperty(exports, "useStrings", {
+  enumerable: true,
+  get: function () {
+    return _LocaleProvider.useStrings;
+  }
+});
 Object.defineProperty(exports, "useTheme", {
   enumerable: true,
   get: function () {
@@ -81838,6 +86117,7 @@ Object.defineProperty(exports, "wordCloudLayout", {
 var _Badge = require("./components/Badge/Badge.jsx");
 var _VisuallyHidden = require("./components/VisuallyHidden/VisuallyHidden.jsx");
 var _Isolate = require("./components/Isolate/Isolate.jsx");
+var _VoteTally = require("./components/VoteTally/VoteTally.jsx");
 var _Count = require("./components/Count/Count.jsx");
 var _Metric = require("./components/Metric/Metric.jsx");
 var _MetricCard = require("./components/MetricCard/MetricCard.jsx");

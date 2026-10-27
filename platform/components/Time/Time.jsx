@@ -37,7 +37,7 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
-import { formatDate, formatTime, formatDateTime, formatRelative, formatLocale, dateTimeAttr } from '../../utils/format.js';
+import { formatDate, formatTime, formatDateTime, formatRelative, formatLocale, numeralLocale, dateTimeAttr } from '../../utils/format.js';
 import { tokenMs } from '../../utils/tokenTime.js';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';
 
@@ -51,7 +51,7 @@ const calendarDay = (d) => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' +
 function dayLabel(d, now, o) {
   const days = Math.round((dayStart(d) - dayStart(now)) / 86400000);
   if (Math.abs(days) > 1) return formatDate(d, { dateStyle: 'short', timeZone: o.timeZone, locale: o.locale });
-  const lang = o.locale || formatLocale();
+  const lang = numeralLocale(o.locale || formatLocale());
   const w = new Intl.RelativeTimeFormat(lang, { numeric: 'auto' }).format(days, 'day');
   return w.charAt(0).toLocaleUpperCase(lang) + w.slice(1);
 }

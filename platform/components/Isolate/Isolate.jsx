@@ -7,6 +7,8 @@
      <Isolate dir="auto">{fileName}</Isolate>          // a value that may be in either direction: its first letter decides
    Props:
      dir: "ltr" (default: IDs, numbers, emails, URLs, code) | "rtl" | "auto" (the first strong letter decides)
+     kind: "email" | "url": keeps its Latin digits when the page writes Arabic-Indic digits (owner, arabic-digits-risk-36); any other
+       value (an ID, a case number, a phone number, code) takes the page's digits, ٠-٩ in Arabic
      as: the element; default "bdi"
      className: more classes on the element
      children: the text
@@ -15,9 +17,10 @@
      The element is isolated (unicode-bidi: isolate, as <bdi> is): the text inside never reorders the text around it,
        and the text around it never reorders it. In an Arabic sentence "20261020-01" stays "20261020-01" (without it,
        the two numbers swap places: "01-20261020").
-     It keeps the order of its characters, not their digits: when Arabic-Indic digits are on (LocaleProvider, issue 413 step 5),
-       the digits of an ID, a case number or an email inside it change too, and still read in the right order (owner,
-       arabic-ids-35).
+     Digits: in Arabic (LocaleProvider digits, "auto" for an Arabic locale) the digits of its text are written Arabic-Indic, case
+       numbers and IDs included, and an email or a web address (kind) keeps Latin (owner, arabic-ids-35, arabic-digits-risk-36).
+     A left-to-right island overrides the order (unicode-bidi: isolate-override): Arabic-Indic digits would otherwise let a hyphen
+       swap the two numbers around it ("٢٠٢٦١٠٢٠-٠١" reads "٠١-٢٠٢٦١٠٢٠"). The order of its characters is kept as written.
      It is inline and adds no box: alignment, wrapping and the ellipsis stay the container's.
    Notes:
      Plenix isolates by itself where it knows the value is technical: DataGrid and Table cells of kind data, id, email,
@@ -26,7 +29,13 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
+import { useDigits } from '../../providers/LocaleProvider.jsx';
+import { localDigits } from '../../utils/digits.js';
 
-export function Isolate({ dir = 'ltr', as: Tag = 'bdi', className, children, ...rest }) {
-  return <Tag className={cx('plx-isolate', className)} dir={dir} {...rest}>{children}</Tag>;
+export function Isolate({ dir = 'ltr', as: Tag = 'bdi', kind, className, children, ...rest }) {
+  const digits = useDigits();
+  // an email or a web address keeps its Latin digits; any other value takes the page's digits (Arabic-Indic in Arabic)
+  const own = kind === 'email' || kind === 'url' ? 'latn' : digits;
+  const shown = React.Children.map(children, (child) => (typeof child === 'string' || typeof child === 'number' ? localDigits(String(child), { digits: own }) : child));
+  return <Tag className={cx('plx-isolate', className)} dir={dir} {...rest}>{shown}</Tag>;
 }

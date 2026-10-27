@@ -1,0 +1,11 @@
+{
+  "name": "@plenix-ds/vote-kit",
+  "version": "0.1.0",
+  "description": "A live vote for any app: a Postgres layout, the counting function, and the HTTP and live-update contract. No dependencies.",
+  "license": "BSD-3-Clause",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": { ".": "./src/index.js", "./settings": "./src/settings.js", "./count": "./src/count.js" },
+  "files": ["src", "schema", "contract", "reference", "README.md", "LICENSE"],
+  "private": true
+}
