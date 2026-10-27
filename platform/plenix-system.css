@@ -1,18 +1,19 @@
 /* Plenix · System stylesheet (platform/plenix-system.css): the foundations only. Token tiers (reference → semantic →
    component), the plenix theme, then the foundation rules. No components. It loads by
    itself for the design spec's foundation previews; platform.css imports it first. The order is the cascade order. */
-@import url("system/tokens/reference.css");
-@import url("system/tokens/semantic.css");
-@import url("system/tokens/components.css");
-@import url("system/themes/index.css");   /* every theme (generated from platform/standards/themes.json) */
-@import url("system/radius.css");
-@import url("system/controls.css");
-@import url("system/density.css");
-@import url("system/spacing.css");
-@import url("system/grid.css");
-@import url("system/interaction.css");
-@import url("system/scrolling.css");
-@import url("system/elements.css");
-@import url("system/shadows.css");
-@import url("system/motion.css");
-@import url("system/islands.css");
+@layer plx.vendor, plx.reset, plx.tokens, plx.elements, plx.layout, plx.components, plx.patterns, plx.utilities;
+@import url("system/tokens/reference.css") layer(plx.tokens);
+@import url("system/tokens/semantic.css") layer(plx.tokens);
+@import url("system/tokens/components.css") layer(plx.tokens);
+@import url("system/themes/index.css") layer(plx.tokens);   /* every theme (generated from platform/standards/themes.json) */
+@import url("system/radius.css") layer(plx.tokens);
+@import url("system/controls.css") layer(plx.tokens);
+@import url("system/density.css") layer(plx.tokens);
+@import url("system/spacing.css") layer(plx.tokens);
+@import url("system/grid.css") layer(plx.layout);
+@import url("system/interaction.css") layer(plx.tokens);
+@import url("system/scrolling.css") layer(plx.layout);
+@import url("system/elements.css") layer(plx.elements);
+@import url("system/shadows.css") layer(plx.layout);
+@import url("system/motion.css") layer(plx.elements);
+@import url("system/islands.css") layer(plx.layout);
