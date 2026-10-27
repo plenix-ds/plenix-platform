@@ -1,0 +1,17 @@
+{
+  "$comment": "The cascade layer of every Platform stylesheet (styling standard section 8, issue 249). platform.css and plenix-system.css write it on each @import as layer(plx.<name>); build-exports.js writes it on the library block; check-system rule cascade-layers checks both against this file. Order, general to specific: vendor, reset, tokens, elements, layout, components, patterns, utilities. A sheet that came after the components in the old single cascade and styles their classes sits in patterns or utilities, so it still wins ties.",
+  "order": ["vendor", "reset", "tokens", "elements", "layout", "components", "patterns", "utilities"],
+  "folders": { "components": "components", "charts": "components", "templates": "components", "patterns": "patterns" },
+  "system": {
+    "tokens/reference.css": "tokens", "tokens/semantic.css": "tokens", "tokens/components.css": "tokens",
+    "themes/index.css": "tokens", "radius.css": "tokens", "controls.css": "tokens", "density.css": "tokens", "spacing.css": "tokens",
+    "interaction.css": "tokens", "forced-colors.css": "tokens", "theme-zone.css": "tokens",
+    "base.css": "reset",
+    "elements.css": "elements", "motion.css": "elements",
+    "grid.css": "layout", "scrolling.css": "layout", "islands.css": "layout", "shadows.css": "layout", "layout-grid.css": "layout",
+    "scroll-lock.css": "layout", "direction.css": "layout", "portal.css": "layout", "floating.css": "layout", "ratio.css": "layout",
+    "virtual.css": "components", "gesture.css": "components", "ai.css": "components", "charts.css": "components", "dataviz.css": "components", "dnd.css": "components",
+    "layout-modes.css": "patterns", "read-only.css": "patterns", "steps.css": "patterns",
+    "keylines.css": "utilities", "focus-order.css": "utilities", "print.css": "utilities", "utilities.css": "utilities"
+  }
+}
