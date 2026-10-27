@@ -1920,5 +1920,28 @@ export default {
   "wizardDialog": {
     "close": "Close",
     "unsaved": "Your changes will be lost."
+  },
+  "voteTally": {
+    "approve": "Approve",
+    "deny": "Deny",
+    "abstain": "Abstain",
+    "turnedOff": "turned off",
+    "notVoted": "Not voted",
+    "voteOf": "Vote of {name}",
+    "hiddenUntilClosed": "Hidden until the vote closes",
+    "totalsOnly": "Totals only",
+    "reconnecting": "Reconnecting",
+    "quorum": "Quorum: {present} present, {needed} needed ({state})",
+    "met": "met",
+    "notMet": "not met",
+    "result": {
+      "open": "Open",
+      "passing": "Passing",
+      "failing": "Failing",
+      "passed": "Passed",
+      "failed": "Failed",
+      "tied": "Tied",
+      "no-quorum": "No quorum"
+    }
   }
 };
