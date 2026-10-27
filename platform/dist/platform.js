@@ -2948,6 +2948,15 @@ function chartTokens(where) {
     bar: mk('rect', 'plx-sparkline__bar'),
     last: mk('circle', 'plx-sparkline__last')
   };
+  const tree = {
+    link: mk('path', 'plx-tree-chart__link'),
+    node: mk('circle', 'plx-tree-chart__node'),
+    folded: mk('circle', 'plx-tree-chart__node plx-tree-chart__node--folded'),
+    focus: mk('circle', 'plx-tree-chart__node plx-tree-chart__node--focus'),
+    name: mk('text', 'plx-tree-chart__name'),
+    nameFocus: mk('text', 'plx-tree-chart__name plx-tree-chart__name--focus'),
+    detail: mk('text', 'plx-tree-chart__detail')
+  };
   where.appendChild(svg);
   const cs = e => win.getComputedStyle(e);
   const font = e => {
@@ -3008,6 +3017,31 @@ function chartTokens(where) {
         outline: cs(spark.last).stroke,
         outlineWidth: num(cs(spark.last).strokeWidth)
       }
+    },
+    // a tree's look (TreeChart): its lines, a node's ring and fill (filled when folded), the node in focus, the name and
+    // detail fonts, and its room: the gap beside a label, a leaf's height across, a level's height down
+    tree: {
+      link: {
+        color: cs(tree.link).stroke,
+        width: num(cs(tree.link).strokeWidth)
+      },
+      node: {
+        r: num(cs(tree.node).r),
+        fill: cs(tree.node).fill,
+        color: cs(tree.node).stroke,
+        width: num(cs(tree.node).strokeWidth)
+      },
+      folded: cs(tree.folded).fill,
+      focus: {
+        color: cs(tree.focus).stroke,
+        width: num(cs(tree.focus).strokeWidth)
+      },
+      name: font(tree.name),
+      nameFocus: font(tree.nameFocus),
+      detail: font(tree.detail),
+      gap: len(prop('--plx-comp-tree-chart-label-gap')),
+      leaf: len(prop('--plx-comp-tree-chart-leaf-spacing')),
+      level: len(prop('--plx-comp-tree-chart-level-spacing'))
     },
     // the values not in focus dim to the interaction's token; the drawing's animation is the motion token (reduced motion: 0)
     dim: num(prop('--plx-comp-chart-interaction-dim-opacity')) || 1,
@@ -77292,7 +77326,558 @@ const Heading = exports.Heading = /*#__PURE__*/_react.default.forwardRef(functio
   }, rest), children);
 });
   } },
-  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/MetricCard/MetricCard.jsx":"platform/components/MetricCard/MetricCard.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/DataPill/DataPill.jsx":"platform/components/DataPill/DataPill.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/Surface.jsx":"platform/providers/Surface.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./utils/tokenSheet.js":"platform/utils/tokenSheet.js","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js","./components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","./components/RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","./components/Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","./components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","./components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","./components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","./components/MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","./components/Cascader/Cascader.jsx":"platform/components/Cascader/Cascader.jsx","./components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","./components/TimePicker/TimePicker.jsx":"platform/components/TimePicker/TimePicker.jsx","./components/RelativeDateInput/RelativeDateInput.jsx":"platform/components/RelativeDateInput/RelativeDateInput.jsx","./components/LoadMore/LoadMore.jsx":"platform/components/LoadMore/LoadMore.jsx","./patterns/ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","./patterns/AvatarUpload/AvatarUpload.jsx":"platform/patterns/AvatarUpload/AvatarUpload.jsx","./charts/scales.js":"platform/charts/scales.js","./charts/ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./components/TimeZoneSelect/TimeZoneSelect.jsx":"platform/components/TimeZoneSelect/TimeZoneSelect.jsx","./components/TreeSelect/TreeSelect.jsx":"platform/components/TreeSelect/TreeSelect.jsx","./components/TransferList/TransferList.jsx":"platform/components/TransferList/TransferList.jsx","./patterns/BottomSheetNav/BottomSheetNav.jsx":"platform/patterns/BottomSheetNav/BottomSheetNav.jsx","./patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","./patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","./patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","./patterns/GroupPanel/GroupPanel.jsx":"platform/patterns/GroupPanel/GroupPanel.jsx","./patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","./patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","./patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","./utils/fields.js":"platform/utils/fields.js","./hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","./charts/parts/position.js":"platform/charts/parts/position.js","./charts/parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./charts/parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./charts/parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./charts/parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./charts/parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./charts/parts/ReferenceLine.jsx":"platform/charts/parts/ReferenceLine.jsx","./charts/parts/ChartAnnotation.jsx":"platform/charts/parts/ChartAnnotation.jsx","./patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","./patterns/UserCard/UserCard.jsx":"platform/patterns/UserCard/UserCard.jsx","./components/VirtualList/VirtualList.jsx":"platform/components/VirtualList/VirtualList.jsx","./components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","./patterns/PeopleGroup/PeopleGroup.jsx":"platform/patterns/PeopleGroup/PeopleGroup.jsx","./patterns/PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","./patterns/QueryBuilder/QueryBuilder.jsx":"platform/patterns/QueryBuilder/QueryBuilder.jsx","./components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","./components/SearchResult/SearchResult.jsx":"platform/components/SearchResult/SearchResult.jsx","./components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","./patterns/ResourceList/ResourceList.jsx":"platform/patterns/ResourceList/ResourceList.jsx","./charts/interaction.js":"platform/charts/interaction.js","./charts/LineChart.jsx":"platform/charts/LineChart.jsx","./charts/AreaChart.jsx":"platform/charts/AreaChart.jsx","./charts/Gauge.jsx":"platform/charts/Gauge.jsx","./charts/HeatMap.jsx":"platform/charts/HeatMap.jsx","./charts/WaterfallChart.jsx":"platform/charts/WaterfallChart.jsx","./charts/WordCloud.jsx":"platform/charts/WordCloud.jsx","./charts/NetworkGraph.jsx":"platform/charts/NetworkGraph.jsx","./charts/Diagram.jsx":"platform/charts/Diagram.jsx","./charts/BarChart.jsx":"platform/charts/BarChart.jsx","./charts/ComboChart.jsx":"platform/charts/ComboChart.jsx","./charts/PieChart.jsx":"platform/charts/PieChart.jsx","./charts/BulletChart.jsx":"platform/charts/BulletChart.jsx","./charts/BoxPlot.jsx":"platform/charts/BoxPlot.jsx","./charts/RadarChart.jsx":"platform/charts/RadarChart.jsx","./charts/SankeyDiagram.jsx":"platform/charts/SankeyDiagram.jsx","./charts/TimelineChart.jsx":"platform/charts/TimelineChart.jsx","./patterns/ComparisonView/ComparisonView.jsx":"platform/patterns/ComparisonView/ComparisonView.jsx","./charts/a11y.js":"platform/charts/a11y.js","./charts/Sparkline.jsx":"platform/charts/Sparkline.jsx","./charts/LollipopChart.jsx":"platform/charts/LollipopChart.jsx","./charts/ScatterChart.jsx":"platform/charts/ScatterChart.jsx","./charts/FunnelChart.jsx":"platform/charts/FunnelChart.jsx","./charts/Treemap.jsx":"platform/charts/Treemap.jsx","./charts/GanttChart.jsx":"platform/charts/GanttChart.jsx","./charts/GeoMap.jsx":"platform/charts/GeoMap.jsx","./utils/dnd.js":"platform/utils/dnd.js","./components/DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","./patterns/SortableList/SortableList.jsx":"platform/patterns/SortableList/SortableList.jsx","./components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","./patterns/RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","./patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","./patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","./patterns/DuplicateAction/DuplicateAction.jsx":"platform/patterns/DuplicateAction/DuplicateAction.jsx","./patterns/Publish/Publish.jsx":"platform/patterns/Publish/Publish.jsx","./patterns/AssignControl/AssignControl.jsx":"platform/patterns/AssignControl/AssignControl.jsx","./patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","./patterns/WizardDialog/WizardDialog.jsx":"platform/patterns/WizardDialog/WizardDialog.jsx","./patterns/FormFlow/FormFlow.jsx":"platform/patterns/FormFlow/FormFlow.jsx","./patterns/Autosave/Autosave.jsx":"platform/patterns/Autosave/Autosave.jsx","./patterns/DraftState/DraftState.jsx":"platform/patterns/DraftState/DraftState.jsx","./patterns/SaveAs/SaveAs.jsx":"platform/patterns/SaveAs/SaveAs.jsx","./patterns/ArchiveRestore/ArchiveRestore.jsx":"platform/patterns/ArchiveRestore/ArchiveRestore.jsx","./components/File/File.jsx":"platform/components/File/File.jsx","./components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","./patterns/Auth/Auth.jsx":"platform/patterns/Auth/Auth.jsx","./patterns/SessionTimeout/SessionTimeout.jsx":"platform/patterns/SessionTimeout/SessionTimeout.jsx","./patterns/RoleManager/RoleManager.jsx":"platform/patterns/RoleManager/RoleManager.jsx","./patterns/ConnectedAccounts/ConnectedAccounts.jsx":"platform/patterns/ConnectedAccounts/ConnectedAccounts.jsx","./patterns/ShareDialog/ShareDialog.jsx":"platform/patterns/ShareDialog/ShareDialog.jsx","./patterns/PermissionsEditor/PermissionsEditor.jsx":"platform/patterns/PermissionsEditor/PermissionsEditor.jsx","./patterns/Tour/Tour.jsx":"platform/patterns/Tour/Tour.jsx","./components/Checklist/Checklist.jsx":"platform/components/Checklist/Checklist.jsx","./patterns/Onboarding/Onboarding.jsx":"platform/patterns/Onboarding/Onboarding.jsx","./patterns/FeatureIntro/FeatureIntro.jsx":"platform/patterns/FeatureIntro/FeatureIntro.jsx","./patterns/HelpPanel/HelpPanel.jsx":"platform/patterns/HelpPanel/HelpPanel.jsx","./patterns/ImportDialog/ImportDialog.jsx":"platform/patterns/ImportDialog/ImportDialog.jsx","./patterns/ImportWizard/ImportWizard.jsx":"platform/patterns/ImportWizard/ImportWizard.jsx","./patterns/ExportDialog/ExportDialog.jsx":"platform/patterns/ExportDialog/ExportDialog.jsx","./patterns/AccessRequest/AccessRequest.jsx":"platform/patterns/AccessRequest/AccessRequest.jsx","./patterns/TrialUpgrade/TrialUpgrade.jsx":"platform/patterns/TrialUpgrade/TrialUpgrade.jsx","./patterns/Offboarding/Offboarding.jsx":"platform/patterns/Offboarding/Offboarding.jsx","./patterns/ShortcutsDialog/ShortcutsDialog.jsx":"platform/patterns/ShortcutsDialog/ShortcutsDialog.jsx","./patterns/FileList/FileList.jsx":"platform/patterns/FileList/FileList.jsx","./patterns/FileBrowser/FileBrowser.jsx":"platform/patterns/FileBrowser/FileBrowser.jsx","./patterns/UploadManager/UploadManager.jsx":"platform/patterns/UploadManager/UploadManager.jsx","./patterns/VersionCompare/VersionCompare.jsx":"platform/patterns/VersionCompare/VersionCompare.jsx","./patterns/AssetGallery/AssetGallery.jsx":"platform/patterns/AssetGallery/AssetGallery.jsx","./patterns/DownloadManager/DownloadManager.jsx":"platform/patterns/DownloadManager/DownloadManager.jsx","./components/MediaPlayer/MediaPlayer.jsx":"platform/components/MediaPlayer/MediaPlayer.jsx","./patterns/MetadataEditor/MetadataEditor.jsx":"platform/patterns/MetadataEditor/MetadataEditor.jsx","./patterns/RelatedAssets/RelatedAssets.jsx":"platform/patterns/RelatedAssets/RelatedAssets.jsx","./patterns/AttachmentPicker/AttachmentPicker.jsx":"platform/patterns/AttachmentPicker/AttachmentPicker.jsx","./patterns/FilePicker/FilePicker.jsx":"platform/patterns/FilePicker/FilePicker.jsx","./patterns/RenditionList/RenditionList.jsx":"platform/patterns/RenditionList/RenditionList.jsx","./components/DocumentViewer/DocumentViewer.jsx":"platform/components/DocumentViewer/DocumentViewer.jsx","./patterns/VersionHistory/VersionHistory.jsx":"platform/patterns/VersionHistory/VersionHistory.jsx","./patterns/ProductCard/ProductCard.jsx":"platform/patterns/ProductCard/ProductCard.jsx","./components/ProductOptions/ProductOptions.jsx":"platform/components/ProductOptions/ProductOptions.jsx","./templates/Commerce/Commerce.jsx":"platform/templates/Commerce/Commerce.jsx","./components/Comment/Comment.jsx":"platform/components/Comment/Comment.jsx","./patterns/CommentThread/CommentThread.jsx":"platform/patterns/CommentThread/CommentThread.jsx","./patterns/ImageAnnotation/ImageAnnotation.jsx":"platform/patterns/ImageAnnotation/ImageAnnotation.jsx","./patterns/PresenceBar/PresenceBar.jsx":"platform/patterns/PresenceBar/PresenceBar.jsx","./components/MentionInput/MentionInput.jsx":"platform/components/MentionInput/MentionInput.jsx","./components/Announcement/Announcement.jsx":"platform/components/Announcement/Announcement.jsx","./patterns/AuditLog/AuditLog.jsx":"platform/patterns/AuditLog/AuditLog.jsx","./patterns/ApprovalWorkflow/ApprovalWorkflow.jsx":"platform/patterns/ApprovalWorkflow/ApprovalWorkflow.jsx","./components/PromptInput/PromptInput.jsx":"platform/components/PromptInput/PromptInput.jsx","./components/StreamingText/StreamingText.jsx":"platform/components/StreamingText/StreamingText.jsx","./patterns/AIChat/AIChat.jsx":"platform/patterns/AIChat/AIChat.jsx","./patterns/AssistantPanel/AssistantPanel.jsx":"platform/patterns/AssistantPanel/AssistantPanel.jsx","./components/AILabel/AILabel.jsx":"platform/components/AILabel/AILabel.jsx","./components/GeneratedContent/GeneratedContent.jsx":"platform/components/GeneratedContent/GeneratedContent.jsx","./patterns/PromptHistory/PromptHistory.jsx":"platform/patterns/PromptHistory/PromptHistory.jsx","./components/Citation/Citation.jsx":"platform/components/Citation/Citation.jsx","./components/SuggestedAction/SuggestedAction.jsx":"platform/components/SuggestedAction/SuggestedAction.jsx","./patterns/AISearch/AISearch.jsx":"platform/patterns/AISearch/AISearch.jsx","./patterns/Recommendation/Recommendation.jsx":"platform/patterns/Recommendation/Recommendation.jsx","./components/AIButton/AIButton.jsx":"platform/components/AIButton/AIButton.jsx","./components/AIDisclaimer/AIDisclaimer.jsx":"platform/components/AIDisclaimer/AIDisclaimer.jsx","./components/ConfidenceIndicator/ConfidenceIndicator.jsx":"platform/components/ConfidenceIndicator/ConfidenceIndicator.jsx","./patterns/AIExplanation/AIExplanation.jsx":"platform/patterns/AIExplanation/AIExplanation.jsx","./components/PromptSuggestions/PromptSuggestions.jsx":"platform/components/PromptSuggestions/PromptSuggestions.jsx","./components/SuggestedEdit/SuggestedEdit.jsx":"platform/components/SuggestedEdit/SuggestedEdit.jsx","./components/RefineMenu/RefineMenu.jsx":"platform/components/RefineMenu/RefineMenu.jsx","./providers/AnalyticsProvider.jsx":"platform/providers/AnalyticsProvider.jsx","./templates/templates/Templates.jsx":"platform/templates/templates/Templates.jsx","./utils/browserSupport.js":"platform/utils/browserSupport.js","./providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","./patterns/SplitView/SplitView.jsx":"platform/patterns/SplitView/SplitView.jsx","./components/Heading/Heading.jsx":"platform/components/Heading/Heading.jsx","./components/DataGrid/DataGridEngine.jsx":"platform/components/DataGrid/DataGridEngine.jsx"}, externals: {  }, run: function (module, exports, require) {
+  "platform/charts/TreeChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/grid.js":"platform/utils/grid.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./interaction.js":"platform/charts/interaction.js","./echarts/EChartsPlot.jsx":"platform/charts/echarts/EChartsPlot.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.TreeChart = TreeChart;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../utils/cx.js");
+var _grid = require("../utils/grid.js");
+var _ChartFrame = require("./ChartFrame.jsx");
+var _interaction = require("./interaction.js");
+var _EChartsPlot = require("./echarts/EChartsPlot.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · TreeChart
+   Summary: A hierarchy as a tree (07 Data Display › Charts › Tree chart; owner, 2026-10-26, charts-tree-26): one root,
+     its children and theirs, joined by curved lines, drawn left to right or top to bottom. Each branch folds away and
+     opens again. Drawn by Apache ECharts' tree in ChartFrame, with the Plenix keyboard, live region and data grid.
+   Usage:
+     <TreeChart title="How the ministries report to the clergy" description="Education and worship report to the parish priest."
+       data={{ id: 'parish', label: 'St. John the Beloved', detail: 'The parish', children: [
+         { id: 'c1', label: 'Fr. Daniel Boulos', detail: 'Parish priest', children: [{ id: 'edu', label: 'Education', children: […] }] }] }} />
+     <TreeChart orientation="top-to-bottom" title="…" data={root} defaultFolded={['c2']} />
+   Props:
+     title: the chart's name (required); description: its takeaway (ChartFrame)
+     data: the root: { id, label, detail, children: [the same] } (id unique in the tree; detail an optional second line:
+       a role, a count)
+     orientation: "left-to-right" (default: the root at the start, the leaves at the end) | "top-to-bottom" (the root at
+       the top, the leaves along the bottom, their labels turned to read upward)
+     defaultFolded: ids of the branches folded at first; folded / onFoldedChange(ids): the parent keeps them
+     interactive: keyboard, pointer and live region (default true)
+     hideCaption, className: ChartFrame's
+     strings: { name: "Name", detail: "Detail", parent: "Reports to", level: "Level", folded: "folded", open: "open" } and
+       the interaction's words (interaction: { hint, hintSelect })
+   Behavior:
+     A click on a node with children folds its branch away, and again opens it; a folded node is a filled dot. The
+       chart's height follows what is open: left to right, one row per leaf shown; top to bottom, one band per level.
+     One Tab stop. Left to right: ↑ ↓ move to the node before and after, → opens a folded branch or steps into it, ←
+       folds an open branch or steps back to its parent (mirrored in a right-to-left page); top to bottom: ← → move, ↓
+       opens or steps in, ↑ folds or steps out. Home and End go to the first and last node shown; Enter or Space folds
+       or opens. The node in focus takes the focus ring and a semibold name; under the pointer or in focus, the path up
+       to the root stands out and the rest dims. The live region says each node ("Education, 4 ministries, open").
+     Labels never collide: a name or detail longer than its room ends in an ellipsis (top to bottom, the leaves keep
+       only their name when two lines do not fit). The data grid ("Show the data") lists every node with its detail,
+       its parent and its level.
+     The plot draws once the chart engine has loaded (the first chart on a page loads it); the caption and data grid
+       show at once.
+   Notes:
+     For a few levels and up to a few dozen nodes; a large hierarchy belongs in a Tree (the list) or MillerColumns. The
+       lines, the nodes, the focus ring and the fonts are --plx-comp-tree-chart-* tokens read by the ECharts theme
+       (echarts/engine.js); ECharts' own tooltip is not used. No style is written here: ECharts writes only the sizes
+       and fonts the page checks allow inside .plx-chart__engine (font weights from the font-weight tokens).
+*/
+
+const STRINGS = {
+  name: 'Name',
+  detail: 'Detail',
+  parent: 'Reports to',
+  level: 'Level',
+  folded: 'folded',
+  open: 'open'
+};
+const INTERACTION = {
+  hint: 'Use the arrow keys to move through the tree.',
+  hintSelect: ' Enter folds or opens a branch.',
+  selected: '{text}'
+};
+const ORIENTATIONS = ['left-to-right', 'top-to-bottom'];
+const NONE = Object.freeze([]);
+
+// the tree as a list in reading order, each node with its parent and depth
+function flatten(root) {
+  const nodes = [],
+    byId = new Map();
+  (function walk(n, parent, depth) {
+    if (!n) return;
+    const id = n.id === undefined ? parent ? parent.id + '/' + nodes.length : 'root' : String(n.id);
+    const node = {
+      id,
+      label: n.label,
+      detail: n.detail,
+      parent,
+      depth,
+      children: []
+    };
+    nodes.push(node);
+    byId.set(id, node);
+    if (parent) parent.children.push(node);
+    (n.children || []).forEach(c => walk(c, node, depth + 1));
+  })(root, null, 0);
+  return {
+    nodes,
+    byId
+  };
+}
+
+// a canvas to measure label widths in the chart's own fonts (nothing is drawn with it)
+let canvas = null;
+const measure = (text, f) => {
+  if (!text || typeof document === 'undefined') return 0;
+  canvas = canvas || document.createElement('canvas');
+  const c = canvas.getContext('2d');
+  c.font = (f.fontWeight || 400) + ' ' + f.fontSize + 'px ' + f.fontFamily;
+  return c.measureText(String(text)).width;
+};
+// a token in pixels, read where the page sets it (the chart's spacing for its height before the engine has drawn)
+const tokenPx = name => {
+  if (typeof document === 'undefined') return 0;
+  const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  return /rem$/.test(v) ? parseFloat(v) * parseFloat(getComputedStyle(document.documentElement).fontSize) : parseFloat(v) || 0;
+};
+function TreeChart({
+  title,
+  description,
+  hideCaption,
+  data,
+  orientation = 'left-to-right',
+  defaultFolded = NONE,
+  folded: foldedProp,
+  onFoldedChange,
+  interactive = true,
+  strings,
+  className
+}) {
+  const t = Object.assign({}, STRINGS, strings);
+  const down = orientation === 'top-to-bottom';
+  const {
+    nodes,
+    byId
+  } = _react.default.useMemo(() => flatten(data), [data]);
+  const [own, setOwn] = _react.default.useState(() => new Set(defaultFolded));
+  const folded = foldedProp ? new Set(foldedProp) : own;
+  const foldedRef = _react.default.useRef(folded);
+  foldedRef.current = folded;
+  const setFolded = next => {
+    foldedRef.current = next;
+    if (!foldedProp) setOwn(next);
+    if (onFoldedChange) onFoldedChange([...next]);
+  };
+  const toggle = n => {
+    if (!n || !n.children.length) return;
+    const next = new Set(foldedRef.current);
+    if (next.has(n.id)) next.delete(n.id);else next.add(n.id);
+    setFolded(next);
+  };
+  // the nodes shown, in reading order (a folded branch's children are not)
+  const shown = _react.default.useMemo(() => {
+    const out = [];
+    (function walk(n) {
+      if (!n) return;
+      out.push(n);
+      if (!folded.has(n.id)) n.children.forEach(walk);
+    })(nodes[0]);
+    return out;
+  }, [nodes, [...folded].sort().join('|')]);
+  const leafNodes = shown.filter(n => !n.children.length || folded.has(n.id)),
+    leaves = leafNodes.length;
+  // the engine's tree layout keeps one unit between two leaves of the same parent and two between cousins: the breadth
+  // the leaves take is counted in those units, so each unit gets a whole leaf's room
+  const units = leafNodes.reduce((u, n, i) => u + (i === 0 ? 0 : n.parent === leafNodes[i - 1].parent ? 1 : 2), 0);
+  const depth = shown.reduce((d, n) => Math.max(d, n.depth), 0);
+  const rtl = _react.default.useRef(false);
+  const say = n => n ? [n.label, n.detail, n.children.length ? foldedRef.current.has(n.id) ? t.folded : t.open : null].filter(Boolean).join(', ') : '';
+  const ia = (0, _interaction.useChartInteraction)({
+    rows: 1,
+    columns: Math.max(1, shown.length),
+    mode: 'point',
+    select: true,
+    strings: Object.assign({}, INTERACTION, strings && strings.interaction),
+    first: () => ({
+      r: 0,
+      c: 0
+    }),
+    labelOf: c => shown[c] ? shown[c].label : '',
+    describe: ({
+      c
+    }) => say(shown[c]),
+    onSelect: ({
+      c
+    }) => toggle(shown[c]),
+    // the arrow keys follow the orientation: along the reading order, into a branch, back out of it
+    move: (cur, k) => {
+      const n = shown[cur.c];
+      if (!n) return cur;
+      const across = down ? ['ArrowLeft', 'ArrowRight'] : ['ArrowUp', 'ArrowDown'];
+      let into = down ? 'ArrowDown' : rtl.current ? 'ArrowLeft' : 'ArrowRight',
+        out = down ? 'ArrowUp' : rtl.current ? 'ArrowRight' : 'ArrowLeft';
+      if (down && rtl.current) {
+        across.reverse();
+      }
+      if (k === 'Home') return {
+        r: 0,
+        c: 0
+      };
+      if (k === 'End') return {
+        r: 0,
+        c: shown.length - 1
+      };
+      if (k === across[0]) return {
+        r: 0,
+        c: Math.max(0, cur.c - 1)
+      };
+      if (k === across[1]) return {
+        r: 0,
+        c: Math.min(shown.length - 1, cur.c + 1)
+      };
+      if (k === into && n.children.length) {
+        if (foldedRef.current.has(n.id)) {
+          toggle(n);
+          return cur;
+        }
+        return {
+          r: 0,
+          c: shown.indexOf(n.children[0])
+        };
+      }
+      if (k === out) {
+        if (n.children.length && !foldedRef.current.has(n.id)) {
+          toggle(n);
+          return cur;
+        }
+        if (n.parent) return {
+          r: 0,
+          c: shown.indexOf(n.parent)
+        };
+      }
+      return cur;
+    }
+  });
+  const active = ia.active && shown[ia.active.c] ? shown[ia.active.c] : null;
+  const focusId = active && ia.focused && ia.source === 'keyboard' ? active.id : null;
+
+  // the height follows what is open: a row per leaf (left to right) or a band per level and the turned leaf labels
+  const fitHeight = width => {
+    const leaf = tokenPx('--plx-comp-tree-chart-leaf-spacing') || 40,
+      level = tokenPx('--plx-comp-tree-chart-level-spacing') || 80;
+    if (!down) return (0, _grid.snapToGrid)(Math.max(1, units) * leaf + leaf, {
+      round: 'up'
+    });
+    const room = Math.min(width * 0.4, level * 2);
+    return (0, _grid.snapToGrid)(level * (depth + 0.5) + room, {
+      round: 'up'
+    });
+  };
+
+  // where each node shown is drawn (from the engine's layout), for the pointer and the label rooms; top to bottom, a
+  // change of layout draws the labels again within their new rooms
+  const positions = _react.default.useRef(new Map()),
+    index = _react.default.useRef(new Map());
+  const [layout, setLayout] = _react.default.useState('');
+  const plot = (0, _EChartsPlot.useEChartsPlot)();
+  const key = shown.map(n => n.id + (folded.has(n.id) ? '+' : '')).join('|');
+  const option = _react.default.useCallback((tk, dims) => {
+    const T = tk.tree,
+      gap = T.gap,
+      line = f => f.fontSize + 4;
+    rtl.current = tk.rtl;
+    const W = dims.width,
+      H = dims.height;
+    const ellipsis = (f, w) => ({
+      width: Math.max(gap, Math.floor(w)),
+      overflow: 'truncate',
+      ellipsis: '…'
+    });
+    const fits = (n, f) => Math.max(measure(n.label, f), measure(n.detail, T.detail)) + gap;
+    let box, labelFor;
+    if (!down) {
+      // the root's label before it, the leaves' after them, the others above their node; each label within its room
+      const rootW = Math.min(fits(nodes[0], T.nameFocus), W * 0.25);
+      const leafW = Math.min(leafNodes.reduce((m, n) => Math.max(m, fits(n, T.nameFocus)), 0), W * 0.35);
+      box = {
+        left: (0, _grid.snapToGrid)(rootW + gap * 2, {
+          round: 'up'
+        }),
+        right: (0, _grid.snapToGrid)(leafW + gap * 2, {
+          round: 'up'
+        }),
+        top: (0, _grid.snapToGrid)(T.leaf / 2, {
+          round: 'up'
+        }),
+        bottom: (0, _grid.snapToGrid)(T.leaf / 2, {
+          round: 'up'
+        })
+      };
+      const step = depth ? (W - box.left - box.right) / depth : W;
+      labelFor = (n, leafish) => n.depth === 0 ? Object.assign({
+        position: tk.rtl ? 'right' : 'left',
+        align: tk.rtl ? 'left' : 'right',
+        verticalAlign: 'middle'
+      }, ellipsis(T.name, rootW)) : leafish ? Object.assign({
+        position: tk.rtl ? 'left' : 'right',
+        align: tk.rtl ? 'right' : 'left',
+        verticalAlign: 'middle'
+      }, ellipsis(T.name, leafW)) : Object.assign({
+        position: 'top',
+        align: 'center',
+        verticalAlign: 'bottom'
+      }, ellipsis(T.name, step - gap * 2));
+    } else {
+      // the root's label above it; the others beside their node, within the room to the next node; the leaves' turned
+      // under them, the detail only when two lines fit across a leaf's room
+      const leafRoom = (W - gap * 2) / Math.max(1, units);
+      const twoLines = leafRoom >= line(T.name) + line(T.detail);
+      const turned = Math.min(H - T.level * (depth + 0.5), W * 0.4);
+      // the reading side's margin leaves the last branch at each level room for its label (at most 15% of the width)
+      const branchW = Math.min(shown.filter(n => n.depth > 0 && n.children.length && !folded.has(n.id)).reduce((m, n) => Math.max(m, fits(n, T.nameFocus)), 0), W * 0.15);
+      const endMargin = (0, _grid.snapToGrid)(Math.max(gap, branchW), {
+        round: 'up'
+      });
+      box = {
+        left: (0, _grid.snapToGrid)(tk.rtl ? endMargin : gap, {
+          round: 'up'
+        }),
+        right: (0, _grid.snapToGrid)(tk.rtl ? gap : endMargin, {
+          round: 'up'
+        }),
+        top: (0, _grid.snapToGrid)(line(T.name) * 2 + gap, {
+          round: 'up'
+        }),
+        bottom: (0, _grid.snapToGrid)(Math.max(gap, turned), {
+          round: 'up'
+        })
+      };
+      labelFor = (n, leafish, room) => n.depth === 0 ? Object.assign({
+        position: 'top',
+        align: 'center',
+        verticalAlign: 'bottom'
+      }, ellipsis(T.name, W - gap * 2)) : leafish ? Object.assign({
+        position: 'bottom',
+        rotate: 90,
+        align: 'right',
+        verticalAlign: 'middle',
+        twoLines
+      }, ellipsis(T.name, turned - gap)) : Object.assign(room.end ? {
+        position: 'right',
+        align: 'left'
+      } : {
+        position: 'left',
+        align: 'right'
+      }, {
+        verticalAlign: 'middle'
+      }, ellipsis(T.name, room.width));
+    }
+    // top to bottom, a branch label's room: the distance to the next node at its level on its reading side (the plot's
+    // edge for the last one), read from the last drawing
+    const roomOf = n => {
+      const pos = positions.current,
+        me = pos.get(n.id);
+      if (!me) return {
+        end: !tk.rtl,
+        width: W / 4
+      };
+      let next = tk.rtl ? gap : W - gap;
+      pos.forEach((p, id) => {
+        const o = byId.get(id);
+        if (o && o.depth === n.depth && id !== n.id && (tk.rtl ? p[0] < me[0] : p[0] > me[0])) next = tk.rtl ? Math.max(next, p[0]) : Math.min(next, p[0]);
+      });
+      return {
+        end: !tk.rtl,
+        width: Math.max(gap, Math.abs(next - me[0]) - gap * 3)
+      };
+    };
+    const item = n => {
+      const isFolded = folded.has(n.id),
+        leafish = !n.children.length || isFolded,
+        focus = n.id === focusId;
+      const lab = labelFor(n, leafish, down ? roomOf(n) : null);
+      const both = !(down && leafish && n.depth > 0 && !lab.twoLines) && n.detail;
+      delete lab.twoLines;
+      return {
+        name: n.label,
+        value: n.detail || '',
+        plxId: n.id,
+        collapsed: isFolded,
+        symbolSize: T.node.r * 2,
+        itemStyle: {
+          color: n.children.length && isFolded ? T.folded : T.node.fill,
+          borderColor: focus ? T.focus.color : T.node.color,
+          borderWidth: focus ? T.focus.width : T.node.width
+        },
+        label: Object.assign(lab, {
+          formatter: p => '{n|' + p.name + '}' + (both ? '\n{d|' + p.value + '}' : ''),
+          rich: {
+            n: {
+              color: T.name.color,
+              fontFamily: T.name.fontFamily,
+              fontSize: T.name.fontSize,
+              fontWeight: focus ? T.nameFocus.fontWeight : T.name.fontWeight,
+              lineHeight: line(T.name)
+            },
+            d: {
+              color: T.detail.color,
+              fontFamily: T.detail.fontFamily,
+              fontSize: T.detail.fontSize,
+              fontWeight: T.detail.fontWeight,
+              lineHeight: line(T.detail)
+            }
+          }
+        }),
+        children: n.children.map(item)
+      };
+    };
+    return {
+      animationDuration: tk.motion,
+      animationDurationUpdate: tk.motion,
+      series: [{
+        type: 'tree',
+        id: 'tree',
+        data: [item(nodes[0])],
+        orient: down ? 'TB' : tk.rtl ? 'RL' : 'LR',
+        left: box.left,
+        right: box.right,
+        top: box.top,
+        bottom: box.bottom,
+        symbol: 'circle',
+        expandAndCollapse: false,
+        roam: false,
+        initialTreeDepth: -1,
+        edgeShape: 'curve',
+        lineStyle: {
+          color: T.link.color,
+          width: T.link.width,
+          curveness: 0.5
+        },
+        label: {
+          distance: gap,
+          color: T.name.color,
+          fontFamily: T.name.fontFamily,
+          fontSize: T.name.fontSize
+        },
+        emphasis: {
+          focus: 'ancestor',
+          lineStyle: {
+            width: T.link.width * 2
+          }
+        },
+        blur: {
+          itemStyle: {
+            opacity: tk.dim
+          },
+          lineStyle: {
+            opacity: tk.dim
+          },
+          label: {
+            opacity: tk.dim
+          }
+        }
+      }]
+    };
+  }, [key, down, focusId, layout]);
+  _react.default.useEffect(() => {
+    const c = plot.chart;
+    if (!c) return;
+    const s = c.getModel().getSeriesByIndex(0);
+    if (!s) return;
+    const d = s.getData(),
+      tree = d.tree,
+      box = s.layoutInfo || {
+        x: 0,
+        y: 0
+      };
+    const pos = new Map(),
+      idx = new Map();
+    tree.eachNode(node => {
+      const id = node.getModel().get('plxId'),
+        l = node.getLayout();
+      idx.set(id, node.dataIndex);
+      if (l && shown.some(n => n.id === id)) pos.set(id, [box.x + l.x, box.y + l.y]);
+    });
+    positions.current = pos;
+    index.current = idx;
+    const k = [...pos].map(([id, p]) => id + ':' + Math.round(p[0]) + ',' + Math.round(p[1])).join('|');
+    if (down && k !== layout) setLayout(k);
+  });
+
+  // the path to the root of the node under the pointer or in focus stands out (the engine's ancestor emphasis)
+  const activeId = active ? active.id : '';
+  _react.default.useEffect(() => {
+    const c = plot.chart;
+    if (!c) return;
+    c.dispatchAction({
+      type: 'downplay',
+      seriesIndex: 0
+    });
+    if (activeId && index.current.has(activeId)) c.dispatchAction({
+      type: 'highlight',
+      seriesIndex: 0,
+      dataIndex: index.current.get(activeId)
+    });
+  }, [activeId, plot.chart, key]);
+  const table = {
+    columns: [{
+      title: t.name,
+      field: 'name',
+      kind: 'name',
+      rowLabel: true
+    }, {
+      title: t.detail,
+      field: 'detail'
+    }, {
+      title: t.parent,
+      field: 'parent'
+    }, {
+      title: t.level,
+      field: 'level',
+      kind: 'data',
+      align: 'right'
+    }],
+    data: nodes.map((n, i) => ({
+      id: i + 1,
+      name: n.label,
+      detail: n.detail || '',
+      parent: n.parent ? n.parent.label : '',
+      level: String(n.depth + 1)
+    }))
+  };
+  const draw = dims => {
+    const layer = plot.layer(dims, option);
+    ia.register({
+      nearest: (px, py) => {
+        let best = null,
+          bd = Infinity;
+        positions.current.forEach((p, id) => {
+          const dd = Math.hypot(p[0] - px, p[1] - py);
+          if (dd < bd) {
+            bd = dd;
+            best = id;
+          }
+        });
+        const reach = Math.max(16, (plot.tokens ? plot.tokens.tree.gap : 8) * 2);
+        return best !== null && bd <= reach ? {
+          r: 0,
+          c: shown.findIndex(n => n.id === best)
+        } : null;
+      }
+    });
+    return layer;
+  };
+  return /*#__PURE__*/_react.default.createElement(_ChartFrame.ChartFrame, {
+    title: title,
+    description: description,
+    hideCaption: hideCaption,
+    margin: _EChartsPlot.NO_MARGIN,
+    table: table,
+    fitHeight: fitHeight,
+    interaction: interactive ? ia : undefined,
+    strings: strings,
+    className: (0, _cx.cx)('plx-tree-chart', 'plx-tree-chart--' + (ORIENTATIONS.indexOf(orientation) >= 0 ? orientation : 'left-to-right'), className)
+  }, draw);
+}
+  } },
+  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/MetricCard/MetricCard.jsx":"platform/components/MetricCard/MetricCard.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/DataPill/DataPill.jsx":"platform/components/DataPill/DataPill.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/Surface.jsx":"platform/providers/Surface.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./utils/tokenSheet.js":"platform/utils/tokenSheet.js","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js","./components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","./components/RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","./components/Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","./components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","./components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","./components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","./components/MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","./components/Cascader/Cascader.jsx":"platform/components/Cascader/Cascader.jsx","./components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","./components/TimePicker/TimePicker.jsx":"platform/components/TimePicker/TimePicker.jsx","./components/RelativeDateInput/RelativeDateInput.jsx":"platform/components/RelativeDateInput/RelativeDateInput.jsx","./components/LoadMore/LoadMore.jsx":"platform/components/LoadMore/LoadMore.jsx","./patterns/ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","./patterns/AvatarUpload/AvatarUpload.jsx":"platform/patterns/AvatarUpload/AvatarUpload.jsx","./charts/scales.js":"platform/charts/scales.js","./charts/ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./components/TimeZoneSelect/TimeZoneSelect.jsx":"platform/components/TimeZoneSelect/TimeZoneSelect.jsx","./components/TreeSelect/TreeSelect.jsx":"platform/components/TreeSelect/TreeSelect.jsx","./components/TransferList/TransferList.jsx":"platform/components/TransferList/TransferList.jsx","./patterns/BottomSheetNav/BottomSheetNav.jsx":"platform/patterns/BottomSheetNav/BottomSheetNav.jsx","./patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","./patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","./patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","./patterns/GroupPanel/GroupPanel.jsx":"platform/patterns/GroupPanel/GroupPanel.jsx","./patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","./patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","./patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","./utils/fields.js":"platform/utils/fields.js","./hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","./charts/parts/position.js":"platform/charts/parts/position.js","./charts/parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./charts/parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./charts/parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./charts/parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./charts/parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./charts/parts/ReferenceLine.jsx":"platform/charts/parts/ReferenceLine.jsx","./charts/parts/ChartAnnotation.jsx":"platform/charts/parts/ChartAnnotation.jsx","./patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","./patterns/UserCard/UserCard.jsx":"platform/patterns/UserCard/UserCard.jsx","./components/VirtualList/VirtualList.jsx":"platform/components/VirtualList/VirtualList.jsx","./components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","./patterns/PeopleGroup/PeopleGroup.jsx":"platform/patterns/PeopleGroup/PeopleGroup.jsx","./patterns/PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","./patterns/QueryBuilder/QueryBuilder.jsx":"platform/patterns/QueryBuilder/QueryBuilder.jsx","./components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","./components/SearchResult/SearchResult.jsx":"platform/components/SearchResult/SearchResult.jsx","./components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","./patterns/ResourceList/ResourceList.jsx":"platform/patterns/ResourceList/ResourceList.jsx","./charts/interaction.js":"platform/charts/interaction.js","./charts/LineChart.jsx":"platform/charts/LineChart.jsx","./charts/AreaChart.jsx":"platform/charts/AreaChart.jsx","./charts/Gauge.jsx":"platform/charts/Gauge.jsx","./charts/HeatMap.jsx":"platform/charts/HeatMap.jsx","./charts/WaterfallChart.jsx":"platform/charts/WaterfallChart.jsx","./charts/WordCloud.jsx":"platform/charts/WordCloud.jsx","./charts/NetworkGraph.jsx":"platform/charts/NetworkGraph.jsx","./charts/Diagram.jsx":"platform/charts/Diagram.jsx","./charts/BarChart.jsx":"platform/charts/BarChart.jsx","./charts/ComboChart.jsx":"platform/charts/ComboChart.jsx","./charts/PieChart.jsx":"platform/charts/PieChart.jsx","./charts/BulletChart.jsx":"platform/charts/BulletChart.jsx","./charts/BoxPlot.jsx":"platform/charts/BoxPlot.jsx","./charts/RadarChart.jsx":"platform/charts/RadarChart.jsx","./charts/SankeyDiagram.jsx":"platform/charts/SankeyDiagram.jsx","./charts/TimelineChart.jsx":"platform/charts/TimelineChart.jsx","./patterns/ComparisonView/ComparisonView.jsx":"platform/patterns/ComparisonView/ComparisonView.jsx","./charts/a11y.js":"platform/charts/a11y.js","./charts/Sparkline.jsx":"platform/charts/Sparkline.jsx","./charts/LollipopChart.jsx":"platform/charts/LollipopChart.jsx","./charts/ScatterChart.jsx":"platform/charts/ScatterChart.jsx","./charts/FunnelChart.jsx":"platform/charts/FunnelChart.jsx","./charts/Treemap.jsx":"platform/charts/Treemap.jsx","./charts/GanttChart.jsx":"platform/charts/GanttChart.jsx","./charts/GeoMap.jsx":"platform/charts/GeoMap.jsx","./utils/dnd.js":"platform/utils/dnd.js","./components/DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","./patterns/SortableList/SortableList.jsx":"platform/patterns/SortableList/SortableList.jsx","./components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","./patterns/RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","./patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","./patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","./patterns/DuplicateAction/DuplicateAction.jsx":"platform/patterns/DuplicateAction/DuplicateAction.jsx","./patterns/Publish/Publish.jsx":"platform/patterns/Publish/Publish.jsx","./patterns/AssignControl/AssignControl.jsx":"platform/patterns/AssignControl/AssignControl.jsx","./patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","./patterns/WizardDialog/WizardDialog.jsx":"platform/patterns/WizardDialog/WizardDialog.jsx","./patterns/FormFlow/FormFlow.jsx":"platform/patterns/FormFlow/FormFlow.jsx","./patterns/Autosave/Autosave.jsx":"platform/patterns/Autosave/Autosave.jsx","./patterns/DraftState/DraftState.jsx":"platform/patterns/DraftState/DraftState.jsx","./patterns/SaveAs/SaveAs.jsx":"platform/patterns/SaveAs/SaveAs.jsx","./patterns/ArchiveRestore/ArchiveRestore.jsx":"platform/patterns/ArchiveRestore/ArchiveRestore.jsx","./components/File/File.jsx":"platform/components/File/File.jsx","./components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","./patterns/Auth/Auth.jsx":"platform/patterns/Auth/Auth.jsx","./patterns/SessionTimeout/SessionTimeout.jsx":"platform/patterns/SessionTimeout/SessionTimeout.jsx","./patterns/RoleManager/RoleManager.jsx":"platform/patterns/RoleManager/RoleManager.jsx","./patterns/ConnectedAccounts/ConnectedAccounts.jsx":"platform/patterns/ConnectedAccounts/ConnectedAccounts.jsx","./patterns/ShareDialog/ShareDialog.jsx":"platform/patterns/ShareDialog/ShareDialog.jsx","./patterns/PermissionsEditor/PermissionsEditor.jsx":"platform/patterns/PermissionsEditor/PermissionsEditor.jsx","./patterns/Tour/Tour.jsx":"platform/patterns/Tour/Tour.jsx","./components/Checklist/Checklist.jsx":"platform/components/Checklist/Checklist.jsx","./patterns/Onboarding/Onboarding.jsx":"platform/patterns/Onboarding/Onboarding.jsx","./patterns/FeatureIntro/FeatureIntro.jsx":"platform/patterns/FeatureIntro/FeatureIntro.jsx","./patterns/HelpPanel/HelpPanel.jsx":"platform/patterns/HelpPanel/HelpPanel.jsx","./patterns/ImportDialog/ImportDialog.jsx":"platform/patterns/ImportDialog/ImportDialog.jsx","./patterns/ImportWizard/ImportWizard.jsx":"platform/patterns/ImportWizard/ImportWizard.jsx","./patterns/ExportDialog/ExportDialog.jsx":"platform/patterns/ExportDialog/ExportDialog.jsx","./patterns/AccessRequest/AccessRequest.jsx":"platform/patterns/AccessRequest/AccessRequest.jsx","./patterns/TrialUpgrade/TrialUpgrade.jsx":"platform/patterns/TrialUpgrade/TrialUpgrade.jsx","./patterns/Offboarding/Offboarding.jsx":"platform/patterns/Offboarding/Offboarding.jsx","./patterns/ShortcutsDialog/ShortcutsDialog.jsx":"platform/patterns/ShortcutsDialog/ShortcutsDialog.jsx","./patterns/FileList/FileList.jsx":"platform/patterns/FileList/FileList.jsx","./patterns/FileBrowser/FileBrowser.jsx":"platform/patterns/FileBrowser/FileBrowser.jsx","./patterns/UploadManager/UploadManager.jsx":"platform/patterns/UploadManager/UploadManager.jsx","./patterns/VersionCompare/VersionCompare.jsx":"platform/patterns/VersionCompare/VersionCompare.jsx","./patterns/AssetGallery/AssetGallery.jsx":"platform/patterns/AssetGallery/AssetGallery.jsx","./patterns/DownloadManager/DownloadManager.jsx":"platform/patterns/DownloadManager/DownloadManager.jsx","./components/MediaPlayer/MediaPlayer.jsx":"platform/components/MediaPlayer/MediaPlayer.jsx","./patterns/MetadataEditor/MetadataEditor.jsx":"platform/patterns/MetadataEditor/MetadataEditor.jsx","./patterns/RelatedAssets/RelatedAssets.jsx":"platform/patterns/RelatedAssets/RelatedAssets.jsx","./patterns/AttachmentPicker/AttachmentPicker.jsx":"platform/patterns/AttachmentPicker/AttachmentPicker.jsx","./patterns/FilePicker/FilePicker.jsx":"platform/patterns/FilePicker/FilePicker.jsx","./patterns/RenditionList/RenditionList.jsx":"platform/patterns/RenditionList/RenditionList.jsx","./components/DocumentViewer/DocumentViewer.jsx":"platform/components/DocumentViewer/DocumentViewer.jsx","./patterns/VersionHistory/VersionHistory.jsx":"platform/patterns/VersionHistory/VersionHistory.jsx","./patterns/ProductCard/ProductCard.jsx":"platform/patterns/ProductCard/ProductCard.jsx","./components/ProductOptions/ProductOptions.jsx":"platform/components/ProductOptions/ProductOptions.jsx","./templates/Commerce/Commerce.jsx":"platform/templates/Commerce/Commerce.jsx","./components/Comment/Comment.jsx":"platform/components/Comment/Comment.jsx","./patterns/CommentThread/CommentThread.jsx":"platform/patterns/CommentThread/CommentThread.jsx","./patterns/ImageAnnotation/ImageAnnotation.jsx":"platform/patterns/ImageAnnotation/ImageAnnotation.jsx","./patterns/PresenceBar/PresenceBar.jsx":"platform/patterns/PresenceBar/PresenceBar.jsx","./components/MentionInput/MentionInput.jsx":"platform/components/MentionInput/MentionInput.jsx","./components/Announcement/Announcement.jsx":"platform/components/Announcement/Announcement.jsx","./patterns/AuditLog/AuditLog.jsx":"platform/patterns/AuditLog/AuditLog.jsx","./patterns/ApprovalWorkflow/ApprovalWorkflow.jsx":"platform/patterns/ApprovalWorkflow/ApprovalWorkflow.jsx","./components/PromptInput/PromptInput.jsx":"platform/components/PromptInput/PromptInput.jsx","./components/StreamingText/StreamingText.jsx":"platform/components/StreamingText/StreamingText.jsx","./patterns/AIChat/AIChat.jsx":"platform/patterns/AIChat/AIChat.jsx","./patterns/AssistantPanel/AssistantPanel.jsx":"platform/patterns/AssistantPanel/AssistantPanel.jsx","./components/AILabel/AILabel.jsx":"platform/components/AILabel/AILabel.jsx","./components/GeneratedContent/GeneratedContent.jsx":"platform/components/GeneratedContent/GeneratedContent.jsx","./patterns/PromptHistory/PromptHistory.jsx":"platform/patterns/PromptHistory/PromptHistory.jsx","./components/Citation/Citation.jsx":"platform/components/Citation/Citation.jsx","./components/SuggestedAction/SuggestedAction.jsx":"platform/components/SuggestedAction/SuggestedAction.jsx","./patterns/AISearch/AISearch.jsx":"platform/patterns/AISearch/AISearch.jsx","./patterns/Recommendation/Recommendation.jsx":"platform/patterns/Recommendation/Recommendation.jsx","./components/AIButton/AIButton.jsx":"platform/components/AIButton/AIButton.jsx","./components/AIDisclaimer/AIDisclaimer.jsx":"platform/components/AIDisclaimer/AIDisclaimer.jsx","./components/ConfidenceIndicator/ConfidenceIndicator.jsx":"platform/components/ConfidenceIndicator/ConfidenceIndicator.jsx","./patterns/AIExplanation/AIExplanation.jsx":"platform/patterns/AIExplanation/AIExplanation.jsx","./components/PromptSuggestions/PromptSuggestions.jsx":"platform/components/PromptSuggestions/PromptSuggestions.jsx","./components/SuggestedEdit/SuggestedEdit.jsx":"platform/components/SuggestedEdit/SuggestedEdit.jsx","./components/RefineMenu/RefineMenu.jsx":"platform/components/RefineMenu/RefineMenu.jsx","./providers/AnalyticsProvider.jsx":"platform/providers/AnalyticsProvider.jsx","./templates/templates/Templates.jsx":"platform/templates/templates/Templates.jsx","./utils/browserSupport.js":"platform/utils/browserSupport.js","./providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","./patterns/SplitView/SplitView.jsx":"platform/patterns/SplitView/SplitView.jsx","./components/Heading/Heading.jsx":"platform/components/Heading/Heading.jsx","./charts/TreeChart.jsx":"platform/charts/TreeChart.jsx","./components/DataGrid/DataGridEngine.jsx":"platform/components/DataGrid/DataGridEngine.jsx"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -79608,6 +80193,12 @@ Object.defineProperty(exports, "Tree", {
     return _Tree.Tree;
   }
 });
+Object.defineProperty(exports, "TreeChart", {
+  enumerable: true,
+  get: function () {
+    return _TreeChart.TreeChart;
+  }
+});
 Object.defineProperty(exports, "TreeSelect", {
   enumerable: true,
   get: function () {
@@ -81111,6 +81702,7 @@ var _browserSupport = require("./utils/browserSupport.js");
 var _LocaleProvider = require("./providers/LocaleProvider.jsx");
 var _SplitView = require("./patterns/SplitView/SplitView.jsx");
 var _Heading = require("./components/Heading/Heading.jsx");
+var _TreeChart = require("./charts/TreeChart.jsx");
 var _DataGridEngine = require("./components/DataGrid/DataGridEngine.jsx");
   } }
   };
