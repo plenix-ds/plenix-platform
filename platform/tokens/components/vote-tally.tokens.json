@@ -1,0 +1,17 @@
+{
+  "$description": "VoteTally (platform/components/VoteTally; owner, vote-live-36, vote-screen-36/37): a live vote as a list of members, each with three icon-only choices, and the totals under it. Its colors come from Button's tone and Badge; these tokens are its frame and spacing.",
+  "plx-comp": {
+    "vote-tally-background": { "$value": "{plx-sys.surface-default}", "$type": "color", "$description": "The list's and the totals' surface." },
+    "vote-tally-border-color": { "$value": "{plx-sys.border-default}", "$type": "color", "$description": "The frame around the list and the totals." },
+    "vote-tally-border-width": { "$value": "{plx-sys.border-width-thin}", "$type": "dimension", "$description": "The frame around the list and the totals." },
+    "vote-tally-radius": { "$value": "{plx-sys.shape-md}", "$type": "dimension", "$description": "The frames' corners (6px)." },
+    "vote-tally-divider-color": { "$value": "{plx-sys.border-subtle}", "$type": "color", "$description": "The line between two members." },
+    "vote-tally-gap": { "$value": "{plx-ref.space-12px}", "$type": "dimension", "$description": "The space between the list and the totals." },
+    "vote-tally-row-padding-block": { "$value": "{plx-ref.space-12px}", "$type": "dimension", "$description": "A member row's space above and below." },
+    "vote-tally-row-padding-inline": { "$value": "{plx-ref.space-16px}", "$type": "dimension", "$description": "A member row's space at its sides." },
+    "vote-tally-row-gap": { "$value": "{plx-ref.space-12px}", "$type": "dimension", "$description": "The space between the avatar, the name and the choices." },
+    "vote-tally-choices-gap": { "$value": "{plx-ref.space-8px}", "$type": "dimension", "$description": "The space between the three choices." },
+    "vote-tally-totals-padding": { "$value": "{plx-ref.space-12px}", "$type": "dimension", "$description": "The totals frame's inner space." },
+    "vote-tally-totals-gap": { "$value": "{plx-ref.space-8px}", "$type": "dimension", "$description": "The space between the totals' badges." }
+  }
+}
