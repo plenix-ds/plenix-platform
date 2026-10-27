@@ -2904,6 +2904,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.chartTokens = chartTokens;
 exports.loadECharts = loadECharts;
 exports.plenixTheme = plenixTheme;
+exports.tickLineHeight = tickLineHeight;
 var _vendorBase = require("../../utils/vendorBase.js");
 /* Plenix · Chart engine (platform/charts/echarts/engine.js)
    Summary: How a Plenix chart draws with Apache ECharts (issue 353, owner 2026-10-26): loads the vendored engine
@@ -2967,6 +2968,26 @@ const ms = v => {
   const s = String(v).trim();
   return /ms$/.test(s) ? num(s) : /s$/.test(s) ? num(s) * 1000 : num(s);
 };
+
+// a tick label's line height (owner, arabic-font-35; issue 413): the font size, unless a label is in a script whose letters
+// reach below it (Arabic); then the deepest such label, measured, so ECharts keeps room for it under the axis. Latin labels
+// are never measured, so their charts do not change.
+const DEEP_SCRIPT = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
+function tickLineHeight(t, texts) {
+  const size = t.tick.fontSize,
+    deep = (texts || []).map(String).filter(x => DEEP_SCRIPT.test(x));
+  if (!deep.length || typeof document === 'undefined') return size;
+  const ctx = document.createElement('canvas').getContext('2d');
+  if (!ctx) return size;
+  ctx.font = (t.tick.fontWeight || 400) + ' ' + size + 'px ' + t.tick.fontFamily;
+  ctx.textBaseline = 'top';
+  let h = size;
+  for (const x of deep) {
+    const m = ctx.measureText(x);
+    h = Math.max(h, Math.ceil(m.actualBoundingBoxDescent - Math.min(0, -m.actualBoundingBoxAscent)));
+  }
+  return h;
+}
 function chartTokens(where) {
   const doc = where.ownerDocument,
     win = doc.defaultView;
@@ -53103,7 +53124,7 @@ function ResourceList({
   }, items.map(row)));
 }
   } },
-  "platform/charts/LineChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./interaction.js":"platform/charts/interaction.js","./echarts/EChartsPlot.jsx":"platform/charts/echarts/EChartsPlot.jsx","../utils/grid.js":"platform/utils/grid.js","./chart-kit.js":"platform/charts/chart-kit.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/LineChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./interaction.js":"platform/charts/interaction.js","./echarts/EChartsPlot.jsx":"platform/charts/echarts/EChartsPlot.jsx","./echarts/engine.js":"platform/charts/echarts/engine.js","../utils/grid.js":"platform/utils/grid.js","./chart-kit.js":"platform/charts/chart-kit.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -53121,6 +53142,7 @@ var _ChartLegend = require("./parts/ChartLegend.jsx");
 var _ChartTooltip = require("./parts/ChartTooltip.jsx");
 var _interaction = require("./interaction.js");
 var _EChartsPlot = require("./echarts/EChartsPlot.jsx");
+var _engine = require("./echarts/engine.js");
 var _grid = require("../utils/grid.js");
 var _chartKit = require("./chart-kit.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -53378,8 +53400,11 @@ function SeriesChart({
     const room = gridRoom(margin, tk.top);
     // ECharts does not measure labels at its own tick values: the room under the plot and after it for the date labels
     const dates = type === 'time' ? timeLabels(size) : null;
+    // the x labels' line height: the font size, or more for Arabic labels (tickLineHeight)
+    const xTexts = type === 'band' ? cols.map(c => fmts.current.fmtX(xs[c])) : dates ? dates.customValues.map(dates.formatter) : [];
+    const xLine = (0, _engine.tickLineHeight)(tk, xTexts);
     if (dates) {
-      room.bottom = Math.max(room.bottom, (0, _grid.snapToGrid)(tk.tickOffset + tk.tick.fontSize, {
+      room.bottom = Math.max(room.bottom, (0, _grid.snapToGrid)(tk.tickOffset + xLine, {
         round: 'up'
       }));
       room.right = Math.max(room.right, (0, _chartKit.halfRoom)(dates.last));
@@ -53397,13 +53422,17 @@ function SeriesChart({
     };
     const xAxis = Object.assign({
       name: xLabel,
-      nameGap: tk.tickOffset * 2 + tk.tick.fontSize,
+      nameGap: tk.tickOffset * 2 + xLine,
       inverse: tk.rtl
-    }, named, type === 'band' ? {
+    }, named, type === 'band' ? Object.assign({
       type: 'category',
       boundaryGap: false,
-      data: cols.map(c => fmts.current.fmtX(xs[c]))
-    } : {
+      data: xTexts
+    }, xLine > tk.tick.fontSize ? {
+      axisLabel: {
+        lineHeight: xLine
+      }
+    } : {}) : {
       type: type === 'time' ? 'time' : 'value',
       min: xValue(v0),
       max: xValue(v1),
@@ -55756,7 +55785,7 @@ function Diagram({
   }, draw);
 }
   } },
-  "platform/charts/BarChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./interaction.js":"platform/charts/interaction.js","./chart-kit.js":"platform/charts/chart-kit.js","./echarts/EChartsPlot.jsx":"platform/charts/echarts/EChartsPlot.jsx","./LineChart.jsx":"platform/charts/LineChart.jsx","../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/BarChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./interaction.js":"platform/charts/interaction.js","./chart-kit.js":"platform/charts/chart-kit.js","./echarts/EChartsPlot.jsx":"platform/charts/echarts/EChartsPlot.jsx","./echarts/engine.js":"platform/charts/echarts/engine.js","./LineChart.jsx":"platform/charts/LineChart.jsx","../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -55775,6 +55804,7 @@ var _DataLabel = require("./parts/DataLabel.jsx");
 var _interaction = require("./interaction.js");
 var _chartKit = require("./chart-kit.js");
 var _EChartsPlot = require("./echarts/EChartsPlot.jsx");
+var _engine = require("./echarts/engine.js");
 var _LineChart = require("./LineChart.jsx");
 var _grid = require("../utils/grid.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -56085,15 +56115,19 @@ function BarChart({
       min: 0,
       max: 1
     } : {});
+    // the category labels' line height under columns: the font size, or more for Arabic labels (tickLineHeight)
+    const catLine = across || bins ? tk.tick.fontSize : (0, _engine.tickLineHeight)(tk, cats.map(String));
     const catAxis = Object.assign({
       type: 'category',
       data: cats.map((c, ci) => bins ? String(ci) : String(c)),
       inverse: across,
       name: bins ? undefined : categoryLabel,
-      nameGap: across ? 0 : tk.tickOffset * 2 + tk.tick.fontSize,
+      nameGap: across ? 0 : tk.tickOffset * 2 + catLine,
       position: across ? tk.rtl ? 'right' : 'left' : 'bottom',
       axisLabel: bins ? {
         show: false
+      } : catLine > tk.tick.fontSize ? {
+        lineHeight: catLine
       } : {}
     }, named);
     // a histogram's range axis: the bins' edges on a number axis laid over the bins

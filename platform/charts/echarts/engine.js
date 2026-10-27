@@ -49,6 +49,20 @@ const num = (v) => parseFloat(v) || 0;
 // a duration token in milliseconds ("200ms" or "0.2s")
 const ms = (v) => { const s = String(v).trim(); return /ms$/.test(s) ? num(s) : /s$/.test(s) ? num(s) * 1000 : num(s); };
 
+// a tick label's line height (owner, arabic-font-35; issue 413): the font size, unless a label is in a script whose letters
+// reach below it (Arabic); then the deepest such label, measured, so ECharts keeps room for it under the axis. Latin labels
+// are never measured, so their charts do not change.
+const DEEP_SCRIPT = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
+export function tickLineHeight(t, texts) {
+  const size = t.tick.fontSize, deep = (texts || []).map(String).filter((x) => DEEP_SCRIPT.test(x));
+  if (!deep.length || typeof document === 'undefined') return size;
+  const ctx = document.createElement('canvas').getContext('2d');
+  if (!ctx) return size;
+  ctx.font = (t.tick.fontWeight || 400) + ' ' + size + 'px ' + t.tick.fontFamily; ctx.textBaseline = 'top';
+  let h = size;
+  for (const x of deep) { const m = ctx.measureText(x); h = Math.max(h, Math.ceil(m.actualBoundingBoxDescent - Math.min(0, -m.actualBoundingBoxAscent))); }
+  return h;
+}
 export function chartTokens(where) {
   const doc = where.ownerDocument, win = doc.defaultView;
   const svg = doc.createElementNS(NS, 'svg');
