@@ -102,8 +102,9 @@
       "$description": "The titles' stack: DM Sans, then Readex Pro for Arabic letters only (owner, arabic-font-35). Latin titles are DM Sans, as before."
     },
     "font-mono": {
-      "$value": "\"Reddit Mono\", ui-monospace, \"SFMono-Regular\", Menlo, Monaco, Consolas, \"Liberation Mono\", monospace",
-      "$type": "fontFamily"
+      "$value": "\"Reddit Mono\", \"IBM Plex Sans Arabic\", ui-monospace, \"SFMono-Regular\", Menlo, Monaco, Consolas, \"Liberation Mono\", monospace",
+      "$type": "fontFamily",
+      "$description": "The code and data stack: Reddit Mono, then IBM Plex Sans Arabic for Arabic letters only (owner, arabic-font-35), so Arabic in data text and chart axes is drawn joined, not by a system monospace font."
     },
     "font-weight-regular-400": {
       "$value": "400",
