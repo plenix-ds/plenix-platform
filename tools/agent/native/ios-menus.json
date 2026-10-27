@@ -87,7 +87,7 @@
    {
     "part": "A",
     "attribute": "Corner radius",
-    "token": "plx-sys-radius-menu-8px",
+    "token": "plx-sys-radius-menu-6px",
     "value": "8 pt (Plenix.Radius.radiusMenu8px)",
     "apple": "34 pt glass",
     "swiftui": "System Menu: drawn by the system. A Plenix-drawn menu: .clipShape(.rect(cornerRadius: Plenix.Radius.radiusMenu8px))",

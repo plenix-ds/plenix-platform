@@ -50,7 +50,7 @@
    {
     "part": "A",
     "attribute": "Container",
-    "token": "plx-comp-menu-background, plx-sys-radius-menu-8px",
+    "token": "plx-comp-menu-background, plx-sys-radius-menu-6px",
     "value": "Drawn by the system; a Plenix-drawn selection bar uses the overlay surface, 8 pt (Plenix.Radius.radiusMenu8px)",
     "apple": "Glass capsule",
     "swiftui": "Drawn by the system",

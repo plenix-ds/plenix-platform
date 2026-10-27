@@ -12,7 +12,7 @@
     "version-compare-lines-background": { "$value": "{plx-sys.surface-default}", "$type": "color", "$description": "VersionCompare text: the lines' surface (surface-default)." },
     "version-compare-lines-border-color": { "$value": "{plx-sys.border-default}", "$type": "color", "$description": "VersionCompare text: the lines' frame (border-default)." },
     "version-compare-lines-border-width": { "$value": "{plx-sys.border-width-thin}", "$type": "dimension", "$description": "VersionCompare text: the frame's width (border-width-thin)." },
-    "version-compare-lines-radius": { "$value": "{plx-sys.radius-surface-8px}", "$type": "dimension", "$description": "VersionCompare text: the frame's corners (radius-surface-8px)." },
+    "version-compare-lines-radius": { "$value": "{plx-sys.radius-surface-6px}", "$type": "dimension", "$description": "VersionCompare text: the frame's corners (radius-surface-6px)." },
     "version-compare-lines-max-height": { "$value": "{plx-ref.size-560px}", "$type": "dimension", "$description": "VersionCompare text: the lines' tallest height; past it they scroll (560px)." },
     "version-compare-line-gap": { "$value": "{plx-sys.space-inline-sm}", "$type": "dimension", "$description": "VersionCompare text: the gap between a line's numbers, sign and text (space-inline-sm)." },
     "version-compare-line-padding-inline": { "$value": "{plx-sys.space-inset-sm}", "$type": "dimension", "$description": "VersionCompare text: a line's padding at the start and end (space-inset-sm)." },

@@ -277,7 +277,7 @@
       "$description": "EntityHeader: a section header's column gap."
     },
     "entity-header-section-radius": {
-      "$value": "{plx-sys.radius-surface-8px}",
+      "$value": "{plx-sys.radius-surface-6px}",
       "$type": "dimension",
       "$description": "EntityHeader: a section header's corners."
     },

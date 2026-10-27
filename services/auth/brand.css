@@ -18,7 +18,7 @@
   --plenix-on-primary: #ffffff /* --plx-sys-action-primary-content */;
   --plenix-focus: #2a6fdb /* --plx-sys-focus-ring-color */;
   --plenix-radius: 4px /* --plx-sys-radius-control */;
-  --plenix-card-radius: 12px /* --plx-sys-radius-card-12px */;
+  --plenix-card-radius: 6px /* --plx-sys-radius-card-6px */;
   --plenix-height: 2.25rem /* --plx-sys-control-height-dialog */;
   --plenix-border-width: 1px /* --plx-comp-input-border-width */;
   --plenix-semibold: 600 /* --plx-sys-font-weight-semibold */;

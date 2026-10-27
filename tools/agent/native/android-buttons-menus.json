@@ -835,7 +835,7 @@
    {
     "part": "A",
     "attribute": "Corner radius",
-    "token": "plx-sys-radius-menu-8px",
+    "token": "plx-sys-radius-menu-6px",
     "value": "8 dp (PlenixRadius.radiusMenu8px)",
     "material": "4 dp",
     "compose": "DropdownMenu(shape = RoundedCornerShape(PlenixRadius.radiusMenu8px))",

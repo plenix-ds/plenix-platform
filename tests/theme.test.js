@@ -53,7 +53,7 @@ const fails = (T) => { try { require(path.join(T, 'build-tokens.js'))(T); return
   }, (f) => {
     // its own foundations: a softer shape and a heavier semibold
     // (controls take shape-xs, 4px, since the buttons study: radius-control-4px; owner, 2026-10-24)
-    f['plx-sys']['shape-xs'].$value = '{plx-ref.radius-12px}';
+    f['plx-sys']['shape-xs'].$value = '{plx-ref.radius-2px}';
     f['plx-sys']['font-weight-semibold'].$value = '{plx-ref.font-weight-bold-700}';
   }));
   build(good);
@@ -92,7 +92,7 @@ const fails = (T) => { try { require(path.join(T, 'build-tokens.js'))(T); return
   await p.evaluate(() => window.PlenixWorkspace.setTheme('sample')); await sleep(100);
   const s1 = await read();
   check('switching to the new theme changes its roles', s1.theme === 'sample' && s1.link !== d0.link && s1.canvas !== d0.canvas, JSON.stringify([d0, s1]));
-  check('and its foundations: a Button takes the theme shape and weight', d0.radius === '4px' && s1.radius === '12px' && d0.weight === '600' && s1.weight === '700', JSON.stringify([d0, s1]));
+  check('and its foundations: a Button takes the theme shape and weight', d0.radius === '4px' && s1.radius === '2px' && d0.weight === '600' && s1.weight === '700', JSON.stringify([d0, s1]));
   await p.evaluate(() => document.documentElement.setAttribute('data-plx-mode', 'dark')); await sleep(100);
   const s2 = await read();
   check('the new theme has its own dark values', s2.link !== s1.link, JSON.stringify(s2));

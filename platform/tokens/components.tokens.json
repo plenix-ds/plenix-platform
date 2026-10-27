@@ -2298,7 +2298,7 @@
       "$description": "The height of the buttons in a destructive confirmation dialog footer"
     },
     "dialog-radius": {
-      "$value": "{plx-sys.radius-dialog-8px}",
+      "$value": "{plx-sys.radius-dialog-6px}",
       "$type": "dimension"
     },
     "dialog-shadow": {
@@ -2358,7 +2358,7 @@
       "$type": "color"
     },
     "sheet-radius": {
-      "$value": "{plx-sys.radius-dialog-8px}",
+      "$value": "{plx-sys.radius-dialog-6px}",
       "$type": "dimension",
       "$description": "The top corners of the bottom sheet (the dialog radius)"
     },
@@ -3295,7 +3295,7 @@
       }
     },
     "app-switcher-pinned-radius": {
-      "$value": "{plx-sys.radius-surface-8px}",
+      "$value": "{plx-sys.radius-surface-6px}",
       "$type": "dimension"
     },
     "app-switcher-pinned-padding-block": {
@@ -4004,7 +4004,7 @@
       "$type": "dimension"
     },
     "avatar-48-radius": {
-      "$value": "{plx-sys.radius-avatar-8px}",
+      "$value": "{plx-sys.radius-avatar-6px}",
       "$type": "dimension"
     },
     "avatar-48-font-size": {
@@ -4020,7 +4020,7 @@
       "$type": "dimension"
     },
     "avatar-64-radius": {
-      "$value": "{plx-sys.radius-avatar-8px}",
+      "$value": "{plx-sys.radius-avatar-6px}",
       "$type": "dimension"
     },
     "avatar-64-font-size": {
@@ -4099,7 +4099,7 @@
       "$type": "color"
     },
     "panel-radius": {
-      "$value": "{plx-sys.radius-surface-8px}",
+      "$value": "{plx-sys.radius-surface-6px}",
       "$type": "dimension"
     },
     "panel-border-width": {
@@ -4199,7 +4199,7 @@
       "$type": "color"
     },
     "card-radius": {
-      "$value": "{plx-sys.radius-card-12px}",
+      "$value": "{plx-sys.radius-card-6px}",
       "$type": "dimension"
     },
     "card-border-width": {
@@ -4312,7 +4312,7 @@
       "$type": "color"
     },
     "media-card-radius": {
-      "$value": "{plx-sys.radius-card-12px}",
+      "$value": "{plx-sys.radius-card-6px}",
       "$type": "dimension"
     },
     "media-card-border-width": {
@@ -4320,11 +4320,11 @@
       "$type": "dimension"
     },
     "media-card-media-border-top-left-radius": {
-      "$value": "calc({plx-sys.radius-card-12px} - {plx-sys.border-width-thin})",
+      "$value": "calc({plx-sys.radius-card-6px} - {plx-sys.border-width-thin})",
       "$type": "dimension"
     },
     "media-card-media-border-top-right-radius": {
-      "$value": "calc({plx-sys.radius-card-12px} - {plx-sys.border-width-thin})",
+      "$value": "calc({plx-sys.radius-card-6px} - {plx-sys.border-width-thin})",
       "$type": "dimension"
     },
     "media-card-media-background": {
@@ -4580,7 +4580,7 @@
       "$type": "color"
     },
     "chat-bubble-radius": {
-      "$value": "{plx-sys.radius-card-12px}",
+      "$value": "{plx-sys.radius-card-6px}",
       "$type": "dimension"
     },
     "chat-bubble-border-width": {
@@ -4672,7 +4672,7 @@
       "$type": "dimension"
     },
     "code-block-radius": {
-      "$value": "{plx-sys.radius-surface-8px}",
+      "$value": "{plx-sys.radius-surface-6px}",
       "$type": "dimension"
     },
     "code-block-border-color": {
@@ -5420,7 +5420,7 @@
       "$type": "color"
     },
     "drop-zone-radius": {
-      "$value": "{plx-sys.radius-surface-8px}",
+      "$value": "{plx-sys.radius-surface-6px}",
       "$type": "dimension"
     },
     "drop-zone-border-width": {
@@ -5862,7 +5862,7 @@
       "$type": "dimension"
     },
     "media-viewer-nav-radius": {
-      "$value": "{plx-sys.radius-control-12px}",
+      "$value": "{plx-sys.radius-control-6px}",
       "$type": "dimension"
     },
     "media-viewer-nav-min-height": {
@@ -5890,7 +5890,7 @@
       "$type": "color"
     },
     "media-viewer-stage-radius": {
-      "$value": "{plx-sys.radius-dialog-8px}",
+      "$value": "{plx-sys.radius-dialog-6px}",
       "$type": "dimension"
     },
     "media-viewer-info-row-gap": {
@@ -6461,7 +6461,7 @@
       "$type": "color"
     },
     "preview-radius": {
-      "$value": "{plx-sys.radius-surface-8px}",
+      "$value": "{plx-sys.radius-surface-6px}",
       "$type": "dimension"
     },
     "preview-text": {
@@ -6549,7 +6549,7 @@
       "$type": "color"
     },
     "radio-tile-radius": {
-      "$value": "{plx-sys.radius-surface-8px}",
+      "$value": "{plx-sys.radius-surface-6px}",
       "$type": "dimension"
     },
     "radio-tile-border-width": {
@@ -7889,7 +7889,7 @@
       "$description": "The selection bar's frame, the command bar's."
     },
     "bulk-actions-radius": {
-      "$value": "{plx-sys.radius-control-8px}",
+      "$value": "{plx-sys.radius-control-6px}",
       "$type": "dimension",
       "$description": "The selection bar's corners, the command bar's."
     },
@@ -7973,7 +7973,7 @@
       "$type": "color"
     },
     "entity-header-radius": {
-      "$value": "{plx-sys.radius-card-12px}",
+      "$value": "{plx-sys.radius-card-6px}",
       "$type": "dimension"
     },
     "entity-header-border-width": {
@@ -8616,7 +8616,7 @@
       "$type": "color"
     },
     "record-page-header-card-radius": {
-      "$value": "{plx-sys.radius-surface-8px}",
+      "$value": "{plx-sys.radius-surface-6px}",
       "$type": "dimension"
     },
     "record-page-header-card-border-width": {
@@ -8834,7 +8834,7 @@
       "$type": "color"
     },
     "settings-section-card-radius": {
-      "$value": "{plx-sys.radius-surface-8px}",
+      "$value": "{plx-sys.radius-surface-6px}",
       "$type": "dimension"
     },
     "settings-section-card-border-width": {
@@ -9251,7 +9251,7 @@
       "$type": "dimension"
     },
     "widget-grid-item-radius": {
-      "$value": "{plx-sys.radius-card-12px}",
+      "$value": "{plx-sys.radius-card-6px}",
       "$type": "dimension"
     },
     "widget-grid-item-dragging-opacity": {
