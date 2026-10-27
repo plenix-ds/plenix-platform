@@ -180,11 +180,12 @@
   --plx-comp-select-list-padding: var(--plx-comp-menu-padding-block);
   --plx-comp-select-list-z-index: var(--plx-comp-menu-z-index);
   --plx-comp-select-option-text: var(--plx-comp-menu-item-text);
-  --plx-comp-select-option-font-size: var(--plx-comp-menu-item-font-size);
-  --plx-comp-select-option-min-height: var(--plx-comp-menu-item-min-height);
-  --plx-comp-select-option-padding-inline: var(--plx-comp-menu-item-padding-inline);
+  --plx-comp-select-option-font-size: var(--plx-comp-combobox-option-font-size);
+  --plx-comp-select-option-min-height: var(--plx-comp-combobox-option-min-height);
+  --plx-comp-select-option-padding-inline: var(--plx-comp-combobox-option-padding-inline);
   --plx-comp-select-option-radius: var(--plx-comp-menu-item-radius);
-  --plx-comp-select-option-active-background: var(--plx-sys-state-selected);
+  --plx-comp-select-option-active-background: var(--plx-comp-menu-item-hover-background);
+  --plx-comp-select-option-selected-background: var(--plx-sys-state-selected);
   --plx-comp-select-option-selected-text: var(--plx-sys-content-link);
   --plx-comp-select-option-selected-font-weight: var(--plx-sys-font-weight-semibold);
   --plx-comp-select-option-disabled-text: var(--plx-comp-menu-item-disabled-text);
