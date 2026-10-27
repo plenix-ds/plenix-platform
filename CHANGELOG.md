@@ -6,6 +6,9 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+### Fixed
+- Arabic in the data font (owner, arabic-font-35; #413): `--plx-ref-font-mono` adds "IBM Plex Sans Arabic" after Reddit Mono (Arabic letters only, from the existing @font-face), so Arabic in data text, data columns, PropertyList data values and chart axis labels is drawn joined, not letter by letter in a system monospace font. Latin is unchanged.
+
 ### Breaking
 - Four circle sizes are renamed from `-radius` to `-size`, so the corner rule (2 to 6px) covers only real corners (owner, dot-radius-names-34). Each still holds the circle's radius (SVG `r`), so nothing on screen changes. A theme or page that set an old name must use the new one:
   - `--plx-comp-chart-interaction-focus-mark-radius` → `--plx-comp-chart-interaction-focus-mark-size`
