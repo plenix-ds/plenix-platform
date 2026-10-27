@@ -39,13 +39,13 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { cell: 'character {n} of {total}' };
 const KEEP = { numeric: /[^0-9]/g, alphanumeric: /[^0-9a-zA-Z]/g };
 
 export const OtpInput = React.forwardRef(function OtpInput({ length = 6, value, defaultValue = '', onChange, onComplete, kind = 'numeric', masked = false, label,
   invalid, disabled, required, autoFocus, name, id, strings, className, 'aria-describedby': describedBy, ...rest }, ref) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('otpInput', strings);
   const n = Math.max(1, Number(length) || 6);
   const clean = (s) => String(s == null ? '' : s).replace(KEEP[kind] || KEEP.numeric, '').toUpperCase();
   const [own, setOwn] = React.useState(() => clean(defaultValue).slice(0, n));

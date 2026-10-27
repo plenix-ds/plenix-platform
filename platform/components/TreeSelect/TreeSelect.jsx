@@ -46,8 +46,8 @@ import { isRtl } from '../../utils/direction.js';
 import { Icon } from '../Icon/Icon.jsx';
 import { Popover } from '../Popover/Popover.jsx';
 import { SearchField } from '../SearchField/SearchField.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { placeholder: 'Choose', search: 'Search', choose: 'Choose an item', more: '{list} and {n} more', empty: 'No matches' };
 const asIcon = (i) => (typeof i === 'string' ? <Icon name={i} /> : i);
 const OPEN_ICONS = { folder: 'folder-open' };
 const iconOf = (n, isOpen) => (isOpen ? n.openIcon || (typeof n.icon === 'string' && OPEN_ICONS[n.icon]) || n.icon : n.icon);
@@ -80,7 +80,7 @@ function flatten(nodes, open, parent, out) {
 
 export function TreeSelect({ nodes = [], value, values, onChange, multiple = false, search = false, placeholder, label, defaultExpanded, width,
   invalid, disabled, required, strings, id, className, ...rest }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('treeSelect', strings);
   const base = 'plx-ts' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const { byId, leaves } = React.useMemo(() => index(nodes), [nodes]);
   const chosen = multiple ? (values || []) : (value !== undefined && value !== null && value !== '' ? [value] : []);

@@ -44,13 +44,13 @@ import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { Icon } from '../Icon/Icon.jsx';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { step: 'Step {n} of {total}', complete: 'Complete', current: 'Current step', upcoming: 'Not started', error: 'Needs attention' };
 const fill = (s, n, total) => s.replace('{n}', n).replace('{total}', total);
 
 export function ProgressSteps({ steps = [], current = 0, orientation = 'horizontal', variant = 'default', onStepClick, label, strings, className, ...rest }) {
   devWarn('ProgressSteps', { variant }, { variant: ['default','compact'] });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('progressSteps', strings);
   const statusOf = (s, i) => s.status || (i < current ? 'complete' : i === current ? 'current' : 'upcoming');
   if (variant === 'compact') {
     const at = Math.max(0, Math.min(current, steps.length - 1));

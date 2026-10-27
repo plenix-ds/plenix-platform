@@ -29,7 +29,7 @@
      readOnly: shows the content without the toolbar; it can be selected and copied, not changed (default false)
      invalid: marks the area invalid (aria-invalid); put the message in Field's error
      disabled: the area cannot be used (default false)
-     strings: the words it shows, for other languages (STRINGS below: every button, menu and field name; on(name),
+     strings: the words it shows, for other languages (the richTextEditor section of i18n/en.js: every button, menu and field name; on(name),
        off(name) announce a format turned on or off from the keyboard; tip(name, keys) is a button's tooltip; leave is
        announced after Escape)
      className: more classes on the editor
@@ -93,21 +93,9 @@ import { CATEGORY_COLORS } from '../ColorSwatch/categoryColors.js';
 import { hotkeyLabel, isMac } from '../../utils/hotkey.js';
 import { loadTiptap } from './tiptap.js';
 import { cleanRichText, RICH_TEXT_STYLE_PROPERTIES, SAFE_HREF } from '../../utils/richTextClean.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 export { cleanRichText, RICH_TEXT_STYLE_PROPERTIES };
 
-const STRINGS = { toolbar: 'Formatting', more: 'More formatting', bold: 'Bold', italic: 'Italic', underline: 'Underline', strike: 'Strikethrough',
-  code: 'Inline code', subscript: 'Subscript', superscript: 'Superscript', link: 'Link', bulleted: 'Bulleted list', numbered: 'Numbered list',
-  tasks: 'Task list', quote: 'Quote', codeBlock: 'Code block', rule: 'Horizontal rule', image: 'Image', table: 'Table', color: 'Text color',
-  highlight: 'Highlight', alignLeft: 'Align left', alignCenter: 'Align center', alignRight: 'Align right', alignJustify: 'Justify',
-  clear: 'Clear formatting', undo: 'Undo', redo: 'Redo', textStyle: 'Text style', paragraph: 'Paragraph', heading: (n) => 'Heading ' + n,
-  font: 'Font', defaultFont: 'Default font', size: 'Size', defaultSize: 'Default size', custom: 'Custom…', customFont: 'Font family',
-  customSize: 'Font size', insertTable: 'Insert table', rowBefore: 'Add row above', rowAfter: 'Add row below', columnBefore: 'Add column before',
-  columnAfter: 'Add column after', deleteRow: 'Delete row', deleteColumn: 'Delete column', headerRow: 'Header row', deleteTable: 'Delete table',
-  linkAddress: 'Link address', addLink: 'Add link', imageAddress: 'Image address', imageAlt: 'Description', addImage: 'Add image',
-  swatches: 'Suggested colors', customColor: 'Custom color', hex: 'Hex value', apply: 'Apply', remove: 'Remove', cancel: 'Cancel',
-  mentions: 'Suggestions', on: (name) => name + ' on', off: (name) => name + ' off', tip: (name, keys) => name + ' (' + keys + ')',
-  groupMarks: 'Text', groupColor: 'Color', groupAlign: 'Alignment', groupLists: 'Lists', groupInsert: 'Insert', groupHistory: 'History',
-  leave: 'Press Tab or Shift+Tab to leave the editor', hint: 'Escape, then Tab, leaves the editor' };
 
 // the toolbar's icons (Material Symbols Sharp, platform/icons/map.json)
 const ICONS = { bold: 'format-bold', italic: 'format-italic', underline: 'format-underlined', strike: 'format-strikethrough', code: 'code',
@@ -258,7 +246,7 @@ function makeEditor(T, el, o) {
 
 export function RichTextEditor({ label, defaultValue = '', onChange, toolbar = 'basic', markdownShortcuts = true, mentions, placeholder, readOnly = false,
   invalid, disabled = false, strings, className, id, ...rest }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('richTextEditor', strings);
   const auto = useUid('plx-rte');
   const areaId = id || auto + '-area';
   const area = React.useRef(null), list = React.useRef(null), firstField = React.useRef(null), groupsRef = React.useRef(null), picker = React.useRef(null);

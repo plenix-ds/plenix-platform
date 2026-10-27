@@ -49,12 +49,8 @@ import { useFloating, FLOATING_ANCHOR } from '../../utils/floating.js';
 
 // the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
 const TOP_LAYER = FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = {
-  placeholder: 'Choose a time zone', empty: 'No matches', utc: 'Coordinated Universal Time', other: 'Other',
-  results: (n) => n + (n === 1 ? ' time zone' : ' time zones'),
-  regions: { Africa: 'Africa', America: 'Americas', Antarctica: 'Antarctica', Arctic: 'Arctic', Asia: 'Asia', Atlantic: 'Atlantic', Australia: 'Australia', Europe: 'Europe', Indian: 'Indian Ocean', Pacific: 'Pacific' }
-};
 // a few zones for browsers without Intl.supportedValuesOf
 const FALLBACK = ['America/Los_Angeles', 'America/Denver', 'America/Chicago', 'America/New_York', 'America/Sao_Paulo', 'Europe/London', 'Europe/Paris', 'Europe/Berlin',
   'Africa/Cairo', 'Africa/Johannesburg', 'Asia/Dubai', 'Asia/Kolkata', 'Asia/Shanghai', 'Asia/Tokyo', 'Australia/Sydney', 'Pacific/Auckland'];
@@ -75,8 +71,8 @@ function longName(zone, date, locale) {
 }
 
 export function timeZoneOptions({ zones, date = new Date(), locale, strings } = {}) {
-  const t = Object.assign({}, STRINGS, strings);
-  const regions = Object.assign({}, STRINGS.regions, t.regions);
+  const t = useStrings('timeZoneSelect', strings);
+  const regions = t.regions;
   const lang = locale || formatLocale();
   const all = zones || (typeof Intl.supportedValuesOf === 'function' ? Intl.supportedValuesOf('timeZone') : FALLBACK);
   const list = all.indexOf('UTC') >= 0 || zones ? all : ['UTC'].concat(all);
@@ -97,7 +93,7 @@ const offsetKeys = (o) => { const sign = o.minutes < 0 ? '-' : '+', a = Math.abs
 
 export const TimeZoneSelect = React.forwardRef(function TimeZoneSelect({ value, onChange, grouped = true, showOffset = true, zones, date, placeholder,
   label, invalid, disabled, locale, strings, id, className, ...rest }, ref) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('timeZoneSelect', strings);
   const digits = useDigits();
   const auto = 'plx-tz' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const listId = auto + '-list';

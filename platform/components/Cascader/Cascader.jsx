@@ -48,9 +48,8 @@ import { useFloating, FLOATING_ANCHOR } from '../../utils/floating.js';
 
 // the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
 const TOP_LAYER = FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { placeholder: 'Choose', separator: ' / ', search: 'Search', noMatches: 'No matches', empty: 'No items', remove: 'Remove {label}',
-  results: (n) => n + (n === 1 ? ' match' : ' matches'), columns: 'Options' };
 
 // every leaf of the hierarchy with its path of items
 // the columns of the list take the narrowest width step (160px), so three levels fit under a form field
@@ -61,7 +60,7 @@ const pathTo = (items, id) => { const hit = leavesOf(items).find((l) => l.item.i
 
 export const Cascader = React.forwardRef(function Cascader({ options = [], value, values, onChange, multiple = false, expandTrigger = 'click', searchable = false,
   placeholder, label, invalid, disabled, id, strings, className, 'aria-describedby': describedBy, ...rest }, ref) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('cascader', strings);
   const auto = 'plx-cs' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const [open, setOpen] = React.useState(false);
   const [text, setText] = React.useState('');

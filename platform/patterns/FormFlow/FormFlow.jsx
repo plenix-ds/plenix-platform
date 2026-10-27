@@ -24,9 +24,10 @@ import { Text } from '../../components/Text/Text.jsx';
 import { useToast } from '../../components/Toast/Toast.jsx';
 import { useUnsavedGuard } from '../../providers/UnsavedGuard.jsx';
 import { cx } from '../../utils/cx.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function FormFlow({ mode = 'create', surface = 'page', open = true, title, initialValue, sessionKey, validate, onSubmit, onSuccess, onCancel, children, strings, className }) {
-  const t = Object.assign({ create: 'Create', save: 'Save changes', cancel: 'Cancel', failed: 'Could not save. Try again.', invalid: 'Check the fields before saving.', saved: 'Saved', unsaved: 'Your changes will be lost.', close: 'Close' }, strings);
+  const t = useStrings('formFlow', strings);
   const [value, setValue] = React.useState(initialValue), [saved, setSaved] = React.useState(initialValue);
   const [busy, setBusy] = React.useState(false), [error, setError] = React.useState('');
   const lock = React.useRef(false), generation = React.useRef(0), alive = React.useRef(false);

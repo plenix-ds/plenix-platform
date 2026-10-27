@@ -42,12 +42,11 @@ import { Input, Textarea, Select } from '../Input/Input.jsx';
 import { Button } from '../Button/Button.jsx';
 import { Icon } from '../Icon/Icon.jsx';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
-
-const STRINGS = { edit: 'edit', save: 'Save', cancel: 'Cancel', empty: 'Add a value', saved: 'Saved', failed: 'The change could not be saved' };
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function InlineEdit({ label, value = '', onConfirm, onCancel, type = 'text', options = [], placeholder, confirmButtons = false, validate,
   data = false, disabled = false, readView, strings, className, ...rest }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('inlineEdit', strings);
   const id = useUid('plx-inline-edit');
   const [editing, setEditing] = React.useState(false);
   const [draft, setDraft] = React.useState(value);
