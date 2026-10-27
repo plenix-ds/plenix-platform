@@ -1932,28 +1932,5 @@ export default {
       "many": "تم تحديد {count} عنصرًا",
       "other": "تم تحديد {count} عنصر"
     }
-  },
-  "voteTally": {
-    "approve": "موافقة",
-    "deny": "رفض",
-    "abstain": "امتناع",
-    "turnedOff": "معطّل",
-    "notVoted": "لم يصوّت",
-    "voteOf": "تصويت {name}",
-    "hiddenUntilClosed": "مخفي حتى إغلاق التصويت",
-    "totalsOnly": "المجاميع فقط",
-    "reconnecting": "جارٍ إعادة الاتصال",
-    "quorum": "النصاب: {present} حاضرون، {needed} مطلوب ({state})",
-    "met": "مكتمل",
-    "notMet": "غير مكتمل",
-    "result": {
-      "open": "مفتوح",
-      "passing": "يتجه للإقرار",
-      "failing": "يتجه للرفض",
-      "passed": "أُقرّ",
-      "failed": "رُفض",
-      "tied": "تعادل",
-      "no-quorum": "لا نصاب"
-    }
   }
 };
