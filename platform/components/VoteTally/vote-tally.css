@@ -15,3 +15,7 @@
   .plx-vote-tally__member{flex-wrap:wrap;}
   .plx-vote-tally__choices{margin-inline-start:auto;}
 }
+/* a row whose vote just changed (live) flashes once: its tint fades back to the surface. Under reduced motion the
+   duration token is 0s (system/tokens), so there is no flash */
+@keyframes plx-vote-tally-flash{from{background-color:var(--plx-comp-vote-tally-flash-background);}}
+.plx-vote-tally__member.is-changed{animation-duration:var(--plx-comp-vote-tally-flash-duration);animation-name:plx-vote-tally-flash;animation-timing-function:var(--plx-comp-vote-tally-flash-easing);}

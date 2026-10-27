@@ -5998,6 +5998,9 @@
   --plx-comp-vote-tally-choices-gap: var(--plx-ref-space-8px);
   --plx-comp-vote-tally-totals-padding: var(--plx-ref-space-12px);
   --plx-comp-vote-tally-totals-gap: var(--plx-ref-space-8px);
+  --plx-comp-vote-tally-flash-background: var(--plx-sys-data-grid-row-selected);
+  --plx-comp-vote-tally-flash-duration: var(--plx-sys-motion-duration-slow);
+  --plx-comp-vote-tally-flash-easing: var(--plx-sys-motion-ease-standard);
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-waterfall-chart-connector-color: var(--plx-sys-border-strong);
