@@ -109,6 +109,16 @@
   --plx-comp-button-danger-secondary-pressed-background: var(--plx-sys-action-danger-background-pressed);
   --plx-comp-button-danger-secondary-pressed-border: var(--plx-sys-action-danger-background-pressed);
   /* states: selected (its border and text come from the size), disabled, focus */
+  /* tone: a toggle's chosen (pressed) state in a feedback color; its rest state stays the variant's (owner, vote-screen-37) */
+  --plx-comp-button-tone-success-selected-background: var(--plx-sys-feedback-success-solid);
+  --plx-comp-button-tone-success-selected-border: var(--plx-sys-feedback-success-solid-border);
+  --plx-comp-button-tone-success-selected-text: var(--plx-sys-feedback-success-on-solid);
+  --plx-comp-button-tone-danger-selected-background: var(--plx-sys-feedback-danger-solid);
+  --plx-comp-button-tone-danger-selected-border: var(--plx-sys-feedback-danger-solid-border);
+  --plx-comp-button-tone-danger-selected-text: var(--plx-sys-feedback-danger-on-solid);
+  --plx-comp-button-tone-neutral-selected-background: var(--plx-sys-feedback-neutral-solid);
+  --plx-comp-button-tone-neutral-selected-border: var(--plx-sys-feedback-neutral-solid-border);
+  --plx-comp-button-tone-neutral-selected-text: var(--plx-sys-feedback-neutral-on-solid);
   --plx-comp-button-disabled-background: var(--plx-sys-fill-neutral);
   --plx-comp-button-disabled-quiet-background: transparent;
   --plx-comp-button-focus-ring-color: var(--plx-sys-focus-ring-color);

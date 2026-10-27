@@ -28,6 +28,9 @@
        unfilled variants (owner, 2026-10-14: it replaces the small filled triangle); default false
      expanded: sets aria-expanded, for a button that opens a menu
      pressed: makes a toggle button (aria-pressed): true when on, false when off (undefined: not a toggle)
+     tone: "success" | "danger" | "neutral": the chosen state (pressed or selected) fills in that feedback color (green, red,
+       gray) instead of the selected gray; the rest state stays the variant's, so a choice not taken is the plain button
+       (owner, vote-screen-37: a vote's Approve, Deny and Abstain). Default none
      selected: shows the selected state without a toggle role (default false)
      loading: shows a spinner in place of the icon (default false)
      disabled: the button does nothing (default false)
@@ -63,6 +66,8 @@ import { Tooltip, InTooltip } from '../Tooltip/Tooltip.jsx';
 import { Kbd } from '../Kbd/Kbd.jsx';
 import { parseHotkey, hotkeyLabel } from '../../utils/hotkey.js';
 
+const TONES = ['success', 'danger', 'neutral'];
+
 const STRINGS = { working: 'Working' };
 
 // the icon takes the button's state as its own (Styling Standard 3.6): filled while the button is selected, pressed or
@@ -79,13 +84,13 @@ const ariaShortcut = (binding) => {
 };
 
 export const Button = React.forwardRef(function Button({ variant = 'secondary', size = 'md', icon, iconEnd, iconOnly = false, label, caret = false,
-  expanded, pressed, selected = false, loading = false, disabled = false, href, type = 'button', joined, truncate = false, stackedLabel = false, labelRow = false, tooltip, shortcut, className, children, onClick, strings, ...rest }, ref) {
+  expanded, pressed, selected = false, tone, loading = false, disabled = false, href, type = 'button', joined, truncate = false, stackedLabel = false, labelRow = false, tooltip, shortcut, className, children, onClick, strings, ...rest }, ref) {
   devWarn('Button', { variant, size }, { variant: ['secondary','primary','tertiary','ghost','danger','danger-secondary','quiet'], size: ['md','sm','xs','2xs','lg'] });
   const t = Object.assign({}, STRINGS, strings);
   // a colored surface around the button (TeachingBubble, the accent AppHeader) gives it that surface's look
   const surface = React.useContext(SurfaceContext);
   const classes = cx('plx-button', 'plx-button--' + (variant === 'quiet' ? 'ghost' : variant), size !== 'md' && 'plx-button--size-' + size, iconOnly && 'plx-button--icon-only',
-    caret && 'plx-button--caret', (selected || pressed || expanded) && 'is-selected', loading && 'is-loading', truncate && 'plx-button--truncate', stackedLabel && 'plx-button--stacked-label', labelRow && 'plx-button--label-row', joined && joined.start && 'plx-button--joined-start-' + joined.start, joined && joined.end && 'plx-button--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-button--joined', (surface === 'inverse' || surface === 'accent') && 'plx-button--on-' + surface, className);
+    caret && 'plx-button--caret', TONES.includes(tone) && 'plx-button--tone-' + tone, (selected || pressed || expanded) && 'is-selected', loading && 'is-loading', truncate && 'plx-button--truncate', stackedLabel && 'plx-button--stacked-label', labelRow && 'plx-button--label-row', joined && joined.start && 'plx-button--joined-start-' + joined.start, joined && joined.end && 'plx-button--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-button--joined', (surface === 'inverse' || surface === 'accent') && 'plx-button--on-' + surface, className);
   // the parts take the button's state as their own classes (Styling Standard 3.6: no rule reaches from the button into them)
   const v = variant === 'quiet' ? 'ghost' : variant;
   const on = !!(selected || pressed || expanded);

@@ -119,3 +119,8 @@
 .plx-button--joined-start-seam{--plx-state-button-border-start-width:0;}
 .plx-button--joined-end-seam{--plx-state-button-border-end-width:0;}
 .plx-button--joined:is(:focus-visible, .is-focus-visible, :focus-within){z-index:var(--plx-comp-button-joined-focus-layer);}
+/* tone (owner, vote-screen-37): a toggle's chosen state (pressed or selected) fills in a feedback color; the rest state stays
+   the variant's, so a choice not taken is the plain gray button. Only the selected hooks change: after the variants, so it wins */
+.plx-button--tone-success{--plx-state-button-selected-background:var(--plx-comp-button-tone-success-selected-background);--plx-state-button-selected-border:var(--plx-comp-button-tone-success-selected-border);--plx-state-button-selected-text:var(--plx-comp-button-tone-success-selected-text);}
+.plx-button--tone-danger{--plx-state-button-selected-background:var(--plx-comp-button-tone-danger-selected-background);--plx-state-button-selected-border:var(--plx-comp-button-tone-danger-selected-border);--plx-state-button-selected-text:var(--plx-comp-button-tone-danger-selected-text);}
+.plx-button--tone-neutral{--plx-state-button-selected-background:var(--plx-comp-button-tone-neutral-selected-background);--plx-state-button-selected-border:var(--plx-comp-button-tone-neutral-selected-border);--plx-state-button-selected-text:var(--plx-comp-button-tone-neutral-selected-text);}
