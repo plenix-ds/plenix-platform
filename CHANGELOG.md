@@ -6,9 +6,6 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
-### Fixed
-- Arabic in the data font (owner, arabic-font-35; #413): `--plx-ref-font-mono` adds "IBM Plex Sans Arabic" after Reddit Mono (Arabic letters only, from the existing @font-face), so Arabic in data text, data columns, PropertyList data values and chart axis labels is drawn joined, not letter by letter in a system monospace font. Latin is unchanged.
-
 ### Breaking
 - Four circle sizes are renamed from `-radius` to `-size`, so the corner rule (2 to 6px) covers only real corners (owner, dot-radius-names-34). Each still holds the circle's radius (SVG `r`), so nothing on screen changes. A theme or page that set an old name must use the new one:
   - `--plx-comp-chart-interaction-focus-mark-radius` → `--plx-comp-chart-interaction-focus-mark-size`
@@ -26,11 +23,14 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 ### Changed
 - Select is drawn by Plenix, not the browser (owner, dropdown-look-36): a field and an open list in the Menu's look (the Menu's row height and text size, the chosen row blue and semibold, group headings, disabled rows skipped), built on a hidden native `<select>` that stays the source of truth. The API is unchanged (`options` or `<option>` children, `value`, `defaultValue`, `onChange(event)`, `size`, `width`, `block`, `joined`, `appearance`, `invalid`, `disabled`, `data`, `ref`), and a form still posts and resets. Keyboard: arrows, Home, End, type-ahead, Enter, Space, Escape, Tab. A `multiple` select or a numeric `size` above 1 keeps the browser's list box. The list opens in the browser's top layer, placed like a Menu (flips up near an edge, follows scroll and resize), so no dialog, drawer, table cell or scroll area clips it. New tokens: `--plx-comp-select-list-*`, `--plx-comp-select-option-*` and `--plx-comp-select-group-*`, aliases of the Menu's.
 - Form arrows are one size (owner, combobox-arrow-36): the Select, Combobox and TreeSelect arrows move from 12px to the form-icon size, `--plx-sys-control-icon-inline` (16px at the compact density). Tokens: `--plx-comp-select-after-width|height`, `--plx-comp-combobox-chevron-width|height`, `--plx-comp-tree-select-chevron-size`. The Cascader's arrow was already 16px; DatePicker, TimePicker, CountrySelect, TimeZoneSelect and EntityPicker take the Combobox's.
-### Changed
 - DataGrid and Table: with `cells="pill"`, every standard pill of a column is always as wide as that column's widest pill in the current view; there is no switch (owner, uniform-pills-always-35). Columns stay independent; custom cells, tags and badges keep their own widths. Table now does it too: it never received the switch.
 
 ### Deprecated
 - DataGrid `uniformPillWidths`: accepted and ignored, since uniform widths are always on. Remove it from your pages; it goes in a later release.
+
+### Fixed
+- Arabic in the data font (owner, arabic-font-35; #413): `--plx-ref-font-mono` adds "IBM Plex Sans Arabic" after Reddit Mono (Arabic letters only, from the existing @font-face), so Arabic in data text, data columns, PropertyList data values and chart axis labels is drawn joined, not letter by letter in a system monospace font. Latin is unchanged.
+- Charts in a right-to-left page (owner, ctm-needs-34; #413 batch 4): labels drawn by ECharts no longer grow the wrong way from their point. The engine's own element is always left to right (`.plx-chart__engine`), and the chart reads the page's direction from the `dir` attribute (`:dir(rtl)`), so it still mirrors: TreeChart's labels now sit beside their dots instead of over them, and a line or bar chart's value labels sit outside the axis. TreeChart also keeps its root label's room on the root's side in right to left, so the root's name is no longer cut off. Left to right is unchanged.
 
 ## [0.73.0] - 2026-10-27
 
