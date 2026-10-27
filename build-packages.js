@@ -202,7 +202,7 @@ json(path.join(S, 'package.json'), manifest('styles', 'Plenix styles: the whole 
 }));
 readme('styles', `
 - \`plenix.css\` (and \`plenix.min.css\`): tokens, the Plenix theme, the foundations and every component and pattern.
-- \`fonts.css\` and \`fonts/\`: DM Sans and Reddit Mono (SIL Open Font License), hosted with the styles: nothing is fetched from Google.
+- \`fonts.css\` and \`fonts/\`: DM Sans and Reddit Mono, and for Arabic Readex Pro and IBM Plex Sans Arabic (all SIL Open Font License), hosted with the styles: nothing is fetched from Google.
 - \`theme-boot.js\`: load it in \`<head>\` before the page draws; it sets the light or dark mode, the display density and the interaction environment (\`data-plx-mode\`, \`data-plx-density-policy\` on \`<html>\`).
 
 \`\`\`html

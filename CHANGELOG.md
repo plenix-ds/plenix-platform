@@ -6,6 +6,10 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+### Added
+- Arabic typefaces (owner, arabic-font-35; #413 batch 1): Readex Pro for titles and IBM Plex Sans Arabic for every other text, hosted with the Platform in `platform/fonts/` (SIL Open Font License 1.1) and served from the CDN, nothing fetched from Google. Each comes after DM Sans in its stack and covers only the Arabic letters (unicode-range), so Latin text keeps DM Sans and a page without Arabic downloads neither.
+  - `--plx-ref-font-sans` adds "IBM Plex Sans Arabic"; the new `--plx-ref-font-sans-title` ("DM Sans", "Readex Pro", …) and `--plx-sys-typeface-sans-title` feed `--plx-sys-font-heading`, so every heading and title role (Heading, Text title, heading and display, dialog and panel titles) uses it.
+
 ### Changed
 - DataGrid and Table: with `cells="pill"`, every standard pill of a column is always as wide as that column's widest pill in the current view; there is no switch (owner, uniform-pills-always-35). Columns stay independent; custom cells, tags and badges keep their own widths. Table now does it too: it never received the switch.
 
