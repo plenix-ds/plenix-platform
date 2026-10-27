@@ -6,7 +6,8 @@
      (pill) every other value is a DataPill with its column's type icon; column.pill(value, record) may return its tone,
      icon, variant, data and gender, and column.pill === false keeps the plain value. A person (type person, kind
      avatar-name) carries value.gender.
-   Notes: Imports no legacy grid implementation. Data still sorts and filters by its raw value. mods: the value classes the
+   Notes: A value of kind id, email, url, phone or code is a left-to-right island, and of kind data one in its own
+     direction (Isolate), so it reads as written in a right-to-left table. Imports no legacy grid implementation. Data still sorts and filters by its raw value. mods: the value classes the
      engine gives every value span (__value--wrap, --sized, --lines). */
 import React from 'react';
 import { Avatar } from '../Avatar/Avatar.jsx';
@@ -14,6 +15,7 @@ import { Badge } from '../Badge/Badge.jsx';
 import { Tag } from '../Tag/Tag.jsx';
 import { DataPill } from '../DataPill/DataPill.jsx';
 import { formatBytes } from '../../utils/format.js';
+import { Isolate } from '../Isolate/Isolate.jsx';
 export const valueText=value=>value==null?'':Array.isArray(value)?value.map(valueText).join(', '):typeof value==='object'?String(value.label??value.name??''):String(value);
 export function textFilter(row,field,search) {return valueText(row.getValue(field)).toLocaleLowerCase().includes(String(search??'').toLocaleLowerCase());}
 export function listFilter(row,field,search) {const value=row.getValue(field);return [].concat(value??[]).some(item=>valueText(item).toLocaleLowerCase()===String(search??'').toLocaleLowerCase());}
@@ -47,6 +49,11 @@ export function CellValue({ column, value, strings, record, pill = false, pillFi
   if (kinds.includes('tags')) return <span className={`${block}__rich`}>{[].concat(value).map((tag, i) => <Tag key={i} category={typeof tag === 'object' ? tag.category : undefined}>{typeof tag === 'object' ? tag.label : String(tag)}</Tag>)}</span>;
   if (kinds.includes('badge')) { const badge = typeof value === 'object' ? value : { label: String(value) }; return <Badge tone={badge.tone} icon={badge.icon||'circle-info'}>{badge.label}</Badge>; }
   // the full text on hover, only when the cell cuts it off with an ellipsis (owner, 2026-10-22)
+  // a technical value keeps its own direction inside a right-to-left table (owner, ctm-needs-34): ids, emails, URLs, phone
+  // numbers and code read left to right; any other data value by its first strong letter
+  const island=ISLANDS.find(k=>kinds.includes(k));
+  if (island) return <span className={own} onMouseEnter={fullText}><Isolate dir={island==='data'?'auto':'ltr'}>{valueText(value)}</Isolate></span>;
   return <span className={own} onMouseEnter={fullText}>{valueText(value)}</span>;
 }
+const ISLANDS=['id','email','url','phone','code','data'];
 function fullText(event) { const el = event.currentTarget; if (el.scrollWidth > el.clientWidth) el.title = el.textContent; else el.removeAttribute('title'); }

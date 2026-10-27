@@ -21,6 +21,7 @@
      Copy puts the code on the clipboard and reads "Copied" with a check for a moment; screen readers hear "Copied" (or
        "Could not copy" when the clipboard refuses).
    Notes:
+     Writing direction (owner, ctm-needs-34): the code is always left to right (dir="ltr" on the <pre>), also in a right-to-left page.
      The colors come from the --plx-sys-code-* roles.
      The highlighter (highlight, detect) is shared with CodeEditor, which colors its text the same way; it is not public.
 */
@@ -105,7 +106,7 @@ export function CodeBlock({ title, maxHeight = 'none', copy = true, label, langu
           {copy ? <VisuallyHidden role="status">{said}</VisuallyHidden> : null}
         </div>
       ) : null}
-      <pre className="plx-code-block__pre" tabIndex={0} aria-label={label || title || t.code}><code className="plx-code-block__code" data-plx-language={lang}>{colored}</code></pre>
+      <pre className="plx-code-block__pre" dir="ltr" tabIndex={0} aria-label={label || title || t.code}><code className="plx-code-block__code" data-plx-language={lang}>{colored}</code></pre>
     </div>
   );
 }

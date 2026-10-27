@@ -1,0 +1,3 @@
+/* Plenix · Isolate (platform/components/Isolate): a piece of text kept in its own writing direction inside text of the
+   other direction; inline, no box of its own. */
+.plx-isolate{unicode-bidi:isolate;}
