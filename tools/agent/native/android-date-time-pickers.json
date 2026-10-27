@@ -99,7 +99,7 @@
    {
     "part": "A",
     "attribute": "Corner radius",
-    "token": "plx-sys-radius-dialog-8px",
+    "token": "plx-sys-radius-dialog-6px",
     "value": "8 dp (PlenixRadius.radiusDialog8px)",
     "material": "28 dp (extra large)",
     "compose": "DatePickerDialog(shape = RoundedCornerShape(PlenixRadius.radiusDialog8px))",

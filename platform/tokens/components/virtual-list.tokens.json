@@ -37,9 +37,9 @@
       "$description": "VirtualList: scroll area border width (border-width-thin)."
     },
     "virtual-list-radius": {
-      "$value": "{plx-sys.radius-surface-8px}",
+      "$value": "{plx-sys.radius-surface-6px}",
       "$type": "dimension",
-      "$description": "VirtualList: scroll area corner radius (radius-surface-8px)."
+      "$description": "VirtualList: scroll area corner radius (radius-surface-6px)."
     },
     "virtual-list-focus-border-color": {
       "$value": "{plx-sys.focus-ring-color}",

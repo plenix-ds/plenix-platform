@@ -4,7 +4,7 @@
     "metric-card-background": { "$value": "{plx-sys.surface-default}", "$type": "color", "$description": "MetricCard: the plain card's surface." },
     "metric-card-border-color": { "$value": "{plx-sys.border-default}", "$type": "color", "$description": "MetricCard: the plain card's border." },
     "metric-card-border-width": { "$value": "{plx-sys.border-width-thin}", "$type": "dimension", "$description": "MetricCard: the card's border." },
-    "metric-card-radius": { "$value": "{plx-sys.radius-surface-8px}", "$type": "dimension", "$description": "MetricCard: the card's corners (Panel's)." },
+    "metric-card-radius": { "$value": "{plx-sys.radius-surface-6px}", "$type": "dimension", "$description": "MetricCard: the card's corners (Panel's)." },
     "metric-card-divider-color": { "$value": "{plx-sys.border-divider}", "$type": "color", "$description": "MetricCard: the lines under the header and over the footer." },
     "metric-card-divider-width": { "$value": "{plx-sys.border-width-thin}", "$type": "dimension", "$description": "MetricCard: the width of those lines." },
     "metric-card-header-padding-block": { "$value": "{plx-sys.space-inset-md}", "$type": "dimension", "$description": "MetricCard: the header's block padding." },

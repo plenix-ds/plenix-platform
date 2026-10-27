@@ -103,7 +103,7 @@ const pages = [];
   const v = (layout) => set.children.find(c => c.name === 'Button Layout=' + layout);
   const mk = (layout, field, destr) => () => { const i = v(layout).createInstance(); setProp(i, /^Show Text Field/, field); return i; };
   const style = (inst, V, vv) => {
-    surface(inst, V, fv(V, 'plx-sys/radius-dialog-8px', 'radius-dialog-8px'));
+    surface(inst, V, fv(V, 'plx-sys/radius-dialog-6px', 'radius-dialog-6px'));
     inst.paddingTop = inst.paddingBottom = inst.paddingLeft = inst.paddingRight = 16;
     restyleText(inst, V, (t, bold) => bold ? fv(V, 'plx-sys/content-default') : fv(V, 'plx-sys/content-muted'));
     const btns = inst.findAll(x => x.type === 'INSTANCE' && /^(Button|Action)/.test(x.name) && x.parent && /Buttons|Actions/.test(x.parent.name));
@@ -121,7 +121,7 @@ const pages = [];
   const comp = await figma.getNodeByIdAsync('5446:10266');
   const mk = (msg) => () => { const i = comp.createInstance(); setProp(i, /^Show message/, msg); return i; };
   const style = (inst, V, vv) => {
-    surface(inst, V, fv(V, 'plx-sys/radius-menu-8px', 'radius-menu-8px'));
+    surface(inst, V, fv(V, 'plx-sys/radius-menu-6px', 'radius-menu-6px'));
     inst.paddingTop = inst.paddingBottom = inst.paddingLeft = inst.paddingRight = 8;
     restyleText(inst, V, () => fv(V, 'plx-sys/content-muted'));
     const acts = inst.findAll(x => x.type === 'INSTANCE' && x.name === 'Action');
@@ -145,7 +145,7 @@ const pages = [];
   const style = (inst, V) => {
     const sheet = inst.findOne(x => x.name === 'Sheet'); const bgI = sheet && sheet.findOne(x => x.name === 'BG');
     if (bgI) bgI.visible = false;
-    if (sheet) { fillVar(sheet, fv(V, 'plx-sys/surface-overlay')); const r = fv(V, 'plx-sys/radius-dialog-8px', 'radius-dialog-8px'); bind(sheet, 'topLeftRadius', r, 8); bind(sheet, 'topRightRadius', r, 8); sheet.clipsContent = true; }
+    if (sheet) { fillVar(sheet, fv(V, 'plx-sys/surface-overlay')); const r = fv(V, 'plx-sys/radius-dialog-6px', 'radius-dialog-6px'); bind(sheet, 'topLeftRadius', r, 8); bind(sheet, 'topRightRadius', r, 8); sheet.clipsContent = true; }
     const ov = inst.findOne(x => x.name === 'Overlay'); if (ov) { try { ov.fills = [Object.assign(paint(fv(V, 'plx-sys/scrim')), { opacity: 0.5 })]; } catch (e) {} }
     const gr = inst.findOne(x => x.type === 'INSTANCE' && x.name === 'Grabber' && x.width < 100); if (gr) { try { gr.fills = [paint(fv(V, 'plx-sys/border-strong'))]; } catch (e) {} }
     restyleText(inst, V);
@@ -162,7 +162,7 @@ const pages = [];
   const style = (inst, V) => {
     inst.effects = [];
     for (const m of inst.findAll(x => x.name === 'Material')) { try { m.visible = false; } catch (e) {} }
-    const bg = inst.findOne(x => x.name === 'Background'); if (bg) { fillVar(bg, fv(V, 'plx-sys/surface-overlay')); bg.strokes = [paint(fv(V, 'plx-sys/border-default'))]; bg.strokeWeight = 1; bg.strokeAlign = 'INSIDE'; radius(bg, fv(V, 'plx-sys/radius-surface-8px', 'radius-surface-8px'), 8); }
+    const bg = inst.findOne(x => x.name === 'Background'); if (bg) { fillVar(bg, fv(V, 'plx-sys/surface-overlay')); bg.strokes = [paint(fv(V, 'plx-sys/border-default'))]; bg.strokeWeight = 1; bg.strokeAlign = 'INSIDE'; radius(bg, fv(V, 'plx-sys/radius-surface-6px', 'radius-surface-6px'), 8); }
     const ar = inst.findOne(x => x.name === 'Arrow'); if (ar) { try { ar.fills = [paint(fv(V, 'plx-sys/surface-overlay'))]; ar.effects = []; } catch (e) {} }
   };
   pages.push({ key: 'popovers', page: '507:24681', leaf: 'Popovers', note: 'Each column is one arrow edge. The Apple rows are the kit iPad popover; the Plenix rows are the same component with the Plenix overlay surface, a 1 pt border and the 8 pt surface radius.',

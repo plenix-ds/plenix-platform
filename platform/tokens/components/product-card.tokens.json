@@ -1,10 +1,10 @@
 {
-  "$description": "ProductCard (platform/patterns/ProductCard), library wave 13, lane A: its pattern tokens. The card's surface on the card's own roles (surface-raised, border-default, radius-card-12px), its hover shadow and focus ring; the picture's fill; the body's spacing; the name, the price and the old price (the data font), the rating's gap, the action's place; the list layout's picture column.",
+  "$description": "ProductCard (platform/patterns/ProductCard), library wave 13, lane A: its pattern tokens. The card's surface on the card's own roles (surface-raised, border-default, radius-card-6px), its hover shadow and focus ring; the picture's fill; the body's spacing; the name, the price and the old price (the data font), the rating's gap, the action's place; the list layout's picture column.",
   "plx-comp": {
     "product-card-background": { "$value": "{plx-sys.surface-raised}", "$type": "color", "$description": "ProductCard: the card's surface (surface-raised, as Card)." },
     "product-card-border-color": { "$value": "{plx-sys.border-default}", "$type": "color", "$description": "ProductCard: the card's border (border-default)." },
     "product-card-border-width": { "$value": "{plx-sys.border-width-thin}", "$type": "dimension", "$description": "ProductCard: the border's width (border-width-thin)." },
-    "product-card-radius": { "$value": "{plx-sys.radius-card-12px}", "$type": "dimension", "$description": "ProductCard: the card's corners (radius-card-12px, as Card)." },
+    "product-card-radius": { "$value": "{plx-sys.radius-card-6px}", "$type": "dimension", "$description": "ProductCard: the card's corners (radius-card-6px, as Card)." },
     "product-card-duration": { "$value": "{plx-sys.motion-duration-fast}", "$type": "duration", "$description": "ProductCard: how long the hover shadow takes to show (motion-duration-fast)." },
     "product-card-easing": { "$value": "{plx-sys.motion-ease-standard}", "$type": "cubicBezier", "$description": "ProductCard: the hover shadow's easing (motion-ease-standard)." },
     "product-card-hover-shadow": { "$value": "{plx-sys.shadow-md}", "$type": "shadow", "$description": "ProductCard: the raised card under the pointer (shadow-md, as an interactive Card)." },

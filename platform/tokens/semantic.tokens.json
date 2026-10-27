@@ -277,28 +277,20 @@
       "$value": "{plx-sys.shape-sm}",
       "$type": "dimension"
     },
-    "radius-control-8px": {
-      "$value": "{plx-sys.shape-md}",
-      "$type": "dimension"
-    },
-    "radius-control-12px": {
-      "$value": "{plx-sys.shape-lg}",
-      "$type": "dimension"
-    },
     "radius-media-4px": {
       "$value": "{plx-sys.shape-xs}",
       "$type": "dimension"
     },
-    "radius-media-12px": {
-      "$value": "{plx-sys.shape-lg}",
+    "radius-media-6px": {
+      "$value": "{plx-sys.shape-sm}",
       "$type": "dimension"
     },
     "radius-surface-4px": {
       "$value": "{plx-sys.shape-xs}",
       "$type": "dimension"
     },
-    "radius-surface-8px": {
-      "$value": "{plx-sys.shape-md}",
+    "radius-surface-6px": {
+      "$value": "{plx-sys.shape-sm}",
       "$type": "dimension"
     },
     "radius-card-4px": {
@@ -309,21 +301,17 @@
       "$value": "{plx-sys.shape-sm}",
       "$type": "dimension"
     },
-    "radius-card-12px": {
-      "$value": "{plx-sys.shape-lg}",
-      "$type": "dimension"
-    },
     "radius-table-2px": {
       "$value": "{plx-ref.radius-2px}",
       "$type": "dimension",
       "$description": "Tables and data grids: their frame corner (owner, 2026-10-19: every data grid and table at 2px)."
     },
-    "radius-menu-8px": {
-      "$value": "{plx-sys.shape-md}",
+    "radius-menu-6px": {
+      "$value": "{plx-sys.shape-sm}",
       "$type": "dimension"
     },
-    "radius-dialog-8px": {
-      "$value": "{plx-sys.shape-md}",
+    "radius-dialog-6px": {
+      "$value": "{plx-sys.shape-sm}",
       "$type": "dimension"
     },
     "radius-avatar-4px": {
@@ -332,14 +320,6 @@
     },
     "radius-avatar-6px": {
       "$value": "{plx-sys.shape-sm}",
-      "$type": "dimension"
-    },
-    "radius-avatar-8px": {
-      "$value": "{plx-sys.shape-md}",
-      "$type": "dimension"
-    },
-    "radius-avatar-12px": {
-      "$value": "{plx-sys.shape-lg}",
       "$type": "dimension"
     },
     "space-inline-xs": {
