@@ -379,22 +379,17 @@ public enum Plenix {
         public static let radiusPill4px: CGFloat = 4
         public static let radiusControl4px: CGFloat = 4
         public static let radiusControl6px: CGFloat = 6
-        public static let radiusControl8px: CGFloat = 8
-        public static let radiusControl12px: CGFloat = 12
         public static let radiusMedia4px: CGFloat = 4
-        public static let radiusMedia12px: CGFloat = 12
+        public static let radiusMedia6px: CGFloat = 6
         public static let radiusSurface4px: CGFloat = 4
-        public static let radiusSurface8px: CGFloat = 8
+        public static let radiusSurface6px: CGFloat = 6
         public static let radiusCard4px: CGFloat = 4
         public static let radiusCard6px: CGFloat = 6
-        public static let radiusCard12px: CGFloat = 12
         public static let radiusTable2px: CGFloat = 2
-        public static let radiusMenu8px: CGFloat = 8
-        public static let radiusDialog8px: CGFloat = 8
+        public static let radiusMenu6px: CGFloat = 6
+        public static let radiusDialog6px: CGFloat = 6
         public static let radiusAvatar4px: CGFloat = 4
         public static let radiusAvatar6px: CGFloat = 6
-        public static let radiusAvatar8px: CGFloat = 8
-        public static let radiusAvatar12px: CGFloat = 12
         public static let radiusControl: CGFloat = 4
     }
     public enum Space {
@@ -460,10 +455,10 @@ public enum Plenix {
         public static let shape2xs: CGFloat = 2
         public static let shapeXs: CGFloat = 4
         public static let shapeSm: CGFloat = 6
-        public static let shapeMd: CGFloat = 8
-        public static let shapeLg: CGFloat = 12
-        public static let shapeXl: CGFloat = 16
-        public static let shapePill: CGFloat = 9999
+        public static let shapeMd: CGFloat = 6
+        public static let shapeLg: CGFloat = 6
+        public static let shapeXl: CGFloat = 6
+        public static let shapePill: CGFloat = 6
     }
     public enum Shell {
         public static let shellPhoneBelow: CGFloat = 600
@@ -495,7 +490,7 @@ public enum Plenix {
     /// The component values the Plenix native designs use (sizes in points, durations in seconds).
     public enum Component {
         public static let activityListItemBorderBottomWidth: CGFloat = 1
-        public static let authCardRadius: CGFloat = 8
+        public static let authCardRadius: CGFloat = 6
         public static let authTitleFontSize: CGFloat = 20
         public static let avatar20FontSize: CGFloat = 10
         public static let avatar20Radius: CGFloat = 4
@@ -513,10 +508,10 @@ public enum Plenix {
         public static let avatar40Radius: CGFloat = 6
         public static let avatar40Width: CGFloat = 40
         public static let avatar48FontSize: CGFloat = 18
-        public static let avatar48Radius: CGFloat = 8
+        public static let avatar48Radius: CGFloat = 6
         public static let avatar48Width: CGFloat = 48
         public static let avatar64FontSize: CGFloat = 20
-        public static let avatar64Radius: CGFloat = 8
+        public static let avatar64Radius: CGFloat = 6
         public static let avatar64Width: CGFloat = 64
         public static let avatarLineHeight: Double = 1
         public static let buttonBorderWidth: CGFloat = 1
@@ -531,7 +526,7 @@ public enum Plenix {
         public static let cardInteractiveOpenerFocusOutlineWidth: CGFloat = 2
         public static let cardMetaFontSize: CGFloat = 12
         public static let cardPadding: CGFloat = 16
-        public static let cardRadius: CGFloat = 12
+        public static let cardRadius: CGFloat = 6
         public static let cardTitleContentGap: CGFloat = 12
         public static let cardTitleFontSize: CGFloat = 13
         public static let carouselAutoplayInterval: Double = 6
@@ -555,7 +550,7 @@ public enum Plenix {
         public static let colorSwatchMdHeight: CGFloat = 20
         public static let colorSwatchMdWidth: CGFloat = 20
         public static let colorSwatchRadius: CGFloat = 2
-        public static let colorSwatchRoundRadius: CGFloat = 9999
+        public static let colorSwatchRoundRadius: CGFloat = 6
         public static let comboboxListMarginBlockStart: CGFloat = 4
         public static let comboboxOptionPaddingInline: CGFloat = 12
         public static let comparisonViewPaneGap: CGFloat = 12
@@ -577,7 +572,7 @@ public enum Plenix {
         public static let dialogHeaderPaddingInlineEnd: CGFloat = 8
         public static let dialogHeaderPaddingInlineStart: CGFloat = 16
         public static let dialogPadding: CGFloat = 24
-        public static let dialogRadius: CGFloat = 8
+        public static let dialogRadius: CGFloat = 6
         public static let dialogSmMaxWidth: CGFloat = 400
         public static let dialogTitleFontSize: CGFloat = 15
         public static let dragHandleSize: CGFloat = 28
@@ -615,19 +610,19 @@ public enum Plenix {
         public static let navListItemPaddingInline: CGFloat = 8
         public static let navListItemRadius: CGFloat = 4
         public static let navPaneWidth: CGFloat = 240
-        public static let productCardRadius: CGFloat = 12
+        public static let productCardRadius: CGFloat = 6
         public static let progressBarFillDuration: Double = 0.2
-        public static let progressBarFillRadius: CGFloat = 9999
+        public static let progressBarFillRadius: CGFloat = 6
         public static let progressBarIndeterminateFillAnimationDuration: Double = 1.4
         public static let progressBarLabelFontSize: CGFloat = 12
         public static let progressBarRowGap: CGFloat = 4
         public static let progressBarSmTrackHeight: CGFloat = 4
         public static let progressBarTrackHeight: CGFloat = 8
-        public static let progressBarTrackRadius: CGFloat = 9999
+        public static let progressBarTrackRadius: CGFloat = 6
         public static let radioGroupRowGap: CGFloat = 12
         public static let radioTileBorderWidth: CGFloat = 1
         public static let radioTileDisabledOpacity: Double = 0.5
-        public static let radioTileRadius: CGFloat = 8
+        public static let radioTileRadius: CGFloat = 6
         public static let roleLabelIconSize: CGFloat = 12
         public static let rowButtonFocusOutlineWidth: CGFloat = 2
         public static let searchClearWidth: CGFloat = 28

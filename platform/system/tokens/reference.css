@@ -146,10 +146,6 @@
   --plx-ref-radius-2px: 2px;
   --plx-ref-radius-4px: 4px;
   --plx-ref-radius-6px: 6px;
-  --plx-ref-radius-8px: 8px;
-  --plx-ref-radius-12px: 12px;
-  --plx-ref-radius-16px: 16px;
-  --plx-ref-radius-pill: 9999px;
   /* ── CONTROLS: sizes (value in the name; controls only) ── */
   /* breakpoints: read by the shell's JavaScript (CSS media queries cannot read custom properties; grid.css repeats them) */
   --plx-ref-breakpoint-600px: 600px;
