@@ -84,6 +84,9 @@ jobs:
       - name: Release build
         run: node build-packages.js
 
+      - name: Bundle rules (the built CDN files against check-bundle.baseline.json; bundle-check-27)
+        run: node check-bundle.js
+
       - name: What changed (the scope of the browser tests)
         run: node tests/changed.js
 

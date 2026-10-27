@@ -36,6 +36,7 @@ jobs:
           node check-system.js
           node check-style.js
           node build-packages.js
+          node check-bundle.js
 
       - name: Publish packages
         env:
