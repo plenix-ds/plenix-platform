@@ -21,7 +21,8 @@
        no vote is sent blind; the last totals stay
      onVote(memberId, option): a choice pressed; option null when the chosen one is pressed again (unless changeVote is
        "final")
-     strings: the words, for other languages (the settings' labels win for the three choices)
+     strings: the words, for other languages (default: the locale's voteTally words, through LocaleProvider; the settings'
+       labels win for the three choices)
      className: more classes on the section
    Behavior:
      Each member's choices are a group named "Vote of <name>": three toggle buttons (aria-pressed), each with its name and
@@ -44,13 +45,8 @@ import { Avatar } from '../Avatar/Avatar.jsx';
 import { Badge } from '../Badge/Badge.jsx';
 import { Button } from '../Button/Button.jsx';
 import { Text } from '../Text/Text.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = {
-  approve: 'Approve', deny: 'Deny', abstain: 'Abstain', turnedOff: 'turned off', notVoted: 'Not voted',
-  voteOf: 'Vote of {name}', hiddenUntilClosed: 'Hidden until the vote closes', totalsOnly: 'Totals only',
-  reconnecting: 'Reconnecting', quorum: 'Quorum: {present} present, {needed} needed ({state})', met: 'met', notMet: 'not met',
-  result: { open: 'Open', passing: 'Passing', failing: 'Failing', passed: 'Passed', failed: 'Failed', tied: 'Tied', 'no-quorum': 'No quorum' },
-};
 const OPTIONS = [['approve', 'check', 'success'], ['deny', 'close', 'danger'], ['abstain', 'remove', 'neutral']];
 const RESULT_TONE = { open: 'neutral', passing: 'active', failing: 'action-required', passed: 'success', failed: 'negative', tied: 'waiting', 'no-quorum': 'waiting' };
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] === undefined || v[k] === null ? m : v[k]));
@@ -63,8 +59,10 @@ function countOf(members) {
 }
 
 export function VoteTally({ label, members = [], outcome, settings = {}, status = 'open', readOnly = false, connection = 'live', onVote, strings, className }) {
-  const t = Object.assign({}, STRINGS, strings, settings.labels || {});
-  const words = Object.assign({}, STRINGS.result, strings && strings.result);
+  // the words: the locale's voteTally section (platform/i18n), then the strings prop, then the vote's own labels for the choices
+  const base = useStrings('voteTally', strings);
+  const t = Object.assign({}, base, settings.labels || {});
+  const words = base.result || {};
   const o = outcome || countOf(members);
   const locked = readOnly || status === 'closed' || connection === 'reconnecting' || typeof onVote !== 'function';
   const hiddenText = settings.liveVisibility === 'totals' ? t.totalsOnly : t.hiddenUntilClosed;
