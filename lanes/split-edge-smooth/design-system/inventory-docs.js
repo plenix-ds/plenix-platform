@@ -300,7 +300,7 @@ window.DSDocs = {
    "motion": "Not applicable: radius has no motion."
   },
   "content": {
-   "labels": "Name a role by its use and value (--plx-sys-radius-card-6px). Controls own their radius and never take it from their container. Menus use --plx-sys-radius-menu-8px. Avatars are rounded squares, never circles.",
+   "labels": "Name a role by its use and value (--plx-sys-radius-card-6px). Controls own their radius and never take it from their container. Menus use --plx-sys-radius-menu-6px. Avatars are rounded squares, never circles.",
    "actions": "Not applicable: radius has no actions.",
    "errors": "Not applicable: radius shows no error text.",
    "localization": "The concentric class sets all four corners, so it works the same in right-to-left."

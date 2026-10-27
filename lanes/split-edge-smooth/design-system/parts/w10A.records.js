@@ -221,7 +221,7 @@ DSParts.records.push(function (H) {
           ['Both', function () { return h(Sized, { label: 'Picture', axis: 'both', width: 280, height: 160, hint: 'Drag the corner, or either edge' }); }, 'plx-resizable--both', 'axis=' + q('both')]], { prop: 'axis' }],
         ['Behavior', [['Snapped to size steps', function () { return h(Sized, { label: 'Panel', axis: 'horizontal', width: 320, hint: 'Small, medium or large: 240, 320 or 400px', props: { steps: [240, 320, 400] } }); }, 'plx-resizable--steps', 'steps={[240, 320, 400]}']]],
         ['Variant', [
-          ['Divider: the edge is the gap to the next panel, a line and a pill (SplitView)', function () { return h(Sized, { label: 'List', axis: 'horizontal', width: 320, hint: 'The divider SplitView draws between its panels', props: { variant: 'divider' } }); }, 'plx-resizable--divider', 'variant=' + q('divider')],
+          ['Divider: the edge is the whole gap to the next panel, two thin lines and a three-line grip (SplitView)', function () { return h(Sized, { label: 'List', axis: 'horizontal', width: 320, hint: 'The divider SplitView draws between its panels', props: { variant: 'divider' } }); }, 'plx-resizable--divider', 'variant=' + q('divider')],
           ['Fill: the content is a column its children fill', function () { return h(Sized, { label: 'Panel', axis: 'horizontal', width: 320, hint: 'Its child takes the whole height', props: { fill: true } }); }, 'plx-resizable--fill', 'fill']]]] },
 
     /* ── 10 Patterns › Selection and organization › Drag and drop: the engine's data-item drag ── */

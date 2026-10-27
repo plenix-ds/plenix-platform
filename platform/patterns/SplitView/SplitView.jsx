@@ -39,6 +39,11 @@
        limits. There is no size menu (owner, 2026-10-16).
      Stacked when there is no room side by side: under 900px of the split view's own width the panels stack (container
        query), whatever the orientation.
+     Room and corners (owner, 2026-10-27, splitview-design-29): the split view keeps 16px of room all around
+       (--plx-comp-split-view-padding), so its panels never touch the rest of the screen. Both panels round their outer
+       corners by the same 6px (--plx-comp-split-view-radius, shape-md), and the corners at the divider are square, side
+       by side and stacked: each panel hands its corners to its content as context tokens
+       (--plx-comp-data-grid-context-<corner>-radius, --plx-comp-reading-pane-context-<corner>-radius).
    Notes:
      Built on Resizable (the first panel); the divider is Resizable's divider variant (resizable.css,
      --plx-comp-resizable-divider-* tokens), its size SplitView's gap (--plx-comp-split-view-gap). Colors, sizes and
@@ -89,8 +94,8 @@ export function SplitView({ orientation = 'side-by-side', first, second, label, 
   return (
     <GridPane.Provider value={true}><div ref={container} role="group" aria-label={label} className={cx('plx-split-view', 'plx-split-view--' + (side ? 'side-by-side' : 'stacked'), className)} {...rest}>
       <div className="plx-split-view__panels">
-        <Resizable label={firstLabel} steps={steps} variant="divider" fill className="plx-split-view__first" {...box}>{first}</Resizable>
-        <div className="plx-split-view__second">{second}</div>
+        <Resizable label={firstLabel} steps={steps} variant="divider" fill className={cx('plx-split-view__first', 'plx-split-view__first--' + (side ? 'side-by-side' : 'stacked'))} {...box}>{first}</Resizable>
+        <div className={cx('plx-split-view__second', 'plx-split-view__second--' + (side ? 'side-by-side' : 'stacked'))}>{second}</div>
       </div>
     </div></GridPane.Provider>
   );
