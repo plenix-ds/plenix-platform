@@ -91,13 +91,14 @@ function Thread({ label, follow = true, className, children, ...rest }) {
 }
 
 function Message({ mine = false, author, time, dateTime, avatar, className, children, ...rest }) {
+  const t = useStrings('chat');
   return (
     <div className={cx('plx-chat__message', mine && 'plx-chat__message--mine', className)} {...rest}>
       {!mine && avatar ? <span className="plx-chat__avatar">{avatar}</span> : null}
       <div className="plx-chat__bubble">
         {(author && !mine) || time ? (
           <div className="plx-chat__meta">
-            {mine ? <VisuallyHidden>You</VisuallyHidden> : (author ? <span className="plx-chat__author">{author}</span> : null)}
+            {mine ? <VisuallyHidden>{t.you}</VisuallyHidden> : (author ? <span className="plx-chat__author">{author}</span> : null)}
             {time ? <time className="plx-chat__time" dateTime={dateTime}>{time}</time> : null}
           </div>
         ) : null}

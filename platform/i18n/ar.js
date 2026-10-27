@@ -365,7 +365,8 @@ export default {
     "columnsLabel": "أعمدة {label}",
     "rowsLabel": "صفوف {label}",
     "columnActions": "إجراءات العمود {title}",
-    "unreadRow": "{label}، غير مقروء"
+    "unreadRow": "{label}، غير مقروء",
+    "editCell": "تعديل {title}"
   },
   "dataPill": {
     "male": "ذكر",
@@ -1535,7 +1536,8 @@ export default {
     "conversation": "المحادثة",
     "message": "الرسالة",
     "send": "إرسال",
-    "typing": "جارٍ الكتابة"
+    "typing": "جارٍ الكتابة",
+    "you": "أنت"
   },
   "checklist": {
     "dismiss": "تجاهل قائمة المهام",
@@ -2566,5 +2568,11 @@ export default {
       "any": "أي وقت",
       "year": "هذا العام"
     }
+  },
+  "dateBadge": {
+    "today": "اليوم"
+  },
+  "activityList": {
+    "unread": "غير مقروء"
   }
 };

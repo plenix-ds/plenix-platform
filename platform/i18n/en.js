@@ -481,7 +481,8 @@ export default {
     "conversation": "Conversation",
     "message": "Message",
     "send": "Send",
-    "typing": "Typing"
+    "typing": "Typing",
+    "you": "You"
   },
   "checklist": {
     "dismiss": "Dismiss checklist",
@@ -726,7 +727,8 @@ export default {
     "columnsLabel": "{label} columns",
     "rowsLabel": "{label} rows",
     "columnActions": "{title} column actions",
-    "unreadRow": "{label}, unread"
+    "unreadRow": "{label}, unread",
+    "editCell": "Edit {title}"
   },
   "dataPill": {
     "male": "male",
@@ -2534,5 +2536,11 @@ export default {
       "any": "Any time",
       "year": "This year"
     }
+  },
+  "dateBadge": {
+    "today": "Today"
+  },
+  "activityList": {
+    "unread": "Unread"
   }
 };
