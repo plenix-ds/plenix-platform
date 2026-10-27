@@ -17,7 +17,8 @@ const PORT = +process.env.TEST_PORT || 8797, BASE = 'http://127.0.0.1:' + PORT +
 // each component checked: the site page that draws it and its Platform unit
 const PARTS = { toolbar: ['readings', 'components/Toolbar'], rating: ['event', 'components/Rating'], tabs: ['member', 'components/Tabs'], settings: ['settings', 'patterns/SettingsLayout'], recent: ['search', 'components/SearchField'],
   cmdbar: ['members', 'patterns/CommandBar'], panels: ['members', 'patterns/FilterPanel'], bulk: ['directory', 'patterns/BulkActions'] };
-const want = (k) => changed.wants({ units: [PARTS[k][1]] }) || changed.pages([site.url(PARTS[k][0])]).length > 0;
+// the command bar's action forms are a module of their own (command-actions.test.js): its change turns them on (#382 F1)
+const want = (k) => changed.wants({ units: [PARTS[k][1]] }) || changed.pages([site.url(PARTS[k][0])]).length > 0 || (k === 'cmdbar' && changed.child('command-actions'));
 const route = (k) => site.url(PARTS[k][0]);
 const WANTED = Object.keys(PARTS).filter(want);
 if (!WANTED.length) changed.none('KEYBOARD_OK 0/0');

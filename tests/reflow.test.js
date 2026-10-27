@@ -27,10 +27,12 @@ const APP_PAGES = changed.pages(['dashboard', 'projects', 'messages', 'contacts'
 const site = require('./site.js');
 const SITE_PAGES = changed.pages(site.urls());
 changed.noPartialUpdate();
-// the controls that fold when their room is narrow (each the only check of its fix), when they changed: the command bar's
-// find side folds into "Find and view" (#274), a SegmentedControl folds into a Select (#276)
-if (changed.wants({ units: ['components/CommandBar', 'components/SegmentedControl'] })) {
-  for (const regression of ['commandbar-find-fold-274.test.js', 'segmented-fold-276.test.js']) {
+// the controls that fold when their room is narrow (each the only check of its fix), when they changed or the regression
+// itself did (#382 F1): the command bar's find side folds into "Find and view" (#274; the CommandBar is a pattern, #382
+// F5), a SegmentedControl folds into a Select (#276)
+{
+  for (const [regression, unit] of [['commandbar-find-fold-274.test.js', 'patterns/CommandBar'], ['segmented-fold-276.test.js', 'components/SegmentedControl']]) {
+    if (!changed.wants({ units: [unit] }) && !changed.child(regression)) continue;
     const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, regression)], { stdio: 'inherit', env: process.env });
     if (result.status !== 0) process.exit(result.status || 1);
   }

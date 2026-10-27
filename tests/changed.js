@@ -15,6 +15,11 @@
 //   dev/, tests/lib.js, this file, the builders)               → a small fixed slice: each app's first page, the first two
 //                                                                records of each design-system section, every 40th lab
 //   a test's own file or baseline                              → that test on the slice
+//   a child test (a regression a group test runs as a child process or loads into its page: data-grid, reflow, keyboard)
+//                                                              → its group, with that child on (changed.child), even when
+//                                                                nothing else of the group is in scope (#382 F1)
+//   a test fixture (tests/fixtures/…)                          → the tests that load it, as above (a child: its group with
+//                                                                it on); a fixture no test names: the slice
 //   nothing relevant                                           → each test prints its OK line with 0 and exits 0
 //   TEST_SCOPE=changed (default) | full     full: every page, as before
 //   CHANGED_BASE=<commit>                   what to compare with (default HEAD~1)
@@ -41,6 +46,32 @@ const TEST = path.basename(process.argv[1] || '').replace(/\.test\.js$/, '').rep
 const BASELINE_OF = { button: 'visual' };
 // a record set this large is a broad change: the slice stands for it
 const BROAD = 40;
+// the shared helpers every test loads (their change is global, below), never a group's child
+const HELPERS = new Set(['lib', 'changed', 'site', 'limit', 'run']);
+// the group test that runs each child test (a child process, or a module loaded into its page), read from the tests' own
+// sources ('cut-popover.test.js', require('./command-actions.test.js')), so a new child is found without a list here
+let PARENTS = null;
+function parents() {
+  if (PARENTS) return PARENTS;
+  PARENTS = {};
+  const tests = fs.readdirSync(__dirname).filter((n) => /\.test\.js$/.test(n)).map((n) => n.replace(/\.test\.js$/, ''));
+  for (const group of tests) {
+    const text = read(path.join(__dirname, group + '.test.js'));
+    for (const m of text.matchAll(/['"](?:\.\/)?([\w-]+)\.test\.js['"]/g)) {
+      const child = m[1];
+      if (child !== group && !HELPERS.has(child) && tests.includes(child) && !PARENTS[child]) PARENTS[child] = group;
+    }
+  }
+  return PARENTS;
+}
+// the tests that load a fixture (its path under tests/fixtures/ named in their source)
+function fixtureUsers(fixture) {
+  const sub = fixture.replace(/^tests\/fixtures\//, ''), dir = sub.split('/')[0];
+  return fs.readdirSync(__dirname).filter((n) => /\.test\.js$/.test(n)).filter((n) => {
+    const text = read(path.join(__dirname, n));
+    return text.indexOf('fixtures/' + sub) >= 0 || (sub.indexOf('/') > 0 && text.indexOf('fixtures/' + dir + '/') >= 0);
+  }).map((n) => n.replace(/\.test\.js$/, ''));
+}
 
 const git = (dir, args) => { try { return execFileSync('git', ['-C', dir].concat(args), { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], maxBuffer: 1 << 28 }); } catch (e) { return null; } };
 const commit = (dir, ref) => { const r = git(dir, ['rev-parse', '--verify', '--quiet', ref + '^{commit}']); return r ? r.trim() : null; };
@@ -144,7 +175,7 @@ function starts(line, kind, indent) {
 // ---- the scope
 function compute() {
   const s = { full: FULL, base: null, files: [], note: [], apps: new Set(), appSlice: false, ds: new Set(), leaves: new Set(), dsRoutes: new Set(), dsSlice: false,
-    units: new Set(), direct: [], around: [], names: {}, tests: new Set(), why: [] };
+    units: new Set(), direct: [], around: [], names: {}, tests: new Set(), children: new Set(), why: [] };
   if (FULL) return s;
   const { base, files, note } = changes();
   s.base = base; s.note = note; s.files = [...files.keys()].sort();
@@ -207,7 +238,18 @@ function compute() {
   for (const f of list) {
     const top = f.split('/')[0];
     const t = /^tests\/(?:baselines\/)?([\w-]+?)(?:\.test)?\.js(?:on)?$/.exec(f);
-    if (t && fs.existsSync(path.join(__dirname, (BASELINE_OF[t[1]] || t[1]) + '.test.js'))) { s.tests.add(BASELINE_OF[t[1]] || t[1]); why(f, 'its test on the slice'); continue; }
+    // a test (or its baseline): itself on the slice; a group's child: its group runs with that child on
+    const testFile = (name, f) => {
+      s.tests.add(name);
+      const group = parents()[name];
+      if (group) { s.children.add(name); why(f, 'its group ' + group + ', with ' + name + ' on'); } else why(f, 'its test on the slice');
+    };
+    if (t && fs.existsSync(path.join(__dirname, (BASELINE_OF[t[1]] || t[1]) + '.test.js'))) { testFile(BASELINE_OF[t[1]] || t[1], f); continue; }
+    if (/^tests\/fixtures\//.test(f)) {
+      const users = fixtureUsers(f);
+      if (users.length) { users.forEach((u) => testFile(u, f)); continue; }
+      globalFile(f); continue;
+    }
     if (IGNORED.test(f)) continue;
     if (f === 'package.json') { const h = hunks(files.get(f)); if (h && h.changed.every((l) => /^\s*"version":/.test(l))) continue; globalFile(f); continue; }
     if (f.indexOf(DS_DIR + '/') === 0) { dsFile(f); continue; }
@@ -312,6 +354,11 @@ module.exports = {
     const m = await matched(page), slice = dsSlice(test) || m.broad;
     return shard(ids.filter((id, i) => m.ids.has(id) || (slice && i % 40 === 0)));
   },
+  // a group's child test ('cut-popover', 'cut-popover.test.js'): did it change (or a fixture it loads)? Every child runs in
+  // a full run; in changed mode the group runs a child when what it covers changed (wants) or the child itself did (#382 F1)
+  child(name) { return FULL || scope().children.has(String(name).replace(/^\.\//, '').replace(/\.test\.js$/, '')); },
+  // the children of a group in scope this run (the group must not stop at "nothing in scope" before running them)
+  childrenOf(group) { const s = scope(); return FULL ? [] : [...s.children].filter((c) => parents()[c] === (group || TEST)); },
   // a test of fixed fixtures: does anything it covers change? { units: ['components/Button'], apps: ['settings'], ids: ['toolbar'] }
   wants(what, test) {
     if (FULL) return true;
@@ -342,5 +389,6 @@ if (require.main === module) {
   const ds = [...s.ds].concat([...s.leaves]);
   console.log('  design system: ' + (ds.length ? ds.length + ' records (' + ds.slice(0, 10).join(', ') + (ds.length > 10 ? ', …' : '') + ')' : '-') + (s.dsRoutes.size ? ', ' + s.dsRoutes.size + ' guidance pages' : '')
     + (s.direct.length ? ', the records of ' + s.direct.length + ' units' : '') + (s.dsSlice ? ' + the slice' : ''));
-  console.log('  units: ' + ([...s.units].join(', ') || '-') + (s.tests.size ? ' · tests on the slice: ' + [...s.tests].join(', ') : ''));
+  console.log('  units: ' + ([...s.units].join(', ') || '-') + (s.tests.size ? ' · tests on the slice: ' + [...s.tests].filter((x) => !s.children.has(x)).join(', ') : ''));
+  if (s.children.size) console.log('  children on: ' + [...s.children].map((c) => c + ' (' + parents()[c] + ')').join(', '));
 }
