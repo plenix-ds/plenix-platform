@@ -38,18 +38,14 @@ import { CopyButton } from '../../components/CopyButton/CopyButton.jsx';
 import { Timeline } from '../../components/Timeline/Timeline.jsx';
 import { StatusIcon } from '../../components/Icon/Icon.jsx';
 import { CommerceLine, OrderSummary, orderTotals, fill, money, useCommercePage } from './shared.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 /* ── the cart ── */
-const CART_STRINGS = {
-  title: 'Cart', items: '{n} items', item: '1 item', lines: 'Items in your cart', remove: 'Remove {title}', noun: 'item', removed: '{title} removed from your cart.',
-  undo: 'Undo', empty: 'Your cart is empty', emptyText: 'Find something you like and add it here.', continue: 'Continue shopping', checkout: 'Check out',
-  promo: 'Promo code', apply: 'Apply', applied: 'Promo code {code} applied', promoError: 'This code cannot be used.', total: 'Total {total}',
-};
 
 export function Cart({ items = [], currency = 'USD', onQuantityChange, onRemove, onRestore, onCheckout, continueHref, shipping, taxRate, discount, onApplyPromo,
   title, headingLevel = 1, strings, className }) {
   useCommercePage('cart');
-  const t = Object.assign({}, CART_STRINGS, strings);
+  const t = useStrings('commerce.cart', strings);
   const toast = useOptionalToast();
   const [removed, setRemoved] = React.useState(null);
   const [code, setCode] = React.useState('');
@@ -116,13 +112,6 @@ export function Cart({ items = [], currency = 'USD', onQuantityChange, onRemove,
 }
 
 /* ── payment: the method and the card fields (form UI only) ── */
-const PAY_STRINGS = {
-  method: 'Payment method', newCard: 'A new card', number: 'Card number', accepted: 'Visa, Mastercard, American Express or Discover', expiry: 'Expiry date',
-  expiryHint: 'MM / YY', cvc: 'Security code', cvcHint: 'The last 3 digits on the back, or 4 on the front of American Express', name: 'Name on card',
-  billingSame: 'The billing address is the same as the delivery address', billing: 'Billing address', street: 'Address', city: 'City', postal: 'Postal code',
-  secure: 'Your card details go straight to the payment provider. This page does not keep them.', charge: 'You will be charged',
-  brands: { visa: 'Visa', mastercard: 'Mastercard', amex: 'American Express', discover: 'Discover' },
-};
 // the card's brand from its first digits, and the number in groups as people type it (4 4 4 4, or 4 6 5 for American Express)
 export function cardBrand(number) {
   const d = String(number || '').replace(/\D/g, '');
@@ -142,7 +131,7 @@ export function formatCardNumber(number) {
 const formatExpiry = (v) => { const d = String(v || '').replace(/\D/g, '').slice(0, 4); return d.length > 2 ? d.slice(0, 2) + ' / ' + d.slice(2) : d; };
 
 export function PaymentFields({ value = {}, onChange, savedMethods = [], amount, currency = 'USD', billing = true, disabled = false, strings, className }) {
-  const t = Object.assign({}, PAY_STRINGS, strings);
+  const t = useStrings('commerce.pay', strings);
   const set = (k, v) => { if (onChange) onChange(Object.assign({}, value, { [k]: v })); };
   const method = value.method || (savedMethods.length ? savedMethods[0].id : 'card');
   const brand = cardBrand(value.number);
@@ -189,11 +178,10 @@ export function PaymentFields({ value = {}, onChange, savedMethods = [], amount,
   );
 }
 
-const PAYMENT_STRINGS = { title: 'Payment', description: 'Choose how to pay. Nothing is charged until you press Pay.', pay: 'Pay {amount}', cancel: 'Cancel', declined: 'The payment did not go through', declinedText: 'Your card was declined. Check the details or use another card.', paid: 'Payment received' };
 
 export function Payment({ amount, currency = 'USD', savedMethods, defaultValue, onPay, onCancel, title, strings, className }) {
   useCommercePage('payment');
-  const t = Object.assign({}, PAYMENT_STRINGS, strings);
+  const t = useStrings('commerce.payment', strings);
   const [value, setValue] = React.useState(() => Object.assign({ billingSame: true }, defaultValue));
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState('');
@@ -222,18 +210,11 @@ export function Payment({ amount, currency = 'USD', savedMethods, defaultValue, 
 }
 
 /* ── checkout: contact, delivery, payment, review ── */
-const CHECKOUT_STRINGS = {
-  label: 'Checkout', contact: 'Contact', delivery: 'Delivery', payment: 'Payment', review: 'Review', placeOrder: 'Place order', cancel: 'Back to cart',
-  email: 'Email', emailHint: 'For the order confirmation and delivery updates.', account: 'Have an account?', signIn: 'Sign in', name: 'Full name', street: 'Address',
-  street2: 'Apartment, suite or unit (optional)', city: 'City', region: 'State or region', postal: 'Postal code', country: 'Country', phone: 'Phone (optional)',
-  phoneHint: 'Only for questions about the delivery.', method: 'Delivery method', summary: 'Order summary', card: 'Card ending {last4}', placed: 'Order placed',
-  checkAnswers: 'Check your order before you place it.', items: 'Items', free: 'Free',
-};
 
 export function Checkout({ items = [], currency = 'USD', deliveryOptions = [], defaultValue, savedMethods, taxRate, discount, onPlaceOrder, onCancel,
   signInHref, strings, className }) {
   useCommercePage('checkout');
-  const t = Object.assign({}, CHECKOUT_STRINGS, strings);
+  const t = useStrings('commerce.checkout', strings);
   const [d, setD] = React.useState(() => Object.assign({ email: '', name: '', street: '', street2: '', city: '', region: '', postal: '', country: 'US', phone: '',
     delivery: deliveryOptions.length ? deliveryOptions[0].value : '', payment: { billingSame: true } }, defaultValue));
   const set = (k) => (e) => setD(Object.assign({}, d, { [k]: e && e.target ? e.target.value : e }));
@@ -295,14 +276,10 @@ export function Checkout({ items = [], currency = 'USD', deliveryOptions = [], d
 }
 
 /* ── the order confirmation ── */
-const CONFIRM_STRINGS = {
-  title: 'Thank you. Your order is placed.', number: 'Order number', copy: 'Copy the order number', sent: 'We sent a confirmation to {email}.',
-  next: 'What happens next', items: 'Items', view: 'View your order', continue: 'Continue shopping', delivery: 'Delivery', method: 'Delivery method',
-};
 
 export function OrderConfirmation({ orderNumber, email, items = [], currency = 'USD', totals, delivery = {}, steps = [], orderHref, continueHref, headingLevel = 1, autoFocus = true, strings, className }) {
   useCommercePage('order-confirmation');
-  const t = Object.assign({}, CONFIRM_STRINGS, strings);
+  const t = useStrings('commerce.confirm', strings);
   const uid = useUid('plx-commerce');
   const heading = React.useRef(null);
   // the page's heading takes the focus when it opens: the success is the first thing read

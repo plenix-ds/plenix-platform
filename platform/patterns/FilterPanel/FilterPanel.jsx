@@ -39,15 +39,10 @@ import { Button } from '../../components/Button/Button.jsx';
 import { Input } from '../../components/Input/Input.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
-import { PanelTrigger, PanelHead, Pick, MultiPick, useReorder, REORDER_STRINGS, fill } from '../CommandBar/panel-parts.jsx';
+import { PanelTrigger, PanelHead, Pick, MultiPick, useReorder, fill } from '../CommandBar/panel-parts.jsx';
 import { KIND_ICONS, OPERATORS, WITHIN, fieldOf, kindOf, optionsOf, conditionsOf, newCondition, nextId } from '../../utils/fields.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = Object.assign({
-  label: 'Filter', info: 'Only the records that meet the conditions are shown; a condition left unfinished does not filter.',
-  sub: 'In this view, show records', where: 'Where', and: 'and', or: 'or', empty: 'No conditions: every record is shown.',
-  addCondition: 'Add condition', addGroup: 'Add condition group', remove: 'Remove {what}', condition: 'condition', group: 'condition group',
-  value: 'Enter a value', choose: 'Choose options', field: 'Field', operator: 'Operator', join: 'And or or',
-}, REORDER_STRINGS);
 const fieldOption = (f) => ({ value: f.value, label: f.label, icon: KIND_ICONS[kindOf(f)] });
 
 function ConditionValue({ c, f, set, t }) {
@@ -108,7 +103,7 @@ function ConditionRows({ fields, node, setNode, nested, t }) {
 }
 
 export function FilterPanel({ fields = [], value, onChange, inline = false, strings, open, onOpenChange, request }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('filterPanel', strings);
   const node = value || { join: 'and', items: [] };
   const n = conditionsOf(node).length;
   const add = (x) => onChange(Object.assign({}, node, { items: node.items.concat(x) }));

@@ -45,11 +45,11 @@ import { Tooltip } from '../Tooltip/Tooltip.jsx';
 import { announce } from '../../utils/announce.jsx';
 import { formatNumber } from '../../utils/format.js';
 import { useDescribedBy } from '../../utils/describedBy.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 // the layout a Form gives the fields inside it (Form's layout "two-column" makes them inline); a Field's own layout wins
 export const FieldLayoutContext = React.createContext(null);
 
-const COUNTER_STRINGS = { left: '{n} characters left', over: '{n} characters too many' };
 const fill = (t, n) => String(t).replace('{n}', formatNumber(n));
 
 export function Field({ label, hideLabel = false, description, error, required = false, info, infoLabel, layout, labelWidth, counter, strings, type, inputMode, autoComplete, enterKeyHint, className, children, ...rest }) {
@@ -67,7 +67,7 @@ export function Field({ label, hideLabel = false, description, error, required =
   const [typed, setTyped] = React.useState(() => String(child.props.defaultValue == null ? '' : child.props.defaultValue).length);
   const length = child.props.value != null ? String(child.props.value).length : typed;
   const over = max > 0 && length > max;
-  const t = Object.assign({}, COUNTER_STRINGS, strings);
+  const t = useStrings('field.counter', strings);
   const countId = max ? controlId + '-c' : undefined;
   const near = max > 0 && max - length <= Math.ceil(max / 10);
   const said = React.useRef(null);

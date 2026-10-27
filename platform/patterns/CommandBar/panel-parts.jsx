@@ -5,7 +5,7 @@
      same control height, the same spacing.
    Usage:
      <PanelTrigger icon="sort" label="Sort" count={levels.length}><div className="plx-find-panel">…</div></PanelTrigger>
-     const ro = useReorder(levels, setLevels, (l) => l.field, REORDER_STRINGS);
+     const ro = useReorder(levels, setLevels, (l) => l.field, t);
    Props:
      PanelTrigger: the bar button (CommandBarButton) and its Popover; or, inline, the panel's body alone in a frame
      PanelHead: the panel's title, its info button (a tooltip) and its actions on the right; a line under it
@@ -118,6 +118,4 @@ export function useReorder(items, setItems, nameOf, t) {
   const status = <VisuallyHidden role="status" aria-live="polite">{msg}</VisuallyHidden>;
   return { box, rowProps, handle, status };
 }
-// the words of a row that reorders
-export const REORDER_STRINGS = { moved: '{name} moved to position {position} of {total}', row: '{name}, {position} of {total}. Alt + Arrow Up or Down moves it',
-  reorder: 'Reorder {name}', moveUp: 'Move up', moveDown: 'Move down' };
+// the words of a row that reorders are in the catalog under each panel's section (moved, row, reorder, moveUp, moveDown)

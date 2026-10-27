@@ -69,6 +69,7 @@ import { DataGrid } from '../../components/DataGrid/DataGrid.jsx';
 import { useToast } from '../../components/Toast/Toast.jsx';
 import { ActivityList } from '../ActivityList/ActivityList.jsx';
 import { CommandBar } from '../CommandBar/CommandBar.jsx';
+import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
 
 // the workflow statuses: a Badge variant by meaning, and its icon (owner, 2026-10-15)
 export const WORKFLOW_STATUSES = {
@@ -95,19 +96,13 @@ export function useOptionalToast() {
 
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 
-const FLOW_STRINGS = {
-  reviewers: 'Reviewers', history: 'History', comment: 'Comment', commentHint: 'Needed to reject or request changes.',
-  approve: 'Approve', changes: 'Request changes', reject: 'Reject', waiting: 'Waiting',
-  human: 'Generated content. A person checks it before it is used.', needReason: 'Say why, so the author knows what to change.',
-  done: '{decision}: {title}', decisions: 'Review decisions',
-};
 const VERB = { approved: 'approve', 'changes-requested': 'changes', rejected: 'reject' };
 const LOOK = { approved: 'primary', 'changes-requested': 'secondary', rejected: 'danger-secondary' };
 
 export function ReviewFlow({ status = 'in-review', title, headingLevel = 3, detail, kind = 'review', reviewers = [], history = [],
   onDecision, decisions = ['rejected', 'changes-requested', 'approved'], reasonFor = ['rejected', 'changes-requested'],
   strings, className, ...rest }) {
-  const t = Object.assign({}, FLOW_STRINGS, strings);
+  const t = useStrings('reviewFlow.flow', strings);
   const toast = useOptionalToast();
   const [comment, setComment] = React.useState('');
   const [error, setError] = React.useState('');
@@ -171,26 +166,22 @@ export function ReviewFlow({ status = 'in-review', title, headingLevel = 3, deta
   );
 }
 
-const QUEUE_STRINGS = {
-  name: 'Name', type: 'Type', submittedBy: 'Submitted by', submitted: 'Submitted', status: 'Status',
-  approve: 'Approve', changes: 'Request changes', reject: 'Reject',
-  rejectTitle: 'Reject {what}?', changesTitle: 'Request changes on {what}?', reason: 'Reason', changesLabel: 'What to change',
-  reasonHint: 'The authors see it with the decision.', needReason: 'Say why, so the authors know what to change.',
-  done: '{what} {decision}', count: '{n} {plural}',
-};
 
 export function ReviewQueue({ items = [], label, noun, plural, onDecision, selected, onSelectionChange,
   strings, className, ...rest }) {
-  const t = Object.assign({}, QUEUE_STRINGS, strings);
+  const t = useStrings('reviewFlow.queue', strings);
+  const loc = useLocale();
+  const builtIn = !noun && !plural;   // the default words: whole counted phrases with the Arabic plural forms, from the catalog
   const many = plural || (noun ? noun + 's' : t.plural);   // the default words come from the catalog
   noun = noun ?? t.noun;
   label = label ?? t.queueLabel;
+  const counted = (m) => (builtIn ? loc.t('reviewFlow.queue.items', { count: m, n: formatNumber(m) }) : null);
   const toast = useOptionalToast();
   const [own, setOwn] = React.useState([]);
   const sel = selected !== undefined ? selected : own;
   const setSel = (ids) => { if (selected === undefined) setOwn(ids); if (onSelectionChange) onSelectionChange(ids); };
   const [ask, setAsk] = React.useState(null);   // "rejected" | "changes-requested" while its dialog is open
-  const what = (n) => (n === 1 ? '1 ' + noun : formatNumber(n) + ' ' + many);
+  const what = (n) => counted(n) ?? (n === 1 ? '1 ' + noun : formatNumber(n) + ' ' + many);
   const run = (decision, reason) => {
     const ids = sel.slice();
     if (onDecision) onDecision(ids, decision, reason || '');
@@ -207,7 +198,7 @@ export function ReviewQueue({ items = [], label, noun, plural, onDecision, selec
   ];
   return (
     <div className={cx('plx-review-queue', className)} {...rest}>
-      <CommandBar label={label} count={fill(t.count, { n: formatNumber(items.length), plural: items.length === 1 ? noun : many })}
+      <CommandBar label={label} count={counted(items.length) ?? fill(t.count, { n: formatNumber(items.length), plural: items.length === 1 ? noun : many })}
         selection={{ count: sel.length, noun, plural: many, onClear: () => setSel([]), actions: [
           { id: 'approve', label: t.approve, icon: 'circle-check', onSelect: () => run('approved') },
           { id: 'changes', label: t.changes, icon: 'alert', onSelect: () => setAsk('changes-requested') },

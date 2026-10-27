@@ -43,6 +43,7 @@ import { Field } from '../../components/Field/Field.jsx';
 import { Textarea } from '../../components/Input/Input.jsx';
 import { NumberInput } from '../../components/NumberInput/NumberInput.jsx';
 import { CommerceLine, OrderSummary, orderTotals, fill, money, useCommercePage } from './shared.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 // a calendar day ("2026-10-15") read in the reader's locale, at noon so no time zone moves it to another day
 const day = (iso) => (iso ? formatDate(/T/.test(iso) ? iso : iso + 'T12:00:00') : '');
@@ -65,17 +66,10 @@ export function OrderStatus({ status, statuses }) {
 }
 
 /* ── order management ── */
-const ORDERS_STRINGS = {
-  label: 'Orders', search: 'Search orders', count: '{n} orders', one: '1 order', noun: 'order', plural: 'orders', number: 'Order', date: 'Date', customer: 'Customer',
-  items: 'Items', total: 'Total', status: 'Status', open: 'Open', fulfill: 'Fulfill', refund: 'Refund', cancel: 'Cancel order', cancelMany: 'Cancel orders',
-  cancelTitle: 'Cancel {what}?', cancelText: 'The customer is told and paid back in full. This cannot be undone.', keep: 'Keep the order',
-  notFulfillable: 'Only unfulfilled orders can be fulfilled', notCancelable: 'Only unfulfilled orders can be canceled', notRefundable: 'Only shipped or delivered orders can be refunded',
-  fulfilled: '{what} marked as shipped', canceled: '{what} canceled',
-};
 
 export function OrderManagement({ orders = [], currency = 'USD', onOpen, onFulfill, onCancel, onRefund, statuses, strings, className }) {
   useCommercePage('order-management');
-  const t = Object.assign({}, ORDERS_STRINGS, strings);
+  const t = useStrings('commerce.orders', strings);
   const S = statuses || ORDER_STATUSES;
   const fields = React.useMemo(() => [
     { value: 'number', label: t.number, kind: 'text' },
@@ -127,15 +121,10 @@ export function OrderManagement({ orders = [], currency = 'USD', onOpen, onFulfi
 }
 
 /* ── one order ── */
-const DETAIL_STRINGS = {
-  context: 'Order', back: 'Orders', items: 'Items', delivery: 'Delivery', address: 'Address', method: 'Method', tracking: 'Tracking number', payment: 'Payment',
-  history: 'History', fulfill: 'Fulfill', refund: 'Refund', cancel: 'Cancel order', return: 'Start a return', cancelTitle: 'Cancel order {number}?',
-  cancelText: 'The customer is told and paid back in full. This cannot be undone.', keep: 'Keep the order',
-};
 
 export function OrderDetail({ order, currency = 'USD', backHref, onFulfill, onRefund, onCancel, onReturn, statuses, headingLevel = 1, strings, className }) {
   useCommercePage('order-detail');
-  const t = Object.assign({}, DETAIL_STRINGS, strings);
+  const t = useStrings('commerce.orderDetail', strings);
   const o = order || {};
   const uid = useUid('plx-commerce');
   const [asking, setAsking] = React.useState(false);
@@ -185,23 +174,12 @@ export function OrderDetail({ order, currency = 'USD', backHref, onFulfill, onRe
 }
 
 /* ── subscription management ── */
-const SUB_STRINGS = {
-  plan: 'Your plan', planName: 'Plan', price: 'Price', status: 'Status', next: 'Next payment', since: 'Member since', ends: 'Access ends',
-  perPeriod: '{price} per {period}', more: '{amount} more', less: '{amount} less', change: 'Change plan', changeTitle: 'Change to {plan}?',
-  changeText: 'You will pay {price} from {date}. Until then your current plan stays as it is.', changeConfirm: 'Change plan', changed: 'Your plan changes to {plan} on {date}.',
-  plans: 'Plans', current: 'Current plan', method: 'Payment method', update: 'Update payment method', manage: 'Pause or cancel',
-  manageText: 'Pause to stop the payments for a while and keep your settings; cancel to end the plan. Either way you keep access until {date}.',
-  pause: 'Pause subscription', pauseTitle: 'Pause your subscription?', pauseText: 'No payment is taken while it is paused. Resume it whenever you like.', resume: 'Resume subscription',
-  cancel: 'Cancel subscription', cancelTitle: 'Cancel your subscription?', cancelText: 'You keep access until {date}, and you will not be charged again.', keep: 'Keep my plan',
-  history: 'Billing history', date: 'Date', description: 'Description', amount: 'Amount', invoice: 'Invoice', invoiceFor: 'Invoice for {date}', paused: 'Your subscription is paused.',
-  canceled: 'Your subscription is canceled.', statuses: { active: 'Active', paused: 'Paused', canceled: 'Canceled', paid: 'Paid', refunded: 'Refunded', failed: 'Failed' },
-};
 const SUB_TONES = { active: ['success', 'circle-check'], paused: ['waiting', 'schedule'], canceled: ['neutral', 'do-not-disturb'], paid: ['success', 'circle-check'], refunded: ['neutral', 'ed-undo'], failed: ['negative', 'alert'] };
 
 export function SubscriptionManagement({ subscription = {}, plans = [], history = [], currency = 'USD', onChangePlan, onPause, onResume, onCancel, onUpdatePayment, strings, className }) {
   useCommercePage('subscription-management');
-  const t = Object.assign({}, SUB_STRINGS, strings);
-  const st = Object.assign({}, SUB_STRINGS.statuses, t.statuses);
+  const t = useStrings('commerce.subscription', strings);
+  const st = t.statuses;   // merged key by key with the strings prop
   const s = subscription;
   const current = plans.find((p) => p.id === s.plan) || {};
   const [pick, setPick] = React.useState(s.plan);
@@ -284,18 +262,10 @@ export function SubscriptionManagement({ subscription = {}, plans = [], history 
 }
 
 /* ── returns ── */
-const RETURN_STRINGS = {
-  label: 'Return items', items: 'Items', reason: 'Reason', resolution: 'Resolution', review: 'Review', submit: 'Request return', cancel: 'Cancel',
-  window: 'You can return most items within 30 days of delivery.', choose: 'Choose at least one item to return.', notReturnable: 'Cannot be returned',
-  quantity: 'How many, {title}', why: 'Why are you returning them?', whyRequired: 'Choose a reason.', note: 'Anything else we should know? (optional)',
-  want: 'What would you like?', wantRequired: 'Choose a refund or an exchange.', send: 'How will you send them?', sendRequired: 'Choose how to send them.',
-  refund: 'Refund', refundTiming: 'The refund reaches your original payment method 5 to 10 business days after the items arrive.', requested: 'Return requested',
-  requestedText: 'We emailed you the return label and the steps. Here is where your return stands.', status: 'Return status', returning: '{n} items', returningOne: '1 item',
-};
 
 export function Returns({ order = {}, reasons = [], resolutions = [], methods = [], currency = 'USD', status, onSubmit, onCancel, headingLevel = 2, strings, className }) {
   useCommercePage('returns');
-  const t = Object.assign({}, RETURN_STRINGS, strings);
+  const t = useStrings('commerce.returns', strings);
   const items = order.items || [];
   const [chosen, setChosen] = React.useState({});
   const [reason, setReason] = React.useState('');
