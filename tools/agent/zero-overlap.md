@@ -77,9 +77,8 @@ properties included. Inheritance is not an overlap. There are no exceptions; wha
 
 - `node build-app.js`, `node check-system.js` and `node check-style.js` (SYSTEM_OK, STYLE_OK, apart from findings that are not yours), `npm run lint:css`, `node check-spec.js`
   (a new modifier needs a variant card or a `NOT_VARIANTS` reason).
-- `node tests/selector-kinds.test.js` and `node tests/zero-overlap.test.js` stay OK.
-- `node tests/clash-audit.js --strict --check --pages <the pages that use it>`.
+- Do not run `tests/selector-kinds.test.js`, `tests/zero-overlap.test.js` or `tests/clash-audit.js` (HANDOFF.md, "No tests"); `node check-system.js` and `node check-style.js` check the selector kinds.
 - **No visual change** except the matrix corrections the Standard requires (a hovered disabled control stays disabled);
   list each one in the PR with before and after. Compare computed styles before and after on the component's spec pages
-  and the application pages that use it (`tests/compare-styles.js`, or the styling-proof workflow).
-- Dispatch the **Styling proof** workflow and list the run in the PR. Never wait for it.
+  and the application pages that use it: by reading the code, not by running `tests/compare-styles.js`. List the pages the change touches in the PR.
+

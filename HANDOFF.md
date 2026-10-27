@@ -20,7 +20,7 @@ One design system and the suite of applications built on it, owned by one person
 | Design spec | `platform/design-system/` (a **submodule**, private repo `plenix-ds/plenix-design-system`) | The living spec: 688 records, 1,172 taxonomy leaves; `inventory.js` + `parts/*.records.js|docs.js|labs.js`; one page per component (the duplicate merge is permanent, no redirects) |
 | Standards | `platform/standards/` | `styling.md` (the Styling Standard: ownership, zero overlap, text contracts, layers), `text-contracts.json`, themes, layout, native design |
 | Apps | `dashboard/ projects/ messages/ contacts/ calendar/ tasks/ notes/ bookmarks/ files/ settings/ dam/` | The suite, each `main.jsx` → generated `app.js` |
-| Checks | `check-system.js` (+ `check-system.rules/`), `check-spec.js`, `tests/` | The gates |
+| Checks | `check-system.js` (+ `check-system.rules/`), `check-style.js`, `check-spec.js`; `tests/` | The gates (the tests run only when the owner starts them) |
 | Agent tools | `tools/agent/` | Work notes, proof log (`proof-log.md`), release script (`release.sh`), the spec-merge record |
 
 ## Where things stand
@@ -43,15 +43,16 @@ One design system and the suite of applications built on it, owned by one person
 - **Dark mode last** (#205). American English. Statuses are badges with an icon, never a dot. No action links.
 - Write documentation as definitive rules, plain words, bullets for two sentences or more.
 - **Other sessions share this folder.** Commit only your own files; build generated files in a clean copy; never `git add -A`.
-- Proofs: prove only the pages you touch (`tests/clash-audit.js --check --pages …`, `tests/compare-styles.js`), log
-  them in `tools/agent/proof-log.md`, never wait on them; the full suite (#58) only at the very end.
+- Proofs: do not run `tests/clash-audit.js` or `tests/compare-styles.js` (see "No tests"); say in the pull request which pages the change touches.
+  The full suite (#58) is the owner's, at the very end.
 - Commits: author "Coptic Collection" <frraphaelmaher@gmail.com>, trailer `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`. The global git identity is set to this author (owner, 2026-10-24).
 
 ## How to work
 
-- **Tests and checks only before a push (owner, 2026-10-26).** The owner's words: "so i want the tests checks to only be done on a PUSH!!!"
-  - Commit freely while working. Run the tests and checks (`node build-app.js`, `node check-system.js`, `node check-style.js`, `npm run lint:css`, `node check-spec.js`, the tests that cover the change) only right before a push.
-  - The full suite runs on the release gate (the sharded CI full run on the release commit), not on each commit.
+- **No tests (owner, 2026-10-27).** Never run a test. Tests run only when the owner starts them himself. Reading the code and the quick static checks (check-system, check-style, lint) are fine.
+  - This is the one statement of the rule; every other file points here.
+  - Commit freely while working. Right before a push run only the build and the static checks: `node build-app.js`, `node check-system.js`, `node check-style.js`, `npm run lint:css`, `node check-spec.js`.
+  - The full suite and the on-demand tests are started by the owner. CI is a separate owner decision.
 - **Show me, then ship it (owner, 2026-10-26).**
   - "Show me" comes first: a live preview and one picture, with no build, no tests and no PR.
   - "Ship it" comes only after the owner picks: then build, check before the push, open the PR, and merge on the owner's word.
@@ -67,7 +68,7 @@ One design system and the suite of applications built on it, owned by one person
   - Clone it beside this repository (`../st-john-test-site`, or set `SITE_DIR`). The tests start it on their own server at `/Plenix/test-site/` with a fresh database (PGlite on a computer, the job's PostgreSQL in CI) and point it at this checkout's CDN files at `/cdn/local/`: run `node build-app.js` and `node build-packages.js` first.
   - It is a church database and membership app with made-up data (no sacrament records; "servants", never "volunteers"). Its routes are its `site/pages.js`; tests read them through `tests/site.js`.
   - CI reads the site's repository with the `DS_TOKEN` secret (owner, 2026-10-26: reuse it; it also reads the spec).
-  - A new Platform part must be placed on the site: `node tests/site-coverage.test.js` (SITE_COVERAGE_OK) and `node tests/site-check.js` (the site's rules).
+  - A new Platform part must be placed on the site. The owner starts `node tests/site-coverage.test.js` (SITE_COVERAGE_OK) and `node tests/site-check.js` (the site's rules); you do not run them.
   - The spec's component labs are spec-only (`node tests/run.js labs`); `tests/component-tokens.test.js` checks the tokens on the site's real components.
 - **No target-size test.** The owner removed it ("Remove tap areas from all tests", 2026-10-25).
 - **Each thing is checked once (reset, owner 2026-10-26).**
