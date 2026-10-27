@@ -1967,7 +1967,10 @@ export default {
     "scope": "في {scope}",
     "pin": "تثبيت {app} في الشريط العلوي",
     "unpin": "إلغاء تثبيت {app} من الشريط العلوي",
-    "switchApp": "{app}، تبديل التطبيق"
+    "switchApp": "{app}، تبديل التطبيق",
+    "cancel": "إلغاء",
+    "searchHint": "اكتب ما تبحث عنه، ثم اضغط Enter.",
+    "pinnedHeading": "مثبتة في الشريط العلوي"
   },
   "form": {
     "label": "إجراءات النموذج"
