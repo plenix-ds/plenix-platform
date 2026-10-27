@@ -6,6 +6,9 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+### Fixed
+- Avatar: a name with no Latin letter (an Arabic name) shows its initials instead of an empty box: each word's first letter, two Arabic initials kept apart so they do not join (owner, ctm-needs-34; #413 batch 4). Latin names are unchanged.
+
 ### Breaking
 - Four circle sizes are renamed from `-radius` to `-size`, so the corner rule (2 to 6px) covers only real corners (owner, dot-radius-names-34). Each still holds the circle's radius (SVG `r`), so nothing on screen changes. A theme or page that set an old name must use the new one:
   - `--plx-comp-chart-interaction-focus-mark-radius` → `--plx-comp-chart-interaction-focus-mark-size`
