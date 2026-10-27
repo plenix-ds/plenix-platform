@@ -536,7 +536,7 @@ public enum Plenix {
         public static let carouselDotTarget: CGFloat = 24
         public static let carouselGap: CGFloat = 12
         public static let carouselPeek: CGFloat = 40
-        public static let chartInteractionFocusMarkRadius: CGFloat = 8
+        public static let chartInteractionFocusMarkSize: CGFloat = 8
         public static let chartLineWidth: CGFloat = 2
         public static let chartPlotHeightMd: CGFloat = 240
         public static let chartPlotHeightSm: CGFloat = 160

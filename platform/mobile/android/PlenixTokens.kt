@@ -543,7 +543,7 @@ object PlenixComponent {
     val carouselDotTarget = 24.dp
     val carouselGap = 12.dp
     val carouselPeek = 40.dp
-    val chartInteractionFocusMarkRadius = 8.dp
+    val chartInteractionFocusMarkSize = 8.dp
     val chartLineWidth = 2.dp
     val chartPlotHeightMd = 240.dp
     val chartPlotHeightSm = 160.dp

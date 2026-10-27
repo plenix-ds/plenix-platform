@@ -85,8 +85,9 @@
       "$description": "Display size: a metric card's large value, a dashboard's first row (owner, 2026-10-19)."
     },
     "font-sans": {
-      "$value": "\"DM Sans\", system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Arial, sans-serif",
+      "$value": "\"DM Sans\", \"IBM Plex Sans Arabic\", system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Arial, sans-serif",
       "$type": "fontFamily",
+      "$description": "The sans stack: DM Sans, then IBM Plex Sans Arabic for Arabic letters only (owner, arabic-font-35).",
       "$extensions": {
         "com.plenix": {
           "before": [
@@ -94,6 +95,11 @@
           ]
         }
       }
+    },
+    "font-sans-title": {
+      "$value": "\"DM Sans\", \"Readex Pro\", system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Arial, sans-serif",
+      "$type": "fontFamily",
+      "$description": "The titles' stack: DM Sans, then Readex Pro for Arabic letters only (owner, arabic-font-35). Latin titles are DM Sans, as before."
     },
     "font-mono": {
       "$value": "\"Reddit Mono\", ui-monospace, \"SFMono-Regular\", Menlo, Monaco, Consolas, \"Liberation Mono\", monospace",
