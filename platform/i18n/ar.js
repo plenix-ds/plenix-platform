@@ -780,7 +780,19 @@ export default {
     "regions.Australia": "أستراليا",
     "regions.Europe": "أوروبا",
     "regions.Indian": "المحيط الهندي",
-    "regions.Pacific": "المحيط الهادئ"
+    "regions.Pacific": "المحيط الهادئ",
+    "regions": {
+      "Africa": "أفريقيا",
+      "America": "الأمريكتان",
+      "Antarctica": "القارة القطبية الجنوبية",
+      "Arctic": "القطب الشمالي",
+      "Asia": "آسيا",
+      "Atlantic": "المحيط الأطلسي",
+      "Australia": "أستراليا",
+      "Europe": "أوروبا",
+      "Indian": "المحيط الهندي",
+      "Pacific": "المحيط الهادئ"
+    }
   },
   "transferList": {
     "source": "المتاح",
@@ -1910,5 +1922,15 @@ export default {
   "reviewFlow": {
     "label": "بانتظار المراجعة",
     "noun": "عنصر"
+  },
+  "collection": {
+    "selected": {
+      "=0": "لم يتم تحديد أي عنصر",
+      "one": "تم تحديد عنصر واحد",
+      "two": "تم تحديد عنصرين",
+      "few": "تم تحديد {count} عناصر",
+      "many": "تم تحديد {count} عنصرًا",
+      "other": "تم تحديد {count} عنصر"
+    }
   }
 };

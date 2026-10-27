@@ -23397,7 +23397,19 @@ var _default = exports.default = {
     "regions.Australia": "أستراليا",
     "regions.Europe": "أوروبا",
     "regions.Indian": "المحيط الهندي",
-    "regions.Pacific": "المحيط الهادئ"
+    "regions.Pacific": "المحيط الهادئ",
+    "regions": {
+      "Africa": "أفريقيا",
+      "America": "الأمريكتان",
+      "Antarctica": "القارة القطبية الجنوبية",
+      "Arctic": "القطب الشمالي",
+      "Asia": "آسيا",
+      "Atlantic": "المحيط الأطلسي",
+      "Australia": "أستراليا",
+      "Europe": "أوروبا",
+      "Indian": "المحيط الهندي",
+      "Pacific": "المحيط الهادئ"
+    }
   },
   "transferList": {
     "source": "المتاح",
@@ -24527,6 +24539,16 @@ var _default = exports.default = {
   "reviewFlow": {
     "label": "بانتظار المراجعة",
     "noun": "عنصر"
+  },
+  "collection": {
+    "selected": {
+      "=0": "لم يتم تحديد أي عنصر",
+      "one": "تم تحديد عنصر واحد",
+      "two": "تم تحديد عنصرين",
+      "few": "تم تحديد {count} عناصر",
+      "many": "تم تحديد {count} عنصرًا",
+      "other": "تم تحديد {count} عنصر"
+    }
   }
 };
   } },
@@ -24599,6 +24621,11 @@ const messageAt = (catalog, key) => {
   return String(key).split('.').reduce((node, part) => own(node, part) ? node[part] : undefined, catalog);
 };
 const text = (message, values) => String(message).replace(/\{(\w+)\}/g, (match, key) => own(values, key) ? String(values[key]) : match);
+
+// a plural message: an object whose keys are only plural categories (zero, one, two, few, many, other) or exact counts ("=0"),
+// with "other"; a section that merely has a key named "other" (TimeZoneSelect's "Other") is not one
+const PLURAL_KEY = /^(zero|one|two|few|many|other|=\d+)$/;
+const pluralMessage = v => !!v && typeof v === 'object' && !Array.isArray(v) && own(v, 'other') && Object.keys(v).every(k => PLURAL_KEY.test(k));
 function createTranslator(locale = 'en', catalogs = {}, fallbackLocale = 'en') {
   const language = canonical(locale),
     fallback = canonical(fallbackLocale);
@@ -24636,7 +24663,7 @@ function createTranslator(locale = 'en', catalogs = {}, fallbackLocale = 'en') {
   };
   // a component's words: the whole section, merged across the catalogs (English at the bottom, the language on top); nested
   // sections merge key by key, a plural message (an object with "other") is kept whole, so two languages never mix
-  const isPlural = v => v && typeof v === 'object' && !Array.isArray(v) && own(v, 'other');
+  const isPlural = pluralMessage;
   const merge = (a, b) => {
     if (!b || typeof b !== 'object' || Array.isArray(b) || isPlural(b)) return b === undefined ? a : b;
     const out = Object.assign({}, a && typeof a === 'object' && !isPlural(a) ? a : {});
@@ -24721,7 +24748,7 @@ function useStrings(name, strings) {
     Object.keys(strings).forEach(k => {
       const v = strings[k],
         b = base[k];
-      out[k] = v && typeof v === 'object' && !Array.isArray(v) && b && typeof b === 'object' && !Object.prototype.hasOwnProperty.call(v, 'other') ? Object.assign({}, b, v) : v;
+      out[k] = v && typeof v === 'object' && !Array.isArray(v) && b && typeof b === 'object' && !Array.isArray(b) && !pluralMessage(v) ? Object.assign({}, b, v) : v;
     });
     return out;
   }, [loc, name, strings]);
