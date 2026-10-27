@@ -9,39 +9,45 @@
 # Both names serve /srv/plenix/www on the VM (Nginx, site file /etc/nginx/sites-available/plenix); Nginx Proxy Manager
 # (CT 102) gives them HTTPS. Only the folders listed below are published: never the build tools, archives or databases.
 # The owner's study pages (docs/font-study, docs/composition, docs/reading-pane-study, docs/page-headers, and the DataGrid studies docs/grid-header-study, docs/grid-row-hover-study, docs/grid-row-selection-study) are published too, at /Plenix/docs/<study>/.
-# Run from Git Bash:  bash deploy.sh   (needs this PC's SSH key on plenix@10.0.0.30)
+# Run on cc-server from the repository root:  bash deploy.sh   (uses the key ~/.ssh/plenix_publish on plenix@10.0.0.30;
+# PLENIX_SSH_KEY names another key)
 set -euo pipefail
 HOST=plenix@10.0.0.30
-cd "$(dirname "$0")/.."
+SSH_OPTS=(-o IdentitiesOnly=yes -o BatchMode=yes -i "${PLENIX_SSH_KEY:-$HOME/.ssh/plenix_publish}")
+cd "$(dirname "$0")"
 
-(cd Plenix && node build-app.js >/dev/null 2>&1 && node build-usage.js >/dev/null) || { echo "BUILD FAILED: run node Plenix/build-app.js"; exit 1; }
-(cd Plenix && node check-system.js >/dev/null 2>&1) || { echo "check-system failed: fix it before publishing"; exit 1; }
-(cd Plenix && node build-packages.js >/dev/null) || { echo "build-packages failed: run node Plenix/build-packages.js"; exit 1; }
-VERSION=$(cd Plenix && node -p "require('./package.json').version")
+(node build-app.js >/dev/null 2>&1 && node build-usage.js >/dev/null) || { echo "BUILD FAILED: run node build-app.js"; exit 1; }
+node check-system.js >/dev/null 2>&1 || { echo "check-system failed: fix it before publishing"; exit 1; }
+node build-packages.js >/dev/null || { echo "build-packages failed: run node build-packages.js"; exit 1; }
+VERSION=$(node -p "require('./package.json').version")
 # the design spec runs on this release from the CDN (platform/design-system/plenix-source.js): it must name this version
-[ ! -f Plenix/platform/design-system/plenix-source.js ] || grep -q "var VERSION = '$VERSION'" Plenix/platform/design-system/plenix-source.js || { echo "The design spec pins another release: set VERSION in platform/design-system/plenix-source.js to $VERSION"; exit 1; }
+[ ! -f platform/design-system/plenix-source.js ] || grep -q "var VERSION = '$VERSION'" platform/design-system/plenix-source.js || { echo "The design spec pins another release: set VERSION in platform/design-system/plenix-source.js to $VERSION"; exit 1; }
 # the Material Symbols library, shared by every release (icons-all.css points at it): copied once per pinned commit
-MATERIAL=$(cd Plenix && node -p "require('./platform/icons/map.json')._commit.slice(0, 12)")
+MATERIAL=$(node -p "require('./platform/icons/map.json')._commit.slice(0, 12)")
 
+# the site keeps its Plenix/ folder: every path is packed under Plenix/ (not symlink targets)
 PKG=$(mktemp -u).tgz
-tar -czf "$PKG" --force-local --exclude='*.bak' --exclude='node_modules' \
-  Plenix/platform Plenix/suite Plenix/bookmarks Plenix/calendar Plenix/contacts Plenix/dam Plenix/dashboard Plenix/files \
-  Plenix/messages Plenix/notes Plenix/projects Plenix/settings Plenix/tasks Plenix/check-system.js \
-  Plenix/docs/font-study Plenix/docs/composition Plenix/docs/reading-pane-study Plenix/docs/page-headers \
-  Plenix/docs/grid-header-study Plenix/docs/grid-row-hover-study Plenix/docs/grid-row-selection-study \
-  "Plenix - DAM/audit/batches/15-26.md" Plenix/release Plenix/packages/styles/plenix.css
+tar -czf "$PKG" --exclude='*.bak' --exclude='node_modules' --transform='s,^,Plenix/,S' \
+  platform suite bookmarks calendar contacts dam dashboard files \
+  messages notes projects settings tasks check-system.js \
+  docs/font-study docs/composition docs/reading-pane-study docs/page-headers \
+  docs/grid-header-study docs/grid-row-hover-study docs/grid-row-selection-study \
+  release packages/styles/plenix.css
 
 gzip -t "$PKG" || { echo "package is damaged; nothing published"; rm -f "$PKG"; exit 1; }
 SUM=$(sha256sum "$PKG" | cut -d' ' -f1)
-scp -q "$PKG" "$HOST:/tmp/plenix-site.tgz"
+scp -q "${SSH_OPTS[@]}" "$PKG" "$HOST:/tmp/plenix-site.tgz"
 rm -f "$PKG"
 # unpack beside the live copy; swap only when the upload checks out and unpacks cleanly (the old copy stays as www.old)
-ssh "$HOST" "set -e
+ssh "${SSH_OPTS[@]}" "$HOST" "set -e
   echo '$SUM  /tmp/plenix-site.tgz' | sha256sum -c --quiet -
   sudo rm -rf /srv/plenix/www.new
   sudo mkdir -p /srv/plenix/www.new
   sudo tar -xzf /tmp/plenix-site.tgz -C /srv/plenix/www.new --no-same-owner
   rm /tmp/plenix-site.tgz
+  # the design spec reads the Asset Manager audit notes (batches 15-26), which live outside the repository: keep the live copy
+  D='Plenix - DAM/audit/batches'
+  if [ -f \"/srv/plenix/www/\$D/15-26.md\" ]; then sudo mkdir -p \"/srv/plenix/www.new/\$D\" && sudo cp -p \"/srv/plenix/www/\$D/15-26.md\" \"/srv/plenix/www.new/\$D/\"; fi
   sudo find /srv/plenix/www.new -type d -exec chmod 755 {} +
   sudo find /srv/plenix/www.new -type f -exec chmod 644 {} +
   sudo rm -rf /srv/plenix/www.old /srv/plenix/www.bad
