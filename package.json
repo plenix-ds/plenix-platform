@@ -37,7 +37,7 @@
     "test:data-grid": "node tests/data-grid.test.js",
     "test:navigation": "node tests/navigation.test.js",
     "test:types": "node tests/types.test.js",
-    "lint:css": "stylelint \"platform/**/*.css\"",
+    "lint:css": "stylelint \"platform/**/*.css\" \"services/**/*.css\"",
     "lint:unused": "knip --no-exit-code"
   },
   "devDependencies": {
