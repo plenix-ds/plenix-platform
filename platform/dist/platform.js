@@ -6460,13 +6460,14 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.gridPx = exports.GRID_TOKEN = void 0;
 exports.gridStep = gridStep;
+exports.gridWithin = gridWithin;
 exports.onGrid = onGrid;
 exports.snapToGrid = snapToGrid;
 /* Plenix · grid (platform/utils/grid.js)
    Summary: Puts a length that JavaScript writes inline on the Plenix grid (owner, 2026-10-13: an on-the-spot offset "has
      to conform to fit into the grid system!!! important"). The grid step is the base spacing token (--plx-ref-space-4px),
-     read from the page, never written as a number. A size that has a scale (a column, a pane, a box) takes the size tokens
-     instead: snapSize and stepSize in utils/sizeSteps.js.
+     read from the page, never written as a number. A size with steps of its own takes them (Resizable's steps); a dragged
+     pane or box lands on the grid (gridWithin).
    Usage:
      import { snapToGrid, gridPx } from '../../utils/grid.js';
      el.style.insetBlockStart = gridPx(anchor.bottom + tokenPx('--plx-sys-space-stack-xs'));   // a measured anchor plus a token
@@ -6476,6 +6477,9 @@ exports.snapToGrid = snapToGrid;
      snapToGrid(px, { round, el }): px on the grid: round "nearest" (default) | "up" | "down"
      gridPx(px, { round, el }): the same, as a CSS length ("12px"), for an inline style
      onGrid(px, el): true when px is a whole number of grid steps (within half a pixel's rounding)
+     gridWithin(px, min, max, { el }): the grid line nearest px inside [min, max] (each limit taken to the nearest grid line
+       inside it): a dragged pane's or box's size, one grid line at a time (owner, 2026-10-26: "only after a user positions
+       the menu, it would automatically reposition itself to the nearest grid line")
    Behavior:
      A measured anchor (where a trigger is) is layout, not an invented value: snap the result, not the anchor. Offsets and
      gaps added to it come from tokens. 0 stays 0; a negative length snaps the same way as a positive one.
@@ -6512,6 +6516,21 @@ function onGrid(px, el) {
   const step = gridStep(el),
     q = Math.abs(Number(px) || 0) / step;
   return Math.abs(q - Math.round(q)) * step <= 0.5;
+}
+function gridWithin(px, min, max, opts) {
+  const o = opts || {},
+    step = o.step || gridStep(o.el);
+  const lo = snapToGrid(min, {
+      step,
+      round: 'up'
+    }),
+    hi = Math.max(lo, snapToGrid(max, {
+      step,
+      round: 'down'
+    }));
+  return Math.max(lo, Math.min(hi, snapToGrid(px, {
+    step
+  })));
 }
   } },
   "platform/components/Input/Input.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -7203,7 +7222,7 @@ const FIELD_RULES = exports.FIELD_RULES = {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.SIZE_STEPS = void 0;
+exports.SIZE_STEPS = exports.GRID_PANE_MAX = exports.GRID_MIN = exports.GRID_BOX_MAX = void 0;
 exports.snapSize = snapSize;
 exports.stepSize = stepSize;
 /* Plenix · SIZE_STEPS
@@ -7215,6 +7234,10 @@ exports.stepSize = stepSize;
      none: SIZE_STEPS lists the sizes in pixels, smallest first; snapSize(px, min, max) and stepSize(px, dir, min, max)
 */
 const SIZE_STEPS = exports.SIZE_STEPS = [4, 8, 12, 16, 18, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 80, 88, 92, 96, 100, 112, 120, 128, 132, 140, 152, 160, 180, 200, 220, 240, 260, 280, 300, 320, 360, 380, 400, 420, 440, 460, 480, 500, 520, 560, 600, 640, 720, 760, 800, 860, 900];
+// the grid lines system/steps.css has a rule for (build-steps.js): a pane is drawn from GRID_MIN to GRID_PANE_MAX, a Resizable box to GRID_BOX_MAX
+const GRID_MIN = exports.GRID_MIN = 4,
+  GRID_PANE_MAX = exports.GRID_PANE_MAX = 960,
+  GRID_BOX_MAX = exports.GRID_BOX_MAX = 1600;
 const within = (min, max) => SIZE_STEPS.filter(s => s >= min && s <= max);
 // the size token nearest to px within [min, max] (the limit itself when no token lies between them)
 function snapSize(px, min, max) {
@@ -7265,7 +7288,7 @@ function resizeScale(steps, min, max, keyboardSteps = []) {
   };
 }
   } },
-  "platform/components/Resizable/Resizable.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","./resize-scale.js":"platform/components/Resizable/resize-scale.js","../../utils/floating.js":"platform/utils/floating.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Resizable/Resizable.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../utils/grid.js":"platform/utils/grid.js","./resize-scale.js":"platform/components/Resizable/resize-scale.js","../../utils/floating.js":"platform/utils/floating.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -7277,6 +7300,7 @@ var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _direction = require("../../utils/direction.js");
 var _sizeSteps = require("../../utils/sizeSteps.js");
+var _grid = require("../../utils/grid.js");
 var _resizeScale = require("./resize-scale.js");
 var _floating = require("../../utils/floating.js");
 var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
@@ -7285,8 +7309,10 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Summary: An area people make wider or taller by dragging its edge (10 Patterns › Selection and organization › Resize):
      Resizable is a box with a resize edge on its end (horizontal), its bottom (vertical) or both
      for those who do not drag; PanelSplitter is the same edge on a pane of the application shell (the navigation pane,
-     a secondary pane, the inspector), promoted here from AppShell, which imports and re-exports it. Every size is a size
-     token: a drag follows the pointer and snaps on release, the arrow keys step through them, and a list of steps narrows them further.
+     a secondary pane, the inspector), promoted here from AppShell, which imports and re-exports it. Every size is on the
+     4px grid: a drag moves one grid line at a time and lands on one when let go (owner, 2026-10-26), and a list of steps
+     narrows the settled sizes further. Sizes are honoured from 4px up to 1600px (GRID_BOX_MAX; a pane of the shell up to
+     960px, GRID_PANE_MAX): each grid line has a rule in the stylesheet up to there, and a larger size lands on the largest.
    Usage:
      <Resizable label="Preview" axis="horizontal" defaultWidth={320} minWidth={200} maxWidth={560}>…</Resizable>
      <Resizable label="Notes" axis="vertical" height={h} onResize={({ height }) => setH(height)} minHeight={120} maxHeight={400}>…</Resizable>
@@ -7314,23 +7340,29 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      PanelSplitter.label, value, min, max() (a function: the widest it can be now), onChange(width), onCollapse(),
        defaultValue, edge: "end" (an area at the start) | "start" (an area at the end)
    Behavior:
-     Pointer: drag an edge (or the corner); the size follows the pointer within the limits and snaps on release to 4px or the supplied steps; the page shows the resize pointer.
+     Pointer: drag an edge (or the corner); the size follows the pointer one grid line (4px) at a time within the limits
+       and, when let go, stays on that grid line or settles on the nearest of the supplied steps; the page shows the
+       resize pointer.
      Keyboard: each edge is a separator (aria-valuenow, -valuemin, -valuemax) in the Tab order: Arrow Left / Right (the
        end edge, mirrored in a right-to-left page) or Arrow Up / Down (the bottom edge) step to the next size, Home and End
-       to the limits.
+       to the limits. aria-valuemin and -valuemax are the limits it can reach (within GRID_MIN to GRID_BOX_MAX, a pane's
+       to GRID_PANE_MAX), so a maxWidth past 1600 reports 1600.
      No size menu (owner, 2026-10-16: removed, also for touch): the edge is dragged, or moved with the keyboard.
-     PanelSplitter: drag, or the arrow keys, Home and End; double-click or Enter collapses the area when it can collapse.
+     PanelSplitter: drag (one grid line at a time, within min and max), or the arrow keys (--plx-sys-shell-splitter-step),
+       Home and End; double-click or Enter collapses the area when it can collapse (onCollapse: the navigation pane folds
+       to its rail).
    Notes:
-     The size reaches the stylesheet as data-plx-width and data-plx-height with one rule per size token (never a style
-       attribute). The content fits itself: it wraps, or scrolls in a region of its own.
+     The size reaches the stylesheet as data-plx-width and data-plx-height with one rule per size token and one per grid
+       line (system/steps.css; never a style attribute or a style element). The content fits itself: it wraps, or scrolls in a region of its own.
      Limit hints appear beside the divider, announce once per limit per drag, and dismiss on release, blur or Escape.
      Motion uses the existing duration token and is skipped when reduced motion is requested.
      A table's column widths are the DataGrid's own; a pane of the shell uses PanelSplitter through its pattern.
 */
 const useSizeEffect = typeof window === 'undefined' ? _react.default.useEffect : _react.default.useLayoutEffect;
 
-/* the drag handle on a resizable area's inner edge: drag, or the arrow keys (16px), Home and End; double-click or Enter
-   collapses the area when it can collapse. edge: "end" (an area at the start: dragging toward the end widens it) or
+/* the drag handle on a resizable area's inner edge: drag, or the arrow keys (--plx-sys-shell-splitter-step), Home and End;
+   double-click or Enter collapses the area when it can collapse. While dragged the width moves one grid line at a time
+   (the base spacing token, 4px) within the limits, so it lands on the grid when let go (owner, 2026-10-26). edge: "end" (an area at the start: dragging toward the end widens it) or
    "start" (an area at the end). In a right-to-left page the start is on the right, so the drag and Arrow Left / Right
    are mirrored (arrowStep gives the step in reading order). No size menu (owner, 2026-10-16). */
 function PanelSplitter({
@@ -7343,8 +7375,9 @@ function PanelSplitter({
   edge = 'end'
 }) {
   const dir = edge === 'end' ? 1 : -1;
-  // a width is always a size token (batch 281: Strict DS): dragging snaps to the nearest, the arrow keys step through them
-  const clamp = w => (0, _sizeSteps.snapSize)(w, min, max());
+  // a width is always on the 4px grid (owner, 2026-10-26: smooth, then "the nearest grid line"), within the limits
+  // (and within the grid lines the stylesheet draws a pane at: GRID_MIN to GRID_PANE_MAX)
+  const clamp = w => (0, _grid.gridWithin)(w, Math.max(min, _sizeSteps.GRID_MIN), Math.min(max(), _sizeSteps.GRID_PANE_MAX));
   const onPointerDown = e => {
     if (e.button !== 0) return;
     e.preventDefault();
@@ -7367,7 +7400,7 @@ function PanelSplitter({
     }) * dir;
     if (step) {
       e.preventDefault();
-      onChange((0, _sizeSteps.stepSize)(value, step, min, max()));
+      onChange(clamp(value + step * (tokenPx('--plx-sys-shell-splitter-step') || (0, _grid.gridStep)())));
     } else if (e.key === 'Home') {
       e.preventDefault();
       onChange(clamp(min));
@@ -7385,7 +7418,7 @@ function PanelSplitter({
     "aria-orientation": "vertical",
     "aria-label": label,
     "aria-valuenow": value,
-    "aria-valuemin": min,
+    "aria-valuemin": clamp(min),
     "aria-valuemax": top,
     tabIndex: 0,
     className: (0, _cx.cx)('plx-panel-splitter', 'plx-panel-splitter--' + edge),
@@ -7404,7 +7437,7 @@ const fill = (s, vars) => String(s).replace(/\{(\w+)\}/g, (m, k) => k in vars ? 
 // the default limits are the component's tokens (--plx-comp-resizable-min-width …), read from the page
 const tokenPx = name => typeof document === 'undefined' ? 0 : parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name)) || 0;
 const limit = (v, name) => v != null ? v : tokenPx('--plx-comp-resizable-' + name);
-// One axis's settled sizes: caller steps, or the 4px grid; the live pointer remains continuous.
+// One axis's settled sizes: caller steps, or the 4px grid; while dragged the size moves one grid line at a time.
 function Resizable({
   label,
   variant = 'default',
@@ -7441,29 +7474,26 @@ function Resizable({
     height: defaultHeight != null ? H.snap(defaultHeight) : H.snap((minHeight + maxHeight) / 2)
   }));
   const [dragging, setDragging] = _react.default.useState(false);
+  // live (dragging): one grid line at a time within the limits; settled: the steps, or the grid
+  // every size within the grid lines the stylesheet draws a box at (GRID_MIN to GRID_BOX_MAX): a larger one lands on the
+  // largest, never on the default size
+  const cap = v => Math.max(_sizeSteps.GRID_MIN, Math.min(_sizeSteps.GRID_BOX_MAX, v));
+  const live = (S, v) => cap((0, _grid.gridWithin)(v, S.lo, S.hi));
+  // the limits it can actually reach (the separator's aria-valuemin / -valuemax and the limit hint): each scale's own,
+  // settled and held within GRID_MIN to GRID_BOX_MAX, so a maxWidth past 1600 reports 1600
+  const reach = S => ({
+    lo: cap(S.snap(S.lo)),
+    hi: cap(S.snap(S.hi))
+  });
+  const WR = reach(W),
+    HR = reach(H);
   const size = {
-    width: width != null ? dragging ? W.clamp(width) : W.snap(width) : W.clamp(own.width),
-    height: height != null ? dragging ? H.clamp(height) : H.snap(height) : H.clamp(own.height)
+    width: width != null ? dragging ? live(W, width) : cap(W.snap(width)) : live(W, own.width),
+    height: height != null ? dragging ? live(H, height) : cap(H.snap(height)) : live(H, own.height)
   };
-  const root = _react.default.useRef(null),
-    sizeId = _react.default.useId();
-  // Data dimensions use scoped CSS rules, never style attributes. Existing size-token selectors remain exclusive.
-  useSizeEffect(() => {
-    const doc = root.current && root.current.ownerDocument;
-    if (!doc) return;
-    const rules = [];
-    for (const [axis, value] of Object.entries(size)) {
-      if (!(axis === 'width' ? doW : doH) || _sizeSteps.SIZE_STEPS.includes(value)) continue;
-      const selector = '.plx-resizable[data-plx-' + axis + '="' + value + 'px"]:where([data-plx-resize-id=' + JSON.stringify(sizeId) + '])';
-      rules.push(selector + '{--plx-comp-resizable-' + axis + ':calc(var(--plx-ref-size-4px) * ' + value / 4 + ')}');
-    }
-    if (!rules.length) return;
-    const sheet = doc.createElement('style');
-    sheet.setAttribute('data-plx-resize-rules', sizeId);
-    sheet.textContent = rules.join('\n');
-    doc.head.appendChild(sheet);
-    return () => sheet.remove();
-  }, [size.width, size.height, doW, doH, sizeId]);
+  const root = _react.default.useRef(null);
+  // a size reaches the stylesheet as data-plx-width / data-plx-height: one rule per size token (resizable.css) and one per
+  // grid line (system/steps.css, build-steps.js), never a style attribute or a style element
   const latest = _react.default.useRef(size);
   latest.current = size;
   const dragCleanup = _react.default.useRef(null),
@@ -7506,7 +7536,7 @@ function Resizable({
   }, [notice]);
   const reportLimit = next => {
     let message = '';
-    for (const [which, scale, active] of [['width', W, doW], ['height', H, doH]]) {
+    for (const [which, scale, active] of [['width', WR, doW], ['height', HR, doH]]) {
       if (!active || next[which] > scale.lo && next[which] < scale.hi) continue;
       const smallest = next[which] <= scale.lo,
         value = smallest ? scale.lo : scale.hi;
@@ -7531,8 +7561,8 @@ function Resizable({
   const set = (next, settle = true) => {
     reportLimit(next);
     const s = {
-      width: doW ? settle ? W.snap(next.width) : W.clamp(next.width) : latest.current.width,
-      height: doH ? settle ? H.snap(next.height) : H.clamp(next.height) : latest.current.height
+      width: doW ? settle ? cap(W.snap(next.width)) : live(W, next.width) : latest.current.width,
+      height: doH ? settle ? cap(H.snap(next.height)) : live(H, next.height) : latest.current.height
     };
     if (s.width === latest.current.width && s.height === latest.current.height) return;
     latest.current = s;
@@ -7616,7 +7646,7 @@ function Resizable({
     }));
   };
   const edge = which => {
-    const S = which === 'width' ? W : H;
+    const R = which === 'width' ? WR : HR;
     return /*#__PURE__*/_react.default.createElement("div", {
       role: "separator",
       tabIndex: 0,
@@ -7625,10 +7655,10 @@ function Resizable({
         label
       }),
       "aria-valuenow": size[which],
-      "aria-valuemin": S.lo,
-      "aria-valuemax": S.hi,
+      "aria-valuemin": R.lo,
+      "aria-valuemax": R.hi,
       title: notice || undefined,
-      className: (0, _cx.cx)('plx-resizable__edge', 'plx-resizable__edge--' + (which === 'width' ? 'inline' : 'block')),
+      className: (0, _cx.cx)('plx-resizable__edge', 'plx-resizable__edge--' + (which === 'width' ? 'inline' : 'block'), variant === 'divider' && 'plx-resizable__edge--divider'),
       onPointerDown: which === 'width' ? drag(1, 0) : drag(0, 1),
       onKeyDown: keys(which),
       onBlur: () => setNotice(''),
@@ -7639,7 +7669,6 @@ function Resizable({
   };
   return /*#__PURE__*/_react.default.createElement("div", _extends({}, rest, {
     ref: root,
-    "data-plx-resize-id": sizeId,
     className: (0, _cx.cx)('plx-resizable', 'plx-resizable--' + (doW && doH ? 'both' : doH ? 'vertical' : 'horizontal'), steps && 'plx-resizable--steps', variant === 'divider' && 'plx-resizable--divider', fillContent && 'plx-resizable--fill', className),
     "data-plx-width": doW ? size.width + 'px' : undefined,
     "data-plx-height": doH ? size.height + 'px' : undefined
@@ -7736,11 +7765,12 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The header and the footer always span the full width, above and below both side areas.
      The side areas live between the header and the footer, also when they open as overlays.
      Navigation: --plx-sys-shell-nav-width (240px), resizable 140–320px with the splitter on its edge; the width is remembered.
-     A dragged width snaps to the size tokens (--plx-ref-size-*) and the arrow keys step through them (batch 281).
+     While dragged the edge moves one grid line (4px) at a time and stays on the grid when let go (owner, 2026-10-26); the
+       arrow keys move it by --plx-sys-shell-splitter-step, Home and End go to the limits.
      The splitters follow the writing direction: in a right-to-left page the edges are mirrored, so dragging and Arrow Left /
        Right move the edge the mirrored way (the key toward the outside widens the area).
-     The navigation's own Collapse button (in the pane's header) or Ctrl+[ collapses it to a rail whose Expand button opens
-       it again; this is remembered.
+     The navigation's own Collapse button (in the pane's header), Ctrl+[, or Enter or a double-click on its edge collapses it
+       to a rail whose Expand button opens it again; this is remembered.
      The window classes (Platforms Standard 3.3) decide the navigation's form (4.1): Wide (840px and up, from
        --plx-sys-shell-rail-below) the pane beside the main region; Medium (600-839px) a rail whose Expand opens the
        expanded rail over the main region (Escape or a click outside closes it); Narrow (under 600px,
@@ -34417,7 +34447,7 @@ ToolRail.Divider = function ToolRailDivider() {
   });
 };
   } },
-  "platform/patterns/NavPane/NavPane.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/patterns/NavPane/NavPane.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -34431,6 +34461,7 @@ var _layer = require("../../utils/layer.js");
 var _Button = require("../../components/Button/Button.jsx");
 var _ToolRail = require("../ToolRail/ToolRail.jsx");
 var _AppShell = require("../AppShell/AppShell.jsx");
+var _grid = require("../../utils/grid.js");
 var _sizeSteps = require("../../utils/sizeSteps.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · NavPane
@@ -34455,7 +34486,9 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      className: more classes on the pane
      children: the body: NavList groups (whose headings are collapsible section headers), a filter field, buttons
    Behavior:
-     Its size follows the Layout grid's shell: --plx-sys-shell-nav-width (240px), resizable 140–320px with the splitter on its edge.
+     Its size follows the Layout grid's shell: --plx-sys-shell-nav-width (240px), resizable 140–320px with the splitter on its
+       edge: dragged, it moves one grid line (4px) at a time and stays on the grid; the arrow keys move it by
+       --plx-sys-shell-splitter-step; Enter or a double-click on the edge folds the pane to its rail.
      The first row is the same on every pane: the title, the actions, then the Collapse button at the row's end, on the side
        that faces the main region.
      Collapsed, it is a rail (ToolRail) of the page's rail items with Expand always first, at the top, then a divider.
@@ -34576,9 +34609,9 @@ function NavPane({
     if (mode === 'bar') return narrowEl;
   }
 
-  // a width only the page or the person knows (the width prop, or the splitter's) reaches the stylesheet as the pane's width token
+  // a width only the page or the person knows (the width prop, or the splitter's) reaches the stylesheet as the pane's width, on the grid
   const w = mode === 'static' ? width : narrow ? null : layout.width;
-  const paneWidth = w ? (0, _sizeSteps.snapSize)(parseInt(w, 10), (0, _AppShell.tokenPx)('--plx-sys-shell-nav-min-width'), (0, _AppShell.tokenPx)('--plx-sys-shell-nav-max-width')) + 'px' : undefined;
+  const paneWidth = w ? (0, _grid.gridWithin)(parseInt(w, 10), (0, _AppShell.tokenPx)('--plx-sys-shell-nav-min-width'), Math.min((0, _AppShell.tokenPx)('--plx-sys-shell-nav-max-width'), _sizeSteps.GRID_PANE_MAX)) + 'px' : undefined;
   const collapse = mode === 'static' || narrow ? null : /*#__PURE__*/_react.default.createElement("span", {
     className: (0, _cx.cx)('plx-nav-pane__collapse', 'plx-nav-pane__collapse--' + collapseAt)
   }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
@@ -34616,6 +34649,7 @@ function NavPane({
     min: (0, _AppShell.tokenPx)('--plx-sys-shell-nav-min-width'),
     max: () => (0, _AppShell.tokenPx)('--plx-sys-shell-nav-max-width'),
     onChange: layout.setWidth,
+    onCollapse: layout.toggle,
     edge: "end"
   }) : null);
   // Narrow: the pane is a screen over the main region, with the bar still below it
@@ -34832,7 +34866,7 @@ function SettingsRow({
   }, children));
 }
   } },
-  "platform/patterns/SidePanel/SidePanel.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","../ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/SidePanel/SidePanel.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","../ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -34847,6 +34881,7 @@ var _Icon = require("../../components/Icon/Icon.jsx");
 var _Sheet = require("../../components/Sheet/Sheet.jsx");
 var _ToolRail = require("../ToolRail/ToolRail.jsx");
 var _AppShell = require("../AppShell/AppShell.jsx");
+var _grid = require("../../utils/grid.js");
 var _sizeSteps = require("../../utils/sizeSteps.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · SidePanel
@@ -34957,7 +34992,7 @@ function SidePanel({
     ref: ref,
     "aria-label": name,
     className: (0, _cx.cx)('plx-side-panel', small && 'plx-side-panel--overlay', docked && 'plx-side-panel--resizable', docked && size && 'plx-side-panel--resized', className),
-    "data-plx-width": docked && size ? (0, _sizeSteps.snapSize)(size, (0, _AppShell.tokenPx)('--plx-comp-side-panel-width-min'), (0, _AppShell.tokenPx)('--plx-comp-side-panel-width-max')) + 'px' : undefined
+    "data-plx-width": docked && size ? (0, _grid.gridWithin)(size, (0, _AppShell.tokenPx)('--plx-comp-side-panel-width-min'), Math.min((0, _AppShell.tokenPx)('--plx-comp-side-panel-width-max'), _sizeSteps.GRID_PANE_MAX)) + 'px' : undefined
   }, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-side-panel__header"
   }, onOpenChange ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
@@ -34994,7 +35029,7 @@ function SidePanel({
   }), pane) : pane;
 }
   } },
-  "platform/patterns/SecondaryPane/SecondaryPane.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../utils/layer.js":"platform/utils/layer.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/SecondaryPane/SecondaryPane.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../utils/layer.js":"platform/utils/layer.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35008,6 +35043,7 @@ var _Button = require("../../components/Button/Button.jsx");
 var _ToolRail = require("../ToolRail/ToolRail.jsx");
 var _AppShell = require("../AppShell/AppShell.jsx");
 var _layer = require("../../utils/layer.js");
+var _grid = require("../../utils/grid.js");
 var _sizeSteps = require("../../utils/sizeSteps.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · SecondaryPane
@@ -35185,7 +35221,7 @@ function SecondaryPane({
   const pane = /*#__PURE__*/_react.default.createElement("aside", _extends({
     "aria-label": name,
     className: (0, _cx.cx)('plx-secondary-pane', 'plx-secondary-pane--' + side, 'plx-secondary-pane--' + width, sized && 'plx-secondary-pane--resized', narrow && listDetail && (stepAside ? 'plx-secondary-pane--aside' : 'plx-secondary-pane--list'), className),
-    "data-plx-width": sized ? (0, _sizeSteps.snapSize)(size, min(), max()) + 'px' : undefined
+    "data-plx-width": sized ? (0, _grid.gridWithin)(size, min(), Math.min(max(), _sizeSteps.GRID_PANE_MAX)) + 'px' : undefined
   }, rest), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-secondary-pane__header"
   }, icon ? typeof icon === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
@@ -76449,15 +76485,25 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Behavior:
      Claims master-detail through useAppLayout().claimPage while mounted inside AppShell; cleanup restores the shell page.
      Each panel scrolls on its own; the page never scrolls as a whole (the multi-pane page kind). The divider is the whole
-       gap between the panels: the resize pointer anywhere along it, a thin line down its middle and a small pill
-       centered on the line; the pill darkens on hover, line and pill take the focus color while focused or dragged.
+       8px gutter between the panels (owner, 2026-10-26: the uiwjs look): the resize pointer anywhere along it, a thin
+       line on each side, a light fill and a grip of three short lines in the middle; the gutter tints on hover, and its
+       lines and grip take the focus color while focused or dragged. Stacked, the same turned a quarter.
+     Dragging: the divider moves one grid line (4px) at a time within the limits and stays on the grid when let go, or
+       settles on the nearest of the steps when there are steps. Sizes are honoured up to 1600px (Resizable's
+       GRID_BOX_MAX): a larger size or maxSize lands on 1600px.
      Keyboard: the divider is a separator in the Tab order; the arrow keys step to the next size, Home and End to the
        limits. There is no size menu (owner, 2026-10-16).
      Stacked when there is no room side by side: under 900px of the split view's own width the panels stack (container
        query), whatever the orientation.
+     Room and corners (owner, 2026-10-27, splitview-design-29): the split view keeps 16px of room all around
+       (--plx-comp-split-view-padding), so its panels never touch the rest of the screen. Both panels round their outer
+       corners by the same 6px (--plx-comp-split-view-radius, shape-md), and the corners at the divider are square, side
+       by side and stacked: each panel hands its corners to its content as context tokens
+       (--plx-comp-data-grid-context-<corner>-radius, --plx-comp-reading-pane-context-<corner>-radius).
    Notes:
-     Built on Resizable (the first panel); the divider's look is SplitView's (split-view.css). Colors, sizes and spacing
-     are --plx-comp-split-view-* and --plx-comp-reading-pane-* tokens on existing roles; the reading pane's frame is the
+     Built on Resizable (the first panel); the divider is Resizable's divider variant (resizable.css,
+     --plx-comp-resizable-divider-* tokens), its size SplitView's gap (--plx-comp-split-view-gap). Colors, sizes and
+     spacing are --plx-comp-split-view-*, --plx-comp-resizable-divider-* and --plx-comp-reading-pane-* tokens on existing roles; the reading pane's frame is the
      data grid's (data-grid-border, shape-md, border-width-thin).
 */
 const LIMITS = {
@@ -76550,9 +76596,9 @@ function SplitView({
     steps: steps,
     variant: "divider",
     fill: true,
-    className: "plx-split-view__first"
+    className: (0, _cx.cx)('plx-split-view__first', 'plx-split-view__first--' + (side ? 'side-by-side' : 'stacked'))
   }, box), first), /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-split-view__second"
+    className: (0, _cx.cx)('plx-split-view__second', 'plx-split-view__second--' + (side ? 'side-by-side' : 'stacked'))
   }, second))));
 }
 function ReadingPane({
