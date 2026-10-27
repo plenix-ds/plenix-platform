@@ -38,7 +38,8 @@
        resize pointer.
      Keyboard: each edge is a separator (aria-valuenow, -valuemin, -valuemax) in the Tab order: Arrow Left / Right (the
        end edge, mirrored in a right-to-left page) or Arrow Up / Down (the bottom edge) step to the next size, Home and End
-       to the limits.
+       to the limits. aria-valuemin and -valuemax are the limits it can reach (within GRID_MIN to GRID_BOX_MAX, a pane's
+       to GRID_PANE_MAX), so a maxWidth past 1600 reports 1600.
      No size menu (owner, 2026-10-16: removed, also for touch): the edge is dragged, or moved with the keyboard.
      PanelSplitter: drag (one grid line at a time, within min and max), or the arrow keys (--plx-sys-shell-splitter-step),
        Home and End; double-click or Enter collapses the area when it can collapse (onCollapse: the navigation pane folds
@@ -87,7 +88,7 @@ export function PanelSplitter({ label, value, min, max, onChange, onCollapse, ed
   };
   const top = clamp(max());
   return (
-      <div role="separator" aria-orientation="vertical" aria-label={label} aria-valuenow={value} aria-valuemin={min} aria-valuemax={top} tabIndex={0}
+      <div role="separator" aria-orientation="vertical" aria-label={label} aria-valuenow={value} aria-valuemin={clamp(min)} aria-valuemax={top} tabIndex={0}
         className={cx('plx-panel-splitter', 'plx-panel-splitter--' + edge)} onPointerDown={onPointerDown} onKeyDown={onKeyDown}
         onDoubleClick={onCollapse || undefined} />
   );
@@ -115,6 +116,10 @@ export function Resizable({ label, variant = 'default', fill: fillContent = fals
   // largest, never on the default size
   const cap = (v) => Math.max(GRID_MIN, Math.min(GRID_BOX_MAX, v));
   const live = (S, v) => cap(gridWithin(v, S.lo, S.hi));
+  // the limits it can actually reach (the separator's aria-valuemin / -valuemax and the limit hint): each scale's own,
+  // settled and held within GRID_MIN to GRID_BOX_MAX, so a maxWidth past 1600 reports 1600
+  const reach = (S) => ({ lo: cap(S.snap(S.lo)), hi: cap(S.snap(S.hi)) });
+  const WR = reach(W), HR = reach(H);
   const size = { width: width != null ? (dragging ? live(W, width) : cap(W.snap(width))) : live(W, own.width), height: height != null ? (dragging ? live(H, height) : cap(H.snap(height))) : live(H, own.height) };
   const root = React.useRef(null);
   // a size reaches the stylesheet as data-plx-width / data-plx-height: one rule per size token (resizable.css) and one per
@@ -142,7 +147,7 @@ export function Resizable({ label, variant = 'default', fill: fillContent = fals
   }, [notice]);
   const reportLimit = next => {
     let message = '';
-    for (const [which, scale, active] of [['width', W, doW], ['height', H, doH]]) {
+    for (const [which, scale, active] of [['width', WR, doW], ['height', HR, doH]]) {
       if (!active || (next[which] > scale.lo && next[which] < scale.hi)) continue;
       const smallest = next[which] <= scale.lo, value = smallest ? scale.lo : scale.hi;
       message = t[(smallest ? 'min' : 'max') + (which === 'width' ? 'Width' : 'Height')] || (smallest ? 'Smallest ' : 'Largest ') + which + ' for ' + label + ' (' + value + 'px)';
@@ -202,10 +207,10 @@ export function Resizable({ label, variant = 'default', fill: fillContent = fals
     set(Object.assign({}, latest.current, { [which]: next }));
   };
   const edge = (which) => {
-    const S = which === 'width' ? W : H;
+    const R = which === 'width' ? WR : HR;
     return (
       <div role="separator" tabIndex={0} aria-orientation={which === 'width' ? 'vertical' : 'horizontal'} aria-label={fill(t[which], { label })}
-        aria-valuenow={size[which]} aria-valuemin={S.lo} aria-valuemax={S.hi} title={notice || undefined}
+        aria-valuenow={size[which]} aria-valuemin={R.lo} aria-valuemax={R.hi} title={notice || undefined}
         className={cx('plx-resizable__edge', 'plx-resizable__edge--' + (which === 'width' ? 'inline' : 'block'), variant === 'divider' && 'plx-resizable__edge--divider')}
         onPointerDown={which === 'width' ? drag(1, 0) : drag(0, 1)} onKeyDown={keys(which)}
         onBlur={() => setNotice('')} onPointerLeave={() => { if (!dragging && input.current === 'pointer') setNotice(''); }} />
