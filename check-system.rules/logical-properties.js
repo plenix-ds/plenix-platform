@@ -8,9 +8,10 @@
 //   .plx-x{border-left-color:var(--a);border-right-color:var(--a)}          ok (both sides the same: nothing to mirror)
 //   .plx-x{margin-left:var(--a)}                                            finding
 //   .plx-x{text-align:left}                                                 finding (text-align: start)
-// The rule is a module check-system.js runs (every file of check-system.rules/):
-//   require('./check-system.rules/logical-properties.js').check({ files, add })   files: [{ file }], add(rule, file, line, text)
-// Alone: node check-system.rules/logical-properties.js     -> LOGICAL_PROPERTIES_OK, or the findings and exit 1
+// Stylelint runs it (style-plan-30, step 3: every style rule in one place): tools/stylelint/plenix.mjs wraps scan() as
+// plenix/logical-properties over platform/components, patterns and templates, and @plenix-ds/lint publishes the same
+// scan() (build-packages.d/lint.js). It exports no check(), so check-system.js no longer loads it.
+// Alone (the same scope, plus the rule's fixtures): node check-system.rules/logical-properties.js -> LOGICAL_PROPERTIES_OK
 const fs = require('fs');
 const path = require('path');
 
@@ -63,7 +64,7 @@ function check({ files, add }) {
   }
 }
 
-module.exports = { name: NAME, check, scan };
+module.exports = { name: NAME, scan };
 
 if (require.main === module) {
   const ROOT = path.join(__dirname, '..');
@@ -75,7 +76,7 @@ if (require.main === module) {
   // the rule's own fixtures
   const fx = [['.a{padding-inline-start:var(--x)}', 0], ['.a{border-left-color:var(--x);border-right-color:var(--x)}', 0], ['.a{border-left-color:var(--x)}', 1],
     ['.a{margin-left:var(--x)}', 1], ['.a{text-align:left}', 1], ['.a{text-align:start}', 0], ['.a{float:right}', 1], ['.a{left:0}', 1],
-    ['.a{border-top-left-radius:var(--r);border-top-right-radius:var(--r)}', 0], ['.a{border-top-left-radius:var(--r)}', 1], ['.a{border-left-width:var(--a-border-left-width);border-right-width:var(--a-border-right-width)}', 0], ['.a .b-col{padding-left:0}', 0]];
+    ['.a{border-top-left-radius:var(--r);border-top-right-radius:var(--r)}', 0], ['.a{border-top-left-radius:var(--r)}', 1], ['.a{border-left-width:var(--a-border-left-width);border-right-width:var(--a-border-right-width)}', 0], ['.a .b-col{padding-left:0}', 1]];
   fx.forEach(([src, n]) => { if (scan(src).length !== n) found.push('fixture: ' + src + ' gives ' + scan(src).length + ' finding(s), expected ' + n); });
   found.forEach((x) => console.log('FAIL ' + x));
   console.log(found.length ? '\n' + found.length + ' finding(s)' : 'LOGICAL_PROPERTIES_OK (' + files.length + ' files, ' + fx.length + ' fixtures)');

@@ -6,7 +6,7 @@
     "upload-manager-background": { "$value": "{plx-sys.surface-default}", "$type": "color", "$description": "UploadManager panel: its surface (surface-default)." },
     "upload-manager-border-color": { "$value": "{plx-sys.border-default}", "$type": "color", "$description": "UploadManager panel: its frame (border-default)." },
     "upload-manager-border-width": { "$value": "{plx-sys.border-width-thin}", "$type": "dimension", "$description": "UploadManager panel: its frame's width (border-width-thin)." },
-    "upload-manager-radius": { "$value": "{plx-sys.radius-surface-8px}", "$type": "dimension", "$description": "UploadManager panel: its corners (radius-surface-8px)." },
+    "upload-manager-radius": { "$value": "{plx-sys.radius-surface-6px}", "$type": "dimension", "$description": "UploadManager panel: its corners (radius-surface-6px)." },
     "upload-manager-padding-block": { "$value": "{plx-sys.space-inset-sm}", "$type": "dimension", "$description": "UploadManager panel: padding top and bottom (space-inset-sm)." },
     "upload-manager-padding-inline": { "$value": "{plx-sys.space-inset-md}", "$type": "dimension", "$description": "UploadManager panel: padding at the start and end (space-inset-md)." },
     "upload-manager-docked-width": { "$value": "{plx-ref.size-400px}", "$type": "dimension", "$description": "UploadManager docked: its width (400px)." },

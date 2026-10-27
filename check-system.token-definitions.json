@@ -203,10 +203,5 @@
     "shadow-ring-subtle": "0 0 0 2px {plx-ref.color-blue-100}",
     "shadow-underline-focus": "0 1px 0 {plx-ref.color-blue-400}"
   },
-  "corners": {
-    "radius-8px": "8px",
-    "radius-12px": "12px",
-    "radius-16px": "16px",
-    "radius-pill": "9999px"
-  }
+  "corners": {}
 }

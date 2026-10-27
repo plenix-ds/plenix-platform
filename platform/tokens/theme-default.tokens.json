@@ -87,19 +87,19 @@
       "$type": "dimension"
     },
     "shape-md": {
-      "$value": "{plx-ref.radius-8px}",
+      "$value": "{plx-ref.radius-6px}",
       "$type": "dimension"
     },
     "shape-lg": {
-      "$value": "{plx-ref.radius-12px}",
+      "$value": "{plx-ref.radius-6px}",
       "$type": "dimension"
     },
     "shape-xl": {
-      "$value": "{plx-ref.radius-16px}",
+      "$value": "{plx-ref.radius-6px}",
       "$type": "dimension"
     },
     "shape-pill": {
-      "$value": "{plx-ref.radius-pill}",
+      "$value": "{plx-ref.radius-6px}",
       "$type": "dimension"
     },
     "border-width-thin": {

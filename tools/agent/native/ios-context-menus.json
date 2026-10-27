@@ -62,7 +62,7 @@
    {
     "part": "B",
     "attribute": "Corner radius",
-    "token": "plx-sys-radius-menu-8px",
+    "token": "plx-sys-radius-menu-6px",
     "value": "8 pt (Plenix.Radius.radiusMenu8px)",
     "apple": "34 pt glass",
     "swiftui": "Drawn by the system",

@@ -40,7 +40,7 @@ const fixedOf = (mode) => ({
   onPrimary: v('--plx-sys-action-primary-content', mode),
   focus: v('--plx-sys-focus-ring-color', mode),
   radius: v('--plx-sys-radius-control', mode),
-  cardRadius: v('--plx-sys-radius-card-12px', mode),
+  cardRadius: v('--plx-sys-radius-card-6px', mode),
   height: v('--plx-sys-control-height-dialog', mode),
   borderWidth: v('--plx-comp-input-border-width', mode),
   semibold: v('--plx-sys-font-weight-semibold', mode),

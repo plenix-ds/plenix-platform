@@ -933,7 +933,7 @@
     {
      "part": "A",
      "attribute": "Corner radius",
-     "token": "plx-sys-radius-menu-8px",
+     "token": "plx-sys-radius-menu-6px",
      "value": "8 dp (PlenixRadius.radiusMenu8px)",
      "material": "4 dp",
      "compose": "DropdownMenu(shape = RoundedCornerShape(PlenixRadius.radiusMenu8px))",
@@ -6151,7 +6151,7 @@
     {
      "part": "A",
      "attribute": "Corner radius",
-     "token": "plx-sys-radius-dialog-8px",
+     "token": "plx-sys-radius-dialog-6px",
      "value": "8 dp (PlenixRadius.radiusDialog8px)",
      "material": "28 dp (extra large)",
      "compose": "DatePickerDialog(shape = RoundedCornerShape(PlenixRadius.radiusDialog8px))",
@@ -14311,7 +14311,7 @@
     {
      "part": "B",
      "attribute": "Corner radius",
-     "token": "plx-sys-radius-menu-8px",
+     "token": "plx-sys-radius-menu-6px",
      "value": "8 pt (Plenix.Radius.radiusMenu8px)",
      "apple": "34 pt glass",
      "swiftui": "Drawn by the system",
@@ -14578,7 +14578,7 @@
     {
      "part": "A",
      "attribute": "Container",
-     "token": "plx-comp-menu-background, plx-sys-radius-menu-8px",
+     "token": "plx-comp-menu-background, plx-sys-radius-menu-6px",
      "value": "Drawn by the system; a Plenix-drawn selection bar uses the overlay surface, 8 pt (Plenix.Radius.radiusMenu8px)",
      "apple": "Glass capsule",
      "swiftui": "Drawn by the system",
@@ -14843,7 +14843,7 @@
     {
      "part": "A",
      "attribute": "Corner radius",
-     "token": "plx-sys-radius-menu-8px",
+     "token": "plx-sys-radius-menu-6px",
      "value": "8 pt (Plenix.Radius.radiusMenu8px)",
      "apple": "34 pt glass",
      "swiftui": "System Menu: drawn by the system. A Plenix-drawn menu: .clipShape(.rect(cornerRadius: Plenix.Radius.radiusMenu8px))",
@@ -23550,7 +23550,7 @@
     {
      "part": "A",
      "attribute": "Corner radius",
-     "token": "plx-sys-radius-menu-8px",
+     "token": "plx-sys-radius-menu-6px",
      "value": "8 pt (Plenix.Radius.radiusMenu8px)",
      "apple": "34 pt",
      "swiftui": ".presentationCornerRadius(Plenix.Radius.radiusMenu8px)",
@@ -24236,7 +24236,7 @@
     {
      "part": "A",
      "attribute": "Corner radius",
-     "token": "plx-sys-radius-surface-8px",
+     "token": "plx-sys-radius-surface-6px",
      "value": "8 pt (Plenix.Radius.radiusSurface8px)",
      "apple": "38 pt",
      "swiftui": "Set by the system (use the UIKit background view for the Plenix radius)",

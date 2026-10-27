@@ -11,7 +11,7 @@
     "comparison-view-pane-background": { "$value": "{plx-sys.surface-default}", "$type": "color", "$description": "Comparison view: a pane's surface." },
     "comparison-view-pane-border-color": { "$value": "{plx-sys.border-default}", "$type": "color", "$description": "Comparison view: a pane's frame and the line under its head." },
     "comparison-view-pane-border-width": { "$value": "{plx-sys.border-width-thin}", "$type": "dimension", "$description": "Comparison view: a pane's frame width." },
-    "comparison-view-pane-radius": { "$value": "{plx-sys.radius-surface-8px}", "$type": "dimension", "$description": "Comparison view: a pane's corners, and the slider's stage's." },
+    "comparison-view-pane-radius": { "$value": "{plx-sys.radius-surface-6px}", "$type": "dimension", "$description": "Comparison view: a pane's corners, and the slider's stage's." },
     "comparison-view-pane-padding-block": { "$value": "{plx-sys.space-inset-md}", "$type": "dimension", "$description": "Comparison view: a pane body's top and bottom padding." },
     "comparison-view-pane-padding-inline": { "$value": "{plx-sys.space-inset-md}", "$type": "dimension", "$description": "Comparison view: a pane's start and end padding (head and body)." },
     "comparison-view-head-padding-block": { "$value": "{plx-sys.space-inset-sm}", "$type": "dimension", "$description": "Comparison view: a pane head's top and bottom padding." },

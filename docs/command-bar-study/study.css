@@ -3,7 +3,7 @@
    owner chooses becomes a CommandBar pattern with its own tokens. */
 
 /* the bar: white and framed (the default look) */
-.study-bar{align-items:center;background-color:var(--plx-sys-surface-default);min-block-size:calc(var(--plx-sys-control-height-toolbar) + 2 * var(--plx-ref-space-8px));padding-block:var(--plx-ref-space-8px);border-color:var(--plx-sys-border-default);border-radius:var(--plx-sys-radius-control-8px);border-style:solid;border-width:var(--plx-sys-border-width-thin);box-sizing:border-box;display:flex;gap:var(--plx-ref-space-4px);padding-inline:var(--plx-ref-space-8px);}
+.study-bar{align-items:center;background-color:var(--plx-sys-surface-default);min-block-size:calc(var(--plx-sys-control-height-toolbar) + 2 * var(--plx-ref-space-8px));padding-block:var(--plx-ref-space-8px);border-color:var(--plx-sys-border-default);border-radius:var(--plx-sys-radius-control-6px);border-style:solid;border-width:var(--plx-sys-border-width-thin);box-sizing:border-box;display:flex;gap:var(--plx-ref-space-4px);padding-inline:var(--plx-ref-space-8px);}
 .study-bar>.plx-toolbar{align-items:center;display:flex;flex:1 1 auto;flex-wrap:wrap;gap:var(--plx-ref-space-8px);min-inline-size:0;}
 .study-bar .plx-toolbar__group,.study-bar .plx-toolbar-group{align-items:center;display:flex;flex-wrap:nowrap;gap:var(--plx-ref-space-4px);}
 
@@ -26,18 +26,18 @@
 .study-condition{align-items:center;display:grid;gap:var(--plx-ref-space-8px);grid-template-columns:var(--plx-ref-size-48px) var(--plx-ref-size-120px) var(--plx-ref-size-100px) var(--plx-ref-size-140px) auto;}
 
 /* the study's label above each screen: which standard, when to use it */
-.study-note{background-color:var(--plx-sys-surface-sunken);border-radius:var(--plx-sys-radius-surface-8px);padding:var(--plx-ref-space-16px);}
+.study-note{background-color:var(--plx-sys-surface-sunken);border-radius:var(--plx-sys-radius-surface-6px);padding:var(--plx-ref-space-16px);}
 /* compare view: only the bars; each layout's page header and table are hidden; the floating bar sits in the flow */
 .study-compare .plx-data-grid,.study-compare:not(.study-compare--ent) .plx-record-page__header:not(:has(button)){display:none;}
 /* compare view: each variation in its own bordered frame, with wide space between the frames */
-.study-compare{background-color:var(--plx-sys-surface-default);border-color:var(--plx-sys-border-default);border-radius:var(--plx-sys-radius-card-12px);border-style:solid;border-width:var(--plx-sys-border-width-thin);padding-block:var(--plx-sys-space-layout-md);padding-inline:var(--plx-sys-space-layout-md);}
+.study-compare{background-color:var(--plx-sys-surface-default);border-color:var(--plx-sys-border-default);border-radius:var(--plx-sys-radius-card-6px);border-style:solid;border-width:var(--plx-sys-border-width-thin);padding-block:var(--plx-sys-space-layout-md);padding-inline:var(--plx-sys-space-layout-md);}
 
 /* enterprise systems (group 8): a header row with a start and an end, a gray panel (Salesforce's list header, SAP's filter
    bar), a white framed panel (Ant's query form, ServiceNow's condition builder), a row of fields, a row of tokens or chips */
 .study-head{align-items:center;display:flex;flex-wrap:wrap;gap:var(--plx-ref-space-12px);justify-content:space-between;}
 .study-head__start{align-items:center;display:flex;gap:var(--plx-ref-space-12px);min-inline-size:0;}
 .study-head__text{display:flex;flex-direction:column;gap:var(--plx-ref-space-4px);}
-.study-panel{background-color:var(--plx-sys-surface-sunken);border-radius:var(--plx-sys-radius-surface-8px);display:flex;flex-direction:column;gap:var(--plx-ref-space-12px);padding:var(--plx-ref-space-12px);}
+.study-panel{background-color:var(--plx-sys-surface-sunken);border-radius:var(--plx-sys-radius-surface-6px);display:flex;flex-direction:column;gap:var(--plx-ref-space-12px);padding:var(--plx-ref-space-12px);}
 .study-panel--framed{background-color:var(--plx-sys-surface-default);border-color:var(--plx-sys-border-default);border-style:solid;border-width:var(--plx-sys-border-width-thin);}
 .study-form{align-items:end;display:flex;flex-wrap:wrap;gap:var(--plx-ref-space-12px);}
 .study-form>.plx-field{inline-size:var(--plx-ref-size-200px);}
@@ -51,15 +51,15 @@
 /* the guided chooser: the summary line, the steps, each option's frame,
    a saved note, the enterprise peek (bars only) */
 .study-steps{flex-wrap:wrap;}
-.study-summary{align-items:center;background-color:var(--plx-sys-surface-sunken);border-radius:var(--plx-sys-radius-surface-8px);display:flex;flex-wrap:wrap;gap:var(--plx-ref-space-8px);padding-block:var(--plx-ref-space-8px);padding-inline:var(--plx-ref-space-12px);}
+.study-summary{align-items:center;background-color:var(--plx-sys-surface-sunken);border-radius:var(--plx-sys-radius-surface-6px);display:flex;flex-wrap:wrap;gap:var(--plx-ref-space-8px);padding-block:var(--plx-ref-space-8px);padding-inline:var(--plx-ref-space-12px);}
 .study-summary__text{flex:1 1 auto;min-inline-size:0;}
-.study-option{background-color:var(--plx-sys-surface-default);border-color:var(--plx-sys-border-default);border-radius:var(--plx-sys-radius-card-12px);border-style:solid;border-width:var(--plx-sys-border-width-thin);padding-block:var(--plx-sys-space-layout-md);padding-inline:var(--plx-sys-space-layout-md);}
+.study-option{background-color:var(--plx-sys-surface-default);border-color:var(--plx-sys-border-default);border-radius:var(--plx-sys-radius-card-6px);border-style:solid;border-width:var(--plx-sys-border-width-thin);padding-block:var(--plx-sys-space-layout-md);padding-inline:var(--plx-sys-space-layout-md);}
 .study-built__stack{display:flex;flex-direction:column;gap:var(--plx-ref-space-8px);}
 /* fixed at the top (owner, 2026-10-14: "the menu is always on the top… does not move"): a page-high frame; the header and
    the bars keep their place and the table scrolls in the room left under them */
 .study-built--fixed,.study-built--fixed>.study-built__stack{block-size:var(--plx-ref-size-560px);}
 .study-built--fixed .study-table-room{flex:1 1 auto;min-block-size:0;}
-.study-saved-note{align-items:start;background-color:var(--plx-sys-surface-sunken);border-radius:var(--plx-sys-radius-surface-8px);display:flex;gap:var(--plx-ref-space-12px);justify-content:space-between;padding-block:var(--plx-ref-space-8px);padding-inline:var(--plx-ref-space-12px);}
+.study-saved-note{align-items:start;background-color:var(--plx-sys-surface-sunken);border-radius:var(--plx-sys-radius-surface-6px);display:flex;gap:var(--plx-ref-space-12px);justify-content:space-between;padding-block:var(--plx-ref-space-8px);padding-inline:var(--plx-ref-space-12px);}
 .study-peek .plx-data-grid{display:none;}
 
 /* segmented controls, look A (decided, owner 2026-10-14): a ButtonGroup of pressed Buttons, bordered and joined, at the
@@ -76,7 +76,7 @@
 .study-ctl-slot{min-inline-size:0;}
 .study-ctl-grid{display:grid;gap:var(--plx-sys-space-layout-md);grid-template-columns:repeat(2,minmax(0,1fr));}
 .study-ctl-section{border-block-start-color:var(--plx-sys-border-default);border-block-start-style:solid;border-block-start-width:var(--plx-sys-border-width-thin);padding-block-start:var(--plx-sys-space-layout-md);}
-.study-ctl-na{align-items:center;background-color:var(--plx-sys-surface-sunken);border-radius:var(--plx-sys-radius-control-8px);box-sizing:border-box;display:flex;min-block-size:calc(var(--plx-sys-control-height-toolbar) + 2 * var(--plx-ref-space-8px));padding-inline:var(--plx-ref-space-12px);}
+.study-ctl-na{align-items:center;background-color:var(--plx-sys-surface-sunken);border-radius:var(--plx-sys-radius-control-6px);box-sizing:border-box;display:flex;min-block-size:calc(var(--plx-sys-control-height-toolbar) + 2 * var(--plx-ref-space-8px));padding-inline:var(--plx-ref-space-12px);}
 .study-gallery-room{max-block-size:var(--plx-ref-size-320px);overflow-y:auto;}
 
 /* the thin outline caret on the sample tables' column header buttons (Airtable's chevron, owner 2026-10-14): chevron-down,
@@ -99,7 +99,7 @@
 .study-panel{min-inline-size:var(--plx-ref-size-400px);}
 .study-panel-head{align-items:center;display:flex;gap:var(--plx-ref-space-12px);justify-content:space-between;}
 .study-levels{display:flex;flex-direction:column;gap:var(--plx-ref-space-8px);}
-.study-levels--framed{border-color:var(--plx-sys-border-default);border-radius:var(--plx-sys-radius-control-8px);border-style:solid;border-width:var(--plx-sys-border-width-thin);padding:var(--plx-ref-space-8px);}
+.study-levels--framed{border-color:var(--plx-sys-border-default);border-radius:var(--plx-sys-radius-control-6px);border-style:solid;border-width:var(--plx-sys-border-width-thin);padding:var(--plx-ref-space-8px);}
 .study-levels--nested{background-color:var(--plx-sys-surface-sunken);}
 .study-level-row{align-items:center;border-radius:var(--plx-sys-radius-control-4px);display:flex;gap:var(--plx-ref-space-8px);}
 .study-level-handle{cursor:grab;}
@@ -117,13 +117,13 @@
 .study-pill{align-items:center;background-color:var(--plx-comp-data-color-soft);border-color:var(--plx-comp-data-color);border-radius:var(--plx-comp-badge-radius);border-style:solid;border-width:var(--plx-comp-badge-border-width);color:var(--plx-comp-data-color-on-soft);display:inline-flex;font-size:var(--plx-comp-badge-font-size);font-weight:var(--plx-comp-badge-font-weight);padding-inline:var(--plx-comp-badge-padding-inline);white-space:nowrap;}
 .study-gallery-room--fill{block-size:100%;max-block-size:none;}
 /* the panels drawn open on Decided so far: a popover's frame (surface, border, menu radius) */
-.study-panel-frame{background-color:var(--plx-sys-surface-default);border-color:var(--plx-sys-border-default);border-radius:var(--plx-sys-radius-menu-8px);border-style:solid;border-width:var(--plx-sys-border-width-thin);padding:var(--plx-ref-space-16px);}
+.study-panel-frame{background-color:var(--plx-sys-surface-default);border-color:var(--plx-sys-border-default);border-radius:var(--plx-sys-radius-menu-6px);border-style:solid;border-width:var(--plx-sys-border-width-thin);padding:var(--plx-ref-space-16px);}
 /* the search rule (owner, 2026-10-14): the bar search at one fixed width, never squeezed; in a panel the find field fills
    the width; narrow, the opened field lies across the bar, over its other controls */
 .study-search-bar{flex:none;inline-size:var(--plx-ref-size-240px);}
 .study-panel-search{inline-size:100%;}
 .study-bar{position:relative;}
-.study-search-over{align-items:center;background-color:var(--plx-sys-surface-default);border-radius:var(--plx-sys-radius-control-8px);display:flex;inset-block:0;inset-inline:0;padding-inline:var(--plx-ref-space-8px);position:absolute;z-index:var(--plx-sys-layer-overlay);}
+.study-search-over{align-items:center;background-color:var(--plx-sys-surface-default);border-radius:var(--plx-sys-radius-control-6px);display:flex;inset-block:0;inset-inline:0;padding-inline:var(--plx-ref-space-8px);position:absolute;z-index:var(--plx-sys-layer-overlay);}
 .study-query{inline-size:var(--plx-ref-size-360px);}
 /* D and E (owner, 2026-10-15): one command bar; the selection row sits in the same frame under a thin gray line */
 .study-bar.study-bar--rows{align-items:stretch;flex-direction:column;gap:var(--plx-ref-space-8px);}

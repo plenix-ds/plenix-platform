@@ -157,7 +157,7 @@
       "$description": "SearchField collapsed, opened: the band across the bar that holds the field, the bar's own white surface."
     },
     "search-over-radius": {
-      "$value": "{plx-sys.radius-control-8px}",
+      "$value": "{plx-sys.radius-control-6px}",
       "$type": "dimension",
       "$description": "SearchField collapsed, opened: the band's corners (the command bar's)."
     },
