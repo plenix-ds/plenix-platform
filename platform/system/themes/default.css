@@ -4,6 +4,7 @@
 :root:not([data-plx-theme]:not([data-plx-theme="default"])),[data-plx-theme="default"]{
   /* typography: the typefaces, weights and letter spacing of this theme */
   --plx-sys-typeface-sans: var(--plx-ref-font-sans);
+  --plx-sys-typeface-sans-title: var(--plx-ref-font-sans-title);
   --plx-sys-typeface-mono: var(--plx-ref-font-mono);
   --plx-sys-font-weight-regular: var(--plx-ref-font-weight-regular-400);
   --plx-sys-font-weight-medium: var(--plx-ref-font-weight-medium-500);

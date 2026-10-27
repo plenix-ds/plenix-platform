@@ -27,7 +27,7 @@
   --plx-sys-touch-dismiss-delay: var(--plx-ref-motion-delay-dismiss);
   /* ── TYPOGRAPHY: font roles ── */
   --plx-sys-font-body: var(--plx-sys-typeface-sans);
-  --plx-sys-font-heading: var(--plx-sys-typeface-sans);
+  --plx-sys-font-heading: var(--plx-sys-typeface-sans-title);
   --plx-sys-font-label: var(--plx-sys-typeface-sans);
   --plx-sys-font-code: var(--plx-sys-typeface-mono);
   --plx-sys-font-data: var(--plx-sys-typeface-mono);

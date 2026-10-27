@@ -182,7 +182,7 @@
       }
     },
     "font-heading": {
-      "$value": "{plx-sys.typeface-sans}",
+      "$value": "{plx-sys.typeface-sans-title}",
       "$type": "fontFamily"
     },
     "font-label": {

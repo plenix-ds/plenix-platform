@@ -19,6 +19,11 @@
         }
       }
     },
+    "typeface-sans-title": {
+      "$value": "{plx-ref.font-sans-title}",
+      "$type": "fontFamily",
+      "$description": "The titles' typeface: the sans typeface, with Readex Pro for Arabic letters (owner, arabic-font-35)."
+    },
     "typeface-mono": {
       "$value": "{plx-ref.font-mono}",
       "$type": "fontFamily"
