@@ -11,6 +11,9 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 - Automatic islands: DataGrid and Table cells of kind `id`, `email`, `url`, `phone` and `code` (left to right) and `data` (its own direction); DataPill with `data`; PropertyList.Item with `data`; Code, Kbd and CodeBlock (always left to right). Text was already `dir="auto"`.
 
 ### Changed
+- Select is drawn by Plenix, not the browser (owner, dropdown-look-36): a field and an open list in the Menu's look (the Menu's row height and text size, the chosen row blue and semibold, group headings, disabled rows skipped), built on a hidden native `<select>` that stays the source of truth. The API is unchanged (`options` or `<option>` children, `value`, `defaultValue`, `onChange(event)`, `size`, `width`, `block`, `joined`, `appearance`, `invalid`, `disabled`, `data`, `ref`), and a form still posts and resets. Keyboard: arrows, Home, End, type-ahead, Enter, Space, Escape, Tab. A `multiple` select or a numeric `size` above 1 keeps the browser's list box. New tokens: `--plx-comp-select-list-*`, `--plx-comp-select-option-*` and `--plx-comp-select-group-*`, aliases of the Menu's.
+- Form arrows are one size (owner, combobox-arrow-36): the Select, Combobox and TreeSelect arrows move from 12px to the form-icon size, `--plx-sys-control-icon-inline` (16px at the compact density). Tokens: `--plx-comp-select-after-width|height`, `--plx-comp-combobox-chevron-width|height`, `--plx-comp-tree-select-chevron-size`. The Cascader's arrow was already 16px; DatePicker, TimePicker, CountrySelect, TimeZoneSelect and EntityPicker take the Combobox's.
+### Changed
 - DataGrid and Table: with `cells="pill"`, every standard pill of a column is always as wide as that column's widest pill in the current view; there is no switch (owner, uniform-pills-always-35). Columns stay independent; custom cells, tags and badges keep their own widths. Table now does it too: it never received the switch.
 
 ### Deprecated

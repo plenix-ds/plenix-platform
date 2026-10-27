@@ -7,7 +7,7 @@
      <Input appearance="filled" … />               <Textarea autoGrow … />
    Props:
      Input.size: "sm" uses the existing toolbar control height; omitted or "md" keeps today’s standard height; numeric values retain the native size attribute.
-     Select.size: as Input.size; numeric values retain the native select size attribute.
+     Select.size: as Input.size; a number above 1 (or multiple) keeps the browser's own list box.
      Input.invalid: marks the field (aria-invalid); put the message in Field's error
      Input.width: "xs" | "sm" | "md" | "lg" (a field narrower than its row, --plx-sys-field-width-*) | "fill" (the whole width)
        A date or a time (type date, time, datetime-local, month, week) is never narrower than its value, whatever the width:
@@ -30,14 +30,23 @@
      Textarea.data: technical text (lists of extensions, paths, codes) in the data font, as Input.data
      Textarea.className: more classes on the <textarea>
      Select.invalid: marks the field (aria-invalid)
-     Select.options: the choices: [{ value, label, disabled }]; or pass <option>s as children
+     Select.options: the choices: [{ value, label, disabled }]; or pass <option>s (and <optgroup>s) as children
+     Select.value, defaultValue, onChange(event), name, required, disabled, form, ref: as on a native select (event.target.value is the choice);
+       the ref is the hidden native <select>
      Select.block: the select takes its own line, as wide as its room (InlineEdit)
      Select.joined: { start, end }: "square" | "seam": its corners square where it meets a neighbor (InputGroup sets it)
      Select.children: <option>s, when there are no options
      Select.appearance: as Input.appearance (on the <select>)
      Select.className: more classes on the wrapper
    Behavior:
-     Select.data applies the same technical-value font variant as Input.data to its native control.
+     Select.data applies the same technical-value font variant as Input.data to the field.
+     Select is drawn by Plenix (owner, dropdown-look-36): a field and a list in the Menu's look, over a hidden native <select> that
+     stays the source of truth (options, value, form, reset, label). The field is role="combobox" and the list role="listbox"; a
+     <label for> or Field names and focuses it. The arrow is the form-icon size (--plx-sys-control-icon-inline), like the Combobox's.
+     Keyboard: ↓ / ↑ / Enter / Space open the list; ↓ / ↑ move; Home and End jump to the first and last row; typing a letter
+     goes to the next row that starts with it; Enter chooses; Alt+↑ chooses and closes; Escape closes; Tab chooses the row
+     and moves on. Rows are the Menu's height and text size; the chosen row is blue and semibold; a disabled row is skipped.
+     The box is as wide as the widest option; the list opens below it, as wide as the field at least.
      Inside a Field, the label, description and error are connected for you.
      Every appearance keeps the same states: hover and focus change only the color of its border, never a ring outside
      it; invalid draws a 2px danger border (the border and a line inside it, so the value does not move) on the lightest
@@ -88,8 +97,8 @@ export const Textarea = React.forwardRef(function Textarea({ invalid, appearance
     onInput={(e) => { fit(); if (onInput) onInput(e); }} {...rest} />;
 });
 
-/* options: [{ value, label }] or children <option>s */
-export const Select = React.forwardRef(function Select({ invalid, options, appearance, size, joined, data = false, block = false, width, className, children, ...rest }, ref) {
+/* the native control: a list box (multiple, or a size above 1) keeps the browser's own select */
+const SelectNative = React.forwardRef(function SelectNative({ invalid, options, appearance, size, joined, data = false, block = false, width, className, children, ...rest }, ref) {
   return (
     <span className={cx('plx-select', size === 'sm' && 'plx-select--size-sm', width && 'plx-select--width-' + width, block && 'plx-select--block', joined && joined.start && 'plx-select--joined-start-' + joined.start, joined && joined.end && 'plx-select--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-select--joined', className)}>
       <select ref={ref} size={size === 'sm' || size === 'md' ? undefined : size} className={cx('plx-input', 'plx-select__control', data && 'plx-input--data', look(appearance))} aria-invalid={invalid || undefined} {...rest}>
@@ -97,4 +106,132 @@ export const Select = React.forwardRef(function Select({ invalid, options, appea
       </select>
     </span>
   );
+});
+
+/* the Plenix-drawn dropdown (owner, dropdown-look-36): a field (role combobox) and a list (role listbox) drawn by Plenix over a
+   hidden native <select>, which stays the source of truth: the options, the value, the form, the ref and onChange(event) all
+   come from it, so a form posts, a reset resets and e.target.value works as before. */
+const SelectList = React.forwardRef(function SelectList({ invalid, options, appearance, size, joined, data = false, block = false, width, className, children, id, onFocus, onBlur, onKeyDown,
+  'aria-label': ariaLabel, 'aria-labelledby': labelledBy, 'aria-describedby': describedBy, 'aria-errormessage': errorMessage, ...rest }, ref) {
+  const native = React.useRef(null), field = React.useRef(null), last = React.useRef(''), buffer = React.useRef(''), timer = React.useRef(0);
+  const setNative = React.useCallback((el) => { native.current = el; if (typeof ref === 'function') ref(el); else if (ref) ref.current = el; }, [ref]);
+  const auto = React.useId();
+  const [items, setItems] = React.useState([]);
+  const [chosen, setChosen] = React.useState(0);
+  const [open, setOpen] = React.useState(false);
+  const [active, setActive] = React.useState(-1);
+  const [labelId, setLabelId] = React.useState(null);
+  const [, redraw] = React.useReducer((n) => n + 1, 0);
+  const disabled = !!rest.disabled;
+  const listId = auto + '-list', optId = (i) => auto + '-o' + i;
+  // read the native select (its options, in order, and its chosen one) after every render
+  const read = React.useCallback(() => {
+    const el = native.current;
+    if (!el) return;
+    const next = Array.from(el.options).map((o) => ({ value: o.value, label: o.text, disabled: o.disabled || (o.parentElement && o.parentElement.disabled === true), group: o.parentElement && o.parentElement.tagName === 'OPTGROUP' ? o.parentElement.label : null }));
+    const key = JSON.stringify(next);
+    if (key !== last.current) { last.current = key; setItems(next); }
+    setChosen(el.selectedIndex);
+  }, []);
+  React.useLayoutEffect(read);
+  React.useEffect(() => {   // a form reset puts the first choice back
+    const form = native.current && native.current.form;
+    if (!form) return undefined;
+    const reset = () => setTimeout(read, 0);
+    form.addEventListener('reset', reset);
+    return () => form.removeEventListener('reset', reset);
+  }, [read]);
+  React.useEffect(() => {   // a <label for="id"> names the field and focuses it
+    if (!id || labelledBy || typeof document === 'undefined') return undefined;
+    const label = document.querySelector('label[for="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"]');
+    if (!label) return undefined;
+    if (!label.id) label.id = id + '-label';
+    setLabelId(label.id);
+    const focus = () => { if (field.current) field.current.focus(); };
+    label.addEventListener('click', focus);
+    return () => label.removeEventListener('click', focus);
+  }, [id, labelledBy]);
+  React.useEffect(() => {   // keep the row under the arrow keys in view
+    if (!open || active < 0) return;
+    const el = document.getElementById(optId(active));
+    if (el && el.scrollIntoView) el.scrollIntoView({ block: 'nearest' });
+  }, [open, active]);
+  const step = (from, dir) => { for (let i = from; i >= 0 && i < items.length; i += dir) if (!items[i].disabled) return i; return -1; };
+  const show = (at) => { setActive(at !== undefined ? at : (chosen >= 0 && !(items[chosen] && items[chosen].disabled) ? chosen : step(0, 1))); setOpen(true); };
+  const choose = (i) => {
+    const el = native.current, it = items[i];
+    if (!el || !it || it.disabled) return;
+    setOpen(false);
+    if (i !== el.selectedIndex) {
+      el.selectedIndex = i;
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+      el.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+    redraw();
+    setTimeout(read, 0);
+  };
+  const onKey = (e) => {
+    if (onKeyDown) onKeyDown(e);
+    if (e.defaultPrevented || disabled) return;
+    const k = e.key;
+    if (k === 'ArrowDown' || k === 'ArrowUp') {
+      e.preventDefault();
+      if (!open) { show(); return; }
+      if (e.altKey && k === 'ArrowUp') { choose(active); return; }
+      const j = step(active + (k === 'ArrowDown' ? 1 : -1), k === 'ArrowDown' ? 1 : -1);
+      if (j >= 0) setActive(j);
+    } else if (k === 'Home' || k === 'End') {
+      e.preventDefault();
+      const j = k === 'Home' ? step(0, 1) : step(items.length - 1, -1);
+      if (open) setActive(j); else show(j);
+    } else if ((k === 'Enter' || k === ' ') && !(k === ' ' && buffer.current)) {
+      e.preventDefault();
+      if (open) choose(active); else show();
+    } else if (k === 'Escape') {
+      if (open) { e.preventDefault(); e.stopPropagation(); setOpen(false); }
+    } else if (k === 'Tab') {
+      if (open && active >= 0) choose(active);
+      else setOpen(false);
+    } else if (k.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {   // type-ahead: the next row that starts with what was typed
+      clearTimeout(timer.current);
+      buffer.current += k.toLowerCase();
+      timer.current = setTimeout(() => { buffer.current = ''; }, 700);
+      const from = (open ? active : chosen) + (buffer.current.length === 1 ? 1 : 0);
+      const order = items.map((it, i) => i).slice(Math.max(0, from)).concat(items.map((it, i) => i).slice(0, Math.max(0, from)));
+      const j = order.find((i) => !items[i].disabled && items[i].label.toLowerCase().indexOf(buffer.current) === 0);
+      if (j !== undefined) { if (open) setActive(j); else show(j); }
+    }
+  };
+  const current = items[chosen];
+  return (
+    <span className={cx('plx-select', 'plx-select--list', size === 'sm' && 'plx-select--size-sm', width && 'plx-select--width-' + width, block && 'plx-select--block', joined && joined.start && 'plx-select--joined-start-' + joined.start, joined && joined.end && 'plx-select--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-select--joined', open && 'is-open', disabled && 'is-disabled', className)}>
+      <select ref={setNative} tabIndex={-1} aria-hidden="true" className={cx('plx-input', 'plx-select__control', 'plx-select__native', data && 'plx-input--data', look(appearance))}
+        onFocus={() => { if (field.current) field.current.focus(); }} {...rest}>
+        {options ? options.map((o) => <option key={o.value} value={o.value} disabled={o.disabled}>{o.label}</option>) : children}
+      </select>
+      <div ref={field} id={id} role="combobox" tabIndex={disabled ? -1 : 0} aria-haspopup="listbox" aria-expanded={open} aria-controls={open ? listId : undefined}
+        aria-activedescendant={open && active >= 0 ? optId(active) : undefined} aria-label={ariaLabel} aria-labelledby={labelledBy || (ariaLabel ? undefined : labelId || undefined)}
+        aria-describedby={describedBy} aria-errormessage={errorMessage} aria-invalid={invalid || undefined} aria-required={rest.required || undefined} aria-disabled={disabled || undefined}
+        className={cx('plx-input', 'plx-select__field', data && 'plx-input--data', look(appearance), disabled && 'is-disabled')}
+        onClick={() => { if (disabled) return; if (open) setOpen(false); else show(); }} onKeyDown={onKey}
+        onFocus={onFocus} onBlur={(e) => { setOpen(false); if (onBlur) onBlur(e); }}>
+        <span className="plx-select__value">{current ? current.label : ''}</span>
+      </div>
+      {open ? (
+        <ul id={listId} role="listbox" aria-label={ariaLabel} aria-labelledby={labelledBy || (ariaLabel ? undefined : labelId || undefined)} className="plx-select__list">
+          {items.map((it, i) => [
+            it.group && (i === 0 || items[i - 1].group !== it.group) ? <li key={'g' + i} role="presentation" className="plx-select__group">{it.group}</li> : null,
+            <li key={'o' + i} id={optId(i)} role="option" aria-selected={i === chosen} aria-disabled={it.disabled || undefined}
+              className={cx('plx-select__option', i === active && 'is-active', i === chosen && 'is-selected', it.disabled && 'is-disabled')}
+              onMouseDown={(e) => e.preventDefault()} onClick={() => choose(i)} onMouseEnter={() => { if (!it.disabled) setActive(i); }}>{it.label}</li>])}
+        </ul>
+      ) : null}
+    </span>
+  );
+});
+
+/* options: [{ value, label }] or children <option>s */
+export const Select = React.forwardRef(function Select(props, ref) {
+  const listBox = props.multiple || (typeof props.size === 'number' && props.size > 1);
+  return listBox ? <SelectNative {...props} ref={ref} /> : <SelectList {...props} ref={ref} />;
 });

@@ -223,7 +223,7 @@
     <dimen name="plx_component_segmented_item_min_height">32dp</dimen>
     <dimen name="plx_component_segmented_radius">4dp</dimen>
     <dimen name="plx_component_select_after_inset_inline_end">12dp</dimen>
-    <dimen name="plx_component_select_after_width">12dp</dimen>
+    <dimen name="plx_component_select_after_width">20dp</dimen>
     <dimen name="plx_component_slider_input_height">28dp</dimen>
     <dimen name="plx_component_slider_row_gap">4dp</dimen>
     <dimen name="plx_component_spinner_lg_border_width">3dp</dimen>
