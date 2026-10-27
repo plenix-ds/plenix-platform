@@ -4,9 +4,9 @@ How every Plenix component, pattern, template and page is styled and composed, s
 element and no component styles another. It applies to the Platform (`platform/`), the suite's applications, the
 Asset Manager and the design-system site. "Must" and "never" are requirements. The checks in section 13 enforce it.
 
-Code that does not conform yet is listed by file in the rollout backlog (`check-system.exceptions.json` and
-`check-system.selector-kinds.json`). The backlog is not a list of exceptions: it may only shrink, a new violation fails
-the build, an entry that no longer occurs must be removed, and the rollout ends when it is empty.
+Code that does not conform yet is listed by file in the rollout backlog (`check-system.selector-kinds.json`). The
+backlog is not a list of exceptions: it may only shrink, a new violation fails the build, an entry that no longer occurs
+must be removed, and the rollout ends when it is empty.
 
 ## 1. Principles
 
@@ -535,7 +535,7 @@ one owner, instead of once per page. Pages then have nothing to override, so the
 | Check | Where | Fails on |
 |---|---|---|
 | Selector kinds | Project rule (`selector-kinds`) | A selector that is not one of the five kinds (3.6): a combinator, CSS nesting, a component compound reaching another block, a behavior or condition setting what it does not own; a state variable not registered `inherits: false` |
-| Cross-component selector | Project rule (check-system) | A selector into another block's classes |
+| Cross-component selector | Project rule (`selector-kinds`: its combinator and cross-block findings) | A selector into another block's classes |
 | Page composition | Project rule (composition check) | A page region built from components placed directly instead of the pattern the template names; a page without a template |
 | Application CSS scope | Project rule | An application rule for a component's classes, a non-layout property, or a rule outside the product's own layer |
 | Specificity ceiling | Stylelint (`selector-max-specificity: 0,2,0`, `selector-max-id: 0`) | Any authored selector above 0,2,0 not in the rollout backlog |
@@ -560,7 +560,7 @@ one owner, instead of once per page. Pages then have nothing to override, so the
 - **Overlap:** two applicable declarations assigning one property (custom properties included) on one element in one
   condition (3.5). There is no approved overlap. Inherited values are dependencies, listed apart.
 - **The rollout backlog:** the selectors and overlaps that existed when the rule began, by file
-  (`check-system.exceptions.json`, `check-system.selector-kinds.json`, the audit's baseline). It may only shrink: an
+  (`check-system.selector-kinds.json`, the audit's baseline). It may only shrink: an
   entry that no longer occurs fails the check until it is removed, and the rollout ends when it is empty.
 - **Coverage per change:**
   - an ownership repair runs the audit on the affected components' pages, in their states, light and dark;
