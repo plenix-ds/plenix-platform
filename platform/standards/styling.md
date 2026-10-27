@@ -342,6 +342,7 @@ do are the migration list, `check-system.text-contract.json`, which only shrinks
   combine.
 - **Every production stylesheet is assigned to its layer, all at once.** Unlayered CSS beats layered CSS, so a partial
   move would invert precedence.
+- **A product that consumes Plenix leaves its own CSS unlayered.** Unlayered CSS wins over every Plenix layer, which is the "product last" order. The design spec is such a product: it loads the pinned CDN release, so its own sheets stay unlayered.
 - **Vendor CSS:** optional third-party styles belong in `vendor`. The retired table engine and its temporary exceptions have been removed.
 - **Utilities:** they win by layer order. Every `!important` is removed in verified batches; an important declaration
   reverses layer precedence, so batches are tested before release.

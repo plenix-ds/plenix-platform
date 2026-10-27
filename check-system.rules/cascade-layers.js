@@ -20,6 +20,8 @@ const UNLAYERED = {
   'services/login/login.css': 'served with the released CDN stylesheet, which has no layers until the release that ships them',
   'services/auth/brand.css': 'pasted into Authentik, whose own CSS is unlayered: it must beat that CSS',
 };
+// platform/design-system is skipped on purpose: the design spec is a product that consumes Plenix from the pinned CDN release, so its
+// own CSS stays unlayered (styling.md section 8, "A product that consumes Plenix leaves its own CSS unlayered").
 const SKIP_DIR = /^(node_modules|\.git|vendor|dist|design-system|exports|docs|tests|release|packages|dev)$/;
 
 const rel = (f) => path.relative(ROOT, f).split(path.sep).join('/');
