@@ -45244,6 +45244,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        placeholder shows the form (MM/DD/YYYY). A range is two dates with a dash between them. Typed text is read when the
        field is left or Enter is pressed: a date it cannot read, or one that cannot be chosen, leaves the text and marks
        the field invalid until it is corrected; the Field's error says what to fix.
+     The field is one box like the text field (owner, form-controls-37): the date input and a 16px calendar icon button inside
+       it at its end; a range and a date-time picker look the same, the time field beside it. The calendar opens in a popover 4px
+       under the field.
      The calendar button (or Alt+Arrow Down in the field) opens the calendar in a popover under the field, with focus on
        the chosen day (else today); choosing a day (a range: its end) or a preset closes it and returns focus to the field.
        Escape, a press outside, and Tab out of it close it too.
@@ -45257,7 +45260,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The value is a calendar date (no time zone moves it); a date-time value is a local wall-clock time, and the time zone
        shown says which.
      A date people know by heart (a birth date) is typed: give it no calendar (use Input).
-     Built on InputGroup, Popover (manual) and Calendar.
+     Built on Popover (manual) and Calendar; the date-time's time field is an InputGroup.
 */
 const STRINGS = {
   open: 'Choose date',
@@ -45518,28 +45521,26 @@ const DatePicker = exports.DatePicker = /*#__PURE__*/_react.default.forwardRef(f
   const firstMonth = (range ? shown && shown.start : shown) || undefined;
   const field = /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-date-picker__field"
-  }, /*#__PURE__*/_react.default.createElement(_InputGroup.InputGroup, {
-    className: "plx-date-picker__date",
-    data: true,
-    invalid: invalid || bad,
-    disabled: disabled,
-    end: /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      iconOnly: true,
-      icon: "calendar",
-      label: t.open,
-      expanded: open,
-      "aria-haspopup": "dialog",
-      disabled: disabled,
-      onClick: toggle
-    })
-  }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-date-picker__date', range && 'plx-date-picker__date--range', 'plx-input', 'plx-input--data', disabled && 'is-disabled'),
+    "aria-invalid": invalid || bad || undefined,
+    onMouseDown: e => {
+      if (!disabled && input.current && e.target !== input.current && !e.target.closest('button')) {
+        e.preventDefault();
+        input.current.focus();
+      }
+    }
+  }, /*#__PURE__*/_react.default.createElement("input", {
     ref: input,
     id: id,
-    data: true,
+    type: "text",
+    className: "plx-date-picker__input",
     value: text,
     placeholder: range ? form.hint + DASH + form.hint : form.hint,
     required: required,
     "aria-describedby": describedBy,
+    "aria-invalid": invalid || bad || undefined,
+    disabled: disabled,
     autoComplete: "off",
     onChange: e => {
       typing.current = true;
@@ -45555,6 +45556,17 @@ const DatePicker = exports.DatePicker = /*#__PURE__*/_react.default.forwardRef(f
         if (!open) toggle();
       }
     }
+  }), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "ghost",
+    size: "2xs",
+    iconOnly: true,
+    icon: "calendar",
+    className: "plx-date-picker__button",
+    label: t.open,
+    expanded: open,
+    "aria-haspopup": "dialog",
+    disabled: disabled,
+    onClick: toggle
   })), dateTime ? /*#__PURE__*/_react.default.createElement(_InputGroup.InputGroup, {
     data: true,
     suffix: zone || undefined,

@@ -1,11 +1,15 @@
-/* Plenix · DatePicker (platform/components/DatePicker). Anatomy and API: DatePicker.jsx. The field is an InputGroup in the
-   data font with the calendar button joined at its end (input-group.css); a date-time picker puts the time field beside
+/* Plenix · DatePicker (platform/components/DatePicker). Anatomy and API: DatePicker.jsx. The field is one box like the text
+   field (plx-input) in the data font, with the calendar button inside at its end; a date-time picker puts the time field beside
    it. The popover holds the presets (a column of ghost buttons, divided from the calendar) and the Calendar. */
 .plx-date-picker{display:flex;max-inline-size:100%;min-inline-size:0;}
 .plx-date-picker__anchor{display:flex;max-inline-size:100%;min-inline-size:0;}
 .plx-date-picker__field{column-gap:var(--plx-comp-date-picker-field-gap);display:flex;flex-wrap:wrap;max-inline-size:100%;min-inline-size:0;row-gap:var(--plx-comp-date-picker-field-gap);}
-.plx-input-group.plx-date-picker__date{flex-shrink:1;inline-size:var(--plx-comp-date-picker-width);}
-.plx-date-picker--range .plx-input-group.plx-date-picker__date{inline-size:var(--plx-comp-date-picker-range-width);}
+.plx-date-picker__date{--plx-comp-input-context-padding-inline-end:var(--plx-comp-date-picker-box-padding-inline-end);align-items:center;display:flex;flex-shrink:1;inline-size:var(--plx-comp-date-picker-width);min-inline-size:0;}
+.plx-date-picker__date--range{inline-size:var(--plx-comp-date-picker-range-width);}
+/* the date box is one field like the text field (owner, form-controls-37): the borderless input fills it, the calendar button sits inside at its end */
+.plx-date-picker__input{align-self:stretch;background-color:transparent;border-style:none;border-width:0;color:inherit;flex:1 1 0%;font-family:inherit;font-size:inherit;margin-block:var(--plx-comp-date-picker-control-margin-block);min-inline-size:0;outline-style:none;padding-block:0;padding-inline:0;}
+.plx-date-picker__button{margin-block:var(--plx-comp-date-picker-control-margin-block);}
+.plx-date-picker__input::placeholder{color:var(--plx-comp-input-placeholder-text);}
 .plx-input-group.plx-date-picker__time{flex-shrink:1;inline-size:var(--plx-comp-date-picker-time-width);}
 .plx-date-picker__panel{column-gap:var(--plx-comp-date-picker-panel-gap);display:flex;flex-wrap:wrap;padding-block-end:var(--plx-comp-date-picker-panel-padding);padding-block-start:var(--plx-comp-date-picker-panel-padding);padding-inline-end:var(--plx-comp-date-picker-panel-padding);padding-inline-start:var(--plx-comp-date-picker-panel-padding);row-gap:var(--plx-comp-date-picker-panel-gap);}
 .plx-date-picker__presets{border-inline-end-color:var(--plx-comp-date-picker-presets-border-color);border-inline-end-style:solid;border-inline-end-width:var(--plx-comp-date-picker-presets-border-width);display:flex;flex-direction:column;padding-inline-end:var(--plx-comp-date-picker-presets-padding-inline-end);row-gap:var(--plx-comp-date-picker-presets-gap);}

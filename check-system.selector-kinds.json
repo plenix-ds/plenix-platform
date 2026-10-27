@@ -192,8 +192,6 @@
    "combinator | .plx-date-badge.is-today .plx-date-badge__weekday": 1
   },
   "platform/components/DatePicker/date-picker.css": {
-   "cross-block | .plx-input-group.plx-date-picker__date": 1,
-   "combinator | .plx-date-picker--range .plx-input-group.plx-date-picker__date": 1,
    "cross-block | .plx-input-group.plx-date-picker__time": 1
   },
   "platform/components/Details/details.css": {
