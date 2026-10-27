@@ -1,6 +1,9 @@
 {
   "defaultSeverity": "warning",
+  "plugins": ["./tools/stylelint/plenix.mjs"],
   "rules": {
+    "plenix/token-tiers": [true, { "severity": "error", "allowedPattern": "^--ds-sample-[a-z-]+$", "allowedIn": "^platform/design-system/" }],
+    "plenix/logical-properties": [true, { "severity": "error", "files": "^platform/(components|patterns|templates)/" }],
     "declaration-no-important": [true, { "severity": "error" }],
     "color-no-hex": [true, { "severity": "error" }],
     "function-disallowed-list": [["rgb", "rgba", "hsl", "hsla", "hwb", "lab", "lch", "oklab", "oklch"], { "severity": "error" }],
@@ -17,8 +20,8 @@
   },
   "overrides": [
     { "files": ["platform/system/**/*.css", "platform/components/**/*.css", "platform/patterns/**/*.css"],
-      "rules": { "selector-class-pattern": ["^(plx-|is-)", { "severity": "error", "message": ".%s is not a plx- class: a Platform stylesheet defines plx- classes (state classes is-…)" }] } },
+      "rules": { "selector-class-pattern": ["^(plx-|is-)", { "severity": "error", "message": "%s is not a plx- class: a Platform stylesheet defines plx- classes (state classes is-…)" }] } },
     { "files": ["platform/components/RichTextEditor/rich-text-editor.css"],
-      "rules": { "selector-class-pattern": ["^(plx-|is-|ProseMirror-(separator|hideselection|selectednode)$|selectedCell$)", { "severity": "error", "message": ".%s is not a plx- class (only the editor engine's ProseMirror-separator, -hideselection, -selectednode and selectedCell are allowed here)" }] } }
+      "rules": { "selector-class-pattern": ["^(plx-|is-|ProseMirror-(separator|hideselection|selectednode)$|selectedCell$)", { "severity": "error", "message": "%s is not a plx- class (only the editor engine's ProseMirror-separator, -hideselection, -selectednode and selectedCell are allowed here)" }] } }
   ]
 }

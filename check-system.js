@@ -2,8 +2,8 @@
 //   node check-system.js        (or: npm run lint:system)
 // Exits with 1 and lists every finding when a rule is broken, so it can run in CI next to the build.
 //
-//   tokens      every var(--…) is a Platform token (--plx-ref-, --plx-sys-, --plx-comp-) or a custom property the same
-//               file declares for itself (e.g. --ds-r on the spec page); no old names
+//   tokens      in code (JavaScript, JSX, HTML) every var(--…) is a Platform token (--plx-ref-, --plx-sys-, --plx-comp-) or a
+//               custom property the source declares; no old names. Stylesheets: Stylelint (plenix/token-tiers, style-plan-30)
 //   hex         no raw hex colors written in code (JavaScript, JSX and HTML; colors come from tokens). Stylesheets: Stylelint (color-no-hex)
 //   font-size   no font size written as a number in code: font sizes come from --plx-ref-font-size-* tokens. Stylesheets: Stylelint (raw lengths)
 //   (classes, every class a Platform stylesheet defines starts with plx- or is-, is Stylelint's: selector-class-pattern in
@@ -140,8 +140,8 @@ for (const { file } of files) {
     const n = i + 1;
     // defined: a used token exists (a name ending in "-" is built in code, e.g. 'var(--plx-ref-radius-' + n + 'px)')
     for (const m of line.matchAll(/var\(\s*(--plx-[a-z0-9-]*[a-z0-9])(?![\w-])/g)) if (!PLX.has(m[1])) add('defined', file, n, m[1] + ' is not declared anywhere');
-    // tokens
-    for (const m of line.matchAll(/var\(\s*(--[a-z][a-z0-9-]*)/g)) {
+    // tokens, in code (a stylesheet's are Stylelint's: plenix/token-tiers)
+    if (!/\.css$/.test(file)) for (const m of line.matchAll(/var\(\s*(--[a-z][a-z0-9-]*)/g)) {
       // the design system's samples (--ds-sample-<property>) are set at run time by DS.sample (ds.js)
       // the three token tiers, the state variables (Styling Standard 4.1: --plx-state-<component>-…, never inherited) and the
       // token layers build-tokens.js writes (--plx-ctx-<interaction|density|base>-<token>: one rule per context picks)
@@ -214,7 +214,11 @@ for (const f of [path.join(ROOT, 'shared'), path.join(ROOT, 'platform', 'system'
 
 // rules kept as their own modules (check-system.rules/<name>.js: { check({ files, add }) }; the library waves, batch 347)
 const RULES_DIR = path.join(ROOT, 'check-system.rules');
-if (fs.existsSync(RULES_DIR)) for (const f of fs.readdirSync(RULES_DIR).filter((x) => /\.js$/.test(x)).sort()) require(path.join(RULES_DIR, f)).check({ files, add });
+// a module without check() is run elsewhere: logical-properties.js by Stylelint (tools/stylelint/plenix.mjs; style-plan-30)
+if (fs.existsSync(RULES_DIR)) for (const f of fs.readdirSync(RULES_DIR).filter((x) => /\.js$/.test(x)).sort()) {
+  const rule = require(path.join(RULES_DIR, f));
+  if (typeof rule.check === 'function') rule.check({ files, add });
+}
 
 const byRule = {};
 for (const f of findings) (byRule[f.rule] = byRule[f.rule] || []).push(f);
