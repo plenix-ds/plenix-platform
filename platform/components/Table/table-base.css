@@ -382,7 +382,7 @@ a.plx-table__cell-content{align-items:center;align-self:stretch;display:inline-f
 .plx-table__type-icon{--plx-comp-icon-size:100%;block-size:var(--plx-comp-data-grid-header-type-icon-size);color:var(--plx-comp-data-grid-header-type-icon-text);display:var(--plx-comp-data-grid-context-hover-type-icon,inline-flex);flex-shrink:0;inline-size:var(--plx-comp-data-grid-header-type-icon-size);overflow:hidden;}
 @property --plx-state-data-grid-holder-overflow{syntax:"*";inherits:false;}
 
-.plx-table[data-plx-engine="next"]{background-color:var(--plx-comp-data-grid-background);border-color:var(--plx-comp-data-grid-border-color);border-radius:var(--plx-comp-data-grid-radius);border-style:solid;border-width:var(--plx-comp-data-grid-border-width);min-inline-size:0;overflow:var(--plx-state-data-grid-root-overflow,hidden);}
+.plx-table[data-plx-engine="next"]{background-color:var(--plx-comp-data-grid-background);border-color:var(--plx-comp-data-grid-border-color);border-end-end-radius:var(--plx-comp-data-grid-context-end-end-radius,var(--plx-comp-data-grid-radius));border-end-start-radius:var(--plx-comp-data-grid-context-end-start-radius,var(--plx-comp-data-grid-radius));border-start-end-radius:var(--plx-comp-data-grid-context-start-end-radius,var(--plx-comp-data-grid-radius));border-start-start-radius:var(--plx-comp-data-grid-context-start-start-radius,var(--plx-comp-data-grid-radius));border-style:solid;border-width:var(--plx-comp-data-grid-border-width);min-inline-size:0;overflow:var(--plx-state-data-grid-root-overflow,hidden);}
 
 @property --plx-state-data-grid-sticky-start{syntax:"*";inherits:false;}
 @property --plx-state-data-grid-position{syntax:"*";inherits:false;}

@@ -38,7 +38,8 @@ import { Icon } from '../../components/Icon/Icon.jsx';
 import { Sheet } from '../../components/Sheet/Sheet.jsx';
 import { ToolRail } from '../ToolRail/ToolRail.jsx';
 import { useMedia, below, PanelSplitter, tokenPx } from '../AppShell/AppShell.jsx';
-import { snapSize } from '../../utils/sizeSteps.js';
+import { gridWithin } from '../../utils/grid.js';
+import { GRID_PANE_MAX } from '../../utils/sizeSteps.js';
 
 const WIDTH_KEY = 'plenix.sidePanelWidth';
 
@@ -74,7 +75,7 @@ export function SidePanel({ title, label, icon, open = true, onOpenChange, actio
   }
   const pane = (
     <aside ref={ref} aria-label={name} className={cx('plx-side-panel', small && 'plx-side-panel--overlay', docked && 'plx-side-panel--resizable', docked && size && 'plx-side-panel--resized', className)}
-      data-plx-width={docked && size ? snapSize(size, tokenPx('--plx-comp-side-panel-width-min'), tokenPx('--plx-comp-side-panel-width-max')) + 'px' : undefined}>
+      data-plx-width={docked && size ? gridWithin(size, tokenPx('--plx-comp-side-panel-width-min'), Math.min(tokenPx('--plx-comp-side-panel-width-max'), GRID_PANE_MAX)) + 'px' : undefined}>
       <div className="plx-side-panel__header">
         {onOpenChange ? <Button size="sm" variant="ghost" iconOnly icon="panel-right-close" label={collapseLabel || 'Collapse panel'} onClick={() => set(false)} /> : null}
         {icon ? <span className="plx-side-panel__icon" aria-hidden="true">{typeof icon === 'string' ? <Icon name={icon} /> : icon}</span> : null}

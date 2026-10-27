@@ -11,6 +11,12 @@ const fs = require('fs');
 const path = require('path');
 const { ROOT, launch, sleep } = require('./lib.js');
 const changed = require('./changed.js');
+// sizes past the generated grid lines land on the caps, never on the default size (#375 review): its own test, when
+// Resizable, SplitView or a pane of the shell changed
+if (changed.wants({ units: ['components/Resizable', 'patterns/SplitView', 'patterns/AppShell', 'patterns/NavPane', 'patterns/SecondaryPane', 'patterns/SidePanel'] })) {
+  const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'resize-caps.test.js')], { stdio: 'inherit', env: process.env });
+  if (result.status !== 0) process.exit(result.status || 1);
+}
 if (!changed.wants({ units: ['patterns/AppShell', 'patterns/SettingsLayout'] })) changed.none('LAYOUT_OK 0/0');
 changed.report('every mode');
 const P = 'file://' + (ROOT.startsWith('/') ? '' : '/') + ROOT.replace(/\\/g, '/') + '/platform/';
