@@ -153,7 +153,7 @@ export function Resizable({ label, variant = 'default', fill: fillContent = fals
     for (const [which, scale, active] of [['width', WR, doW], ['height', HR, doH]]) {
       if (!active || (next[which] > scale.lo && next[which] < scale.hi)) continue;
       const smallest = next[which] <= scale.lo, value = smallest ? scale.lo : scale.hi;
-      message = t[(smallest ? 'min' : 'max') + (which === 'width' ? 'Width' : 'Height')] || (smallest ? 'Smallest ' : 'Largest ') + which + ' for ' + label + ' (' + value + 'px)';
+      message = fill(t[(smallest ? 'min' : 'max') + (which === 'width' ? 'Width' : 'Height')], { label, value });
       break;
     }
     setNotice(message);

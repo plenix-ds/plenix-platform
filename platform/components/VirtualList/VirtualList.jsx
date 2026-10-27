@@ -110,7 +110,7 @@ export const VirtualList = React.forwardRef(function VirtualList({ label, items,
     const item = r ? r.item : undefined;
     const key = getKey ? getKey(item, index) : item && typeof item === 'object' && item.id !== undefined ? item.id : index;
     return (
-      <div key={key} role="listitem" className="plx-virtual-list__item" data-plx-unread={unread.has(item)||undefined} aria-label={unread.has(item)?String(item?.label??key)+', unread':undefined} tabIndex={onItemOpen?0:undefined} onClick={()=>{if(onItemOpen){onItemOpen(item);unread.open(item);}}} onKeyDown={event=>{if(onItemOpen&&event.key==='Enter'&&event.target===event.currentTarget){onItemOpen(item);unread.open(item);}}} {...v.itemProps(index)}>
+      <div key={key} role="listitem" className="plx-virtual-list__item" data-plx-unread={unread.has(item)||undefined} aria-label={unread.has(item)?t.unreadRow.replace('{label}',String(item?.label??key)):undefined} tabIndex={onItemOpen?0:undefined} onClick={()=>{if(onItemOpen){onItemOpen(item);unread.open(item);}}} onKeyDown={event=>{if(onItemOpen&&event.key==='Enter'&&event.target===event.currentTarget){onItemOpen(item);unread.open(item);}}} {...v.itemProps(index)}>
         {renderItem ? renderItem(item, index) : <Row item={item} />}
       </div>
     );

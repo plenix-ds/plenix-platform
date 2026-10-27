@@ -722,7 +722,11 @@ export default {
       "Sort unchecked → checked",
       "Sort checked → unchecked"
     ],
-    "unread": "Unread ({count})"
+    "unread": "Unread ({count})",
+    "columnsLabel": "{label} columns",
+    "rowsLabel": "{label} rows",
+    "columnActions": "{title} column actions",
+    "unreadRow": "{label}, unread"
   },
   "dataPill": {
     "male": "male",
@@ -1464,7 +1468,11 @@ export default {
   },
   "resizable": {
     "width": "{label} width",
-    "height": "{label} height"
+    "height": "{label} height",
+    "minWidth": "Smallest width for {label} ({value}px)",
+    "maxWidth": "Largest width for {label} ({value}px)",
+    "minHeight": "Smallest height for {label} ({value}px)",
+    "maxHeight": "Largest height for {label} ({value}px)"
   },
   "resourceList": {
     "item": "item",
@@ -2009,7 +2017,8 @@ export default {
     "group": {
       "one": "{n} item",
       "other": "{n} items"
-    }
+    },
+    "unreadRow": "{label}, unread"
   },
   "widgetGrid": {
     "widget": "Widget",
@@ -2438,5 +2447,10 @@ export default {
     "repositionCanceled": "Move canceled. {name} is back where it was",
     "movable": "movable",
     "list": "the list"
+  },
+  "collapsibleSection": {
+    "less": "Show less",
+    "more": "Show more",
+    "moreCount": "Show more ({n})"
   }
 };

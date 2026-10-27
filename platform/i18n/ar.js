@@ -361,7 +361,11 @@ export default {
       "فرز من غير المحدد إلى المحدد",
       "فرز من المحدد إلى غير المحدد"
     ],
-    "unread": "غير مقروء ({count})"
+    "unread": "غير مقروء ({count})",
+    "columnsLabel": "أعمدة {label}",
+    "rowsLabel": "صفوف {label}",
+    "columnActions": "إجراءات العمود {title}",
+    "unreadRow": "{label}، غير مقروء"
   },
   "dataPill": {
     "male": "ذكر",
@@ -643,7 +647,11 @@ export default {
   },
   "resizable": {
     "width": "عرض {label}",
-    "height": "ارتفاع {label}"
+    "height": "ارتفاع {label}",
+    "minWidth": "أصغر عرض لـ {label} ({value}px)",
+    "maxWidth": "أكبر عرض لـ {label} ({value}px)",
+    "minHeight": "أصغر ارتفاع لـ {label} ({value}px)",
+    "maxHeight": "أكبر ارتفاع لـ {label} ({value}px)"
   },
   "richTextEditor": {
     "toolbar": "التنسيق",
@@ -842,7 +850,8 @@ export default {
       "few": "{n} عناصر",
       "many": "{n} عنصرًا",
       "other": "{n} عنصر"
-    }
+    },
+    "unreadRow": "{label}، غير مقروء"
   },
   "aiSearch": {
     "label": "بحث بالذكاء الاصطناعي",
@@ -2470,5 +2479,10 @@ export default {
     "repositionCanceled": "أُلغي النقل. عاد {name} إلى مكانه",
     "movable": "قابل للنقل",
     "list": "القائمة"
+  },
+  "collapsibleSection": {
+    "less": "عرض أقل",
+    "more": "عرض المزيد",
+    "moreCount": "عرض المزيد ({n})"
   }
 };

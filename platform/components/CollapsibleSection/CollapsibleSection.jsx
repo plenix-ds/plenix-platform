@@ -33,6 +33,7 @@ import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
 import { Icon } from '../Icon/Icon.jsx';
 import { Button } from '../Button/Button.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 const asIcon = (i) => (typeof i === 'string' ? <Icon name={i} /> : i);
 
@@ -58,11 +59,12 @@ export function CollapsibleSection({ title, icon, expanded, defaultExpanded = tr
 }
 
 // "Show more (n)" / "Show less" with its chevron after the label: down to show more, up to show less (batch 276)
-export function ShowMore({ expanded = false, count, onToggle, size = '2xs', ...rest }) {
+export function ShowMore({ expanded = false, count, onToggle, size = '2xs', strings, ...rest }) {
   devWarn('ShowMore', { size }, { size: ['md','sm','xs','2xs','lg'] });
+  const t = useStrings('collapsibleSection', strings);
   return (
     <Button size={size} iconEnd={expanded ? 'chevron-up' : 'chevron-down'} aria-expanded={expanded} onClick={() => { if (onToggle) onToggle(!expanded); }} {...rest}>
-      {expanded ? 'Show less' : 'Show more' + (count !== undefined && count !== null && count !== '' ? ' (' + count + ')' : '')}
+      {expanded ? t.less : (count !== undefined && count !== null && count !== '' ? t.moreCount.replace('{n}', count) : t.more)}
     </Button>
   );
 }
