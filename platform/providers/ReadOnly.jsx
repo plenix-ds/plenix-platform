@@ -31,6 +31,8 @@
        read-only for a value that is there to read. Hide or remove the actions that would change the region (Save,
        Delete) rather than disabling them.
      Buttons inside stay as they are: actions that only read (Copy, Download, Open) keep working.
+     Checkbox, Radio, Switch, RadioGroup, ChoiceList, RadioTiles, Select and Slider read useReadOnly and lock themselves
+       with the same stops (readOnlyProps, inside the Platform), so their own readOnly works outside a region too.
 */
 import React from 'react';
 import { useDescriptionId, joinIds } from '../utils/describedBy.js';
@@ -58,6 +60,28 @@ const ARIA_READONLY = { checkbox: 1, switch: 1, slider: 1, spinbutton: 1, combob
 // keys that change a locked control's value (Tab, Escape and shortcuts with Ctrl or ⌘ still work)
 const CHANGE_KEYS = /^(ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Home|End|PageUp|PageDown| |Spacebar|Enter|Backspace|Delete|.)$/;
 
+// a key the region (and readOnlyProps) stops on a locked control: Tab, Escape and shortcuts with Ctrl, ⌘ or Alt pass
+const stopsKey = (e) => !(e.key === 'Tab' || e.key === 'Escape' || e.ctrlKey || e.metaKey || e.altKey) && CHANGE_KEYS.test(e.key);
+const stop = (e) => { e.preventDefault(); e.stopPropagation(); };
+const noChange = () => {};
+// the props a component puts on a value control it locks itself (on: useReadOnly(own)): the region's stops, on the element.
+//   aria: marks it aria-readonly (a single radio does not: its group would); pointer: a press focuses without changing
+//   (a select, a slider, a combobox). Off, the props come back unchanged.
+export function readOnlyProps(on, props, { aria = true, pointer = false } = {}) {
+  if (!on) return props;
+  const out = Object.assign({}, props, {
+    onClick: stop,
+    onChange: noChange,   // React reports a choice's change from the click itself, so the click stop alone does not hold it
+    onKeyDown: (e) => { if (stopsKey(e)) stop(e); else if (props.onKeyDown) props.onKeyDown(e); },
+  });
+  if (aria && props['aria-readonly'] == null) out['aria-readonly'] = true;
+  if (pointer) {
+    const press = (own) => (e) => { e.preventDefault(); e.currentTarget.focus(); if (own) own(e); };
+    out.onMouseDown = press(props.onMouseDown);
+    out.onPointerDown = press(props.onPointerDown);
+  }
+  return out;
+}
 function roleOf(el) {
   const r = el.getAttribute('role');
   if (r) return r;
@@ -105,12 +129,8 @@ function useLockRegion(ref, on) {
       const el = t && t.closest ? t.closest('[data-plx-readonly-set="locked"]') : null;
       return el && mine(el) ? el : null;
     };
-    const stop = (e) => { e.preventDefault(); e.stopPropagation(); };
     const onClick = (e) => { if (locked(e.target)) stop(e); };
-    const onKey = (e) => {
-      if (e.key === 'Tab' || e.key === 'Escape' || e.ctrlKey || e.metaKey || e.altKey) return;
-      if (locked(e.target) && CHANGE_KEYS.test(e.key)) stop(e);
-    };
+    const onKey = (e) => { if (stopsKey(e) && locked(e.target)) stop(e); };
     const onPointer = (e) => { const el = locked(e.target); if (el && (el.tagName === 'SELECT' || roleOf(el) === 'slider' || roleOf(el) === 'combobox')) { e.preventDefault(); el.focus(); } };
     const onSubmit = (e) => { if (e.target === root || mine(e.target)) e.preventDefault(); };
     root.addEventListener('click', onClick, true);

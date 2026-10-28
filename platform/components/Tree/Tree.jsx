@@ -18,7 +18,8 @@
      className: more classes on the tree
    Behavior:
      Each item passes its own open/selected state to Icon.filled; child icons do not follow an ancestor item.
-     The tree is one Tab stop.
+     The tree is one Tab stop. Each item's focus, and whether the keyboard moved it there (its row's focus ring), comes
+       from useFocusable.
      Arrow Up and Down move through the visible items.
      Arrow Right opens an item or goes to its first child; Arrow Left closes it or goes to the parent.
      Home and End go to the first and last visible item.
@@ -32,11 +33,35 @@ import { isRtl } from '../../utils/direction.js';
 import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
 import { Icon } from '../Icon/Icon.jsx';
+import { useFocusable } from '../../hooks/useFocusable.js';
 
 const asIcon = (i, filled) => (typeof i === 'string' ? <Icon name={i} filled={filled} /> : React.isValidElement(i) && i.type === Icon ? React.cloneElement(i, { filled: filled || i.props.filled }) : i);
 // the icon an open item shows: its own openIcon, else an open folder for a folder
 const OPEN_ICONS = { folder: 'folder-open' };
 const iconOf = (n, isOpen) => (isOpen ? n.openIcon || (typeof n.icon === 'string' && OPEN_ICONS[n.icon]) || n.icon : n.icon);
+
+// one item: its focus (and whether the keyboard moved it there, :focus-visible) comes from useFocusable; the tree keeps
+// the one Tab stop (tabIndex) and the keys
+function TreeItem({ n, level, tree }) {
+  const { base, selected, active, open, refs, moveTo, toggle, onSelect, setFocusId } = tree;
+  const { focusVisible, focusProps } = useFocusable({ tabStop: 'none', handlers: { onFocus: (e) => { if (e.target === e.currentTarget) setFocusId(n.id); } } });
+  const kids = n.children && n.children.length;
+  const isOpen = kids && open.has(n.id);
+  return (
+    <li ref={(el) => { refs.current[n.id] = el; }} id={base + '-' + n.id} role="treeitem" aria-level={level}
+      aria-expanded={kids ? !!isOpen : undefined} aria-selected={n.id === selected} tabIndex={n.id === active ? 0 : -1}
+      className={cx('plx-tree__item', n.id === selected && 'is-selected')} {...focusProps}>
+      <div className={cx('plx-tree__row', n.id === selected && 'is-selected', focusVisible && 'is-focus-visible')} data-plx-level={Math.min(level, 12)} onClick={() => { moveTo(n.id); if (onSelect) onSelect(n.id); }}>
+        <span className={cx('plx-tree__toggle', isOpen && 'is-open', !kids && 'is-leaf')} aria-hidden="true"
+          onClick={kids ? (e) => { e.stopPropagation(); toggle(n.id); moveTo(n.id); } : undefined} />
+        {n.icon ? <span className="plx-tree__icon">{asIcon(iconOf(n, isOpen || n.id === selected), !!isOpen || n.id === selected)}</span> : null}
+        <span className="plx-tree__label">{n.label}</span>
+        {n.meta !== undefined ? <span className="plx-tree__meta">{n.meta}</span> : null}
+      </div>
+      {isOpen ? <ul role="group" className="plx-tree__group">{n.children.map((c) => <TreeItem key={c.id} n={c} level={level + 1} tree={tree} />)}</ul> : null}
+    </li>
+  );
+}
 
 function visible(nodes, open, parent, out) {
   nodes.forEach((n) => {
@@ -53,8 +78,6 @@ export function Tree({ label, nodes, selected, onSelect, expanded, defaultExpand
   const setOpen = (next) => { const list = Array.from(next); if (expanded === undefined) setOwnOpen(list); if (onExpandedChange) onExpandedChange(list); };
   const flat = visible(nodes, open, null, []);
   const [focusId, setFocusId] = React.useState(null);
-  // the item whose focus the keyboard moved (:focus-visible): its row draws the focus ring
-  const [ringId, setRingId] = React.useState(null);
   const active = flat.some((v) => v.node.id === focusId) ? focusId : (flat.some((v) => v.node.id === selected) ? selected : (flat[0] && flat[0].node.id));
   const refs = React.useRef({});
   const moveTo = (id) => { setFocusId(id); if (refs.current[id]) refs.current[id].focus(); };
@@ -75,25 +98,6 @@ export function Tree({ label, nodes, selected, onSelect, expanded, defaultExpand
     else return;
     e.preventDefault();
   };
-  const renderNodes = (list, level) => list.map((n) => {
-    const kids = n.children && n.children.length;
-    const isOpen = kids && open.has(n.id);
-    return (
-      <li key={n.id} ref={(el) => { refs.current[n.id] = el; }} id={base + '-' + n.id} role="treeitem" aria-level={level}
-        aria-expanded={kids ? !!isOpen : undefined} aria-selected={n.id === selected} tabIndex={n.id === active ? 0 : -1}
-        className={cx('plx-tree__item', n.id === selected && 'is-selected')}
-        onFocus={(e) => { if (e.target === e.currentTarget) { setFocusId(n.id); setRingId(e.currentTarget.matches(':focus-visible') ? n.id : null); } }}
-        onBlur={(e) => { if (e.target === e.currentTarget) setRingId(null); }}>
-        <div className={cx('plx-tree__row', n.id === selected && 'is-selected', n.id === ringId && 'is-focus-visible')} data-plx-level={Math.min(level, 12)} onClick={() => { moveTo(n.id); if (onSelect) onSelect(n.id); }}>
-          <span className={cx('plx-tree__toggle', isOpen && 'is-open', !kids && 'is-leaf')} aria-hidden="true"
-            onClick={kids ? (e) => { e.stopPropagation(); toggle(n.id); moveTo(n.id); } : undefined} />
-          {n.icon ? <span className="plx-tree__icon">{asIcon(iconOf(n, isOpen || n.id === selected), !!isOpen || n.id === selected)}</span> : null}
-          <span className="plx-tree__label">{n.label}</span>
-          {n.meta !== undefined ? <span className="plx-tree__meta">{n.meta}</span> : null}
-        </div>
-        {isOpen ? <ul role="group" className="plx-tree__group">{renderNodes(n.children, level + 1)}</ul> : null}
-      </li>
-    );
-  });
-  return <ul role="tree" aria-label={label} className={cx('plx-tree', className)} onKeyDown={onKeyDown}>{renderNodes(nodes, 1)}</ul>;
+  const tree = { base, selected, active, open, refs, moveTo, toggle, onSelect, setFocusId };
+  return <ul role="tree" aria-label={label} className={cx('plx-tree', className)} onKeyDown={onKeyDown}>{nodes.map((n) => <TreeItem key={n.id} n={n} level={1} tree={tree} />)}</ul>;
 }
