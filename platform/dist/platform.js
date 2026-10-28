@@ -26958,7 +26958,7 @@ function groupDisplay(groups, collapsed, add, gaps = true) {
   return display;
 }
   } },
-  "platform/components/DataGrid/DataGridEngine.jsx": { deps: {"react":null,"./unread.js":"platform/components/DataGrid/unread.js","./room.js":"platform/components/DataGrid/room.js","react-dom":null,"./scrollbars.jsx":"platform/components/DataGrid/scrollbars.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","@tanstack/react-table":"../../plenix/node_modules/@tanstack/react-table/build/lib/index.js","@tanstack/react-virtual":"../../plenix/node_modules/@tanstack/react-virtual/dist/cjs/index.cjs","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./environment.js":"platform/components/DataGrid/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataGrid/state.js","./adapter.js":"platform/components/DataGrid/adapter.js","./cells.jsx":"platform/components/DataGrid/cells.jsx","./records.js":"platform/components/DataGrid/records.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/DataGrid/DataGridEngine.jsx": { deps: {"react":null,"./unread.js":"platform/components/DataGrid/unread.js","./room.js":"platform/components/DataGrid/room.js","react-dom":null,"./scrollbars.jsx":"platform/components/DataGrid/scrollbars.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","@tanstack/react-table":"../../plenix/node_modules/@tanstack/react-table/build/lib/index.js","@tanstack/react-virtual":"../../plenix/node_modules/@tanstack/react-virtual/dist/cjs/index.cjs","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./environment.js":"platform/components/DataGrid/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataGrid/state.js","./adapter.js":"platform/components/DataGrid/adapter.js","./cells.jsx":"platform/components/DataGrid/cells.jsx","./records.js":"platform/components/DataGrid/records.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -26977,6 +26977,7 @@ var _reactVirtual = require("@tanstack/react-virtual");
 var _direction = require("../../utils/direction.js");
 var _format = require("../../utils/format.js");
 var _cx = require("../../utils/cx.js");
+var _announce = require("../../utils/announce.jsx");
 var _grid = require("../../utils/grid.js");
 var _sizeSteps = require("../../utils/sizeSteps.js");
 var _useVirtualizer = require("../../hooks/useVirtualizer.js");
@@ -27500,8 +27501,7 @@ function NextEngine(props) {
       space: 0,
       room: 0
     }),
-    [isNarrow, setNarrow] = _react.default.useState(false),
-    [message, setMessage] = _react.default.useState('');
+    [isNarrow, setNarrow] = _react.default.useState(false);
   // One conversion per distinct width and measured environment, shared by every visible cell.
   const widthPixels = _react.default.useMemo(() => {
     const cache = new Map();
@@ -27576,11 +27576,12 @@ function NextEngine(props) {
   };
   const toggleGroup = (id, open) => {
     const next = new Set(live.current.collapsed),
-      expand = open ?? next.has(id);
+      expand = open ?? next.has(id),
+      changed = expand === next.has(id);
     if (expand) next.delete(id);else next.add(id);
     live.current.collapsed = next;
     setCollapsed(next);
-    setMessage(expand ? S.expanded : S.collapsed);
+    if (changed) (0, _announce.announce)(expand ? S.expanded : S.collapsed);
     props.onViewChange?.({
       collapsed: [...next]
     });
@@ -29233,11 +29234,7 @@ function NextEngine(props) {
         }
       } else setLoaded(n => Math.min(allRows.length, n + pageSize));
     }
-  }, S.loadMore) : null) : null, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-sr-only",
-    role: "status",
-    "aria-live": "polite"
-  }, message)));
+  }, S.loadMore) : null) : null));
 }
 function DataGridEngine(props) {
   return /*#__PURE__*/_react.default.createElement(NextEngine, _extends({
@@ -35669,7 +35666,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        Pinned cells use the grid direction for placement, while their values retain automatic text direction.
      The grid is an ARIA grid: column headers (aria-sort), rows (aria-rowindex, aria-rowcount) and cells; its body is one
        Tab stop; the arrow keys move between cells, Home and End to the ends, Shift + F10 opens the focused header's or
-       row's menu. Menus are ARIA menus. Selection, grouping and loading changes are announced politely.
+       row's menu. Menus are ARIA menus. Opening and closing a group is announced politely (announce()): "expanded" or "collapsed".
      Every drag has a way without dragging (WCAG 2.5.7): Move up, down, to top and to bottom on a row; Move left and right
        on a column; a focused handle moves its row with Alt + Arrow keys. Column widths step through the size tokens.
      Geometry: the row height, cell padding and text size are the density's tokens; a taller row step puts content at the
