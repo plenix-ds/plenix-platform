@@ -16,3 +16,13 @@ only after: 591db1ab | only before: none
 d6b6b8b1 vs 591db1ab at 12623:
    d6b6b8b1: …tack--gap-md plx-layout--inset-md plx-grow plx-layout--scroll plx-motion-enter"><div class="plx-inline plx-inline--gap-sm plx-layout--align-center"><span dir="auto" class="plx-text plx-text--data">9:52 PM</span><div role=
    591db1ab: …tack--gap-md plx-layout--inset-md plx-grow plx-layout--scroll plx-motion-enter"><div class="plx-inline plx-inline--gap-sm plx-layout--align-center"><span dir="auto" class="plx-text plx-text--data">9:53 PM</span><div role=
+
+# The same loads with the dashboard's clock text replaced by CLOCK: one state per language, on both sides.
+ar loads per side 8
+before states {"139000dd":8}
+after  states {"139000dd":8}
+only after: none | only before: none
+en loads per side 6
+before states {"44b4b9f5":6}
+after  states {"44b4b9f5":6}
+only after: none | only before: none
