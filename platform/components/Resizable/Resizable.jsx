@@ -223,8 +223,8 @@ export function Resizable({ label, variant = 'default', fill: fillContent = fals
       <div className="plx-resizable__content">{children}</div>
       {notice ? <span ref={bubble} role="tooltip" popover="manual" className="plx-resizable-limit">{notice}</span> : null}
       <VisuallyHidden role="status" aria-live="polite" aria-atomic="true">{announcement}</VisuallyHidden>
-      {doW ? edge('width') : null}
-      {doH ? edge('height') : null}
+      {/* one edge in one place: when the axis changes (a SplitView that stacks) the same separator stays, with its focus */}
+      {doW && doH ? <>{edge('width')}{edge('height')}</> : edge(doW ? 'width' : 'height')}
       {doW && doH ? <div className="plx-resizable__corner" aria-hidden="true" onPointerDown={drag(1, 1)} /> : null}
     </div>
   );

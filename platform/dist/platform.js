@@ -13236,7 +13236,7 @@ function Resizable({
     role: "status",
     "aria-live": "polite",
     "aria-atomic": "true"
-  }, announcement), doW ? edge('width') : null, doH ? edge('height') : null, doW && doH ? /*#__PURE__*/_react.default.createElement("div", {
+  }, announcement), doW && doH ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, edge('width'), edge('height')) : edge(doW ? 'width' : 'height'), doW && doH ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-resizable__corner",
     "aria-hidden": "true",
     onPointerDown: drag(1, 1)
@@ -81695,7 +81695,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Keyboard: the divider is a separator in the Tab order; the arrow keys step to the next size, Home and End to the
        limits. There is no size menu (owner, 2026-10-16).
      Stacked when there is no room side by side: under 900px of the split view's own width the panels stack (container
-       query), whatever the orientation.
+       query), whatever the orientation, and the divider is the stacked one: a horizontal separator under the first panel
+       that drags its height (200–500px, starting at 320) and that Up and Down move. Above 900px it is the side divider
+       again. Each orientation keeps the person's own size (issue 237).
      Room and corners (owner, 2026-10-27, splitview-design-29): the split view keeps 16px of room all around
        (--plx-comp-split-view-padding), so its panels never touch the rest of the screen. Both panels round their outer
        corners by the same 6px (--plx-comp-split-view-radius, shape-md), and the corners at the divider are square, side
@@ -81733,6 +81735,9 @@ function SplitView({
   const [lo, hi, start] = LIMITS[side ? 'side-by-side' : 'stacked'];
   const container = _react.default.useRef(null);
   const [available, setAvailable] = _react.default.useState(null);
+  // stacked by its room (issue 237): under 900px a side-by-side split view stacks in CSS (the container query); its divider
+  // then becomes the stacked one, read from the layout the CSS chose, so the two never disagree
+  const [roomStacked, setRoomStacked] = _react.default.useState(false);
   _react.default.useEffect(() => {
     const element = container.current,
       win = element && element.ownerDocument.defaultView;
@@ -81741,6 +81746,8 @@ function SplitView({
       const panels = element.firstElementChild,
         second = panels && panels.lastElementChild;
       const horizontal = side && panels && win.getComputedStyle(panels).flexDirection === 'row';
+      // never while a divider is dragged: the switch waits for the drag to end (the pointerup below measures again)
+      if (!/\bis-resizing-/.test(element.ownerDocument.documentElement.className)) setRoomStacked(side && !!panels && !horizontal);
       if (!horizontal || !second) {
         setAvailable(null);
         return;
@@ -81757,16 +81764,35 @@ function SplitView({
     const observer = win.ResizeObserver ? new win.ResizeObserver(measure) : null;
     if (observer) observer.observe(element);
     win.addEventListener('resize', measure);
+    const settle = () => win.requestAnimationFrame(measure); // after a drag ends, a switch it held back happens
+    win.addEventListener('pointerup', settle, true);
+    win.addEventListener('pointercancel', settle, true);
     return () => {
       if (observer) observer.disconnect();
       win.removeEventListener('resize', measure);
+      win.removeEventListener('pointerup', settle, true);
+      win.removeEventListener('pointercancel', settle, true);
     };
   }, [side, minSize, lo]);
   const requestedMax = maxSize ?? hi;
   const constrained = side && available && available.max < requestedMax;
   const widthMax = constrained ? available.max : requestedMax;
-  const box = side ? {
+  const [,, stackedStart] = LIMITS.stacked;
+  const box = side && roomStacked
+  // stacked by its room: the stacked divider, its height limits and start, a horizontal separator that Up and Down move
+  ? {
+    axis: 'vertical',
+    defaultWidth: defaultSize != null ? defaultSize : start,
+    minWidth: minSize || lo,
+    maxWidth: requestedMax,
+    defaultHeight: stackedStart,
+    minHeight: LIMITS.stacked[0],
+    maxHeight: LIMITS.stacked[1]
+  } : side ? {
     axis: 'horizontal',
+    defaultHeight: stackedStart,
+    minHeight: LIMITS.stacked[0],
+    maxHeight: LIMITS.stacked[1],
     defaultWidth: defaultSize != null ? defaultSize : start,
     width: size,
     minWidth: minSize || lo,
