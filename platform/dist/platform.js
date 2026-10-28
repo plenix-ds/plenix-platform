@@ -959,6 +959,7 @@ exports.formatRelative = formatRelative;
 exports.formatTime = formatTime;
 exports.formatUnit = formatUnit;
 exports.numeralLocale = numeralLocale;
+exports.parseDate = parseDate;
 exports.regionName = regionName;
 /* Plenix · Formatting (platform/utils/format.js)
    Summary: Numbers, units, dates, times, money, percentages, names, addresses and phone numbers written the same way on
@@ -1004,6 +1005,9 @@ exports.regionName = regionName;
      formatPhone(e164, { display }):a phone number stored as E.164 ("+14155550123"), "international" (default) or
        "national" ("(415) 555-0123")
      dateTimeAttr(date): the machine-readable value for <time dateTime={…}>
+     parseDate(value): the Date every helper here reads: a Date as is, a date-only "YYYY-MM-DD" as that calendar day
+       where the reader is (never midnight UTC, which is the day before in the Americas), else new Date(value); null when
+       it is not a date. Components that read a date use it, so no component parses dates itself (issue 342)
      FORMATS: the standard's data (see platform/standards/formats.json)
    Behavior:
      Nothing is cached per locale beyond the Intl formatter objects; every call reads the locale unless one is given.
@@ -1073,7 +1077,7 @@ const FORMATS = exports.FORMATS = {
 };
 const ok = n => typeof n === 'number' && isFinite(n);
 // A date-only value is a calendar date in the reader's zone, not midnight UTC (DT-7).
-const toDate = d => {
+function parseDate(d) {
   if (typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d)) {
     const [year, month, day] = d.split('-').map(Number),
       x = new Date(0);
@@ -1083,7 +1087,8 @@ const toDate = d => {
   }
   const x = d instanceof Date ? d : new Date(d);
   return isNaN(x.getTime()) ? null : x;
-};
+}
+const toDate = parseDate;
 function formatLocale() {
   const lang = typeof document !== 'undefined' && document.documentElement && document.documentElement.getAttribute('lang');
   if (lang) return lang;
@@ -44884,11 +44889,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Other props pass through to the <time>.
 */
 const FORMATS = ['datetime', 'relative', 'label', 'date', 'time'];
-const toDate = v => {
-  if (v === undefined || v === null || v === '') return null;
-  const d = v instanceof Date ? v : new Date(v);
-  return isNaN(d.getTime()) ? null : d;
-};
+// the shared parser: a date-only value is that calendar day where the reader is, never midnight UTC (issue 342)
+const toDate = v => v === undefined || v === null || v === '' ? null : (0, _format.parseDate)(v);
 const dayStart = d => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
 const pad = n => (n < 10 ? '0' : '') + n;
 const calendarDay = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
@@ -67580,9 +67582,6 @@ function fileIcon(name, type) {
   if (/^text\//.test(type || '')) return 'doc-text';
   return 'document';
 }
-
-// a calendar day written YYYY-MM-DD is that day where the reader is (new Date('2026-10-14') would be midnight UTC)
-const day = v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) ? new Date(+v.slice(0, 4), +v.slice(5, 7) - 1, +v.slice(8, 10)) : v;
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 function Picture({
   src,
@@ -67635,7 +67634,7 @@ function File({
   if (folder && typeof count === 'number') facts.push(fill(count === 1 ? t.item : t.items, {
     n: (0, _format.formatNumber)(count)
   }));
-  if (modified) facts.push((0, _format.formatDate)(day(modified), {
+  if (modified) facts.push((0, _format.formatDate)(modified, {
     dateStyle: 'short'
   }));
   const text = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("span", {
@@ -67764,8 +67763,6 @@ const STRINGS = {
   items: '{n} items',
   item: '{n} item'
 };
-// a calendar day written YYYY-MM-DD is that day where the reader is (new Date('2026-10-14') would be midnight UTC)
-const day = v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) ? new Date(+v.slice(0, 4), +v.slice(5, 7) - 1, +v.slice(8, 10)) : v;
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 function FileRow({
   file,
@@ -67933,7 +67930,7 @@ function FileFacts({
   }, size), file.modified ? /*#__PURE__*/_react.default.createElement("time", {
     className: "plx-file-row__cell plx-file-row__date",
     dateTime: typeof file.modified === 'string' ? file.modified : (0, _format.dateTimeAttr)(file.modified)
-  }, (0, _format.formatDate)(day(file.modified), {
+  }, (0, _format.formatDate)(file.modified, {
     dateStyle: 'medium'
   })) : null);
 }
@@ -69950,8 +69947,6 @@ const STRINGS = {
   done: '{service} connected',
   undone: '{service} disconnected'
 };
-// a calendar day written YYYY-MM-DD is that day where the reader is (new Date('2026-10-14') would be midnight UTC)
-const day = v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) ? new Date(+v.slice(0, 4), +v.slice(5, 7) - 1, +v.slice(8, 10)) : v;
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 const STATUS = {
   connected: ['success', 'check'],
@@ -70031,7 +70026,7 @@ function ConnectedAccount({
   }, a.account)) : null, a.account && a.connectedAt ? ', ' : null, a.connectedAt ? around(t.since, 'date', /*#__PURE__*/_react.default.createElement("time", {
     className: "plx-connected-accounts__date",
     dateTime: typeof a.connectedAt === 'string' ? a.connectedAt : (0, _format.dateTimeAttr)(a.connectedAt)
-  }, (0, _format.formatDate)(day(a.connectedAt)))) : null) : null, status === 'error' && a.error ? /*#__PURE__*/_react.default.createElement("p", {
+  }, (0, _format.formatDate)(a.connectedAt))) : null) : null, status === 'error' && a.error ? /*#__PURE__*/_react.default.createElement("p", {
     className: "plx-connected-accounts__error"
   }, a.error) : null), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-connected-accounts__actions"
