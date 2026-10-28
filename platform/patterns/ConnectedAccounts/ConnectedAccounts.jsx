@@ -67,8 +67,6 @@ const STRINGS = {
   continue: 'Continue to {service}', disconnectTitle: 'Disconnect {service}?', disconnectMessage: 'You can connect it again at any time.',
   done: '{service} connected', undone: '{service} disconnected',
 };
-// a calendar day written YYYY-MM-DD is that day where the reader is (new Date('2026-10-14') would be midnight UTC)
-const day = (v) => (typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) ? new Date(+v.slice(0, 4), +v.slice(5, 7) - 1, +v.slice(8, 10)) : v);
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const STATUS = { connected: ['success', 'check'], disconnected: ['neutral', 'link'], error: ['negative', 'alert'] };
 // a sentence with a node in place of {key}: the words around it stay in the UI font
@@ -107,7 +105,7 @@ export function ConnectedAccount({ account, onConnect, onDisconnect, onReconnect
           <p className="plx-connected-accounts__detail">
             {a.account ? around(t.as, 'account', <Text variant="data">{a.account}</Text>) : null}
             {a.account && a.connectedAt ? ', ' : null}
-            {a.connectedAt ? around(t.since, 'date', <time className="plx-connected-accounts__date" dateTime={typeof a.connectedAt === 'string' ? a.connectedAt : dateTimeAttr(a.connectedAt)}>{formatDate(day(a.connectedAt))}</time>) : null}
+            {a.connectedAt ? around(t.since, 'date', <time className="plx-connected-accounts__date" dateTime={typeof a.connectedAt === 'string' ? a.connectedAt : dateTimeAttr(a.connectedAt)}>{formatDate(a.connectedAt)}</time>) : null}
           </p>
         ) : null}
         {status === 'error' && a.error ? <p className="plx-connected-accounts__error">{a.error}</p> : null}

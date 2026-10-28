@@ -49,5 +49,22 @@ check('address', () => {
 });
 check('phone', () => { eq(F.formatPhone('+14155550123'), '+1 415 555 0123'); eq(F.formatPhone('+14155550123', { display: 'national' }), '(415) 555-0123'); eq(F.formatPhone('+33612345678'), '+33 6 12 34 56 78'); eq(F.formatPhone('+4930123456'), '+49 301 234 56'); eq(F.formatPhone('0123'), '0123'); });
 
+// #342: a date-only value is that calendar day where the reader is, in a US zone too (UTC midnight is the day before there)
+check('parseDate: a date-only value stays its calendar day in a US time zone #342', () => {
+  const zone = process.env.TZ; process.env.TZ = 'America/Los_Angeles';
+  try {
+    const x = F.parseDate('2026-10-18');
+    assert.ok(x && x.getFullYear() === 2026 && x.getMonth() === 9 && x.getDate() === 18, 'parseDate gave ' + (x && x.toString()));
+    eq(F.formatDate('2026-10-18', us), 'Oct 18, 2026');
+  } finally { if (zone === undefined) delete process.env.TZ; else process.env.TZ = zone; }
+});
+check('parseDate: Time and the file and account parts read dates through it, never on their own #342', () => {
+  for (const f of ['components/Time/Time.jsx', 'components/File/File.jsx', 'components/FileRow/FileRow.jsx', 'patterns/ConnectedAccounts/ConnectedAccounts.jsx']) {
+    const text = fs.readFileSync(path.join(ROOT, 'platform', f), 'utf8');
+    assert.ok(!/new Date\((v|value|modified|connectedAt)\)|new Date\(\+v\.slice/.test(text), f + ' parses a date itself');
+  }
+  assert.ok(/parseDate\(/.test(fs.readFileSync(path.join(ROOT, 'platform', 'components/Time/Time.jsx'), 'utf8')), 'Time does not use parseDate');
+});
+
 console.log(failed ? '\n' + failed + ' failed, ' + passed + ' passed' : 'FORMATS_OK (' + passed + ' checks)');
 process.exit(failed ? 1 : 0);
