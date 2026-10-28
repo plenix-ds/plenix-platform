@@ -5,6 +5,7 @@
 // (reset, owner 2026-10-26: the style audit is checked once, by Pages: pages.test.js)
 //   node tests/utilities.test.js       (UTILITIES_PORT or TEST_PORT picks the port; default 8831)   → UTILITIES_OK
 //   TEST_SCOPE=full: always; by default (tests/changed.js) when a utility, its page, a global file or this test changed
+const shared = require('./check.js');   // the shared check helper: parts (TEST_ONLY) and the results file (TEST_RESULTS)
 const { serve, launch, sleep } = require('./lib.js');
 const changed = require('./changed.js');
 
@@ -14,7 +15,7 @@ changed.report('every utility');
 const BASE = 'http://127.0.0.1:' + PORT + '/Plenix/';
 const site = require('./site.js');
 let failed = 0, passed = 0;
-const check = (name, ok, info) => { if (ok) passed++; else { failed++; console.log('FAIL ' + name + (info !== undefined ? ': ' + JSON.stringify(info) : '')); } };
+const check = (name, ok, info) => { if (!shared.check(name, ok, info)) return; if (ok) passed++; else { failed++; console.log('FAIL ' + name + (info !== undefined ? ': ' + JSON.stringify(info) : '')); } };
 
 (async () => {
   const server = await serve(PORT);

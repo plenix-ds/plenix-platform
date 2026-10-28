@@ -1,0 +1,9 @@
+{ "results": [
+ { "test": "keyboard", "part": "Toolbar", "name": "Toolbar: Arrow Right moves to the next control", "ok": false, "detail": "button-1 -> button-1", "at": "2026-10-28T01:00:00Z" },
+ { "test": "keyboard", "part": "Tabs", "name": "Tabs: Home goes to the first tab", "ok": true, "detail": "", "at": "2026-10-28T01:00:01Z" },
+ { "test": "login", "part": "Sign-in", "name": "Sign-in: wrong password: 401, generic message, no cookie", "ok": false, "detail": "200", "at": "2026-10-28T01:01:00Z" },
+ { "test": "login", "part": "Lockout", "name": "Lockout: other accounts still sign in", "ok": false, "detail": "429", "at": "2026-10-28T01:01:05Z" },
+ { "test": "login", "part": "Lockout", "name": "Lockout: other accounts still sign in", "ok": true, "detail": "", "at": "2026-10-28T01:01:09Z" },
+ { "test": "data-grid", "part": "Sort", "name": "Sort: a click sorts the column", "ok": false, "detail": "order unchanged", "at": "2026-10-28T01:02:00Z" },
+ { "test": "formats", "part": "", "name": "number", "ok": false, "detail": "expected 1,234,567.891", "at": "2026-10-28T01:03:00Z" }
+] }

@@ -4,6 +4,9 @@
 //   node tests/run.js                      every automatic test, changed mode (npm test)
 //   node tests/run.js --full               every automatic test, every page (npm run test:full)
 //   node tests/run.js pages typography     only these tests (the CI matrix groups)
+//   node tests/run.js keyboard:Toolbar,Tabs pages   only some parts of a test: the checks whose name starts with "Toolbar:" or
+//                                          "Tabs:" (tests/check.js, TEST_ONLY); the test still runs once. tests/parts.json lists each
+//                                          test's parts. TEST_RESULTS=<file> collects every counted check (tools/file-failures.js)
 //   node tests/run.js --on-demand          the on-demand tests only (npm run test:on-demand; add --full for every page)
 // Where (owner, 2026-10-25: "make the test site ... no longer using the design spec for testing"): the browser tests open the
 // St. John the Beloved test site (test-site/, tests/site.js) and the suite applications, never the design spec.
@@ -25,7 +28,12 @@ const ALL = AUTOMATIC.concat(ON_DEMAND, SPEC_ONLY);
 const args = process.argv.slice(2);
 const full = args.includes('--full');
 const onDemand = args.includes('--on-demand');
-const names = args.filter((a) => !/^--/.test(a));
+// a name may carry its parts: keyboard:Toolbar,Tabs (the parts are passed to that test only, as TEST_ONLY)
+const parts = {};
+const names = args.filter((a) => !/^--/.test(a)).map((a) => {
+  const i = a.indexOf(':'); if (i < 0) return a;
+  const n = a.slice(0, i); parts[n] = a.slice(i + 1).split(',').map((x) => x.trim()).filter(Boolean); return n;
+});
 const bad = names.filter((n) => ALL.indexOf(n) < 0);
 if (bad.length) { console.error('No such test: ' + bad.join(', ') + ' (tests: ' + ALL.join(', ') + ')'); process.exit(2); }
 const env = Object.assign({}, process.env, full ? { TEST_SCOPE: 'full' } : {});
@@ -35,7 +43,9 @@ const t0 = Date.now();
 for (const n of list) {
   const t = Date.now();
   console.log('\n── ' + n + (full ? ' (full)' : ''));
-  const r = spawnSync(process.execPath, [path.join(__dirname, n + '.test.js')], { stdio: 'inherit', env });
+  const only = parts[n] && parts[n].length ? parts[n].join(',') : '';
+  if (only) console.log('   parts: ' + only);
+  const r = spawnSync(process.execPath, [path.join(__dirname, n + '.test.js')], { stdio: 'inherit', env: Object.assign({}, env, { TEST_ONLY: only }) });
   const s = ((Date.now() - t) / 1000).toFixed(1);
   times.push(n + ' ' + s + 's');
   if (r.status !== 0) failed.push(n);

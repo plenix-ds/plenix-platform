@@ -3,6 +3,7 @@
 // dark, read from the token source (platform/tokens/*.tokens.json) with the palette resolved. Also checks the functions on
 // known values. No browser; the repository is never changed.
 //   node tests/contrast.test.js           ALL=1 node tests/contrast.test.js   (print every pair with its ratio)
+const shared = require('./check.js');   // the shared check helper: parts (TEST_ONLY) and the results file (TEST_RESULTS)
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
@@ -10,7 +11,7 @@ require('./limit.js');   // the hard time limit (TEST_TIMEOUT_MS)
 
 const ROOT = path.join(__dirname, '..');
 const TOK = path.join(ROOT, 'platform', 'tokens');
-const res = [], check = (n, ok, d) => res.push([n, ok, d]);
+const res = [], check = (n, ok, d) => { if (shared.check(n, ok, d)) res.push([n, ok, d]); };
 
 // the module, run as a script (its exports become globals of the context)
 const src = fs.readFileSync(path.join(ROOT, 'platform', 'utils', 'contrast.js'), 'utf8').replace(/^export (const|function) /gm, '$1 ');

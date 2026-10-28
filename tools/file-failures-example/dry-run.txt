@@ -1,0 +1,7 @@
+$ node tools/file-failures.js --results tools/file-failures-example/results.json --dry-run --open-issues tools/file-failures-example/open-issues.json --run https://github.com/example/requests/issues/31 --commit abc1234
+7 results, 6 checks, 4 still failing
+DRY: new issue [bug, qa, area:library] Test failure: keyboard · Toolbar: Arrow Right moves to the next control
+DRY: comment on #480 (login · Sign-in: wrong password: 401, generic message, no cookie)
+DRY: new issue [bug, qa, area:datatable] Test failure: data-grid · Sort: a click sorts the column
+DRY: new issue [bug, qa, area:design] Test failure: formats · number
+exit 0
