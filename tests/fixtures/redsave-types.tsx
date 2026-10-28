@@ -13,6 +13,10 @@ const columns = [{ title: 'Name', field: 'name', kind: 'name' }, { title: 'Statu
 export const grid = <DataGrid label="Records" data={rows} columns={columns} />;
 export const alias = <DataTable label="Records" data={rows} columns={columns} />;
 
+// rowMenu is one fixed list or one list per row: (record) => items (#455)
+export const rowMenuList = <DataGrid label="Records" data={rows} columns={columns} rowMenu={[{ label: 'Open', onSelect: (record: Row) => record.id }, { separator: true }, { label: 'Delete', danger: true }]} />;
+export const rowMenuPerRow = <DataGrid label="Records" data={rows} columns={columns} rowMenu={(record: Row) => (record.status === 'open' ? [{ label: 'Close' }] : [{ label: 'Reopen' }])} />;
+
 // Tabs onChange receives the tab's value, not a DOM event
 export function TabsUse() {
   const [tab, setTab] = React.useState('info');
