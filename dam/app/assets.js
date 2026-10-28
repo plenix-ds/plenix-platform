@@ -7643,9 +7643,12 @@ function mount(el) {
   if (!render || el.hasAttribute('data-plx-mounted')) return;
   const tree = render(el); // read the markup before React replaces it
   el.setAttribute('data-plx-mounted', '');
-  (0, _client.createRoot)(el).render(/*#__PURE__*/_react.default.createElement(_plenixPlatform.ThemeProvider, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.SessionProvider, {
+  // each island reads the page's own direction (<html dir>) as context; nothing on the page changes (#262)
+  (0, _client.createRoot)(el).render(/*#__PURE__*/_react.default.createElement(_plenixPlatform.DirectionProvider, {
+    follow: true
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.ThemeProvider, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.SessionProvider, {
     session: _session.SUITE_SESSION
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.ToastProvider, null, tree))));
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.ToastProvider, null, tree)))));
 }
 function mountAll(root) {
   root.querySelectorAll('[data-plx-mount]').forEach(mount);
