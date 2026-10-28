@@ -1001,3 +1001,6 @@
 .plx-icon--wifi-off,.plx-icon--wifi_off{--plx-comp-icon-filled:var(--plx-comp-icon-auto-wifi-off-fill,var(--plx-comp-icon-glyph-wifi-off-fill));--plx-comp-icon-filled-24:var(--plx-comp-icon-glyph-wifi-off-24-fill);--plx-comp-icon-outline:var(--plx-comp-icon-auto-wifi-off,var(--plx-comp-icon-glyph-wifi-off));--plx-comp-icon-outline-24:var(--plx-comp-icon-glyph-wifi-off-24);}
 /* right to left: the directional icons mirror (Material Symbols' bidirectional set); scale, so a rotation on the icon still applies (batch 213) */
 .plx-icon--arrow-left:dir(rtl),.plx-icon--chevron-left:dir(rtl),.plx-icon--chevron_left:dir(rtl),.plx-icon--chevron-right:dir(rtl),.plx-icon--chevron_right:dir(rtl),.plx-icon--ed-redo:dir(rtl),.plx-icon--ed-undo:dir(rtl),.plx-icon--panel-left-close:dir(rtl),.plx-icon--panel-left-open:dir(rtl),.plx-icon--panel-right-close:dir(rtl),.plx-icon--panel-right-open:dir(rtl),.plx-icon--triangle-right:dir(rtl){scale:-1 1;}
+/* an imported icon module outside the Plenix set that points along the reading direction (its mirrored flag; issue 281):
+   the Icon component marks it plx-icon--mirrored, and it mirrors the same way */
+.plx-icon--mirrored:dir(rtl){scale:-1 1;}
