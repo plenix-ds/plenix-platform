@@ -6910,7 +6910,78 @@ function ButtonGroup({
   })));
 }
   } },
-  "platform/utils/layer.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/utils/scrollLock.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.isScrollLocked = isScrollLocked;
+exports.lockScroll = lockScroll;
+exports.scrollLockCount = scrollLockCount;
+exports.useScrollLock = useScrollLock;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · scroll lock (platform/utils/scrollLock.js): stops a scroll container scrolling while a modal layer covers it.
+   Summary: lockScroll(target) locks the page (the html element) or one scroll container and returns the function that
+     releases it; useScrollLock(active, ref) does the same for as long as a component asks. Locks are counted per target,
+     so nested modals release the page only when the last one closes.
+   Usage:
+     import { useScrollLock, lockScroll } from 'plenix-platform';
+     useScrollLock(open);                          // the page, while open
+     useScrollLock(open, listRef);                 // one scroll container
+     const release = lockScroll(); … release();    // outside React
+   Props:
+     lockScroll(target?): target is an element (default document.documentElement); returns release(), safe to call twice
+     useScrollLock(active, ref?): locks while active is true; ref (a React ref) names the container, else the page
+     isScrollLocked(target?): true while the target holds a lock
+     scrollLockCount(target?): how many locks the target holds
+   Behavior:
+     A locked target carries data-plx-scroll-lock="locked" and system/scroll-lock.css stops it scrolling: overflow hidden in
+     both directions, the scrollbar's space kept (scrollbar-gutter: stable) so nothing shifts, overscroll contained. The
+     scroll position is not touched, so it is exactly where it was when the lock is released. Content inside the modal
+     scrolls as usual.
+   Notes:
+     Only for modal layers (Dialog, a modal drawer or sheet, a full-screen overlay): never for menus, popovers, tooltips or
+     toasts. Pair it with the modal's focus trap (utils/layer.js) so assistive technology also stays inside. */
+
+const ATTR = 'data-plx-scroll-lock';
+const counts = new Map();
+const pageOf = target => target || (typeof document !== 'undefined' ? document.documentElement : null);
+function lockScroll(target) {
+  const el = pageOf(target);
+  if (!el) return () => {};
+  const n = (counts.get(el) || 0) + 1;
+  counts.set(el, n);
+  if (n === 1) el.setAttribute(ATTR, 'locked');
+  let released = false;
+  return function release() {
+    if (released) return;
+    released = true;
+    const left = (counts.get(el) || 1) - 1;
+    if (left > 0) {
+      counts.set(el, left);
+      return;
+    }
+    counts.delete(el);
+    el.removeAttribute(ATTR);
+  };
+}
+function isScrollLocked(target) {
+  return (counts.get(pageOf(target)) || 0) > 0;
+}
+function scrollLockCount(target) {
+  return counts.get(pageOf(target)) || 0;
+}
+function useScrollLock(active, ref) {
+  _react.default.useEffect(() => {
+    if (!active) return undefined;
+    if (ref && !ref.current) return undefined;
+    return lockScroll(ref ? ref.current : undefined);
+  }, [active, ref]);
+}
+  } },
+  "platform/utils/layer.js": { deps: {"react":null,"./scrollLock.js":"platform/utils/scrollLock.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -6920,6 +6991,7 @@ exports.focusables = focusables;
 exports.useLayer = useLayer;
 exports.useUid = useUid;
 var _react = _interopRequireDefault(require("react"));
+var _scrollLock = require("./scrollLock.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · layers (platform/utils/layer.js). Internal; not part of the public API.
    Every open menu, dialog, drawer and media viewer is a layer. Escape closes only the topmost layer, so Escape in a menu
@@ -6927,7 +6999,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
    when it opens (initialFocus: a ref, or a function that returns the element) and returns focus to the element that opened it when it closes. */
 
 const stack = [];
-let modalCount = 0;
 const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]):not([type="hidden"]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
 function focusables(root) {
   if (!root) return [];
@@ -6947,9 +7018,10 @@ function useLayer(ref, open, {
     };
     stack.push(entry);
     const opener = document.activeElement;
+    // a modal layer stops the page scrolling with the shared scroll lock (utils/scrollLock.js: counted, so stacked layers
+    // release the page only when the last one closes; system/scroll-lock.css keeps the scrollbar's space)
+    const release = modal ? (0, _scrollLock.lockScroll)() : null;
     if (modal) {
-      if (modalCount === 0) document.documentElement.classList.add('is-scroll-locked');
-      modalCount += 1;
       const root = ref.current;
       const wanted = typeof initialFocus === 'function' ? initialFocus() : initialFocus && initialFocus.current;
       const first = wanted || focusables(root)[0] || root;
@@ -6993,9 +7065,8 @@ function useLayer(ref, open, {
     return () => {
       document.removeEventListener('keydown', onKey, true);
       stack.splice(stack.indexOf(entry), 1);
+      if (release) release();
       if (modal) {
-        modalCount -= 1;
-        if (modalCount === 0) document.documentElement.classList.remove('is-scroll-locked');
         if (opener && opener.focus && document.contains(opener)) opener.focus({
           preventScroll: true
         });
@@ -10405,10 +10476,10 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        pointer, kept inside the window (useFloating's point); Shift+F10 or the Menu key opens it at the target's start
        edge, below it. Focus moves to the first item; Escape, Tab, a choice or a click outside close it and return
        focus to where it was. It renders in the top layer (Portal), so a scroll area or a dialog never clips it.
-     The menu opens on top of everything (batch 272): in the browser's top layer (popover), placed beside its trigger by CSS
-       anchor positioning, so no card, pane or scroll area can cover or clip it. The trigger's wrapper scopes the anchor, so
-       each menu finds its own trigger; near an edge the menu flips to the other side. A browser without anchor
-       positioning draws it inside the wrapper as before.
+     The menu opens on top of everything (batch 272): in the browser's top layer (popover), placed beside its trigger by
+       useFloating (CSS anchor positioning), so no card, pane or scroll area can cover or clip it, and it follows the
+       trigger on scroll and resize; near an edge the menu flips to the other side. A submenu is placed the same way at its
+       item's end edge. A browser without anchor positioning draws them inside the wrapper as before.
    Notes:
      Menus are border-only (no shadow, D9); dialogs keep their shadow.
      A context menu is a shortcut: every action in it is also reachable another way (a toolbar, a row's More menu).
@@ -10453,6 +10524,11 @@ function Menu({
   }, []);
   (0, _layer.useLayer)(list, open, {
     onEscape: () => close(true)
+  });
+  // placed against its trigger's wrapper by useFloating (anchor positioning, in the top layer); without it, drawn inside the wrapper
+  (0, _floating.useFloating)(wrap, list, {
+    open: open && TOP_LAYER,
+    placement
   });
   // into the top layer as soon as it is in the page (before the first item takes focus)
   _react.default.useLayoutEffect(() => {
@@ -10637,6 +10713,12 @@ function MenuSub({
   }, []);
   (0, _layer.useLayer)(list, open, {
     onEscape: back
+  });
+  // at the item's end edge, level with it (useFloating end-top; the gap is the menu's own, menu.css)
+  (0, _floating.useFloating)(item, list, {
+    open: open && TOP_LAYER,
+    placement: 'end-top',
+    offset: 'none'
   });
   _react.default.useLayoutEffect(() => {
     const el = list.current;
@@ -13478,7 +13560,7 @@ function PageContent({
   }, rest), children);
 }
   } },
-  "platform/components/Sheet/Sheet.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/Sheet/Sheet.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../hooks/useGesture.js":"platform/hooks/useGesture.js","../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -13492,6 +13574,7 @@ var _layer = require("../../utils/layer.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _Button = require("../Button/Button.jsx");
 var _Dialog = require("../Dialog/Dialog.jsx");
+var _useGesture = require("../../hooks/useGesture.js");
 var _AppShell = require("../../patterns/AppShell/AppShell.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · Sheet
@@ -13528,7 +13611,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        the sheet is open, and returns to the opener when it closes.
      Escape and a click on the scrim close it, unless dismissible is false.
      The grabber is a button: pressing it moves between the medium and large heights; dragging it up opens the large
-       height, dragging it down returns to the medium height or, from there, closes the sheet.
+       height, dragging it down returns to the medium height or, from there, closes the sheet (the drag is useGesture's pan).
      Only one sheet shows at a time: a sheet opened while another is open shows in its place, and the first returns when
        it closes.
      The page does not scroll while the sheet is open.
@@ -13623,6 +13706,19 @@ function Sheet({
     initialFocus: firstFocus
   });
   const task = !!onDone;
+  // the grabber's drag (the shared gesture hook; a press is the button's click): a drag of at least half the grabber's height
+  // up opens the large height, down returns to the medium height or, from there, closes the sheet; a canceled drag does nothing
+  const grabber = _react.default.useRef(null);
+  (0, _useGesture.useGesture)(grabber, {
+    disabled: !(shown && bottom),
+    axis: 'both',
+    onPanEnd: g => {
+      const el = grabber.current;
+      if (g.canceled || !el || Math.abs(g.dy) < el.offsetHeight / 2) return; // a press: the click toggles
+      el.dataset.plxDragged = 'true';
+      if (g.dy < 0) setHeight('large');else if (height === 'large') setHeight('medium');else if (dismissible && onClose) onClose();
+    }
+  });
   if (!shown) return null;
   if (!bottom) {
     // the side sheet (Medium) and the dialog (Wide): Close in the header; Cancel and Done after the caller's footer actions
@@ -13651,23 +13747,15 @@ function Sheet({
     }, actions) : null, children);
   }
 
-  // the grabber: a press moves between the two heights; a drag up opens the large height, a drag down shrinks or closes
+  // the grabber: a press moves between the two heights (its drag is the gesture above)
   const toggle = () => setHeight(height === 'medium' ? 'large' : 'medium');
-  const onGrab = e => {
-    if (e.button !== 0) return;
-    const y0 = e.clientY,
-      el = e.currentTarget,
-      step = el.offsetHeight;
-    el.setPointerCapture(e.pointerId);
-    const up = ev => {
-      el.removeEventListener('pointerup', up);
-      const dy = ev.clientY - y0;
-      if (Math.abs(dy) < step / 2) return; // a press: the click toggles
-      ev.preventDefault();
-      el.dataset.plxDragged = 'true';
-      if (dy < 0) setHeight('large');else if (height === 'large') setHeight('medium');else if (dismissible && onClose) onClose();
-    };
-    el.addEventListener('pointerup', up);
+  // capture the pointer at once, so a quick flick that leaves the grabber before the gesture's slop is still followed to its release
+  const onGrabDown = e => {
+    if (e.button === 0) {
+      try {
+        e.currentTarget.setPointerCapture(e.pointerId);
+      } catch (err) {/* the pointer is gone */}
+    }
   };
   const onGrabClick = e => {
     if (e.currentTarget.dataset.plxDragged) {
@@ -13691,10 +13779,11 @@ function Sheet({
     tabIndex: -1,
     className: (0, _cx.cx)('plx-sheet', 'plx-sheet--' + height, task && 'plx-sheet--task', className)
   }, /*#__PURE__*/_react.default.createElement("button", {
+    ref: grabber,
     type: "button",
     className: "plx-sheet__grabber",
     "aria-label": height === 'medium' ? t.expand : t.shrink,
-    onPointerDown: onGrab,
+    onPointerDown: onGrabDown,
     onClick: onGrabClick
   }), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-sheet__header"
@@ -42192,77 +42281,6 @@ function meetsContrast(ratio, rule = 'text') {
   const min = CONTRAST_MINIMUMS[rule];
   if (min == null) throw new Error('meetsContrast: no rule "' + rule + '" (text, large-text, enhanced, non-text)');
   return ratio >= min;
-}
-  } },
-  "platform/utils/scrollLock.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.isScrollLocked = isScrollLocked;
-exports.lockScroll = lockScroll;
-exports.scrollLockCount = scrollLockCount;
-exports.useScrollLock = useScrollLock;
-var _react = _interopRequireDefault(require("react"));
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · scroll lock (platform/utils/scrollLock.js): stops a scroll container scrolling while a modal layer covers it.
-   Summary: lockScroll(target) locks the page (the html element) or one scroll container and returns the function that
-     releases it; useScrollLock(active, ref) does the same for as long as a component asks. Locks are counted per target,
-     so nested modals release the page only when the last one closes.
-   Usage:
-     import { useScrollLock, lockScroll } from 'plenix-platform';
-     useScrollLock(open);                          // the page, while open
-     useScrollLock(open, listRef);                 // one scroll container
-     const release = lockScroll(); … release();    // outside React
-   Props:
-     lockScroll(target?): target is an element (default document.documentElement); returns release(), safe to call twice
-     useScrollLock(active, ref?): locks while active is true; ref (a React ref) names the container, else the page
-     isScrollLocked(target?): true while the target holds a lock
-     scrollLockCount(target?): how many locks the target holds
-   Behavior:
-     A locked target carries data-plx-scroll-lock="locked" and system/scroll-lock.css stops it scrolling: overflow hidden in
-     both directions, the scrollbar's space kept (scrollbar-gutter: stable) so nothing shifts, overscroll contained. The
-     scroll position is not touched, so it is exactly where it was when the lock is released. Content inside the modal
-     scrolls as usual.
-   Notes:
-     Only for modal layers (Dialog, a modal drawer or sheet, a full-screen overlay): never for menus, popovers, tooltips or
-     toasts. Pair it with the modal's focus trap (utils/layer.js) so assistive technology also stays inside. */
-
-const ATTR = 'data-plx-scroll-lock';
-const counts = new Map();
-const pageOf = target => target || (typeof document !== 'undefined' ? document.documentElement : null);
-function lockScroll(target) {
-  const el = pageOf(target);
-  if (!el) return () => {};
-  const n = (counts.get(el) || 0) + 1;
-  counts.set(el, n);
-  if (n === 1) el.setAttribute(ATTR, 'locked');
-  let released = false;
-  return function release() {
-    if (released) return;
-    released = true;
-    const left = (counts.get(el) || 1) - 1;
-    if (left > 0) {
-      counts.set(el, left);
-      return;
-    }
-    counts.delete(el);
-    el.removeAttribute(ATTR);
-  };
-}
-function isScrollLocked(target) {
-  return (counts.get(pageOf(target)) || 0) > 0;
-}
-function scrollLockCount(target) {
-  return counts.get(pageOf(target)) || 0;
-}
-function useScrollLock(active, ref) {
-  _react.default.useEffect(() => {
-    if (!active) return undefined;
-    if (ref && !ref.current) return undefined;
-    return lockScroll(ref ? ref.current : undefined);
-  }, [active, ref]);
 }
   } },
   "platform/components/Code/Code.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {

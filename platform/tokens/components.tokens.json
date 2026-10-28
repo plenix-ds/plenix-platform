@@ -3885,22 +3885,6 @@
       "$value": "{plx-sys.space-inset-sm}",
       "$type": "dimension"
     },
-    "menu-popover-bottom-start-margin-block-start": {
-      "$value": "{plx-sys.space-inset-xs}",
-      "$type": "dimension"
-    },
-    "menu-popover-bottom-end-margin-block-start": {
-      "$value": "{plx-sys.space-inset-xs}",
-      "$type": "dimension"
-    },
-    "menu-popover-top-start-margin-block-end": {
-      "$value": "{plx-sys.space-inset-xs}",
-      "$type": "dimension"
-    },
-    "menu-popover-top-end-margin-block-end": {
-      "$value": "{plx-sys.space-inset-xs}",
-      "$type": "dimension"
-    },
     "app-header-accent-brand": {
       "$value": "{plx-sys.accent-content}",
       "$type": "color",
