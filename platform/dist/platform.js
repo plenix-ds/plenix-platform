@@ -11258,7 +11258,367 @@ function gridWithin(px, min, max, opts) {
   })));
 }
   } },
-  "platform/components/Input/Input.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/floating.js":"platform/utils/floating.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Stack/Stack.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Bleed = Bleed;
+exports.Center = Center;
+exports.Inline = Inline;
+exports.Stack = Stack;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Stack, Inline, Center, Bleed
+   Summary: Lay children out in a column (Stack) or a row (Inline), spaced by the spacing tokens, never by a margin or a number;
+     center a block at a readable width (Center); let a child reach past its parent's inset to the edge (Bleed).
+   Usage:
+     <Stack gap="md">
+       <Inline gap="sm" justify="between">…</Inline>
+       <Inline wrap>…</Inline>
+     </Stack>
+     <Inline reverseBelow="narrow"><Main /><Summary /></Inline>    the summary comes first on a narrow window
+     <Center maxWidth="sm" text><EmptyState … /></Center>
+     <Stack inset="md"><Bleed space="md"><Image … /></Bleed><Text>…</Text></Stack>
+   Props:
+     Stack.gap: "none" | "xs" | "sm" | "md" (default) | "lg" | "xl" (--plx-sys-space-stack-*) | "section" (--plx-sys-space-section)
+       Stack.equal: every child as wide as the widest (stacked buttons, owner 2026-10-22): the Stack shrinks to its widest
+       child and each Button takes its whole width; with align="end" or "center" the Stack itself sits at the end or middle
+       Peer sections that are not framed (a SectionHeading and its table, list or text, then the next): <Stack gap="section">
+       holding one <Stack gap="sm"> per section; the same in a page or a split pane, every density, either direction, phones
+     Inline.gap: "none" | "xs" | "sm" (default) | "md" | "lg" | "xl" (--plx-sys-space-inline-*)
+     Stack.align: "start" | "center" | "end" | "stretch" | "baseline" (the cross axis)
+     Inline.align: the same values; default "center"
+     Stack.justify: "start" | "center" | "end" | "between"
+     Inline.wrap: an Inline that wraps onto more lines (its lines are --plx-sys-space-stack-xs apart)
+     Stack.inset: "none" | "xs" | "sm" | "md" | "lg" | "xl" (padding on every side, --plx-sys-space-inset-*)
+     Stack.grow: fills the rest of its parent row or column (it may shrink below its content)
+     Stack.scroll: scrolls its own content
+     Stack.width: "xs" | "sm" | "md" | "lg" (a fixed width from --plx-sys-field-width-*: a field narrower than its row)
+     Stack.maxHeight: "sm" | "md" | "lg" (scrolls past --plx-sys-scroll-max-*)
+     Stack.indent: starts one inline step in (a nested group)
+     Stack.push: moves itself to the end of its row (a search box at the end of a toolbar)
+     Stack.reverse: lays the children out in the other order (column-reverse, row-reverse); the reading and Tab order stay the markup's
+     Stack.reverseBelow: "narrow" (under 600px) | "medium" (under 840px): reverses only below that window class
+     Stack.order: "first" | "last": moves this element to the start or the end of its parent Stack or Inline
+     Stack.orderBelow: "narrow" | "medium": applies order only below that window class
+     Stack.as: the element; "div" by default; ul, ol, section, header, footer, form, fieldset, …
+     Stack.className: more classes on the element
+     Stack.children: the content to lay out
+     Center.maxWidth: "sm" (400px: a sign-in form, an empty state) | "md" (default, 600px: a dialog-like page) | "lg" (900px:
+       reading) | "page" (the contained layout's maximum) | "none": the widest it grows; narrower parents keep it narrower
+     Center.intrinsic: centers each child at its own width (a column of centered children) instead of stretching it
+     Center.vertical: centers the content in its parent's height too; content taller than the parent starts at the top
+     Center.text: centers the lines of text (short headings and messages only)
+     Center.as, Center.className: as for Stack
+     Bleed.space: "xs" | "sm" | "md" (default) | "lg" | "xl": the parent's inset (Stack inset) it cancels
+     Bleed.sides: "inline" (default: to the start and end edges) | "block" (top and bottom) | "all"
+     Bleed.as, Bleed.className: as for Stack
+   Behavior:
+     A scrolling Stack or Inline shows its scroll bar on hover.
+     reverse, reverseBelow and order change only where the children are drawn: assistive technology and the Tab key follow
+       the markup. Use them for regions without a reading order between them (a summary and the content it sums up), never
+       for steps, form fields or anything read in sequence; when the meaning changes, change the markup instead.
+     Bleed cancels exactly the inset tokens of its parent (Stack inset), so its edges meet the parent's edges; its own content
+       keeps no inset (text stays out of a Bleed).
+   Notes:
+     Inline takes the same props as Stack.
+     Any other prop reaches the element.
+     Applications build their layouts from these (and the Platform's patterns) instead of styles.
+*/
+function layout(kind, {
+  as: As = 'div',
+  gap,
+  equal,
+  align,
+  justify,
+  wrap,
+  inset,
+  grow,
+  scroll,
+  width,
+  maxHeight,
+  indent,
+  push,
+  reverse,
+  reverseBelow,
+  order,
+  orderBelow,
+  className,
+  children,
+  ...rest
+}, defaults) {
+  return /*#__PURE__*/_react.default.createElement(As, _extends({
+    className: (0, _cx.cx)('plx-' + kind, 'plx-' + kind + '--gap-' + (gap || defaults.gap), (align || defaults.align) && 'plx-layout--align-' + (align || defaults.align), justify && 'plx-layout--justify-' + justify, wrap && 'plx-inline--wrap', inset && 'plx-layout--inset-' + inset, grow && 'plx-grow', scroll && 'plx-layout--scroll', width && 'plx-layout--width-' + width, maxHeight && 'plx-layout--max-' + maxHeight, indent && 'plx-layout--indent', push && 'plx-layout--push', equal && kind === 'stack' && 'plx-stack--equal', equal && kind === 'stack' && (align === 'end' || align === 'center') && 'plx-stack--equal-' + align, reverse && 'plx-layout--reverse', reverseBelow && 'plx-layout--reverse-below-' + reverseBelow, order && 'plx-layout--order-' + order + (orderBelow ? '-below-' + orderBelow : ''), className)
+  }, rest), children);
+}
+function Stack(props) {
+  return layout('stack', props, {
+    gap: 'md'
+  });
+}
+function Inline(props) {
+  return layout('inline', props, {
+    gap: 'sm',
+    align: 'center'
+  });
+}
+function Center({
+  as: As = 'div',
+  maxWidth = 'md',
+  intrinsic,
+  vertical,
+  text,
+  className,
+  children,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement(As, _extends({
+    className: (0, _cx.cx)('plx-center', 'plx-center--max-' + maxWidth, intrinsic && 'plx-center--intrinsic', vertical && 'plx-center--vertical', text && 'plx-center--text', className)
+  }, rest), children);
+}
+function Bleed({
+  as: As = 'div',
+  space = 'md',
+  sides = 'inline',
+  className,
+  children,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement(As, _extends({
+    className: (0, _cx.cx)('plx-bleed', 'plx-bleed--' + space, 'plx-bleed--' + sides, className)
+  }, rest), children);
+}
+  } },
+  "platform/providers/ReadOnly.jsx": { deps: {"react":null,"../utils/describedBy.js":"platform/utils/describedBy.js","../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ReadOnlyContext = exports.ReadOnly = void 0;
+exports.ReadOnlyProvider = ReadOnlyProvider;
+exports.useReadOnly = useReadOnly;
+var _react = _interopRequireDefault(require("react"));
+var _describedBy = require("../utils/describedBy.js");
+var _Icon = require("../components/Icon/Icon.jsx");
+var _Text = require("../components/Text/Text.jsx");
+var _Stack = require("../components/Stack/Stack.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ReadOnly, ReadOnlyProvider, useReadOnly
+   Summary: A read-only region: everything people could change inside it shows its value and cannot be changed, while
+     it stays readable, focusable, selectable and copyable (unlike disabled). A record someone may view but not edit, a
+     form that is locked after it was submitted, a setting an administrator controls.
+   Usage:
+     <ReadOnly reason="Set by your administrator">…fields…</ReadOnly>                         // a region
+     <ReadOnly as="form" readOnly={!canEdit} onSubmit={save}>…</ReadOnly>                    // a whole form
+     <Field label="Asset ID"><Input value={id} readOnly /></Field>                              // one field: its own prop
+     const readOnly = useReadOnly(props.readOnly);                                              // a component adopting it
+   Props:
+     ReadOnly.as ("div"): the element: "div", "section", "form" or "fieldset"
+     ReadOnly.readOnly (true): false makes the region editable again (a nested editable part of a read-only page)
+     ReadOnly.reason: why it cannot be changed, shown first in the region with the lock icon and tied to it as its
+       description (aria-describedby)
+     ReadOnly.className: more classes on the element
+     ReadOnly.children: the content; ...rest: other attributes go on the element
+     ReadOnlyProvider.readOnly (true): the value the components inside read with useReadOnly, without the region's
+       behavior (a component that draws its own read-only state)
+     useReadOnly(own): the component's own readOnly prop when it is given, else the nearest region's (false outside one)
+   Behavior:
+     The region carries data-plx-readonly="true" (system/read-only.css draws its controls: the sunken surface, the quiet
+       border, the arrow pointer). Inside it, text fields and text areas become readOnly (the value can be selected,
+       copied and focused); checkboxes, switches, radios, selects and sliders keep their value and take focus, but a
+       click, Space, the arrow keys or typing do not change them, and they are marked aria-readonly where the role allows
+       it. A form inside a read-only region does not submit. Content editable text stops being editable.
+     Controls added later are covered as they appear; making the region editable again (or removing it) gives every
+       control back exactly what it had.
+     A nested <ReadOnly readOnly={false}> is left alone by the outer region.
+   Notes:
+     Read-only is not disabled: use disabled for a control that is not available now (it leaves the Tab order and dims);
+       read-only for a value that is there to read. Hide or remove the actions that would change the region (Save,
+       Delete) rather than disabling them.
+     Buttons inside stay as they are: actions that only read (Copy, Download, Open) keep working.
+*/
+const ReadOnlyContext = exports.ReadOnlyContext = /*#__PURE__*/_react.default.createContext(false);
+function ReadOnlyProvider({
+  readOnly = true,
+  children
+}) {
+  return /*#__PURE__*/_react.default.createElement(ReadOnlyContext.Provider, {
+    value: !!readOnly
+  }, children);
+}
+function useReadOnly(own) {
+  const ctx = _react.default.useContext(ReadOnlyContext);
+  return own === undefined || own === null ? ctx : !!own;
+}
+
+// what the region may lock: the controls whose value a person changes
+const CONTROLS = 'input,textarea,select,[contenteditable="true"],[contenteditable=""],[role="checkbox"],[role="switch"],[role="radio"],[role="slider"],[role="spinbutton"],[role="combobox"]';
+const NOT_VALUES = {
+  button: 1,
+  submit: 1,
+  reset: 1,
+  image: 1,
+  hidden: 1,
+  file: 0
+};
+const TEXT_TYPES = /^(text|search|email|url|tel|password|number|date|datetime-local|month|week|time)$/;
+// roles that may carry aria-readonly (WAI-ARIA 1.2); a radio's group carries it instead
+const ARIA_READONLY = {
+  checkbox: 1,
+  switch: 1,
+  slider: 1,
+  spinbutton: 1,
+  combobox: 1,
+  listbox: 1,
+  textbox: 1,
+  radiogroup: 1
+};
+// keys that change a locked control's value (Tab, Escape and shortcuts with Ctrl or ⌘ still work)
+const CHANGE_KEYS = /^(ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Home|End|PageUp|PageDown| |Spacebar|Enter|Backspace|Delete|.)$/;
+function roleOf(el) {
+  const r = el.getAttribute('role');
+  if (r) return r;
+  if (el.tagName === 'SELECT') return el.multiple ? 'listbox' : 'combobox';
+  if (el.tagName === 'INPUT') return el.type === 'checkbox' ? 'checkbox' : el.type === 'radio' ? 'radio' : el.type === 'range' ? 'slider' : 'textbox';
+  return 'textbox';
+}
+
+// locks one control; returns what to undo, or null when it is not a value control or is already read-only by its owner
+function lock(el) {
+  if (el.hasAttribute('data-plx-readonly-set')) return null;
+  const tag = el.tagName;
+  if (tag === 'INPUT' && NOT_VALUES[el.type]) return null;
+  if (el.getAttribute('contenteditable') === 'true' || el.getAttribute('contenteditable') === '') {
+    el.setAttribute('contenteditable', 'false');
+    el.setAttribute('data-plx-readonly-set', 'editable');
+    return () => {
+      el.setAttribute('contenteditable', 'true');
+      el.removeAttribute('data-plx-readonly-set');
+    };
+  }
+  if (tag === 'TEXTAREA' || tag === 'INPUT' && TEXT_TYPES.test(el.type)) {
+    if (el.readOnly) return null;
+    el.readOnly = true;
+    el.setAttribute('data-plx-readonly-set', 'readonly');
+    return () => {
+      el.readOnly = false;
+      el.removeAttribute('data-plx-readonly-set');
+    };
+  }
+  // a choice, a select or a slider: the value stays, changes are stopped by the region's listeners
+  const role = roleOf(el);
+  const aria = ARIA_READONLY[role] && !el.hasAttribute('aria-readonly');
+  if (aria) el.setAttribute('aria-readonly', 'true');
+  el.setAttribute('data-plx-readonly-set', 'locked');
+  return () => {
+    if (aria) el.removeAttribute('aria-readonly');
+    el.removeAttribute('data-plx-readonly-set');
+  };
+}
+
+// the region's behavior: locks its controls (and the ones added later), stops the events that would change them
+function useLockRegion(ref, on) {
+  _react.default.useEffect(() => {
+    const root = ref.current;
+    if (!root || !on) return undefined;
+    const undo = new Map();
+    const mine = el => el.closest('[data-plx-readonly]') === root;
+    const apply = () => {
+      root.querySelectorAll(CONTROLS).forEach(el => {
+        if (!undo.has(el) && mine(el)) {
+          const u = lock(el);
+          if (u) undo.set(el, u);
+        }
+      });
+    };
+    apply();
+    const observer = typeof MutationObserver !== 'undefined' ? new MutationObserver(apply) : null;
+    if (observer) observer.observe(root, {
+      childList: true,
+      subtree: true
+    });
+    const locked = t => {
+      const el = t && t.closest ? t.closest('[data-plx-readonly-set="locked"]') : null;
+      return el && mine(el) ? el : null;
+    };
+    const stop = e => {
+      e.preventDefault();
+      e.stopPropagation();
+    };
+    const onClick = e => {
+      if (locked(e.target)) stop(e);
+    };
+    const onKey = e => {
+      if (e.key === 'Tab' || e.key === 'Escape' || e.ctrlKey || e.metaKey || e.altKey) return;
+      if (locked(e.target) && CHANGE_KEYS.test(e.key)) stop(e);
+    };
+    const onPointer = e => {
+      const el = locked(e.target);
+      if (el && (el.tagName === 'SELECT' || roleOf(el) === 'slider' || roleOf(el) === 'combobox')) {
+        e.preventDefault();
+        el.focus();
+      }
+    };
+    const onSubmit = e => {
+      if (e.target === root || mine(e.target)) e.preventDefault();
+    };
+    root.addEventListener('click', onClick, true);
+    root.addEventListener('keydown', onKey, true);
+    root.addEventListener('mousedown', onPointer, true);
+    root.addEventListener('pointerdown', onPointer, true);
+    root.addEventListener('submit', onSubmit, true);
+    return () => {
+      if (observer) observer.disconnect();
+      root.removeEventListener('click', onClick, true);
+      root.removeEventListener('keydown', onKey, true);
+      root.removeEventListener('mousedown', onPointer, true);
+      root.removeEventListener('pointerdown', onPointer, true);
+      root.removeEventListener('submit', onSubmit, true);
+      undo.forEach(u => u());
+    };
+  }, [ref, on]);
+}
+const ReadOnly = exports.ReadOnly = /*#__PURE__*/_react.default.forwardRef(function ReadOnly({
+  as = 'div',
+  readOnly = true,
+  reason,
+  className,
+  children,
+  ...rest
+}, ref) {
+  const own = _react.default.useRef(null);
+  const setRef = el => {
+    own.current = el;
+    if (typeof ref === 'function') ref(el);else if (ref) ref.current = el;
+  };
+  const on = !!readOnly;
+  useLockRegion(own, on);
+  const reasonId = (0, _describedBy.useDescriptionId)('read-only');
+  const Tag = ['div', 'section', 'form', 'fieldset'].indexOf(as) >= 0 ? as : 'div';
+  return /*#__PURE__*/_react.default.createElement(ReadOnlyContext.Provider, {
+    value: on
+  }, /*#__PURE__*/_react.default.createElement(Tag, _extends({
+    ref: setRef,
+    "data-plx-readonly": on ? 'true' : 'false',
+    className: className
+  }, rest, {
+    "aria-describedby": (0, _describedBy.joinIds)(rest['aria-describedby'], on && reason ? reasonId : null)
+  }), on && reason ? /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+    gap: "xs"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "lock",
+    size: "sm"
+  }), /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "secondary",
+    id: reasonId
+  }, reason)) : null, children));
+});
+  } },
+  "platform/components/Input/Input.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/floating.js":"platform/utils/floating.js","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -11269,6 +11629,7 @@ var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _grid = require("../../utils/grid.js");
 var _floating = require("../../utils/floating.js");
+var _ReadOnly = require("../../providers/ReadOnly.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Input, Textarea, Select
    Summary: The text field family, at the standard control height.
@@ -11332,6 +11693,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      check; tel gets inputMode "tel"; search gets inputMode "search" and enterKeyHint "search".
    Notes:
      They take every native attribute (value, onChange, placeholder, disabled, readOnly, required…).
+     Input and Textarea are read-only when their own readOnly says so, else when they sit in a read-only region (ReadOnly,
+       useReadOnly).
      All three forward their ref to the native element.
 */
 // the top layer and CSS anchor positioning (as Menu and Popover), checked once
@@ -11369,11 +11732,15 @@ const Input = exports.Input = /*#__PURE__*/_react.default.forwardRef(function In
   size,
   className,
   type = 'text',
+  readOnly,
   ...rest
 }, ref) {
+  // its own readOnly, else the nearest read-only region's (providers/ReadOnly.jsx)
+  const locked = (0, _ReadOnly.useReadOnly)(readOnly);
   return /*#__PURE__*/_react.default.createElement("input", _extends({
     ref: ref,
     type: type,
+    readOnly: locked || undefined,
     size: size === 'sm' || size === 'md' ? undefined : size,
     className: (0, _cx.cx)('plx-input', size === 'sm' && 'plx-input--size-sm', width && 'plx-input--width-' + width, data && 'plx-input--data', emphasis && 'plx-input--emphasis', look(appearance), className),
     "aria-invalid": invalid || undefined
@@ -11390,8 +11757,10 @@ const Textarea = exports.Textarea = /*#__PURE__*/_react.default.forwardRef(funct
   className,
   rows = 3,
   onInput,
+  readOnly,
   ...rest
 }, ref) {
+  const locked = (0, _ReadOnly.useReadOnly)(readOnly); // its own readOnly, else the nearest read-only region's
   const own = _react.default.useRef(null);
   const setRef = _react.default.useCallback(el => {
     own.current = el;
@@ -11414,6 +11783,7 @@ const Textarea = exports.Textarea = /*#__PURE__*/_react.default.forwardRef(funct
   return /*#__PURE__*/_react.default.createElement("textarea", _extends({
     ref: setRef,
     rows: rows,
+    readOnly: locked || undefined,
     className: (0, _cx.cx)('plx-input', 'plx-input--textarea', data && 'plx-input--data', autoGrow && 'plx-input--auto-grow', look(appearance), className),
     "aria-invalid": invalid || undefined,
     onInput: e => {
@@ -23375,140 +23745,6 @@ function singleChoice(options, value, required) {
   const values = (options || []).map(option => typeof option === 'string' ? option : option.value);
   const selected = (Array.isArray(value) ? value : value === undefined || value === null ? [] : [value]).find(item => values.includes(item));
   return selected !== undefined ? [selected] : required && values.length ? [values[0]] : [];
-}
-  } },
-  "platform/components/Stack/Stack.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Bleed = Bleed;
-exports.Center = Center;
-exports.Inline = Inline;
-exports.Stack = Stack;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Stack, Inline, Center, Bleed
-   Summary: Lay children out in a column (Stack) or a row (Inline), spaced by the spacing tokens, never by a margin or a number;
-     center a block at a readable width (Center); let a child reach past its parent's inset to the edge (Bleed).
-   Usage:
-     <Stack gap="md">
-       <Inline gap="sm" justify="between">…</Inline>
-       <Inline wrap>…</Inline>
-     </Stack>
-     <Inline reverseBelow="narrow"><Main /><Summary /></Inline>    the summary comes first on a narrow window
-     <Center maxWidth="sm" text><EmptyState … /></Center>
-     <Stack inset="md"><Bleed space="md"><Image … /></Bleed><Text>…</Text></Stack>
-   Props:
-     Stack.gap: "none" | "xs" | "sm" | "md" (default) | "lg" | "xl" (--plx-sys-space-stack-*) | "section" (--plx-sys-space-section)
-       Stack.equal: every child as wide as the widest (stacked buttons, owner 2026-10-22): the Stack shrinks to its widest
-       child and each Button takes its whole width; with align="end" or "center" the Stack itself sits at the end or middle
-       Peer sections that are not framed (a SectionHeading and its table, list or text, then the next): <Stack gap="section">
-       holding one <Stack gap="sm"> per section; the same in a page or a split pane, every density, either direction, phones
-     Inline.gap: "none" | "xs" | "sm" (default) | "md" | "lg" | "xl" (--plx-sys-space-inline-*)
-     Stack.align: "start" | "center" | "end" | "stretch" | "baseline" (the cross axis)
-     Inline.align: the same values; default "center"
-     Stack.justify: "start" | "center" | "end" | "between"
-     Inline.wrap: an Inline that wraps onto more lines (its lines are --plx-sys-space-stack-xs apart)
-     Stack.inset: "none" | "xs" | "sm" | "md" | "lg" | "xl" (padding on every side, --plx-sys-space-inset-*)
-     Stack.grow: fills the rest of its parent row or column (it may shrink below its content)
-     Stack.scroll: scrolls its own content
-     Stack.width: "xs" | "sm" | "md" | "lg" (a fixed width from --plx-sys-field-width-*: a field narrower than its row)
-     Stack.maxHeight: "sm" | "md" | "lg" (scrolls past --plx-sys-scroll-max-*)
-     Stack.indent: starts one inline step in (a nested group)
-     Stack.push: moves itself to the end of its row (a search box at the end of a toolbar)
-     Stack.reverse: lays the children out in the other order (column-reverse, row-reverse); the reading and Tab order stay the markup's
-     Stack.reverseBelow: "narrow" (under 600px) | "medium" (under 840px): reverses only below that window class
-     Stack.order: "first" | "last": moves this element to the start or the end of its parent Stack or Inline
-     Stack.orderBelow: "narrow" | "medium": applies order only below that window class
-     Stack.as: the element; "div" by default; ul, ol, section, header, footer, form, fieldset, …
-     Stack.className: more classes on the element
-     Stack.children: the content to lay out
-     Center.maxWidth: "sm" (400px: a sign-in form, an empty state) | "md" (default, 600px: a dialog-like page) | "lg" (900px:
-       reading) | "page" (the contained layout's maximum) | "none": the widest it grows; narrower parents keep it narrower
-     Center.intrinsic: centers each child at its own width (a column of centered children) instead of stretching it
-     Center.vertical: centers the content in its parent's height too; content taller than the parent starts at the top
-     Center.text: centers the lines of text (short headings and messages only)
-     Center.as, Center.className: as for Stack
-     Bleed.space: "xs" | "sm" | "md" (default) | "lg" | "xl": the parent's inset (Stack inset) it cancels
-     Bleed.sides: "inline" (default: to the start and end edges) | "block" (top and bottom) | "all"
-     Bleed.as, Bleed.className: as for Stack
-   Behavior:
-     A scrolling Stack or Inline shows its scroll bar on hover.
-     reverse, reverseBelow and order change only where the children are drawn: assistive technology and the Tab key follow
-       the markup. Use them for regions without a reading order between them (a summary and the content it sums up), never
-       for steps, form fields or anything read in sequence; when the meaning changes, change the markup instead.
-     Bleed cancels exactly the inset tokens of its parent (Stack inset), so its edges meet the parent's edges; its own content
-       keeps no inset (text stays out of a Bleed).
-   Notes:
-     Inline takes the same props as Stack.
-     Any other prop reaches the element.
-     Applications build their layouts from these (and the Platform's patterns) instead of styles.
-*/
-function layout(kind, {
-  as: As = 'div',
-  gap,
-  equal,
-  align,
-  justify,
-  wrap,
-  inset,
-  grow,
-  scroll,
-  width,
-  maxHeight,
-  indent,
-  push,
-  reverse,
-  reverseBelow,
-  order,
-  orderBelow,
-  className,
-  children,
-  ...rest
-}, defaults) {
-  return /*#__PURE__*/_react.default.createElement(As, _extends({
-    className: (0, _cx.cx)('plx-' + kind, 'plx-' + kind + '--gap-' + (gap || defaults.gap), (align || defaults.align) && 'plx-layout--align-' + (align || defaults.align), justify && 'plx-layout--justify-' + justify, wrap && 'plx-inline--wrap', inset && 'plx-layout--inset-' + inset, grow && 'plx-grow', scroll && 'plx-layout--scroll', width && 'plx-layout--width-' + width, maxHeight && 'plx-layout--max-' + maxHeight, indent && 'plx-layout--indent', push && 'plx-layout--push', equal && kind === 'stack' && 'plx-stack--equal', equal && kind === 'stack' && (align === 'end' || align === 'center') && 'plx-stack--equal-' + align, reverse && 'plx-layout--reverse', reverseBelow && 'plx-layout--reverse-below-' + reverseBelow, order && 'plx-layout--order-' + order + (orderBelow ? '-below-' + orderBelow : ''), className)
-  }, rest), children);
-}
-function Stack(props) {
-  return layout('stack', props, {
-    gap: 'md'
-  });
-}
-function Inline(props) {
-  return layout('inline', props, {
-    gap: 'sm',
-    align: 'center'
-  });
-}
-function Center({
-  as: As = 'div',
-  maxWidth = 'md',
-  intrinsic,
-  vertical,
-  text,
-  className,
-  children,
-  ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement(As, _extends({
-    className: (0, _cx.cx)('plx-center', 'plx-center--max-' + maxWidth, intrinsic && 'plx-center--intrinsic', vertical && 'plx-center--vertical', text && 'plx-center--text', className)
-  }, rest), children);
-}
-function Bleed({
-  as: As = 'div',
-  space = 'md',
-  sides = 'inline',
-  className,
-  children,
-  ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement(As, _extends({
-    className: (0, _cx.cx)('plx-bleed', 'plx-bleed--' + space, 'plx-bleed--' + sides, className)
-  }, rest), children);
 }
   } },
   "platform/utils/fields.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
@@ -42346,232 +42582,6 @@ function useSelection(options = {}) {
     anchor: anchor.current
   };
 }
-  } },
-  "platform/providers/ReadOnly.jsx": { deps: {"react":null,"../utils/describedBy.js":"platform/utils/describedBy.js","../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.ReadOnlyContext = exports.ReadOnly = void 0;
-exports.ReadOnlyProvider = ReadOnlyProvider;
-exports.useReadOnly = useReadOnly;
-var _react = _interopRequireDefault(require("react"));
-var _describedBy = require("../utils/describedBy.js");
-var _Icon = require("../components/Icon/Icon.jsx");
-var _Text = require("../components/Text/Text.jsx");
-var _Stack = require("../components/Stack/Stack.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ReadOnly, ReadOnlyProvider, useReadOnly
-   Summary: A read-only region: everything people could change inside it shows its value and cannot be changed, while
-     it stays readable, focusable, selectable and copyable (unlike disabled). A record someone may view but not edit, a
-     form that is locked after it was submitted, a setting an administrator controls.
-   Usage:
-     <ReadOnly reason="Set by your administrator">…fields…</ReadOnly>                         // a region
-     <ReadOnly as="form" readOnly={!canEdit} onSubmit={save}>…</ReadOnly>                    // a whole form
-     <Field label="Asset ID"><Input value={id} readOnly /></Field>                              // one field: its own prop
-     const readOnly = useReadOnly(props.readOnly);                                              // a component adopting it
-   Props:
-     ReadOnly.as ("div"): the element: "div", "section", "form" or "fieldset"
-     ReadOnly.readOnly (true): false makes the region editable again (a nested editable part of a read-only page)
-     ReadOnly.reason: why it cannot be changed, shown first in the region with the lock icon and tied to it as its
-       description (aria-describedby)
-     ReadOnly.className: more classes on the element
-     ReadOnly.children: the content; ...rest: other attributes go on the element
-     ReadOnlyProvider.readOnly (true): the value the components inside read with useReadOnly, without the region's
-       behavior (a component that draws its own read-only state)
-     useReadOnly(own): the component's own readOnly prop when it is given, else the nearest region's (false outside one)
-   Behavior:
-     The region carries data-plx-readonly="true" (system/read-only.css draws its controls: the sunken surface, the quiet
-       border, the arrow pointer). Inside it, text fields and text areas become readOnly (the value can be selected,
-       copied and focused); checkboxes, switches, radios, selects and sliders keep their value and take focus, but a
-       click, Space, the arrow keys or typing do not change them, and they are marked aria-readonly where the role allows
-       it. A form inside a read-only region does not submit. Content editable text stops being editable.
-     Controls added later are covered as they appear; making the region editable again (or removing it) gives every
-       control back exactly what it had.
-     A nested <ReadOnly readOnly={false}> is left alone by the outer region.
-   Notes:
-     Read-only is not disabled: use disabled for a control that is not available now (it leaves the Tab order and dims);
-       read-only for a value that is there to read. Hide or remove the actions that would change the region (Save,
-       Delete) rather than disabling them.
-     Buttons inside stay as they are: actions that only read (Copy, Download, Open) keep working.
-*/
-const ReadOnlyContext = exports.ReadOnlyContext = /*#__PURE__*/_react.default.createContext(false);
-function ReadOnlyProvider({
-  readOnly = true,
-  children
-}) {
-  return /*#__PURE__*/_react.default.createElement(ReadOnlyContext.Provider, {
-    value: !!readOnly
-  }, children);
-}
-function useReadOnly(own) {
-  const ctx = _react.default.useContext(ReadOnlyContext);
-  return own === undefined || own === null ? ctx : !!own;
-}
-
-// what the region may lock: the controls whose value a person changes
-const CONTROLS = 'input,textarea,select,[contenteditable="true"],[contenteditable=""],[role="checkbox"],[role="switch"],[role="radio"],[role="slider"],[role="spinbutton"],[role="combobox"]';
-const NOT_VALUES = {
-  button: 1,
-  submit: 1,
-  reset: 1,
-  image: 1,
-  hidden: 1,
-  file: 0
-};
-const TEXT_TYPES = /^(text|search|email|url|tel|password|number|date|datetime-local|month|week|time)$/;
-// roles that may carry aria-readonly (WAI-ARIA 1.2); a radio's group carries it instead
-const ARIA_READONLY = {
-  checkbox: 1,
-  switch: 1,
-  slider: 1,
-  spinbutton: 1,
-  combobox: 1,
-  listbox: 1,
-  textbox: 1,
-  radiogroup: 1
-};
-// keys that change a locked control's value (Tab, Escape and shortcuts with Ctrl or ⌘ still work)
-const CHANGE_KEYS = /^(ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Home|End|PageUp|PageDown| |Spacebar|Enter|Backspace|Delete|.)$/;
-function roleOf(el) {
-  const r = el.getAttribute('role');
-  if (r) return r;
-  if (el.tagName === 'SELECT') return el.multiple ? 'listbox' : 'combobox';
-  if (el.tagName === 'INPUT') return el.type === 'checkbox' ? 'checkbox' : el.type === 'radio' ? 'radio' : el.type === 'range' ? 'slider' : 'textbox';
-  return 'textbox';
-}
-
-// locks one control; returns what to undo, or null when it is not a value control or is already read-only by its owner
-function lock(el) {
-  if (el.hasAttribute('data-plx-readonly-set')) return null;
-  const tag = el.tagName;
-  if (tag === 'INPUT' && NOT_VALUES[el.type]) return null;
-  if (el.getAttribute('contenteditable') === 'true' || el.getAttribute('contenteditable') === '') {
-    el.setAttribute('contenteditable', 'false');
-    el.setAttribute('data-plx-readonly-set', 'editable');
-    return () => {
-      el.setAttribute('contenteditable', 'true');
-      el.removeAttribute('data-plx-readonly-set');
-    };
-  }
-  if (tag === 'TEXTAREA' || tag === 'INPUT' && TEXT_TYPES.test(el.type)) {
-    if (el.readOnly) return null;
-    el.readOnly = true;
-    el.setAttribute('data-plx-readonly-set', 'readonly');
-    return () => {
-      el.readOnly = false;
-      el.removeAttribute('data-plx-readonly-set');
-    };
-  }
-  // a choice, a select or a slider: the value stays, changes are stopped by the region's listeners
-  const role = roleOf(el);
-  const aria = ARIA_READONLY[role] && !el.hasAttribute('aria-readonly');
-  if (aria) el.setAttribute('aria-readonly', 'true');
-  el.setAttribute('data-plx-readonly-set', 'locked');
-  return () => {
-    if (aria) el.removeAttribute('aria-readonly');
-    el.removeAttribute('data-plx-readonly-set');
-  };
-}
-
-// the region's behavior: locks its controls (and the ones added later), stops the events that would change them
-function useLockRegion(ref, on) {
-  _react.default.useEffect(() => {
-    const root = ref.current;
-    if (!root || !on) return undefined;
-    const undo = new Map();
-    const mine = el => el.closest('[data-plx-readonly]') === root;
-    const apply = () => {
-      root.querySelectorAll(CONTROLS).forEach(el => {
-        if (!undo.has(el) && mine(el)) {
-          const u = lock(el);
-          if (u) undo.set(el, u);
-        }
-      });
-    };
-    apply();
-    const observer = typeof MutationObserver !== 'undefined' ? new MutationObserver(apply) : null;
-    if (observer) observer.observe(root, {
-      childList: true,
-      subtree: true
-    });
-    const locked = t => {
-      const el = t && t.closest ? t.closest('[data-plx-readonly-set="locked"]') : null;
-      return el && mine(el) ? el : null;
-    };
-    const stop = e => {
-      e.preventDefault();
-      e.stopPropagation();
-    };
-    const onClick = e => {
-      if (locked(e.target)) stop(e);
-    };
-    const onKey = e => {
-      if (e.key === 'Tab' || e.key === 'Escape' || e.ctrlKey || e.metaKey || e.altKey) return;
-      if (locked(e.target) && CHANGE_KEYS.test(e.key)) stop(e);
-    };
-    const onPointer = e => {
-      const el = locked(e.target);
-      if (el && (el.tagName === 'SELECT' || roleOf(el) === 'slider' || roleOf(el) === 'combobox')) {
-        e.preventDefault();
-        el.focus();
-      }
-    };
-    const onSubmit = e => {
-      if (e.target === root || mine(e.target)) e.preventDefault();
-    };
-    root.addEventListener('click', onClick, true);
-    root.addEventListener('keydown', onKey, true);
-    root.addEventListener('mousedown', onPointer, true);
-    root.addEventListener('pointerdown', onPointer, true);
-    root.addEventListener('submit', onSubmit, true);
-    return () => {
-      if (observer) observer.disconnect();
-      root.removeEventListener('click', onClick, true);
-      root.removeEventListener('keydown', onKey, true);
-      root.removeEventListener('mousedown', onPointer, true);
-      root.removeEventListener('pointerdown', onPointer, true);
-      root.removeEventListener('submit', onSubmit, true);
-      undo.forEach(u => u());
-    };
-  }, [ref, on]);
-}
-const ReadOnly = exports.ReadOnly = /*#__PURE__*/_react.default.forwardRef(function ReadOnly({
-  as = 'div',
-  readOnly = true,
-  reason,
-  className,
-  children,
-  ...rest
-}, ref) {
-  const own = _react.default.useRef(null);
-  const setRef = el => {
-    own.current = el;
-    if (typeof ref === 'function') ref(el);else if (ref) ref.current = el;
-  };
-  const on = !!readOnly;
-  useLockRegion(own, on);
-  const reasonId = (0, _describedBy.useDescriptionId)('read-only');
-  const Tag = ['div', 'section', 'form', 'fieldset'].indexOf(as) >= 0 ? as : 'div';
-  return /*#__PURE__*/_react.default.createElement(ReadOnlyContext.Provider, {
-    value: on
-  }, /*#__PURE__*/_react.default.createElement(Tag, _extends({
-    ref: setRef,
-    "data-plx-readonly": on ? 'true' : 'false',
-    className: className
-  }, rest, {
-    "aria-describedby": (0, _describedBy.joinIds)(rest['aria-describedby'], on && reason ? reasonId : null)
-  }), on && reason ? /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
-    gap: "xs"
-  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: "lock",
-    size: "sm"
-  }), /*#__PURE__*/_react.default.createElement(_Text.Text, {
-    variant: "secondary",
-    id: reasonId
-  }, reason)) : null, children));
-});
   } },
   "platform/components/Pictogram/Pictogram.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";

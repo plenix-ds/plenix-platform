@@ -61,6 +61,8 @@
      check; tel gets inputMode "tel"; search gets inputMode "search" and enterKeyHint "search".
    Notes:
      They take every native attribute (value, onChange, placeholder, disabled, readOnly, required…).
+     Input and Textarea are read-only when their own readOnly says so, else when they sit in a read-only region (ReadOnly,
+       useReadOnly).
      All three forward their ref to the native element.
 */
 import React from 'react';
@@ -83,14 +85,17 @@ const TYPE_HINTS = {
 // the appearance class (outline is the base look: no class)
 const look = (appearance) => appearance === 'filled' && 'plx-input--filled';
 
-export const Input = React.forwardRef(function Input({ invalid, width, data = false, emphasis = false, appearance, size, className, type = 'text', ...rest }, ref) {
-  return <input ref={ref} type={type} size={size === 'sm' || size === 'md' ? undefined : size} className={cx('plx-input', size === 'sm' && 'plx-input--size-sm', width && 'plx-input--width-' + width, data && 'plx-input--data', emphasis && 'plx-input--emphasis', look(appearance), className)} aria-invalid={invalid || undefined} {...TYPE_HINTS[type]} {...rest} />;
+export const Input = React.forwardRef(function Input({ invalid, width, data = false, emphasis = false, appearance, size, className, type = 'text', readOnly, ...rest }, ref) {
+  // its own readOnly, else the nearest read-only region's (providers/ReadOnly.jsx)
+  const locked = useReadOnly(readOnly);
+  return <input ref={ref} type={type} readOnly={locked || undefined} size={size === 'sm' || size === 'md' ? undefined : size} className={cx('plx-input', size === 'sm' && 'plx-input--size-sm', width && 'plx-input--width-' + width, data && 'plx-input--data', emphasis && 'plx-input--emphasis', look(appearance), className)} aria-invalid={invalid || undefined} {...TYPE_HINTS[type]} {...rest} />;
 });
 
 // can the browser size a text area to its content? (field-sizing: Chrome 123, Safari 26)
 const SIZES_ITSELF = typeof CSS !== 'undefined' && !!CSS.supports && CSS.supports('field-sizing', 'content');
 
-export const Textarea = React.forwardRef(function Textarea({ invalid, appearance, autoGrow = false, data = false, className, rows = 3, onInput, ...rest }, ref) {
+export const Textarea = React.forwardRef(function Textarea({ invalid, appearance, autoGrow = false, data = false, className, rows = 3, onInput, readOnly, ...rest }, ref) {
+  const locked = useReadOnly(readOnly);   // its own readOnly, else the nearest read-only region's
   const own = React.useRef(null);
   const setRef = React.useCallback((el) => { own.current = el; if (typeof ref === 'function') ref(el); else if (ref) ref.current = el; }, [ref]);
   // the fallback: measure the content and set the height on the grid (the stylesheet caps it at the maximum)
@@ -102,7 +107,7 @@ export const Textarea = React.forwardRef(function Textarea({ invalid, appearance
     el.style.blockSize = gridPx(el.scrollHeight + edge, { round: 'up', el });
   }, [autoGrow]);
   React.useLayoutEffect(() => { fit(); });
-  return <textarea ref={setRef} rows={rows} className={cx('plx-input', 'plx-input--textarea', data && 'plx-input--data', autoGrow && 'plx-input--auto-grow', look(appearance), className)} aria-invalid={invalid || undefined}
+  return <textarea ref={setRef} rows={rows} readOnly={locked || undefined} className={cx('plx-input', 'plx-input--textarea', data && 'plx-input--data', autoGrow && 'plx-input--auto-grow', look(appearance), className)} aria-invalid={invalid || undefined}
     onInput={(e) => { fit(); if (onInput) onInput(e); }} {...rest} />;
 });
 
