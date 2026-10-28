@@ -1526,7 +1526,7 @@
       }
     },
     "toast-background": {
-      "$value": "{plx-ref.color-black}",
+      "$value": "{plx-ref.color-gray-900}",
       "$type": "color",
       "$extensions": {
         "plenix": {
@@ -1791,7 +1791,7 @@
       }
     },
     "status-bar-background": {
-      "$value": "{plx-ref.color-black}",
+      "$value": "{plx-ref.color-gray-900}",
       "$type": "color",
       "$extensions": {
         "com.plenix": {
