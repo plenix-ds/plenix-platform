@@ -12819,10 +12819,10 @@ exports.stepSize = stepSize;
    Props:
      none: SIZE_STEPS lists the sizes in pixels, smallest first; snapSize(px, min, max) and stepSize(px, dir, min, max)
 */
-const SIZE_STEPS = exports.SIZE_STEPS = [4, 8, 12, 16, 18, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 80, 88, 92, 96, 100, 112, 120, 128, 132, 140, 152, 160, 180, 200, 220, 240, 260, 280, 300, 320, 360, 380, 400, 420, 440, 460, 480, 500, 520, 560, 600, 640, 720, 760, 800, 860, 900];
+const SIZE_STEPS = exports.SIZE_STEPS = [4, 8, 12, 16, 18, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 80, 88, 92, 96, 100, 112, 120, 128, 132, 140, 152, 160, 180, 200, 220, 240, 260, 280, 300, 320, 360, 380, 400, 420, 440, 460, 480, 500, 520, 560, 600, 640, 720, 760, 800, 860, 900, 960, 1000, 1200, 1400, 1600];
 // the grid lines system/steps.css has a rule for (build-steps.js): a pane is drawn from GRID_MIN to GRID_PANE_MAX, a Resizable box to GRID_BOX_MAX
 const GRID_MIN = exports.GRID_MIN = 4,
-  GRID_PANE_MAX = exports.GRID_PANE_MAX = 960,
+  GRID_PANE_MAX = exports.GRID_PANE_MAX = 1600,
   GRID_BOX_MAX = exports.GRID_BOX_MAX = 1600;
 const within = (min, max) => SIZE_STEPS.filter(s => s >= min && s <= max);
 // the size token nearest to px within [min, max] (the limit itself when no token lies between them)
@@ -12897,8 +12897,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      for those who do not drag; PanelSplitter is the same edge on a pane of the application shell (the navigation pane,
      a secondary pane, the inspector), promoted here from AppShell, which imports and re-exports it. Every size is on the
      4px grid: a drag moves one grid line at a time and lands on one when let go (owner, 2026-10-26), and a list of steps
-     narrows the settled sizes further. Sizes are honoured from 4px up to 1600px (GRID_BOX_MAX; a pane of the shell up to
-     960px, GRID_PANE_MAX): each grid line has a rule in the stylesheet up to there, and a larger size lands on the largest.
+     narrows the settled sizes further. Sizes are honoured from 4px up to 1600px (GRID_BOX_MAX; a pane of the shell too,
+     GRID_PANE_MAX): each grid line has a rule in the stylesheet up to there, and a larger size lands on the largest.
    Usage:
      <Resizable label="Preview" axis="horizontal" defaultWidth={320} minWidth={200} maxWidth={560}>…</Resizable>
      <Resizable label="Notes" axis="vertical" height={h} onResize={({ height }) => setH(height)} minHeight={120} maxHeight={400}>…</Resizable>

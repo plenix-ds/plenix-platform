@@ -116,6 +116,11 @@
   --plx-ref-size-800px: 800px;
   --plx-ref-size-860px: 860px;
   --plx-ref-size-900px: 900px;
+  --plx-ref-size-960px: 960px;
+  --plx-ref-size-1000px: 1000px;
+  --plx-ref-size-1200px: 1200px;
+  --plx-ref-size-1400px: 1400px;
+  --plx-ref-size-1600px: 1600px;
   /* ── GLYPHS: optical sizes of icons, dots, checkmarks, carets and separators ── */
   --plx-ref-glyph-size-6px: 6px;
   --plx-ref-glyph-size-10px: 10px;
