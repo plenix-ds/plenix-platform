@@ -23,7 +23,8 @@
        Alt + Arrow Up or Down moves it", firstMark: ", first column", none: "No column matches" }
    Behavior:
      Changes in the dropdown apply at once; the dialog applies them with Apply (Cancel leaves the columns as they were).
-     A row moves by drag, by Move up and Move down in the handle's menu (the way without dragging), or by Alt + Arrow Up /
+     A row moves by drag (in Firefox a drag does not start on a button: start it from the row, not the handle), by Move up and
+       Move down in the handle's menu (the way without dragging), or by Alt + Arrow Up /
        Down on the focused row; the First column select moves a column to the top. Each change is announced politely. The
        first column cannot be hidden. No row carries a "Make first column" or arrow button of its own.
      The button reads "Columns" with the thin chevron; icons only, its icon and tooltip; hidden columns tint it and show
@@ -80,7 +81,7 @@ export function ColumnsList({ fields, value, onChange, filter = '', t }) {
             onDragStart={(e) => { setDrag(f); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', f); }}
             onDragEnd={() => setDrag(null)} onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => { e.preventDefault(); const from = e.dataTransfer.getData('text/plain') || drag; setDrag(null); if (from && from !== f) move(from, i); }}>
-            <Menu trigger={<Button size="xs" variant="ghost" icon="drag" iconOnly label={fill(t.moveMenu, { name: name(f) })} className="plx-columns-list__handle" />} placement="bottom-start">
+            <Menu label={fill(t.moveMenu, { name: name(f) })} trigger={<Button size="xs" variant="ghost" icon="drag" iconOnly label={fill(t.moveMenu, { name: name(f) })} className="plx-columns-list__handle" />} placement="bottom-start">
               <MenuItem icon="chevron-up" disabled={i === 0} onSelect={() => move(f, i - 1, true)}>{t.up}</MenuItem>
               <MenuItem icon="chevron-down" disabled={i === order.length - 1} onSelect={() => move(f, i + 1, true)}>{t.down}</MenuItem>
             </Menu>
