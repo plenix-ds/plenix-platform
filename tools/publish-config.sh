@@ -13,7 +13,7 @@ fi
 for _k in PUBLISH_HOST PUBLISH_USER PUBLISH_KEY; do
   [ -n "${!_k:-}" ] || { echo "Missing $_k: set it in the environment or in publish.config (see publish.config.example)." >&2; exit 2; }
 done
-[ -f "$PUBLISH_KEY" ] || { echo "PUBLISH_KEY names no file: $PUBLISH_KEY" >&2; exit 2; }
+[ -f "$PUBLISH_KEY" ] || { echo "PUBLISH_KEY names no file (check the path in publish.config or the environment)" >&2; exit 2; }
 HOST="$PUBLISH_USER@$PUBLISH_HOST"
 SSH_OPTS=(-o IdentitiesOnly=yes -o BatchMode=yes -i "$PUBLISH_KEY")
 unset _k _v _publish_root
