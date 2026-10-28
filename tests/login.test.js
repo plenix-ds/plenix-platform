@@ -70,14 +70,11 @@ async function main() {
     check('Sign-in page: no style attributes or style elements', !/\sstyle\s*=/i.test(html) && !/<style/i.test(html));
     check('Sign-in page: autocomplete username and current-password', /autocomplete="username"/.test(html) && /autocomplete="current-password"/.test(html));
     check('Sign-in page: paste and autofill are not blocked', !/onpaste|oncopy|readonly/i.test(html));
-    check('Sign-in page: the release stylesheet from the CDN and login.css', /https:\/\/cdn\.example\.test\/cdn\/0\.0\.0\/plenix\.css/.test(html) && /\/auth\/login\.css/.test(html));
+    check('Sign-in page: the release stylesheet from the CDN and no stylesheet of its own', /https:\/\/cdn\.example\.test\/cdn\/0\.0\.0\/plenix\.css/.test(html) && !/\/auth\/login\.css/.test(html) && (html.match(/<link rel="stylesheet"/g) || []).length === 2);
+    check('Sign-in page: the Auth pattern classes', /class="plx-auth plx-auth--page"/.test(html) && /class="plx-auth__card"/.test(html) && /plx-auth__submit/.test(html));
     check('Sign-in page: keeps a same-site rd', /name="rd" value="\/Plenix\/dashboard\/"/.test(html));
     check('Sign-in page: CSP and no-store', /frame-ancestors 'none'/.test(r.headers.get('content-security-policy') || '') && r.headers.get('cache-control') === 'no-store');
-    const css = await (await request('GET', '/auth/login.css')).text();
-    // (a media query's width cannot be a custom property: the Narrow breakpoint is the one number, as in the Platform's own CSS)
-    const rules = css.replace(/\/\*[\s\S]*?\*\//g, '').replace(/@media \(width < 600px\)/g, '');
-    check('Sign-in page: login.css: no hard-coded colors or sizes', !/#[0-9a-f]{3,8}\b|\b\d+(\.\d+)?(px|rem|em|pt)\b|rgba?\(|hsla?\(/i.test(rules));
-    check('Sign-in page: login.css: only Plenix tokens', (rules.match(/var\(--[a-z0-9-]+\)/g) || []).every((v) => /^var\(--plx-/.test(v)));
+    check('Sign-in page: /auth/login.css is gone', (await request('GET', '/auth/login.css')).status === 404);
 
     // POSTs from elsewhere
     r = await request('POST', '/auth/sign-in', { headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: form({ user: 'tester', password: PASS }) });

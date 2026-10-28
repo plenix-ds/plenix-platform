@@ -67720,7 +67720,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Notes:
      Sign in, not Log in, everywhere. Never ask for the same thing twice (no "confirm password"). Offer single sign-on
        first where the organization uses it. Security questions are never a recovery method.
-     services/login is the Plenix sign-in service; it draws this layout with the release's classes (login.css).
+     services/login is the Plenix sign-in service; it draws this layout with the release's classes (no stylesheet of its own).
 */
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 const around = (s, key, node) => {
