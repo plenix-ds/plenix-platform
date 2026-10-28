@@ -31,7 +31,7 @@ const LEVELS = 12;
 // the widest grid line a pane and a Resizable box get a rule for: the one place they are set; utils/sizeSteps.js (written
 // below) exports them, and the panes and Resizable clamp to them, so a size is never drawn without a rule. One rule per
 // grid line (owner, 2026-10-26: a dragged edge stays on the grid) grew steps.css to about 245 KB (17.6 KB gzipped).
-const GRID_MIN = 4, GRID_PANE_MAX = 960, GRID_BOX_MAX = 1600;
+const GRID_MIN = 4, GRID_PANE_MAX = 1600, GRID_BOX_MAX = 1600;   // a pane of the shell goes as wide as a Resizable box (owner, #463)
 const ASPECTS = [['4/3', '4 / 3'], ['3/2', '3 / 2'], ['1/1', '1 / 1'], ['16/9', '16 / 9']];
 
 module.exports = function buildSteps(root) {

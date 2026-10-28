@@ -1,0 +1,29 @@
+DIFF en dashboard/index.html          dir=null lang=en direction=ltr elements=670 wrappers=0 markup=e91cb01d3b picture=a9ac7d3d45 errors 0/0 (before differs from itself: timing)
+     before: {"dir":null,"lang":"en","computed":"ltr","els":670,"wrappers":0,"body":"fb5ab9754e","png":"74da5b88b9","errs":0}
+SAME en projects/index.html           dir=null lang=en direction=ltr elements=298 wrappers=0 markup=37b250103b picture=3e788abe80 errors 0/0
+SAME en messages/index.html           dir=null lang=en direction=ltr elements=371 wrappers=0 markup=1d36034e84 picture=3ff367bfaf errors 0/0
+SAME en contacts/index.html           dir=null lang=en direction=ltr elements=270 wrappers=0 markup=5396a2fb05 picture=422e585776 errors 0/0
+SAME en calendar/index.html           dir=null lang=en direction=ltr elements=455 wrappers=0 markup=644c34a687 picture=f80bbaf705 errors 0/0
+SAME en tasks/index.html              dir=null lang=en direction=ltr elements=431 wrappers=0 markup=befb832d8f picture=3a9ba81852 errors 0/0
+SAME en notes/index.html              dir=null lang=en direction=ltr elements=237 wrappers=0 markup=8e9934eca3 picture=b47848a8a5 errors 0/0
+SAME en bookmarks/index.html          dir=null lang=en direction=ltr elements=334 wrappers=0 markup=534fd1c001 picture=52b6e0a108 errors 0/0
+SAME en files/index.html              dir=null lang=en direction=ltr elements=487 wrappers=0 markup=71a85daf8b picture=436e7e1e2e errors 0/0
+SAME en settings/index.html           dir=null lang=en direction=ltr elements=1051 wrappers=0 markup=d0c4179cc0 picture=f7f60b8a63 errors 0/0
+SAME en dam/index.html                dir=null lang=en direction=ltr elements=1320 wrappers=0 markup=96bdf0f1e6 picture=38c6f1eee4 errors 0/0
+SAME en dam/settings-system.html      dir=null lang=en direction=ltr elements=2983 wrappers=0 markup=061684af4e picture=3d54ed7b45 errors 0/0
+SAME en dam/settings-myaccount.html   dir=null lang=en direction=ltr elements=346 wrappers=0 markup=96f0436f06 picture=a4b3d23388 errors 0/0
+DIFF ar dashboard/index.html          dir=rtl lang=ar direction=rtl elements=670 wrappers=0 markup=adc69923bc picture=dbe775cf5f errors 0/0 (before differs from itself: timing)
+     before: {"dir":"rtl","lang":"ar","computed":"rtl","els":670,"wrappers":0,"body":"1ccc085ef4","png":"59fdd6d771","errs":0}
+SAME ar projects/index.html           dir=rtl lang=ar direction=rtl elements=298 wrappers=0 markup=37b250103b picture=353324c3a1 errors 0/0
+SAME ar messages/index.html           dir=rtl lang=ar direction=rtl elements=371 wrappers=0 markup=972aaaebf7 picture=e4e5cf1d35 errors 0/0
+SAME ar contacts/index.html           dir=rtl lang=ar direction=rtl elements=270 wrappers=0 markup=5396a2fb05 picture=eff5b55ca0 errors 0/0
+SAME ar calendar/index.html           dir=rtl lang=ar direction=rtl elements=455 wrappers=0 markup=30ccbeaf0a picture=0c632c1733 errors 0/0
+SAME ar tasks/index.html              dir=rtl lang=ar direction=rtl elements=431 wrappers=0 markup=bc32f7d56f picture=98bf2cc3bb errors 0/0
+SAME ar notes/index.html              dir=rtl lang=ar direction=rtl elements=237 wrappers=0 markup=8e9934eca3 picture=6a68be9983 errors 0/0
+SAME ar bookmarks/index.html          dir=rtl lang=ar direction=rtl elements=334 wrappers=0 markup=ac6d8a2e02 picture=f99b880b0f errors 0/0
+SAME ar files/index.html              dir=rtl lang=ar direction=rtl elements=487 wrappers=0 markup=19e23305ce picture=9ec590f4e5 errors 0/0
+SAME ar settings/index.html           dir=rtl lang=ar direction=rtl elements=1051 wrappers=0 markup=d0c4179cc0 picture=ce6edd438e errors 0/0
+SAME ar dam/index.html                dir=rtl lang=ar direction=rtl elements=1320 wrappers=0 markup=9486875527 picture=9d3614854a errors 0/0
+SAME ar dam/settings-system.html      dir=rtl lang=ar direction=rtl elements=2983 wrappers=0 markup=8f7944c541 picture=b0788685c7 errors 0/0
+SAME ar dam/settings-myaccount.html   dir=rtl lang=ar direction=rtl elements=346 wrappers=0 markup=96f0436f06 picture=3b7d1a1a96 errors 0/0
+same 24 diff 2

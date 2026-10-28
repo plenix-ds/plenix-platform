@@ -4,8 +4,8 @@
      for those who do not drag; PanelSplitter is the same edge on a pane of the application shell (the navigation pane,
      a secondary pane, the inspector), promoted here from AppShell, which imports and re-exports it. Every size is on the
      4px grid: a drag moves one grid line at a time and lands on one when let go (owner, 2026-10-26), and a list of steps
-     narrows the settled sizes further. Sizes are honoured from 4px up to 1600px (GRID_BOX_MAX; a pane of the shell up to
-     960px, GRID_PANE_MAX): each grid line has a rule in the stylesheet up to there, and a larger size lands on the largest.
+     narrows the settled sizes further. Sizes are honoured from 4px up to 1600px (GRID_BOX_MAX; a pane of the shell too,
+     GRID_PANE_MAX): each grid line has a rule in the stylesheet up to there, and a larger size lands on the largest.
    Usage:
      <Resizable label="Preview" axis="horizontal" defaultWidth={320} minWidth={200} maxWidth={560}>…</Resizable>
      <Resizable label="Notes" axis="vertical" height={h} onResize={({ height }) => setH(height)} minHeight={120} maxHeight={400}>…</Resizable>
