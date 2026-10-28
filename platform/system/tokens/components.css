@@ -1675,8 +1675,6 @@
   --plx-comp-text-success-text: var(--plx-sys-feedback-success-content);
   --plx-comp-text-accent-text: var(--plx-sys-content-link);
   --plx-comp-text-accent-font-weight: var(--plx-sys-font-weight-medium);
-  --plx-comp-text-link-target-inset-block: min(0px, calc((100% - var(--plx-sys-control-target-min)) / 2));
-  --plx-comp-text-link-target-inset-inline-end: min(0px, calc(100% - var(--plx-sys-control-target-min)));
   --plx-comp-text-link-text: var(--plx-sys-content-link);
   --plx-comp-text-link-font-weight: var(--plx-sys-font-weight-regular);
   --plx-comp-thumbnail-background: var(--plx-sys-surface-sunken);
