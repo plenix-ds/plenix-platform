@@ -77,6 +77,15 @@ module.exports = async function regressions(page) {
     check(clicks === 1 && opens === 0 && !table.getSelectedRows().length, 'DT-17: nested controls act without opening or selecting the row');
     table.getRows()[0].getElement().click(); await wait(); check(opens === 1 && table.getSelectedRows().length === 1, 'DT-17: ordinary row clicks still open and select');
     await reset();
+    let opened = null;
+    await mount(h(P.DataGrid, { label: 'People', data: rows, columns, onRowClick: (r) => { opened = r.id; } }));
+    host.querySelectorAll('.plx-data-grid__grid-row')[1].querySelector('[role="gridcell"]').click(); await wait();
+    const openRow = host.querySelectorAll('.plx-data-grid__grid-row')[1];
+    check(opened !== null && openRow.getAttribute('aria-current') === 'true' && openRow.classList.contains('plx-data-grid__grid-selected')
+      && host.querySelectorAll('[aria-current="true"].plx-data-grid__grid-row').length === 1, 'DataGrid: the open row is marked (aria-current and the selected look) #453');
+    await mount(h(P.DataGrid, { label: 'People', data: rows, columns, onRowClick: () => {}, openKey: null }));
+    check(!host.querySelector('.plx-data-grid__grid-row[aria-current]') && !host.querySelector('.plx-data-grid__grid-selected'), 'DataGrid: openKey null marks no row #453');
+    await reset();
     const selectionChange = (keys, info) => { selected = { keys, info }; };
     await mount(h(P.DataGrid, { label: 'Hidden selection', data: rows, columns, selectable: true, onReady: ready, onSelectionChange: selectionChange }));
     table.selectRow([1, 2]); table.setFilter('name', '=', 'Alpha'); await wait();
