@@ -6,9 +6,9 @@
    Props:
      none: SIZE_STEPS lists the sizes in pixels, smallest first; snapSize(px, min, max) and stepSize(px, dir, min, max)
 */
-export const SIZE_STEPS = [4,8,12,16,18,20,24,28,32,36,40,44,48,52,56,60,64,68,72,80,88,92,96,100,112,120,128,132,140,152,160,180,200,220,240,260,280,300,320,360,380,400,420,440,460,480,500,520,560,600,640,720,760,800,860,900];
+export const SIZE_STEPS = [4,8,12,16,18,20,24,28,32,36,40,44,48,52,56,60,64,68,72,80,88,92,96,100,112,120,128,132,140,152,160,180,200,220,240,260,280,300,320,360,380,400,420,440,460,480,500,520,560,600,640,720,760,800,860,900,960,1000,1200,1400,1600];
 // the grid lines system/steps.css has a rule for (build-steps.js): a pane is drawn from GRID_MIN to GRID_PANE_MAX, a Resizable box to GRID_BOX_MAX
-export const GRID_MIN = 4, GRID_PANE_MAX = 960, GRID_BOX_MAX = 1600;
+export const GRID_MIN = 4, GRID_PANE_MAX = 1600, GRID_BOX_MAX = 1600;
 const within = (min, max) => SIZE_STEPS.filter((s) => s >= min && s <= max);
 // the size token nearest to px within [min, max] (the limit itself when no token lies between them)
 export function snapSize(px, min, max) { const c = within(min, max); if (!c.length) return Math.max(min, Math.min(max, px)); return c.reduce((a, b) => (Math.abs(b - px) < Math.abs(a - px) ? b : a)); }
