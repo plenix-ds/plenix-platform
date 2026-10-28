@@ -38,6 +38,7 @@
      Select.children: <option>s, when there are no options
      Select.appearance: as Input.appearance (on the <select>)
      Select.className: more classes on the wrapper
+     Select.readOnly: the choice shows and takes focus but cannot change (default: the nearest read-only region's, useReadOnly)
    Behavior:
      Select.data applies the same technical-value font variant as Input.data to the field.
      Select is drawn by Plenix (owner, dropdown-look-36): a field and a list in the Menu's look, over a hidden native <select> that
@@ -68,7 +69,7 @@ import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { gridPx } from '../../utils/grid.js';
 import { useFloating, FLOATING_ANCHOR } from '../../utils/floating.js';
-import { useReadOnly } from '../../providers/ReadOnly.jsx';
+import { useReadOnly, readOnlyProps } from '../../providers/ReadOnly.jsx';
 
 // the top layer and CSS anchor positioning (as Menu and Popover), checked once
 const TOP_LAYER = FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
@@ -111,10 +112,11 @@ export const Textarea = React.forwardRef(function Textarea({ invalid, appearance
 });
 
 /* the native control: a list box (multiple, or a size above 1) keeps the browser's own select */
-const SelectNative = React.forwardRef(function SelectNative({ invalid, options, appearance, size, joined, data = false, block = false, width, className, children, ...rest }, ref) {
+const SelectNative = React.forwardRef(function SelectNative({ invalid, options, appearance, size, joined, data = false, block = false, width, className, children, readOnly, ...rest }, ref) {
+  const locked = useReadOnly(readOnly);
   return (
     <span className={cx('plx-select', size === 'sm' && 'plx-select--size-sm', width && 'plx-select--width-' + width, block && 'plx-select--block', joined && joined.start && 'plx-select--joined-start-' + joined.start, joined && joined.end && 'plx-select--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-select--joined', className)}>
-      <select ref={ref} size={size === 'sm' || size === 'md' ? undefined : size} className={cx('plx-input', 'plx-select__control', data && 'plx-input--data', look(appearance))} aria-invalid={invalid || undefined} {...rest}>
+      <select ref={ref} size={size === 'sm' || size === 'md' ? undefined : size} className={cx('plx-input', 'plx-select__control', data && 'plx-input--data', look(appearance))} aria-invalid={invalid || undefined} {...readOnlyProps(locked, rest, { pointer: true })}>
         {options ? options.map((o) => <option key={o.value} value={o.value} disabled={o.disabled}>{o.label}</option>) : children}
       </select>
     </span>
@@ -125,7 +127,8 @@ const SelectNative = React.forwardRef(function SelectNative({ invalid, options, 
    hidden native <select>, which stays the source of truth: the options, the value, the form, the ref and onChange(event) all
    come from it, so a form posts, a reset resets and e.target.value works as before. */
 const SelectList = React.forwardRef(function SelectList({ invalid, options, appearance, size, joined, data = false, block = false, width, className, children, id, onFocus, onBlur, onKeyDown,
-  'aria-label': ariaLabel, 'aria-labelledby': labelledBy, 'aria-describedby': describedBy, 'aria-errormessage': errorMessage, ...rest }, ref) {
+  'aria-label': ariaLabel, 'aria-labelledby': labelledBy, 'aria-describedby': describedBy, 'aria-errormessage': errorMessage, readOnly, ...rest }, ref) {
+  const locked = useReadOnly(readOnly);   // keeps the value and focus; a press, Space, the arrows or typing do not open or change it
   const native = React.useRef(null), field = React.useRef(null), wrap = React.useRef(null), list = React.useRef(null), last = React.useRef(null), buffer = React.useRef(''), timer = React.useRef(0);
   const setNative = React.useCallback((el) => { native.current = el; if (typeof ref === 'function') ref(el); else if (ref) ref.current = el; }, [ref]);
   const auto = React.useId();
@@ -224,14 +227,14 @@ const SelectList = React.forwardRef(function SelectList({ invalid, options, appe
   return (
     <span ref={wrap} className={cx('plx-select', 'plx-select--list', size === 'sm' && 'plx-select--size-sm', width && 'plx-select--width-' + width, block && 'plx-select--block', joined && joined.start && 'plx-select--joined-start-' + joined.start, joined && joined.end && 'plx-select--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-select--joined', open && 'is-open', disabled && 'is-disabled', className)}>
       <select ref={setNative} tabIndex={-1} aria-hidden="true" className={cx('plx-input', 'plx-select__control', 'plx-select__native', data && 'plx-input--data', look(appearance))}
-        onFocus={() => { if (field.current) field.current.focus(); }} {...rest}>
+        {...readOnlyProps(locked, Object.assign({ onFocus: () => { if (field.current) field.current.focus(); } }, rest), { pointer: true })}>
         {options ? options.map((o) => <option key={o.value} value={o.value} disabled={o.disabled}>{o.label}</option>) : children}
       </select>
       <div ref={field} id={id} role="combobox" tabIndex={disabled ? -1 : 0} aria-haspopup="listbox" aria-expanded={open} aria-controls={open ? listId : undefined}
         aria-activedescendant={open && active >= 0 ? optId(active) : undefined} aria-label={ariaLabel} aria-labelledby={labelledBy || (ariaLabel ? undefined : labelId || undefined)}
         aria-describedby={describedBy} aria-errormessage={errorMessage} aria-invalid={invalid || undefined} aria-required={rest.required || undefined} aria-disabled={disabled || undefined}
         className={cx('plx-input', 'plx-select__field', data && 'plx-input--data', look(appearance), disabled && 'is-disabled')}
-        onClick={() => { if (disabled) return; if (open) setOpen(false); else show(); }} onKeyDown={onKey}
+        {...readOnlyProps(locked, { onClick: () => { if (disabled) return; if (open) setOpen(false); else show(); }, onKeyDown: onKey }, { pointer: true })}
         onFocus={onFocus} onBlur={(e) => { setOpen(false); if (onBlur) onBlur(e); }}>
         <span className="plx-select__value">{current ? current.label : ''}</span>
       </div>
