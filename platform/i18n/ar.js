@@ -923,7 +923,7 @@ export default {
     "label": "الأعمدة",
     "manage": "إدارة الأعمدة",
     "first": "العمود الأول",
-    "makeFirst": "جعله العمود الأول",
+    "moveMenu": "نقل {name}",
     "moveUp": "نقل {name} لأعلى",
     "moveDown": "نقل {name} لأسفل",
     "up": "نقل لأعلى",

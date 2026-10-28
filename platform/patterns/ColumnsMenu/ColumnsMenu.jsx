@@ -1,8 +1,9 @@
 /* Plenix · ColumnsMenu, ManageColumnsDialog
    Summary: The command bar's Columns (owner, 2026-10-14: the first column is a must; a list with reordering): a "Columns"
-     dropdown listing every column with its handle, a checkbox (shown or hidden), "Make first column" (or the pinned mark
-     of the first) and Move up / Move down; ManageColumnsDialog is the same list, larger, with a find field, Show all,
-     Hide all and a First column select, applied with Apply.
+     dropdown listing every column with its handle, a checkbox (shown or hidden) and, for the first, its pinned mark; a
+     First column select above the list names the first column. The handle opens a menu with Move up and Move down.
+     ManageColumnsDialog is the same list, larger, with a find field, Show all, Hide all and the First column select,
+     applied with Apply.
    Usage:
      const [columns, setColumns] = React.useState({ order: ['name', 'type', 'size'], hidden: [] });
      <ColumnsMenu fields={fields} value={columns} onChange={setColumns} />
@@ -15,15 +16,16 @@
      open, onOpenChange(open): (ManageColumnsDialog) the dialog opened by its owner, e.g. the DataGrid's "More…" in the
        header's right-click menu; trigger={null} draws no button
      inline: (ColumnsMenu) draws the list alone (open, in a frame); default false
-     strings: { label: "Columns", manage: "Manage columns", first: "First column", makeFirst: "Make first column",
+     strings: { label: "Columns", manage: "Manage columns", first: "First column", moveMenu: "Move {name}",
        moveUp: "Move {name} up", moveDown: "Move {name} down", up: "Move up", down: "Move down", find: "Find a column",
        showAll: "Show all", hideAll: "Hide all", apply: "Apply", cancel: "Cancel", shown: "{name} shown", hidden: "{name}
        hidden", isFirst: "{name} is the first column", moved: "{name}, position {position} of {total}", row: "{name}{first}.
        Alt + Arrow Up or Down moves it", firstMark: ", first column", none: "No column matches" }
    Behavior:
      Changes in the dropdown apply at once; the dialog applies them with Apply (Cancel leaves the columns as they were).
-     A row moves by drag, by Move up and Move down, or by Alt + Arrow Up / Down on the focused row; Make first column moves
-       it to the top. Each change is announced politely. The first column cannot be hidden.
+     A row moves by drag, by Move up and Move down in the handle's menu (the way without dragging), or by Alt + Arrow Up /
+       Down on the focused row; the First column select moves a column to the top. Each change is announced politely. The
+       first column cannot be hidden. No row carries a "Make first column" or arrow button of its own.
      The button reads "Columns" with the thin chevron; icons only, its icon and tooltip; hidden columns tint it and show
        their count. */
 import React from 'react';
@@ -33,14 +35,14 @@ import { Checkbox } from '../../components/Checkbox/Checkbox.jsx';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { Field } from '../../components/Field/Field.jsx';
 import { Icon } from '../../components/Icon/Icon.jsx';
+import { Menu, MenuItem } from '../../components/Menu/Menu.jsx';
 import { Select } from '../../components/Input/Input.jsx';
 import { SearchField } from '../../components/SearchField/SearchField.jsx';
 import { Text } from '../../components/Text/Text.jsx';
-import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
 import { VisuallyHidden } from '../../components/VisuallyHidden/VisuallyHidden.jsx';
 import { PanelTrigger, toggle, fill } from '../CommandBar/panel-parts.jsx';
 
-const STRINGS = { label: 'Columns', manage: 'Manage columns', first: 'First column', makeFirst: 'Make first column', moveUp: 'Move {name} up', moveDown: 'Move {name} down',
+const STRINGS = { label: 'Columns', manage: 'Manage columns', first: 'First column', moveMenu: 'Move {name}', moveUp: 'Move {name} up', moveDown: 'Move {name} down',
   up: 'Move up', down: 'Move down', find: 'Find a column', showAll: 'Show all', hideAll: 'Hide all', apply: 'Apply', cancel: 'Cancel', shown: '{name} shown',
   hidden: '{name} hidden', isFirst: '{name} is the first column', moved: '{name}, position {position} of {total}', row: '{name}{first}. Alt + Arrow Up or Down moves it',
   firstMark: ', first column', none: 'No column matches' };
@@ -78,13 +80,13 @@ export function ColumnsList({ fields, value, onChange, filter = '', t }) {
             onDragStart={(e) => { setDrag(f); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', f); }}
             onDragEnd={() => setDrag(null)} onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => { e.preventDefault(); const from = e.dataTransfer.getData('text/plain') || drag; setDrag(null); if (from && from !== f) move(from, i); }}>
-            <span className="plx-columns-list__handle" aria-hidden="true"><Icon name="drag" /></span>
+            <Menu trigger={<Button size="xs" variant="ghost" icon="drag" iconOnly label={fill(t.moveMenu, { name: name(f) })} className="plx-columns-list__handle" />} placement="bottom-start">
+              <MenuItem icon="chevron-up" disabled={i === 0} onSelect={() => move(f, i - 1, true)}>{t.up}</MenuItem>
+              <MenuItem icon="chevron-down" disabled={i === order.length - 1} onSelect={() => move(f, i + 1, true)}>{t.down}</MenuItem>
+            </Menu>
             <Checkbox label={name(f)} checked={hidden.indexOf(f) < 0} disabled={i === 0}
               onChange={() => put(order, toggle(hidden, f), fill(hidden.indexOf(f) >= 0 ? t.shown : t.hidden, { name: name(f) }))} />
-            {i === 0 ? <span className="plx-columns-list__first"><Icon name="pin-filled" /><Text variant="secondary">{t.first}</Text></span>
-              : <Button size="xs" variant="ghost" icon="pin" onClick={() => move(f, 0, true)}>{t.makeFirst}</Button>}
-            <Tooltip content={t.up}><Button size="xs" variant="ghost" icon="chevron-up" iconOnly label={fill(t.moveUp, { name: name(f) })} disabled={i === 0} onClick={() => move(f, i - 1)} /></Tooltip>
-            <Tooltip content={t.down}><Button size="xs" variant="ghost" icon="chevron-down" iconOnly label={fill(t.moveDown, { name: name(f) })} disabled={i === order.length - 1} onClick={() => move(f, i + 1)} /></Tooltip>
+            {i === 0 ? <span className="plx-columns-list__first"><Icon name="pin-filled" /><Text variant="secondary">{t.first}</Text></span> : null}
           </div>
         );
       })}
@@ -96,7 +98,10 @@ export function ColumnsList({ fields, value, onChange, filter = '', t }) {
 export function ColumnsMenu({ fields = [], value, onChange, inline = false, strings }) {
   const t = Object.assign({}, STRINGS, strings);
   const v = value || { order: fields.map((f) => f.value), hidden: [] };
-  const list = <div className="plx-find-panel plx-find-panel--columns"><ColumnsList fields={fields} value={v} onChange={onChange} t={t} /></div>;
+  const name = nameIn(fields);
+  const first = <Field label={t.first}><Select value={v.order[0]} options={v.order.map((f) => ({ value: f, label: name(f) }))}
+    onChange={(e) => onChange({ order: moveTo(v.order, e.target.value, 0), hidden: (v.hidden || []).filter((x) => x !== e.target.value) })} /></Field>;
+  const list = <div className="plx-find-panel plx-find-panel--columns">{first}<ColumnsList fields={fields} value={v} onChange={onChange} t={t} /></div>;
   return <PanelTrigger icon="fields" label={t.label} title={t.label} count={(v.hidden || []).length} caret size="lg" inline={inline}>{list}</PanelTrigger>;
 }
 
