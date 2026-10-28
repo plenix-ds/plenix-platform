@@ -28130,6 +28130,19 @@ function NextEngine(props) {
     setAutoSizing(old => JSON.stringify(old) === JSON.stringify(widths) ? old : widths);
     setFloors(old => JSON.stringify(old) === JSON.stringify(floor) ? old : floor);
   }, [columns, source, metrics.room, metrics.min, metrics.space, metrics.row, selectable, isStatic, showTypes, headerMenu, cells, effectiveWrap]);
+
+  // the room under the table that the page keeps (#451): the grid's own part below it (its border, a footer) and the end
+  // margin, padding and border of each container up to the page, so a table that fills the window ends at the page's
+  // padding and only the table scrolls; content placed after the grid is not counted
+  const trailing = (at, hold) => {
+    let sum = Math.max(0, at.getBoundingClientRect().bottom - hold.getBoundingClientRect().bottom);
+    for (let el = at; el; el = el.parentElement) {
+      const cs = getComputedStyle(el);
+      sum += parseFloat(cs.marginBlockEnd) || 0;
+      if (el !== at) sum += (parseFloat(cs.paddingBlockEnd) || 0) + (parseFloat(cs.borderBlockEndWidth) || 0);
+    }
+    return sum;
+  };
   _react.default.useLayoutEffect(() => {
     const at = frame.current;
     if (!at) return;
@@ -28158,7 +28171,7 @@ function NextEngine(props) {
       if (!isStatic && !height && mode !== 'pages' && holder.current) {
         const top = holder.current.getBoundingClientRect().top,
           room = at.getBoundingClientRect().bottom - top;
-        holder.current.style.maxBlockSize = (0, _grid.gridPx)(inPane ? Math.max(0, room) : Math.max(next.row * 8, doc.defaultView.innerHeight - top), {
+        holder.current.style.maxBlockSize = (0, _grid.gridPx)(inPane ? Math.max(0, room) : Math.max(next.row * 8, doc.defaultView.innerHeight - top - trailing(at, holder.current)), {
           round: 'down',
           el: at
         });
@@ -28357,6 +28370,48 @@ function NextEngine(props) {
       });
       table.setRowSelection(next);
     } else pick(row.id, wanted);
+    selectionAnchor.current = row.id;
+  };
+  // a click on the row (or Enter on it), not on its checkbox (#452, as a file manager): a plain one selects only that row,
+  // Ctrl or ⌘ toggles it, Shift extends from the anchor, Ctrl or ⌘ with Shift adds the range to the selection; the
+  // checkbox and select all keep toggling
+  const chooseRow = (row, e) => {
+    if (!selectable && !options.selectableRows) return;
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && selectable) {
+      pickCheckbox(row, {
+        target: {
+          checked: true
+        },
+        nativeEvent: e.nativeEvent,
+        shiftKey: true
+      });
+      return;
+    } // Ctrl/⌘+Shift adds the range
+    if (e.ctrlKey || e.metaKey) {
+      if (selectable) pickCheckbox(row, {
+        target: {
+          checked: !selection[row.id]
+        },
+        nativeEvent: e.nativeEvent,
+        shiftKey: false
+      });else pick(row.id, !selection[row.id]);
+      return;
+    }
+    if (e.shiftKey && selectable) {
+      pickCheckbox(row, {
+        target: {
+          checked: !selection[row.id]
+        },
+        nativeEvent: e.nativeEvent,
+        shiftKey: true
+      });
+      return;
+    }
+    const now = live.current.selection,
+      keys = Object.keys(now).filter(k => now[k]);
+    if (!(keys.length === 1 && keys[0] === String(row.id))) table.setRowSelection({
+      [row.id]: true
+    });
     selectionAnchor.current = row.id;
   };
   const fit = field => {
@@ -28793,13 +28848,7 @@ function NextEngine(props) {
       className: (0, _cx.cx)('' + B + '__grid-row', (selectable || options.selectableRows || props.onRowClick || on.rowClick) && B + '__grid-selectable', childField && '' + B + '__grid-tree-level-' + Math.min(12, row.depth), selection[row.id] && '' + B + '__grid-selected', isStatic && B + '__grid-row--static', anyWrap && !isNarrow && (isStatic || (effectiveStep || 'short') !== 'short') && B + '__grid-row--wrap', isNarrow && B + '__grid-row--narrow', virtualized && B + '__grid-row--virtual'),
       onClick: e => {
         if (e.target.closest(interactive)) return;
-        if (selectable) pickCheckbox(row, {
-          target: {
-            checked: !selection[row.id]
-          },
-          nativeEvent: e.nativeEvent,
-          shiftKey: e.shiftKey
-        });else if (options.selectableRows) pick(row.id, !selection[row.id]);
+        chooseRow(row, e);
         emit('rowClick', e, rowApi);
         props.onRowClick?.(record, e);
         if (props.onRowClick || on.rowClick) unread.open(record);
@@ -28813,13 +28862,7 @@ function NextEngine(props) {
       onKeyDown: e => {
         if (e.key === 'Enter' && !e.defaultPrevented && (e.target === e.currentTarget || e.target.getAttribute('role') === 'gridcell')) {
           e.preventDefault();
-          if (selectable) pickCheckbox(row, {
-            target: {
-              checked: !selection[row.id]
-            },
-            nativeEvent: e.nativeEvent,
-            shiftKey: e.shiftKey
-          });else if (options.selectableRows) pick(row.id, !selection[row.id]);
+          chooseRow(row, e);
           emit('rowClick', e, rowApi);
           props.onRowClick?.(record, e);
           if (props.onRowClick || on.rowClick) unread.open(record);
