@@ -32,7 +32,7 @@
        the sheet is open, and returns to the opener when it closes.
      Escape and a click on the scrim close it, unless dismissible is false.
      The grabber is a button: pressing it moves between the medium and large heights; dragging it up opens the large
-       height, dragging it down returns to the medium height or, from there, closes the sheet.
+       height, dragging it down returns to the medium height or, from there, closes the sheet (the drag is useGesture's pan).
      Only one sheet shows at a time: a sheet opened while another is open shows in its place, and the first returns when
        it closes.
      The page does not scroll while the sheet is open.
@@ -51,6 +51,7 @@ import { focusables, useLayer, useUid } from '../../utils/layer.js';
 import { Icon } from '../Icon/Icon.jsx';
 import { Button } from '../Button/Button.jsx';
 import { Dialog, Drawer } from '../Dialog/Dialog.jsx';
+import { useGesture } from '../../hooks/useGesture.js';
 import { useMedia, below } from '../../patterns/AppShell/AppShell.jsx';
 
 const STRINGS = { expand: 'Expand sheet', shrink: 'Shrink sheet' };
@@ -97,6 +98,17 @@ export function Sheet({ open, onClose, title, description, icon, onDone, doneLab
   };
   useLayer(ref, shown && bottom, { modal: true, onEscape: dismissible ? onClose : null, initialFocus: firstFocus });
   const task = !!onDone;
+  // the grabber's drag (the shared gesture hook; a press is the button's click): a drag of at least half the grabber's height
+  // up opens the large height, down returns to the medium height or, from there, closes the sheet; a canceled drag does nothing
+  const grabber = React.useRef(null);
+  useGesture(grabber, { disabled: !(shown && bottom), axis: 'both', onPanEnd: (g) => {
+    const el = grabber.current;
+    if (g.canceled || !el || Math.abs(g.dy) < el.offsetHeight / 2) return;   // a press: the click toggles
+    el.dataset.plxDragged = 'true';
+    if (g.dy < 0) setHeight('large');
+    else if (height === 'large') setHeight('medium');
+    else if (dismissible && onClose) onClose();
+  } });
 
   if (!shown) return null;
   if (!bottom) {
@@ -108,31 +120,15 @@ export function Sheet({ open, onClose, title, description, icon, onDone, doneLab
       closeLabel={closeLabel} dismissible={dismissible} flush={flush} className={cx('plx-sheet-' + kind, className)}>{actions ? <div className="plx-sheet__actions">{actions}</div> : null}{children}</Shell>;
   }
 
-  // the grabber: a press moves between the two heights; a drag up opens the large height, a drag down shrinks or closes
+  // the grabber: a press moves between the two heights (its drag is the gesture above)
   const toggle = () => setHeight(height === 'medium' ? 'large' : 'medium');
-  const onGrab = (e) => {
-    if (e.button !== 0) return;
-    const y0 = e.clientY, el = e.currentTarget, step = el.offsetHeight;
-    el.setPointerCapture(e.pointerId);
-    const up = (ev) => {
-      el.removeEventListener('pointerup', up);
-      const dy = ev.clientY - y0;
-      if (Math.abs(dy) < step / 2) return;   // a press: the click toggles
-      ev.preventDefault();
-      el.dataset.plxDragged = 'true';
-      if (dy < 0) setHeight('large');
-      else if (height === 'large') setHeight('medium');
-      else if (dismissible && onClose) onClose();
-    };
-    el.addEventListener('pointerup', up);
-  };
   const onGrabClick = (e) => { if (e.currentTarget.dataset.plxDragged) { delete e.currentTarget.dataset.plxDragged; return; } toggle(); };
   const onScrim = (e) => { if (dismissible && e.target === e.currentTarget && onClose) onClose(); };
   return createPortal(
     <div className="plx-modal-layer plx-modal-layer--sheet" onMouseDown={onScrim}>
       <div ref={ref} role="dialog" aria-modal="true" aria-labelledby={id + 't'} aria-describedby={description ? id + 'd' : undefined} tabIndex={-1}
         className={cx('plx-sheet', 'plx-sheet--' + height, task && 'plx-sheet--task', className)}>
-        <button type="button" className="plx-sheet__grabber" aria-label={height === 'medium' ? t.expand : t.shrink} onPointerDown={onGrab} onClick={onGrabClick} />
+        <button ref={grabber} type="button" className="plx-sheet__grabber" aria-label={height === 'medium' ? t.expand : t.shrink} onClick={onGrabClick} />
         <div className="plx-sheet__header">
           {task && dismissible ? <Button variant="ghost" className="plx-sheet__cancel" onClick={onClose}>{cancelLabel}</Button> : null}
           {icon ? <span className="plx-sheet__icon" aria-hidden="true">{asIcon(icon)}</span> : null}
