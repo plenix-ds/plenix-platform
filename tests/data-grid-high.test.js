@@ -83,8 +83,12 @@ module.exports = async function regressions(page) {
     const openRow = host.querySelectorAll('.plx-data-grid__grid-row')[1];
     check(opened !== null && openRow.getAttribute('aria-current') === 'true' && openRow.classList.contains('plx-data-grid__grid-selected')
       && host.querySelectorAll('[aria-current="true"].plx-data-grid__grid-row').length === 1, 'DataGrid: the open row is marked (aria-current and the selected look) #453');
-    await mount(h(P.DataGrid, { label: 'People', data: rows, columns, onRowClick: () => {}, openKey: null }));
-    check(!host.querySelector('.plx-data-grid__grid-row[aria-current]') && !host.querySelector('.plx-data-grid__grid-selected'), 'DataGrid: openKey null marks no row #453');
+    await reset(); await mount(h(P.DataGrid, { label: 'People', data: rows, columns, onRowClick: () => {}, openKey: null }));
+    host.querySelectorAll('.plx-data-grid__grid-row')[0].querySelector('[role="gridcell"]').click(); await wait();
+    check(!host.querySelector('.plx-data-grid__grid-row[aria-current]') && !host.querySelector('.plx-data-grid__grid-selected'), 'DataGrid: with openKey null, a clicked row stays unmarked #453');
+    await reset(); await mount(h(P.DataGrid, { label: 'People', data: rows, columns, onRowClick: () => {}, openKey: rows[2].id }));
+    const keyed = host.querySelectorAll('.plx-data-grid__grid-row[aria-current="true"]');
+    check(keyed.length === 1 && keyed[0].textContent.includes(rows[2].name) && keyed[0].classList.contains('plx-data-grid__grid-selected'), 'DataGrid: openKey marks its row without a click #453');
     await reset();
     const selectionChange = (keys, info) => { selected = { keys, info }; };
     await mount(h(P.DataGrid, { label: 'Hidden selection', data: rows, columns, selectable: true, onReady: ready, onSelectionChange: selectionChange }));
