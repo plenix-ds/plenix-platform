@@ -55,3 +55,20 @@ restyled icon is a new Plenix drawing, not an edited Material file. They live in
 from this folder, with each library's original kept beside it. Apps draw none of them until the owner approves one;
 it then joins the working set through `map.json` like any icon. Tools: `tools/icons/` (`check-icon.js` reports how an
 SVG is built against the guidance, `restyle-icon.js` refuses to write over the Material files).
+
+## The asset layout (#279, stage 1 of #277)
+
+One layout and one naming for every icon source, written by `layout.js` (generated, never committed):
+
+| Set | Where it is written | By | Size |
+|---|---|---|---|
+| `plenix` (the names in `map.json`) | `platform/dist/icons/plenix/` and `release/cdn/<v>/icons/plenix/` | `build-icons.js` (every `build-app.js` run) and `build-packages.js` | 212 icons, 1,061 files, 0.8 MB |
+| `material` (every symbol in `library/`) | `release/cdn/<v>/icons/material/` | `build-packages.js` (each release) | 4,150 icons, 20,751 files, 20.2 MB, under 1 s |
+
+- **Files per icon:** `<name>.svg`, `<name>-fill.svg`, `<name>-24.svg`, `<name>-24-fill.svg` (the source files, unedited), and `<name>.js`.
+- **The module:** `export default { name, set, symbol, fillOutline, mirrored, drawings: { 20: { outline, fill }, 24: { outline, fill } } }`. Each drawing is `{ viewBox, d, transform?, fillRule?, clipRule? }`. Both optical sizes are in every module (owner, #277 answer 7).
+- **`index.json` per set:** every name with its symbol and files, and every alias with its name.
+- **Names:** lowercase with dashes (`mic_off` is `mic-off`); the variant suffixes are `-fill`, `-24` and `-24-fill`. An alias (a symbol's underscore spelling) has no file of its own; `index.json` maps it to its name, so every name has exactly one module.
+- **The CDN path:** `/cdn/<version>/icons/<set>/<name>.js` (and `.svg`), under the release's version, so it never changes once published. The existing `/cdn/material/<commit>/` stays for the Icon component's fetch.
+- **One set on its own:** `node platform/icons/layout.js <plenix|material> <folder>`.
+- **No consumer reads the layout yet** (stage 1): `icon.css`, `glyphs.js` and the Icon component draw every icon as before. Stage 2 (#282) makes the modules importable.
