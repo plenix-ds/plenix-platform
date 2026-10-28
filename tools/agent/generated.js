@@ -13,7 +13,7 @@ const GENERATED = [
   /(^|\/)app\.js$/, /^dam\/app\/assets\.js$/,
   /^platform\/components\/Icon\/icon\.css$/, /^platform\/components\/Brand\/brand\.css$/,
   /^platform\/components\/ColorSwatch\/(categoryColors|dataColors)\.js$/,
-  /^platform\/components\/(DataGrid\/data-grid|Table\/table)-steps\.css$/,
+  /^platform\/components\/(DataGrid\/data-grid|Table\/table)-steps\.css$/, /^platform\/components\/Table\/table-base\.css$/,   // build-steps.js
   /^platform\/patterns\/ImageEditor\/imageEditorSteps\.js$/, /^platform\/utils\/sizeSteps\.js$/,
   /^platform\/providers\/(pageLayouts|themes)\.js$/,
   /^platform\/mobile\//, /^packages\//,
