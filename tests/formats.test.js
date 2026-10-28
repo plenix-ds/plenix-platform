@@ -1,6 +1,7 @@
 // Plenix · tests/formats.test.js: the Formats standard (platform/standards/formats.json) and utils/format.js agree, and the
 // formatters write what the standard says, in two locales. Node only (Intl with full ICU), no browser.
 //   node tests/formats.test.js   → FORMATS_OK
+const shared = require('./check.js');   // the shared check helper: parts (TEST_ONLY) and the results file (TEST_RESULTS)
 const fs = require('fs');
 const path = require('path');
 const assert = require('assert');
@@ -17,7 +18,7 @@ const F = mod.exports;
 const std = JSON.parse(fs.readFileSync(path.join(ROOT, 'platform', 'standards', 'formats.json'), 'utf8'));
 const strip = (o) => (Array.isArray(o) ? o.map(strip) : o && typeof o === 'object' ? Object.fromEntries(Object.entries(o).filter(([k]) => k !== '$description').map(([k, v]) => [k, strip(v)])) : o);
 let failed = 0, passed = 0;
-const check = (name, fn) => { try { fn(); passed++; } catch (e) { failed++; console.log('FAIL ' + name + ': ' + e.message); } };
+const check = (name, fn) => { if (!shared.wanted(name)) return; try { fn(); passed++; shared.record(name, true); } catch (e) { failed++; shared.record(name, false, e.message); console.log('FAIL ' + name + ': ' + e.message); } };
 const nb = (s) => s.replace(/[\u00a0\u202f\u2009]/g, ' ');   // Intl writes narrow, thin and non-breaking spaces
 const eq = (got, want) => assert.strictEqual(nb(got), want);
 

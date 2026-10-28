@@ -1,0 +1,264 @@
+{
+ "$description": "The parts (components) of each test, read from its check names by tools/build-test-parts.js (no test runs). node tests/run.js <test>:<Part>,<Part> runs only those parts. The dashboard's Run tests window will offer them.",
+ "tests": {
+  "brand-rules": {
+   "parts": [
+    {
+     "part": "names an existing token",
+     "checks": 1
+    }
+   ],
+   "checksWithoutPart": 3,
+   "checksNamedAtRunTime": 7
+  },
+  "contrast": {
+   "parts": [],
+   "checksWithoutPart": 6,
+   "checksNamedAtRunTime": 4
+  },
+  "focus-order": {
+   "parts": [
+    {
+     "part": "dialog",
+     "checks": 2
+    },
+    {
+     "part": "fixture",
+     "checks": 5
+    }
+   ],
+   "checksWithoutPart": 0,
+   "checksNamedAtRunTime": 1
+  },
+  "formats": {
+   "parts": [],
+   "checksWithoutPart": 15,
+   "checksNamedAtRunTime": 0
+  },
+  "high-contrast": {
+   "parts": [
+    {
+     "part": "forced colors",
+     "checks": 8
+    },
+    {
+     "part": "motion",
+     "checks": 2
+    },
+    {
+     "part": "reduced motion",
+     "checks": 1
+    }
+   ],
+   "checksWithoutPart": 0,
+   "checksNamedAtRunTime": 3
+  },
+  "keyboard": {
+   "parts": [
+    {
+     "part": "Command actions",
+     "checks": 2
+    },
+    {
+     "part": "Command bar",
+     "checks": 8
+    },
+    {
+     "part": "Filter panel",
+     "checks": 2
+    },
+    {
+     "part": "Rating",
+     "checks": 2
+    },
+    {
+     "part": "Recent searches",
+     "checks": 8
+    },
+    {
+     "part": "Selection bar",
+     "checks": 2
+    },
+    {
+     "part": "Settings section",
+     "checks": 4
+    },
+    {
+     "part": "Tabs",
+     "checks": 2
+    },
+    {
+     "part": "Tabs (right to left)",
+     "checks": 1
+    },
+    {
+     "part": "Toolbar",
+     "checks": 3
+    },
+    {
+     "part": "Toolbar (right to left)",
+     "checks": 1
+    }
+   ],
+   "checksWithoutPart": 0,
+   "checksNamedAtRunTime": 0
+  },
+  "layout": {
+   "parts": [
+    {
+     "part": "contained",
+     "checks": 2
+    },
+    {
+     "part": "fluid",
+     "checks": 2
+    },
+    {
+     "part": "focus",
+     "checks": 3
+    },
+    {
+     "part": "hybrid",
+     "checks": 3
+    },
+    {
+     "part": "multi-pane",
+     "checks": 2
+    },
+    {
+     "part": "settings",
+     "checks": 1
+    },
+    {
+     "part": "standard",
+     "checks": 3
+    }
+   ],
+   "checksWithoutPart": 0,
+   "checksNamedAtRunTime": 0
+  },
+  "login": {
+   "parts": [
+    {
+     "part": "Accounts",
+     "checks": 2
+    },
+    {
+     "part": "CLI",
+     "checks": 4
+    },
+    {
+     "part": "Check",
+     "checks": 3
+    },
+    {
+     "part": "Cookie",
+     "checks": 2
+    },
+    {
+     "part": "Lockout",
+     "checks": 3
+    },
+    {
+     "part": "Log",
+     "checks": 2
+    },
+    {
+     "part": "Redirect",
+     "checks": 1
+    },
+    {
+     "part": "Revocation",
+     "checks": 2
+    },
+    {
+     "part": "Save",
+     "checks": 2
+    },
+    {
+     "part": "Secret",
+     "checks": 2
+    },
+    {
+     "part": "Session",
+     "checks": 2
+    },
+    {
+     "part": "Sign-in",
+     "checks": 7
+    },
+    {
+     "part": "Sign-in page",
+     "checks": 13
+    },
+    {
+     "part": "Sign-out",
+     "checks": 6
+    }
+   ],
+   "checksWithoutPart": 0,
+   "checksNamedAtRunTime": 0
+  },
+  "navigation": {
+   "parts": [
+    {
+     "part": "DAM search",
+     "checks": 5
+    },
+    {
+     "part": "back",
+     "checks": 2
+    },
+    {
+     "part": "calendar",
+     "checks": 5
+    },
+    {
+     "part": "deep link",
+     "checks": 2
+    },
+    {
+     "part": "guard",
+     "checks": 5
+    },
+    {
+     "part": "legacy",
+     "checks": 2
+    },
+    {
+     "part": "page guard",
+     "checks": 3
+    },
+    {
+     "part": "restoration",
+     "checks": 2
+    },
+    {
+     "part": "screen",
+     "checks": 3
+    },
+    {
+     "part": "search view",
+     "checks": 5
+    }
+   ],
+   "checksWithoutPart": 0,
+   "checksNamedAtRunTime": 13
+  },
+  "theme": {
+   "parts": [
+    {
+     "part": "and its foundations",
+     "checks": 1
+    }
+   ],
+   "checksWithoutPart": 11,
+   "checksNamedAtRunTime": 0
+  },
+  "utilities": {
+   "parts": [],
+   "checksWithoutPart": 16,
+   "checksNamedAtRunTime": 0
+  }
+ }
+}

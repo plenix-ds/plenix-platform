@@ -7,6 +7,7 @@
 //   focus: the navigation and the inspector are hidden; the header and the footer stay
 //   node tests/layout.test.js
 //   TEST_SCOPE=full: always; by default (tests/changed.js) only when the AppShell, the SettingsLayout, a global file or this test changed
+const shared = require('./check.js');   // the shared check helper: parts (TEST_ONLY) and the results file (TEST_RESULTS)
 const fs = require('fs');
 const path = require('path');
 const { ROOT, launch, sleep } = require('./lib.js');
@@ -62,7 +63,7 @@ const html = '<!doctype html><html lang="en" data-plx-theme="default" data-plx-m
   {
   }
   await browser.close(); fs.unlinkSync(file);
-  const res = [], check = (n, ok, d) => res.push([n, ok, d]);
+  const res = [], check = (n, ok, d) => { if (shared.check(n, ok, d)) res.push([n, ok, d]); };
   const f = out.fluid, c = out.contained, y = out.hybrid, m = out['multi-pane'], fo = out.focus;
   check('fluid: the wide block fills the content width', f.wide && f.wide.w > 960, JSON.stringify(f.wide));
   check('contained: the content is at most 960px wide', c.wide && c.wide.w <= 960 && c.p.w <= 960, JSON.stringify([c.p, c.wide]));

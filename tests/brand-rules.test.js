@@ -4,6 +4,7 @@
 // brand.json names exist. No browser: it reads the token source.
 //   node tests/brand-rules.test.js
 //   TEST_SCOPE=full: always; by default (tests/changed.js) when platform/brand, the brand tokens, a global file or this test changed
+const shared = require('./check.js');   // the shared check helper: parts (TEST_ONLY) and the results file (TEST_RESULTS)
 const fs = require('fs');
 const path = require('path');
 const changed = require('./changed.js');
@@ -18,7 +19,7 @@ if (!fs.existsSync(path.join(BRAND, 'brand-rules.json'))) {
   console.log('BRAND_RULES_OK 0 checks (skipped)');
   process.exit(0);
 }
-const res = [], check = (n, ok, d) => res.push([n, !!ok, d || '']);
+const res = [], check = (n, ok, d) => { if (shared.check(n, ok, d)) res.push([n, !!ok, d || '']); };
 const json = (f) => JSON.parse(fs.readFileSync(f, 'utf8'));
 
 // every token of the source, by tier and name ({ 'plx-ref': { 'size-16px': '16px' }, … }); the base files win over the
