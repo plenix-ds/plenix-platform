@@ -11,6 +11,7 @@ on:
   pull_request:
     types: [opened, synchronize, labeled, unlabeled, closed]
 permissions:
+  contents: read
   issues: write
   pull-requests: write
   statuses: write
@@ -19,7 +20,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   guard:
-    if: github.event_name == 'pull_request' || startsWith(github.event.label.name, 'phase:')
+    if: (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) || (github.event_name == 'issues' && startsWith(github.event.label.name, 'phase:'))
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
