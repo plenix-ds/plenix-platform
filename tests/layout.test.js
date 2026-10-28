@@ -109,6 +109,12 @@ const html = '<!doctype html><html lang="en" data-plx-theme="default" data-plx-m
     root.unmount(); host.remove(); return out;
   });
   check('SplitView: stacked by its room, the divider turns horizontal and drags the first panel\'s height, keeping its focus #237', turned.wide === 'vertical' && turned.narrow === 'horizontal' && turned.same && turned.focused && turned.first >= 200 && turned.first <= 500, JSON.stringify(turned));
+  const firstFrame = await page.evaluate(() => {
+    const h = React.createElement, P = window.Plenix, host = document.createElement('div'); host.style.cssText = 'display:flex;flex-direction:column;inline-size:700px;block-size:500px'; document.body.appendChild(host);
+    const root = ReactDOM.createRoot(host); ReactDOM.flushSync(() => root.render(h(P.SplitView, { label: 'Split', first: h('div', null, 'List'), second: h('div', null, 'Item') })));
+    const o = host.querySelector('[role="separator"]').getAttribute('aria-orientation'); root.unmount(); host.remove(); return o;
+  });
+  check('SplitView: a narrow split view has the stacked divider from its first frame #237', firstFrame === 'horizontal', firstFrame);
   // #288: screen-reader texts at the end of the page (the announcer, a VisuallyHidden text) take no room, so a page that
   // fits the window does not scroll
   const quiet = await page.evaluate(async () => {

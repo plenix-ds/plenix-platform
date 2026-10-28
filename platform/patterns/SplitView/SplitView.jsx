@@ -72,7 +72,8 @@ export function SplitView({ orientation = 'side-by-side', first, second, label, 
   // stacked by its room (issue 237): under 900px a side-by-side split view stacks in CSS (the container query); its divider
   // then becomes the stacked one, read from the layout the CSS chose, so the two never disagree
   const [roomStacked, setRoomStacked] = React.useState(false);
-  React.useEffect(() => {
+  // measured before the first paint, so a narrow split view never draws a frame with the side settings
+  React.useLayoutEffect(() => {
     const element = container.current, win = element && element.ownerDocument.defaultView;
     if (!element || !win) return;
     const measure = () => {
@@ -90,7 +91,8 @@ export function SplitView({ orientation = 'side-by-side', first, second, label, 
     const observer = win.ResizeObserver ? new win.ResizeObserver(measure) : null;
     if (observer) observer.observe(element);
     win.addEventListener('resize', measure);
-    const settle = () => win.requestAnimationFrame(measure);   // after a drag ends, a switch it held back happens
+    // after a drag ends, a switch it held back happens; any other click measures nothing
+    const settle = () => { if (/\bis-resizing-/.test(element.ownerDocument.documentElement.className)) win.requestAnimationFrame(measure); };
     win.addEventListener('pointerup', settle, true); win.addEventListener('pointercancel', settle, true);
     return () => { if (observer) observer.disconnect(); win.removeEventListener('resize', measure); win.removeEventListener('pointerup', settle, true); win.removeEventListener('pointercancel', settle, true); };
   }, [side, minSize, lo]);
