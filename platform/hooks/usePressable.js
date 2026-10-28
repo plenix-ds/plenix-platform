@@ -18,7 +18,8 @@
      options.native (false): on a native <button>, the browser's click stays the one press, for every input: onPress
        runs from that click (event is the click itself), with pointerType from the pointer or key that made it; the keys
        keep the browser's behavior (Enter repeats while held, as a native button does), and pressed stays false (the
-       button draws its own :active); pressProps are then onPointerDown, onKeyDown and onClick
+       button draws its own :active); pressProps are then onPointerDown, onPointerCancel, onKeyDown, onBlur and onClick. A
+       preventDefault in one of your handlers does not stop the press there: the browser decides the click
      returns { pressed, pressProps }: pressProps go on the element (onPointerDown, onPointerUp, onPointerEnter,
        onPointerLeave, onPointerCancel, onKeyDown, onKeyUp, onBlur, onClick)
    Behavior:
@@ -82,7 +83,9 @@ export function usePressable(options = {}) {
     const own = (name) => (e) => { if (handlers[name]) handlers[name](e); };
     const nativeProps = {
       onPointerDown: (e) => { own('onPointerDown')(e); lastPointer.current = e.pointerType || 'mouse'; },
+      onPointerCancel: (e) => { own('onPointerCancel')(e); lastPointer.current = null; },
       onKeyDown: (e) => { own('onKeyDown')(e); if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') lastPointer.current = 'keyboard'; },
+      onBlur: (e) => { own('onBlur')(e); lastPointer.current = null; },   // a pointer or key that never clicked names no later click
       onClick: (e) => {
         own('onClick')(e);
         const pointerType = lastPointer.current || (e.detail === 0 ? 'virtual' : 'mouse');
