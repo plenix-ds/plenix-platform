@@ -1,0 +1,8 @@
+before {"n":71,"widths":{"2":71}}
+  #/foundations/color-surface {}
+  #/foundations/color-text {}
+copied spec.css
+OVERLAY: 1 files into platform/design-system
+after {"n":71,"widths":{"120":71}}
+  #/foundations/color-surface {}
+  #/foundations/color-text {}
