@@ -89,6 +89,20 @@ if (!ONLY && !changed.anyDS()) changed.none('LABS_OK 0/0 labs');
   });
   const sampleBad = samples.n && Number.isFinite(samples.want) && samples.want > 0 && !samples.narrow ? [] : ['DS color samples: ' + samples.narrow + ' of ' + samples.n + ' are narrower than ' + samples.want + 'px (first ' + samples.first + 'px) #263'];
   results.push(['color samples #263', { checks: samples.n, tokens: 0, bad: sampleBad, nbad: sampleBad.length }]);
+  // #352 (owner, option B): a wide lab (it names a matrix column width) draws one variant per row, each drawing fitting
+  // its cell (no sideways scroll); a small lab (buttons) keeps a column per variant
+  at('wide labs');
+  const labRows = async (hash) => {
+    await page.evaluate((h) => { location.hash = h; }, hash); await sleep(5000);
+    const frame = await page.$('iframe.ds-lab-frame'); const f = frame && await frame.contentFrame(); if (!f) return null;
+    return f.evaluate(() => { const picks = [...document.querySelectorAll('.lab-pick')]; return { columns: document.querySelectorAll('[role="columnheader"]').length, picks: picks.length,
+      clipped: picks.filter((p) => { const c = p.closest('[role="cell"],[role="gridcell"]'), k = p.firstElementChild; return k && c && k.getBoundingClientRect().width > c.getBoundingClientRect().width + 1; }).length }; });
+  };
+  const wide = await labRows('#/page-structures/record-page/v/all'), small = await labRows('#/actions/button/v/all');
+  const wideBad = [];
+  if (!wide || wide.columns !== 1 || !wide.picks || wide.clipped) wideBad.push('DS record page lab: one column with every drawing whole expected, got ' + JSON.stringify(wide) + ' #352');
+  if (!small || small.columns < 3 || small.clipped) wideBad.push('DS button lab: a column per variant expected, got ' + JSON.stringify(small) + ' #352');
+  results.push(['wide labs #352', { checks: 2, tokens: 0, bad: wideBad, nbad: wideBad.length }]);
   await browser.close(); server.close();
   const failed = results.filter((x) => x[1].nbad);
   results.forEach(([id, r]) => { console.log((r.nbad ? '  FAIL ' : '  ok   ') + id + ': ' + r.checks + ' checks, ' + r.tokens + ' tokens'); r.bad.forEach((b) => console.log('       ' + b)); });
