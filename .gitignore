@@ -14,3 +14,6 @@ tests/.layout-test.html
 tests/.theme-sample.css
 tests/.theme-test.html
 tests/.density-test.html
+
+# the publish host, account and key (tools/publish-config.sh); never committed
+publish.config

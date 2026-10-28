@@ -1,8 +1,8 @@
 # Plenix: handoff for a new session (2026-10-24)
 
 > **Handed off, 2026-10-26.** The owner: "so now all the work is ready to hand off to begin a new clean environment based on the plan discussed".
-> The **cc-server team** (the Lead on VM 131, 10.0.0.32) runs Plenix from here. The Windows-VM sessions (Owner desk, Governance and the DND sessions) stand down and start or merge nothing more.
-> The hand-off note is `HANDOFF-to-cc-server.md`, in the sessions' shared notes folder on the Windows VM (`C:\Users\Administrator\AppData\Roaming\Claude\side-session-notes\local_6c3642e2-6729-4aa7-80c6-a08a9198dca1\`), beside `owner-decisions-log.md` (every owner decision, verbatim). Read it first, then this file and #252.
+> The **team server** (the Lead's machine) runs Plenix from here. The Windows-VM sessions (Owner desk, Governance and the DND sessions) stand down and start or merge nothing more.
+> The hand-off note is in the sessions' shared notes folder on the Windows VM, beside `owner-decisions-log.md` (every owner decision, verbatim). Read it first, then this file and #252.
 > State at hand-off: live 0.72.0; `styling/phase-2` green (CI run 40389886058); merged since 0.72.0 and unreleased: #341 (+ spec #5), #345–#351, #355. In flight: charts on ECharts (#353; Line, Area, Bar, Pie approved to ship; branch `claude/charts-echarts-first`; then Diagram retired (breaking), Sparkline and WordCloud to ECharts). No release until the owner asks.
 
 Read this first, then [STATUS.md](STATUS.md) (what is done and left), then `CLAUDE.md` (Claude) or `AGENTS.md` (Codex).
@@ -29,7 +29,7 @@ One design system and the suite of applications built on it, owned by one person
 - **Last release: 0.69.4** (tag `v0.69.4`, live at `https://design-system.lighthouseway.org/cdn/0.69.4/`).
   - 0.69.3 shipped EntityHeader's Streamlined header style (`headerStyle="streamlined"`).
   - 0.69.2 shipped the five Structured layouts (`layout`), the tag picker fix and the icon fix.
-- **Hosting**: VM 130 "Plenix" (10.0.0.30) behind Nginx Proxy Manager; `plenix.lighthouseway.org` (apps), `design-system.lighthouseway.org` (spec, CDN `/cdn/<version>/`, API `/api/v1/`, behind Authentik except `/cdn/`).
+- **Hosting**: the publish host (`PUBLISH_HOST`, `tools/publish-config.sh`) behind Nginx Proxy Manager; `plenix.lighthouseway.org` (apps), `design-system.lighthouseway.org` (spec, CDN `/cdn/<version>/`, API `/api/v1/`, behind Authentik except `/cdn/`).
 - **Unfinished work saved on a branch**: `wip/data-grid-lines-as-borders` (an unverified DataGrid change found on disk): #290.
 
 ## The owner's rules (non-negotiable)

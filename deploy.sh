@@ -1,20 +1,19 @@
 #!/usr/bin/env bash
-# Plenix · publish the apps and the design system to the Plenix VM (Proxmox VM 130, 10.0.0.30).
+# Plenix · publish the apps and the design system to the publish host (PUBLISH_HOST).
 #   plenix.lighthouseway.org         -> /Plenix/dashboard/
 #   design-system.lighthouseway.org  -> /Plenix/platform/design-system/
 #     /cdn/<version>/  the release's CDN files (kept for good: a published version never changes)
 #     /api/v1/         the read-only JSON API (replaced on every deploy)
 # The deployed apps run on the release, not on the source: their pages load the Platform from /cdn/<version>/ (the version
 # in package.json), so a broken release shows in our own apps first. Platform changes reach them only through a new version.
-# Both names serve /srv/plenix/www on the VM (Nginx, site file /etc/nginx/sites-available/plenix); Nginx Proxy Manager
-# (CT 102) gives them HTTPS. Only the folders listed below are published: never the build tools, archives or databases.
+# Both names serve /srv/plenix/www on the publish host (Nginx, site file /etc/nginx/sites-available/plenix); the reverse
+# proxy gives them HTTPS. Only the folders listed below are published: never the build tools, archives or databases.
 # The owner's study pages (docs/font-study, docs/composition, docs/reading-pane-study, docs/page-headers, and the DataGrid studies docs/grid-header-study, docs/grid-row-hover-study, docs/grid-row-selection-study) are published too, at /Plenix/docs/<study>/.
-# Run on cc-server from the repository root:  bash deploy.sh   (uses the key ~/.ssh/plenix_publish on plenix@10.0.0.30;
-# PLENIX_SSH_KEY names another key)
+# Run from the repository root:  bash deploy.sh   The publish host, account and key come from the environment or from
+# publish.config (tools/publish-config.sh: PUBLISH_HOST, PUBLISH_USER, PUBLISH_KEY; no defaults).
 set -euo pipefail
-HOST=plenix@10.0.0.30
-SSH_OPTS=(-o IdentitiesOnly=yes -o BatchMode=yes -i "${PLENIX_SSH_KEY:-$HOME/.ssh/plenix_publish}")
 cd "$(dirname "$0")"
+. tools/publish-config.sh
 
 (node build-app.js >/dev/null 2>&1 && node build-usage.js >/dev/null) || { echo "BUILD FAILED: run node build-app.js"; exit 1; }
 node check-system.js >/dev/null 2>&1 || { echo "check-system failed: fix it before publishing"; exit 1; }
