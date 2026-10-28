@@ -1,7 +1,7 @@
 /* Plenix · accessible descriptions (platform/utils/describedBy.js): one way to tie descriptions to an element.
    Summary: joinIds merges description ids into one aria-describedby value (empty and repeated ids dropped, the order kept);
      useDescriptionId gives a component a stable id for its description; useDescribedBy builds the attribute from the ids a
-     component has now. Field and Tooltip do this by hand today; new components use these.
+     component has now. Field and Tooltip use them, and so does every new component.
    Usage:
      import { joinIds, useDescriptionId, useDescribedBy } from 'plenix-platform';
      const hintId = useDescriptionId('hint');

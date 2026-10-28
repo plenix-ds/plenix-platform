@@ -6078,7 +6078,57 @@ function useFloating(anchorRef, floatingRef, options = {}) {
   };
 }
   } },
-  "platform/components/Tooltip/Tooltip.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/floating.js":"platform/utils/floating.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/utils/describedBy.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.joinIds = joinIds;
+exports.useDescribedBy = useDescribedBy;
+exports.useDescriptionId = useDescriptionId;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · accessible descriptions (platform/utils/describedBy.js): one way to tie descriptions to an element.
+   Summary: joinIds merges description ids into one aria-describedby value (empty and repeated ids dropped, the order kept);
+     useDescriptionId gives a component a stable id for its description; useDescribedBy builds the attribute from the ids a
+     component has now. Field and Tooltip use them, and so does every new component.
+   Usage:
+     import { joinIds, useDescriptionId, useDescribedBy } from 'plenix-platform';
+     const hintId = useDescriptionId('hint');
+     const describedBy = useDescribedBy(props['aria-describedby'], hint && hintId, error && errorId);
+     <input aria-describedby={describedBy} />
+     <p id={hintId}>Use letters and numbers only</p>
+   Props:
+     joinIds(...ids): a string of ids separated by spaces, or undefined when there is none; each argument may itself hold
+       several ids ("a b"), or be empty, false or undefined
+     useDescriptionId(prefix?): a stable, unique id for this component ("plx-" + prefix + a React id); default prefix "desc"
+     useDescribedBy(...ids): joinIds of the arguments (the hook form, for symmetry with useDescriptionId)
+   Behavior:
+     The ids already on the element come first (what its owner set), then the component's own, so nothing the owner
+     described is lost. A description that is not shown (a hint only for screen readers) is VisuallyHidden text with the id.
+   Notes:
+     A description adds to the name, it never repeats it. Visible text first: aria-describedby points at text everyone can
+     read (the hint, the error message); a hidden description only for what sighted people get from the layout. */
+
+function joinIds(...ids) {
+  const out = [];
+  ids.forEach(v => {
+    if (!v) return;
+    String(v).split(/\s+/).forEach(id => {
+      if (id && out.indexOf(id) < 0) out.push(id);
+    });
+  });
+  return out.length ? out.join(' ') : undefined;
+}
+function useDescriptionId(prefix = 'desc') {
+  return 'plx-' + prefix + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+}
+function useDescribedBy(...ids) {
+  return joinIds(...ids);
+}
+  } },
+  "platform/components/Tooltip/Tooltip.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/floating.js":"platform/utils/floating.js","../../utils/describedBy.js":"platform/utils/describedBy.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -6089,6 +6139,7 @@ exports.Tooltip = Tooltip;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _floating = require("../../utils/floating.js");
+var _describedBy = require("../../utils/describedBy.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · Tooltip
    Summary: A short label for a control, shown on hover, on keyboard focus and, on touch, on a long press. The rich
@@ -6170,7 +6221,7 @@ function Tooltip({
   className,
   children
 }) {
-  const id = 'plx-tt' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const id = (0, _describedBy.useDescriptionId)('tt'); // plx-tt<id> (utils/describedBy.js)
   const [open, setOpen] = _react.default.useState(false);
   const wrap = _react.default.useRef(null);
   const bubble = _react.default.useRef(null);
@@ -6217,7 +6268,7 @@ function Tooltip({
   }, [open, toggle]);
   const child = _react.default.Children.only(children);
   const described = {
-    'aria-describedby': [child.props['aria-describedby'], id].filter(Boolean).join(' ')
+    'aria-describedby': (0, _describedBy.useDescribedBy)(child.props['aria-describedby'], id)
   };
   const trigger = disabled ? child : /*#__PURE__*/_react.default.cloneElement(child, toggle ? Object.assign(described, {
     'aria-expanded': open,
@@ -10939,7 +10990,7 @@ function useTruncated(ref) {
   return cut;
 }
   } },
-  "platform/components/Field/Field.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Field/Field.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/describedBy.js":"platform/utils/describedBy.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -10953,6 +11004,7 @@ var _overflow = require("../../utils/overflow.js");
 var _Tooltip = require("../Tooltip/Tooltip.jsx");
 var _announce = require("../../utils/announce.jsx");
 var _format = require("../../utils/format.js");
+var _describedBy = require("../../utils/describedBy.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Field
    Summary: A label, the control, and its help or error, connected for assistive technology.
@@ -11047,9 +11099,11 @@ function Field({
       (0, _announce.announce)(over ? fill(t.over, length - max) : fill(t.left, max - length));
     }
   }, [length, max, near, over, t.over, t.left]);
+  // the control's own descriptions first, then the field's: the description, the counter, the error (utils/describedBy.js)
+  const describedBy = (0, _describedBy.useDescribedBy)(child.props['aria-describedby'], descId, countId, errId);
   const props = {
     id: child.props.id || controlId,
-    'aria-describedby': [child.props['aria-describedby'], descId, countId, errId].filter(Boolean).join(' ') || undefined,
+    'aria-describedby': describedBy,
     invalid: child.props.invalid !== undefined ? child.props.invalid : error || over ? true : undefined,
     required: child.props.required !== undefined ? child.props.required : required || undefined
   };
@@ -41395,56 +41449,6 @@ function meetsContrast(ratio, rule = 'text') {
   const min = CONTRAST_MINIMUMS[rule];
   if (min == null) throw new Error('meetsContrast: no rule "' + rule + '" (text, large-text, enhanced, non-text)');
   return ratio >= min;
-}
-  } },
-  "platform/utils/describedBy.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.joinIds = joinIds;
-exports.useDescribedBy = useDescribedBy;
-exports.useDescriptionId = useDescriptionId;
-var _react = _interopRequireDefault(require("react"));
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · accessible descriptions (platform/utils/describedBy.js): one way to tie descriptions to an element.
-   Summary: joinIds merges description ids into one aria-describedby value (empty and repeated ids dropped, the order kept);
-     useDescriptionId gives a component a stable id for its description; useDescribedBy builds the attribute from the ids a
-     component has now. Field and Tooltip do this by hand today; new components use these.
-   Usage:
-     import { joinIds, useDescriptionId, useDescribedBy } from 'plenix-platform';
-     const hintId = useDescriptionId('hint');
-     const describedBy = useDescribedBy(props['aria-describedby'], hint && hintId, error && errorId);
-     <input aria-describedby={describedBy} />
-     <p id={hintId}>Use letters and numbers only</p>
-   Props:
-     joinIds(...ids): a string of ids separated by spaces, or undefined when there is none; each argument may itself hold
-       several ids ("a b"), or be empty, false or undefined
-     useDescriptionId(prefix?): a stable, unique id for this component ("plx-" + prefix + a React id); default prefix "desc"
-     useDescribedBy(...ids): joinIds of the arguments (the hook form, for symmetry with useDescriptionId)
-   Behavior:
-     The ids already on the element come first (what its owner set), then the component's own, so nothing the owner
-     described is lost. A description that is not shown (a hint only for screen readers) is VisuallyHidden text with the id.
-   Notes:
-     A description adds to the name, it never repeats it. Visible text first: aria-describedby points at text everyone can
-     read (the hint, the error message); a hidden description only for what sighted people get from the layout. */
-
-function joinIds(...ids) {
-  const out = [];
-  ids.forEach(v => {
-    if (!v) return;
-    String(v).split(/\s+/).forEach(id => {
-      if (id && out.indexOf(id) < 0) out.push(id);
-    });
-  });
-  return out.length ? out.join(' ') : undefined;
-}
-function useDescriptionId(prefix = 'desc') {
-  return 'plx-' + prefix + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
-}
-function useDescribedBy(...ids) {
-  return joinIds(...ids);
 }
   } },
   "platform/utils/scrollLock.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
