@@ -342,6 +342,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Icon = Icon;
 exports.StatusIcon = StatusIcon;
+exports.registerIcons = registerIcons;
 exports.resolveIcon = resolveIcon;
 exports.setIconLibrary = setIconLibrary;
 exports.stateIcon = stateIcon;
@@ -357,6 +358,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Usage:
      <Icon name="folder" />
      <Icon name="bookmark" size="sm" filled label="Bookmarked" />
+     import Add from 'plenix-platform/icons/plenix/add';  <Icon icon={Add} />      // an imported icon module (#282)
+     registerIcons(Add, Close);  <Icon name="add" />                               // a name drawn from its module first
      <StatusIcon tone="warning" />
      <StatusIcon tone="success" size="sm">Synced</StatusIcon>
    Props:
@@ -366,6 +369,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        Material name that is also a Plenix name draws the Plenix icon (check, home). Unknown names draw nothing
      size: "xs" 12px | "sm" 16px | "md" 20px | "lg" 24px | "xl" 48px, a page title (--plx-sys-icon-size-*); without it the icon takes its container's
        grid icon (a control's --plx-sys-control-icon-<role>) or --plx-sys-icon-size
+     icon: an imported icon module (platform/icons/layout.js: icons/<set>/<name>.js; in an application,
+       import X from 'plenix-platform/icons/<set>/<name>'): drawn from its own drawings instead of icon.css, with the same
+       classes, so sizes, fills, the optical size and right-to-left mirroring work exactly as for name (issue 282)
      filled: the filled version (default false)
      label: the accessible name, when the icon alone carries meaning
      className: more classes on the icon
@@ -377,6 +383,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      StatusIcon.strings: the tone words, for other languages: { info: "Information", success: "Success", warning: "Warning",
        danger: "Error", neutral: "Note" }
      StatusIcon.className: more classes on the status icon
+     registerIcons(...modules): names drawn from their modules first (a name, and its symbol's spelling, to its module);
+       stage 2 minimal, issue 281 extends it (the library choice, the development fetch). Unregistered names draw as before
    Behavior:
      The component that owns a current or selected state passes filled (NavList's current item and pinned pin, a
        selected or pressed Button); filled={false} keeps the outline (Tree owns each item state).
@@ -413,6 +421,31 @@ const LARGE = {
 const VARIANT = ['', '-fill', '-24', '-24-fill']; // outline 20, filled 20, outline 24, filled 24
 const library = new Set(_glyphs.LIBRARY.split(' ')),
   plenix = new Set(_glyphs.SYMBOLS.split(' '));
+// imported icon modules (#282): { name, set, symbol, fillOutline, mirrored, drawings: { 20: { outline, fill }, 24: … } }.
+// registerIcons is the stage 2 minimal resolver: a name (and its symbol's spelling) -> its module, consulted before the
+// stylesheet and the library; #281 extends it (the library choice, the development fetch), it does not replace it
+const registered = new Map();
+const isModule = m => !!(m && typeof m === 'object' && m.drawings && m.drawings[20] && m.drawings[24] && m.name);
+function registerIcons(...modules) {
+  for (const m of modules.flat()) {
+    if (!isModule(m)) {
+      if (typeof console !== 'undefined') console.warn('[Plenix] registerIcons: not an icon module', m);
+      continue;
+    }
+    registered.set(m.name, m);
+    if (m.symbol && m.symbol !== m.name) registered.set(m.symbol, m);
+  }
+}
+// a module's drawing i (VARIANT order: outline 20, filled 20, outline 24, filled 24) as [path, viewBox, extra], the shape
+// parseSvg gives, with the extras in the same order, so the markup is the same as from the stylesheet
+const SLOT = [[20, 'outline'], [20, 'fill'], [24, 'outline'], [24, 'fill']];
+function moduleGlyph(m, i) {
+  const d = m.drawings[SLOT[i][0]] && m.drawings[SLOT[i][0]][SLOT[i][1]];
+  if (!d || !d.d || !d.viewBox) return null;
+  const extra = {};
+  for (const key of ['transform', 'fillRule', 'clipRule']) if (d[key]) extra[key] = d[key];
+  return [d.d, d.viewBox, extra];
+}
 const normal = name => String(name == null ? '' : name).trim();
 function resolveIcon(name) {
   const n = normal(name);
@@ -518,8 +551,12 @@ function warnUnknown(name) {
   }).slice(0, 6);
   if (typeof console !== 'undefined') console.warn('[Plenix] Icon: no icon is named "' + n + '"; nothing is drawn.' + (near.length ? ' Closest: ' + near.join(', ') + '.' : ''));
 }
-function useDrawings(name, size, filled) {
-  const found = resolveIcon(name);
+function useDrawings(name, size, filled, mod) {
+  const found = mod ? {
+    kind: 'module',
+    symbol: mod.symbol || mod.name,
+    fillOutline: !!mod.fillOutline
+  } : resolveIcon(name);
   const fill = filled === true || found && found.fillOutline;
   const wanted = LARGE[size] ? [[fill ? 3 : 2, 24]] : [[fill ? 1 : 0, 20], [fill ? 3 : 2, 24]];
   const fileOf = i => found.symbol + VARIANT[i];
@@ -540,7 +577,7 @@ function useDrawings(name, size, filled) {
     };
   }, [found && found.symbol, fill, LARGE[size] ? 1 : 0, pending.length]);
   if (!found) return [];
-  const glyphs = wanted.map(([i, optical]) => [found.kind === 'plenix' ? cssGlyph(found.symbol, i) : files.get(fileOf(i)), optical]).filter(([glyph]) => Array.isArray(glyph));
+  const glyphs = wanted.map(([i, optical]) => [found.kind === 'module' ? moduleGlyph(mod, i) : found.kind === 'plenix' ? cssGlyph(found.symbol, i) : files.get(fileOf(i)), optical]).filter(([glyph]) => Array.isArray(glyph));
   if (!glyphs.length) return [];
   // the drawings share one svg when they share a box (nearly every icon): the stylesheet shows one path; otherwise each
   // drawing is its own svg in its own box
@@ -566,6 +603,7 @@ function useDrawings(name, size, filled) {
   }, glyph[2] || null))));
 }
 function Icon({
+  icon,
   name,
   size,
   filled,
@@ -578,9 +616,12 @@ function Icon({
   }, {
     size: ['xs', 'sm', 'md', 'lg', 'xl']
   });
-  const svg = useDrawings(name, size, filled);
+  // an imported module (icon), else a registered module for the name, else the name as before (the stylesheet, the library)
+  const mod = isModule(icon) ? icon : registered.get(normal(name)) || null,
+    shown = isModule(icon) ? icon.name : name;
+  const svg = useDrawings(shown, size, filled, mod);
   return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: (0, _cx.cx)('plx-icon', 'plx-icon--' + normal(name), size ? 'plx-icon--size-' + size : null, filled === true && 'plx-icon--filled', filled === false && 'plx-icon--outline', 'plx-icon--inline', className),
+    className: (0, _cx.cx)('plx-icon', 'plx-icon--' + normal(shown), size ? 'plx-icon--size-' + size : null, filled === true && 'plx-icon--filled', filled === false && 'plx-icon--outline', 'plx-icon--inline', className),
     role: label ? 'img' : undefined,
     "aria-label": label,
     "aria-hidden": label ? undefined : true
@@ -86038,6 +86079,12 @@ Object.defineProperty(exports, "registerHotkey", {
   enumerable: true,
   get: function () {
     return _hotkey.registerHotkey;
+  }
+});
+Object.defineProperty(exports, "registerIcons", {
+  enumerable: true,
+  get: function () {
+    return _Icon.registerIcons;
   }
 });
 Object.defineProperty(exports, "relativeLuminance", {

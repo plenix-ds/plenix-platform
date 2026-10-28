@@ -114,6 +114,15 @@ function bundle(target) {
         entry.deps[spec] = { external: EXTERNALS[spec] };
         continue;
       }
+      // an icon module (#282): plenix-platform/icons/<set>/<name>, the asset layout's module (platform/icons/layout.js),
+      // bundled into the application like a source file; a Material one is written on demand, only the names imported
+      const icon = /^plenix-platform\/icons\/(plenix|material)\/([a-z0-9-]+)$/.exec(spec);
+      if (icon) {
+        const dir = path.join(ROOT, 'platform', 'dist', 'icons', icon[1]);
+        const dep = icon[1] === 'material' ? require('./platform/icons/layout.js').writeMaterialModule(ROOT, icon[2], dir) : path.join(dir, icon[2] + '.js');
+        if (!fs.existsSync(dep)) throw new BuildError('No icon named ' + icon[2] + ' in the ' + icon[1] + ' set (' + rel(file) + ')');
+        entry.deps[spec] = { id: rel(dep) }; visit(dep); continue;
+      }
       if (!spec.startsWith('.')) {
         if (!/^@tanstack\/(react-table|table-core|react-virtual|virtual-core)$/.test(spec)) throw new BuildError('Unapproved browser package ' + spec + ' in ' + rel(file));
         const dep = require.resolve(spec, { paths: [path.dirname(file)] });
