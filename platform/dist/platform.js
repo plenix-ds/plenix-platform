@@ -848,12 +848,16 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
    Usage:
      <DirectionProvider dir="rtl" lang="ar">{app}</DirectionProvider>
      <DirectionProvider locale="he-IL" root>{app}</DirectionProvider>   // on <html>: the whole page
+     <DirectionProvider follow>{app}</DirectionProvider>                 // an app root: the page's own dir, as it is
      const { dir, setDir } = useDirection();
    Props:
      dir: "ltr" | "rtl"; without it, the direction of locale, else of the page
      locale: a language tag ("ar-EG", "en-US"); it sets lang and, without dir, the direction (directionOf)
      lang: the lang attribute, when it is not the locale
      root: set dir and lang on <html> instead of a region (default false): the page, its portals and its scrollbars mirror
+     follow: the page decides (default false): the direction is <html>'s dir as it is and as it changes; nothing is
+       written and no wrapper is added, so an application root (mountSuite, the Asset Manager's islands) gets the
+       context without any change to the page; setDir sets <html>'s dir
      children: the application root or the region it wraps
      useDirection(): { dir, rtl, setDir(dir) }: the nearest provider's direction (outside one, the page's), and a way to
        change it
@@ -869,7 +873,37 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
 */
 
 const DirectionContext = exports.DirectionContext = /*#__PURE__*/_react.default.createContext(null);
+
+// follow: the page's own direction, read from <html> and kept current; it writes nothing and adds no element
+function PageDirection({
+  children
+}) {
+  const [page, setPage] = _react.default.useState(() => typeof document !== 'undefined' ? (0, _direction.getDirection)() : 'ltr');
+  _react.default.useEffect(() => {
+    const observer = new MutationObserver(() => setPage((0, _direction.getDirection)()));
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['dir']
+    });
+    setPage((0, _direction.getDirection)());
+    return () => observer.disconnect();
+  }, []);
+  const value = _react.default.useMemo(() => ({
+    dir: page,
+    rtl: page === 'rtl',
+    setDir: d => document.documentElement.setAttribute('dir', d === 'rtl' ? 'rtl' : 'ltr')
+  }), [page]);
+  return /*#__PURE__*/_react.default.createElement(DirectionContext.Provider, {
+    value: value
+  }, children);
+}
 function DirectionProvider({
+  follow = false,
+  ...props
+}) {
+  return follow ? /*#__PURE__*/_react.default.createElement(PageDirection, null, props.children) : /*#__PURE__*/_react.default.createElement(OwnDirection, props);
+}
+function OwnDirection({
   dir,
   locale,
   lang,

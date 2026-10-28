@@ -2273,14 +2273,17 @@ function Suite({
 // opts.page: what kind of page the app is (the design system's layout standard lays it out; default "workspace")
 // opts.legacy(hash): the screen path of an older address of this page (#t-3, #account), opened in its place
 function mountSuite(app, render, opts) {
-  ReactDOM.createRoot(document.getElementById('root')).render(/*#__PURE__*/React.createElement(_plenixPlatform.SessionProvider, {
+  // the page's own direction (<html dir>), given to the components as context; nothing on the page changes (#262)
+  ReactDOM.createRoot(document.getElementById('root')).render(/*#__PURE__*/React.createElement(_plenixPlatform.DirectionProvider, {
+    follow: true
+  }, /*#__PURE__*/React.createElement(_plenixPlatform.SessionProvider, {
     session: _session.SUITE_SESSION
   }, /*#__PURE__*/React.createElement(Suite, {
     app: app,
     render: render,
     page: opts && opts.page || 'workspace',
     legacy: opts && opts.legacy
-  })));
+  }))));
 }
   } },
   "suite/classification.jsx": { deps: {"plenix-platform":null,"./shared.jsx":"suite/shared.jsx"}, externals: { "plenix-platform": function () { return window.Plenix; } }, run: function (module, exports, require) {
