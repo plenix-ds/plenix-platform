@@ -33264,7 +33264,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      options.native (false): on a native <button>, the browser's click stays the one press, for every input: onPress
        runs from that click (event is the click itself), with pointerType from the pointer or key that made it; the keys
        keep the browser's behavior (Enter repeats while held, as a native button does), and pressed stays false (the
-       button draws its own :active); pressProps are then onPointerDown, onKeyDown and onClick
+       button draws its own :active); pressProps are then onPointerDown, onPointerCancel, onKeyDown, onBlur and onClick. A
+       preventDefault in one of your handlers does not stop the press there: the browser decides the click
      returns { pressed, pressProps }: pressProps go on the element (onPointerDown, onPointerUp, onPointerEnter,
        onPointerLeave, onPointerCancel, onKeyDown, onKeyUp, onBlur, onClick)
    Behavior:
@@ -33352,10 +33353,19 @@ function usePressable(options = {}) {
         own('onPointerDown')(e);
         lastPointer.current = e.pointerType || 'mouse';
       },
+      onPointerCancel: e => {
+        own('onPointerCancel')(e);
+        lastPointer.current = null;
+      },
       onKeyDown: e => {
         own('onKeyDown')(e);
         if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') lastPointer.current = 'keyboard';
       },
+      onBlur: e => {
+        own('onBlur')(e);
+        lastPointer.current = null;
+      },
+      // a pointer or key that never clicked names no later click
       onClick: e => {
         own('onClick')(e);
         const pointerType = lastPointer.current || (e.detail === 0 ? 'virtual' : 'mouse');
@@ -33504,11 +33514,13 @@ const RowButton = exports.RowButton = /*#__PURE__*/_react.default.forwardRef(fun
   children,
   onClick,
   onPointerDown,
+  onPointerCancel,
   onKeyDown,
+  onBlur,
   ...rest
 }, ref) {
   // the browser's click stays the press (usePressable native), and onClick gets that click event; your own
-  // onPointerDown and onKeyDown run first, as before
+  // onPointerDown, onPointerCancel, onKeyDown and onBlur run first, as before
   const {
     pressProps
   } = (0, _usePressable.usePressable)({
@@ -33518,7 +33530,9 @@ const RowButton = exports.RowButton = /*#__PURE__*/_react.default.forwardRef(fun
     },
     handlers: {
       onPointerDown,
-      onKeyDown
+      onPointerCancel,
+      onKeyDown,
+      onBlur
     }
   });
   return /*#__PURE__*/_react.default.createElement("button", _extends({
