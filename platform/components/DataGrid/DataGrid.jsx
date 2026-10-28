@@ -49,6 +49,9 @@
        puts DataGrid.unreadCommands(...).filter in its CommandBar's quickFilters and .selection among its selection commands. The controller exposes getUnreadCount(), markRead(keys), markUnread(keys).
      onRowClick(record, event), onRowDoubleClick(record, event): with them rows are focusable and Enter clicks;
        onCellEdit(record, { field, value, previous })
+     openKey: the key of the record whose details show (the open row); default the row last opened by a click or Enter
+       (with onRowClick); null: none. The open row is aria-current="true"; in a grid without selection it takes the
+       selected look (the fill and the start bar); with selection, opening a row selects only it, so it is marked too
      density: "compact" (default: tables start Compact, owner 2026-10-22) | "standard" | "comfortable" | "page" (follow the
        page's density); set on the grid itself, so its rows (36 / 40 / 48px), header and pills follow it
      uniformPillWidths: deprecated, ignored (owner, uniform-pills-always-35): with cells="pill", every standard pill of a
@@ -104,7 +107,7 @@
        Pinned cells use the grid direction for placement, while their values retain automatic text direction.
      The grid is an ARIA grid: column headers (aria-sort), rows (aria-rowindex, aria-rowcount) and cells; its body is one
        Tab stop; the arrow keys move between cells, Home and End to the ends, Shift + F10 opens the focused header's or
-       row's menu. Menus are ARIA menus. Selection, grouping and loading changes are announced politely.
+       row's menu. Menus are ARIA menus. Opening and closing a group is announced politely (announce()): "expanded" or "collapsed".
      Every drag has a way without dragging (WCAG 2.5.7): Move up, down, to top and to bottom on a row; Move left and right
        on a column; a focused handle moves its row with Alt + Arrow keys. Column widths step through the size tokens.
      Geometry: the row height, cell padding and text size are the density's tokens; a taller row step puts content at the

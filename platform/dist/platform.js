@@ -7914,10 +7914,12 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Usage:
      announce('12 results');                               // polite: waits until the reader is idle
      announce('Couldn’t save. Check your connection.', { politeness: 'assertive' });   // interrupts: urgent errors only
+     announce('Asset moved. Undo', { queue: true });       // every one is heard: a burst is read joined, in order (Toast)
      <LiveRegion kind="status">{saved ? 'Saved' : ''}</LiveRegion>
      <LiveRegion kind="log" visible>{lines.map((l) => <div key={l.id}>{l.text}</div>)}</LiveRegion>
    Props:
-     announce(text, { politeness }): politeness "polite" (default) or "assertive"; the same text twice is spoken twice
+     announce(text, { politeness, queue }): politeness "polite" (default) or "assertive"; the same text twice is spoken
+       twice; queue (default false): the message is never replaced, and it replaces nothing
      LiveRegion.kind: "polite" (default; aria-live="polite"), "assertive" (aria-live="assertive"), "status"
        (role="status": a polite advisory such as a count or a save) or "log" (role="log": new lines are read, old ones stay)
      LiveRegion.visible: show the region's text on screen (default false: read by screen readers only)
@@ -7927,6 +7929,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Behavior:
      The page-wide regions are created on the first announce(), once per page, at the end of <body>, and are never removed.
      Each message replaces the last after a short pause (--plx-sys-live-region-delay), so rapid updates are read once, in their final state.
+     A queued message is never replaced and replaces nothing; a plain message replaces only the plain one before it. The
+       messages of one pause are read together, in the order they came, joined as sentences ("Saved. Asset moved. Undo.
+       File deleted. Undo").
      A LiveRegion is in the page from its first render; screen readers only read changes made after it appeared.
    Notes:
      Not when focus already moves to the new content (a dialog, an error summary): that is announced by the focus itself.
@@ -7935,6 +7940,13 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
 */
 const regions = {};
 const pending = {};
+const waiting = {
+  polite: [],
+  assertive: []
+}; // the messages of the current pause: { text, queue }
+
+// sentences joined: a period between two messages unless the first already ends a sentence
+const joinMessages = list => list.reduce((all, t) => !all ? t : all + (/[.!?…]$/.test(all) ? ' ' : '. ') + t, '');
 
 // the page-wide region for one politeness (made once, visually hidden)
 function region(politeness) {
@@ -7950,17 +7962,27 @@ function region(politeness) {
   return el;
 }
 function announce(text, {
-  politeness = 'polite'
+  politeness = 'polite',
+  queue = false
 } = {}) {
   if (typeof document === 'undefined' || !document.body) return;
   const p = politeness === 'assertive' ? 'assertive' : 'polite';
   const el = region(p);
+  // a plain message replaces only the plain one before it in this pause; a queued one never replaces anything
+  const t = String(text || '');
+  const kept = pending[p] ? queue ? waiting[p] : waiting[p].filter(m => m.queue) : [];
+  waiting[p] = kept.concat({
+    text: t,
+    queue
+  });
   // clear first, then write in the next frame: the same text twice is still a change, and a burst is read once
   el.textContent = '';
   if (pending[p]) clearTimeout(pending[p]);
   pending[p] = setTimeout(() => {
     pending[p] = null;
-    el.textContent = String(text || '');
+    const list = waiting[p].map(m => m.text).filter(Boolean); // in the order they came
+    waiting[p] = [];
+    el.textContent = joinMessages(list);
   }, (0, _tokenTime.tokenMs)('--plx-sys-live-region-delay'));
 }
 const KINDS = {
@@ -26936,7 +26958,7 @@ function groupDisplay(groups, collapsed, add, gaps = true) {
   return display;
 }
   } },
-  "platform/components/DataGrid/DataGridEngine.jsx": { deps: {"react":null,"./unread.js":"platform/components/DataGrid/unread.js","./room.js":"platform/components/DataGrid/room.js","react-dom":null,"./scrollbars.jsx":"platform/components/DataGrid/scrollbars.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","@tanstack/react-table":"../../plenix/node_modules/@tanstack/react-table/build/lib/index.js","@tanstack/react-virtual":"../../plenix/node_modules/@tanstack/react-virtual/dist/cjs/index.cjs","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./environment.js":"platform/components/DataGrid/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataGrid/state.js","./adapter.js":"platform/components/DataGrid/adapter.js","./cells.jsx":"platform/components/DataGrid/cells.jsx","./records.js":"platform/components/DataGrid/records.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/DataGrid/DataGridEngine.jsx": { deps: {"react":null,"./unread.js":"platform/components/DataGrid/unread.js","./room.js":"platform/components/DataGrid/room.js","react-dom":null,"./scrollbars.jsx":"platform/components/DataGrid/scrollbars.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","@tanstack/react-table":"../../plenix/node_modules/@tanstack/react-table/build/lib/index.js","@tanstack/react-virtual":"../../plenix/node_modules/@tanstack/react-virtual/dist/cjs/index.cjs","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./environment.js":"platform/components/DataGrid/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataGrid/state.js","./adapter.js":"platform/components/DataGrid/adapter.js","./cells.jsx":"platform/components/DataGrid/cells.jsx","./records.js":"platform/components/DataGrid/records.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -26955,6 +26977,7 @@ var _reactVirtual = require("@tanstack/react-virtual");
 var _direction = require("../../utils/direction.js");
 var _format = require("../../utils/format.js");
 var _cx = require("../../utils/cx.js");
+var _announce = require("../../utils/announce.jsx");
 var _grid = require("../../utils/grid.js");
 var _sizeSteps = require("../../utils/sizeSteps.js");
 var _useVirtualizer = require("../../hooks/useVirtualizer.js");
@@ -27478,8 +27501,7 @@ function NextEngine(props) {
       space: 0,
       room: 0
     }),
-    [isNarrow, setNarrow] = _react.default.useState(false),
-    [message, setMessage] = _react.default.useState('');
+    [isNarrow, setNarrow] = _react.default.useState(false);
   // One conversion per distinct width and measured environment, shared by every visible cell.
   const widthPixels = _react.default.useMemo(() => {
     const cache = new Map();
@@ -27513,6 +27535,7 @@ function NextEngine(props) {
     canonical = _react.default.useMemo(() => (0, _records.recordsOf)(source, index, childField), [source, index, childField]);
   // TanStack tries a global filter against columns; the public predicate describes a record, so evaluate it once.
   const unreadKey = _react.default.useCallback(record => record[index], [index]);
+  const [ownOpen, setOwnOpen] = _react.default.useState(null);
   const unread = (0, _unread.useUnread)(canonical, unreadKey, props),
     [localUnreadOnly, setUnreadOnly] = _react.default.useState(false);
   const unreadOnly = props.unreadOnly ?? localUnreadOnly;
@@ -27554,11 +27577,12 @@ function NextEngine(props) {
   };
   const toggleGroup = (id, open) => {
     const next = new Set(live.current.collapsed),
-      expand = open ?? next.has(id);
+      expand = open ?? next.has(id),
+      changed = expand === next.has(id);
     if (expand) next.delete(id);else next.add(id);
     live.current.collapsed = next;
     setCollapsed(next);
-    setMessage(expand ? S.expanded : S.collapsed);
+    if (changed) (0, _announce.announce)(expand ? S.expanded : S.collapsed);
     props.onViewChange?.({
       collapsed: [...next]
     });
@@ -28107,6 +28131,19 @@ function NextEngine(props) {
     setAutoSizing(old => JSON.stringify(old) === JSON.stringify(widths) ? old : widths);
     setFloors(old => JSON.stringify(old) === JSON.stringify(floor) ? old : floor);
   }, [columns, source, metrics.room, metrics.min, metrics.space, metrics.row, selectable, isStatic, showTypes, headerMenu, cells, effectiveWrap]);
+
+  // the room under the table that the page keeps (#451): the grid's own part below it (its border, a footer) and the end
+  // margin, padding and border of each container up to the page, so a table that fills the window ends at the page's
+  // padding and only the table scrolls; content placed after the grid is not counted
+  const trailing = (at, hold) => {
+    let sum = Math.max(0, at.getBoundingClientRect().bottom - hold.getBoundingClientRect().bottom);
+    for (let el = at; el; el = el.parentElement) {
+      const cs = getComputedStyle(el);
+      sum += parseFloat(cs.marginBlockEnd) || 0;
+      if (el !== at) sum += (parseFloat(cs.paddingBlockEnd) || 0) + (parseFloat(cs.borderBlockEndWidth) || 0);
+    }
+    return sum;
+  };
   _react.default.useLayoutEffect(() => {
     const at = frame.current;
     if (!at) return;
@@ -28135,7 +28172,7 @@ function NextEngine(props) {
       if (!isStatic && !height && mode !== 'pages' && holder.current) {
         const top = holder.current.getBoundingClientRect().top,
           room = at.getBoundingClientRect().bottom - top;
-        holder.current.style.maxBlockSize = (0, _grid.gridPx)(inPane ? Math.max(0, room) : Math.max(next.row * 8, doc.defaultView.innerHeight - top), {
+        holder.current.style.maxBlockSize = (0, _grid.gridPx)(inPane ? Math.max(0, room) : Math.max(next.row * 8, doc.defaultView.innerHeight - top - trailing(at, holder.current)), {
           round: 'down',
           el: at
         });
@@ -28309,6 +28346,11 @@ function NextEngine(props) {
     };
   }, [remoteMode, page, pageSize, JSON.stringify(sorting), JSON.stringify(filters), props.search, retry]);
   const displayedTotal = remoteMode ? remote?.total || 0 : table.getFilteredRowModel().rows.length;
+  // the open row (#453): the record whose details show, the row last opened by a click or Enter, or openKey (null: none);
+  // it is aria-current, and in a grid without selection it takes the selected look (with selection, opening selects it)
+  const openId = props.openKey !== undefined ? props.openKey == null ? null : (0, _state.recordKey)(props.openKey) : ownOpen;
+  const isOpen = id => openId != null && String(id) === String(openId),
+    marked = id => !!selection[id] || !selectable && !options.selectableRows && isOpen(id);
   const selectionRows = table.getPrePaginationRowModel().rows,
     selectedVisible = selectionRows.filter(r => selection[r.id]),
     allVisible = selectionRows.length > 0 && selectedVisible.length === selectionRows.length;
@@ -28334,6 +28376,48 @@ function NextEngine(props) {
       });
       table.setRowSelection(next);
     } else pick(row.id, wanted);
+    selectionAnchor.current = row.id;
+  };
+  // a click on the row (or Enter on it), not on its checkbox (#452, as a file manager): a plain one selects only that row,
+  // Ctrl or ⌘ toggles it, Shift extends from the anchor, Ctrl or ⌘ with Shift adds the range to the selection; the
+  // checkbox and select all keep toggling
+  const chooseRow = (row, e) => {
+    if (!selectable && !options.selectableRows) return;
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && selectable) {
+      pickCheckbox(row, {
+        target: {
+          checked: true
+        },
+        nativeEvent: e.nativeEvent,
+        shiftKey: true
+      });
+      return;
+    } // Ctrl/⌘+Shift adds the range
+    if (e.ctrlKey || e.metaKey) {
+      if (selectable) pickCheckbox(row, {
+        target: {
+          checked: !selection[row.id]
+        },
+        nativeEvent: e.nativeEvent,
+        shiftKey: false
+      });else pick(row.id, !selection[row.id]);
+      return;
+    }
+    if (e.shiftKey && selectable) {
+      pickCheckbox(row, {
+        target: {
+          checked: !selection[row.id]
+        },
+        nativeEvent: e.nativeEvent,
+        shiftKey: true
+      });
+      return;
+    }
+    const now = live.current.selection,
+      keys = Object.keys(now).filter(k => now[k]);
+    if (!(keys.length === 1 && keys[0] === String(row.id))) table.setRowSelection({
+      [row.id]: true
+    });
     selectionAnchor.current = row.id;
   };
   const fit = field => {
@@ -28764,22 +28848,20 @@ function NextEngine(props) {
       role: "row",
       "aria-rowindex": (mode === 'pages' ? page * pageSize : 0) + (semanticIndex.get(row.displayKey || row.id) || 2),
       "aria-selected": selectable || options.selectableRows ? !!selection[row.id] : undefined,
+      "aria-current": isOpen(row.id) ? 'true' : undefined,
       tabIndex: props.onRowClick || on.rowClick || options.selectableRows ? 0 : undefined,
       "aria-level": childField ? row.depth + 1 : undefined,
       "aria-expanded": row.getCanExpand?.() ? row.getIsExpanded() : undefined,
-      className: (0, _cx.cx)('' + B + '__grid-row', (selectable || options.selectableRows || props.onRowClick || on.rowClick) && B + '__grid-selectable', childField && '' + B + '__grid-tree-level-' + Math.min(12, row.depth), selection[row.id] && '' + B + '__grid-selected', isStatic && B + '__grid-row--static', anyWrap && !isNarrow && (isStatic || (effectiveStep || 'short') !== 'short') && B + '__grid-row--wrap', isNarrow && B + '__grid-row--narrow', virtualized && B + '__grid-row--virtual'),
+      className: (0, _cx.cx)('' + B + '__grid-row', (selectable || options.selectableRows || props.onRowClick || on.rowClick) && B + '__grid-selectable', childField && '' + B + '__grid-tree-level-' + Math.min(12, row.depth), marked(row.id) && '' + B + '__grid-selected', isStatic && B + '__grid-row--static', anyWrap && !isNarrow && (isStatic || (effectiveStep || 'short') !== 'short') && B + '__grid-row--wrap', isNarrow && B + '__grid-row--narrow', virtualized && B + '__grid-row--virtual'),
       onClick: e => {
         if (e.target.closest(interactive)) return;
-        if (selectable) pickCheckbox(row, {
-          target: {
-            checked: !selection[row.id]
-          },
-          nativeEvent: e.nativeEvent,
-          shiftKey: e.shiftKey
-        });else if (options.selectableRows) pick(row.id, !selection[row.id]);
+        chooseRow(row, e);
         emit('rowClick', e, rowApi);
         props.onRowClick?.(record, e);
-        if (props.onRowClick || on.rowClick) unread.open(record);
+        if (props.onRowClick || on.rowClick) {
+          unread.open(record);
+          setOwnOpen(row.id);
+        }
       },
       onDoubleClick: e => {
         if (!e.target.closest(interactive)) {
@@ -28790,16 +28872,13 @@ function NextEngine(props) {
       onKeyDown: e => {
         if (e.key === 'Enter' && !e.defaultPrevented && (e.target === e.currentTarget || e.target.getAttribute('role') === 'gridcell')) {
           e.preventDefault();
-          if (selectable) pickCheckbox(row, {
-            target: {
-              checked: !selection[row.id]
-            },
-            nativeEvent: e.nativeEvent,
-            shiftKey: e.shiftKey
-          });else if (options.selectableRows) pick(row.id, !selection[row.id]);
+          chooseRow(row, e);
           emit('rowClick', e, rowApi);
           props.onRowClick?.(record, e);
-          if (props.onRowClick || on.rowClick) unread.open(record);
+          if (props.onRowClick || on.rowClick) {
+            unread.open(record);
+            setOwnOpen(row.id);
+          }
         }
         if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && e.target === e.currentTarget) {
           e.preventDefault();
@@ -28892,7 +28971,7 @@ function NextEngine(props) {
         },
         "data-plx-sticky": pinned && sticky ? sticky + 'px' : undefined,
         "data-plx-text-follow": c.rowLabel || columns.indexOf(c) <= pinnedAt ? 'size family weight' : 'size family',
-        className: (0, _cx.cx)('' + B + '__grid-cell', modes, !selectable && selection[row.id] && ordered.indexOf(column) === 0 && B + '__grid-cell--selected-start', bare && B + '__grid-cell--bare', selectable && ordered.indexOf(column) === 0 && B + '__grid-cell--after-lead', ordered.indexOf(column) > 0 && ordered[ordered.indexOf(column) - 1].getIsPinned() === 'left' && column.getIsPinned() !== 'left' && B + '__grid-cell--after-frozen', isTree && row.depth > 0 && B + '__tree-cell--level-' + Math.min(12, row.depth), editing?.key === row.id && editing.field === c.field && '' + B + '__grid-editing', k.map(kind => B + '__cell--' + kind).join(' '), (k.includes('data') || c.type === 'bytes') && B + '__grid-cell--data', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', c.type === 'bytes' && B + '__cell--data', c.rowHandle && B + '__cell--handle', childField && c.field === (props.treeColumn || columns[0]?.field) && B + '__tree-cell', pinned && '' + B + '__grid-frozen', (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + '__cell--row-label', k.includes('icon') && B + '__w-lead', keys.includes(c.field) && B + '__cell--key', keys[0] === c.field && B + '__cell--key-first', (c.align || c.type === 'bytes') && B + '__cell--align-' + (c.align || 'right'))
+        className: (0, _cx.cx)('' + B + '__grid-cell', modes, !selectable && marked(row.id) && ordered.indexOf(column) === 0 && B + '__grid-cell--selected-start', bare && B + '__grid-cell--bare', selectable && ordered.indexOf(column) === 0 && B + '__grid-cell--after-lead', ordered.indexOf(column) > 0 && ordered[ordered.indexOf(column) - 1].getIsPinned() === 'left' && column.getIsPinned() !== 'left' && B + '__grid-cell--after-frozen', isTree && row.depth > 0 && B + '__tree-cell--level-' + Math.min(12, row.depth), editing?.key === row.id && editing.field === c.field && '' + B + '__grid-editing', k.map(kind => B + '__cell--' + kind).join(' '), (k.includes('data') || c.type === 'bytes') && B + '__grid-cell--data', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', c.type === 'bytes' && B + '__cell--data', c.rowHandle && B + '__cell--handle', childField && c.field === (props.treeColumn || columns[0]?.field) && B + '__tree-cell', pinned && '' + B + '__grid-frozen', (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + '__cell--row-label', k.includes('icon') && B + '__w-lead', keys.includes(c.field) && B + '__cell--key', keys[0] === c.field && B + '__cell--key-first', (c.align || c.type === 'bytes') && B + '__cell--align-' + (c.align || 'right'))
       }), childField && c.field === (props.treeColumn || columns[0]?.field) ? /*#__PURE__*/_react.default.createElement("span", {
         className: B + '__tree-level',
         "data-plx-depth": 0
@@ -28999,7 +29078,7 @@ function NextEngine(props) {
     key: row.displayKey || row.id,
     row: row,
     render: rowNode,
-    selected: !!selection[row.id],
+    selected: (selection[row.id] ? 1 : 0) + (isOpen(row.id) ? 2 : 0),
     version: props.movableRows ?? options.movableRows ? {} : rowVersion
   }) : rowNode(row);
   const priorGroups = model.slice(0, first).filter(row => row.__group).map(row => row.__group),
@@ -29211,11 +29290,7 @@ function NextEngine(props) {
         }
       } else setLoaded(n => Math.min(allRows.length, n + pageSize));
     }
-  }, S.loadMore) : null) : null, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-sr-only",
-    role: "status",
-    "aria-live": "polite"
-  }, message)));
+  }, S.loadMore) : null) : null));
 }
 function DataGridEngine(props) {
   return /*#__PURE__*/_react.default.createElement(NextEngine, _extends({
@@ -34280,7 +34355,7 @@ function Slider({
   }, m.label)))) : null);
 }
   } },
-  "platform/components/Toast/Toast.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../utils/tokenTime.js":"platform/utils/tokenTime.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/Toast/Toast.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../utils/tokenTime.js":"platform/utils/tokenTime.js","../../utils/announce.jsx":"platform/utils/announce.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -34295,6 +34370,7 @@ var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _Button = require("../Button/Button.jsx");
 var _tokenTime = require("../../utils/tokenTime.js");
+var _announce = require("../../utils/announce.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · ToastProvider, useToast, useUndo
    Summary: A short message about something that just happened, at the end of the screen; with an action (Undo) it is the
@@ -34323,8 +34399,11 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        options.label: the action's label (default "Undo")
        options.tone, options.duration: as toast.show
    Behavior:
-     A danger toast stays until dismissed (unless a duration is given) and is announced at once (role="alert").
-     The other toasts are announced politely.
+     A danger toast stays until dismissed (unless a duration is given).
+     Each toast is announced once when it appears, through announce() (utils/announce.jsx): its text and its action's
+       label ("Asset moved to Crosses. Undo"), at once (assertive) for a danger toast and politely for the others. The
+       messages are queued, so toasts that appear together are all read, in order. The toast region itself is not a
+       live region, so its buttons are never read as part of a message.
      Every toast has a Dismiss button.
      A toast with an action stays while the pointer is over it or focus is inside it, and starts its time again when they
        leave, so the action is never taken away from someone reaching for it.
@@ -34347,7 +34426,26 @@ function ToastProvider({
 }) {
   const [toasts, setToasts] = _react.default.useState([]);
   const timers = _react.default.useRef(new Map()); // id -> { wait, timer, onClose }
-  const remove = _react.default.useCallback(id => setToasts(all => all.filter(t => t.id !== id)), []);
+  const texts = _react.default.useRef(new Map()); // id -> the message element, read for its announcement
+  const announced = _react.default.useRef(new Set());
+  const remove = _react.default.useCallback(id => {
+    announced.current.delete(id);
+    setToasts(all => all.filter(t => t.id !== id));
+  }, []);
+  // each new toast once: its text (as shown) and its action's label; danger interrupts, the others wait; queued, so none is lost
+  _react.default.useEffect(() => {
+    toasts.forEach(t => {
+      if (t.leaving || announced.current.has(t.id)) return;
+      announced.current.add(t.id);
+      const el = texts.current.get(t.id);
+      const shown = el ? el.textContent : String(t.message);
+      const text = t.action && t.action.label ? shown + (/[.!?…]$/.test(shown) ? ' ' : '. ') + t.action.label : shown;
+      (0, _announce.announce)(text, {
+        politeness: t.tone === 'danger' ? 'assertive' : 'polite',
+        queue: true
+      });
+    });
+  }, [toasts]);
   const dismiss = _react.default.useCallback((id, reason = 'dismiss') => {
     const t = timers.current.get(id);
     if (t) {
@@ -34401,11 +34499,9 @@ function ToastProvider({
   return /*#__PURE__*/_react.default.createElement(ToastContext.Provider, {
     value: api
   }, children, /*#__PURE__*/(0, _reactDom.createPortal)(/*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-toast-region",
-    "aria-live": "polite"
+    className: "plx-toast-region"
   }, toasts.map(t => /*#__PURE__*/_react.default.createElement("div", {
     key: t.id,
-    role: t.tone === 'danger' ? 'alert' : undefined,
     className: (0, _cx.cx)('plx-toast', 'plx-toast--' + t.tone, t.leaving && 'is-leaving'),
     onAnimationEnd: t.leaving ? () => remove(t.id) : undefined,
     onPointerEnter: t.action ? () => hold(t.id) : undefined,
@@ -34419,6 +34515,9 @@ function ToastProvider({
   }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
     name: TONE_ICON[t.tone] || TONE_ICON.info
   })), /*#__PURE__*/_react.default.createElement("span", {
+    ref: el => {
+      if (el) texts.current.set(t.id, el);else texts.current.delete(t.id);
+    },
     className: "plx-toast__message"
   }, t.message), t.action ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
     size: "xs",
@@ -35568,6 +35667,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        puts DataGrid.unreadCommands(...).filter in its CommandBar's quickFilters and .selection among its selection commands. The controller exposes getUnreadCount(), markRead(keys), markUnread(keys).
      onRowClick(record, event), onRowDoubleClick(record, event): with them rows are focusable and Enter clicks;
        onCellEdit(record, { field, value, previous })
+     openKey: the key of the record whose details show (the open row); default the row last opened by a click or Enter
+       (with onRowClick); null: none. The open row is aria-current="true"; in a grid without selection it takes the
+       selected look (the fill and the start bar); with selection, opening a row selects only it, so it is marked too
      density: "compact" (default: tables start Compact, owner 2026-10-22) | "standard" | "comfortable" | "page" (follow the
        page's density); set on the grid itself, so its rows (36 / 40 / 48px), header and pills follow it
      uniformPillWidths: deprecated, ignored (owner, uniform-pills-always-35): with cells="pill", every standard pill of a
@@ -35623,7 +35725,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        Pinned cells use the grid direction for placement, while their values retain automatic text direction.
      The grid is an ARIA grid: column headers (aria-sort), rows (aria-rowindex, aria-rowcount) and cells; its body is one
        Tab stop; the arrow keys move between cells, Home and End to the ends, Shift + F10 opens the focused header's or
-       row's menu. Menus are ARIA menus. Selection, grouping and loading changes are announced politely.
+       row's menu. Menus are ARIA menus. Opening and closing a group is announced politely (announce()): "expanded" or "collapsed".
      Every drag has a way without dragging (WCAG 2.5.7): Move up, down, to top and to bottom on a row; Move left and right
        on a column; a focused handle moves its row with Alt + Arrow keys. Column widths step through the size tokens.
      Geometry: the row height, cell padding and text size are the density's tokens; a taller row step puts content at the
