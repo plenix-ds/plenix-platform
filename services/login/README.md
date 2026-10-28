@@ -61,7 +61,7 @@ This builds the image on the VM and runs `plenix-login` on `127.0.0.1:8782`, wit
 ## The first account
 
 ```
-ssh plenix@10.0.0.30
+ssh -i "$PUBLISH_KEY" "$PUBLISH_USER@$PUBLISH_HOST"
 sudo docker exec -it plenix-login node accounts.js add <user> --email <email> --name "<display name>" --groups Admins
 ```
 
@@ -80,14 +80,14 @@ node accounts.js revoke <user>
 
 `disable` and `reset-password` also sign the account out everywhere. `revoke` signs it out everywhere without changing anything else.
 
-To try the page before the cutover, open a tunnel with `ssh -L 8782:127.0.0.1:8782 plenix@10.0.0.30` and go to http://localhost:8782/auth/sign-in. Browsers accept Secure cookies on localhost.
+To try the page before the cutover, open a tunnel with `ssh -i "$PUBLISH_KEY" -L 8782:127.0.0.1:8782 "$PUBLISH_USER@$PUBLISH_HOST"` (the publish host, account and key: `tools/publish-config.sh`) and go to http://localhost:8782/auth/sign-in. Browsers accept Secure cookies on localhost.
 
 ## Cutover from Authentik (each step needs the owner's go)
 
 1. **Back up.** Copy the VM's `/etc/nginx/sites-available/plenix` to `plenix.bak-<date>`. Back up NPM's `database.sqlite` the same way as the earlier `.bak-20261010-ds-private` backup.
 2. **Deploy the save service.** Run `bash services/save/deploy.sh`. It now accepts `X-Plenix-*` headers as well as `X-authentik-*`, so Save works before and after the switch.
 3. **Deploy the login service and add the owner's account.** Follow "Deploy" and "The first account" above, then test the sign-in through the tunnel.
-4. **Change the VM's Nginx.** Merge `nginx-example.conf` into the site file and keep the existing rules: the redirects, the bundle and the CDN headers. Run `sudo nginx -t`, then `sudo systemctl reload nginx`. Until step 5, a visitor signs in twice: first through Authentik, then through Plenix.
+4. **Change the VM's Nginx.** Merge `nginx-example.conf` into the site file, with `<PROXY_ADDRESS>` replaced by the reverse proxy's address on the private network and keep the existing rules: the redirects, the bundle and the CDN headers. Run `sudo nginx -t`, then `sudo systemctl reload nginx`. Until step 5, a visitor signs in twice: first through Authentik, then through Plenix.
 5. **Remove the Authentik forward auth from NPM hosts 27 and 28.** Clear their advanced config, the same way it was applied: a dry run first (`npm-dryrun.mjs`), then the real change. Keep TLS, Force SSL, HSTS and "Block Common Exploits".
 6. **Check the result:**
    - Signed out, https://plenix.lighthouseway.org/ goes to the Plenix sign-in, and https://design-system.lighthouseway.org/cdn/index.json still answers 200 without a sign-in.
