@@ -811,7 +811,7 @@ DSParts.records.push(function (H) {
       use: ['Menus, lists and overlay panes that people leave by clicking elsewhere'], avoid: ['Closing a form with unsaved input on a stray click: make it not dismissible or ask'],
       examples: [['Open the menu, then click outside it', function () { return row(h(P.Menu, { label: 'Share', trigger: h(P.Button, { caret: true, icon: 'share' }, 'Share') }, h(P.MenuItem, { onSelect: noop }, 'Copy link'), h(P.MenuItem, { onSelect: noop }, 'Email'))); }]] }),
     T('overlay-manager', { sec: 'interaction', sub: 'Behavioral utilities', leaf: 'Focus lock',
-      text: 'A modal layer locks the page behind it: focus stays inside the layer and the page does not scroll (is-scroll-locked on <html>) until the last modal layer closes; layers opened inside it stack on top and release in order.',
+      text: 'A modal layer locks the page behind it: focus stays inside the layer and the page does not scroll (data-plx-scroll-lock="locked" on <html>) until the last modal layer closes; layers opened inside it stack on top and release in order.',
       use: ['Drawers, dialogs and sheets'], avoid: ['Locking scroll for a non-modal panel'],
       examples: [['A drawer that locks the page', opener('Open the drawer', function (open, close) { return h(P.Drawer, { open: open, onClose: close, title: 'Filters', size: 'sm', footer: h(P.Button, { variant: 'primary', onClick: close }, 'Apply') }, h(P.Fieldset, { legend: 'Type' }, h(P.Checkbox, { label: 'PNG' }), h(P.Checkbox, { label: 'SVG' }))); })]] }),
     T('hide-show', { sec: 'interaction', sub: 'Behavioral utilities', leaf: 'Responsive visibility',

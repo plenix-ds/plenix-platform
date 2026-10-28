@@ -729,7 +729,7 @@ window.DSDocs = {
    "Scroll region — any element that overflows (for example Stack with `scroll` or `maxHeight`, or a pane) (required)",
    "Thumb — a thin bar in --plx-sys-scrollbar-thumb, shown on hover or while focus is inside (required)",
    "Track — always transparent; its space stays reserved (required)",
-   "Scroll lock — :root.is-scroll-locked, set while a modal layer is open (optional)"
+   "Scroll lock — data-plx-scroll-lock=\"locked\" on the page, set while a modal layer is open (optional)"
   ],
   "behavior": {
    "pointer": "Hovering a region shows its thumb; leaving hides it again. The wheel, trackpad and the thumb scroll it; touch devices show their own overlay bars while scrolling.",
@@ -3766,7 +3766,7 @@ window.DSDocs = {
    "Escape handler — `onEscape`, run only for the top layer (optional)",
    "Modal trap — Tab and Shift+Tab cycle within the layer when `modal` is true (optional)",
    "Initial focus — `initialFocus`, a ref or a function returning the element; else the first focusable element, else the layer root (optional)",
-   "Scroll lock — a modal layer (a dialog) adds the is-scroll-locked class to the html element while open, separate from lockScroll and useScrollLock, which set data-plx-scroll-lock (optional)"
+   "Scroll lock — a modal layer (a dialog) takes the shared scroll lock (lockScroll), which sets data-plx-scroll-lock=\"locked\" on the html element while open; useScrollLock does the same for a component (optional)"
   ],
   "behavior": {
    "pointer": "None of its own; outside clicks are handled by each overlay.",

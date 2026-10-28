@@ -10,7 +10,7 @@
      <LiveRegion kind="log" visible>{lines.map((l) => <div key={l.id}>{l.text}</div>)}</LiveRegion>
    Props:
      announce(text, { politeness, queue }): politeness "polite" (default) or "assertive"; the same text twice is spoken
-       twice; queue (default false): the message is never replaced, a burst reads every queued message, joined in order
+       twice; queue (default false): the message is never replaced, and it replaces nothing
      LiveRegion.kind: "polite" (default; aria-live="polite"), "assertive" (aria-live="assertive"), "status"
        (role="status": a polite advisory such as a count or a save) or "log" (role="log": new lines are read, old ones stay)
      LiveRegion.visible: show the region's text on screen (default false: read by screen readers only)
@@ -20,8 +20,9 @@
    Behavior:
      The page-wide regions are created on the first announce(), once per page, at the end of <body>, and are never removed.
      Each message replaces the last after a short pause (--plx-sys-live-region-delay), so rapid updates are read once, in their final state.
-     A queued message is never replaced: the messages of one pause are read together, in order, the queued ones joined as
-       sentences ("Asset moved. Undo. File deleted. Undo"), with the last plain message after them.
+     A queued message is never replaced and replaces nothing; a plain message replaces only the plain one before it. The
+       messages of one pause are read together, in the order they came, joined as sentences ("Saved. Asset moved. Undo.
+       File deleted. Undo").
      A LiveRegion is in the page from its first render; screen readers only read changes made after it appeared.
    Notes:
      Not when focus already moves to the new content (a dialog, an error summary): that is announced by the focus itself.
@@ -57,15 +58,16 @@ export function announce(text, { politeness = 'polite', queue = false } = {}) {
   if (typeof document === 'undefined' || !document.body) return;
   const p = politeness === 'assertive' ? 'assertive' : 'polite';
   const el = region(p);
-  // a plain message replaces the plain one before it in this pause; a queued one is kept
+  // a plain message replaces only the plain one before it in this pause; a queued one never replaces anything
   const t = String(text || '');
-  waiting[p] = pending[p] ? waiting[p].filter((m) => m.queue).concat({ text: t, queue }) : [{ text: t, queue }];
+  const kept = pending[p] ? (queue ? waiting[p] : waiting[p].filter((m) => m.queue)) : [];
+  waiting[p] = kept.concat({ text: t, queue });
   // clear first, then write in the next frame: the same text twice is still a change, and a burst is read once
   el.textContent = '';
   if (pending[p]) clearTimeout(pending[p]);
   pending[p] = setTimeout(() => {
     pending[p] = null;
-    const list = waiting[p].filter((m) => m.queue).concat(waiting[p].filter((m) => !m.queue)).map((m) => m.text).filter(Boolean);
+    const list = waiting[p].map((m) => m.text).filter(Boolean);   // in the order they came
     waiting[p] = [];
     el.textContent = joinMessages(list);
   }, tokenMs('--plx-sys-live-region-delay'));
