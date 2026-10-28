@@ -18,7 +18,7 @@ if (changed.wants({ units: ['components/Resizable', 'patterns/SplitView', 'patte
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'resize-caps.test.js')], { stdio: 'inherit', env: process.env });
   if (result.status !== 0) process.exit(result.status || 1);
 }
-if (!changed.wants({ units: ['patterns/AppShell', 'patterns/SettingsLayout'] })) changed.none('LAYOUT_OK 0/0');
+if (!changed.wants({ units: ['patterns/AppShell', 'patterns/SettingsLayout', 'patterns/SplitView'] })) changed.none('LAYOUT_OK 0/0');
 changed.report('every mode');
 const P = 'file://' + (ROOT.startsWith('/') ? '' : '/') + ROOT.replace(/\\/g, '/') + '/platform/';
 // each mode through a kind of page that the standard gives it
@@ -63,6 +63,23 @@ const html = '<!doctype html><html lang="en" data-plx-theme="default" data-plx-m
   {
   }
   await browser.close(); fs.unlinkSync(file);
+  // SplitView stacks under 900px of its own border-box width and sits side by side from 900px (#410; its container query
+  // measures inside its 16px room, so the query is 868px): one split view drawn at 899px and at 900px
+  const split = await page.evaluate(async () => {
+    const R = window.React, D = window.ReactDOM, PX = window.Plenix, h = R.createElement, out = {};
+    const host = document.createElement('div'); document.body.appendChild(host);
+    for (const w of [899, 900]) {
+      host.style.cssText = 'display:flex;inline-size:' + w + 'px;block-size:400px';
+      const root = D.createRoot(host);
+      root.render(h(PX.SplitView, { label: 'Split', firstLabel: 'List', first: h('div', null, 'List'), second: h(PX.ReadingPane, { label: 'Item' }, 'Item') }));
+      await new Promise((r) => setTimeout(r, 300));
+      const sv = host.querySelector('.plx-split-view'), panels = sv && sv.querySelector('.plx-split-view__panels');
+      out[w] = sv ? { width: Math.round(sv.getBoundingClientRect().width), direction: getComputedStyle(panels).flexDirection } : null;
+      root.unmount();
+    }
+    host.remove();
+    return out;
+  });
   const res = [], check = (n, ok, d) => { if (shared.check(n, ok, d)) res.push([n, ok, d]); };
   const f = out.fluid, c = out.contained, y = out.hybrid, m = out['multi-pane'], fo = out.focus;
   check('fluid: the wide block fills the content width', f.wide && f.wide.w > 960, JSON.stringify(f.wide));
@@ -79,6 +96,7 @@ const html = '<!doctype html><html lang="en" data-plx-theme="default" data-plx-m
   check('focus: the main region gets the freed width', fo.main.w > f.main.w, fo.main.w + ' vs ' + f.main.w);
   check('fluid: the navigation and the inspector are shown', !!f.nav && !!f.panel, '');
   check('standard: each page kind gets its mode', Object.keys(MODES).every((m) => out[m].mode === m), JSON.stringify(Object.keys(MODES).map((m) => out[m].mode)));
+  check('SplitView: stacks under 900px of its own width, side by side from 900px #410', !!split[899] && !!split[900] && split[899].width === 899 && split[899].direction === 'column' && split[900].width === 900 && split[900].direction === 'row', JSON.stringify(split));
   check('standard: a SettingsLayout page is contained without saying so', claimed.mode === 'contained', claimed.mode);
   check('standard: its settings column is at most 960px and centered', claimed.inner <= 960 && Math.abs(claimed.center - claimed.mainCenter) <= 1, JSON.stringify(claimed));
   check('settings: every section is a card (owner, 2026-10-13: the cards view)', claimed.card, JSON.stringify(claimed));
