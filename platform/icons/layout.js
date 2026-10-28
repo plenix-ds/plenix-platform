@@ -13,7 +13,9 @@
 // (a symbol's own underscore spelling) has no file of its own: index.json maps it to its name, so every name has exactly
 // one module. The CDN serves the layout at /cdn/<version>/icons/<set>/…, which never changes once published.
 // No consumer reads these files yet (stage 1): the Icon component and icon.css draw everything as before.
-//   node platform/icons/layout.js <plenix|material> <out folder>    writes one set there (the material set on its own)
+//   node platform/icons/layout.js <plenix|material> <out folder>    writes one set there (the material set on its own); the
+//     folder must be inside the repository's platform/dist/ or release/, and it is emptied only when it is empty, absent,
+//     or holds an index.json this tool wrote (generator: "plenix-icons")
 const fs = require('fs');
 const path = require('path');
 
@@ -57,8 +59,20 @@ function materialEntries(root) {
     files: Object.fromEntries(VARIANTS.map((x) => [x, path.join(lib, symbol + x + '.svg')])) }));
 }
 
+const GENERATOR = 'plenix-icons';   // the mark in every index.json this tool writes: only such a folder is ever emptied
+
+// a folder may be (re)written only when it does not exist, is empty, or holds an index.json this tool wrote
+function safeToReplace(out) {
+  if (!fs.existsSync(out)) return true;
+  if (!fs.statSync(out).isDirectory()) return false;
+  const names = fs.readdirSync(out);
+  if (!names.length) return true;
+  try { return JSON.parse(fs.readFileSync(path.join(out, 'index.json'), 'utf8')).generator === GENERATOR; } catch (e) { return false; }
+}
+
 // writes one set: the files, a module per name and index.json; returns what it wrote
 function writeIconSet(set, entries, out, source) {
+  if (!safeToReplace(out)) throw new Error('refusing to empty ' + out + ': it is not empty and holds no index.json written by platform/icons/layout.js');
   fs.rmSync(out, { recursive: true, force: true }); fs.mkdirSync(out, { recursive: true });
   const seen = new Map(); let bytes = 0, count = 0;
   const write = (f, text) => { fs.writeFileSync(f, text); bytes += Buffer.byteLength(text); count++; };
@@ -73,7 +87,7 @@ function writeIconSet(set, entries, out, source) {
       ' set (symbol ' + e.symbol + ').\nexport default ' + JSON.stringify(mod) + ';\n');
   }
   const aliases = {}; for (const e of entries) for (const a of e.aliases) if (!seen.has(a)) aliases[a] = e.name;
-  write(path.join(out, 'index.json'), JSON.stringify({ set, source, count: entries.length,
+  write(path.join(out, 'index.json'), JSON.stringify({ generator: GENERATOR, set, source, count: entries.length,
     icons: entries.map((e) => ({ name: e.name, symbol: e.symbol, files: VARIANTS.map((x) => e.name + x + '.svg').concat(e.name + '.js') })), aliases }) + '\n');
   return { set, icons: entries.length, files: count, bytes };
 }
@@ -86,6 +100,10 @@ module.exports = { VARIANTS, MIRROR, readDrawing, plenixEntries, materialEntries
 if (require.main === module) {
   const [set, out] = process.argv.slice(2);
   if (!['plenix', 'material'].includes(set) || !out) { console.error('usage: node platform/icons/layout.js <plenix|material> <out folder>'); process.exit(2); }
-  const t = Date.now(), r = writeSet(path.resolve(__dirname, '..', '..'), set, path.resolve(out));
+  // from the command line only inside the repository's platform/dist/ or release/ (a mistyped "." or "~" is refused)
+  const root = path.resolve(__dirname, '..', '..'), target = path.resolve(out);
+  const inside = ['platform/dist', 'release'].some((d) => { const r = path.relative(path.join(root, d), target); return r !== '' && !r.startsWith('..') && !path.isAbsolute(r); });
+  if (!inside) { console.error('refusing: the folder must be inside ' + path.join(root, 'platform/dist') + ' or ' + path.join(root, 'release')); process.exit(2); }
+  const t = Date.now(), r = writeSet(root, set, target);
   console.log('ICON_LAYOUT ' + set + ': ' + r.icons + ' icons, ' + r.files + ' files, ' + (r.bytes / 1048576).toFixed(1) + ' MB in ' + ((Date.now() - t) / 1000).toFixed(1) + ' s');
 }
