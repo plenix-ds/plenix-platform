@@ -2725,6 +2725,7 @@ function CalendarScreen({
     variant: "eyebrow"
   }, "March ", selDay), evFor(selDay).map(e => /*#__PURE__*/React.createElement(_plenixPlatform.Card, {
     key: e.id,
+    headingLevel: 2,
     title: e.title,
     meta: /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
       variant: "data"
