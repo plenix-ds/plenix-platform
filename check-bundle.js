@@ -3,8 +3,7 @@
 //                                     check-bundle.baseline.json
 //   node check-bundle.js --update     writes today's counts into check-bundle.baseline.json (a deliberate step)
 //   node check-bundle.js --list       also prints where every finding is (the source module of plenix.js, or the CSS rule)
-// It counts, per rule, what the bundle still does and fails (BUNDLE_FAIL, exit 1) when any count, or the stylesheet's size,
-// goes up from the baseline. A count that goes down prints "lower the baseline" (run --update in the same pull request).
+// It counts, per rule, what the bundle still does and fails (BUNDLE_FAIL, exit 1) when any count goes up from the baseline. A count that goes down prints "lower the baseline" (run --update in the same pull request).
 //
 //   P-38  runtime addresses (456)    plenix.js: string values with an absolute address (http:, https:, //host) or a /cdn/ or
 //                                    vendor/ path, which the bundle fetches at runtime. XML namespaces and example
@@ -17,7 +16,8 @@
 //   P-48  unsupported CSS (459)      plenix.css: style rules that use a CSS feature outside the supported browsers
 //                                    (.browserslistrc, platform/standards/browsers.json) with no @supports guard around them
 //                                    (UNSUPPORTED below). Guarded rules have a fallback and are printed for information only
-//   P-36  stylesheet size (460)      plenix.css, in KB (1024 bytes, rounded up); plenix.min.css is printed for information
+// The size of plenix.css is not a rule (owner, #460): it is printed as a plain number, in KB (1024 bytes, rounded up), with
+// plenix.min.css, and the check never fails on it.
 // The scan reads the code, not the comments: plenix.js is parsed (@babel/standalone) and each finding is traced to the
 // source module it came from; plenix.css is parsed with PostCSS. plenix.esm.js holds the same modules and is not counted twice.
 const fs = require('fs');
@@ -48,7 +48,7 @@ const UNSUPPORTED = [
 ];
 const RULES = {
   'P-38': 'runtime addresses (#456)', 'P-45': 'injected scripts (#457)', 'P-46': 'page prefetch (#458)',
-  'P-47': 'raw HTML outside the rich-text engine (#461)', 'P-48': 'unsupported CSS without a fallback (#459)', 'P-36': 'plenix.css size in KB (#460)',
+  'P-47': 'raw HTML outside the rich-text engine (#461)', 'P-48': 'unsupported CSS without a fallback (#459)'
 };
 
 function need(file) {
@@ -130,11 +130,11 @@ function scanStyles(file) {
 const kb = (f) => Math.ceil(fs.statSync(f).size / 1024);
 const js = scanScript(need('plenix.js'));
 const css = scanStyles(need('plenix.css'));
-const now = { 'P-38': js['P-38'].length, 'P-45': js['P-45'].length, 'P-46': js['P-46'].length, 'P-47': js['P-47'].length, 'P-48': css.found.length, 'P-36': kb(need('plenix.css')) };
+const now = { 'P-38': js['P-38'].length, 'P-45': js['P-45'].length, 'P-46': js['P-46'].length, 'P-47': js['P-47'].length, 'P-48': css.found.length };
 const where = Object.assign({}, js, { 'P-48': css.found });
 
 if (UPDATE) {
-  fs.writeFileSync(BASELINE, JSON.stringify({ $description: 'The bundle rules baseline (check-bundle.js; owner, bundle-check-27). Counts per rule and the plenix.css size in KB of the built CDN files. The check fails when a number goes up. Lower it with node check-bundle.js --update when one goes down; never raise it to pass.', version: VERSION, rules: now }, null, 2) + '\n');
+  fs.writeFileSync(BASELINE, JSON.stringify({ $description: 'The bundle rules baseline (check-bundle.js; owner, bundle-check-27). Counts per rule in the built CDN files. The check fails when a count goes up. Lower it with node check-bundle.js --update when one goes down; never raise it to pass.', version: VERSION, rules: now }, null, 2) + '\n');
   console.log('BUNDLE_BASELINE written for ' + VERSION + ': ' + Object.keys(now).map((k) => k + ' ' + now[k]).join(', '));
   process.exit(0);
 }
@@ -144,12 +144,12 @@ if (!base) { console.log('BUNDLE_FAIL: check-bundle.baseline.json is missing: no
 let up = 0, down = 0;
 console.log('Bundle rules, release/cdn/' + VERSION + '/ (plenix.js, plenix.css)');
 for (const k of Object.keys(RULES)) {
-  const b = base[k] == null ? 0 : base[k], n = now[k], unit = k === 'P-36' ? ' KB' : '';
+  const b = base[k] == null ? 0 : base[k], n = now[k], unit = '';
   const note = n > b ? '  UP from ' + b + unit + ': not allowed' : n < b ? '  down from ' + b + unit + ': lower the baseline (node check-bundle.js --update)' : '';
   if (n > b) up++; if (n < b) down++;
   console.log('  ' + k + '  ' + RULES[k] + ': ' + n + unit + note);
-  if (k !== 'P-36' && (LIST || n > b)) (where[k] || []).forEach((f) => console.log('        ' + f.where + '  ' + f.what));
+  if (LIST || n > b) (where[k] || []).forEach((f) => console.log('        ' + f.where + '  ' + f.what));
 }
-console.log('  (information) plenix.min.css: ' + kb(need('plenix.min.css')) + ' KB; unsupported CSS inside @supports (has a fallback): ' + css.guarded + ' rules');
+console.log('  (information, never a failure) plenix.css: ' + kb(need('plenix.css')) + ' KB; plenix.min.css: ' + kb(need('plenix.min.css')) + ' KB; unsupported CSS inside @supports (has a fallback): ' + css.guarded + ' rules');
 if (up) { console.log('BUNDLE_FAIL (' + up + ' rule' + (up > 1 ? 's' : '') + ' went up)'); process.exit(1); }
 console.log(down ? 'BUNDLE_OK (' + down + ' went down: lower the baseline)' : 'BUNDLE_OK');

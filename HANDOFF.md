@@ -84,10 +84,10 @@ One design system and the suite of applications built on it, owned by one person
   After a spec change, `node build-spec-parts.js` (build-app runs it).
 - Bundle rules (`node check-bundle.js`; owner, bundle-check-27; #456 to #461):
   - It reads the built CDN files in `release/cdn/<version>/` (`plenix.js`, `plenix.css`) and never builds them; CI runs it after "Release build" and the release after `build-packages.js`. Advisory, like the other checks.
-  - It counts runtime addresses (P-38), injected scripts (P-45), page prefetch (P-46), raw HTML outside the rich-text engine (P-47) and CSS outside the supported browsers with no `@supports` fallback (P-48), and holds `plenix.css` to its size in KB (P-36). The header of `check-bundle.js` defines each rule.
-  - It fails (BUNDLE_FAIL) when any count or the size goes up from `check-bundle.baseline.json`. When one goes down, lower the baseline in the same pull request with `node check-bundle.js --update`.
+  - It counts runtime addresses (P-38), injected scripts (P-45), page prefetch (P-46), raw HTML outside the rich-text engine (P-47) and CSS outside the supported browsers with no `@supports` fallback (P-48). The header of `check-bundle.js` defines each rule. The size of `plenix.css` is not a rule (owner, #460): it prints as a plain number in KB and never fails the check.
+  - It fails (BUNDLE_FAIL) when any count goes up from `check-bundle.baseline.json`. When one goes down, lower the baseline in the same pull request with `node check-bundle.js --update`.
   - Never raise the baseline to pass. `--list` shows where each finding comes from: the source module, or the CSS rule.
-  - `node build-packages.js` currently runs tests (#466), so do not run it to refresh the files; read what is there, or let CI build them.
+  - `node build-packages.js` builds the CDN files and runs no test (#466, #472); CI also builds them.
 - Generated files (never edit by hand): `platform/dist/platform.js`, `<app>/app.js`, `platform/system/steps.css`,
   `platform/system/tokens/*.css`, `platform/tokens/tokens.index.json`, `platform/components/Icon/icon.css`,
   `platform/design-system/spec-parts.js`, `reviewed.js`, `usage.js`.
