@@ -18,7 +18,7 @@ if (changed.wants({ units: ['components/Resizable', 'patterns/SplitView', 'patte
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'resize-caps.test.js')], { stdio: 'inherit', env: process.env });
   if (result.status !== 0) process.exit(result.status || 1);
 }
-if (!changed.wants({ units: ['patterns/AppShell', 'patterns/SettingsLayout', 'patterns/SplitView', 'components/VisuallyHidden'] })) changed.none('LAYOUT_OK 0/0');
+if (!changed.wants({ units: ['patterns/AppShell', 'patterns/SettingsLayout', 'patterns/SplitView', 'components/VisuallyHidden', 'providers/DirectionProvider'] })) changed.none('LAYOUT_OK 0/0');
 changed.report('every mode');
 const P = 'file://' + (ROOT.startsWith('/') ? '' : '/') + ROOT.replace(/\\/g, '/') + '/platform/';
 // each mode through a kind of page that the standard gives it
@@ -96,7 +96,39 @@ const html = '<!doctype html><html lang="en" data-plx-theme="default" data-plx-m
   check('focus: the main region gets the freed width', fo.main.w > f.main.w, fo.main.w + ' vs ' + f.main.w);
   check('fluid: the navigation and the inspector are shown', !!f.nav && !!f.panel, '');
   check('standard: each page kind gets its mode', Object.keys(MODES).every((m) => out[m].mode === m), JSON.stringify(Object.keys(MODES).map((m) => out[m].mode)));
+  // #262: an application root follows the page's direction: it reads <html dir> as it is and as it changes, writes nothing
+  const follow = await page.evaluate(async () => {
+    const h = React.createElement, P = window.Plenix, html = document.documentElement, wait = (n) => new Promise((r) => setTimeout(r, n));
+    const before = [html.getAttribute('dir'), html.getAttribute('lang')];
+    const host = document.createElement('div'); document.body.appendChild(host);
+    function Show() { const d = P.useDirection(); return h('span', { 'data-dir': d.dir }, d.dir); }
+    const root = ReactDOM.createRoot(host); ReactDOM.flushSync(() => root.render(h(P.DirectionProvider, { follow: true }, h(Show))));
+    const first = host.querySelector('[data-dir]').getAttribute('data-dir'), wrapped = !!host.querySelector('.plx-direction'), untouched = html.getAttribute('dir') === before[0] && html.getAttribute('lang') === before[1];
+    html.setAttribute('dir', 'rtl'); await wait(100); const turned = host.querySelector('[data-dir]').getAttribute('data-dir');
+    if (before[0] == null) html.removeAttribute('dir'); else html.setAttribute('dir', before[0]); await wait(100);
+    const back = host.querySelector('[data-dir]').getAttribute('data-dir'); root.unmount(); host.remove();
+    return { first, wrapped, untouched, turned, back };
+  });
+  check('DirectionProvider: follow gives the page\'s own direction, follows it, and writes nothing #262', follow.first === 'ltr' && !follow.wrapped && follow.untouched && follow.turned === 'rtl' && follow.back === 'ltr', JSON.stringify(follow));
   check('SplitView: stacks under 900px of its own width, side by side from 900px #410', !!split[899] && !!split[900] && split[899].width === 899 && split[899].direction === 'column' && split[900].width === 900 && split[900].direction === 'row', JSON.stringify(split));
+  // issue 237: stacked by its room, the divider is the stacked one (horizontal, the height), the same focused separator
+  const turned = await page.evaluate(async () => {
+    const R = window.React, D = window.ReactDOM, PX = window.Plenix, h = R.createElement, wait = (n) => new Promise((r) => setTimeout(r, n));
+    const host = document.createElement('div'); host.style.cssText = 'display:flex;flex-direction:column;inline-size:1000px;block-size:640px'; document.body.appendChild(host);
+    const root = D.createRoot(host); root.render(h(PX.SplitView, { label: 'Split', firstLabel: 'List', first: h('div', null, 'List'), second: h('div', null, 'Item') })); await wait(300);
+    const sep = host.querySelector('[role="separator"]'); sep.focus(); const wide = sep.getAttribute('aria-orientation');
+    host.style.inlineSize = '700px'; await wait(400);
+    const now = host.querySelector('[role="separator"]'), first = host.querySelector('.plx-split-view__first').getBoundingClientRect().height;
+    const out = { wide, narrow: now.getAttribute('aria-orientation'), same: now === sep, focused: document.activeElement === now, first: Math.round(first) };
+    root.unmount(); host.remove(); return out;
+  });
+  check('SplitView: stacked by its room, the divider turns horizontal and drags the first panel\'s height, keeping its focus #237', turned.wide === 'vertical' && turned.narrow === 'horizontal' && turned.same && turned.focused && turned.first >= 200 && turned.first <= 500, JSON.stringify(turned));
+  const firstFrame = await page.evaluate(() => {
+    const h = React.createElement, P = window.Plenix, host = document.createElement('div'); host.style.cssText = 'display:flex;flex-direction:column;inline-size:700px;block-size:500px'; document.body.appendChild(host);
+    const root = ReactDOM.createRoot(host); ReactDOM.flushSync(() => root.render(h(P.SplitView, { label: 'Split', first: h('div', null, 'List'), second: h('div', null, 'Item') })));
+    const o = host.querySelector('[role="separator"]').getAttribute('aria-orientation'); root.unmount(); host.remove(); return o;
+  });
+  check('SplitView: a narrow split view has the stacked divider from its first frame #237', firstFrame === 'horizontal', firstFrame);
   // #288: screen-reader texts at the end of the page (the announcer, a VisuallyHidden text) take no room, so a page that
   // fits the window does not scroll
   const quiet = await page.evaluate(async () => {

@@ -848,12 +848,16 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
    Usage:
      <DirectionProvider dir="rtl" lang="ar">{app}</DirectionProvider>
      <DirectionProvider locale="he-IL" root>{app}</DirectionProvider>   // on <html>: the whole page
+     <DirectionProvider follow>{app}</DirectionProvider>                 // an app root: the page's own dir, as it is
      const { dir, setDir } = useDirection();
    Props:
      dir: "ltr" | "rtl"; without it, the direction of locale, else of the page
      locale: a language tag ("ar-EG", "en-US"); it sets lang and, without dir, the direction (directionOf)
      lang: the lang attribute, when it is not the locale
      root: set dir and lang on <html> instead of a region (default false): the page, its portals and its scrollbars mirror
+     follow: the page decides (default false): the direction is <html>'s dir as it is and as it changes; nothing is
+       written and no wrapper is added, so an application root (mountSuite, the Asset Manager's islands) gets the
+       context without any change to the page; setDir sets <html>'s dir
      children: the application root or the region it wraps
      useDirection(): { dir, rtl, setDir(dir) }: the nearest provider's direction (outside one, the page's), and a way to
        change it
@@ -869,7 +873,37 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
 */
 
 const DirectionContext = exports.DirectionContext = /*#__PURE__*/_react.default.createContext(null);
+
+// follow: the page's own direction, read from <html> and kept current; it writes nothing and adds no element
+function PageDirection({
+  children
+}) {
+  const [page, setPage] = _react.default.useState(() => typeof document !== 'undefined' ? (0, _direction.getDirection)() : 'ltr');
+  _react.default.useEffect(() => {
+    const observer = new MutationObserver(() => setPage((0, _direction.getDirection)()));
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['dir']
+    });
+    setPage((0, _direction.getDirection)());
+    return () => observer.disconnect();
+  }, []);
+  const value = _react.default.useMemo(() => ({
+    dir: page,
+    rtl: page === 'rtl',
+    setDir: d => document.documentElement.setAttribute('dir', d === 'rtl' ? 'rtl' : 'ltr')
+  }), [page]);
+  return /*#__PURE__*/_react.default.createElement(DirectionContext.Provider, {
+    value: value
+  }, children);
+}
 function DirectionProvider({
+  follow = false,
+  ...props
+}) {
+  return follow ? /*#__PURE__*/_react.default.createElement(PageDirection, null, props.children) : /*#__PURE__*/_react.default.createElement(OwnDirection, props);
+}
+function OwnDirection({
   dir,
   locale,
   lang,
@@ -959,6 +993,7 @@ exports.formatRelative = formatRelative;
 exports.formatTime = formatTime;
 exports.formatUnit = formatUnit;
 exports.numeralLocale = numeralLocale;
+exports.parseDate = parseDate;
 exports.regionName = regionName;
 /* Plenix · Formatting (platform/utils/format.js)
    Summary: Numbers, units, dates, times, money, percentages, names, addresses and phone numbers written the same way on
@@ -1004,6 +1039,9 @@ exports.regionName = regionName;
      formatPhone(e164, { display }):a phone number stored as E.164 ("+14155550123"), "international" (default) or
        "national" ("(415) 555-0123")
      dateTimeAttr(date): the machine-readable value for <time dateTime={…}>
+     parseDate(value): the Date every helper here reads: a Date as is, a date-only "YYYY-MM-DD" as that calendar day
+       where the reader is (never midnight UTC, which is the day before in the Americas), else new Date(value); null when
+       it is not a date. Components that read a date use it, so no component parses dates itself (issue 342)
      FORMATS: the standard's data (see platform/standards/formats.json)
    Behavior:
      Nothing is cached per locale beyond the Intl formatter objects; every call reads the locale unless one is given.
@@ -1073,7 +1111,7 @@ const FORMATS = exports.FORMATS = {
 };
 const ok = n => typeof n === 'number' && isFinite(n);
 // A date-only value is a calendar date in the reader's zone, not midnight UTC (DT-7).
-const toDate = d => {
+function parseDate(d) {
   if (typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d)) {
     const [year, month, day] = d.split('-').map(Number),
       x = new Date(0);
@@ -1083,7 +1121,8 @@ const toDate = d => {
   }
   const x = d instanceof Date ? d : new Date(d);
   return isNaN(x.getTime()) ? null : x;
-};
+}
+const toDate = parseDate;
 function formatLocale() {
   const lang = typeof document !== 'undefined' && document.documentElement && document.documentElement.getAttribute('lang');
   if (lang) return lang;
@@ -1885,7 +1924,7 @@ var _default = exports.default = {
     "label": "Columns",
     "manage": "Manage columns",
     "first": "First column",
-    "makeFirst": "Make first column",
+    "moveMenu": "Move {name}",
     "moveUp": "Move {name} up",
     "moveDown": "Move {name} down",
     "up": "Move up",
@@ -4199,7 +4238,7 @@ var _default = exports.default = {
     "label": "الأعمدة",
     "manage": "إدارة الأعمدة",
     "first": "العمود الأول",
-    "makeFirst": "جعله العمود الأول",
+    "moveMenu": "نقل {name}",
     "moveUp": "نقل {name} لأعلى",
     "moveDown": "نقل {name} لأسفل",
     "up": "نقل لأعلى",
@@ -13231,7 +13270,7 @@ function Resizable({
     role: "status",
     "aria-live": "polite",
     "aria-atomic": "true"
-  }, announcement), doW ? edge('width') : null, doH ? edge('height') : null, doW && doH ? /*#__PURE__*/_react.default.createElement("div", {
+  }, announcement), doW && doH ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, edge('width'), edge('height')) : edge(doW ? 'width' : 'height'), doW && doH ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-resizable__corner",
     "aria-hidden": "true",
     onPointerDown: drag(1, 1)
@@ -24610,9 +24649,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Summary: The bar over a collection (owner, 2026-10-14 and 2026-10-15, the command bar study): ONE white framed bar of
      one height, fixed at the top of the content while the content scrolls; the table under it never moves. With nothing
      selected: the page's actions, then the search and the filters, then Sort, Group, Columns and View, and the count at
-     the end. With rows selected the bar swaps (Microsoft 365): the actions, the search and the filters give way to the
-     selection's commands (Delete last); Sort, Group, Columns and View stay where they are; the bar ends with "× N
-     selected", which clears the selection. A page with no actions has a view bar (1F).
+     the end. With rows selected the bar swaps (Microsoft 365): the page's actions give way to the selection's commands
+     (Delete last); the search, the filters and Sort, Group, Columns and View stay where they are, so the person can keep
+     narrowing the list while rows are ticked (owner, issue 454); the bar ends with "× N selected", which clears the selection. A page with no actions has a view bar (1F).
    Usage:
      <CommandBar label="Assets" count="24 assets"
        actions={[{ id: 'new', label: 'New', icon: 'plus', items: <><MenuItem icon="folder-add">Folder</MenuItem>…</> },
@@ -24653,8 +24692,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      selection.hidden: how many selected records are hidden by filters (DataGrid onSelectionChange supplies it)
      selection: the selection (the swap): { count, hidden, actions, onClear, noun, plural, label }; while count is above 0 the bar
        holds selection.actions ([{ id, label, icon, onSelect, items, danger, single, disabled, why }]; single: disabled
-       while more than one is selected, with a why-tooltip) instead of the page's actions, search and filters, and ends
-       with "× N selected" (onClear); label names the bar meanwhile (default "{label} actions")
+       while more than one is selected, with a why-tooltip) instead of the page's actions, and ends with "× N selected"
+       (onClear); search and the filters stay (owner, issue 454); label names the bar meanwhile (default "{label} actions")
      layout: "auto" (default: "one" with actions, "view" without) | "one" (1A) | "view" (1F: a view bar, no actions);
        "split" (a separate action bar for many actions) is retired (2026-10-15) and draws "one": many actions fold into More
      sticky: "auto" (default) sticks only as a direct child of PageContent or AppShell main; true/false force
@@ -24781,8 +24820,8 @@ function CommandBar({
 }) {
   const t = Object.assign({}, STRINGS, strings);
   const root = _react.default.useRef(null);
-  // the selection (owner, 2026-10-15: the swap): an object { count, actions, onClear, noun, plural, label }; while its
-  // count is above 0 the bar holds the selection's commands instead of the page's actions, search and filters
+  // the selection (owner, 2026-10-15: the swap; issue 454): an object { count, actions, onClear, noun, plural, label }; while
+  // its count is above 0 the selection's commands replace the page's actions; search and filters stay
   const sel = selection && ! /*#__PURE__*/_react.default.isValidElement(selection) && typeof selection === 'object' ? selection : null;
   const selCount = sel ? Number(sel.count) || 0 : 0;
   const selecting = selCount > 0;
@@ -24790,12 +24829,12 @@ function CommandBar({
   // "split" (a separate action bar) is retired (2026-10-15): many actions fold into More in the one bar
   const shape = layout === 'auto' || layout === 'split' ? actions.length ? 'one' : 'view' : layout;
   const shown = selecting ? selActs : shape === 'view' ? [] : actions;
-  const quick = selecting ? [] : quickFilters;
+  const quick = quickFilters; // search and filters stay while rows are ticked (owner, issue 454)
   const ending = end && ! /*#__PURE__*/_react.default.isValidElement(end) && !Array.isArray(end) && typeof end === 'object' && ('content' in end || 'fold' in end) ? end : null;
   const endContent = ending ? ending.content : end;
   const endFold = !selecting && ending && ending.fold;
   const finding = !!find || quick.length > 0;
-  const folds = (0, _BarActions.foldOrder)(shown).length + quick.length + (endFold ? 1 : 0) + (finding && !selecting ? 1 : 0);
+  const folds = (0, _BarActions.foldOrder)(shown).length + quick.length + (endFold ? 1 : 0) + (finding ? 1 : 0);
   // the bar's search, opened across the bar: the bar holds its step while it is open
   const [searchOpen, setSearchOpen] = _react.default.useState(false);
   const key = [shape, narrow, selecting ? 'sel' : 'rest', shown.map(a => a.label + (a.disabled ? '0' : '') + (a.loading ? 'busy' : '')).join('|'), quickFilters.map(q => q.label + (q.value && q.value.length ? q.value.length : '')).join('|'), endFold && endFold.label].join('§');
@@ -24813,7 +24852,7 @@ function CommandBar({
   const endAway = !!endFold && foldAll > fold;
   const quickAway = Math.min(quick.length, Math.max(0, foldAll - fold - (endAway ? 1 : 0)));
   // the last step: the find side folds into its button (after every command, the end control and the quick filters)
-  const findAway = finding && !selecting && foldAll > fold + (endAway ? 1 : 0) + quickAway;
+  const findAway = finding && foldAll > fold + (endAway ? 1 : 0) + quickAway;
   const quickKept = quick.slice(0, quick.length - quickAway),
     quickFolded = quick.slice(quick.length - quickAway);
   const quickMenu = quickFolded.map(q => {
@@ -24956,7 +24995,7 @@ function CommandBar({
     searchOpen: false,
     setSearchOpen
   }), []);
-  const findEl = !(find || quickEls.length) || selecting ? null : findAway ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
+  const findEl = !(find || quickEls.length) ? null : findAway ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
     className: "plx-command-bar__find"
   }, /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
     title: t.find,
@@ -25016,11 +25055,11 @@ function CommandBar({
   }) : null, countEl, statusEl, keptEnd, clearEl) : null;
   // Escape in the bar clears the selection (as "× N selected" does)
   const onKeyDown = selecting && sel.onClear ? e => {
-    if (e.key === 'Escape' && !e.defaultPrevented && !e.target.closest('[role="menu"], [role="dialog"]')) {
+    if (e.key === 'Escape' && !e.defaultPrevented && !e.target.closest('input, textarea, [role="menu"], [role="dialog"]')) {
       e.preventDefault();
       sel.onClear();
     }
-  } : undefined;
+  } : undefined; // Escape in the search clears the text, not the selection (issue 454)
   const parts = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, acts, acts && findEl ? /*#__PURE__*/_react.default.createElement(_Divider.Divider, {
     orientation: "vertical"
   }) : null, findEl, /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Spacer, null), viewEl, tail);
@@ -25374,7 +25413,7 @@ const REORDER_STRINGS = exports.REORDER_STRINGS = {
   moveDown: 'Move down'
 };
   } },
-  "platform/patterns/ColumnsMenu/ColumnsMenu.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ColumnsMenu/ColumnsMenu.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -25390,18 +25429,19 @@ var _Checkbox = require("../../components/Checkbox/Checkbox.jsx");
 var _Dialog = require("../../components/Dialog/Dialog.jsx");
 var _Field = require("../../components/Field/Field.jsx");
 var _Icon = require("../../components/Icon/Icon.jsx");
+var _Menu = require("../../components/Menu/Menu.jsx");
 var _Input = require("../../components/Input/Input.jsx");
 var _SearchField = require("../../components/SearchField/SearchField.jsx");
 var _Text = require("../../components/Text/Text.jsx");
-var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
 var _VisuallyHidden = require("../../components/VisuallyHidden/VisuallyHidden.jsx");
 var _panelParts = require("../CommandBar/panel-parts.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · ColumnsMenu, ManageColumnsDialog
    Summary: The command bar's Columns (owner, 2026-10-14: the first column is a must; a list with reordering): a "Columns"
-     dropdown listing every column with its handle, a checkbox (shown or hidden), "Make first column" (or the pinned mark
-     of the first) and Move up / Move down; ManageColumnsDialog is the same list, larger, with a find field, Show all,
-     Hide all and a First column select, applied with Apply.
+     dropdown listing every column with its handle, a checkbox (shown or hidden) and, for the first, its pinned mark; a
+     First column select above the list names the first column. The handle opens a menu with Move up and Move down.
+     ManageColumnsDialog is the same list, larger, with a find field, Show all, Hide all and the First column select,
+     applied with Apply.
    Usage:
      const [columns, setColumns] = React.useState({ order: ['name', 'type', 'size'], hidden: [] });
      <ColumnsMenu fields={fields} value={columns} onChange={setColumns} />
@@ -25414,15 +25454,17 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      open, onOpenChange(open): (ManageColumnsDialog) the dialog opened by its owner, e.g. the DataGrid's "More…" in the
        header's right-click menu; trigger={null} draws no button
      inline: (ColumnsMenu) draws the list alone (open, in a frame); default false
-     strings: { label: "Columns", manage: "Manage columns", first: "First column", makeFirst: "Make first column",
+     strings: { label: "Columns", manage: "Manage columns", first: "First column", moveMenu: "Move {name}",
        moveUp: "Move {name} up", moveDown: "Move {name} down", up: "Move up", down: "Move down", find: "Find a column",
        showAll: "Show all", hideAll: "Hide all", apply: "Apply", cancel: "Cancel", shown: "{name} shown", hidden: "{name}
        hidden", isFirst: "{name} is the first column", moved: "{name}, position {position} of {total}", row: "{name}{first}.
        Alt + Arrow Up or Down moves it", firstMark: ", first column", none: "No column matches" }
    Behavior:
      Changes in the dropdown apply at once; the dialog applies them with Apply (Cancel leaves the columns as they were).
-     A row moves by drag, by Move up and Move down, or by Alt + Arrow Up / Down on the focused row; Make first column moves
-       it to the top. Each change is announced politely. The first column cannot be hidden.
+     A row moves by drag (in Firefox a drag does not start on a button: start it from the row, not the handle), by Move up and
+       Move down in the handle's menu (the way without dragging), or by Alt + Arrow Up /
+       Down on the focused row; the First column select moves a column to the top. Each change is announced politely. The
+       first column cannot be hidden. No row carries a "Make first column" or arrow button of its own.
      The button reads "Columns" with the thin chevron; icons only, its icon and tooltip; hidden columns tint it and show
        their count. */
 
@@ -25430,7 +25472,7 @@ const STRINGS = {
   label: 'Columns',
   manage: 'Manage columns',
   first: 'First column',
-  makeFirst: 'Make first column',
+  moveMenu: 'Move {name}',
   moveUp: 'Move {name} up',
   moveDown: 'Move {name} down',
   up: 'Move up',
@@ -25537,12 +25579,30 @@ function ColumnsList({
         setDrag(null);
         if (from && from !== f) move(from, i);
       }
-    }, /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-columns-list__handle",
-      "aria-hidden": "true"
-    }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-      name: "drag"
-    })), /*#__PURE__*/_react.default.createElement(_Checkbox.Checkbox, {
+    }, /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+      label: (0, _panelParts.fill)(t.moveMenu, {
+        name: name(f)
+      }),
+      trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+        size: "xs",
+        variant: "ghost",
+        icon: "drag",
+        iconOnly: true,
+        label: (0, _panelParts.fill)(t.moveMenu, {
+          name: name(f)
+        }),
+        className: "plx-columns-list__handle"
+      }),
+      placement: "bottom-start"
+    }, /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      icon: "chevron-up",
+      disabled: i === 0,
+      onSelect: () => move(f, i - 1, true)
+    }, t.up), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      icon: "chevron-down",
+      disabled: i === order.length - 1,
+      onSelect: () => move(f, i + 1, true)
+    }, t.down)), /*#__PURE__*/_react.default.createElement(_Checkbox.Checkbox, {
       label: name(f),
       checked: hidden.indexOf(f) < 0,
       disabled: i === 0,
@@ -25555,36 +25615,7 @@ function ColumnsList({
       name: "pin-filled"
     }), /*#__PURE__*/_react.default.createElement(_Text.Text, {
       variant: "secondary"
-    }, t.first)) : /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      size: "xs",
-      variant: "ghost",
-      icon: "pin",
-      onClick: () => move(f, 0, true)
-    }, t.makeFirst), /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
-      content: t.up
-    }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      size: "xs",
-      variant: "ghost",
-      icon: "chevron-up",
-      iconOnly: true,
-      label: (0, _panelParts.fill)(t.moveUp, {
-        name: name(f)
-      }),
-      disabled: i === 0,
-      onClick: () => move(f, i - 1)
-    })), /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
-      content: t.down
-    }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      size: "xs",
-      variant: "ghost",
-      icon: "chevron-down",
-      iconOnly: true,
-      label: (0, _panelParts.fill)(t.moveDown, {
-        name: name(f)
-      }),
-      disabled: i === order.length - 1,
-      onClick: () => move(f, i + 1)
-    })));
+    }, t.first)) : null);
   }), /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, {
     role: "status",
     "aria-live": "polite"
@@ -25602,9 +25633,23 @@ function ColumnsMenu({
     order: fields.map(f => f.value),
     hidden: []
   };
+  const name = nameIn(fields);
+  const first = /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.first
+  }, /*#__PURE__*/_react.default.createElement(_Input.Select, {
+    value: v.order[0],
+    options: v.order.map(f => ({
+      value: f,
+      label: name(f)
+    })),
+    onChange: e => onChange({
+      order: moveTo(v.order, e.target.value, 0),
+      hidden: (v.hidden || []).filter(x => x !== e.target.value)
+    })
+  }));
   const list = /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-find-panel plx-find-panel--columns"
-  }, /*#__PURE__*/_react.default.createElement(ColumnsList, {
+  }, first, /*#__PURE__*/_react.default.createElement(ColumnsList, {
     fields: fields,
     value: v,
     onChange: onChange,
@@ -35178,7 +35223,6 @@ exports.ReviewFlow = ReviewFlow;
 exports.ReviewQueue = ReviewQueue;
 exports.WORKFLOW_STATUSES = void 0;
 exports.WorkflowStatus = WorkflowStatus;
-exports.localDay = void 0;
 exports.useOptionalToast = useOptionalToast;
 var _react = _interopRequireDefault(require("react"));
 var _devWarn = require("../../utils/devWarn.js");
@@ -35322,9 +35366,6 @@ function useOptionalToast() {
   }
 }
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
-// a day ("YYYY-MM-DD") read as local midnight: Date reads a bare day as UTC, which is a day early west of Greenwich
-const localDay = d => typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d) ? d + 'T00:00' : d;
-exports.localDay = localDay;
 const FLOW_STRINGS = {
   reviewers: 'Reviewers',
   history: 'History',
@@ -35539,7 +35580,7 @@ function ReviewQueue({
     type: 'date',
     render: r => /*#__PURE__*/_react.default.createElement(_Text.Text, {
       variant: "data"
-    }, (0, _format.formatDate)(localDay(r.submitted)))
+    }, (0, _format.formatDate)(r.submitted))
   }, {
     title: t.status,
     field: 'status',
@@ -44884,11 +44925,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Other props pass through to the <time>.
 */
 const FORMATS = ['datetime', 'relative', 'label', 'date', 'time'];
-const toDate = v => {
-  if (v === undefined || v === null || v === '') return null;
-  const d = v instanceof Date ? v : new Date(v);
-  return isNaN(d.getTime()) ? null : d;
-};
+// the shared parser: a date-only value is that calendar day where the reader is, never midnight UTC (issue 342)
+const toDate = v => v === undefined || v === null || v === '' ? null : (0, _format.parseDate)(v);
 const dayStart = d => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
 const pad = n => (n < 10 ? '0' : '') + n;
 const calendarDay = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
@@ -66370,7 +66408,7 @@ function AssignControl({
         className: "plx-assign-control__dates"
       }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
         variant: "data"
-      }, (0, _format.formatRange)((0, _ReviewFlow.localDay)(d.start), (0, _ReviewFlow.localDay)(d.end))))
+      }, (0, _format.formatRange)(d.start, d.end)))
     }) : /*#__PURE__*/_react.default.createElement("span", {
       className: "plx-assign-control__empty"
     }, t.notDelegated)), /*#__PURE__*/_react.default.createElement("div", {
@@ -67580,9 +67618,6 @@ function fileIcon(name, type) {
   if (/^text\//.test(type || '')) return 'doc-text';
   return 'document';
 }
-
-// a calendar day written YYYY-MM-DD is that day where the reader is (new Date('2026-10-14') would be midnight UTC)
-const day = v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) ? new Date(+v.slice(0, 4), +v.slice(5, 7) - 1, +v.slice(8, 10)) : v;
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 function Picture({
   src,
@@ -67635,7 +67670,7 @@ function File({
   if (folder && typeof count === 'number') facts.push(fill(count === 1 ? t.item : t.items, {
     n: (0, _format.formatNumber)(count)
   }));
-  if (modified) facts.push((0, _format.formatDate)(day(modified), {
+  if (modified) facts.push((0, _format.formatDate)(modified, {
     dateStyle: 'short'
   }));
   const text = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("span", {
@@ -67764,8 +67799,6 @@ const STRINGS = {
   items: '{n} items',
   item: '{n} item'
 };
-// a calendar day written YYYY-MM-DD is that day where the reader is (new Date('2026-10-14') would be midnight UTC)
-const day = v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) ? new Date(+v.slice(0, 4), +v.slice(5, 7) - 1, +v.slice(8, 10)) : v;
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 function FileRow({
   file,
@@ -67933,7 +67966,7 @@ function FileFacts({
   }, size), file.modified ? /*#__PURE__*/_react.default.createElement("time", {
     className: "plx-file-row__cell plx-file-row__date",
     dateTime: typeof file.modified === 'string' ? file.modified : (0, _format.dateTimeAttr)(file.modified)
-  }, (0, _format.formatDate)(day(file.modified), {
+  }, (0, _format.formatDate)(file.modified, {
     dateStyle: 'medium'
   })) : null);
 }
@@ -69950,8 +69983,6 @@ const STRINGS = {
   done: '{service} connected',
   undone: '{service} disconnected'
 };
-// a calendar day written YYYY-MM-DD is that day where the reader is (new Date('2026-10-14') would be midnight UTC)
-const day = v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) ? new Date(+v.slice(0, 4), +v.slice(5, 7) - 1, +v.slice(8, 10)) : v;
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 const STATUS = {
   connected: ['success', 'check'],
@@ -70031,7 +70062,7 @@ function ConnectedAccount({
   }, a.account)) : null, a.account && a.connectedAt ? ', ' : null, a.connectedAt ? around(t.since, 'date', /*#__PURE__*/_react.default.createElement("time", {
     className: "plx-connected-accounts__date",
     dateTime: typeof a.connectedAt === 'string' ? a.connectedAt : (0, _format.dateTimeAttr)(a.connectedAt)
-  }, (0, _format.formatDate)(day(a.connectedAt)))) : null) : null, status === 'error' && a.error ? /*#__PURE__*/_react.default.createElement("p", {
+  }, (0, _format.formatDate)(a.connectedAt))) : null) : null, status === 'error' && a.error ? /*#__PURE__*/_react.default.createElement("p", {
     className: "plx-connected-accounts__error"
   }, a.error) : null), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-connected-accounts__actions"
@@ -72060,8 +72091,6 @@ const STRINGS = {
 const FIELDS = ['name', 'size', 'modified', 'owner'];
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 const idOf = f => f.id === undefined ? f.name : f.id;
-// a calendar day written YYYY-MM-DD is that day where the reader is
-const day = v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) ? new Date(+v.slice(0, 4), +v.slice(5, 7) - 1, +v.slice(8, 10)) : v;
 const stamp = v => v instanceof Date ? v.toISOString() : String(v || '');
 
 // the order of the list: folders first, then the field, then the name
@@ -72283,7 +72312,7 @@ function FileList({
       field: 'modified',
       kind: 'data',
       type: 'date',
-      render: f => f.modified ? (0, _format.formatDate)(day(f.modified), {
+      render: f => f.modified ? (0, _format.formatDate)(f.modified, {
         dateStyle: 'medium'
       }) : ''
     });
@@ -73663,7 +73692,6 @@ const STRINGS = {
   empty: 'Choose two versions to compare.'
 };
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
-const day = v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) ? new Date(+v.slice(0, 4), +v.slice(5, 7) - 1, +v.slice(8, 10)) : v;
 
 // the lines of two texts, compared: [{ kind: "same" | "add" | "del", text, a (the line number before), b (after) }]
 function diffLines(before, after) {
@@ -73932,12 +73960,12 @@ function VersionCompare({
     if (mode === undefined) setOwnMode(m);
     if (onModeChange) onModeChange(m);
   };
-  const metaOf = v => [v.date ? (0, _format.formatDate)(day(v.date), {
+  const metaOf = v => [v.date ? (0, _format.formatDate)(v.date, {
     dateStyle: 'medium'
   }) : null, v.author ? fill(t.by, {
     author: v.author
   }) : null].filter(Boolean).join(' · ');
-  const optionLabel = v => [v.label, v.date ? (0, _format.formatDate)(day(v.date), {
+  const optionLabel = v => [v.label, v.date ? (0, _format.formatDate)(v.date, {
     dateStyle: 'medium'
   }) : null].filter(Boolean).join(' · ');
   const pick = (which, other) => versions.filter(v => v.id !== pair[other]).map(v => ({
@@ -81700,7 +81728,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Keyboard: the divider is a separator in the Tab order; the arrow keys step to the next size, Home and End to the
        limits. There is no size menu (owner, 2026-10-16).
      Stacked when there is no room side by side: under 900px of the split view's own width the panels stack (container
-       query), whatever the orientation.
+       query), whatever the orientation, and the divider is the stacked one: a horizontal separator under the first panel
+       that drags its height (200–500px, starting at 320) and that Up and Down move. Above 900px it is the side divider
+       again. Each orientation keeps the person's own size (issue 237).
      Room and corners (owner, 2026-10-27, splitview-design-29): the split view keeps 16px of room all around
        (--plx-comp-split-view-padding), so its panels never touch the rest of the screen. Both panels round their outer
        corners by the same 6px (--plx-comp-split-view-radius, shape-md), and the corners at the divider are square, side
@@ -81738,7 +81768,11 @@ function SplitView({
   const [lo, hi, start] = LIMITS[side ? 'side-by-side' : 'stacked'];
   const container = _react.default.useRef(null);
   const [available, setAvailable] = _react.default.useState(null);
-  _react.default.useEffect(() => {
+  // stacked by its room (issue 237): under 900px a side-by-side split view stacks in CSS (the container query); its divider
+  // then becomes the stacked one, read from the layout the CSS chose, so the two never disagree
+  const [roomStacked, setRoomStacked] = _react.default.useState(false);
+  // measured before the first paint, so a narrow split view never draws a frame with the side settings
+  _react.default.useLayoutEffect(() => {
     const element = container.current,
       win = element && element.ownerDocument.defaultView;
     if (!element || !win) return;
@@ -81746,6 +81780,8 @@ function SplitView({
       const panels = element.firstElementChild,
         second = panels && panels.lastElementChild;
       const horizontal = side && panels && win.getComputedStyle(panels).flexDirection === 'row';
+      // never while a divider is dragged: the switch waits for the drag to end (the pointerup below measures again)
+      if (!/\bis-resizing-/.test(element.ownerDocument.documentElement.className)) setRoomStacked(side && !!panels && !horizontal);
       if (!horizontal || !second) {
         setAvailable(null);
         return;
@@ -81762,16 +81798,38 @@ function SplitView({
     const observer = win.ResizeObserver ? new win.ResizeObserver(measure) : null;
     if (observer) observer.observe(element);
     win.addEventListener('resize', measure);
+    // after a drag ends, a switch it held back happens; any other click measures nothing
+    const settle = () => {
+      if (/\bis-resizing-/.test(element.ownerDocument.documentElement.className)) win.requestAnimationFrame(measure);
+    };
+    win.addEventListener('pointerup', settle, true);
+    win.addEventListener('pointercancel', settle, true);
     return () => {
       if (observer) observer.disconnect();
       win.removeEventListener('resize', measure);
+      win.removeEventListener('pointerup', settle, true);
+      win.removeEventListener('pointercancel', settle, true);
     };
   }, [side, minSize, lo]);
   const requestedMax = maxSize ?? hi;
   const constrained = side && available && available.max < requestedMax;
   const widthMax = constrained ? available.max : requestedMax;
-  const box = side ? {
+  const [,, stackedStart] = LIMITS.stacked;
+  const box = side && roomStacked
+  // stacked by its room: the stacked divider, its height limits and start, a horizontal separator that Up and Down move
+  ? {
+    axis: 'vertical',
+    defaultWidth: defaultSize != null ? defaultSize : start,
+    minWidth: minSize || lo,
+    maxWidth: requestedMax,
+    defaultHeight: stackedStart,
+    minHeight: LIMITS.stacked[0],
+    maxHeight: LIMITS.stacked[1]
+  } : side ? {
     axis: 'horizontal',
+    defaultHeight: stackedStart,
+    minHeight: LIMITS.stacked[0],
+    maxHeight: LIMITS.stacked[1],
     defaultWidth: defaultSize != null ? defaultSize : start,
     width: size,
     minWidth: minSize || lo,

@@ -94,8 +94,6 @@ export function useOptionalToast() {
 }
 
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
-// a day ("YYYY-MM-DD") read as local midnight: Date reads a bare day as UTC, which is a day early west of Greenwich
-export const localDay = (d) => (typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d) ? d + 'T00:00' : d);
 
 const FLOW_STRINGS = {
   reviewers: 'Reviewers', history: 'History', comment: 'Comment', commentHint: 'Needed to reject or request changes.',
@@ -202,7 +200,7 @@ export function ReviewQueue({ items = [], label = 'Waiting for review', noun = '
     { title: t.name, field: 'name', kind: 'name' },
     { title: t.type, field: 'type' },
     { title: t.submittedBy, field: 'submittedBy', type: 'person' },
-    { title: t.submitted, field: 'submitted', kind: 'data', type: 'date', render: (r) => <Text variant="data">{formatDate(localDay(r.submitted))}</Text> },
+    { title: t.submitted, field: 'submitted', kind: 'data', type: 'date', render: (r) => <Text variant="data">{formatDate(r.submitted)}</Text> },
     { title: t.status, field: 'status', kind: 'center', render: (r) => <WorkflowStatus status={r.status} strings={strings} /> },
   ];
   return (

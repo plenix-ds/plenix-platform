@@ -31,7 +31,16 @@
    "checksNamedAtRunTime": 1
   },
   "formats": {
-   "parts": [],
+   "parts": [
+    {
+     "part": "Time",
+     "checks": 1
+    },
+    {
+     "part": "parseDate",
+     "checks": 2
+    }
+   ],
    "checksWithoutPart": 15,
    "checksNamedAtRunTime": 0
   },
@@ -106,8 +115,12 @@
   "layout": {
    "parts": [
     {
-     "part": "SplitView",
+     "part": "DirectionProvider",
      "checks": 1
+    },
+    {
+     "part": "SplitView",
+     "checks": 3
     },
     {
      "part": "VisuallyHidden",
