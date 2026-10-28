@@ -484,7 +484,7 @@ export default {
     "label": "Columns",
     "manage": "Manage columns",
     "first": "First column",
-    "makeFirst": "Make first column",
+    "moveMenu": "Move {name}",
     "moveUp": "Move {name} up",
     "moveDown": "Move {name} down",
     "up": "Move up",

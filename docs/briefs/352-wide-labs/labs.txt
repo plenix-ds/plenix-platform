@@ -1,0 +1,8 @@
+before record   {"columns":10,"heads":["State","Entity · a person","Entity · a generic icon","Entity · live state","Entity · an email","Entity · narrow"],"picks":9,"cellWidths":[93],"drawingWidths":[720,400],"fits":"0/9","docH":388}
+before buttons  {"columns":7,"heads":["State","Secondary","Primary","Tertiary","Ghost","Danger"],"picks":36,"cellWidths":[80,384],"drawingWidths":[59],"fits":"36/36","docH":376}
+before split    {"columns":4,"heads":["State","Start (default)","End","Resized by dragging its edge"],"picks":3,"cellWidths":[273],"drawingWidths":[600],"fits":"0/3","docH":331}
+copied component-lab.js
+OVERLAY: 1 files into platform/design-system
+after record   {"columns":1,"heads":["Variant"],"picks":9,"cellWidths":[864],"drawingWidths":[720,400],"fits":"9/9","docH":1900}
+after buttons  {"columns":7,"heads":["State","Secondary","Primary","Tertiary","Ghost","Danger"],"picks":36,"cellWidths":[80,384],"drawingWidths":[59],"fits":"36/36","docH":376}
+after split    {"columns":1,"heads":["Variant"],"picks":3,"cellWidths":[864],"drawingWidths":[600],"fits":"3/3","docH":934}

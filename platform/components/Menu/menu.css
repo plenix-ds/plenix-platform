@@ -26,7 +26,7 @@
    in the window (over the fallback's absolute), and it flips on one axis at a time (flip-block, then flip-inline).
    Nothing is written inline. */
 .plx-menu[popover]{position:fixed;}
-.plx-menu[popover]:where(:not(.plx-menu-sub__list)){position-try-fallbacks:flip-block, flip-inline;}
+@supports (position-try-fallbacks: flip-block){.plx-menu[popover]:where(:not(.plx-menu-sub__list)){position-try-fallbacks:flip-block, flip-inline;}}
 
 /* radio items (MenuRadioGroup, MenuItem type="radio"): the check of a checkbox item marks the one chosen (library w05B) */
 /* submenus (MenuSub, library w05B): the submenu is a popover at the item's end edge (useFloating end-top, its own gap),
