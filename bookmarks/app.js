@@ -2601,6 +2601,7 @@ function BookmarksScreen({
     label: "Bookmarks"
   }, filtered.map(b => /*#__PURE__*/React.createElement(_plenixPlatform.Card, {
     key: b.id,
+    headingLevel: 2,
     title: b.title,
     meta: b.url,
     selected: sel === b.id,
