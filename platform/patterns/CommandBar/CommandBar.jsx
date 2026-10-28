@@ -256,7 +256,7 @@ export function CommandBar({ label, actions = [], find, quickFilters = [], view,
     </Toolbar.Group>
   ) : null;
   // Escape in the bar clears the selection (as "× N selected" does)
-  const onKeyDown = selecting && sel.onClear ? (e) => { if (e.key === 'Escape' && !e.defaultPrevented && !e.target.closest('[role="menu"], [role="dialog"]')) { e.preventDefault(); sel.onClear(); } } : undefined;
+  const onKeyDown = selecting && sel.onClear ? (e) => { if (e.key === 'Escape' && !e.defaultPrevented && !e.target.closest('input, textarea, [role="menu"], [role="dialog"]')) { e.preventDefault(); sel.onClear(); } } : undefined;   // Escape in the search clears the text, not the selection (issue 454)
   const parts = <>{acts}{acts && findEl ? <Divider orientation="vertical" /> : null}{findEl}<Toolbar.Spacer />{viewEl}{tail}</>;
   const name = selecting ? (sel.label || fill(t.actions, { label: label || '' }).trim()) : label;
   return (

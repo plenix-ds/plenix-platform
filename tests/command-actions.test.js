@@ -66,6 +66,13 @@ module.exports = async function regressions(page) {
       selection: { count: 2, onClear() {}, actions: [{ id: 'archive', label: 'Archive', icon: 'archive', onSelect() {} }] } }));
     check(!!host.querySelector('.plx-command-bar input') && !!button('Community') && !!button('Archive') && !button('New post'),
       'CommandBar: while rows are ticked, search and filters stay and only the page actions give way to the selection commands #454');
+    let cleared = 0; await reset(); await mount(h(P.CommandBar, { label: 'Posts', find: h(P.CommandBarSearch, { value: 'cairo', onChange() {}, placeholder: 'Search posts' }),
+      selection: { count: 2, onClear: () => cleared++, actions: [{ id: 'archive', label: 'Archive', icon: 'archive', onSelect() {} }] } }));
+    const field = host.querySelector('.plx-command-bar input'); field.focus();
+    const esc = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }); field.dispatchEvent(esc); await wait();
+    check(cleared === 0, 'CommandBar: Escape in the search field while rows are ticked does not clear the selection #454');
+    button('Archive').focus(); button('Archive').dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true })); await wait();
+    check(cleared === 1, 'CommandBar: Escape on the bar while rows are ticked still clears the selection #454');
     await reset(); await mount(h(P.Toolbar, { label: 'Folded form toolbar' }, h(B, { actions: [action, { label: 'Other', icon: 'check' }], fold: 5 })));
     button('More actions').click(); await wait(); button('Add tag').click(); await wait();
     check(document.activeElement.getAttribute('aria-label') === 'Tag name', 'folded panel opens from its actual More item and focuses the field');
