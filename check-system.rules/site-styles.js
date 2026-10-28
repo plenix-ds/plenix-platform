@@ -5,11 +5,15 @@
 //   stylesheet, no <style> block and no style attribute of its own: it uses the Platform's classes and tokens.
 // What it rejects:
 //   stylesheet   a tracked .css file anywhere outside the exempt list below (so a new site stylesheet fails, whatever its folder)
-//   markup       a <style> block or a style="…" attribute written in services/ or the St. John site (HTML, or an HTML string in
-//                code). The applications, dam/ and suite/ are covered for markup by the inline-style rule (check-style.js)
+//   markup       a <style> block, a style="…" attribute or a React style={{…}} object written in services/ or the St. John site (HTML,
+//                an HTML string or JSX). The applications, dam/ and suite/ are covered for markup by the inline-style rule (check-style.js)
 //   stale        an exempt file that no longer exists: remove its line, so the lists only ever shrink
 // The exempt list (each entry has its reason; nothing else is exempt):
 const EXEMPT_FILES = {
+  'platform/platform.css': 'the Platform\'s one stylesheet: it imports the foundations, components and patterns that sites use',
+  'platform/plenix-system.css': 'the Platform\'s foundations stylesheet (tokens, theme, layout layers)',
+  'docs/font-study/playground.css': 'a published study page (deploy.sh publishes it); the owner decides',
+  'docs/reading-pane-study/study.css': 'a published study page (deploy.sh publishes it); the owner decides',
   'services/auth/brand.css': 'generated from the tokens by services/auth/brand-css.js and pasted into the SSO service, whose custom CSS field cannot import the release (issue 365); removed at the login cutover; owner decision pending (#381)',
 };
 // markup exempt from the style-block and style-attribute scan (path from the site's own folder; the St. John site is read beside this repository)
@@ -17,14 +21,23 @@ const EXEMPT_MARKUP = {
   'site/screens/announcement-edit.jsx': 'the seed announcement is user content for the rich-text editor ("the person\'s own formatting is kept"): the rich-text engine is a standing exception to the no-inline-styles rule',
 };
 const EXEMPT_PREFIXES = {
-  'platform/': 'the Platform itself: its stylesheets are the components, tokens and layers that sites use (Stylelint checks them)',
+  'platform/components/': 'the Platform\'s component stylesheets: the classes sites use (Stylelint checks them)',
+  'platform/patterns/': 'the Platform\'s pattern stylesheets',
+  'platform/system/': 'the Platform\'s foundation stylesheets (tokens, themes, layers, layout), many generated',
+  'platform/charts/': 'the Platform\'s chart stylesheets',
+  'platform/exports/': 'the Platform\'s export stylesheets',
+  'platform/templates/': 'the Platform\'s page-template stylesheets',
   'lanes/': 'a lane carries design-system files into the design spec (lanes/<task>/design-system/…), which is not a site',
-  'docs/': 'internal working pages (studies, briefs, the generated docs viewer); not shipped, not a site; the owner decides later whether finished ones go to Archived/',
+  'docs/briefs/': 'internal working pages (briefs); deploy.sh does not publish them; the owner decides later whether finished ones go to Archived/',
+  'docs/command-bar-study/': 'an internal study page that deploy.sh does not publish',
+  'docs/touch-options/': 'an internal study page that deploy.sh does not publish',
   'tests/fixtures/': 'a fixture that holds the violations on purpose, so a rule can be shown to catch them',
   'release/': 'a built release (generated)',
   'packages/': 'built packages (generated)',
 };
-// The design spec (platform/design-system, its own repository and project; its 60 sheets are a separate plan, #381) is under platform/.
+// Everything else under platform/ (the design spec is a submodule, not tracked here; dev/, brand/, vendor/ and the rest) holds no sheet: a
+// new folder or file there fails until it is added to a list on purpose. The published studies in docs/ have only the two files above.
+// The design spec (platform/design-system) is its own repository and project (a submodule: its 60 sheets are a separate plan, #381).
 // Alone: node check-system.rules/site-styles.js     -> SITE_STYLES_OK, or the findings and exit 1
 const fs = require('fs');
 const path = require('path');
@@ -65,11 +78,11 @@ function check({ add }) {
     if (Object.keys(EXEMPT_MARKUP).some((k) => f === path.join(STJOHN, k))) continue;
     if (/[\\/](app|assets)\.js$/.test(f) && /public/.test(f)) continue;   // the St. John site's generated bundle is checked through its sources
     const text = fs.readFileSync(f, 'utf8');
-    for (const re of [/<style[\s>]/gi, /\sstyle\s*=\s*["']/gi]) for (const m of text.matchAll(re)) {
+    for (const re of [/<style[\s>]/gi, /\sstyle\s*=\s*["']/gi, /\sstyle\s*=\s*\{/g]) for (const m of text.matchAll(re)) {
       const line = lineOf(text, m.index);
       const lineText = text.split('\n')[line - 1];
       if (/^\s*(\/\/|\/\*|\*)/.test(lineText)) continue;   // prose in a comment
-      add(NAME, f, line, re.source.startsWith('<') ? 'a <style> block: no site styles of its own (#381)' : 'a style attribute: no site styles of its own (#381)');
+      add(NAME, f, line, re.source.startsWith('<') ? 'a <style> block: no site styles of its own (#381)' : re.source.endsWith('\\{') ? 'a React style object: no site styles of its own (#381)' : 'a style attribute: no site styles of its own (#381)');
     }
   }
 }
