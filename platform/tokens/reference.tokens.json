@@ -486,6 +486,26 @@
       "$value": "900px",
       "$type": "dimension"
     },
+    "size-960px": {
+      "$value": "960px",
+      "$type": "dimension"
+    },
+    "size-1000px": {
+      "$value": "1000px",
+      "$type": "dimension"
+    },
+    "size-1200px": {
+      "$value": "1200px",
+      "$type": "dimension"
+    },
+    "size-1400px": {
+      "$value": "1400px",
+      "$type": "dimension"
+    },
+    "size-1600px": {
+      "$value": "1600px",
+      "$type": "dimension"
+    },
     "glyph-size-6px": {
       "$value": "6px",
       "$type": "dimension",
