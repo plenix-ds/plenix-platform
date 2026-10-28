@@ -67,10 +67,10 @@
        pointer, kept inside the window (useFloating's point); Shift+F10 or the Menu key opens it at the target's start
        edge, below it. Focus moves to the first item; Escape, Tab, a choice or a click outside close it and return
        focus to where it was. It renders in the top layer (Portal), so a scroll area or a dialog never clips it.
-     The menu opens on top of everything (batch 272): in the browser's top layer (popover), placed beside its trigger by CSS
-       anchor positioning, so no card, pane or scroll area can cover or clip it. The trigger's wrapper scopes the anchor, so
-       each menu finds its own trigger; near an edge the menu flips to the other side. A browser without anchor
-       positioning draws it inside the wrapper as before.
+     The menu opens on top of everything (batch 272): in the browser's top layer (popover), placed beside its trigger by
+       useFloating (CSS anchor positioning), so no card, pane or scroll area can cover or clip it, and it follows the
+       trigger on scroll and resize; near an edge the menu flips to the other side. A submenu is placed the same way at its
+       item's end edge. A browser without anchor positioning draws them inside the wrapper as before.
    Notes:
      Menus are border-only (no shadow, D9); dialogs keep their shadow.
      A context menu is a shortcut: every action in it is also reachable another way (a toolbar, a row's More menu).
@@ -114,6 +114,8 @@ export function Menu({ trigger, label, placement = 'bottom-start', className, ch
   const wrap = React.useRef(null), list = React.useRef(null), button = React.useRef(null);
   const close = React.useCallback((refocus) => { setOpen(false); if (refocus && button.current) button.current.focus(); }, []);
   useLayer(list, open, { onEscape: () => close(true) });
+  // placed against its trigger's wrapper by useFloating (anchor positioning, in the top layer); without it, drawn inside the wrapper
+  useFloating(wrap, list, { open: open && TOP_LAYER, placement });
   // into the top layer as soon as it is in the page (before the first item takes focus)
   React.useLayoutEffect(() => { const el = list.current; if (open && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover(); }, [open]);
   React.useEffect(() => {
@@ -213,6 +215,8 @@ export function MenuSub({ label, icon, disabled = false, className, children }) 
   const wrap = React.useRef(null), item = React.useRef(null), list = React.useRef(null), focusFirst = React.useRef(false);
   const back = React.useCallback(() => { setOpen(false); if (item.current) item.current.focus(); }, []);
   useLayer(list, open, { onEscape: back });
+  // at the item's end edge, level with it (useFloating end-top; the gap is the menu's own, menu.css)
+  useFloating(item, list, { open: open && TOP_LAYER, placement: 'end-top', offset: 'none' });
   React.useLayoutEffect(() => { const el = list.current; if (open && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover(); }, [open]);
   React.useEffect(() => {
     if (!open || !focusFirst.current) return;

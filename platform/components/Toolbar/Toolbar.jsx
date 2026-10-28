@@ -26,11 +26,12 @@
      In a radio group, only the checked option is a stop.
    Notes:
      Every control in it takes the toolbar control height.
+     Its one Tab stop and its arrow keys are the shared focus group (useFocusGroup, hooks/useFocusable.js).
      Other props reach the toolbar or group element.
 */
 import React from 'react';
-import { useRovingFocus, roveTo } from '../../utils/roving.js';
-import { arrowStep } from '../../utils/direction.js';
+import { roveTo } from '../../utils/roving.js';
+import { useFocusGroup } from '../../hooks/useFocusable.js';
 import { cx } from '../../utils/cx.js';
 
 const POPUP = '[role="dialog"],[role="alertdialog"],[role="menu"],[role="listbox"],[role="tree"],[role="grid"],[role="tablist"]';
@@ -63,23 +64,15 @@ export function Toolbar({ label, variant = 'default', className, children, onKey
     window.addEventListener('resize', refresh);
     return () => { observer.disconnect(); if (resize) resize.disconnect(); window.removeEventListener('resize', refresh); };
   }, []);
-  // one Tab stop: the current control is in the Tab order, the others are reached with the arrows (batch 213)
-  useRovingFocus(ref, itemsOf);
-  const onKey = (e) => {
-    if (onKeyDown) onKeyDown(e);
-    if (e.defaultPrevented || ['ArrowLeft', 'ArrowRight', 'Home', 'End'].indexOf(e.key) < 0) return;
-    if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable) return;   // preserve the control's editing keys
-    if (e.target.closest(POPUP) && ref.current.contains(e.target.closest(POPUP))) return;   // popup/composite controls keep their own keys
-    if (e.target.closest('[role="toolbar"]') !== ref.current) return;   // a nested toolbar owns its arrows
-    const items = itemsOf();
-    const i = items.indexOf(document.activeElement);
-    if (i < 0) return;
-    const step = arrowStep(e, ref.current, { vertical: false });   // in reading order: right to left reverses Left and Right
-    const n = e.key === 'Home' ? 0 : e.key === 'End' ? items.length - 1 : (i + step + items.length) % items.length;
-    e.preventDefault(); items[n].focus();
-  };
-  const onFocusIn = (e) => { if (onFocus) onFocus(e); roveTo(ref, itemsOf(), e.target); };
-  return <div ref={ref} role="toolbar" aria-label={label} className={cx('plx-toolbar', variant === 'bar' && 'plx-toolbar--bar', className)} onKeyDown={onKey} onFocus={onFocusIn} {...rest}>{children}</div>;
+  // one Tab stop and the arrow keys: the shared focus group (hooks/useFocusable.js), with the toolbar's own item rules. The
+  // keys stay a text field's, a select's, an editable region's, a popup's and a nested toolbar's own (ignore).
+  const { groupProps } = useFocusGroup(ref, {
+    items: itemsOf, orientation: 'horizontal', loop: true, modifiers: true, onKeyDown,
+    ignore: (e) => /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable
+      || (e.target.closest(POPUP) && ref.current.contains(e.target.closest(POPUP))) || e.target.closest('[role="toolbar"]') !== ref.current
+  });
+  const onFocusIn = (e) => { if (onFocus) onFocus(e); groupProps.onFocus(e); };
+  return <div ref={ref} role="toolbar" aria-label={label} className={cx('plx-toolbar', variant === 'bar' && 'plx-toolbar--bar', className)} onKeyDown={groupProps.onKeyDown} onFocus={onFocusIn} {...rest}>{children}</div>;
 }
 Toolbar.Group = function ToolbarGroup({ className, children, ...rest }) {
   return <div className={cx('plx-toolbar__group', className)} {...rest}>{children}</div>;
