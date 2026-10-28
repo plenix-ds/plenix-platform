@@ -15,4 +15,4 @@ if (errors.length) {
   console.error('TYPES_FAIL ' + errors.length + ' errors');
   process.exit(1);
 }
-console.log('TYPES_OK DataGrid columns, Tabs onChange(value), collection panels, MediaCard 4/3, Text as span/h2–h4, MediaViewer, useAppLayout');
+console.log('TYPES_OK DataGrid columns, rowMenu as a list or a function per row, Tabs onChange(value), collection panels, MediaCard 4/3, Text as span/h2–h4, MediaViewer, useAppLayout');
