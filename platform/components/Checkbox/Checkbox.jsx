@@ -43,50 +43,56 @@
    Notes:
      The Switch track is 36 × 20px and the knob 16px, centered: (track − knob) / 2.
      Checkbox, Radio and Switch pass other props (checked, onChange, name, value, disabled, …) and their ref to the <input>.
-     RadioGroup and ChoiceList pass other props to the <fieldset>.
+     RadioGroup and ChoiceList pass other props to the <fieldset>; their readOnly goes to each radio.
+     Each is read-only by its own readOnly, else inside a read-only region (useReadOnly, providers/ReadOnly.jsx): it keeps its
+       value and focus, a click or a change key does not change it, and Checkbox and Switch are marked aria-readonly.
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
+import { useReadOnly, readOnlyProps } from '../../providers/ReadOnly.jsx';
 
-export const Checkbox = React.forwardRef(function Checkbox({ label, description, indeterminate = false, className, ...rest }, ref) {
+export const Checkbox = React.forwardRef(function Checkbox({ label, description, indeterminate = false, className, readOnly, ...rest }, ref) {
+  const locked = useReadOnly(readOnly);
   const inner = React.useRef(null);
   React.useImperativeHandle(ref, () => inner.current);
   React.useEffect(() => { if (inner.current) inner.current.indeterminate = indeterminate; }, [indeterminate]);
   return (
     <label className={cx('plx-check', className)}>
-      <input ref={inner} type="checkbox" className="plx-check__input" {...rest} />
+      <input ref={inner} type="checkbox" className="plx-check__input" {...readOnlyProps(locked, rest)} />
       {label || description ? <span className="plx-check__text"><span className="plx-check__label">{label}</span>{description ? <span className="plx-check__description">{description}</span> : null}</span> : null}
     </label>
   );
 });
 
-export const Radio = React.forwardRef(function Radio({ label, description, className, ...rest }, ref) {
+export const Radio = React.forwardRef(function Radio({ label, description, className, readOnly, ...rest }, ref) {
+  const locked = useReadOnly(readOnly);
   return (
     <label className={cx('plx-check', className)}>
-      <input ref={ref} type="radio" className="plx-check__input" {...rest} />
+      <input ref={ref} type="radio" className="plx-check__input" {...readOnlyProps(locked, rest, { aria: false })} />
       {label ? <span className="plx-check__text"><span className="plx-check__label">{label}</span>{description ? <span className="plx-check__description">{description}</span> : null}</span> : null}
     </label>
   );
 });
 
-export function RadioGroup({ label, name, value, onChange, options, layout = 'column', className, ...rest }) {
+export function RadioGroup({ label, name, value, onChange, options, layout = 'column', className, readOnly, ...rest }) {
   const auto = 'plx-r' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   return (
     <fieldset className={cx('plx-radio-group', 'plx-radio-group--' + layout, className)} {...rest}>
       {label ? <legend className="plx-radio-group__legend">{label}</legend> : null}
-      {options.map((o) => <Radio key={o.value} name={name || auto} value={o.value} label={o.label} description={o.description} checked={o.value === value} onChange={() => onChange(o.value)} disabled={o.disabled} />)}
+      {options.map((o) => <Radio key={o.value} name={name || auto} value={o.value} label={o.label} description={o.description} checked={o.value === value} onChange={() => onChange(o.value)} disabled={o.disabled} readOnly={readOnly} />)}
     </fieldset>
   );
 }
 
-export function ChoiceList({ legend, name, value, onChange, options, className, ...rest }) {
+export function ChoiceList({ legend, name, value, onChange, options, className, readOnly, ...rest }) {
+  const locked = useReadOnly(readOnly);
   const auto = 'plx-c' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   return (
     <fieldset className={cx('plx-choice-list', className)} {...rest}>
       {legend ? <legend className="plx-choice-list__legend">{legend}</legend> : null}
       {options.map((o) => (
         <label key={o.value} className={cx('plx-choice', o.value === value && 'is-selected')} hidden={o.hidden || undefined}>
-          <input type="radio" className="plx-choice__input" name={name || auto} value={o.value} checked={o.value === value} onChange={() => onChange(o.value)} />
+          <input type="radio" className="plx-choice__input" {...readOnlyProps(locked, { name: name || auto, value: o.value, checked: o.value === value, onChange: () => onChange(o.value) }, { aria: false })} />
           <span className="plx-choice__text"><span className="plx-choice__label">{o.label}</span>{o.description ? <span className="plx-choice__description">{o.description}</span> : null}</span>
         </label>
       ))}
@@ -94,10 +100,11 @@ export function ChoiceList({ legend, name, value, onChange, options, className, 
   );
 }
 
-export const Switch = React.forwardRef(function Switch({ label, labelHidden = false, className, ...rest }, ref) {
+export const Switch = React.forwardRef(function Switch({ label, labelHidden = false, className, readOnly, ...rest }, ref) {
+  const locked = useReadOnly(readOnly);
   return (
     <label className={cx('plx-switch', className)}>
-      <input ref={ref} type="checkbox" role="switch" className="plx-switch__input" aria-label={labelHidden ? label : undefined} {...rest} />
+      <input ref={ref} type="checkbox" role="switch" className="plx-switch__input" aria-label={labelHidden ? label : undefined} {...readOnlyProps(locked, rest)} />
       <span className="plx-switch__track" aria-hidden="true" />
       {label && !labelHidden ? <span className="plx-switch__label">{label}</span> : null}
     </label>

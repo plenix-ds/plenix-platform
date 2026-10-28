@@ -11258,7 +11258,401 @@ function gridWithin(px, min, max, opts) {
   })));
 }
   } },
-  "platform/components/Input/Input.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/floating.js":"platform/utils/floating.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Stack/Stack.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Bleed = Bleed;
+exports.Center = Center;
+exports.Inline = Inline;
+exports.Stack = Stack;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Stack, Inline, Center, Bleed
+   Summary: Lay children out in a column (Stack) or a row (Inline), spaced by the spacing tokens, never by a margin or a number;
+     center a block at a readable width (Center); let a child reach past its parent's inset to the edge (Bleed).
+   Usage:
+     <Stack gap="md">
+       <Inline gap="sm" justify="between">…</Inline>
+       <Inline wrap>…</Inline>
+     </Stack>
+     <Inline reverseBelow="narrow"><Main /><Summary /></Inline>    the summary comes first on a narrow window
+     <Center maxWidth="sm" text><EmptyState … /></Center>
+     <Stack inset="md"><Bleed space="md"><Image … /></Bleed><Text>…</Text></Stack>
+   Props:
+     Stack.gap: "none" | "xs" | "sm" | "md" (default) | "lg" | "xl" (--plx-sys-space-stack-*) | "section" (--plx-sys-space-section)
+       Stack.equal: every child as wide as the widest (stacked buttons, owner 2026-10-22): the Stack shrinks to its widest
+       child and each Button takes its whole width; with align="end" or "center" the Stack itself sits at the end or middle
+       Peer sections that are not framed (a SectionHeading and its table, list or text, then the next): <Stack gap="section">
+       holding one <Stack gap="sm"> per section; the same in a page or a split pane, every density, either direction, phones
+     Inline.gap: "none" | "xs" | "sm" (default) | "md" | "lg" | "xl" (--plx-sys-space-inline-*)
+     Stack.align: "start" | "center" | "end" | "stretch" | "baseline" (the cross axis)
+     Inline.align: the same values; default "center"
+     Stack.justify: "start" | "center" | "end" | "between"
+     Inline.wrap: an Inline that wraps onto more lines (its lines are --plx-sys-space-stack-xs apart)
+     Stack.inset: "none" | "xs" | "sm" | "md" | "lg" | "xl" (padding on every side, --plx-sys-space-inset-*)
+     Stack.grow: fills the rest of its parent row or column (it may shrink below its content)
+     Stack.scroll: scrolls its own content
+     Stack.width: "xs" | "sm" | "md" | "lg" (a fixed width from --plx-sys-field-width-*: a field narrower than its row)
+     Stack.maxHeight: "sm" | "md" | "lg" (scrolls past --plx-sys-scroll-max-*)
+     Stack.indent: starts one inline step in (a nested group)
+     Stack.push: moves itself to the end of its row (a search box at the end of a toolbar)
+     Stack.reverse: lays the children out in the other order (column-reverse, row-reverse); the reading and Tab order stay the markup's
+     Stack.reverseBelow: "narrow" (under 600px) | "medium" (under 840px): reverses only below that window class
+     Stack.order: "first" | "last": moves this element to the start or the end of its parent Stack or Inline
+     Stack.orderBelow: "narrow" | "medium": applies order only below that window class
+     Stack.as: the element; "div" by default; ul, ol, section, header, footer, form, fieldset, …
+     Stack.className: more classes on the element
+     Stack.children: the content to lay out
+     Center.maxWidth: "sm" (400px: a sign-in form, an empty state) | "md" (default, 600px: a dialog-like page) | "lg" (900px:
+       reading) | "page" (the contained layout's maximum) | "none": the widest it grows; narrower parents keep it narrower
+     Center.intrinsic: centers each child at its own width (a column of centered children) instead of stretching it
+     Center.vertical: centers the content in its parent's height too; content taller than the parent starts at the top
+     Center.text: centers the lines of text (short headings and messages only)
+     Center.as, Center.className: as for Stack
+     Bleed.space: "xs" | "sm" | "md" (default) | "lg" | "xl": the parent's inset (Stack inset) it cancels
+     Bleed.sides: "inline" (default: to the start and end edges) | "block" (top and bottom) | "all"
+     Bleed.as, Bleed.className: as for Stack
+   Behavior:
+     A scrolling Stack or Inline shows its scroll bar on hover.
+     reverse, reverseBelow and order change only where the children are drawn: assistive technology and the Tab key follow
+       the markup. Use them for regions without a reading order between them (a summary and the content it sums up), never
+       for steps, form fields or anything read in sequence; when the meaning changes, change the markup instead.
+     Bleed cancels exactly the inset tokens of its parent (Stack inset), so its edges meet the parent's edges; its own content
+       keeps no inset (text stays out of a Bleed).
+   Notes:
+     Inline takes the same props as Stack.
+     Any other prop reaches the element.
+     Applications build their layouts from these (and the Platform's patterns) instead of styles.
+*/
+function layout(kind, {
+  as: As = 'div',
+  gap,
+  equal,
+  align,
+  justify,
+  wrap,
+  inset,
+  grow,
+  scroll,
+  width,
+  maxHeight,
+  indent,
+  push,
+  reverse,
+  reverseBelow,
+  order,
+  orderBelow,
+  className,
+  children,
+  ...rest
+}, defaults) {
+  return /*#__PURE__*/_react.default.createElement(As, _extends({
+    className: (0, _cx.cx)('plx-' + kind, 'plx-' + kind + '--gap-' + (gap || defaults.gap), (align || defaults.align) && 'plx-layout--align-' + (align || defaults.align), justify && 'plx-layout--justify-' + justify, wrap && 'plx-inline--wrap', inset && 'plx-layout--inset-' + inset, grow && 'plx-grow', scroll && 'plx-layout--scroll', width && 'plx-layout--width-' + width, maxHeight && 'plx-layout--max-' + maxHeight, indent && 'plx-layout--indent', push && 'plx-layout--push', equal && kind === 'stack' && 'plx-stack--equal', equal && kind === 'stack' && (align === 'end' || align === 'center') && 'plx-stack--equal-' + align, reverse && 'plx-layout--reverse', reverseBelow && 'plx-layout--reverse-below-' + reverseBelow, order && 'plx-layout--order-' + order + (orderBelow ? '-below-' + orderBelow : ''), className)
+  }, rest), children);
+}
+function Stack(props) {
+  return layout('stack', props, {
+    gap: 'md'
+  });
+}
+function Inline(props) {
+  return layout('inline', props, {
+    gap: 'sm',
+    align: 'center'
+  });
+}
+function Center({
+  as: As = 'div',
+  maxWidth = 'md',
+  intrinsic,
+  vertical,
+  text,
+  className,
+  children,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement(As, _extends({
+    className: (0, _cx.cx)('plx-center', 'plx-center--max-' + maxWidth, intrinsic && 'plx-center--intrinsic', vertical && 'plx-center--vertical', text && 'plx-center--text', className)
+  }, rest), children);
+}
+function Bleed({
+  as: As = 'div',
+  space = 'md',
+  sides = 'inline',
+  className,
+  children,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement(As, _extends({
+    className: (0, _cx.cx)('plx-bleed', 'plx-bleed--' + space, 'plx-bleed--' + sides, className)
+  }, rest), children);
+}
+  } },
+  "platform/providers/ReadOnly.jsx": { deps: {"react":null,"../utils/describedBy.js":"platform/utils/describedBy.js","../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ReadOnlyContext = exports.ReadOnly = void 0;
+exports.ReadOnlyProvider = ReadOnlyProvider;
+exports.readOnlyProps = readOnlyProps;
+exports.useReadOnly = useReadOnly;
+var _react = _interopRequireDefault(require("react"));
+var _describedBy = require("../utils/describedBy.js");
+var _Icon = require("../components/Icon/Icon.jsx");
+var _Text = require("../components/Text/Text.jsx");
+var _Stack = require("../components/Stack/Stack.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ReadOnly, ReadOnlyProvider, useReadOnly
+   Summary: A read-only region: everything people could change inside it shows its value and cannot be changed, while
+     it stays readable, focusable, selectable and copyable (unlike disabled). A record someone may view but not edit, a
+     form that is locked after it was submitted, a setting an administrator controls.
+   Usage:
+     <ReadOnly reason="Set by your administrator">…fields…</ReadOnly>                         // a region
+     <ReadOnly as="form" readOnly={!canEdit} onSubmit={save}>…</ReadOnly>                    // a whole form
+     <Field label="Asset ID"><Input value={id} readOnly /></Field>                              // one field: its own prop
+     const readOnly = useReadOnly(props.readOnly);                                              // a component adopting it
+   Props:
+     ReadOnly.as ("div"): the element: "div", "section", "form" or "fieldset"
+     ReadOnly.readOnly (true): false makes the region editable again (a nested editable part of a read-only page)
+     ReadOnly.reason: why it cannot be changed, shown first in the region with the lock icon and tied to it as its
+       description (aria-describedby)
+     ReadOnly.className: more classes on the element
+     ReadOnly.children: the content; ...rest: other attributes go on the element
+     ReadOnlyProvider.readOnly (true): the value the components inside read with useReadOnly, without the region's
+       behavior (a component that draws its own read-only state)
+     useReadOnly(own): the component's own readOnly prop when it is given, else the nearest region's (false outside one)
+   Behavior:
+     The region carries data-plx-readonly="true" (system/read-only.css draws its controls: the sunken surface, the quiet
+       border, the arrow pointer). Inside it, text fields and text areas become readOnly (the value can be selected,
+       copied and focused); checkboxes, switches, radios, selects and sliders keep their value and take focus, but a
+       click, Space, the arrow keys or typing do not change them, and they are marked aria-readonly where the role allows
+       it. A form inside a read-only region does not submit. Content editable text stops being editable.
+     Controls added later are covered as they appear; making the region editable again (or removing it) gives every
+       control back exactly what it had.
+     A nested <ReadOnly readOnly={false}> is left alone by the outer region.
+   Notes:
+     Read-only is not disabled: use disabled for a control that is not available now (it leaves the Tab order and dims);
+       read-only for a value that is there to read. Hide or remove the actions that would change the region (Save,
+       Delete) rather than disabling them.
+     Buttons inside stay as they are: actions that only read (Copy, Download, Open) keep working.
+     Checkbox, Radio, Switch, RadioGroup, ChoiceList, RadioTiles, Select and Slider read useReadOnly and lock themselves
+       with the same stops (readOnlyProps, inside the Platform), so their own readOnly works outside a region too.
+*/
+const ReadOnlyContext = exports.ReadOnlyContext = /*#__PURE__*/_react.default.createContext(false);
+function ReadOnlyProvider({
+  readOnly = true,
+  children
+}) {
+  return /*#__PURE__*/_react.default.createElement(ReadOnlyContext.Provider, {
+    value: !!readOnly
+  }, children);
+}
+function useReadOnly(own) {
+  const ctx = _react.default.useContext(ReadOnlyContext);
+  return own === undefined || own === null ? ctx : !!own;
+}
+
+// what the region may lock: the controls whose value a person changes
+const CONTROLS = 'input,textarea,select,[contenteditable="true"],[contenteditable=""],[role="checkbox"],[role="switch"],[role="radio"],[role="slider"],[role="spinbutton"],[role="combobox"]';
+const NOT_VALUES = {
+  button: 1,
+  submit: 1,
+  reset: 1,
+  image: 1,
+  hidden: 1,
+  file: 0
+};
+const TEXT_TYPES = /^(text|search|email|url|tel|password|number|date|datetime-local|month|week|time)$/;
+// roles that may carry aria-readonly (WAI-ARIA 1.2); a radio's group carries it instead
+const ARIA_READONLY = {
+  checkbox: 1,
+  switch: 1,
+  slider: 1,
+  spinbutton: 1,
+  combobox: 1,
+  listbox: 1,
+  textbox: 1,
+  radiogroup: 1
+};
+// keys that change a locked control's value (Tab, Escape and shortcuts with Ctrl or ⌘ still work)
+const CHANGE_KEYS = /^(ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Home|End|PageUp|PageDown| |Spacebar|Enter|Backspace|Delete|.)$/;
+
+// a key the region (and readOnlyProps) stops on a locked control: Tab, Escape and shortcuts with Ctrl, ⌘ or Alt pass
+const stopsKey = e => !(e.key === 'Tab' || e.key === 'Escape' || e.ctrlKey || e.metaKey || e.altKey) && CHANGE_KEYS.test(e.key);
+const stop = e => {
+  e.preventDefault();
+  e.stopPropagation();
+};
+const noChange = () => {};
+// the props a component puts on a value control it locks itself (on: useReadOnly(own)): the region's stops, on the element.
+//   aria: marks it aria-readonly (a single radio does not: its group would); pointer: a press focuses without changing
+//   (a select, a slider, a combobox). Off, the props come back unchanged.
+function readOnlyProps(on, props, {
+  aria = true,
+  pointer = false
+} = {}) {
+  if (!on) return props;
+  const out = Object.assign({}, props, {
+    onClick: stop,
+    onChange: noChange,
+    // React reports a choice's change from the click itself, so the click stop alone does not hold it
+    onKeyDown: e => {
+      if (stopsKey(e)) stop(e);else if (props.onKeyDown) props.onKeyDown(e);
+    }
+  });
+  if (aria && props['aria-readonly'] == null) out['aria-readonly'] = true;
+  if (pointer) {
+    const press = own => e => {
+      e.preventDefault();
+      e.currentTarget.focus();
+      if (own) own(e);
+    };
+    out.onMouseDown = press(props.onMouseDown);
+    out.onPointerDown = press(props.onPointerDown);
+  }
+  return out;
+}
+function roleOf(el) {
+  const r = el.getAttribute('role');
+  if (r) return r;
+  if (el.tagName === 'SELECT') return el.multiple ? 'listbox' : 'combobox';
+  if (el.tagName === 'INPUT') return el.type === 'checkbox' ? 'checkbox' : el.type === 'radio' ? 'radio' : el.type === 'range' ? 'slider' : 'textbox';
+  return 'textbox';
+}
+
+// locks one control; returns what to undo, or null when it is not a value control or is already read-only by its owner
+function lock(el) {
+  if (el.hasAttribute('data-plx-readonly-set')) return null;
+  const tag = el.tagName;
+  if (tag === 'INPUT' && NOT_VALUES[el.type]) return null;
+  if (el.getAttribute('contenteditable') === 'true' || el.getAttribute('contenteditable') === '') {
+    el.setAttribute('contenteditable', 'false');
+    el.setAttribute('data-plx-readonly-set', 'editable');
+    return () => {
+      el.setAttribute('contenteditable', 'true');
+      el.removeAttribute('data-plx-readonly-set');
+    };
+  }
+  if (tag === 'TEXTAREA' || tag === 'INPUT' && TEXT_TYPES.test(el.type)) {
+    if (el.readOnly) return null;
+    el.readOnly = true;
+    el.setAttribute('data-plx-readonly-set', 'readonly');
+    return () => {
+      el.readOnly = false;
+      el.removeAttribute('data-plx-readonly-set');
+    };
+  }
+  // a choice, a select or a slider: the value stays, changes are stopped by the region's listeners
+  const role = roleOf(el);
+  const aria = ARIA_READONLY[role] && !el.hasAttribute('aria-readonly');
+  if (aria) el.setAttribute('aria-readonly', 'true');
+  el.setAttribute('data-plx-readonly-set', 'locked');
+  return () => {
+    if (aria) el.removeAttribute('aria-readonly');
+    el.removeAttribute('data-plx-readonly-set');
+  };
+}
+
+// the region's behavior: locks its controls (and the ones added later), stops the events that would change them
+function useLockRegion(ref, on) {
+  _react.default.useEffect(() => {
+    const root = ref.current;
+    if (!root || !on) return undefined;
+    const undo = new Map();
+    const mine = el => el.closest('[data-plx-readonly]') === root;
+    const apply = () => {
+      root.querySelectorAll(CONTROLS).forEach(el => {
+        if (!undo.has(el) && mine(el)) {
+          const u = lock(el);
+          if (u) undo.set(el, u);
+        }
+      });
+    };
+    apply();
+    const observer = typeof MutationObserver !== 'undefined' ? new MutationObserver(apply) : null;
+    if (observer) observer.observe(root, {
+      childList: true,
+      subtree: true
+    });
+    const locked = t => {
+      const el = t && t.closest ? t.closest('[data-plx-readonly-set="locked"]') : null;
+      return el && mine(el) ? el : null;
+    };
+    const onClick = e => {
+      if (locked(e.target)) stop(e);
+    };
+    const onKey = e => {
+      if (stopsKey(e) && locked(e.target)) stop(e);
+    };
+    const onPointer = e => {
+      const el = locked(e.target);
+      if (el && (el.tagName === 'SELECT' || roleOf(el) === 'slider' || roleOf(el) === 'combobox')) {
+        e.preventDefault();
+        el.focus();
+      }
+    };
+    const onSubmit = e => {
+      if (e.target === root || mine(e.target)) e.preventDefault();
+    };
+    root.addEventListener('click', onClick, true);
+    root.addEventListener('keydown', onKey, true);
+    root.addEventListener('mousedown', onPointer, true);
+    root.addEventListener('pointerdown', onPointer, true);
+    root.addEventListener('submit', onSubmit, true);
+    return () => {
+      if (observer) observer.disconnect();
+      root.removeEventListener('click', onClick, true);
+      root.removeEventListener('keydown', onKey, true);
+      root.removeEventListener('mousedown', onPointer, true);
+      root.removeEventListener('pointerdown', onPointer, true);
+      root.removeEventListener('submit', onSubmit, true);
+      undo.forEach(u => u());
+    };
+  }, [ref, on]);
+}
+const ReadOnly = exports.ReadOnly = /*#__PURE__*/_react.default.forwardRef(function ReadOnly({
+  as = 'div',
+  readOnly = true,
+  reason,
+  className,
+  children,
+  ...rest
+}, ref) {
+  const own = _react.default.useRef(null);
+  const setRef = el => {
+    own.current = el;
+    if (typeof ref === 'function') ref(el);else if (ref) ref.current = el;
+  };
+  const on = !!readOnly;
+  useLockRegion(own, on);
+  const reasonId = (0, _describedBy.useDescriptionId)('read-only');
+  const Tag = ['div', 'section', 'form', 'fieldset'].indexOf(as) >= 0 ? as : 'div';
+  return /*#__PURE__*/_react.default.createElement(ReadOnlyContext.Provider, {
+    value: on
+  }, /*#__PURE__*/_react.default.createElement(Tag, _extends({
+    ref: setRef,
+    "data-plx-readonly": on ? 'true' : 'false',
+    className: className
+  }, rest, {
+    "aria-describedby": (0, _describedBy.joinIds)(rest['aria-describedby'], on && reason ? reasonId : null)
+  }), on && reason ? /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+    gap: "xs"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "lock",
+    size: "sm"
+  }), /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "secondary",
+    id: reasonId
+  }, reason)) : null, children));
+});
+  } },
+  "platform/components/Input/Input.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/floating.js":"platform/utils/floating.js","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -11269,6 +11663,7 @@ var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _grid = require("../../utils/grid.js");
 var _floating = require("../../utils/floating.js");
+var _ReadOnly = require("../../providers/ReadOnly.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Input, Textarea, Select
    Summary: The text field family, at the standard control height.
@@ -11310,6 +11705,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Select.children: <option>s, when there are no options
      Select.appearance: as Input.appearance (on the <select>)
      Select.className: more classes on the wrapper
+     Select.readOnly: the choice shows and takes focus but cannot change (default: the nearest read-only region's, useReadOnly)
    Behavior:
      Select.data applies the same technical-value font variant as Input.data to the field.
      Select is drawn by Plenix (owner, dropdown-look-36): a field and a list in the Menu's look, over a hidden native <select> that
@@ -11332,6 +11728,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      check; tel gets inputMode "tel"; search gets inputMode "search" and enterKeyHint "search".
    Notes:
      They take every native attribute (value, onChange, placeholder, disabled, readOnly, required…).
+     Input and Textarea are read-only when their own readOnly says so, else when they sit in a read-only region (ReadOnly,
+       useReadOnly).
      All three forward their ref to the native element.
 */
 // the top layer and CSS anchor positioning (as Menu and Popover), checked once
@@ -11369,11 +11767,15 @@ const Input = exports.Input = /*#__PURE__*/_react.default.forwardRef(function In
   size,
   className,
   type = 'text',
+  readOnly,
   ...rest
 }, ref) {
+  // its own readOnly, else the nearest read-only region's (providers/ReadOnly.jsx)
+  const locked = (0, _ReadOnly.useReadOnly)(readOnly);
   return /*#__PURE__*/_react.default.createElement("input", _extends({
     ref: ref,
     type: type,
+    readOnly: locked || undefined,
     size: size === 'sm' || size === 'md' ? undefined : size,
     className: (0, _cx.cx)('plx-input', size === 'sm' && 'plx-input--size-sm', width && 'plx-input--width-' + width, data && 'plx-input--data', emphasis && 'plx-input--emphasis', look(appearance), className),
     "aria-invalid": invalid || undefined
@@ -11390,8 +11792,10 @@ const Textarea = exports.Textarea = /*#__PURE__*/_react.default.forwardRef(funct
   className,
   rows = 3,
   onInput,
+  readOnly,
   ...rest
 }, ref) {
+  const locked = (0, _ReadOnly.useReadOnly)(readOnly); // its own readOnly, else the nearest read-only region's
   const own = _react.default.useRef(null);
   const setRef = _react.default.useCallback(el => {
     own.current = el;
@@ -11414,6 +11818,7 @@ const Textarea = exports.Textarea = /*#__PURE__*/_react.default.forwardRef(funct
   return /*#__PURE__*/_react.default.createElement("textarea", _extends({
     ref: setRef,
     rows: rows,
+    readOnly: locked || undefined,
     className: (0, _cx.cx)('plx-input', 'plx-input--textarea', data && 'plx-input--data', autoGrow && 'plx-input--auto-grow', look(appearance), className),
     "aria-invalid": invalid || undefined,
     onInput: e => {
@@ -11435,8 +11840,10 @@ const SelectNative = /*#__PURE__*/_react.default.forwardRef(function SelectNativ
   width,
   className,
   children,
+  readOnly,
   ...rest
 }, ref) {
+  const locked = (0, _ReadOnly.useReadOnly)(readOnly);
   return /*#__PURE__*/_react.default.createElement("span", {
     className: (0, _cx.cx)('plx-select', size === 'sm' && 'plx-select--size-sm', width && 'plx-select--width-' + width, block && 'plx-select--block', joined && joined.start && 'plx-select--joined-start-' + joined.start, joined && joined.end && 'plx-select--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-select--joined', className)
   }, /*#__PURE__*/_react.default.createElement("select", _extends({
@@ -11444,7 +11851,9 @@ const SelectNative = /*#__PURE__*/_react.default.forwardRef(function SelectNativ
     size: size === 'sm' || size === 'md' ? undefined : size,
     className: (0, _cx.cx)('plx-input', 'plx-select__control', data && 'plx-input--data', look(appearance)),
     "aria-invalid": invalid || undefined
-  }, rest), options ? options.map(o => /*#__PURE__*/_react.default.createElement("option", {
+  }, (0, _ReadOnly.readOnlyProps)(locked, rest, {
+    pointer: true
+  })), options ? options.map(o => /*#__PURE__*/_react.default.createElement("option", {
     key: o.value,
     value: o.value,
     disabled: o.disabled
@@ -11473,8 +11882,10 @@ const SelectList = /*#__PURE__*/_react.default.forwardRef(function SelectList({
   'aria-labelledby': labelledBy,
   'aria-describedby': describedBy,
   'aria-errormessage': errorMessage,
+  readOnly,
   ...rest
 }, ref) {
+  const locked = (0, _ReadOnly.useReadOnly)(readOnly); // keeps the value and focus; a press, Space, the arrows or typing do not open or change it
   const native = _react.default.useRef(null),
     field = _react.default.useRef(null),
     wrap = _react.default.useRef(null),
@@ -11646,15 +12057,18 @@ const SelectList = /*#__PURE__*/_react.default.forwardRef(function SelectList({
     ref: setNative,
     tabIndex: -1,
     "aria-hidden": "true",
-    className: (0, _cx.cx)('plx-input', 'plx-select__control', 'plx-select__native', data && 'plx-input--data', look(appearance)),
+    className: (0, _cx.cx)('plx-input', 'plx-select__control', 'plx-select__native', data && 'plx-input--data', look(appearance))
+  }, (0, _ReadOnly.readOnlyProps)(locked, Object.assign({
     onFocus: () => {
       if (field.current) field.current.focus();
     }
-  }, rest), options ? options.map(o => /*#__PURE__*/_react.default.createElement("option", {
+  }, rest), {
+    pointer: true
+  })), options ? options.map(o => /*#__PURE__*/_react.default.createElement("option", {
     key: o.value,
     value: o.value,
     disabled: o.disabled
-  }, o.label)) : children), /*#__PURE__*/_react.default.createElement("div", {
+  }, o.label)) : children), /*#__PURE__*/_react.default.createElement("div", _extends({
     ref: field,
     id: id,
     role: "combobox",
@@ -11670,18 +12084,22 @@ const SelectList = /*#__PURE__*/_react.default.forwardRef(function SelectList({
     "aria-invalid": invalid || undefined,
     "aria-required": rest.required || undefined,
     "aria-disabled": disabled || undefined,
-    className: (0, _cx.cx)('plx-input', 'plx-select__field', data && 'plx-input--data', look(appearance), disabled && 'is-disabled'),
+    className: (0, _cx.cx)('plx-input', 'plx-select__field', data && 'plx-input--data', look(appearance), disabled && 'is-disabled')
+  }, (0, _ReadOnly.readOnlyProps)(locked, {
     onClick: () => {
       if (disabled) return;
       if (open) setOpen(false);else show();
     },
-    onKeyDown: onKey,
+    onKeyDown: onKey
+  }, {
+    pointer: true
+  }), {
     onFocus: onFocus,
     onBlur: e => {
       setOpen(false);
       if (onBlur) onBlur(e);
     }
-  }, /*#__PURE__*/_react.default.createElement("span", {
+  }), /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-select__value"
   }, current ? current.label : '')), open ? /*#__PURE__*/_react.default.createElement("ul", {
     ref: list,
@@ -22105,7 +22523,7 @@ function tokenPixels(token, el) {
   return /^\d+(?:\.\d+)?px$/.test(v) ? parseFloat(v) : v ? tokenPixels(v, el) : 0;
 }
   } },
-  "platform/components/Checkbox/Checkbox.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Checkbox/Checkbox.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -22118,6 +22536,7 @@ exports.RadioGroup = RadioGroup;
 exports.Switch = void 0;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
+var _ReadOnly = require("../../providers/ReadOnly.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Checkbox, Radio, RadioGroup, ChoiceList, Switch
    Summary: Native choice inputs, so keyboard, forms and assistive technology work as usual.
@@ -22164,15 +22583,19 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Notes:
      The Switch track is 36 × 20px and the knob 16px, centered: (track − knob) / 2.
      Checkbox, Radio and Switch pass other props (checked, onChange, name, value, disabled, …) and their ref to the <input>.
-     RadioGroup and ChoiceList pass other props to the <fieldset>.
+     RadioGroup and ChoiceList pass other props to the <fieldset>; their readOnly goes to each radio.
+     Each is read-only by its own readOnly, else inside a read-only region (useReadOnly, providers/ReadOnly.jsx): it keeps its
+       value and focus, a click or a change key does not change it, and Checkbox and Switch are marked aria-readonly.
 */
 const Checkbox = exports.Checkbox = /*#__PURE__*/_react.default.forwardRef(function Checkbox({
   label,
   description,
   indeterminate = false,
   className,
+  readOnly,
   ...rest
 }, ref) {
+  const locked = (0, _ReadOnly.useReadOnly)(readOnly);
   const inner = _react.default.useRef(null);
   _react.default.useImperativeHandle(ref, () => inner.current);
   _react.default.useEffect(() => {
@@ -22184,7 +22607,7 @@ const Checkbox = exports.Checkbox = /*#__PURE__*/_react.default.forwardRef(funct
     ref: inner,
     type: "checkbox",
     className: "plx-check__input"
-  }, rest)), label || description ? /*#__PURE__*/_react.default.createElement("span", {
+  }, (0, _ReadOnly.readOnlyProps)(locked, rest))), label || description ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-check__text"
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-check__label"
@@ -22196,15 +22619,19 @@ const Radio = exports.Radio = /*#__PURE__*/_react.default.forwardRef(function Ra
   label,
   description,
   className,
+  readOnly,
   ...rest
 }, ref) {
+  const locked = (0, _ReadOnly.useReadOnly)(readOnly);
   return /*#__PURE__*/_react.default.createElement("label", {
     className: (0, _cx.cx)('plx-check', className)
   }, /*#__PURE__*/_react.default.createElement("input", _extends({
     ref: ref,
     type: "radio",
     className: "plx-check__input"
-  }, rest)), label ? /*#__PURE__*/_react.default.createElement("span", {
+  }, (0, _ReadOnly.readOnlyProps)(locked, rest, {
+    aria: false
+  }))), label ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-check__text"
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-check__label"
@@ -22220,6 +22647,7 @@ function RadioGroup({
   options,
   layout = 'column',
   className,
+  readOnly,
   ...rest
 }) {
   const auto = 'plx-r' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
@@ -22235,7 +22663,8 @@ function RadioGroup({
     description: o.description,
     checked: o.value === value,
     onChange: () => onChange(o.value),
-    disabled: o.disabled
+    disabled: o.disabled,
+    readOnly: readOnly
   })));
 }
 function ChoiceList({
@@ -22245,8 +22674,10 @@ function ChoiceList({
   onChange,
   options,
   className,
+  readOnly,
   ...rest
 }) {
+  const locked = (0, _ReadOnly.useReadOnly)(readOnly);
   const auto = 'plx-c' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
   return /*#__PURE__*/_react.default.createElement("fieldset", _extends({
     className: (0, _cx.cx)('plx-choice-list', className)
@@ -22256,14 +22687,17 @@ function ChoiceList({
     key: o.value,
     className: (0, _cx.cx)('plx-choice', o.value === value && 'is-selected'),
     hidden: o.hidden || undefined
-  }, /*#__PURE__*/_react.default.createElement("input", {
+  }, /*#__PURE__*/_react.default.createElement("input", _extends({
     type: "radio",
-    className: "plx-choice__input",
+    className: "plx-choice__input"
+  }, (0, _ReadOnly.readOnlyProps)(locked, {
     name: name || auto,
     value: o.value,
     checked: o.value === value,
     onChange: () => onChange(o.value)
-  }), /*#__PURE__*/_react.default.createElement("span", {
+  }, {
+    aria: false
+  }))), /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-choice__text"
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-choice__label"
@@ -22275,8 +22709,10 @@ const Switch = exports.Switch = /*#__PURE__*/_react.default.forwardRef(function 
   label,
   labelHidden = false,
   className,
+  readOnly,
   ...rest
 }, ref) {
+  const locked = (0, _ReadOnly.useReadOnly)(readOnly);
   return /*#__PURE__*/_react.default.createElement("label", {
     className: (0, _cx.cx)('plx-switch', className)
   }, /*#__PURE__*/_react.default.createElement("input", _extends({
@@ -22285,7 +22721,7 @@ const Switch = exports.Switch = /*#__PURE__*/_react.default.forwardRef(function 
     role: "switch",
     className: "plx-switch__input",
     "aria-label": labelHidden ? label : undefined
-  }, rest)), /*#__PURE__*/_react.default.createElement("span", {
+  }, (0, _ReadOnly.readOnlyProps)(locked, rest))), /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-switch__track",
     "aria-hidden": "true"
   }), label && !labelHidden ? /*#__PURE__*/_react.default.createElement("span", {
@@ -22852,7 +23288,155 @@ function useRovingFocus(ref, getItems) {
   });
 }
   } },
-  "platform/components/Toolbar/Toolbar.jsx": { deps: {"react":null,"../../utils/roving.js":"platform/utils/roving.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/hooks/useFocusable.js": { deps: {"react":null,"../utils/roving.js":"platform/utils/roving.js","../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.useFocusGroup = useFocusGroup;
+exports.useFocusable = useFocusable;
+var _react = _interopRequireDefault(require("react"));
+var _roving = require("../utils/roving.js");
+var _direction = require("../utils/direction.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · useFocusable, useFocusGroup
+   Summary: Focus for custom elements, the way native controls have it. useFocusable makes an element a Tab stop (or a
+     focus target only) and tells whether its focus came from the keyboard (focus-visible), so the focus treatment shows
+     for the keyboard and not after a click. useFocusGroup makes a group of controls one Tab stop whose items are reached
+     with the arrow keys (roving focus: a toolbar, a list of options, a grid of tiles).
+   Usage:
+     const { focused, focusVisible, focusProps } = useFocusable();
+     <div role="option" aria-selected={on} className={cx('plx-state', focusVisible && 'is-focus-visible')} {...focusProps}>…</div>
+     const ref = React.useRef(null);
+     const { groupProps } = useFocusGroup(ref, { orientation: 'vertical' });
+     <div ref={ref} role="listbox" aria-label="Folders" {...groupProps}>{options}</div>
+   Props:
+     useFocusable(options).tabStop ("tab"): "tab" puts it in the Tab order (tabIndex 0); "target" makes it focusable
+       only from code or a click (tabIndex -1, a skip-link target or a dialog's heading); "none" leaves tabIndex alone
+       (a native control, or an item of a focus group, whose tabIndex the group sets)
+     useFocusable(options).disabled (false): no Tab stop (an item that is disabled is skipped)
+     useFocusable(options).onFocusChange(focused, visible): the focus changes
+     useFocusable(options).handlers ({}): your own onFocus and onBlur; they run first
+     useFocusable returns { focused, focusVisible, focusProps } (tabIndex, onFocus, onBlur)
+     useFocusGroup(ref, options).orientation ("horizontal"): "horizontal" (Left and Right, in reading order),
+       "vertical" (Up and Down) or "both" (all four arrows: a grid read in order)
+     useFocusGroup(ref, options).loop (true): the last item's next is the first
+     useFocusGroup(ref, options).items (a selector, or a function): which descendants are items; default the enabled buttons,
+       links, inputs, selects and elements with a tabindex. A function () => elements returns the items itself, already
+       filtered (a group that needs its own rules for hidden, disabled, nested or popup controls: Toolbar)
+     useFocusGroup(ref, options).ignore(event): return true to leave a key to its target (a select's or an editable
+       region's own keys, a popup's, a nested group's); runs after onKeyDown, before the group moves focus
+     useFocusGroup(ref, options).modifiers (false): true moves focus when Alt, Ctrl or Meta is held too; by default a key with
+       a modifier is left alone (browser and assistive-technology shortcuts)
+     useFocusGroup(ref, options).onKeyDown(event): runs first; preventDefault stops the group's own key handling
+     useFocusGroup returns { groupProps } (onKeyDown, onFocus) for the group element
+   Behavior:
+     focusVisible follows the browser's :focus-visible: true after Tab, an arrow key or focus moved by a keyboard command,
+       false after a mouse click or a tap on a non-text element. A text field is always focus-visible (it shows its caret).
+     A focus group has one Tab stop: the item focused last (else the first) has tabIndex 0 and the others -1 (the roving
+       focus of utils/roving.js), so Tab enters and leaves the group in one step. The arrows move to the next and previous
+       items in reading order (right to left reverses Left and Right), Home and End to the first and last. In a text field
+       Left and Right move the caret instead. Hidden items are skipped.
+   Notes:
+     Make only interactive elements focusable: a heading or a paragraph is not a Tab stop. A scroll area that holds no
+       control is the exception: give it tabStop "tab" and a name (role="region" with aria-label) so the keyboard can
+       scroll it.
+     The focus treatment is the system's (Focus treatment, system/interaction.css): a ring on controls, the border color
+       on fields; never remove it without the replacement.
+*/
+
+const ITEMS = 'button:not([disabled]),a[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([disabled]):not([aria-disabled="true"])';
+function isVisibleFocus(el) {
+  try {
+    return el.matches(':focus-visible');
+  } catch (e) {
+    return true;
+  } // a browser without :focus-visible shows it always
+}
+function useFocusable(options = {}) {
+  const {
+    tabStop = 'tab',
+    disabled = false,
+    onFocusChange,
+    handlers = {}
+  } = options;
+  const [state, setState] = _react.default.useState({
+    focused: false,
+    visible: false
+  });
+  const set = (focused, visible) => {
+    setState(s => s.focused === focused && s.visible === visible ? s : {
+      focused,
+      visible
+    });
+    if (onFocusChange) onFocusChange(focused, visible);
+  };
+  const focusProps = {
+    onFocus: e => {
+      if (handlers.onFocus) handlers.onFocus(e);
+      if (e.target === e.currentTarget) set(true, isVisibleFocus(e.currentTarget));
+    },
+    onBlur: e => {
+      if (handlers.onBlur) handlers.onBlur(e);
+      if (e.target === e.currentTarget) set(false, false);
+    }
+  };
+  if (tabStop !== 'none') focusProps.tabIndex = disabled ? undefined : tabStop === 'target' ? -1 : 0;
+  return {
+    focused: state.focused,
+    focusVisible: state.focused && state.visible,
+    focusProps
+  };
+}
+function useFocusGroup(ref, options = {}) {
+  const {
+    orientation = 'horizontal',
+    loop = true,
+    items: selector = ITEMS,
+    onKeyDown,
+    ignore,
+    modifiers = false
+  } = options;
+  const itemsOf = () => typeof selector === 'function' ? selector() : ref.current ? Array.prototype.filter.call(ref.current.querySelectorAll(selector), el => el.getClientRects().length > 0 && !el.closest('[hidden]')) : [];
+  (0, _roving.useRovingFocus)(ref, itemsOf);
+  const KEYS = orientation === 'vertical' ? ['ArrowUp', 'ArrowDown'] : orientation === 'both' ? ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'] : ['ArrowLeft', 'ArrowRight'];
+  const groupProps = {
+    onKeyDown: e => {
+      if (onKeyDown) onKeyDown(e);
+      if (e.defaultPrevented || !modifiers && (e.altKey || e.ctrlKey || e.metaKey)) return;
+      if (KEYS.indexOf(e.key) < 0 && e.key !== 'Home' && e.key !== 'End') return;
+      const t = e.target;
+      if ((t.tagName === 'INPUT' || t.tagName === 'TEXTAREA') && (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'Home' || e.key === 'End')) return;
+      if (ignore && ignore(e)) return;
+      const list = itemsOf();
+      const i = list.indexOf(document.activeElement);
+      if (i < 0 || !list.length) return;
+      let n;
+      if (e.key === 'Home') n = 0;else if (e.key === 'End') n = list.length - 1;else {
+        const step = (0, _direction.arrowStep)(e, ref.current, {
+          vertical: orientation !== 'horizontal'
+        });
+        if (!step) return;
+        n = i + step;
+        if (n < 0 || n >= list.length) {
+          if (!loop) return;
+          n = (n + list.length) % list.length;
+        }
+      }
+      e.preventDefault();
+      list[n].focus();
+    },
+    onFocus: e => {
+      (0, _roving.roveTo)(ref, itemsOf(), e.target);
+    }
+  };
+  return {
+    groupProps
+  };
+}
+  } },
+  "platform/components/Toolbar/Toolbar.jsx": { deps: {"react":null,"../../utils/roving.js":"platform/utils/roving.js","../../hooks/useFocusable.js":"platform/hooks/useFocusable.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -22861,7 +23445,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.Toolbar = Toolbar;
 var _react = _interopRequireDefault(require("react"));
 var _roving = require("../../utils/roving.js");
-var _direction = require("../../utils/direction.js");
+var _useFocusable = require("../../hooks/useFocusable.js");
 var _cx = require("../../utils/cx.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Toolbar, Toolbar.Group, Toolbar.Spacer
@@ -22892,6 +23476,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      In a radio group, only the checked option is a stop.
    Notes:
      Every control in it takes the toolbar control height.
+     Its one Tab stop and its arrow keys are the shared focus group (useFocusGroup, hooks/useFocusable.js).
      Other props reach the toolbar or group element.
 */
 const POPUP = '[role="dialog"],[role="alertdialog"],[role="menu"],[role="listbox"],[role="tree"],[role="grid"],[role="tablist"]';
@@ -22941,34 +23526,28 @@ function Toolbar({
       window.removeEventListener('resize', refresh);
     };
   }, []);
-  // one Tab stop: the current control is in the Tab order, the others are reached with the arrows (batch 213)
-  (0, _roving.useRovingFocus)(ref, itemsOf);
-  const onKey = e => {
-    if (onKeyDown) onKeyDown(e);
-    if (e.defaultPrevented || ['ArrowLeft', 'ArrowRight', 'Home', 'End'].indexOf(e.key) < 0) return;
-    if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable) return; // preserve the control's editing keys
-    if (e.target.closest(POPUP) && ref.current.contains(e.target.closest(POPUP))) return; // popup/composite controls keep their own keys
-    if (e.target.closest('[role="toolbar"]') !== ref.current) return; // a nested toolbar owns its arrows
-    const items = itemsOf();
-    const i = items.indexOf(document.activeElement);
-    if (i < 0) return;
-    const step = (0, _direction.arrowStep)(e, ref.current, {
-      vertical: false
-    }); // in reading order: right to left reverses Left and Right
-    const n = e.key === 'Home' ? 0 : e.key === 'End' ? items.length - 1 : (i + step + items.length) % items.length;
-    e.preventDefault();
-    items[n].focus();
-  };
+  // one Tab stop and the arrow keys: the shared focus group (hooks/useFocusable.js), with the toolbar's own item rules. The
+  // keys stay a text field's, a select's, an editable region's, a popup's and a nested toolbar's own (ignore).
+  const {
+    groupProps
+  } = (0, _useFocusable.useFocusGroup)(ref, {
+    items: itemsOf,
+    orientation: 'horizontal',
+    loop: true,
+    modifiers: true,
+    onKeyDown,
+    ignore: e => /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable || e.target.closest(POPUP) && ref.current.contains(e.target.closest(POPUP)) || e.target.closest('[role="toolbar"]') !== ref.current
+  });
   const onFocusIn = e => {
     if (onFocus) onFocus(e);
-    (0, _roving.roveTo)(ref, itemsOf(), e.target);
+    groupProps.onFocus(e);
   };
   return /*#__PURE__*/_react.default.createElement("div", _extends({
     ref: ref,
     role: "toolbar",
     "aria-label": label,
     className: (0, _cx.cx)('plx-toolbar', variant === 'bar' && 'plx-toolbar--bar', className),
-    onKeyDown: onKey,
+    onKeyDown: groupProps.onKeyDown,
     onFocus: onFocusIn
   }, rest), children);
 }
@@ -23375,140 +23954,6 @@ function singleChoice(options, value, required) {
   const values = (options || []).map(option => typeof option === 'string' ? option : option.value);
   const selected = (Array.isArray(value) ? value : value === undefined || value === null ? [] : [value]).find(item => values.includes(item));
   return selected !== undefined ? [selected] : required && values.length ? [values[0]] : [];
-}
-  } },
-  "platform/components/Stack/Stack.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Bleed = Bleed;
-exports.Center = Center;
-exports.Inline = Inline;
-exports.Stack = Stack;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Stack, Inline, Center, Bleed
-   Summary: Lay children out in a column (Stack) or a row (Inline), spaced by the spacing tokens, never by a margin or a number;
-     center a block at a readable width (Center); let a child reach past its parent's inset to the edge (Bleed).
-   Usage:
-     <Stack gap="md">
-       <Inline gap="sm" justify="between">…</Inline>
-       <Inline wrap>…</Inline>
-     </Stack>
-     <Inline reverseBelow="narrow"><Main /><Summary /></Inline>    the summary comes first on a narrow window
-     <Center maxWidth="sm" text><EmptyState … /></Center>
-     <Stack inset="md"><Bleed space="md"><Image … /></Bleed><Text>…</Text></Stack>
-   Props:
-     Stack.gap: "none" | "xs" | "sm" | "md" (default) | "lg" | "xl" (--plx-sys-space-stack-*) | "section" (--plx-sys-space-section)
-       Stack.equal: every child as wide as the widest (stacked buttons, owner 2026-10-22): the Stack shrinks to its widest
-       child and each Button takes its whole width; with align="end" or "center" the Stack itself sits at the end or middle
-       Peer sections that are not framed (a SectionHeading and its table, list or text, then the next): <Stack gap="section">
-       holding one <Stack gap="sm"> per section; the same in a page or a split pane, every density, either direction, phones
-     Inline.gap: "none" | "xs" | "sm" (default) | "md" | "lg" | "xl" (--plx-sys-space-inline-*)
-     Stack.align: "start" | "center" | "end" | "stretch" | "baseline" (the cross axis)
-     Inline.align: the same values; default "center"
-     Stack.justify: "start" | "center" | "end" | "between"
-     Inline.wrap: an Inline that wraps onto more lines (its lines are --plx-sys-space-stack-xs apart)
-     Stack.inset: "none" | "xs" | "sm" | "md" | "lg" | "xl" (padding on every side, --plx-sys-space-inset-*)
-     Stack.grow: fills the rest of its parent row or column (it may shrink below its content)
-     Stack.scroll: scrolls its own content
-     Stack.width: "xs" | "sm" | "md" | "lg" (a fixed width from --plx-sys-field-width-*: a field narrower than its row)
-     Stack.maxHeight: "sm" | "md" | "lg" (scrolls past --plx-sys-scroll-max-*)
-     Stack.indent: starts one inline step in (a nested group)
-     Stack.push: moves itself to the end of its row (a search box at the end of a toolbar)
-     Stack.reverse: lays the children out in the other order (column-reverse, row-reverse); the reading and Tab order stay the markup's
-     Stack.reverseBelow: "narrow" (under 600px) | "medium" (under 840px): reverses only below that window class
-     Stack.order: "first" | "last": moves this element to the start or the end of its parent Stack or Inline
-     Stack.orderBelow: "narrow" | "medium": applies order only below that window class
-     Stack.as: the element; "div" by default; ul, ol, section, header, footer, form, fieldset, …
-     Stack.className: more classes on the element
-     Stack.children: the content to lay out
-     Center.maxWidth: "sm" (400px: a sign-in form, an empty state) | "md" (default, 600px: a dialog-like page) | "lg" (900px:
-       reading) | "page" (the contained layout's maximum) | "none": the widest it grows; narrower parents keep it narrower
-     Center.intrinsic: centers each child at its own width (a column of centered children) instead of stretching it
-     Center.vertical: centers the content in its parent's height too; content taller than the parent starts at the top
-     Center.text: centers the lines of text (short headings and messages only)
-     Center.as, Center.className: as for Stack
-     Bleed.space: "xs" | "sm" | "md" (default) | "lg" | "xl": the parent's inset (Stack inset) it cancels
-     Bleed.sides: "inline" (default: to the start and end edges) | "block" (top and bottom) | "all"
-     Bleed.as, Bleed.className: as for Stack
-   Behavior:
-     A scrolling Stack or Inline shows its scroll bar on hover.
-     reverse, reverseBelow and order change only where the children are drawn: assistive technology and the Tab key follow
-       the markup. Use them for regions without a reading order between them (a summary and the content it sums up), never
-       for steps, form fields or anything read in sequence; when the meaning changes, change the markup instead.
-     Bleed cancels exactly the inset tokens of its parent (Stack inset), so its edges meet the parent's edges; its own content
-       keeps no inset (text stays out of a Bleed).
-   Notes:
-     Inline takes the same props as Stack.
-     Any other prop reaches the element.
-     Applications build their layouts from these (and the Platform's patterns) instead of styles.
-*/
-function layout(kind, {
-  as: As = 'div',
-  gap,
-  equal,
-  align,
-  justify,
-  wrap,
-  inset,
-  grow,
-  scroll,
-  width,
-  maxHeight,
-  indent,
-  push,
-  reverse,
-  reverseBelow,
-  order,
-  orderBelow,
-  className,
-  children,
-  ...rest
-}, defaults) {
-  return /*#__PURE__*/_react.default.createElement(As, _extends({
-    className: (0, _cx.cx)('plx-' + kind, 'plx-' + kind + '--gap-' + (gap || defaults.gap), (align || defaults.align) && 'plx-layout--align-' + (align || defaults.align), justify && 'plx-layout--justify-' + justify, wrap && 'plx-inline--wrap', inset && 'plx-layout--inset-' + inset, grow && 'plx-grow', scroll && 'plx-layout--scroll', width && 'plx-layout--width-' + width, maxHeight && 'plx-layout--max-' + maxHeight, indent && 'plx-layout--indent', push && 'plx-layout--push', equal && kind === 'stack' && 'plx-stack--equal', equal && kind === 'stack' && (align === 'end' || align === 'center') && 'plx-stack--equal-' + align, reverse && 'plx-layout--reverse', reverseBelow && 'plx-layout--reverse-below-' + reverseBelow, order && 'plx-layout--order-' + order + (orderBelow ? '-below-' + orderBelow : ''), className)
-  }, rest), children);
-}
-function Stack(props) {
-  return layout('stack', props, {
-    gap: 'md'
-  });
-}
-function Inline(props) {
-  return layout('inline', props, {
-    gap: 'sm',
-    align: 'center'
-  });
-}
-function Center({
-  as: As = 'div',
-  maxWidth = 'md',
-  intrinsic,
-  vertical,
-  text,
-  className,
-  children,
-  ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement(As, _extends({
-    className: (0, _cx.cx)('plx-center', 'plx-center--max-' + maxWidth, intrinsic && 'plx-center--intrinsic', vertical && 'plx-center--vertical', text && 'plx-center--text', className)
-  }, rest), children);
-}
-function Bleed({
-  as: As = 'div',
-  space = 'md',
-  sides = 'inline',
-  className,
-  children,
-  ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement(As, _extends({
-    className: (0, _cx.cx)('plx-bleed', 'plx-bleed--' + space, 'plx-bleed--' + sides, className)
-  }, rest), children);
 }
   } },
   "platform/utils/fields.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
@@ -30903,7 +31348,7 @@ function EventChip({
   }, title));
 }
   } },
-  "platform/components/RadioTiles/RadioTiles.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/RadioTiles/RadioTiles.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -30913,6 +31358,7 @@ exports.RadioTiles = RadioTiles;
 var _react = _interopRequireDefault(require("react"));
 var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
+var _ReadOnly = require("../../providers/ReadOnly.jsx");
 var _Icon = require("../Icon/Icon.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · RadioTiles
@@ -30929,6 +31375,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      onChange(value): runs when another tile is chosen
      name: the radio group's name (default: a unique one)
      size: "sm" | "md" (default) | "lg": the tiles' minimum width
+     readOnly: the choice shows but cannot change (default: the nearest read-only region's, useReadOnly)
      className: more classes on the group
    Behavior:
      Public context --plx-comp-radio-tiles-legend-line-height applies to legends inside its containing element; fallback inherit.
@@ -30946,8 +31393,10 @@ function RadioTiles({
   name,
   size = 'md',
   className,
+  readOnly,
   ...rest
 }) {
+  const locked = (0, _ReadOnly.useReadOnly)(readOnly);
   (0, _devWarn.devWarn)('RadioTiles', {
     size
   }, {
@@ -30965,9 +31414,10 @@ function RadioTiles({
     return /*#__PURE__*/_react.default.createElement("label", {
       key: o.value,
       className: (0, _cx.cx)('plx-radio-tile', on && 'is-selected', o.disabled && 'is-disabled')
-    }, /*#__PURE__*/_react.default.createElement("input", {
+    }, /*#__PURE__*/_react.default.createElement("input", _extends({
       className: "plx-radio-tile__input plx-visually-hidden",
-      type: "radio",
+      type: "radio"
+    }, (0, _ReadOnly.readOnlyProps)(locked, {
       name: name || auto,
       value: o.value,
       checked: on,
@@ -30975,7 +31425,9 @@ function RadioTiles({
       onChange: () => {
         if (onChange) onChange(o.value);
       }
-    }), o.preview ? /*#__PURE__*/_react.default.createElement("span", {
+    }, {
+      aria: false
+    }))), o.preview ? /*#__PURE__*/_react.default.createElement("span", {
       className: "plx-radio-tile__preview",
       "aria-hidden": "true"
     }, o.preview) : null, /*#__PURE__*/_react.default.createElement("span", {
@@ -33248,7 +33700,7 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
   }, emptyText)) : null);
 });
   } },
-  "platform/components/Slider/Slider.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Slider/Slider.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/grid.js":"platform/utils/grid.js","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -33259,6 +33711,7 @@ var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
 var _grid = require("../../utils/grid.js");
+var _ReadOnly = require("../../providers/ReadOnly.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Slider
    Summary: A value picked from a range by dragging; with range, two thumbs pick a minimum and a maximum (range slider);
@@ -33280,6 +33733,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      onChange(value): follows every move (live preview); with range, onChange([low, high])
      onCommit(value): runs when the person lets go or finishes with the keys (record the change, e.g. in an undo history)
      disabled: default false
+     readOnly: the value shows and takes focus but cannot change (default: the nearest read-only region's, useReadOnly)
      strings: the thumbs' names with range, for other languages: { minimum: "Minimum", maximum: "Maximum" } (each thumb
        is named "<label>, minimum" and "<label>, maximum")
      className: more classes on the slider
@@ -33332,9 +33786,14 @@ function Slider({
   disabled = false,
   strings,
   className,
+  readOnly,
   ...rest
 }) {
   const id = (0, _layer.useUid)('plx-slider');
+  const locked = (0, _ReadOnly.useReadOnly)(readOnly);
+  const lockOf = props => (0, _ReadOnly.readOnlyProps)(locked, props, {
+    pointer: true
+  }); // a press focuses, the keys do not move it
   const t = Object.assign({}, STRINGS, strings);
   const drawn = marksOf(marks, min, max, step);
   const custom = range || drawn.length > 0;
@@ -33385,7 +33844,7 @@ function Slider({
       onKeyUp: e => {
         if (onCommit && /Arrow|Page|Home|End/.test(e.key)) onCommit(Number(e.currentTarget.value));
       }
-    }, rest)));
+    }, lockOf(rest))));
   }
   const lowOf = v => [Math.min(v, high), high],
     highOf = v => [low, Math.max(v, low)];
@@ -33432,7 +33891,7 @@ function Slider({
     onChange: e => onChange && onChange(lowOf(Number(e.target.value))),
     onPointerUp: e => commit(lowOf(Number(e.currentTarget.value))),
     onKeyUp: keyCommit(lowOf)
-  }, rest)), /*#__PURE__*/_react.default.createElement("input", {
+  }, lockOf(rest))), /*#__PURE__*/_react.default.createElement("input", _extends({
     id: id + '-high',
     type: "range",
     className: "plx-slider__input",
@@ -33446,7 +33905,7 @@ function Slider({
     onChange: e => onChange && onChange(highOf(Number(e.target.value))),
     onPointerUp: e => commit(highOf(Number(e.currentTarget.value))),
     onKeyUp: keyCommit(highOf)
-  })) : /*#__PURE__*/_react.default.createElement("input", _extends({
+  }, lockOf({})))) : /*#__PURE__*/_react.default.createElement("input", _extends({
     id: id,
     type: "range",
     className: "plx-slider__input",
@@ -33459,7 +33918,7 @@ function Slider({
     onChange: e => onChange && onChange(Number(e.target.value)),
     onPointerUp: e => commit(Number(e.currentTarget.value)),
     onKeyUp: keyCommit(v => v)
-  }, rest))), drawn.length ? /*#__PURE__*/_react.default.createElement("div", {
+  }, lockOf(rest)))), drawn.length ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-slider__marks",
     "aria-hidden": "true"
   }, /*#__PURE__*/_react.default.createElement("div", {
@@ -42057,146 +42516,6 @@ function usePressable(options = {}) {
   };
 }
   } },
-  "platform/hooks/useFocusable.js": { deps: {"react":null,"../utils/roving.js":"platform/utils/roving.js","../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.useFocusGroup = useFocusGroup;
-exports.useFocusable = useFocusable;
-var _react = _interopRequireDefault(require("react"));
-var _roving = require("../utils/roving.js");
-var _direction = require("../utils/direction.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · useFocusable, useFocusGroup
-   Summary: Focus for custom elements, the way native controls have it. useFocusable makes an element a Tab stop (or a
-     focus target only) and tells whether its focus came from the keyboard (focus-visible), so the focus treatment shows
-     for the keyboard and not after a click. useFocusGroup makes a group of controls one Tab stop whose items are reached
-     with the arrow keys (roving focus: a toolbar, a list of options, a grid of tiles).
-   Usage:
-     const { focused, focusVisible, focusProps } = useFocusable();
-     <div role="option" aria-selected={on} className={cx('plx-state', focusVisible && 'is-focus-visible')} {...focusProps}>…</div>
-     const ref = React.useRef(null);
-     const { groupProps } = useFocusGroup(ref, { orientation: 'vertical' });
-     <div ref={ref} role="listbox" aria-label="Folders" {...groupProps}>{options}</div>
-   Props:
-     useFocusable(options).tabStop ("tab"): "tab" puts it in the Tab order (tabIndex 0); "target" makes it focusable
-       only from code or a click (tabIndex -1, a skip-link target or a dialog's heading); "none" leaves tabIndex alone
-       (a native control, or an item of a focus group, whose tabIndex the group sets)
-     useFocusable(options).disabled (false): no Tab stop (an item that is disabled is skipped)
-     useFocusable(options).onFocusChange(focused, visible): the focus changes
-     useFocusable(options).handlers ({}): your own onFocus and onBlur; they run first
-     useFocusable returns { focused, focusVisible, focusProps } (tabIndex, onFocus, onBlur)
-     useFocusGroup(ref, options).orientation ("horizontal"): "horizontal" (Left and Right, in reading order),
-       "vertical" (Up and Down) or "both" (all four arrows: a grid read in order)
-     useFocusGroup(ref, options).loop (true): the last item's next is the first
-     useFocusGroup(ref, options).items (a selector): which descendants are items; default the enabled buttons, links,
-       inputs, selects and elements with a tabindex
-     useFocusGroup(ref, options).onKeyDown(event): runs first; preventDefault stops the group's own key handling
-     useFocusGroup returns { groupProps } (onKeyDown, onFocus) for the group element
-   Behavior:
-     focusVisible follows the browser's :focus-visible: true after Tab, an arrow key or focus moved by a keyboard command,
-       false after a mouse click or a tap on a non-text element. A text field is always focus-visible (it shows its caret).
-     A focus group has one Tab stop: the item focused last (else the first) has tabIndex 0 and the others -1 (the roving
-       focus of utils/roving.js), so Tab enters and leaves the group in one step. The arrows move to the next and previous
-       items in reading order (right to left reverses Left and Right), Home and End to the first and last. In a text field
-       Left and Right move the caret instead. Hidden items are skipped.
-   Notes:
-     Make only interactive elements focusable: a heading or a paragraph is not a Tab stop. A scroll area that holds no
-       control is the exception: give it tabStop "tab" and a name (role="region" with aria-label) so the keyboard can
-       scroll it.
-     The focus treatment is the system's (Focus treatment, system/interaction.css): a ring on controls, the border color
-       on fields; never remove it without the replacement.
-*/
-
-const ITEMS = 'button:not([disabled]),a[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([disabled]):not([aria-disabled="true"])';
-function isVisibleFocus(el) {
-  try {
-    return el.matches(':focus-visible');
-  } catch (e) {
-    return true;
-  } // a browser without :focus-visible shows it always
-}
-function useFocusable(options = {}) {
-  const {
-    tabStop = 'tab',
-    disabled = false,
-    onFocusChange,
-    handlers = {}
-  } = options;
-  const [state, setState] = _react.default.useState({
-    focused: false,
-    visible: false
-  });
-  const set = (focused, visible) => {
-    setState(s => s.focused === focused && s.visible === visible ? s : {
-      focused,
-      visible
-    });
-    if (onFocusChange) onFocusChange(focused, visible);
-  };
-  const focusProps = {
-    onFocus: e => {
-      if (handlers.onFocus) handlers.onFocus(e);
-      if (e.target === e.currentTarget) set(true, isVisibleFocus(e.currentTarget));
-    },
-    onBlur: e => {
-      if (handlers.onBlur) handlers.onBlur(e);
-      if (e.target === e.currentTarget) set(false, false);
-    }
-  };
-  if (tabStop !== 'none') focusProps.tabIndex = disabled ? undefined : tabStop === 'target' ? -1 : 0;
-  return {
-    focused: state.focused,
-    focusVisible: state.focused && state.visible,
-    focusProps
-  };
-}
-function useFocusGroup(ref, options = {}) {
-  const {
-    orientation = 'horizontal',
-    loop = true,
-    items: selector = ITEMS,
-    onKeyDown
-  } = options;
-  const itemsOf = () => ref.current ? Array.prototype.filter.call(ref.current.querySelectorAll(selector), el => el.getClientRects().length > 0 && !el.closest('[hidden]')) : [];
-  (0, _roving.useRovingFocus)(ref, itemsOf);
-  const KEYS = orientation === 'vertical' ? ['ArrowUp', 'ArrowDown'] : orientation === 'both' ? ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'] : ['ArrowLeft', 'ArrowRight'];
-  const groupProps = {
-    onKeyDown: e => {
-      if (onKeyDown) onKeyDown(e);
-      if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return;
-      if (KEYS.indexOf(e.key) < 0 && e.key !== 'Home' && e.key !== 'End') return;
-      const t = e.target;
-      if ((t.tagName === 'INPUT' || t.tagName === 'TEXTAREA') && (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'Home' || e.key === 'End')) return;
-      const list = itemsOf();
-      const i = list.indexOf(document.activeElement);
-      if (i < 0 || !list.length) return;
-      let n;
-      if (e.key === 'Home') n = 0;else if (e.key === 'End') n = list.length - 1;else {
-        const step = (0, _direction.arrowStep)(e, ref.current, {
-          vertical: orientation !== 'horizontal'
-        });
-        if (!step) return;
-        n = i + step;
-        if (n < 0 || n >= list.length) {
-          if (!loop) return;
-          n = (n + list.length) % list.length;
-        }
-      }
-      e.preventDefault();
-      list[n].focus();
-    },
-    onFocus: e => {
-      (0, _roving.roveTo)(ref, itemsOf(), e.target);
-    }
-  };
-  return {
-    groupProps
-  };
-}
-  } },
   "platform/hooks/useSelection.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -42346,232 +42665,6 @@ function useSelection(options = {}) {
     anchor: anchor.current
   };
 }
-  } },
-  "platform/providers/ReadOnly.jsx": { deps: {"react":null,"../utils/describedBy.js":"platform/utils/describedBy.js","../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.ReadOnlyContext = exports.ReadOnly = void 0;
-exports.ReadOnlyProvider = ReadOnlyProvider;
-exports.useReadOnly = useReadOnly;
-var _react = _interopRequireDefault(require("react"));
-var _describedBy = require("../utils/describedBy.js");
-var _Icon = require("../components/Icon/Icon.jsx");
-var _Text = require("../components/Text/Text.jsx");
-var _Stack = require("../components/Stack/Stack.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ReadOnly, ReadOnlyProvider, useReadOnly
-   Summary: A read-only region: everything people could change inside it shows its value and cannot be changed, while
-     it stays readable, focusable, selectable and copyable (unlike disabled). A record someone may view but not edit, a
-     form that is locked after it was submitted, a setting an administrator controls.
-   Usage:
-     <ReadOnly reason="Set by your administrator">…fields…</ReadOnly>                         // a region
-     <ReadOnly as="form" readOnly={!canEdit} onSubmit={save}>…</ReadOnly>                    // a whole form
-     <Field label="Asset ID"><Input value={id} readOnly /></Field>                              // one field: its own prop
-     const readOnly = useReadOnly(props.readOnly);                                              // a component adopting it
-   Props:
-     ReadOnly.as ("div"): the element: "div", "section", "form" or "fieldset"
-     ReadOnly.readOnly (true): false makes the region editable again (a nested editable part of a read-only page)
-     ReadOnly.reason: why it cannot be changed, shown first in the region with the lock icon and tied to it as its
-       description (aria-describedby)
-     ReadOnly.className: more classes on the element
-     ReadOnly.children: the content; ...rest: other attributes go on the element
-     ReadOnlyProvider.readOnly (true): the value the components inside read with useReadOnly, without the region's
-       behavior (a component that draws its own read-only state)
-     useReadOnly(own): the component's own readOnly prop when it is given, else the nearest region's (false outside one)
-   Behavior:
-     The region carries data-plx-readonly="true" (system/read-only.css draws its controls: the sunken surface, the quiet
-       border, the arrow pointer). Inside it, text fields and text areas become readOnly (the value can be selected,
-       copied and focused); checkboxes, switches, radios, selects and sliders keep their value and take focus, but a
-       click, Space, the arrow keys or typing do not change them, and they are marked aria-readonly where the role allows
-       it. A form inside a read-only region does not submit. Content editable text stops being editable.
-     Controls added later are covered as they appear; making the region editable again (or removing it) gives every
-       control back exactly what it had.
-     A nested <ReadOnly readOnly={false}> is left alone by the outer region.
-   Notes:
-     Read-only is not disabled: use disabled for a control that is not available now (it leaves the Tab order and dims);
-       read-only for a value that is there to read. Hide or remove the actions that would change the region (Save,
-       Delete) rather than disabling them.
-     Buttons inside stay as they are: actions that only read (Copy, Download, Open) keep working.
-*/
-const ReadOnlyContext = exports.ReadOnlyContext = /*#__PURE__*/_react.default.createContext(false);
-function ReadOnlyProvider({
-  readOnly = true,
-  children
-}) {
-  return /*#__PURE__*/_react.default.createElement(ReadOnlyContext.Provider, {
-    value: !!readOnly
-  }, children);
-}
-function useReadOnly(own) {
-  const ctx = _react.default.useContext(ReadOnlyContext);
-  return own === undefined || own === null ? ctx : !!own;
-}
-
-// what the region may lock: the controls whose value a person changes
-const CONTROLS = 'input,textarea,select,[contenteditable="true"],[contenteditable=""],[role="checkbox"],[role="switch"],[role="radio"],[role="slider"],[role="spinbutton"],[role="combobox"]';
-const NOT_VALUES = {
-  button: 1,
-  submit: 1,
-  reset: 1,
-  image: 1,
-  hidden: 1,
-  file: 0
-};
-const TEXT_TYPES = /^(text|search|email|url|tel|password|number|date|datetime-local|month|week|time)$/;
-// roles that may carry aria-readonly (WAI-ARIA 1.2); a radio's group carries it instead
-const ARIA_READONLY = {
-  checkbox: 1,
-  switch: 1,
-  slider: 1,
-  spinbutton: 1,
-  combobox: 1,
-  listbox: 1,
-  textbox: 1,
-  radiogroup: 1
-};
-// keys that change a locked control's value (Tab, Escape and shortcuts with Ctrl or ⌘ still work)
-const CHANGE_KEYS = /^(ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Home|End|PageUp|PageDown| |Spacebar|Enter|Backspace|Delete|.)$/;
-function roleOf(el) {
-  const r = el.getAttribute('role');
-  if (r) return r;
-  if (el.tagName === 'SELECT') return el.multiple ? 'listbox' : 'combobox';
-  if (el.tagName === 'INPUT') return el.type === 'checkbox' ? 'checkbox' : el.type === 'radio' ? 'radio' : el.type === 'range' ? 'slider' : 'textbox';
-  return 'textbox';
-}
-
-// locks one control; returns what to undo, or null when it is not a value control or is already read-only by its owner
-function lock(el) {
-  if (el.hasAttribute('data-plx-readonly-set')) return null;
-  const tag = el.tagName;
-  if (tag === 'INPUT' && NOT_VALUES[el.type]) return null;
-  if (el.getAttribute('contenteditable') === 'true' || el.getAttribute('contenteditable') === '') {
-    el.setAttribute('contenteditable', 'false');
-    el.setAttribute('data-plx-readonly-set', 'editable');
-    return () => {
-      el.setAttribute('contenteditable', 'true');
-      el.removeAttribute('data-plx-readonly-set');
-    };
-  }
-  if (tag === 'TEXTAREA' || tag === 'INPUT' && TEXT_TYPES.test(el.type)) {
-    if (el.readOnly) return null;
-    el.readOnly = true;
-    el.setAttribute('data-plx-readonly-set', 'readonly');
-    return () => {
-      el.readOnly = false;
-      el.removeAttribute('data-plx-readonly-set');
-    };
-  }
-  // a choice, a select or a slider: the value stays, changes are stopped by the region's listeners
-  const role = roleOf(el);
-  const aria = ARIA_READONLY[role] && !el.hasAttribute('aria-readonly');
-  if (aria) el.setAttribute('aria-readonly', 'true');
-  el.setAttribute('data-plx-readonly-set', 'locked');
-  return () => {
-    if (aria) el.removeAttribute('aria-readonly');
-    el.removeAttribute('data-plx-readonly-set');
-  };
-}
-
-// the region's behavior: locks its controls (and the ones added later), stops the events that would change them
-function useLockRegion(ref, on) {
-  _react.default.useEffect(() => {
-    const root = ref.current;
-    if (!root || !on) return undefined;
-    const undo = new Map();
-    const mine = el => el.closest('[data-plx-readonly]') === root;
-    const apply = () => {
-      root.querySelectorAll(CONTROLS).forEach(el => {
-        if (!undo.has(el) && mine(el)) {
-          const u = lock(el);
-          if (u) undo.set(el, u);
-        }
-      });
-    };
-    apply();
-    const observer = typeof MutationObserver !== 'undefined' ? new MutationObserver(apply) : null;
-    if (observer) observer.observe(root, {
-      childList: true,
-      subtree: true
-    });
-    const locked = t => {
-      const el = t && t.closest ? t.closest('[data-plx-readonly-set="locked"]') : null;
-      return el && mine(el) ? el : null;
-    };
-    const stop = e => {
-      e.preventDefault();
-      e.stopPropagation();
-    };
-    const onClick = e => {
-      if (locked(e.target)) stop(e);
-    };
-    const onKey = e => {
-      if (e.key === 'Tab' || e.key === 'Escape' || e.ctrlKey || e.metaKey || e.altKey) return;
-      if (locked(e.target) && CHANGE_KEYS.test(e.key)) stop(e);
-    };
-    const onPointer = e => {
-      const el = locked(e.target);
-      if (el && (el.tagName === 'SELECT' || roleOf(el) === 'slider' || roleOf(el) === 'combobox')) {
-        e.preventDefault();
-        el.focus();
-      }
-    };
-    const onSubmit = e => {
-      if (e.target === root || mine(e.target)) e.preventDefault();
-    };
-    root.addEventListener('click', onClick, true);
-    root.addEventListener('keydown', onKey, true);
-    root.addEventListener('mousedown', onPointer, true);
-    root.addEventListener('pointerdown', onPointer, true);
-    root.addEventListener('submit', onSubmit, true);
-    return () => {
-      if (observer) observer.disconnect();
-      root.removeEventListener('click', onClick, true);
-      root.removeEventListener('keydown', onKey, true);
-      root.removeEventListener('mousedown', onPointer, true);
-      root.removeEventListener('pointerdown', onPointer, true);
-      root.removeEventListener('submit', onSubmit, true);
-      undo.forEach(u => u());
-    };
-  }, [ref, on]);
-}
-const ReadOnly = exports.ReadOnly = /*#__PURE__*/_react.default.forwardRef(function ReadOnly({
-  as = 'div',
-  readOnly = true,
-  reason,
-  className,
-  children,
-  ...rest
-}, ref) {
-  const own = _react.default.useRef(null);
-  const setRef = el => {
-    own.current = el;
-    if (typeof ref === 'function') ref(el);else if (ref) ref.current = el;
-  };
-  const on = !!readOnly;
-  useLockRegion(own, on);
-  const reasonId = (0, _describedBy.useDescriptionId)('read-only');
-  const Tag = ['div', 'section', 'form', 'fieldset'].indexOf(as) >= 0 ? as : 'div';
-  return /*#__PURE__*/_react.default.createElement(ReadOnlyContext.Provider, {
-    value: on
-  }, /*#__PURE__*/_react.default.createElement(Tag, _extends({
-    ref: setRef,
-    "data-plx-readonly": on ? 'true' : 'false',
-    className: className
-  }, rest, {
-    "aria-describedby": (0, _describedBy.joinIds)(rest['aria-describedby'], on && reason ? reasonId : null)
-  }), on && reason ? /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
-    gap: "xs"
-  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: "lock",
-    size: "sm"
-  }), /*#__PURE__*/_react.default.createElement(_Text.Text, {
-    variant: "secondary",
-    id: reasonId
-  }, reason)) : null, children));
-});
   } },
   "platform/components/Pictogram/Pictogram.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
