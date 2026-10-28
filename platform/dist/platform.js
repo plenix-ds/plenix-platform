@@ -24610,9 +24610,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Summary: The bar over a collection (owner, 2026-10-14 and 2026-10-15, the command bar study): ONE white framed bar of
      one height, fixed at the top of the content while the content scrolls; the table under it never moves. With nothing
      selected: the page's actions, then the search and the filters, then Sort, Group, Columns and View, and the count at
-     the end. With rows selected the bar swaps (Microsoft 365): the actions, the search and the filters give way to the
-     selection's commands (Delete last); Sort, Group, Columns and View stay where they are; the bar ends with "× N
-     selected", which clears the selection. A page with no actions has a view bar (1F).
+     the end. With rows selected the bar swaps (Microsoft 365): the page's actions give way to the selection's commands
+     (Delete last); the search, the filters and Sort, Group, Columns and View stay where they are, so the person can keep
+     narrowing the list while rows are ticked (owner, issue 454); the bar ends with "× N selected", which clears the selection. A page with no actions has a view bar (1F).
    Usage:
      <CommandBar label="Assets" count="24 assets"
        actions={[{ id: 'new', label: 'New', icon: 'plus', items: <><MenuItem icon="folder-add">Folder</MenuItem>…</> },
@@ -24653,8 +24653,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      selection.hidden: how many selected records are hidden by filters (DataGrid onSelectionChange supplies it)
      selection: the selection (the swap): { count, hidden, actions, onClear, noun, plural, label }; while count is above 0 the bar
        holds selection.actions ([{ id, label, icon, onSelect, items, danger, single, disabled, why }]; single: disabled
-       while more than one is selected, with a why-tooltip) instead of the page's actions, search and filters, and ends
-       with "× N selected" (onClear); label names the bar meanwhile (default "{label} actions")
+       while more than one is selected, with a why-tooltip) instead of the page's actions, and ends with "× N selected"
+       (onClear); search and the filters stay (owner, issue 454); label names the bar meanwhile (default "{label} actions")
      layout: "auto" (default: "one" with actions, "view" without) | "one" (1A) | "view" (1F: a view bar, no actions);
        "split" (a separate action bar for many actions) is retired (2026-10-15) and draws "one": many actions fold into More
      sticky: "auto" (default) sticks only as a direct child of PageContent or AppShell main; true/false force
@@ -24781,8 +24781,8 @@ function CommandBar({
 }) {
   const t = Object.assign({}, STRINGS, strings);
   const root = _react.default.useRef(null);
-  // the selection (owner, 2026-10-15: the swap): an object { count, actions, onClear, noun, plural, label }; while its
-  // count is above 0 the bar holds the selection's commands instead of the page's actions, search and filters
+  // the selection (owner, 2026-10-15: the swap; issue 454): an object { count, actions, onClear, noun, plural, label }; while
+  // its count is above 0 the selection's commands replace the page's actions; search and filters stay
   const sel = selection && ! /*#__PURE__*/_react.default.isValidElement(selection) && typeof selection === 'object' ? selection : null;
   const selCount = sel ? Number(sel.count) || 0 : 0;
   const selecting = selCount > 0;
@@ -24790,12 +24790,12 @@ function CommandBar({
   // "split" (a separate action bar) is retired (2026-10-15): many actions fold into More in the one bar
   const shape = layout === 'auto' || layout === 'split' ? actions.length ? 'one' : 'view' : layout;
   const shown = selecting ? selActs : shape === 'view' ? [] : actions;
-  const quick = selecting ? [] : quickFilters;
+  const quick = quickFilters; // search and filters stay while rows are ticked (owner, issue 454)
   const ending = end && ! /*#__PURE__*/_react.default.isValidElement(end) && !Array.isArray(end) && typeof end === 'object' && ('content' in end || 'fold' in end) ? end : null;
   const endContent = ending ? ending.content : end;
   const endFold = !selecting && ending && ending.fold;
   const finding = !!find || quick.length > 0;
-  const folds = (0, _BarActions.foldOrder)(shown).length + quick.length + (endFold ? 1 : 0) + (finding && !selecting ? 1 : 0);
+  const folds = (0, _BarActions.foldOrder)(shown).length + quick.length + (endFold ? 1 : 0) + (finding ? 1 : 0);
   // the bar's search, opened across the bar: the bar holds its step while it is open
   const [searchOpen, setSearchOpen] = _react.default.useState(false);
   const key = [shape, narrow, selecting ? 'sel' : 'rest', shown.map(a => a.label + (a.disabled ? '0' : '') + (a.loading ? 'busy' : '')).join('|'), quickFilters.map(q => q.label + (q.value && q.value.length ? q.value.length : '')).join('|'), endFold && endFold.label].join('§');
@@ -24813,7 +24813,7 @@ function CommandBar({
   const endAway = !!endFold && foldAll > fold;
   const quickAway = Math.min(quick.length, Math.max(0, foldAll - fold - (endAway ? 1 : 0)));
   // the last step: the find side folds into its button (after every command, the end control and the quick filters)
-  const findAway = finding && !selecting && foldAll > fold + (endAway ? 1 : 0) + quickAway;
+  const findAway = finding && foldAll > fold + (endAway ? 1 : 0) + quickAway;
   const quickKept = quick.slice(0, quick.length - quickAway),
     quickFolded = quick.slice(quick.length - quickAway);
   const quickMenu = quickFolded.map(q => {
@@ -24956,7 +24956,7 @@ function CommandBar({
     searchOpen: false,
     setSearchOpen
   }), []);
-  const findEl = !(find || quickEls.length) || selecting ? null : findAway ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
+  const findEl = !(find || quickEls.length) ? null : findAway ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
     className: "plx-command-bar__find"
   }, /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
     title: t.find,
@@ -25016,11 +25016,11 @@ function CommandBar({
   }) : null, countEl, statusEl, keptEnd, clearEl) : null;
   // Escape in the bar clears the selection (as "× N selected" does)
   const onKeyDown = selecting && sel.onClear ? e => {
-    if (e.key === 'Escape' && !e.defaultPrevented && !e.target.closest('[role="menu"], [role="dialog"]')) {
+    if (e.key === 'Escape' && !e.defaultPrevented && !e.target.closest('input, textarea, [role="menu"], [role="dialog"]')) {
       e.preventDefault();
       sel.onClear();
     }
-  } : undefined;
+  } : undefined; // Escape in the search clears the text, not the selection (issue 454)
   const parts = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, acts, acts && findEl ? /*#__PURE__*/_react.default.createElement(_Divider.Divider, {
     orientation: "vertical"
   }) : null, findEl, /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Spacer, null), viewEl, tail);
