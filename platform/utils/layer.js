@@ -3,9 +3,9 @@
    inside a dialog closes the menu first. A modal layer also keeps Tab inside itself, locks page scroll, moves focus in
    when it opens (initialFocus: a ref, or a function that returns the element) and returns focus to the element that opened it when it closes. */
 import React from 'react';
+import { lockScroll } from './scrollLock.js';
 
 const stack = [];
-let modalCount = 0;
 
 const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]):not([type="hidden"]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
 
@@ -22,9 +22,10 @@ export function useLayer(ref, open, { modal = false, onEscape, initialFocus } = 
     const entry = { modal };
     stack.push(entry);
     const opener = document.activeElement;
+    // a modal layer stops the page scrolling with the shared scroll lock (utils/scrollLock.js: counted, so stacked layers
+    // release the page only when the last one closes; system/scroll-lock.css keeps the scrollbar's space)
+    const release = modal ? lockScroll() : null;
     if (modal) {
-      if (modalCount === 0) document.documentElement.classList.add('is-scroll-locked');
-      modalCount += 1;
       const root = ref.current;
       const wanted = typeof initialFocus === 'function' ? initialFocus() : (initialFocus && initialFocus.current);
       const first = wanted || focusables(root)[0] || root;
@@ -49,9 +50,8 @@ export function useLayer(ref, open, { modal = false, onEscape, initialFocus } = 
     return () => {
       document.removeEventListener('keydown', onKey, true);
       stack.splice(stack.indexOf(entry), 1);
+      if (release) release();
       if (modal) {
-        modalCount -= 1;
-        if (modalCount === 0) document.documentElement.classList.remove('is-scroll-locked');
         if (opener && opener.focus && document.contains(opener)) opener.focus({ preventScroll: true });
       }
     };
