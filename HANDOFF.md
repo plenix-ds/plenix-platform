@@ -17,7 +17,7 @@ One design system and the suite of applications built on it, owned by one person
 | Part | Where | What |
 |---|---|---|
 | Platform | `platform/` | React components (`components/`), patterns (`patterns/`), hooks, providers; `plx-` CSS classes; tokens in three tiers (`--plx-ref-` values, `--plx-sys-` roles, `--plx-comp-` component settings) as W3C JSON in `platform/tokens/` |
-| Design spec | `platform/design-system/` (a **submodule**, private repo `plenix-ds/plenix-design-system`) | The living spec: 688 records, 1,172 taxonomy leaves; `inventory.js` + `parts/*.records.js|docs.js|labs.js`; one page per component (the duplicate merge is permanent, no redirects) |
+| Design spec | `platform/design-system/` (a **submodule**, private repo `plenix-ds/plenix-design-system`) | The living spec: 689 records, 1,173 taxonomy leaves; `inventory.js` + `parts/*.records.js|docs.js|labs.js`; one page per component (the duplicate merge is permanent, no redirects) |
 | Standards | `platform/standards/` | `styling.md` (the Styling Standard: ownership, zero overlap, text contracts, layers), `text-contracts.json`, themes, layout, native design |
 | Apps | `dashboard/ projects/ messages/ contacts/ calendar/ tasks/ notes/ bookmarks/ files/ settings/ dam/` | The suite, each `main.jsx` → generated `app.js` |
 | Checks | `check-system.js` (+ `check-system.rules/`), `check-style.js`, `check-spec.js`, `check-bundle.js` (+ `check-bundle.baseline.json`); `tests/` | The gates (the tests run only when the owner starts them) |
