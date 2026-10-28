@@ -87,7 +87,7 @@ if (!ONLY && !changed.anyDS()) changed.none('LABS_OK 0/0 labs');
     const list = [...document.querySelectorAll('.ds-token-render .ds-swatch')], narrow = list.filter((e) => e.getBoundingClientRect().width < want - 1);
     return { n: list.length, want, narrow: narrow.length, first: narrow[0] ? Math.round(narrow[0].getBoundingClientRect().width) : null };
   });
-  const sampleBad = samples.n && !samples.narrow ? [] : ['DS color samples: ' + samples.narrow + ' of ' + samples.n + ' are narrower than ' + samples.want + 'px (first ' + samples.first + 'px) #263'];
+  const sampleBad = samples.n && Number.isFinite(samples.want) && samples.want > 0 && !samples.narrow ? [] : ['DS color samples: ' + samples.narrow + ' of ' + samples.n + ' are narrower than ' + samples.want + 'px (first ' + samples.first + 'px) #263'];
   results.push(['color samples #263', { checks: samples.n, tokens: 0, bad: sampleBad, nbad: sampleBad.length }]);
   await browser.close(); server.close();
   const failed = results.filter((x) => x[1].nbad);
