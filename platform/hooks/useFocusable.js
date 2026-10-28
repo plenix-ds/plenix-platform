@@ -20,8 +20,13 @@
      useFocusGroup(ref, options).orientation ("horizontal"): "horizontal" (Left and Right, in reading order),
        "vertical" (Up and Down) or "both" (all four arrows: a grid read in order)
      useFocusGroup(ref, options).loop (true): the last item's next is the first
-     useFocusGroup(ref, options).items (a selector): which descendants are items; default the enabled buttons, links,
-       inputs, selects and elements with a tabindex
+     useFocusGroup(ref, options).items (a selector, or a function): which descendants are items; default the enabled buttons,
+       links, inputs, selects and elements with a tabindex. A function () => elements returns the items itself, already
+       filtered (a group that needs its own rules for hidden, disabled, nested or popup controls: Toolbar)
+     useFocusGroup(ref, options).ignore(event): return true to leave a key to its target (a select's or an editable
+       region's own keys, a popup's, a nested group's); runs after onKeyDown, before the group moves focus
+     useFocusGroup(ref, options).modifiers (false): true moves focus when Alt, Ctrl or Meta is held too; by default a key with
+       a modifier is left alone (browser and assistive-technology shortcuts)
      useFocusGroup(ref, options).onKeyDown(event): runs first; preventDefault stops the group's own key handling
      useFocusGroup returns { groupProps } (onKeyDown, onFocus) for the group element
    Behavior:
@@ -64,8 +69,8 @@ export function useFocusable(options = {}) {
 }
 
 export function useFocusGroup(ref, options = {}) {
-  const { orientation = 'horizontal', loop = true, items: selector = ITEMS, onKeyDown } = options;
-  const itemsOf = () => (ref.current
+  const { orientation = 'horizontal', loop = true, items: selector = ITEMS, onKeyDown, ignore, modifiers = false } = options;
+  const itemsOf = () => (typeof selector === 'function' ? selector() : ref.current
     ? Array.prototype.filter.call(ref.current.querySelectorAll(selector), (el) => el.getClientRects().length > 0 && !el.closest('[hidden]'))
     : []);
   useRovingFocus(ref, itemsOf);
@@ -73,10 +78,11 @@ export function useFocusGroup(ref, options = {}) {
   const groupProps = {
     onKeyDown: (e) => {
       if (onKeyDown) onKeyDown(e);
-      if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return;
+      if (e.defaultPrevented || (!modifiers && (e.altKey || e.ctrlKey || e.metaKey))) return;
       if (KEYS.indexOf(e.key) < 0 && e.key !== 'Home' && e.key !== 'End') return;
       const t = e.target;
       if ((t.tagName === 'INPUT' || t.tagName === 'TEXTAREA') && (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'Home' || e.key === 'End')) return;
+      if (ignore && ignore(e)) return;
       const list = itemsOf();
       const i = list.indexOf(document.activeElement);
       if (i < 0 || !list.length) return;

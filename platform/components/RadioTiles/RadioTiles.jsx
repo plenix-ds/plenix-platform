@@ -12,6 +12,7 @@
      onChange(value): runs when another tile is chosen
      name: the radio group's name (default: a unique one)
      size: "sm" | "md" (default) | "lg": the tiles' minimum width
+     readOnly: the choice shows but cannot change (default: the nearest read-only region's, useReadOnly)
      className: more classes on the group
    Behavior:
      Public context --plx-comp-radio-tiles-legend-line-height applies to legends inside its containing element; fallback inherit.
@@ -23,9 +24,11 @@
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
+import { useReadOnly, readOnlyProps } from '../../providers/ReadOnly.jsx';
 import { Icon } from '../Icon/Icon.jsx';
 
-export function RadioTiles({ legend, legendHidden = false, options = [], value, onChange, name, size = 'md', className, ...rest }) {
+export function RadioTiles({ legend, legendHidden = false, options = [], value, onChange, name, size = 'md', className, readOnly, ...rest }) {
+  const locked = useReadOnly(readOnly);
   devWarn('RadioTiles', { size }, { size: ['sm','md','lg'] });
   const auto = 'plx-rt' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   return (
@@ -36,8 +39,8 @@ export function RadioTiles({ legend, legendHidden = false, options = [], value, 
           const on = o.value === value;
           return (
             <label key={o.value} className={cx('plx-radio-tile', on && 'is-selected', o.disabled && 'is-disabled')}>
-              <input className="plx-radio-tile__input plx-visually-hidden" type="radio" name={name || auto} value={o.value} checked={on} disabled={o.disabled}
-                onChange={() => { if (onChange) onChange(o.value); }} />
+              <input className="plx-radio-tile__input plx-visually-hidden" type="radio"
+                {...readOnlyProps(locked, { name: name || auto, value: o.value, checked: on, disabled: o.disabled, onChange: () => { if (onChange) onChange(o.value); } }, { aria: false })} />
               {o.preview ? <span className="plx-radio-tile__preview" aria-hidden="true">{o.preview}</span> : null}
               <span className="plx-radio-tile__text">
                 <span className="plx-radio-tile__label">{o.label}</span>
