@@ -58,12 +58,32 @@ check('parseDate: a date-only value stays its calendar day in a US time zone #34
     eq(F.formatDate('2026-10-18', us), 'Oct 18, 2026');
   } finally { if (zone === undefined) delete process.env.TZ; else process.env.TZ = zone; }
 });
-check('parseDate: Time and the file and account parts read dates through it, never on their own #342', () => {
-  for (const f of ['components/Time/Time.jsx', 'components/File/File.jsx', 'components/FileRow/FileRow.jsx', 'patterns/ConnectedAccounts/ConnectedAccounts.jsx']) {
-    const text = fs.readFileSync(path.join(ROOT, 'platform', f), 'utf8');
-    assert.ok(!/new Date\((v|value|modified|connectedAt)\)|new Date\(\+v\.slice/.test(text), f + ' parses a date itself');
+check('parseDate: the parts that show dates read them through it, never on their own #342', () => {
+  // the parts known to show dates: no new Date(<a name>) of their own (Time's bug was new Date(v))
+  const NAMED = /new Date\(\s*[A-Za-z_$][\w$.]*\s*\)/;
+  for (const f of ['components/Time/Time.jsx', 'components/File/File.jsx', 'components/FileRow/FileRow.jsx', 'patterns/ConnectedAccounts/ConnectedAccounts.jsx',
+    'patterns/VersionCompare/VersionCompare.jsx', 'patterns/FileList/FileList.jsx', 'patterns/ReviewFlow/ReviewFlow.jsx', 'patterns/AssignControl/AssignControl.jsx']) {
+    assert.ok(!NAMED.test(fs.readFileSync(path.join(ROOT, 'platform', f), 'utf8')), f + ' builds a Date from a value itself');
   }
+  // anywhere in the Platform and the suite: a private date-only rule (a YYYY-MM-DD test beside its own Date or "T00:00"),
+  // whatever its names, is a copy of parseDate
+  const DATE_ONLY = /\\d\{4\}-\\d\{2\}-\\d\{2\}\$/, BUILD = /new Date\(|['"]T00:00/, files = [];
+  const walk = (d) => { for (const e of fs.readdirSync(d, { withFileTypes: true })) { const q = path.join(d, e.name); if (e.isDirectory()) { if (!/dist|vendor|design-system|node_modules/.test(q)) walk(q); } else if (/\.(jsx?|mjs)$/.test(e.name)) files.push(q); } };
+  ['platform/components', 'platform/patterns', 'platform/templates', 'platform/utils', 'platform/hooks', 'platform/providers', 'suite'].forEach((d) => { if (fs.existsSync(path.join(ROOT, d))) walk(path.join(ROOT, d)); });
+  const copies = files.filter((q) => !q.endsWith(path.join('utils', 'format.js'))).filter((q) => { const t = fs.readFileSync(q, 'utf8'); return DATE_ONLY.test(t) && BUILD.test(t); });
+  assert.deepStrictEqual(copies.map((q) => path.relative(ROOT, q)), [], 'private date-only parsers');
   assert.ok(/parseDate\(/.test(fs.readFileSync(path.join(ROOT, 'platform', 'components/Time/Time.jsx'), 'utf8')), 'Time does not use parseDate');
+});
+check('Time: a date-only value has the dateTime and text of its own day in a US time zone #342', () => {
+  const zone = process.env.TZ; process.env.TZ = 'America/Los_Angeles';
+  try {
+    const esbuild = require('esbuild'), React = require('react'), Server = require('react-dom/server');
+    const out = esbuild.buildSync({ entryPoints: [path.join(ROOT, 'platform/components/Time/Time.jsx')], bundle: true, write: false, format: 'cjs', platform: 'node',
+      external: ['react', 'react-dom'], jsx: 'transform', loader: { '.js': 'jsx' }, logLevel: 'silent' });
+    const m = { exports: {} }; new Function('module', 'exports', 'require', out.outputFiles[0].text)(m, m.exports, require);
+    const html = Server.renderToStaticMarkup(React.createElement(m.exports.Time, { value: '2026-10-18', format: 'date', tooltip: false, locale: 'en-US' }));
+    assert.ok(/dateTime="2026-10-18"/.test(html) && /Oct 18, 2026/.test(nb(html)), html);
+  } finally { if (zone === undefined) delete process.env.TZ; else process.env.TZ = zone; }
 });
 
 console.log(failed ? '\n' + failed + ' failed, ' + passed + ' passed' : 'FORMATS_OK (' + passed + ' checks)');

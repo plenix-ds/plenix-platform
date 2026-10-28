@@ -33,6 +33,10 @@
   "formats": {
    "parts": [
     {
+     "part": "Time",
+     "checks": 1
+    },
+    {
      "part": "parseDate",
      "checks": 2
     }

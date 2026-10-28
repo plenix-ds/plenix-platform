@@ -35183,7 +35183,6 @@ exports.ReviewFlow = ReviewFlow;
 exports.ReviewQueue = ReviewQueue;
 exports.WORKFLOW_STATUSES = void 0;
 exports.WorkflowStatus = WorkflowStatus;
-exports.localDay = void 0;
 exports.useOptionalToast = useOptionalToast;
 var _react = _interopRequireDefault(require("react"));
 var _devWarn = require("../../utils/devWarn.js");
@@ -35327,9 +35326,6 @@ function useOptionalToast() {
   }
 }
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
-// a day ("YYYY-MM-DD") read as local midnight: Date reads a bare day as UTC, which is a day early west of Greenwich
-const localDay = d => typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d) ? d + 'T00:00' : d;
-exports.localDay = localDay;
 const FLOW_STRINGS = {
   reviewers: 'Reviewers',
   history: 'History',
@@ -35544,7 +35540,7 @@ function ReviewQueue({
     type: 'date',
     render: r => /*#__PURE__*/_react.default.createElement(_Text.Text, {
       variant: "data"
-    }, (0, _format.formatDate)(localDay(r.submitted)))
+    }, (0, _format.formatDate)(r.submitted))
   }, {
     title: t.status,
     field: 'status',
@@ -66372,7 +66368,7 @@ function AssignControl({
         className: "plx-assign-control__dates"
       }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
         variant: "data"
-      }, (0, _format.formatRange)((0, _ReviewFlow.localDay)(d.start), (0, _ReviewFlow.localDay)(d.end))))
+      }, (0, _format.formatRange)(d.start, d.end)))
     }) : /*#__PURE__*/_react.default.createElement("span", {
       className: "plx-assign-control__empty"
     }, t.notDelegated)), /*#__PURE__*/_react.default.createElement("div", {
@@ -72055,8 +72051,6 @@ const STRINGS = {
 const FIELDS = ['name', 'size', 'modified', 'owner'];
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 const idOf = f => f.id === undefined ? f.name : f.id;
-// a calendar day written YYYY-MM-DD is that day where the reader is
-const day = v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) ? new Date(+v.slice(0, 4), +v.slice(5, 7) - 1, +v.slice(8, 10)) : v;
 const stamp = v => v instanceof Date ? v.toISOString() : String(v || '');
 
 // the order of the list: folders first, then the field, then the name
@@ -72278,7 +72272,7 @@ function FileList({
       field: 'modified',
       kind: 'data',
       type: 'date',
-      render: f => f.modified ? (0, _format.formatDate)(day(f.modified), {
+      render: f => f.modified ? (0, _format.formatDate)(f.modified, {
         dateStyle: 'medium'
       }) : ''
     });
@@ -73658,7 +73652,6 @@ const STRINGS = {
   empty: 'Choose two versions to compare.'
 };
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
-const day = v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) ? new Date(+v.slice(0, 4), +v.slice(5, 7) - 1, +v.slice(8, 10)) : v;
 
 // the lines of two texts, compared: [{ kind: "same" | "add" | "del", text, a (the line number before), b (after) }]
 function diffLines(before, after) {
@@ -73927,12 +73920,12 @@ function VersionCompare({
     if (mode === undefined) setOwnMode(m);
     if (onModeChange) onModeChange(m);
   };
-  const metaOf = v => [v.date ? (0, _format.formatDate)(day(v.date), {
+  const metaOf = v => [v.date ? (0, _format.formatDate)(v.date, {
     dateStyle: 'medium'
   }) : null, v.author ? fill(t.by, {
     author: v.author
   }) : null].filter(Boolean).join(' · ');
-  const optionLabel = v => [v.label, v.date ? (0, _format.formatDate)(day(v.date), {
+  const optionLabel = v => [v.label, v.date ? (0, _format.formatDate)(v.date, {
     dateStyle: 'medium'
   }) : null].filter(Boolean).join(' · ');
   const pick = (which, other) => versions.filter(v => v.id !== pair[other]).map(v => ({
