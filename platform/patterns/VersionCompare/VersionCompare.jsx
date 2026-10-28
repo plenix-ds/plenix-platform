@@ -70,7 +70,6 @@ const STRINGS = {
   unchanged: 'Show {n} unchanged lines', empty: 'Choose two versions to compare.',
 };
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
-const day = (v) => (typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) ? new Date(+v.slice(0, 4), +v.slice(5, 7) - 1, +v.slice(8, 10)) : v);
 
 // the lines of two texts, compared: [{ kind: "same" | "add" | "del", text, a (the line number before), b (after) }]
 export function diffLines(before, after) {
@@ -180,8 +179,8 @@ export function VersionCompare({ versions = [], attributes = [], base, defaultBa
   const want = mode !== undefined ? mode : ownMode;
   const current = choices.indexOf(want) >= 0 ? want : choices[0] || 'columns';
   const setMode = (m) => { if (mode === undefined) setOwnMode(m); if (onModeChange) onModeChange(m); };
-  const metaOf = (v) => [v.date ? formatDate(day(v.date), { dateStyle: 'medium' }) : null, v.author ? fill(t.by, { author: v.author }) : null].filter(Boolean).join(' · ');
-  const optionLabel = (v) => [v.label, v.date ? formatDate(day(v.date), { dateStyle: 'medium' }) : null].filter(Boolean).join(' · ');
+  const metaOf = (v) => [v.date ? formatDate(v.date, { dateStyle: 'medium' }) : null, v.author ? fill(t.by, { author: v.author }) : null].filter(Boolean).join(' · ');
+  const optionLabel = (v) => [v.label, v.date ? formatDate(v.date, { dateStyle: 'medium' }) : null].filter(Boolean).join(' · ');
   const pick = (which, other) => versions.filter((v) => v.id !== pair[other]).map((v) => ({ value: v.id, label: optionLabel(v) }));
   const item = (v) => ({ id: v.id, title: v.label, meta: metaOf(v), image: v.image, media: v.media, values: v.values || {} });
 
