@@ -18,6 +18,7 @@
      onChange(value): follows every move (live preview); with range, onChange([low, high])
      onCommit(value): runs when the person lets go or finishes with the keys (record the change, e.g. in an undo history)
      disabled: default false
+     readOnly: the value shows and takes focus but cannot change (default: the nearest read-only region's, useReadOnly)
      strings: the thumbs' names with range, for other languages: { minimum: "Minimum", maximum: "Maximum" } (each thumb
        is named "<label>, minimum" and "<label>, maximum")
      className: more classes on the slider
@@ -38,6 +39,7 @@ import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
 import { gridPx } from '../../utils/grid.js';
+import { useReadOnly, readOnlyProps } from '../../providers/ReadOnly.jsx';
 
 const STRINGS = { minimum: 'Minimum', maximum: 'Maximum' };
 const MAX_STEP_MARKS = 12;
@@ -55,8 +57,10 @@ function marksOf(marks, min, max, step) {
 }
 
 export function Slider({ label, value, min = 0, max = 100, step = 1, unit = '', range = false, marks, onChange, onCommit, disabled = false,
-  strings, className, ...rest }) {
+  strings, className, readOnly, ...rest }) {
   const id = useUid('plx-slider');
+  const locked = useReadOnly(readOnly);
+  const lockOf = (props) => readOnlyProps(locked, props, { pointer: true });   // a press focuses, the keys do not move it
   const t = Object.assign({}, STRINGS, strings);
   const drawn = marksOf(marks, min, max, step);
   const custom = range || drawn.length > 0;
@@ -90,7 +94,7 @@ export function Slider({ label, value, min = 0, max = 100, step = 1, unit = '', 
         <input id={id} type="range" className="plx-slider__input" min={min} max={max} step={step} value={value} disabled={disabled}
           aria-valuetext={value + unit} onChange={(e) => onChange && onChange(Number(e.target.value))}
           onPointerUp={(e) => onCommit && onCommit(Number(e.currentTarget.value))}
-          onKeyUp={(e) => { if (onCommit && /Arrow|Page|Home|End/.test(e.key)) onCommit(Number(e.currentTarget.value)); }} {...rest} />
+          onKeyUp={(e) => { if (onCommit && /Arrow|Page|Home|End/.test(e.key)) onCommit(Number(e.currentTarget.value)); }} {...lockOf(rest)} />
       </div>
     );
   }
@@ -114,16 +118,16 @@ export function Slider({ label, value, min = 0, max = 100, step = 1, unit = '', 
             <input id={id} type="range" className={cx('plx-slider__input', low > (min + max) / 2 && 'is-on-top')} min={min} max={max} step={step} value={low}
               disabled={disabled} aria-label={label + ', ' + t.minimum.toLowerCase()} aria-valuetext={low + unit}
               onChange={(e) => onChange && onChange(lowOf(Number(e.target.value)))}
-              onPointerUp={(e) => commit(lowOf(Number(e.currentTarget.value)))} onKeyUp={keyCommit(lowOf)} {...rest} />
+              onPointerUp={(e) => commit(lowOf(Number(e.currentTarget.value)))} onKeyUp={keyCommit(lowOf)} {...lockOf(rest)} />
             <input id={id + '-high'} type="range" className="plx-slider__input" min={min} max={max} step={step} value={high}
               disabled={disabled} aria-label={label + ', ' + t.maximum.toLowerCase()} aria-valuetext={high + unit}
               onChange={(e) => onChange && onChange(highOf(Number(e.target.value)))}
-              onPointerUp={(e) => commit(highOf(Number(e.currentTarget.value)))} onKeyUp={keyCommit(highOf)} />
+              onPointerUp={(e) => commit(highOf(Number(e.currentTarget.value)))} onKeyUp={keyCommit(highOf)} {...lockOf({})} />
           </>
         ) : (
           <input id={id} type="range" className="plx-slider__input" min={min} max={max} step={step} value={value} disabled={disabled}
             aria-valuetext={value + unit} onChange={(e) => onChange && onChange(Number(e.target.value))}
-            onPointerUp={(e) => commit(Number(e.currentTarget.value))} onKeyUp={keyCommit((v) => v)} {...rest} />
+            onPointerUp={(e) => commit(Number(e.currentTarget.value))} onKeyUp={keyCommit((v) => v)} {...lockOf(rest)} />
         )}
       </div>
       {drawn.length ? (
