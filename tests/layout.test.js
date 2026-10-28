@@ -18,7 +18,7 @@ if (changed.wants({ units: ['components/Resizable', 'patterns/SplitView', 'patte
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'resize-caps.test.js')], { stdio: 'inherit', env: process.env });
   if (result.status !== 0) process.exit(result.status || 1);
 }
-if (!changed.wants({ units: ['patterns/AppShell', 'patterns/SettingsLayout', 'patterns/SplitView'] })) changed.none('LAYOUT_OK 0/0');
+if (!changed.wants({ units: ['patterns/AppShell', 'patterns/SettingsLayout', 'patterns/SplitView', 'components/VisuallyHidden'] })) changed.none('LAYOUT_OK 0/0');
 changed.report('every mode');
 const P = 'file://' + (ROOT.startsWith('/') ? '' : '/') + ROOT.replace(/\\/g, '/') + '/platform/';
 // each mode through a kind of page that the standard gives it
@@ -97,6 +97,18 @@ const html = '<!doctype html><html lang="en" data-plx-theme="default" data-plx-m
   check('fluid: the navigation and the inspector are shown', !!f.nav && !!f.panel, '');
   check('standard: each page kind gets its mode', Object.keys(MODES).every((m) => out[m].mode === m), JSON.stringify(Object.keys(MODES).map((m) => out[m].mode)));
   check('SplitView: stacks under 900px of its own width, side by side from 900px #410', !!split[899] && !!split[900] && split[899].width === 899 && split[899].direction === 'column' && split[900].width === 900 && split[900].direction === 'row', JSON.stringify(split));
+  // #288: screen-reader texts at the end of the page (the announcer, a VisuallyHidden text) take no room, so a page that
+  // fits the window does not scroll
+  const quiet = await page.evaluate(async () => {
+    const P = window.Plenix, h = React.createElement, root = document.getElementById('root');
+    root.innerHTML = ''; ReactDOM.flushSync(() => ReactDOM.createRoot(root).render(h(P.AppShell, { page: 'workspace', header: h('div', null, 'Header') }, h('p', null, 'Content'))));
+    P.announce('Selection cleared.'); const extra = document.createElement('div'); extra.className = 'plx-visually-hidden';
+    extra.textContent = 'Press Space or Enter to pick it up. The arrow keys move it, Space or Enter drops it, Escape puts it back.'; document.body.appendChild(extra);
+    await new Promise((r) => setTimeout(r, 600));
+    const se = document.scrollingElement, box = extra.getBoundingClientRect(), out = { scroll: se.scrollHeight - se.clientHeight, box: [box.width, box.height] };
+    extra.remove(); return out;
+  });
+  check('VisuallyHidden: screen-reader texts at the page end take no room, so the page does not scroll #288', quiet.scroll <= 0 && quiet.box[0] <= 1 && quiet.box[1] <= 1, JSON.stringify(quiet));
   check('standard: a SettingsLayout page is contained without saying so', claimed.mode === 'contained', claimed.mode);
   check('standard: its settings column is at most 960px and centered', claimed.inner <= 960 && Math.abs(claimed.center - claimed.mainCenter) <= 1, JSON.stringify(claimed));
   check('settings: every section is a card (owner, 2026-10-13: the cards view)', claimed.card, JSON.stringify(claimed));

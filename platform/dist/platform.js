@@ -24610,9 +24610,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Summary: The bar over a collection (owner, 2026-10-14 and 2026-10-15, the command bar study): ONE white framed bar of
      one height, fixed at the top of the content while the content scrolls; the table under it never moves. With nothing
      selected: the page's actions, then the search and the filters, then Sort, Group, Columns and View, and the count at
-     the end. With rows selected the bar swaps (Microsoft 365): the actions, the search and the filters give way to the
-     selection's commands (Delete last); Sort, Group, Columns and View stay where they are; the bar ends with "× N
-     selected", which clears the selection. A page with no actions has a view bar (1F).
+     the end. With rows selected the bar swaps (Microsoft 365): the page's actions give way to the selection's commands
+     (Delete last); the search, the filters and Sort, Group, Columns and View stay where they are, so the person can keep
+     narrowing the list while rows are ticked (owner, issue 454); the bar ends with "× N selected", which clears the selection. A page with no actions has a view bar (1F).
    Usage:
      <CommandBar label="Assets" count="24 assets"
        actions={[{ id: 'new', label: 'New', icon: 'plus', items: <><MenuItem icon="folder-add">Folder</MenuItem>…</> },
@@ -24653,8 +24653,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      selection.hidden: how many selected records are hidden by filters (DataGrid onSelectionChange supplies it)
      selection: the selection (the swap): { count, hidden, actions, onClear, noun, plural, label }; while count is above 0 the bar
        holds selection.actions ([{ id, label, icon, onSelect, items, danger, single, disabled, why }]; single: disabled
-       while more than one is selected, with a why-tooltip) instead of the page's actions, search and filters, and ends
-       with "× N selected" (onClear); label names the bar meanwhile (default "{label} actions")
+       while more than one is selected, with a why-tooltip) instead of the page's actions, and ends with "× N selected"
+       (onClear); search and the filters stay (owner, issue 454); label names the bar meanwhile (default "{label} actions")
      layout: "auto" (default: "one" with actions, "view" without) | "one" (1A) | "view" (1F: a view bar, no actions);
        "split" (a separate action bar for many actions) is retired (2026-10-15) and draws "one": many actions fold into More
      sticky: "auto" (default) sticks only as a direct child of PageContent or AppShell main; true/false force
@@ -24781,8 +24781,8 @@ function CommandBar({
 }) {
   const t = Object.assign({}, STRINGS, strings);
   const root = _react.default.useRef(null);
-  // the selection (owner, 2026-10-15: the swap): an object { count, actions, onClear, noun, plural, label }; while its
-  // count is above 0 the bar holds the selection's commands instead of the page's actions, search and filters
+  // the selection (owner, 2026-10-15: the swap; issue 454): an object { count, actions, onClear, noun, plural, label }; while
+  // its count is above 0 the selection's commands replace the page's actions; search and filters stay
   const sel = selection && ! /*#__PURE__*/_react.default.isValidElement(selection) && typeof selection === 'object' ? selection : null;
   const selCount = sel ? Number(sel.count) || 0 : 0;
   const selecting = selCount > 0;
@@ -24790,12 +24790,12 @@ function CommandBar({
   // "split" (a separate action bar) is retired (2026-10-15): many actions fold into More in the one bar
   const shape = layout === 'auto' || layout === 'split' ? actions.length ? 'one' : 'view' : layout;
   const shown = selecting ? selActs : shape === 'view' ? [] : actions;
-  const quick = selecting ? [] : quickFilters;
+  const quick = quickFilters; // search and filters stay while rows are ticked (owner, issue 454)
   const ending = end && ! /*#__PURE__*/_react.default.isValidElement(end) && !Array.isArray(end) && typeof end === 'object' && ('content' in end || 'fold' in end) ? end : null;
   const endContent = ending ? ending.content : end;
   const endFold = !selecting && ending && ending.fold;
   const finding = !!find || quick.length > 0;
-  const folds = (0, _BarActions.foldOrder)(shown).length + quick.length + (endFold ? 1 : 0) + (finding && !selecting ? 1 : 0);
+  const folds = (0, _BarActions.foldOrder)(shown).length + quick.length + (endFold ? 1 : 0) + (finding ? 1 : 0);
   // the bar's search, opened across the bar: the bar holds its step while it is open
   const [searchOpen, setSearchOpen] = _react.default.useState(false);
   const key = [shape, narrow, selecting ? 'sel' : 'rest', shown.map(a => a.label + (a.disabled ? '0' : '') + (a.loading ? 'busy' : '')).join('|'), quickFilters.map(q => q.label + (q.value && q.value.length ? q.value.length : '')).join('|'), endFold && endFold.label].join('§');
@@ -24813,7 +24813,7 @@ function CommandBar({
   const endAway = !!endFold && foldAll > fold;
   const quickAway = Math.min(quick.length, Math.max(0, foldAll - fold - (endAway ? 1 : 0)));
   // the last step: the find side folds into its button (after every command, the end control and the quick filters)
-  const findAway = finding && !selecting && foldAll > fold + (endAway ? 1 : 0) + quickAway;
+  const findAway = finding && foldAll > fold + (endAway ? 1 : 0) + quickAway;
   const quickKept = quick.slice(0, quick.length - quickAway),
     quickFolded = quick.slice(quick.length - quickAway);
   const quickMenu = quickFolded.map(q => {
@@ -24956,7 +24956,7 @@ function CommandBar({
     searchOpen: false,
     setSearchOpen
   }), []);
-  const findEl = !(find || quickEls.length) || selecting ? null : findAway ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
+  const findEl = !(find || quickEls.length) ? null : findAway ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
     className: "plx-command-bar__find"
   }, /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
     title: t.find,
@@ -25016,11 +25016,11 @@ function CommandBar({
   }) : null, countEl, statusEl, keptEnd, clearEl) : null;
   // Escape in the bar clears the selection (as "× N selected" does)
   const onKeyDown = selecting && sel.onClear ? e => {
-    if (e.key === 'Escape' && !e.defaultPrevented && !e.target.closest('[role="menu"], [role="dialog"]')) {
+    if (e.key === 'Escape' && !e.defaultPrevented && !e.target.closest('input, textarea, [role="menu"], [role="dialog"]')) {
       e.preventDefault();
       sel.onClear();
     }
-  } : undefined;
+  } : undefined; // Escape in the search clears the text, not the selection (issue 454)
   const parts = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, acts, acts && findEl ? /*#__PURE__*/_react.default.createElement(_Divider.Divider, {
     orientation: "vertical"
   }) : null, findEl, /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Spacer, null), viewEl, tail);
@@ -27535,6 +27535,7 @@ function NextEngine(props) {
     canonical = _react.default.useMemo(() => (0, _records.recordsOf)(source, index, childField), [source, index, childField]);
   // TanStack tries a global filter against columns; the public predicate describes a record, so evaluate it once.
   const unreadKey = _react.default.useCallback(record => record[index], [index]);
+  const [ownOpen, setOwnOpen] = _react.default.useState(null);
   const unread = (0, _unread.useUnread)(canonical, unreadKey, props),
     [localUnreadOnly, setUnreadOnly] = _react.default.useState(false);
   const unreadOnly = props.unreadOnly ?? localUnreadOnly;
@@ -28130,6 +28131,19 @@ function NextEngine(props) {
     setAutoSizing(old => JSON.stringify(old) === JSON.stringify(widths) ? old : widths);
     setFloors(old => JSON.stringify(old) === JSON.stringify(floor) ? old : floor);
   }, [columns, source, metrics.room, metrics.min, metrics.space, metrics.row, selectable, isStatic, showTypes, headerMenu, cells, effectiveWrap]);
+
+  // the room under the table that the page keeps (#451): the grid's own part below it (its border, a footer) and the end
+  // margin, padding and border of each container up to the page, so a table that fills the window ends at the page's
+  // padding and only the table scrolls; content placed after the grid is not counted
+  const trailing = (at, hold) => {
+    let sum = Math.max(0, at.getBoundingClientRect().bottom - hold.getBoundingClientRect().bottom);
+    for (let el = at; el; el = el.parentElement) {
+      const cs = getComputedStyle(el);
+      sum += parseFloat(cs.marginBlockEnd) || 0;
+      if (el !== at) sum += (parseFloat(cs.paddingBlockEnd) || 0) + (parseFloat(cs.borderBlockEndWidth) || 0);
+    }
+    return sum;
+  };
   _react.default.useLayoutEffect(() => {
     const at = frame.current;
     if (!at) return;
@@ -28158,7 +28172,7 @@ function NextEngine(props) {
       if (!isStatic && !height && mode !== 'pages' && holder.current) {
         const top = holder.current.getBoundingClientRect().top,
           room = at.getBoundingClientRect().bottom - top;
-        holder.current.style.maxBlockSize = (0, _grid.gridPx)(inPane ? Math.max(0, room) : Math.max(next.row * 8, doc.defaultView.innerHeight - top), {
+        holder.current.style.maxBlockSize = (0, _grid.gridPx)(inPane ? Math.max(0, room) : Math.max(next.row * 8, doc.defaultView.innerHeight - top - trailing(at, holder.current)), {
           round: 'down',
           el: at
         });
@@ -28332,6 +28346,11 @@ function NextEngine(props) {
     };
   }, [remoteMode, page, pageSize, JSON.stringify(sorting), JSON.stringify(filters), props.search, retry]);
   const displayedTotal = remoteMode ? remote?.total || 0 : table.getFilteredRowModel().rows.length;
+  // the open row (#453): the record whose details show, the row last opened by a click or Enter, or openKey (null: none);
+  // it is aria-current, and in a grid without selection it takes the selected look (with selection, opening selects it)
+  const openId = props.openKey !== undefined ? props.openKey == null ? null : (0, _state.recordKey)(props.openKey) : ownOpen;
+  const isOpen = id => openId != null && String(id) === String(openId),
+    marked = id => !!selection[id] || !selectable && !options.selectableRows && isOpen(id);
   const selectionRows = table.getPrePaginationRowModel().rows,
     selectedVisible = selectionRows.filter(r => selection[r.id]),
     allVisible = selectionRows.length > 0 && selectedVisible.length === selectionRows.length;
@@ -28829,16 +28848,20 @@ function NextEngine(props) {
       role: "row",
       "aria-rowindex": (mode === 'pages' ? page * pageSize : 0) + (semanticIndex.get(row.displayKey || row.id) || 2),
       "aria-selected": selectable || options.selectableRows ? !!selection[row.id] : undefined,
+      "aria-current": isOpen(row.id) ? 'true' : undefined,
       tabIndex: props.onRowClick || on.rowClick || options.selectableRows ? 0 : undefined,
       "aria-level": childField ? row.depth + 1 : undefined,
       "aria-expanded": row.getCanExpand?.() ? row.getIsExpanded() : undefined,
-      className: (0, _cx.cx)('' + B + '__grid-row', (selectable || options.selectableRows || props.onRowClick || on.rowClick) && B + '__grid-selectable', childField && '' + B + '__grid-tree-level-' + Math.min(12, row.depth), selection[row.id] && '' + B + '__grid-selected', isStatic && B + '__grid-row--static', anyWrap && !isNarrow && (isStatic || (effectiveStep || 'short') !== 'short') && B + '__grid-row--wrap', isNarrow && B + '__grid-row--narrow', virtualized && B + '__grid-row--virtual'),
+      className: (0, _cx.cx)('' + B + '__grid-row', (selectable || options.selectableRows || props.onRowClick || on.rowClick) && B + '__grid-selectable', childField && '' + B + '__grid-tree-level-' + Math.min(12, row.depth), marked(row.id) && '' + B + '__grid-selected', isStatic && B + '__grid-row--static', anyWrap && !isNarrow && (isStatic || (effectiveStep || 'short') !== 'short') && B + '__grid-row--wrap', isNarrow && B + '__grid-row--narrow', virtualized && B + '__grid-row--virtual'),
       onClick: e => {
         if (e.target.closest(interactive)) return;
         chooseRow(row, e);
         emit('rowClick', e, rowApi);
         props.onRowClick?.(record, e);
-        if (props.onRowClick || on.rowClick) unread.open(record);
+        if (props.onRowClick || on.rowClick) {
+          unread.open(record);
+          setOwnOpen(row.id);
+        }
       },
       onDoubleClick: e => {
         if (!e.target.closest(interactive)) {
@@ -28852,7 +28875,10 @@ function NextEngine(props) {
           chooseRow(row, e);
           emit('rowClick', e, rowApi);
           props.onRowClick?.(record, e);
-          if (props.onRowClick || on.rowClick) unread.open(record);
+          if (props.onRowClick || on.rowClick) {
+            unread.open(record);
+            setOwnOpen(row.id);
+          }
         }
         if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && e.target === e.currentTarget) {
           e.preventDefault();
@@ -28945,7 +28971,7 @@ function NextEngine(props) {
         },
         "data-plx-sticky": pinned && sticky ? sticky + 'px' : undefined,
         "data-plx-text-follow": c.rowLabel || columns.indexOf(c) <= pinnedAt ? 'size family weight' : 'size family',
-        className: (0, _cx.cx)('' + B + '__grid-cell', modes, !selectable && selection[row.id] && ordered.indexOf(column) === 0 && B + '__grid-cell--selected-start', bare && B + '__grid-cell--bare', selectable && ordered.indexOf(column) === 0 && B + '__grid-cell--after-lead', ordered.indexOf(column) > 0 && ordered[ordered.indexOf(column) - 1].getIsPinned() === 'left' && column.getIsPinned() !== 'left' && B + '__grid-cell--after-frozen', isTree && row.depth > 0 && B + '__tree-cell--level-' + Math.min(12, row.depth), editing?.key === row.id && editing.field === c.field && '' + B + '__grid-editing', k.map(kind => B + '__cell--' + kind).join(' '), (k.includes('data') || c.type === 'bytes') && B + '__grid-cell--data', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', c.type === 'bytes' && B + '__cell--data', c.rowHandle && B + '__cell--handle', childField && c.field === (props.treeColumn || columns[0]?.field) && B + '__tree-cell', pinned && '' + B + '__grid-frozen', (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + '__cell--row-label', k.includes('icon') && B + '__w-lead', keys.includes(c.field) && B + '__cell--key', keys[0] === c.field && B + '__cell--key-first', (c.align || c.type === 'bytes') && B + '__cell--align-' + (c.align || 'right'))
+        className: (0, _cx.cx)('' + B + '__grid-cell', modes, !selectable && marked(row.id) && ordered.indexOf(column) === 0 && B + '__grid-cell--selected-start', bare && B + '__grid-cell--bare', selectable && ordered.indexOf(column) === 0 && B + '__grid-cell--after-lead', ordered.indexOf(column) > 0 && ordered[ordered.indexOf(column) - 1].getIsPinned() === 'left' && column.getIsPinned() !== 'left' && B + '__grid-cell--after-frozen', isTree && row.depth > 0 && B + '__tree-cell--level-' + Math.min(12, row.depth), editing?.key === row.id && editing.field === c.field && '' + B + '__grid-editing', k.map(kind => B + '__cell--' + kind).join(' '), (k.includes('data') || c.type === 'bytes') && B + '__grid-cell--data', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', c.type === 'bytes' && B + '__cell--data', c.rowHandle && B + '__cell--handle', childField && c.field === (props.treeColumn || columns[0]?.field) && B + '__tree-cell', pinned && '' + B + '__grid-frozen', (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + '__cell--row-label', k.includes('icon') && B + '__w-lead', keys.includes(c.field) && B + '__cell--key', keys[0] === c.field && B + '__cell--key-first', (c.align || c.type === 'bytes') && B + '__cell--align-' + (c.align || 'right'))
       }), childField && c.field === (props.treeColumn || columns[0]?.field) ? /*#__PURE__*/_react.default.createElement("span", {
         className: B + '__tree-level',
         "data-plx-depth": 0
@@ -29052,7 +29078,7 @@ function NextEngine(props) {
     key: row.displayKey || row.id,
     row: row,
     render: rowNode,
-    selected: !!selection[row.id],
+    selected: (selection[row.id] ? 1 : 0) + (isOpen(row.id) ? 2 : 0),
     version: props.movableRows ?? options.movableRows ? {} : rowVersion
   }) : rowNode(row);
   const priorGroups = model.slice(0, first).filter(row => row.__group).map(row => row.__group),
@@ -35641,6 +35667,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        puts DataGrid.unreadCommands(...).filter in its CommandBar's quickFilters and .selection among its selection commands. The controller exposes getUnreadCount(), markRead(keys), markUnread(keys).
      onRowClick(record, event), onRowDoubleClick(record, event): with them rows are focusable and Enter clicks;
        onCellEdit(record, { field, value, previous })
+     openKey: the key of the record whose details show (the open row); default the row last opened by a click or Enter
+       (with onRowClick); null: none. The open row is aria-current="true"; in a grid without selection it takes the
+       selected look (the fill and the start bar); with selection, opening a row selects only it, so it is marked too
      density: "compact" (default: tables start Compact, owner 2026-10-22) | "standard" | "comfortable" | "page" (follow the
        page's density); set on the grid itself, so its rows (36 / 40 / 48px), header and pills follow it
      uniformPillWidths: deprecated, ignored (owner, uniform-pills-always-35): with cells="pill", every standard pill of a
