@@ -107,7 +107,7 @@
    "parts": [
     {
      "part": "SplitView",
-     "checks": 1
+     "checks": 2
     },
     {
      "part": "VisuallyHidden",
