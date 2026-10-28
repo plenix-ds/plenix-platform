@@ -1,0 +1,44 @@
+# Icon stage 2 (#282) proof. dom-check.js runs dom-check.html (put it in platform/dist/icons/) in headless Chrome, after a build.
+
+## DOM equality
+{
+ "icons": 212,
+ "cases": 3816,
+ "emptyFromStylesheet": 0,
+ "diffs": 0,
+ "diffSample": [],
+ "registered": {
+  "cases": 3816,
+  "diffs": 0
+ },
+ "aliases": {
+  "cases": 39,
+  "diffs": 0
+ },
+ "material": {
+  "fetchedHasPath": true,
+  "sameSvg": true
+ }
+}
+page errors 0
+
+## Full-page pictures (sha1), two loads per side; before = styling/phase-2, after = this branch
+SAME dashboard/index.html                         before 95c87fecf5 after 95c87fecf5
+SAME projects/index.html                          before dc5a9e8eb2 after dc5a9e8eb2
+SAME messages/index.html                          before 899d70f00c after 8f1080f4c4,899d70f00c
+SAME contacts/index.html                          before dba1680646 after dba1680646
+SAME calendar/index.html                          before 8595ff27b9 after 8595ff27b9
+SAME tasks/index.html                             before ea83bfb257 after ea83bfb257
+SAME notes/index.html                             before 50957af09b after 50957af09b
+SAME bookmarks/index.html                         before a9f076392b after a9f076392b
+SAME files/index.html                             before 7fb1ee2cf2 after 7fb1ee2cf2
+SAME settings/index.html                          before d614c65618 after d614c65618
+SAME dam/index.html                               before bbf2624cbe after bbf2624cbe
+SAME dam/settings-system.html                     before 36afaa8744 after 36afaa8744
+SAME dam/settings-myaccount.html                  before 58ec51e415 after 58ec51e415
+SAME platform/design-system/#/foundations/icon    before 8c4559bf5b after 8c4559bf5b
+identical 14 of 14
+
+## Bundle
+platform.js raw 3,846,350 -> 3,848,762 (+2,412 bytes), gzip 912,199 -> 913,045 (+846 bytes). No application bundle changes (none imports an icon yet).
+A trial import (reverted, not committed) of plenix/add and material/rocket-launch into notes/main.jsx: notes/app.js went from 10 to 12 modules, both drawings in it; only rocket-launch was written into platform/dist/icons/material/.

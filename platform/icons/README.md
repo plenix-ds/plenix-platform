@@ -72,3 +72,15 @@ One layout and one naming for every icon source, written by `layout.js` (generat
 - **The CDN path:** `/cdn/<version>/icons/<set>/<name>.js` (and `.svg`), under the release's version, so it never changes once published. The existing `/cdn/material/<commit>/` stays for the Icon component's fetch.
 - **One set on its own:** `node platform/icons/layout.js <plenix|material> <folder>`.
 - **No consumer reads the layout yet** (stage 1): `icon.css`, `glyphs.js` and the Icon component draw every icon as before. Stage 2 (#282) makes the modules importable.
+
+## Importing icons (#282, stage 2)
+
+- **In an application:** `import Add from 'plenix-platform/icons/plenix/add'` (or `…/icons/material/rocket-launch`), then `<Icon icon={Add} />`.
+  - `build-app.js` bundles the module into that application's script.
+  - A Material module is written on demand into `platform/dist/icons/material/`: only the names imported, under the same folder guard.
+- **Outside the suite:** the CDN's stage 1 paths, `/cdn/<version>/icons/<set>/<name>.js`.
+- **The `icon` prop:** Icon draws from the module's own drawings, with the same classes as by name, so `icon.css` still chooses the optical size (20 or 24) and the fill, and mirrors in right to left.
+- **`registerIcons(...modules)`:** a name (and its symbol's spelling) draws from its module first.
+  - It is stage 2 minimal; #281 extends it with the library choice and the development fetch.
+  - Unregistered names draw as before: Plenix names from `icon.css`, Material names from the library.
+- **No consumer is switched yet:** every page draws from `icon.css` as before.
