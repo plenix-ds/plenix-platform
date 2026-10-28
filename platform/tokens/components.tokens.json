@@ -2051,11 +2051,11 @@
       "$description": "Two shades darker than the notice fill (owner, 2026-10-09)."
     },
     "skeleton-animation-duration": {
-      "$value": "{plx-sys.motion-duration-loop-slow}",
+      "$value": "{plx-sys.motion-loading-shimmer-duration}",
       "$type": "duration"
     },
     "skeleton-animation-timing-function": {
-      "$value": "{plx-sys.motion-ease-standard}",
+      "$value": "{plx-sys.motion-loading-shimmer-easing}",
       "$type": "dimension"
     },
     "skeleton-background": {
@@ -2071,8 +2071,12 @@
       "$type": "dimension"
     },
     "spinner-animation-duration": {
-      "$value": "{plx-sys.motion-duration-loop-fast}",
+      "$value": "{plx-sys.motion-loading-spin-duration}",
       "$type": "duration"
+    },
+    "spinner-animation-timing-function": {
+      "$value": "{plx-sys.motion-loading-spin-easing}",
+      "$type": "dimension"
     },
     "spinner-border-bottom-color": {
       "$value": "{plx-sys.action-primary-background}",
@@ -2184,11 +2188,11 @@
       "$type": "cubicBezier"
     },
     "progress-bar-indeterminate-fill-animation-duration": {
-      "$value": "{plx-sys.motion-duration-loop-slow}",
+      "$value": "{plx-sys.motion-loading-progress-duration}",
       "$type": "duration"
     },
     "progress-bar-indeterminate-fill-animation-timing-function": {
-      "$value": "{plx-sys.motion-ease-standard}",
+      "$value": "{plx-sys.motion-loading-progress-easing}",
       "$type": "dimension"
     },
     "progress-bar-info-fill": {
