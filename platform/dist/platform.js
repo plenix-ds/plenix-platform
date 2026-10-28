@@ -10405,10 +10405,10 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        pointer, kept inside the window (useFloating's point); Shift+F10 or the Menu key opens it at the target's start
        edge, below it. Focus moves to the first item; Escape, Tab, a choice or a click outside close it and return
        focus to where it was. It renders in the top layer (Portal), so a scroll area or a dialog never clips it.
-     The menu opens on top of everything (batch 272): in the browser's top layer (popover), placed beside its trigger by CSS
-       anchor positioning, so no card, pane or scroll area can cover or clip it. The trigger's wrapper scopes the anchor, so
-       each menu finds its own trigger; near an edge the menu flips to the other side. A browser without anchor
-       positioning draws it inside the wrapper as before.
+     The menu opens on top of everything (batch 272): in the browser's top layer (popover), placed beside its trigger by
+       useFloating (CSS anchor positioning), so no card, pane or scroll area can cover or clip it, and it follows the
+       trigger on scroll and resize; near an edge the menu flips to the other side. A submenu is placed the same way at its
+       item's end edge. A browser without anchor positioning draws them inside the wrapper as before.
    Notes:
      Menus are border-only (no shadow, D9); dialogs keep their shadow.
      A context menu is a shortcut: every action in it is also reachable another way (a toolbar, a row's More menu).
@@ -10453,6 +10453,11 @@ function Menu({
   }, []);
   (0, _layer.useLayer)(list, open, {
     onEscape: () => close(true)
+  });
+  // placed against its trigger's wrapper by useFloating (anchor positioning, in the top layer); without it, drawn inside the wrapper
+  (0, _floating.useFloating)(wrap, list, {
+    open: open && TOP_LAYER,
+    placement
   });
   // into the top layer as soon as it is in the page (before the first item takes focus)
   _react.default.useLayoutEffect(() => {
@@ -10637,6 +10642,12 @@ function MenuSub({
   }, []);
   (0, _layer.useLayer)(list, open, {
     onEscape: back
+  });
+  // at the item's end edge, level with it (useFloating end-top; the gap is the menu's own, menu.css)
+  (0, _floating.useFloating)(item, list, {
+    open: open && TOP_LAYER,
+    placement: 'end-top',
+    offset: 'none'
   });
   _react.default.useLayoutEffect(() => {
     const el = list.current;
