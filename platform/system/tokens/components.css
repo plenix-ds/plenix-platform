@@ -444,12 +444,13 @@
   --plx-comp-notice-danger-background: var(--plx-sys-feedback-danger-soft);
   --plx-comp-notice-danger-text: var(--plx-sys-feedback-danger-soft-content);
   --plx-comp-notice-danger-border: var(--plx-sys-feedback-danger-soft-border);
-  --plx-comp-skeleton-animation-duration: var(--plx-sys-motion-duration-loop-slow);
-  --plx-comp-skeleton-animation-timing-function: var(--plx-sys-motion-ease-standard);
+  --plx-comp-skeleton-animation-duration: var(--plx-sys-motion-loading-shimmer-duration);
+  --plx-comp-skeleton-animation-timing-function: var(--plx-sys-motion-loading-shimmer-easing);
   --plx-comp-skeleton-background: var(--plx-sys-skeleton-base);
   --plx-comp-skeleton-background-image: linear-gradient(90deg,var(--plx-sys-skeleton-base) 25%,var(--plx-sys-skeleton-highlight) 50%,var(--plx-sys-skeleton-base) 75%);
   --plx-comp-skeleton-radius: var(--plx-sys-radius-compact-4px);
-  --plx-comp-spinner-animation-duration: var(--plx-sys-motion-duration-loop-fast);
+  --plx-comp-spinner-animation-duration: var(--plx-sys-motion-loading-spin-duration);
+  --plx-comp-spinner-animation-timing-function: var(--plx-sys-motion-loading-spin-easing);
   --plx-comp-spinner-border-bottom-color: var(--plx-sys-action-primary-background);
   --plx-comp-spinner-radius: 50%;
   --plx-comp-spinner-border-left-color: var(--plx-sys-action-primary-background);
@@ -477,8 +478,8 @@
   --plx-comp-progress-bar-fill-radius: var(--plx-sys-shape-pill);
   --plx-comp-progress-bar-fill-duration: var(--plx-sys-motion-duration-base);
   --plx-comp-progress-bar-fill-easing: var(--plx-sys-motion-ease-standard);
-  --plx-comp-progress-bar-indeterminate-fill-animation-duration: var(--plx-sys-motion-duration-loop-slow);
-  --plx-comp-progress-bar-indeterminate-fill-animation-timing-function: var(--plx-sys-motion-ease-standard);
+  --plx-comp-progress-bar-indeterminate-fill-animation-duration: var(--plx-sys-motion-loading-progress-duration);
+  --plx-comp-progress-bar-indeterminate-fill-animation-timing-function: var(--plx-sys-motion-loading-progress-easing);
   --plx-comp-progress-bar-info-fill: var(--plx-sys-feedback-info-solid);
   --plx-comp-progress-bar-success-fill: var(--plx-sys-feedback-success-solid);
   --plx-comp-progress-bar-warning-fill: var(--plx-sys-feedback-warning-solid);
