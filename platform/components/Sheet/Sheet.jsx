@@ -122,13 +122,15 @@ export function Sheet({ open, onClose, title, description, icon, onDone, doneLab
 
   // the grabber: a press moves between the two heights (its drag is the gesture above)
   const toggle = () => setHeight(height === 'medium' ? 'large' : 'medium');
+  // capture the pointer at once, so a quick flick that leaves the grabber before the gesture's slop is still followed to its release
+  const onGrabDown = (e) => { if (e.button === 0) { try { e.currentTarget.setPointerCapture(e.pointerId); } catch (err) { /* the pointer is gone */ } } };
   const onGrabClick = (e) => { if (e.currentTarget.dataset.plxDragged) { delete e.currentTarget.dataset.plxDragged; return; } toggle(); };
   const onScrim = (e) => { if (dismissible && e.target === e.currentTarget && onClose) onClose(); };
   return createPortal(
     <div className="plx-modal-layer plx-modal-layer--sheet" onMouseDown={onScrim}>
       <div ref={ref} role="dialog" aria-modal="true" aria-labelledby={id + 't'} aria-describedby={description ? id + 'd' : undefined} tabIndex={-1}
         className={cx('plx-sheet', 'plx-sheet--' + height, task && 'plx-sheet--task', className)}>
-        <button ref={grabber} type="button" className="plx-sheet__grabber" aria-label={height === 'medium' ? t.expand : t.shrink} onClick={onGrabClick} />
+        <button ref={grabber} type="button" className="plx-sheet__grabber" aria-label={height === 'medium' ? t.expand : t.shrink} onPointerDown={onGrabDown} onClick={onGrabClick} />
         <div className="plx-sheet__header">
           {task && dismissible ? <Button variant="ghost" className="plx-sheet__cancel" onClick={onClose}>{cancelLabel}</Button> : null}
           {icon ? <span className="plx-sheet__icon" aria-hidden="true">{asIcon(icon)}</span> : null}
