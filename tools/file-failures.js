@@ -4,7 +4,7 @@
 // tests/check.js); it runs no test. ~/team/test-runner.sh calls it after a run.
 //   node tools/file-failures.js --results <file> [--repo owner/name] [--run <url>] [--commit <sha>] [--dry-run] [--open-issues <file>]
 //   --results       the JSON results file: { results: [{ test, part, name, ok, detail, at }] }
-//   --repo          where the issues go (default plenix-ds/plenix-platform)
+//   --repo          where the issues go: only plenix-ds/plenix-platform is accepted (the default)
 //   --run, --commit what the issue body names: the run (its request issue) and the commit that was tested
 //   --dry-run       prints what it would do and changes nothing on GitHub
 //   --open-issues   (with --dry-run) the open issues as a JSON file [{ number, body }] instead of reading GitHub
@@ -25,6 +25,7 @@ const arg = (k) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : un
 const DRY = args.includes('--dry-run');
 const RESULTS = arg('--results'), REPO = arg('--repo') || 'plenix-ds/plenix-platform';
 const RUN = arg('--run') || '', COMMIT = arg('--commit') || '', OPEN_FILE = arg('--open-issues');
+if (REPO !== 'plenix-ds/plenix-platform') { console.error('file-failures: issues go only to plenix-ds/plenix-platform (got ' + REPO + ')'); process.exit(2); }
 if (!RESULTS) { console.error('usage: node tools/file-failures.js --results <file> [--repo owner/name] [--run <url>] [--commit <sha>] [--dry-run] [--open-issues <file>]'); process.exit(2); }
 
 // the Run tests window's groups that have their own area (every other test is area:library)
