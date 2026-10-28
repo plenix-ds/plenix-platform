@@ -28130,6 +28130,19 @@ function NextEngine(props) {
     setAutoSizing(old => JSON.stringify(old) === JSON.stringify(widths) ? old : widths);
     setFloors(old => JSON.stringify(old) === JSON.stringify(floor) ? old : floor);
   }, [columns, source, metrics.room, metrics.min, metrics.space, metrics.row, selectable, isStatic, showTypes, headerMenu, cells, effectiveWrap]);
+
+  // the room under the table that the page keeps (#451): the grid's own part below it (its border, a footer) and the end
+  // margin, padding and border of each container up to the page, so a table that fills the window ends at the page's
+  // padding and only the table scrolls; content placed after the grid is not counted
+  const trailing = (at, hold) => {
+    let sum = Math.max(0, at.getBoundingClientRect().bottom - hold.getBoundingClientRect().bottom);
+    for (let el = at; el; el = el.parentElement) {
+      const cs = getComputedStyle(el);
+      sum += parseFloat(cs.marginBlockEnd) || 0;
+      if (el !== at) sum += (parseFloat(cs.paddingBlockEnd) || 0) + (parseFloat(cs.borderBlockEndWidth) || 0);
+    }
+    return sum;
+  };
   _react.default.useLayoutEffect(() => {
     const at = frame.current;
     if (!at) return;
@@ -28158,7 +28171,7 @@ function NextEngine(props) {
       if (!isStatic && !height && mode !== 'pages' && holder.current) {
         const top = holder.current.getBoundingClientRect().top,
           room = at.getBoundingClientRect().bottom - top;
-        holder.current.style.maxBlockSize = (0, _grid.gridPx)(inPane ? Math.max(0, room) : Math.max(next.row * 8, doc.defaultView.innerHeight - top), {
+        holder.current.style.maxBlockSize = (0, _grid.gridPx)(inPane ? Math.max(0, room) : Math.max(next.row * 8, doc.defaultView.innerHeight - top - trailing(at, holder.current)), {
           round: 'down',
           el: at
         });
