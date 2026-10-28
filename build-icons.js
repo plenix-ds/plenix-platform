@@ -102,6 +102,9 @@ module.exports = function buildIcons(root) {
     ...names,
     '/* right to left: the directional icons mirror (Material Symbols\' bidirectional set); scale, so a rotation on the icon still applies (batch 213) */',
     Object.keys(M.map).filter((n) => MIRROR.indexOf(M.map[n].split('#')[0]) >= 0).sort().map((n) => selectors(M, n).split(',').map((sel) => sel + ':dir(rtl)').join(',')).join(',') + '{scale:-1 1;}',
+    '/* an imported icon module outside the Plenix set that points along the reading direction (its mirrored flag; issue 281):',
+    '   the Icon component marks it plx-icon--mirrored, and it mirrors the same way */',
+    '.plx-icon--mirrored:dir(rtl){scale:-1 1;}',
   ].join('\n') + '\n';
   const missing = Object.keys(M.map).filter((n) => !css.includes('.plx-icon--' + n + '{') && !css.includes('.plx-icon--' + n + ','));
   if (missing.length) throw new Error('icon names without a rule: ' + missing.join(', '));

@@ -102,12 +102,13 @@ function writeIconSet(set, entries, out, source) {
 function writeMaterialModule(root, name, out) {
   if (!/^[a-z0-9-]+$/.test(name)) throw new Error('not an icon name: ' + name);
   const file = path.join(out, name + '.js'), index = path.join(out, 'index.json');
-  if (fs.existsSync(out) && fs.readdirSync(out).length && !safeToReplace(out)) throw new Error('refusing to write into ' + out + ': it holds no index.json written by platform/icons/layout.js');
-  fs.mkdirSync(out, { recursive: true });
-  const meta = fs.existsSync(index) ? JSON.parse(fs.readFileSync(index, 'utf8')) : { generator: GENERATOR, set: 'material', source: SOURCE.material, onDemand: true, icons: [] };
+  // the symbol first: an unknown name creates nothing
   const lib = path.join(root, 'platform', 'icons', 'library');
   const symbol = [name.replace(/-/g, '_'), name].find((s) => VARIANTS.every((x) => fs.existsSync(path.join(lib, s + x + '.svg'))));
   if (!symbol) throw new Error('no Material icon is named ' + name);
+  if (fs.existsSync(out) && fs.readdirSync(out).length && !safeToReplace(out)) throw new Error('refusing to write into ' + out + ': it holds no index.json written by platform/icons/layout.js');
+  fs.mkdirSync(out, { recursive: true });
+  const meta = fs.existsSync(index) ? JSON.parse(fs.readFileSync(index, 'utf8')) : { generator: GENERATOR, set: 'material', source: SOURCE.material, onDemand: true, icons: [] };
   const e = { name, symbol, fillOutline: false, mirrored: MIRROR.includes(symbol), files: Object.fromEntries(VARIANTS.map((x) => [x, path.join(lib, symbol + x + '.svg')])) };
   const text = moduleText('material', e, SOURCE.material);
   if (!fs.existsSync(file) || fs.readFileSync(file, 'utf8') !== text) fs.writeFileSync(file, text);
