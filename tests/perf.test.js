@@ -1,5 +1,5 @@
-// Plenix · performance budgets over the actual package artifacts. Invoked by the last W15C build step and by CI's
-// existing build-packages.js command; CLI: node tests/perf.test.js. Missing artifacts fail with a build instruction.
+// Plenix · performance budgets over the actual package artifacts. A test: it runs only when the owner starts it
+// (HANDOFF.md "No tests"), never inside the build; CLI: node tests/perf.test.js. Missing artifacts fail with a build instruction.
 const fs = require('fs'), path = require('path'), zlib = require('zlib'), assert = require('assert');
 const ROOT = path.resolve(__dirname, '..');
 const BUDGETS = [
