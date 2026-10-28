@@ -7549,16 +7549,6 @@
       "$value": "{plx-sys.font-weight-medium}",
       "$type": "fontWeight"
     },
-    "text-link-target-inset-block": {
-      "$value": "min(0px, calc((100% - {plx-sys.control-target-min}) / 2))",
-      "$type": "dimension",
-      "$description": "How far a text link that is a table cell's only content reaches above and below its text with an invisible target: up to the minimum target (--plx-sys-control-target-min: 24px with a mouse, 44px with touch), centered on the link; the cell clips it, so it never reaches the next row (Platforms Standard 3.1)."
-    },
-    "text-link-target-inset-inline-end": {
-      "$value": "min(0px, calc(100% - {plx-sys.control-target-min}))",
-      "$type": "dimension",
-      "$description": "How far that link's invisible target reaches after its text (toward the cell's end, where the cell has room; the link starts at the cell's padding): up to the minimum target width; the cell clips it, so it never reaches the next column."
-    },
     "text-link-text": {
       "$value": "{plx-sys.content-link}",
       "$type": "color"
