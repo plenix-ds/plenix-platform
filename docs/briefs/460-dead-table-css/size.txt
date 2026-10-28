@@ -1,0 +1,3 @@
+before {"raw":2617530,"min":2342845,"brotli":183663}
+after  {"raw":2612009,"min":2338563,"brotli":183382}
+saved  raw 5,521 bytes (5.4 KB), minified 4,282 bytes (4.2 KB), brotli 281 bytes
