@@ -6910,7 +6910,78 @@ function ButtonGroup({
   })));
 }
   } },
-  "platform/utils/layer.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/utils/scrollLock.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.isScrollLocked = isScrollLocked;
+exports.lockScroll = lockScroll;
+exports.scrollLockCount = scrollLockCount;
+exports.useScrollLock = useScrollLock;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · scroll lock (platform/utils/scrollLock.js): stops a scroll container scrolling while a modal layer covers it.
+   Summary: lockScroll(target) locks the page (the html element) or one scroll container and returns the function that
+     releases it; useScrollLock(active, ref) does the same for as long as a component asks. Locks are counted per target,
+     so nested modals release the page only when the last one closes.
+   Usage:
+     import { useScrollLock, lockScroll } from 'plenix-platform';
+     useScrollLock(open);                          // the page, while open
+     useScrollLock(open, listRef);                 // one scroll container
+     const release = lockScroll(); … release();    // outside React
+   Props:
+     lockScroll(target?): target is an element (default document.documentElement); returns release(), safe to call twice
+     useScrollLock(active, ref?): locks while active is true; ref (a React ref) names the container, else the page
+     isScrollLocked(target?): true while the target holds a lock
+     scrollLockCount(target?): how many locks the target holds
+   Behavior:
+     A locked target carries data-plx-scroll-lock="locked" and system/scroll-lock.css stops it scrolling: overflow hidden in
+     both directions, the scrollbar's space kept (scrollbar-gutter: stable) so nothing shifts, overscroll contained. The
+     scroll position is not touched, so it is exactly where it was when the lock is released. Content inside the modal
+     scrolls as usual.
+   Notes:
+     Only for modal layers (Dialog, a modal drawer or sheet, a full-screen overlay): never for menus, popovers, tooltips or
+     toasts. Pair it with the modal's focus trap (utils/layer.js) so assistive technology also stays inside. */
+
+const ATTR = 'data-plx-scroll-lock';
+const counts = new Map();
+const pageOf = target => target || (typeof document !== 'undefined' ? document.documentElement : null);
+function lockScroll(target) {
+  const el = pageOf(target);
+  if (!el) return () => {};
+  const n = (counts.get(el) || 0) + 1;
+  counts.set(el, n);
+  if (n === 1) el.setAttribute(ATTR, 'locked');
+  let released = false;
+  return function release() {
+    if (released) return;
+    released = true;
+    const left = (counts.get(el) || 1) - 1;
+    if (left > 0) {
+      counts.set(el, left);
+      return;
+    }
+    counts.delete(el);
+    el.removeAttribute(ATTR);
+  };
+}
+function isScrollLocked(target) {
+  return (counts.get(pageOf(target)) || 0) > 0;
+}
+function scrollLockCount(target) {
+  return counts.get(pageOf(target)) || 0;
+}
+function useScrollLock(active, ref) {
+  _react.default.useEffect(() => {
+    if (!active) return undefined;
+    if (ref && !ref.current) return undefined;
+    return lockScroll(ref ? ref.current : undefined);
+  }, [active, ref]);
+}
+  } },
+  "platform/utils/layer.js": { deps: {"react":null,"./scrollLock.js":"platform/utils/scrollLock.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -6920,6 +6991,7 @@ exports.focusables = focusables;
 exports.useLayer = useLayer;
 exports.useUid = useUid;
 var _react = _interopRequireDefault(require("react"));
+var _scrollLock = require("./scrollLock.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · layers (platform/utils/layer.js). Internal; not part of the public API.
    Every open menu, dialog, drawer and media viewer is a layer. Escape closes only the topmost layer, so Escape in a menu
@@ -6927,7 +6999,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
    when it opens (initialFocus: a ref, or a function that returns the element) and returns focus to the element that opened it when it closes. */
 
 const stack = [];
-let modalCount = 0;
 const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]):not([type="hidden"]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
 function focusables(root) {
   if (!root) return [];
@@ -6947,9 +7018,10 @@ function useLayer(ref, open, {
     };
     stack.push(entry);
     const opener = document.activeElement;
+    // a modal layer stops the page scrolling with the shared scroll lock (utils/scrollLock.js: counted, so stacked layers
+    // release the page only when the last one closes; system/scroll-lock.css keeps the scrollbar's space)
+    const release = modal ? (0, _scrollLock.lockScroll)() : null;
     if (modal) {
-      if (modalCount === 0) document.documentElement.classList.add('is-scroll-locked');
-      modalCount += 1;
       const root = ref.current;
       const wanted = typeof initialFocus === 'function' ? initialFocus() : initialFocus && initialFocus.current;
       const first = wanted || focusables(root)[0] || root;
@@ -6993,9 +7065,8 @@ function useLayer(ref, open, {
     return () => {
       document.removeEventListener('keydown', onKey, true);
       stack.splice(stack.indexOf(entry), 1);
+      if (release) release();
       if (modal) {
-        modalCount -= 1;
-        if (modalCount === 0) document.documentElement.classList.remove('is-scroll-locked');
         if (opener && opener.focus && document.contains(opener)) opener.focus({
           preventScroll: true
         });
@@ -42203,77 +42274,6 @@ function meetsContrast(ratio, rule = 'text') {
   const min = CONTRAST_MINIMUMS[rule];
   if (min == null) throw new Error('meetsContrast: no rule "' + rule + '" (text, large-text, enhanced, non-text)');
   return ratio >= min;
-}
-  } },
-  "platform/utils/scrollLock.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.isScrollLocked = isScrollLocked;
-exports.lockScroll = lockScroll;
-exports.scrollLockCount = scrollLockCount;
-exports.useScrollLock = useScrollLock;
-var _react = _interopRequireDefault(require("react"));
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · scroll lock (platform/utils/scrollLock.js): stops a scroll container scrolling while a modal layer covers it.
-   Summary: lockScroll(target) locks the page (the html element) or one scroll container and returns the function that
-     releases it; useScrollLock(active, ref) does the same for as long as a component asks. Locks are counted per target,
-     so nested modals release the page only when the last one closes.
-   Usage:
-     import { useScrollLock, lockScroll } from 'plenix-platform';
-     useScrollLock(open);                          // the page, while open
-     useScrollLock(open, listRef);                 // one scroll container
-     const release = lockScroll(); … release();    // outside React
-   Props:
-     lockScroll(target?): target is an element (default document.documentElement); returns release(), safe to call twice
-     useScrollLock(active, ref?): locks while active is true; ref (a React ref) names the container, else the page
-     isScrollLocked(target?): true while the target holds a lock
-     scrollLockCount(target?): how many locks the target holds
-   Behavior:
-     A locked target carries data-plx-scroll-lock="locked" and system/scroll-lock.css stops it scrolling: overflow hidden in
-     both directions, the scrollbar's space kept (scrollbar-gutter: stable) so nothing shifts, overscroll contained. The
-     scroll position is not touched, so it is exactly where it was when the lock is released. Content inside the modal
-     scrolls as usual.
-   Notes:
-     Only for modal layers (Dialog, a modal drawer or sheet, a full-screen overlay): never for menus, popovers, tooltips or
-     toasts. Pair it with the modal's focus trap (utils/layer.js) so assistive technology also stays inside. */
-
-const ATTR = 'data-plx-scroll-lock';
-const counts = new Map();
-const pageOf = target => target || (typeof document !== 'undefined' ? document.documentElement : null);
-function lockScroll(target) {
-  const el = pageOf(target);
-  if (!el) return () => {};
-  const n = (counts.get(el) || 0) + 1;
-  counts.set(el, n);
-  if (n === 1) el.setAttribute(ATTR, 'locked');
-  let released = false;
-  return function release() {
-    if (released) return;
-    released = true;
-    const left = (counts.get(el) || 1) - 1;
-    if (left > 0) {
-      counts.set(el, left);
-      return;
-    }
-    counts.delete(el);
-    el.removeAttribute(ATTR);
-  };
-}
-function isScrollLocked(target) {
-  return (counts.get(pageOf(target)) || 0) > 0;
-}
-function scrollLockCount(target) {
-  return counts.get(pageOf(target)) || 0;
-}
-function useScrollLock(active, ref) {
-  _react.default.useEffect(() => {
-    if (!active) return undefined;
-    if (ref && !ref.current) return undefined;
-    return lockScroll(ref ? ref.current : undefined);
-  }, [active, ref]);
 }
   } },
   "platform/components/Code/Code.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
