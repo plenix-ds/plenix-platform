@@ -21,26 +21,21 @@
 .plx-menu__check.is-checked{-webkit-mask-image:var(--plx-comp-icon-glyph-check-small);-webkit-mask-position:center;-webkit-mask-repeat:no-repeat;-webkit-mask-size:contain;background-color:currentcolor;mask-image:var(--plx-comp-icon-glyph-check-small);mask-position:center;mask-repeat:no-repeat;mask-size:contain;}
 .plx-menu__divider{border-top-color:var(--plx-comp-menu-divider-border-top-color);border-top-style:solid;border-top-width:var(--plx-comp-menu-divider-border-top-width);margin-block-end:var(--plx-comp-menu-divider-margin-block);margin-block-start:var(--plx-comp-menu-divider-margin-block);margin-inline-end:0;margin-inline-start:0;}
 .plx-menu__group-label{color:var(--plx-comp-menu-group-label-text);font-size:var(--plx-comp-menu-group-label-font-size);font-weight:var(--plx-comp-menu-group-label-font-weight);padding-block-end:var(--plx-comp-menu-group-label-padding-block);padding-block-start:var(--plx-comp-menu-group-label-padding-block);padding-inline-end:var(--plx-comp-menu-group-label-padding-inline);padding-inline-start:var(--plx-comp-menu-group-label-padding-inline);}
-/* on top of everything (owner, batch 272): the menu is a popover in the browser's top layer, placed by CSS anchor positioning.
-   Each wrapper scopes the anchor name, so a menu finds its own trigger; position-area puts it on the trigger's side and
-   edge, and it flips when it would leave the window. Nothing is written inline. */
-/* the anchor wraps the trigger and takes its size: the menu is placed against it */
-.plx-menu-anchor{anchor-name:--plx-menu-trigger;anchor-scope:--plx-menu-trigger;}
-.plx-menu[popover]{inset:auto;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;position-anchor:--plx-menu-trigger;position-try-fallbacks:flip-block, flip-inline;position:fixed;}
-.plx-menu[popover].plx-menu--bottom-start{margin-block-start:var(--plx-comp-menu-popover-bottom-start-margin-block-start);position-area:block-end span-inline-end;}
-.plx-menu[popover].plx-menu--bottom-end{margin-block-start:var(--plx-comp-menu-popover-bottom-end-margin-block-start);position-area:block-end span-inline-start;}
-.plx-menu[popover].plx-menu--top-start{margin-block-end:var(--plx-comp-menu-popover-top-start-margin-block-end);position-area:block-start span-inline-end;}
-.plx-menu[popover].plx-menu--top-end{margin-block-end:var(--plx-comp-menu-popover-top-end-margin-block-end);position-area:block-start span-inline-start;}
+/* on top of everything (owner, batch 272): the menu is a popover in the browser's top layer, placed against its trigger's
+   wrapper by useFloating (system/floating.css: the side, the alignment, the offset xs). The menu's own settings: fixed
+   in the window (over the fallback's absolute), and it flips on one axis at a time (flip-block, then flip-inline).
+   Nothing is written inline. */
+.plx-menu[popover]{position:fixed;}
+.plx-menu[popover]:where(:not(.plx-menu-sub__list)){position-try-fallbacks:flip-block, flip-inline;}
 
 /* radio items (MenuRadioGroup, MenuItem type="radio"): the check of a checkbox item marks the one chosen (library w05B) */
-/* submenus (MenuSub, library w05B): the item scopes its own anchor; the submenu is a popover at the item's end edge,
+/* submenus (MenuSub, library w05B): the submenu is a popover at the item's end edge (useFloating end-top, its own gap),
    level with it, and flips to the other side (or upward) when there is no room. The open item keeps the hover fill. */
-.plx-menu-sub{anchor-scope:--plx-menu-sub;display:flex;flex-direction:column;position:relative;}
-.plx-menu-sub__item{anchor-name:--plx-menu-sub;}
+.plx-menu-sub{display:flex;flex-direction:column;position:relative;}
 .plx-menu-sub__item.is-open{background-color:var(--plx-comp-menu-sub-open-background);}
 .plx-menu-sub__arrow{--plx-comp-icon-size:var(--plx-comp-menu-sub-arrow-size);color:var(--plx-comp-menu-sub-arrow-color);display:inline-flex;flex-shrink:0;}
 .plx-menu-sub__list:not([popover]){inset-block-start:var(--plx-comp-menu-sub-fallback-inset-block-start);inset-inline-start:var(--plx-comp-menu-sub-fallback-inset-inline-start);}
-.plx-menu-sub__list[popover]{margin-inline-start:var(--plx-comp-menu-sub-offset);position-anchor:--plx-menu-sub;position-area:inline-end span-block-end;position-try-fallbacks:flip-inline, flip-block, flip-inline flip-block;}
+.plx-menu-sub__list[popover]{margin-inline-start:var(--plx-comp-menu-sub-offset);}
 /* its motion (moved from motion.css, Styling Standard 3.6: each component owns its own; reduced motion sets the durations to 0s) */
 .plx-menu__item{transition-duration:var(--plx-sys-motion-duration-instant);transition-property:background-color, border-color, box-shadow, color, transform;transition-timing-function:var(--plx-sys-motion-ease-standard);}
 .plx-menu{animation-duration:var(--plx-sys-motion-duration-quick);animation-name:motion-pop-in;animation-timing-function:var(--plx-sys-motion-ease-enter);}

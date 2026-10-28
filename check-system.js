@@ -23,6 +23,8 @@
 //               226, 229, 234). In stylesheets (no rule for the retired variant's class): Stylelint, selector-disallowed-list
 //   icon-names  (check-system.rules/icon-names.js) every icon named in source (<Icon name=…>, icon=…, icon: …, plx-icon--…)
 //               is in the Plenix set (platform/icons/map.json); an unknown name draws nothing
+//   site-styles (check-system.rules/site-styles.js) sites have no stylesheet, style block or style attribute of their own (#381): a tracked
+//               .css file outside the exempt list fails, and so does a <style> block or style attribute in services/ or the St. John site
 //   and the other modules of check-system.rules/ that are not style rules (check-common.js, STYLE_MODULES): composition,
 //   links-not-buttons, semantic-html, settings-cards, table-geometry, use-of-color, copy
 const fs = require('fs');
