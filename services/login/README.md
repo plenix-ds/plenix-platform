@@ -16,7 +16,6 @@ A small sign-in service for plenix.lighthouseway.org and design-system.lighthous
 
 - `server.js`: the service.
 - `accounts.js`: the accounts CLI.
-- `login.css`: the page's layout. It uses Plenix tokens only.
 - `Dockerfile`, `deploy.sh`: the container, built in the save service's style. They are written but have not been run.
 - `nginx-example.conf`: how the VM's Nginx would use the service.
 - The tests are in `tests/login.test.js` (`npm run test:login`). No tests: see HANDOFF.md (the owner runs them).
@@ -37,7 +36,7 @@ The data lives in `DATA` (`/srv/plenix/login` on the VM, mounted at `/data`):
   - These limits are kept in memory, so a restart clears them.
 - **Requests from other sites.** A POST must carry an `Origin` (or `Referer`) from the host it was sent to. The page sends a strict Content-Security-Policy: scripts, styles and fonts come only from the Platform CDN.
 - **Password managers (WCAG 3.3.8).** The fields use `autocomplete="username"` and `autocomplete="current-password"`. Paste and autofill are never blocked, and the user name stays filled in after an error.
-- **Look.** The page uses only the Platform release's classes: the accent application header, a `plx-panel` card, `plx-field` and `plx-input`, `plx-check`, `plx-button`, and `plx-notice`. It loads `fonts.css`, `plenix.css` and `theme-boot.js` from `https://design-system.lighthouseway.org/cdn/<version>/`, where the version comes from `package.json` (the same files the deployed apps use). Light and dark mode follow the system. It follows Platforms Standard 5.3 "Sign-in and account": a centered card at Medium and Wide, and one column with no card frame at Narrow.
+- **Look.** The page uses only the Platform release's classes: the accent application header, the Platform's `Auth` pattern (`plx-auth`: a centered card, one column at Narrow) in the AppShell frame, `plx-field` and `plx-input`, `plx-check`, `plx-button`, and `plx-notice`. It loads `fonts.css`, `plenix.css` and `theme-boot.js` from `https://design-system.lighthouseway.org/cdn/<version>/`, where the version comes from `package.json` (the same files the deployed apps use). Light and dark mode follow the system. It follows Platforms Standard 5.3 "Sign-in and account": a centered card at Medium and Wide, and one column with no card frame at Narrow.
 
 Settings come from environment variables:
 

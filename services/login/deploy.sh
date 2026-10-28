@@ -11,7 +11,7 @@ VERSION=$(node -p "require('../../package.json').version")
 CDN=https://design-system.lighthouseway.org/cdn/$VERSION
 cp ../../platform/brand/favicon.svg favicon.svg
 trap 'rm -f favicon.svg' EXIT
-tar -czf - server.js accounts.js login.css favicon.svg Dockerfile | ssh "${SSH_OPTS[@]}" "$HOST" "set -e
+tar -czf - server.js accounts.js favicon.svg Dockerfile | ssh "${SSH_OPTS[@]}" "$HOST" "set -e
   mkdir -p /tmp/plenix-login-src && tar -xzf - -C /tmp/plenix-login-src
   cd /tmp/plenix-login-src && sudo docker build -q -t plenix-login . >/dev/null
   sudo mkdir -p /srv/plenix/login && sudo chown 1000:1000 /srv/plenix/login && sudo chmod 700 /srv/plenix/login

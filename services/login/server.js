@@ -5,7 +5,7 @@
 //   POST /auth/sign-out     signs out (everywhere=1 also ends every other session of the account); back to the sign-in page
 //   GET  /auth/sign-out     the apps' "Sign out" link: signs out when followed on this site, otherwise asks first
 //   GET  /auth/session      who is signed in, for the apps' account menu: { user, email, name, groups } or 401
-//   GET  /auth/login.css    the page's layout stylesheet (Plenix tokens only); /auth/favicon.svg the brand kit's icon
+//   GET  /auth/favicon.svg  the brand kit's icon
 // It runs on the Plenix VM in Docker, behind the VM's Nginx, like the save service. Accounts are DATA/accounts.json, made and
 // changed with the CLI (accounts.js: add, groups, disable, enable, reset-password, revoke, list); passwords are scrypt hashes
 // with a salt per account. A session is a cookie signed with HMAC-SHA256 (the key is DATA/secret, made on first start, mode
@@ -217,7 +217,8 @@ setInterval(() => {
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const minutes = (ms) => { const m = Math.max(1, Math.ceil(ms / 60000)); return m + (m === 1 ? ' minute' : ' minutes'); };
 // the Plenix page: the application header (accent), the canvas, and a centered card (Platforms Standard 5.3 "Sign-in and
-// account"; one column at Narrow, login.css). Only Platform classes and the release stylesheets: no style attributes.
+// account"; one column at Narrow): the release's AppShell frame, application header and Auth pattern (plx-auth). Only Platform
+// classes and the release stylesheets: no stylesheet of its own, no style attributes.
 function page({ title, body }) {
   return '<!doctype html>\n<html lang="en" data-plx-mode="system" data-plx-density-policy="standard">\n<head>\n<meta charset="utf-8">\n'
     + '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'
@@ -227,35 +228,34 @@ function page({ title, body }) {
     + '<script src="' + CDN + '/theme-boot.js"></script>\n'
     + '<link rel="stylesheet" href="' + CDN + '/fonts.css">\n'
     + '<link rel="stylesheet" href="' + CDN + '/plenix.css">\n'
-    + '<link rel="stylesheet" href="/auth/login.css">\n'
-    + '</head>\n<body class="plx-login">\n'
+    + '</head>\n<body>\n<div class="plx-app-shell" data-plx-layout="fluid">\n'
     + '<header class="plx-app-header plx-app-header--accent"><div class="plx-app-header__start"><span class="plx-app-header__brand"><span aria-hidden="true" class="plx-brand-mark"></span>Plenix</span></div></header>\n'
-    + '<main class="plx-login__main">\n' + body + '\n</main>\n</body>\n</html>\n';
+    + '<div class="plx-app-shell__body"><main id="plx-login-main" tabindex="-1" class="plx-app-shell__main" data-plx-layout="fluid">\n' + body + '\n</main></div>\n</div>\n</body>\n</html>\n';
 }
 const notice = (tone, text) => '<div class="plx-notice plx-notice--' + tone + '"' + (tone === 'danger' ? ' role="alert"' : '') + '><span class="plx-icon plx-icon--' + (tone === 'danger' ? 'alert' : 'info-circle') + '" aria-hidden="true"></span><div class="plx-notice__text">' + esc(text) + '</div></div>';
 function signInPage({ rd, user, error, info }) {
   const field = (id, label, input) => '<div class="plx-field plx-field--stacked"><div class="plx-field__head"><label class="plx-field__label" for="' + id + '">' + label + '</label></div><div class="plx-field__control">' + input + '</div></div>';
-  return page({ title: 'Sign in', body: '<section class="plx-panel plx-login__card" aria-labelledby="plx-login-title">'
-    + '<div class="plx-panel__header"><div class="plx-panel__heading"><h1 id="plx-login-title" class="plx-panel__title">Sign in to Plenix</h1>'
-    + '<p class="plx-panel__description">Use your Plenix user name or email.</p></div></div>'
-    + '<div class="plx-panel__body"><form class="plx-stack plx-stack--gap-md" method="post" action="/auth/sign-in" novalidate>'
+  return page({ title: 'Sign in', body: '<div class="plx-auth plx-auth--page"><section class="plx-auth__card" aria-labelledby="plx-login-title">'
+    + '<header class="plx-auth__header"><h1 id="plx-login-title" class="plx-auth__title">Sign in to Plenix</h1>'
+    + '<p class="plx-auth__description">Use your Plenix user name or email.</p></header>'
+    + '<div class="plx-auth__body"><form class="plx-auth__form" method="post" action="/auth/sign-in" novalidate>'
     + (error ? notice('danger', error) : '') + (info ? notice('info', info) : '')
     + '<input type="hidden" name="rd" value="' + esc(rd) + '">'
     + field('plx-login-user', 'User name or email', '<input class="plx-input" id="plx-login-user" name="user" type="text" value="' + esc(user || '') + '" autocomplete="username" autocapitalize="off" spellcheck="false" required' + (error && user ? '' : ' autofocus') + (error ? ' aria-invalid="true"' : '') + '>')
     + field('plx-login-password', 'Password', '<input class="plx-input" id="plx-login-password" name="password" type="password" autocomplete="current-password" required' + (error && user ? ' autofocus' : '') + (error ? ' aria-invalid="true"' : '') + '>')
     + '<label class="plx-check"><input class="plx-check__input" type="checkbox" name="keep" value="1"><span class="plx-check__text"><span class="plx-check__label">Keep me signed in</span><span class="plx-check__description">For 30 days on this device. Otherwise, for 12 hours.</span></span></label>'
-    + '<button class="plx-button plx-button--primary plx-login__submit" type="submit"><span class="plx-button__label">Sign in</span></button>'
-    + '</form></div></section>' });
+    + '<button class="plx-button plx-button--primary plx-auth__submit" type="submit"><span class="plx-button__label">Sign in</span></button>'
+    + '</form></div></section></div>' });
 }
 function signedInPage(a, rd) {
-  return page({ title: 'Signed in', body: '<section class="plx-panel plx-login__card" aria-labelledby="plx-login-title">'
-    + '<div class="plx-panel__header"><div class="plx-panel__heading"><h1 id="plx-login-title" class="plx-panel__title">You are signed in</h1>'
-    + '<p class="plx-panel__description">As ' + esc(a.name || a.user) + ' (' + esc(a.user) + ').</p></div></div>'
-    + '<div class="plx-panel__body"><div class="plx-stack plx-stack--gap-md">'
-    + '<a class="plx-button plx-button--primary plx-login__submit" href="' + esc(rd) + '"><span class="plx-button__label">Continue</span></a>'
+  return page({ title: 'Signed in', body: '<div class="plx-auth plx-auth--page"><section class="plx-auth__card" aria-labelledby="plx-login-title">'
+    + '<header class="plx-auth__header"><h1 id="plx-login-title" class="plx-auth__title">You are signed in</h1>'
+    + '<p class="plx-auth__description">As ' + esc(a.name || a.user) + ' (' + esc(a.user) + ').</p></header>'
+    + '<div class="plx-auth__body"><div class="plx-auth__flow">'
+    + '<a class="plx-button plx-button--primary plx-auth__submit" href="' + esc(rd) + '"><span class="plx-button__label">Continue</span></a>'
     + '<form method="post" action="/auth/sign-out"><input type="hidden" name="rd" value="' + esc(rd) + '">'
-    + '<button class="plx-button plx-button--secondary plx-login__submit" type="submit"><span class="plx-button__label">Switch account</span></button></form>'
-    + '</div></div></section>' });
+    + '<button class="plx-button plx-button--secondary plx-auth__submit" type="submit"><span class="plx-button__label">Switch account</span></button></form>'
+    + '</div></div></section></div>' });
 }
 
 // ---- responses ---------------------------------------------------------------------------------------------------------
@@ -320,13 +320,13 @@ function signOutLink(req, res) {
   if (req.headers['sec-fetch-site'] === 'same-origin') return endSession(req, res, rd, false);
   const a = signedIn(req);
   if (!a) return redirect(res, '/auth/sign-in' + (rd !== '/' ? '?rd=' + encodeURIComponent(rd) : ''));
-  return html(res, 200, page({ title: 'Sign out', body: '<section class="plx-panel plx-login__card" aria-labelledby="plx-login-title">'
-    + '<div class="plx-panel__header"><div class="plx-panel__heading"><h1 id="plx-login-title" class="plx-panel__title">Sign out of Plenix?</h1>'
-    + '<p class="plx-panel__description">You are signed in as ' + esc(a.name || a.user) + ' (' + esc(a.user) + ').</p></div></div>'
-    + '<div class="plx-panel__body"><form class="plx-stack plx-stack--gap-md" method="post" action="/auth/sign-out"><input type="hidden" name="rd" value="' + esc(rd) + '">'
-    + '<button class="plx-button plx-button--primary plx-login__submit" type="submit"><span class="plx-button__label">Sign out</span></button>'
-    + '<a class="plx-button plx-button--secondary plx-login__submit" href="' + esc(rd) + '"><span class="plx-button__label">Stay signed in</span></a>'
-    + '</form></div></section>' }));
+  return html(res, 200, page({ title: 'Sign out', body: '<div class="plx-auth plx-auth--page"><section class="plx-auth__card" aria-labelledby="plx-login-title">'
+    + '<header class="plx-auth__header"><h1 id="plx-login-title" class="plx-auth__title">Sign out of Plenix?</h1>'
+    + '<p class="plx-auth__description">You are signed in as ' + esc(a.name || a.user) + ' (' + esc(a.user) + ').</p></header>'
+    + '<div class="plx-auth__body"><form class="plx-auth__form" method="post" action="/auth/sign-out"><input type="hidden" name="rd" value="' + esc(rd) + '">'
+    + '<button class="plx-button plx-button--primary plx-auth__submit" type="submit"><span class="plx-button__label">Sign out</span></button>'
+    + '<a class="plx-button plx-button--secondary plx-auth__submit" href="' + esc(rd) + '"><span class="plx-button__label">Stay signed in</span></a>'
+    + '</form></div></section></div>' }));
 }
 
 async function signOut(req, res) {
@@ -379,7 +379,6 @@ function handle(req, res) {
   if (url === '/auth/sign-in' && req.method === 'POST') return signIn(req, res).catch((e) => { log({ event: 'sign-in', result: 'error', error: String(e.message).slice(0, 200) }); json(res, 500, { error: 'failed' }); });
   if (url === '/auth/sign-out' && req.method === 'GET') return signOutLink(req, res);
   if (url === '/auth/sign-out' && req.method === 'POST') return signOut(req, res).catch(() => json(res, 500, { error: 'failed' }));
-  if (url === '/auth/login.css' && req.method === 'GET') return file(res, 'login.css', 'text/css; charset=utf-8');
   if (url === '/auth/favicon.svg' && req.method === 'GET') return file(res, 'favicon.svg', 'image/svg+xml');
   return json(res, 404, { error: 'not-found' });
 }
