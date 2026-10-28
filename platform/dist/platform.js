@@ -35603,7 +35603,7 @@ function NavList({
   })));
 }
   } },
-  "platform/components/Tree/Tree.jsx": { deps: {"react":null,"../../utils/direction.js":"platform/utils/direction.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Tree/Tree.jsx": { deps: {"react":null,"../../utils/direction.js":"platform/utils/direction.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../hooks/useFocusable.js":"platform/hooks/useFocusable.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35615,8 +35615,9 @@ var _direction = require("../../utils/direction.js");
 var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
 var _Icon = require("../Icon/Icon.jsx");
+var _useFocusable = require("../../hooks/useFocusable.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · Tree
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Tree
    Summary: A hierarchy to choose from (folders, categories).
    Usage:
      <Tree label="Folders" nodes={[{ id, label, icon, meta, children: [...] }]} selected={id} onSelect={setId}
@@ -35636,7 +35637,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      className: more classes on the tree
    Behavior:
      Each item passes its own open/selected state to Icon.filled; child icons do not follow an ancestor item.
-     The tree is one Tab stop.
+     The tree is one Tab stop. Each item's focus, and whether the keyboard moved it there (its row's focus ring), comes
+       from useFocusable.
      Arrow Up and Down move through the visible items.
      Arrow Right opens an item or goes to its first child; Arrow Left closes it or goes to the parent.
      Home and End go to the first and last visible item.
@@ -35645,7 +35647,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      An open folder shows the open-folder icon (batch 239). Icons are outline while closed and open and filled while the item
      is open or selected (batch 241), by the item's own state only: a selected item does not fill the icons of the items inside it (batch 240).
 */
-
 const asIcon = (i, filled) => typeof i === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
   name: i,
   filled: filled
@@ -35657,6 +35658,80 @@ const OPEN_ICONS = {
   folder: 'folder-open'
 };
 const iconOf = (n, isOpen) => isOpen ? n.openIcon || typeof n.icon === 'string' && OPEN_ICONS[n.icon] || n.icon : n.icon;
+
+// one item: its focus (and whether the keyboard moved it there, :focus-visible) comes from useFocusable; the tree keeps
+// the one Tab stop (tabIndex) and the keys
+function TreeItem({
+  n,
+  level,
+  tree
+}) {
+  const {
+    base,
+    selected,
+    active,
+    open,
+    refs,
+    moveTo,
+    toggle,
+    onSelect,
+    setFocusId
+  } = tree;
+  const {
+    focusVisible,
+    focusProps
+  } = (0, _useFocusable.useFocusable)({
+    tabStop: 'none',
+    handlers: {
+      onFocus: e => {
+        if (e.target === e.currentTarget) setFocusId(n.id);
+      }
+    }
+  });
+  const kids = n.children && n.children.length;
+  const isOpen = kids && open.has(n.id);
+  return /*#__PURE__*/_react.default.createElement("li", _extends({
+    ref: el => {
+      refs.current[n.id] = el;
+    },
+    id: base + '-' + n.id,
+    role: "treeitem",
+    "aria-level": level,
+    "aria-expanded": kids ? !!isOpen : undefined,
+    "aria-selected": n.id === selected,
+    tabIndex: n.id === active ? 0 : -1,
+    className: (0, _cx.cx)('plx-tree__item', n.id === selected && 'is-selected')
+  }, focusProps), /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-tree__row', n.id === selected && 'is-selected', focusVisible && 'is-focus-visible'),
+    "data-plx-level": Math.min(level, 12),
+    onClick: () => {
+      moveTo(n.id);
+      if (onSelect) onSelect(n.id);
+    }
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: (0, _cx.cx)('plx-tree__toggle', isOpen && 'is-open', !kids && 'is-leaf'),
+    "aria-hidden": "true",
+    onClick: kids ? e => {
+      e.stopPropagation();
+      toggle(n.id);
+      moveTo(n.id);
+    } : undefined
+  }), n.icon ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-tree__icon"
+  }, asIcon(iconOf(n, isOpen || n.id === selected), !!isOpen || n.id === selected)) : null, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-tree__label"
+  }, n.label), n.meta !== undefined ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-tree__meta"
+  }, n.meta) : null), isOpen ? /*#__PURE__*/_react.default.createElement("ul", {
+    role: "group",
+    className: "plx-tree__group"
+  }, n.children.map(c => /*#__PURE__*/_react.default.createElement(TreeItem, {
+    key: c.id,
+    n: c,
+    level: level + 1,
+    tree: tree
+  }))) : null);
+}
 function visible(nodes, open, parent, out) {
   nodes.forEach(n => {
     out.push({
@@ -35687,8 +35762,6 @@ function Tree({
   };
   const flat = visible(nodes, open, null, []);
   const [focusId, setFocusId] = _react.default.useState(null);
-  // the item whose focus the keyboard moved (:focus-visible): its row draws the focus ring
-  const [ringId, setRingId] = _react.default.useState(null);
   const active = flat.some(v => v.node.id === focusId) ? focusId : flat.some(v => v.node.id === selected) ? selected : flat[0] && flat[0].node.id;
   const refs = _react.default.useRef({});
   const moveTo = id => {
@@ -35720,62 +35793,28 @@ function Tree({
     } else return;
     e.preventDefault();
   };
-  const renderNodes = (list, level) => list.map(n => {
-    const kids = n.children && n.children.length;
-    const isOpen = kids && open.has(n.id);
-    return /*#__PURE__*/_react.default.createElement("li", {
-      key: n.id,
-      ref: el => {
-        refs.current[n.id] = el;
-      },
-      id: base + '-' + n.id,
-      role: "treeitem",
-      "aria-level": level,
-      "aria-expanded": kids ? !!isOpen : undefined,
-      "aria-selected": n.id === selected,
-      tabIndex: n.id === active ? 0 : -1,
-      className: (0, _cx.cx)('plx-tree__item', n.id === selected && 'is-selected'),
-      onFocus: e => {
-        if (e.target === e.currentTarget) {
-          setFocusId(n.id);
-          setRingId(e.currentTarget.matches(':focus-visible') ? n.id : null);
-        }
-      },
-      onBlur: e => {
-        if (e.target === e.currentTarget) setRingId(null);
-      }
-    }, /*#__PURE__*/_react.default.createElement("div", {
-      className: (0, _cx.cx)('plx-tree__row', n.id === selected && 'is-selected', n.id === ringId && 'is-focus-visible'),
-      "data-plx-level": Math.min(level, 12),
-      onClick: () => {
-        moveTo(n.id);
-        if (onSelect) onSelect(n.id);
-      }
-    }, /*#__PURE__*/_react.default.createElement("span", {
-      className: (0, _cx.cx)('plx-tree__toggle', isOpen && 'is-open', !kids && 'is-leaf'),
-      "aria-hidden": "true",
-      onClick: kids ? e => {
-        e.stopPropagation();
-        toggle(n.id);
-        moveTo(n.id);
-      } : undefined
-    }), n.icon ? /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-tree__icon"
-    }, asIcon(iconOf(n, isOpen || n.id === selected), !!isOpen || n.id === selected)) : null, /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-tree__label"
-    }, n.label), n.meta !== undefined ? /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-tree__meta"
-    }, n.meta) : null), isOpen ? /*#__PURE__*/_react.default.createElement("ul", {
-      role: "group",
-      className: "plx-tree__group"
-    }, renderNodes(n.children, level + 1)) : null);
-  });
+  const tree = {
+    base,
+    selected,
+    active,
+    open,
+    refs,
+    moveTo,
+    toggle,
+    onSelect,
+    setFocusId
+  };
   return /*#__PURE__*/_react.default.createElement("ul", {
     role: "tree",
     "aria-label": label,
     className: (0, _cx.cx)('plx-tree', className),
     onKeyDown: onKeyDown
-  }, renderNodes(nodes, 1));
+  }, nodes.map(n => /*#__PURE__*/_react.default.createElement(TreeItem, {
+    key: n.id,
+    n: n,
+    level: 1,
+    tree: tree
+  })));
 }
   } },
   "platform/components/MediaPlayer/useSeparateAudio.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
