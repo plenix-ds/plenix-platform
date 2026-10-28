@@ -848,12 +848,16 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
    Usage:
      <DirectionProvider dir="rtl" lang="ar">{app}</DirectionProvider>
      <DirectionProvider locale="he-IL" root>{app}</DirectionProvider>   // on <html>: the whole page
+     <DirectionProvider follow>{app}</DirectionProvider>                 // an app root: the page's own dir, as it is
      const { dir, setDir } = useDirection();
    Props:
      dir: "ltr" | "rtl"; without it, the direction of locale, else of the page
      locale: a language tag ("ar-EG", "en-US"); it sets lang and, without dir, the direction (directionOf)
      lang: the lang attribute, when it is not the locale
      root: set dir and lang on <html> instead of a region (default false): the page, its portals and its scrollbars mirror
+     follow: the page decides (default false): the direction is <html>'s dir as it is and as it changes; nothing is
+       written and no wrapper is added, so an application root (mountSuite, the Asset Manager's islands) gets the
+       context without any change to the page; setDir sets <html>'s dir
      children: the application root or the region it wraps
      useDirection(): { dir, rtl, setDir(dir) }: the nearest provider's direction (outside one, the page's), and a way to
        change it
@@ -869,7 +873,37 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
 */
 
 const DirectionContext = exports.DirectionContext = /*#__PURE__*/_react.default.createContext(null);
+
+// follow: the page's own direction, read from <html> and kept current; it writes nothing and adds no element
+function PageDirection({
+  children
+}) {
+  const [page, setPage] = _react.default.useState(() => typeof document !== 'undefined' ? (0, _direction.getDirection)() : 'ltr');
+  _react.default.useEffect(() => {
+    const observer = new MutationObserver(() => setPage((0, _direction.getDirection)()));
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['dir']
+    });
+    setPage((0, _direction.getDirection)());
+    return () => observer.disconnect();
+  }, []);
+  const value = _react.default.useMemo(() => ({
+    dir: page,
+    rtl: page === 'rtl',
+    setDir: d => document.documentElement.setAttribute('dir', d === 'rtl' ? 'rtl' : 'ltr')
+  }), [page]);
+  return /*#__PURE__*/_react.default.createElement(DirectionContext.Provider, {
+    value: value
+  }, children);
+}
 function DirectionProvider({
+  follow = false,
+  ...props
+}) {
+  return follow ? /*#__PURE__*/_react.default.createElement(PageDirection, null, props.children) : /*#__PURE__*/_react.default.createElement(OwnDirection, props);
+}
+function OwnDirection({
   dir,
   locale,
   lang,
@@ -1890,7 +1924,7 @@ var _default = exports.default = {
     "label": "Columns",
     "manage": "Manage columns",
     "first": "First column",
-    "makeFirst": "Make first column",
+    "moveMenu": "Move {name}",
     "moveUp": "Move {name} up",
     "moveDown": "Move {name} down",
     "up": "Move up",
@@ -4204,7 +4238,7 @@ var _default = exports.default = {
     "label": "الأعمدة",
     "manage": "إدارة الأعمدة",
     "first": "العمود الأول",
-    "makeFirst": "جعله العمود الأول",
+    "moveMenu": "نقل {name}",
     "moveUp": "نقل {name} لأعلى",
     "moveDown": "نقل {name} لأسفل",
     "up": "نقل لأعلى",
@@ -25379,7 +25413,7 @@ const REORDER_STRINGS = exports.REORDER_STRINGS = {
   moveDown: 'Move down'
 };
   } },
-  "platform/patterns/ColumnsMenu/ColumnsMenu.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ColumnsMenu/ColumnsMenu.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -25395,18 +25429,19 @@ var _Checkbox = require("../../components/Checkbox/Checkbox.jsx");
 var _Dialog = require("../../components/Dialog/Dialog.jsx");
 var _Field = require("../../components/Field/Field.jsx");
 var _Icon = require("../../components/Icon/Icon.jsx");
+var _Menu = require("../../components/Menu/Menu.jsx");
 var _Input = require("../../components/Input/Input.jsx");
 var _SearchField = require("../../components/SearchField/SearchField.jsx");
 var _Text = require("../../components/Text/Text.jsx");
-var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
 var _VisuallyHidden = require("../../components/VisuallyHidden/VisuallyHidden.jsx");
 var _panelParts = require("../CommandBar/panel-parts.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · ColumnsMenu, ManageColumnsDialog
    Summary: The command bar's Columns (owner, 2026-10-14: the first column is a must; a list with reordering): a "Columns"
-     dropdown listing every column with its handle, a checkbox (shown or hidden), "Make first column" (or the pinned mark
-     of the first) and Move up / Move down; ManageColumnsDialog is the same list, larger, with a find field, Show all,
-     Hide all and a First column select, applied with Apply.
+     dropdown listing every column with its handle, a checkbox (shown or hidden) and, for the first, its pinned mark; a
+     First column select above the list names the first column. The handle opens a menu with Move up and Move down.
+     ManageColumnsDialog is the same list, larger, with a find field, Show all, Hide all and the First column select,
+     applied with Apply.
    Usage:
      const [columns, setColumns] = React.useState({ order: ['name', 'type', 'size'], hidden: [] });
      <ColumnsMenu fields={fields} value={columns} onChange={setColumns} />
@@ -25419,15 +25454,17 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      open, onOpenChange(open): (ManageColumnsDialog) the dialog opened by its owner, e.g. the DataGrid's "More…" in the
        header's right-click menu; trigger={null} draws no button
      inline: (ColumnsMenu) draws the list alone (open, in a frame); default false
-     strings: { label: "Columns", manage: "Manage columns", first: "First column", makeFirst: "Make first column",
+     strings: { label: "Columns", manage: "Manage columns", first: "First column", moveMenu: "Move {name}",
        moveUp: "Move {name} up", moveDown: "Move {name} down", up: "Move up", down: "Move down", find: "Find a column",
        showAll: "Show all", hideAll: "Hide all", apply: "Apply", cancel: "Cancel", shown: "{name} shown", hidden: "{name}
        hidden", isFirst: "{name} is the first column", moved: "{name}, position {position} of {total}", row: "{name}{first}.
        Alt + Arrow Up or Down moves it", firstMark: ", first column", none: "No column matches" }
    Behavior:
      Changes in the dropdown apply at once; the dialog applies them with Apply (Cancel leaves the columns as they were).
-     A row moves by drag, by Move up and Move down, or by Alt + Arrow Up / Down on the focused row; Make first column moves
-       it to the top. Each change is announced politely. The first column cannot be hidden.
+     A row moves by drag (in Firefox a drag does not start on a button: start it from the row, not the handle), by Move up and
+       Move down in the handle's menu (the way without dragging), or by Alt + Arrow Up /
+       Down on the focused row; the First column select moves a column to the top. Each change is announced politely. The
+       first column cannot be hidden. No row carries a "Make first column" or arrow button of its own.
      The button reads "Columns" with the thin chevron; icons only, its icon and tooltip; hidden columns tint it and show
        their count. */
 
@@ -25435,7 +25472,7 @@ const STRINGS = {
   label: 'Columns',
   manage: 'Manage columns',
   first: 'First column',
-  makeFirst: 'Make first column',
+  moveMenu: 'Move {name}',
   moveUp: 'Move {name} up',
   moveDown: 'Move {name} down',
   up: 'Move up',
@@ -25542,12 +25579,30 @@ function ColumnsList({
         setDrag(null);
         if (from && from !== f) move(from, i);
       }
-    }, /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-columns-list__handle",
-      "aria-hidden": "true"
-    }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-      name: "drag"
-    })), /*#__PURE__*/_react.default.createElement(_Checkbox.Checkbox, {
+    }, /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+      label: (0, _panelParts.fill)(t.moveMenu, {
+        name: name(f)
+      }),
+      trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+        size: "xs",
+        variant: "ghost",
+        icon: "drag",
+        iconOnly: true,
+        label: (0, _panelParts.fill)(t.moveMenu, {
+          name: name(f)
+        }),
+        className: "plx-columns-list__handle"
+      }),
+      placement: "bottom-start"
+    }, /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      icon: "chevron-up",
+      disabled: i === 0,
+      onSelect: () => move(f, i - 1, true)
+    }, t.up), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      icon: "chevron-down",
+      disabled: i === order.length - 1,
+      onSelect: () => move(f, i + 1, true)
+    }, t.down)), /*#__PURE__*/_react.default.createElement(_Checkbox.Checkbox, {
       label: name(f),
       checked: hidden.indexOf(f) < 0,
       disabled: i === 0,
@@ -25560,36 +25615,7 @@ function ColumnsList({
       name: "pin-filled"
     }), /*#__PURE__*/_react.default.createElement(_Text.Text, {
       variant: "secondary"
-    }, t.first)) : /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      size: "xs",
-      variant: "ghost",
-      icon: "pin",
-      onClick: () => move(f, 0, true)
-    }, t.makeFirst), /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
-      content: t.up
-    }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      size: "xs",
-      variant: "ghost",
-      icon: "chevron-up",
-      iconOnly: true,
-      label: (0, _panelParts.fill)(t.moveUp, {
-        name: name(f)
-      }),
-      disabled: i === 0,
-      onClick: () => move(f, i - 1)
-    })), /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
-      content: t.down
-    }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      size: "xs",
-      variant: "ghost",
-      icon: "chevron-down",
-      iconOnly: true,
-      label: (0, _panelParts.fill)(t.moveDown, {
-        name: name(f)
-      }),
-      disabled: i === order.length - 1,
-      onClick: () => move(f, i + 1)
-    })));
+    }, t.first)) : null);
   }), /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, {
     role: "status",
     "aria-live": "polite"
@@ -25607,9 +25633,23 @@ function ColumnsMenu({
     order: fields.map(f => f.value),
     hidden: []
   };
+  const name = nameIn(fields);
+  const first = /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.first
+  }, /*#__PURE__*/_react.default.createElement(_Input.Select, {
+    value: v.order[0],
+    options: v.order.map(f => ({
+      value: f,
+      label: name(f)
+    })),
+    onChange: e => onChange({
+      order: moveTo(v.order, e.target.value, 0),
+      hidden: (v.hidden || []).filter(x => x !== e.target.value)
+    })
+  }));
   const list = /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-find-panel plx-find-panel--columns"
-  }, /*#__PURE__*/_react.default.createElement(ColumnsList, {
+  }, first, /*#__PURE__*/_react.default.createElement(ColumnsList, {
     fields: fields,
     value: v,
     onChange: onChange,

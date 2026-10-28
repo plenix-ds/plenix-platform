@@ -33,7 +33,8 @@
 /* the text area resizes up and down, unless it grows with its content (autoGrow): sized to its content up to the
    maximum, then it scrolls; no resize handle */
 .plx-input--textarea:where(:not(.plx-input--auto-grow)){resize:var(--plx-comp-input-context-resize,vertical);}
-.plx-input--auto-grow{field-sizing:content;max-block-size:var(--plx-comp-textarea-auto-grow-max-height);overflow-y:auto;resize:none;}
+.plx-input--auto-grow{max-block-size:var(--plx-comp-textarea-auto-grow-max-height);overflow-y:auto;resize:none;}
+@supports (field-sizing: content){.plx-input--auto-grow{field-sizing:content;}}
 /* widths: natural, or a role's width, or the whole width of its container (P-52); the color well keeps its square */
 .plx-input--width-xs:where(:not([type="color"])){flex-shrink:0;inline-size:var(--plx-comp-input-width-xs-width);}
 .plx-input--width-sm:where(:not([type="color"])){flex-shrink:0;inline-size:var(--plx-comp-input-width-sm-width);}
