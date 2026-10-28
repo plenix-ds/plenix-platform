@@ -1523,7 +1523,7 @@
       }
     },
     "content-dialog-chrome": {
-      "$value": "{plx-ref.color-black}",
+      "$value": "{plx-ref.color-gray-900}",
       "$type": "color",
       "$extensions": {
         "plenix": {
@@ -1533,7 +1533,7 @@
       }
     },
     "scrim": {
-      "$value": "{plx-ref.color-black}",
+      "$value": "{plx-ref.color-gray-900}",
       "$type": "color",
       "$extensions": {
         "plenix": {

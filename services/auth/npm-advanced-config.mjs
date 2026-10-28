@@ -1,7 +1,11 @@
 // batch 258: the advanced config of the Plenix proxy hosts (27 plenix, 28 design-system); used by npm-plenix.mjs (apply) and npm-dryrun.mjs (test first)
+// AUTHENTIK_OUTPOST: the Authentik outpost's address on the private network (scheme, host and port, for example
+// http://<host>:<port>), from the environment. There is no default: the config is not built without it.
+const OUTPOST_URL = process.env.AUTHENTIK_OUTPOST;
+if (!OUTPOST_URL) throw new Error('Missing AUTHENTIK_OUTPOST: set it in the environment (the Authentik outpost, http://<host>:<port>).');
 const OUTPOST = `
 location /outpost.goauthentik.io {
-    proxy_pass              http://10.0.0.26:9000/outpost.goauthentik.io;
+    proxy_pass              ${OUTPOST_URL.replace(/\/+$/, '')}/outpost.goauthentik.io;
     proxy_set_header        Host $host;
     proxy_set_header        X-Original-URL $scheme://$http_host$request_uri;
     add_header              Set-Cookie $auth_cookie;

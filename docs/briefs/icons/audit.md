@@ -2,7 +2,7 @@
 
 The measured inventory of how an icon reaches the screen at 0.69.5 (commit 0b7af35d). It is step 1 of the icon architecture epic #277; the asset layout (#279) and the move out of CSS (#280) build on it. No product code was changed.
 
-How to repeat every number: `node docs/briefs/icons/measure.js <checkout>` (needs `esbuild` and `puppeteer-core`; `NODE_PATH` may point at another checkout's `node_modules`). It writes [measure.json](measure.json). The run below used the main checkout at the same commit, because `platform/design-system` is a submodule that this worktree does not check out. Chrome 155, headless, 1440×900, Windows 11 (VM 101), median of 7 runs.
+How to repeat every number: `node docs/briefs/icons/measure.js <checkout>` (needs `esbuild` and `puppeteer-core`; `NODE_PATH` may point at another checkout's `node_modules`). It writes [measure.json](measure.json). The run below used the main checkout at the same commit, because `platform/design-system` is a submodule that this worktree does not check out. Chrome 155, headless, 1440×900, Windows 11 (the Windows VM), median of 7 runs.
 
 ## 1. The paths an icon takes
 

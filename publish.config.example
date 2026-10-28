@@ -1,0 +1,6 @@
+# Copy to publish.config (untracked) and fill in. Or set the same names in the environment.
+# No value here is a default: the deploy scripts stop when one is empty.
+# Values are read literally: write full paths (no ~, no quotes).
+PUBLISH_HOST=
+PUBLISH_USER=
+PUBLISH_KEY=
