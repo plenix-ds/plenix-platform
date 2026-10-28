@@ -25,8 +25,11 @@
        options.label: the action's label (default "Undo")
        options.tone, options.duration: as toast.show
    Behavior:
-     A danger toast stays until dismissed (unless a duration is given) and is announced at once (role="alert").
-     The other toasts are announced politely.
+     A danger toast stays until dismissed (unless a duration is given).
+     Each toast is announced once when it appears, through announce() (utils/announce.jsx): its text and its action's
+       label ("Asset moved to Crosses. Undo"), at once (assertive) for a danger toast and politely for the others. The
+       messages are queued, so toasts that appear together are all read, in order. The toast region itself is not a
+       live region, so its buttons are never read as part of a message.
      Every toast has a Dismiss button.
      A toast with an action stays while the pointer is over it or focus is inside it, and starts its time again when they
        leave, so the action is never taken away from someone reaching for it.
@@ -40,6 +43,7 @@ import { cx } from '../../utils/cx.js';
 import { Icon } from '../Icon/Icon.jsx';
 import { Button } from '../Button/Button.jsx';
 import { tokenMs } from '../../utils/tokenTime.js';
+import { announce } from '../../utils/announce.jsx';
 
 const ToastContext = React.createContext(null);
 const TONE_ICON = { info: 'circle-info', success: 'circle-check', warning: 'warning', danger: 'alert' };
@@ -48,7 +52,20 @@ let nextId = 1;
 export function ToastProvider({ duration, children }) {
   const [toasts, setToasts] = React.useState([]);
   const timers = React.useRef(new Map());   // id -> { wait, timer, onClose }
-  const remove = React.useCallback((id) => setToasts((all) => all.filter((t) => t.id !== id)), []);
+  const texts = React.useRef(new Map());    // id -> the message element, read for its announcement
+  const announced = React.useRef(new Set());
+  const remove = React.useCallback((id) => { announced.current.delete(id); setToasts((all) => all.filter((t) => t.id !== id)); }, []);
+  // each new toast once: its text (as shown) and its action's label; danger interrupts, the others wait; queued, so none is lost
+  React.useEffect(() => {
+    toasts.forEach((t) => {
+      if (t.leaving || announced.current.has(t.id)) return;
+      announced.current.add(t.id);
+      const el = texts.current.get(t.id);
+      const shown = el ? el.textContent : String(t.message);
+      const text = t.action && t.action.label ? shown + (/[.!?…]$/.test(shown) ? ' ' : '. ') + t.action.label : shown;
+      announce(text, { politeness: t.tone === 'danger' ? 'assertive' : 'polite', queue: true });
+    });
+  }, [toasts]);
   const dismiss = React.useCallback((id, reason = 'dismiss') => {
     const t = timers.current.get(id);
     if (t) { clearTimeout(t.timer); timers.current.delete(id); if (t.onClose) t.onClose(reason); }
@@ -75,16 +92,16 @@ export function ToastProvider({ duration, children }) {
     <ToastContext.Provider value={api}>
       {children}
       {createPortal(
-        <div className="plx-toast-region" aria-live="polite">
+        <div className="plx-toast-region">
           {toasts.map((t) => (
-            <div key={t.id} role={t.tone === 'danger' ? 'alert' : undefined}
+            <div key={t.id}
               className={cx('plx-toast', 'plx-toast--' + t.tone, t.leaving && 'is-leaving')}
               onAnimationEnd={t.leaving ? () => remove(t.id) : undefined}
               onPointerEnter={t.action ? () => hold(t.id) : undefined} onPointerLeave={t.action ? () => start(t.id) : undefined}
               onFocus={t.action ? () => hold(t.id) : undefined}
               onBlur={t.action ? (e) => { if (!e.currentTarget.contains(e.relatedTarget)) start(t.id); } : undefined}>
               <span className="plx-toast__icon"><Icon name={TONE_ICON[t.tone] || TONE_ICON.info} /></span>
-              <span className="plx-toast__message">{t.message}</span>
+              <span ref={(el) => { if (el) texts.current.set(t.id, el); else texts.current.delete(t.id); }} className="plx-toast__message">{t.message}</span>
               {t.action ? <Button size="xs" className="plx-toast__action" onClick={() => { if (t.action.onAction) t.action.onAction(); dismiss(t.id, 'action'); }}>{t.action.label}</Button> : null}
               <button type="button" className="plx-toast__close" aria-label="Dismiss" onClick={() => dismiss(t.id)}><Icon name="close" /></button>
             </div>

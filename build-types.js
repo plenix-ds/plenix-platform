@@ -2,7 +2,7 @@
 // comments (Summary / Usage / Props) and the defaults in their code: the same reading the design system's API tables use.
 //   Prop types: a chain of quoted choices at the prop's own level ("md" (default) | "sm", "h1"–"h4") becomes a union (an
 //   open chain ending "| …" also takes any string); choices inside a shape ([{ kind: "a" | "b" }]) are a field's, so a
-//   prop written as an array or object shape is typed as one; true/false a boolean, a number default a number, on… a
+//   prop written as an array or object shape is typed as one ("[{ … }] or (record) => that list" also takes that function); true/false a boolean, a number default a number, on… a
 //   handler, children/label/title/icon/… a React node; anything the header does not pin down stays `any`.
 //   A component with "...rest" also takes the attributes of its element.
 // Called by build-packages.js; can run alone: node build-types.js
@@ -79,6 +79,8 @@ function choicesOf(t) {
 }
 function typeOf(name, text, def) {
   if (/^on[A-Z]/.test(name)) return '(...args: any[]) => void';
+  // an array shape that a function can also give: "[{ label, onSelect(record) }] or (record) => that list" (rowMenu, #455)
+  if (/^\s*\[/.test(text) && /\]\s+or\s+\([^)]*\)\s*=>/.test(text)) return 'any[] | ((...args: any[]) => any[])';
   if (/^\s*\[/.test(text)) return 'any[]';   // the prop is written as an array shape: [{ title, field, … }]
   if (/^\s*\{/.test(text)) return 'any';     // an object shape
   if (def && /^\[/.test(def)) return 'any[]';   // an array by its default: a chain in its description is a field's

@@ -31,6 +31,7 @@ import { Virtualizer, elementScroll, observeElementOffset, observeElementRect } 
 import { isRtl } from '../../utils/direction.js';
 import { formatNumber } from '../../utils/format.js';
 import { cx } from '../../utils/cx.js';
+import { announce } from '../../utils/announce.jsx';
 import { gridPx, snapToGrid, gridStep } from '../../utils/grid.js';
 import { SIZE_STEPS, stepSize, snapSize } from '../../utils/sizeSteps.js';
 import { gapPieces } from '../../hooks/useVirtualizer.js';
@@ -165,7 +166,7 @@ function NextEngine(props) {
   const fetching=React.useRef(false);
   const [remoteBusy,setRemoteBusy]=React.useState(false);
   const [remote,setRemote]=React.useState(null),[remoteError,setRemoteError]=React.useState(null),[retry,setRetry]=React.useState(0);
-  const [metrics,setMetrics]=React.useState({row:0,line:0,lead:0,menu:0,min:0,space:0,room:0}),[isNarrow,setNarrow]=React.useState(false),[message,setMessage]=React.useState('');
+  const [metrics,setMetrics]=React.useState({row:0,line:0,lead:0,menu:0,min:0,space:0,room:0}),[isNarrow,setNarrow]=React.useState(false);
   // One conversion per distinct width and measured environment, shared by every visible cell.
   const widthPixels=React.useMemo(()=>{const cache=new Map();return value=>{if(!cache.has(value))cache.set(value,gridPx(value,{el:frame.current||document.documentElement}));return cache.get(value);};},[metrics]);
   const effectiveStep=props.rowHeight || rowHeight, effectiveWrap=props.wrapHeaders ?? wrapHeaders;
@@ -191,7 +192,7 @@ function NextEngine(props) {
   const recordsByKey=React.useMemo(()=>new Map(canonical.map(record=>[recordKey(record[index]),record])),[canonical,index]);
   const replaceData=rows=>new Promise(resolve=>{mutations.current.push(resolve);setEdited({input:incoming,rows:rows.slice()});});
   const changeGroups=value=>{setGroupOwner(groupSignal);setGroups(()=>value);setCollapsed(new Set());props.onViewChange?.({groupBy:value,collapsed:[]});};
-  const toggleGroup=(id,open)=>{const next=new Set(live.current.collapsed),expand=open??next.has(id);if(expand)next.delete(id);else next.add(id);live.current.collapsed=next;setCollapsed(next);setMessage(expand?S.expanded:S.collapsed);props.onViewChange?.({collapsed:[...next]});};
+  const toggleGroup=(id,open)=>{const next=new Set(live.current.collapsed),expand=open??next.has(id),changed=expand===next.has(id);if(expand)next.delete(id);else next.add(id);live.current.collapsed=next;setCollapsed(next);if(changed)announce(expand?S.expanded:S.collapsed);props.onViewChange?.({collapsed:[...next]});};
   const updateRecord=(key,change)=>new Promise(resolve=>{mutations.current.push(resolve);setEdited(old=>({input:incoming,rows:changeRecord(old?.input===incoming?old.rows:source,key,change,index,childField)}));});
   const commitEdit=(key,field,value)=>{const old=canonical.find(record=>recordKey(record[index])===key),previous=valueAt(old,field);updateRecord(key,record=>setField(record,field,value));setEditing(null);pendingEdit.current={key,field};props.onCellEdit?.(setField(old,field,value),{field,value,previous,row:old});};
   const emit=(name,...args)=>{live.current.props.on?.[name]?.(...args);listeners.current.get(name)?.forEach(fn=>fn(...args));};
@@ -486,7 +487,6 @@ function NextEngine(props) {
     {!isStatic?<Scrollbars holder={holder} viewportId={viewportId}/>:null}
     {mode==='pages'&&!failed?<div className={B+'__footer'}><Text variant="data" className={B+'__range'}>{words(S.range,{first:displayedTotal?Math.min(page*pageSize+1,displayedTotal):0,last:Math.min((page+1)*pageSize,displayedTotal),total:displayedTotal})}</Text><label className={B+'__page-size'}><span>{S.perPage}</span><Select value={String(pageSize)} options={(props.pageSizes||[25,50,100]).map(n=>({value:String(n),label:String(n)}))} onChange={e=>{setPage(0);setPageSize(+e.target.value);}}/></label><Pagination className={B+'__pages'} label={words(S.pages,{label})} page={page+1} pageCount={Math.max(1,Math.ceil(displayedTotal/pageSize))} onPageChange={n=>setPage(n-1)}/></div>:null}
     {mode==='load-more'&&!failed?<div className={B+'__footer'}><Text variant="data" className={B+'__range'}>{words(S.count,{shown:Math.min(loadedRows.length,displayedTotal),total:displayedTotal})}</Text>{loadedRows.length<displayedTotal?<Button size="sm" loading={remoteMode&&remoteBusy} className={B+'__more'} onClick={()=>{if(remoteMode){if(!fetching.current){fetching.current=true;setPage(n=>n+1);}}else setLoaded(n=>Math.min(allRows.length,n+pageSize));}}>{S.loadMore}</Button>:null}</div>:null}
-    <span className="plx-sr-only" role="status" aria-live="polite">{message}</span>
   </div></WidthPixels.Provider>;
 }
 export function DataGridEngine(props) { return <NextEngine key={props.storageKey || ''} {...props}/>; }
