@@ -119,7 +119,9 @@ function bundle(target) {
       const icon = /^plenix-platform\/icons\/(plenix|material)\/([a-z0-9-]+)$/.exec(spec);
       if (icon) {
         const dir = path.join(ROOT, 'platform', 'dist', 'icons', icon[1]);
-        const dep = icon[1] === 'material' ? require('./platform/icons/layout.js').writeMaterialModule(ROOT, icon[2], dir) : path.join(dir, icon[2] + '.js');
+        let dep;
+        try { dep = icon[1] === 'material' ? require('./platform/icons/layout.js').writeMaterialModule(ROOT, icon[2], dir) : path.join(dir, icon[2] + '.js'); }
+        catch (e) { throw new BuildError('No icon named ' + icon[2] + ' in the ' + icon[1] + ' set (' + rel(file) + '): ' + e.message); }
         if (!fs.existsSync(dep)) throw new BuildError('No icon named ' + icon[2] + ' in the ' + icon[1] + ' set (' + rel(file) + ')');
         entry.deps[spec] = { id: rel(dep) }; visit(dep); continue;
       }

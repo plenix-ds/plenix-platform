@@ -1,0 +1,90 @@
+# Icon stage 3 (#281) proof. dom-check.js runs dom-production.html and dom-development.html (put them in platform/dist/icons/) after a build.
+
+## DOM and behavior (production and development React)
+{
+ "production": {
+  "dom": {
+   "cases": 3816,
+   "moduleVsStylesheet": 0,
+   "registeredVsStylesheet": 0
+  },
+  "material": {
+   "plenixCheck": "check_small",
+   "materialCheck": "check",
+   "materialKind": "library",
+   "drawsMaterial": true
+  },
+  "project": {
+   "inAcme": true,
+   "inDefault": false,
+   "acmeHasNoPlenix": false
+  },
+  "mirrored": {
+   "flag": true,
+   "set": "material",
+   "classAdded": true,
+   "scaleRtl": "-1 1",
+   "plenixModuleClass": false
+  },
+  "warnings": [
+   "[Plenix] Icon: no icon is named \"acme-logo\"; nothing is drawn.",
+   "[Plenix] Icon: icon is not an icon module (import it from plenix-platform/icons/<set>/<name>); nothing is drawn. [object Object]",
+   "[Plenix] Icon: icon is not an icon module (import it from plenix-platform/icons/<set>/<name>); nothing is drawn. [object Object]"
+  ],
+  "pageErrors": 0
+ },
+ "development": {
+  "material": {
+   "plenixCheck": "check_small",
+   "materialCheck": "check",
+   "materialKind": "library",
+   "drawsMaterial": true
+  },
+  "project": {
+   "inAcme": true,
+   "inDefault": false,
+   "acmeHasNoPlenix": false
+  },
+  "mirrored": {
+   "flag": true,
+   "set": "material",
+   "classAdded": true,
+   "scaleRtl": "-1 1",
+   "plenixModuleClass": false
+  },
+  "warnings": [
+   "[Plenix] Icon: check was fetched at run time; for production import it (plenix-platform/icons/material/check) or register it (registerIcons)",
+   "[Plenix] Icon: no icon is named \"acme-logo\"; nothing is drawn.",
+   "[Plenix] Icon: rocket_launch was fetched at run time; for production import it (plenix-platform/icons/material/rocket-launch) or register it",
+   "[Plenix] Icon: icon is not an icon module (import it from plenix-platform/icons/<set>/<name>); nothing is drawn. [object Object]",
+   "[Plenix] Icon: icon is not an icon module (import it from plenix-platform/icons/<set>/<name>); nothing is drawn. [object Object]"
+  ],
+  "pageErrors": 0
+ }
+}
+
+## Unknown Material import
+A temporary import of plenix-platform/icons/material/no-such-icon in notes/main.jsx (reverted): build-app.js exits 1, "No icon named no-such-icon in the material set (notes/main.jsx): no Material icon is named no-such-icon"; no file is written.
+
+## icon.css regenerates the same: two builds in a row, sha1 474359647a70 both times.
+
+## Full-page pictures (sha1), two loads per side
+SAME dashboard/index.html                         before 25ed49539d after 25ed49539d
+SAME projects/index.html                          before dc5a9e8eb2 after dc5a9e8eb2
+DIFF messages/index.html                          before 138e69a08b,899d70f00c after 8f1080f4c4
+SAME contacts/index.html                          before dba1680646 after dba1680646
+SAME calendar/index.html                          before 8595ff27b9 after 8595ff27b9
+SAME tasks/index.html                             before ea83bfb257 after ea83bfb257
+SAME notes/index.html                             before 50957af09b after 50957af09b
+SAME bookmarks/index.html                         before a9f076392b after a9f076392b
+SAME files/index.html                             before 7fb1ee2cf2 after 7fb1ee2cf2
+SAME settings/index.html                          before d614c65618 after d614c65618
+SAME dam/index.html                               before bbf2624cbe after bbf2624cbe
+SAME dam/settings-system.html                     before 36afaa8744 after 36afaa8744
+SAME dam/settings-myaccount.html                  before 58ec51e415 after 58ec51e415
+SAME platform/design-system/#/foundations/icon    before 8c4559bf5b after 8c4559bf5b
+identical 13 of 14
+
+## Messages, three loads per side (markup sha1 / picture sha1)
+{"before":{"0c7462d1/8f1080f4":1,"0c7462d1/899d70f0":2},"after":{"0c7462d1/8f1080f4":1,"0c7462d1/899d70f0":2}}
+0c7462d1/8f1080f4 vs 0c7462d1/899d70f0 markup same

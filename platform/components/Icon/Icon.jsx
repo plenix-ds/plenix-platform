@@ -30,8 +30,13 @@
      StatusIcon.strings: the tone words, for other languages: { info: "Information", success: "Success", warning: "Warning",
        danger: "Error", neutral: "Note" }
      StatusIcon.className: more classes on the status icon
-     registerIcons(...modules): names drawn from their modules first (a name, and its symbol's spelling, to its module);
-       stage 2 minimal, issue 281 extends it (the library choice, the development fetch). Unregistered names draw as before
+     library: where a name is looked up (issue 281): "plenix" (default: registered modules, the Plenix set, then the
+       Material library, as before), "material" (Material's own symbol even where a Plenix name exists), or a project's own
+       library registered with registerIcons(..., { library }) (only its modules). setDefaultIconLibrary(name) sets the page's
+     registerIcons(...modules[, { library }]): modules drawn first by their name and their symbol's spelling, in their
+       set's library or the one named
+     A name drawn by a run-time fetch (a Material name not imported or registered) warns once in development: production
+       should import or register it. An icon value that is not a module warns once per kind of value and draws nothing
    Behavior:
      The component that owns a current or selected state passes filled (NavList's current item and pinned pin, a
        selected or pressed Button); filled={false} keeps the outline (Tree owns each item state).
@@ -54,7 +59,7 @@
        keeps the text color and size of where it sits.
 */
 import React from 'react';
-import { devWarn } from '../../utils/devWarn.js';
+import { devWarn, development } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { SYMBOLS, NAMES, LIBRARY, LIBRARY_COMMIT } from './glyphs.js';
 
@@ -70,16 +75,24 @@ const LARGE = { lg: true, xl: true };
 const VARIANT = ['', '-fill', '-24', '-24-fill'];   // outline 20, filled 20, outline 24, filled 24
 const library = new Set(LIBRARY.split(' ')), plenix = new Set(SYMBOLS.split(' '));
 // imported icon modules (#282): { name, set, symbol, fillOutline, mirrored, drawings: { 20: { outline, fill }, 24: … } }.
-// registerIcons is the stage 2 minimal resolver: a name (and its symbol's spelling) -> its module, consulted before the
-// stylesheet and the library; #281 extends it (the library choice, the development fetch), it does not replace it
-const registered = new Map();
+// The registry (#281): per library, a name (and its symbol's spelling) -> its module. registerIcons(...modules) puts each
+// module in its own set's library ("plenix", "material"); registerIcons(...modules, { library: 'acme' }) makes a
+// project's own library, which <Icon library="acme"> draws from only
+const libraries = new Map();   // library -> Map(name -> module)
 const isModule = (m) => !!(m && typeof m === 'object' && m.drawings && m.drawings[20] && m.drawings[24] && m.name);
-export function registerIcons(...modules) {
-  for (const m of modules.flat()) {
+export function registerIcons(...args) {
+  const last = args[args.length - 1], options = last && typeof last === 'object' && !Array.isArray(last) && !isModule(last) && 'library' in last ? args.pop() : null;
+  for (const m of args.flat()) {
     if (!isModule(m)) { if (typeof console !== 'undefined') console.warn('[Plenix] registerIcons: not an icon module', m); continue; }
-    registered.set(m.name, m); if (m.symbol && m.symbol !== m.name) registered.set(m.symbol, m);
+    const lib = (options && options.library) || m.set || 'plenix';
+    if (!libraries.has(lib)) libraries.set(lib, new Map());
+    const map = libraries.get(lib); map.set(m.name, m); if (m.symbol && m.symbol !== m.name) map.set(m.symbol, m);
   }
 }
+// the library an Icon without its own library prop draws from: "plenix" (the Plenix set, then the Material library, as
+// before), "material", or a project's own registered library
+let defaultLibrary = 'plenix';
+export function setDefaultIconLibrary(name) { defaultLibrary = name ? String(name) : 'plenix'; }
 // a module's drawing i (VARIANT order: outline 20, filled 20, outline 24, filled 24) as [path, viewBox, extra], the shape
 // parseSvg gives, with the extras in the same order, so the markup is the same as from the stylesheet
 const SLOT = [[20, 'outline'], [20, 'fill'], [24, 'outline'], [24, 'fill']];
@@ -90,8 +103,25 @@ function moduleGlyph(m, i) {
   return [d.d, d.viewBox, extra];
 }
 const normal = (name) => String(name == null ? '' : name).trim();
-export function resolveIcon(name) {
-  const n = normal(name);
+// One resolver (#281): the registered modules of the chosen library first; then, for "plenix", the Plenix set (icon.css)
+// and the Material library; for "material", the Material library only (a Material name draws Material's own symbol
+// even where a Plenix name exists); a project's library draws only its registered modules. A Material name that is not
+// registered is fetched at run time (as before; development warns once that production should import or register it).
+// Returns { kind: 'module' | 'plenix' | 'library', symbol, fillOutline, module? } or null.
+export function resolveIcon(name, options) {
+  const n = normal(name), lib = (options && options.library) || defaultLibrary;
+  const fromRegistry = (l) => { const map = libraries.get(l); const m = map && (map.get(n) || map.get(n.toLowerCase().replace(/_/g, '-')) || map.get(n.toLowerCase().replace(/-/g, '_'))); return m ? { kind: 'module', symbol: m.symbol || m.name, fillOutline: !!m.fillOutline, module: m } : null; };
+  if (lib === 'material') {
+    const reg = fromRegistry('material'); if (reg) return reg;
+    const symbol = n.toLowerCase().replace(/-/g, '_');
+    if (plenix.has(symbol)) return { kind: 'plenix', symbol, fillOutline: false };   // the same drawing, already in icon.css
+    return library.has(symbol) ? { kind: 'library', symbol, fillOutline: false } : null;
+  }
+  if (lib !== 'plenix') return fromRegistry(lib);
+  const reg = fromRegistry('plenix') || fromRegistry('material'); if (reg) return reg;
+  return resolvePlenix(n);
+}
+function resolvePlenix(n) {
   if (NAMES[n]) return { kind: 'plenix', symbol: NAMES[n][0], fillOutline: NAMES[n][1] === 1 };
   const dashed = n.toLowerCase().replace(/_/g, '-');
   if (NAMES[dashed]) return { kind: 'plenix', symbol: NAMES[dashed][0], fillOutline: NAMES[dashed][1] === 1 };
@@ -158,8 +188,17 @@ function warnUnknown(name) {
   const near = [...Object.keys(NAMES), ...library].filter((c) => { const k = c.replace(/[-_]/g, ''); return k.includes(key) || key.includes(k); }).slice(0, 6);
   if (typeof console !== 'undefined') console.warn('[Plenix] Icon: no icon is named "' + n + '"; nothing is drawn.' + (near.length ? ' Closest: ' + near.join(', ') + '.' : ''));
 }
-function useDrawings(name, size, filled, mod) {
-  const found = mod ? { kind: 'module', symbol: mod.symbol || mod.name, fillOutline: !!mod.fillOutline } : resolveIcon(name);
+// a name drawn by a run-time fetch: development warns once that production should import or register it
+const fetchedNotice = new Set();
+function noticeFetch(symbol) {
+  if (fetchedNotice.has(symbol) || !development() || typeof console === 'undefined') return;
+  fetchedNotice.add(symbol);
+  console.warn('[Plenix] Icon: ' + symbol + ' was fetched at run time; for production import it (plenix-platform/icons/material/' + symbol.replace(/_/g, '-') + ') or register it (registerIcons).');
+}
+function useDrawings(name, size, filled, mod, lib) {
+  const resolved = mod ? { kind: 'module', symbol: mod.symbol || mod.name, fillOutline: !!mod.fillOutline, module: mod } : resolveIcon(name, { library: lib });
+  const found = resolved;
+  if (found && found.kind === 'module') mod = found.module;
   const fill = filled === true || (found && found.fillOutline);
   const wanted = LARGE[size] ? [[fill ? 3 : 2, 24]] : [[fill ? 1 : 0, 20], [fill ? 3 : 2, 24]];
   const fileOf = (i) => found.symbol + VARIANT[i];
@@ -167,6 +206,7 @@ function useDrawings(name, size, filled, mod) {
   const pending = found && found.kind === 'library' ? wanted.filter(([i]) => !Array.isArray(files.get(fileOf(i))) && files.get(fileOf(i)) !== null) : [];
   React.useEffect(() => {
     if (!found) { warnUnknown(name); return undefined; }
+    if (found.kind === 'library') noticeFetch(found.symbol);
     if (!pending.length) return undefined;
     let live = true;
     Promise.all(pending.map(([i]) => loadFile(fileOf(i)))).then(() => { if (live) redraw(); });
@@ -182,13 +222,21 @@ function useDrawings(name, size, filled, mod) {
   return glyphs.map(([glyph, optical]) => <svg key={optical} className={'plx-icon__svg plx-icon__glyph--' + optical} viewBox={glyph[1]} aria-hidden="true" focusable="false"><path d={glyph[0]} {...(glyph[2] || null)} /></svg>);
 }
 
-export function Icon({ icon, name, size, filled, label, className, ...rest }) {
+const badIcon = new Set();
+export function Icon({ icon, name, library: lib, size, filled, label, className, ...rest }) {
   devWarn('Icon', { size }, { size: ['xs','sm','md','lg','xl'] });
-  // an imported module (icon), else a registered module for the name, else the name as before (the stylesheet, the library)
-  const mod = isModule(icon) ? icon : registered.get(normal(name)) || null, shown = isModule(icon) ? icon.name : name;
-  const svg = useDrawings(shown, size, filled, mod);
+  // an imported module (icon); else the name through the resolver (registered modules, the stylesheet, the library)
+  // once per kind of bad value (its type and keys), so an object written inline, new on every render, warns once
+  const badKey = icon != null && !isModule(icon) ? Object.prototype.toString.call(icon) + ':' + (typeof icon === 'object' ? Object.keys(icon).sort().join(',') : String(icon)) : null;
+  if (badKey && !badIcon.has(badKey)) { badIcon.add(badKey); if (typeof console !== 'undefined') console.warn('[Plenix] Icon: icon is not an icon module (import it from plenix-platform/icons/<set>/<name>); nothing is drawn.', icon); }
+  const shown = isModule(icon) ? icon.name : name;
+  const svg = useDrawings(shown, size, filled, isModule(icon) ? icon : null, lib);
+  const mod = isModule(icon) ? icon : (() => { const f = resolveIcon(shown, { library: lib }); return f && f.kind === 'module' ? f.module : null; })();
+  // a module outside the Plenix set that points along the reading direction mirrors in right to left (icon.css's
+  // plx-icon--mirrored); the Plenix set's own names already mirror through their per-name rules, so their markup stays the same
+  const mirrored = !!(mod && mod.mirrored && mod.set !== 'plenix');
   return (
-    <span className={cx('plx-icon', 'plx-icon--' + normal(shown), size ? 'plx-icon--size-' + size : null, filled === true && 'plx-icon--filled', filled === false && 'plx-icon--outline', 'plx-icon--inline', className)}
+    <span className={cx('plx-icon', 'plx-icon--' + normal(shown), size ? 'plx-icon--size-' + size : null, filled === true && 'plx-icon--filled', filled === false && 'plx-icon--outline', 'plx-icon--inline', mirrored && 'plx-icon--mirrored', className)}
       role={label ? 'img' : undefined} aria-label={label} aria-hidden={label ? undefined : true} {...rest}>{svg}</span>
   );
 }

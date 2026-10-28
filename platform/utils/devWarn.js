@@ -11,7 +11,7 @@
 import React from 'react';
 
 const messages = new Set();
-function development() {
+export function development() {   // also read by Icon's run-time fetch notice
   if (typeof process === 'object' && process) {
     const env = Reflect.get(process, 'env');
     if (env && Reflect.get(env, 'NODE_ENV') === 'production') return false;

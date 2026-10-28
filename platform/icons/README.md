@@ -84,3 +84,15 @@ One layout and one naming for every icon source, written by `layout.js` (generat
   - It is stage 2 minimal; #281 extends it with the library choice and the development fetch.
   - Unregistered names draw as before: Plenix names from `icon.css`, Material names from the library.
 - **No consumer is switched yet:** every page draws from `icon.css` as before.
+
+## One resolver (#281, stage 3)
+
+- **The order:** the registered modules of the chosen library first. Then, for the default library `plenix`, the Plenix set (`icon.css`) and the Material library (registered Material modules, else the run-time file fetch, as before).
+- **The `library` choice:** `<Icon library="plenix" | "material" | "<project>">`, or `setDefaultIconLibrary(name)` for the page.
+  - `material` draws Material's own symbol even where a Plenix name exists: `check` is `check`, not `check_small`.
+  - A project's library draws only the modules registered into it: `registerIcons(...modules, { library: 'acme' })`.
+- **Development notice:** a name drawn by a run-time fetch warns once, in development only (`devWarn`'s check), that production should import or register it. The fetch itself stays in production for now; switching it off belongs to a later stage, once sites ship icon files.
+- **Right to left:** a module outside the Plenix set whose symbol points along the reading direction (`mirrored`) gets `plx-icon--mirrored`, which `icon.css` mirrors. Plenix names keep their own per-name rules.
+- **Build errors:**
+  - An unknown `plenix-platform/icons/material/<name>` import stops the build, as an unknown Plenix name does.
+  - An icon value that is not a module warns once.
