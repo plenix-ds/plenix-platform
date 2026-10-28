@@ -4,12 +4,16 @@
    Usage:
      <DirectionProvider dir="rtl" lang="ar">{app}</DirectionProvider>
      <DirectionProvider locale="he-IL" root>{app}</DirectionProvider>   // on <html>: the whole page
+     <DirectionProvider follow>{app}</DirectionProvider>                 // an app root: the page's own dir, as it is
      const { dir, setDir } = useDirection();
    Props:
      dir: "ltr" | "rtl"; without it, the direction of locale, else of the page
      locale: a language tag ("ar-EG", "en-US"); it sets lang and, without dir, the direction (directionOf)
      lang: the lang attribute, when it is not the locale
      root: set dir and lang on <html> instead of a region (default false): the page, its portals and its scrollbars mirror
+     follow: the page decides (default false): the direction is <html>'s dir as it is and as it changes; nothing is
+       written and no wrapper is added, so an application root (mountSuite, the Asset Manager's islands) gets the
+       context without any change to the page; setDir sets <html>'s dir
      children: the application root or the region it wraps
      useDirection(): { dir, rtl, setDir(dir) }: the nearest provider's direction (outside one, the page's), and a way to
        change it
@@ -28,7 +32,24 @@ import { directionOf, getDirection } from '../utils/direction.js';
 
 export const DirectionContext = React.createContext(null);
 
-export function DirectionProvider({ dir, locale, lang, root = false, children }) {
+// follow: the page's own direction, read from <html> and kept current; it writes nothing and adds no element
+function PageDirection({ children }) {
+  const [page, setPage] = React.useState(() => (typeof document !== 'undefined' ? getDirection() : 'ltr'));
+  React.useEffect(() => {
+    const observer = new MutationObserver(() => setPage(getDirection()));
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['dir'] });
+    setPage(getDirection());
+    return () => observer.disconnect();
+  }, []);
+  const value = React.useMemo(() => ({ dir: page, rtl: page === 'rtl', setDir: (d) => document.documentElement.setAttribute('dir', d === 'rtl' ? 'rtl' : 'ltr') }), [page]);
+  return <DirectionContext.Provider value={value}>{children}</DirectionContext.Provider>;
+}
+
+export function DirectionProvider({ follow = false, ...props }) {
+  return follow ? <PageDirection>{props.children}</PageDirection> : <OwnDirection {...props} />;
+}
+
+function OwnDirection({ dir, locale, lang, root = false, children }) {
   const wanted = dir || (locale ? directionOf(locale) : null);
   const [own, setOwn] = React.useState(wanted);
   React.useEffect(() => { setOwn(wanted); }, [wanted]);
