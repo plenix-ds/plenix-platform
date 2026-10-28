@@ -28,6 +28,9 @@ const {ROOT,serve,launch,check}=require('./lib');
  const fill=await page.evaluate(async()=>{const h=React.createElement;document.querySelectorAll('[data-scroll-test]').forEach(e=>e.remove());const host=document.createElement('div');host.setAttribute('data-scroll-test','');host.setAttribute('data-wide','');document.body.appendChild(host);
   const data=Array.from({length:200},(_,i)=>({id:i,title:'Post '+i,community:'Community '+(i%7)}));ReactDOM.flushSync(()=>ReactDOM.createRoot(host).render(h(Plenix.PageContent,{title:'Posts'},h(Plenix.DataGrid,{label:'Posts',data,columns:[{field:'title',title:'Title'},{field:'community',title:'Community'}]}))));
   await new Promise(r=>setTimeout(r,700));const grid=host.querySelector('.plx-data-grid'),pc=host.querySelector('.plx-page-content'),hold=host.querySelector('.plx-data-grid__grid-tableholder');
-  return {gridBottom:grid.getBoundingClientRect().bottom,pad:parseFloat(getComputedStyle(pc).paddingBlockEnd)||0,win:innerHeight,tableScrolls:hold.scrollHeight>hold.clientHeight};});
- check('DataGrid: a table that fills the window ends at the page\'s bottom padding, so the page does not scroll beside it #451',fill.tableScrolls&&fill.gridBottom+fill.pad<=fill.win+1,JSON.stringify(fill));
+  // what the page keeps under the grid: each element's end margin, and its containers' end padding and border
+  let trail=0;for(let el=grid;el;el=el.parentElement){const cs=getComputedStyle(el);trail+=parseFloat(cs.marginBlockEnd)||0;if(el!==grid)trail+=(parseFloat(cs.paddingBlockEnd)||0)+(parseFloat(cs.borderBlockEndWidth)||0);}
+  return {gridBottom:grid.getBoundingClientRect().bottom,trail,step:4,win:innerHeight,tableScrolls:hold.scrollHeight>hold.clientHeight};});
+ {const name='DataGrid: a table that fills the window ends at the page\'s bottom padding, so the page does not scroll beside it #451',gap=fill.win-(fill.gridBottom+fill.trail),ok=fill.tableScrolls&&gap>=-1&&gap<fill.step+1;   // ends at the page's padding: never past it, never more than one 4px grid step short (its height rounds down to the grid)
+  if(check(name,ok,JSON.stringify(fill)))assert.ok(ok,name+': '+JSON.stringify(fill));}
 }finally{if(browser)await browser.close();server.close();}})().catch(e=>{console.error(e);process.exit(1)});
