@@ -13560,7 +13560,7 @@ function PageContent({
   }, rest), children);
 }
   } },
-  "platform/components/Sheet/Sheet.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/Sheet/Sheet.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../hooks/useGesture.js":"platform/hooks/useGesture.js","../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -13574,6 +13574,7 @@ var _layer = require("../../utils/layer.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _Button = require("../Button/Button.jsx");
 var _Dialog = require("../Dialog/Dialog.jsx");
+var _useGesture = require("../../hooks/useGesture.js");
 var _AppShell = require("../../patterns/AppShell/AppShell.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · Sheet
@@ -13610,7 +13611,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        the sheet is open, and returns to the opener when it closes.
      Escape and a click on the scrim close it, unless dismissible is false.
      The grabber is a button: pressing it moves between the medium and large heights; dragging it up opens the large
-       height, dragging it down returns to the medium height or, from there, closes the sheet.
+       height, dragging it down returns to the medium height or, from there, closes the sheet (the drag is useGesture's pan).
      Only one sheet shows at a time: a sheet opened while another is open shows in its place, and the first returns when
        it closes.
      The page does not scroll while the sheet is open.
@@ -13705,6 +13706,19 @@ function Sheet({
     initialFocus: firstFocus
   });
   const task = !!onDone;
+  // the grabber's drag (the shared gesture hook; a press is the button's click): a drag of at least half the grabber's height
+  // up opens the large height, down returns to the medium height or, from there, closes the sheet; a canceled drag does nothing
+  const grabber = _react.default.useRef(null);
+  (0, _useGesture.useGesture)(grabber, {
+    disabled: !(shown && bottom),
+    axis: 'both',
+    onPanEnd: g => {
+      const el = grabber.current;
+      if (g.canceled || !el || Math.abs(g.dy) < el.offsetHeight / 2) return; // a press: the click toggles
+      el.dataset.plxDragged = 'true';
+      if (g.dy < 0) setHeight('large');else if (height === 'large') setHeight('medium');else if (dismissible && onClose) onClose();
+    }
+  });
   if (!shown) return null;
   if (!bottom) {
     // the side sheet (Medium) and the dialog (Wide): Close in the header; Cancel and Done after the caller's footer actions
@@ -13733,23 +13747,15 @@ function Sheet({
     }, actions) : null, children);
   }
 
-  // the grabber: a press moves between the two heights; a drag up opens the large height, a drag down shrinks or closes
+  // the grabber: a press moves between the two heights (its drag is the gesture above)
   const toggle = () => setHeight(height === 'medium' ? 'large' : 'medium');
-  const onGrab = e => {
-    if (e.button !== 0) return;
-    const y0 = e.clientY,
-      el = e.currentTarget,
-      step = el.offsetHeight;
-    el.setPointerCapture(e.pointerId);
-    const up = ev => {
-      el.removeEventListener('pointerup', up);
-      const dy = ev.clientY - y0;
-      if (Math.abs(dy) < step / 2) return; // a press: the click toggles
-      ev.preventDefault();
-      el.dataset.plxDragged = 'true';
-      if (dy < 0) setHeight('large');else if (height === 'large') setHeight('medium');else if (dismissible && onClose) onClose();
-    };
-    el.addEventListener('pointerup', up);
+  // capture the pointer at once, so a quick flick that leaves the grabber before the gesture's slop is still followed to its release
+  const onGrabDown = e => {
+    if (e.button === 0) {
+      try {
+        e.currentTarget.setPointerCapture(e.pointerId);
+      } catch (err) {/* the pointer is gone */}
+    }
   };
   const onGrabClick = e => {
     if (e.currentTarget.dataset.plxDragged) {
@@ -13773,10 +13779,11 @@ function Sheet({
     tabIndex: -1,
     className: (0, _cx.cx)('plx-sheet', 'plx-sheet--' + height, task && 'plx-sheet--task', className)
   }, /*#__PURE__*/_react.default.createElement("button", {
+    ref: grabber,
     type: "button",
     className: "plx-sheet__grabber",
     "aria-label": height === 'medium' ? t.expand : t.shrink,
-    onPointerDown: onGrab,
+    onPointerDown: onGrabDown,
     onClick: onGrabClick
   }), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-sheet__header"
