@@ -66,7 +66,7 @@
    Notes:
      Sign in, not Log in, everywhere. Never ask for the same thing twice (no "confirm password"). Offer single sign-on
        first where the organization uses it. Security questions are never a recovery method.
-     services/login is the Plenix sign-in service; it draws this layout with the release's classes (login.css).
+     services/login is the Plenix sign-in service; it draws this layout with the release's classes (no stylesheet of its own).
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
