@@ -68,8 +68,6 @@ const STRINGS = {
   select: 'Select {name}', more: 'More actions for {name}', download: 'Download {name}', rename: 'Rename…', delete: 'Delete',
   cancel: 'Cancel', retry: 'Try again', transfer: '{label} {name}', uploading: 'Uploading', file: 'file', files: 'files', folder: 'folder', folders: 'folders', items: '{n} items', item: '{n} item',
 };
-// a calendar day written YYYY-MM-DD is that day where the reader is (new Date('2026-10-14') would be midnight UTC)
-const day = (v) => (typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) ? new Date(+v.slice(0, 4), +v.slice(5, 7) - 1, +v.slice(8, 10)) : v);
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 
 export function FileRow({ file, as = 'div', selectable = false, selected = false, onSelectChange, href, onOpen, owner, status,
@@ -146,7 +144,7 @@ function FileFacts({ file, t }) {
   return (
     <>
       <span className="plx-file-row__cell plx-file-row__size">{size}</span>
-      {file.modified ? <time className="plx-file-row__cell plx-file-row__date" dateTime={typeof file.modified === 'string' ? file.modified : dateTimeAttr(file.modified)}>{formatDate(day(file.modified), { dateStyle: 'medium' })}</time> : null}
+      {file.modified ? <time className="plx-file-row__cell plx-file-row__date" dateTime={typeof file.modified === 'string' ? file.modified : dateTimeAttr(file.modified)}>{formatDate(file.modified, { dateStyle: 'medium' })}</time> : null}
     </>
   );
 }

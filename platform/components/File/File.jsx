@@ -69,8 +69,6 @@ export function fileIcon(name, type) {
   return 'document';
 }
 
-// a calendar day written YYYY-MM-DD is that day where the reader is (new Date('2026-10-14') would be midnight UTC)
-const day = (v) => (typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) ? new Date(+v.slice(0, 4), +v.slice(5, 7) - 1, +v.slice(8, 10)) : v);
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 
 function Picture({ src, icon }) {
@@ -90,7 +88,7 @@ export function File({ name = '', kind = 'file', size, modified, count, meta, ty
   const facts = [];
   if (!folder && size !== undefined && size !== null && size !== '') facts.push(typeof size === 'number' ? formatBytes(size) : String(size));
   if (folder && typeof count === 'number') facts.push(fill(count === 1 ? t.item : t.items, { n: formatNumber(count) }));
-  if (modified) facts.push(formatDate(day(modified), { dateStyle: 'short' }));
+  if (modified) facts.push(formatDate(modified, { dateStyle: 'short' }));
   const text = (
     <>
       <span className="plx-file__base">{base}</span>
