@@ -87,8 +87,9 @@ One layout and one naming for every icon source, written by `layout.js` (generat
 
 ## One resolver (#281, stage 3)
 
-- **The order:** the registered modules of the chosen library first. Then, for the default library `plenix`, the Plenix set (`icon.css`) and the Material library (registered Material modules, else the run-time file fetch, as before).
-- **The `library` choice:** `<Icon library="plenix" | "material" | "<project>">`, or `setDefaultIconLibrary(name)` for the page.
+- **The order, in the default library `plenix`:** registered Plenix modules, then the Plenix set (`icon.css`), then registered Material modules, then the run-time file fetch (as before). Other libraries look only at their own registered modules (and, for `material`, the Material files).
+- **The `library` choice:** `<Icon library="plenix" | "material" | "<project>">`, or `setDefaultIconLibrary(name)` for the page. Call it at startup, before icons draw: icons already on the page don't draw again.
+- **Plenix names win in the default library:** a registered Material module never replaces a Plenix name (importing `material/home` leaves every `<Icon name="home">` drawing Plenix's `home`); it serves only names outside the Plenix set.
   - `material` draws Material's own symbol even where a Plenix name exists: `check` is `check`, not `check_small`.
   - A project's library draws only the modules registered into it: `registerIcons(...modules, { library: 'acme' })`.
 - **Development notice:** a name drawn by a run-time fetch warns once, in development only (`devWarn`'s check), that production should import or register it. The fetch itself stays in production for now; switching it off belongs to a later stage, once sites ship icon files.

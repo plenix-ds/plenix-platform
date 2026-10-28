@@ -88,3 +88,81 @@ identical 13 of 14
 ## Messages, three loads per side (markup sha1 / picture sha1)
 {"before":{"0c7462d1/8f1080f4":1,"0c7462d1/899d70f0":2},"after":{"0c7462d1/8f1080f4":1,"0c7462d1/899d70f0":2}}
 0c7462d1/8f1080f4 vs 0c7462d1/899d70f0 markup same
+
+## QA on #517 (resolver order), rerun after the fix: production and development React
+{
+ "production": {
+  "plenixWins": {
+   "homeKind": "plenix",
+   "homeSymbol": "home",
+   "homeSameMarkup": true,
+   "materialLibraryDrawsModule": "module",
+   "rocketKind": "module"
+  },
+  "dom": {
+   "cases": 3816,
+   "moduleVsStylesheet": 0,
+   "registeredVsStylesheet": 0
+  },
+  "material": {
+   "plenixCheck": "check_small",
+   "materialCheck": "check",
+   "materialKind": "library",
+   "drawsMaterial": true
+  },
+  "project": {
+   "inAcme": true,
+   "inDefault": false,
+   "acmeHasNoPlenix": false
+  },
+  "mirrored": {
+   "flag": true,
+   "set": "material",
+   "classAdded": true,
+   "scaleRtl": "-1 1",
+   "plenixModuleClass": false
+  },
+  "warnings": [
+   "[Plenix] Icon: no icon is named \"acme-logo\"; nothing is drawn.",
+   "[Plenix] Icon: icon is not an icon module (import it from plenix-platform/icons/<set>/<name>); nothing is drawn. [object Object]",
+   "[Plenix] Icon: icon is not an icon module (import it from plenix-platform/icons/<set>/<name>); nothing is drawn. [object Object]"
+  ],
+  "pageErrors": 0
+ },
+ "development": {
+  "plenixWins": {
+   "homeKind": "plenix",
+   "homeSymbol": "home",
+   "homeSameMarkup": true,
+   "materialLibraryDrawsModule": "module",
+   "rocketKind": "module"
+  },
+  "material": {
+   "plenixCheck": "check_small",
+   "materialCheck": "check",
+   "materialKind": "library",
+   "drawsMaterial": true
+  },
+  "project": {
+   "inAcme": true,
+   "inDefault": false,
+   "acmeHasNoPlenix": false
+  },
+  "mirrored": {
+   "flag": true,
+   "set": "material",
+   "classAdded": true,
+   "scaleRtl": "-1 1",
+   "plenixModuleClass": false
+  },
+  "warnings": [
+   "[Plenix] Icon: check was fetched at run time; for production import it (plenix-platform/icons/material/check) or register it (registerIcons)",
+   "[Plenix] Icon: no icon is named \"acme-logo\"; nothing is drawn.",
+   "[Plenix] Icon: icon is not an icon module (import it from plenix-platform/icons/<set>/<name>); nothing is drawn. [object Object]",
+   "[Plenix] Icon: icon is not an icon module (import it from plenix-platform/icons/<set>/<name>); nothing is drawn. [object Object]"
+  ],
+  "pageErrors": 0
+ }
+}
+
+writeMaterialModule('no-such-icon') into an absent folder: throws 'no Material icon is named no-such-icon'; the folder is not created.

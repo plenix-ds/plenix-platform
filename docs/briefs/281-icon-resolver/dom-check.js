@@ -6,6 +6,11 @@ out[mode]=await p.evaluate(async(full)=>{const P=Plenix,h=React.createElement,ho
  const html=(el)=>{ReactDOM.flushSync(()=>root.render(el));return host.innerHTML;};const svg=(s)=>(s.match(/<svg[\s\S]*<\/svg>/)||[''])[0];
  const idx=await (await fetch('plenix/index.json')).json();const mods={};for(const i of idx.icons)mods[i.name]=(await import('./plenix/'+i.name+'.js')).default;
  const R={};
+ // QA on #517: a registered Material module never replaces a Plenix name in the default library
+ const plenixHome=html(h(P.Icon,{name:'home'}));const matHome=(await import('./material/home.js')).default;const matRocket=(await import('./material/rocket-launch.js')).default;
+ P.registerIcons(matHome,matRocket);
+ R.plenixWins={homeKind:P.resolveIcon('home').kind,homeSymbol:P.resolveIcon('home').symbol,homeSameMarkup:html(h(P.Icon,{name:'home'}))===plenixHome,
+  materialLibraryDrawsModule:P.resolveIcon('home',{library:'material'}).kind,rocketKind:P.resolveIcon('rocket_launch').kind};
  if(full){const SIZES=[undefined,'xs','sm','md','lg','xl'],FILLS=[undefined,false,true];let cases=0,d1=0,d2=0;const byName={};
   for(const n of Object.keys(mods))for(const size of SIZES)for(const filled of FILLS){const a=html(h(P.Icon,{name:n,size,filled}));byName[n+size+filled]=a;cases++;if(a!==html(h(P.Icon,{icon:mods[n],size,filled})))d1++;}
   P.registerIcons(Object.values(mods));for(const n of Object.keys(mods))for(const size of SIZES)for(const filled of FILLS){if(html(h(P.Icon,{name:n,size,filled}))!==byName[n+size+filled])d2++;}

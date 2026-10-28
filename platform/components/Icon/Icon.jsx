@@ -33,6 +33,7 @@
      library: where a name is looked up (issue 281): "plenix" (default: registered modules, the Plenix set, then the
        Material library, as before), "material" (Material's own symbol even where a Plenix name exists), or a project's own
        library registered with registerIcons(..., { library }) (only its modules). setDefaultIconLibrary(name) sets the page's
+       default: call it at startup, before icons draw (icons already on the page do not draw again)
      registerIcons(...modules[, { library }]): modules drawn first by their name and their symbol's spelling, in their
        set's library or the one named
      A name drawn by a run-time fetch (a Material name not imported or registered) warns once in development: production
@@ -92,6 +93,7 @@ export function registerIcons(...args) {
 // the library an Icon without its own library prop draws from: "plenix" (the Plenix set, then the Material library, as
 // before), "material", or a project's own registered library
 let defaultLibrary = 'plenix';
+// call it at startup, before icons draw: an icon already on the page does not draw again when it changes
 export function setDefaultIconLibrary(name) { defaultLibrary = name ? String(name) : 'plenix'; }
 // a module's drawing i (VARIANT order: outline 20, filled 20, outline 24, filled 24) as [path, viewBox, extra], the shape
 // parseSvg gives, with the extras in the same order, so the markup is the same as from the stylesheet
@@ -118,8 +120,11 @@ export function resolveIcon(name, options) {
     return library.has(symbol) ? { kind: 'library', symbol, fillOutline: false } : null;
   }
   if (lib !== 'plenix') return fromRegistry(lib);
-  const reg = fromRegistry('plenix') || fromRegistry('material'); if (reg) return reg;
-  return resolvePlenix(n);
+  // a registered Plenix module, then the Plenix set: a registered Material module never replaces a Plenix name (importing
+  // material/home must not swap every <Icon name="home"> on the page); it serves only names outside the Plenix set
+  const reg = fromRegistry('plenix'); if (reg) return reg;
+  const p = resolvePlenix(n); if (p && p.kind === 'plenix') return p;
+  return fromRegistry('material') || p;
 }
 function resolvePlenix(n) {
   if (NAMES[n]) return { kind: 'plenix', symbol: NAMES[n][0], fillOutline: NAMES[n][1] === 1 };
