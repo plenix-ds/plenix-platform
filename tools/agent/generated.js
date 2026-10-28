@@ -16,7 +16,7 @@ const GENERATED = [
   /^platform\/components\/(DataGrid\/data-grid|Table\/table)-steps\.css$/, /^platform\/components\/Table\/table-base\.css$/,   // build-steps.js
   /^platform\/patterns\/ImageEditor\/imageEditorSteps\.js$/, /^platform\/utils\/sizeSteps\.js$/,
   /^platform\/providers\/(pageLayouts|themes)\.js$/,
-  /^platform\/mobile\//, /^packages\//,
+  /^platform\/mobile\//, /^packages\//, /^release\//,     // the packages and the release (release/cdn/<v>/icons/<set>/ too, #279)
   /^docs\/plenix-docs\.html$/, /^docs\/plenix-data\.js$/,
   /^CHANGELOG\.md$/, /^package\.json$/,                    // written by release.sh
   /^platform\/design-system$/, /^node_modules$/,           // the submodule pointer and the dependency junction

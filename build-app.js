@@ -2,6 +2,7 @@
 //   node build-app.js        (or: npm run build:app)
 //
 //   Icons          platform/icons/                 → platform/components/Icon/icon.css   (build-icons.js)
+//                                                  → platform/dist/icons/plenix/<name>.svg|.js, index.json (the asset layout, #279)
 //   Platform       platform/index.js               → platform/dist/platform.js       publishes its exports on window.Plenix
 //   Applications   <folder>/main.jsx               → <folder>/app.js                  one per suite application (dashboard,
 //                  projects, messages, contacts, calendar, tasks, notes, bookmarks, files, settings); they share suite/

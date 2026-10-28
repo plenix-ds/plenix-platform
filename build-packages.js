@@ -288,7 +288,11 @@ copy(path.join(ROOT, 'docs', 'integration', 'acceptance.html'), path.join(CDN, '
   write(path.join(CDN, 'icons-all.css'), '/* Plenix ' + VERSION + ' · every Material Symbols Sharp symbol (weight 300, unedited, ' + lib.source + ') as an Icon name: <Icon name="person_cancel">.\n   Load after plenix.css. The files are at ' + base + ' (shared by every release). ' + rules.length + ' symbols; Plenix names keep their own symbol. */\n' + rules.join('\n') + '\n');
 }
 copyDir(path.join(T, 'css'), path.join(CDN, 'tokens'));
-copy(path.join(T, 'css', 'tokens.css'), path.join(CDN, 'tokens.css'));   // /cdn/<version>/tokens.css, beside plenix.js (plenixTokens' default)
+copy(path.join(T, 'css', 'tokens.css'), path.join(CDN, 'tokens.css'));
+// the icon asset layout (#279, stage 1 of #277): /cdn/<version>/icons/<set>/<name>.svg|.js and index.json for Plenix's
+// own set and the whole Material library (generated as modules at each release: #277 answer 8); a path never changes
+// once published. No consumer reads them yet: plenix.css and the Icon component draw every icon as before.
+for (const set of ['plenix', 'material']) { const t = Date.now(), r = require('./platform/icons/layout.js').writeSet(ROOT, set, path.join(CDN, 'icons', set)); console.log('  icons/' + set + ': ' + r.icons + ' icons, ' + r.files + ' files, ' + (r.bytes / 1048576).toFixed(1) + ' MB, ' + ((Date.now() - t) / 1000).toFixed(1) + ' s'); }   // /cdn/<version>/tokens.css, beside plenix.js (plenixTokens' default)
 copy(path.join(T, 'tokens.json'), path.join(CDN, 'tokens', 'tokens.json'));
 // the native outputs (build-mobile.js) and the platform sets they come from (Platforms Standard 7.1 and 7.2, batch 297)
 for (const d of ['ios', 'android', 'flutter']) copyDir(path.join(P, 'mobile', d), path.join(CDN, 'mobile', d));
