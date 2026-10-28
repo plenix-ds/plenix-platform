@@ -11400,6 +11400,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ReadOnlyContext = exports.ReadOnly = void 0;
 exports.ReadOnlyProvider = ReadOnlyProvider;
+exports.readOnlyProps = readOnlyProps;
 exports.useReadOnly = useReadOnly;
 var _react = _interopRequireDefault(require("react"));
 var _describedBy = require("../utils/describedBy.js");
@@ -11440,6 +11441,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        read-only for a value that is there to read. Hide or remove the actions that would change the region (Save,
        Delete) rather than disabling them.
      Buttons inside stay as they are: actions that only read (Copy, Download, Open) keep working.
+     Checkbox, Radio, Switch, RadioGroup, ChoiceList, RadioTiles, Select and Slider read useReadOnly and lock themselves
+       with the same stops (readOnlyProps, inside the Platform), so their own readOnly works outside a region too.
 */
 const ReadOnlyContext = exports.ReadOnlyContext = /*#__PURE__*/_react.default.createContext(false);
 function ReadOnlyProvider({
@@ -11479,6 +11482,42 @@ const ARIA_READONLY = {
 };
 // keys that change a locked control's value (Tab, Escape and shortcuts with Ctrl or ⌘ still work)
 const CHANGE_KEYS = /^(ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Home|End|PageUp|PageDown| |Spacebar|Enter|Backspace|Delete|.)$/;
+
+// a key the region (and readOnlyProps) stops on a locked control: Tab, Escape and shortcuts with Ctrl, ⌘ or Alt pass
+const stopsKey = e => !(e.key === 'Tab' || e.key === 'Escape' || e.ctrlKey || e.metaKey || e.altKey) && CHANGE_KEYS.test(e.key);
+const stop = e => {
+  e.preventDefault();
+  e.stopPropagation();
+};
+const noChange = () => {};
+// the props a component puts on a value control it locks itself (on: useReadOnly(own)): the region's stops, on the element.
+//   aria: marks it aria-readonly (a single radio does not: its group would); pointer: a press focuses without changing
+//   (a select, a slider, a combobox). Off, the props come back unchanged.
+function readOnlyProps(on, props, {
+  aria = true,
+  pointer = false
+} = {}) {
+  if (!on) return props;
+  const out = Object.assign({}, props, {
+    onClick: stop,
+    onChange: noChange,
+    // React reports a choice's change from the click itself, so the click stop alone does not hold it
+    onKeyDown: e => {
+      if (stopsKey(e)) stop(e);else if (props.onKeyDown) props.onKeyDown(e);
+    }
+  });
+  if (aria && props['aria-readonly'] == null) out['aria-readonly'] = true;
+  if (pointer) {
+    const press = own => e => {
+      e.preventDefault();
+      e.currentTarget.focus();
+      if (own) own(e);
+    };
+    out.onMouseDown = press(props.onMouseDown);
+    out.onPointerDown = press(props.onPointerDown);
+  }
+  return out;
+}
 function roleOf(el) {
   const r = el.getAttribute('role');
   if (r) return r;
@@ -11545,16 +11584,11 @@ function useLockRegion(ref, on) {
       const el = t && t.closest ? t.closest('[data-plx-readonly-set="locked"]') : null;
       return el && mine(el) ? el : null;
     };
-    const stop = e => {
-      e.preventDefault();
-      e.stopPropagation();
-    };
     const onClick = e => {
       if (locked(e.target)) stop(e);
     };
     const onKey = e => {
-      if (e.key === 'Tab' || e.key === 'Escape' || e.ctrlKey || e.metaKey || e.altKey) return;
-      if (locked(e.target) && CHANGE_KEYS.test(e.key)) stop(e);
+      if (stopsKey(e) && locked(e.target)) stop(e);
     };
     const onPointer = e => {
       const el = locked(e.target);
@@ -11671,6 +11705,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Select.children: <option>s, when there are no options
      Select.appearance: as Input.appearance (on the <select>)
      Select.className: more classes on the wrapper
+     Select.readOnly: the choice shows and takes focus but cannot change (default: the nearest read-only region's, useReadOnly)
    Behavior:
      Select.data applies the same technical-value font variant as Input.data to the field.
      Select is drawn by Plenix (owner, dropdown-look-36): a field and a list in the Menu's look, over a hidden native <select> that
@@ -11805,8 +11840,10 @@ const SelectNative = /*#__PURE__*/_react.default.forwardRef(function SelectNativ
   width,
   className,
   children,
+  readOnly,
   ...rest
 }, ref) {
+  const locked = (0, _ReadOnly.useReadOnly)(readOnly);
   return /*#__PURE__*/_react.default.createElement("span", {
     className: (0, _cx.cx)('plx-select', size === 'sm' && 'plx-select--size-sm', width && 'plx-select--width-' + width, block && 'plx-select--block', joined && joined.start && 'plx-select--joined-start-' + joined.start, joined && joined.end && 'plx-select--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-select--joined', className)
   }, /*#__PURE__*/_react.default.createElement("select", _extends({
@@ -11814,7 +11851,9 @@ const SelectNative = /*#__PURE__*/_react.default.forwardRef(function SelectNativ
     size: size === 'sm' || size === 'md' ? undefined : size,
     className: (0, _cx.cx)('plx-input', 'plx-select__control', data && 'plx-input--data', look(appearance)),
     "aria-invalid": invalid || undefined
-  }, rest), options ? options.map(o => /*#__PURE__*/_react.default.createElement("option", {
+  }, (0, _ReadOnly.readOnlyProps)(locked, rest, {
+    pointer: true
+  })), options ? options.map(o => /*#__PURE__*/_react.default.createElement("option", {
     key: o.value,
     value: o.value,
     disabled: o.disabled
@@ -11843,8 +11882,10 @@ const SelectList = /*#__PURE__*/_react.default.forwardRef(function SelectList({
   'aria-labelledby': labelledBy,
   'aria-describedby': describedBy,
   'aria-errormessage': errorMessage,
+  readOnly,
   ...rest
 }, ref) {
+  const locked = (0, _ReadOnly.useReadOnly)(readOnly); // keeps the value and focus; a press, Space, the arrows or typing do not open or change it
   const native = _react.default.useRef(null),
     field = _react.default.useRef(null),
     wrap = _react.default.useRef(null),
@@ -12016,15 +12057,18 @@ const SelectList = /*#__PURE__*/_react.default.forwardRef(function SelectList({
     ref: setNative,
     tabIndex: -1,
     "aria-hidden": "true",
-    className: (0, _cx.cx)('plx-input', 'plx-select__control', 'plx-select__native', data && 'plx-input--data', look(appearance)),
+    className: (0, _cx.cx)('plx-input', 'plx-select__control', 'plx-select__native', data && 'plx-input--data', look(appearance))
+  }, (0, _ReadOnly.readOnlyProps)(locked, Object.assign({
     onFocus: () => {
       if (field.current) field.current.focus();
     }
-  }, rest), options ? options.map(o => /*#__PURE__*/_react.default.createElement("option", {
+  }, rest), {
+    pointer: true
+  })), options ? options.map(o => /*#__PURE__*/_react.default.createElement("option", {
     key: o.value,
     value: o.value,
     disabled: o.disabled
-  }, o.label)) : children), /*#__PURE__*/_react.default.createElement("div", {
+  }, o.label)) : children), /*#__PURE__*/_react.default.createElement("div", _extends({
     ref: field,
     id: id,
     role: "combobox",
@@ -12040,18 +12084,22 @@ const SelectList = /*#__PURE__*/_react.default.forwardRef(function SelectList({
     "aria-invalid": invalid || undefined,
     "aria-required": rest.required || undefined,
     "aria-disabled": disabled || undefined,
-    className: (0, _cx.cx)('plx-input', 'plx-select__field', data && 'plx-input--data', look(appearance), disabled && 'is-disabled'),
+    className: (0, _cx.cx)('plx-input', 'plx-select__field', data && 'plx-input--data', look(appearance), disabled && 'is-disabled')
+  }, (0, _ReadOnly.readOnlyProps)(locked, {
     onClick: () => {
       if (disabled) return;
       if (open) setOpen(false);else show();
     },
-    onKeyDown: onKey,
+    onKeyDown: onKey
+  }, {
+    pointer: true
+  }), {
     onFocus: onFocus,
     onBlur: e => {
       setOpen(false);
       if (onBlur) onBlur(e);
     }
-  }, /*#__PURE__*/_react.default.createElement("span", {
+  }), /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-select__value"
   }, current ? current.label : '')), open ? /*#__PURE__*/_react.default.createElement("ul", {
     ref: list,
@@ -22475,7 +22523,7 @@ function tokenPixels(token, el) {
   return /^\d+(?:\.\d+)?px$/.test(v) ? parseFloat(v) : v ? tokenPixels(v, el) : 0;
 }
   } },
-  "platform/components/Checkbox/Checkbox.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Checkbox/Checkbox.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -22488,6 +22536,7 @@ exports.RadioGroup = RadioGroup;
 exports.Switch = void 0;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
+var _ReadOnly = require("../../providers/ReadOnly.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Checkbox, Radio, RadioGroup, ChoiceList, Switch
    Summary: Native choice inputs, so keyboard, forms and assistive technology work as usual.
@@ -22534,15 +22583,19 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Notes:
      The Switch track is 36 × 20px and the knob 16px, centered: (track − knob) / 2.
      Checkbox, Radio and Switch pass other props (checked, onChange, name, value, disabled, …) and their ref to the <input>.
-     RadioGroup and ChoiceList pass other props to the <fieldset>.
+     RadioGroup and ChoiceList pass other props to the <fieldset>; their readOnly goes to each radio.
+     Each is read-only by its own readOnly, else inside a read-only region (useReadOnly, providers/ReadOnly.jsx): it keeps its
+       value and focus, a click or a change key does not change it, and Checkbox and Switch are marked aria-readonly.
 */
 const Checkbox = exports.Checkbox = /*#__PURE__*/_react.default.forwardRef(function Checkbox({
   label,
   description,
   indeterminate = false,
   className,
+  readOnly,
   ...rest
 }, ref) {
+  const locked = (0, _ReadOnly.useReadOnly)(readOnly);
   const inner = _react.default.useRef(null);
   _react.default.useImperativeHandle(ref, () => inner.current);
   _react.default.useEffect(() => {
@@ -22554,7 +22607,7 @@ const Checkbox = exports.Checkbox = /*#__PURE__*/_react.default.forwardRef(funct
     ref: inner,
     type: "checkbox",
     className: "plx-check__input"
-  }, rest)), label || description ? /*#__PURE__*/_react.default.createElement("span", {
+  }, (0, _ReadOnly.readOnlyProps)(locked, rest))), label || description ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-check__text"
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-check__label"
@@ -22566,15 +22619,19 @@ const Radio = exports.Radio = /*#__PURE__*/_react.default.forwardRef(function Ra
   label,
   description,
   className,
+  readOnly,
   ...rest
 }, ref) {
+  const locked = (0, _ReadOnly.useReadOnly)(readOnly);
   return /*#__PURE__*/_react.default.createElement("label", {
     className: (0, _cx.cx)('plx-check', className)
   }, /*#__PURE__*/_react.default.createElement("input", _extends({
     ref: ref,
     type: "radio",
     className: "plx-check__input"
-  }, rest)), label ? /*#__PURE__*/_react.default.createElement("span", {
+  }, (0, _ReadOnly.readOnlyProps)(locked, rest, {
+    aria: false
+  }))), label ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-check__text"
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-check__label"
@@ -22590,6 +22647,7 @@ function RadioGroup({
   options,
   layout = 'column',
   className,
+  readOnly,
   ...rest
 }) {
   const auto = 'plx-r' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
@@ -22605,7 +22663,8 @@ function RadioGroup({
     description: o.description,
     checked: o.value === value,
     onChange: () => onChange(o.value),
-    disabled: o.disabled
+    disabled: o.disabled,
+    readOnly: readOnly
   })));
 }
 function ChoiceList({
@@ -22615,8 +22674,10 @@ function ChoiceList({
   onChange,
   options,
   className,
+  readOnly,
   ...rest
 }) {
+  const locked = (0, _ReadOnly.useReadOnly)(readOnly);
   const auto = 'plx-c' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
   return /*#__PURE__*/_react.default.createElement("fieldset", _extends({
     className: (0, _cx.cx)('plx-choice-list', className)
@@ -22626,14 +22687,17 @@ function ChoiceList({
     key: o.value,
     className: (0, _cx.cx)('plx-choice', o.value === value && 'is-selected'),
     hidden: o.hidden || undefined
-  }, /*#__PURE__*/_react.default.createElement("input", {
+  }, /*#__PURE__*/_react.default.createElement("input", _extends({
     type: "radio",
-    className: "plx-choice__input",
+    className: "plx-choice__input"
+  }, (0, _ReadOnly.readOnlyProps)(locked, {
     name: name || auto,
     value: o.value,
     checked: o.value === value,
     onChange: () => onChange(o.value)
-  }), /*#__PURE__*/_react.default.createElement("span", {
+  }, {
+    aria: false
+  }))), /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-choice__text"
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-choice__label"
@@ -22645,8 +22709,10 @@ const Switch = exports.Switch = /*#__PURE__*/_react.default.forwardRef(function 
   label,
   labelHidden = false,
   className,
+  readOnly,
   ...rest
 }, ref) {
+  const locked = (0, _ReadOnly.useReadOnly)(readOnly);
   return /*#__PURE__*/_react.default.createElement("label", {
     className: (0, _cx.cx)('plx-switch', className)
   }, /*#__PURE__*/_react.default.createElement("input", _extends({
@@ -22655,7 +22721,7 @@ const Switch = exports.Switch = /*#__PURE__*/_react.default.forwardRef(function 
     role: "switch",
     className: "plx-switch__input",
     "aria-label": labelHidden ? label : undefined
-  }, rest)), /*#__PURE__*/_react.default.createElement("span", {
+  }, (0, _ReadOnly.readOnlyProps)(locked, rest))), /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-switch__track",
     "aria-hidden": "true"
   }), label && !labelHidden ? /*#__PURE__*/_react.default.createElement("span", {
@@ -31139,7 +31205,7 @@ function EventChip({
   }, title));
 }
   } },
-  "platform/components/RadioTiles/RadioTiles.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/RadioTiles/RadioTiles.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -31149,6 +31215,7 @@ exports.RadioTiles = RadioTiles;
 var _react = _interopRequireDefault(require("react"));
 var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
+var _ReadOnly = require("../../providers/ReadOnly.jsx");
 var _Icon = require("../Icon/Icon.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · RadioTiles
@@ -31165,6 +31232,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      onChange(value): runs when another tile is chosen
      name: the radio group's name (default: a unique one)
      size: "sm" | "md" (default) | "lg": the tiles' minimum width
+     readOnly: the choice shows but cannot change (default: the nearest read-only region's, useReadOnly)
      className: more classes on the group
    Behavior:
      Public context --plx-comp-radio-tiles-legend-line-height applies to legends inside its containing element; fallback inherit.
@@ -31182,8 +31250,10 @@ function RadioTiles({
   name,
   size = 'md',
   className,
+  readOnly,
   ...rest
 }) {
+  const locked = (0, _ReadOnly.useReadOnly)(readOnly);
   (0, _devWarn.devWarn)('RadioTiles', {
     size
   }, {
@@ -31201,9 +31271,10 @@ function RadioTiles({
     return /*#__PURE__*/_react.default.createElement("label", {
       key: o.value,
       className: (0, _cx.cx)('plx-radio-tile', on && 'is-selected', o.disabled && 'is-disabled')
-    }, /*#__PURE__*/_react.default.createElement("input", {
+    }, /*#__PURE__*/_react.default.createElement("input", _extends({
       className: "plx-radio-tile__input plx-visually-hidden",
-      type: "radio",
+      type: "radio"
+    }, (0, _ReadOnly.readOnlyProps)(locked, {
       name: name || auto,
       value: o.value,
       checked: on,
@@ -31211,7 +31282,9 @@ function RadioTiles({
       onChange: () => {
         if (onChange) onChange(o.value);
       }
-    }), o.preview ? /*#__PURE__*/_react.default.createElement("span", {
+    }, {
+      aria: false
+    }))), o.preview ? /*#__PURE__*/_react.default.createElement("span", {
       className: "plx-radio-tile__preview",
       "aria-hidden": "true"
     }, o.preview) : null, /*#__PURE__*/_react.default.createElement("span", {
@@ -33484,7 +33557,7 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
   }, emptyText)) : null);
 });
   } },
-  "platform/components/Slider/Slider.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Slider/Slider.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/grid.js":"platform/utils/grid.js","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -33495,6 +33568,7 @@ var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
 var _grid = require("../../utils/grid.js");
+var _ReadOnly = require("../../providers/ReadOnly.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Slider
    Summary: A value picked from a range by dragging; with range, two thumbs pick a minimum and a maximum (range slider);
@@ -33516,6 +33590,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      onChange(value): follows every move (live preview); with range, onChange([low, high])
      onCommit(value): runs when the person lets go or finishes with the keys (record the change, e.g. in an undo history)
      disabled: default false
+     readOnly: the value shows and takes focus but cannot change (default: the nearest read-only region's, useReadOnly)
      strings: the thumbs' names with range, for other languages: { minimum: "Minimum", maximum: "Maximum" } (each thumb
        is named "<label>, minimum" and "<label>, maximum")
      className: more classes on the slider
@@ -33568,9 +33643,14 @@ function Slider({
   disabled = false,
   strings,
   className,
+  readOnly,
   ...rest
 }) {
   const id = (0, _layer.useUid)('plx-slider');
+  const locked = (0, _ReadOnly.useReadOnly)(readOnly);
+  const lockOf = props => (0, _ReadOnly.readOnlyProps)(locked, props, {
+    pointer: true
+  }); // a press focuses, the keys do not move it
   const t = Object.assign({}, STRINGS, strings);
   const drawn = marksOf(marks, min, max, step);
   const custom = range || drawn.length > 0;
@@ -33621,7 +33701,7 @@ function Slider({
       onKeyUp: e => {
         if (onCommit && /Arrow|Page|Home|End/.test(e.key)) onCommit(Number(e.currentTarget.value));
       }
-    }, rest)));
+    }, lockOf(rest))));
   }
   const lowOf = v => [Math.min(v, high), high],
     highOf = v => [low, Math.max(v, low)];
@@ -33668,7 +33748,7 @@ function Slider({
     onChange: e => onChange && onChange(lowOf(Number(e.target.value))),
     onPointerUp: e => commit(lowOf(Number(e.currentTarget.value))),
     onKeyUp: keyCommit(lowOf)
-  }, rest)), /*#__PURE__*/_react.default.createElement("input", {
+  }, lockOf(rest))), /*#__PURE__*/_react.default.createElement("input", _extends({
     id: id + '-high',
     type: "range",
     className: "plx-slider__input",
@@ -33682,7 +33762,7 @@ function Slider({
     onChange: e => onChange && onChange(highOf(Number(e.target.value))),
     onPointerUp: e => commit(highOf(Number(e.currentTarget.value))),
     onKeyUp: keyCommit(highOf)
-  })) : /*#__PURE__*/_react.default.createElement("input", _extends({
+  }, lockOf({})))) : /*#__PURE__*/_react.default.createElement("input", _extends({
     id: id,
     type: "range",
     className: "plx-slider__input",
@@ -33695,7 +33775,7 @@ function Slider({
     onChange: e => onChange && onChange(Number(e.target.value)),
     onPointerUp: e => commit(Number(e.currentTarget.value)),
     onKeyUp: keyCommit(v => v)
-  }, rest))), drawn.length ? /*#__PURE__*/_react.default.createElement("div", {
+  }, lockOf(rest)))), drawn.length ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-slider__marks",
     "aria-hidden": "true"
   }, /*#__PURE__*/_react.default.createElement("div", {
