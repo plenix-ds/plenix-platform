@@ -68,7 +68,7 @@
   --plx-sys-state-pressed: var(--plx-ref-color-gray-200);
   --plx-sys-scrollbar-thumb: var(--plx-ref-color-gray-300);
   --plx-sys-state-hover-border: var(--plx-ref-color-gray-300);
-  --plx-sys-content-default: var(--plx-ref-color-black);
+  --plx-sys-content-default: var(--plx-ref-color-gray-900);
   --plx-sys-content-inverse: var(--plx-ref-color-white);
   --plx-sys-content-link: var(--plx-ref-color-blue-600);
   --plx-sys-content-link-visited: var(--plx-ref-color-purple-900);
@@ -193,13 +193,13 @@
   --plx-sys-accent-field-border: var(--plx-ref-color-blue-300);
   --plx-sys-accent-field-placeholder: var(--plx-ref-color-blue-300);
   --plx-sys-field-placeholder: var(--plx-ref-color-gray-600);
-  --plx-sys-tooltip-background: var(--plx-ref-color-black);
+  --plx-sys-tooltip-background: var(--plx-ref-color-gray-900);
   --plx-sys-tooltip-content: var(--plx-ref-color-white);
   /* overlays and structure (batch 107) */
   --plx-sys-border-dialog-chrome: var(--plx-ref-color-gray-300);
-  --plx-sys-content-dialog-chrome: var(--plx-ref-color-black);
-  --plx-sys-scrim: var(--plx-ref-color-black);
-  --plx-sys-toast-background: var(--plx-ref-color-black);
+  --plx-sys-content-dialog-chrome: var(--plx-ref-color-gray-900);
+  --plx-sys-scrim: var(--plx-ref-color-gray-900);
+  --plx-sys-toast-background: var(--plx-ref-color-gray-900);
   --plx-sys-toast-content: var(--plx-ref-color-white);
   /* code: the usual editor colors for keywords, strings, comments… (CodeBlock) */
   --plx-sys-code-keyword: var(--plx-ref-color-blue-700);
@@ -226,7 +226,7 @@
   --plx-sys-frost-border: var(--plx-ref-color-blue-250);
   --plx-sys-frost-field-background: var(--plx-ref-color-blue-50);
   /* status bar (batch 111) */
-  --plx-sys-status-bar-background: var(--plx-ref-color-black);
+  --plx-sys-status-bar-background: var(--plx-ref-color-gray-900);
   --plx-sys-status-bar-content: var(--plx-ref-color-gray-300);
   --plx-sys-status-bar-edge: var(--plx-ref-color-gray-300);
   --plx-sys-data-grid-surface: var(--plx-ref-color-white);
@@ -242,8 +242,8 @@
   --plx-sys-data-grid-menu-button-hover-bottom: var(--plx-ref-color-gray-400);
   --plx-sys-data-grid-border: var(--plx-ref-color-gray-300);
   --plx-sys-table-border: var(--plx-ref-color-gray-300);
-  --plx-sys-data-grid-text: var(--plx-ref-color-black);
-  --plx-sys-table-text: var(--plx-ref-color-black);
+  --plx-sys-data-grid-text: var(--plx-ref-color-gray-900);
+  --plx-sys-table-text: var(--plx-ref-color-gray-900);
   --plx-sys-data-grid-text-muted: var(--plx-ref-color-gray-700);
   --plx-sys-table-text-muted: var(--plx-ref-color-gray-700);
   --plx-sys-data-grid-text-subtle: var(--plx-ref-color-gray-500);
@@ -576,8 +576,8 @@
   --plx-sys-tooltip-content: var(--plx-ref-color-black);
   /* overlays and structure (batch 107); the dialog chrome values are provisional with the chrome fill (D3) */
   --plx-sys-border-dialog-chrome: var(--plx-ref-color-gray-300);
-  --plx-sys-content-dialog-chrome: var(--plx-ref-color-black);
-  --plx-sys-scrim: var(--plx-ref-color-black);
+  --plx-sys-content-dialog-chrome: var(--plx-ref-color-gray-900);
+  --plx-sys-scrim: var(--plx-ref-color-gray-900);
   --plx-sys-toast-background: var(--plx-ref-color-gray-700);
   --plx-sys-toast-content: var(--plx-ref-color-white);
   --plx-sys-code-keyword: var(--plx-ref-color-blue-300);
