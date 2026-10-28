@@ -44,6 +44,7 @@
 import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { useFloating, FLOATING_ANCHOR } from '../../utils/floating.js';
+import { useDescriptionId, useDescribedBy } from '../../utils/describedBy.js';
 
 const SIDES = ['bottom', 'top', 'start', 'end'];
 
@@ -67,7 +68,7 @@ const listen = () => {
 };
 
 export function Tooltip({ content, placement = 'bottom', title, action, rich = false, disabled = false, className, children }) {
-  const id = 'plx-tt' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const id = useDescriptionId('tt');   // plx-tt<id> (utils/describedBy.js)
   const [open, setOpen] = React.useState(false);
   const wrap = React.useRef(null);
   const bubble = React.useRef(null);
@@ -96,7 +97,7 @@ export function Tooltip({ content, placement = 'bottom', title, action, rich = f
     return () => { document.removeEventListener('keydown', esc); document.removeEventListener('mousedown', outside); };
   }, [open, toggle]);
   const child = React.Children.only(children);
-  const described = { 'aria-describedby': [child.props['aria-describedby'], id].filter(Boolean).join(' ') };
+  const described = { 'aria-describedby': useDescribedBy(child.props['aria-describedby'], id) };
   const trigger = disabled ? child : React.cloneElement(child, toggle ? Object.assign(described, {
     'aria-expanded': open, 'aria-controls': open ? id + 'b' : undefined,
     onClick: (e) => { if (child.props.onClick) child.props.onClick(e); setOpen(!open); },
