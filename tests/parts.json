@@ -110,6 +110,10 @@
      "checks": 1
     },
     {
+     "part": "VisuallyHidden",
+     "checks": 1
+    },
+    {
      "part": "contained",
      "checks": 2
     },
