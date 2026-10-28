@@ -206,15 +206,12 @@
 .plx-table__check{cursor:pointer;display:flex;}
 .plx-table__check::before{content:"";inset-block-end:0;inset-block-start:0;inset-inline-end:0;inset-inline-start:0;position:absolute;}
 .plx-table__check-input{accent-color:var(--plx-comp-data-grid-checkbox-accent-color);block-size:var(--plx-comp-data-grid-mark-size);cursor:pointer;font-family:inherit;inline-size:var(--plx-comp-data-grid-mark-size);margin:0;position:relative;vertical-align:middle;}
-.plx-table__editor{appearance:none;background-color:transparent;block-size:100%;border-block-end-style:none;border-block-start-style:none;border-inline-end-style:none;border-inline-start-style:none;color:var(--plx-comp-data-grid-text);font:inherit;inline-size:100%;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
-.plx-table__editor:focus-visible{outline-style:none;}
 .plx-table__tree-level{align-items:center;display:inline-flex;}
 .plx-table__grid-data-tree-control{align-items:center;background-color:transparent;block-size:var(--plx-comp-data-grid-tree-control-size);border-color:var(--plx-comp-data-grid-border-color);border-radius:var(--plx-comp-data-grid-tree-control-radius);border-style:solid;border-width:var(--plx-comp-data-grid-line-width);display:inline-flex;flex-shrink:0;font-family:inherit;inline-size:var(--plx-comp-data-grid-tree-control-size);justify-content:center;margin-inline-end:var(--plx-comp-data-grid-tree-control-gap);overflow:hidden;padding:0;vertical-align:middle;}
 .plx-table__grid-data-tree-control-expand{background-color:var(--plx-comp-data-grid-tree-control-mark);}
 :is(.plx-table__grid-data-tree-control-expand, .plx-table__grid-data-tree-control-collapse){block-size:calc(var(--plx-comp-data-grid-tree-control-size) / 2);display:inline-block;inline-size:var(--plx-comp-data-grid-line-width);position:relative;}
 :is(.plx-table__grid-data-tree-control-expand, .plx-table__grid-data-tree-control-collapse)::after{background-color:var(--plx-comp-data-grid-tree-control-mark);block-size:var(--plx-comp-data-grid-line-width);content:"";inline-size:calc(var(--plx-comp-data-grid-tree-control-size) / 2);inset-block-start:calc((var(--plx-comp-data-grid-tree-control-size) / 2 - var(--plx-comp-data-grid-line-width)) / 2);inset-inline-start:calc((var(--plx-comp-data-grid-line-width) - var(--plx-comp-data-grid-tree-control-size) / 2) / 2);position:absolute;}
 /* the measuring span tokenPixels (environment.js) appends for a moment to read a CSS length in the grid's context */
-.plx-table__length-probe{block-size:0;pointer-events:none;position:absolute;visibility:hidden;}
 /* Content bidi must not choose the sticky edge of the containing grid cell. */
 .plx-table__cell-direction{display:contents;}
 /* ---- scrolling (zero overlap, batch 4): the grid, the scroll body (table holder), the table inside it and the floating
@@ -240,52 +237,9 @@
 .plx-table__grid-tableholder{--plx-sys-scrollbar-width:none;anchor-name:--plx-table-body;scroll-timeline:--plx-table-y block,--plx-table-x inline;}
 .plx-table__scroll[data-plx-thumb]{--plx-comp-data-grid-context-thumb-events:var(--plx-comp-data-grid-context-scroll-events,none);--plx-state-data-grid-scroll-display:flex;container-type:size;opacity:var(--plx-comp-data-grid-context-scroll-opacity,0);pointer-events:var(--plx-comp-data-grid-context-scroll-events,none);position:absolute;position-anchor:--plx-table-body;z-index:var(--plx-comp-data-grid-scroll-layer);}
 .plx-table__scroll[data-plx-dragging]{--plx-comp-data-grid-context-scroll-events:auto;--plx-comp-data-grid-context-scroll-opacity:1;}
-.plx-table__scroll--y{block-size:auto;flex-direction:column;inline-size:var(--plx-comp-data-grid-scroll-size);inset-block-end:anchor(end);inset-block-start:anchor(start);inset-inline-end:anchor(self-end);}
-.plx-table__scroll--x{block-size:var(--plx-comp-data-grid-scroll-size);flex-direction:row;inline-size:auto;inset-block-end:anchor(end);inset-inline-end:anchor(self-end);inset-inline-start:anchor(self-start);}
-.plx-table__thumb{animation-duration:auto;animation-fill-mode:both;animation-timing-function:linear;background-color:var(--plx-comp-data-grid-scroll-thumb-color);border-end-end-radius:var(--plx-comp-data-grid-scroll-thumb-radius);border-end-start-radius:var(--plx-comp-data-grid-scroll-thumb-radius);border-start-end-radius:var(--plx-comp-data-grid-scroll-thumb-radius);border-start-start-radius:var(--plx-comp-data-grid-scroll-thumb-radius);flex-shrink:0;pointer-events:var(--plx-comp-data-grid-context-thumb-events,none);touch-action:none;}
-.plx-table__thumb--y{animation-name:plx-table-thumb-y;animation-timeline:--plx-table-y;inline-size:100%;}
-.plx-table__thumb--x{animation-timeline:--plx-table-x;block-size:100%;}
-.plx-table__thumb--x:where(:not(:dir(rtl))){animation-name:plx-table-thumb-x;}
-.plx-table__thumb--x:dir(rtl){animation-name:plx-table-thumb-x-rtl;}
 @keyframes plx-table-thumb-y{from{transform:translateY(0);}to{transform:translateY(calc(100cqb - 100%));}}
 @keyframes plx-table-thumb-x{from{transform:translateX(0);}to{transform:translateX(calc(100cqi - 100%));}}
 @keyframes plx-table-thumb-x-rtl{from{transform:translateX(0);}to{transform:translateX(calc(100% - 100cqi));}}
-.plx-table__thumb--y[data-plx-thumb="10"]{block-size:10%;}
-.plx-table__thumb--y[data-plx-thumb="15"]{block-size:15%;}
-.plx-table__thumb--y[data-plx-thumb="20"]{block-size:20%;}
-.plx-table__thumb--y[data-plx-thumb="25"]{block-size:25%;}
-.plx-table__thumb--y[data-plx-thumb="30"]{block-size:30%;}
-.plx-table__thumb--y[data-plx-thumb="35"]{block-size:35%;}
-.plx-table__thumb--y[data-plx-thumb="40"]{block-size:40%;}
-.plx-table__thumb--y[data-plx-thumb="45"]{block-size:45%;}
-.plx-table__thumb--y[data-plx-thumb="50"]{block-size:50%;}
-.plx-table__thumb--y[data-plx-thumb="55"]{block-size:55%;}
-.plx-table__thumb--y[data-plx-thumb="60"]{block-size:60%;}
-.plx-table__thumb--y[data-plx-thumb="65"]{block-size:65%;}
-.plx-table__thumb--y[data-plx-thumb="70"]{block-size:70%;}
-.plx-table__thumb--y[data-plx-thumb="75"]{block-size:75%;}
-.plx-table__thumb--y[data-plx-thumb="80"]{block-size:80%;}
-.plx-table__thumb--y[data-plx-thumb="85"]{block-size:85%;}
-.plx-table__thumb--y[data-plx-thumb="90"]{block-size:90%;}
-.plx-table__thumb--y[data-plx-thumb="95"]{block-size:95%;}
-.plx-table__thumb--x[data-plx-thumb="10"]{inline-size:10%;}
-.plx-table__thumb--x[data-plx-thumb="15"]{inline-size:15%;}
-.plx-table__thumb--x[data-plx-thumb="20"]{inline-size:20%;}
-.plx-table__thumb--x[data-plx-thumb="25"]{inline-size:25%;}
-.plx-table__thumb--x[data-plx-thumb="30"]{inline-size:30%;}
-.plx-table__thumb--x[data-plx-thumb="35"]{inline-size:35%;}
-.plx-table__thumb--x[data-plx-thumb="40"]{inline-size:40%;}
-.plx-table__thumb--x[data-plx-thumb="45"]{inline-size:45%;}
-.plx-table__thumb--x[data-plx-thumb="50"]{inline-size:50%;}
-.plx-table__thumb--x[data-plx-thumb="55"]{inline-size:55%;}
-.plx-table__thumb--x[data-plx-thumb="60"]{inline-size:60%;}
-.plx-table__thumb--x[data-plx-thumb="65"]{inline-size:65%;}
-.plx-table__thumb--x[data-plx-thumb="70"]{inline-size:70%;}
-.plx-table__thumb--x[data-plx-thumb="75"]{inline-size:75%;}
-.plx-table__thumb--x[data-plx-thumb="80"]{inline-size:80%;}
-.plx-table__thumb--x[data-plx-thumb="85"]{inline-size:85%;}
-.plx-table__thumb--x[data-plx-thumb="90"]{inline-size:90%;}
-.plx-table__thumb--x[data-plx-thumb="95"]{inline-size:95%;}
 }
 /* ---- groups (zero overlap, batch 5): group rows, their heads, cells, labels and summaries, the add row, bands, the sticky
    copies of open groups and the virtual gaps, flat. A group row's keyboard focus reaches its head as context values;
@@ -335,10 +289,6 @@
 .plx-table__group-summary-value{color:var(--plx-comp-data-grid-group-count-text);font-family:var(--plx-comp-data-grid-data-font-family);font-size:var(--plx-comp-data-grid-data-font-size);font-weight:var(--plx-comp-data-grid-group-count-font-weight);letter-spacing:var(--plx-sys-text-body-letter-spacing);line-height:var(--plx-comp-data-grid-text-line-height);word-spacing:var(--plx-sys-font-data-word-spacing);}
 .plx-table__add-row{background-color:var(--plx-comp-data-grid-background);block-size:calc(var(--plx-sys-data-grid-row-height) + var(--plx-comp-data-grid-line-width));border-block-end-color:var(--plx-comp-data-grid-row-line);border-block-end-style:solid;border-block-end-width:var(--plx-comp-data-grid-line-width);display:flex;}
 .plx-table__group-band{background-color:var(--plx-comp-data-grid-background);block-size:var(--plx-comp-data-grid-group-gap);display:block;}
-.plx-table__gap--group{--plx-sys-virtual-item-size:var(--plx-comp-data-grid-group-header-height);}
-.plx-table__gap--add{--plx-sys-virtual-item-size:var(--plx-sys-data-grid-row-height);}
-.plx-table__gap--band{--plx-sys-virtual-item-gap:0px;--plx-sys-virtual-item-size:var(--plx-comp-data-grid-group-gap);}
-.plx-table__gap--separated{--plx-sys-virtual-item-size:calc(var(--plx-comp-data-grid-group-header-height) + var(--plx-comp-data-grid-line-width));}
 /* ---- the rest (zero overlap, batch 6): the empty message, the footer, a link alone in a custom cell, the row menu, the
    header's type icon, flat. A link the engine places directly in a cell is a.plx-table__cell-content (the engine adds
    the class to custom content); the row-menu cell sizes its button through Button's context hooks. */
