@@ -17,8 +17,6 @@ if (!PAGES.length) changed.none('SEMANTIC_HTML_PAGES_OK (0 pages)');
 changed.report(PAGES.length + ' app and test-site pages');
 // known findings, each to be fixed in its application (then removed here): a page listed here fails only on another finding
 const KNOWN = {
-  'calendar/index.html': /^heading levels skipped: h1 → h3$/,
-  'bookmarks/index.html': /^heading levels skipped: h1 → h3$/,
   // the test site's photo is a full-screen experience (no navigation by design); ImageAnnotation draws its notes' titles
   // as h3 with no heading-level option (a Platform gap, reported)
   'test-site/index.html#/photo/v5': /^(no navigation region|heading levels skipped: h1 → h3)$/
