@@ -31,7 +31,12 @@
    "checksNamedAtRunTime": 1
   },
   "formats": {
-   "parts": [],
+   "parts": [
+    {
+     "part": "parseDate",
+     "checks": 2
+    }
+   ],
    "checksWithoutPart": 15,
    "checksNamedAtRunTime": 0
   },

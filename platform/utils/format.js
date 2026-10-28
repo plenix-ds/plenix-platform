@@ -42,6 +42,9 @@
      formatPhone(e164, { display }):a phone number stored as E.164 ("+14155550123"), "international" (default) or
        "national" ("(415) 555-0123")
      dateTimeAttr(date): the machine-readable value for <time dateTime={…}>
+     parseDate(value): the Date every helper here reads: a Date as is, a date-only "YYYY-MM-DD" as that calendar day
+       where the reader is (never midnight UTC, which is the day before in the Americas), else new Date(value); null when
+       it is not a date. Components that read a date use it, so no component parses dates itself (issue 342)
      FORMATS: the standard's data (see platform/standards/formats.json)
    Behavior:
      Nothing is cached per locale beyond the Intl formatter objects; every call reads the locale unless one is given.
@@ -80,14 +83,15 @@ export const FORMATS = {
 
 const ok = (n) => typeof n === 'number' && isFinite(n);
 // A date-only value is a calendar date in the reader's zone, not midnight UTC (DT-7).
-const toDate = (d) => {
+export function parseDate(d) {
   if (typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d)) {
     const [year, month, day] = d.split('-').map(Number), x = new Date(0);
     x.setFullYear(year, month - 1, day); x.setHours(0, 0, 0, 0);
     return x.getFullYear() === year && x.getMonth() === month - 1 && x.getDate() === day ? x : null;
   }
   const x = d instanceof Date ? d : new Date(d); return isNaN(x.getTime()) ? null : x;
-};
+}
+const toDate = parseDate;
 
 export function formatLocale() {
   const lang = typeof document !== 'undefined' && document.documentElement && document.documentElement.getAttribute('lang');
