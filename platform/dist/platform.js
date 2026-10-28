@@ -27535,6 +27535,7 @@ function NextEngine(props) {
     canonical = _react.default.useMemo(() => (0, _records.recordsOf)(source, index, childField), [source, index, childField]);
   // TanStack tries a global filter against columns; the public predicate describes a record, so evaluate it once.
   const unreadKey = _react.default.useCallback(record => record[index], [index]);
+  const [ownOpen, setOwnOpen] = _react.default.useState(null);
   const unread = (0, _unread.useUnread)(canonical, unreadKey, props),
     [localUnreadOnly, setUnreadOnly] = _react.default.useState(false);
   const unreadOnly = props.unreadOnly ?? localUnreadOnly;
@@ -28345,6 +28346,11 @@ function NextEngine(props) {
     };
   }, [remoteMode, page, pageSize, JSON.stringify(sorting), JSON.stringify(filters), props.search, retry]);
   const displayedTotal = remoteMode ? remote?.total || 0 : table.getFilteredRowModel().rows.length;
+  // the open row (#453): the record whose details show, the row last opened by a click or Enter, or openKey (null: none);
+  // it is aria-current, and in a grid without selection it takes the selected look (with selection, opening selects it)
+  const openId = props.openKey !== undefined ? props.openKey == null ? null : (0, _state.recordKey)(props.openKey) : ownOpen;
+  const isOpen = id => openId != null && String(id) === String(openId),
+    marked = id => !!selection[id] || !selectable && !options.selectableRows && isOpen(id);
   const selectionRows = table.getPrePaginationRowModel().rows,
     selectedVisible = selectionRows.filter(r => selection[r.id]),
     allVisible = selectionRows.length > 0 && selectedVisible.length === selectionRows.length;
@@ -28842,16 +28848,20 @@ function NextEngine(props) {
       role: "row",
       "aria-rowindex": (mode === 'pages' ? page * pageSize : 0) + (semanticIndex.get(row.displayKey || row.id) || 2),
       "aria-selected": selectable || options.selectableRows ? !!selection[row.id] : undefined,
+      "aria-current": isOpen(row.id) ? 'true' : undefined,
       tabIndex: props.onRowClick || on.rowClick || options.selectableRows ? 0 : undefined,
       "aria-level": childField ? row.depth + 1 : undefined,
       "aria-expanded": row.getCanExpand?.() ? row.getIsExpanded() : undefined,
-      className: (0, _cx.cx)('' + B + '__grid-row', (selectable || options.selectableRows || props.onRowClick || on.rowClick) && B + '__grid-selectable', childField && '' + B + '__grid-tree-level-' + Math.min(12, row.depth), selection[row.id] && '' + B + '__grid-selected', isStatic && B + '__grid-row--static', anyWrap && !isNarrow && (isStatic || (effectiveStep || 'short') !== 'short') && B + '__grid-row--wrap', isNarrow && B + '__grid-row--narrow', virtualized && B + '__grid-row--virtual'),
+      className: (0, _cx.cx)('' + B + '__grid-row', (selectable || options.selectableRows || props.onRowClick || on.rowClick) && B + '__grid-selectable', childField && '' + B + '__grid-tree-level-' + Math.min(12, row.depth), marked(row.id) && '' + B + '__grid-selected', isStatic && B + '__grid-row--static', anyWrap && !isNarrow && (isStatic || (effectiveStep || 'short') !== 'short') && B + '__grid-row--wrap', isNarrow && B + '__grid-row--narrow', virtualized && B + '__grid-row--virtual'),
       onClick: e => {
         if (e.target.closest(interactive)) return;
         chooseRow(row, e);
         emit('rowClick', e, rowApi);
         props.onRowClick?.(record, e);
-        if (props.onRowClick || on.rowClick) unread.open(record);
+        if (props.onRowClick || on.rowClick) {
+          unread.open(record);
+          setOwnOpen(row.id);
+        }
       },
       onDoubleClick: e => {
         if (!e.target.closest(interactive)) {
@@ -28865,7 +28875,10 @@ function NextEngine(props) {
           chooseRow(row, e);
           emit('rowClick', e, rowApi);
           props.onRowClick?.(record, e);
-          if (props.onRowClick || on.rowClick) unread.open(record);
+          if (props.onRowClick || on.rowClick) {
+            unread.open(record);
+            setOwnOpen(row.id);
+          }
         }
         if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && e.target === e.currentTarget) {
           e.preventDefault();
@@ -28958,7 +28971,7 @@ function NextEngine(props) {
         },
         "data-plx-sticky": pinned && sticky ? sticky + 'px' : undefined,
         "data-plx-text-follow": c.rowLabel || columns.indexOf(c) <= pinnedAt ? 'size family weight' : 'size family',
-        className: (0, _cx.cx)('' + B + '__grid-cell', modes, !selectable && selection[row.id] && ordered.indexOf(column) === 0 && B + '__grid-cell--selected-start', bare && B + '__grid-cell--bare', selectable && ordered.indexOf(column) === 0 && B + '__grid-cell--after-lead', ordered.indexOf(column) > 0 && ordered[ordered.indexOf(column) - 1].getIsPinned() === 'left' && column.getIsPinned() !== 'left' && B + '__grid-cell--after-frozen', isTree && row.depth > 0 && B + '__tree-cell--level-' + Math.min(12, row.depth), editing?.key === row.id && editing.field === c.field && '' + B + '__grid-editing', k.map(kind => B + '__cell--' + kind).join(' '), (k.includes('data') || c.type === 'bytes') && B + '__grid-cell--data', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', c.type === 'bytes' && B + '__cell--data', c.rowHandle && B + '__cell--handle', childField && c.field === (props.treeColumn || columns[0]?.field) && B + '__tree-cell', pinned && '' + B + '__grid-frozen', (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + '__cell--row-label', k.includes('icon') && B + '__w-lead', keys.includes(c.field) && B + '__cell--key', keys[0] === c.field && B + '__cell--key-first', (c.align || c.type === 'bytes') && B + '__cell--align-' + (c.align || 'right'))
+        className: (0, _cx.cx)('' + B + '__grid-cell', modes, !selectable && marked(row.id) && ordered.indexOf(column) === 0 && B + '__grid-cell--selected-start', bare && B + '__grid-cell--bare', selectable && ordered.indexOf(column) === 0 && B + '__grid-cell--after-lead', ordered.indexOf(column) > 0 && ordered[ordered.indexOf(column) - 1].getIsPinned() === 'left' && column.getIsPinned() !== 'left' && B + '__grid-cell--after-frozen', isTree && row.depth > 0 && B + '__tree-cell--level-' + Math.min(12, row.depth), editing?.key === row.id && editing.field === c.field && '' + B + '__grid-editing', k.map(kind => B + '__cell--' + kind).join(' '), (k.includes('data') || c.type === 'bytes') && B + '__grid-cell--data', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', c.type === 'bytes' && B + '__cell--data', c.rowHandle && B + '__cell--handle', childField && c.field === (props.treeColumn || columns[0]?.field) && B + '__tree-cell', pinned && '' + B + '__grid-frozen', (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + '__cell--row-label', k.includes('icon') && B + '__w-lead', keys.includes(c.field) && B + '__cell--key', keys[0] === c.field && B + '__cell--key-first', (c.align || c.type === 'bytes') && B + '__cell--align-' + (c.align || 'right'))
       }), childField && c.field === (props.treeColumn || columns[0]?.field) ? /*#__PURE__*/_react.default.createElement("span", {
         className: B + '__tree-level',
         "data-plx-depth": 0
@@ -29065,7 +29078,7 @@ function NextEngine(props) {
     key: row.displayKey || row.id,
     row: row,
     render: rowNode,
-    selected: !!selection[row.id],
+    selected: (selection[row.id] ? 1 : 0) + (isOpen(row.id) ? 2 : 0),
     version: props.movableRows ?? options.movableRows ? {} : rowVersion
   }) : rowNode(row);
   const priorGroups = model.slice(0, first).filter(row => row.__group).map(row => row.__group),
@@ -35654,6 +35667,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        puts DataGrid.unreadCommands(...).filter in its CommandBar's quickFilters and .selection among its selection commands. The controller exposes getUnreadCount(), markRead(keys), markUnread(keys).
      onRowClick(record, event), onRowDoubleClick(record, event): with them rows are focusable and Enter clicks;
        onCellEdit(record, { field, value, previous })
+     openKey: the key of the record whose details show (the open row); default the row last opened by a click or Enter
+       (with onRowClick); null: none. The open row is aria-current="true"; in a grid without selection it takes the
+       selected look (the fill and the start bar); with selection, opening a row selects only it, so it is marked too
      density: "compact" (default: tables start Compact, owner 2026-10-22) | "standard" | "comfortable" | "page" (follow the
        page's density); set on the grid itself, so its rows (36 / 40 / 48px), header and pills follow it
      uniformPillWidths: deprecated, ignored (owner, uniform-pills-always-35): with cells="pill", every standard pill of a
