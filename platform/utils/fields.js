@@ -10,6 +10,7 @@
    Sort levels: [{ field, dir: "asc" | "desc" }], the first the main one; a select field sorts in its options' order. */
 
 import english from '../i18n/en.js';
+import { parseDate, isoDay } from './format.js';
 import CalendarIcon from 'plenix-platform/icons/plenix/calendar';
 import EdTextIcon from 'plenix-platform/icons/plenix/ed-text';
 import FieldNumberIcon from 'plenix-platform/icons/plenix/field-number';
@@ -36,8 +37,10 @@ export const kindOf = (f) => (OPERATORS[f && f.kind] ? f.kind : 'text');
 // a field's options, each with its color (given, or the next category color)
 export const optionsOf = (f) => ((f && f.options) || []).map((o, i) => (typeof o === 'string' ? { value: o } : o)).map((o, i) => Object.assign({ label: o.value, color: CATEGORY_ORDER[i % CATEGORY_ORDER.length] }, o));
 const blank = (x) => x === null || x === undefined || x === '' || (Array.isArray(x) && !x.length);
-const iso = (d) => (d instanceof Date ? d : new Date(d)).toISOString().slice(0, 10);
-const daysBefore = (n, today) => { const d = new Date((today || iso(new Date())) + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate() - n); return iso(d); };
+// days are calendar days where the reader is (the owner, issue 342 option A): today and "N days before" from local dates,
+// never from toISOString (the UTC day, which is the day before east of UTC around midnight)
+const iso = isoDay;
+const daysBefore = (n, today) => { const d = new Date((parseDate(today) || new Date()).getTime()); d.setDate(d.getDate() - n); return iso(d); };
 
 // one condition against one row (today: an ISO date, for "is within"; default the current date)
 export function matchesCondition(c, row, fields, today) {

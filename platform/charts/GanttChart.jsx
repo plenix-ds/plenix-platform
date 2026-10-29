@@ -35,7 +35,7 @@
 */
 import React from 'react';
 import { cx } from '../utils/cx.js';
-import { formatDate, formatPercent, formatList } from '../utils/format.js';
+import { formatDate, formatPercent, formatList, parseDate } from '../utils/format.js';
 import { ChartFrame } from './ChartFrame.jsx';
 import { scaleTime, scaleBand, seriesColor } from './scales.js';
 import { Axis } from './parts/Axis.jsx';
@@ -50,7 +50,8 @@ import { useStrings } from '../providers/LocaleProvider.jsx';
 // SVG geometry on the 4px grid: a milestone's half width, how far before a task's end its arrow leaves it, the arrowhead's
 // length, the active ring's room, the task name's distance from the plot
 const DIAMOND = 8, ELBOW = 8, HEAD = 4, RING = 4, NAME_GAP = 8;
-const toDate = (v) => (v instanceof Date ? v : new Date(v));
+// the shared reader (utils/format.js parseDate): a date-only "YYYY-MM-DD" is that calendar day where the reader is (issue 342)
+const toDate = (v) => parseDate(v) || new Date(NaN);
 
 export function GanttChart({ title, description, tasks = [], today, range, color, size = 'lg', strings, className }) {
   const t = useStrings('chart.ganttChart', strings);

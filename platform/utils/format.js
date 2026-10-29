@@ -44,7 +44,11 @@
      dateTimeAttr(date): the machine-readable value for <time dateTime={…}>
      parseDate(value): the Date every helper here reads: a Date as is, a date-only "YYYY-MM-DD" as that calendar day
        where the reader is (never midnight UTC, which is the day before in the Americas), else new Date(value); null when
-       it is not a date. Components that read a date use it, so no component parses dates itself (issue 342)
+       it is not a date. Components that read a date use it, so no component parses dates itself (issue 342). The owner's
+       rule (2026-10-29, option A): one rule everywhere, so the charts' time axes, GanttChart, HeatMap and the filters
+       read dates through it too
+     isoDay(date): a date's calendar day where the reader is, as "YYYY-MM-DD" (its local parts, never toISOString, which
+       is the UTC day: the day before east of UTC around midnight); internal, for the filters (utils/fields.js)
      FORMATS: the standard's data (see platform/standards/formats.json)
    Behavior:
      Nothing is cached per locale beyond the Intl formatter objects; every call reads the locale unless one is given.
@@ -92,6 +96,12 @@ export function parseDate(d) {
   const x = d instanceof Date ? d : new Date(d); return isNaN(x.getTime()) ? null : x;
 }
 const toDate = parseDate;
+// a date's calendar day where the reader is ("YYYY-MM-DD", from its local parts); "" when it is not a date
+const pad2 = (n) => (n < 10 ? '0' : '') + n;
+export function isoDay(date) {
+  const d = parseDate(date);
+  return d ? String(d.getFullYear()).padStart(4, '0') + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()) : '';
+}
 
 export function formatLocale() {
   const lang = typeof document !== 'undefined' && document.documentElement && document.documentElement.getAttribute('lang');
