@@ -55,7 +55,7 @@ export function CollapsibleSection({ title, icon, expanded, defaultExpanded = tr
   return (
     <section className={cx('plx-collapsible-section', open && 'is-expanded', className)}>
       <Tag className="plx-collapsible-section__heading">
-        <Tooltip content={title} disabled={!cut} className="plx-collapsible-section__tip">
+        <Tooltip content={title} disabled={!cut} describe={false} className="plx-collapsible-section__tip">
           <button type="button" className="plx-collapsible-section__toggle" aria-expanded={open} aria-controls={id + '-body'} onClick={toggle}>
             {icon ? <span className="plx-collapsible-section__icon" aria-hidden="true">{asIcon(icon)}</span> : null}
             <span ref={titleRef} className="plx-collapsible-section__title">{title}</span>

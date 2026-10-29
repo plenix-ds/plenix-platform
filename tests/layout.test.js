@@ -35,7 +35,7 @@ if (changed.wants({ units: ['patterns/AppShell', 'patterns/SidePanel', 'patterns
   if (result.status !== 0) process.exit(result.status || 1);
 }
 // section headings wrap, then end in an ellipsis with a tooltip (issue 502): its own test, when CollapsibleSection, NavList, Tooltip or the truncation helper changed
-if (changed.wants({ units: ['components/CollapsibleSection', 'components/NavList', 'components/Tooltip'] })) {
+if (changed.wants({ units: ['components/CollapsibleSection', 'components/NavList', 'components/Tooltip', 'components/Field', 'patterns/PropertyList', 'utils/overflow.js'] })) {
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'section-headings-502.test.js')], { stdio: 'inherit', env: process.env });
   if (result.status !== 0) process.exit(result.status || 1);
 }
