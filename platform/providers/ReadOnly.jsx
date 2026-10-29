@@ -39,6 +39,7 @@ import { useDescriptionId, joinIds } from '../utils/describedBy.js';
 import { Icon } from '../components/Icon/Icon.jsx';
 import { Text } from '../components/Text/Text.jsx';
 import { Inline } from '../components/Stack/Stack.jsx';
+import LockIcon from 'plenix-platform/icons/plenix/lock';
 
 export const ReadOnlyContext = React.createContext(false);
 
@@ -163,7 +164,7 @@ export const ReadOnly = React.forwardRef(function ReadOnly({ as = 'div', readOnl
         aria-describedby={joinIds(rest['aria-describedby'], on && reason ? reasonId : null)}>
         {on && reason ? (
           <Inline gap="xs">
-            <Icon name="lock" size="sm" />
+            <Icon name={LockIcon} size="sm" />
             <Text variant="secondary" id={reasonId}>{reason}</Text>
           </Inline>
         ) : null}

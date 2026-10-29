@@ -54,6 +54,7 @@ import { Field } from '../../components/Field/Field.jsx';
 import { Input } from '../../components/Input/Input.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import RenameIcon from 'plenix-platform/icons/plenix/rename';
 
 const fill = (s, vars) => String(s).replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m));
 
@@ -122,7 +123,7 @@ export function RenameAction({ value = '', onRename, variant = 'inline', label, 
   }
   return (
     <span {...rest} className={cx('plx-rename-action', 'plx-rename-action--dialog', className)}>
-      {controlled ? null : <Button icon="rename" disabled={disabled} {...triggerProps} onClick={() => setOwnOpen(true)}>{t.open}</Button>}
+      {controlled ? null : <Button icon={RenameIcon} disabled={disabled} {...triggerProps} onClick={() => setOwnOpen(true)}>{t.open}</Button>}
       <Dialog open={open} onClose={close} title={fill(t.title, { name: value })} size="sm" initialFocus={input}
         footer={<><Button onClick={close}>{t.cancel}</Button><Button variant="primary" type="submit" form={formId} loading={busy}>{t.rename}</Button></>}>
         <form id={formId} noValidate onSubmit={submit} className="plx-rename-action__form">
