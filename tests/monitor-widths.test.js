@@ -45,6 +45,8 @@ const SCREEN = (w, h, r) => 'Object.defineProperty(window.screen,"width",{get:()
     v = await visit(1600, [1920, 1080]); assert.equal(await v.width(), 480, 'C: the first monitor keeps its own'); await v.page.close();
     // zoom is not a monitor: 150% and 200% browser zoom on the same 1920x1080 monitor report 1280x720 at ratio 1.5 and 960x540 at ratio 2; the saved width stays
     for (const screen of [[1280, 720, 1.5], [960, 540, 2], [1920, 1080, 1]]) { v = await visit(1600, screen); assert.equal(await v.width(), 480, 'Z: zoom ' + screen.join(' ') + ' keeps the monitor\'s width'); assert.deepEqual(Object.keys((await v.store()).side).sort(), ['1920x1080', '2560x1440'], 'Z: no new monitor appears when zoom changes'); await v.page.close(); }
+    // a size a few pixels off the stored one is the same monitor (a rounding edge at an odd zoom step): 1920x1080 stored, 1914x1076 reported, still 480
+    v = await visit(1600, [1914, 1076, 1]); assert.equal(await v.width(), 480, 'N: a monitor within 10px of a stored one shares its width'); assert.deepEqual(Object.keys((await v.store()).side).sort(), ['1920x1080', '2560x1440'], 'N: no new key'); await v.page.close();
     v = await visit(1000, [2560, 1440]); assert.equal(await v.width(), start, 'D: 1600 does not fit a 1000px window: the default'); assert.deepEqual((await v.store()).side['2560x1440'], 1600, 'D: and it is kept'); await v.page.close();
     v = await visit(2000, [2560, 1440]); assert.equal(await v.width(), 1600, 'E: it comes back when it fits'); assert.deepEqual(v.errors, [], 'no script errors'); await v.page.close();
     console.log('monitor-widths: OK');

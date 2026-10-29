@@ -21,7 +21,8 @@ const PORT = +process.env.TEST_PORT || 8876;
     assert.deepEqual(s.map((x) => x.select), [true, true], 'narrow: a drop-down list ' + JSON.stringify(s)); assert.ok(!s[0].out && !s[1].out, 'nothing past the card');
     const sel = await page.$('#alone select');
     assert.equal(await page.evaluate((e) => e.options[e.selectedIndex].textContent, sel), 'Not saved yet', 'same value');
-    assert.equal(await page.evaluate((e) => e.getAttribute('aria-label'), sel), 'Show', 'same name');
+    // the name is on the drawn field (role="combobox"); the native <select> under it is hidden and aria-hidden (dropdown-look-36, #423)
+    assert.equal(await page.$eval('#alone [role="combobox"]', (e) => e.getAttribute('aria-label')), 'Show', 'same name');
     await page.select('#alone select', '2'); await new Promise((r) => setTimeout(r, 200));
     assert.equal(await page.evaluate(() => window.__seg276), 'saved', 'same onChange');
     await page.evaluate(() => document.getElementById('stage').classList.remove('rv-narrow')); await page.waitForFunction(() => document.querySelectorAll('#stage [role=radiogroup]').length === 2, { timeout: 10000 }).catch(() => {});

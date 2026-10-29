@@ -5,7 +5,7 @@ const ROOT = path.resolve(__dirname, '..');
 module.exports = async function groups(page) {
   const esbuild = require('esbuild');
   const output = await esbuild.build({ stdin: { contents: "export {DataGrid as MultiTable} from './platform/components/DataGrid/DataGrid.jsx'; export {useCollectionView} from './platform/hooks/useCollectionView.js';", resolveDir: ROOT, loader: 'jsx' }, bundle: true, write: false, format: 'iife', globalName: 'MultiGroupsTest',
-    plugins: [{ name: 'browser-peers', setup(build) { build.onResolve({ filter: /^react(-dom)?$/ }, args => ({ path: args.path, namespace: 'peers' })); build.onLoad({ filter: /.*/, namespace: 'peers' }, args => ({ contents: 'module.exports = window.' + (args.path === 'react' ? 'React' : 'ReactDOM') + ';' })); } }] });
+    plugins: [require('./icon-modules.js'), { name: 'browser-peers', setup(build) { build.onResolve({ filter: /^react(-dom)?$/ }, args => ({ path: args.path, namespace: 'peers' })); build.onLoad({ filter: /.*/, namespace: 'peers' }, args => ({ contents: 'module.exports = window.' + (args.path === 'react' ? 'React' : 'ReactDOM') + ';' })); } }] });
   await page.addScriptTag({ content: output.outputFiles[0].text });
   return page.evaluate(async () => {
     const R = React, D = ReactDOM, h = R.createElement, host = document.createElement('div'); document.body.appendChild(host);
