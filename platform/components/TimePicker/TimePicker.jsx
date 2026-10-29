@@ -38,6 +38,8 @@
        it (the minute by step), Home and End go to its first and last value, digits type it (two digits move on to the next
        segment), A and P set the period, Backspace clears it. The value changes once every segment is filled.
      Times outside min and max are not offered and are brought back inside when typed.
+     List: a time wider than the field (a narrow bar, issue 558) ends in an ellipsis and shows in full in a tooltip on hover
+       and focus, only while it is cut and the list is closed.
    Notes:
      For a date and a time together, place a date picker beside it. For a duration, use a number input with a unit.
      Show the time zone in the description when people in several zones use the data.
@@ -54,6 +56,8 @@ import { useDigits } from '../../providers/LocaleProvider.jsx';
 const TOP_LAYER = FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import { Icon } from '../Icon/Icon.jsx';
+import { Tooltip } from '../Tooltip/Tooltip.jsx';
+import { useTruncated } from '../../utils/overflow.js';
 import ScheduleIcon from 'plenix-platform/icons/plenix/schedule';
 
 const pad = (n) => String(n).padStart(2, '0');
@@ -147,14 +151,18 @@ const ListPicker = React.forwardRef(function ListPicker({ t, cycle, step, curren
     else if (e.key === 'Escape') { if (open) { e.preventDefault(); setOpen(false); } else if (text !== null) { e.preventDefault(); setText(null); } }
   };
   const optId = (i) => auto + '-o' + i;
+  const shownText = text !== null ? text : show(mins, cycle, t, digits);
+  const cut = useTruncated(input, shownText);   // the time is cut (issue 558): its full text goes in a Tooltip on hover and focus
   return (
     <div ref={wrap} className={cls}>
       <div className="plx-time-picker__field plx-input" aria-invalid={invalid || undefined}>
-        <input ref={input} id={id} className="plx-time-picker__input" role="combobox" aria-expanded={open} aria-controls={auto + '-list'} aria-autocomplete="none"
-          aria-activedescendant={open && times[active] !== undefined ? optId(active) : undefined} aria-label={label} disabled={disabled} autoComplete="off" inputMode="text"
-          value={text !== null ? text : show(mins, cycle, t, digits)} placeholder={cycle === '12' ? '9:00 ' + t.am : '09:00'}
-          onChange={(e) => { setText(e.target.value); const n = parseTime(e.target.value, cycle); if (n !== null) setActive(nearest(n)); }}
-          onBlur={() => { settle(); }} onClick={() => { if (!open && !disabled) openAt(mins); }} onKeyDown={onKey} {...rest} />
+        <Tooltip content={shownText} disabled={!cut || !shownText || open} describe={false} className="plx-time-picker__tip">
+          <input ref={input} id={id} className="plx-time-picker__input" role="combobox" aria-expanded={open} aria-controls={auto + '-list'} aria-autocomplete="none"
+            aria-activedescendant={open && times[active] !== undefined ? optId(active) : undefined} aria-label={label} disabled={disabled} autoComplete="off" inputMode="text"
+            value={shownText} placeholder={cycle === '12' ? '9:00 ' + t.am : '09:00'}
+            onChange={(e) => { setText(e.target.value); const n = parseTime(e.target.value, cycle); if (n !== null) setActive(nearest(n)); }}
+            onBlur={() => { settle(); }} onClick={() => { if (!open && !disabled) openAt(mins); }} onKeyDown={onKey} {...rest} />
+        </Tooltip>
         <span className="plx-time-picker__icon" aria-hidden="true"><Icon icon={ScheduleIcon} filled={false} /></span>
       </div>
       {open ? (

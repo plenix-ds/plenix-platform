@@ -69,7 +69,7 @@ module.exports = function buildStandards(root, opts) {
     // the patterns publish context values (Styling Standard 4.1); every field reads them in its own rule, a content pattern
     // over a stretch one, and its width prop (plx-<field>--width-*) over both
     if (stretch) { css.push('/* the fields rule (layout.json › fields): in a "stretch" pattern a field fills its column */'); css.push(':is(' + stretch + '){--plx-comp-field-context-stretch-inline-size:100%;}'); }
-    if (content) { css.push('/* in a "content" pattern a field takes its natural width (a select its longest option, an input its own size) */'); css.push(':is(' + content + '){--plx-comp-field-context-content-flex-shrink:0;--plx-comp-field-context-content-inline-size:auto;}'); }
+    if (content) { css.push('/* in a "content" pattern a field takes its natural width (a select its longest option, an input its own size) */'); css.push(':is(' + content + '){--plx-comp-field-context-content-flex-shrink:0;--plx-comp-field-context-content-inline-size:auto;--plx-comp-field-context-content-min-inline-size:var(--plx-sys-fit-field-min-width);--plx-comp-field-context-content-max-inline-size:var(--plx-sys-fit-field-max-width);--plx-comp-field-context-width-flex-shrink:0;}'); css.push('/* a bar folds its Buttons first (platform/standards/fit-and-overflow.md); only when it has folded every one (data-plx-fit-shrink) do its fields shrink, down to the minimum width */'); css.push(':is(' + content + ')[data-plx-fit-shrink]{--plx-comp-field-context-content-flex-shrink:1;--plx-comp-field-context-width-flex-shrink:1;}'); }
   }
   css.push('/* fluid: ' + M.fluid.description + ' */');
   if (M.contained) {

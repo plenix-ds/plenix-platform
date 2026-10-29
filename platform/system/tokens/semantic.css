@@ -369,6 +369,8 @@
   --plx-sys-fit-line-height: var(--plx-ref-size-16px);
   --plx-sys-fit-footer-stack-width: var(--plx-ref-size-400px);
   --plx-sys-fit-wrap-padding-block: var(--plx-sys-space-stack-xs);
+  --plx-sys-fit-field-min-width: var(--plx-sys-field-width-md);
+  --plx-sys-fit-field-max-width: var(--plx-ref-size-320px);
 }
 :root {
   --plx-sys-floating-offset-xs: var(--plx-ref-space-4px);

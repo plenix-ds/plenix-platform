@@ -49,6 +49,8 @@
        as the range as the pointer or the keys move.
      Date-time: the time field (the browser's own, typed or stepped) sits beside the date with the time zone after it;
        choosing a date keeps the time, or takes defaultTime.
+     A date or a range wider than its box (a narrow bar, issue 558) ends in an ellipsis and shows in full in a tooltip on
+       hover and focus, only while it is cut and the calendar is closed.
    Notes:
      The date field is as wide as its form (wider for a range) and the time field as wide as a time with its zone
        (--plx-comp-date-picker-*-width).
@@ -64,6 +66,8 @@ import { Button } from '../Button/Button.jsx';
 import { Input } from '../Input/Input.jsx';
 import { InputGroup } from '../InputGroup/InputGroup.jsx';
 import { Popover } from '../Popover/Popover.jsx';
+import { Tooltip } from '../Tooltip/Tooltip.jsx';
+import { useTruncated } from '../../utils/overflow.js';
 import { Calendar, parseIsoDate, addDays, addMonths, todayIso } from '../Calendar/Calendar.jsx';
 import CalendarIcon from 'plenix-platform/icons/plenix/calendar';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
@@ -173,18 +177,21 @@ export const DatePicker = React.forwardRef(function DatePicker({ mode = 'single'
   const zone = dateTime && timeZoneName ? zoneOf(locale, timeZoneName) : '';
   const shown = range ? (draft || datePart || { start: null, end: null }) : datePart;
   const firstMonth = (range ? (shown && shown.start) : shown) || undefined;
+  const cut = useTruncated(input, text);   // the date (or range) is cut (issue 558): its full text goes in a Tooltip on hover and focus
   const field = (
     <div className="plx-date-picker__field">
       <div className={cx('plx-date-picker__date', range && 'plx-date-picker__date--range', 'plx-input', 'plx-input--data', disabled && 'is-disabled')} aria-invalid={(invalid || bad) || undefined}
         onMouseDown={(e) => { if (!disabled && input.current && e.target !== input.current && !e.target.closest('button')) { e.preventDefault(); input.current.focus(); } }}>
-        <input ref={input} id={id} type="text" className="plx-date-picker__input" value={text} placeholder={range ? form.hint + DASH + form.hint : form.hint} required={required}
-          aria-describedby={describedBy} aria-invalid={(invalid || bad) || undefined} disabled={disabled} autoComplete="off"
-          onChange={(e) => { typing.current = true; setText(e.target.value); if (bad) setBad(false); }}
-          onBlur={read}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') { read(); }
-            else if (e.key === 'ArrowDown' && e.altKey) { e.preventDefault(); if (!open) toggle(); }
-          }} />
+        <Tooltip content={text} disabled={!cut || !text || open} describe={false} className="plx-date-picker__tip">
+          <input ref={input} id={id} type="text" className="plx-date-picker__input" value={text} placeholder={range ? form.hint + DASH + form.hint : form.hint} required={required}
+            aria-describedby={describedBy} aria-invalid={(invalid || bad) || undefined} disabled={disabled} autoComplete="off"
+            onChange={(e) => { typing.current = true; setText(e.target.value); if (bad) setBad(false); }}
+            onBlur={read}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') { read(); }
+              else if (e.key === 'ArrowDown' && e.altKey) { e.preventDefault(); if (!open) toggle(); }
+            }} />
+        </Tooltip>
         <Button variant="ghost" size="2xs" iconOnly icon={CalendarIcon} className="plx-date-picker__button" label={t.open} expanded={open} aria-haspopup="dialog" disabled={disabled} onClick={toggle} />
       </div>
       {dateTime ? (

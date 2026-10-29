@@ -264,7 +264,7 @@ export function CommandBar({ label, actions = [], find, quickFilters = [], view,
     <BarContext.Provider value={ctx}>
       <div ref={root} className={cx('plx-command-bar', ctx.iconOnly && 'plx-command-bar--icons', selecting && 'plx-command-bar--selecting', className)} data-plx-layout={shape} data-plx-position={sticky === true ? 'sticky' : sticky === false ? 'static' : 'auto'} onKeyDown={onKeyDown}>
         <div className="plx-command-bar__bar">
-          <Toolbar label={name} variant="bar" className="plx-command-bar__row" data-plx-bar-row="">{parts}</Toolbar>
+          <Toolbar label={name} variant="bar" className="plx-command-bar__row" data-plx-bar-row="" data-plx-fit-shrink={step >= SEARCH + folds || undefined}>{parts}</Toolbar>
         </div>
         {React.isValidElement(selection) ? selection : null}
       </div>

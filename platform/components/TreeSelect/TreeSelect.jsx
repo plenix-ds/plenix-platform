@@ -45,6 +45,8 @@ import { cx } from '../../utils/cx.js';
 import { isRtl } from '../../utils/direction.js';
 import { Icon, asIcon as iconElement, iconKey } from '../Icon/Icon.jsx';
 import { Popover } from '../Popover/Popover.jsx';
+import { Tooltip } from '../Tooltip/Tooltip.jsx';
+import { useTruncated } from '../../utils/overflow.js';
 import { SearchField } from '../SearchField/SearchField.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import FolderOpenIcon from 'plenix-platform/icons/plenix/folder-open';
@@ -89,6 +91,7 @@ export function TreeSelect({ nodes = [], value, values, onChange, multiple = fal
   const { byId, leaves } = React.useMemo(() => index(nodes), [nodes]);
   const chosen = multiple ? (values || []) : (value !== undefined && value !== null && value !== '' ? [value] : []);
   const [open, setOpen] = React.useState(false);
+  const valueRef = React.useRef(null), cut = useTruncated(valueRef);   // the chosen text is cut: its full text goes in a Tooltip
   const [text, setText] = React.useState('');
   const [expanded, setExpanded] = React.useState(() => {
     if (defaultExpanded) return defaultExpanded;
@@ -165,7 +168,7 @@ export function TreeSelect({ nodes = [], value, values, onChange, multiple = fal
   const trigger = (
     <button type="button" id={id} role="combobox" aria-label={label} aria-invalid={invalid || undefined} aria-required={required || undefined} disabled={disabled}
       className={cx('plx-input', 'plx-tree-select__trigger', !names.length && 'is-empty')} {...rest}>
-      <span className={names.length ? 'plx-tree-select__value' : 'plx-tree-select__placeholder'}>{names.length ? summary : (placeholder || t.placeholder)}</span>
+      <Tooltip content={names.length ? summary : ''} disabled={!cut || open || !names.length} className="plx-tree-select__tip"><span ref={valueRef} className={names.length ? 'plx-tree-select__value' : 'plx-tree-select__placeholder'}>{names.length ? summary : (placeholder || t.placeholder)}</span></Tooltip>
       <span className="plx-tree-select__chevron" aria-hidden="true"><Icon icon={SelectChevronIcon} filled={false} /></span>
     </button>
   );

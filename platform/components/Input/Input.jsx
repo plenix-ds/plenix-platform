@@ -55,6 +55,9 @@
      The box is as wide as the widest option. The list opens in the browser's top layer, below the field (or above it near an
      edge), at least as wide as the field, placed like a Menu: no dialog, drawer, table cell or scroll area clips it.
      Inside a Field, the label, description and error are connected for you.
+     Input in a bar or a header (issue 558; not inside an InputGroup): a text value (text, search, email, url, tel; never a
+       password) wider than the field ends in an ellipsis and shows in full in a tooltip on hover and focus, only while it
+       is cut. The Input then sits in the Tooltip's wrapper (plx-input__tip), which takes its place in the bar.
      Every appearance keeps the same states: hover and focus change only the color of its border, never a ring outside
      it; invalid draws a 2px danger border (the border and a line inside it, so the value does not move) on the lightest
      red fill; read-only and disabled keep their fills.
@@ -75,6 +78,8 @@ import { isDataValue } from '../../utils/dataValue.js';
 import { useFloating, FLOATING_ANCHOR } from '../../utils/floating.js';
 import { useReadOnly, readOnlyProps } from '../../providers/ReadOnly.jsx';
 import { Icon } from '../Icon/Icon.jsx';
+import { Tooltip } from '../Tooltip/Tooltip.jsx';
+import { useTruncated, useInBar } from '../../utils/overflow.js';
 import SelectChevronIcon from 'plenix-platform/icons/plenix/select-chevron';
 
 // the top layer and CSS anchor positioning (as Menu and Popover), checked once
@@ -91,10 +96,25 @@ const TYPE_HINTS = {
 // the appearance class (outline is the base look: no class)
 const look = (appearance) => appearance === 'filled' && 'plx-input--filled';
 
-export const Input = React.forwardRef(function Input({ invalid, width, data = false, emphasis = false, appearance, size, className, type = 'text', readOnly, ...rest }, ref) {
+// the types whose value is text that a bar can cut (issue 558); never a password
+const TEXT_TYPES = { text: 1, search: 1, email: 1, url: 1, tel: 1 };
+// the Tooltip around a text Input in a bar: its width class follows the Input's (fixed: xs, sm, md)
+const tipWidth = (width) => (width === 'xs' || width === 'sm' || width === 'md' ? 'plx-input__tip--fixed' : width === 'lg' || width === 'fill' ? 'plx-input__tip--' + width : null);
+
+export const Input = React.forwardRef(function Input({ invalid, width, data = false, emphasis = false, appearance, size, className, type = 'text', readOnly, onInput, ...rest }, ref) {
   // its own readOnly, else the nearest read-only region's (providers/ReadOnly.jsx)
   const locked = useReadOnly(readOnly);
-  return <input ref={ref} type={type} readOnly={locked || undefined} size={size === 'sm' || size === 'md' ? undefined : size} className={cx('plx-input', size === 'sm' && 'plx-input--size-sm', width && 'plx-input--width-' + width, data && 'plx-input--data', emphasis && 'plx-input--emphasis', look(appearance), className)} aria-invalid={invalid || undefined} {...TYPE_HINTS[type]} {...rest} />;
+  const own = React.useRef(null);
+  const setRef = React.useCallback((el) => { own.current = el; if (typeof ref === 'function') ref(el); else if (ref) ref.current = el; }, [ref]);
+  // in a bar (issue 558) a text Input whose value is cut shows its whole value in a Tooltip on hover and focus; it is wrapped once it is known to sit in one
+  const bar = useInBar(own, '.plx-input-group') && !!TEXT_TYPES[type];
+  const [, redraw] = React.useReducer((n) => n + 1, 0);
+  const cut = useTruncated(own, bar ? 'bar|' + rest.value : '', bar);
+  const field = <input ref={setRef} type={type} readOnly={locked || undefined} size={size === 'sm' || size === 'md' ? undefined : size} className={cx('plx-input', size === 'sm' && 'plx-input--size-sm', width && 'plx-input--width-' + width, data && 'plx-input--data', emphasis && 'plx-input--emphasis', bar && 'plx-input__bar-text', look(appearance), className)} aria-invalid={invalid || undefined}
+    onInput={bar ? (e) => { redraw(); if (onInput) onInput(e); } : onInput} {...TYPE_HINTS[type]} {...rest} />;
+  if (!bar) return field;
+  const text = rest.value !== undefined && rest.value !== null ? String(rest.value) : own.current ? own.current.value : String(rest.defaultValue || '');
+  return <Tooltip content={text} disabled={!cut || !text} describe={false} className={cx('plx-input__tip', tipWidth(width))}>{field}</Tooltip>;
 });
 
 // can the browser size a text area to its content? (field-sizing: Chrome 123, Safari 26)
@@ -145,6 +165,7 @@ const SelectList = React.forwardRef(function SelectList({ invalid, options, appe
   const [active, setActive] = React.useState(-1);
   const [labelId, setLabelId] = React.useState(null);
   const [, redraw] = React.useReducer((n) => n + 1, 0);
+  const valueRef = React.useRef(null), cut = useTruncated(valueRef);   // the chosen text is cut (its box is narrower than the text): its full text goes in a Tooltip
   const disabled = !!rest.disabled;
   // the list opens in the top layer, placed against the field by the floating layer (flips up near an edge, follows scroll and resize), so no dialog, drawer, table cell or scroll area clips it
   useFloating(wrap, list, { open, placement: 'bottom-start', matchWidth: true });
@@ -245,7 +266,7 @@ const SelectList = React.forwardRef(function SelectList({ invalid, options, appe
         className={cx('plx-input', 'plx-select__field', asData && 'plx-input--data', look(appearance), disabled && 'is-disabled')}
         {...readOnlyProps(locked, { onClick: () => { if (disabled) return; if (open) setOpen(false); else show(); }, onKeyDown: onKey }, { pointer: true })}
         onFocus={onFocus} onBlur={(e) => { setOpen(false); if (onBlur) onBlur(e); }}>
-        <span className="plx-select__value">{current ? current.label : ''}</span>
+        <Tooltip content={current ? current.label : ''} disabled={!cut || open} className="plx-select__tip"><span ref={valueRef} className="plx-select__value">{current ? current.label : ''}</span></Tooltip>
       </div>
       <span className="plx-select__chevron" aria-hidden="true"><Icon icon={SelectChevronIcon} filled={false} /></span>
       {open ? (
