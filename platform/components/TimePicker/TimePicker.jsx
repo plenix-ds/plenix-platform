@@ -52,8 +52,8 @@ import { useDigits } from '../../providers/LocaleProvider.jsx';
 
 // the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
 const TOP_LAYER = FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { hour: 'Hour', minute: 'Minute', period: 'AM or PM', am: 'AM', pm: 'PM', times: 'Times', empty: '--' };
 const pad = (n) => String(n).padStart(2, '0');
 const toMin = (v) => { const m = /^(\d{1,2}):(\d{2})$/.exec(v || ''); return m ? (+m[1]) * 60 + (+m[2]) : null; };
 const fromMin = (n) => pad(Math.floor(n / 60) % 24) + ':' + pad(n % 60);
@@ -83,7 +83,7 @@ const show = (mins, cycle, t, digits) => {
 export const TimePicker = React.forwardRef(function TimePicker({ value, defaultValue = '', onChange, variant = 'list', hourCycle, step, min, max, label, width,
   invalid, disabled, id, name, strings, className, ...rest }, ref) {
   devWarn('TimePicker', { variant }, { variant: ['list','segments'] });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('timePicker', strings);
   const cycle = hourCycle ? String(hourCycle) : localeCycle();
   const [own, setOwn] = React.useState(defaultValue);
   const current = value !== undefined ? value : own;

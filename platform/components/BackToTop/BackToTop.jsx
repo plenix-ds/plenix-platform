@@ -30,14 +30,13 @@ import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { Button } from '../Button/Button.jsx';
 import { useIntersection } from '../../hooks/useIntersection.js';
-
-const STRINGS = { label: 'Back to top' };
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 const reduced = () => typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 export function BackToTop({ variant = 'floating', scrollRef, focusRef, strings, className }) {
   devWarn('BackToTop', { variant }, { variant: ['floating','inline'] });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('backToTop', strings);
   const floating = variant !== 'inline';
   const sentinel = React.useRef(null);
   const { visible: atTop, entry } = useIntersection(sentinel, { root: scrollRef || null, disabled: !floating });

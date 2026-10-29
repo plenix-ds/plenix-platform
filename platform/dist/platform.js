@@ -1358,7 +1358,17 @@ var _default = exports.default = {
       "standard": "Standard",
       "comfortable": "Comfortable",
       "signOut": "Sign out"
-    }
+    },
+    "navLabel": "Pinned applications",
+    "applications": "Applications",
+    "search": "Search",
+    "scope": "In {scope}",
+    "pin": "Pin {app} to the header",
+    "unpin": "Unpin {app} from the header",
+    "switchApp": "{app}, switch application",
+    "cancel": "Cancel",
+    "searchHint": "Type what you are looking for, then press Enter.",
+    "pinnedHeading": "Pinned to the header"
   },
   "appShell": {
     "skip": "Skip to main content"
@@ -1523,7 +1533,11 @@ var _default = exports.default = {
     "noMatches": "No matches",
     "empty": "No items",
     "remove": "Remove {label}",
-    "columns": "Options"
+    "columns": "Options",
+    "results": {
+      "one": "{n} match",
+      "other": "{n} matches"
+    }
   },
   "chart": {
     "barChart": {
@@ -1723,7 +1737,32 @@ var _default = exports.default = {
     "hint": "Tab indents. Press Escape, then Tab, to leave the editor."
   },
   "colorSwatch": {
-    "label": "Color"
+    "label": "Color",
+    "more": "More colors",
+    "moreChosen": "More colors, {name} chosen",
+    "colors": {
+      "red": "Red",
+      "green": "Green",
+      "yellow": "Yellow",
+      "blue": "Blue",
+      "orange": "Orange",
+      "purple": "Purple",
+      "cyan": "Cyan",
+      "magenta": "Magenta",
+      "lime": "Lime",
+      "pink": "Pink",
+      "teal": "Teal",
+      "lavender": "Lavender",
+      "beige": "Beige",
+      "maroon": "Maroon",
+      "mint": "Mint",
+      "olive": "Olive",
+      "apricot": "Apricot",
+      "navy": "Navy",
+      "grey": "Grey",
+      "brown": "Brown",
+      "gray": "Gray"
+    }
   },
   "columnsMenu": {
     "label": "Columns",
@@ -1749,7 +1788,13 @@ var _default = exports.default = {
   },
   "combobox": {
     "loading": "Loading…",
-    "error": "The options could not be loaded"
+    "error": "The options could not be loaded",
+    "emptyText": "No matches",
+    "removeItem": "Remove {label}",
+    "results": {
+      "one": "{n} option",
+      "other": "{n} options"
+    }
   },
   "commandBar": {
     "more": "More actions",
@@ -2053,7 +2098,11 @@ var _default = exports.default = {
     "browse": "Browse all {entityName}",
     "loading": "Loading…",
     "error": "The results could not be loaded",
-    "remove": "Remove {label}"
+    "remove": "Remove {label}",
+    "results": {
+      "one": "{n} result",
+      "other": "{n} results"
+    }
   },
   "errorSummary": {
     "one": "There is a problem",
@@ -2401,7 +2450,11 @@ var _default = exports.default = {
     "unpinItem": "Unpin {label}"
   },
   "navPane": {
-    "browse": "Browse"
+    "browse": "Browse",
+    "expand": "Expand sidebar",
+    "collapse": "Collapse sidebar",
+    "resize": "Resize {name}",
+    "resizeNavigation": "Resize navigation"
   },
   "notice": {
     "dismiss": "Dismiss"
@@ -2584,7 +2637,12 @@ var _default = exports.default = {
     "to": "To"
   },
   "rating": {
-    "label": "Rating"
+    "label": "Rating",
+    "value": "{label}: {value} of {max}",
+    "stars": {
+      "one": "{count} star",
+      "other": "{count} stars"
+    }
   },
   "refineMenu": {
     "label": "Refine",
@@ -2812,7 +2870,9 @@ var _default = exports.default = {
     "groupInsert": "Insert",
     "groupHistory": "History",
     "leave": "Press Tab or Shift+Tab to leave the editor",
-    "hint": "Escape, then Tab, leaves the editor"
+    "hint": "Escape, then Tab, leaves the editor",
+    "heading": "Heading {n}",
+    "tip": "{name} ({keys})"
   },
   "roleLabel": {
     "owner": "Owner",
@@ -2874,7 +2934,8 @@ var _default = exports.default = {
     "removed": "{query} removed from recent searches",
     "remove": "Remove {query}",
     "placeholder": "Search",
-    "label": "Search"
+    "label": "Search",
+    "searching": "Searching"
   },
   "searchWorkspace": {
     "title": "Search",
@@ -3008,7 +3069,12 @@ var _default = exports.default = {
     "moreLabel": "More tabs"
   },
   "tag": {
-    "label": "Add a tag"
+    "label": "Add a tag",
+    "rename": "Rename {label}",
+    "renameTag": "Rename tag",
+    "remove": "Remove {label}",
+    "removeTag": "Remove tag",
+    "removeFilter": "Remove filter"
   },
   "teachingBubble": {
     "close": "Close",
@@ -3065,6 +3131,10 @@ var _default = exports.default = {
       "Europe": "Europe",
       "Indian": "Indian Ocean",
       "Pacific": "Pacific"
+    },
+    "results": {
+      "one": "{n} time zone",
+      "other": "{n} time zones"
     }
   },
   "toast": {
@@ -3324,7 +3394,8 @@ var _default = exports.default = {
     "counter": {
       "left": "{n} characters left",
       "over": "{n} characters too many"
-    }
+    },
+    "about": "About {label}"
   },
   "icon": {
     "status": {
@@ -3726,6 +3797,14 @@ var _default = exports.default = {
   },
   "activityList": {
     "unread": "Unread"
+  },
+  "sidePanel": {
+    "expand": "Expand panel",
+    "pane": "{name} pane"
+  },
+  "splitView": {
+    "firstLabel": "First panel",
+    "maxWidth": "The other pane needs at least {n}px"
   }
 };
   } },
@@ -3978,7 +4057,15 @@ var _default = exports.default = {
     "noMatches": "لا توجد نتائج مطابقة",
     "empty": "لا توجد عناصر",
     "remove": "إزالة {label}",
-    "columns": "الخيارات"
+    "columns": "الخيارات",
+    "results": {
+      "zero": "لا توجد تطابقات",
+      "one": "تطابق واحد",
+      "two": "تطابقان",
+      "few": "{n} تطابقات",
+      "many": "{n} تطابقًا",
+      "other": "{n} تطابق"
+    }
   },
   "codeBlock": {
     "code": "الرمز",
@@ -3991,7 +4078,17 @@ var _default = exports.default = {
   },
   "combobox": {
     "loading": "جارٍ التحميل…",
-    "error": "تعذّر تحميل الخيارات"
+    "error": "تعذّر تحميل الخيارات",
+    "emptyText": "لا توجد نتائج مطابقة",
+    "removeItem": "إزالة {label}",
+    "results": {
+      "zero": "لا توجد خيارات",
+      "one": "خيار واحد",
+      "two": "خياران",
+      "few": "{n} خيارات",
+      "many": "{n} خيارًا",
+      "other": "{n} خيار"
+    }
   },
   "commandMenu": {
     "label": "الأوامر",
@@ -4165,7 +4262,15 @@ var _default = exports.default = {
     "browse": "تصفح كل {entityName}",
     "loading": "جارٍ التحميل…",
     "error": "تعذّر تحميل النتائج",
-    "remove": "إزالة {label}"
+    "remove": "إزالة {label}",
+    "results": {
+      "zero": "لا توجد نتائج",
+      "one": "نتيجة واحدة",
+      "two": "نتيجتان",
+      "few": "{n} نتائج",
+      "many": "{n} نتيجةً",
+      "other": "{n} نتيجة"
+    }
   },
   "errorSummary": {
     "one": "توجد مشكلة",
@@ -4417,7 +4522,9 @@ var _default = exports.default = {
     "groupInsert": "إدراج",
     "groupHistory": "السجل",
     "leave": "اضغط Tab أو Shift+Tab للخروج من المحرّر",
-    "hint": "Escape ثم Tab للخروج من المحرّر"
+    "hint": "Escape ثم Tab للخروج من المحرّر",
+    "heading": "عنوان {n}",
+    "tip": "{name} ({keys})"
   },
   "roleLabel": {
     "owner": "المالك",
@@ -4433,7 +4540,8 @@ var _default = exports.default = {
     "removed": "تمت إزالة {query} من عمليات البحث الأخيرة",
     "remove": "إزالة {query}",
     "placeholder": "بحث",
-    "label": "بحث"
+    "label": "بحث",
+    "searching": "جارٍ البحث"
   },
   "sheet": {
     "expand": "توسيع اللوحة",
@@ -4499,6 +4607,14 @@ var _default = exports.default = {
       "Europe": "أوروبا",
       "Indian": "المحيط الهندي",
       "Pacific": "المحيط الهادئ"
+    },
+    "results": {
+      "zero": "لا توجد مناطق زمنية",
+      "one": "منطقة زمنية واحدة",
+      "two": "منطقتان زمنيتان",
+      "few": "{n} مناطق زمنية",
+      "many": "{n} منطقةً زمنية",
+      "other": "{n} منطقة زمنية"
     }
   },
   "transferList": {
@@ -4843,7 +4959,11 @@ var _default = exports.default = {
     "several": "{label} · {count}"
   },
   "navPane": {
-    "browse": "استعراض"
+    "browse": "استعراض",
+    "expand": "توسيع الشريط الجانبي",
+    "collapse": "طي الشريط الجانبي",
+    "resize": "تغيير حجم {name}",
+    "resizeNavigation": "تغيير حجم شريط التنقل"
   },
   "notificationList": {
     "label": "الإشعارات",
@@ -5658,7 +5778,32 @@ var _default = exports.default = {
     "label": "مسار التنقل"
   },
   "colorSwatch": {
-    "label": "اللون"
+    "label": "اللون",
+    "more": "ألوان أخرى",
+    "moreChosen": "ألوان أخرى، تم اختيار {name}",
+    "colors": {
+      "red": "أحمر",
+      "green": "أخضر",
+      "yellow": "أصفر",
+      "blue": "أزرق",
+      "orange": "برتقالي",
+      "purple": "بنفسجي",
+      "cyan": "سماوي",
+      "magenta": "أرجواني",
+      "lime": "ليموني",
+      "pink": "وردي",
+      "teal": "أزرق مخضر",
+      "lavender": "خزامي",
+      "beige": "بيج",
+      "maroon": "عنابي",
+      "mint": "نعناعي",
+      "olive": "زيتوني",
+      "apricot": "مشمشي",
+      "navy": "كحلي",
+      "grey": "رمادي",
+      "brown": "بني",
+      "gray": "رمادي"
+    }
   },
   "dialog": {
     "confirmLabel": "حفظ",
@@ -5671,10 +5816,24 @@ var _default = exports.default = {
     "label": "جارٍ التحميل"
   },
   "rating": {
-    "label": "التقييم"
+    "label": "التقييم",
+    "value": "{label}: {value} من {max}",
+    "stars": {
+      "zero": "لا نجوم",
+      "one": "نجمة واحدة",
+      "two": "نجمتان",
+      "few": "{count} نجوم",
+      "many": "{count} نجمة",
+      "other": "{count} نجمة"
+    }
   },
   "tag": {
-    "label": "إضافة وسم"
+    "label": "إضافة وسم",
+    "rename": "إعادة تسمية {label}",
+    "renameTag": "إعادة تسمية الوسم",
+    "remove": "إزالة {label}",
+    "removeTag": "إزالة الوسم",
+    "removeFilter": "إزالة عامل التصفية"
   },
   "toast": {
     "aria-label": "تجاهل",
@@ -5698,7 +5857,17 @@ var _default = exports.default = {
       "standard": "قياسي",
       "comfortable": "مريح",
       "signOut": "تسجيل الخروج"
-    }
+    },
+    "navLabel": "التطبيقات المثبتة",
+    "applications": "التطبيقات",
+    "search": "بحث",
+    "scope": "في {scope}",
+    "pin": "تثبيت {app} في الشريط العلوي",
+    "unpin": "إلغاء تثبيت {app} من الشريط العلوي",
+    "switchApp": "{app}، تبديل التطبيق",
+    "cancel": "إلغاء",
+    "searchHint": "اكتب ما تبحث عنه، ثم اضغط Enter.",
+    "pinnedHeading": "مثبتة في الشريط العلوي"
   },
   "form": {
     "label": "إجراءات النموذج"
@@ -5881,7 +6050,8 @@ var _default = exports.default = {
     "counter": {
       "left": "بقي {n} حرفًا",
       "over": "زاد {n} حرفًا"
-    }
+    },
+    "about": "معلومات عن {label}"
   },
   "icon": {
     "status": {
@@ -6283,6 +6453,14 @@ var _default = exports.default = {
   },
   "activityList": {
     "unread": "غير مقروء"
+  },
+  "sidePanel": {
+    "expand": "توسيع اللوحة",
+    "pane": "لوحة {name}"
+  },
+  "splitView": {
+    "firstLabel": "اللوحة الأولى",
+    "maxWidth": "تحتاج اللوحة الأخرى إلى {n} بكسل على الأقل"
   }
 };
   } },
@@ -6623,9 +6801,10 @@ function moduleProblem(m) {
   if (!(m && typeof m === 'object' && m.drawings && m.drawings[20] && m.drawings[24] && m.name)) return 'not an icon module';
   if (checked.has(m)) return checked.get(m);
   let problem = null;
+  // the problem is a message to developers (the console), not a word for people
   for (const size of [20, 24]) for (const k of ['outline', 'fill']) {
     const r = (0, _iconSafety.checkDrawing)(m.drawings[size][k]);
-    if (!r.ok && !problem) problem = 'its ' + size + ' ' + k + ' drawing: ' + r.reason;
+    if (!r.ok && !problem) problem = ['its', size, k, 'drawing:', r.reason].join(' ');
   }
   checked.set(m, problem);
   return problem;
@@ -12773,7 +12952,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      error: the error message under the control; it marks the field invalid
      required: marks the field and the control required; the label shows " *" (default false)
      info: content for a small (i) button next to the label
-     infoLabel: the accessible name of the (i) button (default "About " + the label)
+     infoLabel: the accessible name of the (i) button (default the catalog's field.about, "About {label}")
      layout: "stacked" (default; label above) | "inline" (label beside the control: settings rows, a 160px label column) |
        "row" (the description under the label and the control at the end); without it, the layout of the Form around the
        field (FieldLayoutContext: a two-column Form makes its fields inline), else "stacked"
@@ -12838,6 +13017,7 @@ function Field({
   const length = child.props.value != null ? String(child.props.value).length : typed;
   const over = max > 0 && length > max;
   const t = (0, _LocaleProvider.useStrings)('field.counter', strings);
+  const about = (0, _LocaleProvider.useStrings)('field').about;
   const countId = max ? controlId + '-c' : undefined;
   const near = max > 0 && max - length <= Math.ceil(max / 10);
   const said = _react.default.useRef(null);
@@ -12896,7 +13076,7 @@ function Field({
   }, " *") : null)), info ? /*#__PURE__*/_react.default.createElement("button", {
     type: "button",
     className: "plx-field__info",
-    "aria-label": infoLabel || 'About ' + label,
+    "aria-label": infoLabel || about.replace('{label}', label),
     "aria-expanded": showInfo,
     onClick: () => setShowInfo(!showInfo)
   }, "i") : null, lay === 'row' && description ? /*#__PURE__*/_react.default.createElement("div", {
@@ -14931,7 +15111,7 @@ function Resizable({
   }) : null);
 }
   } },
-  "platform/patterns/AppShell/AppShell.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../providers/pageLayouts.js":"platform/providers/pageLayouts.js","../../components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/patterns/AppShell/AppShell.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../providers/pageLayouts.js":"platform/providers/pageLayouts.js","../../components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -14957,6 +15137,7 @@ var _reactDom = require("react-dom");
 var _cx = require("../../utils/cx.js");
 var _pageLayouts = require("../../providers/pageLayouts.js");
 var _Resizable = require("../../components/Resizable/Resizable.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · AppShell, PageContent, SideNavPortal, Show, Hide
    Summary: The root of an application page, after the Layout grid's shell: the header across the top, a body row with the
@@ -15039,9 +15220,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        leaves the page, the Tab order and the accessibility tree; on paper they toggle display (the content stays in the
        page for screen readers). Every hidden action needs a place where it still is (fallback, a menu, the detail view).
 */
-const STRINGS = {
-  skip: 'Skip to main content'
-};
 // the five layout modes (the Layout foundation; app-shell.css draws them)
 const LAYOUTS = ['fluid', 'contained', 'hybrid', 'multi-pane', 'focus'];
 const LayoutContext = exports.LayoutContext = /*#__PURE__*/_react.default.createContext(null);
@@ -15104,7 +15282,7 @@ function AppShell({
     return () => setClaimed(k => k === kind ? null : k);
   }, []);
   const layout = (0, _pageLayouts.pageLayout)(claimed || page); // the design system's layout standard decides the mode
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('appShell', strings);
   const small = useMedia(below('--plx-sys-shell-rail-below'));
   const narrow = useMedia(below('--plx-sys-shell-phone-below'));
   const [barEl, setBarEl] = _react.default.useState(null); // where NavPane puts the bottom navigation bar at Narrow
@@ -24523,7 +24701,7 @@ const Switch = exports.Switch = /*#__PURE__*/_react.default.forwardRef(function 
   }, label) : null);
 });
   } },
-  "platform/components/SearchField/SearchField.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/SearchField/SearchField.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -24539,6 +24717,7 @@ var _Icon = require("../Icon/Icon.jsx");
 var _Kbd = require("../Kbd/Kbd.jsx");
 var _Loading = require("../Loading/Loading.jsx");
 var _Tooltip = require("../Tooltip/Tooltip.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · SearchField
    Summary: A search input with a search icon, an optional clear button and an optional shortcut hint; optionally a list
@@ -24600,15 +24779,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      It has the toolbar control height. The list is a menu surface (border only, no shadow); the caller matches,
      ranks and limits the suggestions (about eight) and the recent searches (about five).
 */
-const STRINGS = {
-  suggestions: 'Suggestions',
-  recent: 'Recent searches',
-  clearRecent: 'Clear recent searches',
-  clear: 'Clear search',
-  results: '{n} suggestions',
-  removed: '{query} removed from recent searches',
-  remove: 'Remove {query}'
-};
 const asItem = kind => x => typeof x === 'string' ? {
   value: x,
   label: x,
@@ -24636,8 +24806,8 @@ const SearchInput = /*#__PURE__*/_react.default.forwardRef(function SearchInput(
   value,
   onChange,
   onClear,
-  placeholder = 'Search',
-  label = 'Search',
+  placeholder,
+  label,
   shortcut,
   loading = false,
   onAccent = false,
@@ -24655,7 +24825,9 @@ const SearchInput = /*#__PURE__*/_react.default.forwardRef(function SearchInput(
   size,
   ...rest
 }, ref) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('searchField', strings);
+  if (placeholder === undefined) placeholder = t.placeholder;
+  if (label === undefined) label = t.label;
   const auto = 'plx-sf' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
   const listId = auto + '-list';
   const wrap = _react.default.useRef(null),
@@ -24776,7 +24948,7 @@ const SearchInput = /*#__PURE__*/_react.default.forwardRef(function SearchInput(
     "aria-hidden": "true"
   }, loading ? /*#__PURE__*/_react.default.createElement(_Loading.Spinner, {
     size: "sm",
-    label: "Searching"
+    label: t.searching
   }) : /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
     name: "search"
   })), /*#__PURE__*/_react.default.createElement("input", _extends({
@@ -24908,7 +25080,7 @@ const SearchInput = /*#__PURE__*/_react.default.forwardRef(function SearchInput(
 // the narrow bar's search (owner, 2026-10-14): the search icon in the field's place; it opens the field across the bar
 function CollapsedSearch({
   value,
-  label = 'Search',
+  label,
   onKeyDown,
   onBlur,
   className,
@@ -24916,6 +25088,8 @@ function CollapsedSearch({
   onOpenChange,
   ...rest
 }, ref) {
+  const tw = (0, _LocaleProvider.useStrings)('searchField');
+  if (label === undefined) label = tw.label;
   const [own, setOwn] = _react.default.useState(false);
   const open = openProp === undefined ? own : openProp;
   const setOpen = v => {
@@ -27699,7 +27873,7 @@ function opening(props) {
   };
 }
   } },
-  "platform/components/Tag/Tag.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Tag/Tag.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27713,6 +27887,7 @@ var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _Tooltip = require("../Tooltip/Tooltip.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Tag, Chip, TagList, TagInput
    Summary: Small labels with one look: Tag for a keyword or category, Chip for the same look as a toggle button. A tag with a
@@ -27790,6 +27965,7 @@ function Tag({
   children,
   ...rest
 }) {
+  const tw = (0, _LocaleProvider.useStrings)('tag');
   const [editing, setEditing] = _react.default.useState(false);
   const [draft, setDraft] = _react.default.useState('');
   const text = typeof children === 'string' ? children : '';
@@ -27803,7 +27979,7 @@ function Tag({
   }, rest), onRename && editing ? /*#__PURE__*/_react.default.createElement("input", {
     className: "plx-tag__input",
     value: draft,
-    "aria-label": renameLabel || 'Rename ' + (text || 'tag'),
+    "aria-label": renameLabel || (text ? tw.rename.replace('{label}', text) : tw.renameTag),
     autoFocus: true,
     size: Math.max(4, draft.length),
     onChange: e => setDraft(e.target.value),
@@ -27820,7 +27996,7 @@ function Tag({
   }) : onRename ? /*#__PURE__*/_react.default.createElement("button", {
     type: "button",
     className: "plx-tag__label plx-tag__rename",
-    "aria-label": renameLabel || 'Rename ' + (text || 'tag'),
+    "aria-label": renameLabel || (text ? tw.rename.replace('{label}', text) : tw.renameTag),
     onClick: () => {
       setDraft(text);
       setEditing(true);
@@ -27828,7 +28004,7 @@ function Tag({
   }, children) : /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-tag__label"
   }, children), onRemove ? /*#__PURE__*/_react.default.createElement(RemoveButton, {
-    label: removeLabel || 'Remove ' + (typeof children === 'string' ? children : 'tag'),
+    label: removeLabel || (typeof children === 'string' ? tw.remove.replace('{label}', children) : tw.removeTag),
     onClick: onRemove
   }) : null);
 }
@@ -27840,6 +28016,7 @@ function Chip({
   children,
   ...rest
 }) {
+  const tw = (0, _LocaleProvider.useStrings)('tag');
   if (onRemove) {
     return /*#__PURE__*/_react.default.createElement("span", {
       className: (0, _cx.cx)('plx-tag', 'plx-tag--chip', selected && 'plx-tag--selected', className)
@@ -27848,7 +28025,7 @@ function Chip({
       className: "plx-tag__toggle",
       "aria-pressed": selected
     }, rest), children), /*#__PURE__*/_react.default.createElement(RemoveButton, {
-      label: removeLabel || 'Remove ' + (typeof children === 'string' ? children : 'filter'),
+      label: removeLabel || (typeof children === 'string' ? tw.remove.replace('{label}', children) : tw.removeFilter),
       onClick: onRemove
     }));
   }
@@ -27875,13 +28052,15 @@ const TagInput = exports.TagInput = /*#__PURE__*/_react.default.forwardRef(funct
   onKeyDown,
   value,
   onChange,
-  label = 'Add a tag',
+  label,
   collapsible = true,
   id,
   className,
   onBlur,
   ...rest
 }, ref) {
+  const tw = (0, _LocaleProvider.useStrings)('tag');
+  if (label === undefined) label = tw.label;
   const [own, setOwn] = _react.default.useState('');
   const [open, setOpen] = _react.default.useState(!collapsible);
   const text = value !== undefined ? value : own;
@@ -33392,7 +33571,7 @@ exports.CATEGORY_COLORS = void 0;
 */
 const CATEGORY_COLORS = exports.CATEGORY_COLORS = ["red", "green", "yellow", "blue", "orange", "purple", "cyan", "magenta", "lime", "pink", "teal", "lavender", "beige", "maroon", "mint", "olive", "apricot", "navy", "grey"];
   } },
-  "platform/components/ColorSwatch/ColorSwatch.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","./dataColors.js":"platform/components/ColorSwatch/dataColors.js","./categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../utils/overflow.js":"platform/utils/overflow.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/ColorSwatch/ColorSwatch.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","./dataColors.js":"platform/components/ColorSwatch/dataColors.js","./categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../utils/overflow.js":"platform/utils/overflow.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -33408,6 +33587,7 @@ var _categoryColors = require("./categoryColors.js");
 var _Button = require("../Button/Button.jsx");
 var _Menu = require("../Menu/Menu.jsx");
 var _overflow = require("../../utils/overflow.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ColorSwatch
    Summary: A color from the data shown as a small square chip (a category's color).
@@ -33523,7 +33703,7 @@ function ColorSwatch({
 function ColorPicker({
   value,
   onChange,
-  label = 'Color',
+  label,
   size = 'md',
   palette = 'data',
   colors,
@@ -33538,6 +33718,9 @@ function ColorPicker({
   }, {
     size: ['sm', 'md']
   });
+  const tw = (0, _LocaleProvider.useStrings)('colorSwatch');
+  if (label === undefined) label = tw.label;
+  const colorName = h => tw.colors && tw.colors[h] || nameOf(h);
   const cat = palette === 'category';
   if (cat && value === 'brown') value = 'orange';
   const all = cat ? _categoryColors.CATEGORY_COLORS : _dataColors.DATA_COLORS;
@@ -33560,7 +33743,7 @@ function ColorPicker({
     "data-plx-overflow-item": "",
     className: "plx-color-picker__slot"
   }, swatch(h, {
-    label: nameOf(h),
+    label: colorName(h),
     pressed: value === h,
     onClick: () => pick(h)
   })));
@@ -33570,13 +33753,13 @@ function ColorPicker({
     "data-plx-overflow-more": "",
     className: "plx-color-picker__more"
   }, /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-    label: 'More colors',
+    label: tw.more,
     placement: "bottom-end",
     trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
       size: "2xs",
       variant: chosenHidden ? 'secondary' : 'ghost',
       caret: true,
-      "aria-label": 'More colors' + (chosenHidden ? ', ' + nameOf(value) + ' chosen' : '')
+      "aria-label": chosenHidden ? tw.moreChosen.replace('{name}', colorName(value)) : tw.more
     }, chosenHidden ? /*#__PURE__*/_react.default.createElement(ColorSwatch, {
       color: cat ? undefined : value,
       category: cat ? value : undefined,
@@ -33590,7 +33773,7 @@ function ColorPicker({
       size: 'sm'
     }),
     onSelect: () => pick(h)
-  }, nameOf(h))))) : null;
+  }, colorName(h))))) : null;
   return /*#__PURE__*/_react.default.createElement("div", _extends({
     ref: ref,
     role: "group",
@@ -33842,7 +34025,7 @@ function Columns({
   }, rest), children);
 }
   } },
-  "platform/components/Breadcrumbs/Breadcrumbs.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Breadcrumbs/Breadcrumbs.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -33851,6 +34034,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.Breadcrumbs = Breadcrumbs;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · Breadcrumbs
    Summary: Shows where the page sits in a hierarchy, from the top level to the current page.
@@ -33872,9 +34056,11 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
 
 function Breadcrumbs({
   items = [],
-  label = 'Breadcrumb',
+  label,
   className
 }) {
+  const tw = (0, _LocaleProvider.useStrings)('breadcrumbs');
+  if (label === undefined) label = tw.label;
   return /*#__PURE__*/_react.default.createElement("nav", {
     "aria-label": label,
     className: (0, _cx.cx)('plx-breadcrumbs', className)
@@ -34355,7 +34541,7 @@ function ShowMore({
   }, rest), expanded ? t.less : count !== undefined && count !== null && count !== '' ? t.moreCount.replace('{n}', count) : t.more);
 }
   } },
-  "platform/components/ProgressSteps/ProgressSteps.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/ProgressSteps/ProgressSteps.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -34367,6 +34553,7 @@ var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ProgressSteps
    Summary: The steps of a task done in order (setup, an import, a checkout) and where the person is: each step's marker,
@@ -34409,13 +34596,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Statuses of records are a Badge; these markers belong to the steps only.
      Other props pass through to the outer element.
 */
-const STRINGS = {
-  step: 'Step {n} of {total}',
-  complete: 'Complete',
-  current: 'Current step',
-  upcoming: 'Not started',
-  error: 'Needs attention'
-};
 const fill = (s, n, total) => s.replace('{n}', n).replace('{total}', total);
 function ProgressSteps({
   steps = [],
@@ -34433,7 +34613,7 @@ function ProgressSteps({
   }, {
     variant: ['default', 'compact']
   });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('progressSteps', strings);
   const statusOf = (s, i) => s.status || (i < current ? 'complete' : i === current ? 'current' : 'upcoming');
   if (variant === 'compact') {
     const at = Math.max(0, Math.min(current, steps.length - 1));
@@ -34741,7 +34921,7 @@ const Chat = exports.Chat = {
   Typing
 };
   } },
-  "platform/components/Rating/Rating.jsx": { deps: {"react":null,"../../utils/direction.js":"platform/utils/direction.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Rating/Rating.jsx": { deps: {"react":null,"../../utils/direction.js":"platform/utils/direction.js","../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -34751,6 +34931,7 @@ exports.Rating = Rating;
 var _react = _interopRequireDefault(require("react"));
 var _direction = require("../../utils/direction.js");
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Rating
    Summary: 1 to max stars as a radio group, for rating an item.
@@ -34773,11 +34954,14 @@ function Rating({
   value = 0,
   onChange,
   max = 5,
-  label = 'Rating',
+  label,
   readOnly = false,
   className,
   ...rest
 }) {
+  const tw = (0, _LocaleProvider.useStrings)('rating'),
+    loc = (0, _LocaleProvider.useLocale)();
+  if (label === undefined) label = tw.label;
   const stars = Array.from({
     length: max
   }, (_, i) => i + 1);
@@ -34792,7 +34976,7 @@ function Rating({
     return /*#__PURE__*/_react.default.createElement("span", _extends({
       className: (0, _cx.cx)('plx-rating', 'plx-rating--read-only', className),
       role: "img",
-      "aria-label": label + ': ' + value + ' of ' + max
+      "aria-label": tw.value.replace('{label}', label).replace('{value}', value).replace('{max}', max)
     }, rest), stars.map(n => /*#__PURE__*/_react.default.createElement("span", {
       key: n,
       className: (0, _cx.cx)('plx-rating__star', n <= value && 'plx-rating__star--on'),
@@ -34823,7 +35007,9 @@ function Rating({
     },
     role: "radio",
     "aria-checked": n === value,
-    "aria-label": n + (n === 1 ? ' star' : ' stars'),
+    "aria-label": loc.t('rating.stars', {
+      count: n
+    }),
     tabIndex: (value ? n === value : n === 1) ? 0 : -1,
     className: (0, _cx.cx)('plx-rating__star', n <= value && 'plx-rating__star--on'),
     onClick: () => choose(n),
@@ -35310,7 +35496,7 @@ function SegmentedControl({
   }, segments);
 }
   } },
-  "platform/components/Combobox/Combobox.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Combobox/Combobox.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35323,6 +35509,8 @@ var _Tag = require("../Tag/Tag.jsx");
 var _Loading = require("../Loading/Loading.jsx");
 var _announce = require("../../utils/announce.jsx");
 var _floating = require("../../utils/floating.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _format = require("../../utils/format.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Combobox
    Summary: A field with a list to choose from, filtered as you type (an ARIA combobox with a listbox).
@@ -35381,11 +35569,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
 */
 // the top layer and CSS anchor positioning (as Menu, Popover and Select), checked once
 const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
-const STRINGS = {
-  loading: 'Loading…',
-  error: 'The options could not be loaded',
-  results: n => n + (n === 1 ? ' option' : ' options')
-};
 const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(function Combobox({
   options = [],
   value,
@@ -35399,7 +35582,7 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
   label,
   invalid,
   disabled,
-  emptyText = 'No matches',
+  emptyText,
   loadOptions,
   loadDelay = 300,
   minChars = 0,
@@ -35411,7 +35594,10 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
   size,
   ...rest
 }, ref) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('combobox', strings),
+    words = t;
+  const loc = (0, _LocaleProvider.useLocale)();
+  if (emptyText === undefined) emptyText = t.emptyText;
   const auto = 'plx-cb' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
   const listId = auto + '-list';
   const [open, setOpen] = _react.default.useState(false);
@@ -35460,7 +35646,10 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
         got.forEach(o => seen.current.set(o.value, o));
         setLoaded(got);
         setBusy(false);
-        (0, _announce.announce)(t.results(got.length));
+        (0, _announce.announce)(typeof t.results === 'function' ? t.results(got.length) : loc.t('combobox.results', {
+          count: got.length,
+          n: (0, _format.formatNumber)(got.length)
+        }));
       }, () => {
         if (n !== request.current) return;
         setLoaded([]);
@@ -35561,7 +35750,7 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
     return /*#__PURE__*/_react.default.createElement(_Tag.Tag, {
       key: v,
       onRemove: () => onChange(chosen.filter(x => x !== v)),
-      removeLabel: 'Remove ' + t
+      removeLabel: words.removeItem.replace('{label}', t)
     }, t);
   }) : null, /*#__PURE__*/_react.default.createElement("input", _extends({
     ref: input,
@@ -35644,7 +35833,7 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
   }, emptyText)) : null);
 });
   } },
-  "platform/components/Slider/Slider.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/grid.js":"platform/utils/grid.js","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Slider/Slider.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/grid.js":"platform/utils/grid.js","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35656,6 +35845,7 @@ var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
 var _grid = require("../../utils/grid.js");
 var _ReadOnly = require("../../providers/ReadOnly.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Slider
    Summary: A value picked from a range by dragging; with range, two thumbs pick a minimum and a maximum (range slider);
@@ -35694,10 +35884,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        other value is a --plx-comp-slider-* token.
      Mark labels are values: they use the data font.
 */
-const STRINGS = {
-  minimum: 'Minimum',
-  maximum: 'Maximum'
-};
 const MAX_STEP_MARKS = 12;
 
 // the marks to draw: [{ value, label }] inside [min, max]
@@ -35738,7 +35924,7 @@ function Slider({
   const lockOf = props => (0, _ReadOnly.readOnlyProps)(locked, props, {
     pointer: true
   }); // a press focuses, the keys do not move it
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('slider', strings);
   const drawn = marksOf(marks, min, max, step);
   const custom = range || drawn.length > 0;
   const span = _react.default.useRef(null);
@@ -36087,7 +36273,7 @@ function useUndo() {
   }), [toast, words.undo]);
 }
   } },
-  "platform/components/Tabs/Tabs.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Count/Count.jsx":"platform/components/Count/Count.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Tabs/Tabs.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Count/Count.jsx":"platform/components/Count/Count.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36103,6 +36289,7 @@ var _layer = require("../../utils/layer.js");
 var _Count = require("../Count/Count.jsx");
 var _Icon = require("../Icon/Icon.jsx");
 var _Menu = require("../Menu/Menu.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · Tabs
    Summary: Switch between views of the same thing.
@@ -36154,16 +36341,11 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
 // the selected tab fills its icon (the tab owns its state)
 const asIcon = _Icon.stateIcon;
 const tabsPanelId = (base, value) => base + '-panel-' + String(value).replace(/[^a-zA-Z0-9_-]/g, '');
-exports.tabsPanelId = tabsPanelId;
-const STRINGS = {
-  more: 'More',
-  moreLabel: 'More tabs'
-};
-
 /* how many tabs fit on the row: it starts from all of them whenever the width, the tabs or the selected tab change, and
    lowers the number, before the browser paints, until every shown tab ends inside the tab list (the More control, once
    shown, takes its own room, so the list narrows and the count is checked again). The width is the Tabs' own, which
    does not follow the count, so the two never chase each other. */
+exports.tabsPanelId = tabsPanelId;
 function useTabsFit(rootRef, listRef, count, key) {
   const [fit, setFit] = _react.default.useState(count);
   const [width, setWidth] = _react.default.useState(0);
@@ -36208,7 +36390,7 @@ function Tabs({
   }, {
     variant: ['contained', 'folder', 'segmented']
   });
-  const words = Object.assign({}, STRINGS, strings);
+  const words = (0, _LocaleProvider.useStrings)('tabs', strings);
   const uid = (0, _layer.useUid)('plx-tabs');
   const base = idBase || uid;
   const [own, setOwn] = _react.default.useState(defaultValue !== undefined ? defaultValue : items[0] ? items[0].value : undefined);
@@ -37308,7 +37490,7 @@ function ActionBar({
   }, children);
 }
   } },
-  "platform/components/NavList/NavList.jsx": { deps: {"react":null,"../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/NavList/NavList.jsx": { deps: {"react":null,"../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -37321,6 +37503,7 @@ var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _CollapsibleSection = require("../CollapsibleSection/CollapsibleSection.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · NavList
    Summary: A list of places in a side navigation (settings sections, folders of a screen).
@@ -37364,13 +37547,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Notes:
      item.actions are siblings of the row's own button, never inside it.
 */
-const STRINGS = {
-  pin: 'Pin',
-  unpin: 'Unpin',
-  pinItem: 'Pin {label}',
-  unpinItem: 'Unpin {label}'
-};
-
 // the icon takes the row's state as its own (Styling Standard 3.6): filled on the current row; an Icon element the caller
 // gives keeps its own fill when it sets one
 const asIcon = _Icon.stateIcon;
@@ -37537,7 +37713,7 @@ function NavList({
   strings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('navList', strings);
   const loc = (0, _format.numeralLocale)(locale || typeof document !== 'undefined' && document.documentElement.lang || undefined);
   const all = groups || [{
     heading: null,
@@ -38704,7 +38880,7 @@ function useDensity() {
   return [document.documentElement.getAttribute('data-plx-density') || 'standard', set];
 }
   } },
-  "platform/patterns/AppHeader/AppHeader.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../providers/Surface.jsx":"platform/providers/Surface.jsx","../../components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","../../components/Count/Count.jsx":"platform/components/Count/Count.jsx","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","../../providers/apps.js":"platform/providers/apps.js","../../utils/layer.js":"platform/utils/layer.js","../../hooks/useDensity.js":"platform/hooks/useDensity.js","../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/patterns/AppHeader/AppHeader.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../providers/Surface.jsx":"platform/providers/Surface.jsx","../../components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","../../components/Count/Count.jsx":"platform/components/Count/Count.jsx","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","../../providers/apps.js":"platform/providers/apps.js","../../utils/layer.js":"platform/utils/layer.js","../../hooks/useDensity.js":"platform/hooks/useDensity.js","../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -38730,6 +38906,7 @@ var _apps = require("../../providers/apps.js");
 var _layer = require("../../utils/layer.js");
 var _useDensity = require("../../hooks/useDensity.js");
 var _AppShell = require("../AppShell/AppShell.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · AppHeader
    Summary: The header across the top of every Plenix application (a banner landmark), after the Carbon UI shell header.
@@ -38839,7 +39016,7 @@ function AppHeader({
   appsRoot = '',
   onOpenApp,
   nav,
-  navLabel = 'Pinned applications',
+  navLabel,
   action,
   search,
   searchSuggestions,
@@ -38858,6 +39035,8 @@ function AppHeader({
   }, {
     tone: ['accent', 'frost', 'plain']
   });
+  const tw = (0, _LocaleProvider.useStrings)('appHeader');
+  if (navLabel === undefined) navLabel = tw.navLabel;
   const {
     pinnedApps
   } = (0, _SessionProvider.useSession)();
@@ -38980,7 +39159,7 @@ function AppHeader({
     className: "plx-search-view",
     role: "dialog",
     "aria-modal": "true",
-    "aria-label": "Search",
+    "aria-label": tw.search,
     onKeyDown: onViewKey
   }, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-search-view__bar"
@@ -38992,11 +39171,11 @@ function AppHeader({
     variant: "ghost",
     className: "plx-search-view__cancel",
     onClick: cancel
-  }, "Cancel")), scope ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+  }, tw.cancel)), scope ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
     variant: "secondary",
     as: "p",
     className: "plx-search-view__scope"
-  }, 'In ' + scope) : null, /*#__PURE__*/_react.default.createElement("div", {
+  }, tw.scope.replace('{scope}', scope)) : null, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-search-view__content"
   }, searchSuggestions ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-search-view__suggestions"
@@ -39005,7 +39184,7 @@ function AppHeader({
   }, searchResults) : null, !searchSuggestions && !searchResults ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
     variant: "secondary",
     as: "p"
-  }, "Type what you are looking for, then press Enter.") : null)), document.body) : null;
+  }, tw.searchHint) : null)), document.body) : null;
   return /*#__PURE__*/_react.default.createElement(_Surface.SurfaceContext.Provider, {
     value: tone === 'accent' ? 'accent' : null
   }, /*#__PURE__*/_react.default.createElement("header", _extends({
@@ -39048,7 +39227,7 @@ function AppHeader({
     ref: toggle,
     type: "button",
     className: "plx-app-header__item plx-app-header__search-toggle",
-    "aria-label": "Search",
+    "aria-label": tw.search,
     "aria-expanded": searching,
     "aria-controls": searchId,
     "aria-keyshortcuts": "Control+K Meta+K",
@@ -39254,6 +39433,7 @@ AppHeader.Switcher = function AppHeaderSwitcher({
     pinnedApps,
     setPinnedApps
   } = (0, _SessionProvider.useSession)();
+  const tw = (0, _LocaleProvider.useStrings)('appHeader');
   const [open, setOpen] = _react.default.useState(false);
   const wrap = _react.default.useRef(null),
     panel = _react.default.useRef(null),
@@ -39307,7 +39487,7 @@ AppHeader.Switcher = function AppHeaderSwitcher({
       type: "button",
       className: (0, _cx.cx)('plx-app-switcher__pin', on && 'is-pinned'),
       "aria-pressed": on,
-      "aria-label": (on ? 'Unpin ' : 'Pin ') + a.label + (on ? ' from' : ' to') + ' the header',
+      "aria-label": (on ? tw.unpin : tw.pin).replace('{app}', a.label),
       onClick: () => pin(a)
     }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
       name: on ? 'pin-filled' : 'pin'
@@ -39323,7 +39503,7 @@ AppHeader.Switcher = function AppHeaderSwitcher({
     "aria-haspopup": "dialog",
     "aria-expanded": open,
     "aria-controls": id,
-    "aria-label": (typeof brand === 'string' ? brand : 'Plenix' + (currentApp && (0, _apps.appById)(currentApp) ? ' ' + (0, _apps.appById)(currentApp).label : '')) + ', switch application',
+    "aria-label": tw.switchApp.replace('{app}', typeof brand === 'string' ? brand : 'Plenix' + (currentApp && (0, _apps.appById)(currentApp) ? ' ' + (0, _apps.appById)(currentApp).label : '')),
     onClick: () => setOpen(!open)
   }, brand, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
     name: "chevron-down",
@@ -39333,7 +39513,7 @@ AppHeader.Switcher = function AppHeaderSwitcher({
     icon: /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
       name: "app-switcher"
     }),
-    label: "Applications",
+    label: tw.applications,
     tooltip: false,
     "aria-haspopup": "dialog",
     "aria-expanded": open,
@@ -39343,7 +39523,7 @@ AppHeader.Switcher = function AppHeaderSwitcher({
     ref: panel,
     id: id,
     role: "dialog",
-    "aria-label": "Applications",
+    "aria-label": tw.applications,
     className: (0, _cx.cx)('plx-app-switcher__panel', brand && 'plx-app-switcher__panel--brand')
   }, pinnedList.length ? /*#__PURE__*/_react.default.createElement("section", {
     className: "plx-app-switcher__pinned",
@@ -39351,7 +39531,7 @@ AppHeader.Switcher = function AppHeaderSwitcher({
   }, /*#__PURE__*/_react.default.createElement("h2", {
     id: id + '-pinned',
     className: "plx-app-switcher__heading"
-  }, "Pinned to the header"), /*#__PURE__*/_react.default.createElement("ul", {
+  }, tw.pinnedHeading), /*#__PURE__*/_react.default.createElement("ul", {
     className: "plx-app-switcher__grid"
   }, pinnedList.map(tile))) : null, apps.length > pinnedList.length ? /*#__PURE__*/_react.default.createElement("section", {
     "aria-labelledby": id + '-all'
@@ -41756,7 +41936,7 @@ ToolRail.Divider = function ToolRailDivider() {
   });
 };
   } },
-  "platform/patterns/NavPane/NavPane.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../utils/grid.js":"platform/utils/grid.js","../../utils/paneLimit.js":"platform/utils/paneLimit.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/patterns/NavPane/NavPane.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../utils/grid.js":"platform/utils/grid.js","../../utils/paneLimit.js":"platform/utils/paneLimit.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -41772,6 +41952,7 @@ var _ToolRail = require("../ToolRail/ToolRail.jsx");
 var _AppShell = require("../AppShell/AppShell.jsx");
 var _grid = require("../../utils/grid.js");
 var _paneLimit = require("../../utils/paneLimit.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · NavPane
    Summary: The navigation pane, the same on every page of every application. Give it to the AppShell's sideNav (or a
@@ -41820,9 +42001,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      The content is the page's.
 */
 
-const STRINGS = {
-  browse: 'Browse'
-};
 // the rail's items out of their fragments (the bar draws destinations, never dividers)
 const railItems = rail => {
   const out = [];
@@ -41851,7 +42029,7 @@ function NavPane({
 }) {
   const layout = (0, _AppShell.useAppLayout)();
   const ref = _react.default.useRef(null);
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('navPane', strings);
   const Tag = as;
   const mode = layout && layout.hasSideNav ? layout.mode : 'static';
   const narrow = mode === 'bar' || mode === 'screen';
@@ -41866,7 +42044,7 @@ function NavPane({
   });
   const expand = /*#__PURE__*/_react.default.createElement(_ToolRail.ToolRail.Item, {
     icon: "panel-left-open",
-    label: "Expand sidebar",
+    label: t.expand,
     onClick: layout ? layout.toggle : undefined
   });
   const railEl = mode === 'rail' || mode === 'overlay' ? /*#__PURE__*/_react.default.createElement(_ToolRail.ToolRail, {
@@ -41928,7 +42106,7 @@ function NavPane({
     variant: "ghost",
     iconOnly: true,
     icon: "panel-left-close",
-    label: "Collapse sidebar",
+    label: t.collapse,
     onClick: layout.toggle
   }));
   const onChoose = narrow ? e => {
@@ -41953,7 +42131,7 @@ function NavPane({
   }, children), footer ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-nav-pane__footer"
   }, footer) : null, mode === 'inline' ? /*#__PURE__*/_react.default.createElement(_AppShell.PanelSplitter, {
-    label: 'Resize ' + (label || 'navigation'),
+    label: label ? t.resize.replace('{name}', label) : t.resizeNavigation,
     value: layout.width || (0, _AppShell.tokenPx)('--plx-sys-shell-nav-width'),
     min: (0, _AppShell.tokenPx)('--plx-sys-shell-nav-min-width'),
     max: () => (0, _AppShell.tokenPx)('--plx-sys-shell-nav-max-width'),
@@ -42173,7 +42351,7 @@ function SettingsRow({
   }, children));
 }
   } },
-  "platform/patterns/SidePanel/SidePanel.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","../ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../utils/grid.js":"platform/utils/grid.js","../../utils/paneLimit.js":"platform/utils/paneLimit.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/SidePanel/SidePanel.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","../ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../utils/grid.js":"platform/utils/grid.js","../../utils/paneLimit.js":"platform/utils/paneLimit.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -42190,6 +42368,7 @@ var _ToolRail = require("../ToolRail/ToolRail.jsx");
 var _AppShell = require("../AppShell/AppShell.jsx");
 var _grid = require("../../utils/grid.js");
 var _paneLimit = require("../../utils/paneLimit.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · SidePanel
    Summary: The inspector panel on the right of the main region (details, a preview). Give it to the AppShell's panel.
@@ -42239,6 +42418,7 @@ function SidePanel({
   className,
   children
 }) {
+  const tw = (0, _LocaleProvider.useStrings)('sidePanel');
   const small = (0, _AppShell.useMedia)((0, _AppShell.below)('--plx-sys-shell-inspector-overlay-below'));
   const narrow = (0, _AppShell.useMedia)((0, _AppShell.below)('--plx-sys-shell-phone-below'));
   const ref = _react.default.useRef(null);
@@ -42274,11 +42454,11 @@ function SidePanel({
   };
   const docked = resizable && !small;
   const railEl = onOpenChange ? /*#__PURE__*/_react.default.createElement(_ToolRail.ToolRail, {
-    label: name + ' pane',
+    label: tw.pane.replace('{name}', name),
     className: "plx-side-panel-rail"
   }, /*#__PURE__*/_react.default.createElement(_ToolRail.ToolRail.Item, {
     icon: "panel-right-open",
-    label: "Expand panel",
+    label: tw.expand,
     onClick: () => set(true)
   })) : null;
   if (!open) return railEl;
@@ -42334,7 +42514,7 @@ function SidePanel({
   }), pane) : pane;
 }
   } },
-  "platform/patterns/SecondaryPane/SecondaryPane.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../utils/layer.js":"platform/utils/layer.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/paneLimit.js":"platform/utils/paneLimit.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/SecondaryPane/SecondaryPane.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../utils/layer.js":"platform/utils/layer.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/paneLimit.js":"platform/utils/paneLimit.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -42350,6 +42530,7 @@ var _AppShell = require("../AppShell/AppShell.jsx");
 var _layer = require("../../utils/layer.js");
 var _grid = require("../../utils/grid.js");
 var _paneLimit = require("../../utils/paneLimit.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · SecondaryPane
    Summary: A narrow pane beside the main content, inside the main region (under the header, beside the navigation pane):
@@ -42405,13 +42586,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      A dragged width reaches the stylesheet as --plx-comp-secondary-pane-width (no style is written).
      Other props go on its aside element.
 */
-const STRINGS = {
-  expand: 'Expand {name}',
-  collapse: 'Collapse {name}',
-  resize: 'Resize {name}',
-  close: 'Close {name}',
-  back: 'Back to {name}'
-};
 function SecondaryPane({
   title,
   label,
@@ -42438,7 +42612,7 @@ function SecondaryPane({
   children,
   ...rest
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('secondaryPane', strings);
   const [ownCollapsed, setOwnCollapsed] = _react.default.useState(defaultCollapsed);
   const narrow = (0, _AppShell.useMedia)((0, _AppShell.below)('--plx-sys-shell-phone-below'));
   const listDetail = detailOpen !== undefined;
@@ -47103,7 +47277,7 @@ const FloatingActionButton = exports.FloatingActionButton = /*#__PURE__*/_react.
   }, label) : null);
 });
   } },
-  "platform/components/SplitButton/SplitButton.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/SplitButton/SplitButton.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -47115,6 +47289,7 @@ var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Button = require("../Button/Button.jsx");
 var _Menu = require("../Menu/Menu.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · SplitButton
    Summary: The most common action and its close alternatives in one control: a main button that runs the action, joined
@@ -47151,9 +47326,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        most common; when all are equally likely, use a menu button (Button with caret and Menu).
 */
 
-const STRINGS = {
-  more: 'More {label} options'
-};
 const PLACES = ['bottom-start', 'bottom-end', 'top-start', 'top-end'];
 const SplitButton = exports.SplitButton = /*#__PURE__*/_react.default.forwardRef(function SplitButton({
   label,
@@ -47175,7 +47347,7 @@ const SplitButton = exports.SplitButton = /*#__PURE__*/_react.default.forwardRef
     variant: ['secondary', 'primary'],
     size: ['md', 'sm', 'xs', '2xs', 'lg']
   });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('splitButton', strings);
   const v = variant === 'primary' ? 'primary' : 'secondary';
   const more = menuLabel || t.more.replace('{label}', typeof label === 'string' ? label.toLowerCase() : '').replace(/\s+/g, ' ');
   return /*#__PURE__*/_react.default.createElement("div", {
@@ -47306,7 +47478,7 @@ function usePrint(options = {}) {
   };
 }
   } },
-  "platform/components/CommandMenu/CommandMenu.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/hotkey.js":"platform/utils/hotkey.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/CommandMenu/CommandMenu.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/hotkey.js":"platform/utils/hotkey.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -47322,6 +47494,7 @@ var _Icon = require("../Icon/Icon.jsx");
 var _Kbd = require("../Kbd/Kbd.jsx");
 var _Button = require("../Button/Button.jsx");
 var _SearchField = require("../SearchField/SearchField.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · CommandMenu
    Summary: A filterable list of commands (04 Actions & Commands › Menus and commands › Command menu): a search field
@@ -47365,15 +47538,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Command labels are verb plus object ("Create collection"), the same words as in the menus and buttons.
      Not for choosing a value in a form (Combobox), nor for searching records (SearchField and its results).
 */
-const STRINGS = {
-  label: 'Commands',
-  placeholder: 'Type a command or search',
-  empty: 'No results for “{query}”',
-  loading: 'Loading',
-  back: 'Back',
-  results: '{count} results'
-};
-
 // how well an item matches the text: 4 the label starts with it, 3 a word of the label does, 2 the label contains it,
 // 1 the keywords, description or group do, 0 no match
 function score(item, q) {
@@ -47399,7 +47563,7 @@ const CommandMenu = exports.CommandMenu = /*#__PURE__*/_react.default.forwardRef
   className,
   ...rest
 }, ref) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('commandMenu', strings);
   const id = (0, _layer.useUid)('plx-cmd');
   const input = _react.default.useRef(null);
   _react.default.useImperativeHandle(ref, () => input.current);
@@ -47846,7 +48010,7 @@ const DownloadButton = exports.DownloadButton = /*#__PURE__*/_react.default.forw
   }, facts.join(' · ')) : null));
 });
   } },
-  "platform/components/BackToTop/BackToTop.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../hooks/useIntersection.js":"platform/hooks/useIntersection.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/BackToTop/BackToTop.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../hooks/useIntersection.js":"platform/hooks/useIntersection.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -47858,6 +48022,7 @@ var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Button = require("../Button/Button.jsx");
 var _useIntersection = require("../../hooks/useIntersection.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · BackToTop
    Summary: A button that takes a long page back to its top (04 Actions & Commands › Common actions › Back to top):
@@ -47887,9 +48052,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      The button is a Button (secondary, with the arrow-up icon: Material's arrow_upward); its target is at least the standard control height.
 */
 
-const STRINGS = {
-  label: 'Back to top'
-};
 const reduced = () => typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 function BackToTop({
   variant = 'floating',
@@ -47903,7 +48065,7 @@ function BackToTop({
   }, {
     variant: ['floating', 'inline']
   });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('backToTop', strings);
   const floating = variant !== 'inline';
   const sentinel = _react.default.useRef(null);
   const {
@@ -48087,7 +48249,7 @@ function InputGroup({
   }, suffix) : null), ends.map((el, i) => attach(el, i, ends, 'end')));
 }
   } },
-  "platform/components/NumberInput/NumberInput.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/NumberInput/NumberInput.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -48100,6 +48262,7 @@ var _format = require("../../utils/format.js");
 var _Input = require("../Input/Input.jsx");
 var _Button = require("../Button/Button.jsx");
 var _InputGroup = require("../InputGroup/InputGroup.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · NumberInput
    Summary: A field for a number: typed freely in the reader's locale, checked and formatted when the field is left,
@@ -48150,10 +48313,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        autoComplete, onBlur, onFocus…).
      Numbers that are really codes (ZIP codes, card numbers, phone numbers) are text: use Input.
 */
-const STRINGS = {
-  decrease: 'Decrease',
-  increase: 'Increase'
-};
 const decimalsOf = n => {
   const s = String(n);
   const i = s.indexOf('.');
@@ -48242,7 +48401,7 @@ const NumberInput = exports.NumberInput = /*#__PURE__*/_react.default.forwardRef
   onKeyDown,
   ...rest
 }, ref) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('numberInput', strings);
   const locale = (0, _format.numeralLocale)((0, _format.formatLocale)());
   const aff = _react.default.useMemo(() => affix(format, currency, currencyDisplay, locale), [format, currency, currencyDisplay, locale]);
   const places = decimals !== undefined ? decimals : aff && aff.decimals !== undefined ? aff.decimals : undefined;
@@ -48463,7 +48622,7 @@ function ErrorSummary({
   }, e.message))))));
 }
   } },
-  "platform/components/FileInput/FileInput.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/FileInput/FileInput.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -48475,6 +48634,7 @@ var _cx = require("../../utils/cx.js");
 var _format = require("../../utils/format.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _Button = require("../Button/Button.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · FileInput
    Summary: Chooses files from the device: the browser's own file input (focusable, read by assistive technology) drawn
@@ -48510,13 +48670,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Sizes are written by formatBytes in the data font, as file names are.
      For dragging files in, use DropZone; for images with a preview, an image upload.
 */
-const STRINGS = {
-  choose: 'Choose file',
-  chooseMany: 'Choose files',
-  none: 'No file chosen',
-  count: '{count} files',
-  remove: 'Remove {name}'
-};
 const FileInput = exports.FileInput = /*#__PURE__*/_react.default.forwardRef(function FileInput({
   accept,
   multiple = false,
@@ -48533,7 +48686,7 @@ const FileInput = exports.FileInput = /*#__PURE__*/_react.default.forwardRef(fun
   className,
   ...rest
 }, ref) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('fileInput', strings);
   const input = _react.default.useRef(null);
   const [files, setFiles] = _react.default.useState([]);
   const [focus, setFocus] = _react.default.useState(false);
@@ -48619,7 +48772,7 @@ const FileInput = exports.FileInput = /*#__PURE__*/_react.default.forwardRef(fun
   })))) : null);
 });
   } },
-  "platform/components/CodeEditor/CodeEditor.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/CodeEditor/CodeEditor.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -48629,6 +48782,7 @@ exports.CodeEditor = void 0;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _CodeBlock = require("../CodeBlock/CodeBlock.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · CodeEditor
    Summary: A multi-line field for code people write: the code font (Reddit Mono), the CodeBlock's colors as they type,
@@ -48671,10 +48825,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      For code people only read, use CodeBlock. A real editor engine (completion, folding, error markers) is not part of
        Plenix; ask before adding one.
 */
-const STRINGS = {
-  hint: 'Tab indents. Press Escape, then Tab, to leave the editor.'
-};
-
 // replaces the textarea's selection with text through the browser's editing, so it joins the undo history; falls back to
 // setting the value (and telling React) where execCommand is not available
 function insert(el, text, selStart, selEnd) {
@@ -48714,7 +48864,7 @@ const CodeEditor = exports.CodeEditor = /*#__PURE__*/_react.default.forwardRef(f
   onKeyDown,
   ...rest
 }, ref) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('codeEditor', strings);
   const area = _react.default.useRef(null);
   const release = _react.default.useRef(false); // Escape was pressed: the next Tab leaves the editor
   const controlled = value !== undefined;
@@ -48819,7 +48969,7 @@ const CodeEditor = exports.CodeEditor = /*#__PURE__*/_react.default.forwardRef(f
   }, t.hint) : null);
 });
   } },
-  "platform/patterns/Form/Form.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/Form/Form.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -48835,6 +48985,7 @@ var _Field = require("../../components/Field/Field.jsx");
 var _Stack = require("../../components/Stack/Stack.jsx");
 var _Text = require("../../components/Text/Text.jsx");
 var _ActionBar = require("../ActionBar/ActionBar.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Form, FormSection, FormActions
    Summary: A form laid out the Plenix way: titled sections of fields in one column (labels above) or two (labels beside),
@@ -48925,18 +49076,20 @@ function FormSection({
   }, children));
 }
 function FormActions({
-  label = 'Form actions',
+  label,
   sticky = true,
   className,
   children
 }) {
+  const tw = (0, _LocaleProvider.useStrings)('form');
+  if (label === undefined) label = tw.label;
   return /*#__PURE__*/_react.default.createElement(_ActionBar.ActionBar, {
     label: label,
     className: (0, _cx.cx)('plx-form-actions', !sticky && 'plx-form-actions--static', className)
   }, children);
 }
   } },
-  "platform/components/OtpInput/OtpInput.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/OtpInput/OtpInput.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -48945,6 +49098,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.OtpInput = void 0;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · OtpInput
    Summary: A one-time passcode or PIN of a known length, one box per character: typing moves on, Backspace moves back, a
@@ -48985,9 +49139,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Only for codes of a known, short length (4 to 8). A password or a code of any length is one Input.
      Say where the code was sent and how long it lasts in the Field's description; give a way to send a new one.
 */
-const STRINGS = {
-  cell: 'character {n} of {total}'
-};
 const KEEP = {
   numeric: /[^0-9]/g,
   alphanumeric: /[^0-9a-zA-Z]/g
@@ -49012,7 +49163,7 @@ const OtpInput = exports.OtpInput = /*#__PURE__*/_react.default.forwardRef(funct
   'aria-describedby': describedBy,
   ...rest
 }, ref) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('otpInput', strings);
   const n = Math.max(1, Number(length) || 6);
   const clean = s => String(s == null ? '' : s).replace(KEEP[kind] || KEEP.numeric, '').toUpperCase();
   const [own, setOwn] = _react.default.useState(() => clean(defaultValue).slice(0, n));
@@ -49214,7 +49365,7 @@ function useSearchHistory(key, options = {}) {
   };
 }
   } },
-  "platform/components/InlineEdit/InlineEdit.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/InlineEdit/InlineEdit.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -49229,6 +49380,7 @@ var _Input = require("../Input/Input.jsx");
 var _Button = require("../Button/Button.jsx");
 var _Icon = require("../Icon/Icon.jsx");
 var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · InlineEdit
    Summary: A value people edit where it is shown: the read view is a button with the value; activating it swaps in a text
@@ -49266,14 +49418,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The read view has the field's size and padding, so the text does not move when it turns into the field.
      The read view is a button (it opens an editor), never a link; it shows a pencil on hover and focus.
 */
-const STRINGS = {
-  edit: 'edit',
-  save: 'Save',
-  cancel: 'Cancel',
-  empty: 'Add a value',
-  saved: 'Saved',
-  failed: 'The change could not be saved'
-};
 function InlineEdit({
   label,
   value = '',
@@ -49291,7 +49435,7 @@ function InlineEdit({
   className,
   ...rest
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('inlineEdit', strings);
   const id = (0, _layer.useUid)('plx-inline-edit');
   const [editing, setEditing] = _react.default.useState(false);
   const [draft, setDraft] = _react.default.useState(value);
@@ -49484,7 +49628,7 @@ function loadTiptap(win) {
   return (0, _engines.engine)('tiptap', w);
 }
   } },
-  "platform/components/RichTextEditor/RichTextEditor.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js","../../utils/overflow.js":"platform/utils/overflow.js","../Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","../ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","../../utils/hotkey.js":"platform/utils/hotkey.js","./tiptap.js":"platform/components/RichTextEditor/tiptap.js","../../utils/richTextClean.js":"platform/utils/richTextClean.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/RichTextEditor/RichTextEditor.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js","../../utils/overflow.js":"platform/utils/overflow.js","../Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","../ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","../../utils/hotkey.js":"platform/utils/hotkey.js","./tiptap.js":"platform/components/RichTextEditor/tiptap.js","../../utils/richTextClean.js":"platform/utils/richTextClean.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -49520,6 +49664,8 @@ var _categoryColors = require("../ColorSwatch/categoryColors.js");
 var _hotkey = require("../../utils/hotkey.js");
 var _tiptap = require("./tiptap.js");
 var _richTextClean = require("../../utils/richTextClean.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _format = require("../../utils/format.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · RichTextEditor
    Summary: A field for formatted text: a formatting toolbar (the Platform Toolbar, Buttons and Menus) over an editing
@@ -49552,7 +49698,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      readOnly: shows the content without the toolbar; it can be selected and copied, not changed (default false)
      invalid: marks the area invalid (aria-invalid); put the message in Field's error
      disabled: the area cannot be used (default false)
-     strings: the words it shows, for other languages (STRINGS below: every button, menu and field name; on(name),
+     strings: the words it shows, for other languages (the richTextEditor section of i18n/en.js: every button, menu and field name; on(name),
        off(name) announce a format turned on or off from the keyboard; tip(name, keys) is a button's tooltip; leave is
        announced after Escape)
      className: more classes on the editor
@@ -49600,78 +49746,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        (ul data-type="taskList", li data-type="taskItem" data-checked, its label, checkbox and div). Style attributes keep
        only color, background-color, font-family, font-size and text-align; everything else is unwrapped or dropped.
 */
-const STRINGS = {
-  toolbar: 'Formatting',
-  more: 'More formatting',
-  bold: 'Bold',
-  italic: 'Italic',
-  underline: 'Underline',
-  strike: 'Strikethrough',
-  code: 'Inline code',
-  subscript: 'Subscript',
-  superscript: 'Superscript',
-  link: 'Link',
-  bulleted: 'Bulleted list',
-  numbered: 'Numbered list',
-  tasks: 'Task list',
-  quote: 'Quote',
-  codeBlock: 'Code block',
-  rule: 'Horizontal rule',
-  image: 'Image',
-  table: 'Table',
-  color: 'Text color',
-  highlight: 'Highlight',
-  alignLeft: 'Align left',
-  alignCenter: 'Align center',
-  alignRight: 'Align right',
-  alignJustify: 'Justify',
-  clear: 'Clear formatting',
-  undo: 'Undo',
-  redo: 'Redo',
-  textStyle: 'Text style',
-  paragraph: 'Paragraph',
-  heading: n => 'Heading ' + n,
-  font: 'Font',
-  defaultFont: 'Default font',
-  size: 'Size',
-  defaultSize: 'Default size',
-  custom: 'Custom…',
-  customFont: 'Font family',
-  customSize: 'Font size',
-  insertTable: 'Insert table',
-  rowBefore: 'Add row above',
-  rowAfter: 'Add row below',
-  columnBefore: 'Add column before',
-  columnAfter: 'Add column after',
-  deleteRow: 'Delete row',
-  deleteColumn: 'Delete column',
-  headerRow: 'Header row',
-  deleteTable: 'Delete table',
-  linkAddress: 'Link address',
-  addLink: 'Add link',
-  imageAddress: 'Image address',
-  imageAlt: 'Description',
-  addImage: 'Add image',
-  swatches: 'Suggested colors',
-  customColor: 'Custom color',
-  hex: 'Hex value',
-  apply: 'Apply',
-  remove: 'Remove',
-  cancel: 'Cancel',
-  mentions: 'Suggestions',
-  on: name => name + ' on',
-  off: name => name + ' off',
-  tip: (name, keys) => name + ' (' + keys + ')',
-  groupMarks: 'Text',
-  groupColor: 'Color',
-  groupAlign: 'Alignment',
-  groupLists: 'Lists',
-  groupInsert: 'Insert',
-  groupHistory: 'History',
-  leave: 'Press Tab or Shift+Tab to leave the editor',
-  hint: 'Escape, then Tab, leaves the editor'
-};
-
 // the toolbar's icons (Material Symbols Sharp, platform/icons/map.json)
 const ICONS = {
   bold: 'format-bold',
@@ -50025,7 +50099,10 @@ function RichTextEditor({
   id,
   ...rest
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('richTextEditor', strings);
+  // heading and tip are messages with {n}, {name} and {keys}; an app's own function in strings still works
+  const headingText = n => typeof t.heading === 'function' ? t.heading(n) : String(t.heading).replace('{n}', (0, _format.formatNumber)(n));
+  const tipText = (name, keys) => typeof t.tip === 'function' ? t.tip(name, keys) : String(t.tip).replace('{name}', name).replace('{keys}', keys);
   const auto = (0, _layer.useUid)('plx-rte');
   const areaId = id || auto + '-area';
   const area = _react.default.useRef(null),
@@ -50446,7 +50523,7 @@ function RichTextEditor({
       off = !usable || name === 'undo' && !formats.undo || name === 'redo' && !formats.redo;
     return /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
       key: name,
-      content: keys ? t.tip(t[name], (0, _hotkey.hotkeyLabel)(keys)) : t[name],
+      content: keys ? tipText(t[name], (0, _hotkey.hotkeyLabel)(keys)) : t[name],
       disabled: off
     }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
       variant: "ghost",
@@ -50461,7 +50538,7 @@ function RichTextEditor({
       onClick: () => apply(name)
     }, t[name]));
   };
-  const blockName = b => !b || b === 'paragraph' ? t.paragraph : t.heading(Number(b.slice(1)));
+  const blockName = b => !b || b === 'paragraph' ? t.paragraph : headingText(Number(b.slice(1)));
   const fontName = f => {
     const hit = RICH_TEXT_FONTS.find(x => x[1] === f);
     return f ? hit ? hit[0] : f.replace(/["']/g, '').split(',')[0] : t.font;
@@ -50788,7 +50865,7 @@ RichTextEditor.preload = () => {
   (0, _tiptap.loadTiptap)().catch(() => {});
 };
   } },
-  "platform/components/Calendar/Calendar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Calendar/Calendar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -50806,6 +50883,7 @@ var _cx = require("../../utils/cx.js");
 var _direction = require("../../utils/direction.js");
 var _format = require("../../utils/format.js");
 var _Button = require("../Button/Button.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Calendar
    Summary: A month grid of days to choose a date or a range from, with the weeks in the reader's locale (its first day of
@@ -50861,15 +50939,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        fill between its two ends.
      Other props pass through to the outer <div>.
 */
-const STRINGS = {
-  label: 'Calendar',
-  previous: 'Previous month',
-  next: 'Next month',
-  week: 'Week',
-  weekShort: 'Wk',
-  today: 'Today'
-};
-
 /* ---- calendar dates: "YYYY-MM-DD" strings; arithmetic on local dates at noon, so no daylight-saving change moves a day */
 const pad = (n, w) => String(n).padStart(w || 2, '0');
 function parseIsoDate(s) {
@@ -50958,7 +51027,7 @@ const Calendar = exports.Calendar = /*#__PURE__*/_react.default.forwardRef(funct
   className,
   ...rest
 }, ref) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('calendar', strings);
   const locale = (0, _format.numeralLocale)(localeProp || (0, _format.formatLocale)());
   const today = todayProp || todayIso();
   const range = mode === 'range';
@@ -51636,7 +51705,7 @@ const DatePicker = exports.DatePicker = /*#__PURE__*/_react.default.forwardRef(f
 // the locale's numeric date form ("MM/DD/YYYY"), for a Field's description
 DatePicker.formatHint = locale => numericForm(locale || (0, _format.formatLocale)()).hint;
   } },
-  "platform/components/CountrySelect/CountrySelect.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/CountrySelect/CountrySelect.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -51649,6 +51718,7 @@ var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _format = require("../../utils/format.js");
 var _Combobox = require("../Combobox/Combobox.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · CountrySelect
    Summary: A searchable select of countries and regions, locales, or languages, named in the reader's language by the
@@ -51692,14 +51762,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        stable value to store.
      Other props pass through to Combobox's <input>.
 */
-const STRINGS = {
-  country: 'Choose a country or region',
-  language: 'Choose a language',
-  locale: 'Choose a language and region',
-  suggested: 'Suggested',
-  all: 'All'
-};
-
 // ISO 3166-1 alpha-2: every assigned country and region code
 const REGION_CODES = exports.REGION_CODES = ('AD AE AF AG AI AL AM AO AQ AR AS AT AU AW AX AZ BA BB BD BE BF BG BH BI BJ BL BM BN BO BQ BR BS BT BV BW BY BZ CA CC CD CF CG ' + 'CH CI CK CL CM CN CO CR CU CV CW CX CY CZ DE DJ DK DM DO DZ EC EE EG EH ER ES ET FI FJ FK FM FO FR GA GB GD GE GF GG GH GI GL GM GN GP GQ GR ' + 'GS GT GU GW GY HK HM HN HR HT HU ID IE IL IM IN IO IQ IR IS IT JE JM JO JP KE KG KH KI KM KN KP KR KW KY KZ LA LB LC LI LK LR LS LT LU LV LY ' + 'MA MC MD ME MF MG MH MK ML MM MN MO MP MQ MR MS MT MU MV MW MX MY MZ NA NC NE NF NG NI NL NO NP NR NU NZ OM PA PE PF PG PH PK PL PM PN PR PS ' + 'PT PW PY QA RE RO RS RU RW SA SB SC SD SE SG SH SI SJ SK SL SM SN SO SR SS ST SV SX SY SZ TC TD TF TG TH TJ TK TL TM TN TO TR TT TV TW TZ UA ' + 'UG UM US UY UZ VA VC VE VG VI VN VU WF WS YE YT ZA ZM ZW').split(' ');
 // ISO 639-1 languages with wide use in software
@@ -51774,7 +51836,7 @@ const CountrySelect = exports.CountrySelect = /*#__PURE__*/_react.default.forwar
   className,
   ...rest
 }, ref) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('countrySelect', strings);
   const loc = locale || (0, _format.formatLocale)();
   const options = _react.default.useMemo(() => {
     const all = countryOptions({
@@ -51811,7 +51873,7 @@ const CountrySelect = exports.CountrySelect = /*#__PURE__*/_react.default.forwar
   }, rest));
 });
   } },
-  "platform/components/MillerColumns/MillerColumns.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/MillerColumns/MillerColumns.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -51822,6 +51884,7 @@ var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _AppShell = require("../../patterns/AppShell/AppShell.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · MillerColumns
    Summary: A hierarchy browsed in side-by-side columns: choosing an item in one column lists its children in the next, so
@@ -51864,11 +51927,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The checkbox marks (checked) are drawn with the Checkbox control but are inert and hidden: the row is the target and
        its aria-checked says whether it is checked.
 */
-const STRINGS = {
-  empty: 'No items',
-  resize: 'Resize the {label} column',
-  preview: 'Preview of {label}'
-};
 const MIN_STEP = 1,
   MAX_STEP = 6,
   DEFAULT_STEP = 3;
@@ -51892,7 +51950,7 @@ const MillerColumns = exports.MillerColumns = /*#__PURE__*/_react.default.forwar
   className,
   ...rest
 }, ref) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('millerColumns', strings);
   const auto = 'plx-mc' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
   const [ownPath, setOwnPath] = _react.default.useState(defaultPath);
   const ids = path !== undefined ? path : ownPath;
@@ -52152,7 +52210,7 @@ const MillerColumns = exports.MillerColumns = /*#__PURE__*/_react.default.forwar
   }, renderPreview(preview)) : null);
 });
   } },
-  "platform/components/Cascader/Cascader.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Cascader/Cascader.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -52165,6 +52223,8 @@ var _Tag = require("../Tag/Tag.jsx");
 var _MillerColumns = require("../MillerColumns/MillerColumns.jsx");
 var _announce = require("../../utils/announce.jsx");
 var _floating = require("../../utils/floating.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _format = require("../../utils/format.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Cascader
    Summary: A form field whose value is a leaf of a hierarchy, chosen level by level in columns that open under the field
@@ -52209,17 +52269,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
 */
 // the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
 const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
-const STRINGS = {
-  placeholder: 'Choose',
-  separator: ' / ',
-  search: 'Search',
-  noMatches: 'No matches',
-  empty: 'No items',
-  remove: 'Remove {label}',
-  results: n => n + (n === 1 ? ' match' : ' matches'),
-  columns: 'Options'
-};
-
 // every leaf of the hierarchy with its path of items
 // the columns of the list take the narrowest width step (160px), so three levels fit under a form field
 const NARROW = [1, 1, 1, 1, 1, 1];
@@ -52249,7 +52298,8 @@ const Cascader = exports.Cascader = /*#__PURE__*/_react.default.forwardRef(funct
   'aria-describedby': describedBy,
   ...rest
 }, ref) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('cascader', strings);
+  const loc = (0, _LocaleProvider.useLocale)();
   const auto = 'plx-cs' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
   const [open, setOpen] = _react.default.useState(false);
   const [text, setText] = _react.default.useState('');
@@ -52302,7 +52352,10 @@ const Cascader = exports.Cascader = /*#__PURE__*/_react.default.forwardRef(funct
   const matches = q ? leavesOf(options).filter(l => !l.item.disabled && String(l.item.label).toLowerCase().indexOf(q) >= 0) : [];
   _react.default.useEffect(() => {
     setActive(0);
-    if (q) (0, _announce.announce)(t.results(matches.length));
+    if (q) (0, _announce.announce)(typeof t.results === 'function' ? t.results(matches.length) : loc.t('cascader.results', {
+      count: matches.length,
+      n: (0, _format.formatNumber)(matches.length)
+    }));
   }, [q]);
   const pick = (item, trail) => {
     if (multiple) onChange(chosen.indexOf(item.id) >= 0 ? chosen.filter(x => x !== item.id) : chosen.concat([item.id]));else {
@@ -52445,7 +52498,7 @@ const Cascader = exports.Cascader = /*#__PURE__*/_react.default.forwardRef(funct
   }))) : null);
 });
   } },
-  "platform/components/EntityPicker/EntityPicker.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/EntityPicker/EntityPicker.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -52461,6 +52514,8 @@ var _Icon = require("../Icon/Icon.jsx");
 var _Loading = require("../Loading/Loading.jsx");
 var _announce = require("../../utils/announce.jsx");
 var _floating = require("../../utils/floating.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _format = require("../../utils/format.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · EntityPicker
    Summary: A search-and-choose field for records of one kind (people, teams, projects, assets), each suggestion with its
@@ -52510,16 +52565,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
 */
 // the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
 const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
-const STRINGS = {
-  placeholderPeople: 'Search by name or email',
-  placeholder: 'Search {entityName}',
-  empty: 'No {entityName} found',
-  browse: 'Browse all {entityName}',
-  loading: 'Loading…',
-  error: 'The results could not be loaded',
-  results: n => n + (n === 1 ? ' result' : ' results'),
-  remove: 'Remove {label}'
-};
 const NAMES = {
   people: 'people',
   teams: 'teams',
@@ -52547,7 +52592,8 @@ const EntityPicker = exports.EntityPicker = /*#__PURE__*/_react.default.forwardR
   className,
   ...rest
 }, ref) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('entityPicker', strings);
+  const loc = (0, _LocaleProvider.useLocale)();
   const noun = entityName || NAMES[kind] || NAMES.records;
   const auto = 'plx-ep' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
   const listId = auto + '-list';
@@ -52586,7 +52632,10 @@ const EntityPicker = exports.EntityPicker = /*#__PURE__*/_react.default.forwardR
         got.forEach(o => seen.current.set(o.value, o));
         setLoaded(got);
         setBusy(false);
-        (0, _announce.announce)(t.results(got.length));
+        (0, _announce.announce)(typeof t.results === 'function' ? t.results(got.length) : loc.t('entityPicker.results', {
+          count: got.length,
+          n: (0, _format.formatNumber)(got.length)
+        }));
       }, () => {
         if (n !== request.current) return;
         setLoaded([]);
@@ -52611,7 +52660,10 @@ const EntityPicker = exports.EntityPicker = /*#__PURE__*/_react.default.forwardR
   // the number of results, once typing pauses (the async loader announces its own)
   _react.default.useEffect(() => {
     if (async || !open || !q) return undefined;
-    const timer = setTimeout(() => (0, _announce.announce)(t.results(results.length)), 500);
+    const timer = setTimeout(() => (0, _announce.announce)(typeof t.results === 'function' ? t.results(results.length) : loc.t('entityPicker.results', {
+      count: results.length,
+      n: (0, _format.formatNumber)(results.length)
+    })), 500);
     return () => clearTimeout(timer);
   }, [q, open]);
   _react.default.useEffect(() => {
@@ -52873,15 +52925,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
 */
 // the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
 const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
-const STRINGS = {
-  hour: 'Hour',
-  minute: 'Minute',
-  period: 'AM or PM',
-  am: 'AM',
-  pm: 'PM',
-  times: 'Times',
-  empty: '--'
-};
 const pad = n => String(n).padStart(2, '0');
 const toMin = v => {
   const m = /^(\d{1,2}):(\d{2})$/.exec(v || '');
@@ -52947,7 +52990,7 @@ const TimePicker = exports.TimePicker = /*#__PURE__*/_react.default.forwardRef(f
   }, {
     variant: ['list', 'segments']
   });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('timePicker', strings);
   const cycle = hourCycle ? String(hourCycle) : localeCycle();
   const [own, setOwn] = _react.default.useState(defaultValue);
   const current = value !== undefined ? value : own;
@@ -53331,7 +53374,7 @@ const Segments = /*#__PURE__*/_react.default.forwardRef(function Segments({
   })), hidden);
 });
   } },
-  "platform/components/RelativeDateInput/RelativeDateInput.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Input/Input.jsx":"platform/components/Input/Input.jsx","../NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/RelativeDateInput/RelativeDateInput.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Input/Input.jsx":"platform/components/Input/Input.jsx","../NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","../../utils/format.js":"platform/utils/format.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -53344,6 +53387,7 @@ var _cx = require("../../utils/cx.js");
 var _Input = require("../Input/Input.jsx");
 var _NumberInput = require("../NumberInput/NumberInput.jsx");
 var _format = require("../../utils/format.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · RelativeDateInput, resolveRelativeDate
    Summary: A date range relative to today, for filters, saved searches and rules that must stay right as time passes:
@@ -53399,34 +53443,6 @@ const DEFAULT_PRESETS = {
   future: ['today', 'tomorrow', 'next-7-days', 'next-30-days', 'next-90-days', 'next-12-months']
 };
 DEFAULT_PRESETS.both = DEFAULT_PRESETS.past.concat(DEFAULT_PRESETS.future.slice(1));
-const STRINGS = {
-  custom: 'Custom',
-  none: 'Any time',
-  amount: 'Amount',
-  unit: 'Unit',
-  direction: 'Direction',
-  past: 'Last',
-  future: 'Next',
-  units: {
-    day: ['day', 'days'],
-    week: ['week', 'weeks'],
-    month: ['month', 'months'],
-    year: ['year', 'years']
-  },
-  presets: {
-    today: 'Today',
-    yesterday: 'Yesterday',
-    'last-7-days': 'Last 7 days',
-    'last-30-days': 'Last 30 days',
-    'last-90-days': 'Last 90 days',
-    'last-12-months': 'Last 12 months',
-    tomorrow: 'Tomorrow',
-    'next-7-days': 'Next 7 days',
-    'next-30-days': 'Next 30 days',
-    'next-90-days': 'Next 90 days',
-    'next-12-months': 'Next 12 months'
-  }
-};
 const UNITS = ['day', 'week', 'month', 'year'];
 const CUSTOM = 'custom';
 const startOfDay = d => new Date(d.getFullYear(), d.getMonth(), d.getDate());
@@ -53488,10 +53504,7 @@ const RelativeDateInput = exports.RelativeDateInput = /*#__PURE__*/_react.defaul
   'aria-describedby': describedBy,
   ...rest
 }, ref) {
-  const t = Object.assign({}, STRINGS, strings, {
-    units: Object.assign({}, STRINGS.units, strings && strings.units),
-    presets: Object.assign({}, STRINGS.presets, strings && strings.presets)
-  });
+  const t = (0, _LocaleProvider.useStrings)('relativeDateInput', strings); // units and presets merge key by key
   const auto = 'plx-rd' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
   const [own, setOwn] = _react.default.useState(defaultValue);
   const current = value !== undefined ? value : own;
@@ -54412,25 +54425,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
 */
 // the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
 const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
-const STRINGS = {
-  placeholder: 'Choose a time zone',
-  empty: 'No matches',
-  utc: 'Coordinated Universal Time',
-  other: 'Other',
-  results: n => n + (n === 1 ? ' time zone' : ' time zones'),
-  regions: {
-    Africa: 'Africa',
-    America: 'Americas',
-    Antarctica: 'Antarctica',
-    Arctic: 'Arctic',
-    Asia: 'Asia',
-    Atlantic: 'Atlantic',
-    Australia: 'Australia',
-    Europe: 'Europe',
-    Indian: 'Indian Ocean',
-    Pacific: 'Pacific'
-  }
-};
 // a few zones for browsers without Intl.supportedValuesOf
 const FALLBACK = ['America/Los_Angeles', 'America/Denver', 'America/Chicago', 'America/New_York', 'America/Sao_Paulo', 'Europe/London', 'Europe/Paris', 'Europe/Berlin', 'Africa/Cairo', 'Africa/Johannesburg', 'Asia/Dubai', 'Asia/Kolkata', 'Asia/Shanghai', 'Asia/Tokyo', 'Australia/Sydney', 'Pacific/Auckland'];
 const MINUS = '−';
@@ -54476,9 +54470,10 @@ function timeZoneOptions({
   locale,
   strings
 } = {}) {
-  const t = Object.assign({}, STRINGS, strings);
-  const regions = Object.assign({}, STRINGS.regions, t.regions);
+  // not a hook (it is exported, and the component calls it inside useMemo): the words are the locale's catalog section with strings on top
   const lang = locale || (0, _format.formatLocale)();
+  const t = Object.assign({}, (0, _LocaleProvider.createTranslator)(lang).section('timeZoneSelect'), strings);
+  const regions = t.regions;
   const all = zones || (typeof Intl.supportedValuesOf === 'function' ? Intl.supportedValuesOf('timeZone') : FALLBACK);
   const list = all.indexOf('UTC') >= 0 || zones ? all : ['UTC'].concat(all);
   return list.map(zone => {
@@ -54524,7 +54519,8 @@ const TimeZoneSelect = exports.TimeZoneSelect = /*#__PURE__*/_react.default.forw
   className,
   ...rest
 }, ref) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('timeZoneSelect', strings);
+  const loc = (0, _LocaleProvider.useLocale)();
   const digits = (0, _LocaleProvider.useDigits)();
   const auto = 'plx-tz' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
   const listId = auto + '-list';
@@ -54554,7 +54550,7 @@ const TimeZoneSelect = exports.TimeZoneSelect = /*#__PURE__*/_react.default.forw
       zones,
       date: at,
       locale,
-      strings
+      strings: t
     });
     // a value the browser lists under another name (Asia/Kolkata, listed as Asia/Calcutta) takes that zone's place
     if (value && !out.some(o => o.value === value)) {
@@ -54571,7 +54567,7 @@ const TimeZoneSelect = exports.TimeZoneSelect = /*#__PURE__*/_react.default.forw
           zones: [value],
           date: at,
           locale,
-          strings
+          strings: t
         })[0];
         const i = out.findIndex(o => o.value === canonical);
         if (i >= 0) out[i] = own;else out.push(own);
@@ -54582,12 +54578,15 @@ const TimeZoneSelect = exports.TimeZoneSelect = /*#__PURE__*/_react.default.forw
     });
     const byName = (a, b) => a.label.localeCompare(b.label, locale || (0, _format.formatLocale)());
     return grouped ? out.sort((a, b) => (a.region === t.other) - (b.region === t.other) || a.region.localeCompare(b.region) || byName(a, b)) : out.sort((a, b) => a.minutes - b.minutes || byName(a, b));
-  }, [day, zoneKey, locale, grouped, value]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [day, zoneKey, locale, loc.locale, grouped, value]); // eslint-disable-line react-hooks/exhaustive-deps
   const current = options.find(o => o.value === value) || null;
   const q = fold(text.trim());
   const shown = q ? options.filter(o => q.split(/\s+/).every(w => o.search.indexOf(w) >= 0)) : options;
   _react.default.useEffect(() => {
-    if (open && q) (0, _announce.announce)(t.results(shown.length));
+    if (open && q) (0, _announce.announce)(typeof t.results === 'function' ? t.results(shown.length) : loc.t('timeZoneSelect.results', {
+      count: shown.length,
+      n: (0, _format.formatNumber)(shown.length)
+    }));
   }, [q, open]); // eslint-disable-line react-hooks/exhaustive-deps
   _react.default.useEffect(() => {
     if (!open) return undefined;
@@ -54710,7 +54709,7 @@ const TimeZoneSelect = exports.TimeZoneSelect = /*#__PURE__*/_react.default.forw
   }, t.empty)) : null);
 });
   } },
-  "platform/components/TreeSelect/TreeSelect.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/direction.js":"platform/utils/direction.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/TreeSelect/TreeSelect.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/direction.js":"platform/utils/direction.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -54723,6 +54722,7 @@ var _direction = require("../../utils/direction.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _Popover = require("../Popover/Popover.jsx");
 var _SearchField = require("../SearchField/SearchField.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · TreeSelect
    Summary: A field whose choices are a hierarchy (05 Forms › Select and lookup › Tree select): it shows the chosen item
@@ -54766,13 +54766,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        item's aria-checked says its state. For a flat list use a select or Combobox; for picking among thousands of
        items in folders use a file or entity picker.
 */
-const STRINGS = {
-  placeholder: 'Choose',
-  search: 'Search',
-  choose: 'Choose an item',
-  more: '{list} and {n} more',
-  empty: 'No matches'
-};
 const asIcon = i => (0, _Icon.asIcon)(i); // a name or an imported module (#280)
 const OPEN_ICONS = {
   folder: 'folder-open'
@@ -54845,7 +54838,7 @@ function TreeSelect({
   className,
   ...rest
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('treeSelect', strings);
   const base = 'plx-ts' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
   const {
     byId,
@@ -55054,7 +55047,7 @@ function TreeSelect({
   }, t.empty)))));
 }
   } },
-  "platform/components/TransferList/TransferList.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/TransferList/TransferList.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -55068,6 +55061,7 @@ var _announce = require("../../utils/announce.jsx");
 var _Button = require("../Button/Button.jsx");
 var _SearchField = require("../SearchField/SearchField.jsx");
 var _useVirtualizer = require("../../hooks/useVirtualizer.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · TransferList
    Summary: Two lists side by side for choosing a subset of many items (10 Patterns › Selection and organization ›
@@ -55112,23 +55106,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The checkboxes are the Checkbox control drawn in the row, not focusable and hidden from assistive technology: each
        option's aria-selected says it is checked.
 */
-const STRINGS = {
-  source: 'Available',
-  target: 'Chosen',
-  add: 'Add',
-  addAll: 'Add all',
-  remove: 'Remove',
-  removeAll: 'Remove all',
-  up: 'Move up',
-  down: 'Move down',
-  search: 'Search {title}',
-  selectAll: 'Check every item in {title}',
-  count: '{checked} of {total} checked',
-  moved: '{n} moved to {title}',
-  empty: 'No items',
-  noMatch: 'No matches',
-  moves: 'Move items'
-};
 const fill = (s, o) => String(s).replace(/\{(\w+)\}/g, (all, k) => o[k] !== undefined ? o[k] : all);
 const AUTO_VIRTUAL = 500;
 
@@ -55304,7 +55281,7 @@ function TransferList({
   }, {
     size: ['sm', 'md', 'lg']
   });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('transferList', strings);
   const id = 'plx-tl' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
   const title = Object.assign({
     source: t.source,
@@ -55442,7 +55419,7 @@ function TransferList({
   })));
 }
   } },
-  "platform/patterns/BottomSheetNav/BottomSheetNav.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","../../components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","../../components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/BottomSheetNav/BottomSheetNav.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","../../components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","../../components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -55455,6 +55432,7 @@ var _Sheet = require("../../components/Sheet/Sheet.jsx");
 var _NavList = require("../../components/NavList/NavList.jsx");
 var _RowButton = require("../../components/RowButton/RowButton.jsx");
 var _Icon = require("../../components/Icon/Icon.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · BottomSheetNav
    Summary: Navigation in a bottom sheet (06 Navigation › Mobile navigation › Bottom-sheet navigation): the places of an
@@ -55491,10 +55469,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        list, with groups.
 */
 
-const STRINGS = {
-  title: 'Navigation',
-  close: 'Close'
-};
 function BottomSheetNav({
   open,
   onClose,
@@ -55509,7 +55483,7 @@ function BottomSheetNav({
   strings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('bottomSheetNav', strings);
   const name = title || t.title;
   const choose = id => {
     if (onSelect) onSelect(id);
@@ -67696,7 +67670,7 @@ function WizardDialog({
   })) : null);
 }
   } },
-  "platform/patterns/FormFlow/FormFlow.jsx": { deps: {"react":null,"../Form/Form.jsx":"platform/patterns/Form/Form.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/FormFlow/FormFlow.jsx": { deps: {"react":null,"../Form/Form.jsx":"platform/patterns/Form/Form.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -67713,6 +67687,7 @@ var _Text = require("../../components/Text/Text.jsx");
 var _Toast = require("../../components/Toast/Toast.jsx");
 var _UnsavedGuard = require("../../providers/UnsavedGuard.jsx");
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · FormFlow
    Summary: Create or edit on a page, in place, in a dialog or drawer with unsaved-change protection.
@@ -67746,16 +67721,7 @@ function FormFlow({
   strings,
   className
 }) {
-  const t = Object.assign({
-    create: 'Create',
-    save: 'Save changes',
-    cancel: 'Cancel',
-    failed: 'Could not save. Try again.',
-    invalid: 'Check the fields before saving.',
-    saved: 'Saved',
-    unsaved: 'Your changes will be lost.',
-    close: 'Close'
-  }, strings);
+  const t = (0, _LocaleProvider.useStrings)('formFlow', strings);
   const [value, setValue] = _react.default.useState(initialValue),
     [saved, setSaved] = _react.default.useState(initialValue);
   const [busy, setBusy] = _react.default.useState(false),
@@ -74996,7 +74962,7 @@ function RelatedAssets({
   }, cards));
 }
   } },
-  "platform/patterns/AttachmentPicker/AttachmentPicker.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../utils/cx.js":"platform/utils/cx.js","../../components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","../../components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/AttachmentPicker/AttachmentPicker.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../utils/cx.js":"platform/utils/cx.js","../../components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","../../components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -75014,6 +74980,7 @@ var _FileInput = require("../../components/FileInput/FileInput.jsx");
 var _FileRow = require("../../components/FileRow/FileRow.jsx");
 var _Menu = require("../../components/Menu/Menu.jsx");
 var _Tag = require("../../components/Tag/Tag.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · AttachmentPicker
    Summary: Attach device files as removable rows or chips without uploading them implicitly.
@@ -75024,13 +74991,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
    Notes: The caller owns upload and persistence. Limits apply to device files, not an authorization policy.
 */
 
-const STRINGS = {
-  label: 'Attachments',
-  remove: 'Remove {name}',
-  invalid: 'Choose a supported file within the size limit.',
-  limit: 'Too many attachments.',
-  empty: 'No attachments.'
-};
 function AttachmentPicker({
   value = [],
   onChange,
@@ -75048,10 +75008,7 @@ function AttachmentPicker({
   }, {
     variant: ['inline', 'chips']
   });
-  const t = {
-      ...STRINGS,
-      ...strings
-    },
+  const t = (0, _LocaleProvider.useStrings)('attachmentPicker', strings),
     [error, setError] = _react.default.useState(''),
     [inputKey, setInputKey] = _react.default.useState(0);
   const remove = i => {
@@ -75112,7 +75069,7 @@ function AttachmentPicker({
   }))));
 }
   } },
-  "platform/patterns/FilePicker/FilePicker.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../utils/cx.js":"platform/utils/cx.js","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","../../components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/FilePicker/FilePicker.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../utils/cx.js":"platform/utils/cx.js","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","../../components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -75129,6 +75086,7 @@ var _Dialog = require("../../components/Dialog/Dialog.jsx");
 var _Tree = require("../../components/Tree/Tree.jsx");
 var _FileRow = require("../../components/FileRow/FileRow.jsx");
 var _SearchField = require("../../components/SearchField/SearchField.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · FilePicker
    Summary: Pick stored files, assets or media from a folder tree in a dialog.
@@ -75140,16 +75098,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
    Notes: Uses Tree and FileRow directly; no dependency on FileBrowser or implicit device access.
 */
 
-const STRINGS = {
-  title: 'Choose files',
-  all: 'All files',
-  folders: 'Folders',
-  search: 'Search files',
-  empty: 'No matching files.',
-  pick: 'Choose',
-  cancel: 'Cancel',
-  failed: 'Files could not be chosen. Try again.'
-};
 function FilePicker({
   open = false,
   onClose,
@@ -75162,10 +75110,7 @@ function FilePicker({
   strings,
   className
 }) {
-  const t = {
-      ...STRINGS,
-      ...strings
-    },
+  const t = (0, _LocaleProvider.useStrings)('filePicker', strings),
     [selected, setSelected] = _react.default.useState(initialSelected),
     [folder, setFolder] = _react.default.useState(null),
     [query, setQuery] = _react.default.useState(''),
@@ -76018,7 +75963,7 @@ function ProductCard({
   }, act) : null));
 }
   } },
-  "platform/components/ProductOptions/ProductOptions.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","../ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","../NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","../Field/Field.jsx":"platform/components/Field/Field.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/ProductOptions/ProductOptions.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","../ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","../NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","../Field/Field.jsx":"platform/components/Field/Field.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -76033,6 +75978,7 @@ var _ColorSwatch = require("../ColorSwatch/ColorSwatch.jsx");
 var _NumberInput = require("../NumberInput/NumberInput.jsx");
 var _Field = require("../Field/Field.jsx");
 var _Icon = require("../Icon/Icon.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ProductOptions
    Summary: The controls that choose one variant of a product (12 Specialized › Commerce › Product options): sizes as a row
@@ -76088,14 +76034,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Fewer than about six choices: buttons or swatches, never a select. Put the quantity last, beside Add to cart.
      Other props go on the group.
 */
-const STRINGS = {
-  chosen: '{label}:',
-  unavailable: 'Out of stock',
-  quantity: 'Quantity',
-  quantityOf: 'Quantity, {product}',
-  unavailableName: '{label}, out of stock',
-  none: 'None chosen'
-};
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 const labelOf = v => v.label !== undefined ? v.label : String(v.value);
 
@@ -76145,7 +76083,7 @@ function ProductOptions({
   className,
   ...rest
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('productOptions', strings);
   const uid = (0, _layer.useUid)('plx-product-options');
   const pick = (name, v) => {
     if (onChange) onChange(Object.assign({}, value, {
@@ -76526,7 +76464,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
 */
 // the products' fields, for the filter, the category quick filter and the sort (utils/fields.js)
 function productFields(categories = [], strings) {
-  const t = (0, _LocaleProvider.useStrings)('commerce.listing', strings);
+  // not a hook (it is exported, and ProductListing calls it inside useMemo): the page locale's catalog words, with strings on top
+  const t = Object.assign({}, (0, _LocaleProvider.createTranslator)((0, _format.formatLocale)()).section('commerce.listing'), strings);
   return [{
     value: 'title',
     label: t.name,
@@ -76597,7 +76536,7 @@ function ProductListing({
 }) {
   (0, _shared.useCommercePage)('product-listing');
   const t = (0, _LocaleProvider.useStrings)('commerce.listing', strings);
-  const fields = _react.default.useMemo(() => productFields(categories, strings), [categories, strings]);
+  const fields = _react.default.useMemo(() => productFields(categories, t), [categories, t]);
   const v = (0, _useCollectionView.useCollectionView)(fields, {
     text: p => [p.title, p.meta, p.category].join(' '),
     quick: {
@@ -79319,7 +79258,7 @@ function PresenceBar({
   }, t.view) : null))) : null);
 }
   } },
-  "platform/components/MentionInput/MentionInput.jsx": { deps: {"react":null,"../Input/Input.jsx":"platform/components/Input/Input.jsx","../RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","../EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/MentionInput/MentionInput.jsx": { deps: {"react":null,"../Input/Input.jsx":"platform/components/Input/Input.jsx","../RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","../EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -79332,6 +79271,7 @@ var _RichTextEditor = require("../RichTextEditor/RichTextEditor.jsx");
 var _EntityPicker = require("../EntityPicker/EntityPicker.jsx");
 var _Button = require("../Button/Button.jsx");
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · MentionInput
    Summary: Mention a directory entity in plain text with EntityPicker, or in rich text with the existing editor engine.
@@ -79364,10 +79304,7 @@ const MentionInput = exports.MentionInput = /*#__PURE__*/_react.default.forwardR
   pickerStrings,
   className
 }, ref) {
-  const t = Object.assign({
-    add: 'Add mention',
-    choose: 'Choose a person to mention'
-  }, strings);
+  const t = (0, _LocaleProvider.useStrings)('mentionInput', strings);
   const input = _react.default.useRef(null),
     picker = _react.default.useRef(null),
     range = _react.default.useRef({
@@ -81769,7 +81706,7 @@ function useAnalytics() {
   return _react.default.useContext(Context);
 }
   } },
-  "platform/patterns/SplitView/SplitView.jsx": { deps: {"react":null,"../../components/DataGrid/room.js":"platform/components/DataGrid/room.js","../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../utils/cx.js":"platform/utils/cx.js","../../components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/SplitView/SplitView.jsx": { deps: {"react":null,"../../components/DataGrid/room.js":"platform/components/DataGrid/room.js","../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../utils/cx.js":"platform/utils/cx.js","../../components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -81782,6 +81719,7 @@ var _room = require("../../components/DataGrid/room.js");
 var _AppShell = require("../AppShell/AppShell.jsx");
 var _cx = require("../../utils/cx.js");
 var _Resizable = require("../../components/Resizable/Resizable.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · SplitView, ReadingPane
    Summary: Two panels that share their room (02 Page structures › Workspace structures › Split workspace): a list or
@@ -81846,7 +81784,7 @@ function SplitView({
   first,
   second,
   label,
-  firstLabel = 'First panel',
+  firstLabel,
   defaultSize,
   size,
   onSizeChange,
@@ -81856,6 +81794,8 @@ function SplitView({
   className,
   ...rest
 }) {
+  const tw = (0, _LocaleProvider.useStrings)('splitView');
+  if (firstLabel === undefined) firstLabel = tw.firstLabel;
   const shell = (0, _AppShell.useAppLayout)();
   const claim = shell && shell.claimPage;
   _react.default.useEffect(() => claim ? claim('master-detail') : undefined, [claim]);
@@ -81930,7 +81870,7 @@ function SplitView({
     minWidth: minSize || lo,
     maxWidth: widthMax,
     strings: constrained ? {
-      maxWidth: "The other pane needs at least " + available.minimum + "px"
+      maxWidth: tw.maxWidth.replace('{n}', available.minimum)
     } : undefined,
     onResize: onSizeChange ? s => onSizeChange(s.width) : undefined
   } : {

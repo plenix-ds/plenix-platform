@@ -52,12 +52,11 @@ import { useUid } from '../../utils/layer.js';
 import { Count } from '../Count/Count.jsx';
 import { stateIcon } from '../Icon/Icon.jsx';
 import { Menu, MenuItem } from '../Menu/Menu.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 // the selected tab fills its icon (the tab owns its state)
 const asIcon = stateIcon;
 export const tabsPanelId = (base, value) => base + '-panel-' + String(value).replace(/[^a-zA-Z0-9_-]/g, '');
-const STRINGS = { more: 'More', moreLabel: 'More tabs' };
-
 /* how many tabs fit on the row: it starts from all of them whenever the width, the tabs or the selected tab change, and
    lowers the number, before the browser paints, until every shown tab ends inside the tab list (the More control, once
    shown, takes its own room, so the list narrows and the count is checked again). The width is the Tabs' own, which
@@ -89,7 +88,7 @@ function useTabsFit(rootRef, listRef, count, key) {
 
 export function Tabs({ variant = 'contained', orientation = 'horizontal', items, value, defaultValue, onChange, label, idBase, className, panelClassName, strings }) {
   devWarn('Tabs', { variant }, { variant: ['contained','folder','segmented'] });
-  const words = Object.assign({}, STRINGS, strings);
+  const words = useStrings('tabs', strings);
   const uid = useUid('plx-tabs');
   const base = idBase || uid;
   const [own, setOwn] = React.useState(defaultValue !== undefined ? defaultValue : (items[0] ? items[0].value : undefined));

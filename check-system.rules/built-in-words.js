@@ -6,6 +6,11 @@
 //   default     a default argument that holds words: closeLabel = 'Close', title = 'Untitled' (a name ending in label, text,
 //               title, placeholder, message, hint or caption)
 //   attribute   literal words in aria-label, title, placeholder or alt in the markup: aria-label="Dismiss"
+//   joined      English joined in code: n + ' stars', 'Remove ' + name (Arabic cannot be built from pieces)
+//   template    English around ${…} in a template string: `${n} items`
+//   braced      a literal in braces on a word attribute: label={'More colors'}
+//   text        words written as JSX text: <span>Loading</span>
+// Not counted: messages to developers (devWarn, console, thrown errors) and the product's name, Plenix.
 // It also checks that en.json mirrors en.js.
 // What was there when the rule began is the backlog in check-system.built-in-words.json: by file, with its count. It only
 // shrinks: a file not listed, or with more than its count, fails; a file with fewer fails until the backlog is lowered
@@ -59,7 +64,26 @@ function scan(file) {
     if (people(m[3])) out.push({ kind: 'default', line: lineOf(m.index), text: m[1] + ' = ' + m[3] });
   }
   for (const m of text.matchAll(/\b(aria-label|title|placeholder|alt)="([^"{]*)"/g)) if (people(m[2])) out.push({ kind: 'attribute', line: lineOf(m.index), text: m[1] + '="' + m[2] + '"' });
-  return out;
+  // English built in code (owner, arabic-words-37: Arabic cannot be joined from pieces)
+  const code = text.replace(/\/\/[^\n]*/g, (m) => m.replace(/[^\n]/g, ' '));   // line comments are documentation too
+  // a phrase for people: a word of 2+ letters set off by spaces or the ends, and none of a class's, a selector's or code's marks
+  const sentence = (s) => /(^|\s)[A-Za-z][a-z]{1,}(?=$|[\s.,:;!?…'’])/.test(s) && /[a-z]{3,}/.test(s) && !/[_(){}\[\]<>=;\\|`$#@]|--|^\s*[-.:\/?&]|^\s*(plx|data|aria|is|has)-/.test(s) && !/^\s*[A-Z0-9]{2,}(\s+[A-Z0-9]{2,})+\s*$/.test(s) && !/^\s*[a-z]{2,3}(-[A-Z]{2})?(\s+[a-z]{2,3}(-[A-Z]{2})?)+\s*$/.test(s);
+  for (const m of code.matchAll(/\+\s*(['"])((?:\\.|(?!\1)[^\n])*)\1/g)) if (sentence(m[2])) out.push({ kind: 'joined', line: lineOf(m.index), text: '+ ' + m[1] + m[2] + m[1] });
+  for (const m of code.matchAll(/(['"])((?:\\.|(?!\1)[^\n])*\s)\1\s*\+/g)) if (sentence(m[2])) out.push({ kind: 'joined', line: lineOf(m.index), text: m[1] + m[2] + m[1] + ' +' });
+  for (const m of code.matchAll(/`([^`]*)`/g)) {
+    if (!m[1].includes('${')) continue;
+    const plain = m[1].replace(/\$\{[^}]*\}/g, ' ');
+    if (/[A-Za-z]{2,}\s+[A-Za-z]{2,}|\s[a-z]{3,}\b|\b[A-Z][a-z]{2,}\b/.test(plain) && sentence(plain) && !/^[\s-]*(plx|is|has|data)-|--plx|var\(|calc\(|url\(|https?:/.test(plain)) out.push({ kind: 'template', line: lineOf(m.index), text: '`' + m[1].slice(0, 60) + '`' });
+  }
+  for (const m of code.matchAll(/\b(aria-label|label|title|placeholder|alt|tooltip|description|caption|heading|emptyText|removeLabel|closeLabel)=\{\s*(['"])((?:\\.|(?!\2).)*)\2\s*\}/g)) if (people(m[3])) out.push({ kind: 'braced', line: lineOf(m.index), text: m[1] + "={'" + m[3] + "'}" });
+  for (const m of code.matchAll(/>([^<>{}\n]*[A-Za-z]{2,}[^<>{}\n]*)<\//g)) {
+    const s = m[1].trim(), before = code.slice(Math.max(0, m.index - 1), m.index);
+    if (!s || !/[A-Za-z0-9"'}\/]/.test(before) || /[?:+*=()&|]/.test(s)) continue;
+    if (people(s)) out.push({ kind: 'text', line: lineOf(m.index), text: '>' + s.slice(0, 60) + '<' });
+  }
+  // not for people: messages to developers (devWarn, console, thrown errors), and the product's name
+  const lines = text.split('\n');
+  return out.filter((f) => !/\bdevWarn\(|\bconsole\.|\bthrow new\b|\bnew Error\(/.test(lines[f.line - 1] || '') && !/^>?\s*Plenix\s*<?$/.test(f.text));
 }
 const rel = (f) => path.relative(ROOT, f).split(path.sep).join('/');
 function measure() { const found = {}; for (const f of files()) { const n = scan(f).length; if (n) found[rel(f)] = n; } return found; }
@@ -84,7 +108,7 @@ function check({ add }) {
   }
   const p = parity(); if (p) add(NAME, path.join(ROOT, 'platform/i18n/en.json'), 0, p);
 }
-const DESCRIPTION = 'The rollout backlog of check-system.rules/built-in-words.js (owner, arabic-words-37; issue 427), recorded 2026-10-27: per component file, how many built-in English words it still writes in its code (STRINGS objects, default arguments with words, literal aria-label/title/placeholder/alt). Wiring a file to useStrings brings it to 0. It only shrinks: node check-system.rules/built-in-words.js --shrink.';
+const DESCRIPTION = 'The rollout backlog of check-system.rules/built-in-words.js (owner, arabic-words-37; issue 427), recorded 2026-10-27, and again when the rule widened to English built in code (joined, template, braced, text): per component file, how many built-in English words it still writes in its code (STRINGS objects, inline defaults, default arguments with words, literal aria-label/title/placeholder/alt, English joined or templated in code, braced literals, JSX text). Wiring a file to useStrings brings it to 0. It only shrinks: node check-system.rules/built-in-words.js --shrink.';
 function write(files) { fs.writeFileSync(BACKLOG, JSON.stringify({ $description: DESCRIPTION, files }, null, 2) + '\n'); }
 module.exports = { name: NAME, check, scan, measure };
 

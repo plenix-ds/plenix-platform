@@ -53,8 +53,8 @@ import { formatLocale, numeralLocale, formatNumber, formatCurrency } from '../..
 import { Input } from '../Input/Input.jsx';
 import { Button } from '../Button/Button.jsx';
 import { InputGroup } from '../InputGroup/InputGroup.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { decrease: 'Decrease', increase: 'Increase' };
 const decimalsOf = (n) => { const s = String(n); const i = s.indexOf('.'); return i < 0 ? 0 : s.length - i - 1; };
 const SPACES = /[\s  ]/g;
 
@@ -92,7 +92,7 @@ function affix(format, currency, display, locale) {
 export const NumberInput = React.forwardRef(function NumberInput({ value, defaultValue = null, onChange, min, max, step = 1, bigStep = 10, decimals,
   format = 'number', currency, currencyDisplay = 'symbol', unit, stepper = 'none', width, invalid, disabled, readOnly, required, id,
   'aria-describedby': describedBy, strings, className, onFocus, onBlur, onKeyDown, ...rest }, ref) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('numberInput', strings);
   const locale = numeralLocale(formatLocale());
   const aff = React.useMemo(() => affix(format, currency, currencyDisplay, locale), [format, currency, currencyDisplay, locale]);
   const places = decimals !== undefined ? decimals : aff && aff.decimals !== undefined ? aff.decimals : undefined;

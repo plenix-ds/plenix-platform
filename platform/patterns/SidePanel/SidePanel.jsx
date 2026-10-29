@@ -42,10 +42,12 @@ import { ToolRail } from '../ToolRail/ToolRail.jsx';
 import { useMedia, below, PanelSplitter, tokenPx } from '../AppShell/AppShell.jsx';
 import { gridWithin } from '../../utils/grid.js';
 import { paneMax } from '../../utils/paneLimit.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 const WIDTH_KEY = 'plenix.sidePanelWidth';
 
 export function SidePanel({ title, label, icon, open = true, onOpenChange, actions, footer, collapseLabel, resizable = false, resizeLabel, className, children }) {
+  const tw = useStrings('sidePanel');
   const small = useMedia(below('--plx-sys-shell-inspector-overlay-below'));
   const narrow = useMedia(below('--plx-sys-shell-phone-below'));
   const ref = React.useRef(null);
@@ -63,7 +65,7 @@ export function SidePanel({ title, label, icon, open = true, onOpenChange, actio
   const resize = (w) => { setSize(w); try { localStorage.setItem(WIDTH_KEY, String(w)); } catch (e) { /* this visit only */ } };
   const docked = resizable && !small;
   const railEl = onOpenChange ? (
-    <ToolRail label={name + ' pane'} className="plx-side-panel-rail"><ToolRail.Item icon="panel-right-open" label="Expand panel" onClick={() => set(true)} /></ToolRail>
+    <ToolRail label={tw.pane.replace('{name}', name)} className="plx-side-panel-rail"><ToolRail.Item icon="panel-right-open" label={tw.expand} onClick={() => set(true)} /></ToolRail>
   ) : null;
   if (!open) return railEl;
   if (sheet) {

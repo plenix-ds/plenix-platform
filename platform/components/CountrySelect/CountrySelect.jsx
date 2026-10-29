@@ -44,8 +44,7 @@ import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { formatLocale } from '../../utils/format.js';
 import { Combobox } from '../Combobox/Combobox.jsx';
-
-const STRINGS = { country: 'Choose a country or region', language: 'Choose a language', locale: 'Choose a language and region', suggested: 'Suggested', all: 'All' };
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 // ISO 3166-1 alpha-2: every assigned country and region code
 export const REGION_CODES = ('AD AE AF AG AI AL AM AO AQ AR AS AT AU AW AX AZ BA BB BD BE BF BG BH BI BJ BL BM BN BO BQ BR BS BT BV BW BY BZ CA CC CD CF CG '
@@ -89,7 +88,7 @@ export function countryOptions({ type = 'country', locale, only, ownNames, flags
 
 export const CountrySelect = React.forwardRef(function CountrySelect({ type = 'country', value, onChange, only, priority, ownNames, flags = false,
   codes = false, locale, placeholder, strings, className, ...rest }, ref) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('countrySelect', strings);
   const loc = locale || formatLocale();
   const options = React.useMemo(() => {
     const all = countryOptions({ type, locale: loc, only, ownNames, flags, codes });

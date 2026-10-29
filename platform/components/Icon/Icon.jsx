@@ -91,7 +91,8 @@ function moduleProblem(m) {
   if (!(m && typeof m === 'object' && m.drawings && m.drawings[20] && m.drawings[24] && m.name)) return 'not an icon module';
   if (checked.has(m)) return checked.get(m);
   let problem = null;
-  for (const size of [20, 24]) for (const k of ['outline', 'fill']) { const r = checkDrawing(m.drawings[size][k]); if (!r.ok && !problem) problem = 'its ' + size + ' ' + k + ' drawing: ' + r.reason; }
+  // the problem is a message to developers (the console), not a word for people
+  for (const size of [20, 24]) for (const k of ['outline', 'fill']) { const r = checkDrawing(m.drawings[size][k]); if (!r.ok && !problem) problem = ['its', size, k, 'drawing:', r.reason].join(' '); }
   checked.set(m, problem);
   return problem;
 }

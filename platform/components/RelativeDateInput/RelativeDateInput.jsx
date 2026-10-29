@@ -38,6 +38,7 @@ import { cx } from '../../utils/cx.js';
 import { Select } from '../Input/Input.jsx';
 import { NumberInput } from '../NumberInput/NumberInput.jsx';
 import { formatRange, formatDate } from '../../utils/format.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 // presets: [id, direction, amount, unit, offset] (offset: whole units before or after today, for yesterday and tomorrow)
 export const RELATIVE_PRESETS = {
@@ -48,11 +49,6 @@ export const RELATIVE_PRESETS = {
 const DEFAULT_PRESETS = { past: ['today', 'yesterday', 'last-7-days', 'last-30-days', 'last-90-days', 'last-12-months'],
   future: ['today', 'tomorrow', 'next-7-days', 'next-30-days', 'next-90-days', 'next-12-months'] };
 DEFAULT_PRESETS.both = DEFAULT_PRESETS.past.concat(DEFAULT_PRESETS.future.slice(1));
-const STRINGS = { custom: 'Custom', none: 'Any time', amount: 'Amount', unit: 'Unit', direction: 'Direction', past: 'Last', future: 'Next',
-  units: { day: ['day', 'days'], week: ['week', 'weeks'], month: ['month', 'months'], year: ['year', 'years'] },
-  presets: { today: 'Today', yesterday: 'Yesterday', 'last-7-days': 'Last 7 days', 'last-30-days': 'Last 30 days', 'last-90-days': 'Last 90 days',
-    'last-12-months': 'Last 12 months', tomorrow: 'Tomorrow', 'next-7-days': 'Next 7 days', 'next-30-days': 'Next 30 days', 'next-90-days': 'Next 90 days',
-    'next-12-months': 'Next 12 months' } };
 const UNITS = ['day', 'week', 'month', 'year'];
 const CUSTOM = 'custom';
 
@@ -80,7 +76,7 @@ export function resolveRelativeDate(value, now) {
 
 export const RelativeDateInput = React.forwardRef(function RelativeDateInput({ value, defaultValue = '', onChange, direction = 'past', presets, now, label,
   invalid, disabled, id, strings, className, 'aria-describedby': describedBy, ...rest }, ref) {
-  const t = Object.assign({}, STRINGS, strings, { units: Object.assign({}, STRINGS.units, strings && strings.units), presets: Object.assign({}, STRINGS.presets, strings && strings.presets) });
+  const t = useStrings('relativeDateInput', strings);   // units and presets merge key by key
   const auto = 'plx-rd' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const [own, setOwn] = React.useState(defaultValue);
   const current = value !== undefined ? value : own;
