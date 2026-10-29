@@ -47,6 +47,15 @@ CTM's own rules are no longer needed. Its wrapper's `dir="rtl"` already turns th
    Or put `dir: "rtl", lang: "ar"` on the `P.Fieldset` itself.
 3. The `ctm-report-question-language--rtl` class then has no rules. Remove it, or keep it as a hook for CTM's own tests.
 
+## Identifiers and technical values (owner, #590 and #606)
+
+- A computed identifier or case number (20261020-01) reads `01-20261020` in a right-to-left page, with each number in its own order, and `20261020-01` in a left-to-right page. This is the owner's rule: "01-20261020 everywhere".
+- The identifier is shown that way by `Isolate kind="id"`, a DataGrid column of kind `id`, `DataPill kind="id"`, and `PropertyList.Item kind="id"`. The stored text is never changed: copy, search and screen readers get `20261020-01`.
+- An email, a web address, a phone number and code stay left to right (`Isolate` with its default, or kinds `email`, `url`, `phone`, `code`).
+- Arabic-Indic digits apply where they are on (`٢٠٢٦١٠٢٠-٠١`); the order of the two numbers is the same.
+- The default of `Isolate` is unchanged (left to right), so existing uses keep their order. A use for an identifier moves to `kind="id"`. This is a visible change for CTM: tell CTM before it moves to the release that has this.
+- The editor (RichTextEditor) needs no change: an identifier typed into Arabic text already reads `01-20261020`.
+
 ## Known limits
 
 - A count in a NavList (the "(3)" beside a category) takes its digits from the page's language, not the block's. An English block in an Arabic page shows "(٣)".

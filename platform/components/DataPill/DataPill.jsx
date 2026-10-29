@@ -34,6 +34,8 @@
      The pill is not interactive: a value that opens something is a Link inside it, or the cell's own action.
    Notes:
      Writing direction (owner, ctm-needs-34): with data, the value keeps its own direction (dir="auto") in a right-to-left page.
+     kind="id" (owner, issue 606): the value is a computed identifier or case number. It follows the direction around it, so in a right-to-left
+       page it reads 01-20261020 and in a left-to-right one 20261020-01; an email, a URL, a phone number or a code stays data (left to right).
      Not a Tag (a keyword next to content, 10px) and not a Badge (a status): a DataPill is the value itself.
      DataGrid: a column's pill option draws each value as a DataPill (DataGrid.jsx).
 */
@@ -42,13 +44,14 @@ import { cx } from '../../utils/cx.js';
 import { devWarn } from '../../utils/devWarn.js';
 import { Icon } from '../Icon/Icon.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { Isolate } from '../Isolate/Isolate.jsx';
 import PersonIcon from 'plenix-platform/icons/plenix/person';
 import PersonFemaleIcon from 'plenix-platform/icons/plenix/person-female';
 import PersonMaleIcon from 'plenix-platform/icons/plenix/person-male';
 
 const GENDER = { male: { tone: 'blue', icon: PersonMaleIcon }, female: { tone: 'pink', icon: PersonFemaleIcon } };
 
-export function DataPill({ children, tone, variant = 'soft', size, icon, data = false, fill = false, gender, person = false, strings, className, ...rest }) {
+export function DataPill({ children, tone, variant = 'soft', size, icon, data = false, kind, fill = false, gender, person = false, strings, className, ...rest }) {
   devWarn('DataPill', { variant }, { variant: ['soft', 'solid', 'plain'] });
   const t = useStrings('dataPill', strings);
   const g = GENDER[gender];
@@ -58,7 +61,7 @@ export function DataPill({ children, tone, variant = 'soft', size, icon, data = 
   return (
     <span className={cx('plx-data-pill', size === 'md' && variant !== 'plain' && 'plx-data-pill--md', 'plx-data-pill--' + variant, data && 'plx-data-pill--data', fill && 'plx-data-pill--fill', className)} data-plx-category={color} title={title} {...rest}>
       {glyph ? <Icon name={glyph} size="sm" className="plx-data-pill__icon" filled={!!g} /> : null}
-      <span className="plx-data-pill__value" dir={data ? 'auto' : undefined}>{children}</span>
+      <span className="plx-data-pill__value" dir={data && kind !== 'id' ? 'auto' : undefined}>{kind === 'id' ? <Isolate kind="id">{children}</Isolate> : children}</span>
       {g ? <span className="plx-visually-hidden">{', ' + t[gender]}</span> : null}
     </span>
   );

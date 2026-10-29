@@ -15,6 +15,8 @@
        at the value size, so it shares the label's baseline; names, descriptions and statuses stay DM Sans; default false.
        It keeps its own writing direction in a right-to-left page (Isolate dir="auto"); a data value is text only (no links,
        controls or other parts inside it)
+     PropertyList.Item.kind: "id" for a computed identifier or case number: it follows the page's direction (01-20261020 in a
+       right-to-left page, 20261020-01 in a left-to-right one; owner, issue 606). Pair it with data for the data font
      PropertyList.Item.className: more classes on the pair
      PropertyList.Item.children: the value
    Notes:
@@ -34,7 +36,7 @@ export function PropertyList({ layout = 'columns', className, children, ...rest 
   return <dl className={cx('plx-property-list', 'plx-property-list--' + layout, className)} {...rest}>{children}</dl>;
 }
 
-PropertyList.Item = function PropertyListItem({ label, htmlFor, description, data = false, className, children }) {
+PropertyList.Item = function PropertyListItem({ label, htmlFor, description, data = false, kind, className, children }) {
   const textRef = React.useRef(null);
   const cut = useTruncated(textRef);
   return (
@@ -42,7 +44,7 @@ PropertyList.Item = function PropertyListItem({ label, htmlFor, description, dat
       <dt className="plx-property-list__label"><Tooltip content={label} disabled={!cut} describe={false} className="plx-property-list__label-tip"><span ref={textRef} className="plx-property-list__label-text">{htmlFor ? <label htmlFor={htmlFor}>{label}</label> : label}</span></Tooltip>
         {description ? <span className="plx-property-list__description" data-plx-text-follow="size">{description}</span> : null}
       </dt>
-      <dd className={cx('plx-property-list__value', data && 'plx-property-list__value--data')} data-plx-text-follow="size">{data ? <Isolate dir="auto">{children}</Isolate> : children}</dd>
+      <dd className={cx('plx-property-list__value', data && 'plx-property-list__value--data')} data-plx-text-follow="size">{kind === 'id' ? <Isolate kind="id">{children}</Isolate> : data ? <Isolate dir="auto">{children}</Isolate> : children}</dd>
     </div>
   );
 };

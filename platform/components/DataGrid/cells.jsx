@@ -6,8 +6,8 @@
      (pill) every other value is a DataPill with its column's type icon; column.pill(value, record) may return its tone,
      icon, variant, data and gender, and column.pill === false keeps the plain value. A person (type person, kind
      avatar-name) carries value.gender.
-   Notes: A value of kind id, email, url, phone or code is a left-to-right island, and of kind data one in its own
-     direction (Isolate), so it reads as written in a right-to-left table. Imports no legacy grid implementation. Data still sorts and filters by its raw value. mods: the value classes the
+   Notes: A value of kind email, url, phone or code is a left-to-right island, of kind data one in its own direction, and of kind id one
+     that follows the table's direction (Isolate; owner, issue 606: a computed identifier reads 01-20261020 in a right-to-left table). Imports no legacy grid implementation. Data still sorts and filters by its raw value. mods: the value classes the
      engine gives every value span (__value--wrap, --sized, --lines). */
 import React from 'react';
 import { Avatar } from '../Avatar/Avatar.jsx';
@@ -42,7 +42,7 @@ export function CellValue({ column, value, strings, record, pill = false, pillFi
     const own = typeof column.pill === 'function' ? column.pill(value, record) || {} : {};
     const text = column.type === 'bytes' ? formatBytes(Number(value)) : person ? (person.name || person.label || '') : valueText(value);
     return <DataPill size="md" data-plx-pill-field={pillField} tone={own.tone} variant={own.variant} icon={own.icon || (isPerson ? undefined : icon)} person={isPerson} gender={own.gender || (person ? person.gender : undefined)}
-      data={own.data !== undefined ? own.data : kinds.includes('data') || DATA_TYPES.includes(column.type)} fill={own.fill}>{text}</DataPill>;
+      data={own.data !== undefined ? own.data : kinds.includes('data') || DATA_TYPES.includes(column.type)} kind={kinds.includes('id') ? 'id' : undefined} fill={own.fill}>{text}</DataPill>;
   }
   if (value === null || value === undefined || value === '') return <span className={own+(kinds.includes('deleted')?' '+block+'__deleted':'')}>{column.empty??(kinds.includes('deleted')?strings?.deleted||'Deleted':'')}</span>;
   if (column.type === 'bytes') return <span className={own}>{formatBytes(Number(value))}</span>;
@@ -51,10 +51,11 @@ export function CellValue({ column, value, strings, record, pill = false, pillFi
   if (kinds.includes('tags')) return <span className={`${block}__rich`}>{[].concat(value).map((tag, i) => <Tag key={i} category={typeof tag === 'object' ? tag.category : undefined}>{typeof tag === 'object' ? tag.label : String(tag)}</Tag>)}</span>;
   if (kinds.includes('badge')) { const badge = typeof value === 'object' ? value : { label: String(value) }; return <Badge tone={badge.tone} icon={badge.icon||CircleInfoIcon}>{badge.label}</Badge>; }
   // the full text on hover, only when the cell cuts it off with an ellipsis (owner, 2026-10-22)
-  // a technical value keeps its own direction inside a right-to-left table (owner, ctm-needs-34): ids, emails, URLs, phone
-  // numbers and code read left to right; any other data value by its first strong letter
+  // a technical value keeps its own direction inside a right-to-left table (owner, ctm-needs-34): emails, URLs, phone
+  // numbers and code read left to right; an id reads as the table does (01-20261020 in a right-to-left one); any other data value
+  // by its first strong letter
   const island=ISLANDS.find(k=>kinds.includes(k));
-  if (island) return <span className={own} onMouseEnter={fullText}><Isolate dir={island==='data'?'auto':'ltr'} kind={island==='email'||island==='url'?island:undefined}>{valueText(value)}</Isolate></span>;
+  if (island) return <span className={own} onMouseEnter={fullText}><Isolate dir={island==='data'?'auto':island==='id'?undefined:'ltr'} kind={island==='email'||island==='url'||island==='id'?island:undefined}>{valueText(value)}</Isolate></span>;
   return <span className={own} onMouseEnter={fullText}>{localDigits(valueText(value))}</span>;
 }
 const ISLANDS=['id','email','url','phone','code','data'];
