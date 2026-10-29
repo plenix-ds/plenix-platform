@@ -88485,7 +88485,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        onSizeChange(px): the parent keeps it (keep it in the view to remember it per person)
      minSize, maxSize: its limits in pixels (defaults: 360–720 side by side, 200–500 stacked)
      steps: settled sizes allowed; the divider follows the pointer within its limits and snaps to these on release.
-       Without steps it settles on the 4px grid. Side by side, the other pane retains its token minimum width.
+       Without steps it settles on the 4px grid. Side by side, the other pane retains its token minimum width;
+       stacked, its token minimum height.
      className: more classes on the split view
      ReadingPane.label: its region's name (the item's title); actions: the actions row (a Toolbar); empty: what shows
        when nothing is chosen (an EmptyState); children: the item; className
@@ -88504,6 +88505,11 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        query), whatever the orientation, and the divider is the stacked one: a horizontal separator under the first panel
        that drags its height (200–500px, starting at 320) and that Up and Down move. Above 900px it is the side divider
        again. Each orientation keeps the person's own size (issue 237).
+     Stacked, by its orientation or its room (issue 560): the divider is a horizontal bar the full width between the two
+       panels, its grip turned a quarter, a separator with aria-orientation="horizontal". It drags vertically; Up and
+       Down step it, Home and End go to the limits. The second panel keeps at least 160px
+       (--plx-comp-split-view-second-min-height), so the divider stops short of it in a short room and says why. Only
+       one divider is drawn at a time: switching layouts never leaves a side divider at the first panel's end.
      Room and corners (owner, 2026-10-27, splitview-design-29): the split view keeps 16px of room all around
        (--plx-comp-split-view-padding), so its panels never touch the rest of the screen. Both panels round their outer
        corners by the same 6px (--plx-comp-split-view-radius, shape-md), and the corners at the divider are square, side
@@ -88557,16 +88563,23 @@ function SplitView({
       const horizontal = side && panels && win.getComputedStyle(panels).flexDirection === 'row';
       // never while a divider is dragged: the switch waits for the drag to end (the pointerup below measures again)
       if (!/\bis-resizing-/.test(element.ownerDocument.documentElement.className)) setRoomStacked(side && !!panels && !horizontal);
-      if (!horizontal || !second) {
+      if (!panels || !second) {
         setAvailable(null);
         return;
       }
-      const minimum = parseFloat(win.getComputedStyle(second).minInlineSize) || 0;
-      const gap = parseFloat(win.getComputedStyle(panels).columnGap) || 0;
-      const max = Math.max(minSize ?? lo, panels.getBoundingClientRect().width - gap - minimum);
-      setAvailable(previous => previous && previous.max === max && previous.minimum === minimum ? previous : {
+      // the room the first panel may take: the panels' width (side by side) or height (stacked, issue 560) less the gap
+      // and the second panel's token minimum (--plx-comp-split-view-second-min-width or -min-height)
+      const secondStyle = win.getComputedStyle(second),
+        panelsStyle = win.getComputedStyle(panels),
+        box = panels.getBoundingClientRect();
+      const minimum = parseFloat(horizontal ? secondStyle.minInlineSize : secondStyle.minBlockSize) || 0;
+      const gap = parseFloat(horizontal ? panelsStyle.columnGap : panelsStyle.rowGap) || 0;
+      const floor = horizontal || !side ? minSize ?? lo : LIMITS.stacked[0];
+      const max = Math.max(floor, (horizontal ? box.width : box.height) - gap - minimum);
+      setAvailable(previous => previous && previous.max === max && previous.minimum === minimum && previous.horizontal === horizontal ? previous : {
         max,
-        minimum
+        minimum,
+        horizontal
       });
     };
     measure();
@@ -88587,8 +88600,16 @@ function SplitView({
     };
   }, [side, minSize, lo]);
   const requestedMax = maxSize ?? hi;
-  const constrained = side && available && available.max < requestedMax;
-  const widthMax = constrained ? available.max : requestedMax;
+  const sideRoom = side && available && available.horizontal ? available : null;
+  const constrained = !!sideRoom && sideRoom.max < requestedMax;
+  const widthMax = constrained ? sideRoom.max : requestedMax;
+  // stacked (by its orientation or its room): the divider stops where the second panel would get shorter than its token
+  // minimum (issue 560), and says so at that limit
+  const stackRoom = available && !available.horizontal ? available : null;
+  const heightMax = wanted => stackRoom && stackRoom.max < wanted ? stackRoom.max : wanted;
+  const heightWords = wanted => stackRoom && stackRoom.max < wanted ? {
+    maxHeight: tw.maxWidth.replace('{n}', stackRoom.minimum)
+  } : undefined;
   const [,, stackedStart] = LIMITS.stacked;
   const box = side && roomStacked
   // stacked by its room: the stacked divider, its height limits and start, a horizontal separator that Up and Down move
@@ -88599,7 +88620,8 @@ function SplitView({
     maxWidth: requestedMax,
     defaultHeight: stackedStart,
     minHeight: LIMITS.stacked[0],
-    maxHeight: LIMITS.stacked[1]
+    maxHeight: heightMax(LIMITS.stacked[1]),
+    strings: heightWords(LIMITS.stacked[1])
   } : side ? {
     axis: 'horizontal',
     defaultHeight: stackedStart,
@@ -88618,7 +88640,8 @@ function SplitView({
     defaultHeight: defaultSize != null ? defaultSize : start,
     height: size,
     minHeight: minSize || lo,
-    maxHeight: maxSize || hi,
+    maxHeight: heightMax(maxSize || hi),
+    strings: heightWords(maxSize || hi),
     onResize: onSizeChange ? s => onSizeChange(s.height) : undefined
   };
   return /*#__PURE__*/_react.default.createElement(_room.GridPane.Provider, {

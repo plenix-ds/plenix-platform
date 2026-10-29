@@ -5468,6 +5468,7 @@
   --plx-comp-split-view-padding: var(--plx-ref-space-16px);
   --plx-comp-split-view-radius: var(--plx-sys-shape-md);
   --plx-comp-split-view-second-min-width: var(--plx-ref-size-320px);
+  --plx-comp-split-view-second-min-height: var(--plx-ref-size-160px);
   --plx-comp-reading-pane-background: var(--plx-sys-data-grid-surface);
   --plx-comp-reading-pane-border-color: var(--plx-sys-data-grid-border);
   --plx-comp-reading-pane-border-width: var(--plx-sys-border-width-thin);
