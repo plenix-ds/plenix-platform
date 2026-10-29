@@ -34,6 +34,7 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
+import { useDescribedBy } from '../../utils/describedBy.js';
 import { formatBytes } from '../../utils/format.js';
 import { Icon } from '../Icon/Icon.jsx';
 import { Button } from '../Button/Button.jsx';
@@ -49,6 +50,7 @@ export const FileInput = React.forwardRef(function FileInput({ accept, multiple 
   const [files, setFiles] = React.useState([]);
   const [focus, setFocus] = React.useState(false);
   const sumId = 'plx-fi' + React.useId().replace(/[^a-zA-Z0-9]/g, '') + '-s';
+  const describedAt = useDescribedBy(describedBy, sumId);   // what its owner (a Field) described, then the line that names the chosen file
   const setRef = (node) => { input.current = node; if (typeof ref === 'function') ref(node); else if (ref) ref.current = node; };
   const chosen = (e) => { const list = Array.from(e.target.files || []); setFiles(list); if (onChange) onChange(list, e); };
   const remove = (i) => (e) => {
@@ -67,7 +69,7 @@ export const FileInput = React.forwardRef(function FileInput({ accept, multiple 
         <label className="plx-file-input__trigger">
           <input ref={setRef} type="file" className="plx-file-input__native plx-visually-hidden" accept={accept} multiple={multiple} disabled={disabled}
             required={required} aria-invalid={invalid || undefined} id={id} aria-label={label || (id ? undefined : choose)}
-            aria-describedby={[describedBy, sumId].filter(Boolean).join(' ')} onChange={chosen}
+            aria-describedby={describedAt} onChange={chosen}
             onFocus={(e) => setFocus(e.target.matches(':focus-visible'))} onBlur={() => setFocus(false)} {...rest} />
           <span className={cx('plx-button', 'plx-button--secondary', 'plx-file-input__button', focus && 'is-focus-visible')} aria-hidden="true" aria-disabled={disabled || undefined}>
             <span className="plx-button__icon"><Icon name={AttachmentIcon} /></span><span className="plx-button__label">{choose}</span>

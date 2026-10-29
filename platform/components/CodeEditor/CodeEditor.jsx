@@ -41,6 +41,7 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
+import { useDescribedBy } from '../../utils/describedBy.js';
 import { highlight } from '../CodeBlock/CodeBlock.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 
@@ -70,6 +71,7 @@ export const CodeEditor = React.forwardRef(function CodeEditor({ value, defaultV
   const colored = React.useMemo(() => highlight(code, language), [code, language]);
   const lines = code.split('\n').length;
   const editable = !readOnly && !disabled;
+  const describedAt = useDescribedBy(describedBy, editable ? hintId : null);   // what its owner (a Field) described, then the Tab hint while it can be edited
   const pad = ' '.repeat(tabSize);
 
   const changed = (e) => { if (!controlled) setInner(e.target.value); if (onChange) onChange(e.target.value, e); };
@@ -115,7 +117,7 @@ export const CodeEditor = React.forwardRef(function CodeEditor({ value, defaultV
         <div className="plx-code-editor__code">
           <textarea ref={setRef} className="plx-code-editor__input" value={code} onChange={changed} onKeyDown={keys} readOnly={readOnly} disabled={disabled}
             required={required} id={id} aria-label={label} aria-invalid={invalid || undefined} rows={1} wrap="off" spellCheck={false} autoCapitalize="off"
-            autoComplete="off" autoCorrect="off" data-gramm="false" aria-describedby={[describedBy, editable ? hintId : null].filter(Boolean).join(' ') || undefined} {...rest} />
+            autoComplete="off" autoCorrect="off" data-gramm="false" aria-describedby={describedAt} {...rest} />
           {/* the colored copy lies over the textarea (its text is transparent): the selection and the caret show through */}
           <pre className="plx-code-editor__pre" aria-hidden="true"><code data-plx-language={language}>{colored}{code.endsWith('\n') || !code ? ' ' : ''}</code></pre>
         </div>

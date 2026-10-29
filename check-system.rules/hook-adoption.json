@@ -9,7 +9,16 @@
     "platform/components/PromptInput/PromptInput.jsx",
     "platform/components/TimeZoneSelect/TimeZoneSelect.jsx"
   ],
-  "useDescribedBy": [],
+  "useDescribedBy": [
+    "platform/components/Tooltip/Tooltip.jsx",
+    "platform/components/Field/Field.jsx",
+    "platform/components/Cascader/Cascader.jsx",
+    "platform/components/CodeEditor/CodeEditor.jsx",
+    "platform/components/FileInput/FileInput.jsx",
+    "platform/components/InputGroup/InputGroup.jsx",
+    "platform/components/RelativeDateInput/RelativeDateInput.jsx",
+    "platform/patterns/AvatarUpload/AvatarUpload.jsx"
+  ],
   "usePressable": [
     "platform/components/RowButton/RowButton.jsx"
   ],

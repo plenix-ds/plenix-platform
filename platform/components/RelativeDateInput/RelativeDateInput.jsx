@@ -35,6 +35,7 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
+import { useDescribedBy } from '../../utils/describedBy.js';
 import { Select } from '../Input/Input.jsx';
 import { NumberInput } from '../NumberInput/NumberInput.jsx';
 import { formatRange, formatDate } from '../../utils/format.js';
@@ -94,7 +95,7 @@ export const RelativeDateInput = React.forwardRef(function RelativeDateInput({ v
   const part = (k, v) => set(Object.assign({}, current, { [k]: v }));
   const amount = custom ? current.amount : 7;
   const options = [{ value: '', label: t.none }].concat(list.map((p) => ({ value: p, label: t.presets[p] || p })), [{ value: CUSTOM, label: t.custom }]);
-  const descr = [range ? auto + '-range' : null, describedBy].filter(Boolean).join(' ') || undefined;
+  const descr = useDescribedBy(range ? auto + '-range' : null, describedBy);   // the resolved range, then what its owner (a Field) described
   return (
     <div className={cx('plx-relative-date-input', custom && 'plx-relative-date-input--custom', className)}>
       <div className="plx-relative-date-input__row" role="group" aria-label={label}>
