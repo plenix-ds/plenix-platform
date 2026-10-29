@@ -39,6 +39,10 @@ import { Timeline } from '../../components/Timeline/Timeline.jsx';
 import { StatusIcon } from '../../components/Icon/Icon.jsx';
 import { CommerceLine, OrderSummary, orderTotals, fill, money, useCommercePage } from './shared.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import BriefcaseIcon from 'plenix-platform/icons/plenix/briefcase';
+import EdUndoIcon from 'plenix-platform/icons/plenix/ed-undo';
+import LockIcon from 'plenix-platform/icons/plenix/lock';
+import TrashIcon from 'plenix-platform/icons/plenix/trash';
 
 /* ── the cart ── */
 
@@ -69,7 +73,7 @@ export function Cart({ items = [], currency = 'USD', onQuantityChange, onRemove,
   if (!items.length && !removed) {
     return (
       <section className={cx('plx-commerce', 'plx-commerce--cart', className)} aria-label={title || t.title}>
-        <EmptyState size="page" icon="briefcase" title={t.empty} action={continueHref ? <Link href={continueHref} variant="standalone">{t.continue}</Link> : undefined}>{t.emptyText}</EmptyState>
+        <EmptyState size="page" icon={BriefcaseIcon} title={t.empty} action={continueHref ? <Link href={continueHref} variant="standalone">{t.continue}</Link> : undefined}>{t.emptyText}</EmptyState>
       </section>
     );
   }
@@ -81,14 +85,14 @@ export function Cart({ items = [], currency = 'USD', onQuantityChange, onRemove,
       </header>
       <div className="plx-commerce__columns">
         <div className="plx-commerce__main">
-          {removed ? <Notice tone="info" actions={onRestore ? <Button size="xs" icon="ed-undo" onClick={() => { onRestore(removed); setRemoved(null); }}>{t.undo}</Button> : undefined}
+          {removed ? <Notice tone="info" actions={onRestore ? <Button size="xs" icon={EdUndoIcon} onClick={() => { onRestore(removed); setRemoved(null); }}>{t.undo}</Button> : undefined}
             onDismiss={() => setRemoved(null)}>{fill(t.removed, { title: removed.title })}</Notice> : null}
           <ul className="plx-commerce-lines" aria-label={t.lines}>
             {items.map((x) => (
               <CommerceLine key={x.id} item={x} currency={currency} onQuantityChange={onQuantityChange ? (n) => onQuantityChange(x, n) : undefined}
                 remove={onRemove ? <DeleteFlow variant="undo" items={[{ id: x.id, label: x.title }]} noun={t.noun}
                   onDelete={() => { onRemove(x); if (!toast) setRemoved(x); }} onRestore={onRestore ? () => onRestore(x) : undefined}
-                  trigger={<Button variant="ghost" size="xs" iconOnly icon="trash" label={fill(t.remove, { title: x.title })} />} /> : null} />
+                  trigger={<Button variant="ghost" size="xs" iconOnly icon={TrashIcon} label={fill(t.remove, { title: x.title })} />} /> : null} />
             ))}
           </ul>
         </div>
@@ -172,7 +176,7 @@ export function PaymentFields({ value = {}, onChange, savedMethods = [], amount,
           </div>
         </fieldset>
       ) : null}
-      <Notice tone="info" icon="lock">{t.secure}</Notice>
+      <Notice tone="info" icon={LockIcon}>{t.secure}</Notice>
       {typeof amount === 'number' ? <Text as="p">{t.charge} <Text variant="data">{money(amount, currency)}</Text></Text> : null}
     </div>
   );

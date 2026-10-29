@@ -49,7 +49,7 @@ function bound(p, out) {
   return out;
 }
 
-function scanFile(file, rel, report) {
+function scanFile(file, rel, report, opts = {}) {
   const text = fs.readFileSync(file, 'utf8'), lines = text.split('\n');
   const ast = parse(text);
   // a scope per function (and the program): what its parameters bind, and its own declarations by name (not those of a
@@ -93,6 +93,7 @@ function scanFile(file, rel, report) {
     if (e.type === 'Identifier') { const r = lookup(e); return r.values ? r.values.flatMap((v) => tables(v, depth + 1) || []) : null; }
     if (e.type === 'MemberExpression') { const objs = tables(e.object, depth + 1); if (!objs) return null; const out = []; for (const o of objs) { const got = pick(o, keyName(e)); if (got) for (const g of got) out.push(...(tables(g, depth + 1) || [g])); } return out; }
     if (e.type === 'ConditionalExpression') return [...(tables(e.consequent, depth + 1) || []), ...(tables(e.alternate, depth + 1) || [])];
+    if (e.type === 'LogicalExpression') return [...(tables(e.left, depth + 1) || []), ...(tables(e.right, depth + 1) || [])];   // (SUB_TONES[k] || [])[1]
     return [e];
   }
   const seen = new Set();
@@ -114,6 +115,7 @@ function scanFile(file, rel, report) {
       case 'MemberExpression': {
         const root = (function base(e) { return e.type === 'MemberExpression' ? base(e.object) : e; })(v);
         if (root.type === 'Identifier' && lookup(root).values) { const got = tables(v, 0); if (got) { got.forEach((g) => value(g, at, depth + 1)); return; } break; }
+        if (/^(LogicalExpression|ConditionalExpression)$/.test(root.type)) { const got = tables(v, 0); if (got && got.length) { got.forEach((g) => value(g, at, depth + 1)); return; } break; }   // (TABLE[k] || [])[1]
         if (root.type === 'Identifier' && lookup(root).outside === 'import' && /icons?$/i.test(root.name)) return;   // a *Icons table of another file, scanned there
         if (!v.computed) return;   // item.icon: the item's own field (collected where it is written)
         if (v.property.type === 'NumericLiteral' && root.type === 'Identifier' && lookup(root).outside === 'param') return;   // m[3]: a tuple's own field, the same
@@ -167,9 +169,9 @@ function scanFile(file, rel, report) {
       for (const p of n.arguments[1].properties) if (p.type === 'ObjectProperty' && keyOf(p) === 'name') value(p.value, p);
     if (n.type === 'VariableDeclarator' && n.id.type === 'Identifier' && /icons?$/i.test(n.id.name) && n.init) {
       if (n.init.type === 'ObjectExpression' || n.init.type === 'ArrayExpression') table(n.init, n);
-      else if (FN.test(n.init.type)) returns(n.init).forEach((x) => value(x, x));
+      else if (FN.test(n.init.type) && opts.fnReturns !== false) returns(n.init).forEach((x) => value(x, x));
     }
-    if (n.type === 'FunctionDeclaration' && n.id && /icons?$/i.test(n.id.name)) returns(n).forEach((x) => value(x, x));
+    if (n.type === 'FunctionDeclaration' && n.id && /icons?$/i.test(n.id.name) && opts.fnReturns !== false) returns(n).forEach((x) => value(x, x));
     if (n.type === 'AssignmentPattern' && n.left.type === 'Identifier' && SLOT.test(n.left.name) && parent.type !== 'ObjectProperty') value(n.right, n);
     for (const c of children(n)) visit(c);
   })(ast.program);
@@ -186,23 +188,26 @@ function files(dir, out = []) {
 
 // names: the known Plenix names (glyphs.js NAMES: name -> [symbol, …]); a string in an icon slot that is not one is listed
 // in unknown (a Material name, a typo)
-function scan(root, folders, { names }) {
+function scan(root, folders, { names, withIcon = false }) {
   const found = new Map(), unresolved = [], unknown = [], literals = new Map();
   const report = {
     // node: the string written in the source (absent for a name listed in a plx-icons comment), for a tool that rewrites it
     name(nm, at, node, file) {
       if (!names[nm]) { unknown.push(at + ' ' + JSON.stringify(nm)); return; }
       if (!found.has(nm)) found.set(nm, new Set()); found.get(nm).add(at);
-      if (node) { const k = file + ':' + node.start; if (!literals.has(k)) literals.set(k, { file, start: node.start, end: node.end, name: nm, jsx: !!(node.parent && node.parent.type === 'JSXAttribute'), param: !!(node.parent && node.parent.type === 'AssignmentPattern') }); }
+      if (node) { const k = file + ':' + node.start; if (!literals.has(k)) literals.set(k, { file, start: node.start, end: node.end, name: nm, jsx: !!(node.parent && node.parent.type === 'JSXAttribute'), param: !!(node.parent && node.parent.type === 'AssignmentPattern'), line: node.loc.start.line }); }
     },
     unresolved(at) { unresolved.push(at); },
   };
   for (const folder of folders) for (const f of files(path.join(root, folder))) if (!/[\\/]components[\\/]Icon[\\/]/.test(f)) scanFile(f, path.relative(root, f).split(path.sep).join('/'), report);
+  // the Icon component itself: its icon slots and tables (StatusIcon's tone icons), not the returns of its resolver
+  // functions (resolveIcon, asIcon, stateIcon: they pass on what they are given)
+  if (withIcon && folders.includes('platform/components')) { const f = path.join(root, 'platform', 'components', 'Icon', 'Icon.jsx'); if (fs.existsSync(f)) scanFile(f, 'platform/components/Icon/Icon.jsx', report, { fnReturns: false }); }
   return { found, unresolved, unknown, literals: [...literals.values()] };
 }
 
-// the Platform's own source: platform/components, patterns, hooks and providers (the Icon component itself excluded: it
+// the Platform's own source: platform/components, patterns, hooks, providers and templates (the Icon component itself excluded: it
 // draws what it is given)
-const PLATFORM = ['platform/components', 'platform/patterns', 'platform/hooks', 'platform/providers'];
+const PLATFORM = ['platform/components', 'platform/patterns', 'platform/hooks', 'platform/providers', 'platform/templates'];
 
 module.exports = { scan, PLATFORM };

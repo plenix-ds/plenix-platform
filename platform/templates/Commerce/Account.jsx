@@ -44,18 +44,28 @@ import { Textarea } from '../../components/Input/Input.jsx';
 import { NumberInput } from '../../components/NumberInput/NumberInput.jsx';
 import { CommerceLine, OrderSummary, orderTotals, fill, money, useCommercePage } from './shared.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import AlertIcon from 'plenix-platform/icons/plenix/alert';
+import CircleCheckIcon from 'plenix-platform/icons/plenix/circle-check';
+import DoNotDisturbIcon from 'plenix-platform/icons/plenix/do-not-disturb';
+import DocTextIcon from 'plenix-platform/icons/plenix/doc-text';
+import EdUndoIcon from 'plenix-platform/icons/plenix/ed-undo';
+import ForwardIcon from 'plenix-platform/icons/plenix/forward';
+import OpenIcon from 'plenix-platform/icons/plenix/open';
+import ProgressIcon from 'plenix-platform/icons/plenix/progress';
+import ReplyIcon from 'plenix-platform/icons/plenix/reply';
+import ScheduleIcon from 'plenix-platform/icons/plenix/schedule';
 
 // a calendar day ("2026-10-15") read in the reader's locale, at noon so no time zone moves it to another day
 const day = (iso) => (iso ? formatDate(/T/.test(iso) ? iso : iso + 'T12:00:00') : '');
 
 // the order statuses: each a Badge with its icon (never a dot); the actions each one allows
 export const ORDER_STATUSES = {
-  unfulfilled: { tone: 'waiting', icon: 'schedule', label: 'Unfulfilled' },
-  fulfilled: { tone: 'active', icon: 'forward', label: 'Shipped' },
-  delivered: { tone: 'success', icon: 'circle-check', label: 'Delivered' },
-  returning: { tone: 'action-required', icon: 'ed-undo', label: 'Return requested' },
-  refunded: { tone: 'neutral', icon: 'ed-undo', label: 'Refunded' },
-  canceled: { tone: 'neutral', icon: 'do-not-disturb', label: 'Canceled' },
+  unfulfilled: { tone: 'waiting', icon: ScheduleIcon, label: 'Unfulfilled' },
+  fulfilled: { tone: 'active', icon: ForwardIcon, label: 'Shipped' },
+  delivered: { tone: 'success', icon: CircleCheckIcon, label: 'Delivered' },
+  returning: { tone: 'action-required', icon: EdUndoIcon, label: 'Return requested' },
+  refunded: { tone: 'neutral', icon: EdUndoIcon, label: 'Refunded' },
+  canceled: { tone: 'neutral', icon: DoNotDisturbIcon, label: 'Canceled' },
 };
 const canFulfill = (o) => o.status === 'unfulfilled';
 const canRefund = (o) => o.status === 'delivered' || o.status === 'returning' || o.status === 'fulfilled';
@@ -100,18 +110,18 @@ export function OrderManagement({ orders = [], currency = 'USD', onOpen, onFulfi
       <CommandBar label={t.label} count={shown === 1 ? t.one : fill(t.count, { n: formatNumber(shown) })}
         find={<><CommandBarSearch value={v.search} onChange={(e) => v.setSearch(e.target.value)} onClear={() => v.setSearch('')} placeholder={t.search} label={t.search} />
           <FilterPanel {...v.filterProps} />
-          <QuickFilter label={t.status} icon="progress" noun={t.status.toLowerCase()} options={Object.keys(S).map((k) => ({ value: k, label: S[k].label }))} {...v.quickProps('status')} /></>}
+          <QuickFilter label={t.status} icon={ProgressIcon} noun={t.status.toLowerCase()} options={Object.keys(S).map((k) => ({ value: k, label: S[k].label }))} {...v.quickProps('status')} /></>}
         selection={{ count: chosen.length, noun: t.noun, plural: t.plural, onClear: () => setSelected([]), actions: [
-          { id: 'fulfill', label: t.fulfill, icon: 'circle-check', disabled: !chosen.every(canFulfill), why: t.notFulfillable, onSelect: () => fulfill(chosen) },
-          { id: 'cancel', label: t.cancelMany, icon: 'do-not-disturb', danger: true, disabled: !chosen.every(canCancel), why: t.notCancelable, onSelect: () => setAsking(chosen) }] }} />
+          { id: 'fulfill', label: t.fulfill, icon: CircleCheckIcon, disabled: !chosen.every(canFulfill), why: t.notFulfillable, onSelect: () => fulfill(chosen) },
+          { id: 'cancel', label: t.cancelMany, icon: DoNotDisturbIcon, danger: true, disabled: !chosen.every(canCancel), why: t.notCancelable, onSelect: () => setAsking(chosen) }] }} />
       <DataGrid label={t.label} data={rows} columns={columns}
         selectable selected={selected} onSelectionChange={setSelected} filter={v.test}
         rowMenu={(o) => [
-          { label: t.open, icon: 'open', onSelect: () => onOpen && onOpen(o) },
-          { label: t.fulfill, icon: 'circle-check', disabled: !canFulfill(o), onSelect: () => fulfill([o]) },
-          { label: t.refund, icon: 'ed-undo', disabled: !canRefund(o), onSelect: () => onRefund && onRefund(o) },
+          { label: t.open, icon: OpenIcon, onSelect: () => onOpen && onOpen(o) },
+          { label: t.fulfill, icon: CircleCheckIcon, disabled: !canFulfill(o), onSelect: () => fulfill([o]) },
+          { label: t.refund, icon: EdUndoIcon, disabled: !canRefund(o), onSelect: () => onRefund && onRefund(o) },
           { separator: true },
-          { label: t.cancel, icon: 'do-not-disturb', danger: true, disabled: !canCancel(o), onSelect: () => setAsking([o]) }]}
+          { label: t.cancel, icon: DoNotDisturbIcon, danger: true, disabled: !canCancel(o), onSelect: () => setAsking([o]) }]}
         onRowDoubleClick={onOpen ? (order) => onOpen(orders.find((o) => o.id === order.id)) : undefined} />
       <ConfirmDialog open={!!asking} destructive title={asking ? fill(t.cancelTitle, { what: what(asking) }) : ''} message={t.cancelText}
         confirmLabel={asking && asking.length > 1 ? t.cancelMany : t.cancel} cancelLabel={t.keep}
@@ -130,15 +140,15 @@ export function OrderDetail({ order, currency = 'USD', backHref, onFulfill, onRe
   const [asking, setAsking] = React.useState(false);
   const cur = o.currency || currency;
   const actions = [];
-  if (onFulfill) actions.push({ icon: 'circle-check', label: t.fulfill, primary: true, disabled: !canFulfill(o), onClick: () => onFulfill(o) });
-  if (onRefund) actions.push({ icon: 'ed-undo', label: t.refund, disabled: !canRefund(o), onClick: () => onRefund(o) });
-  if (onReturn) actions.push({ icon: 'reply', label: t.return, disabled: o.status !== 'delivered', onClick: () => onReturn(o) });
-  const more = onCancel && canCancel(o) ? [{ icon: 'do-not-disturb', label: t.cancel, danger: true, onSelect: () => setAsking(true) }] : undefined;
+  if (onFulfill) actions.push({ icon: CircleCheckIcon, label: t.fulfill, primary: true, disabled: !canFulfill(o), onClick: () => onFulfill(o) });
+  if (onRefund) actions.push({ icon: EdUndoIcon, label: t.refund, disabled: !canRefund(o), onClick: () => onRefund(o) });
+  if (onReturn) actions.push({ icon: ReplyIcon, label: t.return, disabled: o.status !== 'delivered', onClick: () => onReturn(o) });
+  const more = onCancel && canCancel(o) ? [{ icon: DoNotDisturbIcon, label: t.cancel, danger: true, onSelect: () => setAsking(true) }] : undefined;
   const H2 = 'h' + Math.min(6, headingLevel + 1);
   return (
     <article className={cx('plx-commerce', 'plx-commerce--order', className)}>
       {backHref ? <Link href={backHref} back>{t.back}</Link> : null}
-      <EntityHeader media={{ icon: 'doc-text', hue: 'gray' }} context={t.context} title={o.number} headingLevel={headingLevel}
+      <EntityHeader media={{ icon: DocTextIcon, hue: 'gray' }} context={t.context} title={o.number} headingLevel={headingLevel}
         status={<OrderStatus status={o.status} statuses={statuses} />}
         facts={[<Text key="d" variant="data">{day(o.date)}</Text>, o.customer, <Text key="t" variant="data">{money(o.total, cur)}</Text>].filter(Boolean)}
         actions={actions.length ? actions : undefined} moreActions={more} />
@@ -174,7 +184,7 @@ export function OrderDetail({ order, currency = 'USD', backHref, onFulfill, onRe
 }
 
 /* ── subscription management ── */
-const SUB_TONES = { active: ['success', 'circle-check'], paused: ['waiting', 'schedule'], canceled: ['neutral', 'do-not-disturb'], paid: ['success', 'circle-check'], refunded: ['neutral', 'ed-undo'], failed: ['negative', 'alert'] };
+const SUB_TONES = { active: ['success', CircleCheckIcon], paused: ['waiting', ScheduleIcon], canceled: ['neutral', DoNotDisturbIcon], paid: ['success', CircleCheckIcon], refunded: ['neutral', EdUndoIcon], failed: ['negative', AlertIcon] };
 
 export function SubscriptionManagement({ subscription = {}, plans = [], history = [], currency = 'USD', onChangePlan, onPause, onResume, onCancel, onUpdatePayment, strings, className }) {
   useCommercePage('subscription-management');

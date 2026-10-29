@@ -47,6 +47,7 @@ import { NumberInput } from '../../components/NumberInput/NumberInput.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { ProductPrice } from '../../patterns/ProductCard/ProductCard.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import ImageBIcon from 'plenix-platform/icons/plenix/image-b';
 
 export const COMMERCE_PAGES = {
   'product-discovery': 'workspace', 'product-listing': 'workspace', 'product-detail': 'detail', cart: 'workspace', checkout: 'form',
@@ -82,7 +83,7 @@ export function CommerceLine({ item, currency = 'USD', onQuantityChange, remove,
     <li className={cx('plx-commerce-line', className)}>
       <span className="plx-commerce-line__media">
         {item.image && item.image.src ? <Image src={item.image.src} alt={item.image.alt || ''} ratio="1-1" />
-          : <span className="plx-commerce-line__placeholder plx-ratio-1-1" aria-hidden="true"><Icon name="image-b" /></span>}
+          : <span className="plx-commerce-line__placeholder plx-ratio-1-1" aria-hidden="true"><Icon name={ImageBIcon} /></span>}
       </span>
       <span className="plx-commerce-line__text">
         <span className="plx-commerce-line__title">{item.href ? <Link href={item.href} variant="subtle">{item.title}</Link> : item.title}</span>
