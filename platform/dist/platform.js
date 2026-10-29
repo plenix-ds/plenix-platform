@@ -55886,7 +55886,7 @@ const Calendar = exports.Calendar = /*#__PURE__*/_react.default.forwardRef(funct
   }, (_, i) => monthGrid(shiftMonth(shown, i), i))));
 });
   } },
-  "platform/components/DatePicker/DatePicker.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","plenix-platform/icons/plenix/calendar":"platform/dist/icons/plenix/calendar.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/DatePicker/DatePicker.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","plenix-platform/icons/plenix/calendar":"platform/dist/icons/plenix/calendar.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -55902,6 +55902,7 @@ var _InputGroup = require("../InputGroup/InputGroup.jsx");
 var _Popover = require("../Popover/Popover.jsx");
 var _Calendar = require("../Calendar/Calendar.jsx");
 var _calendar = _interopRequireDefault(require("plenix-platform/icons/plenix/calendar"));
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · DatePicker
    Summary: A field for a date that people type in their locale's numeric form or choose from a Calendar in a popover:
@@ -55934,7 +55935,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      required: handed to the date field (a Field sets it)
      id: handed to the date field, with aria-describedby (a Field sets both)
      locale: the locale of the typed form, the names and the first day of the week (default: the page's language)
-     strings: the words it shows and announces, for other languages: { open: "Choose date", dialog: "Choose date",
+     strings: the words it shows and announces; default: the locale's datePicker words from the catalog (platform/i18n: English, Arabic), through LocaleProvider; this prop wins: { open: "Choose date", dialog: "Choose date",
        time: "Time", presets: "Presets", today: "Today", tomorrow: "Tomorrow", nextWeek: "In a week", last7: "Last 7 days",
        last30: "Last 30 days", thisMonth: "This month", lastMonth: "Last month", calendar: {…Calendar's strings} }
      className: more classes on the date picker
@@ -55962,19 +55963,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      A date people know by heart (a birth date) is typed: give it no calendar (use Input).
      Built on Popover (manual) and Calendar; the date-time's time field is an InputGroup.
 */
-const STRINGS = {
-  open: 'Choose date',
-  dialog: 'Choose date',
-  time: 'Time',
-  presets: 'Presets',
-  today: 'Today',
-  tomorrow: 'Tomorrow',
-  nextWeek: 'In a week',
-  last7: 'Last 7 days',
-  last30: 'Last 30 days',
-  thisMonth: 'This month',
-  lastMonth: 'Last month'
-};
 const DASH = ' – ';
 
 // the locale's numeric date: its parts in order ("month", "day", "year") and the form people read ("MM/DD/YYYY")
@@ -56057,7 +56045,7 @@ const DatePicker = exports.DatePicker = /*#__PURE__*/_react.default.forwardRef(f
   className,
   ...rest
 }, ref) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('datePicker', strings); // the locale's words (platform/i18n), with the strings prop on top
   const locale = (0, _format.numeralLocale)(localeProp || (0, _format.formatLocale)());
   const form = numericForm(locale);
   const range = mode === 'range',
