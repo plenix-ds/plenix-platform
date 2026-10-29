@@ -1,7 +1,7 @@
 /* Plenix · dashboard (dashboard/dashboard.jsx). Split out of app/plenix.jsx in batch 113; rebuilt from Platform components in
    batch 201: every widget is a Panel; the widgets sit in a WidgetGrid (drag a handle or use the arrow keys to reorder);
    rows are ActivityList items, RowButtons, Checkboxes and EventChips; project cards carry the project's color as their accent. */
-import { ActivityList, Avatar, Badge, Button, Card, Checkbox, ContentGrid, Divider, EventChip, Icon, Inline, NotificationList, Panel, RowButton, Stack, Tag, TagList, Text, WidgetGrid, useAppLayout, useSession } from 'plenix-platform';
+import { ActivityList, Avatar, Badge, Button, Card, Checkbox, ContentGrid, Divider, EventChip, Icon, Inline, NotificationList, Panel, RowButton, Stack, Tag, TagList, Text, WidgetGrid, useAppLayout, useSession, VisuallyHidden } from 'plenix-platform';
 import { ALL_NOTES, ALL_TASKS, CONTACTS, EMAILS, EVENTS, PROJECTS, Priority } from '../suite/shared.jsx';
 const { useState, useEffect } = React;
 
@@ -159,6 +159,7 @@ export function Dashboard({ setSection, setProject, prefs }) {
   const dStr = `${DAYS[now.getDay()]}, ${MONTHS[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
   return (
     <Stack gap="md" inset="md" grow scroll className="plx-motion-enter">
+      <VisuallyHidden as="h1">Dashboard</VisuallyHidden>
       <Inline gap="sm">
         <Text variant="data">{hStr}</Text>
         <Divider orientation="vertical" />
