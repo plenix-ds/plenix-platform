@@ -1,0 +1,82 @@
+# Icon stage 5a (#280), part 2, group 3: 26 files, 79 icon names become imports of their modules. Proof scripts only.
+# Files: components/Sheet/Sheet.jsx components/StatusDot/StatusDot.jsx components/StreamingText/StreamingText.jsx components/SuggestedAction/SuggestedAction.jsx components/SuggestedEdit/SuggestedEdit.jsx components/Tag/Tag.jsx components/TeachingBubble/TeachingBubble.jsx components/Text/Text.jsx components/Thumbnail/Thumbnail.jsx components/Toast/Toast.jsx components/TransferList/TransferList.jsx components/Tree/Tree.jsx components/TreeSelect/TreeSelect.jsx components/VoteTally/VoteTally.jsx patterns/AIExplanation/AIExplanation.jsx patterns/AISearch/AISearch.jsx patterns/AccessRequest/AccessRequest.jsx patterns/AppHeader/AppHeader.jsx patterns/ApprovalWorkflow/ApprovalWorkflow.jsx patterns/ArchiveRestore/ArchiveRestore.jsx patterns/AssignControl/AssignControl.jsx patterns/AssistantPanel/AssistantPanel.jsx patterns/Auth/Auth.jsx patterns/Autosave/Autosave.jsx patterns/AvatarUpload/AvatarUpload.jsx patterns/ColumnsMenu/ColumnsMenu.jsx 
+
+## By hand
+- Thumbnail: the documented default stays the name (icon = 'document'): the spec shows each prop's default from the
+  signature, so converting it changed the spec's prop table ("— DocumentIcon"). The component draws the name's module
+  (const glyph = icon === 'document' ? DocumentIcon : icon). convert.js now leaves a parameter's default for a hand fix
+  (one left: PermissionSummary's 'lock', in a later group).
+- AppHeader: the density menu's icon was built from text ('density-' + value); it is now DENSITY_ICONS[value], with the
+  name as the fallback for a workspace's own density (listed in a plx-icons comment).
+- File (QA on #532): fileIconModule draws the document icon, and development warns once, when a type's icon has no import.
+- RichTextEditor: the plx-icons comment is gone; the scan treats a tuple's numbered field (m[3]) like an item's field.
+
+## spec-pages.js: the record pages of these components (60) and the 10 application pages, styling/phase-2 (7fb8734d) vs this branch
+- Masked: the clock, ECharts' instance number, Files' drag instructions (added at a moment that varies).
+- Noise check (two runs before the change): 70 of 70 the same.
+{
+ "pages": 70,
+ "same": 70,
+ "differ": 0,
+ "pageErrors": {
+  "before": 0,
+  "after": 0
+ },
+ "differs": []
+}
+
+## first-paint.js: with no stylesheet on the page
+{
+ "stylesheet": false,
+ "CopyButton (converted)": {
+  "icons": 1,
+  "withPath": 1
+ },
+ "BackToTop (converted)": {
+  "icons": 1,
+  "withPath": 1
+ },
+ "Details (converted)": {
+  "icons": 2,
+  "withPath": 2
+ },
+ "Banner (its dismiss icon converted; its status icon comes from StatusIcon in Icon.jsx, a later group)": {
+  "icons": 2,
+  "withPath": 1
+ },
+ "EmptyState (group 2)": {
+  "icons": 1,
+  "withPath": 1
+ },
+ "Notice (group 2)": {
+  "icons": 1,
+  "withPath": 1
+ },
+ "SearchField (group 2)": {
+  "icons": 1,
+  "withPath": 1
+ },
+ "File (group 2)": {
+  "icons": 1,
+  "withPath": 1
+ },
+ "StatusDot presence (group 3)": {
+  "icons": 1,
+  "withPath": 1
+ },
+ "Thumbnail default (group 3)": {
+  "icons": 1,
+  "withPath": 1
+ },
+ "Autosave (group 3)": {
+  "icons": 1,
+  "withPath": 1
+ },
+ "Button icon=\"add\" (a name, not converted)": {
+  "icons": 1,
+  "withPath": 0
+ }
+}
+
+## platform.js
+- raw 4127839 -> 4175511 (+47672); gzip 974855 -> 985535 (+10680)

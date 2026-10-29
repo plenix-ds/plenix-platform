@@ -43,6 +43,13 @@ import { Text } from '../../components/Text/Text.jsx';
 import { VisuallyHidden } from '../../components/VisuallyHidden/VisuallyHidden.jsx';
 import { PanelTrigger, toggle, fill } from '../CommandBar/panel-parts.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
+import ChevronUpIcon from 'plenix-platform/icons/plenix/chevron-up';
+import DragIcon from 'plenix-platform/icons/plenix/drag';
+import FieldsIcon from 'plenix-platform/icons/plenix/fields';
+import PinFilledIcon from 'plenix-platform/icons/plenix/pin-filled';
+import VisibilityIcon from 'plenix-platform/icons/plenix/visibility';
+import VisibilityOffIcon from 'plenix-platform/icons/plenix/visibility-off';
 
 const moveTo = (order, f, i) => { const rest = order.filter((x) => x !== f); rest.splice(i, 0, f); return rest; };
 const nameIn = (fields) => (f) => { const x = fields.find((y) => y.value === f); return x ? x.label : f; };
@@ -78,13 +85,13 @@ export function ColumnsList({ fields, value, onChange, filter = '', t }) {
             onDragStart={(e) => { setDrag(f); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', f); }}
             onDragEnd={() => setDrag(null)} onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => { e.preventDefault(); const from = e.dataTransfer.getData('text/plain') || drag; setDrag(null); if (from && from !== f) move(from, i); }}>
-            <Menu label={fill(t.moveMenu, { name: name(f) })} trigger={<Button size="xs" variant="ghost" icon="drag" iconOnly label={fill(t.moveMenu, { name: name(f) })} className="plx-columns-list__handle" />} placement="bottom-start">
-              <MenuItem icon="chevron-up" disabled={i === 0} onSelect={() => move(f, i - 1, true)}>{t.up}</MenuItem>
-              <MenuItem icon="chevron-down" disabled={i === order.length - 1} onSelect={() => move(f, i + 1, true)}>{t.down}</MenuItem>
+            <Menu label={fill(t.moveMenu, { name: name(f) })} trigger={<Button size="xs" variant="ghost" icon={DragIcon} iconOnly label={fill(t.moveMenu, { name: name(f) })} className="plx-columns-list__handle" />} placement="bottom-start">
+              <MenuItem icon={ChevronUpIcon} disabled={i === 0} onSelect={() => move(f, i - 1, true)}>{t.up}</MenuItem>
+              <MenuItem icon={ChevronDownIcon} disabled={i === order.length - 1} onSelect={() => move(f, i + 1, true)}>{t.down}</MenuItem>
             </Menu>
             <Checkbox label={name(f)} checked={hidden.indexOf(f) < 0} disabled={i === 0}
               onChange={() => put(order, toggle(hidden, f), fill(hidden.indexOf(f) >= 0 ? t.shown : t.hidden, { name: name(f) }))} />
-            {i === 0 ? <span className="plx-columns-list__first"><Icon name="pin-filled" /><Text variant="secondary">{t.first}</Text></span> : null}
+            {i === 0 ? <span className="plx-columns-list__first"><Icon name={PinFilledIcon} /><Text variant="secondary">{t.first}</Text></span> : null}
           </div>
         );
       })}
@@ -100,7 +107,7 @@ export function ColumnsMenu({ fields = [], value, onChange, inline = false, stri
   const first = <Field label={t.first}><Select value={v.order[0]} options={v.order.map((f) => ({ value: f, label: name(f) }))}
     onChange={(e) => onChange({ order: moveTo(v.order, e.target.value, 0), hidden: (v.hidden || []).filter((x) => x !== e.target.value) })} /></Field>;
   const list = <div className="plx-find-panel plx-find-panel--columns">{first}<ColumnsList fields={fields} value={v} onChange={onChange} t={t} /></div>;
-  return <PanelTrigger icon="fields" label={t.label} title={t.label} count={(v.hidden || []).length} caret size="lg" inline={inline}>{list}</PanelTrigger>;
+  return <PanelTrigger icon={FieldsIcon} label={t.label} title={t.label} count={(v.hidden || []).length} caret size="lg" inline={inline}>{list}</PanelTrigger>;
 }
 
 export function ManageColumnsDialog({ fields = [], value, onChange, strings, trigger, open: openProp, onOpenChange }) {
@@ -115,19 +122,19 @@ export function ManageColumnsDialog({ fields = [], value, onChange, strings, tri
   // opened by its owner: start from the current columns, as the button does
   React.useEffect(() => { if (controlled && openProp) { setDraft(v); setQ(''); } }, [controlled, openProp]);
   const start = () => { setDraft(v); setQ(''); setOpen(true); };
-  const button = trigger === null ? null : trigger ? React.cloneElement(trigger, { onClick: start }) : <Button size="sm" variant="ghost" icon="fields" onClick={start}>{t.manage}</Button>;
+  const button = trigger === null ? null : trigger ? React.cloneElement(trigger, { onClick: start }) : <Button size="sm" variant="ghost" icon={FieldsIcon} onClick={start}>{t.manage}</Button>;
   return (
     <>
       {button}
-      <Dialog open={open} onClose={() => setOpen(false)} title={t.manage} icon="fields" size="md"
+      <Dialog open={open} onClose={() => setOpen(false)} title={t.manage} icon={FieldsIcon} size="md"
         footer={<><Button onClick={() => setOpen(false)}>{t.cancel}</Button><Button variant="primary" onClick={() => { onChange(draft); setOpen(false); }}>{t.apply}</Button></>}>
         <div className="plx-find-panel plx-find-panel--dialog">
           <Field label={t.first}><Select value={draft.order[0]} options={draft.order.map((f) => ({ value: f, label: name(f) }))}
             onChange={(e) => setDraft({ order: moveTo(draft.order, e.target.value, 0), hidden: (draft.hidden || []).filter((x) => x !== e.target.value) })} /></Field>
           <SearchField width="fill" value={q} onChange={(e) => setQ(e.target.value)} onClear={() => setQ('')} placeholder={t.find} label={t.find} />
           <div className="plx-find-panel__add">
-            <Button size="sm" variant="ghost" icon="visibility" onClick={() => setDraft({ order: draft.order, hidden: [] })}>{t.showAll}</Button>
-            <Button size="sm" variant="ghost" icon="visibility-off" onClick={() => setDraft({ order: draft.order, hidden: draft.order.slice(1) })}>{t.hideAll}</Button>
+            <Button size="sm" variant="ghost" icon={VisibilityIcon} onClick={() => setDraft({ order: draft.order, hidden: [] })}>{t.showAll}</Button>
+            <Button size="sm" variant="ghost" icon={VisibilityOffIcon} onClick={() => setDraft({ order: draft.order, hidden: draft.order.slice(1) })}>{t.hideAll}</Button>
           </div>
           <ColumnsList fields={fields} value={draft} onChange={setDraft} filter={q} t={t} />
         </div>

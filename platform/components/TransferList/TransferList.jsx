@@ -49,6 +49,10 @@ import { Button } from '../Button/Button.jsx';
 import { SearchField } from '../SearchField/SearchField.jsx';
 import { useVirtualizer, VirtualGap, VirtualProbe } from '../../hooks/useVirtualizer.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
+import ChevronLeftIcon from 'plenix-platform/icons/plenix/chevron-left';
+import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
+import ChevronUpIcon from 'plenix-platform/icons/plenix/chevron-up';
 
 const fill = (s, o) => String(s).replace(/\{(\w+)\}/g, (all, k) => (o[k] !== undefined ? o[k] : all));
 const AUTO_VIRTUAL = 500;
@@ -168,8 +172,8 @@ export function TransferList({ label, options = [], value = [], onChange, titles
   const firstChecked = value.findIndex((v) => right.has(v)), lastChecked = value.length - 1 - value.slice().reverse().findIndex((v) => right.has(v));
   const orderTools = ordered ? (
     <>
-      <Button size="xs" variant="ghost" iconOnly icon="chevron-up" label={t.up} disabled={disabled || firstChecked <= 0} onClick={() => shift(-1)} />
-      <Button size="xs" variant="ghost" iconOnly icon="chevron-down" label={t.down} disabled={disabled || firstChecked < 0 || lastChecked >= value.length - 1} onClick={() => shift(1)} />
+      <Button size="xs" variant="ghost" iconOnly icon={ChevronUpIcon} label={t.up} disabled={disabled || firstChecked <= 0} onClick={() => shift(-1)} />
+      <Button size="xs" variant="ghost" iconOnly icon={ChevronDownIcon} label={t.down} disabled={disabled || firstChecked < 0 || lastChecked >= value.length - 1} onClick={() => shift(1)} />
     </>
   ) : null;
   return (
@@ -178,9 +182,9 @@ export function TransferList({ label, options = [], value = [], onChange, titles
         <Side id={id + '-s'} title={title.source} items={source} checked={left} setChecked={setLeft} search={search} virtual={virtual} disabled={disabled} t={t}
           emptyText={t.empty} onMove={(list, all) => add(all ? list : list.filter((o) => left.has(o.value)), title.target)} />
         <div className="plx-transfer-list__moves" role="group" aria-label={t.moves}>
-          <Button size="sm" iconEnd="chevron-right" disabled={disabled || !leftChecked.length} onClick={() => add(leftChecked, title.target)}>{t.add}</Button>
+          <Button size="sm" iconEnd={ChevronRightIcon} disabled={disabled || !leftChecked.length} onClick={() => add(leftChecked, title.target)}>{t.add}</Button>
           <Button size="sm" disabled={disabled || !source.some((o) => !o.disabled)} onClick={() => add(source, title.target)}>{t.addAll}</Button>
-          <Button size="sm" icon="chevron-left" disabled={disabled || !rightChecked.length} onClick={() => remove(rightChecked, title.source)}>{t.remove}</Button>
+          <Button size="sm" icon={ChevronLeftIcon} disabled={disabled || !rightChecked.length} onClick={() => remove(rightChecked, title.source)}>{t.remove}</Button>
           <Button size="sm" disabled={disabled || !target.some((o) => !o.disabled)} onClick={() => remove(target, title.source)}>{t.removeAll}</Button>
         </div>
         <Side id={id + '-t'} title={title.target} items={target} checked={right} setChecked={setRight} search={search} virtual={virtual} disabled={disabled} t={t}
