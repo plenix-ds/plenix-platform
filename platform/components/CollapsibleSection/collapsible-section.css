@@ -8,6 +8,9 @@
 .plx-collapsible-section__toggle.is-focus-visible{outline-color:var(--plx-comp-collapsible-section-toggle-focus-outline-color);outline-offset:var(--plx-comp-collapsible-section-toggle-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-collapsible-section-toggle-focus-outline-width);}
 .plx-collapsible-section__icon{--plx-comp-icon-size:var(--plx-sys-control-icon-prominent);display:inline-flex;flex-shrink:0;}
 .plx-collapsible-section__title{flex-basis:0%;flex-grow:1;flex-shrink:1;min-inline-size:0;overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;white-space:nowrap;}
+/* wrap (the navigation groups; owner, #502): the title wraps to evenly balanced lines, at most --plx-comp-collapsible-section-title-lines; past them the last
+   line ends in an ellipsis (the full title is in a Tooltip while it is cut). A one-line title keeps the toggle's height (32px); two lines are 40px */
+.plx-collapsible-section__title--wrap{-webkit-box-orient:vertical;-webkit-line-clamp:var(--plx-comp-collapsible-section-title-lines);display:-webkit-box;line-height:var(--plx-comp-collapsible-section-title-line-height);padding-block-end:var(--plx-comp-collapsible-section-title-wrap-padding-block);padding-block-start:var(--plx-comp-collapsible-section-title-wrap-padding-block);overflow-wrap:anywhere;text-wrap:balance;white-space:normal;}
 .plx-collapsible-section__chevron{--plx-comp-icon-size:var(--plx-sys-control-icon-prominent);display:inline-flex;flex-shrink:0;transform:rotate(180deg);transition-duration:var(--plx-comp-collapsible-section-chevron-duration);transition-property:transform;transition-timing-function:var(--plx-comp-collapsible-section-chevron-easing);}
 .plx-collapsible-section.is-expanded>.plx-collapsible-section__heading .plx-collapsible-section__chevron{transform:rotate(0deg);}
 .plx-collapsible-section__actions{align-items:center;column-gap:var(--plx-comp-collapsible-section-actions-gap);display:inline-flex;flex-shrink:0;}

@@ -40,6 +40,8 @@
 .plx-nav-list__entry--actions{align-items:center;column-gap:var(--plx-comp-nav-list-entry-actions-gap);display:flex;}
 .plx-nav-list__item--in-actions{flex-basis:0%;flex-grow:1;flex-shrink:1;min-inline-size:0;}
 .plx-nav-list__actions{--plx-comp-button-context-height:var(--plx-sys-control-height-standard);--plx-comp-button-context-icon:var(--plx-sys-control-icon-standard);align-items:center;column-gap:var(--plx-comp-nav-list-actions-gap);display:flex;flex-shrink:0;}
+/* a static heading's text wraps to balanced lines, at most --plx-comp-nav-list-heading-lines, the last cut with an ellipsis past them (owner, issue 502) */
+.plx-nav-list__heading-text{-webkit-box-orient:vertical;-webkit-line-clamp:var(--plx-comp-nav-list-heading-lines);display:-webkit-box;line-height:var(--plx-comp-nav-list-heading-line-height);min-inline-size:0;overflow-x:hidden;overflow-wrap:anywhere;overflow-y:hidden;text-wrap:balance;}
 /* a collapsible group: its header lines up with the rows (the legacy section header inside a navigation list) */
 .plx-nav-list__group{--plx-comp-collapsible-section-context-heading-padding-inline:var(--plx-comp-nav-list-group-collapsible-section-heading-padding-inline);}
 /* the name truncates before the count does; the count sits right after it: small, italic, in parentheses, subtle */

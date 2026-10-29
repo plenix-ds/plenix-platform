@@ -628,6 +628,12 @@
     "letter-spacing"
    ]
   },
+  "plx-collapsible-section__title--wrap": {
+   "contract": "adjusts",
+   "props": [
+    "line-height"
+   ]
+  },
   "plx-color-swatch-label": {
    "contract": "adjusts",
    "props": [
@@ -1958,6 +1964,12 @@
     "font-size",
     "font-weight",
     "letter-spacing"
+   ]
+  },
+  "plx-nav-list__heading-text": {
+   "contract": "adjusts",
+   "props": [
+    "line-height"
    ]
   },
   "plx-nav-list__item": {
