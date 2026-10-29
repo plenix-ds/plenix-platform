@@ -30,15 +30,25 @@ const load = () => { try { const o = JSON.parse(localStorage.getItem(STORE)); re
 const save = (all) => { try { localStorage.setItem(STORE, JSON.stringify(all)); } catch (e) { /* this visit only */ } };
 const whole = (v) => { const n = +v; return Number.isFinite(n) && n > 0 ? n : null; };
 
+// A stored key whose two sizes are both within 10px of this key's is the same monitor: a size ending in 4 to 6 can round either way at an odd zoom
+// step, so the exact key alone could straddle the rounding edge. The nearest such key wins; none matches: the key itself.
+function nearest(mine, key) {
+  if (!mine || typeof mine !== 'object' || key in mine) return key;
+  const at = (k) => /^(\d+)x(\d+)$/.exec(k), c = at(key);
+  if (!c) return key;
+  let best = key, gap = Infinity;
+  for (const k of Object.keys(mine)) { const m = at(k); if (!m) continue; const a = Math.abs(m[1] - c[1]), b = Math.abs(m[2] - c[2]); if (a <= 10 && b <= 10 && a + b < gap) { best = k; gap = a + b; } }
+  return best;
+}
 // the saved width for a monitor; the first read of a panel carries the old single value over as this monitor's (written by the caller, in an
 // effect: reading never writes)
 function read(panel, key, legacy) {
   const mine = load()[panel];
-  if (mine && typeof mine === 'object') return { value: whole(mine[key]), carried: false };
+  if (mine && typeof mine === 'object') return { value: whole(mine[nearest(mine, key)]), carried: false };
   const old = legacy ? whole(legacy()) : null;
   return { value: old, carried: !!old };
 }
-function write(panel, key, w) { const all = load(); all[panel] = Object.assign({}, all[panel], { [key]: w }); save(all); }
+function write(panel, key, w) { const all = load(); all[panel] = Object.assign({}, all[panel], { [nearest(all[panel], key)]: w }); save(all); }
 
 export function useMonitorWidth(panel, { legacy, min, max }) {
   const [key, setKey] = React.useState(() => monitorKey());
