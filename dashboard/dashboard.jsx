@@ -1,6 +1,6 @@
 /* Plenix · dashboard (dashboard/dashboard.jsx). Split out of app/plenix.jsx in batch 113; rebuilt from Platform components in
    batch 201: every widget is a Panel; the widgets sit in a WidgetGrid (drag a handle or use the arrow keys to reorder);
-   rows are ActivityList items, RowButtons, Checkboxes and EventChips; project cards carry the project's color as their accent. */
+   rows are ActivityList items, RowButtons, Checkboxes and EventChips; project cards show the project's color as a ColorSwatch. */
 import { ActivityList, Avatar, Badge, Button, Card, Checkbox, ColorSwatch, ContentGrid, Divider, EventChip, Icon, Inline, NotificationList, Panel, RowButton, Stack, Tag, TagList, Text, useAppLayout, useSession, VisuallyHidden, WidgetGrid } from 'plenix-platform';
 import { ALL_NOTES, ALL_TASKS, CONTACTS, EMAILS, EVENTS, PROJECTS, Priority } from '../suite/shared.jsx';
 const { useState, useEffect } = React;
