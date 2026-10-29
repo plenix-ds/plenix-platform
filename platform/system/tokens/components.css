@@ -5050,12 +5050,22 @@
   --plx-comp-resizable-edge-z-index: var(--plx-comp-panel-splitter-z-index);
   --plx-comp-resizable-corner-size: var(--plx-ref-size-16px);
   --plx-comp-resizable-divider-size: var(--plx-ref-space-8px);
-  --plx-comp-resizable-divider-line-color: var(--plx-sys-border-default);
   --plx-comp-resizable-divider-line-width: var(--plx-sys-border-width-thin);
   --plx-comp-resizable-divider-background: var(--plx-sys-surface-sunken);
   --plx-comp-resizable-divider-hover-background: var(--plx-sys-data-grid-row-selected);
   --plx-comp-resizable-divider-grip-gap: var(--plx-ref-space-4px);
   --plx-comp-resizable-divider-active-color: var(--plx-sys-focus-ring-color);
+}
+/* the person's contrast settings: forced colors, then more contrast, else the values above */
+@media not (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-resizable-divider-line-color: var(--plx-sys-border-default);
+  }
+}
+@media (forced-colors: active) {
+  :root,[data-plx-density],[data-plx-interaction] {
+    --plx-comp-resizable-divider-line-color: CanvasText;
+  }
 }
 :root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-resource-list-gap: var(--plx-sys-space-stack-sm);
