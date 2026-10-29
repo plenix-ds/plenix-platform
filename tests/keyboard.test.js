@@ -159,7 +159,7 @@ changed.report(WANTED.join(', '));
   const sw = await page.evaluate(() => { const b = document.querySelector('main .plx-command-bar--selecting'); if (!b) return null; b.setAttribute('data-kb-swap', ''); const h = Math.round(b.getBoundingClientRect().height);
     const first = b.querySelector('.plx-command-bar__row button:not([disabled])'); if (first) first.focus(); return { h, clear: !!b.querySelector('.plx-command-bar__clear'), search: !!b.querySelector('.plx-search') }; });
   if (sw) {
-    check('Command bar: rows selected swap the bar (selection commands, "× N selected", no search)', sw.clear && !sw.search, JSON.stringify(sw));
+    check('Command bar: rows selected swap the page\'s actions for the selection\'s commands and end with "× N selected"; the search stays (owner, #454)', sw.clear && sw.search, JSON.stringify(sw));
     await page.keyboard.press('Escape'); await sleep(300);
     const after = await page.evaluate(() => { const b = document.querySelector('[data-kb-swap]'); return b ? { selecting: b.classList.contains('plx-command-bar--selecting'), h: Math.round(b.getBoundingClientRect().height), search: !!b.querySelector('.plx-search') } : null; });
     check('Command bar: Escape clears the selection, the normal bar returns at the same height', after && !after.selecting && after.search && after.h === sw.h, JSON.stringify([sw, after]));

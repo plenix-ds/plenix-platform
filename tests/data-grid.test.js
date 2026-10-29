@@ -349,7 +349,7 @@ if (!VIEWS.length && !IN_PAGE.some((m) => changed.child(m))) changed.none('DATA_
       await page.keyboard.press('Tab');
       const kb = await page.evaluate((i) => { const g = Array.from(document.querySelectorAll('.plx-data-grid')).filter((x) => x.offsetParent && x.querySelector('.plx-data-grid__footer'))[i];
         const f = g.querySelector('.plx-data-grid__footer'), a = document.activeElement;
-        const controls = Array.from(f.querySelectorAll('button, select, a[href], input')).filter((c) => !c.disabled && c.offsetParent);
+        const controls = Array.from(f.querySelectorAll('button, select, a[href], input, [role="combobox"]')).filter((c) => !c.disabled && c.offsetParent && c.getAttribute('aria-hidden') !== 'true');   // the rows-per-page Select is the drawn combobox; its native <select> is hidden and aria-hidden (dropdown-look-36)
         return { label: g.querySelector('.plx-data-grid__grid').getAttribute('aria-label'), inFooter: f.contains(a), at: a ? (a.getAttribute('aria-label') || a.textContent || a.tagName).trim().slice(0, 24) : '', controls: controls.length, out: controls.filter((c) => c.tabIndex < 0).length }; }, i);
       if (!from || !kb.inFooter || !kb.controls || kb.out) bad.push(kb.label + ': footer controls not keyboard reachable (' + JSON.stringify(kb) + ')');
       else r.modes.push('footer keyboard ok (' + kb.controls + ' controls)');

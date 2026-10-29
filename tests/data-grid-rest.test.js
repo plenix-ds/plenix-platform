@@ -12,7 +12,7 @@ module.exports = async function rest(page) {
     write: false,
     format: 'iife',
     globalName: 'RestTest',
-    plugins: [{
+    plugins: [require('./icon-modules.js'), {
       name: 'peers',
       setup(b) {
         b.onResolve({

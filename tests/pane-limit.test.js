@@ -26,7 +26,7 @@ const assert = require('assert/strict'), { serve, launch } = require('./lib');
         const edge = document.querySelector('#pane .plx-panel-splitter');
         edge.focus(); edge.dispatchEvent(new KeyboardEvent('keydown', { key: 'End', bubbles: true }));
         const seps = [...document.querySelectorAll('#table [role=separator]')];
-        return { paneMax: +edge.getAttribute('aria-valuemax'), end: steps[steps.length - 1], tableWidth: document.querySelector('#table').clientWidth, colMax: seps.map((s) => +s.getAttribute('aria-valuemax')) };
+        return { paneMax: +edge.getAttribute('aria-valuemax'), end: steps[steps.length - 1], tableWidth: (document.querySelector('#table .plx-data-grid') || document.querySelector('#table')).clientWidth, colMax: seps.map((s) => +s.getAttribute('aria-valuemax')) };
       });
       assert.deepEqual(errors, [], 'no script errors');
       await page.close(); return got;
