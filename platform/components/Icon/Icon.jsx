@@ -96,6 +96,17 @@ function moduleProblem(m) {
   return problem;
 }
 const isModule = (m) => !moduleProblem(m);
+// for the components that take an icon (#280, stage 5a): an imported module counts as an icon as a name does
+export const isIconModule = isModule;
+// an icon slot's value as an element: a name or an imported module becomes an Icon (props: more Icon props); an element,
+// null or anything else passes through
+export function asIcon(i, props) {
+  if (typeof i === 'string') return <Icon name={i} {...props} />;
+  if (isModule(i)) return <Icon icon={i} {...props} />;
+  return i;
+}
+// an icon slot's value as a key (a name, or a module's name): for the tables keyed by icon name (an open folder's icon)
+export const iconKey = (i) => (typeof i === 'string' ? i : isModule(i) ? i.name : null);
 export function registerIcons(...args) {
   const last = args[args.length - 1], options = last && typeof last === 'object' && !Array.isArray(last) && !isModule(last) && 'library' in last ? args.pop() : null;
   for (const m of args.flat()) {
@@ -267,6 +278,7 @@ function useDrawings(name, size, filled, mod, lib) {
 
 const badIcon = new Set();
 export function Icon({ icon, name, library: lib, size, filled, label, className, ...rest }) {
+  if (icon == null && name != null && typeof name === 'object' && isModule(name)) { icon = name; name = undefined; }   // a module given as the name
   devWarn('Icon', { size }, { size: ['xs','sm','md','lg','xl'] });
   // an imported module (icon); else the name through the resolver (registered modules, the stylesheet, the library)
   // once per kind of bad value (its type and keys), so an object written inline, new on every render, warns once
@@ -286,10 +298,11 @@ export function Icon({ icon, name, library: lib, size, filled, label, className,
 
 // stateIcon: an icon a component draws in its own state: filled while the state is on, the outline otherwise (Styling
 // Standard 3.6: the component that owns the state passes it; no rule reaches in from the ancestor). A string is an icon
-// name; an Icon element the caller gives keeps a fill it sets itself; anything else passes through. extra: more props for
+// name or an imported module; an Icon element the caller gives keeps a fill it sets itself; anything else passes through. extra: more props for
 // the Icon (a size), given only where the caller set none.
 export function stateIcon(icon, on, extra) {
   if (typeof icon === 'string') return <Icon name={icon} filled={!!on} {...extra} />;
+  if (isModule(icon)) return <Icon icon={icon} filled={!!on} {...extra} />;
   if (React.isValidElement(icon) && icon.type === Icon) {
     const add = {};
     if (icon.props.filled === undefined) add.filled = !!on;

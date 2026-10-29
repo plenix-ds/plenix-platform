@@ -79,13 +79,13 @@ import { devWarn } from '../../utils/devWarn.js';
 import { createPortal } from 'react-dom';
 import { cx } from '../../utils/cx.js';
 import { focusables, useLayer, useUid } from '../../utils/layer.js';
-import { Icon } from '../Icon/Icon.jsx';
+import { Icon, asIcon as iconElement } from '../Icon/Icon.jsx';
 import { Button } from '../Button/Button.jsx';
 import { Field } from '../Field/Field.jsx';
 import { Input } from '../Input/Input.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const asIcon = (i) => (typeof i === 'string' ? <Icon name={i} /> : i);
+const asIcon = (i) => iconElement(i);   // a name or an imported module (#280)
 
 // a non-modal dialog: focus moves in when it opens (not trapped), F6 moves between it and its opener, and focus goes back
 // to the opener when it closes from inside (useLayer does this only for modal layers)

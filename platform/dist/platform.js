@@ -6519,6 +6519,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Icon = Icon;
 exports.StatusIcon = StatusIcon;
+exports.asIcon = asIcon;
+exports.isIconModule = exports.iconKey = void 0;
 exports.registerIcons = registerIcons;
 exports.resolveIcon = resolveIcon;
 exports.setDefaultIconLibrary = setDefaultIconLibrary;
@@ -6629,6 +6631,22 @@ function moduleProblem(m) {
   return problem;
 }
 const isModule = m => !moduleProblem(m);
+// for the components that take an icon (#280, stage 5a): an imported module counts as an icon as a name does
+const isIconModule = exports.isIconModule = isModule;
+// an icon slot's value as an element: a name or an imported module becomes an Icon (props: more Icon props); an element,
+// null or anything else passes through
+function asIcon(i, props) {
+  if (typeof i === 'string') return /*#__PURE__*/_react.default.createElement(Icon, _extends({
+    name: i
+  }, props));
+  if (isModule(i)) return /*#__PURE__*/_react.default.createElement(Icon, _extends({
+    icon: i
+  }, props));
+  return i;
+}
+// an icon slot's value as a key (a name, or a module's name): for the tables keyed by icon name (an open folder's icon)
+const iconKey = i => typeof i === 'string' ? i : isModule(i) ? i.name : null;
+exports.iconKey = iconKey;
 function registerIcons(...args) {
   const last = args[args.length - 1],
     options = last && typeof last === 'object' && !Array.isArray(last) && !isModule(last) && 'library' in last ? args.pop() : null;
@@ -6917,6 +6935,10 @@ function Icon({
   className,
   ...rest
 }) {
+  if (icon == null && name != null && typeof name === 'object' && isModule(name)) {
+    icon = name;
+    name = undefined;
+  } // a module given as the name
   (0, _devWarn.devWarn)('Icon', {
     size
   }, {
@@ -6950,11 +6972,15 @@ function Icon({
 
 // stateIcon: an icon a component draws in its own state: filled while the state is on, the outline otherwise (Styling
 // Standard 3.6: the component that owns the state passes it; no rule reaches in from the ancestor). A string is an icon
-// name; an Icon element the caller gives keeps a fill it sets itself; anything else passes through. extra: more props for
+// name or an imported module; an Icon element the caller gives keeps a fill it sets itself; anything else passes through. extra: more props for
 // the Icon (a size), given only where the caller set none.
 function stateIcon(icon, on, extra) {
   if (typeof icon === 'string') return /*#__PURE__*/_react.default.createElement(Icon, _extends({
     name: icon,
+    filled: !!on
+  }, extra));
+  if (isModule(icon)) return /*#__PURE__*/_react.default.createElement(Icon, _extends({
+    icon: icon,
     filled: !!on
   }, extra));
   if (/*#__PURE__*/_react.default.isValidElement(icon) && icon.type === Icon) {
@@ -9324,9 +9350,7 @@ function Panel({
   }, icon ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-panel__icon",
     "aria-hidden": "true"
-  }, typeof icon === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: icon
-  }) : icon) : null, title) : null, description ? /*#__PURE__*/_react.default.createElement("p", {
+  }, (0, _Icon.asIcon)(icon)) : null, title) : null, description ? /*#__PURE__*/_react.default.createElement("p", {
     className: "plx-panel__description"
   }, description) : null), actions ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-panel__actions"
@@ -9415,9 +9439,7 @@ function Card({
   }, icon && title ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-card__icon",
     "aria-hidden": "true"
-  }, typeof icon === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: icon
-  }) : icon) : null, title ? /*#__PURE__*/_react.default.createElement(H, {
+  }, (0, _Icon.asIcon)(icon)) : null, title ? /*#__PURE__*/_react.default.createElement(H, {
     level: headingLevel,
     className: "plx-card__title"
   }, /*#__PURE__*/_react.default.createElement(Opener, {
@@ -9506,10 +9528,9 @@ function MediaCard({
     className: "plx-media-card__image"
   }) : /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-media-card__placeholder"
-  }, icon ? typeof icon === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: icon,
-    size: "lg"
-  }) : icon : null), badge ? /*#__PURE__*/_react.default.createElement("span", {
+  }, icon ? (0, _Icon.asIcon)(icon, {
+    size: 'lg'
+  }) : null), badge ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-media-card__badge"
   }, badge) : null, type ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-media-card__type"
@@ -12139,9 +12160,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
 */
 const MenuContext = /*#__PURE__*/_react.default.createContext(null);
 const RadioContext = /*#__PURE__*/_react.default.createContext(null);
-const asIcon = i => typeof i === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-  name: i
-}) : i;
+const asIcon = i => (0, _Icon.asIcon)(i); // a name or an imported module (#280)
 // the menu's own items (not those of a submenu inside it)
 const itemsIn = list => list ? Array.prototype.filter.call(list.querySelectorAll('[data-plx-menu-item]:not([aria-disabled="true"])'), el => el.closest('[role="menu"]') === list) : [];
 const isRtl = el => !!el && getComputedStyle(el).direction === 'rtl';
@@ -13983,9 +14002,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The title is at the start of the header, the close button at its end, the actions in the footer.
      The layer renders in a portal on document.body.
 */
-const asIcon = i => typeof i === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-  name: i
-}) : i;
+const asIcon = i => (0, _Icon.asIcon)(i); // a name or an imported module (#280)
 
 // a non-modal dialog: focus moves in when it opens (not trapped), F6 moves between it and its opener, and focus goes back
 // to the opener when it closes from inside (useLayer does this only for modal layers)
@@ -15323,9 +15340,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      The layer renders in a portal on document.body.
 */
 
-const asIcon = i => typeof i === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-  name: i
-}) : i;
+const asIcon = i => (0, _Icon.asIcon)(i); // a name or an imported module (#280)
 
 // one sheet at a time (HIG › Sheets): the open sheets in the order they opened; only the last one shows
 const openSheets = [];
@@ -32694,9 +32709,7 @@ function MetricCard({
   const iconEl = icon ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-metric-card__icon",
     "aria-hidden": "true"
-  }, typeof icon === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: icon
-  }) : icon) : null;
+  }, (0, _Icon.asIcon)(icon)) : null;
   const moreLabel = fill(t.more, {
     title: typeof name === 'string' ? name : ''
   });
@@ -32726,7 +32739,7 @@ function MetricCard({
   // the two headerless layouts: tile and icon-start
   if (layout === 'tile' || layout === 'icon-start') {
     return /*#__PURE__*/_react.default.createElement("article", rootProps, layout === 'icon-start' && icon ? /*#__PURE__*/_react.default.createElement(_IconTile.IconTile, {
-      icon: typeof icon === 'string' ? icon : undefined,
+      icon: typeof icon === 'string' || (0, _Icon.isIconModule)(icon) ? icon : undefined,
       hue: hue,
       size: "lg"
     }) : null, /*#__PURE__*/_react.default.createElement("div", {
@@ -34266,9 +34279,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      It is the section header: an accent uppercase title with an optional icon, a divider beneath it and a
        chevron at the end.
 */
-const asIcon = i => typeof i === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-  name: i
-}) : i;
+const asIcon = i => (0, _Icon.asIcon)(i); // a name or an imported module (#280)
+
 function CollapsibleSection({
   title,
   icon,
@@ -37366,7 +37378,7 @@ const asIcon = _Icon.stateIcon;
 const OPEN_ICONS = {
   folder: 'folder-open'
 };
-const iconOf = (icon, on) => on && typeof icon === 'string' && OPEN_ICONS[icon] || icon;
+const iconOf = (icon, on) => on && OPEN_ICONS[(0, _Icon.iconKey)(icon)] || icon;
 const holds = (item, current) => !!item.children && item.children.some(c => c.id === current || holds(c, current));
 function SubGroup({
   item,
@@ -37592,9 +37604,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      An open folder shows the open-folder icon (batch 239). Icons are outline while closed and open and filled while the item
      is open or selected (batch 241), by the item's own state only: a selected item does not fill the icons of the items inside it (batch 240).
 */
-const asIcon = (i, filled) => typeof i === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-  name: i,
-  filled: filled
+const asIcon = (i, filled) => typeof i === 'string' || (0, _Icon.isIconModule)(i) ? (0, _Icon.asIcon)(i, {
+  filled
 }) : /*#__PURE__*/_react.default.isValidElement(i) && i.type === _Icon.Icon ? /*#__PURE__*/_react.default.cloneElement(i, {
   filled: filled || i.props.filled
 }) : i;
@@ -37602,7 +37613,7 @@ const asIcon = (i, filled) => typeof i === 'string' ? /*#__PURE__*/_react.defaul
 const OPEN_ICONS = {
   folder: 'folder-open'
 };
-const iconOf = (n, isOpen) => isOpen ? n.openIcon || typeof n.icon === 'string' && OPEN_ICONS[n.icon] || n.icon : n.icon;
+const iconOf = (n, isOpen) => isOpen ? n.openIcon || OPEN_ICONS[(0, _Icon.iconKey)(n.icon)] || n.icon : n.icon;
 
 // one item: its focus (and whether the keyboard moved it there, :focus-visible) comes from useFocusable; the tree keeps
 // the one Tab stop (tabIndex) and the keys
@@ -39228,9 +39239,7 @@ AppHeader.Action = function AppHeaderAction({
   ...rest
 }) {
   return /*#__PURE__*/_react.default.createElement(AppHeader.Item, _extends({
-    icon: typeof icon === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-      name: icon
-    }) : icon,
+    icon: (0, _Icon.asIcon)(icon),
     label: label || (typeof children === 'string' ? children : undefined)
   }, rest));
 };
@@ -41719,10 +41728,9 @@ ToolRail.Item = function ToolRailItem({
     "aria-current": pressed ? 'page' : undefined,
     disabled: disabled || undefined,
     onClick: onClick
-  }, typeof icon === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: icon,
+  }, (0, _Icon.asIcon)(icon, {
     filled: !!pressed
-  }) : icon, /*#__PURE__*/_react.default.createElement("span", {
+  }), /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-nav-bar__label"
   }, label));
   const button = /*#__PURE__*/_react.default.createElement("button", {
@@ -42304,9 +42312,7 @@ function SidePanel({
   }) : null, icon ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-side-panel__icon",
     "aria-hidden": "true"
-  }, typeof icon === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: icon
-  }) : icon) : null, /*#__PURE__*/_react.default.createElement("h2", {
+  }, (0, _Icon.asIcon)(icon)) : null, /*#__PURE__*/_react.default.createElement("h2", {
     className: "plx-side-panel__title"
   }, title), actions), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-side-panel__body"
@@ -42523,9 +42529,7 @@ function SecondaryPane({
     "data-plx-width": sized ? (0, _grid.gridWithin)(size, min(), (0, _paneLimit.paneMax)(max(), min())) + 'px' : undefined
   }, rest), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-secondary-pane__header"
-  }, icon ? typeof icon === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: icon
-  }) : icon : null, /*#__PURE__*/_react.default.createElement("span", {
+  }, icon ? (0, _Icon.asIcon)(icon) : null, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-secondary-pane__title"
   }, title), actions, collapsible ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
     size: "xs",
@@ -47062,9 +47066,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        (a primary Button) instead.
 */
 const SIZES = ['sm', 'md', 'lg'];
-const asIcon = i => typeof i === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-  name: i
-}) : i;
+const asIcon = i => (0, _Icon.asIcon)(i); // a name or an imported module (#280)
+
 const FloatingActionButton = exports.FloatingActionButton = /*#__PURE__*/_react.default.forwardRef(function FloatingActionButton({
   icon,
   label,
@@ -54770,13 +54773,11 @@ const STRINGS = {
   more: '{list} and {n} more',
   empty: 'No matches'
 };
-const asIcon = i => typeof i === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-  name: i
-}) : i;
+const asIcon = i => (0, _Icon.asIcon)(i); // a name or an imported module (#280)
 const OPEN_ICONS = {
   folder: 'folder-open'
 };
-const iconOf = (n, isOpen) => isOpen ? n.openIcon || typeof n.icon === 'string' && OPEN_ICONS[n.icon] || n.icon : n.icon;
+const iconOf = (n, isOpen) => isOpen ? n.openIcon || OPEN_ICONS[(0, _Icon.iconKey)(n.icon)] || n.icon : n.icon;
 const kidsOf = n => n.children && n.children.length ? n.children : null;
 // every node by id, with its parent and the leaves under it
 function index(nodes) {
