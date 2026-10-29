@@ -36,6 +36,7 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
+import { useDescribedBy } from '../../utils/describedBy.js';
 import { Icon } from '../Icon/Icon.jsx';
 
 const list = (x) => (x == null || x === false ? [] : Array.isArray(x) ? x.filter(Boolean) : [x]);
@@ -47,9 +48,10 @@ export function InputGroup({ prefix, suffix, icon, start, end, width, compact = 
   const inputRef = React.useRef(null);
   const starts = list(start), ends = list(end);
   const own = child.props;
+  const describedAt = useDescribedBy(own['aria-describedby'], describedBy, preId, sufId);   // the child's own, then the group's (a Field's), then the prefix and the suffix
   const pass = {
     id: own.id || id,
-    'aria-describedby': [own['aria-describedby'], describedBy, preId, sufId].filter(Boolean).join(' ') || undefined,
+    'aria-describedby': describedAt,
     invalid: own.invalid !== undefined ? own.invalid : invalid,
     disabled: own.disabled !== undefined ? own.disabled : disabled,
     readOnly: own.readOnly !== undefined ? own.readOnly : readOnly,

@@ -34303,7 +34303,9 @@ function ChartFrame({
   Object.keys(MARGIN_TOKENS).forEach(k => {
     m[k] = (0, _grid.snapToGrid)(margin && margin[k] !== undefined ? margin[k] : box.tokens ? box.tokens[k] : 0);
   });
-  const left = box.rtl ? m.end : m.start;
+  // the drawing is left to right in every language (time runs left to right, owner issue 584 B), so the start margin,
+  // where the labels sit, stays at the left
+  const left = m.start;
   const fit = typeof fitHeight === 'function';
   const height = fit ? box.width > 0 ? Math.max(1, Math.ceil(fitHeight(box.width))) : 0 : box.height;
   const inner = {
@@ -52682,7 +52684,7 @@ function BackToTop({
   }));
 }
   } },
-  "platform/components/InputGroup/InputGroup.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/InputGroup/InputGroup.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/describedBy.js":"platform/utils/describedBy.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -52691,6 +52693,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.InputGroup = InputGroup;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
+var _describedBy = require("../../utils/describedBy.js");
 var _Icon = require("../Icon/Icon.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · InputGroup
@@ -52757,9 +52760,10 @@ function InputGroup({
   const starts = list(start),
     ends = list(end);
   const own = child.props;
+  const describedAt = (0, _describedBy.useDescribedBy)(own['aria-describedby'], describedBy, preId, sufId); // the child's own, then the group's (a Field's), then the prefix and the suffix
   const pass = {
     id: own.id || id,
-    'aria-describedby': [own['aria-describedby'], describedBy, preId, sufId].filter(Boolean).join(' ') || undefined,
+    'aria-describedby': describedAt,
     invalid: own.invalid !== undefined ? own.invalid : invalid,
     disabled: own.disabled !== undefined ? own.disabled : disabled,
     readOnly: own.readOnly !== undefined ? own.readOnly : readOnly,
@@ -53229,7 +53233,7 @@ function ErrorSummary({
   }, e.message))))));
 }
   } },
-  "platform/components/FileInput/FileInput.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/attachment":"platform/dist/icons/plenix/attachment.js","plenix-platform/icons/plenix/close":"platform/dist/icons/plenix/close.js","plenix-platform/icons/plenix/doc-text":"platform/dist/icons/plenix/doc-text.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/FileInput/FileInput.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/describedBy.js":"platform/utils/describedBy.js","../../utils/format.js":"platform/utils/format.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/attachment":"platform/dist/icons/plenix/attachment.js","plenix-platform/icons/plenix/close":"platform/dist/icons/plenix/close.js","plenix-platform/icons/plenix/doc-text":"platform/dist/icons/plenix/doc-text.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -53238,6 +53242,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.FileInput = void 0;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
+var _describedBy = require("../../utils/describedBy.js");
 var _format = require("../../utils/format.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _Button = require("../Button/Button.jsx");
@@ -53301,6 +53306,7 @@ const FileInput = exports.FileInput = /*#__PURE__*/_react.default.forwardRef(fun
   const [files, setFiles] = _react.default.useState([]);
   const [focus, setFocus] = _react.default.useState(false);
   const sumId = 'plx-fi' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '') + '-s';
+  const describedAt = (0, _describedBy.useDescribedBy)(describedBy, sumId); // what its owner (a Field) described, then the line that names the chosen file
   const setRef = node => {
     input.current = node;
     if (typeof ref === 'function') ref(node);else if (ref) ref.current = node;
@@ -53341,7 +53347,7 @@ const FileInput = exports.FileInput = /*#__PURE__*/_react.default.forwardRef(fun
     "aria-invalid": invalid || undefined,
     id: id,
     "aria-label": label || (id ? undefined : choose),
-    "aria-describedby": [describedBy, sumId].filter(Boolean).join(' '),
+    "aria-describedby": describedAt,
     onChange: chosen,
     onFocus: e => setFocus(e.target.matches(':focus-visible')),
     onBlur: () => setFocus(false)
@@ -53382,7 +53388,7 @@ const FileInput = exports.FileInput = /*#__PURE__*/_react.default.forwardRef(fun
   })))) : null);
 });
   } },
-  "platform/components/CodeEditor/CodeEditor.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/CodeEditor/CodeEditor.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/describedBy.js":"platform/utils/describedBy.js","../CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -53391,6 +53397,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.CodeEditor = void 0;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
+var _describedBy = require("../../utils/describedBy.js");
 var _CodeBlock = require("../CodeBlock/CodeBlock.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _ReadOnly = require("../../providers/ReadOnly.jsx");
@@ -53490,6 +53497,7 @@ const CodeEditor = exports.CodeEditor = /*#__PURE__*/_react.default.forwardRef(f
   const colored = _react.default.useMemo(() => (0, _CodeBlock.highlight)(code, language), [code, language]);
   const lines = code.split('\n').length;
   const editable = !readOnly && !disabled;
+  const describedAt = (0, _describedBy.useDescribedBy)(describedBy, editable ? hintId : null); // what its owner (a Field) described, then the Tab hint while it can be edited
   const pad = ' '.repeat(tabSize);
   const changed = e => {
     if (!controlled) setInner(e.target.value);
@@ -53569,7 +53577,7 @@ const CodeEditor = exports.CodeEditor = /*#__PURE__*/_react.default.forwardRef(f
     autoComplete: "off",
     autoCorrect: "off",
     "data-gramm": "false",
-    "aria-describedby": [describedBy, editable ? hintId : null].filter(Boolean).join(' ') || undefined
+    "aria-describedby": describedAt
   }, rest)), /*#__PURE__*/_react.default.createElement("pre", {
     className: "plx-code-editor__pre",
     "aria-hidden": "true"
@@ -57981,7 +57989,7 @@ const MillerColumns = exports.MillerColumns = /*#__PURE__*/_react.default.forwar
   }, renderPreview(preview)) : null);
 });
   } },
-  "platform/components/Cascader/Cascader.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/format.js":"platform/utils/format.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","plenix-platform/icons/plenix/select-chevron":"platform/dist/icons/plenix/select-chevron.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Cascader/Cascader.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/describedBy.js":"platform/utils/describedBy.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/format.js":"platform/utils/format.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","plenix-platform/icons/plenix/select-chevron":"platform/dist/icons/plenix/select-chevron.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -57990,6 +57998,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.Cascader = void 0;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
+var _describedBy = require("../../utils/describedBy.js");
 var _Tag = require("../Tag/Tag.jsx");
 var _MillerColumns = require("../MillerColumns/MillerColumns.jsx");
 var _announce = require("../../utils/announce.jsx");
@@ -58074,6 +58083,7 @@ const Cascader = exports.Cascader = /*#__PURE__*/_react.default.forwardRef(funct
   const t = (0, _LocaleProvider.useStrings)('cascader', strings);
   const loc = (0, _LocaleProvider.useLocale)();
   const auto = 'plx-cs' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const describedAt = (0, _describedBy.useDescribedBy)(auto + '-value', describedBy); // the chosen value first, then what its owner (a Field) described
   const [open, setOpen] = _react.default.useState(false);
   const [text, setText] = _react.default.useState('');
   const [active, setActive] = _react.default.useState(0);
@@ -58191,7 +58201,7 @@ const Cascader = exports.Cascader = /*#__PURE__*/_react.default.forwardRef(funct
     "aria-expanded": open,
     "aria-controls": open ? auto + '-pop' : undefined,
     "aria-label": label || undefined,
-    "aria-describedby": [auto + '-value', describedBy].filter(Boolean).join(' '),
+    "aria-describedby": describedAt,
     disabled: disabled,
     onClick: () => open ? close(false) : openList(),
     onKeyDown: e => {
@@ -59174,7 +59184,7 @@ const Segments = /*#__PURE__*/_react.default.forwardRef(function Segments({
   }))), hidden);
 });
   } },
-  "platform/components/RelativeDateInput/RelativeDateInput.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Input/Input.jsx":"platform/components/Input/Input.jsx","../NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","../../utils/format.js":"platform/utils/format.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/RelativeDateInput/RelativeDateInput.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/describedBy.js":"platform/utils/describedBy.js","../Input/Input.jsx":"platform/components/Input/Input.jsx","../NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","../../utils/format.js":"platform/utils/format.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -59184,6 +59194,7 @@ exports.RelativeDateInput = exports.RELATIVE_PRESETS = void 0;
 exports.resolveRelativeDate = resolveRelativeDate;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
+var _describedBy = require("../../utils/describedBy.js");
 var _Input = require("../Input/Input.jsx");
 var _NumberInput = require("../NumberInput/NumberInput.jsx");
 var _format = require("../../utils/format.js");
@@ -59341,7 +59352,7 @@ const RelativeDateInput = exports.RelativeDateInput = /*#__PURE__*/_react.defaul
     value: CUSTOM,
     label: t.custom
   }]);
-  const descr = [range ? auto + '-range' : null, describedBy].filter(Boolean).join(' ') || undefined;
+  const descr = (0, _describedBy.useDescribedBy)(range ? auto + '-range' : null, describedBy); // the resolved range, then what its owner (a Field) described
   return /*#__PURE__*/_react.default.createElement("div", {
     className: (0, _cx.cx)('plx-relative-date-input', custom && 'plx-relative-date-input--custom', className)
   }, /*#__PURE__*/_react.default.createElement("div", {
@@ -60080,7 +60091,7 @@ function ImageUpload({
   }, errors.join(' ')) : null);
 }
   } },
-  "platform/patterns/AvatarUpload/AvatarUpload.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","../../utils/format.js":"platform/utils/format.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/trash":"platform/dist/icons/plenix/trash.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/AvatarUpload/AvatarUpload.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/describedBy.js":"platform/utils/describedBy.js","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","../../utils/format.js":"platform/utils/format.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/trash":"platform/dist/icons/plenix/trash.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -60090,6 +60101,7 @@ exports.AvatarUpload = AvatarUpload;
 var _react = _interopRequireDefault(require("react"));
 var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
+var _describedBy = require("../../utils/describedBy.js");
 var _Avatar = require("../../components/Avatar/Avatar.jsx");
 var _FileInput = require("../../components/FileInput/FileInput.jsx");
 var _Button = require("../../components/Button/Button.jsx");
@@ -60161,6 +60173,7 @@ function AvatarUpload({
   const [error, setError] = _react.default.useState('');
   const wrap = _react.default.useRef(null);
   const auto = 'plx-au' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const describedAt = (0, _describedBy.useDescribedBy)(describedBy, description ? auto + '-hint' : null); // what its owner (a Field) described, then the hint beside the actions
   const focusChange = () => setTimeout(() => {
     const inp = wrap.current && wrap.current.querySelector('input[type="file"]');
     if (inp) inp.focus();
@@ -60207,7 +60220,7 @@ function AvatarUpload({
     accept: accept,
     disabled: disabled || !!pending,
     id: id,
-    "aria-describedby": [describedBy, description ? auto + '-hint' : null].filter(Boolean).join(' ') || undefined,
+    "aria-describedby": describedAt,
     label: word,
     strings: {
       choose: word
@@ -65420,10 +65433,12 @@ function SeriesChart({
         width: tk.axis.width
       }
     };
+    // time and sequence run left to right in every language, Arabic pages included (owner, issue 584 B); the labels
+    // and the legend still follow the page's direction
     const xAxis = Object.assign({
       name: xLabel,
       nameGap: tk.tickOffset * 2 + xLine,
-      inverse: tk.rtl
+      inverse: false
     }, named, type === 'band' ? Object.assign({
       type: 'category',
       boundaryGap: false,
@@ -65451,7 +65466,7 @@ function SeriesChart({
       type: 'value',
       name: yLabel,
       nameGap: 0,
-      position: tk.rtl ? 'right' : 'left',
+      position: 'left',
       axisLabel: {
         formatter: v => percent ? (0, _format.formatPercent)(v) : fmts.current.fmtV(v)
       }

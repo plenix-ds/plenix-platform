@@ -41,6 +41,7 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
+import { useDescribedBy } from '../../utils/describedBy.js';
 import { Tag } from '../Tag/Tag.jsx';
 import { MillerColumns } from '../MillerColumns/MillerColumns.jsx';
 import { announce } from '../../utils/announce.jsx';
@@ -66,6 +67,7 @@ export const Cascader = React.forwardRef(function Cascader({ options = [], value
   const t = useStrings('cascader', strings);
   const loc = useLocale();
   const auto = 'plx-cs' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const describedAt = useDescribedBy(auto + '-value', describedBy);   // the chosen value first, then what its owner (a Field) described
   const [open, setOpen] = React.useState(false);
   const [text, setText] = React.useState('');
   const [active, setActive] = React.useState(0);
@@ -125,7 +127,7 @@ export const Cascader = React.forwardRef(function Cascader({ options = [], value
         {multiple ? chosen.map((v) => { const trail = pathTo(options, v); const name = trail ? trail[trail.length - 1].label : String(v);
           return <Tag key={v} onRemove={disabled ? undefined : () => onChange(chosen.filter((x) => x !== v))} removeLabel={t.remove.replace('{label}', name)}>{name}</Tag>; }) : null}
         <button ref={button} type="button" id={id} className="plx-cascader__trigger" aria-haspopup="dialog" aria-expanded={open} aria-controls={open ? auto + '-pop' : undefined}
-          aria-label={label || undefined} aria-describedby={[auto + '-value', describedBy].filter(Boolean).join(' ')} disabled={disabled}
+          aria-label={label || undefined} aria-describedby={describedAt} disabled={disabled}
           onClick={() => (open ? close(false) : openList())}
           onKeyDown={(e) => { if (e.key === 'ArrowDown' && !open) { e.preventDefault(); openList(); } }} {...rest}>
           <span id={auto + '-value'} className={cx('plx-cascader__value', !shown && 'plx-cascader__placeholder')}>{shown || (multiple && chosen.length ? '' : placeholder || t.placeholder)}</span>
