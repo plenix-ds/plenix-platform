@@ -49,6 +49,11 @@ if (changed.wants({ units: ['components/SegmentedControl', 'components/ColorSwat
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'readonly-adoption.test.js')], { stdio: 'inherit', env: process.env });
   if (result.status !== 0) process.exit(result.status || 1);
 }
+// descriptions through useDescribedBy (issue 262, PR 3): its own test, when one of those controls or the helper changed
+if (changed.wants({ units: ['components/Cascader', 'components/CodeEditor', 'components/FileInput', 'components/InputGroup', 'components/RelativeDateInput', 'patterns/AvatarUpload', 'components/Field', 'utils/describedBy.js'] })) {
+  const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'describedby-adoption.test.js')], { stdio: 'inherit', env: process.env });
+  if (result.status !== 0) process.exit(result.status || 1);
+}
 // section headings wrap, then end in an ellipsis with a tooltip (issue 502): its own test, when CollapsibleSection, NavList, Tooltip or the truncation helper changed
 if (changed.wants({ units: ['components/CollapsibleSection', 'components/NavList', 'components/Tooltip', 'components/Field', 'patterns/PropertyList', 'utils/overflow.js'] })) {
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'section-headings-502.test.js')], { stdio: 'inherit', env: process.env });
