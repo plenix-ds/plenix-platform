@@ -5009,17 +5009,17 @@
       "$type": "color"
     },
     "collapsible-section-title-lines": {
-      "$value": "2",
+      "$value": "{plx-sys.fit-lines}",
       "$type": "number",
       "$description": "A wrapping heading (CollapsibleSection wrap, the navigation groups) shows at most this many lines; past them the last line ends in an ellipsis and the full title shows in a tooltip (owner, #502)."
     },
     "collapsible-section-title-line-height": {
-      "$value": "{plx-ref.size-16px}",
+      "$value": "{plx-sys.fit-line-height}",
       "$type": "dimension",
       "$description": "The line height of a wrapping heading: two lines are 32px, with the padding below 40px, on the 4px grid (owner, #502)."
     },
     "collapsible-section-title-wrap-padding-block": {
-      "$value": "{plx-sys.space-stack-xs}",
+      "$value": "{plx-sys.fit-wrap-padding-block}",
       "$type": "dimension",
       "$description": "The room above and below a wrapping heading's lines: a one-line heading stays at the toggle's height (32px), two lines become 40px (owner, #502)."
     },
@@ -6247,12 +6247,12 @@
       "$type": "dimension"
     },
     "nav-list-heading-lines": {
-      "$value": "2",
+      "$value": "{plx-sys.fit-lines}",
       "$type": "number",
       "$description": "A static group heading shows at most this many lines (balanced); past them the last line ends in an ellipsis and the full text shows in a tooltip (owner, issue 502)."
     },
     "nav-list-heading-line-height": {
-      "$value": "{plx-ref.size-16px}",
+      "$value": "{plx-sys.fit-line-height}",
       "$type": "dimension",
       "$description": "The line height of a wrapping static group heading: with the heading's padding, one line stays 32px and two lines are 40px (owner, issue 502)."
     },
