@@ -3247,7 +3247,7 @@ function DocsPanel({
       return /*#__PURE__*/React.createElement(Section, {
         key: layer.id,
         title: layer.label,
-        description: total + " capabilities"
+        description: (0, _plenixPlatform.dataPhrase)(total + " capabilities")
       }, groups.map(grp => /*#__PURE__*/React.createElement(_plenixPlatform.Stack, {
         key: grp.id,
         gap: "xs"
@@ -3418,7 +3418,7 @@ function DocsPanel({
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
     as: "p",
     variant: "secondary"
-  }, window.FEATURES.length + " areas, " + window.FEATURES.reduce((s, a) => s + a.items.length, 0) + " features documented.")))), /*#__PURE__*/React.createElement(Section, {
+  }, (0, _plenixPlatform.dataPhrase)(window.FEATURES.length + " areas, " + window.FEATURES.reduce((s, a) => s + a.items.length, 0) + " features documented."))))), /*#__PURE__*/React.createElement(Section, {
     title: "Feature areas"
   }, /*#__PURE__*/React.createElement(_plenixPlatform.ContentGrid, {
     size: "md",
@@ -3520,7 +3520,7 @@ function FeatureArea({
   }))), /*#__PURE__*/React.createElement(Section, {
     title: "Features",
     stateKey: "features",
-    description: area.items.length + " features, each with its status"
+    description: (0, _plenixPlatform.dataPhrase)(area.items.length + " features, each with its status")
   }, area.items.map((item, i) => /*#__PURE__*/React.createElement(FeatureRow, {
     key: i,
     item: item
@@ -3866,7 +3866,7 @@ function Settings({
       collapsible: true,
       defaultExpanded: cat.id <= 3,
       title: cat.name,
-      description: cat.subs.length === 1 ? "1 subcategory" : cat.subs.length + " subcategories",
+      description: (0, _plenixPlatform.dataPhrase)(cat.subs.length === 1 ? "1 subcategory" : cat.subs.length + " subcategories"),
       actions: /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_plenixPlatform.Button, {
         size: "sm",
         variant: "danger-secondary",
@@ -3938,7 +3938,7 @@ function Settings({
       desc: "Tags are flat keyword identifiers applied to any item -- images, notes, contacts, bookmarks, files, and more. Create them here and apply them anywhere."
     }, /*#__PURE__*/React.createElement(Section, {
       title: "All tags",
-      description: visibleTags.length + " of " + tags.length + " tags"
+      description: (0, _plenixPlatform.dataPhrase)(visibleTags.length + " of " + tags.length + " tags")
     }, /*#__PURE__*/React.createElement(_plenixPlatform.CommandBar, {
       label: "Tags",
       sticky: false,
@@ -3990,7 +3990,7 @@ function Settings({
       desc: "Define the types of projects in your workspace. Applied when creating a project."
     }, /*#__PURE__*/React.createElement(Section, {
       title: "Find a project type",
-      description: projTypes.length + " project types defined"
+      description: (0, _plenixPlatform.dataPhrase)(projTypes.length + " project types defined")
     }, /*#__PURE__*/React.createElement(_plenixPlatform.CommandBar, {
       label: "Project types",
       sticky: false,
@@ -4037,7 +4037,7 @@ function Settings({
         key: grp,
         title: grp,
         collapsible: true,
-        description: items.length === 1 ? "1 type" : items.length + " types"
+        description: (0, _plenixPlatform.dataPhrase)(items.length === 1 ? "1 type" : items.length + " types")
       }, /*#__PURE__*/React.createElement(_plenixPlatform.TagList, {
         label: grp
       }, items.sort((a, b) => a.name.localeCompare(b.name)).map(pt => /*#__PURE__*/React.createElement(_plenixPlatform.Tag, {
@@ -4789,7 +4789,7 @@ function Settings({
     desc: "Every significant feature in Plenix -- what it does, how it works, and what is planned. Select an area from the sidebar to explore it."
   }, /*#__PURE__*/React.createElement(Section, {
     title: "Feature areas",
-    description: window.FEATURES.length + " areas"
+    description: (0, _plenixPlatform.dataPhrase)(window.FEATURES.length + " areas")
   }, /*#__PURE__*/React.createElement(_plenixPlatform.ContentGrid, {
     size: "md",
     label: "Feature areas"

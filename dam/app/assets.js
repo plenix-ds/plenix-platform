@@ -313,8 +313,10 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
 
 // DATA: the library totals come from the back end; this is the sample record the pages show until then. Who is signed in
 // and their notifications come from the Platform session (SessionProvider, mounted in app/assets.jsx).
+// the library's facts: the counts and sizes in the data font, the words in the normal font (issue 260)
 const LIBRARY = {
-  summary: '4,546 assets | 12.4 GB',
+  assets: 4546,
+  size: '12.4 GB',
   owner: 'Lighthouse Way'
 };
 const RECENT_MAX = 5;
@@ -443,7 +445,10 @@ function AssetStatusBar() {
     start: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_plenixPlatform.StatusIcon, {
       tone: "success",
       size: "sm"
-    }, "Library online"), /*#__PURE__*/_react.default.createElement("span", null, LIBRARY.summary)),
+    }, "Library online"), /*#__PURE__*/_react.default.createElement("span", null, (0, _plenixPlatform.dataPhrase)('{n} assets | {size}', {
+      n: LIBRARY.assets,
+      size: LIBRARY.size
+    }))),
     end: LIBRARY.owner
   });
 }
@@ -5351,7 +5356,10 @@ function CartInner({
     onChange: e => setFileType(e.target.value)
   }, CART_FILE_TYPES.map(v => /*#__PURE__*/_react.default.createElement("option", {
     key: v
-  }, v)))), /*#__PURE__*/_react.default.createElement(Caption, null, 'Items in your cart: ' + CART_ITEMS + ' • Adding ' + count + ' more')));
+  }, v)))), /*#__PURE__*/_react.default.createElement(Caption, null, (0, _plenixPlatform.dataPhrase)('Items in your cart: {cart} • Adding {count} more', {
+    cart: CART_ITEMS,
+    count
+  }))));
 }
 
 /* ── baStatus ── */
@@ -6679,7 +6687,9 @@ function HomePage() {
       key: c.id,
       src: c.thumb,
       title: c.name,
-      meta: c.count + ' assets',
+      meta: (0, _plenixPlatform.dataPhrase)('{n} assets', {
+        n: c.count
+      }),
       selected: selCats.indexOf(c.id) >= 0,
       selecting: selCats.length > 0,
       onSelectChange: () => toggle(selCats, setSelCats, c.id),
@@ -6745,7 +6755,9 @@ function HomePage() {
       key: c.id,
       icon: "briefcase",
       title: c.name,
-      meta: c.count + ' assets',
+      meta: (0, _plenixPlatform.dataPhrase)('{n} assets', {
+        n: c.count
+      }),
       onOpen: () => openCategory(c.name)
     }))) : /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, _extends({
       label: "Collections",
