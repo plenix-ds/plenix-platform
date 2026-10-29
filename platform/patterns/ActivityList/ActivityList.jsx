@@ -32,6 +32,7 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 // stacked lists set the meta's text in the smallest type: text inside the meta follows it (data-plx-text-follow)
 const StackedContext = React.createContext(false);
@@ -42,12 +43,13 @@ export function ActivityList({ label, stacked = false, titleLines = 1, className
 
 ActivityList.Item = function ActivityListItem({ leading, title, meta, time, dateTime, unread = false, selected = false, onOpen, href, actions, className }) {
   const stacked = React.useContext(StackedContext);
+  const words = useStrings('activityList');
   const opener = href ? <a href={href} className="plx-activity-list__opener">{title}</a>
     : onOpen ? <button type="button" className="plx-activity-list__opener" onClick={onOpen}>{title}</button>
       : <span className="plx-activity-list__opener">{title}</span>;
   return (
     <li className={cx('plx-activity-list__item', (href || onOpen) && 'is-interactive', unread && 'is-unread', selected && 'is-selected', className)} aria-current={selected ? 'true' : undefined}>
-      {unread ? <span className="plx-activity-list__unread"><span className="plx-visually-hidden">Unread</span></span> : null}
+      {unread ? <span className="plx-activity-list__unread"><span className="plx-visually-hidden">{words.unread}</span></span> : null}
       {leading ? <span className="plx-activity-list__leading">{leading}</span> : null}
       <span className="plx-activity-list__text">
         <span className="plx-activity-list__title">{opener}</span>

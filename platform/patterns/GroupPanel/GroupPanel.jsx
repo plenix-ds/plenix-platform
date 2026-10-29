@@ -30,7 +30,7 @@ import { Menu, MenuItem } from '../../components/Menu/Menu.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
 import { PanelTrigger, PanelHead, Pick, useReorder, fill } from '../CommandBar/panel-parts.jsx';
-import { KIND_ICONS, DIRECTIONS, fieldOf, kindOf } from '../../utils/fields.js';
+import { KIND_ICONS, DIRECTIONS, fieldOf, kindOf, fieldWords } from '../../utils/fields.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 const fieldOption = (f) => ({ value: f.value, label: f.label, icon: KIND_ICONS[kindOf(f)] });
@@ -45,6 +45,7 @@ const eachGroup = (t, fn) => {
 export function GroupPanel({ fields = [], value = [], onChange, table, inline = false, strings }) {
   fields = fields.filter(f => f.groupable !== false);
   const t = useStrings('groupPanel', strings);
+  const fw = useStrings('fields');
   const levels = value;
   const ro = useReorder(levels, onChange, (l) => fieldOf(fields, l.field).label, t);
   const put = (i, ch) => onChange(levels.map((l, j) => (j === i ? Object.assign({}, l, ch) : l)));
@@ -59,7 +60,7 @@ export function GroupPanel({ fields = [], value = [], onChange, table, inline = 
       <div className="plx-find-panel__rows" ref={ro.box}>
         {levels.length ? null : <Text variant="secondary">{t.empty}</Text>}
         {levels.map((l, i) => {
-          const f = fieldOf(fields, l.field), words = DIRECTIONS[kindOf(f)];
+          const f = fieldOf(fields, l.field), words = fieldWords.directions(fw, kindOf(f));
           return (
             <div key={l.field} {...ro.rowProps(i, f.label)}>
               <Pick label={t.field} value={l.field} options={fields.filter((x) => x.value === l.field || !levels.some((y) => y.field === x.value)).map(fieldOption)} onChange={(v) => put(i, { field: v, interval: fields.find(f => f.value === v)?.kind === 'date' ? 'day' : undefined, range: undefined })} />

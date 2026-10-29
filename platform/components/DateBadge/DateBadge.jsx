@@ -17,14 +17,16 @@
 import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function DateBadge({ day, weekday, today = false, dateTime, className, ...rest }) {
+  const t = useStrings('dateBadge');
   const Tag = dateTime ? 'time' : 'span';
   return (
     <Tag className={cx('plx-date-badge', today && 'is-today', className)} dateTime={dateTime} {...rest}>
       {weekday ? <span className="plx-date-badge__weekday">{weekday}</span> : null}
       <span className="plx-date-badge__day">{day}</span>
-      {today ? <VisuallyHidden>Today</VisuallyHidden> : null}
+      {today ? <VisuallyHidden>{t.today}</VisuallyHidden> : null}
     </Tag>
   );
 }

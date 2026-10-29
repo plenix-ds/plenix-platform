@@ -481,7 +481,8 @@ export default {
     "conversation": "Conversation",
     "message": "Message",
     "send": "Send",
-    "typing": "Typing"
+    "typing": "Typing",
+    "you": "You"
   },
   "checklist": {
     "dismiss": "Dismiss checklist",
@@ -726,7 +727,8 @@ export default {
     "columnsLabel": "{label} columns",
     "rowsLabel": "{label} rows",
     "columnActions": "{title} column actions",
-    "unreadRow": "{label}, unread"
+    "unreadRow": "{label}, unread",
+    "editCell": "Edit {title}"
   },
   "dataPill": {
     "male": "male",
@@ -1534,7 +1536,30 @@ export default {
       "items": {
         "one": "{n} item",
         "other": "{n} items"
+      },
+      "doneItems": {
+        "approved": {
+          "one": "{n} item approved",
+          "other": "{n} items approved"
+        },
+        "rejected": {
+          "one": "{n} item rejected",
+          "other": "{n} items rejected"
+        },
+        "changes-requested": {
+          "one": "Changes requested on {n} item",
+          "other": "Changes requested on {n} items"
+        }
       }
+    },
+    "statuses": {
+      "draft": "Draft",
+      "in-review": "In review",
+      "approved": "Approved",
+      "changes-requested": "Changes requested",
+      "rejected": "Rejected",
+      "published": "Published",
+      "scheduled": "Scheduled"
     }
   },
   "richTextEditor": {
@@ -2452,5 +2477,84 @@ export default {
     "less": "Show less",
     "more": "Show more",
     "moreCount": "Show more ({n})"
+  },
+  "fields": {
+    "directions": {
+      "text": [
+        "A → Z",
+        "Z → A"
+      ],
+      "select": [
+        "First → Last",
+        "Last → First"
+      ],
+      "multi": [
+        "First → Last",
+        "Last → First"
+      ],
+      "number": [
+        "1 → 9",
+        "9 → 1"
+      ],
+      "date": [
+        "Oldest → newest",
+        "Newest → oldest"
+      ]
+    },
+    "operators": {
+      "text": {
+        "contains": "contains",
+        "ncontains": "does not contain",
+        "is": "is",
+        "isnot": "is not",
+        "empty": "is empty",
+        "nempty": "is not empty"
+      },
+      "select": {
+        "any": "is any of",
+        "none": "is none of",
+        "empty": "is empty",
+        "nempty": "is not empty"
+      },
+      "multi": {
+        "any": "has any of",
+        "none": "has none of",
+        "empty": "is empty",
+        "nempty": "is not empty"
+      },
+      "number": {
+        "eq": "=",
+        "ne": "≠",
+        "lt": "<",
+        "gt": ">",
+        "empty": "is empty",
+        "nempty": "is not empty"
+      },
+      "date": {
+        "is": "is",
+        "before": "is before",
+        "after": "is after",
+        "within": "is within",
+        "empty": "is empty",
+        "nempty": "is not empty"
+      }
+    },
+    "within": {
+      "week": "the past week",
+      "month": "the past month",
+      "year": "the past year"
+    },
+    "presets": {
+      "7": "Last 7 days",
+      "30": "Last 30 days",
+      "any": "Any time",
+      "year": "This year"
+    }
+  },
+  "dateBadge": {
+    "today": "Today"
+  },
+  "activityList": {
+    "unread": "Unread"
   }
 };
