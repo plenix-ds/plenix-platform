@@ -32,13 +32,14 @@ import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { mergeDndProps } from '../../utils/dnd.js';
 import { Icon } from '../Icon/Icon.jsx';
+import DragIcon from 'plenix-platform/icons/plenix/drag';
 
 export const DragHandle = React.forwardRef(function DragHandle({ label, orientation = 'vertical', dnd, disabled = false, className, ...rest }, ref) {
   const props = mergeDndProps(dnd || {}, rest);
   return (
     <button ref={ref} type="button" {...props} aria-label={label || props['aria-label']} disabled={disabled || props.disabled || undefined}
       className={cx('plx-drag-handle', 'plx-drag-handle--' + (orientation === 'horizontal' ? 'horizontal' : 'vertical'), className)}>
-      <Icon name="drag" />
+      <Icon name={DragIcon} />
     </button>
   );
 });

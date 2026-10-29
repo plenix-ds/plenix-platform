@@ -35,6 +35,7 @@ import { Icon } from '../Icon/Icon.jsx';
 import { Link } from '../Link/Link.jsx';
 import { Popover } from '../Popover/Popover.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import InfoCircleIcon from 'plenix-platform/icons/plenix/info-circle';
 
 
 export function ContextualHelp({ title, children, link, variant = 'info', label, placement = 'bottom-start', size = 'sm', strings, className }) {
@@ -44,7 +45,7 @@ export function ContextualHelp({ title, children, link, variant = 'info', label,
   if (variant === 'inline') {
     return (
       <div className={cx('plx-contextual-help', 'plx-contextual-help--inline', className)}>
-        <span className="plx-contextual-help__icon" aria-hidden="true"><Icon name="info-circle" size="sm" /></span>
+        <span className="plx-contextual-help__icon" aria-hidden="true"><Icon name={InfoCircleIcon} size="sm" /></span>
         <p className="plx-contextual-help__tip">
           {title ? <strong className="plx-contextual-help__title">{title}</strong> : null}{title ? ' ' : null}{children}{link ? ' ' : null}{more('inline')}
         </p>
@@ -54,7 +55,7 @@ export function ContextualHelp({ title, children, link, variant = 'info', label,
   const name = label || (typeof title === 'string' && title ? t.more.split('{title}').join(title) : t.moreUntitled);
   return (
     <span className={cx('plx-contextual-help', 'plx-contextual-help--info', className)}>
-      <Popover trigger={<Button variant="ghost" size="xs" iconOnly icon="info-circle" label={name} />} title={title} label={name} placement={placement} size={size}>
+      <Popover trigger={<Button variant="ghost" size="xs" iconOnly icon={InfoCircleIcon} label={name} />} title={title} label={name} placement={placement} size={size}>
         <p className="plx-contextual-help__text">{children}</p>
         {link && link.href ? <p className="plx-contextual-help__more">{more('standalone')}</p> : null}
       </Popover>

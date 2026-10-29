@@ -30,6 +30,7 @@ import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { Button } from '../Button/Button.jsx';
 import { useIntersection } from '../../hooks/useIntersection.js';
+import ArrowUpIcon from 'plenix-platform/icons/plenix/arrow-up';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 const reduced = () => typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -53,12 +54,12 @@ export function BackToTop({ variant = 'floating', scrollRef, focusRef, strings, 
     target.focus({ preventScroll: true });
   };
   if (!floating) {
-    return <Button variant="ghost" size="sm" icon="arrow-up" className={cx('plx-back-to-top', 'plx-back-to-top--inline', className)} onClick={goTop}>{t.label}</Button>;
+    return <Button variant="ghost" size="sm" icon={ArrowUpIcon} className={cx('plx-back-to-top', 'plx-back-to-top--inline', className)} onClick={goTop}>{t.label}</Button>;
   }
   return (
     <span className="plx-back-to-top__anchor">
       <span ref={sentinel} className="plx-back-to-top__sentinel" aria-hidden="true" />
-      <Button iconOnly icon="arrow-up" label={t.label} className={cx('plx-back-to-top', 'plx-back-to-top--floating', shown && 'is-shown', className)} onClick={goTop} />
+      <Button iconOnly icon={ArrowUpIcon} label={t.label} className={cx('plx-back-to-top', 'plx-back-to-top--floating', shown && 'is-shown', className)} onClick={goTop} />
     </span>
   );
 }

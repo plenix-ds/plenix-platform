@@ -38,6 +38,8 @@ import { tokenMs } from '../../utils/tokenTime.js';
 import { useGesture } from '../../hooks/useGesture.js';
 import { Button } from '../Button/Button.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import ChevronLeftIcon from 'plenix-platform/icons/plenix/chevron-left';
+import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
 
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const reduced = () => typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -121,7 +123,7 @@ export function Carousel({ label, children, perView = 1, controls = 'both', auto
             <Button size="sm" variant="ghost" className="plx-carousel__play" aria-label={playing ? t.pauseLabel : t.playLabel}
               onClick={() => setPlaying(!playing)}>{playing ? t.pause : t.play}</Button>
           ) : null}
-          {arrows ? <Button size="sm" iconOnly icon="chevron-left" label={t.previous} className="plx-carousel__previous" disabled={page <= 0} onClick={() => go(page - 1)} /> : null}
+          {arrows ? <Button size="sm" iconOnly icon={ChevronLeftIcon} label={t.previous} className="plx-carousel__previous" disabled={page <= 0} onClick={() => go(page - 1)} /> : null}
           {dots ? (
             <div className="plx-carousel__dots" role="group" aria-label={t.pages}>
               {Array.from({ length: pages }, (_, i) => (
@@ -130,7 +132,7 @@ export function Carousel({ label, children, perView = 1, controls = 'both', auto
               ))}
             </div>
           ) : null}
-          {arrows ? <Button size="sm" iconOnly icon="chevron-right" label={t.next} className="plx-carousel__next" disabled={page >= pages - 1} onClick={() => go(page + 1)} /> : null}
+          {arrows ? <Button size="sm" iconOnly icon={ChevronRightIcon} label={t.next} className="plx-carousel__next" disabled={page >= pages - 1} onClick={() => go(page + 1)} /> : null}
         </div>
       ) : null}
     </section>

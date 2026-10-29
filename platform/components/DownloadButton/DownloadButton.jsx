@@ -42,6 +42,7 @@ import { ProgressCircle } from '../ProgressCircle/ProgressCircle.jsx';
 import { formatBytes, formatPercent } from '../../utils/format.js';
 import { announce } from '../../utils/announce.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import DownloadArrowIcon from 'plenix-platform/icons/plenix/download-arrow';
 
 
 export const DownloadButton = React.forwardRef(function DownloadButton({ href, fileName, onDownload, format, size, progress, iconOnly = false,
@@ -64,7 +65,7 @@ export const DownloadButton = React.forwardRef(function DownloadButton({ href, f
   const word = typeof label === 'string' ? label : t.download;
   const name = busy ? [t.downloading, fileName, percent].filter(Boolean).join(' ')
     : [word, fileName].filter(Boolean).join(' ') + (facts.length ? ' (' + facts.join(', ') + ')' : '');
-  const icon = busy ? <ProgressCircle size="sm" value={known ? pct : undefined} label={t.downloading} aria-hidden="true" /> : 'download-arrow';
+  const icon = busy ? <ProgressCircle size="sm" value={known ? pct : undefined} label={t.downloading} aria-hidden="true" /> : DownloadArrowIcon;
   const onClick = (e) => { if (busy) { e.preventDefault(); return; } if (onDownload) onDownload(e); };
   return (
     <Button ref={ref} variant={variant} size={buttonSize} icon={icon} iconOnly={iconOnly} label={name}

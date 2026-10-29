@@ -40,6 +40,8 @@ import { cx } from '../../utils/cx.js';
 import { useClipboard } from '../../utils/clipboard.js';
 import { Button } from '../Button/Button.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import CheckIcon from 'plenix-platform/icons/plenix/check';
+import EdCopyIcon from 'plenix-platform/icons/plenix/ed-copy';
 
 
 export const CopyButton = React.forwardRef(function CopyButton({ value, label, showLabel = false, field = false, fieldLabel, variant, size = 'md', timeout,
@@ -58,7 +60,7 @@ export const CopyButton = React.forwardRef(function CopyButton({ value, label, s
   };
   const labelled = showLabel || field;
   const button = (
-    <Button ref={ref} variant={variant || (labelled ? 'secondary' : 'ghost')} size={size} icon={clip.copied ? 'check' : 'ed-copy'} iconOnly={!labelled} label={!labelled || (field && !showLabel) ? name : undefined}
+    <Button ref={ref} variant={variant || (labelled ? 'secondary' : 'ghost')} size={size} icon={clip.copied ? CheckIcon : EdCopyIcon} iconOnly={!labelled} label={!labelled || (field && !showLabel) ? name : undefined}
       disabled={disabled} onClick={press} joined={field ? { start: 'seam' } : undefined} className={cx('plx-copy-button', clip.copied && 'is-copied', field ? 'plx-copy-button-field__button' : className)} {...rest}>
       {labelled ? (clip.copied ? t.copied : (field && !showLabel ? t.copy : name)) : name}
     </Button>

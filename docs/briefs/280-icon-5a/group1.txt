@@ -1,0 +1,43 @@
+# Icon stage 5a (#280), part 2, group 1: 26 files, 69 icon names become 37 imported icon modules. Proof scripts only.
+# Files: AIButton/AIButton.jsx AIDisclaimer/AIDisclaimer.jsx AILabel/AILabel.jsx Avatar/Avatar.jsx BackToTop/BackToTop.jsx Banner/Banner.jsx Brand/Brand.jsx Calendar/Calendar.jsx Card/Card.jsx Carousel/Carousel.jsx Chat/Chat.jsx CodeBlock/CodeBlock.jsx CollapsibleSection/CollapsibleSection.jsx CommandMenu/CommandMenu.jsx Comment/Comment.jsx ConfidenceIndicator/ConfidenceIndicator.jsx ContextualHelp/ContextualHelp.jsx CopyButton/CopyButton.jsx DataGrid/DataGridEngine.jsx DataGrid/cells.jsx DataPill/DataPill.jsx DatePicker/DatePicker.jsx Details/Details.jsx Dialog/Dialog.jsx DownloadButton/DownloadButton.jsx DragHandle/DragHandle.jsx 
+
+## spec-pages.js: the record pages of these components (70) and the 10 application pages, before and after
+- Noise check (two runs before the change): "pages": 80, "same": 80, "differ": 0, 
+{
+ "pages": 80,
+ "same": 80,
+ "differ": 0,
+ "pageErrors": {
+  "before": 0,
+  "after": 0
+ },
+ "differs": []
+}
+
+## first-paint.js: with no stylesheet on the page
+{
+ "stylesheet": false,
+ "CopyButton (converted)": {
+  "icons": 1,
+  "withPath": 1
+ },
+ "BackToTop (converted)": {
+  "icons": 1,
+  "withPath": 1
+ },
+ "Details (converted)": {
+  "icons": 2,
+  "withPath": 2
+ },
+ "Banner (its dismiss icon converted; its status icon comes from StatusIcon in Icon.jsx, a later group)": {
+  "icons": 2,
+  "withPath": 1
+ },
+ "Button icon=\"add\" (a name, not converted)": {
+  "icons": 1,
+  "withPath": 0
+ }
+}
+
+## platform.js
+- raw 3,916,806 -> 3,999,496 bytes (+82,690); gzip 926,673 -> 943,897 (+17,224) for 37 icons (about 0.47 KB gzip each).
