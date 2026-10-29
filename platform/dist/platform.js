@@ -7267,6 +7267,8 @@ function noticeFetch(found) {
 // which optical size the stylesheet will show for this icon: 24 for lg and xl, else what its context says (a comfortable density or
 // data-plx-icon-optical="24" shows the 24 drawing, any other the 20). A fetched icon asks for that one file only (#642); it is read from the
 // icon's own computed settings once it is in the page, and read again when a density or optical setting changes on the page.
+// Only a fetched icon below lg reads it: a module (imported, registered, a site's icon file) carries both drawings and the stylesheet picks, so it
+// has no watcher, reads no style and sets no state. The one page-wide observer exists only while such a fetched icon is mounted.
 const useIsoLayoutEffect = typeof window !== 'undefined' ? _react.default.useLayoutEffect : _react.default.useEffect;
 const watchers = new Set();
 let observer = null;
@@ -7289,32 +7291,36 @@ function watchOptical(callback) {
   };
 }
 const opticalOf = el => el && typeof getComputedStyle === 'function' && getComputedStyle(el).getPropertyValue('--plx-comp-icon-glyph-show-24').trim() === 'block' ? 24 : 20;
-function useOptical(ref, size) {
-  const [optical, setOptical] = _react.default.useState(LARGE[size] ? 24 : null);
+function useOptical(ref, size, fetched) {
+  const watched = fetched && !LARGE[size];
+  const [optical, setOptical] = _react.default.useState(null);
   useIsoLayoutEffect(() => {
-    if (LARGE[size]) {
-      setOptical(24);
-      return undefined;
-    }
+    if (!watched) return undefined;
     const read = () => setOptical(opticalOf(ref.current));
     read();
-    return watchOptical(read);
-  }, [size]);
-  return optical;
+    const stop = watchOptical(read);
+    // forget the reading when the icon stops watching (a name that becomes a module, or lg): a later watch starts from unknown, never from a stale size
+    return () => {
+      stop();
+      setOptical(null);
+    };
+  }, [watched]);
+  return LARGE[size] ? 24 : watched ? optical : null;
 }
-function useDrawings(name, size, filled, mod, lib, optical) {
-  const resolved = mod ? {
-    kind: 'module',
-    symbol: mod.symbol || mod.name,
-    fillOutline: !!mod.fillOutline,
-    module: mod
-  } : resolveIcon(name, {
-    library: lib
-  });
-  const found = resolved;
-  if (found && found.kind === 'module') mod = found.module;
+// an icon's drawing source, resolved once per render: the imported module, else the name through the resolver
+const resolveShown = (name, mod, lib) => mod ? {
+  kind: 'module',
+  symbol: mod.symbol || mod.name,
+  fillOutline: !!mod.fillOutline,
+  module: mod
+} : resolveIcon(name, {
+  library: lib
+});
+const isFetched = found => !!found && (found.kind === 'library' || found.kind === 'plenix');
+function useDrawings(name, size, filled, found, optical) {
+  const mod = found && found.kind === 'module' ? found.module : null;
   const fill = filled === true || found && found.fillOutline;
-  const fetched = found && (found.kind === 'library' || found.kind === 'plenix');
+  const fetched = isFetched(found);
   // a module has both drawings and the stylesheet picks; a fetched icon loads only the one it will show (none until its optical size is known)
   const wanted = fetched ? optical === null ? [] : [[fill ? optical === 24 ? 3 : 1 : optical === 24 ? 2 : 0, optical]] : LARGE[size] ? [[fill ? 3 : 2, 24]] : [[fill ? 1 : 0, 20], [fill ? 3 : 2, 24]];
   // a fetched drawing's key: the library's file (symbol), or the Plenix layout's file (the Plenix name)
@@ -7391,8 +7397,10 @@ function Icon({
   }
   const shown = isModule(icon) ? icon.name : name;
   const ref = _react.default.useRef(null);
-  const optical = useOptical(ref, size);
-  const svg = useDrawings(shown, size, filled, isModule(icon) ? icon : null, lib, optical);
+  // fetched or not is decided first, so only a fetched icon watches its optical size (#642)
+  const found = resolveShown(shown, isModule(icon) ? icon : null, lib);
+  const optical = useOptical(ref, size, isFetched(found));
+  const svg = useDrawings(shown, size, filled, found, optical);
   return /*#__PURE__*/_react.default.createElement("span", _extends({
     ref: ref,
     className: iconClasses(shown, isModule(icon) ? icon : null, lib, size, filled, className),
