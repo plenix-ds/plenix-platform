@@ -32221,6 +32221,14 @@ function NextEngine(props) {
   const [remote, setRemote] = _react.default.useState(null),
     [remoteError, setRemoteError] = _react.default.useState(null),
     [retry, setRetry] = _react.default.useState(0);
+  // a sort, filter, search or page size change starts again from page 1 in the same render as the change (issue 614), so
+  // no request for the old page number with the new search or filter goes out first
+  const resetBy = [sortSignal, props.filter, JSON.stringify(filters), props.search, pageSize],
+    [resetSeen, setResetSeen] = _react.default.useState(resetBy);
+  if (resetBy.some((value, i) => !Object.is(value, resetSeen[i]))) {
+    setResetSeen(resetBy);
+    if (page !== 0) setPage(0);
+  }
   const [metrics, setMetrics] = _react.default.useState({
       row: 0,
       line: 0,
@@ -33002,7 +33010,6 @@ function NextEngine(props) {
     }
   }, [source]);
   _react.default.useEffect(() => {
-    setPage(0);
     setLoaded(pageSize);
   }, [sortSignal, props.filter, JSON.stringify(filters), props.search, pageSize]);
   _react.default.useEffect(() => {
@@ -33060,10 +33067,16 @@ function NextEngine(props) {
       if (alive) {
         fetching.current = false;
         setRemoteBusy(false);
-        setRemote(old => ({
-          rows: (mode === 'load-more' || mode === 'fill') && page > 0 ? [...(old?.rows || []), ...(result.rows || [])] : result.rows || [],
-          total: result.total || 0
-        }));
+        setRemote(old => {
+          const append = mode === 'load-more' || mode === 'fill',
+            got = result.rows || [],
+            rows = append && page > 0 ? [...(old?.rows || []), ...got] : got;
+          // an empty or short page ends the list (issue 614), even when the total says there are more
+          return {
+            rows,
+            total: append && got.length < pageSize ? rows.length : result.total || 0
+          };
+        });
       }
     }, failure => {
       if (alive) {
@@ -40962,7 +40975,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        search text. "pages" asks for one page at a time; "load-more" appends the next on Load more; "fill" (issue 522)
        appends the next page by itself when the scroll comes within 8 rows of the end (and while the rows do not yet
        fill the room), with a "Loading records" row at the end while it comes, a row with Retry when it fails, and no
-       more asking at total. A sort, filter or search change starts again from page 1. size is pageSize (default 50)
+       more asking at total. In "fill" and "load-more" an empty or short page (fewer rows than size) ends the list, even
+       when total says more (issue 614). A sort, filter or search change starts again from page 1, in the same render
+       as the change. size is pageSize (default 50)
      storageKey: keeps the person's standalone view (sort, widths, order, hidden columns, row height, wrap, groups).
      onViewChange(patch): delegates view changes to an external controller; its presence disables the grid's own store.
        useCollectionView supplies this callback and columnWidths, so its collection state owns the view.

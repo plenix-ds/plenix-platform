@@ -90,7 +90,9 @@
        search text. "pages" asks for one page at a time; "load-more" appends the next on Load more; "fill" (issue 522)
        appends the next page by itself when the scroll comes within 8 rows of the end (and while the rows do not yet
        fill the room), with a "Loading records" row at the end while it comes, a row with Retry when it fails, and no
-       more asking at total. A sort, filter or search change starts again from page 1. size is pageSize (default 50)
+       more asking at total. In "fill" and "load-more" an empty or short page (fewer rows than size) ends the list, even
+       when total says more (issue 614). A sort, filter or search change starts again from page 1, in the same render
+       as the change. size is pageSize (default 50)
      storageKey: keeps the person's standalone view (sort, widths, order, hidden columns, row height, wrap, groups).
      onViewChange(patch): delegates view changes to an external controller; its presence disables the grid's own store.
        useCollectionView supplies this callback and columnWidths, so its collection state owns the view.
