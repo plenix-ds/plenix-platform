@@ -181,6 +181,8 @@ const PLENIX_ICONS = path.join(P, 'dist', 'icons', 'plenix');
 if (!fs.existsSync(path.join(PLENIX_ICONS, 'index.json'))) throw new Error('platform/dist/icons/plenix is missing: run node build-app.js first');
 copyDir(PLENIX_ICONS, path.join(I, 'plenix'));
 const plenixModules = fs.readdirSync(PLENIX_ICONS).filter((n) => n.endsWith('.js')).map((n) => n.replace(/\.js$/, '')).sort();
+// the icons with their own drawings (four SVG files each); the rest are aliases, modules that import their icon
+const plenixIcons = plenixModules.filter((n) => fs.existsSync(path.join(PLENIX_ICONS, n + '.svg')));
 json(path.join(I, 'icons.json'), { version: VERSION, set: 'Material Symbols Sharp, weight 300, optical size 20 (unedited)', count: icons.length, icons,
   plenix: { count: plenixModules.length, modules: plenixModules.map((n) => './plenix/' + n + '.js'), index: './plenix/index.json' } });
 json(path.join(I, 'package.json'), manifest('icons', 'Plenix icons: Material Symbols Sharp (weight 300), outline and filled, as SVG files, importable icon modules and an icon stylesheet.', {
@@ -193,7 +195,7 @@ ${icons.length} icons, outline and filled, 20px and 24px: Material Symbols Sharp
 
 - \`svg/<name>.svg\`, \`<name>-fill.svg\`, \`<name>-24.svg\`, \`<name>-24-fill.svg\`
 - \`icons.json\`: every name and its files, and the list of Plenix modules.
-- \`plenix/<name>.js\`: each of the ${plenixModules.length} Plenix icons as its own module, with its four SVG files beside it and \`plenix/index.json\` (names and aliases). Import only what you use: \`import Add from '${SCOPE}/icons/plenix/add.js'\`, then \`<Icon icon={Add} />\` or \`registerIcons(Add)\`.
+- \`plenix/<name>.js\`: ${plenixModules.length} modules. Each of the ${plenixIcons.length} Plenix icons is its own module with its four SVG files beside it. Each of the ${plenixModules.length - plenixIcons.length} aliases (a symbol's underscore spelling, \`add_row_below\`) is a module that imports its icon (\`add-row-below.js\`) and has no SVG files of its own. \`plenix/index.json\` lists the names and aliases. Import only what you use: \`import Add from '${SCOPE}/icons/plenix/add.js'\`, then \`<Icon icon={Add} />\` or \`registerIcons(Add)\`.
 - \`icon.css\`: the stylesheet the Icon component uses (already part of ${SCOPE}/styles).`);
 
 // ---------- styles ----------
