@@ -85,6 +85,7 @@ import { cx } from '../../utils/cx.js';
 import { pageLayout } from '../../providers/pageLayouts.js';
 import { PanelSplitter } from '../../components/Resizable/Resizable.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useMonitorWidth } from '../../utils/monitorWidths.js';
 
 // the five layout modes (the Layout foundation; app-shell.css draws them)
 const LAYOUTS = ['fluid', 'contained', 'hybrid', 'multi-pane', 'focus'];
@@ -124,7 +125,8 @@ export function AppShell({ header, sideNav, panel, footer, page = 'workspace', m
   const [barEl, setBarEl] = React.useState(null);         // where NavPane puts the bottom navigation bar at Narrow
   const [parentEl, setParentEl] = React.useState(null);   // where it puts the parent row (the way to the pane) at Narrow
   const [expanded, setExpanded] = React.useState(() => readPref('plenix.sideNav.expanded', true));
-  const [width, setWidthState] = React.useState(() => readPref('plenix.sideNav.width', null));
+  // the navigation pane's dragged width, remembered per monitor (utils/monitorWidths.js); the single value saved before is this monitor's first value
+  const [width, setWidth] = useMonitorWidth('nav', { legacy: () => readPref('plenix.sideNav.width', null), min: () => tokenPx('--plx-sys-shell-nav-min-width'), max: () => tokenPx('--plx-sys-shell-nav-max-width') });
   const [overlay, setOverlay] = React.useState(false);
   const [slotEl, setSlotEl] = React.useState(null);   // the side-navigation area a screen fills through SideNavPortal
   const [portals, setPortals] = React.useState(0);
@@ -136,7 +138,6 @@ export function AppShell({ header, sideNav, panel, footer, page = 'workspace', m
   const [detailBack, setDetailBack] = React.useState(null);
   const claimParentRow = React.useCallback(() => { setParentRow(true); return () => setParentRow(false); }, []);
   const claimBack = React.useCallback((b) => { setDetailBack(b); return () => setDetailBack((x) => (x === b ? null : x)); }, []);
-  const setWidth = React.useCallback((w) => { setWidthState(w); writePref('plenix.sideNav.width', w); }, []);
   const toggle = React.useCallback(() => {
     if (small) setOverlay((o) => !o);
     else setExpanded((e) => { writePref('plenix.sideNav.expanded', !e); return !e; });

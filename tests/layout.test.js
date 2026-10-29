@@ -29,6 +29,11 @@ if (changed.wants({ units: ['patterns/AppShell', 'patterns/NavPane', 'patterns/S
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'pane-defaults.test.js')], { stdio: 'inherit', env: process.env });
   if (result.status !== 0) process.exit(result.status || 1);
 }
+// the width a person dragged a pane to is remembered per monitor (issue 463, option C, step 3): its own test, when AppShell or the side panel changed
+if (changed.wants({ units: ['patterns/AppShell', 'patterns/SidePanel', 'patterns/NavPane'] })) {
+  const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'monitor-widths.test.js')], { stdio: 'inherit', env: process.env });
+  if (result.status !== 0) process.exit(result.status || 1);
+}
 if (!changed.wants({ units: ['patterns/AppShell', 'patterns/SettingsLayout', 'patterns/SplitView', 'components/VisuallyHidden', 'providers/DirectionProvider', 'components/Checkbox', 'components/Fieldset', 'components/Icon'] })) changed.none('LAYOUT_OK 0/0');
 changed.report('every mode');
 const P = 'file://' + (ROOT.startsWith('/') ? '' : '/') + ROOT.replace(/\\/g, '/') + '/platform/';

@@ -15111,7 +15111,120 @@ function Resizable({
   }) : null);
 }
   } },
-  "platform/patterns/AppShell/AppShell.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../providers/pageLayouts.js":"platform/providers/pageLayouts.js","../../components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/utils/monitorWidths.js": { deps: {"react":null,"./paneLimit.js":"platform/utils/paneLimit.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.monitorKey = void 0;
+exports.useMonitorWidth = useMonitorWidth;
+var _react = _interopRequireDefault(require("react"));
+var _paneLimit = require("./paneLimit.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · monitorWidths (platform/utils/monitorWidths.js)
+   Summary: The width a person dragged a pane to, remembered per monitor (owner, issue 463 option C, step 3): one saved value per panel per
+     monitor, the monitor named by its physical size (screen size times devicePixelRatio, to the nearest 10px: "2560x1440"), so browser zoom does not change it. A laptop screen and an external monitor each keep their own.
+   Usage:
+     const [width, setWidth] = useMonitorWidth('side', { legacy: () => oldValue, min: () => px, max: () => px });
+     width is the saved width for this monitor when it still fits the window (between min and the window's share, paneMax), else null
+     (the pane starts at its default); setWidth(w) saves w for this monitor.
+   Props: panel: "side" (the side panel) | "nav" (the navigation pane); legacy(): the single value saved before this change (read once);
+     min(), max(): the limits now, in pixels (the component's tokens).
+   Behavior:
+     Storage: one localStorage object, plenix.paneWidths = { side: { "2560x1440": 560 }, nav: { … } }. The old single value (plenix.sidePanelWidth,
+       plenix.sideNav.width) becomes the current monitor's value the first time a panel is read, and the old key stays where it is.
+     A saved width that no longer fits the window (a smaller window, a lower limit) is not used and not deleted: it comes back when it fits.
+     Moving the window to another monitor is noticed on the next window resize and the other monitor's width is read.
+     Nothing stored (private window, blocked site data): the width lasts for this visit only.
+   Notes: Internal; not part of the public API. The 90% share and the 4px grid come from paneMax (utils/paneLimit.js). */
+
+const STORE = 'plenix.paneWidths';
+// The monitor's identity is its physical size: the screen's CSS size times devicePixelRatio, to the nearest 10px (a fractional zoom step rounds to the same
+// size). A browser reports screen.width in zoom-adjusted CSS pixels (1920 at 100% is about 1280 at 150%), so screen.width alone would change with every
+// Ctrl+plus; multiplied by devicePixelRatio the zoom cancels out.
+const monitorKey = win => {
+  const w = win || (typeof window !== 'undefined' ? window : null) || {},
+    s = w.screen,
+    r = w.devicePixelRatio || 1;
+  const tenth = n => Math.round(n * r / 10) * 10;
+  return s && s.width ? tenth(s.width) + 'x' + tenth(s.height) : 'unknown';
+};
+exports.monitorKey = monitorKey;
+const load = () => {
+  try {
+    const o = JSON.parse(localStorage.getItem(STORE));
+    return o && typeof o === 'object' && !Array.isArray(o) ? o : {};
+  } catch (e) {
+    return {};
+  }
+};
+const save = all => {
+  try {
+    localStorage.setItem(STORE, JSON.stringify(all));
+  } catch (e) {/* this visit only */}
+};
+const whole = v => {
+  const n = +v;
+  return Number.isFinite(n) && n > 0 ? n : null;
+};
+
+// the saved width for a monitor; the first read of a panel carries the old single value over as this monitor's (written by the caller, in an
+// effect: reading never writes)
+function read(panel, key, legacy) {
+  const mine = load()[panel];
+  if (mine && typeof mine === 'object') return {
+    value: whole(mine[key]),
+    carried: false
+  };
+  const old = legacy ? whole(legacy()) : null;
+  return {
+    value: old,
+    carried: !!old
+  };
+}
+function write(panel, key, w) {
+  const all = load();
+  all[panel] = Object.assign({}, all[panel], {
+    [key]: w
+  });
+  save(all);
+}
+function useMonitorWidth(panel, {
+  legacy,
+  min,
+  max
+}) {
+  const [key, setKey] = _react.default.useState(() => monitorKey());
+  const [first] = _react.default.useState(() => read(panel, key, legacy));
+  const [raw, setRaw] = _react.default.useState(first.value);
+  // the old single value becomes this monitor's value: saved once, here, not while rendering
+  _react.default.useEffect(() => {
+    if (first.carried) write(panel, key, first.value);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  _react.default.useEffect(() => {
+    const onResize = () => {
+      const k = monitorKey();
+      if (k !== key) {
+        setKey(k);
+        const r = read(panel, k, legacy);
+        setRaw(r.value);
+        if (r.carried) write(panel, k, r.value);
+      }
+    };
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, [key, panel]); // eslint-disable-line react-hooks/exhaustive-deps
+  const set = _react.default.useCallback(w => {
+    setRaw(w);
+    write(panel, key, w);
+  }, [panel, key]);
+  const lo = min ? min() : 0,
+    hi = max ? (0, _paneLimit.paneMax)(max(), lo) : Infinity;
+  return [raw && raw >= lo && raw <= hi ? raw : null, set];
+}
+  } },
+  "platform/patterns/AppShell/AppShell.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../providers/pageLayouts.js":"platform/providers/pageLayouts.js","../../components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/monitorWidths.js":"platform/utils/monitorWidths.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -15138,6 +15251,7 @@ var _cx = require("../../utils/cx.js");
 var _pageLayouts = require("../../providers/pageLayouts.js");
 var _Resizable = require("../../components/Resizable/Resizable.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _monitorWidths = require("../../utils/monitorWidths.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · AppShell, PageContent, SideNavPortal, Show, Hide
    Summary: The root of an application page, after the Layout grid's shell: the header across the top, a body row with the
@@ -15288,7 +15402,12 @@ function AppShell({
   const [barEl, setBarEl] = _react.default.useState(null); // where NavPane puts the bottom navigation bar at Narrow
   const [parentEl, setParentEl] = _react.default.useState(null); // where it puts the parent row (the way to the pane) at Narrow
   const [expanded, setExpanded] = _react.default.useState(() => readPref('plenix.sideNav.expanded', true));
-  const [width, setWidthState] = _react.default.useState(() => readPref('plenix.sideNav.width', null));
+  // the navigation pane's dragged width, remembered per monitor (utils/monitorWidths.js); the single value saved before is this monitor's first value
+  const [width, setWidth] = (0, _monitorWidths.useMonitorWidth)('nav', {
+    legacy: () => readPref('plenix.sideNav.width', null),
+    min: () => tokenPx('--plx-sys-shell-nav-min-width'),
+    max: () => tokenPx('--plx-sys-shell-nav-max-width')
+  });
   const [overlay, setOverlay] = _react.default.useState(false);
   const [slotEl, setSlotEl] = _react.default.useState(null); // the side-navigation area a screen fills through SideNavPortal
   const [portals, setPortals] = _react.default.useState(0);
@@ -15308,10 +15427,6 @@ function AppShell({
   const claimBack = _react.default.useCallback(b => {
     setDetailBack(b);
     return () => setDetailBack(x => x === b ? null : x);
-  }, []);
-  const setWidth = _react.default.useCallback(w => {
-    setWidthState(w);
-    writePref('plenix.sideNav.width', w);
   }, []);
   const toggle = _react.default.useCallback(() => {
     if (small) setOverlay(o => !o);else setExpanded(e => {
@@ -41976,7 +42091,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      className: more classes on the pane
      children: the body: NavList groups (whose headings are collapsible section headers), a filter field, buttons
    Behavior:
-     Its size follows the Layout grid's shell: --plx-sys-shell-nav-width (240px; 272px from a window 1440px wide, 320px from 1920px: the -from-1440 and -from-1920 tokens, set in system/grid.css), resizable 140–320px with the splitter on its
+     Its size follows the Layout grid's shell: --plx-sys-shell-nav-width (240px; 272px from a window 1440px wide, 320px from 1920px: the -from-1440 and -from-1920 tokens, set in system/grid.css; its dragged width is remembered per monitor, utils/monitorWidths.js), resizable 140–320px with the splitter on its
        edge: dragged, it moves one grid line (4px) at a time and stays on the grid; the arrow keys move it by
        --plx-sys-shell-splitter-step; Enter or a double-click on the edge folds the pane to its rail.
      The first row is the same on every pane: the title, the actions, then the Collapse button at the row's end, on the side
@@ -42351,7 +42466,7 @@ function SettingsRow({
   }, children));
 }
   } },
-  "platform/patterns/SidePanel/SidePanel.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","../ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../utils/grid.js":"platform/utils/grid.js","../../utils/paneLimit.js":"platform/utils/paneLimit.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/SidePanel/SidePanel.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","../ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../utils/grid.js":"platform/utils/grid.js","../../utils/paneLimit.js":"platform/utils/paneLimit.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/monitorWidths.js":"platform/utils/monitorWidths.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -42369,6 +42484,7 @@ var _AppShell = require("../AppShell/AppShell.jsx");
 var _grid = require("../../utils/grid.js");
 var _paneLimit = require("../../utils/paneLimit.js");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _monitorWidths = require("../../utils/monitorWidths.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · SidePanel
    Summary: The inspector panel on the right of the main region (details, a preview). Give it to the AppShell's panel.
@@ -42385,6 +42501,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      collapseLabel: the Collapse button's label (default "Collapse panel")
      width: it opens at --plx-comp-side-panel-width-default: 240px, 320px from a window 1440px wide, 400px from 1920px (the -from-1440 and
        -from-1920 tokens, set in system/grid.css); a width a person dragged to wins
+     the width a person dragged to is remembered per monitor (utils/monitorWidths.js): one value per monitor, named by its physical screen size,
+       used only when it still fits the window; the single value saved before carries over as the current monitor's
      resizable: its start edge can be dragged (or moved with the arrow keys) between --plx-comp-side-panel-width-min and
        -max; the width is remembered; Home and End jump to the smallest and largest (batch 259); default false
      resizeLabel: the edge's accessible name (default "Resize panel")
@@ -42441,19 +42559,18 @@ function SidePanel({
   }, [small]);
   const name = label || title || 'Panel';
   // the width dragged on its edge, remembered across visits (resizable, docked only)
-  const [size, setSize] = _react.default.useState(() => {
-    try {
-      return +localStorage.getItem(WIDTH_KEY) || null;
-    } catch (e) {
-      return null;
-    }
+  // remembered per monitor (utils/monitorWidths.js); the single value saved before is this monitor's first value
+  const [size, resize] = (0, _monitorWidths.useMonitorWidth)('side', {
+    legacy: () => {
+      try {
+        return localStorage.getItem(WIDTH_KEY);
+      } catch (e) {
+        return null;
+      }
+    },
+    min: () => (0, _AppShell.tokenPx)('--plx-comp-side-panel-width-min'),
+    max: () => (0, _AppShell.tokenPx)('--plx-comp-side-panel-width-max')
   });
-  const resize = w => {
-    setSize(w);
-    try {
-      localStorage.setItem(WIDTH_KEY, String(w));
-    } catch (e) {/* this visit only */}
-  };
   const docked = resizable && !small;
   const railEl = onOpenChange ? /*#__PURE__*/_react.default.createElement(_ToolRail.ToolRail, {
     label: tw.pane.replace('{name}', name),
