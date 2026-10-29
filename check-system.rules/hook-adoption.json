@@ -29,7 +29,8 @@
     "platform/patterns/AvatarUpload/AvatarUpload.jsx"
   ],
   "usePressable": [
-    "platform/components/RowButton/RowButton.jsx"
+    "platform/components/RowButton/RowButton.jsx",
+    "platform/components/DataGrid/DataGridEngine.jsx"
   ],
   "useFocusGroup": [
     "platform/components/Toolbar/Toolbar.jsx"
