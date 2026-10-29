@@ -24,7 +24,7 @@ if (changed.wants({ units: ['components/Resizable', 'components/DataGrid', 'patt
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'pane-limit.test.js')], { stdio: 'inherit', env: process.env });
   if (result.status !== 0) process.exit(result.status || 1);
 }
-if (!changed.wants({ units: ['patterns/AppShell', 'patterns/SettingsLayout', 'patterns/SplitView', 'components/VisuallyHidden', 'providers/DirectionProvider', 'components/Checkbox'] })) changed.none('LAYOUT_OK 0/0');
+if (!changed.wants({ units: ['patterns/AppShell', 'patterns/SettingsLayout', 'patterns/SplitView', 'components/VisuallyHidden', 'providers/DirectionProvider', 'components/Checkbox', 'components/Fieldset'] })) changed.none('LAYOUT_OK 0/0');
 changed.report('every mode');
 const P = 'file://' + (ROOT.startsWith('/') ? '' : '/') + ROOT.replace(/\\/g, '/') + '/platform/';
 // each mode through a kind of page that the standard gives it
@@ -131,6 +131,20 @@ const html = '<!doctype html><html lang="en" data-plx-theme="default" data-plx-m
   });
   check('Checkbox: dir and lang go on the row of a Checkbox, Radio and Switch, so the box sits on the reading start #420',
     ['c', 'r', 's'].every((k) => rowDir[k].inputDir === null && rowDir[k].rowDir === 'rtl' && rowDir[k].rowLang === 'ar' && rowDir[k].rtl && rowDir[k].boxRight), JSON.stringify(rowDir));
+  // QA on 420: a Fieldset with dir and lang gives them to its <fieldset>, so a RadioGroup inside reads right to left
+  const groupDir = await page.evaluate(async () => {
+    const h = React.createElement, P = window.Plenix, host = document.createElement('div'); host.style.cssText = 'inline-size:600px'; document.body.appendChild(host);
+    const root = ReactDOM.createRoot(host);
+    ReactDOM.flushSync(() => root.render(h(P.Fieldset, { dir: 'rtl', lang: 'ar', legend: 'الحالة', 'data-k': 'set' },
+      h(P.RadioGroup, { label: 'اختر', value: 'a', onChange: () => {}, options: [{ value: 'a', label: 'الأول' }, { value: 'b', label: 'الثاني' }] }))));
+    await new Promise((r) => setTimeout(r, 200));
+    const set = host.querySelector('[data-k="set"]'), input = set.querySelector('input[type="radio"]'), row = input.closest('label');
+    const box = input.getBoundingClientRect(), text = row.querySelector('.plx-check__label').getBoundingClientRect();
+    const out = { tag: set.tagName, setDir: set.getAttribute('dir'), setLang: set.getAttribute('lang'), rowRtl: row.matches(':dir(rtl)'), inputDir: input.getAttribute('dir'), boxRight: box.left > text.left };
+    root.unmount(); host.remove(); return out;
+  });
+  check('Fieldset: dir="rtl" and lang="ar" go on the fieldset, and a RadioGroup option inside puts its box on the right #420',
+    groupDir.tag === 'FIELDSET' && groupDir.setDir === 'rtl' && groupDir.setLang === 'ar' && groupDir.rowRtl && groupDir.inputDir === null && groupDir.boxRight, JSON.stringify(groupDir));
   check('SplitView: stacks under 900px of its own width, side by side from 900px #410', !!split[899] && !!split[900] && split[899].width === 899 && split[899].direction === 'column' && split[900].width === 900 && split[900].direction === 'row', JSON.stringify(split));
   // issue 237: stacked by its room, the divider is the stacked one (horizontal, the height), the same focused separator
   const turned = await page.evaluate(async () => {
