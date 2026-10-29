@@ -1,6 +1,6 @@
 /* Plenix tests · panes start wider on larger windows (issue 463, option C, step 2): the starting width of the navigation pane, the secondary pane
    (small, medium, large) and the side panel follows the window width, as size tokens: under 1440px 240 | 180, 220, 280 | 240; from 1440px up to
-   1919px 272 | 220, 260, 320 | 320; from 1920px 320 | 260, 320, 400 | 400. A width dragged to or set by an app wins (not tested here).
+   1919px 272 | 220, 260, 320 | 320; from 1920px 320 | 260, 320, 400 | 400. A width dragged to or set by an app wins (not tested here). The secondary pane's narrowest drag stays 180px on every window.
    Summary: a NavPane, three SecondaryPanes and a SidePanel with no size set are measured at 1439, 1440, 1919 and 1920px and match the table.
    Usage: node tests/pane-defaults.test.js   (run by layout.test.js when AppShell or a pane of the shell changed) */
 const assert = require('assert/strict'), { serve, launch } = require('./lib');
@@ -26,6 +26,9 @@ const TABLE = [[1439, [240, 180, 220, 280, 240]], [1440, [272, 220, 260, 320, 32
         const w = (s) => Math.round(document.querySelector(s).getBoundingClientRect().width);
         return [w('#nav .plx-nav-pane'), w('#s1 .plx-secondary-pane'), w('#s2 .plx-secondary-pane'), w('#s3 .plx-secondary-pane'), w('#side .plx-side-panel')];
       });
+      // the narrowest a secondary pane can be dragged is 180 on every window (its own token, not the small width, which rises)
+      const least = await page.evaluate(() => { const e = document.createElement('div'); document.documentElement.appendChild(e); const v = getComputedStyle(document.documentElement).getPropertyValue('--plx-comp-secondary-pane-width-min'); e.remove(); return parseFloat(v); });
+      assert.equal(least, 180, 'the secondary pane\'s narrowest drag at ' + width + 'px');
       assert.deepEqual(errors, [], 'no script errors at ' + width + 'px');
       assert.deepEqual(got, want, 'starting widths at ' + width + 'px: nav, secondary sm, md, lg, side panel');
       await page.close();

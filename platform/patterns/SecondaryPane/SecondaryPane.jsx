@@ -129,7 +129,7 @@ export function SecondaryPane({ title, label, icon, actions, side = 'start', wid
       </ToolRail>
     );
   }
-  const min = () => tokenPx('--plx-comp-secondary-pane-width-sm');
+  const min = () => tokenPx('--plx-comp-secondary-pane-width-min');   // its own token: the small width rises on larger windows, the narrowest drag does not
   const max = () => tokenPx('--plx-comp-secondary-pane-width-max');
   const sized = size && !(narrow && listDetail);
   const pane = (

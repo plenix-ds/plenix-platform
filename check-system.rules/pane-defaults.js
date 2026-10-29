@@ -3,7 +3,8 @@
 //   tokens   a missing token: --plx-sys-shell-nav-width-from-1440 / -from-1920, --plx-comp-side-panel-width-default-from-1440 / -from-1920,
 //            --plx-comp-secondary-pane-width-{sm,md,lg}-from-1440 / -from-1920; or a value that is not the owner's table
 //   css      system/grid.css without the two media rules (1440px <= width < 1920px, width >= 1920px) that set the tokens
-//   decouple the side panel's default or minimum going back to the navigation pane's width (it must be 240px below 1440px)
+//   decouple the side panel's default or minimum going back to the navigation pane's width (it must be 240px below 1440px), and the secondary
+//            pane's narrowest drag being the small width again (it must be its own 180px token)
 // Alone: node check-system.rules/pane-defaults.js     -> PANE_DEFAULTS_OK, or the findings and exit 1
 const fs = require('fs');
 const path = require('path');
@@ -27,6 +28,8 @@ function check({ add }) {
   const at = (group, name, want, file) => { const t = group[name]; if (!t) return add(NAME, path.join(ROOT, file), 0, 'the token ' + name + ' is missing'); if (px(t.$value) !== want) add(NAME, path.join(ROOT, file), 0, name + ' is ' + t.$value + ', the owner\'s table says ' + want + 'px'); };
   for (const [n, v] of Object.entries(SYS)) at(sys, n, v, 'platform/tokens/semantic.density-standard.tokens.json');
   for (const [n, v] of Object.entries(COMP)) at(comp, n, v, 'platform/tokens/components.tokens.json');
+  { const t = comp['secondary-pane-width-min']; if (!t || px(t.$value) !== 180) add(NAME, path.join(ROOT, 'platform/tokens/components.tokens.json'), 0, 'secondary-pane-width-min must be 180px (the narrowest drag: the small width rises on larger windows)'); }
+  if (!/secondary-pane-width-min/.test(read('platform/patterns/SecondaryPane/SecondaryPane.jsx'))) add(NAME, path.join(ROOT, 'platform/patterns/SecondaryPane/SecondaryPane.jsx'), 0, 'its minimum must read --plx-comp-secondary-pane-width-min, not the small width');
   for (const n of ['side-panel-width-default', 'side-panel-width-min']) { const t = comp[n]; if (!t || px(t.$value) !== 240) add(NAME, path.join(ROOT, 'platform/tokens/components.tokens.json'), 0, n + ' must be 240px (its own token, not the navigation pane\'s width)'); }
   const css = read('platform/system/grid.css');
   for (const [re, what] of [[/@media\s*\(1440px\s*<=\s*width\s*<\s*1920px\)/, '(1440px <= width < 1920px)'], [/@media\s*\(width\s*>=\s*1920px\)/, '(width >= 1920px)']]) if (!re.test(css)) add(NAME, path.join(ROOT, 'platform/system/grid.css'), 0, 'the media rule ' + what + ' that sets the starting widths is missing');
