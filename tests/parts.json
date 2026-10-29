@@ -133,6 +133,10 @@
      "checks": 1
     },
     {
+     "part": "Fieldset",
+     "checks": 1
+    },
+    {
      "part": "SplitView",
      "checks": 3
     },
