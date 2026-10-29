@@ -34,12 +34,12 @@ import { Button } from '../Button/Button.jsx';
 import { Icon } from '../Icon/Icon.jsx';
 import { Link } from '../Link/Link.jsx';
 import { Popover } from '../Popover/Popover.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { more: 'More about {title}', moreUntitled: 'More information' };
 
 export function ContextualHelp({ title, children, link, variant = 'info', label, placement = 'bottom-start', size = 'sm', strings, className }) {
   devWarn('ContextualHelp', { variant, size }, { variant: ['info','inline'], size: ['sm','md','lg'] });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('contextualHelp', strings);
   const more = (v) => (link && link.href ? <Link href={link.href} variant={v} className="plx-contextual-help__link">{link.label}</Link> : null);
   if (variant === 'inline') {
     return (

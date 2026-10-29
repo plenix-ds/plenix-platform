@@ -28,11 +28,11 @@ import { useSession } from '../../providers/SessionProvider.jsx';
 import { ActivityList } from '../ActivityList/ActivityList.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { label: 'Notifications', empty: 'No notifications', markAllRead: 'Mark all read', viewAll: 'View all' };
 
 export function NotificationList({ items, onChange, onOpen, onViewAll, limit, label, footer = true, strings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('notificationList', strings);
   const session = useSession();
   const own = items || session.notifications;
   const unread = own.filter((n) => n.unread).length;

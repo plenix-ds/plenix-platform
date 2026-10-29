@@ -47,8 +47,8 @@ import { seriesColor } from './scales.js';
 import { ChartLegend } from './parts/ChartLegend.jsx';
 import { ChartTooltip, chartTooltipText } from './parts/ChartTooltip.jsx';
 import { useChartInteraction } from './interaction.js';
+import { useStrings } from '../providers/LocaleProvider.jsx';
 
-const STRINGS = { node: 'Node', group: 'Group', links: 'Connected to', none: 'None', zoomIn: 'Zoom in', zoomOut: 'Zoom out', fit: 'Fit', hintZoom: ' Plus and minus zoom, 0 fits the graph.' };
 // SVG geometry, in plot pixels: the room kept around the layout for the labels (a label is centered under its node), the
 // node's hit radius, the zoom steps
 const INSET_X = 64, INSET_TOP = 24, INSET_BOTTOM = 40, HIT = 16, ZOOM_STEP = 1.25, ZOOM_MIN = 0.5, ZOOM_MAX = 4;
@@ -138,7 +138,7 @@ function fitInto(p, width, height) {
 
 // zoom and pan of a graph's layer: { k, x, y } with the controls, keys and the drag of the background
 export function useGraphView({ enabled = true, strings } = {}) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('chart.networkGraph', strings);
   const [view, setView] = React.useState({ k: 1, x: 0, y: 0 });
   const size = React.useRef({ width: 0, height: 0 });
   const drag = React.useRef(null);
@@ -202,7 +202,7 @@ export function directionalMove(pos, neighbors, a, key) {
 
 export function NetworkGraph({ title, description, nodes = [], edges = [], directed = false, layout = 'force', direction = 'down', groups, zoomable = true,
   size = 'lg', margin, interactive = true, onSelect, strings, frameStrings, interactionStrings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('chart.networkGraph', strings);
   const uid = 'plx-graph' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const nb = React.useMemo(() => graphNeighbors(nodes, edges), [nodes, edges]);
   const gIndex = (g) => (groups || []).findIndex((x) => x.id === g);

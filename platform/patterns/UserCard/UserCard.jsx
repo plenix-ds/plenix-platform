@@ -48,9 +48,9 @@ import { Link } from '../../components/Link/Link.jsx';
 import { List } from '../../components/List/List.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { VisuallyHidden } from '../../components/VisuallyHidden/VisuallyHidden.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 const PRESENCE = ['online', 'away', 'busy', 'dnd', 'offline'];
-const STRINGS = { online: 'Online', away: 'Away', busy: 'Busy', dnd: 'Do not disturb', offline: 'Offline' };
 const H = ({ level, ...props }) => React.createElement(level ? 'h' + level : 'div', props);
 
 export function UserCard({ name, src, color, secondary, role, presence, details, actions, cover, variant = 'default', href,
@@ -58,7 +58,7 @@ export function UserCard({ name, src, color, secondary, role, presence, details,
   devWarn('UserCard', { variant }, { variant: ['default','compact'] });
   const compact = variant === 'compact';
   const p = PRESENCE.indexOf(presence) >= 0 ? presence : null;
-  const words = Object.assign({}, STRINGS, strings);
+  const words = useStrings('userCard', strings);
   const withCover = !compact && !!cover;
   const hasActions = actions !== undefined && actions !== null && actions !== false;
   return (

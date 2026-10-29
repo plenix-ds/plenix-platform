@@ -45,15 +45,15 @@ import { ChartTooltip } from './parts/ChartTooltip.jsx';
 import { DataLabel } from './parts/DataLabel.jsx';
 import { scalePosition } from './parts/position.js';
 import { useChartPoints, ChartPatterns, patternFill } from './a11y.js';
+import { useStrings } from '../providers/LocaleProvider.jsx';
 
-const STRINGS = { task: 'Task', start: 'Start', end: 'End', progress: 'Done', dependsOn: 'Waits for', status: 'Status', today: 'Today', milestone: 'Milestone' };
 // SVG geometry on the 4px grid: a milestone's half width, how far before a task's end its arrow leaves it, the arrowhead's
 // length, the active ring's room, the task name's distance from the plot
 const DIAMOND = 8, ELBOW = 8, HEAD = 4, RING = 4, NAME_GAP = 8;
 const toDate = (v) => (v instanceof Date ? v : new Date(v));
 
 export function GanttChart({ title, description, tasks = [], today, range, color, size = 'lg', strings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('chart.ganttChart', strings);
   const uid = 'plx-gantt' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const rows = tasks.map((k, i) => {
     const start = toDate(k.start), end = k.milestone ? start : toDate(k.end === undefined ? k.start : k.end);

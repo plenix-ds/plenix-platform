@@ -20,9 +20,10 @@ import { Badge } from '../../components/Badge/Badge.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { cx } from '../../utils/cx.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function AccessRequest({ status = 'request', onRequest, onOpen, strings, className }) {
-  const t = Object.assign({ title: 'Request access', description: 'Ask the owner for access to this resource.', message: 'Message to the owner', request: 'Request access', pending: 'Access requested', approved: 'Access approved', denied: 'Access denied', open: 'Open resource', failed: 'Could not send your request. Try again.' }, strings);
+  const t = useStrings('accessRequest', strings);
   const [message, setMessage] = React.useState(''), [busy, setBusy] = React.useState(false), [sent, setSent] = React.useState(false), [error, setError] = React.useState('');
   const lock = React.useRef(false);
   React.useEffect(() => { setSent(false); }, [status]);

@@ -15,8 +15,9 @@ import { Field } from '../../components/Field/Field.jsx';
 import { Textarea } from '../../components/Input/Input.jsx';
 import { Persona } from '../Persona/Persona.jsx';
 import { Time } from '../Time/Time.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 export function Comment({author={},body='',time,own=false,edited=false,resolved=false,reactions=[],onEdit,onResolve,onReact,strings,className,...rest}) {
- const t=Object.assign({edit:'Edit',save:'Save',cancel:'Cancel',resolve:'Resolve',reopen:'Reopen',edited:'Edited',resolved:'Resolved',message:'Comment',empty:'Enter a comment.',failed:'Could not save. Try again.'},strings);
+ const t=useStrings('comment', strings);
  const [editing,setEditing]=React.useState(false),[draft,setDraft]=React.useState(body),[busy,setBusy]=React.useState(false),[error,setError]=React.useState('');const lock=React.useRef(false),mounted=React.useRef(true);
  React.useEffect(()=>{mounted.current=true;return()=>{mounted.current=false;};},[]);
  React.useEffect(()=>{if(!editing)setDraft(body);},[body,editing]);

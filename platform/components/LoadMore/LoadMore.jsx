@@ -41,13 +41,15 @@ import { Spinner } from '../Loading/Loading.jsx';
 import { useIntersection } from '../../hooks/useIntersection.js';
 import { announce } from '../../utils/announce.jsx';
 import { formatNumber } from '../../utils/format.js';
+import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { more: 'Load more', moreCount: 'Show {n} more', loading: 'Loading…', end: 'You’ve reached the end', count: '{shown} of {total}',
-  added: (n) => n + (n === 1 ? ' more item loaded' : ' more items loaded') };
 
 export const LoadMore = React.forwardRef(function LoadMore({ onLoadMore, hasMore = true, loading = false, shown, total, mode = 'button', root, pageSize,
   onFocusNew, strings, className, ...rest }, ref) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('loadMore', strings);
+  const loc = useLocale();
+  // "N more items loaded": a plural message in the catalog (Arabic has six forms); an app's own function in strings still wins
+  const added = (n) => (typeof t.added === 'function' ? t.added(n) : loc.t('loadMore.added', { count: n, n: formatNumber(n) }));
   const sentinel = React.useRef(null);
   const before = React.useRef(shown), fromButton = React.useRef(false);
   const infinite = mode === 'infinite';
@@ -57,7 +59,7 @@ export const LoadMore = React.forwardRef(function LoadMore({ onLoadMore, hasMore
     const was = before.current;
     before.current = shown;
     if (typeof shown !== 'number' || typeof was !== 'number' || shown <= was) return;
-    announce(t.added(shown - was));
+    announce(added(shown - was));
     if (fromButton.current && onFocusNew) onFocusNew(was);
     fromButton.current = false;
   }, [shown]);

@@ -15,7 +15,8 @@ import { Field } from '../../components/Field/Field.jsx';
 import { Textarea } from '../../components/Input/Input.jsx';
 import { AvatarGroup } from '../../components/AvatarGroup/AvatarGroup.jsx';
 import { Persona } from '../../components/Persona/Persona.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 export function PresenceBar({people=[],mode='viewers',max=4,onPerson,strings,className,...rest}) {
- const t=Object.assign({viewers:'Viewing',editors:'Editing',cursors:'Cursors',empty:'No one else here',view:'View person'},strings);const m=['viewers','editors','cursors'].includes(mode)?mode:'viewers';const list=people.filter(p=>m==='editors'?p.role==='editor':m==='cursors'?!!p.cursor:true);
+ const t=useStrings('presenceBar', strings);const m=['viewers','editors','cursors'].includes(mode)?mode:'viewers';const list=people.filter(p=>m==='editors'?p.role==='editor':m==='cursors'?!!p.cursor:true);
  return <Stack className={cx('plx-presence-bar',className)} aria-label={t[m]} {...rest}><Inline wrap><Badge icon="person">{t[m]}</Badge><Text variant="data">{list.length}</Text><AvatarGroup label={t[m]} people={list.map(p=>({id:p.id,name:p.name,src:p.src}))} max={max}/></Inline>{!list.length?<Text>{t.empty}</Text>:m==='cursors'?<Stack>{list.map(p=><Inline wrap key={p.id}><Persona name={p.name} src={p.src}/><Text>{p.cursor}</Text>{onPerson?<Button variant="secondary" onClick={()=>onPerson(p.id)} aria-label={t.view+' '+p.name}>{t.view}</Button>:null}</Inline>)}</Stack>:null}</Stack>;
 }

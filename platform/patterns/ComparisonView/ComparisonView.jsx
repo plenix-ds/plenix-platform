@@ -53,9 +53,8 @@ import { Switch } from '../../components/Checkbox/Checkbox.jsx';
 import { Slider } from '../../components/Slider/Slider.jsx';
 import { Table } from '../../components/Table/Table.jsx';
 import { Image } from '../../components/Image/Image.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { label: 'Comparison', modes: 'View', columns: 'Side by side', matrix: 'Table', slider: 'Slider', onlyDifferences: 'Show only differences',
-  changed: 'Changed', attribute: 'Attribute', position: 'Position', none: 'No differences', one: '1 difference', many: '{n} differences', empty: '—' };
 const MODES = ['columns', 'matrix', 'slider'];
 // the slider's drawing area (SVG user units; the picture fills it, cropped to the ratio)
 const RATIOS = { '16-9': [1600, 900], '4-3': [1600, 1200], '3-2': [1500, 1000], '1-1': [1200, 1200] };
@@ -64,7 +63,7 @@ const text = (v) => (v === undefined || v === null ? '' : typeof v === 'object' 
 
 export function ComparisonView({ items = [], attributes = [], mode, defaultMode = 'columns', onModeChange, modes, highlight = true, onlyDifferences, defaultOnlyDifferences = false,
   onOnlyDifferencesChange, scroll = false, ratio = '16-9', defaultPosition = 50, headingLevel = 3, label, strings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('comparisonView', strings);
   const uid = 'plx-cmp' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const [ownMode, setOwnMode] = React.useState(MODES.indexOf(defaultMode) >= 0 ? defaultMode : 'columns');
   const current = mode !== undefined && MODES.indexOf(mode) >= 0 ? mode : ownMode;

@@ -40,6 +40,7 @@ import { cx } from '../../utils/cx.js';
 import { formatDate, formatTime, formatDateTime, formatRelative, formatLocale, numeralLocale, dateTimeAttr, parseDate } from '../../utils/format.js';
 import { tokenMs } from '../../utils/tokenTime.js';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 const FORMATS = ['datetime', 'relative', 'label', 'date', 'time'];
 // the shared parser: a date-only value is that calendar day where the reader is, never midnight UTC (issue 342)
@@ -69,7 +70,7 @@ export function Time({ value, format = 'datetime', dateStyle, seconds = false, t
   }, [ticking, now]);
   const d = toDate(value);
   if (!d) return null;
-  const words = Object.assign({ now: 'Just now' }, strings);
+  const words = useStrings('time', strings);
   const o = { locale, timeZone, timeZoneName, dateStyle, seconds };
   const at = toDate(now) || new Date();
   let text;

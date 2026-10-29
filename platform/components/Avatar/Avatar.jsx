@@ -44,6 +44,7 @@ import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { Icon } from '../Icon/Icon.jsx';
 import { StatusDot } from '../StatusDot/StatusDot.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 const SIZES = [20, 24, 28, 32, 40, 48, 64];   // the scale its classes define (plx-avatar--24 …)
 // the names pages use: 2xs 20 (inside a small control: the account row in a pane footer), xs 24, sm 28, md 32, lg 40, xl 48, 2xl 64 (numbers are rejected by the system check)
@@ -51,7 +52,6 @@ const NAMED = { '2xs': 20, xs: 24, sm: 28, md: 32, lg: 40, xl: 48, '2xl': 64 };
 // presence (library wave 4): the availability tones, the dot's size for each avatar size, and the words
 const PRESENCE = ['online', 'away', 'busy', 'dnd', 'offline'];
 const DOT = { 20: 'sm', 24: 'sm', 28: 'sm', 32: 'sm', 40: 'md', 48: 'md', 64: 'lg' };
-const STRINGS = { online: 'Online', away: 'Away', busy: 'Busy', dnd: 'Do not disturb', offline: 'Offline' };
 
 // first- and last-name initials: titles (a word ending in a period, e.g. "Fr.") and parenthesized parts are skipped.
 // A word's initial is its first Latin letter or digit, as always; a word with none (an Arabic name, owner ctm-needs-34) takes
@@ -73,7 +73,7 @@ export function Avatar({ name, src, initials, size = 'sm', color, category, gend
   const s = SIZES.indexOf(n) >= 0 ? n : NAMED.sm;
   const text = name ? initialsOf(name) : initials;
   const p = PRESENCE.indexOf(presence) >= 0 ? presence : null;
-  const words = Object.assign({}, STRINGS, strings);
+  const words = useStrings('avatar', strings);
   const named = label && p ? label + ', ' + words[p] : label;
   // a picture that fails to load falls back to the initials (batch 215)
   const [failed, setFailed] = React.useState(false);

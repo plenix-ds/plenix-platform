@@ -30,12 +30,12 @@
 import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { Icon } from '../Icon/Icon.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { owner: 'Owner', editor: 'Editor', viewer: 'Viewer' };
 const ICONS = { owner: 'settings-permissions', editor: 'pencil', viewer: 'visibility', custom: 'person' };
 
 export function RoleLabel({ role = 'viewer', label, icon, category, description, strings, className, ...rest }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('roleLabel', strings);
   const builtIn = role === 'owner' || role === 'editor' || role === 'viewer';
   const kind = builtIn ? role : 'custom';
   const name = label || (builtIn ? t[role] : role === 'custom' ? '' : role);

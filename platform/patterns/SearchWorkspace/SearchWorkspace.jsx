@@ -53,37 +53,15 @@ import { Chip } from '../../components/Tag/Tag.jsx';
 import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
 import { FilterBar } from '../FilterBar/FilterBar.jsx';
 import { useUid } from '../../utils/layer.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = {
-  title: 'Search',
-  selectAll: 'Select all',
-  allSelected: 'Every {noun} is selected',
-  placeholder: 'Search…',
-  result: 'result',
-  results: 'results',
-  searchField: 'Search {nouns}',
-  save: 'Save search',
-  filters: 'Filters',
-  activeFilters: 'Active filters',
-  chip: '{label}: {value}',
-  remove: 'Remove {text}',
-  clearAll: 'Clear all',
-  view: 'View',
-  grid: 'Grid',
-  table: 'Table',
-  sort: 'Sort',
-  sortValue: 'Sort: {value}',
-  noMatchQuery: 'Nothing matches “{query}”.',
-  noMatchQueryFilters: 'Nothing matches “{query}” with these filters.',
-  noMatchFilters: 'Nothing matches these filters.',
-};
 const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m));
 
 const label = (f, v) => { const o = (f.options || []).find((x) => x.value === v); return o ? o.label : String(v); };
 
 export function SearchWorkspace({ title, query = '', onQueryChange, placeholder, filters = [], onFilterChange, onClearAll,
   count = 0, noun, plural, sort, view, onSave, headStart, headEnd, selection, bulk, locale, strings, className, children }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('searchWorkspace', strings);
   const loc = numeralLocale(locale || (typeof document !== 'undefined' && document.documentElement.lang) || undefined);
   const id = useUid('plx-search-ws');
   const field = React.useRef(null);

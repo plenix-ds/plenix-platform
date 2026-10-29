@@ -47,12 +47,8 @@ import { Icon } from '../Icon/Icon.jsx';
 import { Spinner } from '../Loading/Loading.jsx';
 import { formatNumber } from '../../utils/format.js';
 import { useVirtualizer, VirtualGap, VirtualProbe, VIRTUAL_STICKY_CLASS } from '../../hooks/useVirtualizer.js';
+import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = {
-  count: (n) => formatNumber(n) + (n === 1 ? ' item' : ' items'),
-  group: (n) => formatNumber(n) + (n === 1 ? ' item' : ' items'),
-  loading: 'Loading…', empty: 'No items',
-};
 const HEIGHTS = ['sm', 'md', 'lg', 'fill'];
 
 function Row({ item }) {
@@ -71,7 +67,11 @@ function Row({ item }) {
 
 export const VirtualList = React.forwardRef(function VirtualList({ label, items, groups, count, renderItem, getKey, mode = 'fixed', height = 'md',
   showCount = false, loading = false, onEndReached, overscan, strings, className, unread: unreadPredicate, unreadKeys, onUnreadChange, markReadOnOpen, readDelay, onItemOpen, ...rest }, ref) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('virtualList', strings);
+  const loc = useLocale();
+  // "N items": plural messages in the catalog; an app's own function in strings still wins
+  const countText = (n) => (typeof t.count === 'function' ? t.count(n) : loc.t('virtualList.count', { count: n, n: formatNumber(n) }));
+  const groupText = (n) => (typeof t.group === 'function' ? t.group(n) : loc.t('virtualList.group', { count: n, n: formatNumber(n) }));
   // the rows in order: a group's header, then its items
   const rows = React.useMemo(() => {
     if (groups) {
@@ -103,7 +103,7 @@ export const VirtualList = React.forwardRef(function VirtualList({ label, items,
       return (
         <div key={'h' + index} role="listitem" className={cx('plx-virtual-list__item', 'plx-virtual-list__header', VIRTUAL_STICKY_CLASS)} {...v.itemProps(index)}>
           <span className="plx-virtual-list__header-label">{r.group.label}</span>
-          <span className="plx-virtual-list__header-count">{t.group(r.n)}</span>
+          <span className="plx-virtual-list__header-count">{groupText(r.n)}</span>
         </div>
       );
     }
@@ -118,7 +118,7 @@ export const VirtualList = React.forwardRef(function VirtualList({ label, items,
 
   return (
     <div className={cx('plx-virtual-list', 'plx-virtual-list--' + (mode === 'variable' ? 'variable' : 'fixed'), groups && 'plx-virtual-list--groups', className)} {...rest}>
-      {showCount ? <div className="plx-virtual-list__count">{t.count(itemCount)}</div> : null}
+      {showCount ? <div className="plx-virtual-list__count">{countText(itemCount)}</div> : null}
       <div ref={v.viewportRef} role={total || loading ? 'list' : undefined} aria-label={label} aria-busy={loading || undefined}
         className="plx-virtual-list__viewport" data-plx-height={HEIGHTS.indexOf(height) >= 0 ? height : 'md'}>
         {total ? <VirtualProbe /> : null}

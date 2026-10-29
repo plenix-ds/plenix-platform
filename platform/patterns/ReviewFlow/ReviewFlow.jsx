@@ -179,10 +179,12 @@ const QUEUE_STRINGS = {
   done: '{what} {decision}', count: '{n} {plural}',
 };
 
-export function ReviewQueue({ items = [], label = 'Waiting for review', noun = 'item', plural, onDecision, selected, onSelectionChange,
+export function ReviewQueue({ items = [], label, noun, plural, onDecision, selected, onSelectionChange,
   strings, className, ...rest }) {
   const t = Object.assign({}, QUEUE_STRINGS, strings);
-  const many = plural || noun + 's';
+  const many = plural || (noun ? noun + 's' : t.plural);   // the default words come from the catalog
+  noun = noun ?? t.noun;
+  label = label ?? t.queueLabel;
   const toast = useOptionalToast();
   const [own, setOwn] = React.useState([]);
   const sel = selected !== undefined ? selected : own;

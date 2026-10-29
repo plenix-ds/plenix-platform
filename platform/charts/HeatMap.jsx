@@ -43,8 +43,8 @@ import { scalePosition } from './parts/position.js';
 import { Axis } from './parts/Axis.jsx';
 import { ChartTooltip, chartTooltipText } from './parts/ChartTooltip.jsx';
 import { useChartInteraction } from './interaction.js';
+import { useStrings } from '../providers/LocaleProvider.jsx';
 
-const STRINGS = { value: 'Value', row: 'Row', column: 'Column', date: 'Date', missing: 'No data', low: 'Low', high: 'High', scale: 'Color scale' };
 const DAY = 24 * 60 * 60 * 1000;
 // the gap between cells, as a fraction of a cell (band padding: geometry)
 const GAP = 0.1;
@@ -72,7 +72,7 @@ function calendarGrid(data) {
 
 export function HeatMap({ title, description, variant = 'matrix', rows = [], columns = [], values = [], data, valueLabel, scale = 'sequential', min, max,
   format, size, margin, interactive = true, onSelect, strings, frameStrings, interactionStrings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('chart.heatMap', strings);
   const calendar = variant === 'calendar';
   const fmt = typeof format === 'function' ? format : (v) => formatNumber(v);
   const vLabel = valueLabel || t.value;

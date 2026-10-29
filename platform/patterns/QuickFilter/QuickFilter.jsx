@@ -43,8 +43,8 @@ import { Inline } from '../../components/Stack/Stack.jsx';
 import { formatNumber } from '../../utils/format.js';
 import { PanelTrigger, Pill, toggle, fill } from '../CommandBar/panel-parts.jsx';
 import { DATE_PRESETS, CATEGORY_ORDER } from '../../utils/fields.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { find: 'Find a {noun}', none: 'No {noun} matches', clear: 'Clear', all: 'All', presets: DATE_PRESETS, custom: 'Custom range', from: 'From', to: 'To' };
 // the choice in force, in words: the first chosen value's label, "+N" for the rest
 const nameOf = (list, chosen) => {
   if (!chosen || !chosen.length) return undefined;
@@ -54,7 +54,7 @@ const nameOf = (list, chosen) => {
 const asOptions = (options) => (options || []).map((o, i) => (typeof o === 'string' ? { value: o } : o)).map((o, i) => Object.assign({ label: o.value, color: CATEGORY_ORDER[i % CATEGORY_ORDER.length] }, o));
 
 export function QuickFilter({ kind = 'list', label, icon, noun = 'value', options, value, onChange, counts, required = false, inline = false, strings }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = Object.assign({ presets: DATE_PRESETS }, useStrings('quickFilter', strings));   // the date presets' labels come from utils/fields.js
   const [q, setQ] = React.useState('');
   const first = (options || [])[0], firstValue = typeof first === 'string' ? first : first && first.value;
   React.useEffect(() => {

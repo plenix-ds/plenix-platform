@@ -28,11 +28,11 @@ import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { Notice } from '../Notice/Notice.jsx';
 import { Link } from '../Link/Link.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { one: 'There is a problem', many: 'There are {count} problems' };
 
 export function ErrorSummary({ errors = [], title, headingLevel = 2, autoFocus = true, strings, className, ...rest }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('errorSummary', strings);
   const ref = React.useRef(null);
   const titleId = 'plx-es' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const key = errors.map((e) => e.target + ':' + e.message).join('|');

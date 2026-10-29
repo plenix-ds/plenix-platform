@@ -80,15 +80,8 @@ import { ProgressBar } from '../../components/ProgressBar/ProgressBar.jsx';
 import { DropZone } from '../../components/DropZone/DropZone.jsx';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { MenuItem } from '../../components/Menu/Menu.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = {
-  dialogTitle: 'Upload files', queue: 'Uploads', drop: 'Drag and drop files or folders here', or: 'or', chooseFiles: 'Choose files', chooseFolder: 'Choose a folder',
-  uploading: 'Uploading {n} files', uploadingOne: 'Uploading 1 file', done: '{n} uploads complete', doneOne: '1 upload complete', failed: '{n} uploads failed',
-  failedOne: '1 upload failed', none: 'No uploads', progress: '{done} of {total} uploaded', overall: 'Overall progress', waiting: 'Waiting', uploaded: 'Uploaded',
-  canceled: 'Canceled', cancelAll: 'Cancel all', clear: 'Clear finished', hide: 'Hide the uploads', show: 'Show the uploads', close: 'Close', finish: 'Done',
-  remove: 'Remove from the list', again: 'Upload again', tooLarge: 'This file is larger than {max}.', wrongType: 'This type of file can’t be uploaded here.',
-  error: 'The upload failed. Try again.', failedNamed: '{name} failed: {reason}',
-};
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const clamp = (n) => Math.max(0, Math.min(100, Number(n) || 0));
 const MOVING = { queued: true, uploading: true };
@@ -124,7 +117,7 @@ function droppedFiles(dataTransfer) {
 let nextId = 0;
 export function useUploadQueue(options) {
   const o = options || {};
-  const t = Object.assign({}, STRINGS, o.strings);
+  const t = useStrings('uploadManager', o.strings);
   const [items, setItems] = React.useState([]);
   const controllers = React.useRef({});
   const latest = React.useRef(o); latest.current = o;
@@ -171,7 +164,7 @@ export function useUploadQueue(options) {
 export function UploadManager({ queue, upload, items, onAdd, onCancel, onRetry, onRemove, onCancelAll, onClear, variant = 'panel', docked = false, dropZone, accept, maxSize,
   concurrency, folders = true, hint, title, open = true, onClose, defaultCollapsed = false, strings, className }) {
   devWarn('UploadManager', { variant }, { variant: ['panel','dialog'] });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('uploadManager', strings);
   const own = useUploadQueue({ upload, accept, maxSize, concurrency, strings });
   const q = queue || (items ? { items, add: onAdd, cancel: onCancel, retry: onRetry, remove: onRemove, cancelAll: onCancelAll, clear: onClear } : own);
   const rows = q.items || [];

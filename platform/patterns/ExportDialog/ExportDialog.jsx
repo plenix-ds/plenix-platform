@@ -23,9 +23,10 @@ import { Badge } from '../../components/Badge/Badge.jsx';
 import { Link } from '../../components/Link/Link.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { cx } from '../../utils/cx.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function ExportDialog({ open, title, onClose, formats = [], selectedCount = 0, onExport, allowBackground = true, initialBackground = false, strings, className }) {
-  const t = Object.assign({ title: 'Export', format: 'Format', scope: 'Scope', all: 'All records', selection: 'Selected records', background: 'Export in the background', export: 'Export', cancel: 'Cancel', invalid: 'Choose an available format and scope.', failed: 'Could not export. Try again.', ready: 'Export ready', queued: 'Export queued', download: 'Download export', done: 'Done' }, strings);
+  const t = useStrings('exportDialog', strings);
   const [format, setFormat] = React.useState(formats[0]?.value || ''), [scope, setScope] = React.useState('all'), [background, setBackground] = React.useState(initialBackground);
   const [busy, setBusy] = React.useState(false), [result, setResult] = React.useState(null), [finished, setFinished] = React.useState(false), [error, setError] = React.useState('');
   const lock = React.useRef(false), epoch = React.useRef(0), initial = React.useRef(null); initial.current = { format: formats[0]?.value || '', background: initialBackground };

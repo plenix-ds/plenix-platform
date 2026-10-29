@@ -18,13 +18,14 @@ import { snapToGrid } from '../../utils/grid.js';
 import { Image } from '../../components/Image/Image.jsx';
 import { Input, Select } from '../../components/Input/Input.jsx';
 import { CommentThread } from '../CommentThread/CommentThread.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 function AnnotationMark({annotation,index,active,onSelect,strings}) {
  const position={x:snapToGrid(Number(annotation.x)||0),y:snapToGrid(Number(annotation.y)||0)};
  const move=useReposition({name:annotation.label||annotation.location,position,disabled:true});
  return <Button ref={move.props.ref} className={cx('plx-image-annotation__mark',annotation.kind==='region'&&'plx-image-annotation__mark--region')} variant="secondary" aria-label={(annotation.kind==='region'?strings.region:strings.pin)+' '+(index+1)+': '+(annotation.label||annotation.location)} aria-pressed={active} onClick={onSelect}><Text variant="data">{index+1}</Text></Button>;
 }
 export function ImageAnnotation({src,alt,annotations=[],selectedId,onSelectionChange,onAdd,onReply,strings,className,...rest}) {
- const t=Object.assign({title:'Image annotations',pin:'Pin',region:'Region',location:'Location',comment:'Comment',kind:'Annotation type',add:'Add annotation',empty:'Enter a location and comment.',failed:'Could not save. Try again.',none:'No annotations'},strings);
+ const t=useStrings('imageAnnotation', strings);
  const [own,setOwn]=React.useState(null),[kind,setKind]=React.useState('pin'),[location,setLocation]=React.useState(''),[text,setText]=React.useState(''),[error,setError]=React.useState(''),[busy,setBusy]=React.useState(false);const lock=React.useRef(false),alive=React.useRef(true);React.useEffect(()=>{alive.current=true;return()=>{alive.current=false;};},[]);
  const id=selectedId===undefined?own:selectedId,active=annotations.find(a=>a.id===id);
  async function add(e){e.preventDefault();if(lock.current||!onAdd)return;if(!location.trim()||!text.trim()){setError(t.empty);return;}lock.current=true;setBusy(true);setError('');try{await onAdd({kind,location:location.trim(),text:text.trim()});if(alive.current){setText('');setLocation('');}}catch(e){if(alive.current)setError(t.failed);}finally{lock.current=false;if(alive.current)setBusy(false);}}

@@ -49,8 +49,8 @@ import { Text } from '../Text/Text.jsx';
 import { Popover } from '../Popover/Popover.jsx';
 import { Spotlight } from '../Spotlight/Spotlight.jsx';
 import { SurfaceContext } from '../../providers/Surface.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { close: 'Close', step: '{current} of {total}' };
 
 // a string with {name} places filled by numbers in the data font (counts are technical values)
 const fill = (template, values) => template.split(/(\{\w+\})/).filter(Boolean).map((part, i) => {
@@ -60,7 +60,7 @@ const fill = (template, values) => template.split(/(\{\w+\})/).filter(Boolean).m
 
 export function TeachingBubble({ target, open = false, onDismiss, title, children, media, step, primaryAction, secondaryAction, placement = 'bottom',
   wide = false, spotlight = true, focusOnOpen = false, strings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('teachingBubble', strings);
   const id = useUid('plx-teaching-bubble');
   const actions = primaryAction || secondaryAction;
   const spot = React.useRef(null);   // the target's box: the spotlight's anchor

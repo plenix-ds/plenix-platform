@@ -30,13 +30,14 @@ import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { Icon, StatusIcon } from '../Icon/Icon.jsx';
 import { Button } from '../Button/Button.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 const TONES = ['info', 'success', 'warning', 'danger', 'neutral'];
 
 export function Banner({ tone = 'info', title, children, actions, onDismiss, placement = 'page', icon, strings, className, ...rest }) {
   devWarn('Banner', { tone }, { tone: ['info','success','warning','danger','neutral'] });
   const t = TONES.indexOf(tone) >= 0 ? tone : 'info';
-  const words = Object.assign({ dismiss: 'Dismiss' }, strings);
+  const words = useStrings('banner', strings);
   return (
     <div className={cx('plx-banner', 'plx-banner--' + t, 'plx-banner--' + (placement === 'pane' ? 'pane' : 'page'), className)}
       role={t === 'danger' ? 'alert' : 'status'} {...rest}>

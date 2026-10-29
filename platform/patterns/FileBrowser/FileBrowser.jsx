@@ -80,14 +80,8 @@ import { DeleteFlow } from '../DeleteFlow/DeleteFlow.jsx';
 import { FileList, sortFiles } from '../FileList/FileList.jsx';
 import { useDraggable, useDropTarget } from '../../utils/dnd.js';
 import { useSelection } from '../../hooks/useSelection.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = {
-  label: 'Files', root: 'Library', newFolder: 'New folder', folderName: 'Folder name', create: 'Create', upload: 'Upload', search: 'Search this folder',
-  folders: 'Folders', path: 'Location', count: '{n} items', one: '1 item', empty: 'This folder is empty', emptyText: 'Upload files or create a folder.',
-  noMatch: 'Nothing matches “{q}”', download: 'Download', moveTo: 'Move to', delete: 'Delete', noun: 'item', plural: 'items',
-  drop: 'Drop files to upload to {folder}', nameTaken: 'A file or folder named “{name}” is already here.', nameEmpty: 'Give the folder a name.',
-  items: '{n} items', item: '{n} item',
-};
 const ROOT = '__plx-root';
 const DRAG = 'plx-file';
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
@@ -114,7 +108,7 @@ function GridItem({ item, onMove, children }) {
 export function FileBrowser({ items = [], root, folder, defaultFolder, onFolderChange, view, defaultView = 'list', onViewChange, listView = 'list', tree = false,
   breadcrumbs = true, selectable = true, selected, onSelectionChange, onOpenFile, hrefFor, onCreateFolder, onUpload, onDownload, onRename, onDelete, onMove,
   actions = [], strings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('fileBrowser', strings);
   const top = { id: root && root.id !== undefined ? root.id : null, name: (root && root.name) || t.root };
   const [ownFolder, setOwnFolder] = React.useState(defaultFolder === undefined ? top.id : defaultFolder);
   const current = keyOf(folder === undefined ? ownFolder : folder);

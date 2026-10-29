@@ -42,8 +42,8 @@ import { cx } from '../../utils/cx.js';
 import { formatBytes, formatDate, formatNumber } from '../../utils/format.js';
 import { Icon } from '../Icon/Icon.jsx';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { folder: 'folder', items: '{n} items', item: '{n} item' };
 const BY_EXT = {
   pdf: 'file-pdf', png: 'file-png', jpg: 'file-jpg', jpeg: 'file-jpg', svg: 'file-svg', psd: 'file-psd', ai: 'file-ai',
   zip: 'file-zip', rar: 'file-zip', '7z': 'file-zip', gz: 'file-zip', tar: 'file-zip',
@@ -80,7 +80,7 @@ function Picture({ src, icon }) {
 
 export function File({ name = '', kind = 'file', size, modified, count, meta, type, icon, src, open = false, appearance = 'line',
   href, onOpen, strings, className, ...rest }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('file', strings);
   const folder = kind === 'folder';
   const ext = folder ? '' : fileExtension(name);
   const base = ext ? name.slice(0, name.length - ext.length - 1) : name;

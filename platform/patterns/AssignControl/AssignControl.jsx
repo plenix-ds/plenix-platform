@@ -52,20 +52,15 @@ import { EntityPicker } from '../../components/EntityPicker/EntityPicker.jsx';
 import { Persona } from '../../components/Persona/Persona.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { useOptionalToast } from '../ReviewFlow/ReviewFlow.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = {
-  assign: 'Assign', assignToMe: 'Assign to me', reassign: 'Reassign', unassign: 'Unassign', unassigned: 'Unassigned',
-  cancel: 'Cancel', assigned: 'Assigned to {name}', cleared: '{label} removed', delegate: 'Delegate', change: 'Change',
-  end: 'End delegation', delegateTitle: 'Delegate {label}', to: 'Delegate to', dates: 'Dates', note: 'Note',
-  noteHint: 'Shown to the person you delegate to.', needPerson: 'Choose a person.', needDates: 'Choose the first and last day.',
-  delegatedTo: 'Delegated to {name}', notDelegated: 'Not delegated', ended: 'Delegation ended',
-};
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 
-export function AssignControl({ label = 'Assignee', people = [], value = null, onChange, me, clearable = true, variant = 'assign',
+export function AssignControl({ label, people = [], value = null, onChange, me, clearable = true, variant = 'assign',
   delegation, onDelegate, onEndDelegation, strings, className, ...rest }) {
   devWarn('AssignControl', { variant }, { variant: ['assign','delegate'] });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('assignControl', strings);
+  label = label ?? t.label;
   const toast = useOptionalToast();
   const say = (text) => { if (toast) toast.show(text, { tone: 'success' }); else announce(text); };
   const find = (v) => people.find((p) => p.value === v) || null;

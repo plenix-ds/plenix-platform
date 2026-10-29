@@ -54,18 +54,8 @@ import { Text } from '../../components/Text/Text.jsx';
 import { Toolbar } from '../../components/Toolbar/Toolbar.jsx';
 import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
 import { BarActions, foldOrder } from '../CommandBar/BarActions.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = {
-  selected: '{n} selected',
-  selectAll: 'Select all',
-  clear: 'Clear',
-  allSelected: 'Every {noun} is selected',
-  nothingToClear: 'Nothing to clear: select {plural} first',
-  why: 'Select {plural} to {action}',
-  single: 'Select one {noun} to {action}',
-  label: 'Selection actions',
-  more: 'More actions',
-};
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const off = (a, count) => !!a.disabled || !count || !!(a.single && count > 1);
 
@@ -90,9 +80,9 @@ function SelectButtons({ count, total, words, onSelectAll, onClear, t }) {
   );
 }
 
-export function SelectionSummary({ count, total, noun = 'item', plural, onSelectAll, onClear, strings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
-  const words = { noun, plural: plural || noun + 's' };
+export function SelectionSummary({ count, total, noun, plural, onSelectAll, onClear, strings, className }) {
+  const t = useStrings('bulkActions', strings);
+  const words = { noun: noun ?? t.noun, plural: plural || (noun ? noun + 's' : t.plural) };   // the default words come from the catalog
   return (
     <div className={cx('plx-selection-summary', className)}>
       <Count count={count} t={t} />
@@ -101,9 +91,9 @@ export function SelectionSummary({ count, total, noun = 'item', plural, onSelect
   );
 }
 
-export function BulkActions({ count, total, noun = 'item', plural, onSelectAll, onClear, actions = [], label, strings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
-  const words = { noun, plural: plural || noun + 's' };
+export function BulkActions({ count, total, noun, plural, onSelectAll, onClear, actions = [], label, strings, className }) {
+  const t = useStrings('bulkActions', strings);
+  const words = { noun: noun ?? t.noun, plural: plural || (noun ? noun + 's' : t.plural) };   // the default words come from the catalog
   const root = React.useRef(null);
   const folds = foldOrder(actions).length;
   const step = useBarFit(root, actions.map((a) => a.label).join('|') + '§' + count, 1 + folds, 0, ':scope > [data-plx-bar-row]');

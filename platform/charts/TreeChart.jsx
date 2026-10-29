@@ -43,8 +43,8 @@ import { snapToGrid } from '../utils/grid.js';
 import { ChartFrame } from './ChartFrame.jsx';
 import { useChartInteraction } from './interaction.js';
 import { useEChartsPlot, NO_MARGIN } from './echarts/EChartsPlot.jsx';
+import { useStrings } from '../providers/LocaleProvider.jsx';
 
-const STRINGS = { name: 'Name', detail: 'Detail', parent: 'Reports to', level: 'Level', folded: 'folded', open: 'open' };
 const INTERACTION = { hint: 'Use the arrow keys to move through the tree.', hintSelect: ' Enter folds or opens a branch.', selected: '{text}' };
 const ORIENTATIONS = ['left-to-right', 'top-to-bottom'];
 const NONE = Object.freeze([]);
@@ -81,7 +81,7 @@ const tokenPx = (name) => {
 
 export function TreeChart({ title, description, hideCaption, data, orientation = 'left-to-right', defaultFolded = NONE, folded: foldedProp, onFoldedChange,
   interactive = true, strings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('chart.treeChart', strings);
   const down = orientation === 'top-to-bottom';
   const { nodes, byId } = React.useMemo(() => flatten(data), [data]);
   const [own, setOwn] = React.useState(() => new Set(defaultFolded));

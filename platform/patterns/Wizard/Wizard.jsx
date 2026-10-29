@@ -23,9 +23,10 @@ import { Text } from '../../components/Text/Text.jsx';
 import { Stack } from '../../components/Stack/Stack.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { cx } from '../../utils/cx.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function Wizard({ steps = [], label, defaultStep = 0, navigation = 'linear', summary, onComplete, onCancel, strings, className }) {
-  const t = Object.assign({ back: 'Back', next: 'Next', complete: 'Finish', cancel: 'Cancel', summary: 'Review', invalid: 'Check this step before continuing.', failed: 'Could not save. Try again.', steps: 'Steps' }, strings);
+  const t = useStrings('wizard', strings);
   const all = summary == null ? steps : steps.concat([{ id: 'summary', label: t.summary, content: summary }]);
   const [index, setIndex] = React.useState(defaultStep), [busy, setBusy] = React.useState(false), [error, setError] = React.useState('');
   const lock = React.useRef(false), alive = React.useRef(false), moved = React.useRef(false);

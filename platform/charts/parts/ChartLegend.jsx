@@ -33,12 +33,11 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
-
-const STRINGS = { legend: 'Legend' };
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function ChartLegend({ items = [], orientation = 'horizontal', shape = 'square', interactive = false, hidden, defaultHidden = [],
   onToggle, label, strings, className, ...rest }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('chart.chartLegend', strings);
   const [own, setOwn] = React.useState(defaultHidden);
   const off = hidden === undefined ? own : hidden;
   const o = orientation === 'vertical' ? 'vertical' : 'horizontal';

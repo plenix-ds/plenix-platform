@@ -194,7 +194,8 @@ export default {
     "saved": "Saved",
     "offline": "Offline",
     "failed": "Save failed",
-    "retry": "Retry"
+    "retry": "Retry",
+    "unsaved": "Your changes have not been saved."
   },
   "avatar": {
     "online": "Online",
@@ -250,7 +251,8 @@ export default {
     "single": "Select one {noun} to {action}",
     "label": "Selection actions",
     "more": "More actions",
-    "noun": "item"
+    "noun": "item",
+    "plural": "items"
   },
   "button": {
     "working": "Working"
@@ -462,7 +464,11 @@ export default {
     "thinking": "Thinking",
     "label": "Conversation",
     "placeholder": "Write a message",
-    "sendLabel": "Send"
+    "sendLabel": "Send",
+    "conversation": "Conversation",
+    "message": "Message",
+    "send": "Send",
+    "typing": "Typing"
   },
   "checklist": {
     "dismiss": "Dismiss checklist",
@@ -519,7 +525,9 @@ export default {
     "why": "Select {plural} to {action}",
     "single": "Select one {noun} to {action}",
     "preset": "any",
-    "moreLabel": "More actions"
+    "moreLabel": "More actions",
+    "from": "",
+    "to": ""
   },
   "commandMenu": {
     "label": "Commands",
@@ -730,7 +738,20 @@ export default {
     "it": "it",
     "them": "them",
     "names": "Deleted",
-    "noun": "item"
+    "noun": "item",
+    "plural": "items",
+    "items": {
+      "one": "{n} item",
+      "other": "{n} items"
+    },
+    "titleItems": {
+      "one": "Delete {n} item?",
+      "other": "Delete {n} items?"
+    },
+    "phraseItems": {
+      "one": "delete {n} item",
+      "other": "delete {n} items"
+    }
   },
   "documentViewer": {
     "document": "Document",
@@ -1320,7 +1341,14 @@ export default {
     "groupRemoved": "Group removed"
   },
   "quickFilter": {
-    "preset": "any"
+    "preset": "any",
+    "find": "Find a {noun}",
+    "none": "No {noun} matches",
+    "clear": "Clear",
+    "all": "All",
+    "custom": "Custom range",
+    "from": "From",
+    "to": "To"
   },
   "rating": {
     "label": "Rating"
@@ -1428,7 +1456,9 @@ export default {
   },
   "reviewFlow": {
     "label": "Waiting for review",
-    "noun": "item"
+    "noun": "item",
+    "plural": "items",
+    "queueLabel": "Waiting for review"
   },
   "richTextEditor": {
     "toolbar": "Formatting",
@@ -1920,6 +1950,41 @@ export default {
   "wizardDialog": {
     "close": "Close",
     "unsaved": "Your changes will be lost."
+  },
+  "offboarding": {
+    "backup": "Export your data",
+    "export": "Export data",
+    "review": "Confirm your choice",
+    "reason": "Reason (optional)",
+    "confirmName": "Type the account name to confirm",
+    "mismatch": "Enter the exact account name.",
+    "cancel": "Keep account",
+    "deleteAccount": "Delete account",
+    "cancelSubscription": "Cancel subscription"
+  },
+  "imageUpload": {
+    "drop": "Drop an image here, or",
+    "dropMany": "Drop images here, or",
+    "choose": "Choose image",
+    "chooseMany": "Choose images",
+    "replace": "Replace",
+    "remove": "Remove {name}",
+    "alt": "Description",
+    "altHint": "Describe this image for people who cannot see it",
+    "tooLarge": "{name} is larger than {max}",
+    "notImage": "{name} is not an image",
+    "removed": "{name} removed",
+    "added": {
+      "one": "{n} image added",
+      "other": "{n} images added"
+    },
+    "crop": {
+      "title": "Crop image",
+      "zoom": "Zoom",
+      "frame": "Crop area. Drag the picture, or move it with the arrow keys",
+      "apply": "Apply",
+      "cancel": "Cancel"
+    }
   },
   "voteTally": {
     "approve": "Approve",

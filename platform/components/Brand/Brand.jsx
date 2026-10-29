@@ -38,12 +38,12 @@ import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { Icon } from '../Icon/Icon.jsx';
 import { appById } from '../../providers/apps.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { name: 'Plenix' };
 
 export function BrandMark({ kind = 'mark', tone, size, app, showName = true, clearSpace = false, label, strings, className, ...rest }) {
   devWarn('BrandMark', { tone, size }, { tone: ['brand','mono','on-accent'], size: ['sm','md','lg','xl'] });
-  const s = { ...STRINGS, ...strings };
+  const s = useStrings('brand', strings);
   if (kind === 'mark') {
     const cls = cx('plx-brand-mark', tone && 'plx-brand-mark--tone-' + tone, size && 'plx-brand-mark--size-' + size, className);
     return label ? <span role="img" aria-label={label} className={cls} {...rest} />

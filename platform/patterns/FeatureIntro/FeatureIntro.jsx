@@ -19,9 +19,10 @@ import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { TeachingBubble } from '../../components/TeachingBubble/TeachingBubble.jsx';
 import { cx } from '../../utils/cx.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function FeatureIntro({ title, children, target, showBadge = true, initiallyOpen = false, onDismiss, strings, className }) {
-  const t = Object.assign({ new: 'New', whatsNew: 'What is new', gotIt: 'Got it', later: 'Not now', close: 'Close' }, strings);
+  const t = useStrings('featureIntro', strings);
   const [bubble, setBubble] = React.useState(initiallyOpen), [dialog, setDialog] = React.useState(false);
   const done = () => { setBubble(false); setDialog(false); if (onDismiss) onDismiss(); };
   return <Inline className={cx('plx-feature-intro', className)} wrap>

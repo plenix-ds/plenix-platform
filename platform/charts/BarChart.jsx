@@ -63,8 +63,8 @@ import { useEChartsPlot, plotGrid, NO_MARGIN } from './echarts/EChartsPlot.jsx';
 import { tickLineHeight } from './echarts/engine.js';
 import { gridRoom } from './LineChart.jsx';
 import { snapToGrid } from '../utils/grid.js';
+import { useStrings } from '../providers/LocaleProvider.jsx';
 
-const STRINGS = { category: 'Category', total: 'Total', range: 'Range', count: 'Count' };
 const LAYOUTS = ['grouped', 'stacked', 'percent'];
 // px: the least room a segment needs for its share written inside it (percent)
 const INSIDE_LABEL_MIN = 32;
@@ -96,7 +96,7 @@ export function binValues(values, { bins, domain } = {}) {
 
 export function BarChart({ title, description, hideCaption, size, categories = NONE, series = NONE, orientation = 'horizontal', layout = 'grouped',
   histogram, valueLabel, categoryLabel, format, showValues = false, legend, legendPosition, tooltip = true, margin, strings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('chart.barChart', strings);
   const o = orientation === 'vertical' ? 'vertical' : 'horizontal';
   const across = o === 'horizontal';
   const bins = histogram && Array.isArray(histogram.values) ? binValues(histogram.values, histogram) : null;

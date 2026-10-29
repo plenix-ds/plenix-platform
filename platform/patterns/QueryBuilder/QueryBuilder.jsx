@@ -51,14 +51,10 @@ import { Combobox } from '../../components/Combobox/Combobox.jsx';
 import { SegmentedControl } from '../../components/SegmentedControl/SegmentedControl.jsx';
 import { CodeBlock } from '../../components/CodeBlock/CodeBlock.jsx';
 import { VisuallyHidden } from '../../components/VisuallyHidden/VisuallyHidden.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { createTranslator } from '../../providers/LocaleProvider.jsx';
+import { formatLocale } from '../../utils/format.js';
 
-const STRINGS = {
-  builder: 'Builder', text: 'Text', viewLabel: 'View', where: 'Where', and: 'And', or: 'Or', andWord: 'and', orWord: 'or',
-  join: 'Match', all: 'All rules', any: 'Any rule', addRule: 'Add rule', addGroup: 'Add group', removeRule: 'Remove rule',
-  removeGroup: 'Remove group', field: 'Field', operator: 'Operator', value: 'Value', rule: 'Rule {n}', group: 'Group {n}',
-  empty: 'No rules: every record matches.', everything: 'Every record', matches: '{n} matches', match: '{n} match',
-  textTitle: 'Query', added: 'Rule added', groupAdded: 'Group added', removed: 'Rule removed', groupRemoved: 'Group removed',
-};
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const blank = (x) => x === null || x === undefined || x === '' || (Array.isArray(x) && !x.length);
 const NO_VALUE = { empty: true, nempty: true };
@@ -66,7 +62,7 @@ const quote = (s) => '“' + s + '”';
 
 // the query as one sentence: rules in the field type's words, groups in parentheses; unfinished rules left out
 export function formatQuery(node, fields = [], strings) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = Object.assign({}, createTranslator(formatLocale()).section('queryBuilder'), strings);   // a plain function: no hook
   const words = (f, op) => ((OPERATORS[kindOf(f)] || []).find((o) => o[0] === op) || [op, op])[1];
   const rule = (c) => {
     const f = fieldOf(fields, c.field);
@@ -175,8 +171,9 @@ function Group({ node, setNode, depth, index, maxDepth, fields, uid, focus, onRe
   );
 }
 
-export function QueryBuilder({ fields = [], value, onChange, label = 'Query', maxDepth = 3, view: viewProp, onViewChange, views = true, matches, strings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
+export function QueryBuilder({ fields = [], value, onChange, label, maxDepth = 3, view: viewProp, onViewChange, views = true, matches, strings, className }) {
+  const t = useStrings('queryBuilder', strings);
+  label = label ?? t.textTitle;
   const node = value || { join: 'and', items: [] };
   const [own, setOwn] = React.useState('builder');
   const view = viewProp || own;

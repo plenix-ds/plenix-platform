@@ -66,8 +66,8 @@ import { useFloating, FLOATING_ANCHOR, PLACEMENTS } from '../../utils/floating.j
 import { Button } from '../Button/Button.jsx';
 import { Sheet } from '../Sheet/Sheet.jsx';
 import { useMedia, below } from '../../patterns/AppShell/AppShell.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { close: 'Close' };
 const SIZES = ['sm', 'md', 'lg', 'auto'];
 
 // the top layer: the popover attribute, where the browser also places by anchor positioning (as Menu)
@@ -83,7 +83,7 @@ const ms = (el, name) => {
 export function Popover({ trigger, triggerOn = 'click', open: openProp, defaultOpen = false, onOpenChange, title, label, footer, closeButton = false,
   placement = 'bottom-start', size = 'md', arrow = false, role = 'dialog', initialFocus, focusOnOpen, sheetOnNarrow = true, strings, className, anchorClassName, children, ...rest }) {
   devWarn('Popover', { size }, { size: ['md','sm','lg','auto'] });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('popover', strings);
   const id = useUid('plx-popover');
   const controlled = openProp !== undefined;
   const [own, setOwn] = React.useState(!!defaultOpen);

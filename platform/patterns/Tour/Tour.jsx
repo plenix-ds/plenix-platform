@@ -17,9 +17,10 @@ import { Inline } from '../../components/Stack/Stack.jsx';
 import { TeachingBubble } from '../../components/TeachingBubble/TeachingBubble.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { cx } from '../../utils/cx.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function Tour({ steps = [], open = false, onOpenChange, step, defaultStep = 0, onStepChange, onFinish, spotlight = true, strings, className }) {
-  const t = Object.assign({ next: 'Next', back: 'Back', finish: 'Finish tour', skip: 'Skip tour', resume: 'Resume tour', close: 'Close', step: '{current} of {total}' }, strings);
+  const t = useStrings('tour', strings);
   const [own, setOwn] = React.useState(defaultStep);
   const at = Math.max(0, Math.min(step === undefined ? own : step, steps.length - 1));
   const move = (n) => { if (step === undefined) setOwn(n); if (onStepChange) onStepChange(n); };

@@ -40,8 +40,8 @@ import { DataLabel } from './parts/DataLabel.jsx';
 import { ChartLegend } from './parts/ChartLegend.jsx';
 import { ChartTooltip, chartTooltipText } from './parts/ChartTooltip.jsx';
 import { useChartInteraction } from './interaction.js';
+import { useStrings } from '../providers/LocaleProvider.jsx';
 
-const STRINGS = { end: 'End', step: 'Step', change: 'Change', total: 'Total', running: 'Running total', increase: 'Increase', decrease: 'Decrease' };
 const COLORS = { up: 'status-positive', down: 'status-negative', total: seriesColor(0) };
 
 // each bar: its kind, the running total before and after it
@@ -62,7 +62,7 @@ export function waterfallSteps(data = [], endLabel) {
 
 export function WaterfallChart({ title, description, data = [], endLabel, format, yLabel, size = 'md', margin, legend = true, interactive = true, onSelect,
   strings, frameStrings, interactionStrings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('chart.waterfallChart', strings);
   const fmt = typeof format === 'function' ? format : (v) => formatNumber(v);
   const signed = (v) => (v > 0 ? '+' + fmt(v) : v < 0 ? '−' + fmt(-v) : fmt(0));
   const bars = waterfallSteps(data, endLabel === undefined ? t.end : endLabel);

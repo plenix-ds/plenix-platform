@@ -893,7 +893,8 @@ export default {
     "saved": "تم الحفظ",
     "offline": "غير متصل",
     "failed": "فشل الحفظ",
-    "retry": "إعادة المحاولة"
+    "retry": "إعادة المحاولة",
+    "unsaved": "لم يتم حفظ تغييراتك."
   },
   "avatarUpload": {
     "change": "تغيير الصورة",
@@ -917,7 +918,8 @@ export default {
     "single": "حدّد {noun} واحدًا لـ {action}",
     "label": "إجراءات التحديد",
     "more": "المزيد من الإجراءات",
-    "noun": "عنصر"
+    "noun": "عنصر",
+    "plural": "عناصر"
   },
   "columnsMenu": {
     "label": "الأعمدة",
@@ -954,7 +956,9 @@ export default {
     "why": "حدّد {plural} لـ {action}",
     "single": "حدّد {noun} واحدًا لـ {action}",
     "preset": "أي",
-    "moreLabel": "المزيد من الإجراءات"
+    "moreLabel": "المزيد من الإجراءات",
+    "from": "",
+    "to": ""
   },
   "commandPalette": {
     "title": "الأوامر",
@@ -1011,7 +1015,32 @@ export default {
     "it": "ه",
     "them": "هم",
     "names": "محذوف",
-    "noun": "عنصر"
+    "noun": "عنصر",
+    "plural": "عناصر",
+    "items": {
+      "zero": "لا عناصر",
+      "one": "عنصر واحد",
+      "two": "عنصران",
+      "few": "{n} عناصر",
+      "many": "{n} عنصرًا",
+      "other": "{n} عنصر"
+    },
+    "titleItems": {
+      "zero": "حذف لا عناصر؟",
+      "one": "حذف عنصر واحد؟",
+      "two": "حذف عنصرين؟",
+      "few": "حذف {n} عناصر؟",
+      "many": "حذف {n} عنصرًا؟",
+      "other": "حذف {n} عنصر؟"
+    },
+    "phraseItems": {
+      "zero": "حذف لا عناصر",
+      "one": "حذف عنصر واحد",
+      "two": "حذف عنصرين",
+      "few": "حذف {n} عناصر",
+      "many": "حذف {n} عنصرًا",
+      "other": "حذف {n} عنصر"
+    }
   },
   "duplicateAction": {
     "duplicate": "تكرار",
@@ -1486,7 +1515,11 @@ export default {
     "thinking": "جارٍ التفكير",
     "label": "الرسالة",
     "placeholder": "اكتب رسالة",
-    "sendLabel": "إرسال"
+    "sendLabel": "إرسال",
+    "conversation": "المحادثة",
+    "message": "الرسالة",
+    "send": "إرسال",
+    "typing": "جارٍ الكتابة"
   },
   "checklist": {
     "dismiss": "تجاهل قائمة المهام",
@@ -1795,7 +1828,14 @@ export default {
     "view": "عرض الشخص"
   },
   "quickFilter": {
-    "preset": "أي"
+    "preset": "أي",
+    "find": "ابحث عن {noun}",
+    "none": "لا يوجد {noun} مطابق",
+    "clear": "مسح",
+    "all": "الكل",
+    "custom": "نطاق مخصص",
+    "from": "من",
+    "to": "إلى"
   },
   "relatedAssets": {
     "empty": "لا توجد أصول مرتبطة"
@@ -1921,7 +1961,9 @@ export default {
   },
   "reviewFlow": {
     "label": "بانتظار المراجعة",
-    "noun": "عنصر"
+    "noun": "عنصر",
+    "plural": "عناصر",
+    "queueLabel": "بانتظار المراجعة"
   },
   "collection": {
     "selected": {
@@ -1931,6 +1973,68 @@ export default {
       "few": "تم تحديد {count} عناصر",
       "many": "تم تحديد {count} عنصرًا",
       "other": "تم تحديد {count} عنصر"
+    }
+  },
+  "offboarding": {
+    "backup": "صدّر بياناتك",
+    "export": "تصدير البيانات",
+    "review": "أكّد اختيارك",
+    "reason": "السبب (اختياري)",
+    "confirmName": "اكتب اسم الحساب للتأكيد",
+    "mismatch": "أدخل اسم الحساب كما هو تمامًا.",
+    "cancel": "الإبقاء على الحساب",
+    "deleteAccount": "حذف الحساب",
+    "cancelSubscription": "إلغاء الاشتراك"
+  },
+  "imageUpload": {
+    "drop": "اسحب صورة وأفلتها هنا، أو",
+    "dropMany": "اسحب الصور وأفلتها هنا، أو",
+    "choose": "اختيار صورة",
+    "chooseMany": "اختيار صور",
+    "replace": "استبدال",
+    "remove": "إزالة {name}",
+    "alt": "الوصف",
+    "altHint": "صِف هذه الصورة لمن لا يستطيعون رؤيتها",
+    "tooLarge": "{name} أكبر من {max}",
+    "notImage": "{name} ليس صورة",
+    "removed": "تمت إزالة {name}",
+    "added": {
+      "zero": "لم تتم إضافة صور",
+      "one": "تمت إضافة صورة واحدة",
+      "two": "تمت إضافة صورتين",
+      "few": "تمت إضافة {n} صور",
+      "many": "تمت إضافة {n} صورة",
+      "other": "تمت إضافة {n} صورة"
+    },
+    "crop": {
+      "title": "قصّ الصورة",
+      "zoom": "التكبير",
+      "frame": "منطقة القص. اسحب الصورة أو حرّكها بمفاتيح الأسهم",
+      "apply": "تطبيق",
+      "cancel": "إلغاء"
+    }
+  },
+  "voteTally": {
+    "approve": "موافقة",
+    "deny": "رفض",
+    "abstain": "امتناع",
+    "turnedOff": "متوقف",
+    "notVoted": "لم يصوّتوا",
+    "voteOf": "تصويت {name}",
+    "hiddenUntilClosed": "مخفي حتى يُغلق التصويت",
+    "totalsOnly": "المجاميع فقط",
+    "reconnecting": "إعادة الاتصال",
+    "quorum": "النصاب: حاضر {present}، المطلوب {needed} ({state})",
+    "met": "مكتمل",
+    "notMet": "غير مكتمل",
+    "result": {
+      "open": "مفتوح",
+      "passing": "في طريقه للإقرار",
+      "failing": "في طريقه للرفض",
+      "passed": "أُقرّ",
+      "failed": "رُفض",
+      "tied": "تعادل",
+      "no-quorum": "لا نصاب"
     }
   }
 };

@@ -22,7 +22,9 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-export function ActionBar({ label = 'Actions', sticky = true, className, children }) {
-  return <div role="group" aria-label={label} className={cx('plx-action-bar', !sticky && 'plx-action-bar--static', className)}>{children}</div>;
+export function ActionBar({ label, sticky = true, className, children }) {
+  const t = useStrings('actionBar');
+  return <div role="group" aria-label={label ?? t.label} className={cx('plx-action-bar', !sticky && 'plx-action-bar--static', className)}>{children}</div>;
 }

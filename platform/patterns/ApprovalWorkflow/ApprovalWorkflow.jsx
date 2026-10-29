@@ -22,6 +22,7 @@ import { Button } from '../../components/Button/Button.jsx';
 import { Badge } from '../../components/Badge/Badge.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { cx } from '../../utils/cx.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 const statusOf = (step) => {
   const votes = (step.reviewers || []).map((a) => a.decision);
@@ -29,7 +30,7 @@ const statusOf = (step) => {
 };
 export function ApprovalWorkflow({ title, steps = [], reviewerId, variant = 'sequential', onDecision, strings, reviewStrings, className }) {
   devWarn('ApprovalWorkflow', { variant }, { variant: ['sequential','parallel','status'] });
-  const t = Object.assign({ approve: 'Approve', changes: 'Request changes', reject: 'Reject', comment: 'Comment', reason: 'Explain why this needs changes.', failed: 'Could not save this decision. Your comment is still available.', steps: 'Approval stages', recorded: 'Decision recorded' }, strings);
+  const t = useStrings('approvalWorkflow', strings);
   const [comments, setComments] = React.useState({}), [errors, setErrors] = React.useState({}), [pending, setPending] = React.useState({});
   const locks = React.useRef(new Set());
   const [submitted, setSubmitted] = React.useState({});

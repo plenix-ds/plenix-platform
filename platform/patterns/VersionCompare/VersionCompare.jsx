@@ -62,13 +62,8 @@ import { SegmentedControl } from '../../components/SegmentedControl/SegmentedCon
 import { VisuallyHidden } from '../../components/VisuallyHidden/VisuallyHidden.jsx';
 import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
 import { ComparisonView } from '../ComparisonView/ComparisonView.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = {
-  label: 'Version comparison', compare: 'Compare', with: 'With', swap: 'Swap', swapLabel: 'Swap the two versions', view: 'View', columns: 'Side by side', slider: 'Slider',
-  text: 'Text', by: 'by {author}', diff: 'Changes from {base} to {target}', added: 'Added', removed: 'Removed', same: 'No changes in the text',
-  summary: '{added} added, {removed} removed', lines: '{n} lines', line: '1 line', previous: 'Previous change', next: 'Next change', at: 'Change {n} of {total}',
-  unchanged: 'Show {n} unchanged lines', empty: 'Choose two versions to compare.',
-};
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 
 // the lines of two texts, compared: [{ kind: "same" | "add" | "del", text, a (the line number before), b (after) }]
@@ -166,7 +161,7 @@ function TextDiff({ base, target, context, t, uid }) {
 
 export function VersionCompare({ versions = [], attributes = [], base, defaultBase, target, defaultTarget, onChange, mode, defaultMode = 'columns', onModeChange, modes, context = 3,
   ratio = '16-9', scroll = false, label, strings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('versionCompare', strings);
   const uid = useUid('plx-version-compare');
   const ids = versions.map((v) => v.id);
   const [own, setOwn] = React.useState({ base: defaultBase !== undefined ? defaultBase : ids[ids.length - 2], target: defaultTarget !== undefined ? defaultTarget : ids[ids.length - 1] });

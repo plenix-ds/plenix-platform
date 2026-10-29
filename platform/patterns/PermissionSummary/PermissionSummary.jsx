@@ -39,14 +39,14 @@ import { Icon } from '../../components/Icon/Icon.jsx';
 import { List } from '../../components/List/List.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Link } from '../../components/Link/Link.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { can: 'Can', cannot: 'Cannot', manage: 'Manage access', canSentence: 'Can {list}', cannotSentence: 'Cannot {list}' };
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const lower = (x) => String(x).charAt(0).toLowerCase() + String(x).slice(1);
 
 export function PermissionSummary({ access, icon = 'lock', detail, can = [], cannot = [], variant = 'list', onManage, manageHref, live = false, strings, className, ...rest }) {
   devWarn('PermissionSummary', { variant }, { variant: ['list','compact'] });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('permissionSummary', strings);
   const compact = variant === 'compact';
   const yes = (children) => ({ icon: 'check', tone: 'success', children });
   const no = (children) => ({ icon: 'close', tone: 'danger', children });

@@ -37,8 +37,8 @@ import { Axis } from './parts/Axis.jsx';
 import { GridLines } from './parts/GridLines.jsx';
 import { ChartTooltip } from './parts/ChartTooltip.jsx';
 import { useChartHover, labelRoom, halfRoom, AXIS_TITLE_ROOM } from './chart-kit.js';
+import { useStrings } from '../providers/LocaleProvider.jsx';
 
-const STRINGS = { group: 'Group', min: 'Minimum', q1: 'First quartile', median: 'Median', q3: 'Third quartile', max: 'Maximum', outliers: 'Outliers', n: 'Values' };
 const CAP = 0.5;   // a whisker's cap, a share of the box's thickness
 
 // a quantile of sorted values, interpolated between the two nearest
@@ -59,7 +59,7 @@ export function boxStats(values) {
 
 export function BoxPlot({ title, description, hideCaption, size, groups = [], orientation = 'vertical', showOutliers = true, valueLabel, categoryLabel, format,
   tooltip = true, legend, legendPosition, margin, strings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('chart.boxPlot', strings);
   const o = orientation === 'horizontal' ? 'horizontal' : 'vertical';
   const across = o === 'horizontal';
   const fmt = (v) => (typeof format === 'function' ? format(v) : formatNumber(v));
