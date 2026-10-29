@@ -931,6 +931,7 @@ exports.formatRange = formatRange;
 exports.formatRelative = formatRelative;
 exports.formatTime = formatTime;
 exports.formatUnit = formatUnit;
+exports.isoDay = isoDay;
 exports.numeralLocale = numeralLocale;
 exports.parseDate = parseDate;
 exports.regionName = regionName;
@@ -980,7 +981,11 @@ exports.regionName = regionName;
      dateTimeAttr(date): the machine-readable value for <time dateTime={…}>
      parseDate(value): the Date every helper here reads: a Date as is, a date-only "YYYY-MM-DD" as that calendar day
        where the reader is (never midnight UTC, which is the day before in the Americas), else new Date(value); null when
-       it is not a date. Components that read a date use it, so no component parses dates itself (issue 342)
+       it is not a date. Components that read a date use it, so no component parses dates itself (issue 342). The owner's
+       rule (2026-10-29, option A): one rule everywhere, so the charts' time axes, GanttChart, HeatMap and the filters
+       read dates through it too
+     isoDay(date): a date's calendar day where the reader is, as "YYYY-MM-DD" (its local parts, never toISOString, which
+       is the UTC day: the day before east of UTC around midnight); internal, for the filters (utils/fields.js)
      FORMATS: the standard's data (see platform/standards/formats.json)
    Behavior:
      Nothing is cached per locale beyond the Intl formatter objects; every call reads the locale unless one is given.
@@ -1062,6 +1067,12 @@ function parseDate(d) {
   return isNaN(x.getTime()) ? null : x;
 }
 const toDate = parseDate;
+// a date's calendar day where the reader is ("YYYY-MM-DD", from its local parts); "" when it is not a date
+const pad2 = n => (n < 10 ? '0' : '') + n;
+function isoDay(date) {
+  const d = parseDate(date);
+  return d ? String(d.getFullYear()).padStart(4, '0') + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()) : '';
+}
 function formatLocale() {
   const lang = typeof document !== 'undefined' && document.documentElement && document.documentElement.getAttribute('lang');
   if (lang) return lang;
@@ -11427,7 +11438,13 @@ const S = 1000,
   H = 60 * MIN,
   DAY = 24 * H;
 const TIME_STEPS = [['second', 1, S], ['second', 5, 5 * S], ['second', 15, 15 * S], ['second', 30, 30 * S], ['minute', 1, MIN], ['minute', 5, 5 * MIN], ['minute', 15, 15 * MIN], ['minute', 30, 30 * MIN], ['hour', 1, H], ['hour', 3, 3 * H], ['hour', 6, 6 * H], ['hour', 12, 12 * H], ['day', 1, DAY], ['day', 2, 2 * DAY], ['week', 1, 7 * DAY], ['month', 1, 30 * DAY], ['month', 3, 91 * DAY], ['year', 1, 365 * DAY]];
-const toTime = v => v instanceof Date ? v.getTime() : new Date(v).getTime();
+// a time value: a Date, a number, or a text read by the shared reader (a date-only "YYYY-MM-DD" is that calendar day where
+// the reader is, issue 342)
+const toTime = v => {
+  if (typeof v === 'number') return v;
+  const d = (0, _format.parseDate)(v);
+  return d ? d.getTime() : NaN;
+};
 // the start of the step that holds t (local time)
 function floorTo(t, unit, amount) {
   const x = new Date(t);
@@ -27597,7 +27614,7 @@ var _default = exports.default = {
   }
 };
   } },
-  "platform/utils/fields.js": { deps: {"../i18n/en.js":"platform/i18n/en.js","plenix-platform/icons/plenix/calendar":"platform/dist/icons/plenix/calendar.js","plenix-platform/icons/plenix/ed-text":"platform/dist/icons/plenix/ed-text.js","plenix-platform/icons/plenix/field-number":"platform/dist/icons/plenix/field-number.js","plenix-platform/icons/plenix/field-select":"platform/dist/icons/plenix/field-select.js","plenix-platform/icons/plenix/tags":"platform/dist/icons/plenix/tags.js"}, externals: {  }, run: function (module, exports, require) {
+  "platform/utils/fields.js": { deps: {"../i18n/en.js":"platform/i18n/en.js","./format.js":"platform/utils/format.js","plenix-platform/icons/plenix/calendar":"platform/dist/icons/plenix/calendar.js","plenix-platform/icons/plenix/ed-text":"platform/dist/icons/plenix/ed-text.js","plenix-platform/icons/plenix/field-number":"platform/dist/icons/plenix/field-number.js","plenix-platform/icons/plenix/field-select":"platform/dist/icons/plenix/field-select.js","plenix-platform/icons/plenix/tags":"platform/dist/icons/plenix/tags.js"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27611,6 +27628,7 @@ exports.matchesDate = matchesDate;
 exports.matchesFilter = matchesFilter;
 exports.valueOf = exports.optionsOf = exports.nextId = exports.newCondition = void 0;
 var _en = _interopRequireDefault(require("../i18n/en.js"));
+var _format = require("./format.js");
 var _calendar = _interopRequireDefault(require("plenix-platform/icons/plenix/calendar"));
 var _edText = _interopRequireDefault(require("plenix-platform/icons/plenix/ed-text"));
 var _fieldNumber = _interopRequireDefault(require("plenix-platform/icons/plenix/field-number"));
@@ -27679,10 +27697,12 @@ const optionsOf = f => (f && f.options || []).map((o, i) => typeof o === 'string
 }, o));
 exports.optionsOf = optionsOf;
 const blank = x => x === null || x === undefined || x === '' || Array.isArray(x) && !x.length;
-const iso = d => (d instanceof Date ? d : new Date(d)).toISOString().slice(0, 10);
+// days are calendar days where the reader is (the owner, issue 342 option A): today and "N days before" from local dates,
+// never from toISOString (the UTC day, which is the day before east of UTC around midnight)
+const iso = _format.isoDay;
 const daysBefore = (n, today) => {
-  const d = new Date((today || iso(new Date())) + 'T00:00:00Z');
-  d.setUTCDate(d.getUTCDate() - n);
+  const d = new Date(((0, _format.parseDate)(today) || new Date()).getTime());
+  d.setDate(d.getDate() - n);
   return iso(d);
 };
 
@@ -65205,7 +65225,8 @@ function SeriesChart({
   }));
   const xv = data.map(row => row ? row[x] : undefined);
   const type = xType === 'auto' ? typeOf(xv.find(v => v !== undefined && v !== null)) : xType;
-  const xs = type === 'time' ? xv.map(v => v instanceof Date ? v : new Date(v)) : xv;
+  // a time axis reads its values with the shared reader: a date-only "YYYY-MM-DD" is that calendar day where the reader is (issue 342)
+  const xs = type === 'time' ? xv.map(v => typeof v === 'number' ? new Date(v) : (0, _format.parseDate)(v) || new Date(NaN)) : xv;
   const raw = (s, c) => {
     const v = data[c] ? data[c][list[s].field] : undefined;
     return isNum(v) ? v : null;
@@ -65478,7 +65499,7 @@ function SeriesChart({
     };
     const X = v => (type === 'band' ? posOf(xs.indexOf(v)) : c.convertToPixel({
       xAxisIndex: 0
-    }, type === 'time' ? +new Date(v) : Number(v))) - g.x;
+    }, type === 'time' ? +(typeof v === 'number' ? new Date(v) : (0, _format.parseDate)(v) || new Date(NaN)) : Number(v))) - g.x;
     const Y = v => yPx(v) - g.y;
     Y.ticks = () => axisTicks(c, 'yAxis');
     Y.format = v => fmtV(v);
@@ -65660,8 +65681,10 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
 const DAY = 24 * 60 * 60 * 1000;
 // the gap between cells, as a fraction of a cell (band padding: geometry)
 const GAP = 0.1;
+
+// a value's day where the reader is: a date-only "YYYY-MM-DD" through the shared reader (utils/format.js parseDate, issue 342)
 const dayStart = d => {
-  const x = new Date(d instanceof Date ? d.getTime() : d);
+  const x = new Date(((0, _format.parseDate)(d) || new Date(NaN)).getTime());
   x.setHours(0, 0, 0, 0);
   return x;
 };
@@ -71430,7 +71453,8 @@ const DIAMOND = 8,
   HEAD = 4,
   RING = 4,
   NAME_GAP = 8;
-const toDate = v => v instanceof Date ? v : new Date(v);
+// the shared reader (utils/format.js parseDate): a date-only "YYYY-MM-DD" is that calendar day where the reader is (issue 342)
+const toDate = v => (0, _format.parseDate)(v) || new Date(NaN);
 function GanttChart({
   title,
   description,
