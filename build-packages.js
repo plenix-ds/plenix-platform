@@ -175,15 +175,25 @@ copyDir(path.join(P, 'icons'), path.join(I, 'svg'), (n) => n.endsWith('.svg'));
 copy(path.join(P, 'components', 'Icon', 'icon.css'), path.join(I, 'icon.css'));
 const iconNames = [...new Set(svgs.map((n) => n.replace(/\.svg$/, '').replace(/-24$|-fill$|-24-fill$/, '').replace(/-24$/, '')))].sort();
 const icons = iconNames.map((n) => ({ name: n, files: svgs.filter((f) => f === n + '.svg' || f.startsWith(n + '-')) }));
-json(path.join(I, 'icons.json'), { version: VERSION, set: 'Material Symbols Sharp, weight 300, optical size 20 (unedited)', count: icons.length, icons });
-json(path.join(I, 'package.json'), manifest('icons', 'Plenix icons: Material Symbols Sharp (weight 300), outline and filled, as SVG files and an icon stylesheet.', {
-  exports: { './icons.json': './icons.json', './icon.css': './icon.css', './svg/*': './svg/*', './package.json': './package.json' },
+// the Plenix set as importable modules (#282): the stage 1 layout build-app.js writes (platform/dist/icons/plenix: per name
+// <name>.js and its four SVG files, and index.json), so an app installed from npm imports exactly the icons it uses
+const PLENIX_ICONS = path.join(P, 'dist', 'icons', 'plenix');
+if (!fs.existsSync(path.join(PLENIX_ICONS, 'index.json'))) throw new Error('platform/dist/icons/plenix is missing: run node build-app.js first');
+copyDir(PLENIX_ICONS, path.join(I, 'plenix'));
+const plenixModules = fs.readdirSync(PLENIX_ICONS).filter((n) => n.endsWith('.js')).map((n) => n.replace(/\.js$/, '')).sort();
+json(path.join(I, 'icons.json'), { version: VERSION, set: 'Material Symbols Sharp, weight 300, optical size 20 (unedited)', count: icons.length, icons,
+  plenix: { count: plenixModules.length, modules: plenixModules.map((n) => './plenix/' + n + '.js'), index: './plenix/index.json' } });
+json(path.join(I, 'package.json'), manifest('icons', 'Plenix icons: Material Symbols Sharp (weight 300), outline and filled, as SVG files, importable icon modules and an icon stylesheet.', {
+  // the modules are ES modules (export default): the package's only JavaScript
+  type: 'module',
+  exports: { './icons.json': './icons.json', './icon.css': './icon.css', './svg/*': './svg/*', './plenix/*': './plenix/*', './package.json': './package.json' },
 }));
 readme('icons', `
 ${icons.length} icons, outline and filled, 20px and 24px: Material Symbols Sharp at weight 300, unedited.
 
 - \`svg/<name>.svg\`, \`<name>-fill.svg\`, \`<name>-24.svg\`, \`<name>-24-fill.svg\`
-- \`icons.json\`: every name and its files.
+- \`icons.json\`: every name and its files, and the list of Plenix modules.
+- \`plenix/<name>.js\`: each of the ${plenixModules.length} Plenix icons as its own module, with its four SVG files beside it and \`plenix/index.json\` (names and aliases). Import only what you use: \`import Add from '${SCOPE}/icons/plenix/add.js'\`, then \`<Icon icon={Add} />\` or \`registerIcons(Add)\`.
 - \`icon.css\`: the stylesheet the Icon component uses (already part of ${SCOPE}/styles).`);
 
 // ---------- styles ----------
