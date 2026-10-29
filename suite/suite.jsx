@@ -22,6 +22,7 @@ import { CaptureUI } from './capture.jsx';
 import { LeftNav } from './leftnav.jsx';
 import { SearchScreen } from './search.jsx';
 import { FindWorkspace, findResults } from './findSources.jsx';
+import './prefetch.js';   // the next application page is prerendered on hover (batch 237; moved here from the Platform, issue 458)
 const { useState } = React;
 
 // every Plenix application of this suite: its id (PLENIX_APPS), its folder and its label

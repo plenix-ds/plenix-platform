@@ -217,13 +217,13 @@ readme('styles', `
 const R = path.join(PKG, 'react');
 const jsOpts = { entryPoints: [path.join(P, 'index.js')], bundle: true, logLevel: 'silent', target: 'es2019', jsx: 'transform',
   loader: { '.js': 'jsx', '.jsx': 'jsx' }, external: ['react', 'react-dom', 'react-dom/client', 'react/jsx-runtime'],
-  banner: { js: '/* ' + SCOPE + '/react ' + VERSION + ' · Plenix Platform components and patterns (generated) */' },
-  // a bundled app has no Plenix script to find the vendor folder from: the RichTextEditor loads its engine from this release's
-  // CDN copy (versioned, never changes) unless the page sets window.PlenixVendorBase (batch 251)
-  define: { __PLENIX_VENDOR__: JSON.stringify('https://design-system.lighthouseway.org/cdn/' + VERSION + '/vendor/') } };
+  banner: { js: '/* ' + SCOPE + '/react ' + VERSION + ' · Plenix Platform components and patterns (generated) */' } };
+// the bundle holds no engine address and injects no script (#456, #457): the engines (rich text, charts, PDF) load through the
+// page's plenix-engines.js, shipped beside plenix.js and in the npm package's dist/ (its vendor/ folder is beside it)
 esbuild.buildSync(Object.assign({}, jsOpts, { format: 'esm', outfile: path.join(R, 'dist', 'index.js') }));
 esbuild.buildSync(Object.assign({}, jsOpts, { format: 'cjs', outfile: path.join(R, 'dist', 'index.cjs') }));
 copy(path.join(P, 'dist', 'platform.js'), path.join(R, 'dist', 'plenix.global.js'));
+copy(path.join(P, 'engines', 'plenix-engines.js'), path.join(R, 'dist', 'plenix-engines.js'));
 // the TypeScript definitions, from the components' header comments (build-types.js)
 require('./build-types.js')(path.join(R, 'index.d.ts'), VERSION);
 const exportsList = [];
@@ -233,7 +233,7 @@ for (const m of fs.readFileSync(path.join(P, 'index.js'), 'utf8').matchAll(/expo
 }
 json(path.join(R, 'package.json'), manifest('react', 'Plenix React components and patterns, drawn only from Plenix tokens.', {
   main: 'dist/index.cjs', module: 'dist/index.js', types: 'index.d.ts',
-  exports: { '.': { types: './index.d.ts', import: './dist/index.js', require: './dist/index.cjs' }, './plenix.global.js': './dist/plenix.global.js', './package.json': './package.json' },
+  exports: { '.': { types: './index.d.ts', import: './dist/index.js', require: './dist/index.cjs' }, './plenix.global.js': './dist/plenix.global.js', './plenix-engines.js': './dist/plenix-engines.js', './package.json': './package.json' },
   peerDependencies: { react: '>=18.2.0 <19', 'react-dom': '>=18.2.0 <19' },
   dependencies: { [SCOPE + '/styles']: VERSION, [SCOPE + '/tokens']: VERSION, [SCOPE + '/icons']: VERSION },
 }));
@@ -246,6 +246,7 @@ import { AppShell, Button, DataGrid } from '${SCOPE}/react';
 \`\`\`
 
 Pages without a build tool load \`dist/plenix.global.js\` after React 18 and use \`window.Plenix\`.
+A page that shows a rich-text editor, a chart or a PDF also loads \`dist/plenix-engines.js\` (its \`vendor/\` folder sits beside it); without it those parts say the engines script is missing.
 React 18 is a peer dependency. Rules: compose from these components and the tokens only; no inline styles or hard-coded values.`);
 
 // ---------- CDN: the same files at a fixed address per version ----------
@@ -255,10 +256,11 @@ copy(path.join(S, 'fonts.css'), path.join(CDN, 'fonts.css'));
 copyDir(path.join(S, 'fonts'), path.join(CDN, 'fonts'));   // the hosted typefaces beside fonts.css (batch 227)
 copy(path.join(S, 'theme-boot.js'), path.join(CDN, 'theme-boot.js'));
 copy(path.join(R, 'dist', 'plenix.global.js'), path.join(CDN, 'plenix.js'));
+copy(path.join(R, 'dist', 'plenix-engines.js'), path.join(CDN, 'plenix-engines.js'));
 copy(path.join(R, 'dist', 'index.js'), path.join(CDN, 'plenix.esm.js'));
 // The CDN and npm declarations share the same generated source, including its export-coverage gate.
 copy(path.join(R, 'index.d.ts'), path.join(CDN, 'plenix.d.ts'));
-write(path.join(CDN, 'README.md'), '# Plenix ' + VERSION + '\n\nLoad plenix.esm.js with plenix.css. Icon draws every Material Symbols icon by its own name (<Icon name="rocket_launch">): Plenix icons are bundled, any other symbol loads once from /cdn/material/ (setIconLibrary(url) points elsewhere); an unknown name draws nothing and warns in the console. icons-all.css is only for icons written as bare class names (plx-icon plx-icon--<name>) without the component.\n\n## Self-hosting (an extension, an offline app)\n\nThe archive (plenix-' + VERSION + '.tgz) carries everything the documented APIs need, the icon library included (icons/library/; icons-all.css points at it). Serve its files together: Icon finds icons/library/ beside plenix.js or plenix.css. When your bundler renames those files, name the folder before Plenix draws: window.PlenixIconLibrary = chrome.runtime.getURL(\'plenix/icons/library/\') (or setIconLibrary(url)). The icon files are SVG data, parsed into paths and never run as code.\n\nTypeScript declarations: [plenix.d.ts](plenix.d.ts), generated from the same source as @plenix-ds/react/index.d.ts. React types must be installed in your TypeScript project.\n\nOnline changes: [CHANGELOG.md](' + SITE + '/cdn/' + VERSION + '/CHANGELOG.md). Component documentation: [docs/index.json](' + SITE + '/cdn/' + VERSION + '/docs/index.json).\n');
+write(path.join(CDN, 'README.md'), '# Plenix ' + VERSION + '\n\nLoad plenix.esm.js with plenix.css. A page that shows a rich-text editor, a chart or a PDF also loads plenix-engines.js (the engines sit in ./vendor/ beside it). Icon draws every Material Symbols icon by its own name (<Icon name="rocket_launch">): Plenix icons are bundled, any other symbol loads once from /cdn/material/ (setIconLibrary(url) points elsewhere); an unknown name draws nothing and warns in the console. icons-all.css is only for icons written as bare class names (plx-icon plx-icon--<name>) without the component.\n\n## Self-hosting (an extension, an offline app)\n\nThe archive (plenix-' + VERSION + '.tgz) carries everything the documented APIs need, the icon library included (icons/library/; icons-all.css points at it). Serve its files together: Icon finds icons/library/ beside plenix.js or plenix.css. When your bundler renames those files, name the folder before Plenix draws: window.PlenixIconLibrary = chrome.runtime.getURL(\'plenix/icons/library/\') (or setIconLibrary(url)). The icon files are SVG data, parsed into paths and never run as code.\n\nTypeScript declarations: [plenix.d.ts](plenix.d.ts), generated from the same source as @plenix-ds/react/index.d.ts. React types must be installed in your TypeScript project.\n\nOnline changes: [CHANGELOG.md](' + SITE + '/cdn/' + VERSION + '/CHANGELOG.md). Component documentation: [docs/index.json](' + SITE + '/cdn/' + VERSION + '/docs/index.json).\n');
 copy(path.join(P, 'vendor', 'react.production.min.js'), path.join(CDN, 'vendor', 'react.production.min.js'));
 copy(path.join(P, 'vendor', 'react-dom.production.min.js'), path.join(CDN, 'vendor', 'react-dom.production.min.js'));
 // the RichTextEditor's engine (Tiptap, MIT): loaded by the editor from ./vendor/tiptap/ the same way, shipped in both places too
@@ -409,7 +411,7 @@ function cdnOfflineBundle() {
     if (fs.statSync(file).isDirectory()) for (const name of fs.readdirSync(file).sort()) add(relative + '/' + name);
     else assets.set(relative, fs.readFileSync(file));
   };
-  for (const name of ['plenix.esm.js', 'plenix.d.ts', 'README.md', 'plenix.js', 'plenix.css', 'plenix.min.css', 'icons-all.css', 'fonts.css', 'theme-boot.js', 'fonts', 'vendor']) add(name);
+  for (const name of ['plenix.esm.js', 'plenix.d.ts', 'README.md', 'plenix.js', 'plenix-engines.js', 'plenix.css', 'plenix.min.css', 'icons-all.css', 'fonts.css', 'theme-boot.js', 'fonts', 'vendor']) add(name);
   // the icon library inside the bundle (#59; packaging fix for the 0.69.2 regression, the full icon architecture is #277):
   // every Material Symbols file under icons/library/, where <Icon> looks by default when Plenix is served from these files,
   // and icons-all.css pointing at that copy instead of the CDN's shared /cdn/material/<commit>/

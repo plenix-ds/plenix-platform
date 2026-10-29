@@ -95,8 +95,6 @@ export { useInteraction } from './hooks/useInteraction.js';
 export { useScreenLocation, navigate, goToParent, screenHref, parseScreen, useViewState } from './providers/ScreenLocation.js';
 export { useUnsavedGuard, confirmLeave, hasUnsaved, leavePage } from './providers/UnsavedGuard.jsx';
 export { TimeGrid } from './patterns/TimeGrid/TimeGrid.jsx';
-// not exported: runs once on every page (the next page is prerendered on hover; batch 237)
-import './utils/prefetch.js';
 export { WidgetGrid } from './patterns/WidgetGrid/WidgetGrid.jsx';
 export { IMAGE_EDITOR_STEPS } from './patterns/ImageEditor/imageEditorSteps.js';
 // a length JavaScript writes inline, on the grid (the base spacing token; owner, 2026-10-13)

@@ -1,5 +1,5 @@
-/* Plenix · prefetch (platform/utils/prefetch.js): the next page is ready before the click (batch 237). Internal; not part
-   of the public API: the Platform bundle runs it once, on every page that loads the Platform over http(s).
+/* Plenix suite · prefetch (suite/prefetch.js): the next page is ready before the click (batch 237). Part of the suite shell, not
+   of the Platform (issue 458): the shell imports it, so it runs once on every suite application page served over http(s).
    Chromium browsers get speculation rules: a link to another page of the same site is prerendered when the pointer
    rests on it (about 200ms) or presses it, so switching apps shows the finished page at once instead of a blank reload.
    Other browsers get the page's document fetched into the cache on hover. Links that open elsewhere (target, download),
