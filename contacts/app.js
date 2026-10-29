@@ -2691,11 +2691,13 @@ function ContactsScreen({
       ...prev,
       [contact.id]: m
     }))
-  })) : /*#__PURE__*/React.createElement(_plenixPlatform.EmptyState, {
+  })) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_plenixPlatform.VisuallyHidden, {
+    as: "h1"
+  }, "Contacts"), /*#__PURE__*/React.createElement(_plenixPlatform.EmptyState, {
     size: "page",
     icon: "person",
     title: "Select a contact"
-  })));
+  }))));
 }
   } },
   "contacts/main.jsx": { deps: {"../suite/suite.jsx":"suite/suite.jsx","./contacts.jsx":"contacts/contacts.jsx"}, externals: {  }, run: function (module, exports, require) {

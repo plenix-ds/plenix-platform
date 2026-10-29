@@ -2730,11 +2730,13 @@ function NotesScreen({
       ...prev,
       [note.id]: m
     }))
-  })) : /*#__PURE__*/React.createElement(_plenixPlatform.EmptyState, {
+  })) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(_plenixPlatform.VisuallyHidden, {
+    as: "h1"
+  }, "Notes"), /*#__PURE__*/React.createElement(_plenixPlatform.EmptyState, {
     size: "page",
     icon: "doc-text",
     title: "Select a note to read"
-  })));
+  }))));
 }
   } },
   "notes/main.jsx": { deps: {"../suite/suite.jsx":"suite/suite.jsx","./notes.jsx":"notes/notes.jsx"}, externals: {  }, run: function (module, exports, require) {

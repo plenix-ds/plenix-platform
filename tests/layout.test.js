@@ -64,6 +64,11 @@ if (changed.wants({ units: ['components/CodeBlock', 'components/Resizable', 'pat
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'announce-adoption.test.js')], { stdio: 'inherit', env: process.env });
   if (result.status !== 0) process.exit(result.status || 1);
 }
+// every suite page has one level-1 heading (issue 603): its own test, when a suite page or the hidden-text component changed
+if (changed.wants({ units: ['components/VisuallyHidden', 'patterns/EntityHeader'], apps: ['dashboard', 'projects', 'contacts', 'notes', 'messages', 'calendar', 'tasks', 'bookmarks', 'files', 'settings'] })) {
+  const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'page-h1.test.js')], { stdio: 'inherit', env: process.env });
+  if (result.status !== 0) process.exit(result.status || 1);
+}
 // section headings wrap, then end in an ellipsis with a tooltip (issue 502): its own test, when CollapsibleSection, NavList, Tooltip or the truncation helper changed
 if (changed.wants({ units: ['components/CollapsibleSection', 'components/NavList', 'components/Tooltip', 'components/Field', 'patterns/PropertyList', 'utils/overflow.js'] })) {
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'section-headings-502.test.js')], { stdio: 'inherit', env: process.env });

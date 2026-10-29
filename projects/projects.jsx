@@ -5,7 +5,7 @@
    Screens (Platforms Standard 4.3): a project and its capability (#/project/<id>/<capability>, e.g. #/project/3/tasks), a
    history entry each, on the projects page and on the dashboard. The new-project dialog asks before closing with
    unsaved entries (useUnsavedGuard). */
-import { CommandBar, CommandBarButton, CommandBarSearch, Menu, MenuItem, MenuRadioGroup, useCollectionView, Avatar, Badge, Button, Card, Checkbox, Columns, ContentGrid, Dialog, EmptyState, EntityHeader, Field, Fieldset, Inline, Input, Metric, NavList, NavPane, PageContent, Panel, ProgressBar, RowButton, SecondaryPane, SegmentedControl, Select, SideNavPortal, Stack, DataGrid, Tag, TagList, Text, ToolRail, useUnsavedGuard, useViewState } from 'plenix-platform';
+import { CommandBar, CommandBarButton, CommandBarSearch, Menu, MenuItem, MenuRadioGroup, useCollectionView, Avatar, Badge, Button, Card, Checkbox, Columns, ContentGrid, Dialog, EmptyState, EntityHeader, Field, Fieldset, Inline, Input, Metric, NavList, NavPane, PageContent, Panel, ProgressBar, RowButton, SecondaryPane, SegmentedControl, Select, SideNavPortal, Stack, DataGrid, Tag, TagList, Text, ToolRail, useUnsavedGuard, useViewState, VisuallyHidden } from 'plenix-platform';
 import { ALL_FILES, ALL_NOTES, ALL_TASKS, CONTACTS, PROJECTS } from '../suite/shared.jsx';
 const { useState } = React;
 
@@ -198,7 +198,7 @@ export function ProjectContent({ proj, panel }) {
   };
   if (placeholders[panel]) {
     const [title, desc, icon] = placeholders[panel];
-    return <PageContent><EmptyState size="page" icon={<ProjIco n={icon} size={40} />} title={title}>{desc}</EmptyState></PageContent>;
+    return <PageContent><VisuallyHidden as="h1">{title}</VisuallyHidden><EmptyState size="page" icon={<ProjIco n={icon} size={40} />} title={title}>{desc}</EmptyState></PageContent>;
   }
   return null;
 }
@@ -273,7 +273,7 @@ export function ProjectsScreen({ onSettings, screen }) {
           <ProjectNav proj={selected} active={panel} onNav={setPanel} caps={getCaps(selected)} />
           <ProjectContent key={selected.id} proj={selected} panel={panel} />
         </>
-      ) : <PageContent><EmptyState size="page" icon="briefcase" title="Select a project to get started" /></PageContent>}
+      ) : <PageContent><VisuallyHidden as="h1">Projects</VisuallyHidden><EmptyState size="page" icon="briefcase" title="Select a project to get started" /></PageContent>}
     </div>
   );
 }

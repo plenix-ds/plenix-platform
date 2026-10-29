@@ -2915,7 +2915,9 @@ function ProjectContent({
   };
   if (placeholders[panel]) {
     const [title, desc, icon] = placeholders[panel];
-    return /*#__PURE__*/React.createElement(_plenixPlatform.PageContent, null, /*#__PURE__*/React.createElement(_plenixPlatform.EmptyState, {
+    return /*#__PURE__*/React.createElement(_plenixPlatform.PageContent, null, /*#__PURE__*/React.createElement(_plenixPlatform.VisuallyHidden, {
+      as: "h1"
+    }, title), /*#__PURE__*/React.createElement(_plenixPlatform.EmptyState, {
       size: "page",
       icon: /*#__PURE__*/React.createElement(ProjIco, {
         n: icon,
@@ -3096,7 +3098,9 @@ function ProjectsScreen({
     key: selected.id,
     proj: selected,
     panel: panel
-  })) : /*#__PURE__*/React.createElement(_plenixPlatform.PageContent, null, /*#__PURE__*/React.createElement(_plenixPlatform.EmptyState, {
+  })) : /*#__PURE__*/React.createElement(_plenixPlatform.PageContent, null, /*#__PURE__*/React.createElement(_plenixPlatform.VisuallyHidden, {
+    as: "h1"
+  }, "Projects"), /*#__PURE__*/React.createElement(_plenixPlatform.EmptyState, {
     size: "page",
     icon: "briefcase",
     title: "Select a project to get started"

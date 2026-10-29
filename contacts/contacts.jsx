@@ -3,7 +3,7 @@
    Screens (Platforms Standard 4.3, 5.2): the list (#/) and a contact (#/contact/<id>), a history entry each; at Narrow one
    pane at a time (SecondaryPane detailOpen) with Back to the list; the list's scroll position is kept
    (plenix.contacts.view). */
-import { Avatar, Button, DataPill, EmptyState, EntityHeader, Icon, Inline, PageContent, RowButton, SecondaryPane, Stack, Text, useAppLayout, useViewState } from 'plenix-platform';
+import { Avatar, Button, DataPill, EmptyState, EntityHeader, Icon, Inline, PageContent, RowButton, SecondaryPane, Stack, Text, useAppLayout, useViewState, VisuallyHidden } from 'plenix-platform';
 import { ClassificationWidget } from '../suite/classification.jsx';
 import { CONTACTS } from '../suite/shared.jsx';
 const { useState } = React;
@@ -44,7 +44,7 @@ export function ContactsScreen({ screen }) {
                 { icon: 'message', label: 'Message' }, { icon: 'trash', label: 'Delete' }, { icon: 'share', label: 'Share' }]} />
             <ClassificationWidget value={meta[contact.id]} onChange={(m) => setMeta((prev) => ({ ...prev, [contact.id]: m }))} />
           </Stack>
-        ) : <EmptyState size="page" icon="person" title="Select a contact" />}
+        ) : <><VisuallyHidden as="h1">Contacts</VisuallyHidden><EmptyState size="page" icon="person" title="Select a contact" /></>}
       </PageContent>
     </div>
   );
