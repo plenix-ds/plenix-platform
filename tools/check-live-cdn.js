@@ -9,7 +9,9 @@
 //   extra       a file the live index.json or bundle-manifest.json names (outside icons/library/) that the build does not have
 // Read-only: plain GET requests with a timeout, one retry on a network error, no token, nothing written. Not a test.
 // Limit: a server cannot be asked for every file it holds, so "extra" means files the release's own records name; a stray file nobody lists is not seen.
-// Exit: 0 same, 1 differs, 2 could not run (no build folder, the CDN unreachable).
+// A file the server will not serve after every retry on HTTP 429/503 is "unreachable", not "missing" (exit 2 unless a real difference was also found); after about
+// 20 such files in a row it stops. In full mode a live index.json that cannot be read prints a warning that "extra" was not checked.
+// Exit: 0 same, 1 differs, 2 could not run or could not be answered (no build folder, the CDN unreachable or rate-limiting).
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
@@ -39,13 +41,17 @@ async function get(rel) {
   for (let tries = 0, net = 0; ; tries++) {
     try {
       const r = await once(BASE + rel.split('/').map(encodeURIComponent).join('/'));
-      if ((r.status === 429 || r.status === 503) && tries < 8) { await new Promise((ok) => setTimeout(ok, r.retryAfter > 0 ? Math.min(r.retryAfter, 30) * 1000 : Math.min(30000, 500 * 2 ** tries))); continue; }
+      if (r.status === 429 || r.status === 503) {
+        if (tries < 8) { await new Promise((ok) => setTimeout(ok, r.retryAfter > 0 ? Math.min(r.retryAfter, 30) * 1000 : Math.min(30000, 500 * 2 ** tries))); continue; }
+        return { status: 0, error: 'HTTP ' + r.status + ' after ' + tries + ' retries (the server is rate-limiting)', limited: true };   // not a missing file: the CDN could not be asked
+      }
       return r;
     } catch (e) { if (net++ >= 1) return { status: 0, error: e.message }; }
   }
 }
 function walk(dir, base, out) { for (const e of fs.readdirSync(dir, { withFileTypes: true })) { const f = path.join(dir, e.name); if (e.isDirectory()) walk(f, base, out); else out.push(path.relative(base, f).split(path.sep).join('/')); } return out; }
-async function pool(items, worker) { let i = 0; await Promise.all(Array.from({ length: CONC }, async () => { while (i < items.length) { const k = items[i++]; await worker(k); } })); }
+let stopped = false;
+async function pool(items, worker) { let i = 0; await Promise.all(Array.from({ length: CONC }, async () => { while (i < items.length && !stopped) { const k = items[i++]; await worker(k); } })); }
 
 (async () => {
   const different = [], missing = [], extra = [], unreachable = [];
@@ -65,9 +71,12 @@ async function pool(items, worker) { let i = 0; await Promise.all(Array.from({ l
     const man = live['bundle-manifest.json']; if (man) named.push('bundle-manifest.json', ...man.files.filter((f) => !f.path.startsWith('icons/library/')).map((f) => f.path));
     for (const n of new Set(named)) if (!expected.has(n)) extra.push(n);
   }
-  let done = 0; const total = expected.size;
+  if (!LIVE_ONLY && !live['index.json']) console.log('WARNING: the live index.json could not be read, so "extra" files were not checked (only different and missing)');
+  let done = 0, streak = 0; const total = expected.size;
   await pool([...expected.keys()], async (rel) => {
     const r = await get(rel);
+    // about 20 files in a row that used up their retries on 429/503: the server is not answering, so stop instead of asking for thousands more
+    if (r.limited) { if (++streak >= 20) stopped = true; } else streak = 0;
     if (r.status === 0) unreachable.push(rel + ' (' + r.error + ')');
     else if (r.status !== 200) missing.push(rel + ' (HTTP ' + r.status + ')');
     else if (expected.get(rel) !== null && sha(r.buf) !== expected.get(rel)) different.push(rel);
@@ -76,7 +85,8 @@ async function pool(items, worker) { let i = 0; await Promise.all(Array.from({ l
   console.log('Live CDN check, ' + BASE + (LIVE_ONLY ? ' (live files against the live bundle-manifest.json)' : ' (against ' + path.relative(process.cwd(), DIR) + '/)'));
   console.log('  files checked: ' + total + '; different: ' + different.length + '; missing: ' + missing.length + '; extra: ' + extra.length + '; unreachable: ' + unreachable.length);
   for (const [label, list] of [['different', different], ['missing', missing], ['extra', extra], ['unreachable', unreachable]]) list.sort().slice(0, 25).forEach((x) => console.log('  ' + label + '  ' + x)), list.length > 25 && console.log('  … and ' + (list.length - 25) + ' more ' + label);
-  if (unreachable.length && !different.length && !missing.length && !extra.length) { console.log('LIVE_CDN_ERROR (the CDN could not be reached for ' + unreachable.length + ' files)'); process.exitCode = 2; return; }
+  if (stopped) { console.log('LIVE_CDN_ERROR: stopped after 20 files in a row that the server would not serve (HTTP 429/503 after every retry); ' + (total - done) + ' files were not asked. Run it again later.'); process.exitCode = 2; return; }
+  if (unreachable.length && !different.length && !missing.length && !extra.length) { console.log('LIVE_CDN_ERROR (the CDN could not be asked for ' + unreachable.length + ' files)'); process.exitCode = 2; return; }
   if (different.length || missing.length || extra.length || unreachable.length) { console.log('LIVE_CDN_FAIL'); process.exitCode = 1; return; }
   console.log('LIVE_CDN_OK');
 })().catch((e) => { console.log('LIVE_CDN_ERROR: ' + e.message); process.exitCode = 2; });
