@@ -94,6 +94,8 @@ import { useStrings } from '../../providers/LocaleProvider.jsx';
 //      loaded once from the library (platform/icons/library beside the bundle, or the CDN's /cdn/material/<commit>/)
 //      and drawn the same way.
 //   4. An unknown name draws nothing (never a filled square) and warns once, with the closest names.
+//   A fetched icon asks for the one file it will show (the 20px drawing, or the 24px one in a comfortable density, with data-plx-icon-optical="24", and for lg and xl),
+//   at most 6 files at a time (#642); a density change on the page reads the optical size again and asks for the other file.
 //   A file that fails to load (the network, a 5xx) is asked for once more after a short pause; a 404 is answered once; after two
 //   failures the icon draws nothing for the session (#283).
 // The outline or the filled version, at optical sizes 20 and 24: the stylesheet shows the one the context draws (icon.css).
@@ -267,6 +269,12 @@ function readCapped(response) {
 const files = new Map();
 const PLENIX_FILE = 'plenix:';
 const RETRY_AFTER_MS = 250;   // the pause before a failed icon file is asked for once more
+// at most this many icon files are in flight at once (#642): a page that names hundreds of icons asks in turn, so no burst reaches the server's limit on simultaneous requests
+const MAX_FETCHES = 6;
+let running = 0;
+const waiting = [];
+const pump = () => { while (running < MAX_FETCHES && waiting.length) { const next = waiting.shift(); running++; next(); } };
+const queued = (job) => new Promise((resolve) => { waiting.push(() => job().then(resolve, resolve).then(() => { running--; pump(); })); pump(); });
 function loadFile(key) {
   if (files.has(key)) return files.get(key);
   const fromPlenix = key.startsWith(PLENIX_FILE), file = fromPlenix ? key.slice(PLENIX_FILE.length) : key, root = fromPlenix ? plenixFiles() : base();
@@ -274,8 +282,8 @@ function loadFile(key) {
   // large or not a drawing is answered once. Two failures draw nothing for the session (never a square).
   const attempt = () => fetch(root + file + '.svg').then((r) => (r.ok ? readCapped(r) : r.status >= 500 ? Promise.reject(new Error('icon file ' + r.status)) : null));
   const job = !root || typeof fetch !== 'function' ? Promise.resolve(null)
-    : attempt().catch(() => new Promise((resolve) => setTimeout(resolve, RETRY_AFTER_MS)).then(attempt))
-      .then((text) => parseSvg(text, file + '.svg')).catch(() => null).then((glyph) => { files.set(key, glyph); return glyph; });
+    : queued(() => attempt().catch(() => new Promise((resolve) => setTimeout(resolve, RETRY_AFTER_MS)).then(attempt))
+      .then((text) => parseSvg(text, file + '.svg')).catch(() => null)).then((glyph) => { files.set(key, glyph); return glyph; });
   files.set(key, job);
   return job;
 }
@@ -298,13 +306,46 @@ function noticeFetch(found) {
     ? 'load an icon file after plenix.js (plenix-icons-<site>.js from tools/icons/site-icons.js, or plenix-icons-plenix.js), import it (plenix-platform/icons/plenix/' + found.file + ') or register it (registerIcons).'
     : 'import it (plenix-platform/icons/material/' + found.symbol.replace(/_/g, '-') + ') or register it (registerIcons).'));
 }
-function useDrawings(name, size, filled, mod, lib) {
-  const resolved = mod ? { kind: 'module', symbol: mod.symbol || mod.name, fillOutline: !!mod.fillOutline, module: mod } : resolveIcon(name, { library: lib });
-  const found = resolved;
-  if (found && found.kind === 'module') mod = found.module;
+// which optical size the stylesheet will show for this icon: 24 for lg and xl, else what its context says (a comfortable density or
+// data-plx-icon-optical="24" shows the 24 drawing, any other the 20). A fetched icon asks for that one file only (#642); it is read from the
+// icon's own computed settings once it is in the page, and read again when a density or optical setting changes on the page.
+// Only a fetched icon below lg reads it: a module (imported, registered, a site's icon file) carries both drawings and the stylesheet picks, so it
+// has no watcher, reads no style and sets no state. The one page-wide observer exists only while such a fetched icon is mounted.
+const useIsoLayoutEffect = typeof window !== 'undefined' ? React.useLayoutEffect : React.useEffect;
+const watchers = new Set();
+let observer = null;
+function watchOptical(callback) {
+  watchers.add(callback);
+  if (!observer && typeof MutationObserver === 'function' && typeof document !== 'undefined') {
+    observer = new MutationObserver(() => watchers.forEach((w) => w()));
+    observer.observe(document.documentElement, { attributes: true, subtree: true, attributeFilter: ['data-plx-density', 'data-plx-icon-optical'] });
+  }
+  return () => { watchers.delete(callback); if (!watchers.size && observer) { observer.disconnect(); observer = null; } };
+}
+const opticalOf = (el) => (el && typeof getComputedStyle === 'function' && getComputedStyle(el).getPropertyValue('--plx-comp-icon-glyph-show-24').trim() === 'block' ? 24 : 20);
+function useOptical(ref, size, fetched) {
+  const watched = fetched && !LARGE[size];
+  const [optical, setOptical] = React.useState(null);
+  useIsoLayoutEffect(() => {
+    if (!watched) return undefined;
+    const read = () => setOptical(opticalOf(ref.current));
+    read();
+    const stop = watchOptical(read);
+    // forget the reading when the icon stops watching (a name that becomes a module, or lg): a later watch starts from unknown, never from a stale size
+    return () => { stop(); setOptical(null); };
+  }, [watched]);
+  return LARGE[size] ? 24 : watched ? optical : null;
+}
+// an icon's drawing source, resolved once per render: the imported module, else the name through the resolver
+const resolveShown = (name, mod, lib) => (mod ? { kind: 'module', symbol: mod.symbol || mod.name, fillOutline: !!mod.fillOutline, module: mod } : resolveIcon(name, { library: lib }));
+const isFetched = (found) => !!found && (found.kind === 'library' || found.kind === 'plenix');
+function useDrawings(name, size, filled, found, optical) {
+  const mod = found && found.kind === 'module' ? found.module : null;
   const fill = filled === true || (found && found.fillOutline);
-  const wanted = LARGE[size] ? [[fill ? 3 : 2, 24]] : [[fill ? 1 : 0, 20], [fill ? 3 : 2, 24]];
-  const fetched = found && (found.kind === 'library' || found.kind === 'plenix');
+  const fetched = isFetched(found);
+  // a module has both drawings and the stylesheet picks; a fetched icon loads only the one it will show (none until its optical size is known)
+  const wanted = fetched ? (optical === null ? [] : [[fill ? (optical === 24 ? 3 : 1) : (optical === 24 ? 2 : 0), optical]])
+    : LARGE[size] ? [[fill ? 3 : 2, 24]] : [[fill ? 1 : 0, 20], [fill ? 3 : 2, 24]];
   // a fetched drawing's key: the library's file (symbol), or the Plenix layout's file (the Plenix name)
   const fileOf = (i) => (found.kind === 'plenix' ? PLENIX_FILE + found.file : found.symbol) + VARIANT[i];
   const [, redraw] = React.useReducer((x) => x + 1, 0);
@@ -316,7 +357,7 @@ function useDrawings(name, size, filled, mod, lib) {
     let live = true;
     Promise.all(pending.map(([i]) => loadFile(fileOf(i)))).then(() => { if (live) redraw(); });
     return () => { live = false; };
-  }, [found && found.kind, found && (found.file || found.symbol), fill, LARGE[size] ? 1 : 0, pending.length]);
+  }, [found && found.kind, found && (found.file || found.symbol), fill, LARGE[size] ? 1 : 0, optical, pending.length]);
   if (!found) return [];
   const glyphs = wanted.map(([i, optical]) => [found.kind === 'module' ? moduleGlyph(mod, i) : files.get(fileOf(i)), optical]).filter(([glyph]) => Array.isArray(glyph));
   if (!glyphs.length) return [];
@@ -336,9 +377,13 @@ export function Icon({ icon, name, library: lib, size, filled, label, className,
   const badKey = icon != null && !isModule(icon) ? Object.prototype.toString.call(icon) + ':' + (typeof icon === 'object' ? Object.keys(icon).sort().join(',') : String(icon)) : null;
   if (badKey && !badIcon.has(badKey)) { badIcon.add(badKey); if (typeof console !== 'undefined') console.warn('[Plenix] Icon: icon is refused (' + moduleProblem(icon) + '; import it from plenix-platform/icons/<set>/<name>); nothing is drawn.', icon); }
   const shown = isModule(icon) ? icon.name : name;
-  const svg = useDrawings(shown, size, filled, isModule(icon) ? icon : null, lib);
+  const ref = React.useRef(null);
+  // fetched or not is decided first, so only a fetched icon watches its optical size (#642)
+  const found = resolveShown(shown, isModule(icon) ? icon : null, lib);
+  const optical = useOptical(ref, size, isFetched(found));
+  const svg = useDrawings(shown, size, filled, found, optical);
   return (
-    <span className={iconClasses(shown, isModule(icon) ? icon : null, lib, size, filled, className)}
+    <span ref={ref} className={iconClasses(shown, isModule(icon) ? icon : null, lib, size, filled, className)}
       role={label ? 'img' : undefined} aria-label={label} aria-hidden={label ? undefined : true} {...rest}>{svg}</span>
   );
 }
