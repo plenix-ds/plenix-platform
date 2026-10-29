@@ -66,7 +66,7 @@
    "parts": [
     {
      "part": "IconSafety",
-     "checks": 19
+     "checks": 20
     }
    ],
    "checksWithoutPart": 0,
@@ -130,6 +130,10 @@
     },
     {
      "part": "DirectionProvider",
+     "checks": 1
+    },
+    {
+     "part": "Fieldset",
      "checks": 1
     },
     {
