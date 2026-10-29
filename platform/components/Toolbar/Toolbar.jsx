@@ -70,7 +70,7 @@ export function Toolbar({ label, variant = 'default', className, children, onKey
   // (CommandBar) has its own ladder and is left as it is. Only a Button with a text label folds; other controls (fields, selects, menus) stay where they are
   const ladder = variant !== 'bar';
   const acts = ladder ? collect(children, []) : [];
-  const step = useBarFit(ref, acts.map((a) => a.label).join('|'), ladder ? 1 + acts.length : 0, 0, ':self');
+  const step = useBarFit(ref, acts.map((a) => a.label).join('|'), ladder && acts.length ? 1 + acts.length : 0, 0, ':self');
   const iconOnly = ladder && step >= 1;
   const folded = new Set(foldOrder(acts).slice(0, ladder ? Math.max(0, step - 1) : 0).map((a) => a.id));
   let n = 0;

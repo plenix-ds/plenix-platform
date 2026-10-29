@@ -54,7 +54,8 @@ export function ActionBar({ label, sticky = true, className, children }) {
   const phone = useMedia(below('--plx-sys-fit-footer-stack-width'));
   const acts = collect(children, []);
   const foldable = acts.filter((a) => !a.primary);
-  const measured = useBarFit(ref, acts.map((a) => a.label).join('|'), foldable.length, 0, ':self');
+  // the key holds the phone state: a bar measured while the window was a phone starts again when the window grows back. The button that folds last never folds on its own
+  const measured = useBarFit(ref, acts.map((a) => a.label).join('|') + (phone ? '|phone' : ''), Math.max(0, foldable.length - 1), 0, ':self');
   // in a phone window every action but the one that folds last is in More; otherwise only what does not fit
   const fold = phone ? Math.max(0, foldable.length - 1) : measured;
   const folded = new Set(foldOrder(acts).slice(0, fold).map((a) => a.id));
