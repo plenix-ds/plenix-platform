@@ -83,7 +83,7 @@ const ariaShortcut = (binding) => {
 };
 
 export const Button = React.forwardRef(function Button({ variant = 'secondary', size = 'md', icon, iconEnd, iconOnly = false, label, caret = false,
-  expanded, pressed, selected = false, tone, loading = false, disabled = false, href, type = 'button', joined, truncate = false, stackedLabel = false, labelRow = false, tooltip, shortcut, className, children, onClick, strings, ...rest }, ref) {
+  expanded, pressed, selected = false, tone, loading = false, disabled = false, href, type = 'button', joined, truncate = false, stackedLabel = false, labelRow = false, tooltip, shortcut, priority, className, children, onClick, strings, ...rest }, ref) {   // priority: read by a Toolbar or ActionBar that folds it into More; the Button itself ignores it
   devWarn('Button', { variant, size }, { variant: ['secondary','primary','tertiary','ghost','danger','danger-secondary','quiet'], size: ['md','sm','xs','2xs','lg'] });
   const t = useStrings('button', strings);
   // a colored surface around the button (TeachingBubble, the accent AppHeader) gives it that surface's look

@@ -11,6 +11,11 @@
       "$type": "dimension",
       "$description": "The line height of a wrapping heading or label: two lines are 32px; with the padding below, 40px."
     },
+    "fit-footer-stack-width": {
+      "$value": "{plx-ref.size-400px}",
+      "$type": "dimension",
+      "$description": "A footer or an action bar stacks its main button and Cancel full width, the main one first, in a window narrower than this (the window, not the bar). The media query writes the same 400px (CSS cannot read a token there); a component reads this token."
+    },
     "fit-wrap-padding-block": {
       "$value": "{plx-sys.space-stack-xs}",
       "$type": "dimension",
