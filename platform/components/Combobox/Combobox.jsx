@@ -112,7 +112,8 @@ export const Combobox = React.forwardRef(function Combobox({ options = [], value
   const chosen = multiple ? (values || []) : (value !== undefined && value !== null && value !== '' ? [value] : []);
   const current = !multiple && chosen.length ? optionOf(chosen[0]) || null : null;
   // the data font: forced by data (true or false); otherwise when the chosen label is wholly a number, a date or another technical value
-  const asData = data === undefined ? !!(current && isDataValue(String(current.label))) : !!data;
+  // what the input shows decides: the typed text while there is some (open or not), else the chosen label
+  const asData = data === undefined ? isDataValue(text.trim() ? text : (current ? String(current.label) : '')) : !!data;
   const q = text.trim().toLowerCase();
   // a tag picker (multiple without marks) offers only the values not chosen yet: a chosen tag leaves only by its remove
   // button, so Enter on a suggestion always adds (P-57: Enter on a chosen suggestion removed the tag)

@@ -15,12 +15,12 @@ function check({ add }) {
   if (!/export const isDataValue/.test(h)) add(NAME, hf, 0, 'dataValue.js must export isDataValue');
   else {
     const fn = new Function(h.replace(/export const isDataValue/, 'const isDataValue') + '; return isDataValue;')();
-    for (const yes of ['10', '1,000', '2026-10-25', 'Oct 25, 2026', '25 Oct 2026', '10:42 AM', '12 MB', 'v1.2.3', 'report.pdf', '#1234']) if (!fn(yes)) add(NAME, hf, 0, '"' + yes + '" must be a data value');
-    for (const no of ['Compact', '15 minutes', 'Oct 25, 2026 and later', 'Light', '']) if (fn(no)) add(NAME, hf, 0, '"' + no + '" must not be a data value');
+    for (const yes of ['10', '1,000', '2026-10-25', 'Oct 25, 2026', 'September 3, 2026', '25 Oct 2026', '10:42 AM', '12 MB', '3 kB', 'v1.2.3', 'report.csv', 'IMG_2041.jpg', 'plenix-0.73.0.zip', '#1234']) if (!fn(yes)) add(NAME, hf, 0, '"' + yes + '" must be a data value');
+    for (const no of ['Compact', '15 minutes', 'Oct 25, 2026 and later', 'Light', '', 'Mark 5', 'Market 3', 'Junior 2', '3 Decisions', 'Node.js', 'Vue.js', 'Character.ai', 'Read me.md', 'Export as report.csv', '5 b']) if (fn(no)) add(NAME, hf, 0, '"' + no + '" must not be a data value');
   }
-  for (const [f, re] of [['platform/components/Input/Input.jsx', /data === undefined \? !!\(current && isDataValue\(/], ['platform/components/Combobox/Combobox.jsx', /data === undefined \? !!\(current && isDataValue\(/]]) {
+  for (const [f, re] of [['platform/components/Input/Input.jsx', /data === undefined \? !!\(current && isDataValue\(/], ['platform/components/Combobox/Combobox.jsx', /data === undefined \? isDataValue\(/]]) {
     const s = read(f), file = path.join(ROOT, f);
-    if (!re.test(s)) add(NAME, file, 0, 'a Select or Combobox with no data prop must ask isDataValue about the chosen label');
+    if (!re.test(s)) add(NAME, file, 0, 'a Select or Combobox with no data prop must ask isDataValue about what it shows');
     if (/\bdata && 'plx-input--data'/.test(s) && /Combobox/.test(f)) add(NAME, file, 0, 'the data font is asData, not the data prop alone');
   }
 }

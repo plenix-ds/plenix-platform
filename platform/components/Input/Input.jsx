@@ -42,7 +42,8 @@
    Behavior:
      Select.data: true forces the technical-value font variant (as Input.data) on the field, false keeps the interface font; when not set, the field
        shows its value in the data font when the chosen label is wholly a number, a date, a time, a size, a version, a file name or an ID ("10",
-       "Oct 25, 2026"), the same font as the numbers and dates around it, and a word ("Compact", "15 minutes") keeps the interface font
+       "Oct 25, 2026"), the same font as the numbers and dates around it, and a word ("Compact", "15 minutes") keeps the interface font.
+       A multi-select or list box (multiple, or a size above 1) keeps the browser's own select and does no auto detection: data there is only what the prop says
      Select is drawn by Plenix (owner, dropdown-look-36): a field and a list in the Menu's look, over a hidden native <select> that
      stays the source of truth (options, value, form, reset, label). The field is role="combobox" and the list role="listbox"; a
      <label for> or Field names and focuses it. The arrow is the form-icon size (--plx-sys-control-icon-inline), like the Combobox's.
