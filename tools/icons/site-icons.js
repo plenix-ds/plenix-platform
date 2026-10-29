@@ -71,8 +71,12 @@ function inlineScripts(html) {
   return out;
 }
 
+// a quoted word that may be an icon name (opts.literals): a Plenix name that reaches an Icon only at run time (from
+// data, a prop built in code) is still registered; a word that is not a Plenix name is dropped, never reported
+const LITERAL = /['"]([a-z][a-z0-9]*(?:[-_][a-z0-9]+)*)['"]/g;
 // the names a site uses: { names: Map<name, Set<file:line>>, unresolved: [file:line …], unreadable: [file: reason …] }
-function collect(inputs, base) {
+// opts.literals: also every quoted word that is a Plenix icon name (see LITERAL), as "literal:<name>"
+function collect(inputs, base, opts = {}) {
   const names = new Map(), unresolved = [], unreadable = [];
   const add = (nm, at) => { if (!names.has(nm)) names.set(nm, new Set()); names.get(nm).add(at); };
   const report = { name(nm, at) { add(nm, at); }, unresolved(at) { unresolved.push(at); } };
@@ -86,6 +90,7 @@ function collect(inputs, base) {
     let m;
     IMPORT.lastIndex = 0; while ((m = IMPORT.exec(text))) add((m[1] === 'material' ? 'material:' : '') + m[2], rel + ':' + lineAt(text, m.index));
     CLASS.lastIndex = 0; while ((m = CLASS.exec(text))) if (!MODIFIERS.test(m[1])) add(m[1], rel + ':' + lineAt(text, m.index));
+    if (opts.literals) { LITERAL.lastIndex = 0; while ((m = LITERAL.exec(text))) add('literal:' + m[1], rel + ':' + lineAt(text, m.index)); }
   }
   return { names, unresolved, unreadable };
 }
@@ -100,6 +105,7 @@ function resolver(root) {
     return lib.get(n) || lib.get(n.replace(/_/g, '-')) || lib.get(n.replace(/-/g, '_')) || null;
   };
   return (raw) => {
+    if (raw.startsWith('literal:')) { const p = plenix.get(raw.slice(8)); return p ? { set: 'plenix', entry: p } : null; }   // a quoted word: Plenix names only
     const forced = raw.startsWith('material:'), n = (forced ? raw.slice(9) : raw).trim();
     if (!forced) {
       const p = plenix.get(n) || plenix.get(n.toLowerCase().replace(/_/g, '-')) || plenix.get(n.toLowerCase().replace(/-/g, '_'));
@@ -136,13 +142,14 @@ function fileText(site, modules, source, build) {
 }
 
 // a site's file from its source: { text, icons, unknown: [at "name"], unresolved, unreadable, found }
-// opts: { source, build } for the header (default: the generator's own command)
+// opts: { source, build } for the header (default: the generator's own command); literals: also every quoted word that is
+// a Plenix name (collect)
 function siteFile(root, site, inputs, base, opts = {}) {
-  const { names, unresolved, unreadable } = collect(inputs, base || process.cwd());
+  const { names, unresolved, unreadable } = collect(inputs, base || process.cwd(), { literals: !!opts.literals });
   const resolve = resolver(root), chosen = new Map(), unknown = [];
   for (const [raw, at] of [...names.entries()].sort((a, b) => (a[0] < b[0] ? -1 : 1))) {
     const r = resolve(raw);
-    if (!r) { unknown.push([...at][0] + ' ' + JSON.stringify(raw.replace(/^material:/, ''))); continue; }
+    if (!r) { if (!raw.startsWith('literal:')) unknown.push([...at][0] + ' ' + JSON.stringify(raw.replace(/^material:/, ''))); continue; }
     chosen.set(r.set + ':' + r.entry.name, r);
   }
   const modules = [...chosen.values()].sort((a, b) => (a.set + a.entry.name < b.set + b.entry.name ? -1 : 1)).map((r) => layout.moduleObject(r.set, r.entry));
@@ -157,12 +164,14 @@ const APPS = ['dashboard', 'projects', 'messages', 'contacts', 'calendar', 'task
 const PAGES = APPS.map((app) => ({ site: app, inputs: [app, 'suite'], out: app + '/plenix-icons-' + app + '.js' }))
   .concat([{ site: 'dam', inputs: ['dam/app', 'dam/index.html', 'dam/settings-system.html', 'dam/settings-myaccount.html', 'dam/image-editor.html'], out: 'dam/plenix-icons-dam.js' }]);
 // writes (or with check, compares) every page's icon file; a name that is not a Plenix or Material icon (the suite's
-// capability keys in plenix-app-data.js, which no Icon draws) is counted, not fatal; a name built at run time stops the build
+// capability keys in plenix-app-data.js, which no Icon draws) is counted, not fatal; a name built at run time stops the build.
+// Every quoted word in a page's source that is a Plenix name is registered too (literals): a name that reaches an Icon
+// only at run time (from the suite's data, a prop built in code) then draws from file:// as well, not only online
 function buildPages(root, opts = {}) {
   const stale = [], unknown = [], unresolved = [];
   let icons = 0;
   for (const p of PAGES) {
-    const r = siteFile(root, p.site, p.inputs.map((i) => path.join(root, i)), root, { source: p.inputs.join(', '), build: 'node build-app.js (tools/icons/site-icons.js)' });
+    const r = siteFile(root, p.site, p.inputs.map((i) => path.join(root, i)), root, { source: p.inputs.join(', '), build: 'node build-app.js (tools/icons/site-icons.js)', literals: true });
     if (r.unreadable.length) throw new Error('icon file for ' + p.site + ': cannot read ' + r.unreadable.join('; '));
     unresolved.push(...r.unresolved);
     for (const u of r.unknown) if (!unknown.includes(u)) unknown.push(u);

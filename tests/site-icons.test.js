@@ -111,6 +111,14 @@ check('Generator: a name built at run time is reported, and a plx-icons comment 
   assert.strictEqual(go.code, 0, go.out);
   assert.deepStrictEqual(run(fs.readFileSync(path.join(tmp, 'dyn-out', 'plenix-icons-dyn.js'), 'utf8')).registered.map((m) => m.name).sort(), ['density-comfortable', 'density-compact']);
 });
+check('Generator: with literals, a quoted Plenix name in data is registered and other words are dropped #557', () => {
+  write('lit/data.js', "window.DATA = [{ kind: 'trash', label: 'not-an-icon-word' }];\n");
+  const plain = sites.siteFile(ROOT, 'lit', [path.join(tmp, 'lit')], tmp);
+  const wide = sites.siteFile(ROOT, 'lit', [path.join(tmp, 'lit')], tmp, { literals: true });
+  assert.strictEqual(plain.icons, 0);
+  assert.deepStrictEqual(run(wide.text).registered.map((m) => m.name), ['trash']);
+  assert.deepStrictEqual(wide.unknown, []);
+});
 check('Generator: the site name "plenix" and a bad name are refused #553', () => {
   assert.strictEqual(tool(['plenix', 'site']).code, 2);
   assert.strictEqual(tool(['Bad Name', 'site']).code, 2);
