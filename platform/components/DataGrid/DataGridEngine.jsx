@@ -190,6 +190,10 @@ function NextEngine(props) {
   const fetching=React.useRef(false);
   const [remoteBusy,setRemoteBusy]=React.useState(false);
   const [remote,setRemote]=React.useState(null),[remoteError,setRemoteError]=React.useState(null),[retry,setRetry]=React.useState(0);
+  // a sort, filter, search or page size change starts again from page 1 in the same render as the change (issue 614), so
+  // no request for the old page number with the new search or filter goes out first
+  const resetBy=[sortSignal,props.filter,JSON.stringify(filters),props.search,pageSize],[resetSeen,setResetSeen]=React.useState(resetBy);
+  if(resetBy.some((value,i)=>!Object.is(value,resetSeen[i]))){setResetSeen(resetBy);if(page!==0)setPage(0);}
   const [metrics,setMetrics]=React.useState({row:0,line:0,lead:0,menu:0,min:0,space:0,room:0}),[isNarrow,setNarrow]=React.useState(false);
   // One conversion per distinct width and measured environment, shared by every visible cell.
   const widthPixels=React.useMemo(()=>{const cache=new Map();return value=>{if(!cache.has(value))cache.set(value,gridPx(value,{el:frame.current||document.documentElement}));return cache.get(value);};},[metrics]);
@@ -410,10 +414,12 @@ function NextEngine(props) {
   },[deferredFilter,JSON.stringify(filters),source,keepHiddenSelection]);
   const previousData=React.useRef(source);
   React.useEffect(()=>{if(ready.current&&previousData.current!==source){previousData.current=source;emit('dataChanged',source);}},[source]);
-  React.useEffect(()=>{setPage(0);setLoaded(pageSize);},[sortSignal,props.filter,JSON.stringify(filters),props.search,pageSize]);
+  React.useEffect(()=>{setLoaded(pageSize);},[sortSignal,props.filter,JSON.stringify(filters),props.search,pageSize]);
   React.useEffect(()=>{const before=()=>{const el=holder.current;printView.current=el?{top:el.scrollTop,left:el.scrollLeft,max:el.style.maxBlockSize}:null;if(el)el.style.removeProperty('max-block-size');flushSync(()=>setPrinting(true));},after=()=>{setPrinting(false);requestAnimationFrame(()=>requestAnimationFrame(()=>{const el=holder.current,saved=printView.current;if(el&&saved){if(saved.max)el.style.maxBlockSize=gridPx(parseFloat(saved.max),{el});else el.style.removeProperty('max-block-size');virtual.scrollToOffset(saved.top);el.scrollLeft=saved.left;printView.current=null;}}));};window.addEventListener('beforeprint',before);window.addEventListener('afterprint',after);return()=>{window.removeEventListener('beforeprint',before);window.removeEventListener('afterprint',after);};},[]);
 
-  React.useEffect(()=>{if(!remoteMode)return;fetching.current=true;setRemoteBusy(true);let alive=true;const controller=new AbortController();setRemoteError(null);Promise.resolve().then(()=>props.fetchRows({page:page+1,size:pageSize,sort:sorted(sorting),filters:filters.map(f=>({field:f.id,type:'like',value:f.value})),search:props.search,signal:controller.signal})).then(result=>{if(alive){fetching.current=false;setRemoteBusy(false);setRemote(old=>({rows:(mode==='load-more'||mode==='fill')&&page>0?[...(old?.rows||[]),...(result.rows||[])]:result.rows||[],total:result.total||0}));}},failure=>{if(alive){fetching.current=false;setRemoteBusy(false);setRemoteError(failure);}});return()=>{alive=false;controller.abort();};},[remoteMode,page,pageSize,JSON.stringify(sorting),JSON.stringify(filters),props.search,retry]);
+  React.useEffect(()=>{if(!remoteMode)return;fetching.current=true;setRemoteBusy(true);let alive=true;const controller=new AbortController();setRemoteError(null);Promise.resolve().then(()=>props.fetchRows({page:page+1,size:pageSize,sort:sorted(sorting),filters:filters.map(f=>({field:f.id,type:'like',value:f.value})),search:props.search,signal:controller.signal})).then(result=>{if(alive){fetching.current=false;setRemoteBusy(false);setRemote(old=>{const append=mode==='load-more'||mode==='fill',got=result.rows||[],rows=append&&page>0?[...(old?.rows||[]),...got]:got;
+        // an empty or short page ends the list (issue 614), even when the total says there are more
+        return {rows,total:append&&got.length<pageSize?rows.length:result.total||0};});}},failure=>{if(alive){fetching.current=false;setRemoteBusy(false);setRemoteError(failure);}});return()=>{alive=false;controller.abort();};},[remoteMode,page,pageSize,JSON.stringify(sorting),JSON.stringify(filters),props.search,retry]);
   const displayedTotal=remoteMode?remote?.total||0:table.getFilteredRowModel().rows.length;
   // fill with a server (issue 522): the next page is asked for when the scroll comes within 8 rows of the end, and again
   // while the rows do not yet fill the room; never while one is on its way, after a failure (Retry asks again) or at the total
