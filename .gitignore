@@ -19,3 +19,4 @@ tests/.density-test.html
 
 # the publish host, account and key (tools/publish-config.sh); never committed
 publish.config
+tools/overflow-report/
