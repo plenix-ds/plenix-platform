@@ -62,6 +62,16 @@
    "checksWithoutPart": 0,
    "checksNamedAtRunTime": 3
   },
+  "icon-safety": {
+   "parts": [
+    {
+     "part": "IconSafety",
+     "checks": 14
+    }
+   ],
+   "checksWithoutPart": 0,
+   "checksNamedAtRunTime": 0
+  },
   "keyboard": {
    "parts": [
     {

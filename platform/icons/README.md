@@ -97,3 +97,19 @@ One layout and one naming for every icon source, written by `layout.js` (generat
 - **Build errors:**
   - An unknown `plenix-platform/icons/material/<name>` import stops the build, as an unknown Plenix name does.
   - An icon value that is not a module warns once.
+
+## Untrusted icon files (#285, stage 4)
+
+- **One allow-list:** every icon file and every module drawing goes through `platform/utils/iconSafety.js`. That covers the run-time fetch, `registerIcons`, the `icon` prop, `layout.js` and `build-icons.js`.
+- **The shape:** one `<svg>` (`xmlns` = the SVG namespace, `width`, `height`, `viewBox`) holding exactly one `<path>` (`d`, `transform`, `fill-rule`, `clip-rule`).
+- **Values by grammar:**
+  - `viewBox`: four numbers, with a positive width and height
+  - `d`: path data only
+  - `transform`: matrix, translate, scale, rotate or skew of numbers only
+  - the rules: `nonzero` or `evenodd`
+- **Everything else refuses the whole file:** other elements (the basic shapes too: an icon is drawn as one path), other attributes, doctypes, entities, CDATA, comments, processing instructions, and text.
+- **Bounded:** a file over 32 KB, or a path over 16 KB, is refused before it is read. The largest shipped file is 4.3 KB.
+- **When a file is refused:**
+  - at run time, the icon draws nothing, and development warns once with the reason
+  - at build time, the build stops, naming the file and the reason
+- **The shipped files:** all 17,120 pass and read exactly as before. The checks are `tests/icon-safety.test.js` (Node only).

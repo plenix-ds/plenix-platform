@@ -36,6 +36,9 @@
        default: call it at startup, before icons draw (icons already on the page do not draw again)
      registerIcons(...modules[, { library }]): modules drawn first by their name and their symbol's spelling, in their
        set's library or the one named
+     Every loaded icon file and every module drawing is untrusted (issue 285): it is read through the allow-list in
+       utils/iconSafety.js (one svg, one path, values by grammar, bounded size), and anything else refuses it; development
+       warns once with the reason. Nothing is ever inserted as HTML: the values become React props.
      A name drawn by a run-time fetch (a Material name not imported or registered) warns once in development: production
        should import or register it. An icon value that is not a module warns once per kind of value and draws nothing
    Behavior:
@@ -63,6 +66,7 @@ import React from 'react';
 import { devWarn, development } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { SYMBOLS, NAMES, LIBRARY, LIBRARY_COMMIT } from './glyphs.js';
+import { checkIconSvg, checkDrawing } from '../../utils/iconSafety.js';
 
 // One way to draw an icon (owner, 2026-10-23: "no band-aid"): every name goes through resolveIcon, and every icon is an
 // inline SVG in the text color (inline paths paint about 200 times faster than masks).
@@ -80,11 +84,22 @@ const library = new Set(LIBRARY.split(' ')), plenix = new Set(SYMBOLS.split(' ')
 // module in its own set's library ("plenix", "material"); registerIcons(...modules, { library: 'acme' }) makes a
 // project's own library, which <Icon library="acme"> draws from only
 const libraries = new Map();   // library -> Map(name -> module)
-const isModule = (m) => !!(m && typeof m === 'object' && m.drawings && m.drawings[20] && m.drawings[24] && m.name);
+// a module is untrusted (#285): its four drawings pass the same allow-list as a file, once per module object
+const checked = new WeakMap();
+function moduleProblem(m) {
+  if (!(m && typeof m === 'object' && m.drawings && m.drawings[20] && m.drawings[24] && m.name)) return 'not an icon module';
+  if (checked.has(m)) return checked.get(m);
+  let problem = null;
+  for (const size of [20, 24]) for (const k of ['outline', 'fill']) { const r = checkDrawing(m.drawings[size][k]); if (!r.ok && !problem) problem = 'its ' + size + ' ' + k + ' drawing: ' + r.reason; }
+  checked.set(m, problem);
+  return problem;
+}
+const isModule = (m) => !moduleProblem(m);
 export function registerIcons(...args) {
   const last = args[args.length - 1], options = last && typeof last === 'object' && !Array.isArray(last) && !isModule(last) && 'library' in last ? args.pop() : null;
   for (const m of args.flat()) {
-    if (!isModule(m)) { if (typeof console !== 'undefined') console.warn('[Plenix] registerIcons: not an icon module', m); continue; }
+    const problem = moduleProblem(m);
+    if (problem) { if (typeof console !== 'undefined') console.warn('[Plenix] registerIcons: refused (' + problem + ')', m); continue; }
     const lib = (options && options.library) || m.set || 'plenix';
     if (!libraries.has(lib)) libraries.set(lib, new Map());
     const map = libraries.get(lib); map.set(m.name, m); if (m.symbol && m.symbol !== m.name) map.set(m.symbol, m);
@@ -152,14 +167,19 @@ function base() {
   return libraryBase;
 }
 // an icon file -> [path, viewBox, { transform, fillRule, clipRule }]: its one path, in its viewBox (or its width and height)
-function parseSvg(svg) {
+// an icon file -> [path, viewBox, { transform, fillRule, clipRule }], through the allow-list (#285: a loaded file is
+// untrusted; utils/iconSafety.js): anything else in the file refuses it, and development warns once with the reason
+const refused = new Set();
+function parseSvg(svg, from) {
   if (!svg) return null;
-  const tag = svg.match(/<path\b([^>]*)\/?>/), at = (s, key) => { const m = s && s.match(new RegExp('\\s' + key + '=["\']([^"\']+)["\']')); return m ? m[1] : null; };
-  const head = (svg.match(/<svg\b([^>]*)>/) || [])[1], box = at(head, 'viewBox'), w = at(head, 'width'), h = at(head, 'height'), d = at(tag && tag[1], 'd');
-  if (!d || !(box || (w && h))) return null;
-  const extra = {};
-  for (const [a, key] of [['transform', 'transform'], ['fill-rule', 'fillRule'], ['clip-rule', 'clipRule']]) if (at(tag[1], a)) extra[key] = at(tag[1], a);
-  return [d, box || '0 0 ' + w + ' ' + h, extra];
+  const r = checkIconSvg(svg);
+  if (!r.ok) {
+    const key = (from || 'an icon file') + ': ' + r.reason;
+    if (!refused.has(key) && development() && typeof console !== 'undefined') { refused.add(key); console.warn('[Plenix] Icon: refused ' + key); }
+    return null;
+  }
+  const { viewBox, d, ...extra } = r.drawing;
+  return [d, viewBox, extra];
 }
 // a Plenix symbol's drawing: read once from the stylesheet already on the page (icon.css carries every file as a data:
 // URI in --plx-comp-icon-glyph-*), so the drawings ship once, need no request and work from file:// too
@@ -180,7 +200,7 @@ function loadFile(file) {
   if (files.has(file)) return files.get(file);
   const root = base();
   const job = !root || typeof fetch !== 'function' ? Promise.resolve(null) : fetch(root + file + '.svg').then((r) => (r.ok ? r.text() : null))
-    .then(parseSvg).catch(() => null).then((glyph) => { files.set(file, glyph); return glyph; });
+    .then((text) => parseSvg(text, file + '.svg')).catch(() => null).then((glyph) => { files.set(file, glyph); return glyph; });
   files.set(file, job);
   return job;
 }
@@ -233,7 +253,7 @@ export function Icon({ icon, name, library: lib, size, filled, label, className,
   // an imported module (icon); else the name through the resolver (registered modules, the stylesheet, the library)
   // once per kind of bad value (its type and keys), so an object written inline, new on every render, warns once
   const badKey = icon != null && !isModule(icon) ? Object.prototype.toString.call(icon) + ':' + (typeof icon === 'object' ? Object.keys(icon).sort().join(',') : String(icon)) : null;
-  if (badKey && !badIcon.has(badKey)) { badIcon.add(badKey); if (typeof console !== 'undefined') console.warn('[Plenix] Icon: icon is not an icon module (import it from plenix-platform/icons/<set>/<name>); nothing is drawn.', icon); }
+  if (badKey && !badIcon.has(badKey)) { badIcon.add(badKey); if (typeof console !== 'undefined') console.warn('[Plenix] Icon: icon is refused (' + moduleProblem(icon) + '; import it from plenix-platform/icons/<set>/<name>); nothing is drawn.', icon); }
   const shown = isModule(icon) ? icon.name : name;
   const svg = useDrawings(shown, size, filled, isModule(icon) ? icon : null, lib);
   const mod = isModule(icon) ? icon : (() => { const f = resolveIcon(shown, { library: lib }); return f && f.kind === 'module' ? f.module : null; })();
