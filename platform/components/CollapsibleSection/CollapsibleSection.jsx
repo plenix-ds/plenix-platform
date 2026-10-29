@@ -31,11 +31,11 @@ import React from 'react';
 import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
-import { Icon } from '../Icon/Icon.jsx';
+import { Icon, asIcon as iconElement } from '../Icon/Icon.jsx';
 import { Button } from '../Button/Button.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const asIcon = (i) => (typeof i === 'string' ? <Icon name={i} /> : i);
+const asIcon = (i) => iconElement(i);   // a name or an imported module (#280)
 
 export function CollapsibleSection({ title, icon, expanded, defaultExpanded = true, onToggle, actions, headingLevel = 3, className, bodyClassName, children }) {
   const id = useUid('plx-collapsible-section');

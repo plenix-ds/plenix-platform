@@ -27,7 +27,7 @@
 import React from 'react';
 import { useRovingFocus, roveTo } from '../../utils/roving.js';
 import { cx } from '../../utils/cx.js';
-import { Icon, stateIcon } from '../../components/Icon/Icon.jsx';
+import { Icon, stateIcon, asIcon as iconElement } from '../../components/Icon/Icon.jsx';
 import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
 
 const LabelsContext = React.createContext(false);
@@ -61,7 +61,7 @@ ToolRail.Item = function ToolRailItem({ icon, label, pressed, disabled = false, 
   if (bar) return (
     <button type="button" className={cx('plx-nav-bar__item', pressed && 'is-current', className)} aria-current={pressed ? 'page' : undefined}
       disabled={disabled || undefined} onClick={onClick}>
-      {typeof icon === 'string' ? <Icon name={icon} filled={!!pressed} /> : icon}
+      {iconElement(icon, { filled: !!pressed })}
       <span className="plx-nav-bar__label">{label}</span>
     </button>
   );

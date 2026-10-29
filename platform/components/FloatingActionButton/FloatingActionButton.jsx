@@ -34,10 +34,10 @@
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
-import { Icon } from '../Icon/Icon.jsx';
+import { Icon, asIcon as iconElement } from '../Icon/Icon.jsx';
 
 const SIZES = ['sm', 'md', 'lg'];
-const asIcon = (i) => (typeof i === 'string' ? <Icon name={i} /> : i);
+const asIcon = (i) => iconElement(i);   // a name or an imported module (#280)
 
 export const FloatingActionButton = React.forwardRef(function FloatingActionButton({ icon, label, extended = false, size = 'md', variant = 'primary',
   placement = 'corner', disabled = false, onClick, className, ...rest }, ref) {

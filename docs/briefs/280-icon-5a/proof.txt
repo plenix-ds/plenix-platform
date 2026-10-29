@@ -1,0 +1,57 @@
+# Icon stage 5a (#280), part 1: the components that take an icon accept an imported module. No component is converted yet.
+# Proof scripts only (no test file was run). Run after node build-app.js, with dom-production.html in platform/dist/icons/.
+
+## pr1-proof.js (this branch; pages compared with styling/phase-2)
+{
+ "icon": {
+  "why": {},
+  "cases": 3816,
+  "moduleDiff": 0,
+  "asNameDiff": 0,
+  "aliases": 39,
+  "aliasDiff": 0,
+  "slots": {
+   "Button": "same",
+   "ButtonEnd": "same",
+   "MenuItem": "same",
+   "Tree": "same",
+   "NavList": "same",
+   "Card": "same",
+   "MediaCard": "same",
+   "MetricCard": "same",
+   "MetricCardTile": "same",
+   "SidePanel": "same",
+   "CollapsibleSection": "same",
+   "FloatingActionButton": "same",
+   "SecondaryPane": "same",
+   "Badge": "same",
+   "IconTile": "same",
+   "StatusIcon": "same"
+  },
+  "pageErrors": 0
+ },
+ "pages": {
+  "dashboard": "same",
+  "projects": "same",
+  "messages": "same",
+  "contacts": "same",
+  "calendar": "same",
+  "tasks": "same",
+  "notes": "same",
+  "bookmarks": "same",
+  "files": "same",
+  "settings": "same"
+ }
+}
+
+- cases: 212 names x 6 sizes x 3 fills. moduleDiff: name vs icon={module}. asNameDiff: name vs name={module}.
+- aliases: 39 alias modules (chevron_right …) draw exactly as their name (plx-icon--chevron_right kept).
+- slots: 16 component slots draw a module exactly as its name.
+- pages: the 10 applications' markup is identical before and after (the clock text masked).
+
+## check-logic.js (the named check's page logic)
+- this branch: {"button":true,"item":true,"tree":true,"card":true,"nav":true,"named":true}
+- styling/phase-2: the page throws (a module given to a Button is not a valid React child), so the check fails on regression.
+
+## Package build (node build-packages.js, no tests): exit 0. esbuild's alias (plenix-platform -> platform/dist): an entry
+importing chevron_right and an unused add bundles the alias module and drops the unused add drawing.
