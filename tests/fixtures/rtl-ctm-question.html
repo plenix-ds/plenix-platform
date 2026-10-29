@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en" data-plx-mode="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CTM's question block · Plenix tests</title>
+<link rel="icon" type="image/svg+xml" href="../../platform/brand/favicon.svg">
+<!-- Plenix tests: CTM's report question block in a page of the other direction, with the Platform alone (issue 413,
+     rtl-413-d). ?page=ltr: an Arabic block in an English page; ?page=rtl: an English block in an Arabic page. The block is
+     drawn by rtl-ctm-question.js; tests/rtl-ctm-question.test.js reads it. -->
+<script src="../../platform/providers/theme-boot.js"></script>
+<link rel="stylesheet" href="../../platform/system/fonts.css">
+<link rel="stylesheet" href="../../platform/platform.css">
+<script src="../../platform/vendor/react-loader.js"></script>
+<script src="../../platform/dist/platform.js"></script>
+<script src="../../platform/engines/plenix-engines.js"></script>
+<script src="rtl-ctm-question.js"></script>
+</head>
+<body>
+<main id="main"></main>
+</body>
+</html>
