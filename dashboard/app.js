@@ -2382,8 +2382,12 @@ function ProjectsWidget({
   }, active.map(p => /*#__PURE__*/React.createElement(_plenixPlatform.Card, {
     key: p.id,
     title: p.name,
-    meta: showCategory ? catLabel[p.tags[0]] || p.tags[0] : null,
-    accent: p.color,
+    meta: /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
+      gap: "xs"
+    }, /*#__PURE__*/React.createElement(_plenixPlatform.ColorSwatch, {
+      color: p.color,
+      size: "sm"
+    }), showCategory ? catLabel[p.tags[0]] || p.tags[0] : null),
     onOpen: () => onProject(p)
   }, showDesc ? /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
     variant: "secondary"
@@ -3150,7 +3154,6 @@ function ProjectContent({
     meta: /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
       variant: "data"
     }, n.date),
-    accent: proj.color,
     onOpen: () => {}
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
     variant: "secondary"

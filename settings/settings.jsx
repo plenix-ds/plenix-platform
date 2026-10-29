@@ -407,7 +407,7 @@ function DocsPanel({docSection,setDocSection}){
           {window.FEATURES.map(area=>{
             const done=area.items.filter(i=>i.status==="done").length;
             const pct=Math.round(done/area.items.length*100);
-            return <Card key={area.area} title={area.area} meta={<Text variant="data">{pct+"%"}</Text>} accent={area.color} onOpen={()=>setDocSection("feat-"+area.area)}/>;
+            return <Card key={area.area} title={area.area} meta={<Text variant="data">{pct+"%"}</Text>} onOpen={()=>setDocSection("feat-"+area.area)}><ProgressBar value={pct} color={area.color} size="sm" label={area.area+" progress"} labelHidden/></Card>;
           })}
         </ContentGrid>
       </Section>
@@ -835,7 +835,7 @@ export function Settings({prefs,setPrefs,screen,onBack}){
                 const done=area.items.filter(i=>i.status==="done").length;
                 const pct=Math.round(done/area.items.length*100);
                 return(
-                  <Card key={area.area} title={area.area} meta={<Text variant="data">{done+"/"+area.items.length}</Text>} accent={area.color} onOpen={()=>setFeatArea(area.area)}>
+                  <Card key={area.area} title={area.area} meta={<Text variant="data">{done+"/"+area.items.length}</Text>} onOpen={()=>setFeatArea(area.area)}>
                     <ProgressBar value={pct} color={area.color} size="sm" label={area.area+" progress"} labelHidden/>
                   </Card>
                 );

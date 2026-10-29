@@ -1005,7 +1005,6 @@
   --plx-comp-panel-toggle-hover-text: var(--plx-sys-content-default);
   --plx-comp-panel-toggle-icon-duration: var(--plx-sys-motion-duration-fast);
   --plx-comp-panel-toggle-icon-easing: var(--plx-sys-motion-ease-standard);
-  --plx-comp-card-accent-border-inline-start-width: var(--plx-sys-border-width-thick);
   --plx-comp-panel-toggle-focus-outline-color: var(--plx-sys-focus-ring-color);
   --plx-comp-panel-toggle-focus-outline-offset: var(--plx-sys-focus-ring-offset);
   --plx-comp-panel-toggle-focus-outline-width: var(--plx-sys-border-width-medium);

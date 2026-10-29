@@ -2743,7 +2743,6 @@ function ProjectContent({
     meta: /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
       variant: "data"
     }, n.date),
-    accent: proj.color,
     onOpen: () => {}
   }, /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
     variant: "secondary"

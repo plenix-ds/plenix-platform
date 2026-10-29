@@ -2479,8 +2479,7 @@ var _plenixPlatform = require("plenix-platform");
 var _classification = require("../suite/classification.jsx");
 var _shared = require("../suite/shared.jsx");
 /* Plenix · calendar (calendar/calendar.jsx). Split out of app/plenix.jsx in batch 113; rebuilt from Platform components in
-   batch 201: the month as RowButton day cells with EventChips, the chosen day's events as Cards (accent: the calendar's
-   color), the week and the day as TimeGrid. An event opened from its card or the grid is a screen (#/event/<id>, a history
+   batch 201: the month as RowButton day cells with EventChips, the chosen day's events as Cards (the calendar's color is a swatch beside its tag), the week and the day as TimeGrid. An event opened from its card or the grid is a screen (#/event/<id>, a history
    entry: Back closes it; a search result opens it on its day; Platforms Standard 4.3). The view and its date are in the
    address too, each a screen: #/month/2026-03, #/week/2026-03-01 (the week's first day), #/day/2026-03-05; #/ is the
    current month. Closing an event returns to the view it was opened from. */
@@ -2689,10 +2688,14 @@ function CalendarScreen({
     meta: /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
       variant: "data"
     }, e.time),
-    accent: e.color,
     selected: selEv === e.id,
     onOpen: () => setSelEv(selEv === e.id ? null : e.id),
-    actions: /*#__PURE__*/React.createElement(_plenixPlatform.Tag, null, calName(e.cal))
+    actions: /*#__PURE__*/React.createElement(_plenixPlatform.Inline, {
+      gap: "xs"
+    }, /*#__PURE__*/React.createElement(_plenixPlatform.ColorSwatch, {
+      color: e.color,
+      size: "sm"
+    }), /*#__PURE__*/React.createElement(_plenixPlatform.Tag, null, calName(e.cal)))
   }, selEv === e.id ? /*#__PURE__*/React.createElement(_classification.ClassificationWidget, {
     value: evMeta[e.id],
     onChange: m => setEvMeta(p => ({
