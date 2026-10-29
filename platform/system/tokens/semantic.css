@@ -367,6 +367,11 @@
   --plx-sys-dnd-target-reject-outline-color: var(--plx-sys-feedback-danger-solid);
 }
 :root {
+  --plx-sys-fit-lines: 2;
+  --plx-sys-fit-line-height: var(--plx-ref-size-16px);
+  --plx-sys-fit-wrap-padding-block: var(--plx-sys-space-stack-xs);
+}
+:root {
   --plx-sys-floating-offset-xs: var(--plx-ref-space-4px);
   --plx-sys-floating-offset-sm: var(--plx-ref-space-8px);
   --plx-sys-floating-offset-md: var(--plx-ref-space-12px);

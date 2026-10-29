@@ -1095,9 +1095,9 @@
   --plx-comp-collapsible-section-heading-shadow: inset 0 calc(var(--plx-sys-border-width-thin) * -1) 0 var(--plx-sys-border-default);
   --plx-comp-collapsible-section-heading-gap: var(--plx-sys-space-inline-sm);
   --plx-comp-collapsible-section-toggle-text: var(--plx-sys-content-link);
-  --plx-comp-collapsible-section-title-lines: 2;
-  --plx-comp-collapsible-section-title-line-height: var(--plx-ref-size-16px);
-  --plx-comp-collapsible-section-title-wrap-padding-block: var(--plx-sys-space-stack-xs);
+  --plx-comp-collapsible-section-title-lines: var(--plx-sys-fit-lines);
+  --plx-comp-collapsible-section-title-line-height: var(--plx-sys-fit-line-height);
+  --plx-comp-collapsible-section-title-wrap-padding-block: var(--plx-sys-fit-wrap-padding-block);
   --plx-comp-collapsible-section-toggle-gap: var(--plx-sys-space-inline-sm);
   --plx-comp-collapsible-section-toggle-font-family: var(--plx-sys-font-label);
   --plx-comp-collapsible-section-toggle-font-size: var(--plx-ref-font-size-11);
@@ -1392,8 +1392,8 @@
   --plx-comp-nav-list-heading-font-size: var(--plx-ref-font-size-11);
   --plx-comp-nav-list-heading-font-weight: var(--plx-sys-font-weight-bold);
   --plx-comp-nav-list-heading-letter-spacing: var(--plx-sys-letter-spacing-widest);
-  --plx-comp-nav-list-heading-lines: 2;
-  --plx-comp-nav-list-heading-line-height: var(--plx-ref-size-16px);
+  --plx-comp-nav-list-heading-lines: var(--plx-sys-fit-lines);
+  --plx-comp-nav-list-heading-line-height: var(--plx-sys-fit-line-height);
   --plx-comp-nav-list-heading-padding-block: var(--plx-sys-space-inset-xs);
   --plx-comp-nav-list-heading-padding-inline: var(--plx-sys-space-inset-sm);
   --plx-comp-nav-list-heading-min-height: var(--plx-sys-control-height-prominent);
