@@ -6,6 +6,8 @@
 .plx-tree-select__anchor{display:block;}
 .plx-tree-select__trigger{align-items:center;cursor:pointer;display:flex;inline-size:100%;padding-inline-end:var(--plx-comp-tree-select-trigger-padding-inline-end);position:relative;text-align:start;}
 .plx-tree-select__trigger:disabled{cursor:not-allowed;}
+/* the Tooltip around the chosen text (shown only while it is cut) is the flex item that shrinks; the text inside it ends in the ellipsis */
+.plx-tree-select__tip{display:flex;flex-basis:0%;flex-grow:1;min-inline-size:0;}
 .plx-tree-select__value,.plx-tree-select__placeholder{flex-basis:0%;flex-grow:1;min-inline-size:0;overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .plx-tree-select__placeholder{color:var(--plx-comp-tree-select-placeholder-text);}
 .plx-tree-select__chevron{--plx-comp-icon-context-show-20:block;--plx-comp-icon-context-show-24:none;--plx-comp-icon-size:var(--plx-comp-tree-select-chevron-size);block-size:var(--plx-comp-tree-select-chevron-size);color:var(--plx-comp-tree-select-chevron-color);display:inline-flex;inline-size:var(--plx-comp-tree-select-chevron-size);inset-block-start:50%;inset-inline-end:var(--plx-comp-tree-select-chevron-inset-inline-end);pointer-events:none;position:absolute;transform:translateY(-50%);}
@@ -18,7 +20,7 @@
 .plx-tree-select.plx-tree-select--width-xs{flex-shrink:0;inline-size:var(--plx-sys-field-width-xs);}
 .plx-tree-select.plx-tree-select--width-sm{flex-shrink:0;inline-size:var(--plx-sys-field-width-sm);}
 .plx-tree-select.plx-tree-select--width-md{flex-shrink:0;inline-size:var(--plx-sys-field-width-md);}
-.plx-tree-select.plx-tree-select--width-lg{flex-shrink:0;inline-size:var(--plx-sys-field-width-lg);}
+.plx-tree-select.plx-tree-select--width-lg{flex-shrink:var(--plx-comp-field-context-width-flex-shrink,0);inline-size:var(--plx-sys-field-width-lg);min-inline-size:min(var(--plx-sys-field-width-lg),var(--plx-comp-field-context-content-min-inline-size,var(--plx-sys-field-width-lg)));}
 .plx-tree-select.plx-tree-select--width-fill{inline-size:100%;}
 /* the width its pattern gives it (layout-modes.css), else its own */
-.plx-tree-select:where(:not(.plx-tree-select--width-xs, .plx-tree-select--width-sm, .plx-tree-select--width-md, .plx-tree-select--width-lg, .plx-tree-select--width-fill)){flex-shrink:var(--plx-comp-field-context-content-flex-shrink,1);inline-size:var(--plx-comp-field-context-content-inline-size,var(--plx-comp-field-context-stretch-inline-size,auto));}
+.plx-tree-select:where(:not(.plx-tree-select--width-xs, .plx-tree-select--width-sm, .plx-tree-select--width-md, .plx-tree-select--width-lg, .plx-tree-select--width-fill)){flex-shrink:var(--plx-comp-field-context-content-flex-shrink,1);inline-size:var(--plx-comp-field-context-content-inline-size,var(--plx-comp-field-context-stretch-inline-size,auto));max-inline-size:min(var(--plx-comp-tree-select-max-width),var(--plx-comp-field-context-content-max-inline-size,100%),100%);min-inline-size:var(--plx-comp-field-context-content-min-inline-size,0);}

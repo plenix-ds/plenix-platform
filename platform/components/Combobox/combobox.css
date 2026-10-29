@@ -34,7 +34,7 @@
 .plx-combobox.plx-combobox--width-xs{flex-shrink:0;inline-size:var(--plx-sys-field-width-xs);}
 .plx-combobox.plx-combobox--width-sm{flex-shrink:0;inline-size:var(--plx-sys-field-width-sm);}
 .plx-combobox.plx-combobox--width-md{flex-shrink:0;inline-size:var(--plx-sys-field-width-md);}
-.plx-combobox.plx-combobox--width-lg{flex-shrink:0;inline-size:var(--plx-sys-field-width-lg);}
+.plx-combobox.plx-combobox--width-lg{flex-shrink:var(--plx-comp-field-context-width-flex-shrink,0);inline-size:var(--plx-sys-field-width-lg);min-inline-size:min(var(--plx-sys-field-width-lg),var(--plx-comp-field-context-content-min-inline-size,var(--plx-sys-field-width-lg)));}
 .plx-combobox.plx-combobox--width-fill{inline-size:100%;}
 /* its motion (moved from motion.css, Styling Standard 3.6: each component owns its own; reduced motion sets the durations to 0s) */
 .plx-combobox__option{transition-duration:var(--plx-sys-motion-duration-instant);transition-property:background-color, border-color, box-shadow, color, transform;transition-timing-function:var(--plx-sys-motion-ease-standard);}
@@ -42,4 +42,4 @@
 /* the list opens from its top (moved from motion.css) */
 :where(.plx-combobox__list){transform-origin:top center;}
 /* the width its pattern gives it (layout-modes.css), else its own */
-.plx-combobox:where(:not(.plx-combobox--width-xs, .plx-combobox--width-sm, .plx-combobox--width-md, .plx-combobox--width-lg, .plx-combobox--width-fill)){flex-shrink:var(--plx-comp-field-context-content-flex-shrink,1);inline-size:var(--plx-comp-field-context-content-inline-size,var(--plx-comp-field-context-stretch-inline-size,auto));}
+.plx-combobox:where(:not(.plx-combobox--width-xs, .plx-combobox--width-sm, .plx-combobox--width-md, .plx-combobox--width-lg, .plx-combobox--width-fill)){flex-shrink:var(--plx-comp-field-context-content-flex-shrink,1);inline-size:var(--plx-comp-field-context-content-inline-size,var(--plx-comp-field-context-stretch-inline-size,auto));max-inline-size:min(var(--plx-comp-combobox-max-width),var(--plx-comp-field-context-content-max-inline-size,100%),100%);min-inline-size:var(--plx-comp-field-context-content-min-inline-size,0);}

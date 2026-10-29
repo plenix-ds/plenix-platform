@@ -75,6 +75,8 @@ import { isDataValue } from '../../utils/dataValue.js';
 import { useFloating, FLOATING_ANCHOR } from '../../utils/floating.js';
 import { useReadOnly, readOnlyProps } from '../../providers/ReadOnly.jsx';
 import { Icon } from '../Icon/Icon.jsx';
+import { Tooltip } from '../Tooltip/Tooltip.jsx';
+import { useTruncated } from '../../utils/overflow.js';
 import SelectChevronIcon from 'plenix-platform/icons/plenix/select-chevron';
 
 // the top layer and CSS anchor positioning (as Menu and Popover), checked once
@@ -145,6 +147,7 @@ const SelectList = React.forwardRef(function SelectList({ invalid, options, appe
   const [active, setActive] = React.useState(-1);
   const [labelId, setLabelId] = React.useState(null);
   const [, redraw] = React.useReducer((n) => n + 1, 0);
+  const valueRef = React.useRef(null), cut = useTruncated(valueRef);   // the chosen text is cut (its box is narrower than the text): its full text goes in a Tooltip
   const disabled = !!rest.disabled;
   // the list opens in the top layer, placed against the field by the floating layer (flips up near an edge, follows scroll and resize), so no dialog, drawer, table cell or scroll area clips it
   useFloating(wrap, list, { open, placement: 'bottom-start', matchWidth: true });
@@ -245,7 +248,7 @@ const SelectList = React.forwardRef(function SelectList({ invalid, options, appe
         className={cx('plx-input', 'plx-select__field', asData && 'plx-input--data', look(appearance), disabled && 'is-disabled')}
         {...readOnlyProps(locked, { onClick: () => { if (disabled) return; if (open) setOpen(false); else show(); }, onKeyDown: onKey }, { pointer: true })}
         onFocus={onFocus} onBlur={(e) => { setOpen(false); if (onBlur) onBlur(e); }}>
-        <span className="plx-select__value">{current ? current.label : ''}</span>
+        <Tooltip content={current ? current.label : ''} disabled={!cut || open} className="plx-select__tip"><span ref={valueRef} className="plx-select__value">{current ? current.label : ''}</span></Tooltip>
       </div>
       <span className="plx-select__chevron" aria-hidden="true"><Icon icon={SelectChevronIcon} filled={false} /></span>
       {open ? (

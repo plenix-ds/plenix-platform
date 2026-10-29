@@ -51,13 +51,16 @@ import MoreIcon from 'plenix-platform/icons/plenix/more';
 const POPUP = '[role="dialog"],[role="alertdialog"],[role="menu"],[role="listbox"],[role="tree"],[role="grid"],[role="tablist"]';
 const FOCUSABLE = 'button,input,textarea,select,a[href],[tabindex],[contenteditable="true"]';
 
-// A Button that a toolbar can fold: words it can drop (its icon stays) and, past that, a place in More. Not an icon-only, link or menu-trigger button.
-const isFoldable = (el) => React.isValidElement(el) && el.type === Button && typeof el.props.children === 'string' && !el.props.iconOnly && !el.props.href && !el.props.caret;
+// A Button that a toolbar can fold: words it can drop (its icon stays) and, past that, a place in More; an icon-only Button (it has a label) only has the place in More. Not a link or a menu-trigger button.
+const nameOf = (p) => (typeof p.children === 'string' ? p.children : p.iconOnly && typeof p.label === 'string' ? p.label : null);
+const isFoldable = (el) => React.isValidElement(el) && el.type === Button && nameOf(el.props) !== null && !el.props.href && !el.props.caret;
+// a menu whose trigger is a Button with an icon and words (Delete ▾): at the icon-only step it drops its words too, and stays where it is
+const isTrimmable = (el) => React.isValidElement(el) && el.type === Menu && React.isValidElement(el.props.trigger) && el.props.trigger.type === Button && typeof el.props.trigger.props.children === 'string' && !!el.props.trigger.props.icon && !el.props.trigger.props.iconOnly;
 const collect = (nodes, out) => {
   React.Children.forEach(nodes, (el) => {
     if (!React.isValidElement(el)) return;
     if (el.type === Toolbar.Group || el.type === React.Fragment) collect(el.props.children, out);
-    else if (isFoldable(el)) out.push({ id: out.length, label: el.props.children, icon: el.props.icon, primary: el.props.variant === 'primary', danger: /^danger/.test(el.props.variant || '') || !!el.props.danger, priority: el.props.priority, props: el.props });
+    else if (isFoldable(el)) out.push({ id: out.length, label: nameOf(el.props), iconOnly: !!el.props.iconOnly, icon: el.props.icon, primary: el.props.variant === 'primary', danger: /^danger/.test(el.props.variant || '') || !!el.props.danger, priority: el.props.priority, props: el.props });
   });
   return out;
 };
@@ -78,11 +81,12 @@ export function Toolbar({ label, variant = 'default', className, children, onKey
     if (!React.isValidElement(el)) return el;
     if (el.type === Toolbar.Group) return React.cloneElement(el, undefined, walk(el.props.children));
     if (el.type === React.Fragment) return <>{walk(el.props.children)}</>;
+    if (ladder && isTrimmable(el)) return iconOnly ? React.cloneElement(el, { trigger: React.cloneElement(el.props.trigger, { children: undefined, 'aria-label': el.props.trigger.props.children }) }) : el;
     if (!ladder || !isFoldable(el)) return el;
     const id = n++;
     if (folded.has(id)) return null;
     const a = acts[id];
-    if (!a.icon || a.primary) return el;   // no icon to keep (or the primary action: it keeps its words longest): it stays as written
+    if (!a.icon || a.primary || a.iconOnly) return el;   // no icon to keep (or the primary action: it keeps its words longest): it stays as written
     // always wrapped, so a Button keeps its place (and its focus) when its words go; the tooltip shows only while it is an icon
     return <Tooltip content={a.label} disabled={!iconOnly}>{iconOnly ? React.cloneElement(el, { iconOnly: true, label: a.label, priority: undefined }) : React.cloneElement(el, { priority: undefined })}</Tooltip>;
   });
@@ -126,7 +130,7 @@ export function Toolbar({ label, variant = 'default', className, children, onKey
       || (e.target.closest(POPUP) && ref.current.contains(e.target.closest(POPUP))) || e.target.closest('[role="toolbar"]') !== ref.current
   });
   const onFocusIn = (e) => { if (onFocus) onFocus(e); groupProps.onFocus(e); };
-  return <div ref={ref} role="toolbar" aria-label={label} className={cx('plx-toolbar', variant === 'bar' && 'plx-toolbar--bar', className)} onKeyDown={groupProps.onKeyDown} onFocus={onFocusIn} {...rest}>{ladder ? walk(children) : children}{more}</div>;
+  return <div ref={ref} role="toolbar" aria-label={label} className={cx('plx-toolbar', variant === 'bar' && 'plx-toolbar--bar', className)} onKeyDown={groupProps.onKeyDown} onFocus={onFocusIn} data-plx-fit-shrink={ladder ? (acts.length ? step >= 1 + acts.length : true) || undefined : undefined} {...rest}>{ladder ? walk(children) : children}{more}</div>;
 }
 Toolbar.Group = function ToolbarGroup({ className, children, ...rest }) {
   return <div className={cx('plx-toolbar__group', className)} {...rest}>{children}</div>;

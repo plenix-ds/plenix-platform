@@ -14522,7 +14522,7 @@ var _default = exports.default = {
   }
 };
   } },
-  "platform/components/Input/Input.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/dataValue.js":"platform/utils/dataValue.js","../../utils/floating.js":"platform/utils/floating.js","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","plenix-platform/icons/plenix/select-chevron":"platform/dist/icons/plenix/select-chevron.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Input/Input.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/dataValue.js":"platform/utils/dataValue.js","../../utils/floating.js":"platform/utils/floating.js","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/overflow.js":"platform/utils/overflow.js","plenix-platform/icons/plenix/select-chevron":"platform/dist/icons/plenix/select-chevron.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -14536,6 +14536,8 @@ var _dataValue = require("../../utils/dataValue.js");
 var _floating = require("../../utils/floating.js");
 var _ReadOnly = require("../../providers/ReadOnly.jsx");
 var _Icon = require("../Icon/Icon.jsx");
+var _Tooltip = require("../Tooltip/Tooltip.jsx");
+var _overflow = require("../../utils/overflow.js");
 var _selectChevron = _interopRequireDefault(require("plenix-platform/icons/plenix/select-chevron"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Input, Textarea, Select
@@ -14786,6 +14788,8 @@ const SelectList = /*#__PURE__*/_react.default.forwardRef(function SelectList({
   const [active, setActive] = _react.default.useState(-1);
   const [labelId, setLabelId] = _react.default.useState(null);
   const [, redraw] = _react.default.useReducer(n => n + 1, 0);
+  const valueRef = _react.default.useRef(null),
+    cut = (0, _overflow.useTruncated)(valueRef); // the chosen text is cut (its box is narrower than the text): its full text goes in a Tooltip
   const disabled = !!rest.disabled;
   // the list opens in the top layer, placed against the field by the floating layer (flips up near an edge, follows scroll and resize), so no dialog, drawer, table cell or scroll area clips it
   (0, _floating.useFloating)(wrap, list, {
@@ -14983,9 +14987,14 @@ const SelectList = /*#__PURE__*/_react.default.forwardRef(function SelectList({
       setOpen(false);
       if (onBlur) onBlur(e);
     }
-  }), /*#__PURE__*/_react.default.createElement("span", {
+  }), /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+    content: current ? current.label : '',
+    disabled: !cut || open,
+    className: "plx-select__tip"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    ref: valueRef,
     className: "plx-select__value"
-  }, current ? current.label : '')), /*#__PURE__*/_react.default.createElement("span", {
+  }, current ? current.label : ''))), /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-select__chevron",
     "aria-hidden": "true"
   }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
@@ -26761,14 +26770,18 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
 const POPUP = '[role="dialog"],[role="alertdialog"],[role="menu"],[role="listbox"],[role="tree"],[role="grid"],[role="tablist"]';
 const FOCUSABLE = 'button,input,textarea,select,a[href],[tabindex],[contenteditable="true"]';
 
-// A Button that a toolbar can fold: words it can drop (its icon stays) and, past that, a place in More. Not an icon-only, link or menu-trigger button.
-const isFoldable = el => /*#__PURE__*/_react.default.isValidElement(el) && el.type === _Button.Button && typeof el.props.children === 'string' && !el.props.iconOnly && !el.props.href && !el.props.caret;
+// A Button that a toolbar can fold: words it can drop (its icon stays) and, past that, a place in More; an icon-only Button (it has a label) only has the place in More. Not a link or a menu-trigger button.
+const nameOf = p => typeof p.children === 'string' ? p.children : p.iconOnly && typeof p.label === 'string' ? p.label : null;
+const isFoldable = el => /*#__PURE__*/_react.default.isValidElement(el) && el.type === _Button.Button && nameOf(el.props) !== null && !el.props.href && !el.props.caret;
+// a menu whose trigger is a Button with an icon and words (Delete ▾): at the icon-only step it drops its words too, and stays where it is
+const isTrimmable = el => /*#__PURE__*/_react.default.isValidElement(el) && el.type === _Menu.Menu && /*#__PURE__*/_react.default.isValidElement(el.props.trigger) && el.props.trigger.type === _Button.Button && typeof el.props.trigger.props.children === 'string' && !!el.props.trigger.props.icon && !el.props.trigger.props.iconOnly;
 const collect = (nodes, out) => {
   _react.default.Children.forEach(nodes, el => {
     if (! /*#__PURE__*/_react.default.isValidElement(el)) return;
     if (el.type === Toolbar.Group || el.type === _react.default.Fragment) collect(el.props.children, out);else if (isFoldable(el)) out.push({
       id: out.length,
-      label: el.props.children,
+      label: nameOf(el.props),
+      iconOnly: !!el.props.iconOnly,
       icon: el.props.icon,
       primary: el.props.variant === 'primary',
       danger: /^danger/.test(el.props.variant || '') || !!el.props.danger,
@@ -26802,11 +26815,17 @@ function Toolbar({
     if (! /*#__PURE__*/_react.default.isValidElement(el)) return el;
     if (el.type === Toolbar.Group) return /*#__PURE__*/_react.default.cloneElement(el, undefined, walk(el.props.children));
     if (el.type === _react.default.Fragment) return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, walk(el.props.children));
+    if (ladder && isTrimmable(el)) return iconOnly ? /*#__PURE__*/_react.default.cloneElement(el, {
+      trigger: /*#__PURE__*/_react.default.cloneElement(el.props.trigger, {
+        children: undefined,
+        'aria-label': el.props.trigger.props.children
+      })
+    }) : el;
     if (!ladder || !isFoldable(el)) return el;
     const id = n++;
     if (folded.has(id)) return null;
     const a = acts[id];
-    if (!a.icon || a.primary) return el; // no icon to keep (or the primary action: it keeps its words longest): it stays as written
+    if (!a.icon || a.primary || a.iconOnly) return el; // no icon to keep (or the primary action: it keeps its words longest): it stays as written
     // always wrapped, so a Button keeps its place (and its focus) when its words go; the tooltip shows only while it is an icon
     return /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
       content: a.label,
@@ -26896,7 +26915,8 @@ function Toolbar({
     "aria-label": label,
     className: (0, _cx.cx)('plx-toolbar', variant === 'bar' && 'plx-toolbar--bar', className),
     onKeyDown: groupProps.onKeyDown,
-    onFocus: onFocusIn
+    onFocus: onFocusIn,
+    "data-plx-fit-shrink": ladder ? (acts.length ? step >= 1 + acts.length : true) || undefined : undefined
   }, rest), ladder ? walk(children) : children, more);
 }
 Toolbar.Group = function ToolbarGroup({
@@ -28520,7 +28540,8 @@ function CommandBar({
     label: name,
     variant: "bar",
     className: "plx-command-bar__row",
-    "data-plx-bar-row": ""
+    "data-plx-bar-row": "",
+    "data-plx-fit-shrink": step >= SEARCH + folds || undefined
   }, parts)), /*#__PURE__*/_react.default.isValidElement(selection) ? selection : null));
 }
   } },
@@ -40764,6 +40785,7 @@ function ActionBar({
     ref: ref,
     role: "group",
     "aria-label": label ?? t.label,
+    "data-plx-fit-shrink": measured >= Math.max(0, foldable.length - 1) || undefined,
     className: (0, _cx.cx)('plx-action-bar', !sticky && 'plx-action-bar--static', className)
   }, body, placed ? null : more());
 }
@@ -60289,7 +60311,7 @@ const TimeZoneSelect = exports.TimeZoneSelect = /*#__PURE__*/_react.default.forw
   }, t.empty)) : null);
 });
   } },
-  "platform/components/TreeSelect/TreeSelect.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/direction.js":"platform/utils/direction.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/folder-open":"platform/dist/icons/plenix/folder-open.js","plenix-platform/icons/plenix/select-chevron":"platform/dist/icons/plenix/select-chevron.js","plenix-platform/icons/plenix/square-plus":"platform/dist/icons/plenix/square-plus.js","plenix-platform/icons/plenix/square-minus":"platform/dist/icons/plenix/square-minus.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/TreeSelect/TreeSelect.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/direction.js":"platform/utils/direction.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/overflow.js":"platform/utils/overflow.js","../SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/folder-open":"platform/dist/icons/plenix/folder-open.js","plenix-platform/icons/plenix/select-chevron":"platform/dist/icons/plenix/select-chevron.js","plenix-platform/icons/plenix/square-plus":"platform/dist/icons/plenix/square-plus.js","plenix-platform/icons/plenix/square-minus":"platform/dist/icons/plenix/square-minus.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -60301,6 +60323,8 @@ var _cx = require("../../utils/cx.js");
 var _direction = require("../../utils/direction.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _Popover = require("../Popover/Popover.jsx");
+var _Tooltip = require("../Tooltip/Tooltip.jsx");
+var _overflow = require("../../utils/overflow.js");
 var _SearchField = require("../SearchField/SearchField.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _folderOpen = _interopRequireDefault(require("plenix-platform/icons/plenix/folder-open"));
@@ -60430,6 +60454,8 @@ function TreeSelect({
   } = _react.default.useMemo(() => index(nodes), [nodes]);
   const chosen = multiple ? values || [] : value !== undefined && value !== null && value !== '' ? [value] : [];
   const [open, setOpen] = _react.default.useState(false);
+  const valueRef = _react.default.useRef(null),
+    cut = (0, _overflow.useTruncated)(valueRef); // the chosen text is cut: its full text goes in a Tooltip
   const [text, setText] = _react.default.useState('');
   const [expanded, setExpanded] = _react.default.useState(() => {
     if (defaultExpanded) return defaultExpanded;
@@ -60585,9 +60611,14 @@ function TreeSelect({
     "aria-required": required || undefined,
     disabled: disabled,
     className: (0, _cx.cx)('plx-input', 'plx-tree-select__trigger', !names.length && 'is-empty')
-  }, rest), /*#__PURE__*/_react.default.createElement("span", {
+  }, rest), /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+    content: names.length ? summary : '',
+    disabled: !cut || open || !names.length,
+    className: "plx-tree-select__tip"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    ref: valueRef,
     className: names.length ? 'plx-tree-select__value' : 'plx-tree-select__placeholder'
-  }, names.length ? summary : placeholder || t.placeholder), /*#__PURE__*/_react.default.createElement("span", {
+  }, names.length ? summary : placeholder || t.placeholder)), /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-tree-select__chevron",
     "aria-hidden": "true"
   }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {

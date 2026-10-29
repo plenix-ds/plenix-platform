@@ -39,7 +39,7 @@
 .plx-input--width-xs:where(:not([type="color"])){flex-shrink:0;inline-size:var(--plx-comp-input-width-xs-width);}
 .plx-input--width-sm:where(:not([type="color"])){flex-shrink:0;inline-size:var(--plx-comp-input-width-sm-width);}
 .plx-input--width-md:where(:not([type="color"])){flex-shrink:0;inline-size:var(--plx-comp-input-width-md-width);}
-.plx-input--width-lg:where(:not([type="color"])){flex-shrink:0;inline-size:var(--plx-comp-input-width-lg-width);}
+.plx-input--width-lg:where(:not([type="color"])){flex-shrink:var(--plx-comp-field-context-width-flex-shrink,0);inline-size:var(--plx-comp-input-width-lg-width);min-inline-size:var(--plx-state-input-min-inline-size,min(var(--plx-comp-input-width-lg-width),var(--plx-comp-field-context-content-min-inline-size,var(--plx-comp-input-width-lg-width))));}
 .plx-input--width-fill:where(:not([type="color"])){inline-size:100%;}
 /* the border: invalid, focused, hovered (an enabled field), at rest (the fallback). Focus and hover recolor the border
    only; an invalid field has a 2px danger border (its border and a line inside it) on the lightest red fill (owner, 2026-10-16) */
@@ -69,7 +69,7 @@
 /* a date or a time never gets narrower than its value: no width role or narrow column cuts "mm/dd/yyyy" off (owner, 2026-10-22) */
 .plx-input:is([type="date"], [type="time"], [type="datetime-local"], [type="month"], [type="week"]){--plx-state-input-min-inline-size:max-content;}
 /* a field takes the width its pattern gives it (layout-modes.css), else its own: auto, a color well its well */
-.plx-input:where(:not(.plx-input--width-xs, .plx-input--width-sm, .plx-input--width-md, .plx-input--width-lg, .plx-input--width-fill), [type="color"]){flex-shrink:var(--plx-comp-field-context-content-flex-shrink,var(--plx-state-input-flex-shrink,1));inline-size:var(--plx-comp-field-context-content-inline-size,var(--plx-comp-field-context-stretch-inline-size,var(--plx-state-input-inline-size,auto)));}
+.plx-input:where(:not(.plx-input--width-xs, .plx-input--width-sm, .plx-input--width-md, .plx-input--width-lg, .plx-input--width-fill), [type="color"]){flex-shrink:var(--plx-comp-field-context-content-flex-shrink,var(--plx-state-input-flex-shrink,1));inline-size:var(--plx-comp-field-context-content-inline-size,var(--plx-comp-field-context-stretch-inline-size,var(--plx-state-input-inline-size,auto)));max-inline-size:min(var(--plx-comp-input-context-max-width,var(--plx-comp-input-max-width)),var(--plx-comp-field-context-content-max-inline-size,100%),100%);min-inline-size:var(--plx-state-input-min-inline-size,var(--plx-comp-field-context-content-min-inline-size,0));}
 .plx-input[type="color"]{--plx-state-input-flex-shrink:0;--plx-state-input-inline-size:var(--plx-comp-input-color-width);--plx-state-input-background:transparent;block-size:var(--plx-comp-input-color-height);border-bottom-left-radius:var(--plx-comp-input-color-radius);border-bottom-right-radius:var(--plx-comp-input-color-radius);border-bottom-style:none;border-left-style:none;border-right-style:none;border-top-left-radius:var(--plx-comp-input-color-radius);border-top-right-radius:var(--plx-comp-input-color-radius);border-top-style:none;cursor:pointer;padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
 .plx-input[type="color"]::-webkit-color-swatch-wrapper{padding-block-end:0;padding-block-start:0;padding-inline-end:0;padding-inline-start:0;}
 .plx-input[type="color"]::-webkit-color-swatch{border-bottom-left-radius:inherit;border-bottom-right-radius:inherit;border-bottom-style:none;border-left-style:none;border-right-style:none;border-top-left-radius:inherit;border-top-right-radius:inherit;border-top-style:none;}
@@ -81,7 +81,7 @@
 .plx-select{--plx-comp-input-context-padding-inline-end:var(--plx-comp-select-control-padding-inline-end);max-inline-size:min(var(--plx-comp-select-max-width),100%);min-inline-size:0;position:relative;}
 .plx-select:where(:not(.plx-select--block)){display:inline-flex;}
 @property --plx-state-select-flex-shrink{syntax:"*";inherits:false;}
-.plx-select:where(:not(.plx-select--width-xs, .plx-select--width-sm, .plx-select--width-md, .plx-select--width-lg, .plx-select--width-fill)){flex-shrink:var(--plx-comp-field-context-content-flex-shrink,var(--plx-state-select-flex-shrink,1));inline-size:var(--plx-comp-field-context-content-inline-size,var(--plx-comp-field-context-stretch-inline-size,auto));}
+.plx-select:where(:not(.plx-select--width-xs, .plx-select--width-sm, .plx-select--width-md, .plx-select--width-lg, .plx-select--width-fill)){flex-shrink:var(--plx-comp-field-context-content-flex-shrink,var(--plx-state-select-flex-shrink,1));inline-size:var(--plx-comp-field-context-content-inline-size,var(--plx-comp-field-context-stretch-inline-size,auto));max-inline-size:min(var(--plx-comp-select-max-width),var(--plx-comp-field-context-content-max-inline-size,100%),100%);min-inline-size:var(--plx-comp-field-context-content-min-inline-size,0);}
 /* block: the select takes its own line (InlineEdit) */
 .plx-select--block{display:block;}
 .plx-select__chevron{--plx-comp-icon-context-show-20:block;--plx-comp-icon-context-show-24:none;--plx-comp-icon-size:var(--plx-comp-select-after-width);block-size:var(--plx-comp-select-after-height);color:var(--plx-comp-select-after-background);display:inline-flex;inline-size:var(--plx-comp-select-after-width);inset-block-start:50%;inset-inline-end:var(--plx-comp-select-after-inset-inline-end);pointer-events:none;position:absolute;transform:translateY(-50%);}
@@ -93,6 +93,8 @@
 .plx-select__field{align-items:center;display:flex;inset-block:0;inset-inline:0;position:absolute;}
 .plx-select__field:where(:not(.is-disabled)){cursor:pointer;}
 .plx-select__value{flex:1 1 auto;min-inline-size:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+/* the Tooltip around the chosen text (shown only while the text is cut) stays out of the way: it is the flex item that shrinks, the text inside it ends in the ellipsis */
+.plx-select__tip{display:flex;flex:1 1 auto;min-inline-size:0;}
 .plx-select__list{background-color:var(--plx-comp-select-list-background);border-color:var(--plx-comp-select-list-border-color);border-radius:var(--plx-comp-select-list-radius);border-style:solid;border-width:var(--plx-comp-select-list-border-width);box-shadow:var(--plx-comp-select-list-shadow);list-style:none;max-block-size:var(--plx-comp-select-list-max-height);overflow-y:auto;padding-block:var(--plx-comp-select-list-padding);padding-inline:var(--plx-comp-select-list-padding);}
 /* in the top layer, placed (and its gap to the field, 4px, set) by system/floating.css; without it (no anchor positioning) the list hangs below the field */
 .plx-select__list:not([data-plx-floating]){inset-block-start:100%;inset-inline:0;margin-block:var(--plx-comp-select-list-margin-block-start) 0;margin-inline:0;min-inline-size:max-content;position:absolute;z-index:var(--plx-comp-select-list-z-index);}
@@ -116,7 +118,7 @@
 .plx-select--width-xs{flex-shrink:0;inline-size:var(--plx-sys-field-width-xs);}
 .plx-select--width-sm{flex-shrink:0;inline-size:var(--plx-sys-field-width-sm);}
 .plx-select--width-md{flex-shrink:0;inline-size:var(--plx-sys-field-width-md);}
-.plx-select--width-lg{flex-shrink:0;inline-size:var(--plx-sys-field-width-lg);}
+.plx-select--width-lg{flex-shrink:var(--plx-comp-field-context-width-flex-shrink,0);inline-size:var(--plx-sys-field-width-lg);min-inline-size:min(var(--plx-sys-field-width-lg),var(--plx-comp-field-context-content-min-inline-size,var(--plx-sys-field-width-lg)));}
 .plx-select--width-fill{flex-shrink:var(--plx-state-select-flex-shrink,1);inline-size:100%;}
 /* its motion (moved from motion.css, Styling Standard 3.6: each component owns its own; reduced motion sets the durations to 0s) */
 .plx-input{transition-duration:var(--plx-sys-motion-duration-instant);transition-property:background-color, border-color, box-shadow, color, transform;transition-timing-function:var(--plx-sys-motion-ease-standard);}

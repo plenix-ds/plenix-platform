@@ -82,5 +82,5 @@ export function ActionBar({ label, sticky = true, className, children }) {
     return <>{lead}{React.cloneElement(el, { priority: undefined, className: cx(el.props.className, a.primary ? 'plx-action-bar__primary' : 'plx-action-bar__action') })}</>;
   });
   const body = walk(children);
-  return <div ref={ref} role="group" aria-label={label ?? t.label} className={cx('plx-action-bar', !sticky && 'plx-action-bar--static', className)}>{body}{placed ? null : more()}</div>;
+  return <div ref={ref} role="group" aria-label={label ?? t.label} data-plx-fit-shrink={measured >= Math.max(0, foldable.length - 1) || undefined} className={cx('plx-action-bar', !sticky && 'plx-action-bar--static', className)}>{body}{placed ? null : more()}</div>;
 }

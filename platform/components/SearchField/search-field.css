@@ -54,9 +54,9 @@
 .plx-search.plx-search--width-xs{flex-shrink:0;inline-size:var(--plx-sys-field-width-xs);}
 .plx-search.plx-search--width-sm{flex-shrink:0;inline-size:var(--plx-sys-field-width-sm);}
 .plx-search.plx-search--width-md{flex-shrink:0;inline-size:var(--plx-sys-field-width-md);}
-.plx-search.plx-search--width-lg{flex-shrink:0;inline-size:var(--plx-sys-field-width-lg);}
+.plx-search.plx-search--width-lg{flex-shrink:var(--plx-comp-field-context-width-flex-shrink,0);inline-size:var(--plx-sys-field-width-lg);min-inline-size:min(var(--plx-sys-field-width-lg),var(--plx-comp-field-context-content-min-inline-size,var(--plx-sys-field-width-lg)));}
 /* its motion (moved from motion.css, Styling Standard 3.6: each component owns its own; reduced motion sets the durations to 0s) */
 .plx-search__clear{transition-duration:var(--plx-sys-motion-duration-instant);transition-property:background-color, border-color, box-shadow, color, transform;transition-timing-function:var(--plx-sys-motion-ease-standard);}
 .plx-search__clear:active:where(:not(:disabled, [aria-disabled="true"])){transform:scale(var(--plx-sys-motion-press-scale));}
 /* the width its pattern gives it (layout-modes.css), else its own */
-.plx-search:where(:not(.plx-search--width-xs, .plx-search--width-sm, .plx-search--width-md, .plx-search--width-lg)){flex-shrink:var(--plx-comp-field-context-content-flex-shrink,var(--plx-state-search-flex-shrink,1));inline-size:var(--plx-comp-field-context-content-inline-size,var(--plx-comp-field-context-stretch-inline-size,var(--plx-state-search-inline-size,auto)));}
+.plx-search:where(:not(.plx-search--width-xs, .plx-search--width-sm, .plx-search--width-md, .plx-search--width-lg)){flex-shrink:var(--plx-comp-field-context-content-flex-shrink,var(--plx-state-search-flex-shrink,1));inline-size:var(--plx-comp-field-context-content-inline-size,var(--plx-comp-field-context-stretch-inline-size,var(--plx-state-search-inline-size,auto)));max-inline-size:var(--plx-comp-field-context-content-max-inline-size,none);min-inline-size:var(--plx-comp-field-context-content-min-inline-size,0);}
