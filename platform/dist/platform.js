@@ -6872,8 +6872,8 @@ var _warning = _interopRequireDefault(require("plenix-platform/icons/plenix/warn
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Icon, StatusIcon
-   Summary: One icon of the Plenix set, drawn as an inline SVG in the current text color (a name outside the set, from
-     icons-all.css, as a mask). StatusIcon is a tone's icon in the
+   Summary: One icon of the Plenix set, or any Material Symbols icon, drawn as an inline SVG in the current text color.
+     StatusIcon is a tone's icon in the
      tone's color (info, success, warning, danger, neutral), alone or with a short label.
    Usage:
      <Icon name="folder" />
@@ -6886,7 +6886,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Props:
      name: the naming contract (2026-10-22): a Plenix name, with dashes (platform/icons/map.json: mic-off, person-cancel);
        a Plenix name that is its Material symbol with dashes also answers to the underscore spelling (mic_off,
-       person_cancel); with the CDN's icons-all.css on the page, any other Material Symbols name (rocket_launch) too. A
+       person_cancel); any other Material Symbols name (rocket_launch) too, from its module or its library file. A
        Material name that is also a Plenix name draws the Plenix icon (check, home). Unknown names draw nothing
      size: "xs" 12px | "sm" 16px | "md" 20px | "lg" 24px | "xl" 48px, a page title (--plx-sys-icon-size-*); without it the icon takes its container's
        grid icon (a control's --plx-sys-control-icon-<role>) or --plx-sys-icon-size
