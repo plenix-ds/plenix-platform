@@ -67,7 +67,7 @@
       "$description": "Resizable (both): the corner the pointer drags in both directions."
     },
     "resizable-divider-size": { "$value": "{plx-ref.space-8px}", "$type": "dimension", "$description": "Resizable divider: the width of the gap the edge fills; a container sets it on its own element (SplitView: its gap)." },
-    "resizable-divider-line-color": { "$value": "{plx-sys.border-default}", "$type": "color", "$description": "Resizable divider: the two thin lines along the gutter's sides and its grip's lines (owner, 2026-10-26: the uiwjs look)." },
+    "resizable-divider-line-color": { "$value": "{plx-sys.border-default}", "$type": "color", "$description": "Resizable divider: the two thin lines along the gutter's sides and its grip's lines (owner, 2026-10-26: the uiwjs look). Forced colors: CanvasText, so the grip stays drawn (issue 560).", "$extensions": { "com.plenix": { "forcedColors": "CanvasText" } } },
     "resizable-divider-line-width": { "$value": "{plx-sys.border-width-thin}", "$type": "dimension", "$description": "Resizable divider: the side lines and the grip's lines." },
     "resizable-divider-background": { "$value": "{plx-sys.surface-sunken}", "$type": "color", "$description": "Resizable divider: the gutter between its two lines, at rest." },
     "resizable-divider-hover-background": { "$value": "{plx-sys.data-grid-row-selected}", "$type": "color", "$description": "Resizable divider: the gutter while hovered, focused or dragged (the data grid's selected-row tint)." },
