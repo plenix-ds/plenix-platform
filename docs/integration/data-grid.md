@@ -22,3 +22,32 @@ Written for CTM's grid report (2026-10-22), checked on Plenix 0.63.1 and fixed i
 | The same look in every view | Use one column definition per kind of value (case number `kind: 'data'`, people `type: 'person'` with `cells="pill"`, dates `type: 'date'`), so every grid sizes and draws them alike. |
 | No type icons | `typeIcons={false}` on a DataGrid; a static `Table` has none. |
 | Avoid local styles | Do not override `.plx-data-grid` or `.plx-table` rules: widths, wrapping and hover come from the component. |
+
+## The page shape: a grid that fills its room and scrolls inside (issue 522, the canonical pattern)
+
+The owner's rule: every DataGrid fills the room left below the page's headers and toolbars and shows its rows by scrolling inside itself, with no page controls. Pagination is used only when it is explicitly asked for.
+
+### What the CDN does
+
+| Behavior | How it works |
+|---|---|
+| Fill (the default) | `mode` is `"fill"` unless the app says otherwise. The grid measures the room from its top to the bottom of the window, or of its pane inside a SplitView, and scrolls inside that room. Only the rows in view are drawn (virtual rows), so 10 rows and 100,000 rows cost the same. |
+| Headers | The header row stays in place while the rows scroll. Horizontal scrolling moves the headers with the columns; frozen columns stay. |
+| Density and selection | Grids start compact (36px rows). Selection is kept by record key while rows scroll out of view and back. |
+| A bounded container | `height="100%"` fills a container whose height is set (a Panel, a Card, a flex region), instead of measuring to the window. |
+| Pagination (opt-in) | `mode="pages"` (with `pageSize`, `pageSizes`) draws a Pagination footer; `mode="load-more"` adds a Load more button. Use them only when the owner or the product asks for pages. |
+| Printing | A fill grid prints every row (the scroll room is released for print). |
+
+### What the application does
+
+| Need | Do this |
+|---|---|
+| A full-page list | The page's content is `<PageContent>` inside `<div className="plx-page-panes">`. Inside it, a `<Stack gap="md">` holds, in order, the header (EntityHeader), the CommandBar, and the DataGrid with **no** `height` and no `mode`. The grid measures the room left below the bar. The Files application (`files/files.jsx`) is the reference. |
+| A list and its detail side by side | Put the detail in a `<SidePanel>` beside `<PageContent>`, inside the same `plx-page-panes` (Files), or put the grid in `SplitView`'s `first` and the detail in `second` (SplitView tells the grid it is in a pane, so it fills the pane). The grid and the detail scroll on their own. Keep the open record in the address (`screen.open([...])`) and pass it as `selected`, so selection stays when the detail opens or the list re-sorts. |
+| A grid inside a bounded box | Give the box a height (a size token, or the rest of a flex column: `plx-page-panes`, or a `<Stack grow>` inside a `<Stack>`, which fill the rest of their parent and may shrink below their content) and the grid `height="100%"`. Every parent between the page and the grid must be a flex column with `min-block-size: 0`, or the grid grows with its rows and the page scrolls instead. |
+| Several grids on one page | Each fill grid measures to the window, so the first one takes the room. Give each a height token (`height="--plx-ref-size-320px"`), or put each in its own section or tab. |
+| Content under the grid | Keep the area below a fill grid empty (a footer belongs to the shell). If something must sit under it, use a bounded box and `height="100%"`. |
+| Page controls | Only when asked: `mode="pages"`. Do not slice the data into pages in the app and feed the grid 20 rows at a time; give it all the rows (or `fetchRows`, below) and let it scroll. |
+| Data from a server | `fetchRows({ page, size, sort, filters, search })` returns `{ rows, total }`. Today it works with `mode="pages"` and `mode="load-more"` (the Load more button shows a loading state, an error with Retry, and goes away at `total`). |
+
+No application CSS is needed for any of these; the layout comes from `plx-page-panes`, `PageContent`, `Stack`, SplitView and SidePanel.
