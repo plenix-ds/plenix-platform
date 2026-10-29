@@ -11,7 +11,9 @@ import React from 'react';
 // a row is too narrow when a child of it ends past its edge (either edge: right to left mirrors it) or starts on a
 // second line. Children are read, not scrollWidth: a tooltip's hidden bubble at the end may reach past the edge
 const over = (row) => {
-  const kids = Array.prototype.filter.call(row.children, (k) => k.offsetParent !== null && k.offsetWidth > 0);
+  // a wrapper the toolbar makes transparent (display: contents: Stack, Inline) has no box: its children are read in its place
+  const flat = (el) => Array.prototype.reduce.call(el.children, (out, k) => (getComputedStyle(k).display === 'contents' ? out.concat(flat(k)) : out.concat(k)), []);
+  const kids = flat(row).filter((k) => k.offsetParent !== null && k.offsetWidth > 0);
   if (!kids.length) return false;
   const box = row.getBoundingClientRect();
   const top = Math.min.apply(null, kids.map((k) => k.offsetTop));
