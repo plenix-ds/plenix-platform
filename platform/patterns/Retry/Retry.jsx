@@ -50,6 +50,7 @@ import { Notice } from '../../components/Notice/Notice.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import RefreshIcon from 'plenix-platform/icons/plenix/refresh';
 
 export function useRetry(task, { attempts = 3, auto = false, delay, maxDelay, immediate = true } = {}) {
   const [state, setState] = React.useState({ status: immediate ? 'running' : 'idle', attempt: immediate ? 1 : 0, seconds: 0, error: null, result: undefined });
@@ -133,7 +134,7 @@ export function RetryNotice({ retry, title, tone = 'danger', showCount = false, 
   const count = showCount && !stopped ? fill(t.attempt, values) : null;
   return (
     <Notice className={cx('plx-retry', className)} tone={tone} title={title || t.title} onDismiss={onDismiss} strings={{ dismiss: t.dismiss }}
-      actions={<Button size="xs" icon="refresh" loading={r.status === 'running'} onClick={r.retry}>{r.status === 'waiting' ? t.retryNow : t.retry}</Button>} {...rest}>
+      actions={<Button size="xs" icon={RefreshIcon} loading={r.status === 'running'} onClick={r.retry}>{r.status === 'waiting' ? t.retryNow : t.retry}</Button>} {...rest}>
       {children}
       {status || count ? (
         <span className="plx-retry__status">

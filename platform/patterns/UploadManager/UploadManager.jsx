@@ -81,6 +81,15 @@ import { DropZone } from '../../components/DropZone/DropZone.jsx';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { MenuItem } from '../../components/Menu/Menu.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
+import ChevronUpIcon from 'plenix-platform/icons/plenix/chevron-up';
+import CircleCheckIcon from 'plenix-platform/icons/plenix/circle-check';
+import CloseIcon from 'plenix-platform/icons/plenix/close';
+import FolderOpenIcon from 'plenix-platform/icons/plenix/folder-open';
+import RefreshIcon from 'plenix-platform/icons/plenix/refresh';
+import TextCardIcon from 'plenix-platform/icons/plenix/text-card';
+import UploadIcon from 'plenix-platform/icons/plenix/upload';
+import UploadN2Icon from 'plenix-platform/icons/plenix/upload-2';
 
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const clamp = (n) => Math.max(0, Math.min(100, Number(n) || 0));
@@ -209,12 +218,12 @@ export function UploadManager({ queue, upload, items, onAdd, onCancel, onRetry, 
       onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; }}
       onDragLeave={() => { depth.current = Math.max(0, depth.current - 1); if (!depth.current) setOver(false); }}
       onDrop={(e) => { e.preventDefault(); depth.current = 0; setOver(false); droppedFiles(e.dataTransfer).then(add); }}>
-      <Icon name="upload-2" size="lg" />
+      <Icon name={UploadN2Icon} size="lg" />
       <span className="plx-upload-manager__drop">{t.drop}</span>
       {hint ? <span className="plx-upload-manager__hint">{hint}</span> : null}
       <span className="plx-upload-manager__choose">
-        <Button size="sm" icon="text-card" onClick={() => filesInput.current && filesInput.current.click()}>{t.chooseFiles}</Button>
-        {folders ? <Button size="sm" icon="folder-open" onClick={() => folderInput.current && folderInput.current.click()}>{t.chooseFolder}</Button> : null}
+        <Button size="sm" icon={TextCardIcon} onClick={() => filesInput.current && filesInput.current.click()}>{t.chooseFiles}</Button>
+        {folders ? <Button size="sm" icon={FolderOpenIcon} onClick={() => folderInput.current && folderInput.current.click()}>{t.chooseFolder}</Button> : null}
       </span>
       <input ref={filesInput} type="file" multiple hidden accept={accept} onChange={fromInput} aria-label={t.chooseFiles} />
       {folders ? <input ref={folderInput} type="file" multiple hidden webkitdirectory="" directory="" onChange={fromInput} aria-label={t.chooseFolder} /> : null}
@@ -227,14 +236,14 @@ export function UploadManager({ queue, upload, items, onAdd, onCancel, onRetry, 
       return <FileRow key={x.id} as="li" file={file} progress={x.status === 'queued' ? 0 : clamp(x.progress)} progressLabel={x.status === 'queued' ? t.waiting : undefined}
         onCancel={q.cancel ? () => q.cancel(x.id) : undefined} />;
     }
-    const removeItem = q.remove ? <MenuItem key="remove" icon="close" onSelect={() => q.remove(x.id)}>{t.remove}</MenuItem> : null;
+    const removeItem = q.remove ? <MenuItem key="remove" icon={CloseIcon} onSelect={() => q.remove(x.id)}>{t.remove}</MenuItem> : null;
     if (x.status === 'error') {
       return <FileRow key={x.id} as="li" file={file} error={x.error || t.error} onRetry={x.retry !== false && q.retry ? () => q.retry(x.id) : undefined} actions={removeItem || undefined} />;
     }
     const canceled = x.status === 'canceled';
     return <FileRow key={x.id} as="li" file={file}
-      status={canceled ? <Badge tone="neutral" icon="close">{t.canceled}</Badge> : <Badge tone="success" icon="circle-check">{t.uploaded}</Badge>}
-      actions={canceled && q.retry ? <>{<MenuItem icon="refresh" onSelect={() => q.retry(x.id)}>{t.again}</MenuItem>}{removeItem}</> : removeItem || undefined} />;
+      status={canceled ? <Badge tone="neutral" icon={CloseIcon}>{t.canceled}</Badge> : <Badge tone="success" icon={CircleCheckIcon}>{t.uploaded}</Badge>}
+      actions={canceled && q.retry ? <>{<MenuItem icon={RefreshIcon} onSelect={() => q.retry(x.id)}>{t.again}</MenuItem>}{removeItem}</> : removeItem || undefined} />;
   };
   const list = rows.length ? (
     <div className="plx-upload-manager__queue" tabIndex={0} role="region" aria-label={t.queue}>
@@ -257,7 +266,7 @@ export function UploadManager({ queue, upload, items, onAdd, onCancel, onRetry, 
 
   if (dialog) {
     return (
-      <Dialog open={open} onClose={onClose} title={title || t.dialogTitle} icon="upload" size="md"
+      <Dialog open={open} onClose={onClose} title={title || t.dialogTitle} icon={UploadIcon} size="md"
         className={cx('plx-upload-manager', 'plx-upload-manager--dialog', className)}
         footer={<>{bulk}<Button variant="primary" onClick={onClose}>{t.finish}</Button></>}>
         <div className="plx-upload-manager__body">
@@ -275,8 +284,8 @@ export function UploadManager({ queue, upload, items, onAdd, onCancel, onRetry, 
         <h2 id={id + '-title'} className="plx-upload-manager__title">{headline}</h2>
         <span className="plx-upload-manager__actions">
           {bulk}
-          <Button size="sm" variant="ghost" iconOnly icon={collapsed ? 'chevron-up' : 'chevron-down'} label={collapsed ? t.show : t.hide} aria-expanded={!collapsed} aria-controls={id + '-list'} onClick={() => setCollapsed(!collapsed)} />
-          {onClose && !moving ? <Button size="sm" variant="ghost" iconOnly icon="close" label={t.close} onClick={onClose} /> : null}
+          <Button size="sm" variant="ghost" iconOnly icon={collapsed ? ChevronUpIcon : ChevronDownIcon} label={collapsed ? t.show : t.hide} aria-expanded={!collapsed} aria-controls={id + '-list'} onClick={() => setCollapsed(!collapsed)} />
+          {onClose && !moving ? <Button size="sm" variant="ghost" iconOnly icon={CloseIcon} label={t.close} onClick={onClose} /> : null}
         </span>
       </div>
       {summary}

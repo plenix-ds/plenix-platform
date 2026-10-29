@@ -44,6 +44,8 @@ import { formatNumber } from '../../utils/format.js';
 import { PanelTrigger, Pill, toggle, fill } from '../CommandBar/panel-parts.jsx';
 import { DATE_PRESETS, CATEGORY_ORDER, fieldWords } from '../../utils/fields.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import CalendarIcon from 'plenix-platform/icons/plenix/calendar';
+import FilterOffIcon from 'plenix-platform/icons/plenix/filter-off';
 
 // the choice in force, in words: the first chosen value's label, "+N" for the rest
 const nameOf = (list, chosen) => {
@@ -77,10 +79,10 @@ export function QuickFilter({ kind = 'list', label, icon, noun = 'value', option
         </div>
       </div>
     );
-    const footer = <Button size="sm" variant="ghost" icon="filter-off" disabled={!on} onClick={() => onChange({ preset: 'any', from: '', to: '' })}>{t.clear}</Button>;
+    const footer = <Button size="sm" variant="ghost" icon={FilterOffIcon} disabled={!on} onClick={() => onChange({ preset: 'any', from: '', to: '' })}>{t.clear}</Button>;
     const preset = t.presets.find((x) => x.value === d.preset);
     const current = !on ? undefined : d.preset === 'custom' ? [d.from, d.to].filter(Boolean).join(' – ') || t.custom : preset ? preset.label : undefined;
-    return <PanelTrigger icon={icon || 'calendar'} label={label} current={current} title={label} count={on ? 1 : 0} caret size="sm" footer={footer} inline={inline}>{body}</PanelTrigger>;
+    return <PanelTrigger icon={icon || CalendarIcon} label={label} current={current} title={label} count={on ? 1 : 0} caret size="sm" footer={footer} inline={inline}>{body}</PanelTrigger>;
   }
   const list = asOptions(options);
   if (kind === 'single') {
@@ -88,7 +90,7 @@ export function QuickFilter({ kind = 'list', label, icon, noun = 'value', option
     const choices = list.map(o => ({ value: o.value, label: counted(o, <Pill color={o.color}>{o.label}</Pill>) }));
     if (!required) choices.unshift({ value: '', label: t.all });
     const body = <div className="plx-find-panel"><RadioGroup label={label} value={chosen.length ? chosen[0] : ''} options={choices} onChange={v => onChange(v === '' ? [] : [v])} /></div>;
-    const footer = required ? null : <Button size="sm" variant="ghost" icon="filter-off" disabled={!chosen.length} onClick={() => onChange([])}>{t.clear}</Button>;
+    const footer = required ? null : <Button size="sm" variant="ghost" icon={FilterOffIcon} disabled={!chosen.length} onClick={() => onChange([])}>{t.clear}</Button>;
     return <PanelTrigger icon={icon} label={label} current={nameOf(list, chosen)} title={label} count={chosen.length} caret size="sm" footer={footer} inline={inline}>{body}</PanelTrigger>;
   }
   const chosen = value || [];
@@ -102,6 +104,6 @@ export function QuickFilter({ kind = 'list', label, icon, noun = 'value', option
       </div>
     </div>
   );
-  const footer = <Button size="sm" variant="ghost" icon="filter-off" disabled={!chosen.length} onClick={() => onChange([])}>{t.clear}</Button>;
+  const footer = <Button size="sm" variant="ghost" icon={FilterOffIcon} disabled={!chosen.length} onClick={() => onChange([])}>{t.clear}</Button>;
   return <PanelTrigger icon={icon} label={label} current={nameOf(list, chosen)} title={label} count={chosen.length} caret size="sm" footer={footer} inline={inline}>{body}</PanelTrigger>;
 }

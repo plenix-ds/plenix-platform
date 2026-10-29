@@ -23,6 +23,10 @@ import { Menu, MenuItem, MenuDivider, MenuGroup, MenuRadioGroup } from '../../co
 import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
 import { CommandBarButton, useCommandBar } from '../CommandBar/CommandBar.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import GridN2x2Icon from 'plenix-platform/icons/plenix/grid-2x2';
+import ListLinesIcon from 'plenix-platform/icons/plenix/list-lines';
+import RefreshIcon from 'plenix-platform/icons/plenix/refresh';
+import ViewTableIcon from 'plenix-platform/icons/plenix/view-table';
 
 const SIZES = [['s', 'cards-small'], ['m', 'cards-medium'], ['l', 'cards-large']];
 const HEIGHTS = ['short', 'medium', 'tall', 'extra-tall'];
@@ -33,10 +37,10 @@ export function ViewMenu({ value, onChange, gallery = true, strings, onReset }) 
   const v = Object.assign({ layout: 'list', size: 'm', height: 'short' }, value);
   const set = (k) => (x) => onChange(Object.assign({}, v, { [k]: x }));
   const menu = (
-    <Menu label={t.label} placement="bottom-end" trigger={<CommandBarButton icon="view-table" label={t.label} caret />}>
+    <Menu label={t.label} placement="bottom-end" trigger={<CommandBarButton icon={ViewTableIcon} label={t.label} caret />}>
       <MenuRadioGroup label={t.layout} value={v.layout} onChange={set('layout')} keepOpen>
-        <MenuItem value="list" icon="list-lines">{t.list}</MenuItem>
-        <MenuItem value="gallery" icon="grid-2x2" disabled={!gallery}>{t.gallery}</MenuItem>
+        <MenuItem value="list" icon={ListLinesIcon}>{t.list}</MenuItem>
+        <MenuItem value="gallery" icon={GridN2x2Icon} disabled={!gallery}>{t.gallery}</MenuItem>
       </MenuRadioGroup>
       <MenuDivider />
       <MenuGroup label={t.size}>
@@ -46,7 +50,7 @@ export function ViewMenu({ value, onChange, gallery = true, strings, onReset }) 
       <MenuGroup label={t.height}>
         {HEIGHTS.map((k) => <MenuItem key={k} type="radio" checked={v.height === k} disabled={v.layout !== 'list'} keepOpen onSelect={() => set('height')(k)}>{t[k]}</MenuItem>)}
       </MenuGroup>
-      {onReset ? <><MenuDivider /><MenuItem icon="refresh" onSelect={onReset}>{t.reset}</MenuItem></> : null}
+      {onReset ? <><MenuDivider /><MenuItem icon={RefreshIcon} onSelect={onReset}>{t.reset}</MenuItem></> : null}
     </Menu>
   );
   return ctx.iconOnly ? <Tooltip content={t.label}>{menu}</Tooltip> : menu;

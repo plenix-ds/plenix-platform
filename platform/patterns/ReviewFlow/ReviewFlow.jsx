@@ -71,18 +71,26 @@ import { ActivityList } from '../ActivityList/ActivityList.jsx';
 import { CommandBar } from '../CommandBar/CommandBar.jsx';
 import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
 import english from '../../i18n/en.js';
+import AlertIcon from 'plenix-platform/icons/plenix/alert';
+import CircleCheckIcon from 'plenix-platform/icons/plenix/circle-check';
+import CloseIcon from 'plenix-platform/icons/plenix/close';
+import DocSearchIcon from 'plenix-platform/icons/plenix/doc-search';
+import PencilIcon from 'plenix-platform/icons/plenix/pencil';
+import ScheduleIcon from 'plenix-platform/icons/plenix/schedule';
+import SparkleIcon from 'plenix-platform/icons/plenix/sparkle';
+import VisibilityIcon from 'plenix-platform/icons/plenix/visibility';
 
 // the workflow statuses: a Badge variant by meaning, and its icon (owner, 2026-10-15)
 // the labels are the catalog's (reviewFlow.statuses): this constant keeps its shape and its English labels for apps that read it
 const STATUS_LABELS = english.reviewFlow.statuses;
 export const WORKFLOW_STATUSES = {
-  draft: { tone: 'neutral', icon: 'pencil', label: STATUS_LABELS.draft },
-  'in-review': { tone: 'active', icon: 'doc-search', label: STATUS_LABELS['in-review'] },
-  approved: { tone: 'success', icon: 'circle-check', label: STATUS_LABELS.approved },
-  'changes-requested': { tone: 'action-required', icon: 'alert', label: STATUS_LABELS['changes-requested'] },
-  rejected: { tone: 'negative', icon: 'close', label: STATUS_LABELS.rejected },
-  published: { tone: 'success', icon: 'visibility', label: STATUS_LABELS.published },
-  scheduled: { tone: 'waiting', icon: 'schedule', label: STATUS_LABELS.scheduled },
+  draft: { tone: 'neutral', icon: PencilIcon, label: STATUS_LABELS.draft },
+  'in-review': { tone: 'active', icon: DocSearchIcon, label: STATUS_LABELS['in-review'] },
+  approved: { tone: 'success', icon: CircleCheckIcon, label: STATUS_LABELS.approved },
+  'changes-requested': { tone: 'action-required', icon: AlertIcon, label: STATUS_LABELS['changes-requested'] },
+  rejected: { tone: 'negative', icon: CloseIcon, label: STATUS_LABELS.rejected },
+  published: { tone: 'success', icon: VisibilityIcon, label: STATUS_LABELS.published },
+  scheduled: { tone: 'waiting', icon: ScheduleIcon, label: STATUS_LABELS.scheduled },
 };
 
 export function WorkflowStatus({ status = 'draft', label, size, strings, className, ...rest }) {
@@ -131,7 +139,7 @@ export function ReviewFlow({ status = 'in-review', title, headingLevel = 3, deta
         </div>
         <WorkflowStatus status={status} strings={strings} />
       </div>
-      {kind === 'human' ? <Notice tone="info" icon="sparkle">{t.human}</Notice> : null}
+      {kind === 'human' ? <Notice tone="info" icon={SparkleIcon}>{t.human}</Notice> : null}
       {reviewers.length ? (
         <div className="plx-review-flow__section">
           <p className="plx-review-flow__label">{t.reviewers}</p>
@@ -209,9 +217,9 @@ export function ReviewQueue({ items = [], label, noun, plural, onDecision, selec
     <div className={cx('plx-review-queue', className)} {...rest}>
       <CommandBar label={label} count={counted(items.length) ?? fill(t.count, { n: formatNumber(items.length), plural: items.length === 1 ? noun : many })}
         selection={{ count: sel.length, noun, plural: many, onClear: () => setSel([]), actions: [
-          { id: 'approve', label: t.approve, icon: 'circle-check', onSelect: () => run('approved') },
-          { id: 'changes', label: t.changes, icon: 'alert', onSelect: () => setAsk('changes-requested') },
-          { id: 'reject', label: t.reject, icon: 'close', danger: true, onSelect: () => setAsk('rejected') },
+          { id: 'approve', label: t.approve, icon: CircleCheckIcon, onSelect: () => run('approved') },
+          { id: 'changes', label: t.changes, icon: AlertIcon, onSelect: () => setAsk('changes-requested') },
+          { id: 'reject', label: t.reject, icon: CloseIcon, danger: true, onSelect: () => setAsk('rejected') },
         ] }} />
       <DataGrid label={label} data={items} index="id" selectable selected={sel} onSelectionChange={setSel} columns={columns} />
       <PromptDialog open={!!ask} title={fill(ask === 'rejected' ? t.rejectTitle : t.changesTitle, { what: what(sel.length) })}

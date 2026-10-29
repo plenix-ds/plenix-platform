@@ -23,6 +23,7 @@ import { Notice } from '../../components/Notice/Notice.jsx';
 import { ComparisonView } from '../ComparisonView/ComparisonView.jsx';
 import { cx } from '../../utils/cx.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import CheckIcon from 'plenix-platform/icons/plenix/check';
 
 export function TrialUpgrade({ message, plans = [], attributes = [], onUpgrade, defaultOpen = false, strings, className }) {
   const t = useStrings('trialUpgrade', strings);
@@ -34,7 +35,7 @@ export function TrialUpgrade({ message, plans = [], attributes = [], onUpgrade, 
   };
   return <Stack className={cx('plx-trial-upgrade', className)}>
     <Banner tone="neutral" title={t.trial} actions={<Button size="sm" onClick={() => setOpen(true)}>{t.compare}</Button>}>{message}</Banner>
-    {saved ? <Badge tone="success" icon="check" role="status">{t.upgraded}</Badge> : null}
+    {saved ? <Badge tone="success" icon={CheckIcon} role="status">{t.upgraded}</Badge> : null}
     <Dialog open={open} title={t.title} size="lg" dismissible={!busy} onClose={() => { if (!lock.current) setOpen(false); }}
       footer={<><Button disabled={busy} onClick={() => setOpen(false)}>{t.cancel}</Button><Button variant="primary" disabled={busy || !onUpgrade || !plans.some((p) => p.id === plan)} onClick={upgrade}>{t.upgrade}</Button></>}>
       <ComparisonView items={plans} attributes={attributes} mode="matrix" label={t.compare} strings={strings} />

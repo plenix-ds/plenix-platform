@@ -69,8 +69,17 @@ import { AssignControl } from '../AssignControl/AssignControl.jsx';
 import { DuplicateAction } from '../DuplicateAction/DuplicateAction.jsx';
 import { DeleteFlow } from '../DeleteFlow/DeleteFlow.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import ArrowLeftIcon from 'plenix-platform/icons/plenix/arrow-left';
+import CloseIcon from 'plenix-platform/icons/plenix/close';
+import PencilIcon from 'plenix-platform/icons/plenix/pencil';
+import PersonIcon from 'plenix-platform/icons/plenix/person';
+import PlusIcon from 'plenix-platform/icons/plenix/plus';
+import SettingsPermissionsIcon from 'plenix-platform/icons/plenix/settings-permissions';
+import SettingsUsersIcon from 'plenix-platform/icons/plenix/settings-users';
+import TrashIcon from 'plenix-platform/icons/plenix/trash';
+import VisibilityIcon from 'plenix-platform/icons/plenix/visibility';
 
-const ROLE_ICONS = { owner: 'settings-permissions', editor: 'pencil', viewer: 'visibility' };
+const ROLE_ICONS = { owner: SettingsPermissionsIcon, editor: PencilIcon, viewer: VisibilityIcon };
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const around = (s, key, node) => { const p = String(s).split('{' + key + '}'); return <>{p[0]}{p.length > 1 ? node : null}{p.slice(1).join('')}</>; };
 const H = React.forwardRef(function H({ level, ...props }, ref) { return React.createElement('h' + Math.min(6, Math.max(2, level)), Object.assign({ ref }, props)); });
@@ -124,14 +133,14 @@ function RoleList({ roles, t, label, editable, focusId, change, onOpen }) {
     const n = (r.members || []).length;
     return {
       id: r.id, name: r.name, description: r.description, onOpen: () => onOpen(r.id),
-      media: <IconTile icon={ROLE_ICONS[r.builtIn] || 'person'} size="sm" />,
+      media: <IconTile icon={ROLE_ICONS[r.builtIn] || PersonIcon} size="sm" />,
       meta: <span className="plx-role-manager__meta"><span>{around(n === 1 ? t.memberCount : t.membersCount, 'n', <Text variant="data">{formatNumber(n)}</Text>)}</span>
         <span className="plx-role-manager__kind">{r.builtIn ? t.builtIn : t.custom}</span></span>,
     };
   });
   return (
     <div ref={box} className="plx-role-manager__list">
-      {editable ? <div className="plx-role-manager__bar"><Button icon="plus" onClick={() => setCreating(true)}>{t.create}</Button></div> : null}
+      {editable ? <div className="plx-role-manager__bar"><Button icon={PlusIcon} onClick={() => setCreating(true)}>{t.create}</Button></div> : null}
       <ResourceList label={label || t.roles} noun={t.role} items={items} />
       {editable ? <CreateRole open={creating} roles={roles} t={t} onClose={() => setCreating(false)}
         onCreate={(r) => { setCreating(false); change(roles.concat(r), { type: 'create', role: r }); announce(fill(t.created, { name: r.name })); onOpen(r.id); }} /> : null}
@@ -197,7 +206,7 @@ function RoleDetail({ role, roles, permissions, people, t, editable, headingLeve
   const sub = headingLevel + 1;
   return (
     <div className="plx-role-manager__detail">
-      <div className="plx-role-manager__back"><Button variant="ghost" size="sm" icon="arrow-left" onClick={onBack}>{t.back}</Button></div>
+      <div className="plx-role-manager__back"><Button variant="ghost" size="sm" icon={ArrowLeftIcon} onClick={onBack}>{t.back}</Button></div>
       <header className="plx-role-manager__header">
         <div className="plx-role-manager__heading">
           <H level={headingLevel} ref={title} tabIndex={-1} className="plx-role-manager__title">{role.name}</H>
@@ -214,7 +223,7 @@ function RoleDetail({ role, roles, permissions, people, t, editable, headingLeve
               }} />
             {custom ? <DeleteFlow items={[{ id: role.id, label: role.name }]} noun={t.role}
               onDelete={() => { change(roles.filter((r) => r.id !== role.id), { type: 'delete', role: role.id }); onBack(); }}
-              trigger={<Button size="sm" variant="danger-secondary" icon="trash">{t.delete}</Button>} /> : null}
+              trigger={<Button size="sm" variant="danger-secondary" icon={TrashIcon}>{t.delete}</Button>} /> : null}
           </div>
         ) : null}
         {role.description ? <p className="plx-role-manager__description">{role.description}</p> : null}
@@ -232,7 +241,7 @@ function RoleDetail({ role, roles, permissions, people, t, editable, headingLeve
           </div>
         ) : (
           <>
-            <PermissionSummary icon="settings-users" access={fill(t.access, { role: role.name })} detail={fill(members.length === 1 ? t.peopleOne : t.people, { n: formatNumber(members.length) })}
+            <PermissionSummary icon={SettingsUsersIcon} access={fill(t.access, { role: role.name })} detail={fill(members.length === 1 ? t.peopleOne : t.people, { n: formatNumber(members.length) })}
               can={permissions.filter((p) => allowed.has(p.id)).map((p) => p.label)} cannot={permissions.filter((p) => !allowed.has(p.id)).map((p) => p.label)} />
             {editable && !custom ? <p className="plx-role-manager__note">{t.builtInNote}</p> : null}
           </>
@@ -249,7 +258,7 @@ function RoleDetail({ role, roles, permissions, people, t, editable, headingLeve
             const p = person(v);
             return { id: v, name: p.label, description: p.description, avatar: { name: p.label, src: p.src },
               meta: <RoleLabel role={role.builtIn || 'custom'} label={role.builtIn ? undefined : role.name} category={role.category} />,
-              actions: editable ? <Button size="xs" variant="ghost" iconOnly icon="close" label={fill(t.remove, { name: p.label })} onClick={() => remove(v)} /> : null };
+              actions: editable ? <Button size="xs" variant="ghost" iconOnly icon={CloseIcon} label={fill(t.remove, { name: p.label })} onClick={() => remove(v)} /> : null };
           })} />
         ) : <p className="plx-role-manager__note">{t.noMembers}</p>}
         {editable ? (

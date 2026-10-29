@@ -54,6 +54,8 @@ import { VisuallyHidden } from '../../components/VisuallyHidden/VisuallyHidden.j
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import { createTranslator } from '../../providers/LocaleProvider.jsx';
 import { formatLocale } from '../../utils/format.js';
+import PlusIcon from 'plenix-platform/icons/plenix/plus';
+import TrashIcon from 'plenix-platform/icons/plenix/trash';
 
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const blank = (x) => x === null || x === undefined || x === '' || (Array.isArray(x) && !x.length);
@@ -131,7 +133,7 @@ function Rule({ c, index, fields, uid, put, remove, t }) {
           onChange={(e) => { const op = e.target.value; put({ op, value: op === 'within' ? WITHIN[0].value : c.op === 'within' || NO_VALUE[op] ? '' : c.value }); }} />
       </Labeled>
       <RuleValue c={c} f={f} set={put} id={base + '-v'} label={name + ', ' + t.value} />
-      <Button size="sm" variant="ghost" icon="trash" iconOnly label={name + ': ' + t.removeRule} className="plx-query-builder__remove" onClick={remove} />
+      <Button size="sm" variant="ghost" icon={TrashIcon} iconOnly label={name + ': ' + t.removeRule} className="plx-query-builder__remove" onClick={remove} />
     </div>
   );
 }
@@ -152,7 +154,7 @@ function Group({ node, setNode, depth, index, maxDepth, fields, uid, focus, onRe
         <SegmentedControl size="sm" label={(name ? name + ', ' : '') + t.join} value={node.join === 'or' ? 'or' : 'and'}
           options={[{ value: 'and', label: t.and }, { value: 'or', label: t.or }]} onChange={(v) => setNode(Object.assign({}, node, { join: v }))} />
         <span className="plx-query-builder__hint">{node.join === 'or' ? t.any : t.all}</span>
-        {onRemove ? <Button size="sm" variant="ghost" icon="trash" iconOnly label={name + ': ' + t.removeGroup} className="plx-query-builder__remove" onClick={onRemove} /> : null}
+        {onRemove ? <Button size="sm" variant="ghost" icon={TrashIcon} iconOnly label={name + ': ' + t.removeGroup} className="plx-query-builder__remove" onClick={onRemove} /> : null}
       </div>
       {items.length ? (
         <ul className="plx-query-builder__items">
@@ -167,8 +169,8 @@ function Group({ node, setNode, depth, index, maxDepth, fields, uid, focus, onRe
         </ul>
       ) : <p className="plx-query-builder__empty">{t.empty}</p>}
       <div className="plx-query-builder__add" data-plx-add={node.id || 'root'}>
-        <Button size="sm" variant="ghost" icon="plus" disabled={!fields.length} onClick={addRule}>{t.addRule}</Button>
-        {depth + 1 < maxDepth ? <Button size="sm" variant="ghost" icon="plus" disabled={!fields.length} onClick={addGroup}>{t.addGroup}</Button> : null}
+        <Button size="sm" variant="ghost" icon={PlusIcon} disabled={!fields.length} onClick={addRule}>{t.addRule}</Button>
+        {depth + 1 < maxDepth ? <Button size="sm" variant="ghost" icon={PlusIcon} disabled={!fields.length} onClick={addGroup}>{t.addGroup}</Button> : null}
       </div>
     </div>
   );

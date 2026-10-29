@@ -52,6 +52,7 @@ import { DatePicker } from '../../components/DatePicker/DatePicker.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { WorkflowStatus, useOptionalToast } from '../ReviewFlow/ReviewFlow.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import ScheduleIcon from 'plenix-platform/icons/plenix/schedule';
 
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const q = (x) => '“' + x + '”';
@@ -100,7 +101,7 @@ export function Publish({ name = '', status = 'draft', audience, publishedAt, sc
     if (status === 'published') actions = onUnpublish ? <Button onClick={unpublishPress}>{t.unpublish}</Button> : null;
     else if (status === 'scheduled') actions = <>{onCancelSchedule ? <Button onClick={onCancelSchedule}>{t.cancelSchedule}</Button> : null}
       {onPublish ? <Button variant="primary" onClick={publishPress}>{t.publishNow}</Button> : null}</>;
-    else actions = <>{onSchedule ? <Button icon="schedule" onClick={openSchedule}>{t.schedule}</Button> : null}
+    else actions = <>{onSchedule ? <Button icon={ScheduleIcon} onClick={openSchedule}>{t.schedule}</Button> : null}
       {onPublish ? <Button variant="primary" onClick={publishPress}>{t.publish}</Button> : null}</>;
   }
 
