@@ -54,6 +54,7 @@ import { Slider } from '../../components/Slider/Slider.jsx';
 import { Table } from '../../components/Table/Table.jsx';
 import { Image } from '../../components/Image/Image.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import PencilIcon from 'plenix-platform/icons/plenix/pencil';
 
 const MODES = ['columns', 'matrix', 'slider'];
 // the slider's drawing area (SVG user units; the picture fills it, cropped to the ratio)
@@ -88,7 +89,7 @@ export function ComparisonView({ items = [], attributes = [], mode, defaultMode 
     const shown = v === undefined || v === null || v === '' ? t.empty : v;
     return a.kind === 'data' ? <span className="plx-comparison-view__data">{shown}</span> : shown;
   };
-  const badge = (it, a) => (highlight && differs(it, a) ? <Badge tone="active" icon="pencil" size="sm">{t.changed}</Badge> : null);
+  const badge = (it, a) => (highlight && differs(it, a) ? <Badge tone="active" icon={PencilIcon} size="sm">{t.changed}</Badge> : null);
   const H = 'h' + Math.min(6, Math.max(2, headingLevel));
 
   // linked scrolling: one pane's scroll moves the others to the same place

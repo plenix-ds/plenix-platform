@@ -40,22 +40,27 @@ import { List } from '../../components/List/List.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Link } from '../../components/Link/Link.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import CheckIcon from 'plenix-platform/icons/plenix/check';
+import CloseIcon from 'plenix-platform/icons/plenix/close';
+import LockIcon from 'plenix-platform/icons/plenix/lock';
 
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const lower = (x) => String(x).charAt(0).toLowerCase() + String(x).slice(1);
 
 export function PermissionSummary({ access, icon = 'lock', detail, can = [], cannot = [], variant = 'list', onManage, manageHref, live = false, strings, className, ...rest }) {
+  // the documented default is the name; it draws from its imported module (#280)
+  const glyph = icon === 'lock' ? LockIcon : icon;
   devWarn('PermissionSummary', { variant }, { variant: ['list','compact'] });
   const t = useStrings('permissionSummary', strings);
   const compact = variant === 'compact';
-  const yes = (children) => ({ icon: 'check', tone: 'success', children });
-  const no = (children) => ({ icon: 'close', tone: 'danger', children });
+  const yes = (children) => ({ icon: CheckIcon, tone: 'success', children });
+  const no = (children) => ({ icon: CloseIcon, tone: 'danger', children });
   const manage = manageHref ? <Link href={manageHref} className="plx-permission-summary__manage">{t.manage}</Link>
     : onManage ? <Button size="sm" variant="ghost" className="plx-permission-summary__manage" onClick={onManage}>{t.manage}</Button> : null;
   return (
     <div className={cx('plx-permission-summary', compact && 'plx-permission-summary--compact', className)} aria-live={live ? 'polite' : undefined} {...rest}>
       <div className="plx-permission-summary__head">
-        <span className="plx-permission-summary__icon" aria-hidden="true"><Icon name={icon} /></span>
+        <span className="plx-permission-summary__icon" aria-hidden="true"><Icon name={glyph} /></span>
         <span className="plx-permission-summary__access">
           <span className="plx-permission-summary__level">{access}</span>
           {detail ? <span className="plx-permission-summary__detail">{detail}</span> : null}

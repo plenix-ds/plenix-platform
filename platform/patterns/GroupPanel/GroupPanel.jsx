@@ -32,6 +32,10 @@ import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
 import { PanelTrigger, PanelHead, Pick, useReorder, fill } from '../CommandBar/panel-parts.jsx';
 import { KIND_ICONS, DIRECTIONS, fieldOf, kindOf, fieldWords } from '../../utils/fields.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import GroupByIcon from 'plenix-platform/icons/plenix/group-by';
+import MoreIcon from 'plenix-platform/icons/plenix/more';
+import PlusIcon from 'plenix-platform/icons/plenix/plus';
+import TrashIcon from 'plenix-platform/icons/plenix/trash';
 
 const fieldOption = (f) => ({ value: f.value, label: f.label, icon: KIND_ICONS[kindOf(f)] });
 // every group of the table, its subgroups too
@@ -65,11 +69,11 @@ export function GroupPanel({ fields = [], value = [], onChange, table, inline = 
             <div key={l.field} {...ro.rowProps(i, f.label)}>
               <Pick label={t.field} value={l.field} options={fields.filter((x) => x.value === l.field || !levels.some((y) => y.field === x.value)).map(fieldOption)} onChange={(v) => put(i, { field: v, interval: fields.find(f => f.value === v)?.kind === 'date' ? 'day' : undefined, range: undefined })} />
               <Pick label={t.order} size="dir" value={l.dir || 'asc'} options={[{ value: 'asc', label: words[0] }, { value: 'desc', label: words[1] }]} onChange={(v) => put(i, { dir: v })} />
-              <Menu label={fill(t.more, { name: f.label })} placement="bottom-end" trigger={<Button variant="ghost" icon="more" iconOnly label={fill(t.more, { name: f.label })} />}>
+              <Menu label={fill(t.more, { name: f.label })} placement="bottom-end" trigger={<Button variant="ghost" icon={MoreIcon} iconOnly label={fill(t.more, { name: f.label })} />}>
                 {f.kind === 'date' ? ['day', 'week', 'month', 'year'].map(interval => <MenuItem key={interval} checked={(l.interval || 'day') === interval} keepOpen onSelect={() => put(i, { interval })}>{interval[0].toUpperCase() + interval.slice(1)}</MenuItem>) : null}
                 <MenuItem checked={!!l.hideEmpty} keepOpen onSelect={() => put(i, { hideEmpty: !l.hideEmpty })}>{t.hideEmpty}</MenuItem>
               </Menu>
-              <Tooltip content={t.removeTip}><Button variant="ghost" icon="trash" iconOnly label={fill(t.remove, { name: f.label })} onClick={() => onChange(levels.filter((_, j) => j !== i))} /></Tooltip>
+              <Tooltip content={t.removeTip}><Button variant="ghost" icon={TrashIcon} iconOnly label={fill(t.remove, { name: f.label })} onClick={() => onChange(levels.filter((_, j) => j !== i))} /></Tooltip>
               {ro.handle(i, f.label)}
             </div>
           );
@@ -77,9 +81,9 @@ export function GroupPanel({ fields = [], value = [], onChange, table, inline = 
         {ro.status}
       </div>
       <div className="plx-find-panel__add">
-        <Button size="sm" variant="ghost" icon="plus" disabled={!free.length} onClick={() => onChange(levels.concat({ field: free[0].value, dir: 'asc', interval: free[0].kind === 'date' ? 'day' : undefined, range: free[0].groupRange }))}>{levels.length ? t.addSub : t.add}</Button>
+        <Button size="sm" variant="ghost" icon={PlusIcon} disabled={!free.length} onClick={() => onChange(levels.concat({ field: free[0].value, dir: 'asc', interval: free[0].kind === 'date' ? 'day' : undefined, range: free[0].groupRange }))}>{levels.length ? t.addSub : t.add}</Button>
       </div>
     </div>
   );
-  return <PanelTrigger icon="group-by" label={t.label} count={levels.length} inline={inline}>{body}</PanelTrigger>;
+  return <PanelTrigger icon={GroupByIcon} label={t.label} count={levels.length} inline={inline}>{body}</PanelTrigger>;
 }

@@ -1,0 +1,96 @@
+# Icon stage 5a (#280), part 2, group 5 (the last): 22 files, 78 icon names, plus StatusIcon in Icon.jsx by hand. Proof scripts only.
+# Files: patterns/Publish/Publish.jsx patterns/QueryBuilder/QueryBuilder.jsx patterns/QuickFilter/QuickFilter.jsx patterns/Recommendation/Recommendation.jsx patterns/RenameAction/RenameAction.jsx patterns/RenditionList/RenditionList.jsx patterns/Retry/Retry.jsx patterns/ReviewFlow/ReviewFlow.jsx patterns/RoleManager/RoleManager.jsx patterns/SearchWorkspace/SearchWorkspace.jsx patterns/SecondaryPane/SecondaryPane.jsx patterns/SettingsLayout/SettingsLayout.jsx patterns/SidePanel/SidePanel.jsx patterns/SortPanel/SortPanel.jsx patterns/SortableList/SortableList.jsx patterns/TrialUpgrade/TrialUpgrade.jsx patterns/UploadManager/UploadManager.jsx patterns/VersionCompare/VersionCompare.jsx patterns/VersionHistory/VersionHistory.jsx patterns/ViewMenu/ViewMenu.jsx patterns/WidgetGrid/WidgetGrid.jsx providers/ReadOnly.jsx components/Icon/Icon.jsx 
+
+## By hand
+- Icon.jsx: StatusIcon's tone icons (STATUS_ICONS: circle-info, circle-check, warning, alert) are imported modules. The
+  scan skips the Icon component (its resolver handles every name); part 3's rule must cover Icon.jsx by hand.
+
+## What stays text, on purpose (the scan still lists them)
+- File.jsx: fileIcon(name, type) returns a name (public API); the File draws fileIconModule, the same icon imported.
+- Thumbnail ('document') and PermissionSummary ('lock'): documented defaults in the signature, drawn from their modules.
+
+## spec-pages.js: the record pages of these components (48, with Icon.jsx's) and the 10 application pages, styling/phase-2 vs this branch
+- Masked as well now: React's generated ids (a live demo shifts them), and the Upload manager's live demo is compared
+  without its numbers. Noise check (two runs before the change): 58 of 58 the same.
+{
+ "pages": 58,
+ "same": 58,
+ "differ": 0,
+ "pageErrors": {
+  "before": 0,
+  "after": 0
+ },
+ "differs": []
+}
+
+## first-paint.js: with no stylesheet on the page
+{
+ "stylesheet": false,
+ "CopyButton (converted)": {
+  "icons": 1,
+  "withPath": 1
+ },
+ "BackToTop (converted)": {
+  "icons": 1,
+  "withPath": 1
+ },
+ "Details (converted)": {
+  "icons": 2,
+  "withPath": 2
+ },
+ "Banner (its dismiss icon, and its status icon from StatusIcon, group 5)": {
+  "icons": 2,
+  "withPath": 2
+ },
+ "EmptyState (group 2)": {
+  "icons": 1,
+  "withPath": 1
+ },
+ "Notice (group 2)": {
+  "icons": 1,
+  "withPath": 1
+ },
+ "SearchField (group 2)": {
+  "icons": 1,
+  "withPath": 1
+ },
+ "File (group 2)": {
+  "icons": 1,
+  "withPath": 1
+ },
+ "StatusDot presence (group 3)": {
+  "icons": 1,
+  "withPath": 1
+ },
+ "Thumbnail default (group 3)": {
+  "icons": 1,
+  "withPath": 1
+ },
+ "Autosave (group 3)": {
+  "icons": 1,
+  "withPath": 1
+ },
+ "PermissionSummary default (group 4)": {
+  "icons": 1,
+  "withPath": 1
+ },
+ "FeatureCard (group 4)": {
+  "icons": 1,
+  "withPath": 1
+ },
+ "StatusIcon (group 5)": {
+  "icons": 1,
+  "withPath": 1
+ },
+ "UploadManager (group 5)": {
+  "icons": 3,
+  "withPath": 3
+ },
+ "Button icon=\"add\" (a name, not converted)": {
+  "icons": 1,
+  "withPath": 0
+ }
+}
+
+## platform.js
+- raw 4212726 -> 4241230 (+28504); gzip 995510 -> 1000966 (+5456)

@@ -63,6 +63,10 @@ import { VisuallyHidden } from '../../components/VisuallyHidden/VisuallyHidden.j
 import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
 import { ComparisonView } from '../ComparisonView/ComparisonView.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
+import ChevronUpIcon from 'plenix-platform/icons/plenix/chevron-up';
+import CircleCheckIcon from 'plenix-platform/icons/plenix/circle-check';
+import DocSearchIcon from 'plenix-platform/icons/plenix/doc-search';
 
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 
@@ -122,14 +126,14 @@ function TextDiff({ base, target, context, t, uid }) {
     if (el) { el.focus(); if (el.scrollIntoView) el.scrollIntoView({ block: 'nearest' }); }
     announce(fill(t.at, { n: formatNumber(next + 1), total: formatNumber(starts.length) }));
   };
-  if (!added && !removed) return <EmptyState icon="circle-check" title={t.same} />;
+  if (!added && !removed) return <EmptyState icon={CircleCheckIcon} title={t.same} />;
   return (
     <div className="plx-version-compare__diff">
       <div className="plx-version-compare__diff-bar">
         <p className="plx-version-compare__summary">{fill(t.summary, { added: count(added), removed: count(removed) })}</p>
         <span className="plx-version-compare__steps">
-          <Button size="sm" variant="ghost" icon="chevron-up" onClick={() => go(-1)}>{t.previous}</Button>
-          <Button size="sm" variant="ghost" icon="chevron-down" onClick={() => go(1)}>{t.next}</Button>
+          <Button size="sm" variant="ghost" icon={ChevronUpIcon} onClick={() => go(-1)}>{t.previous}</Button>
+          <Button size="sm" variant="ghost" icon={ChevronDownIcon} onClick={() => go(1)}>{t.next}</Button>
         </span>
       </div>
       <div className="plx-version-compare__lines" tabIndex={0} role="region" aria-label={fill(t.diff, { base: base.label, target: target.label })}>
@@ -138,7 +142,7 @@ function TextDiff({ base, target, context, t, uid }) {
             if (r.fold) {
               return (
                 <li key={'fold' + r.key} className="plx-version-compare__fold">
-                  <Button size="xs" variant="ghost" icon="chevron-down" onClick={() => setShown(Object.assign({}, shown, { [r.key]: true }))}>{fill(t.unchanged, { n: formatNumber(r.n) })}</Button>
+                  <Button size="xs" variant="ghost" icon={ChevronDownIcon} onClick={() => setShown(Object.assign({}, shown, { [r.key]: true }))}>{fill(t.unchanged, { n: formatNumber(r.n) })}</Button>
                 </li>
               );
             }
@@ -179,7 +183,7 @@ export function VersionCompare({ versions = [], attributes = [], base, defaultBa
   const pick = (which, other) => versions.filter((v) => v.id !== pair[other]).map((v) => ({ value: v.id, label: optionLabel(v) }));
   const item = (v) => ({ id: v.id, title: v.label, meta: metaOf(v), image: v.image, media: v.media, values: v.values || {} });
 
-  const body = !a || !b ? <EmptyState icon="doc-search" title={t.empty} />
+  const body = !a || !b ? <EmptyState icon={DocSearchIcon} title={t.empty} />
     : current === 'text' ? <TextDiff base={a} target={b} context={context} t={t} uid={uid} />
       : <ComparisonView label={label || t.label} items={[item(a), item(b)]} attributes={attributes} mode={current} modes={[current]} ratio={ratio} scroll={scroll} />;
   return (

@@ -96,7 +96,7 @@ export function Field({ label, hideLabel = false, description, error, required =
   return (
     <div className={cx('plx-field', 'plx-field--' + lay, labelWidth && 'plx-field--label-' + labelWidth, error && 'is-invalid', className)} {...rest}>
       <div className={cx('plx-field__head', hideLabel && 'plx-visually-hidden')}>
-        <Tooltip content={label} disabled={!cut} className="plx-field__label-tip">
+        <Tooltip content={label} disabled={!cut} describe={false} className="plx-field__label-tip">
           <label ref={labelRef} className="plx-field__label" htmlFor={child.props.id || controlId}>{label}{required ? <span className="plx-field__required" aria-hidden="true"> *</span> : null}</label>
         </Tooltip>
         {info ? <button type="button" className="plx-field__info" aria-label={infoLabel || about.replace('{label}', label)} aria-expanded={showInfo} onClick={() => setShowInfo(!showInfo)}>i</button> : null}

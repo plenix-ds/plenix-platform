@@ -24,6 +24,8 @@ import { Link } from '../../components/Link/Link.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { cx } from '../../utils/cx.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import CheckIcon from 'plenix-platform/icons/plenix/check';
+import RefreshIcon from 'plenix-platform/icons/plenix/refresh';
 
 export function ExportDialog({ open, title, onClose, formats = [], selectedCount = 0, onExport, allowBackground = true, initialBackground = false, strings, className }) {
   const t = useStrings('exportDialog', strings);
@@ -42,7 +44,7 @@ export function ExportDialog({ open, title, onClose, formats = [], selectedCount
   return <Dialog open={open} title={title || t.title} onClose={() => { if (!lock.current && onClose) onClose(); }} dismissible={!busy}
     footer={finished ? <Button onClick={onClose}>{t.done}</Button> : <><Button disabled={busy} onClick={onClose}>{t.cancel}</Button><Button variant="primary" disabled={busy || !onExport} onClick={start}>{t.export}</Button></>}>
     <Stack className={cx('plx-export-dialog', className)} aria-busy={busy}>
-      {finished ? <><Badge icon={background && allowBackground ? 'refresh' : 'check'} tone={background && allowBackground ? 'active' : 'success'} role="status">{background && allowBackground ? t.queued : t.ready}</Badge>
+      {finished ? <><Badge icon={background && allowBackground ? RefreshIcon : CheckIcon} tone={background && allowBackground ? 'active' : 'success'} role="status">{background && allowBackground ? t.queued : t.ready}</Badge>
         {result?.href ? <Link href={result.href}>{result.label || t.download}</Link> : null}</>
         : <><Field label={t.format}><Select disabled={busy} value={format} onChange={(e) => setFormat(e.target.value)} options={formats} /></Field>
           <Field label={t.scope}><Select disabled={busy} value={scope} onChange={(e) => setScope(e.target.value)}

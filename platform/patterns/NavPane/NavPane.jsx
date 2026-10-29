@@ -54,6 +54,10 @@ import { useAppLayout, PanelSplitter, tokenPx } from '../AppShell/AppShell.jsx';
 import { gridWithin } from '../../utils/grid.js';
 import { paneMax } from '../../utils/paneLimit.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import ArrowLeftIcon from 'plenix-platform/icons/plenix/arrow-left';
+import MenuLinesIcon from 'plenix-platform/icons/plenix/menu-lines';
+import PanelLeftCloseIcon from 'plenix-platform/icons/plenix/panel-left-close';
+import PanelLeftOpenIcon from 'plenix-platform/icons/plenix/panel-left-open';
 
 // the rail's items out of their fragments (the bar draws destinations, never dividers)
 const railItems = (rail) => {
@@ -82,7 +86,7 @@ export function NavPane({ label, title, actions, as = 'nav', header, footer, rai
   React.useLayoutEffect(() => (rowed && claimRow ? claimRow() : undefined), [rowed, claimRow]);
   // the overlay and the screen are layers: Escape closes them
   useLayer(ref, mode === 'overlay' || mode === 'screen', { onEscape: layout ? layout.close : undefined });
-  const expand = <ToolRail.Item icon="panel-left-open" label={t.expand} onClick={layout ? layout.toggle : undefined} />;
+  const expand = <ToolRail.Item icon={PanelLeftOpenIcon} label={t.expand} onClick={layout ? layout.toggle : undefined} />;
   const railEl = mode === 'rail' || mode === 'overlay' ? (
     <ToolRail label={label || 'Navigation'} className="plx-nav-pane-rail">{rail ? <>{expand}<ToolRail.Divider />{rail}</> : expand}</ToolRail>
   ) : null;
@@ -97,7 +101,7 @@ export function NavPane({ label, title, actions, as = 'nav', header, footer, rai
         <nav aria-label={label || 'Navigation'} className="plx-nav-bar">
           <BarContext.Provider value>
             {items.slice(0, 4).map((el, i) => React.cloneElement(el, { key: el.key || i, pressed: mode === 'screen' ? false : el.props.pressed, onClick: close(el.props.onClick) }))}
-            <ToolRail.Item icon="menu-lines" label={t.browse} pressed={mode === 'screen'} onClick={layout.toggle} />
+            <ToolRail.Item icon={MenuLinesIcon} label={t.browse} pressed={mode === 'screen'} onClick={layout.toggle} />
           </BarContext.Provider>
         </nav>, layout.barEl) : null;
     } else if (layout.parentEl && mode === 'bar') {
@@ -105,8 +109,8 @@ export function NavPane({ label, title, actions, as = 'nav', header, footer, rai
       narrowEl = createPortal(
         <div className="plx-nav-pane-parent">
           {back
-            ? <Button ref={back.ref} size="sm" variant="ghost" icon="arrow-left" onClick={back.onBack}>{back.label}</Button>
-            : <Button size="sm" variant="ghost" icon="arrow-left" onClick={layout.toggle}>{title || label || t.browse}</Button>}
+            ? <Button ref={back.ref} size="sm" variant="ghost" icon={ArrowLeftIcon} onClick={back.onBack}>{back.label}</Button>
+            : <Button size="sm" variant="ghost" icon={ArrowLeftIcon} onClick={layout.toggle}>{title || label || t.browse}</Button>}
         </div>, layout.parentEl);
     }
     if (mode === 'bar') return narrowEl;
@@ -117,7 +121,7 @@ export function NavPane({ label, title, actions, as = 'nav', header, footer, rai
   const paneWidth = w ? gridWithin(parseInt(w, 10), tokenPx('--plx-sys-shell-nav-min-width'), paneMax(tokenPx('--plx-sys-shell-nav-max-width'), tokenPx('--plx-sys-shell-nav-min-width'))) + 'px' : undefined;
   const collapse = mode === 'static' || narrow ? null : (
     <span className={cx('plx-nav-pane__collapse', 'plx-nav-pane__collapse--' + collapseAt)}>
-      <Button size="sm" variant="ghost" iconOnly icon="panel-left-close" label={t.collapse} onClick={layout.toggle} />
+      <Button size="sm" variant="ghost" iconOnly icon={PanelLeftCloseIcon} label={t.collapse} onClick={layout.toggle} />
     </span>
   );
   const onChoose = narrow ? (e) => { if (e.target.closest && e.target.closest(CHOOSES)) layout.close(); } : undefined;

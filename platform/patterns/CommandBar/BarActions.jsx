@@ -37,6 +37,7 @@ import { Popover } from '../../components/Popover/Popover.jsx';
 import { Spinner } from '../../components/Loading/Loading.jsx';
 import { focusables } from '../../utils/layer.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import MoreIcon from 'plenix-platform/icons/plenix/more';
 
 
 // Composite triggers do not all forward arbitrary props. Keep Tooltip's description on the real control.
@@ -153,7 +154,7 @@ export function BarActions({ actions = [], iconOnly = false, fold = 0, off = (a)
   const allOff = away.length > 0 && !extra.length && away.every((a) => off(a));
   const more = away.length || extra.length ? (
     <Tooltip key="plx-more" content={allOff ? why(away[0]) : moreLabel}>
-      <Menu label={moreLabel} placement="bottom-end" trigger={<Button size={size} variant="ghost" icon="more" iconOnly label={moreLabel} disabled={allOff} />}>
+      <Menu label={moreLabel} placement="bottom-end" trigger={<Button size={size} variant="ghost" icon={MoreIcon} iconOnly label={moreLabel} disabled={allOff} />}>
         {away.map((a, i) => {
           const sep = a.danger && i > 0 && !away[i - 1].danger ? <MenuDivider key={(a.id || a.label) + '-sep'} /> : null;
           // folded (the Fluent model): a toggle is a checked item, a choices command a submenu of radio items

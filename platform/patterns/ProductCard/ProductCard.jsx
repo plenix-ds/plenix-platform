@@ -67,6 +67,10 @@ import { Text } from '../../components/Text/Text.jsx';
 import { Icon } from '../../components/Icon/Icon.jsx';
 import { VisuallyHidden } from '../../components/VisuallyHidden/VisuallyHidden.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import DoNotDisturbIcon from 'plenix-platform/icons/plenix/do-not-disturb';
+import ImageBIcon from 'plenix-platform/icons/plenix/image-b';
+import PlusIcon from 'plenix-platform/icons/plenix/plus';
+import TagsIcon from 'plenix-platform/icons/plenix/tags';
 
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const RATIOS = ['1-1', '4-3', '3-4'];
@@ -95,11 +99,11 @@ export function ProductCard({ title, href, onOpen, image, ratio = '1-1', price, 
   const opener = href ? <a className="plx-product-card__opener" href={href}>{title}</a>
     : onOpen ? <button type="button" className="plx-product-card__opener" onClick={onOpen}>{title}</button> : title;
   const status = [];
-  if (onSale) status.push(<Badge key="sale" tone="active" icon="tags">{t.sale}</Badge>);
-  if (outOfStock) status.push(<Badge key="out" tone="negative" icon="do-not-disturb">{t.outOfStock}</Badge>);
+  if (onSale) status.push(<Badge key="sale" tone="active" icon={TagsIcon}>{t.sale}</Badge>);
+  if (outOfStock) status.push(<Badge key="out" tone="negative" icon={DoNotDisturbIcon}>{t.outOfStock}</Badge>);
   const stars = typeof rating === 'number' ? Math.max(0, Math.min(5, rating)) : null;
   const act = action || (onAddToCart ? (
-    <Button size="xs" icon="plus" disabled={outOfStock} onClick={onAddToCart}
+    <Button size="xs" icon={PlusIcon} disabled={outOfStock} onClick={onAddToCart}
       label={outOfStock ? fill(t.soldOut, { title: name }) : name ? fill(t.addToCartFor, { title: name }) : undefined}>{t.addToCart}</Button>
   ) : null);
   return (
@@ -107,7 +111,7 @@ export function ProductCard({ title, href, onOpen, image, ratio = '1-1', price, 
       outOfStock && 'plx-product-card--out-of-stock', interactive && 'plx-product-card--interactive', className)} {...rest}>
       <div className="plx-product-card__media">
         {image && image.src ? <Image src={image.src} srcSet={image.srcSet} sizes={image.sizes} alt={image.alt || ''} ratio={RATIOS.indexOf(ratio) >= 0 ? ratio : '1-1'} />
-          : <span className={cx('plx-product-card__placeholder', 'plx-ratio-' + (RATIOS.indexOf(ratio) >= 0 ? ratio : '1-1'))} aria-hidden="true"><Icon name="image-b" size="lg" /></span>}
+          : <span className={cx('plx-product-card__placeholder', 'plx-ratio-' + (RATIOS.indexOf(ratio) >= 0 ? ratio : '1-1'))} aria-hidden="true"><Icon name={ImageBIcon} size="lg" /></span>}
       </div>
       <div className="plx-product-card__body">
         {status.length || badges ? <div className="plx-product-card__badges">{status}{badges}</div> : null}

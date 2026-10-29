@@ -30,6 +30,9 @@ import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
 import { PanelTrigger, PanelHead, Pick, useReorder, fill } from '../CommandBar/panel-parts.jsx';
 import { KIND_ICONS, DIRECTIONS, fieldOf, kindOf, fieldWords } from '../../utils/fields.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import CloseIcon from 'plenix-platform/icons/plenix/close';
+import PlusIcon from 'plenix-platform/icons/plenix/plus';
+import SortIcon from 'plenix-platform/icons/plenix/sort';
 
 export const fieldOption = (f) => ({ value: f.value, label: f.label, icon: KIND_ICONS[kindOf(f)] });
 
@@ -51,7 +54,7 @@ export function SortPanel({ fields = [], value = [], onChange, grouped = false, 
             <div key={l.field} {...ro.rowProps(i, f.label)}>
               <Pick label={t.field} value={l.field} options={fields.filter((x) => x.value === l.field || !levels.some((y) => y.field === x.value)).map(fieldOption)} onChange={(v) => put(i, { field: v })} />
               <Pick label={t.direction} size="dir" value={l.dir} options={[{ value: 'asc', label: words[0] }, { value: 'desc', label: words[1] }]} onChange={(v) => put(i, { dir: v })} />
-              <Tooltip content={t.removeTip}><Button variant="ghost" icon="close" iconOnly label={fill(t.remove, { name: f.label })} onClick={() => onChange(levels.filter((_, j) => j !== i))} /></Tooltip>
+              <Tooltip content={t.removeTip}><Button variant="ghost" icon={CloseIcon} iconOnly label={fill(t.remove, { name: f.label })} onClick={() => onChange(levels.filter((_, j) => j !== i))} /></Tooltip>
               {ro.handle(i, f.label)}
             </div>
           );
@@ -59,10 +62,10 @@ export function SortPanel({ fields = [], value = [], onChange, grouped = false, 
         {ro.status}
       </div>
       <div className="plx-find-panel__add">
-        <Button size="sm" variant="ghost" icon="plus" disabled={!free.length} onClick={() => onChange(levels.concat({ field: free[0].value, dir: 'asc' }))}>{levels.length ? t.addAnother : t.add}</Button>
+        <Button size="sm" variant="ghost" icon={PlusIcon} disabled={!free.length} onClick={() => onChange(levels.concat({ field: free[0].value, dir: 'asc' }))}>{levels.length ? t.addAnother : t.add}</Button>
       </div>
     </div>
   );
   const current = levels.length ? fieldOf(fields, levels[0].field).label + (levels.length > 1 ? ' +' + (levels.length - 1) : '') : undefined;
-  return <PanelTrigger icon="sort" label={t.label} current={current} count={levels.length} inline={inline}>{body}</PanelTrigger>;
+  return <PanelTrigger icon={SortIcon} label={t.label} current={current} count={levels.length} inline={inline}>{body}</PanelTrigger>;
 }

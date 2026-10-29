@@ -60,6 +60,7 @@ import { ConfirmDialog } from '../../components/Dialog/Dialog.jsx';
 import { IconTile } from '../../components/IconTile/IconTile.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import LinkIcon from 'plenix-platform/icons/plenix/link';
 
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const STATUS = { connected: ['success', 'check'], disconnected: ['neutral', 'link'], error: ['negative', 'alert'] };
@@ -88,7 +89,7 @@ export function ConnectedAccount({ account, onConnect, onDisconnect, onReconnect
 
   return (
     <Tag className={cx('plx-connected-accounts__item', className)} data-plx-state={status} {...rest}>
-      <IconTile className="plx-connected-accounts__tile" icon={a.icon || 'link'} size="md" />
+      <IconTile className="plx-connected-accounts__tile" icon={a.icon || LinkIcon} size="md" />
       <div className="plx-connected-accounts__body">
         <div className="plx-connected-accounts__head">
           <H level={headingLevel} className="plx-connected-accounts__service">{a.service}</H>

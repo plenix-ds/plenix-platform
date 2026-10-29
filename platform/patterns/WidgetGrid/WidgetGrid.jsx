@@ -35,6 +35,7 @@ import { VisuallyHidden } from '../../components/VisuallyHidden/VisuallyHidden.j
 import { arrowStep } from '../../utils/direction.js';
 import { Menu, MenuItem } from '../../components/Menu/Menu.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import DragIcon from 'plenix-platform/icons/plenix/drag';
 
 const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m));
 
@@ -77,7 +78,7 @@ export function WidgetGrid({ items = [], renderItem, onReorder, label, columns =
                   onDragStart={(e) => { setDragging(it.id); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', String(it.id)); }}
                   onDragEnd={() => { setDragging(null); setOver(null); }}
                   onStep={(step) => place(i, i + step)}>
-                  <Icon name="drag" size="md" />
+                  <Icon name={DragIcon} size="md" />
                 </Handle>
               }>
               <MenuItem disabled={i === 0} onSelect={() => place(i, i - 1)}>{t.earlier}</MenuItem>

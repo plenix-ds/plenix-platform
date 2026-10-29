@@ -63,6 +63,12 @@ import { focusables } from '../../utils/layer.js';
 import { gridWithin } from '../../utils/grid.js';
 import { paneMax } from '../../utils/paneLimit.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import ArrowLeftIcon from 'plenix-platform/icons/plenix/arrow-left';
+import CloseIcon from 'plenix-platform/icons/plenix/close';
+import PanelLeftCloseIcon from 'plenix-platform/icons/plenix/panel-left-close';
+import PanelLeftOpenIcon from 'plenix-platform/icons/plenix/panel-left-open';
+import PanelRightCloseIcon from 'plenix-platform/icons/plenix/panel-right-close';
+import PanelRightOpenIcon from 'plenix-platform/icons/plenix/panel-right-open';
 
 export function SecondaryPane({ title, label, icon, actions, side = 'start', width = 'md', collapsible = false, collapsed, defaultCollapsed = false,
   onCollapsedChange, rail, resizable = false, size: sizeProp, defaultSize = null, onSizeChange, detailOpen, onBack, scrollTop, onScrollChange,
@@ -123,7 +129,7 @@ export function SecondaryPane({ title, label, icon, actions, side = 'start', wid
   if (folded) {
     return (
       <ToolRail label={name} className={cx('plx-secondary-pane-rail', 'plx-secondary-pane-rail--' + side, className)}>
-        <ToolRail.Item icon={side === 'start' ? 'panel-left-open' : 'panel-right-open'} label={named(t.expand)} onClick={() => setFolded(false)} />
+        <ToolRail.Item icon={side === 'start' ? PanelLeftOpenIcon : PanelRightOpenIcon} label={named(t.expand)} onClick={() => setFolded(false)} />
         {rail ? <><ToolRail.Divider />{rail}</> : null}
       </ToolRail>
     );
@@ -139,8 +145,8 @@ export function SecondaryPane({ title, label, icon, actions, side = 'start', wid
         {icon ? iconElement(icon) : null}
         <span className="plx-secondary-pane__title">{title}</span>
         {actions}
-        {collapsible ? <Button size="xs" variant="ghost" iconOnly icon={side === 'start' ? 'panel-left-close' : 'panel-right-close'} label={named(t.collapse)} onClick={() => setFolded(true)} /> : null}
-        {onClose ? <Button size="xs" variant="ghost" iconOnly icon="close" label={named(t.close)} onClick={onClose} /> : null}
+        {collapsible ? <Button size="xs" variant="ghost" iconOnly icon={side === 'start' ? PanelLeftCloseIcon : PanelRightCloseIcon} label={named(t.collapse)} onClick={() => setFolded(true)} /> : null}
+        {onClose ? <Button size="xs" variant="ghost" iconOnly icon={CloseIcon} label={named(t.close)} onClick={onClose} /> : null}
       </div>
       <div ref={body} className="plx-secondary-pane__body" onScroll={onScroll} onClick={listDetail ? onBodyClick : undefined}>{children}</div>
       {resizable && !(narrow && listDetail) ? (
@@ -156,7 +162,7 @@ export function SecondaryPane({ title, label, icon, actions, side = 'start', wid
     <>
       {pane}
       <div className="plx-secondary-pane-back">
-        <Button ref={back} size="sm" variant="ghost" icon="arrow-left" onClick={onBack}>{backLabel}</Button>
+        <Button ref={back} size="sm" variant="ghost" icon={ArrowLeftIcon} onClick={onBack}>{backLabel}</Button>
       </div>
     </>
   ) : pane;
