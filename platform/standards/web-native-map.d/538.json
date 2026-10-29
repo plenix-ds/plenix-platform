@@ -1,0 +1,7 @@
+{
+  "$description": "Spec update #538 (lane spec-update-1029): the iOS and Android counterparts of the two foundation pages it added, Icon modules and delivery (as Keylines: the platforms' icon systems) and Fit and overflow (as Layout grid: the platforms' layout and window classes).",
+  "map": {
+    "foundations|Icon modules and delivery": { "ios": ["ios-foundations|Icons"], "android": ["android-foundations|Material Symbols"] },
+    "foundations|Fit and overflow": { "ios": ["ios-layout|Layout"], "android": ["android-foundations|Window classes", "android-layout|Window classes"] }
+  }
+}
