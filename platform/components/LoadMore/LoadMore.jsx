@@ -42,6 +42,7 @@ import { useIntersection } from '../../hooks/useIntersection.js';
 import { announce } from '../../utils/announce.jsx';
 import { formatNumber } from '../../utils/format.js';
 import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
+import { dataPhrase } from '../../utils/dataText.jsx';
 
 
 export const LoadMore = React.forwardRef(function LoadMore({ onLoadMore, hasMore = true, loading = false, shown, total, mode = 'button', root, pageSize,
@@ -71,8 +72,8 @@ export const LoadMore = React.forwardRef(function LoadMore({ onLoadMore, hasMore
       {infinite && hasMore ? <div ref={sentinel} className="plx-load-more__sentinel" aria-hidden="true" /> : null}
       {!hasMore ? <p className="plx-load-more__end">{t.end}</p>
         : infinite && loading ? <div className="plx-load-more__loading"><Spinner size="sm" label={t.loading} /><span aria-hidden="true">{t.loading}</span></div>
-        : <Button className="plx-load-more__button" loading={loading} onClick={press} strings={{ working: t.loading }}>{pageSize ? t.moreCount.replace('{n}', formatNumber(pageSize)) : t.more}</Button>}
-      {count ? <span className="plx-load-more__count">{count}</span> : null}
+        : <Button className="plx-load-more__button" loading={loading} onClick={press} strings={{ working: t.loading }}>{pageSize ? dataPhrase(t.moreCount, { n: pageSize }) : t.more}</Button>}
+      {count ? <span className="plx-load-more__count">{dataPhrase(count)}</span> : null}
     </div>
   );
 });

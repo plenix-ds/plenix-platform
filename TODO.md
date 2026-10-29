@@ -13,7 +13,7 @@ Where each open item of this file went:
 | Themes authored in Figma (future release) | #97 |
 | The 24 iOS Figma drawings after Buttons | #54 |
 | The last touch-target findings | #52 (decision on the sizes: #217) |
-| Numbers in Mono inside phrases ("7 files", the DAM status bar) | #260 |
+| ~~Numbers in Mono inside phrases ("7 files", the DAM status bar)~~ done: dataPhrase, the count-phrases rule, the typography phrase check | #260 |
 | SMTP for password-reset emails | #90 |
 | Proxmox backups | #91 |
 | Save in the design system (the save service, Authentik proxy, history) | #92 |

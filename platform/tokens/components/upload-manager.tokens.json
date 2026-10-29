@@ -21,7 +21,7 @@
     "upload-manager-title-line-height": { "$value": "{plx-sys.label-height-20px}", "$type": "dimension", "$description": "UploadManager: the headline's line height (20px)." },
     "upload-manager-actions-gap": { "$value": "{plx-sys.space-inline-xs}", "$type": "dimension", "$description": "UploadManager: the gap between the head's actions and between the zone's pickers (space-inline-xs)." },
     "upload-manager-counts-text": { "$value": "{plx-sys.content-muted}", "$type": "color", "$description": "UploadManager: the counts' color (content-muted)." },
-    "upload-manager-counts-font-family": { "$value": "{plx-sys.font-data}", "$type": "fontFamily", "$description": "UploadManager: the counts and the percent are numbers: the data font (Reddit Mono)." },
+    "upload-manager-counts-font-family": { "$value": "{plx-sys.font-body}", "$type": "fontFamily", "$description": "UploadManager: the counts line's words in the normal font; its numbers and the percent are in the data font (dataPhrase, issue 260)." },
     "upload-manager-counts-font-size": { "$value": "{plx-sys.text-secondary-font-size}", "$type": "dimension", "$description": "UploadManager: the counts' size (12px)." },
     "upload-manager-counts-line-height": { "$value": "{plx-sys.label-height-16px}", "$type": "dimension", "$description": "UploadManager: the counts' line height (16px)." },
     "upload-manager-drop-text": { "$value": "{plx-sys.content-default}", "$type": "color", "$description": "UploadManager: the drop zone's words (content-default)." },
