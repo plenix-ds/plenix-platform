@@ -1,4 +1,5 @@
-// node tools/agent/generated.js --check <base ref>   fails when a branch changed a generated file since <base ref>
+// node tools/agent/generated.js --check <base ref> [<head ref>]   fails when a branch changed a generated file since it
+//                                                    left <base ref> (their merge base; head: default HEAD)
 // node tools/agent/generated.js --restore            puts every generated file back as committed (before a commit)
 // node tools/agent/generated.js --list               prints the patterns
 // The files the build writes (node build-app.js and its steps). A task branch never commits them: every branch would
@@ -34,9 +35,13 @@ if (require.main === module) {
   const arg = process.argv[2];
   if (arg === '--list') { GENERATED.forEach((re) => console.log(re.source)); process.exit(0); }
   if (arg === '--check') {
-    const base = process.argv[3]; if (!base) { console.error('usage: --check <base ref>'); process.exit(2); }
-    const changed = sh('git diff --name-only ' + base + '...HEAD').split('\n').filter(Boolean).filter((file) => isGenerated(file) && !(file === 'platform/components/DataGrid/data-grid-steps.css' && sh('git diff --diff-filter=D --name-only ' + base + '...HEAD -- platform/components/DataGrid/DataGrid.jsx').trim() && sh('git diff --diff-filter=D --name-only ' + base + '...HEAD -- platform/components/DataGrid/data-grid-steps.css').trim()));
-    for (const file of PARTIAL) if (generatedBlock(sh('git show ' + base + ':' + file)) !== generatedBlock(sh('git show HEAD:' + file))) changed.push(file);
+    // <base ref> [<head ref>]: the branch's own commits, from where it last met the base (their merge base) to its head
+    // (default HEAD). In a pull request CI passes the base branch and the PR's head commit, not the PR's merge commit
+    // (which also holds the base's newer commits, e.g. "Generated files rebuilt", and read as the branch's own: #623)
+    const base = process.argv[3], head = process.argv[4] || 'HEAD'; if (!base) { console.error('usage: --check <base ref> [<head ref>]'); process.exit(2); }
+    const from = sh('git merge-base ' + base + ' ' + head).trim();
+    const changed = sh('git diff --name-only ' + from + ' ' + head).split('\n').filter(Boolean).filter((file) => isGenerated(file) && !(file === 'platform/components/DataGrid/data-grid-steps.css' && sh('git diff --diff-filter=D --name-only ' + from + ' ' + head + ' -- platform/components/DataGrid/DataGrid.jsx').trim() && sh('git diff --diff-filter=D --name-only ' + from + ' ' + head + ' -- platform/components/DataGrid/data-grid-steps.css').trim()));
+    for (const file of PARTIAL) if (generatedBlock(sh('git show ' + from + ':' + file)) !== generatedBlock(sh('git show ' + head + ':' + file))) changed.push(file);
     if (changed.length) {
       console.log('GENERATED_FAIL: this branch commits generated files (the integrator rebuilds them at merge):\n  ' + changed.join('\n  ') +
         '\nPut them back: node tools/agent/generated.js --restore, then commit (see AGENTS.md).');
