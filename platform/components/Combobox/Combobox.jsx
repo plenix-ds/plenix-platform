@@ -9,6 +9,8 @@
    Props:
      width: "xs" | "sm" | "md" | "lg" (the field-width scale, --plx-sys-field-width-*: pick by what it holds) | "fill" (the whole
        width); without a pattern sizing it, the field is never wider than its container (P-52, owner 2026-10-19)
+     data: true forces the technical-value font on the field, false keeps the interface font; when not set, a chosen option whose label is wholly
+       a number, a date or another technical value ("10", "Oct 25, 2026") shows in the data font, as a Select does
      size: "sm" uses the existing toolbar control height; omitted or "md" keeps the standard field; multiple values can grow.
      options: the choices: [{ value, label, group }]; options with a group are listed under its heading, in the order the groups first appear
      value: the chosen value, for a single choice
@@ -60,6 +62,7 @@ import { Spinner } from '../Loading/Loading.jsx';
 import { announce } from '../../utils/announce.jsx';
 import { useFloating, FLOATING_ANCHOR } from '../../utils/floating.js';
 import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
+import { isDataValue } from '../../utils/dataValue.js';
 import { formatNumber } from '../../utils/format.js';
 
 // the top layer and CSS anchor positioning (as Menu, Popover and Select), checked once
@@ -67,7 +70,7 @@ const TOP_LAYER = FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Objec
 
 export const Combobox = React.forwardRef(function Combobox({ options = [], value, values, onChange, multiple = false, creatable = false, onCreate, width,
   placeholder, label, invalid, disabled, emptyText, loadOptions, loadDelay = 300, minChars = 0, loading = false, marks, strings,
-  className, id, size, ...rest }, ref) {
+  className, id, size, data, ...rest }, ref) {
   const t = useStrings('combobox', strings), words = t;
   const loc = useLocale();
   if (emptyText === undefined) emptyText = t.emptyText;
@@ -108,6 +111,9 @@ export const Combobox = React.forwardRef(function Combobox({ options = [], value
   const optionOf = (v) => options.find((x) => x.value === v) || (async ? loaded.find((x) => x.value === v) || seen.current.get(v) : undefined);
   const chosen = multiple ? (values || []) : (value !== undefined && value !== null && value !== '' ? [value] : []);
   const current = !multiple && chosen.length ? optionOf(chosen[0]) || null : null;
+  // the data font: forced by data (true or false); otherwise when the chosen label is wholly a number, a date or another technical value
+  // what the input shows decides: the typed text while there is some (open or not), else the chosen label
+  const asData = data === undefined ? isDataValue(text.trim() ? text : (current ? String(current.label) : '')) : !!data;
   const q = text.trim().toLowerCase();
   // a tag picker (multiple without marks) offers only the values not chosen yet: a chosen tag leaves only by its remove
   // button, so Enter on a suggestion always adds (P-57: Enter on a chosen suggestion removed the tag)
@@ -144,7 +150,7 @@ export const Combobox = React.forwardRef(function Combobox({ options = [], value
   const optId = (i) => auto + '-o' + i;
   return (
     <div ref={wrap} className={cx('plx-combobox', size === 'sm' && 'plx-combobox--size-sm', width && 'plx-combobox--width-' + width, multiple && 'plx-combobox--multiple', marks && 'plx-combobox--marks', open && 'is-open', disabled && 'is-disabled', className)}>
-      <div className={cx('plx-combobox__field', 'plx-input', disabled && 'is-disabled')} aria-invalid={invalid || undefined} onClick={() => { if (!disabled && input.current) input.current.focus(); }}>
+      <div className={cx('plx-combobox__field', 'plx-input', asData && 'plx-input--data', disabled && 'is-disabled')} aria-invalid={invalid || undefined} onClick={() => { if (!disabled && input.current) input.current.focus(); }}>
         {multiple ? chosen.map((v) => { const o = optionOf(v); const t = o ? o.label : v;
           return <Tag key={v} onRemove={() => onChange(chosen.filter((x) => x !== v))} removeLabel={words.removeItem.replace('{label}', t)}>{t}</Tag>; }) : null}
         <input ref={input} id={id} size={size === 'sm' || size === 'md' ? undefined : size} className="plx-combobox__input" role="combobox" aria-expanded={open} aria-controls={listId} aria-autocomplete="list"

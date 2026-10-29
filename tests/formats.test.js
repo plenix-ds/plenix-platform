@@ -79,8 +79,10 @@ check('Time: a date-only value has the dateTime and text of its own day in a US 
   try {
     const esbuild = require('esbuild'), React = require('react'), Server = require('react-dom/server');
     const out = esbuild.buildSync({ entryPoints: [path.join(ROOT, 'platform/components/Time/Time.jsx')], bundle: true, write: false, format: 'cjs', platform: 'node',
-      external: ['react', 'react-dom'], jsx: 'transform', loader: { '.js': 'jsx' }, logLevel: 'silent' });
-    const m = { exports: {} }; new Function('module', 'exports', 'require', out.outputFiles[0].text)(m, m.exports, require);
+      external: ['react', 'react-dom', 'plenix-platform/icons/*'], jsx: 'transform', loader: { '.js': 'jsx' }, logLevel: 'silent' });
+    // a component may import an icon module (plenix-platform/icons/<set>/<name>, resolved only by build-app.js and tests/icon-modules.js); buildSync takes no plugin, so it stays external and is a stub here
+    const need = (id) => (/^plenix-platform\/icons\//.test(id) ? { default: {} } : require(id));
+    const m = { exports: {} }; new Function('module', 'exports', 'require', out.outputFiles[0].text)(m, m.exports, need);
     const html = Server.renderToStaticMarkup(React.createElement(m.exports.Time, { value: '2026-10-18', format: 'date', tooltip: false, locale: 'en-US' }));
     assert.ok(/dateTime="2026-10-18"/.test(html) && /Oct 18, 2026/.test(nb(html)), html);
   } finally { if (zone === undefined) delete process.env.TZ; else process.env.TZ = zone; }
