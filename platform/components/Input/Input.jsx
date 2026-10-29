@@ -74,6 +74,8 @@ import { gridPx } from '../../utils/grid.js';
 import { isDataValue } from '../../utils/dataValue.js';
 import { useFloating, FLOATING_ANCHOR } from '../../utils/floating.js';
 import { useReadOnly, readOnlyProps } from '../../providers/ReadOnly.jsx';
+import { Icon } from '../Icon/Icon.jsx';
+import SelectChevronIcon from 'plenix-platform/icons/plenix/select-chevron';
 
 // the top layer and CSS anchor positioning (as Menu and Popover), checked once
 const TOP_LAYER = FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
@@ -123,6 +125,7 @@ const SelectNative = React.forwardRef(function SelectNative({ invalid, options, 
       <select ref={ref} size={size === 'sm' || size === 'md' ? undefined : size} className={cx('plx-input', 'plx-select__control', data && 'plx-input--data', look(appearance))} aria-invalid={invalid || undefined} {...readOnlyProps(locked, rest, { pointer: true })}>
         {options ? options.map((o) => <option key={o.value} value={o.value} disabled={o.disabled}>{o.label}</option>) : children}
       </select>
+      <span className="plx-select__chevron" aria-hidden="true"><Icon icon={SelectChevronIcon} filled={false} /></span>
     </span>
   );
 });
@@ -244,6 +247,7 @@ const SelectList = React.forwardRef(function SelectList({ invalid, options, appe
         onFocus={onFocus} onBlur={(e) => { setOpen(false); if (onBlur) onBlur(e); }}>
         <span className="plx-select__value">{current ? current.label : ''}</span>
       </div>
+      <span className="plx-select__chevron" aria-hidden="true"><Icon icon={SelectChevronIcon} filled={false} /></span>
       {open ? (
         <ul ref={list} id={listId} role="listbox" popover={TOP_LAYER ? 'manual' : undefined} aria-label={ariaLabel} aria-labelledby={labelledBy || (ariaLabel ? undefined : labelId || undefined)} className="plx-select__list" onMouseDown={(e) => e.preventDefault()}>
           {grouped.map((g, gi) => {

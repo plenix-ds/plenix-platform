@@ -84,11 +84,11 @@
 .plx-select:where(:not(.plx-select--width-xs, .plx-select--width-sm, .plx-select--width-md, .plx-select--width-lg, .plx-select--width-fill)){flex-shrink:var(--plx-comp-field-context-content-flex-shrink,var(--plx-state-select-flex-shrink,1));inline-size:var(--plx-comp-field-context-content-inline-size,var(--plx-comp-field-context-stretch-inline-size,auto));}
 /* block: the select takes its own line (InlineEdit) */
 .plx-select--block{display:block;}
-.plx-select::after{-webkit-mask-image:var(--plx-comp-icon-glyph-keyboard-arrow-down);-webkit-mask-position:center;-webkit-mask-repeat:no-repeat;-webkit-mask-size:contain;background-color:var(--plx-comp-select-after-background);block-size:var(--plx-comp-select-after-height);content:"";inline-size:var(--plx-comp-select-after-width);inset-block-start:50%;inset-inline-end:var(--plx-comp-select-after-inset-inline-end);mask-image:var(--plx-comp-icon-glyph-keyboard-arrow-down);mask-position:center;mask-repeat:no-repeat;mask-size:contain;pointer-events:none;position:absolute;transform:translateY(-50%);}
+.plx-select__chevron{--plx-comp-icon-context-show-20:block;--plx-comp-icon-context-show-24:none;--plx-comp-icon-size:var(--plx-comp-select-after-width);block-size:var(--plx-comp-select-after-height);color:var(--plx-comp-select-after-background);display:inline-flex;inline-size:var(--plx-comp-select-after-width);inset-block-start:50%;inset-inline-end:var(--plx-comp-select-after-inset-inline-end);pointer-events:none;position:absolute;transform:translateY(-50%);}
 .plx-select__control:where(:not(:disabled)){cursor:pointer;}
 /* the Select drawn by Plenix (owner, dropdown-look-36): the native select stays in the flow, unseen, so the box is as wide as the widest
    option and keeps the form, label and ref; the field (role combobox) sits over it and the list opens below it. The arrow is the
-   wrapper's ::after at the form-icon size. */
+   wrapper's last child (plx-select__chevron, an Icon child) at the form-icon size, over the field. */
 .plx-select__native{opacity:0;pointer-events:none;}
 .plx-select__field{align-items:center;display:flex;inset-block:0;inset-inline:0;position:absolute;}
 .plx-select__field:where(:not(.is-disabled)){cursor:pointer;}
