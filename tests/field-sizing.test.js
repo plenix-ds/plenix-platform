@@ -1,6 +1,6 @@
 /* Plenix tests · field sizing in bars (issues 558 and 554, platform/standards/fit-and-overflow.md).
    Summary: in a Toolbar a Select, a Search and an Input without a width size to their content between --plx-sys-fit-field-min-width (100px) and --plx-sys-fit-field-max-width
-     (320px): a short Select is widened to 100px, a Select with a very long choice stops at 320px and shows the full text in a tooltip on hover. The width scale keeps its meaning
+     (320px): a short Select is widened to 100px, a Select with a very long choice stops at 320px and shows the full text in a tooltip on hover and on keyboard focus (#577). The width scale keeps its meaning
      outside a bar: a Select with width="sm" is 80px.
      Order (a sweep of one bar from 700px down to 200px): while any Button is still shown, the Search keeps its natural width and the bar has no data-plx-fit-shrink; the Search
      narrows only once every Button is in More, and never below 100px.
@@ -174,6 +174,27 @@ const FOLDABLE = ['Add new', 'Reindex', 'Import', 'Export', 'Export text', 'Rese
     }, LONG);
     await page.hover('#cut .plx-select__field'); await new Promise((r) => setTimeout(r, 800));
     assert.ok(await page.evaluate(() => [...document.querySelectorAll('[role="tooltip"]')].some((e) => /very long name/.test(e.textContent))), 'a cut Select shows its full text in a tooltip');
+    // #577: the cut text of a Select shows in full on keyboard focus too (the field that takes focus is inside the tooltip's
+    // wrapper), only while it is cut, left to right and right to left
+    for (const dir of ['ltr', 'rtl']) {
+      await page.mouse.move(0, 0);
+      await page.evaluate(async (LONG, dir) => {
+        document.documentElement.dir = dir; document.querySelector('main').innerHTML = '<div id="c"></div>';
+        const h = React.createElement, P = window.Plenix;
+        ReactDOM.createRoot(document.getElementById('c')).render(h('div', null,
+          h('div', { id: 'cutk', style: { inlineSize: '200px' } }, h(P.Select, { 'aria-label': 'Choice', width: 'fill', options: [{ value: 'a', label: LONG }] })),
+          h('div', { id: 'shortk', style: { inlineSize: '200px' } }, h(P.Select, { 'aria-label': 'Short', width: 'fill', options: [{ value: 'a', label: 'One' }] }))));
+        await new Promise((r) => setTimeout(r, 600));
+      }, LONG, dir);
+      const bubble = (sel) => page.evaluate((sel) => { const f = document.querySelector(sel), w = f && f.closest('.plx-tooltip'), b = w && w.querySelector('.plx-tooltip__bubble'); return { wrapped: !!w, open: !!(b && b.classList.contains('is-open')), text: b ? b.textContent : '' }; }, sel);
+      await page.keyboard.press('Tab'); await page.focus('#cutk [role="combobox"]'); await new Promise((r) => setTimeout(r, 500));
+      const cut = await bubble('#cutk [role="combobox"]');
+      assert.ok(cut.wrapped && cut.open && /very long name/.test(cut.text), dir + ': a cut Select shows its full text on keyboard focus, got ' + JSON.stringify(cut));
+      await page.focus('#shortk [role="combobox"]'); await new Promise((r) => setTimeout(r, 500));
+      const short = await bubble('#shortk [role="combobox"]');
+      assert.ok(short.wrapped && !short.open, dir + ': a Select whose text fits shows no tooltip on focus, got ' + JSON.stringify(short));
+    }
+    await page.evaluate(() => { document.documentElement.dir = 'ltr'; });
     assert.deepEqual(errors, [], 'no script errors');
     console.log('field-sizing: OK');
   } finally { if (browser) await browser.close(); server.close(); }

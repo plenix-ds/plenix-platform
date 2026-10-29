@@ -100,8 +100,9 @@
 .plx-select__field{align-items:center;display:flex;inset-block:0;inset-inline:0;position:absolute;}
 .plx-select__field:where(:not(.is-disabled)){cursor:pointer;}
 .plx-select__value{flex:1 1 auto;min-inline-size:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-/* the Tooltip around the chosen text (shown only while the text is cut) stays out of the way: it is the flex item that shrinks, the text inside it ends in the ellipsis */
-.plx-select__tip{display:flex;flex:1 1 auto;min-inline-size:0;}
+/* the Tooltip around the field (it shows the whole chosen text while the text is cut, on hover and on keyboard focus, issue 577) takes the
+   field's place over the native select; the field fills it, as before */
+.plx-select__tip{--plx-comp-tooltip-context-position:absolute;inset-block:0;inset-inline:0;}
 .plx-select__list{background-color:var(--plx-comp-select-list-background);border-color:var(--plx-comp-select-list-border-color);border-radius:var(--plx-comp-select-list-radius);border-style:solid;border-width:var(--plx-comp-select-list-border-width);box-shadow:var(--plx-comp-select-list-shadow);list-style:none;max-block-size:var(--plx-comp-select-list-max-height);overflow-y:auto;padding-block:var(--plx-comp-select-list-padding);padding-inline:var(--plx-comp-select-list-padding);}
 /* in the top layer, placed (and its gap to the field, 4px, set) by system/floating.css; without it (no anchor positioning) the list hangs below the field */
 .plx-select__list:not([data-plx-floating]){inset-block-start:100%;inset-inline:0;margin-block:var(--plx-comp-select-list-margin-block-start) 0;margin-inline:0;min-inline-size:max-content;position:absolute;z-index:var(--plx-comp-select-list-z-index);}

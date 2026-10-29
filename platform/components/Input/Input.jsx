@@ -260,14 +260,18 @@ const SelectList = React.forwardRef(function SelectList({ invalid, options, appe
         {...readOnlyProps(locked, Object.assign({ onFocus: () => { if (field.current) field.current.focus(); } }, rest), { pointer: true })}>
         {options ? options.map((o) => <option key={o.value} value={o.value} disabled={o.disabled}>{o.label}</option>) : children}
       </select>
+      {/* the Tooltip wraps the part that takes focus, so the whole chosen text shows on keyboard focus as on hover while it is cut (issue 577);
+          describe={false}: the field's own text already gives the value to a screen reader */}
+      <Tooltip content={current ? current.label : ''} disabled={!cut || open} describe={false} className="plx-select__tip">
       <div ref={field} id={id} role="combobox" tabIndex={disabled ? -1 : 0} aria-haspopup="listbox" aria-expanded={open} aria-controls={open ? listId : undefined}
         aria-activedescendant={open && active >= 0 ? optId(active) : undefined} aria-label={ariaLabel} aria-labelledby={labelledBy || (ariaLabel ? undefined : labelId || undefined)}
         aria-describedby={describedBy} aria-errormessage={errorMessage} aria-invalid={invalid || undefined} aria-required={rest.required || undefined} aria-disabled={disabled || undefined}
         className={cx('plx-input', 'plx-select__field', asData && 'plx-input--data', look(appearance), disabled && 'is-disabled')}
         {...readOnlyProps(locked, { onClick: () => { if (disabled) return; if (open) setOpen(false); else show(); }, onKeyDown: onKey }, { pointer: true })}
         onFocus={onFocus} onBlur={(e) => { setOpen(false); if (onBlur) onBlur(e); }}>
-        <Tooltip content={current ? current.label : ''} disabled={!cut || open} className="plx-select__tip"><span ref={valueRef} className="plx-select__value">{current ? current.label : ''}</span></Tooltip>
+        <span ref={valueRef} className="plx-select__value">{current ? current.label : ''}</span>
       </div>
+      </Tooltip>
       <span className="plx-select__chevron" aria-hidden="true"><Icon icon={SelectChevronIcon} filled={false} /></span>
       {open ? (
         <ul ref={list} id={listId} role="listbox" popover={TOP_LAYER ? 'manual' : undefined} aria-label={ariaLabel} aria-labelledby={labelledBy || (ariaLabel ? undefined : labelId || undefined)} className="plx-select__list" onMouseDown={(e) => e.preventDefault()}>
