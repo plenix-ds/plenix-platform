@@ -27,6 +27,17 @@
 @media (width < 600px){
   .plx-shell{grid-template-areas:"header" "main";grid-template-columns:minmax(0,1fr);}
 }
+/* ── starting widths by window width (owner, issue 463 option C, step 2): under 1440px the tokens as declared; from 1440px up to
+   1919px and from 1920px the panes start wider. The values are size tokens (…-from-1440, …-from-1920); a width a person dragged to,
+   or an app set, still wins. CSS media queries cannot read custom properties, so the two breakpoints are repeated here, as above ── */
+@media (1440px <= width < 1920px){
+  :root{--plx-sys-shell-nav-width:var(--plx-sys-shell-nav-width-from-1440);--plx-comp-side-panel-width-default:var(--plx-comp-side-panel-width-default-from-1440);
+    --plx-comp-secondary-pane-width-sm:var(--plx-comp-secondary-pane-width-sm-from-1440);--plx-comp-secondary-pane-width-md:var(--plx-comp-secondary-pane-width-md-from-1440);--plx-comp-secondary-pane-width-lg:var(--plx-comp-secondary-pane-width-lg-from-1440);}
+}
+@media (width >= 1920px){
+  :root{--plx-sys-shell-nav-width:var(--plx-sys-shell-nav-width-from-1920);--plx-comp-side-panel-width-default:var(--plx-comp-side-panel-width-default-from-1920);
+    --plx-comp-secondary-pane-width-sm:var(--plx-comp-secondary-pane-width-sm-from-1920);--plx-comp-secondary-pane-width-md:var(--plx-comp-secondary-pane-width-md-from-1920);--plx-comp-secondary-pane-width-lg:var(--plx-comp-secondary-pane-width-lg-from-1920);}
+}
 .plx-shell-header{grid-area:header;}
 .plx-shell-nav{grid-area:nav;inline-size:var(--plx-sys-shell-nav-width);min-inline-size:0;}
 .plx-shell-filters{inline-size:var(--plx-sys-panel-filter-width);min-inline-size:0;}

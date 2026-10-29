@@ -406,6 +406,10 @@
       "$value": "260px",
       "$type": "dimension"
     },
+    "size-272px": {
+      "$value": "272px",
+      "$type": "dimension"
+    },
     "size-280px": {
       "$value": "280px",
       "$type": "dimension"

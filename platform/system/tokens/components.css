@@ -147,11 +147,20 @@
   /* ── SECONDARY PANE: its widths, and the widest it can be dragged to (resizable) ── */
   --plx-comp-secondary-pane-width-sm: var(--plx-ref-size-180px);
   --plx-comp-secondary-pane-width-md: var(--plx-ref-size-220px);
+  --plx-comp-secondary-pane-width-min: var(--plx-ref-size-180px);
   --plx-comp-secondary-pane-width-lg: var(--plx-ref-size-280px);
+  --plx-comp-secondary-pane-width-sm-from-1440: var(--plx-ref-size-220px);
+  --plx-comp-secondary-pane-width-md-from-1440: var(--plx-ref-size-260px);
+  --plx-comp-secondary-pane-width-lg-from-1440: var(--plx-ref-size-320px);
+  --plx-comp-secondary-pane-width-sm-from-1920: var(--plx-ref-size-260px);
+  --plx-comp-secondary-pane-width-md-from-1920: var(--plx-ref-size-320px);
+  --plx-comp-secondary-pane-width-lg-from-1920: var(--plx-ref-size-400px);
   --plx-comp-secondary-pane-width-max: var(--plx-ref-size-400px);
-  /* ── SIDE PANEL: opens as wide as the navigation pane (owner, batch 261); a resizable panel is dragged between min and max ── */
-  --plx-comp-side-panel-width-default: var(--plx-sys-shell-nav-width);
-  --plx-comp-side-panel-width-min: var(--plx-sys-shell-nav-width);
+  /* ── SIDE PANEL: opens as wide as the navigation pane under 1440px (owner, batch 261), wider on larger windows (owner, issue 463 option C, step 2); a resizable panel is dragged between min and max ── */
+  --plx-comp-side-panel-width-default: var(--plx-ref-size-240px);
+  --plx-comp-side-panel-width-min: var(--plx-ref-size-240px);
+  --plx-comp-side-panel-width-default-from-1440: var(--plx-ref-size-320px);
+  --plx-comp-side-panel-width-default-from-1920: var(--plx-ref-size-400px);
   --plx-comp-side-panel-width-max: var(--plx-ref-size-560px);
   --plx-comp-input-background: var(--plx-sys-field-background);
   --plx-comp-input-border-color: var(--plx-sys-field-border);

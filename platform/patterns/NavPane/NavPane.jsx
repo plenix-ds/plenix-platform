@@ -20,7 +20,7 @@
      className: more classes on the pane
      children: the body: NavList groups (whose headings are collapsible section headers), a filter field, buttons
    Behavior:
-     Its size follows the Layout grid's shell: --plx-sys-shell-nav-width (240px), resizable 140–320px with the splitter on its
+     Its size follows the Layout grid's shell: --plx-sys-shell-nav-width (240px; 272px from a window 1440px wide, 320px from 1920px: the -from-1440 and -from-1920 tokens, set in system/grid.css), resizable 140–320px with the splitter on its
        edge: dragged, it moves one grid line (4px) at a time and stays on the grid; the arrow keys move it by
        --plx-sys-shell-splitter-step; Enter or a double-click on the edge folds the pane to its rail.
      The first row is the same on every pane: the title, the actions, then the Collapse button at the row's end, on the side
