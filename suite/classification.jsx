@@ -2,15 +2,9 @@
    tags) the applications share, and the category editor; moved out of the settings page in the suite split (batch 149).
    Rebuilt from Platform components in batch 199: each field is a Field; the lists are Comboboxes (several values, grouped
    options, and a new value created from the text typed); the category editor uses Field, ColorSwatch and Avatar. */
-import { Avatar, Badge, Button, ColorPicker, Combobox, Dialog, Field, Inline, Input, RowButton, Select, Stack, Text } from 'plenix-platform';
+import { Avatar, Badge, Button, ColorPicker, Combobox, Dialog, Field, Inline, Input, Select, Stack, Text } from 'plenix-platform';
 import { PROJECTS } from './shared.jsx';
 const { useRef } = React;
-
-/* A whole row (or card) that acts as one control: the Platform RowButton with its content laid out by inner (a flex row
-   by default). */
-export function RowItem({ innerClassName, children, ...rest }) {
-  return <RowButton {...rest}><span className={['plx-u-flex plx-u-items-center', innerClassName].filter(Boolean).join(' ')}>{children}</span></RowButton>;
-}
 
 /* ─── ClassificationWidget ───────────────────────────────────────
    Universal widget embedded in every capability's create/edit form.

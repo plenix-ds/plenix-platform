@@ -5,13 +5,13 @@
    Screens (Platforms Standard 4.3): a project and its capability (#/project/<id>/<capability>, e.g. #/project/3/tasks), a
    history entry each, on the projects page and on the dashboard. The new-project dialog asks before closing with
    unsaved entries (useUnsavedGuard). */
-import { CommandBar, CommandBarButton, CommandBarSearch, Menu, MenuItem, MenuRadioGroup, useCollectionView, Avatar, Badge, Button, Card, Checkbox, Columns, ContentGrid, Dialog, EmptyState, EntityHeader, Field, Fieldset, Inline, Input, Metric, NavList, NavPane, PageContent, Panel, ProgressBar, RowButton, SecondaryPane, SegmentedControl, Select, SideNavPortal, Stack, DataGrid, Tag, TagList, Text, ToolRail, useUnsavedGuard, useViewState, VisuallyHidden } from 'plenix-platform';
+import { CommandBar, CommandBarButton, CommandBarSearch, Menu, MenuItem, MenuRadioGroup, useCollectionView, Avatar, Button, Card, Checkbox, Columns, ContentGrid, Dialog, EmptyState, EntityHeader, Field, Fieldset, Inline, Input, Metric, NavList, NavPane, PageContent, Panel, ProgressBar, RowButton, SecondaryPane, SegmentedControl, Select, SideNavPortal, Stack, DataGrid, Tag, TagList, Text, ToolRail, useUnsavedGuard, useViewState, VisuallyHidden } from 'plenix-platform';
 import { ALL_FILES, ALL_NOTES, ALL_TASKS, CONTACTS, PROJECTS } from '../suite/shared.jsx';
 const { useState } = React;
 
 /* ─── Projects ──────────────────────────────────────────────────── */
 /* Project icons: data in plain script (window.PROJ_ICONS), drawn in the text color around them */
-export const ProjIco = ({ n, size = 15 }) => {
+const ProjIco = ({ n, size = 15 }) => {
   const html = window.PROJ_ICONS && window.PROJ_ICONS[n] ? window.PROJ_ICONS[n] : (window.PROJ_ICONS && window.PROJ_ICONS.notes) || '';
   return <svg width={size} height={size} viewBox="0 0 20 20" fill="none" aria-hidden="true" className="plx-u-block plx-u-shrink-0" dangerouslySetInnerHTML={{ __html: html }} />;
 };
@@ -19,10 +19,9 @@ export const ProjIco = ({ n, size = 15 }) => {
 /* ── Status badge ── */
 const STATUS = { active: ['active', 'Active'], paused: ['waiting', 'Paused'], completed: ['success', 'Completed'], archived: ['neutral', 'Archived'] };   // status pill variants (owner, 2026-10-14)
 const statusOf = (s) => { const v = STATUS[s] || STATUS.active; return { tone: v[0], label: v[1] }; };
-export const ProjStatus = ({ s }) => { const v = STATUS[s] || STATUS.active; return <Badge tone={v[0]}>{v[1]}</Badge>; };
 
 /* ── The projects list: the shell's side navigation ── */
-export function ProjectsSidebar({ projects, selected, onSelect, onSettings }) {
+function ProjectsSidebar({ projects, selected, onSelect, onSettings }) {
   const collection = useCollectionView([{ value: 'category', label: 'Filter', kind: 'select', get: (p) => p.tags[0] }], { text: (p) => p.name, quick: { category: 'list' } });
   const search = collection.search;
   const filterCat = (collection.quick.category || [])[0] || 'all';
@@ -72,7 +71,7 @@ export function ProjectsSidebar({ projects, selected, onSelect, onSettings }) {
 }
 
 /* ── A project's capabilities: a SecondaryPane beside its content; it folds to a rail of its capabilities and resizes ── */
-export function ProjectNav({ proj, active, onNav, caps }) {
+function ProjectNav({ proj, active, onNav, caps }) {
   const [view, updateView] = useViewState('projects');
   const pCaps = caps || window.DEFAULT_CAPS;
   const navGroups = [{ heading: null, items: [{ id: 'home', label: 'Project home', icon: <ProjIco n="home" size={14} /> }] }]
@@ -86,7 +85,7 @@ export function ProjectNav({ proj, active, onNav, caps }) {
   );
 }
 
-export function ProjectContent({ proj, panel }) {
+function ProjectContent({ proj, panel }) {
   const pTasks = ALL_TASKS.filter((t) => t.proj.includes(proj.name.split(' ')[0]));
   const pNotes = ALL_NOTES.filter((n) => n.folder === proj.name.split(' ')[0]);
   const pFiles = ALL_FILES.filter((f) => f.folder === proj.name.split('—')[0].trim().replace('Tax & Finances 2026', 'Tax 2026'));
@@ -203,7 +202,7 @@ export function ProjectContent({ proj, panel }) {
   return null;
 }
 
-export function NewProjectModal({ onClose, newName, setNewName, newClient, setNewClient, newBilling, setNewBilling, newCaps, toggleCap, dirty }) {
+function NewProjectModal({ onClose, newName, setNewName, newClient, setNewClient, newBilling, setNewBilling, newCaps, toggleCap, dirty }) {
   // Cancel, Close and Escape ask while something has been entered (Create project keeps it)
   const guard = useUnsavedGuard(dirty, 'The new project has not been created.');
   const cancel = guard(onClose);

@@ -26,7 +26,7 @@ import './prefetch.js';   // the next application page is prerendered on hover (
 const { useState } = React;
 
 // every Plenix application of this suite: its id (PLENIX_APPS), its folder and its label
-export const SUITE = [
+const SUITE = [
   { id: 'home', folder: 'dashboard', label: 'Dashboard' }, { id: 'projects', folder: 'projects', label: 'Projects' },
   { id: 'messaging', folder: 'messages', label: 'Messages' }, { id: 'contacts', folder: 'contacts', label: 'Contacts' },
   { id: 'calendar', folder: 'calendar', label: 'Calendar' }, { id: 'tasks', folder: 'tasks', label: 'Tasks' },
@@ -59,8 +59,8 @@ const afterSearchView = (open) => {
   window.history.back();
 };
 
-export function readPrefs() { try { return JSON.parse(localStorage.getItem('plenix.prefs')) || {}; } catch (e) { return {}; } }
-export function writePrefs(p) { try { localStorage.setItem('plenix.prefs', JSON.stringify(p)); } catch (e) { /* this visit only */ } }
+function readPrefs() { try { return JSON.parse(localStorage.getItem('plenix.prefs')) || {}; } catch (e) { return {}; } }
+function writePrefs(p) { try { localStorage.setItem('plenix.prefs', JSON.stringify(p)); } catch (e) { /* this visit only */ } }
 
 function Suite({ app, render, page = 'workspace', legacy }) {
   const [prefs, setPrefsState] = useState(readPrefs);
