@@ -94,6 +94,8 @@ import { useStrings } from '../../providers/LocaleProvider.jsx';
 //      loaded once from the library (platform/icons/library beside the bundle, or the CDN's /cdn/material/<commit>/)
 //      and drawn the same way.
 //   4. An unknown name draws nothing (never a filled square) and warns once, with the closest names.
+//   A file that fails to load (the network, a 5xx) is asked for once more after a short pause; a 404 is answered once; after two
+//   failures the icon draws nothing for the session (#283).
 // The outline or the filled version, at optical sizes 20 and 24: the stylesheet shows the one the context draws (icon.css).
 const LARGE = { lg: true, xl: true };
 const VARIANT = ['', '-fill', '-24', '-24-fill'];   // outline 20, filled 20, outline 24, filled 24
@@ -189,7 +191,8 @@ function resolvePlenix(n) {
   if (library.has(symbol)) return { kind: 'library', symbol, fillOutline: false };
   return null;
 }
-// where the library's files are: set by the page (setIconLibrary), else beside the bundle's script or stylesheet
+// where the library's files are: set by the page (setIconLibrary or window.PlenixIconLibrary), else beside the bundle's script or
+// stylesheet, else beside the ES module itself (plenix.esm.js under any name, #284)
 let libraryBase = null, plenixBase;
 export function setIconLibrary(url) { libraryBase = url ? String(url).replace(/\/?$/, '/') : null; files.clear(); }
 // the Plenix bundle's own script or stylesheet on the page (its URL), or null
@@ -198,11 +201,20 @@ function bundleUrl() {
   return [...document.querySelectorAll('script[src], link[rel="stylesheet"][href]')].map((el) => el.src || el.href)
     .find((url) => /\/(plenix(\.esm|\.min)?\.(js|css)|platform\.(js|css))(\?|#|$)/.test(url)) || null;
 }
+// the URL of this module when it is the ES module build (the build gives it a banner constant: `const __plenixModuleUrl = import.meta.url`): a page
+// that imports plenix.esm.js, under any file name, finds its icons beside it with no setting (#284). Other builds have no such constant.
+function moduleUrl() {
+  try {
+    const url = typeof __plenixModuleUrl === 'string' ? __plenixModuleUrl : null;
+    // not the npm package's dist/index.js: it carries no icon folder (an app that installs it registers or imports its icons)
+    return url && /^(https?|file|chrome-extension|moz-extension):/.test(url) && !/\/dist\/index\.js(\?|#|$)/.test(url) ? url : null;
+  } catch (e) { return null; }
+}
 function base() {
   if (libraryBase) return libraryBase;
   // a page (or an extension whose bundler renames the Plenix files) can name it before Plenix draws: window.PlenixIconLibrary
   if (typeof window !== 'undefined' && typeof window.PlenixIconLibrary === 'string' && window.PlenixIconLibrary) return (libraryBase = window.PlenixIconLibrary.replace(/\/?$/, '/'));
-  const at = bundleUrl();
+  const at = bundleUrl() || moduleUrl();
   if (!at) return null;
   // the CDN: /cdn/<version>/plenix.js -> /cdn/material/<commit>/; this repository: platform/... -> platform/icons/library/
   libraryBase = /\/cdn\/[^/]+\/[^/]+$/.test(new URL(at).pathname) ? new URL('../material/' + LIBRARY_COMMIT + '/', at).href
@@ -213,7 +225,7 @@ function base() {
 // /cdn/<version>/, a self-hosted archive) and beside dist/platform.js; platform/dist/icons/plenix/ from platform.css
 function plenixFiles() {
   if (plenixBase !== undefined) return plenixBase;
-  const at = bundleUrl();
+  const at = bundleUrl() || moduleUrl();
   if (!at) return null;   // not kept: the bundle's tag may not be on the page yet
   plenixBase = new URL(/\/platform\.css(\?|#|$)/.test(at) ? 'dist/icons/plenix/' : 'icons/plenix/', at).href;
   return plenixBase;
@@ -254,11 +266,16 @@ function readCapped(response) {
 // "plenix:" and a Plenix layout file (plenix:chevron-right-24)
 const files = new Map();
 const PLENIX_FILE = 'plenix:';
+const RETRY_AFTER_MS = 250;   // the pause before a failed icon file is asked for once more
 function loadFile(key) {
   if (files.has(key)) return files.get(key);
   const fromPlenix = key.startsWith(PLENIX_FILE), file = fromPlenix ? key.slice(PLENIX_FILE.length) : key, root = fromPlenix ? plenixFiles() : base();
-  const job = !root || typeof fetch !== 'function' ? Promise.resolve(null) : fetch(root + file + '.svg').then((r) => (r.ok ? readCapped(r) : null))
-    .then((text) => parseSvg(text, file + '.svg')).catch(() => null).then((glyph) => { files.set(key, glyph); return glyph; });
+  // a network failure or a server error (5xx) is tried once more after a short pause (#283); a file that is not there (404), too
+  // large or not a drawing is answered once. Two failures draw nothing for the session (never a square).
+  const attempt = () => fetch(root + file + '.svg').then((r) => (r.ok ? readCapped(r) : r.status >= 500 ? Promise.reject(new Error('icon file ' + r.status)) : null));
+  const job = !root || typeof fetch !== 'function' ? Promise.resolve(null)
+    : attempt().catch(() => new Promise((resolve) => setTimeout(resolve, RETRY_AFTER_MS)).then(attempt))
+      .then((text) => parseSvg(text, file + '.svg')).catch(() => null).then((glyph) => { files.set(key, glyph); return glyph; });
   files.set(key, job);
   return job;
 }
