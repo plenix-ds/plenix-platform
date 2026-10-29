@@ -2,7 +2,7 @@
 
 Written for CTM's report questions (an Arabic question block in an English portal; issue 413, owner ctm-needs-34). Checked on Plenix styling/phase-2 at 5a620b5c, which ships in the next release.
 
-## What the Platform does (0.75.0)
+## What the Platform does (from the next release)
 
 | Behavior | How it works |
 |---|---|
@@ -22,7 +22,7 @@ Proof: `tests/fixtures/rtl-ctm-question.html` draws CTM's exact block (council-c
 
 ## CTM: drop the patch (ctm.css lines 295 to 304)
 
-CTM's own rules are no longer needed. Its wrapper's `dir="rtl"` already turns the block on Plenix 0.75.0.
+CTM's own rules are no longer needed. Its wrapper's `dir="rtl"` already turns the block on the next Plenix release.
 
 1. Delete from `static/ctm/ctm.css`:
    ```css
