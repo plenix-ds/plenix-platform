@@ -16,7 +16,9 @@
     "platform/components/InlineEdit/InlineEdit.jsx",
     "platform/components/RichTextEditor/RichTextEditor.jsx",
     "platform/components/CodeEditor/CodeEditor.jsx",
-    "platform/components/MentionInput/MentionInput.jsx"
+    "platform/components/MentionInput/MentionInput.jsx",
+    "platform/components/TimePicker/TimePicker.jsx",
+    "platform/components/Cascader/Cascader.jsx"
   ],
   "useDescribedBy": [
     "platform/components/Tooltip/Tooltip.jsx",

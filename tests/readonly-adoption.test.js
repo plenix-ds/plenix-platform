@@ -1,4 +1,4 @@
-/* Plenix tests · controls follow read-only (issue 262, PRs 1 and 2).
+/* Plenix tests · controls follow read-only (issue 262, PRs 1 and 2, and #596).
    Summary: each control is drawn alone three ways: free (no read-only: a person can change it, which proves the probe works), inside a ReadOnly
      region (the region's contract: nothing changes) and with its own readOnly prop outside a region (nothing changes either). The probe clicks the
      control, types, presses arrow keys and Enter, clicks a choice it offers and presses its buttons, and counts the calls of its change handler.
@@ -8,13 +8,12 @@
      a leaf). While free, each of these steps must change the control, so a zero in a region or with readOnly proves the control holds.
      PR 1: SearchField, SegmentedControl, Rating, ColorSwatch, PromptInput, TimeZoneSelect. PR 2: NumberInput, DatePicker, Combobox, CountrySelect,
      TreeSelect, TransferList, InlineEdit, RichTextEditor, CodeEditor, MentionInput, RelativeDateInput (its Select already follows the region).
-     NOT_YET: TimePicker and Cascader change while free, but do not follow read-only yet (a click on an option of their list still changes them
-     in a region and with readOnly; issue 262): only the free change is asserted for them until they are fixed.
+     #596: TimePicker and Cascader follow read-only too (a click on an option of their list used to change them in a region and with readOnly).
    Usage: node tests/readonly-adoption.test.js   (run by layout.test.js when a control, the ReadOnly provider or this test changed) */
 const assert = require('assert/strict'), { serve, launch } = require('./lib');
 const CHANGES = ['SearchField', 'SegmentedControl', 'Rating', 'ColorSwatch', 'PromptInput', 'TimeZoneSelect', 'NumberInput', 'DatePicker', 'Combobox', 'CountrySelect', 'TreeSelect', 'TransferList',
   'InlineEdit', 'RichTextEditor', 'CodeEditor', 'MentionInput', 'TimePicker', 'Cascader', 'RelativeDateInput'];
-const NAMES = CHANGES, NOT_YET = ['TimePicker', 'Cascader'];
+const NAMES = CHANGES;
 const TYPED = { DatePicker: [['2026-10-15', 'Enter'], ['2026-10-16', 'Tab']], TimePicker: [['2pm', 'Enter'], ['3pm', 'Tab']] };
 const CALENDAR = { DatePicker: '2026-10-20' };   // the day clicked in the calendar (the value is in October 2026)
 const OPENS = { Combobox: '[role=combobox]', CountrySelect: '[role=combobox]', TimePicker: '[role=combobox]', Cascader: '.plx-cascader__trigger', RelativeDateInput: '[role=combobox]' };
@@ -87,7 +86,6 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
       const free = await run(k, 'free'), region = await run(k, 'region'), own = await run(k, 'own');
       assert.ok(free.n > 0, k + ': free, the probe changes it (else it proves nothing), got ' + free.n);
       for (const s of free.steps) assert.ok(s.changes > 0, k + ': free, "' + s.name + '" changes it (else that step proves nothing), got ' + s.changes);
-      if (NOT_YET.indexOf(k) >= 0) continue;
       assert.equal(region.n, 0, k + ': inside a ReadOnly region nothing changes, got ' + region.n + ' change(s)');
       assert.equal(own.n, 0, k + ': with readOnly nothing changes, got ' + own.n + ' change(s)');
     }
