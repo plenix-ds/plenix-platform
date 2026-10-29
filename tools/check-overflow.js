@@ -9,8 +9,8 @@
 // Needs Chrome (CHROME_PATH, as the tests) and puppeteer-core; it serves the repository itself, like the tests do. Read-only: it writes only the report.
 //
 // WHAT IT FINDS (in one headless tab, one page at a time)
-//   cut        text cut by an ellipsis or a line clamp whose full text has no reveal (a Plenix Tooltip around it, or a title). No reveal is an ERROR;
-//              a cut text that has one is listed "for a look" and is not an error.
+//   cut        text cut by an ellipsis (overflow-x hidden or clip) or a line clamp (a -webkit-box that hides its overflow). Its reveal is a real Plenix Tooltip
+//              bubble beside it: none is an ERROR, a bare title is an ERROR of its own kind (keyboard and touch cannot read it), a tooltip is listed "for a look".
 //   spill      content wider than its box where the box does not scroll (scrollWidth > clientWidth + 1, overflow visible or hidden).
 //   outside    a child outside its parent's edges by more than 1px, where the parent clips, has a border or a fill (not for absolute or fixed children).
 //   page       the whole page scrolls sideways.
@@ -50,8 +50,8 @@ function loadAllow() {
   const bad = [];
   (raw.entries || []).forEach((e, i) => {
     const why = [];
-    if (!e.selector || typeof e.selector !== 'string') why.push('a selector');
-    if (!e.page || typeof e.page !== 'string' || /^\s*\*?\s*$/.test(e.page)) why.push('a page text (not empty, not "*")');
+    if (!e.selector || typeof e.selector !== 'string' || !(e.selector.length >= 6 || /plx-/.test(e.selector))) why.push('a selector (at least 6 characters, or with a plx- class)');
+    if (!e.page || typeof e.page !== 'string' || e.page.trim().length < 4 || /^\s*\*+\s*$/.test(e.page)) why.push('a page text (at least 4 characters, not "*")');
     if (!e.reason || String(e.reason).trim().length < 12) why.push('a reason (at least a short sentence)');
     if (e.kind && !['cut', 'spill', 'outside', 'page', 'multirow'].includes(e.kind)) why.push('a kind that is cut, spill, outside, page or multirow');
     if (why.length) bad.push('entry ' + (i + 1) + (e.selector ? ' (' + e.selector + ')' : '') + ' needs ' + why.join(', '));
@@ -94,7 +94,8 @@ if (DRY) {
 function inPage(opts) {
   const out = [];
   const view = (el) => el.ownerDocument.defaultView;
-  const css = (el) => view(el).getComputedStyle(el);
+  const styles = new WeakMap();   // one getComputedStyle per element for this view
+  const css = (el) => { let c = styles.get(el); if (!c) { c = view(el).getComputedStyle(el); styles.set(el, c); } return c; };
   const hiddenUp = (el) => {
     for (let e = el; e && e.nodeType === 1; e = e.parentElement) {
       if (e.hidden || e.hasAttribute('inert') || e.getAttribute('aria-hidden') === 'true' || e.matches('.plx-visually-hidden, .plx-u-sr-only, svg, canvas, iframe, [data-plx-probe]')) return true;
@@ -107,41 +108,46 @@ function inPage(opts) {
   const sel = (el) => { const parts = []; for (let e = el, n = 0; e && e.nodeType === 1 && n < 4; e = e.parentElement, n++) { const cl = [...e.classList].filter((c) => /^plx-/.test(c)).slice(0, 2).join('.'); parts.unshift(e.tagName.toLowerCase() + (cl ? '.' + cl : '') + (e.id ? '#' + e.id : '')); if (e.id) break; } return parts.join(' > '); };
   const text = (el) => String(el.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 80);
   const scrolls = (c) => /auto|scroll/.test(c.overflowX) || /auto|scroll/.test(c.overflowY);
+  // a reveal is a real tooltip bubble beside the trigger (a disabled Tooltip has none), or, worse, a bare title that keyboard and touch cannot read
   const reveal = (el) => {
+    let title = false;
     for (let e = el, n = 0; e && e.nodeType === 1 && n < 4; e = e.parentElement, n++) {
-      if (e.hasAttribute('title') && e.getAttribute('title')) return 'title';
-      if (e.classList.contains('plx-tooltip') || e.querySelector(':scope > .plx-tooltip__bubble')) return 'tooltip';
-      if (e.getAttribute('aria-describedby') && /^plx-tt/.test(e.getAttribute('aria-describedby'))) return 'tooltip';
+      if (e.querySelector(':scope > .plx-tooltip__bubble')) return 'tooltip';
+      if (e.getAttribute('title')) title = true;
     }
-    return 'none';
+    return title ? 'title' : 'none';
   };
+  const inScroll = (el) => { for (let e = el.parentElement; e && e.nodeType === 1; e = e.parentElement) if (scrolls(css(e))) return true; return false; };
   const add = (kind, el, extra) => out.push(Object.assign({ kind, block: block(el), selector: sel(el), text: text(el), rect: (() => { const r = el.getBoundingClientRect(); return { x: Math.round(r.x + view(el).scrollX), y: Math.round(r.y + view(el).scrollY), w: Math.round(r.width), h: Math.round(r.height) }; })() }, extra || {}));
   const root = document;
   const all = [...root.querySelectorAll('body *')];
   // cut: an ellipsis or a line clamp that is really cutting
   for (const el of all) {
     const c = css(el);
-    const clamp = (c.webkitLineClamp && c.webkitLineClamp !== 'none') || (c.lineClamp && c.lineClamp !== 'none');
-    if (!(c.textOverflow === 'ellipsis' || clamp)) continue;
+    // an ellipsis cuts only where overflow-x is hidden or clip; a line clamp only where the box is a -webkit-box that hides its overflow
+    const clips = (v) => v === 'hidden' || v === 'clip';
+    const clamp = ((c.webkitLineClamp && c.webkitLineClamp !== 'none') || (c.lineClamp && c.lineClamp !== 'none')) && /-webkit-box/.test(c.display) && clips(c.overflowY);
+    const ellipsis = c.textOverflow === 'ellipsis' && clips(c.overflowX);
+    if (!(ellipsis || clamp)) continue;
     if (el.clientWidth === 0 || hiddenUp(el)) continue;
-    if (el.scrollWidth > el.clientWidth + 1 || (clamp && el.scrollHeight > el.clientHeight + 1)) add('cut', el, { reveal: reveal(el), width: el.clientWidth, needs: el.scrollWidth });
+    if ((ellipsis && el.scrollWidth > el.clientWidth + 1) || (clamp && el.scrollHeight > el.clientHeight + 1)) add('cut', el, { reveal: reveal(el), width: el.clientWidth, needs: el.scrollWidth });
   }
   // spill: wider than the box, and the box does not scroll
   for (const el of all) {
     const c = css(el);
-    if (c.display === 'inline' || el.clientWidth === 0 || scrolls(c) || /ellipsis/.test(c.textOverflow) || hiddenUp(el)) continue;
-    if (el.scrollWidth > el.clientWidth + 1 && !el.closest('[class*="plx-data-grid__grid"], .plx-table__scroll')) add('spill', el, { width: el.clientWidth, needs: el.scrollWidth });
+    if (c.display === 'inline' || el.clientWidth === 0 || scrolls(c) || /ellipsis/.test(c.textOverflow) || hiddenUp(el) || inScroll(el)) continue;
+    if (el.scrollWidth > el.clientWidth + 1) add('spill', el, { width: el.clientWidth, needs: el.scrollWidth });
   }
   // outside: a child beyond its parent's edge, where the parent clips, has a border or a fill
   for (const parent of all) {
     const c = css(parent);
-    if (parent.clientWidth === 0 || hiddenUp(parent) || scrolls(c)) continue;
+    if (parent.clientWidth === 0 || hiddenUp(parent) || scrolls(c) || inScroll(parent)) continue;
     const frames = c.overflowX !== 'visible' || parseFloat(c.borderLeftWidth) > 0 || parseFloat(c.borderTopWidth) > 0 || (c.backgroundColor && c.backgroundColor !== 'rgba(0, 0, 0, 0)' && c.backgroundColor !== 'transparent');
     if (!frames) continue;
     const pr = parent.getBoundingClientRect();
     for (const child of parent.children) {
       const cc = css(child);
-      if (cc.position === 'absolute' || cc.position === 'fixed' || cc.display === 'none' || cc.display === 'contents' || hiddenUp(child)) continue;
+      if (cc.position === 'absolute' || cc.position === 'fixed' || cc.position === 'sticky' || cc.display === 'none' || cc.display === 'contents' || hiddenUp(child)) continue;
       const r = child.getBoundingClientRect();
       if (r.width === 0 || r.height === 0) continue;
       if (r.left < pr.left - 1 || r.right > pr.right + 1) add('outside', child, { parent: sel(parent), by: Math.round(Math.max(pr.left - r.left, r.right - pr.right)) });
@@ -172,50 +178,57 @@ function inPage(opts) {
   const base = 'http://localhost:' + (server.address().port) + '/Plenix/';
   let browser;
   try { browser = await lib.launch(); } catch (e) { server.close(); console.log('OVERFLOW_ERROR: Chrome did not start: ' + e.message); process.exit(2); }
-  const page = await browser.newPage();
-  const errors = []; page.on('pageerror', (e) => errors.push(e.message));
-  // the spec's pages, from its own navigation
-  let routes = [];
-  if (!has('--no-spec')) {
-    await page.setViewport({ width: 1280, height: 900 });
-    await page.goto(base + SPEC, { waitUntil: 'domcontentloaded' });
-    await lib.ready(page, { timeout: 60000 }).catch(() => {});
-    routes = await page.evaluate(() => [...new Set([...document.querySelectorAll('a[href^="#/"]')].map((a) => a.getAttribute('href').slice(2)).filter((r) => r.split('/').length >= 2 && !/\/v\//.test(r)))]);
-  }
-  const views = [].concat(has('--no-spec') ? [] : limited(filter(specViews(routes))), has('--no-apps') ? [] : limited(filter(appViews())));
-  console.log('Overflow check: ' + views.length + ' page views (' + routes.length + ' spec pages, ' + (has('--no-apps') ? 0 : APPS.length) + ' apps)');
-  const found = [], pictures = {}, failedViews = [];
-  let n = 0;
-  for (const v of views) {
-    n++;
-    try {
-      await page.goto('about:blank');
-      await page.setViewport({ width: v.width, height: 900, deviceScaleFactor: v.scale ? 2 : 1 });
-      await page.goto(base + v.url, { waitUntil: 'domcontentloaded' });
-      await lib.ready(page, { timeout: 20000 }).catch(() => {});
-      if (v.dir === 'rtl') await page.evaluate(() => { document.documentElement.setAttribute('dir', 'rtl'); document.documentElement.setAttribute('lang', 'ar'); });
-      if (v.pane) await page.evaluate((w) => { const s = document.createElement('style'); s.id = 'plx-overflow-pane'; s.textContent = 'html body .plx-nav-pane.plx-nav-pane.plx-nav-pane, html body .plx-shell-nav.plx-shell-nav, html body .plx-side-panel.plx-side-panel.plx-side-panel, html body .plx-secondary-pane.plx-secondary-pane.plx-secondary-pane{inline-size:' + w + 'px;min-inline-size:0;max-inline-size:' + w + 'px;}'; document.head.appendChild(s); }, v.pane);
-      await new Promise((r) => setTimeout(r, 350));
-      const hits = await page.evaluate(inPage, {});
-      for (const h of hits) {
-        const entry = ALLOW.find((a) => (!a.kind || a.kind === h.kind) && v.url.includes(a.page) && h.selector.includes(a.selector));
-        if (entry) { entry.hid++; continue; }
-        const f = Object.assign({}, h, { url: v.url, view: v.label, dir: v.dir, error: h.kind !== 'cut' || h.reveal === 'none' });
-        found.push(f);
-        const key = h.block + '|' + h.kind + '|' + (h.reveal || '');
-        if (PICTURES > 0 && (pictures[key] = pictures[key] || []).length < PICTURES && h.rect.w > 0 && h.rect.h > 0) {
-          try { const shot = await page.screenshot({ encoding: 'base64', clip: { x: Math.max(0, h.rect.x - 8), y: Math.max(0, h.rect.y - 8), width: Math.min(560, h.rect.w + 16), height: Math.min(200, h.rect.h + 16) } }); pictures[key].push({ shot, where: v.url + ' · ' + v.label + ' · ' + v.dir }); f.picture = key + '#' + (pictures[key].length - 1); } catch (e) { /* off screen: no picture */ }
+  const errors = [], found = [], pictures = {}, failedViews = [];
+  let routes = [], views = [];
+  try {
+    const page = await browser.newPage();
+    page.on('pageerror', (e) => errors.push(e.message));
+    // the spec's pages, from its own navigation
+    if (!has('--no-spec')) {
+      await page.setViewport({ width: 1280, height: 900 });
+      await page.goto(base + SPEC, { waitUntil: 'domcontentloaded' });
+      await lib.ready(page, { timeout: 60000 }).catch(() => {});
+      routes = await page.evaluate(() => [...new Set([...document.querySelectorAll('a[href^="#/"]')].map((a) => a.getAttribute('href').slice(2)).filter((r) => r.split('/').length >= 2 && !/\/v\//.test(r)))]);
+    }
+    if (!has('--no-spec') && !routes.length) { console.log('OVERFLOW_ERROR: no spec pages were found in the design spec navigation (the spec did not load, or its navigation changed): nothing was checked'); process.exitCode = 2; return; }
+    views = [].concat(has('--no-spec') ? [] : limited(filter(specViews(routes))), has('--no-apps') ? [] : limited(filter(appViews())));
+    console.log('Overflow check: ' + views.length + ' page views (' + routes.length + ' spec pages, ' + (has('--no-apps') ? 0 : APPS.length) + ' apps)');
+    let n = 0;
+    for (const v of views) {
+      n++;
+      let rtlId = null;
+      try {
+        await page.goto('about:blank');
+        // right to left is set before the page's scripts run, so every part mounts in that direction
+        rtlId = v.dir === 'rtl' ? await page.evaluateOnNewDocument(() => { const set = () => { const e = document.documentElement; if (!e) return false; e.setAttribute('dir', 'rtl'); e.setAttribute('lang', 'ar'); return true; }; if (!set()) { const o = new MutationObserver(() => { if (set()) o.disconnect(); }); o.observe(document, { childList: true }); } }) : null;
+        await page.setViewport({ width: v.width, height: 900, deviceScaleFactor: v.scale ? 2 : 1 });
+        await page.goto(base + v.url, { waitUntil: 'domcontentloaded' });
+        await lib.ready(page, { timeout: 20000 }).catch(() => {});
+        if (v.dir === 'rtl') await page.evaluate(() => { document.documentElement.setAttribute('dir', 'rtl'); document.documentElement.setAttribute('lang', 'ar'); });
+        if (v.pane) await page.evaluate((w) => { const s = document.createElement('style'); s.id = 'plx-overflow-pane'; s.textContent = 'html body .plx-nav-pane.plx-nav-pane.plx-nav-pane, html body .plx-shell-nav.plx-shell-nav, html body .plx-side-panel.plx-side-panel.plx-side-panel, html body .plx-secondary-pane.plx-secondary-pane.plx-secondary-pane{inline-size:' + w + 'px;min-inline-size:0;max-inline-size:' + w + 'px;}'; document.head.appendChild(s); }, v.pane);
+        await new Promise((r) => setTimeout(r, 350));
+        const hits = await page.evaluate(inPage, {});
+        for (const h of hits) {
+          const entry = ALLOW.find((a) => (!a.kind || a.kind === h.kind) && v.url.includes(a.page) && h.selector.includes(a.selector));
+          if (entry) { entry.hid++; continue; }
+          const f = Object.assign({}, h, { url: v.url, view: v.label, dir: v.dir, error: h.kind !== 'cut' || h.reveal !== 'tooltip' });
+          found.push(f);
+          const key = h.block + '|' + h.kind + '|' + (h.reveal || '');
+          if (PICTURES > 0 && (pictures[key] = pictures[key] || []).length < PICTURES && h.rect.w > 0 && h.rect.h > 0) {
+            try { const shot = await page.screenshot({ encoding: 'base64', clip: { x: Math.max(0, h.rect.x - 8), y: Math.max(0, h.rect.y - 8), width: Math.min(560, h.rect.w + 16), height: Math.min(200, h.rect.h + 16) } }); pictures[key].push({ shot, where: v.url + ' · ' + v.label + ' · ' + v.dir }); f.picture = key + '#' + (pictures[key].length - 1); } catch (e) { /* off screen: no picture */ }
+          }
         }
-      }
-    } catch (e) { failedViews.push(v.url + ' · ' + v.label + ' · ' + v.dir + ': ' + String(e.message).split('\n')[0]); }
-    if (n % 25 === 0 || n === views.length) console.log('  ' + n + '/' + views.length + ' views, ' + found.length + ' findings so far, ' + Math.round((Date.now() - started) / 1000) + 's');
+      } catch (e) { failedViews.push(v.url + ' · ' + v.label + ' · ' + v.dir + ': ' + String(e.message).split('\n')[0]); } finally { if (rtlId) await page.removeScriptToEvaluateOnNewDocument(rtlId.identifier).catch(() => {}); }
+      if (n % 25 === 0 || n === views.length) console.log('  ' + n + '/' + views.length + ' views, ' + found.length + ' findings so far, ' + Math.round((Date.now() - started) / 1000) + 's');
+    }
+  } finally {
+    await browser.close(); server.close();   // a throw never leaves Chrome or the server running
   }
-  await browser.close(); server.close();
   const seconds = Math.round((Date.now() - started) / 1000);
 
   // ---- the report: by component kind, then by finding; the errors before the listed cases
   const group = {};
-  for (const f of found) { const g = (group[f.block] = group[f.block] || {}); const k = f.kind + (f.kind === 'cut' ? (f.reveal === 'none' ? ' (no way to read the text)' : ' (the text is revealed: for a look)') : ''); const items = (g[k] = g[k] || { error: f.error, places: new Map(), examples: [] }); const key = f.selector + '|' + f.text; if (!items.places.has(key)) { items.places.set(key, { selector: f.selector, text: f.text, seen: [], picture: f.picture }); } const place = items.places.get(key); if (place.seen.length < 6) place.seen.push(f.url + ' · ' + f.view + ' · ' + f.dir); else place.more = (place.more || 0) + 1; }
+  for (const f of found) { const g = (group[f.block] = group[f.block] || {}); const k = f.kind + (f.kind === 'cut' ? (f.reveal === 'none' ? ' (no way to read the text)' : f.reveal === 'title' ? ' (title only: keyboard and touch cannot read it)' : ' (the text is revealed by a tooltip: for a look)') : ''); const items = (g[k] = g[k] || { error: f.error, places: new Map(), examples: [] }); const key = f.selector + '|' + f.text; if (!items.places.has(key)) { items.places.set(key, { selector: f.selector, text: f.text, seen: [], picture: f.picture }); } const place = items.places.get(key); if (place.seen.length < 6) place.seen.push(f.url + ' · ' + f.view + ' · ' + f.dir); else place.more = (place.more || 0) + 1; }
   const errorCount = found.filter((f) => f.error).length, lookCount = found.length - errorCount;
   const json = { ranAt: new Date().toISOString(), seconds, views: views.length, specPages: routes.length, errors: errorCount, forALook: lookCount, failedViews, pageErrors: [...new Set(errors)].slice(0, 20),
     allowList: ALLOW.map((a) => ({ selector: a.selector, page: a.page, kind: a.kind || null, reason: a.reason, hid: a.hid })),
@@ -223,7 +236,7 @@ function inPage(opts) {
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const html = ['<!doctype html><meta charset="utf-8"><title>Plenix overflow report</title><style>body{font:14px system-ui;margin:24px;max-width:1100px}h1{font-size:20px}h2{font-size:17px;margin-block:24px 8px;border-block-end:1px solid #bbb}h3{font-size:14px;margin-block:12px 4px}.err{color:#a12}.look{color:#555}code{background:#f0f0f0;padding:0 3px}li{margin-block:4px}img{display:block;border:1px solid #ccc;margin-block:4px;max-inline-size:100%}</style>',
     '<h1>Plenix overflow report</h1>',
-    '<p>Run on ' + esc(json.ranAt) + '. <b>Run time: ' + Math.floor(seconds / 60) + ' min ' + (seconds % 60) + ' s</b> for ' + views.length + ' page views (' + routes.length + ' spec pages, ' + (has('--no-apps') ? 0 : APPS.length) + ' apps). <b class="err">' + errorCount + ' errors</b>, <span class="look">' + lookCount + ' cut texts that have a reveal, for a look</span>.</p>',
+    '<p>Run on ' + esc(json.ranAt) + '. <b>Run time: ' + Math.floor(seconds / 60) + ' min ' + (seconds % 60) + ' s</b> for ' + views.length + ' page views (' + routes.length + ' spec pages, ' + (has('--no-apps') ? 0 : APPS.length) + ' apps). <b class="err">' + errorCount + ' errors</b>, <span class="look">' + lookCount + ' cut texts with a tooltip, for a look</span>.</p>',
     failedViews.length ? '<p class="err">' + failedViews.length + ' views could not be opened: ' + esc(failedViews.slice(0, 5).join(' | ')) + '</p>' : '']
     .concat(Object.keys(group).sort().map((b) => '<h2>' + esc(b) + '</h2>' + Object.keys(group[b]).sort((a, c) => Number(group[b][c].error) - Number(group[b][a].error) || a.localeCompare(c)).map((k) => { const g = group[b][k]; return '<h3 class="' + (g.error ? 'err' : 'look') + '">' + esc(k) + ' · ' + g.places.size + ' place' + (g.places.size === 1 ? '' : 's') + '</h3><ul>' + [...g.places.values()].slice(0, 12).map((p) => { const pic = p.picture ? pictures[p.picture.split('#')[0]][+p.picture.split('#')[1]] : null; return '<li><code>' + esc(p.selector) + '</code>' + (p.text ? ' “' + esc(p.text) + '”' : '') + '<br><small>' + esc(p.seen.join(' ; ')) + (p.more ? ' and ' + p.more + ' more' : '') + '</small>' + (pic ? '<img alt="" src="data:image/png;base64,' + pic.shot + '">' : '') + '</li>'; }).join('') + (g.places.size > 12 ? '<li>… and ' + (g.places.size - 12) + ' more places in the JSON</li>' : '') + '</ul>'; }).join('')))
     .concat(['<h2>The allow-list (tools/overflow-allow.json)</h2>', ALLOW.length ? '<ul>' + ALLOW.map((a) => '<li><code>' + esc(a.selector) + '</code> on “' + esc(a.page) + '”' + (a.kind ? ' (' + a.kind + ')' : '') + ': ' + esc(a.reason) + ' <b>' + (a.hid ? 'hid ' + a.hid + ' place' + (a.hid === 1 ? '' : 's') : 'hid nothing: remove it') + '</b></li>').join('') + '</ul>' : '<p>No entries.</p>', json.pageErrors.length ? '<h2>Script errors seen while running</h2><ul>' + json.pageErrors.map((e) => '<li>' + esc(e) + '</li>').join('') + '</ul>' : '']);
