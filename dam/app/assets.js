@@ -133,7 +133,7 @@ const ASSETS = exports.ASSETS = [['Coptic Cross Gold Traditional', 'Cross - Trad
   date,
   status,
   thumb: 'assets/thumb-' + (21 + i) + '.svg',
-  typeIcon: 'file-' + badge.toLowerCase(),
+  typeIcon: 'file-' + badge.toLowerCase() /* plx-icons: file-ai file-jpg file-png file-psd */,
   tags: name.toLowerCase().split(' '),
   owner: ['Jordan Avery', 'Sarah M.', 'John Deacon'][i % 3]
 }));
