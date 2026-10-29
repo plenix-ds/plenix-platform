@@ -57,6 +57,8 @@ import { cx } from '../../utils/cx.js';
 import { arrowStep } from '../../utils/direction.js';
 import { formatLocale, numeralLocale } from '../../utils/format.js';
 import { Button } from '../Button/Button.jsx';
+import ChevronLeftIcon from 'plenix-platform/icons/plenix/chevron-left';
+import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
 
 const STRINGS = { label: 'Calendar', previous: 'Previous month', next: 'Next month', week: 'Week', weekShort: 'Wk', today: 'Today' };
 
@@ -207,10 +209,10 @@ export const Calendar = React.forwardRef(function Calendar({ mode = 'single', va
     return (
       <div key={ym} className="plx-calendar__month">
         <div className="plx-calendar__header">
-          {i === 0 ? <Button variant="ghost" size="sm" iconOnly icon="chevron-left" label={t.previous} className="plx-calendar__nav plx-calendar__nav--previous"
+          {i === 0 ? <Button variant="ghost" size="sm" iconOnly icon={ChevronLeftIcon} label={t.previous} className="plx-calendar__nav plx-calendar__nav--previous"
             disabled={!!prevOff} onClick={() => setShown(shiftMonth(shown, -1))} /> : <span className="plx-calendar__nav-space" aria-hidden="true" />}
           <div id={titleId} className="plx-calendar__title" aria-live="polite">{monthName.format(parseIsoDate(monthStart(ym)))}</div>
-          {i === count - 1 ? <Button variant="ghost" size="sm" iconOnly icon="chevron-right" label={t.next} className="plx-calendar__nav plx-calendar__nav--next"
+          {i === count - 1 ? <Button variant="ghost" size="sm" iconOnly icon={ChevronRightIcon} label={t.next} className="plx-calendar__nav plx-calendar__nav--next"
             disabled={!!nextOff} onClick={() => setShown(shiftMonth(shown, 1))} /> : <span className="plx-calendar__nav-space" aria-hidden="true" />}
         </div>
         <div role="grid" aria-labelledby={titleId} className="plx-calendar__grid" onKeyDown={onKeyDown} onMouseLeave={() => setHover(null)}>

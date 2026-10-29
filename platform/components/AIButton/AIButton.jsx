@@ -13,10 +13,11 @@ import { Text } from '../Text/Text.jsx';
 import { Notice } from '../Notice/Notice.jsx';
 import { Menu, MenuItem } from '../Menu/Menu.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import SparkleIcon from 'plenix-platform/icons/plenix/sparkle';
 const Trigger=React.forwardRef(function Trigger({externalRef,...props},menuRef){return <Button {...props} ref={node=>{if(typeof menuRef==='function')menuRef(node);else if(menuRef)menuRef.current=node;if(typeof externalRef==='function')externalRef(node);else if(externalRef)externalRef.current=node;}}/>;});
 export const AIButton=React.forwardRef(function AIButton({label,mode='trigger',actions=[],onAction,disabled=false,strings,className},ref){
  const t=useStrings('aiButton', strings),[busy,setBusy]=React.useState(false),[error,setError]=React.useState('');const lock=React.useRef(false),alive=React.useRef(true);React.useEffect(()=>{alive.current=true;return()=>{alive.current=false;};},[]);
  async function run(id){if(disabled||lock.current||!onAction)return;lock.current=true;setBusy(true);setError('');try{await onAction(id);}catch(e){if(alive.current)setError(t.failed);}finally{lock.current=false;if(alive.current)setBusy(false);}}
- const name=label||t.label,props={icon:'sparkle',label:name,iconOnly:mode==='icon',loading:busy,disabled:disabled||!onAction||(mode==='menu'&&!actions.length),strings:{working:t.working},children:name};
- return <Stack className={cx('plx-ai-button',className)}>{mode==='menu'?<Menu label={name} trigger={<Trigger {...props} externalRef={ref} caret/>}>{actions.map(a=><MenuItem key={a.id} icon="sparkle" disabled={disabled||busy||a.disabled||!onAction} onSelect={()=>run(a.id)}>{a.label}</MenuItem>)}</Menu>:<Button {...props} ref={ref} onClick={()=>run()}/>}{error?<Notice tone="danger">{error}</Notice>:null}</Stack>;
+ const name=label||t.label,props={icon:SparkleIcon,label:name,iconOnly:mode==='icon',loading:busy,disabled:disabled||!onAction||(mode==='menu'&&!actions.length),strings:{working:t.working},children:name};
+ return <Stack className={cx('plx-ai-button',className)}>{mode==='menu'?<Menu label={name} trigger={<Trigger {...props} externalRef={ref} caret/>}>{actions.map(a=><MenuItem key={a.id} icon={SparkleIcon} disabled={disabled||busy||a.disabled||!onAction} onSelect={()=>run(a.id)}>{a.label}</MenuItem>)}</Menu>:<Button {...props} ref={ref} onClick={()=>run()}/>}{error?<Notice tone="danger">{error}</Notice>:null}</Stack>;
 });

@@ -84,6 +84,7 @@ import { Button } from '../Button/Button.jsx';
 import { Field } from '../Field/Field.jsx';
 import { Input } from '../Input/Input.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import CloseIcon from 'plenix-platform/icons/plenix/close';
 
 const asIcon = (i) => iconElement(i);   // a name or an imported module (#280)
 
@@ -141,7 +142,7 @@ function ModalShell({ kind, open, onClose, title, description, icon, size, side,
         <div className="plx-dialog__header">
           {icon ? <span className="plx-dialog__icon">{asIcon(icon)}</span> : null}
           <h2 id={id + 't'} className="plx-dialog__title">{title}</h2>
-          {dismissible ? <Button variant="ghost" iconOnly icon="close" label={closeLabel ?? t.close} className="plx-dialog__close" onClick={onClose} /> : null}
+          {dismissible ? <Button variant="ghost" iconOnly icon={CloseIcon} label={closeLabel ?? t.close} className="plx-dialog__close" onClick={onClose} /> : null}
         </div>
         <div className={cx('plx-dialog__body', flush && 'plx-dialog__body--flush')}>
           {description ? <p id={id + 'd'} className="plx-dialog__description">{description}</p> : null}

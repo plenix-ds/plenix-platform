@@ -65,6 +65,7 @@ import { Input } from '../Input/Input.jsx';
 import { InputGroup } from '../InputGroup/InputGroup.jsx';
 import { Popover } from '../Popover/Popover.jsx';
 import { Calendar, parseIsoDate, addDays, addMonths, todayIso } from '../Calendar/Calendar.jsx';
+import CalendarIcon from 'plenix-platform/icons/plenix/calendar';
 
 const STRINGS = { open: 'Choose date', dialog: 'Choose date', time: 'Time', presets: 'Presets', today: 'Today', tomorrow: 'Tomorrow',
   nextWeek: 'In a week', last7: 'Last 7 days', last30: 'Last 30 days', thisMonth: 'This month', lastMonth: 'Last month' };
@@ -185,7 +186,7 @@ export const DatePicker = React.forwardRef(function DatePicker({ mode = 'single'
             if (e.key === 'Enter') { read(); }
             else if (e.key === 'ArrowDown' && e.altKey) { e.preventDefault(); if (!open) toggle(); }
           }} />
-        <Button variant="ghost" size="2xs" iconOnly icon="calendar" className="plx-date-picker__button" label={t.open} expanded={open} aria-haspopup="dialog" disabled={disabled} onClick={toggle} />
+        <Button variant="ghost" size="2xs" iconOnly icon={CalendarIcon} className="plx-date-picker__button" label={t.open} expanded={open} aria-haspopup="dialog" disabled={disabled} onClick={toggle} />
       </div>
       {dateTime ? (
         <InputGroup data suffix={zone || undefined} disabled={disabled} invalid={invalid} className="plx-date-picker__time">

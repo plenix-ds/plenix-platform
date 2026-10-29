@@ -15,6 +15,7 @@ import { Notice } from '../Notice/Notice.jsx';
 import { Icon } from '../Icon/Icon.jsx';
 import { Link } from '../Link/Link.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import SparkleIcon from 'plenix-platform/icons/plenix/sparkle';
 export function AIDisclaimer({variant='footer',children,href,strings,className,...rest}){
   devWarn('AIDisclaimer', { variant }, { variant: ['footer','inline'] });
-  const t=useStrings('aiDisclaimer', strings);return <Inline as={variant==='inline'?'span':'footer'} wrap className={cx('plx-ai-disclaimer',className)} {...rest}><Icon name="sparkle"/><Text variant="secondary">{children||t.message}</Text>{href?<Link href={href}>{t.learn}</Link>:null}</Inline>;}
+  const t=useStrings('aiDisclaimer', strings);return <Inline as={variant==='inline'?'span':'footer'} wrap className={cx('plx-ai-disclaimer',className)} {...rest}><Icon name={SparkleIcon}/><Text variant="secondary">{children||t.message}</Text>{href?<Link href={href}>{t.learn}</Link>:null}</Inline>;}

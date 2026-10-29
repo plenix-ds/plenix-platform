@@ -118,6 +118,8 @@ function bundle(target) {
       // bundled into the application like a source file; a Material one is written on demand, only the names imported
       const icon = /^plenix-platform\/icons\/(plenix|material)\/([a-z0-9-]+|[a-z0-9]+(?:_[a-z0-9]+)+)$/.exec(spec);   // a name, or a Plenix alias (more_horiz)
       if (icon) {
+        // the underscore spelling is a Plenix alias (chevron_right); a Material module is imported by its dashed name only
+        if (icon[1] === 'material' && icon[2].includes('_')) throw new BuildError('Material icons are imported by their dashed name: plenix-platform/icons/material/' + icon[2].replace(/_/g, '-') + ', not ' + icon[2] + ' (' + rel(file) + ')');
         const dir = path.join(ROOT, 'platform', 'dist', 'icons', icon[1]);
         let dep;
         try { dep = icon[1] === 'material' ? require('./platform/icons/layout.js').writeMaterialModule(ROOT, icon[2], dir) : path.join(dir, icon[2] + '.js'); }

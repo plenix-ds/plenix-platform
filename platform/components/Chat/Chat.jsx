@@ -51,12 +51,13 @@ import { ProgressSteps } from '../ProgressSteps/ProgressSteps.jsx';
 import { Text } from '../Text/Text.jsx';
 import { Textarea } from '../Input/Input.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import SparkleIcon from 'plenix-platform/icons/plenix/sparkle';
 
 function Typing({ label, variant = 'typing', steps = [], current = 0, strings, className, ...rest }) {
   devWarn('Chat.Typing', { variant }, { variant: ['typing','thinking','steps'] });
   const t = useStrings('chat', strings);
   if (variant === 'thinking' || variant === 'steps') return <div className={cx('plx-chat__thinking', className)} role="status" {...rest}>
-    <div className="plx-chat__thinking-label"><Spinner size="sm" aria-hidden="true" role="presentation" label="" /><Icon name="sparkle"/><Text>{label || t.thinking}</Text></div>
+    <div className="plx-chat__thinking-label"><Spinner size="sm" aria-hidden="true" role="presentation" label="" /><Icon name={SparkleIcon}/><Text>{label || t.thinking}</Text></div>
     {variant === 'steps' && steps.length ? <ProgressSteps label={label || t.thinking} steps={steps} current={current} strings={strings} /> : null}
   </div>;
   if (label === undefined) label = t.typing;

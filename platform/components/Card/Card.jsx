@@ -109,6 +109,7 @@ import { Icon, asIcon as iconElement } from '../Icon/Icon.jsx';
 import { Badge } from '../Badge/Badge.jsx';
 import { formatNumber } from '../../utils/format.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 
 
 const H = ({ level, ...props }) => React.createElement(level ? 'h' + level : 'div', props);
@@ -130,7 +131,7 @@ export function Panel({ icon, title, description, actions, footer, surface = 'fl
           {actions ? <div className="plx-panel__actions">{actions}</div> : null}
           {collapsible ? (
             <button type="button" className="plx-panel__toggle" aria-expanded={open} aria-controls={id + '-body'} aria-label={(open ? t.collapse : t.expand).split('{title}').join(typeof title === 'string' ? title : t.section)} onClick={toggle}>
-              <Icon name="chevron-down" />
+              <Icon name={ChevronDownIcon} />
             </button>
           ) : null}
         </div>
@@ -166,7 +167,7 @@ export function Card({ icon, title, meta, actions, surface = 'flat', elevation =
           {expandable ? (
             <button type="button" className="plx-card__toggle" aria-expanded={open} aria-controls={hasBody ? id + '-body' : undefined}
               aria-label={(open ? t.collapse : t.expand).split('{title}').join(typeof title === 'string' ? title : t.card)} onClick={toggle}>
-              <Icon name="chevron-down" />
+              <Icon name={ChevronDownIcon} />
             </button>
           ) : null}
         </div>

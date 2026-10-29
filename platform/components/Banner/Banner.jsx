@@ -31,6 +31,7 @@ import { cx } from '../../utils/cx.js';
 import { Icon, StatusIcon } from '../Icon/Icon.jsx';
 import { Button } from '../Button/Button.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import CloseIcon from 'plenix-platform/icons/plenix/close';
 
 const TONES = ['info', 'success', 'warning', 'danger', 'neutral'];
 
@@ -50,7 +51,7 @@ export function Banner({ tone = 'info', title, children, actions, onDismiss, pla
         {children ? <span className="plx-banner__text">{children}</span> : null}
       </div>
       {actions ? <div className="plx-banner__actions">{actions}</div> : null}
-      {onDismiss ? <Button variant="ghost" size="sm" iconOnly icon="close" label={words.dismiss} className="plx-banner__dismiss" onClick={onDismiss} /> : null}
+      {onDismiss ? <Button variant="ghost" size="sm" iconOnly icon={CloseIcon} label={words.dismiss} className="plx-banner__dismiss" onClick={onDismiss} /> : null}
     </div>
   );
 }
