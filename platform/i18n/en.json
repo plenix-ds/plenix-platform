@@ -1,12 +1,4 @@
 {
-  "common": {
-    "save": "Save",
-    "cancel": "Cancel",
-    "close": "Close",
-    "retry": "Retry",
-    "next": "Next",
-    "back": "Back"
-  },
   "collection": {
     "selected": {
       "=0": "Nothing selected",
@@ -17,10 +9,7 @@
   "wizard": {
     "next": "Next",
     "back": "Back",
-    "finish": "Finish",
     "cancel": "Cancel",
-    "step": "Step {n} of {total}",
-    "error": "Could not save. Try again.",
     "complete": "Finish",
     "summary": "Review",
     "invalid": "Check this step before continuing.",
@@ -40,9 +29,6 @@
     "less": "Show less"
   },
   "emptyState": {
-    "title": "No items yet",
-    "description": "Create an item to get started.",
-    "action": "Create item",
     "offline": {
       "title": "You’re offline",
       "text": "Check your connection. This page updates when you’re back online."

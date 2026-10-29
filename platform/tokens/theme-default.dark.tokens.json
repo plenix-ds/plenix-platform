@@ -1438,7 +1438,7 @@
       }
     },
     "action-danger-background-pressed": {
-      "$value": "{plx-ref.color-red-800}",
+      "$value": "{plx-ref.color-red-900}",
       "$type": "color",
       "$extensions": {
         "plenix": {
