@@ -12461,7 +12461,7 @@ if (window.DS && DS.registerLab) {
       every: 'every mega menu',
       html: function (variant, size, state, extraCls) {
         var trigger = function (open) {
-          return '<button type="button" tabindex="-1" class="plx-button plx-button--ghost plx-button--caret' + (open ? ' is-selected' : '') + ' plx-mega-menu__toggle" aria-expanded="' + open + '"><span class="plx-button__label">Guides</span><span class="plx-button__caret" aria-hidden="true"></span></button>';
+          return '<button type="button" tabindex="-1" class="plx-button plx-button--ghost plx-button--caret' + (open ? ' is-selected' : '') + ' plx-mega-menu__toggle" aria-expanded="' + open + '"><span class="plx-button__label">Guides</span><span class="plx-button__caret" aria-hidden="true"><span class="plx-icon plx-icon--chevron-down" aria-hidden="true"></span></span></button>';
         };
         if (variant === 'accordion') {
           var groups = GROUPS.map(function (g) {
@@ -12500,7 +12500,7 @@ if (window.DS && DS.registerLab) {
       var cls = 'plx-button plx-button--' + (o.variant || 'secondary') + (o.size && o.size !== 'md' ? ' plx-button--size-' + o.size : '') + (o.iconOnly ? ' plx-button--icon-only' : '') + (o.caret ? ' plx-button--caret' : '') + (o.cls ? ' ' + o.cls : '');
       return '<button type="button" tabindex="-1" class="' + cls + '"' + (o.disabled ? ' disabled' : '') + (o.iconOnly ? ' aria-label="' + (o.name || o.label) + '"' : '') + '>'
         + (o.icon ? '<span class="plx-button__icon">' + icon(o.icon) + '</span>' : '') + (o.iconOnly ? '' : '<span class="plx-button__label">' + o.label + '</span>')
-        + (o.caret ? '<span class="plx-button__caret" aria-hidden="true"></span>' : '') + '</button>';
+        + (o.caret ? '<span class="plx-button__caret" aria-hidden="true"><span class="plx-icon plx-icon--chevron-down" aria-hidden="true"></span></span>' : '') + '</button>';
     };
     var CORNERS = ['border-bottom-left-radius', 'border-bottom-right-radius', 'border-top-left-radius', 'border-top-right-radius'];
     var BORDERS = ['border-top-color', 'border-bottom-color', 'border-left-color', 'border-right-color'];
@@ -13341,7 +13341,7 @@ if (window.DS && DS.registerLab) {
         case 'data': return { cls: 'plx-input-group--data', suffix: 'GB', value: '250', label: 'Storage' };
         case 'icon': return { icon: 'search', value: 'Cross 014', label: 'Search assets' };
         case 'button': return { value: 'Cross 014', label: 'Search assets', end: btn({ side: 'end', label: 'Search', disabled: d }) };
-        case 'select': return { select: true, value: '1,200.00', label: 'Amount', start: '<span class="plx-select plx-select--joined-end-seam plx-input-group__attached plx-input-group__attached--start"><select tabindex="-1" class="plx-input plx-select__control" aria-label="Currency"' + attr(d, 'disabled') + '><option>USD</option><option>EUR</option></select></span>' };
+        case 'select': return { select: true, value: '1,200.00', label: 'Amount', start: '<span class="plx-select plx-select--joined-end-seam plx-input-group__attached plx-input-group__attached--start"><select tabindex="-1" class="plx-input plx-select__control" aria-label="Currency"' + attr(d, 'disabled') + '><option>USD</option><option>EUR</option></select><span class="plx-select__chevron" aria-hidden="true"><span class="plx-icon plx-icon--select-chevron" aria-hidden="true"></span></span></span>' };
         default: return {};
       }
     };
@@ -14043,7 +14043,7 @@ if (window.DS && DS.registerLab) {
           : opt(multi ? 'Crosses' : 'Jordan Avery', !multi ? false : true, true) + opt(multi ? 'Borders' : 'Rachel Ng', !multi, false) + opt(multi ? 'Banners' : 'Ravi Anand', multi, false);
         return '<div class="ds-more-combobox ds-more-combobox--open"><div class="plx-combobox' + (multi ? ' plx-combobox--multiple' : '') + (marks ? ' plx-combobox--marks' : '') + ' is-open' + ex(extraCls) + '">'
           + '<div class="plx-combobox__field plx-input"><input class="plx-combobox__input" role="combobox" tabindex="-1" aria-label="' + (multi ? 'Categories' : 'Owner') + '" aria-expanded="true" aria-autocomplete="list" value="' + (variant === 'async' ? 'Ra' : '') + '" placeholder="' + (multi ? 'Choose categories' : 'Search people') + '">'
-          + '<span class="plx-combobox__chevron" aria-hidden="true"></span></div>'
+          + '<span class="plx-combobox__chevron" aria-hidden="true"><span class="plx-icon plx-icon--select-chevron" aria-hidden="true"></span></span></div>'
           + '<ul class="plx-combobox__list" role="listbox" aria-label="Options"' + (multi ? ' aria-multiselectable="true"' : '') + (content === 'loading' ? ' aria-busy="true"' : '') + '>' + items + '</ul></div></div>';
       },
       labelSelector: '.plx-combobox__input',
@@ -14174,7 +14174,7 @@ if (window.DS && DS.registerLab) {
         }
         var invalid = content === 'invalid', inv = attr(invalid, 'aria-invalid="true"');
         var field = type === 'textarea' ? '<textarea class="plx-input plx-input--textarea plx-input--auto-grow" rows="3" tabindex="-1" aria-label="Description"' + inv + '>' + value + '</textarea>'
-          : type === 'select' ? '<span class="plx-select"><select class="plx-input plx-select__control" tabindex="-1" aria-label="Status"' + inv + '><option>Draft</option><option selected>In review</option></select></span>'
+          : type === 'select' ? '<span class="plx-select"><select class="plx-input plx-select__control" tabindex="-1" aria-label="Status"' + inv + '><option>Draft</option><option selected>In review</option></select><span class="plx-select__chevron" aria-hidden="true"><span class="plx-icon plx-icon--select-chevron" aria-hidden="true"></span></span></span>'
           : '<input type="text" class="plx-input" value="' + (invalid ? '' : value) + '" tabindex="-1" aria-label="Name"' + inv + '>';
         var btn = function (name, label) { return '<button type="button" tabindex="-1" class="plx-button plx-button--secondary plx-button--size-xs plx-button--icon-only" aria-label="' + label + '"><span class="plx-button__icon">' + icon(name) + '</span></button>'; };
         return '<div class="ds-w06c-lab">' + root + '<div class="plx-inline-edit__edit"><div class="plx-inline-edit__control">' + field + '</div>'
@@ -14257,7 +14257,7 @@ if (window.DS && DS.registerLab) {
         var content = (ui && ui.content) || 'text', ro = variant === 'read-only', dis = state === 'disabled', full = variant === 'full';
         // the groups as the component draws them: each in an overflow slot; the full toolbar's last groups in its More formatting menu
         var slot = function (inner) { return '<span data-plx-overflow-item="" class="plx-rich-text-editor__slot"><div class="plx-toolbar__group">' + inner + '</div></span>'; };
-        var mb = function (label, text) { return '<button type="button" tabindex="-1" class="plx-button plx-button--ghost plx-button--size-sm plx-button--caret" aria-haspopup="menu" aria-label="' + label + ': ' + text + '"><span class="plx-button__label">' + text + '</span><span class="plx-button__caret" aria-hidden="true"></span></button>'; };
+        var mb = function (label, text) { return '<button type="button" tabindex="-1" class="plx-button plx-button--ghost plx-button--size-sm plx-button--caret" aria-haspopup="menu" aria-label="' + label + ': ' + text + '"><span class="plx-button__label">' + text + '</span><span class="plx-button__caret" aria-hidden="true"><span class="plx-icon plx-icon--chevron-down" aria-hidden="true"></span></span></button>'; };
         var groups = full
           ? slot(mb('Text style', 'Paragraph')) + slot(mb('Font', 'Font') + mb('Size', 'Size'))
             + slot(tb('Bold', true, 'format-bold') + tb('Italic', false, 'format-italic') + tb('Underline', false, 'format-underlined') + tb('Strikethrough', false, 'format-strikethrough') + tb('Inline code', false, 'code') + tb('Subscript', false, 'subscript') + tb('Superscript', false, 'superscript'))
@@ -14538,7 +14538,7 @@ if (window.DS && DS.registerLab) {
           items += '<li role="option" aria-selected="' + !!x[1] + '" class="plx-combobox__option' + (i === 0 ? ' is-active' : '') + (x[1] ? ' is-selected' : '') + '">' + x[0] + '</li>';
         });
         return '<div class="ds-w07a-select"><div class="plx-combobox plx-country-select' + (open ? ' is-open' : '') + (state === 'disabled' ? ' is-disabled' : '') + ex(extraCls) + '">'
-          + '<div class="plx-combobox__field plx-input' + (state === 'focus' ? ' is-focused' : '') + '"><input tabindex="-1" class="plx-combobox__input" role="combobox" aria-expanded="' + open + '" aria-label="Country or region" value="' + (open ? '' : chosen[0]) + '" placeholder="' + chosen[0] + '"' + attr(state === 'disabled', 'disabled') + '><span class="plx-combobox__chevron" aria-hidden="true"></span></div>'
+          + '<div class="plx-combobox__field plx-input' + (state === 'focus' ? ' is-focused' : '') + '"><input tabindex="-1" class="plx-combobox__input" role="combobox" aria-expanded="' + open + '" aria-label="Country or region" value="' + (open ? '' : chosen[0]) + '" placeholder="' + chosen[0] + '"' + attr(state === 'disabled', 'disabled') + '><span class="plx-combobox__chevron" aria-hidden="true"><span class="plx-icon plx-icon--select-chevron" aria-hidden="true"></span></span></div>'
           + (open ? '<ul class="plx-combobox__list" role="listbox">' + items + '</ul>' : '') + '</div></div>';
       },
       labelSelector: '.plx-combobox__input',
@@ -14773,7 +14773,7 @@ if (window.DS && DS.registerLab) {
         + (o.check !== undefined ? '<input type="checkbox" class="plx-check__input plx-miller-columns__mark" tabindex="-1" aria-hidden="true" inert' + (o.check ? ' checked' : '') + '>' : '')
         + (o.icon ? '<span class="plx-miller-columns__icon" aria-hidden="true">' + icon(o.icon) + '</span>' : '')
         + '<span class="plx-miller-columns__text"><span class="plx-miller-columns__label">' + label + '</span>' + (o.desc ? '<span class="plx-miller-columns__description">' + o.desc + '</span>' : '') + '</span>'
-        + (o.kids ? '<span class="plx-miller-columns__chevron" aria-hidden="true"></span>' : '') + '</li>';
+        + (o.kids ? '<span class="plx-miller-columns__chevron" aria-hidden="true"><span class="plx-icon plx-icon--chevron-right" aria-hidden="true"></span></span>' : '') + '</li>';
     };
     var mCol = function (name, rows, resizable, w) {
       return '<div class="plx-miller-columns__column" data-plx-width="' + (w || 3) + '"><ul class="plx-miller-columns__list" role="listbox" tabindex="-1" aria-label="' + name + '">' + rows + '</ul></div>'
@@ -14809,7 +14809,7 @@ if (window.DS && DS.registerLab) {
         { id: 'fo', label: 'Focus outline color', css: ['outline-color'], part: MITEM + '.is-focus-visible', cat: 'color' },
         { id: 'fw', label: 'Focus outline width', css: ['outline-width'], part: MITEM + '.is-focus-visible', cat: 'border-width' },
         { id: 'ic', label: 'Icon color', css: ['color'], part: MITEM + ':not(.is-selected) .plx-miller-columns__icon', cat: 'color' },
-        { id: 'chb', label: 'Chevron color', css: ['background-color'], part: '.plx-miller-columns__chevron', cat: 'color' },
+        { id: 'chb', label: 'Chevron color', css: ['color'], part: '.plx-miller-columns__chevron', cat: 'color' },
         { id: 'chw', label: 'Chevron size', css: ['inline-size'], show: 'width', part: '.plx-miller-columns__chevron', cat: 'icon' },
         { id: 'dc', label: 'Detail color', css: ['color'], part: '.plx-miller-columns__description', cat: 'color' },
         { id: 'dfs', label: 'Detail size', css: ['font-size'], part: '.plx-miller-columns__description', cat: 'font-size' },
@@ -14899,7 +14899,7 @@ if (window.DS && DS.registerLab) {
         { id: 'fdb', label: 'Disabled field background', css: ['background-color'], part: '.plx-cascader__field', cat: 'color' },
         { id: 'tg', label: 'Gap (path to chevron)', css: ['column-gap'], part: '.plx-cascader__trigger', cat: 'space' },
         { id: 'th', label: 'Path line height', css: ['min-block-size'], show: 'min-height', part: '.plx-cascader__trigger', cat: 'control-height' },
-        { id: 'chb', label: 'Chevron color', css: ['background-color'], part: '.plx-cascader__chevron', cat: 'color' },
+        { id: 'chb', label: 'Chevron color', css: ['color'], part: '.plx-cascader__chevron', cat: 'color' },
         { id: 'chw', label: 'Chevron size', css: ['inline-size'], show: 'width', part: '.plx-cascader__chevron', cat: 'icon' },
         { id: 'pb', label: 'List background', css: ['background-color'], part: POP, cat: 'color' },
         { id: 'pc', label: 'List border color', css: BORDERS, show: 'border-top-color', part: POP, cat: 'color' },
@@ -14952,7 +14952,7 @@ if (window.DS && DS.registerLab) {
         var field = '<div class="plx-cascader__field plx-input' + fieldCls(state) + '"' + (state === 'invalid' ? ' aria-invalid="true"' : '') + '>'
           + (multi ? tag('Paris') + tag('Berlin') : '')
           + '<button type="button" tabindex="-1" class="plx-cascader__trigger" aria-haspopup="dialog" aria-expanded="' + open + '" aria-label="Office"' + (off ? ' disabled' : '') + '>'
-          + '<span class="plx-cascader__value">' + (multi ? '' : 'Europe / France / Lyon') + '</span><span class="plx-cascader__chevron" aria-hidden="true"></span></button></div>';
+          + '<span class="plx-cascader__value">' + (multi ? '' : 'Europe / France / Lyon') + '</span><span class="plx-cascader__chevron" aria-hidden="true"><span class="plx-icon plx-icon--select-chevron" aria-hidden="true"></span></span></button></div>';
         var cols = '<div role="group" aria-label="Office" class="plx-miller-columns plx-cascader__columns' + (multi ? ' plx-miller-columns--checks' : '') + '">'
           + mCol('Office', mRow('Europe', { sel: true, kids: true }) + mRow('Americas', { kids: true }) + mRow('Asia Pacific', { kids: true }), false, 1)
           + mCol('Europe', mRow('France', { sel: true, kids: true }) + mRow('Germany', { kids: true }) + mRow('Italy', { kids: true }), false, 1)
@@ -15090,7 +15090,7 @@ if (window.DS && DS.registerLab) {
         { id: 'ffc', label: 'Focused field border', css: BORDERS, show: 'border-top-color', part: '.plx-time-picker__field', cat: 'color' },
         { id: 'fic', label: 'Invalid field border', css: BORDERS, show: 'border-top-color', part: '.plx-time-picker__field', cat: 'color' },
         { id: 'fdb', label: 'Disabled field background', css: ['background-color'], part: '.plx-time-picker__field', cat: 'color' },
-        { id: 'icb', label: 'Clock icon color', css: ['background-color'], part: '.plx-time-picker__icon', cat: 'color' },
+        { id: 'icb', label: 'Clock icon color', css: ['color'], part: '.plx-time-picker__icon', cat: 'color' },
         { id: 'icw', label: 'Clock icon size', css: ['inline-size'], show: 'width', part: '.plx-time-picker__icon', cat: 'icon' },
         { id: 'lb', label: 'List background', css: ['background-color'], part: '.plx-time-picker__list', cat: 'color' },
         { id: 'lc', label: 'List border color', css: BORDERS, show: 'border-top-color', part: '.plx-time-picker__list', cat: 'color' },
@@ -15138,7 +15138,7 @@ if (window.DS && DS.registerLab) {
       html: function (variant, size, state, extraCls, ui) {
         var c = ui && ui.content, h24 = c === 'h24', off = state === 'disabled', inv = state === 'invalid';
         var show = function (m) { var hh = Math.floor(m / 60), mm = m % 60, p = function (n) { return (n < 10 ? '0' : '') + n; }; return h24 ? p(hh) + ':' + p(mm) : ((hh % 12) || 12) + ':' + p(mm) + ' ' + (hh < 12 ? 'AM' : 'PM'); };
-        var icn = '<span class="plx-time-picker__icon" aria-hidden="true"></span>';
+        var icn = '<span class="plx-time-picker__icon" aria-hidden="true"><span class="plx-icon plx-icon--schedule" aria-hidden="true"></span></span>';
         if (variant === 'segments') {
           var seg = function (label, text, focus, period) { return '<span role="spinbutton" tabindex="-1" aria-label="' + label + '" aria-valuetext="' + text + '" class="plx-time-picker__segment' + (period ? ' plx-time-picker__segment--period' : '') + (focus ? ' is-focus-visible' : '') + '">' + text + '</span>'; };
           return '<div class="plx-time-picker plx-time-picker--segments' + (off ? ' is-disabled' : '') + ex(extraCls) + '"><div role="group" aria-label="Start time" class="plx-time-picker__field plx-time-picker__segments plx-input' + fieldCls(state) + '"' + (inv ? ' aria-invalid="true"' : '') + '>'
@@ -15160,7 +15160,7 @@ if (window.DS && DS.registerLab) {
 
     // ---- RelativeDateInput (<RelativeDateInput>): the row of fields and the resolved dates
     var RD = function (n) { return 'plx-comp-relative-date-input-' + n; };
-    var sel = function (cls, label, opts, val) { return '<span class="plx-select ' + cls + '"><select tabindex="-1" class="plx-input plx-select__control" aria-label="' + label + '">' + opts.map(function (o) { return '<option' + (o === val ? ' selected' : '') + '>' + o + '</option>'; }).join('') + '</select></span>'; };
+    var sel = function (cls, label, opts, val) { return '<span class="plx-select ' + cls + '"><select tabindex="-1" class="plx-input plx-select__control" aria-label="' + label + '">' + opts.map(function (o) { return '<option' + (o === val ? ' selected' : '') + '>' + o + '</option>'; }).join('') + '</select><span class="plx-select__chevron" aria-hidden="true"><span class="plx-icon plx-icon--select-chevron" aria-hidden="true"></span></span></span>'; };
     DS.registerLab('relative-date-input', {
       name: 'Relative date input', title: 'Plenix relative date input', file: 'platform/components/RelativeDateInput/relative-date-input.css', compPrefix: /^plx-comp-relative-date-input-/,
       store: 'plenix-relative-date-input-lab-tokens', sizes: [['default', 'Default', '.plx-relative-date-input']],
@@ -15530,7 +15530,7 @@ if (window.DS && DS.registerLab) {
         }).join('');
         return '<div class="ds-w07c-open"><div class="plx-combobox plx-time-zone-select' + (closed ? '' : ' is-open') + ex(extraCls) + '"><div class="plx-combobox__field plx-input">'
           + '<input class="plx-combobox__input" role="combobox" tabindex="-1" aria-label="Time zone" aria-expanded="' + !closed + '" aria-autocomplete="list" value="' + (closed ? 'Tokyo' : content === 'search' ? '+9' : '') + '" placeholder="Tokyo">'
-          + (closed && off ? '<span class="plx-time-zone-select__field-offset" aria-hidden="true">UTC+09:00</span>' : '') + '<span class="plx-combobox__chevron" aria-hidden="true"></span></div>'
+          + (closed && off ? '<span class="plx-time-zone-select__field-offset" aria-hidden="true">UTC+09:00</span>' : '') + '<span class="plx-combobox__chevron" aria-hidden="true"><span class="plx-icon plx-icon--select-chevron" aria-hidden="true"></span></span></div>'
           + (closed ? '' : '<ul class="plx-combobox__list plx-time-zone-select__list" role="listbox" aria-label="Time zone">' + rows + '</ul>') + '</div></div>';
       },
       labelSelector: '.plx-time-zone-select__city',
@@ -15546,7 +15546,7 @@ if (window.DS && DS.registerLab) {
     var TRIG = '.plx-tree-select__trigger', CHEV = '.plx-tree-select__chevron';
     var treeRow = function (label, level, kids, open, state, multi, active) {
       return '<li role="treeitem" aria-level="' + level + '"' + (kids ? ' aria-expanded="' + open + '"' : '') + (multi ? ' aria-checked="' + state + '"' : ' aria-selected="' + (state === 'true') + '"') + ' tabindex="' + (active ? 0 : -1) + '" class="plx-tree__item' + (!multi && state === 'true' ? ' is-selected' : '') + '">'
-        + '<div class="plx-tree__row' + (!multi && state === 'true' ? ' is-selected' : '') + '" data-plx-level="' + Math.min(level, 12) + '"><span class="plx-tree__toggle' + (open ? ' is-open' : '') + (kids ? '' : ' is-leaf') + '" aria-hidden="true"></span>'
+        + '<div class="plx-tree__row' + (!multi && state === 'true' ? ' is-selected' : '') + '" data-plx-level="' + Math.min(level, 12) + '"><span class="plx-tree__toggle' + (open ? ' is-open' : '') + (kids ? '' : ' is-leaf') + '" aria-hidden="true">' + (kids ? '<span class="plx-icon plx-icon--' + (open ? 'square-minus' : 'square-plus') + '" aria-hidden="true"></span>' : '') + '</span>'
         + (multi ? '<input type="checkbox" class="plx-check__input plx-tree-select__mark" tabindex="-1" aria-hidden="true"' + attr(state === 'true', 'checked') + '>' : '')
         + '<span class="plx-tree__icon">' + icon(open ? 'folder-open' : 'folder') + '</span><span class="plx-tree__label">' + label + '</span></div>';
     };
@@ -15562,7 +15562,7 @@ if (window.DS && DS.registerLab) {
         { id: 'mw', label: 'Widest the field grows', css: ['max-inline-size'], show: 'max-width', cat: 'size' },
         { id: 'pe', label: 'Room for the chevron', css: ['padding-inline-end'], show: 'padding-right', part: TRIG, cat: 'space' },
         { id: 'ph', label: 'Placeholder color', css: ['color'], part: '.plx-tree-select__placeholder', cat: 'color' },
-        { id: 'cc', label: 'Chevron color', css: ['background-color'], part: CHEV, cat: 'color' },
+        { id: 'cc', label: 'Chevron color', css: ['color'], part: CHEV, cat: 'color' },
         { id: 'cs', label: 'Chevron size', css: ['inline-size'], show: 'width', part: CHEV, cat: 'icon' },
         { id: 'ci', label: 'Chevron distance from the end', css: ['inset-inline-end'], show: 'right', part: CHEV, cat: 'space' },
         { id: 'pg', label: 'Space under the search field', css: ['row-gap'], part: '.plx-tree-select__panel', cat: 'space' },
@@ -15587,7 +15587,7 @@ if (window.DS && DS.registerLab) {
         var content = (ui && ui.content) || 'open', multi = variant === 'multiple', open = content === 'open', empty = content === 'empty';
         var value = empty ? '<span class="plx-tree-select__placeholder">Choose a folder</span>' : '<span class="plx-tree-select__value">' + (multi ? 'Crosses, Gold and 1 more' : 'Gold') + '</span>';
         var trig = '<span class="plx-popover-anchor"><button type="button" tabindex="-1" role="combobox" aria-label="Folder" aria-haspopup="dialog" aria-expanded="' + open + '"' + attr(state === 'invalid', 'aria-invalid="true"') + attr(state === 'disabled', 'disabled')
-          + ' class="plx-input plx-tree-select__trigger' + (state === 'focus' ? ' is-focus-visible' : '') + (empty ? ' is-empty' : '') + '">' + value + '<span class="plx-tree-select__chevron" aria-hidden="true"></span></button></span>';
+          + ' class="plx-input plx-tree-select__trigger' + (state === 'focus' ? ' is-focus-visible' : '') + (empty ? ' is-empty' : '') + '">' + value + '<span class="plx-tree-select__chevron" aria-hidden="true"><span class="plx-icon plx-icon--select-chevron" aria-hidden="true"></span></span></button></span>';
         var tree = '<ul role="tree" aria-label="Folder"' + attr(multi, 'aria-multiselectable="true"') + ' class="plx-tree plx-tree-select__tree">'
           + treeRow('Liturgical', 1, true, true, multi ? 'mixed' : 'false', multi, false) + '<ul role="group" class="plx-tree__group">' + treeRow('Crosses', 2, false, false, multi ? 'true' : 'false', multi, false) + '</li>'
           + treeRow('Borders', 2, true, true, multi ? 'mixed' : 'false', multi, false) + '<ul role="group" class="plx-tree__group">' + treeRow('Gold', 3, false, false, 'true', multi, true) + '</li>' + treeRow('Silver', 3, false, false, 'false', multi, false) + '</li></ul></li></ul></li>'
@@ -15854,7 +15854,7 @@ if (window.DS && DS.registerLab) {
       var cls = 'plx-button plx-button--ghost plx-button--size-sm' + (o.only && !o.n ? ' plx-button--icon-only' : '') + (o.caret && !o.only ? ' plx-button--caret' : '') + (o.on || o.n ? ' is-selected' : '') + (o.bar ? ' plx-command-bar__button' : '') + (o.danger ? ' plx-command-bar__danger' : '');
       var badge = o.n ? '<span class="plx-badge plx-badge--active plx-badge--sm">' + o.n + '</span>' : '';
       var text = o.only ? (o.n ? badge : '') : '<span class="plx-button__label">' + label + (badge ? ' ' + badge : '') + '</span>';
-      return '<button type="button" tabindex="-1" class="' + cls + '"' + (o.only ? ' aria-label="' + label + '"' : '') + (o.off ? ' disabled' : '') + '>' + (o.icon ? icon(o.icon) : '') + text + (o.caret && !o.only ? '<span class="plx-button__caret" aria-hidden="true"></span>' : '') + '</button>';
+      return '<button type="button" tabindex="-1" class="' + cls + '"' + (o.only ? ' aria-label="' + label + '"' : '') + (o.off ? ' disabled' : '') + '>' + (o.icon ? icon(o.icon) : '') + text + (o.caret && !o.only ? '<span class="plx-button__caret" aria-hidden="true"><span class="plx-icon plx-icon--chevron-down" aria-hidden="true"></span></span>' : '') + '</button>';
     };
     var group = function (cls, inner) { return '<div class="plx-toolbar__group ' + cls + '">' + inner + '</div>'; };
     var SPACER = '<div class="plx-toolbar__spacer" aria-hidden="true"></div>';
@@ -15995,8 +15995,8 @@ if (window.DS && DS.registerLab) {
 
     // ---- the panels (FilterPanel, SortPanel, GroupPanel): the bar button, or the panel drawn open with its rows
     var FP = function (n) { return 'plx-comp-find-panel-' + n; };
-    var pick = function (label, size, ic) { return '<button type="button" tabindex="-1" class="plx-button plx-button--secondary plx-find-pick plx-find-pick--' + size + ' plx-button--caret">' + (ic ? icon(ic) : '') + '<span class="plx-button__label">' + label + '</span><span class="plx-button__caret" aria-hidden="true"></span></button>'; };
-    var pills = function (list) { return '<button type="button" tabindex="-1" class="plx-button plx-button--secondary plx-find-pick plx-find-pick--value plx-button--caret"><span class="plx-button__label"><span class="plx-find-pick__pills">' + list.map(function (x) { return '<span class="plx-find-pill" data-plx-category="' + x[1] + '">' + x[0] + '</span>'; }).join('') + '</span></span><span class="plx-button__caret" aria-hidden="true"></span></button>'; };
+    var pick = function (label, size, ic) { return '<button type="button" tabindex="-1" class="plx-button plx-button--secondary plx-find-pick plx-find-pick--' + size + ' plx-button--caret">' + (ic ? icon(ic) : '') + '<span class="plx-button__label">' + label + '</span><span class="plx-button__caret" aria-hidden="true"><span class="plx-icon plx-icon--chevron-down" aria-hidden="true"></span></span></button>'; };
+    var pills = function (list) { return '<button type="button" tabindex="-1" class="plx-button plx-button--secondary plx-find-pick plx-find-pick--value plx-button--caret"><span class="plx-button__label"><span class="plx-find-pick__pills">' + list.map(function (x) { return '<span class="plx-find-pill" data-plx-category="' + x[1] + '">' + x[0] + '</span>'; }).join('') + '</span></span><span class="plx-button__caret" aria-hidden="true"><span class="plx-icon plx-icon--chevron-down" aria-hidden="true"></span></span></button>'; };
     var tool = function (label, ic) { return '<button type="button" tabindex="-1" class="plx-button plx-button--ghost plx-button--icon-only' + (ic === 'drag' ? ' plx-find-panel__handle' : '') + '" aria-label="' + label + '">' + icon(ic) + '</button>'; };
     var head = function (title, sub, actions) { return '<div class="plx-find-panel__head"><div class="plx-find-panel__title-row"><span class="plx-find-panel__title"><span class="plx-text plx-text--heading">' + title + '</span>' + tool('About', 'circle-info') + '</span>' + (actions ? '<span class="plx-find-panel__actions">' + actions + '</span>' : '') + '</div>' + (sub ? '<span class="plx-text plx-text--secondary">' + sub + '</span>' : '') + '</div>'; };
     var row = function (inner) { return '<div class="plx-find-panel__row" tabindex="-1">' + inner + '</div>'; };
@@ -16967,7 +16967,7 @@ if (window.DS && DS.registerLab) {
 
     // ---- QueryBuilder (<QueryBuilder>): the switch bar, a group, its rules, a nested group and the text view
     var QB = function (n) { return 'plx-comp-query-builder-' + n; };
-    var sel = function (cls, label, text) { return '<span class="plx-select ' + cls + '"><select class="plx-input plx-select__control" tabindex="-1" aria-label="' + label + '"><option>' + text + '</option></select></span>'; };
+    var sel = function (cls, label, text) { return '<span class="plx-select ' + cls + '"><select class="plx-input plx-select__control" tabindex="-1" aria-label="' + label + '"><option>' + text + '</option></select><span class="plx-select__chevron" aria-hidden="true"><span class="plx-icon plx-icon--select-chevron" aria-hidden="true"></span></span></span>'; };
     var seg = function (label, opts, on) {
       return '<div role="radiogroup" aria-label="' + label + '" class="plx-segmented plx-segmented--sm">' + opts.map(function (o) { return '<button type="button" role="radio" tabindex="-1" aria-checked="' + (o === on) + '" class="plx-segmented__item' + (o === on ? ' is-selected' : '') + '"><span>' + o + '</span></button>'; }).join('') + '</div>';
     };
@@ -20264,7 +20264,7 @@ if (window.DS && DS.registerLab) {
       + '<span class="plx-text plx-text--data plx-command-bar__count">3 items</span></div></div></div>';
     var treeHtml = function (focus) {
       var item = function (label, level, sel, open, kids) {
-        return '<li role="treeitem" aria-level="' + level + '" tabindex="-1" aria-selected="' + !!sel + '"' + (kids ? ' aria-expanded="' + !!open + '"' : '') + ' class="plx-tree__item' + (sel ? ' is-selected' : '') + '"><div class="plx-tree__row' + (sel ? ' is-selected' : '') + '" data-plx-level="' + Math.min(level, 12) + '"><span class="plx-tree__toggle' + (open ? ' is-open' : '') + (kids ? '' : ' is-leaf') + '" aria-hidden="true"></span>'
+        return '<li role="treeitem" aria-level="' + level + '" tabindex="-1" aria-selected="' + !!sel + '"' + (kids ? ' aria-expanded="' + !!open + '"' : '') + ' class="plx-tree__item' + (sel ? ' is-selected' : '') + '"><div class="plx-tree__row' + (sel ? ' is-selected' : '') + '" data-plx-level="' + Math.min(level, 12) + '"><span class="plx-tree__toggle' + (open ? ' is-open' : '') + (kids ? '' : ' is-leaf') + '" aria-hidden="true">' + (kids ? '<span class="plx-icon plx-icon--' + (open ? 'square-minus' : 'square-plus') + '" aria-hidden="true"></span>' : '') + '</span>'
           + '<span class="plx-tree__icon">' + icon(open || sel ? 'folder-open' : 'folder') + '</span><span class="plx-tree__label"><span class="plx-file-browser__target plx-dnd-target">' + label + '</span></span></div>' + (kids ? '<ul role="group" class="plx-tree__group">' + kids + '</ul>' : '') + '</li>';
       };
       return '<div class="plx-file-browser__tree"><div class="plx-resizable plx-file-browser__pane" data-plx-width="240px"><div class="plx-resizable__content"><div class="plx-file-browser__tree-scroll' + (focus ? ' ds-focus' : '') + '" role="region" aria-label="Folders">'
