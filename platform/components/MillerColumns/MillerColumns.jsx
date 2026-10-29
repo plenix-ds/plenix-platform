@@ -43,15 +43,15 @@ import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { Icon } from '../Icon/Icon.jsx';
 import { tokenPx } from '../../patterns/AppShell/AppShell.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { empty: 'No items', resize: 'Resize the {label} column', preview: 'Preview of {label}' };
 const MIN_STEP = 1, MAX_STEP = 6, DEFAULT_STEP = 3;
 const fill = (s, label) => s.replace('{label}', label);
 const hasKids = (it) => !!(it && Array.isArray(it.children));
 
 export const MillerColumns = React.forwardRef(function MillerColumns({ items = [], path, defaultPath = [], onPathChange, onOpen, renderPreview,
   checked, expandOnHover = false, openOnClick = false, resizable = false, columnWidths, onColumnWidthsChange, label, strings, className, ...rest }, ref) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('millerColumns', strings);
   const auto = 'plx-mc' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const [ownPath, setOwnPath] = React.useState(defaultPath);
   const ids = path !== undefined ? path : ownPath;

@@ -60,8 +60,8 @@ import { ColorSwatch } from '../ColorSwatch/ColorSwatch.jsx';
 import { NumberInput } from '../NumberInput/NumberInput.jsx';
 import { Field } from '../Field/Field.jsx';
 import { Icon } from '../Icon/Icon.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { chosen: '{label}:', unavailable: 'Out of stock', quantity: 'Quantity', quantityOf: 'Quantity, {product}', unavailableName: '{label}, out of stock', none: 'None chosen' };
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const labelOf = (v) => (v.label !== undefined ? v.label : String(v.value));
 
@@ -82,7 +82,7 @@ function ErrorLine({ id, children }) {
 
 export function ProductOptions({ options = [], value = {}, onChange, quantity, onQuantityChange, min = 1, max = 99, product, sizeGuide,
   swatchLabels = false, errors = {}, disabled = false, strings, className, ...rest }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('productOptions', strings);
   const uid = useUid('plx-product-options');
   const pick = (name, v) => { if (onChange) onChange(Object.assign({}, value, { [name]: v }), name); };
   let guided = false;

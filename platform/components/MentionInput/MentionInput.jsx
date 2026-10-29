@@ -18,10 +18,11 @@ import { RichTextEditor } from '../RichTextEditor/RichTextEditor.jsx';
 import { EntityPicker } from '../EntityPicker/EntityPicker.jsx';
 import { Button } from '../Button/Button.jsx';
 import { cx } from '../../utils/cx.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export const MentionInput = React.forwardRef(function MentionInput({ mode = 'textarea', label, value = '', onChange, defaultValue = '', options = [], loadOptions,
   onMention, disabled = false, readOnly = false, strings, editorStrings, pickerStrings, className }, ref) {
-  const t = Object.assign({ add: 'Add mention', choose: 'Choose a person to mention' }, strings);
+  const t = useStrings('mentionInput', strings);
   const input = React.useRef(null), picker = React.useRef(null), range = React.useRef({ start: value.length, end: value.length });
   const [open, setOpen] = React.useState(false), [query, setQuery] = React.useState('');
   React.useImperativeHandle(ref, () => input.current, [mode]);

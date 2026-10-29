@@ -49,8 +49,7 @@ import { Icon } from '../Icon/Icon.jsx';
 import { Kbd } from '../Kbd/Kbd.jsx';
 import { Button } from '../Button/Button.jsx';
 import { SearchField } from '../SearchField/SearchField.jsx';
-
-const STRINGS = { label: 'Commands', placeholder: 'Type a command or search', empty: 'No results for “{query}”', loading: 'Loading', back: 'Back', results: '{count} results' };
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 // how well an item matches the text: 4 the label starts with it, 3 a word of the label does, 2 the label contains it,
 // 1 the keywords, description or group do, 0 no match
@@ -66,7 +65,7 @@ function score(item, q) {
 
 export const CommandMenu = React.forwardRef(function CommandMenu({ items = [], label, placeholder, query: queryProp, onQueryChange, filter = true,
   loading = false, onSelect, autoFocus = false, strings, className, ...rest }, ref) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('commandMenu', strings);
   const id = useUid('plx-cmd');
   const input = React.useRef(null);
   React.useImperativeHandle(ref, () => input.current);

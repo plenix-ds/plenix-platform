@@ -37,14 +37,14 @@ import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { Button } from '../Button/Button.jsx';
 import { Menu } from '../Menu/Menu.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { more: 'More {label} options' };
 const PLACES = ['bottom-start', 'bottom-end', 'top-start', 'top-end'];
 
 export const SplitButton = React.forwardRef(function SplitButton({ label, onClick, menuLabel, children, variant = 'secondary', size = 'md', icon,
   disabled = false, placement = 'bottom-end', strings, className }, ref) {
   devWarn('SplitButton', { variant, size }, { variant: ['secondary','primary'], size: ['md','sm','xs','2xs','lg'] });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('splitButton', strings);
   const v = variant === 'primary' ? 'primary' : 'secondary';
   const more = menuLabel || t.more.replace('{label}', typeof label === 'string' ? label.toLowerCase() : '').replace(/\s+/g, ' ');
   return (

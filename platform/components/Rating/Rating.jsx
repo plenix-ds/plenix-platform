@@ -18,8 +18,11 @@
 import React from 'react';
 import { arrowStep } from '../../utils/direction.js';
 import { cx } from '../../utils/cx.js';
+import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
 
-export function Rating({ value = 0, onChange, max = 5, label = 'Rating', readOnly = false, className, ...rest }) {
+export function Rating({ value = 0, onChange, max = 5, label, readOnly = false, className, ...rest }) {
+  const tw = useStrings('rating'), loc = useLocale();
+  if (label === undefined) label = tw.label;
   const stars = Array.from({ length: max }, (_, i) => i + 1);
   const starRefs = React.useRef({});
   const focusNext = React.useRef(0);   // the star the keyboard chose: focus moves there once the value has changed
@@ -30,7 +33,7 @@ export function Rating({ value = 0, onChange, max = 5, label = 'Rating', readOnl
   }, [value]);
   if (readOnly) {
     return (
-      <span className={cx('plx-rating', 'plx-rating--read-only', className)} role="img" aria-label={label + ': ' + value + ' of ' + max} {...rest}>
+      <span className={cx('plx-rating', 'plx-rating--read-only', className)} role="img" aria-label={tw.value.replace('{label}', label).replace('{value}', value).replace('{max}', max)} {...rest}>
         {stars.map((n) => <span key={n} className={cx('plx-rating__star', n <= value && 'plx-rating__star--on')} aria-hidden="true">★</span>)}
       </span>
     );
@@ -48,7 +51,7 @@ export function Rating({ value = 0, onChange, max = 5, label = 'Rating', readOnl
   return (
     <span className={cx('plx-rating', className)} role="radiogroup" aria-label={label} {...rest}>
       {stars.map((n) => (
-        <button type="button" key={n} ref={(el) => { starRefs.current[n] = el; }} role="radio" aria-checked={n === value} aria-label={n + (n === 1 ? ' star' : ' stars')}
+        <button type="button" key={n} ref={(el) => { starRefs.current[n] = el; }} role="radio" aria-checked={n === value} aria-label={loc.t('rating.stars', { count: n })}
           tabIndex={(value ? n === value : n === 1) ? 0 : -1} className={cx('plx-rating__star', n <= value && 'plx-rating__star--on')}
           onClick={() => choose(n)} onKeyDown={(e) => onKey(e, n)}>★</button>
       ))}

@@ -40,8 +40,8 @@ import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
 import { gridPx } from '../../utils/grid.js';
 import { useReadOnly, readOnlyProps } from '../../providers/ReadOnly.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { minimum: 'Minimum', maximum: 'Maximum' };
 const MAX_STEP_MARKS = 12;
 
 // the marks to draw: [{ value, label }] inside [min, max]
@@ -61,7 +61,7 @@ export function Slider({ label, value, min = 0, max = 100, step = 1, unit = '', 
   const id = useUid('plx-slider');
   const locked = useReadOnly(readOnly);
   const lockOf = (props) => readOnlyProps(locked, props, { pointer: true });   // a press focuses, the keys do not move it
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('slider', strings);
   const drawn = marksOf(marks, min, max, step);
   const custom = range || drawn.length > 0;
   const span = React.useRef(null);
