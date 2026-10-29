@@ -622,6 +622,11 @@
       "$value": "{plx-sys.radius-control}",
       "$type": "dimension"
     },
+    "button-label-clip-margin": {
+      "$value": "{plx-ref.size-4px}",
+      "$type": "dimension",
+      "$description": "Button label: how far past its trimmed box the label may draw before it is clipped, so a descender (g, y) is not cut (the label box is trimmed to the letters: text-box trim-both cap alphabetic; owner, 2026-10-29, #610)."
+    },
     "button-target-inset-block": {
       "$value": "0px",
       "$type": "dimension",

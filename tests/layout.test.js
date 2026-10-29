@@ -74,6 +74,11 @@ if (changed.wants({ units: ['components/Isolate', 'components/DataGrid', 'compon
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'ids-rtl-606.test.js')], { stdio: 'inherit', env: process.env });
   if (result.status !== 0) process.exit(result.status || 1);
 }
+// button label centering and the Danger pressed step (issue 610): its own test, when the Button changed
+if (changed.wants({ units: ['components/Button'] })) {
+  const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'button-610.test.js')], { stdio: 'inherit', env: process.env });
+  if (result.status !== 0) process.exit(result.status || 1);
+}
 // the self-hosting archive draws icons with no network (issue 284): its own test, when the Icon component changed
 if (changed.wants({ units: ['components/Icon'] })) {
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'icon-offline-archive-284.test.js')], { stdio: 'inherit', env: process.env });

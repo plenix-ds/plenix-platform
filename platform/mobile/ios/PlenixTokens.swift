@@ -180,7 +180,7 @@ public enum Plenix {
         public static let selectedBorder = Plenix.color(light: 0xFFC8DFF7, dark: 0xFF2A6FDB)
         public static let selectedContent = Plenix.color(light: 0xFF005A9E, dark: 0xFFC8DFF7)
         public static let actionDangerBackgroundHover = Plenix.color(light: 0xFF990000, dark: 0xFF990000)
-        public static let actionDangerBackgroundPressed = Plenix.color(light: 0xFF990000, dark: 0xFF990000)
+        public static let actionDangerBackgroundPressed = Plenix.color(light: 0xFF7A0000, dark: 0xFF7A0000)
         public static let accentFieldBackground = Plenix.color(light: 0xFF1F5BB8, dark: 0xFF444444)
         public static let accentFieldBorder = Plenix.color(light: 0xFFA2C0E3, dark: 0xFF8E9094)
         public static let accentFieldPlaceholder = Plenix.color(light: 0xFFA2C0E3, dark: 0xFFD0D0D0)

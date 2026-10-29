@@ -64,7 +64,7 @@
 .plx-button__stack{display:inline-grid;min-inline-size:0;}
 .plx-button__label--waiting{grid-area:1 / 1;opacity:0;}
 .plx-button__icon--over{align-self:center;grid-area:1 / 1;justify-self:center;}
-.plx-button__label{min-inline-size:0;overflow-x:hidden;overflow-y:hidden;text-overflow:ellipsis;}
+.plx-button__label{min-inline-size:0;overflow-clip-margin:var(--plx-comp-button-label-clip-margin);overflow-x:clip;overflow-y:clip;text-box:trim-both cap alphabetic;text-overflow:ellipsis;}
 /* truncate: the label fills the button, starts at its start edge and ends in an ellipsis (a long choice in a list) */
 .plx-button__label--truncate{flex-grow:1;text-align:start;white-space:nowrap;}
 /* stacked label: the label's lines stack, start-aligned and wrapping (a card-like suggestion); the gap is a context hook */
