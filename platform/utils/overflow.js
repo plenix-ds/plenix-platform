@@ -42,18 +42,31 @@ export function useOverflow(listRef, count, key) {
 export const splitAt = (items, fit, more) => items.slice(0, fit).concat(more ? [more] : [], items.slice(fit));
 
 /* useTruncated(ref) (batch 270): true while the element's text is cut short (shown with an ellipsis), so its full text can be offered in a
-   Tooltip: cut across one line (wider than the box) or cut after several lines (taller than the box, issue 502); checked again whenever the element's size changes. */
-export function useTruncated(ref) {
+   Tooltip: cut across one line (wider than the box) or cut after several lines (taller than the box, issue 502); checked again whenever the element's size changes.
+   An <input> is cut when its value is wider than its box (issue 558); it is checked again as people type. `key` (optional): anything that changes the text,
+   such as a value set from outside; it is checked again when it changes. `on` (default true): false checks nothing and returns false. */
+export function useTruncated(ref, key, on = true) {
   const [cut, setCut] = React.useState(false);
   React.useLayoutEffect(() => {
     const el = ref.current;
-    if (!el) return undefined;
-    const check = () => setCut(el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1);
+    if (!el || !on) { setCut(false); return undefined; }
+    const line = el.tagName === 'INPUT';
+    const check = () => setCut(el.scrollWidth > el.clientWidth + 1 || (!line && el.scrollHeight > el.clientHeight + 1));
     check();
-    if (typeof ResizeObserver === 'undefined') return undefined;
-    const ro = new ResizeObserver(check);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, [ref]);
+    if (line) el.addEventListener('input', check);
+    const ro = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(check);
+    if (ro) ro.observe(el);
+    return () => { if (ro) ro.disconnect(); if (line) el.removeEventListener('input', check); };
+  }, [ref, key, on]);
   return cut;
+}
+
+/* inBar(el) (issue 558): the element sits in a bar or a header that sizes its fields (a "content" pattern of layout.json: layout-modes.css gives it
+   --plx-comp-field-context-content-max-inline-size). useInBar(ref, not): the same, read once the element is on the page; false inside an element that
+   matches the selector `not` (the field is part of a larger control there, such as an InputGroup). */
+export const inBar = (el) => !!el && typeof getComputedStyle === 'function' && getComputedStyle(el).getPropertyValue('--plx-comp-field-context-content-max-inline-size').trim() !== '';
+export function useInBar(ref, not) {
+  const [bar, setBar] = React.useState(false);
+  React.useLayoutEffect(() => { const el = ref.current; setBar(inBar(el) && !(not && el.closest(not))); }, [ref, not]);
+  return bar;
 }

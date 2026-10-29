@@ -13710,7 +13710,8 @@ const Link = exports.Link = /*#__PURE__*/_react.default.forwardRef(function Link
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.splitAt = void 0;
+exports.splitAt = exports.inBar = void 0;
+exports.useInBar = useInBar;
 exports.useOverflow = useOverflow;
 exports.useTruncated = useTruncated;
 var _react = _interopRequireDefault(require("react"));
@@ -13764,21 +13765,44 @@ function useOverflow(listRef, count, key) {
 const splitAt = (items, fit, more) => items.slice(0, fit).concat(more ? [more] : [], items.slice(fit));
 
 /* useTruncated(ref) (batch 270): true while the element's text is cut short (shown with an ellipsis), so its full text can be offered in a
-   Tooltip: cut across one line (wider than the box) or cut after several lines (taller than the box, issue 502); checked again whenever the element's size changes. */
+   Tooltip: cut across one line (wider than the box) or cut after several lines (taller than the box, issue 502); checked again whenever the element's size changes.
+   An <input> is cut when its value is wider than its box (issue 558); it is checked again as people type. `key` (optional): anything that changes the text,
+   such as a value set from outside; it is checked again when it changes. `on` (default true): false checks nothing and returns false. */
 exports.splitAt = splitAt;
-function useTruncated(ref) {
+function useTruncated(ref, key, on = true) {
   const [cut, setCut] = _react.default.useState(false);
   _react.default.useLayoutEffect(() => {
     const el = ref.current;
-    if (!el) return undefined;
-    const check = () => setCut(el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1);
+    if (!el || !on) {
+      setCut(false);
+      return undefined;
+    }
+    const line = el.tagName === 'INPUT';
+    const check = () => setCut(el.scrollWidth > el.clientWidth + 1 || !line && el.scrollHeight > el.clientHeight + 1);
     check();
-    if (typeof ResizeObserver === 'undefined') return undefined;
-    const ro = new ResizeObserver(check);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, [ref]);
+    if (line) el.addEventListener('input', check);
+    const ro = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(check);
+    if (ro) ro.observe(el);
+    return () => {
+      if (ro) ro.disconnect();
+      if (line) el.removeEventListener('input', check);
+    };
+  }, [ref, key, on]);
   return cut;
+}
+
+/* inBar(el) (issue 558): the element sits in a bar or a header that sizes its fields (a "content" pattern of layout.json: layout-modes.css gives it
+   --plx-comp-field-context-content-max-inline-size). useInBar(ref, not): the same, read once the element is on the page; false inside an element that
+   matches the selector `not` (the field is part of a larger control there, such as an InputGroup). */
+const inBar = el => !!el && typeof getComputedStyle === 'function' && getComputedStyle(el).getPropertyValue('--plx-comp-field-context-content-max-inline-size').trim() !== '';
+exports.inBar = inBar;
+function useInBar(ref, not) {
+  const [bar, setBar] = _react.default.useState(false);
+  _react.default.useLayoutEffect(() => {
+    const el = ref.current;
+    setBar(inBar(el) && !(not && el.closest(not)));
+  }, [ref, not]);
+  return bar;
 }
   } },
   "platform/components/Field/Field.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/describedBy.js":"platform/utils/describedBy.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -14597,6 +14621,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The box is as wide as the widest option. The list opens in the browser's top layer, below the field (or above it near an
      edge), at least as wide as the field, placed like a Menu: no dialog, drawer, table cell or scroll area clips it.
      Inside a Field, the label, description and error are connected for you.
+     Input in a bar or a header (issue 558; not inside an InputGroup): a text value (text, search, email, url, tel; never a
+       password) wider than the field ends in an ellipsis and shows in full in a tooltip on hover and focus, only while it
+       is cut. The Input then sits in the Tooltip's wrapper (plx-input__tip), which takes its place in the bar.
      Every appearance keeps the same states: hover and focus change only the color of its border, never a ring outside
      it; invalid draws a 2px danger border (the border and a line inside it, so the value does not move) on the lightest
      red fill; read-only and disabled keep their fills.
@@ -14636,6 +14663,17 @@ const TYPE_HINTS = {
 
 // the appearance class (outline is the base look: no class)
 const look = appearance => appearance === 'filled' && 'plx-input--filled';
+
+// the types whose value is text that a bar can cut (issue 558); never a password
+const TEXT_TYPES = {
+  text: 1,
+  search: 1,
+  email: 1,
+  url: 1,
+  tel: 1
+};
+// the Tooltip around a text Input in a bar: its width class follows the Input's (fixed: xs, sm, md)
+const tipWidth = width => width === 'xs' || width === 'sm' || width === 'md' ? 'plx-input__tip--fixed' : width === 'lg' || width === 'fill' ? 'plx-input__tip--' + width : null;
 const Input = exports.Input = /*#__PURE__*/_react.default.forwardRef(function Input({
   invalid,
   width,
@@ -14646,18 +14684,40 @@ const Input = exports.Input = /*#__PURE__*/_react.default.forwardRef(function In
   className,
   type = 'text',
   readOnly,
+  onInput,
   ...rest
 }, ref) {
   // its own readOnly, else the nearest read-only region's (providers/ReadOnly.jsx)
   const locked = (0, _ReadOnly.useReadOnly)(readOnly);
-  return /*#__PURE__*/_react.default.createElement("input", _extends({
-    ref: ref,
+  const own = _react.default.useRef(null);
+  const setRef = _react.default.useCallback(el => {
+    own.current = el;
+    if (typeof ref === 'function') ref(el);else if (ref) ref.current = el;
+  }, [ref]);
+  // in a bar (issue 558) a text Input whose value is cut shows its whole value in a Tooltip on hover and focus; it is wrapped once it is known to sit in one
+  const bar = (0, _overflow.useInBar)(own, '.plx-input-group') && !!TEXT_TYPES[type];
+  const [, redraw] = _react.default.useReducer(n => n + 1, 0);
+  const cut = (0, _overflow.useTruncated)(own, bar ? 'bar|' + rest.value : '', bar);
+  const field = /*#__PURE__*/_react.default.createElement("input", _extends({
+    ref: setRef,
     type: type,
     readOnly: locked || undefined,
     size: size === 'sm' || size === 'md' ? undefined : size,
-    className: (0, _cx.cx)('plx-input', size === 'sm' && 'plx-input--size-sm', width && 'plx-input--width-' + width, data && 'plx-input--data', emphasis && 'plx-input--emphasis', look(appearance), className),
-    "aria-invalid": invalid || undefined
+    className: (0, _cx.cx)('plx-input', size === 'sm' && 'plx-input--size-sm', width && 'plx-input--width-' + width, data && 'plx-input--data', emphasis && 'plx-input--emphasis', bar && 'plx-input__bar-text', look(appearance), className),
+    "aria-invalid": invalid || undefined,
+    onInput: bar ? e => {
+      redraw();
+      if (onInput) onInput(e);
+    } : onInput
   }, TYPE_HINTS[type], rest));
+  if (!bar) return field;
+  const text = rest.value !== undefined && rest.value !== null ? String(rest.value) : own.current ? own.current.value : String(rest.defaultValue || '');
+  return /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+    content: text,
+    disabled: !cut || !text,
+    describe: false,
+    className: (0, _cx.cx)('plx-input__tip', tipWidth(width))
+  }, field);
 });
 
 // can the browser size a text area to its content? (field-sizing: Chrome 123, Safari 26)
@@ -25933,7 +25993,7 @@ var _default = exports.default = {
   }
 };
   } },
-  "platform/components/SearchField/SearchField.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/clock":"platform/dist/icons/plenix/clock.js","plenix-platform/icons/plenix/close":"platform/dist/icons/plenix/close.js","plenix-platform/icons/plenix/search":"platform/dist/icons/plenix/search.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/SearchField/SearchField.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/overflow.js":"platform/utils/overflow.js","plenix-platform/icons/plenix/clock":"platform/dist/icons/plenix/clock.js","plenix-platform/icons/plenix/close":"platform/dist/icons/plenix/close.js","plenix-platform/icons/plenix/search":"platform/dist/icons/plenix/search.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -25950,6 +26010,7 @@ var _Kbd = require("../Kbd/Kbd.jsx");
 var _Loading = require("../Loading/Loading.jsx");
 var _Tooltip = require("../Tooltip/Tooltip.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _overflow = require("../../utils/overflow.js");
 var _clock = _interopRequireDefault(require("plenix-platform/icons/plenix/clock"));
 var _close = _interopRequireDefault(require("plenix-platform/icons/plenix/close"));
 var _search = _interopRequireDefault(require("plenix-platform/icons/plenix/search"));
@@ -25994,6 +26055,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      ...rest: other attributes go on the input (inputMode, enterKeyHint, autoComplete… override the search defaults)
    Behavior:
      The clear button shows only while there is text.
+     In a bar or a header (issue 558) text wider than the field ends in an ellipsis and shows in full in a tooltip on hover
+       and focus, only while it is cut and the list is closed.
      The shortcut hint shows only while the field is empty.
      It is type="search" with inputMode "search" and enterKeyHint "search": a touch keyboard shows a Search key.
      With suggestions or recent searches it is a combobox (the ARIA pattern): the list opens on focus and on typing, under
@@ -26164,6 +26227,9 @@ const SearchInput = /*#__PURE__*/_react.default.forwardRef(function SearchInput(
       removeRecent(active);
     } else if (!open && e.key.length === 1) setOpen(true);
   };
+  // in a bar (issue 558) search text that is cut shows in full in a Tooltip on hover and focus (not while the list is open under it)
+  const bar = (0, _overflow.useInBar)(input);
+  const cut = (0, _overflow.useTruncated)(input, text, bar) && !!text;
   const optId = i => auto + '-o' + i;
   const cellId = (i, c) => auto + '-o' + i + (c ? '-x' : '');
   const comboProps = hasList ? {
@@ -26186,7 +26252,12 @@ const SearchInput = /*#__PURE__*/_react.default.forwardRef(function SearchInput(
     label: t.searching
   }) : /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
     name: _search.default
-  })), /*#__PURE__*/_react.default.createElement("input", _extends({
+  })), /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+    content: text,
+    disabled: !cut || shown,
+    describe: false,
+    className: "plx-search__tip"
+  }, /*#__PURE__*/_react.default.createElement("input", _extends({
     ref: input,
     size: size === 'sm' || size === 'md' ? undefined : size,
     type: "search",
@@ -26206,7 +26277,7 @@ const SearchInput = /*#__PURE__*/_react.default.forwardRef(function SearchInput(
       if (hasList) setOpen(true);
       if (onFocus) onFocus(e);
     }
-  }, comboProps, rest)), onClear && value ? /*#__PURE__*/_react.default.createElement("button", {
+  }, comboProps, rest))), onClear && value ? /*#__PURE__*/_react.default.createElement("button", {
     type: "button",
     className: "plx-search__clear",
     "aria-label": t.clear,
@@ -38527,7 +38598,7 @@ function SegmentedControl({
   }, segments);
 }
   } },
-  "platform/components/Combobox/Combobox.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/dataValue.js":"platform/utils/dataValue.js","../../utils/format.js":"platform/utils/format.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","plenix-platform/icons/plenix/select-chevron":"platform/dist/icons/plenix/select-chevron.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Combobox/Combobox.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/dataValue.js":"platform/utils/dataValue.js","../../utils/format.js":"platform/utils/format.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/overflow.js":"platform/utils/overflow.js","plenix-platform/icons/plenix/select-chevron":"platform/dist/icons/plenix/select-chevron.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -38544,6 +38615,8 @@ var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _dataValue = require("../../utils/dataValue.js");
 var _format = require("../../utils/format.js");
 var _Icon = require("../Icon/Icon.jsx");
+var _Tooltip = require("../Tooltip/Tooltip.jsx");
+var _overflow = require("../../utils/overflow.js");
 var _selectChevron = _interopRequireDefault(require("plenix-platform/icons/plenix/select-chevron"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Combobox
@@ -38594,6 +38667,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        exact name offers nothing (no duplicate, no Create).
      Checkbox select (multiple with marks="checkbox"): every option stays listed and choosing one toggles it.
      A tag's remove button removes its value.
+     A single choice whose label is wider than the field ends in an ellipsis and shows the whole label in a tooltip on hover
+       and focus, only while it is cut (issue 558); while the list is open the tooltip sits above the field.
      With loadOptions, each pause in typing loads once; an answer that arrives after a newer request is dropped. The list
        is busy (aria-busy) while it loads, the number of options is announced politely, a failed load says so in the list.
      Options loaded earlier keep naming the chosen values when a later load no longer has them.
@@ -38775,24 +38850,14 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
     }
   };
   const optId = i => auto + '-o' + i;
-  return /*#__PURE__*/_react.default.createElement("div", {
-    ref: wrap,
-    className: (0, _cx.cx)('plx-combobox', size === 'sm' && 'plx-combobox--size-sm', width && 'plx-combobox--width-' + width, multiple && 'plx-combobox--multiple', marks && 'plx-combobox--marks', open && 'is-open', disabled && 'is-disabled', className)
-  }, /*#__PURE__*/_react.default.createElement("div", {
-    className: (0, _cx.cx)('plx-combobox__field', 'plx-input', asData && 'plx-input--data', disabled && 'is-disabled'),
-    "aria-invalid": invalid || undefined,
-    onClick: () => {
-      if (!disabled && input.current) input.current.focus();
-    }
-  }, multiple ? chosen.map(v => {
-    const o = optionOf(v);
-    const t = o ? o.label : v;
-    return /*#__PURE__*/_react.default.createElement(_Tag.Tag, {
-      key: v,
-      onRemove: () => onChange(chosen.filter(x => x !== v)),
-      removeLabel: words.removeItem.replace('{label}', t)
-    }, t);
-  }) : null, /*#__PURE__*/_react.default.createElement("input", _extends({
+  // a single choice whose label is cut (the box is narrower than it, issue 558): its full text goes in a Tooltip on hover and focus. While the list is
+  // open the field shows the typed text, so the cut measured while it was closed stays; the Tooltip then sits above the field, clear of the list
+  const label1 = !multiple && current ? String(current.label) : '';
+  const cutNow = (0, _overflow.useTruncated)(input, open ? 'open' : label1, !multiple),
+    cutShut = _react.default.useRef(false);
+  if (!open) cutShut.current = cutNow;
+  const cut = !!label1 && (open ? cutShut.current : cutNow) && !text.trim();
+  const field = /*#__PURE__*/_react.default.createElement("input", _extends({
     ref: input,
     id: id,
     size: size === 'sm' || size === 'md' ? undefined : size,
@@ -38813,7 +38878,31 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
     },
     onFocus: () => setOpen(true),
     onKeyDown: onKey
-  }, rest)), /*#__PURE__*/_react.default.createElement("span", {
+  }, rest));
+  return /*#__PURE__*/_react.default.createElement("div", {
+    ref: wrap,
+    className: (0, _cx.cx)('plx-combobox', size === 'sm' && 'plx-combobox--size-sm', width && 'plx-combobox--width-' + width, multiple && 'plx-combobox--multiple', marks && 'plx-combobox--marks', open && 'is-open', disabled && 'is-disabled', className)
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-combobox__field', 'plx-input', asData && 'plx-input--data', disabled && 'is-disabled'),
+    "aria-invalid": invalid || undefined,
+    onClick: () => {
+      if (!disabled && input.current) input.current.focus();
+    }
+  }, multiple ? chosen.map(v => {
+    const o = optionOf(v);
+    const t = o ? o.label : v;
+    return /*#__PURE__*/_react.default.createElement(_Tag.Tag, {
+      key: v,
+      onRemove: () => onChange(chosen.filter(x => x !== v)),
+      removeLabel: words.removeItem.replace('{label}', t)
+    }, t);
+  }) : null, multiple ? field : /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+    content: label1,
+    disabled: !cut,
+    describe: false,
+    placement: open ? 'top' : 'bottom',
+    className: "plx-combobox__tip"
+  }, field), /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-combobox__chevron",
     "aria-hidden": "true"
   }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
@@ -56758,7 +56847,7 @@ const Calendar = exports.Calendar = /*#__PURE__*/_react.default.forwardRef(funct
   }, (_, i) => monthGrid(shiftMonth(shown, i), i))));
 });
   } },
-  "platform/components/DatePicker/DatePicker.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","plenix-platform/icons/plenix/calendar":"platform/dist/icons/plenix/calendar.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/DatePicker/DatePicker.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/overflow.js":"platform/utils/overflow.js","../Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","plenix-platform/icons/plenix/calendar":"platform/dist/icons/plenix/calendar.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -56772,6 +56861,8 @@ var _Button = require("../Button/Button.jsx");
 var _Input = require("../Input/Input.jsx");
 var _InputGroup = require("../InputGroup/InputGroup.jsx");
 var _Popover = require("../Popover/Popover.jsx");
+var _Tooltip = require("../Tooltip/Tooltip.jsx");
+var _overflow = require("../../utils/overflow.js");
 var _Calendar = require("../Calendar/Calendar.jsx");
 var _calendar = _interopRequireDefault(require("plenix-platform/icons/plenix/calendar"));
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
@@ -56827,6 +56918,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        as the range as the pointer or the keys move.
      Date-time: the time field (the browser's own, typed or stepped) sits beside the date with the time zone after it;
        choosing a date keeps the time, or takes defaultTime.
+     A date or a range wider than its box (a narrow bar, issue 558) ends in an ellipsis and shows in full in a tooltip on
+       hover and focus, only while it is cut and the calendar is closed.
    Notes:
      The date field is as wide as its form (wider for a range) and the time field as wide as a time with its zone
        (--plx-comp-date-picker-*-width).
@@ -57079,6 +57172,7 @@ const DatePicker = exports.DatePicker = /*#__PURE__*/_react.default.forwardRef(f
     end: null
   } : datePart;
   const firstMonth = (range ? shown && shown.start : shown) || undefined;
+  const cut = (0, _overflow.useTruncated)(input, text); // the date (or range) is cut (issue 558): its full text goes in a Tooltip on hover and focus
   const field = /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-date-picker__field"
   }, /*#__PURE__*/_react.default.createElement("div", {
@@ -57090,6 +57184,11 @@ const DatePicker = exports.DatePicker = /*#__PURE__*/_react.default.forwardRef(f
         input.current.focus();
       }
     }
+  }, /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+    content: text,
+    disabled: !cut || !text || open,
+    describe: false,
+    className: "plx-date-picker__tip"
   }, /*#__PURE__*/_react.default.createElement("input", {
     ref: input,
     id: id,
@@ -57116,7 +57215,7 @@ const DatePicker = exports.DatePicker = /*#__PURE__*/_react.default.forwardRef(f
         if (!open) toggle();
       }
     }
-  }), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+  })), /*#__PURE__*/_react.default.createElement(_Button.Button, {
     variant: "ghost",
     size: "2xs",
     iconOnly: true,
@@ -58367,7 +58466,7 @@ const EntityPicker = exports.EntityPicker = /*#__PURE__*/_react.default.forwardR
   })) : null))) : null);
 });
   } },
-  "platform/components/TimePicker/TimePicker.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/floating.js":"platform/utils/floating.js","../../utils/digits.js":"platform/utils/digits.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","plenix-platform/icons/plenix/schedule":"platform/dist/icons/plenix/schedule.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/TimePicker/TimePicker.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/floating.js":"platform/utils/floating.js","../../utils/digits.js":"platform/utils/digits.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/overflow.js":"platform/utils/overflow.js","plenix-platform/icons/plenix/schedule":"platform/dist/icons/plenix/schedule.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -58382,6 +58481,8 @@ var _floating = require("../../utils/floating.js");
 var _digits = require("../../utils/digits.js");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _Icon = require("../Icon/Icon.jsx");
+var _Tooltip = require("../Tooltip/Tooltip.jsx");
+var _overflow = require("../../utils/overflow.js");
 var _schedule = _interopRequireDefault(require("plenix-platform/icons/plenix/schedule"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · TimePicker
@@ -58424,6 +58525,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        it (the minute by step), Home and End go to its first and last value, digits type it (two digits move on to the next
        segment), A and P set the period, Backspace clears it. The value changes once every segment is filled.
      Times outside min and max are not offered and are brought back inside when typed.
+     List: a time wider than the field (a narrow bar, issue 558) ends in an ellipsis and shows in full in a tooltip on hover
+       and focus, only while it is cut and the list is closed.
    Notes:
      For a date and a time together, place a date picker beside it. For a duration, use a number input with a unit.
      Show the time zone in the description when people in several zones use the data.
@@ -58658,12 +58761,19 @@ const ListPicker = /*#__PURE__*/_react.default.forwardRef(function ListPicker({
     }
   };
   const optId = i => auto + '-o' + i;
+  const shownText = text !== null ? text : show(mins, cycle, t, digits);
+  const cut = (0, _overflow.useTruncated)(input, shownText); // the time is cut (issue 558): its full text goes in a Tooltip on hover and focus
   return /*#__PURE__*/_react.default.createElement("div", {
     ref: wrap,
     className: cls
   }, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-time-picker__field plx-input",
     "aria-invalid": invalid || undefined
+  }, /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+    content: shownText,
+    disabled: !cut || !shownText || open,
+    describe: false,
+    className: "plx-time-picker__tip"
   }, /*#__PURE__*/_react.default.createElement("input", _extends({
     ref: input,
     id: id,
@@ -58677,7 +58787,7 @@ const ListPicker = /*#__PURE__*/_react.default.forwardRef(function ListPicker({
     disabled: disabled,
     autoComplete: "off",
     inputMode: "text",
-    value: text !== null ? text : show(mins, cycle, t, digits),
+    value: shownText,
     placeholder: cycle === '12' ? '9:00 ' + t.am : '09:00',
     onChange: e => {
       setText(e.target.value);
@@ -58691,7 +58801,7 @@ const ListPicker = /*#__PURE__*/_react.default.forwardRef(function ListPicker({
       if (!open && !disabled) openAt(mins);
     },
     onKeyDown: onKey
-  }, rest)), /*#__PURE__*/_react.default.createElement("span", {
+  }, rest))), /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-time-picker__icon",
     "aria-hidden": "true"
   }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {

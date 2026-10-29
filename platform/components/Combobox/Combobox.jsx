@@ -46,6 +46,8 @@
        exact name offers nothing (no duplicate, no Create).
      Checkbox select (multiple with marks="checkbox"): every option stays listed and choosing one toggles it.
      A tag's remove button removes its value.
+     A single choice whose label is wider than the field ends in an ellipsis and shows the whole label in a tooltip on hover
+       and focus, only while it is cut (issue 558); while the list is open the tooltip sits above the field.
      With loadOptions, each pause in typing loads once; an answer that arrives after a newer request is dropped. The list
        is busy (aria-busy) while it loads, the number of options is announced politely, a failed load says so in the list.
      Options loaded earlier keep naming the chosen values when a later load no longer has them.
@@ -65,6 +67,8 @@ import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
 import { isDataValue } from '../../utils/dataValue.js';
 import { formatNumber } from '../../utils/format.js';
 import { Icon } from '../Icon/Icon.jsx';
+import { Tooltip } from '../Tooltip/Tooltip.jsx';
+import { useTruncated } from '../../utils/overflow.js';
 import SelectChevronIcon from 'plenix-platform/icons/plenix/select-chevron';
 
 // the top layer and CSS anchor positioning (as Menu, Popover and Select), checked once
@@ -150,15 +154,24 @@ export const Combobox = React.forwardRef(function Combobox({ options = [], value
     else if (e.key === 'Backspace' && multiple && !text && chosen.length) { onChange(chosen.slice(0, -1)); }
   };
   const optId = (i) => auto + '-o' + i;
+  // a single choice whose label is cut (the box is narrower than it, issue 558): its full text goes in a Tooltip on hover and focus. While the list is
+  // open the field shows the typed text, so the cut measured while it was closed stays; the Tooltip then sits above the field, clear of the list
+  const label1 = !multiple && current ? String(current.label) : '';
+  const cutNow = useTruncated(input, open ? 'open' : label1, !multiple), cutShut = React.useRef(false);
+  if (!open) cutShut.current = cutNow;
+  const cut = !!label1 && (open ? cutShut.current : cutNow) && !text.trim();
+  const field = (
+    <input ref={input} id={id} size={size === 'sm' || size === 'md' ? undefined : size} className="plx-combobox__input" role="combobox" aria-expanded={open} aria-controls={listId} aria-autocomplete="list"
+      aria-activedescendant={open && items[active] ? optId(active) : undefined} aria-label={label} disabled={disabled} autoComplete="off"
+      value={open || multiple ? text : (current ? current.label : '')} placeholder={multiple && chosen.length ? '' : (current && !open ? current.label : placeholder)}
+      onChange={(e) => { setText(e.target.value); setOpen(true); }} onFocus={() => setOpen(true)} onKeyDown={onKey} {...rest} />
+  );
   return (
     <div ref={wrap} className={cx('plx-combobox', size === 'sm' && 'plx-combobox--size-sm', width && 'plx-combobox--width-' + width, multiple && 'plx-combobox--multiple', marks && 'plx-combobox--marks', open && 'is-open', disabled && 'is-disabled', className)}>
       <div className={cx('plx-combobox__field', 'plx-input', asData && 'plx-input--data', disabled && 'is-disabled')} aria-invalid={invalid || undefined} onClick={() => { if (!disabled && input.current) input.current.focus(); }}>
         {multiple ? chosen.map((v) => { const o = optionOf(v); const t = o ? o.label : v;
           return <Tag key={v} onRemove={() => onChange(chosen.filter((x) => x !== v))} removeLabel={words.removeItem.replace('{label}', t)}>{t}</Tag>; }) : null}
-        <input ref={input} id={id} size={size === 'sm' || size === 'md' ? undefined : size} className="plx-combobox__input" role="combobox" aria-expanded={open} aria-controls={listId} aria-autocomplete="list"
-          aria-activedescendant={open && items[active] ? optId(active) : undefined} aria-label={label} disabled={disabled} autoComplete="off"
-          value={open || multiple ? text : (current ? current.label : '')} placeholder={multiple && chosen.length ? '' : (current && !open ? current.label : placeholder)}
-          onChange={(e) => { setText(e.target.value); setOpen(true); }} onFocus={() => setOpen(true)} onKeyDown={onKey} {...rest} />
+        {multiple ? field : <Tooltip content={label1} disabled={!cut} describe={false} placement={open ? 'top' : 'bottom'} className="plx-combobox__tip">{field}</Tooltip>}
         <span className="plx-combobox__chevron" aria-hidden="true"><Icon icon={SelectChevronIcon} filled={false} /></span>
       </div>
       {open ? (

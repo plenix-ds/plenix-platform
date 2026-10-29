@@ -1,10 +1,18 @@
 /* Plenix tests · field sizing in bars (issues 558 and 554, platform/standards/fit-and-overflow.md).
    Summary: in a Toolbar a Select, a Search and an Input without a width size to their content between --plx-sys-fit-field-min-width (100px) and --plx-sys-fit-field-max-width
-     (320px): a short Select is widened to 100px, a Select with a very long choice stops at 320px and shows the full text in a tooltip on hover. The Toolbar folds its Buttons first (a Search
-     keeps its natural width while a Button is still shown) and only when every Button is in More do the fields shrink, down to 100px. A Delete menu button drops its words (the icon
-     and the chevron stay) and an icon-only Button folds into More. The width scale keeps its meaning outside a bar: a Select with width="sm" is 80px. Right to left gives the same widths.
+     (320px): a short Select is widened to 100px, a Select with a very long choice stops at 320px and shows the full text in a tooltip on hover. The width scale keeps its meaning
+     outside a bar: a Select with width="sm" is 80px.
+     Order (a sweep of one bar from 700px down to 200px): while any Button is still shown, the Search keeps its natural width and the bar has no data-plx-fit-shrink; the Search
+     narrows only once every Button is in More, and never below 100px.
+     The Asset Manager's System settings > Database > Records toolbar (#554; the same parts: Buttons with an icon, a group, an icon-only Button, a Delete menu button with an icon,
+     a Search in a Stack) does not overflow, and the page does not scroll sideways, at 480px, 360px and 320px. At the icon-only step the Delete menu button drops its words (its
+     name stays as aria-label); with every word shown it keeps them. At 320px the icon-only Button (Reset settings) is in More, and its menu lists it.
+     Cut text shows in full in a tooltip, only while it is cut: a Combobox on keyboard focus (a short one gets none), an Input in a bar on focus, a Search in a bar on hover, a
+     DatePicker and a TimePicker on focus. Every case runs left to right and right to left.
    Usage: node tests/field-sizing.test.js   (run by layout.test.js when a field, the Toolbar, the ActionBar or the fold helpers changed) */
 const assert = require('assert/strict'), { serve, launch } = require('./lib');
+const LONG = 'A choice with a very long name that is wider than any field should be, to the end of the line and past it';
+const FOLDABLE = ['Add new', 'Reindex', 'Import', 'Export', 'Export text', 'Reset settings', 'Expand'];
 (async () => {
   const PORT = +process.env.TEST_PORT || 9622, server = await serve(PORT); let browser;
   try {
@@ -13,35 +21,148 @@ const assert = require('assert/strict'), { serve, launch } = require('./lib');
     await page.setViewport({ width: 900, height: 900 });
     await page.goto('http://localhost:' + PORT + '/Plenix/tests/fixtures/platform-host.html', { waitUntil: 'domcontentloaded' });
     await page.waitForFunction(() => window.Plenix && window.ReactDOM, { timeout: 60000 });
-    const LONG = 'A choice with a very long name that is wider than any field should be, to the end of the line and past it';
+    const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+    // the state of the bar inside `sel`: what it shows, the Search's width, the shrink switch and whether it overflows
+    const read = (sel) => page.evaluate((sel, FOLDABLE) => {
+      const box = document.querySelector(sel), t = box.querySelector('[role=toolbar]');
+      const name = (b) => b.getAttribute('aria-label') || b.textContent.trim();
+      const shown = [...t.querySelectorAll('button')].filter((b) => b.getClientRects().length && !b.closest('[inert]'));
+      const del = shown.find((b) => name(b) === 'Delete'), s = t.querySelector('.plx-search');
+      const r = t.getBoundingClientRect(), c = box.getBoundingClientRect();
+      return { names: shown.map(name), buttons: shown.filter((b) => FOLDABLE.includes(name(b))).length,
+        // Buttons written with words that show only their icon now (Reset settings is icon-only as written, so it does not count)
+        dropped: shown.filter((b) => FOLDABLE.includes(name(b)) && name(b) !== 'Reset settings' && !b.textContent.trim()).length,
+        more: shown.some((b) => name(b) === 'More actions'),
+        del: del ? { words: del.textContent.trim(), label: del.getAttribute('aria-label') } : null,
+        search: s ? Math.round(s.getBoundingClientRect().width) : 0, shrink: t.hasAttribute('data-plx-fit-shrink'),
+        over: t.scrollWidth > t.clientWidth + 1 || r.left < c.left - 1 || r.right > c.right + 1,
+        page: document.documentElement.scrollWidth > window.innerWidth + 1 };
+    }, sel, FOLDABLE);
     for (const dir of ['ltr', 'rtl']) {
+      // 1. sizes between the two tokens, and the width scale outside a bar
+      await page.setViewport({ width: 900, height: 900 });
       const got = await page.evaluate(async (dir, LONG) => {
         document.documentElement.dir = dir;
         document.querySelector('main').innerHTML = '<div id="c"></div>';
-        const h = React.createElement, P = window.Plenix, noop = () => {};
+        const h = React.createElement, P = window.Plenix;
         const bar = (id, w, kids) => h('div', { id, style: { inlineSize: w + 'px' } }, h(P.Toolbar, { label: id }, kids));
-        const btn = (t, icon) => h(P.Button, { key: t, icon, variant: 'ghost' }, t);
         const sel = (opts, extra) => h(P.Select, Object.assign({ key: 's', 'aria-label': 'Choice', defaultValue: opts[0].value, options: opts }, extra));
         ReactDOM.createRoot(document.getElementById('c')).render(h('div', null,
           bar('short', 700, [sel([{ value: 'a', label: 'PNG' }, { value: 'b', label: 'JPG' }])]),
           bar('long', 700, [sel([{ value: 'a', label: LONG }])]),
-          bar('wide', 700, [btn('Edit', 'edit'), btn('Share', 'share'), h(P.SearchField, { key: 'q', label: 'Search', value: '', onChange: noop })]),
-          bar('tight', 300, [btn('Edit', 'edit'), btn('Share', 'share'), h(P.SearchField, { key: 'q', label: 'Search', value: '', onChange: noop })]),
-          bar('narrow', 200, [btn('Edit', 'edit'), btn('Share', 'share'), h(P.SearchField, { key: 'q', label: 'Search', value: '', onChange: noop })]),
           h('div', { id: 'scale' }, h(P.Select, { 'aria-label': 'Small', width: 'sm', options: [{ value: 'a', label: 'One' }] }))));
         await new Promise((r) => setTimeout(r, 900));
-        const w = (sel2) => Math.round(document.querySelector(sel2).getBoundingClientRect().width);
-        const q = (id) => document.querySelector('#' + id + ' [role=toolbar]');
-        const info = (id) => { const t = q(id), s = t.querySelector('.plx-search'); return { search: s ? Math.round(s.getBoundingClientRect().width) : 0, more: !!t.querySelector('[aria-label="More actions"]'), buttons: [...t.querySelectorAll('button')].filter((b) => b.getClientRects().length && !/More actions|Clear|Search/.test(b.getAttribute('aria-label') || '')).length, over: t.scrollWidth > t.clientWidth + 1 }; };
-        return { short: w('#short .plx-select'), long: w('#long .plx-select'), wide: info('wide'), tight: info('tight'), narrow: info('narrow'), scale: w('#scale .plx-select') };
+        const w = (s) => Math.round(document.querySelector(s).getBoundingClientRect().width);
+        return { short: w('#short .plx-select'), long: w('#long .plx-select'), scale: w('#scale .plx-select') };
       }, dir, LONG);
       assert.ok(got.short >= 100, dir + ': a short Select is widened to the minimum (100px), got ' + got.short);
       assert.ok(got.long <= 320 && got.long >= 316, dir + ': a Select with a very long choice stops at the maximum (320px), got ' + got.long);
       assert.equal(got.scale, 80, dir + ': width="sm" is still exactly 80px outside a bar');
-      assert.ok(!got.wide.more && got.wide.search >= 200, dir + ': with room, nothing folds and the Search keeps its natural width');
-      assert.ok(got.tight.more || got.tight.search >= got.wide.search - 1, dir + ': the Buttons fold before the Search shrinks');
-      assert.ok(got.narrow.more && got.narrow.search >= 100, dir + ': when out of room every Button is in More and the Search stays at 100px or more');
-      assert.ok(!got.tight.over, dir + ': a bar with room for its minimums does not overflow');
+
+      // 2. the order: Buttons fold first, then fields shrink (one bar, narrowed step by step)
+      await page.evaluate(async (dir) => {
+        document.documentElement.dir = dir;
+        document.querySelector('main').innerHTML = '<div id="c"></div>';
+        const h = React.createElement, P = window.Plenix, noop = () => {};
+        const btn = (t, icon) => h(P.Button, { key: t, icon, variant: 'ghost' }, t);
+        ReactDOM.createRoot(document.getElementById('c')).render(h('div', { id: 'sweep', style: { inlineSize: '700px' } }, h(P.Toolbar, { label: 'Sweep' },
+          [btn('Add new', 'add'), btn('Expand', 'expand'), h(P.SearchField, { key: 'q', label: 'Search', value: '', onChange: noop })])));
+        await new Promise((r) => setTimeout(r, 900));
+      }, dir);
+      const natural = (await read('#sweep')).search;
+      assert.ok(natural > 100, dir + ': with room the Search is wider than the minimum, got ' + natural);
+      let narrowed = 0;
+      for (let w = 700; w >= 200; w -= 20) {
+        await page.evaluate((w) => { document.getElementById('sweep').style.inlineSize = w + 'px'; }, w);
+        await wait(250);
+        const s = await read('#sweep');
+        if (s.buttons > 0) assert.ok(s.search >= natural - 1, dir + ' ' + w + 'px: a Button is still shown, so the Search keeps its natural width (' + natural + '), got ' + s.search);
+        assert.equal(s.shrink, s.buttons === 0, dir + ' ' + w + 'px: the bar lets its fields shrink exactly when every Button is in More');
+        if (s.search < natural - 1) { narrowed += 1; assert.equal(s.buttons, 0, dir + ' ' + w + 'px: the Search narrowed only after every Button folded'); }
+        assert.ok(s.search >= 100, dir + ' ' + w + 'px: the Search never goes below 100px, got ' + s.search);
+      }
+      assert.ok(narrowed > 0, dir + ': at the narrow end of the sweep the Search does narrow (the second half of the order is exercised)');
+
+      // 3. the Records toolbar (#554): no overflow at 480, 360 and 320px; the Delete menu button and the icon-only Button
+      for (const w of [1400, 480, 360, 320]) {
+        await page.setViewport({ width: w, height: 900 });
+        await page.evaluate(async (dir) => {
+          document.documentElement.dir = dir;
+          document.querySelector('main').innerHTML = '<div id="c"></div>';
+          const h = React.createElement, P = window.Plenix, noop = () => {};
+          const bt = (label, icon) => h(P.Button, { key: label, size: 'sm', icon, onClick: noop }, label);
+          ReactDOM.createRoot(document.getElementById('c')).render(h('div', { id: 'records' }, h(P.Toolbar, { label: 'Record actions' },
+            bt('Add new', 'add'),
+            h(P.Toolbar.Group, { role: 'group', 'aria-label': 'Transfer' }, bt('Reindex', 'refresh'), bt('Import', 'import'), bt('Export', 'export')),
+            bt('Export text', 'doc-text'),
+            h(P.Button, { size: 'sm', iconOnly: true, icon: 'close', label: 'Reset settings', onClick: noop }),
+            h(P.Menu, { label: 'Delete', trigger: h(P.Button, { size: 'sm', variant: 'danger-secondary', icon: 'trash', caret: true }, 'Delete') },
+              h(P.MenuItem, { icon: 'trash', danger: true, onSelect: noop }, 'Delete 120 records'), h(P.MenuItem, { icon: 'trash', danger: true, onSelect: noop }, 'Delete table')),
+            h(P.Button, { size: 'sm', icon: 'expand', onClick: noop }, 'Expand'),
+            h(P.Stack, { width: 'lg', push: true }, h(P.SearchField, { value: '', onChange: noop, onClear: noop, label: 'Search', placeholder: 'Search...' })))));
+          await new Promise((r) => setTimeout(r, 900));
+        }, dir);
+        const r = await read('#records');
+        assert.ok(r.del, dir + ' ' + w + 'px: the Delete menu button stays in the bar');
+        assert.equal(r.del.label === 'Delete' || r.del.words === 'Delete', true, dir + ' ' + w + 'px: the Delete menu button keeps its name');
+        const iconStep = r.dropped > 0 || r.more;   // step 1 (words dropped) or past it (Buttons in More)
+        if (iconStep) assert.equal(r.del.words, '', dir + ' ' + w + 'px: at the icon-only step the Delete menu button drops its words too');
+        if (iconStep) assert.equal(r.del.label, 'Delete', dir + ' ' + w + 'px: its name stays as its aria-label');
+        if (!iconStep) assert.equal(r.del.words, 'Delete', dir + ' ' + w + 'px: while every Button keeps its words, so does Delete');
+        if (w === 1400) { assert.ok(!iconStep, dir + ': at 1400px every Button keeps its words'); continue; }
+        assert.ok(!r.over, dir + ' ' + w + 'px: the Records toolbar does not overflow (' + r.names.join(', ') + ')');
+        assert.ok(!r.page, dir + ' ' + w + 'px: the page does not scroll sideways');
+        if (w === 320) {
+          assert.ok(iconStep, dir + ': at 320px the bar has reached the icon-only step');
+          assert.equal(r.del.words, '', dir + ': at 320px the Delete menu button is an icon');
+          assert.ok(!r.names.includes('Reset settings'), dir + ': at 320px the icon-only Reset settings Button is not in the bar');
+          assert.ok(r.more, dir + ': at 320px the bar has More');
+          await page.click('#records [aria-label="More actions"]'); await wait(400);
+          const items = await page.evaluate(() => [...document.querySelectorAll('[role="menuitem"]')].filter((e) => e.getClientRects().length).map((e) => e.textContent.trim()));
+          assert.ok(items.includes('Reset settings'), dir + ': the icon-only Button is in More with its label as the menu text, got ' + items.join(', '));
+          await page.keyboard.press('Escape'); await wait(200);
+        }
+      }
+
+      // 4. the full text in a tooltip, only while it is cut
+      await page.setViewport({ width: 900, height: 900 });
+      await page.evaluate(async (dir, LONG) => {
+        document.documentElement.dir = dir;
+        document.querySelector('main').innerHTML = '<div id="c"></div>';
+        const h = React.createElement, P = window.Plenix, noop = () => {};
+        ReactDOM.createRoot(document.getElementById('c')).render(h('div', null,
+          h('div', { id: 'cb' }, h(P.Combobox, { label: 'Owner', width: 'sm', options: [{ value: 'a', label: LONG }], value: 'a', onChange: noop })),
+          h('div', { id: 'cbshort' }, h(P.Combobox, { label: 'Format', width: 'lg', options: [{ value: 'a', label: 'PNG' }], value: 'a', onChange: noop })),
+          h('div', { id: 'ib', style: { inlineSize: '200px' } }, h(P.Toolbar, { label: 'Input bar' }, h(P.Input, { 'aria-label': 'Name', value: LONG, onChange: noop }))),
+          h('div', { id: 'sb', style: { inlineSize: '200px' } }, h(P.Toolbar, { label: 'Search bar' }, h(P.SearchField, { label: 'Search', value: LONG, onChange: noop }))),
+          h('div', { id: 'dp' }, h(P.DatePicker, { mode: 'range', width: 'xs', value: { start: '2026-10-01', end: '2026-10-31' }, onChange: noop })),
+          h('div', { id: 'tp' }, h(P.TimePicker, { label: 'Start', width: 'xs', value: '09:00', onChange: noop }))));
+        await new Promise((r) => setTimeout(r, 900));
+      }, dir, LONG);
+      const tip = (sel) => page.evaluate((sel) => {
+        const w = document.querySelector(sel).closest('.plx-tooltip'), b = w && w.querySelector('.plx-tooltip__bubble');
+        return b ? { open: b.classList.contains('is-open') && !!b.getClientRects().length, text: b.textContent } : { open: false, text: '' };
+      }, sel);
+      assert.equal((await tip('#cb .plx-combobox__input')).open, false, dir + ': no tooltip before focus');
+      await page.focus('#cb .plx-combobox__input'); await wait(400);
+      const cb = await tip('#cb .plx-combobox__input');
+      assert.ok(cb.open && /very long name/.test(cb.text), dir + ': a cut Combobox value shows its full text in a tooltip on keyboard focus');
+      await page.focus('#cbshort .plx-combobox__input'); await wait(400);
+      assert.equal((await tip('#cbshort .plx-combobox__input')).open, false, dir + ': a Combobox value that fits gets no tooltip');
+      await page.focus('#ib .plx-input'); await wait(400);
+      const ib = await tip('#ib .plx-input');
+      assert.ok(ib.open && /very long name/.test(ib.text), dir + ': a cut Input in a bar shows its full value in a tooltip on focus');
+      await page.evaluate(() => document.activeElement.blur()); await wait(200);
+      await page.hover('#sb .plx-search__input'); await wait(400);
+      const sb = await tip('#sb .plx-search__input');
+      assert.ok(sb.open && /very long name/.test(sb.text), dir + ': a cut Search in a bar shows its full text in a tooltip on hover');
+      await page.mouse.move(0, 0);
+      await page.focus('#dp .plx-date-picker__input'); await wait(400);
+      const dp = await tip('#dp .plx-date-picker__input');
+      assert.ok(dp.open && /2026/.test(dp.text), dir + ': a cut DatePicker range shows in full in a tooltip on focus, got ' + dp.text);
+      await page.focus('#tp .plx-time-picker__input'); await wait(400);
+      const tp = await tip('#tp .plx-time-picker__input');
+      assert.ok(tp.open && /9/.test(tp.text), dir + ': a cut TimePicker time shows in full in a tooltip on focus, got ' + tp.text);
     }
     // the cut text of a Select shows in full in a tooltip on hover
     await page.setViewport({ width: 900, height: 900 });

@@ -40,7 +40,7 @@ if (changed.wants({ units: ['components/Toolbar', 'components/Button', 'patterns
   if (result.status !== 0) process.exit(result.status || 1);
 }
 // field sizing in bars (issues 558 and 554): its own test, when a field, the Toolbar, the ActionBar, the CommandBar or the fold helpers changed
-if (changed.wants({ units: ['components/Input', 'components/SearchField', 'components/Combobox', 'components/TreeSelect', 'components/DatePicker', 'components/TimePicker', 'components/Toolbar', 'patterns/ActionBar', 'patterns/CommandBar', 'utils/barFit.js', 'system/layout-modes.css'] })) {
+if (changed.wants({ units: ['components/Input', 'components/SearchField', 'components/Combobox', 'components/TreeSelect', 'components/DatePicker', 'components/TimePicker', 'components/Toolbar', 'patterns/ActionBar', 'patterns/CommandBar', 'components/Tooltip', 'utils/barFit.js', 'utils/overflow.js', 'system/layout-modes.css'] })) {
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'field-sizing.test.js')], { stdio: 'inherit', env: process.env });
   if (result.status !== 0) process.exit(result.status || 1);
 }

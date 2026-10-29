@@ -7,7 +7,9 @@
 .plx-date-picker__date{--plx-comp-input-context-padding-inline-end:var(--plx-comp-date-picker-box-padding-inline-end);align-items:center;display:flex;flex:1 1 var(--plx-comp-date-picker-width);min-inline-size:0;}
 .plx-date-picker__date--range{flex-basis:var(--plx-comp-date-picker-range-width);}
 /* the date box is one field like the text field (owner, form-controls-37): the borderless input fills it, the calendar button sits inside at its end */
-.plx-date-picker__input{align-self:stretch;background-color:transparent;border-style:none;border-width:0;color:inherit;flex:1 1 0%;font-family:inherit;font-size:inherit;margin-block:var(--plx-comp-date-picker-control-margin-block);min-inline-size:0;outline-style:none;padding-block:0;padding-inline:0;}
+.plx-date-picker__input{align-self:stretch;background-color:transparent;border-style:none;border-width:0;color:inherit;flex:1 1 0%;font-family:inherit;font-size:inherit;margin-block:var(--plx-comp-date-picker-control-margin-block);min-inline-size:0;outline-style:none;padding-block:0;padding-inline:0;text-overflow:ellipsis;}
+/* the Tooltip around the input (it shows the whole date or range while it is cut, issue 558) takes the input's place in the box, the input fills it */
+.plx-date-picker__tip{align-self:stretch;display:flex;flex:1 1 0%;min-inline-size:0;}
 .plx-date-picker__button{margin-block:var(--plx-comp-date-picker-control-margin-block);}
 .plx-date-picker__input::placeholder{color:var(--plx-comp-input-placeholder-text);}
 .plx-input-group.plx-date-picker__time{flex-shrink:1;inline-size:var(--plx-comp-date-picker-time-width);}

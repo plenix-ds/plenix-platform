@@ -38,6 +38,8 @@
      ...rest: other attributes go on the input (inputMode, enterKeyHint, autoComplete… override the search defaults)
    Behavior:
      The clear button shows only while there is text.
+     In a bar or a header (issue 558) text wider than the field ends in an ellipsis and shows in full in a tooltip on hover
+       and focus, only while it is cut and the list is closed.
      The shortcut hint shows only while the field is empty.
      It is type="search" with inputMode "search" and enterKeyHint "search": a touch keyboard shows a Search key.
      With suggestions or recent searches it is a combobox (the ARIA pattern): the list opens on focus and on typing, under
@@ -68,6 +70,7 @@ import { Kbd } from '../Kbd/Kbd.jsx';
 import { Spinner } from '../Loading/Loading.jsx';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useTruncated, useInBar } from '../../utils/overflow.js';
 import ClockIcon from 'plenix-platform/icons/plenix/clock';
 import CloseIcon from 'plenix-platform/icons/plenix/close';
 import SearchIcon from 'plenix-platform/icons/plenix/search';
@@ -150,6 +153,9 @@ const SearchInput = React.forwardRef(function SearchInput({ value, onChange, onC
       removeRecent(active);
     } else if (!open && e.key.length === 1) setOpen(true);
   };
+  // in a bar (issue 558) search text that is cut shows in full in a Tooltip on hover and focus (not while the list is open under it)
+  const bar = useInBar(input);
+  const cut = useTruncated(input, text, bar) && !!text;
   const optId = (i) => auto + '-o' + i;
   const cellId = (i, c) => auto + '-o' + i + (c ? '-x' : '');
   const comboProps = hasList ? { role: 'combobox', 'aria-expanded': shown, 'aria-controls': listId, 'aria-autocomplete': 'list',
@@ -158,9 +164,11 @@ const SearchInput = React.forwardRef(function SearchInput({ value, onChange, onC
   return (
     <div ref={wrap} className={cx('plx-search', size === 'sm' && 'plx-search--size-sm', width === 'bar' && 'plx-search--bar', width === 'fill' && 'plx-search--fill', ['xs', 'sm', 'md', 'lg'].includes(width) && 'plx-search--width-' + width, onAccent && 'plx-search--on-accent', shown && 'is-open', className)} role="search">
       <span className="plx-search__icon" aria-hidden="true">{loading ? <Spinner size="sm" label={t.searching} /> : <Icon name={SearchIcon} />}</span>
-      <input ref={input} size={size === 'sm' || size === 'md' ? undefined : size} type="search" inputMode="search" enterKeyHint="search" autoComplete="off" className="plx-search__input" aria-label={label} placeholder={placeholder} value={value}
-        onChange={(e) => { if (hasList) setOpen(true); if (onChange) onChange(e); }} onKeyDown={keys}
-        onFocus={(e) => { if (hasList) setOpen(true); if (onFocus) onFocus(e); }} {...comboProps} {...rest} />
+      <Tooltip content={text} disabled={!cut || shown} describe={false} className="plx-search__tip">
+        <input ref={input} size={size === 'sm' || size === 'md' ? undefined : size} type="search" inputMode="search" enterKeyHint="search" autoComplete="off" className="plx-search__input" aria-label={label} placeholder={placeholder} value={value}
+          onChange={(e) => { if (hasList) setOpen(true); if (onChange) onChange(e); }} onKeyDown={keys}
+          onFocus={(e) => { if (hasList) setOpen(true); if (onFocus) onFocus(e); }} {...comboProps} {...rest} />
+      </Tooltip>
       {onClear && value ? <button type="button" className="plx-search__clear" aria-label={t.clear} onClick={onClear}><Icon name={CloseIcon} /></button> : null}
       {shortcut && !value ? <span className="plx-search__kbd"><Kbd onAccent={onAccent}>{shortcut}</Kbd></span> : null}
       {hasList ? (
