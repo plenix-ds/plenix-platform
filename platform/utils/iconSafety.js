@@ -8,7 +8,8 @@
    Props:
      checkIconSvg(text): one SVG file's text
      checkDrawing(drawing): { viewBox, d, transform?, fillRule?, clipRule? }
-     ICON_LIMITS: { file: 32768, d: 16384 } characters (the largest shipped file is 4,272, its path 4,166)
+     ICON_LIMITS: { file: 32768, d: 16384, viewBox: 100, transform: 500, size: 32 } characters (the largest shipped file
+       is 4,272, its path 4,166); every value is measured against its limit before any pattern reads it
    Behavior:
      A file is one <svg> (attributes xmlns = the SVG namespace, width, height, viewBox) holding exactly one <path>
        (attributes d, transform, fill-rule, clip-rule), with whitespace between them and an optional leading XML
@@ -24,14 +25,19 @@
      Every file the library ships passes (17,120 files, platform/icons and its custom and library folders), and reads
        exactly as before. The Icon component renders the returned values as React props; nothing is ever inserted as HTML.
 */
-export const ICON_LIMITS = { file: 32768, d: 16384 };
+export const ICON_LIMITS = { file: 32768, d: 16384, viewBox: 100, transform: 500, size: 32 };
 const SVG_NS = 'http://www.w3.org/2000/svg';
-const NUM = '[+-]?(?:\\d+\\.?\\d*|\\.\\d+)(?:[eE][+-]?\\d+)?';
+// a number one way only (digits, then a fraction, or a fraction alone), with an exponent of at most three digits (no
+// 1e999 -> Infinity); numbers in a list are separated by spaces or a comma, never by nothing, so a run of digits can be
+// read one way only and no pattern backtracks over it
+const NUM = '[+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d{1,3})?';
+const SEP = '(?:\\s*,\\s*|\\s+)';
 const IS_NUM = new RegExp('^' + NUM + '$');
-const VIEWBOX = new RegExp('^\\s*(' + NUM + ')[\\s,]+(' + NUM + ')[\\s,]+(' + NUM + ')[\\s,]+(' + NUM + ')\\s*$');
+const VIEWBOX = new RegExp('^\\s*(' + NUM + ')' + SEP + '(' + NUM + ')' + SEP + '(' + NUM + ')' + SEP + '(' + NUM + ')\\s*$');
 const PATH_DATA = /^\s*[Mm][MmLlHhVvCcSsQqTtAaZz0-9eE.,+\-\s]*$/;
-const TRANSFORM = new RegExp('^\\s*(?:(?:matrix|translate|scale|rotate|skewX|skewY)\\s*\\(\\s*' + NUM + '(?:\\s*[,\\s]\\s*' + NUM + ')*\\s*\\)\\s*,?\\s*)+$');
-const RULE = /^(nonzero|evenodd)$/;
+const TRANSFORM = new RegExp('^\\s*(?:(?:matrix|translate|scale|rotate|skewX|skewY)\\s*\\(\\s*' + NUM + '(?:' + SEP + NUM + ')*\\s*\\)\\s*,?\\s*)+$');
+const RULES = { nonzero: 1, evenodd: 1 };   // compared as exact strings
+const tooLong = (v, max) => typeof v === 'string' && v.length > max;
 const SHAPES = { circle: 1, ellipse: 1, rect: 1, line: 1, polyline: 1, polygon: 1 };
 const ALLOWED = {
   svg: { xmlns: 1, width: 1, height: 1, viewBox: 1 },
@@ -41,15 +47,19 @@ const no = (reason) => ({ ok: false, reason });
 
 // one drawing's values, the same rules for a file and a module
 function checkValues(viewBox, d, transform, fillRule, clipRule) {
+  // every length first, before any pattern reads a value
   if (typeof d !== 'string' || !d) return no('the path has no d');
   if (d.length > ICON_LIMITS.d) return no('the path data is longer than ' + ICON_LIMITS.d + ' characters');
+  if (tooLong(viewBox, ICON_LIMITS.viewBox)) return no('viewBox is longer than ' + ICON_LIMITS.viewBox + ' characters');
+  if (tooLong(transform, ICON_LIMITS.transform)) return no('transform is longer than ' + ICON_LIMITS.transform + ' characters');
   if (!PATH_DATA.test(d)) return no('d holds something other than path data');
   const box = typeof viewBox === 'string' && VIEWBOX.exec(viewBox);
   if (!box) return no('viewBox is not four numbers');
+  if (!box.slice(1, 5).every((n) => Number.isFinite(parseFloat(n)))) return no('viewBox has a number too large to draw');
   if (!(parseFloat(box[3]) > 0 && parseFloat(box[4]) > 0)) return no('viewBox has no positive width and height');
   if (transform != null && (typeof transform !== 'string' || !TRANSFORM.test(transform))) return no('transform holds something other than matrix, translate, scale, rotate or skew of numbers');
-  if (fillRule != null && !RULE.test(fillRule)) return no('fill-rule is not nonzero or evenodd');
-  if (clipRule != null && !RULE.test(clipRule)) return no('clip-rule is not nonzero or evenodd');
+  if (fillRule != null && !(typeof fillRule === 'string' && RULES[fillRule] === 1)) return no('fill-rule is not nonzero or evenodd');
+  if (clipRule != null && !(typeof clipRule === 'string' && RULES[clipRule] === 1)) return no('clip-rule is not nonzero or evenodd');
   return { ok: true };
 }
 
@@ -61,10 +71,11 @@ export function checkDrawing(drawing) {
 
 // the attributes of one tag: name="value" or name='value', each once, nothing else
 function attributes(text) {
-  const out = {}, re = /\s+([a-zA-Z][a-zA-Z0-9:_-]*)\s*=\s*(?:"([^"<>]*)"|'([^'<>]*)')/y;
+  const out = {}, re = /\s+([a-zA-Z][a-zA-Z0-9:_-]{0,40})\s*=\s*(?:"([^"<>]*)"|'([^'<>]*)')/y, rest = /\s*$/y;
   let at = 0;
   while (at < text.length) {
-    if (/^\s*$/.test(text.slice(at))) break;
+    rest.lastIndex = at;
+    if (rest.test(text)) break;
     re.lastIndex = at;
     const m = re.exec(text);
     if (!m) return null;
@@ -89,13 +100,16 @@ export function checkIconSvg(text) {
     if (!ALLOWED[m[1]]) return no('the element ' + m[1] + ' is not allowed');
   }
   // the file as tags with only whitespace between them
-  const tags = [], re = /\s*<(\/?)([a-zA-Z][a-zA-Z0-9:_-]*)((?:\s+[^<>]*?)?)\s*(\/?)>\s*/y;
+  // greedy inside a tag (to its >), so a long run of spaces is read once, never re-read
+  const tags = [], re = /\s*<(\/?)([a-zA-Z][a-zA-Z0-9:_-]{0,40})([^<>]*)>\s*/y;
   let at = 0;
   while (at < s.length) {
     re.lastIndex = at;
     const m = re.exec(s);
-    if (!m) return no(/^\s*$/.test(s.slice(at)) ? 'the file ends early' : 'the file has text or markup outside its tags');
-    tags.push({ close: !!m[1], name: m[2], attrs: m[3] || '', self: !!m[4] });
+    if (!m) return no('the file has text or markup outside its tags');
+    const inside = m[3], self = /\/\s*$/.test(inside);
+    if (inside && !/^\s/.test(inside) && !/^\/\s*$/.test(inside)) return no('a tag name runs into its attributes');
+    tags.push({ close: !!m[1], name: m[2], attrs: self ? inside.replace(/\/\s*$/, '') : inside, self });
     at = re.lastIndex;
   }
   for (const t of tags) {
@@ -117,7 +131,9 @@ export function checkIconSvg(text) {
   for (const k of Object.keys(sa)) if (!ALLOWED.svg[k]) return no('the attribute ' + k + ' is not allowed on svg');
   for (const k of Object.keys(pa)) if (!ALLOWED.path[k]) return no('the attribute ' + k + ' is not allowed on path');
   if (sa.xmlns != null && sa.xmlns !== SVG_NS) return no('xmlns is not the SVG namespace');
-  for (const k of ['width', 'height']) if (sa[k] != null && !IS_NUM.test(sa[k])) return no(k + ' is not a number');
+  for (const k of ['width', 'height']) if (tooLong(sa[k], ICON_LIMITS.size)) return no(k + ' is longer than ' + ICON_LIMITS.size + ' characters');
+  for (const k of ['width', 'height']) if (sa[k] != null && !(IS_NUM.test(sa[k]) && Number.isFinite(parseFloat(sa[k])))) return no(k + ' is not a number');
+  if (tooLong(sa.viewBox, ICON_LIMITS.viewBox)) return no('viewBox is longer than ' + ICON_LIMITS.viewBox + ' characters');
   const viewBox = sa.viewBox != null ? sa.viewBox : sa.width != null && sa.height != null ? '0 0 ' + sa.width + ' ' + sa.height : null;
   const v = checkValues(viewBox, pa.d, pa.transform, pa['fill-rule'], pa['clip-rule']);
   if (!v.ok) return v;

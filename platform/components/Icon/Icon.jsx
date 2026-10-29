@@ -66,7 +66,7 @@ import React from 'react';
 import { devWarn, development } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { SYMBOLS, NAMES, LIBRARY, LIBRARY_COMMIT } from './glyphs.js';
-import { checkIconSvg, checkDrawing } from '../../utils/iconSafety.js';
+import { checkIconSvg, checkDrawing, ICON_LIMITS } from '../../utils/iconSafety.js';
 
 // One way to draw an icon (owner, 2026-10-23: "no band-aid"): every name goes through resolveIcon, and every icon is an
 // inline SVG in the text color (inline paths paint about 200 times faster than masks).
@@ -195,11 +195,28 @@ function cssGlyph(symbol, i) {
   if (glyph) fromCss.set(key, glyph);   // not kept when the stylesheet is not there yet: read again on the next draw
   return glyph;
 }
+// a fetched file is read only up to the size limit (issue 285): a Content-Length over it is refused before reading, and a
+// body without one is read in chunks and dropped as soon as it passes the limit
+function readCapped(response) {
+  const max = ICON_LIMITS.file, length = Number(response.headers && response.headers.get && response.headers.get('content-length'));
+  if (length > max) return null;
+  if (!response.body || typeof response.body.getReader !== 'function') return response.text().then((t) => (t.length > max ? null : t));
+  const reader = response.body.getReader(), parts = [];
+  let size = 0;
+  const step = () => reader.read().then(({ done, value }) => {
+    if (done) return new TextDecoder().decode(parts.length === 1 ? parts[0] : parts.reduce((all, p) => { const out = new Uint8Array(all.length + p.length); out.set(all); out.set(p, all.length); return out; }, new Uint8Array(0)));
+    size += value.length;
+    if (size > max) { reader.cancel(); return null; }
+    parts.push(value);
+    return step();
+  });
+  return step();
+}
 const files = new Map();   // file name -> [path, viewBox, extra] | null (missing) | a Promise while it loads
 function loadFile(file) {
   if (files.has(file)) return files.get(file);
   const root = base();
-  const job = !root || typeof fetch !== 'function' ? Promise.resolve(null) : fetch(root + file + '.svg').then((r) => (r.ok ? r.text() : null))
+  const job = !root || typeof fetch !== 'function' ? Promise.resolve(null) : fetch(root + file + '.svg').then((r) => (r.ok ? readCapped(r) : null))
     .then((text) => parseSvg(text, file + '.svg')).catch(() => null).then((glyph) => { files.set(file, glyph); return glyph; });
   files.set(file, job);
   return job;

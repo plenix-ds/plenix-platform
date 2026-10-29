@@ -87,6 +87,37 @@ check('IconSafety: a file over the size limit or a path over the length limit is
   refused(swap('M80-80v-800h800v800H80Z', 'M0 0' + ' L1 1'.repeat(8000)), /larger than/);
   refused(swap('M80-80v-800h800v800H80Z', 'M0 0' + 'h1'.repeat(9000)), /longer than/);
   assert.ok(S.ICON_LIMITS.file >= 32768 && S.ICON_LIMITS.d >= 16384, 'the limits shrank below the shipped files\' room');
+  assert.ok(S.ICON_LIMITS.viewBox <= 100 && S.ICON_LIMITS.transform <= 500 && S.ICON_LIMITS.size <= 32, 'a value limit grew past what a pattern should read');
+});
+// cost (QA on #519): every value is measured before a pattern reads it, and the patterns read a number one way only, so a
+// long hostile value is refused at once; each case must finish well inside the bound, or the check fails
+const QUICK_MS = 250;
+const quickly = (fn) => { const t = process.hrtime.bigint(); const r = fn(); const ms = Number(process.hrtime.bigint() - t) / 1e6; assert.ok(ms < QUICK_MS, 'took ' + ms.toFixed(1) + ' ms (bound ' + QUICK_MS + ' ms)'); return r; };
+check('IconSafety: 30,000 spaces in a transform are refused at once #285', () => {
+  const r = quickly(() => S.checkIconSvg(swap('<path ', '<path transform="' + ' '.repeat(30000) + '" ')));
+  assert.ok(!r.ok && /transform is longer than/.test(r.reason), r.reason);
+});
+check('IconSafety: 30,000 digits in a viewBox are refused at once #285', () => {
+  const r = quickly(() => S.checkIconSvg(swap('0 -960 960 960', '0 0 ' + '9'.repeat(30000) + ' 1')));
+  assert.ok(!r.ok && /viewBox is longer than/.test(r.reason), r.reason);
+});
+check('IconSafety: a 200,000-character module value is refused at once (viewBox, transform, d) #285', () => {
+  assert.ok(!quickly(() => S.checkDrawing({ viewBox: ' '.repeat(200000), d: 'M0 0h1' })).ok, 'a long viewBox passed');
+  assert.ok(!quickly(() => S.checkDrawing({ viewBox: '0 0 24 24', d: 'M0 0h1', transform: ' '.repeat(200000) })).ok, 'a long transform passed');
+  assert.ok(!quickly(() => S.checkDrawing({ viewBox: '0 0 24 24', d: 'M' + '0'.repeat(200000) })).ok, 'a long d passed');
+});
+check('IconSafety: a number is read one way: 1e999 and a four-digit exponent are refused, digits need a separator #285', () => {
+  refused(swap('0 -960 960 960', '0 0 1e999 1'), /too large/);
+  refused(swap('0 -960 960 960', '0 0 1e1000 1'), /four numbers/);
+  refused(swap('<path ', '<path transform="matrix(' + '1'.repeat(450) + 'x)" '), /transform/);
+  refused(swap('height="20"', 'height="' + ' '.repeat(40) + '"'), /height is longer than/);
+  const r = quickly(() => S.checkIconSvg(swap('<path ', '<path' + ' '.repeat(30000) + ' ')));
+  assert.ok(r.ok, 'legal whitespace between attributes is refused: ' + r.reason);
+});
+check('IconSafety: fill-rule and clip-rule are compared as exact strings #285', () => {
+  assert.ok(!S.checkDrawing({ viewBox: '0 0 24 24', d: 'M0 0h1', fillRule: ['nonzero'] }).ok, 'an array passed as fill-rule');
+  assert.ok(!S.checkDrawing({ viewBox: '0 0 24 24', d: 'M0 0h1', clipRule: 'nonzero ' }).ok, 'a padded clip-rule passed');
+  assert.ok(S.checkDrawing({ viewBox: '0 0 24 24', d: 'M0 0h1', fillRule: 'evenodd' }).ok, 'evenodd is refused');
 });
 check('IconSafety: a module drawing passes the same rules (an unknown field, a bad d, a bad transform) #285', () => {
   assert.ok(S.checkDrawing({ viewBox: '0 0 24 24', d: 'M0 0h1' }).ok, 'a plain drawing is refused');
