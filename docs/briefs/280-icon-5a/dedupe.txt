@@ -1,0 +1,57 @@
+# Icon module path dedupe (#280): a path used by more than one drawing is written once per module. Proof script only:
+# node docs/briefs/280-icon-5a/dedupe-proof.mjs <icons before> <icons after> <platform.js before> <platform.js after>
+# (before: styling/phase-2 at 8e4c53a1, built; after: this branch, built)
+{
+ "sets": {
+  "material": {
+   "modules": 3,
+   "equal": 3,
+   "differ": [],
+   "missing": 0,
+   "filesAfter": 3
+  },
+  "plenix": {
+   "modules": 251,
+   "equal": 251,
+   "differ": [],
+   "missing": 0,
+   "filesAfter": 251
+  }
+ },
+ "sizes": {
+  "material": {
+   "before": {
+    "raw": 7096,
+    "gzipPerFile": 3272
+   },
+   "after": {
+    "raw": 7096,
+    "gzipPerFile": 3272
+   }
+  },
+  "plenix": {
+   "before": {
+    "raw": 811206,
+    "gzipPerFile": 378777
+   },
+   "after": {
+    "raw": 755752,
+    "gzipPerFile": 379715
+   }
+  },
+  "platform.js": {
+   "before": {
+    "raw": 4015181,
+    "gzip": 946315
+   },
+   "after": {
+    "raw": 3991874,
+    "gzip": 945674
+   }
+  }
+ }
+}
+
+- Every module (251 Plenix, 3 Material written on demand) exports exactly the same object: deep-equal, 0 differences.
+- platform.js: raw -23,307 bytes; gzip -641 bytes. gzip already finds the repeated paths, so the gzip saving is small.
+- icons/plenix: raw -55,454 bytes (-6.8%); per-file gzip about the same.
