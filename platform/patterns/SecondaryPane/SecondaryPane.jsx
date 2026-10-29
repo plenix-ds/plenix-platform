@@ -15,7 +15,8 @@
      icon: an icon name or element at the start of the header row
      actions: controls at the end of the header row
      side: "start" (default; before the content) | "end"
-     width: "sm" (180px) | "md" (220px, default) | "lg" (280px), from --plx-comp-secondary-pane-width-*
+     width: "sm" (180px) | "md" (220px, default) | "lg" (280px), from --plx-comp-secondary-pane-width-*; each steps up one size from a window
+       1440px wide (220 | 260 | 320) and again from 1920px (260 | 320 | 400), set in system/grid.css from the -from-1440 and -from-1920 tokens
      collapsible: a Collapse button in the header folds the pane to a rail (an Expand button, then the rail items); default false
      collapsed / onCollapsedChange(next): the folded state, controlled; defaultCollapsed: its first state when not controlled
      rail: the items the folded rail shows under Expand (ToolRail.Item elements)
