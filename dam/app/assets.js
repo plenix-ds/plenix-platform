@@ -58,7 +58,7 @@ const SUITE_SESSION = exports.SUITE_SESSION = {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.VERSIONS = exports.USAGE_RIGHTS = exports.TRASH = exports.SORT_OPTIONS = exports.SEARCH_QUERY = exports.SEARCH_COUNT = exports.SAVED_SEARCHES = exports.RECENT_IMPORTS = exports.FOLDERS_OPEN = exports.FOLDERS = exports.COLLECTION_DETAIL = exports.COLLECTION_CARDS = exports.COLLECTIONS = exports.CATEGORY_TOTAL = exports.CATEGORY_DOWNLOADS = exports.CATEGORY_DETAIL = exports.CATEGORY_COUNT_LABEL = exports.CATEGORY_CARDS = exports.CATEGORIES_SHOWN = exports.CATEGORIES = exports.CARD_MENU = exports.ASSET_TOTAL = exports.ASSET_STATUSES = exports.ASSET_DOWNLOADS = exports.ASSETS = void 0;
+exports.VERSIONS = exports.USAGE_RIGHTS = exports.TRASH = exports.SAVED_SEARCHES = exports.RECENT_IMPORTS = exports.FOLDERS_OPEN = exports.FOLDERS = exports.COLLECTION_DETAIL = exports.COLLECTION_CARDS = exports.COLLECTIONS = exports.CATEGORY_TOTAL = exports.CATEGORY_DOWNLOADS = exports.CATEGORY_DETAIL = exports.CATEGORY_CARDS = exports.CATEGORIES_SHOWN = exports.CATEGORIES = exports.CARD_MENU = exports.ASSET_TOTAL = exports.ASSET_STATUSES = exports.ASSET_DOWNLOADS = exports.ASSETS = void 0;
 /* Plenix asset app · home page data (app/pages/home/homeData.js).
    DATA: every list here comes from the back end; these are the sample records the home page showed in HTML and in
    plenix.js (CATEGORIES, COLLECTIONS, assetData) until then, unchanged. Thumbnails are the stand-in images in assets/. */
@@ -113,7 +113,6 @@ const CATEGORY_CARDS = exports.CATEGORY_CARDS = [['Banner icon', 24, 5, 'Aug 28,
   status: 'Active'
 }));
 const CATEGORY_TOTAL = exports.CATEGORY_TOTAL = 48;
-const CATEGORY_COUNT_LABEL = exports.CATEGORY_COUNT_LABEL = '52 categories';
 const COLLECTION_CARDS = exports.COLLECTION_CARDS = [['Website Assets', 84, 'Aug 28, 2026', 'jordan'], ['Social Media', 42, 'Aug 25, 2026', 'jordan'], ['Print ready', 156, 'Aug 20, 2026', 'sarah'], ['Needs review', 23, 'Aug 14, 2026', 'daniel']].map(([name, count, updated, owner], i) => ({
   id: i,
   name,
@@ -138,10 +137,6 @@ const ASSETS = exports.ASSETS = [['Coptic Cross Gold Traditional', 'Cross - Trad
   owner: ['Jordan Avery', 'Sarah M.', 'John Deacon'][i % 3]
 }));
 const ASSET_TOTAL = exports.ASSET_TOTAL = 210;
-const SEARCH_QUERY = exports.SEARCH_QUERY = 'cross gold';
-const SEARCH_COUNT = exports.SEARCH_COUNT = 24;
-const SORT_OPTIONS = exports.SORT_OPTIONS = ['Relevance', 'Newest', 'Oldest', 'Name A-Z', 'Name Z-A', 'Size ▼', 'Size ▲', 'Modified'];
-
 // the details pane for a category (and the collection shown in the collections view)
 const CATEGORY_DETAIL = exports.CATEGORY_DETAIL = {
   name: 'Cross - Traditional',
@@ -292,9 +287,7 @@ function findOf(params) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.AssetHeader = AssetHeader;
 exports.AssetPage = AssetPage;
-exports.AssetStatusBar = AssetStatusBar;
 var _react = _interopRequireDefault(require("react"));
 var _plenixPlatform = require("plenix-platform");
 var _findAssets = require("../pages/home/findAssets.js");
@@ -792,12 +785,11 @@ function MyAccountPage() {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.VIEW_ALL = exports.VERSIONS = exports.USERS = exports.SERVER_STATUS = exports.SCHEDULED = exports.ROLES = exports.RESULT_VIEWS = exports.PROPERTIES = exports.PERMISSION_ROLES = exports.PERMISSION_AREAS = exports.LOG_PATH = exports.HOT_FOLDERS = exports.GROUPS = exports.FIELD_TOTAL = exports.FIELDS = exports.ENABLED_FOR = exports.EMAIL_TEMPLATES = exports.EDIT_ALL = exports.DB_TOTAL = exports.DB_TABLES = exports.DB_ROWS = exports.DB_COLUMNS = exports.CUSTOMIZATIONS = exports.CONVERSIONS = exports.CATALOG_TOTAL = exports.CATALOG_PARAMETERS = exports.ASSET_TYPES = exports.ACTIONS = void 0;
+exports.VIEW_ALL = exports.VERSIONS = exports.USERS = exports.SERVER_STATUS = exports.SCHEDULED = exports.RESULT_VIEWS = exports.PROPERTIES = exports.PERMISSION_ROLES = exports.PERMISSION_AREAS = exports.LOG_PATH = exports.HOT_FOLDERS = exports.GROUPS = exports.FIELD_TOTAL = exports.FIELDS = exports.ENABLED_FOR = exports.EMAIL_TEMPLATES = exports.EDIT_ALL = exports.DB_TOTAL = exports.DB_TABLES = exports.DB_ROWS = exports.DB_COLUMNS = exports.CUSTOMIZATIONS = exports.CONVERSIONS = exports.CATALOG_TOTAL = exports.CATALOG_PARAMETERS = exports.ASSET_TYPES = exports.ACTIONS = void 0;
 /* Plenix asset app · System Settings data (app/pages/systemSettingsData.js).
    DATA: every list here comes from the back end; these are the sample records the page shows until then (the same ones
    the HTML page showed). */
 
-const ROLES = exports.ROLES = ['Administrators', 'Catalogs Admins', 'Uploaders', 'Users', 'Anonymous'];
 const PROPERTIES = exports.PROPERTIES = {
   defaultRecordLabel: '${entitytable.name}',
   tabOrdering: '115',
@@ -2951,18 +2943,7 @@ function AssetInspector({
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.AdvancedSortDialog = AdvancedSortDialog;
-exports.CatEditFieldsDialog = CatEditFieldsDialog;
-exports.CategoriesFilterDialog = CategoriesFilterDialog;
 exports.DIALOGS = void 0;
-exports.EditFieldsCatDialog = EditFieldsCatDialog;
-exports.EditFieldsFileDialog = EditFieldsFileDialog;
-exports.MergedFilterDialog = MergedFilterDialog;
-exports.NewCatDialog = NewCatDialog;
-exports.NewCollectionDialog = NewCollectionDialog;
-exports.SaveSearchDialog = SaveSearchDialog;
-exports.TagsFilterDialog = TagsFilterDialog;
-exports.TypeFilterDialog = TypeFilterDialog;
 var _react = _interopRequireDefault(require("react"));
 var _plenixPlatform = require("plenix-platform");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -3821,7 +3802,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.DIALOGS = void 0;
-exports.UploadDialog = UploadDialog;
 var _react = _interopRequireDefault(require("react"));
 var _plenixPlatform = require("plenix-platform");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -4500,8 +4480,7 @@ const DIALOGS = exports.DIALOGS = {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.METADATA_FIELD_KEYS = exports.DIALOGS = exports.DEFAULT_FILTERS = void 0;
-exports.MetadataFilterDialog = MetadataFilterDialog;
+exports.DIALOGS = void 0;
 var _react = _interopRequireDefault(require("react"));
 var _plenixPlatform = require("plenix-platform");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -4645,10 +4624,7 @@ const GROUPS = [{
   shown: 2,
   fields: [['Channels', 'channels2', 'distributionchannels'], ['Published locations', 'publishedLocations', 'publishedlocations'], ['Auto assigned media', 'autoAssignedMedia', 'autoassignedmedia'], ['Conversion preset', 'conversionPreset', 'conversionpreset']]
 }];
-
-// Back-end field key for each field name, for the page to build its query from `value.fields`.
-const METADATA_FIELD_KEYS = exports.METADATA_FIELD_KEYS = Object.fromEntries(GROUPS.flatMap(g => g.fields.map(([, name, key]) => [name, key])));
-const DEFAULT_FILTERS = exports.DEFAULT_FILTERS = {
+const DEFAULT_FILTERS = {
   types: ['all'],
   fields: {}
 };
@@ -4802,22 +4778,8 @@ const DIALOGS = exports.DIALOGS = {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.BaCartDialog = BaCartDialog;
-exports.BaChangeCategoryDialog = BaChangeCategoryDialog;
-exports.BaCollectionDialog = BaCollectionDialog;
-exports.BaDeleteDialog = BaDeleteDialog;
-exports.BaDownloadAsDialog = BaDownloadAsDialog;
-exports.BaDownloadDialog = BaDownloadDialog;
-exports.BaMetadataDialog = BaMetadataDialog;
-exports.BaMoveDialog = BaMoveDialog;
-exports.BaRatingDialog = BaRatingDialog;
-exports.BaRenameDialog = BaRenameDialog;
-exports.BaShareDialog = BaShareDialog;
-exports.BaStatusDialog = BaStatusDialog;
-exports.BaTagsDialog = BaTagsDialog;
 exports.bulkComingSoon = exports.DIALOGS = void 0;
 exports.bulkDialogFor = bulkDialogFor;
-exports.isSingleOnly = void 0;
 var _react = _interopRequireDefault(require("react"));
 var _plenixPlatform = require("plenix-platform");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -5015,11 +4977,8 @@ function bulkDialogFor(action) {
   };
 }
 const bulkComingSoon = action => action + ' — coming soon';
-exports.bulkComingSoon = bulkComingSoon;
-const isSingleOnly = action => SINGLE_ONLY.indexOf(action) >= 0;
-
 /* ── small shared parts ── */
-exports.isSingleOnly = isSingleOnly;
+exports.bulkComingSoon = bulkComingSoon;
 const Caption = ({
   children
 }) => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Text, {

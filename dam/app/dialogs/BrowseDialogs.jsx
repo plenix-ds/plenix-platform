@@ -84,7 +84,7 @@ function useDraft(open, value, initial) {
 const toggleIn = (arr, name, on) => (on ? (arr.indexOf(name) >= 0 ? arr : arr.concat(name)) : arr.filter((v) => v !== name));
 
 /* ── Categories › Add New ── */
-export function NewCatDialog({ open, onClose, onSave }) {
+function NewCatDialog({ open, onClose, onSave }) {
   const toast = useToast();
   const uid = React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const [form, setForm] = React.useState({ name: '', description: '' });
@@ -152,16 +152,16 @@ function NameDialog({ open, onClose, onSave, title, icon, nameLabel, nameField, 
   );
 }
 
-export function SaveSearchDialog(props) {
+function SaveSearchDialog(props) {
   return <NameDialog {...props} title="Save search" icon="save" nameLabel="Search name" nameField="searchName" placeholder="e.g. High-res crosses" saved="Search saved" />;
 }
 
-export function NewCollectionDialog(props) {
+function NewCollectionDialog(props) {
   return <NameDialog {...props} title="Collections › Add New" icon="briefcase-plus" nameLabel="Collection name" nameField="collectionName" placeholder="Enter collection name..." saved="Collection created" />;
 }
 
 /* ── Advanced Sort ── */
-export function AdvancedSortDialog({ open, onClose, value, onApply }) {
+function AdvancedSortDialog({ open, onClose, value, onApply }) {
   const toast = useToast();
   const [draft, setDraft, commit] = useDraft(open, value, { field: 'Name', direction: 'asc' });
   const [q, setQ] = React.useState('');
@@ -214,18 +214,18 @@ function FieldVisibilityDialog({ open, onClose, value, onSave, title, descriptio
   );
 }
 
-export function EditFieldsCatDialog(props) {
+function EditFieldsCatDialog(props) {
   return <FieldVisibilityDialog {...props} title="Edit category fields" fields={CATEGORY_FIELDS}
     description="Choose which category attributes to show in the detail panel. Drag to reorder." />;
 }
 
-export function EditFieldsFileDialog(props) {
+function EditFieldsFileDialog(props) {
   return <FieldVisibilityDialog {...props} title="Edit asset fields" fields={ASSET_FIELDS}
     description="Choose which metadata fields to show in the detail panel. Drag to reorder." />;
 }
 
 /* ── Edit Fields: the fields on the category edit form ── */
-export function CatEditFieldsDialog({ open, onClose, onDone }) {
+function CatEditFieldsDialog({ open, onClose, onDone }) {
   const toast = useToast();
   const [fields, setFields] = React.useState(CATEGORY_FORM_FIELDS);
   const [forAll, setForAll] = React.useState(true);
@@ -326,20 +326,20 @@ function FilterDialog({ open, onClose, value, onApply, initial, title, icon, Pan
   );
 }
 
-export function CategoriesFilterDialog(props) {
+function CategoriesFilterDialog(props) {
   return <FilterDialog {...props} title="Filter by Categories" icon="grid-2x2" initial={DEFAULT_CATEGORIES} Panel={CategoriesPanel} />;
 }
 
-export function TypeFilterDialog(props) {
+function TypeFilterDialog(props) {
   return <FilterDialog {...props} title="Filter by Type" icon="image-b" initial={DEFAULT_TYPES} Panel={TypePanel} />;
 }
 
-export function TagsFilterDialog(props) {
+function TagsFilterDialog(props) {
   return <FilterDialog {...props} title="Filter by Tags" icon="tags" initial={DEFAULT_TAGS} Panel={TagsPanel} />;
 }
 
 /* ── Filters: Categories, Type and Tags in one dialog, one tab each ── */
-export function MergedFilterDialog({ open, onClose, tab = 'categories', value, onApply }) {
+function MergedFilterDialog({ open, onClose, tab = 'categories', value, onApply }) {
   // a page may hold only some of the three filters: the others start from their defaults
   const given = value && { categories: value.categories || DEFAULT_CATEGORIES, type: value.type || DEFAULT_TYPES, tags: value.tags || DEFAULT_TAGS };
   const [draft, setDraft, commit] = useDraft(open, given, { categories: DEFAULT_CATEGORIES, type: DEFAULT_TYPES, tags: DEFAULT_TAGS });

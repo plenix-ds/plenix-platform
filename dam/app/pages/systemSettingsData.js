@@ -2,8 +2,6 @@
    DATA: every list here comes from the back end; these are the sample records the page shows until then (the same ones
    the HTML page showed). */
 
-export const ROLES = ['Administrators', 'Catalogs Admins', 'Uploaders', 'Users', 'Anonymous'];
-
 export const PROPERTIES = {
   defaultRecordLabel: '${entitytable.name}', tabOrdering: '115', enableUploading: true, enableOnSearch: true, defaultResultsView: 'Grid',
   defaultSortField: '', uploadSourcepath: 'Module/${entitytableid.name} ${formatteddate} ${formattedyear} ${data.entity_date.yyyy} ${entityid.entityparentid.sourcepath}',

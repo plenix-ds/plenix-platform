@@ -359,7 +359,7 @@ function UploadFlow({ onClose }) {
   );
 }
 
-export function UploadDialog({ open, onClose }) {
+function UploadDialog({ open, onClose }) {
   return open ? <UploadFlow onClose={onClose} /> : null;
 }
 
