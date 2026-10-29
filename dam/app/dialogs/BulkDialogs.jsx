@@ -151,8 +151,6 @@ export function bulkDialogFor(action) {
   return { id, kind: CATEGORY_ACTIONS.indexOf(action) >= 0 ? 'category' : 'asset', singleOnly: SINGLE_ONLY.indexOf(action) >= 0 };
 }
 export const bulkComingSoon = (action) => action + ' — coming soon';
-export const isSingleOnly = (action) => SINGLE_ONLY.indexOf(action) >= 0;
-
 /* ── small shared parts ── */
 const Caption = ({ children }) => <Text as="p" variant="secondary">{children}</Text>;
 const match = (q) => (s) => !q || s.toLowerCase().indexOf(q.trim().toLowerCase()) >= 0;
@@ -176,7 +174,7 @@ function useOpenKey(open) {
 }
 
 /* ── baDelete ── */
-export function BaDeleteDialog({ open, onClose, count = 1, kind = 'asset', onConfirm }) {
+function BaDeleteDialog({ open, onClose, count = 1, kind = 'asset', onConfirm }) {
   return (
     <ConfirmDialog open={open} destructive confirmLabel="Delete" onCancel={onClose}
       onConfirm={() => { if (onConfirm) onConfirm(); onClose(); }}
@@ -188,7 +186,7 @@ export function BaDeleteDialog({ open, onClose, count = 1, kind = 'asset', onCon
 }
 
 /* ── baCollection: pick any number of collections (toggleClass 'selected') ── */
-export function BaCollectionDialog({ open, onClose, count = 1, kind = 'asset', onApply, onCreateCollection }) {
+function BaCollectionDialog({ open, onClose, count = 1, kind = 'asset', onApply, onCreateCollection }) {
   return <CollectionInner key={useOpenKey(open)} open={open} onClose={onClose} count={count} kind={kind} onApply={onApply} onCreateCollection={onCreateCollection} />;
 }
 function CollectionInner({ open, onClose, count, kind, onApply, onCreateCollection }) {
@@ -226,7 +224,7 @@ function CategoryPicker({ label, placeholder, name, list, value, onChange }) {
 }
 
 /* ── baMove ── */
-export function BaMoveDialog({ open, onClose, count = 1, kind = 'asset', onApply }) {
+function BaMoveDialog({ open, onClose, count = 1, kind = 'asset', onApply }) {
   return <MoveInner key={useOpenKey(open)} open={open} onClose={onClose} count={count} kind={kind} onApply={onApply} />;
 }
 function MoveInner({ open, onClose, count, kind, onApply }) {
@@ -244,7 +242,7 @@ function MoveInner({ open, onClose, count, kind, onApply }) {
 }
 
 /* ── baChangeCategory ── */
-export function BaChangeCategoryDialog({ open, onClose, count = 1, kind = 'asset', currentCategory = CURRENT_CATEGORY, onApply }) {
+function BaChangeCategoryDialog({ open, onClose, count = 1, kind = 'asset', currentCategory = CURRENT_CATEGORY, onApply }) {
   return <ChangeCategoryInner key={useOpenKey(open)} open={open} onClose={onClose} count={count} kind={kind} currentCategory={currentCategory} onApply={onApply} />;
 }
 function ChangeCategoryInner({ open, onClose, count, kind, currentCategory, onApply }) {
@@ -264,7 +262,7 @@ function ChangeCategoryInner({ open, onClose, count, kind, currentCategory, onAp
 }
 
 /* ── baCart ── */
-export function BaCartDialog({ open, onClose, count = 1, kind = 'asset', onApply }) {
+function BaCartDialog({ open, onClose, count = 1, kind = 'asset', onApply }) {
   return <CartInner key={useOpenKey(open)} open={open} onClose={onClose} count={count} kind={kind} onApply={onApply} />;
 }
 function CartInner({ open, onClose, count, kind, onApply }) {
@@ -285,7 +283,7 @@ function CartInner({ open, onClose, count, kind, onApply }) {
 }
 
 /* ── baStatus ── */
-export function BaStatusDialog({ open, onClose, count = 1, kind = 'asset', onApply }) {
+function BaStatusDialog({ open, onClose, count = 1, kind = 'asset', onApply }) {
   return <StatusInner key={useOpenKey(open)} open={open} onClose={onClose} count={count} kind={kind} onApply={onApply} />;
 }
 function StatusInner({ open, onClose, count, kind, onApply }) {
@@ -316,7 +314,7 @@ function MetaControl({ field, value, onChange }) {
   if (kind === 'textarea') return <Textarea rows={2} {...common} />;
   return <Input type={kind} {...common} />;
 }
-export function BaMetadataDialog({ open, onClose, count = 1, kind = 'asset', onApply }) {
+function BaMetadataDialog({ open, onClose, count = 1, kind = 'asset', onApply }) {
   return <MetadataInner key={useOpenKey(open)} open={open} onClose={onClose} count={count} kind={kind} onApply={onApply} />;
 }
 function MetadataInner({ open, onClose, count, kind, onApply }) {
@@ -358,7 +356,7 @@ function MetadataInner({ open, onClose, count, kind, onApply }) {
 
 /* ── baTags: × removes a current tag; a suggested tag is added on the first click and removed on the second
    (toggleSuggestedChip) ── */
-export function BaTagsDialog({ open, onClose, count = 1, kind = 'asset', onApply }) {
+function BaTagsDialog({ open, onClose, count = 1, kind = 'asset', onApply }) {
   return <TagsInner key={useOpenKey(open)} open={open} onClose={onClose} count={count} kind={kind} onApply={onApply} />;
 }
 function TagsInner({ open, onClose, count, kind, onApply }) {
@@ -396,7 +394,7 @@ function TagsInner({ open, onClose, count, kind, onApply }) {
 }
 
 /* ── baRating (setBaStars; Clear sets 0) ── */
-export function BaRatingDialog({ open, onClose, count = 1, kind = 'asset', onApply }) {
+function BaRatingDialog({ open, onClose, count = 1, kind = 'asset', onApply }) {
   return <RatingInner key={useOpenKey(open)} open={open} onClose={onClose} count={count} kind={kind} onApply={onApply} />;
 }
 function RatingInner({ open, onClose, count, kind, onApply }) {
@@ -413,7 +411,7 @@ function RatingInner({ open, onClose, count, kind, onApply }) {
 }
 
 /* ── baShare ── */
-export function BaShareDialog({ open, onClose, count = 1, kind = 'asset', onApply }) {
+function BaShareDialog({ open, onClose, count = 1, kind = 'asset', onApply }) {
   return <ShareInner key={useOpenKey(open)} open={open} onClose={onClose} count={count} kind={kind} onApply={onApply} />;
 }
 function ShareInner({ open, onClose, count, kind, onApply }) {
@@ -463,7 +461,7 @@ function ShareInner({ open, onClose, count, kind, onApply }) {
 }
 
 /* ── baDownload ── */
-export function BaDownloadDialog({ open, onClose, count = 1, kind = 'asset', onApply }) {
+function BaDownloadDialog({ open, onClose, count = 1, kind = 'asset', onApply }) {
   return <DownloadInner key={useOpenKey(open)} open={open} onClose={onClose} count={count} kind={kind} onApply={onApply} />;
 }
 function DownloadInner({ open, onClose, count, kind, onApply }) {
@@ -484,7 +482,7 @@ function DownloadInner({ open, onClose, count, kind, onApply }) {
 }
 
 /* ── baDownloadAs ── */
-export function BaDownloadAsDialog({ open, onClose, count = 1, kind = 'asset', onApply }) {
+function BaDownloadAsDialog({ open, onClose, count = 1, kind = 'asset', onApply }) {
   return <DownloadAsInner key={useOpenKey(open)} open={open} onClose={onClose} count={count} kind={kind} onApply={onApply} />;
 }
 function DownloadAsInner({ open, onClose, count, kind, onApply }) {
@@ -517,7 +515,7 @@ function DownloadAsInner({ open, onClose, count, kind, onApply }) {
 }
 
 /* ── baRename (category bar only, one category) ── */
-export function BaRenameDialog({ open, onClose, itemName = CURRENT_CATEGORY, onApply }) {
+function BaRenameDialog({ open, onClose, itemName = CURRENT_CATEGORY, onApply }) {
   return <RenameInner key={useOpenKey(open)} open={open} onClose={onClose} itemName={itemName} onApply={onApply} />;
 }
 function RenameInner({ open, onClose, itemName, onApply }) {

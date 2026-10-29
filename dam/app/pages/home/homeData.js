@@ -43,8 +43,6 @@ export const CATEGORY_CARDS = [
   ['Fonts', 18, 20, 'Jul 10, 2026'],
 ].map(([name, count, thumb, modified], i) => ({ id: i, name, count, thumb: 'assets/thumb-' + thumb + '.svg', modified, status: 'Active' }));
 export const CATEGORY_TOTAL = 48;
-export const CATEGORY_COUNT_LABEL = '52 categories';
-
 export const COLLECTION_CARDS = [['Website Assets', 84, 'Aug 28, 2026', 'jordan'], ['Social Media', 42, 'Aug 25, 2026', 'jordan'], ['Print ready', 156, 'Aug 20, 2026', 'sarah'], ['Needs review', 23, 'Aug 14, 2026', 'daniel']]
   .map(([name, count, updated, owner], i) => ({ id: i, name, count, updated, owner }));
 
@@ -62,11 +60,6 @@ export const ASSETS = [
   tags: name.toLowerCase().split(' '), owner: ['Jordan Avery', 'Sarah M.', 'John Deacon'][i % 3],
 }));
 export const ASSET_TOTAL = 210;
-export const SEARCH_QUERY = 'cross gold';
-export const SEARCH_COUNT = 24;
-
-export const SORT_OPTIONS = ['Relevance', 'Newest', 'Oldest', 'Name A-Z', 'Name Z-A', 'Size ▼', 'Size ▲', 'Modified'];
-
 // the details pane for a category (and the collection shown in the collections view)
 export const CATEGORY_DETAIL = {
   name: 'Cross - Traditional', count: '78 assets', parent: 'Categories (root)', parents: ['Categories (root)', 'Borders', 'Branding', 'Clergy', 'Crosses'],

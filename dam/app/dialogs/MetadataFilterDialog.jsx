@@ -151,10 +151,7 @@ const GROUPS = [
   ] },
 ];
 
-// Back-end field key for each field name, for the page to build its query from `value.fields`.
-export const METADATA_FIELD_KEYS = Object.fromEntries(GROUPS.flatMap((g) => g.fields.map(([, name, key]) => [name, key])));
-
-export const DEFAULT_FILTERS = { types: ['all'], fields: {} };
+const DEFAULT_FILTERS = { types: ['all'], fields: {} };
 
 
 // filterAdvMeta: All and the specific types exclude each other; clearing the last type turns All back on.
@@ -191,7 +188,7 @@ function MetaGroup({ group, index, fields, onField, collapsed, onToggle, expande
   );
 }
 
-export function MetadataFilterDialog({ open, onClose, value, onApply }) {
+function MetadataFilterDialog({ open, onClose, value, onApply }) {
   const [applied, setApplied] = React.useState(value || DEFAULT_FILTERS);
   const current = value || applied;
   const [draft, setDraft] = React.useState(current);

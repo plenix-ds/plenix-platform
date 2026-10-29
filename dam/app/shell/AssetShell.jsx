@@ -29,7 +29,7 @@ const afterSearchView = (open) => {
   window.history.back();
 };
 
-export function AssetHeader({ current, query = '', onSearch, onUpload }) {
+function AssetHeader({ current, query = '', onSearch, onUpload }) {
   const [q, setQ] = React.useState(query);
   const [kept, updateKept] = useViewState('assets');
   const recent = Array.isArray(kept.recentSearches) ? kept.recentSearches : [];
@@ -76,7 +76,7 @@ export function AssetHeader({ current, query = '', onSearch, onUpload }) {
   );
 }
 
-export function AssetStatusBar() {
+function AssetStatusBar() {
   return <StatusBar start={<><StatusIcon tone="success" size="sm">Library online</StatusIcon><span>{dataPhrase('{n} assets | {size}', { n: LIBRARY.assets, size: LIBRARY.size })}</span></>} end={LIBRARY.owner} />;
 }
 
