@@ -174,11 +174,13 @@ export function SeriesChart({ kind = 'line', title, description, data = NONE, x 
     }
     const named = { nameLocation: 'middle', nameMoveOverlap: true };
     const rule = { show: true, lineStyle: { color: tk.axis.color, width: tk.axis.width } };
-    const xAxis = Object.assign({ name: xLabel, nameGap: tk.tickOffset * 2 + xLine, inverse: tk.rtl }, named,
+    // time and sequence run left to right in every language, Arabic pages included (owner, issue 584 B); the labels
+    // and the legend still follow the page's direction
+    const xAxis = Object.assign({ name: xLabel, nameGap: tk.tickOffset * 2 + xLine, inverse: false }, named,
       type === 'band' ? Object.assign({ type: 'category', boundaryGap: false, data: xTexts }, xLine > tk.tick.fontSize ? { axisLabel: { lineHeight: xLine } } : {})
         : { type: type === 'time' ? 'time' : 'value', min: xValue(v0), max: xValue(v1), axisLine: rule, splitLine: { show: false },
           axisLabel: dates ? { customValues: dates.customValues, formatter: dates.formatter } : { formatter: (v) => fmts.current.fmtX(v) } });
-    const yAxis = Object.assign({ type: 'value', name: yLabel, nameGap: 0, position: tk.rtl ? 'right' : 'left',
+    const yAxis = Object.assign({ type: 'value', name: yLabel, nameGap: 0, position: 'left',
       axisLabel: { formatter: (v) => (percent ? formatPercent(v) : fmts.current.fmtV(v)) } }, named,
       percent ? { min: 0, max: 1 } : Array.isArray(yDomain) ? { min: yDomain[0], max: yDomain[1] } : { scale: !(zero || area) });
     const value = (i, c) => {
