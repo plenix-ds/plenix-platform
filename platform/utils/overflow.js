@@ -64,7 +64,7 @@ export function useTruncated(ref, key, on = true) {
 /* inBar(el) (issue 558): the element sits in a bar or a header that sizes its fields (a "content" pattern of layout.json: layout-modes.css gives it
    --plx-comp-field-context-content-max-inline-size). useInBar(ref, not): the same, read once the element is on the page; false inside an element that
    matches the selector `not` (the field is part of a larger control there, such as an InputGroup). */
-export const inBar = (el) => !!el && typeof getComputedStyle === 'function' && getComputedStyle(el).getPropertyValue('--plx-comp-field-context-content-max-inline-size').trim() !== '';
+const inBar = (el) => !!el && typeof getComputedStyle === 'function' && getComputedStyle(el).getPropertyValue('--plx-comp-field-context-content-max-inline-size').trim() !== '';
 export function useInBar(ref, not) {
   const [bar, setBar] = React.useState(false);
   React.useLayoutEffect(() => { const el = ref.current; setBar(inBar(el) && !(not && el.closest(not))); }, [ref, not]);

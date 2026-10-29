@@ -43,7 +43,7 @@ import { useStrings } from '../providers/LocaleProvider.jsx';
 const GROUP_HEAD = 20, GROUP_PAD = 4, LABEL_PAD = 4, NAME_W = 40, NAME_H = 20, VALUE_H = 36, RING = 0;
 
 // the squarified layout of values (sorted largest first) in a rectangle: [{ x, y, width, height }] in the values' order
-export function squarify(values, x, y, width, height) {
+function squarify(values, x, y, width, height) {
   const out = [];
   const total = values.reduce((a, b) => a + b, 0);
   if (!total || width <= 0 || height <= 0) return values.map(() => ({ x, y, width: 0, height: 0 }));

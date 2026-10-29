@@ -34,7 +34,7 @@ import CloseIcon from 'plenix-platform/icons/plenix/close';
 import PlusIcon from 'plenix-platform/icons/plenix/plus';
 import SortIcon from 'plenix-platform/icons/plenix/sort';
 
-export const fieldOption = (f) => ({ value: f.value, label: f.label, icon: KIND_ICONS[kindOf(f)] });
+const fieldOption = (f) => ({ value: f.value, label: f.label, icon: KIND_ICONS[kindOf(f)] });
 
 export function SortPanel({ fields = [], value = [], onChange, grouped = false, inline = false, strings }) {
   const t = useStrings('sortPanel', strings);

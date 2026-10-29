@@ -90,7 +90,7 @@ import { useMonitorWidth } from '../../utils/monitorWidths.js';
 // the five layout modes (the Layout foundation; app-shell.css draws them)
 const LAYOUTS = ['fluid', 'contained', 'hybrid', 'multi-pane', 'focus'];
 
-export const LayoutContext = React.createContext(null);
+const LayoutContext = React.createContext(null);
 export const useAppLayout = () => React.useContext(LayoutContext);
 /* the shell's sizes and breakpoints come from the tokens, never from numbers here:
    --plx-sys-shell-nav-width, -min-width, -max-width, --plx-sys-shell-splitter-step, --plx-sys-shell-rail-below,
@@ -111,8 +111,8 @@ export function useMedia(query) {
   }, [query]);
   return on;
 }
-export const readPref = (key, fallback) => { try { const v = JSON.parse(localStorage.getItem(key)); return v === null || v === undefined ? fallback : v; } catch (e) { return fallback; } };
-export const writePref = (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) { /* not stored: it lasts for this visit */ } };
+const readPref = (key, fallback) => { try { const v = JSON.parse(localStorage.getItem(key)); return v === null || v === undefined ? fallback : v; } catch (e) { return fallback; } };
+const writePref = (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) { /* not stored: it lasts for this visit */ } };
 
 export function AppShell({ header, sideNav, panel, footer, page = 'workspace', mainId = 'main', mainClassName, strings, className, children }) {
   // the page's kind, claimed by a pattern on the page when it is that kind of page (SettingsLayout), else the page prop

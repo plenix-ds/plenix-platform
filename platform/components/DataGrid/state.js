@@ -6,7 +6,7 @@
    Notes: Canonical row keys preserve the distinction between numeric and string IDs. */
 export const recordKey = value => typeof value + ':' + String(value);
 export const normalizeSort = value => (Array.isArray(value) ? value : []).filter(x => x && (x.field || x.column)).map(x => ({ id: x.field || x.column, desc: x.dir === 'desc' }));
-export function readView(key) { try { return key ? JSON.parse(localStorage.getItem('plx-data-grid:' + key) || localStorage.getItem('plx-data-table:' + key) || 'null') : null; } catch (e) { return null; } }   // the old key (before 2026-10-19) still read
+function readView(key) { try { return key ? JSON.parse(localStorage.getItem('plx-data-grid:' + key) || localStorage.getItem('plx-data-table:' + key) || 'null') : null; } catch (e) { return null; } }   // the old key (before 2026-10-19) still read
 export function writeView(key, view) { if (key) try { localStorage.setItem('plx-data-grid:' + key, JSON.stringify(view)); } catch (e) { /* disabled storage */ } }
 export const visibilityOf = hidden => Object.fromEntries((Array.isArray(hidden) ? hidden : []).map(field => [field, false]));
 export const valueAt = (row, field) => String(field).split('.').reduce((value, key) => value == null ? undefined : value[key], row);
