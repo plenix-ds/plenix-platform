@@ -8,7 +8,7 @@
    The probe is proved able to see the old behavior first: the same bundle without the address line (what the old build was) asks for no icon and draws
      nothing. Then: renamed in assets/, the icon file is asked for beside the bundle and the icon is drawn; and the npm package's dist/index.js is left out on
      purpose (it carries no icon folder): no icon request.
-   Usage: node tests/icon-module-url-284.test.js   (run by layout.test.js when the Icon component or build-packages.js changed; needs the release build) */
+   Usage: node tests/icon-module-url-284.test.js   (run by layout.test.js when the Icon component changed; needs the release build) */
 const assert = require('assert/strict'), fs = require('fs'), os = require('os'), path = require('path'), { execFileSync } = require('child_process');
 const { launch } = require('./lib');
 const ROOT = path.resolve(__dirname, '..'), VERSION = require(path.join(ROOT, 'package.json')).version;

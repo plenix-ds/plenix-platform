@@ -6967,6 +6967,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
 //      loaded once from the library (platform/icons/library beside the bundle, or the CDN's /cdn/material/<commit>/)
 //      and drawn the same way.
 //   4. An unknown name draws nothing (never a filled square) and warns once, with the closest names.
+//   A file that fails to load (the network, a 5xx) is asked for once more after a short pause; a 404 is answered once; after two
+//   failures the icon draws nothing for the session (#283).
 // The outline or the filled version, at optical sizes 20 and 24: the stylesheet shows the one the context draws (icon.css).
 const LARGE = {
   lg: true,
@@ -7219,12 +7221,16 @@ function readCapped(response) {
 // "plenix:" and a Plenix layout file (plenix:chevron-right-24)
 const files = new Map();
 const PLENIX_FILE = 'plenix:';
+const RETRY_AFTER_MS = 250; // the pause before a failed icon file is asked for once more
 function loadFile(key) {
   if (files.has(key)) return files.get(key);
   const fromPlenix = key.startsWith(PLENIX_FILE),
     file = fromPlenix ? key.slice(PLENIX_FILE.length) : key,
     root = fromPlenix ? plenixFiles() : base();
-  const job = !root || typeof fetch !== 'function' ? Promise.resolve(null) : fetch(root + file + '.svg').then(r => r.ok ? readCapped(r) : null).then(text => parseSvg(text, file + '.svg')).catch(() => null).then(glyph => {
+  // a network failure or a server error (5xx) is tried once more after a short pause (#283); a file that is not there (404), too
+  // large or not a drawing is answered once. Two failures draw nothing for the session (never a square).
+  const attempt = () => fetch(root + file + '.svg').then(r => r.ok ? readCapped(r) : r.status >= 500 ? Promise.reject(new Error('icon file ' + r.status)) : null);
+  const job = !root || typeof fetch !== 'function' ? Promise.resolve(null) : attempt().catch(() => new Promise(resolve => setTimeout(resolve, RETRY_AFTER_MS)).then(attempt)).then(text => parseSvg(text, file + '.svg')).catch(() => null).then(glyph => {
     files.set(key, glyph);
     return glyph;
   });
