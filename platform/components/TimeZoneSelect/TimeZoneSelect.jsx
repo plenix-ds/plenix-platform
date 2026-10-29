@@ -70,6 +70,7 @@ function longName(zone, date, locale) {
   try { const p = new Intl.DateTimeFormat(locale, { timeZone: zone, timeZoneName: 'long' }).formatToParts(date).find((x) => x.type === 'timeZoneName'); return p ? p.value : ''; } catch (e) { return ''; }
 }
 
+// Called directly (outside a component), it reads the page's language (formatLocale), not a LocaleProvider's catalogs; TimeZoneSelect passes its own words in strings.
 export function timeZoneOptions({ zones, date = new Date(), locale, strings } = {}) {
   // not a hook (it is exported, and the component calls it inside useMemo): the words are the locale's catalog section with strings on top
   const lang = locale || formatLocale();

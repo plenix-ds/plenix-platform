@@ -249,8 +249,8 @@ export function RichTextEditor({ label, defaultValue = '', onChange, toolbar = '
   invalid, disabled = false, strings, className, id, ...rest }) {
   const t = useStrings('richTextEditor', strings);
   // heading and tip are messages with {n}, {name} and {keys}; an app's own function in strings still works
-  const headingText = (n) => (typeof t.heading === 'function' ? t.heading(n) : String(t.heading).replace('{n}', formatNumber(n)));
-  const tipText = (name, keys) => (typeof t.tip === 'function' ? t.tip(name, keys) : String(t.tip).replace('{name}', name).replace('{keys}', keys));
+  const headingText = (n) => (typeof t.heading === 'function' ? t.heading(n) : String(t.heading).replace('{n}', () => formatNumber(n)));
+  const tipText = (name, keys) => (typeof t.tip === 'function' ? t.tip(name, keys) : String(t.tip).replace('{name}', () => name).replace('{keys}', () => keys));
   const auto = useUid('plx-rte');
   const areaId = id || auto + '-area';
   const area = React.useRef(null), list = React.useRef(null), firstField = React.useRef(null), groupsRef = React.useRef(null), picker = React.useRef(null);
