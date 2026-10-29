@@ -240,7 +240,15 @@ export default {
     "noMatches": "لا توجد نتائج مطابقة",
     "empty": "لا توجد عناصر",
     "remove": "إزالة {label}",
-    "columns": "الخيارات"
+    "columns": "الخيارات",
+    "results": {
+      "zero": "لا توجد تطابقات",
+      "one": "تطابق واحد",
+      "two": "تطابقان",
+      "few": "{n} تطابقات",
+      "many": "{n} تطابقًا",
+      "other": "{n} تطابق"
+    }
   },
   "codeBlock": {
     "code": "الرمز",
@@ -255,7 +263,15 @@ export default {
     "loading": "جارٍ التحميل…",
     "error": "تعذّر تحميل الخيارات",
     "emptyText": "لا توجد نتائج مطابقة",
-    "removeItem": "إزالة {label}"
+    "removeItem": "إزالة {label}",
+    "results": {
+      "zero": "لا توجد خيارات",
+      "one": "خيار واحد",
+      "two": "خياران",
+      "few": "{n} خيارات",
+      "many": "{n} خيارًا",
+      "other": "{n} خيار"
+    }
   },
   "commandMenu": {
     "label": "الأوامر",
@@ -441,7 +457,15 @@ export default {
     "browse": "تصفح كل {entityName}",
     "loading": "جارٍ التحميل…",
     "error": "تعذّر تحميل النتائج",
-    "remove": "إزالة {label}"
+    "remove": "إزالة {label}",
+    "results": {
+      "zero": "لا توجد نتائج",
+      "one": "نتيجة واحدة",
+      "two": "نتيجتان",
+      "few": "{n} نتائج",
+      "many": "{n} نتيجةً",
+      "other": "{n} نتيجة"
+    }
   },
   "errorSummary": {
     "one": "توجد مشكلة",
@@ -721,7 +745,9 @@ export default {
     "groupInsert": "إدراج",
     "groupHistory": "السجل",
     "leave": "اضغط Tab أو Shift+Tab للخروج من المحرّر",
-    "hint": "Escape ثم Tab للخروج من المحرّر"
+    "hint": "Escape ثم Tab للخروج من المحرّر",
+    "heading": "عنوان {n}",
+    "tip": "{name} ({keys})"
   },
   "roleLabel": {
     "owner": "المالك",
@@ -804,6 +830,14 @@ export default {
       "Europe": "أوروبا",
       "Indian": "المحيط الهندي",
       "Pacific": "المحيط الهادئ"
+    },
+    "results": {
+      "zero": "لا توجد مناطق زمنية",
+      "one": "منطقة زمنية واحدة",
+      "two": "منطقتان زمنيتان",
+      "few": "{n} مناطق زمنية",
+      "many": "{n} منطقةً زمنية",
+      "other": "{n} منطقة زمنية"
     }
   },
   "transferList": {

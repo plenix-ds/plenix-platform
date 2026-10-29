@@ -40,7 +40,7 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
-import { formatLocale } from '../../utils/format.js';
+import { formatLocale, formatNumber } from '../../utils/format.js';
 import { localDigits, toLatinDigits } from '../../utils/digits.js';
 import { useDigits } from '../../providers/LocaleProvider.jsx';
 import { Isolate } from '../Isolate/Isolate.jsx';
@@ -49,7 +49,7 @@ import { useFloating, FLOATING_ANCHOR } from '../../utils/floating.js';
 
 // the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
 const TOP_LAYER = FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings, useLocale, createTranslator } from '../../providers/LocaleProvider.jsx';
 
 // a few zones for browsers without Intl.supportedValuesOf
 const FALLBACK = ['America/Los_Angeles', 'America/Denver', 'America/Chicago', 'America/New_York', 'America/Sao_Paulo', 'Europe/London', 'Europe/Paris', 'Europe/Berlin',
@@ -71,9 +71,10 @@ function longName(zone, date, locale) {
 }
 
 export function timeZoneOptions({ zones, date = new Date(), locale, strings } = {}) {
-  const t = useStrings('timeZoneSelect', strings);
-  const regions = t.regions;
+  // not a hook (it is exported, and the component calls it inside useMemo): the words are the locale's catalog section with strings on top
   const lang = locale || formatLocale();
+  const t = Object.assign({}, createTranslator(lang).section('timeZoneSelect'), strings);
+  const regions = t.regions;
   const all = zones || (typeof Intl.supportedValuesOf === 'function' ? Intl.supportedValuesOf('timeZone') : FALLBACK);
   const list = all.indexOf('UTC') >= 0 || zones ? all : ['UTC'].concat(all);
   return list.map((zone) => {
@@ -94,6 +95,7 @@ const offsetKeys = (o) => { const sign = o.minutes < 0 ? '-' : '+', a = Math.abs
 export const TimeZoneSelect = React.forwardRef(function TimeZoneSelect({ value, onChange, grouped = true, showOffset = true, zones, date, placeholder,
   label, invalid, disabled, locale, strings, id, className, ...rest }, ref) {
   const t = useStrings('timeZoneSelect', strings);
+  const loc = useLocale();
   const digits = useDigits();
   const auto = 'plx-tz' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const listId = auto + '-list';
@@ -110,13 +112,13 @@ export const TimeZoneSelect = React.forwardRef(function TimeZoneSelect({ value, 
   // the options for the day (offsets change with daylight saving time), sorted: by region then city, or by offset
   const options = React.useMemo(() => {
     const at = date ? new Date(date) : new Date();
-    const out = timeZoneOptions({ zones, date: at, locale, strings });
+    const out = timeZoneOptions({ zones, date: at, locale, strings: t });
     // a value the browser lists under another name (Asia/Kolkata, listed as Asia/Calcutta) takes that zone's place
     if (value && !out.some((o) => o.value === value)) {
       let canonical = null;
       try { canonical = new Intl.DateTimeFormat('en-US', { timeZone: value }).resolvedOptions().timeZone; } catch (e) { canonical = null; }
       if (canonical) {
-        const own = timeZoneOptions({ zones: [value], date: at, locale, strings })[0];
+        const own = timeZoneOptions({ zones: [value], date: at, locale, strings: t })[0];
         const i = out.findIndex((o) => o.value === canonical);
         if (i >= 0) out[i] = own; else out.push(own);
       }
@@ -126,11 +128,11 @@ export const TimeZoneSelect = React.forwardRef(function TimeZoneSelect({ value, 
     return grouped
       ? out.sort((a, b) => (a.region === t.other) - (b.region === t.other) || a.region.localeCompare(b.region) || byName(a, b))
       : out.sort((a, b) => a.minutes - b.minutes || byName(a, b));
-  }, [day, zoneKey, locale, grouped, value]);   // eslint-disable-line react-hooks/exhaustive-deps
+  }, [day, zoneKey, locale, loc.locale, grouped, value]);   // eslint-disable-line react-hooks/exhaustive-deps
   const current = options.find((o) => o.value === value) || null;
   const q = fold(text.trim());
   const shown = q ? options.filter((o) => q.split(/\s+/).every((w) => o.search.indexOf(w) >= 0)) : options;
-  React.useEffect(() => { if (open && q) announce(t.results(shown.length)); }, [q, open]);   // eslint-disable-line react-hooks/exhaustive-deps
+  React.useEffect(() => { if (open && q) announce(typeof t.results === 'function' ? t.results(shown.length) : loc.t('timeZoneSelect.results', { count: shown.length, n: formatNumber(shown.length) })); }, [q, open]);   // eslint-disable-line react-hooks/exhaustive-deps
   React.useEffect(() => {
     if (!open) return undefined;
     const off = (e) => { if (wrap.current && !wrap.current.contains(e.target)) { setOpen(false); setText(''); } };

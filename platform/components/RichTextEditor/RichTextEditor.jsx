@@ -93,7 +93,8 @@ import { CATEGORY_COLORS } from '../ColorSwatch/categoryColors.js';
 import { hotkeyLabel, isMac } from '../../utils/hotkey.js';
 import { loadTiptap } from './tiptap.js';
 import { cleanRichText, RICH_TEXT_STYLE_PROPERTIES, SAFE_HREF } from '../../utils/richTextClean.js';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
+import { formatNumber } from '../../utils/format.js';
 export { cleanRichText, RICH_TEXT_STYLE_PROPERTIES };
 
 
@@ -247,6 +248,9 @@ function makeEditor(T, el, o) {
 export function RichTextEditor({ label, defaultValue = '', onChange, toolbar = 'basic', markdownShortcuts = true, mentions, placeholder, readOnly = false,
   invalid, disabled = false, strings, className, id, ...rest }) {
   const t = useStrings('richTextEditor', strings);
+  // heading and tip are messages with {n}, {name} and {keys}; an app's own function in strings still works
+  const headingText = (n) => (typeof t.heading === 'function' ? t.heading(n) : String(t.heading).replace('{n}', formatNumber(n)));
+  const tipText = (name, keys) => (typeof t.tip === 'function' ? t.tip(name, keys) : String(t.tip).replace('{name}', name).replace('{keys}', keys));
   const auto = useUid('plx-rte');
   const areaId = id || auto + '-area';
   const area = React.useRef(null), list = React.useRef(null), firstField = React.useRef(null), groupsRef = React.useRef(null), picker = React.useRef(null);
@@ -449,14 +453,14 @@ export function RichTextEditor({ label, defaultValue = '', onChange, toolbar = '
   const toolButton = (name) => {
     const keys = keysOf(name), off = !usable || (name === 'undo' && !formats.undo) || (name === 'redo' && !formats.redo);
     return (
-      <Tooltip key={name} content={keys ? t.tip(t[name], hotkeyLabel(keys)) : t[name]} disabled={off}>
+      <Tooltip key={name} content={keys ? tipText(t[name], hotkeyLabel(keys)) : t[name]} disabled={off}>
         <Button variant="ghost" size="sm" pressed={pressedOf(name)} icon={ICONS[name]} iconOnly label={t[name]}
           aria-keyshortcuts={keys ? keysAria(keys) : undefined} disabled={off}
           onMouseDown={(e) => e.preventDefault()} onClick={() => apply(name)}>{t[name]}</Button>
       </Tooltip>
     );
   };
-  const blockName = (b) => (!b || b === 'paragraph' ? t.paragraph : t.heading(Number(b.slice(1))));
+  const blockName = (b) => (!b || b === 'paragraph' ? t.paragraph : headingText(Number(b.slice(1))));
   const fontName = (f) => { const hit = RICH_TEXT_FONTS.find((x) => x[1] === f); return f ? (hit ? hit[0] : f.replace(/["']/g, '').split(',')[0]) : t.font; };
   // the menus' items, the same in the toolbar's menus and in the More menu's submenus
   const blockItems = () => (

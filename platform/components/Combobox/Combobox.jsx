@@ -59,7 +59,8 @@ import { Tag } from '../Tag/Tag.jsx';
 import { Spinner } from '../Loading/Loading.jsx';
 import { announce } from '../../utils/announce.jsx';
 import { useFloating, FLOATING_ANCHOR } from '../../utils/floating.js';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
+import { formatNumber } from '../../utils/format.js';
 
 // the top layer and CSS anchor positioning (as Menu, Popover and Select), checked once
 const TOP_LAYER = FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
@@ -68,6 +69,7 @@ export const Combobox = React.forwardRef(function Combobox({ options = [], value
   placeholder, label, invalid, disabled, emptyText, loadOptions, loadDelay = 300, minChars = 0, loading = false, marks, strings,
   className, id, size, ...rest }, ref) {
   const t = useStrings('combobox', strings), words = t;
+  const loc = useLocale();
   if (emptyText === undefined) emptyText = t.emptyText;
   const auto = 'plx-cb' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const listId = auto + '-list';
@@ -97,7 +99,7 @@ export const Combobox = React.forwardRef(function Combobox({ options = [], value
         if (n !== request.current) return;
         const got = Array.isArray(list) ? list : [];
         got.forEach((o) => seen.current.set(o.value, o));
-        setLoaded(got); setBusy(false); announce(t.results(got.length));
+        setLoaded(got); setBusy(false); announce(typeof t.results === 'function' ? t.results(got.length) : loc.t('combobox.results', { count: got.length, n: formatNumber(got.length) }));
       }, () => { if (n !== request.current) return; setLoaded([]); setBusy(false); setFailed(true); });
     }, query ? loadDelay : 0);
     return () => clearTimeout(timer);

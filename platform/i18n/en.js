@@ -305,7 +305,11 @@ export default {
     "noMatches": "No matches",
     "empty": "No items",
     "remove": "Remove {label}",
-    "columns": "Options"
+    "columns": "Options",
+    "results": {
+      "one": "{n} match",
+      "other": "{n} matches"
+    }
   },
   "chart": {
     "barChart": {
@@ -558,7 +562,11 @@ export default {
     "loading": "Loading…",
     "error": "The options could not be loaded",
     "emptyText": "No matches",
-    "removeItem": "Remove {label}"
+    "removeItem": "Remove {label}",
+    "results": {
+      "one": "{n} option",
+      "other": "{n} options"
+    }
   },
   "commandBar": {
     "more": "More actions",
@@ -874,7 +882,11 @@ export default {
     "browse": "Browse all {entityName}",
     "loading": "Loading…",
     "error": "The results could not be loaded",
-    "remove": "Remove {label}"
+    "remove": "Remove {label}",
+    "results": {
+      "one": "{n} result",
+      "other": "{n} results"
+    }
   },
   "errorSummary": {
     "one": "There is a problem",
@@ -1670,7 +1682,9 @@ export default {
     "groupInsert": "Insert",
     "groupHistory": "History",
     "leave": "Press Tab or Shift+Tab to leave the editor",
-    "hint": "Escape, then Tab, leaves the editor"
+    "hint": "Escape, then Tab, leaves the editor",
+    "heading": "Heading {n}",
+    "tip": "{name} ({keys})"
   },
   "roleLabel": {
     "owner": "Owner",
@@ -1929,6 +1943,10 @@ export default {
       "Europe": "Europe",
       "Indian": "Indian Ocean",
       "Pacific": "Pacific"
+    },
+    "results": {
+      "one": "{n} time zone",
+      "other": "{n} time zones"
     }
   },
   "toast": {
