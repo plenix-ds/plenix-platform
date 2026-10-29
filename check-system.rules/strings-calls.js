@@ -33,7 +33,8 @@ function check({ add }) {
     const src = fs.readFileSync(path.join(ROOT, f), 'utf8');
     if (!/useStrings\(/.test(src)) continue;
     const code = src.replace(/\/\*[^]*?\*\//g, (c) => c.replace(/[^\n]/g, ' '));   // code, not comments
-    const decls = [...code.matchAll(/(?:(?:const|let)\s+|,\s*)(\w+)\s*=\s*useStrings\(\s*'([\w.]+)'/g)].map((m) => ({ v: m[1], section: m[2] }));
+    // t = useStrings('section', …), and t = Object.assign({ … }, useStrings('section', …)) (QuickFilter's)
+    const decls = [...code.matchAll(/(?:(?:const|let)\s+|,\s*)(\w+)\s*=\s*(?:Object\.assign\(\s*\{[^}]*\}\s*,\s*)?useStrings\(\s*'([\w.]+)'/g)].map((m) => ({ v: m[1], section: m[2] }));
     const lines = code.split('\n');
     for (const { section } of decls) if (at(en, section) === undefined) { const i = lines.findIndex((l) => l.includes("'" + section + "'")); add(NAME, path.join(ROOT, f), i + 1, "useStrings('" + section + "') names a section that is not in platform/i18n/en.js"); }
     for (const { v, section } of decls) {
@@ -42,7 +43,7 @@ function check({ add }) {
       lines.forEach((line, i) => {
         if (/^\s*\/\//.test(line)) return;
         for (const m of line.matchAll(call)) {
-          if (SKIP.has(m[1])) continue;
+          if (SKIP.has(m[1]) && !(sec && typeof sec === 'object' && m[1] in sec)) continue;   // a String, Array or Date method, unless the section has a key of that name
           if (new RegExp('typeof\\s+' + v + '\\.' + m[1] + "\\s*===\\s*'function'").test(line)) continue;
           add(NAME, path.join(ROOT, f), i + 1, v + '.' + m[1] + "(…) calls a catalog value as a function: guard it with typeof " + v + '.' + m[1] + " === 'function', or ask the catalog with loc.t('" + section + '.' + m[1] + "', { count, n })");
         }

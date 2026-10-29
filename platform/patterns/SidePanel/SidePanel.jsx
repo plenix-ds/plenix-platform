@@ -11,7 +11,9 @@
      actions: controls at the end of the header row
      footer: a row pinned to the panel's bottom (its actions: Save, Cancel), --plx-comp-pane-footer-height, its divider drawn inside
      collapseLabel: the Collapse button's label (default "Collapse panel")
-     the width a person dragged to is remembered per monitor (utils/monitorWidths.js): one value per monitor, named by its screen size in CSS pixels,
+     width: it opens at --plx-comp-side-panel-width-default: 240px, 320px from a window 1440px wide, 400px from 1920px (the -from-1440 and
+       -from-1920 tokens, set in system/grid.css); a width a person dragged to wins
+     the width a person dragged to is remembered per monitor (utils/monitorWidths.js): one value per monitor, named by its physical screen size,
        used only when it still fits the window; the single value saved before carries over as the current monitor's
      resizable: its start edge can be dragged (or moved with the arrow keys) between --plx-comp-side-panel-width-min and
        -max; the width is remembered; Home and End jump to the smallest and largest (batch 259); default false

@@ -14610,7 +14610,7 @@ exports.stepSize = stepSize;
    Props:
      none: SIZE_STEPS lists the sizes in pixels, smallest first; snapSize(px, min, max) and stepSize(px, dir, min, max)
 */
-const SIZE_STEPS = exports.SIZE_STEPS = [4, 8, 12, 16, 18, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 80, 88, 92, 96, 100, 112, 120, 128, 132, 140, 152, 160, 180, 200, 220, 240, 260, 280, 300, 320, 360, 380, 400, 420, 440, 460, 480, 500, 520, 560, 600, 640, 720, 760, 800, 860, 900, 960, 1000, 1200, 1400, 1600];
+const SIZE_STEPS = exports.SIZE_STEPS = [4, 8, 12, 16, 18, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 80, 88, 92, 96, 100, 112, 120, 128, 132, 140, 152, 160, 180, 200, 220, 240, 260, 272, 280, 300, 320, 360, 380, 400, 420, 440, 460, 480, 500, 520, 560, 600, 640, 720, 760, 800, 860, 900, 960, 1000, 1200, 1400, 1600];
 // the grid lines system/steps.css has a rule for (build-steps.js): a pane is drawn from GRID_MIN to GRID_PANE_MAX, a Resizable box to GRID_BOX_MAX
 const GRID_MIN = exports.GRID_MIN = 4,
   GRID_PANE_MAX = exports.GRID_PANE_MAX = 1600,
@@ -41976,7 +41976,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      className: more classes on the pane
      children: the body: NavList groups (whose headings are collapsible section headers), a filter field, buttons
    Behavior:
-     Its size follows the Layout grid's shell: --plx-sys-shell-nav-width (240px), resizable 140–320px with the splitter on its
+     Its size follows the Layout grid's shell: --plx-sys-shell-nav-width (240px; 272px from a window 1440px wide, 320px from 1920px: the -from-1440 and -from-1920 tokens, set in system/grid.css), resizable 140–320px with the splitter on its
        edge: dragged, it moves one grid line (4px) at a time and stays on the grid; the arrow keys move it by
        --plx-sys-shell-splitter-step; Enter or a double-click on the edge folds the pane to its rail.
      The first row is the same on every pane: the title, the actions, then the Collapse button at the row's end, on the side
@@ -42383,6 +42383,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      actions: controls at the end of the header row
      footer: a row pinned to the panel's bottom (its actions: Save, Cancel), --plx-comp-pane-footer-height, its divider drawn inside
      collapseLabel: the Collapse button's label (default "Collapse panel")
+     width: it opens at --plx-comp-side-panel-width-default: 240px, 320px from a window 1440px wide, 400px from 1920px (the -from-1440 and
+       -from-1920 tokens, set in system/grid.css); a width a person dragged to wins
      resizable: its start edge can be dragged (or moved with the arrow keys) between --plx-comp-side-panel-width-min and
        -max; the width is remembered; Home and End jump to the smallest and largest (batch 259); default false
      resizeLabel: the edge's accessible name (default "Resize panel")
@@ -42549,7 +42551,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      icon: an icon name or element at the start of the header row
      actions: controls at the end of the header row
      side: "start" (default; before the content) | "end"
-     width: "sm" (180px) | "md" (220px, default) | "lg" (280px), from --plx-comp-secondary-pane-width-*
+     width: "sm" (180px) | "md" (220px, default) | "lg" (280px), from --plx-comp-secondary-pane-width-*; each steps up one size from a window
+       1440px wide (220 | 260 | 320) and again from 1920px (260 | 320 | 400), set in system/grid.css from the -from-1440 and -from-1920 tokens
      collapsible: a Collapse button in the header folds the pane to a rail (an Expand button, then the rail items); default false
      collapsed / onCollapsedChange(next): the folded state, controlled; defaultCollapsed: its first state when not controlled
      rail: the items the folded rail shows under Expand (ToolRail.Item elements)
@@ -42694,7 +42697,7 @@ function SecondaryPane({
       onClick: () => setFolded(false)
     }), rail ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_ToolRail.ToolRail.Divider, null), rail) : null);
   }
-  const min = () => (0, _AppShell.tokenPx)('--plx-comp-secondary-pane-width-sm');
+  const min = () => (0, _AppShell.tokenPx)('--plx-comp-secondary-pane-width-min'); // its own token: the small width rises on larger windows, the narrowest drag does not
   const max = () => (0, _AppShell.tokenPx)('--plx-comp-secondary-pane-width-max');
   const sized = size && !(narrow && listDetail);
   const pane = /*#__PURE__*/_react.default.createElement("aside", _extends({
@@ -50101,8 +50104,8 @@ function RichTextEditor({
 }) {
   const t = (0, _LocaleProvider.useStrings)('richTextEditor', strings);
   // heading and tip are messages with {n}, {name} and {keys}; an app's own function in strings still works
-  const headingText = n => typeof t.heading === 'function' ? t.heading(n) : String(t.heading).replace('{n}', (0, _format.formatNumber)(n));
-  const tipText = (name, keys) => typeof t.tip === 'function' ? t.tip(name, keys) : String(t.tip).replace('{name}', name).replace('{keys}', keys);
+  const headingText = n => typeof t.heading === 'function' ? t.heading(n) : String(t.heading).replace('{n}', () => (0, _format.formatNumber)(n));
+  const tipText = (name, keys) => typeof t.tip === 'function' ? t.tip(name, keys) : String(t.tip).replace('{name}', () => name).replace('{keys}', () => keys);
   const auto = (0, _layer.useUid)('plx-rte');
   const areaId = id || auto + '-area';
   const area = _react.default.useRef(null),
@@ -54464,6 +54467,8 @@ function longName(zone, date, locale) {
     return '';
   }
 }
+
+// Called directly (outside a component), it reads the page's language (formatLocale), not a LocaleProvider's catalogs; TimeZoneSelect passes its own words in strings.
 function timeZoneOptions({
   zones,
   date = new Date(),
@@ -76463,6 +76468,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      See Commerce.jsx.
 */
 // the products' fields, for the filter, the category quick filter and the sort (utils/fields.js)
+// Called directly (outside a component), it reads the page's language (formatLocale), not a LocaleProvider's catalogs; ProductListing passes its own words in strings.
 function productFields(categories = [], strings) {
   // not a hook (it is exported, and ProductListing calls it inside useMemo): the page locale's catalog words, with strings on top
   const t = Object.assign({}, (0, _LocaleProvider.createTranslator)((0, _format.formatLocale)()).section('commerce.listing'), strings);

@@ -50,6 +50,7 @@ import { useStrings, createTranslator } from '../../providers/LocaleProvider.jsx
 
 
 // the products' fields, for the filter, the category quick filter and the sort (utils/fields.js)
+// Called directly (outside a component), it reads the page's language (formatLocale), not a LocaleProvider's catalogs; ProductListing passes its own words in strings.
 export function productFields(categories = [], strings) {
   // not a hook (it is exported, and ProductListing calls it inside useMemo): the page locale's catalog words, with strings on top
   const t = Object.assign({}, createTranslator(formatLocale()).section('commerce.listing'), strings);
