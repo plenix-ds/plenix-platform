@@ -1,7 +1,7 @@
 /* Plenix tests · Chat slice 1: the owner's message colors, the card corner and the corner-overlap photo (issue 637).
    Summary: Chat.Thread with messages from two people, light and dark, left to right and right to left:
-     light: theirs #F5F7F9 with a #A9B8C7 outline, yours #E6F0FC with a #B2CBE9 outline, the text #253442 (the owner's colors,
-       the new steps gray-80, slate-375, blue-125, blue-275, slate-900); the thread white
+     light: theirs gray-75 (the owner reused it for #F5F7F9) with a #A9B8C7 outline, yours #E6F0FC with a #B2CBE9 outline, the
+       text #253442 (the owner's colors, the new steps slate-375, blue-125, blue-275, slate-900); the thread white
      dark: the existing dark colors (gray-900 / gray-700, blue-900 / blue-650, text gray-200)
      every bubble: a 1px border and the card's 6px corner; every photo: the avatar standard 1px border, in its bubble's outline
      the photo crosses the bubble's top corner (theirs at the start, yours at the end; mirrored in right to left) and covers no
@@ -45,7 +45,7 @@ const rgb = (h) => 'rgb(' + [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)
     // light, left to right: the owner's exact colors
     let r = await look('light', 'ltr');
     assert.equal(r.thread, rgb('#FFFFFF'), 'the thread is white');
-    assert.deepEqual([r.a.bg, r.a.line, r.a.text], [rgb('#F5F7F9'), rgb('#A9B8C7'), rgb('#253442')], 'theirs: the owner\'s incoming colors');
+    assert.deepEqual([r.a.bg, r.a.line, r.a.text], [rgb('#F7F7F8'), rgb('#A9B8C7'), rgb('#253442')], 'theirs: gray-75 (the owner reused it for #F5F7F9) and his incoming outline');
     assert.deepEqual([r.c.bg, r.c.line, r.c.text], [rgb('#E6F0FC'), rgb('#B2CBE9'), rgb('#253442')], 'yours: the owner\'s outgoing colors');
     for (const m of [r.a, r.b, r.c]) { assert.equal(m.width, '1px', 'a 1px bubble border'); assert.equal(m.radius, '6px', 'the card corner, 6px'); }
     assert.deepEqual([r.a.avatar.line, r.a.avatar.width], [rgb('#A9B8C7'), '1px'], 'their photo: 1px in their outline');

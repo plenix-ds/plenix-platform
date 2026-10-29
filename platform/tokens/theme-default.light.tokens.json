@@ -164,9 +164,9 @@
       }
     },
     "message-incoming-background": {
-      "$value": "{plx-ref.color-gray-80}",
+      "$value": "{plx-ref.color-gray-75}",
       "$type": "color",
-      "$extensions": { "plenix": { "group": "surface", "purpose": "The fill of a message from someone else (Chat; the owner's color, #637)." } }
+      "$extensions": { "plenix": { "group": "surface", "purpose": "The fill of a message from someone else (Chat; #637: the owner's #F5F7F9 reuses gray-75, #f7f7f8)." } }
     },
     "message-incoming-border": {
       "$value": "{plx-ref.color-slate-375}",

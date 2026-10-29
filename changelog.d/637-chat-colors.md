@@ -1,5 +1,5 @@
 ### Added
-- New palette steps from the owner's chat colors (#637, his explicit OK for these five): gray 80 `#f5f7f9`, blue 125 `#e6f0fc`, blue 275 `#b2cbe9`, and a new **slate** family (a blue-gray) with slate 375 `#a9b8c7` and slate 900 `#253442`. Each number places the color by lightness between its neighbors.
+- New palette steps from the owner's chat colors (#637, his explicit OK for these four): blue 125 `#e6f0fc`, blue 275 `#b2cbe9`, and a new **slate** family (a blue-gray) with slate 375 `#a9b8c7` and slate 900 `#253442`. Each number places the color by lightness between its neighbors. His #F5F7F9 reuses gray 75.
 - Message color roles, light and dark: `--plx-sys-message-incoming-background`, `-incoming-border`, `-outgoing-background`, `-outgoing-border` and `--plx-sys-message-text`.
 - Avatar: the context hook `--plx-comp-avatar-context-border-color`, so a slot can color the photo's border while the avatar keeps its own rules.
 - Chat.Message: `continued` for a following message of a run from the same sender. It has no photo, and its bubble lines up with the first one's.

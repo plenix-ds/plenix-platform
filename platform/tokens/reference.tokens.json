@@ -960,11 +960,6 @@
       "$value": "#f3f3f3",
       "$type": "color"
     },
-    "color-gray-80": {
-      "$value": "#f5f7f9",
-      "$type": "color",
-      "$description": "The owner's chat color (2026-10-29, #637): an incoming message's fill. Between gray 100 and gray 75 by lightness."
-    },
     "color-gray-75": {
       "$value": "#f7f7f8",
       "$type": "color"
