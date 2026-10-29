@@ -8,8 +8,8 @@ Part of #280. It depends on #561 (5c-1a: `iconMarkup`, the resolver, the page ic
   - `plx-icon--size-<s>`, `plx-icon--filled` and `plx-icon--outline` in `cls` become the options; other classes pass through as the className.
   - A release without `iconMarkup` (up to 0.73.0, the spec's pinned CDN mode) gets the class form it still draws.
 - **No lab writes a bare `plx-icon plx-icon--<name>` any more:**
-  - 13 shared lab files (`button-lab`, `content-labs`, `data-labs`, `display-labs`, `form-labs`, `layout-lab`, `layout-labs`, `more-labs`, `navigation-labs`, `overlay-labs`, `spec.js`, `ds.js`)
-  - 31 part files (`w02A` to `w13A`)
+  - 12 shared files (`button-lab`, `content-labs`, `data-labs`, `display-labs`, `form-labs`, `layout-lab`, `layout-labs`, `more-labs`, `navigation-labs`, `overlay-labs`, `spec.js`, `ds.js`)
+  - 29 part files (`w02A` to `w13A`)
   - Each file's own `icon(...)` helper now calls `DS.icon`. Two helpers that patched the class string (`w10B`'s badge icon and `w07A`'s header items) now pass the class as an option.
   - The tree toggles pass `plx-icon--outline`, as the Tree component does (`filled={false}`).
   - The status icon in `w04C` keeps its image name (`label`) when it has no visible label.
