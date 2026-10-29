@@ -428,6 +428,9 @@ function cdnOfflineBundle() {
   // (icons-all.css is retired, #557)
   const LIB = path.join(P, 'icons', 'library');
   for (const name of fs.readdirSync(LIB).filter((f) => /\.(svg|json)$/.test(f)).sort()) assets.set('icons/library/' + name, fs.readFileSync(path.join(LIB, name)));
+  // every icon the Icon API documents has its files in the package (#284): a missing one fails the build
+  const lacking = require('./platform/icons/layout.js').missingPackageIcons(ROOT, (f) => assets.has(f));
+  if (lacking.length) throw new Error('The offline bundle lacks ' + lacking.length + ' icon file(s) the Icon API documents, for example ' + lacking.slice(0, 5).join(', '));
   const hash = (buffer) => crypto.createHash('sha256').update(buffer).digest('hex');
   const manifest = { version: VERSION, algorithm: 'sha256', description: 'Hashes cover every runtime file, TypeScript declarations and the README. This manifest is excluded from its own list; the CDN index hashes the complete archive.', files: [...assets].map(([name, data]) => ({ path: name, bytes: data.length, sha256: hash(data) })) };
   const manifestName = 'bundle-manifest.json';

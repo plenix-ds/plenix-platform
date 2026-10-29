@@ -1,0 +1,2 @@
+### Changed
+- The build of the self-hosting archive fails when a documented icon has no file in it (#284, step C, part 1). Every Material name of the Icon's glyph list must have its four files under `icons/library/`, and every Plenix icon its four under `icons/plenix/`; `platform/icons/layout.js` has the check (`missingPackageIcons`), and `build-packages.js` throws with the first missing paths. Today's archive is complete, so nothing changes in what ships.
