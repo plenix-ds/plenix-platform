@@ -34,6 +34,7 @@ import { cx } from '../../utils/cx.js';
 import { announce } from '../../utils/announce.jsx';
 import { gridPx, snapToGrid, gridStep } from '../../utils/grid.js';
 import { SIZE_STEPS, stepSize, snapSize } from '../../utils/sizeSteps.js';
+import { shareOf } from '../../utils/paneLimit.js';
 import { gapPieces } from '../../hooks/useVirtualizer.js';
 import { tokenPixels } from './environment.js';
 import { Icon } from '../Icon/Icon.jsx';
@@ -201,7 +202,7 @@ function NextEngine(props) {
   api.getUnreadCount=()=>unread.count;
   api.markRead=keys=>unread.mark(canonical.filter(record=>[].concat(keys).includes(record[index])),false);
   api.markUnread=keys=>unread.mark(canonical.filter(record=>[].concat(keys).includes(record[index])),true);
-  const resize=(field,value)=>{const definition=columns.find(c=>c.field===field),at=frame.current;const min=Math.max(floors[field]||0,tokenPixels(definition?.minWidth||'--plx-ref-size-80px',at)),max=definition?.maxWidth?tokenPixels(definition.maxWidth,at):SIZE_STEPS[SIZE_STEPS.length-1];const width=snapToGrid(snapSize(tokenPixels(value,at),min,max),{el:at});live.current.sizing={...(live.current.sizing||sizing),[field]:width};setSizing(s=>({...s,[field]:width}));props.onViewChange?.({widths:{...sizing,[field]:width}});};
+  const resize=(field,value)=>{const definition=columns.find(c=>c.field===field),at=frame.current;const min=Math.max(floors[field]||0,tokenPixels(definition?.minWidth||'--plx-ref-size-80px',at)),max=Math.min(definition?.maxWidth?tokenPixels(definition.maxWidth,at):SIZE_STEPS[SIZE_STEPS.length-1],Math.max(min,shareOf(at?.clientWidth,at)));const width=snapToGrid(snapSize(tokenPixels(value,at),min,max),{el:at});live.current.sizing={...(live.current.sizing||sizing),[field]:width};setSizing(s=>({...s,[field]:width}));props.onViewChange?.({widths:{...sizing,[field]:width}});};
   const changeOrder=next=>{setOrderOwner(orderSignal);setOrder(next);props.onViewChange?.({columnOrder:next});};
   const changeVisibility=next=>{setHiddenOwner(hiddenSignal);setVisibility(next);props.onViewChange?.({hiddenColumns:Object.keys(next).filter(field=>next[field]===false)});};
   const move=(field,target,after)=>{const current=live.current.table.getAllLeafColumns().map(c=>c.id).filter(id=>!id.startsWith('__')&&id!==field);const at=current.indexOf(target);current.splice(Math.max(0,at+(after?1:0)),0,field);changeOrder(current);emit('columnMoved',api.column(field),current.map(api.column));};
@@ -217,7 +218,7 @@ function NextEngine(props) {
   const leafDefs=React.useMemo(()=>columns.map(c=>({id:c.field,accessorFn:r=>valueAt(r,c.field),header:c.title||c.field,
     enableSorting:c.sortable!==false,filterFn:c.type==='bytes'?byteFilter:c.filter==='list'?listFilter:textFilter,sortingFn:typeof c.sorter==='function'?(a,b,id)=>c.sorter(a.getValue(id),b.getValue(id),a.original,b.original,id,sortingRef.current.find(s=>s.id===id)?.desc?'desc':'asc'):c.sorter==='number'||c.type==='bytes'?'basic':compare,
     size:kinds(c).includes('icon')?metrics.lead:Math.max(metrics.min,floors[c.field]||0,autoSizing[c.field]||tokenPixels(c.width,frame.current)||metrics.min),minSize:kinds(c).includes('icon')?metrics.lead:Math.max(floors[c.field]||0,tokenPixels(c.minWidth,frame.current)||metrics.min),
-    maxSize:kinds(c).includes('icon')?metrics.lead:c.maxWidth?tokenPixels(c.maxWidth,frame.current):SIZE_STEPS[SIZE_STEPS.length-1],meta:c})),[columns,metrics.min,metrics.lead,autoSizing,floors]);
+    maxSize:kinds(c).includes('icon')?metrics.lead:Math.min(c.maxWidth?tokenPixels(c.maxWidth,frame.current):SIZE_STEPS[SIZE_STEPS.length-1],Math.max(Math.max(floors[c.field]||0,tokenPixels(c.minWidth,frame.current)||metrics.min),shareOf(metrics.room,frame.current))),meta:c})),[columns,metrics.min,metrics.lead,metrics.room,autoSizing,floors]);
   // pinned (frozen) columns are TanStack's left pinning, listed in the columns' current order (columnOrder first, then
   // the rest as defined, as TanStack orders them), so a pinned column's offset is its getStart('left')
   const pinnedAt=columns.findIndex(c=>c.rowLabel),pinnedIds=columns.filter((c,i)=>c.frozen||(pinnedAt>=0&&i<=pinnedAt)).map(c=>c.field);

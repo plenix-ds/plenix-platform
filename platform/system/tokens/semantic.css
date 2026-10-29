@@ -152,6 +152,7 @@
   --plx-sys-shell-nav-width: var(--plx-ref-size-240px);
   --plx-sys-shell-nav-min-width: var(--plx-ref-size-140px);
   --plx-sys-shell-nav-max-width: var(--plx-ref-size-320px);
+  --plx-sys-shell-pane-window-share: 90%;
   --plx-sys-shell-splitter-step: var(--plx-ref-size-16px);
   --plx-sys-shell-rail-below: var(--plx-ref-breakpoint-840px);      /* Medium window: the navigation is a rail below this width (Wide from here) */
   --plx-sys-shell-inspector-overlay-below: var(--plx-ref-breakpoint-1024px);   /* the inspector collapses and opens over the main region below this width */

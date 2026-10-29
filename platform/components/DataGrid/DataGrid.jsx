@@ -101,6 +101,7 @@
      empty: shown when no row matches; error and onRetry(): the error state and its one recovery; strings: the words
      className: more classes on the frame
    Behavior:
+     A column is dragged no wider than --plx-sys-shell-pane-window-share (90%) of the table, down to the 4px grid; a smaller maxWidth still applies.
      Search filtering yields to typing and evaluates each record once per predicate/data revision; numeric text collation and controlled sort state are reused.
      Width conversions are shared across cells and refreshed when the measured token environment changes.
      Horizontal body scrolling moves the column headers by the same amount; frozen headers and cells stay pinned.
