@@ -26,9 +26,16 @@ module.exports = function buildReviewed(root) {
   const blame = (rel) => {
     if (blames[rel]) return blames[rel];
     let txt;
-    // a part file that is not in the design system's history yet (a new part, a lane just overlaid) has no blame: every line counts as today
-    try { txt = execFileSync('git', ['-C', DS, 'blame', '-w', '--line-porcelain', '--', rel], { maxBuffer: 1 << 30, stdio: ['ignore', 'pipe', 'ignore'] }).toString(); }
-    catch (e) { return (blames[rel] = fs.readFileSync(path.join(DS, rel), 'utf8').split('\n').map(() => null)); }
+    try { txt = execFileSync('git', ['-C', DS, 'blame', '-w', '--line-porcelain', '--', rel], { maxBuffer: 1 << 30, stdio: ['ignore', 'pipe', 'pipe'] }).toString(); }
+    catch (e) {
+      // only a file that is not in the design system's history yet (a new part, a lane just overlaid) has no blame: every line counts as today.
+      // Any other git failure is a real error and stops the build, so it can never stamp every record with today's date
+      let tracked = true;
+      try { execFileSync('git', ['-C', DS, 'ls-files', '--error-unmatch', '--', rel], { stdio: ['ignore', 'ignore', 'ignore'] }); } catch (x) { tracked = false; }
+      if (tracked) throw e;
+      console.log('build-reviewed: ' + rel + ' is not in the design system\'s history yet: its records are dated today');
+      return (blames[rel] = fs.readFileSync(path.join(DS, rel), 'utf8').split('\n').map(() => null));
+    }
     const times = {}, lines = [];
     let sha = null;
     for (const l of txt.split('\n')) {
