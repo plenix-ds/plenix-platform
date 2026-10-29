@@ -1365,7 +1365,10 @@ var _default = exports.default = {
     "scope": "In {scope}",
     "pin": "Pin {app} to the header",
     "unpin": "Unpin {app} from the header",
-    "switchApp": "{app}, switch application"
+    "switchApp": "{app}, switch application",
+    "cancel": "Cancel",
+    "searchHint": "Type what you are looking for, then press Enter.",
+    "pinnedHeading": "Pinned to the header"
   },
   "appShell": {
     "skip": "Skip to main content"
@@ -5860,7 +5863,10 @@ var _default = exports.default = {
     "scope": "في {scope}",
     "pin": "تثبيت {app} في الشريط العلوي",
     "unpin": "إلغاء تثبيت {app} من الشريط العلوي",
-    "switchApp": "{app}، تبديل التطبيق"
+    "switchApp": "{app}، تبديل التطبيق",
+    "cancel": "إلغاء",
+    "searchHint": "اكتب ما تبحث عنه، ثم اضغط Enter.",
+    "pinnedHeading": "مثبتة في الشريط العلوي"
   },
   "form": {
     "label": "إجراءات النموذج"
@@ -6793,9 +6799,10 @@ function moduleProblem(m) {
   if (!(m && typeof m === 'object' && m.drawings && m.drawings[20] && m.drawings[24] && m.name)) return 'not an icon module';
   if (checked.has(m)) return checked.get(m);
   let problem = null;
+  // the problem is a message to developers (the console), not a word for people
   for (const size of [20, 24]) for (const k of ['outline', 'fill']) {
     const r = (0, _iconSafety.checkDrawing)(m.drawings[size][k]);
-    if (!r.ok && !problem) problem = 'its ' + size + ' ' + k + ' drawing: ' + r.reason;
+    if (!r.ok && !problem) problem = ['its', size, k, 'drawing:', r.reason].join(' ');
   }
   checked.set(m, problem);
   return problem;
@@ -39161,7 +39168,7 @@ function AppHeader({
     variant: "ghost",
     className: "plx-search-view__cancel",
     onClick: cancel
-  }, "Cancel")), scope ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+  }, tw.cancel)), scope ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
     variant: "secondary",
     as: "p",
     className: "plx-search-view__scope"
@@ -39174,7 +39181,7 @@ function AppHeader({
   }, searchResults) : null, !searchSuggestions && !searchResults ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
     variant: "secondary",
     as: "p"
-  }, "Type what you are looking for, then press Enter.") : null)), document.body) : null;
+  }, tw.searchHint) : null)), document.body) : null;
   return /*#__PURE__*/_react.default.createElement(_Surface.SurfaceContext.Provider, {
     value: tone === 'accent' ? 'accent' : null
   }, /*#__PURE__*/_react.default.createElement("header", _extends({
@@ -39521,7 +39528,7 @@ AppHeader.Switcher = function AppHeaderSwitcher({
   }, /*#__PURE__*/_react.default.createElement("h2", {
     id: id + '-pinned',
     className: "plx-app-switcher__heading"
-  }, "Pinned to the header"), /*#__PURE__*/_react.default.createElement("ul", {
+  }, tw.pinnedHeading), /*#__PURE__*/_react.default.createElement("ul", {
     className: "plx-app-switcher__grid"
   }, pinnedList.map(tile))) : null, apps.length > pinnedList.length ? /*#__PURE__*/_react.default.createElement("section", {
     "aria-labelledby": id + '-all'

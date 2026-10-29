@@ -198,13 +198,13 @@ export function AppHeader({ tone = 'accent', appName, brand, brandHref, currentA
     <div ref={view} id={searchId} className="plx-search-view" role="dialog" aria-modal="true" aria-label={tw.search} onKeyDown={onViewKey}>
       <div className="plx-search-view__bar">
         <div className="plx-search-view__field">{React.isValidElement(search) ? React.cloneElement(search, { onAccent: false }) : search}</div>
-        <Button variant="ghost" className="plx-search-view__cancel" onClick={cancel}>Cancel</Button>
+        <Button variant="ghost" className="plx-search-view__cancel" onClick={cancel}>{tw.cancel}</Button>
       </div>
       {scope ? <Text variant="secondary" as="p" className="plx-search-view__scope">{tw.scope.replace('{scope}', scope)}</Text> : null}
       <div className="plx-search-view__content">
         {searchSuggestions ? <div className="plx-search-view__suggestions">{searchSuggestions}</div> : null}
         {searchResults ? <div className="plx-search-view__results">{searchResults}</div> : null}
-        {!searchSuggestions && !searchResults ? <Text variant="secondary" as="p">Type what you are looking for, then press Enter.</Text> : null}
+        {!searchSuggestions && !searchResults ? <Text variant="secondary" as="p">{tw.searchHint}</Text> : null}
       </div>
     </div>,
     document.body,
@@ -353,7 +353,7 @@ AppHeader.Switcher = function AppHeaderSwitcher({ currentApp, appsRoot = '', onO
         <div ref={panel} id={id} role="dialog" aria-label={tw.applications} className={cx('plx-app-switcher__panel', brand && 'plx-app-switcher__panel--brand')}>
           {pinnedList.length ? (
             <section className="plx-app-switcher__pinned" aria-labelledby={id + '-pinned'}>
-              <h2 id={id + '-pinned'} className="plx-app-switcher__heading">Pinned to the header</h2>
+              <h2 id={id + '-pinned'} className="plx-app-switcher__heading">{tw.pinnedHeading}</h2>
               <ul className="plx-app-switcher__grid">{pinnedList.map(tile)}</ul>
             </section>
           ) : null}
