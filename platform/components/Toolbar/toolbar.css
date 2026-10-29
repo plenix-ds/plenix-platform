@@ -8,7 +8,5 @@
 
 /* Layout-only wrappers do not add a second gap or change the row direction. Hidden wrappers stay hidden. */
 .plx-toolbar :where([data-plx-toolbar-layout]:not([hidden])){display:contents;}
-/* a search field of a fixed width gives way before the Buttons fold, down to a short field (platform/standards/fit-and-overflow.md) */
-.plx-toolbar .plx-search{flex-shrink:1;min-inline-size:var(--plx-sys-field-width-md);}
 
 .plx-toolbar :where(.plx-stack,.plx-inline)[hidden]{display:none;}
