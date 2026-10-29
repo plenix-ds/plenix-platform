@@ -3394,7 +3394,8 @@ var _default = exports.default = {
     "counter": {
       "left": "{n} characters left",
       "over": "{n} characters too many"
-    }
+    },
+    "about": "About {label}"
   },
   "icon": {
     "status": {
@@ -6049,7 +6050,8 @@ var _default = exports.default = {
     "counter": {
       "left": "بقي {n} حرفًا",
       "over": "زاد {n} حرفًا"
-    }
+    },
+    "about": "معلومات عن {label}"
   },
   "icon": {
     "status": {
@@ -12950,7 +12952,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      error: the error message under the control; it marks the field invalid
      required: marks the field and the control required; the label shows " *" (default false)
      info: content for a small (i) button next to the label
-     infoLabel: the accessible name of the (i) button (default "About " + the label)
+     infoLabel: the accessible name of the (i) button (default the catalog's field.about, "About {label}")
      layout: "stacked" (default; label above) | "inline" (label beside the control: settings rows, a 160px label column) |
        "row" (the description under the label and the control at the end); without it, the layout of the Form around the
        field (FieldLayoutContext: a two-column Form makes its fields inline), else "stacked"
@@ -13015,6 +13017,7 @@ function Field({
   const length = child.props.value != null ? String(child.props.value).length : typed;
   const over = max > 0 && length > max;
   const t = (0, _LocaleProvider.useStrings)('field.counter', strings);
+  const about = (0, _LocaleProvider.useStrings)('field').about;
   const countId = max ? controlId + '-c' : undefined;
   const near = max > 0 && max - length <= Math.ceil(max / 10);
   const said = _react.default.useRef(null);
@@ -13073,7 +13076,7 @@ function Field({
   }, " *") : null)), info ? /*#__PURE__*/_react.default.createElement("button", {
     type: "button",
     className: "plx-field__info",
-    "aria-label": infoLabel || 'About ' + label,
+    "aria-label": infoLabel || about.replace('{label}', label),
     "aria-expanded": showInfo,
     onClick: () => setShowInfo(!showInfo)
   }, "i") : null, lay === 'row' && description ? /*#__PURE__*/_react.default.createElement("div", {

@@ -12,7 +12,7 @@
      error: the error message under the control; it marks the field invalid
      required: marks the field and the control required; the label shows " *" (default false)
      info: content for a small (i) button next to the label
-     infoLabel: the accessible name of the (i) button (default "About " + the label)
+     infoLabel: the accessible name of the (i) button (default the catalog's field.about, "About {label}")
      layout: "stacked" (default; label above) | "inline" (label beside the control: settings rows, a 160px label column) |
        "row" (the description under the label and the control at the end); without it, the layout of the Form around the
        field (FieldLayoutContext: a two-column Form makes its fields inline), else "stacked"
@@ -68,6 +68,7 @@ export function Field({ label, hideLabel = false, description, error, required =
   const length = child.props.value != null ? String(child.props.value).length : typed;
   const over = max > 0 && length > max;
   const t = useStrings('field.counter', strings);
+  const about = useStrings('field').about;
   const countId = max ? controlId + '-c' : undefined;
   const near = max > 0 && max - length <= Math.ceil(max / 10);
   const said = React.useRef(null);
@@ -98,7 +99,7 @@ export function Field({ label, hideLabel = false, description, error, required =
         <Tooltip content={label} disabled={!cut} className="plx-field__label-tip">
           <label ref={labelRef} className="plx-field__label" htmlFor={child.props.id || controlId}>{label}{required ? <span className="plx-field__required" aria-hidden="true"> *</span> : null}</label>
         </Tooltip>
-        {info ? <button type="button" className="plx-field__info" aria-label={infoLabel || 'About ' + label} aria-expanded={showInfo} onClick={() => setShowInfo(!showInfo)}>i</button> : null}
+        {info ? <button type="button" className="plx-field__info" aria-label={infoLabel || about.replace('{label}', label)} aria-expanded={showInfo} onClick={() => setShowInfo(!showInfo)}>i</button> : null}
         {lay === 'row' && description ? <div className="plx-field__description" id={descId}>{description}</div> : null}
       </div>
       <div className="plx-field__control">
