@@ -468,6 +468,8 @@ object PlenixShell {
     val shellPhoneBelow = 600.dp
     val shellHeaderHeight = 56.dp
     val shellNavWidth = 240.dp
+    val shellNavWidthFrom1440 = 272.dp
+    val shellNavWidthFrom1920 = 320.dp
     val shellNavMinWidth = 140.dp
     val shellNavMaxWidth = 320.dp
     val shellSplitterStep = 16.dp
