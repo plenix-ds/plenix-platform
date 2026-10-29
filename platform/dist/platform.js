@@ -546,616 +546,6 @@ function checkIconSvg(text) {
   };
 }
   } },
-  "platform/components/Icon/Icon.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","./glyphs.js":"platform/components/Icon/glyphs.js","../../utils/iconSafety.js":"platform/utils/iconSafety.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Icon = Icon;
-exports.StatusIcon = StatusIcon;
-exports.registerIcons = registerIcons;
-exports.resolveIcon = resolveIcon;
-exports.setDefaultIconLibrary = setDefaultIconLibrary;
-exports.setIconLibrary = setIconLibrary;
-exports.stateIcon = stateIcon;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
-var _glyphs = require("./glyphs.js");
-var _iconSafety = require("../../utils/iconSafety.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Icon, StatusIcon
-   Summary: One icon of the Plenix set, drawn as an inline SVG in the current text color (a name outside the set, from
-     icons-all.css, as a mask). StatusIcon is a tone's icon in the
-     tone's color (info, success, warning, danger, neutral), alone or with a short label.
-   Usage:
-     <Icon name="folder" />
-     <Icon name="bookmark" size="sm" filled label="Bookmarked" />
-     import Add from 'plenix-platform/icons/plenix/add';  <Icon icon={Add} />      // an imported icon module (#282)
-     registerIcons(Add, Close);  <Icon name="add" />                               // a name drawn from its module first
-     <StatusIcon tone="warning" />
-     <StatusIcon tone="success" size="sm">Synced</StatusIcon>
-   Props:
-     name: the naming contract (2026-10-22): a Plenix name, with dashes (platform/icons/map.json: mic-off, person-cancel);
-       a Plenix name that is its Material symbol with dashes also answers to the underscore spelling (mic_off,
-       person_cancel); with the CDN's icons-all.css on the page, any other Material Symbols name (rocket_launch) too. A
-       Material name that is also a Plenix name draws the Plenix icon (check, home). Unknown names draw nothing
-     size: "xs" 12px | "sm" 16px | "md" 20px | "lg" 24px | "xl" 48px, a page title (--plx-sys-icon-size-*); without it the icon takes its container's
-       grid icon (a control's --plx-sys-control-icon-<role>) or --plx-sys-icon-size
-     icon: an imported icon module (platform/icons/layout.js: icons/<set>/<name>.js; in an application,
-       import X from 'plenix-platform/icons/<set>/<name>'): drawn from its own drawings instead of icon.css, with the same
-       classes, so sizes, fills, the optical size and right-to-left mirroring work exactly as for name (issue 282)
-     filled: the filled version (default false)
-     label: the accessible name, when the icon alone carries meaning
-     className: more classes on the icon
-     StatusIcon.tone: "info" (default) | "success" | "warning" | "danger" | "neutral"; each has its own icon (neutral shares
-       the info icon, in the neutral color)
-     StatusIcon.size: "sm" (16px) | "md" (default; 20px) | "lg" (24px)
-     StatusIcon.label: the accessible name of the icon alone (default: the tone's word from strings)
-     StatusIcon.children: a short visible label after the icon; the icon is then decorative and the text says the state
-     StatusIcon.strings: the tone words, for other languages: { info: "Information", success: "Success", warning: "Warning",
-       danger: "Error", neutral: "Note" }
-     StatusIcon.className: more classes on the status icon
-     library: where a name is looked up (issue 281): "plenix" (default: registered modules, the Plenix set, then the
-       Material library, as before), "material" (Material's own symbol even where a Plenix name exists), or a project's own
-       library registered with registerIcons(..., { library }) (only its modules). setDefaultIconLibrary(name) sets the page's
-       default: call it at startup, before icons draw (icons already on the page do not draw again)
-     registerIcons(...modules[, { library }]): modules drawn first by their name and their symbol's spelling, in their
-       set's library or the one named
-     Every loaded icon file and every module drawing is untrusted (issue 285): it is read through the allow-list in
-       utils/iconSafety.js (one svg, one path, values by grammar, bounded size), and anything else refuses it; development
-       warns once with the reason. Nothing is ever inserted as HTML: the values become React props.
-     A name drawn by a run-time fetch (a Material name not imported or registered) warns once in development: production
-       should import or register it. An icon value that is not a module warns once per kind of value and draws nothing
-   Behavior:
-     The component that owns a current or selected state passes filled (NavList's current item and pinned pin, a
-       selected or pressed Button); filled={false} keeps the outline (Tree owns each item state).
-     Omitting filled: until every owner passes it, the filled version is still drawn inside a current or selected
-       element (aria-current, aria-pressed, aria-selected, .is-selected, .is-current): the rollout backlog.
-     The optical size follows the context: 24 in a Comfortable region and in a 24px container (the app header, a
-       pictogram), and for sizes lg and xl; 20 everywhere else.
-     A pinned item shows the filled pin, not a filled row.
-     Without a label the icon is decorative and hidden from assistive technology; with one it is an image (role="img").
-     StatusIcon alone is an image named by its tone (role="img", "Warning"), so the state never rests on color only; with a
-       visible label the label carries the state and the icon is hidden from assistive technology.
-   Notes:
-     The set is Material Symbols Sharp, weight 300, used exactly as published (platform/icons/).
-     The size names the icon's whole square, which includes the set's own padding (1/12 of the square on each side): the
-       system adds none to make up for it.
-     Other props pass through to the <span>. The drawings come from icon.css (its data URIs, read once; names in glyphs.js, generated by build-icons.js): the outline or
-     the filled version, at optical sizes 20 and 24, the stylesheet showing the one the context draws; inline paths paint
-     about 200 times faster than masks (owner, 2026-10-23). A bare class name (plx-icon plx-icon--<name>) still draws the mask.
-     StatusIcon's colors and sizes are its own tokens (--plx-comp-status-icon-*, components/Icon/status-icon.css); the label
-       keeps the text color and size of where it sits.
-*/
-// One way to draw an icon (owner, 2026-10-23: "no band-aid"): every name goes through resolveIcon, and every icon is an
-// inline SVG in the text color (inline paths paint about 200 times faster than masks).
-//   1. A Plenix name (map.json, dashes; its underscore alias too): drawn at once, its drawing read from icon.css.
-//   2. Any other Material Symbols name, in dashes or underscores, any case (rocket_launch, Rocket-Launch): its files are
-//      loaded once from the library (platform/icons/library beside the bundle, or the CDN's /cdn/material/<commit>/)
-//      and drawn the same way; the box stays empty while it loads.
-//   3. An unknown name draws nothing (never a filled square) and warns once, with the closest names.
-// The outline or the filled version, at optical sizes 20 and 24: the stylesheet shows the one the context draws (icon.css).
-const LARGE = {
-  lg: true,
-  xl: true
-};
-const VARIANT = ['', '-fill', '-24', '-24-fill']; // outline 20, filled 20, outline 24, filled 24
-const library = new Set(_glyphs.LIBRARY.split(' ')),
-  plenix = new Set(_glyphs.SYMBOLS.split(' '));
-// imported icon modules (#282): { name, set, symbol, fillOutline, mirrored, drawings: { 20: { outline, fill }, 24: … } }.
-// The registry (#281): per library, a name (and its symbol's spelling) -> its module. registerIcons(...modules) puts each
-// module in its own set's library ("plenix", "material"); registerIcons(...modules, { library: 'acme' }) makes a
-// project's own library, which <Icon library="acme"> draws from only
-const libraries = new Map(); // library -> Map(name -> module)
-// a module is untrusted (#285): its four drawings pass the same allow-list as a file, once per module object
-const checked = new WeakMap();
-function moduleProblem(m) {
-  if (!(m && typeof m === 'object' && m.drawings && m.drawings[20] && m.drawings[24] && m.name)) return 'not an icon module';
-  if (checked.has(m)) return checked.get(m);
-  let problem = null;
-  for (const size of [20, 24]) for (const k of ['outline', 'fill']) {
-    const r = (0, _iconSafety.checkDrawing)(m.drawings[size][k]);
-    if (!r.ok && !problem) problem = 'its ' + size + ' ' + k + ' drawing: ' + r.reason;
-  }
-  checked.set(m, problem);
-  return problem;
-}
-const isModule = m => !moduleProblem(m);
-function registerIcons(...args) {
-  const last = args[args.length - 1],
-    options = last && typeof last === 'object' && !Array.isArray(last) && !isModule(last) && 'library' in last ? args.pop() : null;
-  for (const m of args.flat()) {
-    const problem = moduleProblem(m);
-    if (problem) {
-      if (typeof console !== 'undefined') console.warn('[Plenix] registerIcons: refused (' + problem + ')', m);
-      continue;
-    }
-    const lib = options && options.library || m.set || 'plenix';
-    if (!libraries.has(lib)) libraries.set(lib, new Map());
-    const map = libraries.get(lib);
-    map.set(m.name, m);
-    if (m.symbol && m.symbol !== m.name) map.set(m.symbol, m);
-  }
-}
-// the library an Icon without its own library prop draws from: "plenix" (the Plenix set, then the Material library, as
-// before), "material", or a project's own registered library
-let defaultLibrary = 'plenix';
-// call it at startup, before icons draw: an icon already on the page does not draw again when it changes
-function setDefaultIconLibrary(name) {
-  defaultLibrary = name ? String(name) : 'plenix';
-}
-// a module's drawing i (VARIANT order: outline 20, filled 20, outline 24, filled 24) as [path, viewBox, extra], the shape
-// parseSvg gives, with the extras in the same order, so the markup is the same as from the stylesheet
-const SLOT = [[20, 'outline'], [20, 'fill'], [24, 'outline'], [24, 'fill']];
-function moduleGlyph(m, i) {
-  const d = m.drawings[SLOT[i][0]] && m.drawings[SLOT[i][0]][SLOT[i][1]];
-  if (!d || !d.d || !d.viewBox) return null;
-  const extra = {};
-  for (const key of ['transform', 'fillRule', 'clipRule']) if (d[key]) extra[key] = d[key];
-  return [d.d, d.viewBox, extra];
-}
-const normal = name => String(name == null ? '' : name).trim();
-// One resolver (#281): the registered modules of the chosen library first; then, for "plenix", the Plenix set (icon.css)
-// and the Material library; for "material", the Material library only (a Material name draws Material's own symbol
-// even where a Plenix name exists); a project's library draws only its registered modules. A Material name that is not
-// registered is fetched at run time (as before; development warns once that production should import or register it).
-// Returns { kind: 'module' | 'plenix' | 'library', symbol, fillOutline, module? } or null.
-function resolveIcon(name, options) {
-  const n = normal(name),
-    lib = options && options.library || defaultLibrary;
-  const fromRegistry = l => {
-    const map = libraries.get(l);
-    const m = map && (map.get(n) || map.get(n.toLowerCase().replace(/_/g, '-')) || map.get(n.toLowerCase().replace(/-/g, '_')));
-    return m ? {
-      kind: 'module',
-      symbol: m.symbol || m.name,
-      fillOutline: !!m.fillOutline,
-      module: m
-    } : null;
-  };
-  if (lib === 'material') {
-    const reg = fromRegistry('material');
-    if (reg) return reg;
-    const symbol = n.toLowerCase().replace(/-/g, '_');
-    if (plenix.has(symbol)) return {
-      kind: 'plenix',
-      symbol,
-      fillOutline: false
-    }; // the same drawing, already in icon.css
-    return library.has(symbol) ? {
-      kind: 'library',
-      symbol,
-      fillOutline: false
-    } : null;
-  }
-  if (lib !== 'plenix') return fromRegistry(lib);
-  // a registered Plenix module, then the Plenix set: a registered Material module never replaces a Plenix name (importing
-  // material/home must not swap every <Icon name="home"> on the page); it serves only names outside the Plenix set
-  const reg = fromRegistry('plenix');
-  if (reg) return reg;
-  const p = resolvePlenix(n);
-  if (p && p.kind === 'plenix') return p;
-  return fromRegistry('material') || p;
-}
-function resolvePlenix(n) {
-  if (_glyphs.NAMES[n]) return {
-    kind: 'plenix',
-    symbol: _glyphs.NAMES[n][0],
-    fillOutline: _glyphs.NAMES[n][1] === 1
-  };
-  const dashed = n.toLowerCase().replace(/_/g, '-');
-  if (_glyphs.NAMES[dashed]) return {
-    kind: 'plenix',
-    symbol: _glyphs.NAMES[dashed][0],
-    fillOutline: _glyphs.NAMES[dashed][1] === 1
-  };
-  const symbol = n.toLowerCase().replace(/-/g, '_');
-  if (plenix.has(symbol)) return {
-    kind: 'plenix',
-    symbol,
-    fillOutline: false
-  };
-  if (library.has(symbol)) return {
-    kind: 'library',
-    symbol,
-    fillOutline: false
-  };
-  return null;
-}
-// where the library's files are: set by the page (setIconLibrary), else beside the bundle's script or stylesheet
-let libraryBase = null;
-function setIconLibrary(url) {
-  libraryBase = url ? String(url).replace(/\/?$/, '/') : null;
-  files.clear();
-}
-function base() {
-  if (libraryBase) return libraryBase;
-  // a page (or an extension whose bundler renames the Plenix files) can name it before Plenix draws: window.PlenixIconLibrary
-  if (typeof window !== 'undefined' && typeof window.PlenixIconLibrary === 'string' && window.PlenixIconLibrary) return libraryBase = window.PlenixIconLibrary.replace(/\/?$/, '/');
-  if (typeof document === 'undefined') return null;
-  const at = [...document.querySelectorAll('script[src], link[rel="stylesheet"][href]')].map(el => el.src || el.href).find(url => /\/(plenix(\.esm|\.min)?\.(js|css)|platform\.(js|css))(\?|#|$)/.test(url));
-  if (!at) return null;
-  // the CDN: /cdn/<version>/plenix.js -> /cdn/material/<commit>/; this repository: platform/... -> platform/icons/library/
-  libraryBase = /\/cdn\/[^/]+\/[^/]+$/.test(new URL(at).pathname) ? new URL('../material/' + _glyphs.LIBRARY_COMMIT + '/', at).href : new URL(/\/dist\/[^/]+$/.test(new URL(at).pathname) ? '../icons/library/' : 'icons/library/', at).href;
-  return libraryBase;
-}
-// an icon file -> [path, viewBox, { transform, fillRule, clipRule }]: its one path, in its viewBox (or its width and height)
-// an icon file -> [path, viewBox, { transform, fillRule, clipRule }], through the allow-list (#285: a loaded file is
-// untrusted; utils/iconSafety.js): anything else in the file refuses it, and development warns once with the reason
-const refused = new Set();
-function parseSvg(svg, from) {
-  if (!svg) return null;
-  const r = (0, _iconSafety.checkIconSvg)(svg);
-  if (!r.ok) {
-    const key = (from || 'an icon file') + ': ' + r.reason;
-    if (!refused.has(key) && (0, _devWarn.development)() && typeof console !== 'undefined') {
-      refused.add(key);
-      console.warn('[Plenix] Icon: refused ' + key);
-    }
-    return null;
-  }
-  const {
-    viewBox,
-    d,
-    ...extra
-  } = r.drawing;
-  return [d, viewBox, extra];
-}
-// a Plenix symbol's drawing: read once from the stylesheet already on the page (icon.css carries every file as a data:
-// URI in --plx-comp-icon-glyph-*), so the drawings ship once, need no request and work from file:// too
-const fromCss = new Map();
-function cssGlyph(symbol, i) {
-  const key = symbol + VARIANT[i];
-  if (fromCss.has(key)) return fromCss.get(key);
-  if (typeof document === 'undefined' || typeof getComputedStyle !== 'function') return null;
-  const value = getComputedStyle(document.documentElement).getPropertyValue('--plx-comp-icon-glyph-' + key.replace(/_/g, '-')).trim();
-  const uri = value.match(/^url\(["']?data:image\/svg\+xml,(.*?)["']?\)$/);
-  let glyph = null;
-  if (uri) {
-    try {
-      glyph = parseSvg(decodeURIComponent(uri[1]));
-    } catch (e) {
-      glyph = null;
-    }
-  }
-  if (glyph) fromCss.set(key, glyph); // not kept when the stylesheet is not there yet: read again on the next draw
-  return glyph;
-}
-// a fetched file is read only up to the size limit (issue 285): a Content-Length over it is refused before reading, and a
-// body without one is read in chunks and dropped as soon as it passes the limit
-function readCapped(response) {
-  const max = _iconSafety.ICON_LIMITS.file,
-    length = Number(response.headers && response.headers.get && response.headers.get('content-length'));
-  if (length > max) return null;
-  if (!response.body || typeof response.body.getReader !== 'function') return response.text().then(t => t.length > max ? null : t);
-  const reader = response.body.getReader(),
-    parts = [];
-  let size = 0;
-  const step = () => reader.read().then(({
-    done,
-    value
-  }) => {
-    if (done) return new TextDecoder().decode(parts.length === 1 ? parts[0] : parts.reduce((all, p) => {
-      const out = new Uint8Array(all.length + p.length);
-      out.set(all);
-      out.set(p, all.length);
-      return out;
-    }, new Uint8Array(0)));
-    size += value.length;
-    if (size > max) {
-      reader.cancel();
-      return null;
-    }
-    parts.push(value);
-    return step();
-  });
-  return step();
-}
-const files = new Map(); // file name -> [path, viewBox, extra] | null (missing) | a Promise while it loads
-function loadFile(file) {
-  if (files.has(file)) return files.get(file);
-  const root = base();
-  const job = !root || typeof fetch !== 'function' ? Promise.resolve(null) : fetch(root + file + '.svg').then(r => r.ok ? readCapped(r) : null).then(text => parseSvg(text, file + '.svg')).catch(() => null).then(glyph => {
-    files.set(file, glyph);
-    return glyph;
-  });
-  files.set(file, job);
-  return job;
-}
-const warned = new Set();
-function warnUnknown(name) {
-  const n = normal(name);
-  if (!n || warned.has(n)) return;
-  warned.add(n);
-  const key = n.toLowerCase().replace(/[-_\s]+/g, '');
-  const near = [...Object.keys(_glyphs.NAMES), ...library].filter(c => {
-    const k = c.replace(/[-_]/g, '');
-    return k.includes(key) || key.includes(k);
-  }).slice(0, 6);
-  if (typeof console !== 'undefined') console.warn('[Plenix] Icon: no icon is named "' + n + '"; nothing is drawn.' + (near.length ? ' Closest: ' + near.join(', ') + '.' : ''));
-}
-// a name drawn by a run-time fetch: development warns once that production should import or register it
-const fetchedNotice = new Set();
-function noticeFetch(symbol) {
-  if (fetchedNotice.has(symbol) || !(0, _devWarn.development)() || typeof console === 'undefined') return;
-  fetchedNotice.add(symbol);
-  console.warn('[Plenix] Icon: ' + symbol + ' was fetched at run time; for production import it (plenix-platform/icons/material/' + symbol.replace(/_/g, '-') + ') or register it (registerIcons).');
-}
-function useDrawings(name, size, filled, mod, lib) {
-  const resolved = mod ? {
-    kind: 'module',
-    symbol: mod.symbol || mod.name,
-    fillOutline: !!mod.fillOutline,
-    module: mod
-  } : resolveIcon(name, {
-    library: lib
-  });
-  const found = resolved;
-  if (found && found.kind === 'module') mod = found.module;
-  const fill = filled === true || found && found.fillOutline;
-  const wanted = LARGE[size] ? [[fill ? 3 : 2, 24]] : [[fill ? 1 : 0, 20], [fill ? 3 : 2, 24]];
-  const fileOf = i => found.symbol + VARIANT[i];
-  const [, redraw] = _react.default.useReducer(x => x + 1, 0);
-  const pending = found && found.kind === 'library' ? wanted.filter(([i]) => !Array.isArray(files.get(fileOf(i))) && files.get(fileOf(i)) !== null) : [];
-  _react.default.useEffect(() => {
-    if (!found) {
-      warnUnknown(name);
-      return undefined;
-    }
-    if (found.kind === 'library') noticeFetch(found.symbol);
-    if (!pending.length) return undefined;
-    let live = true;
-    Promise.all(pending.map(([i]) => loadFile(fileOf(i)))).then(() => {
-      if (live) redraw();
-    });
-    return () => {
-      live = false;
-    };
-  }, [found && found.symbol, fill, LARGE[size] ? 1 : 0, pending.length]);
-  if (!found) return [];
-  const glyphs = wanted.map(([i, optical]) => [found.kind === 'module' ? moduleGlyph(mod, i) : found.kind === 'plenix' ? cssGlyph(found.symbol, i) : files.get(fileOf(i)), optical]).filter(([glyph]) => Array.isArray(glyph));
-  if (!glyphs.length) return [];
-  // the drawings share one svg when they share a box (nearly every icon): the stylesheet shows one path; otherwise each
-  // drawing is its own svg in its own box
-  if (glyphs.every(([glyph]) => glyph[1] === glyphs[0][0][1])) return [/*#__PURE__*/_react.default.createElement("svg", {
-    key: "svg",
-    className: "plx-icon__svg plx-icon__svg--shared",
-    viewBox: glyphs[0][0][1],
-    "aria-hidden": "true",
-    focusable: "false"
-  }, glyphs.map(([glyph, optical]) => /*#__PURE__*/_react.default.createElement("path", _extends({
-    key: optical,
-    className: 'plx-icon__glyph--' + optical,
-    d: glyph[0]
-  }, glyph[2] || null))))];
-  return glyphs.map(([glyph, optical]) => /*#__PURE__*/_react.default.createElement("svg", {
-    key: optical,
-    className: 'plx-icon__svg plx-icon__glyph--' + optical,
-    viewBox: glyph[1],
-    "aria-hidden": "true",
-    focusable: "false"
-  }, /*#__PURE__*/_react.default.createElement("path", _extends({
-    d: glyph[0]
-  }, glyph[2] || null))));
-}
-const badIcon = new Set();
-function Icon({
-  icon,
-  name,
-  library: lib,
-  size,
-  filled,
-  label,
-  className,
-  ...rest
-}) {
-  (0, _devWarn.devWarn)('Icon', {
-    size
-  }, {
-    size: ['xs', 'sm', 'md', 'lg', 'xl']
-  });
-  // an imported module (icon); else the name through the resolver (registered modules, the stylesheet, the library)
-  // once per kind of bad value (its type and keys), so an object written inline, new on every render, warns once
-  const badKey = icon != null && !isModule(icon) ? Object.prototype.toString.call(icon) + ':' + (typeof icon === 'object' ? Object.keys(icon).sort().join(',') : String(icon)) : null;
-  if (badKey && !badIcon.has(badKey)) {
-    badIcon.add(badKey);
-    if (typeof console !== 'undefined') console.warn('[Plenix] Icon: icon is refused (' + moduleProblem(icon) + '; import it from plenix-platform/icons/<set>/<name>); nothing is drawn.', icon);
-  }
-  const shown = isModule(icon) ? icon.name : name;
-  const svg = useDrawings(shown, size, filled, isModule(icon) ? icon : null, lib);
-  const mod = isModule(icon) ? icon : (() => {
-    const f = resolveIcon(shown, {
-      library: lib
-    });
-    return f && f.kind === 'module' ? f.module : null;
-  })();
-  // a module outside the Plenix set that points along the reading direction mirrors in right to left (icon.css's
-  // plx-icon--mirrored); the Plenix set's own names already mirror through their per-name rules, so their markup stays the same
-  const mirrored = !!(mod && mod.mirrored && mod.set !== 'plenix');
-  return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: (0, _cx.cx)('plx-icon', 'plx-icon--' + normal(shown), size ? 'plx-icon--size-' + size : null, filled === true && 'plx-icon--filled', filled === false && 'plx-icon--outline', 'plx-icon--inline', mirrored && 'plx-icon--mirrored', className),
-    role: label ? 'img' : undefined,
-    "aria-label": label,
-    "aria-hidden": label ? undefined : true
-  }, rest), svg);
-}
-
-// stateIcon: an icon a component draws in its own state: filled while the state is on, the outline otherwise (Styling
-// Standard 3.6: the component that owns the state passes it; no rule reaches in from the ancestor). A string is an icon
-// name; an Icon element the caller gives keeps a fill it sets itself; anything else passes through. extra: more props for
-// the Icon (a size), given only where the caller set none.
-function stateIcon(icon, on, extra) {
-  if (typeof icon === 'string') return /*#__PURE__*/_react.default.createElement(Icon, _extends({
-    name: icon,
-    filled: !!on
-  }, extra));
-  if (/*#__PURE__*/_react.default.isValidElement(icon) && icon.type === Icon) {
-    const add = {};
-    if (icon.props.filled === undefined) add.filled = !!on;
-    for (const k of Object.keys(extra || {})) if (icon.props[k] === undefined) add[k] = extra[k];
-    return Object.keys(add).length ? /*#__PURE__*/_react.default.cloneElement(icon, add) : icon;
-  }
-  return icon;
-}
-
-// StatusIcon: a tone's icon in the tone's color, alone (an image named by the tone) or before a short visible label
-const STATUS_ICONS = {
-  info: 'circle-info',
-  success: 'circle-check',
-  warning: 'warning',
-  danger: 'alert',
-  neutral: 'circle-info'
-};
-const STATUS_WORDS = {
-  info: 'Information',
-  success: 'Success',
-  warning: 'Warning',
-  danger: 'Error',
-  neutral: 'Note'
-};
-function StatusIcon({
-  tone = 'info',
-  size = 'md',
-  label,
-  children,
-  strings,
-  className,
-  ...rest
-}) {
-  (0, _devWarn.devWarn)('StatusIcon', {
-    tone,
-    size
-  }, {
-    tone: ['info', 'success', 'warning', 'danger', 'neutral'],
-    size: ['sm', 'md', 'lg']
-  });
-  const t = STATUS_ICONS[tone] ? tone : 'info';
-  const words = Object.assign({}, STATUS_WORDS, strings);
-  const shown = children !== undefined && children !== null && children !== false;
-  return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: (0, _cx.cx)('plx-status-icon', 'plx-status-icon--' + t, 'plx-status-icon--' + size, className)
-  }, rest), /*#__PURE__*/_react.default.createElement("span", {
-    className: (0, _cx.cx)('plx-status-icon__glyph', 'plx-status-icon__glyph--' + t)
-  }, /*#__PURE__*/_react.default.createElement(Icon, {
-    name: STATUS_ICONS[t],
-    size: size,
-    label: shown ? undefined : label || words[t]
-  })), shown ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-status-icon__label"
-  }, children) : null);
-}
-  } },
-  "platform/components/Badge/Badge.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Badge = Badge;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _Icon = require("../Icon/Icon.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Badge
-   Summary: A status pill: bold text on a soft background of its variant's color family, a 1px border and 4px corners
-     (owner, 2026-10-14, docs/pills-and-colors.md: every pill is soft).
-   Usage:
-     <Badge tone="success">Approved</Badge>
-     <Badge tone="waiting">Paused</Badge>
-     <Badge tone="action-required">Changes requested</Badge>
-     <Badge tone="negative" size="sm">3</Badge>
-     <Badge tone="success" icon="check">Saved</Badge>
-   Props:
-     tone: the status variant:
-       "neutral" (default; gray: no particular state, e.g. Draft, Archived)
-       "success" (green: done, approved, healthy)
-       "active" (blue: in progress, current, information)
-       "waiting" (yellow: waiting, paused)
-       "action-required" (orange: action or correction required, e.g. Changes requested, Needs attention)
-       "negative" (red: failed, error, rejected, blocked)
-       Old names still work: "info" is "active", "warning" is "waiting", "danger" is "negative".
-     variant: accepted and ignored ("solid" and "soft" both draw the soft pill; the solid look was removed, 2026-10-14)
-     size: "md" (default; a 20px label) | "sm" (16px, for counts)
-     icon: an icon name (platform/icons/map.json) drawn before the text, in the text color: a status shows its icon inside
-       the badge (owner, 2026-10-14: check for done, pencil for unsaved, alert for problems); the icon is decorative, the
-       text says the state
-     children: the badge text
-     className: more classes on the badge
-   Behavior:
-     An unknown tone or size falls back to the default.
-   Notes:
-     A badge is a workflow status. A tag or category is a Tag with its category color (never a status variant).
-     Other props (title, aria-*, …) pass through to the <span>.
-     A badge is text: give a count enough context nearby or an accessible name on its control.
-*/
-const TONES = ['neutral', 'success', 'active', 'waiting', 'action-required', 'negative'];
-const ALIASES = {
-  info: 'active',
-  warning: 'waiting',
-  danger: 'negative'
-};
-const SIZES = ['md', 'sm'];
-
-// variant is taken out so it never reaches the <span>: every badge is the soft pill
-function Badge({
-  tone = 'neutral',
-  variant,
-  size = 'md',
-  icon,
-  className,
-  children,
-  ...rest
-}) {
-  (0, _devWarn.devWarn)('Badge', {
-    tone,
-    variant,
-    size
-  }, {
-    tone: ['neutral', 'success', 'active', 'waiting', 'action-required', 'negative', 'info', 'warning', 'danger'],
-    variant: ['solid', 'soft'],
-    size: ['md', 'sm']
-  });
-  const named = ALIASES[tone] || tone;
-  const t = TONES.indexOf(named) >= 0 ? named : 'neutral';
-  const s = SIZES.indexOf(size) >= 0 ? size : 'md';
-  const classes = ['plx-badge', 'plx-badge--' + t, s === 'sm' ? 'plx-badge--sm' : null, className].filter(Boolean).join(' ');
-  return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: classes
-  }, rest), icon ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: icon
-  }) : null, children);
-}
-  } },
-  "platform/components/VisuallyHidden/VisuallyHidden.jsx": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.VisuallyHidden = VisuallyHidden;
-var _react = _interopRequireDefault(require("react"));
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · VisuallyHidden
-   Summary: Text for assistive technology only (a name for an icon-only control, a status).
-   Usage:
-     <button type="button"><Icon name="trash" /><VisuallyHidden>Delete</VisuallyHidden></button>
-   Props:
-     as: the element; default "span"
-     children: the hidden text
-     ...rest: other attributes go on the element
-*/
-function VisuallyHidden({
-  as: Tag = 'span',
-  children,
-  ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement(Tag, _extends({
-    className: "plx-visually-hidden"
-  }, rest), children);
-}
-  } },
   "platform/utils/direction.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
@@ -1955,7 +1345,20 @@ var _default = exports.default = {
     "failed": "Could not dismiss this announcement. Try again."
   },
   "appHeader": {
-    "aria-label": "Search"
+    "aria-label": "Search",
+    "account": {
+      "trigger": "Account and settings for {name}",
+      "menu": "Account",
+      "myAccount": "My account",
+      "settings": "Plenix settings",
+      "appSettings": "{app} settings",
+      "app": "App",
+      "density": "Display density",
+      "compact": "Compact",
+      "standard": "Standard",
+      "comfortable": "Comfortable",
+      "signOut": "Sign out"
+    }
   },
   "appShell": {
     "skip": "Skip to main content"
@@ -2362,7 +1765,14 @@ var _default = exports.default = {
     "preset": "any",
     "moreLabel": "More actions",
     "from": "",
-    "to": ""
+    "to": "",
+    "reorder": {
+      "moved": "{name} moved to position {position} of {total}",
+      "row": "{name}, {position} of {total}. Alt + Arrow Up or Down moves it",
+      "reorder": "Reorder {name}",
+      "moveUp": "Move up",
+      "moveDown": "Move down"
+    }
   },
   "commandMenu": {
     "label": "Commands",
@@ -2525,7 +1935,11 @@ var _default = exports.default = {
     "sortNumber": ["Sort 1 → 9", "Sort 9 → 1"],
     "sortDate": ["Sort oldest → newest", "Sort newest → oldest"],
     "sortCheck": ["Sort unchecked → checked", "Sort checked → unchecked"],
-    "unread": "Unread ({count})"
+    "unread": "Unread ({count})",
+    "columnsLabel": "{label} columns",
+    "rowsLabel": "{label} rows",
+    "columnActions": "{title} column actions",
+    "unreadRow": "{label}, unread"
   },
   "dataPill": {
     "male": "male",
@@ -2782,7 +2196,12 @@ var _default = exports.default = {
     "choose": "Choose options",
     "field": "Field",
     "operator": "Operator",
-    "join": "And or or"
+    "join": "And or or",
+    "moved": "{name} moved to position {position} of {total}",
+    "row": "{name}, {position} of {total}. Alt + Arrow Up or Down moves it",
+    "reorder": "Reorder {name}",
+    "moveUp": "Move up",
+    "moveDown": "Move down"
   },
   "form": {
     "label": "Form actions"
@@ -2823,7 +2242,12 @@ var _default = exports.default = {
     "remove": "Remove the grouping by {name}",
     "removeTip": "Remove group",
     "field": "Field",
-    "order": "Order"
+    "order": "Order",
+    "moved": "{name} moved to position {position} of {total}",
+    "row": "{name}, {position} of {total}. Alt + Arrow Up or Down moves it",
+    "reorder": "Reorder {name}",
+    "moveUp": "Move up",
+    "moveDown": "Move down"
   },
   "helpPanel": {
     "title": "Help",
@@ -3229,7 +2653,11 @@ var _default = exports.default = {
   },
   "resizable": {
     "width": "{label} width",
-    "height": "{label} height"
+    "height": "{label} height",
+    "minWidth": "Smallest width for {label} ({value}px)",
+    "maxWidth": "Largest width for {label} ({value}px)",
+    "minHeight": "Smallest height for {label} ({value}px)",
+    "maxHeight": "Largest height for {label} ({value}px)"
   },
   "resourceList": {
     "item": "item",
@@ -3253,7 +2681,46 @@ var _default = exports.default = {
     "label": "Waiting for review",
     "noun": "item",
     "plural": "items",
-    "queueLabel": "Waiting for review"
+    "queueLabel": "Waiting for review",
+    "flow": {
+      "reviewers": "Reviewers",
+      "history": "History",
+      "comment": "Comment",
+      "commentHint": "Needed to reject or request changes.",
+      "approve": "Approve",
+      "changes": "Request changes",
+      "reject": "Reject",
+      "waiting": "Waiting",
+      "human": "Generated content. A person checks it before it is used.",
+      "needReason": "Say why, so the author knows what to change.",
+      "done": "{decision}: {title}",
+      "decisions": "Review decisions"
+    },
+    "queue": {
+      "name": "Name",
+      "type": "Type",
+      "submittedBy": "Submitted by",
+      "submitted": "Submitted",
+      "status": "Status",
+      "approve": "Approve",
+      "changes": "Request changes",
+      "reject": "Reject",
+      "rejectTitle": "Reject {what}?",
+      "changesTitle": "Request changes on {what}?",
+      "reason": "Reason",
+      "changesLabel": "What to change",
+      "reasonHint": "The authors see it with the decision.",
+      "needReason": "Say why, so the authors know what to change.",
+      "done": "{what} {decision}",
+      "count": "{n} {plural}",
+      "noun": "item",
+      "plural": "items",
+      "queueLabel": "Waiting for review",
+      "items": {
+        "one": "{n} item",
+        "other": "{n} items"
+      }
+    }
   },
   "richTextEditor": {
     "toolbar": "Formatting",
@@ -3478,7 +2945,12 @@ var _default = exports.default = {
     "remove": "Remove the sort by {name}",
     "removeTip": "Remove sort",
     "field": "Field",
-    "direction": "Direction"
+    "direction": "Direction",
+    "moved": "{name} moved to position {position} of {total}",
+    "row": "{name}, {position} of {total}. Alt + Arrow Up or Down moves it",
+    "reorder": "Reorder {name}",
+    "moveUp": "Move up",
+    "moveDown": "Move down"
   },
   "sortableList": {
     "moveMenu": "Move {name}",
@@ -3730,7 +3202,8 @@ var _default = exports.default = {
     "group": {
       "one": "{n} item",
       "other": "{n} items"
-    }
+    },
+    "unreadRow": "{label}, unread"
   },
   "widgetGrid": {
     "widget": "Widget",
@@ -3803,6 +3276,367 @@ var _default = exports.default = {
       "tied": "Tied",
       "no-quorum": "No quorum"
     }
+  },
+  "card": {
+    "panel": {
+      "collapse": "Collapse {title}",
+      "expand": "Expand {title}",
+      "section": "section"
+    },
+    "mediaCard": {
+      "select": "Select {title}",
+      "item": "item",
+      "assets": "{n} assets",
+      "asset": "{n} asset"
+    },
+    "card": {
+      "expand": "Expand {title}",
+      "collapse": "Collapse {title}",
+      "card": "card"
+    }
+  },
+  "field": {
+    "counter": {
+      "left": "{n} characters left",
+      "over": "{n} characters too many"
+    }
+  },
+  "icon": {
+    "status": {
+      "info": "Information",
+      "success": "Success",
+      "warning": "Warning",
+      "danger": "Error",
+      "neutral": "Note"
+    }
+  },
+  "searchResult": {
+    "result": {
+      "path": "In"
+    },
+    "group": {
+      "more": "Show all"
+    }
+  },
+  "settingsLayout": {
+    "section": {
+      "section": "section"
+    }
+  },
+  "commerce": {
+    "orders": {
+      "label": "Orders",
+      "search": "Search orders",
+      "count": "{n} orders",
+      "one": "1 order",
+      "noun": "order",
+      "plural": "orders",
+      "number": "Order",
+      "date": "Date",
+      "customer": "Customer",
+      "items": "Items",
+      "total": "Total",
+      "status": "Status",
+      "open": "Open",
+      "fulfill": "Fulfill",
+      "refund": "Refund",
+      "cancel": "Cancel order",
+      "cancelMany": "Cancel orders",
+      "cancelTitle": "Cancel {what}?",
+      "cancelText": "The customer is told and paid back in full. This cannot be undone.",
+      "keep": "Keep the order",
+      "notFulfillable": "Only unfulfilled orders can be fulfilled",
+      "notCancelable": "Only unfulfilled orders can be canceled",
+      "notRefundable": "Only shipped or delivered orders can be refunded",
+      "fulfilled": "{what} marked as shipped",
+      "canceled": "{what} canceled"
+    },
+    "orderDetail": {
+      "context": "Order",
+      "back": "Orders",
+      "items": "Items",
+      "delivery": "Delivery",
+      "address": "Address",
+      "method": "Method",
+      "tracking": "Tracking number",
+      "payment": "Payment",
+      "history": "History",
+      "fulfill": "Fulfill",
+      "refund": "Refund",
+      "cancel": "Cancel order",
+      "return": "Start a return",
+      "cancelTitle": "Cancel order {number}?",
+      "cancelText": "The customer is told and paid back in full. This cannot be undone.",
+      "keep": "Keep the order"
+    },
+    "subscription": {
+      "plan": "Your plan",
+      "planName": "Plan",
+      "price": "Price",
+      "status": "Status",
+      "next": "Next payment",
+      "since": "Member since",
+      "ends": "Access ends",
+      "perPeriod": "{price} per {period}",
+      "more": "{amount} more",
+      "less": "{amount} less",
+      "change": "Change plan",
+      "changeTitle": "Change to {plan}?",
+      "changeText": "You will pay {price} from {date}. Until then your current plan stays as it is.",
+      "changeConfirm": "Change plan",
+      "changed": "Your plan changes to {plan} on {date}.",
+      "plans": "Plans",
+      "current": "Current plan",
+      "method": "Payment method",
+      "update": "Update payment method",
+      "manage": "Pause or cancel",
+      "manageText": "Pause to stop the payments for a while and keep your settings; cancel to end the plan. Either way you keep access until {date}.",
+      "pause": "Pause subscription",
+      "pauseTitle": "Pause your subscription?",
+      "pauseText": "No payment is taken while it is paused. Resume it whenever you like.",
+      "resume": "Resume subscription",
+      "cancel": "Cancel subscription",
+      "cancelTitle": "Cancel your subscription?",
+      "cancelText": "You keep access until {date}, and you will not be charged again.",
+      "keep": "Keep my plan",
+      "history": "Billing history",
+      "date": "Date",
+      "description": "Description",
+      "amount": "Amount",
+      "invoice": "Invoice",
+      "invoiceFor": "Invoice for {date}",
+      "paused": "Your subscription is paused.",
+      "canceled": "Your subscription is canceled.",
+      "statuses": {
+        "active": "Active",
+        "paused": "Paused",
+        "canceled": "Canceled",
+        "paid": "Paid",
+        "refunded": "Refunded",
+        "failed": "Failed"
+      }
+    },
+    "returns": {
+      "label": "Return items",
+      "items": "Items",
+      "reason": "Reason",
+      "resolution": "Resolution",
+      "review": "Review",
+      "submit": "Request return",
+      "cancel": "Cancel",
+      "window": "You can return most items within 30 days of delivery.",
+      "choose": "Choose at least one item to return.",
+      "notReturnable": "Cannot be returned",
+      "quantity": "How many, {title}",
+      "why": "Why are you returning them?",
+      "whyRequired": "Choose a reason.",
+      "note": "Anything else we should know? (optional)",
+      "want": "What would you like?",
+      "wantRequired": "Choose a refund or an exchange.",
+      "send": "How will you send them?",
+      "sendRequired": "Choose how to send them.",
+      "refund": "Refund",
+      "refundTiming": "The refund reaches your original payment method 5 to 10 business days after the items arrive.",
+      "requested": "Return requested",
+      "requestedText": "We emailed you the return label and the steps. Here is where your return stands.",
+      "status": "Return status",
+      "returning": "{n} items",
+      "returningOne": "1 item"
+    },
+    "cart": {
+      "title": "Cart",
+      "items": "{n} items",
+      "item": "1 item",
+      "lines": "Items in your cart",
+      "remove": "Remove {title}",
+      "noun": "item",
+      "removed": "{title} removed from your cart.",
+      "undo": "Undo",
+      "empty": "Your cart is empty",
+      "emptyText": "Find something you like and add it here.",
+      "continue": "Continue shopping",
+      "checkout": "Check out",
+      "promo": "Promo code",
+      "apply": "Apply",
+      "applied": "Promo code {code} applied",
+      "promoError": "This code cannot be used.",
+      "total": "Total {total}"
+    },
+    "pay": {
+      "method": "Payment method",
+      "newCard": "A new card",
+      "number": "Card number",
+      "accepted": "Visa, Mastercard, American Express or Discover",
+      "expiry": "Expiry date",
+      "expiryHint": "MM / YY",
+      "cvc": "Security code",
+      "cvcHint": "The last 3 digits on the back, or 4 on the front of American Express",
+      "name": "Name on card",
+      "billingSame": "The billing address is the same as the delivery address",
+      "billing": "Billing address",
+      "street": "Address",
+      "city": "City",
+      "postal": "Postal code",
+      "secure": "Your card details go straight to the payment provider. This page does not keep them.",
+      "charge": "You will be charged",
+      "brands": {
+        "visa": "Visa",
+        "mastercard": "Mastercard",
+        "amex": "American Express",
+        "discover": "Discover"
+      }
+    },
+    "payment": {
+      "title": "Payment",
+      "description": "Choose how to pay. Nothing is charged until you press Pay.",
+      "pay": "Pay {amount}",
+      "cancel": "Cancel",
+      "declined": "The payment did not go through",
+      "declinedText": "Your card was declined. Check the details or use another card.",
+      "paid": "Payment received"
+    },
+    "checkout": {
+      "label": "Checkout",
+      "contact": "Contact",
+      "delivery": "Delivery",
+      "payment": "Payment",
+      "review": "Review",
+      "placeOrder": "Place order",
+      "cancel": "Back to cart",
+      "email": "Email",
+      "emailHint": "For the order confirmation and delivery updates.",
+      "account": "Have an account?",
+      "signIn": "Sign in",
+      "name": "Full name",
+      "street": "Address",
+      "street2": "Apartment, suite or unit (optional)",
+      "city": "City",
+      "region": "State or region",
+      "postal": "Postal code",
+      "country": "Country",
+      "phone": "Phone (optional)",
+      "phoneHint": "Only for questions about the delivery.",
+      "method": "Delivery method",
+      "summary": "Order summary",
+      "card": "Card ending {last4}",
+      "placed": "Order placed",
+      "checkAnswers": "Check your order before you place it.",
+      "items": "Items",
+      "free": "Free"
+    },
+    "confirm": {
+      "title": "Thank you. Your order is placed.",
+      "number": "Order number",
+      "copy": "Copy the order number",
+      "sent": "We sent a confirmation to {email}.",
+      "next": "What happens next",
+      "items": "Items",
+      "view": "View your order",
+      "continue": "Continue shopping",
+      "delivery": "Delivery",
+      "method": "Delivery method"
+    },
+    "listing": {
+      "label": "Products",
+      "search": "Search products",
+      "count": "{n} products",
+      "one": "1 product",
+      "category": "Category",
+      "noun": "product",
+      "name": "Name",
+      "price": "Price",
+      "rating": "Rating",
+      "availability": "Availability",
+      "inStock": "In stock",
+      "outOfStock": "Out of stock",
+      "sale": "On sale",
+      "yes": "Yes",
+      "no": "No",
+      "empty": "No products match",
+      "emptyText": "Remove a filter or search for something else.",
+      "clear": "Clear filters and search",
+      "results": "{n} products shown",
+      "resultsOne": "1 product shown",
+      "none": "No products shown"
+    },
+    "discovery": {
+      "title": "Shop",
+      "search": "Search the shop",
+      "categories": "Shop by category",
+      "recommended": "Recommended for you",
+      "results": "Products",
+      "resultsFor": "Results for “{q}”",
+      "count": "{n} products",
+      "one": "1 product",
+      "suggestions": "Try one of these",
+      "clear": "Clear the search"
+    },
+    "productDetail": {
+      "gallery": "Pictures of {title}",
+      "reviews": "{n} reviews",
+      "review": "1 review",
+      "inStock": "In stock",
+      "lowStock": "Only {n} left",
+      "outOfStock": "Out of stock",
+      "addToCart": "Add to cart",
+      "added": "{title} added to your cart",
+      "viewCart": "View cart",
+      "choose": "Choose a {option}.",
+      "missing": "Choose your options first.",
+      "description": "Description",
+      "details": "Details",
+      "delivery": "Delivery and returns",
+      "detail": "Detail",
+      "value": "Value",
+      "related": "You may also like",
+      "rating": "Rating"
+    },
+    "line": {
+      "quantity": "Quantity, {title}",
+      "qty": "Qty {n}",
+      "each": "{price} each"
+    },
+    "summary": {
+      "title": "Order summary",
+      "subtotal": "Subtotal",
+      "discount": "Discount",
+      "shipping": "Shipping",
+      "shippingEstimated": "Estimated shipping",
+      "tax": "Tax",
+      "taxEstimated": "Estimated tax",
+      "total": "Total",
+      "free": "Free",
+      "items": "{n} items",
+      "item": "1 item",
+      "times": "× {n}"
+    }
+  },
+  "dnd": {
+    "handle": "Move {name}",
+    "instructions": "Press Space or Enter to pick it up. The arrow keys move it, Space or Enter drops it, Escape puts it back.",
+    "pickedUp": "{name} picked up. Position {position} of {total}. The arrow keys move it, Space or Enter drops it, Escape puts it back.",
+    "moved": "{name}, position {position} of {total}",
+    "movedTo": "{name} moved to {list}, position {position} of {total}",
+    "dropped": "{name} dropped at position {position} of {total}",
+    "droppedIn": "{name} dropped in {list}, position {position} of {total}",
+    "canceled": "Move canceled. {name} is back at position {position} of {total}",
+    "itemPickedUp": "{name} picked up. {count} places take it. The arrow keys choose one, Space or Enter drops it, Escape puts it back.",
+    "over": "Over {target}",
+    "overReject": "{target} does not take {name}",
+    "droppedOn": "{name} dropped on {target}",
+    "noTargets": "No place takes {name}",
+    "itemCanceled": "Move canceled. {name} was not moved",
+    "repositionPicked": "{name} picked up. The arrow keys move it, with Shift farther; Space or Enter drops it, Escape puts it back.",
+    "repositioned": "{name} moved",
+    "repositionDropped": "{name} dropped",
+    "repositionCanceled": "Move canceled. {name} is back where it was",
+    "movable": "movable",
+    "list": "the list"
+  },
+  "collapsibleSection": {
+    "less": "Show less",
+    "more": "Show more",
+    "moreCount": "Show more ({n})"
   }
 };
   } },
@@ -4164,7 +3998,11 @@ var _default = exports.default = {
     "sortNumber": ["فرز من 1 إلى 9", "فرز من 9 إلى 1"],
     "sortDate": ["فرز من الأقدم إلى الأحدث", "فرز من الأحدث إلى الأقدم"],
     "sortCheck": ["فرز من غير المحدد إلى المحدد", "فرز من المحدد إلى غير المحدد"],
-    "unread": "غير مقروء ({count})"
+    "unread": "غير مقروء ({count})",
+    "columnsLabel": "أعمدة {label}",
+    "rowsLabel": "صفوف {label}",
+    "columnActions": "إجراءات العمود {title}",
+    "unreadRow": "{label}، غير مقروء"
   },
   "dataPill": {
     "male": "ذكر",
@@ -4418,7 +4256,11 @@ var _default = exports.default = {
   },
   "resizable": {
     "width": "عرض {label}",
-    "height": "ارتفاع {label}"
+    "height": "ارتفاع {label}",
+    "minWidth": "أصغر عرض لـ {label} ({value}px)",
+    "maxWidth": "أكبر عرض لـ {label} ({value}px)",
+    "minHeight": "أصغر ارتفاع لـ {label} ({value}px)",
+    "maxHeight": "أكبر ارتفاع لـ {label} ({value}px)"
   },
   "richTextEditor": {
     "toolbar": "التنسيق",
@@ -4617,7 +4459,8 @@ var _default = exports.default = {
       "few": "{n} عناصر",
       "many": "{n} عنصرًا",
       "other": "{n} عنصر"
-    }
+    },
+    "unreadRow": "{label}، غير مقروء"
   },
   "aiSearch": {
     "label": "بحث بالذكاء الاصطناعي",
@@ -4733,7 +4576,14 @@ var _default = exports.default = {
     "preset": "أي",
     "moreLabel": "المزيد من الإجراءات",
     "from": "",
-    "to": ""
+    "to": "",
+    "reorder": {
+      "moved": "تم نقل {name} إلى الموضع {position} من {total}",
+      "row": "{name}، {position} من {total}. المفتاحان Alt + السهم لأعلى أو لأسفل ينقلانه",
+      "reorder": "إعادة ترتيب {name}",
+      "moveUp": "نقل لأعلى",
+      "moveDown": "نقل لأسفل"
+    }
   },
   "commandPalette": {
     "title": "الأوامر",
@@ -5494,7 +5344,12 @@ var _default = exports.default = {
     "choose": "اختر خيارات",
     "field": "الحقل",
     "operator": "العامل",
-    "join": "و أو أو"
+    "join": "و أو أو",
+    "moved": "تم نقل {name} إلى الموضع {position} من {total}",
+    "row": "{name}، {position} من {total}. المفتاحان Alt + السهم لأعلى أو لأسفل ينقلانه",
+    "reorder": "إعادة ترتيب {name}",
+    "moveUp": "نقل لأعلى",
+    "moveDown": "نقل لأسفل"
   },
   "formFlow": {
     "create": "إنشاء",
@@ -5520,7 +5375,12 @@ var _default = exports.default = {
     "remove": "إزالة التجميع حسب {name}",
     "removeTip": "إزالة المجموعة",
     "field": "الحقل",
-    "order": "الترتيب"
+    "order": "الترتيب",
+    "moved": "تم نقل {name} إلى الموضع {position} من {total}",
+    "row": "{name}، {position} من {total}. المفتاحان Alt + السهم لأعلى أو لأسفل ينقلانه",
+    "reorder": "إعادة ترتيب {name}",
+    "moveUp": "نقل لأعلى",
+    "moveDown": "نقل لأسفل"
   },
   "helpPanel": {
     "title": "مساعدة",
@@ -5663,7 +5523,12 @@ var _default = exports.default = {
     "remove": "إزالة الترتيب حسب {name}",
     "removeTip": "إزالة الترتيب",
     "field": "الحقل",
-    "direction": "الاتجاه"
+    "direction": "الاتجاه",
+    "moved": "تم نقل {name} إلى الموضع {position} من {total}",
+    "row": "{name}، {position} من {total}. المفتاحان Alt + السهم لأعلى أو لأسفل ينقلانه",
+    "reorder": "إعادة ترتيب {name}",
+    "moveUp": "نقل لأعلى",
+    "moveDown": "نقل لأسفل"
   },
   "tour": {
     "next": "التالي",
@@ -5729,7 +5594,20 @@ var _default = exports.default = {
     "label": "الإجراءات"
   },
   "appHeader": {
-    "aria-label": "التطبيقات"
+    "aria-label": "التطبيقات",
+    "account": {
+      "trigger": "الحساب والإعدادات لـ {name}",
+      "menu": "الحساب",
+      "myAccount": "حسابي",
+      "settings": "إعدادات Plenix",
+      "appSettings": "إعدادات {app}",
+      "app": "التطبيق",
+      "density": "كثافة العرض",
+      "compact": "مضغوط",
+      "standard": "قياسي",
+      "comfortable": "مريح",
+      "signOut": "تسجيل الخروج"
+    }
   },
   "form": {
     "label": "إجراءات النموذج"
@@ -5738,7 +5616,50 @@ var _default = exports.default = {
     "label": "بانتظار المراجعة",
     "noun": "عنصر",
     "plural": "عناصر",
-    "queueLabel": "بانتظار المراجعة"
+    "queueLabel": "بانتظار المراجعة",
+    "flow": {
+      "reviewers": "المراجعون",
+      "history": "السجل",
+      "comment": "تعليق",
+      "commentHint": "مطلوب للرفض أو لطلب التعديلات.",
+      "approve": "موافقة",
+      "changes": "طلب تعديلات",
+      "reject": "رفض",
+      "waiting": "بالانتظار",
+      "human": "محتوى مُنشأ. يراجعه شخص قبل استخدامه.",
+      "needReason": "اذكر السبب ليعرف الكاتب ما الذي يجب تغييره.",
+      "done": "{decision}: {title}",
+      "decisions": "قرارات المراجعة"
+    },
+    "queue": {
+      "name": "الاسم",
+      "type": "النوع",
+      "submittedBy": "قدّمه",
+      "submitted": "تاريخ التقديم",
+      "status": "الحالة",
+      "approve": "موافقة",
+      "changes": "طلب تعديلات",
+      "reject": "رفض",
+      "rejectTitle": "رفض {what}؟",
+      "changesTitle": "طلب تعديلات على {what}؟",
+      "reason": "السبب",
+      "changesLabel": "ما الذي يجب تغييره",
+      "reasonHint": "يراه المؤلفون مع القرار.",
+      "needReason": "اذكر السبب ليعرف المؤلفون ما الذي يجب تغييره.",
+      "done": "{what} {decision}",
+      "count": "{n} {plural}",
+      "noun": "عنصر",
+      "plural": "عناصر",
+      "queueLabel": "بانتظار المراجعة",
+      "items": {
+        "zero": "لا عناصر",
+        "one": "عنصر واحد",
+        "two": "عنصران",
+        "few": "{n} عناصر",
+        "many": "{n} عنصرًا",
+        "other": "{n} عنصر"
+      }
+    }
   },
   "collection": {
     "selected": {
@@ -5811,6 +5732,367 @@ var _default = exports.default = {
       "tied": "تعادل",
       "no-quorum": "لا نصاب"
     }
+  },
+  "card": {
+    "panel": {
+      "collapse": "طيّ {title}",
+      "expand": "توسيع {title}",
+      "section": "قسم"
+    },
+    "mediaCard": {
+      "select": "تحديد {title}",
+      "item": "عنصر",
+      "assets": "{n} أصول",
+      "asset": "{n} أصل"
+    },
+    "card": {
+      "expand": "توسيع {title}",
+      "collapse": "طيّ {title}",
+      "card": "بطاقة"
+    }
+  },
+  "field": {
+    "counter": {
+      "left": "بقي {n} حرفًا",
+      "over": "زاد {n} حرفًا"
+    }
+  },
+  "icon": {
+    "status": {
+      "info": "معلومة",
+      "success": "نجاح",
+      "warning": "تحذير",
+      "danger": "خطأ",
+      "neutral": "ملاحظة"
+    }
+  },
+  "searchResult": {
+    "result": {
+      "path": "في"
+    },
+    "group": {
+      "more": "إظهار الكل"
+    }
+  },
+  "settingsLayout": {
+    "section": {
+      "section": "قسم"
+    }
+  },
+  "commerce": {
+    "orders": {
+      "label": "الطلبات",
+      "search": "البحث في الطلبات",
+      "count": "{n} طلبات",
+      "one": "طلب واحد",
+      "noun": "طلب",
+      "plural": "طلبات",
+      "number": "الترتيب",
+      "date": "التاريخ",
+      "customer": "العميل",
+      "items": "العناصر",
+      "total": "الإجمالي",
+      "status": "الحالة",
+      "open": "فتح",
+      "fulfill": "تنفيذ",
+      "refund": "استرداد",
+      "cancel": "إلغاء الطلب",
+      "cancelMany": "إلغاء الطلبات",
+      "cancelTitle": "إلغاء {what}؟",
+      "cancelText": "سيُبلَّغ العميل ويُعاد إليه المبلغ كاملًا. لا يمكن التراجع عن ذلك.",
+      "keep": "الإبقاء على الطلب",
+      "notFulfillable": "يمكن تنفيذ الطلبات غير المنفّذة فقط",
+      "notCancelable": "يمكن إلغاء الطلبات غير المنفّذة فقط",
+      "notRefundable": "يمكن استرداد الطلبات المشحونة أو المسلَّمة فقط",
+      "fulfilled": "تم وضع علامة شُحن على {what}",
+      "canceled": "تم إلغاء {what}"
+    },
+    "orderDetail": {
+      "context": "الترتيب",
+      "back": "الطلبات",
+      "items": "العناصر",
+      "delivery": "التسليم",
+      "address": "العنوان",
+      "method": "الطريقة",
+      "tracking": "رقم التتبع",
+      "payment": "الدفع",
+      "history": "السجل",
+      "fulfill": "تنفيذ",
+      "refund": "استرداد",
+      "cancel": "إلغاء الطلب",
+      "return": "بدء عملية إرجاع",
+      "cancelTitle": "إلغاء الطلب {number}؟",
+      "cancelText": "سيُبلَّغ العميل ويُعاد إليه المبلغ كاملًا. لا يمكن التراجع عن ذلك.",
+      "keep": "الإبقاء على الطلب"
+    },
+    "subscription": {
+      "plan": "خطتك",
+      "planName": "الخطة",
+      "price": "السعر",
+      "status": "الحالة",
+      "next": "الدفعة التالية",
+      "since": "عضو منذ",
+      "ends": "ينتهي الوصول في",
+      "perPeriod": "{price} لكل {period}",
+      "more": "{amount} أكثر",
+      "less": "{amount} أقل",
+      "change": "تغيير الخطة",
+      "changeTitle": "التغيير إلى {plan}؟",
+      "changeText": "ستدفع {price} اعتبارًا من {date}. حتى ذلك الحين تبقى خطتك الحالية كما هي.",
+      "changeConfirm": "تغيير الخطة",
+      "changed": "ستتغير خطتك إلى {plan} في {date}.",
+      "plans": "الخطط",
+      "current": "الخطة الحالية",
+      "method": "طريقة الدفع",
+      "update": "تحديث طريقة الدفع",
+      "manage": "إيقاف مؤقت أو إلغاء",
+      "manageText": "أوقف مؤقتًا لإيقاف الدفعات فترة مع الاحتفاظ بإعداداتك، أو ألغِ لإنهاء الخطة. في الحالتين يبقى وصولك حتى {date}.",
+      "pause": "إيقاف الاشتراك مؤقتًا",
+      "pauseTitle": "إيقاف اشتراكك مؤقتًا؟",
+      "pauseText": "لا تُسحب أي دفعات أثناء الإيقاف المؤقت. يمكنك استئنافه متى شئت.",
+      "resume": "استئناف الاشتراك",
+      "cancel": "إلغاء الاشتراك",
+      "cancelTitle": "إلغاء اشتراكك؟",
+      "cancelText": "يبقى وصولك حتى {date}، ولن تُحاسَب مرة أخرى.",
+      "keep": "الإبقاء على خطتي",
+      "history": "سجل الفواتير",
+      "date": "التاريخ",
+      "description": "الوصف",
+      "amount": "المبلغ",
+      "invoice": "فاتورة",
+      "invoiceFor": "فاتورة بتاريخ {date}",
+      "paused": "اشتراكك متوقف مؤقتًا.",
+      "canceled": "تم إلغاء اشتراكك.",
+      "statuses": {
+        "active": "نشط",
+        "paused": "متوقف مؤقتًا",
+        "canceled": "أُلغي",
+        "paid": "مدفوعة",
+        "refunded": "مُستردة",
+        "failed": "فشلت"
+      }
+    },
+    "returns": {
+      "label": "إرجاع العناصر",
+      "items": "العناصر",
+      "reason": "السبب",
+      "resolution": "الحل",
+      "review": "مراجعة",
+      "submit": "طلب إرجاع",
+      "cancel": "إلغاء",
+      "window": "يمكنك إرجاع معظم العناصر خلال 30 يومًا من التسليم.",
+      "choose": "اختر عنصرًا واحدًا على الأقل لإرجاعه.",
+      "notReturnable": "لا يمكن إرجاعه",
+      "quantity": "كم عدد {title}",
+      "why": "لماذا تُرجع العناصر؟",
+      "whyRequired": "اختر سببًا.",
+      "note": "هل هناك ما يجب أن نعرفه؟ (اختياري)",
+      "want": "ماذا تريد؟",
+      "wantRequired": "اختر استردادًا أو استبدالًا.",
+      "send": "كيف سترسلها؟",
+      "sendRequired": "اختر طريقة الإرسال.",
+      "refund": "استرداد",
+      "refundTiming": "يصل المبلغ المسترد إلى طريقة الدفع الأصلية بعد 5 إلى 10 أيام عمل من وصول العناصر.",
+      "requested": "تم طلب الإرجاع",
+      "requestedText": "أرسلنا إليك بالبريد الإلكتروني بطاقة الإرجاع والخطوات. وهذه حالة طلب الإرجاع.",
+      "status": "حالة الإرجاع",
+      "returning": "{n} عناصر",
+      "returningOne": "عنصر واحد"
+    },
+    "cart": {
+      "title": "السلة",
+      "items": "{n} عناصر",
+      "item": "عنصر واحد",
+      "lines": "العناصر في سلتك",
+      "remove": "إزالة {title}",
+      "noun": "عنصر",
+      "removed": "تمت إزالة {title} من سلتك.",
+      "undo": "تراجع",
+      "empty": "سلتك فارغة",
+      "emptyText": "اعثر على ما يعجبك وأضفه هنا.",
+      "continue": "متابعة التسوق",
+      "checkout": "إتمام الشراء",
+      "promo": "رمز العرض",
+      "apply": "تطبيق",
+      "applied": "تم تطبيق رمز العرض {code}",
+      "promoError": "لا يمكن استخدام هذا الرمز.",
+      "total": "الإجمالي {total}"
+    },
+    "pay": {
+      "method": "طريقة الدفع",
+      "newCard": "بطاقة جديدة",
+      "number": "رقم البطاقة",
+      "accepted": "Visa أو Mastercard أو American Express أو Discover",
+      "expiry": "تاريخ الانتهاء",
+      "expiryHint": "شهر / سنة",
+      "cvc": "رمز الأمان",
+      "cvcHint": "الأرقام الثلاثة الأخيرة على ظهر البطاقة، أو أربعة على وجه American Express",
+      "name": "الاسم على البطاقة",
+      "billingSame": "عنوان الفوترة هو نفسه عنوان التسليم",
+      "billing": "عنوان الفوترة",
+      "street": "العنوان",
+      "city": "المدينة",
+      "postal": "الرمز البريدي",
+      "secure": "تذهب بيانات بطاقتك مباشرة إلى مزوّد الدفع. ولا تحتفظ هذه الصفحة بها.",
+      "charge": "سيتم تحصيل",
+      "brands": {
+        "visa": "Visa",
+        "mastercard": "Mastercard",
+        "amex": "American Express",
+        "discover": "Discover"
+      }
+    },
+    "payment": {
+      "title": "الدفع",
+      "description": "اختر طريقة الدفع. لن يُحصَّل أي مبلغ قبل الضغط على «ادفع».",
+      "pay": "ادفع {amount}",
+      "cancel": "إلغاء",
+      "declined": "لم تتم عملية الدفع",
+      "declinedText": "تم رفض بطاقتك. تحقق من البيانات أو استخدم بطاقة أخرى.",
+      "paid": "تم استلام الدفعة"
+    },
+    "checkout": {
+      "label": "إتمام الشراء",
+      "contact": "الاتصال",
+      "delivery": "التسليم",
+      "payment": "الدفع",
+      "review": "مراجعة",
+      "placeOrder": "تأكيد الطلب",
+      "cancel": "العودة إلى السلة",
+      "email": "البريد الإلكتروني",
+      "emailHint": "لتأكيد الطلب وتحديثات التسليم.",
+      "account": "لديك حساب؟",
+      "signIn": "تسجيل الدخول",
+      "name": "الاسم الكامل",
+      "street": "العنوان",
+      "street2": "الشقة أو الجناح أو الوحدة (اختياري)",
+      "city": "المدينة",
+      "region": "الولاية أو المنطقة",
+      "postal": "الرمز البريدي",
+      "country": "البلد",
+      "phone": "الهاتف (اختياري)",
+      "phoneHint": "فقط للأسئلة المتعلقة بالتسليم.",
+      "method": "طريقة التسليم",
+      "summary": "ملخص الطلب",
+      "card": "بطاقة تنتهي بـ {last4}",
+      "placed": "تم تقديم الطلب",
+      "checkAnswers": "راجع طلبك قبل تأكيده.",
+      "items": "العناصر",
+      "free": "مجاني"
+    },
+    "confirm": {
+      "title": "شكرًا لك. تم تقديم طلبك.",
+      "number": "رقم الطلب",
+      "copy": "نسخ رقم الطلب",
+      "sent": "أرسلنا تأكيدًا إلى {email}.",
+      "next": "ما يحدث بعد ذلك",
+      "items": "العناصر",
+      "view": "عرض طلبك",
+      "continue": "متابعة التسوق",
+      "delivery": "التسليم",
+      "method": "طريقة التسليم"
+    },
+    "listing": {
+      "label": "المنتجات",
+      "search": "البحث في المنتجات",
+      "count": "{n} منتجات",
+      "one": "منتج واحد",
+      "category": "الفئة",
+      "noun": "منتج",
+      "name": "الاسم",
+      "price": "السعر",
+      "rating": "التقييم",
+      "availability": "التوفر",
+      "inStock": "متوفر",
+      "outOfStock": "غير متوفر في المخزون",
+      "sale": "معروض بسعر مخفّض",
+      "yes": "نعم",
+      "no": "لا",
+      "empty": "لا توجد منتجات مطابقة",
+      "emptyText": "أزل عامل تصفية أو ابحث عن شيء آخر.",
+      "clear": "مسح عوامل التصفية والبحث",
+      "results": "تم عرض {n} منتجات",
+      "resultsOne": "تم عرض منتج واحد",
+      "none": "لا توجد منتجات معروضة"
+    },
+    "discovery": {
+      "title": "المتجر",
+      "search": "البحث في المتجر",
+      "categories": "التسوق حسب الفئة",
+      "recommended": "موصى به لك",
+      "results": "المنتجات",
+      "resultsFor": "نتائج «{q}»",
+      "count": "{n} منتجات",
+      "one": "منتج واحد",
+      "suggestions": "جرّب أحد هذه",
+      "clear": "مسح البحث"
+    },
+    "productDetail": {
+      "gallery": "صور {title}",
+      "reviews": "{n} مراجعات",
+      "review": "مراجعة واحدة",
+      "inStock": "متوفر",
+      "lowStock": "بقي {n} فقط",
+      "outOfStock": "غير متوفر في المخزون",
+      "addToCart": "أضف إلى السلة",
+      "added": "تمت إضافة {title} إلى سلتك",
+      "viewCart": "عرض السلة",
+      "choose": "اختر {option}.",
+      "missing": "اختر خياراتك أولًا.",
+      "description": "الوصف",
+      "details": "التفاصيل",
+      "delivery": "التسليم والإرجاع",
+      "detail": "التفاصيل",
+      "value": "القيمة",
+      "related": "قد يعجبك أيضًا",
+      "rating": "التقييم"
+    },
+    "line": {
+      "quantity": "الكمية، {title}",
+      "qty": "الكمية {n}",
+      "each": "{price} للقطعة"
+    },
+    "summary": {
+      "title": "ملخص الطلب",
+      "subtotal": "المجموع الفرعي",
+      "discount": "الخصم",
+      "shipping": "الشحن",
+      "shippingEstimated": "الشحن التقديري",
+      "tax": "الضريبة",
+      "taxEstimated": "الضريبة التقديرية",
+      "total": "الإجمالي",
+      "free": "مجاني",
+      "items": "{n} عناصر",
+      "item": "عنصر واحد",
+      "times": "× {n}"
+    }
+  },
+  "dnd": {
+    "handle": "نقل {name}",
+    "instructions": "اضغط على Space أو Enter لالتقاطه. مفاتيح الأسهم تحرّكه، وSpace أو Enter يُسقطه، وEscape يعيده.",
+    "pickedUp": "تم التقاط {name}. الموضع {position} من {total}. مفاتيح الأسهم تحرّكه، وSpace أو Enter يُسقطه، وEscape يعيده.",
+    "moved": "{name}، الموضع {position} من {total}",
+    "movedTo": "تم نقل {name} إلى {list}، الموضع {position} من {total}",
+    "dropped": "تم إسقاط {name} في الموضع {position} من {total}",
+    "droppedIn": "تم إسقاط {name} في {list}، الموضع {position} من {total}",
+    "canceled": "أُلغي النقل. عاد {name} إلى الموضع {position} من {total}",
+    "itemPickedUp": "تم التقاط {name}. يمكن لـ {count} أماكن استقباله. مفاتيح الأسهم تختار مكانًا، وSpace أو Enter يُسقطه، وEscape يعيده.",
+    "over": "فوق {target}",
+    "overReject": "{target} لا يستقبل {name}",
+    "droppedOn": "تم إسقاط {name} على {target}",
+    "noTargets": "لا يوجد مكان يستقبل {name}",
+    "itemCanceled": "أُلغي النقل. لم يتم نقل {name}",
+    "repositionPicked": "تم التقاط {name}. مفاتيح الأسهم تحرّكه، مع Shift لمسافة أكبر؛ وSpace أو Enter يُسقطه، وEscape يعيده.",
+    "repositioned": "تم نقل {name}",
+    "repositionDropped": "تم إسقاط {name}",
+    "repositionCanceled": "أُلغي النقل. عاد {name} إلى مكانه",
+    "movable": "قابل للنقل",
+    "list": "القائمة"
+  },
+  "collapsibleSection": {
+    "less": "عرض أقل",
+    "more": "عرض المزيد",
+    "moreCount": "عرض المزيد ({n})"
   }
 };
   } },
@@ -6037,6 +6319,610 @@ function useLocale() {
 function useDigits() {
   const value = _react.default.useContext(LocaleContext);
   return value ? value.digits : F.digitsOf(F.formatLocale());
+}
+  } },
+  "platform/components/Icon/Icon.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","./glyphs.js":"platform/components/Icon/glyphs.js","../../utils/iconSafety.js":"platform/utils/iconSafety.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Icon = Icon;
+exports.StatusIcon = StatusIcon;
+exports.registerIcons = registerIcons;
+exports.resolveIcon = resolveIcon;
+exports.setDefaultIconLibrary = setDefaultIconLibrary;
+exports.setIconLibrary = setIconLibrary;
+exports.stateIcon = stateIcon;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _cx = require("../../utils/cx.js");
+var _glyphs = require("./glyphs.js");
+var _iconSafety = require("../../utils/iconSafety.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Icon, StatusIcon
+   Summary: One icon of the Plenix set, drawn as an inline SVG in the current text color (a name outside the set, from
+     icons-all.css, as a mask). StatusIcon is a tone's icon in the
+     tone's color (info, success, warning, danger, neutral), alone or with a short label.
+   Usage:
+     <Icon name="folder" />
+     <Icon name="bookmark" size="sm" filled label="Bookmarked" />
+     import Add from 'plenix-platform/icons/plenix/add';  <Icon icon={Add} />      // an imported icon module (#282)
+     registerIcons(Add, Close);  <Icon name="add" />                               // a name drawn from its module first
+     <StatusIcon tone="warning" />
+     <StatusIcon tone="success" size="sm">Synced</StatusIcon>
+   Props:
+     name: the naming contract (2026-10-22): a Plenix name, with dashes (platform/icons/map.json: mic-off, person-cancel);
+       a Plenix name that is its Material symbol with dashes also answers to the underscore spelling (mic_off,
+       person_cancel); with the CDN's icons-all.css on the page, any other Material Symbols name (rocket_launch) too. A
+       Material name that is also a Plenix name draws the Plenix icon (check, home). Unknown names draw nothing
+     size: "xs" 12px | "sm" 16px | "md" 20px | "lg" 24px | "xl" 48px, a page title (--plx-sys-icon-size-*); without it the icon takes its container's
+       grid icon (a control's --plx-sys-control-icon-<role>) or --plx-sys-icon-size
+     icon: an imported icon module (platform/icons/layout.js: icons/<set>/<name>.js; in an application,
+       import X from 'plenix-platform/icons/<set>/<name>'): drawn from its own drawings instead of icon.css, with the same
+       classes, so sizes, fills, the optical size and right-to-left mirroring work exactly as for name (issue 282)
+     filled: the filled version (default false)
+     label: the accessible name, when the icon alone carries meaning
+     className: more classes on the icon
+     StatusIcon.tone: "info" (default) | "success" | "warning" | "danger" | "neutral"; each has its own icon (neutral shares
+       the info icon, in the neutral color)
+     StatusIcon.size: "sm" (16px) | "md" (default; 20px) | "lg" (24px)
+     StatusIcon.label: the accessible name of the icon alone (default: the tone's word from strings)
+     StatusIcon.children: a short visible label after the icon; the icon is then decorative and the text says the state
+     StatusIcon.strings: the tone words, for other languages: { info: "Information", success: "Success", warning: "Warning",
+       danger: "Error", neutral: "Note" }
+     StatusIcon.className: more classes on the status icon
+     library: where a name is looked up (issue 281): "plenix" (default: registered modules, the Plenix set, then the
+       Material library, as before), "material" (Material's own symbol even where a Plenix name exists), or a project's own
+       library registered with registerIcons(..., { library }) (only its modules). setDefaultIconLibrary(name) sets the page's
+       default: call it at startup, before icons draw (icons already on the page do not draw again)
+     registerIcons(...modules[, { library }]): modules drawn first by their name and their symbol's spelling, in their
+       set's library or the one named
+     Every loaded icon file and every module drawing is untrusted (issue 285): it is read through the allow-list in
+       utils/iconSafety.js (one svg, one path, values by grammar, bounded size), and anything else refuses it; development
+       warns once with the reason. Nothing is ever inserted as HTML: the values become React props.
+     A name drawn by a run-time fetch (a Material name not imported or registered) warns once in development: production
+       should import or register it. An icon value that is not a module warns once per kind of value and draws nothing
+   Behavior:
+     The component that owns a current or selected state passes filled (NavList's current item and pinned pin, a
+       selected or pressed Button); filled={false} keeps the outline (Tree owns each item state).
+     Omitting filled: until every owner passes it, the filled version is still drawn inside a current or selected
+       element (aria-current, aria-pressed, aria-selected, .is-selected, .is-current): the rollout backlog.
+     The optical size follows the context: 24 in a Comfortable region and in a 24px container (the app header, a
+       pictogram), and for sizes lg and xl; 20 everywhere else.
+     A pinned item shows the filled pin, not a filled row.
+     Without a label the icon is decorative and hidden from assistive technology; with one it is an image (role="img").
+     StatusIcon alone is an image named by its tone (role="img", "Warning"), so the state never rests on color only; with a
+       visible label the label carries the state and the icon is hidden from assistive technology.
+   Notes:
+     The set is Material Symbols Sharp, weight 300, used exactly as published (platform/icons/).
+     The size names the icon's whole square, which includes the set's own padding (1/12 of the square on each side): the
+       system adds none to make up for it.
+     Other props pass through to the <span>. The drawings come from icon.css (its data URIs, read once; names in glyphs.js, generated by build-icons.js): the outline or
+     the filled version, at optical sizes 20 and 24, the stylesheet showing the one the context draws; inline paths paint
+     about 200 times faster than masks (owner, 2026-10-23). A bare class name (plx-icon plx-icon--<name>) still draws the mask.
+     StatusIcon's colors and sizes are its own tokens (--plx-comp-status-icon-*, components/Icon/status-icon.css); the label
+       keeps the text color and size of where it sits.
+*/
+// One way to draw an icon (owner, 2026-10-23: "no band-aid"): every name goes through resolveIcon, and every icon is an
+// inline SVG in the text color (inline paths paint about 200 times faster than masks).
+//   1. A Plenix name (map.json, dashes; its underscore alias too): drawn at once, its drawing read from icon.css.
+//   2. Any other Material Symbols name, in dashes or underscores, any case (rocket_launch, Rocket-Launch): its files are
+//      loaded once from the library (platform/icons/library beside the bundle, or the CDN's /cdn/material/<commit>/)
+//      and drawn the same way; the box stays empty while it loads.
+//   3. An unknown name draws nothing (never a filled square) and warns once, with the closest names.
+// The outline or the filled version, at optical sizes 20 and 24: the stylesheet shows the one the context draws (icon.css).
+const LARGE = {
+  lg: true,
+  xl: true
+};
+const VARIANT = ['', '-fill', '-24', '-24-fill']; // outline 20, filled 20, outline 24, filled 24
+const library = new Set(_glyphs.LIBRARY.split(' ')),
+  plenix = new Set(_glyphs.SYMBOLS.split(' '));
+// imported icon modules (#282): { name, set, symbol, fillOutline, mirrored, drawings: { 20: { outline, fill }, 24: … } }.
+// The registry (#281): per library, a name (and its symbol's spelling) -> its module. registerIcons(...modules) puts each
+// module in its own set's library ("plenix", "material"); registerIcons(...modules, { library: 'acme' }) makes a
+// project's own library, which <Icon library="acme"> draws from only
+const libraries = new Map(); // library -> Map(name -> module)
+// a module is untrusted (#285): its four drawings pass the same allow-list as a file, once per module object
+const checked = new WeakMap();
+function moduleProblem(m) {
+  if (!(m && typeof m === 'object' && m.drawings && m.drawings[20] && m.drawings[24] && m.name)) return 'not an icon module';
+  if (checked.has(m)) return checked.get(m);
+  let problem = null;
+  for (const size of [20, 24]) for (const k of ['outline', 'fill']) {
+    const r = (0, _iconSafety.checkDrawing)(m.drawings[size][k]);
+    if (!r.ok && !problem) problem = 'its ' + size + ' ' + k + ' drawing: ' + r.reason;
+  }
+  checked.set(m, problem);
+  return problem;
+}
+const isModule = m => !moduleProblem(m);
+function registerIcons(...args) {
+  const last = args[args.length - 1],
+    options = last && typeof last === 'object' && !Array.isArray(last) && !isModule(last) && 'library' in last ? args.pop() : null;
+  for (const m of args.flat()) {
+    const problem = moduleProblem(m);
+    if (problem) {
+      if (typeof console !== 'undefined') console.warn('[Plenix] registerIcons: refused (' + problem + ')', m);
+      continue;
+    }
+    const lib = options && options.library || m.set || 'plenix';
+    if (!libraries.has(lib)) libraries.set(lib, new Map());
+    const map = libraries.get(lib);
+    map.set(m.name, m);
+    if (m.symbol && m.symbol !== m.name) map.set(m.symbol, m);
+  }
+}
+// the library an Icon without its own library prop draws from: "plenix" (the Plenix set, then the Material library, as
+// before), "material", or a project's own registered library
+let defaultLibrary = 'plenix';
+// call it at startup, before icons draw: an icon already on the page does not draw again when it changes
+function setDefaultIconLibrary(name) {
+  defaultLibrary = name ? String(name) : 'plenix';
+}
+// a module's drawing i (VARIANT order: outline 20, filled 20, outline 24, filled 24) as [path, viewBox, extra], the shape
+// parseSvg gives, with the extras in the same order, so the markup is the same as from the stylesheet
+const SLOT = [[20, 'outline'], [20, 'fill'], [24, 'outline'], [24, 'fill']];
+function moduleGlyph(m, i) {
+  const d = m.drawings[SLOT[i][0]] && m.drawings[SLOT[i][0]][SLOT[i][1]];
+  if (!d || !d.d || !d.viewBox) return null;
+  const extra = {};
+  for (const key of ['transform', 'fillRule', 'clipRule']) if (d[key]) extra[key] = d[key];
+  return [d.d, d.viewBox, extra];
+}
+const normal = name => String(name == null ? '' : name).trim();
+// One resolver (#281): the registered modules of the chosen library first; then, for "plenix", the Plenix set (icon.css)
+// and the Material library; for "material", the Material library only (a Material name draws Material's own symbol
+// even where a Plenix name exists); a project's library draws only its registered modules. A Material name that is not
+// registered is fetched at run time (as before; development warns once that production should import or register it).
+// Returns { kind: 'module' | 'plenix' | 'library', symbol, fillOutline, module? } or null.
+function resolveIcon(name, options) {
+  const n = normal(name),
+    lib = options && options.library || defaultLibrary;
+  const fromRegistry = l => {
+    const map = libraries.get(l);
+    const m = map && (map.get(n) || map.get(n.toLowerCase().replace(/_/g, '-')) || map.get(n.toLowerCase().replace(/-/g, '_')));
+    return m ? {
+      kind: 'module',
+      symbol: m.symbol || m.name,
+      fillOutline: !!m.fillOutline,
+      module: m
+    } : null;
+  };
+  if (lib === 'material') {
+    const reg = fromRegistry('material');
+    if (reg) return reg;
+    const symbol = n.toLowerCase().replace(/-/g, '_');
+    if (plenix.has(symbol)) return {
+      kind: 'plenix',
+      symbol,
+      fillOutline: false
+    }; // the same drawing, already in icon.css
+    return library.has(symbol) ? {
+      kind: 'library',
+      symbol,
+      fillOutline: false
+    } : null;
+  }
+  if (lib !== 'plenix') return fromRegistry(lib);
+  // a registered Plenix module, then the Plenix set: a registered Material module never replaces a Plenix name (importing
+  // material/home must not swap every <Icon name="home"> on the page); it serves only names outside the Plenix set
+  const reg = fromRegistry('plenix');
+  if (reg) return reg;
+  const p = resolvePlenix(n);
+  if (p && p.kind === 'plenix') return p;
+  return fromRegistry('material') || p;
+}
+function resolvePlenix(n) {
+  if (_glyphs.NAMES[n]) return {
+    kind: 'plenix',
+    symbol: _glyphs.NAMES[n][0],
+    fillOutline: _glyphs.NAMES[n][1] === 1
+  };
+  const dashed = n.toLowerCase().replace(/_/g, '-');
+  if (_glyphs.NAMES[dashed]) return {
+    kind: 'plenix',
+    symbol: _glyphs.NAMES[dashed][0],
+    fillOutline: _glyphs.NAMES[dashed][1] === 1
+  };
+  const symbol = n.toLowerCase().replace(/-/g, '_');
+  if (plenix.has(symbol)) return {
+    kind: 'plenix',
+    symbol,
+    fillOutline: false
+  };
+  if (library.has(symbol)) return {
+    kind: 'library',
+    symbol,
+    fillOutline: false
+  };
+  return null;
+}
+// where the library's files are: set by the page (setIconLibrary), else beside the bundle's script or stylesheet
+let libraryBase = null;
+function setIconLibrary(url) {
+  libraryBase = url ? String(url).replace(/\/?$/, '/') : null;
+  files.clear();
+}
+function base() {
+  if (libraryBase) return libraryBase;
+  // a page (or an extension whose bundler renames the Plenix files) can name it before Plenix draws: window.PlenixIconLibrary
+  if (typeof window !== 'undefined' && typeof window.PlenixIconLibrary === 'string' && window.PlenixIconLibrary) return libraryBase = window.PlenixIconLibrary.replace(/\/?$/, '/');
+  if (typeof document === 'undefined') return null;
+  const at = [...document.querySelectorAll('script[src], link[rel="stylesheet"][href]')].map(el => el.src || el.href).find(url => /\/(plenix(\.esm|\.min)?\.(js|css)|platform\.(js|css))(\?|#|$)/.test(url));
+  if (!at) return null;
+  // the CDN: /cdn/<version>/plenix.js -> /cdn/material/<commit>/; this repository: platform/... -> platform/icons/library/
+  libraryBase = /\/cdn\/[^/]+\/[^/]+$/.test(new URL(at).pathname) ? new URL('../material/' + _glyphs.LIBRARY_COMMIT + '/', at).href : new URL(/\/dist\/[^/]+$/.test(new URL(at).pathname) ? '../icons/library/' : 'icons/library/', at).href;
+  return libraryBase;
+}
+// an icon file -> [path, viewBox, { transform, fillRule, clipRule }]: its one path, in its viewBox (or its width and height)
+// an icon file -> [path, viewBox, { transform, fillRule, clipRule }], through the allow-list (#285: a loaded file is
+// untrusted; utils/iconSafety.js): anything else in the file refuses it, and development warns once with the reason
+const refused = new Set();
+function parseSvg(svg, from) {
+  if (!svg) return null;
+  const r = (0, _iconSafety.checkIconSvg)(svg);
+  if (!r.ok) {
+    const key = (from || 'an icon file') + ': ' + r.reason;
+    if (!refused.has(key) && (0, _devWarn.development)() && typeof console !== 'undefined') {
+      refused.add(key);
+      console.warn('[Plenix] Icon: refused ' + key);
+    }
+    return null;
+  }
+  const {
+    viewBox,
+    d,
+    ...extra
+  } = r.drawing;
+  return [d, viewBox, extra];
+}
+// a Plenix symbol's drawing: read once from the stylesheet already on the page (icon.css carries every file as a data:
+// URI in --plx-comp-icon-glyph-*), so the drawings ship once, need no request and work from file:// too
+const fromCss = new Map();
+function cssGlyph(symbol, i) {
+  const key = symbol + VARIANT[i];
+  if (fromCss.has(key)) return fromCss.get(key);
+  if (typeof document === 'undefined' || typeof getComputedStyle !== 'function') return null;
+  const value = getComputedStyle(document.documentElement).getPropertyValue('--plx-comp-icon-glyph-' + key.replace(/_/g, '-')).trim();
+  const uri = value.match(/^url\(["']?data:image\/svg\+xml,(.*?)["']?\)$/);
+  let glyph = null;
+  if (uri) {
+    try {
+      glyph = parseSvg(decodeURIComponent(uri[1]));
+    } catch (e) {
+      glyph = null;
+    }
+  }
+  if (glyph) fromCss.set(key, glyph); // not kept when the stylesheet is not there yet: read again on the next draw
+  return glyph;
+}
+// a fetched file is read only up to the size limit (issue 285): a Content-Length over it is refused before reading, and a
+// body without one is read in chunks and dropped as soon as it passes the limit
+function readCapped(response) {
+  const max = _iconSafety.ICON_LIMITS.file,
+    length = Number(response.headers && response.headers.get && response.headers.get('content-length'));
+  if (length > max) return null;
+  if (!response.body || typeof response.body.getReader !== 'function') return response.text().then(t => t.length > max ? null : t);
+  const reader = response.body.getReader(),
+    parts = [];
+  let size = 0;
+  const step = () => reader.read().then(({
+    done,
+    value
+  }) => {
+    if (done) return new TextDecoder().decode(parts.length === 1 ? parts[0] : parts.reduce((all, p) => {
+      const out = new Uint8Array(all.length + p.length);
+      out.set(all);
+      out.set(p, all.length);
+      return out;
+    }, new Uint8Array(0)));
+    size += value.length;
+    if (size > max) {
+      reader.cancel();
+      return null;
+    }
+    parts.push(value);
+    return step();
+  });
+  return step();
+}
+const files = new Map(); // file name -> [path, viewBox, extra] | null (missing) | a Promise while it loads
+function loadFile(file) {
+  if (files.has(file)) return files.get(file);
+  const root = base();
+  const job = !root || typeof fetch !== 'function' ? Promise.resolve(null) : fetch(root + file + '.svg').then(r => r.ok ? readCapped(r) : null).then(text => parseSvg(text, file + '.svg')).catch(() => null).then(glyph => {
+    files.set(file, glyph);
+    return glyph;
+  });
+  files.set(file, job);
+  return job;
+}
+const warned = new Set();
+function warnUnknown(name) {
+  const n = normal(name);
+  if (!n || warned.has(n)) return;
+  warned.add(n);
+  const key = n.toLowerCase().replace(/[-_\s]+/g, '');
+  const near = [...Object.keys(_glyphs.NAMES), ...library].filter(c => {
+    const k = c.replace(/[-_]/g, '');
+    return k.includes(key) || key.includes(k);
+  }).slice(0, 6);
+  if (typeof console !== 'undefined') console.warn('[Plenix] Icon: no icon is named "' + n + '"; nothing is drawn.' + (near.length ? ' Closest: ' + near.join(', ') + '.' : ''));
+}
+// a name drawn by a run-time fetch: development warns once that production should import or register it
+const fetchedNotice = new Set();
+function noticeFetch(symbol) {
+  if (fetchedNotice.has(symbol) || !(0, _devWarn.development)() || typeof console === 'undefined') return;
+  fetchedNotice.add(symbol);
+  console.warn('[Plenix] Icon: ' + symbol + ' was fetched at run time; for production import it (plenix-platform/icons/material/' + symbol.replace(/_/g, '-') + ') or register it (registerIcons).');
+}
+function useDrawings(name, size, filled, mod, lib) {
+  const resolved = mod ? {
+    kind: 'module',
+    symbol: mod.symbol || mod.name,
+    fillOutline: !!mod.fillOutline,
+    module: mod
+  } : resolveIcon(name, {
+    library: lib
+  });
+  const found = resolved;
+  if (found && found.kind === 'module') mod = found.module;
+  const fill = filled === true || found && found.fillOutline;
+  const wanted = LARGE[size] ? [[fill ? 3 : 2, 24]] : [[fill ? 1 : 0, 20], [fill ? 3 : 2, 24]];
+  const fileOf = i => found.symbol + VARIANT[i];
+  const [, redraw] = _react.default.useReducer(x => x + 1, 0);
+  const pending = found && found.kind === 'library' ? wanted.filter(([i]) => !Array.isArray(files.get(fileOf(i))) && files.get(fileOf(i)) !== null) : [];
+  _react.default.useEffect(() => {
+    if (!found) {
+      warnUnknown(name);
+      return undefined;
+    }
+    if (found.kind === 'library') noticeFetch(found.symbol);
+    if (!pending.length) return undefined;
+    let live = true;
+    Promise.all(pending.map(([i]) => loadFile(fileOf(i)))).then(() => {
+      if (live) redraw();
+    });
+    return () => {
+      live = false;
+    };
+  }, [found && found.symbol, fill, LARGE[size] ? 1 : 0, pending.length]);
+  if (!found) return [];
+  const glyphs = wanted.map(([i, optical]) => [found.kind === 'module' ? moduleGlyph(mod, i) : found.kind === 'plenix' ? cssGlyph(found.symbol, i) : files.get(fileOf(i)), optical]).filter(([glyph]) => Array.isArray(glyph));
+  if (!glyphs.length) return [];
+  // the drawings share one svg when they share a box (nearly every icon): the stylesheet shows one path; otherwise each
+  // drawing is its own svg in its own box
+  if (glyphs.every(([glyph]) => glyph[1] === glyphs[0][0][1])) return [/*#__PURE__*/_react.default.createElement("svg", {
+    key: "svg",
+    className: "plx-icon__svg plx-icon__svg--shared",
+    viewBox: glyphs[0][0][1],
+    "aria-hidden": "true",
+    focusable: "false"
+  }, glyphs.map(([glyph, optical]) => /*#__PURE__*/_react.default.createElement("path", _extends({
+    key: optical,
+    className: 'plx-icon__glyph--' + optical,
+    d: glyph[0]
+  }, glyph[2] || null))))];
+  return glyphs.map(([glyph, optical]) => /*#__PURE__*/_react.default.createElement("svg", {
+    key: optical,
+    className: 'plx-icon__svg plx-icon__glyph--' + optical,
+    viewBox: glyph[1],
+    "aria-hidden": "true",
+    focusable: "false"
+  }, /*#__PURE__*/_react.default.createElement("path", _extends({
+    d: glyph[0]
+  }, glyph[2] || null))));
+}
+const badIcon = new Set();
+function Icon({
+  icon,
+  name,
+  library: lib,
+  size,
+  filled,
+  label,
+  className,
+  ...rest
+}) {
+  (0, _devWarn.devWarn)('Icon', {
+    size
+  }, {
+    size: ['xs', 'sm', 'md', 'lg', 'xl']
+  });
+  // an imported module (icon); else the name through the resolver (registered modules, the stylesheet, the library)
+  // once per kind of bad value (its type and keys), so an object written inline, new on every render, warns once
+  const badKey = icon != null && !isModule(icon) ? Object.prototype.toString.call(icon) + ':' + (typeof icon === 'object' ? Object.keys(icon).sort().join(',') : String(icon)) : null;
+  if (badKey && !badIcon.has(badKey)) {
+    badIcon.add(badKey);
+    if (typeof console !== 'undefined') console.warn('[Plenix] Icon: icon is refused (' + moduleProblem(icon) + '; import it from plenix-platform/icons/<set>/<name>); nothing is drawn.', icon);
+  }
+  const shown = isModule(icon) ? icon.name : name;
+  const svg = useDrawings(shown, size, filled, isModule(icon) ? icon : null, lib);
+  const mod = isModule(icon) ? icon : (() => {
+    const f = resolveIcon(shown, {
+      library: lib
+    });
+    return f && f.kind === 'module' ? f.module : null;
+  })();
+  // a module outside the Plenix set that points along the reading direction mirrors in right to left (icon.css's
+  // plx-icon--mirrored); the Plenix set's own names already mirror through their per-name rules, so their markup stays the same
+  const mirrored = !!(mod && mod.mirrored && mod.set !== 'plenix');
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: (0, _cx.cx)('plx-icon', 'plx-icon--' + normal(shown), size ? 'plx-icon--size-' + size : null, filled === true && 'plx-icon--filled', filled === false && 'plx-icon--outline', 'plx-icon--inline', mirrored && 'plx-icon--mirrored', className),
+    role: label ? 'img' : undefined,
+    "aria-label": label,
+    "aria-hidden": label ? undefined : true
+  }, rest), svg);
+}
+
+// stateIcon: an icon a component draws in its own state: filled while the state is on, the outline otherwise (Styling
+// Standard 3.6: the component that owns the state passes it; no rule reaches in from the ancestor). A string is an icon
+// name; an Icon element the caller gives keeps a fill it sets itself; anything else passes through. extra: more props for
+// the Icon (a size), given only where the caller set none.
+function stateIcon(icon, on, extra) {
+  if (typeof icon === 'string') return /*#__PURE__*/_react.default.createElement(Icon, _extends({
+    name: icon,
+    filled: !!on
+  }, extra));
+  if (/*#__PURE__*/_react.default.isValidElement(icon) && icon.type === Icon) {
+    const add = {};
+    if (icon.props.filled === undefined) add.filled = !!on;
+    for (const k of Object.keys(extra || {})) if (icon.props[k] === undefined) add[k] = extra[k];
+    return Object.keys(add).length ? /*#__PURE__*/_react.default.cloneElement(icon, add) : icon;
+  }
+  return icon;
+}
+
+// StatusIcon: a tone's icon in the tone's color, alone (an image named by the tone) or before a short visible label
+const STATUS_ICONS = {
+  info: 'circle-info',
+  success: 'circle-check',
+  warning: 'warning',
+  danger: 'alert',
+  neutral: 'circle-info'
+};
+function StatusIcon({
+  tone = 'info',
+  size = 'md',
+  label,
+  children,
+  strings,
+  className,
+  ...rest
+}) {
+  (0, _devWarn.devWarn)('StatusIcon', {
+    tone,
+    size
+  }, {
+    tone: ['info', 'success', 'warning', 'danger', 'neutral'],
+    size: ['sm', 'md', 'lg']
+  });
+  const t = STATUS_ICONS[tone] ? tone : 'info';
+  const words = (0, _LocaleProvider.useStrings)('icon.status', strings);
+  const shown = children !== undefined && children !== null && children !== false;
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: (0, _cx.cx)('plx-status-icon', 'plx-status-icon--' + t, 'plx-status-icon--' + size, className)
+  }, rest), /*#__PURE__*/_react.default.createElement("span", {
+    className: (0, _cx.cx)('plx-status-icon__glyph', 'plx-status-icon__glyph--' + t)
+  }, /*#__PURE__*/_react.default.createElement(Icon, {
+    name: STATUS_ICONS[t],
+    size: size,
+    label: shown ? undefined : label || words[t]
+  })), shown ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-status-icon__label"
+  }, children) : null);
+}
+  } },
+  "platform/components/Badge/Badge.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Badge = Badge;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _Icon = require("../Icon/Icon.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Badge
+   Summary: A status pill: bold text on a soft background of its variant's color family, a 1px border and 4px corners
+     (owner, 2026-10-14, docs/pills-and-colors.md: every pill is soft).
+   Usage:
+     <Badge tone="success">Approved</Badge>
+     <Badge tone="waiting">Paused</Badge>
+     <Badge tone="action-required">Changes requested</Badge>
+     <Badge tone="negative" size="sm">3</Badge>
+     <Badge tone="success" icon="check">Saved</Badge>
+   Props:
+     tone: the status variant:
+       "neutral" (default; gray: no particular state, e.g. Draft, Archived)
+       "success" (green: done, approved, healthy)
+       "active" (blue: in progress, current, information)
+       "waiting" (yellow: waiting, paused)
+       "action-required" (orange: action or correction required, e.g. Changes requested, Needs attention)
+       "negative" (red: failed, error, rejected, blocked)
+       Old names still work: "info" is "active", "warning" is "waiting", "danger" is "negative".
+     variant: accepted and ignored ("solid" and "soft" both draw the soft pill; the solid look was removed, 2026-10-14)
+     size: "md" (default; a 20px label) | "sm" (16px, for counts)
+     icon: an icon name (platform/icons/map.json) drawn before the text, in the text color: a status shows its icon inside
+       the badge (owner, 2026-10-14: check for done, pencil for unsaved, alert for problems); the icon is decorative, the
+       text says the state
+     children: the badge text
+     className: more classes on the badge
+   Behavior:
+     An unknown tone or size falls back to the default.
+   Notes:
+     A badge is a workflow status. A tag or category is a Tag with its category color (never a status variant).
+     Other props (title, aria-*, …) pass through to the <span>.
+     A badge is text: give a count enough context nearby or an accessible name on its control.
+*/
+const TONES = ['neutral', 'success', 'active', 'waiting', 'action-required', 'negative'];
+const ALIASES = {
+  info: 'active',
+  warning: 'waiting',
+  danger: 'negative'
+};
+const SIZES = ['md', 'sm'];
+
+// variant is taken out so it never reaches the <span>: every badge is the soft pill
+function Badge({
+  tone = 'neutral',
+  variant,
+  size = 'md',
+  icon,
+  className,
+  children,
+  ...rest
+}) {
+  (0, _devWarn.devWarn)('Badge', {
+    tone,
+    variant,
+    size
+  }, {
+    tone: ['neutral', 'success', 'active', 'waiting', 'action-required', 'negative', 'info', 'warning', 'danger'],
+    variant: ['solid', 'soft'],
+    size: ['md', 'sm']
+  });
+  const named = ALIASES[tone] || tone;
+  const t = TONES.indexOf(named) >= 0 ? named : 'neutral';
+  const s = SIZES.indexOf(size) >= 0 ? size : 'md';
+  const classes = ['plx-badge', 'plx-badge--' + t, s === 'sm' ? 'plx-badge--sm' : null, className].filter(Boolean).join(' ');
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: classes
+  }, rest), icon ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: icon
+  }) : null, children);
+}
+  } },
+  "platform/components/VisuallyHidden/VisuallyHidden.jsx": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.VisuallyHidden = VisuallyHidden;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · VisuallyHidden
+   Summary: Text for assistive technology only (a name for an icon-only control, a status).
+   Usage:
+     <button type="button"><Icon name="trash" /><VisuallyHidden>Delete</VisuallyHidden></button>
+   Props:
+     as: the element; default "span"
+     children: the hidden text
+     ...rest: other attributes go on the element
+*/
+function VisuallyHidden({
+  as: Tag = 'span',
+  children,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement(Tag, _extends({
+    className: "plx-visually-hidden"
+  }, rest), children);
 }
   } },
   "platform/utils/digits.js": { deps: {"./format.js":"platform/utils/format.js"}, externals: {  }, run: function (module, exports, require) {
@@ -8082,7 +8968,7 @@ function Count({
   }, rest), shown);
 }
   } },
-  "platform/components/Card/Card.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Card/Card.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../utils/format.js":"platform/utils/format.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8097,6 +8983,7 @@ var _layer = require("../../utils/layer.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _Badge = require("../Badge/Badge.jsx");
 var _format = require("../../utils/format.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Panel, Card, MediaCard
    Summary: Surfaces. Panel is a titled section of a page or a settings screen; Card is one record in a list or grid;
@@ -8202,22 +9089,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Without type, status and stack the MediaCard draws exactly what it drew before (library wave 12 added them).
      Other props pass through to the outer element.
 */
-const PANEL_STRINGS = {
-  collapse: 'Collapse {title}',
-  expand: 'Expand {title}',
-  section: 'section'
-};
-const MEDIA_CARD_STRINGS = {
-  select: 'Select {title}',
-  item: 'item',
-  assets: '{n} assets',
-  asset: '{n} asset'
-};
-const CARD_STRINGS = {
-  expand: 'Expand {title}',
-  collapse: 'Collapse {title}',
-  card: 'card'
-};
 const H = ({
   level,
   ...props
@@ -8241,7 +9112,7 @@ function Panel({
   children,
   ...rest
 }) {
-  const t = Object.assign({}, PANEL_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('card.panel', strings);
   const id = (0, _layer.useUid)('plx-panel');
   const [own, setOwn] = _react.default.useState(defaultExpanded);
   const open = !collapsible || (expanded === undefined ? own : expanded);
@@ -8333,7 +9204,7 @@ function Card({
   ...rest
 }) {
   const interactive = !!(href || onOpen);
-  const t = Object.assign({}, CARD_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('card.card', strings);
   const id = (0, _layer.useUid)('plx-card');
   const [own, setOwn] = _react.default.useState(defaultExpanded);
   const open = !expandable || (expanded === undefined ? own : expanded);
@@ -8409,7 +9280,7 @@ function MediaCard({
   onDoubleClick,
   ...rest
 }) {
-  const t = Object.assign({}, MEDIA_CARD_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('card.mediaCard', strings);
   // a collection's count (library wave 12): "24 assets" in the data font, unless the page gives its own meta
   const line = meta || (typeof count === 'number' ? (count === 1 ? t.asset : t.assets).split('{n}').join((0, _format.formatNumber)(count)) : null);
   const statusEl = status ? /*#__PURE__*/_react.default.isValidElement(status) ? status : /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
@@ -11662,7 +12533,7 @@ function useTruncated(ref) {
   return cut;
 }
   } },
-  "platform/components/Field/Field.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/describedBy.js":"platform/utils/describedBy.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Field/Field.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/describedBy.js":"platform/utils/describedBy.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -11677,6 +12548,7 @@ var _Tooltip = require("../Tooltip/Tooltip.jsx");
 var _announce = require("../../utils/announce.jsx");
 var _format = require("../../utils/format.js");
 var _describedBy = require("../../utils/describedBy.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Field
    Summary: A label, the control, and its help or error, connected for assistive technology.
@@ -11720,10 +12592,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
 */
 // the layout a Form gives the fields inside it (Form's layout "two-column" makes them inline); a Field's own layout wins
 const FieldLayoutContext = exports.FieldLayoutContext = /*#__PURE__*/_react.default.createContext(null);
-const COUNTER_STRINGS = {
-  left: '{n} characters left',
-  over: '{n} characters too many'
-};
 const fill = (t, n) => String(t).replace('{n}', (0, _format.formatNumber)(n));
 function Field({
   label,
@@ -11760,7 +12628,7 @@ function Field({
   const [typed, setTyped] = _react.default.useState(() => String(child.props.defaultValue == null ? '' : child.props.defaultValue).length);
   const length = child.props.value != null ? String(child.props.value).length : typed;
   const over = max > 0 && length > max;
-  const t = Object.assign({}, COUNTER_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('field.counter', strings);
   const countId = max ? controlId + '-c' : undefined;
   const near = max > 0 && max - length <= Math.ceil(max / 10);
   const said = _react.default.useRef(null);
@@ -13703,7 +14571,10 @@ function Resizable({
       if (!active || next[which] > scale.lo && next[which] < scale.hi) continue;
       const smallest = next[which] <= scale.lo,
         value = smallest ? scale.lo : scale.hi;
-      message = t[(smallest ? 'min' : 'max') + (which === 'width' ? 'Width' : 'Height')] || (smallest ? 'Smallest ' : 'Largest ') + which + ' for ' + label + ' (' + value + 'px)';
+      message = fill(t[(smallest ? 'min' : 'max') + (which === 'width' ? 'Width' : 'Height')], {
+        label,
+        value
+      });
       break;
     }
     setNotice(message);
@@ -15260,7 +16131,7 @@ function Scrollbars({
   })));
 }
   } },
-  "platform/utils/dnd.js": { deps: {"react":null,"./announce.jsx":"platform/utils/announce.jsx","./grid.js":"platform/utils/grid.js","./direction.js":"platform/utils/direction.js","./tokenTime.js":"platform/utils/tokenTime.js","../hooks/useGesture.js":"platform/hooks/useGesture.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/utils/dnd.js": { deps: {"react":null,"./announce.jsx":"platform/utils/announce.jsx","./grid.js":"platform/utils/grid.js","./direction.js":"platform/utils/direction.js","./tokenTime.js":"platform/utils/tokenTime.js","../hooks/useGesture.js":"platform/hooks/useGesture.js","../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../i18n/en.js":"platform/i18n/en.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -15283,6 +16154,8 @@ var _grid = require("./grid.js");
 var _direction = require("./direction.js");
 var _tokenTime = require("./tokenTime.js");
 var _useGesture = require("../hooks/useGesture.js");
+var _LocaleProvider = require("../providers/LocaleProvider.jsx");
+var _en = _interopRequireDefault(require("../i18n/en.js"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · dnd (platform/utils/dnd.js)
    Summary: The drag-and-drop engine (13 Interaction › Behavioral utilities › Drag-and-drop engine): pointer, pen and touch
@@ -15313,7 +16186,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        options.orientation: "vertical" (default) | "horizontal" | "grid": the arrow keys and the drop position follow it
        options.handle: true (default) the drag starts on the handle (handleProps); false the whole item drags (itemProps
          then carries the handlers, the tab stop and the name)
-       options.disabled: no drag (default false); options.strings: the words it announces (DND_STRINGS)
+       options.disabled: no drag (default false); options.strings: the words it announces (the catalog's dnd section: Plenix's built-in words for the locale; this prop wins)
      useDraggable(options) → { props, handleProps, targets(), state }
        options.data, options.type: what is dragged and its kind, handed to the targets; options.name: its spoken name
        options.handle: as useSortable; options.disabled; options.strings
@@ -15327,7 +16200,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      useReposition(options) → { props, position, picked, moveBy(dx, dy) }
        options.position: { x, y } in pixels from the element's place in the layout (on the grid); options.onMove(next)
        options.bounds: a ref to the element it stays inside (default its offset parent); options.name; options.disabled
-     DND_STRINGS: the default words; moveItem(list, from, to) and transferItem(from, fromIndex, to, toIndex): the list
+     DND_STRINGS: the default English words (the catalog's dnd section); moveItem(list, from, to) and transferItem(from, fromIndex, to, toIndex): the list
        helpers; setDragOffset(el, dx, dy) and clearDragOffset(el, { settle }): move an element by a transform through
        the Web Animations API (never a style attribute), snapped to the grid; mergeDndProps(a, b): one element's props
        from the engine's and a component's (each event runs the engine's handler first; a handled event stops there)
@@ -15354,28 +16227,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        data-plx-drop-state); a component may draw its own from the same attributes.
 */
 
-const DND_STRINGS = exports.DND_STRINGS = {
-  handle: 'Move {name}',
-  instructions: 'Press Space or Enter to pick it up. The arrow keys move it, Space or Enter drops it, Escape puts it back.',
-  pickedUp: '{name} picked up. Position {position} of {total}. The arrow keys move it, Space or Enter drops it, Escape puts it back.',
-  moved: '{name}, position {position} of {total}',
-  movedTo: '{name} moved to {list}, position {position} of {total}',
-  dropped: '{name} dropped at position {position} of {total}',
-  droppedIn: '{name} dropped in {list}, position {position} of {total}',
-  canceled: 'Move canceled. {name} is back at position {position} of {total}',
-  itemPickedUp: '{name} picked up. {count} places take it. The arrow keys choose one, Space or Enter drops it, Escape puts it back.',
-  over: 'Over {target}',
-  overReject: '{target} does not take {name}',
-  droppedOn: '{name} dropped on {target}',
-  noTargets: 'No place takes {name}',
-  itemCanceled: 'Move canceled. {name} was not moved',
-  repositionPicked: '{name} picked up. The arrow keys move it, with Shift farther; Space or Enter drops it, Escape puts it back.',
-  repositioned: '{name} moved',
-  repositionDropped: '{name} dropped',
-  repositionCanceled: 'Move canceled. {name} is back where it was',
-  movable: 'movable',
-  list: 'the list'
-};
+// the default (English) words, as before: the catalog's dnd section, so the words live in one place
+const DND_STRINGS = exports.DND_STRINGS = _en.default.dnd;
 const fill = (s, vars) => String(s).replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
 const reduced = () => typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -15693,7 +16546,7 @@ function useSortable(options) {
   const getName = o.getName || (x => String(x.name != null ? x.name : x.label != null ? x.label : getId(x)));
   const orientation = o.orientation || 'vertical',
     useHandle = o.handle !== false;
-  const t = Object.assign({}, DND_STRINGS, o.strings);
+  const t = (0, _LocaleProvider.useStrings)('dnd', o.strings);
   const [listId] = _react.default.useState(() => o.id || nextId('plx-dnd-list'));
   const listRef = _react.default.useRef(null);
   const latest = _react.default.useRef(o);
@@ -16130,7 +16983,7 @@ function useDropTarget(options) {
 /* ── useDraggable: a data item people drop on a target (a file on a folder, a card on a column) ── */
 function useDraggable(options) {
   const o = options || {};
-  const t = Object.assign({}, DND_STRINGS, o.strings);
+  const t = (0, _LocaleProvider.useStrings)('dnd', o.strings);
   const [id] = _react.default.useState(() => nextId('plx-dnd-item'));
   const ref = _react.default.useRef(null);
   const now = useDndSession();
@@ -16293,7 +17146,7 @@ function useDraggable(options) {
 /* ── useReposition: a free move (a note on a board, a layer on a canvas), on the grid ── */
 function useReposition(options) {
   const o = options || {};
-  const t = Object.assign({}, DND_STRINGS, o.strings);
+  const t = (0, _LocaleProvider.useStrings)('dnd', o.strings);
   const pos = o.position || {
     x: 0,
     y: 0
@@ -25664,7 +26517,7 @@ exports.MultiPick = MultiPick;
 exports.PanelHead = PanelHead;
 exports.PanelTrigger = PanelTrigger;
 exports.Pick = Pick;
-exports.toggle = exports.fill = exports.REORDER_STRINGS = exports.Pill = void 0;
+exports.toggle = exports.fill = exports.Pill = void 0;
 exports.useReorder = useReorder;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
@@ -25683,7 +26536,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      same control height, the same spacing.
    Usage:
      <PanelTrigger icon="sort" label="Sort" count={levels.length}><div className="plx-find-panel">…</div></PanelTrigger>
-     const ro = useReorder(levels, setLevels, (l) => l.field, REORDER_STRINGS);
+     const ro = useReorder(levels, setLevels, (l) => l.field, t);
    Props:
      PanelTrigger: the bar button (CommandBarButton) and its Popover; or, inline, the panel's body alone in a frame
      PanelHead: the panel's title, its info button (a tooltip) and its actions on the right; a line under it
@@ -25974,14 +26827,7 @@ function useReorder(items, setItems, nameOf, t) {
     status
   };
 }
-// the words of a row that reorders
-const REORDER_STRINGS = exports.REORDER_STRINGS = {
-  moved: '{name} moved to position {position} of {total}',
-  row: '{name}, {position} of {total}. Alt + Arrow Up or Down moves it',
-  reorder: 'Reorder {name}',
-  moveUp: 'Move up',
-  moveDown: 'Move down'
-};
+// the words of a row that reorders are in the catalog under each panel's section (moved, row, reorder, moveUp, moveDown)
   } },
   "platform/patterns/ColumnsMenu/ColumnsMenu.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
@@ -27525,7 +28371,7 @@ function groupDisplay(groups, collapsed, add, gaps = true) {
   return display;
 }
   } },
-  "platform/components/DataGrid/DataGridEngine.jsx": { deps: {"react":null,"./unread.js":"platform/components/DataGrid/unread.js","./room.js":"platform/components/DataGrid/room.js","react-dom":null,"./scrollbars.jsx":"platform/components/DataGrid/scrollbars.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","@tanstack/react-table":"../../plenix/node_modules/@tanstack/react-table/build/lib/index.js","@tanstack/react-virtual":"../../plenix/node_modules/@tanstack/react-virtual/dist/cjs/index.cjs","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../utils/paneLimit.js":"platform/utils/paneLimit.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./environment.js":"platform/components/DataGrid/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataGrid/state.js","./adapter.js":"platform/components/DataGrid/adapter.js","./cells.jsx":"platform/components/DataGrid/cells.jsx","./records.js":"platform/components/DataGrid/records.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/DataGrid/DataGridEngine.jsx": { deps: {"react":null,"./unread.js":"platform/components/DataGrid/unread.js","./room.js":"platform/components/DataGrid/room.js","react-dom":null,"./scrollbars.jsx":"platform/components/DataGrid/scrollbars.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","@tanstack/react-table":"../../plenix/node_modules/@tanstack/react-table/build/lib/index.js","@tanstack/react-virtual":"../../plenix/node_modules/@tanstack/react-virtual/dist/cjs/index.cjs","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../utils/paneLimit.js":"platform/utils/paneLimit.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./environment.js":"platform/components/DataGrid/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataGrid/state.js","./adapter.js":"platform/components/DataGrid/adapter.js","./cells.jsx":"platform/components/DataGrid/cells.jsx","./records.js":"platform/components/DataGrid/records.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27563,6 +28409,7 @@ var _state = require("./state.js");
 var _adapter = require("./adapter.js");
 var _cells = require("./cells.jsx");
 var _records = require("./records.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · DataGridEngine (TanStack)
    Summary: The React-owned renderer behind the public DataGrid and static Table.
@@ -27633,77 +28480,6 @@ const EMPTY_ROWS = [];
 const words = (template, values) => String(template).replace(/\{(\w+)\}/g, (match, key) => values[key] ?? match);
 const GRID = 'plx-data-grid',
   interactive = 'a,button,input,select,textarea,label,[role="button"],[contenteditable="true"],[data-plx-no-row-click]';
-const defaults = {
-  empty: 'Nothing to show',
-  failed: 'The table could not load',
-  retry: 'Retry',
-  selectAll: 'Select all rows',
-  selectRow: 'Select row',
-  rowActions: 'Row actions',
-  clearSort: 'Clear sort',
-  hide: 'Hide field',
-  showAll: 'Show all fields',
-  narrower: 'Narrower',
-  wider: 'Wider',
-  fit: 'Fit to content',
-  deleted: 'Deleted',
-  moveLeft: 'Move left',
-  moveRight: 'Move right',
-  perPage: 'Rows per page',
-  view: 'View options',
-  wrapHeaders: 'Wrap headers',
-  markRead: 'Mark as read',
-  markUnread: 'Mark as unread',
-  wrapText: 'Wrap text',
-  wrapAll: 'Wrap all columns',
-  fullText: 'Show the full text',
-  rowHeight: 'Row height',
-  short: 'Short',
-  medium: 'Medium',
-  tall: 'Tall',
-  'extra-tall': 'Extra tall',
-  filter: 'Filter',
-  clearFilter: 'Clear filter',
-  groupBy: 'Group by this field',
-  ungroup: 'Ungroup',
-  noGroup: 'Don’t group by this field',
-  sizeToFit: 'Size column to fit',
-  sizeAllToFit: 'Size all columns to fit',
-  moreColumns: 'More…',
-  columns: 'Columns',
-  loadMore: 'Load more',
-  loading: 'Loading records',
-  group: 'Group by this field',
-  filterBy: 'Filter by this field',
-  any: 'Any',
-  contains: 'Contains…',
-  moveRow: 'Move row',
-  moveUp: 'Move up',
-  moveDown: 'Move down',
-  moveTop: 'Move to top',
-  moveBottom: 'Move to bottom',
-  resize: 'Resize',
-  range: '{first}–{last} of {total}',
-  count: '{shown} of {total}',
-  pages: '{label} pages',
-  loaded: '{n} more rows loaded, {shown} of {total}',
-  noValue: '(Empty)',
-  addTo: 'Add a record to {value}',
-  groupRow: '{value}, group, {count} {records}',
-  record: 'record',
-  records: 'records',
-  expanded: 'expanded',
-  collapsed: 'collapsed',
-  sum: 'Sum',
-  countOf: 'Count',
-  average: 'Average',
-  min: 'Min',
-  max: 'Max',
-  sortText: ['Sort A → Z', 'Sort Z → A'],
-  sortNumber: ['Sort 1 → 9', 'Sort 9 → 1'],
-  sortDate: ['Sort oldest → newest', 'Sort newest → oldest'],
-  sortCheck: ['Sort unchecked → checked', 'Sort checked → unchecked']
-};
 const typeIcons = {
   multi: 'field-select',
   text: 'ed-text',
@@ -27964,10 +28740,7 @@ function NextEngine(props) {
   const showTypes = typeIconsProp ?? !isStatic; // the column type icons: a DataGrid's sort and filter cue, not a static Table's
   const narrow = requestedNarrow === undefined ? inPane && !isStatic ? 'table' : 'list' : requestedNarrow;
   const B = isStatic ? 'plx-table' : GRID; // Table (static) and DataGrid: each its own block (owner, 2026-10-19)
-  const S = {
-      ...defaults,
-      ...props.strings
-    },
+  const S = (0, _LocaleProvider.useStrings)('dataGrid', props.strings),
     initial = _react.default.useMemo(() => (0, _state.opening)(props), [storageKey]);
   const frame = _react.default.useRef(null),
     holder = _react.default.useRef(null),
@@ -28556,7 +29329,7 @@ function NextEngine(props) {
     items: ordered,
     getId: column => column.id,
     getName: column => column.columnDef.meta.title || column.id,
-    label: label + ' columns',
+    label: S.columnsLabel.replace('{label}', label),
     orientation: 'horizontal',
     disabled: !(props.movableColumns ?? options.movableColumns),
     onReorder: (next, {
@@ -28570,7 +29343,7 @@ function NextEngine(props) {
     items: canonical,
     getId: record => (0, _state.recordKey)(record[index]),
     getName: record => String((0, _state.valueAt)(record, columns[0]?.field) ?? record[index]),
-    label: label + ' rows',
+    label: S.rowsLabel.replace('{label}', label),
     disabled: !(props.movableRows ?? options.movableRows) || !!groupBy || !!childField,
     onReorder: (rows, {
       item
@@ -29188,12 +29961,12 @@ function NextEngine(props) {
     }, S.clearFilter)))) : null), headerMenu ? /*#__PURE__*/_react.default.createElement("span", {
       className: (0, _cx.cx)(B + '__grid-header-popup-button', B + '__grid-header-popup-button--menu')
     }, /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-      label: c.title + ' column actions',
+      label: S.columnActions.replace('{title}', c.title),
       trigger: /*#__PURE__*/_react.default.createElement("span", {
         role: "button",
         tabIndex: 0,
         className: B + '__menu-chevron',
-        "aria-label": c.title + ' column actions'
+        "aria-label": S.columnActions.replace('{title}', c.title)
       }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
         name: "chevron-down"
       }))
@@ -29410,7 +30183,7 @@ function NextEngine(props) {
       key: row.displayKey || row.id
     }, !(props.movableRows ?? options.movableRows) || !recordPositions.has(record) ? null : rowDnd.itemProps(recordPositions.get(record)), {
       "data-plx-unread": unread.has(record) || undefined,
-      "aria-label": unread.has(record) ? String((0, _state.valueAt)(record, columns[0]?.field) ?? record[index]) + ', unread' : undefined,
+      "aria-label": unread.has(record) ? S.unreadRow.replace('{label}', String((0, _state.valueAt)(record, columns[0]?.field) ?? record[index])) : undefined,
       "data-plx-record": row.id,
       onAttach: node => rememberRow(row, node),
       role: "row",
@@ -33242,7 +34015,7 @@ function SectionHeading({
   }, actions) : null);
 }
   } },
-  "platform/components/CollapsibleSection/CollapsibleSection.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/CollapsibleSection/CollapsibleSection.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -33256,6 +34029,7 @@ var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _Button = require("../Button/Button.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · CollapsibleSection
    Summary: A titled section that expands and collapses.
@@ -33344,6 +34118,7 @@ function ShowMore({
   count,
   onToggle,
   size = '2xs',
+  strings,
   ...rest
 }) {
   (0, _devWarn.devWarn)('ShowMore', {
@@ -33351,6 +34126,7 @@ function ShowMore({
   }, {
     size: ['md', 'sm', 'xs', '2xs', 'lg']
   });
+  const t = (0, _LocaleProvider.useStrings)('collapsibleSection', strings);
   return /*#__PURE__*/_react.default.createElement(_Button.Button, _extends({
     size: size,
     iconEnd: expanded ? 'chevron-up' : 'chevron-down',
@@ -33358,7 +34134,7 @@ function ShowMore({
     onClick: () => {
       if (onToggle) onToggle(!expanded);
     }
-  }, rest), expanded ? 'Show less' : 'Show more' + (count !== undefined && count !== null && count !== '' ? ' (' + count + ')' : ''));
+  }, rest), expanded ? t.less : count !== undefined && count !== null && count !== '' ? t.moreCount.replace('{n}', count) : t.more);
 }
   } },
   "platform/components/ProgressSteps/ProgressSteps.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -35691,7 +36467,7 @@ ActivityList.Item = function ActivityListItem({
   }, actions) : null);
 };
   } },
-  "platform/patterns/ReviewFlow/ReviewFlow.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","../../components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","../ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","../CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ReviewFlow/ReviewFlow.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","../../components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","../ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","../CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35720,6 +36496,7 @@ var _DataGrid = require("../../components/DataGrid/DataGrid.jsx");
 var _Toast = require("../../components/Toast/Toast.jsx");
 var _ActivityList = require("../ActivityList/ActivityList.jsx");
 var _CommandBar = require("../CommandBar/CommandBar.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ReviewFlow, ReviewQueue, WorkflowStatus
    Summary: The review of one item and the queue of many. ReviewFlow is a review panel: the item's status as a badge with
@@ -35844,20 +36621,6 @@ function useOptionalToast() {
   }
 }
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
-const FLOW_STRINGS = {
-  reviewers: 'Reviewers',
-  history: 'History',
-  comment: 'Comment',
-  commentHint: 'Needed to reject or request changes.',
-  approve: 'Approve',
-  changes: 'Request changes',
-  reject: 'Reject',
-  waiting: 'Waiting',
-  human: 'Generated content. A person checks it before it is used.',
-  needReason: 'Say why, so the author knows what to change.',
-  done: '{decision}: {title}',
-  decisions: 'Review decisions'
-};
 const VERB = {
   approved: 'approve',
   'changes-requested': 'changes',
@@ -35883,7 +36646,7 @@ function ReviewFlow({
   className,
   ...rest
 }) {
-  const t = Object.assign({}, FLOW_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('reviewFlow.flow', strings);
   const toast = useOptionalToast();
   const [comment, setComment] = _react.default.useState('');
   const [error, setError] = _react.default.useState('');
@@ -35986,24 +36749,6 @@ function ReviewFlow({
     dateTime: x.dateTime
   })))) : null);
 }
-const QUEUE_STRINGS = {
-  name: 'Name',
-  type: 'Type',
-  submittedBy: 'Submitted by',
-  submitted: 'Submitted',
-  status: 'Status',
-  approve: 'Approve',
-  changes: 'Request changes',
-  reject: 'Reject',
-  rejectTitle: 'Reject {what}?',
-  changesTitle: 'Request changes on {what}?',
-  reason: 'Reason',
-  changesLabel: 'What to change',
-  reasonHint: 'The authors see it with the decision.',
-  needReason: 'Say why, so the authors know what to change.',
-  done: '{what} {decision}',
-  count: '{n} {plural}'
-};
 function ReviewQueue({
   items = [],
   label,
@@ -36016,10 +36761,16 @@ function ReviewQueue({
   className,
   ...rest
 }) {
-  const t = Object.assign({}, QUEUE_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('reviewFlow.queue', strings);
+  const loc = (0, _LocaleProvider.useLocale)();
+  const builtIn = !noun && !plural; // the default words: whole counted phrases with the Arabic plural forms, from the catalog
   const many = plural || (noun ? noun + 's' : t.plural); // the default words come from the catalog
   noun = noun ?? t.noun;
   label = label ?? t.queueLabel;
+  const counted = m => builtIn ? loc.t('reviewFlow.queue.items', {
+    count: m,
+    n: (0, _format.formatNumber)(m)
+  }) : null;
   const toast = useOptionalToast();
   const [own, setOwn] = _react.default.useState([]);
   const sel = selected !== undefined ? selected : own;
@@ -36028,7 +36779,7 @@ function ReviewQueue({
     if (onSelectionChange) onSelectionChange(ids);
   };
   const [ask, setAsk] = _react.default.useState(null); // "rejected" | "changes-requested" while its dialog is open
-  const what = n => n === 1 ? '1 ' + noun : (0, _format.formatNumber)(n) + ' ' + many;
+  const what = n => counted(n) ?? (n === 1 ? '1 ' + noun : (0, _format.formatNumber)(n) + ' ' + many);
   const run = (decision, reason) => {
     const ids = sel.slice();
     if (onDecision) onDecision(ids, decision, reason || '');
@@ -36074,7 +36825,7 @@ function ReviewQueue({
     className: (0, _cx.cx)('plx-review-queue', className)
   }, rest), /*#__PURE__*/_react.default.createElement(_CommandBar.CommandBar, {
     label: label,
-    count: fill(t.count, {
+    count: counted(items.length) ?? fill(t.count, {
       n: (0, _format.formatNumber)(items.length),
       plural: items.length === 1 ? noun : many
     }),
@@ -40992,7 +41743,7 @@ function NavPane({
   }), pane) : pane;
 }
   } },
-  "platform/patterns/SettingsLayout/SettingsLayout.jsx": { deps: {"react":null,"../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","../ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/SettingsLayout/SettingsLayout.jsx": { deps: {"react":null,"../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","../ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -41009,6 +41760,7 @@ var _ScreenLocation = require("../../providers/ScreenLocation.js");
 var _Icon = require("../../components/Icon/Icon.jsx");
 var _NavPane = require("../NavPane/NavPane.jsx");
 var _ActionBar = require("../ActionBar/ActionBar.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · SettingsLayout, SettingsSection, SettingsRow
    Summary: Navigation beside the settings form. SettingsSection is a card: a titled group of rows, static or collapsible;
@@ -41062,9 +41814,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      A section with no title is a static card (a collapsible one needs a title to press).
 */
 
-const SECTION_STRINGS = {
-  section: 'section'
-};
 function SettingsLayout({
   nav,
   className,
@@ -41131,7 +41880,7 @@ function SettingsSection({
   className,
   children
 }) {
-  const t = Object.assign({}, SECTION_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('settingsLayout.section', strings);
   const id = (0, _layer.useUid)('plx-set');
   const canCollapse = !!(collapsible && title);
   const [open, toggle] = useOpen(canCollapse, defaultExpanded, expanded, onToggle, stateKey || (typeof title === 'string' ? title : null), remember);
@@ -54583,7 +55332,7 @@ function BottomSheetNav({
   }, body);
 }
   } },
-  "platform/patterns/FilterPanel/FilterPanel.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../utils/fields.js":"platform/utils/fields.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/FilterPanel/FilterPanel.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../utils/fields.js":"platform/utils/fields.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -54598,6 +55347,7 @@ var _Text = require("../../components/Text/Text.jsx");
 var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
 var _panelParts = require("../CommandBar/panel-parts.jsx");
 var _fields = require("../../utils/fields.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · FilterPanel
    Summary: The command bar's Filter (owner, 2026-10-14: "like Airtable's"): the advanced filter that holds every
@@ -54634,25 +55384,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        announced. A condition left unfinished does not filter.
    Notes:
      The panel holds the conditions; the page applies them (DataGrid filter, or matchesFilter on its rows). */
-const STRINGS = Object.assign({
-  label: 'Filter',
-  info: 'Only the records that meet the conditions are shown; a condition left unfinished does not filter.',
-  sub: 'In this view, show records',
-  where: 'Where',
-  and: 'and',
-  or: 'or',
-  empty: 'No conditions: every record is shown.',
-  addCondition: 'Add condition',
-  addGroup: 'Add condition group',
-  remove: 'Remove {what}',
-  condition: 'condition',
-  group: 'condition group',
-  value: 'Enter a value',
-  choose: 'Choose options',
-  field: 'Field',
-  operator: 'Operator',
-  join: 'And or or'
-}, _panelParts.REORDER_STRINGS);
 const fieldOption = f => ({
   value: f.value,
   label: f.label,
@@ -54831,7 +55562,7 @@ function FilterPanel({
   onOpenChange,
   request
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('filterPanel', strings);
   const node = value || {
     join: 'and',
     items: []
@@ -54888,7 +55619,7 @@ function FilterPanel({
   }, body);
 }
   } },
-  "platform/patterns/SortPanel/SortPanel.jsx": { deps: {"react":null,"../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../utils/fields.js":"platform/utils/fields.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/SortPanel/SortPanel.jsx": { deps: {"react":null,"../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../utils/fields.js":"platform/utils/fields.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -54902,6 +55633,7 @@ var _Text = require("../../components/Text/Text.jsx");
 var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
 var _panelParts = require("../CommandBar/panel-parts.jsx");
 var _fields = require("../../utils/fields.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · SortPanel
    Summary: The command bar's Sort (owner, 2026-10-14: "just like Airtable"): a "Sort" button that opens a panel of sort
@@ -54928,19 +55660,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The panel opens with the focus on its first row (else the Add button).
    Notes:
      The panel holds the levels; the page applies them (DataGrid sort, or compareLevels on its rows). */
-const STRINGS = Object.assign({
-  label: 'Sort',
-  title: 'Sort by',
-  within: 'Sort within groups by',
-  info: 'The rows are ordered by the first field, then by the next where the first is the same.',
-  empty: 'No sort: the rows keep their own order.',
-  add: 'Add a sort',
-  addAnother: 'Add another sort',
-  remove: 'Remove the sort by {name}',
-  removeTip: 'Remove sort',
-  field: 'Field',
-  direction: 'Direction'
-}, _panelParts.REORDER_STRINGS);
 const fieldOption = f => ({
   value: f.value,
   label: f.label,
@@ -54955,7 +55674,7 @@ function SortPanel({
   inline = false,
   strings
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('sortPanel', strings);
   const levels = value;
   const ro = (0, _panelParts.useReorder)(levels, onChange, l => (0, _fields.fieldOf)(fields, l.field).label, t);
   const put = (i, ch) => onChange(levels.map((l, j) => j === i ? Object.assign({}, l, ch) : l));
@@ -55029,7 +55748,7 @@ function SortPanel({
   }, body);
 }
   } },
-  "platform/patterns/GroupPanel/GroupPanel.jsx": { deps: {"react":null,"../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../utils/fields.js":"platform/utils/fields.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/GroupPanel/GroupPanel.jsx": { deps: {"react":null,"../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../utils/fields.js":"platform/utils/fields.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -55043,6 +55762,7 @@ var _Text = require("../../components/Text/Text.jsx");
 var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
 var _panelParts = require("../CommandBar/panel-parts.jsx");
 var _fields = require("../../utils/fields.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · GroupPanel
    Summary: The command bar's Group (owner, 2026-10-14: "just like Airtable"): a "Group" button (the group-by icon, stacked
@@ -55070,22 +55790,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        announced. The groups' order follows their levels' order (the page sorts by the levels first).
    Notes:
      The panel holds the levels; the page applies them (DataGrid groupBy, nested with several levels). */
-const STRINGS = Object.assign({
-  label: 'Group',
-  title: 'Group by',
-  info: 'Rows with the same value are gathered under one header; a subgroup splits each group again.',
-  empty: 'Gather the rows that share a value under one header.',
-  add: 'Add group',
-  addSub: 'Add subgroup',
-  collapseAll: 'Collapse all',
-  expandAll: 'Expand all',
-  more: 'More for {name}',
-  hideEmpty: 'Hide empty groups',
-  remove: 'Remove the grouping by {name}',
-  removeTip: 'Remove group',
-  field: 'Field',
-  order: 'Order'
-}, _panelParts.REORDER_STRINGS);
 const fieldOption = f => ({
   value: f.value,
   label: f.label,
@@ -55110,7 +55814,7 @@ function GroupPanel({
   strings
 }) {
   fields = fields.filter(f => f.groupable !== false);
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('groupPanel', strings);
   const levels = value;
   const ro = (0, _panelParts.useReorder)(levels, onChange, l => (0, _fields.fieldOf)(fields, l.field).label, t);
   const put = (i, ch) => onChange(levels.map((l, j) => j === i ? Object.assign({}, l, ch) : l));
@@ -56509,7 +57213,7 @@ const VirtualList = exports.VirtualList = /*#__PURE__*/_react.default.forwardRef
       role: "listitem",
       className: "plx-virtual-list__item",
       "data-plx-unread": unread.has(item) || undefined,
-      "aria-label": unread.has(item) ? String(item?.label ?? key) + ', unread' : undefined,
+      "aria-label": unread.has(item) ? t.unreadRow.replace('{label}', String(item?.label ?? key)) : undefined,
       tabIndex: onItemOpen ? 0 : undefined,
       onClick: () => {
         if (onItemOpen) {
@@ -57595,7 +58299,7 @@ function RoleLabel({
   }, ', ' + description) : null);
 }
   } },
-  "platform/components/SearchResult/SearchResult.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","../SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","../Count/Count.jsx":"platform/components/Count/Count.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/SearchResult/SearchResult.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","../SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","../Count/Count.jsx":"platform/components/Count/Count.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -57614,6 +58318,7 @@ var _SectionHeading = require("../SectionHeading/SectionHeading.jsx");
 var _Count = require("../Count/Count.jsx");
 var _Link = require("../Link/Link.jsx");
 var _Button = require("../Button/Button.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · SearchResult, SearchResultGroup, highlightMatches
    Summary: One result of a search (06 Navigation › Search, filter, and discovery › Search result item) and the group of
@@ -57670,12 +58375,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        and a link to the rest. One kind: one list without headings.
      Other props pass through to the <li> (SearchResult) and the outer <div> (SearchResultGroup).
 */
-const RESULT_STRINGS = {
-  path: 'In'
-};
-const GROUP_STRINGS = {
-  more: 'Show all'
-};
 const escape = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 // the text with every match of the query's words in bold (case ignored; words of two letters or more, longest first)
@@ -57709,7 +58408,7 @@ function SearchResult({
   className,
   ...rest
 }) {
-  const t = Object.assign({}, RESULT_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('searchResult.result', strings);
   const name = highlightMatches(title, query);
   const opener = href ? /*#__PURE__*/_react.default.createElement("a", {
     href: href,
@@ -57776,7 +58475,7 @@ function SearchResultGroup({
   children,
   ...rest
 }) {
-  const t = Object.assign({}, GROUP_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('searchResult.group', strings);
   const id = (0, _layer.useUid)('plx-search-result-group');
   const more = moreLabel || t.more;
   return /*#__PURE__*/_react.default.createElement("div", _extends({
@@ -75319,7 +76018,7 @@ function ProductOptions({
   }))) : null);
 }
   } },
-  "platform/templates/Commerce/shared.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../patterns/ProductCard/ProductCard.jsx":"platform/patterns/ProductCard/ProductCard.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/templates/Commerce/shared.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../patterns/ProductCard/ProductCard.jsx":"platform/patterns/ProductCard/ProductCard.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -75343,6 +76042,7 @@ var _Icon = require("../../components/Icon/Icon.jsx");
 var _NumberInput = require("../../components/NumberInput/NumberInput.jsx");
 var _Notice = require("../../components/Notice/Notice.jsx");
 var _ProductCard = require("../../patterns/ProductCard/ProductCard.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · Commerce templates: shared parts
    Summary: What the Commerce templates share (platform/templates/Commerce): the kind of page each template is
@@ -75422,11 +76122,6 @@ function orderTotals(items = [], o = {}) {
     count
   };
 }
-const LINE_STRINGS = {
-  quantity: 'Quantity, {title}',
-  qty: 'Qty {n}',
-  each: '{price} each'
-};
 function CommerceLine({
   item,
   currency = 'USD',
@@ -75435,7 +76130,7 @@ function CommerceLine({
   strings,
   className
 }) {
-  const t = Object.assign({}, LINE_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('commerce.line', strings);
   const name = typeof item.title === 'string' ? item.title : '';
   return /*#__PURE__*/_react.default.createElement("li", {
     className: (0, _cx.cx)('plx-commerce-line', className)
@@ -75492,20 +76187,6 @@ function CommerceLine({
     tone: "warning"
   }, item.warning)) : null);
 }
-const SUMMARY_STRINGS = {
-  title: 'Order summary',
-  subtotal: 'Subtotal',
-  discount: 'Discount',
-  shipping: 'Shipping',
-  shippingEstimated: 'Estimated shipping',
-  tax: 'Tax',
-  taxEstimated: 'Estimated tax',
-  total: 'Total',
-  free: 'Free',
-  items: '{n} items',
-  item: '1 item',
-  times: '× {n}'
-};
 function OrderSummary({
   items = [],
   currency = 'USD',
@@ -75518,7 +76199,7 @@ function OrderSummary({
   strings,
   className
 }) {
-  const t = Object.assign({}, SUMMARY_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('commerce.summary', strings);
   const s = totals || orderTotals(items);
   const row = (key, label, value, cls) => /*#__PURE__*/_react.default.createElement("div", {
     key: key,
@@ -75555,7 +76236,7 @@ function OrderSummary({
   }, children) : null);
 }
   } },
-  "platform/templates/Commerce/Storefront.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/fields.js":"platform/utils/fields.js","../../hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","../../patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","../../patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","../../patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","../../patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","../../patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","../../patterns/ProductCard/ProductCard.jsx":"platform/patterns/ProductCard/ProductCard.jsx","../../components/ProductOptions/ProductOptions.jsx":"platform/components/ProductOptions/ProductOptions.jsx","../../components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","../../components/Table/Table.jsx":"platform/components/Table/Table.jsx","../../utils/layer.js":"platform/utils/layer.js","./shared.jsx":"platform/templates/Commerce/shared.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/templates/Commerce/Storefront.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/fields.js":"platform/utils/fields.js","../../hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","../../patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","../../patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","../../patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","../../patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","../../patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","../../patterns/ProductCard/ProductCard.jsx":"platform/patterns/ProductCard/ProductCard.jsx","../../components/ProductOptions/ProductOptions.jsx":"platform/components/ProductOptions/ProductOptions.jsx","../../components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","../../components/Table/Table.jsx":"platform/components/Table/Table.jsx","../../utils/layer.js":"platform/utils/layer.js","./shared.jsx":"platform/templates/Commerce/shared.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -75595,6 +76276,7 @@ var _Tabs = require("../../components/Tabs/Tabs.jsx");
 var _Table = require("../../components/Table/Table.jsx");
 var _layer = require("../../utils/layer.js");
 var _shared = require("./shared.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Commerce templates: the storefront
    Summary: The pages people shop on (platform/templates/Commerce): the product listing (ProductListing: a category's or a
@@ -75614,33 +76296,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
 
      See Commerce.jsx.
 */
-const LISTING_STRINGS = {
-  label: 'Products',
-  search: 'Search products',
-  count: '{n} products',
-  one: '1 product',
-  category: 'Category',
-  noun: 'product',
-  name: 'Name',
-  price: 'Price',
-  rating: 'Rating',
-  availability: 'Availability',
-  inStock: 'In stock',
-  outOfStock: 'Out of stock',
-  sale: 'On sale',
-  yes: 'Yes',
-  no: 'No',
-  empty: 'No products match',
-  emptyText: 'Remove a filter or search for something else.',
-  clear: 'Clear filters and search',
-  results: '{n} products shown',
-  resultsOne: '1 product shown',
-  none: 'No products shown'
-};
-
 // the products' fields, for the filter, the category quick filter and the sort (utils/fields.js)
 function productFields(categories = [], strings) {
-  const t = Object.assign({}, LISTING_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('commerce.listing', strings);
   return [{
     value: 'title',
     label: t.name,
@@ -75710,7 +76368,7 @@ function ProductListing({
   className
 }) {
   (0, _shared.useCommercePage)('product-listing');
-  const t = Object.assign({}, LISTING_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('commerce.listing', strings);
   const fields = _react.default.useMemo(() => productFields(categories, strings), [categories, strings]);
   const v = (0, _useCollectionView.useCollectionView)(fields, {
     text: p => [p.title, p.meta, p.category].join(' '),
@@ -75833,18 +76491,6 @@ function ProductListing({
     perPage: pageSize
   }) : null);
 }
-const DISCOVERY_STRINGS = {
-  title: 'Shop',
-  search: 'Search the shop',
-  categories: 'Shop by category',
-  recommended: 'Recommended for you',
-  results: 'Products',
-  resultsFor: 'Results for “{q}”',
-  count: '{n} products',
-  one: '1 product',
-  suggestions: 'Try one of these',
-  clear: 'Clear the search'
-};
 function ProductDiscovery({
   products = [],
   categories = [],
@@ -75860,7 +76506,7 @@ function ProductDiscovery({
   className
 }) {
   (0, _shared.useCommercePage)('product-discovery');
-  const t = Object.assign({}, DISCOVERY_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('commerce.discovery', strings);
   const uid = (0, _layer.useUid)('plx-commerce');
   const [text, setText] = _react.default.useState('');
   const [query, setQuery] = _react.default.useState('');
@@ -75979,26 +76625,6 @@ function ProductDiscovery({
     strings: strings
   })));
 }
-const DETAIL_STRINGS = {
-  gallery: 'Pictures of {title}',
-  reviews: '{n} reviews',
-  review: '1 review',
-  inStock: 'In stock',
-  lowStock: 'Only {n} left',
-  outOfStock: 'Out of stock',
-  addToCart: 'Add to cart',
-  added: '{title} added to your cart',
-  viewCart: 'View cart',
-  choose: 'Choose a {option}.',
-  missing: 'Choose your options first.',
-  description: 'Description',
-  details: 'Details',
-  delivery: 'Delivery and returns',
-  detail: 'Detail',
-  value: 'Value',
-  related: 'You may also like',
-  rating: 'Rating'
-};
 function ProductDetail({
   product,
   value,
@@ -76017,7 +76643,7 @@ function ProductDetail({
   className
 }) {
   (0, _shared.useCommercePage)('product-detail');
-  const t = Object.assign({}, DETAIL_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('commerce.productDetail', strings);
   const uid = (0, _layer.useUid)('plx-commerce');
   const p = product || {};
   const [own, setOwn] = _react.default.useState(() => defaultValue || {});
@@ -76220,7 +76846,7 @@ function ProductDetail({
   })))) : null);
 }
   } },
-  "platform/templates/Commerce/Checkout.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","../../patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","../../patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","../../patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","../../patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","../../components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./shared.jsx":"platform/templates/Commerce/shared.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/templates/Commerce/Checkout.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","../../patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","../../patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","../../patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","../../patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","../../components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./shared.jsx":"platform/templates/Commerce/shared.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -76256,6 +76882,7 @@ var _CopyButton = require("../../components/CopyButton/CopyButton.jsx");
 var _Timeline = require("../../components/Timeline/Timeline.jsx");
 var _Icon = require("../../components/Icon/Icon.jsx");
 var _shared = require("./shared.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · Commerce templates: buying
    Summary: The pages that turn a cart into an order (platform/templates/Commerce): the cart (Cart: the lines with their
@@ -76276,25 +76903,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
 */
 
 /* ── the cart ── */
-const CART_STRINGS = {
-  title: 'Cart',
-  items: '{n} items',
-  item: '1 item',
-  lines: 'Items in your cart',
-  remove: 'Remove {title}',
-  noun: 'item',
-  removed: '{title} removed from your cart.',
-  undo: 'Undo',
-  empty: 'Your cart is empty',
-  emptyText: 'Find something you like and add it here.',
-  continue: 'Continue shopping',
-  checkout: 'Check out',
-  promo: 'Promo code',
-  apply: 'Apply',
-  applied: 'Promo code {code} applied',
-  promoError: 'This code cannot be used.',
-  total: 'Total {total}'
-};
+
 function Cart({
   items = [],
   currency = 'USD',
@@ -76313,7 +76922,7 @@ function Cart({
   className
 }) {
   (0, _shared.useCommercePage)('cart');
-  const t = Object.assign({}, CART_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('commerce.cart', strings);
   const toast = (0, _ReviewFlow.useOptionalToast)();
   const [removed, setRemoved] = _react.default.useState(null);
   const [code, setCode] = _react.default.useState('');
@@ -76477,30 +77086,6 @@ function Cart({
 }
 
 /* ── payment: the method and the card fields (form UI only) ── */
-const PAY_STRINGS = {
-  method: 'Payment method',
-  newCard: 'A new card',
-  number: 'Card number',
-  accepted: 'Visa, Mastercard, American Express or Discover',
-  expiry: 'Expiry date',
-  expiryHint: 'MM / YY',
-  cvc: 'Security code',
-  cvcHint: 'The last 3 digits on the back, or 4 on the front of American Express',
-  name: 'Name on card',
-  billingSame: 'The billing address is the same as the delivery address',
-  billing: 'Billing address',
-  street: 'Address',
-  city: 'City',
-  postal: 'Postal code',
-  secure: 'Your card details go straight to the payment provider. This page does not keep them.',
-  charge: 'You will be charged',
-  brands: {
-    visa: 'Visa',
-    mastercard: 'Mastercard',
-    amex: 'American Express',
-    discover: 'Discover'
-  }
-};
 // the card's brand from its first digits, and the number in groups as people type it (4 4 4 4, or 4 6 5 for American Express)
 function cardBrand(number) {
   const d = String(number || '').replace(/\D/g, '');
@@ -76537,7 +77122,7 @@ function PaymentFields({
   strings,
   className
 }) {
-  const t = Object.assign({}, PAY_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('commerce.pay', strings);
   const set = (k, v) => {
     if (onChange) onChange(Object.assign({}, value, {
       [k]: v
@@ -76654,15 +77239,6 @@ function PaymentFields({
     variant: "data"
   }, (0, _shared.money)(amount, currency))) : null);
 }
-const PAYMENT_STRINGS = {
-  title: 'Payment',
-  description: 'Choose how to pay. Nothing is charged until you press Pay.',
-  pay: 'Pay {amount}',
-  cancel: 'Cancel',
-  declined: 'The payment did not go through',
-  declinedText: 'Your card was declined. Check the details or use another card.',
-  paid: 'Payment received'
-};
 function Payment({
   amount,
   currency = 'USD',
@@ -76675,7 +77251,7 @@ function Payment({
   className
 }) {
   (0, _shared.useCommercePage)('payment');
-  const t = Object.assign({}, PAYMENT_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('commerce.payment', strings);
   const [value, setValue] = _react.default.useState(() => Object.assign({
     billingSame: true
   }, defaultValue));
@@ -76736,35 +77312,7 @@ function Payment({
 }
 
 /* ── checkout: contact, delivery, payment, review ── */
-const CHECKOUT_STRINGS = {
-  label: 'Checkout',
-  contact: 'Contact',
-  delivery: 'Delivery',
-  payment: 'Payment',
-  review: 'Review',
-  placeOrder: 'Place order',
-  cancel: 'Back to cart',
-  email: 'Email',
-  emailHint: 'For the order confirmation and delivery updates.',
-  account: 'Have an account?',
-  signIn: 'Sign in',
-  name: 'Full name',
-  street: 'Address',
-  street2: 'Apartment, suite or unit (optional)',
-  city: 'City',
-  region: 'State or region',
-  postal: 'Postal code',
-  country: 'Country',
-  phone: 'Phone (optional)',
-  phoneHint: 'Only for questions about the delivery.',
-  method: 'Delivery method',
-  summary: 'Order summary',
-  card: 'Card ending {last4}',
-  placed: 'Order placed',
-  checkAnswers: 'Check your order before you place it.',
-  items: 'Items',
-  free: 'Free'
-};
+
 function Checkout({
   items = [],
   currency = 'USD',
@@ -76780,7 +77328,7 @@ function Checkout({
   className
 }) {
   (0, _shared.useCommercePage)('checkout');
-  const t = Object.assign({}, CHECKOUT_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('commerce.checkout', strings);
   const [d, setD] = _react.default.useState(() => Object.assign({
     email: '',
     name: '',
@@ -76966,18 +77514,7 @@ function Checkout({
 }
 
 /* ── the order confirmation ── */
-const CONFIRM_STRINGS = {
-  title: 'Thank you. Your order is placed.',
-  number: 'Order number',
-  copy: 'Copy the order number',
-  sent: 'We sent a confirmation to {email}.',
-  next: 'What happens next',
-  items: 'Items',
-  view: 'View your order',
-  continue: 'Continue shopping',
-  delivery: 'Delivery',
-  method: 'Delivery method'
-};
+
 function OrderConfirmation({
   orderNumber,
   email,
@@ -76994,7 +77531,7 @@ function OrderConfirmation({
   className
 }) {
   (0, _shared.useCommercePage)('order-confirmation');
-  const t = Object.assign({}, CONFIRM_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('commerce.confirm', strings);
   const uid = (0, _layer.useUid)('plx-commerce');
   const heading = _react.default.useRef(null);
   // the page's heading takes the focus when it opens: the success is the first thing read
@@ -77071,7 +77608,7 @@ function OrderConfirmation({
   }))));
 }
   } },
-  "platform/templates/Commerce/Account.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","../../patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","../../patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","../../patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","../../patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","../../patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","../../patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","../../components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./shared.jsx":"platform/templates/Commerce/shared.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/templates/Commerce/Account.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","../../patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","../../patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","../../patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","../../patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","../../patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","../../patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","../../components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./shared.jsx":"platform/templates/Commerce/shared.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -77111,6 +77648,7 @@ var _Field = require("../../components/Field/Field.jsx");
 var _Input = require("../../components/Input/Input.jsx");
 var _NumberInput = require("../../components/NumberInput/NumberInput.jsx");
 var _shared = require("./shared.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Commerce templates: after the order
    Summary: The pages that manage orders and plans (platform/templates/Commerce): order management (OrderManagement: the
@@ -77183,33 +77721,7 @@ function OrderStatus({
 }
 
 /* ── order management ── */
-const ORDERS_STRINGS = {
-  label: 'Orders',
-  search: 'Search orders',
-  count: '{n} orders',
-  one: '1 order',
-  noun: 'order',
-  plural: 'orders',
-  number: 'Order',
-  date: 'Date',
-  customer: 'Customer',
-  items: 'Items',
-  total: 'Total',
-  status: 'Status',
-  open: 'Open',
-  fulfill: 'Fulfill',
-  refund: 'Refund',
-  cancel: 'Cancel order',
-  cancelMany: 'Cancel orders',
-  cancelTitle: 'Cancel {what}?',
-  cancelText: 'The customer is told and paid back in full. This cannot be undone.',
-  keep: 'Keep the order',
-  notFulfillable: 'Only unfulfilled orders can be fulfilled',
-  notCancelable: 'Only unfulfilled orders can be canceled',
-  notRefundable: 'Only shipped or delivered orders can be refunded',
-  fulfilled: '{what} marked as shipped',
-  canceled: '{what} canceled'
-};
+
 function OrderManagement({
   orders = [],
   currency = 'USD',
@@ -77222,7 +77734,7 @@ function OrderManagement({
   className
 }) {
   (0, _shared.useCommercePage)('order-management');
-  const t = Object.assign({}, ORDERS_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('commerce.orders', strings);
   const S = statuses || ORDER_STATUSES;
   const fields = _react.default.useMemo(() => [{
     value: 'number',
@@ -77408,24 +77920,7 @@ function OrderManagement({
 }
 
 /* ── one order ── */
-const DETAIL_STRINGS = {
-  context: 'Order',
-  back: 'Orders',
-  items: 'Items',
-  delivery: 'Delivery',
-  address: 'Address',
-  method: 'Method',
-  tracking: 'Tracking number',
-  payment: 'Payment',
-  history: 'History',
-  fulfill: 'Fulfill',
-  refund: 'Refund',
-  cancel: 'Cancel order',
-  return: 'Start a return',
-  cancelTitle: 'Cancel order {number}?',
-  cancelText: 'The customer is told and paid back in full. This cannot be undone.',
-  keep: 'Keep the order'
-};
+
 function OrderDetail({
   order,
   currency = 'USD',
@@ -77440,7 +77935,7 @@ function OrderDetail({
   className
 }) {
   (0, _shared.useCommercePage)('order-detail');
-  const t = Object.assign({}, DETAIL_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('commerce.orderDetail', strings);
   const o = order || {};
   const uid = (0, _layer.useUid)('plx-commerce');
   const [asking, setAsking] = _react.default.useState(false);
@@ -77559,53 +78054,6 @@ function OrderDetail({
 }
 
 /* ── subscription management ── */
-const SUB_STRINGS = {
-  plan: 'Your plan',
-  planName: 'Plan',
-  price: 'Price',
-  status: 'Status',
-  next: 'Next payment',
-  since: 'Member since',
-  ends: 'Access ends',
-  perPeriod: '{price} per {period}',
-  more: '{amount} more',
-  less: '{amount} less',
-  change: 'Change plan',
-  changeTitle: 'Change to {plan}?',
-  changeText: 'You will pay {price} from {date}. Until then your current plan stays as it is.',
-  changeConfirm: 'Change plan',
-  changed: 'Your plan changes to {plan} on {date}.',
-  plans: 'Plans',
-  current: 'Current plan',
-  method: 'Payment method',
-  update: 'Update payment method',
-  manage: 'Pause or cancel',
-  manageText: 'Pause to stop the payments for a while and keep your settings; cancel to end the plan. Either way you keep access until {date}.',
-  pause: 'Pause subscription',
-  pauseTitle: 'Pause your subscription?',
-  pauseText: 'No payment is taken while it is paused. Resume it whenever you like.',
-  resume: 'Resume subscription',
-  cancel: 'Cancel subscription',
-  cancelTitle: 'Cancel your subscription?',
-  cancelText: 'You keep access until {date}, and you will not be charged again.',
-  keep: 'Keep my plan',
-  history: 'Billing history',
-  date: 'Date',
-  description: 'Description',
-  amount: 'Amount',
-  invoice: 'Invoice',
-  invoiceFor: 'Invoice for {date}',
-  paused: 'Your subscription is paused.',
-  canceled: 'Your subscription is canceled.',
-  statuses: {
-    active: 'Active',
-    paused: 'Paused',
-    canceled: 'Canceled',
-    paid: 'Paid',
-    refunded: 'Refunded',
-    failed: 'Failed'
-  }
-};
 const SUB_TONES = {
   active: ['success', 'circle-check'],
   paused: ['waiting', 'schedule'],
@@ -77628,8 +78076,8 @@ function SubscriptionManagement({
   className
 }) {
   (0, _shared.useCommercePage)('subscription-management');
-  const t = Object.assign({}, SUB_STRINGS, strings);
-  const st = Object.assign({}, SUB_STRINGS.statuses, t.statuses);
+  const t = (0, _LocaleProvider.useStrings)('commerce.subscription', strings);
+  const st = t.statuses; // merged key by key with the strings prop
   const s = subscription;
   const current = plans.find(p => p.id === s.plan) || {};
   const [pick, setPick] = _react.default.useState(s.plan);
@@ -77818,33 +78266,7 @@ function SubscriptionManagement({
 }
 
 /* ── returns ── */
-const RETURN_STRINGS = {
-  label: 'Return items',
-  items: 'Items',
-  reason: 'Reason',
-  resolution: 'Resolution',
-  review: 'Review',
-  submit: 'Request return',
-  cancel: 'Cancel',
-  window: 'You can return most items within 30 days of delivery.',
-  choose: 'Choose at least one item to return.',
-  notReturnable: 'Cannot be returned',
-  quantity: 'How many, {title}',
-  why: 'Why are you returning them?',
-  whyRequired: 'Choose a reason.',
-  note: 'Anything else we should know? (optional)',
-  want: 'What would you like?',
-  wantRequired: 'Choose a refund or an exchange.',
-  send: 'How will you send them?',
-  sendRequired: 'Choose how to send them.',
-  refund: 'Refund',
-  refundTiming: 'The refund reaches your original payment method 5 to 10 business days after the items arrive.',
-  requested: 'Return requested',
-  requestedText: 'We emailed you the return label and the steps. Here is where your return stands.',
-  status: 'Return status',
-  returning: '{n} items',
-  returningOne: '1 item'
-};
+
 function Returns({
   order = {},
   reasons = [],
@@ -77859,7 +78281,7 @@ function Returns({
   className
 }) {
   (0, _shared.useCommercePage)('returns');
-  const t = Object.assign({}, RETURN_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('commerce.returns', strings);
   const items = order.items || [];
   const [chosen, setChosen] = _react.default.useState({});
   const [reason, setReason] = _react.default.useState('');
