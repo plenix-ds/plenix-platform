@@ -38740,7 +38740,7 @@ function SegmentedControl({
   }, segments);
 }
   } },
-  "platform/components/Combobox/Combobox.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/dataValue.js":"platform/utils/dataValue.js","../../utils/format.js":"platform/utils/format.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/overflow.js":"platform/utils/overflow.js","plenix-platform/icons/plenix/select-chevron":"platform/dist/icons/plenix/select-chevron.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Combobox/Combobox.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","../../utils/dataValue.js":"platform/utils/dataValue.js","../../utils/format.js":"platform/utils/format.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/overflow.js":"platform/utils/overflow.js","plenix-platform/icons/plenix/select-chevron":"platform/dist/icons/plenix/select-chevron.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -38754,6 +38754,7 @@ var _Loading = require("../Loading/Loading.jsx");
 var _announce = require("../../utils/announce.jsx");
 var _floating = require("../../utils/floating.js");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _ReadOnly = require("../../providers/ReadOnly.jsx");
 var _dataValue = require("../../utils/dataValue.js");
 var _format = require("../../utils/format.js");
 var _Icon = require("../Icon/Icon.jsx");
@@ -38786,6 +38787,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      label: the accessible name when there is no Field
      invalid: shows the invalid state
      disabled: the field cannot be used
+     readOnly: shows the value and does not change it: the list does not open, nothing is chosen, created or removed (the tags lose their remove button);
+       default the nearest ReadOnly region's (useReadOnly). CountrySelect passes it on
      emptyText: the text when nothing matches (default "No matches")
      loadOptions(text): loads the options for the typed text (async select): returns the options or a Promise of them;
        the list shows those options as they are (the loader filters), while they load a spinner and "Loading…"
@@ -38835,6 +38838,7 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
   label,
   invalid,
   disabled,
+  readOnly: readOnlyOwn,
   emptyText,
   loadOptions,
   loadDelay = 300,
@@ -38848,6 +38852,7 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
   data,
   ...rest
 }, ref) {
+  const locked = (0, _ReadOnly.useReadOnly)(readOnlyOwn); // its own readOnly, else the nearest ReadOnly region's: the value shows; the list does not open, nothing is chosen, created or removed
   const t = (0, _LocaleProvider.useStrings)('combobox', strings),
     words = t;
   const loc = (0, _LocaleProvider.useLocale)();
@@ -38951,7 +38956,7 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
     setActive(0);
   }, [q, open]);
   const choose = item => {
-    if (!item) return;
+    if (!item || locked) return;
     if (item.kind === 'create') {
       if (onCreate) onCreate(text.trim());
       setText('');
@@ -38971,6 +38976,10 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
     }
   };
   const onKey = e => {
+    if (locked) {
+      if (!/^(Tab|Escape|Shift|Control|Alt|Meta)$/.test(e.key) && !e.ctrlKey && !e.metaKey && !e.altKey) e.preventDefault();
+      return;
+    } // read-only: no key opens, chooses, creates or removes
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       if (!open) setOpen(true);else setActive(a => Math.min(items.length - 1, a + 1));
@@ -39011,14 +39020,19 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
     "aria-activedescendant": open && items[active] ? optId(active) : undefined,
     "aria-label": label,
     disabled: disabled,
+    readOnly: locked || undefined,
+    "aria-readonly": locked || undefined,
     autoComplete: "off",
     value: open || multiple ? text : current ? current.label : '',
     placeholder: multiple && chosen.length ? '' : current && !open ? current.label : placeholder,
     onChange: e => {
+      if (locked) return;
       setText(e.target.value);
       setOpen(true);
     },
-    onFocus: () => setOpen(true),
+    onFocus: () => {
+      if (!locked) setOpen(true);
+    },
     onKeyDown: onKey
   }, rest));
   return /*#__PURE__*/_react.default.createElement("div", {
@@ -39035,7 +39049,7 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
     const t = o ? o.label : v;
     return /*#__PURE__*/_react.default.createElement(_Tag.Tag, {
       key: v,
-      onRemove: () => onChange(chosen.filter(x => x !== v)),
+      onRemove: locked ? undefined : () => onChange(chosen.filter(x => x !== v)),
       removeLabel: words.removeItem.replace('{label}', t)
     }, t);
   }) : null, multiple ? field : /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
@@ -52842,7 +52856,7 @@ var _default = exports.default = {
   }
 };
   } },
-  "platform/components/NumberInput/NumberInput.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/plus":"platform/dist/icons/plenix/plus.js","plenix-platform/icons/plenix/remove":"platform/dist/icons/plenix/remove.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/NumberInput/NumberInput.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","plenix-platform/icons/plenix/plus":"platform/dist/icons/plenix/plus.js","plenix-platform/icons/plenix/remove":"platform/dist/icons/plenix/remove.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -52856,6 +52870,7 @@ var _Input = require("../Input/Input.jsx");
 var _Button = require("../Button/Button.jsx");
 var _InputGroup = require("../InputGroup/InputGroup.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _ReadOnly = require("../../providers/ReadOnly.jsx");
 var _plus = _interopRequireDefault(require("plenix-platform/icons/plenix/plus"));
 var _remove = _interopRequireDefault(require("plenix-platform/icons/plenix/remove"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -52889,7 +52904,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      width: "xs" | "sm" | "md" | "lg" (the group's width; quantity has its own); full width by default
      invalid: the danger border and aria-invalid (a Field with an error sets it)
      disabled: turns the field and its buttons off
-     readOnly: the value can be read and copied, not changed; the buttons turn off
+     readOnly: the value can be read and copied, not changed; the buttons turn off; default the nearest ReadOnly region's (useReadOnly)
      required: handed to the field (a Field sets it)
      id: handed to the field, with aria-describedby (a Field sets both)
      strings: the words it announces, for other languages: { decrease: "Decrease", increase: "Increase" }
@@ -52985,7 +53000,7 @@ const NumberInput = exports.NumberInput = /*#__PURE__*/_react.default.forwardRef
   width,
   invalid,
   disabled,
-  readOnly,
+  readOnly: readOnlyOwn,
   required,
   id,
   'aria-describedby': describedBy,
@@ -52996,6 +53011,7 @@ const NumberInput = exports.NumberInput = /*#__PURE__*/_react.default.forwardRef
   onKeyDown,
   ...rest
 }, ref) {
+  const readOnly = (0, _ReadOnly.useReadOnly)(readOnlyOwn); // its own readOnly, else the nearest ReadOnly region's: the step buttons and the keys follow either
   const t = (0, _LocaleProvider.useStrings)('numberInput', strings);
   const locale = (0, _format.numeralLocale)((0, _format.formatLocale)());
   const aff = _react.default.useMemo(() => affix(format, currency, currencyDisplay, locale), [format, currency, currencyDisplay, locale]);
@@ -53372,7 +53388,7 @@ const FileInput = exports.FileInput = /*#__PURE__*/_react.default.forwardRef(fun
   })))) : null);
 });
   } },
-  "platform/components/CodeEditor/CodeEditor.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/describedBy.js":"platform/utils/describedBy.js","../CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/CodeEditor/CodeEditor.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/describedBy.js":"platform/utils/describedBy.js","../CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -53384,6 +53400,7 @@ var _cx = require("../../utils/cx.js");
 var _describedBy = require("../../utils/describedBy.js");
 var _CodeBlock = require("../CodeBlock/CodeBlock.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _ReadOnly = require("../../providers/ReadOnly.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · CodeEditor
    Summary: A multi-line field for code people write: the code font (Reddit Mono), the CodeBlock's colors as they type,
@@ -53450,7 +53467,7 @@ const CodeEditor = exports.CodeEditor = /*#__PURE__*/_react.default.forwardRef(f
   onChange,
   language = 'jsx',
   lineNumbers = false,
-  readOnly = false,
+  readOnly: readOnlyOwn,
   height = 'md',
   maxHeight = 'none',
   tabSize = 2,
@@ -53465,6 +53482,7 @@ const CodeEditor = exports.CodeEditor = /*#__PURE__*/_react.default.forwardRef(f
   onKeyDown,
   ...rest
 }, ref) {
+  const readOnly = (0, _ReadOnly.useReadOnly)(readOnlyOwn); // its own readOnly, else the nearest ReadOnly region's
   const t = (0, _LocaleProvider.useStrings)('codeEditor', strings);
   const area = _react.default.useRef(null);
   const release = _react.default.useRef(false); // Escape was pressed: the next Tab leaves the editor
@@ -53967,7 +53985,7 @@ function useSearchHistory(key, options = {}) {
   };
 }
   } },
-  "platform/components/InlineEdit/InlineEdit.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/check":"platform/dist/icons/plenix/check.js","plenix-platform/icons/plenix/close":"platform/dist/icons/plenix/close.js","plenix-platform/icons/plenix/pencil":"platform/dist/icons/plenix/pencil.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/InlineEdit/InlineEdit.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","plenix-platform/icons/plenix/check":"platform/dist/icons/plenix/check.js","plenix-platform/icons/plenix/close":"platform/dist/icons/plenix/close.js","plenix-platform/icons/plenix/pencil":"platform/dist/icons/plenix/pencil.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -53983,6 +54001,7 @@ var _Button = require("../Button/Button.jsx");
 var _Icon = require("../Icon/Icon.jsx");
 var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _ReadOnly = require("../../providers/ReadOnly.jsx");
 var _check = _interopRequireDefault(require("plenix-platform/icons/plenix/check"));
 var _close = _interopRequireDefault(require("plenix-platform/icons/plenix/close"));
 var _pencil = _interopRequireDefault(require("plenix-platform/icons/plenix/pencil"));
@@ -54008,6 +54027,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      validate(next): returns an error message to keep the field open, or nothing when the value may be saved
      data: the data font, for technical values such as codes and file names (default false)
      disabled: shows the value without the edit affordance (default false)
+     readOnly: shows the value without the edit affordance and keeps it focusable; it does not open for editing; default the nearest ReadOnly region's (useReadOnly)
      readView(value): draws the read view's content (default: the text, or the option's label)
      strings: the words it shows and announces, for other languages: { edit: "edit", save: "Save", cancel: "Cancel",
        empty: "Add a value", saved: "Saved", failed: "The change could not be saved" }
@@ -54035,11 +54055,13 @@ function InlineEdit({
   validate,
   data = false,
   disabled = false,
+  readOnly: readOnlyOwn,
   readView,
   strings,
   className,
   ...rest
 }) {
+  const locked = (0, _ReadOnly.useReadOnly)(readOnlyOwn); // its own readOnly, else the nearest ReadOnly region's: the value shows, stays focusable, and does not open for editing
   const t = (0, _LocaleProvider.useStrings)('inlineEdit', strings);
   const id = (0, _layer.useUid)('plx-inline-edit');
   const [editing, setEditing] = _react.default.useState(false);
@@ -54064,7 +54086,7 @@ function InlineEdit({
     }
   }, [editing, type]);
   const open = () => {
-    if (disabled) return;
+    if (disabled || locked) return;
     setDraft(value);
     setError(null);
     setEditing(true);
@@ -54133,7 +54155,7 @@ function InlineEdit({
       disabled: disabled
     }, /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, label + ', '), /*#__PURE__*/_react.default.createElement("span", {
       className: "plx-inline-edit__value"
-    }, empty ? hint : readView ? readView(value) : shownValue), disabled ? null : /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, ', ' + t.edit), disabled ? null : /*#__PURE__*/_react.default.createElement("span", {
+    }, empty ? hint : readView ? readView(value) : shownValue), disabled || locked ? null : /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, ', ' + t.edit), disabled || locked ? null : /*#__PURE__*/_react.default.createElement("span", {
       className: "plx-inline-edit__hint",
       "aria-hidden": "true"
     }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
@@ -55335,7 +55357,7 @@ var _default = exports.default = {
   }
 };
   } },
-  "platform/components/RichTextEditor/RichTextEditor.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js","../../utils/overflow.js":"platform/utils/overflow.js","../Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","../ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","../../utils/hotkey.js":"platform/utils/hotkey.js","./tiptap.js":"platform/components/RichTextEditor/tiptap.js","../../utils/richTextClean.js":"platform/utils/richTextClean.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/format.js":"platform/utils/format.js","plenix-platform/icons/plenix/add-column-left":"platform/dist/icons/plenix/add-column-left.js","plenix-platform/icons/plenix/add-column-right":"platform/dist/icons/plenix/add-column-right.js","plenix-platform/icons/plenix/add-row-above":"platform/dist/icons/plenix/add-row-above.js","plenix-platform/icons/plenix/add-row-below":"platform/dist/icons/plenix/add-row-below.js","plenix-platform/icons/plenix/checklist":"platform/dist/icons/plenix/checklist.js","plenix-platform/icons/plenix/code":"platform/dist/icons/plenix/code.js","plenix-platform/icons/plenix/code-blocks":"platform/dist/icons/plenix/code-blocks.js","plenix-platform/icons/plenix/ed-align-center":"platform/dist/icons/plenix/ed-align-center.js","plenix-platform/icons/plenix/ed-align-justify":"platform/dist/icons/plenix/ed-align-justify.js","plenix-platform/icons/plenix/ed-align-left":"platform/dist/icons/plenix/ed-align-left.js","plenix-platform/icons/plenix/ed-align-right":"platform/dist/icons/plenix/ed-align-right.js","plenix-platform/icons/plenix/ed-image":"platform/dist/icons/plenix/ed-image.js","plenix-platform/icons/plenix/ed-redo":"platform/dist/icons/plenix/ed-redo.js","plenix-platform/icons/plenix/ed-undo":"platform/dist/icons/plenix/ed-undo.js","plenix-platform/icons/plenix/format-bold":"platform/dist/icons/plenix/format-bold.js","plenix-platform/icons/plenix/format-clear":"platform/dist/icons/plenix/format-clear.js","plenix-platform/icons/plenix/format-color-text":"platform/dist/icons/plenix/format-color-text.js","plenix-platform/icons/plenix/format-italic":"platform/dist/icons/plenix/format-italic.js","plenix-platform/icons/plenix/format-list-numbered":"platform/dist/icons/plenix/format-list-numbered.js","plenix-platform/icons/plenix/format-quote":"platform/dist/icons/plenix/format-quote.js","plenix-platform/icons/plenix/format-strikethrough":"platform/dist/icons/plenix/format-strikethrough.js","plenix-platform/icons/plenix/format-underlined":"platform/dist/icons/plenix/format-underlined.js","plenix-platform/icons/plenix/horizontal-rule":"platform/dist/icons/plenix/horizontal-rule.js","plenix-platform/icons/plenix/ink-highlighter":"platform/dist/icons/plenix/ink-highlighter.js","plenix-platform/icons/plenix/link":"platform/dist/icons/plenix/link.js","plenix-platform/icons/plenix/list-bullets":"platform/dist/icons/plenix/list-bullets.js","plenix-platform/icons/plenix/more":"platform/dist/icons/plenix/more.js","plenix-platform/icons/plenix/subscript":"platform/dist/icons/plenix/subscript.js","plenix-platform/icons/plenix/superscript":"platform/dist/icons/plenix/superscript.js","plenix-platform/icons/plenix/table":"platform/dist/icons/plenix/table.js","plenix-platform/icons/plenix/trash":"platform/dist/icons/plenix/trash.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/RichTextEditor/RichTextEditor.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js","../../utils/overflow.js":"platform/utils/overflow.js","../Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","../ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","../../utils/hotkey.js":"platform/utils/hotkey.js","./tiptap.js":"platform/components/RichTextEditor/tiptap.js","../../utils/richTextClean.js":"platform/utils/richTextClean.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","../../utils/format.js":"platform/utils/format.js","plenix-platform/icons/plenix/add-column-left":"platform/dist/icons/plenix/add-column-left.js","plenix-platform/icons/plenix/add-column-right":"platform/dist/icons/plenix/add-column-right.js","plenix-platform/icons/plenix/add-row-above":"platform/dist/icons/plenix/add-row-above.js","plenix-platform/icons/plenix/add-row-below":"platform/dist/icons/plenix/add-row-below.js","plenix-platform/icons/plenix/checklist":"platform/dist/icons/plenix/checklist.js","plenix-platform/icons/plenix/code":"platform/dist/icons/plenix/code.js","plenix-platform/icons/plenix/code-blocks":"platform/dist/icons/plenix/code-blocks.js","plenix-platform/icons/plenix/ed-align-center":"platform/dist/icons/plenix/ed-align-center.js","plenix-platform/icons/plenix/ed-align-justify":"platform/dist/icons/plenix/ed-align-justify.js","plenix-platform/icons/plenix/ed-align-left":"platform/dist/icons/plenix/ed-align-left.js","plenix-platform/icons/plenix/ed-align-right":"platform/dist/icons/plenix/ed-align-right.js","plenix-platform/icons/plenix/ed-image":"platform/dist/icons/plenix/ed-image.js","plenix-platform/icons/plenix/ed-redo":"platform/dist/icons/plenix/ed-redo.js","plenix-platform/icons/plenix/ed-undo":"platform/dist/icons/plenix/ed-undo.js","plenix-platform/icons/plenix/format-bold":"platform/dist/icons/plenix/format-bold.js","plenix-platform/icons/plenix/format-clear":"platform/dist/icons/plenix/format-clear.js","plenix-platform/icons/plenix/format-color-text":"platform/dist/icons/plenix/format-color-text.js","plenix-platform/icons/plenix/format-italic":"platform/dist/icons/plenix/format-italic.js","plenix-platform/icons/plenix/format-list-numbered":"platform/dist/icons/plenix/format-list-numbered.js","plenix-platform/icons/plenix/format-quote":"platform/dist/icons/plenix/format-quote.js","plenix-platform/icons/plenix/format-strikethrough":"platform/dist/icons/plenix/format-strikethrough.js","plenix-platform/icons/plenix/format-underlined":"platform/dist/icons/plenix/format-underlined.js","plenix-platform/icons/plenix/horizontal-rule":"platform/dist/icons/plenix/horizontal-rule.js","plenix-platform/icons/plenix/ink-highlighter":"platform/dist/icons/plenix/ink-highlighter.js","plenix-platform/icons/plenix/link":"platform/dist/icons/plenix/link.js","plenix-platform/icons/plenix/list-bullets":"platform/dist/icons/plenix/list-bullets.js","plenix-platform/icons/plenix/more":"platform/dist/icons/plenix/more.js","plenix-platform/icons/plenix/subscript":"platform/dist/icons/plenix/subscript.js","plenix-platform/icons/plenix/superscript":"platform/dist/icons/plenix/superscript.js","plenix-platform/icons/plenix/table":"platform/dist/icons/plenix/table.js","plenix-platform/icons/plenix/trash":"platform/dist/icons/plenix/trash.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -55372,6 +55394,7 @@ var _hotkey = require("../../utils/hotkey.js");
 var _tiptap = require("./tiptap.js");
 var _richTextClean = require("../../utils/richTextClean.js");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _ReadOnly = require("../../providers/ReadOnly.jsx");
 var _format = require("../../utils/format.js");
 var _addColumnLeft = _interopRequireDefault(require("plenix-platform/icons/plenix/add-column-left"));
 var _addColumnRight = _interopRequireDefault(require("plenix-platform/icons/plenix/add-column-right"));
@@ -55833,7 +55856,7 @@ function RichTextEditor({
   markdownShortcuts = true,
   mentions,
   placeholder,
-  readOnly = false,
+  readOnly: readOnlyOwn,
   invalid,
   disabled = false,
   strings,
@@ -55841,6 +55864,7 @@ function RichTextEditor({
   id,
   ...rest
 }) {
+  const readOnly = (0, _ReadOnly.useReadOnly)(readOnlyOwn); // its own readOnly, else the nearest ReadOnly region's
   const t = (0, _LocaleProvider.useStrings)('richTextEditor', strings);
   // heading and tip are messages with {n}, {name} and {keys}; an app's own function in strings still works
   const headingText = n => typeof t.heading === 'function' ? t.heading(n) : String(t.heading).replace('{n}', () => (0, _format.formatNumber)(n));
@@ -57002,7 +57026,7 @@ const Calendar = exports.Calendar = /*#__PURE__*/_react.default.forwardRef(funct
   }, (_, i) => monthGrid(shiftMonth(shown, i), i))));
 });
   } },
-  "platform/components/DatePicker/DatePicker.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/overflow.js":"platform/utils/overflow.js","../Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","plenix-platform/icons/plenix/calendar":"platform/dist/icons/plenix/calendar.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/DatePicker/DatePicker.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/overflow.js":"platform/utils/overflow.js","../Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","plenix-platform/icons/plenix/calendar":"platform/dist/icons/plenix/calendar.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -57021,6 +57045,7 @@ var _overflow = require("../../utils/overflow.js");
 var _Calendar = require("../Calendar/Calendar.jsx");
 var _calendar = _interopRequireDefault(require("plenix-platform/icons/plenix/calendar"));
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _ReadOnly = require("../../providers/ReadOnly.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · DatePicker
    Summary: A field for a date that people type in their locale's numeric form or choose from a Calendar in a popover:
@@ -57050,6 +57075,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      timeZoneName: the time zone shown after the time ("short", default: "EDT"; false: none)
      invalid: the danger border and aria-invalid (a Field with an error sets it)
      disabled: turns the field and its button off
+     readOnly: shows the date and does not change it: the field is read-only and the calendar button is not shown; default the nearest ReadOnly region's (useReadOnly)
      required: handed to the date field (a Field sets it)
      id: handed to the date field, with aria-describedby (a Field sets both)
      locale: the locale of the typed form, the names and the first day of the week (default: the page's language)
@@ -57157,6 +57183,7 @@ const DatePicker = exports.DatePicker = /*#__PURE__*/_react.default.forwardRef(f
   timeZoneName = 'short',
   invalid,
   disabled,
+  readOnly: readOnlyOwn,
   required,
   id,
   'aria-describedby': describedBy,
@@ -57165,6 +57192,7 @@ const DatePicker = exports.DatePicker = /*#__PURE__*/_react.default.forwardRef(f
   className,
   ...rest
 }, ref) {
+  const locked = (0, _ReadOnly.useReadOnly)(readOnlyOwn); // its own readOnly, else the nearest ReadOnly region's: the value shows and nothing changes it (no calendar button)
   const t = (0, _LocaleProvider.useStrings)('datePicker', strings); // the locale's words (platform/i18n), with the strings prop on top
   const locale = (0, _format.numeralLocale)(localeProp || (0, _format.formatLocale)());
   const form = numericForm(locale);
@@ -57173,6 +57201,7 @@ const DatePicker = exports.DatePicker = /*#__PURE__*/_react.default.forwardRef(f
   const [own, setOwn] = _react.default.useState(defaultValue !== undefined ? defaultValue : null);
   const current = value !== undefined ? value : own;
   const commit = v => {
+    if (locked) return;
     if (value === undefined) setOwn(v);
     if (onChange) onChange(v);
   };
@@ -57202,6 +57231,7 @@ const DatePicker = exports.DatePicker = /*#__PURE__*/_react.default.forwardRef(f
   // typed text, read when the field is left or Enter is pressed
   const read = () => {
     typing.current = false;
+    if (locked) return;
     const s = text.trim();
     if (!s) {
       setBad(false);
@@ -57355,6 +57385,7 @@ const DatePicker = exports.DatePicker = /*#__PURE__*/_react.default.forwardRef(f
     "aria-describedby": describedBy,
     "aria-invalid": invalid || bad || undefined,
     disabled: disabled,
+    readOnly: locked || undefined,
     autoComplete: "off",
     onChange: e => {
       typing.current = true;
@@ -57365,12 +57396,12 @@ const DatePicker = exports.DatePicker = /*#__PURE__*/_react.default.forwardRef(f
     onKeyDown: e => {
       if (e.key === 'Enter') {
         read();
-      } else if (e.key === 'ArrowDown' && e.altKey) {
+      } else if (e.key === 'ArrowDown' && e.altKey && !locked) {
         e.preventDefault();
         if (!open) toggle();
       }
     }
-  })), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+  })), locked ? null : /*#__PURE__*/_react.default.createElement(_Button.Button, {
     variant: "ghost",
     size: "2xs",
     iconOnly: true,
@@ -57393,6 +57424,7 @@ const DatePicker = exports.DatePicker = /*#__PURE__*/_react.default.forwardRef(f
     "aria-label": t.time,
     value: timePart,
     disabled: disabled,
+    readOnly: locked || undefined,
     onChange: e => {
       const v = e.target.value;
       if (datePart) commit(datePart + 'T' + (v || defaultTime));
@@ -60597,7 +60629,7 @@ const TimeZoneSelect = exports.TimeZoneSelect = /*#__PURE__*/_react.default.forw
   }, t.empty)) : null);
 });
   } },
-  "platform/components/TreeSelect/TreeSelect.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/direction.js":"platform/utils/direction.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/overflow.js":"platform/utils/overflow.js","../SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/folder-open":"platform/dist/icons/plenix/folder-open.js","plenix-platform/icons/plenix/select-chevron":"platform/dist/icons/plenix/select-chevron.js","plenix-platform/icons/plenix/square-plus":"platform/dist/icons/plenix/square-plus.js","plenix-platform/icons/plenix/square-minus":"platform/dist/icons/plenix/square-minus.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/TreeSelect/TreeSelect.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/direction.js":"platform/utils/direction.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/overflow.js":"platform/utils/overflow.js","../SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","plenix-platform/icons/plenix/folder-open":"platform/dist/icons/plenix/folder-open.js","plenix-platform/icons/plenix/select-chevron":"platform/dist/icons/plenix/select-chevron.js","plenix-platform/icons/plenix/square-plus":"platform/dist/icons/plenix/square-plus.js","plenix-platform/icons/plenix/square-minus":"platform/dist/icons/plenix/square-minus.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -60613,6 +60645,7 @@ var _Tooltip = require("../Tooltip/Tooltip.jsx");
 var _overflow = require("../../utils/overflow.js");
 var _SearchField = require("../SearchField/SearchField.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _ReadOnly = require("../../providers/ReadOnly.jsx");
 var _folderOpen = _interopRequireDefault(require("plenix-platform/icons/plenix/folder-open"));
 var _selectChevron = _interopRequireDefault(require("plenix-platform/icons/plenix/select-chevron"));
 var _squarePlus = _interopRequireDefault(require("plenix-platform/icons/plenix/square-plus"));
@@ -60640,6 +60673,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      defaultExpanded: the ids of the items open when the tree first shows (default: the items above the chosen ones)
      invalid: shows the invalid state (a Field sets it)
      disabled: the field cannot be used
+     readOnly: shows the choice and does not open the tree, so nothing changes; default the nearest ReadOnly region's (useReadOnly)
      required: a choice is required (a Field sets it)
      strings: the words it shows and announces, for other languages: { placeholder: "Choose", search: "Search",
        choose: "Choose an item", more: "{list} and {n} more", empty: "No matches" }
@@ -60726,12 +60760,14 @@ function TreeSelect({
   width,
   invalid,
   disabled,
+  readOnly: readOnlyOwn,
   required,
   strings,
   id,
   className,
   ...rest
 }) {
+  const locked = (0, _ReadOnly.useReadOnly)(readOnlyOwn); // its own readOnly, else the nearest ReadOnly region's: the choice shows and the tree does not open
   const t = (0, _LocaleProvider.useStrings)('treeSelect', strings);
   const base = 'plx-ts' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
   const {
@@ -60895,6 +60931,7 @@ function TreeSelect({
     "aria-label": label,
     "aria-invalid": invalid || undefined,
     "aria-required": required || undefined,
+    "aria-readonly": locked || undefined,
     disabled: disabled,
     className: (0, _cx.cx)('plx-input', 'plx-tree-select__trigger', !names.length && 'is-empty')
   }, rest), /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
@@ -60918,6 +60955,7 @@ function TreeSelect({
     trigger: trigger,
     open: open,
     onOpenChange: o => {
+      if (locked && o) return;
       setOpen(o);
       if (!o) setText('');
     },
@@ -60954,7 +60992,7 @@ function TreeSelect({
   }, t.empty)))));
 }
   } },
-  "platform/components/TransferList/TransferList.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js","plenix-platform/icons/plenix/chevron-left":"platform/dist/icons/plenix/chevron-left.js","plenix-platform/icons/plenix/chevron-right":"platform/dist/icons/plenix/chevron-right.js","plenix-platform/icons/plenix/chevron-up":"platform/dist/icons/plenix/chevron-up.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/TransferList/TransferList.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js","plenix-platform/icons/plenix/chevron-left":"platform/dist/icons/plenix/chevron-left.js","plenix-platform/icons/plenix/chevron-right":"platform/dist/icons/plenix/chevron-right.js","plenix-platform/icons/plenix/chevron-up":"platform/dist/icons/plenix/chevron-up.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -60969,6 +61007,7 @@ var _Button = require("../Button/Button.jsx");
 var _SearchField = require("../SearchField/SearchField.jsx");
 var _useVirtualizer = require("../../hooks/useVirtualizer.js");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _ReadOnly = require("../../providers/ReadOnly.jsx");
 var _chevronDown = _interopRequireDefault(require("plenix-platform/icons/plenix/chevron-down"));
 var _chevronLeft = _interopRequireDefault(require("plenix-platform/icons/plenix/chevron-left"));
 var _chevronRight = _interopRequireDefault(require("plenix-platform/icons/plenix/chevron-right"));
@@ -60996,6 +61035,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        itself over 500 items)
      size: the lists' height: "sm" | "md" (default) | "lg"
      disabled: nothing can be checked or moved
+     readOnly: the lists show what is chosen and nothing moves or is reordered (the move buttons are off; items can still be checked to read them);
+       default the nearest ReadOnly region's (useReadOnly)
      strings: the words it shows and announces, for other languages: { source, target, add: "Add", addAll: "Add all",
        remove: "Remove", removeAll: "Remove all", up: "Move up", down: "Move down", search: "Search {title}", selectAll:
        "Check every item in {title}", count: "{checked} of {total} checked", moved: "{n} moved to {title}", empty:
@@ -61184,6 +61225,7 @@ function TransferList({
   virtualized,
   size = 'md',
   disabled = false,
+  readOnly: readOnlyOwn,
   strings,
   className
 }) {
@@ -61192,6 +61234,9 @@ function TransferList({
   }, {
     size: ['sm', 'md', 'lg']
   });
+  // read-only (its own readOnly, else the nearest ReadOnly region's): the lists show what is chosen and nothing moves or is reordered; checking items to read them still works
+  const locked = (0, _ReadOnly.useReadOnly)(readOnlyOwn),
+    frozen = disabled || locked;
   const t = (0, _LocaleProvider.useStrings)('transferList', strings);
   const id = 'plx-tl' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
   const title = Object.assign({
@@ -61211,7 +61256,7 @@ function TransferList({
   // moving keeps the moved items checked in their new list
   const add = (list, title2) => {
     const moving = list.filter(o => !o.disabled && !chosenSet.has(o.value)).map(o => o.value);
-    if (!moving.length || disabled) return;
+    if (!moving.length || frozen) return;
     emit(value.concat(moving));
     setLeft(s => {
       const n = new Set(s);
@@ -61226,7 +61271,7 @@ function TransferList({
   };
   const remove = (list, title2) => {
     const moving = list.filter(o => !o.disabled && chosenSet.has(o.value)).map(o => o.value);
-    if (!moving.length || disabled) return;
+    if (!moving.length || frozen) return;
     emit(value.filter(v => moving.indexOf(v) < 0));
     setRight(s => {
       const n = new Set(s);
@@ -61263,7 +61308,7 @@ function TransferList({
     iconOnly: true,
     icon: _chevronUp.default,
     label: t.up,
-    disabled: disabled || firstChecked <= 0,
+    disabled: frozen || firstChecked <= 0,
     onClick: () => shift(-1)
   }), /*#__PURE__*/_react.default.createElement(_Button.Button, {
     size: "xs",
@@ -61271,7 +61316,7 @@ function TransferList({
     iconOnly: true,
     icon: _chevronDown.default,
     label: t.down,
-    disabled: disabled || firstChecked < 0 || lastChecked >= value.length - 1,
+    disabled: frozen || firstChecked < 0 || lastChecked >= value.length - 1,
     onClick: () => shift(1)
   })) : null;
   return /*#__PURE__*/_react.default.createElement("div", {
@@ -61299,20 +61344,20 @@ function TransferList({
   }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
     size: "sm",
     iconEnd: _chevronRight.default,
-    disabled: disabled || !leftChecked.length,
+    disabled: frozen || !leftChecked.length,
     onClick: () => add(leftChecked, title.target)
   }, t.add), /*#__PURE__*/_react.default.createElement(_Button.Button, {
     size: "sm",
-    disabled: disabled || !source.some(o => !o.disabled),
+    disabled: frozen || !source.some(o => !o.disabled),
     onClick: () => add(source, title.target)
   }, t.addAll), /*#__PURE__*/_react.default.createElement(_Button.Button, {
     size: "sm",
     icon: _chevronLeft.default,
-    disabled: disabled || !rightChecked.length,
+    disabled: frozen || !rightChecked.length,
     onClick: () => remove(rightChecked, title.source)
   }, t.remove), /*#__PURE__*/_react.default.createElement(_Button.Button, {
     size: "sm",
-    disabled: disabled || !target.some(o => !o.disabled),
+    disabled: frozen || !target.some(o => !o.disabled),
     onClick: () => remove(target, title.source)
   }, t.removeAll)), /*#__PURE__*/_react.default.createElement(Side, {
     id: id + '-t',
@@ -86337,7 +86382,7 @@ function PresenceBar({
   }, t.view) : null))) : null);
 }
   } },
-  "platform/components/MentionInput/MentionInput.jsx": { deps: {"react":null,"../Input/Input.jsx":"platform/components/Input/Input.jsx","../RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","../EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/MentionInput/MentionInput.jsx": { deps: {"react":null,"../Input/Input.jsx":"platform/components/Input/Input.jsx","../RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","../EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -86351,6 +86396,7 @@ var _EntityPicker = require("../EntityPicker/EntityPicker.jsx");
 var _Button = require("../Button/Button.jsx");
 var _cx = require("../../utils/cx.js");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _ReadOnly = require("../../providers/ReadOnly.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · MentionInput
    Summary: Mention a directory entity in plain text with EntityPicker, or in rich text with the existing editor engine.
@@ -86377,12 +86423,13 @@ const MentionInput = exports.MentionInput = /*#__PURE__*/_react.default.forwardR
   loadOptions,
   onMention,
   disabled = false,
-  readOnly = false,
+  readOnly: readOnlyOwn,
   strings,
   editorStrings,
   pickerStrings,
   className
 }, ref) {
+  const readOnly = (0, _ReadOnly.useReadOnly)(readOnlyOwn); // its own readOnly, else the nearest ReadOnly region's
   const t = (0, _LocaleProvider.useStrings)('mentionInput', strings);
   const input = _react.default.useRef(null),
     picker = _react.default.useRef(null),

@@ -23,6 +23,8 @@
      label: the accessible name when there is no Field
      invalid: shows the invalid state
      disabled: the field cannot be used
+     readOnly: shows the value and does not change it: the list does not open, nothing is chosen, created or removed (the tags lose their remove button);
+       default the nearest ReadOnly region's (useReadOnly). CountrySelect passes it on
      emptyText: the text when nothing matches (default "No matches")
      loadOptions(text): loads the options for the typed text (async select): returns the options or a Promise of them;
        the list shows those options as they are (the loader filters), while they load a spinner and "Loading…"
@@ -64,6 +66,7 @@ import { Spinner } from '../Loading/Loading.jsx';
 import { announce } from '../../utils/announce.jsx';
 import { useFloating, FLOATING_ANCHOR } from '../../utils/floating.js';
 import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
+import { useReadOnly } from '../../providers/ReadOnly.jsx';
 import { isDataValue } from '../../utils/dataValue.js';
 import { formatNumber } from '../../utils/format.js';
 import { Icon } from '../Icon/Icon.jsx';
@@ -75,8 +78,9 @@ import SelectChevronIcon from 'plenix-platform/icons/plenix/select-chevron';
 const TOP_LAYER = FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 
 export const Combobox = React.forwardRef(function Combobox({ options = [], value, values, onChange, multiple = false, creatable = false, onCreate, width,
-  placeholder, label, invalid, disabled, emptyText, loadOptions, loadDelay = 300, minChars = 0, loading = false, marks, strings,
+  placeholder, label, invalid, disabled, readOnly: readOnlyOwn, emptyText, loadOptions, loadDelay = 300, minChars = 0, loading = false, marks, strings,
   className, id, size, data, ...rest }, ref) {
+  const locked = useReadOnly(readOnlyOwn);   // its own readOnly, else the nearest ReadOnly region's: the value shows; the list does not open, nothing is chosen, created or removed
   const t = useStrings('combobox', strings), words = t;
   const loc = useLocale();
   if (emptyText === undefined) emptyText = t.emptyText;
@@ -139,7 +143,7 @@ export const Combobox = React.forwardRef(function Combobox({ options = [], value
   }, [open]);
   React.useEffect(() => { setActive(0); }, [q, open]);
   const choose = (item) => {
-    if (!item) return;
+    if (!item || locked) return;
     if (item.kind === 'create') { if (onCreate) onCreate(text.trim()); setText(''); return; }
     const v = item.o.value;
     if (tags) { if (chosen.indexOf(v) < 0) onChange(chosen.concat([v])); setText(''); }
@@ -147,6 +151,7 @@ export const Combobox = React.forwardRef(function Combobox({ options = [], value
     else { onChange(v); setText(''); setOpen(false); }
   };
   const onKey = (e) => {
+    if (locked) { if (!/^(Tab|Escape|Shift|Control|Alt|Meta)$/.test(e.key) && !e.ctrlKey && !e.metaKey && !e.altKey) e.preventDefault(); return; }   // read-only: no key opens, chooses, creates or removes
     if (e.key === 'ArrowDown') { e.preventDefault(); if (!open) setOpen(true); else setActive((a) => Math.min(items.length - 1, a + 1)); }
     else if (e.key === 'ArrowUp') { e.preventDefault(); setActive((a) => Math.max(0, a - 1)); }
     else if (e.key === 'Enter') { if (open && items[active]) { e.preventDefault(); choose(items[active]); } }
@@ -162,15 +167,15 @@ export const Combobox = React.forwardRef(function Combobox({ options = [], value
   const cut = !!label1 && (open ? cutShut.current : cutNow) && !text.trim();
   const field = (
     <input ref={input} id={id} size={size === 'sm' || size === 'md' ? undefined : size} className="plx-combobox__input" role="combobox" aria-expanded={open} aria-controls={listId} aria-autocomplete="list"
-      aria-activedescendant={open && items[active] ? optId(active) : undefined} aria-label={label} disabled={disabled} autoComplete="off"
+      aria-activedescendant={open && items[active] ? optId(active) : undefined} aria-label={label} disabled={disabled} readOnly={locked || undefined} aria-readonly={locked || undefined} autoComplete="off"
       value={open || multiple ? text : (current ? current.label : '')} placeholder={multiple && chosen.length ? '' : (current && !open ? current.label : placeholder)}
-      onChange={(e) => { setText(e.target.value); setOpen(true); }} onFocus={() => setOpen(true)} onKeyDown={onKey} {...rest} />
+      onChange={(e) => { if (locked) return; setText(e.target.value); setOpen(true); }} onFocus={() => { if (!locked) setOpen(true); }} onKeyDown={onKey} {...rest} />
   );
   return (
     <div ref={wrap} className={cx('plx-combobox', size === 'sm' && 'plx-combobox--size-sm', width && 'plx-combobox--width-' + width, multiple && 'plx-combobox--multiple', marks && 'plx-combobox--marks', open && 'is-open', disabled && 'is-disabled', className)}>
       <div className={cx('plx-combobox__field', 'plx-input', asData && 'plx-input--data', disabled && 'is-disabled')} aria-invalid={invalid || undefined} onClick={() => { if (!disabled && input.current) input.current.focus(); }}>
         {multiple ? chosen.map((v) => { const o = optionOf(v); const t = o ? o.label : v;
-          return <Tag key={v} onRemove={() => onChange(chosen.filter((x) => x !== v))} removeLabel={words.removeItem.replace('{label}', t)}>{t}</Tag>; }) : null}
+          return <Tag key={v} onRemove={locked ? undefined : () => onChange(chosen.filter((x) => x !== v))} removeLabel={words.removeItem.replace('{label}', t)}>{t}</Tag>; }) : null}
         {multiple ? field : <Tooltip content={label1} disabled={!cut} describe={false} placement={open ? 'top' : 'bottom'} className="plx-combobox__tip">{field}</Tooltip>}
         <span className="plx-combobox__chevron" aria-hidden="true"><Icon icon={SelectChevronIcon} filled={false} /></span>
       </div>

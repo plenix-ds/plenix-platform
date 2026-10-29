@@ -98,6 +98,7 @@ import { hotkeyLabel, isMac } from '../../utils/hotkey.js';
 import { loadTiptap } from './tiptap.js';
 import { cleanRichText, RICH_TEXT_STYLE_PROPERTIES, SAFE_HREF } from '../../utils/richTextClean.js';
 import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
+import { useReadOnly } from '../../providers/ReadOnly.jsx';
 import { formatNumber } from '../../utils/format.js';
 import AddColumnLeftIcon from 'plenix-platform/icons/plenix/add-column-left';
 import AddColumnRightIcon from 'plenix-platform/icons/plenix/add-column-right';
@@ -280,8 +281,9 @@ function makeEditor(T, el, o) {
   });
 }
 
-export function RichTextEditor({ label, defaultValue = '', onChange, toolbar = 'basic', markdownShortcuts = true, mentions, placeholder, readOnly = false,
+export function RichTextEditor({ label, defaultValue = '', onChange, toolbar = 'basic', markdownShortcuts = true, mentions, placeholder, readOnly: readOnlyOwn,
   invalid, disabled = false, strings, className, id, ...rest }) {
+  const readOnly = useReadOnly(readOnlyOwn);   // its own readOnly, else the nearest ReadOnly region's
   const t = useStrings('richTextEditor', strings);
   // heading and tip are messages with {n}, {name} and {keys}; an app's own function in strings still works
   const headingText = (n) => (typeof t.heading === 'function' ? t.heading(n) : String(t.heading).replace('{n}', () => formatNumber(n)));

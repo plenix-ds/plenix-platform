@@ -26,6 +26,7 @@
      timeZoneName: the time zone shown after the time ("short", default: "EDT"; false: none)
      invalid: the danger border and aria-invalid (a Field with an error sets it)
      disabled: turns the field and its button off
+     readOnly: shows the date and does not change it: the field is read-only and the calendar button is not shown; default the nearest ReadOnly region's (useReadOnly)
      required: handed to the date field (a Field sets it)
      id: handed to the date field, with aria-describedby (a Field sets both)
      locale: the locale of the typed form, the names and the first day of the week (default: the page's language)
@@ -71,6 +72,7 @@ import { useTruncated } from '../../utils/overflow.js';
 import { Calendar, parseIsoDate, addDays, addMonths, todayIso } from '../Calendar/Calendar.jsx';
 import CalendarIcon from 'plenix-platform/icons/plenix/calendar';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useReadOnly } from '../../providers/ReadOnly.jsx';
 
 const DASH = ' – ';
 
@@ -101,15 +103,16 @@ const zoneOf = (locale, style) => {
 const monthBounds = (iso, n) => { const first = addMonths(iso.slice(0, 7) + '-01', n); return { start: first, end: addDays(addMonths(first, 1), -1) }; };
 
 export const DatePicker = React.forwardRef(function DatePicker({ mode = 'single', value, defaultValue, onChange, presets, months, min, max, width,
-  isDateDisabled, weekNumbers = false, defaultTime = '09:00', timeZoneName = 'short', invalid, disabled, required, id,
+  isDateDisabled, weekNumbers = false, defaultTime = '09:00', timeZoneName = 'short', invalid, disabled, readOnly: readOnlyOwn, required, id,
   'aria-describedby': describedBy, locale: localeProp, strings, className, ...rest }, ref) {
+  const locked = useReadOnly(readOnlyOwn);   // its own readOnly, else the nearest ReadOnly region's: the value shows and nothing changes it (no calendar button)
   const t = useStrings('datePicker', strings);   // the locale's words (platform/i18n), with the strings prop on top
   const locale = numeralLocale(localeProp || formatLocale());
   const form = numericForm(locale);
   const range = mode === 'range', dateTime = mode === 'date-time';
   const [own, setOwn] = React.useState(defaultValue !== undefined ? defaultValue : null);
   const current = value !== undefined ? value : own;
-  const commit = (v) => { if (value === undefined) setOwn(v); if (onChange) onChange(v); };
+  const commit = (v) => { if (locked) return; if (value === undefined) setOwn(v); if (onChange) onChange(v); };
   // the parts of the value: the date (or range) and the time
   const datePart = dateTime ? (current ? String(current).slice(0, 10) : null) : current;
   const timePart = dateTime && current ? String(current).slice(11, 16) : '';
@@ -129,6 +132,7 @@ export const DatePicker = React.forwardRef(function DatePicker({ mode = 'single'
   // typed text, read when the field is left or Enter is pressed
   const read = () => {
     typing.current = false;
+    if (locked) return;
     const s = text.trim();
     if (!s) { setBad(false); if (datePart) setDate(null); return; }
     if (range) {
@@ -184,19 +188,19 @@ export const DatePicker = React.forwardRef(function DatePicker({ mode = 'single'
         onMouseDown={(e) => { if (!disabled && input.current && e.target !== input.current && !e.target.closest('button')) { e.preventDefault(); input.current.focus(); } }}>
         <Tooltip content={text} disabled={!cut || !text || open} describe={false} className="plx-date-picker__tip">
           <input ref={input} id={id} type="text" className="plx-date-picker__input" value={text} placeholder={range ? form.hint + DASH + form.hint : form.hint} required={required}
-            aria-describedby={describedBy} aria-invalid={(invalid || bad) || undefined} disabled={disabled} autoComplete="off"
+            aria-describedby={describedBy} aria-invalid={(invalid || bad) || undefined} disabled={disabled} readOnly={locked || undefined} autoComplete="off"
             onChange={(e) => { typing.current = true; setText(e.target.value); if (bad) setBad(false); }}
             onBlur={read}
             onKeyDown={(e) => {
               if (e.key === 'Enter') { read(); }
-              else if (e.key === 'ArrowDown' && e.altKey) { e.preventDefault(); if (!open) toggle(); }
+              else if (e.key === 'ArrowDown' && e.altKey && !locked) { e.preventDefault(); if (!open) toggle(); }
             }} />
         </Tooltip>
-        <Button variant="ghost" size="2xs" iconOnly icon={CalendarIcon} className="plx-date-picker__button" label={t.open} expanded={open} aria-haspopup="dialog" disabled={disabled} onClick={toggle} />
+        {locked ? null : <Button variant="ghost" size="2xs" iconOnly icon={CalendarIcon} className="plx-date-picker__button" label={t.open} expanded={open} aria-haspopup="dialog" disabled={disabled} onClick={toggle} />}
       </div>
       {dateTime ? (
         <InputGroup data suffix={zone || undefined} disabled={disabled} invalid={invalid} className="plx-date-picker__time">
-          <Input type="time" data aria-label={t.time} value={timePart} disabled={disabled}
+          <Input type="time" data aria-label={t.time} value={timePart} disabled={disabled} readOnly={locked || undefined}
             onChange={(e) => { const v = e.target.value; if (datePart) commit(datePart + 'T' + (v || defaultTime)); }} />
         </InputGroup>
       ) : null}

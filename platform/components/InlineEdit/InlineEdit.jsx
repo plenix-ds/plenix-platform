@@ -19,6 +19,7 @@
      validate(next): returns an error message to keep the field open, or nothing when the value may be saved
      data: the data font, for technical values such as codes and file names (default false)
      disabled: shows the value without the edit affordance (default false)
+     readOnly: shows the value without the edit affordance and keeps it focusable; it does not open for editing; default the nearest ReadOnly region's (useReadOnly)
      readView(value): draws the read view's content (default: the text, or the option's label)
      strings: the words it shows and announces, for other languages: { edit: "edit", save: "Save", cancel: "Cancel",
        empty: "Add a value", saved: "Saved", failed: "The change could not be saved" }
@@ -43,12 +44,14 @@ import { Button } from '../Button/Button.jsx';
 import { Icon } from '../Icon/Icon.jsx';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useReadOnly } from '../../providers/ReadOnly.jsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 import CloseIcon from 'plenix-platform/icons/plenix/close';
 import PencilIcon from 'plenix-platform/icons/plenix/pencil';
 
 export function InlineEdit({ label, value = '', onConfirm, onCancel, type = 'text', options = [], placeholder, confirmButtons = false, validate,
-  data = false, disabled = false, readView, strings, className, ...rest }) {
+  data = false, disabled = false, readOnly: readOnlyOwn, readView, strings, className, ...rest }) {
+  const locked = useReadOnly(readOnlyOwn);   // its own readOnly, else the nearest ReadOnly region's: the value shows, stays focusable, and does not open for editing
   const t = useStrings('inlineEdit', strings);
   const id = useUid('plx-inline-edit');
   const [editing, setEditing] = React.useState(false);
@@ -65,7 +68,7 @@ export function InlineEdit({ label, value = '', onConfirm, onCancel, type = 'tex
     if (!editing && refocus.current && read.current) { refocus.current = false; read.current.focus(); }
   }, [editing, type]);
 
-  const open = () => { if (disabled) return; setDraft(value); setError(null); setEditing(true); };
+  const open = () => { if (disabled || locked) return; setDraft(value); setError(null); setEditing(true); };
   const close = (back) => { refocus.current = back; setEditing(false); setSaving(false); };
   const cancel = (back) => { setDraft(value); setError(null); close(back); if (onCancel) onCancel(); };
   const save = (back) => {
@@ -92,8 +95,8 @@ export function InlineEdit({ label, value = '', onConfirm, onCancel, type = 'tex
         <button ref={read} type="button" className={cx('plx-inline-edit__read', empty && 'is-empty')} onClick={open} disabled={disabled}>
           <VisuallyHidden>{label + ', '}</VisuallyHidden>
           <span className="plx-inline-edit__value">{empty ? hint : (readView ? readView(value) : shownValue)}</span>
-          {disabled ? null : <VisuallyHidden>{', ' + t.edit}</VisuallyHidden>}
-          {disabled ? null : <span className="plx-inline-edit__hint" aria-hidden="true"><Icon name={PencilIcon} /></span>}
+          {disabled || locked ? null : <VisuallyHidden>{', ' + t.edit}</VisuallyHidden>}
+          {disabled || locked ? null : <span className="plx-inline-edit__hint" aria-hidden="true"><Icon name={PencilIcon} /></span>}
         </button>
       </div>
     );
