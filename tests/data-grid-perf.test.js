@@ -3,10 +3,11 @@
    Usage: node tests/data-grid-perf.test.js; PERF_BASELINE=1 reports before-change numbers without asserting targets.
    Props: PERF_REPORT optional JSON path; TEST_PORT optional isolated server port.
    Behavior: Warms the engine, then times 8-column and 18-column/14-hidden cases with/without storageKey views.
-   Notes: getBoundingClientRect calls are geometry reads, not proof of forced browser layouts. Skips without DS/Chrome. */
+   Notes: getBoundingClientRect calls are geometry reads, not proof of forced browser layouts. Skips without Chrome. It draws its own
+   host page (platform.css and platform.js of this checkout) and never opens the design spec: it no longer skips when the spec is absent (#338). */
 const fs=require('fs'),path=require('path'),ROOT=path.resolve(__dirname,'..');
 const chrome=process.env.CHROME_PATH||['C:/Program Files/Google/Chrome/Application/chrome.exe','/usr/bin/google-chrome','/usr/bin/chromium'].find(p=>fs.existsSync(p));
-if(!fs.existsSync(path.join(ROOT,'platform/design-system/index.html'))||!chrome||!fs.existsSync(chrome)){console.log('DATA_GRID_PERF_SKIP design system or Chrome unavailable');process.exit(0);}
+if(!chrome||!fs.existsSync(chrome)){console.log('DATA_GRID_PERF_SKIP Chrome unavailable');process.exit(0);}
 process.env.CHROME_PATH=chrome;
 const NEXT=process.env.DT_ENGINE==='next';
 const {serve,launch}=require('./lib'),PORT=+process.env.TEST_PORT||9250;
