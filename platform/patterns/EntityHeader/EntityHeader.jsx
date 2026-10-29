@@ -111,6 +111,9 @@ import { AvatarGroup } from '../../components/AvatarGroup/AvatarGroup.jsx';
 import { ProgressBar } from '../../components/ProgressBar/ProgressBar.jsx';
 import { Tag } from '../../components/Tag/Tag.jsx';
 import { Link } from '../../components/Link/Link.jsx';
+import AddIcon from 'plenix-platform/icons/plenix/add';
+import DocTextIcon from 'plenix-platform/icons/plenix/doc-text';
+import MoreIcon from 'plenix-platform/icons/plenix/more';
 
 const HUES = ['blue', 'green', 'purple', 'red', 'brown', 'gray', 'surface'];
 const TONES = ['neutral', 'success', 'active', 'waiting', 'action-required', 'negative'];
@@ -221,8 +224,8 @@ function Fact({ f, iconOnly }) {
         <dd className="plx-entity-header__fact-line">
           <span className="plx-entity-header__fact-value plx-entity-header__fact-value--count">{f.data ? <span className="plx-entity-header__count-data">{f.value}</span> : f.value}</span>
           {iconOnly
-            ? <Button size="xs" variant="secondary" iconOnly icon={a.icon || 'add'} label={a.name || a.label} title={a.label} disabled={a.disabled} onClick={a.onClick} />
-            : <Button size="xs" variant="secondary" icon={a.icon || 'add'} aria-label={a.name} disabled={a.disabled} onClick={a.onClick}>{a.label}</Button>}
+            ? <Button size="xs" variant="secondary" iconOnly icon={a.icon || AddIcon} label={a.name || a.label} title={a.label} disabled={a.disabled} onClick={a.onClick} />
+            : <Button size="xs" variant="secondary" icon={a.icon || AddIcon} aria-label={a.name} disabled={a.disabled} onClick={a.onClick}>{a.label}</Button>}
         </dd>
       </div>
     );
@@ -285,7 +288,7 @@ function Actions({ actions, moreActions, size, strings, labels = 'icon', layout 
   const hidden = list.slice(fit).concat(folded);
   const more = (
     <span key="plx-more" data-plx-overflow-more="" className={cx('plx-entity-header__action', column && 'plx-entity-header__action--stretch')}>
-      <Menu label={strings.more} placement="bottom-end" trigger={text ? <Button size={size} icon="more" variant="secondary">{strings.more}</Button> : <Button size={size} iconOnly icon="more" label={strings.more} title={strings.more} variant="secondary" />}>
+      <Menu label={strings.more} placement="bottom-end" trigger={text ? <Button size={size} icon={MoreIcon} variant="secondary">{strings.more}</Button> : <Button size={size} iconOnly icon={MoreIcon} label={strings.more} title={strings.more} variant="secondary" />}>
         {hidden.map((a) => <MenuItem key={a.label} icon={a.icon} disabled={a.disabled} onSelect={a.onClick}>{a.label}</MenuItem>)}
         {extra.map((a) => <MenuItem key={a.label} icon={a.icon} danger={a.danger} onSelect={a.onSelect}>{a.label}</MenuItem>)}
       </Menu>
@@ -328,7 +331,7 @@ function Streamlined({ section, H, title, sub, media, status, badges, summary, p
     <header className={cx('plx-entity-header', 'plx-entity-header--streamlined', section && 'plx-entity-header--section', view === 'compact' && 'plx-entity-header--compact', className)}>
       <div className="plx-entity-header__top">
         <div className="plx-entity-header__start">
-          {media === null ? null : <Media media={media || { icon: 'doc-text' }} section={section} layout={section ? 'top-small' : 'streamlined'} />}
+          {media === null ? null : <Media media={media || { icon: DocTextIcon }} section={section} layout={section ? 'top-small' : 'streamlined'} />}
           <div className="plx-entity-header__head">
             <div className="plx-entity-header__title-row">
               <H className="plx-entity-header__title">{title}</H>
@@ -412,7 +415,7 @@ function Structured({ kind = 'page', layout = 'top-small', title, subtitle, medi
   const fitKey = (facts || []).map((f) => (f && (f.label || '') + (f.value || '') + (f.action ? f.action.label : ''))).join('|') + '§' + (states ? states.value + (states.options || []).map((o) => o.label).join(',') : '');
   const step = useBarFit(root, fitKey, fitted ? 2 : 0, 0, '.plx-entity-header__details');
   // top row: the media beside the title; column and edge: the media in a column of its own, before the text
-  const mediaEl = <Media media={media || { icon: 'doc-text' }} section={section} layout={lay} />;
+  const mediaEl = <Media media={media || { icon: DocTextIcon }} section={section} layout={lay} />;
   const lead = (
     <div className="plx-entity-header__lead">
       <div className="plx-entity-header__heading">

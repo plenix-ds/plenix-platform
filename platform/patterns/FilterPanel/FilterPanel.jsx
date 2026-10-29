@@ -42,6 +42,9 @@ import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
 import { PanelTrigger, PanelHead, Pick, MultiPick, useReorder, fill } from '../CommandBar/panel-parts.jsx';
 import { KIND_ICONS, OPERATORS, WITHIN, fieldOf, kindOf, optionsOf, conditionsOf, newCondition, nextId, fieldWords } from '../../utils/fields.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import FilterIcon from 'plenix-platform/icons/plenix/filter';
+import PlusIcon from 'plenix-platform/icons/plenix/plus';
+import TrashIcon from 'plenix-platform/icons/plenix/trash';
 
 const fieldOption = (f) => ({ value: f.value, label: f.label, icon: KIND_ICONS[kindOf(f)] });
 
@@ -67,7 +70,7 @@ function ConditionRows({ fields, node, setNode, nested, t }) {
     : i === 1 ? <Pick label={t.join} size="join" value={node.join} options={[{ value: 'and', label: t.and }, { value: 'or', label: t.or }]} onChange={(v) => setNode(Object.assign({}, node, { join: v }))} />
     : <Text variant="secondary" className="plx-find-panel__join">{node.join === 'or' ? t.or : t.and}</Text>);
   const remove = (i, what) => (
-    <Tooltip content={fill(t.remove, { what })}><Button variant="ghost" icon="trash" iconOnly label={fill(t.remove, { what })} onClick={() => setItems(items.filter((_, j) => j !== i))} /></Tooltip>
+    <Tooltip content={fill(t.remove, { what })}><Button variant="ghost" icon={TrashIcon} iconOnly label={fill(t.remove, { what })} onClick={() => setItems(items.filter((_, j) => j !== i))} /></Tooltip>
   );
   return (
     <div className={cx('plx-find-panel__rows', 'plx-find-panel__rows--framed', nested && 'plx-find-panel__rows--nested')} ref={ro.box}>
@@ -79,7 +82,7 @@ function ConditionRows({ fields, node, setNode, nested, t }) {
               {join(i)}
               <div className="plx-find-panel__group">
                 <ConditionRows fields={fields} node={x} setNode={(n) => put(i, n)} nested t={t} />
-                <div className="plx-find-panel__add"><Button size="sm" variant="ghost" icon="plus" onClick={() => put(i, { items: x.items.concat(newCondition(fields[0])) })}>{t.addCondition}</Button></div>
+                <div className="plx-find-panel__add"><Button size="sm" variant="ghost" icon={PlusIcon} onClick={() => put(i, { items: x.items.concat(newCondition(fields[0])) })}>{t.addCondition}</Button></div>
               </div>
               {remove(i, t.group)}
               {ro.handle(i, t.group)}
@@ -121,10 +124,10 @@ export function FilterPanel({ fields = [], value, onChange, inline = false, stri
       <PanelHead title={t.label} info={t.info} sub={t.sub} />
       <ConditionRows fields={fields} node={node} setNode={onChange} t={t} />
       <div className="plx-find-panel__add">
-        <Button size="sm" variant="ghost" icon="plus" disabled={!fields.length} onClick={() => add(newCondition(fields[0]))}>{t.addCondition}</Button>
-        <Button size="sm" variant="ghost" icon="plus" disabled={!fields.length} onClick={() => add({ id: nextId(), group: true, join: 'and', items: [newCondition(fields[0])] })}>{t.addGroup}</Button>
+        <Button size="sm" variant="ghost" icon={PlusIcon} disabled={!fields.length} onClick={() => add(newCondition(fields[0]))}>{t.addCondition}</Button>
+        <Button size="sm" variant="ghost" icon={PlusIcon} disabled={!fields.length} onClick={() => add({ id: nextId(), group: true, join: 'and', items: [newCondition(fields[0])] })}>{t.addGroup}</Button>
       </div>
     </div>
   );
-  return <PanelTrigger icon="filter" label={t.label} count={n} inline={inline} open={open} onOpenChange={onOpenChange}>{body}</PanelTrigger>;
+  return <PanelTrigger icon={FilterIcon} label={t.label} count={n} inline={inline} open={open} onOpenChange={onOpenChange}>{body}</PanelTrigger>;
 }

@@ -24,6 +24,8 @@ import { PermissionSummary } from '../PermissionSummary/PermissionSummary.jsx';
 import { useUnsavedGuard } from '../../providers/UnsavedGuard.jsx';
 import { cx } from '../../utils/cx.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import PersonIcon from 'plenix-platform/icons/plenix/person';
+import SettingsPermissionsIcon from 'plenix-platform/icons/plenix/settings-permissions';
 
 export function PermissionsEditor({ subjects = [], capabilities = [], value = {}, mode = 'roles', onChange, onSave, readOnly = false, strings, className }) {
   const t = useStrings('permissionsEditor', strings);
@@ -49,7 +51,7 @@ export function PermissionsEditor({ subjects = [], capabilities = [], value = {}
   return <Stack className={cx('plx-permissions-editor', className)} aria-busy={busy}>
     <DataGrid label={t.label} data={capabilities} columns={columns} index="id" headerMenu={false} />
     <Field label={t.subject}><Select value={subject?.id || ''} options={subjects.map((s) => ({ value: s.id, label: s.label }))} onChange={(e) => setSelected(e.target.value)} /></Field>
-    {subject ? <PermissionSummary access={subject.label} icon={mode === 'people' ? 'person' : 'settings-permissions'}
+    {subject ? <PermissionSummary access={subject.label} icon={mode === 'people' ? PersonIcon : SettingsPermissionsIcon}
       can={capabilities.filter((c) => (value[subject.id] || []).includes(c.id)).map((c) => c.label)}
       cannot={capabilities.filter((c) => !(value[subject.id] || []).includes(c.id)).map((c) => c.label)} live /> : null}
     {error ? <Notice tone="danger">{error}</Notice> : null}

@@ -22,6 +22,8 @@ const cases = JSON.parse(process.argv[2] || '{}');   // { label: "P.X props as J
       'StatusDot presence (group 3)': drawn(h(P.StatusDot, { tone: 'online', size: 'lg', icon: true })),
       'Thumbnail default (group 3)': drawn(h(P.Thumbnail, {})),
       'Autosave (group 3)': drawn(h(P.Autosave, { state: 'saved' })),
+      'PermissionSummary default (group 4)': drawn(h(P.PermissionSummary, { access: 'Only you' })),
+      'FeatureCard (group 4)': drawn(h(P.FeatureCard, { title: 'T', description: 'd', onOpen: () => {} })),
       'Button icon="add" (a name, not converted)': drawn(h(P.Button, { icon: 'add' }, 'Add')),
     };
   }), null, 1)); await b.close();

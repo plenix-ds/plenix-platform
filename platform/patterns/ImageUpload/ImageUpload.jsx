@@ -59,6 +59,9 @@ import { Notice } from '../../components/Notice/Notice.jsx';
 import { announce } from '../../utils/announce.jsx';
 import { formatBytes, formatNumber } from '../../utils/format.js';
 import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
+import EdCropIcon from 'plenix-platform/icons/plenix/ed-crop';
+import TrashIcon from 'plenix-platform/icons/plenix/trash';
+import UploadIcon from 'plenix-platform/icons/plenix/upload';
 
 const RATIOS = { '1-1': 1, '4-3': 4 / 3, '3-2': 3 / 2, '16-9': 16 / 9, '21-9': 21 / 9, '3-4': 3 / 4, '9-16': 9 / 16 };
 const fill = (s, map) => String(s).replace(/\{(\w+)\}/g, (m, k) => (map[k] !== undefined ? map[k] : m));
@@ -125,7 +128,7 @@ export function ImageCrop({ src, ratio = '1-1', output = 1200, onApply, onCancel
       <Slider className="plx-image-crop__zoom" label={t.zoom} min={100} max={300} step={10} unit="%" value={zoom} onChange={setZoom} />
       <div className="plx-image-crop__actions">
         {onCancel ? <Button onClick={onCancel}>{t.cancel}</Button> : null}
-        <Button variant="primary" icon="ed-crop" onClick={apply}>{t.apply}</Button>
+        <Button variant="primary" icon={EdCropIcon} onClick={apply}>{t.apply}</Button>
       </div>
     </div>
   );
@@ -212,7 +215,7 @@ export function ImageUpload({ value = [], onChange, multiple = false, max, ratio
               </div>
               <div className="plx-image-upload__actions">
                 {!multiple && !disabled ? picker(t.replace) : null}
-                <Button ref={(el) => { removes.current[im.id] = el; }} variant="ghost" size="xs" icon="trash" disabled={disabled} label={fill(t.remove, { name: im.name })}
+                <Button ref={(el) => { removes.current[im.id] = el; }} variant="ghost" size="xs" icon={TrashIcon} disabled={disabled} label={fill(t.remove, { name: im.name })}
                   iconOnly={multiple} onClick={() => remove(i)}>{multiple ? undefined : fill(t.remove, { name: '' }).trim()}</Button>
               </div>
               {altText ? <Field className="plx-image-upload__alt" label={t.alt} description={t.altHint}>
@@ -223,7 +226,7 @@ export function ImageUpload({ value = [], onChange, multiple = false, max, ratio
       ) : null}
       {showZone ? (
         <DropZone className="plx-image-upload__zone" active={over} {...dropProps}>
-          <span className="plx-image-upload__zone-icon" aria-hidden="true"><Icon name="upload" size="lg" /></span>
+          <span className="plx-image-upload__zone-icon" aria-hidden="true"><Icon name={UploadIcon} size="lg" /></span>
           <span className="plx-image-upload__zone-text">{multiple ? t.dropMany : t.drop}</span>
           {picker(multiple ? t.chooseMany : t.choose)}
           {description ? <span className="plx-image-upload__limits">{description}</span> : null}

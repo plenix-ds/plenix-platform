@@ -39,6 +39,7 @@ import { Link } from '../../components/Link/Link.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { VisuallyHidden } from '../../components/VisuallyHidden/VisuallyHidden.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import SettingsUsersIcon from 'plenix-platform/icons/plenix/settings-users';
 
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 
@@ -57,7 +58,7 @@ export function PeopleGroup({ name, kind = 'team', description, members, count, 
   return (
     <div className={cx('plx-people-group', 'plx-people-group--' + (group ? 'group' : 'team'), className)} {...rest}>
       <span className="plx-people-group__media" aria-hidden="true">
-        {group ? <IconTile icon="settings-users" size="md" /> : <Avatar name={name} src={src} size="lg" />}
+        {group ? <IconTile icon={SettingsUsersIcon} size="md" /> : <Avatar name={name} src={src} size="lg" />}
       </span>
       <span className="plx-people-group__body">
         <span className="plx-people-group__name" title={name}>
