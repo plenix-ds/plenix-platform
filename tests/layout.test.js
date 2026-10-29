@@ -201,6 +201,26 @@ const html = '<!doctype html><html lang="en" data-plx-theme="default" data-plx-m
     const o = host.querySelector('[role="separator"]').getAttribute('aria-orientation'); root.unmount(); host.remove(); return o;
   });
   check('SplitView: a narrow split view has the stacked divider from its first frame #237', firstFrame === 'horizontal', firstFrame);
+  // issue 560: stacked, one full-width bar between the panels, Up / Down / Home / End, the second panel keeps its minimum
+  // height, and back side by side no stacked bar remains
+  const stackedBar = await page.evaluate(async () => {
+    const h = React.createElement, P = window.Plenix, wait = (n) => new Promise((r) => setTimeout(r, n));
+    const host = document.createElement('div'); host.style.cssText = 'display:flex;flex-direction:column;inline-size:700px;block-size:640px'; document.body.appendChild(host);
+    const root = ReactDOM.createRoot(host); root.render(h(P.SplitView, { label: 'Split', first: h('div', null, 'List'), second: h('div', null, 'Item') })); await wait(300);
+    const bars = () => host.querySelectorAll('.plx-resizable__edge--divider'), sep = bars()[0], first = host.querySelector('.plx-split-view__first');
+    const panels = host.querySelector('.plx-split-view__panels').getBoundingClientRect(), bar = sep.getBoundingClientRect(), top = first.getBoundingClientRect();
+    const key = async (k) => { sep.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true })); await wait(60); return Number(sep.getAttribute('aria-valuenow')); };
+    const out = { count: bars().length, orientation: sep.getAttribute('aria-orientation'), full: Math.round(bar.width) === Math.round(panels.width), between: Math.round(bar.top) === Math.round(top.bottom) };
+    const start = Number(sep.getAttribute('aria-valuenow')); out.down = (await key('ArrowDown')) > start; out.up = (await key('ArrowUp')) === start;
+    out.home = (await key('Home')) === Number(sep.getAttribute('aria-valuemin')); out.end = (await key('End')) === Number(sep.getAttribute('aria-valuemax'));
+    host.style.blockSize = '420px'; await wait(400); await key('End');
+    out.second = Math.round(host.querySelector('.plx-split-view__second').getBoundingClientRect().height);
+    host.style.inlineSize = '1000px'; await wait(400);
+    out.wide = { count: bars().length, orientation: bars()[0].getAttribute('aria-orientation') };
+    root.unmount(); host.remove(); return out;
+  });
+  check('SplitView: stacked, one full-width horizontal bar between the panels, keyboard to its limits, the second panel keeps 160px; side by side again no stacked bar #560',
+    stackedBar.count === 1 && stackedBar.orientation === 'horizontal' && stackedBar.full && stackedBar.between && stackedBar.down && stackedBar.up && stackedBar.home && stackedBar.end && stackedBar.second >= 160 && stackedBar.wide.count === 1 && stackedBar.wide.orientation === 'vertical', JSON.stringify(stackedBar));
   // #288: screen-reader texts at the end of the page (the announcer, a VisuallyHidden text) take no room, so a page that
   // fits the window does not scroll
   const quiet = await page.evaluate(async () => {
