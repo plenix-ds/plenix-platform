@@ -89225,7 +89225,7 @@ function ReadingPane({
   }, empty) : null)));
 }
   } },
-  "platform/templates/templates/Templates.jsx": { deps: {"react":null,"../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","../../patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","../../patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","../../patterns/FormFlow/FormFlow.jsx":"platform/patterns/FormFlow/FormFlow.jsx","../../patterns/Auth/Auth.jsx":"platform/patterns/Auth/Auth.jsx","../../patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","../../components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../patterns/SplitView/SplitView.jsx":"platform/patterns/SplitView/SplitView.jsx","plenix-platform/icons/plenix/folder":"platform/dist/icons/plenix/folder.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/templates/templates/Templates.jsx": { deps: {"react":null,"../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","../../patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","../../patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","../../patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","../../patterns/FormFlow/FormFlow.jsx":"platform/patterns/FormFlow/FormFlow.jsx","../../patterns/Auth/Auth.jsx":"platform/patterns/Auth/Auth.jsx","../../patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","../../components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../patterns/SplitView/SplitView.jsx":"platform/patterns/SplitView/SplitView.jsx","plenix-platform/icons/plenix/folder":"platform/dist/icons/plenix/folder.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -89248,6 +89248,7 @@ exports.SinglePaneWorkspace = SinglePaneWorkspace;
 exports.SplitWorkspace = SplitWorkspace;
 var _react = _interopRequireDefault(require("react"));
 var _AppShell = require("../../patterns/AppShell/AppShell.jsx");
+var _SidePanel = require("../../patterns/SidePanel/SidePanel.jsx");
 var _RecordPage = require("../../patterns/RecordPage/RecordPage.jsx");
 var _SecondaryPane = require("../../patterns/SecondaryPane/SecondaryPane.jsx");
 var _FeatureCard = require("../../patterns/FeatureCard/FeatureCard.jsx");
@@ -89271,6 +89272,11 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      title: page title; description: supporting text; actions: existing Platform actions; children: page content.
      header, sideNav, footer: AppShell slots; mainId: unique skip-link target when embedded.
      rows, columns: DataGrid data; items: feature cards; onOpen: card action; empty: custom empty state.
+     ListingPage (the canonical full-room list, issue 522): label: the grid's name (default: the title); toolbar: a
+       CommandBar above the grid; grid: more DataGrid props (selected, onRowClick, rowMenu, selectable, …); detail: the
+       chosen record, in a SidePanel beside the list (detailTitle; onDetailClose runs when it is closed). The grid fills
+       the room left below the toolbar and scrolls inside (mode "fill", virtual rows); no page controls unless grid.mode
+       asks for them (docs/integration/data-grid.md, "The page shape").
      initialValue, sessionKey, validate, onSubmit, onSuccess, onCancel: FormFlow contract; fields: render function.
      pane, paneTitle, detailOpen, onBack: SecondaryPane master-detail contract.
      SplitWorkspace: the list and the chosen item in a SplitView (02 Page structures › Split workspace): rows and columns
@@ -89349,21 +89355,56 @@ function NoRecords({
     title: t.empty
   }, t.emptyDescription);
 }
+// the full-room list (issue 522, the canonical DataGrid page): the toolbar, then the grid filling the room left and
+// scrolling inside (fill, virtual rows, no page controls); the chosen record's detail in a SidePanel beside it
 function ListingPage({
   rows = [],
   columns = [],
   empty,
   strings,
   children,
+  label,
+  toolbar,
+  grid,
+  detail,
+  detailTitle,
+  onDetailClose,
   ...rest
 }) {
-  return /*#__PURE__*/_react.default.createElement(Frame, rest, children, rows.length ? /*#__PURE__*/_react.default.createElement(_DataGrid.DataGrid, {
+  const id = _react.default.useId();
+  const t = {
+    ...WORDS,
+    ...strings
+  };
+  const list = rows.length ? /*#__PURE__*/_react.default.createElement(_DataGrid.DataGrid, _extends({
+    label: label || rest.title || t.pane,
     data: rows,
     columns: columns
-  }) : /*#__PURE__*/_react.default.createElement(NoRecords, {
+  }, grid)) : /*#__PURE__*/_react.default.createElement(NoRecords, {
     empty: empty,
     strings: strings
-  }));
+  });
+  if (!detail) return /*#__PURE__*/_react.default.createElement(Frame, rest, children, toolbar, list);
+  return /*#__PURE__*/_react.default.createElement(_AppShell.AppShell, {
+    page: rest.page || 'workspace',
+    header: rest.header,
+    sideNav: rest.sideNav,
+    footer: rest.footer,
+    mainId: rest.mainId || 'plx-template-' + id
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-page-panes"
+  }, /*#__PURE__*/_react.default.createElement(_AppShell.PageContent, null, /*#__PURE__*/_react.default.createElement(_RecordPage.RecordPage, {
+    header: rest.title ? /*#__PURE__*/_react.default.createElement(_RecordPage.RecordPage.Header, {
+      title: rest.title,
+      description: rest.description,
+      actions: rest.actions
+    }) : null
+  }, children, toolbar, list)), /*#__PURE__*/_react.default.createElement(_SidePanel.SidePanel, {
+    title: detailTitle || t.detail,
+    onOpenChange: open => {
+      if (!open && onDetailClose) onDetailClose();
+    }
+  }, detail)));
 }
 function ContentManagementPage({
   items = [],
