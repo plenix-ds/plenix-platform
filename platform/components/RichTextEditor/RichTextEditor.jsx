@@ -151,10 +151,10 @@ const keysOf = (name) => (typeof KEYS[name] === 'function' ? KEYS[name]() : KEYS
 const keysAria = (binding) => binding.replace('Mod', isMac() ? 'Meta' : 'Control');
 
 // the person's fonts and sizes to choose from (content, not interface: any family or size can be typed in too)
-export const RICH_TEXT_FONTS = [['DM Sans', '"DM Sans", sans-serif'], ['Reddit Mono', '"Reddit Mono", monospace'], ['Arial', 'Arial, sans-serif'],
+const RICH_TEXT_FONTS = [['DM Sans', '"DM Sans", sans-serif'], ['Reddit Mono', '"Reddit Mono", monospace'], ['Arial', 'Arial, sans-serif'],
   ['Helvetica', 'Helvetica, Arial, sans-serif'], ['Verdana', 'Verdana, sans-serif'], ['Tahoma', 'Tahoma, sans-serif'], ['Trebuchet MS', '"Trebuchet MS", sans-serif'],
   ['Georgia', 'Georgia, serif'], ['Times New Roman', '"Times New Roman", serif'], ['Garamond', 'Garamond, serif'], ['Courier New', '"Courier New", monospace']];
-export const RICH_TEXT_SIZES = ['12px', '14px', '16px', '18px', '20px', '24px', '28px', '32px', '36px', '48px'];
+const RICH_TEXT_SIZES = ['12px', '14px', '16px', '18px', '20px', '24px', '28px', '32px', '36px', '48px'];
 
 // the mention list goes to the top layer only where the browser also places it by anchor (as Menu and Popover): without
 // anchor positioning it stays inline, beside the text, where useFloating's inline placement works (RedSave P-48)

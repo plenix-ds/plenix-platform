@@ -272,7 +272,7 @@ AppHeader.Item = React.forwardRef(function AppHeaderItem({ icon: iconProp, label
 });
 
 // the sign-in proxy's sign-out (Authentik's forward-auth outpost on every Plenix host): ends the session, then signs in again
-export const SIGN_OUT = '/outpost.goauthentik.io/sign_out';
+const SIGN_OUT = '/outpost.goauthentik.io/sign_out';
 AppHeader.Account = function AppHeaderAccount({ name: nameProp, email: emailProp, src: srcProp, placement = 'header', current, myAccount = {}, settings = {}, appSettings = {}, signOut = { href: SIGN_OUT }, density = false, extra, strings }) {
   const t = Object.assign({}, ACCOUNT_STRINGS, strings);
   const fill = (text, values) => String(text).replace(/\{(\w+)\}/g, (m, k) => (values[k] != null ? values[k] : m));

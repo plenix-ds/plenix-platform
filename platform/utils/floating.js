@@ -37,7 +37,7 @@ const release = (i) => { if (i) taken[i] = false; };
 // what the browser can do, checked once
 const supports = (decl) => typeof CSS !== 'undefined' && !!CSS.supports && CSS.supports(decl);
 export const FLOATING_ANCHOR = supports('anchor-name: --plx-a');
-export const FLOATING_POINTER = supports('inset-block-start: attr(data-plx-floating-y px, 0px)');
+const FLOATING_POINTER = supports('inset-block-start: attr(data-plx-floating-y px, 0px)');
 
 export const PLACEMENTS = ['top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'start', 'start-top', 'start-bottom', 'end', 'end-top', 'end-bottom'];
 const OFFSETS = { none: null, xs: '--plx-sys-floating-offset-xs', sm: '--plx-sys-floating-offset-sm', md: '--plx-sys-floating-offset-md' };

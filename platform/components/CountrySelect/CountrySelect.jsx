@@ -47,22 +47,22 @@ import { Combobox } from '../Combobox/Combobox.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 // ISO 3166-1 alpha-2: every assigned country and region code
-export const REGION_CODES = ('AD AE AF AG AI AL AM AO AQ AR AS AT AU AW AX AZ BA BB BD BE BF BG BH BI BJ BL BM BN BO BQ BR BS BT BV BW BY BZ CA CC CD CF CG '
+const REGION_CODES = ('AD AE AF AG AI AL AM AO AQ AR AS AT AU AW AX AZ BA BB BD BE BF BG BH BI BJ BL BM BN BO BQ BR BS BT BV BW BY BZ CA CC CD CF CG '
   + 'CH CI CK CL CM CN CO CR CU CV CW CX CY CZ DE DJ DK DM DO DZ EC EE EG EH ER ES ET FI FJ FK FM FO FR GA GB GD GE GF GG GH GI GL GM GN GP GQ GR '
   + 'GS GT GU GW GY HK HM HN HR HT HU ID IE IL IM IN IO IQ IR IS IT JE JM JO JP KE KG KH KI KM KN KP KR KW KY KZ LA LB LC LI LK LR LS LT LU LV LY '
   + 'MA MC MD ME MF MG MH MK ML MM MN MO MP MQ MR MS MT MU MV MW MX MY MZ NA NC NE NF NG NI NL NO NP NR NU NZ OM PA PE PF PG PH PK PL PM PN PR PS '
   + 'PT PW PY QA RE RO RS RU RW SA SB SC SD SE SG SH SI SJ SK SL SM SN SO SR SS ST SV SX SY SZ TC TD TF TG TH TJ TK TL TM TN TO TR TT TV TW TZ UA '
   + 'UG UM US UY UZ VA VC VE VG VI VN VU WF WS YE YT ZA ZM ZW').split(' ');
 // ISO 639-1 languages with wide use in software
-export const LANGUAGE_CODES = ('af am ar az be bg bn bs ca cs cy da de el en es et eu fa fi fil fr ga gl gu he hi hr hu hy id is it ja ka kk km kn ko '
+const LANGUAGE_CODES = ('af am ar az be bg bn bs ca cs cy da de el en es et eu fa fi fil fr ga gl gu he hi hr hu hy id is it ja ka kk km kn ko '
   + 'ky lo lt lv mk ml mn mr ms mt my nb ne nl pa pl ps pt ro ru si sk sl sq sr sv sw ta te th tr uk ur uz vi zh zu').split(' ');
 // common locales: a language with the region whose conventions it sets (dates, numbers, money)
-export const LOCALE_CODES = ('ar-EG ar-SA bg-BG cs-CZ da-DK de-AT de-CH de-DE el-GR en-AU en-CA en-GB en-IE en-IN en-NZ en-US en-ZA es-AR es-ES es-MX '
+const LOCALE_CODES = ('ar-EG ar-SA bg-BG cs-CZ da-DK de-AT de-CH de-DE el-GR en-AU en-CA en-GB en-IE en-IN en-NZ en-US en-ZA es-AR es-ES es-MX '
   + 'es-US et-EE fi-FI fr-BE fr-CA fr-CH fr-FR he-IL hi-IN hr-HR hu-HU id-ID it-IT ja-JP ko-KR lt-LT lv-LV ms-MY nb-NO nl-BE nl-NL pl-PL pt-BR '
   + 'pt-PT ro-RO ru-RU sk-SK sl-SI sr-RS sv-SE th-TH tr-TR uk-UA vi-VN zh-CN zh-HK zh-TW').split(' ');
 
 // a region code to its flag emoji: the two regional indicator letters
-export function flagOf(code) {
+function flagOf(code) {
   const r = String(code || '').split('-').pop().toUpperCase();
   return /^[A-Z]{2}$/.test(r) ? String.fromCodePoint(...Array.from(r).map((c) => 0x1f1e6 + c.charCodeAt(0) - 65)) : '';
 }
@@ -70,7 +70,7 @@ const names = (locale, type) => { try { return new Intl.DisplayNames(locale, { t
 const nameOf = (dn, code) => { try { return (dn && dn.of(code)) || code; } catch (e) { return code; } };
 
 // the options of a type: { value, label, match } sorted by label in the reader's language
-export function countryOptions({ type = 'country', locale, only, ownNames, flags = false, codes = false } = {}) {
+function countryOptions({ type = 'country', locale, only, ownNames, flags = false, codes = false } = {}) {
   const loc = locale || formatLocale();
   const kind = type === 'country' ? 'region' : 'language';
   const list = only || (type === 'language' ? LANGUAGE_CODES : type === 'locale' ? LOCALE_CODES : REGION_CODES);

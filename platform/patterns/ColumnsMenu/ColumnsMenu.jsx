@@ -55,7 +55,7 @@ const moveTo = (order, f, i) => { const rest = order.filter((x) => x !== f); res
 const nameIn = (fields) => (f) => { const x = fields.find((y) => y.value === f); return x ? x.label : f; };
 
 // the list: one row per column
-export function ColumnsList({ fields, value, onChange, filter = '', t }) {
+function ColumnsList({ fields, value, onChange, filter = '', t }) {
   const [msg, setMsg] = React.useState('');
   const [drag, setDrag] = React.useState(null);
   const box = React.useRef(null);

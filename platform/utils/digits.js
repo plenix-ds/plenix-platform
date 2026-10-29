@@ -21,7 +21,7 @@ import { digitsOf } from './format.js';
 const KEEP = /([^\s@<>()]+@[^\s@<>()]+|(?:https?:\/\/|www\.)[^\s<>()]+)/gi;
 const ARAB = (d) => String.fromCharCode(0x660 + Number(d));
 
-export function toArabicIndic(text) {
+function toArabicIndic(text) {
   return String(text).split(KEEP).map((part, i) => (i % 2 ? part : part.replace(/[0-9]/g, ARAB))).join('');
 }
 

@@ -70,18 +70,6 @@ export function groupedRows(rows, fields, columns) {
   }
   return build(rows, 0, []);
 }
-export function groupSummary(group, column) {
-  if (column.summary === 'count') return group.rows.length;
-  const values = group.rows.map(row => valueAt(row.original, column.field)).filter(value => value !== null && value !== undefined && value !== '' && typeof value !== 'boolean' && Number.isFinite(Number(value))).map(Number);
-  if (!values.length) return column.summary === 'sum' ? 0 : null;
-  switch (column.summary) {
-    case 'sum': return values.reduce((sum, value) => sum + value, 0);
-    case 'average': return values.reduce((sum, value) => sum + value, 0) / values.length;
-    case 'min': return Math.min(...values);
-    case 'max': return Math.max(...values);
-    default: return null;
-  }
-}
 export function groupDisplay(groups, collapsed, add, gaps = true) {
   const display = [];
   function visit(group) {

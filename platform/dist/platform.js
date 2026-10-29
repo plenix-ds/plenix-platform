@@ -7568,7 +7568,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.localDigits = localDigits;
-exports.toArabicIndic = toArabicIndic;
 exports.toLatinDigits = void 0;
 var _format = require("./format.js");
 /* Plenix · Digits (platform/utils/digits.js)
@@ -8267,7 +8266,7 @@ const SurfaceContext = exports.SurfaceContext = /*#__PURE__*/_react.default.crea
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.PLACEMENTS = exports.FLOATING_POINTER = exports.FLOATING_ANCHOR = void 0;
+exports.PLACEMENTS = exports.FLOATING_ANCHOR = void 0;
 exports.useFloating = useFloating;
 var _react = _interopRequireDefault(require("react"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -8317,7 +8316,7 @@ const release = i => {
 // what the browser can do, checked once
 const supports = decl => typeof CSS !== 'undefined' && !!CSS.supports && CSS.supports(decl);
 const FLOATING_ANCHOR = exports.FLOATING_ANCHOR = supports('anchor-name: --plx-a');
-const FLOATING_POINTER = exports.FLOATING_POINTER = supports('inset-block-start: attr(data-plx-floating-y px, 0px)');
+const FLOATING_POINTER = supports('inset-block-start: attr(data-plx-floating-y px, 0px)');
 const PLACEMENTS = exports.PLACEMENTS = ['top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'start', 'start-top', 'start-bottom', 'end', 'end-top', 'end-bottom'];
 const OFFSETS = {
   none: null,
@@ -13763,7 +13762,7 @@ const Link = exports.Link = /*#__PURE__*/_react.default.forwardRef(function Link
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.splitAt = exports.inBar = void 0;
+exports.splitAt = void 0;
 exports.useInBar = useInBar;
 exports.useOverflow = useOverflow;
 exports.useTruncated = useTruncated;
@@ -13848,7 +13847,6 @@ function useTruncated(ref, key, on = true) {
    --plx-comp-field-context-content-max-inline-size). useInBar(ref, not): the same, read once the element is on the page; false inside an element that
    matches the selector `not` (the field is part of a larger control there, such as an InputGroup). */
 const inBar = el => !!el && typeof getComputedStyle === 'function' && getComputedStyle(el).getPropertyValue('--plx-comp-field-context-content-max-inline-size').trim() !== '';
-exports.inBar = inBar;
 function useInBar(ref, not) {
   const [bar, setBar] = _react.default.useState(false);
   _react.default.useLayoutEffect(() => {
@@ -16334,7 +16332,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.AppShell = AppShell;
 exports.Hide = Hide;
-exports.LayoutContext = void 0;
 exports.PageContent = PageContent;
 Object.defineProperty(exports, "PanelSplitter", {
   enumerable: true,
@@ -16344,9 +16341,8 @@ Object.defineProperty(exports, "PanelSplitter", {
 });
 exports.Show = Show;
 exports.SideNavPortal = SideNavPortal;
-exports.useAppLayout = exports.tokenValue = exports.tokenPx = exports.readPref = exports.below = void 0;
+exports.useAppLayout = exports.tokenValue = exports.tokenPx = exports.below = void 0;
 exports.useMedia = useMedia;
-exports.writePref = void 0;
 var _react = _interopRequireDefault(require("react"));
 var _reactDom = require("react-dom");
 var _cx = require("../../utils/cx.js");
@@ -16438,7 +16434,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
 */
 // the five layout modes (the Layout foundation; app-shell.css draws them)
 const LAYOUTS = ['fluid', 'contained', 'hybrid', 'multi-pane', 'focus'];
-const LayoutContext = exports.LayoutContext = /*#__PURE__*/_react.default.createContext(null);
+const LayoutContext = /*#__PURE__*/_react.default.createContext(null);
 const useAppLayout = () => _react.default.useContext(LayoutContext);
 /* the shell's sizes and breakpoints come from the tokens, never from numbers here:
    --plx-sys-shell-nav-width, -min-width, -max-width, --plx-sys-shell-splitter-step, --plx-sys-shell-rail-below,
@@ -16472,13 +16468,11 @@ const readPref = (key, fallback) => {
     return fallback;
   }
 };
-exports.readPref = readPref;
 const writePref = (key, value) => {
   try {
     localStorage.setItem(key, JSON.stringify(value));
   } catch (e) {/* not stored: it lasts for this visit */}
 };
-exports.writePref = writePref;
 function AppShell({
   header,
   sideNav,
@@ -29352,7 +29346,6 @@ var _default = exports.default = {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.ColumnsList = ColumnsList;
 exports.ColumnsMenu = ColumnsMenu;
 exports.ManageColumnsDialog = ManageColumnsDialog;
 var _react = _interopRequireDefault(require("react"));
@@ -30190,7 +30183,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.normalizeSort = void 0;
 exports.opening = opening;
-exports.readView = readView;
 exports.visibilityOf = exports.valueAt = exports.recordKey = void 0;
 exports.writeView = writeView;
 /* Plenix · DataGridEngine state
@@ -31056,7 +31048,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.changeRecord = changeRecord;
 exports.groupDisplay = groupDisplay;
-exports.groupSummary = groupSummary;
 exports.groupValue = groupValue;
 exports.groupedRows = groupedRows;
 exports.recordsOf = recordsOf;
@@ -31188,23 +31179,6 @@ function groupedRows(rows, fields, columns) {
     });
   }
   return build(rows, 0, []);
-}
-function groupSummary(group, column) {
-  if (column.summary === 'count') return group.rows.length;
-  const values = group.rows.map(row => (0, _state.valueAt)(row.original, column.field)).filter(value => value !== null && value !== undefined && value !== '' && typeof value !== 'boolean' && Number.isFinite(Number(value))).map(Number);
-  if (!values.length) return column.summary === 'sum' ? 0 : null;
-  switch (column.summary) {
-    case 'sum':
-      return values.reduce((sum, value) => sum + value, 0);
-    case 'average':
-      return values.reduce((sum, value) => sum + value, 0) / values.length;
-    case 'min':
-      return Math.min(...values);
-    case 'max':
-      return Math.max(...values);
-    default:
-      return null;
-  }
 }
 function groupDisplay(groups, collapsed, add, gaps = true) {
   const display = [];
@@ -37721,7 +37695,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.CodeBlock = CodeBlock;
-exports.detect = detect;
 exports.highlight = highlight;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
@@ -43090,7 +43063,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.AppHeader = AppHeader;
-exports.SIGN_OUT = void 0;
 var _react = _interopRequireDefault(require("react"));
 var _devWarn = require("../../utils/devWarn.js");
 var _reactDom = require("react-dom");
@@ -43506,7 +43478,7 @@ AppHeader.Item = /*#__PURE__*/_react.default.forwardRef(function AppHeaderItem({
 });
 
 // the sign-in proxy's sign-out (Authentik's forward-auth outpost on every Plenix host): ends the session, then signs in again
-const SIGN_OUT = exports.SIGN_OUT = '/outpost.goauthentik.io/sign_out';
+const SIGN_OUT = '/outpost.goauthentik.io/sign_out';
 AppHeader.Account = function AppHeaderAccount({
   name: nameProp,
   email: emailProp,
@@ -55491,7 +55463,6 @@ var _default = exports.default = {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.RICH_TEXT_SIZES = exports.RICH_TEXT_FONTS = void 0;
 Object.defineProperty(exports, "RICH_TEXT_STYLE_PROPERTIES", {
   enumerable: true,
   get: function () {
@@ -55706,8 +55677,8 @@ const keysOf = name => typeof KEYS[name] === 'function' ? KEYS[name]() : KEYS[na
 const keysAria = binding => binding.replace('Mod', (0, _hotkey.isMac)() ? 'Meta' : 'Control');
 
 // the person's fonts and sizes to choose from (content, not interface: any family or size can be typed in too)
-const RICH_TEXT_FONTS = exports.RICH_TEXT_FONTS = [['DM Sans', '"DM Sans", sans-serif'], ['Reddit Mono', '"Reddit Mono", monospace'], ['Arial', 'Arial, sans-serif'], ['Helvetica', 'Helvetica, Arial, sans-serif'], ['Verdana', 'Verdana, sans-serif'], ['Tahoma', 'Tahoma, sans-serif'], ['Trebuchet MS', '"Trebuchet MS", sans-serif'], ['Georgia', 'Georgia, serif'], ['Times New Roman', '"Times New Roman", serif'], ['Garamond', 'Garamond, serif'], ['Courier New', '"Courier New", monospace']];
-const RICH_TEXT_SIZES = exports.RICH_TEXT_SIZES = ['12px', '14px', '16px', '18px', '20px', '24px', '28px', '32px', '36px', '48px'];
+const RICH_TEXT_FONTS = [['DM Sans', '"DM Sans", sans-serif'], ['Reddit Mono', '"Reddit Mono", monospace'], ['Arial', 'Arial, sans-serif'], ['Helvetica', 'Helvetica, Arial, sans-serif'], ['Verdana', 'Verdana, sans-serif'], ['Tahoma', 'Tahoma, sans-serif'], ['Trebuchet MS', '"Trebuchet MS", sans-serif'], ['Georgia', 'Georgia, serif'], ['Times New Roman', '"Times New Roman", serif'], ['Garamond', 'Garamond, serif'], ['Courier New', '"Courier New", monospace']];
+const RICH_TEXT_SIZES = ['12px', '14px', '16px', '18px', '20px', '24px', '28px', '32px', '36px', '48px'];
 
 // the mention list goes to the top layer only where the browser also places it by anchor (as Menu and Popover): without
 // anchor positioning it stays inline, beside the text, where useFloating's inline placement works (RedSave P-48)
@@ -56768,8 +56739,6 @@ Object.defineProperty(exports, "__esModule", {
 exports.Calendar = void 0;
 exports.addDays = addDays;
 exports.addMonths = addMonths;
-exports.firstDayOf = firstDayOf;
-exports.isoDate = isoDate;
 exports.parseIsoDate = parseIsoDate;
 exports.todayIso = todayIso;
 var _react = _interopRequireDefault(require("react"));
@@ -57614,9 +57583,7 @@ DatePicker.formatHint = locale => numericForm(locale || (0, _format.formatLocale
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.REGION_CODES = exports.LOCALE_CODES = exports.LANGUAGE_CODES = exports.CountrySelect = void 0;
-exports.countryOptions = countryOptions;
-exports.flagOf = flagOf;
+exports.CountrySelect = void 0;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _format = require("../../utils/format.js");
@@ -57666,11 +57633,11 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Other props pass through to Combobox's <input>.
 */
 // ISO 3166-1 alpha-2: every assigned country and region code
-const REGION_CODES = exports.REGION_CODES = ('AD AE AF AG AI AL AM AO AQ AR AS AT AU AW AX AZ BA BB BD BE BF BG BH BI BJ BL BM BN BO BQ BR BS BT BV BW BY BZ CA CC CD CF CG ' + 'CH CI CK CL CM CN CO CR CU CV CW CX CY CZ DE DJ DK DM DO DZ EC EE EG EH ER ES ET FI FJ FK FM FO FR GA GB GD GE GF GG GH GI GL GM GN GP GQ GR ' + 'GS GT GU GW GY HK HM HN HR HT HU ID IE IL IM IN IO IQ IR IS IT JE JM JO JP KE KG KH KI KM KN KP KR KW KY KZ LA LB LC LI LK LR LS LT LU LV LY ' + 'MA MC MD ME MF MG MH MK ML MM MN MO MP MQ MR MS MT MU MV MW MX MY MZ NA NC NE NF NG NI NL NO NP NR NU NZ OM PA PE PF PG PH PK PL PM PN PR PS ' + 'PT PW PY QA RE RO RS RU RW SA SB SC SD SE SG SH SI SJ SK SL SM SN SO SR SS ST SV SX SY SZ TC TD TF TG TH TJ TK TL TM TN TO TR TT TV TW TZ UA ' + 'UG UM US UY UZ VA VC VE VG VI VN VU WF WS YE YT ZA ZM ZW').split(' ');
+const REGION_CODES = ('AD AE AF AG AI AL AM AO AQ AR AS AT AU AW AX AZ BA BB BD BE BF BG BH BI BJ BL BM BN BO BQ BR BS BT BV BW BY BZ CA CC CD CF CG ' + 'CH CI CK CL CM CN CO CR CU CV CW CX CY CZ DE DJ DK DM DO DZ EC EE EG EH ER ES ET FI FJ FK FM FO FR GA GB GD GE GF GG GH GI GL GM GN GP GQ GR ' + 'GS GT GU GW GY HK HM HN HR HT HU ID IE IL IM IN IO IQ IR IS IT JE JM JO JP KE KG KH KI KM KN KP KR KW KY KZ LA LB LC LI LK LR LS LT LU LV LY ' + 'MA MC MD ME MF MG MH MK ML MM MN MO MP MQ MR MS MT MU MV MW MX MY MZ NA NC NE NF NG NI NL NO NP NR NU NZ OM PA PE PF PG PH PK PL PM PN PR PS ' + 'PT PW PY QA RE RO RS RU RW SA SB SC SD SE SG SH SI SJ SK SL SM SN SO SR SS ST SV SX SY SZ TC TD TF TG TH TJ TK TL TM TN TO TR TT TV TW TZ UA ' + 'UG UM US UY UZ VA VC VE VG VI VN VU WF WS YE YT ZA ZM ZW').split(' ');
 // ISO 639-1 languages with wide use in software
-const LANGUAGE_CODES = exports.LANGUAGE_CODES = ('af am ar az be bg bn bs ca cs cy da de el en es et eu fa fi fil fr ga gl gu he hi hr hu hy id is it ja ka kk km kn ko ' + 'ky lo lt lv mk ml mn mr ms mt my nb ne nl pa pl ps pt ro ru si sk sl sq sr sv sw ta te th tr uk ur uz vi zh zu').split(' ');
+const LANGUAGE_CODES = ('af am ar az be bg bn bs ca cs cy da de el en es et eu fa fi fil fr ga gl gu he hi hr hu hy id is it ja ka kk km kn ko ' + 'ky lo lt lv mk ml mn mr ms mt my nb ne nl pa pl ps pt ro ru si sk sl sq sr sv sw ta te th tr uk ur uz vi zh zu').split(' ');
 // common locales: a language with the region whose conventions it sets (dates, numbers, money)
-const LOCALE_CODES = exports.LOCALE_CODES = ('ar-EG ar-SA bg-BG cs-CZ da-DK de-AT de-CH de-DE el-GR en-AU en-CA en-GB en-IE en-IN en-NZ en-US en-ZA es-AR es-ES es-MX ' + 'es-US et-EE fi-FI fr-BE fr-CA fr-CH fr-FR he-IL hi-IN hr-HR hu-HU id-ID it-IT ja-JP ko-KR lt-LT lv-LV ms-MY nb-NO nl-BE nl-NL pl-PL pt-BR ' + 'pt-PT ro-RO ru-RU sk-SK sl-SI sr-RS sv-SE th-TH tr-TR uk-UA vi-VN zh-CN zh-HK zh-TW').split(' ');
+const LOCALE_CODES = ('ar-EG ar-SA bg-BG cs-CZ da-DK de-AT de-CH de-DE el-GR en-AU en-CA en-GB en-IE en-IN en-NZ en-US en-ZA es-AR es-ES es-MX ' + 'es-US et-EE fi-FI fr-BE fr-CA fr-CH fr-FR he-IL hi-IN hr-HR hu-HU id-ID it-IT ja-JP ko-KR lt-LT lv-LV ms-MY nb-NO nl-BE nl-NL pl-PL pt-BR ' + 'pt-PT ro-RO ru-RU sk-SK sl-SI sr-RS sv-SE th-TH tr-TR uk-UA vi-VN zh-CN zh-HK zh-TW').split(' ');
 
 // a region code to its flag emoji: the two regional indicator letters
 function flagOf(code) {
@@ -61932,7 +61899,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.SortPanel = SortPanel;
-exports.fieldOption = void 0;
 var _react = _interopRequireDefault(require("react"));
 var _Button = require("../../components/Button/Button.jsx");
 var _Text = require("../../components/Text/Text.jsx");
@@ -61974,7 +61940,6 @@ const fieldOption = f => ({
   label: f.label,
   icon: _fields.KIND_ICONS[(0, _fields.kindOf)(f)]
 });
-exports.fieldOption = fieldOption;
 function SortPanel({
   fields = [],
   value = [],
@@ -71294,7 +71259,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.Treemap = Treemap;
-exports.squarify = squarify;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../utils/cx.js");
 var _format = require("../utils/format.js");
@@ -75131,7 +75095,6 @@ Object.defineProperty(exports, "__esModule", {
 exports.File = File;
 exports.fileExtension = fileExtension;
 exports.fileIcon = fileIcon;
-exports.fileIconModule = fileIconModule;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _format = require("../../utils/format.js");

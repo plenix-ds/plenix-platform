@@ -69,7 +69,7 @@ export function parseIsoDate(s) {
   const d = new Date(+m[1], +m[2] - 1, +m[3], 12);
   return d.getMonth() === +m[2] - 1 ? d : null;
 }
-export function isoDate(d) { return d ? d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) : ''; }
+function isoDate(d) { return d ? d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) : ''; }
 export function addDays(iso, n) { const d = parseIsoDate(iso); if (!d) return iso; d.setDate(d.getDate() + n); return isoDate(d); }
 export function addMonths(iso, n) {
   const d = parseIsoDate(iso); if (!d) return iso;
@@ -83,7 +83,7 @@ const monthOf = (iso) => String(iso).slice(0, 7);
 const monthStart = (ym) => ym + '-01';
 const shiftMonth = (ym, n) => monthOf(addMonths(monthStart(ym), n));
 // the locale's first day of the week (0 Sunday … 6 Saturday)
-export function firstDayOf(locale) {
+function firstDayOf(locale) {
   try {
     const l = new Intl.Locale(locale);
     const info = typeof l.getWeekInfo === 'function' ? l.getWeekInfo() : l.weekInfo;

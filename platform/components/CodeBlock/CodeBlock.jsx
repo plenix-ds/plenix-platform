@@ -57,7 +57,7 @@ const RULES = {
 };
 RULES.jsx = RULES.js; RULES.html = RULES.js;
 
-export function detect(title, text) {
+function detect(title, text) {
   const ext = title ? (String(title).match(/\.(\w+)$/) || [])[1] : null;
   if (ext) return ext === 'css' ? 'css' : /^(jsx?|mjs|tsx?)$/.test(ext) ? 'jsx' : ext === 'html' ? 'html' : 'text';
   return /^\s*(?:[.#:@\w[\]*-][^{\n]*)\{[^}]*:[^}]*;/m.test(text) && !/=>|import |<[A-Z]/.test(text) ? 'css' : 'jsx';
