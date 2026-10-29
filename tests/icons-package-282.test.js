@@ -1,8 +1,10 @@
 /* Plenix tests · the @plenix-ds/icons package carries the Plenix icon modules (issue 282).
    Summary: after node build-app.js and node build-packages.js, packages/icons:
      package.json exports "./plenix/*" and is "type": "module" (the modules are ES modules)
-     packages/icons/plenix/ holds every module of platform/dist/icons/plenix (the same names), each with its four SVG files
-       (<name>.svg, -fill.svg, -24.svg, -24-fill.svg) and plenix/index.json
+     packages/icons/plenix/ holds every module of platform/dist/icons/plenix (the same names: the icons and their aliases)
+       and plenix/index.json
+     each icon in index.json "icons" has its four SVG files beside its module (<name>.svg, -fill.svg, -24.svg, -24-fill.svg)
+     each alias in index.json "aliases" (for example arrow_back) has a module that imports its icon's module, and no SVG files
      icons.json lists the modules (plenix.count, plenix.modules) and they match the folder
      a module imports and is the Icon module shape: { name, set: "plenix", drawings: { 20, 24 } }
    Proof first: before #282 the package held only svg/, icons.json and icon.css, so the export, folder and list lines fail.
@@ -18,8 +20,15 @@ const ROOT = path.join(__dirname, '..'), PKG = path.join(ROOT, 'packages', 'icon
   const want = names(SRC), have = names(path.join(PKG, 'plenix'));
   assert.ok(want.length > 200, 'the Plenix set has its modules (' + want.length + ')');
   assert.deepEqual(have, want, 'the package holds every module of platform/dist/icons/plenix');
-  for (const n of have) for (const f of [n + '.svg', n + '-fill.svg', n + '-24.svg', n + '-24-fill.svg'])
+  const index = JSON.parse(fs.readFileSync(path.join(PKG, 'plenix', 'index.json'), 'utf8'));
+  const icons = index.icons.map((e) => e.name), aliases = index.aliases || {};
+  assert.deepEqual(icons.concat(Object.keys(aliases)).sort(), have, 'the modules are the icons of index.json and their aliases');
+  for (const n of icons) for (const f of [n + '.svg', n + '-fill.svg', n + '-24.svg', n + '-24-fill.svg'])
     assert.ok(fs.existsSync(path.join(PKG, 'plenix', f)), n + ': ' + f + ' is beside its module');
+  for (const [a, n] of Object.entries(aliases)) {
+    assert.ok(icons.includes(n), a + ': its icon ' + n + ' is in index.json');
+    assert.ok(fs.readFileSync(path.join(PKG, 'plenix', a + '.js'), 'utf8').includes("from './" + n + ".js'"), a + ': its module imports ' + n + '.js');
+  }
   const list = JSON.parse(fs.readFileSync(path.join(PKG, 'icons.json'), 'utf8')).plenix;
   assert.ok(list, 'icons.json lists the Plenix modules');
   assert.equal(list.count, have.length, 'icons.json counts them');
