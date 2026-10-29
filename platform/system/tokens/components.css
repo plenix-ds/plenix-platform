@@ -5886,7 +5886,7 @@
   --plx-comp-upload-manager-title-line-height: var(--plx-sys-label-height-20px);
   --plx-comp-upload-manager-actions-gap: var(--plx-sys-space-inline-xs);
   --plx-comp-upload-manager-counts-text: var(--plx-sys-content-muted);
-  --plx-comp-upload-manager-counts-font-family: var(--plx-sys-font-data);
+  --plx-comp-upload-manager-counts-font-family: var(--plx-sys-font-body);
   --plx-comp-upload-manager-counts-font-size: var(--plx-sys-text-secondary-font-size);
   --plx-comp-upload-manager-counts-line-height: var(--plx-sys-label-height-16px);
   --plx-comp-upload-manager-drop-text: var(--plx-sys-content-default);

@@ -25,6 +25,7 @@
 import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { dataPhrase } from '../../utils/dataText.jsx';
 
 const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m));
 
@@ -44,7 +45,7 @@ export function Pagination({ page = 1, pageCount = 1, onPageChange, total, perPa
   const last = total ? Math.min(total, page * (perPage || total)) : null;
   return (
     <nav className={cx('plx-pagination', className)} aria-label={label || t.label} {...rest}>
-      {total ? <div className="plx-pagination__info">{fill(t.range, { first, last, total })}</div> : null}
+      {total ? <div className="plx-pagination__info">{dataPhrase(t.range, { first, last, total })}</div> : null}
       <div className="plx-pagination__pages">
         <button type="button" className="plx-pagination__page plx-pagination__page--step" aria-label={t.previous} disabled={page <= 1} onClick={() => go(page - 1)}>‹</button>
         {pagesToShow(page, pageCount).map((p) => typeof p === 'string'

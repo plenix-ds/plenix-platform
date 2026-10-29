@@ -90,6 +90,7 @@ import RefreshIcon from 'plenix-platform/icons/plenix/refresh';
 import TextCardIcon from 'plenix-platform/icons/plenix/text-card';
 import UploadIcon from 'plenix-platform/icons/plenix/upload';
 import UploadN2Icon from 'plenix-platform/icons/plenix/upload-2';
+import { dataPhrase, dataNumber } from '../../utils/dataText.jsx';
 
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const clamp = (n) => Math.max(0, Math.min(100, Number(n) || 0));
@@ -253,7 +254,7 @@ export function UploadManager({ queue, upload, items, onAdd, onCancel, onRetry, 
   const summary = total ? (
     <div className="plx-upload-manager__summary">
       <ProgressBar className="plx-upload-manager__bar" size="sm" value={Math.round(overall)} label={t.overall} labelHidden tone={failed && !moving ? 'danger' : moving ? 'info' : 'success'} />
-      <Text variant="data" className="plx-upload-manager__counts">{fill(t.progress, { done: formatNumber(done), total: formatNumber(live.length) })} · {formatPercent(overall / 100)}</Text>
+      <span className="plx-upload-manager__counts">{dataPhrase(t.progress, { done, total: live.length })} · {dataNumber(formatPercent(overall / 100))}</span>
     </div>
   ) : null;
   const finishing = total && !moving;
@@ -271,7 +272,7 @@ export function UploadManager({ queue, upload, items, onAdd, onCancel, onRetry, 
         footer={<>{bulk}<Button variant="primary" onClick={onClose}>{t.finish}</Button></>}>
         <div className="plx-upload-manager__body">
           {zone}
-          {total ? <p className="plx-upload-manager__headline">{headline}</p> : null}
+          {total ? <p className="plx-upload-manager__headline">{dataPhrase(headline)}</p> : null}
           {summary}
           {list}
         </div>
@@ -281,7 +282,7 @@ export function UploadManager({ queue, upload, items, onAdd, onCancel, onRetry, 
   return (
     <section className={cx('plx-upload-manager', 'plx-upload-manager--panel', docked && 'plx-upload-manager--docked', collapsed && 'is-collapsed', className)} aria-labelledby={id + '-title'}>
       <div className="plx-upload-manager__head">
-        <h2 id={id + '-title'} className="plx-upload-manager__title">{headline}</h2>
+        <h2 id={id + '-title'} className="plx-upload-manager__title">{dataPhrase(headline)}</h2>
         <span className="plx-upload-manager__actions">
           {bulk}
           <Button size="sm" variant="ghost" iconOnly icon={collapsed ? ChevronUpIcon : ChevronDownIcon} label={collapsed ? t.show : t.hide} aria-expanded={!collapsed} aria-controls={id + '-list'} onClick={() => setCollapsed(!collapsed)} />

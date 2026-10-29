@@ -3501,7 +3501,7 @@
   "plx-upload-manager__counts": {
    "contract": "establishes",
    "role": "secondary",
-   "font": "mono",
+   "font": "sans",
    "adjusts": [
     "line-height"
    ]
