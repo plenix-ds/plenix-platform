@@ -50,27 +50,25 @@ import { Checkbox } from '../../components/Checkbox/Checkbox.jsx';
 import { Fieldset } from '../../components/Fieldset/Fieldset.jsx';
 import { Icon } from '../../components/Icon/Icon.jsx';
 import { useOptionalToast } from '../ReviewFlow/ReviewFlow.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { createTranslator } from '../../providers/LocaleProvider.jsx';
+import { formatLocale } from '../../utils/format.js';
 
-const STRINGS = {
-  duplicate: 'Duplicate', copyOf: 'Copy of {name}', numbered: '{name} ({n})', title: 'Duplicate {noun}', name: 'Name',
-  from: 'From {name}', also: 'Also copy', empty: 'Enter a name.', taken: 'A {noun} named {name} already exists.',
-  done: 'Duplicated as {name}', undo: 'Undo', cancel: 'Cancel',
-};
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const q = (x) => '“' + x + '”';
 
 export function copyName(name, taken = [], strings) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = Object.assign({}, createTranslator(formatLocale()).section('duplicateAction'), strings);   // a plain function: no hook
   const used = new Set((taken || []).map((x) => String(x).trim().toLowerCase()));
   const base = fill(t.copyOf, { name });
   if (!used.has(base.toLowerCase())) return base;
   for (let n = 2; ; n++) { const next = fill(t.numbered, { name: base, n }); if (!used.has(next.toLowerCase())) return next; }
 }
 
-export function DuplicateAction({ name = '', noun = 'item', variant = 'copy', taken = [], onDuplicate, onUndo, source, options = [],
+export function DuplicateAction({ name = '', noun, variant = 'copy', taken = [], onDuplicate, onUndo, source, options = [],
   trigger, open, onClose, size, strings, className }) {
   devWarn('DuplicateAction', { variant, size }, { variant: ['copy','rename'], size: ['md','sm','xs','2xs','lg'] });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('duplicateAction', strings);
   const toast = useOptionalToast();
   const [shown, setShown] = React.useState(false);
   const [value, setValue] = React.useState('');

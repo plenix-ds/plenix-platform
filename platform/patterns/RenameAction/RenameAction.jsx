@@ -53,10 +53,8 @@ import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { Field } from '../../components/Field/Field.jsx';
 import { Input } from '../../components/Input/Input.jsx';
 import { Button } from '../../components/Button/Button.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { label: 'Name', rename: 'Rename', open: 'Rename…', title: 'Rename {name}', cancel: 'Cancel', empty: 'Enter a name',
-  slash: 'A name can’t contain / or \\', taken: 'There’s already an item named {name} here', tooLong: 'Use {max} characters or fewer',
-  renamed: 'Renamed to {name}', failed: 'The name could not be changed' };
 const fill = (s, vars) => String(s).replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m));
 
 // the name before a file's extension (the whole name when it has none, or starts with its only dot)
@@ -65,7 +63,7 @@ export function baseNameEnd(name) { const i = String(name).lastIndexOf('.'); ret
 export function RenameAction({ value = '', onRename, variant = 'inline', label, names = [], extension = false, validate, maxLength = 255, data = false,
   open: openProp, onClose, triggerProps, disabled = false, strings, className, ...rest }) {
   devWarn('RenameAction', { variant }, { variant: ['inline','dialog'] });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('renameAction', strings);
   const name = label || t.label;
   const formId = useUid('plx-rename');
   const controlled = openProp !== undefined;

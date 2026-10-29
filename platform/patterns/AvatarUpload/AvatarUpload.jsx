@@ -42,14 +42,13 @@ import { Button } from '../../components/Button/Button.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { ImageCrop } from '../ImageUpload/ImageUpload.jsx';
 import { formatBytes } from '../../utils/format.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { change: 'Change photo', add: 'Add photo', remove: 'Remove photo', tooLarge: 'The picture is larger than {max}', notImage: 'Choose an image file',
-  picture: '{name}’s photo', crop: undefined };
 
 export function AvatarUpload({ name, src, onChange, crop = true, removable = true, size = '2xl', accept = 'image/png,image/jpeg,image/webp', maxSize,
   description, disabled = false, strings, className, id, 'aria-describedby': describedBy }) {
   devWarn('AvatarUpload', { size }, { size: ['xl','2xl'] });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('avatarUpload', strings);
   const [pending, setPending] = React.useState(null);   // { url, file } waiting for its crop
   const [error, setError] = React.useState('');
   const wrap = React.useRef(null);

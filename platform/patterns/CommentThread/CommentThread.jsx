@@ -14,8 +14,9 @@ import { Badge } from '../../components/Badge/Badge.jsx';
 import { Field } from '../../components/Field/Field.jsx';
 import { Textarea } from '../../components/Input/Input.jsx';
 import { Comment } from '../../components/Comment/Comment.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 export function CommentThread({comments=[],title,resolved=false,onReply,onResolve,onEdit,onReact,strings,className,...rest}) {
- const t=Object.assign({title:'Comments',reply:'Reply',send:'Send reply',resolve:'Resolve thread',reopen:'Reopen thread',resolved:'Resolved',empty:'Enter a reply.',failed:'Could not save. Try again.'},strings);
+ const t=useStrings('commentThread', strings);
  const [draft,setDraft]=React.useState(''),[error,setError]=React.useState(''),[busy,setBusy]=React.useState(false);const lock=React.useRef(false),alive=React.useRef(true);
  React.useEffect(()=>{alive.current=true;return()=>{alive.current=false;};},[]);
  async function run(fn,clear){if(lock.current||!fn)return;lock.current=true;setBusy(true);setError('');try{await fn();if(clear&&alive.current)setDraft('');}catch(e){if(alive.current)setError(t.failed);}finally{lock.current=false;if(alive.current)setBusy(false);}}

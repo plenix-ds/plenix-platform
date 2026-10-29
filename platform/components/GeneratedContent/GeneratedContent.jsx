@@ -24,9 +24,9 @@ import { Notice } from '../../components/Notice/Notice.jsx';
 import { cx } from '../../utils/cx.js';
 import { AILabel } from '../AILabel/AILabel.jsx';
 import { Badge } from '../Badge/Badge.jsx';
-const STRINGS={label:'Generated content',helpful:'Helpful',unhelpful:'Not helpful',regenerate:'Regenerate',previous:'Previous version',next:'Next version',version:'Version',feedbackSaved:'Feedback saved',failed:'The action failed. Try again.',pending:'Working'};
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 export function GeneratedContent({versions=[],versionId,defaultVersionId,onVersionChange,children,loading=false,onRegenerate,onFeedback,strings,className}){
- const t={...STRINGS,...strings},[own,setOwn]=React.useState(defaultVersionId),[busy,setBusy]=React.useState(''),[error,setError]=React.useState(''),[feedback,setFeedback]=React.useState(null),lock=React.useRef(false),epoch=React.useRef(0),controller=React.useRef(null);
+ const t=useStrings('generatedContent', strings),[own,setOwn]=React.useState(defaultVersionId),[busy,setBusy]=React.useState(''),[error,setError]=React.useState(''),[feedback,setFeedback]=React.useState(null),lock=React.useRef(false),epoch=React.useRef(0),controller=React.useRef(null);
  const id=versionId!==undefined?versionId:own,index=Math.max(0,versions.findIndex(v=>v.id===(id??versions[versions.length-1]?.id))),version=versions[index];
  React.useEffect(()=>{epoch.current++;controller.current?.abort();lock.current=false;setBusy('');setError('');setFeedback(null);return()=>{epoch.current++;controller.current?.abort();};},[version?.id]);
  const run=async(type,value)=>{const callback=type==='regenerate'?onRegenerate:onFeedback;if(lock.current||loading||!callback)return;const at=epoch.current;lock.current=true;setBusy(type);setError('');const abort=new AbortController();controller.current=abort;

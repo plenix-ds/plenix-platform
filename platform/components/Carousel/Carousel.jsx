@@ -37,15 +37,14 @@ import { isRtl } from '../../utils/direction.js';
 import { tokenMs } from '../../utils/tokenTime.js';
 import { useGesture } from '../../hooks/useGesture.js';
 import { Button } from '../Button/Button.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { slide: '{n} of {total}', previous: 'Previous slide', next: 'Next slide', goTo: 'Go to slide {n}', goToPage: 'Go to page {n}',
-  pages: 'Slides', pause: 'Pause', play: 'Play', pauseLabel: 'Pause the slides', playLabel: 'Play the slides', strip: 'Slides' };
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const reduced = () => typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
 
 export function Carousel({ label, children, perView = 1, controls = 'both', autoplay = false, page: pageProp, onPageChange, strings, className, ...rest }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('carousel', strings);
   const slides = React.Children.toArray(children).filter(Boolean);
   const n = slides.length;
   const per = clamp(Math.round(perView) || 1, 1, 4);

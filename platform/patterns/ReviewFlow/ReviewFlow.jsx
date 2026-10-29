@@ -69,22 +69,27 @@ import { DataGrid } from '../../components/DataGrid/DataGrid.jsx';
 import { useToast } from '../../components/Toast/Toast.jsx';
 import { ActivityList } from '../ActivityList/ActivityList.jsx';
 import { CommandBar } from '../CommandBar/CommandBar.jsx';
+import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
+import english from '../../i18n/en.js';
 
 // the workflow statuses: a Badge variant by meaning, and its icon (owner, 2026-10-15)
+// the labels are the catalog's (reviewFlow.statuses): this constant keeps its shape and its English labels for apps that read it
+const STATUS_LABELS = english.reviewFlow.statuses;
 export const WORKFLOW_STATUSES = {
-  draft: { tone: 'neutral', icon: 'pencil', label: 'Draft' },
-  'in-review': { tone: 'active', icon: 'doc-search', label: 'In review' },
-  approved: { tone: 'success', icon: 'circle-check', label: 'Approved' },
-  'changes-requested': { tone: 'action-required', icon: 'alert', label: 'Changes requested' },
-  rejected: { tone: 'negative', icon: 'close', label: 'Rejected' },
-  published: { tone: 'success', icon: 'visibility', label: 'Published' },
-  scheduled: { tone: 'waiting', icon: 'schedule', label: 'Scheduled' },
+  draft: { tone: 'neutral', icon: 'pencil', label: STATUS_LABELS.draft },
+  'in-review': { tone: 'active', icon: 'doc-search', label: STATUS_LABELS['in-review'] },
+  approved: { tone: 'success', icon: 'circle-check', label: STATUS_LABELS.approved },
+  'changes-requested': { tone: 'action-required', icon: 'alert', label: STATUS_LABELS['changes-requested'] },
+  rejected: { tone: 'negative', icon: 'close', label: STATUS_LABELS.rejected },
+  published: { tone: 'success', icon: 'visibility', label: STATUS_LABELS.published },
+  scheduled: { tone: 'waiting', icon: 'schedule', label: STATUS_LABELS.scheduled },
 };
 
 export function WorkflowStatus({ status = 'draft', label, size, strings, className, ...rest }) {
   devWarn('WorkflowStatus', { size }, { size: ['md','sm'] });
   const s = WORKFLOW_STATUSES[status] || WORKFLOW_STATUSES.draft;
-  const words = label || (strings && strings[status]) || s.label;
+  const names = useStrings('reviewFlow.statuses');
+  const words = label || (strings && strings[status]) || names[status] || s.label;
   return <Badge tone={s.tone} icon={s.icon} size={size} className={cx('plx-workflow-status', className)} {...rest}>{words}</Badge>;
 }
 
@@ -95,25 +100,20 @@ export function useOptionalToast() {
 
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 
-const FLOW_STRINGS = {
-  reviewers: 'Reviewers', history: 'History', comment: 'Comment', commentHint: 'Needed to reject or request changes.',
-  approve: 'Approve', changes: 'Request changes', reject: 'Reject', waiting: 'Waiting',
-  human: 'Generated content. A person checks it before it is used.', needReason: 'Say why, so the author knows what to change.',
-  done: '{decision}: {title}', decisions: 'Review decisions',
-};
 const VERB = { approved: 'approve', 'changes-requested': 'changes', rejected: 'reject' };
 const LOOK = { approved: 'primary', 'changes-requested': 'secondary', rejected: 'danger-secondary' };
 
 export function ReviewFlow({ status = 'in-review', title, headingLevel = 3, detail, kind = 'review', reviewers = [], history = [],
   onDecision, decisions = ['rejected', 'changes-requested', 'approved'], reasonFor = ['rejected', 'changes-requested'],
   strings, className, ...rest }) {
-  const t = Object.assign({}, FLOW_STRINGS, strings);
+  const t = useStrings('reviewFlow.flow', strings);
   const toast = useOptionalToast();
   const [comment, setComment] = React.useState('');
   const [error, setError] = React.useState('');
   const field = React.useRef(null);
   const H = 'h' + Math.min(6, Math.max(2, headingLevel));
-  const word = (d) => (t[d] || WORKFLOW_STATUSES[d].label);
+  const names = useStrings('reviewFlow.statuses');
+  const word = (d) => (t[d] || names[d] || WORKFLOW_STATUSES[d].label);
   const decide = (d) => {
     if (reasonFor.indexOf(d) >= 0 && !comment.trim()) { setError(t.needReason); if (field.current) field.current.focus(); return; }
     setError('');
@@ -171,29 +171,31 @@ export function ReviewFlow({ status = 'in-review', title, headingLevel = 3, deta
   );
 }
 
-const QUEUE_STRINGS = {
-  name: 'Name', type: 'Type', submittedBy: 'Submitted by', submitted: 'Submitted', status: 'Status',
-  approve: 'Approve', changes: 'Request changes', reject: 'Reject',
-  rejectTitle: 'Reject {what}?', changesTitle: 'Request changes on {what}?', reason: 'Reason', changesLabel: 'What to change',
-  reasonHint: 'The authors see it with the decision.', needReason: 'Say why, so the authors know what to change.',
-  done: '{what} {decision}', count: '{n} {plural}',
-};
 
-export function ReviewQueue({ items = [], label = 'Waiting for review', noun = 'item', plural, onDecision, selected, onSelectionChange,
+export function ReviewQueue({ items = [], label, noun, plural, onDecision, selected, onSelectionChange,
   strings, className, ...rest }) {
-  const t = Object.assign({}, QUEUE_STRINGS, strings);
-  const many = plural || noun + 's';
+  const t = useStrings('reviewFlow.queue', strings);
+  const names = useStrings('reviewFlow.statuses');
+  const loc = useLocale();
+  const builtIn = !noun && !plural;   // the default words: whole counted phrases with the Arabic plural forms, from the catalog
+  const many = plural || (noun ? noun + 's' : t.plural);   // the default words come from the catalog
+  noun = noun ?? t.noun;
+  label = label ?? t.queueLabel;
+  const counted = (m) => (builtIn ? loc.t('reviewFlow.queue.items', { count: m, n: formatNumber(m) }) : null);
   const toast = useOptionalToast();
   const [own, setOwn] = React.useState([]);
   const sel = selected !== undefined ? selected : own;
   const setSel = (ids) => { if (selected === undefined) setOwn(ids); if (onSelectionChange) onSelectionChange(ids); };
   const [ask, setAsk] = React.useState(null);   // "rejected" | "changes-requested" while its dialog is open
-  const what = (n) => (n === 1 ? '1 ' + noun : formatNumber(n) + ' ' + many);
+  const what = (n) => counted(n) ?? (n === 1 ? '1 ' + noun : formatNumber(n) + ' ' + many);
   const run = (decision, reason) => {
     const ids = sel.slice();
     if (onDecision) onDecision(ids, decision, reason || '');
     setSel([]); setAsk(null);
-    const said = fill(t.done, { what: what(ids.length), decision: WORKFLOW_STATUSES[decision].label.toLowerCase() });
+    // the default words: one whole counted sentence per decision (Arabic plural forms); an app's own noun keeps the pieces
+    const whole = builtIn && t.doneItems && t.doneItems[decision];
+    const said = whole ? loc.t('reviewFlow.queue.doneItems.' + decision, { count: ids.length, n: formatNumber(ids.length) })
+      : fill(t.done, { what: what(ids.length), decision: names[decision].toLowerCase() });
     if (toast) toast.show(said, { tone: decision === 'approved' ? 'success' : 'info' }); else announce(said);
   };
   const columns = [
@@ -205,7 +207,7 @@ export function ReviewQueue({ items = [], label = 'Waiting for review', noun = '
   ];
   return (
     <div className={cx('plx-review-queue', className)} {...rest}>
-      <CommandBar label={label} count={fill(t.count, { n: formatNumber(items.length), plural: items.length === 1 ? noun : many })}
+      <CommandBar label={label} count={counted(items.length) ?? fill(t.count, { n: formatNumber(items.length), plural: items.length === 1 ? noun : many })}
         selection={{ count: sel.length, noun, plural: many, onClear: () => setSel([]), actions: [
           { id: 'approve', label: t.approve, icon: 'circle-check', onSelect: () => run('approved') },
           { id: 'changes', label: t.changes, icon: 'alert', onSelect: () => setAsk('changes-requested') },

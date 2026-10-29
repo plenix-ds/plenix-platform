@@ -51,17 +51,8 @@ import { Field } from '../../components/Field/Field.jsx';
 import { DatePicker } from '../../components/DatePicker/DatePicker.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { WorkflowStatus, useOptionalToast } from '../ReviewFlow/ReviewFlow.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = {
-  publish: 'Publish', publishNow: 'Publish now', schedule: 'Schedule', cancelSchedule: 'Cancel schedule', unpublish: 'Unpublish',
-  cancel: 'Cancel', publishTitle: 'Publish {name}?', publishMessage: 'It becomes visible to {audience}.',
-  unpublishTitle: 'Unpublish {name}?', unpublishMessage: 'It is hidden from {audience}. You can publish it again.',
-  scheduleTitle: 'Schedule {name}', when: 'Publish on', whenHint: 'Date and time, in your time zone.',
-  past: 'Choose a time in the future.', empty: 'Choose a date and time.',
-  publishedLine: 'Published {at}', publishedBy: 'Published {at} by {by}', scheduledLine: 'Publishes {at}', scheduledBy: 'Publishes {at}, scheduled by {by}',
-  draftLine: 'Not published', published: '{name} published', scheduled: '{name} scheduled for {at}', unpublished: '{name} unpublished',
-  undo: 'Undo', everyone: 'everyone with access', actions: 'Publishing',
-};
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const q = (x) => '“' + x + '”';
 
@@ -73,7 +64,7 @@ function Line({ text, at }) {
 
 export function Publish({ name = '', status = 'draft', audience, publishedAt, scheduledFor, by, onPublish, onSchedule, onCancelSchedule,
   onUnpublish, confirm = true, readOnly = false, strings, className, ...rest }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('publish', strings);
   const toast = useOptionalToast();
   const who = audience || t.everyone;
   const [ask, setAsk] = React.useState(null);   // "publish" | "unpublish" | "schedule"

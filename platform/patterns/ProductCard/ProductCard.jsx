@@ -66,11 +66,8 @@ import { Button } from '../../components/Button/Button.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { Icon } from '../../components/Icon/Icon.jsx';
 import { VisuallyHidden } from '../../components/VisuallyHidden/VisuallyHidden.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = {
-  sale: 'Sale', outOfStock: 'Out of stock', addToCart: 'Add to cart', addToCartFor: 'Add {title} to cart', now: 'Now', was: 'Was',
-  rating: 'Rating', reviews: '{n} reviews', review: '1 review', soldOut: '{title} is out of stock',
-};
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const RATIOS = ['1-1', '4-3', '3-4'];
 
@@ -78,7 +75,7 @@ const RATIOS = ['1-1', '4-3', '3-4'];
 // assistive technology); shared with the Commerce templates
 export function ProductPrice({ price, currency = 'USD', compareAtPrice, size = 'md', strings, className }) {
   devWarn('ProductPrice', { size }, { size: ['md','sm'] });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('productCard', strings);
   const onSale = typeof compareAtPrice === 'number' && compareAtPrice > price;
   return (
     <span className={cx('plx-product-card__prices', size === 'sm' && 'plx-product-card__prices--sm', className)}>
@@ -90,7 +87,7 @@ export function ProductPrice({ price, currency = 'USD', compareAtPrice, size = '
 
 export function ProductCard({ title, href, onOpen, image, ratio = '1-1', price, currency = 'USD', compareAtPrice, sale, outOfStock = false,
   meta, rating, reviewCount, badges, onAddToCart, action, layout = 'grid', headingLevel = 3, strings, className, ...rest }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('productCard', strings);
   const name = typeof title === 'string' ? title : '';
   const onSale = sale !== undefined ? !!sale : typeof compareAtPrice === 'number' && compareAtPrice > price;
   const interactive = !!(href || onOpen);

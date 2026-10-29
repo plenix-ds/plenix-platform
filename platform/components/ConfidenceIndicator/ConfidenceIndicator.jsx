@@ -14,6 +14,7 @@ import { Text } from '../Text/Text.jsx';
 import { Notice } from '../Notice/Notice.jsx';
 import { Badge } from '../Badge/Badge.jsx';
 import { formatPercent } from '../../utils/format.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 export function ConfidenceIndicator({level,variant='qualitative',value,locale,strings,className,...rest}){
   devWarn('ConfidenceIndicator', { variant }, { variant: ['qualitative','numeric'] });
-  const t=Object.assign({high:'High confidence',medium:'Medium confidence',low:'Low confidence',unknown:'Confidence unavailable',label:'Confidence'},strings),valid=typeof value==='number'&&Number.isFinite(value)&&value>=0&&value<=1,text=variant==='numeric'?(valid?formatPercent(value,{locale}):t.unknown):(t[level]&&['high','medium','low'].includes(level)?t[level]:t.unknown);return <Inline className={cx('plx-confidence-indicator',className)} {...rest}><Badge icon="sparkle">{variant==='numeric'&&valid?t.label:text}</Badge>{variant==='numeric'&&valid?<Text variant="data">{text}</Text>:null}</Inline>;}
+  const t=useStrings('confidenceIndicator', strings),valid=typeof value==='number'&&Number.isFinite(value)&&value>=0&&value<=1,text=variant==='numeric'?(valid?formatPercent(value,{locale}):t.unknown):(t[level]&&['high','medium','low'].includes(level)?t[level]:t.unknown);return <Inline className={cx('plx-confidence-indicator',className)} {...rest}><Badge icon="sparkle">{variant==='numeric'&&valid?t.label:text}</Badge>{variant==='numeric'&&valid?<Text variant="data">{text}</Text>:null}</Inline>;}

@@ -32,16 +32,16 @@ import { Avatar } from '../Avatar/Avatar.jsx';
 import { Badge } from '../Badge/Badge.jsx';
 import { Link } from '../Link/Link.jsx';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 const SIZES = ['xs', 'sm', 'md', 'lg', 'xl'];
 const PRESENCE = ['online', 'away', 'busy', 'dnd', 'offline'];
-const STRINGS = { online: 'Online', away: 'Away', busy: 'Busy', dnd: 'Do not disturb', offline: 'Offline' };
 
 export function Persona({ name, src, color, secondary, role, presence, size = 'md', href, strings, className, ...rest }) {
   devWarn('Persona', { size }, { size: ['xs','sm','md','lg','xl'] });
   const s = SIZES.indexOf(size) >= 0 ? size : 'md';
   const p = PRESENCE.indexOf(presence) >= 0 ? presence : null;
-  const words = Object.assign({}, STRINGS, strings);
+  const words = useStrings('persona', strings);
   return (
     <div className={cx('plx-persona', 'plx-persona--' + s, className)} {...rest}>
       <Avatar name={name} src={src} color={color} presence={p || undefined} size={s} className="plx-persona__avatar" />

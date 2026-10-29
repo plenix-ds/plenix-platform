@@ -59,14 +59,8 @@ import { Button } from '../../components/Button/Button.jsx';
 import { ConfirmDialog } from '../../components/Dialog/Dialog.jsx';
 import { IconTile } from '../../components/IconTile/IconTile.jsx';
 import { Text } from '../../components/Text/Text.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = {
-  label: 'Connected accounts', connect: 'Connect', disconnect: 'Disconnect', reconnect: 'Reconnect', cancel: 'Cancel',
-  connected: 'Connected', disconnected: 'Not connected', error: 'Connection error', as: 'As {account}', since: 'since {date}',
-  connectTitle: 'Connect {service}?', connectMessage: 'You’ll sign in to {service} to allow this. Plenix will be able to:',
-  continue: 'Continue to {service}', disconnectTitle: 'Disconnect {service}?', disconnectMessage: 'You can connect it again at any time.',
-  done: '{service} connected', undone: '{service} disconnected',
-};
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const STATUS = { connected: ['success', 'check'], disconnected: ['neutral', 'link'], error: ['negative', 'alert'] };
 // a sentence with a node in place of {key}: the words around it stay in the UI font
@@ -74,7 +68,7 @@ const around = (s, key, node) => { const p = String(s).split('{' + key + '}'); r
 const H = ({ level, ...props }) => React.createElement('h' + Math.min(6, Math.max(2, level || 3)), props);
 
 export function ConnectedAccount({ account, onConnect, onDisconnect, onReconnect, confirm = true, headingLevel = 3, strings, as = 'div', className, ...rest }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('connectedAccounts', strings);
   const a = account || {};
   const status = STATUS[a.status] ? a.status : 'disconnected';
   const [ask, setAsk] = React.useState(null);   // "connect" | "disconnect"
@@ -127,7 +121,7 @@ export function ConnectedAccount({ account, onConnect, onDisconnect, onReconnect
 }
 
 export function ConnectedAccounts({ accounts = [], label, className, strings, ...rest }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('connectedAccounts', strings);
   const { onConnect, onDisconnect, onReconnect, confirm, headingLevel, ...own } = rest;
   return (
     <ul className={cx('plx-connected-accounts', className)} aria-label={label || t.label} {...own}>

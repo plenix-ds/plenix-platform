@@ -19,9 +19,10 @@ import { Button } from '../../components/Button/Button.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { useUnsavedGuard } from '../../providers/UnsavedGuard.jsx';
 import { cx } from '../../utils/cx.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function SaveAs({ locations = [], initialName = '', initialLocation = '', initialFormat = '', formats = [], onSave, onCancel, strings, className }) {
-  const t = Object.assign({ title: 'Save as', name: 'Name', location: 'Location', format: 'Format', save: 'Save copy', cancel: 'Cancel', required: 'Enter a name and choose a location.', failed: 'Could not save the copy. Try again.', unsaved: 'Your changes will be lost.' }, strings);
+  const t = useStrings('saveAs', strings);
   const [name, setName] = React.useState(initialName), [location, setLocation] = React.useState(initialLocation);
   const [format, setFormat] = React.useState(initialFormat || formats[0]?.value || '');
   const [busy, setBusy] = React.useState(false), [error, setError] = React.useState(''), [saved, setSaved] = React.useState(false);

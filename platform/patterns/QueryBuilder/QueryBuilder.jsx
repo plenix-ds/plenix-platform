@@ -42,7 +42,7 @@ import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { announce } from '../../utils/announce.jsx';
 import { formatNumber } from '../../utils/format.js';
-import { OPERATORS, WITHIN, fieldOf, kindOf, optionsOf, newCondition, nextId } from '../../utils/fields.js';
+import { OPERATORS, WITHIN, fieldOf, kindOf, optionsOf, newCondition, nextId, fieldWords } from '../../utils/fields.js';
 import { Button } from '../../components/Button/Button.jsx';
 import { Input, Select } from '../../components/Input/Input.jsx';
 import { NumberInput } from '../../components/NumberInput/NumberInput.jsx';
@@ -51,14 +51,10 @@ import { Combobox } from '../../components/Combobox/Combobox.jsx';
 import { SegmentedControl } from '../../components/SegmentedControl/SegmentedControl.jsx';
 import { CodeBlock } from '../../components/CodeBlock/CodeBlock.jsx';
 import { VisuallyHidden } from '../../components/VisuallyHidden/VisuallyHidden.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { createTranslator } from '../../providers/LocaleProvider.jsx';
+import { formatLocale } from '../../utils/format.js';
 
-const STRINGS = {
-  builder: 'Builder', text: 'Text', viewLabel: 'View', where: 'Where', and: 'And', or: 'Or', andWord: 'and', orWord: 'or',
-  join: 'Match', all: 'All rules', any: 'Any rule', addRule: 'Add rule', addGroup: 'Add group', removeRule: 'Remove rule',
-  removeGroup: 'Remove group', field: 'Field', operator: 'Operator', value: 'Value', rule: 'Rule {n}', group: 'Group {n}',
-  empty: 'No rules: every record matches.', everything: 'Every record', matches: '{n} matches', match: '{n} match',
-  textTitle: 'Query', added: 'Rule added', groupAdded: 'Group added', removed: 'Rule removed', groupRemoved: 'Group removed',
-};
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const blank = (x) => x === null || x === undefined || x === '' || (Array.isArray(x) && !x.length);
 const NO_VALUE = { empty: true, nempty: true };
@@ -66,8 +62,9 @@ const quote = (s) => '“' + s + '”';
 
 // the query as one sentence: rules in the field type's words, groups in parentheses; unfinished rules left out
 export function formatQuery(node, fields = [], strings) {
-  const t = Object.assign({}, STRINGS, strings);
-  const words = (f, op) => ((OPERATORS[kindOf(f)] || []).find((o) => o[0] === op) || [op, op])[1];
+  const t = Object.assign({}, createTranslator(formatLocale()).section('queryBuilder'), strings);   // a plain function: no hook
+  const fw = createTranslator(formatLocale()).section('fields');   // a plain function: no hook
+  const words = (f, op) => (fieldWords.operators(fw, kindOf(f)).find((o) => o[0] === op) || [op, op])[1];
   const rule = (c) => {
     const f = fieldOf(fields, c.field);
     if (!f) return null;
@@ -76,7 +73,7 @@ export function formatQuery(node, fields = [], strings) {
     const k = kindOf(f);
     let v;
     if (k === 'select' || k === 'multi') { const o = optionsOf(f); v = [].concat(c.value).map((x) => quote((o.find((p) => p.value === x) || { label: x }).label)).join(', '); }
-    else if (k === 'date' && c.op === 'within') v = (WITHIN.find((w) => w.value === c.value) || WITHIN[0]).label;
+    else if (k === 'date' && c.op === 'within') v = (fieldWords.within(fw).find((w) => w.value === c.value) || fieldWords.within(fw)[0]).label;
     else if (k === 'text') v = quote(c.value);
     else v = String(c.value);
     return f.label + ' ' + words(f, c.op) + ' ' + v;
@@ -99,6 +96,7 @@ function Count({ n, t }) {
 const Labeled = ({ id, text, children }) => <>{<VisuallyHidden as="label" htmlFor={id}>{text}</VisuallyHidden>}{children}</>;
 
 function RuleValue({ c, f, set, id, label }) {
+  const fw = useStrings('fields');
   const k = kindOf(f);
   if (NO_VALUE[c.op]) return <span className="plx-query-builder__value plx-query-builder__value--none" />;
   let control;
@@ -106,7 +104,7 @@ function RuleValue({ c, f, set, id, label }) {
     control = <Combobox id={id} multiple className="plx-query-builder__value" options={optionsOf(f).map((o) => ({ value: o.value, label: o.label }))}
       values={[].concat(c.value || [])} onChange={(v) => set({ value: v })} />;
   } else if (k === 'date' && c.op === 'within') {
-    control = <Select id={id} className="plx-query-builder__value" value={c.value || WITHIN[0].value} options={WITHIN.map((w) => ({ value: w.value, label: w.label }))} onChange={(e) => set({ value: e.target.value })} />;
+    control = <Select id={id} className="plx-query-builder__value" value={c.value || WITHIN[0].value} options={fieldWords.within(fw).map((w) => ({ value: w.value, label: w.label }))} onChange={(e) => set({ value: e.target.value })} />;
   } else if (k === 'date') {
     control = <DatePicker id={id} className="plx-query-builder__value" value={c.value || null} onChange={(v) => set({ value: v || '' })} />;
   } else if (k === 'number') {
@@ -118,6 +116,7 @@ function RuleValue({ c, f, set, id, label }) {
 }
 
 function Rule({ c, index, fields, uid, put, remove, t }) {
+  const fw = useStrings('fields');
   const f = fieldOf(fields, c.field);
   const base = uid + '-' + c.id;
   const name = fill(t.rule, { n: index + 1 });
@@ -128,7 +127,7 @@ function Rule({ c, index, fields, uid, put, remove, t }) {
           onChange={(e) => put(newCondition(fieldOf(fields, e.target.value)))} />
       </Labeled>
       <Labeled id={base + '-o'} text={name + ', ' + t.operator}>
-        <Select id={base + '-o'} className="plx-query-builder__operator" value={c.op} options={(OPERATORS[kindOf(f)] || []).map(([value, label]) => ({ value, label }))}
+        <Select id={base + '-o'} className="plx-query-builder__operator" value={c.op} options={fieldWords.operators(fw, kindOf(f)).map(([value, label]) => ({ value, label }))}
           onChange={(e) => { const op = e.target.value; put({ op, value: op === 'within' ? WITHIN[0].value : c.op === 'within' || NO_VALUE[op] ? '' : c.value }); }} />
       </Labeled>
       <RuleValue c={c} f={f} set={put} id={base + '-v'} label={name + ', ' + t.value} />
@@ -175,8 +174,9 @@ function Group({ node, setNode, depth, index, maxDepth, fields, uid, focus, onRe
   );
 }
 
-export function QueryBuilder({ fields = [], value, onChange, label = 'Query', maxDepth = 3, view: viewProp, onViewChange, views = true, matches, strings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
+export function QueryBuilder({ fields = [], value, onChange, label, maxDepth = 3, view: viewProp, onViewChange, views = true, matches, strings, className }) {
+  const t = useStrings('queryBuilder', strings);
+  label = label ?? t.textTitle;
   const node = value || { join: 'and', items: [] };
   const [own, setOwn] = React.useState('builder');
   const view = viewProp || own;

@@ -17,11 +17,12 @@ import { Button } from '../../components/Button/Button.jsx';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { Stack } from '../../components/Stack/Stack.jsx';
 import { cx } from '../../utils/cx.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 const display = (v) => v == null ? '' : typeof v === 'object' ? JSON.stringify(v) : String(v);
 export function AuditLog({ entries = [], variant = 'table', label, strings, className }) {
   devWarn('AuditLog', { variant }, { variant: ['table','diff'] });
-  const t = Object.assign({ actor: 'Actor', at: 'Time', action: 'Action', target: 'Target', changes: 'Changes', view: 'View changes', field: 'Field', before: 'Before', after: 'After', close: 'Close' }, strings);
+  const t = useStrings('auditLog', strings);
   const [active, setActive] = React.useState(null), entry = entries.find((a) => a.id === active);
   const columns = [
     { field: 'actor', title: t.actor, type: 'person', render: (a) => <Persona name={a.actor?.name || ''} src={a.actor?.src} size="xs" /> },

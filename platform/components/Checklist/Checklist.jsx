@@ -20,9 +20,10 @@ import { Button } from '../Button/Button.jsx';
 import { Text } from '../Text/Text.jsx';
 import { CollapsibleSection } from '../CollapsibleSection/CollapsibleSection.jsx';
 import { cx } from '../../utils/cx.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function Checklist({ title, items = [], completed = [], onChange, progress = true, collapsible = false, onDismiss, strings, className }) {
-  const t = Object.assign({ dismiss: 'Dismiss checklist', progress: 'Tasks completed' }, strings);
+  const t = useStrings('checklist', strings);
   const done = items.filter((item) => completed.includes(item.id)).length;
   const body = <Stack className="plx-checklist__items">
     {progress ? <Stack gap="xs"><Text variant="data" role="status">{done + ' / ' + items.length}</Text>

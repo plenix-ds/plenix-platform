@@ -24,9 +24,10 @@ import { Button } from '../../components/Button/Button.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { useUnsavedGuard } from '../../providers/UnsavedGuard.jsx';
 import { cx } from '../../utils/cx.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function ImportWizard({ open, title, onClose, fields = [], onRead, onImport, strings, className }) {
-  const t = Object.assign({ title: 'Import records', mapping: 'Map columns', review: 'Review', results: 'Results', column: 'Source column', choose: 'Choose a column', missing: 'Map every required field.', invalid: 'The source has no usable columns or rows.', done: 'Done', imported: 'Import complete', source: 'Source', cancel: 'Cancel', unsaved: 'Your import mapping will be lost.' }, strings);
+  const t = useStrings('importWizard', strings);
   const [data, setData] = React.useState(null), [source, setSource] = React.useState(null), [mapping, setMapping] = React.useState({}), [complete, setComplete] = React.useState(false);
   const epoch = React.useRef(0), lock = React.useRef(false), loaded = React.useRef(false);
   const [busy, setBusy] = React.useState(false);

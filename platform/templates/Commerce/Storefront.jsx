@@ -46,17 +46,12 @@ import { Tabs } from '../../components/Tabs/Tabs.jsx';
 import { Table } from '../../components/Table/Table.jsx';
 import { useUid } from '../../utils/layer.js';
 import { fill, useCommercePage } from './shared.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const LISTING_STRINGS = {
-  label: 'Products', search: 'Search products', count: '{n} products', one: '1 product', category: 'Category', noun: 'product',
-  name: 'Name', price: 'Price', rating: 'Rating', availability: 'Availability', inStock: 'In stock', outOfStock: 'Out of stock', sale: 'On sale',
-  yes: 'Yes', no: 'No', empty: 'No products match', emptyText: 'Remove a filter or search for something else.', clear: 'Clear filters and search',
-  results: '{n} products shown', resultsOne: '1 product shown', none: 'No products shown',
-};
 
 // the products' fields, for the filter, the category quick filter and the sort (utils/fields.js)
 export function productFields(categories = [], strings) {
-  const t = Object.assign({}, LISTING_STRINGS, strings);
+  const t = useStrings('commerce.listing', strings);
   return [
     { value: 'title', label: t.name, kind: 'text' },
     { value: 'category', label: t.category, kind: 'select', options: categories.map((c) => ({ value: c.value, label: c.label })) },
@@ -72,7 +67,7 @@ const SIZES = { s: 'sm', m: 'md', l: 'lg' };
 export function ProductListing({ products = [], categories = [], title, description, headingLevel = 1, hrefFor, onOpen, onAddToCart, pageSize = 12,
   query, onQueryChange, defaultView, search = true, strings, className }) {
   useCommercePage('product-listing');
-  const t = Object.assign({}, LISTING_STRINGS, strings);
+  const t = useStrings('commerce.listing', strings);
   const fields = React.useMemo(() => productFields(categories, strings), [categories, strings]);
   const v = useCollectionView(fields, { text: (p) => [p.title, p.meta, p.category].join(' '), quick: { category: 'list' }, view: Object.assign({ layout: 'gallery', size: 'm' }, defaultView) });
   // the search text may come from the page (ProductDiscovery's search)
@@ -114,15 +109,11 @@ export function ProductListing({ products = [], categories = [], title, descript
   );
 }
 
-const DISCOVERY_STRINGS = {
-  title: 'Shop', search: 'Search the shop', categories: 'Shop by category', recommended: 'Recommended for you', results: 'Products',
-  resultsFor: 'Results for “{q}”', count: '{n} products', one: '1 product', suggestions: 'Try one of these', clear: 'Clear the search',
-};
 
 export function ProductDiscovery({ products = [], categories = [], recommended = [], title, headingLevel = 1, hrefFor, onOpen, onAddToCart, suggestions,
   pageSize = 12, strings, className }) {
   useCommercePage('product-discovery');
-  const t = Object.assign({}, DISCOVERY_STRINGS, strings);
+  const t = useStrings('commerce.discovery', strings);
   const uid = useUid('plx-commerce');
   const [text, setText] = React.useState('');
   const [query, setQuery] = React.useState('');
@@ -185,16 +176,11 @@ export function ProductDiscovery({ products = [], categories = [], recommended =
   );
 }
 
-const DETAIL_STRINGS = {
-  gallery: 'Pictures of {title}', reviews: '{n} reviews', review: '1 review', inStock: 'In stock', lowStock: 'Only {n} left', outOfStock: 'Out of stock',
-  addToCart: 'Add to cart', added: '{title} added to your cart', viewCart: 'View cart', choose: 'Choose a {option}.', missing: 'Choose your options first.',
-  description: 'Description', details: 'Details', delivery: 'Delivery and returns', detail: 'Detail', value: 'Value', related: 'You may also like', rating: 'Rating',
-};
 
 export function ProductDetail({ product, value, defaultValue, onChange, quantity, onQuantityChange, onAddToCart, cartHref, related = [], hrefFor, onOpen,
   headingLevel = 1, maxQuantity, strings, className }) {
   useCommercePage('product-detail');
-  const t = Object.assign({}, DETAIL_STRINGS, strings);
+  const t = useStrings('commerce.productDetail', strings);
   const uid = useUid('plx-commerce');
   const p = product || {};
   const [own, setOwn] = React.useState(() => defaultValue || {});

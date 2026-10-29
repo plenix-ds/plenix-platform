@@ -19,9 +19,10 @@ import { Button } from '../../components/Button/Button.jsx';
 import { Checklist } from '../../components/Checklist/Checklist.jsx';
 import { Tour } from '../Tour/Tour.jsx';
 import { cx } from '../../utils/cx.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function Onboarding({ title, children, welcome = true, tasks = [], completed = [], onChange, steps = [], onDismiss, onWelcomeDismiss, onTourStep, onTourFinish, strings, className }) {
-  const t = Object.assign({ start: 'Get started', skip: 'Skip welcome', tour: 'Take a tour', checklist: 'Get started', close: 'Close' }, strings);
+  const t = useStrings('onboarding', strings);
   const [shown, setShown] = React.useState(welcome), [tour, setTour] = React.useState(false);
   const close = () => { setShown(false); if (onWelcomeDismiss) onWelcomeDismiss(); };
   return <Stack className={cx('plx-onboarding', className)}>

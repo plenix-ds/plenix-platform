@@ -39,28 +39,25 @@ import { Button } from '../../components/Button/Button.jsx';
 import { Input } from '../../components/Input/Input.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
-import { PanelTrigger, PanelHead, Pick, MultiPick, useReorder, REORDER_STRINGS, fill } from '../CommandBar/panel-parts.jsx';
-import { KIND_ICONS, OPERATORS, WITHIN, fieldOf, kindOf, optionsOf, conditionsOf, newCondition, nextId } from '../../utils/fields.js';
+import { PanelTrigger, PanelHead, Pick, MultiPick, useReorder, fill } from '../CommandBar/panel-parts.jsx';
+import { KIND_ICONS, OPERATORS, WITHIN, fieldOf, kindOf, optionsOf, conditionsOf, newCondition, nextId, fieldWords } from '../../utils/fields.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = Object.assign({
-  label: 'Filter', info: 'Only the records that meet the conditions are shown; a condition left unfinished does not filter.',
-  sub: 'In this view, show records', where: 'Where', and: 'and', or: 'or', empty: 'No conditions: every record is shown.',
-  addCondition: 'Add condition', addGroup: 'Add condition group', remove: 'Remove {what}', condition: 'condition', group: 'condition group',
-  value: 'Enter a value', choose: 'Choose options', field: 'Field', operator: 'Operator', join: 'And or or',
-}, REORDER_STRINGS);
 const fieldOption = (f) => ({ value: f.value, label: f.label, icon: KIND_ICONS[kindOf(f)] });
 
 function ConditionValue({ c, f, set, t }) {
+  const fw = useStrings('fields');
   const k = kindOf(f);
   if (c.op === 'empty' || c.op === 'nempty') return <span className="plx-find-pick--value" />;
   if (k === 'select' || k === 'multi') return <MultiPick label={f.label} options={optionsOf(f)} value={[].concat(c.value || [])} onChange={(v) => set({ value: v })} placeholder={t.choose} />;
-  if (k === 'date' && c.op === 'within') return <Pick label={f.label} size="value" value={c.value || WITHIN[0].value} options={WITHIN} onChange={(v) => set({ value: v })} />;
+  if (k === 'date' && c.op === 'within') return <Pick label={f.label} size="value" value={c.value || WITHIN[0].value} options={fieldWords.within(fw)} onChange={(v) => set({ value: v })} />;
   if (k === 'date') return <Input type="date" data aria-label={f.label} className="plx-find-pick--value" value={c.value} onChange={(e) => set({ value: e.target.value })} />;
   if (k === 'number') return <Input type="number" data aria-label={f.label} placeholder={t.value} className="plx-find-pick--value" value={c.value} onChange={(e) => set({ value: e.target.value })} />;
   return <Input aria-label={f.label} placeholder={t.value} className="plx-find-pick--value" value={c.value} onChange={(e) => set({ value: e.target.value })} />;
 }
 
 function ConditionRows({ fields, node, setNode, nested, t }) {
+  const fw = useStrings('fields');
   const items = node.items;
   const setItems = (list) => setNode(Object.assign({}, node, { items: list }));
   const nameOf = (x) => (x.group ? t.group : fieldOf(fields, x.field).label);
@@ -94,7 +91,7 @@ function ConditionRows({ fields, node, setNode, nested, t }) {
           <div key={x.id} {...ro.rowProps(i, f.label)}>
             {join(i)}
             <Pick label={t.field} value={x.field} options={fields.map(fieldOption)} onChange={(v) => put(i, newCondition(fieldOf(fields, v)))} />
-            <Pick label={t.operator} size="op" value={x.op} options={OPERATORS[kindOf(f)].map(([value, label]) => ({ value, label }))}
+            <Pick label={t.operator} size="op" value={x.op} options={fieldWords.operators(fw, kindOf(f)).map(([value, label]) => ({ value, label }))}
               onChange={(v) => put(i, { op: v, value: v === 'within' ? WITHIN[0].value : x.op === 'within' ? '' : x.value })} />
             <ConditionValue c={x} f={f} set={(ch) => put(i, ch)} t={t} />
             {remove(i, t.condition)}
@@ -108,7 +105,7 @@ function ConditionRows({ fields, node, setNode, nested, t }) {
 }
 
 export function FilterPanel({ fields = [], value, onChange, inline = false, strings, open, onOpenChange, request }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('filterPanel', strings);
   const node = value || { join: 'and', items: [] };
   const n = conditionsOf(node).length;
   const add = (x) => onChange(Object.assign({}, node, { items: node.items.concat(x) }));

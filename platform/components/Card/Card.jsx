@@ -108,15 +108,13 @@ import { useUid } from '../../utils/layer.js';
 import { Icon, asIcon as iconElement } from '../Icon/Icon.jsx';
 import { Badge } from '../Badge/Badge.jsx';
 import { formatNumber } from '../../utils/format.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const PANEL_STRINGS = { collapse: 'Collapse {title}', expand: 'Expand {title}', section: 'section' };
-const MEDIA_CARD_STRINGS = { select: 'Select {title}', item: 'item', assets: '{n} assets', asset: '{n} asset' };
-const CARD_STRINGS = { expand: 'Expand {title}', collapse: 'Collapse {title}', card: 'card' };
 
 const H = ({ level, ...props }) => React.createElement(level ? 'h' + level : 'div', props);
 
 export function Panel({ icon, title, description, actions, footer, surface = 'flat', elevation = 'outline', flush = false, headingLevel = 2, collapsible = false, defaultExpanded = true, expanded, onToggle, strings, className, children, ...rest }) {
-  const t = Object.assign({}, PANEL_STRINGS, strings);
+  const t = useStrings('card.panel', strings);
   const id = useUid('plx-panel');
   const [own, setOwn] = React.useState(defaultExpanded);
   const open = !collapsible || (expanded === undefined ? own : expanded);
@@ -152,7 +150,7 @@ function Opener({ href, onOpen, current, className, children }) {
 export function Card({ icon, title, meta, actions, surface = 'flat', elevation = 'outline', selected = false, href, onOpen, headingLevel = 3, accent, expandable = false, defaultExpanded = false, expanded, onToggle,
   strings, className, children, layout = 'default', bodyLayout = 'default', titleWrap = false, ...rest }) {
   const interactive = !!(href || onOpen);
-  const t = Object.assign({}, CARD_STRINGS, strings);
+  const t = useStrings('card.card', strings);
   const id = useUid('plx-card');
   const [own, setOwn] = React.useState(defaultExpanded);
   const open = !expandable || (expanded === undefined ? own : expanded);
@@ -181,7 +179,7 @@ export function Card({ icon, title, meta, actions, surface = 'flat', elevation =
 
 export function MediaCard({ src, alt = '', icon, title, meta, badge, aspect = '4/3', selected = false, selecting = false, onSelectChange,
   selectLabel, href, onOpen, actions, type, typeIcon, status, stack = false, count, strings, className, onClick, onDoubleClick, ...rest }) {
-  const t = Object.assign({}, MEDIA_CARD_STRINGS, strings);
+  const t = useStrings('card.mediaCard', strings);
   // a collection's count (library wave 12): "24 assets" in the data font, unless the page gives its own meta
   const line = meta || (typeof count === 'number' ? (count === 1 ? t.asset : t.assets).split('{n}').join(formatNumber(count)) : null);
   const statusEl = status ? (React.isValidElement(status) ? status : <Badge tone={status.tone} icon={status.icon}>{status.label}</Badge>) : null;

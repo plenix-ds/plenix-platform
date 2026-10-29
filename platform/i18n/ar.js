@@ -361,7 +361,12 @@ export default {
       "فرز من غير المحدد إلى المحدد",
       "فرز من المحدد إلى غير المحدد"
     ],
-    "unread": "غير مقروء ({count})"
+    "unread": "غير مقروء ({count})",
+    "columnsLabel": "أعمدة {label}",
+    "rowsLabel": "صفوف {label}",
+    "columnActions": "إجراءات العمود {title}",
+    "unreadRow": "{label}، غير مقروء",
+    "editCell": "تعديل {title}"
   },
   "dataPill": {
     "male": "ذكر",
@@ -643,7 +648,11 @@ export default {
   },
   "resizable": {
     "width": "عرض {label}",
-    "height": "ارتفاع {label}"
+    "height": "ارتفاع {label}",
+    "minWidth": "أصغر عرض لـ {label} ({value}px)",
+    "maxWidth": "أكبر عرض لـ {label} ({value}px)",
+    "minHeight": "أصغر ارتفاع لـ {label} ({value}px)",
+    "maxHeight": "أكبر ارتفاع لـ {label} ({value}px)"
   },
   "richTextEditor": {
     "toolbar": "التنسيق",
@@ -842,7 +851,8 @@ export default {
       "few": "{n} عناصر",
       "many": "{n} عنصرًا",
       "other": "{n} عنصر"
-    }
+    },
+    "unreadRow": "{label}، غير مقروء"
   },
   "aiSearch": {
     "label": "بحث بالذكاء الاصطناعي",
@@ -893,7 +903,8 @@ export default {
     "saved": "تم الحفظ",
     "offline": "غير متصل",
     "failed": "فشل الحفظ",
-    "retry": "إعادة المحاولة"
+    "retry": "إعادة المحاولة",
+    "unsaved": "لم يتم حفظ تغييراتك."
   },
   "avatarUpload": {
     "change": "تغيير الصورة",
@@ -917,7 +928,8 @@ export default {
     "single": "حدّد {noun} واحدًا لـ {action}",
     "label": "إجراءات التحديد",
     "more": "المزيد من الإجراءات",
-    "noun": "عنصر"
+    "noun": "عنصر",
+    "plural": "عناصر"
   },
   "columnsMenu": {
     "label": "الأعمدة",
@@ -954,7 +966,16 @@ export default {
     "why": "حدّد {plural} لـ {action}",
     "single": "حدّد {noun} واحدًا لـ {action}",
     "preset": "أي",
-    "moreLabel": "المزيد من الإجراءات"
+    "moreLabel": "المزيد من الإجراءات",
+    "from": "",
+    "to": "",
+    "reorder": {
+      "moved": "تم نقل {name} إلى الموضع {position} من {total}",
+      "row": "{name}، {position} من {total}. المفتاحان Alt + السهم لأعلى أو لأسفل ينقلانه",
+      "reorder": "إعادة ترتيب {name}",
+      "moveUp": "نقل لأعلى",
+      "moveDown": "نقل لأسفل"
+    }
   },
   "commandPalette": {
     "title": "الأوامر",
@@ -1011,7 +1032,32 @@ export default {
     "it": "ه",
     "them": "هم",
     "names": "محذوف",
-    "noun": "عنصر"
+    "noun": "عنصر",
+    "plural": "عناصر",
+    "items": {
+      "zero": "لا عناصر",
+      "one": "عنصر واحد",
+      "two": "عنصران",
+      "few": "{n} عناصر",
+      "many": "{n} عنصرًا",
+      "other": "{n} عنصر"
+    },
+    "titleItems": {
+      "zero": "حذف لا عناصر؟",
+      "one": "حذف عنصر واحد؟",
+      "two": "حذف عنصرين؟",
+      "few": "حذف {n} عناصر؟",
+      "many": "حذف {n} عنصرًا؟",
+      "other": "حذف {n} عنصر؟"
+    },
+    "phraseItems": {
+      "zero": "حذف لا عناصر",
+      "one": "حذف عنصر واحد",
+      "two": "حذف عنصرين",
+      "few": "حذف {n} عناصر",
+      "many": "حذف {n} عنصرًا",
+      "other": "حذف {n} عنصر"
+    }
   },
   "duplicateAction": {
     "duplicate": "تكرار",
@@ -1486,7 +1532,12 @@ export default {
     "thinking": "جارٍ التفكير",
     "label": "الرسالة",
     "placeholder": "اكتب رسالة",
-    "sendLabel": "إرسال"
+    "sendLabel": "إرسال",
+    "conversation": "المحادثة",
+    "message": "الرسالة",
+    "send": "إرسال",
+    "typing": "جارٍ الكتابة",
+    "you": "أنت"
   },
   "checklist": {
     "dismiss": "تجاهل قائمة المهام",
@@ -1686,7 +1737,12 @@ export default {
     "choose": "اختر خيارات",
     "field": "الحقل",
     "operator": "العامل",
-    "join": "و أو أو"
+    "join": "و أو أو",
+    "moved": "تم نقل {name} إلى الموضع {position} من {total}",
+    "row": "{name}، {position} من {total}. المفتاحان Alt + السهم لأعلى أو لأسفل ينقلانه",
+    "reorder": "إعادة ترتيب {name}",
+    "moveUp": "نقل لأعلى",
+    "moveDown": "نقل لأسفل"
   },
   "formFlow": {
     "create": "إنشاء",
@@ -1712,7 +1768,12 @@ export default {
     "remove": "إزالة التجميع حسب {name}",
     "removeTip": "إزالة المجموعة",
     "field": "الحقل",
-    "order": "الترتيب"
+    "order": "الترتيب",
+    "moved": "تم نقل {name} إلى الموضع {position} من {total}",
+    "row": "{name}، {position} من {total}. المفتاحان Alt + السهم لأعلى أو لأسفل ينقلانه",
+    "reorder": "إعادة ترتيب {name}",
+    "moveUp": "نقل لأعلى",
+    "moveDown": "نقل لأسفل"
   },
   "helpPanel": {
     "title": "مساعدة",
@@ -1795,7 +1856,14 @@ export default {
     "view": "عرض الشخص"
   },
   "quickFilter": {
-    "preset": "أي"
+    "preset": "أي",
+    "find": "ابحث عن {noun}",
+    "none": "لا يوجد {noun} مطابق",
+    "clear": "مسح",
+    "all": "الكل",
+    "custom": "نطاق مخصص",
+    "from": "من",
+    "to": "إلى"
   },
   "relatedAssets": {
     "empty": "لا توجد أصول مرتبطة"
@@ -1848,7 +1916,12 @@ export default {
     "remove": "إزالة الترتيب حسب {name}",
     "removeTip": "إزالة الترتيب",
     "field": "الحقل",
-    "direction": "الاتجاه"
+    "direction": "الاتجاه",
+    "moved": "تم نقل {name} إلى الموضع {position} من {total}",
+    "row": "{name}، {position} من {total}. المفتاحان Alt + السهم لأعلى أو لأسفل ينقلانه",
+    "reorder": "إعادة ترتيب {name}",
+    "moveUp": "نقل لأعلى",
+    "moveDown": "نقل لأسفل"
   },
   "tour": {
     "next": "التالي",
@@ -1914,14 +1987,107 @@ export default {
     "label": "الإجراءات"
   },
   "appHeader": {
-    "aria-label": "التطبيقات"
+    "aria-label": "التطبيقات",
+    "account": {
+      "trigger": "الحساب والإعدادات لـ {name}",
+      "menu": "الحساب",
+      "myAccount": "حسابي",
+      "settings": "إعدادات Plenix",
+      "appSettings": "إعدادات {app}",
+      "app": "التطبيق",
+      "density": "كثافة العرض",
+      "compact": "مضغوط",
+      "standard": "قياسي",
+      "comfortable": "مريح",
+      "signOut": "تسجيل الخروج"
+    }
   },
   "form": {
     "label": "إجراءات النموذج"
   },
   "reviewFlow": {
     "label": "بانتظار المراجعة",
-    "noun": "عنصر"
+    "noun": "عنصر",
+    "plural": "عناصر",
+    "queueLabel": "بانتظار المراجعة",
+    "flow": {
+      "reviewers": "المراجعون",
+      "history": "السجل",
+      "comment": "تعليق",
+      "commentHint": "مطلوب للرفض أو لطلب التعديلات.",
+      "approve": "موافقة",
+      "changes": "طلب تعديلات",
+      "reject": "رفض",
+      "waiting": "بالانتظار",
+      "human": "محتوى مُنشأ. يراجعه شخص قبل استخدامه.",
+      "needReason": "اذكر السبب ليعرف الكاتب ما الذي يجب تغييره.",
+      "done": "{decision}: {title}",
+      "decisions": "قرارات المراجعة"
+    },
+    "queue": {
+      "name": "الاسم",
+      "type": "النوع",
+      "submittedBy": "قدّمه",
+      "submitted": "تاريخ التقديم",
+      "status": "الحالة",
+      "approve": "موافقة",
+      "changes": "طلب تعديلات",
+      "reject": "رفض",
+      "rejectTitle": "رفض {what}؟",
+      "changesTitle": "طلب تعديلات على {what}؟",
+      "reason": "السبب",
+      "changesLabel": "ما الذي يجب تغييره",
+      "reasonHint": "يراه المؤلفون مع القرار.",
+      "needReason": "اذكر السبب ليعرف المؤلفون ما الذي يجب تغييره.",
+      "done": "{what} {decision}",
+      "count": "{n} {plural}",
+      "noun": "عنصر",
+      "plural": "عناصر",
+      "queueLabel": "بانتظار المراجعة",
+      "items": {
+        "zero": "لا عناصر",
+        "one": "عنصر واحد",
+        "two": "عنصران",
+        "few": "{n} عناصر",
+        "many": "{n} عنصرًا",
+        "other": "{n} عنصر"
+      },
+      "doneItems": {
+        "approved": {
+          "zero": "لم تتم الموافقة على أي عنصر",
+          "one": "تمت الموافقة على عنصر واحد",
+          "two": "تمت الموافقة على عنصرين",
+          "few": "تمت الموافقة على {n} عناصر",
+          "many": "تمت الموافقة على {n} عنصرًا",
+          "other": "تمت الموافقة على {n} عنصر"
+        },
+        "rejected": {
+          "zero": "لم يتم رفض أي عنصر",
+          "one": "تم رفض عنصر واحد",
+          "two": "تم رفض عنصرين",
+          "few": "تم رفض {n} عناصر",
+          "many": "تم رفض {n} عنصرًا",
+          "other": "تم رفض {n} عنصر"
+        },
+        "changes-requested": {
+          "zero": "لم يتم طلب تعديلات على أي عنصر",
+          "one": "تم طلب تعديلات على عنصر واحد",
+          "two": "تم طلب تعديلات على عنصرين",
+          "few": "تم طلب تعديلات على {n} عناصر",
+          "many": "تم طلب تعديلات على {n} عنصرًا",
+          "other": "تم طلب تعديلات على {n} عنصر"
+        }
+      }
+    },
+    "statuses": {
+      "draft": "مسودة",
+      "in-review": "قيد المراجعة",
+      "approved": "تمت الموافقة",
+      "changes-requested": "مطلوب تعديلات",
+      "rejected": "مرفوض",
+      "published": "منشور",
+      "scheduled": "مجدول"
+    }
   },
   "collection": {
     "selected": {
@@ -1932,5 +2098,507 @@ export default {
       "many": "تم تحديد {count} عنصرًا",
       "other": "تم تحديد {count} عنصر"
     }
+  },
+  "offboarding": {
+    "backup": "صدّر بياناتك",
+    "export": "تصدير البيانات",
+    "review": "أكّد اختيارك",
+    "reason": "السبب (اختياري)",
+    "confirmName": "اكتب اسم الحساب للتأكيد",
+    "mismatch": "أدخل اسم الحساب كما هو تمامًا.",
+    "cancel": "الإبقاء على الحساب",
+    "deleteAccount": "حذف الحساب",
+    "cancelSubscription": "إلغاء الاشتراك"
+  },
+  "imageUpload": {
+    "drop": "اسحب صورة وأفلتها هنا، أو",
+    "dropMany": "اسحب الصور وأفلتها هنا، أو",
+    "choose": "اختيار صورة",
+    "chooseMany": "اختيار صور",
+    "replace": "استبدال",
+    "remove": "إزالة {name}",
+    "alt": "الوصف",
+    "altHint": "صِف هذه الصورة لمن لا يستطيعون رؤيتها",
+    "tooLarge": "{name} أكبر من {max}",
+    "notImage": "{name} ليس صورة",
+    "removed": "تمت إزالة {name}",
+    "added": {
+      "zero": "لم تتم إضافة صور",
+      "one": "تمت إضافة صورة واحدة",
+      "two": "تمت إضافة صورتين",
+      "few": "تمت إضافة {n} صور",
+      "many": "تمت إضافة {n} صورة",
+      "other": "تمت إضافة {n} صورة"
+    },
+    "crop": {
+      "title": "قصّ الصورة",
+      "zoom": "التكبير",
+      "frame": "منطقة القص. اسحب الصورة أو حرّكها بمفاتيح الأسهم",
+      "apply": "تطبيق",
+      "cancel": "إلغاء"
+    }
+  },
+  "voteTally": {
+    "approve": "موافقة",
+    "deny": "رفض",
+    "abstain": "امتناع",
+    "turnedOff": "متوقف",
+    "notVoted": "لم يصوّتوا",
+    "voteOf": "تصويت {name}",
+    "hiddenUntilClosed": "مخفي حتى يُغلق التصويت",
+    "totalsOnly": "المجاميع فقط",
+    "reconnecting": "إعادة الاتصال",
+    "quorum": "النصاب: حاضر {present}، المطلوب {needed} ({state})",
+    "met": "مكتمل",
+    "notMet": "غير مكتمل",
+    "result": {
+      "open": "مفتوح",
+      "passing": "في طريقه للإقرار",
+      "failing": "في طريقه للرفض",
+      "passed": "أُقرّ",
+      "failed": "رُفض",
+      "tied": "تعادل",
+      "no-quorum": "لا نصاب"
+    }
+  },
+  "card": {
+    "panel": {
+      "collapse": "طيّ {title}",
+      "expand": "توسيع {title}",
+      "section": "قسم"
+    },
+    "mediaCard": {
+      "select": "تحديد {title}",
+      "item": "عنصر",
+      "assets": "{n} أصول",
+      "asset": "{n} أصل"
+    },
+    "card": {
+      "expand": "توسيع {title}",
+      "collapse": "طيّ {title}",
+      "card": "بطاقة"
+    }
+  },
+  "field": {
+    "counter": {
+      "left": "بقي {n} حرفًا",
+      "over": "زاد {n} حرفًا"
+    }
+  },
+  "icon": {
+    "status": {
+      "info": "معلومة",
+      "success": "نجاح",
+      "warning": "تحذير",
+      "danger": "خطأ",
+      "neutral": "ملاحظة"
+    }
+  },
+  "searchResult": {
+    "result": {
+      "path": "في"
+    },
+    "group": {
+      "more": "إظهار الكل"
+    }
+  },
+  "settingsLayout": {
+    "section": {
+      "section": "قسم"
+    }
+  },
+  "commerce": {
+    "orders": {
+      "label": "الطلبات",
+      "search": "البحث في الطلبات",
+      "count": "{n} طلبات",
+      "one": "طلب واحد",
+      "noun": "طلب",
+      "plural": "طلبات",
+      "number": "الترتيب",
+      "date": "التاريخ",
+      "customer": "العميل",
+      "items": "العناصر",
+      "total": "الإجمالي",
+      "status": "الحالة",
+      "open": "فتح",
+      "fulfill": "تنفيذ",
+      "refund": "استرداد",
+      "cancel": "إلغاء الطلب",
+      "cancelMany": "إلغاء الطلبات",
+      "cancelTitle": "إلغاء {what}؟",
+      "cancelText": "سيُبلَّغ العميل ويُعاد إليه المبلغ كاملًا. لا يمكن التراجع عن ذلك.",
+      "keep": "الإبقاء على الطلب",
+      "notFulfillable": "يمكن تنفيذ الطلبات غير المنفّذة فقط",
+      "notCancelable": "يمكن إلغاء الطلبات غير المنفّذة فقط",
+      "notRefundable": "يمكن استرداد الطلبات المشحونة أو المسلَّمة فقط",
+      "fulfilled": "تم وضع علامة شُحن على {what}",
+      "canceled": "تم إلغاء {what}"
+    },
+    "orderDetail": {
+      "context": "الترتيب",
+      "back": "الطلبات",
+      "items": "العناصر",
+      "delivery": "التسليم",
+      "address": "العنوان",
+      "method": "الطريقة",
+      "tracking": "رقم التتبع",
+      "payment": "الدفع",
+      "history": "السجل",
+      "fulfill": "تنفيذ",
+      "refund": "استرداد",
+      "cancel": "إلغاء الطلب",
+      "return": "بدء عملية إرجاع",
+      "cancelTitle": "إلغاء الطلب {number}؟",
+      "cancelText": "سيُبلَّغ العميل ويُعاد إليه المبلغ كاملًا. لا يمكن التراجع عن ذلك.",
+      "keep": "الإبقاء على الطلب"
+    },
+    "subscription": {
+      "plan": "خطتك",
+      "planName": "الخطة",
+      "price": "السعر",
+      "status": "الحالة",
+      "next": "الدفعة التالية",
+      "since": "عضو منذ",
+      "ends": "ينتهي الوصول في",
+      "perPeriod": "{price} لكل {period}",
+      "more": "{amount} أكثر",
+      "less": "{amount} أقل",
+      "change": "تغيير الخطة",
+      "changeTitle": "التغيير إلى {plan}؟",
+      "changeText": "ستدفع {price} اعتبارًا من {date}. حتى ذلك الحين تبقى خطتك الحالية كما هي.",
+      "changeConfirm": "تغيير الخطة",
+      "changed": "ستتغير خطتك إلى {plan} في {date}.",
+      "plans": "الخطط",
+      "current": "الخطة الحالية",
+      "method": "طريقة الدفع",
+      "update": "تحديث طريقة الدفع",
+      "manage": "إيقاف مؤقت أو إلغاء",
+      "manageText": "أوقف مؤقتًا لإيقاف الدفعات فترة مع الاحتفاظ بإعداداتك، أو ألغِ لإنهاء الخطة. في الحالتين يبقى وصولك حتى {date}.",
+      "pause": "إيقاف الاشتراك مؤقتًا",
+      "pauseTitle": "إيقاف اشتراكك مؤقتًا؟",
+      "pauseText": "لا تُسحب أي دفعات أثناء الإيقاف المؤقت. يمكنك استئنافه متى شئت.",
+      "resume": "استئناف الاشتراك",
+      "cancel": "إلغاء الاشتراك",
+      "cancelTitle": "إلغاء اشتراكك؟",
+      "cancelText": "يبقى وصولك حتى {date}، ولن تُحاسَب مرة أخرى.",
+      "keep": "الإبقاء على خطتي",
+      "history": "سجل الفواتير",
+      "date": "التاريخ",
+      "description": "الوصف",
+      "amount": "المبلغ",
+      "invoice": "فاتورة",
+      "invoiceFor": "فاتورة بتاريخ {date}",
+      "paused": "اشتراكك متوقف مؤقتًا.",
+      "canceled": "تم إلغاء اشتراكك.",
+      "statuses": {
+        "active": "نشط",
+        "paused": "متوقف مؤقتًا",
+        "canceled": "أُلغي",
+        "paid": "مدفوعة",
+        "refunded": "مُستردة",
+        "failed": "فشلت"
+      }
+    },
+    "returns": {
+      "label": "إرجاع العناصر",
+      "items": "العناصر",
+      "reason": "السبب",
+      "resolution": "الحل",
+      "review": "مراجعة",
+      "submit": "طلب إرجاع",
+      "cancel": "إلغاء",
+      "window": "يمكنك إرجاع معظم العناصر خلال 30 يومًا من التسليم.",
+      "choose": "اختر عنصرًا واحدًا على الأقل لإرجاعه.",
+      "notReturnable": "لا يمكن إرجاعه",
+      "quantity": "كم عدد {title}",
+      "why": "لماذا تُرجع العناصر؟",
+      "whyRequired": "اختر سببًا.",
+      "note": "هل هناك ما يجب أن نعرفه؟ (اختياري)",
+      "want": "ماذا تريد؟",
+      "wantRequired": "اختر استردادًا أو استبدالًا.",
+      "send": "كيف سترسلها؟",
+      "sendRequired": "اختر طريقة الإرسال.",
+      "refund": "استرداد",
+      "refundTiming": "يصل المبلغ المسترد إلى طريقة الدفع الأصلية بعد 5 إلى 10 أيام عمل من وصول العناصر.",
+      "requested": "تم طلب الإرجاع",
+      "requestedText": "أرسلنا إليك بالبريد الإلكتروني بطاقة الإرجاع والخطوات. وهذه حالة طلب الإرجاع.",
+      "status": "حالة الإرجاع",
+      "returning": "{n} عناصر",
+      "returningOne": "عنصر واحد"
+    },
+    "cart": {
+      "title": "السلة",
+      "items": "{n} عناصر",
+      "item": "عنصر واحد",
+      "lines": "العناصر في سلتك",
+      "remove": "إزالة {title}",
+      "noun": "عنصر",
+      "removed": "تمت إزالة {title} من سلتك.",
+      "undo": "تراجع",
+      "empty": "سلتك فارغة",
+      "emptyText": "اعثر على ما يعجبك وأضفه هنا.",
+      "continue": "متابعة التسوق",
+      "checkout": "إتمام الشراء",
+      "promo": "رمز العرض",
+      "apply": "تطبيق",
+      "applied": "تم تطبيق رمز العرض {code}",
+      "promoError": "لا يمكن استخدام هذا الرمز.",
+      "total": "الإجمالي {total}"
+    },
+    "pay": {
+      "method": "طريقة الدفع",
+      "newCard": "بطاقة جديدة",
+      "number": "رقم البطاقة",
+      "accepted": "Visa أو Mastercard أو American Express أو Discover",
+      "expiry": "تاريخ الانتهاء",
+      "expiryHint": "شهر / سنة",
+      "cvc": "رمز الأمان",
+      "cvcHint": "الأرقام الثلاثة الأخيرة على ظهر البطاقة، أو أربعة على وجه American Express",
+      "name": "الاسم على البطاقة",
+      "billingSame": "عنوان الفوترة هو نفسه عنوان التسليم",
+      "billing": "عنوان الفوترة",
+      "street": "العنوان",
+      "city": "المدينة",
+      "postal": "الرمز البريدي",
+      "secure": "تذهب بيانات بطاقتك مباشرة إلى مزوّد الدفع. ولا تحتفظ هذه الصفحة بها.",
+      "charge": "سيتم تحصيل",
+      "brands": {
+        "visa": "Visa",
+        "mastercard": "Mastercard",
+        "amex": "American Express",
+        "discover": "Discover"
+      }
+    },
+    "payment": {
+      "title": "الدفع",
+      "description": "اختر طريقة الدفع. لن يُحصَّل أي مبلغ قبل الضغط على «ادفع».",
+      "pay": "ادفع {amount}",
+      "cancel": "إلغاء",
+      "declined": "لم تتم عملية الدفع",
+      "declinedText": "تم رفض بطاقتك. تحقق من البيانات أو استخدم بطاقة أخرى.",
+      "paid": "تم استلام الدفعة"
+    },
+    "checkout": {
+      "label": "إتمام الشراء",
+      "contact": "الاتصال",
+      "delivery": "التسليم",
+      "payment": "الدفع",
+      "review": "مراجعة",
+      "placeOrder": "تأكيد الطلب",
+      "cancel": "العودة إلى السلة",
+      "email": "البريد الإلكتروني",
+      "emailHint": "لتأكيد الطلب وتحديثات التسليم.",
+      "account": "لديك حساب؟",
+      "signIn": "تسجيل الدخول",
+      "name": "الاسم الكامل",
+      "street": "العنوان",
+      "street2": "الشقة أو الجناح أو الوحدة (اختياري)",
+      "city": "المدينة",
+      "region": "الولاية أو المنطقة",
+      "postal": "الرمز البريدي",
+      "country": "البلد",
+      "phone": "الهاتف (اختياري)",
+      "phoneHint": "فقط للأسئلة المتعلقة بالتسليم.",
+      "method": "طريقة التسليم",
+      "summary": "ملخص الطلب",
+      "card": "بطاقة تنتهي بـ {last4}",
+      "placed": "تم تقديم الطلب",
+      "checkAnswers": "راجع طلبك قبل تأكيده.",
+      "items": "العناصر",
+      "free": "مجاني"
+    },
+    "confirm": {
+      "title": "شكرًا لك. تم تقديم طلبك.",
+      "number": "رقم الطلب",
+      "copy": "نسخ رقم الطلب",
+      "sent": "أرسلنا تأكيدًا إلى {email}.",
+      "next": "ما يحدث بعد ذلك",
+      "items": "العناصر",
+      "view": "عرض طلبك",
+      "continue": "متابعة التسوق",
+      "delivery": "التسليم",
+      "method": "طريقة التسليم"
+    },
+    "listing": {
+      "label": "المنتجات",
+      "search": "البحث في المنتجات",
+      "count": "{n} منتجات",
+      "one": "منتج واحد",
+      "category": "الفئة",
+      "noun": "منتج",
+      "name": "الاسم",
+      "price": "السعر",
+      "rating": "التقييم",
+      "availability": "التوفر",
+      "inStock": "متوفر",
+      "outOfStock": "غير متوفر في المخزون",
+      "sale": "معروض بسعر مخفّض",
+      "yes": "نعم",
+      "no": "لا",
+      "empty": "لا توجد منتجات مطابقة",
+      "emptyText": "أزل عامل تصفية أو ابحث عن شيء آخر.",
+      "clear": "مسح عوامل التصفية والبحث",
+      "results": "تم عرض {n} منتجات",
+      "resultsOne": "تم عرض منتج واحد",
+      "none": "لا توجد منتجات معروضة"
+    },
+    "discovery": {
+      "title": "المتجر",
+      "search": "البحث في المتجر",
+      "categories": "التسوق حسب الفئة",
+      "recommended": "موصى به لك",
+      "results": "المنتجات",
+      "resultsFor": "نتائج «{q}»",
+      "count": "{n} منتجات",
+      "one": "منتج واحد",
+      "suggestions": "جرّب أحد هذه",
+      "clear": "مسح البحث"
+    },
+    "productDetail": {
+      "gallery": "صور {title}",
+      "reviews": "{n} مراجعات",
+      "review": "مراجعة واحدة",
+      "inStock": "متوفر",
+      "lowStock": "بقي {n} فقط",
+      "outOfStock": "غير متوفر في المخزون",
+      "addToCart": "أضف إلى السلة",
+      "added": "تمت إضافة {title} إلى سلتك",
+      "viewCart": "عرض السلة",
+      "choose": "اختر {option}.",
+      "missing": "اختر خياراتك أولًا.",
+      "description": "الوصف",
+      "details": "التفاصيل",
+      "delivery": "التسليم والإرجاع",
+      "detail": "التفاصيل",
+      "value": "القيمة",
+      "related": "قد يعجبك أيضًا",
+      "rating": "التقييم"
+    },
+    "line": {
+      "quantity": "الكمية، {title}",
+      "qty": "الكمية {n}",
+      "each": "{price} للقطعة"
+    },
+    "summary": {
+      "title": "ملخص الطلب",
+      "subtotal": "المجموع الفرعي",
+      "discount": "الخصم",
+      "shipping": "الشحن",
+      "shippingEstimated": "الشحن التقديري",
+      "tax": "الضريبة",
+      "taxEstimated": "الضريبة التقديرية",
+      "total": "الإجمالي",
+      "free": "مجاني",
+      "items": "{n} عناصر",
+      "item": "عنصر واحد",
+      "times": "× {n}"
+    }
+  },
+  "dnd": {
+    "handle": "نقل {name}",
+    "instructions": "اضغط على Space أو Enter لالتقاطه. مفاتيح الأسهم تحرّكه، وSpace أو Enter يُسقطه، وEscape يعيده.",
+    "pickedUp": "تم التقاط {name}. الموضع {position} من {total}. مفاتيح الأسهم تحرّكه، وSpace أو Enter يُسقطه، وEscape يعيده.",
+    "moved": "{name}، الموضع {position} من {total}",
+    "movedTo": "تم نقل {name} إلى {list}، الموضع {position} من {total}",
+    "dropped": "تم إسقاط {name} في الموضع {position} من {total}",
+    "droppedIn": "تم إسقاط {name} في {list}، الموضع {position} من {total}",
+    "canceled": "أُلغي النقل. عاد {name} إلى الموضع {position} من {total}",
+    "itemPickedUp": "تم التقاط {name}. يمكن لـ {count} أماكن استقباله. مفاتيح الأسهم تختار مكانًا، وSpace أو Enter يُسقطه، وEscape يعيده.",
+    "over": "فوق {target}",
+    "overReject": "{target} لا يستقبل {name}",
+    "droppedOn": "تم إسقاط {name} على {target}",
+    "noTargets": "لا يوجد مكان يستقبل {name}",
+    "itemCanceled": "أُلغي النقل. لم يتم نقل {name}",
+    "repositionPicked": "تم التقاط {name}. مفاتيح الأسهم تحرّكه، مع Shift لمسافة أكبر؛ وSpace أو Enter يُسقطه، وEscape يعيده.",
+    "repositioned": "تم نقل {name}",
+    "repositionDropped": "تم إسقاط {name}",
+    "repositionCanceled": "أُلغي النقل. عاد {name} إلى مكانه",
+    "movable": "قابل للنقل",
+    "list": "القائمة"
+  },
+  "collapsibleSection": {
+    "less": "عرض أقل",
+    "more": "عرض المزيد",
+    "moreCount": "عرض المزيد ({n})"
+  },
+  "fields": {
+    "directions": {
+      "text": [
+        "أ → ي",
+        "ي → أ"
+      ],
+      "select": [
+        "الأول → الأخير",
+        "الأخير → الأول"
+      ],
+      "multi": [
+        "الأول → الأخير",
+        "الأخير → الأول"
+      ],
+      "number": [
+        "1 → 9",
+        "9 → 1"
+      ],
+      "date": [
+        "الأقدم → الأحدث",
+        "الأحدث → الأقدم"
+      ]
+    },
+    "operators": {
+      "text": {
+        "contains": "يحتوي على",
+        "ncontains": "لا يحتوي على",
+        "is": "هو",
+        "isnot": "ليس",
+        "empty": "فارغ",
+        "nempty": "غير فارغ"
+      },
+      "select": {
+        "any": "هو أحد",
+        "none": "ليس أيًّا من",
+        "empty": "فارغ",
+        "nempty": "غير فارغ"
+      },
+      "multi": {
+        "any": "يحتوي على أي من",
+        "none": "لا يحتوي على أي من",
+        "empty": "فارغ",
+        "nempty": "غير فارغ"
+      },
+      "number": {
+        "eq": "=",
+        "ne": "≠",
+        "lt": "<",
+        "gt": ">",
+        "empty": "فارغ",
+        "nempty": "غير فارغ"
+      },
+      "date": {
+        "is": "هو",
+        "before": "قبل",
+        "after": "بعد",
+        "within": "خلال",
+        "empty": "فارغ",
+        "nempty": "غير فارغ"
+      }
+    },
+    "within": {
+      "week": "الأسبوع الماضي",
+      "month": "الشهر الماضي",
+      "year": "العام الماضي"
+    },
+    "presets": {
+      "7": "آخر 7 أيام",
+      "30": "آخر 30 يومًا",
+      "any": "أي وقت",
+      "year": "هذا العام"
+    }
+  },
+  "dateBadge": {
+    "today": "اليوم"
+  },
+  "activityList": {
+    "unread": "غير مقروء"
   }
 };

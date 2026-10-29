@@ -35,12 +35,12 @@ import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
 import { Button } from '../../components/Button/Button.jsx';
 import { Popover } from '../../components/Popover/Popover.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { cancel: 'Cancel' };
 
 export function Popconfirm({ trigger, title, description, confirmLabel, cancelLabel, tone = 'default', onConfirm, onCancel, placement = 'bottom-start', strings, className }) {
   devWarn('Popconfirm', { tone }, { tone: ['default','danger'] });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('popconfirm', strings);
   const id = useUid('plx-popconfirm');
   const [open, setOpen] = React.useState(false);
   const cancelRef = React.useRef(null);

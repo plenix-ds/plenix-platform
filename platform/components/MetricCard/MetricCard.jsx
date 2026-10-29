@@ -96,6 +96,7 @@ import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
 import { Sparkline } from '../../charts/Sparkline.jsx';
 import { Gauge } from '../../charts/Gauge.jsx';
 import { PieChart } from '../../charts/PieChart.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 const TYPES = ['value', 'trend', 'progress', 'gauge', 'breakdown', 'comparison', 'list', 'summary', 'person', 'week', 'month', 'table'];
 const LAYOUTS = ['stacked', 'beside', 'inline', 'tile', 'icon-start'];
@@ -103,13 +104,6 @@ const APPEARANCES = ['plain', 'edge', 'soft', 'filled', 'gradient'];
 const HUES = ['blue', 'green', 'purple', 'red', 'brown', 'gray'];
 const ORDER = ['blue', 'purple', 'brown', 'green', 'red', 'gray'];   // breakdown parts without a color, by their order
 
-const STRINGS = {
-  more: 'More for {title}', up: 'Up', down: 'Down', good: 'good', bad: 'bad', vs: 'vs', empty: 'No data', loading: 'Loading {title}',
-  error: 'Couldn’t load the figures.', retry: 'Try again', stale: 'Out of date', rank: '#{n}', toCome: 'to come',
-  hit: 'hit', missed: 'missed', weekdays: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
-  weekdayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-  month: '{done} of {days} working days so far', parts: '{label} {share}', compare: '{a} {av}, {b} {bv}'
-};
 const fill = (s, o) => Object.keys(o).reduce((t, k) => t.split('{' + k + '}').join(o[k]), s);
 
 function toneOf(change, goodWhen) {
@@ -307,7 +301,7 @@ export function MetricCard({ type = 'value', layout = 'stacked', appearance = 'p
   compare, items, list = 'ranked', metrics, person, days, week = 'bars', weekMax, month, table, strings, className, ...rest }) {
   devWarn('MetricCard', { type, layout, appearance, size }, { type: TYPES, layout: LAYOUTS, appearance: APPEARANCES, size: ['sm', 'md', 'lg'] });
   if ((appearance === 'filled' || appearance === 'gradient') && type !== 'value' && type !== 'summary') devWarn('MetricCard', { appearance: appearance + ' with type ' + type }, { appearance: ['plain', 'edge', 'soft'] });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('metricCard', strings);
   const id = useUid('plx-metric-card');
   const H = 'h' + Math.min(6, Math.max(2, headingLevel));
   const name = type === 'person' && person ? (title || person.name) : title;

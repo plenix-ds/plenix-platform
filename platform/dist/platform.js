@@ -546,616 +546,6 @@ function checkIconSvg(text) {
   };
 }
   } },
-  "platform/components/Icon/Icon.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","./glyphs.js":"platform/components/Icon/glyphs.js","../../utils/iconSafety.js":"platform/utils/iconSafety.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Icon = Icon;
-exports.StatusIcon = StatusIcon;
-exports.registerIcons = registerIcons;
-exports.resolveIcon = resolveIcon;
-exports.setDefaultIconLibrary = setDefaultIconLibrary;
-exports.setIconLibrary = setIconLibrary;
-exports.stateIcon = stateIcon;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
-var _glyphs = require("./glyphs.js");
-var _iconSafety = require("../../utils/iconSafety.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Icon, StatusIcon
-   Summary: One icon of the Plenix set, drawn as an inline SVG in the current text color (a name outside the set, from
-     icons-all.css, as a mask). StatusIcon is a tone's icon in the
-     tone's color (info, success, warning, danger, neutral), alone or with a short label.
-   Usage:
-     <Icon name="folder" />
-     <Icon name="bookmark" size="sm" filled label="Bookmarked" />
-     import Add from 'plenix-platform/icons/plenix/add';  <Icon icon={Add} />      // an imported icon module (#282)
-     registerIcons(Add, Close);  <Icon name="add" />                               // a name drawn from its module first
-     <StatusIcon tone="warning" />
-     <StatusIcon tone="success" size="sm">Synced</StatusIcon>
-   Props:
-     name: the naming contract (2026-10-22): a Plenix name, with dashes (platform/icons/map.json: mic-off, person-cancel);
-       a Plenix name that is its Material symbol with dashes also answers to the underscore spelling (mic_off,
-       person_cancel); with the CDN's icons-all.css on the page, any other Material Symbols name (rocket_launch) too. A
-       Material name that is also a Plenix name draws the Plenix icon (check, home). Unknown names draw nothing
-     size: "xs" 12px | "sm" 16px | "md" 20px | "lg" 24px | "xl" 48px, a page title (--plx-sys-icon-size-*); without it the icon takes its container's
-       grid icon (a control's --plx-sys-control-icon-<role>) or --plx-sys-icon-size
-     icon: an imported icon module (platform/icons/layout.js: icons/<set>/<name>.js; in an application,
-       import X from 'plenix-platform/icons/<set>/<name>'): drawn from its own drawings instead of icon.css, with the same
-       classes, so sizes, fills, the optical size and right-to-left mirroring work exactly as for name (issue 282)
-     filled: the filled version (default false)
-     label: the accessible name, when the icon alone carries meaning
-     className: more classes on the icon
-     StatusIcon.tone: "info" (default) | "success" | "warning" | "danger" | "neutral"; each has its own icon (neutral shares
-       the info icon, in the neutral color)
-     StatusIcon.size: "sm" (16px) | "md" (default; 20px) | "lg" (24px)
-     StatusIcon.label: the accessible name of the icon alone (default: the tone's word from strings)
-     StatusIcon.children: a short visible label after the icon; the icon is then decorative and the text says the state
-     StatusIcon.strings: the tone words, for other languages: { info: "Information", success: "Success", warning: "Warning",
-       danger: "Error", neutral: "Note" }
-     StatusIcon.className: more classes on the status icon
-     library: where a name is looked up (issue 281): "plenix" (default: registered modules, the Plenix set, then the
-       Material library, as before), "material" (Material's own symbol even where a Plenix name exists), or a project's own
-       library registered with registerIcons(..., { library }) (only its modules). setDefaultIconLibrary(name) sets the page's
-       default: call it at startup, before icons draw (icons already on the page do not draw again)
-     registerIcons(...modules[, { library }]): modules drawn first by their name and their symbol's spelling, in their
-       set's library or the one named
-     Every loaded icon file and every module drawing is untrusted (issue 285): it is read through the allow-list in
-       utils/iconSafety.js (one svg, one path, values by grammar, bounded size), and anything else refuses it; development
-       warns once with the reason. Nothing is ever inserted as HTML: the values become React props.
-     A name drawn by a run-time fetch (a Material name not imported or registered) warns once in development: production
-       should import or register it. An icon value that is not a module warns once per kind of value and draws nothing
-   Behavior:
-     The component that owns a current or selected state passes filled (NavList's current item and pinned pin, a
-       selected or pressed Button); filled={false} keeps the outline (Tree owns each item state).
-     Omitting filled: until every owner passes it, the filled version is still drawn inside a current or selected
-       element (aria-current, aria-pressed, aria-selected, .is-selected, .is-current): the rollout backlog.
-     The optical size follows the context: 24 in a Comfortable region and in a 24px container (the app header, a
-       pictogram), and for sizes lg and xl; 20 everywhere else.
-     A pinned item shows the filled pin, not a filled row.
-     Without a label the icon is decorative and hidden from assistive technology; with one it is an image (role="img").
-     StatusIcon alone is an image named by its tone (role="img", "Warning"), so the state never rests on color only; with a
-       visible label the label carries the state and the icon is hidden from assistive technology.
-   Notes:
-     The set is Material Symbols Sharp, weight 300, used exactly as published (platform/icons/).
-     The size names the icon's whole square, which includes the set's own padding (1/12 of the square on each side): the
-       system adds none to make up for it.
-     Other props pass through to the <span>. The drawings come from icon.css (its data URIs, read once; names in glyphs.js, generated by build-icons.js): the outline or
-     the filled version, at optical sizes 20 and 24, the stylesheet showing the one the context draws; inline paths paint
-     about 200 times faster than masks (owner, 2026-10-23). A bare class name (plx-icon plx-icon--<name>) still draws the mask.
-     StatusIcon's colors and sizes are its own tokens (--plx-comp-status-icon-*, components/Icon/status-icon.css); the label
-       keeps the text color and size of where it sits.
-*/
-// One way to draw an icon (owner, 2026-10-23: "no band-aid"): every name goes through resolveIcon, and every icon is an
-// inline SVG in the text color (inline paths paint about 200 times faster than masks).
-//   1. A Plenix name (map.json, dashes; its underscore alias too): drawn at once, its drawing read from icon.css.
-//   2. Any other Material Symbols name, in dashes or underscores, any case (rocket_launch, Rocket-Launch): its files are
-//      loaded once from the library (platform/icons/library beside the bundle, or the CDN's /cdn/material/<commit>/)
-//      and drawn the same way; the box stays empty while it loads.
-//   3. An unknown name draws nothing (never a filled square) and warns once, with the closest names.
-// The outline or the filled version, at optical sizes 20 and 24: the stylesheet shows the one the context draws (icon.css).
-const LARGE = {
-  lg: true,
-  xl: true
-};
-const VARIANT = ['', '-fill', '-24', '-24-fill']; // outline 20, filled 20, outline 24, filled 24
-const library = new Set(_glyphs.LIBRARY.split(' ')),
-  plenix = new Set(_glyphs.SYMBOLS.split(' '));
-// imported icon modules (#282): { name, set, symbol, fillOutline, mirrored, drawings: { 20: { outline, fill }, 24: … } }.
-// The registry (#281): per library, a name (and its symbol's spelling) -> its module. registerIcons(...modules) puts each
-// module in its own set's library ("plenix", "material"); registerIcons(...modules, { library: 'acme' }) makes a
-// project's own library, which <Icon library="acme"> draws from only
-const libraries = new Map(); // library -> Map(name -> module)
-// a module is untrusted (#285): its four drawings pass the same allow-list as a file, once per module object
-const checked = new WeakMap();
-function moduleProblem(m) {
-  if (!(m && typeof m === 'object' && m.drawings && m.drawings[20] && m.drawings[24] && m.name)) return 'not an icon module';
-  if (checked.has(m)) return checked.get(m);
-  let problem = null;
-  for (const size of [20, 24]) for (const k of ['outline', 'fill']) {
-    const r = (0, _iconSafety.checkDrawing)(m.drawings[size][k]);
-    if (!r.ok && !problem) problem = 'its ' + size + ' ' + k + ' drawing: ' + r.reason;
-  }
-  checked.set(m, problem);
-  return problem;
-}
-const isModule = m => !moduleProblem(m);
-function registerIcons(...args) {
-  const last = args[args.length - 1],
-    options = last && typeof last === 'object' && !Array.isArray(last) && !isModule(last) && 'library' in last ? args.pop() : null;
-  for (const m of args.flat()) {
-    const problem = moduleProblem(m);
-    if (problem) {
-      if (typeof console !== 'undefined') console.warn('[Plenix] registerIcons: refused (' + problem + ')', m);
-      continue;
-    }
-    const lib = options && options.library || m.set || 'plenix';
-    if (!libraries.has(lib)) libraries.set(lib, new Map());
-    const map = libraries.get(lib);
-    map.set(m.name, m);
-    if (m.symbol && m.symbol !== m.name) map.set(m.symbol, m);
-  }
-}
-// the library an Icon without its own library prop draws from: "plenix" (the Plenix set, then the Material library, as
-// before), "material", or a project's own registered library
-let defaultLibrary = 'plenix';
-// call it at startup, before icons draw: an icon already on the page does not draw again when it changes
-function setDefaultIconLibrary(name) {
-  defaultLibrary = name ? String(name) : 'plenix';
-}
-// a module's drawing i (VARIANT order: outline 20, filled 20, outline 24, filled 24) as [path, viewBox, extra], the shape
-// parseSvg gives, with the extras in the same order, so the markup is the same as from the stylesheet
-const SLOT = [[20, 'outline'], [20, 'fill'], [24, 'outline'], [24, 'fill']];
-function moduleGlyph(m, i) {
-  const d = m.drawings[SLOT[i][0]] && m.drawings[SLOT[i][0]][SLOT[i][1]];
-  if (!d || !d.d || !d.viewBox) return null;
-  const extra = {};
-  for (const key of ['transform', 'fillRule', 'clipRule']) if (d[key]) extra[key] = d[key];
-  return [d.d, d.viewBox, extra];
-}
-const normal = name => String(name == null ? '' : name).trim();
-// One resolver (#281): the registered modules of the chosen library first; then, for "plenix", the Plenix set (icon.css)
-// and the Material library; for "material", the Material library only (a Material name draws Material's own symbol
-// even where a Plenix name exists); a project's library draws only its registered modules. A Material name that is not
-// registered is fetched at run time (as before; development warns once that production should import or register it).
-// Returns { kind: 'module' | 'plenix' | 'library', symbol, fillOutline, module? } or null.
-function resolveIcon(name, options) {
-  const n = normal(name),
-    lib = options && options.library || defaultLibrary;
-  const fromRegistry = l => {
-    const map = libraries.get(l);
-    const m = map && (map.get(n) || map.get(n.toLowerCase().replace(/_/g, '-')) || map.get(n.toLowerCase().replace(/-/g, '_')));
-    return m ? {
-      kind: 'module',
-      symbol: m.symbol || m.name,
-      fillOutline: !!m.fillOutline,
-      module: m
-    } : null;
-  };
-  if (lib === 'material') {
-    const reg = fromRegistry('material');
-    if (reg) return reg;
-    const symbol = n.toLowerCase().replace(/-/g, '_');
-    if (plenix.has(symbol)) return {
-      kind: 'plenix',
-      symbol,
-      fillOutline: false
-    }; // the same drawing, already in icon.css
-    return library.has(symbol) ? {
-      kind: 'library',
-      symbol,
-      fillOutline: false
-    } : null;
-  }
-  if (lib !== 'plenix') return fromRegistry(lib);
-  // a registered Plenix module, then the Plenix set: a registered Material module never replaces a Plenix name (importing
-  // material/home must not swap every <Icon name="home"> on the page); it serves only names outside the Plenix set
-  const reg = fromRegistry('plenix');
-  if (reg) return reg;
-  const p = resolvePlenix(n);
-  if (p && p.kind === 'plenix') return p;
-  return fromRegistry('material') || p;
-}
-function resolvePlenix(n) {
-  if (_glyphs.NAMES[n]) return {
-    kind: 'plenix',
-    symbol: _glyphs.NAMES[n][0],
-    fillOutline: _glyphs.NAMES[n][1] === 1
-  };
-  const dashed = n.toLowerCase().replace(/_/g, '-');
-  if (_glyphs.NAMES[dashed]) return {
-    kind: 'plenix',
-    symbol: _glyphs.NAMES[dashed][0],
-    fillOutline: _glyphs.NAMES[dashed][1] === 1
-  };
-  const symbol = n.toLowerCase().replace(/-/g, '_');
-  if (plenix.has(symbol)) return {
-    kind: 'plenix',
-    symbol,
-    fillOutline: false
-  };
-  if (library.has(symbol)) return {
-    kind: 'library',
-    symbol,
-    fillOutline: false
-  };
-  return null;
-}
-// where the library's files are: set by the page (setIconLibrary), else beside the bundle's script or stylesheet
-let libraryBase = null;
-function setIconLibrary(url) {
-  libraryBase = url ? String(url).replace(/\/?$/, '/') : null;
-  files.clear();
-}
-function base() {
-  if (libraryBase) return libraryBase;
-  // a page (or an extension whose bundler renames the Plenix files) can name it before Plenix draws: window.PlenixIconLibrary
-  if (typeof window !== 'undefined' && typeof window.PlenixIconLibrary === 'string' && window.PlenixIconLibrary) return libraryBase = window.PlenixIconLibrary.replace(/\/?$/, '/');
-  if (typeof document === 'undefined') return null;
-  const at = [...document.querySelectorAll('script[src], link[rel="stylesheet"][href]')].map(el => el.src || el.href).find(url => /\/(plenix(\.esm|\.min)?\.(js|css)|platform\.(js|css))(\?|#|$)/.test(url));
-  if (!at) return null;
-  // the CDN: /cdn/<version>/plenix.js -> /cdn/material/<commit>/; this repository: platform/... -> platform/icons/library/
-  libraryBase = /\/cdn\/[^/]+\/[^/]+$/.test(new URL(at).pathname) ? new URL('../material/' + _glyphs.LIBRARY_COMMIT + '/', at).href : new URL(/\/dist\/[^/]+$/.test(new URL(at).pathname) ? '../icons/library/' : 'icons/library/', at).href;
-  return libraryBase;
-}
-// an icon file -> [path, viewBox, { transform, fillRule, clipRule }]: its one path, in its viewBox (or its width and height)
-// an icon file -> [path, viewBox, { transform, fillRule, clipRule }], through the allow-list (#285: a loaded file is
-// untrusted; utils/iconSafety.js): anything else in the file refuses it, and development warns once with the reason
-const refused = new Set();
-function parseSvg(svg, from) {
-  if (!svg) return null;
-  const r = (0, _iconSafety.checkIconSvg)(svg);
-  if (!r.ok) {
-    const key = (from || 'an icon file') + ': ' + r.reason;
-    if (!refused.has(key) && (0, _devWarn.development)() && typeof console !== 'undefined') {
-      refused.add(key);
-      console.warn('[Plenix] Icon: refused ' + key);
-    }
-    return null;
-  }
-  const {
-    viewBox,
-    d,
-    ...extra
-  } = r.drawing;
-  return [d, viewBox, extra];
-}
-// a Plenix symbol's drawing: read once from the stylesheet already on the page (icon.css carries every file as a data:
-// URI in --plx-comp-icon-glyph-*), so the drawings ship once, need no request and work from file:// too
-const fromCss = new Map();
-function cssGlyph(symbol, i) {
-  const key = symbol + VARIANT[i];
-  if (fromCss.has(key)) return fromCss.get(key);
-  if (typeof document === 'undefined' || typeof getComputedStyle !== 'function') return null;
-  const value = getComputedStyle(document.documentElement).getPropertyValue('--plx-comp-icon-glyph-' + key.replace(/_/g, '-')).trim();
-  const uri = value.match(/^url\(["']?data:image\/svg\+xml,(.*?)["']?\)$/);
-  let glyph = null;
-  if (uri) {
-    try {
-      glyph = parseSvg(decodeURIComponent(uri[1]));
-    } catch (e) {
-      glyph = null;
-    }
-  }
-  if (glyph) fromCss.set(key, glyph); // not kept when the stylesheet is not there yet: read again on the next draw
-  return glyph;
-}
-// a fetched file is read only up to the size limit (issue 285): a Content-Length over it is refused before reading, and a
-// body without one is read in chunks and dropped as soon as it passes the limit
-function readCapped(response) {
-  const max = _iconSafety.ICON_LIMITS.file,
-    length = Number(response.headers && response.headers.get && response.headers.get('content-length'));
-  if (length > max) return null;
-  if (!response.body || typeof response.body.getReader !== 'function') return response.text().then(t => t.length > max ? null : t);
-  const reader = response.body.getReader(),
-    parts = [];
-  let size = 0;
-  const step = () => reader.read().then(({
-    done,
-    value
-  }) => {
-    if (done) return new TextDecoder().decode(parts.length === 1 ? parts[0] : parts.reduce((all, p) => {
-      const out = new Uint8Array(all.length + p.length);
-      out.set(all);
-      out.set(p, all.length);
-      return out;
-    }, new Uint8Array(0)));
-    size += value.length;
-    if (size > max) {
-      reader.cancel();
-      return null;
-    }
-    parts.push(value);
-    return step();
-  });
-  return step();
-}
-const files = new Map(); // file name -> [path, viewBox, extra] | null (missing) | a Promise while it loads
-function loadFile(file) {
-  if (files.has(file)) return files.get(file);
-  const root = base();
-  const job = !root || typeof fetch !== 'function' ? Promise.resolve(null) : fetch(root + file + '.svg').then(r => r.ok ? readCapped(r) : null).then(text => parseSvg(text, file + '.svg')).catch(() => null).then(glyph => {
-    files.set(file, glyph);
-    return glyph;
-  });
-  files.set(file, job);
-  return job;
-}
-const warned = new Set();
-function warnUnknown(name) {
-  const n = normal(name);
-  if (!n || warned.has(n)) return;
-  warned.add(n);
-  const key = n.toLowerCase().replace(/[-_\s]+/g, '');
-  const near = [...Object.keys(_glyphs.NAMES), ...library].filter(c => {
-    const k = c.replace(/[-_]/g, '');
-    return k.includes(key) || key.includes(k);
-  }).slice(0, 6);
-  if (typeof console !== 'undefined') console.warn('[Plenix] Icon: no icon is named "' + n + '"; nothing is drawn.' + (near.length ? ' Closest: ' + near.join(', ') + '.' : ''));
-}
-// a name drawn by a run-time fetch: development warns once that production should import or register it
-const fetchedNotice = new Set();
-function noticeFetch(symbol) {
-  if (fetchedNotice.has(symbol) || !(0, _devWarn.development)() || typeof console === 'undefined') return;
-  fetchedNotice.add(symbol);
-  console.warn('[Plenix] Icon: ' + symbol + ' was fetched at run time; for production import it (plenix-platform/icons/material/' + symbol.replace(/_/g, '-') + ') or register it (registerIcons).');
-}
-function useDrawings(name, size, filled, mod, lib) {
-  const resolved = mod ? {
-    kind: 'module',
-    symbol: mod.symbol || mod.name,
-    fillOutline: !!mod.fillOutline,
-    module: mod
-  } : resolveIcon(name, {
-    library: lib
-  });
-  const found = resolved;
-  if (found && found.kind === 'module') mod = found.module;
-  const fill = filled === true || found && found.fillOutline;
-  const wanted = LARGE[size] ? [[fill ? 3 : 2, 24]] : [[fill ? 1 : 0, 20], [fill ? 3 : 2, 24]];
-  const fileOf = i => found.symbol + VARIANT[i];
-  const [, redraw] = _react.default.useReducer(x => x + 1, 0);
-  const pending = found && found.kind === 'library' ? wanted.filter(([i]) => !Array.isArray(files.get(fileOf(i))) && files.get(fileOf(i)) !== null) : [];
-  _react.default.useEffect(() => {
-    if (!found) {
-      warnUnknown(name);
-      return undefined;
-    }
-    if (found.kind === 'library') noticeFetch(found.symbol);
-    if (!pending.length) return undefined;
-    let live = true;
-    Promise.all(pending.map(([i]) => loadFile(fileOf(i)))).then(() => {
-      if (live) redraw();
-    });
-    return () => {
-      live = false;
-    };
-  }, [found && found.symbol, fill, LARGE[size] ? 1 : 0, pending.length]);
-  if (!found) return [];
-  const glyphs = wanted.map(([i, optical]) => [found.kind === 'module' ? moduleGlyph(mod, i) : found.kind === 'plenix' ? cssGlyph(found.symbol, i) : files.get(fileOf(i)), optical]).filter(([glyph]) => Array.isArray(glyph));
-  if (!glyphs.length) return [];
-  // the drawings share one svg when they share a box (nearly every icon): the stylesheet shows one path; otherwise each
-  // drawing is its own svg in its own box
-  if (glyphs.every(([glyph]) => glyph[1] === glyphs[0][0][1])) return [/*#__PURE__*/_react.default.createElement("svg", {
-    key: "svg",
-    className: "plx-icon__svg plx-icon__svg--shared",
-    viewBox: glyphs[0][0][1],
-    "aria-hidden": "true",
-    focusable: "false"
-  }, glyphs.map(([glyph, optical]) => /*#__PURE__*/_react.default.createElement("path", _extends({
-    key: optical,
-    className: 'plx-icon__glyph--' + optical,
-    d: glyph[0]
-  }, glyph[2] || null))))];
-  return glyphs.map(([glyph, optical]) => /*#__PURE__*/_react.default.createElement("svg", {
-    key: optical,
-    className: 'plx-icon__svg plx-icon__glyph--' + optical,
-    viewBox: glyph[1],
-    "aria-hidden": "true",
-    focusable: "false"
-  }, /*#__PURE__*/_react.default.createElement("path", _extends({
-    d: glyph[0]
-  }, glyph[2] || null))));
-}
-const badIcon = new Set();
-function Icon({
-  icon,
-  name,
-  library: lib,
-  size,
-  filled,
-  label,
-  className,
-  ...rest
-}) {
-  (0, _devWarn.devWarn)('Icon', {
-    size
-  }, {
-    size: ['xs', 'sm', 'md', 'lg', 'xl']
-  });
-  // an imported module (icon); else the name through the resolver (registered modules, the stylesheet, the library)
-  // once per kind of bad value (its type and keys), so an object written inline, new on every render, warns once
-  const badKey = icon != null && !isModule(icon) ? Object.prototype.toString.call(icon) + ':' + (typeof icon === 'object' ? Object.keys(icon).sort().join(',') : String(icon)) : null;
-  if (badKey && !badIcon.has(badKey)) {
-    badIcon.add(badKey);
-    if (typeof console !== 'undefined') console.warn('[Plenix] Icon: icon is refused (' + moduleProblem(icon) + '; import it from plenix-platform/icons/<set>/<name>); nothing is drawn.', icon);
-  }
-  const shown = isModule(icon) ? icon.name : name;
-  const svg = useDrawings(shown, size, filled, isModule(icon) ? icon : null, lib);
-  const mod = isModule(icon) ? icon : (() => {
-    const f = resolveIcon(shown, {
-      library: lib
-    });
-    return f && f.kind === 'module' ? f.module : null;
-  })();
-  // a module outside the Plenix set that points along the reading direction mirrors in right to left (icon.css's
-  // plx-icon--mirrored); the Plenix set's own names already mirror through their per-name rules, so their markup stays the same
-  const mirrored = !!(mod && mod.mirrored && mod.set !== 'plenix');
-  return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: (0, _cx.cx)('plx-icon', 'plx-icon--' + normal(shown), size ? 'plx-icon--size-' + size : null, filled === true && 'plx-icon--filled', filled === false && 'plx-icon--outline', 'plx-icon--inline', mirrored && 'plx-icon--mirrored', className),
-    role: label ? 'img' : undefined,
-    "aria-label": label,
-    "aria-hidden": label ? undefined : true
-  }, rest), svg);
-}
-
-// stateIcon: an icon a component draws in its own state: filled while the state is on, the outline otherwise (Styling
-// Standard 3.6: the component that owns the state passes it; no rule reaches in from the ancestor). A string is an icon
-// name; an Icon element the caller gives keeps a fill it sets itself; anything else passes through. extra: more props for
-// the Icon (a size), given only where the caller set none.
-function stateIcon(icon, on, extra) {
-  if (typeof icon === 'string') return /*#__PURE__*/_react.default.createElement(Icon, _extends({
-    name: icon,
-    filled: !!on
-  }, extra));
-  if (/*#__PURE__*/_react.default.isValidElement(icon) && icon.type === Icon) {
-    const add = {};
-    if (icon.props.filled === undefined) add.filled = !!on;
-    for (const k of Object.keys(extra || {})) if (icon.props[k] === undefined) add[k] = extra[k];
-    return Object.keys(add).length ? /*#__PURE__*/_react.default.cloneElement(icon, add) : icon;
-  }
-  return icon;
-}
-
-// StatusIcon: a tone's icon in the tone's color, alone (an image named by the tone) or before a short visible label
-const STATUS_ICONS = {
-  info: 'circle-info',
-  success: 'circle-check',
-  warning: 'warning',
-  danger: 'alert',
-  neutral: 'circle-info'
-};
-const STATUS_WORDS = {
-  info: 'Information',
-  success: 'Success',
-  warning: 'Warning',
-  danger: 'Error',
-  neutral: 'Note'
-};
-function StatusIcon({
-  tone = 'info',
-  size = 'md',
-  label,
-  children,
-  strings,
-  className,
-  ...rest
-}) {
-  (0, _devWarn.devWarn)('StatusIcon', {
-    tone,
-    size
-  }, {
-    tone: ['info', 'success', 'warning', 'danger', 'neutral'],
-    size: ['sm', 'md', 'lg']
-  });
-  const t = STATUS_ICONS[tone] ? tone : 'info';
-  const words = Object.assign({}, STATUS_WORDS, strings);
-  const shown = children !== undefined && children !== null && children !== false;
-  return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: (0, _cx.cx)('plx-status-icon', 'plx-status-icon--' + t, 'plx-status-icon--' + size, className)
-  }, rest), /*#__PURE__*/_react.default.createElement("span", {
-    className: (0, _cx.cx)('plx-status-icon__glyph', 'plx-status-icon__glyph--' + t)
-  }, /*#__PURE__*/_react.default.createElement(Icon, {
-    name: STATUS_ICONS[t],
-    size: size,
-    label: shown ? undefined : label || words[t]
-  })), shown ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-status-icon__label"
-  }, children) : null);
-}
-  } },
-  "platform/components/Badge/Badge.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Badge = Badge;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _Icon = require("../Icon/Icon.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Badge
-   Summary: A status pill: bold text on a soft background of its variant's color family, a 1px border and 4px corners
-     (owner, 2026-10-14, docs/pills-and-colors.md: every pill is soft).
-   Usage:
-     <Badge tone="success">Approved</Badge>
-     <Badge tone="waiting">Paused</Badge>
-     <Badge tone="action-required">Changes requested</Badge>
-     <Badge tone="negative" size="sm">3</Badge>
-     <Badge tone="success" icon="check">Saved</Badge>
-   Props:
-     tone: the status variant:
-       "neutral" (default; gray: no particular state, e.g. Draft, Archived)
-       "success" (green: done, approved, healthy)
-       "active" (blue: in progress, current, information)
-       "waiting" (yellow: waiting, paused)
-       "action-required" (orange: action or correction required, e.g. Changes requested, Needs attention)
-       "negative" (red: failed, error, rejected, blocked)
-       Old names still work: "info" is "active", "warning" is "waiting", "danger" is "negative".
-     variant: accepted and ignored ("solid" and "soft" both draw the soft pill; the solid look was removed, 2026-10-14)
-     size: "md" (default; a 20px label) | "sm" (16px, for counts)
-     icon: an icon name (platform/icons/map.json) drawn before the text, in the text color: a status shows its icon inside
-       the badge (owner, 2026-10-14: check for done, pencil for unsaved, alert for problems); the icon is decorative, the
-       text says the state
-     children: the badge text
-     className: more classes on the badge
-   Behavior:
-     An unknown tone or size falls back to the default.
-   Notes:
-     A badge is a workflow status. A tag or category is a Tag with its category color (never a status variant).
-     Other props (title, aria-*, …) pass through to the <span>.
-     A badge is text: give a count enough context nearby or an accessible name on its control.
-*/
-const TONES = ['neutral', 'success', 'active', 'waiting', 'action-required', 'negative'];
-const ALIASES = {
-  info: 'active',
-  warning: 'waiting',
-  danger: 'negative'
-};
-const SIZES = ['md', 'sm'];
-
-// variant is taken out so it never reaches the <span>: every badge is the soft pill
-function Badge({
-  tone = 'neutral',
-  variant,
-  size = 'md',
-  icon,
-  className,
-  children,
-  ...rest
-}) {
-  (0, _devWarn.devWarn)('Badge', {
-    tone,
-    variant,
-    size
-  }, {
-    tone: ['neutral', 'success', 'active', 'waiting', 'action-required', 'negative', 'info', 'warning', 'danger'],
-    variant: ['solid', 'soft'],
-    size: ['md', 'sm']
-  });
-  const named = ALIASES[tone] || tone;
-  const t = TONES.indexOf(named) >= 0 ? named : 'neutral';
-  const s = SIZES.indexOf(size) >= 0 ? size : 'md';
-  const classes = ['plx-badge', 'plx-badge--' + t, s === 'sm' ? 'plx-badge--sm' : null, className].filter(Boolean).join(' ');
-  return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: classes
-  }, rest), icon ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: icon
-  }) : null, children);
-}
-  } },
-  "platform/components/VisuallyHidden/VisuallyHidden.jsx": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.VisuallyHidden = VisuallyHidden;
-var _react = _interopRequireDefault(require("react"));
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · VisuallyHidden
-   Summary: Text for assistive technology only (a name for an icon-only control, a status).
-   Usage:
-     <button type="button"><Icon name="trash" /><VisuallyHidden>Delete</VisuallyHidden></button>
-   Props:
-     as: the element; default "span"
-     children: the hidden text
-     ...rest: other attributes go on the element
-*/
-function VisuallyHidden({
-  as: Tag = 'span',
-  children,
-  ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement(Tag, _extends({
-    className: "plx-visually-hidden"
-  }, rest), children);
-}
-  } },
   "platform/utils/direction.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
@@ -1955,7 +1345,20 @@ var _default = exports.default = {
     "failed": "Could not dismiss this announcement. Try again."
   },
   "appHeader": {
-    "aria-label": "Search"
+    "aria-label": "Search",
+    "account": {
+      "trigger": "Account and settings for {name}",
+      "menu": "Account",
+      "myAccount": "My account",
+      "settings": "Plenix settings",
+      "appSettings": "{app} settings",
+      "app": "App",
+      "density": "Display density",
+      "compact": "Compact",
+      "standard": "Standard",
+      "comfortable": "Comfortable",
+      "signOut": "Sign out"
+    }
   },
   "appShell": {
     "skip": "Skip to main content"
@@ -2029,7 +1432,8 @@ var _default = exports.default = {
     "saved": "Saved",
     "offline": "Offline",
     "failed": "Save failed",
-    "retry": "Retry"
+    "retry": "Retry",
+    "unsaved": "Your changes have not been saved."
   },
   "avatar": {
     "online": "Online",
@@ -2085,7 +1489,8 @@ var _default = exports.default = {
     "single": "Select one {noun} to {action}",
     "label": "Selection actions",
     "more": "More actions",
-    "noun": "item"
+    "noun": "item",
+    "plural": "items"
   },
   "button": {
     "working": "Working"
@@ -2297,7 +1702,12 @@ var _default = exports.default = {
     "thinking": "Thinking",
     "label": "Conversation",
     "placeholder": "Write a message",
-    "sendLabel": "Send"
+    "sendLabel": "Send",
+    "conversation": "Conversation",
+    "message": "Message",
+    "send": "Send",
+    "typing": "Typing",
+    "you": "You"
   },
   "checklist": {
     "dismiss": "Dismiss checklist",
@@ -2354,7 +1764,16 @@ var _default = exports.default = {
     "why": "Select {plural} to {action}",
     "single": "Select one {noun} to {action}",
     "preset": "any",
-    "moreLabel": "More actions"
+    "moreLabel": "More actions",
+    "from": "",
+    "to": "",
+    "reorder": {
+      "moved": "{name} moved to position {position} of {total}",
+      "row": "{name}, {position} of {total}. Alt + Arrow Up or Down moves it",
+      "reorder": "Reorder {name}",
+      "moveUp": "Move up",
+      "moveDown": "Move down"
+    }
   },
   "commandMenu": {
     "label": "Commands",
@@ -2517,7 +1936,12 @@ var _default = exports.default = {
     "sortNumber": ["Sort 1 → 9", "Sort 9 → 1"],
     "sortDate": ["Sort oldest → newest", "Sort newest → oldest"],
     "sortCheck": ["Sort unchecked → checked", "Sort checked → unchecked"],
-    "unread": "Unread ({count})"
+    "unread": "Unread ({count})",
+    "columnsLabel": "{label} columns",
+    "rowsLabel": "{label} rows",
+    "columnActions": "{title} column actions",
+    "unreadRow": "{label}, unread",
+    "editCell": "Edit {title}"
   },
   "dataPill": {
     "male": "male",
@@ -2553,7 +1977,20 @@ var _default = exports.default = {
     "it": "it",
     "them": "them",
     "names": "Deleted",
-    "noun": "item"
+    "noun": "item",
+    "plural": "items",
+    "items": {
+      "one": "{n} item",
+      "other": "{n} items"
+    },
+    "titleItems": {
+      "one": "Delete {n} item?",
+      "other": "Delete {n} items?"
+    },
+    "phraseItems": {
+      "one": "delete {n} item",
+      "other": "delete {n} items"
+    }
   },
   "documentViewer": {
     "document": "Document",
@@ -2761,7 +2198,12 @@ var _default = exports.default = {
     "choose": "Choose options",
     "field": "Field",
     "operator": "Operator",
-    "join": "And or or"
+    "join": "And or or",
+    "moved": "{name} moved to position {position} of {total}",
+    "row": "{name}, {position} of {total}. Alt + Arrow Up or Down moves it",
+    "reorder": "Reorder {name}",
+    "moveUp": "Move up",
+    "moveDown": "Move down"
   },
   "form": {
     "label": "Form actions"
@@ -2802,7 +2244,12 @@ var _default = exports.default = {
     "remove": "Remove the grouping by {name}",
     "removeTip": "Remove group",
     "field": "Field",
-    "order": "Order"
+    "order": "Order",
+    "moved": "{name} moved to position {position} of {total}",
+    "row": "{name}, {position} of {total}. Alt + Arrow Up or Down moves it",
+    "reorder": "Reorder {name}",
+    "moveUp": "Move up",
+    "moveDown": "Move down"
   },
   "helpPanel": {
     "title": "Help",
@@ -3127,7 +2574,14 @@ var _default = exports.default = {
     "groupRemoved": "Group removed"
   },
   "quickFilter": {
-    "preset": "any"
+    "preset": "any",
+    "find": "Find a {noun}",
+    "none": "No {noun} matches",
+    "clear": "Clear",
+    "all": "All",
+    "custom": "Custom range",
+    "from": "From",
+    "to": "To"
   },
   "rating": {
     "label": "Rating"
@@ -3201,7 +2655,11 @@ var _default = exports.default = {
   },
   "resizable": {
     "width": "{label} width",
-    "height": "{label} height"
+    "height": "{label} height",
+    "minWidth": "Smallest width for {label} ({value}px)",
+    "maxWidth": "Largest width for {label} ({value}px)",
+    "minHeight": "Smallest height for {label} ({value}px)",
+    "maxHeight": "Largest height for {label} ({value}px)"
   },
   "resourceList": {
     "item": "item",
@@ -3223,7 +2681,71 @@ var _default = exports.default = {
   },
   "reviewFlow": {
     "label": "Waiting for review",
-    "noun": "item"
+    "noun": "item",
+    "plural": "items",
+    "queueLabel": "Waiting for review",
+    "flow": {
+      "reviewers": "Reviewers",
+      "history": "History",
+      "comment": "Comment",
+      "commentHint": "Needed to reject or request changes.",
+      "approve": "Approve",
+      "changes": "Request changes",
+      "reject": "Reject",
+      "waiting": "Waiting",
+      "human": "Generated content. A person checks it before it is used.",
+      "needReason": "Say why, so the author knows what to change.",
+      "done": "{decision}: {title}",
+      "decisions": "Review decisions"
+    },
+    "queue": {
+      "name": "Name",
+      "type": "Type",
+      "submittedBy": "Submitted by",
+      "submitted": "Submitted",
+      "status": "Status",
+      "approve": "Approve",
+      "changes": "Request changes",
+      "reject": "Reject",
+      "rejectTitle": "Reject {what}?",
+      "changesTitle": "Request changes on {what}?",
+      "reason": "Reason",
+      "changesLabel": "What to change",
+      "reasonHint": "The authors see it with the decision.",
+      "needReason": "Say why, so the authors know what to change.",
+      "done": "{what} {decision}",
+      "count": "{n} {plural}",
+      "noun": "item",
+      "plural": "items",
+      "queueLabel": "Waiting for review",
+      "items": {
+        "one": "{n} item",
+        "other": "{n} items"
+      },
+      "doneItems": {
+        "approved": {
+          "one": "{n} item approved",
+          "other": "{n} items approved"
+        },
+        "rejected": {
+          "one": "{n} item rejected",
+          "other": "{n} items rejected"
+        },
+        "changes-requested": {
+          "one": "Changes requested on {n} item",
+          "other": "Changes requested on {n} items"
+        }
+      }
+    },
+    "statuses": {
+      "draft": "Draft",
+      "in-review": "In review",
+      "approved": "Approved",
+      "changes-requested": "Changes requested",
+      "rejected": "Rejected",
+      "published": "Published",
+      "scheduled": "Scheduled"
+    }
   },
   "richTextEditor": {
     "toolbar": "Formatting",
@@ -3448,7 +2970,12 @@ var _default = exports.default = {
     "remove": "Remove the sort by {name}",
     "removeTip": "Remove sort",
     "field": "Field",
-    "direction": "Direction"
+    "direction": "Direction",
+    "moved": "{name} moved to position {position} of {total}",
+    "row": "{name}, {position} of {total}. Alt + Arrow Up or Down moves it",
+    "reorder": "Reorder {name}",
+    "moveUp": "Move up",
+    "moveDown": "Move down"
   },
   "sortableList": {
     "moveMenu": "Move {name}",
@@ -3700,7 +3227,8 @@ var _default = exports.default = {
     "group": {
       "one": "{n} item",
       "other": "{n} items"
-    }
+    },
+    "unreadRow": "{label}, unread"
   },
   "widgetGrid": {
     "widget": "Widget",
@@ -3715,6 +3243,41 @@ var _default = exports.default = {
   "wizardDialog": {
     "close": "Close",
     "unsaved": "Your changes will be lost."
+  },
+  "offboarding": {
+    "backup": "Export your data",
+    "export": "Export data",
+    "review": "Confirm your choice",
+    "reason": "Reason (optional)",
+    "confirmName": "Type the account name to confirm",
+    "mismatch": "Enter the exact account name.",
+    "cancel": "Keep account",
+    "deleteAccount": "Delete account",
+    "cancelSubscription": "Cancel subscription"
+  },
+  "imageUpload": {
+    "drop": "Drop an image here, or",
+    "dropMany": "Drop images here, or",
+    "choose": "Choose image",
+    "chooseMany": "Choose images",
+    "replace": "Replace",
+    "remove": "Remove {name}",
+    "alt": "Description",
+    "altHint": "Describe this image for people who cannot see it",
+    "tooLarge": "{name} is larger than {max}",
+    "notImage": "{name} is not an image",
+    "removed": "{name} removed",
+    "added": {
+      "one": "{n} image added",
+      "other": "{n} images added"
+    },
+    "crop": {
+      "title": "Crop image",
+      "zoom": "Zoom",
+      "frame": "Crop area. Drag the picture, or move it with the arrow keys",
+      "apply": "Apply",
+      "cancel": "Cancel"
+    }
   },
   "voteTally": {
     "approve": "Approve",
@@ -3738,6 +3301,431 @@ var _default = exports.default = {
       "tied": "Tied",
       "no-quorum": "No quorum"
     }
+  },
+  "card": {
+    "panel": {
+      "collapse": "Collapse {title}",
+      "expand": "Expand {title}",
+      "section": "section"
+    },
+    "mediaCard": {
+      "select": "Select {title}",
+      "item": "item",
+      "assets": "{n} assets",
+      "asset": "{n} asset"
+    },
+    "card": {
+      "expand": "Expand {title}",
+      "collapse": "Collapse {title}",
+      "card": "card"
+    }
+  },
+  "field": {
+    "counter": {
+      "left": "{n} characters left",
+      "over": "{n} characters too many"
+    }
+  },
+  "icon": {
+    "status": {
+      "info": "Information",
+      "success": "Success",
+      "warning": "Warning",
+      "danger": "Error",
+      "neutral": "Note"
+    }
+  },
+  "searchResult": {
+    "result": {
+      "path": "In"
+    },
+    "group": {
+      "more": "Show all"
+    }
+  },
+  "settingsLayout": {
+    "section": {
+      "section": "section"
+    }
+  },
+  "commerce": {
+    "orders": {
+      "label": "Orders",
+      "search": "Search orders",
+      "count": "{n} orders",
+      "one": "1 order",
+      "noun": "order",
+      "plural": "orders",
+      "number": "Order",
+      "date": "Date",
+      "customer": "Customer",
+      "items": "Items",
+      "total": "Total",
+      "status": "Status",
+      "open": "Open",
+      "fulfill": "Fulfill",
+      "refund": "Refund",
+      "cancel": "Cancel order",
+      "cancelMany": "Cancel orders",
+      "cancelTitle": "Cancel {what}?",
+      "cancelText": "The customer is told and paid back in full. This cannot be undone.",
+      "keep": "Keep the order",
+      "notFulfillable": "Only unfulfilled orders can be fulfilled",
+      "notCancelable": "Only unfulfilled orders can be canceled",
+      "notRefundable": "Only shipped or delivered orders can be refunded",
+      "fulfilled": "{what} marked as shipped",
+      "canceled": "{what} canceled"
+    },
+    "orderDetail": {
+      "context": "Order",
+      "back": "Orders",
+      "items": "Items",
+      "delivery": "Delivery",
+      "address": "Address",
+      "method": "Method",
+      "tracking": "Tracking number",
+      "payment": "Payment",
+      "history": "History",
+      "fulfill": "Fulfill",
+      "refund": "Refund",
+      "cancel": "Cancel order",
+      "return": "Start a return",
+      "cancelTitle": "Cancel order {number}?",
+      "cancelText": "The customer is told and paid back in full. This cannot be undone.",
+      "keep": "Keep the order"
+    },
+    "subscription": {
+      "plan": "Your plan",
+      "planName": "Plan",
+      "price": "Price",
+      "status": "Status",
+      "next": "Next payment",
+      "since": "Member since",
+      "ends": "Access ends",
+      "perPeriod": "{price} per {period}",
+      "more": "{amount} more",
+      "less": "{amount} less",
+      "change": "Change plan",
+      "changeTitle": "Change to {plan}?",
+      "changeText": "You will pay {price} from {date}. Until then your current plan stays as it is.",
+      "changeConfirm": "Change plan",
+      "changed": "Your plan changes to {plan} on {date}.",
+      "plans": "Plans",
+      "current": "Current plan",
+      "method": "Payment method",
+      "update": "Update payment method",
+      "manage": "Pause or cancel",
+      "manageText": "Pause to stop the payments for a while and keep your settings; cancel to end the plan. Either way you keep access until {date}.",
+      "pause": "Pause subscription",
+      "pauseTitle": "Pause your subscription?",
+      "pauseText": "No payment is taken while it is paused. Resume it whenever you like.",
+      "resume": "Resume subscription",
+      "cancel": "Cancel subscription",
+      "cancelTitle": "Cancel your subscription?",
+      "cancelText": "You keep access until {date}, and you will not be charged again.",
+      "keep": "Keep my plan",
+      "history": "Billing history",
+      "date": "Date",
+      "description": "Description",
+      "amount": "Amount",
+      "invoice": "Invoice",
+      "invoiceFor": "Invoice for {date}",
+      "paused": "Your subscription is paused.",
+      "canceled": "Your subscription is canceled.",
+      "statuses": {
+        "active": "Active",
+        "paused": "Paused",
+        "canceled": "Canceled",
+        "paid": "Paid",
+        "refunded": "Refunded",
+        "failed": "Failed"
+      }
+    },
+    "returns": {
+      "label": "Return items",
+      "items": "Items",
+      "reason": "Reason",
+      "resolution": "Resolution",
+      "review": "Review",
+      "submit": "Request return",
+      "cancel": "Cancel",
+      "window": "You can return most items within 30 days of delivery.",
+      "choose": "Choose at least one item to return.",
+      "notReturnable": "Cannot be returned",
+      "quantity": "How many, {title}",
+      "why": "Why are you returning them?",
+      "whyRequired": "Choose a reason.",
+      "note": "Anything else we should know? (optional)",
+      "want": "What would you like?",
+      "wantRequired": "Choose a refund or an exchange.",
+      "send": "How will you send them?",
+      "sendRequired": "Choose how to send them.",
+      "refund": "Refund",
+      "refundTiming": "The refund reaches your original payment method 5 to 10 business days after the items arrive.",
+      "requested": "Return requested",
+      "requestedText": "We emailed you the return label and the steps. Here is where your return stands.",
+      "status": "Return status",
+      "returning": "{n} items",
+      "returningOne": "1 item"
+    },
+    "cart": {
+      "title": "Cart",
+      "items": "{n} items",
+      "item": "1 item",
+      "lines": "Items in your cart",
+      "remove": "Remove {title}",
+      "noun": "item",
+      "removed": "{title} removed from your cart.",
+      "undo": "Undo",
+      "empty": "Your cart is empty",
+      "emptyText": "Find something you like and add it here.",
+      "continue": "Continue shopping",
+      "checkout": "Check out",
+      "promo": "Promo code",
+      "apply": "Apply",
+      "applied": "Promo code {code} applied",
+      "promoError": "This code cannot be used.",
+      "total": "Total {total}"
+    },
+    "pay": {
+      "method": "Payment method",
+      "newCard": "A new card",
+      "number": "Card number",
+      "accepted": "Visa, Mastercard, American Express or Discover",
+      "expiry": "Expiry date",
+      "expiryHint": "MM / YY",
+      "cvc": "Security code",
+      "cvcHint": "The last 3 digits on the back, or 4 on the front of American Express",
+      "name": "Name on card",
+      "billingSame": "The billing address is the same as the delivery address",
+      "billing": "Billing address",
+      "street": "Address",
+      "city": "City",
+      "postal": "Postal code",
+      "secure": "Your card details go straight to the payment provider. This page does not keep them.",
+      "charge": "You will be charged",
+      "brands": {
+        "visa": "Visa",
+        "mastercard": "Mastercard",
+        "amex": "American Express",
+        "discover": "Discover"
+      }
+    },
+    "payment": {
+      "title": "Payment",
+      "description": "Choose how to pay. Nothing is charged until you press Pay.",
+      "pay": "Pay {amount}",
+      "cancel": "Cancel",
+      "declined": "The payment did not go through",
+      "declinedText": "Your card was declined. Check the details or use another card.",
+      "paid": "Payment received"
+    },
+    "checkout": {
+      "label": "Checkout",
+      "contact": "Contact",
+      "delivery": "Delivery",
+      "payment": "Payment",
+      "review": "Review",
+      "placeOrder": "Place order",
+      "cancel": "Back to cart",
+      "email": "Email",
+      "emailHint": "For the order confirmation and delivery updates.",
+      "account": "Have an account?",
+      "signIn": "Sign in",
+      "name": "Full name",
+      "street": "Address",
+      "street2": "Apartment, suite or unit (optional)",
+      "city": "City",
+      "region": "State or region",
+      "postal": "Postal code",
+      "country": "Country",
+      "phone": "Phone (optional)",
+      "phoneHint": "Only for questions about the delivery.",
+      "method": "Delivery method",
+      "summary": "Order summary",
+      "card": "Card ending {last4}",
+      "placed": "Order placed",
+      "checkAnswers": "Check your order before you place it.",
+      "items": "Items",
+      "free": "Free"
+    },
+    "confirm": {
+      "title": "Thank you. Your order is placed.",
+      "number": "Order number",
+      "copy": "Copy the order number",
+      "sent": "We sent a confirmation to {email}.",
+      "next": "What happens next",
+      "items": "Items",
+      "view": "View your order",
+      "continue": "Continue shopping",
+      "delivery": "Delivery",
+      "method": "Delivery method"
+    },
+    "listing": {
+      "label": "Products",
+      "search": "Search products",
+      "count": "{n} products",
+      "one": "1 product",
+      "category": "Category",
+      "noun": "product",
+      "name": "Name",
+      "price": "Price",
+      "rating": "Rating",
+      "availability": "Availability",
+      "inStock": "In stock",
+      "outOfStock": "Out of stock",
+      "sale": "On sale",
+      "yes": "Yes",
+      "no": "No",
+      "empty": "No products match",
+      "emptyText": "Remove a filter or search for something else.",
+      "clear": "Clear filters and search",
+      "results": "{n} products shown",
+      "resultsOne": "1 product shown",
+      "none": "No products shown"
+    },
+    "discovery": {
+      "title": "Shop",
+      "search": "Search the shop",
+      "categories": "Shop by category",
+      "recommended": "Recommended for you",
+      "results": "Products",
+      "resultsFor": "Results for “{q}”",
+      "count": "{n} products",
+      "one": "1 product",
+      "suggestions": "Try one of these",
+      "clear": "Clear the search"
+    },
+    "productDetail": {
+      "gallery": "Pictures of {title}",
+      "reviews": "{n} reviews",
+      "review": "1 review",
+      "inStock": "In stock",
+      "lowStock": "Only {n} left",
+      "outOfStock": "Out of stock",
+      "addToCart": "Add to cart",
+      "added": "{title} added to your cart",
+      "viewCart": "View cart",
+      "choose": "Choose a {option}.",
+      "missing": "Choose your options first.",
+      "description": "Description",
+      "details": "Details",
+      "delivery": "Delivery and returns",
+      "detail": "Detail",
+      "value": "Value",
+      "related": "You may also like",
+      "rating": "Rating"
+    },
+    "line": {
+      "quantity": "Quantity, {title}",
+      "qty": "Qty {n}",
+      "each": "{price} each"
+    },
+    "summary": {
+      "title": "Order summary",
+      "subtotal": "Subtotal",
+      "discount": "Discount",
+      "shipping": "Shipping",
+      "shippingEstimated": "Estimated shipping",
+      "tax": "Tax",
+      "taxEstimated": "Estimated tax",
+      "total": "Total",
+      "free": "Free",
+      "items": "{n} items",
+      "item": "1 item",
+      "times": "× {n}"
+    }
+  },
+  "dnd": {
+    "handle": "Move {name}",
+    "instructions": "Press Space or Enter to pick it up. The arrow keys move it, Space or Enter drops it, Escape puts it back.",
+    "pickedUp": "{name} picked up. Position {position} of {total}. The arrow keys move it, Space or Enter drops it, Escape puts it back.",
+    "moved": "{name}, position {position} of {total}",
+    "movedTo": "{name} moved to {list}, position {position} of {total}",
+    "dropped": "{name} dropped at position {position} of {total}",
+    "droppedIn": "{name} dropped in {list}, position {position} of {total}",
+    "canceled": "Move canceled. {name} is back at position {position} of {total}",
+    "itemPickedUp": "{name} picked up. {count} places take it. The arrow keys choose one, Space or Enter drops it, Escape puts it back.",
+    "over": "Over {target}",
+    "overReject": "{target} does not take {name}",
+    "droppedOn": "{name} dropped on {target}",
+    "noTargets": "No place takes {name}",
+    "itemCanceled": "Move canceled. {name} was not moved",
+    "repositionPicked": "{name} picked up. The arrow keys move it, with Shift farther; Space or Enter drops it, Escape puts it back.",
+    "repositioned": "{name} moved",
+    "repositionDropped": "{name} dropped",
+    "repositionCanceled": "Move canceled. {name} is back where it was",
+    "movable": "movable",
+    "list": "the list"
+  },
+  "collapsibleSection": {
+    "less": "Show less",
+    "more": "Show more",
+    "moreCount": "Show more ({n})"
+  },
+  "fields": {
+    "directions": {
+      "text": ["A → Z", "Z → A"],
+      "select": ["First → Last", "Last → First"],
+      "multi": ["First → Last", "Last → First"],
+      "number": ["1 → 9", "9 → 1"],
+      "date": ["Oldest → newest", "Newest → oldest"]
+    },
+    "operators": {
+      "text": {
+        "contains": "contains",
+        "ncontains": "does not contain",
+        "is": "is",
+        "isnot": "is not",
+        "empty": "is empty",
+        "nempty": "is not empty"
+      },
+      "select": {
+        "any": "is any of",
+        "none": "is none of",
+        "empty": "is empty",
+        "nempty": "is not empty"
+      },
+      "multi": {
+        "any": "has any of",
+        "none": "has none of",
+        "empty": "is empty",
+        "nempty": "is not empty"
+      },
+      "number": {
+        "eq": "=",
+        "ne": "≠",
+        "lt": "<",
+        "gt": ">",
+        "empty": "is empty",
+        "nempty": "is not empty"
+      },
+      "date": {
+        "is": "is",
+        "before": "is before",
+        "after": "is after",
+        "within": "is within",
+        "empty": "is empty",
+        "nempty": "is not empty"
+      }
+    },
+    "within": {
+      "week": "the past week",
+      "month": "the past month",
+      "year": "the past year"
+    },
+    "presets": {
+      "7": "Last 7 days",
+      "30": "Last 30 days",
+      "any": "Any time",
+      "year": "This year"
+    }
+  },
+  "dateBadge": {
+    "today": "Today"
+  },
+  "activityList": {
+    "unread": "Unread"
   }
 };
   } },
@@ -4099,7 +4087,12 @@ var _default = exports.default = {
     "sortNumber": ["فرز من 1 إلى 9", "فرز من 9 إلى 1"],
     "sortDate": ["فرز من الأقدم إلى الأحدث", "فرز من الأحدث إلى الأقدم"],
     "sortCheck": ["فرز من غير المحدد إلى المحدد", "فرز من المحدد إلى غير المحدد"],
-    "unread": "غير مقروء ({count})"
+    "unread": "غير مقروء ({count})",
+    "columnsLabel": "أعمدة {label}",
+    "rowsLabel": "صفوف {label}",
+    "columnActions": "إجراءات العمود {title}",
+    "unreadRow": "{label}، غير مقروء",
+    "editCell": "تعديل {title}"
   },
   "dataPill": {
     "male": "ذكر",
@@ -4353,7 +4346,11 @@ var _default = exports.default = {
   },
   "resizable": {
     "width": "عرض {label}",
-    "height": "ارتفاع {label}"
+    "height": "ارتفاع {label}",
+    "minWidth": "أصغر عرض لـ {label} ({value}px)",
+    "maxWidth": "أكبر عرض لـ {label} ({value}px)",
+    "minHeight": "أصغر ارتفاع لـ {label} ({value}px)",
+    "maxHeight": "أكبر ارتفاع لـ {label} ({value}px)"
   },
   "richTextEditor": {
     "toolbar": "التنسيق",
@@ -4552,7 +4549,8 @@ var _default = exports.default = {
       "few": "{n} عناصر",
       "many": "{n} عنصرًا",
       "other": "{n} عنصر"
-    }
+    },
+    "unreadRow": "{label}، غير مقروء"
   },
   "aiSearch": {
     "label": "بحث بالذكاء الاصطناعي",
@@ -4603,7 +4601,8 @@ var _default = exports.default = {
     "saved": "تم الحفظ",
     "offline": "غير متصل",
     "failed": "فشل الحفظ",
-    "retry": "إعادة المحاولة"
+    "retry": "إعادة المحاولة",
+    "unsaved": "لم يتم حفظ تغييراتك."
   },
   "avatarUpload": {
     "change": "تغيير الصورة",
@@ -4627,7 +4626,8 @@ var _default = exports.default = {
     "single": "حدّد {noun} واحدًا لـ {action}",
     "label": "إجراءات التحديد",
     "more": "المزيد من الإجراءات",
-    "noun": "عنصر"
+    "noun": "عنصر",
+    "plural": "عناصر"
   },
   "columnsMenu": {
     "label": "الأعمدة",
@@ -4664,7 +4664,16 @@ var _default = exports.default = {
     "why": "حدّد {plural} لـ {action}",
     "single": "حدّد {noun} واحدًا لـ {action}",
     "preset": "أي",
-    "moreLabel": "المزيد من الإجراءات"
+    "moreLabel": "المزيد من الإجراءات",
+    "from": "",
+    "to": "",
+    "reorder": {
+      "moved": "تم نقل {name} إلى الموضع {position} من {total}",
+      "row": "{name}، {position} من {total}. المفتاحان Alt + السهم لأعلى أو لأسفل ينقلانه",
+      "reorder": "إعادة ترتيب {name}",
+      "moveUp": "نقل لأعلى",
+      "moveDown": "نقل لأسفل"
+    }
   },
   "commandPalette": {
     "title": "الأوامر",
@@ -4721,7 +4730,32 @@ var _default = exports.default = {
     "it": "ه",
     "them": "هم",
     "names": "محذوف",
-    "noun": "عنصر"
+    "noun": "عنصر",
+    "plural": "عناصر",
+    "items": {
+      "zero": "لا عناصر",
+      "one": "عنصر واحد",
+      "two": "عنصران",
+      "few": "{n} عناصر",
+      "many": "{n} عنصرًا",
+      "other": "{n} عنصر"
+    },
+    "titleItems": {
+      "zero": "حذف لا عناصر؟",
+      "one": "حذف عنصر واحد؟",
+      "two": "حذف عنصرين؟",
+      "few": "حذف {n} عناصر؟",
+      "many": "حذف {n} عنصرًا؟",
+      "other": "حذف {n} عنصر؟"
+    },
+    "phraseItems": {
+      "zero": "حذف لا عناصر",
+      "one": "حذف عنصر واحد",
+      "two": "حذف عنصرين",
+      "few": "حذف {n} عناصر",
+      "many": "حذف {n} عنصرًا",
+      "other": "حذف {n} عنصر"
+    }
   },
   "duplicateAction": {
     "duplicate": "تكرار",
@@ -5196,7 +5230,12 @@ var _default = exports.default = {
     "thinking": "جارٍ التفكير",
     "label": "الرسالة",
     "placeholder": "اكتب رسالة",
-    "sendLabel": "إرسال"
+    "sendLabel": "إرسال",
+    "conversation": "المحادثة",
+    "message": "الرسالة",
+    "send": "إرسال",
+    "typing": "جارٍ الكتابة",
+    "you": "أنت"
   },
   "checklist": {
     "dismiss": "تجاهل قائمة المهام",
@@ -5396,7 +5435,12 @@ var _default = exports.default = {
     "choose": "اختر خيارات",
     "field": "الحقل",
     "operator": "العامل",
-    "join": "و أو أو"
+    "join": "و أو أو",
+    "moved": "تم نقل {name} إلى الموضع {position} من {total}",
+    "row": "{name}، {position} من {total}. المفتاحان Alt + السهم لأعلى أو لأسفل ينقلانه",
+    "reorder": "إعادة ترتيب {name}",
+    "moveUp": "نقل لأعلى",
+    "moveDown": "نقل لأسفل"
   },
   "formFlow": {
     "create": "إنشاء",
@@ -5422,7 +5466,12 @@ var _default = exports.default = {
     "remove": "إزالة التجميع حسب {name}",
     "removeTip": "إزالة المجموعة",
     "field": "الحقل",
-    "order": "الترتيب"
+    "order": "الترتيب",
+    "moved": "تم نقل {name} إلى الموضع {position} من {total}",
+    "row": "{name}، {position} من {total}. المفتاحان Alt + السهم لأعلى أو لأسفل ينقلانه",
+    "reorder": "إعادة ترتيب {name}",
+    "moveUp": "نقل لأعلى",
+    "moveDown": "نقل لأسفل"
   },
   "helpPanel": {
     "title": "مساعدة",
@@ -5505,7 +5554,14 @@ var _default = exports.default = {
     "view": "عرض الشخص"
   },
   "quickFilter": {
-    "preset": "أي"
+    "preset": "أي",
+    "find": "ابحث عن {noun}",
+    "none": "لا يوجد {noun} مطابق",
+    "clear": "مسح",
+    "all": "الكل",
+    "custom": "نطاق مخصص",
+    "from": "من",
+    "to": "إلى"
   },
   "relatedAssets": {
     "empty": "لا توجد أصول مرتبطة"
@@ -5558,7 +5614,12 @@ var _default = exports.default = {
     "remove": "إزالة الترتيب حسب {name}",
     "removeTip": "إزالة الترتيب",
     "field": "الحقل",
-    "direction": "الاتجاه"
+    "direction": "الاتجاه",
+    "moved": "تم نقل {name} إلى الموضع {position} من {total}",
+    "row": "{name}، {position} من {total}. المفتاحان Alt + السهم لأعلى أو لأسفل ينقلانه",
+    "reorder": "إعادة ترتيب {name}",
+    "moveUp": "نقل لأعلى",
+    "moveDown": "نقل لأسفل"
   },
   "tour": {
     "next": "التالي",
@@ -5624,14 +5685,107 @@ var _default = exports.default = {
     "label": "الإجراءات"
   },
   "appHeader": {
-    "aria-label": "التطبيقات"
+    "aria-label": "التطبيقات",
+    "account": {
+      "trigger": "الحساب والإعدادات لـ {name}",
+      "menu": "الحساب",
+      "myAccount": "حسابي",
+      "settings": "إعدادات Plenix",
+      "appSettings": "إعدادات {app}",
+      "app": "التطبيق",
+      "density": "كثافة العرض",
+      "compact": "مضغوط",
+      "standard": "قياسي",
+      "comfortable": "مريح",
+      "signOut": "تسجيل الخروج"
+    }
   },
   "form": {
     "label": "إجراءات النموذج"
   },
   "reviewFlow": {
     "label": "بانتظار المراجعة",
-    "noun": "عنصر"
+    "noun": "عنصر",
+    "plural": "عناصر",
+    "queueLabel": "بانتظار المراجعة",
+    "flow": {
+      "reviewers": "المراجعون",
+      "history": "السجل",
+      "comment": "تعليق",
+      "commentHint": "مطلوب للرفض أو لطلب التعديلات.",
+      "approve": "موافقة",
+      "changes": "طلب تعديلات",
+      "reject": "رفض",
+      "waiting": "بالانتظار",
+      "human": "محتوى مُنشأ. يراجعه شخص قبل استخدامه.",
+      "needReason": "اذكر السبب ليعرف الكاتب ما الذي يجب تغييره.",
+      "done": "{decision}: {title}",
+      "decisions": "قرارات المراجعة"
+    },
+    "queue": {
+      "name": "الاسم",
+      "type": "النوع",
+      "submittedBy": "قدّمه",
+      "submitted": "تاريخ التقديم",
+      "status": "الحالة",
+      "approve": "موافقة",
+      "changes": "طلب تعديلات",
+      "reject": "رفض",
+      "rejectTitle": "رفض {what}؟",
+      "changesTitle": "طلب تعديلات على {what}؟",
+      "reason": "السبب",
+      "changesLabel": "ما الذي يجب تغييره",
+      "reasonHint": "يراه المؤلفون مع القرار.",
+      "needReason": "اذكر السبب ليعرف المؤلفون ما الذي يجب تغييره.",
+      "done": "{what} {decision}",
+      "count": "{n} {plural}",
+      "noun": "عنصر",
+      "plural": "عناصر",
+      "queueLabel": "بانتظار المراجعة",
+      "items": {
+        "zero": "لا عناصر",
+        "one": "عنصر واحد",
+        "two": "عنصران",
+        "few": "{n} عناصر",
+        "many": "{n} عنصرًا",
+        "other": "{n} عنصر"
+      },
+      "doneItems": {
+        "approved": {
+          "zero": "لم تتم الموافقة على أي عنصر",
+          "one": "تمت الموافقة على عنصر واحد",
+          "two": "تمت الموافقة على عنصرين",
+          "few": "تمت الموافقة على {n} عناصر",
+          "many": "تمت الموافقة على {n} عنصرًا",
+          "other": "تمت الموافقة على {n} عنصر"
+        },
+        "rejected": {
+          "zero": "لم يتم رفض أي عنصر",
+          "one": "تم رفض عنصر واحد",
+          "two": "تم رفض عنصرين",
+          "few": "تم رفض {n} عناصر",
+          "many": "تم رفض {n} عنصرًا",
+          "other": "تم رفض {n} عنصر"
+        },
+        "changes-requested": {
+          "zero": "لم يتم طلب تعديلات على أي عنصر",
+          "one": "تم طلب تعديلات على عنصر واحد",
+          "two": "تم طلب تعديلات على عنصرين",
+          "few": "تم طلب تعديلات على {n} عناصر",
+          "many": "تم طلب تعديلات على {n} عنصرًا",
+          "other": "تم طلب تعديلات على {n} عنصر"
+        }
+      }
+    },
+    "statuses": {
+      "draft": "مسودة",
+      "in-review": "قيد المراجعة",
+      "approved": "تمت الموافقة",
+      "changes-requested": "مطلوب تعديلات",
+      "rejected": "مرفوض",
+      "published": "منشور",
+      "scheduled": "مجدول"
+    }
   },
   "collection": {
     "selected": {
@@ -5642,6 +5796,493 @@ var _default = exports.default = {
       "many": "تم تحديد {count} عنصرًا",
       "other": "تم تحديد {count} عنصر"
     }
+  },
+  "offboarding": {
+    "backup": "صدّر بياناتك",
+    "export": "تصدير البيانات",
+    "review": "أكّد اختيارك",
+    "reason": "السبب (اختياري)",
+    "confirmName": "اكتب اسم الحساب للتأكيد",
+    "mismatch": "أدخل اسم الحساب كما هو تمامًا.",
+    "cancel": "الإبقاء على الحساب",
+    "deleteAccount": "حذف الحساب",
+    "cancelSubscription": "إلغاء الاشتراك"
+  },
+  "imageUpload": {
+    "drop": "اسحب صورة وأفلتها هنا، أو",
+    "dropMany": "اسحب الصور وأفلتها هنا، أو",
+    "choose": "اختيار صورة",
+    "chooseMany": "اختيار صور",
+    "replace": "استبدال",
+    "remove": "إزالة {name}",
+    "alt": "الوصف",
+    "altHint": "صِف هذه الصورة لمن لا يستطيعون رؤيتها",
+    "tooLarge": "{name} أكبر من {max}",
+    "notImage": "{name} ليس صورة",
+    "removed": "تمت إزالة {name}",
+    "added": {
+      "zero": "لم تتم إضافة صور",
+      "one": "تمت إضافة صورة واحدة",
+      "two": "تمت إضافة صورتين",
+      "few": "تمت إضافة {n} صور",
+      "many": "تمت إضافة {n} صورة",
+      "other": "تمت إضافة {n} صورة"
+    },
+    "crop": {
+      "title": "قصّ الصورة",
+      "zoom": "التكبير",
+      "frame": "منطقة القص. اسحب الصورة أو حرّكها بمفاتيح الأسهم",
+      "apply": "تطبيق",
+      "cancel": "إلغاء"
+    }
+  },
+  "voteTally": {
+    "approve": "موافقة",
+    "deny": "رفض",
+    "abstain": "امتناع",
+    "turnedOff": "متوقف",
+    "notVoted": "لم يصوّتوا",
+    "voteOf": "تصويت {name}",
+    "hiddenUntilClosed": "مخفي حتى يُغلق التصويت",
+    "totalsOnly": "المجاميع فقط",
+    "reconnecting": "إعادة الاتصال",
+    "quorum": "النصاب: حاضر {present}، المطلوب {needed} ({state})",
+    "met": "مكتمل",
+    "notMet": "غير مكتمل",
+    "result": {
+      "open": "مفتوح",
+      "passing": "في طريقه للإقرار",
+      "failing": "في طريقه للرفض",
+      "passed": "أُقرّ",
+      "failed": "رُفض",
+      "tied": "تعادل",
+      "no-quorum": "لا نصاب"
+    }
+  },
+  "card": {
+    "panel": {
+      "collapse": "طيّ {title}",
+      "expand": "توسيع {title}",
+      "section": "قسم"
+    },
+    "mediaCard": {
+      "select": "تحديد {title}",
+      "item": "عنصر",
+      "assets": "{n} أصول",
+      "asset": "{n} أصل"
+    },
+    "card": {
+      "expand": "توسيع {title}",
+      "collapse": "طيّ {title}",
+      "card": "بطاقة"
+    }
+  },
+  "field": {
+    "counter": {
+      "left": "بقي {n} حرفًا",
+      "over": "زاد {n} حرفًا"
+    }
+  },
+  "icon": {
+    "status": {
+      "info": "معلومة",
+      "success": "نجاح",
+      "warning": "تحذير",
+      "danger": "خطأ",
+      "neutral": "ملاحظة"
+    }
+  },
+  "searchResult": {
+    "result": {
+      "path": "في"
+    },
+    "group": {
+      "more": "إظهار الكل"
+    }
+  },
+  "settingsLayout": {
+    "section": {
+      "section": "قسم"
+    }
+  },
+  "commerce": {
+    "orders": {
+      "label": "الطلبات",
+      "search": "البحث في الطلبات",
+      "count": "{n} طلبات",
+      "one": "طلب واحد",
+      "noun": "طلب",
+      "plural": "طلبات",
+      "number": "الترتيب",
+      "date": "التاريخ",
+      "customer": "العميل",
+      "items": "العناصر",
+      "total": "الإجمالي",
+      "status": "الحالة",
+      "open": "فتح",
+      "fulfill": "تنفيذ",
+      "refund": "استرداد",
+      "cancel": "إلغاء الطلب",
+      "cancelMany": "إلغاء الطلبات",
+      "cancelTitle": "إلغاء {what}؟",
+      "cancelText": "سيُبلَّغ العميل ويُعاد إليه المبلغ كاملًا. لا يمكن التراجع عن ذلك.",
+      "keep": "الإبقاء على الطلب",
+      "notFulfillable": "يمكن تنفيذ الطلبات غير المنفّذة فقط",
+      "notCancelable": "يمكن إلغاء الطلبات غير المنفّذة فقط",
+      "notRefundable": "يمكن استرداد الطلبات المشحونة أو المسلَّمة فقط",
+      "fulfilled": "تم وضع علامة شُحن على {what}",
+      "canceled": "تم إلغاء {what}"
+    },
+    "orderDetail": {
+      "context": "الترتيب",
+      "back": "الطلبات",
+      "items": "العناصر",
+      "delivery": "التسليم",
+      "address": "العنوان",
+      "method": "الطريقة",
+      "tracking": "رقم التتبع",
+      "payment": "الدفع",
+      "history": "السجل",
+      "fulfill": "تنفيذ",
+      "refund": "استرداد",
+      "cancel": "إلغاء الطلب",
+      "return": "بدء عملية إرجاع",
+      "cancelTitle": "إلغاء الطلب {number}؟",
+      "cancelText": "سيُبلَّغ العميل ويُعاد إليه المبلغ كاملًا. لا يمكن التراجع عن ذلك.",
+      "keep": "الإبقاء على الطلب"
+    },
+    "subscription": {
+      "plan": "خطتك",
+      "planName": "الخطة",
+      "price": "السعر",
+      "status": "الحالة",
+      "next": "الدفعة التالية",
+      "since": "عضو منذ",
+      "ends": "ينتهي الوصول في",
+      "perPeriod": "{price} لكل {period}",
+      "more": "{amount} أكثر",
+      "less": "{amount} أقل",
+      "change": "تغيير الخطة",
+      "changeTitle": "التغيير إلى {plan}؟",
+      "changeText": "ستدفع {price} اعتبارًا من {date}. حتى ذلك الحين تبقى خطتك الحالية كما هي.",
+      "changeConfirm": "تغيير الخطة",
+      "changed": "ستتغير خطتك إلى {plan} في {date}.",
+      "plans": "الخطط",
+      "current": "الخطة الحالية",
+      "method": "طريقة الدفع",
+      "update": "تحديث طريقة الدفع",
+      "manage": "إيقاف مؤقت أو إلغاء",
+      "manageText": "أوقف مؤقتًا لإيقاف الدفعات فترة مع الاحتفاظ بإعداداتك، أو ألغِ لإنهاء الخطة. في الحالتين يبقى وصولك حتى {date}.",
+      "pause": "إيقاف الاشتراك مؤقتًا",
+      "pauseTitle": "إيقاف اشتراكك مؤقتًا؟",
+      "pauseText": "لا تُسحب أي دفعات أثناء الإيقاف المؤقت. يمكنك استئنافه متى شئت.",
+      "resume": "استئناف الاشتراك",
+      "cancel": "إلغاء الاشتراك",
+      "cancelTitle": "إلغاء اشتراكك؟",
+      "cancelText": "يبقى وصولك حتى {date}، ولن تُحاسَب مرة أخرى.",
+      "keep": "الإبقاء على خطتي",
+      "history": "سجل الفواتير",
+      "date": "التاريخ",
+      "description": "الوصف",
+      "amount": "المبلغ",
+      "invoice": "فاتورة",
+      "invoiceFor": "فاتورة بتاريخ {date}",
+      "paused": "اشتراكك متوقف مؤقتًا.",
+      "canceled": "تم إلغاء اشتراكك.",
+      "statuses": {
+        "active": "نشط",
+        "paused": "متوقف مؤقتًا",
+        "canceled": "أُلغي",
+        "paid": "مدفوعة",
+        "refunded": "مُستردة",
+        "failed": "فشلت"
+      }
+    },
+    "returns": {
+      "label": "إرجاع العناصر",
+      "items": "العناصر",
+      "reason": "السبب",
+      "resolution": "الحل",
+      "review": "مراجعة",
+      "submit": "طلب إرجاع",
+      "cancel": "إلغاء",
+      "window": "يمكنك إرجاع معظم العناصر خلال 30 يومًا من التسليم.",
+      "choose": "اختر عنصرًا واحدًا على الأقل لإرجاعه.",
+      "notReturnable": "لا يمكن إرجاعه",
+      "quantity": "كم عدد {title}",
+      "why": "لماذا تُرجع العناصر؟",
+      "whyRequired": "اختر سببًا.",
+      "note": "هل هناك ما يجب أن نعرفه؟ (اختياري)",
+      "want": "ماذا تريد؟",
+      "wantRequired": "اختر استردادًا أو استبدالًا.",
+      "send": "كيف سترسلها؟",
+      "sendRequired": "اختر طريقة الإرسال.",
+      "refund": "استرداد",
+      "refundTiming": "يصل المبلغ المسترد إلى طريقة الدفع الأصلية بعد 5 إلى 10 أيام عمل من وصول العناصر.",
+      "requested": "تم طلب الإرجاع",
+      "requestedText": "أرسلنا إليك بالبريد الإلكتروني بطاقة الإرجاع والخطوات. وهذه حالة طلب الإرجاع.",
+      "status": "حالة الإرجاع",
+      "returning": "{n} عناصر",
+      "returningOne": "عنصر واحد"
+    },
+    "cart": {
+      "title": "السلة",
+      "items": "{n} عناصر",
+      "item": "عنصر واحد",
+      "lines": "العناصر في سلتك",
+      "remove": "إزالة {title}",
+      "noun": "عنصر",
+      "removed": "تمت إزالة {title} من سلتك.",
+      "undo": "تراجع",
+      "empty": "سلتك فارغة",
+      "emptyText": "اعثر على ما يعجبك وأضفه هنا.",
+      "continue": "متابعة التسوق",
+      "checkout": "إتمام الشراء",
+      "promo": "رمز العرض",
+      "apply": "تطبيق",
+      "applied": "تم تطبيق رمز العرض {code}",
+      "promoError": "لا يمكن استخدام هذا الرمز.",
+      "total": "الإجمالي {total}"
+    },
+    "pay": {
+      "method": "طريقة الدفع",
+      "newCard": "بطاقة جديدة",
+      "number": "رقم البطاقة",
+      "accepted": "Visa أو Mastercard أو American Express أو Discover",
+      "expiry": "تاريخ الانتهاء",
+      "expiryHint": "شهر / سنة",
+      "cvc": "رمز الأمان",
+      "cvcHint": "الأرقام الثلاثة الأخيرة على ظهر البطاقة، أو أربعة على وجه American Express",
+      "name": "الاسم على البطاقة",
+      "billingSame": "عنوان الفوترة هو نفسه عنوان التسليم",
+      "billing": "عنوان الفوترة",
+      "street": "العنوان",
+      "city": "المدينة",
+      "postal": "الرمز البريدي",
+      "secure": "تذهب بيانات بطاقتك مباشرة إلى مزوّد الدفع. ولا تحتفظ هذه الصفحة بها.",
+      "charge": "سيتم تحصيل",
+      "brands": {
+        "visa": "Visa",
+        "mastercard": "Mastercard",
+        "amex": "American Express",
+        "discover": "Discover"
+      }
+    },
+    "payment": {
+      "title": "الدفع",
+      "description": "اختر طريقة الدفع. لن يُحصَّل أي مبلغ قبل الضغط على «ادفع».",
+      "pay": "ادفع {amount}",
+      "cancel": "إلغاء",
+      "declined": "لم تتم عملية الدفع",
+      "declinedText": "تم رفض بطاقتك. تحقق من البيانات أو استخدم بطاقة أخرى.",
+      "paid": "تم استلام الدفعة"
+    },
+    "checkout": {
+      "label": "إتمام الشراء",
+      "contact": "الاتصال",
+      "delivery": "التسليم",
+      "payment": "الدفع",
+      "review": "مراجعة",
+      "placeOrder": "تأكيد الطلب",
+      "cancel": "العودة إلى السلة",
+      "email": "البريد الإلكتروني",
+      "emailHint": "لتأكيد الطلب وتحديثات التسليم.",
+      "account": "لديك حساب؟",
+      "signIn": "تسجيل الدخول",
+      "name": "الاسم الكامل",
+      "street": "العنوان",
+      "street2": "الشقة أو الجناح أو الوحدة (اختياري)",
+      "city": "المدينة",
+      "region": "الولاية أو المنطقة",
+      "postal": "الرمز البريدي",
+      "country": "البلد",
+      "phone": "الهاتف (اختياري)",
+      "phoneHint": "فقط للأسئلة المتعلقة بالتسليم.",
+      "method": "طريقة التسليم",
+      "summary": "ملخص الطلب",
+      "card": "بطاقة تنتهي بـ {last4}",
+      "placed": "تم تقديم الطلب",
+      "checkAnswers": "راجع طلبك قبل تأكيده.",
+      "items": "العناصر",
+      "free": "مجاني"
+    },
+    "confirm": {
+      "title": "شكرًا لك. تم تقديم طلبك.",
+      "number": "رقم الطلب",
+      "copy": "نسخ رقم الطلب",
+      "sent": "أرسلنا تأكيدًا إلى {email}.",
+      "next": "ما يحدث بعد ذلك",
+      "items": "العناصر",
+      "view": "عرض طلبك",
+      "continue": "متابعة التسوق",
+      "delivery": "التسليم",
+      "method": "طريقة التسليم"
+    },
+    "listing": {
+      "label": "المنتجات",
+      "search": "البحث في المنتجات",
+      "count": "{n} منتجات",
+      "one": "منتج واحد",
+      "category": "الفئة",
+      "noun": "منتج",
+      "name": "الاسم",
+      "price": "السعر",
+      "rating": "التقييم",
+      "availability": "التوفر",
+      "inStock": "متوفر",
+      "outOfStock": "غير متوفر في المخزون",
+      "sale": "معروض بسعر مخفّض",
+      "yes": "نعم",
+      "no": "لا",
+      "empty": "لا توجد منتجات مطابقة",
+      "emptyText": "أزل عامل تصفية أو ابحث عن شيء آخر.",
+      "clear": "مسح عوامل التصفية والبحث",
+      "results": "تم عرض {n} منتجات",
+      "resultsOne": "تم عرض منتج واحد",
+      "none": "لا توجد منتجات معروضة"
+    },
+    "discovery": {
+      "title": "المتجر",
+      "search": "البحث في المتجر",
+      "categories": "التسوق حسب الفئة",
+      "recommended": "موصى به لك",
+      "results": "المنتجات",
+      "resultsFor": "نتائج «{q}»",
+      "count": "{n} منتجات",
+      "one": "منتج واحد",
+      "suggestions": "جرّب أحد هذه",
+      "clear": "مسح البحث"
+    },
+    "productDetail": {
+      "gallery": "صور {title}",
+      "reviews": "{n} مراجعات",
+      "review": "مراجعة واحدة",
+      "inStock": "متوفر",
+      "lowStock": "بقي {n} فقط",
+      "outOfStock": "غير متوفر في المخزون",
+      "addToCart": "أضف إلى السلة",
+      "added": "تمت إضافة {title} إلى سلتك",
+      "viewCart": "عرض السلة",
+      "choose": "اختر {option}.",
+      "missing": "اختر خياراتك أولًا.",
+      "description": "الوصف",
+      "details": "التفاصيل",
+      "delivery": "التسليم والإرجاع",
+      "detail": "التفاصيل",
+      "value": "القيمة",
+      "related": "قد يعجبك أيضًا",
+      "rating": "التقييم"
+    },
+    "line": {
+      "quantity": "الكمية، {title}",
+      "qty": "الكمية {n}",
+      "each": "{price} للقطعة"
+    },
+    "summary": {
+      "title": "ملخص الطلب",
+      "subtotal": "المجموع الفرعي",
+      "discount": "الخصم",
+      "shipping": "الشحن",
+      "shippingEstimated": "الشحن التقديري",
+      "tax": "الضريبة",
+      "taxEstimated": "الضريبة التقديرية",
+      "total": "الإجمالي",
+      "free": "مجاني",
+      "items": "{n} عناصر",
+      "item": "عنصر واحد",
+      "times": "× {n}"
+    }
+  },
+  "dnd": {
+    "handle": "نقل {name}",
+    "instructions": "اضغط على Space أو Enter لالتقاطه. مفاتيح الأسهم تحرّكه، وSpace أو Enter يُسقطه، وEscape يعيده.",
+    "pickedUp": "تم التقاط {name}. الموضع {position} من {total}. مفاتيح الأسهم تحرّكه، وSpace أو Enter يُسقطه، وEscape يعيده.",
+    "moved": "{name}، الموضع {position} من {total}",
+    "movedTo": "تم نقل {name} إلى {list}، الموضع {position} من {total}",
+    "dropped": "تم إسقاط {name} في الموضع {position} من {total}",
+    "droppedIn": "تم إسقاط {name} في {list}، الموضع {position} من {total}",
+    "canceled": "أُلغي النقل. عاد {name} إلى الموضع {position} من {total}",
+    "itemPickedUp": "تم التقاط {name}. يمكن لـ {count} أماكن استقباله. مفاتيح الأسهم تختار مكانًا، وSpace أو Enter يُسقطه، وEscape يعيده.",
+    "over": "فوق {target}",
+    "overReject": "{target} لا يستقبل {name}",
+    "droppedOn": "تم إسقاط {name} على {target}",
+    "noTargets": "لا يوجد مكان يستقبل {name}",
+    "itemCanceled": "أُلغي النقل. لم يتم نقل {name}",
+    "repositionPicked": "تم التقاط {name}. مفاتيح الأسهم تحرّكه، مع Shift لمسافة أكبر؛ وSpace أو Enter يُسقطه، وEscape يعيده.",
+    "repositioned": "تم نقل {name}",
+    "repositionDropped": "تم إسقاط {name}",
+    "repositionCanceled": "أُلغي النقل. عاد {name} إلى مكانه",
+    "movable": "قابل للنقل",
+    "list": "القائمة"
+  },
+  "collapsibleSection": {
+    "less": "عرض أقل",
+    "more": "عرض المزيد",
+    "moreCount": "عرض المزيد ({n})"
+  },
+  "fields": {
+    "directions": {
+      "text": ["أ → ي", "ي → أ"],
+      "select": ["الأول → الأخير", "الأخير → الأول"],
+      "multi": ["الأول → الأخير", "الأخير → الأول"],
+      "number": ["1 → 9", "9 → 1"],
+      "date": ["الأقدم → الأحدث", "الأحدث → الأقدم"]
+    },
+    "operators": {
+      "text": {
+        "contains": "يحتوي على",
+        "ncontains": "لا يحتوي على",
+        "is": "هو",
+        "isnot": "ليس",
+        "empty": "فارغ",
+        "nempty": "غير فارغ"
+      },
+      "select": {
+        "any": "هو أحد",
+        "none": "ليس أيًّا من",
+        "empty": "فارغ",
+        "nempty": "غير فارغ"
+      },
+      "multi": {
+        "any": "يحتوي على أي من",
+        "none": "لا يحتوي على أي من",
+        "empty": "فارغ",
+        "nempty": "غير فارغ"
+      },
+      "number": {
+        "eq": "=",
+        "ne": "≠",
+        "lt": "<",
+        "gt": ">",
+        "empty": "فارغ",
+        "nempty": "غير فارغ"
+      },
+      "date": {
+        "is": "هو",
+        "before": "قبل",
+        "after": "بعد",
+        "within": "خلال",
+        "empty": "فارغ",
+        "nempty": "غير فارغ"
+      }
+    },
+    "within": {
+      "week": "الأسبوع الماضي",
+      "month": "الشهر الماضي",
+      "year": "العام الماضي"
+    },
+    "presets": {
+      "7": "آخر 7 أيام",
+      "30": "آخر 30 يومًا",
+      "any": "أي وقت",
+      "year": "هذا العام"
+    }
+  },
+  "dateBadge": {
+    "today": "اليوم"
+  },
+  "activityList": {
+    "unread": "غير مقروء"
   }
 };
   } },
@@ -5870,6 +6511,610 @@ function useDigits() {
   return value ? value.digits : F.digitsOf(F.formatLocale());
 }
   } },
+  "platform/components/Icon/Icon.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","./glyphs.js":"platform/components/Icon/glyphs.js","../../utils/iconSafety.js":"platform/utils/iconSafety.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Icon = Icon;
+exports.StatusIcon = StatusIcon;
+exports.registerIcons = registerIcons;
+exports.resolveIcon = resolveIcon;
+exports.setDefaultIconLibrary = setDefaultIconLibrary;
+exports.setIconLibrary = setIconLibrary;
+exports.stateIcon = stateIcon;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _cx = require("../../utils/cx.js");
+var _glyphs = require("./glyphs.js");
+var _iconSafety = require("../../utils/iconSafety.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Icon, StatusIcon
+   Summary: One icon of the Plenix set, drawn as an inline SVG in the current text color (a name outside the set, from
+     icons-all.css, as a mask). StatusIcon is a tone's icon in the
+     tone's color (info, success, warning, danger, neutral), alone or with a short label.
+   Usage:
+     <Icon name="folder" />
+     <Icon name="bookmark" size="sm" filled label="Bookmarked" />
+     import Add from 'plenix-platform/icons/plenix/add';  <Icon icon={Add} />      // an imported icon module (#282)
+     registerIcons(Add, Close);  <Icon name="add" />                               // a name drawn from its module first
+     <StatusIcon tone="warning" />
+     <StatusIcon tone="success" size="sm">Synced</StatusIcon>
+   Props:
+     name: the naming contract (2026-10-22): a Plenix name, with dashes (platform/icons/map.json: mic-off, person-cancel);
+       a Plenix name that is its Material symbol with dashes also answers to the underscore spelling (mic_off,
+       person_cancel); with the CDN's icons-all.css on the page, any other Material Symbols name (rocket_launch) too. A
+       Material name that is also a Plenix name draws the Plenix icon (check, home). Unknown names draw nothing
+     size: "xs" 12px | "sm" 16px | "md" 20px | "lg" 24px | "xl" 48px, a page title (--plx-sys-icon-size-*); without it the icon takes its container's
+       grid icon (a control's --plx-sys-control-icon-<role>) or --plx-sys-icon-size
+     icon: an imported icon module (platform/icons/layout.js: icons/<set>/<name>.js; in an application,
+       import X from 'plenix-platform/icons/<set>/<name>'): drawn from its own drawings instead of icon.css, with the same
+       classes, so sizes, fills, the optical size and right-to-left mirroring work exactly as for name (issue 282)
+     filled: the filled version (default false)
+     label: the accessible name, when the icon alone carries meaning
+     className: more classes on the icon
+     StatusIcon.tone: "info" (default) | "success" | "warning" | "danger" | "neutral"; each has its own icon (neutral shares
+       the info icon, in the neutral color)
+     StatusIcon.size: "sm" (16px) | "md" (default; 20px) | "lg" (24px)
+     StatusIcon.label: the accessible name of the icon alone (default: the tone's word from strings)
+     StatusIcon.children: a short visible label after the icon; the icon is then decorative and the text says the state
+     StatusIcon.strings: the tone words, for other languages: { info: "Information", success: "Success", warning: "Warning",
+       danger: "Error", neutral: "Note" }
+     StatusIcon.className: more classes on the status icon
+     library: where a name is looked up (issue 281): "plenix" (default: registered modules, the Plenix set, then the
+       Material library, as before), "material" (Material's own symbol even where a Plenix name exists), or a project's own
+       library registered with registerIcons(..., { library }) (only its modules). setDefaultIconLibrary(name) sets the page's
+       default: call it at startup, before icons draw (icons already on the page do not draw again)
+     registerIcons(...modules[, { library }]): modules drawn first by their name and their symbol's spelling, in their
+       set's library or the one named
+     Every loaded icon file and every module drawing is untrusted (issue 285): it is read through the allow-list in
+       utils/iconSafety.js (one svg, one path, values by grammar, bounded size), and anything else refuses it; development
+       warns once with the reason. Nothing is ever inserted as HTML: the values become React props.
+     A name drawn by a run-time fetch (a Material name not imported or registered) warns once in development: production
+       should import or register it. An icon value that is not a module warns once per kind of value and draws nothing
+   Behavior:
+     The component that owns a current or selected state passes filled (NavList's current item and pinned pin, a
+       selected or pressed Button); filled={false} keeps the outline (Tree owns each item state).
+     Omitting filled: until every owner passes it, the filled version is still drawn inside a current or selected
+       element (aria-current, aria-pressed, aria-selected, .is-selected, .is-current): the rollout backlog.
+     The optical size follows the context: 24 in a Comfortable region and in a 24px container (the app header, a
+       pictogram), and for sizes lg and xl; 20 everywhere else.
+     A pinned item shows the filled pin, not a filled row.
+     Without a label the icon is decorative and hidden from assistive technology; with one it is an image (role="img").
+     StatusIcon alone is an image named by its tone (role="img", "Warning"), so the state never rests on color only; with a
+       visible label the label carries the state and the icon is hidden from assistive technology.
+   Notes:
+     The set is Material Symbols Sharp, weight 300, used exactly as published (platform/icons/).
+     The size names the icon's whole square, which includes the set's own padding (1/12 of the square on each side): the
+       system adds none to make up for it.
+     Other props pass through to the <span>. The drawings come from icon.css (its data URIs, read once; names in glyphs.js, generated by build-icons.js): the outline or
+     the filled version, at optical sizes 20 and 24, the stylesheet showing the one the context draws; inline paths paint
+     about 200 times faster than masks (owner, 2026-10-23). A bare class name (plx-icon plx-icon--<name>) still draws the mask.
+     StatusIcon's colors and sizes are its own tokens (--plx-comp-status-icon-*, components/Icon/status-icon.css); the label
+       keeps the text color and size of where it sits.
+*/
+// One way to draw an icon (owner, 2026-10-23: "no band-aid"): every name goes through resolveIcon, and every icon is an
+// inline SVG in the text color (inline paths paint about 200 times faster than masks).
+//   1. A Plenix name (map.json, dashes; its underscore alias too): drawn at once, its drawing read from icon.css.
+//   2. Any other Material Symbols name, in dashes or underscores, any case (rocket_launch, Rocket-Launch): its files are
+//      loaded once from the library (platform/icons/library beside the bundle, or the CDN's /cdn/material/<commit>/)
+//      and drawn the same way; the box stays empty while it loads.
+//   3. An unknown name draws nothing (never a filled square) and warns once, with the closest names.
+// The outline or the filled version, at optical sizes 20 and 24: the stylesheet shows the one the context draws (icon.css).
+const LARGE = {
+  lg: true,
+  xl: true
+};
+const VARIANT = ['', '-fill', '-24', '-24-fill']; // outline 20, filled 20, outline 24, filled 24
+const library = new Set(_glyphs.LIBRARY.split(' ')),
+  plenix = new Set(_glyphs.SYMBOLS.split(' '));
+// imported icon modules (#282): { name, set, symbol, fillOutline, mirrored, drawings: { 20: { outline, fill }, 24: … } }.
+// The registry (#281): per library, a name (and its symbol's spelling) -> its module. registerIcons(...modules) puts each
+// module in its own set's library ("plenix", "material"); registerIcons(...modules, { library: 'acme' }) makes a
+// project's own library, which <Icon library="acme"> draws from only
+const libraries = new Map(); // library -> Map(name -> module)
+// a module is untrusted (#285): its four drawings pass the same allow-list as a file, once per module object
+const checked = new WeakMap();
+function moduleProblem(m) {
+  if (!(m && typeof m === 'object' && m.drawings && m.drawings[20] && m.drawings[24] && m.name)) return 'not an icon module';
+  if (checked.has(m)) return checked.get(m);
+  let problem = null;
+  for (const size of [20, 24]) for (const k of ['outline', 'fill']) {
+    const r = (0, _iconSafety.checkDrawing)(m.drawings[size][k]);
+    if (!r.ok && !problem) problem = 'its ' + size + ' ' + k + ' drawing: ' + r.reason;
+  }
+  checked.set(m, problem);
+  return problem;
+}
+const isModule = m => !moduleProblem(m);
+function registerIcons(...args) {
+  const last = args[args.length - 1],
+    options = last && typeof last === 'object' && !Array.isArray(last) && !isModule(last) && 'library' in last ? args.pop() : null;
+  for (const m of args.flat()) {
+    const problem = moduleProblem(m);
+    if (problem) {
+      if (typeof console !== 'undefined') console.warn('[Plenix] registerIcons: refused (' + problem + ')', m);
+      continue;
+    }
+    const lib = options && options.library || m.set || 'plenix';
+    if (!libraries.has(lib)) libraries.set(lib, new Map());
+    const map = libraries.get(lib);
+    map.set(m.name, m);
+    if (m.symbol && m.symbol !== m.name) map.set(m.symbol, m);
+  }
+}
+// the library an Icon without its own library prop draws from: "plenix" (the Plenix set, then the Material library, as
+// before), "material", or a project's own registered library
+let defaultLibrary = 'plenix';
+// call it at startup, before icons draw: an icon already on the page does not draw again when it changes
+function setDefaultIconLibrary(name) {
+  defaultLibrary = name ? String(name) : 'plenix';
+}
+// a module's drawing i (VARIANT order: outline 20, filled 20, outline 24, filled 24) as [path, viewBox, extra], the shape
+// parseSvg gives, with the extras in the same order, so the markup is the same as from the stylesheet
+const SLOT = [[20, 'outline'], [20, 'fill'], [24, 'outline'], [24, 'fill']];
+function moduleGlyph(m, i) {
+  const d = m.drawings[SLOT[i][0]] && m.drawings[SLOT[i][0]][SLOT[i][1]];
+  if (!d || !d.d || !d.viewBox) return null;
+  const extra = {};
+  for (const key of ['transform', 'fillRule', 'clipRule']) if (d[key]) extra[key] = d[key];
+  return [d.d, d.viewBox, extra];
+}
+const normal = name => String(name == null ? '' : name).trim();
+// One resolver (#281): the registered modules of the chosen library first; then, for "plenix", the Plenix set (icon.css)
+// and the Material library; for "material", the Material library only (a Material name draws Material's own symbol
+// even where a Plenix name exists); a project's library draws only its registered modules. A Material name that is not
+// registered is fetched at run time (as before; development warns once that production should import or register it).
+// Returns { kind: 'module' | 'plenix' | 'library', symbol, fillOutline, module? } or null.
+function resolveIcon(name, options) {
+  const n = normal(name),
+    lib = options && options.library || defaultLibrary;
+  const fromRegistry = l => {
+    const map = libraries.get(l);
+    const m = map && (map.get(n) || map.get(n.toLowerCase().replace(/_/g, '-')) || map.get(n.toLowerCase().replace(/-/g, '_')));
+    return m ? {
+      kind: 'module',
+      symbol: m.symbol || m.name,
+      fillOutline: !!m.fillOutline,
+      module: m
+    } : null;
+  };
+  if (lib === 'material') {
+    const reg = fromRegistry('material');
+    if (reg) return reg;
+    const symbol = n.toLowerCase().replace(/-/g, '_');
+    if (plenix.has(symbol)) return {
+      kind: 'plenix',
+      symbol,
+      fillOutline: false
+    }; // the same drawing, already in icon.css
+    return library.has(symbol) ? {
+      kind: 'library',
+      symbol,
+      fillOutline: false
+    } : null;
+  }
+  if (lib !== 'plenix') return fromRegistry(lib);
+  // a registered Plenix module, then the Plenix set: a registered Material module never replaces a Plenix name (importing
+  // material/home must not swap every <Icon name="home"> on the page); it serves only names outside the Plenix set
+  const reg = fromRegistry('plenix');
+  if (reg) return reg;
+  const p = resolvePlenix(n);
+  if (p && p.kind === 'plenix') return p;
+  return fromRegistry('material') || p;
+}
+function resolvePlenix(n) {
+  if (_glyphs.NAMES[n]) return {
+    kind: 'plenix',
+    symbol: _glyphs.NAMES[n][0],
+    fillOutline: _glyphs.NAMES[n][1] === 1
+  };
+  const dashed = n.toLowerCase().replace(/_/g, '-');
+  if (_glyphs.NAMES[dashed]) return {
+    kind: 'plenix',
+    symbol: _glyphs.NAMES[dashed][0],
+    fillOutline: _glyphs.NAMES[dashed][1] === 1
+  };
+  const symbol = n.toLowerCase().replace(/-/g, '_');
+  if (plenix.has(symbol)) return {
+    kind: 'plenix',
+    symbol,
+    fillOutline: false
+  };
+  if (library.has(symbol)) return {
+    kind: 'library',
+    symbol,
+    fillOutline: false
+  };
+  return null;
+}
+// where the library's files are: set by the page (setIconLibrary), else beside the bundle's script or stylesheet
+let libraryBase = null;
+function setIconLibrary(url) {
+  libraryBase = url ? String(url).replace(/\/?$/, '/') : null;
+  files.clear();
+}
+function base() {
+  if (libraryBase) return libraryBase;
+  // a page (or an extension whose bundler renames the Plenix files) can name it before Plenix draws: window.PlenixIconLibrary
+  if (typeof window !== 'undefined' && typeof window.PlenixIconLibrary === 'string' && window.PlenixIconLibrary) return libraryBase = window.PlenixIconLibrary.replace(/\/?$/, '/');
+  if (typeof document === 'undefined') return null;
+  const at = [...document.querySelectorAll('script[src], link[rel="stylesheet"][href]')].map(el => el.src || el.href).find(url => /\/(plenix(\.esm|\.min)?\.(js|css)|platform\.(js|css))(\?|#|$)/.test(url));
+  if (!at) return null;
+  // the CDN: /cdn/<version>/plenix.js -> /cdn/material/<commit>/; this repository: platform/... -> platform/icons/library/
+  libraryBase = /\/cdn\/[^/]+\/[^/]+$/.test(new URL(at).pathname) ? new URL('../material/' + _glyphs.LIBRARY_COMMIT + '/', at).href : new URL(/\/dist\/[^/]+$/.test(new URL(at).pathname) ? '../icons/library/' : 'icons/library/', at).href;
+  return libraryBase;
+}
+// an icon file -> [path, viewBox, { transform, fillRule, clipRule }]: its one path, in its viewBox (or its width and height)
+// an icon file -> [path, viewBox, { transform, fillRule, clipRule }], through the allow-list (#285: a loaded file is
+// untrusted; utils/iconSafety.js): anything else in the file refuses it, and development warns once with the reason
+const refused = new Set();
+function parseSvg(svg, from) {
+  if (!svg) return null;
+  const r = (0, _iconSafety.checkIconSvg)(svg);
+  if (!r.ok) {
+    const key = (from || 'an icon file') + ': ' + r.reason;
+    if (!refused.has(key) && (0, _devWarn.development)() && typeof console !== 'undefined') {
+      refused.add(key);
+      console.warn('[Plenix] Icon: refused ' + key);
+    }
+    return null;
+  }
+  const {
+    viewBox,
+    d,
+    ...extra
+  } = r.drawing;
+  return [d, viewBox, extra];
+}
+// a Plenix symbol's drawing: read once from the stylesheet already on the page (icon.css carries every file as a data:
+// URI in --plx-comp-icon-glyph-*), so the drawings ship once, need no request and work from file:// too
+const fromCss = new Map();
+function cssGlyph(symbol, i) {
+  const key = symbol + VARIANT[i];
+  if (fromCss.has(key)) return fromCss.get(key);
+  if (typeof document === 'undefined' || typeof getComputedStyle !== 'function') return null;
+  const value = getComputedStyle(document.documentElement).getPropertyValue('--plx-comp-icon-glyph-' + key.replace(/_/g, '-')).trim();
+  const uri = value.match(/^url\(["']?data:image\/svg\+xml,(.*?)["']?\)$/);
+  let glyph = null;
+  if (uri) {
+    try {
+      glyph = parseSvg(decodeURIComponent(uri[1]));
+    } catch (e) {
+      glyph = null;
+    }
+  }
+  if (glyph) fromCss.set(key, glyph); // not kept when the stylesheet is not there yet: read again on the next draw
+  return glyph;
+}
+// a fetched file is read only up to the size limit (issue 285): a Content-Length over it is refused before reading, and a
+// body without one is read in chunks and dropped as soon as it passes the limit
+function readCapped(response) {
+  const max = _iconSafety.ICON_LIMITS.file,
+    length = Number(response.headers && response.headers.get && response.headers.get('content-length'));
+  if (length > max) return null;
+  if (!response.body || typeof response.body.getReader !== 'function') return response.text().then(t => t.length > max ? null : t);
+  const reader = response.body.getReader(),
+    parts = [];
+  let size = 0;
+  const step = () => reader.read().then(({
+    done,
+    value
+  }) => {
+    if (done) return new TextDecoder().decode(parts.length === 1 ? parts[0] : parts.reduce((all, p) => {
+      const out = new Uint8Array(all.length + p.length);
+      out.set(all);
+      out.set(p, all.length);
+      return out;
+    }, new Uint8Array(0)));
+    size += value.length;
+    if (size > max) {
+      reader.cancel();
+      return null;
+    }
+    parts.push(value);
+    return step();
+  });
+  return step();
+}
+const files = new Map(); // file name -> [path, viewBox, extra] | null (missing) | a Promise while it loads
+function loadFile(file) {
+  if (files.has(file)) return files.get(file);
+  const root = base();
+  const job = !root || typeof fetch !== 'function' ? Promise.resolve(null) : fetch(root + file + '.svg').then(r => r.ok ? readCapped(r) : null).then(text => parseSvg(text, file + '.svg')).catch(() => null).then(glyph => {
+    files.set(file, glyph);
+    return glyph;
+  });
+  files.set(file, job);
+  return job;
+}
+const warned = new Set();
+function warnUnknown(name) {
+  const n = normal(name);
+  if (!n || warned.has(n)) return;
+  warned.add(n);
+  const key = n.toLowerCase().replace(/[-_\s]+/g, '');
+  const near = [...Object.keys(_glyphs.NAMES), ...library].filter(c => {
+    const k = c.replace(/[-_]/g, '');
+    return k.includes(key) || key.includes(k);
+  }).slice(0, 6);
+  if (typeof console !== 'undefined') console.warn('[Plenix] Icon: no icon is named "' + n + '"; nothing is drawn.' + (near.length ? ' Closest: ' + near.join(', ') + '.' : ''));
+}
+// a name drawn by a run-time fetch: development warns once that production should import or register it
+const fetchedNotice = new Set();
+function noticeFetch(symbol) {
+  if (fetchedNotice.has(symbol) || !(0, _devWarn.development)() || typeof console === 'undefined') return;
+  fetchedNotice.add(symbol);
+  console.warn('[Plenix] Icon: ' + symbol + ' was fetched at run time; for production import it (plenix-platform/icons/material/' + symbol.replace(/_/g, '-') + ') or register it (registerIcons).');
+}
+function useDrawings(name, size, filled, mod, lib) {
+  const resolved = mod ? {
+    kind: 'module',
+    symbol: mod.symbol || mod.name,
+    fillOutline: !!mod.fillOutline,
+    module: mod
+  } : resolveIcon(name, {
+    library: lib
+  });
+  const found = resolved;
+  if (found && found.kind === 'module') mod = found.module;
+  const fill = filled === true || found && found.fillOutline;
+  const wanted = LARGE[size] ? [[fill ? 3 : 2, 24]] : [[fill ? 1 : 0, 20], [fill ? 3 : 2, 24]];
+  const fileOf = i => found.symbol + VARIANT[i];
+  const [, redraw] = _react.default.useReducer(x => x + 1, 0);
+  const pending = found && found.kind === 'library' ? wanted.filter(([i]) => !Array.isArray(files.get(fileOf(i))) && files.get(fileOf(i)) !== null) : [];
+  _react.default.useEffect(() => {
+    if (!found) {
+      warnUnknown(name);
+      return undefined;
+    }
+    if (found.kind === 'library') noticeFetch(found.symbol);
+    if (!pending.length) return undefined;
+    let live = true;
+    Promise.all(pending.map(([i]) => loadFile(fileOf(i)))).then(() => {
+      if (live) redraw();
+    });
+    return () => {
+      live = false;
+    };
+  }, [found && found.symbol, fill, LARGE[size] ? 1 : 0, pending.length]);
+  if (!found) return [];
+  const glyphs = wanted.map(([i, optical]) => [found.kind === 'module' ? moduleGlyph(mod, i) : found.kind === 'plenix' ? cssGlyph(found.symbol, i) : files.get(fileOf(i)), optical]).filter(([glyph]) => Array.isArray(glyph));
+  if (!glyphs.length) return [];
+  // the drawings share one svg when they share a box (nearly every icon): the stylesheet shows one path; otherwise each
+  // drawing is its own svg in its own box
+  if (glyphs.every(([glyph]) => glyph[1] === glyphs[0][0][1])) return [/*#__PURE__*/_react.default.createElement("svg", {
+    key: "svg",
+    className: "plx-icon__svg plx-icon__svg--shared",
+    viewBox: glyphs[0][0][1],
+    "aria-hidden": "true",
+    focusable: "false"
+  }, glyphs.map(([glyph, optical]) => /*#__PURE__*/_react.default.createElement("path", _extends({
+    key: optical,
+    className: 'plx-icon__glyph--' + optical,
+    d: glyph[0]
+  }, glyph[2] || null))))];
+  return glyphs.map(([glyph, optical]) => /*#__PURE__*/_react.default.createElement("svg", {
+    key: optical,
+    className: 'plx-icon__svg plx-icon__glyph--' + optical,
+    viewBox: glyph[1],
+    "aria-hidden": "true",
+    focusable: "false"
+  }, /*#__PURE__*/_react.default.createElement("path", _extends({
+    d: glyph[0]
+  }, glyph[2] || null))));
+}
+const badIcon = new Set();
+function Icon({
+  icon,
+  name,
+  library: lib,
+  size,
+  filled,
+  label,
+  className,
+  ...rest
+}) {
+  (0, _devWarn.devWarn)('Icon', {
+    size
+  }, {
+    size: ['xs', 'sm', 'md', 'lg', 'xl']
+  });
+  // an imported module (icon); else the name through the resolver (registered modules, the stylesheet, the library)
+  // once per kind of bad value (its type and keys), so an object written inline, new on every render, warns once
+  const badKey = icon != null && !isModule(icon) ? Object.prototype.toString.call(icon) + ':' + (typeof icon === 'object' ? Object.keys(icon).sort().join(',') : String(icon)) : null;
+  if (badKey && !badIcon.has(badKey)) {
+    badIcon.add(badKey);
+    if (typeof console !== 'undefined') console.warn('[Plenix] Icon: icon is refused (' + moduleProblem(icon) + '; import it from plenix-platform/icons/<set>/<name>); nothing is drawn.', icon);
+  }
+  const shown = isModule(icon) ? icon.name : name;
+  const svg = useDrawings(shown, size, filled, isModule(icon) ? icon : null, lib);
+  const mod = isModule(icon) ? icon : (() => {
+    const f = resolveIcon(shown, {
+      library: lib
+    });
+    return f && f.kind === 'module' ? f.module : null;
+  })();
+  // a module outside the Plenix set that points along the reading direction mirrors in right to left (icon.css's
+  // plx-icon--mirrored); the Plenix set's own names already mirror through their per-name rules, so their markup stays the same
+  const mirrored = !!(mod && mod.mirrored && mod.set !== 'plenix');
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: (0, _cx.cx)('plx-icon', 'plx-icon--' + normal(shown), size ? 'plx-icon--size-' + size : null, filled === true && 'plx-icon--filled', filled === false && 'plx-icon--outline', 'plx-icon--inline', mirrored && 'plx-icon--mirrored', className),
+    role: label ? 'img' : undefined,
+    "aria-label": label,
+    "aria-hidden": label ? undefined : true
+  }, rest), svg);
+}
+
+// stateIcon: an icon a component draws in its own state: filled while the state is on, the outline otherwise (Styling
+// Standard 3.6: the component that owns the state passes it; no rule reaches in from the ancestor). A string is an icon
+// name; an Icon element the caller gives keeps a fill it sets itself; anything else passes through. extra: more props for
+// the Icon (a size), given only where the caller set none.
+function stateIcon(icon, on, extra) {
+  if (typeof icon === 'string') return /*#__PURE__*/_react.default.createElement(Icon, _extends({
+    name: icon,
+    filled: !!on
+  }, extra));
+  if (/*#__PURE__*/_react.default.isValidElement(icon) && icon.type === Icon) {
+    const add = {};
+    if (icon.props.filled === undefined) add.filled = !!on;
+    for (const k of Object.keys(extra || {})) if (icon.props[k] === undefined) add[k] = extra[k];
+    return Object.keys(add).length ? /*#__PURE__*/_react.default.cloneElement(icon, add) : icon;
+  }
+  return icon;
+}
+
+// StatusIcon: a tone's icon in the tone's color, alone (an image named by the tone) or before a short visible label
+const STATUS_ICONS = {
+  info: 'circle-info',
+  success: 'circle-check',
+  warning: 'warning',
+  danger: 'alert',
+  neutral: 'circle-info'
+};
+function StatusIcon({
+  tone = 'info',
+  size = 'md',
+  label,
+  children,
+  strings,
+  className,
+  ...rest
+}) {
+  (0, _devWarn.devWarn)('StatusIcon', {
+    tone,
+    size
+  }, {
+    tone: ['info', 'success', 'warning', 'danger', 'neutral'],
+    size: ['sm', 'md', 'lg']
+  });
+  const t = STATUS_ICONS[tone] ? tone : 'info';
+  const words = (0, _LocaleProvider.useStrings)('icon.status', strings);
+  const shown = children !== undefined && children !== null && children !== false;
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: (0, _cx.cx)('plx-status-icon', 'plx-status-icon--' + t, 'plx-status-icon--' + size, className)
+  }, rest), /*#__PURE__*/_react.default.createElement("span", {
+    className: (0, _cx.cx)('plx-status-icon__glyph', 'plx-status-icon__glyph--' + t)
+  }, /*#__PURE__*/_react.default.createElement(Icon, {
+    name: STATUS_ICONS[t],
+    size: size,
+    label: shown ? undefined : label || words[t]
+  })), shown ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-status-icon__label"
+  }, children) : null);
+}
+  } },
+  "platform/components/Badge/Badge.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Badge = Badge;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _Icon = require("../Icon/Icon.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Badge
+   Summary: A status pill: bold text on a soft background of its variant's color family, a 1px border and 4px corners
+     (owner, 2026-10-14, docs/pills-and-colors.md: every pill is soft).
+   Usage:
+     <Badge tone="success">Approved</Badge>
+     <Badge tone="waiting">Paused</Badge>
+     <Badge tone="action-required">Changes requested</Badge>
+     <Badge tone="negative" size="sm">3</Badge>
+     <Badge tone="success" icon="check">Saved</Badge>
+   Props:
+     tone: the status variant:
+       "neutral" (default; gray: no particular state, e.g. Draft, Archived)
+       "success" (green: done, approved, healthy)
+       "active" (blue: in progress, current, information)
+       "waiting" (yellow: waiting, paused)
+       "action-required" (orange: action or correction required, e.g. Changes requested, Needs attention)
+       "negative" (red: failed, error, rejected, blocked)
+       Old names still work: "info" is "active", "warning" is "waiting", "danger" is "negative".
+     variant: accepted and ignored ("solid" and "soft" both draw the soft pill; the solid look was removed, 2026-10-14)
+     size: "md" (default; a 20px label) | "sm" (16px, for counts)
+     icon: an icon name (platform/icons/map.json) drawn before the text, in the text color: a status shows its icon inside
+       the badge (owner, 2026-10-14: check for done, pencil for unsaved, alert for problems); the icon is decorative, the
+       text says the state
+     children: the badge text
+     className: more classes on the badge
+   Behavior:
+     An unknown tone or size falls back to the default.
+   Notes:
+     A badge is a workflow status. A tag or category is a Tag with its category color (never a status variant).
+     Other props (title, aria-*, …) pass through to the <span>.
+     A badge is text: give a count enough context nearby or an accessible name on its control.
+*/
+const TONES = ['neutral', 'success', 'active', 'waiting', 'action-required', 'negative'];
+const ALIASES = {
+  info: 'active',
+  warning: 'waiting',
+  danger: 'negative'
+};
+const SIZES = ['md', 'sm'];
+
+// variant is taken out so it never reaches the <span>: every badge is the soft pill
+function Badge({
+  tone = 'neutral',
+  variant,
+  size = 'md',
+  icon,
+  className,
+  children,
+  ...rest
+}) {
+  (0, _devWarn.devWarn)('Badge', {
+    tone,
+    variant,
+    size
+  }, {
+    tone: ['neutral', 'success', 'active', 'waiting', 'action-required', 'negative', 'info', 'warning', 'danger'],
+    variant: ['solid', 'soft'],
+    size: ['md', 'sm']
+  });
+  const named = ALIASES[tone] || tone;
+  const t = TONES.indexOf(named) >= 0 ? named : 'neutral';
+  const s = SIZES.indexOf(size) >= 0 ? size : 'md';
+  const classes = ['plx-badge', 'plx-badge--' + t, s === 'sm' ? 'plx-badge--sm' : null, className].filter(Boolean).join(' ');
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: classes
+  }, rest), icon ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: icon
+  }) : null, children);
+}
+  } },
+  "platform/components/VisuallyHidden/VisuallyHidden.jsx": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.VisuallyHidden = VisuallyHidden;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · VisuallyHidden
+   Summary: Text for assistive technology only (a name for an icon-only control, a status).
+   Usage:
+     <button type="button"><Icon name="trash" /><VisuallyHidden>Delete</VisuallyHidden></button>
+   Props:
+     as: the element; default "span"
+     children: the hidden text
+     ...rest: other attributes go on the element
+*/
+function VisuallyHidden({
+  as: Tag = 'span',
+  children,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement(Tag, _extends({
+    className: "plx-visually-hidden"
+  }, rest), children);
+}
+  } },
   "platform/utils/digits.js": { deps: {"./format.js":"platform/utils/format.js"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
@@ -6049,7 +7294,7 @@ function StatusDot({
   }) : null, label ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, label) : null);
 }
   } },
-  "platform/components/Avatar/Avatar.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Avatar/Avatar.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -6062,6 +7307,7 @@ var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _StatusDot = require("../StatusDot/StatusDot.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Avatar
    Summary: A person's picture, or their initials, in a rounded square (never a circle), inside a 1px media border (owner,
@@ -6126,13 +7372,6 @@ const DOT = {
   48: 'md',
   64: 'lg'
 };
-const STRINGS = {
-  online: 'Online',
-  away: 'Away',
-  busy: 'Busy',
-  dnd: 'Do not disturb',
-  offline: 'Offline'
-};
 
 // first- and last-name initials: titles (a word ending in a period, e.g. "Fr.") and parenthesized parts are skipped.
 // A word's initial is its first Latin letter or digit, as always; a word with none (an Arabic name, owner ctm-needs-34) takes
@@ -6181,7 +7420,7 @@ function Avatar({
   const s = SIZES.indexOf(n) >= 0 ? n : NAMED.sm;
   const text = name ? initialsOf(name) : initials;
   const p = PRESENCE.indexOf(presence) >= 0 ? presence : null;
-  const words = Object.assign({}, STRINGS, strings);
+  const words = (0, _LocaleProvider.useStrings)('avatar', strings);
   const named = label && p ? label + ', ' + words[p] : label;
   // a picture that fails to load falls back to the initials (batch 215)
   const [failed, setFailed] = _react.default.useState(false);
@@ -6217,7 +7456,7 @@ function Avatar({
   }) : null);
 }
   } },
-  "platform/components/Loading/Loading.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Loading/Loading.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -6229,6 +7468,7 @@ var _react = _interopRequireDefault(require("react"));
 var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Skeleton, Spinner
    Summary: Loading indicators. Skeleton is a placeholder block with a shimmer; Spinner is a turning ring. (The typing
@@ -6268,7 +7508,7 @@ function Skeleton({
 }
 function Spinner({
   size = 'md',
-  label = 'Loading',
+  label,
   className,
   ...rest
 }) {
@@ -6277,10 +7517,11 @@ function Spinner({
   }, {
     size: ['sm', 'md', 'lg']
   });
+  const t = (0, _LocaleProvider.useStrings)('loading');
   return /*#__PURE__*/_react.default.createElement("span", _extends({
     className: (0, _cx.cx)('plx-spinner', 'plx-spinner--' + size, className),
     role: "status"
-  }, rest), /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, label));
+  }, rest), /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, label ?? t.label));
 }
   } },
   "platform/providers/Surface.jsx": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -7122,7 +8363,7 @@ function singleKeyHotkeys() {
   return singleKeys;
 }
   } },
-  "platform/components/Button/Button.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../providers/Surface.jsx":"platform/providers/Surface.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","../../utils/hotkey.js":"platform/utils/hotkey.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Button/Button.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../providers/Surface.jsx":"platform/providers/Surface.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","../../utils/hotkey.js":"platform/utils/hotkey.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -7139,6 +8380,7 @@ var _Surface = require("../../providers/Surface.jsx");
 var _Tooltip = require("../Tooltip/Tooltip.jsx");
 var _Kbd = require("../Kbd/Kbd.jsx");
 var _hotkey = require("../../utils/hotkey.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Button, ButtonGroup
    Summary: A button for an action, in one of several emphasis levels and sizes; ButtonGroup joins buttons that act as a set.
@@ -7199,9 +8441,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      For one choice from several, use SegmentedControl instead of ButtonGroup.
 */
 const TONES = ['success', 'danger', 'neutral'];
-const STRINGS = {
-  working: 'Working'
-};
 
 // the icon takes the button's state as its own (Styling Standard 3.6): filled while the button is selected, pressed or
 // open; an Icon element the caller gives keeps its own fill when it sets one
@@ -7250,7 +8489,7 @@ const Button = exports.Button = /*#__PURE__*/_react.default.forwardRef(function 
     variant: ['secondary', 'primary', 'tertiary', 'ghost', 'danger', 'danger-secondary', 'quiet'],
     size: ['md', 'sm', 'xs', '2xs', 'lg']
   });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('button', strings);
   // a colored surface around the button (TeachingBubble, the accent AppHeader) gives it that surface's look
   const surface = _react.default.useContext(_Surface.SurfaceContext);
   const classes = (0, _cx.cx)('plx-button', 'plx-button--' + (variant === 'quiet' ? 'ghost' : variant), size !== 'md' && 'plx-button--size-' + size, iconOnly && 'plx-button--icon-only', caret && 'plx-button--caret', TONES.includes(tone) && 'plx-button--tone-' + tone, (selected || pressed || expanded) && 'is-selected', loading && 'is-loading', truncate && 'plx-button--truncate', stackedLabel && 'plx-button--stacked-label', labelRow && 'plx-button--label-row', joined && joined.start && 'plx-button--joined-start-' + joined.start, joined && joined.end && 'plx-button--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-button--joined', (surface === 'inverse' || surface === 'accent') && 'plx-button--on-' + surface, className);
@@ -7577,10 +8816,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        lang override it, for text in the other direction than the page (an Arabic question in an English page).
 */
 const LINES = [2, 3, 4];
-const STRINGS = {
-  more: 'Show more',
-  less: 'Show less'
-};
 
 // a text's classes: its role, how it overflows (one line, or at most `clamp` lines while folded) and its figures
 const textClass = (variant, truncate, clamp, open, tabular, className) => (0, _cx.cx)('plx-text', 'plx-text--' + variant, truncate && !clamp && 'plx-text--truncate', clamp && !open && 'plx-text--lines-' + clamp, tabular && 'plx-text--tabular', className);
@@ -7654,7 +8889,7 @@ function ExpandableText({
     watch.observe(el);
     return () => watch.disconnect();
   }, [open, children]);
-  const words = Object.assign({}, STRINGS, strings);
+  const words = (0, _LocaleProvider.useStrings)('text', strings);
   return /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-text-expand"
   }, /*#__PURE__*/_react.default.createElement(As, _extends({
@@ -7923,7 +9158,7 @@ function Count({
   }, rest), shown);
 }
   } },
-  "platform/components/Card/Card.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Card/Card.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../utils/format.js":"platform/utils/format.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -7938,6 +9173,7 @@ var _layer = require("../../utils/layer.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _Badge = require("../Badge/Badge.jsx");
 var _format = require("../../utils/format.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Panel, Card, MediaCard
    Summary: Surfaces. Panel is a titled section of a page or a settings screen; Card is one record in a list or grid;
@@ -8043,22 +9279,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Without type, status and stack the MediaCard draws exactly what it drew before (library wave 12 added them).
      Other props pass through to the outer element.
 */
-const PANEL_STRINGS = {
-  collapse: 'Collapse {title}',
-  expand: 'Expand {title}',
-  section: 'section'
-};
-const MEDIA_CARD_STRINGS = {
-  select: 'Select {title}',
-  item: 'item',
-  assets: '{n} assets',
-  asset: '{n} asset'
-};
-const CARD_STRINGS = {
-  expand: 'Expand {title}',
-  collapse: 'Collapse {title}',
-  card: 'card'
-};
 const H = ({
   level,
   ...props
@@ -8082,7 +9302,7 @@ function Panel({
   children,
   ...rest
 }) {
-  const t = Object.assign({}, PANEL_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('card.panel', strings);
   const id = (0, _layer.useUid)('plx-panel');
   const [own, setOwn] = _react.default.useState(defaultExpanded);
   const open = !collapsible || (expanded === undefined ? own : expanded);
@@ -8174,7 +9394,7 @@ function Card({
   ...rest
 }) {
   const interactive = !!(href || onOpen);
-  const t = Object.assign({}, CARD_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('card.card', strings);
   const id = (0, _layer.useUid)('plx-card');
   const [own, setOwn] = _react.default.useState(defaultExpanded);
   const open = !expandable || (expanded === undefined ? own : expanded);
@@ -8250,7 +9470,7 @@ function MediaCard({
   onDoubleClick,
   ...rest
 }) {
-  const t = Object.assign({}, MEDIA_CARD_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('card.mediaCard', strings);
   // a collection's count (library wave 12): "24 assets" in the data font, unless the page gives its own meta
   const line = meta || (typeof count === 'number' ? (count === 1 ? t.asset : t.assets).split('{n}').join((0, _format.formatNumber)(count)) : null);
   const statusEl = status ? /*#__PURE__*/_react.default.isValidElement(status) ? status : /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
@@ -11339,7 +12559,7 @@ function ContextMenu({
   }, children))) : null);
 }
   } },
-  "platform/components/Link/Link.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Link/Link.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -11351,6 +12571,7 @@ var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Link
    Summary: A link to another page or place: inside a sentence (inline), on its own line (standalone), to another site
@@ -11385,9 +12606,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Use a Button for an action that changes data; a Link only goes somewhere.
      Other props pass through to the <a>. forwardRef: the ref is the <a>.
 */
-const STRINGS = {
-  newTab: 'opens in a new tab'
-};
 const Link = exports.Link = /*#__PURE__*/_react.default.forwardRef(function Link({
   href,
   variant = 'inline',
@@ -11406,7 +12624,7 @@ const Link = exports.Link = /*#__PURE__*/_react.default.forwardRef(function Link
   }, {
     variant: ['inline', 'standalone', 'subtle']
   });
-  const s = Object.assign({}, STRINGS, strings);
+  const s = (0, _LocaleProvider.useStrings)('link', strings);
   const kind = back ? 'standalone' : variant;
   const newTab = external ? {
     target: '_blank',
@@ -11505,7 +12723,7 @@ function useTruncated(ref) {
   return cut;
 }
   } },
-  "platform/components/Field/Field.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/describedBy.js":"platform/utils/describedBy.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Field/Field.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/describedBy.js":"platform/utils/describedBy.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -11520,6 +12738,7 @@ var _Tooltip = require("../Tooltip/Tooltip.jsx");
 var _announce = require("../../utils/announce.jsx");
 var _format = require("../../utils/format.js");
 var _describedBy = require("../../utils/describedBy.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Field
    Summary: A label, the control, and its help or error, connected for assistive technology.
@@ -11563,10 +12782,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
 */
 // the layout a Form gives the fields inside it (Form's layout "two-column" makes them inline); a Field's own layout wins
 const FieldLayoutContext = exports.FieldLayoutContext = /*#__PURE__*/_react.default.createContext(null);
-const COUNTER_STRINGS = {
-  left: '{n} characters left',
-  over: '{n} characters too many'
-};
 const fill = (t, n) => String(t).replace('{n}', (0, _format.formatNumber)(n));
 function Field({
   label,
@@ -11603,7 +12818,7 @@ function Field({
   const [typed, setTyped] = _react.default.useState(() => String(child.props.defaultValue == null ? '' : child.props.defaultValue).length);
   const length = child.props.value != null ? String(child.props.value).length : typed;
   const over = max > 0 && length > max;
-  const t = Object.assign({}, COUNTER_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('field.counter', strings);
   const countId = max ? controlId + '-c' : undefined;
   const near = max > 0 && max - length <= Math.ceil(max / 10);
   const said = _react.default.useRef(null);
@@ -12671,7 +13886,7 @@ const Select = exports.Select = /*#__PURE__*/_react.default.forwardRef(function 
   }));
 });
   } },
-  "platform/components/Dialog/Dialog.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Field/Field.jsx":"platform/components/Field/Field.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/Dialog/Dialog.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Field/Field.jsx":"platform/components/Field/Field.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -12690,6 +13905,7 @@ var _Icon = require("../Icon/Icon.jsx");
 var _Button = require("../Button/Button.jsx");
 var _Field = require("../Field/Field.jsx");
 var _Input = require("../Input/Input.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Dialog, ConfirmDialog, PromptDialog, Drawer
    Summary: Modal layers. Dialog is a centered window (or, with modal={false}, a non-modal one beside the page);
@@ -12818,13 +14034,14 @@ function ModalShell({
   role = 'dialog',
   footer,
   initialFocus,
-  closeLabel = 'Close',
+  closeLabel,
   dismissible = true,
   flush = false,
   modal = true,
   className,
   children
 }) {
+  const t = (0, _LocaleProvider.useStrings)('dialog');
   const ref = _react.default.useRef(null);
   const id = (0, _layer.useUid)('plx-dlg');
   const firstFocus = () => {
@@ -12880,7 +14097,7 @@ function ModalShell({
     variant: "ghost",
     iconOnly: true,
     icon: "close",
-    label: closeLabel,
+    label: closeLabel ?? t.close,
     className: "plx-dialog__close",
     onClick: onClose
   }) : null), /*#__PURE__*/_react.default.createElement("div", {
@@ -12926,13 +14143,14 @@ function ConfirmDialog({
   open,
   title,
   message,
-  confirmLabel = 'Confirm',
-  cancelLabel = 'Cancel',
+  confirmLabel,
+  cancelLabel,
   destructive = false,
   onConfirm,
   onCancel,
   children
 }) {
+  const t = (0, _LocaleProvider.useStrings)('dialog');
   const cancel = _react.default.useRef(null);
   return /*#__PURE__*/_react.default.createElement(ModalShell, {
     kind: "dialog",
@@ -12947,10 +14165,10 @@ function ConfirmDialog({
     footer: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
       ref: cancel,
       onClick: onCancel
-    }, cancelLabel), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    }, cancelLabel ?? t.cancel), /*#__PURE__*/_react.default.createElement(_Button.Button, {
       variant: destructive ? 'danger' : 'primary',
       onClick: onConfirm
-    }, confirmLabel))
+    }, confirmLabel ?? t.confirm))
   }, children);
 }
 function PromptDialog({
@@ -12961,8 +14179,8 @@ function PromptDialog({
   defaultValue = '',
   placeholder,
   description,
-  confirmLabel = 'Save',
-  cancelLabel = 'Cancel',
+  confirmLabel,
+  cancelLabel,
   validate,
   onSubmit,
   onCancel,
@@ -12974,6 +14192,7 @@ function PromptDialog({
   }, {
     size: ['sm', 'md', 'lg', 'xl', 'full']
   });
+  const t = (0, _LocaleProvider.useStrings)('dialog');
   const formId = (0, _layer.useUid)('plx-prompt');
   const input = _react.default.useRef(null);
   const [value, setValue] = _react.default.useState(defaultValue);
@@ -13008,11 +14227,11 @@ function PromptDialog({
     initialFocus: input,
     footer: /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
       onClick: onCancel
-    }, cancelLabel), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    }, cancelLabel ?? t.cancel), /*#__PURE__*/_react.default.createElement(_Button.Button, {
       variant: "primary",
       type: "submit",
       form: formId
-    }, confirmLabel))
+    }, confirmLabel ?? t.save))
   }, /*#__PURE__*/_react.default.createElement("form", {
     id: formId,
     noValidate: true,
@@ -13287,7 +14506,7 @@ function resizeScale(steps, min, max, keyboardSteps = []) {
   };
 }
   } },
-  "platform/components/Resizable/Resizable.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/paneLimit.js":"platform/utils/paneLimit.js","./resize-scale.js":"platform/components/Resizable/resize-scale.js","../../utils/floating.js":"platform/utils/floating.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Resizable/Resizable.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/paneLimit.js":"platform/utils/paneLimit.js","./resize-scale.js":"platform/components/Resizable/resize-scale.js","../../utils/floating.js":"platform/utils/floating.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -13304,6 +14523,7 @@ var _paneLimit = require("../../utils/paneLimit.js");
 var _resizeScale = require("./resize-scale.js");
 var _floating = require("../../utils/floating.js");
 var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Resizable, PanelSplitter
    Summary: An area people make wider or taller by dragging its edge (10 Patterns › Selection and organization › Resize):
@@ -13434,10 +14654,6 @@ function PanelSplitter({
 }
 
 /* ── Resizable: a box with its own resize edges ── */
-const STRINGS = {
-  width: '{label} width',
-  height: '{label} height'
-};
 const fill = (s, vars) => String(s).replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
 // the default limits are the component's tokens (--plx-comp-resizable-min-width …), read from the page
 const tokenPx = name => typeof document === 'undefined' ? 0 : parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name)) || 0;
@@ -13463,7 +14679,7 @@ function Resizable({
   children,
   ...rest
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('resizable', strings);
   const minWidth = limit(minW, 'min-width'),
     maxWidth = limit(maxW, 'max-width'),
     minHeight = limit(minH, 'min-height'),
@@ -13545,7 +14761,10 @@ function Resizable({
       if (!active || next[which] > scale.lo && next[which] < scale.hi) continue;
       const smallest = next[which] <= scale.lo,
         value = smallest ? scale.lo : scale.hi;
-      message = t[(smallest ? 'min' : 'max') + (which === 'width' ? 'Width' : 'Height')] || (smallest ? 'Smallest ' : 'Largest ') + which + ' for ' + label + ' (' + value + 'px)';
+      message = fill(t[(smallest ? 'min' : 'max') + (which === 'width' ? 'Width' : 'Height')], {
+        label,
+        value
+      });
       break;
     }
     setNotice(message);
@@ -14039,7 +15258,7 @@ function PageContent({
   }, rest), children);
 }
   } },
-  "platform/components/Sheet/Sheet.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../hooks/useGesture.js":"platform/hooks/useGesture.js","../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/Sheet/Sheet.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../hooks/useGesture.js":"platform/hooks/useGesture.js","../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -14055,6 +15274,7 @@ var _Button = require("../Button/Button.jsx");
 var _Dialog = require("../Dialog/Dialog.jsx");
 var _useGesture = require("../../hooks/useGesture.js");
 var _AppShell = require("../../patterns/AppShell/AppShell.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · Sheet
    Summary: A short, self-contained task or the details of a selection over the screen (Platforms Standard 4.2 rows 5–6,
@@ -14103,10 +15323,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      The layer renders in a portal on document.body.
 */
 
-const STRINGS = {
-  expand: 'Expand sheet',
-  shrink: 'Shrink sheet'
-};
 const asIcon = i => typeof i === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
   name: i
 }) : i;
@@ -14150,9 +15366,9 @@ function Sheet({
   description,
   icon,
   onDone,
-  doneLabel = 'Done',
-  cancelLabel = 'Cancel',
-  closeLabel = 'Close',
+  doneLabel,
+  cancelLabel,
+  closeLabel,
   detent = 'medium',
   form,
   actions,
@@ -14164,7 +15380,10 @@ function Sheet({
   strings,
   children
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('sheet', strings);
+  doneLabel = doneLabel ?? t.done;
+  cancelLabel = cancelLabel ?? t.cancel;
+  closeLabel = closeLabel ?? t.close;
   const shown = useTopSheet(!!open);
   const kind = useForm(form);
   const bottom = kind === 'bottom';
@@ -14297,7 +15516,7 @@ function Sheet({
   }, footer) : null)), document.body);
 }
   } },
-  "platform/components/Popover/Popover.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/floating.js":"platform/utils/floating.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Popover/Popover.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/floating.js":"platform/utils/floating.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -14312,6 +15531,7 @@ var _floating = require("../../utils/floating.js");
 var _Button = require("../Button/Button.jsx");
 var _Sheet = require("../Sheet/Sheet.jsx");
 var _AppShell = require("../../patterns/AppShell/AppShell.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Popover
    Summary: A small non-modal surface anchored to its trigger that shows related content or a few controls in context:
@@ -14373,9 +15593,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        the task is a Dialog. Popovers are border-only with the menu shadow (as Menu).
      ContextualHelp, Popconfirm, TeachingBubble and MegaMenu are built on it.
 */
-const STRINGS = {
-  close: 'Close'
-};
 const SIZES = ['sm', 'md', 'lg', 'auto'];
 
 // the top layer: the popover attribute, where the browser also places by anchor positioning (as Menu)
@@ -14415,7 +15632,7 @@ function Popover({
   }, {
     size: ['md', 'sm', 'lg', 'auto']
   });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('popover', strings);
   const id = (0, _layer.useUid)('plx-popover');
   const controlled = openProp !== undefined;
   const [own, setOwn] = _react.default.useState(!!defaultOpen);
@@ -14588,7 +15805,7 @@ function Popover({
   }, children) : null);
 }
   } },
-  "platform/components/ContextualHelp/ContextualHelp.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/ContextualHelp/ContextualHelp.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -14602,6 +15819,7 @@ var _Button = require("../Button/Button.jsx");
 var _Icon = require("../Icon/Icon.jsx");
 var _Link = require("../Link/Link.jsx");
 var _Popover = require("../Popover/Popover.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · ContextualHelp
    Summary: Help where the question comes up: an info button beside a label, heading or setting that opens a short
@@ -14633,10 +15851,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      Help that everyone needs is helper text, not hidden help; errors and warnings are never contextual help.
 */
 
-const STRINGS = {
-  more: 'More about {title}',
-  moreUntitled: 'More information'
-};
 function ContextualHelp({
   title,
   children,
@@ -14655,7 +15869,7 @@ function ContextualHelp({
     variant: ['info', 'inline'],
     size: ['sm', 'md', 'lg']
   });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('contextualHelp', strings);
   const more = v => link && link.href ? /*#__PURE__*/_react.default.createElement(_Link.Link, {
     href: link.href,
     variant: v,
@@ -14791,7 +16005,7 @@ function ProgressBar({
   })));
 }
   } },
-  "platform/components/Notice/Notice.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Notice/Notice.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -14803,6 +16017,7 @@ var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _Button = require("../Button/Button.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Notice
    Summary: A short message inside a page, a panel or a dialog (an inline message); with a title, actions or a dismiss
@@ -14835,9 +16050,6 @@ const ICONS = {
   warning: 'warning',
   danger: 'alert'
 };
-const STRINGS = {
-  dismiss: 'Dismiss'
-};
 function Notice({
   tone = 'info',
   icon,
@@ -14854,7 +16066,7 @@ function Notice({
   }, {
     tone: ['info', 'success', 'warning', 'danger']
   });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('notice', strings);
   const section = title || actions;
   return /*#__PURE__*/_react.default.createElement("div", _extends({
     className: (0, _cx.cx)('plx-notice', 'plx-notice--' + tone, className),
@@ -15109,7 +16321,7 @@ function Scrollbars({
   })));
 }
   } },
-  "platform/utils/dnd.js": { deps: {"react":null,"./announce.jsx":"platform/utils/announce.jsx","./grid.js":"platform/utils/grid.js","./direction.js":"platform/utils/direction.js","./tokenTime.js":"platform/utils/tokenTime.js","../hooks/useGesture.js":"platform/hooks/useGesture.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/utils/dnd.js": { deps: {"react":null,"./announce.jsx":"platform/utils/announce.jsx","./grid.js":"platform/utils/grid.js","./direction.js":"platform/utils/direction.js","./tokenTime.js":"platform/utils/tokenTime.js","../hooks/useGesture.js":"platform/hooks/useGesture.js","../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../i18n/en.js":"platform/i18n/en.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -15132,6 +16344,8 @@ var _grid = require("./grid.js");
 var _direction = require("./direction.js");
 var _tokenTime = require("./tokenTime.js");
 var _useGesture = require("../hooks/useGesture.js");
+var _LocaleProvider = require("../providers/LocaleProvider.jsx");
+var _en = _interopRequireDefault(require("../i18n/en.js"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · dnd (platform/utils/dnd.js)
    Summary: The drag-and-drop engine (13 Interaction › Behavioral utilities › Drag-and-drop engine): pointer, pen and touch
@@ -15162,7 +16376,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        options.orientation: "vertical" (default) | "horizontal" | "grid": the arrow keys and the drop position follow it
        options.handle: true (default) the drag starts on the handle (handleProps); false the whole item drags (itemProps
          then carries the handlers, the tab stop and the name)
-       options.disabled: no drag (default false); options.strings: the words it announces (DND_STRINGS)
+       options.disabled: no drag (default false); options.strings: the words it announces (the catalog's dnd section: Plenix's built-in words for the locale; this prop wins)
      useDraggable(options) → { props, handleProps, targets(), state }
        options.data, options.type: what is dragged and its kind, handed to the targets; options.name: its spoken name
        options.handle: as useSortable; options.disabled; options.strings
@@ -15176,7 +16390,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      useReposition(options) → { props, position, picked, moveBy(dx, dy) }
        options.position: { x, y } in pixels from the element's place in the layout (on the grid); options.onMove(next)
        options.bounds: a ref to the element it stays inside (default its offset parent); options.name; options.disabled
-     DND_STRINGS: the default words; moveItem(list, from, to) and transferItem(from, fromIndex, to, toIndex): the list
+     DND_STRINGS: the default English words (the catalog's dnd section); moveItem(list, from, to) and transferItem(from, fromIndex, to, toIndex): the list
        helpers; setDragOffset(el, dx, dy) and clearDragOffset(el, { settle }): move an element by a transform through
        the Web Animations API (never a style attribute), snapped to the grid; mergeDndProps(a, b): one element's props
        from the engine's and a component's (each event runs the engine's handler first; a handled event stops there)
@@ -15203,28 +16417,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        data-plx-drop-state); a component may draw its own from the same attributes.
 */
 
-const DND_STRINGS = exports.DND_STRINGS = {
-  handle: 'Move {name}',
-  instructions: 'Press Space or Enter to pick it up. The arrow keys move it, Space or Enter drops it, Escape puts it back.',
-  pickedUp: '{name} picked up. Position {position} of {total}. The arrow keys move it, Space or Enter drops it, Escape puts it back.',
-  moved: '{name}, position {position} of {total}',
-  movedTo: '{name} moved to {list}, position {position} of {total}',
-  dropped: '{name} dropped at position {position} of {total}',
-  droppedIn: '{name} dropped in {list}, position {position} of {total}',
-  canceled: 'Move canceled. {name} is back at position {position} of {total}',
-  itemPickedUp: '{name} picked up. {count} places take it. The arrow keys choose one, Space or Enter drops it, Escape puts it back.',
-  over: 'Over {target}',
-  overReject: '{target} does not take {name}',
-  droppedOn: '{name} dropped on {target}',
-  noTargets: 'No place takes {name}',
-  itemCanceled: 'Move canceled. {name} was not moved',
-  repositionPicked: '{name} picked up. The arrow keys move it, with Shift farther; Space or Enter drops it, Escape puts it back.',
-  repositioned: '{name} moved',
-  repositionDropped: '{name} dropped',
-  repositionCanceled: 'Move canceled. {name} is back where it was',
-  movable: 'movable',
-  list: 'the list'
-};
+// the default (English) words, as before: the catalog's dnd section, so the words live in one place
+const DND_STRINGS = exports.DND_STRINGS = _en.default.dnd;
 const fill = (s, vars) => String(s).replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
 const reduced = () => typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -15542,7 +16736,7 @@ function useSortable(options) {
   const getName = o.getName || (x => String(x.name != null ? x.name : x.label != null ? x.label : getId(x)));
   const orientation = o.orientation || 'vertical',
     useHandle = o.handle !== false;
-  const t = Object.assign({}, DND_STRINGS, o.strings);
+  const t = (0, _LocaleProvider.useStrings)('dnd', o.strings);
   const [listId] = _react.default.useState(() => o.id || nextId('plx-dnd-list'));
   const listRef = _react.default.useRef(null);
   const latest = _react.default.useRef(o);
@@ -15979,7 +17173,7 @@ function useDropTarget(options) {
 /* ── useDraggable: a data item people drop on a target (a file on a folder, a card on a column) ── */
 function useDraggable(options) {
   const o = options || {};
-  const t = Object.assign({}, DND_STRINGS, o.strings);
+  const t = (0, _LocaleProvider.useStrings)('dnd', o.strings);
   const [id] = _react.default.useState(() => nextId('plx-dnd-item'));
   const ref = _react.default.useRef(null);
   const now = useDndSession();
@@ -16142,7 +17336,7 @@ function useDraggable(options) {
 /* ── useReposition: a free move (a note on a board, a layer on a canvas), on the grid ── */
 function useReposition(options) {
   const o = options || {};
-  const t = Object.assign({}, DND_STRINGS, o.strings);
+  const t = (0, _LocaleProvider.useStrings)('dnd', o.strings);
   const pos = o.position || {
     x: 0,
     y: 0
@@ -24187,7 +25381,7 @@ function Divider({
   }, rest));
 }
   } },
-  "platform/patterns/CommandBar/BarActions.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../../components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/layer.js":"platform/utils/layer.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/CommandBar/BarActions.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../../components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/layer.js":"platform/utils/layer.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -24203,6 +25397,7 @@ var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
 var _Popover = require("../../components/Popover/Popover.jsx");
 var _Loading = require("../../components/Loading/Loading.jsx");
 var _layer = require("../../utils/layer.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · BarActions
    (platform/patterns/CommandBar; internal, not part of the public API: the commands of a bar, shared by CommandBar, the
@@ -24372,11 +25567,13 @@ function BarActions({
   fold = 0,
   off = a => !!a.disabled,
   why = a => a.why,
-  moreLabel = 'More actions',
+  moreLabel,
   dangerClass,
   size = 'sm',
   extra = []
 }) {
+  const t = (0, _LocaleProvider.useStrings)('commandBar');
+  moreLabel = moreLabel ?? t.moreLabel;
   const folded = new Set(foldOrder(actions).slice(0, fold).map(a => a.id || a.label));
   const kept = actions.filter(a => !folded.has(a.id || a.label));
   const away = actions.filter(a => folded.has(a.id || a.label));
@@ -24541,7 +25738,7 @@ function singleChoice(options, value, required) {
   return selected !== undefined ? [selected] : required && values.length ? [values[0]] : [];
 }
   } },
-  "platform/utils/fields.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "platform/utils/fields.js": { deps: {"../i18n/en.js":"platform/i18n/en.js"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -24549,11 +25746,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.WITHIN = exports.OPERATORS = exports.KIND_ICONS = exports.DIRECTIONS = exports.DATE_PRESETS = exports.CATEGORY_ORDER = void 0;
 exports.compareLevels = compareLevels;
-exports.kindOf = exports.fieldOf = exports.conditionsOf = void 0;
+exports.kindOf = exports.fieldWords = exports.fieldOf = exports.conditionsOf = void 0;
 exports.matchesCondition = matchesCondition;
 exports.matchesDate = matchesDate;
 exports.matchesFilter = matchesFilter;
 exports.valueOf = exports.optionsOf = exports.nextId = exports.newCondition = void 0;
+var _en = _interopRequireDefault(require("../i18n/en.js"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · fields (platform/utils/fields.js): the field model of the command bar's panels (owner, 2026-10-14, Airtable
    style): what a collection's fields are, how a filter tests a row, how sort levels order rows and how a date quick filter
    reads its presets. FilterPanel, SortPanel, GroupPanel, QuickFilter and useCollectionView use it; a page may too (a
@@ -24574,33 +25773,29 @@ const KIND_ICONS = exports.KIND_ICONS = {
   date: 'calendar'
 };
 // the directions in each kind's words (Airtable's)
-const DIRECTIONS = exports.DIRECTIONS = {
-  text: ['A → Z', 'Z → A'],
-  select: ['First → Last', 'Last → First'],
-  multi: ['First → Last', 'Last → First'],
-  number: ['1 → 9', '9 → 1'],
-  date: ['Oldest → newest', 'Newest → oldest']
-};
+const DIRECTIONS = exports.DIRECTIONS = _en.default.fields.directions;
 // the operators by kind: [op, words]
-const OPERATORS = exports.OPERATORS = {
-  text: [['contains', 'contains'], ['ncontains', 'does not contain'], ['is', 'is'], ['isnot', 'is not'], ['empty', 'is empty'], ['nempty', 'is not empty']],
-  select: [['any', 'is any of'], ['none', 'is none of'], ['empty', 'is empty'], ['nempty', 'is not empty']],
-  multi: [['any', 'has any of'], ['none', 'has none of'], ['empty', 'is empty'], ['nempty', 'is not empty']],
-  number: [['eq', '='], ['ne', '≠'], ['lt', '<'], ['gt', '>'], ['empty', 'is empty'], ['nempty', 'is not empty']],
-  date: [['is', 'is'], ['before', 'is before'], ['after', 'is after'], ['within', 'is within'], ['empty', 'is empty'], ['nempty', 'is not empty']]
+// (the words are the catalog's `fields` section, English here for apps; the panels read the locale's words with fieldWords)
+const OP_ORDER = {
+  text: ['contains', 'ncontains', 'is', 'isnot', 'empty', 'nempty'],
+  select: ['any', 'none', 'empty', 'nempty'],
+  multi: ['any', 'none', 'empty', 'nempty'],
+  number: ['eq', 'ne', 'lt', 'gt', 'empty', 'nempty'],
+  date: ['is', 'before', 'after', 'within', 'empty', 'nempty']
 };
+const OPERATORS = exports.OPERATORS = Object.fromEntries(Object.entries(OP_ORDER).map(([kind, ops]) => [kind, ops.map(op => [op, _en.default.fields.operators[kind][op]])]));
 // "is within": the past week, month or year
 const WITHIN = exports.WITHIN = [{
   value: 'week',
-  label: 'the past week',
+  label: _en.default.fields.within.week,
   days: 7
 }, {
   value: 'month',
-  label: 'the past month',
+  label: _en.default.fields.within.month,
   days: 30
 }, {
   value: 'year',
-  label: 'the past year',
+  label: _en.default.fields.within.year,
   days: 365
 }];
 // the category colors (Trubetskoy's 20), in the order options take them
@@ -24709,16 +25904,16 @@ function compareLevels(fields, levels) {
 // the date quick filter: { preset: "any" | "7" | "30" | "year" | "custom", from, to } (ISO dates)
 const DATE_PRESETS = exports.DATE_PRESETS = [{
   value: 'any',
-  label: 'Any time'
+  label: _en.default.fields.presets.any
 }, {
   value: '7',
-  label: 'Last 7 days'
+  label: _en.default.fields.presets['7']
 }, {
   value: '30',
-  label: 'Last 30 days'
+  label: _en.default.fields.presets['30']
 }, {
   value: 'year',
-  label: 'This year'
+  label: _en.default.fields.presets.year
 }];
 function matchesDate(range, value, today) {
   if (!range || range.preset === 'any' || !range.preset) return true;
@@ -24729,8 +25924,21 @@ function matchesDate(range, value, today) {
   if (range.preset === 'year') return d.slice(0, 4) === now.slice(0, 4);
   return (!range.from || d >= range.from) && (!range.to || d <= range.to);
 }
+
+// the words of the filter model in the reader's language: fw = useStrings('fields') (a hook-free helper set, so the panels, the query
+// builder and the quick filters read them the same way)
+const fieldWords = exports.fieldWords = {
+  operators: (fw, kind) => (OPERATORS[kind] || []).map(([op, en]) => [op, ((fw.operators || {})[kind] || {})[op] || en]),
+  within: fw => WITHIN.map(w => Object.assign({}, w, {
+    label: (fw.within || {})[w.value] || w.label
+  })),
+  presets: fw => DATE_PRESETS.map(d => Object.assign({}, d, {
+    label: (fw.presets || {})[d.value] || d.label
+  })),
+  directions: (fw, kind) => (fw.directions || {})[kind] || DIRECTIONS[kind]
+};
   } },
-  "platform/patterns/QuickFilter/QuickFilter.jsx": { deps: {"react":null,"./single-choice.js":"platform/patterns/QuickFilter/single-choice.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/format.js":"platform/utils/format.js","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../utils/fields.js":"platform/utils/fields.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/QuickFilter/QuickFilter.jsx": { deps: {"react":null,"./single-choice.js":"platform/patterns/QuickFilter/single-choice.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/format.js":"platform/utils/format.js","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../utils/fields.js":"platform/utils/fields.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -24749,6 +25957,7 @@ var _Stack = require("../../components/Stack/Stack.jsx");
 var _format = require("../../utils/format.js");
 var _panelParts = require("../CommandBar/panel-parts.jsx");
 var _fields = require("../../utils/fields.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · QuickFilter
    Summary: An application's own shortcut beside Filter (owner, 2026-10-14): Category, Type, Tags or Date. An app that has
@@ -24784,16 +25993,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
    Notes:
      The page applies the choice (useCollectionView, or matchesDate from utils/fields.js). */
 
-const STRINGS = {
-  find: 'Find a {noun}',
-  none: 'No {noun} matches',
-  clear: 'Clear',
-  all: 'All',
-  presets: _fields.DATE_PRESETS,
-  custom: 'Custom range',
-  from: 'From',
-  to: 'To'
-};
 // the choice in force, in words: the first chosen value's label, "+N" for the rest
 const nameOf = (list, chosen) => {
   if (!chosen || !chosen.length) return undefined;
@@ -24819,7 +26018,10 @@ function QuickFilter({
   inline = false,
   strings
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const fw = (0, _LocaleProvider.useStrings)('fields');
+  const t = Object.assign({
+    presets: _fields.fieldWords.presets(fw)
+  }, (0, _LocaleProvider.useStrings)('quickFilter', strings)); // the date presets' labels are the catalog's (fields.presets)
   const [q, setQ] = _react.default.useState('');
   const first = (options || [])[0],
     firstValue = typeof first === 'string' ? first : first && first.value;
@@ -25052,7 +26254,7 @@ function SingleQuickFilterMenu({
   }));
 }
   } },
-  "platform/patterns/CommandBar/CommandBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/barFit.js":"platform/utils/barFit.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","../../components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./BarActions.jsx":"platform/patterns/CommandBar/BarActions.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","../QuickFilter/single-menu.jsx":"platform/patterns/QuickFilter/single-menu.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../../utils/fields.js":"platform/utils/fields.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/CommandBar/CommandBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/barFit.js":"platform/utils/barFit.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","../../components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./BarActions.jsx":"platform/patterns/CommandBar/BarActions.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","../QuickFilter/single-menu.jsx":"platform/patterns/QuickFilter/single-menu.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../../utils/fields.js":"platform/utils/fields.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -25079,6 +26281,7 @@ var _singleMenu = require("../QuickFilter/single-menu.jsx");
 var _Stack = require("../../components/Stack/Stack.jsx");
 var _Popover = require("../../components/Popover/Popover.jsx");
 var _fields = require("../../utils/fields.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · CommandBar, CommandBarButton, CommandBarSearch, useCommandBar
    Summary: The bar over a collection (owner, 2026-10-14 and 2026-10-15, the command bar study): ONE white framed bar of
@@ -25164,19 +26367,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Notes:
      The count and the end controls sit at the end of the bar. Pages with neither actions nor find and view have no
      bar: the plain table. */
-const STRINGS = {
-  more: 'More actions',
-  actions: '{label} actions',
-  find: 'Find and view',
-  selected: '{n} selected',
-  hidden: ' ({n} hidden by filters)',
-  clear: 'Clear the selection',
-  clearName: '{n} selected, clear the selection',
-  swapped: '{n} selected. Selection actions available.',
-  cleared: 'Selection cleared.',
-  why: 'Select {plural} to {action}',
-  single: 'Select one {noun} to {action}'
-};
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 // the steps of the button rule: 0 icon and label; 1 icons only; 2 the search as its icon; then one more action per step
 // into More
@@ -25253,7 +26443,8 @@ function CommandBar({
   strings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('commandBar', strings);
+  const fw = (0, _LocaleProvider.useStrings)('fields');
   const root = _react.default.useRef(null);
   // the selection (owner, 2026-10-15: the swap; issue 454): an object { count, actions, onClear, noun, plural, label }; while
   // its count is above 0 the selection's commands replace the page's actions; search and filters stay
@@ -25322,7 +26513,7 @@ function CommandBar({
         onChange: v => q.onChange && q.onChange(Object.assign({}, d, {
           preset: v
         }))
-      }, _fields.DATE_PRESETS.map(p => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      }, _fields.fieldWords.presets(fw).map(p => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
         key: p.value,
         value: p.value
       }, counted(p)))));
@@ -25529,7 +26720,7 @@ exports.MultiPick = MultiPick;
 exports.PanelHead = PanelHead;
 exports.PanelTrigger = PanelTrigger;
 exports.Pick = Pick;
-exports.toggle = exports.fill = exports.REORDER_STRINGS = exports.Pill = void 0;
+exports.toggle = exports.fill = exports.Pill = void 0;
 exports.useReorder = useReorder;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
@@ -25548,7 +26739,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      same control height, the same spacing.
    Usage:
      <PanelTrigger icon="sort" label="Sort" count={levels.length}><div className="plx-find-panel">…</div></PanelTrigger>
-     const ro = useReorder(levels, setLevels, (l) => l.field, REORDER_STRINGS);
+     const ro = useReorder(levels, setLevels, (l) => l.field, t);
    Props:
      PanelTrigger: the bar button (CommandBarButton) and its Popover; or, inline, the panel's body alone in a frame
      PanelHead: the panel's title, its info button (a tooltip) and its actions on the right; a line under it
@@ -25839,16 +27030,9 @@ function useReorder(items, setItems, nameOf, t) {
     status
   };
 }
-// the words of a row that reorders
-const REORDER_STRINGS = exports.REORDER_STRINGS = {
-  moved: '{name} moved to position {position} of {total}',
-  row: '{name}, {position} of {total}. Alt + Arrow Up or Down moves it',
-  reorder: 'Reorder {name}',
-  moveUp: 'Move up',
-  moveDown: 'Move down'
-};
+// the words of a row that reorders are in the catalog under each panel's section (moved, row, reorder, moveUp, moveDown)
   } },
-  "platform/patterns/ColumnsMenu/ColumnsMenu.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ColumnsMenu/ColumnsMenu.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -25870,6 +27054,7 @@ var _SearchField = require("../../components/SearchField/SearchField.jsx");
 var _Text = require("../../components/Text/Text.jsx");
 var _VisuallyHidden = require("../../components/VisuallyHidden/VisuallyHidden.jsx");
 var _panelParts = require("../CommandBar/panel-parts.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · ColumnsMenu, ManageColumnsDialog
    Summary: The command bar's Columns (owner, 2026-10-14: the first column is a must; a list with reordering): a "Columns"
@@ -25903,28 +27088,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      The button reads "Columns" with the thin chevron; icons only, its icon and tooltip; hidden columns tint it and show
        their count. */
 
-const STRINGS = {
-  label: 'Columns',
-  manage: 'Manage columns',
-  first: 'First column',
-  moveMenu: 'Move {name}',
-  moveUp: 'Move {name} up',
-  moveDown: 'Move {name} down',
-  up: 'Move up',
-  down: 'Move down',
-  find: 'Find a column',
-  showAll: 'Show all',
-  hideAll: 'Hide all',
-  apply: 'Apply',
-  cancel: 'Cancel',
-  shown: '{name} shown',
-  hidden: '{name} hidden',
-  isFirst: '{name} is the first column',
-  moved: '{name}, position {position} of {total}',
-  row: '{name}{first}. Alt + Arrow Up or Down moves it',
-  firstMark: ', first column',
-  none: 'No column matches'
-};
 const moveTo = (order, f, i) => {
   const rest = order.filter(x => x !== f);
   rest.splice(i, 0, f);
@@ -26063,7 +27226,7 @@ function ColumnsMenu({
   inline = false,
   strings
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('columnsMenu', strings);
   const v = value || {
     order: fields.map(f => f.value),
     hidden: []
@@ -26109,7 +27272,7 @@ function ManageColumnsDialog({
   open: openProp,
   onOpenChange
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('columnsMenu', strings);
   const v = value || {
     order: fields.map(f => f.value),
     hidden: []
@@ -26322,7 +27485,7 @@ function Pagination({
   }, n)))) : null);
 }
   } },
-  "platform/components/EmptyState/EmptyState.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/EmptyState/EmptyState.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -26333,6 +27496,7 @@ var _react = _interopRequireDefault(require("react"));
 var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · EmptyState
    Summary: What a region shows when it has nothing yet, and how to add the first item; in a tone, what failed, what needs
@@ -26396,32 +27560,6 @@ const KINDS = {
     icon: 'circle-check'
   }
 };
-const STRINGS = {
-  offline: {
-    title: 'You’re offline',
-    text: 'Check your connection. This page updates when you’re back online.'
-  },
-  degraded: {
-    title: 'Some features aren’t working',
-    text: 'A service is slow or not responding, so what you see may be out of date.'
-  },
-  'permission-denied': {
-    title: 'You don’t have access',
-    text: 'Ask the owner to share it with you.'
-  },
-  'not-found': {
-    title: 'This page doesn’t exist',
-    text: 'It may have been moved or deleted. Check the address or go back.'
-  },
-  maintenance: {
-    title: 'Down for maintenance',
-    text: 'This service is being updated. Try again in a few minutes.'
-  },
-  completion: {
-    title: 'All done',
-    text: 'There’s nothing left to do here.'
-  }
-};
 const TONE_ICONS = {
   error: 'warning',
   warning: 'warning',
@@ -26452,7 +27590,8 @@ function EmptyState({
     tone: ['neutral', 'error', 'warning', 'success']
   });
   const preset = KINDS[kind];
-  const words = preset ? Object.assign({}, STRINGS[kind], strings && strings[kind]) : null;
+  const all = (0, _LocaleProvider.useStrings)('emptyState', strings); // every system state's words, the strings prop on top
+  const words = preset ? all[kind] : null;
   const t = tone || (preset ? preset.tone : 'neutral');
   const mark = icon !== undefined ? icon : preset ? preset.icon : TONE_ICONS[t];
   const head = title !== undefined ? title : words ? words.title : null;
@@ -26804,7 +27943,7 @@ const TagInput = exports.TagInput = /*#__PURE__*/_react.default.forwardRef(funct
   }, rest));
 });
   } },
-  "platform/components/DataPill/DataPill.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/devWarn.js":"platform/utils/devWarn.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/DataPill/DataPill.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/devWarn.js":"platform/utils/devWarn.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -26815,6 +27954,7 @@ var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _devWarn = require("../../utils/devWarn.js");
 var _Icon = require("../Icon/Icon.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · DataPill
    Summary: A value shown as a pill: the value itself (a case number, a person, a date, a price, an airport code, Yes or
@@ -26855,10 +27995,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Not a Tag (a keyword next to content, 10px) and not a Badge (a status): a DataPill is the value itself.
      DataGrid: a column's pill option draws each value as a DataPill (DataGrid.jsx).
 */
-const STRINGS = {
-  male: 'male',
-  female: 'female'
-};
 const GENDER = {
   male: {
     tone: 'blue',
@@ -26888,7 +28024,7 @@ function DataPill({
   }, {
     variant: ['soft', 'solid', 'plain']
   });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('dataPill', strings);
   const g = GENDER[gender];
   const color = g ? g.tone : tone || (variant === 'plain' ? undefined : 'grey'); // a plain value with no color keeps the text color
   const glyph = icon === false ? null : g ? g.icon : icon || (person ? 'person' : null); // icon={false}: a picture beside it already says it
@@ -27438,7 +28574,7 @@ function groupDisplay(groups, collapsed, add, gaps = true) {
   return display;
 }
   } },
-  "platform/components/DataGrid/DataGridEngine.jsx": { deps: {"react":null,"./unread.js":"platform/components/DataGrid/unread.js","./room.js":"platform/components/DataGrid/room.js","react-dom":null,"./scrollbars.jsx":"platform/components/DataGrid/scrollbars.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","@tanstack/react-table":"../../plenix/node_modules/@tanstack/react-table/build/lib/index.js","@tanstack/react-virtual":"../../plenix/node_modules/@tanstack/react-virtual/dist/cjs/index.cjs","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../utils/paneLimit.js":"platform/utils/paneLimit.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./environment.js":"platform/components/DataGrid/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataGrid/state.js","./adapter.js":"platform/components/DataGrid/adapter.js","./cells.jsx":"platform/components/DataGrid/cells.jsx","./records.js":"platform/components/DataGrid/records.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/DataGrid/DataGridEngine.jsx": { deps: {"react":null,"./unread.js":"platform/components/DataGrid/unread.js","./room.js":"platform/components/DataGrid/room.js","react-dom":null,"./scrollbars.jsx":"platform/components/DataGrid/scrollbars.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","@tanstack/react-table":"../../plenix/node_modules/@tanstack/react-table/build/lib/index.js","@tanstack/react-virtual":"../../plenix/node_modules/@tanstack/react-virtual/dist/cjs/index.cjs","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../utils/paneLimit.js":"platform/utils/paneLimit.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./environment.js":"platform/components/DataGrid/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataGrid/state.js","./adapter.js":"platform/components/DataGrid/adapter.js","./cells.jsx":"platform/components/DataGrid/cells.jsx","./records.js":"platform/components/DataGrid/records.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27476,6 +28612,7 @@ var _state = require("./state.js");
 var _adapter = require("./adapter.js");
 var _cells = require("./cells.jsx");
 var _records = require("./records.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · DataGridEngine (TanStack)
    Summary: The React-owned renderer behind the public DataGrid and static Table.
@@ -27546,77 +28683,6 @@ const EMPTY_ROWS = [];
 const words = (template, values) => String(template).replace(/\{(\w+)\}/g, (match, key) => values[key] ?? match);
 const GRID = 'plx-data-grid',
   interactive = 'a,button,input,select,textarea,label,[role="button"],[contenteditable="true"],[data-plx-no-row-click]';
-const defaults = {
-  empty: 'Nothing to show',
-  failed: 'The table could not load',
-  retry: 'Retry',
-  selectAll: 'Select all rows',
-  selectRow: 'Select row',
-  rowActions: 'Row actions',
-  clearSort: 'Clear sort',
-  hide: 'Hide field',
-  showAll: 'Show all fields',
-  narrower: 'Narrower',
-  wider: 'Wider',
-  fit: 'Fit to content',
-  deleted: 'Deleted',
-  moveLeft: 'Move left',
-  moveRight: 'Move right',
-  perPage: 'Rows per page',
-  view: 'View options',
-  wrapHeaders: 'Wrap headers',
-  markRead: 'Mark as read',
-  markUnread: 'Mark as unread',
-  wrapText: 'Wrap text',
-  wrapAll: 'Wrap all columns',
-  fullText: 'Show the full text',
-  rowHeight: 'Row height',
-  short: 'Short',
-  medium: 'Medium',
-  tall: 'Tall',
-  'extra-tall': 'Extra tall',
-  filter: 'Filter',
-  clearFilter: 'Clear filter',
-  groupBy: 'Group by this field',
-  ungroup: 'Ungroup',
-  noGroup: 'Don’t group by this field',
-  sizeToFit: 'Size column to fit',
-  sizeAllToFit: 'Size all columns to fit',
-  moreColumns: 'More…',
-  columns: 'Columns',
-  loadMore: 'Load more',
-  loading: 'Loading records',
-  group: 'Group by this field',
-  filterBy: 'Filter by this field',
-  any: 'Any',
-  contains: 'Contains…',
-  moveRow: 'Move row',
-  moveUp: 'Move up',
-  moveDown: 'Move down',
-  moveTop: 'Move to top',
-  moveBottom: 'Move to bottom',
-  resize: 'Resize',
-  range: '{first}–{last} of {total}',
-  count: '{shown} of {total}',
-  pages: '{label} pages',
-  loaded: '{n} more rows loaded, {shown} of {total}',
-  noValue: '(Empty)',
-  addTo: 'Add a record to {value}',
-  groupRow: '{value}, group, {count} {records}',
-  record: 'record',
-  records: 'records',
-  expanded: 'expanded',
-  collapsed: 'collapsed',
-  sum: 'Sum',
-  countOf: 'Count',
-  average: 'Average',
-  min: 'Min',
-  max: 'Max',
-  sortText: ['Sort A → Z', 'Sort Z → A'],
-  sortNumber: ['Sort 1 → 9', 'Sort 9 → 1'],
-  sortDate: ['Sort oldest → newest', 'Sort newest → oldest'],
-  sortCheck: ['Sort unchecked → checked', 'Sort checked → unchecked']
-};
 const typeIcons = {
   multi: 'field-select',
   text: 'ed-text',
@@ -27715,7 +28781,8 @@ function CellEditor({
   onCommit,
   onCancel
 }) {
-  const [draft, setDraft] = _react.default.useState(value ?? ''),
+  const S = (0, _LocaleProvider.useStrings)('dataGrid'),
+    [draft, setDraft] = _react.default.useState(value ?? ''),
     done = _react.default.useRef(false);
   const finish = () => {
     if (done.current) return;
@@ -27725,7 +28792,7 @@ function CellEditor({
   return /*#__PURE__*/_react.default.createElement("input", {
     autoFocus: true,
     className: "plx-data-grid__editor",
-    "aria-label": 'Edit ' + column.title,
+    "aria-label": S.editCell.replace('{title}', column.title),
     type: column.editor === 'number' ? 'number' : 'text',
     value: draft,
     onChange: e => setDraft(e.target.value),
@@ -27877,10 +28944,7 @@ function NextEngine(props) {
   const showTypes = typeIconsProp ?? !isStatic; // the column type icons: a DataGrid's sort and filter cue, not a static Table's
   const narrow = requestedNarrow === undefined ? inPane && !isStatic ? 'table' : 'list' : requestedNarrow;
   const B = isStatic ? 'plx-table' : GRID; // Table (static) and DataGrid: each its own block (owner, 2026-10-19)
-  const S = {
-      ...defaults,
-      ...props.strings
-    },
+  const S = (0, _LocaleProvider.useStrings)('dataGrid', props.strings),
     initial = _react.default.useMemo(() => (0, _state.opening)(props), [storageKey]);
   const frame = _react.default.useRef(null),
     holder = _react.default.useRef(null),
@@ -28469,7 +29533,7 @@ function NextEngine(props) {
     items: ordered,
     getId: column => column.id,
     getName: column => column.columnDef.meta.title || column.id,
-    label: label + ' columns',
+    label: S.columnsLabel.replace('{label}', label),
     orientation: 'horizontal',
     disabled: !(props.movableColumns ?? options.movableColumns),
     onReorder: (next, {
@@ -28483,7 +29547,7 @@ function NextEngine(props) {
     items: canonical,
     getId: record => (0, _state.recordKey)(record[index]),
     getName: record => String((0, _state.valueAt)(record, columns[0]?.field) ?? record[index]),
-    label: label + ' rows',
+    label: S.rowsLabel.replace('{label}', label),
     disabled: !(props.movableRows ?? options.movableRows) || !!groupBy || !!childField,
     onReorder: (rows, {
       item
@@ -29101,12 +30165,12 @@ function NextEngine(props) {
     }, S.clearFilter)))) : null), headerMenu ? /*#__PURE__*/_react.default.createElement("span", {
       className: (0, _cx.cx)(B + '__grid-header-popup-button', B + '__grid-header-popup-button--menu')
     }, /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
-      label: c.title + ' column actions',
+      label: S.columnActions.replace('{title}', c.title),
       trigger: /*#__PURE__*/_react.default.createElement("span", {
         role: "button",
         tabIndex: 0,
         className: B + '__menu-chevron',
-        "aria-label": c.title + ' column actions'
+        "aria-label": S.columnActions.replace('{title}', c.title)
       }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
         name: "chevron-down"
       }))
@@ -29323,7 +30387,7 @@ function NextEngine(props) {
       key: row.displayKey || row.id
     }, !(props.movableRows ?? options.movableRows) || !recordPositions.has(record) ? null : rowDnd.itemProps(recordPositions.get(record)), {
       "data-plx-unread": unread.has(record) || undefined,
-      "aria-label": unread.has(record) ? String((0, _state.valueAt)(record, columns[0]?.field) ?? record[index]) + ', unread' : undefined,
+      "aria-label": unread.has(record) ? S.unreadRow.replace('{label}', String((0, _state.valueAt)(record, columns[0]?.field) ?? record[index])) : undefined,
       "data-plx-record": row.id,
       onAttach: node => rememberRow(row, node),
       role: "row",
@@ -29970,7 +31034,7 @@ function Details({
   }, children));
 }
   } },
-  "platform/charts/Gauge.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","../components/Details/Details.jsx":"platform/components/Details/Details.jsx","../components/Table/Table.jsx":"platform/components/Table/Table.jsx","../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./scales.js":"platform/charts/scales.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/Gauge.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","../components/Details/Details.jsx":"platform/components/Details/Details.jsx","../components/Table/Table.jsx":"platform/components/Table/Table.jsx","../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./scales.js":"platform/charts/scales.js","../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -29984,6 +31048,7 @@ var _Details = require("../components/Details/Details.jsx");
 var _Table = require("../components/Table/Table.jsx");
 var _Badge = require("../components/Badge/Badge.jsx");
 var _scales = require("./scales.js");
+var _LocaleProvider = require("../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · Gauge
    Summary: A gauge (07 Data Display › Charts › Gauge): one value inside a known range, as a semicircle track filled up to
@@ -30019,15 +31084,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        gauge: to compare values, use a bar or bullet chart; for a value without a range, a metric.
 */
 
-const STRINGS = {
-  showData: 'Show the data',
-  table: '{title}: data',
-  measure: 'Measure',
-  value: 'Value',
-  min: 'Minimum',
-  max: 'Maximum',
-  ok: ''
-};
 const SIZES = ['sm', 'md', 'lg'];
 const LEVELS = {
   warning: {
@@ -30070,7 +31126,7 @@ function Gauge({
   strings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('chart.gauge', strings);
   const uid = 'plx-gauge' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
   const fmt = typeof format === 'function' ? format : v => (0, _format.formatNumber)(v);
   const span = max - min || 1;
@@ -30186,7 +31242,7 @@ function Gauge({
   })));
 }
   } },
-  "platform/charts/ChartFrame.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/direction.js":"platform/utils/direction.js","../components/Details/Details.jsx":"platform/components/Details/Details.jsx","../components/Table/Table.jsx":"platform/components/Table/Table.jsx","../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/ChartFrame.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/direction.js":"platform/utils/direction.js","../components/Details/Details.jsx":"platform/components/Details/Details.jsx","../components/Table/Table.jsx":"platform/components/Table/Table.jsx","../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../utils/grid.js":"platform/utils/grid.js","../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -30200,6 +31256,7 @@ var _Details = require("../components/Details/Details.jsx");
 var _Table = require("../components/Table/Table.jsx");
 var _Button = require("../components/Button/Button.jsx");
 var _grid = require("../utils/grid.js");
+var _LocaleProvider = require("../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ChartFrame
    Summary: The frame every Plenix chart is drawn in (07 Data Display › Charts › Chart foundations): a figure with the
@@ -30255,10 +31312,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Chart parts (platform/charts/parts: Axis, GridLines, ChartLegend, ChartTooltip, DataLabel, ReferenceLine,
        ChartAnnotation; wave 8) and the charts themselves (wave 9) build on this frame.
 */
-const STRINGS = {
-  showData: 'Show the data',
-  table: '{title}: data'
-};
 const MARGIN_TOKENS = {
   top: '--plx-comp-chart-margin-block-start',
   end: '--plx-comp-chart-margin-inline-end',
@@ -30282,7 +31335,7 @@ function ChartFrame({
   className,
   children
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('chart.chartFrame', strings);
   const uid = 'plx-chart' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
   const frame = _react.default.useRef(null),
     plot = _react.default.useRef(null);
@@ -30418,7 +31471,7 @@ function ChartFrame({
   })) : null);
 }
   } },
-  "platform/charts/parts/ChartLegend.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/parts/ChartLegend.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -30427,6 +31480,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.ChartLegend = ChartLegend;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ChartLegend
    Summary: The key of a chart's series (07 Data Display › Charts › Chart legend): each series' color swatch and name,
@@ -30461,9 +31515,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Colors come from the data-viz scales through data-plx-dataviz (no color is written). Color is never the only cue: the
        names are always shown; on a line chart label the lines directly when there is room.
 */
-const STRINGS = {
-  legend: 'Legend'
-};
 function ChartLegend({
   items = [],
   orientation = 'horizontal',
@@ -30477,7 +31528,7 @@ function ChartLegend({
   className,
   ...rest
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('chart.chartLegend', strings);
   const [own, setOwn] = _react.default.useState(defaultHidden);
   const off = hidden === undefined ? own : hidden;
   const o = orientation === 'vertical' ? 'vertical' : 'horizontal';
@@ -30767,7 +31818,7 @@ function finite(v) {
   return isFinite(n) ? n : 0;
 }
   } },
-  "platform/charts/PieChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./interaction.js":"platform/charts/interaction.js","./chart-kit.js":"platform/charts/chart-kit.js","./echarts/EChartsPlot.jsx":"platform/charts/echarts/EChartsPlot.jsx","../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/PieChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./interaction.js":"platform/charts/interaction.js","./chart-kit.js":"platform/charts/chart-kit.js","./echarts/EChartsPlot.jsx":"platform/charts/echarts/EChartsPlot.jsx","../utils/grid.js":"platform/utils/grid.js","../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -30787,6 +31838,7 @@ var _interaction = require("./interaction.js");
 var _chartKit = require("./chart-kit.js");
 var _EChartsPlot = require("./echarts/EChartsPlot.jsx");
 var _grid = require("../utils/grid.js");
+var _LocaleProvider = require("../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · PieChart
    Summary: The shares of a few parts in one whole (07 Data Display › Charts › Pie chart, Donut chart): a circle cut into
@@ -30831,13 +31883,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        No style is written here.
 */
 
-const STRINGS = {
-  part: 'Part',
-  value: 'Value',
-  share: 'Share',
-  total: 'Total',
-  other: 'Other'
-};
 const VARIANTS = ['pie', 'donut', 'half'];
 const HOLE = 0.6; // the hollow center's radius, a share of the ring's radius
 const LABEL_MIN = 0.08; // the least share written on its slice
@@ -30913,7 +31958,7 @@ function PieChart({
   strings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('chart.pieChart', strings);
   const v = VARIANTS.indexOf(variant) >= 0 ? variant : 'pie';
   const half = v === 'half';
   const fmt = x => typeof format === 'function' ? format(x) : (0, _format.formatNumber)(x);
@@ -31139,7 +32184,7 @@ function PieChart({
   }, draw);
 }
   } },
-  "platform/components/MetricCard/MetricCard.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/format.js":"platform/utils/format.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../Count/Count.jsx":"platform/components/Count/Count.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","../ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../Table/Table.jsx":"platform/components/Table/Table.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../charts/Sparkline.jsx":"platform/charts/Sparkline.jsx","../../charts/Gauge.jsx":"platform/charts/Gauge.jsx","../../charts/PieChart.jsx":"platform/charts/PieChart.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/MetricCard/MetricCard.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/format.js":"platform/utils/format.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../Count/Count.jsx":"platform/components/Count/Count.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","../ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../Table/Table.jsx":"platform/components/Table/Table.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../charts/Sparkline.jsx":"platform/charts/Sparkline.jsx","../../charts/Gauge.jsx":"platform/charts/Gauge.jsx","../../charts/PieChart.jsx":"platform/charts/PieChart.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -31167,6 +32212,7 @@ var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
 var _Sparkline = require("../../charts/Sparkline.jsx");
 var _Gauge = require("../../charts/Gauge.jsx");
 var _PieChart = require("../../charts/PieChart.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · MetricCard
    Summary: One key figure in a card, with one anatomy for every kind of data (07 › Cards and objects › Metric card;
@@ -31251,28 +32297,6 @@ const APPEARANCES = ['plain', 'edge', 'soft', 'filled', 'gradient'];
 const HUES = ['blue', 'green', 'purple', 'red', 'brown', 'gray'];
 const ORDER = ['blue', 'purple', 'brown', 'green', 'red', 'gray']; // breakdown parts without a color, by their order
 
-const STRINGS = {
-  more: 'More for {title}',
-  up: 'Up',
-  down: 'Down',
-  good: 'good',
-  bad: 'bad',
-  vs: 'vs',
-  empty: 'No data',
-  loading: 'Loading {title}',
-  error: 'Couldn’t load the figures.',
-  retry: 'Try again',
-  stale: 'Out of date',
-  rank: '#{n}',
-  toCome: 'to come',
-  hit: 'hit',
-  missed: 'missed',
-  weekdays: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
-  weekdayNames: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-  month: '{done} of {days} working days so far',
-  parts: '{label} {share}',
-  compare: '{a} {av}, {b} {bv}'
-};
 const fill = (s, o) => Object.keys(o).reduce((t, k) => t.split('{' + k + '}').join(o[k]), s);
 function toneOf(change, goodWhen) {
   if (!change || goodWhen === 'none' || !goodWhen) return 'neutral';
@@ -31651,7 +32675,7 @@ function MetricCard({
   }, {
     appearance: ['plain', 'edge', 'soft']
   });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('metricCard', strings);
   const id = (0, _layer.useUid)('plx-metric-card');
   const H = 'h' + Math.min(6, Math.max(2, headingLevel));
   const name = type === 'person' && person ? title || person.name : title;
@@ -31896,7 +32920,7 @@ function MetricCard({
   }, note) : null);
 }
   } },
-  "platform/components/DateBadge/DateBadge.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/DateBadge/DateBadge.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -31906,6 +32930,7 @@ exports.DateBadge = DateBadge;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · DateBadge
    Summary: A day shown as its number and weekday, with today marked (02 › Inputs › Date and time › Calendar).
@@ -31931,6 +32956,7 @@ function DateBadge({
   className,
   ...rest
 }) {
+  const t = (0, _LocaleProvider.useStrings)('dateBadge');
   const Tag = dateTime ? 'time' : 'span';
   return /*#__PURE__*/_react.default.createElement(Tag, _extends({
     className: (0, _cx.cx)('plx-date-badge', today && 'is-today', className),
@@ -31939,7 +32965,7 @@ function DateBadge({
     className: "plx-date-badge__weekday"
   }, weekday) : null, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-date-badge__day"
-  }, day), today ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, "Today") : null);
+  }, day), today ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, t.today) : null);
 }
   } },
   "platform/components/EventChip/EventChip.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -32211,7 +33237,7 @@ exports.appById = appById;
 const appHref = (app, root = '') => root + app.path.split('/').map(encodeURIComponent).join('/').replace(/%23/g, '#');
 exports.appHref = appHref;
   } },
-  "platform/components/Brand/Brand.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../providers/apps.js":"platform/providers/apps.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Brand/Brand.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../providers/apps.js":"platform/providers/apps.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -32223,6 +33249,7 @@ var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _apps = require("../../providers/apps.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · BrandMark
    Summary: The Plenix brand from the brand kit (platform/brand/): the mark alone, the wordmark, the logo (mark and wordmark
@@ -32259,9 +33286,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The brand blue comes from the brand tokens (tokens/components/brand.tokens.json), never from a palette color.
      Other props pass through to the outer <span>.
 */
-const STRINGS = {
-  name: 'Plenix'
-};
 function BrandMark({
   kind = 'mark',
   tone,
@@ -32281,10 +33305,7 @@ function BrandMark({
     tone: ['brand', 'mono', 'on-accent'],
     size: ['sm', 'md', 'lg', 'xl']
   });
-  const s = {
-    ...STRINGS,
-    ...strings
-  };
+  const s = (0, _LocaleProvider.useStrings)('brand', strings);
   if (kind === 'mark') {
     const cls = (0, _cx.cx)('plx-brand-mark', tone && 'plx-brand-mark--tone-' + tone, size && 'plx-brand-mark--size-' + size, className);
     return label ? /*#__PURE__*/_react.default.createElement("span", _extends({
@@ -32969,7 +33990,7 @@ List.Item = function ListItem({
   })) : text);
 };
   } },
-  "platform/components/CodeBlock/CodeBlock.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/CodeBlock/CodeBlock.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -32982,6 +34003,7 @@ var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _Button = require("../Button/Button.jsx");
 var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · CodeBlock
    Summary: Code or a file's source, in the code font (Reddit Mono) on the page surface, with a Copy button.
@@ -33069,12 +34091,6 @@ function highlight(text, language) {
   plain(text.slice(at));
   return out;
 }
-const STRINGS = {
-  code: 'Code',
-  copy: 'Copy',
-  copied: 'Copied',
-  failed: 'Could not copy'
-};
 function CodeBlock({
   title,
   maxHeight = 'none',
@@ -33085,7 +34101,7 @@ function CodeBlock({
   className,
   children
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('codeBlock', strings);
   const [copied, setCopied] = _react.default.useState(false);
   const [said, setSaid] = _react.default.useState(''); // what screen readers hear after Copy (batch 213)
   const text = typeof children === 'string' ? children : String(children == null ? '' : children);
@@ -33205,7 +34221,7 @@ function SectionHeading({
   }, actions) : null);
 }
   } },
-  "platform/components/CollapsibleSection/CollapsibleSection.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/CollapsibleSection/CollapsibleSection.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -33219,6 +34235,7 @@ var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _Button = require("../Button/Button.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · CollapsibleSection
    Summary: A titled section that expands and collapses.
@@ -33307,6 +34324,7 @@ function ShowMore({
   count,
   onToggle,
   size = '2xs',
+  strings,
   ...rest
 }) {
   (0, _devWarn.devWarn)('ShowMore', {
@@ -33314,6 +34332,7 @@ function ShowMore({
   }, {
     size: ['md', 'sm', 'xs', '2xs', 'lg']
   });
+  const t = (0, _LocaleProvider.useStrings)('collapsibleSection', strings);
   return /*#__PURE__*/_react.default.createElement(_Button.Button, _extends({
     size: size,
     iconEnd: expanded ? 'chevron-up' : 'chevron-down',
@@ -33321,7 +34340,7 @@ function ShowMore({
     onClick: () => {
       if (onToggle) onToggle(!expanded);
     }
-  }, rest), expanded ? 'Show less' : 'Show more' + (count !== undefined && count !== null && count !== '' ? ' (' + count + ')' : ''));
+  }, rest), expanded ? t.less : count !== undefined && count !== null && count !== '' ? t.moreCount.replace('{n}', count) : t.more);
 }
   } },
   "platform/components/ProgressSteps/ProgressSteps.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -33465,7 +34484,7 @@ function ProgressSteps({
   }));
 }
   } },
-  "platform/components/Chat/Chat.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Chat/Chat.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -33482,6 +34501,7 @@ var _Loading = require("../Loading/Loading.jsx");
 var _ProgressSteps = require("../ProgressSteps/ProgressSteps.jsx");
 var _Text = require("../Text/Text.jsx");
 var _Input = require("../Input/Input.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Chat
    Summary: The live messaging surface of a conversation (12 › Collaboration and communication › Chat): its header, the
@@ -33539,9 +34559,7 @@ function Typing({
   }, {
     variant: ['typing', 'thinking', 'steps']
   });
-  const t = Object.assign({
-    thinking: 'Thinking'
-  }, strings);
+  const t = (0, _LocaleProvider.useStrings)('chat', strings);
   if (variant === 'thinking' || variant === 'steps') return /*#__PURE__*/_react.default.createElement("div", _extends({
     className: (0, _cx.cx)('plx-chat__thinking', className),
     role: "status"
@@ -33560,7 +34578,7 @@ function Typing({
     current: current,
     strings: strings
   }) : null);
-  if (label === undefined) label = 'Typing';
+  if (label === undefined) label = t.typing;
   return /*#__PURE__*/_react.default.createElement("span", _extends({
     className: (0, _cx.cx)('plx-chat__typing', className),
     role: "status"
@@ -33595,12 +34613,14 @@ function Header({
   }, actions) : null);
 }
 function Thread({
-  label = 'Conversation',
+  label,
   follow = true,
   className,
   children,
   ...rest
 }) {
+  const t = (0, _LocaleProvider.useStrings)('chat');
+  label = label ?? t.conversation;
   // it opens at the newest message and follows new ones, unless the person has scrolled up to read (batch 215)
   const ref = _react.default.useRef(null),
     atEnd = _react.default.useRef(true);
@@ -33636,6 +34656,7 @@ function Message({
   children,
   ...rest
 }) {
+  const t = (0, _LocaleProvider.useStrings)('chat');
   return /*#__PURE__*/_react.default.createElement("div", _extends({
     className: (0, _cx.cx)('plx-chat__message', mine && 'plx-chat__message--mine', className)
   }, rest), !mine && avatar ? /*#__PURE__*/_react.default.createElement("span", {
@@ -33644,7 +34665,7 @@ function Message({
     className: "plx-chat__bubble"
   }, author && !mine || time ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-chat__meta"
-  }, mine ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, "You") : author ? /*#__PURE__*/_react.default.createElement("span", {
+  }, mine ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, t.you) : author ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-chat__author"
   }, author) : null, time ? /*#__PURE__*/_react.default.createElement("time", {
     className: "plx-chat__time",
@@ -33657,13 +34678,17 @@ function Composer({
   value = '',
   onChange,
   onSend,
-  placeholder = 'Write a message',
-  label = 'Message',
-  sendLabel = 'Send',
+  placeholder,
+  label,
+  sendLabel,
   disabled = false,
   className,
   ...rest
 }) {
+  const t = (0, _LocaleProvider.useStrings)('chat');
+  placeholder = placeholder ?? t.placeholder;
+  label = label ?? t.message;
+  sendLabel = sendLabel ?? t.send;
   const empty = !String(value).trim();
   const send = () => {
     if (!empty && onSend) onSend(value);
@@ -34839,7 +35864,7 @@ function Slider({
   }, m.label)))) : null);
 }
   } },
-  "platform/components/Toast/Toast.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../utils/tokenTime.js":"platform/utils/tokenTime.js","../../utils/announce.jsx":"platform/utils/announce.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/Toast/Toast.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../utils/tokenTime.js":"platform/utils/tokenTime.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -34855,6 +35880,7 @@ var _Icon = require("../Icon/Icon.jsx");
 var _Button = require("../Button/Button.jsx");
 var _tokenTime = require("../../utils/tokenTime.js");
 var _announce = require("../../utils/announce.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · ToastProvider, useToast, useUndo
    Summary: A short message about something that just happened, at the end of the screen; with an action (Undo) it is the
@@ -34908,6 +35934,7 @@ function ToastProvider({
   duration,
   children
 }) {
+  const words = (0, _LocaleProvider.useStrings)('toast');
   const [toasts, setToasts] = _react.default.useState([]);
   const timers = _react.default.useRef(new Map()); // id -> { wait, timer, onClose }
   const texts = _react.default.useRef(new Map()); // id -> the message element, read for its announcement
@@ -35013,7 +36040,7 @@ function ToastProvider({
   }, t.action.label) : null, /*#__PURE__*/_react.default.createElement("button", {
     type: "button",
     className: "plx-toast__close",
-    "aria-label": "Dismiss",
+    "aria-label": words.dismiss,
     onClick: () => dismiss(t.id)
   }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
     name: "close"
@@ -35028,23 +36055,24 @@ function useToast() {
 // the undo pattern: the action is already done; the toast offers Undo for as long as it shows, then the change is final
 function useUndo() {
   const toast = useToast();
+  const words = (0, _LocaleProvider.useStrings)('toast');
   return _react.default.useCallback((message, {
     onUndo,
     onCommit,
-    label = 'Undo',
+    label,
     tone,
     duration
   } = {}) => toast.show(message, {
     tone,
     duration,
     action: {
-      label,
+      label: label ?? words.undo,
       onAction: onUndo
     },
     onClose: reason => {
       if (reason !== 'action' && onCommit) onCommit();
     }
-  }), [toast]);
+  }), [toast, words.undo]);
 }
   } },
   "platform/components/Tabs/Tabs.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Count/Count.jsx":"platform/components/Count/Count.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -35442,7 +36470,7 @@ function unreadCommands({
   };
 }
   } },
-  "platform/components/Persona/Persona.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Persona/Persona.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35456,6 +36484,7 @@ var _Avatar = require("../Avatar/Avatar.jsx");
 var _Badge = require("../Badge/Badge.jsx");
 var _Link = require("../Link/Link.jsx");
 var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Persona
    Summary: A person in one compact line: their avatar, their name and one detail (a role, a team, an email), with their
@@ -35486,13 +36515,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
 */
 const SIZES = ['xs', 'sm', 'md', 'lg', 'xl'];
 const PRESENCE = ['online', 'away', 'busy', 'dnd', 'offline'];
-const STRINGS = {
-  online: 'Online',
-  away: 'Away',
-  busy: 'Busy',
-  dnd: 'Do not disturb',
-  offline: 'Offline'
-};
 function Persona({
   name,
   src,
@@ -35513,7 +36535,7 @@ function Persona({
   });
   const s = SIZES.indexOf(size) >= 0 ? size : 'md';
   const p = PRESENCE.indexOf(presence) >= 0 ? presence : null;
-  const words = Object.assign({}, STRINGS, strings);
+  const words = (0, _LocaleProvider.useStrings)('persona', strings);
   return /*#__PURE__*/_react.default.createElement("div", _extends({
     className: (0, _cx.cx)('plx-persona', 'plx-persona--' + s, className)
   }, rest), /*#__PURE__*/_react.default.createElement(_Avatar.Avatar, {
@@ -35545,7 +36567,7 @@ function Persona({
   }, secondary) : null));
 }
   } },
-  "platform/patterns/ActivityList/ActivityList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ActivityList/ActivityList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35554,6 +36576,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.ActivityList = ActivityList;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · ActivityList
    Summary: A list of things that happened or arrived (messages, versions, notifications, notes).
@@ -35618,6 +36641,7 @@ ActivityList.Item = function ActivityListItem({
   className
 }) {
   const stacked = _react.default.useContext(StackedContext);
+  const words = (0, _LocaleProvider.useStrings)('activityList');
   const opener = href ? /*#__PURE__*/_react.default.createElement("a", {
     href: href,
     className: "plx-activity-list__opener"
@@ -35635,7 +36659,7 @@ ActivityList.Item = function ActivityListItem({
     className: "plx-activity-list__unread"
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-visually-hidden"
-  }, "Unread")) : null, leading ? /*#__PURE__*/_react.default.createElement("span", {
+  }, words.unread)) : null, leading ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-activity-list__leading"
   }, leading) : null, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-activity-list__text"
@@ -35652,7 +36676,7 @@ ActivityList.Item = function ActivityListItem({
   }, actions) : null);
 };
   } },
-  "platform/patterns/ReviewFlow/ReviewFlow.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","../../components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","../ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","../CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ReviewFlow/ReviewFlow.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","../../components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","../ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","../CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../i18n/en.js":"platform/i18n/en.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -35681,6 +36705,8 @@ var _DataGrid = require("../../components/DataGrid/DataGrid.jsx");
 var _Toast = require("../../components/Toast/Toast.jsx");
 var _ActivityList = require("../ActivityList/ActivityList.jsx");
 var _CommandBar = require("../CommandBar/CommandBar.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _en = _interopRequireDefault(require("../../i18n/en.js"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ReviewFlow, ReviewQueue, WorkflowStatus
    Summary: The review of one item and the queue of many. ReviewFlow is a review panel: the item's status as a badge with
@@ -35736,41 +36762,43 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Decisions are final for the reviewer; to change one, decide again (the history keeps both).
 */
 // the workflow statuses: a Badge variant by meaning, and its icon (owner, 2026-10-15)
+// the labels are the catalog's (reviewFlow.statuses): this constant keeps its shape and its English labels for apps that read it
+const STATUS_LABELS = _en.default.reviewFlow.statuses;
 const WORKFLOW_STATUSES = exports.WORKFLOW_STATUSES = {
   draft: {
     tone: 'neutral',
     icon: 'pencil',
-    label: 'Draft'
+    label: STATUS_LABELS.draft
   },
   'in-review': {
     tone: 'active',
     icon: 'doc-search',
-    label: 'In review'
+    label: STATUS_LABELS['in-review']
   },
   approved: {
     tone: 'success',
     icon: 'circle-check',
-    label: 'Approved'
+    label: STATUS_LABELS.approved
   },
   'changes-requested': {
     tone: 'action-required',
     icon: 'alert',
-    label: 'Changes requested'
+    label: STATUS_LABELS['changes-requested']
   },
   rejected: {
     tone: 'negative',
     icon: 'close',
-    label: 'Rejected'
+    label: STATUS_LABELS.rejected
   },
   published: {
     tone: 'success',
     icon: 'visibility',
-    label: 'Published'
+    label: STATUS_LABELS.published
   },
   scheduled: {
     tone: 'waiting',
     icon: 'schedule',
-    label: 'Scheduled'
+    label: STATUS_LABELS.scheduled
   }
 };
 function WorkflowStatus({
@@ -35787,7 +36815,8 @@ function WorkflowStatus({
     size: ['md', 'sm']
   });
   const s = WORKFLOW_STATUSES[status] || WORKFLOW_STATUSES.draft;
-  const words = label || strings && strings[status] || s.label;
+  const names = (0, _LocaleProvider.useStrings)('reviewFlow.statuses');
+  const words = label || strings && strings[status] || names[status] || s.label;
   return /*#__PURE__*/_react.default.createElement(_Badge.Badge, _extends({
     tone: s.tone,
     icon: s.icon,
@@ -35805,20 +36834,6 @@ function useOptionalToast() {
   }
 }
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
-const FLOW_STRINGS = {
-  reviewers: 'Reviewers',
-  history: 'History',
-  comment: 'Comment',
-  commentHint: 'Needed to reject or request changes.',
-  approve: 'Approve',
-  changes: 'Request changes',
-  reject: 'Reject',
-  waiting: 'Waiting',
-  human: 'Generated content. A person checks it before it is used.',
-  needReason: 'Say why, so the author knows what to change.',
-  done: '{decision}: {title}',
-  decisions: 'Review decisions'
-};
 const VERB = {
   approved: 'approve',
   'changes-requested': 'changes',
@@ -35844,13 +36859,14 @@ function ReviewFlow({
   className,
   ...rest
 }) {
-  const t = Object.assign({}, FLOW_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('reviewFlow.flow', strings);
   const toast = useOptionalToast();
   const [comment, setComment] = _react.default.useState('');
   const [error, setError] = _react.default.useState('');
   const field = _react.default.useRef(null);
   const H = 'h' + Math.min(6, Math.max(2, headingLevel));
-  const word = d => t[d] || WORKFLOW_STATUSES[d].label;
+  const names = (0, _LocaleProvider.useStrings)('reviewFlow.statuses');
+  const word = d => t[d] || names[d] || WORKFLOW_STATUSES[d].label;
   const decide = d => {
     if (reasonFor.indexOf(d) >= 0 && !comment.trim()) {
       setError(t.needReason);
@@ -35947,28 +36963,10 @@ function ReviewFlow({
     dateTime: x.dateTime
   })))) : null);
 }
-const QUEUE_STRINGS = {
-  name: 'Name',
-  type: 'Type',
-  submittedBy: 'Submitted by',
-  submitted: 'Submitted',
-  status: 'Status',
-  approve: 'Approve',
-  changes: 'Request changes',
-  reject: 'Reject',
-  rejectTitle: 'Reject {what}?',
-  changesTitle: 'Request changes on {what}?',
-  reason: 'Reason',
-  changesLabel: 'What to change',
-  reasonHint: 'The authors see it with the decision.',
-  needReason: 'Say why, so the authors know what to change.',
-  done: '{what} {decision}',
-  count: '{n} {plural}'
-};
 function ReviewQueue({
   items = [],
-  label = 'Waiting for review',
-  noun = 'item',
+  label,
+  noun,
   plural,
   onDecision,
   selected,
@@ -35977,8 +36975,17 @@ function ReviewQueue({
   className,
   ...rest
 }) {
-  const t = Object.assign({}, QUEUE_STRINGS, strings);
-  const many = plural || noun + 's';
+  const t = (0, _LocaleProvider.useStrings)('reviewFlow.queue', strings);
+  const names = (0, _LocaleProvider.useStrings)('reviewFlow.statuses');
+  const loc = (0, _LocaleProvider.useLocale)();
+  const builtIn = !noun && !plural; // the default words: whole counted phrases with the Arabic plural forms, from the catalog
+  const many = plural || (noun ? noun + 's' : t.plural); // the default words come from the catalog
+  noun = noun ?? t.noun;
+  label = label ?? t.queueLabel;
+  const counted = m => builtIn ? loc.t('reviewFlow.queue.items', {
+    count: m,
+    n: (0, _format.formatNumber)(m)
+  }) : null;
   const toast = useOptionalToast();
   const [own, setOwn] = _react.default.useState([]);
   const sel = selected !== undefined ? selected : own;
@@ -35987,15 +36994,20 @@ function ReviewQueue({
     if (onSelectionChange) onSelectionChange(ids);
   };
   const [ask, setAsk] = _react.default.useState(null); // "rejected" | "changes-requested" while its dialog is open
-  const what = n => n === 1 ? '1 ' + noun : (0, _format.formatNumber)(n) + ' ' + many;
+  const what = n => counted(n) ?? (n === 1 ? '1 ' + noun : (0, _format.formatNumber)(n) + ' ' + many);
   const run = (decision, reason) => {
     const ids = sel.slice();
     if (onDecision) onDecision(ids, decision, reason || '');
     setSel([]);
     setAsk(null);
-    const said = fill(t.done, {
+    // the default words: one whole counted sentence per decision (Arabic plural forms); an app's own noun keeps the pieces
+    const whole = builtIn && t.doneItems && t.doneItems[decision];
+    const said = whole ? loc.t('reviewFlow.queue.doneItems.' + decision, {
+      count: ids.length,
+      n: (0, _format.formatNumber)(ids.length)
+    }) : fill(t.done, {
       what: what(ids.length),
-      decision: WORKFLOW_STATUSES[decision].label.toLowerCase()
+      decision: names[decision].toLowerCase()
     });
     if (toast) toast.show(said, {
       tone: decision === 'approved' ? 'success' : 'info'
@@ -36033,7 +37045,7 @@ function ReviewQueue({
     className: (0, _cx.cx)('plx-review-queue', className)
   }, rest), /*#__PURE__*/_react.default.createElement(_CommandBar.CommandBar, {
     label: label,
-    count: fill(t.count, {
+    count: counted(items.length) ?? fill(t.count, {
       n: (0, _format.formatNumber)(items.length),
       plural: items.length === 1 ? noun : many
     }),
@@ -36236,7 +37248,7 @@ DataGrid.unreadCommands = _unreadCommands.unreadCommands;
 // nothing to load ahead: the engine is part of the Platform bundle (kept so pages that called it keep working)
 DataGrid.preload = () => {};
   } },
-  "platform/patterns/ActionBar/ActionBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ActionBar/ActionBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36245,6 +37257,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.ActionBar = ActionBar;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · ActionBar
    Summary: A page's or a form's buttons in one bar on the right, kept in view at the bottom of the page while it scrolls.
@@ -36270,14 +37283,15 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
 */
 
 function ActionBar({
-  label = 'Actions',
+  label,
   sticky = true,
   className,
   children
 }) {
+  const t = (0, _LocaleProvider.useStrings)('actionBar');
   return /*#__PURE__*/_react.default.createElement("div", {
     role: "group",
-    "aria-label": label,
+    "aria-label": label ?? t.label,
     className: (0, _cx.cx)('plx-action-bar', !sticky && 'plx-action-bar--static', className)
   }, children);
 }
@@ -36855,7 +37869,7 @@ function useSeparateAudio(video, sound, src, audio, kind) {
   return failed;
 }
   } },
-  "platform/components/MediaPlayer/MediaPlayer.jsx": { deps: {"react":null,"./useSeparateAudio.js":"platform/components/MediaPlayer/useSeparateAudio.js","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Field/Field.jsx":"platform/components/Field/Field.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx","../../utils/layer.js":"platform/utils/layer.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/MediaPlayer/MediaPlayer.jsx": { deps: {"react":null,"./useSeparateAudio.js":"platform/components/MediaPlayer/useSeparateAudio.js","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Field/Field.jsx":"platform/components/Field/Field.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx","../../utils/layer.js":"platform/utils/layer.js","../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36874,6 +37888,7 @@ var _Notice = require("../Notice/Notice.jsx");
 var _Link = require("../Link/Link.jsx");
 var _layer = require("../../utils/layer.js");
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · MediaPlayer
    Summary: Native audio/video playback with captions, a seekable transcript, playback rate and optional picture in picture.
@@ -36919,21 +37934,7 @@ const MediaPlayer = exports.MediaPlayer = /*#__PURE__*/_react.default.forwardRef
   className,
   fill = false
 }, ref) {
-  const t = Object.assign({
-    rate: 'Playback speed',
-    transcript: 'Show transcript',
-    hideTranscript: 'Hide transcript',
-    pip: 'Picture in picture',
-    exitPip: 'Exit picture in picture',
-    unsupported: 'Picture in picture is unavailable.',
-    failed: 'This media could not be played.',
-    pipFailed: 'Could not change picture in picture. Try again.',
-    seek: 'Seek to {time}',
-    fallback: 'Open media file',
-    volume: 'Volume',
-    mute: 'Mute',
-    audioFailed: 'The separate sound track could not be played. Video is playing muted.'
-  }, strings);
+  const t = (0, _LocaleProvider.useStrings)('mediaPlayer', strings);
   const media = _react.default.useRef(null),
     id = (0, _layer.useUid)('plx-media-player'),
     epoch = _react.default.useRef(0),
@@ -37098,7 +38099,7 @@ const MediaPlayer = exports.MediaPlayer = /*#__PURE__*/_react.default.forwardRef
   }, error) : null);
 });
   } },
-  "platform/components/MediaViewer/MediaViewer.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../MediaPlayer/MediaPlayer.jsx":"platform/components/MediaPlayer/MediaPlayer.jsx","../../hooks/useGesture.js":"platform/hooks/useGesture.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/MediaViewer/MediaViewer.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../MediaPlayer/MediaPlayer.jsx":"platform/components/MediaPlayer/MediaPlayer.jsx","../../hooks/useGesture.js":"platform/hooks/useGesture.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../utils/direction.js":"platform/utils/direction.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -37113,6 +38114,7 @@ var _MediaPlayer = require("../MediaPlayer/MediaPlayer.jsx");
 var _useGesture = require("../../hooks/useGesture.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _direction = require("../../utils/direction.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · MediaViewer
    Summary: A full-screen preview of images and videos, one at a time (the lightbox).
@@ -37146,13 +38148,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      The viewer renders in a portal on document.body.
 */
 
-const STRINGS = {
-  label: 'Preview',
-  close: 'Close preview',
-  previous: 'Previous',
-  next: 'Next',
-  counter: '{index} of {total}'
-};
 function MediaViewer({
   open,
   onClose,
@@ -37165,7 +38160,7 @@ function MediaViewer({
   strings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('mediaViewer', strings);
   const ref = _react.default.useRef(null);
   const id = (0, _layer.useUid)('plx-mv');
   const [own, setOwn] = _react.default.useState(defaultIndex);
@@ -38359,7 +39354,7 @@ AppHeader.Switcher = function AppHeaderSwitcher({
   }, apps.filter(a => pinnedApps.indexOf(a.id) < 0).map(tile))) : null) : null);
 };
   } },
-  "platform/patterns/FilterBar/FilterBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/FilterBar/FilterBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -38371,6 +39366,7 @@ var _cx = require("../../utils/cx.js");
 var _overflow = require("../../utils/overflow.js");
 var _Button = require("../../components/Button/Button.jsx");
 var _Menu = require("../../components/Menu/Menu.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · FilterBar
    Summary: A row of filters above a list or grid; each filter opens a menu of choices.
@@ -38395,13 +39391,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
 */
 
 const isSet = f => f.multiple ? (f.value || []).length > 0 : f.value !== null && f.value !== undefined && f.value !== '';
-const STRINGS = {
-  label: 'Filters',
-  more: 'More filters',
-  clearAll: 'Clear all',
-  one: '{label}: {value}',
-  several: '{label} · {count}'
-};
 const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
 const summary = (f, t) => {
   if (!isSet(f)) return f.label;
@@ -38448,7 +39437,7 @@ function FilterBar({
   strings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('filterBar', strings);
   const list = _react.default.useRef(null);
   const fit = (0, _overflow.useOverflow)(list, filters.length, filters.map(f => summary(f, t)).join('|'));
   const hidden = filters.slice(fit);
@@ -38500,7 +39489,7 @@ function FilterBar({
   }, actions) : null);
 }
   } },
-  "platform/patterns/SearchWorkspace/SearchWorkspace.jsx": { deps: {"react":null,"../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","../../utils/layer.js":"platform/utils/layer.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/SearchWorkspace/SearchWorkspace.jsx": { deps: {"react":null,"../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","../../utils/layer.js":"platform/utils/layer.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -38518,6 +39507,7 @@ var _Tag = require("../../components/Tag/Tag.jsx");
 var _EmptyState = require("../../components/EmptyState/EmptyState.jsx");
 var _FilterBar = require("../FilterBar/FilterBar.jsx");
 var _layer = require("../../utils/layer.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · SearchWorkspace
    Summary: The Advanced Search workspace (level 3 of Plenix search), a view of the main work area like Categories or Files.
@@ -38564,29 +39554,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      Pressing Enter in the header search opens it with the query kept.
 */
 
-const STRINGS = {
-  title: 'Search',
-  selectAll: 'Select all',
-  allSelected: 'Every {noun} is selected',
-  placeholder: 'Search…',
-  result: 'result',
-  results: 'results',
-  searchField: 'Search {nouns}',
-  save: 'Save search',
-  filters: 'Filters',
-  activeFilters: 'Active filters',
-  chip: '{label}: {value}',
-  remove: 'Remove {text}',
-  clearAll: 'Clear all',
-  view: 'View',
-  grid: 'Grid',
-  table: 'Table',
-  sort: 'Sort',
-  sortValue: 'Sort: {value}',
-  noMatchQuery: 'Nothing matches “{query}”.',
-  noMatchQueryFilters: 'Nothing matches “{query}” with these filters.',
-  noMatchFilters: 'Nothing matches these filters.'
-};
 const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
 const label = (f, v) => {
   const o = (f.options || []).find(x => x.value === v);
@@ -38615,7 +39582,7 @@ function SearchWorkspace({
   className,
   children
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('searchWorkspace', strings);
   const loc = (0, _format.numeralLocale)(locale || typeof document !== 'undefined' && document.documentElement.lang || undefined);
   const id = (0, _layer.useUid)('plx-search-ws');
   const field = _react.default.useRef(null);
@@ -38802,7 +39769,7 @@ function DataToolbar({
   }, end) : null);
 }
   } },
-  "platform/patterns/BulkActions/BulkActions.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/barFit.js":"platform/utils/barFit.js","../../utils/format.js":"platform/utils/format.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../CommandBar/BarActions.jsx":"platform/patterns/CommandBar/BarActions.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/BulkActions/BulkActions.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/barFit.js":"platform/utils/barFit.js","../../utils/format.js":"platform/utils/format.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../CommandBar/BarActions.jsx":"platform/patterns/CommandBar/BarActions.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -38819,6 +39786,7 @@ var _Text = require("../../components/Text/Text.jsx");
 var _Toolbar = require("../../components/Toolbar/Toolbar.jsx");
 var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
 var _BarActions = require("../CommandBar/BarActions.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · SelectionSummary, BulkActions
    Summary: What is selected, and what can be done with it. BulkActions is a selection bar for a page WITHOUT a command
@@ -38868,17 +39836,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      and "Clear" keep their places and are disabled, never hidden; the look is the command bar's (white, framed, ghost
      buttons), never tinted by a selection. */
 
-const STRINGS = {
-  selected: '{n} selected',
-  selectAll: 'Select all',
-  clear: 'Clear',
-  allSelected: 'Every {noun} is selected',
-  nothingToClear: 'Nothing to clear: select {plural} first',
-  why: 'Select {plural} to {action}',
-  single: 'Select one {noun} to {action}',
-  label: 'Selection actions',
-  more: 'More actions'
-};
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 const off = (a, count) => !!a.disabled || !count || !!(a.single && count > 1);
 
@@ -38924,18 +39881,18 @@ function SelectButtons({
 function SelectionSummary({
   count,
   total,
-  noun = 'item',
+  noun,
   plural,
   onSelectAll,
   onClear,
   strings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('bulkActions', strings);
   const words = {
-    noun,
-    plural: plural || noun + 's'
-  };
+    noun: noun ?? t.noun,
+    plural: plural || (noun ? noun + 's' : t.plural)
+  }; // the default words come from the catalog
   return /*#__PURE__*/_react.default.createElement("div", {
     className: (0, _cx.cx)('plx-selection-summary', className)
   }, /*#__PURE__*/_react.default.createElement(Count, {
@@ -38953,7 +39910,7 @@ function SelectionSummary({
 function BulkActions({
   count,
   total,
-  noun = 'item',
+  noun,
   plural,
   onSelectAll,
   onClear,
@@ -38962,11 +39919,11 @@ function BulkActions({
   strings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('bulkActions', strings);
   const words = {
-    noun,
-    plural: plural || noun + 's'
-  };
+    noun: noun ?? t.noun,
+    plural: plural || (noun ? noun + 's' : t.plural)
+  }; // the default words come from the catalog
   const root = _react.default.useRef(null);
   const folds = (0, _BarActions.foldOrder)(actions).length;
   const step = (0, _barFit.useBarFit)(root, actions.map(a => a.label).join('|') + '§' + count, 1 + folds, 0, ':scope > [data-plx-bar-row]');
@@ -39246,7 +40203,7 @@ function RecordPage({
 }
 RecordPage.Header = Header;
   } },
-  "platform/components/AvatarGroup/AvatarGroup.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/AvatarGroup/AvatarGroup.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -39257,6 +40214,7 @@ var _react = _interopRequireDefault(require("react"));
 var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Avatar = require("../Avatar/Avatar.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · AvatarGroup
    Summary: The people of one item (owners, collaborators, assignees) as a row of avatars: overlapped in a stack or spaced
@@ -39285,10 +40243,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Other props pass through to the wrapper.
 */
 const SIZES = ['xs', 'sm', 'md', 'lg'];
-const STRINGS = {
-  more: '+{n}',
-  moreLabel: '{n} more'
-};
 function AvatarGroup({
   people = [],
   label,
@@ -39307,7 +40261,7 @@ function AvatarGroup({
   });
   const s = SIZES.indexOf(size) >= 0 ? size : 'sm';
   const l = layout === 'grid' ? 'grid' : 'stack';
-  const words = Object.assign({}, STRINGS, strings);
+  const words = (0, _LocaleProvider.useStrings)('avatarGroup', strings);
   const limit = Math.max(1, max | 0);
   const shown = people.length > limit ? people.slice(0, limit) : people;
   const rest_ = people.length - shown.length;
@@ -40166,7 +41120,7 @@ function Structured({
   }) : null) : null) : null));
 }
   } },
-  "platform/patterns/NotificationList/NotificationList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","../ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/NotificationList/NotificationList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","../ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -40179,6 +41133,7 @@ var _SessionProvider = require("../../providers/SessionProvider.jsx");
 var _ActivityList = require("../ActivityList/ActivityList.jsx");
 var _Button = require("../../components/Button/Button.jsx");
 var _EmptyState = require("../../components/EmptyState/EmptyState.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · NotificationList
    Summary: The signed-in person's notifications, as a list (the session's, unless items are given).
@@ -40205,12 +41160,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      It lives in the page (the dashboard's Notifications section), not in the header: the header carries no notifications.
 */
 
-const STRINGS = {
-  label: 'Notifications',
-  empty: 'No notifications',
-  markAllRead: 'Mark all read',
-  viewAll: 'View all'
-};
 function NotificationList({
   items,
   onChange,
@@ -40222,7 +41171,7 @@ function NotificationList({
   strings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('notificationList', strings);
   const session = (0, _SessionProvider.useSession)();
   const own = items || session.notifications;
   const unread = own.filter(n => n.unread).length;
@@ -41014,7 +41963,7 @@ function NavPane({
   }), pane) : pane;
 }
   } },
-  "platform/patterns/SettingsLayout/SettingsLayout.jsx": { deps: {"react":null,"../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","../ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/SettingsLayout/SettingsLayout.jsx": { deps: {"react":null,"../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","../ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -41031,6 +41980,7 @@ var _ScreenLocation = require("../../providers/ScreenLocation.js");
 var _Icon = require("../../components/Icon/Icon.jsx");
 var _NavPane = require("../NavPane/NavPane.jsx");
 var _ActionBar = require("../ActionBar/ActionBar.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · SettingsLayout, SettingsSection, SettingsRow
    Summary: Navigation beside the settings form. SettingsSection is a card: a titled group of rows, static or collapsible;
@@ -41084,9 +42034,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      A section with no title is a static card (a collapsible one needs a title to press).
 */
 
-const SECTION_STRINGS = {
-  section: 'section'
-};
 function SettingsLayout({
   nav,
   className,
@@ -41153,7 +42100,7 @@ function SettingsSection({
   className,
   children
 }) {
-  const t = Object.assign({}, SECTION_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('settingsLayout.section', strings);
   const id = (0, _layer.useUid)('plx-set');
   const canCollapse = !!(collapsible && title);
   const [open, toggle] = useOpen(canCollapse, defaultExpanded, expanded, onToggle, stateKey || (typeof title === 'string' ? title : null), remember);
@@ -41777,7 +42724,7 @@ function TimeGrid({
   }))))));
 }
   } },
-  "platform/patterns/WidgetGrid/WidgetGrid.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../utils/direction.js":"platform/utils/direction.js","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/WidgetGrid/WidgetGrid.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../utils/direction.js":"platform/utils/direction.js","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -41790,6 +42737,7 @@ var _Icon = require("../../components/Icon/Icon.jsx");
 var _VisuallyHidden = require("../../components/VisuallyHidden/VisuallyHidden.jsx");
 var _direction = require("../../utils/direction.js");
 var _Menu = require("../../components/Menu/Menu.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · WidgetGrid
    Summary: A dashboard's widgets in a grid that people reorder by dragging a widget's handle, or with the arrow keys on it
@@ -41821,16 +42769,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Notes:
      The grid never changes the order by itself: onReorder hands the new order to the page, which keeps it.
 */
-const STRINGS = {
-  widget: 'Widget',
-  widgetLower: 'widget',
-  move: 'Move {title} (arrow keys)',
-  position: '{title}, position {index} of {total}',
-  earlier: 'Move earlier',
-  later: 'Move later',
-  first: 'Move to the start',
-  last: 'Move to the end'
-};
 const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
 const move = (ids, from, to) => {
   const next = ids.slice();
@@ -41872,7 +42810,7 @@ function WidgetGrid({
   className,
   ...rest
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('widgetGrid', strings);
   const [dragging, setDragging] = _react.default.useState(null);
   const [over, setOver] = _react.default.useState(null);
   const [said, setSaid] = _react.default.useState('');
@@ -43688,7 +44626,7 @@ function Illustration({
   })));
 }
   } },
-  "platform/components/Image/Image.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Image/Image.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -43698,6 +44636,7 @@ exports.Image = void 0;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Image
    Summary: A picture in a frame of a fixed ratio and fit: an asset preview, a photo or a screenshot, with a placeholder
@@ -43740,9 +44679,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Other props pass through to the <img>.
 */
 const RATIOS = ['1-1', '4-3', '3-2', '16-9', '21-9', '3-4', '9-16'];
-const STRINGS = {
-  error: 'Image not available'
-};
 const Image = exports.Image = /*#__PURE__*/_react.default.forwardRef(function Image({
   src,
   alt,
@@ -43765,7 +44701,7 @@ const Image = exports.Image = /*#__PURE__*/_react.default.forwardRef(function Im
   className,
   ...rest
 }, ref) {
-  const s = Object.assign({}, STRINGS, strings);
+  const s = (0, _LocaleProvider.useStrings)('image', strings);
   const own = _react.default.useRef(null);
   const [status, setStatus] = _react.default.useState('loading');
   const setRef = el => {
@@ -44014,7 +44950,7 @@ function encodeBarcode(value, format = 'code128') {
   return code128(value);
 }
   } },
-  "platform/components/Barcode/Barcode.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/barcode.js":"platform/utils/barcode.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Barcode/Barcode.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/barcode.js":"platform/utils/barcode.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -44025,6 +44961,7 @@ var _react = _interopRequireDefault(require("react"));
 var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _barcode = require("../../utils/barcode.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Barcode
    Summary: A one-dimensional barcode drawn as SVG from a value (Code 128, EAN-13 or UPC-A), with the value printed under
@@ -44056,15 +44993,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
 */
 // the height of the drawing in narrow bars: the stylesheet's height token sets the size, the width follows the viewBox
 const HEIGHT_MODULES = 32;
-const STRINGS = {
-  label: 'Barcode {format}: {value}',
-  invalid: 'Not a valid {format} code',
-  formats: {
-    code128: 'Code 128',
-    ean13: 'EAN-13',
-    upca: 'UPC-A'
-  }
-};
 const fill = (s, v) => s.replace(/\{(\w+)\}/g, (all, k) => v[k] !== undefined ? v[k] : all);
 function Barcode({
   value,
@@ -44081,9 +45009,7 @@ function Barcode({
   }, {
     size: ['md', 'sm', 'lg']
   });
-  const t = Object.assign({}, STRINGS, strings, {
-    formats: Object.assign({}, STRINGS.formats, strings && strings.formats)
-  });
+  const t = (0, _LocaleProvider.useStrings)('barcode', strings); // formats merge key by key
   const code = _react.default.useMemo(() => (0, _barcode.encodeBarcode)(value, format), [value, format]);
   const name = t.formats[format] || format;
   if (!code) {
@@ -44126,7 +45052,7 @@ function Barcode({
   }, code.text) : null);
 }
   } },
-  "platform/patterns/Retry/Retry.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/tokenTime.js":"platform/utils/tokenTime.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/Retry/Retry.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/tokenTime.js":"platform/utils/tokenTime.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -44143,6 +45069,7 @@ var _format = require("../../utils/format.js");
 var _Notice = require("../../components/Notice/Notice.jsx");
 var _Button = require("../../components/Button/Button.jsx");
 var _Text = require("../../components/Text/Text.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Retry (useRetry, RetryNotice)
    Summary: Recovering from a failed load or save: useRetry runs a task, counts its attempts and, when asked, tries again by
@@ -44297,16 +45224,6 @@ function useRetry(task, {
     cancel
   });
 }
-const STRINGS = {
-  title: 'Couldn’t load',
-  retry: 'Retry',
-  retryNow: 'Retry now',
-  retrying: 'Retrying…',
-  waiting: 'Retrying in {time}',
-  attempt: 'Attempt {attempt} of {attempts}',
-  stopped: 'Stopped after {attempts} attempts',
-  dismiss: 'Dismiss'
-};
 
 // a string with {name} places filled by values in the data font (numbers and durations are technical values)
 const fill = (template, values) => template.split(/(\{\w+\})/).filter(Boolean).map((part, i) => {
@@ -44333,7 +45250,7 @@ function RetryNotice({
   }, {
     tone: ['danger', 'warning']
   });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('retry', strings);
   const r = retry || {};
   const failing = r.status === 'failed' || r.status === 'waiting' || r.status === 'running' && r.attempt > 1;
   const values = {
@@ -44906,7 +45823,7 @@ function QRCode({
   }, String(value)) : null) : null);
 }
   } },
-  "platform/components/VersionLabel/VersionLabel.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/VersionLabel/VersionLabel.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -44919,6 +45836,7 @@ var _cx = require("../../utils/cx.js");
 var _Badge = require("../Badge/Badge.jsx");
 var _Link = require("../Link/Link.jsx");
 var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · VersionLabel
    Summary: Which version of an item this is: a number ("v12") or a semantic version ("2.1.0") in the data font, with a
@@ -44944,12 +45862,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Mark only one version "Latest" at a time.
      Other props pass through to the <span>.
 */
-const STRINGS = {
-  version: 'Version',
-  prefix: 'v',
-  latest: 'Latest',
-  draft: 'Draft'
-};
 const STATUSES = ['latest', 'draft'];
 function VersionLabel({
   version,
@@ -44965,7 +45877,7 @@ function VersionLabel({
   }, {
     size: ['md', 'sm']
   });
-  const words = Object.assign({}, STRINGS, strings);
+  const words = (0, _LocaleProvider.useStrings)('versionLabel', strings);
   const s = size === 'sm' ? 'sm' : 'md';
   const numbered = typeof version === 'number' || /^\d+$/.test(String(version));
   const number = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, words.version + ' '), numbered ? /*#__PURE__*/_react.default.createElement("span", {
@@ -44985,7 +45897,7 @@ function VersionLabel({
   }, words[status]) : null);
 }
   } },
-  "platform/components/Banner/Banner.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Banner/Banner.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -44997,6 +45909,7 @@ var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _Button = require("../Button/Button.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Banner
    Summary: A message about the whole page or a whole pane, across its full width at its top: a system notice, an expiring
@@ -45044,9 +45957,7 @@ function Banner({
     tone: ['info', 'success', 'warning', 'danger', 'neutral']
   });
   const t = TONES.indexOf(tone) >= 0 ? tone : 'info';
-  const words = Object.assign({
-    dismiss: 'Dismiss'
-  }, strings);
+  const words = (0, _LocaleProvider.useStrings)('banner', strings);
   return /*#__PURE__*/_react.default.createElement("div", _extends({
     className: (0, _cx.cx)('plx-banner', 'plx-banner--' + t, 'plx-banner--' + (placement === 'pane' ? 'pane' : 'page'), className),
     role: t === 'danger' ? 'alert' : 'status'
@@ -45143,7 +46054,7 @@ function Scrim({
   }, rest));
 }
   } },
-  "platform/components/LoadingOverlay/LoadingOverlay.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/LoadingOverlay/LoadingOverlay.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -45156,6 +46067,7 @@ var _Scrim = require("../Scrim/Scrim.jsx");
 var _Loading = require("../Loading/Loading.jsx");
 var _ProgressBar = require("../ProgressBar/ProgressBar.jsx");
 var _Button = require("../Button/Button.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · LoadingOverlay
    Summary: Covers a region (or the whole window) while it saves or refreshes: a veil over the content, a spinner or a
@@ -45198,10 +46110,7 @@ function LoadingOverlay({
   className,
   ...rest
 }) {
-  const words = Object.assign({
-    loading: 'Loading',
-    cancel: 'Cancel'
-  }, strings);
+  const words = (0, _LocaleProvider.useStrings)('loadingOverlay', strings);
   const [shown, setShown] = _react.default.useState(active && !delay);
   const content = _react.default.useRef(null);
   const focused = _react.default.useRef(null);
@@ -45262,7 +46171,7 @@ function LoadingOverlay({
   }, words.cancel) : null) : null);
 }
   } },
-  "platform/components/Time/Time.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/tokenTime.js":"platform/utils/tokenTime.js","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Time/Time.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/tokenTime.js":"platform/utils/tokenTime.js","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -45274,6 +46183,7 @@ var _cx = require("../../utils/cx.js");
 var _format = require("../../utils/format.js");
 var _tokenTime = require("../../utils/tokenTime.js");
 var _Tooltip = require("../Tooltip/Tooltip.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Time
    Summary: A date or a time as a technical value: a timestamp, a relative time ("5 minutes ago"), a date label ("Today",
@@ -45359,9 +46269,7 @@ function Time({
   }, [ticking, now]);
   const d = toDate(value);
   if (!d) return null;
-  const words = Object.assign({
-    now: 'Just now'
-  }, strings);
+  const words = (0, _LocaleProvider.useStrings)('time', strings);
   const o = {
     locale,
     timeZone,
@@ -45606,7 +46514,7 @@ function Spotlight({
   return contained ? layer : /*#__PURE__*/_react.default.createElement(_portal.Portal, null, layer);
 }
   } },
-  "platform/components/TeachingBubble/TeachingBubble.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","../../providers/Surface.jsx":"platform/providers/Surface.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/TeachingBubble/TeachingBubble.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","../../providers/Surface.jsx":"platform/providers/Surface.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -45621,6 +46529,7 @@ var _Text = require("../Text/Text.jsx");
 var _Popover = require("../Popover/Popover.jsx");
 var _Spotlight = require("../Spotlight/Spotlight.jsx");
 var _Surface = require("../../providers/Surface.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · TeachingBubble
    Summary: A callout that points at a feature to introduce it once, or leads a short tour step by step: a title, one or
@@ -45666,11 +46575,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        action and Close are drawn in it; the pair meets the text contrast in light and dark.
 */
 
-const STRINGS = {
-  close: 'Close',
-  step: '{current} of {total}'
-};
-
 // a string with {name} places filled by numbers in the data font (counts are technical values)
 const fill = (template, values) => template.split(/(\{\w+\})/).filter(Boolean).map((part, i) => {
   const m = /^\{(\w+)\}$/.exec(part);
@@ -45696,7 +46600,7 @@ function TeachingBubble({
   strings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('teachingBubble', strings);
   const id = (0, _layer.useUid)('plx-teaching-bubble');
   const actions = primaryAction || secondaryAction;
   const spot = _react.default.useRef(null); // the target's box: the spotlight's anchor
@@ -45752,7 +46656,7 @@ function TeachingBubble({
   }, primaryAction.label) : null) : null) : null)));
 }
   } },
-  "platform/patterns/Popconfirm/Popconfirm.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/Popconfirm/Popconfirm.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -45765,6 +46669,7 @@ var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
 var _Button = require("../../components/Button/Button.jsx");
 var _Popover = require("../../components/Popover/Popover.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · Popconfirm
    Summary: A one-sentence question in a Popover beside the action it guards, with Cancel and the action's verb: a light
@@ -45798,9 +46703,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        (the toast's action) instead of asking first.
 */
 
-const STRINGS = {
-  cancel: 'Cancel'
-};
 function Popconfirm({
   trigger,
   title,
@@ -45819,7 +46721,7 @@ function Popconfirm({
   }, {
     tone: ['default', 'danger']
   });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('popconfirm', strings);
   const id = (0, _layer.useUid)('plx-popconfirm');
   const [open, setOpen] = _react.default.useState(false);
   const cancelRef = _react.default.useRef(null);
@@ -45996,7 +46898,7 @@ function MegaMenu({
   }, featured) : null)));
 }
   } },
-  "platform/components/CopyButton/CopyButton.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/clipboard.js":"platform/utils/clipboard.js","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/CopyButton/CopyButton.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/clipboard.js":"platform/utils/clipboard.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -46008,6 +46910,7 @@ var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _clipboard = require("../../utils/clipboard.js");
 var _Button = require("../Button/Button.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · CopyButton
    Summary: A button that copies one value (an ID, a path, a link, a code sample) to the clipboard and confirms it in
@@ -46045,11 +46948,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Name it for what it copies ("Copy file path"), never only "Copy". Put it right after the value it copies. The field
        form is for a value people may also read or select (a share link, an API endpoint).
 */
-const STRINGS = {
-  copy: 'Copy',
-  copied: 'Copied',
-  failed: 'Couldn’t copy. Select the text and copy it by hand.'
-};
 const CopyButton = exports.CopyButton = /*#__PURE__*/_react.default.forwardRef(function CopyButton({
   value,
   label,
@@ -46072,7 +46970,7 @@ const CopyButton = exports.CopyButton = /*#__PURE__*/_react.default.forwardRef(f
     variant: ['secondary', 'primary', 'tertiary', 'ghost', 'danger', 'danger-secondary', 'quiet'],
     size: ['md', 'sm', 'xs', '2xs', 'lg']
   });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('copyButton', strings);
   const clip = (0, _clipboard.useClipboard)({
     timeout,
     strings: {
@@ -46696,7 +47594,7 @@ const CommandMenu = exports.CommandMenu = /*#__PURE__*/_react.default.forwardRef
   }, count));
 });
   } },
-  "platform/patterns/CommandPalette/CommandPalette.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/hotkey.js":"platform/utils/hotkey.js","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/CommandPalette/CommandPalette.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/hotkey.js":"platform/utils/hotkey.js","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -46708,6 +47606,7 @@ var _cx = require("../../utils/cx.js");
 var _hotkey = require("../../utils/hotkey.js");
 var _Dialog = require("../../components/Dialog/Dialog.jsx");
 var _CommandMenu = require("../../components/CommandMenu/CommandMenu.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · CommandPalette
    Summary: The command menu in a dialog, opened with a shortcut (04 Actions & Commands › Menus and commands › Command
@@ -46742,11 +47641,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      Built only from Platform parts: Dialog, CommandMenu and useHotkey.
 */
 
-const STRINGS = {
-  title: 'Commands',
-  close: 'Close'
-};
-
 // a one-step binding as aria-keyshortcuts writes it (Mod+K: Control+K, or Meta+K on a Mac)
 const keyshortcut = b => /\s/.test(String(b).trim()) ? undefined : String(b).trim().split('+').map(k => /^mod$/i.test(k) ? (0, _hotkey.isMac)() ? 'Meta' : 'Control' : /^ctrl$/i.test(k) ? 'Control' : k).join('+');
 function CommandPalette({
@@ -46767,7 +47661,7 @@ function CommandPalette({
   strings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('commandPalette', strings);
   const controlled = openProp !== undefined;
   const [own, setOwn] = _react.default.useState(!!defaultOpen);
   const open = controlled ? !!openProp : own;
@@ -46819,7 +47713,7 @@ function CommandPalette({
   }) : null));
 }
   } },
-  "platform/components/DownloadButton/DownloadButton.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/announce.jsx":"platform/utils/announce.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/DownloadButton/DownloadButton.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -46833,6 +47727,7 @@ var _Button = require("../Button/Button.jsx");
 var _ProgressCircle = require("../ProgressCircle/ProgressCircle.jsx");
 var _format = require("../../utils/format.js");
 var _announce = require("../../utils/announce.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · DownloadButton
    Summary: A button that saves a file to the device (04 Actions & Commands › Common actions › Download): the download
@@ -46870,11 +47765,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      One file in its stored format. Several formats or sizes: a Menu of downloads; a changed or filtered copy: Export.
      Opening a file in the browser is a Link, not a download.
 */
-const STRINGS = {
-  download: 'Download',
-  downloading: 'Downloading',
-  ready: 'Download ready'
-};
 const DownloadButton = exports.DownloadButton = /*#__PURE__*/_react.default.forwardRef(function DownloadButton({
   href,
   fileName,
@@ -46896,7 +47786,7 @@ const DownloadButton = exports.DownloadButton = /*#__PURE__*/_react.default.forw
   }, {
     variant: ['secondary', 'primary', 'tertiary', 'ghost', 'danger', 'danger-secondary', 'quiet']
   });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('downloadButton', strings);
   const busy = progress !== undefined && progress !== null && progress !== false;
   const known = busy && typeof progress === 'number';
   const pct = known ? Math.max(0, Math.min(100, progress)) : null;
@@ -47478,7 +48368,7 @@ const NumberInput = exports.NumberInput = /*#__PURE__*/_react.default.forwardRef
   }, rest)));
 });
   } },
-  "platform/components/ErrorSummary/ErrorSummary.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/ErrorSummary/ErrorSummary.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -47489,6 +48379,7 @@ var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _Notice = require("../Notice/Notice.jsx");
 var _Link = require("../Link/Link.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ErrorSummary
    Summary: The list of what stopped a form from being sent, at the top of the form after a failed submit: a danger
@@ -47516,10 +48407,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Other props pass through to the outer <div>.
      For a problem that is not about a field (the server did not answer), use a Notice or a Banner instead.
 */
-const STRINGS = {
-  one: 'There is a problem',
-  many: 'There are {count} problems'
-};
 function ErrorSummary({
   errors = [],
   title,
@@ -47529,7 +48416,7 @@ function ErrorSummary({
   className,
   ...rest
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('errorSummary', strings);
   const ref = _react.default.useRef(null);
   const titleId = 'plx-es' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
   const key = errors.map(e => e.target + ':' + e.message).join('|');
@@ -52700,7 +53587,7 @@ const RelativeDateInput = exports.RelativeDateInput = /*#__PURE__*/_react.defaul
   }, rangeText) : null);
 });
   } },
-  "platform/components/LoadMore/LoadMore.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../hooks/useIntersection.js":"platform/hooks/useIntersection.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/LoadMore/LoadMore.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../hooks/useIntersection.js":"platform/hooks/useIntersection.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -52714,6 +53601,7 @@ var _Loading = require("../Loading/Loading.jsx");
 var _useIntersection = require("../../hooks/useIntersection.js");
 var _announce = require("../../utils/announce.jsx");
 var _format = require("../../utils/format.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · LoadMore
    Summary: The end of a long list that brings the next items: a Load more button (the default), or the next items loaded
@@ -52751,14 +53639,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Prefer the button for results people compare and come back to; keep infinite for streams people browse, with no
        footer under them that people need to reach. For "page 3", use Pagination. DataGrid has its own load more.
 */
-const STRINGS = {
-  more: 'Load more',
-  moreCount: 'Show {n} more',
-  loading: 'Loading…',
-  end: 'You’ve reached the end',
-  count: '{shown} of {total}',
-  added: n => n + (n === 1 ? ' more item loaded' : ' more items loaded')
-};
 const LoadMore = exports.LoadMore = /*#__PURE__*/_react.default.forwardRef(function LoadMore({
   onLoadMore,
   hasMore = true,
@@ -52773,7 +53653,13 @@ const LoadMore = exports.LoadMore = /*#__PURE__*/_react.default.forwardRef(funct
   className,
   ...rest
 }, ref) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('loadMore', strings);
+  const loc = (0, _LocaleProvider.useLocale)();
+  // "N more items loaded": a plural message in the catalog (Arabic has six forms); an app's own function in strings still wins
+  const added = n => typeof t.added === 'function' ? t.added(n) : loc.t('loadMore.added', {
+    count: n,
+    n: (0, _format.formatNumber)(n)
+  });
   const sentinel = _react.default.useRef(null);
   const before = _react.default.useRef(shown),
     fromButton = _react.default.useRef(false);
@@ -52792,7 +53678,7 @@ const LoadMore = exports.LoadMore = /*#__PURE__*/_react.default.forwardRef(funct
     const was = before.current;
     before.current = shown;
     if (typeof shown !== 'number' || typeof was !== 'number' || shown <= was) return;
-    (0, _announce.announce)(t.added(shown - was));
+    (0, _announce.announce)(added(shown - was));
     if (fromButton.current && onFocusNew) onFocusNew(was);
     fromButton.current = false;
   }, [shown]);
@@ -52830,7 +53716,7 @@ const LoadMore = exports.LoadMore = /*#__PURE__*/_react.default.forwardRef(funct
   }, count) : null);
 });
   } },
-  "platform/patterns/ImageUpload/ImageUpload.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","../../components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ImageUpload/ImageUpload.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","../../components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -52851,6 +53737,7 @@ var _Input = require("../../components/Input/Input.jsx");
 var _Notice = require("../../components/Notice/Notice.jsx");
 var _announce = require("../../utils/announce.jsx");
 var _format = require("../../utils/format.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ImageUpload, ImageCrop
    Summary: Adds images with a preview of each before they are saved: a drop zone with a Choose button, the chosen images as
@@ -52899,28 +53786,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The page uploads value[].file (or .blob after a crop) when the form is saved; show progress with a ProgressBar.
      For profile pictures use AvatarUpload; for other files, FileInput or a drop zone.
 */
-const CROP = {
-  title: 'Crop image',
-  zoom: 'Zoom',
-  frame: 'Crop area. Drag the picture, or move it with the arrow keys',
-  apply: 'Apply',
-  cancel: 'Cancel'
-};
-const STRINGS = {
-  drop: 'Drop an image here, or',
-  dropMany: 'Drop images here, or',
-  choose: 'Choose image',
-  chooseMany: 'Choose images',
-  replace: 'Replace',
-  remove: 'Remove {name}',
-  alt: 'Description',
-  altHint: 'Describe this image for people who cannot see it',
-  tooLarge: '{name} is larger than {max}',
-  notImage: '{name} is not an image',
-  added: n => n === 1 ? '1 image added' : n + ' images added',
-  removed: '{name} removed',
-  crop: CROP
-};
 const RATIOS = {
   '1-1': 1,
   '4-3': 4 / 3,
@@ -52943,7 +53808,7 @@ function ImageCrop({
   strings,
   className
 }) {
-  const t = Object.assign({}, CROP, strings);
+  const t = (0, _LocaleProvider.useStrings)('imageUpload.crop', strings);
   const r = RATIOS[ratio] || 1;
   const [zoom, setZoom] = _react.default.useState(100);
   const [pos, setPos] = _react.default.useState({
@@ -53112,8 +53977,12 @@ function ImageUpload({
   id,
   'aria-describedby': describedBy
 }) {
-  const t = Object.assign({}, STRINGS, strings, {
-    crop: Object.assign({}, CROP, strings && strings.crop)
+  const t = (0, _LocaleProvider.useStrings)('imageUpload', strings);
+  const loc = (0, _LocaleProvider.useLocale)();
+  // "N images added": a plural message in the catalog (Arabic has six forms); an app's own function in strings still wins
+  const addedText = n => typeof t.added === 'function' ? t.added(n) : loc.t('imageUpload.added', {
+    count: n,
+    n: (0, _format.formatNumber)(n)
   });
   const images = value || [];
   const [over, setOver] = _react.default.useState(false);
@@ -53155,7 +54024,7 @@ function ImageUpload({
   };
   const commit = take => {
     onChange(multiple ? images.concat(take) : take.slice(0, 1));
-    (0, _announce.announce)(t.added(take.length));
+    (0, _announce.announce)(addedText(take.length));
   };
   const onCropped = res => {
     const [first, ...rest] = cropping.queue;
@@ -53309,7 +54178,7 @@ function ImageUpload({
   }, errors.join(' ')) : null);
 }
   } },
-  "platform/patterns/AvatarUpload/AvatarUpload.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/AvatarUpload/AvatarUpload.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","../../utils/format.js":"platform/utils/format.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -53325,6 +54194,7 @@ var _Button = require("../../components/Button/Button.jsx");
 var _Notice = require("../../components/Notice/Notice.jsx");
 var _ImageUpload = require("../ImageUpload/ImageUpload.jsx");
 var _format = require("../../utils/format.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · AvatarUpload
    Summary: Sets a person's (or a team's) picture: the current Avatar (the picture, or the initials without one) beside
@@ -53362,15 +54232,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        change it.
 */
 
-const STRINGS = {
-  change: 'Change photo',
-  add: 'Add photo',
-  remove: 'Remove photo',
-  tooLarge: 'The picture is larger than {max}',
-  notImage: 'Choose an image file',
-  picture: '{name}’s photo',
-  crop: undefined
-};
 function AvatarUpload({
   name,
   src,
@@ -53392,7 +54253,7 @@ function AvatarUpload({
   }, {
     size: ['xl', '2xl']
   });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('avatarUpload', strings);
   const [pending, setPending] = _react.default.useState(null); // { url, file } waiting for its crop
   const [error, setError] = _react.default.useState('');
   const wrap = _react.default.useRef(null);
@@ -54691,7 +55552,7 @@ function BottomSheetNav({
   }, body);
 }
   } },
-  "platform/patterns/FilterPanel/FilterPanel.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../utils/fields.js":"platform/utils/fields.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/FilterPanel/FilterPanel.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../utils/fields.js":"platform/utils/fields.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -54706,6 +55567,7 @@ var _Text = require("../../components/Text/Text.jsx");
 var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
 var _panelParts = require("../CommandBar/panel-parts.jsx");
 var _fields = require("../../utils/fields.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · FilterPanel
    Summary: The command bar's Filter (owner, 2026-10-14: "like Airtable's"): the advanced filter that holds every
@@ -54742,25 +55604,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        announced. A condition left unfinished does not filter.
    Notes:
      The panel holds the conditions; the page applies them (DataGrid filter, or matchesFilter on its rows). */
-const STRINGS = Object.assign({
-  label: 'Filter',
-  info: 'Only the records that meet the conditions are shown; a condition left unfinished does not filter.',
-  sub: 'In this view, show records',
-  where: 'Where',
-  and: 'and',
-  or: 'or',
-  empty: 'No conditions: every record is shown.',
-  addCondition: 'Add condition',
-  addGroup: 'Add condition group',
-  remove: 'Remove {what}',
-  condition: 'condition',
-  group: 'condition group',
-  value: 'Enter a value',
-  choose: 'Choose options',
-  field: 'Field',
-  operator: 'Operator',
-  join: 'And or or'
-}, _panelParts.REORDER_STRINGS);
 const fieldOption = f => ({
   value: f.value,
   label: f.label,
@@ -54772,6 +55615,7 @@ function ConditionValue({
   set,
   t
 }) {
+  const fw = (0, _LocaleProvider.useStrings)('fields');
   const k = (0, _fields.kindOf)(f);
   if (c.op === 'empty' || c.op === 'nempty') return /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-find-pick--value"
@@ -54789,7 +55633,7 @@ function ConditionValue({
     label: f.label,
     size: "value",
     value: c.value || _fields.WITHIN[0].value,
-    options: _fields.WITHIN,
+    options: _fields.fieldWords.within(fw),
     onChange: v => set({
       value: v
     })
@@ -54832,6 +55676,7 @@ function ConditionRows({
   nested,
   t
 }) {
+  const fw = (0, _LocaleProvider.useStrings)('fields');
   const items = node.items;
   const setItems = list => setNode(Object.assign({}, node, {
     items: list
@@ -54913,7 +55758,7 @@ function ConditionRows({
       label: t.operator,
       size: "op",
       value: x.op,
-      options: _fields.OPERATORS[(0, _fields.kindOf)(f)].map(([value, label]) => ({
+      options: _fields.fieldWords.operators(fw, (0, _fields.kindOf)(f)).map(([value, label]) => ({
         value,
         label
       })),
@@ -54939,7 +55784,7 @@ function FilterPanel({
   onOpenChange,
   request
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('filterPanel', strings);
   const node = value || {
     join: 'and',
     items: []
@@ -54996,7 +55841,7 @@ function FilterPanel({
   }, body);
 }
   } },
-  "platform/patterns/SortPanel/SortPanel.jsx": { deps: {"react":null,"../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../utils/fields.js":"platform/utils/fields.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/SortPanel/SortPanel.jsx": { deps: {"react":null,"../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../utils/fields.js":"platform/utils/fields.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -55010,6 +55855,7 @@ var _Text = require("../../components/Text/Text.jsx");
 var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
 var _panelParts = require("../CommandBar/panel-parts.jsx");
 var _fields = require("../../utils/fields.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · SortPanel
    Summary: The command bar's Sort (owner, 2026-10-14: "just like Airtable"): a "Sort" button that opens a panel of sort
@@ -55036,19 +55882,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The panel opens with the focus on its first row (else the Add button).
    Notes:
      The panel holds the levels; the page applies them (DataGrid sort, or compareLevels on its rows). */
-const STRINGS = Object.assign({
-  label: 'Sort',
-  title: 'Sort by',
-  within: 'Sort within groups by',
-  info: 'The rows are ordered by the first field, then by the next where the first is the same.',
-  empty: 'No sort: the rows keep their own order.',
-  add: 'Add a sort',
-  addAnother: 'Add another sort',
-  remove: 'Remove the sort by {name}',
-  removeTip: 'Remove sort',
-  field: 'Field',
-  direction: 'Direction'
-}, _panelParts.REORDER_STRINGS);
 const fieldOption = f => ({
   value: f.value,
   label: f.label,
@@ -55063,7 +55896,8 @@ function SortPanel({
   inline = false,
   strings
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('sortPanel', strings);
+  const fw = (0, _LocaleProvider.useStrings)('fields');
   const levels = value;
   const ro = (0, _panelParts.useReorder)(levels, onChange, l => (0, _fields.fieldOf)(fields, l.field).label, t);
   const put = (i, ch) => onChange(levels.map((l, j) => j === i ? Object.assign({}, l, ch) : l));
@@ -55080,7 +55914,7 @@ function SortPanel({
     variant: "secondary"
   }, t.empty), levels.map((l, i) => {
     const f = (0, _fields.fieldOf)(fields, l.field),
-      words = _fields.DIRECTIONS[(0, _fields.kindOf)(f)];
+      words = _fields.fieldWords.directions(fw, (0, _fields.kindOf)(f));
     return /*#__PURE__*/_react.default.createElement("div", _extends({
       key: l.field
     }, ro.rowProps(i, f.label)), /*#__PURE__*/_react.default.createElement(_panelParts.Pick, {
@@ -55137,7 +55971,7 @@ function SortPanel({
   }, body);
 }
   } },
-  "platform/patterns/GroupPanel/GroupPanel.jsx": { deps: {"react":null,"../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../utils/fields.js":"platform/utils/fields.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/GroupPanel/GroupPanel.jsx": { deps: {"react":null,"../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../utils/fields.js":"platform/utils/fields.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -55151,6 +55985,7 @@ var _Text = require("../../components/Text/Text.jsx");
 var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
 var _panelParts = require("../CommandBar/panel-parts.jsx");
 var _fields = require("../../utils/fields.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · GroupPanel
    Summary: The command bar's Group (owner, 2026-10-14: "just like Airtable"): a "Group" button (the group-by icon, stacked
@@ -55178,22 +56013,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        announced. The groups' order follows their levels' order (the page sorts by the levels first).
    Notes:
      The panel holds the levels; the page applies them (DataGrid groupBy, nested with several levels). */
-const STRINGS = Object.assign({
-  label: 'Group',
-  title: 'Group by',
-  info: 'Rows with the same value are gathered under one header; a subgroup splits each group again.',
-  empty: 'Gather the rows that share a value under one header.',
-  add: 'Add group',
-  addSub: 'Add subgroup',
-  collapseAll: 'Collapse all',
-  expandAll: 'Expand all',
-  more: 'More for {name}',
-  hideEmpty: 'Hide empty groups',
-  remove: 'Remove the grouping by {name}',
-  removeTip: 'Remove group',
-  field: 'Field',
-  order: 'Order'
-}, _panelParts.REORDER_STRINGS);
 const fieldOption = f => ({
   value: f.value,
   label: f.label,
@@ -55218,7 +56037,8 @@ function GroupPanel({
   strings
 }) {
   fields = fields.filter(f => f.groupable !== false);
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('groupPanel', strings);
+  const fw = (0, _LocaleProvider.useStrings)('fields');
   const levels = value;
   const ro = (0, _panelParts.useReorder)(levels, onChange, l => (0, _fields.fieldOf)(fields, l.field).label, t);
   const put = (i, ch) => onChange(levels.map((l, j) => j === i ? Object.assign({}, l, ch) : l));
@@ -55247,7 +56067,7 @@ function GroupPanel({
     variant: "secondary"
   }, t.empty), levels.map((l, i) => {
     const f = (0, _fields.fieldOf)(fields, l.field),
-      words = _fields.DIRECTIONS[(0, _fields.kindOf)(f)];
+      words = _fields.fieldWords.directions(fw, (0, _fields.kindOf)(f));
     return /*#__PURE__*/_react.default.createElement("div", _extends({
       key: l.field
     }, ro.rowProps(i, f.label)), /*#__PURE__*/_react.default.createElement(_panelParts.Pick, {
@@ -55332,7 +56152,7 @@ function GroupPanel({
   }, body);
 }
   } },
-  "platform/patterns/ViewMenu/ViewMenu.jsx": { deps: {"react":null,"../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ViewMenu/ViewMenu.jsx": { deps: {"react":null,"../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -55343,6 +56163,7 @@ var _react = _interopRequireDefault(require("react"));
 var _Menu = require("../../components/Menu/Menu.jsx");
 var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
 var _CommandBar = require("../CommandBar/CommandBar.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · ViewMenu
    Summary: The command bar's View (6B, owner 2026-10-14): one "View" menu with the layout (List, Gallery), the gallery's
@@ -55365,22 +56186,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        the list, the row height in the gallery. The menu stays open while choosing (keepOpen).
      The button reads "View" with the thin chevron; icons only, its icon and tooltip. */
 
-const STRINGS = {
-  reset: 'Reset view',
-  label: 'View',
-  layout: 'Layout',
-  list: 'List',
-  gallery: 'Gallery',
-  size: 'Card size (gallery)',
-  s: 'Small',
-  m: 'Medium',
-  l: 'Large',
-  height: 'Row height (list)',
-  short: 'Short',
-  medium: 'Medium',
-  tall: 'Tall',
-  'extra-tall': 'Extra tall'
-};
 const SIZES = [['s', 'cards-small'], ['m', 'cards-medium'], ['l', 'cards-large']];
 const HEIGHTS = ['short', 'medium', 'tall', 'extra-tall'];
 function ViewMenu({
@@ -55390,7 +56195,7 @@ function ViewMenu({
   strings,
   onReset
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('viewMenu', strings);
   const ctx = (0, _CommandBar.useCommandBar)();
   const v = Object.assign({
     layout: 'list',
@@ -56299,7 +57104,7 @@ function FeatureCard({
   }, media));
 }
   } },
-  "platform/patterns/UserCard/UserCard.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/List/List.jsx":"platform/components/List/List.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/UserCard/UserCard.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/List/List.jsx":"platform/components/List/List.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -56317,6 +57122,7 @@ var _Link = require("../../components/Link/Link.jsx");
 var _List = require("../../components/List/List.jsx");
 var _Text = require("../../components/Text/Text.jsx");
 var _VisuallyHidden = require("../../components/VisuallyHidden/VisuallyHidden.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · UserCard
    Summary: A person on a card (03 Content & Identity › Identity › User card; also the Profile card): their avatar, name,
@@ -56358,13 +57164,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        preview on hover is the hover card. Other props pass through to Card's <article>.
 */
 const PRESENCE = ['online', 'away', 'busy', 'dnd', 'offline'];
-const STRINGS = {
-  online: 'Online',
-  away: 'Away',
-  busy: 'Busy',
-  dnd: 'Do not disturb',
-  offline: 'Offline'
-};
 const H = ({
   level,
   ...props
@@ -56393,7 +57192,7 @@ function UserCard({
   });
   const compact = variant === 'compact';
   const p = PRESENCE.indexOf(presence) >= 0 ? presence : null;
-  const words = Object.assign({}, STRINGS, strings);
+  const words = (0, _LocaleProvider.useStrings)('userCard', strings);
   const withCover = !compact && !!cover;
   const hasActions = actions !== undefined && actions !== null && actions !== false;
   return /*#__PURE__*/_react.default.createElement(_Card.Card, _extends({
@@ -56447,7 +57246,7 @@ function UserCard({
   }, actions) : null);
 }
   } },
-  "platform/components/VirtualList/VirtualList.jsx": { deps: {"react":null,"../DataGrid/unread.js":"platform/components/DataGrid/unread.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/format.js":"platform/utils/format.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/VirtualList/VirtualList.jsx": { deps: {"react":null,"../DataGrid/unread.js":"platform/components/DataGrid/unread.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/format.js":"platform/utils/format.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -56461,6 +57260,7 @@ var _Icon = require("../Icon/Icon.jsx");
 var _Loading = require("../Loading/Loading.jsx");
 var _format = require("../../utils/format.js");
 var _useVirtualizer = require("../../hooks/useVirtualizer.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · VirtualList
    Summary: A long list (hundreds to many thousands of items) that renders only the rows in and near its view, in a
@@ -56504,12 +57304,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Not for short lists (under a few hundred rows): use List or render them all. Not where browser find (Ctrl F) across
        every row matters, unless the page offers its own search. Tables are the DataGrid, which has its own rendering.
 */
-const STRINGS = {
-  count: n => (0, _format.formatNumber)(n) + (n === 1 ? ' item' : ' items'),
-  group: n => (0, _format.formatNumber)(n) + (n === 1 ? ' item' : ' items'),
-  loading: 'Loading…',
-  empty: 'No items'
-};
 const HEIGHTS = ['sm', 'md', 'lg', 'fill'];
 function Row({
   item
@@ -56557,7 +57351,17 @@ const VirtualList = exports.VirtualList = /*#__PURE__*/_react.default.forwardRef
   onItemOpen,
   ...rest
 }, ref) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('virtualList', strings);
+  const loc = (0, _LocaleProvider.useLocale)();
+  // "N items": plural messages in the catalog; an app's own function in strings still wins
+  const countText = n => typeof t.count === 'function' ? t.count(n) : loc.t('virtualList.count', {
+    count: n,
+    n: (0, _format.formatNumber)(n)
+  });
+  const groupText = n => typeof t.group === 'function' ? t.group(n) : loc.t('virtualList.group', {
+    count: n,
+    n: (0, _format.formatNumber)(n)
+  });
   // the rows in order: a group's header, then its items
   const rows = _react.default.useMemo(() => {
     if (groups) {
@@ -56624,7 +57428,7 @@ const VirtualList = exports.VirtualList = /*#__PURE__*/_react.default.forwardRef
         className: "plx-virtual-list__header-label"
       }, r.group.label), /*#__PURE__*/_react.default.createElement("span", {
         className: "plx-virtual-list__header-count"
-      }, t.group(r.n)));
+      }, groupText(r.n)));
     }
     const item = r ? r.item : undefined;
     const key = getKey ? getKey(item, index) : item && typeof item === 'object' && item.id !== undefined ? item.id : index;
@@ -56633,7 +57437,7 @@ const VirtualList = exports.VirtualList = /*#__PURE__*/_react.default.forwardRef
       role: "listitem",
       className: "plx-virtual-list__item",
       "data-plx-unread": unread.has(item) || undefined,
-      "aria-label": unread.has(item) ? String(item?.label ?? key) + ', unread' : undefined,
+      "aria-label": unread.has(item) ? t.unreadRow.replace('{label}', String(item?.label ?? key)) : undefined,
       tabIndex: onItemOpen ? 0 : undefined,
       onClick: () => {
         if (onItemOpen) {
@@ -56655,7 +57459,7 @@ const VirtualList = exports.VirtualList = /*#__PURE__*/_react.default.forwardRef
     className: (0, _cx.cx)('plx-virtual-list', 'plx-virtual-list--' + (mode === 'variable' ? 'variable' : 'fixed'), groups && 'plx-virtual-list--groups', className)
   }, rest), showCount ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-virtual-list__count"
-  }, t.count(itemCount)) : null, /*#__PURE__*/_react.default.createElement("div", {
+  }, countText(itemCount)) : null, /*#__PURE__*/_react.default.createElement("div", {
     ref: v.viewportRef,
     role: total || loading ? 'list' : undefined,
     "aria-label": label,
@@ -56678,7 +57482,7 @@ const VirtualList = exports.VirtualList = /*#__PURE__*/_react.default.forwardRef
   }, t.empty) : null));
 });
   } },
-  "platform/components/Carousel/Carousel.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/tokenTime.js":"platform/utils/tokenTime.js","../../hooks/useGesture.js":"platform/hooks/useGesture.js","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Carousel/Carousel.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/tokenTime.js":"platform/utils/tokenTime.js","../../hooks/useGesture.js":"platform/hooks/useGesture.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -56691,6 +57495,7 @@ var _direction = require("../../utils/direction.js");
 var _tokenTime = require("../../utils/tokenTime.js");
 var _useGesture = require("../../hooks/useGesture.js");
 var _Button = require("../Button/Button.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Carousel
    Summary: A set of equal items shown one (or a few) at a time in a strip people move through: Previous and Next
@@ -56725,19 +57530,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Do not hide what people need in later slides: put it on the page. For a long set use a grid or a list. On iOS this
        is a paged scroll view with the system page control; on Android, Material's carousel.
 */
-const STRINGS = {
-  slide: '{n} of {total}',
-  previous: 'Previous slide',
-  next: 'Next slide',
-  goTo: 'Go to slide {n}',
-  goToPage: 'Go to page {n}',
-  pages: 'Slides',
-  pause: 'Pause',
-  play: 'Play',
-  pauseLabel: 'Pause the slides',
-  playLabel: 'Play the slides',
-  strip: 'Slides'
-};
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 const reduced = () => typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
@@ -56753,7 +57545,7 @@ function Carousel({
   className,
   ...rest
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('carousel', strings);
   const slides = _react.default.Children.toArray(children).filter(Boolean);
   const n = slides.length;
   const per = clamp(Math.round(perView) || 1, 1, 4);
@@ -56914,7 +57706,7 @@ function Carousel({
   }) : null) : null);
 }
   } },
-  "platform/patterns/PeopleGroup/PeopleGroup.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","../../components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/PeopleGroup/PeopleGroup.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","../../components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -56930,6 +57722,7 @@ var _IconTile = require("../../components/IconTile/IconTile.jsx");
 var _Link = require("../../components/Link/Link.jsx");
 var _Button = require("../../components/Button/Button.jsx");
 var _VisuallyHidden = require("../../components/VisuallyHidden/VisuallyHidden.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · PeopleGroup
    Summary: A set of people shown as one identity in a single row: a team (its own picture or initials, its name, what it
@@ -56962,14 +57755,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      A list of people with no shared identity is an AvatarGroup. A single person is a Persona. Granting a team or a group
        access shows it with a role (PermissionSummary for what that role allows).
 */
-const STRINGS = {
-  team: 'Team',
-  group: 'Group',
-  members: '{n} members',
-  member: '{n} member',
-  showMembers: 'Show members',
-  membersOf: 'Members of {name}'
-};
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 
 // "8 members" with the number in the data font
@@ -57000,7 +57785,7 @@ function PeopleGroup({
   className,
   ...rest
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('peopleGroup', strings);
   const group = kind === 'group';
   const kindWord = group ? t.group : t.team;
   const showAvatars = !group && members && members.length;
@@ -57059,7 +57844,7 @@ function PeopleGroup({
   }, t.showMembers) : null);
 }
   } },
-  "platform/patterns/PermissionSummary/PermissionSummary.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/List/List.jsx":"platform/components/List/List.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/PermissionSummary/PermissionSummary.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/List/List.jsx":"platform/components/List/List.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -57074,6 +57859,7 @@ var _Icon = require("../../components/Icon/Icon.jsx");
 var _List = require("../../components/List/List.jsx");
 var _Button = require("../../components/Button/Button.jsx");
 var _Link = require("../../components/Link/Link.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · PermissionSummary
    Summary: Who can reach an item and what they may do with it, in a few lines: the access in words with its icon ("Your
@@ -57108,13 +57894,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Lead with the audience, then the right. List the rights people ask about (share, delete, download), not every
        permission: Manage access shows the rest. A role's full grid of rights is the permissions editor's.
 */
-const STRINGS = {
-  can: 'Can',
-  cannot: 'Cannot',
-  manage: 'Manage access',
-  canSentence: 'Can {list}',
-  cannotSentence: 'Cannot {list}'
-};
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 const lower = x => String(x).charAt(0).toLowerCase() + String(x).slice(1);
 function PermissionSummary({
@@ -57136,7 +57915,7 @@ function PermissionSummary({
   }, {
     variant: ['list', 'compact']
   });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('permissionSummary', strings);
   const compact = variant === 'compact';
   const yes = children => ({
     icon: 'check',
@@ -57201,7 +57980,7 @@ function PermissionSummary({
   })) : null) : null);
 }
   } },
-  "platform/patterns/QueryBuilder/QueryBuilder.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/fields.js":"platform/utils/fields.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","../../components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","../../components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","../../components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","../../components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/QueryBuilder/QueryBuilder.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/fields.js":"platform/utils/fields.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","../../components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","../../components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","../../components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","../../components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -57222,6 +58001,7 @@ var _Combobox = require("../../components/Combobox/Combobox.jsx");
 var _SegmentedControl = require("../../components/SegmentedControl/SegmentedControl.jsx");
 var _CodeBlock = require("../../components/CodeBlock/CodeBlock.jsx");
 var _VisuallyHidden = require("../../components/VisuallyHidden/VisuallyHidden.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · QueryBuilder, formatQuery
    Summary: Builds a query from rules and groups of rules, for advanced search, saved views, automations and audience
@@ -57264,37 +58044,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      hard to read; keep maxDepth at 3 or less.
 */
 
-const STRINGS = {
-  builder: 'Builder',
-  text: 'Text',
-  viewLabel: 'View',
-  where: 'Where',
-  and: 'And',
-  or: 'Or',
-  andWord: 'and',
-  orWord: 'or',
-  join: 'Match',
-  all: 'All rules',
-  any: 'Any rule',
-  addRule: 'Add rule',
-  addGroup: 'Add group',
-  removeRule: 'Remove rule',
-  removeGroup: 'Remove group',
-  field: 'Field',
-  operator: 'Operator',
-  value: 'Value',
-  rule: 'Rule {n}',
-  group: 'Group {n}',
-  empty: 'No rules: every record matches.',
-  everything: 'Every record',
-  matches: '{n} matches',
-  match: '{n} match',
-  textTitle: 'Query',
-  added: 'Rule added',
-  groupAdded: 'Group added',
-  removed: 'Rule removed',
-  groupRemoved: 'Group removed'
-};
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 const blank = x => x === null || x === undefined || x === '' || Array.isArray(x) && !x.length;
 const NO_VALUE = {
@@ -57305,8 +58054,9 @@ const quote = s => '“' + s + '”';
 
 // the query as one sentence: rules in the field type's words, groups in parentheses; unfinished rules left out
 function formatQuery(node, fields = [], strings) {
-  const t = Object.assign({}, STRINGS, strings);
-  const words = (f, op) => ((_fields.OPERATORS[(0, _fields.kindOf)(f)] || []).find(o => o[0] === op) || [op, op])[1];
+  const t = Object.assign({}, (0, _LocaleProvider.createTranslator)((0, _format.formatLocale)()).section('queryBuilder'), strings); // a plain function: no hook
+  const fw = (0, _LocaleProvider.createTranslator)((0, _format.formatLocale)()).section('fields'); // a plain function: no hook
+  const words = (f, op) => (_fields.fieldWords.operators(fw, (0, _fields.kindOf)(f)).find(o => o[0] === op) || [op, op])[1];
   const rule = c => {
     const f = (0, _fields.fieldOf)(fields, c.field);
     if (!f) return null;
@@ -57319,7 +58069,7 @@ function formatQuery(node, fields = [], strings) {
       v = [].concat(c.value).map(x => quote((o.find(p => p.value === x) || {
         label: x
       }).label)).join(', ');
-    } else if (k === 'date' && c.op === 'within') v = (_fields.WITHIN.find(w => w.value === c.value) || _fields.WITHIN[0]).label;else if (k === 'text') v = quote(c.value);else v = String(c.value);
+    } else if (k === 'date' && c.op === 'within') v = (_fields.fieldWords.within(fw).find(w => w.value === c.value) || _fields.fieldWords.within(fw)[0]).label;else if (k === 'text') v = quote(c.value);else v = String(c.value);
     return f.label + ' ' + words(f, c.op) + ' ' + v;
   };
   const group = (g, top) => {
@@ -57361,6 +58111,7 @@ function RuleValue({
   id,
   label
 }) {
+  const fw = (0, _LocaleProvider.useStrings)('fields');
   const k = (0, _fields.kindOf)(f);
   if (NO_VALUE[c.op]) return /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-query-builder__value plx-query-builder__value--none"
@@ -57385,7 +58136,7 @@ function RuleValue({
       id: id,
       className: "plx-query-builder__value",
       value: c.value || _fields.WITHIN[0].value,
-      options: _fields.WITHIN.map(w => ({
+      options: _fields.fieldWords.within(fw).map(w => ({
         value: w.value,
         label: w.label
       })),
@@ -57435,6 +58186,7 @@ function Rule({
   remove,
   t
 }) {
+  const fw = (0, _LocaleProvider.useStrings)('fields');
   const f = (0, _fields.fieldOf)(fields, c.field);
   const base = uid + '-' + c.id;
   const name = fill(t.rule, {
@@ -57464,7 +58216,7 @@ function Rule({
     id: base + '-o',
     className: "plx-query-builder__operator",
     value: c.op,
-    options: (_fields.OPERATORS[(0, _fields.kindOf)(f)] || []).map(([value, label]) => ({
+    options: _fields.fieldWords.operators(fw, (0, _fields.kindOf)(f)).map(([value, label]) => ({
       value,
       label
     })),
@@ -57623,7 +58375,7 @@ function QueryBuilder({
   fields = [],
   value,
   onChange,
-  label = 'Query',
+  label,
   maxDepth = 3,
   view: viewProp,
   onViewChange,
@@ -57632,7 +58384,8 @@ function QueryBuilder({
   strings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('queryBuilder', strings);
+  label = label ?? t.textTitle;
   const node = value || {
     join: 'and',
     items: []
@@ -57695,7 +58448,7 @@ function QueryBuilder({
   }));
 }
   } },
-  "platform/components/RoleLabel/RoleLabel.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/RoleLabel/RoleLabel.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -57705,6 +58458,7 @@ exports.RoleLabel = RoleLabel;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · RoleLabel
    Summary: A person's role on a project, a folder or a workspace (03 Content › Identity › Role): its name in the tag look,
@@ -57735,11 +58489,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        after it are the role label's own tokens. data-plx-role carries the role for the application's own rules.
      Other props pass through to the <span>.
 */
-const STRINGS = {
-  owner: 'Owner',
-  editor: 'Editor',
-  viewer: 'Viewer'
-};
 const ICONS = {
   owner: 'settings-permissions',
   editor: 'pencil',
@@ -57756,7 +58505,7 @@ function RoleLabel({
   className,
   ...rest
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('roleLabel', strings);
   const builtIn = role === 'owner' || role === 'editor' || role === 'viewer';
   const kind = builtIn ? role : 'custom';
   const name = label || (builtIn ? t[role] : role === 'custom' ? '' : role);
@@ -57777,7 +58526,7 @@ function RoleLabel({
   }, ', ' + description) : null);
 }
   } },
-  "platform/components/SearchResult/SearchResult.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","../SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","../Count/Count.jsx":"platform/components/Count/Count.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/SearchResult/SearchResult.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","../SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","../Count/Count.jsx":"platform/components/Count/Count.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -57796,6 +58545,7 @@ var _SectionHeading = require("../SectionHeading/SectionHeading.jsx");
 var _Count = require("../Count/Count.jsx");
 var _Link = require("../Link/Link.jsx");
 var _Button = require("../Button/Button.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · SearchResult, SearchResultGroup, highlightMatches
    Summary: One result of a search (06 Navigation › Search, filter, and discovery › Search result item) and the group of
@@ -57852,12 +58602,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        and a link to the rest. One kind: one list without headings.
      Other props pass through to the <li> (SearchResult) and the outer <div> (SearchResultGroup).
 */
-const RESULT_STRINGS = {
-  path: 'In'
-};
-const GROUP_STRINGS = {
-  more: 'Show all'
-};
 const escape = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 // the text with every match of the query's words in bold (case ignored; words of two letters or more, longest first)
@@ -57891,7 +58635,7 @@ function SearchResult({
   className,
   ...rest
 }) {
-  const t = Object.assign({}, RESULT_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('searchResult.result', strings);
   const name = highlightMatches(title, query);
   const opener = href ? /*#__PURE__*/_react.default.createElement("a", {
     href: href,
@@ -57958,7 +58702,7 @@ function SearchResultGroup({
   children,
   ...rest
 }) {
-  const t = Object.assign({}, GROUP_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('searchResult.group', strings);
   const id = (0, _layer.useUid)('plx-search-result-group');
   const more = moreLabel || t.more;
   return /*#__PURE__*/_react.default.createElement("div", _extends({
@@ -58077,7 +58821,7 @@ function Timeline({
   }, it.content) : null))));
 }
   } },
-  "platform/patterns/ResourceList/ResourceList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../hooks/useSelection.js":"platform/hooks/useSelection.js","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","../../components/Count/Count.jsx":"platform/components/Count/Count.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ResourceList/ResourceList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../hooks/useSelection.js":"platform/hooks/useSelection.js","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","../../components/Count/Count.jsx":"platform/components/Count/Count.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -58094,6 +58838,7 @@ var _Avatar = require("../../components/Avatar/Avatar.jsx");
 var _SectionHeading = require("../../components/SectionHeading/SectionHeading.jsx");
 var _Count = require("../../components/Count/Count.jsx");
 var _Text = require("../../components/Text/Text.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · ResourceList
    Summary: A list of the records of one kind (07 Data Display › Lists and collections › Resource list, and its duplicate
@@ -58150,13 +58895,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      A pattern of the Polaris resource list. Use the DataGrid when people compare records by column or sort by a column.
 */
 
-const STRINGS = {
-  item: 'item',
-  selectAll: 'Select all {n} {nouns}',
-  select: 'Select {name}',
-  count: '{n} {nouns}',
-  selected: '{n} of {total} selected'
-};
 const fill = (s, map) => Object.keys(map).reduce((out, k) => out.split('{' + k + '}').join(map[k]), s);
 // a phrase with its numbers in the data font: "{n} of {total} selected" → [<Text data>3</Text>, ' of ', …]
 const phrase = (s, map) => s.split(/(\{n\}|\{total\})/).map((p, i) => p === '{n}' || p === '{total}' ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
@@ -58235,7 +58973,7 @@ function ResourceList({
   strings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('resourceList', strings);
   const uid = (0, _layer.useUid)('plx-resource-list');
   const ids = items.map(it => it.id);
   const sel = (0, _useSelection.useSelection)({
@@ -58321,7 +59059,7 @@ function ResourceList({
   }, items.map(row)));
 }
   } },
-  "platform/charts/LineChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./interaction.js":"platform/charts/interaction.js","./echarts/EChartsPlot.jsx":"platform/charts/echarts/EChartsPlot.jsx","./echarts/engine.js":"platform/charts/echarts/engine.js","../utils/grid.js":"platform/utils/grid.js","./chart-kit.js":"platform/charts/chart-kit.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/LineChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./interaction.js":"platform/charts/interaction.js","./echarts/EChartsPlot.jsx":"platform/charts/echarts/EChartsPlot.jsx","./echarts/engine.js":"platform/charts/echarts/engine.js","../utils/grid.js":"platform/utils/grid.js","./chart-kit.js":"platform/charts/chart-kit.js","../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -58342,6 +59080,7 @@ var _EChartsPlot = require("./echarts/EChartsPlot.jsx");
 var _engine = require("./echarts/engine.js");
 var _grid = require("../utils/grid.js");
 var _chartKit = require("./chart-kit.js");
+var _LocaleProvider = require("../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · LineChart
    Summary: A line chart (07 Data Display › Charts › Line chart, and its Step chart variant): one line per series through
@@ -58396,9 +59135,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        are the chart interaction's. No style is written in this file.
      Up to about five series; more lines tangle: use small multiples. Unordered categories: a bar or column chart.
 */
-const STRINGS = {
-  category: 'Category'
-};
 const DASH = '—';
 // an empty list that stays the same between renders (the drawing redraws when its data changes)
 const NONE = Object.freeze([]);
@@ -58460,7 +59196,7 @@ function SeriesChart({
   interactionStrings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('chart.lineChart', strings);
   const area = kind === 'area';
   const stacked = area && (stack === 'stacked' || stack === 'percent');
   const percent = area && stack === 'percent';
@@ -58869,7 +59605,7 @@ function AreaChart({
   }));
 }
   } },
-  "platform/charts/HeatMap.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","../utils/dataviz.js":"platform/utils/dataviz.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/position.js":"platform/charts/parts/position.js","./parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./interaction.js":"platform/charts/interaction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/HeatMap.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","../utils/dataviz.js":"platform/utils/dataviz.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/position.js":"platform/charts/parts/position.js","./parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./interaction.js":"platform/charts/interaction.js","../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -58886,6 +59622,7 @@ var _position = require("./parts/position.js");
 var _Axis = require("./parts/Axis.jsx");
 var _ChartTooltip = require("./parts/ChartTooltip.jsx");
 var _interaction = require("./interaction.js");
+var _LocaleProvider = require("../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · HeatMap
    Summary: A heat map (07 Data Display › Charts › Heat map): a grid of cells whose color shows the value where a row and
@@ -58923,16 +59660,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        the tooltip and the table carry them. Cell gaps, edges and the legend's swatches are --plx-comp-heat-map-* tokens.
 */
 
-const STRINGS = {
-  value: 'Value',
-  row: 'Row',
-  column: 'Column',
-  date: 'Date',
-  missing: 'No data',
-  low: 'Low',
-  high: 'High',
-  scale: 'Color scale'
-};
 const DAY = 24 * 60 * 60 * 1000;
 // the gap between cells, as a fraction of a cell (band padding: geometry)
 const GAP = 0.1;
@@ -59008,7 +59735,7 @@ function HeatMap({
   interactionStrings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('chart.heatMap', strings);
   const calendar = variant === 'calendar';
   const fmt = typeof format === 'function' ? format : v => (0, _format.formatNumber)(v);
   const vLabel = valueLabel || t.value;
@@ -59298,7 +60025,7 @@ function HeatMap({
   }, draw);
 }
   } },
-  "platform/charts/WaterfallChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/position.js":"platform/charts/parts/position.js","./parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./interaction.js":"platform/charts/interaction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/WaterfallChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/position.js":"platform/charts/parts/position.js","./parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./interaction.js":"platform/charts/interaction.js","../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -59318,6 +60045,7 @@ var _DataLabel = require("./parts/DataLabel.jsx");
 var _ChartLegend = require("./parts/ChartLegend.jsx");
 var _ChartTooltip = require("./parts/ChartTooltip.jsx");
 var _interaction = require("./interaction.js");
+var _LocaleProvider = require("../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · WaterfallChart
    Summary: A waterfall chart (07 Data Display › Charts › Waterfall): how a starting total becomes an end total through
@@ -59350,15 +60078,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        connector and the value axis are tokens (--plx-comp-waterfall-chart-*). Up to about ten steps: group the small ones.
 */
 
-const STRINGS = {
-  end: 'End',
-  step: 'Step',
-  change: 'Change',
-  total: 'Total',
-  running: 'Running total',
-  increase: 'Increase',
-  decrease: 'Decrease'
-};
 const COLORS = {
   up: 'status-positive',
   down: 'status-negative',
@@ -59417,7 +60136,7 @@ function WaterfallChart({
   interactionStrings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('chart.waterfallChart', strings);
   const fmt = typeof format === 'function' ? format : v => (0, _format.formatNumber)(v);
   const signed = v => v > 0 ? '+' + fmt(v) : v < 0 ? '−' + fmt(-v) : fmt(0);
   const bars = waterfallSteps(data, endLabel === undefined ? t.end : endLabel);
@@ -59578,7 +60297,7 @@ function WaterfallChart({
   }, draw);
 }
   } },
-  "platform/charts/WordCloud.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./interaction.js":"platform/charts/interaction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/WordCloud.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./interaction.js":"platform/charts/interaction.js","../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -59594,6 +60313,7 @@ var _scales = require("./scales.js");
 var _ChartLegend = require("./parts/ChartLegend.jsx");
 var _ChartTooltip = require("./parts/ChartTooltip.jsx");
 var _interaction = require("./interaction.js");
+var _LocaleProvider = require("../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · WordCloud
    Summary: A word cloud (07 Data Display › Charts › Word cloud): the main terms of a body of text, each sized by how
@@ -59627,11 +60347,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        color, grouped words the categorical data-viz colors. Never use it to compare values exactly: a sorted bar chart.
 */
 
-const STRINGS = {
-  value: 'Count',
-  word: 'Term',
-  group: 'Group'
-};
 const STEPS = 5;
 // the space kept around each word while placing, and the spiral's step (SVG geometry, pixels)
 const PAD = 4,
@@ -59706,7 +60421,7 @@ function WordCloud({
   interactionStrings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('chart.wordCloud', strings);
   const fmt = typeof format === 'function' ? format : v => (0, _format.formatNumber)(v);
   const vLabel = valueLabel || t.value;
   const sorted = words.filter(w => w && w.text).slice().sort((a, b) => b.value - a.value);
@@ -59898,7 +60613,7 @@ function WordCloud({
   }, draw);
 }
   } },
-  "platform/charts/NetworkGraph.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","../components/Button/Button.jsx":"platform/components/Button/Button.jsx","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./interaction.js":"platform/charts/interaction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/NetworkGraph.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","../components/Button/Button.jsx":"platform/components/Button/Button.jsx","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./interaction.js":"platform/charts/interaction.js","../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -59920,6 +60635,7 @@ var _scales = require("./scales.js");
 var _ChartLegend = require("./parts/ChartLegend.jsx");
 var _ChartTooltip = require("./parts/ChartTooltip.jsx");
 var _interaction = require("./interaction.js");
+var _LocaleProvider = require("../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · NetworkGraph
    Summary: A graph of nodes joined by edges (07 Data Display › Specialized displays › Graph / network): how items
@@ -59962,16 +60678,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      the categorical data-viz colors. Hundreds of nodes: filter or cluster first; a strict hierarchy: a tree view.
 */
 
-const STRINGS = {
-  node: 'Node',
-  group: 'Group',
-  links: 'Connected to',
-  none: 'None',
-  zoomIn: 'Zoom in',
-  zoomOut: 'Zoom out',
-  fit: 'Fit',
-  hintZoom: ' Plus and minus zoom, 0 fits the graph.'
-};
 // SVG geometry, in plot pixels: the room kept around the layout for the labels (a label is centered under its node), the
 // node's hit radius, the zoom steps
 const INSET_X = 64,
@@ -60161,7 +60867,7 @@ function useGraphView({
   enabled = true,
   strings
 } = {}) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('chart.networkGraph', strings);
   const [view, setView] = _react.default.useState({
     k: 1,
     x: 0,
@@ -60351,7 +61057,7 @@ function NetworkGraph({
   interactionStrings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('chart.networkGraph', strings);
   const uid = 'plx-graph' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
   const nb = _react.default.useMemo(() => graphNeighbors(nodes, edges), [nodes, edges]);
   const gIndex = g => (groups || []).findIndex(x => x.id === g);
@@ -60548,7 +61254,7 @@ function NetworkGraph({
   }, draw);
 }
   } },
-  "platform/charts/Diagram.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./interaction.js":"platform/charts/interaction.js","./NetworkGraph.jsx":"platform/charts/NetworkGraph.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/Diagram.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./interaction.js":"platform/charts/interaction.js","./NetworkGraph.jsx":"platform/charts/NetworkGraph.jsx","../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -60562,6 +61268,7 @@ var _ChartFrame = require("./ChartFrame.jsx");
 var _ChartTooltip = require("./parts/ChartTooltip.jsx");
 var _interaction = require("./interaction.js");
 var _NetworkGraph = require("./NetworkGraph.jsx");
+var _LocaleProvider = require("../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · Diagram
    Summary: A diagram of shapes joined by connectors (07 Data Display › Specialized displays › Diagram) that explains a
@@ -60605,19 +61312,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        labels do). For data values use a chart; for a few steps in order, a numbered list.
 */
 
-const STRINGS = {
-  step: 'Step',
-  kind: 'Kind',
-  next: 'Leads to',
-  previous: 'Comes from',
-  end: 'End',
-  process: 'Step',
-  decision: 'Decision',
-  terminal: 'Start or end',
-  data: 'Data',
-  box: 'Part',
-  group: 'Group'
-};
 const SHAPES = ['process', 'decision', 'terminal', 'data'];
 // SVG geometry, in pixels on the 4px grid: each shape's size, the gaps between layers and across them, a group's padding
 const SIZE = {
@@ -60657,7 +61351,7 @@ function Diagram({
   interactionStrings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('chart.diagram', strings);
   const uid = 'plx-diagram' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
   const boxes = variant === 'boxes';
   const right = direction === 'right';
@@ -60982,7 +61676,7 @@ function Diagram({
   }, draw);
 }
   } },
-  "platform/charts/BarChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./interaction.js":"platform/charts/interaction.js","./chart-kit.js":"platform/charts/chart-kit.js","./echarts/EChartsPlot.jsx":"platform/charts/echarts/EChartsPlot.jsx","./echarts/engine.js":"platform/charts/echarts/engine.js","./LineChart.jsx":"platform/charts/LineChart.jsx","../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/BarChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./interaction.js":"platform/charts/interaction.js","./chart-kit.js":"platform/charts/chart-kit.js","./echarts/EChartsPlot.jsx":"platform/charts/echarts/EChartsPlot.jsx","./echarts/engine.js":"platform/charts/echarts/engine.js","./LineChart.jsx":"platform/charts/LineChart.jsx","../utils/grid.js":"platform/utils/grid.js","../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -61004,6 +61698,7 @@ var _EChartsPlot = require("./echarts/EChartsPlot.jsx");
 var _engine = require("./echarts/engine.js");
 var _LineChart = require("./LineChart.jsx");
 var _grid = require("../utils/grid.js");
+var _LocaleProvider = require("../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · BarChart
    Summary: Amounts compared as the lengths of bars (07 Data Display › Charts › Bar chart, Column chart, Stacked bar
@@ -61056,12 +61751,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        thin line in the surface color (bar-chart tokens); axes, grid lines and labels take the frame's chart tokens
        through the ECharts theme (echarts/engine.js). The plot is drawn by Apache ECharts (issue 353); no style is written here.
 */
-const STRINGS = {
-  category: 'Category',
-  total: 'Total',
-  range: 'Range',
-  count: 'Count'
-};
 const LAYOUTS = ['grouped', 'stacked', 'percent'];
 // px: the least room a segment needs for its share written inside it (percent)
 const INSIDE_LABEL_MIN = 32;
@@ -61123,7 +61812,7 @@ function BarChart({
   strings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('chart.barChart', strings);
   const o = orientation === 'vertical' ? 'vertical' : 'horizontal';
   const across = o === 'horizontal';
   const bins = histogram && Array.isArray(histogram.values) ? binValues(histogram.values, histogram) : null;
@@ -61528,7 +62217,7 @@ function BarChart({
   }, draw);
 }
   } },
-  "platform/charts/ComboChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./parts/position.js":"platform/charts/parts/position.js","./chart-kit.js":"platform/charts/chart-kit.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/ComboChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./parts/position.js":"platform/charts/parts/position.js","./chart-kit.js":"platform/charts/chart-kit.js","../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -61546,6 +62235,7 @@ var _ChartLegend = require("./parts/ChartLegend.jsx");
 var _ChartTooltip = require("./parts/ChartTooltip.jsx");
 var _position = require("./parts/position.js");
 var _chartKit = require("./chart-kit.js");
+var _LocaleProvider = require("../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ComboChart
    Summary: Two related measures on one category axis (07 Data Display › Charts › Combo chart): columns for the primary
@@ -61580,11 +62270,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Two chart types at most: never a third. Colors come from the data-viz scales by the series' order (columns first).
      Points are the frame's point marks; their radius is a combo-chart token.
 */
-const STRINGS = {
-  category: 'Category',
-  bars: 'Columns',
-  lines: 'Lines'
-};
 const extent = (list, from0) => {
   let lo = from0 ? 0 : Infinity,
     hi = from0 ? 0 : -Infinity;
@@ -61622,7 +62307,7 @@ function ComboChart({
   strings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('chart.comboChart', strings);
   const dual = axis === 'dual';
   const fb = v => typeof formatBar === 'function' ? formatBar(v) : (0, _format.formatNumber)(v);
   const fl = v => typeof formatLine === 'function' ? formatLine(v) : (0, _format.formatNumber)(v);
@@ -61833,7 +62518,7 @@ function ComboChart({
   });
 }
   } },
-  "platform/charts/BulletChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./chart-kit.js":"platform/charts/chart-kit.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/BulletChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./chart-kit.js":"platform/charts/chart-kit.js","../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -61848,6 +62533,7 @@ var _scales = require("./scales.js");
 var _Axis = require("./parts/Axis.jsx");
 var _ChartTooltip = require("./parts/ChartTooltip.jsx");
 var _chartKit = require("./chart-kit.js");
+var _LocaleProvider = require("../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · BulletChart
    Summary: Key measures against their targets (07 Data Display › Charts › Bullet chart): for each measure a short value
@@ -61878,15 +62564,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        shades and the target the default content color (bullet-chart tokens): color is not the only cue, the target is
        a line across and the ranges are named in the tooltip and the table.
 */
-const STRINGS = {
-  measure: 'Measure',
-  value: 'Value',
-  target: 'Target',
-  ranges: 'Ranges',
-  poor: 'Poor',
-  fair: 'Fair',
-  good: 'Good'
-};
 const BAR = 1 / 3; // the value bar's thickness, a share of the band
 const TARGET = 2 / 3; // the target line's length, a share of the band
 
@@ -61907,7 +62584,7 @@ function BulletChart({
   strings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('chart.bulletChart', strings);
   const o = orientation === 'vertical' ? 'vertical' : 'horizontal';
   const across = o === 'horizontal';
   const fmt = v => typeof format === 'function' ? format(v) : (0, _format.formatNumber)(v);
@@ -62076,7 +62753,7 @@ function BulletChart({
   });
 }
   } },
-  "platform/charts/BoxPlot.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./chart-kit.js":"platform/charts/chart-kit.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/BoxPlot.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./chart-kit.js":"platform/charts/chart-kit.js","../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -62093,6 +62770,7 @@ var _Axis = require("./parts/Axis.jsx");
 var _GridLines = require("./parts/GridLines.jsx");
 var _ChartTooltip = require("./parts/ChartTooltip.jsx");
 var _chartKit = require("./chart-kit.js");
+var _LocaleProvider = require("../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · BoxPlot
    Summary: Distributions compared by their summaries (07 Data Display › Charts › Box plot): for each group a box from
@@ -62124,16 +62802,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The box is the frame's mark (the first categorical color); the median line takes the surface color across it, the
        whiskers the subtle content color, outliers the frame's point (box-plot tokens). For a few values plot the points.
 */
-const STRINGS = {
-  group: 'Group',
-  min: 'Minimum',
-  q1: 'First quartile',
-  median: 'Median',
-  q3: 'Third quartile',
-  max: 'Maximum',
-  outliers: 'Outliers',
-  n: 'Values'
-};
 const CAP = 0.5; // a whisker's cap, a share of the box's thickness
 
 // a quantile of sorted values, interpolated between the two nearest
@@ -62182,7 +62850,7 @@ function BoxPlot({
   strings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('chart.boxPlot', strings);
   const o = orientation === 'horizontal' ? 'horizontal' : 'vertical';
   const across = o === 'horizontal';
   const fmt = v => typeof format === 'function' ? format(v) : (0, _format.formatNumber)(v);
@@ -62386,7 +63054,7 @@ function BoxPlot({
   });
 }
   } },
-  "platform/charts/RadarChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./chart-kit.js":"platform/charts/chart-kit.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/RadarChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./chart-kit.js":"platform/charts/chart-kit.js","../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -62401,6 +63069,7 @@ var _scales = require("./scales.js");
 var _ChartLegend = require("./parts/ChartLegend.jsx");
 var _ChartTooltip = require("./parts/ChartTooltip.jsx");
 var _chartKit = require("./chart-kit.js");
+var _LocaleProvider = require("../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · RadarChart
    Summary: The profile of one item, or of two or three compared, across several measures on one scale (07 Data Display ›
@@ -62431,9 +63100,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        color at the low opacity (radar-chart tokens). Spokes and rings are the frame's grid lines; the measures' names are
        UI text, the ring values the data font. Compare three items at most.
 */
-const STRINGS = {
-  measure: 'Measure'
-};
 // px: the room around the web for the measures' names (on the 4px grid); the start and end sides take the longest name
 const WEB_MARGIN = {
   top: 24,
@@ -62459,7 +63125,7 @@ function RadarChart({
   strings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('chart.radarChart', strings);
   const fmt = v => typeof format === 'function' ? format(v) : (0, _format.formatNumber)(v);
   const [active, hover] = (0, _chartKit.useChartHover)();
   const list = (0, _chartKit.withColors)(series);
@@ -62600,7 +63266,7 @@ function RadarChart({
   });
 }
   } },
-  "platform/charts/SankeyDiagram.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./chart-kit.js":"platform/charts/chart-kit.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/SankeyDiagram.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./chart-kit.js":"platform/charts/chart-kit.js","../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -62615,6 +63281,7 @@ var _ChartFrame = require("./ChartFrame.jsx");
 var _scales = require("./scales.js");
 var _ChartTooltip = require("./parts/ChartTooltip.jsx");
 var _chartKit = require("./chart-kit.js");
+var _LocaleProvider = require("../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · SankeyDiagram
    Summary: How a quantity flows, splits and merges through stages (07 Data Display › Charts › Sankey diagram): a bar
@@ -62645,12 +63312,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        are UI text with a halo in the surface color, totals the data font (sankey-diagram tokens). Group small flows:
        many thin bands do not read. For a linear drop-off use a funnel.
 */
-const STRINGS = {
-  source: 'Source',
-  target: 'Target',
-  value: 'Value',
-  total: 'Total'
-};
 // px: a node's bar and the least space between two nodes of a column (on the 4px grid)
 const NODE_WIDTH = 12,
   NODE_GAP = 12;
@@ -62814,7 +63475,7 @@ function SankeyDiagram({
   strings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('chart.sankeyDiagram', strings);
   const fmt = v => typeof format === 'function' ? format(v) : (0, _format.formatNumber)(v);
   const [active, hover] = (0, _chartKit.useChartHover)();
   const nameOf = {};
@@ -62922,7 +63583,7 @@ function SankeyDiagram({
   });
 }
   } },
-  "platform/charts/TimelineChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./parts/ReferenceLine.jsx":"platform/charts/parts/ReferenceLine.jsx","./chart-kit.js":"platform/charts/chart-kit.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/TimelineChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./parts/ReferenceLine.jsx":"platform/charts/parts/ReferenceLine.jsx","./chart-kit.js":"platform/charts/chart-kit.js","../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -62939,6 +63600,7 @@ var _GridLines = require("./parts/GridLines.jsx");
 var _ChartTooltip = require("./parts/ChartTooltip.jsx");
 var _ReferenceLine = require("./parts/ReferenceLine.jsx");
 var _chartKit = require("./chart-kit.js");
+var _LocaleProvider = require("../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · TimelineChart
    Summary: When things happened and how long they lasted, on one time axis (07 Data Display › Specialized displays ›
@@ -62974,15 +63636,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        (timeline-chart tokens); the today line is a ReferenceLine. For tasks with dependencies use a Gantt chart; for a
        short activity log, the Timeline list.
 */
-const STRINGS = {
-  item: 'Item',
-  lane: 'Lane',
-  start: 'Start',
-  end: 'End',
-  today: 'Today',
-  date: 'Date',
-  dates: 'Dates'
-};
 const MARK = 0.4; // a period's bar thickness, a share of its lane
 // a date-only string (2026-09-10) is that day in local time, as people read it; anything else as Date reads it
 const toTime = v => {
@@ -63008,7 +63661,7 @@ function TimelineChart({
   strings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('chart.timelineChart', strings);
   const fd = d => typeof formatDate === 'function' ? formatDate(new Date(toTime(d))) : (0, _format.formatDate)(new Date(toTime(d)));
   const [active, hover] = (0, _chartKit.useChartHover)();
   const tracks = lanes && lanes.length ? lanes.map((l, i) => ({
@@ -63183,7 +63836,7 @@ function TimelineChart({
   });
 }
   } },
-  "platform/patterns/ComparisonView/ComparisonView.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","../../components/Table/Table.jsx":"platform/components/Table/Table.jsx","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ComparisonView/ComparisonView.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","../../components/Table/Table.jsx":"platform/components/Table/Table.jsx","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -63198,6 +63851,7 @@ var _Checkbox = require("../../components/Checkbox/Checkbox.jsx");
 var _Slider = require("../../components/Slider/Slider.jsx");
 var _Table = require("../../components/Table/Table.jsx");
 var _Image = require("../../components/Image/Image.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · ComparisonView
    Summary: Two to four items or versions side by side with their differences marked (07 Data Display › Specialized
@@ -63247,21 +63901,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      Compare at most four items side by side; let people choose which (a picker above the view) when there are more.
 */
 
-const STRINGS = {
-  label: 'Comparison',
-  modes: 'View',
-  columns: 'Side by side',
-  matrix: 'Table',
-  slider: 'Slider',
-  onlyDifferences: 'Show only differences',
-  changed: 'Changed',
-  attribute: 'Attribute',
-  position: 'Position',
-  none: 'No differences',
-  one: '1 difference',
-  many: '{n} differences',
-  empty: '—'
-};
 const MODES = ['columns', 'matrix', 'slider'];
 // the slider's drawing area (SVG user units; the picture fills it, cropped to the ratio)
 const RATIOS = {
@@ -63290,7 +63929,7 @@ function ComparisonView({
   strings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('comparisonView', strings);
   const uid = 'plx-cmp' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
   const [ownMode, setOwnMode] = _react.default.useState(MODES.indexOf(defaultMode) >= 0 ? defaultMode : 'columns');
   const current = mode !== undefined && MODES.indexOf(mode) >= 0 ? mode : ownMode;
@@ -63503,7 +64142,7 @@ function ComparisonView({
   }, bar, body);
 }
   } },
-  "platform/charts/LollipopChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./parts/position.js":"platform/charts/parts/position.js","./a11y.js":"platform/charts/a11y.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/LollipopChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./parts/position.js":"platform/charts/parts/position.js","./a11y.js":"platform/charts/a11y.js","../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -63521,6 +64160,7 @@ var _DataLabel = require("./parts/DataLabel.jsx");
 var _ChartTooltip = require("./parts/ChartTooltip.jsx");
 var _position = require("./parts/position.js");
 var _a11y = require("./a11y.js");
+var _LocaleProvider = require("../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · LollipopChart
    Summary: A bar chart drawn light (07 Data Display › Charts › Lollipop chart): each category's value is a thin stem from
@@ -63555,10 +64195,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        stacked or grouped values.
 */
 
-const STRINGS = {
-  category: 'Category',
-  value: 'Value'
-};
 // the ring around the active dot (SVG geometry, the 4px grid): its radius
 const RING = 8;
 function LollipopChart({
@@ -63576,7 +64212,7 @@ function LollipopChart({
   strings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('chart.lollipopChart', strings);
   const o = orientation === 'vertical' ? 'vertical' : 'horizontal';
   const rows = _react.default.useMemo(() => {
     const r = data.map((d, i) => ({
@@ -63754,7 +64390,7 @@ function LollipopChart({
   });
 }
   } },
-  "platform/charts/ScatterChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./a11y.js":"platform/charts/a11y.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/ScatterChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./a11y.js":"platform/charts/a11y.js","../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -63771,6 +64407,7 @@ var _GridLines = require("./parts/GridLines.jsx");
 var _ChartLegend = require("./parts/ChartLegend.jsx");
 var _ChartTooltip = require("./parts/ChartTooltip.jsx");
 var _a11y = require("./a11y.js");
+var _LocaleProvider = require("../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · ScatterChart
    Summary: Items plotted as points by two measures, to show how they relate (07 Data Display › Charts › Scatter plot):
@@ -63805,10 +64442,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        the categorical colors by their order; the trend line is dashed, so it is told from the points by more than color.
 */
 
-const STRINGS = {
-  series: 'Series',
-  item: 'Item'
-};
 // SVG geometry on the 4px grid: a point's radius, the largest and smallest bubble's, the active ring's room
 const POINT = 4,
   BUBBLE_MAX = 24,
@@ -63855,7 +64488,7 @@ function ScatterChart({
   strings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('chart.scatterChart', strings);
   const v = variant === 'bubble' ? 'bubble' : 'points';
   const groups = series.map((s, i) => ({
     id: s.id === undefined ? i : s.id,
@@ -64032,7 +64665,7 @@ function ScatterChart({
   });
 }
   } },
-  "platform/charts/FunnelChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./parts/position.js":"platform/charts/parts/position.js","./a11y.js":"platform/charts/a11y.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/FunnelChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./parts/position.js":"platform/charts/parts/position.js","./a11y.js":"platform/charts/a11y.js","../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -64049,6 +64682,7 @@ var _DataLabel = require("./parts/DataLabel.jsx");
 var _ChartTooltip = require("./parts/ChartTooltip.jsx");
 var _position = require("./parts/position.js");
 var _a11y = require("./a11y.js");
+var _LocaleProvider = require("../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · FunnelChart
    Summary: How many items remain at each step of an ordered process (07 Data Display › Charts › Funnel): one bar per
@@ -64080,12 +64714,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Built on ChartFrame, the chart parts (Axis, DataLabel, ChartTooltip) and the chart-a11y helpers. Use a Sankey
        diagram when items can skip or repeat stages, a bar chart for categories that are not steps.
 */
-const STRINGS = {
-  stage: 'Stage',
-  value: 'Count',
-  kept: 'Kept from the step before',
-  ofFirst: 'Of the first step'
-};
 // the room between the active bar and its ring (SVG geometry, the 4px grid)
 const RING = 4,
   LINE = 12;
@@ -64116,7 +64744,7 @@ function FunnelChart({
   strings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('chart.funnelChart', strings);
   const o = orientation === 'horizontal' ? 'horizontal' : 'vertical';
   const rows = data.map((d, i) => ({
     id: i + 1,
@@ -64298,7 +64926,7 @@ function FunnelChart({
   });
 }
   } },
-  "platform/charts/Treemap.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./a11y.js":"platform/charts/a11y.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/Treemap.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./a11y.js":"platform/charts/a11y.js","../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -64313,6 +64941,7 @@ var _ChartFrame = require("./ChartFrame.jsx");
 var _scales = require("./scales.js");
 var _ChartTooltip = require("./parts/ChartTooltip.jsx");
 var _a11y = require("./a11y.js");
+var _LocaleProvider = require("../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · Treemap
    Summary: The parts of a whole as rectangles whose areas are their sizes (07 Data Display › Charts › Treemap): many parts
@@ -64346,12 +64975,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      For precise comparison use a bar chart; for two to five parts a donut or bars.
 */
 
-const STRINGS = {
-  group: 'Group',
-  item: 'Part',
-  value: 'Value',
-  share: 'Share'
-};
 // SVG geometry on the 4px grid: a group's name row and inset, the label's inset in a tile, the smallest tile that shows a
 // name (and a value), the ring's room
 const GROUP_HEAD = 20,
@@ -64443,7 +65066,7 @@ function Treemap({
   strings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('chart.treemap', strings);
   const nested = variant ? variant === 'nested' : data.some(d => Array.isArray(d.children));
   const v = nested ? 'nested' : 'flat';
   const uid = 'plx-treemap' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
@@ -64625,7 +65248,7 @@ function Treemap({
   });
 }
   } },
-  "platform/charts/GanttChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./parts/ReferenceLine.jsx":"platform/charts/parts/ReferenceLine.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./parts/position.js":"platform/charts/parts/position.js","./a11y.js":"platform/charts/a11y.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/GanttChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./parts/ReferenceLine.jsx":"platform/charts/parts/ReferenceLine.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./parts/position.js":"platform/charts/parts/position.js","./a11y.js":"platform/charts/a11y.js","../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -64644,6 +65267,7 @@ var _ChartTooltip = require("./parts/ChartTooltip.jsx");
 var _DataLabel = require("./parts/DataLabel.jsx");
 var _position = require("./parts/position.js");
 var _a11y = require("./a11y.js");
+var _LocaleProvider = require("../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · GanttChart
    Summary: A schedule on a time axis (07 Data Display › Charts › Gantt chart): one row per task with a bar from its start
@@ -64680,16 +65304,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        (Axis, GridLines, ReferenceLine, ChartTooltip) and the chart-a11y helpers. Status is never told by color alone: say it
        in words (status).
 */
-const STRINGS = {
-  task: 'Task',
-  start: 'Start',
-  end: 'End',
-  progress: 'Done',
-  dependsOn: 'Waits for',
-  status: 'Status',
-  today: 'Today',
-  milestone: 'Milestone'
-};
 // SVG geometry on the 4px grid: a milestone's half width, how far before a task's end its arrow leaves it, the arrowhead's
 // length, the active ring's room, the task name's distance from the plot
 const DIAMOND = 8,
@@ -64709,7 +65323,7 @@ function GanttChart({
   strings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('chart.ganttChart', strings);
   const uid = 'plx-gantt' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
   const rows = tasks.map((k, i) => {
     const start = toDate(k.start),
@@ -64939,7 +65553,7 @@ function GanttChart({
   });
 }
   } },
-  "platform/charts/GeoMap.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","../utils/dataviz.js":"platform/utils/dataviz.js","../components/Button/Button.jsx":"platform/components/Button/Button.jsx","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./a11y.js":"platform/charts/a11y.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/GeoMap.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","../utils/dataviz.js":"platform/utils/dataviz.js","../components/Button/Button.jsx":"platform/components/Button/Button.jsx","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./a11y.js":"platform/charts/a11y.js","../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -64956,6 +65570,7 @@ var _scales = require("./scales.js");
 var _ChartLegend = require("./parts/ChartLegend.jsx");
 var _ChartTooltip = require("./parts/ChartTooltip.jsx");
 var _a11y = require("./a11y.js");
+var _LocaleProvider = require("../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · GeoMap
    Summary: A map drawn from the app's own geography (07 Data Display › Specialized displays › Map, and Charts ›
@@ -64997,18 +65612,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        its attribution; it is not part of GeoMap. Region colors are data-viz steps; outlines, the no-data texture and the
        markers' ring are --plx-comp-geo-map-* tokens.
 */
-const STRINGS = {
-  region: 'Region',
-  place: 'Place',
-  value: 'Value',
-  noData: 'No data',
-  latitude: 'Latitude',
-  longitude: 'Longitude',
-  zoom: 'Zoom',
-  zoomIn: 'Zoom in',
-  zoomOut: 'Zoom out',
-  reset: 'Show the whole map'
-};
 const STEPS = 7;
 // SVG geometry on the 4px grid: a marker's radius, the ring's room around it; the zoom range
 const MARKER = 4,
@@ -65042,7 +65645,7 @@ function GeoMap({
   strings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('chart.geoMap', strings);
   const uid = 'plx-geo-map' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
   const project = PROJECTIONS[projection] || PROJECTIONS.mercator;
   const list = Array.isArray(features) ? features : features && features.features || [];
@@ -65364,7 +65967,7 @@ function GeoMap({
   }));
 }
   } },
-  "platform/patterns/SortableList/SortableList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/dnd.js":"platform/utils/dnd.js","../../components/DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/SortableList/SortableList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/dnd.js":"platform/utils/dnd.js","../../components/DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -65377,6 +65980,7 @@ var _dnd = require("../../utils/dnd.js");
 var _DragHandle = require("../../components/DragHandle/DragHandle.jsx");
 var _Menu = require("../../components/Menu/Menu.jsx");
 var _Button = require("../../components/Button/Button.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · SortableList
    Summary: A list people put in their own order (10 Patterns › Selection and organization › Sortable list; also
@@ -65423,17 +66027,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      A list of fields in a find panel reorders with the panels' own rows (Reordering, the columns list); a dashboard's
        widgets with WidgetGrid. Other props pass through to the <ul>.
 */
-const STRINGS = {
-  moveMenu: 'Move {name}',
-  moveUp: 'Move up',
-  moveDown: 'Move down',
-  moveEarlier: 'Move earlier',
-  moveLater: 'Move later',
-  moveFirst: 'Move to the start',
-  moveLast: 'Move to the end',
-  moveUpNamed: 'Move {name} up',
-  moveDownNamed: 'Move {name} down'
-};
 const fill = (s, vars) => String(s).replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
 // after a move button moves its item, focus stays on that button in the moved item (the other one at the list's end)
 const keep = dir => itemEl => {
@@ -65459,7 +66052,7 @@ function SortableList({
   className,
   ...rest
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('sortableList', strings);
   const nameOf = getName || (x => String(x.name != null ? x.name : x.label != null ? x.label : getId(x)));
   const grid = layout === 'grid';
   const off = disabled || !onReorder;
@@ -65548,7 +66141,7 @@ function SortableList({
   }));
 }
   } },
-  "platform/patterns/RenameAction/RenameAction.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/layer.js":"platform/utils/layer.js","../../components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/RenameAction/RenameAction.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/layer.js":"platform/utils/layer.js","../../components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -65566,6 +66159,7 @@ var _Dialog = require("../../components/Dialog/Dialog.jsx");
 var _Field = require("../../components/Field/Field.jsx");
 var _Input = require("../../components/Input/Input.jsx");
 var _Button = require("../../components/Button/Button.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · RenameAction
    Summary: Giving something a new name (04 Actions › Common actions › Rename): in place, where the name is shown
@@ -65612,19 +66206,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The dialog's button reads "Rename…" (an ellipsis: it asks for more before acting); as an item in an actions menu use
        the menu item with open and onClose. Leading and trailing spaces are taken off before the rules run.
 */
-const STRINGS = {
-  label: 'Name',
-  rename: 'Rename',
-  open: 'Rename…',
-  title: 'Rename {name}',
-  cancel: 'Cancel',
-  empty: 'Enter a name',
-  slash: 'A name can’t contain / or \\',
-  taken: 'There’s already an item named {name} here',
-  tooLong: 'Use {max} characters or fewer',
-  renamed: 'Renamed to {name}',
-  failed: 'The name could not be changed'
-};
 const fill = (s, vars) => String(s).replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
 
 // the name before a file's extension (the whole name when it has none, or starts with its only dot)
@@ -65655,7 +66236,7 @@ function RenameAction({
   }, {
     variant: ['inline', 'dialog']
   });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('renameAction', strings);
   const name = label || t.label;
   const formId = (0, _layer.useUid)('plx-rename');
   const controlled = openProp !== undefined;
@@ -65812,7 +66393,7 @@ function RenameAction({
   })))));
 }
   } },
-  "platform/patterns/DeleteFlow/DeleteFlow.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/DeleteFlow/DeleteFlow.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -65831,6 +66412,7 @@ var _Field = require("../../components/Field/Field.jsx");
 var _Input = require("../../components/Input/Input.jsx");
 var _Text = require("../../components/Text/Text.jsx");
 var _ReviewFlow = require("../ReviewFlow/ReviewFlow.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · DeleteFlow
    Summary: Deleting one or several items the Plenix way, in one of four forms. Confirm asks first, with the count in the
@@ -65881,29 +66463,11 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      The count is the number of items, in the question and in the button's toast, never "these items".
 */
 
-const STRINGS = {
-  title: 'Delete {name}?',
-  titleMany: 'Delete {count} {plural}?',
-  delete: 'Delete',
-  cancel: 'Cancel',
-  permanent: 'This cannot be undone.',
-  more: 'and {count} more',
-  typeLabel: 'Type {phrase} to confirm',
-  typeError: 'Type {phrase} exactly as shown.',
-  phraseMany: 'delete {count} {plural}',
-  deleted: '{what} deleted',
-  trashed: '{what} moved to the trash',
-  undo: 'Undo',
-  retention: 'Restore {them} from the trash within {days} days.',
-  it: 'it',
-  them: 'them',
-  names: 'Deleted'
-};
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 const SHOWN = 5;
 function DeleteFlow({
   items = [],
-  noun = 'item',
+  noun,
   plural,
   variant = 'confirm',
   consequence,
@@ -65923,17 +66487,27 @@ function DeleteFlow({
   }, {
     variant: ['confirm', 'type', 'undo', 'trash']
   });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('deleteFlow', strings);
   const toast = (0, _ReviewFlow.useOptionalToast)();
-  const many = plural || noun + 's';
+  const loc = (0, _LocaleProvider.useLocale)();
+  const builtIn = !noun && !plural; // the default words: whole sentences with the Arabic plural forms, from the catalog
+  const many = plural || (noun ? noun + 's' : t.plural);
+  noun = noun ?? t.noun;
+  const counted = m => builtIn ? loc.t('deleteFlow.items', {
+    count: m,
+    n: (0, _format.formatNumber)(m)
+  }) : (0, _format.formatNumber)(m) + ' ' + many;
   const n = items.length;
   const name = n === 1 ? '“' + items[0].label + '”' : '';
-  const what = n === 1 ? name : (0, _format.formatNumber)(n) + ' ' + many;
+  const what = n === 1 ? name : counted(n);
   const [shown, setShown] = _react.default.useState(false);
   const [typed, setTyped] = _react.default.useState('');
   const [error, setError] = _react.default.useState('');
   const field = _react.default.useRef(null);
-  const phrase = confirmPhrase || (n === 1 ? items[0].label : fill(t.phraseMany, {
+  const phrase = confirmPhrase || (n === 1 ? items[0].label : builtIn ? loc.t('deleteFlow.phraseItems', {
+    count: n,
+    n: (0, _format.formatNumber)(n)
+  }) : fill(t.phraseMany, {
     count: (0, _format.formatNumber)(n),
     plural: many
   }));
@@ -66015,6 +66589,9 @@ function DeleteFlow({
   const label = String(t.typeLabel).split('{phrase}');
   const title = n === 1 ? fill(t.title, {
     name
+  }) : builtIn ? loc.t('deleteFlow.titleItems', {
+    count: n,
+    n: (0, _format.formatNumber)(n)
   }) : fill(t.titleMany, {
     count: (0, _format.formatNumber)(n),
     plural: many
@@ -66077,7 +66654,7 @@ function DeleteFlow({
   })) : null)) : null);
 }
   } },
-  "platform/patterns/DuplicateAction/DuplicateAction.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/DuplicateAction/DuplicateAction.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -66098,6 +66675,8 @@ var _Checkbox = require("../../components/Checkbox/Checkbox.jsx");
 var _Fieldset = require("../../components/Fieldset/Fieldset.jsx");
 var _Icon = require("../../components/Icon/Icon.jsx");
 var _ReviewFlow = require("../ReviewFlow/ReviewFlow.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _format = require("../../utils/format.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · DuplicateAction, copyName
    Summary: Make a copy of one item. Copy of the name duplicates at once: the copy is named "Copy of Easter banner" (then
@@ -66139,24 +66718,10 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      Duplicate never copies people's comments or members unless they choose it: those belong to the original's history.
 */
 
-const STRINGS = {
-  duplicate: 'Duplicate',
-  copyOf: 'Copy of {name}',
-  numbered: '{name} ({n})',
-  title: 'Duplicate {noun}',
-  name: 'Name',
-  from: 'From {name}',
-  also: 'Also copy',
-  empty: 'Enter a name.',
-  taken: 'A {noun} named {name} already exists.',
-  done: 'Duplicated as {name}',
-  undo: 'Undo',
-  cancel: 'Cancel'
-};
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 const q = x => '“' + x + '”';
 function copyName(name, taken = [], strings) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = Object.assign({}, (0, _LocaleProvider.createTranslator)((0, _format.formatLocale)()).section('duplicateAction'), strings); // a plain function: no hook
   const used = new Set((taken || []).map(x => String(x).trim().toLowerCase()));
   const base = fill(t.copyOf, {
     name
@@ -66172,7 +66737,7 @@ function copyName(name, taken = [], strings) {
 }
 function DuplicateAction({
   name = '',
-  noun = 'item',
+  noun,
   variant = 'copy',
   taken = [],
   onDuplicate,
@@ -66193,7 +66758,7 @@ function DuplicateAction({
     variant: ['copy', 'rename'],
     size: ['md', 'sm', 'xs', '2xs', 'lg']
   });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('duplicateAction', strings);
   const toast = (0, _ReviewFlow.useOptionalToast)();
   const [shown, setShown] = _react.default.useState(false);
   const [value, setValue] = _react.default.useState('');
@@ -66318,7 +66883,7 @@ function DuplicateAction({
   }))) : null)) : null);
 }
   } },
-  "platform/patterns/Publish/Publish.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/Publish/Publish.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -66336,6 +66901,7 @@ var _Field = require("../../components/Field/Field.jsx");
 var _DatePicker = require("../../components/DatePicker/DatePicker.jsx");
 var _Text = require("../../components/Text/Text.jsx");
 var _ReviewFlow = require("../ReviewFlow/ReviewFlow.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Publish
    Summary: An item's publishing state and the actions that change it, in one row: the status badge with its icon (Draft,
@@ -66379,34 +66945,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Notes:
      The status is the item's own; whether it may be published (an approval) is ReviewFlow's.
 */
-const STRINGS = {
-  publish: 'Publish',
-  publishNow: 'Publish now',
-  schedule: 'Schedule',
-  cancelSchedule: 'Cancel schedule',
-  unpublish: 'Unpublish',
-  cancel: 'Cancel',
-  publishTitle: 'Publish {name}?',
-  publishMessage: 'It becomes visible to {audience}.',
-  unpublishTitle: 'Unpublish {name}?',
-  unpublishMessage: 'It is hidden from {audience}. You can publish it again.',
-  scheduleTitle: 'Schedule {name}',
-  when: 'Publish on',
-  whenHint: 'Date and time, in your time zone.',
-  past: 'Choose a time in the future.',
-  empty: 'Choose a date and time.',
-  publishedLine: 'Published {at}',
-  publishedBy: 'Published {at} by {by}',
-  scheduledLine: 'Publishes {at}',
-  scheduledBy: 'Publishes {at}, scheduled by {by}',
-  draftLine: 'Not published',
-  published: '{name} published',
-  scheduled: '{name} scheduled for {at}',
-  unpublished: '{name} unpublished',
-  undo: 'Undo',
-  everyone: 'everyone with access',
-  actions: 'Publishing'
-};
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 const q = x => '“' + x + '”';
 
@@ -66439,7 +66977,7 @@ function Publish({
   className,
   ...rest
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('publish', strings);
   const toast = (0, _ReviewFlow.useOptionalToast)();
   const who = audience || t.everyone;
   const [ask, setAsk] = _react.default.useState(null); // "publish" | "unpublish" | "schedule"
@@ -66589,7 +67127,7 @@ function Publish({
   })))) : null);
 }
   } },
-  "platform/patterns/AssignControl/AssignControl.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","../../components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","../../components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/AssignControl/AssignControl.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","../../components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","../../components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -66611,6 +67149,7 @@ var _EntityPicker = require("../../components/EntityPicker/EntityPicker.jsx");
 var _Persona = require("../../components/Persona/Persona.jsx");
 var _Text = require("../../components/Text/Text.jsx");
 var _ReviewFlow = require("../ReviewFlow/ReviewFlow.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · AssignControl
    Summary: Who is responsible for an item, and how to change it, in one row. Assign: nobody yet, so the people picker
@@ -66651,32 +67190,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      One assignee per item; several people sharing a task are reviewers or members, not assignees.
      A delegation ends by itself after its last day; End delegation ends it sooner.
 */
-const STRINGS = {
-  assign: 'Assign',
-  assignToMe: 'Assign to me',
-  reassign: 'Reassign',
-  unassign: 'Unassign',
-  unassigned: 'Unassigned',
-  cancel: 'Cancel',
-  assigned: 'Assigned to {name}',
-  cleared: '{label} removed',
-  delegate: 'Delegate',
-  change: 'Change',
-  end: 'End delegation',
-  delegateTitle: 'Delegate {label}',
-  to: 'Delegate to',
-  dates: 'Dates',
-  note: 'Note',
-  noteHint: 'Shown to the person you delegate to.',
-  needPerson: 'Choose a person.',
-  needDates: 'Choose the first and last day.',
-  delegatedTo: 'Delegated to {name}',
-  notDelegated: 'Not delegated',
-  ended: 'Delegation ended'
-};
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 function AssignControl({
-  label = 'Assignee',
+  label,
   people = [],
   value = null,
   onChange,
@@ -66695,7 +67211,8 @@ function AssignControl({
   }, {
     variant: ['assign', 'delegate']
   });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('assignControl', strings);
+  label = label ?? t.label;
   const toast = (0, _ReviewFlow.useOptionalToast)();
   const say = text => {
     if (toast) toast.show(text, {
@@ -66930,7 +67447,7 @@ function AssignControl({
   }, t.unassign) : null));
 }
   } },
-  "platform/patterns/Wizard/Wizard.jsx": { deps: {"react":null,"../Form/Form.jsx":"platform/patterns/Form/Form.jsx","../../components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","../../components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/Wizard/Wizard.jsx": { deps: {"react":null,"../Form/Form.jsx":"platform/patterns/Form/Form.jsx","../../components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","../../components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -66946,6 +67463,7 @@ var _Text = require("../../components/Text/Text.jsx");
 var _Stack = require("../../components/Stack/Stack.jsx");
 var _Notice = require("../../components/Notice/Notice.jsx");
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · Wizard
    Summary: Named form steps with validation, Back and Next, and an optional final summary.
@@ -66975,16 +67493,7 @@ function Wizard({
   strings,
   className
 }) {
-  const t = Object.assign({
-    back: 'Back',
-    next: 'Next',
-    complete: 'Finish',
-    cancel: 'Cancel',
-    summary: 'Review',
-    invalid: 'Check this step before continuing.',
-    failed: 'Could not save. Try again.',
-    steps: 'Steps'
-  }, strings);
+  const t = (0, _LocaleProvider.useStrings)('wizard', strings);
   const all = summary == null ? steps : steps.concat([{
     id: 'summary',
     label: t.summary,
@@ -67116,7 +67625,7 @@ function Wizard({
   }, at === all.length - 1 ? t.complete : t.next)));
 }
   } },
-  "platform/patterns/WizardDialog/WizardDialog.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/WizardDialog/WizardDialog.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -67128,6 +67637,7 @@ var _devWarn = require("../../utils/devWarn.js");
 var _Dialog = require("../../components/Dialog/Dialog.jsx");
 var _Wizard = require("../Wizard/Wizard.jsx");
 var _UnsavedGuard = require("../../providers/UnsavedGuard.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · WizardDialog
    Summary: A Wizard in a medium, large or full-screen Platform Dialog.
@@ -67156,10 +67666,7 @@ function WizardDialog({
   }, {
     size: ['md', 'lg', 'full']
   });
-  const t = Object.assign({
-    close: 'Close',
-    unsaved: 'Your changes will be lost.'
-  }, strings);
+  const t = (0, _LocaleProvider.useStrings)('wizardDialog', strings);
   const [busy, setBusy] = _react.default.useState(false);
   const guard = (0, _UnsavedGuard.useUnsavedGuard)(open && dirty, t.unsaved);
   const close = guard(() => {
@@ -67348,7 +67855,7 @@ function FormFlow({
   }, open ? body : null);
 }
   } },
-  "platform/patterns/Autosave/Autosave.jsx": { deps: {"react":null,"../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/Autosave/Autosave.jsx": { deps: {"react":null,"../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -67363,6 +67870,7 @@ var _Button = require("../../components/Button/Button.jsx");
 var _Stack = require("../../components/Stack/Stack.jsx");
 var _UnsavedGuard = require("../../providers/UnsavedGuard.jsx");
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · Autosave, SaveStatus, useAutosave
    Summary: Debounced serialized persistence and icon Badges for saving, saved, offline and failed work.
@@ -67431,14 +67939,15 @@ function Autosave({
 function useAutosave(value, onSave, {
   delay = 600,
   enabled = true,
-  unsavedMessage = 'Your changes have not been saved.'
+  unsavedMessage
 } = {}) {
+  const words = (0, _LocaleProvider.useStrings)('autosave');
   const [snapshot, setSnapshot] = _react.default.useState({
     state: 'saved',
     error: null,
     dirty: false
   });
-  (0, _UnsavedGuard.useUnsavedGuard)(snapshot.dirty, unsavedMessage);
+  (0, _UnsavedGuard.useUnsavedGuard)(snapshot.dirty, unsavedMessage ?? words.unsaved);
   const ref = _react.default.useRef({
     value,
     saved: value,
@@ -67535,7 +68044,7 @@ function useAutosave(value, onSave, {
   };
 }
   } },
-  "platform/patterns/DraftState/DraftState.jsx": { deps: {"react":null,"../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Autosave/Autosave.jsx":"platform/patterns/Autosave/Autosave.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/DraftState/DraftState.jsx": { deps: {"react":null,"../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Autosave/Autosave.jsx":"platform/patterns/Autosave/Autosave.jsx","../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -67551,6 +68060,7 @@ var _Notice = require("../../components/Notice/Notice.jsx");
 var _Stack = require("../../components/Stack/Stack.jsx");
 var _Autosave = require("../Autosave/Autosave.jsx");
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · DraftState
    Summary: Draft Badge, version and actions to resume or confirm discarding work.
@@ -67572,15 +68082,7 @@ function DraftState({
   strings,
   className
 }) {
-  const t = Object.assign({
-    draft: 'Draft',
-    resume: 'Resume draft',
-    discard: 'Discard draft',
-    confirm: 'Discard this draft?',
-    message: 'This draft will be permanently removed.',
-    cancel: 'Keep draft',
-    failed: 'Could not update the draft. Try again.'
-  }, strings);
+  const t = (0, _LocaleProvider.useStrings)('draftState', strings);
   const [confirm, setConfirm] = _react.default.useState(false),
     [busy, setBusy] = _react.default.useState(false),
     [error, setError] = _react.default.useState('');
@@ -67648,7 +68150,7 @@ function DraftState({
   }, error) : null));
 }
   } },
-  "platform/patterns/SaveAs/SaveAs.jsx": { deps: {"react":null,"../Form/Form.jsx":"platform/patterns/Form/Form.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/TreeSelect/TreeSelect.jsx":"platform/components/TreeSelect/TreeSelect.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/SaveAs/SaveAs.jsx": { deps: {"react":null,"../Form/Form.jsx":"platform/patterns/Form/Form.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/TreeSelect/TreeSelect.jsx":"platform/components/TreeSelect/TreeSelect.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -67664,6 +68166,7 @@ var _Button = require("../../components/Button/Button.jsx");
 var _Notice = require("../../components/Notice/Notice.jsx");
 var _UnsavedGuard = require("../../providers/UnsavedGuard.jsx");
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · SaveAs
    Summary: Save a copy with a name, a tree location and an optional file format.
@@ -67689,17 +68192,7 @@ function SaveAs({
   strings,
   className
 }) {
-  const t = Object.assign({
-    title: 'Save as',
-    name: 'Name',
-    location: 'Location',
-    format: 'Format',
-    save: 'Save copy',
-    cancel: 'Cancel',
-    required: 'Enter a name and choose a location.',
-    failed: 'Could not save the copy. Try again.',
-    unsaved: 'Your changes will be lost.'
-  }, strings);
+  const t = (0, _LocaleProvider.useStrings)('saveAs', strings);
   const [name, setName] = _react.default.useState(initialName),
     [location, setLocation] = _react.default.useState(initialLocation);
   const [format, setFormat] = _react.default.useState(initialFormat || formats[0]?.value || '');
@@ -67783,7 +68276,7 @@ function SaveAs({
   }, t.save)));
 }
   } },
-  "platform/patterns/ArchiveRestore/ArchiveRestore.jsx": { deps: {"react":null,"../../components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ArchiveRestore/ArchiveRestore.jsx": { deps: {"react":null,"../../components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -67797,6 +68290,7 @@ var _Button = require("../../components/Button/Button.jsx");
 var _Notice = require("../../components/Notice/Notice.jsx");
 var _Stack = require("../../components/Stack/Stack.jsx");
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · ArchiveRestore
    Summary: Reversible archiving with an archived Banner, icon Badge and restore action.
@@ -67819,13 +68313,7 @@ function ArchiveRestore({
   children,
   className
 }) {
-  const t = Object.assign({
-    archive: 'Archive',
-    restore: 'Restore',
-    archived: 'Archived',
-    message: 'Restore this record to make it active again.',
-    failed: 'Could not update the record. Try again.'
-  }, strings);
+  const t = (0, _LocaleProvider.useStrings)('archiveRestore', strings);
   const [busy, setBusy] = _react.default.useState(false),
     [error, setError] = _react.default.useState('');
   const lock = _react.default.useRef(false);
@@ -67866,7 +68354,7 @@ function ArchiveRestore({
   }, error) : null, children);
 }
   } },
-  "platform/components/File/File.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/File/File.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -67880,6 +68368,7 @@ var _cx = require("../../utils/cx.js");
 var _format = require("../../utils/format.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · File
    Summary: A file or a folder as one object, the same everywhere it appears (12 Specialized › Files, assets, and DAM ›
@@ -67920,11 +68409,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        dates and counts: the data font.
      Other props pass through to the outer <span>.
 */
-const STRINGS = {
-  folder: 'folder',
-  items: '{n} items',
-  item: '{n} item'
-};
 const BY_EXT = {
   pdf: 'file-pdf',
   png: 'file-png',
@@ -68025,7 +68509,7 @@ function File({
   className,
   ...rest
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('file', strings);
   const folder = kind === 'folder';
   const ext = folder ? '' : fileExtension(name);
   const base = ext ? name.slice(0, name.length - ext.length - 1) : name;
@@ -68073,7 +68557,7 @@ function File({
   }, meta) : null) : null));
 }
   } },
-  "platform/components/FileRow/FileRow.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../File/File.jsx":"platform/components/File/File.jsx","../Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","../../patterns/RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","../../patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/FileRow/FileRow.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../File/File.jsx":"platform/components/File/File.jsx","../Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","../../patterns/RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","../../patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -68092,6 +68576,7 @@ var _Menu = require("../Menu/Menu.jsx");
 var _ProgressBar = require("../ProgressBar/ProgressBar.jsx");
 var _RenameAction = require("../../patterns/RenameAction/RenameAction.jsx");
 var _DeleteFlow = require("../../patterns/DeleteFlow/DeleteFlow.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · FileRow, FileRowList
    Summary: One file or folder as a line in a list (12 Specialized › Files, assets, and DAM › File row): a checkbox to
@@ -68147,23 +68632,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        and pickers. Files people compare by column (size, date, owner, sorted and filtered) belong in the DataGrid.
      Other props pass through to the row element.
 */
-const STRINGS = {
-  select: 'Select {name}',
-  more: 'More actions for {name}',
-  download: 'Download {name}',
-  rename: 'Rename…',
-  delete: 'Delete',
-  cancel: 'Cancel',
-  retry: 'Try again',
-  transfer: '{label} {name}',
-  uploading: 'Uploading',
-  file: 'file',
-  files: 'files',
-  folder: 'folder',
-  folders: 'folders',
-  items: '{n} items',
-  item: '{n} item'
-};
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 function FileRow({
   file,
@@ -68191,7 +68659,7 @@ function FileRow({
   className,
   ...rest
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('fileRow', strings);
   const f = file || {};
   const name = f.name || '';
   const folder = f.kind === 'folder';
@@ -69403,7 +69871,7 @@ function AccountRecovery({
   }, t.back) : null));
 }
   } },
-  "platform/patterns/SessionTimeout/SessionTimeout.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/SessionTimeout/SessionTimeout.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -69417,6 +69885,7 @@ var _layer = require("../../utils/layer.js");
 var _announce = require("../../utils/announce.jsx");
 var _Button = require("../../components/Button/Button.jsx");
 var _Dialog = require("../../components/Dialog/Dialog.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · SessionTimeout, useSessionTimeout
    Summary: Ending a session that nobody is using without losing anyone's work (10 Patterns › Authentication and
@@ -69464,19 +69933,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        server's answer).
 */
 
-const STRINGS = {
-  warningTitle: 'Your session is about to end',
-  warning: 'You’ll be signed out in {time} because you haven’t been active.',
-  stay: 'Stay signed in',
-  signOut: 'Sign out',
-  signedOutTitle: 'You were signed out',
-  signedOut: 'For your security, you were signed out after {minutes} minutes without activity.',
-  signedOutShort: 'For your security, you were signed out because you weren’t active.',
-  saved: 'Your changes are saved.',
-  signIn: 'Sign in again',
-  left: '{time} left',
-  ended: 'Signed out'
-};
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 const clock = sec => {
   const s = Math.max(0, Math.ceil(sec));
@@ -69515,7 +69971,7 @@ function SessionTimeout({
   strings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('sessionTimeout', strings);
   const left = useLeft(state, expiresAt, remaining);
   const stayRef = _react.default.useRef(null);
   const signInRef = _react.default.useRef(null);
@@ -69663,7 +70119,7 @@ function useSessionTimeout({
   };
 }
   } },
-  "platform/patterns/RoleManager/RoleManager.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","../../components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../ResourceList/ResourceList.jsx":"platform/patterns/ResourceList/ResourceList.jsx","../PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","../AssignControl/AssignControl.jsx":"platform/patterns/AssignControl/AssignControl.jsx","../DuplicateAction/DuplicateAction.jsx":"platform/patterns/DuplicateAction/DuplicateAction.jsx","../DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/RoleManager/RoleManager.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","../../components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../ResourceList/ResourceList.jsx":"platform/patterns/ResourceList/ResourceList.jsx","../PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","../AssignControl/AssignControl.jsx":"platform/patterns/AssignControl/AssignControl.jsx","../DuplicateAction/DuplicateAction.jsx":"platform/patterns/DuplicateAction/DuplicateAction.jsx","../DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -69690,6 +70146,7 @@ var _PermissionSummary = require("../PermissionSummary/PermissionSummary.jsx");
 var _AssignControl = require("../AssignControl/AssignControl.jsx");
 var _DuplicateAction = require("../DuplicateAction/DuplicateAction.jsx");
 var _DeleteFlow = require("../DeleteFlow/DeleteFlow.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · RoleManager
    Summary: The roles of a workspace and what each allows, in two views (10 Patterns › Authentication and permissions ›
@@ -69741,41 +70198,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Few roles that match real jobs (Viewer, Editor, Owner) and custom roles only when needed. Every change should go
        to the workspace's audit log (onChange's change says what to record).
 */
-const STRINGS = {
-  roles: 'Roles',
-  create: 'Create role',
-  createTitle: 'Create role',
-  name: 'Name',
-  description: 'Description',
-  descriptionHint: 'One sentence on what people with this role can do.',
-  startFrom: 'Start with the permissions of',
-  empty: 'Enter a name.',
-  taken: 'A role named {name} already exists.',
-  back: 'All roles',
-  members: 'Members',
-  member: 'member',
-  membersCount: '{n} members',
-  memberCount: '{n} member',
-  builtIn: 'Built-in',
-  custom: 'Custom',
-  permissions: 'Permissions',
-  builtInNote: 'Built-in roles can’t be changed. Duplicate one to make your own.',
-  addMember: 'Add a member',
-  remove: 'Remove {name}',
-  lastMember: '{role} needs at least one member. Add someone else first.',
-  noMembers: 'Nobody has this role yet.',
-  role: 'role',
-  cancel: 'Cancel',
-  delete: 'Delete',
-  added: '{name} added to {role}',
-  removed: '{name} removed from {role}',
-  created: '{name} created',
-  access: 'People with the {role} role',
-  people: '{n} people',
-  peopleOne: '{n} person',
-  allowed: '{permission} allowed for {role}',
-  denied: '{permission} no longer allowed for {role}'
-};
 const ROLE_ICONS = {
   owner: 'settings-permissions',
   editor: 'pencil',
@@ -69824,7 +70246,7 @@ function RoleManager({
   className,
   ...rest
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('roleManager', strings);
   const [ownView, setOwnView] = _react.default.useState(defaultView);
   const [ownId, setOwnId] = _react.default.useState(defaultRoleId || roles[0] && roles[0].id);
   const shown = view || ownView;
@@ -70259,7 +70681,7 @@ function RoleDetail({
   })) : null));
 }
   } },
-  "platform/patterns/ConnectedAccounts/ConnectedAccounts.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ConnectedAccounts/ConnectedAccounts.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -70276,6 +70698,7 @@ var _Button = require("../../components/Button/Button.jsx");
 var _Dialog = require("../../components/Dialog/Dialog.jsx");
 var _IconTile = require("../../components/IconTile/IconTile.jsx");
 var _Text = require("../../components/Text/Text.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ConnectedAccounts, ConnectedAccount
    Summary: The accounts on other services that Plenix is linked to, and the way to link or unlink each (10 Patterns ›
@@ -70329,25 +70752,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The status is the Badge's word and icon; the connected account and date are technical values (the data font).
      One row per service; for many accounts on one service, a row per account with the account in the title.
 */
-const STRINGS = {
-  label: 'Connected accounts',
-  connect: 'Connect',
-  disconnect: 'Disconnect',
-  reconnect: 'Reconnect',
-  cancel: 'Cancel',
-  connected: 'Connected',
-  disconnected: 'Not connected',
-  error: 'Connection error',
-  as: 'As {account}',
-  since: 'since {date}',
-  connectTitle: 'Connect {service}?',
-  connectMessage: 'You’ll sign in to {service} to allow this. Plenix will be able to:',
-  continue: 'Continue to {service}',
-  disconnectTitle: 'Disconnect {service}?',
-  disconnectMessage: 'You can connect it again at any time.',
-  done: '{service} connected',
-  undone: '{service} disconnected'
-};
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 const STATUS = {
   connected: ['success', 'check'],
@@ -70375,7 +70779,7 @@ function ConnectedAccount({
   className,
   ...rest
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('connectedAccounts', strings);
   const a = account || {};
   const status = STATUS[a.status] ? a.status : 'disconnected';
   const [ask, setAsk] = _react.default.useState(null); // "connect" | "disconnect"
@@ -70480,7 +70884,7 @@ function ConnectedAccounts({
   strings,
   ...rest
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('connectedAccounts', strings);
   const {
     onConnect,
     onDisconnect,
@@ -70505,7 +70909,7 @@ function ConnectedAccounts({
   })));
 }
   } },
-  "platform/patterns/ShareDialog/ShareDialog.jsx": { deps: {"react":null,"../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","../../components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","../../components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ShareDialog/ShareDialog.jsx": { deps: {"react":null,"../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","../../components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","../../components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -70526,6 +70930,7 @@ var _Notice = require("../../components/Notice/Notice.jsx");
 var _Text = require("../../components/Text/Text.jsx");
 var _UnsavedGuard = require("../../providers/UnsavedGuard.jsx");
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · ShareDialog
    Summary: Manage people and their roles, copy a restricted link, or invoke Web Share.
@@ -70567,25 +70972,7 @@ function ShareDialog({
   strings,
   className
 }) {
-  const t = Object.assign({
-    title: 'Share',
-    people: 'People',
-    link: 'Link',
-    person: 'Person',
-    role: 'Role',
-    add: 'Add person',
-    remove: 'Remove',
-    save: 'Save access',
-    cancel: 'Cancel',
-    copy: 'Copy link',
-    access: 'Link access',
-    restricted: 'Only people with access',
-    anyone: 'Anyone with the link can view',
-    nativeShare: 'Share using device',
-    failed: 'Could not share. Try again.',
-    invalid: 'Choose a person and an available role.',
-    unsaved: 'Your access changes will be lost.'
-  }, strings);
+  const t = (0, _LocaleProvider.useStrings)('shareDialog', strings);
   const [draft, setDraft] = _react.default.useState(grants),
     [access, setAccess] = _react.default.useState(linkAccess);
   const [person, setPerson] = _react.default.useState(''),
@@ -70757,7 +71144,7 @@ function ShareDialog({
   }, error) : null));
 }
   } },
-  "platform/patterns/PermissionsEditor/PermissionsEditor.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/PermissionsEditor/PermissionsEditor.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -70775,6 +71162,7 @@ var _Notice = require("../../components/Notice/Notice.jsx");
 var _PermissionSummary = require("../PermissionSummary/PermissionSummary.jsx");
 var _UnsavedGuard = require("../../providers/UnsavedGuard.jsx");
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · PermissionsEditor
    Summary: An editable capabilities matrix by role or person with a readable permission summary.
@@ -70802,14 +71190,7 @@ function PermissionsEditor({
   strings,
   className
 }) {
-  const t = Object.assign({
-    label: 'Permissions',
-    capability: 'Capability',
-    subject: 'Show permissions for',
-    save: 'Save permissions',
-    failed: 'Could not save permissions. Try again.',
-    unsaved: 'Your permission changes have not been saved.'
-  }, strings);
+  const t = (0, _LocaleProvider.useStrings)('permissionsEditor', strings);
   const [selected, setSelected] = _react.default.useState(subjects[0]?.id || ''),
     [busy, setBusy] = _react.default.useState(false),
     [error, setError] = _react.default.useState('');
@@ -70894,7 +71275,7 @@ function PermissionsEditor({
   }, t.save) : null);
 }
   } },
-  "platform/patterns/Tour/Tour.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/Tour/Tour.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -70906,6 +71287,7 @@ var _Stack = require("../../components/Stack/Stack.jsx");
 var _TeachingBubble = require("../../components/TeachingBubble/TeachingBubble.jsx");
 var _Button = require("../../components/Button/Button.jsx");
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · Tour
    Summary: A skippable, resumable sequence of TeachingBubbles around real controls.
@@ -70934,15 +71316,7 @@ function Tour({
   strings,
   className
 }) {
-  const t = Object.assign({
-    next: 'Next',
-    back: 'Back',
-    finish: 'Finish tour',
-    skip: 'Skip tour',
-    resume: 'Resume tour',
-    close: 'Close',
-    step: '{current} of {total}'
-  }, strings);
+  const t = (0, _LocaleProvider.useStrings)('tour', strings);
   const [own, setOwn] = _react.default.useState(defaultStep);
   const at = Math.max(0, Math.min(step === undefined ? own : step, steps.length - 1));
   const move = n => {
@@ -70989,7 +71363,7 @@ function Tour({
   }, t.resume) : null);
 }
   } },
-  "platform/components/Checklist/Checklist.jsx": { deps: {"react":null,"../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Checklist/Checklist.jsx": { deps: {"react":null,"../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -71004,6 +71378,7 @@ var _Button = require("../Button/Button.jsx");
 var _Text = require("../Text/Text.jsx");
 var _CollapsibleSection = require("../CollapsibleSection/CollapsibleSection.jsx");
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · Checklist
    Summary: Named setup tasks with completion progress, optional collapse and dismissal.
@@ -71031,10 +71406,7 @@ function Checklist({
   strings,
   className
 }) {
-  const t = Object.assign({
-    dismiss: 'Dismiss checklist',
-    progress: 'Tasks completed'
-  }, strings);
+  const t = (0, _LocaleProvider.useStrings)('checklist', strings);
   const done = items.filter(item => completed.includes(item.id)).length;
   const body = /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
     className: "plx-checklist__items"
@@ -71073,7 +71445,7 @@ function Checklist({
   }, body) : body);
 }
   } },
-  "platform/patterns/Onboarding/Onboarding.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checklist/Checklist.jsx":"platform/components/Checklist/Checklist.jsx","../Tour/Tour.jsx":"platform/patterns/Tour/Tour.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/Onboarding/Onboarding.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checklist/Checklist.jsx":"platform/components/Checklist/Checklist.jsx","../Tour/Tour.jsx":"platform/patterns/Tour/Tour.jsx","../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -71087,6 +71459,7 @@ var _Button = require("../../components/Button/Button.jsx");
 var _Checklist = require("../../components/Checklist/Checklist.jsx");
 var _Tour = require("../Tour/Tour.jsx");
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · Onboarding
    Summary: An optional welcome dialog followed by a setup checklist and a user-started product tour.
@@ -71118,13 +71491,7 @@ function Onboarding({
   strings,
   className
 }) {
-  const t = Object.assign({
-    start: 'Get started',
-    skip: 'Skip welcome',
-    tour: 'Take a tour',
-    checklist: 'Get started',
-    close: 'Close'
-  }, strings);
+  const t = (0, _LocaleProvider.useStrings)('onboarding', strings);
   const [shown, setShown] = _react.default.useState(welcome),
     [tour, setTour] = _react.default.useState(false);
   const close = () => {
@@ -71163,7 +71530,7 @@ function Onboarding({
   })) : null);
 }
   } },
-  "platform/patterns/FeatureIntro/FeatureIntro.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/FeatureIntro/FeatureIntro.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -71178,6 +71545,7 @@ var _Dialog = require("../../components/Dialog/Dialog.jsx");
 var _Text = require("../../components/Text/Text.jsx");
 var _TeachingBubble = require("../../components/TeachingBubble/TeachingBubble.jsx");
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · FeatureIntro
    Summary: A feature label with a New Badge, optional TeachingBubble and a what-is-new dialog.
@@ -71203,13 +71571,7 @@ function FeatureIntro({
   strings,
   className
 }) {
-  const t = Object.assign({
-    new: 'New',
-    whatsNew: 'What is new',
-    gotIt: 'Got it',
-    later: 'Not now',
-    close: 'Close'
-  }, strings);
+  const t = (0, _LocaleProvider.useStrings)('featureIntro', strings);
   const [bubble, setBubble] = _react.default.useState(initiallyOpen),
     [dialog, setDialog] = _react.default.useState(false);
   const done = () => {
@@ -71255,7 +71617,7 @@ function FeatureIntro({
   }, children));
 }
   } },
-  "platform/patterns/HelpPanel/HelpPanel.jsx": { deps: {"react":null,"../SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/HelpPanel/HelpPanel.jsx": { deps: {"react":null,"../SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -71271,6 +71633,7 @@ var _Link = require("../../components/Link/Link.jsx");
 var _Text = require("../../components/Text/Text.jsx");
 var _EmptyState = require("../../components/EmptyState/EmptyState.jsx");
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · HelpPanel
    Summary: Searchable help articles in the Platform inspector SidePanel.
@@ -71293,14 +71656,7 @@ function HelpPanel({
   strings,
   className
 }) {
-  const t = Object.assign({
-    title: 'Help',
-    search: 'Search help',
-    empty: 'No matching articles',
-    back: 'Back to articles',
-    read: 'Read full article',
-    close: 'Collapse help'
-  }, strings);
+  const t = (0, _LocaleProvider.useStrings)('helpPanel', strings);
   const [query, setQuery] = _react.default.useState(''),
     [selected, setSelected] = _react.default.useState(null);
   const article = articles.find(a => a.id === selected);
@@ -71338,7 +71694,7 @@ function HelpPanel({
   }))));
 }
   } },
-  "platform/patterns/ImportDialog/ImportDialog.jsx": { deps: {"react":null,"../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","../../components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ImportDialog/ImportDialog.jsx": { deps: {"react":null,"../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","../../components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -71358,6 +71714,7 @@ var _Button = require("../../components/Button/Button.jsx");
 var _Notice = require("../../components/Notice/Notice.jsx");
 var _UnsavedGuard = require("../../providers/UnsavedGuard.jsx");
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · ImportDialog
    Summary: Choose a file, paste data or provide an HTTP URL before an explicit import.
@@ -71386,20 +71743,7 @@ function ImportDialog({
   strings,
   className
 }) {
-  const t = Object.assign({
-    title: 'Import',
-    file: 'File',
-    paste: 'Paste data',
-    url: 'URL',
-    choose: 'Choose source file',
-    drop: 'Drop a file here or choose it below.',
-    none: 'No file chosen',
-    import: 'Import',
-    cancel: 'Cancel',
-    invalid: 'Choose a supported file, paste data, or enter an HTTP URL.',
-    failed: 'Could not import. Your source is still available.',
-    unsaved: 'Your import source will be lost.'
-  }, strings);
+  const t = (0, _LocaleProvider.useStrings)('importDialog', strings);
   const [mode, setMode] = _react.default.useState(initialMode),
     [files, setFiles] = _react.default.useState([]),
     [text, setText] = _react.default.useState(''),
@@ -71544,7 +71888,7 @@ function ImportDialog({
   }, error) : null));
 }
   } },
-  "platform/patterns/ImportWizard/ImportWizard.jsx": { deps: {"react":null,"../ImportDialog/ImportDialog.jsx":"platform/patterns/ImportDialog/ImportDialog.jsx","../Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ImportWizard/ImportWizard.jsx": { deps: {"react":null,"../ImportDialog/ImportDialog.jsx":"platform/patterns/ImportDialog/ImportDialog.jsx","../Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -71564,6 +71908,7 @@ var _Button = require("../../components/Button/Button.jsx");
 var _Text = require("../../components/Text/Text.jsx");
 var _UnsavedGuard = require("../../providers/UnsavedGuard.jsx");
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · ImportWizard
    Summary: Read an import source, map columns, review rows and report persisted results.
@@ -71589,21 +71934,7 @@ function ImportWizard({
   strings,
   className
 }) {
-  const t = Object.assign({
-    title: 'Import records',
-    mapping: 'Map columns',
-    review: 'Review',
-    results: 'Results',
-    column: 'Source column',
-    choose: 'Choose a column',
-    missing: 'Map every required field.',
-    invalid: 'The source has no usable columns or rows.',
-    done: 'Done',
-    imported: 'Import complete',
-    source: 'Source',
-    cancel: 'Cancel',
-    unsaved: 'Your import mapping will be lost.'
-  }, strings);
+  const t = (0, _LocaleProvider.useStrings)('importWizard', strings);
   const [data, setData] = _react.default.useState(null),
     [source, setSource] = _react.default.useState(null),
     [mapping, setMapping] = _react.default.useState({}),
@@ -71741,7 +72072,7 @@ function ImportWizard({
   })));
 }
   } },
-  "platform/patterns/ExportDialog/ExportDialog.jsx": { deps: {"react":null,"../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ExportDialog/ExportDialog.jsx": { deps: {"react":null,"../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -71759,6 +72090,7 @@ var _Badge = require("../../components/Badge/Badge.jsx");
 var _Link = require("../../components/Link/Link.jsx");
 var _Notice = require("../../components/Notice/Notice.jsx");
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · ExportDialog
    Summary: Explicit format and record scope selection, with optional background export results.
@@ -71787,22 +72119,7 @@ function ExportDialog({
   strings,
   className
 }) {
-  const t = Object.assign({
-    title: 'Export',
-    format: 'Format',
-    scope: 'Scope',
-    all: 'All records',
-    selection: 'Selected records',
-    background: 'Export in the background',
-    export: 'Export',
-    cancel: 'Cancel',
-    invalid: 'Choose an available format and scope.',
-    failed: 'Could not export. Try again.',
-    ready: 'Export ready',
-    queued: 'Export queued',
-    download: 'Download export',
-    done: 'Done'
-  }, strings);
+  const t = (0, _LocaleProvider.useStrings)('exportDialog', strings);
   const [format, setFormat] = _react.default.useState(formats[0]?.value || ''),
     [scope, setScope] = _react.default.useState('all'),
     [background, setBackground] = _react.default.useState(initialBackground);
@@ -71917,7 +72234,7 @@ function ExportDialog({
   }, error) : null));
 }
   } },
-  "platform/patterns/AccessRequest/AccessRequest.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/AccessRequest/AccessRequest.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -71933,6 +72250,7 @@ var _Badge = require("../../components/Badge/Badge.jsx");
 var _Button = require("../../components/Button/Button.jsx");
 var _Notice = require("../../components/Notice/Notice.jsx");
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · AccessRequest
    Summary: Request access and communicate pending, approved or denied states with icon Badges.
@@ -71955,17 +72273,7 @@ function AccessRequest({
   strings,
   className
 }) {
-  const t = Object.assign({
-    title: 'Request access',
-    description: 'Ask the owner for access to this resource.',
-    message: 'Message to the owner',
-    request: 'Request access',
-    pending: 'Access requested',
-    approved: 'Access approved',
-    denied: 'Access denied',
-    open: 'Open resource',
-    failed: 'Could not send your request. Try again.'
-  }, strings);
+  const t = (0, _LocaleProvider.useStrings)('accessRequest', strings);
   const [message, setMessage] = _react.default.useState(''),
     [busy, setBusy] = _react.default.useState(false),
     [sent, setSent] = _react.default.useState(false),
@@ -72016,7 +72324,7 @@ function AccessRequest({
   }, error) : null);
 }
   } },
-  "platform/patterns/TrialUpgrade/TrialUpgrade.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../ComparisonView/ComparisonView.jsx":"platform/patterns/ComparisonView/ComparisonView.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/TrialUpgrade/TrialUpgrade.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../ComparisonView/ComparisonView.jsx":"platform/patterns/ComparisonView/ComparisonView.jsx","../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -72034,6 +72342,7 @@ var _Input = require("../../components/Input/Input.jsx");
 var _Notice = require("../../components/Notice/Notice.jsx");
 var _ComparisonView = require("../ComparisonView/ComparisonView.jsx");
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · TrialUpgrade
    Summary: A trial banner and optional plan comparison dialog with explicit upgrade submission.
@@ -72058,16 +72367,7 @@ function TrialUpgrade({
   strings,
   className
 }) {
-  const t = Object.assign({
-    trial: 'Trial',
-    compare: 'Compare plans',
-    title: 'Choose a plan',
-    plan: 'Plan',
-    upgrade: 'Upgrade',
-    cancel: 'Cancel',
-    failed: 'Could not upgrade. Try again.',
-    upgraded: 'Plan updated'
-  }, strings);
+  const t = (0, _LocaleProvider.useStrings)('trialUpgrade', strings);
   const [open, setOpen] = _react.default.useState(defaultOpen),
     [plan, setPlan] = _react.default.useState(plans[0]?.id || ''),
     [busy, setBusy] = _react.default.useState(false),
@@ -72140,7 +72440,7 @@ function TrialUpgrade({
   }, error) : null));
 }
   } },
-  "platform/patterns/Offboarding/Offboarding.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../WizardDialog/WizardDialog.jsx":"platform/patterns/WizardDialog/WizardDialog.jsx","../ExportDialog/ExportDialog.jsx":"platform/patterns/ExportDialog/ExportDialog.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/Offboarding/Offboarding.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../WizardDialog/WizardDialog.jsx":"platform/patterns/WizardDialog/WizardDialog.jsx","../ExportDialog/ExportDialog.jsx":"platform/patterns/ExportDialog/ExportDialog.jsx","../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -72156,6 +72456,7 @@ var _Text = require("../../components/Text/Text.jsx");
 var _WizardDialog = require("../WizardDialog/WizardDialog.jsx");
 var _ExportDialog = require("../ExportDialog/ExportDialog.jsx");
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · Offboarding
    Summary: Export data before explicit subscription cancellation or typed account deletion confirmation.
@@ -72183,17 +72484,13 @@ function Offboarding({
   strings,
   className
 }) {
-  const t = Object.assign({
-    title: action === 'delete' ? 'Delete account' : 'Cancel subscription',
-    backup: 'Export your data',
-    export: 'Export data',
-    review: 'Confirm your choice',
-    reason: 'Reason (optional)',
-    confirmName: 'Type the account name to confirm',
-    mismatch: 'Enter the exact account name.',
-    cancel: 'Keep account',
-    complete: action === 'delete' ? 'Delete account' : 'Cancel subscription'
-  }, strings);
+  const words = (0, _LocaleProvider.useStrings)('offboarding', strings);
+  // the title and the last button name the action: an app's own words in strings win
+  const named = action === 'delete' ? words.deleteAccount : words.cancelSubscription;
+  const t = Object.assign({}, words, {
+    title: strings && strings.title || named,
+    complete: strings && strings.complete || named
+  });
   const [reason, setReason] = _react.default.useState(''),
     [name, setName] = _react.default.useState(''),
     [exporting, setExporting] = _react.default.useState(false);
@@ -72253,7 +72550,7 @@ function Offboarding({
   }) : null);
 }
   } },
-  "platform/patterns/ShortcutsDialog/ShortcutsDialog.jsx": { deps: {"react":null,"../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../utils/hotkey.js":"platform/utils/hotkey.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ShortcutsDialog/ShortcutsDialog.jsx": { deps: {"react":null,"../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../utils/hotkey.js":"platform/utils/hotkey.js","../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -72270,6 +72567,7 @@ var _Button = require("../../components/Button/Button.jsx");
 var _EmptyState = require("../../components/EmptyState/EmptyState.jsx");
 var _hotkey = require("../../utils/hotkey.js");
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · ShortcutsDialog
    Summary: A searchable, grouped view of the live Platform hotkey registry.
@@ -72291,13 +72589,7 @@ function ShortcutsDialog({
   strings,
   className
 }) {
-  const t = Object.assign({
-    title: 'Keyboard shortcuts',
-    search: 'Search shortcuts',
-    general: 'General',
-    empty: 'No matching shortcuts',
-    close: 'Close'
-  }, strings);
+  const t = (0, _LocaleProvider.useStrings)('shortcutsDialog', strings);
   const all = (0, _hotkey.useHotkeyList)(),
     [query, setQuery] = _react.default.useState('');
   _react.default.useEffect(() => {
@@ -72337,7 +72629,7 @@ function ShortcutsDialog({
   })));
 }
   } },
-  "platform/patterns/FileList/FileList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../components/File/File.jsx":"platform/components/File/File.jsx","../../components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","../../components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","../DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","../../utils/dnd.js":"platform/utils/dnd.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/FileList/FileList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../components/File/File.jsx":"platform/components/File/File.jsx","../../components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","../../components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","../DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -72359,6 +72651,7 @@ var _Menu = require("../../components/Menu/Menu.jsx");
 var _RenameAction = require("../RenameAction/RenameAction.jsx");
 var _DeleteFlow = require("../DeleteFlow/DeleteFlow.jsx");
 var _dnd = require("../../utils/dnd.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · FileList
    Summary: Many files and folders at once (12 Specialized › Files, assets, and DAM › File list): a list of FileRows (list),
@@ -72426,33 +72719,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Choose the list for files people open one at a time, and the table where they compare by column (size, date,
      owner). Pictures people recognize by sight belong in a grid of MediaCards (FileBrowser's grid).
 */
-const STRINGS = {
-  sort: 'Sort',
-  sortBy: 'Sort by {field}',
-  field: 'Sort by',
-  order: 'Order',
-  asc: 'Ascending',
-  desc: 'Descending',
-  name: 'Name',
-  size: 'Size',
-  modified: 'Modified',
-  owner: 'Owner',
-  status: 'Status',
-  count: '{n} items',
-  one: '1 item',
-  empty: 'Nothing here yet',
-  open: 'Open',
-  download: 'Download',
-  rename: 'Rename…',
-  delete: 'Delete',
-  moveTo: 'Move to',
-  file: 'file',
-  files: 'files',
-  folder: 'folder',
-  folders: 'folders',
-  items: '{n} items',
-  item: '{n} item'
-};
 const FIELDS = ['name', 'size', 'modified', 'owner'];
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 const idOf = f => f.id === undefined ? f.name : f.id;
@@ -72536,7 +72802,7 @@ function FileList({
   strings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('fileList', strings);
   const [own, setOwn] = _react.default.useState(Object.assign({
     field: 'name',
     dir: 'asc'
@@ -72791,7 +73057,7 @@ function FileList({
   }, countText), sortMenu) : null, body, table ? dialogs : null);
 }
   } },
-  "platform/patterns/FileBrowser/FileBrowser.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","../../components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/File/File.jsx":"platform/components/File/File.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","../../components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","../ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","../ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","../DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","../FileList/FileList.jsx":"platform/patterns/FileList/FileList.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../../hooks/useSelection.js":"platform/hooks/useSelection.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/FileBrowser/FileBrowser.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","../../components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/File/File.jsx":"platform/components/File/File.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","../../components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","../ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","../ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","../DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","../FileList/FileList.jsx":"platform/patterns/FileList/FileList.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../../hooks/useSelection.js":"platform/hooks/useSelection.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -72818,6 +73084,7 @@ var _DeleteFlow = require("../DeleteFlow/DeleteFlow.jsx");
 var _FileList = require("../FileList/FileList.jsx");
 var _dnd = require("../../utils/dnd.js");
 var _useSelection = require("../../hooks/useSelection.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · FileBrowser
    Summary: Finding, organizing and acting on files by place (12 Specialized › Files, assets, and DAM › File browser): the
@@ -72881,32 +73148,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      A picker that only chooses a file is the File picker, not this. Assets with rights and renditions show as asset
      cards (MediaCard type and status) in the grid.
 */
-const STRINGS = {
-  label: 'Files',
-  root: 'Library',
-  newFolder: 'New folder',
-  folderName: 'Folder name',
-  create: 'Create',
-  upload: 'Upload',
-  search: 'Search this folder',
-  folders: 'Folders',
-  path: 'Location',
-  count: '{n} items',
-  one: '1 item',
-  empty: 'This folder is empty',
-  emptyText: 'Upload files or create a folder.',
-  noMatch: 'Nothing matches “{q}”',
-  download: 'Download',
-  moveTo: 'Move to',
-  delete: 'Delete',
-  noun: 'item',
-  plural: 'items',
-  drop: 'Drop files to upload to {folder}',
-  nameTaken: 'A file or folder named “{name}” is already here.',
-  nameEmpty: 'Give the folder a name.',
-  items: '{n} items',
-  item: '{n} item'
-};
 const ROOT = '__plx-root';
 const DRAG = 'plx-file';
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
@@ -73001,7 +73242,7 @@ function FileBrowser({
   strings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('fileBrowser', strings);
   const top = {
     id: root && root.id !== undefined ? root.id : null,
     name: root && root.name || t.root
@@ -73374,7 +73615,7 @@ function FileBrowser({
   }) : null);
 }
   } },
-  "platform/patterns/UploadManager/UploadManager.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/layer.js":"platform/utils/layer.js","../../components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","../../components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/UploadManager/UploadManager.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/layer.js":"platform/utils/layer.js","../../components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","../../components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -73397,6 +73638,7 @@ var _ProgressBar = require("../../components/ProgressBar/ProgressBar.jsx");
 var _DropZone = require("../../components/DropZone/DropZone.jsx");
 var _Dialog = require("../../components/Dialog/Dialog.jsx");
 var _Menu = require("../../components/Menu/Menu.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · UploadManager, useUploadQueue
    Summary: Files on their way up (12 Specialized › Files, assets, and DAM › Upload manager): a drop zone that also opens
@@ -73466,38 +73708,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      for uploads that outlast the moment. Say the limits before people choose.
 */
 
-const STRINGS = {
-  dialogTitle: 'Upload files',
-  queue: 'Uploads',
-  drop: 'Drag and drop files or folders here',
-  or: 'or',
-  chooseFiles: 'Choose files',
-  chooseFolder: 'Choose a folder',
-  uploading: 'Uploading {n} files',
-  uploadingOne: 'Uploading 1 file',
-  done: '{n} uploads complete',
-  doneOne: '1 upload complete',
-  failed: '{n} uploads failed',
-  failedOne: '1 upload failed',
-  none: 'No uploads',
-  progress: '{done} of {total} uploaded',
-  overall: 'Overall progress',
-  waiting: 'Waiting',
-  uploaded: 'Uploaded',
-  canceled: 'Canceled',
-  cancelAll: 'Cancel all',
-  clear: 'Clear finished',
-  hide: 'Hide the uploads',
-  show: 'Show the uploads',
-  close: 'Close',
-  finish: 'Done',
-  remove: 'Remove from the list',
-  again: 'Upload again',
-  tooLarge: 'This file is larger than {max}.',
-  wrongType: 'This type of file can’t be uploaded here.',
-  error: 'The upload failed. Try again.',
-  failedNamed: '{name} failed: {reason}'
-};
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 const clamp = n => Math.max(0, Math.min(100, Number(n) || 0));
 const MOVING = {
@@ -73547,7 +73757,7 @@ function droppedFiles(dataTransfer) {
 let nextId = 0;
 function useUploadQueue(options) {
   const o = options || {};
-  const t = Object.assign({}, STRINGS, o.strings);
+  const t = (0, _LocaleProvider.useStrings)('uploadManager', o.strings);
   const [items, setItems] = _react.default.useState([]);
   const controllers = _react.default.useRef({});
   const latest = _react.default.useRef(o);
@@ -73694,7 +73904,7 @@ function UploadManager({
   }, {
     variant: ['panel', 'dialog']
   });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('uploadManager', strings);
   const own = useUploadQueue({
     upload,
     accept,
@@ -73958,7 +74168,7 @@ function UploadManager({
   }, zone, list));
 }
   } },
-  "platform/patterns/VersionCompare/VersionCompare.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/layer.js":"platform/utils/layer.js","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../ComparisonView/ComparisonView.jsx":"platform/patterns/ComparisonView/ComparisonView.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/VersionCompare/VersionCompare.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/layer.js":"platform/utils/layer.js","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../ComparisonView/ComparisonView.jsx":"platform/patterns/ComparisonView/ComparisonView.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -73978,6 +74188,7 @@ var _SegmentedControl = require("../../components/SegmentedControl/SegmentedCont
 var _VisuallyHidden = require("../../components/VisuallyHidden/VisuallyHidden.jsx");
 var _EmptyState = require("../../components/EmptyState/EmptyState.jsx");
 var _ComparisonView = require("../ComparisonView/ComparisonView.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · VersionCompare, diffLines
    Summary: What changed between two versions of one item (12 Specialized › Files, assets, and DAM › Version comparison):
@@ -74032,30 +74243,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      side-by-side view with Show only differences on; versions of different items are not compared here.
 */
 
-const STRINGS = {
-  label: 'Version comparison',
-  compare: 'Compare',
-  with: 'With',
-  swap: 'Swap',
-  swapLabel: 'Swap the two versions',
-  view: 'View',
-  columns: 'Side by side',
-  slider: 'Slider',
-  text: 'Text',
-  by: 'by {author}',
-  diff: 'Changes from {base} to {target}',
-  added: 'Added',
-  removed: 'Removed',
-  same: 'No changes in the text',
-  summary: '{added} added, {removed} removed',
-  lines: '{n} lines',
-  line: '1 line',
-  previous: 'Previous change',
-  next: 'Next change',
-  at: 'Change {n} of {total}',
-  unchanged: 'Show {n} unchanged lines',
-  empty: 'Choose two versions to compare.'
-};
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 
 // the lines of two texts, compared: [{ kind: "same" | "add" | "del", text, a (the line number before), b (after) }]
@@ -74299,7 +74486,7 @@ function VersionCompare({
   strings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('versionCompare', strings);
   const uid = (0, _layer.useUid)('plx-version-compare');
   const ids = versions.map(v => v.id);
   const [own, setOwn] = _react.default.useState({
@@ -74410,7 +74597,7 @@ function VersionCompare({
   }) : null), body);
 }
   } },
-  "platform/patterns/AssetGallery/AssetGallery.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/AssetGallery/AssetGallery.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -74425,6 +74612,7 @@ var _MediaViewer = require("../../components/MediaViewer/MediaViewer.jsx");
 var _EmptyState = require("../../components/EmptyState/EmptyState.jsx");
 var _Stack = require("../../components/Stack/Stack.jsx");
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · AssetGallery
    Summary: Browse image assets in masonry or justified rows and optionally open the existing lightbox.
@@ -74452,10 +74640,7 @@ function AssetGallery({
   }, {
     size: ['xs', 'sm', 'md', 'lg']
   });
-  const t = Object.assign({
-    empty: 'No images',
-    preview: 'Image preview'
-  }, strings);
+  const t = (0, _LocaleProvider.useStrings)('assetGallery', strings);
   const [active, setActive] = _react.default.useState(null);
   const index = items.findIndex(a => a.id === active);
   return /*#__PURE__*/_react.default.createElement(_Stack.Stack, {
@@ -74489,7 +74674,7 @@ function AssetGallery({
   }));
 }
   } },
-  "platform/patterns/DownloadManager/DownloadManager.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/DownloadManager/DownloadManager.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -74505,6 +74690,7 @@ var _Notice = require("../../components/Notice/Notice.jsx");
 var _EmptyState = require("../../components/EmptyState/EmptyState.jsx");
 var _Stack = require("../../components/Stack/Stack.jsx");
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · DownloadManager
    Summary: A named panel of queued, progressing, ready or failed downloads built from FileRow.
@@ -74532,15 +74718,7 @@ function DownloadManager({
   }, {
     variant: ['panel', 'progress', 'ready']
   });
-  const t = Object.assign({
-    title: 'Downloads',
-    empty: 'No downloads',
-    queued: 'Queued',
-    progress: 'Downloading',
-    ready: 'Ready',
-    failed: 'Download failed',
-    actionFailed: 'Could not complete the download action. Try again.'
-  }, strings);
+  const t = (0, _LocaleProvider.useStrings)('downloadManager', strings);
   const [pending, setPending] = _react.default.useState({}),
     [errors, setErrors] = _react.default.useState({});
   const locks = _react.default.useRef(new Set());
@@ -74602,7 +74780,7 @@ function DownloadManager({
   }, content) : content;
 }
   } },
-  "platform/patterns/MetadataEditor/MetadataEditor.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/MetadataEditor/MetadataEditor.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -74621,6 +74799,7 @@ var _Badge = require("../../components/Badge/Badge.jsx");
 var _Notice = require("../../components/Notice/Notice.jsx");
 var _UnsavedGuard = require("../../providers/UnsavedGuard.jsx");
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · MetadataEditor
    Summary: Editable metadata inline or in a validated form; bulk mode applies only explicitly selected fields.
@@ -74647,15 +74826,7 @@ function MetadataEditor({
   }, {
     variant: ['inline', 'form', 'bulk']
   });
-  const t = Object.assign({
-    save: 'Save metadata',
-    reset: 'Reset',
-    apply: 'Apply {field}',
-    required: 'Enter a value.',
-    failed: 'Metadata could not be saved. Your changes are still available.',
-    saved: 'Metadata saved',
-    unsaved: 'Your metadata changes will be lost.'
-  }, strings);
+  const t = (0, _LocaleProvider.useStrings)('metadataEditor', strings);
   const [draft, setDraft] = _react.default.useState(values),
     [touched, setTouched] = _react.default.useState({}),
     [error, setError] = _react.default.useState(''),
@@ -74763,7 +74934,7 @@ function MetadataEditor({
   }, t.saved) : null);
 }
   } },
-  "platform/patterns/RelatedAssets/RelatedAssets.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/RelatedAssets/RelatedAssets.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -74778,6 +74949,7 @@ var _EmptyState = require("../../components/EmptyState/EmptyState.jsx");
 var _ContentGrid = require("../ContentGrid/ContentGrid.jsx");
 var _Stack = require("../../components/Stack/Stack.jsx");
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · RelatedAssets
    Summary: Related images as a responsive grid or a manually navigated carousel.
@@ -74800,9 +74972,7 @@ function RelatedAssets({
   }, {
     variant: ['strip', 'grid']
   });
-  const t = Object.assign({
-    empty: 'No related assets'
-  }, strings);
+  const t = (0, _LocaleProvider.useStrings)('relatedAssets', strings);
   const cards = items.map(a => /*#__PURE__*/_react.default.createElement(_Card.MediaCard, {
     key: a.id,
     src: a.src,
@@ -75089,7 +75259,7 @@ function FilePicker({
   }))) : /*#__PURE__*/_react.default.createElement(_Text.Text, null, t.empty)));
 }
   } },
-  "platform/patterns/RenditionList/RenditionList.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../utils/cx.js":"platform/utils/cx.js","../../components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","../../components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/RenditionList/RenditionList.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../utils/cx.js":"platform/utils/cx.js","../../components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","../../components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../utils/format.js":"platform/utils/format.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -75107,6 +75277,7 @@ var _DataGrid = require("../../components/DataGrid/DataGrid.jsx");
 var _DownloadButton = require("../../components/DownloadButton/DownloadButton.jsx");
 var _Menu = require("../../components/Menu/Menu.jsx");
 var _format = require("../../utils/format.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · RenditionList
    Summary: Stored derivatives with format and byte size, as a DataGrid or a menu of downloads.
@@ -75117,14 +75288,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
    Notes: Links retain browser download behavior. File preparation belongs to the caller.
 */
 
-const STRINGS = {
-  label: 'Renditions',
-  name: 'Name',
-  format: 'Format',
-  size: 'Size',
-  download: 'Download',
-  empty: 'No renditions.'
-};
 function RenditionList({
   items = [],
   variant = 'table',
@@ -75136,10 +75299,7 @@ function RenditionList({
   }, {
     variant: ['table', 'menu']
   });
-  const t = {
-    ...STRINGS,
-    ...strings
-  };
+  const t = (0, _LocaleProvider.useStrings)('renditionList', strings);
   const download = r => /*#__PURE__*/_react.default.createElement(_DownloadButton.DownloadButton, {
     href: r.href,
     fileName: r.fileName || r.name,
@@ -75194,7 +75354,7 @@ function RenditionList({
   }));
 }
   } },
-  "platform/components/DocumentViewer/DocumentViewer.jsx": { deps: {"react":null,"../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Field/Field.jsx":"platform/components/Field/Field.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Image/Image.jsx":"platform/components/Image/Image.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../utils/cx.js":"platform/utils/cx.js","../../utils/engines.js":"platform/utils/engines.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/DocumentViewer/DocumentViewer.jsx": { deps: {"react":null,"../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Field/Field.jsx":"platform/components/Field/Field.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Image/Image.jsx":"platform/components/Image/Image.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../utils/cx.js":"platform/utils/cx.js","../../utils/engines.js":"platform/utils/engines.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -75212,6 +75372,7 @@ var _Image = require("../Image/Image.jsx");
 var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
 var _cx = require("../../utils/cx.js");
 var _engines = require("../../utils/engines.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · DocumentViewer
    Summary: Read PDF, image pages or text with page navigation, thumbnails and stepped zoom.
@@ -75236,22 +75397,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      PDF canvas dimensions are document geometry, never an inline style. No remote PDF code is downloaded.
 */
 
-const STRINGS = {
-  document: 'Document',
-  previous: 'Previous page',
-  next: 'Next page',
-  page: 'Page',
-  zoom: 'Zoom',
-  thumbnails: 'Page thumbnails',
-  loading: 'Loading document',
-  failed: 'The document could not be opened.',
-  failedEngine: 'The document viewer could not start. Try again later.',
-  failedAccess: 'The document could not be opened. It may have moved, or you may not have access to it.',
-  failedParse: 'This file could not be read as a PDF.',
-  failedRender: 'This page could not be shown.',
-  empty: 'No document.',
-  retry: 'Try again'
-};
 const ZOOMS = [50, 75, 100, 125, 150, 200];
 const pdfEngine = () => (0, _engines.engine)('pdf');
 // why a PDF failed, from PDF.js's error names: the engine, the document's address (missing, denied, blocked) or its content
@@ -75320,10 +75465,7 @@ function DocumentViewer({
   onError,
   className
 }) {
-  const t = {
-      ...STRINGS,
-      ...strings
-    },
+  const t = (0, _LocaleProvider.useStrings)('documentViewer', strings),
     [page, setPage] = _react.default.useState(initialPage),
     [zoom, setZoom] = _react.default.useState(ZOOMS.includes(initialZoom) ? initialZoom : 100),
     [pdf, setPdf] = _react.default.useState(null),
@@ -75525,7 +75667,7 @@ function DocumentViewer({
   }, text) : !loading && !error ? /*#__PURE__*/_react.default.createElement(_Text.Text, null, t.empty) : null));
 }
   } },
-  "platform/patterns/VersionHistory/VersionHistory.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../utils/cx.js":"platform/utils/cx.js","../../components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","../../components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/VersionHistory/VersionHistory.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../utils/cx.js":"platform/utils/cx.js","../../components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","../../components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -75543,6 +75685,7 @@ var _Timeline = require("../../components/Timeline/Timeline.jsx");
 var _VersionLabel = require("../../components/VersionLabel/VersionLabel.jsx");
 var _Dialog = require("../../components/Dialog/Dialog.jsx");
 var _Badge = require("../../components/Badge/Badge.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · VersionHistory
    Summary: A version timeline with an optional preview and a confirmed restore.
@@ -75553,16 +75696,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
    Notes: Caller owns version storage, authorization and currentId. No history is rewritten optimistically.
 */
 
-const STRINGS = {
-  label: 'Version history',
-  preview: 'Preview',
-  restore: 'Restore',
-  confirm: 'Restore this version?',
-  cancel: 'Cancel',
-  failed: 'The version could not be restored. Try again.',
-  restored: 'Version restored',
-  empty: 'No versions.'
-};
 function VersionHistory({
   versions = [],
   currentId,
@@ -75577,10 +75710,7 @@ function VersionHistory({
   }, {
     variant: ['list', 'restore', 'preview']
   });
-  const t = {
-      ...STRINGS,
-      ...strings
-    },
+  const t = (0, _LocaleProvider.useStrings)('versionHistory', strings),
     [ask, setAsk] = _react.default.useState(null),
     [preview, setPreview] = _react.default.useState(null),
     [busy, setBusy] = _react.default.useState(false),
@@ -75676,7 +75806,7 @@ function VersionHistory({
   }, error) : null));
 }
   } },
-  "platform/patterns/ProductCard/ProductCard.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ProductCard/ProductCard.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -75695,6 +75825,7 @@ var _Button = require("../../components/Button/Button.jsx");
 var _Text = require("../../components/Text/Text.jsx");
 var _Icon = require("../../components/Icon/Icon.jsx");
 var _VisuallyHidden = require("../../components/VisuallyHidden/VisuallyHidden.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ProductCard
    Summary: One product in a catalog (07 Data display › Cards and objects › Product card): its picture at a fixed ratio,
@@ -75753,18 +75884,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      page. Do not mix product cards with other cards in one grid. Prices, counts and ratings are technical values: Reddit Mono.
      Other props go on the <article>.
 */
-const STRINGS = {
-  sale: 'Sale',
-  outOfStock: 'Out of stock',
-  addToCart: 'Add to cart',
-  addToCartFor: 'Add {title} to cart',
-  now: 'Now',
-  was: 'Was',
-  rating: 'Rating',
-  reviews: '{n} reviews',
-  review: '1 review',
-  soldOut: '{title} is out of stock'
-};
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 const RATIOS = ['1-1', '4-3', '3-4'];
 
@@ -75783,7 +75902,7 @@ function ProductPrice({
   }, {
     size: ['md', 'sm']
   });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('productCard', strings);
   const onSale = typeof compareAtPrice === 'number' && compareAtPrice > price;
   return /*#__PURE__*/_react.default.createElement("span", {
     className: (0, _cx.cx)('plx-product-card__prices', size === 'sm' && 'plx-product-card__prices--sm', className)
@@ -75816,7 +75935,7 @@ function ProductCard({
   className,
   ...rest
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('productCard', strings);
   const name = typeof title === 'string' ? title : '';
   const onSale = sale !== undefined ? !!sale : typeof compareAtPrice === 'number' && compareAtPrice > price;
   const interactive = !!(href || onOpen);
@@ -76126,7 +76245,7 @@ function ProductOptions({
   }))) : null);
 }
   } },
-  "platform/templates/Commerce/shared.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../patterns/ProductCard/ProductCard.jsx":"platform/patterns/ProductCard/ProductCard.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/templates/Commerce/shared.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../patterns/ProductCard/ProductCard.jsx":"platform/patterns/ProductCard/ProductCard.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -76150,6 +76269,7 @@ var _Icon = require("../../components/Icon/Icon.jsx");
 var _NumberInput = require("../../components/NumberInput/NumberInput.jsx");
 var _Notice = require("../../components/Notice/Notice.jsx");
 var _ProductCard = require("../../patterns/ProductCard/ProductCard.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · Commerce templates: shared parts
    Summary: What the Commerce templates share (platform/templates/Commerce): the kind of page each template is
@@ -76229,11 +76349,6 @@ function orderTotals(items = [], o = {}) {
     count
   };
 }
-const LINE_STRINGS = {
-  quantity: 'Quantity, {title}',
-  qty: 'Qty {n}',
-  each: '{price} each'
-};
 function CommerceLine({
   item,
   currency = 'USD',
@@ -76242,7 +76357,7 @@ function CommerceLine({
   strings,
   className
 }) {
-  const t = Object.assign({}, LINE_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('commerce.line', strings);
   const name = typeof item.title === 'string' ? item.title : '';
   return /*#__PURE__*/_react.default.createElement("li", {
     className: (0, _cx.cx)('plx-commerce-line', className)
@@ -76299,20 +76414,6 @@ function CommerceLine({
     tone: "warning"
   }, item.warning)) : null);
 }
-const SUMMARY_STRINGS = {
-  title: 'Order summary',
-  subtotal: 'Subtotal',
-  discount: 'Discount',
-  shipping: 'Shipping',
-  shippingEstimated: 'Estimated shipping',
-  tax: 'Tax',
-  taxEstimated: 'Estimated tax',
-  total: 'Total',
-  free: 'Free',
-  items: '{n} items',
-  item: '1 item',
-  times: '× {n}'
-};
 function OrderSummary({
   items = [],
   currency = 'USD',
@@ -76325,7 +76426,7 @@ function OrderSummary({
   strings,
   className
 }) {
-  const t = Object.assign({}, SUMMARY_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('commerce.summary', strings);
   const s = totals || orderTotals(items);
   const row = (key, label, value, cls) => /*#__PURE__*/_react.default.createElement("div", {
     key: key,
@@ -76362,7 +76463,7 @@ function OrderSummary({
   }, children) : null);
 }
   } },
-  "platform/templates/Commerce/Storefront.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/fields.js":"platform/utils/fields.js","../../hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","../../patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","../../patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","../../patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","../../patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","../../patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","../../patterns/ProductCard/ProductCard.jsx":"platform/patterns/ProductCard/ProductCard.jsx","../../components/ProductOptions/ProductOptions.jsx":"platform/components/ProductOptions/ProductOptions.jsx","../../components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","../../components/Table/Table.jsx":"platform/components/Table/Table.jsx","../../utils/layer.js":"platform/utils/layer.js","./shared.jsx":"platform/templates/Commerce/shared.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/templates/Commerce/Storefront.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/fields.js":"platform/utils/fields.js","../../hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","../../patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","../../patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","../../patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","../../patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","../../patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","../../patterns/ProductCard/ProductCard.jsx":"platform/patterns/ProductCard/ProductCard.jsx","../../components/ProductOptions/ProductOptions.jsx":"platform/components/ProductOptions/ProductOptions.jsx","../../components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","../../components/Table/Table.jsx":"platform/components/Table/Table.jsx","../../utils/layer.js":"platform/utils/layer.js","./shared.jsx":"platform/templates/Commerce/shared.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -76402,6 +76503,7 @@ var _Tabs = require("../../components/Tabs/Tabs.jsx");
 var _Table = require("../../components/Table/Table.jsx");
 var _layer = require("../../utils/layer.js");
 var _shared = require("./shared.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Commerce templates: the storefront
    Summary: The pages people shop on (platform/templates/Commerce): the product listing (ProductListing: a category's or a
@@ -76421,33 +76523,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
 
      See Commerce.jsx.
 */
-const LISTING_STRINGS = {
-  label: 'Products',
-  search: 'Search products',
-  count: '{n} products',
-  one: '1 product',
-  category: 'Category',
-  noun: 'product',
-  name: 'Name',
-  price: 'Price',
-  rating: 'Rating',
-  availability: 'Availability',
-  inStock: 'In stock',
-  outOfStock: 'Out of stock',
-  sale: 'On sale',
-  yes: 'Yes',
-  no: 'No',
-  empty: 'No products match',
-  emptyText: 'Remove a filter or search for something else.',
-  clear: 'Clear filters and search',
-  results: '{n} products shown',
-  resultsOne: '1 product shown',
-  none: 'No products shown'
-};
-
 // the products' fields, for the filter, the category quick filter and the sort (utils/fields.js)
 function productFields(categories = [], strings) {
-  const t = Object.assign({}, LISTING_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('commerce.listing', strings);
   return [{
     value: 'title',
     label: t.name,
@@ -76517,7 +76595,7 @@ function ProductListing({
   className
 }) {
   (0, _shared.useCommercePage)('product-listing');
-  const t = Object.assign({}, LISTING_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('commerce.listing', strings);
   const fields = _react.default.useMemo(() => productFields(categories, strings), [categories, strings]);
   const v = (0, _useCollectionView.useCollectionView)(fields, {
     text: p => [p.title, p.meta, p.category].join(' '),
@@ -76640,18 +76718,6 @@ function ProductListing({
     perPage: pageSize
   }) : null);
 }
-const DISCOVERY_STRINGS = {
-  title: 'Shop',
-  search: 'Search the shop',
-  categories: 'Shop by category',
-  recommended: 'Recommended for you',
-  results: 'Products',
-  resultsFor: 'Results for “{q}”',
-  count: '{n} products',
-  one: '1 product',
-  suggestions: 'Try one of these',
-  clear: 'Clear the search'
-};
 function ProductDiscovery({
   products = [],
   categories = [],
@@ -76667,7 +76733,7 @@ function ProductDiscovery({
   className
 }) {
   (0, _shared.useCommercePage)('product-discovery');
-  const t = Object.assign({}, DISCOVERY_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('commerce.discovery', strings);
   const uid = (0, _layer.useUid)('plx-commerce');
   const [text, setText] = _react.default.useState('');
   const [query, setQuery] = _react.default.useState('');
@@ -76786,26 +76852,6 @@ function ProductDiscovery({
     strings: strings
   })));
 }
-const DETAIL_STRINGS = {
-  gallery: 'Pictures of {title}',
-  reviews: '{n} reviews',
-  review: '1 review',
-  inStock: 'In stock',
-  lowStock: 'Only {n} left',
-  outOfStock: 'Out of stock',
-  addToCart: 'Add to cart',
-  added: '{title} added to your cart',
-  viewCart: 'View cart',
-  choose: 'Choose a {option}.',
-  missing: 'Choose your options first.',
-  description: 'Description',
-  details: 'Details',
-  delivery: 'Delivery and returns',
-  detail: 'Detail',
-  value: 'Value',
-  related: 'You may also like',
-  rating: 'Rating'
-};
 function ProductDetail({
   product,
   value,
@@ -76824,7 +76870,7 @@ function ProductDetail({
   className
 }) {
   (0, _shared.useCommercePage)('product-detail');
-  const t = Object.assign({}, DETAIL_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('commerce.productDetail', strings);
   const uid = (0, _layer.useUid)('plx-commerce');
   const p = product || {};
   const [own, setOwn] = _react.default.useState(() => defaultValue || {});
@@ -77027,7 +77073,7 @@ function ProductDetail({
   })))) : null);
 }
   } },
-  "platform/templates/Commerce/Checkout.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","../../patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","../../patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","../../patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","../../patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","../../components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./shared.jsx":"platform/templates/Commerce/shared.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/templates/Commerce/Checkout.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","../../patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","../../patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","../../patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","../../patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","../../components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./shared.jsx":"platform/templates/Commerce/shared.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -77063,6 +77109,7 @@ var _CopyButton = require("../../components/CopyButton/CopyButton.jsx");
 var _Timeline = require("../../components/Timeline/Timeline.jsx");
 var _Icon = require("../../components/Icon/Icon.jsx");
 var _shared = require("./shared.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · Commerce templates: buying
    Summary: The pages that turn a cart into an order (platform/templates/Commerce): the cart (Cart: the lines with their
@@ -77083,25 +77130,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
 */
 
 /* ── the cart ── */
-const CART_STRINGS = {
-  title: 'Cart',
-  items: '{n} items',
-  item: '1 item',
-  lines: 'Items in your cart',
-  remove: 'Remove {title}',
-  noun: 'item',
-  removed: '{title} removed from your cart.',
-  undo: 'Undo',
-  empty: 'Your cart is empty',
-  emptyText: 'Find something you like and add it here.',
-  continue: 'Continue shopping',
-  checkout: 'Check out',
-  promo: 'Promo code',
-  apply: 'Apply',
-  applied: 'Promo code {code} applied',
-  promoError: 'This code cannot be used.',
-  total: 'Total {total}'
-};
+
 function Cart({
   items = [],
   currency = 'USD',
@@ -77120,7 +77149,7 @@ function Cart({
   className
 }) {
   (0, _shared.useCommercePage)('cart');
-  const t = Object.assign({}, CART_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('commerce.cart', strings);
   const toast = (0, _ReviewFlow.useOptionalToast)();
   const [removed, setRemoved] = _react.default.useState(null);
   const [code, setCode] = _react.default.useState('');
@@ -77284,30 +77313,6 @@ function Cart({
 }
 
 /* ── payment: the method and the card fields (form UI only) ── */
-const PAY_STRINGS = {
-  method: 'Payment method',
-  newCard: 'A new card',
-  number: 'Card number',
-  accepted: 'Visa, Mastercard, American Express or Discover',
-  expiry: 'Expiry date',
-  expiryHint: 'MM / YY',
-  cvc: 'Security code',
-  cvcHint: 'The last 3 digits on the back, or 4 on the front of American Express',
-  name: 'Name on card',
-  billingSame: 'The billing address is the same as the delivery address',
-  billing: 'Billing address',
-  street: 'Address',
-  city: 'City',
-  postal: 'Postal code',
-  secure: 'Your card details go straight to the payment provider. This page does not keep them.',
-  charge: 'You will be charged',
-  brands: {
-    visa: 'Visa',
-    mastercard: 'Mastercard',
-    amex: 'American Express',
-    discover: 'Discover'
-  }
-};
 // the card's brand from its first digits, and the number in groups as people type it (4 4 4 4, or 4 6 5 for American Express)
 function cardBrand(number) {
   const d = String(number || '').replace(/\D/g, '');
@@ -77344,7 +77349,7 @@ function PaymentFields({
   strings,
   className
 }) {
-  const t = Object.assign({}, PAY_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('commerce.pay', strings);
   const set = (k, v) => {
     if (onChange) onChange(Object.assign({}, value, {
       [k]: v
@@ -77461,15 +77466,6 @@ function PaymentFields({
     variant: "data"
   }, (0, _shared.money)(amount, currency))) : null);
 }
-const PAYMENT_STRINGS = {
-  title: 'Payment',
-  description: 'Choose how to pay. Nothing is charged until you press Pay.',
-  pay: 'Pay {amount}',
-  cancel: 'Cancel',
-  declined: 'The payment did not go through',
-  declinedText: 'Your card was declined. Check the details or use another card.',
-  paid: 'Payment received'
-};
 function Payment({
   amount,
   currency = 'USD',
@@ -77482,7 +77478,7 @@ function Payment({
   className
 }) {
   (0, _shared.useCommercePage)('payment');
-  const t = Object.assign({}, PAYMENT_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('commerce.payment', strings);
   const [value, setValue] = _react.default.useState(() => Object.assign({
     billingSame: true
   }, defaultValue));
@@ -77543,35 +77539,7 @@ function Payment({
 }
 
 /* ── checkout: contact, delivery, payment, review ── */
-const CHECKOUT_STRINGS = {
-  label: 'Checkout',
-  contact: 'Contact',
-  delivery: 'Delivery',
-  payment: 'Payment',
-  review: 'Review',
-  placeOrder: 'Place order',
-  cancel: 'Back to cart',
-  email: 'Email',
-  emailHint: 'For the order confirmation and delivery updates.',
-  account: 'Have an account?',
-  signIn: 'Sign in',
-  name: 'Full name',
-  street: 'Address',
-  street2: 'Apartment, suite or unit (optional)',
-  city: 'City',
-  region: 'State or region',
-  postal: 'Postal code',
-  country: 'Country',
-  phone: 'Phone (optional)',
-  phoneHint: 'Only for questions about the delivery.',
-  method: 'Delivery method',
-  summary: 'Order summary',
-  card: 'Card ending {last4}',
-  placed: 'Order placed',
-  checkAnswers: 'Check your order before you place it.',
-  items: 'Items',
-  free: 'Free'
-};
+
 function Checkout({
   items = [],
   currency = 'USD',
@@ -77587,7 +77555,7 @@ function Checkout({
   className
 }) {
   (0, _shared.useCommercePage)('checkout');
-  const t = Object.assign({}, CHECKOUT_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('commerce.checkout', strings);
   const [d, setD] = _react.default.useState(() => Object.assign({
     email: '',
     name: '',
@@ -77773,18 +77741,7 @@ function Checkout({
 }
 
 /* ── the order confirmation ── */
-const CONFIRM_STRINGS = {
-  title: 'Thank you. Your order is placed.',
-  number: 'Order number',
-  copy: 'Copy the order number',
-  sent: 'We sent a confirmation to {email}.',
-  next: 'What happens next',
-  items: 'Items',
-  view: 'View your order',
-  continue: 'Continue shopping',
-  delivery: 'Delivery',
-  method: 'Delivery method'
-};
+
 function OrderConfirmation({
   orderNumber,
   email,
@@ -77801,7 +77758,7 @@ function OrderConfirmation({
   className
 }) {
   (0, _shared.useCommercePage)('order-confirmation');
-  const t = Object.assign({}, CONFIRM_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('commerce.confirm', strings);
   const uid = (0, _layer.useUid)('plx-commerce');
   const heading = _react.default.useRef(null);
   // the page's heading takes the focus when it opens: the success is the first thing read
@@ -77878,7 +77835,7 @@ function OrderConfirmation({
   }))));
 }
   } },
-  "platform/templates/Commerce/Account.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","../../patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","../../patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","../../patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","../../patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","../../patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","../../patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","../../components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./shared.jsx":"platform/templates/Commerce/shared.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/templates/Commerce/Account.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","../../patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","../../patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","../../patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","../../patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","../../patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","../../patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","../../components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./shared.jsx":"platform/templates/Commerce/shared.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -77918,6 +77875,7 @@ var _Field = require("../../components/Field/Field.jsx");
 var _Input = require("../../components/Input/Input.jsx");
 var _NumberInput = require("../../components/NumberInput/NumberInput.jsx");
 var _shared = require("./shared.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Commerce templates: after the order
    Summary: The pages that manage orders and plans (platform/templates/Commerce): order management (OrderManagement: the
@@ -77990,33 +77948,7 @@ function OrderStatus({
 }
 
 /* ── order management ── */
-const ORDERS_STRINGS = {
-  label: 'Orders',
-  search: 'Search orders',
-  count: '{n} orders',
-  one: '1 order',
-  noun: 'order',
-  plural: 'orders',
-  number: 'Order',
-  date: 'Date',
-  customer: 'Customer',
-  items: 'Items',
-  total: 'Total',
-  status: 'Status',
-  open: 'Open',
-  fulfill: 'Fulfill',
-  refund: 'Refund',
-  cancel: 'Cancel order',
-  cancelMany: 'Cancel orders',
-  cancelTitle: 'Cancel {what}?',
-  cancelText: 'The customer is told and paid back in full. This cannot be undone.',
-  keep: 'Keep the order',
-  notFulfillable: 'Only unfulfilled orders can be fulfilled',
-  notCancelable: 'Only unfulfilled orders can be canceled',
-  notRefundable: 'Only shipped or delivered orders can be refunded',
-  fulfilled: '{what} marked as shipped',
-  canceled: '{what} canceled'
-};
+
 function OrderManagement({
   orders = [],
   currency = 'USD',
@@ -78029,7 +77961,7 @@ function OrderManagement({
   className
 }) {
   (0, _shared.useCommercePage)('order-management');
-  const t = Object.assign({}, ORDERS_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('commerce.orders', strings);
   const S = statuses || ORDER_STATUSES;
   const fields = _react.default.useMemo(() => [{
     value: 'number',
@@ -78215,24 +78147,7 @@ function OrderManagement({
 }
 
 /* ── one order ── */
-const DETAIL_STRINGS = {
-  context: 'Order',
-  back: 'Orders',
-  items: 'Items',
-  delivery: 'Delivery',
-  address: 'Address',
-  method: 'Method',
-  tracking: 'Tracking number',
-  payment: 'Payment',
-  history: 'History',
-  fulfill: 'Fulfill',
-  refund: 'Refund',
-  cancel: 'Cancel order',
-  return: 'Start a return',
-  cancelTitle: 'Cancel order {number}?',
-  cancelText: 'The customer is told and paid back in full. This cannot be undone.',
-  keep: 'Keep the order'
-};
+
 function OrderDetail({
   order,
   currency = 'USD',
@@ -78247,7 +78162,7 @@ function OrderDetail({
   className
 }) {
   (0, _shared.useCommercePage)('order-detail');
-  const t = Object.assign({}, DETAIL_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('commerce.orderDetail', strings);
   const o = order || {};
   const uid = (0, _layer.useUid)('plx-commerce');
   const [asking, setAsking] = _react.default.useState(false);
@@ -78366,53 +78281,6 @@ function OrderDetail({
 }
 
 /* ── subscription management ── */
-const SUB_STRINGS = {
-  plan: 'Your plan',
-  planName: 'Plan',
-  price: 'Price',
-  status: 'Status',
-  next: 'Next payment',
-  since: 'Member since',
-  ends: 'Access ends',
-  perPeriod: '{price} per {period}',
-  more: '{amount} more',
-  less: '{amount} less',
-  change: 'Change plan',
-  changeTitle: 'Change to {plan}?',
-  changeText: 'You will pay {price} from {date}. Until then your current plan stays as it is.',
-  changeConfirm: 'Change plan',
-  changed: 'Your plan changes to {plan} on {date}.',
-  plans: 'Plans',
-  current: 'Current plan',
-  method: 'Payment method',
-  update: 'Update payment method',
-  manage: 'Pause or cancel',
-  manageText: 'Pause to stop the payments for a while and keep your settings; cancel to end the plan. Either way you keep access until {date}.',
-  pause: 'Pause subscription',
-  pauseTitle: 'Pause your subscription?',
-  pauseText: 'No payment is taken while it is paused. Resume it whenever you like.',
-  resume: 'Resume subscription',
-  cancel: 'Cancel subscription',
-  cancelTitle: 'Cancel your subscription?',
-  cancelText: 'You keep access until {date}, and you will not be charged again.',
-  keep: 'Keep my plan',
-  history: 'Billing history',
-  date: 'Date',
-  description: 'Description',
-  amount: 'Amount',
-  invoice: 'Invoice',
-  invoiceFor: 'Invoice for {date}',
-  paused: 'Your subscription is paused.',
-  canceled: 'Your subscription is canceled.',
-  statuses: {
-    active: 'Active',
-    paused: 'Paused',
-    canceled: 'Canceled',
-    paid: 'Paid',
-    refunded: 'Refunded',
-    failed: 'Failed'
-  }
-};
 const SUB_TONES = {
   active: ['success', 'circle-check'],
   paused: ['waiting', 'schedule'],
@@ -78435,8 +78303,8 @@ function SubscriptionManagement({
   className
 }) {
   (0, _shared.useCommercePage)('subscription-management');
-  const t = Object.assign({}, SUB_STRINGS, strings);
-  const st = Object.assign({}, SUB_STRINGS.statuses, t.statuses);
+  const t = (0, _LocaleProvider.useStrings)('commerce.subscription', strings);
+  const st = t.statuses; // merged key by key with the strings prop
   const s = subscription;
   const current = plans.find(p => p.id === s.plan) || {};
   const [pick, setPick] = _react.default.useState(s.plan);
@@ -78625,33 +78493,7 @@ function SubscriptionManagement({
 }
 
 /* ── returns ── */
-const RETURN_STRINGS = {
-  label: 'Return items',
-  items: 'Items',
-  reason: 'Reason',
-  resolution: 'Resolution',
-  review: 'Review',
-  submit: 'Request return',
-  cancel: 'Cancel',
-  window: 'You can return most items within 30 days of delivery.',
-  choose: 'Choose at least one item to return.',
-  notReturnable: 'Cannot be returned',
-  quantity: 'How many, {title}',
-  why: 'Why are you returning them?',
-  whyRequired: 'Choose a reason.',
-  note: 'Anything else we should know? (optional)',
-  want: 'What would you like?',
-  wantRequired: 'Choose a refund or an exchange.',
-  send: 'How will you send them?',
-  sendRequired: 'Choose how to send them.',
-  refund: 'Refund',
-  refundTiming: 'The refund reaches your original payment method 5 to 10 business days after the items arrive.',
-  requested: 'Return requested',
-  requestedText: 'We emailed you the return label and the steps. Here is where your return stands.',
-  status: 'Return status',
-  returning: '{n} items',
-  returningOne: '1 item'
-};
+
 function Returns({
   order = {},
   reasons = [],
@@ -78666,7 +78508,7 @@ function Returns({
   className
 }) {
   (0, _shared.useCommercePage)('returns');
-  const t = Object.assign({}, RETURN_STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('commerce.returns', strings);
   const items = order.items || [];
   const [chosen, setChosen] = _react.default.useState({});
   const [reason, setReason] = _react.default.useState('');
@@ -78975,7 +78817,7 @@ var _Storefront = require("./Storefront.jsx");
 var _Checkout = require("./Checkout.jsx");
 var _Account = require("./Account.jsx");
   } },
-  "platform/components/Comment/Comment.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","../Time/Time.jsx":"platform/components/Time/Time.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Comment/Comment.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","../Time/Time.jsx":"platform/components/Time/Time.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -78992,6 +78834,7 @@ var _Field = require("../../components/Field/Field.jsx");
 var _Input = require("../../components/Input/Input.jsx");
 var _Persona = require("../Persona/Persona.jsx");
 var _Time = require("../Time/Time.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Comment
    Summary: A person, timestamp and plain text with explicit edit, resolve and reaction actions.
@@ -79015,18 +78858,7 @@ function Comment({
   className,
   ...rest
 }) {
-  const t = Object.assign({
-    edit: 'Edit',
-    save: 'Save',
-    cancel: 'Cancel',
-    resolve: 'Resolve',
-    reopen: 'Reopen',
-    edited: 'Edited',
-    resolved: 'Resolved',
-    message: 'Comment',
-    empty: 'Enter a comment.',
-    failed: 'Could not save. Try again.'
-  }, strings);
+  const t = (0, _LocaleProvider.useStrings)('comment', strings);
   const [editing, setEditing] = _react.default.useState(false),
     [draft, setDraft] = _react.default.useState(body),
     [busy, setBusy] = _react.default.useState(false),
@@ -79123,7 +78955,7 @@ function Comment({
   }, r.count))))));
 }
   } },
-  "platform/patterns/CommentThread/CommentThread.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Comment/Comment.jsx":"platform/components/Comment/Comment.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/CommentThread/CommentThread.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Comment/Comment.jsx":"platform/components/Comment/Comment.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -79139,6 +78971,7 @@ var _Badge = require("../../components/Badge/Badge.jsx");
 var _Field = require("../../components/Field/Field.jsx");
 var _Input = require("../../components/Input/Input.jsx");
 var _Comment = require("../../components/Comment/Comment.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · CommentThread
    Summary: An ordered comment conversation with a reply composer and explicit thread resolution.
@@ -79159,16 +78992,7 @@ function CommentThread({
   className,
   ...rest
 }) {
-  const t = Object.assign({
-    title: 'Comments',
-    reply: 'Reply',
-    send: 'Send reply',
-    resolve: 'Resolve thread',
-    reopen: 'Reopen thread',
-    resolved: 'Resolved',
-    empty: 'Enter a reply.',
-    failed: 'Could not save. Try again.'
-  }, strings);
+  const t = (0, _LocaleProvider.useStrings)('commentThread', strings);
   const [draft, setDraft] = _react.default.useState(''),
     [error, setError] = _react.default.useState(''),
     [busy, setBusy] = _react.default.useState(false);
@@ -79241,7 +79065,7 @@ function CommentThread({
   }, error) : null);
 }
   } },
-  "platform/patterns/ImageAnnotation/ImageAnnotation.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../../utils/grid.js":"platform/utils/grid.js","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../CommentThread/CommentThread.jsx":"platform/patterns/CommentThread/CommentThread.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ImageAnnotation/ImageAnnotation.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../../utils/grid.js":"platform/utils/grid.js","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../CommentThread/CommentThread.jsx":"platform/patterns/CommentThread/CommentThread.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -79260,6 +79084,7 @@ var _dnd = require("../../utils/dnd.js");
 var _grid = require("../../utils/grid.js");
 var _Image = require("../../components/Image/Image.jsx");
 var _CommentThread = require("../CommentThread/CommentThread.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ImageAnnotation
    Summary: Named image pins and regions linked to comment threads without pointer-only interaction.
@@ -79307,18 +79132,7 @@ function ImageAnnotation({
   className,
   ...rest
 }) {
-  const t = Object.assign({
-    title: 'Image annotations',
-    pin: 'Pin',
-    region: 'Region',
-    location: 'Location',
-    comment: 'Comment',
-    kind: 'Annotation type',
-    add: 'Add annotation',
-    empty: 'Enter a location and comment.',
-    failed: 'Could not save. Try again.',
-    none: 'No annotations'
-  }, strings);
+  const t = (0, _LocaleProvider.useStrings)('imageAnnotation', strings);
   const [own, setOwn] = _react.default.useState(null),
     [kind, setKind] = _react.default.useState('pin'),
     [location, setLocation] = _react.default.useState(''),
@@ -79436,7 +79250,7 @@ function ImageAnnotation({
   }, t.add)) : null);
 }
   } },
-  "platform/patterns/PresenceBar/PresenceBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","../../components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/PresenceBar/PresenceBar.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","../../components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -79453,6 +79267,7 @@ var _Field = require("../../components/Field/Field.jsx");
 var _Input = require("../../components/Input/Input.jsx");
 var _AvatarGroup = require("../../components/AvatarGroup/AvatarGroup.jsx");
 var _Persona = require("../../components/Persona/Persona.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · PresenceBar
    Summary: The current viewers, editors and a keyboard reachable cursor list.
@@ -79470,13 +79285,7 @@ function PresenceBar({
   className,
   ...rest
 }) {
-  const t = Object.assign({
-    viewers: 'Viewing',
-    editors: 'Editing',
-    cursors: 'Cursors',
-    empty: 'No one else here',
-    view: 'View person'
-  }, strings);
+  const t = (0, _LocaleProvider.useStrings)('presenceBar', strings);
   const m = ['viewers', 'editors', 'cursors'].includes(mode) ? mode : 'viewers';
   const list = people.filter(p => m === 'editors' ? p.role === 'editor' : m === 'cursors' ? !!p.cursor : true);
   return /*#__PURE__*/_react.default.createElement(_Stack.Stack, _extends({
@@ -79653,7 +79462,7 @@ const MentionInput = exports.MentionInput = /*#__PURE__*/_react.default.forwardR
   }) : null));
 });
   } },
-  "platform/components/Announcement/Announcement.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","../Card/Card.jsx":"platform/components/Card/Card.jsx","../Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Announcement/Announcement.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","../Card/Card.jsx":"platform/components/Card/Card.jsx","../Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -79669,6 +79478,7 @@ var _Stack = require("../Stack/Stack.jsx");
 var _Button = require("../Button/Button.jsx");
 var _Notice = require("../Notice/Notice.jsx");
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · Announcement
    Summary: The same announcement as a Banner, Card or Dialog, with explicit actions and recoverable dismissal.
@@ -79701,10 +79511,7 @@ function Announcement({
     variant: ['banner', 'card', 'dialog'],
     tone: ['info', 'success', 'warning', 'danger', 'neutral']
   });
-  const t = Object.assign({
-    dismiss: 'Dismiss announcement',
-    failed: 'Could not dismiss this announcement. Try again.'
-  }, strings);
+  const t = (0, _LocaleProvider.useStrings)('announcement', strings);
   const [closed, setClosed] = _react.default.useState(false),
     [busy, setBusy] = _react.default.useState(false),
     [error, setError] = _react.default.useState('');
@@ -79772,7 +79579,7 @@ function Announcement({
   }, content);
 }
   } },
-  "platform/patterns/AuditLog/AuditLog.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","../../components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","../../components/Time/Time.jsx":"platform/components/Time/Time.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/AuditLog/AuditLog.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","../../components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","../../components/Time/Time.jsx":"platform/components/Time/Time.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -79788,6 +79595,7 @@ var _Button = require("../../components/Button/Button.jsx");
 var _Dialog = require("../../components/Dialog/Dialog.jsx");
 var _Stack = require("../../components/Stack/Stack.jsx");
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · AuditLog
    Summary: A read-only audit DataGrid with actor, timestamp, action, target and optional before/after differences.
@@ -79813,18 +79621,7 @@ function AuditLog({
   }, {
     variant: ['table', 'diff']
   });
-  const t = Object.assign({
-    actor: 'Actor',
-    at: 'Time',
-    action: 'Action',
-    target: 'Target',
-    changes: 'Changes',
-    view: 'View changes',
-    field: 'Field',
-    before: 'Before',
-    after: 'After',
-    close: 'Close'
-  }, strings);
+  const t = (0, _LocaleProvider.useStrings)('auditLog', strings);
   const [active, setActive] = _react.default.useState(null),
     entry = entries.find(a => a.id === active);
   const columns = [{
@@ -79903,7 +79700,7 @@ function AuditLog({
   })));
 }
   } },
-  "platform/patterns/ApprovalWorkflow/ApprovalWorkflow.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","../../components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ApprovalWorkflow/ApprovalWorkflow.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","../../components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -79921,6 +79718,7 @@ var _Button = require("../../components/Button/Button.jsx");
 var _Badge = require("../../components/Badge/Badge.jsx");
 var _Notice = require("../../components/Notice/Notice.jsx");
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · ApprovalWorkflow
    Summary: Sequential or parallel reviewer decisions composed from ReviewFlow and ordered ProgressSteps.
@@ -79955,16 +79753,7 @@ function ApprovalWorkflow({
   }, {
     variant: ['sequential', 'parallel', 'status']
   });
-  const t = Object.assign({
-    approve: 'Approve',
-    changes: 'Request changes',
-    reject: 'Reject',
-    comment: 'Comment',
-    reason: 'Explain why this needs changes.',
-    failed: 'Could not save this decision. Your comment is still available.',
-    steps: 'Approval stages',
-    recorded: 'Decision recorded'
-  }, strings);
+  const t = (0, _LocaleProvider.useStrings)('approvalWorkflow', strings);
   const [comments, setComments] = _react.default.useState({}),
     [errors, setErrors] = _react.default.useState({}),
     [pending, setPending] = _react.default.useState({});
@@ -80414,7 +80203,7 @@ const AILabel = exports.AILabel = /*#__PURE__*/_react.default.forwardRef(functio
   }, label);
 });
   } },
-  "platform/components/GeneratedContent/GeneratedContent.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../utils/cx.js":"platform/utils/cx.js","../AILabel/AILabel.jsx":"platform/components/AILabel/AILabel.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/GeneratedContent/GeneratedContent.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../utils/cx.js":"platform/utils/cx.js","../AILabel/AILabel.jsx":"platform/components/AILabel/AILabel.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -80429,6 +80218,7 @@ var _Notice = require("../../components/Notice/Notice.jsx");
 var _cx = require("../../utils/cx.js");
 var _AILabel = require("../AILabel/AILabel.jsx");
 var _Badge = require("../Badge/Badge.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · GeneratedContent
    Summary: Retain generated content while people review versions, send feedback or explicitly regenerate it.
@@ -80449,18 +80239,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
    Notes: Render trusted React content, never raw model HTML. Feedback belongs to the selected version.
 */
 
-const STRINGS = {
-  label: 'Generated content',
-  helpful: 'Helpful',
-  unhelpful: 'Not helpful',
-  regenerate: 'Regenerate',
-  previous: 'Previous version',
-  next: 'Next version',
-  version: 'Version',
-  feedbackSaved: 'Feedback saved',
-  failed: 'The action failed. Try again.',
-  pending: 'Working'
-};
 function GeneratedContent({
   versions = [],
   versionId,
@@ -80473,10 +80251,7 @@ function GeneratedContent({
   strings,
   className
 }) {
-  const t = {
-      ...STRINGS,
-      ...strings
-    },
+  const t = (0, _LocaleProvider.useStrings)('generatedContent', strings),
     [own, setOwn] = _react.default.useState(defaultVersionId),
     [busy, setBusy] = _react.default.useState(''),
     [error, setError] = _react.default.useState(''),
@@ -80677,7 +80452,7 @@ const Citation = exports.Citation = /*#__PURE__*/_react.default.forwardRef(funct
   }, card(source, 0));
 });
   } },
-  "platform/components/PromptSuggestions/PromptSuggestions.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Card/Card.jsx":"platform/components/Card/Card.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/PromptSuggestions/PromptSuggestions.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Card/Card.jsx":"platform/components/Card/Card.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -80694,6 +80469,7 @@ var _Notice = require("../Notice/Notice.jsx");
 var _Icon = require("../Icon/Icon.jsx");
 var _Tag = require("../Tag/Tag.jsx");
 var _Card = require("../Card/Card.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · PromptSuggestions
    Summary: Optional prompt choices as chips or cards; selecting one is an explicit action.
@@ -80716,11 +80492,7 @@ function PromptSuggestions({
   }, {
     variant: ['chips', 'cards']
   });
-  const t = Object.assign({
-      label: 'Prompt suggestions',
-      empty: 'No prompt suggestions',
-      failed: 'Could not use this suggestion. Try again.'
-    }, strings),
+  const t = (0, _LocaleProvider.useStrings)('promptSuggestions', strings),
     [busy, setBusy] = _react.default.useState(false),
     [error, setError] = _react.default.useState('');
   const lock = _react.default.useRef(false),
@@ -80770,7 +80542,7 @@ function PromptSuggestions({
   }, error) : null);
 }
   } },
-  "platform/components/AIDisclaimer/AIDisclaimer.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/AIDisclaimer/AIDisclaimer.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Link/Link.jsx":"platform/components/Link/Link.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -80786,6 +80558,7 @@ var _Text = require("../Text/Text.jsx");
 var _Notice = require("../Notice/Notice.jsx");
 var _Icon = require("../Icon/Icon.jsx");
 var _Link = require("../Link/Link.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · AIDisclaimer
    Summary: A plain language reminder to review AI output, inline or in a footer.
@@ -80807,10 +80580,7 @@ function AIDisclaimer({
   }, {
     variant: ['footer', 'inline']
   });
-  const t = Object.assign({
-    message: 'AI-generated content may be inaccurate. Review important details.',
-    learn: 'About AI-generated content'
-  }, strings);
+  const t = (0, _LocaleProvider.useStrings)('aiDisclaimer', strings);
   return /*#__PURE__*/_react.default.createElement(_Stack.Inline, _extends({
     as: variant === 'inline' ? 'span' : 'footer',
     wrap: true,
@@ -80824,7 +80594,7 @@ function AIDisclaimer({
   }, t.learn) : null);
 }
   } },
-  "platform/components/RefineMenu/RefineMenu.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../Field/Field.jsx":"platform/components/Field/Field.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/RefineMenu/RefineMenu.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../Field/Field.jsx":"platform/components/Field/Field.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -80841,6 +80611,7 @@ var _Menu = require("../Menu/Menu.jsx");
 var _Dialog = require("../Dialog/Dialog.jsx");
 var _Field = require("../Field/Field.jsx");
 var _Input = require("../Input/Input.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · RefineMenu
    Summary: Requested text refinement by length, tone or a custom instruction.
@@ -80857,21 +80628,7 @@ function RefineMenu({
   strings,
   className
 }) {
-  const t = Object.assign({
-      label: 'Refine',
-      shorter: 'Make shorter',
-      longer: 'Make longer',
-      tone: 'Change tone',
-      formal: 'Formal',
-      casual: 'Casual',
-      neutral: 'Neutral',
-      custom: 'Custom instruction',
-      prompt: 'Instruction',
-      apply: 'Apply instruction',
-      cancel: 'Cancel',
-      empty: 'Enter an instruction.',
-      failed: 'Could not refine this text. Try again.'
-    }, strings),
+  const t = (0, _LocaleProvider.useStrings)('refineMenu', strings),
     [custom, setCustom] = _react.default.useState(false),
     [prompt, setPrompt] = _react.default.useState(''),
     [busy, setBusy] = _react.default.useState(false),
@@ -81383,7 +81140,7 @@ const SuggestedAction = exports.SuggestedAction = /*#__PURE__*/_react.default.fo
   }, error) : null);
 });
   } },
-  "platform/patterns/AISearch/AISearch.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../utils/cx.js":"platform/utils/cx.js","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/GeneratedContent/GeneratedContent.jsx":"platform/components/GeneratedContent/GeneratedContent.jsx","../../components/Citation/Citation.jsx":"platform/components/Citation/Citation.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/AISearch/AISearch.jsx": { deps: {"react":null,"../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../utils/cx.js":"platform/utils/cx.js","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/GeneratedContent/GeneratedContent.jsx":"platform/components/GeneratedContent/GeneratedContent.jsx","../../components/Citation/Citation.jsx":"platform/components/Citation/Citation.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -81402,6 +81159,7 @@ var _Checkbox = require("../../components/Checkbox/Checkbox.jsx");
 var _Link = require("../../components/Link/Link.jsx");
 var _GeneratedContent = require("../../components/GeneratedContent/GeneratedContent.jsx");
 var _Citation = require("../../components/Citation/Citation.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · AISearch
    Summary: Search with optional semantic matching, a clearly identified generated answer and linked sources above results.
@@ -81418,16 +81176,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
    Notes: This is a UI adapter, not a model or search service; caller content must be trusted React nodes.
 */
 
-const STRINGS = {
-  label: 'AI search',
-  query: 'Search query',
-  search: 'Search',
-  semantic: 'Use semantic search',
-  results: 'Search results',
-  empty: 'No results.',
-  failed: 'Search failed. Try again.',
-  pending: 'Searching'
-};
 function AISearch({
   onSearch,
   defaultQuery = '',
@@ -81436,10 +81184,7 @@ function AISearch({
   strings,
   className
 }) {
-  const t = {
-      ...STRINGS,
-      ...strings
-    },
+  const t = (0, _LocaleProvider.useStrings)('aiSearch', strings),
     [query, setQuery] = _react.default.useState(defaultQuery),
     [semantic, setSemantic] = _react.default.useState(defaultSemantic),
     [data, setData] = _react.default.useState(null),
@@ -81604,7 +81349,7 @@ function Recommendation({
   }, t.open + ' ' + item.title) : null))) : /*#__PURE__*/_react.default.createElement(_Text.Text, null, t.empty));
 }
   } },
-  "platform/components/AIButton/AIButton.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/AIButton/AIButton.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -81618,6 +81363,7 @@ var _Button = require("../Button/Button.jsx");
 var _Text = require("../Text/Text.jsx");
 var _Notice = require("../Notice/Notice.jsx");
 var _Menu = require("../Menu/Menu.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · AIButton
    Summary: An explicitly named AI action using the existing sparkle icon, with optional action menu.
@@ -81646,11 +81392,7 @@ const AIButton = exports.AIButton = /*#__PURE__*/_react.default.forwardRef(funct
   strings,
   className
 }, ref) {
-  const t = Object.assign({
-      label: 'AI actions',
-      failed: 'Could not complete this action. Try again.',
-      working: 'Working'
-    }, strings),
+  const t = (0, _LocaleProvider.useStrings)('aiButton', strings),
     [busy, setBusy] = _react.default.useState(false),
     [error, setError] = _react.default.useState('');
   const lock = _react.default.useRef(false),
@@ -81708,7 +81450,7 @@ const AIButton = exports.AIButton = /*#__PURE__*/_react.default.forwardRef(funct
   }, error) : null);
 });
   } },
-  "platform/components/ConfidenceIndicator/ConfidenceIndicator.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/ConfidenceIndicator/ConfidenceIndicator.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../utils/format.js":"platform/utils/format.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -81724,6 +81466,7 @@ var _Text = require("../Text/Text.jsx");
 var _Notice = require("../Notice/Notice.jsx");
 var _Badge = require("../Badge/Badge.jsx");
 var _format = require("../../utils/format.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ConfidenceIndicator
    Summary: Caller supplied confidence with explicit text; numeric values use the data font.
@@ -81746,13 +81489,7 @@ function ConfidenceIndicator({
   }, {
     variant: ['qualitative', 'numeric']
   });
-  const t = Object.assign({
-      high: 'High confidence',
-      medium: 'Medium confidence',
-      low: 'Low confidence',
-      unknown: 'Confidence unavailable',
-      label: 'Confidence'
-    }, strings),
+  const t = (0, _LocaleProvider.useStrings)('confidenceIndicator', strings),
     valid = typeof value === 'number' && Number.isFinite(value) && value >= 0 && value <= 1,
     text = variant === 'numeric' ? valid ? (0, _format.formatPercent)(value, {
       locale
@@ -81766,7 +81503,7 @@ function ConfidenceIndicator({
   }, text) : null);
 }
   } },
-  "platform/patterns/AIExplanation/AIExplanation.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../../components/ConfidenceIndicator/ConfidenceIndicator.jsx":"platform/components/ConfidenceIndicator/ConfidenceIndicator.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/AIExplanation/AIExplanation.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../../components/ConfidenceIndicator/ConfidenceIndicator.jsx":"platform/components/ConfidenceIndicator/ConfidenceIndicator.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -81780,6 +81517,7 @@ var _Text = require("../../components/Text/Text.jsx");
 var _Button = require("../../components/Button/Button.jsx");
 var _Popover = require("../../components/Popover/Popover.jsx");
 var _ConfidenceIndicator = require("../../components/ConfidenceIndicator/ConfidenceIndicator.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · AIExplanation
    Summary: A requested explanation and caller supplied factors, with optional confidence.
@@ -81800,11 +81538,7 @@ function AIExplanation({
   strings,
   className
 }) {
-  const t = Object.assign({
-    label: 'Why this?',
-    title: 'AI explanation',
-    close: 'Close'
-  }, strings);
+  const t = (0, _LocaleProvider.useStrings)('aiExplanation', strings);
   return /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
     title: title || t.title,
     open: open,
@@ -81830,7 +81564,7 @@ function AIExplanation({
   }, f.label), f.detail ? ' — ' + f.detail : null))) : null, confidence ? /*#__PURE__*/_react.default.createElement(_ConfidenceIndicator.ConfidenceIndicator, confidence) : null));
 }
   } },
-  "platform/components/SuggestedEdit/SuggestedEdit.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/SuggestedEdit/SuggestedEdit.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -81846,6 +81580,7 @@ var _Text = require("../Text/Text.jsx");
 var _Notice = require("../Notice/Notice.jsx");
 var _Badge = require("../Badge/Badge.jsx");
 var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · SuggestedEdit
    Summary: Review plain text changes and explicitly accept or reject individual edits or all outstanding edits.
@@ -81869,18 +81604,7 @@ function SuggestedEdit({
   }, {
     variant: ['diff', 'accept', 'reject', 'all']
   });
-  const t = Object.assign({
-      label: 'Suggested edits',
-      before: 'Before',
-      after: 'After',
-      accept: 'Accept',
-      reject: 'Reject',
-      acceptAll: 'Accept all',
-      accepted: 'Accepted',
-      rejected: 'Rejected',
-      empty: 'No suggested edits',
-      failed: 'Could not save this decision. Try again.'
-    }, strings),
+  const t = (0, _LocaleProvider.useStrings)('suggestedEdit', strings),
     [done, setDone] = _react.default.useState({}),
     [busy, setBusy] = _react.default.useState(false),
     [error, setError] = _react.default.useState('');
@@ -82798,7 +82522,7 @@ const Heading = exports.Heading = /*#__PURE__*/_react.default.forwardRef(functio
   }, rest), children);
 });
   } },
-  "platform/charts/TreeChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/grid.js":"platform/utils/grid.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./interaction.js":"platform/charts/interaction.js","./echarts/EChartsPlot.jsx":"platform/charts/echarts/EChartsPlot.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/TreeChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/grid.js":"platform/utils/grid.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./interaction.js":"platform/charts/interaction.js","./echarts/EChartsPlot.jsx":"platform/charts/echarts/EChartsPlot.jsx","../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -82811,6 +82535,7 @@ var _grid = require("../utils/grid.js");
 var _ChartFrame = require("./ChartFrame.jsx");
 var _interaction = require("./interaction.js");
 var _EChartsPlot = require("./echarts/EChartsPlot.jsx");
+var _LocaleProvider = require("../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · TreeChart
    Summary: A hierarchy as a tree (07 Data Display › Charts › Tree chart; owner, 2026-10-26, charts-tree-26): one root,
@@ -82852,14 +82577,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        and fonts the page checks allow inside .plx-chart__engine (font weights from the font-weight tokens).
 */
 
-const STRINGS = {
-  name: 'Name',
-  detail: 'Detail',
-  parent: 'Reports to',
-  level: 'Level',
-  folded: 'folded',
-  open: 'open'
-};
 const INTERACTION = {
   hint: 'Use the arrow keys to move through the tree.',
   hintSelect: ' Enter folds or opens a branch.',
@@ -82922,7 +82639,7 @@ function TreeChart({
   strings,
   className
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = (0, _LocaleProvider.useStrings)('chart.treeChart', strings);
   const down = orientation === 'top-to-bottom';
   const {
     nodes,

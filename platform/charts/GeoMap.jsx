@@ -48,8 +48,8 @@ import { seriesColor } from './scales.js';
 import { ChartLegend } from './parts/ChartLegend.jsx';
 import { ChartTooltip } from './parts/ChartTooltip.jsx';
 import { useChartPoints, ChartPatterns, patternFill } from './a11y.js';
+import { useStrings } from '../providers/LocaleProvider.jsx';
 
-const STRINGS = { region: 'Region', place: 'Place', value: 'Value', noData: 'No data', latitude: 'Latitude', longitude: 'Longitude', zoom: 'Zoom', zoomIn: 'Zoom in', zoomOut: 'Zoom out', reset: 'Show the whole map' };
 const STEPS = 7;
 // SVG geometry on the 4px grid: a marker's radius, the ring's room around it; the zoom range
 const MARKER = 4, RING = 4, ZOOM_MIN = 1, ZOOM_MAX = 8;
@@ -63,7 +63,7 @@ const polygonsOf = (g) => (!g ? [] : g.type === 'Polygon' ? [g.coordinates] : g.
 
 export function GeoMap({ title, description, features, idKey = 'id', nameKey = 'name', values, scale = 'sequential', markers = [], projection = 'mercator',
   format, valueTitle, zoom = true, size = 'lg', strings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('chart.geoMap', strings);
   const uid = 'plx-geo-map' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const project = PROJECTIONS[projection] || PROJECTIONS.mercator;
   const list = Array.isArray(features) ? features : (features && features.features) || [];

@@ -49,9 +49,8 @@ import { useSortable } from '../../utils/dnd.js';
 import { DragHandle } from '../../components/DragHandle/DragHandle.jsx';
 import { Menu, MenuItem, MenuDivider } from '../../components/Menu/Menu.jsx';
 import { Button } from '../../components/Button/Button.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { moveMenu: 'Move {name}', moveUp: 'Move up', moveDown: 'Move down', moveEarlier: 'Move earlier', moveLater: 'Move later',
-  moveFirst: 'Move to the start', moveLast: 'Move to the end', moveUpNamed: 'Move {name} up', moveDownNamed: 'Move {name} down' };
 const fill = (s, vars) => String(s).replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m));
 // after a move button moves its item, focus stays on that button in the moved item (the other one at the list's end)
 const keep = (dir) => (itemEl) => {
@@ -61,7 +60,7 @@ const keep = (dir) => (itemEl) => {
 
 export function SortableList({ items = [], renderItem, onReorder, label, getId = (x) => x.id, getName, layout = 'vertical', handles = true, moveButtons = false,
   id, group, onMove, disabled = false, strings, className, ...rest }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('sortableList', strings);
   const nameOf = getName || ((x) => String(x.name != null ? x.name : x.label != null ? x.label : getId(x)));
   const grid = layout === 'grid';
   const off = disabled || !onReorder;

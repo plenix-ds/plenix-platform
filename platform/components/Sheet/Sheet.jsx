@@ -53,8 +53,8 @@ import { Button } from '../Button/Button.jsx';
 import { Dialog, Drawer } from '../Dialog/Dialog.jsx';
 import { useGesture } from '../../hooks/useGesture.js';
 import { useMedia, below } from '../../patterns/AppShell/AppShell.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { expand: 'Expand sheet', shrink: 'Shrink sheet' };
 const asIcon = (i) => iconElement(i);   // a name or an imported module (#280)
 
 // one sheet at a time (HIG › Sheets): the open sheets in the order they opened; only the last one shows
@@ -81,9 +81,10 @@ function useForm(form) {
   return narrow ? 'bottom' : medium ? 'side' : 'dialog';
 }
 
-export function Sheet({ open, onClose, title, description, icon, onDone, doneLabel = 'Done', cancelLabel = 'Cancel', closeLabel = 'Close',
+export function Sheet({ open, onClose, title, description, icon, onDone, doneLabel, cancelLabel, closeLabel,
   detent = 'medium', form, actions, footer, initialFocus, dismissible = true, flush = false, className, strings, children }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('sheet', strings);
+  doneLabel = doneLabel ?? t.done; cancelLabel = cancelLabel ?? t.cancel; closeLabel = closeLabel ?? t.close;
   const shown = useTopSheet(!!open);
   const kind = useForm(form);
   const bottom = kind === 'bottom';

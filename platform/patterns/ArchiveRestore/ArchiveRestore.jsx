@@ -17,9 +17,10 @@ import { Button } from '../../components/Button/Button.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { Stack } from '../../components/Stack/Stack.jsx';
 import { cx } from '../../utils/cx.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function ArchiveRestore({ archived = false, onArchive, onRestore, strings, children, className }) {
-  const t = Object.assign({ archive: 'Archive', restore: 'Restore', archived: 'Archived', message: 'Restore this record to make it active again.', failed: 'Could not update the record. Try again.' }, strings);
+  const t = useStrings('archiveRestore', strings);
   const [busy, setBusy] = React.useState(false), [error, setError] = React.useState('');
   const lock = React.useRef(false);
   const run = async (fn) => {

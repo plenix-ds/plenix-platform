@@ -41,13 +41,13 @@
 import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { Icon } from '../Icon/Icon.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 const RATIOS = ['1-1', '4-3', '3-2', '16-9', '21-9', '3-4', '9-16'];
-const STRINGS = { error: 'Image not available' };
 
 export const Image = React.forwardRef(function Image({ src, alt, ratio = 'auto', fit = 'cover', srcSet, sizes, sources, loading = 'lazy', priority = false,
   placeholder = 'color', placeholderSrc, rounded = false, width, height, fallback, strings, onLoad, onError, className, ...rest }, ref) {
-  const s = Object.assign({}, STRINGS, strings);
+  const s = useStrings('image', strings);
   const own = React.useRef(null);
   const [status, setStatus] = React.useState('loading');
   const setRef = (el) => { own.current = el; if (typeof ref === 'function') ref(el); else if (ref) ref.current = el; };

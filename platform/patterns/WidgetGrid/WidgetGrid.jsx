@@ -34,9 +34,8 @@ import { Icon } from '../../components/Icon/Icon.jsx';
 import { VisuallyHidden } from '../../components/VisuallyHidden/VisuallyHidden.jsx';
 import { arrowStep } from '../../utils/direction.js';
 import { Menu, MenuItem } from '../../components/Menu/Menu.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { widget: 'Widget', widgetLower: 'widget', move: 'Move {title} (arrow keys)', position: '{title}, position {index} of {total}',
-  earlier: 'Move earlier', later: 'Move later', first: 'Move to the start', last: 'Move to the end' };
 const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m));
 
 const move = (ids, from, to) => { const next = ids.slice(); const [x] = next.splice(from, 1); next.splice(to, 0, x); return next; };
@@ -52,7 +51,7 @@ const Handle = React.forwardRef(function Handle({ onStep, onKeyDown, expanded, .
 });
 
 export function WidgetGrid({ items = [], renderItem, onReorder, label, columns = 'auto', strings, className, ...rest }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('widgetGrid', strings);
   const [dragging, setDragging] = React.useState(null);
   const [over, setOver] = React.useState(null);
   const [said, setSaid] = React.useState('');

@@ -62,8 +62,8 @@ import { Avatar } from '../../components/Avatar/Avatar.jsx';
 import { SectionHeading } from '../../components/SectionHeading/SectionHeading.jsx';
 import { Count } from '../../components/Count/Count.jsx';
 import { Text } from '../../components/Text/Text.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { item: 'item', selectAll: 'Select all {n} {nouns}', select: 'Select {name}', count: '{n} {nouns}', selected: '{n} of {total} selected' };
 const fill = (s, map) => Object.keys(map).reduce((out, k) => out.split('{' + k + '}').join(map[k]), s);
 // a phrase with its numbers in the data font: "{n} of {total} selected" → [<Text data>3</Text>, ' of ', …]
 const phrase = (s, map) => s.split(/(\{n\}|\{total\})/).map((p, i) => (p === '{n}' || p === '{total}' ? <Text key={i} variant="data">{map[p.slice(1, -1)]}</Text> : fill(p, map)));
@@ -97,7 +97,7 @@ function Row({ item, selectable, checked, onCheck, t }) {
 
 export function ResourceList({ items = [], label, noun, plural, selectable = false, selected, onSelectionChange, defaultSelected, showCount = false,
   bar, emptyState, headingLevel = 3, strings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('resourceList', strings);
   const uid = useUid('plx-resource-list');
   const ids = items.map((it) => it.id);
   const sel = useSelection({ items: ids, mode: 'multiple', selected, defaultSelected, onChange: onSelectionChange,

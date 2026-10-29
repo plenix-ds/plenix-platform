@@ -30,15 +30,15 @@ import React from 'react';
 import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { encodeBarcode, BARCODE_QUIET_ZONE } from '../../utils/barcode.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 // the height of the drawing in narrow bars: the stylesheet's height token sets the size, the width follows the viewBox
 const HEIGHT_MODULES = 32;
-const STRINGS = { label: 'Barcode {format}: {value}', invalid: 'Not a valid {format} code', formats: { code128: 'Code 128', ean13: 'EAN-13', upca: 'UPC-A' } };
 const fill = (s, v) => s.replace(/\{(\w+)\}/g, (all, k) => (v[k] !== undefined ? v[k] : all));
 
 export function Barcode({ value, format = 'code128', size = 'md', showText = true, label, strings, className, ...rest }) {
   devWarn('Barcode', { size }, { size: ['md','sm','lg'] });
-  const t = Object.assign({}, STRINGS, strings, { formats: Object.assign({}, STRINGS.formats, strings && strings.formats) });
+  const t = useStrings('barcode', strings);   // formats merge key by key
   const code = React.useMemo(() => encodeBarcode(value, format), [value, format]);
   const name = t.formats[format] || format;
   if (!code) {

@@ -52,11 +52,10 @@ import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
 import { Button } from '../Button/Button.jsx';
-import { useDigits } from '../../providers/LocaleProvider.jsx';
+import { useStrings, useDigits } from '../../providers/LocaleProvider.jsx';
 import { localDigits } from '../../utils/digits.js';
 
 const LINES = [2, 3, 4];
-const STRINGS = { more: 'Show more', less: 'Show less' };
 
 // a text's classes: its role, how it overflows (one line, or at most `clamp` lines while folded) and its figures
 const textClass = (variant, truncate, clamp, open, tabular, className) => cx('plx-text', 'plx-text--' + variant,
@@ -92,7 +91,7 @@ function ExpandableText({ As, variant, clamp, defaultExpanded, tabular, strings,
     watch.observe(el);
     return () => watch.disconnect();
   }, [open, children]);
-  const words = Object.assign({}, STRINGS, strings);
+  const words = useStrings('text', strings);
   return (
     <div className="plx-text-expand">
       <As dir="auto" {...rest} ref={ref} id={id} className={textClass(variant, false, clamp, open, tabular, className)}>{children}</As>

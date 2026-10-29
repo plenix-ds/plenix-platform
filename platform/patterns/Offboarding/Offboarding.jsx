@@ -20,9 +20,13 @@ import { Text } from '../../components/Text/Text.jsx';
 import { WizardDialog } from '../WizardDialog/WizardDialog.jsx';
 import { ExportDialog } from '../ExportDialog/ExportDialog.jsx';
 import { cx } from '../../utils/cx.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function Offboarding({ open, onClose, accountName, action = 'cancel', onConfirm, onExport, formats = [], children, strings, className }) {
-  const t = Object.assign({ title: action === 'delete' ? 'Delete account' : 'Cancel subscription', backup: 'Export your data', export: 'Export data', review: 'Confirm your choice', reason: 'Reason (optional)', confirmName: 'Type the account name to confirm', mismatch: 'Enter the exact account name.', cancel: 'Keep account', complete: action === 'delete' ? 'Delete account' : 'Cancel subscription' }, strings);
+  const words = useStrings('offboarding', strings);
+  // the title and the last button name the action: an app's own words in strings win
+  const named = action === 'delete' ? words.deleteAccount : words.cancelSubscription;
+  const t = Object.assign({}, words, { title: (strings && strings.title) || named, complete: (strings && strings.complete) || named });
   const [reason, setReason] = React.useState(''), [name, setName] = React.useState(''), [exporting, setExporting] = React.useState(false);
   React.useEffect(() => { if (open) { setReason(''); setName(''); setExporting(false); } }, [open]);
   return <Stack className={cx('plx-offboarding', className)}>

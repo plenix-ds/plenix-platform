@@ -63,8 +63,8 @@ import { useEChartsPlot, plotGrid } from './echarts/EChartsPlot.jsx';
 import { tickLineHeight } from './echarts/engine.js';
 import { snapToGrid } from '../utils/grid.js';
 import { halfRoom } from './chart-kit.js';
+import { useStrings } from '../providers/LocaleProvider.jsx';
 
-const STRINGS = { category: 'Category' };
 const DASH = '—';
 // an empty list that stays the same between renders (the drawing redraws when its data changes)
 const NONE = Object.freeze([]);
@@ -89,7 +89,7 @@ const axisTicks = (chart, axis) => {
 export function SeriesChart({ kind = 'line', title, description, data = NONE, x = 'x', series = NONE, xType = 'auto', curve = 'linear', step = 'after',
   points = false, stack = 'none', zero = true, yDomain, format, formatX, xLabel, yLabel, size = 'md', margin, legend = 'auto', legendPosition = 'bottom',
   interactive = true, zoom = false, onSelect, overlay, strings, frameStrings, interactionStrings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('chart.lineChart', strings);
   const area = kind === 'area';
   const stacked = area && (stack === 'stacked' || stack === 'percent');
   const percent = area && stack === 'percent';

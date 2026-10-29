@@ -41,13 +41,13 @@ import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { devWarn } from '../../utils/devWarn.js';
 import { Icon } from '../Icon/Icon.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { male: 'male', female: 'female' };
 const GENDER = { male: { tone: 'blue', icon: 'person-male' }, female: { tone: 'pink', icon: 'person-female' } };
 
 export function DataPill({ children, tone, variant = 'soft', size, icon, data = false, fill = false, gender, person = false, strings, className, ...rest }) {
   devWarn('DataPill', { variant }, { variant: ['soft', 'solid', 'plain'] });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('dataPill', strings);
   const g = GENDER[gender];
   const color = g ? g.tone : (tone || (variant === 'plain' ? undefined : 'grey'));   // a plain value with no color keeps the text color
   const glyph = icon === false ? null : g ? g.icon : (icon || (person ? 'person' : null));   // icon={false}: a picture beside it already says it

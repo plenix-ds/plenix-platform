@@ -31,11 +31,12 @@ import { Notice } from '../Notice/Notice.jsx';
 import { Link } from '../Link/Link.jsx';
 import { useUid } from '../../utils/layer.js';
 import { cx } from '../../utils/cx.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 const clock = (seconds) => { const n = Math.max(0, Math.floor(Number(seconds) || 0)); return Math.floor(n / 60) + ':' + String(n % 60).padStart(2, '0'); };
 export const MediaPlayer = React.forwardRef(function MediaPlayer({ src, audio, kind = 'video', label, poster, crossOrigin, tracks = [], transcript = [], showTranscript = false,
   rates = [0.5, 1, 1.5, 2], pictureInPicture = true, onTimeChange, onError, strings, className, fill = false }, ref) {
-  const t = Object.assign({ rate: 'Playback speed', transcript: 'Show transcript', hideTranscript: 'Hide transcript', pip: 'Picture in picture', exitPip: 'Exit picture in picture', unsupported: 'Picture in picture is unavailable.', failed: 'This media could not be played.', pipFailed: 'Could not change picture in picture. Try again.', seek: 'Seek to {time}', fallback: 'Open media file', volume: 'Volume', mute: 'Mute', audioFailed: 'The separate sound track could not be played. Video is playing muted.' }, strings);
+  const t = useStrings('mediaPlayer', strings);
   const media = React.useRef(null), id = useUid('plx-media-player'), epoch = React.useRef(0), lock = React.useRef(false);
   const sound = React.useRef(null), audioFailed = useSeparateAudio(media, sound, src, audio, kind);
   React.useImperativeHandle(ref, () => media.current, [kind, src]);

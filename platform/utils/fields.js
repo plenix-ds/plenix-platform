@@ -9,21 +9,19 @@
    { id, field, op, value }. A condition left unfinished (no value) does not filter.
    Sort levels: [{ field, dir: "asc" | "desc" }], the first the main one; a select field sorts in its options' order. */
 
+import english from '../i18n/en.js';
+
 // the type icon of each kind (the field pickers and the column headers' type icons)
 export const KIND_ICONS = { text: 'ed-text', select: 'field-select', multi: 'tags', number: 'field-number', date: 'calendar' };
 // the directions in each kind's words (Airtable's)
-export const DIRECTIONS = { text: ['A → Z', 'Z → A'], select: ['First → Last', 'Last → First'], multi: ['First → Last', 'Last → First'],
-  number: ['1 → 9', '9 → 1'], date: ['Oldest → newest', 'Newest → oldest'] };
+export const DIRECTIONS = english.fields.directions;
 // the operators by kind: [op, words]
-export const OPERATORS = {
-  text: [['contains', 'contains'], ['ncontains', 'does not contain'], ['is', 'is'], ['isnot', 'is not'], ['empty', 'is empty'], ['nempty', 'is not empty']],
-  select: [['any', 'is any of'], ['none', 'is none of'], ['empty', 'is empty'], ['nempty', 'is not empty']],
-  multi: [['any', 'has any of'], ['none', 'has none of'], ['empty', 'is empty'], ['nempty', 'is not empty']],
-  number: [['eq', '='], ['ne', '≠'], ['lt', '<'], ['gt', '>'], ['empty', 'is empty'], ['nempty', 'is not empty']],
-  date: [['is', 'is'], ['before', 'is before'], ['after', 'is after'], ['within', 'is within'], ['empty', 'is empty'], ['nempty', 'is not empty']],
-};
+// (the words are the catalog's `fields` section, English here for apps; the panels read the locale's words with fieldWords)
+const OP_ORDER = { text: ['contains', 'ncontains', 'is', 'isnot', 'empty', 'nempty'], select: ['any', 'none', 'empty', 'nempty'], multi: ['any', 'none', 'empty', 'nempty'],
+  number: ['eq', 'ne', 'lt', 'gt', 'empty', 'nempty'], date: ['is', 'before', 'after', 'within', 'empty', 'nempty'] };
+export const OPERATORS = Object.fromEntries(Object.entries(OP_ORDER).map(([kind, ops]) => [kind, ops.map((op) => [op, english.fields.operators[kind][op]])]));
 // "is within": the past week, month or year
-export const WITHIN = [{ value: 'week', label: 'the past week', days: 7 }, { value: 'month', label: 'the past month', days: 30 }, { value: 'year', label: 'the past year', days: 365 }];
+export const WITHIN = [{ value: 'week', label: english.fields.within.week, days: 7 }, { value: 'month', label: english.fields.within.month, days: 30 }, { value: 'year', label: english.fields.within.year, days: 365 }];
 // the category colors (Trubetskoy's 20), in the order options take them
 export const CATEGORY_ORDER = ['blue', 'green', 'purple', 'orange', 'teal', 'magenta', 'yellow', 'navy', 'red', 'cyan', 'lavender', 'brown', 'olive', 'pink', 'apricot', 'mint', 'maroon', 'lime', 'beige', 'grey'];
 
@@ -80,7 +78,7 @@ export function compareLevels(fields, levels) {
 }
 
 // the date quick filter: { preset: "any" | "7" | "30" | "year" | "custom", from, to } (ISO dates)
-export const DATE_PRESETS = [{ value: 'any', label: 'Any time' }, { value: '7', label: 'Last 7 days' }, { value: '30', label: 'Last 30 days' }, { value: 'year', label: 'This year' }];
+export const DATE_PRESETS = [{ value: 'any', label: english.fields.presets.any }, { value: '7', label: english.fields.presets['7'] }, { value: '30', label: english.fields.presets['30'] }, { value: 'year', label: english.fields.presets.year }];
 export function matchesDate(range, value, today) {
   if (!range || range.preset === 'any' || !range.preset) return true;
   const d = blank(value) ? '' : String(value).slice(0, 10);
@@ -90,3 +88,12 @@ export function matchesDate(range, value, today) {
   if (range.preset === 'year') return d.slice(0, 4) === now.slice(0, 4);
   return (!range.from || d >= range.from) && (!range.to || d <= range.to);
 }
+
+// the words of the filter model in the reader's language: fw = useStrings('fields') (a hook-free helper set, so the panels, the query
+// builder and the quick filters read them the same way)
+export const fieldWords = {
+  operators: (fw, kind) => (OPERATORS[kind] || []).map(([op, en]) => [op, ((fw.operators || {})[kind] || {})[op] || en]),
+  within: (fw) => WITHIN.map((w) => Object.assign({}, w, { label: (fw.within || {})[w.value] || w.label })),
+  presets: (fw) => DATE_PRESETS.map((d) => Object.assign({}, d, { label: (fw.presets || {})[d.value] || d.label })),
+  directions: (fw, kind) => ((fw.directions || {})[kind]) || DIRECTIONS[kind],
+};

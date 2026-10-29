@@ -67,6 +67,7 @@ import { devWarn, development } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { SYMBOLS, NAMES, LIBRARY, LIBRARY_COMMIT } from './glyphs.js';
 import { checkIconSvg, checkDrawing, ICON_LIMITS } from '../../utils/iconSafety.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 // One way to draw an icon (owner, 2026-10-23: "no band-aid"): every name goes through resolveIcon, and every icon is an
 // inline SVG in the text color (inline paths paint about 200 times faster than masks).
@@ -313,11 +314,10 @@ export function stateIcon(icon, on, extra) {
 
 // StatusIcon: a tone's icon in the tone's color, alone (an image named by the tone) or before a short visible label
 const STATUS_ICONS = { info: 'circle-info', success: 'circle-check', warning: 'warning', danger: 'alert', neutral: 'circle-info' };
-const STATUS_WORDS = { info: 'Information', success: 'Success', warning: 'Warning', danger: 'Error', neutral: 'Note' };
 export function StatusIcon({ tone = 'info', size = 'md', label, children, strings, className, ...rest }) {
   devWarn('StatusIcon', { tone, size }, { tone: ['info','success','warning','danger','neutral'], size: ['sm','md','lg'] });
   const t = STATUS_ICONS[tone] ? tone : 'info';
-  const words = Object.assign({}, STATUS_WORDS, strings);
+  const words = useStrings('icon.status', strings);
   const shown = children !== undefined && children !== null && children !== false;
   return (
     <span className={cx('plx-status-icon', 'plx-status-icon--' + t, 'plx-status-icon--' + size, className)} {...rest}>

@@ -58,31 +58,29 @@ import { Field } from '../../components/Field/Field.jsx';
 import { Input } from '../../components/Input/Input.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { useOptionalToast } from '../ReviewFlow/ReviewFlow.jsx';
+import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = {
-  title: 'Delete {name}?', titleMany: 'Delete {count} {plural}?', delete: 'Delete', cancel: 'Cancel',
-  permanent: 'This cannot be undone.', more: 'and {count} more', typeLabel: 'Type {phrase} to confirm',
-  typeError: 'Type {phrase} exactly as shown.', phraseMany: 'delete {count} {plural}',
-  deleted: '{what} deleted', trashed: '{what} moved to the trash', undo: 'Undo',
-  retention: 'Restore {them} from the trash within {days} days.', it: 'it', them: 'them', names: 'Deleted',
-};
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const SHOWN = 5;
 
-export function DeleteFlow({ items = [], noun = 'item', plural, variant = 'confirm', consequence, confirmPhrase, retention,
+export function DeleteFlow({ items = [], noun, plural, variant = 'confirm', consequence, confirmPhrase, retention,
   onDelete, onRestore, onCommit, trigger, open, onClose, strings, className }) {
   devWarn('DeleteFlow', { variant }, { variant: ['confirm','type','undo','trash'] });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('deleteFlow', strings);
   const toast = useOptionalToast();
-  const many = plural || noun + 's';
+  const loc = useLocale();
+  const builtIn = !noun && !plural;   // the default words: whole sentences with the Arabic plural forms, from the catalog
+  const many = plural || (noun ? noun + 's' : t.plural);
+  noun = noun ?? t.noun;
+  const counted = (m) => (builtIn ? loc.t('deleteFlow.items', { count: m, n: formatNumber(m) }) : formatNumber(m) + ' ' + many);
   const n = items.length;
   const name = n === 1 ? '“' + items[0].label + '”' : '';
-  const what = n === 1 ? name : formatNumber(n) + ' ' + many;
+  const what = n === 1 ? name : counted(n);
   const [shown, setShown] = React.useState(false);
   const [typed, setTyped] = React.useState('');
   const [error, setError] = React.useState('');
   const field = React.useRef(null);
-  const phrase = confirmPhrase || (n === 1 ? items[0].label : fill(t.phraseMany, { count: formatNumber(n), plural: many }));
+  const phrase = confirmPhrase || (n === 1 ? items[0].label : (builtIn ? loc.t('deleteFlow.phraseItems', { count: n, n: formatNumber(n) }) : fill(t.phraseMany, { count: formatNumber(n), plural: many })));
   const dialog = variant === 'confirm' || variant === 'type';
   const say = (text, options) => { if (toast) toast.show(text, options); else announce(text); };
   const close = () => { setShown(false); setTyped(''); setError(''); if (onClose) onClose(); };
@@ -123,7 +121,7 @@ export function DeleteFlow({ items = [], noun = 'item', plural, variant = 'confi
   const cancelRef = React.useRef(null);
   const formId = useUid('plx-delete-flow');
   const label = String(t.typeLabel).split('{phrase}');
-  const title = n === 1 ? fill(t.title, { name }) : fill(t.titleMany, { count: formatNumber(n), plural: many });
+  const title = n === 1 ? fill(t.title, { name }) : (builtIn ? loc.t('deleteFlow.titleItems', { count: n, n: formatNumber(n) }) : fill(t.titleMany, { count: formatNumber(n), plural: many }));
   const message = (consequence ? consequence + ' ' : '') + t.permanent;
   const rest = n - SHOWN;
   const names = n > 1 ? (

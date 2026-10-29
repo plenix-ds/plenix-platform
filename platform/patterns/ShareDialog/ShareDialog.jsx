@@ -28,10 +28,11 @@ import { Notice } from '../../components/Notice/Notice.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { useUnsavedGuard } from '../../providers/UnsavedGuard.jsx';
 import { cx } from '../../utils/cx.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 const ROLES = [{ value: 'viewer', label: 'Viewer' }, { value: 'editor', label: 'Editor' }];
 export function ShareDialog({ open, title, onClose, people = [], grants = [], roles = ROLES, defaultRole = 'viewer', url = '', linkAccess = 'restricted', onSave, initialTab = 'people', webShare = true, strings, className }) {
-  const t = Object.assign({ title: 'Share', people: 'People', link: 'Link', person: 'Person', role: 'Role', add: 'Add person', remove: 'Remove', save: 'Save access', cancel: 'Cancel', copy: 'Copy link', access: 'Link access', restricted: 'Only people with access', anyone: 'Anyone with the link can view', nativeShare: 'Share using device', failed: 'Could not share. Try again.', invalid: 'Choose a person and an available role.', unsaved: 'Your access changes will be lost.' }, strings);
+  const t = useStrings('shareDialog', strings);
   const [draft, setDraft] = React.useState(grants), [access, setAccess] = React.useState(linkAccess);
   const [person, setPerson] = React.useState(''), [role, setRole] = React.useState(defaultRole), [tab, setTab] = React.useState(initialTab);
   const [busy, setBusy] = React.useState(false), [error, setError] = React.useState('');

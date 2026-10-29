@@ -20,9 +20,10 @@ import { Button } from '../../components/Button/Button.jsx';
 import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
 import { useHotkeyList, hotkeyLabel } from '../../utils/hotkey.js';
 import { cx } from '../../utils/cx.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function ShortcutsDialog({ open, onClose, searchable = true, strings, className }) {
-  const t = Object.assign({ title: 'Keyboard shortcuts', search: 'Search shortcuts', general: 'General', empty: 'No matching shortcuts', close: 'Close' }, strings);
+  const t = useStrings('shortcutsDialog', strings);
   const all = useHotkeyList(), [query, setQuery] = React.useState('');
   React.useEffect(() => { if (!open) setQuery(''); }, [open]);
   const filtered = all.filter((v) => v.enabled !== false && (v.label + ' ' + v.group + ' ' + hotkeyLabel(v.binding)).toLowerCase().includes(query.trim().toLowerCase()));

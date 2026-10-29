@@ -42,8 +42,8 @@ import { ChartLegend } from './parts/ChartLegend.jsx';
 import { ChartTooltip } from './parts/ChartTooltip.jsx';
 import { scalePosition } from './parts/position.js';
 import { useChartHover, labelRoom, legendItems, finite, AXIS_TITLE_ROOM } from './chart-kit.js';
+import { useStrings } from '../providers/LocaleProvider.jsx';
 
-const STRINGS = { category: 'Category', bars: 'Columns', lines: 'Lines' };
 const extent = (list, from0) => {
   let lo = from0 ? 0 : Infinity, hi = from0 ? 0 : -Infinity;
   list.forEach((s) => (s.values || []).forEach((v) => { if (v === null || v === undefined || !isFinite(Number(v))) return; lo = Math.min(lo, Number(v)); hi = Math.max(hi, Number(v)); }));
@@ -54,7 +54,7 @@ const extent = (list, from0) => {
 
 export function ComboChart({ title, description, hideCaption, size, categories = [], bars = [], lines = [], axis = 'shared', barLabel, lineLabel, categoryLabel,
   formatBar, formatLine, showPoints = true, legend, legendPosition, tooltip = true, margin, strings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('chart.comboChart', strings);
   const dual = axis === 'dual';
   const fb = (v) => (typeof formatBar === 'function' ? formatBar(v) : formatNumber(v));
   const fl = (v) => (typeof formatLine === 'function' ? formatLine(v) : formatNumber(v));

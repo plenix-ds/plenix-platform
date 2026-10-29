@@ -16,10 +16,11 @@ import { MediaViewer } from '../../components/MediaViewer/MediaViewer.jsx';
 import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
 import { Stack } from '../../components/Stack/Stack.jsx';
 import { cx } from '../../utils/cx.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function AssetGallery({ items = [], layout = 'masonry', size = 'md', lightbox = false, onOpen, label, strings, className }) {
   devWarn('AssetGallery', { size }, { size: ['xs','sm','md','lg'] });
-  const t = Object.assign({ empty: 'No images', preview: 'Image preview' }, strings);
+  const t = useStrings('assetGallery', strings);
   const [active, setActive] = React.useState(null);
   const index = items.findIndex((a) => a.id === active);
   return <Stack className={cx('plx-asset-gallery', className)}>

@@ -57,8 +57,8 @@ import { useViewState, readView } from '../../providers/ScreenLocation.js';
 import { Icon } from '../../components/Icon/Icon.jsx';
 import { NavPane } from '../NavPane/NavPane.jsx';
 import { ActionBar } from '../ActionBar/ActionBar.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const SECTION_STRINGS = { section: 'section' };
 
 export function SettingsLayout({ nav, className, children }) {
   // a settings page: the layout standard (providers/pageLayouts.js) lays it out, through the shell (batch 218)
@@ -104,7 +104,7 @@ function useOpen(collapsible, defaultExpanded, expanded, onToggle, key, remember
 
 export function SettingsSection({ title, description, collapsible = false, defaultExpanded = true, expanded, onToggle, stateKey, remember = true,
   actions, headingLevel = 2, strings, className, children }) {
-  const t = Object.assign({}, SECTION_STRINGS, strings);
+  const t = useStrings('settingsLayout.section', strings);
   const id = useUid('plx-set');
   const canCollapse = !!(collapsible && title);
   const [open, toggle] = useOpen(canCollapse, defaultExpanded, expanded, onToggle, stateKey || (typeof title === 'string' ? title : null), remember);

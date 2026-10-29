@@ -23,6 +23,7 @@ import React from 'react';
 import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 // a size token's name from "200px" (or the older "var(--plx-ref-size-200px)"); the rule per size is in system/steps.css
 const sizeName = (v) => (v ? String(v).replace(/^var\(--plx-ref-size-|\)$/g, '') : undefined);
@@ -30,11 +31,12 @@ export function Skeleton({ width, height, className, ...rest }) {
   return <span className={cx('plx-skeleton', className)} aria-hidden="true" data-plx-width={sizeName(width)} data-plx-height={sizeName(height)} {...rest} />;
 }
 
-export function Spinner({ size = 'md', label = 'Loading', className, ...rest }) {
+export function Spinner({ size = 'md', label, className, ...rest }) {
   devWarn('Spinner', { size }, { size: ['sm','md','lg'] });
+  const t = useStrings('loading');
   return (
     <span className={cx('plx-spinner', 'plx-spinner--' + size, className)} role="status" {...rest}>
-      <VisuallyHidden>{label}</VisuallyHidden>
+      <VisuallyHidden>{label ?? t.label}</VisuallyHidden>
     </span>
   );
 }

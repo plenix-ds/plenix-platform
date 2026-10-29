@@ -33,9 +33,10 @@ import { Scrim } from '../Scrim/Scrim.jsx';
 import { Spinner } from '../Loading/Loading.jsx';
 import { ProgressBar } from '../ProgressBar/ProgressBar.jsx';
 import { Button } from '../Button/Button.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function LoadingOverlay({ active = true, fullPage = false, message, progress, delay = 0, onCancel, strings, children, className, ...rest }) {
-  const words = Object.assign({ loading: 'Loading', cancel: 'Cancel' }, strings);
+  const words = useStrings('loadingOverlay', strings);
   const [shown, setShown] = React.useState(active && !delay);
   const content = React.useRef(null);
   const focused = React.useRef(null);

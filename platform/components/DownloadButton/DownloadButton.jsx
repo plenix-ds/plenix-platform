@@ -41,13 +41,13 @@ import { Button } from '../Button/Button.jsx';
 import { ProgressCircle } from '../ProgressCircle/ProgressCircle.jsx';
 import { formatBytes, formatPercent } from '../../utils/format.js';
 import { announce } from '../../utils/announce.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { download: 'Download', downloading: 'Downloading', ready: 'Download ready' };
 
 export const DownloadButton = React.forwardRef(function DownloadButton({ href, fileName, onDownload, format, size, progress, iconOnly = false,
   variant = 'secondary', buttonSize = 'md', locale, strings, children, className, ...rest }, ref) {
   devWarn('DownloadButton', { variant }, { variant: ['secondary','primary','tertiary','ghost','danger','danger-secondary','quiet'] });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('downloadButton', strings);
   const busy = progress !== undefined && progress !== null && progress !== false;
   const known = busy && typeof progress === 'number';
   const pct = known ? Math.max(0, Math.min(100, progress)) : null;

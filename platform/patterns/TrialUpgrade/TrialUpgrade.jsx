@@ -22,9 +22,10 @@ import { Select } from '../../components/Input/Input.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { ComparisonView } from '../ComparisonView/ComparisonView.jsx';
 import { cx } from '../../utils/cx.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function TrialUpgrade({ message, plans = [], attributes = [], onUpgrade, defaultOpen = false, strings, className }) {
-  const t = Object.assign({ trial: 'Trial', compare: 'Compare plans', title: 'Choose a plan', plan: 'Plan', upgrade: 'Upgrade', cancel: 'Cancel', failed: 'Could not upgrade. Try again.', upgraded: 'Plan updated' }, strings);
+  const t = useStrings('trialUpgrade', strings);
   const [open, setOpen] = React.useState(defaultOpen), [plan, setPlan] = React.useState(plans[0]?.id || ''), [busy, setBusy] = React.useState(false), [error, setError] = React.useState(''), [saved, setSaved] = React.useState(false);
   const lock = React.useRef(false);
   const upgrade = async () => {

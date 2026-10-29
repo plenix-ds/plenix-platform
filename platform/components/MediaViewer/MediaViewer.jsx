@@ -37,11 +37,11 @@ import { MediaPlayer } from '../MediaPlayer/MediaPlayer.jsx';
 import { useGesture } from '../../hooks/useGesture.js';
 import { Icon } from '../Icon/Icon.jsx';
 import { arrowStep } from '../../utils/direction.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { label: 'Preview', close: 'Close preview', previous: 'Previous', next: 'Next', counter: '{index} of {total}' };
 
 export function MediaViewer({ open, onClose, items, index, defaultIndex = 0, onIndexChange, label, actions, strings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('mediaViewer', strings);
   const ref = React.useRef(null);
   const id = useUid('plx-mv');
   const [own, setOwn] = React.useState(defaultIndex);

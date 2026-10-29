@@ -100,11 +100,9 @@ import { QuickFilter } from '../QuickFilter/QuickFilter.jsx';
 import { SingleQuickFilterMenu } from '../QuickFilter/single-menu.jsx';
 import { Inline, Stack } from '../../components/Stack/Stack.jsx';
 import { Popover } from '../../components/Popover/Popover.jsx';
-import { DATE_PRESETS } from '../../utils/fields.js';
+import { fieldWords } from '../../utils/fields.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { more: 'More actions', actions: '{label} actions', find: 'Find and view', selected: '{n} selected', hidden: ' ({n} hidden by filters)',
-  clear: 'Clear the selection', clearName: '{n} selected, clear the selection', swapped: '{n} selected. Selection actions available.',
-  cleared: 'Selection cleared.', why: 'Select {plural} to {action}', single: 'Select one {noun} to {action}' };
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 // the steps of the button rule: 0 icon and label; 1 icons only; 2 the search as its icon; then one more action per step
 // into More
@@ -134,7 +132,8 @@ export const CommandBarSearch = React.forwardRef(function CommandBarSearch(props
 });
 
 export function CommandBar({ label, actions = [], find, quickFilters = [], view, count, status, end, selection, layout = 'auto', sticky = 'auto', narrow = false, strings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('commandBar', strings);
+  const fw = useStrings('fields');
   const root = React.useRef(null);
   // the selection (owner, 2026-10-15: the swap; issue 454): an object { count, actions, onClear, noun, plural, label }; while
   // its count is above 0 the selection's commands replace the page's actions; search and filters stay
@@ -174,7 +173,7 @@ export function CommandBar({ label, actions = [], find, quickFilters = [], view,
     if (q.kind === 'date') {
       const d = Object.assign({ preset: 'any', from: '', to: '' }, q.value);
       return <MenuSub key={id} label={q.label} icon={q.icon}><MenuRadioGroup label={q.label} value={d.preset} onChange={(v) => q.onChange && q.onChange(Object.assign({}, d, { preset: v }))}>
-        {DATE_PRESETS.map((p) => <MenuItem key={p.value} value={p.value}>{counted(p)}</MenuItem>)}</MenuRadioGroup></MenuSub>;
+        {fieldWords.presets(fw).map((p) => <MenuItem key={p.value} value={p.value}>{counted(p)}</MenuItem>)}</MenuRadioGroup></MenuSub>;
     }
     const chosen = q.value || [];
     return <MenuSub key={id} label={chosen.length ? q.label + ' (' + chosen.length + ')' : q.label} icon={q.icon}>

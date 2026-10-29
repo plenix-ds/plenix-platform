@@ -46,6 +46,7 @@ import { Icon } from '../../components/Icon/Icon.jsx';
 import { NumberInput } from '../../components/NumberInput/NumberInput.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { ProductPrice } from '../../patterns/ProductCard/ProductCard.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export const COMMERCE_PAGES = {
   'product-discovery': 'workspace', 'product-listing': 'workspace', 'product-detail': 'detail', cart: 'workspace', checkout: 'form',
@@ -73,10 +74,9 @@ export function orderTotals(items = [], o = {}) {
   return { subtotal, discount, shipping, tax, total: round(subtotal - discount + shipping + tax), count };
 }
 
-const LINE_STRINGS = { quantity: 'Quantity, {title}', qty: 'Qty {n}', each: '{price} each' };
 
 export function CommerceLine({ item, currency = 'USD', onQuantityChange, remove, strings, className }) {
-  const t = Object.assign({}, LINE_STRINGS, strings);
+  const t = useStrings('commerce.line', strings);
   const name = typeof item.title === 'string' ? item.title : '';
   return (
     <li className={cx('plx-commerce-line', className)}>
@@ -101,13 +101,9 @@ export function CommerceLine({ item, currency = 'USD', onQuantityChange, remove,
   );
 }
 
-const SUMMARY_STRINGS = {
-  title: 'Order summary', subtotal: 'Subtotal', discount: 'Discount', shipping: 'Shipping', shippingEstimated: 'Estimated shipping', tax: 'Tax',
-  taxEstimated: 'Estimated tax', total: 'Total', free: 'Free', items: '{n} items', item: '1 item', times: '× {n}',
-};
 
 export function OrderSummary({ items = [], currency = 'USD', totals, estimated = false, showItems = false, title, headingLevel = 2, children, strings, className }) {
-  const t = Object.assign({}, SUMMARY_STRINGS, strings);
+  const t = useStrings('commerce.summary', strings);
   const s = totals || orderTotals(items);
   const row = (key, label, value, cls) => (
     <div key={key} className={cx('plx-commerce-summary__row', cls)}>

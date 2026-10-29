@@ -20,10 +20,11 @@ import { Badge } from '../../components/Badge/Badge.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { useUnsavedGuard } from '../../providers/UnsavedGuard.jsx';
 import { cx } from '../../utils/cx.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function MetadataEditor({ fields = [], values = {}, onSave, variant = 'inline', disabled = false, strings, className }) {
   devWarn('MetadataEditor', { variant }, { variant: ['inline','form','bulk'] });
-  const t = Object.assign({ save: 'Save metadata', reset: 'Reset', apply: 'Apply {field}', required: 'Enter a value.', failed: 'Metadata could not be saved. Your changes are still available.', saved: 'Metadata saved', unsaved: 'Your metadata changes will be lost.' }, strings);
+  const t = useStrings('metadataEditor', strings);
   const [draft, setDraft] = React.useState(values), [touched, setTouched] = React.useState({}), [error, setError] = React.useState(''), [busy, setBusy] = React.useState(false), [saved, setSaved] = React.useState(false);
   const lock = React.useRef(false), dirty = Object.values(touched).some(Boolean);
   React.useEffect(() => { if (!dirty) setDraft(values); }, [values, dirty]);

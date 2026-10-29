@@ -13,10 +13,11 @@ import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
 import { ContentGrid } from '../ContentGrid/ContentGrid.jsx';
 import { Stack } from '../../components/Stack/Stack.jsx';
 import { cx } from '../../utils/cx.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function RelatedAssets({ items = [], variant = 'strip', label, onOpen, strings, className }) {
   devWarn('RelatedAssets', { variant }, { variant: ['strip','grid'] });
-  const t = Object.assign({ empty: 'No related assets' }, strings);
+  const t = useStrings('relatedAssets', strings);
   const cards = items.map((a) => <MediaCard key={a.id} src={a.src} alt={a.alt} title={a.title} meta={a.meta} href={a.href} onOpen={!a.href && onOpen ? () => onOpen(a) : undefined} />);
   return <Stack className={cx('plx-related-assets', className)}>{!items.length ? <EmptyState title={t.empty} /> : variant === 'grid'
     ? <ContentGrid label={label}>{cards}</ContentGrid> : <Carousel label={label} perView={2} strings={strings}>{cards}</Carousel>}</Stack>;

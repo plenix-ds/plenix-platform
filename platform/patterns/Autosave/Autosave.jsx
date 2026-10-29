@@ -21,6 +21,7 @@ import { Button } from '../../components/Button/Button.jsx';
 import { Inline } from '../../components/Stack/Stack.jsx';
 import { useUnsavedGuard } from '../../providers/UnsavedGuard.jsx';
 import { cx } from '../../utils/cx.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 const STATES = { saving: ['active', 'refresh'], saved: ['success', 'check'], offline: ['waiting', 'cloud-off'], failed: ['negative', 'alert'] };
 const WORDS = { saving: 'Saving', saved: 'Saved', offline: 'Offline', failed: 'Save failed', retry: 'Retry' };
@@ -33,9 +34,10 @@ export function Autosave({ state = 'saved', onRetry, strings, className }) {
   return <Inline className={cx('plx-autosave', className)} wrap><SaveStatus state={state} strings={strings} />
     {state === 'failed' && onRetry ? <Button size="sm" onClick={onRetry}>{t.retry}</Button> : null}</Inline>;
 }
-export function useAutosave(value, onSave, { delay = 600, enabled = true, unsavedMessage = 'Your changes have not been saved.' } = {}) {
+export function useAutosave(value, onSave, { delay = 600, enabled = true, unsavedMessage } = {}) {
+  const words = useStrings('autosave');
   const [snapshot, setSnapshot] = React.useState({ state: 'saved', error: null, dirty: false });
-  useUnsavedGuard(snapshot.dirty, unsavedMessage);
+  useUnsavedGuard(snapshot.dirty, unsavedMessage ?? words.unsaved);
   const ref = React.useRef({ value, saved: value, onSave, enabled, alive: false, timer: null, running: null, online: typeof navigator === 'undefined' || navigator.onLine !== false });
   const r = ref.current; r.onSave = onSave; r.enabled = enabled;
   const publish = (state, error = null) => { if (r.alive) setSnapshot({ state, error, dirty: !Object.is(r.value, r.saved) }); };

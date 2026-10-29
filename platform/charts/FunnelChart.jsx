@@ -38,8 +38,8 @@ import { DataLabel } from './parts/DataLabel.jsx';
 import { ChartTooltip } from './parts/ChartTooltip.jsx';
 import { scalePosition } from './parts/position.js';
 import { useChartPoints } from './a11y.js';
+import { useStrings } from '../providers/LocaleProvider.jsx';
 
-const STRINGS = { stage: 'Stage', value: 'Count', kept: 'Kept from the step before', ofFirst: 'Of the first step' };
 // the room between the active bar and its ring (SVG geometry, the 4px grid)
 const RING = 4, LINE = 12;
 // a stage name in one or two lines, split at the word nearest its middle (the horizontal funnel's names under narrow columns)
@@ -52,7 +52,7 @@ const twoLines = (s) => {
 };
 
 export function FunnelChart({ title, description, data = [], orientation = 'vertical', color, format, valueTitle, size = 'md', strings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('chart.funnelChart', strings);
   const o = orientation === 'horizontal' ? 'horizontal' : 'vertical';
   const rows = data.map((d, i) => ({ id: i + 1, label: String(d.label), value: Math.max(0, Number(d.value) || 0) }));
   const first = rows.length ? rows[0].value : 0;
