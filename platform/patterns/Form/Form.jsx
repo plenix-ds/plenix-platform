@@ -35,7 +35,7 @@
        (at most --plx-ref-size-160px); a label cut short shows in full in a Tooltip; in a very narrow column each label
        moves above its control (Field).
      A section is a <section> named by its title; its description is part of the page text (read in order).
-     FormActions is an ActionBar: buttons at the end, wrapping when the bar is narrow; sticky by default.
+     FormActions is an ActionBar: buttons at the end in one row (what does not fit folds into More actions); sticky by default.
      Other props pass through to the <form> and the <section>.
    Notes:
      One set of actions per form, never one per section. Validate on submit or when a field is left, and show the error

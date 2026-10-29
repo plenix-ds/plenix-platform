@@ -1,7 +1,7 @@
 /* Plenix · ActionBar (platform/patterns/ActionBar). A page's or a form's buttons on the right, in a bar that sticks to the
    bottom of the scrolling page: the page surface behind it, a divider above it. A scrolling area sets
    --plx-comp-action-bar-stick to minus its bottom padding, so the stuck bar is flush with its bottom edge. */
-.plx-action-bar{align-items:center;background-color:var(--plx-comp-action-bar-context-background,var(--plx-comp-action-bar-background));border-top-color:var(--plx-comp-action-bar-line);border-top-style:solid;border-top-width:var(--plx-comp-action-bar-line-width);inset-block-end:var(--plx-comp-action-bar-stick);column-gap:var(--plx-comp-action-bar-gap);display:flex;flex-wrap:wrap;justify-content:flex-end;margin-block-start:var(--plx-comp-action-bar-margin-block-start);padding-block-end:var(--plx-comp-action-bar-padding-block);padding-block-start:var(--plx-comp-action-bar-padding-block);position:sticky;row-gap:var(--plx-comp-action-bar-gap);z-index:var(--plx-comp-action-bar-layer);}
+.plx-action-bar{align-items:center;background-color:var(--plx-comp-action-bar-context-background,var(--plx-comp-action-bar-background));border-top-color:var(--plx-comp-action-bar-line);border-top-style:solid;border-top-width:var(--plx-comp-action-bar-line-width);inset-block-end:var(--plx-comp-action-bar-stick);column-gap:var(--plx-comp-action-bar-gap);display:flex;flex-wrap:nowrap;justify-content:flex-end;margin-block-start:var(--plx-comp-action-bar-margin-block-start);padding-block-end:var(--plx-comp-action-bar-padding-block);padding-block-start:var(--plx-comp-action-bar-padding-block);position:sticky;row-gap:var(--plx-comp-action-bar-gap);z-index:var(--plx-comp-action-bar-layer);}
 /* Focus not obscured (WCAG 2.2 SC 2.4.11; Platforms Standard 8.1): a scrolling area that holds a stuck bar keeps the
    bar's height (--plx-comp-action-bar-block-size: one row) clear when focus or a scroll brings an element into view, so
    the bar never covers the focused element. The header, the footer (StatusBar) and the Narrow bottom bar sit outside
@@ -9,3 +9,11 @@
 :where(:root, .plx-app-shell__main, .plx-page-content, .plx-settings__content, .plx-side-panel__body, .plx-secondary-pane__body, .plx-u-overflow-y-auto):has(.plx-action-bar:not(.plx-action-bar--static)){scroll-padding-block-end:var(--plx-comp-action-bar-block-size);}
 
 .plx-action-bar--static{position:static;}
+/* a window under 400px (a phone; the same value as --plx-sys-fit-footer-stack-width, which a media query cannot read): the main button and the one beside it stack full width,
+   the main one first; More (the other actions) sits on Cancel's row */
+@media (width < 400px){
+  .plx-action-bar{flex-wrap:wrap;}
+  .plx-action-bar__primary{flex-basis:100%;order:-1;}
+  .plx-action-bar__action{flex-basis:0%;flex-grow:1;}
+  .plx-action-bar__more{flex-shrink:0;}
+}

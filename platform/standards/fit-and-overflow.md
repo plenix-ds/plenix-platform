@@ -30,7 +30,7 @@ How every Plenix part behaves when its content does not fit its space (owner, 20
 | Badges and tags | One line, full text | A list of tags wraps to new rows, 8px apart | One tag wider than its space: its text ends in an ellipsis; the icon and the remove button stay | Status badges keep their icon and meaning; the full text in a tooltip |
 | Table header cells | One line | Wrap to 2 lines (`wrapHeaders`, 16px lines) | An ellipsis on line 2 | The full header in a tooltip; the sort arrow and menu never hide; labels stay left-aligned |
 | Breadcrumbs | The middle items collapse into one "…" button that opens a menu of them | The current page's name ends in an ellipsis | The first item and the current page always show | The full trail in the menu; the current page's full name in a tooltip |
-| Buttons in a footer or an action bar | One row, aligned to the end | The secondary actions move into a "More actions" button; the primary action and Cancel stay | Under 400px windows only: the two kept buttons stack full width, primary first | Labels never hide (footer actions are words); a footer never wraps to a second row of mixed buttons |
+| Buttons in a footer or an action bar | One row, aligned to the end | The secondary actions move into a "More actions" button, in priority order (`priority` low, normal, high; the last first within a priority; danger last of its priority); the primary action and Cancel (the button that folds last) stay | Under 400px windows only (the window, not the bar): the primary and Cancel stack full width, primary first, and every other action is in More, which sits on Cancel's row | Labels never hide (footer actions are words); a footer never wraps to a second row of mixed buttons; growing the window back shows every button again |
 
 ## 3. Toolbars and menu bars: which actions go into More
 
@@ -75,10 +75,11 @@ How every Plenix part behaves when its content does not fit its space (owner, 20
 ## 7. Shared values
 
 - `--plx-sys-fit-lines` (2), `--plx-sys-fit-line-height` (16px) and `--plx-sys-fit-wrap-padding-block` (4px) are the values every wrapping heading or label shares (`platform/tokens/semantic/fit.tokens.json`). The CollapsibleSection and NavList heading tokens alias them.
-- The container widths of later ladders (the 360px label stack, the 400px footer stack) are written in their queries with a token beside them when each ladder is built.
+- `--plx-sys-fit-footer-stack-width` (400px) is the footer stack width. A media query cannot read a token, so `action-bar.css` writes the value and the ActionBar reads the token (`useMedia`). The 360px label stack is written the same way when it is built.
 
 ## 8. What is built
 
 - Built: section and navigation group headings (issue 502): `CollapsibleSection`, `NavList`, `useTruncated` for several lines, the Tooltip's `describe` option.
-- To build, in this order: the Toolbar, CommandBar `priority` and ActionBar ladders (section 3 and the footer row), segmented buttons (#276), combo and select sizing, label plus control, badges and tags, table header tooltips, breadcrumbs.
+- Built: the Toolbar ladder, the ActionBar ladder and the footer row, with `Button.priority` (issue 477, stage 4): `Toolbar`, `ActionBar`, `foldOrder`, `useBarFit` with its own row (`:self`). Only a `Button` element with a text label folds; a Button inside another component (a wrapper like `<B/>`) does not.
+- To build, in this order: CommandBar `priority`, segmented buttons (#276), combo and select sizing, label plus control, badges and tags, table header tooltips, breadcrumbs.
 - The overflow audit (`tools/check-overflow.js`) lists what still breaks this standard on every spec page and in the 10 apps.

@@ -1028,6 +1028,21 @@ const B = ({
   variant: variant,
   onClick: act(label, tone)
 }, rest), label);
+// a toolbar's Buttons are Button elements (not a component that makes one) so the Toolbar can fold them into More at a narrow width
+const bt = ({
+  icon,
+  label,
+  tone,
+  act,
+  variant,
+  ...rest
+}) => /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, _extends({
+  key: label,
+  size: "sm",
+  icon: icon,
+  variant: variant,
+  onClick: act(label, tone)
+}, rest), label);
 const Bar = ({
   children,
   label
@@ -1575,17 +1590,18 @@ function Users({
     title: "All users"
   }, /*#__PURE__*/_react.default.createElement(Bar, {
     label: "User actions"
-  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.ButtonGroup, {
-    label: "Maintenance"
-  }, /*#__PURE__*/_react.default.createElement(B, {
-    icon: "import",
-    label: "Import / Export",
-    act: act
-  }), /*#__PURE__*/_react.default.createElement(B, {
-    icon: "refresh",
-    label: "Reindex",
-    tone: "info",
-    act: act
+  }, /*#__PURE__*/_react.default.createElement(_plenixPlatform.Toolbar.Group, {
+    role: "group",
+    "aria-label": "Maintenance"
+  }, bt({
+    icon: 'import',
+    label: 'Import / Export',
+    act
+  }), bt({
+    icon: 'refresh',
+    label: 'Reindex',
+    tone: 'info',
+    act
   })), /*#__PURE__*/_react.default.createElement(Search, {
     value: q,
     onChange: setQ,
@@ -1968,31 +1984,32 @@ function Database({
     }, D.DB_TOTAL.pages))
   }, /*#__PURE__*/_react.default.createElement(Bar, {
     label: "Record actions"
-  }, /*#__PURE__*/_react.default.createElement(B, {
-    icon: "add",
-    label: "Add new",
-    act: act
-  }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.ButtonGroup, {
-    label: "Transfer"
-  }, /*#__PURE__*/_react.default.createElement(B, {
-    icon: "refresh",
-    label: "Reindex",
-    tone: "info",
-    act: act
-  }), /*#__PURE__*/_react.default.createElement(B, {
-    icon: "import",
-    label: "Import",
-    act: act
-  }), /*#__PURE__*/_react.default.createElement(B, {
-    icon: "export",
-    label: "Export",
-    tone: "info",
-    act: act
-  })), /*#__PURE__*/_react.default.createElement(B, {
-    icon: "doc-text",
-    label: "Export text",
-    tone: "info",
-    act: act
+  }, bt({
+    icon: 'add',
+    label: 'Add new',
+    act
+  }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Toolbar.Group, {
+    role: "group",
+    "aria-label": "Transfer"
+  }, bt({
+    icon: 'refresh',
+    label: 'Reindex',
+    tone: 'info',
+    act
+  }), bt({
+    icon: 'import',
+    label: 'Import',
+    act
+  }), bt({
+    icon: 'export',
+    label: 'Export',
+    tone: 'info',
+    act
+  })), bt({
+    icon: 'doc-text',
+    label: 'Export text',
+    tone: 'info',
+    act
   }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Button, {
     size: "sm",
     iconOnly: true,
@@ -2056,28 +2073,29 @@ function Customizations({
     title: "Changes"
   }, /*#__PURE__*/_react.default.createElement(Bar, {
     label: "Customization actions"
-  }, /*#__PURE__*/_react.default.createElement(B, {
-    icon: "refresh",
-    label: "Scan for changes",
-    tone: "info",
-    act: act
-  }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.ButtonGroup, {
-    label: "Transfer"
-  }, /*#__PURE__*/_react.default.createElement(B, {
-    icon: "export",
-    label: "Export",
-    tone: "info",
-    act: act
-  }), /*#__PURE__*/_react.default.createElement(B, {
-    icon: "import",
-    label: "Import",
-    act: act
-  })), /*#__PURE__*/_react.default.createElement(B, {
-    icon: "trash",
-    label: "Delete",
-    tone: "warning",
-    variant: "danger-secondary",
-    act: act
+  }, bt({
+    icon: 'refresh',
+    label: 'Scan for changes',
+    tone: 'info',
+    act
+  }), /*#__PURE__*/_react.default.createElement(_plenixPlatform.Toolbar.Group, {
+    role: "group",
+    "aria-label": "Transfer"
+  }, bt({
+    icon: 'export',
+    label: 'Export',
+    tone: 'info',
+    act
+  }), bt({
+    icon: 'import',
+    label: 'Import',
+    act
+  })), bt({
+    icon: 'trash',
+    label: 'Delete',
+    tone: 'warning',
+    variant: 'danger-secondary',
+    act
   })), /*#__PURE__*/_react.default.createElement(_plenixPlatform.DataGrid, {
     label: "Customizations",
     selectable: true,

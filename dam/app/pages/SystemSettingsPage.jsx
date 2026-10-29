@@ -50,6 +50,8 @@ function useAct() {
   return (label, tone = 'success') => () => toast.show(label, { tone });
 }
 const B = ({ icon, label, tone, act, variant, ...rest }) => <Button size="sm" icon={icon} variant={variant} onClick={act(label, tone)} {...rest}>{label}</Button>;
+// a toolbar's Buttons are Button elements (not a component that makes one) so the Toolbar can fold them into More at a narrow width
+const bt = ({ icon, label, tone, act, variant, ...rest }) => <Button key={label} size="sm" icon={icon} variant={variant} onClick={act(label, tone)} {...rest}>{label}</Button>;
 const Bar = ({ children, label }) => <Toolbar label={label}>{children}</Toolbar>;
 const Search = ({ value, onChange, label }) => (
   <Stack width="lg" push>
@@ -211,7 +213,7 @@ function Users({ act }) {
     <Screen id="users" title="Users" description="Manage user accounts and view login activity." actions={<B icon="add" label="Create user" act={act} />}>
       <Section title="All users">
         <Bar label="User actions">
-          <ButtonGroup label="Maintenance"><B icon="import" label="Import / Export" act={act} /><B icon="refresh" label="Reindex" tone="info" act={act} /></ButtonGroup>
+          <Toolbar.Group role="group" aria-label="Maintenance">{bt({ icon: 'import', label: 'Import / Export', act })}{bt({ icon: 'refresh', label: 'Reindex', tone: 'info', act })}</Toolbar.Group>
           <Search value={q} onChange={setQ} label="Search users" />
         </Bar>
         <DataGrid label="Users" empty="No users match" data={rowsOf(D.USERS.filter((r) => match(q, r)), ['user', 'name', 'email', 'role', 'created', 'login'])} columns={[
@@ -342,9 +344,9 @@ function Database({ act }) {
       </Section>
       <Section title={'Records in ' + table} stateKey="records" description={<>{'Found '}<Text variant="data">{D.DB_TOTAL.records}</Text>{' records · page '}<Text variant="data">1</Text>{' of '}<Text variant="data">{D.DB_TOTAL.pages}</Text></>}>
         <Bar label="Record actions">
-          <B icon="add" label="Add new" act={act} />
-          <ButtonGroup label="Transfer"><B icon="refresh" label="Reindex" tone="info" act={act} /><B icon="import" label="Import" act={act} /><B icon="export" label="Export" tone="info" act={act} /></ButtonGroup>
-          <B icon="doc-text" label="Export text" tone="info" act={act} />
+          {bt({ icon: 'add', label: 'Add new', act })}
+          <Toolbar.Group role="group" aria-label="Transfer">{bt({ icon: 'refresh', label: 'Reindex', tone: 'info', act })}{bt({ icon: 'import', label: 'Import', act })}{bt({ icon: 'export', label: 'Export', tone: 'info', act })}</Toolbar.Group>
+          {bt({ icon: 'doc-text', label: 'Export text', tone: 'info', act })}
           <Button size="sm" iconOnly icon="close" label="Reset settings" onClick={act('Settings reset', 'info')} />
           <Menu label="Delete" trigger={<Button size="sm" variant="danger-secondary" icon="trash" caret>Delete</Button>}>
             <MenuItem icon="trash" danger onSelect={act('Delete ' + D.DB_TOTAL.records + ' records', 'warning')}>{'Delete ' + D.DB_TOTAL.records + ' records'}</MenuItem>
@@ -371,9 +373,9 @@ function Customizations({ act }) {
     <Screen id="customizations" title="Customizations" description="Track configuration changes across modules, and export or import them between environments.">
       <Section title="Changes">
         <Bar label="Customization actions">
-          <B icon="refresh" label="Scan for changes" tone="info" act={act} />
-          <ButtonGroup label="Transfer"><B icon="export" label="Export" tone="info" act={act} /><B icon="import" label="Import" act={act} /></ButtonGroup>
-          <B icon="trash" label="Delete" tone="warning" variant="danger-secondary" act={act} />
+          {bt({ icon: 'refresh', label: 'Scan for changes', tone: 'info', act })}
+          <Toolbar.Group role="group" aria-label="Transfer">{bt({ icon: 'export', label: 'Export', tone: 'info', act })}{bt({ icon: 'import', label: 'Import', act })}</Toolbar.Group>
+          {bt({ icon: 'trash', label: 'Delete', tone: 'warning', variant: 'danger-secondary', act })}
         </Bar>
         <DataGrid label="Customizations" selectable selected={sel} onSelectionChange={setSel} data={rows} columns={[
           { title: 'Type', field: 'type', filter: 'list' }, { title: 'Customization', field: 'name', kind: 'name', filter: true }, { title: 'Modules', field: 'modules', kind: 'data' }, { title: 'Date', field: 'date', kind: 'data' }]} />

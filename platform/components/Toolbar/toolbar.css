@@ -1,7 +1,7 @@
 /* Plenix · Toolbar (platform/components/Toolbar). Controls in a toolbar take the toolbar role height. */
-.plx-toolbar{--plx-comp-input-context-min-height:var(--plx-comp-toolbar-input-min-height);--plx-comp-button-context-height:var(--plx-sys-control-height-toolbar);align-items:center;column-gap:var(--plx-comp-toolbar-group-gap);display:flex;flex-wrap:wrap;min-inline-size:0;row-gap:var(--plx-comp-toolbar-control-gap);}
-.plx-toolbar__group{align-items:center;column-gap:var(--plx-comp-toolbar-control-gap);display:flex;flex-wrap:wrap;row-gap:var(--plx-comp-toolbar-control-gap);}
-/* bar (CommandBar): one row that never wraps, with fixed gaps that density does not change */
+.plx-toolbar{--plx-comp-input-context-min-height:var(--plx-comp-toolbar-input-min-height);--plx-comp-button-context-height:var(--plx-sys-control-height-toolbar);align-items:center;column-gap:var(--plx-comp-toolbar-group-gap);display:flex;flex-wrap:nowrap;min-inline-size:0;row-gap:var(--plx-comp-toolbar-control-gap);}
+.plx-toolbar__group{align-items:center;column-gap:var(--plx-comp-toolbar-control-gap);display:flex;flex-shrink:0;flex-wrap:nowrap;row-gap:var(--plx-comp-toolbar-control-gap);}
+/* a toolbar never wraps (platform/standards/fit-and-overflow.md): its Buttons fold into More instead. bar (CommandBar): fixed gaps that density does not change */
 .plx-toolbar--bar{column-gap:var(--plx-comp-toolbar-bar-group-gap);flex-wrap:nowrap;}
 .plx-toolbar--bar>.plx-toolbar__group{column-gap:var(--plx-comp-toolbar-bar-control-gap);flex-shrink:0;flex-wrap:nowrap;}
 .plx-toolbar__spacer{flex-grow:1;}

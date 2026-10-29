@@ -3,7 +3,7 @@
    Step 0 draws every control with its icon and label; each later step makes the bar narrower (icons only with tooltips,
    the search as its icon, then one more action into More per step, from the end, Delete last: the bar decides what a
    step means). The rows measured are the elements in ref that match rows (default [data-plx-bar-row]): a row fits while every visible child of
-   it lies inside it on one line. The step starts again from `min` whenever the bar's width or `key` (anything that changes
+   it lies inside it on one line (rows ':self': the element itself is the row). The step starts again from `min` whenever the bar's width or `key` (anything that changes
    the controls' widths: labels, a selection) changes, unless hold (the bar's search is open across it), and goes up one step at a time, before the browser paints,
    until every row fits or `max` is reached. Nothing is written to the page: the bar draws each step from its classes. */
 import React from 'react';
@@ -11,7 +11,9 @@ import React from 'react';
 // a row is too narrow when a child of it ends past its edge (either edge: right to left mirrors it) or starts on a
 // second line. Children are read, not scrollWidth: a tooltip's hidden bubble at the end may reach past the edge
 const over = (row) => {
-  const kids = Array.prototype.filter.call(row.children, (k) => k.offsetParent !== null && k.offsetWidth > 0);
+  // a wrapper the toolbar makes transparent (display: contents: Stack, Inline) has no box: its children are read in its place
+  const flat = (el) => Array.prototype.reduce.call(el.children, (out, k) => (getComputedStyle(k).display === 'contents' ? out.concat(flat(k)) : out.concat(k)), []);
+  const kids = flat(row).filter((k) => k.offsetParent !== null && k.offsetWidth > 0);
   if (!kids.length) return false;
   const box = row.getBoundingClientRect();
   const top = Math.min.apply(null, kids.map((k) => k.offsetTop));
@@ -39,7 +41,7 @@ export function useBarFit(ref, key, max, min = 0, rows = '[data-plx-bar-row]', h
     const signature = [el, width, key, max, min, rows, step, el.textContent];
     if (measured.current && signature.every((value, i) => value === measured.current[i])) return;
     measured.current = signature;
-    if (Array.prototype.some.call(el.querySelectorAll(rows), over)) setStep(step + 1);
+    if (Array.prototype.some.call(rows === ':self' ? [el] : el.querySelectorAll(rows), over)) setStep(step + 1);
   });
   return Math.max(min, Math.min(step, max));
 }
