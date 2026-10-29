@@ -50104,8 +50104,8 @@ function RichTextEditor({
 }) {
   const t = (0, _LocaleProvider.useStrings)('richTextEditor', strings);
   // heading and tip are messages with {n}, {name} and {keys}; an app's own function in strings still works
-  const headingText = n => typeof t.heading === 'function' ? t.heading(n) : String(t.heading).replace('{n}', (0, _format.formatNumber)(n));
-  const tipText = (name, keys) => typeof t.tip === 'function' ? t.tip(name, keys) : String(t.tip).replace('{name}', name).replace('{keys}', keys);
+  const headingText = n => typeof t.heading === 'function' ? t.heading(n) : String(t.heading).replace('{n}', () => (0, _format.formatNumber)(n));
+  const tipText = (name, keys) => typeof t.tip === 'function' ? t.tip(name, keys) : String(t.tip).replace('{name}', () => name).replace('{keys}', () => keys);
   const auto = (0, _layer.useUid)('plx-rte');
   const areaId = id || auto + '-area';
   const area = _react.default.useRef(null),
@@ -54467,6 +54467,8 @@ function longName(zone, date, locale) {
     return '';
   }
 }
+
+// Called directly (outside a component), it reads the page's language (formatLocale), not a LocaleProvider's catalogs; TimeZoneSelect passes its own words in strings.
 function timeZoneOptions({
   zones,
   date = new Date(),
@@ -76466,6 +76468,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      See Commerce.jsx.
 */
 // the products' fields, for the filter, the category quick filter and the sort (utils/fields.js)
+// Called directly (outside a component), it reads the page's language (formatLocale), not a LocaleProvider's catalogs; ProductListing passes its own words in strings.
 function productFields(categories = [], strings) {
   // not a hook (it is exported, and ProductListing calls it inside useMemo): the page locale's catalog words, with strings on top
   const t = Object.assign({}, (0, _LocaleProvider.createTranslator)((0, _format.formatLocale)()).section('commerce.listing'), strings);
