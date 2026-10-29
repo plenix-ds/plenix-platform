@@ -7,7 +7,9 @@
        (the @plenix-ds/lint inline-style rule), the app stylesheet, its raw color and its .plx-fieldset__legend patch
      skips the copy of Plenix inside the app (vendor-copy/plenix.js)
      never changes a file of the app (each file's bytes are the same after the scan) and writes its report only where asked
-   Proof first: before #273 there was no scan, so every line fails.
+     refuses (exit 2, nothing written) without --out or --json, and with an --out inside the app folder
+   Proof first: before #273 there was no scan, so every line fails; on ae164f53 (before the QA fix) the two refusals fail,
+     because the report then defaulted to the current folder.
    Usage: node tests/baseline-scan-273.test.js   → BASELINE_SCAN_273_OK */
 const assert = require('assert/strict'), fs = require('fs'), path = require('path'), os = require('os');
 const APP = path.join(__dirname, 'fixtures', 'baseline-app');
@@ -42,4 +44,17 @@ assert.deepEqual(fs.readdirSync(out).sort(), ['baseline-fixture.json', 'baseline
 for (const f of all(APP)) assert.equal(fs.readFileSync(f).toString('base64'), before[f], 'unchanged: ' + path.relative(APP, f));
 assert.deepEqual(all(APP).sort(), Object.keys(before).sort(), 'no file added to the app');
 fs.rmSync(out, { recursive: true, force: true });
+
+// the command refuses to run without --out or --json, and refuses an --out inside the app (exit 2, nothing written)
+const SCAN = path.join(__dirname, '..', 'tools', 'baseline', 'scan.js');
+const refused = (argv, cwd) => require('child_process').spawnSync(process.execPath, [SCAN, ...argv], { cwd, encoding: 'utf8' });
+const noOut = refused(['.', '--app', 'fixture'], APP);
+assert.equal(noOut.status, 2, 'no --out and no --json: refused');
+assert.match(noOut.stderr, /--out <folder outside the app>, or --json/, 'the refusal says what to pass');
+const inApp = refused([APP, '--app', 'fixture', '--out', path.join(APP, 'report')]);
+assert.equal(inApp.status, 2, '--out inside the app: refused');
+assert.match(inApp.stderr, /is inside the app folder/, 'the refusal says why');
+const atApp = refused([APP, '--app', 'fixture', '--out', APP]);
+assert.equal(atApp.status, 2, '--out the app folder itself: refused');
+assert.deepEqual(all(APP).sort(), Object.keys(before).sort(), 'the refusals add no file to the app');
 console.log('BASELINE_SCAN_273_OK');

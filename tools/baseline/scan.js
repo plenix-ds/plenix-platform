@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 // Plenix · the baseline scan (issue 273, owner: apps follow the newest Plenix once they match the baseline).
-//   node tools/baseline/scan.js <app folder> --app <name> [--pin <version>] [--out <folder>] [--json]
+//   node tools/baseline/scan.js <app folder> --app <name> [--pin <version>] (--out <folder> | --json)
+// One of --out or --json is required. --out must be a folder outside the app folder: the scan refuses (exit 2) to write
+// its report into the app it reads.
 // Reads one application's own source, never edits it, and lists every place that does not match Plenix's baseline:
 //   changelog    each item of CHANGELOG.md's "Upgrading from …", "Removed", "Breaking" and "Changed (breaking)" sections
 //                newer than the app's pinned version, with the places in the app that name what the item changed
@@ -15,7 +17,8 @@
 // Output: the findings as JSON (stdout with --json, or <out>/baseline-<app>.json) and a plain-words page
 // (<out>/baseline-<app>.md). Exit 0 always: it reports, it never blocks (a release never fails because of an app).
 // The style rules come from @plenix-ds/lint when it is installed beside the app or here, else from the same rules in this
-// repository (check-system.rules), so the scan and the published lint package never disagree.
+// repository (check-system.rules), so the scan and the published lint package never disagree. When the app has
+// @plenix-ds/lint in its own node_modules, the scan runs that copy's code (the team's own package).
 const fs = require('fs');
 const path = require('path');
 
@@ -34,8 +37,15 @@ function args(argv) {
     if (a === '--app') o.app = argv[++i]; else if (a === '--pin') o.pin = argv[++i]; else if (a === '--out') o.out = argv[++i];
     else if (a === '--json') o.json = true; else if (!o.folder) o.folder = a;
   }
-  if (!o.folder) { console.error('usage: node tools/baseline/scan.js <app folder> --app <name> [--pin <version>] [--out <folder>] [--json]'); process.exit(2); }
+  const usage = 'usage: node tools/baseline/scan.js <app folder> --app <name> [--pin <version>] (--out <folder outside the app> | --json)';
+  if (!o.folder) { console.error(usage); process.exit(2); }
+  if (!o.out && !o.json) { console.error('baseline scan: say where the report goes: --out <folder outside the app>, or --json for stdout\n' + usage); process.exit(2); }
   o.folder = path.resolve(o.folder); o.app = o.app || path.basename(o.folder);
+  if (o.out) {
+    o.out = path.resolve(o.out);
+    const inside = path.relative(o.folder, o.out);
+    if (!inside || (inside !== '..' && !inside.startsWith('..' + path.sep) && !path.isAbsolute(inside))) { console.error('baseline scan: --out ' + o.out + ' is inside the app folder ' + o.folder + '; the scan never writes into the app it reads. Choose a folder outside it.'); process.exit(2); }
+  }
   return o;
 }
 function files(dir, out = []) {
@@ -177,7 +187,7 @@ module.exports = { scan, page, changelogItems, termsOf };
 if (require.main === module) {
   const o = args(process.argv.slice(2)), r = scan(o);
   if (o.json && !o.out) { process.stdout.write(JSON.stringify(r, null, 1) + '\n'); process.exit(0); }
-  const out = path.resolve(o.out || '.');
+  const out = o.out;
   fs.mkdirSync(out, { recursive: true });
   fs.writeFileSync(path.join(out, 'baseline-' + r.app + '.json'), JSON.stringify(r, null, 1) + '\n');
   fs.writeFileSync(path.join(out, 'baseline-' + r.app + '.md'), page(r) + '\n');
