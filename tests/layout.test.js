@@ -115,6 +115,11 @@ if (changed.wants({ units: ['components/Icon'] })) {
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'icon-fetch-642.test.js')], { stdio: 'inherit', env: process.env });
   if (result.status !== 0) process.exit(result.status || 1);
 }
+// a pill in a DataGrid or Table cell has equal padding at both sides (issue 649): its own test, when the DataPill, the DataGrid or the Table changed
+if (changed.wants({ units: ['components/DataPill', 'components/DataGrid', 'components/Table'] })) {
+  const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'pill-padding-649.test.js')], { stdio: 'inherit', env: process.env });
+  if (result.status !== 0) process.exit(result.status || 1);
+}
 // section headings wrap, then end in an ellipsis with a tooltip (issue 502): its own test, when CollapsibleSection, NavList, Tooltip or the truncation helper changed
 if (changed.wants({ units: ['components/CollapsibleSection', 'components/NavList', 'components/Tooltip', 'components/Field', 'patterns/PropertyList', 'utils/overflow.js'] })) {
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'section-headings-502.test.js')], { stdio: 'inherit', env: process.env });

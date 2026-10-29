@@ -268,7 +268,7 @@ function NextEngine(props) {
   // uniform pill widths (CTM, 2026-10-22; always on, owner uniform-pills-always-35): every standard pill of a column as wide as the
   // column's widest pill in the current view (the filtered, sorted page, every row of it, not only the rows drawn), so scrolling
   // a long list never changes it. The uniformPillWidths prop is accepted and ignored (deprecated).
-  // Measured like the column widths (the pill's font, weight, sides, border and icon), snapped up to the grid.
+  // Measured like the column widths (the pill's font, weight, sides, border and icon), snapped up to the grid, the text centered in it so the leftover splits between the two sides (#649).
   const gridKey=React.useId(),[fontsReady,setFontsReady]=React.useState(0);
   React.useEffect(()=>{const fonts=frame.current?.ownerDocument.fonts;if(fonts&&fonts.ready)fonts.ready.then(()=>setFontsReady(n=>n+1));},[]);
   React.useLayoutEffect(()=>{
@@ -285,7 +285,7 @@ function NextEngine(props) {
       let widest=0;allRows.forEach(r=>{if(!r.original)return;const v=valueAt(r.original,c.field);if(v==null||v==='')return;widest=Math.max(widest,ctx.measureText(valueText(v)).width*scale);});
       if(!widest)return;
       const icon=c.type==='person'||k.includes('avatar-name')||(showTypes&&typeOf(c)!=='text');
-      rules.push('[data-plx-grid-key="'+key+'"] .plx-data-pill[data-plx-pill-field="'+CSS.escape(c.field)+'"]{inline-size:'+snapToGrid(widest+sides+(icon?glyph:0),{round:'up',step})+'px;}');
+      rules.push('[data-plx-grid-key="'+key+'"] .plx-data-pill[data-plx-pill-field="'+CSS.escape(c.field)+'"]{inline-size:'+snapToGrid(widest+sides+(icon?glyph:0),{round:'up',step})+'px;justify-content:center;}');
     });
     store.rules.set(gridKey,rules.join('\n'));store.flush();
     return undefined;
