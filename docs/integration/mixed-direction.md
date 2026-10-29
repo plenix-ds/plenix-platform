@@ -1,6 +1,6 @@
 # A block in the other direction: what the Platform does, what the app does
 
-Written for CTM's report questions (an Arabic question block in an English portal; issue 413, owner ctm-needs-34). Checked on Plenix styling/phase-2 at 5a620b5c, which ships in 0.75.0.
+Written for CTM's report questions (an Arabic question block in an English portal; issue 413, owner ctm-needs-34). Checked on Plenix styling/phase-2 at 5a620b5c, which ships in the next release.
 
 ## What the Platform does (0.75.0)
 
