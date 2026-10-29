@@ -116,6 +116,19 @@ import { useLayer, useUid } from '../../utils/layer.js';
 import { useDensity } from '../../hooks/useDensity.js';
 import { useMedia, below, tokenPx } from '../AppShell/AppShell.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import AppSwitcherIcon from 'plenix-platform/icons/plenix/app-switcher';
+import ArrowLeftIcon from 'plenix-platform/icons/plenix/arrow-left';
+import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
+import GearIcon from 'plenix-platform/icons/plenix/gear';
+import HdrSearchIcon from 'plenix-platform/icons/plenix/hdr-search';
+import PinIcon from 'plenix-platform/icons/plenix/pin';
+import PinFilledIcon from 'plenix-platform/icons/plenix/pin-filled';
+import SettingsCustomizeIcon from 'plenix-platform/icons/plenix/settings-customize';
+import SettingsProfileIcon from 'plenix-platform/icons/plenix/settings-profile';
+import SignOutIcon from 'plenix-platform/icons/plenix/sign-out';
+import DensityCompactIcon from 'plenix-platform/icons/plenix/density-compact';
+import DensityStandardIcon from 'plenix-platform/icons/plenix/density-standard';
+import DensityComfortableIcon from 'plenix-platform/icons/plenix/density-comfortable';
 
 export function AppHeader({ tone = 'accent', appName, brand, brandHref, currentApp, appsRoot = '', onOpenApp, nav, navLabel,
   action, search, searchSuggestions, searchResults, searchScope, actions, account, switcher, back, title, className, ...rest }) {
@@ -213,7 +226,7 @@ export function AppHeader({ tone = 'accent', appName, brand, brandHref, currentA
     <SurfaceContext.Provider value={tone === 'accent' ? 'accent' : null}>
     <header ref={root} data-plx-icon-optical="24" className={cx('plx-app-header', 'plx-app-header--' + tone, compact && 'plx-app-header--compact', searching && 'is-searching', className)} {...rest}>
       <div className="plx-app-header__start">
-        {back ? <AppHeader.Item icon={<Icon name="arrow-left" />} label={back.label || 'Back'} href={back.href} onClick={back.onClick} className="plx-app-header__back" /> : null}
+        {back ? <AppHeader.Item icon={<Icon name={ArrowLeftIcon} />} label={back.label || 'Back'} href={back.href} onClick={back.onClick} className="plx-app-header__back" /> : null}
         {title ? <span className="plx-app-header__brand plx-app-header__title">{title}</span>
           : showSwitcher ? <AppHeader.Switcher currentApp={currentApp} appsRoot={appsRoot} onOpenApp={onOpenApp} brand={brandEl} />
           : brandHref ? <a href={brandHref} className="plx-app-header__brand">{brandEl}</a> : <span className="plx-app-header__brand">{brandEl}</span>}
@@ -223,7 +236,7 @@ export function AppHeader({ tone = 'accent', appName, brand, brandHref, currentA
         {search ? (
             <div className="plx-app-header__search-slot">
               <button ref={toggle} type="button" className="plx-app-header__item plx-app-header__search-toggle" aria-label={tw.search} aria-expanded={searching} aria-controls={searchId}
-                aria-keyshortcuts="Control+K Meta+K" onClick={() => setSearching(true)}><Icon name="hdr-search" size="lg" /></button>
+                aria-keyshortcuts="Control+K Meta+K" onClick={() => setSearching(true)}><Icon name={HdrSearchIcon} size="lg" /></button>
               {searchView}
               {searching && !narrow ? (
                 <div ref={panel} id={searchId} className="plx-app-header__search" role="search" onBlur={onPanelBlur}>
@@ -278,15 +291,15 @@ AppHeader.Account = function AppHeaderAccount({ name: nameProp, email: emailProp
     <Menu label={t.menu} placement={inPane ? 'top-start' : 'bottom-end'} trigger={trigger}>
       <MenuGroup label={email ? <>{name}<br />{email}</> : name}>
         <MenuDivider />
-        {has(myAccount) ? <MenuItem icon="settings-profile" href={myAccount.href} onSelect={myAccount.onSelect} aria-current={current === 'account' ? 'page' : undefined}>{t.myAccount}</MenuItem> : null}
-        {has(settings) ? <MenuItem icon="gear" href={settings.href} onSelect={settings.onSelect} aria-current={current === 'settings' ? 'page' : undefined}>{t.settings}</MenuItem> : null}
-        {has(appSettings) ? <MenuItem icon={appSettings.icon || 'settings-customize'} href={appSettings.href} onSelect={appSettings.onSelect} aria-current={current === 'app-settings' ? 'page' : undefined}>{fill(t.appSettings, { app: appSettings.app || t.app })}</MenuItem> : null}
+        {has(myAccount) ? <MenuItem icon={SettingsProfileIcon} href={myAccount.href} onSelect={myAccount.onSelect} aria-current={current === 'account' ? 'page' : undefined}>{t.myAccount}</MenuItem> : null}
+        {has(settings) ? <MenuItem icon={GearIcon} href={settings.href} onSelect={settings.onSelect} aria-current={current === 'settings' ? 'page' : undefined}>{t.settings}</MenuItem> : null}
+        {has(appSettings) ? <MenuItem icon={appSettings.icon || SettingsCustomizeIcon} href={appSettings.href} onSelect={appSettings.onSelect} aria-current={current === 'app-settings' ? 'page' : undefined}>{fill(t.appSettings, { app: appSettings.app || t.app })}</MenuItem> : null}
       </MenuGroup>
       {density ? <><MenuDivider /><MenuGroup label={t.density}>
-        {choices.map((d) => <MenuItem key={d.value} role="menuitemradio" icon={'density-' + d.value} checked={dens === d.value} onSelect={() => setDens(d.value)}>{t[d.value] || d.label}</MenuItem>)}
+        {choices.map((d) => <MenuItem key={d.value} role="menuitemradio" icon={DENSITY_ICONS[d.value] || 'density-' + d.value /* plx-icons: density-compact density-standard density-comfortable */} checked={dens === d.value} onSelect={() => setDens(d.value)}>{t[d.value] || d.label}</MenuItem>)}
       </MenuGroup></> : null}
       {extra ? <><MenuDivider />{extra}</> : null}
-      {has(signOut) ? <><MenuDivider /><MenuItem icon="sign-out" href={signOut.href} onSelect={signOut.onSelect}>{t.signOut}</MenuItem></> : null}
+      {has(signOut) ? <><MenuDivider /><MenuItem icon={SignOutIcon} href={signOut.href} onSelect={signOut.onSelect}>{t.signOut}</MenuItem></> : null}
     </Menu>
   );
 };
@@ -294,6 +307,8 @@ AppHeader.Account = function AppHeaderAccount({ name: nameProp, email: emailProp
 const ACCOUNT_STRINGS = { trigger: 'Account and settings for {name}', menu: 'Account', myAccount: 'My account', settings: 'Plenix settings',
   appSettings: '{app} settings', app: 'App', density: 'Display density', compact: 'Compact', standard: 'Standard', comfortable: 'Comfortable', signOut: 'Sign out' };
 // the density choices when the workspace script is not on the page
+// the density menu's icons (#280): a workspace's own density without one here keeps its name (density-<value>)
+const DENSITY_ICONS = { compact: DensityCompactIcon, standard: DensityStandardIcon, comfortable: DensityComfortableIcon };
 const DENSITY_CHOICES = [{ value: 'compact', label: 'Compact' }, { value: 'standard', label: 'Standard' }, { value: 'comfortable', label: 'Comfortable' }];
 
 // the application's action is an icon item like the header's others: its label is the tooltip and the accessible name
@@ -333,7 +348,7 @@ AppHeader.Switcher = function AppHeaderSwitcher({ currentApp, appsRoot = '', onO
           <span className="plx-app-switcher__label">{a.label}</span>
         </a>
         <button type="button" className={cx('plx-app-switcher__pin', on && 'is-pinned')} aria-pressed={on} aria-label={(on ? tw.unpin : tw.pin).replace('{app}', a.label)}
-          onClick={() => pin(a)}><Icon name={on ? 'pin-filled' : 'pin'} /></button>
+          onClick={() => pin(a)}><Icon name={on ? PinFilledIcon : PinIcon} /></button>
       </li>
     );
   };
@@ -343,10 +358,10 @@ AppHeader.Switcher = function AppHeaderSwitcher({ currentApp, appsRoot = '', onO
         <button ref={trigger} type="button" className="plx-app-header__brand plx-app-header__brand--switch" aria-haspopup="dialog" aria-expanded={open} aria-controls={id}
           aria-label={tw.switchApp.replace('{app}', typeof brand === 'string' ? brand : 'Plenix' + (currentApp && appById(currentApp) ? ' ' + appById(currentApp).label : ''))}
           onClick={() => setOpen(!open)}>
-          {brand}<Icon name="chevron-down" className="plx-app-header__switch-chevron" />
+          {brand}<Icon name={ChevronDownIcon} className="plx-app-header__switch-chevron" />
         </button>
       ) : (
-        <AppHeader.Item ref={trigger} icon={<Icon name="app-switcher" />} label={tw.applications} tooltip={false} aria-haspopup="dialog" aria-expanded={open} aria-controls={id}
+        <AppHeader.Item ref={trigger} icon={<Icon name={AppSwitcherIcon} />} label={tw.applications} tooltip={false} aria-haspopup="dialog" aria-expanded={open} aria-controls={id}
           onClick={() => setOpen(!open)} />
       )}
       {open ? (

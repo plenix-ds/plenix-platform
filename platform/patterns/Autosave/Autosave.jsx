@@ -22,8 +22,12 @@ import { Inline } from '../../components/Stack/Stack.jsx';
 import { useUnsavedGuard } from '../../providers/UnsavedGuard.jsx';
 import { cx } from '../../utils/cx.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import AlertIcon from 'plenix-platform/icons/plenix/alert';
+import CheckIcon from 'plenix-platform/icons/plenix/check';
+import CloudOffIcon from 'plenix-platform/icons/plenix/cloud-off';
+import RefreshIcon from 'plenix-platform/icons/plenix/refresh';
 
-const STATES = { saving: ['active', 'refresh'], saved: ['success', 'check'], offline: ['waiting', 'cloud-off'], failed: ['negative', 'alert'] };
+const STATES = { saving: ['active', RefreshIcon], saved: ['success', CheckIcon], offline: ['waiting', CloudOffIcon], failed: ['negative', AlertIcon] };
 const WORDS = { saving: 'Saving', saved: 'Saved', offline: 'Offline', failed: 'Save failed', retry: 'Retry' };
 export function SaveStatus({ state = 'saved', strings, className }) {
   const t = Object.assign({}, WORDS, strings), key = STATES[state] ? state : 'saved', s = STATES[key];

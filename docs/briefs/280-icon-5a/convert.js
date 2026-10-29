@@ -22,7 +22,12 @@ for (const file of [...want].sort()) {
   const names = [...new Set(lits.map((l) => l.name))].sort();
   const clash = names.map(ident).filter((id) => new RegExp('\\b' + id + '\\b').test(text));
   if (clash.length) { console.log('!', file, 'skipped: the name(s) already exist:', clash.join(', ')); continue; }
-  for (const l of lits) text = text.slice(0, l.start) + (l.jsx ? '{' + ident(l.name) + '}' : ident(l.name)) + text.slice(l.end);
+  // a parameter's default (icon = 'document') stays as written: the spec shows each prop's default from the signature, so
+  // the component maps it to its module by hand (const glyph = icon === 'document' ? DocumentIcon : icon)
+  for (const l of lits) {
+    if (l.param) { console.log('  by hand:', file, 'default', JSON.stringify(l.name)); continue; }
+    text = text.slice(0, l.start) + (l.jsx ? '{' + ident(l.name) + '}' : ident(l.name)) + text.slice(l.end);
+  }
   // the imports, after the file's last import
   const ast = Babel.transform(text, { ast: true, code: false, sourceType: 'module', parserOpts: { plugins: ['jsx'] } }).ast;
   const last = ast.program.body.filter((n) => n.type === 'ImportDeclaration').pop();

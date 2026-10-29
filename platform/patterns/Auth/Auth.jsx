@@ -82,6 +82,9 @@ import { Notice } from '../../components/Notice/Notice.jsx';
 import { OtpInput } from '../../components/OtpInput/OtpInput.jsx';
 import { Spinner } from '../../components/Loading/Loading.jsx';
 import { Form } from '../Form/Form.jsx';
+import LockIcon from 'plenix-platform/icons/plenix/lock';
+import VisibilityIcon from 'plenix-platform/icons/plenix/visibility';
+import VisibilityOffIcon from 'plenix-platform/icons/plenix/visibility-off';
 
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const around = (s, key, node) => { const p = String(s).split('{' + key + '}'); return <>{p[0]}{p.length > 1 ? node : null}{p.slice(1).join('')}</>; };
@@ -130,7 +133,7 @@ const Password = React.forwardRef(function Password({ show, hide, value, onChang
   const [visible, setVisible] = React.useState(false);
   return (
     <InputGroup id={id} invalid={invalid} {...rest}
-      end={<Button iconOnly icon={visible ? 'visibility-off' : 'visibility'} label={visible ? hide : show} pressed={visible} onClick={() => setVisible(!visible)} />}>
+      end={<Button iconOnly icon={visible ? VisibilityOffIcon : VisibilityIcon} label={visible ? hide : show} pressed={visible} onClick={() => setVisible(!visible)} />}>
       <Input ref={ref} type={visible ? 'text' : 'password'} value={value} onChange={onChange} autoComplete={autoComplete} autoCapitalize="off" spellCheck={false} />
     </InputGroup>
   );
@@ -429,7 +432,7 @@ export function SsoButtons({ providers = [], onProvider, organization = false, o
     <div className={cx('plx-auth__sso', className)} role="group" aria-label={t.label} {...rest}>
       {error ? <Notice tone="danger">{error}</Notice> : null}
       {providers.map((p) => <Button key={p.id} icon={p.icon} className="plx-auth__submit" onClick={() => onProvider && onProvider(p)}>{fill(t.provider, { name: p.label })}</Button>)}
-      {organization ? <Button icon="lock" className="plx-auth__submit" onClick={() => setAsking(true)}>{t.organization}</Button> : null}
+      {organization ? <Button icon={LockIcon} className="plx-auth__submit" onClick={() => setAsking(true)}>{t.organization}</Button> : null}
     </div>
   );
 }

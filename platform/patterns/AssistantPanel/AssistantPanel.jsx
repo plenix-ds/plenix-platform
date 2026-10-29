@@ -16,8 +16,9 @@ import { SidePanel } from '../SidePanel/SidePanel.jsx';
 import { Sheet } from '../../components/Sheet/Sheet.jsx';
 import { Stack } from '../../components/Stack/Stack.jsx';
 import { AIChat } from '../AIChat/AIChat.jsx';
+import SparkleIcon from 'plenix-platform/icons/plenix/sparkle';
 export function AssistantPanel({open=true,onOpenChange,variant='inspector',title,context,chat={},strings,className,...rest}){
  const t={title:'AI assistant',close:'Close AI assistant',...strings},name=title||t.title,body=<Stack className="plx-assistant-panel__body">{context}<AIChat {...chat} {...rest} title={name} strings={t.chat||chat.strings}/></Stack>;
- if(variant==='overlay')return <Sheet open={open} onClose={()=>onOpenChange?.(false)} title={name} icon="sparkle" closeLabel={t.close} className={cx('plx-assistant-panel',className)}>{body}</Sheet>;
- return <SidePanel open={open} onOpenChange={onOpenChange} title={name} label={name} icon="sparkle" collapseLabel={t.close} className={cx('plx-assistant-panel',className)}>{body}</SidePanel>;
+ if(variant==='overlay')return <Sheet open={open} onClose={()=>onOpenChange?.(false)} title={name} icon={SparkleIcon} closeLabel={t.close} className={cx('plx-assistant-panel',className)}>{body}</Sheet>;
+ return <SidePanel open={open} onOpenChange={onOpenChange} title={name} label={name} icon={SparkleIcon} collapseLabel={t.close} className={cx('plx-assistant-panel',className)}>{body}</SidePanel>;
 }

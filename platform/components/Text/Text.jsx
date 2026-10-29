@@ -54,6 +54,8 @@ import { useUid } from '../../utils/layer.js';
 import { Button } from '../Button/Button.jsx';
 import { useStrings, useDigits } from '../../providers/LocaleProvider.jsx';
 import { localDigits } from '../../utils/digits.js';
+import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
+import ChevronUpIcon from 'plenix-platform/icons/plenix/chevron-up';
 
 const LINES = [2, 3, 4];
 
@@ -96,7 +98,7 @@ function ExpandableText({ As, variant, clamp, defaultExpanded, tabular, strings,
     <div className="plx-text-expand">
       <As dir="auto" {...rest} ref={ref} id={id} className={textClass(variant, false, clamp, open, tabular, className)}>{children}</As>
       {open || cut ? (
-        <Button size="2xs" iconEnd={open ? 'chevron-up' : 'chevron-down'} aria-expanded={open} aria-controls={id} onClick={() => setOpen(!open)}>
+        <Button size="2xs" iconEnd={open ? ChevronUpIcon : ChevronDownIcon} aria-expanded={open} aria-controls={id} onClick={() => setOpen(!open)}>
           {open ? words.less : words.more}
         </Button>
       ) : null}

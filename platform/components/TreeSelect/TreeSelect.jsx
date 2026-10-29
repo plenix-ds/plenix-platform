@@ -47,9 +47,10 @@ import { Icon, asIcon as iconElement, iconKey } from '../Icon/Icon.jsx';
 import { Popover } from '../Popover/Popover.jsx';
 import { SearchField } from '../SearchField/SearchField.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import FolderOpenIcon from 'plenix-platform/icons/plenix/folder-open';
 
 const asIcon = (i) => iconElement(i);   // a name or an imported module (#280)
-const OPEN_ICONS = { folder: 'folder-open' };
+const OPEN_ICONS = { folder: FolderOpenIcon };
 const iconOf = (n, isOpen) => (isOpen ? n.openIcon || OPEN_ICONS[iconKey(n.icon)] || n.icon : n.icon);
 const kidsOf = (n) => (n.children && n.children.length ? n.children : null);
 // every node by id, with its parent and the leaves under it

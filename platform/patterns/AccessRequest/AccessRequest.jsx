@@ -21,6 +21,9 @@ import { Button } from '../../components/Button/Button.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { cx } from '../../utils/cx.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import CheckIcon from 'plenix-platform/icons/plenix/check';
+import LockIcon from 'plenix-platform/icons/plenix/lock';
+import RefreshIcon from 'plenix-platform/icons/plenix/refresh';
 
 export function AccessRequest({ status = 'request', onRequest, onOpen, strings, className }) {
   const t = useStrings('accessRequest', strings);
@@ -34,7 +37,7 @@ export function AccessRequest({ status = 'request', onRequest, onOpen, strings, 
   };
   return <Stack className={cx('plx-access-request', className)} aria-busy={busy}>
     <EmptyState title={t.title}>{t.description}</EmptyState>
-    {shown !== 'request' ? <Badge role="status" tone={shown === 'approved' ? 'success' : shown === 'denied' ? 'negative' : 'waiting'} icon={shown === 'approved' ? 'check' : shown === 'denied' ? 'lock' : 'refresh'}>{t[shown]}</Badge> : null}
+    {shown !== 'request' ? <Badge role="status" tone={shown === 'approved' ? 'success' : shown === 'denied' ? 'negative' : 'waiting'} icon={shown === 'approved' ? CheckIcon : shown === 'denied' ? LockIcon : RefreshIcon}>{t[shown]}</Badge> : null}
     {(shown === 'request' || shown === 'denied') && onRequest ? <><Field label={t.message}><Textarea value={message} disabled={busy} onChange={(e) => setMessage(e.target.value)} /></Field>
       <Button variant="primary" disabled={busy} onClick={send}>{t.request}</Button></> : null}
     {shown === 'approved' && onOpen ? <Button onClick={onOpen}>{t.open}</Button> : null}
