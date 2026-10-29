@@ -22,6 +22,9 @@
      Controlled with expanded and onToggle(next); uncontrolled with defaultExpanded.
      The header is one button (aria-expanded, pointing at the body).
      The chevron at the end points down while open.
+     The title wraps to evenly balanced lines, at most 2 (--plx-comp-collapsible-section-title-lines); past them the last line ends in an ellipsis (a word too long for
+       the line breaks there) and the full title shows in a tooltip on hover and keyboard focus (owner, issue 502). A one-line title stays 32px high, two lines are 40px.
+       The button's name stays the full title. Every section does this: navigation groups, side-panel and settings sections alike.
      The body is removed from view, and from the accessibility tree, while collapsed.
    Notes:
      It is the section header: an accent uppercase title with an optional icon, a divider beneath it and a
@@ -33,6 +36,8 @@ import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
 import { Icon, asIcon as iconElement } from '../Icon/Icon.jsx';
 import { Button } from '../Button/Button.jsx';
+import { Tooltip } from '../Tooltip/Tooltip.jsx';
+import { useTruncated } from '../../utils/overflow.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 import ChevronUpIcon from 'plenix-platform/icons/plenix/chevron-up';
@@ -45,14 +50,18 @@ export function CollapsibleSection({ title, icon, expanded, defaultExpanded = tr
   const open = expanded !== undefined ? expanded : own;
   const toggle = () => { if (expanded === undefined) setOwn(!open); if (onToggle) onToggle(!open); };
   const Tag = headingLevel ? 'h' + headingLevel : 'div';
+  const titleRef = React.useRef(null);
+  const cut = useTruncated(titleRef);   // the title is cut (past its lines): its full text goes in a Tooltip
   return (
     <section className={cx('plx-collapsible-section', open && 'is-expanded', className)}>
       <Tag className="plx-collapsible-section__heading">
-        <button type="button" className="plx-collapsible-section__toggle" aria-expanded={open} aria-controls={id + '-body'} onClick={toggle}>
-          {icon ? <span className="plx-collapsible-section__icon" aria-hidden="true">{asIcon(icon)}</span> : null}
-          <span className="plx-collapsible-section__title">{title}</span>
-          <span className="plx-collapsible-section__chevron" aria-hidden="true"><Icon name={ChevronDownIcon} /></span>
-        </button>
+        <Tooltip content={title} disabled={!cut} className="plx-collapsible-section__tip">
+          <button type="button" className="plx-collapsible-section__toggle" aria-expanded={open} aria-controls={id + '-body'} onClick={toggle}>
+            {icon ? <span className="plx-collapsible-section__icon" aria-hidden="true">{asIcon(icon)}</span> : null}
+            <span ref={titleRef} className="plx-collapsible-section__title">{title}</span>
+            <span className="plx-collapsible-section__chevron" aria-hidden="true"><Icon name={ChevronDownIcon} /></span>
+          </button>
+        </Tooltip>
         {actions ? <span className="plx-collapsible-section__actions">{actions}</span> : null}
       </Tag>
       <div id={id + '-body'} className={cx('plx-collapsible-section__body', bodyClassName)} hidden={!open}>{children}</div>
