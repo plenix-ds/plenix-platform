@@ -66,6 +66,7 @@ import React from 'react';
 import { devWarn, development } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { SYMBOLS, NAMES, LIBRARY, LIBRARY_COMMIT } from './glyphs.js';
+import { DRAWINGS } from './plenix-drawings.js';
 import { checkIconSvg, checkDrawing, ICON_LIMITS } from '../../utils/iconSafety.js';
 
 // One way to draw an icon (owner, 2026-10-23: "no band-aid"): every name goes through resolveIcon, and every icon is an
@@ -181,7 +182,15 @@ function parseSvg(svg, from) {
   const { viewBox, d, ...extra } = r.drawing;
   return [d, viewBox, extra];
 }
-// a Plenix symbol's drawing: read once from the stylesheet already on the page (icon.css carries every file as a data:
+// a Plenix symbol the Platform's own components draw (#280, stage 5a): its drawing ships in this script
+// (plenix-drawings.js), so it draws before the stylesheet arrives and never reads it
+function ownGlyph(symbol, i) {
+  const row = DRAWINGS.symbols[symbol];
+  if (!row) return null;
+  const g = row[i];
+  return typeof g === 'number' ? [DRAWINGS.d[g], DRAWINGS.box, {}] : [DRAWINGS.d[g[0]], g[1], Object.assign({}, g[2])];
+}
+// any other Plenix symbol (until stage 5c): read once from the stylesheet already on the page (icon.css carries every file as a data:
 // URI in --plx-comp-icon-glyph-*), so the drawings ship once, need no request and work from file:// too
 const fromCss = new Map();
 function cssGlyph(symbol, i) {
@@ -255,7 +264,7 @@ function useDrawings(name, size, filled, mod, lib) {
     return () => { live = false; };
   }, [found && found.symbol, fill, LARGE[size] ? 1 : 0, pending.length]);
   if (!found) return [];
-  const glyphs = wanted.map(([i, optical]) => [found.kind === 'module' ? moduleGlyph(mod, i) : found.kind === 'plenix' ? cssGlyph(found.symbol, i) : files.get(fileOf(i)), optical]).filter(([glyph]) => Array.isArray(glyph));
+  const glyphs = wanted.map(([i, optical]) => [found.kind === 'module' ? moduleGlyph(mod, i) : found.kind === 'plenix' ? (ownGlyph(found.symbol, i) || cssGlyph(found.symbol, i)) : files.get(fileOf(i)), optical]).filter(([glyph]) => Array.isArray(glyph));
   if (!glyphs.length) return [];
   // the drawings share one svg when they share a box (nearly every icon): the stylesheet shows one path; otherwise each
   // drawing is its own svg in its own box

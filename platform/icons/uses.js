@@ -1,0 +1,201 @@
+// Plenix · which icon names a body of source draws (#280, stage 5a). Build-time only (Node); no page loads this file.
+// Reads the JSX source with Babel's parser (no regular expressions over code) and collects every icon name written in an
+// icon slot:
+//   - a JSX attribute icon, iconEnd or <anything>Icon (stateIcon, typeIcon), and name on <Icon> or <StatusIcon>
+//   - an object property with one of those keys (a toolbar's { icon: 'format_bold' }), and name in h(Icon, { name })
+//   - a constant whose name ends in Icon or Icons (const typeIcons = { text: 'ed-text' }) and its values
+//   - a default in a parameter (({ icon = 'info' }) => …)
+// A value is followed through a ternary, || and ??, a constant declared in the same file, and a lookup into a constant
+// object or array of the same file (KIND[ext]). A value that comes from outside (a prop, item.icon) is the caller's
+// and is not collected. A name built at run time ('density-' + d.value, a template with ${…}, a function's result)
+// cannot be read: in strict mode the scan fails, naming the file and line, unless the line (or the line before) lists the
+// names it can take in a comment:   /* plx-icons: density-large density-medium density-small */
+//   scan(root, folders, { names, strict }) -> { found: Map<name, Set<file:line>>, unresolved: [file:line …], unknown: [...] }
+const fs = require('fs');
+const path = require('path');
+
+const SLOT = /^(icon|iconEnd|iconStart|[a-z][A-Za-z]*Icons?)$/;   // iconOnly is a flag, not a slot
+const ICON_ELEMENT = /(^|\.)(Icon|StatusIcon)$/;
+const MARK = /plx-icons:\s*([a-z0-9_\- ]+)/;
+
+let parser = null;
+function parse(code) {
+  if (!parser) parser = require('@babel/standalone');
+  return parser.transform(code, { ast: true, code: false, sourceType: 'module', parserOpts: { plugins: ['jsx'] } }).ast;
+}
+const jsxName = (n) => (!n ? '' : n.type === 'JSXIdentifier' ? n.name : n.type === 'JSXMemberExpression' ? jsxName(n.object) + '.' + n.property.name : '');
+const exprName = (n) => (!n ? '' : n.type === 'Identifier' ? n.name : n.type === 'MemberExpression' && !n.computed ? exprName(n.object) + '.' + n.property.name : '');
+const keyOf = (p) => (p.key && (p.key.type === 'Identifier' ? p.key.name : p.key.type === 'StringLiteral' ? p.key.value : null));
+
+function children(n) {
+  const out = [];
+  for (const k of Object.keys(n)) {
+    if (k === 'parent' || k === 'loc' || k === 'start' || k === 'end' || k === 'leadingComments' || k === 'trailingComments' || k === 'innerComments') continue;
+    const c = n[k];
+    if (Array.isArray(c)) { for (const x of c) if (x && typeof x.type === 'string') out.push(x); } else if (c && typeof c.type === 'string') out.push(c);
+  }
+  return out;
+}
+
+const FN = /^(FunctionDeclaration|FunctionExpression|ArrowFunctionExpression|ClassMethod|ObjectMethod)$/;
+// the names a pattern binds (a parameter, a destructuring)
+function bound(p, out) {
+  if (!p) return out;
+  if (p.type === 'Identifier') out.add(p.name);
+  else if (p.type === 'AssignmentPattern') bound(p.left, out);
+  else if (p.type === 'RestElement') bound(p.argument, out);
+  else if (p.type === 'ArrayPattern') p.elements.forEach((e) => bound(e, out));
+  else if (p.type === 'ObjectPattern') p.properties.forEach((q) => bound(q.type === 'RestElement' ? q.argument : q.value, out));
+  return out;
+}
+
+function scanFile(file, rel, report) {
+  const text = fs.readFileSync(file, 'utf8'), lines = text.split('\n');
+  const ast = parse(text);
+  // a scope per function (and the program): what its parameters bind, and its own declarations by name (not those of a
+  // nested function); a name declared twice in one scope resolves to all its values
+  const scopes = new Map();
+  const scopeOf = (n) => { if (!scopes.has(n)) scopes.set(n, { params: new Set(), decls: new Map(), imports: new Set() }); return scopes.get(n); };
+  const decl = (sc, name, init) => { if (!sc.decls.has(name)) sc.decls.set(name, []); sc.decls.get(name).push(init); };
+  (function link(n, parent, scope) {
+    n.parent = parent;
+    let here = scope;
+    if (n.type === 'Program' || FN.test(n.type)) { here = scopeOf(n); if (n.params) n.params.forEach((q) => bound(q, here.params)); }
+    if (n.type === 'VariableDeclarator' && n.init) { const names = bound(n.id, new Set()); if (n.id.type === 'Identifier') decl(scope, n.id.name, n.init); else names.forEach((nm) => scope.params.add(nm)); }
+    if (n.type === 'FunctionDeclaration' && n.id) decl(scope, n.id.name, n);
+    if (n.type === 'ImportDeclaration') n.specifiers.forEach((sp) => scope.imports.add(sp.local.name));
+    if (n.type === 'AssignmentExpression' && n.left.type === 'MemberExpression' && FN.test(n.right.type)) { /* Name.Part = function …: not a binding */ }
+    for (const c of children(n)) link(c, n, here);
+  })(ast.program, null, null);
+  // what a name means where it is used: its values (a declaration), 'outside' (a parameter, an import, a global)
+  function lookup(id) {
+    for (let n = id.parent; n; n = n.parent) {
+      if (!scopes.has(n)) continue;
+      const sc = scopes.get(n);
+      if (sc.decls.has(id.name)) return { values: sc.decls.get(id.name) };
+      if (sc.params.has(id.name)) return { outside: 'param' };
+      if (sc.imports.has(id.name)) return { outside: 'import' };
+    }
+    return { outside: 'global' };
+  }
+  const where = (n) => rel + ':' + n.loc.start.line;
+  const marked = (n) => { for (const l of [n.loc.start.line, n.loc.start.line - 1]) { const m = (lines[l - 1] || '').match(MARK); if (m) return m[1].trim().split(/\s+/); } return null; };
+  // the expressions an expression can stand for, through constants and literal lookups (STATES[key][1], ICONS.table);
+  // null when it cannot be read
+  const keyName = (m) => (!m.computed ? m.property.name : m.property.type === 'StringLiteral' ? m.property.value : m.property.type === 'NumericLiteral' ? m.property.value : undefined);
+  function pick(t, key) {
+    if (t.type === 'ObjectExpression') { const ps = t.properties.filter((p) => p.type === 'ObjectProperty'); return key === undefined ? ps.map((p) => p.value) : ps.filter((p) => keyOf(p) === String(key)).map((p) => p.value); }
+    if (t.type === 'ArrayExpression') { const es = t.elements.filter(Boolean); return key === undefined ? es : typeof key === 'number' && t.elements[key] ? [t.elements[key]] : []; }
+    return null;
+  }
+  function tables(e, depth) {
+    if (depth > 20) return null;
+    if (e.type === 'Identifier') { const r = lookup(e); return r.values ? r.values.flatMap((v) => tables(v, depth + 1) || []) : null; }
+    if (e.type === 'MemberExpression') { const objs = tables(e.object, depth + 1); if (!objs) return null; const out = []; for (const o of objs) { const got = pick(o, keyName(e)); if (got) for (const g of got) out.push(...(tables(g, depth + 1) || [g])); } return out; }
+    if (e.type === 'ConditionalExpression') return [...(tables(e.consequent, depth + 1) || []), ...(tables(e.alternate, depth + 1) || [])];
+    return [e];
+  }
+  const seen = new Set();
+  // the names a value can take; an expression that cannot be read is reported
+  function value(v, at, depth = 0) {
+    if (!v || depth > 30) return;
+    switch (v.type) {
+      case 'StringLiteral': report.name(v.value, where(at)); return;
+      case 'TemplateLiteral': if (!v.expressions.length) { report.name(v.quasis[0].value.cooked, where(at)); return; } break;
+      case 'ConditionalExpression': value(v.consequent, at, depth + 1); value(v.alternate, at, depth + 1); return;
+      case 'LogicalExpression': if (v.operator !== '&&') value(v.left, at, depth + 1); value(v.right, at, depth + 1); return;
+      case 'BinaryExpression': if (v.operator !== '+') return; break;   // a comparison is a flag, not a name
+      case 'Identifier': {
+        if (v.name === 'undefined') return;
+        const r = lookup(v);
+        if (r.values) { if (seen.has(v)) return; seen.add(v); r.values.forEach((init) => value(init, at, depth + 1)); return; }
+        return;   // a parameter, a prop, an import: the caller's icon (an imported table is scanned where it is declared)
+      }
+      case 'MemberExpression': {
+        const root = (function base(e) { return e.type === 'MemberExpression' ? base(e.object) : e; })(v);
+        if (root.type === 'Identifier' && lookup(root).values) { const got = tables(v, 0); if (got) { got.forEach((g) => value(g, at, depth + 1)); return; } break; }
+        if (root.type === 'Identifier' && lookup(root).outside === 'import' && /icons?$/i.test(root.name)) return;   // a *Icons table of another file, scanned there
+        if (!v.computed) return;   // item.icon: the item's own field (collected where it is written)
+        break;
+      }
+      case 'CallExpression': {
+        const c = v.callee;
+        if (c.type === 'MemberExpression' && /^(React\.)?(cloneElement|createElement)$/.test(exprName(c))) return;   // an element, not a name
+        if (c.type === 'Identifier') {
+          const r = lookup(c);
+          if (r.values) { for (const f of r.values) if (FN.test(f.type)) returns(f).forEach((x) => value(x, at, depth + 1)); return; }
+          if (/icons?$/i.test(c.name)) return;   // an imported *Icon function: its returns are scanned where it is declared
+        }
+        break;
+      }
+      case 'ObjectExpression': case 'ArrayExpression': table(v, at); return;
+      case 'NullLiteral': case 'BooleanLiteral': case 'NumericLiteral': case 'JSXElement': case 'JSXFragment':
+      case 'ArrowFunctionExpression': case 'FunctionExpression': case 'UnaryExpression': case 'AssignmentPattern': return;
+      default: break;
+    }
+    const listed = marked(at);
+    if (listed) { listed.forEach((nm) => report.name(nm, where(at))); return; }
+    report.unresolved(where(at) + ' (' + v.type + ')');
+  }
+  // what a function can return (its return statements, not those of nested functions; an arrow's expression body)
+  function returns(f) {
+    if (f.body && f.body.type !== 'BlockStatement') return [f.body];
+    const out = [];
+    (function walk(n) { if (n !== f && FN.test(n.type)) return; if (n.type === 'ReturnStatement' && n.argument) out.push(n.argument); children(n).forEach(walk); })(f);
+    return out;
+  }
+  // every value of a constant table (an object's values, an array's items)
+  function table(t, at) {
+    if (t.type === 'ObjectExpression') { for (const p of t.properties) if (p.type === 'ObjectProperty') value(p.value, p); return; }
+    if (t.type === 'ArrayExpression') { for (const e of t.elements) if (e) value(e, e); return; }
+    value(t, at);
+  }
+  (function visit(n) {
+    const parent = n.parent;
+    if (n.type === 'JSXAttribute' && n.name.type === 'JSXIdentifier') {
+      const k = n.name.name, el = jsxName(parent && parent.name);
+      if (SLOT.test(k) || (k === 'name' && ICON_ELEMENT.test(el))) {
+        const v = !n.value ? null : n.value.type === 'JSXExpressionContainer' ? n.value.expression : n.value;
+        if (v && v.type !== 'JSXEmptyExpression') value(v, n);
+      }
+    }
+    if (n.type === 'ObjectProperty' && parent.type === 'ObjectExpression' && SLOT.test(keyOf(n) || '')) value(n.value, n);
+    if (n.type === 'ObjectProperty' && parent.type === 'ObjectPattern' && SLOT.test(keyOf(n) || '') && n.value.type === 'AssignmentPattern') value(n.value.right, n);
+    if (n.type === 'CallExpression' && ICON_ELEMENT.test(exprName(n.arguments[0])) && n.arguments[1] && n.arguments[1].type === 'ObjectExpression')
+      for (const p of n.arguments[1].properties) if (p.type === 'ObjectProperty' && keyOf(p) === 'name') value(p.value, p);
+    if (n.type === 'VariableDeclarator' && n.id.type === 'Identifier' && /icons?$/i.test(n.id.name) && n.init) {
+      if (n.init.type === 'ObjectExpression' || n.init.type === 'ArrayExpression') table(n.init, n);
+      else if (FN.test(n.init.type)) returns(n.init).forEach((x) => value(x, x));
+    }
+    if (n.type === 'FunctionDeclaration' && n.id && /icons?$/i.test(n.id.name)) returns(n).forEach((x) => value(x, x));
+    if (n.type === 'AssignmentPattern' && n.left.type === 'Identifier' && SLOT.test(n.left.name) && parent.type !== 'ObjectProperty') value(n.right, n);
+    for (const c of children(n)) visit(c);
+  })(ast.program);
+}
+
+function files(dir, out = []) {
+  if (!fs.existsSync(dir)) return out;
+  for (const e of fs.readdirSync(dir, { withFileTypes: true }).sort((a, b) => (a.name < b.name ? -1 : 1))) {
+    const p = path.join(dir, e.name);
+    if (e.isDirectory()) { if (!/^(node_modules|dist|vendor|design-system|icons)$/.test(e.name)) files(p, out); } else if (/\.jsx$/.test(e.name)) out.push(p);
+  }
+  return out;
+}
+
+// names: the known Plenix names (glyphs.js NAMES: name -> [symbol, …]); a string in an icon slot that is not one is listed
+// in unknown (a Material name, a typo)
+function scan(root, folders, { names }) {
+  const found = new Map(), unresolved = [], unknown = [];
+  const report = {
+    name(nm, at) { if (!names[nm]) { unknown.push(at + ' ' + JSON.stringify(nm)); return; } if (!found.has(nm)) found.set(nm, new Set()); found.get(nm).add(at); },
+    unresolved(at) { unresolved.push(at); },
+  };
+  for (const folder of folders) for (const f of files(path.join(root, folder))) if (!/[\\/]components[\\/]Icon[\\/]/.test(f)) scanFile(f, path.relative(root, f).split(path.sep).join('/'), report);
+  return { found, unresolved, unknown };
+}
+
+// the Platform's own source: platform/components, patterns, hooks and providers (the Icon component itself excluded: it
+// draws what it is given)
+const PLATFORM = ['platform/components', 'platform/patterns', 'platform/hooks', 'platform/providers'];
+
+module.exports = { scan, PLATFORM };

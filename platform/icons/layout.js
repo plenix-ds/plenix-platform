@@ -127,7 +127,7 @@ function writeMaterialModule(root, name, out) {
 const SOURCE = { plenix: 'platform/icons (map.json; Material Symbols Sharp, weight 300, and Plenix\'s own icons)', material: 'platform/icons/library (Material Symbols Sharp, weight 300)' };
 const writeSet = (root, set, out) => writeIconSet(set, set === 'material' ? materialEntries(root) : plenixEntries(root), out, SOURCE[set]);
 
-module.exports = { VARIANTS, MIRROR, readDrawing, plenixEntries, materialEntries, writeIconSet, writeSet, writeMaterialModule };
+module.exports = { VARIANTS, MIRROR, readDrawing, plenixFile: symbolFile, plenixEntries, materialEntries, writeIconSet, writeSet, writeMaterialModule };
 
 if (require.main === module) {
   const [set, out] = process.argv.slice(2);

@@ -133,6 +133,35 @@ module.exports = function buildIcons(root) {
     'export const NAMES = ' + JSON.stringify(named) + ';\n' +
     'export const LIBRARY = ' + JSON.stringify(library.join(' ')) + ';\n' +
     'export const LIBRARY_COMMIT = ' + JSON.stringify(String(M._commit).slice(0, 12)) + ';\n');
+  // the drawings of the icons the Platform's own source draws (#280, stage 5a): the Icon component draws these from
+  // script, never from the stylesheet. The scan (platform/icons/uses.js) is strict: an icon slot whose names cannot be read
+  // stops the build, so the table never silently misses one
+  const uses = require('./platform/icons/uses.js');
+  const scanned = uses.scan(root, uses.PLATFORM, { names: named });
+  if (scanned.unresolved.length || scanned.unknown.length)
+    throw new Error('icon names the Platform draws that cannot be read (list them in a "plx-icons: …" comment on the line, or write them as text):\n  ' +
+      scanned.unresolved.concat(scanned.unknown.map((u) => u + ' is not a Plenix icon name')).join('\n  '));
+  const own = [...new Set([...scanned.found.keys()].map((n) => named[n][0]))].sort();
+  const BOX = '0 -960 960 960', strings = [], at = new Map();
+  const table = {};
+  for (const s of own) table[s] = VARIANTS.map(([file]) => {
+    const dr = layout.readDrawing(layout.plenixFile(dir, s, file));   // the allow-list's drawing: the form the Icon component parses
+    if (!at.has(dr.d)) { at.set(dr.d, strings.length); strings.push(dr.d); }
+    const { viewBox, d, ...extra } = dr;
+    return viewBox === BOX && !Object.keys(extra).length ? at.get(d) : [at.get(d), viewBox, extra];
+  });
+  fs.writeFileSync(path.join(root, 'platform', 'components', 'Icon', 'plenix-drawings.js'),
+    '/* Plenix · Icon drawings of the Platform\'s own icons\n' +
+    '   Summary: GENERATED FILE — DO NOT EDIT. Written by build-icons.js (#280, stage 5a): the drawings of the ' + own.length + ' Plenix\n' +
+    '     symbols the Platform\'s own components draw (found by platform/icons/uses.js), so they never wait for the stylesheet.\n' +
+    '     Any other Plenix icon comes from an imported module (registerIcons) or, until stage 5c, the stylesheet.\n' +
+    '   Usage: import { DRAWINGS } from \'./plenix-drawings.js\'   (Icon.jsx only)\n' +
+    '   Props:\n' +
+    '     DRAWINGS.d: every path, once\n' +
+    '     DRAWINGS.box: the box most drawings use\n' +
+    '     DRAWINGS.symbols: symbol -> [outline 20, filled 20, outline 24, filled 24], each the index of its path (in the box), or\n' +
+    '       [index, viewBox, { transform?, fillRule?, clipRule? }] */\n' +
+    'export const DRAWINGS = ' + JSON.stringify({ d: strings, box: BOX, symbols: table }) + ';\n');
   // the asset layout of the Plenix set (#279, stage 1): platform/dist/icons/plenix/<name>.svg|.js and index.json, generated
   // and not committed; no consumer reads it yet (icon.css and glyphs.js above still draw every icon)
   const assets = layout.writeSet(root, 'plenix', path.join(root, 'platform', 'dist', 'icons', 'plenix'));

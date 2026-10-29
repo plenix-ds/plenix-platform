@@ -535,6 +535,7 @@ export function RichTextEditor({ label, defaultValue = '', onChange, toolbar = '
         {hidden.map((g) => (
           <MenuGroup key={g.id} label={g.label}>
             {(g.buttons || []).map(menuEntry)}
+            {/* a menu's icon is its fourth item (only the table menu has one): plx-icons: table */}
             {(g.menus || []).map((m) => <MenuSub key={m[0]} label={t[m[0]]} icon={m[3]}>{m[2]()}</MenuSub>)}
             {(g.after || []).map(menuEntry)}
           </MenuGroup>

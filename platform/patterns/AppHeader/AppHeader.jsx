@@ -280,6 +280,7 @@ AppHeader.Account = function AppHeaderAccount({ name: nameProp, email: emailProp
         {has(appSettings) ? <MenuItem icon={appSettings.icon || 'settings-customize'} href={appSettings.href} onSelect={appSettings.onSelect} aria-current={current === 'app-settings' ? 'page' : undefined}>{fill(t.appSettings, { app: appSettings.app || t.app })}</MenuItem> : null}
       </MenuGroup>
       {density ? <><MenuDivider /><MenuGroup label={t.density}>
+        {/* the density icons: plx-icons: density-compact density-standard density-comfortable */}
         {choices.map((d) => <MenuItem key={d.value} role="menuitemradio" icon={'density-' + d.value} checked={dens === d.value} onSelect={() => setDens(d.value)}>{t[d.value] || d.label}</MenuItem>)}
       </MenuGroup></> : null}
       {extra ? <><MenuDivider />{extra}</> : null}
