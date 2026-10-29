@@ -1,5 +1,5 @@
 /* Plenix tests · remembered widths per monitor (issue 463, option C, step 3): the side panel's dragged width is saved per monitor, the monitor named by
-   its screen size in CSS pixels. One saved value per panel per monitor; the single value saved before carries over as the current monitor's;
+   its physical size (screen size times devicePixelRatio, to the nearest 10px), so browser zoom does not change it. One saved value per panel per monitor; the single value saved before carries over as the current monitor's;
    a saved width is used only when it still fits the window (the limits of step 1).
    Summary: with the side panel's limit raised to 1600px: (A) an old single value of 480 on a 1920x1080 monitor shows 480 and is stored under
      "1920x1080"; (B) a 2560x1440 monitor has no value yet, so the panel starts at its default, and End there saves 1600 under "2560x1440";
@@ -7,7 +7,8 @@
      (E) in a 2000px window it comes back.
    Usage: node tests/monitor-widths.test.js   (run by layout.test.js when AppShell or the side panel changed) */
 const assert = require('assert/strict'), { serve, launch } = require('./lib');
-const SCREEN = (w, h) => 'Object.defineProperty(window.screen,"width",{get:()=>' + w + '});Object.defineProperty(window.screen,"height",{get:()=>' + h + '});';
+// a monitor as the page sees it: the screen size in CSS pixels and devicePixelRatio (a browser zoomed to 150% reports 1280x720 at ratio 1.5 on a 1920x1080 monitor)
+const SCREEN = (w, h, r) => 'Object.defineProperty(window.screen,"width",{get:()=>' + w + '});Object.defineProperty(window.screen,"height",{get:()=>' + h + '});Object.defineProperty(window,"devicePixelRatio",{get:()=>' + (r || 1) + '});';
 (async () => {
   const PORT = +process.env.TEST_PORT || 9618, server = await serve(PORT); let browser;
   try {
@@ -16,7 +17,7 @@ const SCREEN = (w, h) => 'Object.defineProperty(window.screen,"width",{get:()=>'
     const visit = async (windowWidth, screen, setup) => {
       const page = await browser.newPage(); const errors = [];
       page.on('pageerror', (e) => errors.push(e.message));
-      await page.evaluateOnNewDocument(SCREEN(screen[0], screen[1]));
+      await page.evaluateOnNewDocument(SCREEN(screen[0], screen[1], screen[2]));
       await page.setViewport({ width: windowWidth, height: 800 });
       if (setup) { await page.goto(url, { waitUntil: 'domcontentloaded' }); await page.evaluate(setup); }
       await page.goto(url, { waitUntil: 'domcontentloaded' });
@@ -42,6 +43,8 @@ const SCREEN = (w, h) => 'Object.defineProperty(window.screen,"width",{get:()=>'
     assert.deepEqual(await v.store(), { side: { '1920x1080': 480, '2560x1440': 1600 } }, 'B: both monitors kept');
     await v.page.close();
     v = await visit(1600, [1920, 1080]); assert.equal(await v.width(), 480, 'C: the first monitor keeps its own'); await v.page.close();
+    // zoom is not a monitor: 150% and 200% browser zoom on the same 1920x1080 monitor report 1280x720 at ratio 1.5 and 960x540 at ratio 2; the saved width stays
+    for (const screen of [[1280, 720, 1.5], [960, 540, 2], [1920, 1080, 1]]) { v = await visit(1600, screen); assert.equal(await v.width(), 480, 'Z: zoom ' + screen.join(' ') + ' keeps the monitor\'s width'); assert.deepEqual(Object.keys((await v.store()).side).sort(), ['1920x1080', '2560x1440'], 'Z: no new monitor appears when zoom changes'); await v.page.close(); }
     v = await visit(1000, [2560, 1440]); assert.equal(await v.width(), start, 'D: 1600 does not fit a 1000px window: the default'); assert.deepEqual((await v.store()).side['2560x1440'], 1600, 'D: and it is kept'); await v.page.close();
     v = await visit(2000, [2560, 1440]); assert.equal(await v.width(), 1600, 'E: it comes back when it fits'); assert.deepEqual(v.errors, [], 'no script errors'); await v.page.close();
     console.log('monitor-widths: OK');
