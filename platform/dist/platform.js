@@ -46112,7 +46112,7 @@ function useScreenLocation(options) {
   }), [loc]);
 }
   } },
-  "platform/patterns/ToolRail/ToolRail.jsx": { deps: {"react":null,"../../utils/roving.js":"platform/utils/roving.js","../../utils/cx.js":"platform/utils/cx.js","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ToolRail/ToolRail.jsx": { deps: {"react":null,"../../hooks/useFocusable.js":"platform/hooks/useFocusable.js","../../utils/cx.js":"platform/utils/cx.js","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -46121,12 +46121,12 @@ Object.defineProperty(exports, "__esModule", {
 exports.BarContext = void 0;
 exports.ToolRail = ToolRail;
 var _react = _interopRequireDefault(require("react"));
-var _roving = require("../../utils/roving.js");
+var _useFocusable = require("../../hooks/useFocusable.js");
 var _cx = require("../../utils/cx.js");
 var _Icon = require("../../components/Icon/Icon.jsx");
 var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · ToolRail
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ToolRail
    Summary: A vertical bar of tools beside a canvas (the image editor).
    Usage:
      <ToolRail label="Tools">
@@ -46147,12 +46147,12 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      ToolRailBar (NavPane at Narrow): the same items drawn as the destinations of the bottom navigation bar
    Behavior:
      It is a toolbar with vertical orientation and one Tab stop: Arrow Up / Down, Home and End move between tools; Tab
-     enters and leaves the rail.
+     enters and leaves the rail. Its Tab stop and arrow keys are the shared focus group (useFocusGroup,
+     hooks/useFocusable.js); NavPane's and SecondaryPane's collapsed rails are this rail.
      Each tool is an icon-only toggle button with a tooltip at its end side.
    Notes:
      The editor page sets the dark mode on its container.
 */
-
 const LabelsContext = /*#__PURE__*/_react.default.createContext(false);
 // inside the bottom navigation bar (NavPane at Narrow; Platforms Standard 4.1, 6.4) an item is a destination: its icon with
 // its label under it, always shown, and aria-current for the current one
@@ -46165,28 +46165,24 @@ function ToolRail({
 }) {
   const ref = _react.default.useRef(null);
   const itemsOf = () => ref.current ? Array.prototype.slice.call(ref.current.querySelectorAll('.plx-tool-rail__item:not([disabled])')) : [];
-  // one Tab stop: Tab enters and leaves the rail; the arrows move between tools (batch 213)
-  (0, _roving.useRovingFocus)(ref, itemsOf);
-  const onKeyDown = e => {
-    if (['ArrowUp', 'ArrowDown', 'Home', 'End'].indexOf(e.key) < 0) return;
-    const items = itemsOf();
-    const i = items.indexOf(document.activeElement);
-    if (i < 0) return;
-    const n = e.key === 'Home' ? 0 : e.key === 'End' ? items.length - 1 : e.key === 'ArrowDown' ? (i + 1) % items.length : (i - 1 + items.length) % items.length;
-    e.preventDefault();
-    items[n].focus();
-  };
+  // one Tab stop: Tab enters and leaves the rail; Arrow Up / Down (looping), Home and End move between tools (batch 213).
+  // The shared focus group (hooks/useFocusable.js, issue 262); the rail's own items, and a held modifier still moves, as before
+  const {
+    groupProps
+  } = (0, _useFocusable.useFocusGroup)(ref, {
+    orientation: 'vertical',
+    items: itemsOf,
+    modifiers: true
+  });
   return /*#__PURE__*/_react.default.createElement(LabelsContext.Provider, {
     value: showLabels
-  }, /*#__PURE__*/_react.default.createElement("div", {
+  }, /*#__PURE__*/_react.default.createElement("div", _extends({
     ref: ref,
     role: "toolbar",
     "aria-orientation": "vertical",
     "aria-label": label,
-    className: (0, _cx.cx)('plx-tool-rail', showLabels && 'plx-tool-rail--labels', className),
-    onKeyDown: onKeyDown,
-    onFocus: e => (0, _roving.roveTo)(ref, itemsOf(), e.target)
-  }, children));
+    className: (0, _cx.cx)('plx-tool-rail', showLabels && 'plx-tool-rail--labels', className)
+  }, groupProps), children));
 }
 ToolRail.Item = function ToolRailItem({
   icon,
