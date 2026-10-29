@@ -21,7 +21,11 @@ const path = require('path');
 
 const VARIANTS = ['', '-fill', '-24', '-24-fill'];
 // the symbols that point along the reading direction: mirrored in right to left (build-icons.js draws them so in icon.css)
-const MIRROR = ['arrow_back', 'arrow_right', 'chevron_left', 'chevron_right', 'left_panel_close', 'left_panel_open', 'right_panel_close', 'right_panel_open', 'undo', 'redo'];
+// (issue 413, rtl-413-a: Material's bidirectional icons that point somewhere: forward and back, first and last page, sign
+// in and out through a door, reply, forward, send, the keyboard's backspace and return)
+const MIRROR = ['arrow_back', 'arrow_forward', 'arrow_right', 'chevron_left', 'chevron_right', 'first_page', 'forward', 'keyboard_arrow_left', 'keyboard_arrow_right',
+  'keyboard_backspace', 'keyboard_return', 'last_page', 'left_panel_close', 'left_panel_open', 'login', 'logout', 'navigate_before', 'navigate_next', 'redo', 'reply', 'reply_all',
+  'right_panel_close', 'right_panel_open', 'send', 'undo'];
 const dashed = (s) => s.replace(/_/g, '-');
 
 // the allow-list every icon file passes (platform/utils/iconSafety.js, #285): the same module the Icon component uses,
