@@ -6,7 +6,7 @@
      there. Dictation puts the spoken words into the box as they come, in the page's language (ar-EG for Arabic, en-US for English), with "Listening…" and a Stop.
    The probe is proved able to see the difference first: the same composer without a recognition has no microphone, and with a stub it has one.
    Cases: the microphone hidden and shown; Send disabled when empty and enabled with text; Enter sends; the box is the bordered one and the text area is not; the focus turns the box's
-     border; right to left mirrors the tools (Send at the left, the microphone right before it); dictation (words, language, Listening, Stop); the emoji button opens a panel;
+     border; right to left mirrors the tools (Send at the left, the microphone right before it); dictation (words, language, Listening, Stop); typing while dictating keeps the typed text and stops dictation; the emoji button opens a panel;
      files: previews on the card standard, progress, an error with Retry, Send off while one uploads, a pasted and a dropped file reach onAttach.
    Usage: node tests/chat-composer-s3.test.js   (run by layout.test.js when the Chat, the Input or the Popover changed) */
 const assert = require('assert/strict'), { serve, launch } = require('./lib');
@@ -27,7 +27,7 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
         const h = React.createElement, P = Plenix;
         function App() {
           const [v, setV] = React.useState(files ? 'hi' : '');
-          return h(P.Chat.Composer, { value: v, onChange: setV, onSend: (t, f) => window.__sent.push([t, f.length]), attachments: files || [], onAttach: (list) => window.__attached.push(list.map((f) => f.name)),
+          return h(P.Chat.Composer, { value: v, onChange: setV, onSend: (t, f) => { window.__sent.push([t, f.length]); setV(''); }, attachments: files || [], onAttach: (list) => window.__attached.push(list.map((f) => f.name)),
             onRetryAttachment: () => {}, onRemoveAttachment: () => {}, onCancelAttachment: () => {} });
         }
         ReactDOM.createRoot(document.getElementById('c')).render(h(App));
@@ -91,6 +91,20 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
     assert.ok(rtl.send < rtl.mic && rtl.mic < rtl.emoji && rtl.emoji < rtl.attach, 'rtl: mirrored: Send at the left, the microphone right before it, Emoji and Attach at the right');
     await page.click('.plx-chat__mic button'); await wait(300);
     assert.equal(await page.evaluate(() => window.__recs[0].lang), 'ar-EG', 'an Arabic page dictates in ar-EG');
+    await page.close();
+    // typing while dictating: the typed text is kept and dictation stops (a later result must not write the starting text plus the speech over it)
+    page = await open('ltr', true);
+    await page.click('.plx-chat__mic button'); await wait(300);
+    await page.evaluate(() => window.__recs[0].onresult({ results: [Object.assign([{ transcript: 'hello' }], { isFinal: false })] }));
+    await wait(200);
+    assert.equal(await page.evaluate(() => document.querySelector('.plx-chat__field').value), 'hello', 'the probe sees the speech reach the box');
+    await page.focus('.plx-chat__field'); await page.keyboard.press('End'); await page.keyboard.type('x'); await wait(200);
+    await page.evaluate(() => { const r = window.__recs[0]; if (r.onresult) r.onresult({ results: [Object.assign([{ transcript: 'hello world' }], { isFinal: true })] }); });
+    await wait(300);
+    const typedWhile = await page.evaluate(() => ({ value: document.querySelector('.plx-chat__field').value, stopped: !!window.__recs[0].stopped, listening: !!document.querySelector('.plx-chat__listening') }));
+    assert.equal(typedWhile.value, 'hellox', 'a character typed while dictating is kept; the next result does not overwrite it');
+    assert.equal(typedWhile.stopped, true, 'typing stops the dictation');
+    assert.equal(typedWhile.listening, false, '"Listening…" is gone once the person types');
     await page.close();
     // a dropped and a pasted file reach onAttach
     page = await open('ltr', true);

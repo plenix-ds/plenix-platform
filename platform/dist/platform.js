@@ -38871,8 +38871,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        area without a border of its own (Input's context hooks), and a row of tools: Attach, Image and Emoji at the start; Listening, the microphone and Send
        (an arrow with its word) at the end. The text area starts at two lines and grows to its maximum height, then scrolls; at a phone width it starts at one.
      Dictation: the microphone starts the browser's speech recognition; the words appear in the box as they are spoken (the unfinished ones too), "Listening…"
-       and a Stop button show with a red dot and a ring round the microphone; Stop, the microphone again, Send or the browser ending it stops it. The microphone
-       is looked for when the composer is drawn, so a browser that gains speech recognition shows it with no change. A blocked microphone says so.
+       and a Stop button show with a red dot and a ring round the microphone; Stop, the microphone again, Send, typing in the box or the browser ending it
+       stops it, and typing keeps the text exactly as typed. The microphone is looked for when the composer is drawn, so a browser that gains speech
+       recognition shows it with no change. A blocked microphone says so. "Listening…" and a microphone problem are announced once each (announce()).
      Chat.Typing is a status region (role="status"), so its label is announced.
      The dots pulse one after another; people who ask their system for less motion see them still.
    Notes:
@@ -39143,6 +39144,7 @@ function Composer({
   };
   const send = () => {
     if (!canSend) return;
+    spoken.current.open = false;
     stopListening();
     if (onSend) onSend(value, attachments.filter(a => (a.status || 'ready') === 'ready'));
   };
@@ -39157,10 +39159,13 @@ function Composer({
     r.lang = speechLanguage(lang);
     r.continuous = true;
     r.interimResults = true;
-    spoken.current = {
-      base: String(value)
+    const session = {
+      base: String(value),
+      open: true
     };
+    spoken.current = session;
     r.onresult = e => {
+      if (!session.open) return;
       let done = '',
         interim = '';
       for (let i = 0; i < e.results.length; i++) {
@@ -39176,7 +39181,8 @@ function Composer({
       });
     };
     r.onend = () => {
-      recognition.current = null;
+      session.open = false;
+      if (recognition.current === r) recognition.current = null;
       setListening(false);
     };
     recognition.current = r;
@@ -39186,9 +39192,21 @@ function Composer({
       setListening(true);
       (0, _announce.announce)(t.listening);
     } catch (err) {
+      session.open = false;
       recognition.current = null;
       setProblem(t.micStopped);
+      (0, _announce.announce)(t.micStopped, {
+        politeness: 'assertive'
+      });
     }
+  };
+  // typing while dictating ends the dictation and keeps the text as typed: a later speech result would otherwise write the starting text plus the speech over it
+  const typed = text => {
+    if (recognition.current) {
+      spoken.current.open = false;
+      stopListening();
+    }
+    if (onChange) onChange(text);
   };
   const emojiPanel = typeof emoji === 'function' ? emoji(text => {
     if (onChange) onChange(String(value) + text);
@@ -39240,9 +39258,7 @@ function Composer({
     placeholder: placeholder,
     "aria-label": label,
     disabled: disabled,
-    onChange: e => {
-      if (onChange) onChange(e.target.value);
-    },
+    onChange: e => typed(e.target.value),
     onPaste: hasFiles ? e => {
       const files = e.clipboardData && e.clipboardData.files;
       if (files && files.length) {
@@ -39260,8 +39276,7 @@ function Composer({
   }), problem ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-chat__problem"
   }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
-    variant: "caption",
-    role: "alert"
+    variant: "caption"
   }, problem)) : null, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-chat__tools"
   }, hasFiles ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement(_Button.Button, {
@@ -39317,8 +39332,7 @@ function Composer({
   }, emojiPanel)) : null, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-chat__tools-end"
   }, listening ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-chat__listening",
-    role: "status"
+    className: "plx-chat__listening"
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-chat__dot",
     "aria-hidden": "true"

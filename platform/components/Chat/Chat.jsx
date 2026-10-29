@@ -47,8 +47,9 @@
        area without a border of its own (Input's context hooks), and a row of tools: Attach, Image and Emoji at the start; Listening, the microphone and Send
        (an arrow with its word) at the end. The text area starts at two lines and grows to its maximum height, then scrolls; at a phone width it starts at one.
      Dictation: the microphone starts the browser's speech recognition; the words appear in the box as they are spoken (the unfinished ones too), "Listening…"
-       and a Stop button show with a red dot and a ring round the microphone; Stop, the microphone again, Send or the browser ending it stops it. The microphone
-       is looked for when the composer is drawn, so a browser that gains speech recognition shows it with no change. A blocked microphone says so.
+       and a Stop button show with a red dot and a ring round the microphone; Stop, the microphone again, Send, typing in the box or the browser ending it
+       stops it, and typing keeps the text exactly as typed. The microphone is looked for when the composer is drawn, so a browser that gains speech
+       recognition shows it with no change. A blocked microphone says so. "Listening…" and a microphone problem are announced once each (announce()).
      Chat.Typing is a status region (role="status"), so its label is announced.
      The dots pulse one after another; people who ask their system for less motion see them still.
    Notes:
@@ -194,24 +195,28 @@ function Composer({ value = '', onChange, onSend, placeholder, label, sendLabel,
   const uploading = attachments.some((a) => a.status === 'uploading'), sendable = String(value).trim() || attachments.some((a) => (a.status || 'ready') === 'ready');
   const canSend = !disabled && !uploading && !!sendable;
   const stopListening = () => { if (recognition.current) recognition.current.stop(); };
-  const send = () => { if (!canSend) return; stopListening(); if (onSend) onSend(value, attachments.filter((a) => (a.status || 'ready') === 'ready')); };
+  const send = () => { if (!canSend) return; spoken.current.open = false; stopListening(); if (onSend) onSend(value, attachments.filter((a) => (a.status || 'ready') === 'ready')); };
   const attach = (files) => { const list = Array.prototype.slice.call(files || []); if (list.length && onAttach) onAttach(list); };
   const listen = () => {
     const Recognition = speechConstructor();
     if (!Recognition || recognition.current) return;
     const r = new Recognition();
     r.lang = speechLanguage(lang); r.continuous = true; r.interimResults = true;
-    spoken.current = { base: String(value) };
+    const session = { base: String(value), open: true };
+    spoken.current = session;
     r.onresult = (e) => {
+      if (!session.open) return;
       let done = '', interim = '';
       for (let i = 0; i < e.results.length; i++) { if (e.results[i].isFinal) done += e.results[i][0].transcript; else interim += e.results[i][0].transcript; }
       if (latest.current) latest.current(joinSpoken(spoken.current.base, done + interim));
     };
     r.onerror = (e) => { const blocked = e.error === 'not-allowed' || e.error === 'service-not-allowed'; setProblem(blocked ? t.micBlocked : t.micStopped); announce(blocked ? t.micBlocked : t.micStopped, { politeness: 'assertive' }); };
-    r.onend = () => { recognition.current = null; setListening(false); };
+    r.onend = () => { session.open = false; if (recognition.current === r) recognition.current = null; setListening(false); };
     recognition.current = r; setProblem('');
-    try { r.start(); setListening(true); announce(t.listening); } catch (err) { recognition.current = null; setProblem(t.micStopped); }
+    try { r.start(); setListening(true); announce(t.listening); } catch (err) { session.open = false; recognition.current = null; setProblem(t.micStopped); announce(t.micStopped, { politeness: 'assertive' }); }
   };
+  // typing while dictating ends the dictation and keeps the text as typed: a later speech result would otherwise write the starting text plus the speech over it
+  const typed = (text) => { if (recognition.current) { spoken.current.open = false; stopListening(); } if (onChange) onChange(text); };
   const emojiPanel = typeof emoji === 'function' ? emoji((text) => { if (onChange) onChange(String(value) + text); }) : <Text variant="secondary">{t.emojiSoon}</Text>;
   const hasFiles = !!onAttach, dropping = dragging && hasFiles;
   return (
@@ -223,13 +228,13 @@ function Composer({ value = '', onChange, onSend, placeholder, label, sendLabel,
         {dropping ? <div className="plx-chat__drop" role="status">{t.dropFiles}</div> : null}
         {attachments.length ? <ul className="plx-chat__strip" aria-label={t.attachments}>{attachments.map((a) => <ComposerFile key={a.id} file={a} t={t} onRemove={onRemoveAttachment} onRetry={onRetryAttachment} onCancel={onCancelAttachment} />)}</ul> : null}
         <Textarea className="plx-chat__field" rows={2} autoGrow value={value} placeholder={placeholder} aria-label={label} disabled={disabled}
-          onChange={(e) => { if (onChange) onChange(e.target.value); }}
+          onChange={(e) => typed(e.target.value)}
           onPaste={hasFiles ? (e) => { const files = e.clipboardData && e.clipboardData.files; if (files && files.length) { e.preventDefault(); attach(files); } } : undefined}
           onKeyDown={(e) => {
             if (e.key !== 'Enter' || e.shiftKey || e.nativeEvent.isComposing) return;
             if (sendOn === 'mod-enter' ? (e.ctrlKey || e.metaKey) : !(e.ctrlKey || e.metaKey || e.altKey)) { e.preventDefault(); send(); }
           }} />
-        {problem ? <div className="plx-chat__problem"><Text variant="caption" role="alert">{problem}</Text></div> : null}
+        {problem ? <div className="plx-chat__problem"><Text variant="caption">{problem}</Text></div> : null}
         <div className="plx-chat__tools">
           {hasFiles ? <>
             <Button variant="ghost" size="sm" iconOnly icon={AttachmentIcon} label={t.attach} disabled={disabled} onClick={() => fileInput.current && fileInput.current.click()} />
@@ -238,7 +243,7 @@ function Composer({ value = '', onChange, onSend, placeholder, label, sendLabel,
             <input ref={imageInput} type="file" multiple hidden accept={imageAccept} onChange={(e) => { attach(e.target.files); e.target.value = ''; }} /></> : null}
           {emoji ? <Popover title={t.emoji} size="sm" placement="top-start" trigger={<Button variant="ghost" size="sm" iconOnly icon={MoodIcon} label={t.emoji} disabled={disabled} />}><div className="plx-chat__panel">{emojiPanel}</div></Popover> : null}
           <span className="plx-chat__tools-end">
-            {listening ? <span className="plx-chat__listening" role="status"><span className="plx-chat__dot" aria-hidden="true" />{t.listening}<Button variant="secondary" size="xs" icon={StopIcon} onClick={stopListening}>{t.stop}</Button></span> : null}
+            {listening ? <span className="plx-chat__listening"><span className="plx-chat__dot" aria-hidden="true" />{t.listening}<Button variant="secondary" size="xs" icon={StopIcon} onClick={stopListening}>{t.stop}</Button></span> : null}
             {voice && speech ? <span className={cx('plx-chat__mic', listening && 'plx-chat__mic--listening')}><Button variant="ghost" size="sm" iconOnly icon={MicIcon} label={listening ? t.stop : t.dictate} disabled={disabled} onClick={listening ? stopListening : listen} /></span> : null}
             <Button type="submit" variant="primary" size="sm" icon={SendIcon} disabled={!canSend}>{sendLabel}</Button>
           </span>

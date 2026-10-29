@@ -2410,7 +2410,8 @@ function MessagingScreen({
     onChange: setInput,
     onSend: send,
     placeholder: "Reply\u2026",
-    label: "Reply"
+    label: "Reply",
+    emoji: false
   })) : /*#__PURE__*/React.createElement(_plenixPlatform.EmptyState, {
     size: "page",
     icon: "message",
