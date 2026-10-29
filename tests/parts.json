@@ -137,6 +137,10 @@
      "checks": 1
     },
     {
+     "part": "Icon",
+     "checks": 1
+    },
+    {
      "part": "SplitView",
      "checks": 3
     },

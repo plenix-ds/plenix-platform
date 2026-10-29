@@ -43,14 +43,14 @@
 import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { isRtl } from '../../utils/direction.js';
-import { Icon } from '../Icon/Icon.jsx';
+import { Icon, asIcon as iconElement, iconKey } from '../Icon/Icon.jsx';
 import { Popover } from '../Popover/Popover.jsx';
 import { SearchField } from '../SearchField/SearchField.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const asIcon = (i) => (typeof i === 'string' ? <Icon name={i} /> : i);
+const asIcon = (i) => iconElement(i);   // a name or an imported module (#280)
 const OPEN_ICONS = { folder: 'folder-open' };
-const iconOf = (n, isOpen) => (isOpen ? n.openIcon || (typeof n.icon === 'string' && OPEN_ICONS[n.icon]) || n.icon : n.icon);
+const iconOf = (n, isOpen) => (isOpen ? n.openIcon || OPEN_ICONS[iconKey(n.icon)] || n.icon : n.icon);
 const kidsOf = (n) => (n.children && n.children.length ? n.children : null);
 // every node by id, with its parent and the leaves under it
 function index(nodes) {
