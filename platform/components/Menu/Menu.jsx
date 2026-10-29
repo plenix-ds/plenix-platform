@@ -82,6 +82,7 @@ import { Icon, asIcon as iconElement } from '../Icon/Icon.jsx';
 import { Portal } from '../../utils/portal.jsx';
 import { useFloating } from '../../utils/floating.js';
 import { useGesture } from '../../hooks/useGesture.js';
+import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
 
 const MenuContext = React.createContext(null);
 const RadioContext = React.createContext(null);
@@ -245,7 +246,7 @@ export function MenuSub({ label, icon, disabled = false, className, children }) 
         onPointerEnter={(e) => { if (e.pointerType === 'mouse' && !open) openIt(false); }}>
         {icon ? <span className="plx-menu__icon">{asIcon(icon)}</span> : null}
         <span className="plx-menu__label">{label}</span>
-        <span className="plx-menu-sub__arrow" aria-hidden="true"><Icon name="chevron-right" /></span>
+        <span className="plx-menu-sub__arrow" aria-hidden="true"><Icon name={ChevronRightIcon} /></span>
       </button>
       {open ? (
         <div ref={list} id={id} role="menu" aria-label={typeof label === 'string' ? label : undefined} popover={TOP_LAYER ? 'manual' : undefined}

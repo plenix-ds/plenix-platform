@@ -67,6 +67,7 @@ import { Button } from '../Button/Button.jsx';
 import { Sheet } from '../Sheet/Sheet.jsx';
 import { useMedia, below } from '../../patterns/AppShell/AppShell.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import CloseIcon from 'plenix-platform/icons/plenix/close';
 
 const SIZES = ['sm', 'md', 'lg', 'auto'];
 
@@ -158,7 +159,7 @@ export function Popover({ trigger, triggerOn = 'click', open: openProp, defaultO
   const header = title || closeButton ? (
     <div className="plx-popover__header">
       {title ? <h2 id={titleId} className="plx-popover__title">{title}</h2> : null}
-      {closeButton ? <Button variant="ghost" size="xs" iconOnly icon="close" label={t.close} className="plx-popover__close" onClick={() => close(true)} /> : null}
+      {closeButton ? <Button variant="ghost" size="xs" iconOnly icon={CloseIcon} label={t.close} className="plx-popover__close" onClick={() => close(true)} /> : null}
     </div>
   ) : null;
 

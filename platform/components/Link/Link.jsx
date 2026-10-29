@@ -37,6 +37,8 @@ import { cx } from '../../utils/cx.js';
 import { Icon } from '../Icon/Icon.jsx';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import ChevronLeftIcon from 'plenix-platform/icons/plenix/chevron-left';
+import OpenIcon from 'plenix-platform/icons/plenix/open';
 
 
 export const Link = React.forwardRef(function Link({ href, variant = 'inline', external = false, back = false, onAccent = false, visited = false,
@@ -49,9 +51,9 @@ export const Link = React.forwardRef(function Link({ href, variant = 'inline', e
     <Tag ref={ref} href={href} {...newTab} {...rest}
       className={cx('plx-link', 'plx-link--' + kind, back && 'plx-link--back', external && 'plx-link--external', onAccent && 'plx-link--on-accent',
         visited && 'is-visited', className)}>
-      {back ? <span className="plx-link__icon"><Icon name="chevron-left" /></span> : null}
+      {back ? <span className="plx-link__icon"><Icon name={ChevronLeftIcon} /></span> : null}
       {children}
-      {external ? <span className="plx-link__icon"><Icon name="open" /></span> : null}
+      {external ? <span className="plx-link__icon"><Icon name={OpenIcon} /></span> : null}
       {external ? <VisuallyHidden> ({s.newTab})</VisuallyHidden> : null}
     </Tag>
   );

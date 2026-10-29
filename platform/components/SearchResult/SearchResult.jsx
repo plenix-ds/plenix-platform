@@ -64,6 +64,9 @@ import { Count } from '../Count/Count.jsx';
 import { Link } from '../Link/Link.jsx';
 import { Button } from '../Button/Button.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
+import DocTextIcon from 'plenix-platform/icons/plenix/doc-text';
+import DocumentIcon from 'plenix-platform/icons/plenix/document';
 
 const escape = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
@@ -85,7 +88,7 @@ export function SearchResult({ title, href, onOpen, kind = 'page', icon, thumbna
       : <span className="plx-search-result__opener">{name}</span>;
   const lead = leading !== undefined ? leading
     : kind === 'person' ? <Avatar name={(avatar && avatar.name) || (typeof title === 'string' ? title : '')} src={avatar && avatar.src} size="md" />
-      : <Thumbnail src={kind === 'file' && thumbnail ? thumbnail.src : undefined} alt={thumbnail && thumbnail.alt} icon={icon || (kind === 'file' ? 'document' : 'doc-text')} />;
+      : <Thumbnail src={kind === 'file' && thumbnail ? thumbnail.src : undefined} alt={thumbnail && thumbnail.alt} icon={icon || (kind === 'file' ? DocumentIcon : DocTextIcon)} />;
   const Title = headingLevel ? 'h' + headingLevel : 'span';
   return (
     <li className={cx('plx-search-result', (href || onOpen) && 'is-interactive', selected && 'is-selected', className)} {...rest}>
@@ -96,7 +99,7 @@ export function SearchResult({ title, href, onOpen, kind = 'page', icon, thumbna
             <span className="plx-visually-hidden">{t.path + ' '}</span>
             {path.map((p, i) => (
               <React.Fragment key={i}>
-                {i ? <span className="plx-search-result__separator" aria-hidden="true"><Icon name="chevron-right" /></span> : null}
+                {i ? <span className="plx-search-result__separator" aria-hidden="true"><Icon name={ChevronRightIcon} /></span> : null}
                 <span className="plx-search-result__crumb">{p}</span>
               </React.Fragment>
             ))}

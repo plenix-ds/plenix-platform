@@ -24,6 +24,8 @@ import { FileInput } from '../FileInput/FileInput.jsx';
 import { Chip } from '../Tag/Tag.jsx';
 import { Menu, MenuItem, MenuRadioGroup } from '../Menu/Menu.jsx';
 import { Notice } from '../Notice/Notice.jsx';
+import SparkleIcon from 'plenix-platform/icons/plenix/sparkle';
+import StopIcon from 'plenix-platform/icons/plenix/stop';
 export const PromptInput = React.forwardRef(function PromptInput({value,defaultValue='',onChange,onSend,multiline=false,streaming=false,onStop,disabled=false,attachments=false,accept,onAttachmentsChange,models=[],model,onModelChange,strings,className},ref){
  const t={label:'Prompt',placeholder:'Ask a question',send:'Send prompt',stop:'Stop generating',stopping:'Stopping',failed:'Could not send the prompt. Try again.',attachments:'Attachments',model:'Choose model',...strings};
  const [own,setOwn]=React.useState(defaultValue),[files,setFiles]=React.useState([]),[fileKey,setFileKey]=React.useState(0),[busy,setBusy]=React.useState(false),[stopping,setStopping]=React.useState(false),[error,setError]=React.useState('');
@@ -41,6 +43,6 @@ export const PromptInput = React.forwardRef(function PromptInput({value,defaultV
  <Field label={t.label}><Control ref={ref} value={text} rows={multiline?3:undefined} disabled={disabled} placeholder={t.placeholder} enterKeyHint="send" onChange={e=>change(e.target.value)} onKeyDown={e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.nativeEvent.isComposing&&e.keyCode!==229){e.preventDefault();send();}}}/></Field>
  <Inline wrap>{attachments?<FileInput key={fileKey} multiple showList accept={accept} label={t.attachments} strings={strings} disabled={disabled||busy||streaming} onChange={selectFiles}/>:null}
  {models.length?<Menu label={t.model} trigger={<Chip disabled={disabled||busy||streaming||!onModelChange} aria-label={t.model+': '+(chosen?.label||t.model)}>{chosen?.label||t.model}</Chip>}><MenuRadioGroup label={t.model} value={model} onChange={onModelChange}>{models.map(m=><MenuItem key={m.id} value={m.id} disabled={m.disabled}>{m.label}</MenuItem>)}</MenuRadioGroup></Menu>:null}
- {streaming?<Button icon="stop" disabled={disabled||stopping||!onStop} onClick={stop}>{stopping?t.stopping:t.stop}</Button>:<Button type="submit" icon="sparkle" disabled={disabled||busy||!onSend||!String(text).trim()}>{t.send}</Button>}</Inline>
+ {streaming?<Button icon={StopIcon} disabled={disabled||stopping||!onStop} onClick={stop}>{stopping?t.stopping:t.stop}</Button>:<Button type="submit" icon={SparkleIcon} disabled={disabled||busy||!onSend||!String(text).trim()}>{t.send}</Button>}</Inline>
  {error?<Notice tone="danger">{error}</Notice>:null}</Stack>;
 });

@@ -42,6 +42,7 @@ import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { Icon } from '../Icon/Icon.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import ImageAN2Icon from 'plenix-platform/icons/plenix/image-a-2';
 
 const RATIOS = ['1-1', '4-3', '3-2', '16-9', '21-9', '3-4', '9-16'];
 
@@ -72,7 +73,7 @@ export const Image = React.forwardRef(function Image({ src, alt, ratio = 'auto',
         : img}
       {status === 'error' ? (
         <span className="plx-image__fallback" role={alt ? 'img' : undefined} aria-label={alt || undefined} aria-hidden={alt ? undefined : true}>
-          {fallback || <React.Fragment><span className="plx-image__fallback-icon"><Icon name="image-a-2" /></span><span className="plx-image__fallback-text">{s.error}</span></React.Fragment>}
+          {fallback || <React.Fragment><span className="plx-image__fallback-icon"><Icon name={ImageAN2Icon} /></span><span className="plx-image__fallback-text">{s.error}</span></React.Fragment>}
         </span>
       ) : null}
     </span>

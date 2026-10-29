@@ -43,6 +43,9 @@ import { Button } from '../Button/Button.jsx';
 import { Icon } from '../Icon/Icon.jsx';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import CheckIcon from 'plenix-platform/icons/plenix/check';
+import CloseIcon from 'plenix-platform/icons/plenix/close';
+import PencilIcon from 'plenix-platform/icons/plenix/pencil';
 
 export function InlineEdit({ label, value = '', onConfirm, onCancel, type = 'text', options = [], placeholder, confirmButtons = false, validate,
   data = false, disabled = false, readView, strings, className, ...rest }) {
@@ -90,7 +93,7 @@ export function InlineEdit({ label, value = '', onConfirm, onCancel, type = 'tex
           <VisuallyHidden>{label + ', '}</VisuallyHidden>
           <span className="plx-inline-edit__value">{empty ? hint : (readView ? readView(value) : shownValue)}</span>
           {disabled ? null : <VisuallyHidden>{', ' + t.edit}</VisuallyHidden>}
-          {disabled ? null : <span className="plx-inline-edit__hint" aria-hidden="true"><Icon name="pencil" /></span>}
+          {disabled ? null : <span className="plx-inline-edit__hint" aria-hidden="true"><Icon name={PencilIcon} /></span>}
         </button>
       </div>
     );
@@ -107,8 +110,8 @@ export function InlineEdit({ label, value = '', onConfirm, onCancel, type = 'tex
         <div className="plx-inline-edit__control">{control}</div>
         {confirmButtons ? (
           <div className="plx-inline-edit__actions">
-            <Button size="xs" iconOnly icon="check" label={t.save + ' ' + label.toLowerCase()} loading={saving} onMouseDown={(e) => e.preventDefault()} onClick={() => save(true)} />
-            <Button size="xs" iconOnly icon="close" label={t.cancel} disabled={saving} onMouseDown={(e) => e.preventDefault()} onClick={() => cancel(true)} />
+            <Button size="xs" iconOnly icon={CheckIcon} label={t.save + ' ' + label.toLowerCase()} loading={saving} onMouseDown={(e) => e.preventDefault()} onClick={() => save(true)} />
+            <Button size="xs" iconOnly icon={CloseIcon} label={t.cancel} disabled={saving} onMouseDown={(e) => e.preventDefault()} onClick={() => cancel(true)} />
           </div>
         ) : null}
       </div>

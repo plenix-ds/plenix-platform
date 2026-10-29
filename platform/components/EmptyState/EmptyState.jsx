@@ -36,19 +36,26 @@
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
-import { Icon } from '../Icon/Icon.jsx';
+import { Icon, asIcon as iconElement } from '../Icon/Icon.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import CircleCheckIcon from 'plenix-platform/icons/plenix/circle-check';
+import CloudOffIcon from 'plenix-platform/icons/plenix/cloud-off';
+import DocSearchIcon from 'plenix-platform/icons/plenix/doc-search';
+import LockIcon from 'plenix-platform/icons/plenix/lock';
+import SettingsMaintenanceIcon from 'plenix-platform/icons/plenix/settings-maintenance';
+import WarningIcon from 'plenix-platform/icons/plenix/warning';
+import WifiOffIcon from 'plenix-platform/icons/plenix/wifi-off';
 
 // the system states: their tone and icon, and their words (STRINGS, translatable through the strings prop)
 const KINDS = {
-  offline: { tone: 'warning', icon: 'wifi-off' },
-  degraded: { tone: 'warning', icon: 'cloud-off' },
-  'permission-denied': { tone: 'neutral', icon: 'lock' },
-  'not-found': { tone: 'neutral', icon: 'doc-search' },
-  maintenance: { tone: 'neutral', icon: 'settings-maintenance' },
-  completion: { tone: 'success', icon: 'circle-check' }
+  offline: { tone: 'warning', icon: WifiOffIcon },
+  degraded: { tone: 'warning', icon: CloudOffIcon },
+  'permission-denied': { tone: 'neutral', icon: LockIcon },
+  'not-found': { tone: 'neutral', icon: DocSearchIcon },
+  maintenance: { tone: 'neutral', icon: SettingsMaintenanceIcon },
+  completion: { tone: 'success', icon: CircleCheckIcon }
 };
-const TONE_ICONS = { error: 'warning', warning: 'warning', success: 'circle-check' };
+const TONE_ICONS = { error: WarningIcon, warning: WarningIcon, success: CircleCheckIcon };
 const ROLES = { error: 'alert', warning: 'status', success: 'status' };
 
 export function EmptyState({ size = 'inline', tone, kind, icon, title, action, strings, className, children, ...rest }) {
@@ -62,7 +69,7 @@ export function EmptyState({ size = 'inline', tone, kind, icon, title, action, s
   const text = children !== undefined && children !== null ? children : words ? words.text : null;
   return (
     <div className={cx('plx-empty-state', 'plx-empty-state--' + size, t !== 'neutral' && 'plx-empty-state--' + t, className)} role={ROLES[t]} {...rest}>
-      {mark ? <div className="plx-empty-state__icon" aria-hidden="true">{typeof mark === 'string' ? <Icon name={mark} /> : mark}</div> : null}
+      {mark ? <div className="plx-empty-state__icon" aria-hidden="true">{iconElement(mark)}</div> : null}
       {head ? <div className="plx-empty-state__title">{head}</div> : null}
       {text ? <div className="plx-empty-state__text">{text}</div> : null}
       {action ? <div className="plx-empty-state__action">{action}</div> : null}

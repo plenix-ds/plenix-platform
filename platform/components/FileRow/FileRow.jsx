@@ -64,6 +64,12 @@ import { ProgressBar } from '../ProgressBar/ProgressBar.jsx';
 import { RenameAction } from '../../patterns/RenameAction/RenameAction.jsx';
 import { DeleteFlow } from '../../patterns/DeleteFlow/DeleteFlow.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import AlertIcon from 'plenix-platform/icons/plenix/alert';
+import DownloadTrayIcon from 'plenix-platform/icons/plenix/download-tray';
+import MoreIcon from 'plenix-platform/icons/plenix/more';
+import RefreshIcon from 'plenix-platform/icons/plenix/refresh';
+import RenameIcon from 'plenix-platform/icons/plenix/rename';
+import TrashIcon from 'plenix-platform/icons/plenix/trash';
 
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 
@@ -92,7 +98,7 @@ export function FileRow({ file, as = 'div', selectable = false, selected = false
       <span className="plx-file-row__file"><File {...fileProps} href={href} onOpen={onOpen} /></span>
       {error ? (
         <span className="plx-file-row__error" role="alert">
-          <span className="plx-file-row__error-icon"><Icon name="alert" /></span>
+          <span className="plx-file-row__error-icon"><Icon name={AlertIcon} /></span>
           <span className="plx-file-row__error-text">{error}</span>
         </span>
       ) : moving ? (
@@ -109,15 +115,15 @@ export function FileRow({ file, as = 'div', selectable = false, selected = false
       )}
       {withActions || (moving && onCancel) || (error && onRetry) ? (
         <span className="plx-file-row__actions">
-          {error && onRetry ? <Button size="xs" icon="refresh" onClick={onRetry}>{t.retry}</Button> : null}
+          {error && onRetry ? <Button size="xs" icon={RefreshIcon} onClick={onRetry}>{t.retry}</Button> : null}
           {moving && onCancel ? <Button size="xs" variant="ghost" onClick={onCancel}>{t.cancel}</Button> : null}
-          {!moving && onDownload ? <Button size="xs" variant="ghost" iconOnly icon="download-tray" label={fill(t.download, { name })} onClick={onDownload} /> : null}
+          {!moving && onDownload ? <Button size="xs" variant="ghost" iconOnly icon={DownloadTrayIcon} label={fill(t.download, { name })} onClick={onDownload} /> : null}
           {menu ? (
-            <Menu label={fill(t.more, { name })} placement="bottom-end" trigger={<Button size="xs" variant="ghost" iconOnly icon="more" label={fill(t.more, { name })} />}>
+            <Menu label={fill(t.more, { name })} placement="bottom-end" trigger={<Button size="xs" variant="ghost" iconOnly icon={MoreIcon} label={fill(t.more, { name })} />}>
               {actions || null}
               {actions && (onRename || onDelete) ? <MenuDivider /> : null}
-              {onRename ? <MenuItem icon="rename" onSelect={() => setAsk('rename')}>{t.rename}</MenuItem> : null}
-              {onDelete ? <MenuItem icon="trash" danger onSelect={() => setAsk('delete')}>{t.delete}</MenuItem> : null}
+              {onRename ? <MenuItem icon={RenameIcon} onSelect={() => setAsk('rename')}>{t.rename}</MenuItem> : null}
+              {onDelete ? <MenuItem icon={TrashIcon} danger onSelect={() => setAsk('delete')}>{t.delete}</MenuItem> : null}
             </Menu>
           ) : null}
         </span>

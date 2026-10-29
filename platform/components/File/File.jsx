@@ -43,6 +43,20 @@ import { formatBytes, formatDate, formatNumber } from '../../utils/format.js';
 import { Icon } from '../Icon/Icon.jsx';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import CodeIcon from 'plenix-platform/icons/plenix/code';
+import DocTextIcon from 'plenix-platform/icons/plenix/doc-text';
+import DocumentIcon from 'plenix-platform/icons/plenix/document';
+import FileAiIcon from 'plenix-platform/icons/plenix/file-ai';
+import FileJpgIcon from 'plenix-platform/icons/plenix/file-jpg';
+import FilePdfIcon from 'plenix-platform/icons/plenix/file-pdf';
+import FilePngIcon from 'plenix-platform/icons/plenix/file-png';
+import FilePsdIcon from 'plenix-platform/icons/plenix/file-psd';
+import FileSvgIcon from 'plenix-platform/icons/plenix/file-svg';
+import FileZipIcon from 'plenix-platform/icons/plenix/file-zip';
+import FolderIcon from 'plenix-platform/icons/plenix/folder';
+import FolderOpenIcon from 'plenix-platform/icons/plenix/folder-open';
+import ImageA2Icon from 'plenix-platform/icons/plenix/image-a-2';
+import TableIcon from 'plenix-platform/icons/plenix/table';
 
 const BY_EXT = {
   pdf: 'file-pdf', png: 'file-png', jpg: 'file-jpg', jpeg: 'file-jpg', svg: 'file-svg', psd: 'file-psd', ai: 'file-ai',
@@ -68,6 +82,10 @@ export function fileIcon(name, type) {
   if (/^text\//.test(type || '')) return 'doc-text';
   return 'document';
 }
+// the same icon as the imported module the File draws (#280): fileIcon stays a name (it is public: a caller may print or
+// compare it); this one is the component's own (plx-icons: is not needed, every name it can return is imported here)
+const TYPE_ICONS = Object.fromEntries([CodeIcon, DocTextIcon, DocumentIcon, FileAiIcon, FileJpgIcon, FilePdfIcon, FilePngIcon, FilePsdIcon, FileSvgIcon, FileZipIcon, ImageA2Icon, TableIcon].map((m) => [m.name, m]));
+export const fileIconModule = (name, type) => TYPE_ICONS[fileIcon(name, type)];
 
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 
@@ -84,7 +102,7 @@ export function File({ name = '', kind = 'file', size, modified, count, meta, ty
   const folder = kind === 'folder';
   const ext = folder ? '' : fileExtension(name);
   const base = ext ? name.slice(0, name.length - ext.length - 1) : name;
-  const glyph = icon || (folder ? (open ? 'folder-open' : 'folder') : fileIcon(name, type));
+  const glyph = icon || (folder ? (open ? FolderOpenIcon : FolderIcon) : fileIconModule(name, type));
   const facts = [];
   if (!folder && size !== undefined && size !== null && size !== '') facts.push(typeof size === 'number' ? formatBytes(size) : String(size));
   if (folder && typeof count === 'number') facts.push(fill(count === 1 ? t.item : t.items, { n: formatNumber(count) }));

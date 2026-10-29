@@ -29,8 +29,13 @@ import { cx } from '../../utils/cx.js';
 import { Icon } from '../Icon/Icon.jsx';
 import { Button } from '../Button/Button.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import AlertIcon from 'plenix-platform/icons/plenix/alert';
+import CircleCheckIcon from 'plenix-platform/icons/plenix/circle-check';
+import CloseIcon from 'plenix-platform/icons/plenix/close';
+import InfoCircleIcon from 'plenix-platform/icons/plenix/info-circle';
+import WarningIcon from 'plenix-platform/icons/plenix/warning';
 
-const ICONS = { info: 'info-circle', success: 'circle-check', warning: 'warning', danger: 'alert' };
+const ICONS = { info: InfoCircleIcon, success: CircleCheckIcon, warning: WarningIcon, danger: AlertIcon };
 export function Notice({ tone = 'info', icon, title, actions, onDismiss, strings, className, children, ...rest }) {
   devWarn('Notice', { tone }, { tone: ['info','success','warning','danger'] });
   const t = useStrings('notice', strings);
@@ -45,7 +50,7 @@ export function Notice({ tone = 'info', icon, title, actions, onDismiss, strings
           {actions ? <div className="plx-notice__actions">{actions}</div> : null}
         </div>
       ) : <div className="plx-notice__text">{children}</div>}
-      {onDismiss ? <Button className="plx-notice__dismiss" variant="ghost" size="xs" iconOnly icon="close" label={t.dismiss} onClick={onDismiss} /> : null}
+      {onDismiss ? <Button className="plx-notice__dismiss" variant="ghost" size="xs" iconOnly icon={CloseIcon} label={t.dismiss} onClick={onDismiss} /> : null}
     </div>
   );
 }

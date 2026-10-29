@@ -38,6 +38,8 @@ import { useGesture } from '../../hooks/useGesture.js';
 import { Icon } from '../Icon/Icon.jsx';
 import { arrowStep } from '../../utils/direction.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
+import CloseIcon from 'plenix-platform/icons/plenix/close';
 
 
 export function MediaViewer({ open, onClose, items, index, defaultIndex = 0, onIndexChange, label, actions, strings, className }) {
@@ -62,8 +64,8 @@ export function MediaViewer({ open, onClose, items, index, defaultIndex = 0, onI
     <div ref={ref} role="dialog" aria-modal="true" aria-label={label || t.label} aria-describedby={id + 'c'} tabIndex={-1}
       className={cx('plx-media-viewer', className)} onKeyDown={onKeyDown}>
       <div id={id + 'c'} className="plx-media-viewer__counter">{t.counter.split('{index}').join(String(at + 1)).split('{total}').join(String(items.length))}</div>
-      <button type="button" className="plx-media-viewer__control plx-media-viewer__close" aria-label={t.close} onClick={onClose}><Icon name="close" size="md" /></button>
-      {many ? <button type="button" className="plx-media-viewer__control plx-media-viewer__nav plx-media-viewer__nav--previous" aria-label={t.previous} onClick={() => go(at - 1)}><Icon name="chevron-down" size="md" /></button> : null}
+      <button type="button" className="plx-media-viewer__control plx-media-viewer__close" aria-label={t.close} onClick={onClose}><Icon name={CloseIcon} size="md" /></button>
+      {many ? <button type="button" className="plx-media-viewer__control plx-media-viewer__nav plx-media-viewer__nav--previous" aria-label={t.previous} onClick={() => go(at - 1)}><Icon name={ChevronDownIcon} size="md" /></button> : null}
       <figure className="plx-media-viewer__figure">
         <div ref={stage} className={cx('plx-media-viewer__stage', 'plx-gesture--pan-x', item.kind === 'video' && 'plx-media-viewer__stage--video')}
           onPointerDownCapture={event => { if (event.target.closest('video,audio,button,input,select,a')) event.stopPropagation(); }}>
@@ -78,7 +80,7 @@ export function MediaViewer({ open, onClose, items, index, defaultIndex = 0, onI
         ) : null}
         {actions ? <div className="plx-media-viewer__actions">{actions}</div> : null}
       </figure>
-      {many ? <button type="button" className="plx-media-viewer__control plx-media-viewer__nav plx-media-viewer__nav--next" aria-label={t.next} onClick={() => go(at + 1)}><Icon name="chevron-down" size="md" /></button> : null}
+      {many ? <button type="button" className="plx-media-viewer__control plx-media-viewer__nav plx-media-viewer__nav--next" aria-label={t.next} onClick={() => go(at + 1)}><Icon name={ChevronDownIcon} size="md" /></button> : null}
     </div>,
     document.body,
   );

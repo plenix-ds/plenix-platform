@@ -15,6 +15,10 @@ const cases = JSON.parse(process.argv[2] || '{}');   // { label: "P.X props as J
       'BackToTop (converted)': drawn(h(P.BackToTop, { visible: true })),
       'Details (converted)': drawn(h(P.Details, { summary: 'S' }, 'x')),
       'Banner (its dismiss icon converted; its status icon comes from StatusIcon in Icon.jsx, a later group)': drawn(h(P.Banner, { tone: 'info', onDismiss: () => {} }, 'x')),
+      'EmptyState (group 2)': drawn(h(P.EmptyState, { kind: 'offline', title: 'Offline' })),
+      'Notice (group 2)': drawn(h(P.Notice, { tone: 'warning' }, 'x')),
+      'SearchField (group 2)': drawn(h(P.SearchField, { label: 'Search', value: 'x', onChange: () => {} })),
+      'File (group 2)': drawn(h(P.File, { name: 'report.pdf' })),
       'Button icon="add" (a name, not converted)': drawn(h(P.Button, { icon: 'add' }, 'Add')),
     };
   }), null, 1)); await b.close();

@@ -25,6 +25,9 @@ import { cx } from '../../utils/cx.js';
 import { AILabel } from '../AILabel/AILabel.jsx';
 import { Badge } from '../Badge/Badge.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import CheckIcon from 'plenix-platform/icons/plenix/check';
+import RefreshIcon from 'plenix-platform/icons/plenix/refresh';
+import SparkleIcon from 'plenix-platform/icons/plenix/sparkle';
 export function GeneratedContent({versions=[],versionId,defaultVersionId,onVersionChange,children,loading=false,onRegenerate,onFeedback,strings,className}){
  const t=useStrings('generatedContent', strings),[own,setOwn]=React.useState(defaultVersionId),[busy,setBusy]=React.useState(''),[error,setError]=React.useState(''),[feedback,setFeedback]=React.useState(null),lock=React.useRef(false),epoch=React.useRef(0),controller=React.useRef(null);
  const id=versionId!==undefined?versionId:own,index=Math.max(0,versions.findIndex(v=>v.id===(id??versions[versions.length-1]?.id))),version=versions[index];
@@ -34,9 +37,9 @@ export function GeneratedContent({versions=[],versionId,defaultVersionId,onVersi
  };
  const choose=i=>{if(busy||loading)return;const v=versions[i];if(!v)return;if(versionId===undefined)setOwn(v.id);onVersionChange?.(v.id);};
  return <Stack className={cx('plx-ai','plx-generated-content',className)} role="region" aria-label={t.label} aria-busy={!!busy||loading||undefined}>
- <Inline wrap><AILabel strings={strings?.aiLabel}/>{loading||busy?<Badge icon="sparkle">{t.pending}</Badge>:null}</Inline><Stack>{version?version.content:children}</Stack>
- {error?<Notice tone="danger">{error}</Notice>:null}{feedback?<Inline><Badge icon="check" role="status">{t.feedbackSaved}</Badge></Inline>:null}
+ <Inline wrap><AILabel strings={strings?.aiLabel}/>{loading||busy?<Badge icon={SparkleIcon}>{t.pending}</Badge>:null}</Inline><Stack>{version?version.content:children}</Stack>
+ {error?<Notice tone="danger">{error}</Notice>:null}{feedback?<Inline><Badge icon={CheckIcon} role="status">{t.feedbackSaved}</Badge></Inline>:null}
  {versions.length>1?<Inline><Button disabled={!!busy||loading||index<=0} onClick={()=>choose(index-1)}>{t.previous}</Button><Text variant="data" role="status">{t.version+' '+(index+1)+' / '+versions.length}</Text><Button disabled={!!busy||loading||index>=versions.length-1} onClick={()=>choose(index+1)}>{t.next}</Button></Inline>:null}
- <Inline wrap>{onFeedback?<><Button aria-pressed={feedback==='helpful'} disabled={!!busy||loading} onClick={()=>run('feedback','helpful')}>{t.helpful}</Button><Button aria-pressed={feedback==='unhelpful'} disabled={!!busy||loading} onClick={()=>run('feedback','unhelpful')}>{t.unhelpful}</Button></>:null}{onRegenerate?<Button icon="refresh" disabled={!!busy||loading} onClick={()=>run('regenerate')}>{t.regenerate}</Button>:null}</Inline>
+ <Inline wrap>{onFeedback?<><Button aria-pressed={feedback==='helpful'} disabled={!!busy||loading} onClick={()=>run('feedback','helpful')}>{t.helpful}</Button><Button aria-pressed={feedback==='unhelpful'} disabled={!!busy||loading} onClick={()=>run('feedback','unhelpful')}>{t.unhelpful}</Button></>:null}{onRegenerate?<Button icon={RefreshIcon} disabled={!!busy||loading} onClick={()=>run('regenerate')}>{t.regenerate}</Button>:null}</Inline>
  </Stack>;
 }

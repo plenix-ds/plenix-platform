@@ -97,6 +97,12 @@ import { Sparkline } from '../../charts/Sparkline.jsx';
 import { Gauge } from '../../charts/Gauge.jsx';
 import { PieChart } from '../../charts/PieChart.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import ArrowUpIcon from 'plenix-platform/icons/plenix/arrow-up';
+import CheckIcon from 'plenix-platform/icons/plenix/check';
+import ClockIcon from 'plenix-platform/icons/plenix/clock';
+import CloseIcon from 'plenix-platform/icons/plenix/close';
+import MoreIcon from 'plenix-platform/icons/plenix/more';
+import RefreshIcon from 'plenix-platform/icons/plenix/refresh';
 
 const TYPES = ['value', 'trend', 'progress', 'gauge', 'breakdown', 'comparison', 'list', 'summary', 'person', 'week', 'month', 'table'];
 const LAYOUTS = ['stacked', 'beside', 'inline', 'tile', 'icon-start'];
@@ -119,7 +125,7 @@ function Change({ change, goodWhen, t }) {
   return (
     <div className="plx-metric-card__change">
       <span className={cx('plx-metric-card__delta', 'plx-metric-card__delta--' + tone)}>
-        {change.direction ? <Icon name="arrow-up" className={cx('plx-metric-card__arrow', down && 'plx-metric-card__arrow--down')} /> : null}
+        {change.direction ? <Icon name={ArrowUpIcon} className={cx('plx-metric-card__arrow', down && 'plx-metric-card__arrow--down')} /> : null}
         {change.direction ? <VisuallyHidden>{(down ? t.down : t.up) + (tone === 'neutral' ? ' ' : ' (' + t[tone] + ') ')}</VisuallyHidden> : null}
         {change.amount}
       </span>
@@ -253,7 +259,7 @@ function Week({ days = [], variant, max, t }) {
         <span key={i} className="plx-metric-card__day-cell">
           {variant === 'marks'
             ? (d === null || d === undefined ? <span className="plx-metric-card__mark plx-metric-card__mark--none">{'–'}</span>
-              : <span className={cx('plx-metric-card__mark', d ? 'plx-metric-card__delta--good' : 'plx-metric-card__delta--bad')}><Icon name={d ? 'check' : 'close'} /></span>)
+              : <span className={cx('plx-metric-card__mark', d ? 'plx-metric-card__delta--good' : 'plx-metric-card__delta--bad')}><Icon name={d ? CheckIcon : CloseIcon} /></span>)
             : <svg className="plx-metric-card__day-bar" viewBox="0 0 12 40" preserveAspectRatio="none" aria-hidden="true">
                 <rect className="plx-metric-card__day-track" x="0" y="0" width="12" height="40" />
                 {typeof d === 'number' && d > 0 ? <rect className="plx-metric-card__day-fill" x="0" y={40 - Math.min(1, d / top) * 40} width="12" height={Math.min(1, d / top) * 40} /> : null}
@@ -307,7 +313,7 @@ export function MetricCard({ type = 'value', layout = 'stacked', appearance = 'p
   const name = type === 'person' && person ? (title || person.name) : title;
   const line = type === 'person' && person && context === undefined ? person.role : context;
   const empty = state === 'empty';
-  const shownStatus = state === 'stale' && !status ? { tone: 'waiting', icon: 'clock', label: t.stale } : status;
+  const shownStatus = state === 'stale' && !status ? { tone: 'waiting', icon: ClockIcon, label: t.stale } : status;
   const hue = HUES.indexOf(color) >= 0 ? color : 'blue';
 
   const titleText = href ? <a className="plx-metric-card__link" href={href}>{name}</a> : name;
@@ -317,7 +323,7 @@ export function MetricCard({ type = 'value', layout = 'stacked', appearance = 'p
     <div className="plx-metric-card__actions">
       {info ? <ContextualHelp title={typeof name === 'string' ? name : ''}>{info}</ContextualHelp> : null}
       {filter || null}
-      {menu ? <Menu trigger={<Button iconOnly icon="more" label={moreLabel} variant="ghost" size="sm" />} placement="bottom-end">{menu}</Menu> : null}
+      {menu ? <Menu trigger={<Button iconOnly icon={MoreIcon} label={moreLabel} variant="ghost" size="sm" />} placement="bottom-end">{menu}</Menu> : null}
     </div>
   ) : null;
 
@@ -383,7 +389,7 @@ export function MetricCard({ type = 'value', layout = 'stacked', appearance = 'p
   else if (state === 'error') body = (
     <>
       <Figure empty />
-      <Notice tone="danger" actions={onRetry ? <Button size="xs" icon="refresh" onClick={onRetry}>{t.retry}</Button> : undefined}>{errorText || t.error}</Notice>
+      <Notice tone="danger" actions={onRetry ? <Button size="xs" icon={RefreshIcon} onClick={onRetry}>{t.retry}</Button> : undefined}>{errorText || t.error}</Notice>
     </>
   );
   else {

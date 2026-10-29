@@ -38,6 +38,9 @@ import { formatBytes } from '../../utils/format.js';
 import { Icon } from '../Icon/Icon.jsx';
 import { Button } from '../Button/Button.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import AttachmentIcon from 'plenix-platform/icons/plenix/attachment';
+import CloseIcon from 'plenix-platform/icons/plenix/close';
+import DocTextIcon from 'plenix-platform/icons/plenix/doc-text';
 
 export const FileInput = React.forwardRef(function FileInput({ accept, multiple = false, showList = false, hideSummary = false, onChange, label, disabled = false, required, invalid,
   id, 'aria-describedby': describedBy, strings, className, ...rest }, ref) {
@@ -67,7 +70,7 @@ export const FileInput = React.forwardRef(function FileInput({ accept, multiple 
             aria-describedby={[describedBy, sumId].filter(Boolean).join(' ')} onChange={chosen}
             onFocus={(e) => setFocus(e.target.matches(':focus-visible'))} onBlur={() => setFocus(false)} {...rest} />
           <span className={cx('plx-button', 'plx-button--secondary', 'plx-file-input__button', focus && 'is-focus-visible')} aria-hidden="true" aria-disabled={disabled || undefined}>
-            <span className="plx-button__icon"><Icon name="attachment" /></span><span className="plx-button__label">{choose}</span>
+            <span className="plx-button__icon"><Icon name={AttachmentIcon} /></span><span className="plx-button__label">{choose}</span>
           </span>
         </label>
         <span className={cx('plx-file-input__summary', files.length === 1 && 'plx-file-input__summary--file')} id={sumId}>{summary}</span>
@@ -76,10 +79,10 @@ export const FileInput = React.forwardRef(function FileInput({ accept, multiple 
         <ul className="plx-file-input__list">
           {files.map((f, i) => (
             <li key={f.name + i} className="plx-file-input__item">
-              <span className="plx-file-input__icon"><Icon name="doc-text" /></span>
+              <span className="plx-file-input__icon"><Icon name={DocTextIcon} /></span>
               <span className="plx-file-input__name">{f.name}</span>
               <span className="plx-file-input__size">{formatBytes(f.size)}</span>
-              <Button className="plx-file-input__remove" variant="ghost" size="xs" iconOnly icon="close" label={t.remove.replace('{name}', f.name)} onClick={remove(i)} />
+              <Button className="plx-file-input__remove" variant="ghost" size="xs" iconOnly icon={CloseIcon} label={t.remove.replace('{name}', f.name)} onClick={remove(i)} />
             </li>
           ))}
         </ul>
