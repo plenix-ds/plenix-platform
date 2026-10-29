@@ -91,6 +91,15 @@ check('IconSafety: a file over the size limit or a path over the length limit is
 });
 // cost (QA on #519): every value is measured before a pattern reads it, and the patterns read a number one way only, so a
 // long hostile value is refused at once; each case must finish well inside the bound, or the check fails
+check('IconSafety: a refusal reason quotes a name from the file at most 40 characters long (an element, an attribute, a drawing field) #519', () => {
+  const long = 'x'.repeat(5000);
+  const short = (r) => { assert.ok(!r.ok, 'accepted'); assert.ok(r.reason.length <= 120, 'the reason is ' + r.reason.length + ' characters long'); };
+  short(S.checkIconSvg(swap('<path', '<' + long + '/><path')));
+  short(S.checkIconSvg(swap('<svg ', '<svg ' + long + '="1" ')));
+  short(S.checkIconSvg(swap('<path ', '<path ' + long + '="1" ')));
+  short(S.checkDrawing({ viewBox: '0 0 1 1', d: 'M0 0', [long]: 1 }));
+});
+
 const QUICK_MS = 250;
 const quickly = (fn) => { const t = process.hrtime.bigint(); const r = fn(); const ms = Number(process.hrtime.bigint() - t) / 1e6; assert.ok(ms < QUICK_MS, 'took ' + ms.toFixed(1) + ' ms (bound ' + QUICK_MS + ' ms)'); return r; };
 check('IconSafety: 30,000 spaces in a transform are refused at once #285', () => {

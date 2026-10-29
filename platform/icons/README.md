@@ -105,7 +105,7 @@ One layout and one naming for every icon source, written by `layout.js` (generat
 - **Values by grammar:**
   - `viewBox`: four numbers, with a positive width and height
   - `d`: path data only
-  - `transform`: matrix, translate, scale, rotate or skew of numbers only
+  - `transform`: matrix, translate, scale, rotate or skew of numbers only, with a space or a comma between numbers (`translate(10 -5)` passes; `translate(10-5)` is refused)
   - the rules: `nonzero` or `evenodd`
 - **Everything else refuses the whole file:** other elements (the basic shapes too: an icon is drawn as one path), other attributes, doctypes, entities, CDATA, comments, processing instructions, and text.
 - **Bounded:** a file over 32 KB, or a path over 16 KB, is refused before it is read. The largest shipped file is 4.3 KB.

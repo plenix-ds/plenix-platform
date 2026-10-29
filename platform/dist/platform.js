@@ -420,6 +420,8 @@ const no = reason => ({
   ok: false,
   reason
 });
+// a name the file chose is echoed in a reason at most 40 characters long
+const named = name => String(name).slice(0, 40);
 
 // one drawing's values, the same rules for a file and a module
 function checkValues(viewBox, d, transform, fillRule, clipRule) {
@@ -448,7 +450,7 @@ function checkDrawing(drawing) {
     transform: 1,
     fillRule: 1,
     clipRule: 1
-  }[k]) return no('the drawing has a field ' + k + ' that is not allowed');
+  }[k]) return no('the drawing has a field ' + named(k) + ' that is not allowed');
   return checkValues(drawing.viewBox, drawing.d, drawing.transform, drawing.fillRule, drawing.clipRule);
 }
 
@@ -482,8 +484,8 @@ function checkIconSvg(text) {
   if (/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/.test(s)) return no('the file has control characters');
   // every element named anywhere first, so the reason names it (a script, a style, a foreignObject)
   for (const m of s.matchAll(/<\/?([a-zA-Z][a-zA-Z0-9:_-]*)/g)) {
-    if (SHAPES[m[1]]) return no('a basic shape (' + m[1] + ') is not accepted: an icon is drawn as one path');
-    if (!ALLOWED[m[1]]) return no('the element ' + m[1] + ' is not allowed');
+    if (SHAPES[m[1]]) return no('a basic shape (' + named(m[1]) + ') is not accepted: an icon is drawn as one path');
+    if (!ALLOWED[m[1]]) return no('the element ' + named(m[1]) + ' is not allowed');
   }
   // the file as tags with only whitespace between them
   // greedy inside a tag (to its >), so a long run of spaces is read once, never re-read
@@ -506,8 +508,8 @@ function checkIconSvg(text) {
     at = re.lastIndex;
   }
   for (const t of tags) {
-    if (SHAPES[t.name]) return no('a basic shape (' + t.name + ') is not accepted: an icon is drawn as one path');
-    if (!ALLOWED[t.name]) return no('the element ' + t.name + ' is not allowed');
+    if (SHAPES[t.name]) return no('a basic shape (' + named(t.name) + ') is not accepted: an icon is drawn as one path');
+    if (!ALLOWED[t.name]) return no('the element ' + named(t.name) + ' is not allowed');
     if (t.close && (t.self || t.attrs.trim())) return no('a closing tag has attributes');
   }
   // the shape: <svg …> <path …/> </svg>, or <path …></path>
@@ -521,9 +523,9 @@ function checkIconSvg(text) {
   const sa = attributes(svg.attrs),
     pa = attributes(path.attrs);
   if (!sa || !pa) return no('an attribute is not name="value"');
-  if (sa.duplicate || pa.duplicate) return no('the attribute ' + (sa.duplicate || pa.duplicate) + ' is written twice');
-  for (const k of Object.keys(sa)) if (!ALLOWED.svg[k]) return no('the attribute ' + k + ' is not allowed on svg');
-  for (const k of Object.keys(pa)) if (!ALLOWED.path[k]) return no('the attribute ' + k + ' is not allowed on path');
+  if (sa.duplicate || pa.duplicate) return no('the attribute ' + named(sa.duplicate || pa.duplicate) + ' is written twice');
+  for (const k of Object.keys(sa)) if (!ALLOWED.svg[k]) return no('the attribute ' + named(k) + ' is not allowed on svg');
+  for (const k of Object.keys(pa)) if (!ALLOWED.path[k]) return no('the attribute ' + named(k) + ' is not allowed on path');
   if (sa.xmlns != null && sa.xmlns !== SVG_NS) return no('xmlns is not the SVG namespace');
   for (const k of ['width', 'height']) if (tooLong(sa[k], ICON_LIMITS.size)) return no(k + ' is longer than ' + ICON_LIMITS.size + ' characters');
   for (const k of ['width', 'height']) if (sa[k] != null && !(IS_NUM.test(sa[k]) && Number.isFinite(parseFloat(sa[k])))) return no(k + ' is not a number');
