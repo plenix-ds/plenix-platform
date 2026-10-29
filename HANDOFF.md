@@ -99,7 +99,7 @@ One design system and the suite of applications built on it, owned by one person
 - Local server for the spec and apps: `http://localhost:8767/Plenix/…` (the `plenix-static` preview), or `tests/lib.js` `serve()` in scripts.
 - Shell quoting: `node -e` and heredocs eat backslashes and quotes; write scripts to files (the Write tool) and run them.
 
-## Releasing (only when the owner says so)
+## Releasing (after QA passes; paused while the publishing hold stands)
 
 1. Move the "Unreleased" entries of `CHANGELOG.md` into a file (the release script inserts that file as the new
    version's entry; leaving them under Unreleased duplicates them).
