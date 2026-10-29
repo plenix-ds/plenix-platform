@@ -86,8 +86,11 @@
        by the hour) or keeps its plain value with pill: false. Tags, badges and deleted values keep their own look
      mode: "fill" (default: fills the room left on screen, virtual rows) | "pages" (pageSize, pageSizes, a footer with
        Pagination) | "load-more"; height: a size token or "100%" in place of the room "fill" measures
-     fetchRows({ page, size, sort, filters, search }): rows from a server for "pages" and "load-more", returning
-       { rows, total }; search: the page's search text
+     fetchRows({ page, size, sort, filters, search }): rows from a server, returning { rows, total }; search: the page's
+       search text. "pages" asks for one page at a time; "load-more" appends the next on Load more; "fill" (issue 522)
+       appends the next page by itself when the scroll comes within 8 rows of the end (and while the rows do not yet
+       fill the room), with a "Loading records" row at the end while it comes, a row with Retry when it fails, and no
+       more asking at total. A sort, filter or search change starts again from page 1. size is pageSize (default 50)
      storageKey: keeps the person's standalone view (sort, widths, order, hidden columns, row height, wrap, groups).
      onViewChange(patch): delegates view changes to an external controller; its presence disables the grid's own store.
        useCollectionView supplies this callback and columnWidths, so its collection state owns the view.
