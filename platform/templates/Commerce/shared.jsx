@@ -48,6 +48,7 @@ import { Notice } from '../../components/Notice/Notice.jsx';
 import { ProductPrice } from '../../patterns/ProductCard/ProductCard.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import ImageBIcon from 'plenix-platform/icons/plenix/image-b';
+import { dataPhrase } from '../../utils/dataText.jsx';
 
 export const COMMERCE_PAGES = {
   'product-discovery': 'workspace', 'product-listing': 'workspace', 'product-detail': 'detail', cart: 'workspace', checkout: 'form',
@@ -93,7 +94,7 @@ export function CommerceLine({ item, currency = 'USD', onQuantityChange, remove,
       <span className="plx-commerce-line__quantity">
         {onQuantityChange ? <NumberInput stepper="quantity" value={item.quantity} min={1} max={item.max || 99} onChange={(n) => { if (n) onQuantityChange(n); }}
           aria-label={fill(t.quantity, { title: name })} />
-          : <Text variant="data">{fill(t.qty, { n: formatNumber(item.quantity) })}</Text>}
+          : <Text variant="secondary">{dataPhrase(t.qty, { n: item.quantity })}</Text>}
       </span>
       <span className="plx-commerce-line__total">{money(item.price * item.quantity, currency)}</span>
       {remove ? <span className="plx-commerce-line__remove">{remove}</span> : null}
@@ -118,7 +119,7 @@ export function OrderSummary({ items = [], currency = 'USD', totals, estimated =
         <ul className="plx-commerce-summary__items" aria-label={s.count === 1 ? t.item : fill(t.items, { n: formatNumber(s.count) })}>
           {items.map((x) => (
             <li key={x.id} className="plx-commerce-summary__item">
-              <span className="plx-commerce-summary__name">{x.title} <Text variant="data">{fill(t.times, { n: formatNumber(x.quantity) })}</Text></span>
+              <span className="plx-commerce-summary__name">{x.title} {dataPhrase(t.times, { n: x.quantity })}</span>
               <span className="plx-commerce-summary__value">{money(x.price * x.quantity, currency)}</span>
             </li>
           ))}

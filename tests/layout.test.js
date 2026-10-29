@@ -238,6 +238,27 @@ const html = '<!doctype html><html lang="en" data-plx-theme="default" data-plx-m
     extra.remove(); return out;
   });
   check('VisuallyHidden: screen-reader texts at the page end take no room, so the page does not scroll #288', quiet.scroll <= 0 && quiet.box[0] <= 1 && quiet.box[1] <= 1, JSON.stringify(quiet));
+  // #288, the bug as RedSave met it: a page with a sortable list (dnd.js appends its keyboard instructions to the body) and
+  // a live region that has spoken, left to right and right to left: the document is no taller and no wider than the window
+  const quietBoth = await page.evaluate(async () => {
+    const P = window.Plenix, h = React.createElement, root = document.getElementById('root'), out = {};
+    for (const dir of ['ltr', 'rtl']) {
+      document.documentElement.setAttribute('dir', dir);
+      root.innerHTML = '';
+      ReactDOM.flushSync(() => ReactDOM.createRoot(root).render(h(P.AppShell, { page: 'workspace', header: h('div', null, 'Header') },
+        h(P.SortableList, { label: 'Steps', items: [{ id: 'a', name: 'First' }, { id: 'b', name: 'Second' }], onReorder: () => {} }),
+        h(P.LiveRegion, null, 'Selection cleared.'))));
+      P.announce('Selection cleared.');
+      await new Promise((r) => setTimeout(r, 600));
+      const se = document.scrollingElement, hidden = [...document.body.querySelectorAll('.plx-visually-hidden')];
+      out[dir] = { instructions: !!document.querySelector('[id^="plx-dnd-instructions"]'), hidden: hidden.length, taller: se.scrollHeight - se.clientHeight, wider: se.scrollWidth - se.clientWidth,
+        biggest: hidden.reduce((m, e) => { const b = e.getBoundingClientRect(); return Math.max(m, b.width, b.height); }, 0) };
+    }
+    document.documentElement.setAttribute('dir', 'ltr'); root.innerHTML = '';
+    return out;
+  });
+  check('VisuallyHidden: a page with drag-and-drop instructions and a live region is no taller or wider than the window, left to right and right to left #288',
+    ['ltr', 'rtl'].every((d) => quietBoth[d].instructions && quietBoth[d].hidden >= 2 && quietBoth[d].taller <= 0 && quietBoth[d].wider <= 0 && quietBoth[d].biggest <= 1), JSON.stringify(quietBoth));
   check('standard: a SettingsLayout page is contained without saying so', claimed.mode === 'contained', claimed.mode);
   check('standard: its settings column is at most 960px and centered', claimed.inner <= 960 && Math.abs(claimed.center - claimed.mainCenter) <= 1, JSON.stringify(claimed));
   check('settings: every section is a card (owner, 2026-10-13: the cards view)', claimed.card, JSON.stringify(claimed));

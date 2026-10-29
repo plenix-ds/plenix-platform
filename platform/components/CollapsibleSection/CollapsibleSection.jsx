@@ -41,6 +41,7 @@ import { useTruncated } from '../../utils/overflow.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 import ChevronUpIcon from 'plenix-platform/icons/plenix/chevron-up';
+import { dataPhrase } from '../../utils/dataText.jsx';
 
 const asIcon = (i) => iconElement(i);   // a name or an imported module (#280)
 
@@ -75,7 +76,7 @@ export function ShowMore({ expanded = false, count, onToggle, size = '2xs', stri
   const t = useStrings('collapsibleSection', strings);
   return (
     <Button size={size} iconEnd={expanded ? ChevronUpIcon : ChevronDownIcon} aria-expanded={expanded} onClick={() => { if (onToggle) onToggle(!expanded); }} {...rest}>
-      {expanded ? t.less : (count !== undefined && count !== null && count !== '' ? t.moreCount.replace('{n}', count) : t.more)}
+      {expanded ? t.less : (count !== undefined && count !== null && count !== '' ? dataPhrase(t.moreCount, { n: count }) : t.more)}
     </Button>
   );
 }

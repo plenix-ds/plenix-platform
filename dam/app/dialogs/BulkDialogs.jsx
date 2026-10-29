@@ -17,7 +17,7 @@
 import React from 'react';
 import {
   Dialog, ConfirmDialog, Field, Input, Textarea, Select, Checkbox, RadioGroup, SegmentedControl, Button, Icon, Tag, TagList,
-  Chip, Rating, Tree, Avatar, Badge, EmptyState, useToast, useSession, Stack, Text, Notice, Fieldset
+  Chip, Rating, Tree, Avatar, Badge, EmptyState, useToast, useSession, Stack, Text, Notice, Fieldset, dataPhrase
 } from 'plenix-platform';
 
 // DATA: collections, categories, tags, people, cart and size figures come from the back end; sample values until then.
@@ -278,7 +278,7 @@ function CartInner({ open, onClose, count, kind, onApply }) {
         <Field label="File type">
           <Select name="fileType" value={fileType} onChange={(e) => setFileType(e.target.value)}>{CART_FILE_TYPES.map((v) => <option key={v}>{v}</option>)}</Select>
         </Field>
-        <Caption>{'Items in your cart: ' + CART_ITEMS + ' • Adding ' + count + ' more'}</Caption>
+        <Caption>{dataPhrase('Items in your cart: {cart} • Adding {count} more', { cart: CART_ITEMS, count })}</Caption>
       </Stack>
     </Dialog>
   );

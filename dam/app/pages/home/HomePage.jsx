@@ -12,7 +12,7 @@
    screen; ?upload=1 opens the upload dialog. Dialogs are opened by their legacy ids from app/dialogs (one host renders
    the open one). */
 import React from 'react';
-import { CommandBar, CommandBarSearch, FilterPanel, SortPanel, GroupPanel, ColumnsMenu, ViewMenu, useCollectionView, compareLevels, ContentGrid, MediaCard, DataGrid, Pagination, Button, Menu, MenuItem, Badge, Icon, MediaViewer, Tree, useToast, useSelection, SearchWorkspace, SidePanel, below, Stack, Inline, Text, Thumbnail, SecondaryPane, PageContent, DropZone, useScreenLocation, screenHref } from 'plenix-platform';
+import { dataPhrase, CommandBar, CommandBarSearch, FilterPanel, SortPanel, GroupPanel, ColumnsMenu, ViewMenu, useCollectionView, compareLevels, ContentGrid, MediaCard, DataGrid, Pagination, Button, Menu, MenuItem, Badge, Icon, MediaViewer, Tree, useToast, useSelection, SearchWorkspace, SidePanel, below, Stack, Inline, Text, Thumbnail, SecondaryPane, PageContent, DropZone, useScreenLocation, screenHref } from 'plenix-platform';
 import { AssetPage } from '../../shell/AssetShell.jsx';
 import { Sidebar } from './Sidebar.jsx';
 import { CategoryInspector, AssetInspector, InspectorFooter } from './Inspector.jsx';
@@ -232,7 +232,7 @@ export function HomePage() {
     content = gallery ? (
       <ContentGrid size={gridSize} label="Categories">
         {shown(D.CATEGORY_CARDS).map((c) => (
-          <MediaCard key={c.id} src={c.thumb} title={c.name} meta={c.count + ' assets'} selected={selCats.indexOf(c.id) >= 0} selecting={selCats.length > 0}
+          <MediaCard key={c.id} src={c.thumb} title={c.name} meta={dataPhrase('{n} assets', { n: c.count })} selected={selCats.indexOf(c.id) >= 0} selecting={selCats.length > 0}
             onSelectChange={() => toggle(selCats, setSelCats, c.id)} selectLabel={'Select ' + c.name} onOpen={() => openCategory(c.name)}
             actions={<Menu label={'Options for ' + c.name} placement="bottom-end" trigger={<Button size="xs" variant="ghost" iconOnly icon="menu-lines" label={'Options for ' + c.name} />}>
               {D.CARD_MENU.map(([icon, label, msg]) => <MenuItem key={label} icon={icon} danger={label === 'Delete'} onSelect={act(msg, 'info')}>{label}</MenuItem>)}
@@ -248,7 +248,7 @@ export function HomePage() {
   } else if (view === 'collections') {
     content = gallery ? (
       <ContentGrid size={gridSize} label="Collections">
-        {shown(D.COLLECTION_CARDS).map((c) => <MediaCard key={c.id} icon="briefcase" title={c.name} meta={c.count + ' assets'} onOpen={() => openCategory(c.name)} />)}
+        {shown(D.COLLECTION_CARDS).map((c) => <MediaCard key={c.id} icon="briefcase" title={c.name} meta={dataPhrase('{n} assets', { n: c.count })} onOpen={() => openCategory(c.name)} />)}
       </ContentGrid>
     ) : (
       <DataGrid label="Collections" data={D.COLLECTION_CARDS} onRowClick={(record) => openCategory(record.name)} {...tableProps} columns={[

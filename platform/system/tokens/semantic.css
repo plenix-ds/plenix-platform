@@ -107,7 +107,6 @@
     --plx-sys-boundary-outline-color: transparent;
     --plx-sys-forced-indicator: initial;
     --plx-sys-forced-gap: initial;
-    --plx-sys-icon-forced-stroke: 0;
   }
 }
 @media (forced-colors: active) {
@@ -116,7 +115,6 @@
     --plx-sys-boundary-outline-color: CanvasText;
     --plx-sys-forced-indicator: Highlight;
     --plx-sys-forced-gap: Canvas;
-    --plx-sys-icon-forced-stroke: 1;
   }
 }
 @media not print {

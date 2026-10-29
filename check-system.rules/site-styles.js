@@ -32,6 +32,7 @@ const EXEMPT_PREFIXES = {
   'docs/command-bar-study/': 'an internal study page that deploy.sh does not publish',
   'docs/touch-options/': 'an internal study page that deploy.sh does not publish',
   'tests/fixtures/': 'a fixture that holds the violations on purpose, so a rule can be shown to catch them',
+  'tools/fixtures/spec-color-samples/': 'the fixtures of the check-spec rule color-samples (#263): a good and a shrunk spec sheet, so the rule can be shown to pass and to catch a shrunk sample',
   'release/': 'a built release (generated)',
   'packages/': 'built packages (generated)',
 };

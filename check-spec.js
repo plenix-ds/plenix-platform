@@ -147,7 +147,7 @@ const blocksOf = (r) => r.blocks || (r.src && /^(components|patterns)\//.test(r.
 // classes that look like variants but are not chosen by whoever uses the component (each has its reason; they are
 // documented under the component's Behavior or Names)
 const NOT_VARIANTS = {
-  'plx-icon--inline': 'how the Icon component draws (an inline SVG, every icon it renders), not a look: a bare class name (deprecated, #557) draws the mask until stage 5c-2',
+  'plx-icon--inline': 'how the Icon component draws (an inline SVG, every icon it renders), not a look: a bare class name (retired, #557) draws nothing',
   'plx-icon--mirrored': 'set by the Icon component on every icon whose symbol points along the reading direction (a module by its mirrored flag, a name by its symbol; #557), so it mirrors in right to left; not a look a person picks',
   'plx-data-grid--static': 'the renderer’s static mode (Table renders it with isStatic); in DataGrid it never applies, Table’s generated base carries it',
   'plx-table--static': 'Table’s own mode, always set: the static grid (it fits the page, wraps and grows), Table’s base look, not a variant',
@@ -260,9 +260,46 @@ if (SPEC_ON_CDN) {
   }
 }
 
+// color-samples: every color sample in the spec is a bar 120px wide (owner, 2026-10-28, option A; #263). A sample is an empty block with no content of its own, so a
+// width that is missing, smaller or left to shrink collapses it in a table cell to its 2px border and the colors seem to be gone. The samples are .ds-swatch (token
+// tables and cards) and .ds-vis--color (role pages and variant token tables); each must say inline-size: var(--plx-ref-size-120px) and flex-shrink: 0, and no rule
+// for it may say another inline-size, width or min-inline-size. The stylesheet read is the one the spec will have: a lane's (lanes/*/design-system/spec.css) when
+// one carries it, else the pinned spec's. The rule proves itself on the two fixtures in tools/fixtures/spec-color-samples/: the good one passes, the shrunk one fails.
+function colorSampleFindings(css, label) {
+  const BAR = 'var(--plx-ref-size-120px)', SAMPLES = ['.ds-swatch', '.ds-vis--color'], out = [], got = {};
+  SAMPLES.forEach((s) => { got[s] = { size: [], shrink: [] }; });
+  for (const m of css.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+    for (const sel of m[1].split(',').map((x) => x.trim())) {
+      const last = sel.split(/[\s>+~]+/).pop().replace(/::?[\w-]+(\([^)]*\))?/g, '');
+      if (!SAMPLES.includes(last)) continue;
+      for (const d of m[2].split(';')) {
+        const [p, ...v] = d.split(':'), prop = (p || '').trim(), val = v.join(':').trim();
+        if (/^(inline-size|width|min-inline-size|min-width)$/.test(prop)) got[last].size.push({ sel, prop, val });
+        if (prop === 'flex-shrink') got[last].shrink.push({ sel, val });
+      }
+    }
+  }
+  for (const s of SAMPLES) {
+    const g = got[s];
+    if (!g.size.some((x) => x.prop === 'inline-size' && x.val === BAR)) out.push(label + ': ' + s + ' has no inline-size: ' + BAR);
+    g.size.filter((x) => x.val !== BAR).forEach((x) => out.push(label + ': ' + x.sel + ' says ' + x.prop + ': ' + x.val + ' (a color sample is ' + BAR + ')'));
+    if (!g.shrink.length || g.shrink.some((x) => x.val !== '0')) out.push(label + ': ' + s + ' must say flex-shrink: 0 (in a flex row a sample shrinks to its border)');
+  }
+  return out;
+}
+{
+  const lanesDir = path.join(__dirname, 'lanes');
+  const laneCss = fs.existsSync(lanesDir) ? fs.readdirSync(lanesDir).map((d) => path.join(lanesDir, d, 'design-system', 'spec.css')).filter((f) => fs.existsSync(f)) : [];
+  const fromLane = laneCss.length > 0, file = process.env.COLOR_SAMPLES_CSS || (fromLane ? laneCss[laneCss.length - 1] : path.join(SPEC, 'spec.css'));   // COLOR_SAMPLES_CSS: try the rule on another stylesheet
+  colorSampleFindings(read(file), path.relative(__dirname, file).split(path.sep).join('/')).forEach((m) => add('color-samples', m));
+  const fx = path.join(__dirname, 'tools', 'fixtures', 'spec-color-samples');
+  if (colorSampleFindings(read(path.join(fx, 'good.css')), 'fixture good.css').length) add('color-samples', 'the check fails on its good fixture (tools/fixtures/spec-color-samples/good.css): the rule is broken');
+  if (!colorSampleFindings(read(path.join(fx, 'shrunk.css')), 'fixture shrunk.css').length) add('color-samples', 'the check does not fail on its shrunk fixture (tools/fixtures/spec-color-samples/shrunk.css): the rule is broken');
+}
+
 // report
 let failed = 0;
-for (const rule of ['taxonomy', 'records', 'parts', 'sidebar', 'order', 'template', 'variant-block', 'variants', 'states', 'api', 'sizes', 'cdn']) {
+for (const rule of ['taxonomy', 'records', 'parts', 'sidebar', 'order', 'template', 'variant-block', 'variants', 'states', 'api', 'sizes', 'color-samples', 'cdn']) {
   const list = findings[rule] || [];
   const pending = PENDING[rule];
   if (!list.length) { console.log('ok       ' + rule); continue; }

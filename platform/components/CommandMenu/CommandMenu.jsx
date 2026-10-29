@@ -52,6 +52,7 @@ import { SearchField } from '../SearchField/SearchField.jsx';
 import ArrowLeftIcon from 'plenix-platform/icons/plenix/arrow-left';
 import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { dataPhrase } from '../../utils/dataText.jsx';
 
 // how well an item matches the text: 4 the label starts with it, 3 a word of the label does, 2 the label contains it,
 // 1 the keywords, description or group do, 0 no match
@@ -168,7 +169,7 @@ export const CommandMenu = React.forwardRef(function CommandMenu({ items = [], l
         })}
       </div>
       {!shown.length && loading ? <div className="plx-command-menu__status">{t.loading}</div> : null}
-      {!shown.length && !loading ? <div className="plx-command-menu__status">{q ? t.empty.replace('{query}', query.trim()) : t.results.replace('{count}', '0')}</div> : null}
+      {!shown.length && !loading ? <div className="plx-command-menu__status">{q ? t.empty.replace('{query}', query.trim()) : dataPhrase(t.results, { count: 0 })}</div> : null}
       <LiveRegion kind="status">{count}</LiveRegion>
     </div>
   );

@@ -55,6 +55,7 @@ import PlusIcon from 'plenix-platform/icons/plenix/plus';
 import ScheduleIcon from 'plenix-platform/icons/plenix/schedule';
 import SearchIcon from 'plenix-platform/icons/plenix/search';
 import SettingsCategoriesIcon from 'plenix-platform/icons/plenix/settings-categories';
+import { dataPhrase } from '../../utils/dataText.jsx';
 
 
 // the products' fields, for the filter, the category quick filter and the sort (utils/fields.js)
@@ -158,7 +159,7 @@ export function ProductDiscovery({ products = [], categories = [], recommended =
             {categories.map((c) => (
               <Card key={c.value} title={c.label} headingLevel={Math.min(6, headingLevel + 2)} selected={category === c.value}
                 onOpen={() => setCategory(category === c.value ? null : c.value)}
-                meta={<Text variant="data">{fill(products.filter((p) => p.category === c.value).length === 1 ? t.one : t.count, { n: formatNumber(products.filter((p) => p.category === c.value).length) })}</Text>} />
+                meta={dataPhrase(products.filter((p) => p.category === c.value).length === 1 ? t.one : t.count, { n: products.filter((p) => p.category === c.value).length })} />
             ))}
           </ContentGrid>
         </section>
@@ -217,7 +218,7 @@ export function ProductDetail({ product, value, defaultValue, onChange, quantity
     setAdded(true); announce(fill(t.added, { title: p.title }));
   };
   const status = out ? <Badge tone="negative" icon={DoNotDisturbIcon}>{t.outOfStock}</Badge>
-    : typeof stock === 'number' && stock <= 5 ? <Badge tone="waiting" icon={ScheduleIcon}>{fill(t.lowStock, { n: formatNumber(stock) })}</Badge>
+    : typeof stock === 'number' && stock <= 5 ? <Badge tone="waiting" icon={ScheduleIcon}>{dataPhrase(t.lowStock, { n: stock })}</Badge>
       : <Badge tone="success" icon={CircleCheckIcon}>{t.inStock}</Badge>;
   const tabs = [];
   if (p.description) tabs.push({ value: 'description', label: t.description, content: typeof p.description === 'string' ? <Text as="p">{p.description}</Text> : p.description });
@@ -236,7 +237,7 @@ export function ProductDetail({ product, value, defaultValue, onChange, quantity
           <H className="plx-commerce__title">{p.title}</H>
           {typeof p.rating === 'number' ? (
             <span className="plx-commerce__rating"><Rating readOnly value={p.rating} label={t.rating} />
-              {typeof p.reviewCount === 'number' ? <Text variant="data">{p.reviewCount === 1 ? t.review : fill(t.reviews, { n: formatNumber(p.reviewCount) })}</Text> : null}</span>
+              {typeof p.reviewCount === 'number' ? <Text variant="secondary">{dataPhrase(p.reviewCount === 1 ? t.review : t.reviews, { n: p.reviewCount })}</Text> : null}</span>
           ) : null}
           <span className="plx-commerce__price" aria-live="polite"><ProductPrice price={price} currency={p.currency} compareAtPrice={p.compareAtPrice} /></span>
           <span className="plx-commerce__stock">{status}</span>

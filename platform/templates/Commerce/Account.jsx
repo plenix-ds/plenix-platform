@@ -54,6 +54,7 @@ import OpenIcon from 'plenix-platform/icons/plenix/open';
 import ProgressIcon from 'plenix-platform/icons/plenix/progress';
 import ReplyIcon from 'plenix-platform/icons/plenix/reply';
 import ScheduleIcon from 'plenix-platform/icons/plenix/schedule';
+import { dataPhrase } from '../../utils/dataText.jsx';
 
 // a calendar day ("2026-10-15") read in the reader's locale, at noon so no time zone moves it to another day
 const day = (iso) => (iso ? formatDate(/T/.test(iso) ? iso : iso + 'T12:00:00') : '');
@@ -349,7 +350,7 @@ export function Returns({ order = {}, reasons = [], resolutions = [], methods = 
         <aside className="plx-commerce__aside" aria-label={t.refund}>
           <Panel title={t.refund} headingLevel={Math.min(6, headingLevel + 1)}>
             <PropertyList>
-              <PropertyList.Item label={t.items} data>{count === 1 ? t.returningOne : fill(t.returning, { n: formatNumber(count) })}</PropertyList.Item>
+              <PropertyList.Item label={t.items}>{dataPhrase(count === 1 ? t.returningOne : t.returning, { n: count })}</PropertyList.Item>
               <PropertyList.Item label={t.refund} data>{money(refund, cur)}</PropertyList.Item>
             </PropertyList>
           </Panel>

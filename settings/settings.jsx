@@ -6,7 +6,7 @@
    field width, ColorPicker, RadioTiles, ChoiceList); categories, tags and project types are cards of rows and renamable
    Tags; the documentation pages are cards of Text, Tables, Cards, Notices, Badges, Metrics and ProgressBars. The style
    guide points at the design system (../platform/design-system/), the point of truth. */
-import { CommandBar, CommandBarSearch, useCollectionView, Avatar, Badge, Button, choosePicture, Card, ChoiceList, CollapsibleSection, ColorPicker, ColorSwatch, DATA_COLORS, ContentGrid, Count, EmptyState, Inline, Input, Kbd, leavePage, List, Metric, NavList, NavPane, Notice, PageContent, ProgressBar, PropertyList, RadioTiles, RecordPage, SegmentedControl, Select, SettingsRow, SettingsSection, SideNavPortal, Stack, Switch, Table, Tag, TagList, Text, useDensity, useSession, useTheme, useUnsavedGuard } from 'plenix-platform';
+import { dataPhrase, CommandBar, CommandBarSearch, useCollectionView, Avatar, Badge, Button, choosePicture, Card, ChoiceList, CollapsibleSection, ColorPicker, ColorSwatch, DATA_COLORS, ContentGrid, Count, EmptyState, Inline, Input, Kbd, leavePage, List, Metric, NavList, NavPane, Notice, PageContent, ProgressBar, PropertyList, RadioTiles, RecordPage, SegmentedControl, Select, SettingsRow, SettingsSection, SideNavPortal, Stack, Switch, Table, Tag, TagList, Text, useDensity, useSession, useTheme, useUnsavedGuard } from 'plenix-platform';
 import { Ico } from '../suite/shared.jsx';
 import { CatEditModal } from '../suite/classification.jsx';
 const {useState}=React;
@@ -307,7 +307,7 @@ function DocsPanel({docSection,setDocSection}){
           const groups=(window.CAPABILITY_GROUPS||[]).filter(g=>g.layer===layer.id);
           const total=groups.reduce((s,g)=>s+g.items.length,0);
           return(
-            <Section key={layer.id} title={layer.label} description={total+" capabilities"}>
+            <Section key={layer.id} title={layer.label} description={dataPhrase(total+" capabilities")}>
               {groups.map(grp=>(
                 <Stack key={grp.id} gap="xs">
                   <Text variant="label">{grp.group}</Text>
@@ -398,7 +398,7 @@ function DocsPanel({docSection,setDocSection}){
             <Text as="p" variant="secondary">Design tokens, typography, color palette, spacing, and component patterns: the Plenix design system.</Text>
           </Card>
           <Card title="All feature areas" onOpen={()=>setDocSection("feat-"+window.FEATURES[0].area)}>
-            <Text as="p" variant="secondary">{window.FEATURES.length+" areas, "+window.FEATURES.reduce((s,a)=>s+a.items.length,0)+" features documented."}</Text>
+            <Text as="p" variant="secondary">{dataPhrase(window.FEATURES.length+" areas, "+window.FEATURES.reduce((s,a)=>s+a.items.length,0)+" features documented.")}</Text>
           </Card>
         </ContentGrid>
       </Section>
@@ -460,7 +460,7 @@ function FeatureArea({area,stats}){
           <ProgressBar value={pct} color={area.color} size="sm" label={pct+"% complete"} labelHidden={!!stats}/>
         </Stack>
       </Section>
-      <Section title="Features" stateKey="features" description={area.items.length+" features, each with its status"}>
+      <Section title="Features" stateKey="features" description={dataPhrase(area.items.length+" features, each with its status")}>
         {area.items.map((item,i)=><FeatureRow key={i} item={item}/>)}
       </Section>
     </Screen>
@@ -575,7 +575,7 @@ export function Settings({prefs,setPrefs,screen,onBack}){
         {/* one collapsible card per category: its color, its subcategories as rows, its actions */}
         {cats.map(cat=>(
           <Section key={cat.id} stateKey={"category-"+cat.id} collapsible defaultExpanded={cat.id<=3} title={cat.name}
-            description={cat.subs.length===1?"1 subcategory":cat.subs.length+" subcategories"}
+            description={dataPhrase(cat.subs.length===1?"1 subcategory":cat.subs.length+" subcategories")}
             actions={<>
               <Button size="sm" variant="danger-secondary" icon="trash" onClick={()=>{if(window.confirm('Delete "'+cat.name+'"?'))deleteCat(cat.id);}}>Delete category</Button>
               <Button size="sm" icon="pencil" onClick={()=>setCatEdit({type:"cat",catId:cat.id,isNew:false,name:cat.name,color:cat.color,icon:cat.icon||null})}>Edit category</Button>
@@ -599,7 +599,7 @@ export function Settings({prefs,setPrefs,screen,onBack}){
     tags:(
       <Screen id="tags" title="Tags" desc="Tags are flat keyword identifiers applied to any item -- images, notes, contacts, bookmarks, files, and more. Create them here and apply them anywhere."
         >
-        <Section title="All tags" description={visibleTags.length+" of "+tags.length+" tags"}>
+        <Section title="All tags" description={dataPhrase(visibleTags.length+" of "+tags.length+" tags")}>
           <CommandBar label="Tags" sticky={false} count={visibleTags.length+" tags"}
             actions={[{id:"new",label:"New tag",icon:"plus",primary:true,onSelect:()=>{setTagAdding(true);setTagEditVal("");}}]}
             find={<CommandBarSearch id="settings-tag-search" {...tagView.searchProps} placeholder="Search tags..." label="Search tags"/>}/>
@@ -620,7 +620,7 @@ export function Settings({prefs,setPrefs,screen,onBack}){
     projtypes:(
       <Screen id="projtypes" title="Project types" desc="Define the types of projects in your workspace. Applied when creating a project."
         >
-        <Section title="Find a project type" description={projTypes.length+" project types defined"}>
+        <Section title="Find a project type" description={dataPhrase(projTypes.length+" project types defined")}>
           <CommandBar label="Project types" sticky={false} count={ptView.count(projTypes)+" project types"}
             actions={[{id:"new",label:"New type",icon:"plus",primary:true,onSelect:()=>{setPtAdding(true);setPtEditVal("");}}]}
             find={<CommandBarSearch id="settings-type-search" {...ptView.searchProps} placeholder="Search project types..." label="Search project types"/>}/>
@@ -632,7 +632,7 @@ export function Settings({prefs,setPrefs,screen,onBack}){
           if(filtered.length===0)return <Section title="No results" stateKey="none"><EmptyState title="No project types match."/></Section>;
           // one collapsible card per group of types
           return Object.entries(groups).map(([grp,items])=>(
-            <Section key={grp} title={grp} collapsible description={items.length===1?"1 type":items.length+" types"}>
+            <Section key={grp} title={grp} collapsible description={dataPhrase(items.length===1?"1 type":items.length+" types")}>
               <TagList label={grp}>
                 {items.sort((a,b)=>a.name.localeCompare(b.name)).map(pt=>(
                   <Tag key={pt.id} onRename={text=>renamePT(pt.id,text)} renameLabel={"Rename project type "+pt.name} onRemove={()=>deletePT(pt.id)} removeLabel={"Delete project type "+pt.name}>{pt.name}</Tag>
@@ -829,7 +829,7 @@ export function Settings({prefs,setPrefs,screen,onBack}){
         })()
       : (
         <Screen id="features" title="Features to build progress" desc="Every significant feature in Plenix -- what it does, how it works, and what is planned. Select an area from the sidebar to explore it.">
-          <Section title="Feature areas" description={window.FEATURES.length+" areas"}>
+          <Section title="Feature areas" description={dataPhrase(window.FEATURES.length+" areas")}>
             <ContentGrid size="md" label="Feature areas">
               {window.FEATURES.map(area=>{
                 const done=area.items.filter(i=>i.status==="done").length;

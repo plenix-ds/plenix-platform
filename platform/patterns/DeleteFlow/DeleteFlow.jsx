@@ -59,6 +59,7 @@ import { Input } from '../../components/Input/Input.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { useOptionalToast } from '../ReviewFlow/ReviewFlow.jsx';
 import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
+import { dataPhrase } from '../../utils/dataText.jsx';
 
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const SHOWN = 5;
@@ -127,7 +128,7 @@ export function DeleteFlow({ items = [], noun, plural, variant = 'confirm', cons
   const names = n > 1 ? (
     <ul className="plx-delete-flow__names" aria-label={t.names}>
       {items.slice(0, SHOWN).map((x) => <li key={x.id || x.label} className="plx-delete-flow__name">{x.label}</li>)}
-      {rest > 0 ? <li className="plx-delete-flow__more">{fill(t.more, { count: formatNumber(rest) })}</li> : null}
+      {rest > 0 ? <li className="plx-delete-flow__more">{dataPhrase(t.more, { count: rest })}</li> : null}
     </ul>
   ) : null;
 

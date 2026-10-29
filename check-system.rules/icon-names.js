@@ -1,6 +1,6 @@
 // Plenix · check-system rule "icon-names": every icon a source file names is in the Plenix set (a key of
-// platform/icons/map.json). An unknown name draws nothing: the Icon component writes the class plx-icon--<name>, and only
-// the set's names have a rule in the icon stylesheet (build-icons.js). So:
+// platform/icons/map.json). An unknown name draws nothing: the Icon component resolves only the set's names (and Material
+// names in a library) to a drawing (#557: no drawing is left in the stylesheet). So:
 //   <Icon name="folder" />   icon="add"   { icon: 'pin' }   h(P.Icon, { name: 'close' })   "plx-icon--trash"   ok
 //   <Icon name="star" />     icon="collection"   { icon: 'image' }                                            finding
 // Only names written as whole literals are read (icon={'density-' + d.value} is computed at run time and not read).

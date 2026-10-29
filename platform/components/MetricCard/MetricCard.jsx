@@ -103,6 +103,7 @@ import ClockIcon from 'plenix-platform/icons/plenix/clock';
 import CloseIcon from 'plenix-platform/icons/plenix/close';
 import MoreIcon from 'plenix-platform/icons/plenix/more';
 import RefreshIcon from 'plenix-platform/icons/plenix/refresh';
+import { dataPhrase } from '../../utils/dataText.jsx';
 
 const TYPES = ['value', 'trend', 'progress', 'gauge', 'breakdown', 'comparison', 'list', 'summary', 'person', 'week', 'month', 'table'];
 const LAYOUTS = ['stacked', 'beside', 'inline', 'tile', 'icon-start'];
@@ -222,7 +223,7 @@ function ListVisual({ items = [], variant, t }) {
         const label = i.href ? <a className="plx-metric-card__row-link" href={i.href}>{i.label}</a> : i.label;
         return (
           <li key={i.id} className="plx-metric-card__list-row">
-            {variant === 'records' ? null : <span className="plx-metric-card__rank">{fill(t.rank, { n: n + 1 })}</span>}
+            {variant === 'records' ? null : <span className="plx-metric-card__rank">{dataPhrase(t.rank, { n: n + 1 })}</span>}
             {variant === 'records' ? null : (i.person ? <Avatar name={i.person.name} src={i.person.src} gender={i.person.gender} size="sm" />
               : i.icon ? <IconTile icon={i.icon} hue={i.color} size="sm" /> : <span />)}
             <span className="plx-metric-card__row-label">{label}</span>

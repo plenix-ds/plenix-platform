@@ -10,12 +10,13 @@
    recentSearches; the last five) and, while a query is typed, the matching assets; choosing an asset leaves the view
    (its history entry) and opens the asset in the search screen (#/search?q=…&asset=<id>). */
 import React from 'react';
-import { ActivityList, AppHeader, Icon, SearchField, SectionHeading, StatusIcon, StatusBar, AppShell, Text, Thumbnail, navigate, screenHref, useViewState } from 'plenix-platform';
+import { ActivityList, AppHeader, Icon, SearchField, SectionHeading, StatusIcon, StatusBar, AppShell, Text, Thumbnail, navigate, screenHref, useViewState, dataPhrase } from 'plenix-platform';
 import { FIND_EMPTY, findAssets } from '../pages/home/findAssets.js';
 
 // DATA: the library totals come from the back end; this is the sample record the pages show until then. Who is signed in
 // and their notifications come from the Platform session (SessionProvider, mounted in app/assets.jsx).
-const LIBRARY = { summary: '4,546 assets | 12.4 GB', owner: 'Lighthouse Way' };
+// the library's facts: the counts and sizes in the data font, the words in the normal font (issue 260)
+const LIBRARY = { assets: 4546, size: '12.4 GB', owner: 'Lighthouse Way' };
 
 const RECENT_MAX = 5;
 // the full-screen search view (AppHeader at Narrow) is a history entry of its own: leave it (Back, which closes it) before
@@ -76,7 +77,7 @@ export function AssetHeader({ current, query = '', onSearch, onUpload }) {
 }
 
 export function AssetStatusBar() {
-  return <StatusBar start={<><StatusIcon tone="success" size="sm">Library online</StatusIcon><span>{LIBRARY.summary}</span></>} end={LIBRARY.owner} />;
+  return <StatusBar start={<><StatusIcon tone="success" size="sm">Library online</StatusIcon><span>{dataPhrase('{n} assets | {size}', { n: LIBRARY.assets, size: LIBRARY.size })}</span></>} end={LIBRARY.owner} />;
 }
 
 export function AssetPage({ title, current, query, onSearch, onUpload, sideNav, panel, children }) {

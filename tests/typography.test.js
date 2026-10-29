@@ -18,6 +18,9 @@
 //             of kind "data" and for code and the data role, in DM Sans elsewhere; every header title is weight 600 and
 //             every row-label cell's text 500. Badges, tags, chips, buttons, keys, counts, avatars, tooltips, the placeholder,
 //             a group header's eyebrow and a summary's name, and the design system's specimens keep their own type.
+//   phrase    (issue 260; owner 2026-10-24) a count inside a phrase is in Reddit Mono, its words in DM Sans: no DM Sans text
+//             holds a number followed by words ("7 files", "4,546 assets"; Latin or Arabic-Indic digits). The same places
+//             as pattern are left out. A new check: its first run records the page's findings with --update (TEST_SCOPE=full).
 // Known findings are kept in tests/baselines/typography.json (page -> mode -> check -> number); the test fails only when
 // a page and mode has more findings than recorded, so they can only go down (aim: none).
 //   node tests/typography.test.js            compare
@@ -42,8 +45,8 @@ const site = require('./site.js');
 // every page of the St. John the Beloved test site (owner, 2026-10-25: the tests run there, not on the design spec)
 const SITE_PAGES = changed.pages(site.urls());
 changed.noPartialUpdate();
-if (!APP_PAGES.length && !SITE_PAGES.length) changed.none('TYPOGRAPHY_OK role 0, prose 0, pattern 0, baseline 0, table 0 on 0 pages');
-const CHECKS = ['role', 'prose', 'pattern', 'baseline', 'table'];
+if (!APP_PAGES.length && !SITE_PAGES.length) changed.none('TYPOGRAPHY_OK role 0, prose 0, pattern 0, baseline 0, table 0, phrase 0 on 0 pages');
+const CHECKS = ['role', 'prose', 'pattern', 'baseline', 'table', 'phrase'];
 
 // runs in the page: the findings of each check
 async function inspect() {
@@ -75,7 +78,9 @@ async function inspect() {
   const TECH = new RegExp('^(?:' + ONE.join('|') + ')(?:\\s*[·,–-]\\s*(?:' + ONE.join('|') + '))*$', 'i');
   // a sentence: four or more words of letters (with ordinary punctuation), none of the characters of code or values
   const prose = (t) => { const w = t.split(/\s+/).filter(Boolean); return w.length >= 4 && !/[=<>{}()[\]\/\\_#@$`|*+~^"]|--|\d/.test(t) && w.every((x) => /^[A-Za-z][a-z'’]*[,.!?:;]?$/.test(x)); };
-  const out = { role: [], prose: [], pattern: [], baseline: [], table: [] };
+  // a count followed by words in one text: "7 files", "4,546 assets", "٧ ملفات" (Latin or Arabic-Indic digits)
+  const PHRASE = /(?:^|[\s(])[$€£]?[0-9٠-٩][0-9٠-٩,.]*\s+\p{L}{2,}/u;
+  const out = { role: [], prose: [], pattern: [], baseline: [], table: [], phrase: [] };
   const texts = [];
   const walk = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
   let n;
@@ -94,6 +99,9 @@ async function inspect() {
     // pattern: a technical value on its own is in Reddit Mono (a title or heading that names a thing by its date
     // or file name is a title: it keeps the heading typography)
     if (!x.mono && !own && !x.el.closest('[role="menu"], [role="listbox"], nav, .plx-tooltip, [role="tooltip"], ' + TITLE) && TECH.test(x.t)) out.pattern.push(say(x.el, x.t));
+    // phrase (issue 260; owner 2026-10-24): a count inside a phrase is in Reddit Mono and its words in DM Sans, so a DM Sans
+    // text never holds a number followed by words ("7 files"): dataPhrase puts the number in its own data span
+    if (!x.mono && !own && !x.el.closest('[role="menu"], [role="listbox"], nav, .plx-tooltip, [role="tooltip"], ' + TITLE) && PHRASE.test(x.t)) out.phrase.push(say(x.el, x.t));
   }
   // baseline: each Mono text against the Sans texts on its line in the same row
   const ROW = '.plx-data-grid__grid-row, .plx-property-list__item, tr, li, [role="row"], p, dd, dt, label';

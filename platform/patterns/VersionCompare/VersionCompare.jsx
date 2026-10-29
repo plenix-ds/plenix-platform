@@ -67,6 +67,7 @@ import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 import ChevronUpIcon from 'plenix-platform/icons/plenix/chevron-up';
 import CircleCheckIcon from 'plenix-platform/icons/plenix/circle-check';
 import DocSearchIcon from 'plenix-platform/icons/plenix/doc-search';
+import { dataPhrase } from '../../utils/dataText.jsx';
 
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 
@@ -142,7 +143,7 @@ function TextDiff({ base, target, context, t, uid }) {
             if (r.fold) {
               return (
                 <li key={'fold' + r.key} className="plx-version-compare__fold">
-                  <Button size="xs" variant="ghost" icon={ChevronDownIcon} onClick={() => setShown(Object.assign({}, shown, { [r.key]: true }))}>{fill(t.unchanged, { n: formatNumber(r.n) })}</Button>
+                  <Button size="xs" variant="ghost" icon={ChevronDownIcon} onClick={() => setShown(Object.assign({}, shown, { [r.key]: true }))}>{dataPhrase(t.unchanged, { n: r.n })}</Button>
                 </li>
               );
             }

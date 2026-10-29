@@ -71,6 +71,7 @@ import DoNotDisturbIcon from 'plenix-platform/icons/plenix/do-not-disturb';
 import ImageBIcon from 'plenix-platform/icons/plenix/image-b';
 import PlusIcon from 'plenix-platform/icons/plenix/plus';
 import TagsIcon from 'plenix-platform/icons/plenix/tags';
+import { dataPhrase } from '../../utils/dataText.jsx';
 
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const RATIOS = ['1-1', '4-3', '3-4'];
@@ -121,7 +122,7 @@ export function ProductCard({ title, href, onOpen, image, ratio = '1-1', price, 
         {stars !== null ? (
           <span className="plx-product-card__rating">
             <Rating readOnly value={stars} label={t.rating} />
-            {typeof reviewCount === 'number' ? <Text variant="data" className="plx-product-card__reviews">{reviewCount === 1 ? t.review : fill(t.reviews, { n: formatNumber(reviewCount) })}</Text> : null}
+            {typeof reviewCount === 'number' ? <Text variant="secondary" className="plx-product-card__reviews">{dataPhrase(reviewCount === 1 ? t.review : t.reviews, { n: reviewCount })}</Text> : null}
           </span>
         ) : null}
         {act ? <div className="plx-product-card__actions">{act}</div> : null}

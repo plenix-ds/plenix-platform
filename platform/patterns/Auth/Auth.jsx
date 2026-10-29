@@ -85,6 +85,7 @@ import { Form } from '../Form/Form.jsx';
 import LockIcon from 'plenix-platform/icons/plenix/lock';
 import VisibilityIcon from 'plenix-platform/icons/plenix/visibility';
 import VisibilityOffIcon from 'plenix-platform/icons/plenix/visibility-off';
+import { dataPhrase } from '../../utils/dataText.jsx';
 
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const around = (s, key, node) => { const p = String(s).split('{' + key + '}'); return <>{p[0]}{p.length > 1 ? node : null}{p.slice(1).join('')}</>; };
@@ -222,7 +223,7 @@ export function SignUpForm({ onSubmit, errors: server, busy = false, minLength =
       <Form label={t.label} noValidate onSubmit={submit} className="plx-auth__form" {...rest}>
         <Field label={t.name} error={err('name')}><Input ref={refs.name} value={v.name} onChange={(e) => set('name', e.target.value)} autoComplete="name" /></Field>
         <Field label={t.email} error={err('email')}><Input ref={refs.email} type="email" value={v.email} onChange={(e) => set('email', e.target.value)} autoComplete="email" /></Field>
-        <Field label={t.password} description={fill(t.rule, { n: minLength })} error={err('password')}>
+        <Field label={t.password} description={dataPhrase(t.rule, { n: minLength })} error={err('password')}>
           <Password ref={refs.password} show={t.show} hide={t.hide} value={v.password} onChange={(e) => set('password', e.target.value)} autoComplete="new-password" />
         </Field>
         {terms ? (
@@ -283,7 +284,7 @@ export function PasswordResetForm({ step, defaultStep = 'request', onRequest, on
     body = (
       <Form label={t.label} noValidate onSubmit={reset} className="plx-auth__form" {...rest}>
         {error ? <Notice tone="danger">{error}</Notice> : null}
-        <Field label={t.newPassword} description={fill(t.rule, { n: minLength })} error={errors.password || undefined}>
+        <Field label={t.newPassword} description={dataPhrase(t.rule, { n: minLength })} error={errors.password || undefined}>
           <Password ref={refs.password} show={t.show} hide={t.hide} value={password} onChange={(e) => { setPassword(e.target.value); clear('password'); }} autoComplete="new-password" />
         </Field>
         <p className="plx-auth__note">{t.others}</p>
