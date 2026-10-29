@@ -8,6 +8,7 @@
      children: the key or shortcut text
      className: more classes on the <kbd>
    Notes:
+     Writing direction (owner, ctm-needs-34): always left to right (dir="ltr", which also isolates it), also in a right-to-left page.
      It uses the data font at a 16px label height.
      Other props pass through to the <kbd>.
 */
@@ -15,5 +16,5 @@ import React from 'react';
 import { cx } from '../../utils/cx.js';
 
 export function Kbd({ onAccent = false, className, children, ...rest }) {
-  return <kbd className={cx('plx-kbd', onAccent && 'plx-kbd--on-accent', className)} {...rest}>{children}</kbd>;
+  return <kbd className={cx('plx-kbd', onAccent && 'plx-kbd--on-accent', className)} dir="ltr" {...rest}>{children}</kbd>;
 }

@@ -85,8 +85,9 @@
       "$description": "Display size: a metric card's large value, a dashboard's first row (owner, 2026-10-19)."
     },
     "font-sans": {
-      "$value": "\"DM Sans\", system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Arial, sans-serif",
+      "$value": "\"DM Sans\", \"IBM Plex Sans Arabic\", system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Arial, sans-serif",
       "$type": "fontFamily",
+      "$description": "The sans stack: DM Sans, then IBM Plex Sans Arabic for Arabic letters only (owner, arabic-font-35).",
       "$extensions": {
         "com.plenix": {
           "before": [
@@ -95,9 +96,15 @@
         }
       }
     },
+    "font-sans-title": {
+      "$value": "\"DM Sans\", \"Readex Pro\", system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Arial, sans-serif",
+      "$type": "fontFamily",
+      "$description": "The titles' stack: DM Sans, then Readex Pro for Arabic letters only (owner, arabic-font-35). Latin titles are DM Sans, as before."
+    },
     "font-mono": {
-      "$value": "\"Reddit Mono\", ui-monospace, \"SFMono-Regular\", Menlo, Monaco, Consolas, \"Liberation Mono\", monospace",
-      "$type": "fontFamily"
+      "$value": "\"Reddit Mono\", \"IBM Plex Sans Arabic\", ui-monospace, \"SFMono-Regular\", Menlo, Monaco, Consolas, \"Liberation Mono\", monospace",
+      "$type": "fontFamily",
+      "$description": "The code and data stack: Reddit Mono, then IBM Plex Sans Arabic for Arabic letters only (owner, arabic-font-35), so Arabic in data text and chart axes is drawn joined, not by a system monospace font."
     },
     "font-weight-regular-400": {
       "$value": "400",
@@ -477,6 +484,26 @@
     },
     "size-900px": {
       "$value": "900px",
+      "$type": "dimension"
+    },
+    "size-960px": {
+      "$value": "960px",
+      "$type": "dimension"
+    },
+    "size-1000px": {
+      "$value": "1000px",
+      "$type": "dimension"
+    },
+    "size-1200px": {
+      "$value": "1200px",
+      "$type": "dimension"
+    },
+    "size-1400px": {
+      "$value": "1400px",
+      "$type": "dimension"
+    },
+    "size-1600px": {
+      "$value": "1600px",
       "$type": "dimension"
     },
     "glyph-size-6px": {

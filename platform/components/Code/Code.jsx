@@ -15,6 +15,7 @@
      A long value wraps anywhere rather than overflow its line; truncate keeps it to one line instead.
      It is not focusable and has no actions: to copy code, use a CodeBlock.
    Notes:
+     Writing direction (owner, ctm-needs-34): always left to right (dir="ltr", which also isolates it), also in a right-to-left page.
      Code for code only: technical values that are not code (sizes, dates, IDs) use Text variant="data".
      Other props pass through to the <code>. forwardRef: the ref is the <code>.
 */
@@ -24,7 +25,7 @@ import { cx } from '../../utils/cx.js';
 export const Code = React.forwardRef(function Code({ onAccent = false, truncate = false, className, children, ...rest }, ref) {
   const title = truncate && typeof children === 'string' ? children : undefined;
   return (
-    <code ref={ref} title={title} {...rest}
+    <code ref={ref} title={title} dir="ltr" {...rest}
       className={cx('plx-code', onAccent && 'plx-code--on-accent', truncate && 'plx-code--truncate', className)}>{children}</code>
   );
 });

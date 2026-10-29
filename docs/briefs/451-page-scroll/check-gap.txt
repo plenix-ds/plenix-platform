@@ -1,0 +1,6 @@
+before 1280x800 gap -23.0 → FAIL
+before 1000x601 gap -22.0 → FAIL
+before 1440x903 gap -24.0 → FAIL
+after 1280x800 gap 1.0 → pass
+after 1000x601 gap 2.0 → pass
+after 1440x903 gap 0.0 → pass

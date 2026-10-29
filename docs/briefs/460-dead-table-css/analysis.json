@@ -1,0 +1,42 @@
+{
+ "corpus": {
+  "files": 1736,
+  "repo": 1490,
+  "spec": 193,
+  "stjohn": 53
+ },
+ "suffixes": 136,
+ "suffixPrefixes": 9,
+ "files": {
+  "platform/components/Table/table-base.css": {
+   "bytes": 85844,
+   "rules": 50,
+   "ruleBytes": 4332,
+   "partialRules": 0,
+   "partialSelectors": 0,
+   "unreadClasses": 11,
+   "sample": [
+    "plx-table__editor",
+    "plx-table__length-probe",
+    "plx-table__scroll--y",
+    "plx-table__scroll--x",
+    "plx-table__thumb",
+    "plx-table__thumb--y",
+    "plx-table__thumb--x",
+    "plx-table__gap--group",
+    "plx-table__gap--add",
+    "plx-table__gap--band",
+    "plx-table__gap--separated"
+   ]
+  },
+  "platform/components/DataGrid/data-grid.css": {
+   "bytes": 88790,
+   "rules": 0,
+   "ruleBytes": 0,
+   "partialRules": 0,
+   "partialSelectors": 0,
+   "unreadClasses": 0,
+   "sample": []
+  }
+ }
+}

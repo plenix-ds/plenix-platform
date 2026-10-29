@@ -9,8 +9,13 @@ Archived/
 *.bak
 packages/
 release/
+# the icon asset layout, written by build-icons.js (platform/icons/layout.js, #279); never committed
+platform/dist/icons/
 tests/.visual-button.html
 tests/.layout-test.html
 tests/.theme-sample.css
 tests/.theme-test.html
 tests/.density-test.html
+
+# the publish host, account and key (tools/publish-config.sh); never committed
+publish.config

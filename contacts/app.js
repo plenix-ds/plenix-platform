@@ -1906,7 +1906,57 @@ function FindWorkspace({
   })));
 }
   } },
-  "suite/suite.jsx": { deps: {"./session.js":"suite/session.js","plenix-platform":null,"./capture.jsx":"suite/capture.jsx","./leftnav.jsx":"suite/leftnav.jsx","./search.jsx":"suite/search.jsx","./findSources.jsx":"suite/findSources.jsx"}, externals: { "plenix-platform": function () { return window.Plenix; } }, run: function (module, exports, require) {
+  "suite/prefetch.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+/* Plenix suite · prefetch (suite/prefetch.js): the next page is ready before the click (batch 237). Part of the suite shell, not
+   of the Platform (issue 458): the shell imports it, so it runs once on every suite application page served over http(s).
+   Chromium browsers get speculation rules: a link to another page of the same site is prerendered when the pointer
+   rests on it (about 200ms) or presses it, so switching apps shows the finished page at once instead of a blank reload.
+   Other browsers get the page's document fetched into the cache on hover. Links that open elsewhere (target, download),
+   same-page anchors and links marked data-plx-no-prefetch are left alone. Nothing runs from file://. */
+const SKIP = '[target], [download], [data-plx-no-prefetch], [href^="#"]';
+function speculationRules(doc) {
+  if (!(window.HTMLScriptElement && HTMLScriptElement.supports && HTMLScriptElement.supports('speculationrules'))) return false;
+  const rules = {
+    prerender: [{
+      where: {
+        and: [{
+          href_matches: '/*'
+        }, {
+          not: {
+            selector_matches: SKIP
+          }
+        }]
+      },
+      eagerness: 'moderate'
+    }]
+  };
+  const s = doc.createElement('script');
+  s.type = 'speculationrules';
+  s.textContent = JSON.stringify(rules);
+  doc.head.appendChild(s);
+  return true;
+}
+function hoverPrefetch(doc) {
+  const done = new Set();
+  doc.addEventListener('pointerover', e => {
+    const a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+    if (!a || a.matches(SKIP)) return;
+    const url = new URL(a.href, location.href);
+    if (url.origin !== location.origin || url.pathname === location.pathname || done.has(url.pathname)) return;
+    done.add(url.pathname);
+    const link = doc.createElement('link');
+    link.rel = 'prefetch';
+    link.href = url.origin + url.pathname + url.search;
+    doc.head.appendChild(link);
+  }, {
+    passive: true
+  });
+}
+if (typeof window !== 'undefined' && typeof document !== 'undefined' && document.head && /^https?:$/.test(location.protocol)) {
+  if (!speculationRules(document)) hoverPrefetch(document);
+}
+  } },
+  "suite/suite.jsx": { deps: {"./session.js":"suite/session.js","plenix-platform":null,"./capture.jsx":"suite/capture.jsx","./leftnav.jsx":"suite/leftnav.jsx","./search.jsx":"suite/search.jsx","./findSources.jsx":"suite/findSources.jsx","./prefetch.js":"suite/prefetch.js"}, externals: { "plenix-platform": function () { return window.Plenix; } }, run: function (module, exports, require) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -1921,6 +1971,7 @@ var _capture = require("./capture.jsx");
 var _leftnav = require("./leftnav.jsx");
 var _search = require("./search.jsx");
 var _findSources = require("./findSources.jsx");
+require("./prefetch.js");
 /* Plenix suite · shell (suite/suite.jsx): the frame every Plenix application page shares (batch 149). Each application
    is its own page (<folder>/index.html) and mounts itself with mountSuite(appId, render):
    - the Plenix header: the switcher, the pinned applications (links to their pages), search, the Capture action and the
@@ -1940,6 +1991,7 @@ var _findSources = require("./findSources.jsx");
    view state, plenix.<app>.view, recentSearches; the last five) and, while a query is typed, its results; choosing one
    leaves the view (its history entry) and opens the result's screen. */
 
+// the next application page is prerendered on hover (batch 237; moved here from the Platform, issue 458)
 const {
   useState
 } = React;
@@ -2273,14 +2325,17 @@ function Suite({
 // opts.page: what kind of page the app is (the design system's layout standard lays it out; default "workspace")
 // opts.legacy(hash): the screen path of an older address of this page (#t-3, #account), opened in its place
 function mountSuite(app, render, opts) {
-  ReactDOM.createRoot(document.getElementById('root')).render(/*#__PURE__*/React.createElement(_plenixPlatform.SessionProvider, {
+  // the page's own direction (<html dir>), given to the components as context; nothing on the page changes (#262)
+  ReactDOM.createRoot(document.getElementById('root')).render(/*#__PURE__*/React.createElement(_plenixPlatform.DirectionProvider, {
+    follow: true
+  }, /*#__PURE__*/React.createElement(_plenixPlatform.SessionProvider, {
     session: _session.SUITE_SESSION
   }, /*#__PURE__*/React.createElement(Suite, {
     app: app,
     render: render,
     page: opts && opts.page || 'workspace',
     legacy: opts && opts.legacy
-  })));
+  }))));
 }
   } },
   "suite/classification.jsx": { deps: {"plenix-platform":null,"./shared.jsx":"suite/shared.jsx"}, externals: { "plenix-platform": function () { return window.Plenix; } }, run: function (module, exports, require) {

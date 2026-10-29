@@ -3,6 +3,8 @@
    "plenix-platform". Add a component here only when it is ready for both applications. */
 export { Badge } from './components/Badge/Badge.jsx';
 export { VisuallyHidden } from './components/VisuallyHidden/VisuallyHidden.jsx';
+export { Isolate } from './components/Isolate/Isolate.jsx';
+export { VoteTally } from './components/VoteTally/VoteTally.jsx';
 export { Count } from './components/Count/Count.jsx';
 export { Metric } from './components/Metric/Metric.jsx';
 export { MetricCard } from './components/MetricCard/MetricCard.jsx';
@@ -93,8 +95,6 @@ export { useInteraction } from './hooks/useInteraction.js';
 export { useScreenLocation, navigate, goToParent, screenHref, parseScreen, useViewState } from './providers/ScreenLocation.js';
 export { useUnsavedGuard, confirmLeave, hasUnsaved, leavePage } from './providers/UnsavedGuard.jsx';
 export { TimeGrid } from './patterns/TimeGrid/TimeGrid.jsx';
-// not exported: runs once on every page (the next page is prerendered on hover; batch 237)
-import './utils/prefetch.js';
 export { WidgetGrid } from './patterns/WidgetGrid/WidgetGrid.jsx';
 export { IMAGE_EDITOR_STEPS } from './patterns/ImageEditor/imageEditorSteps.js';
 // a length JavaScript writes inline, on the grid (the base spacing token; owner, 2026-10-13)
@@ -142,7 +142,7 @@ export { ProgressCircle } from './components/ProgressCircle/ProgressCircle.jsx';
 export { QRCode } from './components/QRCode/QRCode.jsx';
 export { qrEncode } from './utils/qr.js';
 export { VersionLabel } from './components/VersionLabel/VersionLabel.jsx';
-export { StatusIcon, resolveIcon, setIconLibrary } from './components/Icon/Icon.jsx';
+export { StatusIcon, resolveIcon, setIconLibrary, registerIcons, setDefaultIconLibrary } from './components/Icon/Icon.jsx';
 export { Banner } from './components/Banner/Banner.jsx';
 export { Scrim } from './components/Scrim/Scrim.jsx';
 export { LoadingOverlay } from './components/LoadingOverlay/LoadingOverlay.jsx';
@@ -343,7 +343,7 @@ export { RefineMenu } from './components/RefineMenu/RefineMenu.jsx';
 export { AnalyticsProvider, useAnalytics, track } from './providers/AnalyticsProvider.jsx';
 export { ListingPage, ContentManagementPage, LandingPage, HomePage, CreatePage, EditPage, MasterDetailPage, SplitWorkspace, SinglePaneWorkspace, FullScreenWorkspace, FullScreenExperience, DetailPage, SearchResultsPage, AuthenticationPage, ErrorPage } from './templates/templates/Templates.jsx';
 export { browserSupport } from './utils/browserSupport.js';
-export { LocaleProvider, useLocale, createTranslator } from './providers/LocaleProvider.jsx';
+export { LocaleProvider, useLocale, useStrings, createTranslator } from './providers/LocaleProvider.jsx';
 export { SplitView, ReadingPane } from './patterns/SplitView/SplitView.jsx';
 export { Heading } from './components/Heading/Heading.jsx';
 export { TreeChart } from './charts/TreeChart.jsx';

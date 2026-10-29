@@ -1,6 +1,6 @@
 # Handoff 2026-10-15: command bar swap, floating scrollbar, NavPane padding
 
-From the desktop session to the VM 101 session. The owner reviewed the command bar after 0.31.65–0.31.67 and changed the
+From the desktop session to the Windows VM session. The owner reviewed the command bar after 0.31.65–0.31.67 and changed the
 standard. Read the whole file before building; save the decisions to memory (update `plenix-command-bar-study.md`).
 Study pages (live, in `docs/command-bar-study/`, open `index.html` through a local server): **Swap** (the decided
 one), Tidy bar, Fewer bars, Decided so far (now out of date).

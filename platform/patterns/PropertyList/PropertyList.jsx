@@ -12,7 +12,9 @@
      PropertyList.Item.htmlFor: the id of a control in the item, so the label names it
      PropertyList.Item.description: a line under the label
      PropertyList.Item.data: the value is a technical value (a size, a date, an ID, a file name): the data font, Reddit Mono,
-       at the value size, so it shares the label's baseline; names, descriptions and statuses stay DM Sans; default false
+       at the value size, so it shares the label's baseline; names, descriptions and statuses stay DM Sans; default false.
+       It keeps its own writing direction in a right-to-left page (Isolate dir="auto"); a data value is text only (no links,
+       controls or other parts inside it)
      PropertyList.Item.className: more classes on the pair
      PropertyList.Item.children: the value
    Notes:
@@ -26,6 +28,7 @@ import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { useTruncated } from '../../utils/overflow.js';
 import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
+import { Isolate } from '../../components/Isolate/Isolate.jsx';
 
 export function PropertyList({ layout = 'columns', className, children, ...rest }) {
   return <dl className={cx('plx-property-list', 'plx-property-list--' + layout, className)} {...rest}>{children}</dl>;
@@ -39,7 +42,7 @@ PropertyList.Item = function PropertyListItem({ label, htmlFor, description, dat
       <dt className="plx-property-list__label"><Tooltip content={label} disabled={!cut} className="plx-property-list__label-tip"><span ref={textRef} className="plx-property-list__label-text">{htmlFor ? <label htmlFor={htmlFor}>{label}</label> : label}</span></Tooltip>
         {description ? <span className="plx-property-list__description" data-plx-text-follow="size">{description}</span> : null}
       </dt>
-      <dd className={cx('plx-property-list__value', data && 'plx-property-list__value--data')} data-plx-text-follow="size">{children}</dd>
+      <dd className={cx('plx-property-list__value', data && 'plx-property-list__value--data')} data-plx-text-follow="size">{data ? <Isolate dir="auto">{children}</Isolate> : children}</dd>
     </div>
   );
 };

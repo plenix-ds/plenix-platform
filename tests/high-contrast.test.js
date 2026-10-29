@@ -8,13 +8,14 @@
 //   reduced motion (prefers-reduced-motion: reduce): plx-motion-spin, -shimmer and -progress stand still (no animation)
 //   node tests/high-contrast.test.js            HC_PORT (or TEST_PORT)=8851 by default
 //   TEST_SCOPE=full: always; by default (tests/changed.js) only when a specimen's component, the Settings app, a global file or this test changed
+const shared = require('./check.js');   // the shared check helper: parts (TEST_ONLY) and the results file (TEST_RESULTS)
 const { serve, launch, sleep } = require('./lib.js');
 const changed = require('./changed.js');
 const PORT = +process.env.HC_PORT || +process.env.TEST_PORT || 8851;
 if (!changed.wants({ units: ['components/Input', 'components/NavList', 'components/Button', 'components/Card', 'components/ProgressBar'], apps: ['settings'] })) changed.none('HIGH_CONTRAST_OK 0 checks');
 changed.report('every check');
 
-const res = [], check = (n, ok, d) => res.push([n, !!ok, d]);
+const res = [], check = (n, ok, d) => { if (shared.check(n, ok, d)) res.push([n, !!ok, d]); };
 
 (async () => {
   const server = await serve(PORT);

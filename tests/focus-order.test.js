@@ -14,6 +14,7 @@
 //   FOCUS_PORT=8834 (or TEST_PORT) node tests/focus-order.test.js   another port
 //   TEST_SCOPE=full: every page; by default (tests/changed.js) the app pages that changed, the dialog when the Dialog or its
 //   page changed, the fixture when the overlay (platform/dev, a global file) or this test changed
+const shared = require('./check.js');   // the shared check helper: parts (TEST_ONLY) and the results file (TEST_RESULTS)
 const fs = require('fs');
 const path = require('path');
 const { serve, launch, sleep, APPS, at } = require('./lib.js');
@@ -33,7 +34,7 @@ changed.report(PAGES.length + ' app and test-site pages' + (DIALOG ? ', the dial
   const browser = await launch();
   const page = await browser.newPage(); await page.setViewport({ width: 1440, height: 1000 });
   const results = [];
-  const check = (name, ok, detail) => { results.push([name, ok, detail]); };
+  const check = (name, ok, detail) => { if (shared.check(name, ok, detail)) results.push([name, ok, detail]); };
   const overlay = async () => { if (!(await page.evaluate(() => !!window.PlenixFocusOrder))) await page.addScriptTag({ url: BASE + 'platform/dev/focus-order.js' }); };
 
   // ---- the fixture: what the overlay must find

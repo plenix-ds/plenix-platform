@@ -1,5 +1,5 @@
 // Library part w04C (wave 4, lane C): StatusIcon, Banner, Scrim, LoadingOverlay, Time and the undo pattern (useUndo).
-export { StatusIcon, resolveIcon, setIconLibrary } from '../components/Icon/Icon.jsx';
+export { StatusIcon, resolveIcon, setIconLibrary, registerIcons, setDefaultIconLibrary } from '../components/Icon/Icon.jsx';
 export { Banner } from '../components/Banner/Banner.jsx';
 export { Scrim } from '../components/Scrim/Scrim.jsx';
 export { LoadingOverlay } from '../components/LoadingOverlay/LoadingOverlay.jsx';

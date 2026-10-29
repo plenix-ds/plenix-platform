@@ -7,13 +7,19 @@
      <button type="button" className={cx('plx-state', pressed && 'is-pressed')} {...pressProps}>Open</button>
      <div role="button" tabIndex={0} {...pressProps}>…</div>          // a custom surface: the role and the Tab stop are yours
    Props:
-     options.onPress({ pointerType, target, shiftKey, ctrlKey, metaKey, altKey }): the press, once; pointerType is
-       "mouse", "touch", "pen", "keyboard" or "virtual" (a screen reader's or a script's click)
+     options.onPress({ pointerType, target, shiftKey, ctrlKey, metaKey, altKey, event }): the press, once; pointerType is
+       "mouse", "touch", "pen", "keyboard" or "virtual" (a screen reader's or a script's click); event is the event that
+       made it (a click, or the key with the keyboard)
      options.onPressStart({ pointerType }): the press begins (pointer down, or the key goes down)
      options.onPressEnd({ pointerType }): the press ends, whether it was made or canceled
      options.onPressChange(pressed): the pressed state changes
      options.disabled (false): no press, no pressed state; the element keeps its focus behavior
      options.handlers ({}): your own handlers of the same events (onClick, onKeyDown, …); they run first
+     options.native (false): on a native <button>, the browser's click stays the one press, for every input: onPress
+       runs from that click (event is the click itself), with pointerType from the pointer or key that made it; the keys
+       keep the browser's behavior (Enter repeats while held, as a native button does), and pressed stays false (the
+       button draws its own :active); pressProps are then onPointerDown, onPointerCancel, onKeyDown, onBlur and onClick. A
+       preventDefault in one of your handlers does not stop the press there: the browser decides the click
      returns { pressed, pressProps }: pressProps go on the element (onPointerDown, onPointerUp, onPointerEnter,
        onPointerLeave, onPointerCancel, onKeyDown, onKeyUp, onBlur, onClick)
    Behavior:
@@ -35,7 +41,7 @@ import React from 'react';
 const PRIMARY = 0;
 
 export function usePressable(options = {}) {
-  const { onPress, onPressStart, onPressEnd, onPressChange, disabled = false, handlers = {} } = options;
+  const { onPress, onPressStart, onPressEnd, onPressChange, disabled = false, handlers = {}, native = false } = options;
   const [pressed, setPressedState] = React.useState(false);
   // what is held now: { pointerType } while a pointer or key holds the press; the key that holds it
   const hold = React.useRef(null);
@@ -60,7 +66,7 @@ export function usePressable(options = {}) {
     if (was && onPressEnd) onPressEnd({ pointerType: was.pointerType });
   };
   const fire = (e, pointerType) => {
-    if (onPress) onPress({ pointerType, target: e.currentTarget, shiftKey: !!e.shiftKey, ctrlKey: !!e.ctrlKey, metaKey: !!e.metaKey, altKey: !!e.altKey });
+    if (onPress) onPress({ pointerType, target: e.currentTarget, shiftKey: !!e.shiftKey, ctrlKey: !!e.ctrlKey, metaKey: !!e.metaKey, altKey: !!e.altKey, event: e });
   };
   // the caller's own handler first; preventDefault in it stops the press
   const chain = (name, own) => (e) => {
@@ -71,6 +77,25 @@ export function usePressable(options = {}) {
   const isLink = (el) => el && el.tagName === 'A' && el.hasAttribute('href');
 
   React.useEffect(() => { if (disabled && hold.current) end(); });
+
+  if (native) {
+    // the browser's click is the press: the pointer or key before it only names the kind of input
+    const own = (name) => (e) => { if (handlers[name]) handlers[name](e); };
+    const nativeProps = {
+      onPointerDown: (e) => { own('onPointerDown')(e); lastPointer.current = e.pointerType || 'mouse'; },
+      onPointerCancel: (e) => { own('onPointerCancel')(e); lastPointer.current = null; },
+      onKeyDown: (e) => { own('onKeyDown')(e); if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') lastPointer.current = 'keyboard'; },
+      onBlur: (e) => { own('onBlur')(e); lastPointer.current = null; },   // a pointer or key that never clicked names no later click
+      onClick: (e) => {
+        own('onClick')(e);
+        const pointerType = lastPointer.current || (e.detail === 0 ? 'virtual' : 'mouse');
+        lastPointer.current = null;
+        if (!disabled) fire(e, pointerType);
+      }
+    };
+    Object.keys(handlers).forEach((name) => { if (!nativeProps[name]) nativeProps[name] = handlers[name]; });
+    return { pressed: false, pressProps: nativeProps };
+  }
 
   const pressProps = {
     onPointerDown: chain('onPointerDown', (e) => {

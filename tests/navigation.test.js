@@ -19,6 +19,7 @@
 //   node tests/navigation.test.js            run
 //   NAV_PORT=8855 (or TEST_PORT) node tests/navigation.test.js   another port (several runs side by side)
 //   TEST_SCOPE=full: always; by default (tests/changed.js) when one of its apps (or what they use) changed
+const shared = require('./check.js');   // the shared check helper: parts (TEST_ONLY) and the results file (TEST_RESULTS)
 const { serve, launch, sleep } = require('./lib.js');
 const changed = require('./changed.js');
 const PORT = +process.env.NAV_PORT || +process.env.TEST_PORT || 8845, BASE = 'http://127.0.0.1:' + PORT + '/Plenix/';
@@ -27,7 +28,7 @@ if (!NAV_APPS.length) changed.none('NAVIGATION_OK');
 changed.report('every check (' + NAV_APPS.map((p) => p.split('/')[0]).join(', ') + ' changed)');
 
 let failed = 0;
-const check = (name, ok, detail) => { console.log((ok ? 'ok   ' : 'FAIL ') + name + (ok || !detail ? '' : '  (' + detail + ')')); if (!ok) failed++; };
+const check = (name, ok, detail) => { if (!shared.check(name, ok, detail)) return; console.log((ok ? 'ok   ' : 'FAIL ') + name + (ok || !detail ? '' : '  (' + detail + ')')); if (!ok) failed++; };
 const hash = (page) => page.evaluate(() => location.hash);
 const len = (page) => page.evaluate(() => history.length);
 const text = (page, sel) => page.evaluate((s) => { const el = document.querySelector(s); return el ? el.innerText.trim() : null; }, sel);

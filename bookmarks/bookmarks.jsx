@@ -29,7 +29,7 @@ export function BookmarksScreen({ screen }) {
             </Menu>} />
           <ContentGrid size="lg" label="Bookmarks">
             {filtered.map((b) => (
-              <Card key={b.id} title={b.title} meta={b.url} selected={sel === b.id} onOpen={() => setSel(sel === b.id ? null : b.id)}>
+              <Card key={b.id} headingLevel={2} title={b.title} meta={b.url} selected={sel === b.id} onOpen={() => setSel(sel === b.id ? null : b.id)}>
                 <TagList label="Tags">{b.tags.map((t) => <Tag key={t}>{t}</Tag>)}</TagList>
                 <Text variant="data">{b.date}</Text>
               </Card>

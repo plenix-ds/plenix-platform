@@ -16,10 +16,9 @@ A small sign-in service for plenix.lighthouseway.org and design-system.lighthous
 
 - `server.js`: the service.
 - `accounts.js`: the accounts CLI.
-- `login.css`: the page's layout. It uses Plenix tokens only.
 - `Dockerfile`, `deploy.sh`: the container, built in the save service's style. They are written but have not been run.
 - `nginx-example.conf`: how the VM's Nginx would use the service.
-- The tests are in `tests/login.test.js` (`npm run test:login`).
+- The tests are in `tests/login.test.js` (`npm run test:login`). No tests: see HANDOFF.md (the owner runs them).
 
 The data lives in `DATA` (`/srv/plenix/login` on the VM, mounted at `/data`):
 
@@ -37,7 +36,7 @@ The data lives in `DATA` (`/srv/plenix/login` on the VM, mounted at `/data`):
   - These limits are kept in memory, so a restart clears them.
 - **Requests from other sites.** A POST must carry an `Origin` (or `Referer`) from the host it was sent to. The page sends a strict Content-Security-Policy: scripts, styles and fonts come only from the Platform CDN.
 - **Password managers (WCAG 3.3.8).** The fields use `autocomplete="username"` and `autocomplete="current-password"`. Paste and autofill are never blocked, and the user name stays filled in after an error.
-- **Look.** The page uses only the Platform release's classes: the accent application header, a `plx-panel` card, `plx-field` and `plx-input`, `plx-check`, `plx-button`, and `plx-notice`. It loads `fonts.css`, `plenix.css` and `theme-boot.js` from `https://design-system.lighthouseway.org/cdn/<version>/`, where the version comes from `package.json` (the same files the deployed apps use). Light and dark mode follow the system. It follows Platforms Standard 5.3 "Sign-in and account": a centered card at Medium and Wide, and one column with no card frame at Narrow.
+- **Look.** The page uses only the Platform release's classes: the accent application header, the Platform's `Auth` pattern (`plx-auth`: a centered card, one column at Narrow) in the AppShell frame, `plx-field` and `plx-input`, `plx-check`, `plx-button`, and `plx-notice`. It loads `fonts.css`, `plenix.css` and `theme-boot.js` from `https://design-system.lighthouseway.org/cdn/<version>/`, where the version comes from `package.json` (the same files the deployed apps use). Light and dark mode follow the system. It follows Platforms Standard 5.3 "Sign-in and account": a centered card at Medium and Wide, and one column with no card frame at Narrow.
 
 Settings come from environment variables:
 
@@ -61,7 +60,7 @@ This builds the image on the VM and runs `plenix-login` on `127.0.0.1:8782`, wit
 ## The first account
 
 ```
-ssh plenix@10.0.0.30
+ssh -i "$PUBLISH_KEY" "$PUBLISH_USER@$PUBLISH_HOST"
 sudo docker exec -it plenix-login node accounts.js add <user> --email <email> --name "<display name>" --groups Admins
 ```
 
@@ -80,14 +79,14 @@ node accounts.js revoke <user>
 
 `disable` and `reset-password` also sign the account out everywhere. `revoke` signs it out everywhere without changing anything else.
 
-To try the page before the cutover, open a tunnel with `ssh -L 8782:127.0.0.1:8782 plenix@10.0.0.30` and go to http://localhost:8782/auth/sign-in. Browsers accept Secure cookies on localhost.
+To try the page before the cutover, open a tunnel with `ssh -i "$PUBLISH_KEY" -L 8782:127.0.0.1:8782 "$PUBLISH_USER@$PUBLISH_HOST"` (the publish host, account and key: `tools/publish-config.sh`) and go to http://localhost:8782/auth/sign-in. Browsers accept Secure cookies on localhost.
 
 ## Cutover from Authentik (each step needs the owner's go)
 
 1. **Back up.** Copy the VM's `/etc/nginx/sites-available/plenix` to `plenix.bak-<date>`. Back up NPM's `database.sqlite` the same way as the earlier `.bak-20261010-ds-private` backup.
 2. **Deploy the save service.** Run `bash services/save/deploy.sh`. It now accepts `X-Plenix-*` headers as well as `X-authentik-*`, so Save works before and after the switch.
 3. **Deploy the login service and add the owner's account.** Follow "Deploy" and "The first account" above, then test the sign-in through the tunnel.
-4. **Change the VM's Nginx.** Merge `nginx-example.conf` into the site file and keep the existing rules: the redirects, the bundle and the CDN headers. Run `sudo nginx -t`, then `sudo systemctl reload nginx`. Until step 5, a visitor signs in twice: first through Authentik, then through Plenix.
+4. **Change the VM's Nginx.** Merge `nginx-example.conf` into the site file, with `<PROXY_ADDRESS>` replaced by the reverse proxy's address on the private network and keep the existing rules: the redirects, the bundle and the CDN headers. Run `sudo nginx -t`, then `sudo systemctl reload nginx`. Until step 5, a visitor signs in twice: first through Authentik, then through Plenix.
 5. **Remove the Authentik forward auth from NPM hosts 27 and 28.** Clear their advanced config, the same way it was applied: a dry run first (`npm-dryrun.mjs`), then the real change. Keep TLS, Force SSL, HSTS and "Block Common Exploits".
 6. **Check the result:**
    - Signed out, https://plenix.lighthouseway.org/ goes to the Plenix sign-in, and https://design-system.lighthouseway.org/cdn/index.json still answers 200 without a sign-in.

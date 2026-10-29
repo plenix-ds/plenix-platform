@@ -1,3 +1,5 @@
+No tests: see HANDOFF.md (the owner runs them)
+
 # Task #210: Zero overlap lane Z4: the design-system site's own stylesheets (Codex)
 
 Tracker: https://github.com/plenix-ds/plenix-platform/issues/210 · Plan of record: https://github.com/plenix-ds/plenix-platform/issues/3

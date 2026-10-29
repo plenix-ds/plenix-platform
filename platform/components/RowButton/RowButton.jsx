@@ -14,6 +14,7 @@
      ...rest: other attributes go on the button (onClick)
    Behavior:
      It is a native button with no look of its own beyond the states: a hover fill, a selected fill and the focus ring.
+     Its press comes from usePressable with native: the browser's click is the press, and onClick gets that click.
      A pressed button shows the selected fill too.
    Notes:
      Use it when a Button's single centered label cannot hold the content: list rows that open a record, calendar day cells, compact project tiles.
@@ -21,12 +22,16 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
+import { usePressable } from '../../hooks/usePressable.js';
 
 export const RowButton = React.forwardRef(function RowButton({ selected = false, current, pressed, expanded, hover = true,
-  className, children, ...rest }, ref) {
+  className, children, onClick, onPointerDown, onPointerCancel, onKeyDown, onBlur, ...rest }, ref) {
+  // the browser's click stays the press (usePressable native), and onClick gets that click event; your own
+  // onPointerDown, onPointerCancel, onKeyDown and onBlur run first, as before
+  const { pressProps } = usePressable({ native: true, onPress: (p) => { if (onClick) onClick(p.event); }, handlers: { onPointerDown, onPointerCancel, onKeyDown, onBlur } });
   return (
     <button ref={ref} type="button"
-      aria-current={current || (selected ? 'true' : undefined)} aria-pressed={pressed} aria-expanded={expanded} {...rest}
+      aria-current={current || (selected ? 'true' : undefined)} aria-pressed={pressed} aria-expanded={expanded} {...rest} {...pressProps}
       className={cx('plx-row-button', hover && 'plx-row-button--hover', (selected || pressed) && 'is-selected', className)}>
       {children}
     </button>

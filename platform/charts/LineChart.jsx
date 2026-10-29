@@ -60,6 +60,7 @@ import { ChartLegend } from './parts/ChartLegend.jsx';
 import { ChartTooltip, chartTooltipText } from './parts/ChartTooltip.jsx';
 import { useChartInteraction, ChartFocusMark, ChartBrush } from './interaction.js';
 import { useEChartsPlot, plotGrid } from './echarts/EChartsPlot.jsx';
+import { tickLineHeight } from './echarts/engine.js';
 import { snapToGrid } from '../utils/grid.js';
 import { halfRoom } from './chart-kit.js';
 
@@ -163,14 +164,17 @@ export function SeriesChart({ kind = 'line', title, description, data = NONE, x 
     const room = gridRoom(margin, tk.top);
     // ECharts does not measure labels at its own tick values: the room under the plot and after it for the date labels
     const dates = type === 'time' ? timeLabels(size) : null;
+    // the x labels' line height: the font size, or more for Arabic labels (tickLineHeight)
+    const xTexts = type === 'band' ? cols.map((c) => fmts.current.fmtX(xs[c])) : dates ? dates.customValues.map(dates.formatter) : [];
+    const xLine = tickLineHeight(tk, xTexts);
     if (dates) {
-      room.bottom = Math.max(room.bottom, snapToGrid(tk.tickOffset + tk.tick.fontSize, { round: 'up' }));
+      room.bottom = Math.max(room.bottom, snapToGrid(tk.tickOffset + xLine, { round: 'up' }));
       room.right = Math.max(room.right, halfRoom(dates.last));
     }
     const named = { nameLocation: 'middle', nameMoveOverlap: true };
     const rule = { show: true, lineStyle: { color: tk.axis.color, width: tk.axis.width } };
-    const xAxis = Object.assign({ name: xLabel, nameGap: tk.tickOffset * 2 + tk.tick.fontSize, inverse: tk.rtl }, named,
-      type === 'band' ? { type: 'category', boundaryGap: false, data: cols.map((c) => fmts.current.fmtX(xs[c])) }
+    const xAxis = Object.assign({ name: xLabel, nameGap: tk.tickOffset * 2 + xLine, inverse: tk.rtl }, named,
+      type === 'band' ? Object.assign({ type: 'category', boundaryGap: false, data: xTexts }, xLine > tk.tick.fontSize ? { axisLabel: { lineHeight: xLine } } : {})
         : { type: type === 'time' ? 'time' : 'value', min: xValue(v0), max: xValue(v1), axisLine: rule, splitLine: { show: false },
           axisLabel: dates ? { customValues: dates.customValues, formatter: dates.formatter } : { formatter: (v) => fmts.current.fmtX(v) } });
     const yAxis = Object.assign({ type: 'value', name: yLabel, nameGap: 0, position: tk.rtl ? 'right' : 'left',

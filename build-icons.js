@@ -10,6 +10,7 @@
 // ~200 times less). A class name alone (no component, or a Material name from icons-all.css) still draws the mask.
 const fs = require('fs');
 const path = require('path');
+const layout = require('./platform/icons/layout.js');   // the icon asset layout (#279): icons/<set>/<name>.svg|.js
 
 const ident = (sym) => sym.replace(/_/g, '-');
 // the naming contract (owner, 2026-10-22): Plenix names use dashes; a name that is its Material symbol with dashes
@@ -50,7 +51,7 @@ module.exports = function buildIcons(root) {
     return selectors(M, n) + '{--plx-comp-icon-filled:' + auto(f) + ';--plx-comp-icon-filled-24:var(' + f.replace(/-fill$/, '-24-fill') + ');--plx-comp-icon-outline:' + auto(o) + ';--plx-comp-icon-outline-24:var(' + o.replace(/(-fill)?$/, '-24$1') + ');}';
   });
   // the symbols that point along the reading direction: mirrored in right to left
-  const MIRROR = ['arrow_back', 'arrow_right', 'chevron_left', 'chevron_right', 'left_panel_close', 'left_panel_open', 'right_panel_close', 'right_panel_open', 'undo', 'redo'];
+  const MIRROR = layout.MIRROR;
   // the optical size a context draws, per symbol: 20 by default (every density context but Comfortable resets it, so a
   // region nested in a Comfortable one draws 20 again), 24 in a Comfortable region and in a 24px container
   const autos = (big) => symbols.flatMap((sym) => ['', '-fill'].map((f) => '--plx-comp-icon-auto-' + ident(sym) + f + ':var(--plx-comp-icon-glyph-' + ident(sym) + (big ? '-24' : '') + f + ');')).join('');
@@ -101,6 +102,9 @@ module.exports = function buildIcons(root) {
     ...names,
     '/* right to left: the directional icons mirror (Material Symbols\' bidirectional set); scale, so a rotation on the icon still applies (batch 213) */',
     Object.keys(M.map).filter((n) => MIRROR.indexOf(M.map[n].split('#')[0]) >= 0).sort().map((n) => selectors(M, n).split(',').map((sel) => sel + ':dir(rtl)').join(',')).join(',') + '{scale:-1 1;}',
+    '/* an imported icon module outside the Plenix set that points along the reading direction (its mirrored flag; issue 281):',
+    '   the Icon component marks it plx-icon--mirrored, and it mirrors the same way */',
+    '.plx-icon--mirrored:dir(rtl){scale:-1 1;}',
   ].join('\n') + '\n';
   const missing = Object.keys(M.map).filter((n) => !css.includes('.plx-icon--' + n + '{') && !css.includes('.plx-icon--' + n + ','));
   if (missing.length) throw new Error('icon names without a rule: ' + missing.join(', '));
@@ -128,5 +132,8 @@ module.exports = function buildIcons(root) {
     'export const NAMES = ' + JSON.stringify(named) + ';\n' +
     'export const LIBRARY = ' + JSON.stringify(library.join(' ')) + ';\n' +
     'export const LIBRARY_COMMIT = ' + JSON.stringify(String(M._commit).slice(0, 12)) + ';\n');
-  return { symbols: symbols.length, names: names.length, bytes: Buffer.byteLength(css) };
+  // the asset layout of the Plenix set (#279, stage 1): platform/dist/icons/plenix/<name>.svg|.js and index.json, generated
+  // and not committed; no consumer reads it yet (icon.css and glyphs.js above still draw every icon)
+  const assets = layout.writeSet(root, 'plenix', path.join(root, 'platform', 'dist', 'icons', 'plenix'));
+  return { symbols: symbols.length, names: names.length, bytes: Buffer.byteLength(css), assets };
 };

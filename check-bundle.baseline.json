@@ -1,0 +1,11 @@
+{
+  "$description": "The bundle rules baseline (check-bundle.js; owner, bundle-check-27). Counts per rule in the built CDN files. The check fails when a count goes up. Lower it with node check-bundle.js --update when one goes down; never raise it to pass. The size of plenix.css is printed, not limited (owner, #460).",
+  "version": "0.73.0",
+  "rules": {
+    "P-38": 0,
+    "P-45": 0,
+    "P-46": 0,
+    "P-47": 0,
+    "P-48": 0
+  }
+}

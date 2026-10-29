@@ -26,14 +26,12 @@ You fix the items in your task, in the files your task names. Other writers work
 - node check-style.js    → STYLE_OK
 - npm run lint:css       → no errors
 - node check-spec.js     → SPEC_OK
-- node tests/pages.test.js → PAGES_OK (slow: run once at the end)
-- the tests for what you touched: tests/keyboard.test.js, tests/layout.test.js, tests/data-grid.test.js,
-  tests/a11y.test.js (must not get worse), tests/theme.test.js, tests/density.test.js, tests/visual.test.js.
-  Use a free port if a test takes one (several writers run tests at the same time; tests/lib.js serve(PORT): if a port is
-  busy, set the env or edit nothing — wait and rerun).
+- No tests: the owner runs them (see HANDOFF.md, No tests). The ones that cover this work: tests/pages.test.js,
+  tests/keyboard.test.js, tests/layout.test.js, tests/data-grid.test.js, tests/a11y.test.js, tests/theme.test.js,
+  tests/density.test.js, tests/visual.test.js. Name them in your report so the owner can start them.
 - Look at what you built in Chrome (the tests use puppeteer; you may write a small puppeteer script in the scratchpad).
 - Do not commit, release or deploy. Do not edit files outside your task's list except new files you create and the
   token JSON entries you need.
 
 ## Report
-Per item: what you changed (files), how you verified it, test results, anything left (with the reason). Short.
+Per item: what you changed (files), how you verified it (static checks), the tests the owner should run, anything left (with the reason). Short.

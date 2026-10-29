@@ -1,5 +1,5 @@
 /* Plenix · Auth (platform/patterns/Auth): the sign-in, sign-up, reset, two-step, single sign-on and recovery forms in one
-   frame, promoted from the Plenix login (services/login/login.css). A centered card a small dialog wide on the canvas
+   frame, promoted from the Plenix login (services/login). A centered card a small dialog wide on the canvas
    (page: it fills the window under the header); on narrow windows one column from the top, without the card's frame.
    Inside: the title and its line, the form (fields stacked, the submit button as wide as the card), the links to the
    other flows, and "or" between single sign-on and the form. Anatomy and API: Auth.jsx. */

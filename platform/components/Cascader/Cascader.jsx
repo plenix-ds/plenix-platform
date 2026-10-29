@@ -24,6 +24,7 @@
        columns: "Options" }
      className: more classes on the cascader
    Behavior:
+     The popup opens in the browser's top layer, below the field or above it near an edge: no dialog, drawer or scroll area clips it.
      The field is a button (aria-haspopup="dialog", aria-expanded) that opens the columns under it; focus moves into the
        first column, on the chosen path. The columns are MillerColumns: Arrow Up and Down in a column, Right into the
        children, Left back, Enter on a leaf chooses it (a click too). A single choice closes the list and returns focus to
@@ -43,6 +44,10 @@ import { cx } from '../../utils/cx.js';
 import { Tag } from '../Tag/Tag.jsx';
 import { MillerColumns } from '../MillerColumns/MillerColumns.jsx';
 import { announce } from '../../utils/announce.jsx';
+import { useFloating, FLOATING_ANCHOR } from '../../utils/floating.js';
+
+// the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
+const TOP_LAYER = FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 
 const STRINGS = { placeholder: 'Choose', separator: ' / ', search: 'Search', noMatches: 'No matches', empty: 'No items', remove: 'Remove {label}',
   results: (n) => n + (n === 1 ? ' match' : ' matches'), columns: 'Options' };
@@ -62,7 +67,10 @@ export const Cascader = React.forwardRef(function Cascader({ options = [], value
   const [text, setText] = React.useState('');
   const [active, setActive] = React.useState(0);
   const [browse, setBrowse] = React.useState([]);
-  const wrap = React.useRef(null), button = React.useRef(null), search = React.useRef(null), cols = React.useRef(null);
+  const wrap = React.useRef(null), button = React.useRef(null), search = React.useRef(null), cols = React.useRef(null), popup = React.useRef(null);
+  // the popup opens in the top layer, placed against the field by the floating layer (flips up near an edge, follows scroll and resize): no dialog, drawer or scroll area clips it
+  useFloating(wrap, popup, { open, placement: 'bottom-start' });
+  React.useLayoutEffect(() => { const el = popup.current; if (open && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover(); }, [open]);
   React.useImperativeHandle(ref, () => button.current);
   const chosen = multiple ? (values || []) : (value !== undefined && value !== null && value !== '' ? [value] : []);
   const pathLabel = (trail) => trail.map((x) => x.label).join(t.separator);
@@ -122,7 +130,7 @@ export const Cascader = React.forwardRef(function Cascader({ options = [], value
         </button>
       </div>
       {open ? (
-        <div className="plx-cascader__popup" id={auto + '-pop'} role="dialog" aria-label={label || t.columns}>
+        <div ref={popup} className="plx-cascader__popup" id={auto + '-pop'} role="dialog" popover={TOP_LAYER ? 'manual' : undefined} aria-label={label || t.columns}>
           {searchable ? (
             <div className="plx-cascader__search">
               <input ref={search} type="search" className="plx-input plx-cascader__search-input" role="combobox" aria-expanded={!!q} aria-controls={auto + '-matches'}

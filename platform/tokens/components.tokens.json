@@ -517,6 +517,49 @@
         }
       }
     },
+    "button-tone-success-selected-background": {
+      "$value": "{plx-sys.feedback-success-solid}",
+      "$type": "color",
+      "$extensions": {
+        "com.plenix": {
+          "before": [
+            "  /* tone: a toggle's chosen (pressed) state in a feedback color; its rest state stays the variant's (owner, vote-screen-37) */"
+          ]
+        }
+      }
+    },
+    "button-tone-success-selected-border": {
+      "$value": "{plx-sys.feedback-success-solid-border}",
+      "$type": "color"
+    },
+    "button-tone-success-selected-text": {
+      "$value": "{plx-sys.feedback-success-on-solid}",
+      "$type": "color"
+    },
+    "button-tone-danger-selected-background": {
+      "$value": "{plx-sys.feedback-danger-solid}",
+      "$type": "color"
+    },
+    "button-tone-danger-selected-border": {
+      "$value": "{plx-sys.feedback-danger-solid-border}",
+      "$type": "color"
+    },
+    "button-tone-danger-selected-text": {
+      "$value": "{plx-sys.feedback-danger-on-solid}",
+      "$type": "color"
+    },
+    "button-tone-neutral-selected-background": {
+      "$value": "{plx-sys.feedback-neutral-solid}",
+      "$type": "color"
+    },
+    "button-tone-neutral-selected-border": {
+      "$value": "{plx-sys.feedback-neutral-solid-border}",
+      "$type": "color"
+    },
+    "button-tone-neutral-selected-text": {
+      "$value": "{plx-sys.feedback-neutral-on-solid}",
+      "$type": "color"
+    },
     "button-disabled-background": {
       "$value": "{plx-sys.fill-neutral}",
       "$type": "color"
@@ -805,11 +848,11 @@
       "$type": "color"
     },
     "select-after-height": {
-      "$value": "{plx-ref.size-12px}",
+      "$value": "{plx-sys.control-icon-inline}",
       "$type": "dimension"
     },
     "select-after-width": {
-      "$value": "{plx-ref.size-12px}",
+      "$value": "{plx-sys.control-icon-inline}",
       "$type": "dimension"
     },
     "select-after-inset-inline-end": {
@@ -819,6 +862,126 @@
     "select-control-padding-inline-end": {
       "$value": "{plx-ref.space-32px}",
       "$type": "dimension"
+    },
+    "select-list-background": {
+      "$value": "{plx-comp.menu-background}",
+      "$type": "color",
+      "$description": "Select: the open list, the same surface as a Menu."
+    },
+    "select-list-border-color": {
+      "$value": "{plx-comp.menu-border-color}",
+      "$type": "color",
+      "$description": "Select: the open list border."
+    },
+    "select-list-border-width": {
+      "$value": "{plx-comp.menu-border-width}",
+      "$type": "dimension",
+      "$description": "Select: the open list border width."
+    },
+    "select-list-radius": {
+      "$value": "{plx-comp.menu-radius}",
+      "$type": "dimension",
+      "$description": "Select: the open list corners."
+    },
+    "select-list-shadow": {
+      "$value": "{plx-comp.menu-shadow}",
+      "$type": "shadow",
+      "$description": "Select: the open list shadow."
+    },
+    "select-list-margin-block-start": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "Select: the space between the field and its list."
+    },
+    "select-list-max-height": {
+      "$value": "{plx-ref.size-320px}",
+      "$type": "dimension",
+      "$description": "Select: the list scrolls past this height."
+    },
+    "select-list-padding": {
+      "$value": "{plx-comp.menu-padding-block}",
+      "$type": "dimension",
+      "$description": "Select: the space inside the list around its rows."
+    },
+    "select-list-z-index": {
+      "$value": "{plx-comp.menu-z-index}",
+      "$type": "number",
+      "$description": "Select: the list layer."
+    },
+    "select-option-text": {
+      "$value": "{plx-comp.menu-item-text}",
+      "$type": "color",
+      "$description": "Select: a row text color."
+    },
+    "select-option-font-size": {
+      "$value": "{plx-comp.combobox-option-font-size}",
+      "$type": "dimension",
+      "$description": "Select: a row text size, the Combobox's (the approved picture)."
+    },
+    "select-option-min-height": {
+      "$value": "{plx-comp.combobox-option-min-height}",
+      "$type": "dimension",
+      "$description": "Select: a row height, the Combobox's: 28px at the compact density (the approved picture)."
+    },
+    "select-option-padding-inline": {
+      "$value": "{plx-comp.combobox-option-padding-inline}",
+      "$type": "dimension",
+      "$description": "Select: the space at a row start and end."
+    },
+    "select-option-radius": {
+      "$value": "{plx-comp.menu-item-radius}",
+      "$type": "dimension",
+      "$description": "Select: a row corners."
+    },
+    "select-option-active-background": {
+      "$value": "{plx-comp.menu-item-hover-background}",
+      "$type": "color",
+      "$description": "Select: the row under the pointer or the arrow keys, the same gray as a Menu row."
+    },
+    "select-option-selected-background": {
+      "$value": "{plx-sys.state-selected}",
+      "$type": "color",
+      "$description": "Select: the chosen row's light blue tint (the Combobox's active tint), also while the row is active."
+    },
+    "select-option-selected-text": {
+      "$value": "{plx-sys.content-link}",
+      "$type": "color",
+      "$description": "Select: the chosen row text color."
+    },
+    "select-option-selected-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight",
+      "$description": "Select: the chosen row weight."
+    },
+    "select-option-disabled-text": {
+      "$value": "{plx-comp.menu-item-disabled-text}",
+      "$type": "color",
+      "$description": "Select: a disabled row text color."
+    },
+    "select-group-text": {
+      "$value": "{plx-comp.menu-group-label-text}",
+      "$type": "color",
+      "$description": "Select: a group heading color."
+    },
+    "select-group-font-size": {
+      "$value": "{plx-comp.menu-group-label-font-size}",
+      "$type": "dimension",
+      "$description": "Select: a group heading size."
+    },
+    "select-group-font-weight": {
+      "$value": "{plx-comp.menu-group-label-font-weight}",
+      "$type": "fontWeight",
+      "$description": "Select: a group heading weight."
+    },
+    "select-group-padding-block": {
+      "$value": "{plx-comp.menu-group-label-padding-block}",
+      "$type": "dimension",
+      "$description": "Select: a group heading vertical space."
+    },
+    "select-group-padding-inline": {
+      "$value": "{plx-comp.menu-group-label-padding-inline}",
+      "$type": "dimension",
+      "$description": "Select: a group heading horizontal space."
     },
     "input-width-xs-width": {
       "$value": "{plx-sys.field-width-xs}",
@@ -1888,11 +2051,11 @@
       "$description": "Two shades darker than the notice fill (owner, 2026-10-09)."
     },
     "skeleton-animation-duration": {
-      "$value": "{plx-sys.motion-duration-loop-slow}",
+      "$value": "{plx-sys.motion-loading-shimmer-duration}",
       "$type": "duration"
     },
     "skeleton-animation-timing-function": {
-      "$value": "{plx-sys.motion-ease-standard}",
+      "$value": "{plx-sys.motion-loading-shimmer-easing}",
       "$type": "dimension"
     },
     "skeleton-background": {
@@ -1908,8 +2071,12 @@
       "$type": "dimension"
     },
     "spinner-animation-duration": {
-      "$value": "{plx-sys.motion-duration-loop-fast}",
+      "$value": "{plx-sys.motion-loading-spin-duration}",
       "$type": "duration"
+    },
+    "spinner-animation-timing-function": {
+      "$value": "{plx-sys.motion-loading-spin-easing}",
+      "$type": "dimension"
     },
     "spinner-border-bottom-color": {
       "$value": "{plx-sys.action-primary-background}",
@@ -2021,11 +2188,11 @@
       "$type": "cubicBezier"
     },
     "progress-bar-indeterminate-fill-animation-duration": {
-      "$value": "{plx-sys.motion-duration-loop-slow}",
+      "$value": "{plx-sys.motion-loading-progress-duration}",
       "$type": "duration"
     },
     "progress-bar-indeterminate-fill-animation-timing-function": {
-      "$value": "{plx-sys.motion-ease-standard}",
+      "$value": "{plx-sys.motion-loading-progress-easing}",
       "$type": "dimension"
     },
     "progress-bar-info-fill": {
@@ -3718,22 +3885,6 @@
       "$value": "{plx-sys.space-inset-sm}",
       "$type": "dimension"
     },
-    "menu-popover-bottom-start-margin-block-start": {
-      "$value": "{plx-sys.space-inset-xs}",
-      "$type": "dimension"
-    },
-    "menu-popover-bottom-end-margin-block-start": {
-      "$value": "{plx-sys.space-inset-xs}",
-      "$type": "dimension"
-    },
-    "menu-popover-top-start-margin-block-end": {
-      "$value": "{plx-sys.space-inset-xs}",
-      "$type": "dimension"
-    },
-    "menu-popover-top-end-margin-block-end": {
-      "$value": "{plx-sys.space-inset-xs}",
-      "$type": "dimension"
-    },
     "app-header-accent-brand": {
       "$value": "{plx-sys.accent-content}",
       "$type": "color",
@@ -5020,11 +5171,11 @@
       "$type": "color"
     },
     "combobox-chevron-height": {
-      "$value": "{plx-ref.size-12px}",
+      "$value": "{plx-sys.control-icon-inline}",
       "$type": "dimension"
     },
     "combobox-chevron-width": {
-      "$value": "{plx-ref.size-12px}",
+      "$value": "{plx-sys.control-icon-inline}",
       "$type": "dimension"
     },
     "combobox-chevron-inset-inline-end": {
@@ -7398,15 +7549,10 @@
       "$value": "{plx-sys.font-weight-medium}",
       "$type": "fontWeight"
     },
-    "text-link-target-inset-block": {
-      "$value": "min(0px, calc((100% - {plx-sys.control-target-min}) / 2))",
+    "visually-hidden-size": {
+      "$value": "{plx-ref.border-width-1px}",
       "$type": "dimension",
-      "$description": "How far a text link that is a table cell's only content reaches above and below its text with an invisible target: up to the minimum target (--plx-sys-control-target-min: 24px with a mouse, 44px with touch), centered on the link; the cell clips it, so it never reaches the next row (Platforms Standard 3.1)."
-    },
-    "text-link-target-inset-inline-end": {
-      "$value": "min(0px, calc(100% - {plx-sys.control-target-min}))",
-      "$type": "dimension",
-      "$description": "How far that link's invisible target reaches after its text (toward the cell's end, where the cell has room; the link starts at the cell's padding): up to the minimum target width; the cell clips it, so it never reaches the next column."
+      "$description": "The box of a text kept for screen readers only (VisuallyHidden): one pixel each way, so it never takes room on the page (#288)."
     },
     "text-link-text": {
       "$value": "{plx-sys.content-link}",

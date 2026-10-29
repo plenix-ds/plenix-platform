@@ -1,8 +1,8 @@
 # Plenix: handoff for a new session (2026-10-24)
 
 > **Handed off, 2026-10-26.** The owner: "so now all the work is ready to hand off to begin a new clean environment based on the plan discussed".
-> The **cc-server team** (the Lead on VM 131, 10.0.0.32) runs Plenix from here. The Windows-VM sessions (Owner desk, Governance and the DND sessions) stand down and start or merge nothing more.
-> The hand-off note is `HANDOFF-to-cc-server.md`, in the sessions' shared notes folder on the Windows VM (`C:\Users\Administrator\AppData\Roaming\Claude\side-session-notes\local_6c3642e2-6729-4aa7-80c6-a08a9198dca1\`), beside `owner-decisions-log.md` (every owner decision, verbatim). Read it first, then this file and #252.
+> The **team server** (the Lead's machine) runs Plenix from here. The Windows-VM sessions (Owner desk, Governance and the DND sessions) stand down and start or merge nothing more.
+> The hand-off note is in the sessions' shared notes folder on the Windows VM, beside `owner-decisions-log.md` (every owner decision, verbatim). Read it first, then this file and #252.
 > State at hand-off: live 0.72.0; `styling/phase-2` green (CI run 40389886058); merged since 0.72.0 and unreleased: #341 (+ spec #5), #345–#351, #355. In flight: charts on ECharts (#353; Line, Area, Bar, Pie approved to ship; branch `claude/charts-echarts-first`; then Diagram retired (breaking), Sparkline and WordCloud to ECharts). No release until the owner asks.
 
 Read this first, then [STATUS.md](STATUS.md) (what is done and left), then `CLAUDE.md` (Claude) or `AGENTS.md` (Codex).
@@ -17,10 +17,10 @@ One design system and the suite of applications built on it, owned by one person
 | Part | Where | What |
 |---|---|---|
 | Platform | `platform/` | React components (`components/`), patterns (`patterns/`), hooks, providers; `plx-` CSS classes; tokens in three tiers (`--plx-ref-` values, `--plx-sys-` roles, `--plx-comp-` component settings) as W3C JSON in `platform/tokens/` |
-| Design spec | `platform/design-system/` (a **submodule**, private repo `plenix-ds/plenix-design-system`) | The living spec: 688 records, 1,172 taxonomy leaves; `inventory.js` + `parts/*.records.js|docs.js|labs.js`; one page per component (the duplicate merge is permanent, no redirects) |
+| Design spec | `platform/design-system/` (a **submodule**, private repo `plenix-ds/plenix-design-system`) | The living spec: 689 records, 1,173 taxonomy leaves; `inventory.js` + `parts/*.records.js|docs.js|labs.js`; one page per component (the duplicate merge is permanent, no redirects) |
 | Standards | `platform/standards/` | `styling.md` (the Styling Standard: ownership, zero overlap, text contracts, layers), `text-contracts.json`, themes, layout, native design |
 | Apps | `dashboard/ projects/ messages/ contacts/ calendar/ tasks/ notes/ bookmarks/ files/ settings/ dam/` | The suite, each `main.jsx` → generated `app.js` |
-| Checks | `check-system.js` (+ `check-system.rules/`), `check-spec.js`, `tests/` | The gates |
+| Checks | `check-system.js` (+ `check-system.rules/`), `check-style.js`, `check-spec.js`, `check-bundle.js` (+ `check-bundle.baseline.json`); `tests/` | The gates (the tests run only when the owner starts them) |
 | Agent tools | `tools/agent/` | Work notes, proof log (`proof-log.md`), release script (`release.sh`), the spec-merge record |
 
 ## Where things stand
@@ -29,7 +29,7 @@ One design system and the suite of applications built on it, owned by one person
 - **Last release: 0.69.4** (tag `v0.69.4`, live at `https://design-system.lighthouseway.org/cdn/0.69.4/`).
   - 0.69.3 shipped EntityHeader's Streamlined header style (`headerStyle="streamlined"`).
   - 0.69.2 shipped the five Structured layouts (`layout`), the tag picker fix and the icon fix.
-- **Hosting**: VM 130 "Plenix" (10.0.0.30) behind Nginx Proxy Manager; `plenix.lighthouseway.org` (apps), `design-system.lighthouseway.org` (spec, CDN `/cdn/<version>/`, API `/api/v1/`, behind Authentik except `/cdn/`).
+- **Hosting**: the publish host (`PUBLISH_HOST`, `tools/publish-config.sh`) behind Nginx Proxy Manager; `plenix.lighthouseway.org` (apps), `design-system.lighthouseway.org` (spec, CDN `/cdn/<version>/`, API `/api/v1/`, behind Authentik except `/cdn/`).
 - **Unfinished work saved on a branch**: `wip/data-grid-lines-as-borders` (an unverified DataGrid change found on disk): #290.
 
 ## The owner's rules (non-negotiable)
@@ -43,32 +43,34 @@ One design system and the suite of applications built on it, owned by one person
 - **Dark mode last** (#205). American English. Statuses are badges with an icon, never a dot. No action links.
 - Write documentation as definitive rules, plain words, bullets for two sentences or more.
 - **Other sessions share this folder.** Commit only your own files; build generated files in a clean copy; never `git add -A`.
-- Proofs: prove only the pages you touch (`tests/clash-audit.js --check --pages …`, `tests/compare-styles.js`), log
-  them in `tools/agent/proof-log.md`, never wait on them; the full suite (#58) only at the very end.
+- Proofs: do not run `tests/clash-audit.js` or `tests/compare-styles.js` (see "No tests"); say in the pull request which pages the change touches.
+  The full suite (#58) is the owner's, at the very end.
 - Commits: author "Coptic Collection" <frraphaelmaher@gmail.com>, trailer `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`. The global git identity is set to this author (owner, 2026-10-24).
 
 ## How to work
 
-- **Tests and checks only before a push (owner, 2026-10-26).** The owner's words: "so i want the tests checks to only be done on a PUSH!!!"
-  - Commit freely while working. Run the tests and checks (`node build-app.js`, `node check-system.js`, `node check-style.js`, `npm run lint:css`, `node check-spec.js`, the tests that cover the change) only right before a push.
-  - The full suite runs on the release gate (the sharded CI full run on the release commit), not on each commit.
+- **No tests (owner, 2026-10-27).** Never run a test. Tests run only when the owner starts them himself. Reading the code and the quick static checks (check-system, check-style, lint) are fine.
+  - This is the one statement of the rule; every other file points here.
+  - Commit freely while working. Right before a push run only the build and the static checks: `node build-app.js`, `node check-system.js`, `node check-style.js`, `npm run lint:css`, `node check-spec.js`.
+  - The full suite and the on-demand tests are started by the owner. CI is a separate owner decision.
+  - The owner starts tests with a run-tests issue in plenix-ds/owner-requests, which `~/team/test-runner.sh` runs. No agent opens, edits or comments on those issues.
 - **Show me, then ship it (owner, 2026-10-26).**
   - "Show me" comes first: a live preview and one picture, with no build, no tests and no PR.
   - "Ship it" comes only after the owner picks: then build, check before the push, open the PR, and merge on the owner's word.
-- **On-demand tests (owner only, 2026-10-25).**
+- **On-demand tests (owner only, 2026-10-25; the owner runs them, see No tests).**
   - Accessibility, high contrast, color contrast, themes and density run only when the owner asks for them.
-  - They are not in `npm test`, `npm run test:full`, the per-push CI or the full suite.
-  - On this computer: `npm run test:on-demand` checks what changed; `npm run test:on-demand:full` checks every page (accessibility alone takes about two hours).
-  - On GitHub: Actions › On-demand tests › Run workflow, then pick "full" or "changed".
-  - One test by name: `node tests/run.js a11y` (or `high-contrast`, `contrast`, `theme`, `density`).
+  - They are not in `npm test` (the owner runs it), `npm run test:full`, the per-push CI or the full suite.
+  - The owner runs, on this computer: `npm run test:on-demand` checks what changed; `npm run test:on-demand:full` checks every page (accessibility alone takes about two hours).
+  - The owner runs, on GitHub: Actions › On-demand tests › Run workflow, then pick "full" or "changed".
+  - One test by name (the owner runs): `node tests/run.js a11y` (or `high-contrast`, `contrast`, `theme`, `density`).
 - **The test site (owner, 2026-10-25).** Every automatic browser test runs on the St. John the Beloved Coptic Orthodox
   Church test site and the suite apps, never on the design spec.
   - The site is its own web app and repository: github.com/plenix-ds/st-john-test-site (Node 22 + PostgreSQL 16, Plenix from the CDN), live at https://stjohn.lighthouseway.org behind Authentik.
   - Clone it beside this repository (`../st-john-test-site`, or set `SITE_DIR`). The tests start it on their own server at `/Plenix/test-site/` with a fresh database (PGlite on a computer, the job's PostgreSQL in CI) and point it at this checkout's CDN files at `/cdn/local/`: run `node build-app.js` and `node build-packages.js` first.
   - It is a church database and membership app with made-up data (no sacrament records; "servants", never "volunteers"). Its routes are its `site/pages.js`; tests read them through `tests/site.js`.
   - CI reads the site's repository with the `DS_TOKEN` secret (owner, 2026-10-26: reuse it; it also reads the spec).
-  - A new Platform part must be placed on the site: `node tests/site-coverage.test.js` (SITE_COVERAGE_OK) and `node tests/site-check.js` (the site's rules).
-  - The spec's component labs are spec-only (`node tests/run.js labs`); `tests/component-tokens.test.js` checks the tokens on the site's real components.
+  - A new Platform part must be placed on the site. The owner starts `node tests/site-coverage.test.js` (SITE_COVERAGE_OK) and `node tests/site-check.js` (the site's rules); you do not run them.
+  - The spec's component labs are spec-only (`node tests/run.js labs`, the owner runs); `tests/component-tokens.test.js` (the owner runs) checks the tokens on the site's real components.
 - **No target-size test.** The owner removed it ("Remove tap areas from all tests", 2026-10-25).
 - **Each thing is checked once (reset, owner 2026-10-26).**
   - Visual checks the buttons in light mode at the default density (Standard) only: 840 buttons and the group.
@@ -80,6 +82,12 @@ One design system and the suite of applications built on it, owned by one person
   - Dark mode, the themes and the densities are checked only on demand (`theme`, `density`) until dark mode work starts (#205).
 - Gates before finishing any change: `node build-app.js`, `node check-system.js` (SYSTEM_OK), `node check-style.js` (STYLE_OK), `npm run lint:css` (no errors), `node check-spec.js` (SPEC_OK).
   After a spec change, `node build-spec-parts.js` (build-app runs it).
+- Bundle rules (`node check-bundle.js`; owner, bundle-check-27; #456 to #461):
+  - It reads the built CDN files in `release/cdn/<version>/` (`plenix.js`, `plenix.css`) and never builds them; CI runs it after "Release build" and the release after `build-packages.js`. Advisory, like the other checks.
+  - It counts runtime addresses (P-38), injected scripts (P-45), page prefetch (P-46), raw HTML outside the rich-text engine (P-47) and CSS outside the supported browsers with no `@supports` fallback (P-48). The header of `check-bundle.js` defines each rule. The size of `plenix.css` is not a rule (owner, #460): it prints as a plain number in KB and never fails the check.
+  - It fails (BUNDLE_FAIL) when any count goes up from `check-bundle.baseline.json`. When one goes down, lower the baseline in the same pull request with `node check-bundle.js --update`.
+  - Never raise the baseline to pass. `--list` shows where each finding comes from: the source module, or the CSS rule.
+  - `node build-packages.js` builds the CDN files and runs no test (#466, #472); CI also builds them.
 - Generated files (never edit by hand): `platform/dist/platform.js`, `<app>/app.js`, `platform/system/steps.css`,
   `platform/system/tokens/*.css`, `platform/tokens/tokens.index.json`, `platform/components/Icon/icon.css`,
   `platform/design-system/spec-parts.js`, `reviewed.js`, `usage.js`.

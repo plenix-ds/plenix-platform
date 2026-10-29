@@ -37,12 +37,13 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
-import { formatDate, formatTime, formatDateTime, formatRelative, formatLocale, dateTimeAttr } from '../../utils/format.js';
+import { formatDate, formatTime, formatDateTime, formatRelative, formatLocale, numeralLocale, dateTimeAttr, parseDate } from '../../utils/format.js';
 import { tokenMs } from '../../utils/tokenTime.js';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';
 
 const FORMATS = ['datetime', 'relative', 'label', 'date', 'time'];
-const toDate = (v) => { if (v === undefined || v === null || v === '') return null; const d = v instanceof Date ? v : new Date(v); return isNaN(d.getTime()) ? null : d; };
+// the shared parser: a date-only value is that calendar day where the reader is, never midnight UTC (issue 342)
+const toDate = (v) => (v === undefined || v === null || v === '' ? null : parseDate(v));
 const dayStart = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
 const pad = (n) => (n < 10 ? '0' : '') + n;
 const calendarDay = (d) => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
@@ -51,7 +52,7 @@ const calendarDay = (d) => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' +
 function dayLabel(d, now, o) {
   const days = Math.round((dayStart(d) - dayStart(now)) / 86400000);
   if (Math.abs(days) > 1) return formatDate(d, { dateStyle: 'short', timeZone: o.timeZone, locale: o.locale });
-  const lang = o.locale || formatLocale();
+  const lang = numeralLocale(o.locale || formatLocale());
   const w = new Intl.RelativeTimeFormat(lang, { numeric: 'auto' }).format(days, 'day');
   return w.charAt(0).toLocaleUpperCase(lang) + w.slice(1);
 }

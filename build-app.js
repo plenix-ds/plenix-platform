@@ -2,6 +2,7 @@
 //   node build-app.js        (or: npm run build:app)
 //
 //   Icons          platform/icons/                 → platform/components/Icon/icon.css   (build-icons.js)
+//                                                  → platform/dist/icons/plenix/<name>.svg|.js, index.json (the asset layout, #279)
 //   Platform       platform/index.js               → platform/dist/platform.js       publishes its exports on window.Plenix
 //   Applications   <folder>/main.jsx               → <folder>/app.js                  one per suite application (dashboard,
 //                  projects, messages, contacts, calendar, tasks, notes, bookmarks, files, settings); they share suite/
@@ -112,6 +113,17 @@ function bundle(target) {
         if (spec === 'plenix-platform' && target.publish) throw new BuildError(`Platform source must not import "plenix-platform" (${rel(file)})`);
         entry.deps[spec] = { external: EXTERNALS[spec] };
         continue;
+      }
+      // an icon module (#282): plenix-platform/icons/<set>/<name>, the asset layout's module (platform/icons/layout.js),
+      // bundled into the application like a source file; a Material one is written on demand, only the names imported
+      const icon = /^plenix-platform\/icons\/(plenix|material)\/([a-z0-9-]+)$/.exec(spec);
+      if (icon) {
+        const dir = path.join(ROOT, 'platform', 'dist', 'icons', icon[1]);
+        let dep;
+        try { dep = icon[1] === 'material' ? require('./platform/icons/layout.js').writeMaterialModule(ROOT, icon[2], dir) : path.join(dir, icon[2] + '.js'); }
+        catch (e) { throw new BuildError('No icon named ' + icon[2] + ' in the ' + icon[1] + ' set (' + rel(file) + '): ' + e.message); }
+        if (!fs.existsSync(dep)) throw new BuildError('No icon named ' + icon[2] + ' in the ' + icon[1] + ' set (' + rel(file) + ')');
+        entry.deps[spec] = { id: rel(dep) }; visit(dep); continue;
       }
       if (!spec.startsWith('.')) {
         if (!/^@tanstack\/(react-table|table-core|react-virtual|virtual-core)$/.test(spec)) throw new BuildError('Unapproved browser package ' + spec + ' in ' + rel(file));

@@ -55,3 +55,45 @@ restyled icon is a new Plenix drawing, not an edited Material file. They live in
 from this folder, with each library's original kept beside it. Apps draw none of them until the owner approves one;
 it then joins the working set through `map.json` like any icon. Tools: `tools/icons/` (`check-icon.js` reports how an
 SVG is built against the guidance, `restyle-icon.js` refuses to write over the Material files).
+
+## The asset layout (#279, stage 1 of #277)
+
+One layout and one naming for every icon source, written by `layout.js` (generated, never committed):
+
+| Set | Where it is written | By | Size |
+|---|---|---|---|
+| `plenix` (the names in `map.json`) | `platform/dist/icons/plenix/` and `release/cdn/<v>/icons/plenix/` | `build-icons.js` (every `build-app.js` run) and `build-packages.js` | 212 icons, 1,061 files, 0.8 MB |
+| `material` (every symbol in `library/`) | `release/cdn/<v>/icons/material/` | `build-packages.js` (each release) | 4,150 icons, 20,751 files, 20.2 MB, under 1 s |
+
+- **Files per icon:** `<name>.svg`, `<name>-fill.svg`, `<name>-24.svg`, `<name>-24-fill.svg` (the source files, unedited), and `<name>.js`.
+- **The module:** `export default { name, set, symbol, fillOutline, mirrored, drawings: { 20: { outline, fill }, 24: { outline, fill } } }`. Each drawing is `{ viewBox, d, transform?, fillRule?, clipRule? }`. Both optical sizes are in every module (owner, #277 answer 7).
+- **`index.json` per set:** every name with its symbol and files, and every alias with its name.
+- **Names:** lowercase with dashes (`mic_off` is `mic-off`); the variant suffixes are `-fill`, `-24` and `-24-fill`. An alias (a symbol's underscore spelling) has no file of its own; `index.json` maps it to its name, so every name has exactly one module.
+- **The CDN path:** `/cdn/<version>/icons/<set>/<name>.js` (and `.svg`), under the release's version, so it never changes once published. The existing `/cdn/material/<commit>/` stays for the Icon component's fetch.
+- **One set on its own:** `node platform/icons/layout.js <plenix|material> <folder>`.
+- **No consumer reads the layout yet** (stage 1): `icon.css`, `glyphs.js` and the Icon component draw every icon as before. Stage 2 (#282) makes the modules importable.
+
+## Importing icons (#282, stage 2)
+
+- **In an application:** `import Add from 'plenix-platform/icons/plenix/add'` (or `…/icons/material/rocket-launch`), then `<Icon icon={Add} />`.
+  - `build-app.js` bundles the module into that application's script.
+  - A Material module is written on demand into `platform/dist/icons/material/`: only the names imported, under the same folder guard.
+- **Outside the suite:** the CDN's stage 1 paths, `/cdn/<version>/icons/<set>/<name>.js`.
+- **The `icon` prop:** Icon draws from the module's own drawings, with the same classes as by name, so `icon.css` still chooses the optical size (20 or 24) and the fill, and mirrors in right to left.
+- **`registerIcons(...modules)`:** a name (and its symbol's spelling) draws from its module first.
+  - It is stage 2 minimal; #281 extends it with the library choice and the development fetch.
+  - Unregistered names draw as before: Plenix names from `icon.css`, Material names from the library.
+- **No consumer is switched yet:** every page draws from `icon.css` as before.
+
+## One resolver (#281, stage 3)
+
+- **The order, in the default library `plenix`:** registered Plenix modules, then the Plenix set (`icon.css`), then registered Material modules, then the run-time file fetch (as before). Other libraries look only at their own registered modules (and, for `material`, the Material files).
+- **The `library` choice:** `<Icon library="plenix" | "material" | "<project>">`, or `setDefaultIconLibrary(name)` for the page. Call it at startup, before icons draw: icons already on the page don't draw again.
+- **Plenix names win in the default library:** a registered Material module never replaces a Plenix name (importing `material/home` leaves every `<Icon name="home">` drawing Plenix's `home`); it serves only names outside the Plenix set.
+  - `material` draws Material's own symbol even where a Plenix name exists: `check` is `check`, not `check_small`.
+  - A project's library draws only the modules registered into it: `registerIcons(...modules, { library: 'acme' })`.
+- **Development notice:** a name drawn by a run-time fetch warns once, in development only (`devWarn`'s check), that production should import or register it. The fetch itself stays in production for now; switching it off belongs to a later stage, once sites ship icon files.
+- **Right to left:** a module outside the Plenix set whose symbol points along the reading direction (`mirrored`) gets `plx-icon--mirrored`, which `icon.css` mirrors. Plenix names keep their own per-name rules.
+- **Build errors:**
+  - An unknown `plenix-platform/icons/material/<name>` import stops the build, as an unknown Plenix name does.
+  - An icon value that is not a module warns once.

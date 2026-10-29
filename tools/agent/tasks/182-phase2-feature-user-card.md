@@ -1,3 +1,5 @@
+No tests: see HANDOFF.md (the owner runs them)
+
 # Task #182: Styling Standard Phase 2: FeatureCard and UserCard stop restyling Card's parts (Codex)
 
 Tracker: https://github.com/plenix-ds/plenix-platform/issues/182 · Plan of record: https://github.com/plenix-ds/plenix-platform/issues/3 · Standard: `platform/standards/styling.md`

@@ -1,3 +1,5 @@
+No tests: see HANDOFF.md (the owner runs them)
+
 # Task #124: palette to 70 colors, the owner's revised proposal (Codex)
 
 Tracker: https://github.com/plenix-ds/plenix-platform/issues/124 · Plan of record: https://github.com/plenix-ds/plenix-platform/issues/3

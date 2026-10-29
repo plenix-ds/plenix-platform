@@ -1,0 +1,19 @@
+# #507 proof, regenerated 2026-10-28T21:21:07Z from a real run (headless Chrome).
+# before = styling/phase-2 at 3045125f (useEffect; its bundle has no 'measured before the first paint')
+# after  = this branch, built (its bundle has 'measured before the first paint' and the settle guard)
+# The first column is the check's own expression: flushSync-render a 700px SplitView, read the separator's aria-orientation
+# at once. On the old code it reads 'vertical', so the check FAILS there; on this branch 'horizontal', so it passes.
+
+before  narrow SplitView right after its first render: separator vertical | frames scheduled by 5 plain clicks: 5
+after   narrow SplitView right after its first render: separator horizontal | frames scheduled by 5 plain clicks: 0
+
+# the #505 switch steps on this branch (drag case included):
+=== after
+1000px                        row | sep vertical 560 [360–640] | first 560×608 | same sep true | focus on sep false
+1000px, focus, →              row | sep vertical 600 [360–640] | first 600×608 | same sep true | focus on sep true
+700px (stacked)               column | sep horizontal 320 [200–500] | first 668×320 | same sep true | focus on sep true
+700px, ↓                      column | sep horizontal 360 [200–500] | first 668×360 | same sep true | focus on sep true
+1000px again                  row | sep vertical 600 [360–640] | first 600×608 | same sep true | focus on sep true
+700px again                   column | sep horizontal 360 [200–500] | first 668×360 | same sep true | focus on sep true
+700px while dragging          column | sep vertical 640 [360–720] | first 668×20 | same sep true | focus on sep true
+after the drag ends           column | sep horizontal 360 [200–500] | first 668×360 | same sep true | focus on sep true

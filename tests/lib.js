@@ -74,4 +74,6 @@ const ready = async (page, { timeout = 15000 } = {}) => {
 const APPS = ['dashboard', 'projects', 'messages', 'contacts', 'calendar', 'tasks', 'notes', 'bookmarks', 'files', 'settings', 'dam'];
 
 // at(step): the step a timeout names
-module.exports = { ROOT, serve, launch, sleep, ready, APPS, at: limit.at };
+// check, wanted, record: the shared check helper (tests/check.js: parts with TEST_ONLY, results with TEST_RESULTS)
+const { check, wanted, record } = require('./check.js');
+module.exports = { ROOT, serve, launch, sleep, ready, APPS, at: limit.at, check, wanted, record };

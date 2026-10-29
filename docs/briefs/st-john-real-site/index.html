@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="../review.css">
 <script src="../../../platform/vendor/react-loader.js"></script>
 <script src="../../../platform/dist/platform.js"></script>
+<script src="../../../platform/engines/plenix-engines.js"></script>
 </head>
 <body class="rv-page">
 <main class="rv-doc">
@@ -22,7 +23,7 @@
   <section class="rv-section">
     <h2 class="rv-h2">Your four points, answered</h2>
     <ul class="rv-list">
-      <li><strong>1. A real website with PostgreSQL on the server:</strong> yes. A small app and a PostgreSQL database, each in a Docker container on the Plenix server (VM 130), next to the services already there.</li>
+      <li><strong>1. A real website with PostgreSQL on the server:</strong> yes. A small app and a PostgreSQL database, each in a Docker container on the Plenix server (the publish host), next to the services already there.</li>
       <li><strong>2. Loads Plenix the way any outside app does:</strong> from the CDN, so the tests check exactly what other projects get.</li>
       <li><strong>3. Not in the design spec:</strong> it has its own repository and no ties to the spec. It is not in the spec today either; it sits in the Plenix repository's test-site folder on the PR #345 branch.</li>
       <li><strong>4. The address:</strong> today it is local only, at <span class="rv-tag">http://localhost:8767/Plenix/test-site/index.html</span> once #345 is merged. The proposed web address is <span class="rv-tag">https://stjohn.lighthouseway.org</span>.</li>
@@ -110,7 +111,7 @@
     { id: 4, when: 'Tests in the St. John repository', plenix: 'The released version it is pinned to' }] }));
   mount('deploy', h(P.Table, { label: 'Deploy steps', columns: [col('n', 'Step'), col('what', 'What happens', 'wrap'), col('who', 'Who')], data: [
     { id: 1, n: '1', what: 'Create the private repository plenix-ds/st-john-test-site and a read-only token for the Plenix tests', who: 'Claude (your OK)' },
-    { id: 2, n: '2', what: 'On VM 130: the PostgreSQL container (data kept in /srv/st-john/db, port open only inside the server) and the app container (port 8790, inside the server only)', who: 'Claude, by deploy.sh' },
+    { id: 2, n: '2', what: 'On the publish host: the PostgreSQL container (data kept in /srv/st-john/db, port open only inside the server) and the app container (port 8790, inside the server only)', who: 'Claude, by deploy.sh' },
     { id: 3, n: '3', what: 'The server’s Nginx: a site file for stjohn.lighthouseway.org that sends everything to the app', who: 'Claude' },
     { id: 4, n: '4', what: 'DNS: stjohn.lighthouseway.org as a CNAME to npm.lighthouseway.org, like the other names', who: 'You, or Claude if you allow it' },
     { id: 5, n: '5', what: 'Nginx Proxy Manager: a new proxy host with a Let’s Encrypt certificate, HTTPS forced, and Authentik in front if you choose it', who: 'Claude (your OK; the database is backed up first)' },

@@ -4,8 +4,8 @@
      for those who do not drag; PanelSplitter is the same edge on a pane of the application shell (the navigation pane,
      a secondary pane, the inspector), promoted here from AppShell, which imports and re-exports it. Every size is on the
      4px grid: a drag moves one grid line at a time and lands on one when let go (owner, 2026-10-26), and a list of steps
-     narrows the settled sizes further. Sizes are honoured from 4px up to 1600px (GRID_BOX_MAX; a pane of the shell up to
-     960px, GRID_PANE_MAX): each grid line has a rule in the stylesheet up to there, and a larger size lands on the largest.
+     narrows the settled sizes further. Sizes are honoured from 4px up to 1600px (GRID_BOX_MAX; a pane of the shell too,
+     GRID_PANE_MAX): each grid line has a rule in the stylesheet up to there, and a larger size lands on the largest.
    Usage:
      <Resizable label="Preview" axis="horizontal" defaultWidth={320} minWidth={200} maxWidth={560}>…</Resizable>
      <Resizable label="Notes" axis="vertical" height={h} onResize={({ height }) => setH(height)} minHeight={120} maxHeight={400}>…</Resizable>
@@ -14,8 +14,9 @@
      <PanelSplitter label="Resize navigation" value={w} min={140} max={() => 320} onChange={setW} edge="end" />
    Props:
      label: what is resized ("Preview"): the edges' names ("Preview width", "Preview height") (required)
-     variant: "default" (a hover line on the edge) | "divider" (the edge is the whole gap to the next panel: a line down
-       its middle and a pill on it; its size is the container's --plx-comp-resizable-divider-size: SplitView)
+     variant: "default" (a hover line on the edge) | "divider" (the edge is the whole gap to the next panel, 8px in
+       SplitView: a thin line on each side, a light fill and a grip of three short lines in the middle; its size is the
+       container's --plx-comp-resizable-divider-size)
      fill: the content is a column whose children fill it; default false
      axis: "horizontal" (default; the end edge changes the width) | "vertical" (the bottom edge changes the height) |
        "both" (both edges, and a corner the pointer drags in both directions)
@@ -222,8 +223,8 @@ export function Resizable({ label, variant = 'default', fill: fillContent = fals
       <div className="plx-resizable__content">{children}</div>
       {notice ? <span ref={bubble} role="tooltip" popover="manual" className="plx-resizable-limit">{notice}</span> : null}
       <VisuallyHidden role="status" aria-live="polite" aria-atomic="true">{announcement}</VisuallyHidden>
-      {doW ? edge('width') : null}
-      {doH ? edge('height') : null}
+      {/* one edge in one place: when the axis changes (a SplitView that stacks) the same separator stays, with its focus */}
+      {doW && doH ? <>{edge('width')}{edge('height')}</> : edge(doW ? 'width' : 'height')}
       {doW && doH ? <div className="plx-resizable__corner" aria-hidden="true" onPointerDown={drag(1, 1)} /> : null}
     </div>
   );

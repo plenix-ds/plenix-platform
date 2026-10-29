@@ -1,3 +1,5 @@
+No tests: see HANDOFF.md (the owner runs them)
+
 # Task #209: Zero overlap lane Z3: components M–Z and the services (Codex)
 
 Tracker: https://github.com/plenix-ds/plenix-platform/issues/209 · Plan of record: https://github.com/plenix-ds/plenix-platform/issues/3

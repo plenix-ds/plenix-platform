@@ -123,18 +123,18 @@ An extended component's new tokens go in components/<component>.tokens.json too 
 - node build-app.js (it runs build-exports.js and build-spec-parts.js first)
 - node check-system.js → SYSTEM_OK; node check-style.js → STYLE_OK; npm run lint:css → no errors
 - node check-spec.js → SPEC_OK (rules records, parts, variants, states, api)
-- LABS_ONLY=<your lab ids> LABS_PORT=<8831 lane A | 8832 lane B | 8833 lane C> node tests/labs.test.js → ok for each
-- the tests for what you touched (BRIEF-web.md list), with your own ports; node tests/pages.test.js once at the end
+- the owner runs: LABS_ONLY=<your lab ids> LABS_PORT=<8831 lane A | 8832 lane B | 8833 lane C> node tests/labs.test.js
+- the owner runs: the tests for what you touched (BRIEF-web.md list) and node tests/pages.test.js. No tests: see HANDOFF.md
 - look at each new page in Chrome, light and dark (a small puppeteer script in the scratchpad with tests/lib.js serve and
   launch on a port of your own; tools/agent/web/s3/look.js is one)
 - node tools/agent/native/check.js on your native fragments → ALL OK
 
 ## Report
-Per target: files written, record ids, lab ids with checks/tokens from the labs test, variant pages, native map and
-fragments, test results, anything left with the reason. Short.
+Per target: files written, record ids, lab ids, variant pages, native map and fragments, the static check results,
+anything left with the reason. Short.
 
 ## Lessons from wave 1 (the integrator, 2026-10-12)
-- Run tests/typography.test.js before you report: in wave 1 it caught format output in DM Sans. Accessibility, contrast, high contrast, themes and density are on-demand tests the owner runs (2026-10-25); do not run them unless asked.
+- tests/typography.test.js (the owner runs; see HANDOFF.md, No tests) caught format output in DM Sans in wave 1. Accessibility, contrast, high contrast, themes and density are on-demand tests the owner runs (2026-10-25).
   (technical values are kind 'data': Reddit Mono at the table's size) and a scroll area without keyboard access.
 - Any scrolling region you create must be keyboard reachable (tabIndex 0 plus a name), or use useVirtualizer, which
   does that already.

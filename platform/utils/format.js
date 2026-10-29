@@ -16,6 +16,8 @@
    Props:
      every function takes an options object last; options.locale overrides the reader's locale (formatLocale())
      formatLocale(): the page's language (<html lang>), else the browser's, else "en-US"
+     digitsOf(locale): "arab" (Arabic-Indic ٠-٩) for Arabic locales, else "latn"; an explicit -u-nu-latn keeps Latin (owner, arabic-digits-35)
+     numeralLocale(locale, digits): the locale tag with its digits explicit (-u-nu-arab), for Intl; every format function here uses it
      formatNumber(value, { decimals, signed }): a plain number; decimals fixes the precision (keep it the same in a column)
      formatUnit(value, unit, { display, decimals }): a measurement with an Intl unit ("kilometer", "celsius", "megabyte");
        display "short" (default), "long" or "narrow"
@@ -40,6 +42,9 @@
      formatPhone(e164, { display }):a phone number stored as E.164 ("+14155550123"), "international" (default) or
        "national" ("(415) 555-0123")
      dateTimeAttr(date): the machine-readable value for <time dateTime={…}>
+     parseDate(value): the Date every helper here reads: a Date as is, a date-only "YYYY-MM-DD" as that calendar day
+       where the reader is (never midnight UTC, which is the day before in the Americas), else new Date(value); null when
+       it is not a date. Components that read a date use it, so no component parses dates itself (issue 342)
      FORMATS: the standard's data (see platform/standards/formats.json)
    Behavior:
      Nothing is cached per locale beyond the Intl formatter objects; every call reads the locale unless one is given.
@@ -78,14 +83,15 @@ export const FORMATS = {
 
 const ok = (n) => typeof n === 'number' && isFinite(n);
 // A date-only value is a calendar date in the reader's zone, not midnight UTC (DT-7).
-const toDate = (d) => {
+export function parseDate(d) {
   if (typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d)) {
     const [year, month, day] = d.split('-').map(Number), x = new Date(0);
     x.setFullYear(year, month - 1, day); x.setHours(0, 0, 0, 0);
     return x.getFullYear() === year && x.getMonth() === month - 1 && x.getDate() === day ? x : null;
   }
   const x = d instanceof Date ? d : new Date(d); return isNaN(x.getTime()) ? null : x;
-};
+}
+const toDate = parseDate;
 
 export function formatLocale() {
   const lang = typeof document !== 'undefined' && document.documentElement && document.documentElement.getAttribute('lang');
@@ -93,7 +99,20 @@ export function formatLocale() {
   if (typeof navigator !== 'undefined' && navigator.language) return navigator.language;
   return 'en-US';
 }
-const loc = (o) => (o && o.locale) || formatLocale();
+/* the digits a locale writes (owner, arabic-digits-35 and arabic-ids-35): Arabic text uses Arabic-Indic digits (٠-٩) everywhere,
+   whichever Arabic region the tag names (the browser alone writes Latin digits for "ar" and "ar-AE"); an explicit -u-nu-latn keeps Latin */
+export function digitsOf(locale) {
+  try { const l = new Intl.Locale(locale || formatLocale()); return l.numberingSystem === 'latn' ? 'latn' : l.numberingSystem === 'arab' || l.language === 'ar' ? 'arab' : 'latn'; } catch (e) { return 'latn'; }
+}
+// the locale tag with its digits made explicit (-u-nu-arab or -u-nu-latn), for Intl; a language that is not Arabic is left as it is
+export function numeralLocale(locale, digits) {
+  const tag = locale || formatLocale();
+  try {
+    const l = new Intl.Locale(tag), want = digits === 'arab' || digits === 'latn' ? digits : (l.language === 'ar' ? digitsOf(tag) : null);
+    return want ? new Intl.Locale(l.toString(), { numberingSystem: want }).toString() : l.toString();
+  } catch (e) { return tag; }
+}
+const loc = (o) => numeralLocale((o && o.locale) || formatLocale());
 const digits = (d) => (d === undefined ? {} : { minimumFractionDigits: d, maximumFractionDigits: d });
 
 export function formatNumber(value, o = {}) {

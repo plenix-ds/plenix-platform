@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.devWarn = devWarn;
+exports.development = development;
 var _react = _interopRequireDefault(require("react"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · devWarn
@@ -27,6 +28,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
 
 const messages = new Set();
 function development() {
+  // also read by Icon's run-time fetch notice
   if (typeof process === 'object' && process) {
     const env = Reflect.get(process, 'env');
     if (env && Reflect.get(env, 'NODE_ENV') === 'production') return false;
@@ -342,7 +344,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Icon = Icon;
 exports.StatusIcon = StatusIcon;
+exports.registerIcons = registerIcons;
 exports.resolveIcon = resolveIcon;
+exports.setDefaultIconLibrary = setDefaultIconLibrary;
 exports.setIconLibrary = setIconLibrary;
 exports.stateIcon = stateIcon;
 var _react = _interopRequireDefault(require("react"));
@@ -357,6 +361,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Usage:
      <Icon name="folder" />
      <Icon name="bookmark" size="sm" filled label="Bookmarked" />
+     import Add from 'plenix-platform/icons/plenix/add';  <Icon icon={Add} />      // an imported icon module (#282)
+     registerIcons(Add, Close);  <Icon name="add" />                               // a name drawn from its module first
      <StatusIcon tone="warning" />
      <StatusIcon tone="success" size="sm">Synced</StatusIcon>
    Props:
@@ -366,6 +372,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        Material name that is also a Plenix name draws the Plenix icon (check, home). Unknown names draw nothing
      size: "xs" 12px | "sm" 16px | "md" 20px | "lg" 24px | "xl" 48px, a page title (--plx-sys-icon-size-*); without it the icon takes its container's
        grid icon (a control's --plx-sys-control-icon-<role>) or --plx-sys-icon-size
+     icon: an imported icon module (platform/icons/layout.js: icons/<set>/<name>.js; in an application,
+       import X from 'plenix-platform/icons/<set>/<name>'): drawn from its own drawings instead of icon.css, with the same
+       classes, so sizes, fills, the optical size and right-to-left mirroring work exactly as for name (issue 282)
      filled: the filled version (default false)
      label: the accessible name, when the icon alone carries meaning
      className: more classes on the icon
@@ -377,6 +386,14 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      StatusIcon.strings: the tone words, for other languages: { info: "Information", success: "Success", warning: "Warning",
        danger: "Error", neutral: "Note" }
      StatusIcon.className: more classes on the status icon
+     library: where a name is looked up (issue 281): "plenix" (default: registered modules, the Plenix set, then the
+       Material library, as before), "material" (Material's own symbol even where a Plenix name exists), or a project's own
+       library registered with registerIcons(..., { library }) (only its modules). setDefaultIconLibrary(name) sets the page's
+       default: call it at startup, before icons draw (icons already on the page do not draw again)
+     registerIcons(...modules[, { library }]): modules drawn first by their name and their symbol's spelling, in their
+       set's library or the one named
+     A name drawn by a run-time fetch (a Material name not imported or registered) warns once in development: production
+       should import or register it. An icon value that is not a module warns once per kind of value and draws nothing
    Behavior:
      The component that owns a current or selected state passes filled (NavList's current item and pinned pin, a
        selected or pressed Button); filled={false} keeps the outline (Tree owns each item state).
@@ -413,9 +430,88 @@ const LARGE = {
 const VARIANT = ['', '-fill', '-24', '-24-fill']; // outline 20, filled 20, outline 24, filled 24
 const library = new Set(_glyphs.LIBRARY.split(' ')),
   plenix = new Set(_glyphs.SYMBOLS.split(' '));
+// imported icon modules (#282): { name, set, symbol, fillOutline, mirrored, drawings: { 20: { outline, fill }, 24: … } }.
+// The registry (#281): per library, a name (and its symbol's spelling) -> its module. registerIcons(...modules) puts each
+// module in its own set's library ("plenix", "material"); registerIcons(...modules, { library: 'acme' }) makes a
+// project's own library, which <Icon library="acme"> draws from only
+const libraries = new Map(); // library -> Map(name -> module)
+const isModule = m => !!(m && typeof m === 'object' && m.drawings && m.drawings[20] && m.drawings[24] && m.name);
+function registerIcons(...args) {
+  const last = args[args.length - 1],
+    options = last && typeof last === 'object' && !Array.isArray(last) && !isModule(last) && 'library' in last ? args.pop() : null;
+  for (const m of args.flat()) {
+    if (!isModule(m)) {
+      if (typeof console !== 'undefined') console.warn('[Plenix] registerIcons: not an icon module', m);
+      continue;
+    }
+    const lib = options && options.library || m.set || 'plenix';
+    if (!libraries.has(lib)) libraries.set(lib, new Map());
+    const map = libraries.get(lib);
+    map.set(m.name, m);
+    if (m.symbol && m.symbol !== m.name) map.set(m.symbol, m);
+  }
+}
+// the library an Icon without its own library prop draws from: "plenix" (the Plenix set, then the Material library, as
+// before), "material", or a project's own registered library
+let defaultLibrary = 'plenix';
+// call it at startup, before icons draw: an icon already on the page does not draw again when it changes
+function setDefaultIconLibrary(name) {
+  defaultLibrary = name ? String(name) : 'plenix';
+}
+// a module's drawing i (VARIANT order: outline 20, filled 20, outline 24, filled 24) as [path, viewBox, extra], the shape
+// parseSvg gives, with the extras in the same order, so the markup is the same as from the stylesheet
+const SLOT = [[20, 'outline'], [20, 'fill'], [24, 'outline'], [24, 'fill']];
+function moduleGlyph(m, i) {
+  const d = m.drawings[SLOT[i][0]] && m.drawings[SLOT[i][0]][SLOT[i][1]];
+  if (!d || !d.d || !d.viewBox) return null;
+  const extra = {};
+  for (const key of ['transform', 'fillRule', 'clipRule']) if (d[key]) extra[key] = d[key];
+  return [d.d, d.viewBox, extra];
+}
 const normal = name => String(name == null ? '' : name).trim();
-function resolveIcon(name) {
-  const n = normal(name);
+// One resolver (#281): the registered modules of the chosen library first; then, for "plenix", the Plenix set (icon.css)
+// and the Material library; for "material", the Material library only (a Material name draws Material's own symbol
+// even where a Plenix name exists); a project's library draws only its registered modules. A Material name that is not
+// registered is fetched at run time (as before; development warns once that production should import or register it).
+// Returns { kind: 'module' | 'plenix' | 'library', symbol, fillOutline, module? } or null.
+function resolveIcon(name, options) {
+  const n = normal(name),
+    lib = options && options.library || defaultLibrary;
+  const fromRegistry = l => {
+    const map = libraries.get(l);
+    const m = map && (map.get(n) || map.get(n.toLowerCase().replace(/_/g, '-')) || map.get(n.toLowerCase().replace(/-/g, '_')));
+    return m ? {
+      kind: 'module',
+      symbol: m.symbol || m.name,
+      fillOutline: !!m.fillOutline,
+      module: m
+    } : null;
+  };
+  if (lib === 'material') {
+    const reg = fromRegistry('material');
+    if (reg) return reg;
+    const symbol = n.toLowerCase().replace(/-/g, '_');
+    if (plenix.has(symbol)) return {
+      kind: 'plenix',
+      symbol,
+      fillOutline: false
+    }; // the same drawing, already in icon.css
+    return library.has(symbol) ? {
+      kind: 'library',
+      symbol,
+      fillOutline: false
+    } : null;
+  }
+  if (lib !== 'plenix') return fromRegistry(lib);
+  // a registered Plenix module, then the Plenix set: a registered Material module never replaces a Plenix name (importing
+  // material/home must not swap every <Icon name="home"> on the page); it serves only names outside the Plenix set
+  const reg = fromRegistry('plenix');
+  if (reg) return reg;
+  const p = resolvePlenix(n);
+  if (p && p.kind === 'plenix') return p;
+  return fromRegistry('material') || p;
+}
+function resolvePlenix(n) {
   if (_glyphs.NAMES[n]) return {
     kind: 'plenix',
     symbol: _glyphs.NAMES[n][0],
@@ -518,8 +614,24 @@ function warnUnknown(name) {
   }).slice(0, 6);
   if (typeof console !== 'undefined') console.warn('[Plenix] Icon: no icon is named "' + n + '"; nothing is drawn.' + (near.length ? ' Closest: ' + near.join(', ') + '.' : ''));
 }
-function useDrawings(name, size, filled) {
-  const found = resolveIcon(name);
+// a name drawn by a run-time fetch: development warns once that production should import or register it
+const fetchedNotice = new Set();
+function noticeFetch(symbol) {
+  if (fetchedNotice.has(symbol) || !(0, _devWarn.development)() || typeof console === 'undefined') return;
+  fetchedNotice.add(symbol);
+  console.warn('[Plenix] Icon: ' + symbol + ' was fetched at run time; for production import it (plenix-platform/icons/material/' + symbol.replace(/_/g, '-') + ') or register it (registerIcons).');
+}
+function useDrawings(name, size, filled, mod, lib) {
+  const resolved = mod ? {
+    kind: 'module',
+    symbol: mod.symbol || mod.name,
+    fillOutline: !!mod.fillOutline,
+    module: mod
+  } : resolveIcon(name, {
+    library: lib
+  });
+  const found = resolved;
+  if (found && found.kind === 'module') mod = found.module;
   const fill = filled === true || found && found.fillOutline;
   const wanted = LARGE[size] ? [[fill ? 3 : 2, 24]] : [[fill ? 1 : 0, 20], [fill ? 3 : 2, 24]];
   const fileOf = i => found.symbol + VARIANT[i];
@@ -530,6 +642,7 @@ function useDrawings(name, size, filled) {
       warnUnknown(name);
       return undefined;
     }
+    if (found.kind === 'library') noticeFetch(found.symbol);
     if (!pending.length) return undefined;
     let live = true;
     Promise.all(pending.map(([i]) => loadFile(fileOf(i)))).then(() => {
@@ -540,7 +653,7 @@ function useDrawings(name, size, filled) {
     };
   }, [found && found.symbol, fill, LARGE[size] ? 1 : 0, pending.length]);
   if (!found) return [];
-  const glyphs = wanted.map(([i, optical]) => [found.kind === 'plenix' ? cssGlyph(found.symbol, i) : files.get(fileOf(i)), optical]).filter(([glyph]) => Array.isArray(glyph));
+  const glyphs = wanted.map(([i, optical]) => [found.kind === 'module' ? moduleGlyph(mod, i) : found.kind === 'plenix' ? cssGlyph(found.symbol, i) : files.get(fileOf(i)), optical]).filter(([glyph]) => Array.isArray(glyph));
   if (!glyphs.length) return [];
   // the drawings share one svg when they share a box (nearly every icon): the stylesheet shows one path; otherwise each
   // drawing is its own svg in its own box
@@ -565,8 +678,11 @@ function useDrawings(name, size, filled) {
     d: glyph[0]
   }, glyph[2] || null))));
 }
+const badIcon = new Set();
 function Icon({
+  icon,
   name,
+  library: lib,
   size,
   filled,
   label,
@@ -578,9 +694,26 @@ function Icon({
   }, {
     size: ['xs', 'sm', 'md', 'lg', 'xl']
   });
-  const svg = useDrawings(name, size, filled);
+  // an imported module (icon); else the name through the resolver (registered modules, the stylesheet, the library)
+  // once per kind of bad value (its type and keys), so an object written inline, new on every render, warns once
+  const badKey = icon != null && !isModule(icon) ? Object.prototype.toString.call(icon) + ':' + (typeof icon === 'object' ? Object.keys(icon).sort().join(',') : String(icon)) : null;
+  if (badKey && !badIcon.has(badKey)) {
+    badIcon.add(badKey);
+    if (typeof console !== 'undefined') console.warn('[Plenix] Icon: icon is not an icon module (import it from plenix-platform/icons/<set>/<name>); nothing is drawn.', icon);
+  }
+  const shown = isModule(icon) ? icon.name : name;
+  const svg = useDrawings(shown, size, filled, isModule(icon) ? icon : null, lib);
+  const mod = isModule(icon) ? icon : (() => {
+    const f = resolveIcon(shown, {
+      library: lib
+    });
+    return f && f.kind === 'module' ? f.module : null;
+  })();
+  // a module outside the Plenix set that points along the reading direction mirrors in right to left (icon.css's
+  // plx-icon--mirrored); the Plenix set's own names already mirror through their per-name rules, so their markup stays the same
+  const mirrored = !!(mod && mod.mirrored && mod.set !== 'plenix');
   return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: (0, _cx.cx)('plx-icon', 'plx-icon--' + normal(name), size ? 'plx-icon--size-' + size : null, filled === true && 'plx-icon--filled', filled === false && 'plx-icon--outline', 'plx-icon--inline', className),
+    className: (0, _cx.cx)('plx-icon', 'plx-icon--' + normal(shown), size ? 'plx-icon--size-' + size : null, filled === true && 'plx-icon--filled', filled === false && 'plx-icon--outline', 'plx-icon--inline', mirrored && 'plx-icon--mirrored', className),
     role: label ? 'img' : undefined,
     "aria-label": label,
     "aria-hidden": label ? undefined : true
@@ -761,155 +894,209 @@ function VisuallyHidden({
   }, rest), children);
 }
   } },
-  "platform/components/Count/Count.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/utils/direction.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Count = Count;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Count
-   Summary: A number shown on its own.
+exports.RTL_LANGUAGES = void 0;
+exports.arrowStep = arrowStep;
+exports.directionOf = directionOf;
+exports.getDirection = getDirection;
+exports.isRtl = isRtl;
+exports.physicalSide = physicalSide;
+/* Plenix · Writing direction (platform/utils/direction.js)
+   Summary: Right-to-left and left-to-right in script: the direction of an element or a language, the arrow keys in reading
+     order, and the physical side of a logical one. In a right-to-left page Arrow Right moves back and Arrow Left forward,
+     as the eye reads; Up and Down are the same in both directions.
    Usage:
-     <Count value={24} />
-     <Count variant="pill" value={unread} max={99} label={unread + ' unread notifications'} />
+     const step = arrowStep(e, e.currentTarget);   // +1, -1 or 0
+     if (step) { e.preventDefault(); move(index + step); }
+     directionOf('ar-EG')          // "rtl"
+     physicalSide('start', 'rtl')  // "right"
    Props:
-     value: the number; with no value nothing renders
-     variant: "plain" (default; muted tabular figures, e.g. a list row's item count) | "pill" (a 16px soft pill for unread
-       or pending counts: the status pill look, shade 100 background, shade 300 border, dark text, 4px corners)
-     tone: the pill color: "neutral" (gray) | "info" (blue) | "success" (green) | "warning" (yellow) | "danger" (red;
-       default), on the same roles as Badge's neutral, active, success, waiting and negative
-     max: above it the count shows max + "+" (e.g. "99+")
-     label: the accessible name when the number alone is unclear ("3 unread notifications")
-     moreThan: what screen readers hear for a capped count without a label (default "More than {max}")
-     className: more classes on the count
-   Notes:
-     Other props pass through to the <span>.
+     isRtl(el): true when the element is laid out right to left (its computed direction)
+     arrowStep(event, el, { vertical }): +1 for the next item, -1 for the previous one, 0 for another key; with vertical:
+       false, Up and Down are ignored (a horizontal-only control)
+     getDirection(el): "rtl" | "ltr", the element's computed direction (the document's when no element is given)
+     directionOf(locale): "rtl" for a language written right to left (Arabic, Hebrew, Persian, Urdu and the others in
+       RTL_LANGUAGES), else "ltr"
+     physicalSide(side, dir): "left" | "right" for a logical "start" or "end" in that direction (for a measurement API that
+       only speaks physical sides, such as a pointer's clientX); "left" and "right" come back as they are
+     RTL_LANGUAGES: the language subtags written right to left
+   Behavior:
+     The direction comes from the dir attribute on the element or an ancestor (<html dir="rtl">, a DirectionProvider):
+       stylesheets use logical properties (inline-start, inline-end), so the layout mirrors on its own; script reads the
+       computed direction only where it measures or handles arrow keys.
 */
-function Count({
-  value,
-  max,
-  variant = 'plain',
-  tone = 'danger',
-  label,
-  moreThan = 'More than {max}',
-  className,
-  ...rest
-}) {
-  (0, _devWarn.devWarn)('Count', {
-    variant,
-    tone
-  }, {
-    variant: ['plain', 'pill'],
-    tone: ['info', 'success', 'warning', 'danger', 'neutral']
-  });
-  if (value === null || value === undefined || value === '') return null;
-  const shown = typeof max === 'number' && Number(value) > max ? max + '+' : String(value);
-  return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: (0, _cx.cx)('plx-count', 'plx-count--' + variant, variant === 'pill' ? 'plx-count--' + tone : null, className),
-    "aria-label": label || (typeof max === 'number' && Number(value) > max ? moreThan.replace('{max}', String(max)) : undefined)
-  }, rest), shown);
+const RTL_LANGUAGES = exports.RTL_LANGUAGES = ['ar', 'arc', 'ckb', 'dv', 'fa', 'he', 'iw', 'ps', 'sd', 'syr', 'ug', 'ur', 'yi'];
+function isRtl(el) {
+  return !!el && typeof window !== 'undefined' && window.getComputedStyle(el).direction === 'rtl';
+}
+function getDirection(el) {
+  if (typeof window === 'undefined') return 'ltr';
+  return isRtl(el || document.documentElement) ? 'rtl' : 'ltr';
+}
+function directionOf(locale) {
+  const lang = String(locale || '').toLowerCase().split(/[-_]/)[0];
+  return RTL_LANGUAGES.indexOf(lang) >= 0 ? 'rtl' : 'ltr';
+}
+function physicalSide(side, dir) {
+  if (side !== 'start' && side !== 'end') return side;
+  return side === 'start' === (dir !== 'rtl') ? 'left' : 'right';
+}
+function arrowStep(event, el, opts) {
+  const vertical = !opts || opts.vertical !== false;
+  const rtl = isRtl(el);
+  switch (event.key) {
+    case 'ArrowRight':
+      return rtl ? -1 : 1;
+    case 'ArrowLeft':
+      return rtl ? 1 : -1;
+    case 'ArrowDown':
+      return vertical ? 1 : 0;
+    case 'ArrowUp':
+      return vertical ? -1 : 0;
+    default:
+      return 0;
+  }
 }
   } },
-  "platform/utils/layer.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/providers/DirectionProvider.jsx": { deps: {"react":null,"../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.focusables = focusables;
-exports.useLayer = useLayer;
-exports.useUid = useUid;
+exports.DirectionContext = void 0;
+exports.DirectionProvider = DirectionProvider;
+exports.useDirection = useDirection;
 var _react = _interopRequireDefault(require("react"));
+var _direction = require("../utils/direction.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · layers (platform/utils/layer.js). Internal; not part of the public API.
-   Every open menu, dialog, drawer and media viewer is a layer. Escape closes only the topmost layer, so Escape in a menu
-   inside a dialog closes the menu first. A modal layer also keeps Tab inside itself, locks page scroll, moves focus in
-   when it opens (initialFocus: a ref, or a function that returns the element) and returns focus to the element that opened it when it closes. */
+/* Plenix · DirectionProvider, useDirection
+   Summary: Sets the writing direction (left to right or right to left) of an application or of one region, and tells
+     React components which it is.
+   Usage:
+     <DirectionProvider dir="rtl" lang="ar">{app}</DirectionProvider>
+     <DirectionProvider locale="he-IL" root>{app}</DirectionProvider>   // on <html>: the whole page
+     <DirectionProvider follow>{app}</DirectionProvider>                 // an app root: the page's own dir, as it is
+     const { dir, setDir } = useDirection();
+   Props:
+     dir: "ltr" | "rtl"; without it, the direction of locale, else of the page
+     locale: a language tag ("ar-EG", "en-US"); it sets lang and, without dir, the direction (directionOf)
+     lang: the lang attribute, when it is not the locale
+     root: set dir and lang on <html> instead of a region (default false): the page, its portals and its scrollbars mirror
+     follow: the page decides (default false): the direction is <html>'s dir as it is and as it changes; nothing is
+       written and no wrapper is added, so an application root (mountSuite, the Asset Manager's islands) gets the
+       context without any change to the page; setDir sets <html>'s dir
+     children: the application root or the region it wraps
+     useDirection(): { dir, rtl, setDir(dir) }: the nearest provider's direction (outside one, the page's), and a way to
+       change it
+   Behavior:
+     A region: a wrapper (div.plx-direction, display: contents, so it adds no box) with dir and lang; everything inside
+       it lays out in that direction, as the stylesheets use logical properties.
+     With root, the attributes go on <html> and are put back as they were when the provider unmounts.
+     Overlays drawn in a Portal take the direction of where they were written (the Portal copies dir and lang).
+   Notes:
+     Mirror the layout, not the content: text, numbers, media controls, clocks and the icons that are not directional
+       keep their shape; the icon set mirrors its directional icons (arrows, chevrons, undo and redo) by itself.
+     Script reads the direction where it measures or handles arrow keys (utils/direction.js: arrowStep, physicalSide).
+*/
 
-const stack = [];
-let modalCount = 0;
-const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]):not([type="hidden"]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
-function focusables(root) {
-  if (!root) return [];
-  return Array.prototype.filter.call(root.querySelectorAll(FOCUSABLE), el => !el.closest('[hidden]') && el.getClientRects().length > 0);
-}
-function useLayer(ref, open, {
-  modal = false,
-  onEscape,
-  initialFocus
-} = {}) {
-  const escape = _react.default.useRef(onEscape);
-  escape.current = onEscape;
+const DirectionContext = exports.DirectionContext = /*#__PURE__*/_react.default.createContext(null);
+
+// follow: the page's own direction, read from <html> and kept current; it writes nothing and adds no element
+function PageDirection({
+  children
+}) {
+  const [page, setPage] = _react.default.useState(() => typeof document !== 'undefined' ? (0, _direction.getDirection)() : 'ltr');
   _react.default.useEffect(() => {
-    if (!open) return undefined;
-    const entry = {
-      modal
-    };
-    stack.push(entry);
-    const opener = document.activeElement;
-    if (modal) {
-      if (modalCount === 0) document.documentElement.classList.add('is-scroll-locked');
-      modalCount += 1;
-      const root = ref.current;
-      const wanted = typeof initialFocus === 'function' ? initialFocus() : initialFocus && initialFocus.current;
-      const first = wanted || focusables(root)[0] || root;
-      if (first) first.focus({
-        preventScroll: true
-      });
-    }
-    const onKey = e => {
-      if (stack[stack.length - 1] !== entry) return;
-      if (e.key === 'Escape') {
-        if (escape.current) {
-          e.preventDefault();
-          e.stopPropagation();
-          escape.current();
-        }
-        return;
-      }
-      if (!modal || e.key !== 'Tab') return;
-      const root = ref.current;
-      const items = focusables(root);
-      if (!items.length) {
-        e.preventDefault();
-        root.focus();
-        return;
-      }
-      const first = items[0],
-        last = items[items.length - 1],
-        active = document.activeElement;
-      if (!root.contains(active)) {
-        e.preventDefault();
-        first.focus();
-      } else if (e.shiftKey && (active === first || active === root)) {
-        e.preventDefault();
-        last.focus();
-      } else if (!e.shiftKey && active === last) {
-        e.preventDefault();
-        first.focus();
-      }
-    };
-    document.addEventListener('keydown', onKey, true);
-    return () => {
-      document.removeEventListener('keydown', onKey, true);
-      stack.splice(stack.indexOf(entry), 1);
-      if (modal) {
-        modalCount -= 1;
-        if (modalCount === 0) document.documentElement.classList.remove('is-scroll-locked');
-        if (opener && opener.focus && document.contains(opener)) opener.focus({
-          preventScroll: true
-        });
-      }
-    };
-  }, [open]);
+    const observer = new MutationObserver(() => setPage((0, _direction.getDirection)()));
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['dir']
+    });
+    setPage((0, _direction.getDirection)());
+    return () => observer.disconnect();
+  }, []);
+  const value = _react.default.useMemo(() => ({
+    dir: page,
+    rtl: page === 'rtl',
+    setDir: d => document.documentElement.setAttribute('dir', d === 'rtl' ? 'rtl' : 'ltr')
+  }), [page]);
+  return /*#__PURE__*/_react.default.createElement(DirectionContext.Provider, {
+    value: value
+  }, children);
 }
-function useUid(prefix) {
-  return prefix + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+function DirectionProvider({
+  follow = false,
+  ...props
+}) {
+  return follow ? /*#__PURE__*/_react.default.createElement(PageDirection, null, props.children) : /*#__PURE__*/_react.default.createElement(OwnDirection, props);
+}
+function OwnDirection({
+  dir,
+  locale,
+  lang,
+  root = false,
+  children
+}) {
+  const wanted = dir || (locale ? (0, _direction.directionOf)(locale) : null);
+  const [own, setOwn] = _react.default.useState(wanted);
+  _react.default.useEffect(() => {
+    setOwn(wanted);
+  }, [wanted]);
+  const current = own || (typeof document !== 'undefined' ? (0, _direction.getDirection)() : 'ltr');
+  const language = lang || locale || undefined;
+  _react.default.useLayoutEffect(() => {
+    if (!root) return undefined;
+    const html = document.documentElement,
+      before = {
+        dir: html.getAttribute('dir'),
+        lang: html.getAttribute('lang')
+      };
+    html.setAttribute('dir', current);
+    if (language) html.setAttribute('lang', language);
+    return () => {
+      if (before.dir == null) html.removeAttribute('dir');else html.setAttribute('dir', before.dir);
+      if (language) {
+        if (before.lang == null) html.removeAttribute('lang');else html.setAttribute('lang', before.lang);
+      }
+    };
+  }, [root, current, language]);
+  const value = _react.default.useMemo(() => ({
+    dir: current,
+    rtl: current === 'rtl',
+    setDir: d => setOwn(d === 'rtl' ? 'rtl' : 'ltr')
+  }), [current]);
+  return /*#__PURE__*/_react.default.createElement(DirectionContext.Provider, {
+    value: value
+  }, root ? children : /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-direction",
+    dir: current,
+    lang: language
+  }, children));
+}
+function useDirection() {
+  const ctx = _react.default.useContext(DirectionContext);
+  const [page, setPage] = _react.default.useState(() => typeof document !== 'undefined' ? (0, _direction.getDirection)() : 'ltr');
+  _react.default.useEffect(() => {
+    if (ctx) return undefined;
+    const observer = new MutationObserver(() => setPage((0, _direction.getDirection)()));
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['dir']
+    });
+    return () => observer.disconnect();
+  }, [ctx]);
+  if (ctx) return ctx;
+  return {
+    dir: page,
+    rtl: page === 'rtl',
+    setDir: d => document.documentElement.setAttribute('dir', d === 'rtl' ? 'rtl' : 'ltr')
+  };
 }
   } },
   "platform/utils/format.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
@@ -920,6 +1107,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.FORMATS = void 0;
 exports.dateTimeAttr = dateTimeAttr;
+exports.digitsOf = digitsOf;
 exports.formatAddress = formatAddress;
 exports.formatBytes = formatBytes;
 exports.formatCompact = formatCompact;
@@ -937,6 +1125,8 @@ exports.formatRange = formatRange;
 exports.formatRelative = formatRelative;
 exports.formatTime = formatTime;
 exports.formatUnit = formatUnit;
+exports.numeralLocale = numeralLocale;
+exports.parseDate = parseDate;
 exports.regionName = regionName;
 /* Plenix · Formatting (platform/utils/format.js)
    Summary: Numbers, units, dates, times, money, percentages, names, addresses and phone numbers written the same way on
@@ -956,6 +1146,8 @@ exports.regionName = regionName;
    Props:
      every function takes an options object last; options.locale overrides the reader's locale (formatLocale())
      formatLocale(): the page's language (<html lang>), else the browser's, else "en-US"
+     digitsOf(locale): "arab" (Arabic-Indic ٠-٩) for Arabic locales, else "latn"; an explicit -u-nu-latn keeps Latin (owner, arabic-digits-35)
+     numeralLocale(locale, digits): the locale tag with its digits explicit (-u-nu-arab), for Intl; every format function here uses it
      formatNumber(value, { decimals, signed }): a plain number; decimals fixes the precision (keep it the same in a column)
      formatUnit(value, unit, { display, decimals }): a measurement with an Intl unit ("kilometer", "celsius", "megabyte");
        display "short" (default), "long" or "narrow"
@@ -980,6 +1172,9 @@ exports.regionName = regionName;
      formatPhone(e164, { display }):a phone number stored as E.164 ("+14155550123"), "international" (default) or
        "national" ("(415) 555-0123")
      dateTimeAttr(date): the machine-readable value for <time dateTime={…}>
+     parseDate(value): the Date every helper here reads: a Date as is, a date-only "YYYY-MM-DD" as that calendar day
+       where the reader is (never midnight UTC, which is the day before in the Americas), else new Date(value); null when
+       it is not a date. Components that read a date use it, so no component parses dates itself (issue 342)
      FORMATS: the standard's data (see platform/standards/formats.json)
    Behavior:
      Nothing is cached per locale beyond the Intl formatter objects; every call reads the locale unless one is given.
@@ -1049,7 +1244,7 @@ const FORMATS = exports.FORMATS = {
 };
 const ok = n => typeof n === 'number' && isFinite(n);
 // A date-only value is a calendar date in the reader's zone, not midnight UTC (DT-7).
-const toDate = d => {
+function parseDate(d) {
   if (typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d)) {
     const [year, month, day] = d.split('-').map(Number),
       x = new Date(0);
@@ -1059,14 +1254,38 @@ const toDate = d => {
   }
   const x = d instanceof Date ? d : new Date(d);
   return isNaN(x.getTime()) ? null : x;
-};
+}
+const toDate = parseDate;
 function formatLocale() {
   const lang = typeof document !== 'undefined' && document.documentElement && document.documentElement.getAttribute('lang');
   if (lang) return lang;
   if (typeof navigator !== 'undefined' && navigator.language) return navigator.language;
   return 'en-US';
 }
-const loc = o => o && o.locale || formatLocale();
+/* the digits a locale writes (owner, arabic-digits-35 and arabic-ids-35): Arabic text uses Arabic-Indic digits (٠-٩) everywhere,
+   whichever Arabic region the tag names (the browser alone writes Latin digits for "ar" and "ar-AE"); an explicit -u-nu-latn keeps Latin */
+function digitsOf(locale) {
+  try {
+    const l = new Intl.Locale(locale || formatLocale());
+    return l.numberingSystem === 'latn' ? 'latn' : l.numberingSystem === 'arab' || l.language === 'ar' ? 'arab' : 'latn';
+  } catch (e) {
+    return 'latn';
+  }
+}
+// the locale tag with its digits made explicit (-u-nu-arab or -u-nu-latn), for Intl; a language that is not Arabic is left as it is
+function numeralLocale(locale, digits) {
+  const tag = locale || formatLocale();
+  try {
+    const l = new Intl.Locale(tag),
+      want = digits === 'arab' || digits === 'latn' ? digits : l.language === 'ar' ? digitsOf(tag) : null;
+    return want ? new Intl.Locale(l.toString(), {
+      numberingSystem: want
+    }).toString() : l.toString();
+  } catch (e) {
+    return tag;
+  }
+}
+const loc = o => numeralLocale(o && o.locale || formatLocale());
 const digits = d => d === undefined ? {} : {
   minimumFractionDigits: d,
   maximumFractionDigits: d
@@ -1343,6 +1562,6101 @@ function formatPhone(e164, o = {}) {
 function dateTimeAttr(date) {
   const d = toDate(date);
   return d ? d.toISOString() : '';
+}
+  } },
+  "platform/i18n/en.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// Browser mirror of en.json, the one source of Plenix's built-in English words (components read them with useStrings; owner, arabic-words-37). The repository module loader accepts JavaScript only; the W15C catalog test and check-system's built-in-words rule check parity.
+var _default = exports.default = {
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "retry": "Retry",
+    "next": "Next",
+    "back": "Back"
+  },
+  "collection": {
+    "selected": {
+      "=0": "Nothing selected",
+      "one": "{count} item selected",
+      "other": "{count} items selected"
+    }
+  },
+  "wizard": {
+    "next": "Next",
+    "back": "Back",
+    "finish": "Finish",
+    "cancel": "Cancel",
+    "step": "Step {n} of {total}",
+    "error": "Could not save. Try again.",
+    "complete": "Finish",
+    "summary": "Review",
+    "invalid": "Check this step before continuing.",
+    "failed": "Could not save. Try again.",
+    "steps": "Steps"
+  },
+  "dialog": {
+    "close": "Close",
+    "confirmLabel": "Confirm",
+    "cancelLabel": "Cancel",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "save": "Save"
+  },
+  "text": {
+    "more": "Show more",
+    "less": "Show less"
+  },
+  "emptyState": {
+    "title": "No items yet",
+    "description": "Create an item to get started.",
+    "action": "Create item",
+    "offline": {
+      "title": "You’re offline",
+      "text": "Check your connection. This page updates when you’re back online."
+    },
+    "degraded": {
+      "title": "Some features aren’t working",
+      "text": "A service is slow or not responding, so what you see may be out of date."
+    },
+    "permission-denied": {
+      "title": "You don’t have access",
+      "text": "Ask the owner to share it with you."
+    },
+    "not-found": {
+      "title": "This page doesn’t exist",
+      "text": "It may have been moved or deleted. Check the address or go back."
+    },
+    "maintenance": {
+      "title": "Down for maintenance",
+      "text": "This service is being updated. Try again in a few minutes."
+    },
+    "completion": {
+      "title": "All done",
+      "text": "There’s nothing left to do here."
+    }
+  },
+  "pagination": {
+    "label": "Pages",
+    "range": "{first}–{last} of {total}",
+    "previous": "Previous page",
+    "next": "Next page",
+    "page": "Page {n}",
+    "perPage": "Per page"
+  },
+  "accessRequest": {
+    "title": "Request access",
+    "description": "Ask the owner for access to this resource.",
+    "message": "Message to the owner",
+    "request": "Request access",
+    "pending": "Access requested",
+    "approved": "Access approved",
+    "denied": "Access denied",
+    "open": "Open resource",
+    "failed": "Could not send your request. Try again."
+  },
+  "actionBar": {
+    "label": "Actions"
+  },
+  "aiButton": {
+    "label": "AI actions",
+    "failed": "Could not complete this action. Try again.",
+    "working": "Working"
+  },
+  "aiDisclaimer": {
+    "message": "AI-generated content may be inaccurate. Review important details.",
+    "learn": "About AI-generated content"
+  },
+  "aiExplanation": {
+    "label": "Why this?",
+    "title": "AI explanation",
+    "close": "Close"
+  },
+  "aiSearch": {
+    "label": "AI search",
+    "query": "Search query",
+    "search": "Search",
+    "semantic": "Use semantic search",
+    "results": "Search results",
+    "empty": "No results.",
+    "failed": "Search failed. Try again.",
+    "pending": "Searching"
+  },
+  "announcement": {
+    "dismiss": "Dismiss announcement",
+    "failed": "Could not dismiss this announcement. Try again."
+  },
+  "appHeader": {
+    "aria-label": "Search"
+  },
+  "appShell": {
+    "skip": "Skip to main content"
+  },
+  "approvalWorkflow": {
+    "approve": "Approve",
+    "changes": "Request changes",
+    "reject": "Reject",
+    "comment": "Comment",
+    "reason": "Explain why this needs changes.",
+    "failed": "Could not save this decision. Your comment is still available.",
+    "steps": "Approval stages",
+    "recorded": "Decision recorded"
+  },
+  "archiveRestore": {
+    "archive": "Archive",
+    "restore": "Restore",
+    "archived": "Archived",
+    "message": "Restore this record to make it active again.",
+    "failed": "Could not update the record. Try again."
+  },
+  "assetGallery": {
+    "empty": "No images",
+    "preview": "Image preview"
+  },
+  "assignControl": {
+    "assign": "Assign",
+    "assignToMe": "Assign to me",
+    "reassign": "Reassign",
+    "unassign": "Unassign",
+    "unassigned": "Unassigned",
+    "cancel": "Cancel",
+    "assigned": "Assigned to {name}",
+    "cleared": "{label} removed",
+    "delegate": "Delegate",
+    "change": "Change",
+    "end": "End delegation",
+    "delegateTitle": "Delegate {label}",
+    "to": "Delegate to",
+    "dates": "Dates",
+    "note": "Note",
+    "noteHint": "Shown to the person you delegate to.",
+    "needPerson": "Choose a person.",
+    "needDates": "Choose the first and last day.",
+    "delegatedTo": "Delegated to {name}",
+    "notDelegated": "Not delegated",
+    "ended": "Delegation ended",
+    "label": "Assignee"
+  },
+  "attachmentPicker": {
+    "label": "Attachments",
+    "remove": "Remove {name}",
+    "invalid": "Choose a supported file within the size limit.",
+    "limit": "Too many attachments.",
+    "empty": "No attachments."
+  },
+  "auditLog": {
+    "actor": "Actor",
+    "at": "Time",
+    "action": "Action",
+    "target": "Target",
+    "changes": "Changes",
+    "view": "View changes",
+    "field": "Field",
+    "before": "Before",
+    "after": "After",
+    "close": "Close"
+  },
+  "autosave": {
+    "saving": "Saving",
+    "saved": "Saved",
+    "offline": "Offline",
+    "failed": "Save failed",
+    "retry": "Retry"
+  },
+  "avatar": {
+    "online": "Online",
+    "away": "Away",
+    "busy": "Busy",
+    "dnd": "Do not disturb",
+    "offline": "Offline"
+  },
+  "avatarGroup": {
+    "more": "+{n}",
+    "moreLabel": "{n} more"
+  },
+  "avatarUpload": {
+    "change": "Change photo",
+    "add": "Add photo",
+    "remove": "Remove photo",
+    "tooLarge": "The picture is larger than {max}",
+    "notImage": "Choose an image file",
+    "picture": "{name}’s photo"
+  },
+  "backToTop": {
+    "label": "Back to top"
+  },
+  "banner": {
+    "dismiss": "Dismiss"
+  },
+  "barcode": {
+    "label": "Barcode {format}: {value}",
+    "invalid": "Not a valid {format} code",
+    "formats": {
+      "code128": "Code 128",
+      "ean13": "EAN-13",
+      "upca": "UPC-A"
+    }
+  },
+  "bottomSheetNav": {
+    "title": "Navigation",
+    "close": "Close"
+  },
+  "brand": {
+    "name": "Plenix"
+  },
+  "breadcrumbs": {
+    "label": "Breadcrumb"
+  },
+  "bulkActions": {
+    "selected": "{n} selected",
+    "selectAll": "Select all",
+    "clear": "Clear",
+    "allSelected": "Every {noun} is selected",
+    "nothingToClear": "Nothing to clear: select {plural} first",
+    "why": "Select {plural} to {action}",
+    "single": "Select one {noun} to {action}",
+    "label": "Selection actions",
+    "more": "More actions",
+    "noun": "item"
+  },
+  "button": {
+    "working": "Working"
+  },
+  "calendar": {
+    "label": "Calendar",
+    "previous": "Previous month",
+    "next": "Next month",
+    "week": "Week",
+    "weekShort": "Wk",
+    "today": "Today"
+  },
+  "carousel": {
+    "slide": "{n} of {total}",
+    "previous": "Previous slide",
+    "next": "Next slide",
+    "goTo": "Go to slide {n}",
+    "goToPage": "Go to page {n}",
+    "pages": "Slides",
+    "pause": "Pause",
+    "play": "Play",
+    "pauseLabel": "Pause the slides",
+    "playLabel": "Play the slides",
+    "strip": "Slides"
+  },
+  "cascader": {
+    "placeholder": "Choose",
+    "separator": " / ",
+    "search": "Search",
+    "noMatches": "No matches",
+    "empty": "No items",
+    "remove": "Remove {label}",
+    "columns": "Options"
+  },
+  "chart": {
+    "barChart": {
+      "category": "Category",
+      "total": "Total",
+      "range": "Range",
+      "count": "Count"
+    },
+    "boxPlot": {
+      "group": "Group",
+      "min": "Minimum",
+      "q1": "First quartile",
+      "median": "Median",
+      "q3": "Third quartile",
+      "max": "Maximum",
+      "outliers": "Outliers",
+      "n": "Values"
+    },
+    "bulletChart": {
+      "measure": "Measure",
+      "value": "Value",
+      "target": "Target",
+      "ranges": "Ranges",
+      "poor": "Poor",
+      "fair": "Fair",
+      "good": "Good"
+    },
+    "chartFrame": {
+      "showData": "Show the data",
+      "table": "{title}: data"
+    },
+    "chartLegend": {
+      "legend": "Legend"
+    },
+    "comboChart": {
+      "category": "Category",
+      "bars": "Columns",
+      "lines": "Lines"
+    },
+    "diagram": {
+      "step": "Step",
+      "kind": "Kind",
+      "next": "Leads to",
+      "previous": "Comes from",
+      "process": "Step",
+      "decision": "Decision",
+      "terminal": "Start or end",
+      "data": "Data",
+      "box": "Part",
+      "group": "Group",
+      "end": "End"
+    },
+    "funnelChart": {
+      "stage": "Stage",
+      "value": "Count",
+      "kept": "Kept from the step before",
+      "ofFirst": "Of the first step"
+    },
+    "ganttChart": {
+      "task": "Task",
+      "progress": "Done",
+      "dependsOn": "Waits for",
+      "status": "Status",
+      "today": "Today",
+      "milestone": "Milestone",
+      "start": "Start",
+      "end": "End"
+    },
+    "gauge": {
+      "showData": "Show the data",
+      "table": "{title}: data",
+      "measure": "Measure",
+      "value": "Value",
+      "min": "Minimum",
+      "max": "Maximum",
+      "ok": ""
+    },
+    "geoMap": {
+      "region": "Region",
+      "place": "Place",
+      "value": "Value",
+      "noData": "No data",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "zoom": "Zoom",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "reset": "Show the whole map"
+    },
+    "heatMap": {
+      "value": "Value",
+      "row": "Row",
+      "column": "Column",
+      "date": "Date",
+      "missing": "No data",
+      "low": "Low",
+      "high": "High",
+      "scale": "Color scale"
+    },
+    "lineChart": {
+      "category": "Category"
+    },
+    "lollipopChart": {
+      "category": "Category",
+      "value": "Value"
+    },
+    "networkGraph": {
+      "node": "Node",
+      "group": "Group",
+      "links": "Connected to",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "fit": "Fit",
+      "hintZoom": " Plus and minus zoom, 0 fits the graph.",
+      "none": "None"
+    },
+    "pieChart": {
+      "part": "Part",
+      "value": "Value",
+      "share": "Share",
+      "total": "Total",
+      "other": "Other"
+    },
+    "radarChart": {
+      "measure": "Measure"
+    },
+    "sankeyDiagram": {
+      "source": "Source",
+      "target": "Target",
+      "value": "Value",
+      "total": "Total"
+    },
+    "scatterChart": {
+      "series": "Series",
+      "item": "Item"
+    },
+    "timelineChart": {
+      "item": "Item",
+      "lane": "Lane",
+      "today": "Today",
+      "date": "Date",
+      "dates": "Dates",
+      "start": "Start",
+      "end": "End"
+    },
+    "treeChart": {
+      "name": "Name",
+      "detail": "Detail",
+      "parent": "Reports to",
+      "level": "Level",
+      "folded": "folded",
+      "open": "open"
+    },
+    "treemap": {
+      "group": "Group",
+      "item": "Part",
+      "value": "Value",
+      "share": "Share"
+    },
+    "waterfallChart": {
+      "step": "Step",
+      "change": "Change",
+      "total": "Total",
+      "running": "Running total",
+      "increase": "Increase",
+      "decrease": "Decrease",
+      "end": "End"
+    },
+    "wordCloud": {
+      "value": "Count",
+      "word": "Term",
+      "group": "Group"
+    }
+  },
+  "chat": {
+    "thinking": "Thinking",
+    "label": "Conversation",
+    "placeholder": "Write a message",
+    "sendLabel": "Send"
+  },
+  "checklist": {
+    "dismiss": "Dismiss checklist",
+    "progress": "Tasks completed"
+  },
+  "codeBlock": {
+    "code": "Code",
+    "copy": "Copy",
+    "copied": "Copied",
+    "failed": "Could not copy"
+  },
+  "codeEditor": {
+    "hint": "Tab indents. Press Escape, then Tab, to leave the editor."
+  },
+  "colorSwatch": {
+    "label": "Color"
+  },
+  "columnsMenu": {
+    "label": "Columns",
+    "manage": "Manage columns",
+    "first": "First column",
+    "moveMenu": "Move {name}",
+    "moveUp": "Move {name} up",
+    "moveDown": "Move {name} down",
+    "up": "Move up",
+    "down": "Move down",
+    "find": "Find a column",
+    "showAll": "Show all",
+    "hideAll": "Hide all",
+    "apply": "Apply",
+    "cancel": "Cancel",
+    "shown": "{name} shown",
+    "hidden": "{name} hidden",
+    "isFirst": "{name} is the first column",
+    "moved": "{name}, position {position} of {total}",
+    "row": "{name}{first}. Alt + Arrow Up or Down moves it",
+    "firstMark": ", first column",
+    "none": "No column matches"
+  },
+  "combobox": {
+    "loading": "Loading…",
+    "error": "The options could not be loaded"
+  },
+  "commandBar": {
+    "more": "More actions",
+    "actions": "{label} actions",
+    "find": "Find and view",
+    "selected": "{n} selected",
+    "hidden": " ({n} hidden by filters)",
+    "clear": "Clear the selection",
+    "clearName": "{n} selected, clear the selection",
+    "swapped": "{n} selected. Selection actions available.",
+    "cleared": "Selection cleared.",
+    "why": "Select {plural} to {action}",
+    "single": "Select one {noun} to {action}",
+    "preset": "any",
+    "moreLabel": "More actions"
+  },
+  "commandMenu": {
+    "label": "Commands",
+    "placeholder": "Type a command or search",
+    "empty": "No results for “{query}”",
+    "loading": "Loading",
+    "back": "Back",
+    "results": "{count} results"
+  },
+  "commandPalette": {
+    "title": "Commands",
+    "close": "Close"
+  },
+  "comment": {
+    "edit": "Edit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "resolve": "Resolve",
+    "reopen": "Reopen",
+    "edited": "Edited",
+    "resolved": "Resolved",
+    "message": "Comment",
+    "empty": "Enter a comment.",
+    "failed": "Could not save. Try again."
+  },
+  "commentThread": {
+    "title": "Comments",
+    "reply": "Reply",
+    "send": "Send reply",
+    "resolve": "Resolve thread",
+    "reopen": "Reopen thread",
+    "resolved": "Resolved",
+    "empty": "Enter a reply.",
+    "failed": "Could not save. Try again."
+  },
+  "comparisonView": {
+    "label": "Comparison",
+    "modes": "View",
+    "columns": "Side by side",
+    "matrix": "Table",
+    "slider": "Slider",
+    "onlyDifferences": "Show only differences",
+    "changed": "Changed",
+    "attribute": "Attribute",
+    "position": "Position",
+    "none": "No differences",
+    "one": "1 difference",
+    "many": "{n} differences",
+    "empty": "—"
+  },
+  "confidenceIndicator": {
+    "high": "High confidence",
+    "medium": "Medium confidence",
+    "low": "Low confidence",
+    "unknown": "Confidence unavailable",
+    "label": "Confidence"
+  },
+  "connectedAccounts": {
+    "label": "Connected accounts",
+    "connect": "Connect",
+    "disconnect": "Disconnect",
+    "reconnect": "Reconnect",
+    "cancel": "Cancel",
+    "connected": "Connected",
+    "disconnected": "Not connected",
+    "error": "Connection error",
+    "as": "As {account}",
+    "since": "since {date}",
+    "connectTitle": "Connect {service}?",
+    "connectMessage": "You’ll sign in to {service} to allow this. Plenix will be able to:",
+    "continue": "Continue to {service}",
+    "disconnectTitle": "Disconnect {service}?",
+    "disconnectMessage": "You can connect it again at any time.",
+    "done": "{service} connected",
+    "undone": "{service} disconnected"
+  },
+  "contextualHelp": {
+    "more": "More about {title}",
+    "moreUntitled": "More information"
+  },
+  "copyButton": {
+    "copy": "Copy",
+    "copied": "Copied",
+    "failed": "Couldn’t copy. Select the text and copy it by hand."
+  },
+  "countrySelect": {
+    "country": "Choose a country or region",
+    "language": "Choose a language",
+    "locale": "Choose a language and region",
+    "suggested": "Suggested",
+    "all": "All"
+  },
+  "dataGrid": {
+    "empty": "Nothing to show",
+    "failed": "The table could not load",
+    "retry": "Retry",
+    "selectAll": "Select all rows",
+    "selectRow": "Select row",
+    "rowActions": "Row actions",
+    "clearSort": "Clear sort",
+    "hide": "Hide field",
+    "showAll": "Show all fields",
+    "narrower": "Narrower",
+    "wider": "Wider",
+    "fit": "Fit to content",
+    "deleted": "Deleted",
+    "moveLeft": "Move left",
+    "moveRight": "Move right",
+    "perPage": "Rows per page",
+    "view": "View options",
+    "wrapHeaders": "Wrap headers",
+    "markRead": "Mark as read",
+    "markUnread": "Mark as unread",
+    "wrapText": "Wrap text",
+    "wrapAll": "Wrap all columns",
+    "fullText": "Show the full text",
+    "rowHeight": "Row height",
+    "short": "Short",
+    "medium": "Medium",
+    "tall": "Tall",
+    "extra-tall": "Extra tall",
+    "filter": "Filter",
+    "clearFilter": "Clear filter",
+    "groupBy": "Group by this field",
+    "ungroup": "Ungroup",
+    "noGroup": "Don’t group by this field",
+    "sizeToFit": "Size column to fit",
+    "sizeAllToFit": "Size all columns to fit",
+    "moreColumns": "More…",
+    "columns": "Columns",
+    "loadMore": "Load more",
+    "loading": "Loading records",
+    "group": "Group by this field",
+    "filterBy": "Filter by this field",
+    "any": "Any",
+    "contains": "Contains…",
+    "moveRow": "Move row",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "moveTop": "Move to top",
+    "moveBottom": "Move to bottom",
+    "resize": "Resize",
+    "range": "{first}–{last} of {total}",
+    "count": "{shown} of {total}",
+    "pages": "{label} pages",
+    "loaded": "{n} more rows loaded, {shown} of {total}",
+    "noValue": "(Empty)",
+    "addTo": "Add a record to {value}",
+    "groupRow": "{value}, group, {count} {records}",
+    "record": "record",
+    "records": "records",
+    "expanded": "expanded",
+    "collapsed": "collapsed",
+    "sum": "Sum",
+    "countOf": "Count",
+    "average": "Average",
+    "min": "Min",
+    "max": "Max",
+    "sortText": ["Sort A → Z", "Sort Z → A"],
+    "sortNumber": ["Sort 1 → 9", "Sort 9 → 1"],
+    "sortDate": ["Sort oldest → newest", "Sort newest → oldest"],
+    "sortCheck": ["Sort unchecked → checked", "Sort checked → unchecked"],
+    "unread": "Unread ({count})"
+  },
+  "dataPill": {
+    "male": "male",
+    "female": "female"
+  },
+  "datePicker": {
+    "open": "Choose date",
+    "dialog": "Choose date",
+    "time": "Time",
+    "presets": "Presets",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "nextWeek": "In a week",
+    "last7": "Last 7 days",
+    "last30": "Last 30 days",
+    "thisMonth": "This month",
+    "lastMonth": "Last month"
+  },
+  "deleteFlow": {
+    "title": "Delete {name}?",
+    "titleMany": "Delete {count} {plural}?",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "permanent": "This cannot be undone.",
+    "more": "and {count} more",
+    "typeLabel": "Type {phrase} to confirm",
+    "typeError": "Type {phrase} exactly as shown.",
+    "phraseMany": "delete {count} {plural}",
+    "deleted": "{what} deleted",
+    "trashed": "{what} moved to the trash",
+    "undo": "Undo",
+    "retention": "Restore {them} from the trash within {days} days.",
+    "it": "it",
+    "them": "them",
+    "names": "Deleted",
+    "noun": "item"
+  },
+  "documentViewer": {
+    "document": "Document",
+    "previous": "Previous page",
+    "next": "Next page",
+    "page": "Page",
+    "zoom": "Zoom",
+    "thumbnails": "Page thumbnails",
+    "loading": "Loading document",
+    "failed": "The document could not be opened.",
+    "failedEngine": "The document viewer could not start. Try again later.",
+    "failedAccess": "The document could not be opened. It may have moved, or you may not have access to it.",
+    "failedParse": "This file could not be read as a PDF.",
+    "failedRender": "This page could not be shown.",
+    "empty": "No document.",
+    "retry": "Try again"
+  },
+  "downloadButton": {
+    "download": "Download",
+    "downloading": "Downloading",
+    "ready": "Download ready"
+  },
+  "downloadManager": {
+    "title": "Downloads",
+    "empty": "No downloads",
+    "queued": "Queued",
+    "progress": "Downloading",
+    "ready": "Ready",
+    "failed": "Download failed",
+    "actionFailed": "Could not complete the download action. Try again."
+  },
+  "draftState": {
+    "draft": "Draft",
+    "resume": "Resume draft",
+    "discard": "Discard draft",
+    "confirm": "Discard this draft?",
+    "message": "This draft will be permanently removed.",
+    "cancel": "Keep draft",
+    "failed": "Could not update the draft. Try again."
+  },
+  "duplicateAction": {
+    "duplicate": "Duplicate",
+    "copyOf": "Copy of {name}",
+    "numbered": "{name} ({n})",
+    "title": "Duplicate {noun}",
+    "name": "Name",
+    "from": "From {name}",
+    "also": "Also copy",
+    "empty": "Enter a name.",
+    "taken": "A {noun} named {name} already exists.",
+    "done": "Duplicated as {name}",
+    "undo": "Undo",
+    "cancel": "Cancel",
+    "noun": "item"
+  },
+  "entityPicker": {
+    "placeholderPeople": "Search by name or email",
+    "placeholder": "Search {entityName}",
+    "empty": "No {entityName} found",
+    "browse": "Browse all {entityName}",
+    "loading": "Loading…",
+    "error": "The results could not be loaded",
+    "remove": "Remove {label}"
+  },
+  "errorSummary": {
+    "one": "There is a problem",
+    "many": "There are {count} problems"
+  },
+  "exportDialog": {
+    "title": "Export",
+    "format": "Format",
+    "scope": "Scope",
+    "all": "All records",
+    "selection": "Selected records",
+    "background": "Export in the background",
+    "export": "Export",
+    "cancel": "Cancel",
+    "invalid": "Choose an available format and scope.",
+    "failed": "Could not export. Try again.",
+    "ready": "Export ready",
+    "queued": "Export queued",
+    "download": "Download export",
+    "done": "Done"
+  },
+  "featureIntro": {
+    "new": "New",
+    "whatsNew": "What is new",
+    "gotIt": "Got it",
+    "later": "Not now",
+    "close": "Close"
+  },
+  "file": {
+    "folder": "folder",
+    "items": "{n} items",
+    "item": "{n} item"
+  },
+  "fileBrowser": {
+    "label": "Files",
+    "root": "Library",
+    "newFolder": "New folder",
+    "folderName": "Folder name",
+    "create": "Create",
+    "upload": "Upload",
+    "search": "Search this folder",
+    "folders": "Folders",
+    "path": "Location",
+    "count": "{n} items",
+    "one": "1 item",
+    "empty": "This folder is empty",
+    "emptyText": "Upload files or create a folder.",
+    "noMatch": "Nothing matches “{q}”",
+    "download": "Download",
+    "moveTo": "Move to",
+    "delete": "Delete",
+    "noun": "item",
+    "plural": "items",
+    "drop": "Drop files to upload to {folder}",
+    "nameTaken": "A file or folder named “{name}” is already here.",
+    "nameEmpty": "Give the folder a name.",
+    "items": "{n} items",
+    "item": "{n} item"
+  },
+  "fileInput": {
+    "choose": "Choose file",
+    "chooseMany": "Choose files",
+    "none": "No file chosen",
+    "count": "{count} files",
+    "remove": "Remove {name}"
+  },
+  "fileList": {
+    "sort": "Sort",
+    "sortBy": "Sort by {field}",
+    "field": "Sort by",
+    "order": "Order",
+    "asc": "Ascending",
+    "desc": "Descending",
+    "name": "Name",
+    "size": "Size",
+    "modified": "Modified",
+    "owner": "Owner",
+    "status": "Status",
+    "count": "{n} items",
+    "one": "1 item",
+    "empty": "Nothing here yet",
+    "open": "Open",
+    "download": "Download",
+    "rename": "Rename…",
+    "delete": "Delete",
+    "moveTo": "Move to",
+    "file": "file",
+    "files": "files",
+    "folder": "folder",
+    "folders": "folders",
+    "items": "{n} items",
+    "item": "{n} item"
+  },
+  "filePicker": {
+    "title": "Choose files",
+    "all": "All files",
+    "folders": "Folders",
+    "search": "Search files",
+    "empty": "No matching files.",
+    "pick": "Choose",
+    "cancel": "Cancel",
+    "failed": "Files could not be chosen. Try again."
+  },
+  "fileRow": {
+    "select": "Select {name}",
+    "more": "More actions for {name}",
+    "download": "Download {name}",
+    "rename": "Rename…",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "retry": "Try again",
+    "transfer": "{label} {name}",
+    "uploading": "Uploading",
+    "file": "file",
+    "files": "files",
+    "folder": "folder",
+    "folders": "folders",
+    "items": "{n} items",
+    "item": "{n} item"
+  },
+  "filterBar": {
+    "label": "Filters",
+    "more": "More filters",
+    "clearAll": "Clear all",
+    "one": "{label}: {value}",
+    "several": "{label} · {count}"
+  },
+  "filterPanel": {
+    "label": "Filter",
+    "info": "Only the records that meet the conditions are shown; a condition left unfinished does not filter.",
+    "sub": "In this view, show records",
+    "where": "Where",
+    "and": "and",
+    "or": "or",
+    "empty": "No conditions: every record is shown.",
+    "addCondition": "Add condition",
+    "addGroup": "Add condition group",
+    "remove": "Remove {what}",
+    "condition": "condition",
+    "group": "condition group",
+    "value": "Enter a value",
+    "choose": "Choose options",
+    "field": "Field",
+    "operator": "Operator",
+    "join": "And or or"
+  },
+  "form": {
+    "label": "Form actions"
+  },
+  "formFlow": {
+    "create": "Create",
+    "save": "Save changes",
+    "cancel": "Cancel",
+    "failed": "Could not save. Try again.",
+    "invalid": "Check the fields before saving.",
+    "saved": "Saved",
+    "unsaved": "Your changes will be lost.",
+    "close": "Close"
+  },
+  "generatedContent": {
+    "label": "Generated content",
+    "helpful": "Helpful",
+    "unhelpful": "Not helpful",
+    "regenerate": "Regenerate",
+    "previous": "Previous version",
+    "next": "Next version",
+    "version": "Version",
+    "feedbackSaved": "Feedback saved",
+    "failed": "The action failed. Try again.",
+    "pending": "Working"
+  },
+  "groupPanel": {
+    "label": "Group",
+    "title": "Group by",
+    "info": "Rows with the same value are gathered under one header; a subgroup splits each group again.",
+    "empty": "Gather the rows that share a value under one header.",
+    "add": "Add group",
+    "addSub": "Add subgroup",
+    "collapseAll": "Collapse all",
+    "expandAll": "Expand all",
+    "more": "More for {name}",
+    "hideEmpty": "Hide empty groups",
+    "remove": "Remove the grouping by {name}",
+    "removeTip": "Remove group",
+    "field": "Field",
+    "order": "Order"
+  },
+  "helpPanel": {
+    "title": "Help",
+    "search": "Search help",
+    "empty": "No matching articles",
+    "back": "Back to articles",
+    "read": "Read full article",
+    "close": "Collapse help"
+  },
+  "image": {
+    "error": "Image not available"
+  },
+  "imageAnnotation": {
+    "title": "Image annotations",
+    "pin": "Pin",
+    "region": "Region",
+    "location": "Location",
+    "comment": "Comment",
+    "kind": "Annotation type",
+    "add": "Add annotation",
+    "empty": "Enter a location and comment.",
+    "failed": "Could not save. Try again.",
+    "none": "No annotations"
+  },
+  "importDialog": {
+    "title": "Import",
+    "file": "File",
+    "paste": "Paste data",
+    "url": "URL",
+    "choose": "Choose source file",
+    "drop": "Drop a file here or choose it below.",
+    "none": "No file chosen",
+    "import": "Import",
+    "cancel": "Cancel",
+    "invalid": "Choose a supported file, paste data, or enter an HTTP URL.",
+    "failed": "Could not import. Your source is still available.",
+    "unsaved": "Your import source will be lost."
+  },
+  "importWizard": {
+    "title": "Import records",
+    "mapping": "Map columns",
+    "review": "Review",
+    "results": "Results",
+    "column": "Source column",
+    "choose": "Choose a column",
+    "missing": "Map every required field.",
+    "invalid": "The source has no usable columns or rows.",
+    "done": "Done",
+    "imported": "Import complete",
+    "source": "Source",
+    "cancel": "Cancel",
+    "unsaved": "Your import mapping will be lost."
+  },
+  "inlineEdit": {
+    "edit": "edit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "empty": "Add a value",
+    "saved": "Saved",
+    "failed": "The change could not be saved"
+  },
+  "link": {
+    "newTab": "opens in a new tab"
+  },
+  "loadMore": {
+    "more": "Load more",
+    "moreCount": "Show {n} more",
+    "loading": "Loading…",
+    "end": "You’ve reached the end",
+    "count": "{shown} of {total}",
+    "added": {
+      "one": "{n} more item loaded",
+      "other": "{n} more items loaded"
+    }
+  },
+  "loading": {
+    "label": "Loading"
+  },
+  "loadingOverlay": {
+    "loading": "Loading",
+    "cancel": "Cancel"
+  },
+  "mediaPlayer": {
+    "rate": "Playback speed",
+    "transcript": "Show transcript",
+    "hideTranscript": "Hide transcript",
+    "pip": "Picture in picture",
+    "exitPip": "Exit picture in picture",
+    "unsupported": "Picture in picture is unavailable.",
+    "failed": "This media could not be played.",
+    "pipFailed": "Could not change picture in picture. Try again.",
+    "seek": "Seek to {time}",
+    "fallback": "Open media file",
+    "volume": "Volume",
+    "mute": "Mute",
+    "audioFailed": "The separate sound track could not be played. Video is playing muted."
+  },
+  "mediaViewer": {
+    "label": "Preview",
+    "close": "Close preview",
+    "previous": "Previous",
+    "next": "Next",
+    "counter": "{index} of {total}"
+  },
+  "mentionInput": {
+    "add": "Add mention",
+    "choose": "Choose a person to mention"
+  },
+  "metadataEditor": {
+    "save": "Save metadata",
+    "reset": "Reset",
+    "apply": "Apply {field}",
+    "required": "Enter a value.",
+    "failed": "Metadata could not be saved. Your changes are still available.",
+    "saved": "Metadata saved",
+    "unsaved": "Your metadata changes will be lost."
+  },
+  "metricCard": {
+    "more": "More for {title}",
+    "up": "Up",
+    "down": "Down",
+    "good": "good",
+    "bad": "bad",
+    "vs": "vs",
+    "empty": "No data",
+    "loading": "Loading {title}",
+    "error": "Couldn’t load the figures.",
+    "retry": "Try again",
+    "stale": "Out of date",
+    "rank": "#{n}",
+    "toCome": "to come",
+    "hit": "hit",
+    "missed": "missed",
+    "weekdays": ["M", "T", "W", "T", "F", "S", "S"],
+    "weekdayNames": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+    "month": "{done} of {days} working days so far",
+    "parts": "{label} {share}",
+    "compare": "{a} {av}, {b} {bv}"
+  },
+  "millerColumns": {
+    "empty": "No items",
+    "resize": "Resize the {label} column",
+    "preview": "Preview of {label}"
+  },
+  "navList": {
+    "pin": "Pin",
+    "unpin": "Unpin",
+    "pinItem": "Pin {label}",
+    "unpinItem": "Unpin {label}"
+  },
+  "navPane": {
+    "browse": "Browse"
+  },
+  "notice": {
+    "dismiss": "Dismiss"
+  },
+  "notificationList": {
+    "label": "Notifications",
+    "empty": "No notifications",
+    "markAllRead": "Mark all read",
+    "viewAll": "View all"
+  },
+  "numberInput": {
+    "decrease": "Decrease",
+    "increase": "Increase"
+  },
+  "onboarding": {
+    "start": "Get started",
+    "skip": "Skip welcome",
+    "tour": "Take a tour",
+    "checklist": "Get started",
+    "close": "Close"
+  },
+  "otpInput": {
+    "cell": "character {n} of {total}"
+  },
+  "peopleGroup": {
+    "team": "Team",
+    "group": "Group",
+    "members": "{n} members",
+    "member": "{n} member",
+    "showMembers": "Show members",
+    "membersOf": "Members of {name}"
+  },
+  "permissionSummary": {
+    "can": "Can",
+    "cannot": "Cannot",
+    "manage": "Manage access",
+    "canSentence": "Can {list}",
+    "cannotSentence": "Cannot {list}"
+  },
+  "permissionsEditor": {
+    "label": "Permissions",
+    "capability": "Capability",
+    "subject": "Show permissions for",
+    "save": "Save permissions",
+    "failed": "Could not save permissions. Try again.",
+    "unsaved": "Your permission changes have not been saved."
+  },
+  "persona": {
+    "online": "Online",
+    "away": "Away",
+    "busy": "Busy",
+    "dnd": "Do not disturb",
+    "offline": "Offline"
+  },
+  "popconfirm": {
+    "cancel": "Cancel"
+  },
+  "popover": {
+    "close": "Close"
+  },
+  "presenceBar": {
+    "viewers": "Viewing",
+    "editors": "Editing",
+    "cursors": "Cursors",
+    "empty": "No one else here",
+    "view": "View person"
+  },
+  "productCard": {
+    "sale": "Sale",
+    "outOfStock": "Out of stock",
+    "addToCart": "Add to cart",
+    "addToCartFor": "Add {title} to cart",
+    "now": "Now",
+    "was": "Was",
+    "rating": "Rating",
+    "reviews": "{n} reviews",
+    "review": "1 review",
+    "soldOut": "{title} is out of stock"
+  },
+  "productOptions": {
+    "chosen": "{label}:",
+    "unavailable": "Out of stock",
+    "quantity": "Quantity",
+    "quantityOf": "Quantity, {product}",
+    "unavailableName": "{label}, out of stock",
+    "none": "None chosen"
+  },
+  "progressSteps": {
+    "step": "Step {n} of {total}",
+    "complete": "Complete",
+    "current": "Current step",
+    "upcoming": "Not started",
+    "error": "Needs attention"
+  },
+  "promptSuggestions": {
+    "label": "Prompt suggestions",
+    "empty": "No prompt suggestions",
+    "failed": "Could not use this suggestion. Try again."
+  },
+  "providers": {
+    "UnsavedGuard": {
+      "title": "Leave without saving?",
+      "message": "Your changes will be lost.",
+      "leave": "Leave",
+      "stay": "Keep editing"
+    },
+    "theme-boot": {
+      "compact": "Compact",
+      "standard": "Standard",
+      "comfortable": "Comfortable"
+    }
+  },
+  "publish": {
+    "publish": "Publish",
+    "publishNow": "Publish now",
+    "schedule": "Schedule",
+    "cancelSchedule": "Cancel schedule",
+    "unpublish": "Unpublish",
+    "cancel": "Cancel",
+    "publishTitle": "Publish {name}?",
+    "publishMessage": "It becomes visible to {audience}.",
+    "unpublishTitle": "Unpublish {name}?",
+    "unpublishMessage": "It is hidden from {audience}. You can publish it again.",
+    "scheduleTitle": "Schedule {name}",
+    "when": "Publish on",
+    "whenHint": "Date and time, in your time zone.",
+    "past": "Choose a time in the future.",
+    "empty": "Choose a date and time.",
+    "publishedLine": "Published {at}",
+    "publishedBy": "Published {at} by {by}",
+    "scheduledLine": "Publishes {at}",
+    "scheduledBy": "Publishes {at}, scheduled by {by}",
+    "draftLine": "Not published",
+    "published": "{name} published",
+    "scheduled": "{name} scheduled for {at}",
+    "unpublished": "{name} unpublished",
+    "undo": "Undo",
+    "everyone": "everyone with access",
+    "actions": "Publishing"
+  },
+  "queryBuilder": {
+    "builder": "Builder",
+    "text": "Text",
+    "viewLabel": "View",
+    "where": "Where",
+    "and": "And",
+    "or": "Or",
+    "andWord": "and",
+    "orWord": "or",
+    "join": "Match",
+    "all": "All rules",
+    "any": "Any rule",
+    "addRule": "Add rule",
+    "addGroup": "Add group",
+    "removeRule": "Remove rule",
+    "removeGroup": "Remove group",
+    "field": "Field",
+    "operator": "Operator",
+    "value": "Value",
+    "rule": "Rule {n}",
+    "group": "Group {n}",
+    "empty": "No rules: every record matches.",
+    "everything": "Every record",
+    "matches": "{n} matches",
+    "match": "{n} match",
+    "textTitle": "Query",
+    "added": "Rule added",
+    "groupAdded": "Group added",
+    "removed": "Rule removed",
+    "groupRemoved": "Group removed"
+  },
+  "quickFilter": {
+    "preset": "any"
+  },
+  "rating": {
+    "label": "Rating"
+  },
+  "refineMenu": {
+    "label": "Refine",
+    "shorter": "Make shorter",
+    "longer": "Make longer",
+    "tone": "Change tone",
+    "formal": "Formal",
+    "casual": "Casual",
+    "neutral": "Neutral",
+    "custom": "Custom instruction",
+    "prompt": "Instruction",
+    "apply": "Apply instruction",
+    "cancel": "Cancel",
+    "empty": "Enter an instruction.",
+    "failed": "Could not refine this text. Try again."
+  },
+  "relatedAssets": {
+    "empty": "No related assets"
+  },
+  "relativeDateInput": {
+    "custom": "Custom",
+    "none": "Any time",
+    "amount": "Amount",
+    "unit": "Unit",
+    "direction": "Direction",
+    "past": "Last",
+    "future": "Next",
+    "units": {
+      "day": ["day", "days"],
+      "week": ["week", "weeks"],
+      "month": ["month", "months"],
+      "year": ["year", "years"]
+    },
+    "presets": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "last-7-days": "Last 7 days",
+      "last-30-days": "Last 30 days",
+      "last-90-days": "Last 90 days",
+      "last-12-months": "Last 12 months",
+      "tomorrow": "Tomorrow",
+      "next-7-days": "Next 7 days",
+      "next-30-days": "Next 30 days",
+      "next-90-days": "Next 90 days",
+      "next-12-months": "Next 12 months"
+    }
+  },
+  "renameAction": {
+    "label": "Name",
+    "rename": "Rename",
+    "open": "Rename…",
+    "title": "Rename {name}",
+    "cancel": "Cancel",
+    "empty": "Enter a name",
+    "slash": "A name can’t contain / or \\",
+    "taken": "There’s already an item named {name} here",
+    "tooLong": "Use {max} characters or fewer",
+    "renamed": "Renamed to {name}",
+    "failed": "The name could not be changed"
+  },
+  "renditionList": {
+    "label": "Renditions",
+    "name": "Name",
+    "format": "Format",
+    "size": "Size",
+    "download": "Download",
+    "empty": "No renditions."
+  },
+  "resizable": {
+    "width": "{label} width",
+    "height": "{label} height"
+  },
+  "resourceList": {
+    "item": "item",
+    "selectAll": "Select all {n} {nouns}",
+    "select": "Select {name}",
+    "count": "{n} {nouns}",
+    "selected": "{n} of {total} selected"
+  },
+  "retry": {
+    "title": "Couldn’t load",
+    "retry": "Retry",
+    "retryNow": "Retry now",
+    "retrying": "Retrying…",
+    "waiting": "Retrying in {time}",
+    "attempt": "Attempt {attempt} of {attempts}",
+    "stopped": "Stopped after {attempts} attempts",
+    "dismiss": "Dismiss",
+    "status": "failed"
+  },
+  "reviewFlow": {
+    "label": "Waiting for review",
+    "noun": "item"
+  },
+  "richTextEditor": {
+    "toolbar": "Formatting",
+    "more": "More formatting",
+    "bold": "Bold",
+    "italic": "Italic",
+    "underline": "Underline",
+    "strike": "Strikethrough",
+    "code": "Inline code",
+    "subscript": "Subscript",
+    "superscript": "Superscript",
+    "link": "Link",
+    "bulleted": "Bulleted list",
+    "numbered": "Numbered list",
+    "tasks": "Task list",
+    "quote": "Quote",
+    "codeBlock": "Code block",
+    "rule": "Horizontal rule",
+    "image": "Image",
+    "table": "Table",
+    "color": "Text color",
+    "highlight": "Highlight",
+    "alignLeft": "Align left",
+    "alignCenter": "Align center",
+    "alignRight": "Align right",
+    "alignJustify": "Justify",
+    "clear": "Clear formatting",
+    "undo": "Undo",
+    "redo": "Redo",
+    "textStyle": "Text style",
+    "paragraph": "Paragraph",
+    "font": "Font",
+    "defaultFont": "Default font",
+    "size": "Size",
+    "defaultSize": "Default size",
+    "custom": "Custom…",
+    "customFont": "Font family",
+    "customSize": "Font size",
+    "insertTable": "Insert table",
+    "rowBefore": "Add row above",
+    "rowAfter": "Add row below",
+    "columnBefore": "Add column before",
+    "columnAfter": "Add column after",
+    "deleteRow": "Delete row",
+    "deleteColumn": "Delete column",
+    "headerRow": "Header row",
+    "deleteTable": "Delete table",
+    "linkAddress": "Link address",
+    "addLink": "Add link",
+    "imageAddress": "Image address",
+    "imageAlt": "Description",
+    "addImage": "Add image",
+    "swatches": "Suggested colors",
+    "customColor": "Custom color",
+    "hex": "Hex value",
+    "apply": "Apply",
+    "remove": "Remove",
+    "cancel": "Cancel",
+    "mentions": "Suggestions",
+    "groupMarks": "Text",
+    "groupColor": "Color",
+    "groupAlign": "Alignment",
+    "groupLists": "Lists",
+    "groupInsert": "Insert",
+    "groupHistory": "History",
+    "leave": "Press Tab or Shift+Tab to leave the editor",
+    "hint": "Escape, then Tab, leaves the editor"
+  },
+  "roleLabel": {
+    "owner": "Owner",
+    "editor": "Editor",
+    "viewer": "Viewer"
+  },
+  "roleManager": {
+    "roles": "Roles",
+    "create": "Create role",
+    "createTitle": "Create role",
+    "name": "Name",
+    "description": "Description",
+    "descriptionHint": "One sentence on what people with this role can do.",
+    "startFrom": "Start with the permissions of",
+    "empty": "Enter a name.",
+    "taken": "A role named {name} already exists.",
+    "back": "All roles",
+    "members": "Members",
+    "member": "member",
+    "membersCount": "{n} members",
+    "memberCount": "{n} member",
+    "builtIn": "Built-in",
+    "custom": "Custom",
+    "permissions": "Permissions",
+    "builtInNote": "Built-in roles can’t be changed. Duplicate one to make your own.",
+    "addMember": "Add a member",
+    "remove": "Remove {name}",
+    "lastMember": "{role} needs at least one member. Add someone else first.",
+    "noMembers": "Nobody has this role yet.",
+    "role": "role",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "added": "{name} added to {role}",
+    "removed": "{name} removed from {role}",
+    "created": "{name} created",
+    "access": "People with the {role} role",
+    "people": "{n} people",
+    "peopleOne": "{n} person",
+    "allowed": "{permission} allowed for {role}",
+    "denied": "{permission} no longer allowed for {role}"
+  },
+  "saveAs": {
+    "title": "Save as",
+    "name": "Name",
+    "location": "Location",
+    "format": "Format",
+    "save": "Save copy",
+    "cancel": "Cancel",
+    "required": "Enter a name and choose a location.",
+    "failed": "Could not save the copy. Try again.",
+    "unsaved": "Your changes will be lost."
+  },
+  "searchField": {
+    "suggestions": "Suggestions",
+    "recent": "Recent searches",
+    "clearRecent": "Clear recent searches",
+    "clear": "Clear search",
+    "results": "{n} suggestions",
+    "removed": "{query} removed from recent searches",
+    "remove": "Remove {query}",
+    "placeholder": "Search",
+    "label": "Search"
+  },
+  "searchWorkspace": {
+    "title": "Search",
+    "selectAll": "Select all",
+    "allSelected": "Every {noun} is selected",
+    "placeholder": "Search…",
+    "result": "result",
+    "results": "results",
+    "searchField": "Search {nouns}",
+    "save": "Save search",
+    "filters": "Filters",
+    "activeFilters": "Active filters",
+    "chip": "{label}: {value}",
+    "remove": "Remove {text}",
+    "clearAll": "Clear all",
+    "view": "View",
+    "grid": "Grid",
+    "table": "Table",
+    "sort": "Sort",
+    "sortValue": "Sort: {value}",
+    "noMatchQuery": "Nothing matches “{query}”.",
+    "noMatchQueryFilters": "Nothing matches “{query}” with these filters.",
+    "noMatchFilters": "Nothing matches these filters."
+  },
+  "secondaryPane": {
+    "expand": "Expand {name}",
+    "collapse": "Collapse {name}",
+    "resize": "Resize {name}",
+    "close": "Close {name}",
+    "back": "Back to {name}"
+  },
+  "sessionTimeout": {
+    "warningTitle": "Your session is about to end",
+    "warning": "You’ll be signed out in {time} because you haven’t been active.",
+    "stay": "Stay signed in",
+    "signOut": "Sign out",
+    "signedOutTitle": "You were signed out",
+    "signedOut": "For your security, you were signed out after {minutes} minutes without activity.",
+    "signedOutShort": "For your security, you were signed out because you weren’t active.",
+    "saved": "Your changes are saved.",
+    "signIn": "Sign in again",
+    "left": "{time} left",
+    "ended": "Signed out"
+  },
+  "shareDialog": {
+    "title": "Share",
+    "people": "People",
+    "link": "Link",
+    "person": "Person",
+    "role": "Role",
+    "add": "Add person",
+    "remove": "Remove",
+    "save": "Save access",
+    "cancel": "Cancel",
+    "copy": "Copy link",
+    "access": "Link access",
+    "restricted": "Only people with access",
+    "anyone": "Anyone with the link can view",
+    "nativeShare": "Share using device",
+    "failed": "Could not share. Try again.",
+    "invalid": "Choose a person and an available role.",
+    "unsaved": "Your access changes will be lost."
+  },
+  "sheet": {
+    "expand": "Expand sheet",
+    "shrink": "Shrink sheet",
+    "doneLabel": "Done",
+    "cancelLabel": "Cancel",
+    "closeLabel": "Close",
+    "done": "Done",
+    "cancel": "Cancel",
+    "close": "Close"
+  },
+  "shortcutsDialog": {
+    "title": "Keyboard shortcuts",
+    "search": "Search shortcuts",
+    "general": "General",
+    "empty": "No matching shortcuts",
+    "close": "Close"
+  },
+  "slider": {
+    "minimum": "Minimum",
+    "maximum": "Maximum"
+  },
+  "sortPanel": {
+    "label": "Sort",
+    "title": "Sort by",
+    "within": "Sort within groups by",
+    "info": "The rows are ordered by the first field, then by the next where the first is the same.",
+    "empty": "No sort: the rows keep their own order.",
+    "add": "Add a sort",
+    "addAnother": "Add another sort",
+    "remove": "Remove the sort by {name}",
+    "removeTip": "Remove sort",
+    "field": "Field",
+    "direction": "Direction"
+  },
+  "sortableList": {
+    "moveMenu": "Move {name}",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "moveEarlier": "Move earlier",
+    "moveLater": "Move later",
+    "moveFirst": "Move to the start",
+    "moveLast": "Move to the end",
+    "moveUpNamed": "Move {name} up",
+    "moveDownNamed": "Move {name} down"
+  },
+  "splitButton": {
+    "more": "More {label} options"
+  },
+  "suggestedEdit": {
+    "label": "Suggested edits",
+    "before": "Before",
+    "after": "After",
+    "accept": "Accept",
+    "reject": "Reject",
+    "acceptAll": "Accept all",
+    "accepted": "Accepted",
+    "rejected": "Rejected",
+    "empty": "No suggested edits",
+    "failed": "Could not save this decision. Try again."
+  },
+  "tabs": {
+    "more": "More",
+    "moreLabel": "More tabs"
+  },
+  "tag": {
+    "label": "Add a tag"
+  },
+  "teachingBubble": {
+    "close": "Close",
+    "step": "{current} of {total}"
+  },
+  "templates": {
+    "Commerce": {
+      "Storefront": {
+        "layout": "gallery"
+      }
+    },
+    "templates": {
+      "Templates": {
+        "empty": "No records yet",
+        "emptyDescription": "Create a record to get started.",
+        "pane": "Records",
+        "sections": "On this page",
+        "retry": "Try again",
+        "home": "Go home",
+        "search": "Search results",
+        "tools": "Tools",
+        "inspector": "Options",
+        "detail": "Details",
+        "noSelection": "Nothing selected",
+        "noSelectionDescription": "Choose an item to see it here."
+      }
+    }
+  },
+  "time": {
+    "now": "Just now"
+  },
+  "timePicker": {
+    "hour": "Hour",
+    "minute": "Minute",
+    "period": "AM or PM",
+    "am": "AM",
+    "pm": "PM",
+    "times": "Times",
+    "empty": "--"
+  },
+  "timeZoneSelect": {
+    "placeholder": "Choose a time zone",
+    "empty": "No matches",
+    "utc": "Coordinated Universal Time",
+    "other": "Other",
+    "regions": {
+      "Africa": "Africa",
+      "America": "Americas",
+      "Antarctica": "Antarctica",
+      "Arctic": "Arctic",
+      "Asia": "Asia",
+      "Atlantic": "Atlantic",
+      "Australia": "Australia",
+      "Europe": "Europe",
+      "Indian": "Indian Ocean",
+      "Pacific": "Pacific"
+    }
+  },
+  "toast": {
+    "aria-label": "Dismiss",
+    "undo": "Undo",
+    "dismiss": "Dismiss"
+  },
+  "tour": {
+    "next": "Next",
+    "back": "Back",
+    "finish": "Finish tour",
+    "skip": "Skip tour",
+    "resume": "Resume tour",
+    "close": "Close",
+    "step": "{current} of {total}"
+  },
+  "transferList": {
+    "source": "Available",
+    "target": "Chosen",
+    "add": "Add",
+    "addAll": "Add all",
+    "remove": "Remove",
+    "removeAll": "Remove all",
+    "up": "Move up",
+    "down": "Move down",
+    "search": "Search {title}",
+    "selectAll": "Check every item in {title}",
+    "count": "{checked} of {total} checked",
+    "moved": "{n} moved to {title}",
+    "empty": "No items",
+    "noMatch": "No matches",
+    "moves": "Move items"
+  },
+  "treeSelect": {
+    "placeholder": "Choose",
+    "search": "Search",
+    "choose": "Choose an item",
+    "more": "{list} and {n} more",
+    "empty": "No matches"
+  },
+  "trialUpgrade": {
+    "trial": "Trial",
+    "compare": "Compare plans",
+    "title": "Choose a plan",
+    "plan": "Plan",
+    "upgrade": "Upgrade",
+    "cancel": "Cancel",
+    "failed": "Could not upgrade. Try again.",
+    "upgraded": "Plan updated"
+  },
+  "uploadManager": {
+    "dialogTitle": "Upload files",
+    "queue": "Uploads",
+    "drop": "Drag and drop files or folders here",
+    "or": "or",
+    "chooseFiles": "Choose files",
+    "chooseFolder": "Choose a folder",
+    "uploading": "Uploading {n} files",
+    "uploadingOne": "Uploading 1 file",
+    "done": "{n} uploads complete",
+    "doneOne": "1 upload complete",
+    "failed": "{n} uploads failed",
+    "failedOne": "1 upload failed",
+    "none": "No uploads",
+    "progress": "{done} of {total} uploaded",
+    "overall": "Overall progress",
+    "waiting": "Waiting",
+    "uploaded": "Uploaded",
+    "canceled": "Canceled",
+    "cancelAll": "Cancel all",
+    "clear": "Clear finished",
+    "hide": "Hide the uploads",
+    "show": "Show the uploads",
+    "close": "Close",
+    "finish": "Done",
+    "remove": "Remove from the list",
+    "again": "Upload again",
+    "tooLarge": "This file is larger than {max}.",
+    "wrongType": "This type of file can’t be uploaded here.",
+    "error": "The upload failed. Try again.",
+    "failedNamed": "{name} failed: {reason}",
+    "status": "canceled"
+  },
+  "userCard": {
+    "online": "Online",
+    "away": "Away",
+    "busy": "Busy",
+    "dnd": "Do not disturb",
+    "offline": "Offline"
+  },
+  "utils": {
+    "clipboard": {
+      "copied": "Copied",
+      "failed": "Couldn’t copy. Select the text and copy it by hand."
+    }
+  },
+  "versionCompare": {
+    "label": "Version comparison",
+    "compare": "Compare",
+    "with": "With",
+    "swap": "Swap",
+    "swapLabel": "Swap the two versions",
+    "view": "View",
+    "columns": "Side by side",
+    "slider": "Slider",
+    "text": "Text",
+    "by": "by {author}",
+    "diff": "Changes from {base} to {target}",
+    "added": "Added",
+    "removed": "Removed",
+    "same": "No changes in the text",
+    "summary": "{added} added, {removed} removed",
+    "lines": "{n} lines",
+    "line": "1 line",
+    "previous": "Previous change",
+    "next": "Next change",
+    "at": "Change {n} of {total}",
+    "unchanged": "Show {n} unchanged lines",
+    "empty": "Choose two versions to compare."
+  },
+  "versionHistory": {
+    "label": "Version history",
+    "preview": "Preview",
+    "restore": "Restore",
+    "confirm": "Restore this version?",
+    "cancel": "Cancel",
+    "failed": "The version could not be restored. Try again.",
+    "restored": "Version restored",
+    "empty": "No versions."
+  },
+  "versionLabel": {
+    "version": "Version",
+    "prefix": "v",
+    "latest": "Latest",
+    "draft": "Draft"
+  },
+  "viewMenu": {
+    "reset": "Reset view",
+    "label": "View",
+    "layout": "Layout",
+    "list": "List",
+    "gallery": "Gallery",
+    "size": "Card size (gallery)",
+    "s": "Small",
+    "m": "Medium",
+    "l": "Large",
+    "height": "Row height (list)",
+    "short": "Short",
+    "medium": "Medium",
+    "tall": "Tall",
+    "extra-tall": "Extra tall"
+  },
+  "virtualList": {
+    "loading": "Loading…",
+    "empty": "No items",
+    "count": {
+      "one": "{n} item",
+      "other": "{n} items"
+    },
+    "group": {
+      "one": "{n} item",
+      "other": "{n} items"
+    }
+  },
+  "widgetGrid": {
+    "widget": "Widget",
+    "widgetLower": "widget",
+    "move": "Move {title} (arrow keys)",
+    "position": "{title}, position {index} of {total}",
+    "earlier": "Move earlier",
+    "later": "Move later",
+    "first": "Move to the start",
+    "last": "Move to the end"
+  },
+  "wizardDialog": {
+    "close": "Close",
+    "unsaved": "Your changes will be lost."
+  },
+  "voteTally": {
+    "approve": "Approve",
+    "deny": "Deny",
+    "abstain": "Abstain",
+    "turnedOff": "turned off",
+    "notVoted": "Not voted",
+    "voteOf": "Vote of {name}",
+    "hiddenUntilClosed": "Hidden until the vote closes",
+    "totalsOnly": "Totals only",
+    "reconnecting": "Reconnecting",
+    "quorum": "Quorum: {present} present, {needed} needed ({state})",
+    "met": "met",
+    "notMet": "not met",
+    "result": {
+      "open": "Open",
+      "passing": "Passing",
+      "failing": "Failing",
+      "passed": "Passed",
+      "failed": "Failed",
+      "tied": "Tied",
+      "no-quorum": "No quorum"
+    }
+  }
+};
+  } },
+  "platform/i18n/ar.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// Plenix's built-in Arabic words (owner, arabic-batch4-36, arabic-words-37; issue 427): every section of en.js in Arabic, a draft
+// (Builder 02's table, ~/handoff/i18n/strings.md) for the owner's review. LocaleProvider uses them for an Arabic locale after the
+// application's own catalog and before English; a part's strings prop still wins.
+var _default = exports.default = {
+  "pagination": {
+    "label": "الصفحات",
+    "range": "{first} إلى {last} من {total}",
+    "previous": "الصفحة السابقة",
+    "next": "الصفحة التالية",
+    "page": "الصفحة {n}",
+    "perPage": "لكل صفحة"
+  },
+  "chart": {
+    "barChart": {
+      "category": "الفئة",
+      "total": "الإجمالي",
+      "range": "النطاق",
+      "count": "العدد"
+    },
+    "boxPlot": {
+      "group": "المجموعة",
+      "min": "الحد الأدنى",
+      "q1": "الربع الأول",
+      "median": "الوسيط",
+      "q3": "الربع الثالث",
+      "max": "الحد الأقصى",
+      "outliers": "القيم الشاذة",
+      "n": "القيم"
+    },
+    "bulletChart": {
+      "measure": "المقياس",
+      "value": "القيمة",
+      "target": "الهدف",
+      "ranges": "النطاقات",
+      "poor": "ضعيف",
+      "fair": "مقبول",
+      "good": "جيد"
+    },
+    "chartFrame": {
+      "showData": "عرض البيانات",
+      "table": "{title}: البيانات"
+    },
+    "comboChart": {
+      "category": "الفئة",
+      "bars": "الأعمدة",
+      "lines": "الخطوط"
+    },
+    "diagram": {
+      "step": "الخطوة",
+      "kind": "النوع",
+      "next": "يؤدي إلى",
+      "previous": "يأتي من",
+      "process": "الخطوة",
+      "decision": "قرار",
+      "terminal": "بداية أو نهاية",
+      "data": "البيانات",
+      "box": "الجزء",
+      "group": "المجموعة",
+      "end": "النهاية"
+    },
+    "funnelChart": {
+      "stage": "المرحلة",
+      "value": "العدد",
+      "kept": "المتبقي من الخطوة السابقة",
+      "ofFirst": "من الخطوة الأولى"
+    },
+    "ganttChart": {
+      "task": "المهمة",
+      "progress": "تم",
+      "dependsOn": "بانتظار",
+      "status": "الحالة",
+      "today": "اليوم",
+      "milestone": "مَعلَم",
+      "start": "البداية",
+      "end": "النهاية"
+    },
+    "gauge": {
+      "showData": "عرض البيانات",
+      "table": "{title}: البيانات",
+      "measure": "المقياس",
+      "value": "القيمة",
+      "min": "الحد الأدنى",
+      "max": "الحد الأقصى",
+      "ok": ""
+    },
+    "geoMap": {
+      "region": "المنطقة",
+      "place": "المكان",
+      "value": "القيمة",
+      "noData": "لا توجد بيانات",
+      "latitude": "خط العرض",
+      "longitude": "خط الطول",
+      "zoom": "التكبير",
+      "zoomIn": "تكبير",
+      "zoomOut": "تصغير",
+      "reset": "عرض الخريطة كاملة"
+    },
+    "heatMap": {
+      "value": "القيمة",
+      "row": "الصف",
+      "column": "العمود",
+      "date": "التاريخ",
+      "missing": "لا توجد بيانات",
+      "low": "منخفض",
+      "high": "مرتفع",
+      "scale": "مقياس الألوان"
+    },
+    "lineChart": {
+      "category": "الفئة"
+    },
+    "lollipopChart": {
+      "category": "الفئة",
+      "value": "القيمة"
+    },
+    "networkGraph": {
+      "node": "العقدة",
+      "group": "المجموعة",
+      "links": "متصل بـ",
+      "zoomIn": "تكبير",
+      "zoomOut": "تصغير",
+      "fit": "ملاءمة",
+      "hintZoom": " الأزرار +/- للتكبير والتصغير، والرقم 0 يناسب الرسم.",
+      "none": "لا شيء"
+    },
+    "pieChart": {
+      "part": "الجزء",
+      "value": "القيمة",
+      "share": "الحصة",
+      "total": "الإجمالي",
+      "other": "أخرى"
+    },
+    "radarChart": {
+      "measure": "المقياس"
+    },
+    "sankeyDiagram": {
+      "source": "المصدر",
+      "target": "الهدف",
+      "value": "القيمة",
+      "total": "الإجمالي"
+    },
+    "scatterChart": {
+      "series": "السلسلة",
+      "item": "العنصر"
+    },
+    "timelineChart": {
+      "item": "العنصر",
+      "lane": "المسار",
+      "today": "اليوم",
+      "date": "التاريخ",
+      "dates": "التواريخ",
+      "start": "البداية",
+      "end": "النهاية"
+    },
+    "treeChart": {
+      "name": "الاسم",
+      "detail": "التفاصيل",
+      "parent": "يتبع لـ",
+      "level": "المستوى",
+      "folded": "مطوي",
+      "open": "مفتوح"
+    },
+    "treemap": {
+      "group": "المجموعة",
+      "item": "الجزء",
+      "value": "القيمة",
+      "share": "الحصة"
+    },
+    "waterfallChart": {
+      "step": "الخطوة",
+      "change": "التغيير",
+      "total": "الإجمالي",
+      "running": "المجموع التراكمي",
+      "increase": "زيادة",
+      "decrease": "نقصان",
+      "end": "النهاية"
+    },
+    "wordCloud": {
+      "value": "العدد",
+      "word": "المصطلح",
+      "group": "المجموعة"
+    },
+    "chartLegend": {
+      "legend": "دليل الرسم"
+    }
+  },
+  "avatar": {
+    "online": "متصل",
+    "away": "غائب",
+    "busy": "مشغول",
+    "dnd": "عدم الإزعاج",
+    "offline": "غير متصل"
+  },
+  "avatarGroup": {
+    "more": "+{n}",
+    "moreLabel": "{n} إضافية"
+  },
+  "backToTop": {
+    "label": "العودة إلى الأعلى"
+  },
+  "barcode": {
+    "label": "الباركود {format}: {value}",
+    "invalid": "رمز {format} غير صالح",
+    "formats": {
+      "code128": "Code 128",
+      "ean13": "EAN-13",
+      "upca": "UPC-A"
+    }
+  },
+  "brand": {
+    "name": "Plenix"
+  },
+  "button": {
+    "working": "جارٍ العمل"
+  },
+  "calendar": {
+    "label": "التقويم",
+    "previous": "الشهر السابق",
+    "next": "الشهر التالي",
+    "week": "الأسبوع",
+    "weekShort": "أسبوع",
+    "today": "اليوم"
+  },
+  "carousel": {
+    "slide": "{n} من {total}",
+    "previous": "الشريحة السابقة",
+    "next": "الشريحة التالية",
+    "goTo": "الانتقال إلى الشريحة {n}",
+    "goToPage": "الانتقال إلى الصفحة {n}",
+    "pages": "الشرائح",
+    "pause": "إيقاف مؤقت",
+    "play": "تشغيل",
+    "pauseLabel": "إيقاف الشرائح مؤقتًا",
+    "playLabel": "تشغيل الشرائح",
+    "strip": "الشرائح"
+  },
+  "cascader": {
+    "placeholder": "اختيار",
+    "separator": " / ",
+    "search": "بحث",
+    "noMatches": "لا توجد نتائج مطابقة",
+    "empty": "لا توجد عناصر",
+    "remove": "إزالة {label}",
+    "columns": "الخيارات"
+  },
+  "codeBlock": {
+    "code": "الرمز",
+    "copy": "نسخ",
+    "copied": "تم النسخ",
+    "failed": "تعذّر النسخ"
+  },
+  "codeEditor": {
+    "hint": "مفتاح Tab يضيف مسافة بادئة. اضغط Escape ثم Tab للخروج من المحرّر."
+  },
+  "combobox": {
+    "loading": "جارٍ التحميل…",
+    "error": "تعذّر تحميل الخيارات"
+  },
+  "commandMenu": {
+    "label": "الأوامر",
+    "placeholder": "اكتب أمرًا أو ابحث",
+    "empty": "لا توجد نتائج لـ «{query}»",
+    "loading": "جارٍ التحميل",
+    "back": "رجوع",
+    "results": "{count} نتيجة"
+  },
+  "contextualHelp": {
+    "more": "المزيد عن {title}",
+    "moreUntitled": "مزيد من المعلومات"
+  },
+  "copyButton": {
+    "copy": "نسخ",
+    "copied": "تم النسخ",
+    "failed": "تعذّر النسخ. حدّد النص وانسخه يدويًا."
+  },
+  "countrySelect": {
+    "country": "اختر بلدًا أو منطقة",
+    "language": "اختر لغة",
+    "locale": "اختر لغة ومنطقة",
+    "suggested": "مقترح",
+    "all": "الكل"
+  },
+  "dataGrid": {
+    "empty": "لا يوجد شيء للعرض",
+    "failed": "تعذّر تحميل الجدول",
+    "retry": "إعادة المحاولة",
+    "selectAll": "تحديد كل الصفوف",
+    "selectRow": "تحديد الصف",
+    "rowActions": "إجراءات الصف",
+    "clearSort": "إلغاء الفرز",
+    "hide": "إخفاء الحقل",
+    "showAll": "إظهار كل الحقول",
+    "narrower": "أضيق",
+    "wider": "أعرض",
+    "fit": "ملاءمة المحتوى",
+    "deleted": "محذوف",
+    "moveLeft": "نقل إلى اليسار",
+    "moveRight": "نقل إلى اليمين",
+    "perPage": "الصفوف في كل صفحة",
+    "view": "خيارات العرض",
+    "wrapHeaders": "التفاف العناوين",
+    "markRead": "وضع علامة مقروء",
+    "markUnread": "وضع علامة غير مقروء",
+    "wrapText": "التفاف النص",
+    "wrapAll": "التفاف كل الأعمدة",
+    "fullText": "عرض النص كاملًا",
+    "rowHeight": "ارتفاع الصف",
+    "short": "قصير",
+    "medium": "متوسط",
+    "tall": "طويل",
+    "extra-tall": "طويل جدًا",
+    "filter": "تصفية",
+    "clearFilter": "مسح التصفية",
+    "groupBy": "التجميع حسب هذا الحقل",
+    "ungroup": "إلغاء التجميع",
+    "noGroup": "عدم التجميع حسب هذا الحقل",
+    "sizeToFit": "ملاءمة عرض العمود",
+    "sizeAllToFit": "ملاءمة عرض كل الأعمدة",
+    "moreColumns": "المزيد…",
+    "columns": "الأعمدة",
+    "loadMore": "تحميل المزيد",
+    "loading": "جارٍ تحميل السجلات",
+    "group": "التجميع حسب هذا الحقل",
+    "filterBy": "التصفية حسب هذا الحقل",
+    "any": "أي قيمة",
+    "contains": "يحتوي على…",
+    "moveRow": "نقل الصف",
+    "moveUp": "نقل لأعلى",
+    "moveDown": "نقل لأسفل",
+    "moveTop": "نقل إلى الأعلى",
+    "moveBottom": "نقل إلى الأسفل",
+    "resize": "تغيير الحجم",
+    "range": "{first}–{last} من {total}",
+    "count": "{shown} من {total}",
+    "pages": "صفحات {label}",
+    "loaded": "تم تحميل {n} صفوف إضافية، {shown} من {total}",
+    "noValue": "(فارغ)",
+    "addTo": "إضافة سجل إلى {value}",
+    "groupRow": "{value}، مجموعة، {count} {records}",
+    "record": "سجل",
+    "records": "سجلات",
+    "expanded": "موسّع",
+    "collapsed": "مطوي",
+    "sum": "المجموع",
+    "countOf": "العدد",
+    "average": "المتوسط",
+    "min": "الأدنى",
+    "max": "الأقصى",
+    "sortText": ["فرز من أ إلى ي", "فرز من ي إلى أ"],
+    "sortNumber": ["فرز من 1 إلى 9", "فرز من 9 إلى 1"],
+    "sortDate": ["فرز من الأقدم إلى الأحدث", "فرز من الأحدث إلى الأقدم"],
+    "sortCheck": ["فرز من غير المحدد إلى المحدد", "فرز من المحدد إلى غير المحدد"],
+    "unread": "غير مقروء ({count})"
+  },
+  "dataPill": {
+    "male": "ذكر",
+    "female": "أنثى"
+  },
+  "datePicker": {
+    "open": "اختيار التاريخ",
+    "dialog": "اختيار التاريخ",
+    "time": "الوقت",
+    "presets": "الإعدادات المسبقة",
+    "today": "اليوم",
+    "tomorrow": "غدًا",
+    "nextWeek": "بعد أسبوع",
+    "last7": "آخر 7 أيام",
+    "last30": "آخر 30 يومًا",
+    "thisMonth": "هذا الشهر",
+    "lastMonth": "الشهر الماضي"
+  },
+  "documentViewer": {
+    "document": "المستند",
+    "previous": "الصفحة السابقة",
+    "next": "الصفحة التالية",
+    "page": "الصفحة",
+    "zoom": "التكبير",
+    "thumbnails": "مصغّرات الصفحات",
+    "loading": "جارٍ تحميل المستند",
+    "failed": "تعذّر فتح المستند.",
+    "failedEngine": "تعذّر تشغيل عارض المستندات. حاول مرة أخرى لاحقًا.",
+    "failedAccess": "تعذّر فتح المستند. ربما نُقل أو لا تملك صلاحية الوصول إليه.",
+    "failedParse": "تعذّرت قراءة هذا الملف كملف PDF.",
+    "failedRender": "تعذّر عرض هذه الصفحة.",
+    "empty": "لا يوجد مستند.",
+    "retry": "حاول مرة أخرى"
+  },
+  "downloadButton": {
+    "download": "تنزيل",
+    "downloading": "جارٍ التنزيل",
+    "ready": "التنزيل جاهز"
+  },
+  "emptyState": {
+    "offline": {
+      "title": "أنت غير متصل بالإنترنت",
+      "text": "تحقق من اتصالك. ستُحدَّث هذه الصفحة عند عودتك إلى الاتصال."
+    },
+    "degraded": {
+      "title": "بعض الميزات لا تعمل",
+      "text": "هناك خدمة بطيئة أو لا تستجيب، لذا قد تكون المعلومات المعروضة غير محدّثة."
+    },
+    "permission-denied": {
+      "title": "لا تملك صلاحية الوصول",
+      "text": "اطلب من المالك مشاركتها معك."
+    },
+    "not-found": {
+      "title": "هذه الصفحة غير موجودة",
+      "text": "ربما نُقلت أو حُذفت. تحقق من العنوان أو ارجع إلى الصفحة السابقة."
+    },
+    "maintenance": {
+      "title": "متوقف للصيانة",
+      "text": "يجري تحديث هذه الخدمة. حاول مرة أخرى بعد بضع دقائق."
+    },
+    "completion": {
+      "title": "اكتمل كل شيء",
+      "text": "لم يتبقَّ شيء لإنجازه هنا."
+    }
+  },
+  "entityPicker": {
+    "placeholderPeople": "ابحث بالاسم أو البريد الإلكتروني",
+    "placeholder": "ابحث في {entityName}",
+    "empty": "لم يتم العثور على {entityName}",
+    "browse": "تصفح كل {entityName}",
+    "loading": "جارٍ التحميل…",
+    "error": "تعذّر تحميل النتائج",
+    "remove": "إزالة {label}"
+  },
+  "errorSummary": {
+    "one": "توجد مشكلة",
+    "many": "توجد {count} مشكلات"
+  },
+  "file": {
+    "folder": "مجلد",
+    "items": "{n} عناصر",
+    "item": "{n} عنصر"
+  },
+  "fileInput": {
+    "choose": "اختيار ملف",
+    "chooseMany": "اختيار ملفات",
+    "none": "لم يتم اختيار ملف",
+    "count": "{count} ملفات",
+    "remove": "إزالة {name}"
+  },
+  "fileRow": {
+    "select": "تحديد {name}",
+    "more": "المزيد من الإجراءات لـ {name}",
+    "download": "تنزيل {name}",
+    "rename": "إعادة تسمية…",
+    "delete": "حذف",
+    "cancel": "إلغاء",
+    "retry": "حاول مرة أخرى",
+    "transfer": "{label} {name}",
+    "uploading": "جارٍ الرفع",
+    "file": "ملف",
+    "files": "ملفات",
+    "folder": "مجلد",
+    "folders": "مجلدات",
+    "items": "{n} عناصر",
+    "item": "{n} عنصر"
+  },
+  "generatedContent": {
+    "label": "محتوى مُنشأ",
+    "helpful": "مفيد",
+    "unhelpful": "غير مفيد",
+    "regenerate": "إعادة الإنشاء",
+    "previous": "الإصدار السابق",
+    "next": "الإصدار التالي",
+    "version": "الإصدار",
+    "feedbackSaved": "تم حفظ الملاحظات",
+    "failed": "فشل الإجراء. حاول مرة أخرى.",
+    "pending": "جارٍ العمل"
+  },
+  "image": {
+    "error": "الصورة غير متاحة"
+  },
+  "inlineEdit": {
+    "edit": "تعديل",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "empty": "إضافة قيمة",
+    "saved": "تم الحفظ",
+    "failed": "تعذّر حفظ التغيير"
+  },
+  "link": {
+    "newTab": "يفتح في علامة تبويب جديدة"
+  },
+  "loadMore": {
+    "more": "تحميل المزيد",
+    "moreCount": "عرض {n} إضافية",
+    "loading": "جارٍ التحميل…",
+    "end": "وصلت إلى النهاية",
+    "count": "{shown} من {total}",
+    "added": {
+      "zero": "لم يتم تحميل عناصر إضافية",
+      "one": "تم تحميل عنصر إضافي واحد",
+      "two": "تم تحميل عنصرين إضافيين",
+      "few": "تم تحميل {n} عناصر إضافية",
+      "many": "تم تحميل {n} عنصرًا إضافيًا",
+      "other": "تم تحميل {n} عنصر إضافي"
+    }
+  },
+  "mediaViewer": {
+    "label": "معاينة",
+    "close": "إغلاق المعاينة",
+    "previous": "السابق",
+    "next": "التالي",
+    "counter": "{index} من {total}"
+  },
+  "metricCard": {
+    "more": "المزيد لـ {title}",
+    "up": "لأعلى",
+    "down": "لأسفل",
+    "good": "جيد",
+    "bad": "سيئ",
+    "vs": "مقابل",
+    "empty": "لا توجد بيانات",
+    "loading": "جارٍ تحميل {title}",
+    "error": "تعذّر تحميل الأرقام.",
+    "retry": "حاول مرة أخرى",
+    "stale": "قديم",
+    "rank": "#{n}",
+    "toCome": "قادم",
+    "hit": "تحقق الهدف",
+    "missed": "لم يتحقق",
+    "weekdays": ["ن", "ث", "ر", "خ", "ج", "س", "ح"],
+    "weekdayNames": ["الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت", "الأحد"],
+    "month": "{done} من {days} أيام عمل حتى الآن",
+    "parts": "{label} {share}",
+    "compare": "{a} {av}، {b} {bv}"
+  },
+  "millerColumns": {
+    "empty": "لا توجد عناصر",
+    "resize": "تغيير عرض العمود {label}",
+    "preview": "معاينة {label}"
+  },
+  "navList": {
+    "pin": "تثبيت",
+    "unpin": "إلغاء التثبيت",
+    "pinItem": "تثبيت {label}",
+    "unpinItem": "إلغاء تثبيت {label}"
+  },
+  "notice": {
+    "dismiss": "تجاهل"
+  },
+  "numberInput": {
+    "decrease": "نقصان",
+    "increase": "زيادة"
+  },
+  "otpInput": {
+    "cell": "الحرف {n} من {total}"
+  },
+  "persona": {
+    "online": "متصل",
+    "away": "غائب",
+    "busy": "مشغول",
+    "dnd": "عدم الإزعاج",
+    "offline": "غير متصل"
+  },
+  "popover": {
+    "close": "إغلاق"
+  },
+  "productOptions": {
+    "chosen": "{label}:",
+    "unavailable": "غير متوفر في المخزون",
+    "quantity": "الكمية",
+    "quantityOf": "الكمية، {product}",
+    "unavailableName": "{label}، غير متوفر في المخزون",
+    "none": "لم يتم اختيار شيء"
+  },
+  "progressSteps": {
+    "step": "الخطوة {n} من {total}",
+    "complete": "مكتملة",
+    "current": "الخطوة الحالية",
+    "upcoming": "لم تبدأ",
+    "error": "تحتاج إلى انتباه"
+  },
+  "relativeDateInput": {
+    "custom": "مخصص",
+    "none": "أي وقت",
+    "amount": "المبلغ",
+    "unit": "الوحدة",
+    "direction": "الاتجاه",
+    "past": "الأخيرة",
+    "future": "التالي",
+    "units": {
+      "day": ["يوم", "أيام"],
+      "week": ["أسبوع", "أسابيع"],
+      "month": ["شهر", "أشهر"],
+      "year": ["سنة", "سنوات"]
+    },
+    "presets": {
+      "today": "اليوم",
+      "yesterday": "أمس",
+      "last-7-days": "آخر 7 أيام",
+      "last-30-days": "آخر 30 يومًا",
+      "last-90-days": "آخر 90 يومًا",
+      "last-12-months": "آخر 12 شهرًا",
+      "tomorrow": "غدًا",
+      "next-7-days": "الأيام السبعة القادمة",
+      "next-30-days": "الأيام الثلاثون القادمة",
+      "next-90-days": "الأيام التسعون القادمة",
+      "next-12-months": "الأشهر الاثنا عشر القادمة"
+    }
+  },
+  "resizable": {
+    "width": "عرض {label}",
+    "height": "ارتفاع {label}"
+  },
+  "richTextEditor": {
+    "toolbar": "التنسيق",
+    "more": "مزيد من التنسيق",
+    "bold": "غامق",
+    "italic": "مائل",
+    "underline": "تسطير",
+    "strike": "يتوسطه خط",
+    "code": "رمز مضمّن",
+    "subscript": "نص سفلي",
+    "superscript": "نص علوي",
+    "link": "رابط",
+    "bulleted": "قائمة نقطية",
+    "numbered": "قائمة مرقّمة",
+    "tasks": "قائمة مهام",
+    "quote": "اقتباس",
+    "codeBlock": "كتلة رمز",
+    "rule": "خط أفقي",
+    "image": "صورة",
+    "table": "جدول",
+    "color": "لون النص",
+    "highlight": "تمييز",
+    "alignLeft": "محاذاة إلى اليسار",
+    "alignCenter": "محاذاة إلى الوسط",
+    "alignRight": "محاذاة إلى اليمين",
+    "alignJustify": "ضبط",
+    "clear": "مسح التنسيق",
+    "undo": "تراجع",
+    "redo": "إعادة",
+    "textStyle": "نمط النص",
+    "paragraph": "فقرة",
+    "font": "الخط",
+    "defaultFont": "الخط الافتراضي",
+    "size": "الحجم",
+    "defaultSize": "الحجم الافتراضي",
+    "custom": "مخصص…",
+    "customFont": "عائلة الخط",
+    "customSize": "حجم الخط",
+    "insertTable": "إدراج جدول",
+    "rowBefore": "إضافة صف أعلاه",
+    "rowAfter": "إضافة صف أدناه",
+    "columnBefore": "إضافة عمود قبله",
+    "columnAfter": "إضافة عمود بعده",
+    "deleteRow": "حذف الصف",
+    "deleteColumn": "حذف العمود",
+    "headerRow": "صف العناوين",
+    "deleteTable": "حذف الجدول",
+    "linkAddress": "عنوان الرابط",
+    "addLink": "إضافة رابط",
+    "imageAddress": "عنوان الصورة",
+    "imageAlt": "الوصف",
+    "addImage": "إضافة صورة",
+    "swatches": "ألوان مقترحة",
+    "customColor": "لون مخصص",
+    "hex": "قيمة سداسية عشرية",
+    "apply": "تطبيق",
+    "remove": "إزالة",
+    "cancel": "إلغاء",
+    "mentions": "اقتراحات",
+    "groupMarks": "النص",
+    "groupColor": "اللون",
+    "groupAlign": "المحاذاة",
+    "groupLists": "القوائم",
+    "groupInsert": "إدراج",
+    "groupHistory": "السجل",
+    "leave": "اضغط Tab أو Shift+Tab للخروج من المحرّر",
+    "hint": "Escape ثم Tab للخروج من المحرّر"
+  },
+  "roleLabel": {
+    "owner": "المالك",
+    "editor": "محرّر",
+    "viewer": "مشاهد"
+  },
+  "searchField": {
+    "suggestions": "اقتراحات",
+    "recent": "عمليات البحث الأخيرة",
+    "clearRecent": "مسح عمليات البحث الأخيرة",
+    "clear": "مسح البحث",
+    "results": "{n} اقتراحات",
+    "removed": "تمت إزالة {query} من عمليات البحث الأخيرة",
+    "remove": "إزالة {query}",
+    "placeholder": "بحث",
+    "label": "بحث"
+  },
+  "sheet": {
+    "expand": "توسيع اللوحة",
+    "shrink": "تصغير اللوحة",
+    "doneLabel": "تم",
+    "cancelLabel": "إلغاء",
+    "closeLabel": "إغلاق",
+    "done": "تم",
+    "cancel": "إلغاء",
+    "close": "إغلاق"
+  },
+  "slider": {
+    "minimum": "الحد الأدنى",
+    "maximum": "الحد الأقصى"
+  },
+  "splitButton": {
+    "more": "مزيد من خيارات {label}"
+  },
+  "tabs": {
+    "more": "المزيد",
+    "moreLabel": "مزيد من علامات التبويب"
+  },
+  "teachingBubble": {
+    "close": "إغلاق",
+    "step": "{current} من {total}"
+  },
+  "text": {
+    "more": "عرض المزيد",
+    "less": "عرض أقل"
+  },
+  "timePicker": {
+    "hour": "الساعة",
+    "minute": "الدقيقة",
+    "period": "ص أو م",
+    "am": "ص",
+    "pm": "م",
+    "times": "الأوقات",
+    "empty": "--"
+  },
+  "timeZoneSelect": {
+    "placeholder": "اختر منطقة زمنية",
+    "empty": "لا توجد نتائج مطابقة",
+    "utc": "التوقيت العالمي المنسق",
+    "other": "أخرى",
+    "regions.Africa": "أفريقيا",
+    "regions.America": "الأمريكتان",
+    "regions.Antarctica": "القارة القطبية الجنوبية",
+    "regions.Arctic": "القطب الشمالي",
+    "regions.Asia": "آسيا",
+    "regions.Atlantic": "المحيط الأطلسي",
+    "regions.Australia": "أستراليا",
+    "regions.Europe": "أوروبا",
+    "regions.Indian": "المحيط الهندي",
+    "regions.Pacific": "المحيط الهادئ",
+    "regions": {
+      "Africa": "أفريقيا",
+      "America": "الأمريكتان",
+      "Antarctica": "القارة القطبية الجنوبية",
+      "Arctic": "القطب الشمالي",
+      "Asia": "آسيا",
+      "Atlantic": "المحيط الأطلسي",
+      "Australia": "أستراليا",
+      "Europe": "أوروبا",
+      "Indian": "المحيط الهندي",
+      "Pacific": "المحيط الهادئ"
+    }
+  },
+  "transferList": {
+    "source": "المتاح",
+    "target": "المختار",
+    "add": "إضافة",
+    "addAll": "إضافة الكل",
+    "remove": "إزالة",
+    "removeAll": "إزالة الكل",
+    "up": "نقل لأعلى",
+    "down": "نقل لأسفل",
+    "search": "بحث في {title}",
+    "selectAll": "تحديد كل عناصر {title}",
+    "count": "تم تحديد {checked} من {total}",
+    "moved": "تم نقل {n} إلى {title}",
+    "empty": "لا توجد عناصر",
+    "noMatch": "لا توجد نتائج مطابقة",
+    "moves": "نقل العناصر"
+  },
+  "treeSelect": {
+    "placeholder": "اختيار",
+    "search": "بحث",
+    "choose": "اختر عنصرًا",
+    "more": "{list} و{n} أخرى",
+    "empty": "لا توجد نتائج مطابقة"
+  },
+  "versionLabel": {
+    "version": "الإصدار",
+    "prefix": "إ",
+    "latest": "الأحدث",
+    "draft": "مسودة"
+  },
+  "virtualList": {
+    "loading": "جارٍ التحميل…",
+    "empty": "لا توجد عناصر",
+    "count": {
+      "zero": "لا توجد عناصر",
+      "one": "عنصر واحد",
+      "two": "عنصران",
+      "few": "{n} عناصر",
+      "many": "{n} عنصرًا",
+      "other": "{n} عنصر"
+    },
+    "group": {
+      "zero": "لا توجد عناصر",
+      "one": "عنصر واحد",
+      "two": "عنصران",
+      "few": "{n} عناصر",
+      "many": "{n} عنصرًا",
+      "other": "{n} عنصر"
+    }
+  },
+  "aiSearch": {
+    "label": "بحث بالذكاء الاصطناعي",
+    "query": "عبارة البحث",
+    "search": "بحث",
+    "semantic": "استخدام البحث الدلالي",
+    "results": "نتائج البحث",
+    "empty": "لا توجد نتائج.",
+    "failed": "فشل البحث. حاول مرة أخرى.",
+    "pending": "جارٍ البحث"
+  },
+  "appShell": {
+    "skip": "تخطّي إلى المحتوى الرئيسي"
+  },
+  "assignControl": {
+    "assign": "إسناد",
+    "assignToMe": "إسناد إليّ",
+    "reassign": "إعادة الإسناد",
+    "unassign": "إلغاء الإسناد",
+    "unassigned": "غير مُسنَد",
+    "cancel": "إلغاء",
+    "assigned": "مُسنَد إلى {name}",
+    "cleared": "تمت إزالة {label}",
+    "delegate": "تفويض",
+    "change": "التغيير",
+    "end": "إنهاء التفويض",
+    "delegateTitle": "تفويض {label}",
+    "to": "التفويض إلى",
+    "dates": "التواريخ",
+    "note": "ملاحظة",
+    "noteHint": "تظهر للشخص الذي تفوّضه.",
+    "needPerson": "اختر شخصًا.",
+    "needDates": "اختر اليوم الأول والأخير.",
+    "delegatedTo": "تم التفويض إلى {name}",
+    "notDelegated": "غير مفوَّض",
+    "ended": "انتهى التفويض",
+    "label": "المُسنَد إليه"
+  },
+  "attachmentPicker": {
+    "label": "المرفقات",
+    "remove": "إزالة {name}",
+    "invalid": "اختر ملفًا مدعومًا ضمن الحد المسموح للحجم.",
+    "limit": "عدد المرفقات كبير جدًا.",
+    "empty": "لا توجد مرفقات."
+  },
+  "autosave": {
+    "saving": "جارٍ الحفظ",
+    "saved": "تم الحفظ",
+    "offline": "غير متصل",
+    "failed": "فشل الحفظ",
+    "retry": "إعادة المحاولة"
+  },
+  "avatarUpload": {
+    "change": "تغيير الصورة",
+    "add": "إضافة صورة",
+    "remove": "إزالة الصورة",
+    "tooLarge": "الصورة أكبر من {max}",
+    "notImage": "اختر ملف صورة",
+    "picture": "صورة {name}"
+  },
+  "bottomSheetNav": {
+    "title": "التنقل",
+    "close": "إغلاق"
+  },
+  "bulkActions": {
+    "selected": "تم تحديد {n}",
+    "selectAll": "تحديد الكل",
+    "clear": "مسح",
+    "allSelected": "كل {noun} محدد",
+    "nothingToClear": "لا شيء لمسحه: حدّد {plural} أولًا",
+    "why": "حدّد {plural} لـ {action}",
+    "single": "حدّد {noun} واحدًا لـ {action}",
+    "label": "إجراءات التحديد",
+    "more": "المزيد من الإجراءات",
+    "noun": "عنصر"
+  },
+  "columnsMenu": {
+    "label": "الأعمدة",
+    "manage": "إدارة الأعمدة",
+    "first": "العمود الأول",
+    "moveMenu": "نقل {name}",
+    "moveUp": "نقل {name} لأعلى",
+    "moveDown": "نقل {name} لأسفل",
+    "up": "نقل لأعلى",
+    "down": "نقل لأسفل",
+    "find": "البحث عن عمود",
+    "showAll": "إظهار الكل",
+    "hideAll": "إخفاء الكل",
+    "apply": "تطبيق",
+    "cancel": "إلغاء",
+    "shown": "تم إظهار {name}",
+    "hidden": "تم إخفاء {name}",
+    "isFirst": "{name} هو العمود الأول",
+    "moved": "{name}، الموضع {position} من {total}",
+    "row": "{name}{first}. المفتاحان Alt + السهم لأعلى أو لأسفل ينقلانه",
+    "firstMark": "، العمود الأول",
+    "none": "لا يوجد عمود مطابق"
+  },
+  "commandBar": {
+    "more": "المزيد من الإجراءات",
+    "actions": "إجراءات {label}",
+    "find": "بحث وعرض",
+    "selected": "تم تحديد {n}",
+    "hidden": " (مخفي {n} بسبب التصفيات)",
+    "clear": "مسح التحديد",
+    "clearName": "تم تحديد {n}، مسح التحديد",
+    "swapped": "تم تحديد {n}. إجراءات التحديد متاحة.",
+    "cleared": "تم مسح التحديد.",
+    "why": "حدّد {plural} لـ {action}",
+    "single": "حدّد {noun} واحدًا لـ {action}",
+    "preset": "أي",
+    "moreLabel": "المزيد من الإجراءات"
+  },
+  "commandPalette": {
+    "title": "الأوامر",
+    "close": "إغلاق"
+  },
+  "comparisonView": {
+    "label": "المقارنة",
+    "modes": "العرض",
+    "columns": "جنبًا إلى جنب",
+    "matrix": "جدول",
+    "slider": "شريط التمرير",
+    "onlyDifferences": "عرض الاختلافات فقط",
+    "changed": "تم تغييره",
+    "attribute": "السمة",
+    "position": "الموضع",
+    "none": "لا توجد اختلافات",
+    "one": "اختلاف واحد",
+    "many": "{n} اختلافات",
+    "empty": "—"
+  },
+  "connectedAccounts": {
+    "label": "الحسابات المتصلة",
+    "connect": "اتصال",
+    "disconnect": "قطع الاتصال",
+    "reconnect": "إعادة الاتصال",
+    "cancel": "إلغاء",
+    "connected": "متصل",
+    "disconnected": "غير متصل",
+    "error": "خطأ في الاتصال",
+    "as": "بصفة {account}",
+    "since": "منذ {date}",
+    "connectTitle": "الاتصال بـ {service}؟",
+    "connectMessage": "ستسجّل الدخول إلى {service} للسماح بذلك. سيتمكن Plenix من:",
+    "continue": "المتابعة إلى {service}",
+    "disconnectTitle": "قطع الاتصال بـ {service}؟",
+    "disconnectMessage": "يمكنك الاتصال به مرة أخرى في أي وقت.",
+    "done": "تم الاتصال بـ {service}",
+    "undone": "تم قطع الاتصال بـ {service}"
+  },
+  "deleteFlow": {
+    "title": "حذف {name}؟",
+    "titleMany": "حذف {count} {plural}؟",
+    "delete": "حذف",
+    "cancel": "إلغاء",
+    "permanent": "لا يمكن التراجع عن هذا.",
+    "more": "و{count} أخرى",
+    "typeLabel": "اكتب {phrase} للتأكيد",
+    "typeError": "اكتب {phrase} تمامًا كما هو معروض.",
+    "phraseMany": "حذف {count} {plural}",
+    "deleted": "تم حذف {what}",
+    "trashed": "تم نقل {what} إلى سلة المحذوفات",
+    "undo": "تراجع",
+    "retention": "استعد {them} من سلة المحذوفات خلال {days} يومًا.",
+    "it": "ه",
+    "them": "هم",
+    "names": "محذوف",
+    "noun": "عنصر"
+  },
+  "duplicateAction": {
+    "duplicate": "تكرار",
+    "copyOf": "نسخة من {name}",
+    "numbered": "{name} ({n})",
+    "title": "تكرار {noun}",
+    "name": "الاسم",
+    "from": "من {name}",
+    "also": "انسخ أيضًا",
+    "empty": "أدخل اسمًا.",
+    "taken": "يوجد {noun} باسم {name} بالفعل.",
+    "done": "تم التكرار باسم {name}",
+    "undo": "تراجع",
+    "cancel": "إلغاء",
+    "noun": "عنصر"
+  },
+  "fileBrowser": {
+    "label": "الملفات",
+    "root": "المكتبة",
+    "newFolder": "مجلد جديد",
+    "folderName": "اسم المجلد",
+    "create": "إنشاء",
+    "upload": "رفع",
+    "search": "البحث في هذا المجلد",
+    "folders": "المجلدات",
+    "path": "الموقع",
+    "count": "{n} عناصر",
+    "one": "عنصر واحد",
+    "empty": "هذا المجلد فارغ",
+    "emptyText": "ارفع ملفات أو أنشئ مجلدًا.",
+    "noMatch": "لا شيء يطابق «{q}»",
+    "download": "تنزيل",
+    "moveTo": "نقل إلى",
+    "delete": "حذف",
+    "noun": "عنصر",
+    "plural": "عناصر",
+    "drop": "أفلت الملفات لرفعها إلى {folder}",
+    "nameTaken": "يوجد ملف أو مجلد باسم «{name}» هنا بالفعل.",
+    "nameEmpty": "أعطِ المجلد اسمًا.",
+    "items": "{n} عناصر",
+    "item": "{n} عنصر"
+  },
+  "fileList": {
+    "sort": "ترتيب",
+    "sortBy": "الترتيب حسب {field}",
+    "field": "الترتيب حسب",
+    "order": "الترتيب",
+    "asc": "تصاعدي",
+    "desc": "تنازلي",
+    "name": "الاسم",
+    "size": "الحجم",
+    "modified": "تاريخ التعديل",
+    "owner": "المالك",
+    "status": "الحالة",
+    "count": "{n} عناصر",
+    "one": "عنصر واحد",
+    "empty": "لا يوجد شيء هنا بعد",
+    "open": "فتح",
+    "download": "تنزيل",
+    "rename": "إعادة تسمية…",
+    "delete": "حذف",
+    "moveTo": "نقل إلى",
+    "file": "ملف",
+    "files": "ملفات",
+    "folder": "مجلد",
+    "folders": "مجلدات",
+    "items": "{n} عناصر",
+    "item": "{n} عنصر"
+  },
+  "filePicker": {
+    "title": "اختيار ملفات",
+    "all": "كل الملفات",
+    "folders": "المجلدات",
+    "search": "البحث في الملفات",
+    "empty": "لا توجد ملفات مطابقة.",
+    "pick": "اختيار",
+    "cancel": "إلغاء",
+    "failed": "تعذّر اختيار الملفات. حاول مرة أخرى."
+  },
+  "filterBar": {
+    "label": "عوامل التصفية",
+    "more": "مزيد من عوامل التصفية",
+    "clearAll": "مسح الكل",
+    "one": "{label}: {value}",
+    "several": "{label} · {count}"
+  },
+  "navPane": {
+    "browse": "استعراض"
+  },
+  "notificationList": {
+    "label": "الإشعارات",
+    "empty": "لا توجد إشعارات",
+    "markAllRead": "تعليم الكل كمقروء",
+    "viewAll": "عرض الكل"
+  },
+  "peopleGroup": {
+    "team": "الفريق",
+    "group": "المجموعة",
+    "members": "{n} أعضاء",
+    "member": "{n} عضو",
+    "showMembers": "عرض الأعضاء",
+    "membersOf": "أعضاء {name}"
+  },
+  "permissionSummary": {
+    "can": "يمكنه",
+    "cannot": "لا يمكنه",
+    "manage": "إدارة الوصول",
+    "canSentence": "يمكنه {list}",
+    "cannotSentence": "لا يمكنه {list}"
+  },
+  "popconfirm": {
+    "cancel": "إلغاء"
+  },
+  "productCard": {
+    "sale": "تخفيض",
+    "outOfStock": "غير متوفر في المخزون",
+    "addToCart": "أضف إلى السلة",
+    "addToCartFor": "أضف {title} إلى السلة",
+    "now": "الآن",
+    "was": "كان",
+    "rating": "التقييم",
+    "reviews": "{n} مراجعات",
+    "review": "مراجعة واحدة",
+    "soldOut": "{title} غير متوفر في المخزون"
+  },
+  "publish": {
+    "publish": "نشر",
+    "publishNow": "النشر الآن",
+    "schedule": "جدولة",
+    "cancelSchedule": "إلغاء الجدولة",
+    "unpublish": "إلغاء النشر",
+    "cancel": "إلغاء",
+    "publishTitle": "نشر {name}؟",
+    "publishMessage": "سيصبح مرئيًا لـ {audience}.",
+    "unpublishTitle": "إلغاء نشر {name}؟",
+    "unpublishMessage": "سيُخفى عن {audience}. يمكنك نشره مرة أخرى.",
+    "scheduleTitle": "جدولة {name}",
+    "when": "النشر في",
+    "whenHint": "التاريخ والوقت، بحسب منطقتك الزمنية.",
+    "past": "اختر وقتًا في المستقبل.",
+    "empty": "اختر التاريخ والوقت.",
+    "publishedLine": "نُشر {at}",
+    "publishedBy": "نُشر {at} بواسطة {by}",
+    "scheduledLine": "سيُنشر {at}",
+    "scheduledBy": "سيُنشر {at}، جدولة {by}",
+    "draftLine": "غير منشور",
+    "published": "تم نشر {name}",
+    "scheduled": "تمت جدولة {name} في {at}",
+    "unpublished": "تم إلغاء نشر {name}",
+    "undo": "تراجع",
+    "everyone": "كل من لديه صلاحية الوصول",
+    "actions": "جارٍ النشر"
+  },
+  "queryBuilder": {
+    "builder": "المنشئ",
+    "text": "النص",
+    "viewLabel": "العرض",
+    "where": "حيث",
+    "and": "و",
+    "or": "أو",
+    "andWord": "و",
+    "orWord": "أو",
+    "join": "المطابقة",
+    "all": "كل القواعد",
+    "any": "أي قاعدة",
+    "addRule": "إضافة قاعدة",
+    "addGroup": "إضافة مجموعة",
+    "removeRule": "إزالة القاعدة",
+    "removeGroup": "إزالة المجموعة",
+    "field": "الحقل",
+    "operator": "العامل",
+    "value": "القيمة",
+    "rule": "القاعدة {n}",
+    "group": "المجموعة {n}",
+    "empty": "لا توجد قواعد: كل السجلات مطابقة.",
+    "everything": "كل سجل",
+    "matches": "{n} مطابقات",
+    "match": "{n} مطابقة",
+    "textTitle": "استعلام",
+    "added": "تمت إضافة القاعدة",
+    "groupAdded": "تمت إضافة المجموعة",
+    "removed": "تمت إزالة القاعدة",
+    "groupRemoved": "تمت إزالة المجموعة"
+  },
+  "renameAction": {
+    "label": "الاسم",
+    "rename": "إعادة تسمية",
+    "open": "إعادة تسمية…",
+    "title": "إعادة تسمية {name}",
+    "cancel": "إلغاء",
+    "empty": "أدخل اسمًا",
+    "slash": "لا يمكن أن يحتوي الاسم على / أو \\",
+    "taken": "يوجد عنصر باسم {name} هنا بالفعل",
+    "tooLong": "استخدم {max} حرفًا أو أقل",
+    "renamed": "تمت إعادة التسمية إلى {name}",
+    "failed": "تعذّر تغيير الاسم"
+  },
+  "renditionList": {
+    "label": "الصيغ المشتقة",
+    "name": "الاسم",
+    "format": "الصيغة",
+    "size": "الحجم",
+    "download": "تنزيل",
+    "empty": "لا توجد صيغ مشتقة."
+  },
+  "resourceList": {
+    "item": "عنصر",
+    "selectAll": "تحديد كل {nouns} ({n})",
+    "select": "تحديد {name}",
+    "count": "{n} {nouns}",
+    "selected": "تم تحديد {n} من {total}"
+  },
+  "retry": {
+    "title": "تعذّر التحميل",
+    "retry": "إعادة المحاولة",
+    "retryNow": "إعادة المحاولة الآن",
+    "retrying": "جارٍ إعادة المحاولة…",
+    "waiting": "إعادة المحاولة خلال {time}",
+    "attempt": "المحاولة {attempt} من {attempts}",
+    "stopped": "توقفت بعد {attempts} محاولات",
+    "dismiss": "تجاهل",
+    "status": "فشل"
+  },
+  "roleManager": {
+    "roles": "الأدوار",
+    "create": "إنشاء دور",
+    "createTitle": "إنشاء دور",
+    "name": "الاسم",
+    "description": "الوصف",
+    "descriptionHint": "جملة واحدة عمّا يستطيع أصحاب هذا الدور فعله.",
+    "startFrom": "البدء بصلاحيات",
+    "empty": "أدخل اسمًا.",
+    "taken": "يوجد دور باسم {name} بالفعل.",
+    "back": "كل الأدوار",
+    "members": "الأعضاء",
+    "member": "عضو",
+    "membersCount": "{n} أعضاء",
+    "memberCount": "{n} عضو",
+    "builtIn": "مدمج",
+    "custom": "مخصص",
+    "permissions": "الصلاحيات",
+    "builtInNote": "لا يمكن تغيير الأدوار المدمجة. انسخ أحدها لإنشاء دور خاص بك.",
+    "addMember": "إضافة عضو",
+    "remove": "إزالة {name}",
+    "lastMember": "يحتاج {role} إلى عضو واحد على الأقل. أضف شخصًا آخر أولًا.",
+    "noMembers": "لا أحد لديه هذا الدور بعد.",
+    "role": "دور",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "added": "تمت إضافة {name} إلى {role}",
+    "removed": "تمت إزالة {name} من {role}",
+    "created": "تم إنشاء {name}",
+    "access": "أصحاب دور {role}",
+    "people": "{n} أشخاص",
+    "peopleOne": "{n} شخص",
+    "allowed": "تم السماح بـ {permission} لدور {role}",
+    "denied": "لم يعد {permission} مسموحًا لدور {role}"
+  },
+  "searchWorkspace": {
+    "title": "بحث",
+    "selectAll": "تحديد الكل",
+    "allSelected": "كل {noun} محدد",
+    "placeholder": "بحث…",
+    "result": "نتيجة",
+    "results": "نتائج",
+    "searchField": "بحث في {nouns}",
+    "save": "حفظ البحث",
+    "filters": "عوامل التصفية",
+    "activeFilters": "عوامل التصفية النشطة",
+    "chip": "{label}: {value}",
+    "remove": "إزالة {text}",
+    "clearAll": "مسح الكل",
+    "view": "العرض",
+    "grid": "شبكة",
+    "table": "جدول",
+    "sort": "ترتيب",
+    "sortValue": "الترتيب: {value}",
+    "noMatchQuery": "لا شيء يطابق «{query}».",
+    "noMatchQueryFilters": "لا شيء يطابق «{query}» مع عوامل التصفية هذه.",
+    "noMatchFilters": "لا شيء يطابق عوامل التصفية هذه."
+  },
+  "secondaryPane": {
+    "expand": "توسيع {name}",
+    "collapse": "طيّ {name}",
+    "resize": "تغيير حجم {name}",
+    "close": "إغلاق {name}",
+    "back": "العودة إلى {name}"
+  },
+  "sessionTimeout": {
+    "warningTitle": "جلستك على وشك الانتهاء",
+    "warning": "سيتم تسجيل خروجك خلال {time} لأنك لم تكن نشطًا.",
+    "stay": "البقاء متصلًا",
+    "signOut": "تسجيل الخروج",
+    "signedOutTitle": "تم تسجيل خروجك",
+    "signedOut": "حفاظًا على أمانك، تم تسجيل خروجك بعد {minutes} دقيقة دون نشاط.",
+    "signedOutShort": "حفاظًا على أمانك، تم تسجيل خروجك لأنك لم تكن نشطًا.",
+    "saved": "تم حفظ تغييراتك.",
+    "signIn": "تسجيل الدخول مرة أخرى",
+    "left": "متبقي {time}",
+    "ended": "تم تسجيل الخروج"
+  },
+  "sortableList": {
+    "moveMenu": "نقل {name}",
+    "moveUp": "نقل لأعلى",
+    "moveDown": "نقل لأسفل",
+    "moveEarlier": "نقل لوقت أبكر",
+    "moveLater": "نقل لوقت أحدث",
+    "moveFirst": "نقل إلى البداية",
+    "moveLast": "نقل إلى النهاية",
+    "moveUpNamed": "نقل {name} لأعلى",
+    "moveDownNamed": "نقل {name} لأسفل"
+  },
+  "uploadManager": {
+    "dialogTitle": "رفع ملفات",
+    "queue": "عمليات الرفع",
+    "drop": "اسحب الملفات أو المجلدات وأفلتها هنا",
+    "or": "أو",
+    "chooseFiles": "اختيار ملفات",
+    "chooseFolder": "اختر مجلدًا",
+    "uploading": "جارٍ رفع {n} ملفات",
+    "uploadingOne": "جارٍ رفع ملف واحد",
+    "done": "اكتمل {n} عمليات رفع",
+    "doneOne": "اكتملت عملية رفع واحدة",
+    "failed": "فشلت {n} عمليات رفع",
+    "failedOne": "فشلت عملية رفع واحدة",
+    "none": "لا توجد عمليات رفع",
+    "progress": "تم رفع {done} من {total}",
+    "overall": "التقدم الإجمالي",
+    "waiting": "بالانتظار",
+    "uploaded": "تم الرفع",
+    "canceled": "أُلغي",
+    "cancelAll": "إلغاء الكل",
+    "clear": "مسح المكتملة",
+    "hide": "إخفاء عمليات الرفع",
+    "show": "إظهار عمليات الرفع",
+    "close": "إغلاق",
+    "finish": "تم",
+    "remove": "إزالة من القائمة",
+    "again": "الرفع مرة أخرى",
+    "tooLarge": "هذا الملف أكبر من {max}.",
+    "wrongType": "لا يمكن رفع هذا النوع من الملفات هنا.",
+    "error": "فشل الرفع. حاول مرة أخرى.",
+    "failedNamed": "فشل {name}: {reason}",
+    "status": "أُلغي"
+  },
+  "userCard": {
+    "online": "متصل",
+    "away": "غائب",
+    "busy": "مشغول",
+    "dnd": "عدم الإزعاج",
+    "offline": "غير متصل"
+  },
+  "versionCompare": {
+    "label": "مقارنة الإصدارات",
+    "compare": "مقارنة",
+    "with": "مع",
+    "swap": "تبديل",
+    "swapLabel": "تبديل الإصدارين",
+    "view": "العرض",
+    "columns": "جنبًا إلى جنب",
+    "slider": "شريط التمرير",
+    "text": "النص",
+    "by": "بواسطة {author}",
+    "diff": "التغييرات من {base} إلى {target}",
+    "added": "مضاف",
+    "removed": "محذوف",
+    "same": "لا توجد تغييرات في النص",
+    "summary": "أُضيف {added}، وحُذف {removed}",
+    "lines": "{n} أسطر",
+    "line": "سطر واحد",
+    "previous": "التغيير السابق",
+    "next": "التغيير التالي",
+    "at": "التغيير {n} من {total}",
+    "unchanged": "عرض {n} أسطر لم تتغير",
+    "empty": "اختر إصدارين للمقارنة."
+  },
+  "versionHistory": {
+    "label": "سجل الإصدارات",
+    "preview": "معاينة",
+    "restore": "استعادة",
+    "confirm": "استعادة هذا الإصدار؟",
+    "cancel": "إلغاء",
+    "failed": "تعذّرت استعادة الإصدار. حاول مرة أخرى.",
+    "restored": "تمت استعادة الإصدار",
+    "empty": "لا توجد إصدارات."
+  },
+  "viewMenu": {
+    "reset": "إعادة ضبط العرض",
+    "label": "العرض",
+    "layout": "التخطيط",
+    "list": "قائمة",
+    "gallery": "معرض",
+    "size": "حجم البطاقة (المعرض)",
+    "s": "صغير",
+    "m": "متوسط",
+    "l": "كبير",
+    "height": "ارتفاع الصف (القائمة)",
+    "short": "قصير",
+    "medium": "متوسط",
+    "tall": "طويل",
+    "extra-tall": "طويل جدًا"
+  },
+  "widgetGrid": {
+    "widget": "أداة",
+    "widgetLower": "أداة",
+    "move": "نقل {title} (مفاتيح الأسهم)",
+    "position": "{title}، الموضع {index} من {total}",
+    "earlier": "نقل لوقت أبكر",
+    "later": "نقل لوقت أحدث",
+    "first": "نقل إلى البداية",
+    "last": "نقل إلى النهاية"
+  },
+  "providers": {
+    "UnsavedGuard": {
+      "title": "المغادرة دون حفظ؟",
+      "message": "ستفقد تغييراتك.",
+      "leave": "مغادرة",
+      "stay": "متابعة التحرير"
+    },
+    "theme-boot": {
+      "compact": "مضغوط",
+      "standard": "قياسي",
+      "comfortable": "مريح"
+    }
+  },
+  "templates": {
+    "templates": {
+      "Templates": {
+        "empty": "لا توجد سجلات بعد",
+        "emptyDescription": "أنشئ سجلًا للبدء.",
+        "pane": "السجلات",
+        "sections": "في هذه الصفحة",
+        "retry": "حاول مرة أخرى",
+        "home": "الذهاب إلى الصفحة الرئيسية",
+        "search": "نتائج البحث",
+        "tools": "الأدوات",
+        "inspector": "الخيارات",
+        "detail": "التفاصيل",
+        "noSelection": "لم يتم تحديد شيء",
+        "noSelectionDescription": "اختر عنصرًا لعرضه هنا."
+      }
+    },
+    "Commerce": {
+      "Storefront": {
+        "layout": "معرض"
+      }
+    }
+  },
+  "utils": {
+    "clipboard": {
+      "copied": "تم النسخ",
+      "failed": "تعذّر النسخ. حدّد النص وانسخه يدويًا."
+    }
+  },
+  "aiButton": {
+    "label": "إجراءات الذكاء الاصطناعي",
+    "failed": "تعذّر إكمال هذا الإجراء. حاول مرة أخرى.",
+    "working": "جارٍ العمل"
+  },
+  "aiDisclaimer": {
+    "message": "قد يكون المحتوى المُنشأ بالذكاء الاصطناعي غير دقيق. راجع التفاصيل المهمة.",
+    "learn": "حول المحتوى المُنشأ بالذكاء الاصطناعي"
+  },
+  "announcement": {
+    "dismiss": "تجاهل الإعلان",
+    "failed": "تعذّر تجاهل هذا الإعلان. حاول مرة أخرى."
+  },
+  "banner": {
+    "dismiss": "تجاهل"
+  },
+  "chat": {
+    "thinking": "جارٍ التفكير",
+    "label": "الرسالة",
+    "placeholder": "اكتب رسالة",
+    "sendLabel": "إرسال"
+  },
+  "checklist": {
+    "dismiss": "تجاهل قائمة المهام",
+    "progress": "المهام المكتملة"
+  },
+  "comment": {
+    "edit": "تعديل",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "resolve": "حلّ",
+    "reopen": "إعادة فتح",
+    "edited": "مُعدَّل",
+    "resolved": "تمت معالجته",
+    "message": "تعليق",
+    "empty": "أدخل تعليقًا.",
+    "failed": "تعذّر الحفظ. حاول مرة أخرى."
+  },
+  "confidenceIndicator": {
+    "high": "ثقة عالية",
+    "medium": "ثقة متوسطة",
+    "low": "ثقة منخفضة",
+    "unknown": "درجة الثقة غير متاحة",
+    "label": "الثقة"
+  },
+  "loadingOverlay": {
+    "loading": "جارٍ التحميل",
+    "cancel": "إلغاء"
+  },
+  "mediaPlayer": {
+    "rate": "سرعة التشغيل",
+    "transcript": "عرض النص المكتوب",
+    "hideTranscript": "إخفاء النص المكتوب",
+    "pip": "صورة داخل صورة",
+    "exitPip": "الخروج من صورة داخل صورة",
+    "unsupported": "ميزة صورة داخل صورة غير متاحة.",
+    "failed": "تعذّر تشغيل هذا الملف.",
+    "pipFailed": "تعذّر تغيير وضع صورة داخل صورة. حاول مرة أخرى.",
+    "seek": "الانتقال إلى {time}",
+    "fallback": "فتح ملف الوسائط",
+    "volume": "مستوى الصوت",
+    "mute": "كتم الصوت",
+    "audioFailed": "تعذّر تشغيل مسار الصوت المنفصل. يُشغَّل الفيديو دون صوت."
+  },
+  "mentionInput": {
+    "add": "إضافة إشارة",
+    "choose": "اختر شخصًا لإشارته"
+  },
+  "promptSuggestions": {
+    "label": "اقتراحات الأوامر",
+    "empty": "لا توجد اقتراحات",
+    "failed": "تعذّر استخدام هذا الاقتراح. حاول مرة أخرى."
+  },
+  "refineMenu": {
+    "label": "تحسين",
+    "shorter": "اختصار النص",
+    "longer": "إطالة النص",
+    "tone": "تغيير النبرة",
+    "formal": "رسمية",
+    "casual": "عفوية",
+    "neutral": "محايدة",
+    "custom": "تعليمات مخصصة",
+    "prompt": "التعليمات",
+    "apply": "تطبيق التعليمات",
+    "cancel": "إلغاء",
+    "empty": "أدخل تعليمات.",
+    "failed": "تعذّر تحسين هذا النص. حاول مرة أخرى."
+  },
+  "suggestedEdit": {
+    "label": "تعديلات مقترحة",
+    "before": "قبل",
+    "after": "بعد",
+    "accept": "قبول",
+    "reject": "رفض",
+    "acceptAll": "قبول الكل",
+    "accepted": "مقبول",
+    "rejected": "مرفوض",
+    "empty": "لا توجد تعديلات مقترحة",
+    "failed": "تعذّر حفظ هذا القرار. حاول مرة أخرى."
+  },
+  "time": {
+    "now": "الآن"
+  },
+  "aiExplanation": {
+    "label": "لماذا هذا؟",
+    "title": "شرح الذكاء الاصطناعي",
+    "close": "إغلاق"
+  },
+  "accessRequest": {
+    "title": "طلب الوصول",
+    "description": "اطلب من المالك صلاحية الوصول إلى هذا المورد.",
+    "message": "رسالة إلى المالك",
+    "request": "طلب الوصول",
+    "pending": "تم طلب الوصول",
+    "approved": "تمت الموافقة على الوصول",
+    "denied": "تم رفض الوصول",
+    "open": "فتح المورد",
+    "failed": "تعذّر إرسال طلبك. حاول مرة أخرى."
+  },
+  "approvalWorkflow": {
+    "approve": "موافقة",
+    "changes": "طلب تعديلات",
+    "reject": "رفض",
+    "comment": "تعليق",
+    "reason": "اشرح سبب الحاجة إلى تعديلات.",
+    "failed": "تعذّر حفظ هذا القرار. تعليقك ما زال محفوظًا.",
+    "steps": "مراحل الموافقة",
+    "recorded": "تم تسجيل القرار"
+  },
+  "archiveRestore": {
+    "archive": "أرشفة",
+    "restore": "استعادة",
+    "archived": "مؤرشف",
+    "message": "استعد هذا السجل ليصبح نشطًا مرة أخرى.",
+    "failed": "تعذّر تحديث السجل. حاول مرة أخرى."
+  },
+  "assetGallery": {
+    "empty": "لا توجد صور",
+    "preview": "معاينة الصورة"
+  },
+  "auditLog": {
+    "actor": "المنفّذ",
+    "at": "الوقت",
+    "action": "الإجراء",
+    "target": "الهدف",
+    "changes": "التغييرات",
+    "view": "عرض التغييرات",
+    "field": "الحقل",
+    "before": "قبل",
+    "after": "بعد",
+    "close": "إغلاق"
+  },
+  "commentThread": {
+    "title": "التعليقات",
+    "reply": "رد",
+    "send": "إرسال الرد",
+    "resolve": "إغلاق النقاش",
+    "reopen": "إعادة فتح النقاش",
+    "resolved": "تمت معالجته",
+    "empty": "أدخل ردًا.",
+    "failed": "تعذّر الحفظ. حاول مرة أخرى."
+  },
+  "downloadManager": {
+    "title": "التنزيلات",
+    "empty": "لا توجد تنزيلات",
+    "queued": "في الانتظار",
+    "progress": "جارٍ التنزيل",
+    "ready": "جاهز",
+    "failed": "فشل التنزيل",
+    "actionFailed": "تعذّر إكمال إجراء التنزيل. حاول مرة أخرى."
+  },
+  "draftState": {
+    "draft": "مسودة",
+    "resume": "استئناف المسودة",
+    "discard": "تجاهل المسودة",
+    "confirm": "تجاهل هذه المسودة؟",
+    "message": "ستُزال هذه المسودة نهائيًا.",
+    "cancel": "الاحتفاظ بالمسودة",
+    "failed": "تعذّر تحديث المسودة. حاول مرة أخرى."
+  },
+  "exportDialog": {
+    "title": "تصدير",
+    "format": "الصيغة",
+    "scope": "النطاق",
+    "all": "كل السجلات",
+    "selection": "السجلات المحددة",
+    "background": "التصدير في الخلفية",
+    "export": "تصدير",
+    "cancel": "إلغاء",
+    "invalid": "اختر صيغة ونطاقًا متاحين.",
+    "failed": "تعذّر التصدير. حاول مرة أخرى.",
+    "ready": "التصدير جاهز",
+    "queued": "التصدير في قائمة الانتظار",
+    "download": "تنزيل ملف التصدير",
+    "done": "تم"
+  },
+  "featureIntro": {
+    "new": "جديد",
+    "whatsNew": "ما الجديد",
+    "gotIt": "فهمت",
+    "later": "ليس الآن",
+    "close": "إغلاق"
+  },
+  "filterPanel": {
+    "label": "تصفية",
+    "info": "تُعرض فقط السجلات التي تستوفي الشروط؛ والشرط غير المكتمل لا يؤثر في التصفية.",
+    "sub": "في هذا العرض، أظهر السجلات",
+    "where": "حيث",
+    "and": "و",
+    "or": "أو",
+    "empty": "لا شروط: تُعرض كل السجلات.",
+    "addCondition": "إضافة شرط",
+    "addGroup": "إضافة مجموعة شروط",
+    "remove": "إزالة {what}",
+    "condition": "شرط",
+    "group": "مجموعة شروط",
+    "value": "أدخل قيمة",
+    "choose": "اختر خيارات",
+    "field": "الحقل",
+    "operator": "العامل",
+    "join": "و أو أو"
+  },
+  "formFlow": {
+    "create": "إنشاء",
+    "save": "حفظ التغييرات",
+    "cancel": "إلغاء",
+    "failed": "تعذّر الحفظ. حاول مرة أخرى.",
+    "invalid": "تحقق من الحقول قبل الحفظ.",
+    "saved": "تم الحفظ",
+    "unsaved": "ستفقد تغييراتك.",
+    "close": "إغلاق"
+  },
+  "groupPanel": {
+    "label": "المجموعة",
+    "title": "التجميع حسب",
+    "info": "تُجمَّع الصفوف ذات القيمة نفسها تحت عنوان واحد؛ والمجموعة الفرعية تقسّم كل مجموعة مرة أخرى.",
+    "empty": "اجمع الصفوف التي تشترك في قيمة تحت عنوان واحد.",
+    "add": "إضافة مجموعة",
+    "addSub": "إضافة مجموعة فرعية",
+    "collapseAll": "طيّ الكل",
+    "expandAll": "توسيع الكل",
+    "more": "المزيد لـ {name}",
+    "hideEmpty": "إخفاء المجموعات الفارغة",
+    "remove": "إزالة التجميع حسب {name}",
+    "removeTip": "إزالة المجموعة",
+    "field": "الحقل",
+    "order": "الترتيب"
+  },
+  "helpPanel": {
+    "title": "مساعدة",
+    "search": "البحث في المساعدة",
+    "empty": "لا توجد مقالات مطابقة",
+    "back": "العودة إلى المقالات",
+    "read": "قراءة المقال كاملًا",
+    "close": "طيّ المساعدة"
+  },
+  "imageAnnotation": {
+    "title": "تعليقات توضيحية على الصورة",
+    "pin": "تثبيت",
+    "region": "المنطقة",
+    "location": "الموقع",
+    "comment": "تعليق",
+    "kind": "نوع التعليق التوضيحي",
+    "add": "إضافة تعليق توضيحي",
+    "empty": "أدخل موقعًا وتعليقًا.",
+    "failed": "تعذّر الحفظ. حاول مرة أخرى.",
+    "none": "لا توجد تعليقات توضيحية"
+  },
+  "importDialog": {
+    "title": "استيراد",
+    "file": "ملف",
+    "paste": "لصق البيانات",
+    "url": "رابط URL",
+    "choose": "اختر الملف المصدر",
+    "drop": "أفلت ملفًا هنا أو اخترْه أدناه.",
+    "none": "لم يتم اختيار ملف",
+    "import": "استيراد",
+    "cancel": "إلغاء",
+    "invalid": "اختر ملفًا مدعومًا أو الصق بيانات أو أدخل رابط HTTP.",
+    "failed": "تعذّر الاستيراد. مصدرك ما زال متاحًا.",
+    "unsaved": "سيُفقد مصدر الاستيراد."
+  },
+  "importWizard": {
+    "title": "استيراد السجلات",
+    "mapping": "مطابقة الأعمدة",
+    "review": "مراجعة",
+    "results": "النتائج",
+    "column": "عمود المصدر",
+    "choose": "اختر عمودًا",
+    "missing": "طابق كل الحقول المطلوبة.",
+    "invalid": "لا يحتوي المصدر على أعمدة أو صفوف صالحة للاستخدام.",
+    "done": "تم",
+    "imported": "اكتمل الاستيراد",
+    "source": "المصدر",
+    "cancel": "إلغاء",
+    "unsaved": "ستُفقد مطابقة الاستيراد."
+  },
+  "metadataEditor": {
+    "save": "حفظ البيانات الوصفية",
+    "reset": "إعادة ضبط",
+    "apply": "تطبيق {field}",
+    "required": "أدخل قيمة.",
+    "failed": "تعذّر حفظ البيانات الوصفية. تغييراتك ما زالت متاحة.",
+    "saved": "تم حفظ البيانات الوصفية",
+    "unsaved": "ستُفقد تغييرات البيانات الوصفية."
+  },
+  "onboarding": {
+    "start": "ابدأ",
+    "skip": "تخطّي الترحيب",
+    "tour": "جولة تعريفية",
+    "checklist": "ابدأ",
+    "close": "إغلاق"
+  },
+  "permissionsEditor": {
+    "label": "الصلاحيات",
+    "capability": "الإمكانية",
+    "subject": "عرض الصلاحيات لـ",
+    "save": "حفظ الصلاحيات",
+    "failed": "تعذّر حفظ الصلاحيات. حاول مرة أخرى.",
+    "unsaved": "لم يتم حفظ تغييرات الصلاحيات."
+  },
+  "presenceBar": {
+    "viewers": "يعرض",
+    "editors": "يحرّر",
+    "cursors": "المؤشرات",
+    "empty": "لا أحد غيرك هنا",
+    "view": "عرض الشخص"
+  },
+  "quickFilter": {
+    "preset": "أي"
+  },
+  "relatedAssets": {
+    "empty": "لا توجد أصول مرتبطة"
+  },
+  "saveAs": {
+    "title": "حفظ باسم",
+    "name": "الاسم",
+    "location": "الموقع",
+    "format": "الصيغة",
+    "save": "حفظ نسخة",
+    "cancel": "إلغاء",
+    "required": "أدخل اسمًا واختر موقعًا.",
+    "failed": "تعذّر حفظ النسخة. حاول مرة أخرى.",
+    "unsaved": "ستفقد تغييراتك."
+  },
+  "shareDialog": {
+    "title": "الحصة",
+    "people": "الأشخاص",
+    "link": "رابط",
+    "person": "الشخص",
+    "role": "الدور",
+    "add": "إضافة شخص",
+    "remove": "إزالة",
+    "save": "حفظ الوصول",
+    "cancel": "إلغاء",
+    "copy": "نسخ الرابط",
+    "access": "الوصول عبر الرابط",
+    "restricted": "فقط من لديهم صلاحية الوصول",
+    "anyone": "يمكن لأي شخص لديه الرابط العرض",
+    "nativeShare": "المشاركة عبر الجهاز",
+    "failed": "تعذّرت المشاركة. حاول مرة أخرى.",
+    "invalid": "اختر شخصًا ودورًا متاحًا.",
+    "unsaved": "ستُفقد تغييرات الوصول."
+  },
+  "shortcutsDialog": {
+    "title": "اختصارات لوحة المفاتيح",
+    "search": "البحث في الاختصارات",
+    "general": "عام",
+    "empty": "لا توجد اختصارات مطابقة",
+    "close": "إغلاق"
+  },
+  "sortPanel": {
+    "label": "ترتيب",
+    "title": "الترتيب حسب",
+    "within": "الترتيب داخل المجموعات حسب",
+    "info": "تُرتَّب الصفوف حسب الحقل الأول، ثم حسب الحقل التالي عند تساوي الأول.",
+    "empty": "لا ترتيب: تحتفظ الصفوف بترتيبها.",
+    "add": "إضافة ترتيب",
+    "addAnother": "إضافة ترتيب آخر",
+    "remove": "إزالة الترتيب حسب {name}",
+    "removeTip": "إزالة الترتيب",
+    "field": "الحقل",
+    "direction": "الاتجاه"
+  },
+  "tour": {
+    "next": "التالي",
+    "back": "رجوع",
+    "finish": "إنهاء الجولة",
+    "skip": "تخطّي الجولة",
+    "resume": "استئناف الجولة",
+    "close": "إغلاق",
+    "step": "{current} من {total}"
+  },
+  "trialUpgrade": {
+    "trial": "تجربة",
+    "compare": "مقارنة الخطط",
+    "title": "اختر خطة",
+    "plan": "الخطة",
+    "upgrade": "ترقية",
+    "cancel": "إلغاء",
+    "failed": "تعذّرت الترقية. حاول مرة أخرى.",
+    "upgraded": "تم تحديث الخطة"
+  },
+  "wizard": {
+    "back": "رجوع",
+    "next": "التالي",
+    "complete": "إنهاء",
+    "cancel": "إلغاء",
+    "summary": "مراجعة",
+    "invalid": "تحقق من هذه الخطوة قبل المتابعة.",
+    "failed": "تعذّر الحفظ. حاول مرة أخرى.",
+    "steps": "الخطوات"
+  },
+  "wizardDialog": {
+    "close": "إغلاق",
+    "unsaved": "ستفقد تغييراتك."
+  },
+  "breadcrumbs": {
+    "label": "مسار التنقل"
+  },
+  "colorSwatch": {
+    "label": "اللون"
+  },
+  "dialog": {
+    "confirmLabel": "حفظ",
+    "cancelLabel": "إلغاء",
+    "confirm": "تأكيد",
+    "cancel": "إلغاء",
+    "save": "حفظ"
+  },
+  "loading": {
+    "label": "جارٍ التحميل"
+  },
+  "rating": {
+    "label": "التقييم"
+  },
+  "tag": {
+    "label": "إضافة وسم"
+  },
+  "toast": {
+    "aria-label": "تجاهل",
+    "undo": "تراجع",
+    "dismiss": "تجاهل"
+  },
+  "actionBar": {
+    "label": "الإجراءات"
+  },
+  "appHeader": {
+    "aria-label": "التطبيقات"
+  },
+  "form": {
+    "label": "إجراءات النموذج"
+  },
+  "reviewFlow": {
+    "label": "بانتظار المراجعة",
+    "noun": "عنصر"
+  },
+  "collection": {
+    "selected": {
+      "=0": "لم يتم تحديد أي عنصر",
+      "one": "تم تحديد عنصر واحد",
+      "two": "تم تحديد عنصرين",
+      "few": "تم تحديد {count} عناصر",
+      "many": "تم تحديد {count} عنصرًا",
+      "other": "تم تحديد {count} عنصر"
+    }
+  }
+};
+  } },
+  "platform/providers/LocaleProvider.jsx": { deps: {"react":null,"./DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","../utils/direction.js":"platform/utils/direction.js","../utils/format.js":"platform/utils/format.js","../i18n/en.js":"platform/i18n/en.js","../i18n/ar.js":"platform/i18n/ar.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.LocaleProvider = LocaleProvider;
+exports.createTranslator = createTranslator;
+exports.useDigits = useDigits;
+exports.useLocale = useLocale;
+exports.useStrings = useStrings;
+var _react = _interopRequireDefault(require("react"));
+var _DirectionProvider = require("./DirectionProvider.jsx");
+var _direction = require("../utils/direction.js");
+var F = _interopRequireWildcard(require("../utils/format.js"));
+var _en = _interopRequireDefault(require("../i18n/en.js"));
+var _ar = _interopRequireDefault(require("../i18n/ar.js"));
+function _interopRequireWildcard(e, t) { if ("function" == typeof WeakMap) var r = new WeakMap(), n = new WeakMap(); return (_interopRequireWildcard = function (e, t) { if (!t && e && e.__esModule) return e; var o, i, f = { __proto__: null, default: e }; if (null === e || "object" != typeof e && "function" != typeof e) return f; if (o = t ? n : r) { if (o.has(e)) return o.get(e); o.set(e, f); } for (const t in e) "default" !== t && {}.hasOwnProperty.call(e, t) && ((i = (o = Object.defineProperty) && Object.getOwnPropertyDescriptor(e, t)) && (i.get || i.set) ? o(f, t, i) : f[t] = e[t]); return f; })(e, t); }
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · LocaleProvider, useLocale, createTranslator
+   Summary: Locale-scoped message catalogs, plural rules, formatting and writing direction. Existing components receive
+     their strings explicitly from the catalog; a region never changes another region's locale.
+   Usage:
+     <LocaleProvider locale="fr-FR" catalogs={{ fr: french }}><App /></LocaleProvider>
+     const { t, strings, format } = useLocale();
+     <Wizard strings={strings('wizard')} />; t('collection.selected', { count: 2 }); format.date('2026-03-08');
+   Props:
+     locale: a BCP 47 language tag; default the page's formatLocale()
+     catalogs: messages by locale, with flat dot keys or nested sections; Plenix's built-in words for the language come after
+       them (i18n/ar.js: Arabic, owner arabic-batch4-36), and English is always the last fallback
+     messages: the current locale's catalog, as a convenience
+     fallbackLocale: locale searched after the requested locale and its language; default "en"
+     timeZone: optional Intl time zone for this provider's date/time formatters
+     dir: explicit "ltr" or "rtl"; otherwise directionOf(locale)
+     digits: "auto" (default: Arabic-Indic ٠-٩ for an Arabic locale, Latin for every other) | "arab" | "latn" (owner, arabic-digits-35):
+       every format helper writes its digits so, and Isolate and Text write the digits of their text so; emails and web addresses keep Latin
+     root: set the page's lang and dir through DirectionProvider; default false (a scoped region)
+     children: the region's content
+     useDigits(): "arab" or "latn", the digits of the nearest LocaleProvider (the page's language when there is none)
+     useLocale(): { locale, dir, digits, t, strings, plural, format }; format has number, unit, bytes, duration, compact, date,
+       time, dateTime, relative, range, currency, percent, list, personName, address, phone and regionName
+     createTranslator(locale, catalogs, fallbackLocale): the same t/strings/plural API outside React, plus section(name): a
+       whole section merged across the catalogs
+     useStrings(section, strings): a component's words: its catalog section for the locale (the app's catalog, Plenix's
+       built-in language, English), with its strings prop on top (owner, arabic-words-37). Every built-in word lives in
+       i18n/en.js; check-system's built-in-words rule keeps English literals out of the components
+   Behavior:
+     Fallback: exact locale, language, configured fallback, then English. Missing messages return their key.
+     Messages interpolate {name} as plain text. Plural messages are objects with one/other (or any Intl category),
+     optional "=0" exact-count keys; t(key, { count }) selects them with Intl.PluralRules. t's third argument may
+     set ordinal:true. Missing interpolation values keep their placeholder. No HTML is parsed.
+     strings(section, values) combines that section across fallbacks for a component's strings prop.
+   Notes:
+     Translators never mutate catalogs or global Intl state. Pass the bound format helpers to localized content;
+     unmodified components keep their existing defaults. Catalog translations are application-owned. */
+
+// Plenix's own words in other languages: used after the application's catalog for the same language, before English
+const BUILT_IN = {
+  ar: _ar.default
+};
+const canonical = (value, fallback = 'en') => {
+  try {
+    return Intl.getCanonicalLocales(value || fallback)[0] || fallback;
+  } catch (e) {
+    return fallback;
+  }
+};
+const own = (value, key) => value && Object.prototype.hasOwnProperty.call(value, key);
+const messageAt = (catalog, key) => {
+  if (own(catalog, key)) return catalog[key];
+  return String(key).split('.').reduce((node, part) => own(node, part) ? node[part] : undefined, catalog);
+};
+const text = (message, values) => String(message).replace(/\{(\w+)\}/g, (match, key) => own(values, key) ? String(values[key]) : match);
+
+// a plural message: an object whose keys are only plural categories (zero, one, two, few, many, other) or exact counts ("=0"),
+// with "other"; a section that merely has a key named "other" (TimeZoneSelect's "Other") is not one
+const PLURAL_KEY = /^(zero|one|two|few|many|other|=\d+)$/;
+const pluralMessage = v => !!v && typeof v === 'object' && !Array.isArray(v) && own(v, 'other') && Object.keys(v).every(k => PLURAL_KEY.test(k));
+function createTranslator(locale = 'en', catalogs = {}, fallbackLocale = 'en') {
+  const language = canonical(locale),
+    fallback = canonical(fallbackLocale);
+  const normalized = Object.fromEntries(Object.entries(catalogs || {}).map(([key, value]) => [canonical(key), value]));
+  const chain = [...new Set([language, language.split('-')[0], fallback, fallback.split('-')[0], 'en'])];
+  const sources = chain.flatMap(key => [normalized[key], BUILT_IN[key]]).filter(Boolean).concat(_en.default);
+  const cardinal = new Intl.PluralRules(language),
+    ordinal = new Intl.PluralRules(language, {
+      type: 'ordinal'
+    });
+  const plural = (count, options = {}) => (options.ordinal ? ordinal : cardinal).select(Number(count));
+  const choose = (value, values, options) => {
+    if (typeof value === 'string' || typeof value === 'number') return text(value, values);
+    if (!value || typeof value !== 'object' || Array.isArray(value)) return undefined;
+    const exact = '=' + Number(values.count),
+      category = plural(values.count, options);
+    const item = own(value, exact) ? value[exact] : value[category] !== undefined ? value[category] : value.other;
+    return typeof item === 'string' || typeof item === 'number' ? text(item, values) : undefined;
+  };
+  const t = (key, values = {}, options = {}) => {
+    for (const source of sources) {
+      const result = choose(messageAt(source, key), values, options);
+      if (result !== undefined) return result;
+    }
+    return String(key);
+  };
+  const strings = (section, values = {}) => {
+    const keys = new Set();
+    sources.forEach(source => {
+      const node = messageAt(source, section);
+      if (node && typeof node === 'object' && !Array.isArray(node)) Object.keys(node).forEach(key => keys.add(key));
+      Object.keys(source).filter(key => key.startsWith(section + '.') && !key.slice(section.length + 1).includes('.')).forEach(key => keys.add(key.slice(section.length + 1)));
+    });
+    return Object.fromEntries([...keys].map(key => [key, t(section + '.' + key, values)]));
+  };
+  // a component's words: the whole section, merged across the catalogs (English at the bottom, the language on top); nested
+  // sections merge key by key, a plural message (an object with "other") is kept whole, so two languages never mix
+  const isPlural = pluralMessage;
+  const merge = (a, b) => {
+    if (!b || typeof b !== 'object' || Array.isArray(b) || isPlural(b)) return b === undefined ? a : b;
+    const out = Object.assign({}, a && typeof a === 'object' && !isPlural(a) ? a : {});
+    Object.keys(b).forEach(k => {
+      out[k] = merge(out[k], b[k]);
+    });
+    return out;
+  };
+  const section = name => sources.slice().reverse().reduce((acc, source) => merge(acc, messageAt(source, name)), {});
+  return {
+    locale: language,
+    dir: (0, _direction.directionOf)(language),
+    t,
+    strings,
+    plural,
+    section
+  };
+}
+const FORMATTERS = {
+  number: ['formatNumber', 1],
+  unit: ['formatUnit', 2],
+  bytes: ['formatBytes', 1],
+  duration: ['formatDuration', 1],
+  compact: ['formatCompact', 1],
+  date: ['formatDate', 1],
+  time: ['formatTime', 1],
+  dateTime: ['formatDateTime', 1],
+  relative: ['formatRelative', 1],
+  range: ['formatRange', 2],
+  currency: ['formatCurrency', 2],
+  percent: ['formatPercent', 1],
+  list: ['formatList', 1],
+  personName: ['formatPersonName', 1],
+  address: ['formatAddress', 1],
+  phone: ['formatPhone', 1],
+  regionName: ['regionName', 1]
+};
+const bind = (locale, timeZone, digits) => {
+  const tag = F.numeralLocale(locale, digits);
+  return Object.fromEntries(Object.entries(FORMATTERS).map(([name, [fn, count]]) => [name, (...args) => F[fn](...Array.from({
+    length: count
+  }, (_, index) => args[index]), Object.assign({
+    locale: tag,
+    timeZone
+  }, args[count]))]));
+};
+const LocaleContext = /*#__PURE__*/_react.default.createContext(null);
+function LocaleProvider({
+  locale,
+  catalogs,
+  messages,
+  fallbackLocale = 'en',
+  timeZone,
+  dir,
+  digits = 'auto',
+  root = false,
+  children
+}) {
+  const language = canonical(locale || F.formatLocale());
+  const value = _react.default.useMemo(() => {
+    const sources = Object.assign({}, catalogs, messages ? {
+      [language]: messages
+    } : {});
+    return Object.assign(createTranslator(language, sources, fallbackLocale), {
+      dir: dir || (0, _direction.directionOf)(language),
+      digits: F.digitsOf(F.numeralLocale(language, digits === 'auto' ? undefined : digits)),
+      format: bind(language, timeZone, digits === 'auto' ? undefined : digits)
+    });
+  }, [language, catalogs, messages, fallbackLocale, timeZone, dir, digits]);
+  return /*#__PURE__*/_react.default.createElement(LocaleContext.Provider, {
+    value: value
+  }, /*#__PURE__*/_react.default.createElement(_DirectionProvider.DirectionProvider, {
+    locale: language,
+    dir: value.dir,
+    root: root
+  }, children));
+}
+
+// a component's words (owner, arabic-words-37): its section of the catalogs for the locale, with the component's strings
+// prop on top (an app's own words still win). useStrings('pagination', strings) -> { label, range, previous, … }
+function useStrings(name, strings) {
+  const loc = useLocale();
+  return _react.default.useMemo(() => {
+    const base = loc.section(name);
+    if (!strings) return base;
+    const out = Object.assign({}, base);
+    Object.keys(strings).forEach(k => {
+      const v = strings[k],
+        b = base[k];
+      out[k] = v && typeof v === 'object' && !Array.isArray(v) && b && typeof b === 'object' && !Array.isArray(b) && !pluralMessage(v) ? Object.assign({}, b, v) : v;
+    });
+    return out;
+  }, [loc, name, strings]);
+}
+function useLocale() {
+  const value = _react.default.useContext(LocaleContext);
+  const language = canonical(F.formatLocale());
+  const fallback = _react.default.useMemo(() => Object.assign(createTranslator(language), {
+    format: bind(language)
+  }), [language]);
+  return value || fallback;
+}
+
+// the digits the text around uses ("arab" or "latn"): the nearest LocaleProvider's, else the page's language (cheap: no translator is built)
+function useDigits() {
+  const value = _react.default.useContext(LocaleContext);
+  return value ? value.digits : F.digitsOf(F.formatLocale());
+}
+  } },
+  "platform/utils/digits.js": { deps: {"./format.js":"platform/utils/format.js"}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.localDigits = localDigits;
+exports.toArabicIndic = toArabicIndic;
+exports.toLatinDigits = void 0;
+var _format = require("./format.js");
+/* Plenix · Digits (platform/utils/digits.js)
+   Summary: Writes the digits of a text in the reader's numerals: Arabic-Indic (٠-٩) in Arabic, Latin elsewhere (owner,
+     arabic-digits-35, arabic-ids-35, arabic-digits-risk-36). Emails and web addresses keep their Latin digits.
+   Usage:
+     localDigits('Case 20261020-01 on 20 October')            // in Arabic: "Case ٢٠٢٦١٠٢٠-٠١ on ٢٠ October"
+     localDigits('write to office2026@example.org')            // email kept: "office2026@example.org"
+     toArabicIndic('2026')                                     // "٢٠٢٦"
+   Props:
+     localDigits(text, { digits, locale }): the text with its ASCII digits changed to the locale's; digits "arab" | "latn" |
+       "auto" (default: from the locale, formatLocale() when none)
+     toArabicIndic(text): the text with every ASCII digit changed to Arabic-Indic, except inside an email or a web address
+     toLatinDigits(text): the text with Arabic-Indic (٠-٩) and Persian (۰-۹) digits changed to ASCII, for reading what a person typed
+   Behavior:
+     An email (name@host) and a web address (http://, https://, www.) are left as written. Anything else changes, including
+       case numbers, IDs, dates and phone numbers written as text. Only digits change; the order of characters never does.
+     Copying a changed ID copies the Arabic-Indic digits (owner, arabic-digits-risk-36).
+   Notes:
+     Formatted numbers and dates change through the locale instead (format.js numeralLocale), not through this. */
+
+const KEEP = /([^\s@<>()]+@[^\s@<>()]+|(?:https?:\/\/|www\.)[^\s<>()]+)/gi;
+const ARAB = d => String.fromCharCode(0x660 + Number(d));
+function toArabicIndic(text) {
+  return String(text).split(KEEP).map((part, i) => i % 2 ? part : part.replace(/[0-9]/g, ARAB)).join('');
+}
+const toLatinDigits = text => String(text).replace(/[\u0660-\u0669]/g, d => String(d.charCodeAt(0) - 0x660)).replace(/[\u06F0-\u06F9]/g, d => String(d.charCodeAt(0) - 0x6F0));
+exports.toLatinDigits = toLatinDigits;
+function localDigits(text, {
+  digits = 'auto',
+  locale
+} = {}) {
+  if (text === null || text === undefined) return text;
+  const want = digits === 'arab' || digits === 'latn' ? digits : (0, _format.digitsOf)(locale);
+  return want === 'arab' ? toArabicIndic(text) : String(text);
+}
+  } },
+  "platform/components/Isolate/Isolate.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/digits.js":"platform/utils/digits.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Isolate = Isolate;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _digits = require("../../utils/digits.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Isolate
+   Summary: Keeps a piece of text in its own writing direction inside text of the other direction (bidirectional
+     isolation): an ID, a case number (20261020-01), an email, a URL, a phone number or code inside an Arabic sentence,
+     so it reads as written and the words around it keep their places (owner, ctm-needs-34; #413 batch 3).
+   Usage:
+     <Text as="p">تم تسجيل القضية رقم <Isolate>20261020-01</Isolate> وستصل الإشعارات إلى <Isolate>office@example.org</Isolate>.</Text>
+     <Isolate dir="auto">{fileName}</Isolate>          // a value that may be in either direction: its first letter decides
+   Props:
+     dir: "ltr" (default: IDs, numbers, emails, URLs, code) | "rtl" | "auto" (the first strong letter decides)
+     kind: "email" | "url": keeps its Latin digits when the page writes Arabic-Indic digits (owner, arabic-digits-risk-36); any other
+       value (an ID, a case number, a phone number, code) takes the page's digits, ٠-٩ in Arabic
+     as: the element; default "bdi"
+     className: more classes on the element
+     children: the text
+     ...rest: other attributes go on the element
+   Behavior:
+     The element is isolated (unicode-bidi: isolate, as <bdi> is): the text inside never reorders the text around it,
+       and the text around it never reorders it. In an Arabic sentence "20261020-01" stays "20261020-01" (without it,
+       the two numbers swap places: "01-20261020").
+     Digits: in Arabic (LocaleProvider digits, "auto" for an Arabic locale) the digits of its text are written Arabic-Indic, case
+       numbers and IDs included, and an email or a web address (kind) keeps Latin (owner, arabic-ids-35, arabic-digits-risk-36).
+     A left-to-right island overrides the order (unicode-bidi: isolate-override): Arabic-Indic digits would otherwise let a hyphen
+       swap the two numbers around it ("٢٠٢٦١٠٢٠-٠١" reads "٠١-٢٠٢٦١٠٢٠"). The order of its characters is kept as written.
+     It is inline and adds no box: alignment, wrapping and the ellipsis stay the container's.
+   Notes:
+     Plenix isolates by itself where it knows the value is technical: DataGrid and Table cells of kind data, id, email,
+       url, phone and code; DataPill with data; PropertyList.Item with data; Code, Kbd and CodeBlock (always left to
+       right); Text, which is dir="auto". Use Isolate for such a value inside running text.
+*/
+function Isolate({
+  dir = 'ltr',
+  as: Tag = 'bdi',
+  kind,
+  className,
+  children,
+  ...rest
+}) {
+  const digits = (0, _LocaleProvider.useDigits)();
+  // an email or a web address keeps its Latin digits; any other value takes the page's digits (Arabic-Indic in Arabic)
+  const own = kind === 'email' || kind === 'url' ? 'latn' : digits;
+  const shown = _react.default.Children.map(children, child => typeof child === 'string' || typeof child === 'number' ? (0, _digits.localDigits)(String(child), {
+    digits: own
+  }) : child);
+  return /*#__PURE__*/_react.default.createElement(Tag, _extends({
+    className: (0, _cx.cx)('plx-isolate', className),
+    dir: dir
+  }, rest), shown);
+}
+  } },
+  "platform/components/StatusDot/StatusDot.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.StatusDot = StatusDot;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _cx = require("../../utils/cx.js");
+var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+var _Icon = require("../Icon/Icon.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · StatusDot
+   Summary: A 6px dot that marks a state (active, paused, priority), or a person's availability (online, away, busy, do
+     not disturb, offline) in the Status colors.
+   Usage:
+     <StatusDot tone="success" label="Active" />
+     <StatusDot tone="busy" label="Busy" />
+     <StatusDot tone="dnd" size="md" icon label="Do not disturb" />
+     <StatusDot tone="away" size="md" icon label="Away" />
+   Props:
+     tone: "neutral" (default) | "info" | "success" | "warning" | "danger"; for a person's availability (the presence
+       roles of the Status colors, library wave 4): "online" | "away" | "busy" | "dnd" (do not disturb) |
+       "offline"
+     size: "sm" (default, 6px) | "md" (12px) | "lg" (16px): the larger dots carry a glyph (icon) and sit on an avatar
+     icon: draws the availability's shape inside a md or lg dot, so it never rests on color alone: online a check, away a
+       clock, busy a solid dot with nothing cut out, do not disturb a minus (remove), offline a cross; busy and do not
+       disturb share a color and differ by shape (default false; presence tones only)
+     label: the state in words, read by assistive technology
+     className: more classes on the dot
+     ...rest: other attributes go on the dot element
+   Behavior:
+     Without a label the dot is decorative and hidden from assistive technology.
+     The glyph is drawn in the surface color, cut out of the dot; a sm dot has no room for one and ignores icon.
+   Notes:
+     Without a label, pair the dot with visible text.
+     Avatar's presence prop draws this dot at the avatar's corner.
+*/
+const PRESENCE = ['online', 'away', 'busy', 'dnd', 'offline'];
+const GLYPHS = {
+  online: 'check',
+  away: 'clock',
+  dnd: 'remove',
+  offline: 'close-2'
+}; // busy is the solid dot: nothing cut out
+const SIZES = ['md', 'lg'];
+function StatusDot({
+  tone = 'neutral',
+  size = 'sm',
+  icon = false,
+  label,
+  className,
+  ...rest
+}) {
+  (0, _devWarn.devWarn)('StatusDot', {
+    tone,
+    size
+  }, {
+    tone: ['info', 'success', 'warning', 'danger', 'neutral', 'online', 'away', 'busy', 'dnd', 'offline'],
+    size: ['sm', 'md', 'lg']
+  });
+  const s = SIZES.indexOf(size) >= 0 ? size : null;
+  const glyph = icon && s && PRESENCE.indexOf(tone) >= 0 && GLYPHS[tone];
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: (0, _cx.cx)('plx-status-dot', 'plx-status-dot--' + tone, s && 'plx-status-dot--' + s, glyph && 'plx-status-dot--glyph', className),
+    "aria-hidden": label ? undefined : true
+  }, rest), glyph ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: glyph,
+    className: "plx-status-dot__glyph"
+  }) : null, label ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, label) : null);
+}
+  } },
+  "platform/components/Avatar/Avatar.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Avatar = Avatar;
+exports.initialsOf = initialsOf;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _cx = require("../../utils/cx.js");
+var _Icon = require("../Icon/Icon.jsx");
+var _StatusDot = require("../StatusDot/StatusDot.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Avatar
+   Summary: A person's picture, or their initials, in a rounded square (never a circle), inside a 1px media border (owner,
+     2026-10-19: every avatar and picture placeholder has the same border).
+   Usage:
+     <Avatar name="Maya Chen" size="md" />
+     <Avatar name="Maya Chen" src="/people/mc.jpg" label="Maya Chen" />
+   Props:
+     name: the person's name; without a picture the avatar shows its initials, from initialsOf(name)
+     src: the URL of the person's picture; it replaces the initials
+     initials: the text to show, only when there is no name to work from
+     size: "2xs" 20px | "xs" 24px | "sm" 28px (default) | "md" 32px | "lg" 40px | "xl" 48px | "2xl" 64px; "2xs" is for inside a small control
+       (the account row in a pane footer)
+     color: the person's own color when the data has one, a data color: a hue name (blue, green, purple, red, brown, gray: the --plx-sys-data-color-<hue> tokens), set as data-plx-color; no value is written (batch 280): its soft fill with
+       its text color (otherwise the theme's avatar colors)
+     category: instead of color, a category color by name (an avatar standing for a category): the color as its fill,
+       black or white text (batch 290)
+     gender: "male" | "female": with no picture, the person-male or person-female icon on soft blue or soft pink (the
+       category palette) instead of the initials; any other value keeps the initials (owner, 2026-10-19)
+     label: the person's name for assistive technology when no visible name is nearby; without it the avatar is hidden from
+       assistive technology
+     presence: the person's availability (library wave 4): "online" | "away" | "busy" | "dnd" (do not disturb)
+       | "offline", a StatusDot at the avatar's bottom end corner in the presence roles of the Status colors, ringed in the surface color;
+       its size follows the avatar (a 6px dot up to 32px, 12px at 40 and 48px, 16px at 64px), and from 40px it carries the
+       availability's shape (a check, a clock, busy the solid dot, do not disturb a minus, a cross) so it never rests on
+       color alone
+     strings: the words of presence, for other languages: { online: "Online", away: "Away", busy: "Busy",
+       dnd: "Do not disturb", offline: "Offline" }
+     className: more classes on the avatar
+   Behavior:
+     A picture that fails to load falls back to the initials. The picture loads lazily and decodes off the main thread
+     (loading="lazy", decoding="async"), so a long list or table of avatars fetches only the ones near the view.
+     The corner and the text size follow the size.
+     Initials are the first letters of the first and last name ("Maya Chen" → MC).
+     Titles such as "Fr." or "Dr." and parenthesized parts are skipped; one word gives one letter.
+     With a label the avatar is an image (role="img") named by the label; with presence too, the name and the state ("Maya Chen, Busy").
+     Without a label the presence dot is hidden with the avatar: the page says the state in words next to it.
+   Notes:
+     Other props pass through to the <span>.
+     initialsOf(name) is also exported for pages that need the same initials. A name with no Latin letter (an Arabic name)
+       takes each word's first letter; two Arabic initials are kept apart so they do not join (owner, ctm-needs-34).
+*/
+const SIZES = [20, 24, 28, 32, 40, 48, 64]; // the scale its classes define (plx-avatar--24 …)
+// the names pages use: 2xs 20 (inside a small control: the account row in a pane footer), xs 24, sm 28, md 32, lg 40, xl 48, 2xl 64 (numbers are rejected by the system check)
+const NAMED = {
+  '2xs': 20,
+  xs: 24,
+  sm: 28,
+  md: 32,
+  lg: 40,
+  xl: 48,
+  '2xl': 64
+};
+// presence (library wave 4): the availability tones, the dot's size for each avatar size, and the words
+const PRESENCE = ['online', 'away', 'busy', 'dnd', 'offline'];
+const DOT = {
+  20: 'sm',
+  24: 'sm',
+  28: 'sm',
+  32: 'sm',
+  40: 'md',
+  48: 'md',
+  64: 'lg'
+};
+const STRINGS = {
+  online: 'Online',
+  away: 'Away',
+  busy: 'Busy',
+  dnd: 'Do not disturb',
+  offline: 'Offline'
+};
+
+// first- and last-name initials: titles (a word ending in a period, e.g. "Fr.") and parenthesized parts are skipped.
+// A word's initial is its first Latin letter or digit, as always; a word with none (an Arabic name, owner ctm-needs-34) takes
+// its first letter of any script. Two Arabic initials are kept apart (a zero-width non-joiner), so they do not join into a word.
+const LATIN = /[A-Za-z0-9]/,
+  ANY = /[\p{L}\p{N}]/u,
+  JOINING = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]/;
+const initialOf = w => (w.match(LATIN) || w.match(ANY) || [''])[0];
+function initialsOf(name) {
+  const words = String(name || '').replace(/\([^)]*\)/g, ' ').split(/\s+/).filter(w => w && !/\.$/.test(w) && initialOf(w));
+  if (!words.length) return '';
+  const first = initialOf(words[0]),
+    last = words.length > 1 ? initialOf(words[words.length - 1]) : '';
+  return (first + (JOINING.test(first) && JOINING.test(last) ? '\u200C' : '') + last).toUpperCase();
+}
+const GENDER = {
+  male: {
+    tone: 'blue',
+    icon: 'person-male'
+  },
+  female: {
+    tone: 'pink',
+    icon: 'person-female'
+  }
+};
+function Avatar({
+  name,
+  src,
+  initials,
+  size = 'sm',
+  color,
+  category,
+  gender,
+  label,
+  presence,
+  strings,
+  className,
+  ...rest
+}) {
+  (0, _devWarn.devWarn)('Avatar', {
+    size
+  }, {
+    size: ['2xs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl']
+  });
+  const n = NAMED[size] || size;
+  const s = SIZES.indexOf(n) >= 0 ? n : NAMED.sm;
+  const text = name ? initialsOf(name) : initials;
+  const p = PRESENCE.indexOf(presence) >= 0 ? presence : null;
+  const words = Object.assign({}, STRINGS, strings);
+  const named = label && p ? label + ', ' + words[p] : label;
+  // a picture that fails to load falls back to the initials (batch 215)
+  const [failed, setFailed] = _react.default.useState(false);
+  _react.default.useEffect(() => {
+    setFailed(false);
+  }, [src]);
+  const picture = src && !failed;
+  const g = !picture ? GENDER[gender] : null; // no picture and a known gender: the gender icon
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: (0, _cx.cx)('plx-avatar', 'plx-avatar--' + s, p && 'plx-avatar--presence', g && 'plx-avatar--gender', className),
+    "data-plx-avatar": "",
+    "data-plx-color": g ? undefined : color || undefined,
+    "data-plx-category": g ? g.tone : category || undefined,
+    role: label ? 'img' : undefined,
+    "aria-label": named,
+    "aria-hidden": label ? undefined : true
+  }, rest), picture ? /*#__PURE__*/_react.default.createElement("img", {
+    className: "plx-avatar__image",
+    src: src,
+    alt: "",
+    loading: "lazy",
+    decoding: "async",
+    onError: () => setFailed(true)
+  }) : g ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: g.icon,
+    filled: true,
+    className: "plx-avatar__gender"
+  }) : text, p ? /*#__PURE__*/_react.default.createElement(_StatusDot.StatusDot, {
+    tone: p,
+    size: DOT[s],
+    icon: DOT[s] !== 'sm',
+    className: "plx-avatar__presence"
+  }) : null);
+}
+  } },
+  "platform/components/Loading/Loading.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Skeleton = Skeleton;
+exports.Spinner = Spinner;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _cx = require("../../utils/cx.js");
+var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Skeleton, Spinner
+   Summary: Loading indicators. Skeleton is a placeholder block with a shimmer; Spinner is a turning ring. (The typing
+     dots are a Chat variant: Chat.Typing.)
+   Usage:
+     <Skeleton width="160px" height="16px" />
+     <Spinner size="sm" label="Saving" />
+   Props:
+     Skeleton.width: the block width, a size token's name ("200px" for --plx-ref-size-200px); none: as wide as its place
+     Skeleton.height: the block height, a size token's name ("16px")
+     Skeleton.className: more classes on the block
+     Spinner.size: "sm" | "md" (default) | "lg"
+     Spinner.label: the text announced to assistive technology (default "Loading")
+     Spinner.className: more classes on the ring
+   Behavior:
+     The Skeleton shimmer runs left to right; the block is decorative (aria-hidden).
+     Spinner is a status region (role="status"), so its label is announced.
+     People who ask their system for less motion see the indicators still.
+   Notes:
+     Other props pass through to the <span>.
+     The old text listed a radius prop for Skeleton; the code takes none (set it with a class).
+*/
+// a size token's name from "200px" (or the older "var(--plx-ref-size-200px)"); the rule per size is in system/steps.css
+const sizeName = v => v ? String(v).replace(/^var\(--plx-ref-size-|\)$/g, '') : undefined;
+function Skeleton({
+  width,
+  height,
+  className,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: (0, _cx.cx)('plx-skeleton', className),
+    "aria-hidden": "true",
+    "data-plx-width": sizeName(width),
+    "data-plx-height": sizeName(height)
+  }, rest));
+}
+function Spinner({
+  size = 'md',
+  label = 'Loading',
+  className,
+  ...rest
+}) {
+  (0, _devWarn.devWarn)('Spinner', {
+    size
+  }, {
+    size: ['sm', 'md', 'lg']
+  });
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: (0, _cx.cx)('plx-spinner', 'plx-spinner--' + size, className),
+    role: "status"
+  }, rest), /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, label));
+}
+  } },
+  "platform/providers/Surface.jsx": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SurfaceContext = void 0;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · SurfaceContext
+   Summary: Tells the components inside a colored surface which surface they sit on, so they take its look from their own
+     classes: no rule reaches into the surface (Styling Standard 3.6).
+   Usage:
+     <SurfaceContext.Provider value="inverse">…</SurfaceContext.Provider>
+   Props:
+     value: "inverse" (a dark surface: TeachingBubble) | "accent" (the accent AppHeader) | null (the page's own surface)
+   Behavior:
+     TeachingBubble and the accent AppHeader provide it. A Button inside takes plx-button--on-inverse or
+       plx-button--on-accent.
+     A component that draws a colored surface of its own provides it for its content.
+*/
+
+const SurfaceContext = exports.SurfaceContext = /*#__PURE__*/_react.default.createContext(null);
+  } },
+  "platform/utils/floating.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.PLACEMENTS = exports.FLOATING_POINTER = exports.FLOATING_ANCHOR = void 0;
+exports.useFloating = useFloating;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · useFloating
+   Summary: Places a floating element (a menu, popover, tooltip, combobox list or date picker) beside its anchor and keeps it in view: a named placement, an offset step, flip, shift, the anchor's width, or a point (a context menu at the pointer). It writes data attributes only; system/floating.css places the element, so no position is ever written as a style.
+   Usage:
+     const anchor = React.useRef(null), panel = React.useRef(null);
+     const { placement } = useFloating(anchor, panel, { open, placement: 'bottom-start' });
+     <button ref={anchor} aria-expanded={open} aria-controls="list">Sort</button>
+     {open ? <div ref={panel} id="list" popover="manual" className="plx-menu">…</div> : null}
+     useFloating(anchor, panel, { open, placement: 'bottom-start', matchWidth: true })      // a select or combobox list
+     useFloating(row, panel, { open, virtual: { x: event.clientX, y: event.clientY } })     // a context menu at the pointer
+   Props:
+     anchorRef: a ref to the element the floating element is placed against
+     floatingRef: a ref to the floating element (best in the top layer: popover="manual", or inside a Portal)
+     options.open (true): placed while open; the anchor slot is released when it closes or unmounts
+     options.placement ('bottom-start'): top | bottom | start | end (the side; start and end follow the writing direction), centered or aligned: top-start, top-end, bottom-start, bottom-end, start-top, start-bottom, end-top, end-bottom
+     options.offset ('xs'): the gap to the anchor: 'none' | 'xs' | 'sm' | 'md' (--plx-sys-floating-offset-*)
+     options.flip (true): moves to the opposite side when there is no room
+     options.shift (true): swaps the alignment (start to end) to stay in the window; a centered placement aligns to an edge
+     options.matchWidth (false): at least as wide as the anchor
+     options.virtual (null): { x, y } in window pixels (event.clientX / clientY): placed at that point, flipped and kept inside the window; the anchor is used where the browser cannot place a point
+     returns { placement (the side and alignment in use where useFloating measures it), mode: 'anchor' | 'pointer' | 'inline' }
+   Behavior:
+     anchor: with CSS anchor positioning (Chrome 125, Safari 26, Firefox 147) the browser places the element, flips and shifts it, and follows the anchor on scroll and resize: nothing is measured.
+     pointer: with typed attr() (Chrome 133) a virtual anchor is a point: useFloating measures the element, flips it to the other side of the point and keeps it --plx-sys-floating-viewport-margin inside the window, then writes the point (data-plx-floating-x / -y).
+     inline: without anchor positioning the element is placed inside the anchor's parent (data-plx-floating-host) on its side; useFloating measures the room and flips or shifts the placement. Render the element next to its anchor for this fallback.
+     The pair shares one of 16 anchor names while open (data-plx-floating-anchor / data-plx-floating), so each floating element finds its own anchor anywhere in the page.
+   Notes:
+     It positions only. Opening, Escape, focus and outside clicks are the overlay's (useLayer), the top layer is popover="manual" or Portal layer="top", and the ARIA link (aria-expanded, aria-controls, aria-describedby) is the component's.
+     Menu, Tooltip and Popover adopt it in their own tasks.
+*/
+
+const SLOTS = 16;
+const taken = new Array(SLOTS + 1).fill(false);
+const take = () => {
+  for (let i = 1; i <= SLOTS; i++) if (!taken[i]) {
+    taken[i] = true;
+    return i;
+  }
+  return 0;
+};
+const release = i => {
+  if (i) taken[i] = false;
+};
+
+// what the browser can do, checked once
+const supports = decl => typeof CSS !== 'undefined' && !!CSS.supports && CSS.supports(decl);
+const FLOATING_ANCHOR = exports.FLOATING_ANCHOR = supports('anchor-name: --plx-a');
+const FLOATING_POINTER = exports.FLOATING_POINTER = supports('inset-block-start: attr(data-plx-floating-y px, 0px)');
+const PLACEMENTS = exports.PLACEMENTS = ['top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'start', 'start-top', 'start-bottom', 'end', 'end-top', 'end-bottom'];
+const OFFSETS = {
+  none: null,
+  xs: '--plx-sys-floating-offset-xs',
+  sm: '--plx-sys-floating-offset-sm',
+  md: '--plx-sys-floating-offset-md'
+};
+const ATTRS = ['data-plx-floating', 'data-plx-floating-placement', 'data-plx-floating-offset', 'data-plx-floating-flip', 'data-plx-floating-shift', 'data-plx-floating-match', 'data-plx-floating-pointer', 'data-plx-floating-x', 'data-plx-floating-y'];
+
+// a length token in pixels (the tokens are written in rem; a custom property's computed value has its var() resolved)
+function tokenPixels(name) {
+  if (!name || typeof document === 'undefined') return 0;
+  const root = document.documentElement,
+    v = getComputedStyle(root).getPropertyValue(name).trim(),
+    n = parseFloat(v) || 0;
+  return /rem$/.test(v) ? n * parseFloat(getComputedStyle(root).fontSize) : n;
+}
+const set = (el, name, value) => {
+  if (value == null || value === false) el.removeAttribute(name);else el.setAttribute(name, String(value));
+};
+const isRtl = el => getComputedStyle(el).direction === 'rtl';
+
+// the inline fallback: the side with room (flip) and the alignment that stays in the window (shift), from the anchor's box
+function measured(anchor, floating, placement, flip, shift, gap) {
+  const a = anchor.getBoundingClientRect(),
+    f = floating.getBoundingClientRect();
+  const W = window.innerWidth,
+    H = window.innerHeight,
+    rtl = isRtl(anchor);
+  let [side, align] = placement.split('-');
+  const room = {
+    top: a.top - gap,
+    bottom: H - a.bottom - gap,
+    start: rtl ? W - a.right - gap : a.left - gap,
+    end: rtl ? a.left - gap : W - a.right - gap
+  };
+  const need = side === 'top' || side === 'bottom' ? f.height : f.width;
+  const opposite = {
+    top: 'bottom',
+    bottom: 'top',
+    start: 'end',
+    end: 'start'
+  }[side];
+  if (flip && room[side] < need && room[opposite] > room[side]) side = opposite;
+  if (shift && align && (side === 'top' || side === 'bottom')) {
+    // aligned to the inline start, the element runs toward the inline end: does it leave the window there?
+    const startEdge = rtl ? a.right : a.left,
+      endRoom = rtl ? startEdge : W - startEdge;
+    const endEdge = rtl ? a.left : a.right,
+      startRoom = rtl ? W - endEdge : endEdge;
+    if (align === 'start' && endRoom < f.width && startRoom > endRoom) align = 'end';else if (align === 'end' && startRoom < f.width && endRoom > startRoom) align = 'start';
+  }
+  if (shift && align && (side === 'start' || side === 'end')) {
+    if (align === 'top' && H - a.top < f.height && a.bottom > H - a.top) align = 'bottom';else if (align === 'bottom' && a.bottom < f.height && H - a.top > a.bottom) align = 'top';
+  }
+  return align ? side + '-' + align : side;
+}
+
+// a point: the element's corner at the point, flipped to the other side of it when it does not fit, then kept inside the window
+function pointAt(floating, x, y) {
+  const f = floating.getBoundingClientRect(),
+    W = window.innerWidth,
+    H = window.innerHeight,
+    m = tokenPixels('--plx-sys-floating-viewport-margin');
+  const rtl = isRtl(floating);
+  // the inline-start inset of the point, measured from the window's inline-start edge
+  let ix = rtl ? W - x : x,
+    iy = y;
+  if (ix + f.width > W - m && ix - f.width >= m) ix -= f.width;
+  if (iy + f.height > H - m && iy - f.height >= m) iy -= f.height;
+  ix = Math.max(m, Math.min(ix, W - m - f.width));
+  iy = Math.max(m, Math.min(iy, H - m - f.height));
+  return [Math.round(ix), Math.round(iy)];
+}
+function useFloating(anchorRef, floatingRef, options = {}) {
+  const {
+    open = true,
+    placement = 'bottom-start',
+    offset = 'xs',
+    flip = true,
+    shift = true,
+    matchWidth = false,
+    virtual = null
+  } = options;
+  const wanted = PLACEMENTS.indexOf(placement) >= 0 ? placement : 'bottom-start';
+  const pointer = !!(virtual && FLOATING_POINTER);
+  const mode = pointer ? 'pointer' : FLOATING_ANCHOR ? 'anchor' : 'inline';
+  const [used, setUsed] = _react.default.useState(wanted);
+  const slot = _react.default.useRef(0);
+  const vx = virtual ? virtual.x : null,
+    vy = virtual ? virtual.y : null;
+  _react.default.useLayoutEffect(() => {
+    const anchor = anchorRef && anchorRef.current,
+      floating = floatingRef && floatingRef.current;
+    if (!open || !floating) return undefined;
+    const host = !pointer && mode === 'inline' && anchor ? anchor.parentElement : null;
+    if (pointer) {
+      set(floating, 'data-plx-floating-pointer', '');
+      const [ix, iy] = pointAt(floating, vx, vy);
+      set(floating, 'data-plx-floating-x', ix);
+      set(floating, 'data-plx-floating-y', iy);
+    } else if (anchor) {
+      if (!slot.current) slot.current = take();
+      set(anchor, 'data-plx-floating-anchor', slot.current || null);
+      set(floating, 'data-plx-floating', slot.current || 'inline');
+      set(floating, 'data-plx-floating-offset', offset === 'xs' || !(offset in OFFSETS) ? null : offset);
+      set(floating, 'data-plx-floating-flip', flip ? null : 'off');
+      set(floating, 'data-plx-floating-shift', shift ? null : 'off');
+      set(floating, 'data-plx-floating-match', matchWidth ? 'width' : null);
+      if (host) set(host, 'data-plx-floating-host', '');
+      set(floating, 'data-plx-floating-placement', wanted);
+      let next = wanted;
+      if (mode === 'inline') {
+        next = measured(anchor, floating, wanted, flip, shift, tokenPixels(OFFSETS[offset] || null));
+        set(floating, 'data-plx-floating-placement', next);
+      }
+      setUsed(next);
+    }
+    return () => {
+      ATTRS.forEach(n => floating.removeAttribute(n));
+      if (anchor) anchor.removeAttribute('data-plx-floating-anchor');
+      if (host) host.removeAttribute('data-plx-floating-host');
+      release(slot.current);
+      slot.current = 0;
+    };
+  }, [open, wanted, offset, flip, shift, matchWidth, pointer, mode, vx, vy, anchorRef, floatingRef]);
+
+  // the inline fallback measures again when the window changes size
+  _react.default.useEffect(() => {
+    if (!open || mode !== 'inline' || typeof window === 'undefined') return undefined;
+    const again = () => {
+      const anchor = anchorRef.current,
+        floating = floatingRef.current;
+      if (!anchor || !floating) return;
+      set(floating, 'data-plx-floating-placement', wanted);
+      const next = measured(anchor, floating, wanted, flip, shift, tokenPixels(OFFSETS[offset] || null));
+      set(floating, 'data-plx-floating-placement', next);
+      setUsed(next);
+    };
+    window.addEventListener('resize', again);
+    return () => window.removeEventListener('resize', again);
+  }, [open, mode, wanted, flip, shift, offset, anchorRef, floatingRef]);
+  return {
+    placement: mode === 'anchor' ? wanted : used,
+    mode
+  };
+}
+  } },
+  "platform/utils/describedBy.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.joinIds = joinIds;
+exports.useDescribedBy = useDescribedBy;
+exports.useDescriptionId = useDescriptionId;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · accessible descriptions (platform/utils/describedBy.js): one way to tie descriptions to an element.
+   Summary: joinIds merges description ids into one aria-describedby value (empty and repeated ids dropped, the order kept);
+     useDescriptionId gives a component a stable id for its description; useDescribedBy builds the attribute from the ids a
+     component has now. Field and Tooltip use them, and so does every new component.
+   Usage:
+     import { joinIds, useDescriptionId, useDescribedBy } from 'plenix-platform';
+     const hintId = useDescriptionId('hint');
+     const describedBy = useDescribedBy(props['aria-describedby'], hint && hintId, error && errorId);
+     <input aria-describedby={describedBy} />
+     <p id={hintId}>Use letters and numbers only</p>
+   Props:
+     joinIds(...ids): a string of ids separated by spaces, or undefined when there is none; each argument may itself hold
+       several ids ("a b"), or be empty, false or undefined
+     useDescriptionId(prefix?): a stable, unique id for this component ("plx-" + prefix + a React id); default prefix "desc"
+     useDescribedBy(...ids): joinIds of the arguments (the hook form, for symmetry with useDescriptionId)
+   Behavior:
+     The ids already on the element come first (what its owner set), then the component's own, so nothing the owner
+     described is lost. A description that is not shown (a hint only for screen readers) is VisuallyHidden text with the id.
+   Notes:
+     A description adds to the name, it never repeats it. Visible text first: aria-describedby points at text everyone can
+     read (the hint, the error message); a hidden description only for what sighted people get from the layout. */
+
+function joinIds(...ids) {
+  const out = [];
+  ids.forEach(v => {
+    if (!v) return;
+    String(v).split(/\s+/).forEach(id => {
+      if (id && out.indexOf(id) < 0) out.push(id);
+    });
+  });
+  return out.length ? out.join(' ') : undefined;
+}
+function useDescriptionId(prefix = 'desc') {
+  return 'plx-' + prefix + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+}
+function useDescribedBy(...ids) {
+  return joinIds(...ids);
+}
+  } },
+  "platform/components/Tooltip/Tooltip.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/floating.js":"platform/utils/floating.js","../../utils/describedBy.js":"platform/utils/describedBy.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.InTooltip = void 0;
+exports.Tooltip = Tooltip;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _floating = require("../../utils/floating.js");
+var _describedBy = require("../../utils/describedBy.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Tooltip
+   Summary: A short label for a control, shown on hover, on keyboard focus and, on touch, on a long press. The rich
+     tooltip (09 Overlays › Contextual overlays › Rich tooltip) adds a title, a few sentences and, as a toggletip, one action.
+   Usage:
+     <Tooltip content="Upload files" placement="bottom"><Button …/></Tooltip>
+     <Tooltip title="Retention" content="Deleted files stay in the trash for 30 days."><Button …/></Tooltip>
+     <Tooltip title="Smart crop" content="…" action={<Link href="#crop" variant="standalone">About smart crop</Link>}><Button …/></Tooltip>
+   Props:
+     content: the tooltip text (in a rich tooltip, its body: one to three sentences)
+     placement: "bottom" (default) | "top" | "start" | "end" (start and end follow the writing direction)
+     title: a short title above the body; it makes the tooltip rich
+     action: one action under the body (a standalone Link, or a small Button); it makes the tooltip rich and a toggletip:
+       it opens on click (Enter or Space on the trigger) instead of on hover and focus
+     rich: the rich look without a title or an action (default false; true when title or action is given)
+     disabled: the tooltip neither shows nor describes the trigger (default false); for a label that is shown in full most of
+       the time and only needs its tooltip when it is cut short
+     className: more classes on the wrapper
+     children: the control it labels (one element)
+   Behavior:
+     It shows on hover (a mouse or a pen) and on keyboard focus, and hides on leave, on blur and with Escape.
+     On touch there is no hover (Platforms Standard 6.5): a long press (--plx-comp-tooltip-long-press-delay) shows it, and
+     it hides --plx-comp-tooltip-touch-dismiss-delay after the finger lifts, or when the finger moves away or is cancelled.
+     A tap does not show it (focus that follows a touch is ignored; mouse events emulated from touch are not listened to),
+     and the long press neither opens the browser's context menu nor activates the control (the click that may follow the
+     release is dropped): a long press asks what a control is, it does not use it.
+     The trigger is described by the tooltip (aria-describedby), added to any it already has.
+     Placement: where the browser has CSS anchor positioning (utils/floating.js) the bubble is placed against the trigger by
+       useFloating while it shows (offset sm), so no scroll area or pane clips it; elsewhere it is drawn inside the wrapper
+       on its side, as before. A tooltip with an arrow keeps its side; a rich tooltip (no arrow) flips and shifts to stay in
+       the window.
+     Rich: a text-only rich tooltip opens on hover and focus like a plain one and stays open while the pointer is over it
+       (it hides --plx-comp-tooltip-rich-close-delay after the pointer leaves both). With an action it is a toggletip: the
+       trigger toggles it (aria-expanded, aria-controls), Tab from the trigger reaches the action, and Escape, a click
+       outside or focus leaving it closes it (Escape returns focus to the trigger); a tap opens it on touch.
+   Notes:
+     An icon-only Button shows its name (and its shortcut) as a tooltip by itself; inside a Tooltip it leaves that to the
+       Tooltip (InTooltip), so a control never gets two.
+     An icon-only control still needs its own label (aria-label): the tooltip repeats it visually, it is never the only
+     way to learn the control's name.
+     Not for essential content. Only the rich tooltip holds an action, and then it opens on click: interactive content never
+     depends on hover.
+     The rich surface is the popover's (the overlay surface with its border, radius and shadow), with no arrow.
+*/
+
+const SIDES = ['bottom', 'top', 'start', 'end'];
+
+// true inside a Tooltip's trigger: a Button there does not add its own (an icon-only Button shows its name by itself)
+const InTooltip = exports.InTooltip = /*#__PURE__*/_react.default.createContext(false);
+
+// a duration token ("0.5s", "500ms") in milliseconds, read from the element's computed style
+const ms = (el, name) => {
+  const v = el ? getComputedStyle(el).getPropertyValue(name).trim() : '';
+  const n = parseFloat(v);
+  return isNaN(n) ? 0 : /ms$/.test(v) ? n : n * 1000;
+};
+
+// the last way the person reached for the page: a touch, or a mouse, pen or key. Focus that follows a tap does not open
+// the tooltip (a long press does); focus that follows a key does. One listener pair for every tooltip, added by the first.
+let lastInput = 'key',
+  listening = false;
+const listen = () => {
+  if (listening) return;
+  listening = true;
+  document.addEventListener('pointerdown', e => {
+    lastInput = e.pointerType === 'touch' ? 'touch' : 'pointer';
+  }, true);
+  document.addEventListener('keydown', () => {
+    lastInput = 'key';
+  }, true);
+};
+function Tooltip({
+  content,
+  placement = 'bottom',
+  title,
+  action,
+  rich = false,
+  disabled = false,
+  className,
+  children
+}) {
+  const id = (0, _describedBy.useDescriptionId)('tt'); // plx-tt<id> (utils/describedBy.js)
+  const [open, setOpen] = _react.default.useState(false);
+  const wrap = _react.default.useRef(null);
+  const bubble = _react.default.useRef(null);
+  const press = _react.default.useRef(null); // the long-press timer
+  const hide = _react.default.useRef(null); // the timer that hides a tooltip a long press (or a rich tooltip's leave) started
+  const pressed = _react.default.useRef(false); // this touch opened the tooltip by a long press
+  const isRich = !!(rich || title || action);
+  const toggle = !!action; // a toggletip: opened by a click on the trigger
+  const side = SIDES.indexOf(placement) >= 0 ? placement : 'bottom';
+  const clear = () => {
+    clearTimeout(press.current);
+    clearTimeout(hide.current);
+  };
+  _react.default.useEffect(() => {
+    listen();
+    return clear;
+  }, []);
+  // placed against the trigger by anchor positioning while it shows; the arrow keeps its side (no flip, no shift)
+  (0, _floating.useFloating)(wrap, bubble, {
+    open: open && !disabled && _floating.FLOATING_ANCHOR,
+    placement: side,
+    offset: 'sm',
+    flip: isRich,
+    shift: isRich
+  });
+  _react.default.useEffect(() => {
+    if (!open) return undefined;
+    const esc = e => {
+      if (e.key !== 'Escape') return;
+      const inside = wrap.current && wrap.current.contains(document.activeElement);
+      setOpen(false);
+      // a toggletip gives focus back to its trigger when Escape closes it from inside
+      if (toggle && inside && wrap.current.firstElementChild && wrap.current.firstElementChild.focus) wrap.current.firstElementChild.focus();
+    };
+    const outside = e => {
+      if (wrap.current && !wrap.current.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener('keydown', esc);
+    if (toggle) document.addEventListener('mousedown', outside);
+    return () => {
+      document.removeEventListener('keydown', esc);
+      document.removeEventListener('mousedown', outside);
+    };
+  }, [open, toggle]);
+  const child = _react.default.Children.only(children);
+  const described = {
+    'aria-describedby': (0, _describedBy.useDescribedBy)(child.props['aria-describedby'], id)
+  };
+  const trigger = disabled ? child : /*#__PURE__*/_react.default.cloneElement(child, toggle ? Object.assign(described, {
+    'aria-expanded': open,
+    'aria-controls': open ? id + 'b' : undefined,
+    onClick: e => {
+      if (child.props.onClick) child.props.onClick(e);
+      setOpen(!open);
+    }
+  }) : described);
+  if (disabled) return /*#__PURE__*/_react.default.createElement("span", {
+    className: (0, _cx.cx)('plx-tooltip', className)
+  }, /*#__PURE__*/_react.default.createElement(InTooltip.Provider, {
+    value: true
+  }, trigger));
+  const onPointerDown = e => {
+    if (e.pointerType !== 'touch' || toggle) return;
+    clear();
+    pressed.current = false;
+    press.current = setTimeout(() => {
+      pressed.current = true;
+      setOpen(true);
+    }, ms(wrap.current, '--plx-comp-tooltip-long-press-delay'));
+  };
+  const onPointerEnd = e => {
+    if (e.pointerType !== 'touch' || toggle) return;
+    clearTimeout(press.current);
+    if (pressed.current) hide.current = setTimeout(() => {
+      setOpen(false);
+      pressed.current = false;
+    }, e.type === 'pointercancel' ? 0 : ms(wrap.current, '--plx-comp-tooltip-touch-dismiss-delay'));
+  };
+  const onEnter = e => {
+    if (e.pointerType === 'touch' || toggle) return;
+    clearTimeout(hide.current);
+    setOpen(true);
+  };
+  const onLeave = e => {
+    if (e.pointerType === 'touch' || toggle) return;
+    // a rich tooltip waits a moment, so the pointer can move into it; a plain one hides at once
+    if (isRich) {
+      clearTimeout(hide.current);
+      hide.current = setTimeout(() => setOpen(false), ms(wrap.current, '--plx-comp-tooltip-rich-close-delay'));
+    } else setOpen(false);
+  };
+  const bubbleCls = (0, _cx.cx)('plx-tooltip__bubble', 'plx-tooltip__bubble--' + side, isRich && 'plx-tooltip__bubble--rich', open && 'is-open');
+  return /*#__PURE__*/_react.default.createElement("span", {
+    ref: wrap,
+    className: (0, _cx.cx)('plx-tooltip', className),
+    onPointerEnter: onEnter,
+    onPointerLeave: onLeave,
+    onPointerDown: onPointerDown,
+    onPointerUp: onPointerEnd,
+    onPointerCancel: onPointerEnd,
+    onContextMenu: e => {
+      if (pressed.current) e.preventDefault();
+    },
+    onClickCapture: e => {
+      if (pressed.current) {
+        e.preventDefault();
+        e.stopPropagation();
+        pressed.current = false;
+      }
+    },
+    onFocus: () => {
+      if (!toggle && lastInput !== 'touch') setOpen(true);
+    },
+    onBlur: e => {
+      if (!pressed.current && !(wrap.current && wrap.current.contains(e.relatedTarget))) setOpen(false);
+    }
+  }, /*#__PURE__*/_react.default.createElement(InTooltip.Provider, {
+    value: true
+  }, trigger), isRich ? /*#__PURE__*/_react.default.createElement("span", {
+    ref: bubble,
+    id: id + 'b',
+    className: bubbleCls
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    role: "tooltip",
+    id: id,
+    className: "plx-tooltip__content"
+  }, title ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-tooltip__title"
+  }, title) : null, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-tooltip__body"
+  }, content)), action ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-tooltip__action"
+  }, action) : null) : /*#__PURE__*/_react.default.createElement("span", {
+    ref: bubble,
+    role: "tooltip",
+    id: id,
+    className: bubbleCls
+  }, content));
+}
+  } },
+  "platform/components/Kbd/Kbd.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Kbd = Kbd;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Kbd
+   Summary: A key or shortcut ("Ctrl K").
+   Usage:
+     <Kbd>Ctrl K</Kbd>
+     <Kbd onAccent>/</Kbd>
+   Props:
+     onAccent: the version for the blue header (default false)
+     children: the key or shortcut text
+     className: more classes on the <kbd>
+   Notes:
+     Writing direction (owner, ctm-needs-34): always left to right (dir="ltr", which also isolates it), also in a right-to-left page.
+     It uses the data font at a 16px label height.
+     Other props pass through to the <kbd>.
+*/
+function Kbd({
+  onAccent = false,
+  className,
+  children,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement("kbd", _extends({
+    className: (0, _cx.cx)('plx-kbd', onAccent && 'plx-kbd--on-accent', className),
+    dir: "ltr"
+  }, rest), children);
+}
+  } },
+  "platform/utils/tokenTime.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.tokenMs = tokenMs;
+// Plenix · tokenMs: a duration token's value in milliseconds ("4s", "250ms"), read from the element (or the root), so
+// behavior that waits (a toast leaving, a delay) takes its time from the tokens like the stylesheets do (batch 341).
+// Returns the fallback when the token is not set (no document, or the token stylesheet not loaded).
+function tokenMs(name, fallback = 0, el) {
+  if (typeof document === 'undefined') return fallback;
+  const v = getComputedStyle(el || document.documentElement).getPropertyValue(name).trim();
+  const m = /^(-?[\d.]+)(ms|s)$/.exec(v);
+  return m ? parseFloat(m[1]) * (m[2] === 's' ? 1000 : 1) : fallback;
+}
+  } },
+  "platform/utils/hotkey.js": { deps: {"react":null,"./tokenTime.js":"platform/utils/tokenTime.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.hotkeyKeys = hotkeyKeys;
+exports.hotkeyLabel = hotkeyLabel;
+exports.hotkeyList = hotkeyList;
+exports.isMac = isMac;
+exports.parseHotkey = parseHotkey;
+exports.registerHotkey = registerHotkey;
+exports.setSingleKeyHotkeys = setSingleKeyHotkeys;
+exports.singleKeyHotkeys = singleKeyHotkeys;
+exports.subscribeHotkeys = subscribeHotkeys;
+exports.useHotkey = useHotkey;
+exports.useHotkeyList = useHotkeyList;
+var _react = _interopRequireDefault(require("react"));
+var _tokenTime = require("./tokenTime.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Hotkey (platform/utils/hotkey.js)
+   Summary: Keyboard shortcuts in one place: useHotkey binds a key, a chord (Mod K) or a sequence (G then I) to a command,
+     for the whole page or for one region, and every binding goes into one registry that the shortcuts dialog and the
+     menus read their hints from (Kbd draws the label).
+   Usage:
+     useHotkey('Mod+K', () => openSearch(), { label: 'Search', group: 'General' });
+     useHotkey('G I', () => goTo('inbox'), { label: 'Go to inbox', group: 'Navigation' });
+     useHotkey('Delete', removeSelected, { scope: listRef, label: 'Delete the selected files' });
+     <Kbd>{hotkeyLabel('Mod+K')}</Kbd>                     // "Ctrl K" on Windows and Linux, "⌘ K" on a Mac
+     const all = useHotkeyList();                         // [{ binding, label, group, keys }] for the shortcuts dialog
+   Props:
+     useHotkey(binding, handler, options): binds while the component is mounted; handler(event) runs on a match
+     binding: steps separated by spaces (a sequence: "G I"), each step keys joined by "+" ("Mod+Shift+P"); modifiers Mod
+       (Cmd on a Mac, Ctrl elsewhere), Ctrl, Meta, Alt, Shift; keys as KeyboardEvent.key names ("K", "Escape", "/", "?")
+     options.scope: a ref (or element) of the region the binding belongs to; it fires only when focus is inside it
+     options.enabled: false unbinds it without unmounting (default true)
+     options.allowInFields: also fire while focus is in a text field (default false)
+     options.label: what the command does, as written in its menu item; options.group: its group in the shortcuts dialog
+     registerHotkey(binding, handler, options): the same without React; returns the function that unbinds it
+     hotkeyLabel(binding, { mac }): the binding as people read it ("Ctrl Shift P", "G then I")
+     hotkeyList(): every labeled binding; useHotkeyList() the same, kept current; subscribeHotkeys(fn) for other code
+     setSingleKeyHotkeys(on): turns every single-key shortcut (no modifier) off or on (WCAG 2.2 SC 2.1.4)
+   Behavior:
+     One keydown listener for the page. The binding of the innermost scope that contains the focus wins; page-wide
+     bindings come last. A key that starts a sequence waits --plx-sys-hotkey-sequence-timeout for the next one.
+     Ignored while focus is in a text field, a select or editable content, unless allowInFields. Ignored when an earlier
+     handler called preventDefault. A match calls preventDefault, so the browser's own use of that key does not run.
+   Notes:
+     Never bind keys that assistive technology or the browser needs (Tab, the arrow keys outside a widget, Ctrl L, F6).
+     Use the same label here as in the menu item, so the dialog and the menu agree.
+*/
+
+const MODS = ['ctrl', 'meta', 'alt', 'shift'];
+const NAMES = {
+  esc: 'escape',
+  del: 'delete',
+  space: ' ',
+  spacebar: ' ',
+  return: 'enter',
+  up: 'arrowup',
+  down: 'arrowdown',
+  left: 'arrowleft',
+  right: 'arrowright',
+  cmd: 'meta',
+  command: 'meta',
+  option: 'alt',
+  control: 'ctrl'
+};
+const entries = [];
+const listeners = new Set();
+let singleKeys = true;
+let buffer = [],
+  bufferAt = 0,
+  installed = false,
+  nextId = 1;
+function isMac() {
+  if (typeof navigator === 'undefined') return false;
+  const p = navigator.userAgentData && navigator.userAgentData.platform || navigator.platform || '';
+  return /mac|iphone|ipad|ipod/i.test(p);
+}
+
+// "Mod+Shift+P" → { ctrl, meta, alt, shift, key: 'p' }
+function parseStep(step, mac) {
+  const parts = step.split('+').filter((x, i, all) => x !== '' || i === all.length - 1).map(x => x === '' ? '+' : x);
+  const s = {
+    ctrl: false,
+    meta: false,
+    alt: false,
+    shift: false,
+    key: ''
+  };
+  parts.forEach(raw => {
+    let p = raw.toLowerCase();
+    p = NAMES[p] || p;
+    if (p === 'mod') s[mac ? 'meta' : 'ctrl'] = true;else if (MODS.indexOf(p) >= 0) s[p] = true;else s.key = p;
+  });
+  return s;
+}
+function parseHotkey(binding, mac = isMac()) {
+  return String(binding || '').trim().split(/\s+/).filter(Boolean).map(st => parseStep(st, mac));
+}
+function matchStep(s, e) {
+  const key = (e.key || '').toLowerCase();
+  // a letter or digit typed with Alt (or Shift) on some layouts changes e.key: e.code still names the key
+  const code = /^Key([A-Z])$|^Digit(\d)$/.exec(e.code || '');
+  const sameKey = key === s.key || !!code && (code[1] || code[2]).toLowerCase() === s.key;
+  if (!sameKey) return false;
+  // a symbol that needs Shift ("?") is written without it: Shift is then not compared
+  const symbol = s.key.length === 1 && !/[a-z0-9]/.test(s.key);
+  return e.ctrlKey === s.ctrl && e.metaKey === s.meta && e.altKey === s.alt && (symbol || e.shiftKey === s.shift);
+}
+const isSingle = steps => steps.length >= 1 && steps.every(s => !s.ctrl && !s.meta && !s.alt) && steps[0].key.length === 1;
+function inField(el) {
+  if (!el || !el.tagName) return false;
+  if (el.isContentEditable) return true;
+  const t = el.tagName.toLowerCase();
+  if (t === 'textarea' || t === 'select') return true;
+  if (t !== 'input') return false;
+  return ['checkbox', 'radio', 'button', 'submit', 'reset', 'range', 'color', 'file', 'image'].indexOf((el.type || '').toLowerCase()) < 0;
+}
+const scopeOf = x => (x && 'current' in x ? x.current : x) || null;
+const depth = el => {
+  let n = 0;
+  for (let x = el; x; x = x.parentElement) n++;
+  return n;
+};
+function onKeyDown(e) {
+  if (e.defaultPrevented || e.isComposing || ['Control', 'Meta', 'Alt', 'Shift'].indexOf(e.key) >= 0) return;
+  const now = Date.now();
+  if (now - bufferAt > (0, _tokenTime.tokenMs)('--plx-sys-hotkey-sequence-timeout')) buffer = [];
+  const target = e.target,
+    field = inField(target);
+  const live = entries.filter(x => x.enabled && (!field || x.allowInFields) && (singleKeys || !isSingle(x.steps))).map(x => ({
+    x,
+    scope: scopeOf(x.scope)
+  })).filter(c => !c.x.scope || c.scope && c.scope.contains(target)).sort((a, b) => (b.scope ? depth(b.scope) : 0) - (a.scope ? depth(a.scope) : 0));
+  const step = buffer.length;
+  const fits = (c, at) => c.x.steps.length > at && buffer.slice(buffer.length - at).every((ev, i) => matchStep(c.x.steps[i], ev)) && matchStep(c.x.steps[at], e);
+  // the longest waiting sequence first, then a fresh start
+  for (const at of [step, 0].filter((v, i, all) => all.indexOf(v) === i)) {
+    const full = live.find(c => c.x.steps.length === at + 1 && fits(c, at));
+    if (full) {
+      buffer = [];
+      e.preventDefault();
+      full.x.handler(e);
+      return;
+    }
+    if (live.some(c => c.x.steps.length > at + 1 && fits(c, at))) {
+      buffer = buffer.slice(buffer.length - at).concat([{
+        key: e.key,
+        code: e.code,
+        ctrlKey: e.ctrlKey,
+        metaKey: e.metaKey,
+        altKey: e.altKey,
+        shiftKey: e.shiftKey
+      }]);
+      bufferAt = now;
+      return;
+    }
+  }
+  buffer = [];
+}
+function install() {
+  if (installed || typeof document === 'undefined') return;
+  document.addEventListener('keydown', onKeyDown);
+  installed = true;
+}
+const notify = () => listeners.forEach(fn => fn());
+function registerHotkey(binding, handler, options = {}) {
+  install();
+  const entry = {
+    id: nextId++,
+    binding,
+    steps: parseHotkey(binding),
+    handler,
+    scope: options.scope || null,
+    enabled: options.enabled !== false,
+    allowInFields: !!options.allowInFields,
+    label: options.label || '',
+    group: options.group || ''
+  };
+  entries.push(entry);
+  if (entry.label) notify();
+  return () => {
+    const i = entries.indexOf(entry);
+    if (i >= 0) {
+      entries.splice(i, 1);
+      if (entry.label) notify();
+    }
+  };
+}
+function useHotkey(binding, handler, options = {}) {
+  const ref = _react.default.useRef(handler);
+  ref.current = handler;
+  const {
+    scope,
+    enabled = true,
+    allowInFields = false,
+    label,
+    group
+  } = options;
+  _react.default.useEffect(() => {
+    if (!enabled || !binding) return undefined;
+    return registerHotkey(binding, e => ref.current && ref.current(e), {
+      scope,
+      allowInFields,
+      label,
+      group
+    });
+  }, [binding, scope, enabled, allowInFields, label, group]);
+}
+const MAC_NAMES = {
+  meta: '⌘',
+  ctrl: '⌃',
+  alt: '⌥',
+  shift: '⇧'
+};
+const PC_NAMES = {
+  meta: 'Win',
+  ctrl: 'Ctrl',
+  alt: 'Alt',
+  shift: 'Shift'
+};
+const KEY_NAMES = {
+  ' ': 'Space',
+  escape: 'Esc',
+  arrowup: '↑',
+  arrowdown: '↓',
+  arrowleft: '←',
+  arrowright: '→',
+  enter: 'Enter',
+  delete: 'Delete',
+  backspace: 'Backspace',
+  tab: 'Tab'
+};
+function hotkeyKeys(binding, {
+  mac = isMac()
+} = {}) {
+  const names = mac ? MAC_NAMES : PC_NAMES;
+  return parseHotkey(binding, mac).map(s => (mac ? ['ctrl', 'alt', 'shift', 'meta'] : ['ctrl', 'meta', 'alt', 'shift']).filter(m => s[m]).map(m => names[m]).concat([KEY_NAMES[s.key] || (s.key.length === 1 ? s.key.toUpperCase() : s.key.charAt(0).toUpperCase() + s.key.slice(1))]));
+}
+function hotkeyLabel(binding, options) {
+  return hotkeyKeys(binding, options).map(k => k.join(' ')).join(' then ');
+}
+function hotkeyList() {
+  return entries.filter(x => x.label).map(x => ({
+    binding: x.binding,
+    label: x.label,
+    group: x.group,
+    keys: hotkeyLabel(x.binding),
+    enabled: x.enabled
+  }));
+}
+function subscribeHotkeys(fn) {
+  listeners.add(fn);
+  return () => listeners.delete(fn);
+}
+function useHotkeyList() {
+  const [list, setList] = _react.default.useState(hotkeyList);
+  _react.default.useEffect(() => {
+    setList(hotkeyList());
+    return subscribeHotkeys(() => setList(hotkeyList()));
+  }, []);
+  return list;
+}
+function setSingleKeyHotkeys(on) {
+  singleKeys = !!on;
+  buffer = [];
+}
+function singleKeyHotkeys() {
+  return singleKeys;
+}
+  } },
+  "platform/components/Button/Button.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../providers/Surface.jsx":"platform/providers/Surface.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","../../utils/hotkey.js":"platform/utils/hotkey.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Button = void 0;
+exports.ButtonGroup = ButtonGroup;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _cx = require("../../utils/cx.js");
+var _Icon = require("../Icon/Icon.jsx");
+var _Loading = require("../Loading/Loading.jsx");
+var _Surface = require("../../providers/Surface.jsx");
+var _Tooltip = require("../Tooltip/Tooltip.jsx");
+var _Kbd = require("../Kbd/Kbd.jsx");
+var _hotkey = require("../../utils/hotkey.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Button, ButtonGroup
+   Summary: A button for an action, in one of several emphasis levels and sizes; ButtonGroup joins buttons that act as a set.
+   Usage:
+     <Button variant="primary" icon="save" onClick={() => …}>Save</Button>
+     <Button iconOnly icon="more_horiz" label="More actions" caret expanded={open} />
+     <ButtonGroup label="Transfer"><Button>Import</Button><Button>Export</Button></ButtonGroup>
+   Props:
+     variant: "secondary" (default; white with a border, reversible actions) | "primary" (filled; the main action, usually one
+       per view) | "tertiary" (outlined in the action color, no fill; fills on hover) | "ghost" (no fill or border until
+       hovered, when its icon turns the action color; the lowest emphasis) | "danger" (filled red; destructive) | "danger-secondary"
+       (red outline, fills on hover). There is no link look: a link goes somewhere (Link), a button does something
+     truncate: the label fills the button from its start edge and ends in an ellipsis (a long choice)
+     stackedLabel: the label’s lines stack, start-aligned and wrapping; the gap is --plx-comp-button-context-label-gap (SuggestedAction)
+     labelRow: the label lays out a row of its own (an avatar and a name); the gap is
+       --plx-comp-button-context-label-row-gap (AppHeader’s account)
+     joined: { start, end }: "square" | "seam": its corners square where it meets a neighbor; a seam also drops that border (ButtonGroup, InputGroup and CopyButton set it)"md" (default; the standard control role) | "sm" (the toolbar role: compact text, gray) | "xs" (the inline-action
+       role: dense row and card actions, never in a toolbar) | "2xs" (the smallest: "Show more" under a list; 11px text, a blue
+       tint on hover) | "lg" (the prominent role: page actions)
+     icon: an <Icon> (or an icon name) before the label
+     iconEnd: an <Icon> (or an icon name) after the label
+     iconOnly: a square button with only its icon; give it a label (default false)
+     label: the accessible name (aria-label); an icon-only button falls back to string children
+     tooltip: the tooltip it shows (default: an icon-only button shows its label; others none); false: none (Carbon,
+       Atlassian: every icon-only button names itself). Inside a Tooltip the button leaves it to that Tooltip
+     shortcut: its keyboard shortcut, as a hotkey binding ("Mod+Shift+A"): shown in its tooltip as keys (Ctrl or ⌘) and set as
+       aria-keyshortcuts. It only shows the shortcut: bind it with useHotkey
+     caret: the button opens a menu: the thin outline chevron (expand_more) after the label, in the muted color on the
+       unfilled variants (owner, 2026-10-14: it replaces the small filled triangle); default false
+     expanded: sets aria-expanded, for a button that opens a menu
+     pressed: makes a toggle button (aria-pressed): true when on, false when off (undefined: not a toggle)
+     tone: "success" | "danger" | "neutral": the chosen state (pressed or selected) fills in that feedback color (green, red,
+       gray) instead of the selected gray; the rest state stays the variant's, so a choice not taken is the plain button
+       (owner, vote-screen-37: a vote's Approve, Deny and Abstain). Default none
+     selected: shows the selected state without a toggle role (default false)
+     loading: shows a spinner in place of the icon (default false)
+     disabled: the button does nothing (default false)
+     href: renders a link styled as a button
+     type: the button type (default "button")
+     onClick(event): runs when the button is clicked, unless disabled or loading
+     children: the button label
+     className: more classes on the button
+     strings: the words it announces, for other languages: { working: "Working" } (the loading spinner's name)
+     ref: forwarded to the <button> or <a>
+     ButtonGroup.label: the accessible name of the group
+     ButtonGroup.children: the buttons
+     ButtonGroup.className: more classes on the group
+   Behavior:
+     Placement can also set the role: a dialog footer gives its buttons the dialog role.
+     Selected, pressed and expanded all show the selected state.
+     A toggle button (pressed true or false) keeps its label and icon when it turns on or off: the label names the option
+       (Bold, Show grid), aria-pressed says whether it is on, and every variant shows "on" with the selected state.
+     Loading keeps the width and the name, and stays focusable but inert (aria-disabled, aria-busy): the spinner takes the
+       icon's place, or, with no icon, sits over the label, which stays (unseen) to hold the width and name the button.
+     A disabled link loses its href.
+   Notes:
+     Other props pass through to the <button> or <a> (and to ButtonGroup's <div>).
+     For one choice from several, use SegmentedControl instead of ButtonGroup.
+*/
+const TONES = ['success', 'danger', 'neutral'];
+const STRINGS = {
+  working: 'Working'
+};
+
+// the icon takes the button's state as its own (Styling Standard 3.6): filled while the button is selected, pressed or
+// open; an Icon element the caller gives keeps its own fill when it sets one
+const asIcon = _Icon.stateIcon;
+
+// a one-step binding as aria-keyshortcuts ("Control+Shift+A"); a sequence has no ARIA form, so none
+const ARIA_MODS = [['ctrl', 'Control'], ['alt', 'Alt'], ['shift', 'Shift'], ['meta', 'Meta']];
+const ariaShortcut = binding => {
+  const steps = (0, _hotkey.parseHotkey)(binding);
+  if (steps.length !== 1 || !steps[0].key) return undefined;
+  const k = steps[0].key;
+  return ARIA_MODS.filter(([m]) => steps[0][m]).map(([, n]) => n).concat(k.length === 1 ? k.toUpperCase() : k.charAt(0).toUpperCase() + k.slice(1)).join('+');
+};
+const Button = exports.Button = /*#__PURE__*/_react.default.forwardRef(function Button({
+  variant = 'secondary',
+  size = 'md',
+  icon,
+  iconEnd,
+  iconOnly = false,
+  label,
+  caret = false,
+  expanded,
+  pressed,
+  selected = false,
+  tone,
+  loading = false,
+  disabled = false,
+  href,
+  type = 'button',
+  joined,
+  truncate = false,
+  stackedLabel = false,
+  labelRow = false,
+  tooltip,
+  shortcut,
+  className,
+  children,
+  onClick,
+  strings,
+  ...rest
+}, ref) {
+  (0, _devWarn.devWarn)('Button', {
+    variant,
+    size
+  }, {
+    variant: ['secondary', 'primary', 'tertiary', 'ghost', 'danger', 'danger-secondary', 'quiet'],
+    size: ['md', 'sm', 'xs', '2xs', 'lg']
+  });
+  const t = Object.assign({}, STRINGS, strings);
+  // a colored surface around the button (TeachingBubble, the accent AppHeader) gives it that surface's look
+  const surface = _react.default.useContext(_Surface.SurfaceContext);
+  const classes = (0, _cx.cx)('plx-button', 'plx-button--' + (variant === 'quiet' ? 'ghost' : variant), size !== 'md' && 'plx-button--size-' + size, iconOnly && 'plx-button--icon-only', caret && 'plx-button--caret', TONES.includes(tone) && 'plx-button--tone-' + tone, (selected || pressed || expanded) && 'is-selected', loading && 'is-loading', truncate && 'plx-button--truncate', stackedLabel && 'plx-button--stacked-label', labelRow && 'plx-button--label-row', joined && joined.start && 'plx-button--joined-start-' + joined.start, joined && joined.end && 'plx-button--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-button--joined', (surface === 'inverse' || surface === 'accent') && 'plx-button--on-' + surface, className);
+  // the parts take the button's state as their own classes (Styling Standard 3.6: no rule reaches from the button into them)
+  const v = variant === 'quiet' ? 'ghost' : variant;
+  const on = !!(selected || pressed || expanded);
+  const labelClass = (0, _cx.cx)('plx-button__label', truncate && 'plx-button__label--truncate', !truncate && stackedLabel && 'plx-button__label--stacked', !truncate && !stackedLabel && labelRow && 'plx-button__label--row');
+  const caretClass = (0, _cx.cx)('plx-button__caret', (v === 'primary' || v === 'danger' || disabled || loading) && 'plx-button__caret--current', expanded && 'plx-button__caret--open');
+  const hasLabel = !iconOnly && children !== undefined && children !== null;
+  // loading: the spinner takes the icon's place; with no icon it sits over the label, which keeps the width and the name
+  // (aria-busy says it is working, so the spinner itself is not read)
+  const over = loading && !icon && hasLabel;
+  const spinner = cls => /*#__PURE__*/_react.default.createElement("span", {
+    className: cls,
+    "aria-hidden": "true"
+  }, /*#__PURE__*/_react.default.createElement(_Loading.Spinner, {
+    size: "sm",
+    label: t.working
+  }));
+  const content = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, loading && !over ? spinner('plx-button__icon') : icon ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-button__icon"
+  }, asIcon(icon, on)) : null, over ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-button__stack"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: (0, _cx.cx)(labelClass, 'plx-button__label--waiting')
+  }, children), spinner('plx-button__icon plx-button__icon--over')) : hasLabel ? /*#__PURE__*/_react.default.createElement("span", {
+    className: labelClass
+  }, children) : null, iconEnd ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-button__icon"
+  }, asIcon(iconEnd, on)) : null, caret ? /*#__PURE__*/_react.default.createElement("span", {
+    className: caretClass,
+    "aria-hidden": "true"
+  }) : null);
+  const a11y = {
+    'aria-label': iconOnly ? label || (typeof children === 'string' ? children : undefined) : label,
+    'aria-expanded': expanded,
+    'aria-pressed': pressed,
+    'aria-disabled': disabled || loading ? true : undefined,
+    'aria-busy': loading || undefined,
+    'aria-keyshortcuts': shortcut ? ariaShortcut(shortcut) : undefined
+  };
+  const handle = e => {
+    if (disabled || loading) {
+      e.preventDefault();
+      return;
+    }
+    if (onClick) onClick(e);
+  };
+  const el = href ? /*#__PURE__*/_react.default.createElement("a", _extends({
+    ref: ref,
+    href: disabled ? undefined : href,
+    className: classes
+  }, a11y, {
+    onClick: handle
+  }, rest), content) : /*#__PURE__*/_react.default.createElement("button", _extends({
+    ref: ref,
+    type: type,
+    className: classes,
+    disabled: disabled && !loading ? true : undefined
+  }, a11y, {
+    onClick: handle
+  }, rest), content);
+  // its tooltip: the name of an icon-only button (or the tooltip it was given), with its shortcut's keys; none inside a
+  // Tooltip, which already names it
+  const inTooltip = _react.default.useContext(_Tooltip.InTooltip);
+  const tip = tooltip === false ? null : tooltip !== undefined ? tooltip : iconOnly ? a11y['aria-label'] : null;
+  if (!tip || inTooltip) return el;
+  return /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+    content: shortcut ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, tip, ' ', /*#__PURE__*/_react.default.createElement(_Kbd.Kbd, null, (0, _hotkey.hotkeyLabel)(shortcut))) : tip
+  }, el);
+});
+
+/* ButtonGroup: joined buttons that act as a set (Import | Export). For one choice from several, use SegmentedControl. */
+function ButtonGroup({
+  label,
+  className,
+  children,
+  ...rest
+}) {
+  // its buttons meet: each passes on which of its sides is joined (the later button's start edge is the seam)
+  const all = _react.default.Children.toArray(children).filter(_react.default.isValidElement);
+  return /*#__PURE__*/_react.default.createElement("div", _extends({
+    role: "group",
+    "aria-label": label,
+    className: (0, _cx.cx)('plx-button-group', className)
+  }, rest), all.map((el, i) => /*#__PURE__*/_react.default.cloneElement(el, {
+    joined: {
+      start: i > 0 ? 'seam' : undefined,
+      end: i < all.length - 1 ? 'square' : undefined
+    }
+  })));
+}
+  } },
+  "platform/utils/scrollLock.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.isScrollLocked = isScrollLocked;
+exports.lockScroll = lockScroll;
+exports.scrollLockCount = scrollLockCount;
+exports.useScrollLock = useScrollLock;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · scroll lock (platform/utils/scrollLock.js): stops a scroll container scrolling while a modal layer covers it.
+   Summary: lockScroll(target) locks the page (the html element) or one scroll container and returns the function that
+     releases it; useScrollLock(active, ref) does the same for as long as a component asks. Locks are counted per target,
+     so nested modals release the page only when the last one closes.
+   Usage:
+     import { useScrollLock, lockScroll } from 'plenix-platform';
+     useScrollLock(open);                          // the page, while open
+     useScrollLock(open, listRef);                 // one scroll container
+     const release = lockScroll(); … release();    // outside React
+   Props:
+     lockScroll(target?): target is an element (default document.documentElement); returns release(), safe to call twice
+     useScrollLock(active, ref?): locks while active is true; ref (a React ref) names the container, else the page
+     isScrollLocked(target?): true while the target holds a lock
+     scrollLockCount(target?): how many locks the target holds
+   Behavior:
+     A locked target carries data-plx-scroll-lock="locked" and system/scroll-lock.css stops it scrolling: overflow hidden in
+     both directions, the scrollbar's space kept (scrollbar-gutter: stable) so nothing shifts, overscroll contained. The
+     scroll position is not touched, so it is exactly where it was when the lock is released. Content inside the modal
+     scrolls as usual.
+   Notes:
+     Only for modal layers (Dialog, a modal drawer or sheet, a full-screen overlay): never for menus, popovers, tooltips or
+     toasts. Pair it with the modal's focus trap (utils/layer.js) so assistive technology also stays inside. */
+
+const ATTR = 'data-plx-scroll-lock';
+const counts = new Map();
+const pageOf = target => target || (typeof document !== 'undefined' ? document.documentElement : null);
+function lockScroll(target) {
+  const el = pageOf(target);
+  if (!el) return () => {};
+  const n = (counts.get(el) || 0) + 1;
+  counts.set(el, n);
+  if (n === 1) el.setAttribute(ATTR, 'locked');
+  let released = false;
+  return function release() {
+    if (released) return;
+    released = true;
+    const left = (counts.get(el) || 1) - 1;
+    if (left > 0) {
+      counts.set(el, left);
+      return;
+    }
+    counts.delete(el);
+    el.removeAttribute(ATTR);
+  };
+}
+function isScrollLocked(target) {
+  return (counts.get(pageOf(target)) || 0) > 0;
+}
+function scrollLockCount(target) {
+  return counts.get(pageOf(target)) || 0;
+}
+function useScrollLock(active, ref) {
+  _react.default.useEffect(() => {
+    if (!active) return undefined;
+    if (ref && !ref.current) return undefined;
+    return lockScroll(ref ? ref.current : undefined);
+  }, [active, ref]);
+}
+  } },
+  "platform/utils/layer.js": { deps: {"react":null,"./scrollLock.js":"platform/utils/scrollLock.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.focusables = focusables;
+exports.useLayer = useLayer;
+exports.useUid = useUid;
+var _react = _interopRequireDefault(require("react"));
+var _scrollLock = require("./scrollLock.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · layers (platform/utils/layer.js). Internal; not part of the public API.
+   Every open menu, dialog, drawer and media viewer is a layer. Escape closes only the topmost layer, so Escape in a menu
+   inside a dialog closes the menu first. A modal layer also keeps Tab inside itself, locks page scroll, moves focus in
+   when it opens (initialFocus: a ref, or a function that returns the element) and returns focus to the element that opened it when it closes. */
+
+const stack = [];
+const FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]):not([type="hidden"]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+function focusables(root) {
+  if (!root) return [];
+  return Array.prototype.filter.call(root.querySelectorAll(FOCUSABLE), el => !el.closest('[hidden]') && el.getClientRects().length > 0);
+}
+function useLayer(ref, open, {
+  modal = false,
+  onEscape,
+  initialFocus
+} = {}) {
+  const escape = _react.default.useRef(onEscape);
+  escape.current = onEscape;
+  _react.default.useEffect(() => {
+    if (!open) return undefined;
+    const entry = {
+      modal
+    };
+    stack.push(entry);
+    const opener = document.activeElement;
+    // a modal layer stops the page scrolling with the shared scroll lock (utils/scrollLock.js: counted, so stacked layers
+    // release the page only when the last one closes; system/scroll-lock.css keeps the scrollbar's space)
+    const release = modal ? (0, _scrollLock.lockScroll)() : null;
+    if (modal) {
+      const root = ref.current;
+      const wanted = typeof initialFocus === 'function' ? initialFocus() : initialFocus && initialFocus.current;
+      const first = wanted || focusables(root)[0] || root;
+      if (first) first.focus({
+        preventScroll: true
+      });
+    }
+    const onKey = e => {
+      if (stack[stack.length - 1] !== entry) return;
+      if (e.key === 'Escape') {
+        if (escape.current) {
+          e.preventDefault();
+          e.stopPropagation();
+          escape.current();
+        }
+        return;
+      }
+      if (!modal || e.key !== 'Tab') return;
+      const root = ref.current;
+      const items = focusables(root);
+      if (!items.length) {
+        e.preventDefault();
+        root.focus();
+        return;
+      }
+      const first = items[0],
+        last = items[items.length - 1],
+        active = document.activeElement;
+      if (!root.contains(active)) {
+        e.preventDefault();
+        first.focus();
+      } else if (e.shiftKey && (active === first || active === root)) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener('keydown', onKey, true);
+    return () => {
+      document.removeEventListener('keydown', onKey, true);
+      stack.splice(stack.indexOf(entry), 1);
+      if (release) release();
+      if (modal) {
+        if (opener && opener.focus && document.contains(opener)) opener.focus({
+          preventScroll: true
+        });
+      }
+    };
+  }, [open]);
+}
+function useUid(prefix) {
+  return prefix + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
+}
+  } },
+  "platform/components/Text/Text.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/digits.js":"platform/utils/digits.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Text = Text;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _cx = require("../../utils/cx.js");
+var _layer = require("../../utils/layer.js");
+var _Button = require("../Button/Button.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _digits = require("../../utils/digits.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Text
+   Summary: A run of text in one of the system's text roles, from the type tokens.
+   Usage:
+     <Text variant="secondary" as="p" truncate>Last edited 2 days ago</Text>
+     <Text variant="display" as="h1">1,284 assets</Text>
+     <Text as="p" lines={3} expandable>A long description…</Text>
+     <Text variant="secondary" tabular>12:40</Text>
+   Props:
+     variant: the text role: "body" (default) | "secondary" | "caption" | "data" | "label" | "strong" | "heading"
+       | "accent" (a highlighted term, step number or key figure: the accent color) | "success" (a good outcome, the new value in a change)
+       | "eyebrow" | "danger" | "link" | "title" | "display" | "lead".
+       body: the UI text. secondary: muted, 12px (counts, hints, descriptions). caption: subtle, 11px.
+       data: the data font, Reddit Mono, for technical values (IDs, file names and paths, versions, dates and
+       times, sizes, counts, durations); 12px on its own, the size of the text around it inside other text.
+       label: semibold 12px. strong: semibold, the current size.
+       heading: a group's title inside a page or dialog, semibold 13px.
+       eyebrow: a small uppercase title over a tool panel, 11px, bold, widest spacing, muted.
+       danger: the danger color (a required marker). link: the link color, normal weight (the color only: a link is the Link component).
+       title: a page title, the heading font, 20px, bold.
+       display: the largest style, for one key figure or a sign-in or welcome heading: the heading font at the top
+         step of the type scale, semibold, with a tight line height and letter spacing (library wave 2).
+       lead: body text one step up (15px) with a relaxed line height, for the opening paragraph of a page or an
+         empty state (body-lg; library wave 2).
+     as: the element; "span" (default) | "p" | "div" | "h1"–"h4" | "dt" | "dd" | "label" | …
+     truncate: one line, cut with an ellipsis; default false (lines wins when both are set)
+     lines: 2 | 3 | 4: at most that many lines, the last one cut with an ellipsis (line clamp); default none
+     expandable: with lines, a "Show more" button under the text while it is cut; it shows the rest and reads
+       "Show less" to fold it again; default false
+     defaultExpanded: an expandable text starts unfolded; default false
+     tabular: digits of equal width (tabular figures), so numbers line up down a column and do not shift as they
+       change; default false
+     strings: the words of the expand button: { more: 'Show more', less: 'Show less' }
+     className: more classes on the text
+     children: the text
+     ...rest: other attributes go on the element
+   Behavior:
+     lines clamps with the line-clamp property; the whole text stays in the page, so search, copy and screen readers
+       get all of it.
+     expandable measures the text: the button shows only while the text is cut (and while it is unfolded). It is a
+       button with aria-expanded that points at the text (aria-controls); it measures again when the width changes.
+     display and lead are type styles only: the element (as) gives the heading level.
+   Notes:
+     Applications never set a font, size, weight or color themselves.
+     There are no margins in any case, whatever the element.
+     The expand button has the look of ShowMore (CollapsibleSection): the smallest button, its chevron after the
+       label, down to show more and up to show less.
+*/
+const LINES = [2, 3, 4];
+const STRINGS = {
+  more: 'Show more',
+  less: 'Show less'
+};
+
+// a text's classes: its role, how it overflows (one line, or at most `clamp` lines while folded) and its figures
+const textClass = (variant, truncate, clamp, open, tabular, className) => (0, _cx.cx)('plx-text', 'plx-text--' + variant, truncate && !clamp && 'plx-text--truncate', clamp && !open && 'plx-text--lines-' + clamp, tabular && 'plx-text--tabular', className);
+
+// the digits of a text's strings: Arabic-Indic in an Arabic page, emails and web addresses kept (owner, arabic-digits-35)
+const shownDigits = (children, digits) => digits === 'arab' ? _react.default.Children.map(children, c => typeof c === 'string' || typeof c === 'number' ? (0, _digits.localDigits)(String(c), {
+  digits
+}) : c) : children;
+function Text({
+  as: As = 'span',
+  variant = 'body',
+  truncate = false,
+  lines,
+  expandable = false,
+  defaultExpanded = false,
+  tabular = false,
+  strings,
+  className,
+  children,
+  ...rest
+}) {
+  (0, _devWarn.devWarn)('Text', {
+    variant
+  }, {
+    variant: ['body', 'secondary', 'caption', 'data', 'label', 'strong', 'heading', 'accent', 'success', 'eyebrow', 'danger', 'link', 'title', 'display', 'lead']
+  });
+  const digits = (0, _LocaleProvider.useDigits)();
+  const clamp = LINES.indexOf(Number(lines)) >= 0 ? Number(lines) : null;
+  if (expandable && clamp) {
+    return /*#__PURE__*/_react.default.createElement(ExpandableText, {
+      As: As,
+      variant: variant,
+      clamp: clamp,
+      defaultExpanded: defaultExpanded,
+      tabular: tabular,
+      strings: strings,
+      className: className,
+      rest: rest
+    }, children);
+  }
+  return /*#__PURE__*/_react.default.createElement(As, _extends({
+    dir: "auto",
+    className: textClass(variant, truncate, clamp, false, tabular, className)
+  }, rest), shownDigits(children, digits));
+}
+
+// a clamped text and its Show more button: the button shows while the text is cut, and while it is unfolded
+function ExpandableText({
+  As,
+  variant,
+  clamp,
+  defaultExpanded,
+  tabular,
+  strings,
+  className,
+  rest,
+  children
+}) {
+  const own = (0, _layer.useUid)('plx-text');
+  const id = rest.id || own;
+  const ref = _react.default.useRef(null);
+  const [open, setOpen] = _react.default.useState(defaultExpanded);
+  const [cut, setCut] = _react.default.useState(false);
+  _react.default.useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el || open) return undefined;
+    const measure = () => setCut(el.scrollHeight > el.clientHeight);
+    measure();
+    if (typeof ResizeObserver === 'undefined') return undefined;
+    const watch = new ResizeObserver(measure);
+    watch.observe(el);
+    return () => watch.disconnect();
+  }, [open, children]);
+  const words = Object.assign({}, STRINGS, strings);
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-text-expand"
+  }, /*#__PURE__*/_react.default.createElement(As, _extends({
+    dir: "auto"
+  }, rest, {
+    ref: ref,
+    id: id,
+    className: textClass(variant, false, clamp, open, tabular, className)
+  }), children), open || cut ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "2xs",
+    iconEnd: open ? 'chevron-up' : 'chevron-down',
+    "aria-expanded": open,
+    "aria-controls": id,
+    onClick: () => setOpen(!open)
+  }, open ? words.less : words.more) : null);
+}
+  } },
+  "platform/components/VoteTally/VoteTally.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.VoteTally = VoteTally;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Avatar = require("../Avatar/Avatar.jsx");
+var _Badge = require("../Badge/Badge.jsx");
+var _Button = require("../Button/Button.jsx");
+var _Text = require("../Text/Text.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · VoteTally
+   Summary: A live vote: the members as a list, each with an avatar, the name and role, and three icon-only choices
+     (Approve, Deny, Abstain); a turned-off member's lock badge in place of the choices; the totals, the quorum and the
+     result under the list (owner, vote-live-36, vote-screen-36/37; the vote kit's shapes, packages/vote-kit).
+   Usage:
+     <VoteTally label="Motion 14: approve the 2027 budget" members={event.members} outcome={event.outcome}
+       settings={event.settings} status={event.status} onVote={(memberId, option) => put(memberId, option)} />
+   Props:
+     label: the vote's name (the list's accessible name) (required)
+     members: [{ memberId, name, role, picture, disabledReason, vote: "approve" | "deny" | "abstain" | null, voteHidden }]
+       (the kit's member shape; disabledReason "Recused", "Absent" … turns the member off; voteHidden: the service holds
+       this member's choice back from the viewer)
+     outcome: { approve, deny, abstain, notVoted, turnedOff, present, quorum: { needed, present, met }, result } from the
+       kit's counting; without it the part counts the three choices itself and shows no quorum or result
+     settings: the vote's settings: labels { approve, deny, abstain, turnedOff } (the choices' words), liveVisibility
+       ("totals" | "hidden-until-closed": the words shown for a held-back vote), changeVote ("final": a cast vote cannot be
+       cleared)
+     status: "open" (default) | "closed": closed, every choice is read-only
+     readOnly: the choices only show the votes (default false)
+     connection: "live" (default) | "reconnecting": while reconnecting a badge says so and the choices are read-only, so
+       no vote is sent blind; the last totals stay
+     onVote(memberId, option): a choice pressed; option null when the chosen one is pressed again (unless changeVote is
+       "final")
+     strings: the words, for other languages (default: the locale's voteTally words, through LocaleProvider; the settings'
+       labels win for the three choices)
+     className: more classes on the section
+   Behavior:
+     Each member's choices are a group named "Vote of <name>": three toggle buttons (aria-pressed), each with its name and
+       tooltip. The chosen one fills green, red or gray (Button tone); the others are plain buttons. While the choices are
+       read-only (closed, readOnly, reconnecting) the chosen one keeps its color and the others are disabled.
+     The totals show only the counts they are given: a vote that holds the choices back sends none for the three.
+     A turned-off member shows a Badge with a lock and the reason, and is counted nowhere.
+     A held-back vote (voteHidden) shows "Hidden until the vote closes" or "Totals only" in place of the choices.
+     The totals row is a polite live region: a new result is announced.
+     A row whose vote changes (a live update or a press) flashes once: its tint fades back. Not on the first render; under
+       reduced motion there is no flash.
+     Narrow (under the stack width): the name and role above the choices.
+   Notes:
+     The part draws; it does not count the quorum or the result (the kit's rules do, the same function in the service).
+     Every value is a --plx-comp-vote-tally-* token; the colors are Button's tone and Badge's.
+*/
+
+const OPTIONS = [['approve', 'check', 'success'], ['deny', 'close', 'danger'], ['abstain', 'remove', 'neutral']];
+const RESULT_TONE = {
+  open: 'neutral',
+  passing: 'active',
+  failing: 'action-required',
+  passed: 'success',
+  failed: 'negative',
+  tied: 'waiting',
+  'no-quorum': 'waiting'
+};
+const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] === undefined || v[k] === null ? m : v[k]);
+
+// the three counts when the app gives no outcome: only the members who are not turned off
+function countOf(members) {
+  const c = {
+    approve: 0,
+    deny: 0,
+    abstain: 0,
+    notVoted: 0,
+    turnedOff: 0
+  };
+  members.forEach(m => {
+    if (m.disabledReason) c.turnedOff += 1;else if (m.vote && c[m.vote] !== undefined) c[m.vote] += 1;else if (!m.voteHidden) c.notVoted += 1;
+  });
+  return c;
+}
+function VoteTally({
+  label,
+  members = [],
+  outcome,
+  settings = {},
+  status = 'open',
+  readOnly = false,
+  connection = 'live',
+  onVote,
+  strings,
+  className
+}) {
+  // the words: the locale's voteTally section (platform/i18n), then the strings prop, then the vote's own labels for the choices
+  const base = (0, _LocaleProvider.useStrings)('voteTally', strings);
+  const t = Object.assign({}, base, settings.labels || {});
+  const words = base.result || {};
+  const o = outcome || countOf(members);
+  const locked = readOnly || status === 'closed' || connection === 'reconnecting' || typeof onVote !== 'function';
+  const hiddenText = settings.liveVisibility === 'totals' ? t.totalsOnly : t.hiddenUntilClosed;
+  const choose = (m, option) => {
+    if (!locked) onVote(m.memberId, m.vote === option && settings.changeVote !== 'final' ? null : option);
+  };
+  // a row whose vote changed since the last render flashes once (not on the first render); the class goes when it ends
+  const before = _react.default.useRef(null),
+    [changed, setChanged] = _react.default.useState(() => new Set());
+  _react.default.useEffect(() => {
+    const now = new Map(members.map(m => [m.memberId, (m.vote || '') + '|' + (m.disabledReason || '') + '|' + (m.voteHidden ? 1 : 0)]));
+    if (before.current) {
+      const ids = [...now].filter(([id, v]) => before.current.has(id) && before.current.get(id) !== v).map(([id]) => id);
+      // under reduced motion there is no flash, so no row is marked (a 0s animation may not report its end)
+      const still = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (ids.length && !still) setChanged(s => new Set([...s, ...ids]));
+    }
+    before.current = now;
+  }, [members]);
+  const settled = id => setChanged(s => {
+    if (!s.has(id)) return s;
+    const n = new Set(s);
+    n.delete(id);
+    return n;
+  });
+  return /*#__PURE__*/_react.default.createElement("section", {
+    className: (0, _cx.cx)('plx-vote-tally', className),
+    "aria-label": label
+  }, /*#__PURE__*/_react.default.createElement("ul", {
+    className: "plx-vote-tally__list"
+  }, members.map(m => /*#__PURE__*/_react.default.createElement("li", {
+    key: m.memberId,
+    className: (0, _cx.cx)('plx-vote-tally__member', changed.has(m.memberId) && 'is-changed'),
+    onAnimationEnd: changed.has(m.memberId) ? () => settled(m.memberId) : undefined
+  }, /*#__PURE__*/_react.default.createElement(_Avatar.Avatar, {
+    name: m.name,
+    src: m.picture || undefined
+  }), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-vote-tally__who"
+  }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "strong"
+  }, m.name), m.role ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "secondary"
+  }, m.role) : null), m.disabledReason ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "neutral",
+    icon: "lock"
+  }, m.disabledReason + ' (' + t.turnedOff + ')') : m.voteHidden ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "neutral",
+    icon: "visibility-off"
+  }, hiddenText) : /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-vote-tally__choices",
+    role: "group",
+    "aria-label": fill(t.voteOf, {
+      name: m.name
+    })
+  }, OPTIONS.map(([option, icon, tone]) => /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    key: option,
+    iconOnly: true,
+    icon: icon,
+    label: t[option],
+    tone: tone,
+    pressed: m.vote === option,
+    disabled: locked && m.vote !== option,
+    onClick: () => choose(m, option)
+  })))))), /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-vote-tally__totals",
+    "aria-live": "polite"
+  }, o.approve !== undefined ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "success",
+    icon: "check"
+  }, t.approve + ' ' + o.approve) : null, o.deny !== undefined ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "negative",
+    icon: "close"
+  }, t.deny + ' ' + o.deny) : null, o.abstain !== undefined ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "neutral",
+    icon: "remove"
+  }, t.abstain + ' ' + o.abstain) : null, o.notVoted !== undefined ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "waiting",
+    icon: "schedule"
+  }, t.notVoted + ' ' + o.notVoted) : null, o.turnedOff ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "neutral",
+    icon: "lock"
+  }, t.turnedOff.charAt(0).toUpperCase() + t.turnedOff.slice(1) + ' ' + o.turnedOff) : null, o.result ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: RESULT_TONE[o.result] || 'neutral',
+    icon: o.result === 'passed' || o.result === 'passing' ? 'check' : 'schedule'
+  }, words[o.result] || o.result) : null, connection === 'reconnecting' ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
+    tone: "waiting",
+    icon: "schedule"
+  }, t.reconnecting) : null, o.quorum && o.quorum.needed ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "secondary",
+    className: "plx-vote-tally__quorum"
+  }, fill(t.quorum, {
+    present: o.quorum.present,
+    needed: o.quorum.needed,
+    state: o.quorum.met ? t.met : t.notMet
+  })) : null));
+}
+  } },
+  "platform/components/Count/Count.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Count = Count;
+var _react = _interopRequireDefault(require("react"));
+var _devWarn = require("../../utils/devWarn.js");
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Count
+   Summary: A number shown on its own.
+   Usage:
+     <Count value={24} />
+     <Count variant="pill" value={unread} max={99} label={unread + ' unread notifications'} />
+   Props:
+     value: the number; with no value nothing renders
+     variant: "plain" (default; muted tabular figures, e.g. a list row's item count) | "pill" (a 16px soft pill for unread
+       or pending counts: the status pill look, shade 100 background, shade 300 border, dark text, 4px corners)
+     tone: the pill color: "neutral" (gray) | "info" (blue) | "success" (green) | "warning" (yellow) | "danger" (red;
+       default), on the same roles as Badge's neutral, active, success, waiting and negative
+     max: above it the count shows max + "+" (e.g. "99+")
+     label: the accessible name when the number alone is unclear ("3 unread notifications")
+     moreThan: what screen readers hear for a capped count without a label (default "More than {max}")
+     className: more classes on the count
+   Notes:
+     Other props pass through to the <span>.
+*/
+function Count({
+  value,
+  max,
+  variant = 'plain',
+  tone = 'danger',
+  label,
+  moreThan = 'More than {max}',
+  className,
+  ...rest
+}) {
+  (0, _devWarn.devWarn)('Count', {
+    variant,
+    tone
+  }, {
+    variant: ['plain', 'pill'],
+    tone: ['info', 'success', 'warning', 'danger', 'neutral']
+  });
+  if (value === null || value === undefined || value === '') return null;
+  const shown = typeof max === 'number' && Number(value) > max ? max + '+' : String(value);
+  return /*#__PURE__*/_react.default.createElement("span", _extends({
+    className: (0, _cx.cx)('plx-count', 'plx-count--' + variant, variant === 'pill' ? 'plx-count--' + tone : null, className),
+    "aria-label": label || (typeof max === 'number' && Number(value) > max ? moreThan.replace('{max}', String(max)) : undefined)
+  }, rest), shown);
 }
   } },
   "platform/components/Card/Card.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -1753,23 +8067,6 @@ function MediaCard({
   }), card);
 }
   } },
-  "platform/utils/tokenTime.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.tokenMs = tokenMs;
-// Plenix · tokenMs: a duration token's value in milliseconds ("4s", "250ms"), read from the element (or the root), so
-// behavior that waits (a toast leaving, a delay) takes its time from the tokens like the stylesheets do (batch 341).
-// Returns the fallback when the token is not set (no document, or the token stylesheet not loaded).
-function tokenMs(name, fallback = 0, el) {
-  if (typeof document === 'undefined') return fallback;
-  const v = getComputedStyle(el || document.documentElement).getPropertyValue(name).trim();
-  const m = /^(-?[\d.]+)(ms|s)$/.exec(v);
-  return m ? parseFloat(m[1]) * (m[2] === 's' ? 1000 : 1) : fallback;
-}
-  } },
   "platform/utils/announce.jsx": { deps: {"react":null,"./cx.js":"platform/utils/cx.js","./tokenTime.js":"platform/utils/tokenTime.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -1789,10 +8086,12 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Usage:
      announce('12 results');                               // polite: waits until the reader is idle
      announce('Couldn’t save. Check your connection.', { politeness: 'assertive' });   // interrupts: urgent errors only
+     announce('Asset moved. Undo', { queue: true });       // every one is heard: a burst is read joined, in order (Toast)
      <LiveRegion kind="status">{saved ? 'Saved' : ''}</LiveRegion>
      <LiveRegion kind="log" visible>{lines.map((l) => <div key={l.id}>{l.text}</div>)}</LiveRegion>
    Props:
-     announce(text, { politeness }): politeness "polite" (default) or "assertive"; the same text twice is spoken twice
+     announce(text, { politeness, queue }): politeness "polite" (default) or "assertive"; the same text twice is spoken
+       twice; queue (default false): the message is never replaced, and it replaces nothing
      LiveRegion.kind: "polite" (default; aria-live="polite"), "assertive" (aria-live="assertive"), "status"
        (role="status": a polite advisory such as a count or a save) or "log" (role="log": new lines are read, old ones stay)
      LiveRegion.visible: show the region's text on screen (default false: read by screen readers only)
@@ -1802,6 +8101,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Behavior:
      The page-wide regions are created on the first announce(), once per page, at the end of <body>, and are never removed.
      Each message replaces the last after a short pause (--plx-sys-live-region-delay), so rapid updates are read once, in their final state.
+     A queued message is never replaced and replaces nothing; a plain message replaces only the plain one before it. The
+       messages of one pause are read together, in the order they came, joined as sentences ("Saved. Asset moved. Undo.
+       File deleted. Undo").
      A LiveRegion is in the page from its first render; screen readers only read changes made after it appeared.
    Notes:
      Not when focus already moves to the new content (a dialog, an error summary): that is announced by the focus itself.
@@ -1810,6 +8112,13 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
 */
 const regions = {};
 const pending = {};
+const waiting = {
+  polite: [],
+  assertive: []
+}; // the messages of the current pause: { text, queue }
+
+// sentences joined: a period between two messages unless the first already ends a sentence
+const joinMessages = list => list.reduce((all, t) => !all ? t : all + (/[.!?…]$/.test(all) ? ' ' : '. ') + t, '');
 
 // the page-wide region for one politeness (made once, visually hidden)
 function region(politeness) {
@@ -1825,17 +8134,27 @@ function region(politeness) {
   return el;
 }
 function announce(text, {
-  politeness = 'polite'
+  politeness = 'polite',
+  queue = false
 } = {}) {
   if (typeof document === 'undefined' || !document.body) return;
   const p = politeness === 'assertive' ? 'assertive' : 'polite';
   const el = region(p);
+  // a plain message replaces only the plain one before it in this pause; a queued one never replaces anything
+  const t = String(text || '');
+  const kept = pending[p] ? queue ? waiting[p] : waiting[p].filter(m => m.queue) : [];
+  waiting[p] = kept.concat({
+    text: t,
+    queue
+  });
   // clear first, then write in the next frame: the same text twice is still a change, and a burst is read once
   el.textContent = '';
   if (pending[p]) clearTimeout(pending[p]);
   pending[p] = setTimeout(() => {
     pending[p] = null;
-    el.textContent = String(text || '');
+    const list = waiting[p].map(m => m.text).filter(Boolean); // in the order they came
+    waiting[p] = [];
+    el.textContent = joinMessages(list);
   }, (0, _tokenTime.tokenMs)('--plx-sys-live-region-delay'));
 }
 const KINDS = {
@@ -2801,7 +9120,7 @@ function scaleTime({
     for (let i = 0; x.getTime() <= hi && i < 1000; i++, x = addTo(x, unit, amount)) out.push(new Date(x.getTime()));
     return out;
   };
-  scale.format = (v, n = count, o = {}) => new Intl.DateTimeFormat(o.locale || (0, _format.formatLocale)(), TIME_LABELS[timeStep(d[1] - d[0], n)[0]]).format(new Date(toTime(v)));
+  scale.format = (v, n = count, o = {}) => new Intl.DateTimeFormat((0, _format.numeralLocale)(o.locale || (0, _format.formatLocale)()), TIME_LABELS[timeStep(d[1] - d[0], n)[0]]).format(new Date(toTime(v)));
   scale.domain = () => d.map(t => new Date(t));
   scale.range = () => r.slice();
   scale.type = 'time';
@@ -2811,42 +9130,40 @@ function seriesColor(index) {
   return (0, _dataviz.datavizCategory)(index);
 }
   } },
-  "platform/utils/vendorBase.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "platform/utils/engines.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.vendorBase = vendorBase;
-/* Plenix · vendorBase
-   Summary: Resolves the shared vendor folder for optional engines.
-   Usage: vendorBase() + the engine path.
-   Props: window.PlenixVendorBase overrides the Platform script or versioned package URL.
-   Behavior: Captures the script address while the module runs; falls back to the package CDN.
-   Notes: Shared URL resolution only; loads no engine. */
-// the Platform script's own address, read while the bundle runs (document.currentScript is gone afterwards)
-const SCRIPT = typeof document !== 'undefined' && document.currentScript ? document.currentScript.src : '';
-
-// the same, found among the page's scripts when the bundle ran its modules later
-function platformScript() {
-  if (SCRIPT) return SCRIPT;
-  const s = Array.from(document.scripts).map(x => x.src).find(src => /\/(dist\/platform|plenix(\.global)?)(\.min)?\.js(\?|$)/.test(src));
-  return s || '';
-}
-
-// the vendor folder: the repository's
-// platform/dist/platform.js finds it at platform/vendor/; every other copy of the script has it beside itself (the CDN's
-// plenix.js: ./vendor/; the npm package's dist/plenix.global.js: dist/vendor/, where build-packages.js puts it)
-function vendorBase() {
-  if (typeof window !== 'undefined' && window.PlenixVendorBase) return String(window.PlenixVendorBase).replace(/\/?$/, '/');
-  const src = platformScript();
-  if (src) return new URL(/\/dist\/platform(\.min)?\.js(\?.*)?$/.test(src) ? '../vendor/' : './vendor/', src).href;
-  // the npm package: build-packages.js defines this release's CDN vendor folder (versioned, never changes)
-  if (typeof __PLENIX_VENDOR__ !== 'undefined') return __PLENIX_VENDOR__; // eslint-disable-line no-undef
-  return 'platform/vendor/';
+exports.engine = engine;
+/* Plenix · engines (platform/utils/engines.js)
+   Summary: Asks the page's engines script (platform/engines/plenix-engines.js) for an optional engine: rich text, charts or PDF.
+   Usage: engine('tiptap', win).then((T) => …); engine('echarts', win); engine('pdf').then(({ module, worker }) => …)
+   Behavior: Resolves with what the page's window.PlenixEngines gives. When the page has no engines script, rejects with a plain
+     message that says so, and writes it once to the console (the editor, chart or document shows its own failure state); nothing is loaded from anywhere else.
+   Notes: Internal; not part of the public API. plenix.js holds no engine address and injects no script (bundle rules P-38, P-45). */
+const WHAT = {
+  tiptap: 'The rich-text engine',
+  echarts: 'The chart engine',
+  pdf: 'The PDF engine'
+};
+const told = new Set();
+function engine(name, win) {
+  const w = typeof window !== 'undefined' ? window : null;
+  const E = win && win.PlenixEngines || w && w.PlenixEngines;
+  if (!E || typeof E[name] !== 'function') {
+    const message = WHAT[name] + ' is missing on this page: add plenix-engines.js to the page, after plenix.js.';
+    if (!told.has(name) && typeof console !== 'undefined') {
+      told.add(name);
+      console.warn('Plenix: ' + message);
+    } // once per engine
+    return Promise.reject(new Error(message));
+  }
+  return E[name](win);
 }
   } },
-  "platform/charts/echarts/engine.js": { deps: {"../../utils/vendorBase.js":"platform/utils/vendorBase.js"}, externals: {  }, run: function (module, exports, require) {
+  "platform/charts/echarts/engine.js": { deps: {"../../utils/engines.js":"platform/utils/engines.js"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2855,7 +9172,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.chartTokens = chartTokens;
 exports.loadECharts = loadECharts;
 exports.plenixTheme = plenixTheme;
-var _vendorBase = require("../../utils/vendorBase.js");
+exports.tickLineHeight = tickLineHeight;
+var _engines = require("../../utils/engines.js");
 /* Plenix · Chart engine (platform/charts/echarts/engine.js)
    Summary: How a Plenix chart draws with Apache ECharts (issue 353, owner 2026-10-26): loads the vendored engine
      (platform/vendor/echarts/echarts.min.js, window.PlenixECharts), reads the chart tokens where the chart is, and builds
@@ -2865,8 +9183,8 @@ var _vendorBase = require("../../utils/vendorBase.js");
      loadECharts().then((E) => E.init(el, plenixTheme(chartTokens(el)), { renderer: 'svg', width, height }));
      const t = chartTokens(el); t.color('categorical-2')   // a data-viz step as the color it is where el is
    Props:
-     loadECharts(win): adds the engine's script to the page once (the given window's, default this one) and resolves with
-       that window's PlenixECharts ({ init, version })
+     loadECharts(win): resolves with the given window's PlenixECharts ({ init, version }), loading it through the page's
+       engines script (platform/engines/plenix-engines.js) on first use; without that script it rejects with a plain message
      chartTokens(el): the chart tokens as the Platform's own chart classes resolve them where el is (theme, density and
        scope included): { color(step), colors, lineWidth, tick, title, axis, grid, point, separator, slice, area, dim, motion }
      plenixTheme(tokens): the ECharts theme (colors in the categorical order of seriesColor, the axis and grid lines, the
@@ -2882,34 +9200,11 @@ var _vendorBase = require("../../utils/vendorBase.js");
        are the tokens read here.
      Dark mode: the charts read the tokens again when the page's mode, theme or density changes (EChartsPlot). */
 
-const loading = new WeakMap();
 function loadECharts(win) {
   const w = win || (typeof window !== 'undefined' ? window : null);
   if (!w) return Promise.reject(new Error('ECharts needs a browser'));
   if (w.PlenixECharts) return Promise.resolve(w.PlenixECharts);
-  if (loading.has(w)) return loading.get(w);
-  const doc = w.document;
-  const p = new Promise((resolve, reject) => {
-    const script = doc.createElement('script');
-    script.src = (0, _vendorBase.vendorBase)() + 'echarts/echarts.min.js';
-    script.async = true;
-    script.setAttribute('data-plx-vendor', 'echarts');
-    script.onload = () => {
-      if (w.PlenixECharts) resolve(w.PlenixECharts);else {
-        loading.delete(w);
-        script.remove();
-        reject(new Error('ECharts did not load from ' + script.src));
-      }
-    };
-    script.onerror = () => {
-      loading.delete(w);
-      script.remove();
-      reject(new Error('ECharts could not be loaded from ' + script.src));
-    };
-    doc.head.appendChild(script);
-  });
-  loading.set(w, p);
-  return p;
+  return (0, _engines.engine)('echarts', w);
 }
 const NS = 'http://www.w3.org/2000/svg';
 const num = v => parseFloat(v) || 0;
@@ -2918,6 +9213,26 @@ const ms = v => {
   const s = String(v).trim();
   return /ms$/.test(s) ? num(s) : /s$/.test(s) ? num(s) * 1000 : num(s);
 };
+
+// a tick label's line height (owner, arabic-font-35; issue 413): the font size, unless a label is in a script whose letters
+// reach below it (Arabic); then the deepest such label, measured, so ECharts keeps room for it under the axis. Latin labels
+// are never measured, so their charts do not change.
+const DEEP_SCRIPT = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
+function tickLineHeight(t, texts) {
+  const size = t.tick.fontSize,
+    deep = (texts || []).map(String).filter(x => DEEP_SCRIPT.test(x));
+  if (!deep.length || typeof document === 'undefined') return size;
+  const ctx = document.createElement('canvas').getContext('2d');
+  if (!ctx) return size;
+  ctx.font = (t.tick.fontWeight || 400) + ' ' + size + 'px ' + t.tick.fontFamily;
+  ctx.textBaseline = 'top';
+  let h = size;
+  for (const x of deep) {
+    const m = ctx.measureText(x);
+    h = Math.max(h, Math.ceil(m.actualBoundingBoxDescent - Math.min(0, -m.actualBoundingBoxAscent)));
+  }
+  return h;
+}
 function chartTokens(where) {
   const doc = where.ownerDocument,
     win = doc.defaultView;
@@ -3005,7 +9320,9 @@ function chartTokens(where) {
     // the gap between a tick label and its axis, and the room above the plot (half the top tick label)
     tickOffset: len(prop('--plx-comp-chart-axis-tick-offset')),
     top: len(prop('--plx-comp-chart-margin-block-start')),
-    rtl: host.direction === 'rtl',
+    // the page's writing direction from the dir attribute (:dir), not the computed direction: the engine element itself
+    // is drawn left to right (system/charts.css) so the engine's anchors hold, and the chart mirrors through its options
+    rtl: typeof where.matches === 'function' && where.matches(':dir(rtl)'),
     // a sparkline's own look (its color follows the sparkline's data-viz step, where it is)
     sparkline: {
       color: cs(spark.line).stroke,
@@ -3661,240 +9978,6 @@ Metric.Group = function MetricGroup({
   }, c) : null));
 };
   } },
-  "platform/components/StatusDot/StatusDot.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.StatusDot = StatusDot;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
-var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
-var _Icon = require("../Icon/Icon.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · StatusDot
-   Summary: A 6px dot that marks a state (active, paused, priority), or a person's availability (online, away, busy, do
-     not disturb, offline) in the Status colors.
-   Usage:
-     <StatusDot tone="success" label="Active" />
-     <StatusDot tone="busy" label="Busy" />
-     <StatusDot tone="dnd" size="md" icon label="Do not disturb" />
-     <StatusDot tone="away" size="md" icon label="Away" />
-   Props:
-     tone: "neutral" (default) | "info" | "success" | "warning" | "danger"; for a person's availability (the presence
-       roles of the Status colors, library wave 4): "online" | "away" | "busy" | "dnd" (do not disturb) |
-       "offline"
-     size: "sm" (default, 6px) | "md" (12px) | "lg" (16px): the larger dots carry a glyph (icon) and sit on an avatar
-     icon: draws the availability's shape inside a md or lg dot, so it never rests on color alone: online a check, away a
-       clock, busy a solid dot with nothing cut out, do not disturb a minus (remove), offline a cross; busy and do not
-       disturb share a color and differ by shape (default false; presence tones only)
-     label: the state in words, read by assistive technology
-     className: more classes on the dot
-     ...rest: other attributes go on the dot element
-   Behavior:
-     Without a label the dot is decorative and hidden from assistive technology.
-     The glyph is drawn in the surface color, cut out of the dot; a sm dot has no room for one and ignores icon.
-   Notes:
-     Without a label, pair the dot with visible text.
-     Avatar's presence prop draws this dot at the avatar's corner.
-*/
-const PRESENCE = ['online', 'away', 'busy', 'dnd', 'offline'];
-const GLYPHS = {
-  online: 'check',
-  away: 'clock',
-  dnd: 'remove',
-  offline: 'close-2'
-}; // busy is the solid dot: nothing cut out
-const SIZES = ['md', 'lg'];
-function StatusDot({
-  tone = 'neutral',
-  size = 'sm',
-  icon = false,
-  label,
-  className,
-  ...rest
-}) {
-  (0, _devWarn.devWarn)('StatusDot', {
-    tone,
-    size
-  }, {
-    tone: ['info', 'success', 'warning', 'danger', 'neutral', 'online', 'away', 'busy', 'dnd', 'offline'],
-    size: ['sm', 'md', 'lg']
-  });
-  const s = SIZES.indexOf(size) >= 0 ? size : null;
-  const glyph = icon && s && PRESENCE.indexOf(tone) >= 0 && GLYPHS[tone];
-  return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: (0, _cx.cx)('plx-status-dot', 'plx-status-dot--' + tone, s && 'plx-status-dot--' + s, glyph && 'plx-status-dot--glyph', className),
-    "aria-hidden": label ? undefined : true
-  }, rest), glyph ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: glyph,
-    className: "plx-status-dot__glyph"
-  }) : null, label ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, label) : null);
-}
-  } },
-  "platform/components/Avatar/Avatar.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Avatar = Avatar;
-exports.initialsOf = initialsOf;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
-var _Icon = require("../Icon/Icon.jsx");
-var _StatusDot = require("../StatusDot/StatusDot.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Avatar
-   Summary: A person's picture, or their initials, in a rounded square (never a circle), inside a 1px media border (owner,
-     2026-10-19: every avatar and picture placeholder has the same border).
-   Usage:
-     <Avatar name="Maya Chen" size="md" />
-     <Avatar name="Maya Chen" src="/people/mc.jpg" label="Maya Chen" />
-   Props:
-     name: the person's name; without a picture the avatar shows its initials, from initialsOf(name)
-     src: the URL of the person's picture; it replaces the initials
-     initials: the text to show, only when there is no name to work from
-     size: "2xs" 20px | "xs" 24px | "sm" 28px (default) | "md" 32px | "lg" 40px | "xl" 48px | "2xl" 64px; "2xs" is for inside a small control
-       (the account row in a pane footer)
-     color: the person's own color when the data has one, a data color: a hue name (blue, green, purple, red, brown, gray: the --plx-sys-data-color-<hue> tokens), set as data-plx-color; no value is written (batch 280): its soft fill with
-       its text color (otherwise the theme's avatar colors)
-     category: instead of color, a category color by name (an avatar standing for a category): the color as its fill,
-       black or white text (batch 290)
-     gender: "male" | "female": with no picture, the person-male or person-female icon on soft blue or soft pink (the
-       category palette) instead of the initials; any other value keeps the initials (owner, 2026-10-19)
-     label: the person's name for assistive technology when no visible name is nearby; without it the avatar is hidden from
-       assistive technology
-     presence: the person's availability (library wave 4): "online" | "away" | "busy" | "dnd" (do not disturb)
-       | "offline", a StatusDot at the avatar's bottom end corner in the presence roles of the Status colors, ringed in the surface color;
-       its size follows the avatar (a 6px dot up to 32px, 12px at 40 and 48px, 16px at 64px), and from 40px it carries the
-       availability's shape (a check, a clock, busy the solid dot, do not disturb a minus, a cross) so it never rests on
-       color alone
-     strings: the words of presence, for other languages: { online: "Online", away: "Away", busy: "Busy",
-       dnd: "Do not disturb", offline: "Offline" }
-     className: more classes on the avatar
-   Behavior:
-     A picture that fails to load falls back to the initials. The picture loads lazily and decodes off the main thread
-     (loading="lazy", decoding="async"), so a long list or table of avatars fetches only the ones near the view.
-     The corner and the text size follow the size.
-     Initials are the first letters of the first and last name ("Maya Chen" → MC).
-     Titles such as "Fr." or "Dr." and parenthesized parts are skipped; one word gives one letter.
-     With a label the avatar is an image (role="img") named by the label; with presence too, the name and the state ("Maya Chen, Busy").
-     Without a label the presence dot is hidden with the avatar: the page says the state in words next to it.
-   Notes:
-     Other props pass through to the <span>.
-     initialsOf(name) is also exported for pages that need the same initials.
-*/
-const SIZES = [20, 24, 28, 32, 40, 48, 64]; // the scale its classes define (plx-avatar--24 …)
-// the names pages use: 2xs 20 (inside a small control: the account row in a pane footer), xs 24, sm 28, md 32, lg 40, xl 48, 2xl 64 (numbers are rejected by the system check)
-const NAMED = {
-  '2xs': 20,
-  xs: 24,
-  sm: 28,
-  md: 32,
-  lg: 40,
-  xl: 48,
-  '2xl': 64
-};
-// presence (library wave 4): the availability tones, the dot's size for each avatar size, and the words
-const PRESENCE = ['online', 'away', 'busy', 'dnd', 'offline'];
-const DOT = {
-  20: 'sm',
-  24: 'sm',
-  28: 'sm',
-  32: 'sm',
-  40: 'md',
-  48: 'md',
-  64: 'lg'
-};
-const STRINGS = {
-  online: 'Online',
-  away: 'Away',
-  busy: 'Busy',
-  dnd: 'Do not disturb',
-  offline: 'Offline'
-};
-
-// first- and last-name initials: titles (a word ending in a period, e.g. "Fr.") and parenthesized parts are skipped
-function initialsOf(name) {
-  const words = String(name || '').replace(/\([^)]*\)/g, ' ').split(/\s+/).filter(w => w && !/\.$/.test(w) && /[A-Za-z0-9]/.test(w));
-  if (!words.length) return '';
-  const first = words[0].match(/[A-Za-z0-9]/)[0],
-    last = words.length > 1 ? words[words.length - 1].match(/[A-Za-z0-9]/)[0] : '';
-  return (first + last).toUpperCase();
-}
-const GENDER = {
-  male: {
-    tone: 'blue',
-    icon: 'person-male'
-  },
-  female: {
-    tone: 'pink',
-    icon: 'person-female'
-  }
-};
-function Avatar({
-  name,
-  src,
-  initials,
-  size = 'sm',
-  color,
-  category,
-  gender,
-  label,
-  presence,
-  strings,
-  className,
-  ...rest
-}) {
-  (0, _devWarn.devWarn)('Avatar', {
-    size
-  }, {
-    size: ['2xs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl']
-  });
-  const n = NAMED[size] || size;
-  const s = SIZES.indexOf(n) >= 0 ? n : NAMED.sm;
-  const text = name ? initialsOf(name) : initials;
-  const p = PRESENCE.indexOf(presence) >= 0 ? presence : null;
-  const words = Object.assign({}, STRINGS, strings);
-  const named = label && p ? label + ', ' + words[p] : label;
-  // a picture that fails to load falls back to the initials (batch 215)
-  const [failed, setFailed] = _react.default.useState(false);
-  _react.default.useEffect(() => {
-    setFailed(false);
-  }, [src]);
-  const picture = src && !failed;
-  const g = !picture ? GENDER[gender] : null; // no picture and a known gender: the gender icon
-  return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: (0, _cx.cx)('plx-avatar', 'plx-avatar--' + s, p && 'plx-avatar--presence', g && 'plx-avatar--gender', className),
-    "data-plx-avatar": "",
-    "data-plx-color": g ? undefined : color || undefined,
-    "data-plx-category": g ? g.tone : category || undefined,
-    role: label ? 'img' : undefined,
-    "aria-label": named,
-    "aria-hidden": label ? undefined : true
-  }, rest), picture ? /*#__PURE__*/_react.default.createElement("img", {
-    className: "plx-avatar__image",
-    src: src,
-    alt: "",
-    loading: "lazy",
-    decoding: "async",
-    onError: () => setFailed(true)
-  }) : g ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: g.icon,
-    filled: true,
-    className: "plx-avatar__gender"
-  }) : text, p ? /*#__PURE__*/_react.default.createElement(_StatusDot.StatusDot, {
-    tone: p,
-    size: DOT[s],
-    icon: DOT[s] !== 'sm',
-    className: "plx-avatar__presence"
-  }) : null);
-}
-  } },
   "platform/components/IconTile/IconTile.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -3963,1058 +10046,6 @@ function IconTile({
     size: s,
     filled: filled
   }));
-}
-  } },
-  "platform/components/Loading/Loading.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Skeleton = Skeleton;
-exports.Spinner = Spinner;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
-var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Skeleton, Spinner
-   Summary: Loading indicators. Skeleton is a placeholder block with a shimmer; Spinner is a turning ring. (The typing
-     dots are a Chat variant: Chat.Typing.)
-   Usage:
-     <Skeleton width="160px" height="16px" />
-     <Spinner size="sm" label="Saving" />
-   Props:
-     Skeleton.width: the block width, a size token's name ("200px" for --plx-ref-size-200px); none: as wide as its place
-     Skeleton.height: the block height, a size token's name ("16px")
-     Skeleton.className: more classes on the block
-     Spinner.size: "sm" | "md" (default) | "lg"
-     Spinner.label: the text announced to assistive technology (default "Loading")
-     Spinner.className: more classes on the ring
-   Behavior:
-     The Skeleton shimmer runs left to right; the block is decorative (aria-hidden).
-     Spinner is a status region (role="status"), so its label is announced.
-     People who ask their system for less motion see the indicators still.
-   Notes:
-     Other props pass through to the <span>.
-     The old text listed a radius prop for Skeleton; the code takes none (set it with a class).
-*/
-// a size token's name from "200px" (or the older "var(--plx-ref-size-200px)"); the rule per size is in system/steps.css
-const sizeName = v => v ? String(v).replace(/^var\(--plx-ref-size-|\)$/g, '') : undefined;
-function Skeleton({
-  width,
-  height,
-  className,
-  ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: (0, _cx.cx)('plx-skeleton', className),
-    "aria-hidden": "true",
-    "data-plx-width": sizeName(width),
-    "data-plx-height": sizeName(height)
-  }, rest));
-}
-function Spinner({
-  size = 'md',
-  label = 'Loading',
-  className,
-  ...rest
-}) {
-  (0, _devWarn.devWarn)('Spinner', {
-    size
-  }, {
-    size: ['sm', 'md', 'lg']
-  });
-  return /*#__PURE__*/_react.default.createElement("span", _extends({
-    className: (0, _cx.cx)('plx-spinner', 'plx-spinner--' + size, className),
-    role: "status"
-  }, rest), /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, label));
-}
-  } },
-  "platform/providers/Surface.jsx": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.SurfaceContext = void 0;
-var _react = _interopRequireDefault(require("react"));
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · SurfaceContext
-   Summary: Tells the components inside a colored surface which surface they sit on, so they take its look from their own
-     classes: no rule reaches into the surface (Styling Standard 3.6).
-   Usage:
-     <SurfaceContext.Provider value="inverse">…</SurfaceContext.Provider>
-   Props:
-     value: "inverse" (a dark surface: TeachingBubble) | "accent" (the accent AppHeader) | null (the page's own surface)
-   Behavior:
-     TeachingBubble and the accent AppHeader provide it. A Button inside takes plx-button--on-inverse or
-       plx-button--on-accent.
-     A component that draws a colored surface of its own provides it for its content.
-*/
-
-const SurfaceContext = exports.SurfaceContext = /*#__PURE__*/_react.default.createContext(null);
-  } },
-  "platform/utils/floating.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.PLACEMENTS = exports.FLOATING_POINTER = exports.FLOATING_ANCHOR = void 0;
-exports.useFloating = useFloating;
-var _react = _interopRequireDefault(require("react"));
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · useFloating
-   Summary: Places a floating element (a menu, popover, tooltip, combobox list or date picker) beside its anchor and keeps it in view: a named placement, an offset step, flip, shift, the anchor's width, or a point (a context menu at the pointer). It writes data attributes only; system/floating.css places the element, so no position is ever written as a style.
-   Usage:
-     const anchor = React.useRef(null), panel = React.useRef(null);
-     const { placement } = useFloating(anchor, panel, { open, placement: 'bottom-start' });
-     <button ref={anchor} aria-expanded={open} aria-controls="list">Sort</button>
-     {open ? <div ref={panel} id="list" popover="manual" className="plx-menu">…</div> : null}
-     useFloating(anchor, panel, { open, placement: 'bottom-start', matchWidth: true })      // a select or combobox list
-     useFloating(row, panel, { open, virtual: { x: event.clientX, y: event.clientY } })     // a context menu at the pointer
-   Props:
-     anchorRef: a ref to the element the floating element is placed against
-     floatingRef: a ref to the floating element (best in the top layer: popover="manual", or inside a Portal)
-     options.open (true): placed while open; the anchor slot is released when it closes or unmounts
-     options.placement ('bottom-start'): top | bottom | start | end (the side; start and end follow the writing direction), centered or aligned: top-start, top-end, bottom-start, bottom-end, start-top, start-bottom, end-top, end-bottom
-     options.offset ('xs'): the gap to the anchor: 'none' | 'xs' | 'sm' | 'md' (--plx-sys-floating-offset-*)
-     options.flip (true): moves to the opposite side when there is no room
-     options.shift (true): swaps the alignment (start to end) to stay in the window; a centered placement aligns to an edge
-     options.matchWidth (false): at least as wide as the anchor
-     options.virtual (null): { x, y } in window pixels (event.clientX / clientY): placed at that point, flipped and kept inside the window; the anchor is used where the browser cannot place a point
-     returns { placement (the side and alignment in use where useFloating measures it), mode: 'anchor' | 'pointer' | 'inline' }
-   Behavior:
-     anchor: with CSS anchor positioning (Chrome 125, Safari 26, Firefox 147) the browser places the element, flips and shifts it, and follows the anchor on scroll and resize: nothing is measured.
-     pointer: with typed attr() (Chrome 133) a virtual anchor is a point: useFloating measures the element, flips it to the other side of the point and keeps it --plx-sys-floating-viewport-margin inside the window, then writes the point (data-plx-floating-x / -y).
-     inline: without anchor positioning the element is placed inside the anchor's parent (data-plx-floating-host) on its side; useFloating measures the room and flips or shifts the placement. Render the element next to its anchor for this fallback.
-     The pair shares one of 16 anchor names while open (data-plx-floating-anchor / data-plx-floating), so each floating element finds its own anchor anywhere in the page.
-   Notes:
-     It positions only. Opening, Escape, focus and outside clicks are the overlay's (useLayer), the top layer is popover="manual" or Portal layer="top", and the ARIA link (aria-expanded, aria-controls, aria-describedby) is the component's.
-     Menu, Tooltip and Popover adopt it in their own tasks.
-*/
-
-const SLOTS = 16;
-const taken = new Array(SLOTS + 1).fill(false);
-const take = () => {
-  for (let i = 1; i <= SLOTS; i++) if (!taken[i]) {
-    taken[i] = true;
-    return i;
-  }
-  return 0;
-};
-const release = i => {
-  if (i) taken[i] = false;
-};
-
-// what the browser can do, checked once
-const supports = decl => typeof CSS !== 'undefined' && !!CSS.supports && CSS.supports(decl);
-const FLOATING_ANCHOR = exports.FLOATING_ANCHOR = supports('anchor-name: --plx-a');
-const FLOATING_POINTER = exports.FLOATING_POINTER = supports('inset-block-start: attr(data-plx-floating-y px, 0px)');
-const PLACEMENTS = exports.PLACEMENTS = ['top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'start', 'start-top', 'start-bottom', 'end', 'end-top', 'end-bottom'];
-const OFFSETS = {
-  none: null,
-  xs: '--plx-sys-floating-offset-xs',
-  sm: '--plx-sys-floating-offset-sm',
-  md: '--plx-sys-floating-offset-md'
-};
-const ATTRS = ['data-plx-floating', 'data-plx-floating-placement', 'data-plx-floating-offset', 'data-plx-floating-flip', 'data-plx-floating-shift', 'data-plx-floating-match', 'data-plx-floating-pointer', 'data-plx-floating-x', 'data-plx-floating-y'];
-
-// a length token in pixels (the tokens are written in rem; a custom property's computed value has its var() resolved)
-function tokenPixels(name) {
-  if (!name || typeof document === 'undefined') return 0;
-  const root = document.documentElement,
-    v = getComputedStyle(root).getPropertyValue(name).trim(),
-    n = parseFloat(v) || 0;
-  return /rem$/.test(v) ? n * parseFloat(getComputedStyle(root).fontSize) : n;
-}
-const set = (el, name, value) => {
-  if (value == null || value === false) el.removeAttribute(name);else el.setAttribute(name, String(value));
-};
-const isRtl = el => getComputedStyle(el).direction === 'rtl';
-
-// the inline fallback: the side with room (flip) and the alignment that stays in the window (shift), from the anchor's box
-function measured(anchor, floating, placement, flip, shift, gap) {
-  const a = anchor.getBoundingClientRect(),
-    f = floating.getBoundingClientRect();
-  const W = window.innerWidth,
-    H = window.innerHeight,
-    rtl = isRtl(anchor);
-  let [side, align] = placement.split('-');
-  const room = {
-    top: a.top - gap,
-    bottom: H - a.bottom - gap,
-    start: rtl ? W - a.right - gap : a.left - gap,
-    end: rtl ? a.left - gap : W - a.right - gap
-  };
-  const need = side === 'top' || side === 'bottom' ? f.height : f.width;
-  const opposite = {
-    top: 'bottom',
-    bottom: 'top',
-    start: 'end',
-    end: 'start'
-  }[side];
-  if (flip && room[side] < need && room[opposite] > room[side]) side = opposite;
-  if (shift && align && (side === 'top' || side === 'bottom')) {
-    // aligned to the inline start, the element runs toward the inline end: does it leave the window there?
-    const startEdge = rtl ? a.right : a.left,
-      endRoom = rtl ? startEdge : W - startEdge;
-    const endEdge = rtl ? a.left : a.right,
-      startRoom = rtl ? W - endEdge : endEdge;
-    if (align === 'start' && endRoom < f.width && startRoom > endRoom) align = 'end';else if (align === 'end' && startRoom < f.width && endRoom > startRoom) align = 'start';
-  }
-  if (shift && align && (side === 'start' || side === 'end')) {
-    if (align === 'top' && H - a.top < f.height && a.bottom > H - a.top) align = 'bottom';else if (align === 'bottom' && a.bottom < f.height && H - a.top > a.bottom) align = 'top';
-  }
-  return align ? side + '-' + align : side;
-}
-
-// a point: the element's corner at the point, flipped to the other side of it when it does not fit, then kept inside the window
-function pointAt(floating, x, y) {
-  const f = floating.getBoundingClientRect(),
-    W = window.innerWidth,
-    H = window.innerHeight,
-    m = tokenPixels('--plx-sys-floating-viewport-margin');
-  const rtl = isRtl(floating);
-  // the inline-start inset of the point, measured from the window's inline-start edge
-  let ix = rtl ? W - x : x,
-    iy = y;
-  if (ix + f.width > W - m && ix - f.width >= m) ix -= f.width;
-  if (iy + f.height > H - m && iy - f.height >= m) iy -= f.height;
-  ix = Math.max(m, Math.min(ix, W - m - f.width));
-  iy = Math.max(m, Math.min(iy, H - m - f.height));
-  return [Math.round(ix), Math.round(iy)];
-}
-function useFloating(anchorRef, floatingRef, options = {}) {
-  const {
-    open = true,
-    placement = 'bottom-start',
-    offset = 'xs',
-    flip = true,
-    shift = true,
-    matchWidth = false,
-    virtual = null
-  } = options;
-  const wanted = PLACEMENTS.indexOf(placement) >= 0 ? placement : 'bottom-start';
-  const pointer = !!(virtual && FLOATING_POINTER);
-  const mode = pointer ? 'pointer' : FLOATING_ANCHOR ? 'anchor' : 'inline';
-  const [used, setUsed] = _react.default.useState(wanted);
-  const slot = _react.default.useRef(0);
-  const vx = virtual ? virtual.x : null,
-    vy = virtual ? virtual.y : null;
-  _react.default.useLayoutEffect(() => {
-    const anchor = anchorRef && anchorRef.current,
-      floating = floatingRef && floatingRef.current;
-    if (!open || !floating) return undefined;
-    const host = !pointer && mode === 'inline' && anchor ? anchor.parentElement : null;
-    if (pointer) {
-      set(floating, 'data-plx-floating-pointer', '');
-      const [ix, iy] = pointAt(floating, vx, vy);
-      set(floating, 'data-plx-floating-x', ix);
-      set(floating, 'data-plx-floating-y', iy);
-    } else if (anchor) {
-      if (!slot.current) slot.current = take();
-      set(anchor, 'data-plx-floating-anchor', slot.current || null);
-      set(floating, 'data-plx-floating', slot.current || 'inline');
-      set(floating, 'data-plx-floating-offset', offset === 'xs' || !(offset in OFFSETS) ? null : offset);
-      set(floating, 'data-plx-floating-flip', flip ? null : 'off');
-      set(floating, 'data-plx-floating-shift', shift ? null : 'off');
-      set(floating, 'data-plx-floating-match', matchWidth ? 'width' : null);
-      if (host) set(host, 'data-plx-floating-host', '');
-      set(floating, 'data-plx-floating-placement', wanted);
-      let next = wanted;
-      if (mode === 'inline') {
-        next = measured(anchor, floating, wanted, flip, shift, tokenPixels(OFFSETS[offset] || null));
-        set(floating, 'data-plx-floating-placement', next);
-      }
-      setUsed(next);
-    }
-    return () => {
-      ATTRS.forEach(n => floating.removeAttribute(n));
-      if (anchor) anchor.removeAttribute('data-plx-floating-anchor');
-      if (host) host.removeAttribute('data-plx-floating-host');
-      release(slot.current);
-      slot.current = 0;
-    };
-  }, [open, wanted, offset, flip, shift, matchWidth, pointer, mode, vx, vy, anchorRef, floatingRef]);
-
-  // the inline fallback measures again when the window changes size
-  _react.default.useEffect(() => {
-    if (!open || mode !== 'inline' || typeof window === 'undefined') return undefined;
-    const again = () => {
-      const anchor = anchorRef.current,
-        floating = floatingRef.current;
-      if (!anchor || !floating) return;
-      set(floating, 'data-plx-floating-placement', wanted);
-      const next = measured(anchor, floating, wanted, flip, shift, tokenPixels(OFFSETS[offset] || null));
-      set(floating, 'data-plx-floating-placement', next);
-      setUsed(next);
-    };
-    window.addEventListener('resize', again);
-    return () => window.removeEventListener('resize', again);
-  }, [open, mode, wanted, flip, shift, offset, anchorRef, floatingRef]);
-  return {
-    placement: mode === 'anchor' ? wanted : used,
-    mode
-  };
-}
-  } },
-  "platform/components/Tooltip/Tooltip.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/floating.js":"platform/utils/floating.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.InTooltip = void 0;
-exports.Tooltip = Tooltip;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-var _floating = require("../../utils/floating.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · Tooltip
-   Summary: A short label for a control, shown on hover, on keyboard focus and, on touch, on a long press. The rich
-     tooltip (09 Overlays › Contextual overlays › Rich tooltip) adds a title, a few sentences and, as a toggletip, one action.
-   Usage:
-     <Tooltip content="Upload files" placement="bottom"><Button …/></Tooltip>
-     <Tooltip title="Retention" content="Deleted files stay in the trash for 30 days."><Button …/></Tooltip>
-     <Tooltip title="Smart crop" content="…" action={<Link href="#crop" variant="standalone">About smart crop</Link>}><Button …/></Tooltip>
-   Props:
-     content: the tooltip text (in a rich tooltip, its body: one to three sentences)
-     placement: "bottom" (default) | "top" | "start" | "end" (start and end follow the writing direction)
-     title: a short title above the body; it makes the tooltip rich
-     action: one action under the body (a standalone Link, or a small Button); it makes the tooltip rich and a toggletip:
-       it opens on click (Enter or Space on the trigger) instead of on hover and focus
-     rich: the rich look without a title or an action (default false; true when title or action is given)
-     disabled: the tooltip neither shows nor describes the trigger (default false); for a label that is shown in full most of
-       the time and only needs its tooltip when it is cut short
-     className: more classes on the wrapper
-     children: the control it labels (one element)
-   Behavior:
-     It shows on hover (a mouse or a pen) and on keyboard focus, and hides on leave, on blur and with Escape.
-     On touch there is no hover (Platforms Standard 6.5): a long press (--plx-comp-tooltip-long-press-delay) shows it, and
-     it hides --plx-comp-tooltip-touch-dismiss-delay after the finger lifts, or when the finger moves away or is cancelled.
-     A tap does not show it (focus that follows a touch is ignored; mouse events emulated from touch are not listened to),
-     and the long press neither opens the browser's context menu nor activates the control (the click that may follow the
-     release is dropped): a long press asks what a control is, it does not use it.
-     The trigger is described by the tooltip (aria-describedby), added to any it already has.
-     Placement: where the browser has CSS anchor positioning (utils/floating.js) the bubble is placed against the trigger by
-       useFloating while it shows (offset sm), so no scroll area or pane clips it; elsewhere it is drawn inside the wrapper
-       on its side, as before. A tooltip with an arrow keeps its side; a rich tooltip (no arrow) flips and shifts to stay in
-       the window.
-     Rich: a text-only rich tooltip opens on hover and focus like a plain one and stays open while the pointer is over it
-       (it hides --plx-comp-tooltip-rich-close-delay after the pointer leaves both). With an action it is a toggletip: the
-       trigger toggles it (aria-expanded, aria-controls), Tab from the trigger reaches the action, and Escape, a click
-       outside or focus leaving it closes it (Escape returns focus to the trigger); a tap opens it on touch.
-   Notes:
-     An icon-only Button shows its name (and its shortcut) as a tooltip by itself; inside a Tooltip it leaves that to the
-       Tooltip (InTooltip), so a control never gets two.
-     An icon-only control still needs its own label (aria-label): the tooltip repeats it visually, it is never the only
-     way to learn the control's name.
-     Not for essential content. Only the rich tooltip holds an action, and then it opens on click: interactive content never
-     depends on hover.
-     The rich surface is the popover's (the overlay surface with its border, radius and shadow), with no arrow.
-*/
-
-const SIDES = ['bottom', 'top', 'start', 'end'];
-
-// true inside a Tooltip's trigger: a Button there does not add its own (an icon-only Button shows its name by itself)
-const InTooltip = exports.InTooltip = /*#__PURE__*/_react.default.createContext(false);
-
-// a duration token ("0.5s", "500ms") in milliseconds, read from the element's computed style
-const ms = (el, name) => {
-  const v = el ? getComputedStyle(el).getPropertyValue(name).trim() : '';
-  const n = parseFloat(v);
-  return isNaN(n) ? 0 : /ms$/.test(v) ? n : n * 1000;
-};
-
-// the last way the person reached for the page: a touch, or a mouse, pen or key. Focus that follows a tap does not open
-// the tooltip (a long press does); focus that follows a key does. One listener pair for every tooltip, added by the first.
-let lastInput = 'key',
-  listening = false;
-const listen = () => {
-  if (listening) return;
-  listening = true;
-  document.addEventListener('pointerdown', e => {
-    lastInput = e.pointerType === 'touch' ? 'touch' : 'pointer';
-  }, true);
-  document.addEventListener('keydown', () => {
-    lastInput = 'key';
-  }, true);
-};
-function Tooltip({
-  content,
-  placement = 'bottom',
-  title,
-  action,
-  rich = false,
-  disabled = false,
-  className,
-  children
-}) {
-  const id = 'plx-tt' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
-  const [open, setOpen] = _react.default.useState(false);
-  const wrap = _react.default.useRef(null);
-  const bubble = _react.default.useRef(null);
-  const press = _react.default.useRef(null); // the long-press timer
-  const hide = _react.default.useRef(null); // the timer that hides a tooltip a long press (or a rich tooltip's leave) started
-  const pressed = _react.default.useRef(false); // this touch opened the tooltip by a long press
-  const isRich = !!(rich || title || action);
-  const toggle = !!action; // a toggletip: opened by a click on the trigger
-  const side = SIDES.indexOf(placement) >= 0 ? placement : 'bottom';
-  const clear = () => {
-    clearTimeout(press.current);
-    clearTimeout(hide.current);
-  };
-  _react.default.useEffect(() => {
-    listen();
-    return clear;
-  }, []);
-  // placed against the trigger by anchor positioning while it shows; the arrow keeps its side (no flip, no shift)
-  (0, _floating.useFloating)(wrap, bubble, {
-    open: open && !disabled && _floating.FLOATING_ANCHOR,
-    placement: side,
-    offset: 'sm',
-    flip: isRich,
-    shift: isRich
-  });
-  _react.default.useEffect(() => {
-    if (!open) return undefined;
-    const esc = e => {
-      if (e.key !== 'Escape') return;
-      const inside = wrap.current && wrap.current.contains(document.activeElement);
-      setOpen(false);
-      // a toggletip gives focus back to its trigger when Escape closes it from inside
-      if (toggle && inside && wrap.current.firstElementChild && wrap.current.firstElementChild.focus) wrap.current.firstElementChild.focus();
-    };
-    const outside = e => {
-      if (wrap.current && !wrap.current.contains(e.target)) setOpen(false);
-    };
-    document.addEventListener('keydown', esc);
-    if (toggle) document.addEventListener('mousedown', outside);
-    return () => {
-      document.removeEventListener('keydown', esc);
-      document.removeEventListener('mousedown', outside);
-    };
-  }, [open, toggle]);
-  const child = _react.default.Children.only(children);
-  const described = {
-    'aria-describedby': [child.props['aria-describedby'], id].filter(Boolean).join(' ')
-  };
-  const trigger = disabled ? child : /*#__PURE__*/_react.default.cloneElement(child, toggle ? Object.assign(described, {
-    'aria-expanded': open,
-    'aria-controls': open ? id + 'b' : undefined,
-    onClick: e => {
-      if (child.props.onClick) child.props.onClick(e);
-      setOpen(!open);
-    }
-  }) : described);
-  if (disabled) return /*#__PURE__*/_react.default.createElement("span", {
-    className: (0, _cx.cx)('plx-tooltip', className)
-  }, /*#__PURE__*/_react.default.createElement(InTooltip.Provider, {
-    value: true
-  }, trigger));
-  const onPointerDown = e => {
-    if (e.pointerType !== 'touch' || toggle) return;
-    clear();
-    pressed.current = false;
-    press.current = setTimeout(() => {
-      pressed.current = true;
-      setOpen(true);
-    }, ms(wrap.current, '--plx-comp-tooltip-long-press-delay'));
-  };
-  const onPointerEnd = e => {
-    if (e.pointerType !== 'touch' || toggle) return;
-    clearTimeout(press.current);
-    if (pressed.current) hide.current = setTimeout(() => {
-      setOpen(false);
-      pressed.current = false;
-    }, e.type === 'pointercancel' ? 0 : ms(wrap.current, '--plx-comp-tooltip-touch-dismiss-delay'));
-  };
-  const onEnter = e => {
-    if (e.pointerType === 'touch' || toggle) return;
-    clearTimeout(hide.current);
-    setOpen(true);
-  };
-  const onLeave = e => {
-    if (e.pointerType === 'touch' || toggle) return;
-    // a rich tooltip waits a moment, so the pointer can move into it; a plain one hides at once
-    if (isRich) {
-      clearTimeout(hide.current);
-      hide.current = setTimeout(() => setOpen(false), ms(wrap.current, '--plx-comp-tooltip-rich-close-delay'));
-    } else setOpen(false);
-  };
-  const bubbleCls = (0, _cx.cx)('plx-tooltip__bubble', 'plx-tooltip__bubble--' + side, isRich && 'plx-tooltip__bubble--rich', open && 'is-open');
-  return /*#__PURE__*/_react.default.createElement("span", {
-    ref: wrap,
-    className: (0, _cx.cx)('plx-tooltip', className),
-    onPointerEnter: onEnter,
-    onPointerLeave: onLeave,
-    onPointerDown: onPointerDown,
-    onPointerUp: onPointerEnd,
-    onPointerCancel: onPointerEnd,
-    onContextMenu: e => {
-      if (pressed.current) e.preventDefault();
-    },
-    onClickCapture: e => {
-      if (pressed.current) {
-        e.preventDefault();
-        e.stopPropagation();
-        pressed.current = false;
-      }
-    },
-    onFocus: () => {
-      if (!toggle && lastInput !== 'touch') setOpen(true);
-    },
-    onBlur: e => {
-      if (!pressed.current && !(wrap.current && wrap.current.contains(e.relatedTarget))) setOpen(false);
-    }
-  }, /*#__PURE__*/_react.default.createElement(InTooltip.Provider, {
-    value: true
-  }, trigger), isRich ? /*#__PURE__*/_react.default.createElement("span", {
-    ref: bubble,
-    id: id + 'b',
-    className: bubbleCls
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    role: "tooltip",
-    id: id,
-    className: "plx-tooltip__content"
-  }, title ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-tooltip__title"
-  }, title) : null, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-tooltip__body"
-  }, content)), action ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-tooltip__action"
-  }, action) : null) : /*#__PURE__*/_react.default.createElement("span", {
-    ref: bubble,
-    role: "tooltip",
-    id: id,
-    className: bubbleCls
-  }, content));
-}
-  } },
-  "platform/components/Kbd/Kbd.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Kbd = Kbd;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Kbd
-   Summary: A key or shortcut ("Ctrl K").
-   Usage:
-     <Kbd>Ctrl K</Kbd>
-     <Kbd onAccent>/</Kbd>
-   Props:
-     onAccent: the version for the blue header (default false)
-     children: the key or shortcut text
-     className: more classes on the <kbd>
-   Notes:
-     It uses the data font at a 16px label height.
-     Other props pass through to the <kbd>.
-*/
-function Kbd({
-  onAccent = false,
-  className,
-  children,
-  ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement("kbd", _extends({
-    className: (0, _cx.cx)('plx-kbd', onAccent && 'plx-kbd--on-accent', className)
-  }, rest), children);
-}
-  } },
-  "platform/utils/hotkey.js": { deps: {"react":null,"./tokenTime.js":"platform/utils/tokenTime.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.hotkeyKeys = hotkeyKeys;
-exports.hotkeyLabel = hotkeyLabel;
-exports.hotkeyList = hotkeyList;
-exports.isMac = isMac;
-exports.parseHotkey = parseHotkey;
-exports.registerHotkey = registerHotkey;
-exports.setSingleKeyHotkeys = setSingleKeyHotkeys;
-exports.singleKeyHotkeys = singleKeyHotkeys;
-exports.subscribeHotkeys = subscribeHotkeys;
-exports.useHotkey = useHotkey;
-exports.useHotkeyList = useHotkeyList;
-var _react = _interopRequireDefault(require("react"));
-var _tokenTime = require("./tokenTime.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · Hotkey (platform/utils/hotkey.js)
-   Summary: Keyboard shortcuts in one place: useHotkey binds a key, a chord (Mod K) or a sequence (G then I) to a command,
-     for the whole page or for one region, and every binding goes into one registry that the shortcuts dialog and the
-     menus read their hints from (Kbd draws the label).
-   Usage:
-     useHotkey('Mod+K', () => openSearch(), { label: 'Search', group: 'General' });
-     useHotkey('G I', () => goTo('inbox'), { label: 'Go to inbox', group: 'Navigation' });
-     useHotkey('Delete', removeSelected, { scope: listRef, label: 'Delete the selected files' });
-     <Kbd>{hotkeyLabel('Mod+K')}</Kbd>                     // "Ctrl K" on Windows and Linux, "⌘ K" on a Mac
-     const all = useHotkeyList();                         // [{ binding, label, group, keys }] for the shortcuts dialog
-   Props:
-     useHotkey(binding, handler, options): binds while the component is mounted; handler(event) runs on a match
-     binding: steps separated by spaces (a sequence: "G I"), each step keys joined by "+" ("Mod+Shift+P"); modifiers Mod
-       (Cmd on a Mac, Ctrl elsewhere), Ctrl, Meta, Alt, Shift; keys as KeyboardEvent.key names ("K", "Escape", "/", "?")
-     options.scope: a ref (or element) of the region the binding belongs to; it fires only when focus is inside it
-     options.enabled: false unbinds it without unmounting (default true)
-     options.allowInFields: also fire while focus is in a text field (default false)
-     options.label: what the command does, as written in its menu item; options.group: its group in the shortcuts dialog
-     registerHotkey(binding, handler, options): the same without React; returns the function that unbinds it
-     hotkeyLabel(binding, { mac }): the binding as people read it ("Ctrl Shift P", "G then I")
-     hotkeyList(): every labeled binding; useHotkeyList() the same, kept current; subscribeHotkeys(fn) for other code
-     setSingleKeyHotkeys(on): turns every single-key shortcut (no modifier) off or on (WCAG 2.2 SC 2.1.4)
-   Behavior:
-     One keydown listener for the page. The binding of the innermost scope that contains the focus wins; page-wide
-     bindings come last. A key that starts a sequence waits --plx-sys-hotkey-sequence-timeout for the next one.
-     Ignored while focus is in a text field, a select or editable content, unless allowInFields. Ignored when an earlier
-     handler called preventDefault. A match calls preventDefault, so the browser's own use of that key does not run.
-   Notes:
-     Never bind keys that assistive technology or the browser needs (Tab, the arrow keys outside a widget, Ctrl L, F6).
-     Use the same label here as in the menu item, so the dialog and the menu agree.
-*/
-
-const MODS = ['ctrl', 'meta', 'alt', 'shift'];
-const NAMES = {
-  esc: 'escape',
-  del: 'delete',
-  space: ' ',
-  spacebar: ' ',
-  return: 'enter',
-  up: 'arrowup',
-  down: 'arrowdown',
-  left: 'arrowleft',
-  right: 'arrowright',
-  cmd: 'meta',
-  command: 'meta',
-  option: 'alt',
-  control: 'ctrl'
-};
-const entries = [];
-const listeners = new Set();
-let singleKeys = true;
-let buffer = [],
-  bufferAt = 0,
-  installed = false,
-  nextId = 1;
-function isMac() {
-  if (typeof navigator === 'undefined') return false;
-  const p = navigator.userAgentData && navigator.userAgentData.platform || navigator.platform || '';
-  return /mac|iphone|ipad|ipod/i.test(p);
-}
-
-// "Mod+Shift+P" → { ctrl, meta, alt, shift, key: 'p' }
-function parseStep(step, mac) {
-  const parts = step.split('+').filter((x, i, all) => x !== '' || i === all.length - 1).map(x => x === '' ? '+' : x);
-  const s = {
-    ctrl: false,
-    meta: false,
-    alt: false,
-    shift: false,
-    key: ''
-  };
-  parts.forEach(raw => {
-    let p = raw.toLowerCase();
-    p = NAMES[p] || p;
-    if (p === 'mod') s[mac ? 'meta' : 'ctrl'] = true;else if (MODS.indexOf(p) >= 0) s[p] = true;else s.key = p;
-  });
-  return s;
-}
-function parseHotkey(binding, mac = isMac()) {
-  return String(binding || '').trim().split(/\s+/).filter(Boolean).map(st => parseStep(st, mac));
-}
-function matchStep(s, e) {
-  const key = (e.key || '').toLowerCase();
-  // a letter or digit typed with Alt (or Shift) on some layouts changes e.key: e.code still names the key
-  const code = /^Key([A-Z])$|^Digit(\d)$/.exec(e.code || '');
-  const sameKey = key === s.key || !!code && (code[1] || code[2]).toLowerCase() === s.key;
-  if (!sameKey) return false;
-  // a symbol that needs Shift ("?") is written without it: Shift is then not compared
-  const symbol = s.key.length === 1 && !/[a-z0-9]/.test(s.key);
-  return e.ctrlKey === s.ctrl && e.metaKey === s.meta && e.altKey === s.alt && (symbol || e.shiftKey === s.shift);
-}
-const isSingle = steps => steps.length >= 1 && steps.every(s => !s.ctrl && !s.meta && !s.alt) && steps[0].key.length === 1;
-function inField(el) {
-  if (!el || !el.tagName) return false;
-  if (el.isContentEditable) return true;
-  const t = el.tagName.toLowerCase();
-  if (t === 'textarea' || t === 'select') return true;
-  if (t !== 'input') return false;
-  return ['checkbox', 'radio', 'button', 'submit', 'reset', 'range', 'color', 'file', 'image'].indexOf((el.type || '').toLowerCase()) < 0;
-}
-const scopeOf = x => (x && 'current' in x ? x.current : x) || null;
-const depth = el => {
-  let n = 0;
-  for (let x = el; x; x = x.parentElement) n++;
-  return n;
-};
-function onKeyDown(e) {
-  if (e.defaultPrevented || e.isComposing || ['Control', 'Meta', 'Alt', 'Shift'].indexOf(e.key) >= 0) return;
-  const now = Date.now();
-  if (now - bufferAt > (0, _tokenTime.tokenMs)('--plx-sys-hotkey-sequence-timeout')) buffer = [];
-  const target = e.target,
-    field = inField(target);
-  const live = entries.filter(x => x.enabled && (!field || x.allowInFields) && (singleKeys || !isSingle(x.steps))).map(x => ({
-    x,
-    scope: scopeOf(x.scope)
-  })).filter(c => !c.x.scope || c.scope && c.scope.contains(target)).sort((a, b) => (b.scope ? depth(b.scope) : 0) - (a.scope ? depth(a.scope) : 0));
-  const step = buffer.length;
-  const fits = (c, at) => c.x.steps.length > at && buffer.slice(buffer.length - at).every((ev, i) => matchStep(c.x.steps[i], ev)) && matchStep(c.x.steps[at], e);
-  // the longest waiting sequence first, then a fresh start
-  for (const at of [step, 0].filter((v, i, all) => all.indexOf(v) === i)) {
-    const full = live.find(c => c.x.steps.length === at + 1 && fits(c, at));
-    if (full) {
-      buffer = [];
-      e.preventDefault();
-      full.x.handler(e);
-      return;
-    }
-    if (live.some(c => c.x.steps.length > at + 1 && fits(c, at))) {
-      buffer = buffer.slice(buffer.length - at).concat([{
-        key: e.key,
-        code: e.code,
-        ctrlKey: e.ctrlKey,
-        metaKey: e.metaKey,
-        altKey: e.altKey,
-        shiftKey: e.shiftKey
-      }]);
-      bufferAt = now;
-      return;
-    }
-  }
-  buffer = [];
-}
-function install() {
-  if (installed || typeof document === 'undefined') return;
-  document.addEventListener('keydown', onKeyDown);
-  installed = true;
-}
-const notify = () => listeners.forEach(fn => fn());
-function registerHotkey(binding, handler, options = {}) {
-  install();
-  const entry = {
-    id: nextId++,
-    binding,
-    steps: parseHotkey(binding),
-    handler,
-    scope: options.scope || null,
-    enabled: options.enabled !== false,
-    allowInFields: !!options.allowInFields,
-    label: options.label || '',
-    group: options.group || ''
-  };
-  entries.push(entry);
-  if (entry.label) notify();
-  return () => {
-    const i = entries.indexOf(entry);
-    if (i >= 0) {
-      entries.splice(i, 1);
-      if (entry.label) notify();
-    }
-  };
-}
-function useHotkey(binding, handler, options = {}) {
-  const ref = _react.default.useRef(handler);
-  ref.current = handler;
-  const {
-    scope,
-    enabled = true,
-    allowInFields = false,
-    label,
-    group
-  } = options;
-  _react.default.useEffect(() => {
-    if (!enabled || !binding) return undefined;
-    return registerHotkey(binding, e => ref.current && ref.current(e), {
-      scope,
-      allowInFields,
-      label,
-      group
-    });
-  }, [binding, scope, enabled, allowInFields, label, group]);
-}
-const MAC_NAMES = {
-  meta: '⌘',
-  ctrl: '⌃',
-  alt: '⌥',
-  shift: '⇧'
-};
-const PC_NAMES = {
-  meta: 'Win',
-  ctrl: 'Ctrl',
-  alt: 'Alt',
-  shift: 'Shift'
-};
-const KEY_NAMES = {
-  ' ': 'Space',
-  escape: 'Esc',
-  arrowup: '↑',
-  arrowdown: '↓',
-  arrowleft: '←',
-  arrowright: '→',
-  enter: 'Enter',
-  delete: 'Delete',
-  backspace: 'Backspace',
-  tab: 'Tab'
-};
-function hotkeyKeys(binding, {
-  mac = isMac()
-} = {}) {
-  const names = mac ? MAC_NAMES : PC_NAMES;
-  return parseHotkey(binding, mac).map(s => (mac ? ['ctrl', 'alt', 'shift', 'meta'] : ['ctrl', 'meta', 'alt', 'shift']).filter(m => s[m]).map(m => names[m]).concat([KEY_NAMES[s.key] || (s.key.length === 1 ? s.key.toUpperCase() : s.key.charAt(0).toUpperCase() + s.key.slice(1))]));
-}
-function hotkeyLabel(binding, options) {
-  return hotkeyKeys(binding, options).map(k => k.join(' ')).join(' then ');
-}
-function hotkeyList() {
-  return entries.filter(x => x.label).map(x => ({
-    binding: x.binding,
-    label: x.label,
-    group: x.group,
-    keys: hotkeyLabel(x.binding),
-    enabled: x.enabled
-  }));
-}
-function subscribeHotkeys(fn) {
-  listeners.add(fn);
-  return () => listeners.delete(fn);
-}
-function useHotkeyList() {
-  const [list, setList] = _react.default.useState(hotkeyList);
-  _react.default.useEffect(() => {
-    setList(hotkeyList());
-    return subscribeHotkeys(() => setList(hotkeyList()));
-  }, []);
-  return list;
-}
-function setSingleKeyHotkeys(on) {
-  singleKeys = !!on;
-  buffer = [];
-}
-function singleKeyHotkeys() {
-  return singleKeys;
-}
-  } },
-  "platform/components/Button/Button.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../providers/Surface.jsx":"platform/providers/Surface.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","../../utils/hotkey.js":"platform/utils/hotkey.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Button = void 0;
-exports.ButtonGroup = ButtonGroup;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
-var _Icon = require("../Icon/Icon.jsx");
-var _Loading = require("../Loading/Loading.jsx");
-var _Surface = require("../../providers/Surface.jsx");
-var _Tooltip = require("../Tooltip/Tooltip.jsx");
-var _Kbd = require("../Kbd/Kbd.jsx");
-var _hotkey = require("../../utils/hotkey.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Button, ButtonGroup
-   Summary: A button for an action, in one of several emphasis levels and sizes; ButtonGroup joins buttons that act as a set.
-   Usage:
-     <Button variant="primary" icon="save" onClick={() => …}>Save</Button>
-     <Button iconOnly icon="more_horiz" label="More actions" caret expanded={open} />
-     <ButtonGroup label="Transfer"><Button>Import</Button><Button>Export</Button></ButtonGroup>
-   Props:
-     variant: "secondary" (default; white with a border, reversible actions) | "primary" (filled; the main action, usually one
-       per view) | "tertiary" (outlined in the action color, no fill; fills on hover) | "ghost" (no fill or border until
-       hovered, when its icon turns the action color; the lowest emphasis) | "danger" (filled red; destructive) | "danger-secondary"
-       (red outline, fills on hover). There is no link look: a link goes somewhere (Link), a button does something
-     truncate: the label fills the button from its start edge and ends in an ellipsis (a long choice)
-     stackedLabel: the label’s lines stack, start-aligned and wrapping; the gap is --plx-comp-button-context-label-gap (SuggestedAction)
-     labelRow: the label lays out a row of its own (an avatar and a name); the gap is
-       --plx-comp-button-context-label-row-gap (AppHeader’s account)
-     joined: { start, end }: "square" | "seam": its corners square where it meets a neighbor; a seam also drops that border (ButtonGroup, InputGroup and CopyButton set it)"md" (default; the standard control role) | "sm" (the toolbar role: compact text, gray) | "xs" (the inline-action
-       role: dense row and card actions, never in a toolbar) | "2xs" (the smallest: "Show more" under a list; 11px text, a blue
-       tint on hover) | "lg" (the prominent role: page actions)
-     icon: an <Icon> (or an icon name) before the label
-     iconEnd: an <Icon> (or an icon name) after the label
-     iconOnly: a square button with only its icon; give it a label (default false)
-     label: the accessible name (aria-label); an icon-only button falls back to string children
-     tooltip: the tooltip it shows (default: an icon-only button shows its label; others none); false: none (Carbon,
-       Atlassian: every icon-only button names itself). Inside a Tooltip the button leaves it to that Tooltip
-     shortcut: its keyboard shortcut, as a hotkey binding ("Mod+Shift+A"): shown in its tooltip as keys (Ctrl or ⌘) and set as
-       aria-keyshortcuts. It only shows the shortcut: bind it with useHotkey
-     caret: the button opens a menu: the thin outline chevron (expand_more) after the label, in the muted color on the
-       unfilled variants (owner, 2026-10-14: it replaces the small filled triangle); default false
-     expanded: sets aria-expanded, for a button that opens a menu
-     pressed: makes a toggle button (aria-pressed): true when on, false when off (undefined: not a toggle)
-     selected: shows the selected state without a toggle role (default false)
-     loading: shows a spinner in place of the icon (default false)
-     disabled: the button does nothing (default false)
-     href: renders a link styled as a button
-     type: the button type (default "button")
-     onClick(event): runs when the button is clicked, unless disabled or loading
-     children: the button label
-     className: more classes on the button
-     strings: the words it announces, for other languages: { working: "Working" } (the loading spinner's name)
-     ref: forwarded to the <button> or <a>
-     ButtonGroup.label: the accessible name of the group
-     ButtonGroup.children: the buttons
-     ButtonGroup.className: more classes on the group
-   Behavior:
-     Placement can also set the role: a dialog footer gives its buttons the dialog role.
-     Selected, pressed and expanded all show the selected state.
-     A toggle button (pressed true or false) keeps its label and icon when it turns on or off: the label names the option
-       (Bold, Show grid), aria-pressed says whether it is on, and every variant shows "on" with the selected state.
-     Loading keeps the width and the name, and stays focusable but inert (aria-disabled, aria-busy): the spinner takes the
-       icon's place, or, with no icon, sits over the label, which stays (unseen) to hold the width and name the button.
-     A disabled link loses its href.
-   Notes:
-     Other props pass through to the <button> or <a> (and to ButtonGroup's <div>).
-     For one choice from several, use SegmentedControl instead of ButtonGroup.
-*/
-const STRINGS = {
-  working: 'Working'
-};
-
-// the icon takes the button's state as its own (Styling Standard 3.6): filled while the button is selected, pressed or
-// open; an Icon element the caller gives keeps its own fill when it sets one
-const asIcon = _Icon.stateIcon;
-
-// a one-step binding as aria-keyshortcuts ("Control+Shift+A"); a sequence has no ARIA form, so none
-const ARIA_MODS = [['ctrl', 'Control'], ['alt', 'Alt'], ['shift', 'Shift'], ['meta', 'Meta']];
-const ariaShortcut = binding => {
-  const steps = (0, _hotkey.parseHotkey)(binding);
-  if (steps.length !== 1 || !steps[0].key) return undefined;
-  const k = steps[0].key;
-  return ARIA_MODS.filter(([m]) => steps[0][m]).map(([, n]) => n).concat(k.length === 1 ? k.toUpperCase() : k.charAt(0).toUpperCase() + k.slice(1)).join('+');
-};
-const Button = exports.Button = /*#__PURE__*/_react.default.forwardRef(function Button({
-  variant = 'secondary',
-  size = 'md',
-  icon,
-  iconEnd,
-  iconOnly = false,
-  label,
-  caret = false,
-  expanded,
-  pressed,
-  selected = false,
-  loading = false,
-  disabled = false,
-  href,
-  type = 'button',
-  joined,
-  truncate = false,
-  stackedLabel = false,
-  labelRow = false,
-  tooltip,
-  shortcut,
-  className,
-  children,
-  onClick,
-  strings,
-  ...rest
-}, ref) {
-  (0, _devWarn.devWarn)('Button', {
-    variant,
-    size
-  }, {
-    variant: ['secondary', 'primary', 'tertiary', 'ghost', 'danger', 'danger-secondary', 'quiet'],
-    size: ['md', 'sm', 'xs', '2xs', 'lg']
-  });
-  const t = Object.assign({}, STRINGS, strings);
-  // a colored surface around the button (TeachingBubble, the accent AppHeader) gives it that surface's look
-  const surface = _react.default.useContext(_Surface.SurfaceContext);
-  const classes = (0, _cx.cx)('plx-button', 'plx-button--' + (variant === 'quiet' ? 'ghost' : variant), size !== 'md' && 'plx-button--size-' + size, iconOnly && 'plx-button--icon-only', caret && 'plx-button--caret', (selected || pressed || expanded) && 'is-selected', loading && 'is-loading', truncate && 'plx-button--truncate', stackedLabel && 'plx-button--stacked-label', labelRow && 'plx-button--label-row', joined && joined.start && 'plx-button--joined-start-' + joined.start, joined && joined.end && 'plx-button--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-button--joined', (surface === 'inverse' || surface === 'accent') && 'plx-button--on-' + surface, className);
-  // the parts take the button's state as their own classes (Styling Standard 3.6: no rule reaches from the button into them)
-  const v = variant === 'quiet' ? 'ghost' : variant;
-  const on = !!(selected || pressed || expanded);
-  const labelClass = (0, _cx.cx)('plx-button__label', truncate && 'plx-button__label--truncate', !truncate && stackedLabel && 'plx-button__label--stacked', !truncate && !stackedLabel && labelRow && 'plx-button__label--row');
-  const caretClass = (0, _cx.cx)('plx-button__caret', (v === 'primary' || v === 'danger' || disabled || loading) && 'plx-button__caret--current', expanded && 'plx-button__caret--open');
-  const hasLabel = !iconOnly && children !== undefined && children !== null;
-  // loading: the spinner takes the icon's place; with no icon it sits over the label, which keeps the width and the name
-  // (aria-busy says it is working, so the spinner itself is not read)
-  const over = loading && !icon && hasLabel;
-  const spinner = cls => /*#__PURE__*/_react.default.createElement("span", {
-    className: cls,
-    "aria-hidden": "true"
-  }, /*#__PURE__*/_react.default.createElement(_Loading.Spinner, {
-    size: "sm",
-    label: t.working
-  }));
-  const content = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, loading && !over ? spinner('plx-button__icon') : icon ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-button__icon"
-  }, asIcon(icon, on)) : null, over ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-button__stack"
-  }, /*#__PURE__*/_react.default.createElement("span", {
-    className: (0, _cx.cx)(labelClass, 'plx-button__label--waiting')
-  }, children), spinner('plx-button__icon plx-button__icon--over')) : hasLabel ? /*#__PURE__*/_react.default.createElement("span", {
-    className: labelClass
-  }, children) : null, iconEnd ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-button__icon"
-  }, asIcon(iconEnd, on)) : null, caret ? /*#__PURE__*/_react.default.createElement("span", {
-    className: caretClass,
-    "aria-hidden": "true"
-  }) : null);
-  const a11y = {
-    'aria-label': iconOnly ? label || (typeof children === 'string' ? children : undefined) : label,
-    'aria-expanded': expanded,
-    'aria-pressed': pressed,
-    'aria-disabled': disabled || loading ? true : undefined,
-    'aria-busy': loading || undefined,
-    'aria-keyshortcuts': shortcut ? ariaShortcut(shortcut) : undefined
-  };
-  const handle = e => {
-    if (disabled || loading) {
-      e.preventDefault();
-      return;
-    }
-    if (onClick) onClick(e);
-  };
-  const el = href ? /*#__PURE__*/_react.default.createElement("a", _extends({
-    ref: ref,
-    href: disabled ? undefined : href,
-    className: classes
-  }, a11y, {
-    onClick: handle
-  }, rest), content) : /*#__PURE__*/_react.default.createElement("button", _extends({
-    ref: ref,
-    type: type,
-    className: classes,
-    disabled: disabled && !loading ? true : undefined
-  }, a11y, {
-    onClick: handle
-  }, rest), content);
-  // its tooltip: the name of an icon-only button (or the tooltip it was given), with its shortcut's keys; none inside a
-  // Tooltip, which already names it
-  const inTooltip = _react.default.useContext(_Tooltip.InTooltip);
-  const tip = tooltip === false ? null : tooltip !== undefined ? tooltip : iconOnly ? a11y['aria-label'] : null;
-  if (!tip || inTooltip) return el;
-  return /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
-    content: shortcut ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, tip, ' ', /*#__PURE__*/_react.default.createElement(_Kbd.Kbd, null, (0, _hotkey.hotkeyLabel)(shortcut))) : tip
-  }, el);
-});
-
-/* ButtonGroup: joined buttons that act as a set (Import | Export). For one choice from several, use SegmentedControl. */
-function ButtonGroup({
-  label,
-  className,
-  children,
-  ...rest
-}) {
-  // its buttons meet: each passes on which of its sides is joined (the later button's start edge is the seam)
-  const all = _react.default.Children.toArray(children).filter(_react.default.isValidElement);
-  return /*#__PURE__*/_react.default.createElement("div", _extends({
-    role: "group",
-    "aria-label": label,
-    className: (0, _cx.cx)('plx-button-group', className)
-  }, rest), all.map((el, i) => /*#__PURE__*/_react.default.cloneElement(el, {
-    joined: {
-      start: i > 0 ? 'seam' : undefined,
-      end: i < all.length - 1 ? 'square' : undefined
-    }
-  })));
 }
   } },
   "platform/utils/portal.jsx": { deps: {"react":null,"react-dom":null,"./cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
@@ -5115,75 +10146,6 @@ function Portal({
     ref: origin,
     "data-plx-portal-origin": ""
   }), /*#__PURE__*/(0, _reactDom.createPortal)(children, node));
-}
-  } },
-  "platform/utils/direction.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.RTL_LANGUAGES = void 0;
-exports.arrowStep = arrowStep;
-exports.directionOf = directionOf;
-exports.getDirection = getDirection;
-exports.isRtl = isRtl;
-exports.physicalSide = physicalSide;
-/* Plenix · Writing direction (platform/utils/direction.js)
-   Summary: Right-to-left and left-to-right in script: the direction of an element or a language, the arrow keys in reading
-     order, and the physical side of a logical one. In a right-to-left page Arrow Right moves back and Arrow Left forward,
-     as the eye reads; Up and Down are the same in both directions.
-   Usage:
-     const step = arrowStep(e, e.currentTarget);   // +1, -1 or 0
-     if (step) { e.preventDefault(); move(index + step); }
-     directionOf('ar-EG')          // "rtl"
-     physicalSide('start', 'rtl')  // "right"
-   Props:
-     isRtl(el): true when the element is laid out right to left (its computed direction)
-     arrowStep(event, el, { vertical }): +1 for the next item, -1 for the previous one, 0 for another key; with vertical:
-       false, Up and Down are ignored (a horizontal-only control)
-     getDirection(el): "rtl" | "ltr", the element's computed direction (the document's when no element is given)
-     directionOf(locale): "rtl" for a language written right to left (Arabic, Hebrew, Persian, Urdu and the others in
-       RTL_LANGUAGES), else "ltr"
-     physicalSide(side, dir): "left" | "right" for a logical "start" or "end" in that direction (for a measurement API that
-       only speaks physical sides, such as a pointer's clientX); "left" and "right" come back as they are
-     RTL_LANGUAGES: the language subtags written right to left
-   Behavior:
-     The direction comes from the dir attribute on the element or an ancestor (<html dir="rtl">, a DirectionProvider):
-       stylesheets use logical properties (inline-start, inline-end), so the layout mirrors on its own; script reads the
-       computed direction only where it measures or handles arrow keys.
-*/
-const RTL_LANGUAGES = exports.RTL_LANGUAGES = ['ar', 'arc', 'ckb', 'dv', 'fa', 'he', 'iw', 'ps', 'sd', 'syr', 'ug', 'ur', 'yi'];
-function isRtl(el) {
-  return !!el && typeof window !== 'undefined' && window.getComputedStyle(el).direction === 'rtl';
-}
-function getDirection(el) {
-  if (typeof window === 'undefined') return 'ltr';
-  return isRtl(el || document.documentElement) ? 'rtl' : 'ltr';
-}
-function directionOf(locale) {
-  const lang = String(locale || '').toLowerCase().split(/[-_]/)[0];
-  return RTL_LANGUAGES.indexOf(lang) >= 0 ? 'rtl' : 'ltr';
-}
-function physicalSide(side, dir) {
-  if (side !== 'start' && side !== 'end') return side;
-  return side === 'start' === (dir !== 'rtl') ? 'left' : 'right';
-}
-function arrowStep(event, el, opts) {
-  const vertical = !opts || opts.vertical !== false;
-  const rtl = isRtl(el);
-  switch (event.key) {
-    case 'ArrowRight':
-      return rtl ? -1 : 1;
-    case 'ArrowLeft':
-      return rtl ? 1 : -1;
-    case 'ArrowDown':
-      return vertical ? 1 : 0;
-    case 'ArrowUp':
-      return vertical ? -1 : 0;
-    default:
-      return 0;
-  }
 }
   } },
   "platform/hooks/useGesture.js": { deps: {"react":null,"../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -5683,10 +10645,10 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        pointer, kept inside the window (useFloating's point); Shift+F10 or the Menu key opens it at the target's start
        edge, below it. Focus moves to the first item; Escape, Tab, a choice or a click outside close it and return
        focus to where it was. It renders in the top layer (Portal), so a scroll area or a dialog never clips it.
-     The menu opens on top of everything (batch 272): in the browser's top layer (popover), placed beside its trigger by CSS
-       anchor positioning, so no card, pane or scroll area can cover or clip it. The trigger's wrapper scopes the anchor, so
-       each menu finds its own trigger; near an edge the menu flips to the other side. A browser without anchor
-       positioning draws it inside the wrapper as before.
+     The menu opens on top of everything (batch 272): in the browser's top layer (popover), placed beside its trigger by
+       useFloating (CSS anchor positioning), so no card, pane or scroll area can cover or clip it, and it follows the
+       trigger on scroll and resize; near an edge the menu flips to the other side. A submenu is placed the same way at its
+       item's end edge. A browser without anchor positioning draws them inside the wrapper as before.
    Notes:
      Menus are border-only (no shadow, D9); dialogs keep their shadow.
      A context menu is a shortcut: every action in it is also reachable another way (a toolbar, a row's More menu).
@@ -5731,6 +10693,11 @@ function Menu({
   }, []);
   (0, _layer.useLayer)(list, open, {
     onEscape: () => close(true)
+  });
+  // placed against its trigger's wrapper by useFloating (anchor positioning, in the top layer); without it, drawn inside the wrapper
+  (0, _floating.useFloating)(wrap, list, {
+    open: open && TOP_LAYER,
+    placement
   });
   // into the top layer as soon as it is in the page (before the first item takes focus)
   _react.default.useLayoutEffect(() => {
@@ -5915,6 +10882,12 @@ function MenuSub({
   }, []);
   (0, _layer.useLayer)(list, open, {
     onEscape: back
+  });
+  // at the item's end edge, level with it (useFloating end-top; the gap is the menu's own, menu.css)
+  (0, _floating.useFloating)(item, list, {
+    open: open && TOP_LAYER,
+    placement: 'end-top',
+    offset: 'none'
   });
   _react.default.useLayoutEffect(() => {
     const el = list.current;
@@ -6268,7 +11241,7 @@ function useTruncated(ref) {
   return cut;
 }
   } },
-  "platform/components/Field/Field.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Field/Field.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/describedBy.js":"platform/utils/describedBy.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -6282,6 +11255,7 @@ var _overflow = require("../../utils/overflow.js");
 var _Tooltip = require("../Tooltip/Tooltip.jsx");
 var _announce = require("../../utils/announce.jsx");
 var _format = require("../../utils/format.js");
+var _describedBy = require("../../utils/describedBy.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Field
    Summary: A label, the control, and its help or error, connected for assistive technology.
@@ -6319,9 +11293,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        left or over are announced politely, once typing pauses (announce).
    Notes:
      Other props pass through to the <div>.
-     Writing direction (owner, ctm-needs-34): dir ("ltr" | "rtl") and lang on the Field go on the <div>, so the label, the control,
-       the description and the error all take that direction: an Arabic field in an English page, or the reverse. Use
-       the dir attribute, never the CSS direction property: the :dir(rtl) rules answer only to the attribute.
 */
 // the layout a Form gives the fields inside it (Form's layout "two-column" makes them inline); a Field's own layout wins
 const FieldLayoutContext = exports.FieldLayoutContext = /*#__PURE__*/_react.default.createContext(null);
@@ -6379,9 +11350,11 @@ function Field({
       (0, _announce.announce)(over ? fill(t.over, length - max) : fill(t.left, max - length));
     }
   }, [length, max, near, over, t.over, t.left]);
+  // the control's own descriptions first, then the field's: the description, the counter, the error (utils/describedBy.js)
+  const describedBy = (0, _describedBy.useDescribedBy)(child.props['aria-describedby'], descId, countId, errId);
   const props = {
     id: child.props.id || controlId,
-    'aria-describedby': [child.props['aria-describedby'], descId, countId, errId].filter(Boolean).join(' ') || undefined,
+    'aria-describedby': describedBy,
     invalid: child.props.invalid !== undefined ? child.props.invalid : error || over ? true : undefined,
     required: child.props.required !== undefined ? child.props.required : required || undefined
   };
@@ -6536,7 +11509,401 @@ function gridWithin(px, min, max, opts) {
   })));
 }
   } },
-  "platform/components/Input/Input.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Stack/Stack.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Bleed = Bleed;
+exports.Center = Center;
+exports.Inline = Inline;
+exports.Stack = Stack;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Stack, Inline, Center, Bleed
+   Summary: Lay children out in a column (Stack) or a row (Inline), spaced by the spacing tokens, never by a margin or a number;
+     center a block at a readable width (Center); let a child reach past its parent's inset to the edge (Bleed).
+   Usage:
+     <Stack gap="md">
+       <Inline gap="sm" justify="between">…</Inline>
+       <Inline wrap>…</Inline>
+     </Stack>
+     <Inline reverseBelow="narrow"><Main /><Summary /></Inline>    the summary comes first on a narrow window
+     <Center maxWidth="sm" text><EmptyState … /></Center>
+     <Stack inset="md"><Bleed space="md"><Image … /></Bleed><Text>…</Text></Stack>
+   Props:
+     Stack.gap: "none" | "xs" | "sm" | "md" (default) | "lg" | "xl" (--plx-sys-space-stack-*) | "section" (--plx-sys-space-section)
+       Stack.equal: every child as wide as the widest (stacked buttons, owner 2026-10-22): the Stack shrinks to its widest
+       child and each Button takes its whole width; with align="end" or "center" the Stack itself sits at the end or middle
+       Peer sections that are not framed (a SectionHeading and its table, list or text, then the next): <Stack gap="section">
+       holding one <Stack gap="sm"> per section; the same in a page or a split pane, every density, either direction, phones
+     Inline.gap: "none" | "xs" | "sm" (default) | "md" | "lg" | "xl" (--plx-sys-space-inline-*)
+     Stack.align: "start" | "center" | "end" | "stretch" | "baseline" (the cross axis)
+     Inline.align: the same values; default "center"
+     Stack.justify: "start" | "center" | "end" | "between"
+     Inline.wrap: an Inline that wraps onto more lines (its lines are --plx-sys-space-stack-xs apart)
+     Stack.inset: "none" | "xs" | "sm" | "md" | "lg" | "xl" (padding on every side, --plx-sys-space-inset-*)
+     Stack.grow: fills the rest of its parent row or column (it may shrink below its content)
+     Stack.scroll: scrolls its own content
+     Stack.width: "xs" | "sm" | "md" | "lg" (a fixed width from --plx-sys-field-width-*: a field narrower than its row)
+     Stack.maxHeight: "sm" | "md" | "lg" (scrolls past --plx-sys-scroll-max-*)
+     Stack.indent: starts one inline step in (a nested group)
+     Stack.push: moves itself to the end of its row (a search box at the end of a toolbar)
+     Stack.reverse: lays the children out in the other order (column-reverse, row-reverse); the reading and Tab order stay the markup's
+     Stack.reverseBelow: "narrow" (under 600px) | "medium" (under 840px): reverses only below that window class
+     Stack.order: "first" | "last": moves this element to the start or the end of its parent Stack or Inline
+     Stack.orderBelow: "narrow" | "medium": applies order only below that window class
+     Stack.as: the element; "div" by default; ul, ol, section, header, footer, form, fieldset, …
+     Stack.className: more classes on the element
+     Stack.children: the content to lay out
+     Center.maxWidth: "sm" (400px: a sign-in form, an empty state) | "md" (default, 600px: a dialog-like page) | "lg" (900px:
+       reading) | "page" (the contained layout's maximum) | "none": the widest it grows; narrower parents keep it narrower
+     Center.intrinsic: centers each child at its own width (a column of centered children) instead of stretching it
+     Center.vertical: centers the content in its parent's height too; content taller than the parent starts at the top
+     Center.text: centers the lines of text (short headings and messages only)
+     Center.as, Center.className: as for Stack
+     Bleed.space: "xs" | "sm" | "md" (default) | "lg" | "xl": the parent's inset (Stack inset) it cancels
+     Bleed.sides: "inline" (default: to the start and end edges) | "block" (top and bottom) | "all"
+     Bleed.as, Bleed.className: as for Stack
+   Behavior:
+     A scrolling Stack or Inline shows its scroll bar on hover.
+     reverse, reverseBelow and order change only where the children are drawn: assistive technology and the Tab key follow
+       the markup. Use them for regions without a reading order between them (a summary and the content it sums up), never
+       for steps, form fields or anything read in sequence; when the meaning changes, change the markup instead.
+     Bleed cancels exactly the inset tokens of its parent (Stack inset), so its edges meet the parent's edges; its own content
+       keeps no inset (text stays out of a Bleed).
+   Notes:
+     Inline takes the same props as Stack.
+     Any other prop reaches the element.
+     Applications build their layouts from these (and the Platform's patterns) instead of styles.
+*/
+function layout(kind, {
+  as: As = 'div',
+  gap,
+  equal,
+  align,
+  justify,
+  wrap,
+  inset,
+  grow,
+  scroll,
+  width,
+  maxHeight,
+  indent,
+  push,
+  reverse,
+  reverseBelow,
+  order,
+  orderBelow,
+  className,
+  children,
+  ...rest
+}, defaults) {
+  return /*#__PURE__*/_react.default.createElement(As, _extends({
+    className: (0, _cx.cx)('plx-' + kind, 'plx-' + kind + '--gap-' + (gap || defaults.gap), (align || defaults.align) && 'plx-layout--align-' + (align || defaults.align), justify && 'plx-layout--justify-' + justify, wrap && 'plx-inline--wrap', inset && 'plx-layout--inset-' + inset, grow && 'plx-grow', scroll && 'plx-layout--scroll', width && 'plx-layout--width-' + width, maxHeight && 'plx-layout--max-' + maxHeight, indent && 'plx-layout--indent', push && 'plx-layout--push', equal && kind === 'stack' && 'plx-stack--equal', equal && kind === 'stack' && (align === 'end' || align === 'center') && 'plx-stack--equal-' + align, reverse && 'plx-layout--reverse', reverseBelow && 'plx-layout--reverse-below-' + reverseBelow, order && 'plx-layout--order-' + order + (orderBelow ? '-below-' + orderBelow : ''), className)
+  }, rest), children);
+}
+function Stack(props) {
+  return layout('stack', props, {
+    gap: 'md'
+  });
+}
+function Inline(props) {
+  return layout('inline', props, {
+    gap: 'sm',
+    align: 'center'
+  });
+}
+function Center({
+  as: As = 'div',
+  maxWidth = 'md',
+  intrinsic,
+  vertical,
+  text,
+  className,
+  children,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement(As, _extends({
+    className: (0, _cx.cx)('plx-center', 'plx-center--max-' + maxWidth, intrinsic && 'plx-center--intrinsic', vertical && 'plx-center--vertical', text && 'plx-center--text', className)
+  }, rest), children);
+}
+function Bleed({
+  as: As = 'div',
+  space = 'md',
+  sides = 'inline',
+  className,
+  children,
+  ...rest
+}) {
+  return /*#__PURE__*/_react.default.createElement(As, _extends({
+    className: (0, _cx.cx)('plx-bleed', 'plx-bleed--' + space, 'plx-bleed--' + sides, className)
+  }, rest), children);
+}
+  } },
+  "platform/providers/ReadOnly.jsx": { deps: {"react":null,"../utils/describedBy.js":"platform/utils/describedBy.js","../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ReadOnlyContext = exports.ReadOnly = void 0;
+exports.ReadOnlyProvider = ReadOnlyProvider;
+exports.readOnlyProps = readOnlyProps;
+exports.useReadOnly = useReadOnly;
+var _react = _interopRequireDefault(require("react"));
+var _describedBy = require("../utils/describedBy.js");
+var _Icon = require("../components/Icon/Icon.jsx");
+var _Text = require("../components/Text/Text.jsx");
+var _Stack = require("../components/Stack/Stack.jsx");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ReadOnly, ReadOnlyProvider, useReadOnly
+   Summary: A read-only region: everything people could change inside it shows its value and cannot be changed, while
+     it stays readable, focusable, selectable and copyable (unlike disabled). A record someone may view but not edit, a
+     form that is locked after it was submitted, a setting an administrator controls.
+   Usage:
+     <ReadOnly reason="Set by your administrator">…fields…</ReadOnly>                         // a region
+     <ReadOnly as="form" readOnly={!canEdit} onSubmit={save}>…</ReadOnly>                    // a whole form
+     <Field label="Asset ID"><Input value={id} readOnly /></Field>                              // one field: its own prop
+     const readOnly = useReadOnly(props.readOnly);                                              // a component adopting it
+   Props:
+     ReadOnly.as ("div"): the element: "div", "section", "form" or "fieldset"
+     ReadOnly.readOnly (true): false makes the region editable again (a nested editable part of a read-only page)
+     ReadOnly.reason: why it cannot be changed, shown first in the region with the lock icon and tied to it as its
+       description (aria-describedby)
+     ReadOnly.className: more classes on the element
+     ReadOnly.children: the content; ...rest: other attributes go on the element
+     ReadOnlyProvider.readOnly (true): the value the components inside read with useReadOnly, without the region's
+       behavior (a component that draws its own read-only state)
+     useReadOnly(own): the component's own readOnly prop when it is given, else the nearest region's (false outside one)
+   Behavior:
+     The region carries data-plx-readonly="true" (system/read-only.css draws its controls: the sunken surface, the quiet
+       border, the arrow pointer). Inside it, text fields and text areas become readOnly (the value can be selected,
+       copied and focused); checkboxes, switches, radios, selects and sliders keep their value and take focus, but a
+       click, Space, the arrow keys or typing do not change them, and they are marked aria-readonly where the role allows
+       it. A form inside a read-only region does not submit. Content editable text stops being editable.
+     Controls added later are covered as they appear; making the region editable again (or removing it) gives every
+       control back exactly what it had.
+     A nested <ReadOnly readOnly={false}> is left alone by the outer region.
+   Notes:
+     Read-only is not disabled: use disabled for a control that is not available now (it leaves the Tab order and dims);
+       read-only for a value that is there to read. Hide or remove the actions that would change the region (Save,
+       Delete) rather than disabling them.
+     Buttons inside stay as they are: actions that only read (Copy, Download, Open) keep working.
+     Checkbox, Radio, Switch, RadioGroup, ChoiceList, RadioTiles, Select and Slider read useReadOnly and lock themselves
+       with the same stops (readOnlyProps, inside the Platform), so their own readOnly works outside a region too.
+*/
+const ReadOnlyContext = exports.ReadOnlyContext = /*#__PURE__*/_react.default.createContext(false);
+function ReadOnlyProvider({
+  readOnly = true,
+  children
+}) {
+  return /*#__PURE__*/_react.default.createElement(ReadOnlyContext.Provider, {
+    value: !!readOnly
+  }, children);
+}
+function useReadOnly(own) {
+  const ctx = _react.default.useContext(ReadOnlyContext);
+  return own === undefined || own === null ? ctx : !!own;
+}
+
+// what the region may lock: the controls whose value a person changes
+const CONTROLS = 'input,textarea,select,[contenteditable="true"],[contenteditable=""],[role="checkbox"],[role="switch"],[role="radio"],[role="slider"],[role="spinbutton"],[role="combobox"]';
+const NOT_VALUES = {
+  button: 1,
+  submit: 1,
+  reset: 1,
+  image: 1,
+  hidden: 1,
+  file: 0
+};
+const TEXT_TYPES = /^(text|search|email|url|tel|password|number|date|datetime-local|month|week|time)$/;
+// roles that may carry aria-readonly (WAI-ARIA 1.2); a radio's group carries it instead
+const ARIA_READONLY = {
+  checkbox: 1,
+  switch: 1,
+  slider: 1,
+  spinbutton: 1,
+  combobox: 1,
+  listbox: 1,
+  textbox: 1,
+  radiogroup: 1
+};
+// keys that change a locked control's value (Tab, Escape and shortcuts with Ctrl or ⌘ still work)
+const CHANGE_KEYS = /^(ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Home|End|PageUp|PageDown| |Spacebar|Enter|Backspace|Delete|.)$/;
+
+// a key the region (and readOnlyProps) stops on a locked control: Tab, Escape and shortcuts with Ctrl, ⌘ or Alt pass
+const stopsKey = e => !(e.key === 'Tab' || e.key === 'Escape' || e.ctrlKey || e.metaKey || e.altKey) && CHANGE_KEYS.test(e.key);
+const stop = e => {
+  e.preventDefault();
+  e.stopPropagation();
+};
+const noChange = () => {};
+// the props a component puts on a value control it locks itself (on: useReadOnly(own)): the region's stops, on the element.
+//   aria: marks it aria-readonly (a single radio does not: its group would); pointer: a press focuses without changing
+//   (a select, a slider, a combobox). Off, the props come back unchanged.
+function readOnlyProps(on, props, {
+  aria = true,
+  pointer = false
+} = {}) {
+  if (!on) return props;
+  const out = Object.assign({}, props, {
+    onClick: stop,
+    onChange: noChange,
+    // React reports a choice's change from the click itself, so the click stop alone does not hold it
+    onKeyDown: e => {
+      if (stopsKey(e)) stop(e);else if (props.onKeyDown) props.onKeyDown(e);
+    }
+  });
+  if (aria && props['aria-readonly'] == null) out['aria-readonly'] = true;
+  if (pointer) {
+    const press = own => e => {
+      e.preventDefault();
+      e.currentTarget.focus();
+      if (own) own(e);
+    };
+    out.onMouseDown = press(props.onMouseDown);
+    out.onPointerDown = press(props.onPointerDown);
+  }
+  return out;
+}
+function roleOf(el) {
+  const r = el.getAttribute('role');
+  if (r) return r;
+  if (el.tagName === 'SELECT') return el.multiple ? 'listbox' : 'combobox';
+  if (el.tagName === 'INPUT') return el.type === 'checkbox' ? 'checkbox' : el.type === 'radio' ? 'radio' : el.type === 'range' ? 'slider' : 'textbox';
+  return 'textbox';
+}
+
+// locks one control; returns what to undo, or null when it is not a value control or is already read-only by its owner
+function lock(el) {
+  if (el.hasAttribute('data-plx-readonly-set')) return null;
+  const tag = el.tagName;
+  if (tag === 'INPUT' && NOT_VALUES[el.type]) return null;
+  if (el.getAttribute('contenteditable') === 'true' || el.getAttribute('contenteditable') === '') {
+    el.setAttribute('contenteditable', 'false');
+    el.setAttribute('data-plx-readonly-set', 'editable');
+    return () => {
+      el.setAttribute('contenteditable', 'true');
+      el.removeAttribute('data-plx-readonly-set');
+    };
+  }
+  if (tag === 'TEXTAREA' || tag === 'INPUT' && TEXT_TYPES.test(el.type)) {
+    if (el.readOnly) return null;
+    el.readOnly = true;
+    el.setAttribute('data-plx-readonly-set', 'readonly');
+    return () => {
+      el.readOnly = false;
+      el.removeAttribute('data-plx-readonly-set');
+    };
+  }
+  // a choice, a select or a slider: the value stays, changes are stopped by the region's listeners
+  const role = roleOf(el);
+  const aria = ARIA_READONLY[role] && !el.hasAttribute('aria-readonly');
+  if (aria) el.setAttribute('aria-readonly', 'true');
+  el.setAttribute('data-plx-readonly-set', 'locked');
+  return () => {
+    if (aria) el.removeAttribute('aria-readonly');
+    el.removeAttribute('data-plx-readonly-set');
+  };
+}
+
+// the region's behavior: locks its controls (and the ones added later), stops the events that would change them
+function useLockRegion(ref, on) {
+  _react.default.useEffect(() => {
+    const root = ref.current;
+    if (!root || !on) return undefined;
+    const undo = new Map();
+    const mine = el => el.closest('[data-plx-readonly]') === root;
+    const apply = () => {
+      root.querySelectorAll(CONTROLS).forEach(el => {
+        if (!undo.has(el) && mine(el)) {
+          const u = lock(el);
+          if (u) undo.set(el, u);
+        }
+      });
+    };
+    apply();
+    const observer = typeof MutationObserver !== 'undefined' ? new MutationObserver(apply) : null;
+    if (observer) observer.observe(root, {
+      childList: true,
+      subtree: true
+    });
+    const locked = t => {
+      const el = t && t.closest ? t.closest('[data-plx-readonly-set="locked"]') : null;
+      return el && mine(el) ? el : null;
+    };
+    const onClick = e => {
+      if (locked(e.target)) stop(e);
+    };
+    const onKey = e => {
+      if (stopsKey(e) && locked(e.target)) stop(e);
+    };
+    const onPointer = e => {
+      const el = locked(e.target);
+      if (el && (el.tagName === 'SELECT' || roleOf(el) === 'slider' || roleOf(el) === 'combobox')) {
+        e.preventDefault();
+        el.focus();
+      }
+    };
+    const onSubmit = e => {
+      if (e.target === root || mine(e.target)) e.preventDefault();
+    };
+    root.addEventListener('click', onClick, true);
+    root.addEventListener('keydown', onKey, true);
+    root.addEventListener('mousedown', onPointer, true);
+    root.addEventListener('pointerdown', onPointer, true);
+    root.addEventListener('submit', onSubmit, true);
+    return () => {
+      if (observer) observer.disconnect();
+      root.removeEventListener('click', onClick, true);
+      root.removeEventListener('keydown', onKey, true);
+      root.removeEventListener('mousedown', onPointer, true);
+      root.removeEventListener('pointerdown', onPointer, true);
+      root.removeEventListener('submit', onSubmit, true);
+      undo.forEach(u => u());
+    };
+  }, [ref, on]);
+}
+const ReadOnly = exports.ReadOnly = /*#__PURE__*/_react.default.forwardRef(function ReadOnly({
+  as = 'div',
+  readOnly = true,
+  reason,
+  className,
+  children,
+  ...rest
+}, ref) {
+  const own = _react.default.useRef(null);
+  const setRef = el => {
+    own.current = el;
+    if (typeof ref === 'function') ref(el);else if (ref) ref.current = el;
+  };
+  const on = !!readOnly;
+  useLockRegion(own, on);
+  const reasonId = (0, _describedBy.useDescriptionId)('read-only');
+  const Tag = ['div', 'section', 'form', 'fieldset'].indexOf(as) >= 0 ? as : 'div';
+  return /*#__PURE__*/_react.default.createElement(ReadOnlyContext.Provider, {
+    value: on
+  }, /*#__PURE__*/_react.default.createElement(Tag, _extends({
+    ref: setRef,
+    "data-plx-readonly": on ? 'true' : 'false',
+    className: className
+  }, rest, {
+    "aria-describedby": (0, _describedBy.joinIds)(rest['aria-describedby'], on && reason ? reasonId : null)
+  }), on && reason ? /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+    gap: "xs"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: "lock",
+    size: "sm"
+  }), /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "secondary",
+    id: reasonId
+  }, reason)) : null, children));
+});
+  } },
+  "platform/components/Input/Input.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/floating.js":"platform/utils/floating.js","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -6546,6 +11913,8 @@ exports.Textarea = exports.Select = exports.Input = void 0;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _grid = require("../../utils/grid.js");
+var _floating = require("../../utils/floating.js");
+var _ReadOnly = require("../../providers/ReadOnly.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Input, Textarea, Select
    Summary: The text field family, at the standard control height.
@@ -6556,7 +11925,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      <Input appearance="filled" … />               <Textarea autoGrow … />
    Props:
      Input.size: "sm" uses the existing toolbar control height; omitted or "md" keeps today’s standard height; numeric values retain the native size attribute.
-     Select.size: as Input.size; numeric values retain the native select size attribute.
+     Select.size: as Input.size; a number above 1 (or multiple) keeps the browser's own list box.
      Input.invalid: marks the field (aria-invalid); put the message in Field's error
      Input.width: "xs" | "sm" | "md" | "lg" (a field narrower than its row, --plx-sys-field-width-*) | "fill" (the whole width)
        A date or a time (type date, time, datetime-local, month, week) is never narrower than its value, whatever the width:
@@ -6579,14 +11948,27 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Textarea.data: technical text (lists of extensions, paths, codes) in the data font, as Input.data
      Textarea.className: more classes on the <textarea>
      Select.invalid: marks the field (aria-invalid)
-     Select.options: the choices: [{ value, label, disabled }]; or pass <option>s as children
+     Select.options: the choices: [{ value, label, disabled }]; or pass <option>s (and <optgroup>s) as children
+     Select.value, defaultValue, onChange(event), name, required, disabled, form, ref: as on a native select (event.target.value is the choice);
+       the ref is the hidden native <select>
      Select.block: the select takes its own line, as wide as its room (InlineEdit)
      Select.joined: { start, end }: "square" | "seam": its corners square where it meets a neighbor (InputGroup sets it)
      Select.children: <option>s, when there are no options
      Select.appearance: as Input.appearance (on the <select>)
      Select.className: more classes on the wrapper
+     Select.readOnly: the choice shows and takes focus but cannot change (default: the nearest read-only region's, useReadOnly)
    Behavior:
-     Select.data applies the same technical-value font variant as Input.data to its native control.
+     Select.data applies the same technical-value font variant as Input.data to the field.
+     Select is drawn by Plenix (owner, dropdown-look-36): a field and a list in the Menu's look, over a hidden native <select> that
+     stays the source of truth (options, value, form, reset, label). The field is role="combobox" and the list role="listbox"; a
+     <label for> or Field names and focuses it. The arrow is the form-icon size (--plx-sys-control-icon-inline), like the Combobox's.
+     Keyboard: ↓ / ↑ / Enter / Space open the list; ↓ / ↑ move; Home and End jump to the first and last row; typing a letter
+     goes to the next row that starts with it; Enter chooses; Alt+↑ chooses and closes; Escape closes; Tab chooses the row
+     and moves on. Rows are the Menu's height and text size; the chosen row is blue and semibold; a disabled row is skipped.
+     A value set straight on the native select through the ref shows on the next render. The options are compared after every
+     render (length, then each value, label and state), so a list of hundreds costs a little each time.
+     The box is as wide as the widest option. The list opens in the browser's top layer, below the field (or above it near an
+     edge), at least as wide as the field, placed like a Menu: no dialog, drawer, table cell or scroll area clips it.
      Inside a Field, the label, description and error are connected for you.
      Every appearance keeps the same states: hover and focus change only the color of its border, never a ring outside
      it; invalid draws a 2px danger border (the border and a line inside it, so the value does not move) on the lightest
@@ -6597,8 +11979,13 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      check; tel gets inputMode "tel"; search gets inputMode "search" and enterKeyHint "search".
    Notes:
      They take every native attribute (value, onChange, placeholder, disabled, readOnly, required…).
+     Input and Textarea are read-only when their own readOnly says so, else when they sit in a read-only region (ReadOnly,
+       useReadOnly).
      All three forward their ref to the native element.
 */
+// the top layer and CSS anchor positioning (as Menu and Popover), checked once
+const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
+
 // the keyboard a type brings on a touch screen (Platforms Standard 3.5: the right type, inputmode and autocomplete)
 const TYPE_HINTS = {
   email: {
@@ -6631,11 +12018,15 @@ const Input = exports.Input = /*#__PURE__*/_react.default.forwardRef(function In
   size,
   className,
   type = 'text',
+  readOnly,
   ...rest
 }, ref) {
+  // its own readOnly, else the nearest read-only region's (providers/ReadOnly.jsx)
+  const locked = (0, _ReadOnly.useReadOnly)(readOnly);
   return /*#__PURE__*/_react.default.createElement("input", _extends({
     ref: ref,
     type: type,
+    readOnly: locked || undefined,
     size: size === 'sm' || size === 'md' ? undefined : size,
     className: (0, _cx.cx)('plx-input', size === 'sm' && 'plx-input--size-sm', width && 'plx-input--width-' + width, data && 'plx-input--data', emphasis && 'plx-input--emphasis', look(appearance), className),
     "aria-invalid": invalid || undefined
@@ -6652,8 +12043,10 @@ const Textarea = exports.Textarea = /*#__PURE__*/_react.default.forwardRef(funct
   className,
   rows = 3,
   onInput,
+  readOnly,
   ...rest
 }, ref) {
+  const locked = (0, _ReadOnly.useReadOnly)(readOnly); // its own readOnly, else the nearest read-only region's
   const own = _react.default.useRef(null);
   const setRef = _react.default.useCallback(el => {
     own.current = el;
@@ -6676,6 +12069,7 @@ const Textarea = exports.Textarea = /*#__PURE__*/_react.default.forwardRef(funct
   return /*#__PURE__*/_react.default.createElement("textarea", _extends({
     ref: setRef,
     rows: rows,
+    readOnly: locked || undefined,
     className: (0, _cx.cx)('plx-input', 'plx-input--textarea', data && 'plx-input--data', autoGrow && 'plx-input--auto-grow', look(appearance), className),
     "aria-invalid": invalid || undefined,
     onInput: e => {
@@ -6685,8 +12079,8 @@ const Textarea = exports.Textarea = /*#__PURE__*/_react.default.forwardRef(funct
   }, rest));
 });
 
-/* options: [{ value, label }] or children <option>s */
-const Select = exports.Select = /*#__PURE__*/_react.default.forwardRef(function Select({
+/* the native control: a list box (multiple, or a size above 1) keeps the browser's own select */
+const SelectNative = /*#__PURE__*/_react.default.forwardRef(function SelectNative({
   invalid,
   options,
   appearance,
@@ -6697,8 +12091,10 @@ const Select = exports.Select = /*#__PURE__*/_react.default.forwardRef(function 
   width,
   className,
   children,
+  readOnly,
   ...rest
 }, ref) {
+  const locked = (0, _ReadOnly.useReadOnly)(readOnly);
   return /*#__PURE__*/_react.default.createElement("span", {
     className: (0, _cx.cx)('plx-select', size === 'sm' && 'plx-select--size-sm', width && 'plx-select--width-' + width, block && 'plx-select--block', joined && joined.start && 'plx-select--joined-start-' + joined.start, joined && joined.end && 'plx-select--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-select--joined', className)
   }, /*#__PURE__*/_react.default.createElement("select", _extends({
@@ -6706,11 +12102,306 @@ const Select = exports.Select = /*#__PURE__*/_react.default.forwardRef(function 
     size: size === 'sm' || size === 'md' ? undefined : size,
     className: (0, _cx.cx)('plx-input', 'plx-select__control', data && 'plx-input--data', look(appearance)),
     "aria-invalid": invalid || undefined
-  }, rest), options ? options.map(o => /*#__PURE__*/_react.default.createElement("option", {
+  }, (0, _ReadOnly.readOnlyProps)(locked, rest, {
+    pointer: true
+  })), options ? options.map(o => /*#__PURE__*/_react.default.createElement("option", {
     key: o.value,
     value: o.value,
     disabled: o.disabled
   }, o.label)) : children));
+});
+
+/* the Plenix-drawn dropdown (owner, dropdown-look-36): a field (role combobox) and a list (role listbox) drawn by Plenix over a
+   hidden native <select>, which stays the source of truth: the options, the value, the form, the ref and onChange(event) all
+   come from it, so a form posts, a reset resets and e.target.value works as before. */
+const SelectList = /*#__PURE__*/_react.default.forwardRef(function SelectList({
+  invalid,
+  options,
+  appearance,
+  size,
+  joined,
+  data = false,
+  block = false,
+  width,
+  className,
+  children,
+  id,
+  onFocus,
+  onBlur,
+  onKeyDown,
+  'aria-label': ariaLabel,
+  'aria-labelledby': labelledBy,
+  'aria-describedby': describedBy,
+  'aria-errormessage': errorMessage,
+  readOnly,
+  ...rest
+}, ref) {
+  const locked = (0, _ReadOnly.useReadOnly)(readOnly); // keeps the value and focus; a press, Space, the arrows or typing do not open or change it
+  const native = _react.default.useRef(null),
+    field = _react.default.useRef(null),
+    wrap = _react.default.useRef(null),
+    list = _react.default.useRef(null),
+    last = _react.default.useRef(null),
+    buffer = _react.default.useRef(''),
+    timer = _react.default.useRef(0);
+  const setNative = _react.default.useCallback(el => {
+    native.current = el;
+    if (typeof ref === 'function') ref(el);else if (ref) ref.current = el;
+  }, [ref]);
+  const auto = _react.default.useId();
+  const [items, setItems] = _react.default.useState([]);
+  const [chosen, setChosen] = _react.default.useState(0);
+  const [open, setOpen] = _react.default.useState(false);
+  const [active, setActive] = _react.default.useState(-1);
+  const [labelId, setLabelId] = _react.default.useState(null);
+  const [, redraw] = _react.default.useReducer(n => n + 1, 0);
+  const disabled = !!rest.disabled;
+  // the list opens in the top layer, placed against the field by the floating layer (flips up near an edge, follows scroll and resize), so no dialog, drawer, table cell or scroll area clips it
+  (0, _floating.useFloating)(wrap, list, {
+    open,
+    placement: 'bottom-start',
+    matchWidth: true
+  });
+  _react.default.useLayoutEffect(() => {
+    const el = list.current;
+    if (open && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+  }, [open]);
+  const listId = auto + '-list',
+    optId = i => auto + '-o' + i;
+  // read the native select (its options, in order, and its chosen one) after every render
+  const read = _react.default.useCallback(() => {
+    const el = native.current;
+    if (!el) return;
+    const next = Array.from(el.options).map(o => ({
+      value: o.value,
+      label: o.text,
+      disabled: o.disabled || o.parentElement && o.parentElement.disabled === true,
+      group: o.parentElement && o.parentElement.tagName === 'OPTGROUP' ? o.parentElement.label : null
+    }));
+    const prev = last.current; // the same options? a length and field-by-field comparison, cheap for a long list
+    if (!prev || prev.length !== next.length || next.some((o, i) => o.value !== prev[i].value || o.label !== prev[i].label || o.disabled !== prev[i].disabled || o.group !== prev[i].group)) {
+      last.current = next;
+      setItems(next);
+    }
+    setChosen(el.selectedIndex);
+  }, []);
+  _react.default.useLayoutEffect(read);
+  _react.default.useEffect(() => {
+    // a form reset puts the first choice back
+    const form = native.current && native.current.form;
+    if (!form) return undefined;
+    const reset = () => setTimeout(read, 0);
+    form.addEventListener('reset', reset);
+    return () => form.removeEventListener('reset', reset);
+  }, [read]);
+  _react.default.useEffect(() => {
+    // a <label for="id"> names the field and focuses it
+    if (!id || labelledBy || typeof document === 'undefined') return undefined;
+    const label = document.querySelector('label[for="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"]');
+    if (!label) return undefined;
+    if (!label.id) label.id = id + '-label';
+    setLabelId(label.id);
+    const focus = () => {
+      if (field.current) field.current.focus();
+    };
+    label.addEventListener('click', focus);
+    return () => label.removeEventListener('click', focus);
+  }, [id, labelledBy]);
+  _react.default.useEffect(() => {
+    // keep the row under the arrow keys in view
+    if (!open || active < 0) return;
+    const el = document.getElementById(optId(active));
+    if (el && el.scrollIntoView) el.scrollIntoView({
+      block: 'nearest'
+    });
+  }, [open, active]);
+  const step = (from, dir) => {
+    for (let i = from; i >= 0 && i < items.length; i += dir) if (!items[i].disabled) return i;
+    return -1;
+  };
+  const show = at => {
+    setActive(at !== undefined ? at : chosen >= 0 && !(items[chosen] && items[chosen].disabled) ? chosen : step(0, 1));
+    setOpen(true);
+  };
+  const choose = i => {
+    const el = native.current,
+      it = items[i];
+    if (!el || !it || it.disabled) return;
+    setOpen(false);
+    if (i !== el.selectedIndex) {
+      el.selectedIndex = i;
+      el.dispatchEvent(new Event('input', {
+        bubbles: true
+      }));
+      el.dispatchEvent(new Event('change', {
+        bubbles: true
+      }));
+    }
+    redraw();
+    setTimeout(read, 0);
+  };
+  const onKey = e => {
+    if (onKeyDown) onKeyDown(e);
+    if (e.defaultPrevented || disabled) return;
+    const k = e.key;
+    if (k === 'ArrowDown' || k === 'ArrowUp') {
+      e.preventDefault();
+      if (!open) {
+        show();
+        return;
+      }
+      if (e.altKey && k === 'ArrowUp') {
+        choose(active);
+        return;
+      }
+      const j = step(active + (k === 'ArrowDown' ? 1 : -1), k === 'ArrowDown' ? 1 : -1);
+      if (j >= 0) setActive(j);
+    } else if (k === 'Home' || k === 'End') {
+      e.preventDefault();
+      const j = k === 'Home' ? step(0, 1) : step(items.length - 1, -1);
+      if (open) setActive(j);else show(j);
+    } else if ((k === 'Enter' || k === ' ') && !(k === ' ' && buffer.current)) {
+      e.preventDefault();
+      if (open) choose(active);else show();
+    } else if (k === 'Escape') {
+      if (open) {
+        e.preventDefault();
+        e.stopPropagation();
+        setOpen(false);
+      }
+    } else if (k === 'Tab') {
+      if (open && active >= 0) choose(active);else setOpen(false);
+    } else if (k.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      // type-ahead: the next row that starts with what was typed
+      clearTimeout(timer.current);
+      buffer.current += k.toLowerCase();
+      timer.current = setTimeout(() => {
+        buffer.current = '';
+      }, 700);
+      const from = (open ? active : chosen) + (buffer.current.length === 1 ? 1 : 0);
+      const order = items.map((it, i) => i).slice(Math.max(0, from)).concat(items.map((it, i) => i).slice(0, Math.max(0, from)));
+      const j = order.find(i => !items[i].disabled && items[i].label.toLowerCase().indexOf(buffer.current) === 0);
+      if (j !== undefined) {
+        if (open) setActive(j);else show(j);
+      }
+    }
+  };
+  const current = items[chosen];
+  const grouped = []; // the rows in order, a group's rows together (an <optgroup>)
+  items.forEach((it, i) => {
+    const g = grouped[grouped.length - 1];
+    if (g && g.name === it.group && it.group != null) g.rows.push({
+      it,
+      i
+    });else grouped.push({
+      name: it.group,
+      rows: [{
+        it,
+        i
+      }]
+    });
+  });
+  return /*#__PURE__*/_react.default.createElement("span", {
+    ref: wrap,
+    className: (0, _cx.cx)('plx-select', 'plx-select--list', size === 'sm' && 'plx-select--size-sm', width && 'plx-select--width-' + width, block && 'plx-select--block', joined && joined.start && 'plx-select--joined-start-' + joined.start, joined && joined.end && 'plx-select--joined-end-' + joined.end, joined && (joined.start || joined.end) && 'plx-select--joined', open && 'is-open', disabled && 'is-disabled', className)
+  }, /*#__PURE__*/_react.default.createElement("select", _extends({
+    ref: setNative,
+    tabIndex: -1,
+    "aria-hidden": "true",
+    className: (0, _cx.cx)('plx-input', 'plx-select__control', 'plx-select__native', data && 'plx-input--data', look(appearance))
+  }, (0, _ReadOnly.readOnlyProps)(locked, Object.assign({
+    onFocus: () => {
+      if (field.current) field.current.focus();
+    }
+  }, rest), {
+    pointer: true
+  })), options ? options.map(o => /*#__PURE__*/_react.default.createElement("option", {
+    key: o.value,
+    value: o.value,
+    disabled: o.disabled
+  }, o.label)) : children), /*#__PURE__*/_react.default.createElement("div", _extends({
+    ref: field,
+    id: id,
+    role: "combobox",
+    tabIndex: disabled ? -1 : 0,
+    "aria-haspopup": "listbox",
+    "aria-expanded": open,
+    "aria-controls": open ? listId : undefined,
+    "aria-activedescendant": open && active >= 0 ? optId(active) : undefined,
+    "aria-label": ariaLabel,
+    "aria-labelledby": labelledBy || (ariaLabel ? undefined : labelId || undefined),
+    "aria-describedby": describedBy,
+    "aria-errormessage": errorMessage,
+    "aria-invalid": invalid || undefined,
+    "aria-required": rest.required || undefined,
+    "aria-disabled": disabled || undefined,
+    className: (0, _cx.cx)('plx-input', 'plx-select__field', data && 'plx-input--data', look(appearance), disabled && 'is-disabled')
+  }, (0, _ReadOnly.readOnlyProps)(locked, {
+    onClick: () => {
+      if (disabled) return;
+      if (open) setOpen(false);else show();
+    },
+    onKeyDown: onKey
+  }, {
+    pointer: true
+  }), {
+    onFocus: onFocus,
+    onBlur: e => {
+      setOpen(false);
+      if (onBlur) onBlur(e);
+    }
+  }), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-select__value"
+  }, current ? current.label : '')), open ? /*#__PURE__*/_react.default.createElement("ul", {
+    ref: list,
+    id: listId,
+    role: "listbox",
+    popover: TOP_LAYER ? 'manual' : undefined,
+    "aria-label": ariaLabel,
+    "aria-labelledby": labelledBy || (ariaLabel ? undefined : labelId || undefined),
+    className: "plx-select__list",
+    onMouseDown: e => e.preventDefault()
+  }, grouped.map((g, gi) => {
+    const rows = g.rows.map(({
+      it,
+      i
+    }) => /*#__PURE__*/_react.default.createElement("li", {
+      key: 'o' + i,
+      id: optId(i),
+      role: "option",
+      "aria-selected": i === chosen,
+      "aria-disabled": it.disabled || undefined,
+      className: (0, _cx.cx)('plx-select__option', i === active && 'is-active', i === chosen && 'is-selected', it.disabled && 'is-disabled'),
+      onMouseDown: e => e.preventDefault(),
+      onClick: () => choose(i),
+      onMouseEnter: () => {
+        if (!it.disabled) setActive(i);
+      }
+    }, it.label));
+    return g.name == null ? rows : /*#__PURE__*/_react.default.createElement("li", {
+      key: 'g' + gi,
+      role: "group",
+      "aria-labelledby": auto + '-g' + gi,
+      className: "plx-select__group-wrap"
+    }, /*#__PURE__*/_react.default.createElement("div", {
+      id: auto + '-g' + gi,
+      role: "presentation",
+      className: "plx-select__group"
+    }, g.name), /*#__PURE__*/_react.default.createElement("ul", {
+      role: "presentation",
+      className: "plx-select__group-list"
+    }, rows));
+  })) : null);
+});
+
+/* options: [{ value, label }] or children <option>s */
+const Select = exports.Select = /*#__PURE__*/_react.default.forwardRef(function Select(props, ref) {
+  const listBox = props.multiple || typeof props.size === 'number' && props.size > 1;
+  return listBox ? /*#__PURE__*/_react.default.createElement(SelectNative, _extends({}, props, {
+    ref: ref
+  })) : /*#__PURE__*/_react.default.createElement(SelectList, _extends({}, props, {
+    ref: ref
+  }));
 });
   } },
   "platform/components/Dialog/Dialog.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Field/Field.jsx":"platform/components/Field/Field.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
@@ -7236,10 +12927,10 @@ exports.stepSize = stepSize;
    Props:
      none: SIZE_STEPS lists the sizes in pixels, smallest first; snapSize(px, min, max) and stepSize(px, dir, min, max)
 */
-const SIZE_STEPS = exports.SIZE_STEPS = [4, 8, 12, 16, 18, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 80, 88, 92, 96, 100, 112, 120, 128, 132, 140, 152, 160, 180, 200, 220, 240, 260, 280, 300, 320, 360, 380, 400, 420, 440, 460, 480, 500, 520, 560, 600, 640, 720, 760, 800, 860, 900];
+const SIZE_STEPS = exports.SIZE_STEPS = [4, 8, 12, 16, 18, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 80, 88, 92, 96, 100, 112, 120, 128, 132, 140, 152, 160, 180, 200, 220, 240, 260, 280, 300, 320, 360, 380, 400, 420, 440, 460, 480, 500, 520, 560, 600, 640, 720, 760, 800, 860, 900, 960, 1000, 1200, 1400, 1600];
 // the grid lines system/steps.css has a rule for (build-steps.js): a pane is drawn from GRID_MIN to GRID_PANE_MAX, a Resizable box to GRID_BOX_MAX
 const GRID_MIN = exports.GRID_MIN = 4,
-  GRID_PANE_MAX = exports.GRID_PANE_MAX = 960,
+  GRID_PANE_MAX = exports.GRID_PANE_MAX = 1600,
   GRID_BOX_MAX = exports.GRID_BOX_MAX = 1600;
 const within = (min, max) => SIZE_STEPS.filter(s => s >= min && s <= max);
 // the size token nearest to px within [min, max] (the limit itself when no token lies between them)
@@ -7314,8 +13005,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      for those who do not drag; PanelSplitter is the same edge on a pane of the application shell (the navigation pane,
      a secondary pane, the inspector), promoted here from AppShell, which imports and re-exports it. Every size is on the
      4px grid: a drag moves one grid line at a time and lands on one when let go (owner, 2026-10-26), and a list of steps
-     narrows the settled sizes further. Sizes are honoured from 4px up to 1600px (GRID_BOX_MAX; a pane of the shell up to
-     960px, GRID_PANE_MAX): each grid line has a rule in the stylesheet up to there, and a larger size lands on the largest.
+     narrows the settled sizes further. Sizes are honoured from 4px up to 1600px (GRID_BOX_MAX; a pane of the shell too,
+     GRID_PANE_MAX): each grid line has a rule in the stylesheet up to there, and a larger size lands on the largest.
    Usage:
      <Resizable label="Preview" axis="horizontal" defaultWidth={320} minWidth={200} maxWidth={560}>…</Resizable>
      <Resizable label="Notes" axis="vertical" height={h} onResize={({ height }) => setH(height)} minHeight={120} maxHeight={400}>…</Resizable>
@@ -7324,8 +13015,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      <PanelSplitter label="Resize navigation" value={w} min={140} max={() => 320} onChange={setW} edge="end" />
    Props:
      label: what is resized ("Preview"): the edges' names ("Preview width", "Preview height") (required)
-     variant: "default" (a hover line on the edge) | "divider" (the edge is the whole gap to the next panel: a line down
-       its middle and a pill on it; its size is the container's --plx-comp-resizable-divider-size: SplitView)
+     variant: "default" (a hover line on the edge) | "divider" (the edge is the whole gap to the next panel, 8px in
+       SplitView: a thin line on each side, a light fill and a grip of three short lines in the middle; its size is the
+       container's --plx-comp-resizable-divider-size)
      fill: the content is a column whose children fill it; default false
      axis: "horizontal" (default; the end edge changes the width) | "vertical" (the bottom edge changes the height) |
        "both" (both edges, and a corner the pointer drags in both directions)
@@ -7686,7 +13378,7 @@ function Resizable({
     role: "status",
     "aria-live": "polite",
     "aria-atomic": "true"
-  }, announcement), doW ? edge('width') : null, doH ? edge('height') : null, doW && doH ? /*#__PURE__*/_react.default.createElement("div", {
+  }, announcement), doW && doH ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, edge('width'), edge('height')) : edge(doW ? 'width' : 'height'), doW && doH ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-resizable__corner",
     "aria-hidden": "true",
     onPointerDown: drag(1, 1)
@@ -8037,7 +13729,7 @@ function PageContent({
   }, rest), children);
 }
   } },
-  "platform/components/Sheet/Sheet.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/Sheet/Sheet.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../hooks/useGesture.js":"platform/hooks/useGesture.js","../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8051,6 +13743,7 @@ var _layer = require("../../utils/layer.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _Button = require("../Button/Button.jsx");
 var _Dialog = require("../Dialog/Dialog.jsx");
+var _useGesture = require("../../hooks/useGesture.js");
 var _AppShell = require("../../patterns/AppShell/AppShell.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · Sheet
@@ -8087,7 +13780,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        the sheet is open, and returns to the opener when it closes.
      Escape and a click on the scrim close it, unless dismissible is false.
      The grabber is a button: pressing it moves between the medium and large heights; dragging it up opens the large
-       height, dragging it down returns to the medium height or, from there, closes the sheet.
+       height, dragging it down returns to the medium height or, from there, closes the sheet (the drag is useGesture's pan).
      Only one sheet shows at a time: a sheet opened while another is open shows in its place, and the first returns when
        it closes.
      The page does not scroll while the sheet is open.
@@ -8182,6 +13875,19 @@ function Sheet({
     initialFocus: firstFocus
   });
   const task = !!onDone;
+  // the grabber's drag (the shared gesture hook; a press is the button's click): a drag of at least half the grabber's height
+  // up opens the large height, down returns to the medium height or, from there, closes the sheet; a canceled drag does nothing
+  const grabber = _react.default.useRef(null);
+  (0, _useGesture.useGesture)(grabber, {
+    disabled: !(shown && bottom),
+    axis: 'both',
+    onPanEnd: g => {
+      const el = grabber.current;
+      if (g.canceled || !el || Math.abs(g.dy) < el.offsetHeight / 2) return; // a press: the click toggles
+      el.dataset.plxDragged = 'true';
+      if (g.dy < 0) setHeight('large');else if (height === 'large') setHeight('medium');else if (dismissible && onClose) onClose();
+    }
+  });
   if (!shown) return null;
   if (!bottom) {
     // the side sheet (Medium) and the dialog (Wide): Close in the header; Cancel and Done after the caller's footer actions
@@ -8210,23 +13916,15 @@ function Sheet({
     }, actions) : null, children);
   }
 
-  // the grabber: a press moves between the two heights; a drag up opens the large height, a drag down shrinks or closes
+  // the grabber: a press moves between the two heights (its drag is the gesture above)
   const toggle = () => setHeight(height === 'medium' ? 'large' : 'medium');
-  const onGrab = e => {
-    if (e.button !== 0) return;
-    const y0 = e.clientY,
-      el = e.currentTarget,
-      step = el.offsetHeight;
-    el.setPointerCapture(e.pointerId);
-    const up = ev => {
-      el.removeEventListener('pointerup', up);
-      const dy = ev.clientY - y0;
-      if (Math.abs(dy) < step / 2) return; // a press: the click toggles
-      ev.preventDefault();
-      el.dataset.plxDragged = 'true';
-      if (dy < 0) setHeight('large');else if (height === 'large') setHeight('medium');else if (dismissible && onClose) onClose();
-    };
-    el.addEventListener('pointerup', up);
+  // capture the pointer at once, so a quick flick that leaves the grabber before the gesture's slop is still followed to its release
+  const onGrabDown = e => {
+    if (e.button === 0) {
+      try {
+        e.currentTarget.setPointerCapture(e.pointerId);
+      } catch (err) {/* the pointer is gone */}
+    }
   };
   const onGrabClick = e => {
     if (e.currentTarget.dataset.plxDragged) {
@@ -8250,10 +13948,11 @@ function Sheet({
     tabIndex: -1,
     className: (0, _cx.cx)('plx-sheet', 'plx-sheet--' + height, task && 'plx-sheet--task', className)
   }, /*#__PURE__*/_react.default.createElement("button", {
+    ref: grabber,
     type: "button",
     className: "plx-sheet__grabber",
     "aria-label": height === 'medium' ? t.expand : t.shrink,
-    onPointerDown: onGrab,
+    onPointerDown: onGrabDown,
     onClick: onGrabClick
   }), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-sheet__header"
@@ -8689,7 +14388,7 @@ function ContextualHelp({
   }, more('standalone')) : null));
 }
   } },
-  "platform/components/ProgressBar/ProgressBar.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/ProgressBar/ProgressBar.jsx": { deps: {"react":null,"../../utils/format.js":"platform/utils/format.js","../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8697,6 +14396,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ProgressBar = ProgressBar;
 var _react = _interopRequireDefault(require("react"));
+var _format = require("../../utils/format.js");
 var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -8747,7 +14447,7 @@ function ProgressBar({
     tone: ['info', 'success', 'warning', 'danger', 'neutral'],
     size: ['sm', 'md']
   });
-  const loc = locale || typeof document !== 'undefined' && document.documentElement.lang || undefined;
+  const loc = (0, _format.numeralLocale)(locale || typeof document !== 'undefined' && document.documentElement.lang || undefined);
   const known = typeof value === 'number' && !Number.isNaN(value);
   const pct = known ? Math.max(0, Math.min(100, value / (max || 100) * 100)) : null;
   const id = 'plx-pb' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
@@ -10364,7 +16064,7 @@ const DragHandle = exports.DragHandle = /*#__PURE__*/_react.default.forwardRef(f
   }));
 });
   } },
-  "node_modules/@tanstack/table-core/build/lib/columnHelper.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/columnHelper.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10434,7 +16134,7 @@ function createColumnHelper() {
 }
 exports.createColumnHelper = createColumnHelper;
   } },
-  "node_modules/@tanstack/table-core/build/lib/utils.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10544,7 +16244,7 @@ exports.makeStateUpdater = makeStateUpdater;
 exports.memo = memo;
 exports.noop = noop;
   } },
-  "node_modules/@tanstack/table-core/build/lib/core/cell.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/core/cell.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10585,7 +16285,7 @@ function createCell(table, row, column, columnId) {
 }
 exports.createCell = createCell;
   } },
-  "node_modules/@tanstack/table-core/build/lib/core/column.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/core/column.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10664,7 +16364,7 @@ function createColumn(table, columnDef, depth, parent) {
 }
 exports.createColumn = createColumn;
   } },
-  "node_modules/@tanstack/table-core/build/lib/core/headers.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/core/headers.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -10933,7 +16633,7 @@ function buildHeaderGroups(allColumns, columnsToGroup, table, headerFamily) {
 exports.Headers = Headers;
 exports.buildHeaderGroups = buildHeaderGroups;
   } },
-  "node_modules/@tanstack/table-core/build/lib/core/row.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./cell.js":"node_modules/@tanstack/table-core/build/lib/core/cell.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/core/row.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./cell.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/core/cell.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11021,7 +16721,7 @@ const createRow = (table, id, original, rowIndex, depth, subRows, parentId) => {
 };
 exports.createRow = createRow;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11062,7 +16762,7 @@ const ColumnFaceting = {
 };
 exports.ColumnFaceting = ColumnFaceting;
   } },
-  "node_modules/@tanstack/table-core/build/lib/filterFns.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/filterFns.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11158,7 +16858,7 @@ function testFalsey(val) {
 }
 exports.filterFns = filterFns;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js": { deps: {"../filterFns.js":"node_modules/@tanstack/table-core/build/lib/filterFns.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js": { deps: {"../filterFns.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/filterFns.js","../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11310,7 +17010,7 @@ function shouldAutoRemoveFilter(filterFn, value, column) {
 exports.ColumnFiltering = ColumnFiltering;
 exports.shouldAutoRemoveFilter = shouldAutoRemoveFilter;
   } },
-  "node_modules/@tanstack/table-core/build/lib/aggregationFns.js": { deps: {"./utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/aggregationFns.js": { deps: {"./utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11417,7 +17117,7 @@ const aggregationFns = {
 };
 exports.aggregationFns = aggregationFns;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js": { deps: {"../aggregationFns.js":"node_modules/@tanstack/table-core/build/lib/aggregationFns.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js": { deps: {"../aggregationFns.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/aggregationFns.js","../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11559,7 +17259,7 @@ function orderColumns(leafColumns, grouping, groupedColumnMode) {
 exports.ColumnGrouping = ColumnGrouping;
 exports.orderColumns = orderColumns;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11658,7 +17358,7 @@ function _getVisibleLeafColumns(table, position) {
 exports.ColumnVisibility = ColumnVisibility;
 exports._getVisibleLeafColumns = _getVisibleLeafColumns;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./ColumnGrouping.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","./ColumnVisibility.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./ColumnGrouping.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","./ColumnVisibility.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11742,7 +17442,7 @@ const ColumnOrdering = {
 };
 exports.ColumnOrdering = ColumnOrdering;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11872,7 +17572,7 @@ const ColumnPinning = {
 };
 exports.ColumnPinning = ColumnPinning;
   } },
-  "node_modules/@tanstack/table-core/build/lib/utils/document.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/utils/document.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -11890,7 +17590,7 @@ function safelyAccessDocument(_document) {
 }
 exports.safelyAccessDocument = safelyAccessDocument;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","../utils/document.js":"node_modules/@tanstack/table-core/build/lib/utils/document.js","./ColumnVisibility.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js","../utils/document.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils/document.js","./ColumnVisibility.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12161,7 +17861,7 @@ exports.ColumnSizing = ColumnSizing;
 exports.defaultColumnSizing = defaultColumnSizing;
 exports.passiveEventSupported = passiveEventSupported;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12202,7 +17902,7 @@ const GlobalFaceting = {
 };
 exports.GlobalFaceting = GlobalFaceting;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js": { deps: {"../filterFns.js":"node_modules/@tanstack/table-core/build/lib/filterFns.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js": { deps: {"../filterFns.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/filterFns.js","../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12265,7 +17965,7 @@ const GlobalFiltering = {
 };
 exports.GlobalFiltering = GlobalFiltering;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12438,7 +18138,7 @@ const RowExpanding = {
 };
 exports.RowExpanding = RowExpanding;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/RowPagination.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/features/RowPagination.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12607,7 +18307,7 @@ const RowPagination = {
 };
 exports.RowPagination = RowPagination;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/RowPinning.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/features/RowPinning.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -12752,7 +18452,7 @@ const RowPinning = {
 };
 exports.RowPinning = RowPinning;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/RowSelection.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/features/RowSelection.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13143,7 +18843,7 @@ exports.isRowSelected = isRowSelected;
 exports.isSubRowSelected = isSubRowSelected;
 exports.selectRowsFn = selectRowsFn;
   } },
-  "node_modules/@tanstack/table-core/build/lib/sortingFns.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/sortingFns.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13263,7 +18963,7 @@ const sortingFns = {
 exports.reSplitAlphaNumeric = reSplitAlphaNumeric;
 exports.sortingFns = sortingFns;
   } },
-  "node_modules/@tanstack/table-core/build/lib/features/RowSorting.js": { deps: {"../sortingFns.js":"node_modules/@tanstack/table-core/build/lib/sortingFns.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/features/RowSorting.js": { deps: {"../sortingFns.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/sortingFns.js","../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13489,7 +19189,7 @@ const RowSorting = {
 };
 exports.RowSorting = RowSorting;
   } },
-  "node_modules/@tanstack/table-core/build/lib/core/table.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./column.js":"node_modules/@tanstack/table-core/build/lib/core/column.js","./headers.js":"node_modules/@tanstack/table-core/build/lib/core/headers.js","../features/ColumnFaceting.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js","../features/ColumnFiltering.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js","../features/ColumnGrouping.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","../features/ColumnOrdering.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js","../features/ColumnPinning.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js","../features/ColumnSizing.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js","../features/ColumnVisibility.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js","../features/GlobalFaceting.js":"node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js","../features/GlobalFiltering.js":"node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js","../features/RowExpanding.js":"node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js","../features/RowPagination.js":"node_modules/@tanstack/table-core/build/lib/features/RowPagination.js","../features/RowPinning.js":"node_modules/@tanstack/table-core/build/lib/features/RowPinning.js","../features/RowSelection.js":"node_modules/@tanstack/table-core/build/lib/features/RowSelection.js","../features/RowSorting.js":"node_modules/@tanstack/table-core/build/lib/features/RowSorting.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/core/table.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./column.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/core/column.js","./headers.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/core/headers.js","../features/ColumnFaceting.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js","../features/ColumnFiltering.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js","../features/ColumnGrouping.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","../features/ColumnOrdering.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js","../features/ColumnPinning.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js","../features/ColumnSizing.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js","../features/ColumnVisibility.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js","../features/GlobalFaceting.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js","../features/GlobalFiltering.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js","../features/RowExpanding.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js","../features/RowPagination.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/RowPagination.js","../features/RowPinning.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/RowPinning.js","../features/RowSelection.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/RowSelection.js","../features/RowSorting.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/RowSorting.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13700,7 +19400,7 @@ function createTable(options) {
 }
 exports.createTable = createTable;
   } },
-  "node_modules/@tanstack/table-core/build/lib/utils/getCoreRowModel.js": { deps: {"../core/row.js":"node_modules/@tanstack/table-core/build/lib/core/row.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/utils/getCoreRowModel.js": { deps: {"../core/row.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/core/row.js","../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13764,7 +19464,7 @@ function getCoreRowModel() {
 }
 exports.getCoreRowModel = getCoreRowModel;
   } },
-  "node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13809,7 +19509,7 @@ function expandRows(rowModel) {
 exports.expandRows = expandRows;
 exports.getExpandedRowModel = getExpandedRowModel;
   } },
-  "node_modules/@tanstack/table-core/build/lib/utils/getFacetedMinMaxValues.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedMinMaxValues.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13844,7 +19544,7 @@ function getFacetedMinMaxValues() {
 }
 exports.getFacetedMinMaxValues = getFacetedMinMaxValues;
   } },
-  "node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js": { deps: {"../core/row.js":"node_modules/@tanstack/table-core/build/lib/core/row.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js": { deps: {"../core/row.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/core/row.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13954,7 +19654,7 @@ function filterRowModelFromRoot(rowsToFilter, filterRow, table) {
 }
 exports.filterRows = filterRows;
   } },
-  "node_modules/@tanstack/table-core/build/lib/utils/getFacetedRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./filterRowsUtils.js":"node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedRowModel.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./filterRowsUtils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -13989,7 +19689,7 @@ function getFacetedRowModel() {
 }
 exports.getFacetedRowModel = getFacetedRowModel;
   } },
-  "node_modules/@tanstack/table-core/build/lib/utils/getFacetedUniqueValues.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedUniqueValues.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -14027,7 +19727,7 @@ function getFacetedUniqueValues() {
 }
 exports.getFacetedUniqueValues = getFacetedUniqueValues;
   } },
-  "node_modules/@tanstack/table-core/build/lib/utils/getFilteredRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./filterRowsUtils.js":"node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/utils/getFilteredRowModel.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./filterRowsUtils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils/filterRowsUtils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -14137,7 +19837,7 @@ function getFilteredRowModel() {
 }
 exports.getFilteredRowModel = getFilteredRowModel;
   } },
-  "node_modules/@tanstack/table-core/build/lib/utils/getGroupedRowModel.js": { deps: {"../core/row.js":"node_modules/@tanstack/table-core/build/lib/core/row.js","../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/utils/getGroupedRowModel.js": { deps: {"../core/row.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/core/row.js","../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -14293,7 +19993,7 @@ function groupBy(rows, columnId) {
 }
 exports.getGroupedRowModel = getGroupedRowModel;
   } },
-  "node_modules/@tanstack/table-core/build/lib/utils/getPaginationRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./getExpandedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/utils/getPaginationRowModel.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./getExpandedRowModel.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -14352,7 +20052,7 @@ function getPaginationRowModel(opts) {
 }
 exports.getPaginationRowModel = getPaginationRowModel;
   } },
-  "node_modules/@tanstack/table-core/build/lib/utils/getSortedRowModel.js": { deps: {"../utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/utils/getSortedRowModel.js": { deps: {"../utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -14453,7 +20153,7 @@ function getSortedRowModel() {
 }
 exports.getSortedRowModel = getSortedRowModel;
   } },
-  "node_modules/@tanstack/table-core/build/lib/index.js": { deps: {"./columnHelper.js":"node_modules/@tanstack/table-core/build/lib/columnHelper.js","./core/cell.js":"node_modules/@tanstack/table-core/build/lib/core/cell.js","./core/column.js":"node_modules/@tanstack/table-core/build/lib/core/column.js","./core/headers.js":"node_modules/@tanstack/table-core/build/lib/core/headers.js","./core/row.js":"node_modules/@tanstack/table-core/build/lib/core/row.js","./core/table.js":"node_modules/@tanstack/table-core/build/lib/core/table.js","./features/ColumnFaceting.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js","./features/ColumnFiltering.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js","./features/ColumnGrouping.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","./features/ColumnOrdering.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js","./features/ColumnPinning.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js","./features/ColumnSizing.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js","./features/ColumnVisibility.js":"node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js","./features/GlobalFaceting.js":"node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js","./features/GlobalFiltering.js":"node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js","./features/RowExpanding.js":"node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js","./features/RowPagination.js":"node_modules/@tanstack/table-core/build/lib/features/RowPagination.js","./features/RowPinning.js":"node_modules/@tanstack/table-core/build/lib/features/RowPinning.js","./features/RowSelection.js":"node_modules/@tanstack/table-core/build/lib/features/RowSelection.js","./features/RowSorting.js":"node_modules/@tanstack/table-core/build/lib/features/RowSorting.js","./utils.js":"node_modules/@tanstack/table-core/build/lib/utils.js","./utils/getCoreRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getCoreRowModel.js","./utils/getExpandedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js","./utils/getFacetedMinMaxValues.js":"node_modules/@tanstack/table-core/build/lib/utils/getFacetedMinMaxValues.js","./utils/getFacetedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getFacetedRowModel.js","./utils/getFacetedUniqueValues.js":"node_modules/@tanstack/table-core/build/lib/utils/getFacetedUniqueValues.js","./utils/getFilteredRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getFilteredRowModel.js","./utils/getGroupedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getGroupedRowModel.js","./utils/getPaginationRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getPaginationRowModel.js","./utils/getSortedRowModel.js":"node_modules/@tanstack/table-core/build/lib/utils/getSortedRowModel.js","./aggregationFns.js":"node_modules/@tanstack/table-core/build/lib/aggregationFns.js","./filterFns.js":"node_modules/@tanstack/table-core/build/lib/filterFns.js","./sortingFns.js":"node_modules/@tanstack/table-core/build/lib/sortingFns.js"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/table-core/build/lib/index.js": { deps: {"./columnHelper.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/columnHelper.js","./core/cell.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/core/cell.js","./core/column.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/core/column.js","./core/headers.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/core/headers.js","./core/row.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/core/row.js","./core/table.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/core/table.js","./features/ColumnFaceting.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFaceting.js","./features/ColumnFiltering.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnFiltering.js","./features/ColumnGrouping.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnGrouping.js","./features/ColumnOrdering.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnOrdering.js","./features/ColumnPinning.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnPinning.js","./features/ColumnSizing.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnSizing.js","./features/ColumnVisibility.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/ColumnVisibility.js","./features/GlobalFaceting.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFaceting.js","./features/GlobalFiltering.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/GlobalFiltering.js","./features/RowExpanding.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/RowExpanding.js","./features/RowPagination.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/RowPagination.js","./features/RowPinning.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/RowPinning.js","./features/RowSelection.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/RowSelection.js","./features/RowSorting.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/features/RowSorting.js","./utils.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils.js","./utils/getCoreRowModel.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils/getCoreRowModel.js","./utils/getExpandedRowModel.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils/getExpandedRowModel.js","./utils/getFacetedMinMaxValues.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedMinMaxValues.js","./utils/getFacetedRowModel.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedRowModel.js","./utils/getFacetedUniqueValues.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils/getFacetedUniqueValues.js","./utils/getFilteredRowModel.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils/getFilteredRowModel.js","./utils/getGroupedRowModel.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils/getGroupedRowModel.js","./utils/getPaginationRowModel.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils/getPaginationRowModel.js","./utils/getSortedRowModel.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/utils/getSortedRowModel.js","./aggregationFns.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/aggregationFns.js","./filterFns.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/filterFns.js","./sortingFns.js":"../../plenix/node_modules/@tanstack/table-core/build/lib/sortingFns.js"}, externals: {  }, run: function (module, exports, require) {
 /**
    * table-core
    *
@@ -14551,7 +20251,7 @@ exports.filterFns = filterFns.filterFns;
 exports.reSplitAlphaNumeric = sortingFns.reSplitAlphaNumeric;
 exports.sortingFns = sortingFns.sortingFns;
   } },
-  "node_modules/@tanstack/react-table/build/lib/index.js": { deps: {"react":null,"@tanstack/table-core":"node_modules/@tanstack/table-core/build/lib/index.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/react-table/build/lib/index.js": { deps: {"react":null,"@tanstack/table-core":"../../plenix/node_modules/@tanstack/table-core/build/lib/index.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 /**
    * react-table
    *
@@ -14654,7 +20354,7 @@ Object.keys(tableCore).forEach(function (k) {
   });
 });
   } },
-  "node_modules/@tanstack/virtual-core/dist/cjs/lazy-measurements.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/virtual-core/dist/cjs/lazy-measurements.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -14696,7 +20396,7 @@ function createLazyMeasurementsView(cache, flat) {
 exports.createLazyMeasurementsView = createLazyMeasurementsView;
 exports.getMeasurementKey = getMeasurementKey;
   } },
-  "node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -14774,7 +20474,7 @@ exports.debounce = debounce;
 exports.memo = memo;
 exports.notUndefined = notUndefined;
   } },
-  "node_modules/@tanstack/virtual-core/dist/cjs/scroll-classifier.cjs": { deps: {"./utils.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/virtual-core/dist/cjs/scroll-classifier.cjs": { deps: {"./utils.cjs":"../../plenix/node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -14867,7 +20567,7 @@ exports.externalRetiresCommand = externalRetiresCommand;
 exports.flingCaught = flingCaught;
 exports.flingSpedUp = flingSpedUp;
   } },
-  "node_modules/@tanstack/virtual-core/dist/cjs/ios-gesture.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/virtual-core/dist/cjs/ios-gesture.cjs": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -14998,7 +20698,7 @@ exports._resetIOSDetectionForTests = _resetIOSDetectionForTests;
 exports.iosMomentumOverridesWrites = iosMomentumOverridesWrites;
 exports.isIOSWebKit = isIOSWebKit;
   } },
-  "node_modules/@tanstack/virtual-core/dist/cjs/index.cjs": { deps: {"./lazy-measurements.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/lazy-measurements.cjs","./utils.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs","./scroll-classifier.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/scroll-classifier.cjs","./ios-gesture.cjs":"node_modules/@tanstack/virtual-core/dist/cjs/ios-gesture.cjs"}, externals: {  }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/virtual-core/dist/cjs/index.cjs": { deps: {"./lazy-measurements.cjs":"../../plenix/node_modules/@tanstack/virtual-core/dist/cjs/lazy-measurements.cjs","./utils.cjs":"../../plenix/node_modules/@tanstack/virtual-core/dist/cjs/utils.cjs","./scroll-classifier.cjs":"../../plenix/node_modules/@tanstack/virtual-core/dist/cjs/scroll-classifier.cjs","./ios-gesture.cjs":"../../plenix/node_modules/@tanstack/virtual-core/dist/cjs/ios-gesture.cjs"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -16572,7 +22272,7 @@ exports.observeWindowOffset = observeWindowOffset;
 exports.observeWindowRect = observeWindowRect;
 exports.windowScroll = windowScroll;
   } },
-  "node_modules/@tanstack/react-virtual/dist/cjs/index.cjs": { deps: {"react":null,"react-dom":null,"@tanstack/virtual-core":"node_modules/@tanstack/virtual-core/dist/cjs/index.cjs"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "../../plenix/node_modules/@tanstack/react-virtual/dist/cjs/index.cjs": { deps: {"react":null,"react-dom":null,"@tanstack/virtual-core":"../../plenix/node_modules/@tanstack/virtual-core/dist/cjs/index.cjs"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, Symbol.toStringTag, {
@@ -17081,7 +22781,7 @@ function tokenPixels(token, el) {
   return /^\d+(?:\.\d+)?px$/.test(v) ? parseFloat(v) : v ? tokenPixels(v, el) : 0;
 }
   } },
-  "platform/components/Checkbox/Checkbox.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Checkbox/Checkbox.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -17094,6 +22794,7 @@ exports.RadioGroup = RadioGroup;
 exports.Switch = void 0;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
+var _ReadOnly = require("../../providers/ReadOnly.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Checkbox, Radio, RadioGroup, ChoiceList, Switch
    Summary: Native choice inputs, so keyboard, forms and assistive technology work as usual.
@@ -17140,36 +22841,31 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Notes:
      The Switch track is 36 × 20px and the knob 16px, centered: (track − knob) / 2.
      Checkbox, Radio and Switch pass other props (checked, onChange, name, value, disabled, …) and their ref to the <input>.
-     RadioGroup and ChoiceList pass other props to the <fieldset>.
-     Writing direction (owner, ctm-needs-34): dir ("ltr" | "rtl") and lang ("ar", "en", …) on Checkbox, Radio and Switch go on
-       the row (the <label>), so the box and its text change sides together; on RadioGroup and ChoiceList they go on the
-       <fieldset>, so the legend and every option follow. An Arabic question can sit in an English page (and the reverse):
-       <Fieldset dir="rtl" lang="ar" legend="بيانات الحضور"><RadioGroup … /><Checkbox label="…" /></Fieldset>.
-       Use the dir attribute, never the CSS direction property: the :dir(rtl) rules answer only to the attribute.
+     RadioGroup and ChoiceList pass other props to the <fieldset>; their readOnly goes to each radio.
+     Each is read-only by its own readOnly, else inside a read-only region (useReadOnly, providers/ReadOnly.jsx): it keeps its
+       value and focus, a click or a change key does not change it, and Checkbox and Switch are marked aria-readonly.
 */
 const Checkbox = exports.Checkbox = /*#__PURE__*/_react.default.forwardRef(function Checkbox({
   label,
   description,
   indeterminate = false,
   className,
-  dir,
-  lang,
+  readOnly,
   ...rest
 }, ref) {
+  const locked = (0, _ReadOnly.useReadOnly)(readOnly);
   const inner = _react.default.useRef(null);
   _react.default.useImperativeHandle(ref, () => inner.current);
   _react.default.useEffect(() => {
     if (inner.current) inner.current.indeterminate = indeterminate;
   }, [indeterminate]);
   return /*#__PURE__*/_react.default.createElement("label", {
-    className: (0, _cx.cx)('plx-check', className),
-    dir: dir,
-    lang: lang
+    className: (0, _cx.cx)('plx-check', className)
   }, /*#__PURE__*/_react.default.createElement("input", _extends({
     ref: inner,
     type: "checkbox",
     className: "plx-check__input"
-  }, rest)), label || description ? /*#__PURE__*/_react.default.createElement("span", {
+  }, (0, _ReadOnly.readOnlyProps)(locked, rest))), label || description ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-check__text"
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-check__label"
@@ -17181,19 +22877,19 @@ const Radio = exports.Radio = /*#__PURE__*/_react.default.forwardRef(function Ra
   label,
   description,
   className,
-  dir,
-  lang,
+  readOnly,
   ...rest
 }, ref) {
+  const locked = (0, _ReadOnly.useReadOnly)(readOnly);
   return /*#__PURE__*/_react.default.createElement("label", {
-    className: (0, _cx.cx)('plx-check', className),
-    dir: dir,
-    lang: lang
+    className: (0, _cx.cx)('plx-check', className)
   }, /*#__PURE__*/_react.default.createElement("input", _extends({
     ref: ref,
     type: "radio",
     className: "plx-check__input"
-  }, rest)), label ? /*#__PURE__*/_react.default.createElement("span", {
+  }, (0, _ReadOnly.readOnlyProps)(locked, rest, {
+    aria: false
+  }))), label ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-check__text"
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-check__label"
@@ -17209,6 +22905,7 @@ function RadioGroup({
   options,
   layout = 'column',
   className,
+  readOnly,
   ...rest
 }) {
   const auto = 'plx-r' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
@@ -17224,7 +22921,8 @@ function RadioGroup({
     description: o.description,
     checked: o.value === value,
     onChange: () => onChange(o.value),
-    disabled: o.disabled
+    disabled: o.disabled,
+    readOnly: readOnly
   })));
 }
 function ChoiceList({
@@ -17234,8 +22932,10 @@ function ChoiceList({
   onChange,
   options,
   className,
+  readOnly,
   ...rest
 }) {
+  const locked = (0, _ReadOnly.useReadOnly)(readOnly);
   const auto = 'plx-c' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
   return /*#__PURE__*/_react.default.createElement("fieldset", _extends({
     className: (0, _cx.cx)('plx-choice-list', className)
@@ -17245,14 +22945,17 @@ function ChoiceList({
     key: o.value,
     className: (0, _cx.cx)('plx-choice', o.value === value && 'is-selected'),
     hidden: o.hidden || undefined
-  }, /*#__PURE__*/_react.default.createElement("input", {
+  }, /*#__PURE__*/_react.default.createElement("input", _extends({
     type: "radio",
-    className: "plx-choice__input",
+    className: "plx-choice__input"
+  }, (0, _ReadOnly.readOnlyProps)(locked, {
     name: name || auto,
     value: o.value,
     checked: o.value === value,
     onChange: () => onChange(o.value)
-  }), /*#__PURE__*/_react.default.createElement("span", {
+  }, {
+    aria: false
+  }))), /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-choice__text"
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-choice__label"
@@ -17264,21 +22967,19 @@ const Switch = exports.Switch = /*#__PURE__*/_react.default.forwardRef(function 
   label,
   labelHidden = false,
   className,
-  dir,
-  lang,
+  readOnly,
   ...rest
 }, ref) {
+  const locked = (0, _ReadOnly.useReadOnly)(readOnly);
   return /*#__PURE__*/_react.default.createElement("label", {
-    className: (0, _cx.cx)('plx-switch', className),
-    dir: dir,
-    lang: lang
+    className: (0, _cx.cx)('plx-switch', className)
   }, /*#__PURE__*/_react.default.createElement("input", _extends({
     ref: ref,
     type: "checkbox",
     role: "switch",
     className: "plx-switch__input",
     "aria-label": labelHidden ? label : undefined
-  }, rest)), /*#__PURE__*/_react.default.createElement("span", {
+  }, (0, _ReadOnly.readOnlyProps)(locked, rest))), /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-switch__track",
     "aria-hidden": "true"
   }), label && !labelHidden ? /*#__PURE__*/_react.default.createElement("span", {
@@ -17743,158 +23444,6 @@ const SearchField = exports.SearchField = /*#__PURE__*/_react.default.forwardRef
   }, props));
 });
   } },
-  "platform/components/Text/Text.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Button/Button.jsx":"platform/components/Button/Button.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Text = Text;
-var _react = _interopRequireDefault(require("react"));
-var _devWarn = require("../../utils/devWarn.js");
-var _cx = require("../../utils/cx.js");
-var _layer = require("../../utils/layer.js");
-var _Button = require("../Button/Button.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Text
-   Summary: A run of text in one of the system's text roles, from the type tokens.
-   Usage:
-     <Text variant="secondary" as="p" truncate>Last edited 2 days ago</Text>
-     <Text variant="display" as="h1">1,284 assets</Text>
-     <Text as="p" lines={3} expandable>A long description…</Text>
-     <Text variant="secondary" tabular>12:40</Text>
-   Props:
-     variant: the text role: "body" (default) | "secondary" | "caption" | "data" | "label" | "strong" | "heading"
-       | "accent" (a highlighted term, step number or key figure: the accent color) | "success" (a good outcome, the new value in a change)
-       | "eyebrow" | "danger" | "link" | "title" | "display" | "lead".
-       body: the UI text. secondary: muted, 12px (counts, hints, descriptions). caption: subtle, 11px.
-       data: the data font, Reddit Mono, for technical values (IDs, file names and paths, versions, dates and
-       times, sizes, counts, durations); 12px on its own, the size of the text around it inside other text.
-       label: semibold 12px. strong: semibold, the current size.
-       heading: a group's title inside a page or dialog, semibold 13px.
-       eyebrow: a small uppercase title over a tool panel, 11px, bold, widest spacing, muted.
-       danger: the danger color (a required marker). link: the link color, normal weight (the color only: a link is the Link component).
-       title: a page title, the heading font, 20px, bold.
-       display: the largest style, for one key figure or a sign-in or welcome heading: the heading font at the top
-         step of the type scale, semibold, with a tight line height and letter spacing (library wave 2).
-       lead: body text one step up (15px) with a relaxed line height, for the opening paragraph of a page or an
-         empty state (body-lg; library wave 2).
-     as: the element; "span" (default) | "p" | "div" | "h1"–"h4" | "dt" | "dd" | "label" | …
-     truncate: one line, cut with an ellipsis; default false (lines wins when both are set)
-     lines: 2 | 3 | 4: at most that many lines, the last one cut with an ellipsis (line clamp); default none
-     expandable: with lines, a "Show more" button under the text while it is cut; it shows the rest and reads
-       "Show less" to fold it again; default false
-     defaultExpanded: an expandable text starts unfolded; default false
-     tabular: digits of equal width (tabular figures), so numbers line up down a column and do not shift as they
-       change; default false
-     strings: the words of the expand button: { more: 'Show more', less: 'Show less' }
-     className: more classes on the text
-     children: the text
-     ...rest: other attributes go on the element
-   Behavior:
-     lines clamps with the line-clamp property; the whole text stays in the page, so search, copy and screen readers
-       get all of it.
-     expandable measures the text: the button shows only while the text is cut (and while it is unfolded). It is a
-       button with aria-expanded that points at the text (aria-controls); it measures again when the width changes.
-     display and lead are type styles only: the element (as) gives the heading level.
-   Notes:
-     Applications never set a font, size, weight or color themselves.
-     There are no margins in any case, whatever the element.
-     The expand button has the look of ShowMore (CollapsibleSection): the smallest button, its chevron after the
-       label, down to show more and up to show less.
-     Writing direction (owner, ctm-needs-34): the element is dir="auto" (its first strong letter decides); dir="rtl" or "ltr" and
-       lang override it, for text in the other direction than the page (an Arabic question in an English page).
-*/
-const LINES = [2, 3, 4];
-const STRINGS = {
-  more: 'Show more',
-  less: 'Show less'
-};
-
-// a text's classes: its role, how it overflows (one line, or at most `clamp` lines while folded) and its figures
-const textClass = (variant, truncate, clamp, open, tabular, className) => (0, _cx.cx)('plx-text', 'plx-text--' + variant, truncate && !clamp && 'plx-text--truncate', clamp && !open && 'plx-text--lines-' + clamp, tabular && 'plx-text--tabular', className);
-function Text({
-  as: As = 'span',
-  variant = 'body',
-  truncate = false,
-  lines,
-  expandable = false,
-  defaultExpanded = false,
-  tabular = false,
-  strings,
-  className,
-  children,
-  ...rest
-}) {
-  (0, _devWarn.devWarn)('Text', {
-    variant
-  }, {
-    variant: ['body', 'secondary', 'caption', 'data', 'label', 'strong', 'heading', 'accent', 'success', 'eyebrow', 'danger', 'link', 'title', 'display', 'lead']
-  });
-  const clamp = LINES.indexOf(Number(lines)) >= 0 ? Number(lines) : null;
-  if (expandable && clamp) {
-    return /*#__PURE__*/_react.default.createElement(ExpandableText, {
-      As: As,
-      variant: variant,
-      clamp: clamp,
-      defaultExpanded: defaultExpanded,
-      tabular: tabular,
-      strings: strings,
-      className: className,
-      rest: rest
-    }, children);
-  }
-  return /*#__PURE__*/_react.default.createElement(As, _extends({
-    dir: "auto",
-    className: textClass(variant, truncate, clamp, false, tabular, className)
-  }, rest), children);
-}
-
-// a clamped text and its Show more button: the button shows while the text is cut, and while it is unfolded
-function ExpandableText({
-  As,
-  variant,
-  clamp,
-  defaultExpanded,
-  tabular,
-  strings,
-  className,
-  rest,
-  children
-}) {
-  const own = (0, _layer.useUid)('plx-text');
-  const id = rest.id || own;
-  const ref = _react.default.useRef(null);
-  const [open, setOpen] = _react.default.useState(defaultExpanded);
-  const [cut, setCut] = _react.default.useState(false);
-  _react.default.useLayoutEffect(() => {
-    const el = ref.current;
-    if (!el || open) return undefined;
-    const measure = () => setCut(el.scrollHeight > el.clientHeight);
-    measure();
-    if (typeof ResizeObserver === 'undefined') return undefined;
-    const watch = new ResizeObserver(measure);
-    watch.observe(el);
-    return () => watch.disconnect();
-  }, [open, children]);
-  const words = Object.assign({}, STRINGS, strings);
-  return /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-text-expand"
-  }, /*#__PURE__*/_react.default.createElement(As, _extends({
-    dir: "auto"
-  }, rest, {
-    ref: ref,
-    id: id,
-    className: textClass(variant, false, clamp, open, tabular, className)
-  }), children), open || cut ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
-    size: "2xs",
-    iconEnd: open ? 'chevron-up' : 'chevron-down',
-    "aria-expanded": open,
-    "aria-controls": id,
-    onClick: () => setOpen(!open)
-  }, open ? words.less : words.more) : null);
-}
-  } },
   "platform/utils/barFit.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -17997,7 +23546,155 @@ function useRovingFocus(ref, getItems) {
   });
 }
   } },
-  "platform/components/Toolbar/Toolbar.jsx": { deps: {"react":null,"../../utils/roving.js":"platform/utils/roving.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/hooks/useFocusable.js": { deps: {"react":null,"../utils/roving.js":"platform/utils/roving.js","../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.useFocusGroup = useFocusGroup;
+exports.useFocusable = useFocusable;
+var _react = _interopRequireDefault(require("react"));
+var _roving = require("../utils/roving.js");
+var _direction = require("../utils/direction.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · useFocusable, useFocusGroup
+   Summary: Focus for custom elements, the way native controls have it. useFocusable makes an element a Tab stop (or a
+     focus target only) and tells whether its focus came from the keyboard (focus-visible), so the focus treatment shows
+     for the keyboard and not after a click. useFocusGroup makes a group of controls one Tab stop whose items are reached
+     with the arrow keys (roving focus: a toolbar, a list of options, a grid of tiles).
+   Usage:
+     const { focused, focusVisible, focusProps } = useFocusable();
+     <div role="option" aria-selected={on} className={cx('plx-state', focusVisible && 'is-focus-visible')} {...focusProps}>…</div>
+     const ref = React.useRef(null);
+     const { groupProps } = useFocusGroup(ref, { orientation: 'vertical' });
+     <div ref={ref} role="listbox" aria-label="Folders" {...groupProps}>{options}</div>
+   Props:
+     useFocusable(options).tabStop ("tab"): "tab" puts it in the Tab order (tabIndex 0); "target" makes it focusable
+       only from code or a click (tabIndex -1, a skip-link target or a dialog's heading); "none" leaves tabIndex alone
+       (a native control, or an item of a focus group, whose tabIndex the group sets)
+     useFocusable(options).disabled (false): no Tab stop (an item that is disabled is skipped)
+     useFocusable(options).onFocusChange(focused, visible): the focus changes
+     useFocusable(options).handlers ({}): your own onFocus and onBlur; they run first
+     useFocusable returns { focused, focusVisible, focusProps } (tabIndex, onFocus, onBlur)
+     useFocusGroup(ref, options).orientation ("horizontal"): "horizontal" (Left and Right, in reading order),
+       "vertical" (Up and Down) or "both" (all four arrows: a grid read in order)
+     useFocusGroup(ref, options).loop (true): the last item's next is the first
+     useFocusGroup(ref, options).items (a selector, or a function): which descendants are items; default the enabled buttons,
+       links, inputs, selects and elements with a tabindex. A function () => elements returns the items itself, already
+       filtered (a group that needs its own rules for hidden, disabled, nested or popup controls: Toolbar)
+     useFocusGroup(ref, options).ignore(event): return true to leave a key to its target (a select's or an editable
+       region's own keys, a popup's, a nested group's); runs after onKeyDown, before the group moves focus
+     useFocusGroup(ref, options).modifiers (false): true moves focus when Alt, Ctrl or Meta is held too; by default a key with
+       a modifier is left alone (browser and assistive-technology shortcuts)
+     useFocusGroup(ref, options).onKeyDown(event): runs first; preventDefault stops the group's own key handling
+     useFocusGroup returns { groupProps } (onKeyDown, onFocus) for the group element
+   Behavior:
+     focusVisible follows the browser's :focus-visible: true after Tab, an arrow key or focus moved by a keyboard command,
+       false after a mouse click or a tap on a non-text element. A text field is always focus-visible (it shows its caret).
+     A focus group has one Tab stop: the item focused last (else the first) has tabIndex 0 and the others -1 (the roving
+       focus of utils/roving.js), so Tab enters and leaves the group in one step. The arrows move to the next and previous
+       items in reading order (right to left reverses Left and Right), Home and End to the first and last. In a text field
+       Left and Right move the caret instead. Hidden items are skipped.
+   Notes:
+     Make only interactive elements focusable: a heading or a paragraph is not a Tab stop. A scroll area that holds no
+       control is the exception: give it tabStop "tab" and a name (role="region" with aria-label) so the keyboard can
+       scroll it.
+     The focus treatment is the system's (Focus treatment, system/interaction.css): a ring on controls, the border color
+       on fields; never remove it without the replacement.
+*/
+
+const ITEMS = 'button:not([disabled]),a[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([disabled]):not([aria-disabled="true"])';
+function isVisibleFocus(el) {
+  try {
+    return el.matches(':focus-visible');
+  } catch (e) {
+    return true;
+  } // a browser without :focus-visible shows it always
+}
+function useFocusable(options = {}) {
+  const {
+    tabStop = 'tab',
+    disabled = false,
+    onFocusChange,
+    handlers = {}
+  } = options;
+  const [state, setState] = _react.default.useState({
+    focused: false,
+    visible: false
+  });
+  const set = (focused, visible) => {
+    setState(s => s.focused === focused && s.visible === visible ? s : {
+      focused,
+      visible
+    });
+    if (onFocusChange) onFocusChange(focused, visible);
+  };
+  const focusProps = {
+    onFocus: e => {
+      if (handlers.onFocus) handlers.onFocus(e);
+      if (e.target === e.currentTarget) set(true, isVisibleFocus(e.currentTarget));
+    },
+    onBlur: e => {
+      if (handlers.onBlur) handlers.onBlur(e);
+      if (e.target === e.currentTarget) set(false, false);
+    }
+  };
+  if (tabStop !== 'none') focusProps.tabIndex = disabled ? undefined : tabStop === 'target' ? -1 : 0;
+  return {
+    focused: state.focused,
+    focusVisible: state.focused && state.visible,
+    focusProps
+  };
+}
+function useFocusGroup(ref, options = {}) {
+  const {
+    orientation = 'horizontal',
+    loop = true,
+    items: selector = ITEMS,
+    onKeyDown,
+    ignore,
+    modifiers = false
+  } = options;
+  const itemsOf = () => typeof selector === 'function' ? selector() : ref.current ? Array.prototype.filter.call(ref.current.querySelectorAll(selector), el => el.getClientRects().length > 0 && !el.closest('[hidden]')) : [];
+  (0, _roving.useRovingFocus)(ref, itemsOf);
+  const KEYS = orientation === 'vertical' ? ['ArrowUp', 'ArrowDown'] : orientation === 'both' ? ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'] : ['ArrowLeft', 'ArrowRight'];
+  const groupProps = {
+    onKeyDown: e => {
+      if (onKeyDown) onKeyDown(e);
+      if (e.defaultPrevented || !modifiers && (e.altKey || e.ctrlKey || e.metaKey)) return;
+      if (KEYS.indexOf(e.key) < 0 && e.key !== 'Home' && e.key !== 'End') return;
+      const t = e.target;
+      if ((t.tagName === 'INPUT' || t.tagName === 'TEXTAREA') && (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'Home' || e.key === 'End')) return;
+      if (ignore && ignore(e)) return;
+      const list = itemsOf();
+      const i = list.indexOf(document.activeElement);
+      if (i < 0 || !list.length) return;
+      let n;
+      if (e.key === 'Home') n = 0;else if (e.key === 'End') n = list.length - 1;else {
+        const step = (0, _direction.arrowStep)(e, ref.current, {
+          vertical: orientation !== 'horizontal'
+        });
+        if (!step) return;
+        n = i + step;
+        if (n < 0 || n >= list.length) {
+          if (!loop) return;
+          n = (n + list.length) % list.length;
+        }
+      }
+      e.preventDefault();
+      list[n].focus();
+    },
+    onFocus: e => {
+      (0, _roving.roveTo)(ref, itemsOf(), e.target);
+    }
+  };
+  return {
+    groupProps
+  };
+}
+  } },
+  "platform/components/Toolbar/Toolbar.jsx": { deps: {"react":null,"../../utils/roving.js":"platform/utils/roving.js","../../hooks/useFocusable.js":"platform/hooks/useFocusable.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -18006,7 +23703,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.Toolbar = Toolbar;
 var _react = _interopRequireDefault(require("react"));
 var _roving = require("../../utils/roving.js");
-var _direction = require("../../utils/direction.js");
+var _useFocusable = require("../../hooks/useFocusable.js");
 var _cx = require("../../utils/cx.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Toolbar, Toolbar.Group, Toolbar.Spacer
@@ -18037,6 +23734,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      In a radio group, only the checked option is a stop.
    Notes:
      Every control in it takes the toolbar control height.
+     Its one Tab stop and its arrow keys are the shared focus group (useFocusGroup, hooks/useFocusable.js).
      Other props reach the toolbar or group element.
 */
 const POPUP = '[role="dialog"],[role="alertdialog"],[role="menu"],[role="listbox"],[role="tree"],[role="grid"],[role="tablist"]';
@@ -18086,34 +23784,28 @@ function Toolbar({
       window.removeEventListener('resize', refresh);
     };
   }, []);
-  // one Tab stop: the current control is in the Tab order, the others are reached with the arrows (batch 213)
-  (0, _roving.useRovingFocus)(ref, itemsOf);
-  const onKey = e => {
-    if (onKeyDown) onKeyDown(e);
-    if (e.defaultPrevented || ['ArrowLeft', 'ArrowRight', 'Home', 'End'].indexOf(e.key) < 0) return;
-    if (/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable) return; // preserve the control's editing keys
-    if (e.target.closest(POPUP) && ref.current.contains(e.target.closest(POPUP))) return; // popup/composite controls keep their own keys
-    if (e.target.closest('[role="toolbar"]') !== ref.current) return; // a nested toolbar owns its arrows
-    const items = itemsOf();
-    const i = items.indexOf(document.activeElement);
-    if (i < 0) return;
-    const step = (0, _direction.arrowStep)(e, ref.current, {
-      vertical: false
-    }); // in reading order: right to left reverses Left and Right
-    const n = e.key === 'Home' ? 0 : e.key === 'End' ? items.length - 1 : (i + step + items.length) % items.length;
-    e.preventDefault();
-    items[n].focus();
-  };
+  // one Tab stop and the arrow keys: the shared focus group (hooks/useFocusable.js), with the toolbar's own item rules. The
+  // keys stay a text field's, a select's, an editable region's, a popup's and a nested toolbar's own (ignore).
+  const {
+    groupProps
+  } = (0, _useFocusable.useFocusGroup)(ref, {
+    items: itemsOf,
+    orientation: 'horizontal',
+    loop: true,
+    modifiers: true,
+    onKeyDown,
+    ignore: e => /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable || e.target.closest(POPUP) && ref.current.contains(e.target.closest(POPUP)) || e.target.closest('[role="toolbar"]') !== ref.current
+  });
   const onFocusIn = e => {
     if (onFocus) onFocus(e);
-    (0, _roving.roveTo)(ref, itemsOf(), e.target);
+    groupProps.onFocus(e);
   };
   return /*#__PURE__*/_react.default.createElement("div", _extends({
     ref: ref,
     role: "toolbar",
     "aria-label": label,
     className: (0, _cx.cx)('plx-toolbar', variant === 'bar' && 'plx-toolbar--bar', className),
-    onKeyDown: onKey,
+    onKeyDown: groupProps.onKeyDown,
     onFocus: onFocusIn
   }, rest), children);
 }
@@ -18520,140 +24212,6 @@ function singleChoice(options, value, required) {
   const values = (options || []).map(option => typeof option === 'string' ? option : option.value);
   const selected = (Array.isArray(value) ? value : value === undefined || value === null ? [] : [value]).find(item => values.includes(item));
   return selected !== undefined ? [selected] : required && values.length ? [values[0]] : [];
-}
-  } },
-  "platform/components/Stack/Stack.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Bleed = Bleed;
-exports.Center = Center;
-exports.Inline = Inline;
-exports.Stack = Stack;
-var _react = _interopRequireDefault(require("react"));
-var _cx = require("../../utils/cx.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Stack, Inline, Center, Bleed
-   Summary: Lay children out in a column (Stack) or a row (Inline), spaced by the spacing tokens, never by a margin or a number;
-     center a block at a readable width (Center); let a child reach past its parent's inset to the edge (Bleed).
-   Usage:
-     <Stack gap="md">
-       <Inline gap="sm" justify="between">…</Inline>
-       <Inline wrap>…</Inline>
-     </Stack>
-     <Inline reverseBelow="narrow"><Main /><Summary /></Inline>    the summary comes first on a narrow window
-     <Center maxWidth="sm" text><EmptyState … /></Center>
-     <Stack inset="md"><Bleed space="md"><Image … /></Bleed><Text>…</Text></Stack>
-   Props:
-     Stack.gap: "none" | "xs" | "sm" | "md" (default) | "lg" | "xl" (--plx-sys-space-stack-*) | "section" (--plx-sys-space-section)
-       Stack.equal: every child as wide as the widest (stacked buttons, owner 2026-10-22): the Stack shrinks to its widest
-       child and each Button takes its whole width; with align="end" or "center" the Stack itself sits at the end or middle
-       Peer sections that are not framed (a SectionHeading and its table, list or text, then the next): <Stack gap="section">
-       holding one <Stack gap="sm"> per section; the same in a page or a split pane, every density, either direction, phones
-     Inline.gap: "none" | "xs" | "sm" (default) | "md" | "lg" | "xl" (--plx-sys-space-inline-*)
-     Stack.align: "start" | "center" | "end" | "stretch" | "baseline" (the cross axis)
-     Inline.align: the same values; default "center"
-     Stack.justify: "start" | "center" | "end" | "between"
-     Inline.wrap: an Inline that wraps onto more lines (its lines are --plx-sys-space-stack-xs apart)
-     Stack.inset: "none" | "xs" | "sm" | "md" | "lg" | "xl" (padding on every side, --plx-sys-space-inset-*)
-     Stack.grow: fills the rest of its parent row or column (it may shrink below its content)
-     Stack.scroll: scrolls its own content
-     Stack.width: "xs" | "sm" | "md" | "lg" (a fixed width from --plx-sys-field-width-*: a field narrower than its row)
-     Stack.maxHeight: "sm" | "md" | "lg" (scrolls past --plx-sys-scroll-max-*)
-     Stack.indent: starts one inline step in (a nested group)
-     Stack.push: moves itself to the end of its row (a search box at the end of a toolbar)
-     Stack.reverse: lays the children out in the other order (column-reverse, row-reverse); the reading and Tab order stay the markup's
-     Stack.reverseBelow: "narrow" (under 600px) | "medium" (under 840px): reverses only below that window class
-     Stack.order: "first" | "last": moves this element to the start or the end of its parent Stack or Inline
-     Stack.orderBelow: "narrow" | "medium": applies order only below that window class
-     Stack.as: the element; "div" by default; ul, ol, section, header, footer, form, fieldset, …
-     Stack.className: more classes on the element
-     Stack.children: the content to lay out
-     Center.maxWidth: "sm" (400px: a sign-in form, an empty state) | "md" (default, 600px: a dialog-like page) | "lg" (900px:
-       reading) | "page" (the contained layout's maximum) | "none": the widest it grows; narrower parents keep it narrower
-     Center.intrinsic: centers each child at its own width (a column of centered children) instead of stretching it
-     Center.vertical: centers the content in its parent's height too; content taller than the parent starts at the top
-     Center.text: centers the lines of text (short headings and messages only)
-     Center.as, Center.className: as for Stack
-     Bleed.space: "xs" | "sm" | "md" (default) | "lg" | "xl": the parent's inset (Stack inset) it cancels
-     Bleed.sides: "inline" (default: to the start and end edges) | "block" (top and bottom) | "all"
-     Bleed.as, Bleed.className: as for Stack
-   Behavior:
-     A scrolling Stack or Inline shows its scroll bar on hover.
-     reverse, reverseBelow and order change only where the children are drawn: assistive technology and the Tab key follow
-       the markup. Use them for regions without a reading order between them (a summary and the content it sums up), never
-       for steps, form fields or anything read in sequence; when the meaning changes, change the markup instead.
-     Bleed cancels exactly the inset tokens of its parent (Stack inset), so its edges meet the parent's edges; its own content
-       keeps no inset (text stays out of a Bleed).
-   Notes:
-     Inline takes the same props as Stack.
-     Any other prop reaches the element.
-     Applications build their layouts from these (and the Platform's patterns) instead of styles.
-*/
-function layout(kind, {
-  as: As = 'div',
-  gap,
-  equal,
-  align,
-  justify,
-  wrap,
-  inset,
-  grow,
-  scroll,
-  width,
-  maxHeight,
-  indent,
-  push,
-  reverse,
-  reverseBelow,
-  order,
-  orderBelow,
-  className,
-  children,
-  ...rest
-}, defaults) {
-  return /*#__PURE__*/_react.default.createElement(As, _extends({
-    className: (0, _cx.cx)('plx-' + kind, 'plx-' + kind + '--gap-' + (gap || defaults.gap), (align || defaults.align) && 'plx-layout--align-' + (align || defaults.align), justify && 'plx-layout--justify-' + justify, wrap && 'plx-inline--wrap', inset && 'plx-layout--inset-' + inset, grow && 'plx-grow', scroll && 'plx-layout--scroll', width && 'plx-layout--width-' + width, maxHeight && 'plx-layout--max-' + maxHeight, indent && 'plx-layout--indent', push && 'plx-layout--push', equal && kind === 'stack' && 'plx-stack--equal', equal && kind === 'stack' && (align === 'end' || align === 'center') && 'plx-stack--equal-' + align, reverse && 'plx-layout--reverse', reverseBelow && 'plx-layout--reverse-below-' + reverseBelow, order && 'plx-layout--order-' + order + (orderBelow ? '-below-' + orderBelow : ''), className)
-  }, rest), children);
-}
-function Stack(props) {
-  return layout('stack', props, {
-    gap: 'md'
-  });
-}
-function Inline(props) {
-  return layout('inline', props, {
-    gap: 'sm',
-    align: 'center'
-  });
-}
-function Center({
-  as: As = 'div',
-  maxWidth = 'md',
-  intrinsic,
-  vertical,
-  text,
-  className,
-  children,
-  ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement(As, _extends({
-    className: (0, _cx.cx)('plx-center', 'plx-center--max-' + maxWidth, intrinsic && 'plx-center--intrinsic', vertical && 'plx-center--vertical', text && 'plx-center--text', className)
-  }, rest), children);
-}
-function Bleed({
-  as: As = 'div',
-  space = 'md',
-  sides = 'inline',
-  className,
-  children,
-  ...rest
-}) {
-  return /*#__PURE__*/_react.default.createElement(As, _extends({
-    className: (0, _cx.cx)('plx-bleed', 'plx-bleed--' + space, 'plx-bleed--' + sides, className)
-  }, rest), children);
 }
   } },
   "platform/utils/fields.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
@@ -19199,9 +24757,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Summary: The bar over a collection (owner, 2026-10-14 and 2026-10-15, the command bar study): ONE white framed bar of
      one height, fixed at the top of the content while the content scrolls; the table under it never moves. With nothing
      selected: the page's actions, then the search and the filters, then Sort, Group, Columns and View, and the count at
-     the end. With rows selected the bar swaps (Microsoft 365): the actions, the search and the filters give way to the
-     selection's commands (Delete last); Sort, Group, Columns and View stay where they are; the bar ends with "× N
-     selected", which clears the selection. A page with no actions has a view bar (1F).
+     the end. With rows selected the bar swaps (Microsoft 365): the page's actions give way to the selection's commands
+     (Delete last); the search, the filters and Sort, Group, Columns and View stay where they are, so the person can keep
+     narrowing the list while rows are ticked (owner, issue 454); the bar ends with "× N selected", which clears the selection. A page with no actions has a view bar (1F).
    Usage:
      <CommandBar label="Assets" count="24 assets"
        actions={[{ id: 'new', label: 'New', icon: 'plus', items: <><MenuItem icon="folder-add">Folder</MenuItem>…</> },
@@ -19242,8 +24800,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      selection.hidden: how many selected records are hidden by filters (DataGrid onSelectionChange supplies it)
      selection: the selection (the swap): { count, hidden, actions, onClear, noun, plural, label }; while count is above 0 the bar
        holds selection.actions ([{ id, label, icon, onSelect, items, danger, single, disabled, why }]; single: disabled
-       while more than one is selected, with a why-tooltip) instead of the page's actions, search and filters, and ends
-       with "× N selected" (onClear); label names the bar meanwhile (default "{label} actions")
+       while more than one is selected, with a why-tooltip) instead of the page's actions, and ends with "× N selected"
+       (onClear); search and the filters stay (owner, issue 454); label names the bar meanwhile (default "{label} actions")
      layout: "auto" (default: "one" with actions, "view" without) | "one" (1A) | "view" (1F: a view bar, no actions);
        "split" (a separate action bar for many actions) is retired (2026-10-15) and draws "one": many actions fold into More
      sticky: "auto" (default) sticks only as a direct child of PageContent or AppShell main; true/false force
@@ -19370,8 +24928,8 @@ function CommandBar({
 }) {
   const t = Object.assign({}, STRINGS, strings);
   const root = _react.default.useRef(null);
-  // the selection (owner, 2026-10-15: the swap): an object { count, actions, onClear, noun, plural, label }; while its
-  // count is above 0 the bar holds the selection's commands instead of the page's actions, search and filters
+  // the selection (owner, 2026-10-15: the swap; issue 454): an object { count, actions, onClear, noun, plural, label }; while
+  // its count is above 0 the selection's commands replace the page's actions; search and filters stay
   const sel = selection && ! /*#__PURE__*/_react.default.isValidElement(selection) && typeof selection === 'object' ? selection : null;
   const selCount = sel ? Number(sel.count) || 0 : 0;
   const selecting = selCount > 0;
@@ -19379,12 +24937,12 @@ function CommandBar({
   // "split" (a separate action bar) is retired (2026-10-15): many actions fold into More in the one bar
   const shape = layout === 'auto' || layout === 'split' ? actions.length ? 'one' : 'view' : layout;
   const shown = selecting ? selActs : shape === 'view' ? [] : actions;
-  const quick = selecting ? [] : quickFilters;
+  const quick = quickFilters; // search and filters stay while rows are ticked (owner, issue 454)
   const ending = end && ! /*#__PURE__*/_react.default.isValidElement(end) && !Array.isArray(end) && typeof end === 'object' && ('content' in end || 'fold' in end) ? end : null;
   const endContent = ending ? ending.content : end;
   const endFold = !selecting && ending && ending.fold;
   const finding = !!find || quick.length > 0;
-  const folds = (0, _BarActions.foldOrder)(shown).length + quick.length + (endFold ? 1 : 0) + (finding && !selecting ? 1 : 0);
+  const folds = (0, _BarActions.foldOrder)(shown).length + quick.length + (endFold ? 1 : 0) + (finding ? 1 : 0);
   // the bar's search, opened across the bar: the bar holds its step while it is open
   const [searchOpen, setSearchOpen] = _react.default.useState(false);
   const key = [shape, narrow, selecting ? 'sel' : 'rest', shown.map(a => a.label + (a.disabled ? '0' : '') + (a.loading ? 'busy' : '')).join('|'), quickFilters.map(q => q.label + (q.value && q.value.length ? q.value.length : '')).join('|'), endFold && endFold.label].join('§');
@@ -19402,7 +24960,7 @@ function CommandBar({
   const endAway = !!endFold && foldAll > fold;
   const quickAway = Math.min(quick.length, Math.max(0, foldAll - fold - (endAway ? 1 : 0)));
   // the last step: the find side folds into its button (after every command, the end control and the quick filters)
-  const findAway = finding && !selecting && foldAll > fold + (endAway ? 1 : 0) + quickAway;
+  const findAway = finding && foldAll > fold + (endAway ? 1 : 0) + quickAway;
   const quickKept = quick.slice(0, quick.length - quickAway),
     quickFolded = quick.slice(quick.length - quickAway);
   const quickMenu = quickFolded.map(q => {
@@ -19545,7 +25103,7 @@ function CommandBar({
     searchOpen: false,
     setSearchOpen
   }), []);
-  const findEl = !(find || quickEls.length) || selecting ? null : findAway ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
+  const findEl = !(find || quickEls.length) ? null : findAway ? /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Group, {
     className: "plx-command-bar__find"
   }, /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
     title: t.find,
@@ -19605,11 +25163,11 @@ function CommandBar({
   }) : null, countEl, statusEl, keptEnd, clearEl) : null;
   // Escape in the bar clears the selection (as "× N selected" does)
   const onKeyDown = selecting && sel.onClear ? e => {
-    if (e.key === 'Escape' && !e.defaultPrevented && !e.target.closest('[role="menu"], [role="dialog"]')) {
+    if (e.key === 'Escape' && !e.defaultPrevented && !e.target.closest('input, textarea, [role="menu"], [role="dialog"]')) {
       e.preventDefault();
       sel.onClear();
     }
-  } : undefined;
+  } : undefined; // Escape in the search clears the text, not the selection (issue 454)
   const parts = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, acts, acts && findEl ? /*#__PURE__*/_react.default.createElement(_Divider.Divider, {
     orientation: "vertical"
   }) : null, findEl, /*#__PURE__*/_react.default.createElement(_Toolbar.Toolbar.Spacer, null), viewEl, tail);
@@ -19963,7 +25521,7 @@ const REORDER_STRINGS = exports.REORDER_STRINGS = {
   moveDown: 'Move down'
 };
   } },
-  "platform/patterns/ColumnsMenu/ColumnsMenu.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ColumnsMenu/ColumnsMenu.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -19979,18 +25537,19 @@ var _Checkbox = require("../../components/Checkbox/Checkbox.jsx");
 var _Dialog = require("../../components/Dialog/Dialog.jsx");
 var _Field = require("../../components/Field/Field.jsx");
 var _Icon = require("../../components/Icon/Icon.jsx");
+var _Menu = require("../../components/Menu/Menu.jsx");
 var _Input = require("../../components/Input/Input.jsx");
 var _SearchField = require("../../components/SearchField/SearchField.jsx");
 var _Text = require("../../components/Text/Text.jsx");
-var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
 var _VisuallyHidden = require("../../components/VisuallyHidden/VisuallyHidden.jsx");
 var _panelParts = require("../CommandBar/panel-parts.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · ColumnsMenu, ManageColumnsDialog
    Summary: The command bar's Columns (owner, 2026-10-14: the first column is a must; a list with reordering): a "Columns"
-     dropdown listing every column with its handle, a checkbox (shown or hidden), "Make first column" (or the pinned mark
-     of the first) and Move up / Move down; ManageColumnsDialog is the same list, larger, with a find field, Show all,
-     Hide all and a First column select, applied with Apply.
+     dropdown listing every column with its handle, a checkbox (shown or hidden) and, for the first, its pinned mark; a
+     First column select above the list names the first column. The handle opens a menu with Move up and Move down.
+     ManageColumnsDialog is the same list, larger, with a find field, Show all, Hide all and the First column select,
+     applied with Apply.
    Usage:
      const [columns, setColumns] = React.useState({ order: ['name', 'type', 'size'], hidden: [] });
      <ColumnsMenu fields={fields} value={columns} onChange={setColumns} />
@@ -20003,15 +25562,17 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      open, onOpenChange(open): (ManageColumnsDialog) the dialog opened by its owner, e.g. the DataGrid's "More…" in the
        header's right-click menu; trigger={null} draws no button
      inline: (ColumnsMenu) draws the list alone (open, in a frame); default false
-     strings: { label: "Columns", manage: "Manage columns", first: "First column", makeFirst: "Make first column",
+     strings: { label: "Columns", manage: "Manage columns", first: "First column", moveMenu: "Move {name}",
        moveUp: "Move {name} up", moveDown: "Move {name} down", up: "Move up", down: "Move down", find: "Find a column",
        showAll: "Show all", hideAll: "Hide all", apply: "Apply", cancel: "Cancel", shown: "{name} shown", hidden: "{name}
        hidden", isFirst: "{name} is the first column", moved: "{name}, position {position} of {total}", row: "{name}{first}.
        Alt + Arrow Up or Down moves it", firstMark: ", first column", none: "No column matches" }
    Behavior:
      Changes in the dropdown apply at once; the dialog applies them with Apply (Cancel leaves the columns as they were).
-     A row moves by drag, by Move up and Move down, or by Alt + Arrow Up / Down on the focused row; Make first column moves
-       it to the top. Each change is announced politely. The first column cannot be hidden.
+     A row moves by drag (in Firefox a drag does not start on a button: start it from the row, not the handle), by Move up and
+       Move down in the handle's menu (the way without dragging), or by Alt + Arrow Up /
+       Down on the focused row; the First column select moves a column to the top. Each change is announced politely. The
+       first column cannot be hidden. No row carries a "Make first column" or arrow button of its own.
      The button reads "Columns" with the thin chevron; icons only, its icon and tooltip; hidden columns tint it and show
        their count. */
 
@@ -20019,7 +25580,7 @@ const STRINGS = {
   label: 'Columns',
   manage: 'Manage columns',
   first: 'First column',
-  makeFirst: 'Make first column',
+  moveMenu: 'Move {name}',
   moveUp: 'Move {name} up',
   moveDown: 'Move {name} down',
   up: 'Move up',
@@ -20126,12 +25687,30 @@ function ColumnsList({
         setDrag(null);
         if (from && from !== f) move(from, i);
       }
-    }, /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-columns-list__handle",
-      "aria-hidden": "true"
-    }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-      name: "drag"
-    })), /*#__PURE__*/_react.default.createElement(_Checkbox.Checkbox, {
+    }, /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+      label: (0, _panelParts.fill)(t.moveMenu, {
+        name: name(f)
+      }),
+      trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+        size: "xs",
+        variant: "ghost",
+        icon: "drag",
+        iconOnly: true,
+        label: (0, _panelParts.fill)(t.moveMenu, {
+          name: name(f)
+        }),
+        className: "plx-columns-list__handle"
+      }),
+      placement: "bottom-start"
+    }, /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      icon: "chevron-up",
+      disabled: i === 0,
+      onSelect: () => move(f, i - 1, true)
+    }, t.up), /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      icon: "chevron-down",
+      disabled: i === order.length - 1,
+      onSelect: () => move(f, i + 1, true)
+    }, t.down)), /*#__PURE__*/_react.default.createElement(_Checkbox.Checkbox, {
       label: name(f),
       checked: hidden.indexOf(f) < 0,
       disabled: i === 0,
@@ -20144,36 +25723,7 @@ function ColumnsList({
       name: "pin-filled"
     }), /*#__PURE__*/_react.default.createElement(_Text.Text, {
       variant: "secondary"
-    }, t.first)) : /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      size: "xs",
-      variant: "ghost",
-      icon: "pin",
-      onClick: () => move(f, 0, true)
-    }, t.makeFirst), /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
-      content: t.up
-    }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      size: "xs",
-      variant: "ghost",
-      icon: "chevron-up",
-      iconOnly: true,
-      label: (0, _panelParts.fill)(t.moveUp, {
-        name: name(f)
-      }),
-      disabled: i === 0,
-      onClick: () => move(f, i - 1)
-    })), /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
-      content: t.down
-    }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      size: "xs",
-      variant: "ghost",
-      icon: "chevron-down",
-      iconOnly: true,
-      label: (0, _panelParts.fill)(t.moveDown, {
-        name: name(f)
-      }),
-      disabled: i === order.length - 1,
-      onClick: () => move(f, i + 1)
-    })));
+    }, t.first)) : null);
   }), /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, {
     role: "status",
     "aria-live": "polite"
@@ -20191,9 +25741,23 @@ function ColumnsMenu({
     order: fields.map(f => f.value),
     hidden: []
   };
+  const name = nameIn(fields);
+  const first = /*#__PURE__*/_react.default.createElement(_Field.Field, {
+    label: t.first
+  }, /*#__PURE__*/_react.default.createElement(_Input.Select, {
+    value: v.order[0],
+    options: v.order.map(f => ({
+      value: f,
+      label: name(f)
+    })),
+    onChange: e => onChange({
+      order: moveTo(v.order, e.target.value, 0),
+      hidden: (v.hidden || []).filter(x => x !== e.target.value)
+    })
+  }));
   const list = /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-find-panel plx-find-panel--columns"
-  }, /*#__PURE__*/_react.default.createElement(ColumnsList, {
+  }, first, /*#__PURE__*/_react.default.createElement(ColumnsList, {
     fields: fields,
     value: v,
     onChange: onChange,
@@ -20316,7 +25880,7 @@ function ManageColumnsDialog({
   }))));
 }
   } },
-  "platform/components/Pagination/Pagination.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Pagination/Pagination.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -20325,6 +25889,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.Pagination = Pagination;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Pagination
    Summary: Page buttons, an optional summary ("1–30 of 120") and an optional per-page choice.
@@ -20341,7 +25906,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      onPerPageChange(n): runs when another per-page number is chosen
      label: the accessible name of the navigation; default strings.label: "Pages"
      className: more classes on the navigation
-     strings: the words it shows and announces, for other languages: { label: "Pages", range: "{first}–{last} of {total}",
+     strings: the words it shows and announces, for other languages (default: the locale's, through LocaleProvider; Arabic is
+       built in): { label: "Pages", range: "{first}–{last} of {total}",
        previous: "Previous page", next: "Next page", page: "Page {n}", perPage: "Per page" }
      ...rest: other attributes go on the navigation element
    Behavior:
@@ -20349,14 +25915,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Previous is disabled on the first page; Next on the last.
      The current page carries aria-current="page".
 */
-const STRINGS = {
-  label: 'Pages',
-  range: '{first}–{last} of {total}',
-  previous: 'Previous page',
-  next: 'Next page',
-  page: 'Page {n}',
-  perPage: 'Per page'
-};
 const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (m, k) => k in vars ? String(vars[k]) : m);
 function pagesToShow(page, count) {
   const set = new Set([1, count, page - 1, page, page + 1].filter(p => p >= 1 && p <= count));
@@ -20381,7 +25939,9 @@ function Pagination({
   className,
   ...rest
 }) {
-  const t = Object.assign({}, STRINGS, strings);
+  // the words: the catalog's for the locale (i18n/en.js, and Arabic says the range its own way: "31 إلى 60 من 120"),
+  // then the strings prop
+  const t = (0, _LocaleProvider.useStrings)('pagination', strings);
   const go = p => {
     if (p >= 1 && p <= pageCount && p !== page && onPageChange) onPageChange(p);
   };
@@ -20964,6 +26524,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The text never wraps; a value too long for a filled pill ends in an ellipsis and its full text is the tooltip (title).
      The pill is not interactive: a value that opens something is a Link inside it, or the cell's own action.
    Notes:
+     Writing direction (owner, ctm-needs-34): with data, the value keeps its own direction (dir="auto") in a right-to-left page.
      Not a Tag (a keyword next to content, 10px) and not a Badge (a status): a DataPill is the value itself.
      DataGrid: a column's pill option draws each value as a DataPill (DataGrid.jsx).
 */
@@ -21015,13 +26576,14 @@ function DataPill({
     className: "plx-data-pill__icon",
     filled: !!g
   }) : null, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-data-pill__value"
+    className: "plx-data-pill__value",
+    dir: data ? 'auto' : undefined
   }, children), g ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-visually-hidden"
   }, ', ' + t[gender]) : null);
 }
   } },
-  "platform/components/DataGrid/cells.jsx": { deps: {"react":null,"../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../DataPill/DataPill.jsx":"platform/components/DataPill/DataPill.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/DataGrid/cells.jsx": { deps: {"react":null,"../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../DataPill/DataPill.jsx":"platform/components/DataPill/DataPill.jsx","../../utils/format.js":"platform/utils/format.js","../Isolate/Isolate.jsx":"platform/components/Isolate/Isolate.jsx","../../utils/digits.js":"platform/utils/digits.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -21038,6 +26600,8 @@ var _Badge = require("../Badge/Badge.jsx");
 var _Tag = require("../Tag/Tag.jsx");
 var _DataPill = require("../DataPill/DataPill.jsx");
 var _format = require("../../utils/format.js");
+var _Isolate = require("../Isolate/Isolate.jsx");
+var _digits = require("../../utils/digits.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · DataGridEngine cells
    Summary: Existing Platform rich-cell parts rendered directly by React.
@@ -21047,7 +26611,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      (pill) every other value is a DataPill with its column's type icon; column.pill(value, record) may return its tone,
      icon, variant, data and gender, and column.pill === false keeps the plain value. A person (type person, kind
      avatar-name) carries value.gender.
-   Notes: Imports no legacy grid implementation. Data still sorts and filters by its raw value. mods: the value classes the
+   Notes: A value of kind id, email, url, phone or code is a left-to-right island, and of kind data one in its own
+     direction (Isolate), so it reads as written in a right-to-left table. Imports no legacy grid implementation. Data still sorts and filters by its raw value. mods: the value classes the
      engine gives every value span (__value--wrap, --sized, --lines). */
 
 const valueText = value => value == null ? '' : Array.isArray(value) ? value.map(valueText).join(', ') : typeof value === 'object' ? String(value.label ?? value.name ?? '') : String(value);
@@ -21157,11 +26722,22 @@ function CellValue({
     }, badge.label);
   }
   // the full text on hover, only when the cell cuts it off with an ellipsis (owner, 2026-10-22)
+  // a technical value keeps its own direction inside a right-to-left table (owner, ctm-needs-34): ids, emails, URLs, phone
+  // numbers and code read left to right; any other data value by its first strong letter
+  const island = ISLANDS.find(k => kinds.includes(k));
+  if (island) return /*#__PURE__*/_react.default.createElement("span", {
+    className: own,
+    onMouseEnter: fullText
+  }, /*#__PURE__*/_react.default.createElement(_Isolate.Isolate, {
+    dir: island === 'data' ? 'auto' : 'ltr',
+    kind: island === 'email' || island === 'url' ? island : undefined
+  }, valueText(value)));
   return /*#__PURE__*/_react.default.createElement("span", {
     className: own,
     onMouseEnter: fullText
-  }, valueText(value));
+  }, (0, _digits.localDigits)(valueText(value)));
 }
+const ISLANDS = ['id', 'email', 'url', 'phone', 'code', 'data'];
 function fullText(event) {
   const el = event.currentTarget;
   if (el.scrollWidth > el.clientWidth) el.title = el.textContent;else el.removeAttribute('title');
@@ -21535,7 +27111,7 @@ function groupDisplay(groups, collapsed, add, gaps = true) {
   return display;
 }
   } },
-  "platform/components/DataGrid/DataGridEngine.jsx": { deps: {"react":null,"./unread.js":"platform/components/DataGrid/unread.js","./room.js":"platform/components/DataGrid/room.js","react-dom":null,"./scrollbars.jsx":"platform/components/DataGrid/scrollbars.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","@tanstack/react-table":"node_modules/@tanstack/react-table/build/lib/index.js","@tanstack/react-virtual":"node_modules/@tanstack/react-virtual/dist/cjs/index.cjs","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./environment.js":"platform/components/DataGrid/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataGrid/state.js","./adapter.js":"platform/components/DataGrid/adapter.js","./cells.jsx":"platform/components/DataGrid/cells.jsx","./records.js":"platform/components/DataGrid/records.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/DataGrid/DataGridEngine.jsx": { deps: {"react":null,"./unread.js":"platform/components/DataGrid/unread.js","./room.js":"platform/components/DataGrid/room.js","react-dom":null,"./scrollbars.jsx":"platform/components/DataGrid/scrollbars.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","@tanstack/react-table":"../../plenix/node_modules/@tanstack/react-table/build/lib/index.js","@tanstack/react-virtual":"../../plenix/node_modules/@tanstack/react-virtual/dist/cjs/index.cjs","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./environment.js":"platform/components/DataGrid/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataGrid/state.js","./adapter.js":"platform/components/DataGrid/adapter.js","./cells.jsx":"platform/components/DataGrid/cells.jsx","./records.js":"platform/components/DataGrid/records.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -21554,6 +27130,7 @@ var _reactVirtual = require("@tanstack/react-virtual");
 var _direction = require("../../utils/direction.js");
 var _format = require("../../utils/format.js");
 var _cx = require("../../utils/cx.js");
+var _announce = require("../../utils/announce.jsx");
 var _grid = require("../../utils/grid.js");
 var _sizeSteps = require("../../utils/sizeSteps.js");
 var _useVirtualizer = require("../../hooks/useVirtualizer.js");
@@ -21621,7 +27198,7 @@ function pillFont(at, ctx, data) {
     wordSpacing: ctx.wordSpacing
   };
 }
-// uniformPillWidths: the widths live in one constructed sheet per document, one entry per grid
+// uniform pill widths: the widths live in one constructed sheet per document, one entry per grid
 function pillSheet(doc) {
   if (doc.__plxPillWidths) return doc.__plxPillWidths;
   const sheet = new doc.defaultView.CSSStyleSheet(),
@@ -21958,7 +27535,7 @@ function NextEngine(props) {
     headerMenu = true,
     typeIcons: typeIconsProp,
     density = 'compact',
-    uniformPillWidths = false,
+    uniformPillWidths: _uniformPillWidths,
     rowMenu: suppliedRowMenu,
     rowMenuButton = true,
     columnMenu,
@@ -22077,8 +27654,7 @@ function NextEngine(props) {
       space: 0,
       room: 0
     }),
-    [isNarrow, setNarrow] = _react.default.useState(false),
-    [message, setMessage] = _react.default.useState('');
+    [isNarrow, setNarrow] = _react.default.useState(false);
   // One conversion per distinct width and measured environment, shared by every visible cell.
   const widthPixels = _react.default.useMemo(() => {
     const cache = new Map();
@@ -22112,6 +27688,7 @@ function NextEngine(props) {
     canonical = _react.default.useMemo(() => (0, _records.recordsOf)(source, index, childField), [source, index, childField]);
   // TanStack tries a global filter against columns; the public predicate describes a record, so evaluate it once.
   const unreadKey = _react.default.useCallback(record => record[index], [index]);
+  const [ownOpen, setOwnOpen] = _react.default.useState(null);
   const unread = (0, _unread.useUnread)(canonical, unreadKey, props),
     [localUnreadOnly, setUnreadOnly] = _react.default.useState(false);
   const unreadOnly = props.unreadOnly ?? localUnreadOnly;
@@ -22153,11 +27730,12 @@ function NextEngine(props) {
   };
   const toggleGroup = (id, open) => {
     const next = new Set(live.current.collapsed),
-      expand = open ?? next.has(id);
+      expand = open ?? next.has(id),
+      changed = expand === next.has(id);
     if (expand) next.delete(id);else next.add(id);
     live.current.collapsed = next;
     setCollapsed(next);
-    setMessage(expand ? S.expanded : S.collapsed);
+    if (changed) (0, _announce.announce)(expand ? S.expanded : S.collapsed);
     props.onViewChange?.({
       collapsed: [...next]
     });
@@ -22377,8 +27955,9 @@ function NextEngine(props) {
     autoResetPageIndex: false
   });
   const allRows = (printing ? table.getPrePaginationRowModel() : table.getRowModel()).rows;
-  // uniformPillWidths (CTM, 2026-10-22): every standard pill of a column as wide as the column's widest pill in the current
-  // view (the filtered, sorted page, every row of it, not only the rows drawn), so scrolling a long list never changes it.
+  // uniform pill widths (CTM, 2026-10-22; always on, owner uniform-pills-always-35): every standard pill of a column as wide as the
+  // column's widest pill in the current view (the filtered, sorted page, every row of it, not only the rows drawn), so scrolling
+  // a long list never changes it. The uniformPillWidths prop is accepted and ignored (deprecated).
   // Measured like the column widths (the pill's font, weight, sides, border and icon), snapped up to the grid.
   const gridKey = _react.default.useId(),
     [fontsReady, setFontsReady] = _react.default.useState(0);
@@ -22390,7 +27969,7 @@ function NextEngine(props) {
     const at = frame.current;
     if (!at || typeof CSSStyleSheet === 'undefined' || !at.ownerDocument.defaultView) return undefined; // a closed document (its frame removed): nothing to measure
     const store = pillSheet(at.ownerDocument);
-    if (!uniformPillWidths || cells !== 'pill' || !metrics.row) {
+    if (cells !== 'pill' || !metrics.row) {
       if (store.rules.delete(gridKey)) store.flush();
       return undefined;
     }
@@ -22430,7 +28009,7 @@ function NextEngine(props) {
     store.rules.set(gridKey, rules.join('\n'));
     store.flush();
     return undefined;
-  }, [uniformPillWidths, cells, columns, allRows, metrics.row, metrics.space, showTypes, fontsReady]);
+  }, [cells, columns, allRows, metrics.row, metrics.space, showTypes, fontsReady]);
   _react.default.useEffect(() => () => {
     const doc = frame.current?.ownerDocument || (typeof document !== 'undefined' ? document : null);
     if (doc && doc.__plxPillWidths && doc.__plxPillWidths.rules.delete(gridKey)) doc.__plxPillWidths.flush();
@@ -22705,6 +28284,19 @@ function NextEngine(props) {
     setAutoSizing(old => JSON.stringify(old) === JSON.stringify(widths) ? old : widths);
     setFloors(old => JSON.stringify(old) === JSON.stringify(floor) ? old : floor);
   }, [columns, source, metrics.room, metrics.min, metrics.space, metrics.row, selectable, isStatic, showTypes, headerMenu, cells, effectiveWrap]);
+
+  // the room under the table that the page keeps (#451): the grid's own part below it (its border, a footer) and the end
+  // margin, padding and border of each container up to the page, so a table that fills the window ends at the page's
+  // padding and only the table scrolls; content placed after the grid is not counted
+  const trailing = (at, hold) => {
+    let sum = Math.max(0, at.getBoundingClientRect().bottom - hold.getBoundingClientRect().bottom);
+    for (let el = at; el; el = el.parentElement) {
+      const cs = getComputedStyle(el);
+      sum += parseFloat(cs.marginBlockEnd) || 0;
+      if (el !== at) sum += (parseFloat(cs.paddingBlockEnd) || 0) + (parseFloat(cs.borderBlockEndWidth) || 0);
+    }
+    return sum;
+  };
   _react.default.useLayoutEffect(() => {
     const at = frame.current;
     if (!at) return;
@@ -22733,7 +28325,7 @@ function NextEngine(props) {
       if (!isStatic && !height && mode !== 'pages' && holder.current) {
         const top = holder.current.getBoundingClientRect().top,
           room = at.getBoundingClientRect().bottom - top;
-        holder.current.style.maxBlockSize = (0, _grid.gridPx)(inPane ? Math.max(0, room) : Math.max(next.row * 8, doc.defaultView.innerHeight - top), {
+        holder.current.style.maxBlockSize = (0, _grid.gridPx)(inPane ? Math.max(0, room) : Math.max(next.row * 8, doc.defaultView.innerHeight - top - trailing(at, holder.current)), {
           round: 'down',
           el: at
         });
@@ -22907,6 +28499,11 @@ function NextEngine(props) {
     };
   }, [remoteMode, page, pageSize, JSON.stringify(sorting), JSON.stringify(filters), props.search, retry]);
   const displayedTotal = remoteMode ? remote?.total || 0 : table.getFilteredRowModel().rows.length;
+  // the open row (#453): the record whose details show, the row last opened by a click or Enter, or openKey (null: none);
+  // it is aria-current, and in a grid without selection it takes the selected look (with selection, opening selects it)
+  const openId = props.openKey !== undefined ? props.openKey == null ? null : (0, _state.recordKey)(props.openKey) : ownOpen;
+  const isOpen = id => openId != null && String(id) === String(openId),
+    marked = id => !!selection[id] || !selectable && !options.selectableRows && isOpen(id);
   const selectionRows = table.getPrePaginationRowModel().rows,
     selectedVisible = selectionRows.filter(r => selection[r.id]),
     allVisible = selectionRows.length > 0 && selectedVisible.length === selectionRows.length;
@@ -22932,6 +28529,48 @@ function NextEngine(props) {
       });
       table.setRowSelection(next);
     } else pick(row.id, wanted);
+    selectionAnchor.current = row.id;
+  };
+  // a click on the row (or Enter on it), not on its checkbox (#452, as a file manager): a plain one selects only that row,
+  // Ctrl or ⌘ toggles it, Shift extends from the anchor, Ctrl or ⌘ with Shift adds the range to the selection; the
+  // checkbox and select all keep toggling
+  const chooseRow = (row, e) => {
+    if (!selectable && !options.selectableRows) return;
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && selectable) {
+      pickCheckbox(row, {
+        target: {
+          checked: true
+        },
+        nativeEvent: e.nativeEvent,
+        shiftKey: true
+      });
+      return;
+    } // Ctrl/⌘+Shift adds the range
+    if (e.ctrlKey || e.metaKey) {
+      if (selectable) pickCheckbox(row, {
+        target: {
+          checked: !selection[row.id]
+        },
+        nativeEvent: e.nativeEvent,
+        shiftKey: false
+      });else pick(row.id, !selection[row.id]);
+      return;
+    }
+    if (e.shiftKey && selectable) {
+      pickCheckbox(row, {
+        target: {
+          checked: !selection[row.id]
+        },
+        nativeEvent: e.nativeEvent,
+        shiftKey: true
+      });
+      return;
+    }
+    const now = live.current.selection,
+      keys = Object.keys(now).filter(k => now[k]);
+    if (!(keys.length === 1 && keys[0] === String(row.id))) table.setRowSelection({
+      [row.id]: true
+    });
     selectionAnchor.current = row.id;
   };
   const fit = field => {
@@ -23362,22 +29001,20 @@ function NextEngine(props) {
       role: "row",
       "aria-rowindex": (mode === 'pages' ? page * pageSize : 0) + (semanticIndex.get(row.displayKey || row.id) || 2),
       "aria-selected": selectable || options.selectableRows ? !!selection[row.id] : undefined,
+      "aria-current": isOpen(row.id) ? 'true' : undefined,
       tabIndex: props.onRowClick || on.rowClick || options.selectableRows ? 0 : undefined,
       "aria-level": childField ? row.depth + 1 : undefined,
       "aria-expanded": row.getCanExpand?.() ? row.getIsExpanded() : undefined,
-      className: (0, _cx.cx)('' + B + '__grid-row', (selectable || options.selectableRows || props.onRowClick || on.rowClick) && B + '__grid-selectable', childField && '' + B + '__grid-tree-level-' + Math.min(12, row.depth), selection[row.id] && '' + B + '__grid-selected', isStatic && B + '__grid-row--static', anyWrap && !isNarrow && (isStatic || (effectiveStep || 'short') !== 'short') && B + '__grid-row--wrap', isNarrow && B + '__grid-row--narrow', virtualized && B + '__grid-row--virtual'),
+      className: (0, _cx.cx)('' + B + '__grid-row', (selectable || options.selectableRows || props.onRowClick || on.rowClick) && B + '__grid-selectable', childField && '' + B + '__grid-tree-level-' + Math.min(12, row.depth), marked(row.id) && '' + B + '__grid-selected', isStatic && B + '__grid-row--static', anyWrap && !isNarrow && (isStatic || (effectiveStep || 'short') !== 'short') && B + '__grid-row--wrap', isNarrow && B + '__grid-row--narrow', virtualized && B + '__grid-row--virtual'),
       onClick: e => {
         if (e.target.closest(interactive)) return;
-        if (selectable) pickCheckbox(row, {
-          target: {
-            checked: !selection[row.id]
-          },
-          nativeEvent: e.nativeEvent,
-          shiftKey: e.shiftKey
-        });else if (options.selectableRows) pick(row.id, !selection[row.id]);
+        chooseRow(row, e);
         emit('rowClick', e, rowApi);
         props.onRowClick?.(record, e);
-        if (props.onRowClick || on.rowClick) unread.open(record);
+        if (props.onRowClick || on.rowClick) {
+          unread.open(record);
+          setOwnOpen(row.id);
+        }
       },
       onDoubleClick: e => {
         if (!e.target.closest(interactive)) {
@@ -23388,16 +29025,13 @@ function NextEngine(props) {
       onKeyDown: e => {
         if (e.key === 'Enter' && !e.defaultPrevented && (e.target === e.currentTarget || e.target.getAttribute('role') === 'gridcell')) {
           e.preventDefault();
-          if (selectable) pickCheckbox(row, {
-            target: {
-              checked: !selection[row.id]
-            },
-            nativeEvent: e.nativeEvent,
-            shiftKey: e.shiftKey
-          });else if (options.selectableRows) pick(row.id, !selection[row.id]);
+          chooseRow(row, e);
           emit('rowClick', e, rowApi);
           props.onRowClick?.(record, e);
-          if (props.onRowClick || on.rowClick) unread.open(record);
+          if (props.onRowClick || on.rowClick) {
+            unread.open(record);
+            setOwnOpen(row.id);
+          }
         }
         if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && e.target === e.currentTarget) {
           e.preventDefault();
@@ -23432,7 +29066,7 @@ function NextEngine(props) {
           strings: S,
           record,
           pill: cells === 'pill',
-          pillField: uniformPillWidths ? c.field : undefined,
+          pillField: c.field,
           icon: showTypes && typeOf(c) !== 'text' ? typeIcons[typeOf(c)] : undefined,
           mods
         }); // a pill carries a type icon only when it says something (a date, a number)
@@ -23490,7 +29124,7 @@ function NextEngine(props) {
         },
         "data-plx-sticky": pinned && sticky ? sticky + 'px' : undefined,
         "data-plx-text-follow": c.rowLabel || columns.indexOf(c) <= pinnedAt ? 'size family weight' : 'size family',
-        className: (0, _cx.cx)('' + B + '__grid-cell', modes, !selectable && selection[row.id] && ordered.indexOf(column) === 0 && B + '__grid-cell--selected-start', bare && B + '__grid-cell--bare', selectable && ordered.indexOf(column) === 0 && B + '__grid-cell--after-lead', ordered.indexOf(column) > 0 && ordered[ordered.indexOf(column) - 1].getIsPinned() === 'left' && column.getIsPinned() !== 'left' && B + '__grid-cell--after-frozen', isTree && row.depth > 0 && B + '__tree-cell--level-' + Math.min(12, row.depth), editing?.key === row.id && editing.field === c.field && '' + B + '__grid-editing', k.map(kind => B + '__cell--' + kind).join(' '), (k.includes('data') || c.type === 'bytes') && B + '__grid-cell--data', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', c.type === 'bytes' && B + '__cell--data', c.rowHandle && B + '__cell--handle', childField && c.field === (props.treeColumn || columns[0]?.field) && B + '__tree-cell', pinned && '' + B + '__grid-frozen', (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + '__cell--row-label', k.includes('icon') && B + '__w-lead', keys.includes(c.field) && B + '__cell--key', keys[0] === c.field && B + '__cell--key-first', (c.align || c.type === 'bytes') && B + '__cell--align-' + (c.align || 'right'))
+        className: (0, _cx.cx)('' + B + '__grid-cell', modes, !selectable && marked(row.id) && ordered.indexOf(column) === 0 && B + '__grid-cell--selected-start', bare && B + '__grid-cell--bare', selectable && ordered.indexOf(column) === 0 && B + '__grid-cell--after-lead', ordered.indexOf(column) > 0 && ordered[ordered.indexOf(column) - 1].getIsPinned() === 'left' && column.getIsPinned() !== 'left' && B + '__grid-cell--after-frozen', isTree && row.depth > 0 && B + '__tree-cell--level-' + Math.min(12, row.depth), editing?.key === row.id && editing.field === c.field && '' + B + '__grid-editing', k.map(kind => B + '__cell--' + kind).join(' '), (k.includes('data') || c.type === 'bytes') && B + '__grid-cell--data', [].concat(groupBy || []).some(level => (typeof level === 'object' ? level.field : level) === c.field) && B + '__cell--grouped', c.type === 'bytes' && B + '__cell--data', c.rowHandle && B + '__cell--handle', childField && c.field === (props.treeColumn || columns[0]?.field) && B + '__tree-cell', pinned && '' + B + '__grid-frozen', (c.rowLabel || columns.indexOf(c) <= pinnedAt) && B + '__cell--row-label', k.includes('icon') && B + '__w-lead', keys.includes(c.field) && B + '__cell--key', keys[0] === c.field && B + '__cell--key-first', (c.align || c.type === 'bytes') && B + '__cell--align-' + (c.align || 'right'))
       }), childField && c.field === (props.treeColumn || columns[0]?.field) ? /*#__PURE__*/_react.default.createElement("span", {
         className: B + '__tree-level',
         "data-plx-depth": 0
@@ -23597,7 +29231,7 @@ function NextEngine(props) {
     key: row.displayKey || row.id,
     row: row,
     render: rowNode,
-    selected: !!selection[row.id],
+    selected: (selection[row.id] ? 1 : 0) + (isOpen(row.id) ? 2 : 0),
     version: props.movableRows ?? options.movableRows ? {} : rowVersion
   }) : rowNode(row);
   const priorGroups = model.slice(0, first).filter(row => row.__group).map(row => row.__group),
@@ -23626,7 +29260,7 @@ function NextEngine(props) {
     ref: frame,
     className: (0, _cx.cx)(B, isStatic && B + '--static', pinnedAt >= 0 && B + '--row-header', listed && B + '--list', isNarrow && B + '--narrow', height === '100%' && B + '--fill', mode === 'pages' && B + '--pages', mode === 'load-more' && B + '--load-more', className),
     "data-plx-engine": "next",
-    "data-plx-grid-key": uniformPillWidths ? gridKey : undefined,
+    "data-plx-grid-key": cells === 'pill' ? gridKey : undefined,
     "data-plx-density": density === 'page' ? undefined : density,
     "data-plx-render": virtualized ? 'virtual' : undefined,
     "data-plx-row-height": !isStatic && !isNarrow ? effectiveStep : undefined,
@@ -23809,11 +29443,7 @@ function NextEngine(props) {
         }
       } else setLoaded(n => Math.min(allRows.length, n + pageSize));
     }
-  }, S.loadMore) : null) : null, /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-sr-only",
-    role: "status",
-    "aria-live": "polite"
-  }, message)));
+  }, S.loadMore) : null) : null));
 }
 function DataGridEngine(props) {
   return /*#__PURE__*/_react.default.createElement(NextEngine, _extends({
@@ -23843,7 +29473,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      cells: "text" (default) | "pill": the pill view (owner, 2026-10-19): every value a DataPill with its column's type icon
        (type: text, number, currency, date, person …); a person's value.gender makes it blue or pink with the male or female
        icon; a column chooses per value with pill(value, record) → { tone, icon, variant, data, gender } or opts out with
-       pill: false (as DataGrid).
+       pill: false (as DataGrid). Every standard pill of a column is as wide as that column's widest pill (as DataGrid; owner,
+       uniform-pills-always-35); custom cells, tags and badges keep their own widths.
      Table.preload(): compatibility no-op; the renderer is already bundled.
    Props: unread(record), unreadKeys and onUnreadChange match DataGrid; static rows never mark themselves read.
    Behavior: Every row is drawn. No sorting, filters, menus, selection, resizing, moving, editing or row hover.
@@ -26034,7 +31665,7 @@ function EventChip({
   }, title));
 }
   } },
-  "platform/components/RadioTiles/RadioTiles.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/RadioTiles/RadioTiles.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -26044,6 +31675,7 @@ exports.RadioTiles = RadioTiles;
 var _react = _interopRequireDefault(require("react"));
 var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
+var _ReadOnly = require("../../providers/ReadOnly.jsx");
 var _Icon = require("../Icon/Icon.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · RadioTiles
@@ -26060,6 +31692,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      onChange(value): runs when another tile is chosen
      name: the radio group's name (default: a unique one)
      size: "sm" | "md" (default) | "lg": the tiles' minimum width
+     readOnly: the choice shows but cannot change (default: the nearest read-only region's, useReadOnly)
      className: more classes on the group
    Behavior:
      Public context --plx-comp-radio-tiles-legend-line-height applies to legends inside its containing element; fallback inherit.
@@ -26077,8 +31710,10 @@ function RadioTiles({
   name,
   size = 'md',
   className,
+  readOnly,
   ...rest
 }) {
+  const locked = (0, _ReadOnly.useReadOnly)(readOnly);
   (0, _devWarn.devWarn)('RadioTiles', {
     size
   }, {
@@ -26096,9 +31731,10 @@ function RadioTiles({
     return /*#__PURE__*/_react.default.createElement("label", {
       key: o.value,
       className: (0, _cx.cx)('plx-radio-tile', on && 'is-selected', o.disabled && 'is-disabled')
-    }, /*#__PURE__*/_react.default.createElement("input", {
+    }, /*#__PURE__*/_react.default.createElement("input", _extends({
       className: "plx-radio-tile__input plx-visually-hidden",
-      type: "radio",
+      type: "radio"
+    }, (0, _ReadOnly.readOnlyProps)(locked, {
       name: name || auto,
       value: o.value,
       checked: on,
@@ -26106,7 +31742,9 @@ function RadioTiles({
       onChange: () => {
         if (onChange) onChange(o.value);
       }
-    }), o.preview ? /*#__PURE__*/_react.default.createElement("span", {
+    }, {
+      aria: false
+    }))), o.preview ? /*#__PURE__*/_react.default.createElement("span", {
       className: "plx-radio-tile__preview",
       "aria-hidden": "true"
     }, o.preview) : null, /*#__PURE__*/_react.default.createElement("span", {
@@ -26770,9 +32408,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      A row keeps its controls aligned at their tops (their labels on one line) and wraps when it runs out of room.
    Notes:
      Other props pass through to the <fieldset> (disabled turns every control in it off).
-     Writing direction (owner, ctm-needs-34): dir ("ltr" | "rtl") and lang on the Fieldset go on the <fieldset>, so the legend and
-       every control in it follow: an Arabic question with its checkboxes and options inside an English page, or the
-       reverse (<Fieldset dir="rtl" lang="ar" legend="…">). Use the dir attribute, never the CSS direction property.
 */
 function Fieldset({
   legend,
@@ -27040,6 +32675,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      Copy puts the code on the clipboard and reads "Copied" with a check for a moment; screen readers hear "Copied" (or
        "Could not copy" when the clipboard refuses).
    Notes:
+     Writing direction (owner, ctm-needs-34): the code is always left to right (dir="ltr" on the <pre>), also in a right-to-left page.
      The colors come from the --plx-sys-code-* roles.
      The highlighter (highlight, detect) is shared with CodeEditor, which colors its text the same way; it is not public.
 */
@@ -27154,6 +32790,7 @@ function CodeBlock({
     role: "status"
   }, said) : null) : null, /*#__PURE__*/_react.default.createElement("pre", {
     className: "plx-code-block__pre",
+    dir: "ltr",
     tabIndex: 0,
     "aria-label": label || title || t.code
   }, /*#__PURE__*/_react.default.createElement("code", {
@@ -27826,7 +33463,243 @@ function Rating({
   }, "\u2605")));
 }
   } },
-  "platform/components/RowButton/RowButton.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/hooks/usePressable.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.usePressable = usePressable;
+var _react = _interopRequireDefault(require("react"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · usePressable
+   Summary: One press from every input: a mouse click, a tap, a pen, Enter or Space on the keyboard, and the click a
+     screen reader sends all call onPress once, with the kind of input that made it. While the press is held the element
+     is pressed, so it can show the pressed treatment (is-pressed, system/interaction.css).
+   Usage:
+     const { pressed, pressProps } = usePressable({ onPress: (e) => open(e.pointerType) });
+     <button type="button" className={cx('plx-state', pressed && 'is-pressed')} {...pressProps}>Open</button>
+     <div role="button" tabIndex={0} {...pressProps}>…</div>          // a custom surface: the role and the Tab stop are yours
+   Props:
+     options.onPress({ pointerType, target, shiftKey, ctrlKey, metaKey, altKey, event }): the press, once; pointerType is
+       "mouse", "touch", "pen", "keyboard" or "virtual" (a screen reader's or a script's click); event is the event that
+       made it (a click, or the key with the keyboard)
+     options.onPressStart({ pointerType }): the press begins (pointer down, or the key goes down)
+     options.onPressEnd({ pointerType }): the press ends, whether it was made or canceled
+     options.onPressChange(pressed): the pressed state changes
+     options.disabled (false): no press, no pressed state; the element keeps its focus behavior
+     options.handlers ({}): your own handlers of the same events (onClick, onKeyDown, …); they run first
+     options.native (false): on a native <button>, the browser's click stays the one press, for every input: onPress
+       runs from that click (event is the click itself), with pointerType from the pointer or key that made it; the keys
+       keep the browser's behavior (Enter repeats while held, as a native button does), and pressed stays false (the
+       button draws its own :active); pressProps are then onPointerDown, onPointerCancel, onKeyDown, onBlur and onClick. A
+       preventDefault in one of your handlers does not stop the press there: the browser decides the click
+     returns { pressed, pressProps }: pressProps go on the element (onPointerDown, onPointerUp, onPointerEnter,
+       onPointerLeave, onPointerCancel, onKeyDown, onKeyUp, onBlur, onClick)
+   Behavior:
+     Pointer: the press is made on release over the element (the browser's click), so sliding off before release cancels
+       it (WCAG 2.2, 2.5.2 Pointer cancellation); sliding back on while held presses it again. Only the primary button presses.
+     Keyboard: Enter presses when it goes down (as a native button does) and does not repeat while held; Space presses
+       when it comes up, and Escape or moving focus away while it is held cancels it. A link (a[href]) keeps Enter for itself.
+     A click with no pointer and no key (a screen reader activating the element) presses with pointerType "virtual".
+     Your own handlers of the same events still run: pass them in options.handlers and they run first; preventDefault
+       in one stops the press.
+   Notes:
+     It gives behavior, not semantics: put it on a native button whenever you can. A custom surface needs role="button"
+       (or the role of its widget), tabIndex 0 and a name; the check-system rule semantic-html rejects a clickable div
+       without a role.
+     Hover is not a press: hover treatment comes from :hover, which touch screens do not keep after a tap.
+*/
+
+const PRIMARY = 0;
+function usePressable(options = {}) {
+  const {
+    onPress,
+    onPressStart,
+    onPressEnd,
+    onPressChange,
+    disabled = false,
+    handlers = {},
+    native = false
+  } = options;
+  const [pressed, setPressedState] = _react.default.useState(false);
+  // what is held now: { pointerType } while a pointer or key holds the press; the key that holds it
+  const hold = _react.default.useRef(null);
+  const key = _react.default.useRef(null);
+  const lastPointer = _react.default.useRef(null);
+  const latest = _react.default.useRef(options);
+  latest.current = options;
+  const setPressed = on => {
+    setPressedState(on);
+    if (latest.current.onPressChange) latest.current.onPressChange(on);
+  };
+  const start = pointerType => {
+    hold.current = {
+      pointerType
+    };
+    setPressed(true);
+    if (onPressStart) onPressStart({
+      pointerType
+    });
+  };
+  const end = () => {
+    const was = hold.current;
+    hold.current = null;
+    setPressed(false);
+    if (was && onPressEnd) onPressEnd({
+      pointerType: was.pointerType
+    });
+  };
+  const fire = (e, pointerType) => {
+    if (onPress) onPress({
+      pointerType,
+      target: e.currentTarget,
+      shiftKey: !!e.shiftKey,
+      ctrlKey: !!e.ctrlKey,
+      metaKey: !!e.metaKey,
+      altKey: !!e.altKey,
+      event: e
+    });
+  };
+  // the caller's own handler first; preventDefault in it stops the press
+  const chain = (name, own) => e => {
+    if (handlers[name]) handlers[name](e);
+    if (disabled || e.defaultPrevented) return;
+    own(e);
+  };
+  const isLink = el => el && el.tagName === 'A' && el.hasAttribute('href');
+  _react.default.useEffect(() => {
+    if (disabled && hold.current) end();
+  });
+  if (native) {
+    // the browser's click is the press: the pointer or key before it only names the kind of input
+    const own = name => e => {
+      if (handlers[name]) handlers[name](e);
+    };
+    const nativeProps = {
+      onPointerDown: e => {
+        own('onPointerDown')(e);
+        lastPointer.current = e.pointerType || 'mouse';
+      },
+      onPointerCancel: e => {
+        own('onPointerCancel')(e);
+        lastPointer.current = null;
+      },
+      onKeyDown: e => {
+        own('onKeyDown')(e);
+        if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') lastPointer.current = 'keyboard';
+      },
+      onBlur: e => {
+        own('onBlur')(e);
+        lastPointer.current = null;
+      },
+      // a pointer or key that never clicked names no later click
+      onClick: e => {
+        own('onClick')(e);
+        const pointerType = lastPointer.current || (e.detail === 0 ? 'virtual' : 'mouse');
+        lastPointer.current = null;
+        if (!disabled) fire(e, pointerType);
+      }
+    };
+    Object.keys(handlers).forEach(name => {
+      if (!nativeProps[name]) nativeProps[name] = handlers[name];
+    });
+    return {
+      pressed: false,
+      pressProps: nativeProps
+    };
+  }
+  const pressProps = {
+    onPointerDown: chain('onPointerDown', e => {
+      if (e.button !== PRIMARY) return;
+      const el = e.currentTarget;
+      lastPointer.current = e.pointerType || 'mouse';
+      start(lastPointer.current);
+      // the release may happen anywhere: it ends the press; off the element it also cancels it (no click follows)
+      const up = u => {
+        window.removeEventListener('pointerup', up, true);
+        window.removeEventListener('pointercancel', up, true);
+        if (u.type === 'pointercancel' || !el.contains(u.target)) lastPointer.current = null;
+        if (hold.current && hold.current.pointerType !== 'keyboard') end();
+      };
+      window.addEventListener('pointerup', up, true);
+      window.addEventListener('pointercancel', up, true);
+    }),
+    onPointerUp: chain('onPointerUp', () => {
+      if (hold.current && hold.current.pointerType !== 'keyboard') end();
+    }),
+    onPointerCancel: chain('onPointerCancel', () => {
+      if (hold.current) end();
+      lastPointer.current = null;
+    }),
+    onPointerLeave: chain('onPointerLeave', () => {
+      if (hold.current && hold.current.pointerType !== 'keyboard') {
+        hold.current.left = true;
+        setPressed(false);
+      }
+    }),
+    onPointerEnter: chain('onPointerEnter', e => {
+      if (hold.current && hold.current.left && e.buttons & 1) {
+        hold.current.left = false;
+        setPressed(true);
+      }
+    }),
+    onKeyDown: chain('onKeyDown', e => {
+      lastPointer.current = null;
+      if (e.key === 'Escape' && key.current) {
+        key.current = null;
+        end();
+        return;
+      }
+      if (e.key === 'Enter' && !isLink(e.currentTarget)) {
+        e.preventDefault(); // the native button's own click would press twice
+        if (e.repeat) return;
+        start('keyboard');
+        fire(e, 'keyboard');
+        end();
+      } else if (e.key === ' ' || e.key === 'Spacebar') {
+        e.preventDefault(); // no page scroll, no native click
+        if (e.repeat || key.current) return;
+        key.current = ' ';
+        start('keyboard');
+      }
+    }),
+    onKeyUp: chain('onKeyUp', e => {
+      if ((e.key === ' ' || e.key === 'Spacebar') && key.current) {
+        e.preventDefault();
+        key.current = null;
+        fire(e, 'keyboard');
+        end();
+      }
+    }),
+    onBlur: chain('onBlur', () => {
+      if (key.current) {
+        key.current = null;
+        end();
+      }
+    }),
+    onClick: chain('onClick', e => {
+      const pointerType = lastPointer.current;
+      lastPointer.current = null;
+      if (pointerType) {
+        if (hold.current) end();
+        fire(e, pointerType);
+        return;
+      }
+      if (e.detail === 0) fire(e, 'virtual'); // a click with no pointer and no key: assistive technology or a script
+    })
+  };
+  // the caller's other handlers pass through untouched
+  Object.keys(handlers).forEach(name => {
+    if (!pressProps[name]) pressProps[name] = handlers[name];
+  });
+  return {
+    pressed: !disabled && pressed,
+    pressProps
+  };
+}
+  } },
+  "platform/components/RowButton/RowButton.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../hooks/usePressable.js":"platform/hooks/usePressable.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27835,6 +33708,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.RowButton = void 0;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
+var _usePressable = require("../../hooks/usePressable.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · RowButton
    Summary: A whole row or tile that is one button, holding any layout (an avatar, two lines of text, a time).
@@ -27852,6 +33726,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      ...rest: other attributes go on the button (onClick)
    Behavior:
      It is a native button with no look of its own beyond the states: a hover fill, a selected fill and the focus ring.
+     Its press comes from usePressable with native: the browser's click is the press, and onClick gets that click.
      A pressed button shows the selected fill too.
    Notes:
      Use it when a Button's single centered label cannot hold the content: list rows that open a record, calendar day cells, compact project tiles.
@@ -27865,15 +33740,36 @@ const RowButton = exports.RowButton = /*#__PURE__*/_react.default.forwardRef(fun
   hover = true,
   className,
   children,
+  onClick,
+  onPointerDown,
+  onPointerCancel,
+  onKeyDown,
+  onBlur,
   ...rest
 }, ref) {
+  // the browser's click stays the press (usePressable native), and onClick gets that click event; your own
+  // onPointerDown, onPointerCancel, onKeyDown and onBlur run first, as before
+  const {
+    pressProps
+  } = (0, _usePressable.usePressable)({
+    native: true,
+    onPress: p => {
+      if (onClick) onClick(p.event);
+    },
+    handlers: {
+      onPointerDown,
+      onPointerCancel,
+      onKeyDown,
+      onBlur
+    }
+  });
   return /*#__PURE__*/_react.default.createElement("button", _extends({
     ref: ref,
     type: "button",
     "aria-current": current || (selected ? 'true' : undefined),
     "aria-pressed": pressed,
     "aria-expanded": expanded
-  }, rest, {
+  }, rest, pressProps, {
     className: (0, _cx.cx)('plx-row-button', hover && 'plx-row-button--hover', (selected || pressed) && 'is-selected', className)
   }), children);
 });
@@ -28046,7 +33942,7 @@ function SegmentedControl({
   }, segments);
 }
   } },
-  "platform/components/Combobox/Combobox.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Combobox/Combobox.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -28058,6 +33954,7 @@ var _cx = require("../../utils/cx.js");
 var _Tag = require("../Tag/Tag.jsx");
 var _Loading = require("../Loading/Loading.jsx");
 var _announce = require("../../utils/announce.jsx");
+var _floating = require("../../utils/floating.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Combobox
    Summary: A field with a list to choose from, filtered as you type (an ARIA combobox with a listbox).
@@ -28095,7 +33992,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      className: more classes on the combobox
      ref: forwarded to the <input>
    Behavior:
-     The list opens on focus and on typing, and closes on a click outside.
+     The list opens on focus and on typing, and closes on a click outside. It opens in the browser's top layer, below the field
+       (or above it near an edge), at least as wide as the field, placed like a Menu: no dialog, drawer or scroll area clips it.
      ↓ / ↑ move, Enter chooses, Escape closes.
      Backspace in an empty multiple field removes the last value.
      A single choice closes the list; with multiple, the list stays open after each choice.
@@ -28113,6 +34011,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The list is a menu surface: border only, no shadow (D9).
      Other props pass through to the <input>.
 */
+// the top layer and CSS anchor positioning (as Menu, Popover and Select), checked once
+const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 const STRINGS = {
   loading: 'Loading…',
   error: 'The options could not be loaded',
@@ -28150,7 +34050,18 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
   const [text, setText] = _react.default.useState('');
   const [active, setActive] = _react.default.useState(0);
   const wrap = _react.default.useRef(null),
-    input = _react.default.useRef(null);
+    input = _react.default.useRef(null),
+    list = _react.default.useRef(null);
+  // the list opens in the top layer, placed against the field by the floating layer (flips up near an edge, follows scroll and resize): no dialog, drawer or scroll area clips it
+  (0, _floating.useFloating)(wrap, list, {
+    open,
+    placement: 'bottom-start',
+    matchWidth: true
+  });
+  _react.default.useLayoutEffect(() => {
+    const el = list.current;
+    if (open && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+  }, [open]);
   _react.default.useImperativeHandle(ref, () => input.current);
   // async select: the options of the last load, the loads in flight (only the newest is shown) and every option seen
   const [loaded, setLoaded] = _react.default.useState([]);
@@ -28309,9 +34220,12 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
     className: "plx-combobox__chevron",
     "aria-hidden": "true"
   })), open ? /*#__PURE__*/_react.default.createElement("ul", {
+    ref: list,
     className: "plx-combobox__list",
     id: listId,
     role: "listbox",
+    popover: TOP_LAYER ? 'manual' : undefined,
+    onMouseDown: e => e.preventDefault(),
     "aria-multiselectable": multiple || undefined,
     "aria-busy": isLoading || undefined
   }, items.length ? items.map((it, i) => it.kind === 'create' ? /*#__PURE__*/_react.default.createElement("li", {
@@ -28362,7 +34276,7 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
   }, emptyText)) : null);
 });
   } },
-  "platform/components/Slider/Slider.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Slider/Slider.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/grid.js":"platform/utils/grid.js","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -28373,6 +34287,7 @@ var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
 var _grid = require("../../utils/grid.js");
+var _ReadOnly = require("../../providers/ReadOnly.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Slider
    Summary: A value picked from a range by dragging; with range, two thumbs pick a minimum and a maximum (range slider);
@@ -28394,6 +34309,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      onChange(value): follows every move (live preview); with range, onChange([low, high])
      onCommit(value): runs when the person lets go or finishes with the keys (record the change, e.g. in an undo history)
      disabled: default false
+     readOnly: the value shows and takes focus but cannot change (default: the nearest read-only region's, useReadOnly)
      strings: the thumbs' names with range, for other languages: { minimum: "Minimum", maximum: "Maximum" } (each thumb
        is named "<label>, minimum" and "<label>, maximum")
      className: more classes on the slider
@@ -28446,9 +34362,14 @@ function Slider({
   disabled = false,
   strings,
   className,
+  readOnly,
   ...rest
 }) {
   const id = (0, _layer.useUid)('plx-slider');
+  const locked = (0, _ReadOnly.useReadOnly)(readOnly);
+  const lockOf = props => (0, _ReadOnly.readOnlyProps)(locked, props, {
+    pointer: true
+  }); // a press focuses, the keys do not move it
   const t = Object.assign({}, STRINGS, strings);
   const drawn = marksOf(marks, min, max, step);
   const custom = range || drawn.length > 0;
@@ -28499,7 +34420,7 @@ function Slider({
       onKeyUp: e => {
         if (onCommit && /Arrow|Page|Home|End/.test(e.key)) onCommit(Number(e.currentTarget.value));
       }
-    }, rest)));
+    }, lockOf(rest))));
   }
   const lowOf = v => [Math.min(v, high), high],
     highOf = v => [low, Math.max(v, low)];
@@ -28546,7 +34467,7 @@ function Slider({
     onChange: e => onChange && onChange(lowOf(Number(e.target.value))),
     onPointerUp: e => commit(lowOf(Number(e.currentTarget.value))),
     onKeyUp: keyCommit(lowOf)
-  }, rest)), /*#__PURE__*/_react.default.createElement("input", {
+  }, lockOf(rest))), /*#__PURE__*/_react.default.createElement("input", _extends({
     id: id + '-high',
     type: "range",
     className: "plx-slider__input",
@@ -28560,7 +34481,7 @@ function Slider({
     onChange: e => onChange && onChange(highOf(Number(e.target.value))),
     onPointerUp: e => commit(highOf(Number(e.currentTarget.value))),
     onKeyUp: keyCommit(highOf)
-  })) : /*#__PURE__*/_react.default.createElement("input", _extends({
+  }, lockOf({})))) : /*#__PURE__*/_react.default.createElement("input", _extends({
     id: id,
     type: "range",
     className: "plx-slider__input",
@@ -28573,7 +34494,7 @@ function Slider({
     onChange: e => onChange && onChange(Number(e.target.value)),
     onPointerUp: e => commit(Number(e.currentTarget.value)),
     onKeyUp: keyCommit(v => v)
-  }, rest))), drawn.length ? /*#__PURE__*/_react.default.createElement("div", {
+  }, lockOf(rest)))), drawn.length ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-slider__marks",
     "aria-hidden": "true"
   }, /*#__PURE__*/_react.default.createElement("div", {
@@ -28587,7 +34508,7 @@ function Slider({
   }, m.label)))) : null);
 }
   } },
-  "platform/components/Toast/Toast.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../utils/tokenTime.js":"platform/utils/tokenTime.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/Toast/Toast.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../utils/tokenTime.js":"platform/utils/tokenTime.js","../../utils/announce.jsx":"platform/utils/announce.jsx"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -28602,6 +34523,7 @@ var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _Button = require("../Button/Button.jsx");
 var _tokenTime = require("../../utils/tokenTime.js");
+var _announce = require("../../utils/announce.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · ToastProvider, useToast, useUndo
    Summary: A short message about something that just happened, at the end of the screen; with an action (Undo) it is the
@@ -28630,8 +34552,11 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
        options.label: the action's label (default "Undo")
        options.tone, options.duration: as toast.show
    Behavior:
-     A danger toast stays until dismissed (unless a duration is given) and is announced at once (role="alert").
-     The other toasts are announced politely.
+     A danger toast stays until dismissed (unless a duration is given).
+     Each toast is announced once when it appears, through announce() (utils/announce.jsx): its text and its action's
+       label ("Asset moved to Crosses. Undo"), at once (assertive) for a danger toast and politely for the others. The
+       messages are queued, so toasts that appear together are all read, in order. The toast region itself is not a
+       live region, so its buttons are never read as part of a message.
      Every toast has a Dismiss button.
      A toast with an action stays while the pointer is over it or focus is inside it, and starts its time again when they
        leave, so the action is never taken away from someone reaching for it.
@@ -28654,7 +34579,26 @@ function ToastProvider({
 }) {
   const [toasts, setToasts] = _react.default.useState([]);
   const timers = _react.default.useRef(new Map()); // id -> { wait, timer, onClose }
-  const remove = _react.default.useCallback(id => setToasts(all => all.filter(t => t.id !== id)), []);
+  const texts = _react.default.useRef(new Map()); // id -> the message element, read for its announcement
+  const announced = _react.default.useRef(new Set());
+  const remove = _react.default.useCallback(id => {
+    announced.current.delete(id);
+    setToasts(all => all.filter(t => t.id !== id));
+  }, []);
+  // each new toast once: its text (as shown) and its action's label; danger interrupts, the others wait; queued, so none is lost
+  _react.default.useEffect(() => {
+    toasts.forEach(t => {
+      if (t.leaving || announced.current.has(t.id)) return;
+      announced.current.add(t.id);
+      const el = texts.current.get(t.id);
+      const shown = el ? el.textContent : String(t.message);
+      const text = t.action && t.action.label ? shown + (/[.!?…]$/.test(shown) ? ' ' : '. ') + t.action.label : shown;
+      (0, _announce.announce)(text, {
+        politeness: t.tone === 'danger' ? 'assertive' : 'polite',
+        queue: true
+      });
+    });
+  }, [toasts]);
   const dismiss = _react.default.useCallback((id, reason = 'dismiss') => {
     const t = timers.current.get(id);
     if (t) {
@@ -28708,11 +34652,9 @@ function ToastProvider({
   return /*#__PURE__*/_react.default.createElement(ToastContext.Provider, {
     value: api
   }, children, /*#__PURE__*/(0, _reactDom.createPortal)(/*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-toast-region",
-    "aria-live": "polite"
+    className: "plx-toast-region"
   }, toasts.map(t => /*#__PURE__*/_react.default.createElement("div", {
     key: t.id,
-    role: t.tone === 'danger' ? 'alert' : undefined,
     className: (0, _cx.cx)('plx-toast', 'plx-toast--' + t.tone, t.leaving && 'is-leaving'),
     onAnimationEnd: t.leaving ? () => remove(t.id) : undefined,
     onPointerEnter: t.action ? () => hold(t.id) : undefined,
@@ -28726,6 +34668,9 @@ function ToastProvider({
   }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
     name: TONE_ICON[t.tone] || TONE_ICON.info
   })), /*#__PURE__*/_react.default.createElement("span", {
+    ref: el => {
+      if (el) texts.current.set(t.id, el);else texts.current.delete(t.id);
+    },
     className: "plx-toast__message"
   }, t.message), t.action ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
     size: "xs",
@@ -29386,7 +35331,6 @@ exports.ReviewFlow = ReviewFlow;
 exports.ReviewQueue = ReviewQueue;
 exports.WORKFLOW_STATUSES = void 0;
 exports.WorkflowStatus = WorkflowStatus;
-exports.localDay = void 0;
 exports.useOptionalToast = useOptionalToast;
 var _react = _interopRequireDefault(require("react"));
 var _devWarn = require("../../utils/devWarn.js");
@@ -29530,9 +35474,6 @@ function useOptionalToast() {
   }
 }
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
-// a day ("YYYY-MM-DD") read as local midnight: Date reads a bare day as UTC, which is a day early west of Greenwich
-const localDay = d => typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d) ? d + 'T00:00' : d;
-exports.localDay = localDay;
 const FLOW_STRINGS = {
   reviewers: 'Reviewers',
   history: 'History',
@@ -29747,7 +35688,7 @@ function ReviewQueue({
     type: 'date',
     render: r => /*#__PURE__*/_react.default.createElement(_Text.Text, {
       variant: "data"
-    }, (0, _format.formatDate)(localDay(r.submitted)))
+    }, (0, _format.formatDate)(r.submitted))
   }, {
     title: t.status,
     field: 'status',
@@ -29875,10 +35816,15 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        puts DataGrid.unreadCommands(...).filter in its CommandBar's quickFilters and .selection among its selection commands. The controller exposes getUnreadCount(), markRead(keys), markUnread(keys).
      onRowClick(record, event), onRowDoubleClick(record, event): with them rows are focusable and Enter clicks;
        onCellEdit(record, { field, value, previous })
+     openKey: the key of the record whose details show (the open row); default the row last opened by a click or Enter
+       (with onRowClick); null: none. The open row is aria-current="true"; in a grid without selection it takes the
+       selected look (the fill and the start bar); with selection, opening a row selects only it, so it is marked too
      density: "compact" (default: tables start Compact, owner 2026-10-22) | "standard" | "comfortable" | "page" (follow the
        page's density); set on the grid itself, so its rows (36 / 40 / 48px), header and pills follow it
-     uniformPillWidths: with cells="pill", every standard pill of a column as wide as that column's widest pill in the
-       current view (filtered and sorted, the current page, every row of it); columns stay independent; default false
+     uniformPillWidths: deprecated, ignored (owner, uniform-pills-always-35): with cells="pill", every standard pill of a
+       column is always as wide as that column's widest pill in the current view (filtered and sorted, the current page, every
+       row of it); columns stay independent; custom cells, tags and badges keep their own widths. Remove the prop; it goes
+       in a later release
      typeIcons: the column type icon before each header title (default: on in a DataGrid, off in the static Table);
        false hides them
      headerMenu (default true): a click on a title sorts; the options button at a header's end edge opens the column menu
@@ -29928,7 +35874,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        Pinned cells use the grid direction for placement, while their values retain automatic text direction.
      The grid is an ARIA grid: column headers (aria-sort), rows (aria-rowindex, aria-rowcount) and cells; its body is one
        Tab stop; the arrow keys move between cells, Home and End to the ends, Shift + F10 opens the focused header's or
-       row's menu. Menus are ARIA menus. Selection, grouping and loading changes are announced politely.
+       row's menu. Menus are ARIA menus. Opening and closing a group is announced politely (announce()): "expanded" or "collapsed".
      Every drag has a way without dragging (WCAG 2.5.7): Move up, down, to top and to bottom on a row; Move left and right
        on a column; a focused handle moves its row with Alt + Arrow keys. Column widths step through the size tokens.
      Geometry: the row height, cell padding and text size are the density's tokens; a taller row step puts content at the
@@ -30004,7 +35950,7 @@ function ActionBar({
   }, children);
 }
   } },
-  "platform/components/NavList/NavList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/NavList/NavList.jsx": { deps: {"react":null,"../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -30012,6 +35958,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.NavList = NavList;
 var _react = _interopRequireDefault(require("react"));
+var _format = require("../../utils/format.js");
 var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
 var _Icon = require("../Icon/Icon.jsx");
@@ -30233,7 +36180,7 @@ function NavList({
   className
 }) {
   const t = Object.assign({}, STRINGS, strings);
-  const loc = locale || typeof document !== 'undefined' && document.documentElement.lang || undefined;
+  const loc = (0, _format.numeralLocale)(locale || typeof document !== 'undefined' && document.documentElement.lang || undefined);
   const all = groups || [{
     heading: null,
     items: items || []
@@ -30255,7 +36202,7 @@ function NavList({
   })));
 }
   } },
-  "platform/components/Tree/Tree.jsx": { deps: {"react":null,"../../utils/direction.js":"platform/utils/direction.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Tree/Tree.jsx": { deps: {"react":null,"../../utils/direction.js":"platform/utils/direction.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../hooks/useFocusable.js":"platform/hooks/useFocusable.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -30267,8 +36214,9 @@ var _direction = require("../../utils/direction.js");
 var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
 var _Icon = require("../Icon/Icon.jsx");
+var _useFocusable = require("../../hooks/useFocusable.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · Tree
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Tree
    Summary: A hierarchy to choose from (folders, categories).
    Usage:
      <Tree label="Folders" nodes={[{ id, label, icon, meta, children: [...] }]} selected={id} onSelect={setId}
@@ -30288,7 +36236,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      className: more classes on the tree
    Behavior:
      Each item passes its own open/selected state to Icon.filled; child icons do not follow an ancestor item.
-     The tree is one Tab stop.
+     The tree is one Tab stop. Each item's focus, and whether the keyboard moved it there (its row's focus ring), comes
+       from useFocusable.
      Arrow Up and Down move through the visible items.
      Arrow Right opens an item or goes to its first child; Arrow Left closes it or goes to the parent.
      Home and End go to the first and last visible item.
@@ -30297,7 +36246,6 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      An open folder shows the open-folder icon (batch 239). Icons are outline while closed and open and filled while the item
      is open or selected (batch 241), by the item's own state only: a selected item does not fill the icons of the items inside it (batch 240).
 */
-
 const asIcon = (i, filled) => typeof i === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
   name: i,
   filled: filled
@@ -30309,6 +36257,80 @@ const OPEN_ICONS = {
   folder: 'folder-open'
 };
 const iconOf = (n, isOpen) => isOpen ? n.openIcon || typeof n.icon === 'string' && OPEN_ICONS[n.icon] || n.icon : n.icon;
+
+// one item: its focus (and whether the keyboard moved it there, :focus-visible) comes from useFocusable; the tree keeps
+// the one Tab stop (tabIndex) and the keys
+function TreeItem({
+  n,
+  level,
+  tree
+}) {
+  const {
+    base,
+    selected,
+    active,
+    open,
+    refs,
+    moveTo,
+    toggle,
+    onSelect,
+    setFocusId
+  } = tree;
+  const {
+    focusVisible,
+    focusProps
+  } = (0, _useFocusable.useFocusable)({
+    tabStop: 'none',
+    handlers: {
+      onFocus: e => {
+        if (e.target === e.currentTarget) setFocusId(n.id);
+      }
+    }
+  });
+  const kids = n.children && n.children.length;
+  const isOpen = kids && open.has(n.id);
+  return /*#__PURE__*/_react.default.createElement("li", _extends({
+    ref: el => {
+      refs.current[n.id] = el;
+    },
+    id: base + '-' + n.id,
+    role: "treeitem",
+    "aria-level": level,
+    "aria-expanded": kids ? !!isOpen : undefined,
+    "aria-selected": n.id === selected,
+    tabIndex: n.id === active ? 0 : -1,
+    className: (0, _cx.cx)('plx-tree__item', n.id === selected && 'is-selected')
+  }, focusProps), /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-tree__row', n.id === selected && 'is-selected', focusVisible && 'is-focus-visible'),
+    "data-plx-level": Math.min(level, 12),
+    onClick: () => {
+      moveTo(n.id);
+      if (onSelect) onSelect(n.id);
+    }
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: (0, _cx.cx)('plx-tree__toggle', isOpen && 'is-open', !kids && 'is-leaf'),
+    "aria-hidden": "true",
+    onClick: kids ? e => {
+      e.stopPropagation();
+      toggle(n.id);
+      moveTo(n.id);
+    } : undefined
+  }), n.icon ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-tree__icon"
+  }, asIcon(iconOf(n, isOpen || n.id === selected), !!isOpen || n.id === selected)) : null, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-tree__label"
+  }, n.label), n.meta !== undefined ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-tree__meta"
+  }, n.meta) : null), isOpen ? /*#__PURE__*/_react.default.createElement("ul", {
+    role: "group",
+    className: "plx-tree__group"
+  }, n.children.map(c => /*#__PURE__*/_react.default.createElement(TreeItem, {
+    key: c.id,
+    n: c,
+    level: level + 1,
+    tree: tree
+  }))) : null);
+}
 function visible(nodes, open, parent, out) {
   nodes.forEach(n => {
     out.push({
@@ -30339,8 +36361,6 @@ function Tree({
   };
   const flat = visible(nodes, open, null, []);
   const [focusId, setFocusId] = _react.default.useState(null);
-  // the item whose focus the keyboard moved (:focus-visible): its row draws the focus ring
-  const [ringId, setRingId] = _react.default.useState(null);
   const active = flat.some(v => v.node.id === focusId) ? focusId : flat.some(v => v.node.id === selected) ? selected : flat[0] && flat[0].node.id;
   const refs = _react.default.useRef({});
   const moveTo = id => {
@@ -30372,62 +36392,28 @@ function Tree({
     } else return;
     e.preventDefault();
   };
-  const renderNodes = (list, level) => list.map(n => {
-    const kids = n.children && n.children.length;
-    const isOpen = kids && open.has(n.id);
-    return /*#__PURE__*/_react.default.createElement("li", {
-      key: n.id,
-      ref: el => {
-        refs.current[n.id] = el;
-      },
-      id: base + '-' + n.id,
-      role: "treeitem",
-      "aria-level": level,
-      "aria-expanded": kids ? !!isOpen : undefined,
-      "aria-selected": n.id === selected,
-      tabIndex: n.id === active ? 0 : -1,
-      className: (0, _cx.cx)('plx-tree__item', n.id === selected && 'is-selected'),
-      onFocus: e => {
-        if (e.target === e.currentTarget) {
-          setFocusId(n.id);
-          setRingId(e.currentTarget.matches(':focus-visible') ? n.id : null);
-        }
-      },
-      onBlur: e => {
-        if (e.target === e.currentTarget) setRingId(null);
-      }
-    }, /*#__PURE__*/_react.default.createElement("div", {
-      className: (0, _cx.cx)('plx-tree__row', n.id === selected && 'is-selected', n.id === ringId && 'is-focus-visible'),
-      "data-plx-level": Math.min(level, 12),
-      onClick: () => {
-        moveTo(n.id);
-        if (onSelect) onSelect(n.id);
-      }
-    }, /*#__PURE__*/_react.default.createElement("span", {
-      className: (0, _cx.cx)('plx-tree__toggle', isOpen && 'is-open', !kids && 'is-leaf'),
-      "aria-hidden": "true",
-      onClick: kids ? e => {
-        e.stopPropagation();
-        toggle(n.id);
-        moveTo(n.id);
-      } : undefined
-    }), n.icon ? /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-tree__icon"
-    }, asIcon(iconOf(n, isOpen || n.id === selected), !!isOpen || n.id === selected)) : null, /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-tree__label"
-    }, n.label), n.meta !== undefined ? /*#__PURE__*/_react.default.createElement("span", {
-      className: "plx-tree__meta"
-    }, n.meta) : null), isOpen ? /*#__PURE__*/_react.default.createElement("ul", {
-      role: "group",
-      className: "plx-tree__group"
-    }, renderNodes(n.children, level + 1)) : null);
-  });
+  const tree = {
+    base,
+    selected,
+    active,
+    open,
+    refs,
+    moveTo,
+    toggle,
+    onSelect,
+    setFocusId
+  };
   return /*#__PURE__*/_react.default.createElement("ul", {
     role: "tree",
     "aria-label": label,
     className: (0, _cx.cx)('plx-tree', className),
     onKeyDown: onKeyDown
-  }, renderNodes(nodes, 1));
+  }, nodes.map(n => /*#__PURE__*/_react.default.createElement(TreeItem, {
+    key: n.id,
+    n: n,
+    level: 1,
+    tree: tree
+  })));
 }
   } },
   "platform/components/MediaPlayer/useSeparateAudio.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -32182,7 +38168,7 @@ function FilterBar({
   }, actions) : null);
 }
   } },
-  "platform/patterns/SearchWorkspace/SearchWorkspace.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","../../utils/layer.js":"platform/utils/layer.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/SearchWorkspace/SearchWorkspace.jsx": { deps: {"react":null,"../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","../../utils/layer.js":"platform/utils/layer.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -32190,6 +38176,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.SearchWorkspace = SearchWorkspace;
 var _react = _interopRequireDefault(require("react"));
+var _format = require("../../utils/format.js");
 var _cx = require("../../utils/cx.js");
 var _Button = require("../../components/Button/Button.jsx");
 var _SearchField = require("../../components/SearchField/SearchField.jsx");
@@ -32297,7 +38284,7 @@ function SearchWorkspace({
   children
 }) {
   const t = Object.assign({}, STRINGS, strings);
-  const loc = locale || typeof document !== 'undefined' && document.documentElement.lang || undefined;
+  const loc = (0, _format.numeralLocale)(locale || typeof document !== 'undefined' && document.documentElement.lang || undefined);
   const id = (0, _layer.useUid)('plx-search-ws');
   const field = _react.default.useRef(null);
   // the query typed here is applied as the person types; Enter keeps focus in the field
@@ -32756,7 +38743,7 @@ function ContentGrid({
   }));
 }
   } },
-  "platform/patterns/PropertyList/PropertyList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/PropertyList/PropertyList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../components/Isolate/Isolate.jsx":"platform/components/Isolate/Isolate.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -32767,6 +38754,7 @@ var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _overflow = require("../../utils/overflow.js");
 var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
+var _Isolate = require("../../components/Isolate/Isolate.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · PropertyList
    Summary: Label and value pairs (metadata, details, settings summaries), as a description list.
@@ -32782,7 +38770,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      PropertyList.Item.htmlFor: the id of a control in the item, so the label names it
      PropertyList.Item.description: a line under the label
      PropertyList.Item.data: the value is a technical value (a size, a date, an ID, a file name): the data font, Reddit Mono,
-       at the value size, so it shares the label's baseline; names, descriptions and statuses stay DM Sans; default false
+       at the value size, so it shares the label's baseline; names, descriptions and statuses stay DM Sans; default false.
+       It keeps its own writing direction in a right-to-left page (Isolate dir="auto"); a data value is text only (no links,
+       controls or other parts inside it)
      PropertyList.Item.className: more classes on the pair
      PropertyList.Item.children: the value
    Notes:
@@ -32831,7 +38821,9 @@ PropertyList.Item = function PropertyListItem({
   }, description) : null), /*#__PURE__*/_react.default.createElement("dd", {
     className: (0, _cx.cx)('plx-property-list__value', data && 'plx-property-list__value--data'),
     "data-plx-text-follow": "size"
-  }, children));
+  }, data ? /*#__PURE__*/_react.default.createElement(_Isolate.Isolate, {
+    dir: "auto"
+  }, children) : children));
 };
   } },
   "platform/patterns/RecordPage/RecordPage.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -33132,6 +39124,9 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      Header style 2 follows the button rule of a command bar: while the facts would wrap, first the count buttons show
        their icon only, then the states too, each with its words as its tooltip and name; past that the boxes wrap.
    Notes:
+     Writing direction (owner, arabic-batch4-36): title, subtitle and summary are plain text. In a right-to-left page an app
+       wraps an ID or a case number in them in <Isolate> (subtitle={['القضية ', <Isolate>20261020-01</Isolate>]}), or it reads
+       backwards (01-20261020); Plenix does not guess. The same goes for a fact's value.
      Not for settings screens: use RecordPage.Header. A small uppercase group label is SectionHeading.
 */
 
@@ -35450,58 +41445,6 @@ function TimeGrid({
   }))))));
 }
   } },
-  "platform/utils/prefetch.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-/* Plenix · prefetch (platform/utils/prefetch.js): the next page is ready before the click (batch 237). Internal; not part
-   of the public API: the Platform bundle runs it once, on every page that loads the Platform over http(s).
-   Chromium browsers get speculation rules: a link to another page of the same site is prerendered when the pointer
-   rests on it (about 200ms) or presses it, so switching apps shows the finished page at once instead of a blank reload.
-   Other browsers get the page's document fetched into the cache on hover. Links that open elsewhere (target, download),
-   same-page anchors and links marked data-plx-no-prefetch are left alone. Nothing runs from file://. */
-const SKIP = '[target], [download], [data-plx-no-prefetch], [href^="#"]';
-function speculationRules(doc) {
-  if (!(window.HTMLScriptElement && HTMLScriptElement.supports && HTMLScriptElement.supports('speculationrules'))) return false;
-  const rules = {
-    prerender: [{
-      where: {
-        and: [{
-          href_matches: '/*'
-        }, {
-          not: {
-            selector_matches: SKIP
-          }
-        }]
-      },
-      eagerness: 'moderate'
-    }]
-  };
-  const s = doc.createElement('script');
-  s.type = 'speculationrules';
-  s.textContent = JSON.stringify(rules);
-  doc.head.appendChild(s);
-  return true;
-}
-function hoverPrefetch(doc) {
-  const done = new Set();
-  doc.addEventListener('pointerover', e => {
-    const a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
-    if (!a || a.matches(SKIP)) return;
-    const url = new URL(a.href, location.href);
-    if (url.origin !== location.origin || url.pathname === location.pathname || done.has(url.pathname)) return;
-    done.add(url.pathname);
-    const link = doc.createElement('link');
-    link.rel = 'prefetch';
-    link.href = url.origin + url.pathname + url.search;
-    doc.head.appendChild(link);
-  }, {
-    passive: true
-  });
-}
-if (typeof window !== 'undefined' && typeof document !== 'undefined' && document.head && /^https?:$/.test(location.protocol)) {
-  if (!speculationRules(document)) hoverPrefetch(document);
-}
-  } },
   "platform/patterns/WidgetGrid/WidgetGrid.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../utils/direction.js":"platform/utils/direction.js","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -36553,127 +42496,6 @@ function meetsContrast(ratio, rule = 'text') {
   return ratio >= min;
 }
   } },
-  "platform/utils/describedBy.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.joinIds = joinIds;
-exports.useDescribedBy = useDescribedBy;
-exports.useDescriptionId = useDescriptionId;
-var _react = _interopRequireDefault(require("react"));
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · accessible descriptions (platform/utils/describedBy.js): one way to tie descriptions to an element.
-   Summary: joinIds merges description ids into one aria-describedby value (empty and repeated ids dropped, the order kept);
-     useDescriptionId gives a component a stable id for its description; useDescribedBy builds the attribute from the ids a
-     component has now. Field and Tooltip do this by hand today; new components use these.
-   Usage:
-     import { joinIds, useDescriptionId, useDescribedBy } from 'plenix-platform';
-     const hintId = useDescriptionId('hint');
-     const describedBy = useDescribedBy(props['aria-describedby'], hint && hintId, error && errorId);
-     <input aria-describedby={describedBy} />
-     <p id={hintId}>Use letters and numbers only</p>
-   Props:
-     joinIds(...ids): a string of ids separated by spaces, or undefined when there is none; each argument may itself hold
-       several ids ("a b"), or be empty, false or undefined
-     useDescriptionId(prefix?): a stable, unique id for this component ("plx-" + prefix + a React id); default prefix "desc"
-     useDescribedBy(...ids): joinIds of the arguments (the hook form, for symmetry with useDescriptionId)
-   Behavior:
-     The ids already on the element come first (what its owner set), then the component's own, so nothing the owner
-     described is lost. A description that is not shown (a hint only for screen readers) is VisuallyHidden text with the id.
-   Notes:
-     A description adds to the name, it never repeats it. Visible text first: aria-describedby points at text everyone can
-     read (the hint, the error message); a hidden description only for what sighted people get from the layout. */
-
-function joinIds(...ids) {
-  const out = [];
-  ids.forEach(v => {
-    if (!v) return;
-    String(v).split(/\s+/).forEach(id => {
-      if (id && out.indexOf(id) < 0) out.push(id);
-    });
-  });
-  return out.length ? out.join(' ') : undefined;
-}
-function useDescriptionId(prefix = 'desc') {
-  return 'plx-' + prefix + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
-}
-function useDescribedBy(...ids) {
-  return joinIds(...ids);
-}
-  } },
-  "platform/utils/scrollLock.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.isScrollLocked = isScrollLocked;
-exports.lockScroll = lockScroll;
-exports.scrollLockCount = scrollLockCount;
-exports.useScrollLock = useScrollLock;
-var _react = _interopRequireDefault(require("react"));
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · scroll lock (platform/utils/scrollLock.js): stops a scroll container scrolling while a modal layer covers it.
-   Summary: lockScroll(target) locks the page (the html element) or one scroll container and returns the function that
-     releases it; useScrollLock(active, ref) does the same for as long as a component asks. Locks are counted per target,
-     so nested modals release the page only when the last one closes.
-   Usage:
-     import { useScrollLock, lockScroll } from 'plenix-platform';
-     useScrollLock(open);                          // the page, while open
-     useScrollLock(open, listRef);                 // one scroll container
-     const release = lockScroll(); … release();    // outside React
-   Props:
-     lockScroll(target?): target is an element (default document.documentElement); returns release(), safe to call twice
-     useScrollLock(active, ref?): locks while active is true; ref (a React ref) names the container, else the page
-     isScrollLocked(target?): true while the target holds a lock
-     scrollLockCount(target?): how many locks the target holds
-   Behavior:
-     A locked target carries data-plx-scroll-lock="locked" and system/scroll-lock.css stops it scrolling: overflow hidden in
-     both directions, the scrollbar's space kept (scrollbar-gutter: stable) so nothing shifts, overscroll contained. The
-     scroll position is not touched, so it is exactly where it was when the lock is released. Content inside the modal
-     scrolls as usual.
-   Notes:
-     Only for modal layers (Dialog, a modal drawer or sheet, a full-screen overlay): never for menus, popovers, tooltips or
-     toasts. Pair it with the modal's focus trap (utils/layer.js) so assistive technology also stays inside. */
-
-const ATTR = 'data-plx-scroll-lock';
-const counts = new Map();
-const pageOf = target => target || (typeof document !== 'undefined' ? document.documentElement : null);
-function lockScroll(target) {
-  const el = pageOf(target);
-  if (!el) return () => {};
-  const n = (counts.get(el) || 0) + 1;
-  counts.set(el, n);
-  if (n === 1) el.setAttribute(ATTR, 'locked');
-  let released = false;
-  return function release() {
-    if (released) return;
-    released = true;
-    const left = (counts.get(el) || 1) - 1;
-    if (left > 0) {
-      counts.set(el, left);
-      return;
-    }
-    counts.delete(el);
-    el.removeAttribute(ATTR);
-  };
-}
-function isScrollLocked(target) {
-  return (counts.get(pageOf(target)) || 0) > 0;
-}
-function scrollLockCount(target) {
-  return counts.get(pageOf(target)) || 0;
-}
-function useScrollLock(active, ref) {
-  _react.default.useEffect(() => {
-    if (!active) return undefined;
-    if (ref && !ref.current) return undefined;
-    return lockScroll(ref ? ref.current : undefined);
-  }, [active, ref]);
-}
-  } },
   "platform/components/Code/Code.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -36701,6 +42523,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      A long value wraps anywhere rather than overflow its line; truncate keeps it to one line instead.
      It is not focusable and has no actions: to copy code, use a CodeBlock.
    Notes:
+     Writing direction (owner, ctm-needs-34): always left to right (dir="ltr", which also isolates it), also in a right-to-left page.
      Code for code only: technical values that are not code (sizes, dates, IDs) use Text variant="data".
      Other props pass through to the <code>. forwardRef: the ref is the <code>.
 */
@@ -36714,7 +42537,8 @@ const Code = exports.Code = /*#__PURE__*/_react.default.forwardRef(function Code
   const title = truncate && typeof children === 'string' ? children : undefined;
   return /*#__PURE__*/_react.default.createElement("code", _extends({
     ref: ref,
-    title: title
+    title: title,
+    dir: "ltr"
   }, rest, {
     className: (0, _cx.cx)('plx-code', onAccent && 'plx-code--on-accent', truncate && 'plx-code--truncate', className)
   }), children);
@@ -37017,438 +42841,6 @@ function RichText({
   }), html != null ? undefined : children);
 }
   } },
-  "platform/providers/DirectionProvider.jsx": { deps: {"react":null,"../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.DirectionContext = void 0;
-exports.DirectionProvider = DirectionProvider;
-exports.useDirection = useDirection;
-var _react = _interopRequireDefault(require("react"));
-var _direction = require("../utils/direction.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · DirectionProvider, useDirection
-   Summary: Sets the writing direction (left to right or right to left) of an application or of one region, and tells
-     React components which it is.
-   Usage:
-     <DirectionProvider dir="rtl" lang="ar">{app}</DirectionProvider>
-     <DirectionProvider locale="he-IL" root>{app}</DirectionProvider>   // on <html>: the whole page
-     const { dir, setDir } = useDirection();
-   Props:
-     dir: "ltr" | "rtl"; without it, the direction of locale, else of the page
-     locale: a language tag ("ar-EG", "en-US"); it sets lang and, without dir, the direction (directionOf)
-     lang: the lang attribute, when it is not the locale
-     root: set dir and lang on <html> instead of a region (default false): the page, its portals and its scrollbars mirror
-     children: the application root or the region it wraps
-     useDirection(): { dir, rtl, setDir(dir) }: the nearest provider's direction (outside one, the page's), and a way to
-       change it
-   Behavior:
-     A region: a wrapper (div.plx-direction, display: contents, so it adds no box) with dir and lang; everything inside
-       it lays out in that direction, as the stylesheets use logical properties.
-     With root, the attributes go on <html> and are put back as they were when the provider unmounts.
-     Overlays drawn in a Portal take the direction of where they were written (the Portal copies dir and lang).
-   Notes:
-     Mirror the layout, not the content: text, numbers, media controls, clocks and the icons that are not directional
-       keep their shape; the icon set mirrors its directional icons (arrows, chevrons, undo and redo) by itself.
-     Script reads the direction where it measures or handles arrow keys (utils/direction.js: arrowStep, physicalSide).
-*/
-
-const DirectionContext = exports.DirectionContext = /*#__PURE__*/_react.default.createContext(null);
-function DirectionProvider({
-  dir,
-  locale,
-  lang,
-  root = false,
-  children
-}) {
-  const wanted = dir || (locale ? (0, _direction.directionOf)(locale) : null);
-  const [own, setOwn] = _react.default.useState(wanted);
-  _react.default.useEffect(() => {
-    setOwn(wanted);
-  }, [wanted]);
-  const current = own || (typeof document !== 'undefined' ? (0, _direction.getDirection)() : 'ltr');
-  const language = lang || locale || undefined;
-  _react.default.useLayoutEffect(() => {
-    if (!root) return undefined;
-    const html = document.documentElement,
-      before = {
-        dir: html.getAttribute('dir'),
-        lang: html.getAttribute('lang')
-      };
-    html.setAttribute('dir', current);
-    if (language) html.setAttribute('lang', language);
-    return () => {
-      if (before.dir == null) html.removeAttribute('dir');else html.setAttribute('dir', before.dir);
-      if (language) {
-        if (before.lang == null) html.removeAttribute('lang');else html.setAttribute('lang', before.lang);
-      }
-    };
-  }, [root, current, language]);
-  const value = _react.default.useMemo(() => ({
-    dir: current,
-    rtl: current === 'rtl',
-    setDir: d => setOwn(d === 'rtl' ? 'rtl' : 'ltr')
-  }), [current]);
-  return /*#__PURE__*/_react.default.createElement(DirectionContext.Provider, {
-    value: value
-  }, root ? children : /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-direction",
-    dir: current,
-    lang: language
-  }, children));
-}
-function useDirection() {
-  const ctx = _react.default.useContext(DirectionContext);
-  const [page, setPage] = _react.default.useState(() => typeof document !== 'undefined' ? (0, _direction.getDirection)() : 'ltr');
-  _react.default.useEffect(() => {
-    if (ctx) return undefined;
-    const observer = new MutationObserver(() => setPage((0, _direction.getDirection)()));
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['dir']
-    });
-    return () => observer.disconnect();
-  }, [ctx]);
-  if (ctx) return ctx;
-  return {
-    dir: page,
-    rtl: page === 'rtl',
-    setDir: d => document.documentElement.setAttribute('dir', d === 'rtl' ? 'rtl' : 'ltr')
-  };
-}
-  } },
-  "platform/hooks/usePressable.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.usePressable = usePressable;
-var _react = _interopRequireDefault(require("react"));
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · usePressable
-   Summary: One press from every input: a mouse click, a tap, a pen, Enter or Space on the keyboard, and the click a
-     screen reader sends all call onPress once, with the kind of input that made it. While the press is held the element
-     is pressed, so it can show the pressed treatment (is-pressed, system/interaction.css).
-   Usage:
-     const { pressed, pressProps } = usePressable({ onPress: (e) => open(e.pointerType) });
-     <button type="button" className={cx('plx-state', pressed && 'is-pressed')} {...pressProps}>Open</button>
-     <div role="button" tabIndex={0} {...pressProps}>…</div>          // a custom surface: the role and the Tab stop are yours
-   Props:
-     options.onPress({ pointerType, target, shiftKey, ctrlKey, metaKey, altKey }): the press, once; pointerType is
-       "mouse", "touch", "pen", "keyboard" or "virtual" (a screen reader's or a script's click)
-     options.onPressStart({ pointerType }): the press begins (pointer down, or the key goes down)
-     options.onPressEnd({ pointerType }): the press ends, whether it was made or canceled
-     options.onPressChange(pressed): the pressed state changes
-     options.disabled (false): no press, no pressed state; the element keeps its focus behavior
-     options.handlers ({}): your own handlers of the same events (onClick, onKeyDown, …); they run first
-     returns { pressed, pressProps }: pressProps go on the element (onPointerDown, onPointerUp, onPointerEnter,
-       onPointerLeave, onPointerCancel, onKeyDown, onKeyUp, onBlur, onClick)
-   Behavior:
-     Pointer: the press is made on release over the element (the browser's click), so sliding off before release cancels
-       it (WCAG 2.2, 2.5.2 Pointer cancellation); sliding back on while held presses it again. Only the primary button presses.
-     Keyboard: Enter presses when it goes down (as a native button does) and does not repeat while held; Space presses
-       when it comes up, and Escape or moving focus away while it is held cancels it. A link (a[href]) keeps Enter for itself.
-     A click with no pointer and no key (a screen reader activating the element) presses with pointerType "virtual".
-     Your own handlers of the same events still run: pass them in options.handlers and they run first; preventDefault
-       in one stops the press.
-   Notes:
-     It gives behavior, not semantics: put it on a native button whenever you can. A custom surface needs role="button"
-       (or the role of its widget), tabIndex 0 and a name; the check-system rule semantic-html rejects a clickable div
-       without a role.
-     Hover is not a press: hover treatment comes from :hover, which touch screens do not keep after a tap.
-*/
-
-const PRIMARY = 0;
-function usePressable(options = {}) {
-  const {
-    onPress,
-    onPressStart,
-    onPressEnd,
-    onPressChange,
-    disabled = false,
-    handlers = {}
-  } = options;
-  const [pressed, setPressedState] = _react.default.useState(false);
-  // what is held now: { pointerType } while a pointer or key holds the press; the key that holds it
-  const hold = _react.default.useRef(null);
-  const key = _react.default.useRef(null);
-  const lastPointer = _react.default.useRef(null);
-  const latest = _react.default.useRef(options);
-  latest.current = options;
-  const setPressed = on => {
-    setPressedState(on);
-    if (latest.current.onPressChange) latest.current.onPressChange(on);
-  };
-  const start = pointerType => {
-    hold.current = {
-      pointerType
-    };
-    setPressed(true);
-    if (onPressStart) onPressStart({
-      pointerType
-    });
-  };
-  const end = () => {
-    const was = hold.current;
-    hold.current = null;
-    setPressed(false);
-    if (was && onPressEnd) onPressEnd({
-      pointerType: was.pointerType
-    });
-  };
-  const fire = (e, pointerType) => {
-    if (onPress) onPress({
-      pointerType,
-      target: e.currentTarget,
-      shiftKey: !!e.shiftKey,
-      ctrlKey: !!e.ctrlKey,
-      metaKey: !!e.metaKey,
-      altKey: !!e.altKey
-    });
-  };
-  // the caller's own handler first; preventDefault in it stops the press
-  const chain = (name, own) => e => {
-    if (handlers[name]) handlers[name](e);
-    if (disabled || e.defaultPrevented) return;
-    own(e);
-  };
-  const isLink = el => el && el.tagName === 'A' && el.hasAttribute('href');
-  _react.default.useEffect(() => {
-    if (disabled && hold.current) end();
-  });
-  const pressProps = {
-    onPointerDown: chain('onPointerDown', e => {
-      if (e.button !== PRIMARY) return;
-      const el = e.currentTarget;
-      lastPointer.current = e.pointerType || 'mouse';
-      start(lastPointer.current);
-      // the release may happen anywhere: it ends the press; off the element it also cancels it (no click follows)
-      const up = u => {
-        window.removeEventListener('pointerup', up, true);
-        window.removeEventListener('pointercancel', up, true);
-        if (u.type === 'pointercancel' || !el.contains(u.target)) lastPointer.current = null;
-        if (hold.current && hold.current.pointerType !== 'keyboard') end();
-      };
-      window.addEventListener('pointerup', up, true);
-      window.addEventListener('pointercancel', up, true);
-    }),
-    onPointerUp: chain('onPointerUp', () => {
-      if (hold.current && hold.current.pointerType !== 'keyboard') end();
-    }),
-    onPointerCancel: chain('onPointerCancel', () => {
-      if (hold.current) end();
-      lastPointer.current = null;
-    }),
-    onPointerLeave: chain('onPointerLeave', () => {
-      if (hold.current && hold.current.pointerType !== 'keyboard') {
-        hold.current.left = true;
-        setPressed(false);
-      }
-    }),
-    onPointerEnter: chain('onPointerEnter', e => {
-      if (hold.current && hold.current.left && e.buttons & 1) {
-        hold.current.left = false;
-        setPressed(true);
-      }
-    }),
-    onKeyDown: chain('onKeyDown', e => {
-      lastPointer.current = null;
-      if (e.key === 'Escape' && key.current) {
-        key.current = null;
-        end();
-        return;
-      }
-      if (e.key === 'Enter' && !isLink(e.currentTarget)) {
-        e.preventDefault(); // the native button's own click would press twice
-        if (e.repeat) return;
-        start('keyboard');
-        fire(e, 'keyboard');
-        end();
-      } else if (e.key === ' ' || e.key === 'Spacebar') {
-        e.preventDefault(); // no page scroll, no native click
-        if (e.repeat || key.current) return;
-        key.current = ' ';
-        start('keyboard');
-      }
-    }),
-    onKeyUp: chain('onKeyUp', e => {
-      if ((e.key === ' ' || e.key === 'Spacebar') && key.current) {
-        e.preventDefault();
-        key.current = null;
-        fire(e, 'keyboard');
-        end();
-      }
-    }),
-    onBlur: chain('onBlur', () => {
-      if (key.current) {
-        key.current = null;
-        end();
-      }
-    }),
-    onClick: chain('onClick', e => {
-      const pointerType = lastPointer.current;
-      lastPointer.current = null;
-      if (pointerType) {
-        if (hold.current) end();
-        fire(e, pointerType);
-        return;
-      }
-      if (e.detail === 0) fire(e, 'virtual'); // a click with no pointer and no key: assistive technology or a script
-    })
-  };
-  // the caller's other handlers pass through untouched
-  Object.keys(handlers).forEach(name => {
-    if (!pressProps[name]) pressProps[name] = handlers[name];
-  });
-  return {
-    pressed: !disabled && pressed,
-    pressProps
-  };
-}
-  } },
-  "platform/hooks/useFocusable.js": { deps: {"react":null,"../utils/roving.js":"platform/utils/roving.js","../utils/direction.js":"platform/utils/direction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.useFocusGroup = useFocusGroup;
-exports.useFocusable = useFocusable;
-var _react = _interopRequireDefault(require("react"));
-var _roving = require("../utils/roving.js");
-var _direction = require("../utils/direction.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · useFocusable, useFocusGroup
-   Summary: Focus for custom elements, the way native controls have it. useFocusable makes an element a Tab stop (or a
-     focus target only) and tells whether its focus came from the keyboard (focus-visible), so the focus treatment shows
-     for the keyboard and not after a click. useFocusGroup makes a group of controls one Tab stop whose items are reached
-     with the arrow keys (roving focus: a toolbar, a list of options, a grid of tiles).
-   Usage:
-     const { focused, focusVisible, focusProps } = useFocusable();
-     <div role="option" aria-selected={on} className={cx('plx-state', focusVisible && 'is-focus-visible')} {...focusProps}>…</div>
-     const ref = React.useRef(null);
-     const { groupProps } = useFocusGroup(ref, { orientation: 'vertical' });
-     <div ref={ref} role="listbox" aria-label="Folders" {...groupProps}>{options}</div>
-   Props:
-     useFocusable(options).tabStop ("tab"): "tab" puts it in the Tab order (tabIndex 0); "target" makes it focusable
-       only from code or a click (tabIndex -1, a skip-link target or a dialog's heading); "none" leaves tabIndex alone
-       (a native control, or an item of a focus group, whose tabIndex the group sets)
-     useFocusable(options).disabled (false): no Tab stop (an item that is disabled is skipped)
-     useFocusable(options).onFocusChange(focused, visible): the focus changes
-     useFocusable(options).handlers ({}): your own onFocus and onBlur; they run first
-     useFocusable returns { focused, focusVisible, focusProps } (tabIndex, onFocus, onBlur)
-     useFocusGroup(ref, options).orientation ("horizontal"): "horizontal" (Left and Right, in reading order),
-       "vertical" (Up and Down) or "both" (all four arrows: a grid read in order)
-     useFocusGroup(ref, options).loop (true): the last item's next is the first
-     useFocusGroup(ref, options).items (a selector): which descendants are items; default the enabled buttons, links,
-       inputs, selects and elements with a tabindex
-     useFocusGroup(ref, options).onKeyDown(event): runs first; preventDefault stops the group's own key handling
-     useFocusGroup returns { groupProps } (onKeyDown, onFocus) for the group element
-   Behavior:
-     focusVisible follows the browser's :focus-visible: true after Tab, an arrow key or focus moved by a keyboard command,
-       false after a mouse click or a tap on a non-text element. A text field is always focus-visible (it shows its caret).
-     A focus group has one Tab stop: the item focused last (else the first) has tabIndex 0 and the others -1 (the roving
-       focus of utils/roving.js), so Tab enters and leaves the group in one step. The arrows move to the next and previous
-       items in reading order (right to left reverses Left and Right), Home and End to the first and last. In a text field
-       Left and Right move the caret instead. Hidden items are skipped.
-   Notes:
-     Make only interactive elements focusable: a heading or a paragraph is not a Tab stop. A scroll area that holds no
-       control is the exception: give it tabStop "tab" and a name (role="region" with aria-label) so the keyboard can
-       scroll it.
-     The focus treatment is the system's (Focus treatment, system/interaction.css): a ring on controls, the border color
-       on fields; never remove it without the replacement.
-*/
-
-const ITEMS = 'button:not([disabled]),a[href],input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([disabled]):not([aria-disabled="true"])';
-function isVisibleFocus(el) {
-  try {
-    return el.matches(':focus-visible');
-  } catch (e) {
-    return true;
-  } // a browser without :focus-visible shows it always
-}
-function useFocusable(options = {}) {
-  const {
-    tabStop = 'tab',
-    disabled = false,
-    onFocusChange,
-    handlers = {}
-  } = options;
-  const [state, setState] = _react.default.useState({
-    focused: false,
-    visible: false
-  });
-  const set = (focused, visible) => {
-    setState(s => s.focused === focused && s.visible === visible ? s : {
-      focused,
-      visible
-    });
-    if (onFocusChange) onFocusChange(focused, visible);
-  };
-  const focusProps = {
-    onFocus: e => {
-      if (handlers.onFocus) handlers.onFocus(e);
-      if (e.target === e.currentTarget) set(true, isVisibleFocus(e.currentTarget));
-    },
-    onBlur: e => {
-      if (handlers.onBlur) handlers.onBlur(e);
-      if (e.target === e.currentTarget) set(false, false);
-    }
-  };
-  if (tabStop !== 'none') focusProps.tabIndex = disabled ? undefined : tabStop === 'target' ? -1 : 0;
-  return {
-    focused: state.focused,
-    focusVisible: state.focused && state.visible,
-    focusProps
-  };
-}
-function useFocusGroup(ref, options = {}) {
-  const {
-    orientation = 'horizontal',
-    loop = true,
-    items: selector = ITEMS,
-    onKeyDown
-  } = options;
-  const itemsOf = () => ref.current ? Array.prototype.filter.call(ref.current.querySelectorAll(selector), el => el.getClientRects().length > 0 && !el.closest('[hidden]')) : [];
-  (0, _roving.useRovingFocus)(ref, itemsOf);
-  const KEYS = orientation === 'vertical' ? ['ArrowUp', 'ArrowDown'] : orientation === 'both' ? ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'] : ['ArrowLeft', 'ArrowRight'];
-  const groupProps = {
-    onKeyDown: e => {
-      if (onKeyDown) onKeyDown(e);
-      if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return;
-      if (KEYS.indexOf(e.key) < 0 && e.key !== 'Home' && e.key !== 'End') return;
-      const t = e.target;
-      if ((t.tagName === 'INPUT' || t.tagName === 'TEXTAREA') && (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'Home' || e.key === 'End')) return;
-      const list = itemsOf();
-      const i = list.indexOf(document.activeElement);
-      if (i < 0 || !list.length) return;
-      let n;
-      if (e.key === 'Home') n = 0;else if (e.key === 'End') n = list.length - 1;else {
-        const step = (0, _direction.arrowStep)(e, ref.current, {
-          vertical: orientation !== 'horizontal'
-        });
-        if (!step) return;
-        n = i + step;
-        if (n < 0 || n >= list.length) {
-          if (!loop) return;
-          n = (n + list.length) % list.length;
-        }
-      }
-      e.preventDefault();
-      list[n].focus();
-    },
-    onFocus: e => {
-      (0, _roving.roveTo)(ref, itemsOf(), e.target);
-    }
-  };
-  return {
-    groupProps
-  };
-}
-  } },
   "platform/hooks/useSelection.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -37598,232 +42990,6 @@ function useSelection(options = {}) {
     anchor: anchor.current
   };
 }
-  } },
-  "platform/providers/ReadOnly.jsx": { deps: {"react":null,"../utils/describedBy.js":"platform/utils/describedBy.js","../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.ReadOnlyContext = exports.ReadOnly = void 0;
-exports.ReadOnlyProvider = ReadOnlyProvider;
-exports.useReadOnly = useReadOnly;
-var _react = _interopRequireDefault(require("react"));
-var _describedBy = require("../utils/describedBy.js");
-var _Icon = require("../components/Icon/Icon.jsx");
-var _Text = require("../components/Text/Text.jsx");
-var _Stack = require("../components/Stack/Stack.jsx");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ReadOnly, ReadOnlyProvider, useReadOnly
-   Summary: A read-only region: everything people could change inside it shows its value and cannot be changed, while
-     it stays readable, focusable, selectable and copyable (unlike disabled). A record someone may view but not edit, a
-     form that is locked after it was submitted, a setting an administrator controls.
-   Usage:
-     <ReadOnly reason="Set by your administrator">…fields…</ReadOnly>                         // a region
-     <ReadOnly as="form" readOnly={!canEdit} onSubmit={save}>…</ReadOnly>                    // a whole form
-     <Field label="Asset ID"><Input value={id} readOnly /></Field>                              // one field: its own prop
-     const readOnly = useReadOnly(props.readOnly);                                              // a component adopting it
-   Props:
-     ReadOnly.as ("div"): the element: "div", "section", "form" or "fieldset"
-     ReadOnly.readOnly (true): false makes the region editable again (a nested editable part of a read-only page)
-     ReadOnly.reason: why it cannot be changed, shown first in the region with the lock icon and tied to it as its
-       description (aria-describedby)
-     ReadOnly.className: more classes on the element
-     ReadOnly.children: the content; ...rest: other attributes go on the element
-     ReadOnlyProvider.readOnly (true): the value the components inside read with useReadOnly, without the region's
-       behavior (a component that draws its own read-only state)
-     useReadOnly(own): the component's own readOnly prop when it is given, else the nearest region's (false outside one)
-   Behavior:
-     The region carries data-plx-readonly="true" (system/read-only.css draws its controls: the sunken surface, the quiet
-       border, the arrow pointer). Inside it, text fields and text areas become readOnly (the value can be selected,
-       copied and focused); checkboxes, switches, radios, selects and sliders keep their value and take focus, but a
-       click, Space, the arrow keys or typing do not change them, and they are marked aria-readonly where the role allows
-       it. A form inside a read-only region does not submit. Content editable text stops being editable.
-     Controls added later are covered as they appear; making the region editable again (or removing it) gives every
-       control back exactly what it had.
-     A nested <ReadOnly readOnly={false}> is left alone by the outer region.
-   Notes:
-     Read-only is not disabled: use disabled for a control that is not available now (it leaves the Tab order and dims);
-       read-only for a value that is there to read. Hide or remove the actions that would change the region (Save,
-       Delete) rather than disabling them.
-     Buttons inside stay as they are: actions that only read (Copy, Download, Open) keep working.
-*/
-const ReadOnlyContext = exports.ReadOnlyContext = /*#__PURE__*/_react.default.createContext(false);
-function ReadOnlyProvider({
-  readOnly = true,
-  children
-}) {
-  return /*#__PURE__*/_react.default.createElement(ReadOnlyContext.Provider, {
-    value: !!readOnly
-  }, children);
-}
-function useReadOnly(own) {
-  const ctx = _react.default.useContext(ReadOnlyContext);
-  return own === undefined || own === null ? ctx : !!own;
-}
-
-// what the region may lock: the controls whose value a person changes
-const CONTROLS = 'input,textarea,select,[contenteditable="true"],[contenteditable=""],[role="checkbox"],[role="switch"],[role="radio"],[role="slider"],[role="spinbutton"],[role="combobox"]';
-const NOT_VALUES = {
-  button: 1,
-  submit: 1,
-  reset: 1,
-  image: 1,
-  hidden: 1,
-  file: 0
-};
-const TEXT_TYPES = /^(text|search|email|url|tel|password|number|date|datetime-local|month|week|time)$/;
-// roles that may carry aria-readonly (WAI-ARIA 1.2); a radio's group carries it instead
-const ARIA_READONLY = {
-  checkbox: 1,
-  switch: 1,
-  slider: 1,
-  spinbutton: 1,
-  combobox: 1,
-  listbox: 1,
-  textbox: 1,
-  radiogroup: 1
-};
-// keys that change a locked control's value (Tab, Escape and shortcuts with Ctrl or ⌘ still work)
-const CHANGE_KEYS = /^(ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Home|End|PageUp|PageDown| |Spacebar|Enter|Backspace|Delete|.)$/;
-function roleOf(el) {
-  const r = el.getAttribute('role');
-  if (r) return r;
-  if (el.tagName === 'SELECT') return el.multiple ? 'listbox' : 'combobox';
-  if (el.tagName === 'INPUT') return el.type === 'checkbox' ? 'checkbox' : el.type === 'radio' ? 'radio' : el.type === 'range' ? 'slider' : 'textbox';
-  return 'textbox';
-}
-
-// locks one control; returns what to undo, or null when it is not a value control or is already read-only by its owner
-function lock(el) {
-  if (el.hasAttribute('data-plx-readonly-set')) return null;
-  const tag = el.tagName;
-  if (tag === 'INPUT' && NOT_VALUES[el.type]) return null;
-  if (el.getAttribute('contenteditable') === 'true' || el.getAttribute('contenteditable') === '') {
-    el.setAttribute('contenteditable', 'false');
-    el.setAttribute('data-plx-readonly-set', 'editable');
-    return () => {
-      el.setAttribute('contenteditable', 'true');
-      el.removeAttribute('data-plx-readonly-set');
-    };
-  }
-  if (tag === 'TEXTAREA' || tag === 'INPUT' && TEXT_TYPES.test(el.type)) {
-    if (el.readOnly) return null;
-    el.readOnly = true;
-    el.setAttribute('data-plx-readonly-set', 'readonly');
-    return () => {
-      el.readOnly = false;
-      el.removeAttribute('data-plx-readonly-set');
-    };
-  }
-  // a choice, a select or a slider: the value stays, changes are stopped by the region's listeners
-  const role = roleOf(el);
-  const aria = ARIA_READONLY[role] && !el.hasAttribute('aria-readonly');
-  if (aria) el.setAttribute('aria-readonly', 'true');
-  el.setAttribute('data-plx-readonly-set', 'locked');
-  return () => {
-    if (aria) el.removeAttribute('aria-readonly');
-    el.removeAttribute('data-plx-readonly-set');
-  };
-}
-
-// the region's behavior: locks its controls (and the ones added later), stops the events that would change them
-function useLockRegion(ref, on) {
-  _react.default.useEffect(() => {
-    const root = ref.current;
-    if (!root || !on) return undefined;
-    const undo = new Map();
-    const mine = el => el.closest('[data-plx-readonly]') === root;
-    const apply = () => {
-      root.querySelectorAll(CONTROLS).forEach(el => {
-        if (!undo.has(el) && mine(el)) {
-          const u = lock(el);
-          if (u) undo.set(el, u);
-        }
-      });
-    };
-    apply();
-    const observer = typeof MutationObserver !== 'undefined' ? new MutationObserver(apply) : null;
-    if (observer) observer.observe(root, {
-      childList: true,
-      subtree: true
-    });
-    const locked = t => {
-      const el = t && t.closest ? t.closest('[data-plx-readonly-set="locked"]') : null;
-      return el && mine(el) ? el : null;
-    };
-    const stop = e => {
-      e.preventDefault();
-      e.stopPropagation();
-    };
-    const onClick = e => {
-      if (locked(e.target)) stop(e);
-    };
-    const onKey = e => {
-      if (e.key === 'Tab' || e.key === 'Escape' || e.ctrlKey || e.metaKey || e.altKey) return;
-      if (locked(e.target) && CHANGE_KEYS.test(e.key)) stop(e);
-    };
-    const onPointer = e => {
-      const el = locked(e.target);
-      if (el && (el.tagName === 'SELECT' || roleOf(el) === 'slider' || roleOf(el) === 'combobox')) {
-        e.preventDefault();
-        el.focus();
-      }
-    };
-    const onSubmit = e => {
-      if (e.target === root || mine(e.target)) e.preventDefault();
-    };
-    root.addEventListener('click', onClick, true);
-    root.addEventListener('keydown', onKey, true);
-    root.addEventListener('mousedown', onPointer, true);
-    root.addEventListener('pointerdown', onPointer, true);
-    root.addEventListener('submit', onSubmit, true);
-    return () => {
-      if (observer) observer.disconnect();
-      root.removeEventListener('click', onClick, true);
-      root.removeEventListener('keydown', onKey, true);
-      root.removeEventListener('mousedown', onPointer, true);
-      root.removeEventListener('pointerdown', onPointer, true);
-      root.removeEventListener('submit', onSubmit, true);
-      undo.forEach(u => u());
-    };
-  }, [ref, on]);
-}
-const ReadOnly = exports.ReadOnly = /*#__PURE__*/_react.default.forwardRef(function ReadOnly({
-  as = 'div',
-  readOnly = true,
-  reason,
-  className,
-  children,
-  ...rest
-}, ref) {
-  const own = _react.default.useRef(null);
-  const setRef = el => {
-    own.current = el;
-    if (typeof ref === 'function') ref(el);else if (ref) ref.current = el;
-  };
-  const on = !!readOnly;
-  useLockRegion(own, on);
-  const reasonId = (0, _describedBy.useDescriptionId)('read-only');
-  const Tag = ['div', 'section', 'form', 'fieldset'].indexOf(as) >= 0 ? as : 'div';
-  return /*#__PURE__*/_react.default.createElement(ReadOnlyContext.Provider, {
-    value: on
-  }, /*#__PURE__*/_react.default.createElement(Tag, _extends({
-    ref: setRef,
-    "data-plx-readonly": on ? 'true' : 'false',
-    className: className
-  }, rest, {
-    "aria-describedby": (0, _describedBy.joinIds)(rest['aria-describedby'], on && reason ? reasonId : null)
-  }), on && reason ? /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
-    gap: "xs"
-  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: "lock",
-    size: "sm"
-  }), /*#__PURE__*/_react.default.createElement(_Text.Text, {
-    variant: "secondary",
-    id: reasonId
-  }, reason)) : null, children));
-});
   } },
   "platform/components/Pictogram/Pictogram.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
@@ -38882,7 +44048,7 @@ function RetryNotice({
   }, count) : null) : null);
 }
   } },
-  "platform/components/ProgressCircle/ProgressCircle.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/ProgressCircle/ProgressCircle.jsx": { deps: {"react":null,"../../utils/format.js":"platform/utils/format.js","../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -38890,6 +44056,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ProgressCircle = ProgressCircle;
 var _react = _interopRequireDefault(require("react"));
+var _format = require("../../utils/format.js");
 var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -38955,7 +44122,7 @@ function ProgressCircle({
   const t = TONES.indexOf(tone) >= 0 ? tone : 'info';
   const known = typeof value === 'number' && !Number.isNaN(value);
   const pct = known ? Math.max(0, Math.min(100, value / (max || 100) * 100)) : null;
-  const loc = locale || typeof document !== 'undefined' && document.documentElement.lang || undefined;
+  const loc = (0, _format.numeralLocale)(locale || typeof document !== 'undefined' && document.documentElement.lang || undefined);
   return /*#__PURE__*/_react.default.createElement("span", _extends({
     className: (0, _cx.cx)('plx-progress-circle', 'plx-progress-circle--' + s, 'plx-progress-circle--' + t, !known && 'is-indeterminate', className),
     role: "progressbar",
@@ -39814,11 +44981,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Other props pass through to the <time>.
 */
 const FORMATS = ['datetime', 'relative', 'label', 'date', 'time'];
-const toDate = v => {
-  if (v === undefined || v === null || v === '') return null;
-  const d = v instanceof Date ? v : new Date(v);
-  return isNaN(d.getTime()) ? null : d;
-};
+// the shared parser: a date-only value is that calendar day where the reader is, never midnight UTC (issue 342)
+const toDate = v => v === undefined || v === null || v === '' ? null : (0, _format.parseDate)(v);
 const dayStart = d => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
 const pad = n => (n < 10 ? '0' : '') + n;
 const calendarDay = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
@@ -39831,7 +44995,7 @@ function dayLabel(d, now, o) {
     timeZone: o.timeZone,
     locale: o.locale
   });
-  const lang = o.locale || (0, _format.formatLocale)();
+  const lang = (0, _format.numeralLocale)(o.locale || (0, _format.formatLocale)());
   const w = new Intl.RelativeTimeFormat(lang, {
     numeric: 'auto'
   }).format(days, 'day');
@@ -41854,7 +47018,7 @@ const NumberInput = exports.NumberInput = /*#__PURE__*/_react.default.forwardRef
   ...rest
 }, ref) {
   const t = Object.assign({}, STRINGS, strings);
-  const locale = (0, _format.formatLocale)();
+  const locale = (0, _format.numeralLocale)((0, _format.formatLocale)());
   const aff = _react.default.useMemo(() => affix(format, currency, currencyDisplay, locale), [format, currency, currencyDisplay, locale]);
   const places = decimals !== undefined ? decimals : aff && aff.decimals !== undefined ? aff.decimals : undefined;
   const controlled = value !== undefined;
@@ -43063,27 +48227,27 @@ function InlineEdit({
   }, error) : null);
 }
   } },
-  "platform/components/RichTextEditor/tiptap.js": { deps: {"../../utils/vendorBase.js":"platform/utils/vendorBase.js"}, externals: {  }, run: function (module, exports, require) {
+  "platform/components/RichTextEditor/tiptap.js": { deps: {"../../utils/engines.js":"platform/utils/engines.js"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.loadTiptap = loadTiptap;
-var _vendorBase = require("../../utils/vendorBase.js");
+var _engines = require("../../utils/engines.js");
 /* Plenix · RichTextEditor engine (tiptap.js)
-   Summary: Loads the engine every RichTextEditor runs on: Tiptap 3.31.3 (MIT, on ProseMirror), vendored as one file in
-     platform/vendor/tiptap/tiptap.min.js that sets window.PlenixTiptap.
+   Summary: Asks the page's engines script for the engine every RichTextEditor runs on: Tiptap 3.31.3 (MIT, on ProseMirror),
+     vendored as one file in platform/vendor/tiptap/tiptap.min.js that sets window.PlenixTiptap.
    Usage:
      loadTiptap().then((T) => new T.Editor({ element: { mount: el }, extensions: [T.StarterKit] }));
    Props:
-     loadTiptap(win): adds the engine's script to the page once (the given window's, default this one: an editor in a
-       frame runs on its frame's engine), and resolves with that window's PlenixTiptap
+     loadTiptap(win): resolves with the given window's PlenixTiptap (default this one: an editor in a frame runs on its
+       frame's engine), loading it through PlenixEngines.tiptap on first use
    Behavior:
      Only the first editor on a page loads the file; later editors reuse the same promise. Pages without an editor never
        load it (no prefetch): RichTextEditor.preload() starts the load early on a page whose first screen has an editor.
-     The file comes from the shared vendor folder (utils/vendorBase.js: next to the
-       Platform script, the release's CDN copy in the npm package, or window.PlenixVendorBase).
+     The page loads platform/engines/plenix-engines.js, which holds the vendor folder's address and the loader
+       (issues 456, 457). Without it, loadTiptap rejects with a message that says the engines script is missing.
      The engine has no stylesheet of its own: the few rules ProseMirror needs are in rich-text-editor.css, on tokens.
    Notes:
      A failed load rejects and is forgotten, so the next editor that mounts tries again.
@@ -43091,34 +48255,11 @@ var _vendorBase = require("../../utils/vendorBase.js");
        @tiptap/extension-list, -mention, -table, -text-style, -text-align, -highlight, -subscript, -superscript, -image and
        -typography, and their dependencies (platform/vendor/README.md: versions, licenses, how it is built). */
 
-const loading = new WeakMap();
 function loadTiptap(win) {
   const w = win || (typeof window !== 'undefined' ? window : null);
   if (!w) return Promise.reject(new Error('Tiptap needs a browser'));
   if (w.PlenixTiptap) return Promise.resolve(w.PlenixTiptap);
-  if (loading.has(w)) return loading.get(w);
-  const doc = w.document;
-  const p = new Promise((resolve, reject) => {
-    const script = doc.createElement('script');
-    script.src = (0, _vendorBase.vendorBase)() + 'tiptap/tiptap.min.js';
-    script.async = true;
-    script.setAttribute('data-plx-vendor', 'tiptap');
-    script.onload = () => {
-      if (w.PlenixTiptap) resolve(w.PlenixTiptap);else {
-        loading.delete(w);
-        script.remove();
-        reject(new Error('Tiptap did not load from ' + script.src));
-      }
-    };
-    script.onerror = () => {
-      loading.delete(w);
-      script.remove();
-      reject(new Error('Tiptap could not be loaded from ' + script.src));
-    };
-    doc.head.appendChild(script);
-  });
-  loading.set(w, p);
-  return p;
+  return (0, _engines.engine)('tiptap', w);
 }
   } },
   "platform/components/RichTextEditor/RichTextEditor.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js","../../utils/overflow.js":"platform/utils/overflow.js","../Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","../ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","../../utils/hotkey.js":"platform/utils/hotkey.js","./tiptap.js":"platform/components/RichTextEditor/tiptap.js","../../utils/richTextClean.js":"platform/utils/richTextClean.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -44596,7 +49737,7 @@ const Calendar = exports.Calendar = /*#__PURE__*/_react.default.forwardRef(funct
   ...rest
 }, ref) {
   const t = Object.assign({}, STRINGS, strings);
-  const locale = localeProp || (0, _format.formatLocale)();
+  const locale = (0, _format.numeralLocale)(localeProp || (0, _format.formatLocale)());
   const today = todayProp || todayIso();
   const range = mode === 'range';
   const [ownValue, setOwnValue] = _react.default.useState(defaultValue !== undefined ? defaultValue : range ? {
@@ -44683,8 +49824,9 @@ const Calendar = exports.Calendar = /*#__PURE__*/_react.default.forwardRef(funct
     month: 'long',
     year: 'numeric'
   });
+  // Arabic weekday names are too long for a column: one letter each, as Arabic calendars do (owner, arabic-batch4-36)
   const weekdayShort = new Intl.DateTimeFormat(locale, {
-    weekday: 'short'
+    weekday: /^ar\b/i.test(locale) ? 'narrow' : 'short'
   });
   const weekdayLong = new Intl.DateTimeFormat(locale, {
     weekday: 'long'
@@ -44882,6 +50024,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        placeholder shows the form (MM/DD/YYYY). A range is two dates with a dash between them. Typed text is read when the
        field is left or Enter is pressed: a date it cannot read, or one that cannot be chosen, leaves the text and marks
        the field invalid until it is corrected; the Field's error says what to fix.
+     The field is one box like the text field (owner, form-controls-37): the date input and a 16px calendar icon button inside
+       it at its end; a range and a date-time picker look the same, the time field beside it. The calendar opens in a popover 4px
+       under the field.
      The calendar button (or Alt+Arrow Down in the field) opens the calendar in a popover under the field, with focus on
        the chosen day (else today); choosing a day (a range: its end) or a preset closes it and returns focus to the field.
        Escape, a press outside, and Tab out of it close it too.
@@ -44895,7 +50040,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The value is a calendar date (no time zone moves it); a date-time value is a local wall-clock time, and the time zone
        shown says which.
      A date people know by heart (a birth date) is typed: give it no calendar (use Input).
-     Built on InputGroup, Popover (manual) and Calendar.
+     Built on Popover (manual) and Calendar; the date-time's time field is an InputGroup.
 */
 const STRINGS = {
   open: 'Choose date',
@@ -44993,7 +50138,7 @@ const DatePicker = exports.DatePicker = /*#__PURE__*/_react.default.forwardRef(f
   ...rest
 }, ref) {
   const t = Object.assign({}, STRINGS, strings);
-  const locale = localeProp || (0, _format.formatLocale)();
+  const locale = (0, _format.numeralLocale)(localeProp || (0, _format.formatLocale)());
   const form = numericForm(locale);
   const range = mode === 'range',
     dateTime = mode === 'date-time';
@@ -45156,28 +50301,26 @@ const DatePicker = exports.DatePicker = /*#__PURE__*/_react.default.forwardRef(f
   const firstMonth = (range ? shown && shown.start : shown) || undefined;
   const field = /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-date-picker__field"
-  }, /*#__PURE__*/_react.default.createElement(_InputGroup.InputGroup, {
-    className: "plx-date-picker__date",
-    data: true,
-    invalid: invalid || bad,
-    disabled: disabled,
-    end: /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      iconOnly: true,
-      icon: "calendar",
-      label: t.open,
-      expanded: open,
-      "aria-haspopup": "dialog",
-      disabled: disabled,
-      onClick: toggle
-    })
-  }, /*#__PURE__*/_react.default.createElement(_Input.Input, {
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-date-picker__date', range && 'plx-date-picker__date--range', 'plx-input', 'plx-input--data', disabled && 'is-disabled'),
+    "aria-invalid": invalid || bad || undefined,
+    onMouseDown: e => {
+      if (!disabled && input.current && e.target !== input.current && !e.target.closest('button')) {
+        e.preventDefault();
+        input.current.focus();
+      }
+    }
+  }, /*#__PURE__*/_react.default.createElement("input", {
     ref: input,
     id: id,
-    data: true,
+    type: "text",
+    className: "plx-date-picker__input",
     value: text,
     placeholder: range ? form.hint + DASH + form.hint : form.hint,
     required: required,
     "aria-describedby": describedBy,
+    "aria-invalid": invalid || bad || undefined,
+    disabled: disabled,
     autoComplete: "off",
     onChange: e => {
       typing.current = true;
@@ -45193,6 +50336,17 @@ const DatePicker = exports.DatePicker = /*#__PURE__*/_react.default.forwardRef(f
         if (!open) toggle();
       }
     }
+  }), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "ghost",
+    size: "2xs",
+    iconOnly: true,
+    icon: "calendar",
+    className: "plx-date-picker__button",
+    label: t.open,
+    expanded: open,
+    "aria-haspopup": "dialog",
+    disabled: disabled,
+    onClick: toggle
   })), dateTime ? /*#__PURE__*/_react.default.createElement(_InputGroup.InputGroup, {
     data: true,
     suffix: zone || undefined,
@@ -45776,7 +50930,7 @@ const MillerColumns = exports.MillerColumns = /*#__PURE__*/_react.default.forwar
   }, renderPreview(preview)) : null);
 });
   } },
-  "platform/components/Cascader/Cascader.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Cascader/Cascader.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -45788,6 +50942,7 @@ var _cx = require("../../utils/cx.js");
 var _Tag = require("../Tag/Tag.jsx");
 var _MillerColumns = require("../MillerColumns/MillerColumns.jsx");
 var _announce = require("../../utils/announce.jsx");
+var _floating = require("../../utils/floating.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Cascader
    Summary: A form field whose value is a leaf of a hierarchy, chosen level by level in columns that open under the field
@@ -45815,6 +50970,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        columns: "Options" }
      className: more classes on the cascader
    Behavior:
+     The popup opens in the browser's top layer, below the field or above it near an edge: no dialog, drawer or scroll area clips it.
      The field is a button (aria-haspopup="dialog", aria-expanded) that opens the columns under it; focus moves into the
        first column, on the chosen path. The columns are MillerColumns: Arrow Up and Down in a column, Right into the
        children, Left back, Enter on a leaf chooses it (a click too). A single choice closes the list and returns focus to
@@ -45829,6 +50985,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      For a hierarchy people should see whole, use a tree select; for two or three short levels, consider plain Selects.
      The list is a menu surface (8px corners, the menu elevation); its columns take the narrowest width step (160px).
 */
+// the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
+const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 const STRINGS = {
   placeholder: 'Choose',
   separator: ' / ',
@@ -45878,7 +51036,17 @@ const Cascader = exports.Cascader = /*#__PURE__*/_react.default.forwardRef(funct
   const wrap = _react.default.useRef(null),
     button = _react.default.useRef(null),
     search = _react.default.useRef(null),
-    cols = _react.default.useRef(null);
+    cols = _react.default.useRef(null),
+    popup = _react.default.useRef(null);
+  // the popup opens in the top layer, placed against the field by the floating layer (flips up near an edge, follows scroll and resize): no dialog, drawer or scroll area clips it
+  (0, _floating.useFloating)(wrap, popup, {
+    open,
+    placement: 'bottom-start'
+  });
+  _react.default.useLayoutEffect(() => {
+    const el = popup.current;
+    if (open && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+  }, [open]);
   _react.default.useImperativeHandle(ref, () => button.current);
   const chosen = multiple ? values || [] : value !== undefined && value !== null && value !== '' ? [value] : [];
   const pathLabel = trail => trail.map(x => x.label).join(t.separator);
@@ -45991,9 +51159,11 @@ const Cascader = exports.Cascader = /*#__PURE__*/_react.default.forwardRef(funct
     className: "plx-cascader__chevron",
     "aria-hidden": "true"
   }))), open ? /*#__PURE__*/_react.default.createElement("div", {
+    ref: popup,
     className: "plx-cascader__popup",
     id: auto + '-pop',
     role: "dialog",
+    popover: TOP_LAYER ? 'manual' : undefined,
     "aria-label": label || t.columns
   }, searchable ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-cascader__search"
@@ -46053,7 +51223,7 @@ const Cascader = exports.Cascader = /*#__PURE__*/_react.default.forwardRef(funct
   }))) : null);
 });
   } },
-  "platform/components/EntityPicker/EntityPicker.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/EntityPicker/EntityPicker.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -46068,6 +51238,7 @@ var _IconTile = require("../IconTile/IconTile.jsx");
 var _Icon = require("../Icon/Icon.jsx");
 var _Loading = require("../Loading/Loading.jsx");
 var _announce = require("../../utils/announce.jsx");
+var _floating = require("../../utils/floating.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · EntityPicker
    Summary: A search-and-choose field for records of one kind (people, teams, projects, assets), each suggestion with its
@@ -46107,12 +51278,16 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      A single choice shows the chosen record's picture or icon before its name in the field and closes the list; with
        multiple, choosing adds or removes a tag and the list stays open; Backspace in the empty field removes the last
        tag; each tag has a remove button named "Remove <name>".
+     The list opens in the browser's top layer, below the field or above it near an edge, as wide as the field at least: no dialog,
+       drawer or scroll area clips it.
      The number of results is announced politely after each search; while loadOptions runs the list is busy and shows
        a spinner; a failed load says so in the list.
    Notes:
      The picture in each suggestion is decorative: the name and the detail are the option's text.
      For a few known choices use Select; for anything that is not a record, Combobox.
 */
+// the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
+const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 const STRINGS = {
   placeholderPeople: 'Search by name or email',
   placeholder: 'Search {entityName}',
@@ -46158,7 +51333,8 @@ const EntityPicker = exports.EntityPicker = /*#__PURE__*/_react.default.forwardR
   const [text, setText] = _react.default.useState('');
   const [active, setActive] = _react.default.useState(0);
   const wrap = _react.default.useRef(null),
-    input = _react.default.useRef(null);
+    input = _react.default.useRef(null),
+    list = _react.default.useRef(null);
   _react.default.useImperativeHandle(ref, () => input.current);
   const [loaded, setLoaded] = _react.default.useState([]);
   const [busy, setBusy] = _react.default.useState(false);
@@ -46287,6 +51463,16 @@ const EntityPicker = exports.EntityPicker = /*#__PURE__*/_react.default.forwardR
     entityName: noun
   }));
   const showList = open && (items.length || busy || failed || q);
+  // the list opens in the top layer, placed against the field by the floating layer (flips up near an edge, follows scroll and resize): no dialog, drawer or scroll area clips it
+  (0, _floating.useFloating)(wrap, list, {
+    open: !!showList,
+    placement: 'bottom-start',
+    matchWidth: true
+  });
+  _react.default.useLayoutEffect(() => {
+    const el = list.current;
+    if (showList && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+  }, [showList]);
   return /*#__PURE__*/_react.default.createElement("div", {
     ref: wrap,
     className: (0, _cx.cx)('plx-entity-picker', 'plx-entity-picker--' + kind, multiple && 'plx-entity-picker--multiple', open && 'is-open', disabled && 'is-disabled', className)
@@ -46334,9 +51520,12 @@ const EntityPicker = exports.EntityPicker = /*#__PURE__*/_react.default.forwardR
   }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
     name: "search"
   }))), showList ? /*#__PURE__*/_react.default.createElement("ul", {
+    ref: list,
     className: "plx-entity-picker__list",
     id: listId,
     role: "listbox",
+    popover: TOP_LAYER ? 'manual' : undefined,
+    onMouseDown: e => e.preventDefault(),
     "aria-label": label || noun,
     "aria-multiselectable": multiple || undefined,
     "aria-busy": busy || undefined
@@ -46401,7 +51590,7 @@ const EntityPicker = exports.EntityPicker = /*#__PURE__*/_react.default.forwardR
   })) : null))) : null);
 });
   } },
-  "platform/components/TimePicker/TimePicker.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/TimePicker/TimePicker.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/floating.js":"platform/utils/floating.js","../../utils/digits.js":"platform/utils/digits.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -46412,6 +51601,9 @@ var _react = _interopRequireDefault(require("react"));
 var _devWarn = require("../../utils/devWarn.js");
 var _cx = require("../../utils/cx.js");
 var _format = require("../../utils/format.js");
+var _floating = require("../../utils/floating.js");
+var _digits = require("../../utils/digits.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · TimePicker
    Summary: A time of day, typed or chosen: a field with a list of times at a set step (the default), or segments for the
@@ -46430,6 +51622,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      variant: "list" (default: a field people type in, with the times at each step in a list under it) | "segments"
        (spin buttons for the hour, the minute and the period)
      hourCycle: "12" | "24": the clock shown; default the reader's locale's clock
+     The list of times opens in the browser's top layer, below the field (or above it near an edge), as wide as the field: no dialog, drawer or scroll area clips it;
+       its rows are the shared list row height (28px at the compact density), the times in the data font (owner, timepicker-rows-37)
+     Digits: in Arabic the times are written Arabic-Indic (٢:٣٠), and a time typed in Arabic-Indic digits reads the same (owner, arabic-digits-35)
      step: the minutes between times in the list, and the minute segment's step (default 15 for the list, 1 for segments);
        a value that divides 60 (5, 10, 15, 30)
      min, max: the earliest and the latest time ("HH:MM"); the list holds only times between them
@@ -46454,6 +51649,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      For a date and a time together, place a date picker beside it. For a duration, use a number input with a unit.
      Show the time zone in the description when people in several zones use the data.
 */
+// the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
+const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 const STRINGS = {
   hour: 'Hour',
   minute: 'Minute',
@@ -46481,7 +51678,7 @@ const localeCycle = () => {
 };
 // "2", "2pm", "2:30 pm", "14:30", "1430", "230p" → minutes after midnight, or null
 const parseTime = (text, cycle) => {
-  const s = String(text || '').trim().toLowerCase().replace(/\./g, '');
+  const s = (0, _digits.toLatinDigits)(String(text || '')).trim().toLowerCase().replace(/\./g, ''); // what a person typed in Arabic-Indic digits reads the same
   if (!s) return null;
   const m = /^(\d{1,2})(?::?(\d{2}))?\s*(a|am|p|pm)?$/.exec(s);
   if (!m) return null;
@@ -46496,11 +51693,13 @@ const parseTime = (text, cycle) => {
   return h * 60 + min;
 };
 exports.parseTime = parseTime;
-const show = (mins, cycle, t) => {
+const show = (mins, cycle, t, digits) => {
   if (mins === null) return '';
   const h = Math.floor(mins / 60),
     m = mins % 60;
-  return cycle === '12' ? (h % 12 || 12) + ':' + pad(m) + ' ' + (h < 12 ? t.am : t.pm) : pad(h) + ':' + pad(m);
+  return (0, _digits.localDigits)(cycle === '12' ? (h % 12 || 12) + ':' + pad(m) + ' ' + (h < 12 ? t.am : t.pm) : pad(h) + ':' + pad(m), {
+    digits
+  }); // the page's digits (Arabic-Indic in Arabic)
 };
 const TimePicker = exports.TimePicker = /*#__PURE__*/_react.default.forwardRef(function TimePicker({
   value,
@@ -46538,6 +51737,7 @@ const TimePicker = exports.TimePicker = /*#__PURE__*/_react.default.forwardRef(f
     if (value === undefined) setOwn(v);
     if (onChange && v !== current) onChange(v);
   };
+  const digits = (0, _LocaleProvider.useDigits)();
   const cls = (0, _cx.cx)('plx-time-picker', 'plx-time-picker--' + variant, width && 'plx-time-picker--width-' + width, disabled && 'is-disabled', className);
   const hidden = name ? /*#__PURE__*/_react.default.createElement("input", {
     type: "hidden",
@@ -46595,6 +51795,7 @@ const ListPicker = /*#__PURE__*/_react.default.forwardRef(function ListPicker({
   hidden,
   rest
 }, ref) {
+  const digits = (0, _LocaleProvider.useDigits)();
   const auto = 'plx-tp' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
   const [open, setOpen] = _react.default.useState(false);
   const [text, setText] = _react.default.useState(null); // the text while typing; null shows the value
@@ -46602,6 +51803,16 @@ const ListPicker = /*#__PURE__*/_react.default.forwardRef(function ListPicker({
   const wrap = _react.default.useRef(null),
     input = _react.default.useRef(null),
     list = _react.default.useRef(null);
+  // the list opens in the top layer, placed against the field by the floating layer (flips up near an edge, follows scroll and resize): no dialog, drawer or scroll area clips it
+  (0, _floating.useFloating)(wrap, list, {
+    open,
+    placement: 'bottom-start',
+    matchWidth: true
+  });
+  _react.default.useLayoutEffect(() => {
+    const el = list.current;
+    if (open && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+  }, [open]);
   _react.default.useImperativeHandle(ref, () => input.current);
   const times = [];
   for (let n = Math.ceil(lo / step) * step; n <= hi; n += step) times.push(n);
@@ -46696,7 +51907,7 @@ const ListPicker = /*#__PURE__*/_react.default.forwardRef(function ListPicker({
     disabled: disabled,
     autoComplete: "off",
     inputMode: "text",
-    value: text !== null ? text : show(mins, cycle, t),
+    value: text !== null ? text : show(mins, cycle, t, digits),
     placeholder: cycle === '12' ? '9:00 ' + t.am : '09:00',
     onChange: e => {
       setText(e.target.value);
@@ -46718,6 +51929,8 @@ const ListPicker = /*#__PURE__*/_react.default.forwardRef(function ListPicker({
     className: "plx-time-picker__list",
     id: auto + '-list',
     role: "listbox",
+    popover: TOP_LAYER ? 'manual' : undefined,
+    onMouseDown: e => e.preventDefault(),
     "aria-label": label ? label + ', ' + t.times : t.times
   }, times.map((n, i) => /*#__PURE__*/_react.default.createElement("li", {
     key: n,
@@ -46729,7 +51942,7 @@ const ListPicker = /*#__PURE__*/_react.default.forwardRef(function ListPicker({
     onMouseDown: e => e.preventDefault(),
     onClick: () => choose(i),
     onMouseEnter: () => setActive(i)
-  }, show(n, cycle, t)))) : null, hidden);
+  }, show(n, cycle, t, digits)))) : null, hidden);
 });
 const Segments = /*#__PURE__*/_react.default.forwardRef(function Segments({
   t,
@@ -46747,6 +51960,7 @@ const Segments = /*#__PURE__*/_react.default.forwardRef(function Segments({
   hidden,
   rest
 }, ref) {
+  const digits = (0, _LocaleProvider.useDigits)();
   const mins = toMin(current);
   // the parts being edited: hour on the clock shown (1–12 or 0–23), minute, period ('am' | 'pm'); null = empty
   const fromValue = () => mins === null ? {
@@ -46857,7 +52071,9 @@ const Segments = /*#__PURE__*/_react.default.forwardRef(function Segments({
     m: t.minute,
     p: t.period
   };
-  const text = k => parts[k] === null ? t.empty : k === 'p' ? parts.p === 'am' ? t.am : t.pm : k === 'h' && cycle === '12' ? String(parts.h) : pad(parts[k]);
+  const text = k => parts[k] === null ? t.empty : k === 'p' ? parts.p === 'am' ? t.am : t.pm : (0, _digits.localDigits)(k === 'h' && cycle === '12' ? String(parts.h) : pad(parts[k]), {
+    digits
+  });
   return /*#__PURE__*/_react.default.createElement("div", {
     className: cls
   }, /*#__PURE__*/_react.default.createElement("div", _extends({
@@ -47941,7 +53157,7 @@ function AvatarUpload({
   }, error) : null);
 }
   } },
-  "platform/components/TimeZoneSelect/TimeZoneSelect.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/announce.jsx":"platform/utils/announce.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/TimeZoneSelect/TimeZoneSelect.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/digits.js":"platform/utils/digits.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../Isolate/Isolate.jsx":"platform/components/Isolate/Isolate.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -47952,7 +53168,11 @@ exports.timeZoneOptions = timeZoneOptions;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _format = require("../../utils/format.js");
+var _digits = require("../../utils/digits.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _Isolate = require("../Isolate/Isolate.jsx");
 var _announce = require("../../utils/announce.jsx");
+var _floating = require("../../utils/floating.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · TimeZoneSelect
    Summary: A field for choosing a time zone (05 Forms › Date, time, and color › Time-zone selector): a combobox over
@@ -47968,6 +53188,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      onChange(zone): runs with the chosen zone's IANA name
      grouped: list the zones under their region (Africa, Americas, Asia…), by city (default true); false lists them in
        one list ordered by offset, west to east
+     Digits: in Arabic the offsets are written Arabic-Indic; typing Arabic-Indic digits finds the same zones (owner, arabic-digits-35)
      showOffset: each zone's offset from UTC ("UTC−08:00") at the end of its option and of the field (default true)
      zones: the IANA names to offer (default: every zone the browser supports, and UTC)
      date: the moment the offsets are for (default now): offsets change with daylight saving time
@@ -47982,6 +53203,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      className: more classes on the field
      ref: forwarded to the <input>; other props pass through to it
    Behavior:
+     The list opens in the browser's top layer like the Combobox's: no dialog, drawer or scroll area clips it.
      The Combobox's behavior and look (its classes and tokens): the list opens on focus and on typing; ↓ and ↑ move,
      Enter chooses, Escape closes, a click outside closes. The active option stays in view.
      Typing filters by city, region, IANA name, the zone's long name in the reader's language and the offset; the number
@@ -47992,6 +53214,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Offsets are technical values: the data font (Reddit Mono). The city comes from the IANA name ("Buenos Aires, Argentina");
      the long name ("Pacific Standard Time") is only searched, never shown, so the list stays short.
 */
+// the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
+const TOP_LAYER = _floating.FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 const STRINGS = {
   placeholder: 'Choose a time zone',
   empty: 'No matches',
@@ -48079,7 +53303,7 @@ function timeZoneOptions({
 }
 
 // the search text: an offset typed as "+5", "-08", "5:30" or "utc+1" matches "UTC+05:00"
-const fold = s => String(s).toLowerCase().replace(/[−–]/g, '-').replace(/_/g, ' ');
+const fold = s => (0, _digits.toLatinDigits)(String(s)).toLowerCase().replace(/[−–]/g, '-').replace(/_/g, ' ');
 const offsetKeys = o => {
   const sign = o.minutes < 0 ? '-' : '+',
     a = Math.abs(o.minutes),
@@ -48105,6 +53329,7 @@ const TimeZoneSelect = exports.TimeZoneSelect = /*#__PURE__*/_react.default.forw
   ...rest
 }, ref) {
   const t = Object.assign({}, STRINGS, strings);
+  const digits = (0, _LocaleProvider.useDigits)();
   const auto = 'plx-tz' + _react.default.useId().replace(/[^a-zA-Z0-9]/g, '');
   const listId = auto + '-list';
   const [open, setOpen] = _react.default.useState(false);
@@ -48113,6 +53338,16 @@ const TimeZoneSelect = exports.TimeZoneSelect = /*#__PURE__*/_react.default.forw
   const wrap = _react.default.useRef(null),
     input = _react.default.useRef(null),
     list = _react.default.useRef(null);
+  // the list opens in the top layer, placed against the field by the floating layer (flips up near an edge, follows scroll and resize): no dialog, drawer or scroll area clips it
+  (0, _floating.useFloating)(wrap, list, {
+    open: open,
+    placement: 'bottom-start',
+    matchWidth: true
+  });
+  _react.default.useLayoutEffect(() => {
+    const el = list.current;
+    if (open && TOP_LAYER && el && el.showPopover && !el.matches(':popover-open')) el.showPopover();
+  }, [open]);
   _react.default.useImperativeHandle(ref, () => input.current);
   const day = date ? new Date(date).toDateString() : new Date().toDateString();
   const zoneKey = zones ? zones.join('|') : '';
@@ -48231,7 +53466,9 @@ const TimeZoneSelect = exports.TimeZoneSelect = /*#__PURE__*/_react.default.forw
     "aria-label": label,
     disabled: disabled,
     autoComplete: "off",
-    "aria-description": current && showOffset ? current.offset : undefined,
+    "aria-description": current && showOffset ? (0, _digits.localDigits)(current.offset, {
+      digits
+    }) : undefined,
     value: open ? text : current ? current.label : '',
     placeholder: current && open ? current.label : placeholder || t.placeholder,
     onChange: e => {
@@ -48243,7 +53480,7 @@ const TimeZoneSelect = exports.TimeZoneSelect = /*#__PURE__*/_react.default.forw
   }, rest)), showOffset && current && !open ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-time-zone-select__field-offset",
     "aria-hidden": "true"
-  }, current.offset) : null, /*#__PURE__*/_react.default.createElement("span", {
+  }, /*#__PURE__*/_react.default.createElement(_Isolate.Isolate, null, current.offset)) : null, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-combobox__chevron",
     "aria-hidden": "true"
   })), open ? /*#__PURE__*/_react.default.createElement("ul", {
@@ -48251,7 +53488,9 @@ const TimeZoneSelect = exports.TimeZoneSelect = /*#__PURE__*/_react.default.forw
     className: "plx-combobox__list plx-time-zone-select__list",
     id: listId,
     role: "listbox",
-    "aria-label": label
+    "aria-label": label,
+    popover: TOP_LAYER ? 'manual' : undefined,
+    onMouseDown: e => e.preventDefault()
   }, shown.length ? shown.map((o, i) => [grouped && (i === 0 || shown[i - 1].region !== o.region) ? /*#__PURE__*/_react.default.createElement("li", {
     key: 'g-' + o.region,
     className: "plx-combobox__group",
@@ -48269,7 +53508,7 @@ const TimeZoneSelect = exports.TimeZoneSelect = /*#__PURE__*/_react.default.forw
     className: "plx-time-zone-select__city"
   }, o.label), showOffset ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-time-zone-select__offset"
-  }, o.offset) : null)]) : /*#__PURE__*/_react.default.createElement("li", {
+  }, /*#__PURE__*/_react.default.createElement(_Isolate.Isolate, null, o.offset)) : null)]) : /*#__PURE__*/_react.default.createElement("li", {
     className: "plx-combobox__empty",
     role: "presentation"
   }, t.empty)) : null);
@@ -52750,7 +57989,7 @@ function ResourceList({
   }, items.map(row)));
 }
   } },
-  "platform/charts/LineChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./interaction.js":"platform/charts/interaction.js","./echarts/EChartsPlot.jsx":"platform/charts/echarts/EChartsPlot.jsx","../utils/grid.js":"platform/utils/grid.js","./chart-kit.js":"platform/charts/chart-kit.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/LineChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./interaction.js":"platform/charts/interaction.js","./echarts/EChartsPlot.jsx":"platform/charts/echarts/EChartsPlot.jsx","./echarts/engine.js":"platform/charts/echarts/engine.js","../utils/grid.js":"platform/utils/grid.js","./chart-kit.js":"platform/charts/chart-kit.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -52768,6 +58007,7 @@ var _ChartLegend = require("./parts/ChartLegend.jsx");
 var _ChartTooltip = require("./parts/ChartTooltip.jsx");
 var _interaction = require("./interaction.js");
 var _EChartsPlot = require("./echarts/EChartsPlot.jsx");
+var _engine = require("./echarts/engine.js");
 var _grid = require("../utils/grid.js");
 var _chartKit = require("./chart-kit.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -53025,8 +58265,11 @@ function SeriesChart({
     const room = gridRoom(margin, tk.top);
     // ECharts does not measure labels at its own tick values: the room under the plot and after it for the date labels
     const dates = type === 'time' ? timeLabels(size) : null;
+    // the x labels' line height: the font size, or more for Arabic labels (tickLineHeight)
+    const xTexts = type === 'band' ? cols.map(c => fmts.current.fmtX(xs[c])) : dates ? dates.customValues.map(dates.formatter) : [];
+    const xLine = (0, _engine.tickLineHeight)(tk, xTexts);
     if (dates) {
-      room.bottom = Math.max(room.bottom, (0, _grid.snapToGrid)(tk.tickOffset + tk.tick.fontSize, {
+      room.bottom = Math.max(room.bottom, (0, _grid.snapToGrid)(tk.tickOffset + xLine, {
         round: 'up'
       }));
       room.right = Math.max(room.right, (0, _chartKit.halfRoom)(dates.last));
@@ -53044,13 +58287,17 @@ function SeriesChart({
     };
     const xAxis = Object.assign({
       name: xLabel,
-      nameGap: tk.tickOffset * 2 + tk.tick.fontSize,
+      nameGap: tk.tickOffset * 2 + xLine,
       inverse: tk.rtl
-    }, named, type === 'band' ? {
+    }, named, type === 'band' ? Object.assign({
       type: 'category',
       boundaryGap: false,
-      data: cols.map(c => fmts.current.fmtX(xs[c]))
-    } : {
+      data: xTexts
+    }, xLine > tk.tick.fontSize ? {
+      axisLabel: {
+        lineHeight: xLine
+      }
+    } : {}) : {
       type: type === 'time' ? 'time' : 'value',
       min: xValue(v0),
       max: xValue(v1),
@@ -53433,7 +58680,7 @@ function HeatMap({
   const calendar = variant === 'calendar';
   const fmt = typeof format === 'function' ? format : v => (0, _format.formatNumber)(v);
   const vLabel = valueLabel || t.value;
-  const locale = (0, _format.formatLocale)();
+  const locale = (0, _format.numeralLocale)((0, _format.formatLocale)());
   const cal = calendar ? calendarGrid(data) : null;
   const weekday = r => new Intl.DateTimeFormat(locale, {
     weekday: 'short'
@@ -55403,7 +60650,7 @@ function Diagram({
   }, draw);
 }
   } },
-  "platform/charts/BarChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./interaction.js":"platform/charts/interaction.js","./chart-kit.js":"platform/charts/chart-kit.js","./echarts/EChartsPlot.jsx":"platform/charts/echarts/EChartsPlot.jsx","./LineChart.jsx":"platform/charts/LineChart.jsx","../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/charts/BarChart.jsx": { deps: {"react":null,"../utils/cx.js":"platform/utils/cx.js","../utils/format.js":"platform/utils/format.js","./ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./scales.js":"platform/charts/scales.js","./parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./interaction.js":"platform/charts/interaction.js","./chart-kit.js":"platform/charts/chart-kit.js","./echarts/EChartsPlot.jsx":"platform/charts/echarts/EChartsPlot.jsx","./echarts/engine.js":"platform/charts/echarts/engine.js","./LineChart.jsx":"platform/charts/LineChart.jsx","../utils/grid.js":"platform/utils/grid.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -55422,6 +60669,7 @@ var _DataLabel = require("./parts/DataLabel.jsx");
 var _interaction = require("./interaction.js");
 var _chartKit = require("./chart-kit.js");
 var _EChartsPlot = require("./echarts/EChartsPlot.jsx");
+var _engine = require("./echarts/engine.js");
 var _LineChart = require("./LineChart.jsx");
 var _grid = require("../utils/grid.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -55732,15 +60980,19 @@ function BarChart({
       min: 0,
       max: 1
     } : {});
+    // the category labels' line height under columns: the font size, or more for Arabic labels (tickLineHeight)
+    const catLine = across || bins ? tk.tick.fontSize : (0, _engine.tickLineHeight)(tk, cats.map(String));
     const catAxis = Object.assign({
       type: 'category',
       data: cats.map((c, ci) => bins ? String(ci) : String(c)),
       inverse: across,
       name: bins ? undefined : categoryLabel,
-      nameGap: across ? 0 : tk.tickOffset * 2 + tk.tick.fontSize,
+      nameGap: across ? 0 : tk.tickOffset * 2 + catLine,
       position: across ? tk.rtl ? 'right' : 'left' : 'bottom',
       axisLabel: bins ? {
         show: false
+      } : catLine > tk.tick.fontSize ? {
+        lineHeight: catLine
       } : {}
     }, named);
     // a histogram's range axis: the bins' edges on a number axis laid over the bins
@@ -61189,7 +66441,7 @@ function AssignControl({
         className: "plx-assign-control__dates"
       }, /*#__PURE__*/_react.default.createElement(_Text.Text, {
         variant: "data"
-      }, (0, _format.formatRange)((0, _ReviewFlow.localDay)(d.start), (0, _ReviewFlow.localDay)(d.end))))
+      }, (0, _format.formatRange)(d.start, d.end)))
     }) : /*#__PURE__*/_react.default.createElement("span", {
       className: "plx-assign-control__empty"
     }, t.notDelegated)), /*#__PURE__*/_react.default.createElement("div", {
@@ -62399,9 +67651,6 @@ function fileIcon(name, type) {
   if (/^text\//.test(type || '')) return 'doc-text';
   return 'document';
 }
-
-// a calendar day written YYYY-MM-DD is that day where the reader is (new Date('2026-10-14') would be midnight UTC)
-const day = v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) ? new Date(+v.slice(0, 4), +v.slice(5, 7) - 1, +v.slice(8, 10)) : v;
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 function Picture({
   src,
@@ -62454,7 +67703,7 @@ function File({
   if (folder && typeof count === 'number') facts.push(fill(count === 1 ? t.item : t.items, {
     n: (0, _format.formatNumber)(count)
   }));
-  if (modified) facts.push((0, _format.formatDate)(day(modified), {
+  if (modified) facts.push((0, _format.formatDate)(modified, {
     dateStyle: 'short'
   }));
   const text = /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("span", {
@@ -62583,8 +67832,6 @@ const STRINGS = {
   items: '{n} items',
   item: '{n} item'
 };
-// a calendar day written YYYY-MM-DD is that day where the reader is (new Date('2026-10-14') would be midnight UTC)
-const day = v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) ? new Date(+v.slice(0, 4), +v.slice(5, 7) - 1, +v.slice(8, 10)) : v;
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 function FileRow({
   file,
@@ -62752,7 +67999,7 @@ function FileFacts({
   }, size), file.modified ? /*#__PURE__*/_react.default.createElement("time", {
     className: "plx-file-row__cell plx-file-row__date",
     dateTime: typeof file.modified === 'string' ? file.modified : (0, _format.dateTimeAttr)(file.modified)
-  }, (0, _format.formatDate)(day(file.modified), {
+  }, (0, _format.formatDate)(file.modified, {
     dateStyle: 'medium'
   })) : null);
 }
@@ -62864,7 +68111,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Notes:
      Sign in, not Log in, everywhere. Never ask for the same thing twice (no "confirm password"). Offer single sign-on
        first where the organization uses it. Security questions are never a recovery method.
-     services/login is the Plenix sign-in service; it draws this layout with the release's classes (login.css).
+     services/login is the Plenix sign-in service; it draws this layout with the release's classes (no stylesheet of its own).
 */
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 const around = (s, key, node) => {
@@ -64769,8 +70016,6 @@ const STRINGS = {
   done: '{service} connected',
   undone: '{service} disconnected'
 };
-// a calendar day written YYYY-MM-DD is that day where the reader is (new Date('2026-10-14') would be midnight UTC)
-const day = v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) ? new Date(+v.slice(0, 4), +v.slice(5, 7) - 1, +v.slice(8, 10)) : v;
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 const STATUS = {
   connected: ['success', 'check'],
@@ -64850,7 +70095,7 @@ function ConnectedAccount({
   }, a.account)) : null, a.account && a.connectedAt ? ', ' : null, a.connectedAt ? around(t.since, 'date', /*#__PURE__*/_react.default.createElement("time", {
     className: "plx-connected-accounts__date",
     dateTime: typeof a.connectedAt === 'string' ? a.connectedAt : (0, _format.dateTimeAttr)(a.connectedAt)
-  }, (0, _format.formatDate)(day(a.connectedAt)))) : null) : null, status === 'error' && a.error ? /*#__PURE__*/_react.default.createElement("p", {
+  }, (0, _format.formatDate)(a.connectedAt))) : null) : null, status === 'error' && a.error ? /*#__PURE__*/_react.default.createElement("p", {
     className: "plx-connected-accounts__error"
   }, a.error) : null), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-connected-accounts__actions"
@@ -66879,8 +72124,6 @@ const STRINGS = {
 const FIELDS = ['name', 'size', 'modified', 'owner'];
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
 const idOf = f => f.id === undefined ? f.name : f.id;
-// a calendar day written YYYY-MM-DD is that day where the reader is
-const day = v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) ? new Date(+v.slice(0, 4), +v.slice(5, 7) - 1, +v.slice(8, 10)) : v;
 const stamp = v => v instanceof Date ? v.toISOString() : String(v || '');
 
 // the order of the list: folders first, then the field, then the name
@@ -67102,7 +72345,7 @@ function FileList({
       field: 'modified',
       kind: 'data',
       type: 'date',
-      render: f => f.modified ? (0, _format.formatDate)(day(f.modified), {
+      render: f => f.modified ? (0, _format.formatDate)(f.modified, {
         dateStyle: 'medium'
       }) : ''
     });
@@ -68482,7 +73725,6 @@ const STRINGS = {
   empty: 'Choose two versions to compare.'
 };
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => v[k] !== undefined ? v[k] : m);
-const day = v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) ? new Date(+v.slice(0, 4), +v.slice(5, 7) - 1, +v.slice(8, 10)) : v;
 
 // the lines of two texts, compared: [{ kind: "same" | "add" | "del", text, a (the line number before), b (after) }]
 function diffLines(before, after) {
@@ -68751,12 +73993,12 @@ function VersionCompare({
     if (mode === undefined) setOwnMode(m);
     if (onModeChange) onModeChange(m);
   };
-  const metaOf = v => [v.date ? (0, _format.formatDate)(day(v.date), {
+  const metaOf = v => [v.date ? (0, _format.formatDate)(v.date, {
     dateStyle: 'medium'
   }) : null, v.author ? fill(t.by, {
     author: v.author
   }) : null].filter(Boolean).join(' · ');
-  const optionLabel = v => [v.label, v.date ? (0, _format.formatDate)(day(v.date), {
+  const optionLabel = v => [v.label, v.date ? (0, _format.formatDate)(v.date, {
     dateStyle: 'medium'
   }) : null].filter(Boolean).join(' · ');
   const pick = (which, other) => versions.filter(v => v.id !== pair[other]).map(v => ({
@@ -69620,7 +74862,7 @@ function RenditionList({
   }));
 }
   } },
-  "platform/components/DocumentViewer/DocumentViewer.jsx": { deps: {"react":null,"../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Field/Field.jsx":"platform/components/Field/Field.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Image/Image.jsx":"platform/components/Image/Image.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../utils/cx.js":"platform/utils/cx.js","../../utils/vendorBase.js":"platform/utils/vendorBase.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/DocumentViewer/DocumentViewer.jsx": { deps: {"react":null,"../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Field/Field.jsx":"platform/components/Field/Field.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../Image/Image.jsx":"platform/components/Image/Image.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../utils/cx.js":"platform/utils/cx.js","../../utils/engines.js":"platform/utils/engines.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -69637,7 +74879,7 @@ var _Notice = require("../Notice/Notice.jsx");
 var _Image = require("../Image/Image.jsx");
 var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
 var _cx = require("../../utils/cx.js");
-var _vendorBase = require("../../utils/vendorBase.js");
+var _engines = require("../../utils/engines.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · DocumentViewer
    Summary: Read PDF, image pages or text with page navigation, thumbnails and stepped zoom.
@@ -69656,7 +74898,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      message never shows the document's address or the server's error. The page counter, page buttons and zoom show
      once a document has pages. PDF text is exposed alongside the canvas for assistive technology.
    Notes: PDF.js 4.10.38 (Apache-2.0) is in the shared vendor folder (platform/vendor/pdfjs/; on the CDN
-     /cdn/<version>/vendor/pdfjs/), found by vendorBase() like the rich-text engine; window.PlenixVendorBase overrides.
+     /cdn/<version>/vendor/pdfjs/), loaded through the page's engines script (platform/engines/plenix-engines.js, which finds the vendor folder; window.PlenixVendorBase overrides). Without that script the viewer shows its engine failure.
      Its module is an ES module: serve it as text/javascript, allow it in script-src and its worker in worker-src, and
      send CORS headers when it is on another origin. URLs must obey the application CSP/CORS policy.
      PDF canvas dimensions are document geometry, never an inline style. No remote PDF code is downloaded.
@@ -69679,9 +74921,7 @@ const STRINGS = {
   retry: 'Try again'
 };
 const ZOOMS = [50, 75, 100, 125, 150, 200];
-function vendorUrl(name) {
-  return (0, _vendorBase.vendorBase)() + 'pdfjs/' + name;
-}
+const pdfEngine = () => (0, _engines.engine)('pdf');
 // why a PDF failed, from PDF.js's error names: the engine, the document's address (missing, denied, blocked) or its content
 function reasonOf(e) {
   const n = e && e.name || '';
@@ -69790,10 +75030,17 @@ function DocumentViewer({
     (async () => {
       let engine;
       try {
-        const moduleUrl = pdfModuleUrl || vendorUrl('pdf.js');
-        engine = await import(moduleUrl);
+        let worker;
+        if (pdfModuleUrl) {
+          engine = await import(pdfModuleUrl);
+          worker = new URL('pdf.worker.js', pdfModuleUrl).href;
+        } else {
+          const e = await pdfEngine();
+          engine = e.module;
+          worker = e.worker;
+        }
         if (!live) return;
-        engine.GlobalWorkerOptions.workerSrc = pdfWorkerUrl || new URL('pdf.worker.js', moduleUrl).href;
+        engine.GlobalWorkerOptions.workerSrc = pdfWorkerUrl || worker;
       } catch (e) {
         if (live) fail('engine', e);
         return;
@@ -76519,7 +81766,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Keyboard: the divider is a separator in the Tab order; the arrow keys step to the next size, Home and End to the
        limits. There is no size menu (owner, 2026-10-16).
      Stacked when there is no room side by side: under 900px of the split view's own width the panels stack (container
-       query), whatever the orientation.
+       query), whatever the orientation, and the divider is the stacked one: a horizontal separator under the first panel
+       that drags its height (200–500px, starting at 320) and that Up and Down move. Above 900px it is the side divider
+       again. Each orientation keeps the person's own size (issue 237).
      Room and corners (owner, 2026-10-27, splitview-design-29): the split view keeps 16px of room all around
        (--plx-comp-split-view-padding), so its panels never touch the rest of the screen. Both panels round their outer
        corners by the same 6px (--plx-comp-split-view-radius, shape-md), and the corners at the divider are square, side
@@ -76557,7 +81806,11 @@ function SplitView({
   const [lo, hi, start] = LIMITS[side ? 'side-by-side' : 'stacked'];
   const container = _react.default.useRef(null);
   const [available, setAvailable] = _react.default.useState(null);
-  _react.default.useEffect(() => {
+  // stacked by its room (issue 237): under 900px a side-by-side split view stacks in CSS (the container query); its divider
+  // then becomes the stacked one, read from the layout the CSS chose, so the two never disagree
+  const [roomStacked, setRoomStacked] = _react.default.useState(false);
+  // measured before the first paint, so a narrow split view never draws a frame with the side settings
+  _react.default.useLayoutEffect(() => {
     const element = container.current,
       win = element && element.ownerDocument.defaultView;
     if (!element || !win) return;
@@ -76565,6 +81818,8 @@ function SplitView({
       const panels = element.firstElementChild,
         second = panels && panels.lastElementChild;
       const horizontal = side && panels && win.getComputedStyle(panels).flexDirection === 'row';
+      // never while a divider is dragged: the switch waits for the drag to end (the pointerup below measures again)
+      if (!/\bis-resizing-/.test(element.ownerDocument.documentElement.className)) setRoomStacked(side && !!panels && !horizontal);
       if (!horizontal || !second) {
         setAvailable(null);
         return;
@@ -76581,16 +81836,38 @@ function SplitView({
     const observer = win.ResizeObserver ? new win.ResizeObserver(measure) : null;
     if (observer) observer.observe(element);
     win.addEventListener('resize', measure);
+    // after a drag ends, a switch it held back happens; any other click measures nothing
+    const settle = () => {
+      if (/\bis-resizing-/.test(element.ownerDocument.documentElement.className)) win.requestAnimationFrame(measure);
+    };
+    win.addEventListener('pointerup', settle, true);
+    win.addEventListener('pointercancel', settle, true);
     return () => {
       if (observer) observer.disconnect();
       win.removeEventListener('resize', measure);
+      win.removeEventListener('pointerup', settle, true);
+      win.removeEventListener('pointercancel', settle, true);
     };
   }, [side, minSize, lo]);
   const requestedMax = maxSize ?? hi;
   const constrained = side && available && available.max < requestedMax;
   const widthMax = constrained ? available.max : requestedMax;
-  const box = side ? {
+  const [,, stackedStart] = LIMITS.stacked;
+  const box = side && roomStacked
+  // stacked by its room: the stacked divider, its height limits and start, a horizontal separator that Up and Down move
+  ? {
+    axis: 'vertical',
+    defaultWidth: defaultSize != null ? defaultSize : start,
+    minWidth: minSize || lo,
+    maxWidth: requestedMax,
+    defaultHeight: stackedStart,
+    minHeight: LIMITS.stacked[0],
+    maxHeight: LIMITS.stacked[1]
+  } : side ? {
     axis: 'horizontal',
+    defaultHeight: stackedStart,
+    minHeight: LIMITS.stacked[0],
+    maxHeight: LIMITS.stacked[1],
     defaultWidth: defaultSize != null ? defaultSize : start,
     width: size,
     minWidth: minSize || lo,
@@ -77139,216 +82416,6 @@ function browserSupport(environment = typeof window === 'undefined' ? {} : windo
   };
 }
   } },
-  "platform/i18n/en.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-// Browser mirror of en.json: the repository module loader accepts JavaScript only. The W15C catalog test checks parity.
-var _default = exports.default = {
-  "common": {
-    "save": "Save",
-    "cancel": "Cancel",
-    "close": "Close",
-    "retry": "Retry",
-    "next": "Next",
-    "back": "Back"
-  },
-  "collection": {
-    "selected": {
-      "=0": "Nothing selected",
-      "one": "{count} item selected",
-      "other": "{count} items selected"
-    }
-  },
-  "wizard": {
-    "next": "Next",
-    "back": "Back",
-    "finish": "Finish",
-    "cancel": "Cancel",
-    "step": "Step {n} of {total}",
-    "error": "Could not save. Try again."
-  },
-  "dialog": {
-    "close": "Close"
-  },
-  "text": {
-    "more": "Show more",
-    "less": "Show less"
-  },
-  "emptyState": {
-    "title": "No items yet",
-    "description": "Create an item to get started.",
-    "action": "Create item"
-  }
-};
-  } },
-  "platform/providers/LocaleProvider.jsx": { deps: {"react":null,"./DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","../utils/direction.js":"platform/utils/direction.js","../utils/format.js":"platform/utils/format.js","../i18n/en.js":"platform/i18n/en.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.LocaleProvider = LocaleProvider;
-exports.createTranslator = createTranslator;
-exports.useLocale = useLocale;
-var _react = _interopRequireDefault(require("react"));
-var _DirectionProvider = require("./DirectionProvider.jsx");
-var _direction = require("../utils/direction.js");
-var F = _interopRequireWildcard(require("../utils/format.js"));
-var _en = _interopRequireDefault(require("../i18n/en.js"));
-function _interopRequireWildcard(e, t) { if ("function" == typeof WeakMap) var r = new WeakMap(), n = new WeakMap(); return (_interopRequireWildcard = function (e, t) { if (!t && e && e.__esModule) return e; var o, i, f = { __proto__: null, default: e }; if (null === e || "object" != typeof e && "function" != typeof e) return f; if (o = t ? n : r) { if (o.has(e)) return o.get(e); o.set(e, f); } for (const t in e) "default" !== t && {}.hasOwnProperty.call(e, t) && ((i = (o = Object.defineProperty) && Object.getOwnPropertyDescriptor(e, t)) && (i.get || i.set) ? o(f, t, i) : f[t] = e[t]); return f; })(e, t); }
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · LocaleProvider, useLocale, createTranslator
-   Summary: Locale-scoped message catalogs, plural rules, formatting and writing direction. Existing components receive
-     their strings explicitly from the catalog; a region never changes another region's locale.
-   Usage:
-     <LocaleProvider locale="fr-FR" catalogs={{ fr: french }}><App /></LocaleProvider>
-     const { t, strings, format } = useLocale();
-     <Wizard strings={strings('wizard')} />; t('collection.selected', { count: 2 }); format.date('2026-03-08');
-   Props:
-     locale: a BCP 47 language tag; default the page's formatLocale()
-     catalogs: messages by locale, with flat dot keys or nested sections; English is always the last fallback
-     messages: the current locale's catalog, as a convenience
-     fallbackLocale: locale searched after the requested locale and its language; default "en"
-     timeZone: optional Intl time zone for this provider's date/time formatters
-     dir: explicit "ltr" or "rtl"; otherwise directionOf(locale)
-     root: set the page's lang and dir through DirectionProvider; default false (a scoped region)
-     children: the region's content
-     useLocale(): { locale, dir, t, strings, plural, format }; format has number, unit, bytes, duration, compact, date,
-       time, dateTime, relative, range, currency, percent, list, personName, address, phone and regionName
-     createTranslator(locale, catalogs, fallbackLocale): the same t/strings/plural API outside React
-   Behavior:
-     Fallback: exact locale, language, configured fallback, then English. Missing messages return their key.
-     Messages interpolate {name} as plain text. Plural messages are objects with one/other (or any Intl category),
-     optional "=0" exact-count keys; t(key, { count }) selects them with Intl.PluralRules. t's third argument may
-     set ordinal:true. Missing interpolation values keep their placeholder. No HTML is parsed.
-     strings(section, values) combines that section across fallbacks for a component's strings prop.
-   Notes:
-     Translators never mutate catalogs or global Intl state. Pass the bound format helpers to localized content;
-     unmodified components keep their existing defaults. Catalog translations are application-owned. */
-
-const canonical = (value, fallback = 'en') => {
-  try {
-    return Intl.getCanonicalLocales(value || fallback)[0] || fallback;
-  } catch (e) {
-    return fallback;
-  }
-};
-const own = (value, key) => value && Object.prototype.hasOwnProperty.call(value, key);
-const messageAt = (catalog, key) => {
-  if (own(catalog, key)) return catalog[key];
-  return String(key).split('.').reduce((node, part) => own(node, part) ? node[part] : undefined, catalog);
-};
-const text = (message, values) => String(message).replace(/\{(\w+)\}/g, (match, key) => own(values, key) ? String(values[key]) : match);
-function createTranslator(locale = 'en', catalogs = {}, fallbackLocale = 'en') {
-  const language = canonical(locale),
-    fallback = canonical(fallbackLocale);
-  const normalized = Object.fromEntries(Object.entries(catalogs || {}).map(([key, value]) => [canonical(key), value]));
-  const chain = [...new Set([language, language.split('-')[0], fallback, fallback.split('-')[0], 'en'])];
-  const sources = chain.map(key => normalized[key]).filter(Boolean).concat(_en.default);
-  const cardinal = new Intl.PluralRules(language),
-    ordinal = new Intl.PluralRules(language, {
-      type: 'ordinal'
-    });
-  const plural = (count, options = {}) => (options.ordinal ? ordinal : cardinal).select(Number(count));
-  const choose = (value, values, options) => {
-    if (typeof value === 'string' || typeof value === 'number') return text(value, values);
-    if (!value || typeof value !== 'object' || Array.isArray(value)) return undefined;
-    const exact = '=' + Number(values.count),
-      category = plural(values.count, options);
-    const item = own(value, exact) ? value[exact] : value[category] !== undefined ? value[category] : value.other;
-    return typeof item === 'string' || typeof item === 'number' ? text(item, values) : undefined;
-  };
-  const t = (key, values = {}, options = {}) => {
-    for (const source of sources) {
-      const result = choose(messageAt(source, key), values, options);
-      if (result !== undefined) return result;
-    }
-    return String(key);
-  };
-  const strings = (section, values = {}) => {
-    const keys = new Set();
-    sources.forEach(source => {
-      const node = messageAt(source, section);
-      if (node && typeof node === 'object' && !Array.isArray(node)) Object.keys(node).forEach(key => keys.add(key));
-      Object.keys(source).filter(key => key.startsWith(section + '.') && !key.slice(section.length + 1).includes('.')).forEach(key => keys.add(key.slice(section.length + 1)));
-    });
-    return Object.fromEntries([...keys].map(key => [key, t(section + '.' + key, values)]));
-  };
-  return {
-    locale: language,
-    dir: (0, _direction.directionOf)(language),
-    t,
-    strings,
-    plural
-  };
-}
-const FORMATTERS = {
-  number: ['formatNumber', 1],
-  unit: ['formatUnit', 2],
-  bytes: ['formatBytes', 1],
-  duration: ['formatDuration', 1],
-  compact: ['formatCompact', 1],
-  date: ['formatDate', 1],
-  time: ['formatTime', 1],
-  dateTime: ['formatDateTime', 1],
-  relative: ['formatRelative', 1],
-  range: ['formatRange', 2],
-  currency: ['formatCurrency', 2],
-  percent: ['formatPercent', 1],
-  list: ['formatList', 1],
-  personName: ['formatPersonName', 1],
-  address: ['formatAddress', 1],
-  phone: ['formatPhone', 1],
-  regionName: ['regionName', 1]
-};
-const bind = (locale, timeZone) => Object.fromEntries(Object.entries(FORMATTERS).map(([name, [fn, count]]) => [name, (...args) => F[fn](...Array.from({
-  length: count
-}, (_, index) => args[index]), Object.assign({
-  locale,
-  timeZone
-}, args[count]))]));
-const LocaleContext = /*#__PURE__*/_react.default.createContext(null);
-function LocaleProvider({
-  locale,
-  catalogs,
-  messages,
-  fallbackLocale = 'en',
-  timeZone,
-  dir,
-  root = false,
-  children
-}) {
-  const language = canonical(locale || F.formatLocale());
-  const value = _react.default.useMemo(() => {
-    const sources = Object.assign({}, catalogs, messages ? {
-      [language]: messages
-    } : {});
-    return Object.assign(createTranslator(language, sources, fallbackLocale), {
-      dir: dir || (0, _direction.directionOf)(language),
-      format: bind(language, timeZone)
-    });
-  }, [language, catalogs, messages, fallbackLocale, timeZone, dir]);
-  return /*#__PURE__*/_react.default.createElement(LocaleContext.Provider, {
-    value: value
-  }, /*#__PURE__*/_react.default.createElement(_DirectionProvider.DirectionProvider, {
-    locale: language,
-    dir: value.dir,
-    root: root
-  }, children));
-}
-function useLocale() {
-  const value = _react.default.useContext(LocaleContext);
-  const language = canonical(F.formatLocale());
-  const fallback = _react.default.useMemo(() => Object.assign(createTranslator(language), {
-    format: bind(language)
-  }), [language]);
-  return value || fallback;
-}
-  } },
   "platform/components/Heading/Heading.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -77378,8 +82445,6 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Notes:
      One level 1 per page. Skip no level going down the outline. Never uppercase (that is SectionHeading's job); never
        a heading made of bold text. Every value is a --plx-comp-heading-* token.
-     Writing direction (owner, ctm-needs-34): dir and lang go on the heading element (other props pass through), for a heading in
-       the other direction than the page.
 */
 const Heading = exports.Heading = /*#__PURE__*/_react.default.forwardRef(function Heading({
   level = 2,
@@ -77669,13 +82734,16 @@ function TreeChart({
       // the root's label before it, the leaves' after them, the others above their node; each label within its room
       const rootW = Math.min(fits(nodes[0], T.nameFocus), W * 0.25);
       const leafW = Math.min(leafNodes.reduce((m, n) => Math.max(m, fits(n, T.nameFocus)), 0), W * 0.35);
+      // the root's room on its side, the leaves' on theirs: in right to left the root is at the right (#413 batch 4)
+      const rootRoom = (0, _grid.snapToGrid)(rootW + gap * 2, {
+          round: 'up'
+        }),
+        leafRoom = (0, _grid.snapToGrid)(leafW + gap * 2, {
+          round: 'up'
+        });
       box = {
-        left: (0, _grid.snapToGrid)(rootW + gap * 2, {
-          round: 'up'
-        }),
-        right: (0, _grid.snapToGrid)(leafW + gap * 2, {
-          round: 'up'
-        }),
+        left: tk.rtl ? leafRoom : rootRoom,
+        right: tk.rtl ? rootRoom : leafRoom,
         top: (0, _grid.snapToGrid)(T.leaf / 2, {
           round: 'up'
         }),
@@ -77950,7 +83018,7 @@ function TreeChart({
   }, draw);
 }
   } },
-  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/MetricCard/MetricCard.jsx":"platform/components/MetricCard/MetricCard.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/DataPill/DataPill.jsx":"platform/components/DataPill/DataPill.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/Surface.jsx":"platform/providers/Surface.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./utils/prefetch.js":"platform/utils/prefetch.js","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./utils/tokenSheet.js":"platform/utils/tokenSheet.js","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js","./components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","./components/RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","./components/Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","./components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","./components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","./components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","./components/MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","./components/Cascader/Cascader.jsx":"platform/components/Cascader/Cascader.jsx","./components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","./components/TimePicker/TimePicker.jsx":"platform/components/TimePicker/TimePicker.jsx","./components/RelativeDateInput/RelativeDateInput.jsx":"platform/components/RelativeDateInput/RelativeDateInput.jsx","./components/LoadMore/LoadMore.jsx":"platform/components/LoadMore/LoadMore.jsx","./patterns/ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","./patterns/AvatarUpload/AvatarUpload.jsx":"platform/patterns/AvatarUpload/AvatarUpload.jsx","./charts/scales.js":"platform/charts/scales.js","./charts/ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./components/TimeZoneSelect/TimeZoneSelect.jsx":"platform/components/TimeZoneSelect/TimeZoneSelect.jsx","./components/TreeSelect/TreeSelect.jsx":"platform/components/TreeSelect/TreeSelect.jsx","./components/TransferList/TransferList.jsx":"platform/components/TransferList/TransferList.jsx","./patterns/BottomSheetNav/BottomSheetNav.jsx":"platform/patterns/BottomSheetNav/BottomSheetNav.jsx","./patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","./patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","./patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","./patterns/GroupPanel/GroupPanel.jsx":"platform/patterns/GroupPanel/GroupPanel.jsx","./patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","./patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","./patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","./utils/fields.js":"platform/utils/fields.js","./hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","./charts/parts/position.js":"platform/charts/parts/position.js","./charts/parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./charts/parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./charts/parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./charts/parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./charts/parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./charts/parts/ReferenceLine.jsx":"platform/charts/parts/ReferenceLine.jsx","./charts/parts/ChartAnnotation.jsx":"platform/charts/parts/ChartAnnotation.jsx","./patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","./patterns/UserCard/UserCard.jsx":"platform/patterns/UserCard/UserCard.jsx","./components/VirtualList/VirtualList.jsx":"platform/components/VirtualList/VirtualList.jsx","./components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","./patterns/PeopleGroup/PeopleGroup.jsx":"platform/patterns/PeopleGroup/PeopleGroup.jsx","./patterns/PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","./patterns/QueryBuilder/QueryBuilder.jsx":"platform/patterns/QueryBuilder/QueryBuilder.jsx","./components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","./components/SearchResult/SearchResult.jsx":"platform/components/SearchResult/SearchResult.jsx","./components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","./patterns/ResourceList/ResourceList.jsx":"platform/patterns/ResourceList/ResourceList.jsx","./charts/interaction.js":"platform/charts/interaction.js","./charts/LineChart.jsx":"platform/charts/LineChart.jsx","./charts/AreaChart.jsx":"platform/charts/AreaChart.jsx","./charts/Gauge.jsx":"platform/charts/Gauge.jsx","./charts/HeatMap.jsx":"platform/charts/HeatMap.jsx","./charts/WaterfallChart.jsx":"platform/charts/WaterfallChart.jsx","./charts/WordCloud.jsx":"platform/charts/WordCloud.jsx","./charts/NetworkGraph.jsx":"platform/charts/NetworkGraph.jsx","./charts/Diagram.jsx":"platform/charts/Diagram.jsx","./charts/BarChart.jsx":"platform/charts/BarChart.jsx","./charts/ComboChart.jsx":"platform/charts/ComboChart.jsx","./charts/PieChart.jsx":"platform/charts/PieChart.jsx","./charts/BulletChart.jsx":"platform/charts/BulletChart.jsx","./charts/BoxPlot.jsx":"platform/charts/BoxPlot.jsx","./charts/RadarChart.jsx":"platform/charts/RadarChart.jsx","./charts/SankeyDiagram.jsx":"platform/charts/SankeyDiagram.jsx","./charts/TimelineChart.jsx":"platform/charts/TimelineChart.jsx","./patterns/ComparisonView/ComparisonView.jsx":"platform/patterns/ComparisonView/ComparisonView.jsx","./charts/a11y.js":"platform/charts/a11y.js","./charts/Sparkline.jsx":"platform/charts/Sparkline.jsx","./charts/LollipopChart.jsx":"platform/charts/LollipopChart.jsx","./charts/ScatterChart.jsx":"platform/charts/ScatterChart.jsx","./charts/FunnelChart.jsx":"platform/charts/FunnelChart.jsx","./charts/Treemap.jsx":"platform/charts/Treemap.jsx","./charts/GanttChart.jsx":"platform/charts/GanttChart.jsx","./charts/GeoMap.jsx":"platform/charts/GeoMap.jsx","./utils/dnd.js":"platform/utils/dnd.js","./components/DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","./patterns/SortableList/SortableList.jsx":"platform/patterns/SortableList/SortableList.jsx","./components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","./patterns/RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","./patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","./patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","./patterns/DuplicateAction/DuplicateAction.jsx":"platform/patterns/DuplicateAction/DuplicateAction.jsx","./patterns/Publish/Publish.jsx":"platform/patterns/Publish/Publish.jsx","./patterns/AssignControl/AssignControl.jsx":"platform/patterns/AssignControl/AssignControl.jsx","./patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","./patterns/WizardDialog/WizardDialog.jsx":"platform/patterns/WizardDialog/WizardDialog.jsx","./patterns/FormFlow/FormFlow.jsx":"platform/patterns/FormFlow/FormFlow.jsx","./patterns/Autosave/Autosave.jsx":"platform/patterns/Autosave/Autosave.jsx","./patterns/DraftState/DraftState.jsx":"platform/patterns/DraftState/DraftState.jsx","./patterns/SaveAs/SaveAs.jsx":"platform/patterns/SaveAs/SaveAs.jsx","./patterns/ArchiveRestore/ArchiveRestore.jsx":"platform/patterns/ArchiveRestore/ArchiveRestore.jsx","./components/File/File.jsx":"platform/components/File/File.jsx","./components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","./patterns/Auth/Auth.jsx":"platform/patterns/Auth/Auth.jsx","./patterns/SessionTimeout/SessionTimeout.jsx":"platform/patterns/SessionTimeout/SessionTimeout.jsx","./patterns/RoleManager/RoleManager.jsx":"platform/patterns/RoleManager/RoleManager.jsx","./patterns/ConnectedAccounts/ConnectedAccounts.jsx":"platform/patterns/ConnectedAccounts/ConnectedAccounts.jsx","./patterns/ShareDialog/ShareDialog.jsx":"platform/patterns/ShareDialog/ShareDialog.jsx","./patterns/PermissionsEditor/PermissionsEditor.jsx":"platform/patterns/PermissionsEditor/PermissionsEditor.jsx","./patterns/Tour/Tour.jsx":"platform/patterns/Tour/Tour.jsx","./components/Checklist/Checklist.jsx":"platform/components/Checklist/Checklist.jsx","./patterns/Onboarding/Onboarding.jsx":"platform/patterns/Onboarding/Onboarding.jsx","./patterns/FeatureIntro/FeatureIntro.jsx":"platform/patterns/FeatureIntro/FeatureIntro.jsx","./patterns/HelpPanel/HelpPanel.jsx":"platform/patterns/HelpPanel/HelpPanel.jsx","./patterns/ImportDialog/ImportDialog.jsx":"platform/patterns/ImportDialog/ImportDialog.jsx","./patterns/ImportWizard/ImportWizard.jsx":"platform/patterns/ImportWizard/ImportWizard.jsx","./patterns/ExportDialog/ExportDialog.jsx":"platform/patterns/ExportDialog/ExportDialog.jsx","./patterns/AccessRequest/AccessRequest.jsx":"platform/patterns/AccessRequest/AccessRequest.jsx","./patterns/TrialUpgrade/TrialUpgrade.jsx":"platform/patterns/TrialUpgrade/TrialUpgrade.jsx","./patterns/Offboarding/Offboarding.jsx":"platform/patterns/Offboarding/Offboarding.jsx","./patterns/ShortcutsDialog/ShortcutsDialog.jsx":"platform/patterns/ShortcutsDialog/ShortcutsDialog.jsx","./patterns/FileList/FileList.jsx":"platform/patterns/FileList/FileList.jsx","./patterns/FileBrowser/FileBrowser.jsx":"platform/patterns/FileBrowser/FileBrowser.jsx","./patterns/UploadManager/UploadManager.jsx":"platform/patterns/UploadManager/UploadManager.jsx","./patterns/VersionCompare/VersionCompare.jsx":"platform/patterns/VersionCompare/VersionCompare.jsx","./patterns/AssetGallery/AssetGallery.jsx":"platform/patterns/AssetGallery/AssetGallery.jsx","./patterns/DownloadManager/DownloadManager.jsx":"platform/patterns/DownloadManager/DownloadManager.jsx","./components/MediaPlayer/MediaPlayer.jsx":"platform/components/MediaPlayer/MediaPlayer.jsx","./patterns/MetadataEditor/MetadataEditor.jsx":"platform/patterns/MetadataEditor/MetadataEditor.jsx","./patterns/RelatedAssets/RelatedAssets.jsx":"platform/patterns/RelatedAssets/RelatedAssets.jsx","./patterns/AttachmentPicker/AttachmentPicker.jsx":"platform/patterns/AttachmentPicker/AttachmentPicker.jsx","./patterns/FilePicker/FilePicker.jsx":"platform/patterns/FilePicker/FilePicker.jsx","./patterns/RenditionList/RenditionList.jsx":"platform/patterns/RenditionList/RenditionList.jsx","./components/DocumentViewer/DocumentViewer.jsx":"platform/components/DocumentViewer/DocumentViewer.jsx","./patterns/VersionHistory/VersionHistory.jsx":"platform/patterns/VersionHistory/VersionHistory.jsx","./patterns/ProductCard/ProductCard.jsx":"platform/patterns/ProductCard/ProductCard.jsx","./components/ProductOptions/ProductOptions.jsx":"platform/components/ProductOptions/ProductOptions.jsx","./templates/Commerce/Commerce.jsx":"platform/templates/Commerce/Commerce.jsx","./components/Comment/Comment.jsx":"platform/components/Comment/Comment.jsx","./patterns/CommentThread/CommentThread.jsx":"platform/patterns/CommentThread/CommentThread.jsx","./patterns/ImageAnnotation/ImageAnnotation.jsx":"platform/patterns/ImageAnnotation/ImageAnnotation.jsx","./patterns/PresenceBar/PresenceBar.jsx":"platform/patterns/PresenceBar/PresenceBar.jsx","./components/MentionInput/MentionInput.jsx":"platform/components/MentionInput/MentionInput.jsx","./components/Announcement/Announcement.jsx":"platform/components/Announcement/Announcement.jsx","./patterns/AuditLog/AuditLog.jsx":"platform/patterns/AuditLog/AuditLog.jsx","./patterns/ApprovalWorkflow/ApprovalWorkflow.jsx":"platform/patterns/ApprovalWorkflow/ApprovalWorkflow.jsx","./components/PromptInput/PromptInput.jsx":"platform/components/PromptInput/PromptInput.jsx","./components/StreamingText/StreamingText.jsx":"platform/components/StreamingText/StreamingText.jsx","./patterns/AIChat/AIChat.jsx":"platform/patterns/AIChat/AIChat.jsx","./patterns/AssistantPanel/AssistantPanel.jsx":"platform/patterns/AssistantPanel/AssistantPanel.jsx","./components/AILabel/AILabel.jsx":"platform/components/AILabel/AILabel.jsx","./components/GeneratedContent/GeneratedContent.jsx":"platform/components/GeneratedContent/GeneratedContent.jsx","./patterns/PromptHistory/PromptHistory.jsx":"platform/patterns/PromptHistory/PromptHistory.jsx","./components/Citation/Citation.jsx":"platform/components/Citation/Citation.jsx","./components/SuggestedAction/SuggestedAction.jsx":"platform/components/SuggestedAction/SuggestedAction.jsx","./patterns/AISearch/AISearch.jsx":"platform/patterns/AISearch/AISearch.jsx","./patterns/Recommendation/Recommendation.jsx":"platform/patterns/Recommendation/Recommendation.jsx","./components/AIButton/AIButton.jsx":"platform/components/AIButton/AIButton.jsx","./components/AIDisclaimer/AIDisclaimer.jsx":"platform/components/AIDisclaimer/AIDisclaimer.jsx","./components/ConfidenceIndicator/ConfidenceIndicator.jsx":"platform/components/ConfidenceIndicator/ConfidenceIndicator.jsx","./patterns/AIExplanation/AIExplanation.jsx":"platform/patterns/AIExplanation/AIExplanation.jsx","./components/PromptSuggestions/PromptSuggestions.jsx":"platform/components/PromptSuggestions/PromptSuggestions.jsx","./components/SuggestedEdit/SuggestedEdit.jsx":"platform/components/SuggestedEdit/SuggestedEdit.jsx","./components/RefineMenu/RefineMenu.jsx":"platform/components/RefineMenu/RefineMenu.jsx","./providers/AnalyticsProvider.jsx":"platform/providers/AnalyticsProvider.jsx","./templates/templates/Templates.jsx":"platform/templates/templates/Templates.jsx","./utils/browserSupport.js":"platform/utils/browserSupport.js","./providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","./patterns/SplitView/SplitView.jsx":"platform/patterns/SplitView/SplitView.jsx","./components/Heading/Heading.jsx":"platform/components/Heading/Heading.jsx","./charts/TreeChart.jsx":"platform/charts/TreeChart.jsx","./components/DataGrid/DataGridEngine.jsx":"platform/components/DataGrid/DataGridEngine.jsx"}, externals: {  }, run: function (module, exports, require) {
+  "platform/index.js": { deps: {"./components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","./components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./components/Isolate/Isolate.jsx":"platform/components/Isolate/Isolate.jsx","./components/VoteTally/VoteTally.jsx":"platform/components/VoteTally/VoteTally.jsx","./components/Count/Count.jsx":"platform/components/Count/Count.jsx","./components/Metric/Metric.jsx":"platform/components/Metric/Metric.jsx","./components/MetricCard/MetricCard.jsx":"platform/components/MetricCard/MetricCard.jsx","./components/ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","./components/DateBadge/DateBadge.jsx":"platform/components/DateBadge/DateBadge.jsx","./components/EventChip/EventChip.jsx":"platform/components/EventChip/EventChip.jsx","./components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","./components/StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","./components/Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","./components/DataPill/DataPill.jsx":"platform/components/DataPill/DataPill.jsx","./components/Kbd/Kbd.jsx":"platform/components/Kbd/Kbd.jsx","./components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","./components/Divider/Divider.jsx":"platform/components/Divider/Divider.jsx","./components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","./components/Text/Text.jsx":"platform/components/Text/Text.jsx","./components/Thumbnail/Thumbnail.jsx":"platform/components/Thumbnail/Thumbnail.jsx","./components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","./components/Brand/Brand.jsx":"platform/components/Brand/Brand.jsx","./components/ColorSwatch/ColorSwatch.jsx":"platform/components/ColorSwatch/ColorSwatch.jsx","./components/ColorSwatch/dataColors.js":"platform/components/ColorSwatch/dataColors.js","./components/ColorSwatch/categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","./components/DropZone/DropZone.jsx":"platform/components/DropZone/DropZone.jsx","./components/Preview/Preview.jsx":"platform/components/Preview/Preview.jsx","./components/Fieldset/Fieldset.jsx":"platform/components/Fieldset/Fieldset.jsx","./components/Columns/Columns.jsx":"platform/components/Columns/Columns.jsx","./components/Breadcrumbs/Breadcrumbs.jsx":"platform/components/Breadcrumbs/Breadcrumbs.jsx","./components/List/List.jsx":"platform/components/List/List.jsx","./components/CodeBlock/CodeBlock.jsx":"platform/components/CodeBlock/CodeBlock.jsx","./components/SectionHeading/SectionHeading.jsx":"platform/components/SectionHeading/SectionHeading.jsx","./components/CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","./components/Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","./components/Chat/Chat.jsx":"platform/components/Chat/Chat.jsx","./components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","./components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","./components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./components/Button/Button.jsx":"platform/components/Button/Button.jsx","./components/RowButton/RowButton.jsx":"platform/components/RowButton/RowButton.jsx","./components/SegmentedControl/SegmentedControl.jsx":"platform/components/SegmentedControl/SegmentedControl.jsx","./components/Input/Input.jsx":"platform/components/Input/Input.jsx","./components/Field/Field.jsx":"platform/components/Field/Field.jsx","./components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","./components/Combobox/Combobox.jsx":"platform/components/Combobox/Combobox.jsx","./components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","./components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./components/Slider/Slider.jsx":"platform/components/Slider/Slider.jsx","./components/Toolbar/Toolbar.jsx":"platform/components/Toolbar/Toolbar.jsx","./components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","./components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","./components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","./components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","./components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","./components/Card/Card.jsx":"platform/components/Card/Card.jsx","./components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","./components/Table/Table.jsx":"platform/components/Table/Table.jsx","./patterns/ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","./components/NavList/NavList.jsx":"platform/components/NavList/NavList.jsx","./components/Tree/Tree.jsx":"platform/components/Tree/Tree.jsx","./components/MediaViewer/MediaViewer.jsx":"platform/components/MediaViewer/MediaViewer.jsx","./patterns/AppHeader/AppHeader.jsx":"platform/patterns/AppHeader/AppHeader.jsx","./patterns/FilterBar/FilterBar.jsx":"platform/patterns/FilterBar/FilterBar.jsx","./patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","./patterns/DataToolbar/DataToolbar.jsx":"platform/patterns/DataToolbar/DataToolbar.jsx","./patterns/BulkActions/BulkActions.jsx":"platform/patterns/BulkActions/BulkActions.jsx","./patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","./patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","./patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","./patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","./patterns/ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","./patterns/NotificationList/NotificationList.jsx":"platform/patterns/NotificationList/NotificationList.jsx","./patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","./patterns/ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","./patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","./patterns/SidePanel/SidePanel.jsx":"platform/patterns/SidePanel/SidePanel.jsx","./patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","./patterns/NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","./patterns/StatusBar/StatusBar.jsx":"platform/patterns/StatusBar/StatusBar.jsx","./providers/ThemeProvider.jsx":"platform/providers/ThemeProvider.jsx","./providers/Surface.jsx":"platform/providers/Surface.jsx","./providers/themes.js":"platform/providers/themes.js","./providers/SessionProvider.jsx":"platform/providers/SessionProvider.jsx","./providers/apps.js":"platform/providers/apps.js","./providers/pageLayouts.js":"platform/providers/pageLayouts.js","./hooks/useDensity.js":"platform/hooks/useDensity.js","./hooks/useInteraction.js":"platform/hooks/useInteraction.js","./providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","./providers/UnsavedGuard.jsx":"platform/providers/UnsavedGuard.jsx","./patterns/TimeGrid/TimeGrid.jsx":"platform/patterns/TimeGrid/TimeGrid.jsx","./patterns/WidgetGrid/WidgetGrid.jsx":"platform/patterns/WidgetGrid/WidgetGrid.jsx","./patterns/ImageEditor/imageEditorSteps.js":"platform/patterns/ImageEditor/imageEditorSteps.js","./utils/grid.js":"platform/utils/grid.js","./utils/format.js":"platform/utils/format.js","./utils/announce.jsx":"platform/utils/announce.jsx","./utils/clipboard.js":"platform/utils/clipboard.js","./utils/hotkey.js":"platform/utils/hotkey.js","./hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./utils/floating.js":"platform/utils/floating.js","./utils/portal.jsx":"platform/utils/portal.jsx","./hooks/useIntersection.js":"platform/hooks/useIntersection.js","./utils/contrast.js":"platform/utils/contrast.js","./utils/dataviz.js":"platform/utils/dataviz.js","./utils/describedBy.js":"platform/utils/describedBy.js","./utils/scrollLock.js":"platform/utils/scrollLock.js","./components/Link/Link.jsx":"platform/components/Link/Link.jsx","./components/Code/Code.jsx":"platform/components/Code/Code.jsx","./components/Blockquote/Blockquote.jsx":"platform/components/Blockquote/Blockquote.jsx","./components/RichText/RichText.jsx":"platform/components/RichText/RichText.jsx","./providers/DirectionProvider.jsx":"platform/providers/DirectionProvider.jsx","./utils/direction.js":"platform/utils/direction.js","./hooks/usePressable.js":"platform/hooks/usePressable.js","./hooks/useFocusable.js":"platform/hooks/useFocusable.js","./hooks/useSelection.js":"platform/hooks/useSelection.js","./hooks/useGesture.js":"platform/hooks/useGesture.js","./providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","./components/IconTile/IconTile.jsx":"platform/components/IconTile/IconTile.jsx","./components/Pictogram/Pictogram.jsx":"platform/components/Pictogram/Pictogram.jsx","./components/Sticky/Sticky.jsx":"platform/components/Sticky/Sticky.jsx","./components/Illustration/Illustration.jsx":"platform/components/Illustration/Illustration.jsx","./components/Illustration/illustrations.js":"platform/components/Illustration/illustrations.js","./components/Image/Image.jsx":"platform/components/Image/Image.jsx","./components/Figure/Figure.jsx":"platform/components/Figure/Figure.jsx","./components/Barcode/Barcode.jsx":"platform/components/Barcode/Barcode.jsx","./utils/barcode.js":"platform/utils/barcode.js","./patterns/Retry/Retry.jsx":"platform/patterns/Retry/Retry.jsx","./components/AvatarGroup/AvatarGroup.jsx":"platform/components/AvatarGroup/AvatarGroup.jsx","./components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","./components/ProgressCircle/ProgressCircle.jsx":"platform/components/ProgressCircle/ProgressCircle.jsx","./components/QRCode/QRCode.jsx":"platform/components/QRCode/QRCode.jsx","./utils/qr.js":"platform/utils/qr.js","./components/VersionLabel/VersionLabel.jsx":"platform/components/VersionLabel/VersionLabel.jsx","./components/Banner/Banner.jsx":"platform/components/Banner/Banner.jsx","./components/Scrim/Scrim.jsx":"platform/components/Scrim/Scrim.jsx","./components/LoadingOverlay/LoadingOverlay.jsx":"platform/components/LoadingOverlay/LoadingOverlay.jsx","./components/Time/Time.jsx":"platform/components/Time/Time.jsx","./utils/tokenSheet.js":"platform/utils/tokenSheet.js","./components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","./components/ContextualHelp/ContextualHelp.jsx":"platform/components/ContextualHelp/ContextualHelp.jsx","./components/TeachingBubble/TeachingBubble.jsx":"platform/components/TeachingBubble/TeachingBubble.jsx","./patterns/Popconfirm/Popconfirm.jsx":"platform/patterns/Popconfirm/Popconfirm.jsx","./components/MegaMenu/MegaMenu.jsx":"platform/components/MegaMenu/MegaMenu.jsx","./components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","./components/Details/Details.jsx":"platform/components/Details/Details.jsx","./components/FloatingActionButton/FloatingActionButton.jsx":"platform/components/FloatingActionButton/FloatingActionButton.jsx","./components/SplitButton/SplitButton.jsx":"platform/components/SplitButton/SplitButton.jsx","./components/Spotlight/Spotlight.jsx":"platform/components/Spotlight/Spotlight.jsx","./hooks/usePrint.js":"platform/hooks/usePrint.js","./components/CommandMenu/CommandMenu.jsx":"platform/components/CommandMenu/CommandMenu.jsx","./patterns/CommandPalette/CommandPalette.jsx":"platform/patterns/CommandPalette/CommandPalette.jsx","./components/DownloadButton/DownloadButton.jsx":"platform/components/DownloadButton/DownloadButton.jsx","./components/BackToTop/BackToTop.jsx":"platform/components/BackToTop/BackToTop.jsx","./components/InputGroup/InputGroup.jsx":"platform/components/InputGroup/InputGroup.jsx","./components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./components/ErrorSummary/ErrorSummary.jsx":"platform/components/ErrorSummary/ErrorSummary.jsx","./components/FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","./components/CodeEditor/CodeEditor.jsx":"platform/components/CodeEditor/CodeEditor.jsx","./patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","./components/OtpInput/OtpInput.jsx":"platform/components/OtpInput/OtpInput.jsx","./hooks/useSearchHistory.js":"platform/hooks/useSearchHistory.js","./components/InlineEdit/InlineEdit.jsx":"platform/components/InlineEdit/InlineEdit.jsx","./components/RichTextEditor/RichTextEditor.jsx":"platform/components/RichTextEditor/RichTextEditor.jsx","./components/Calendar/Calendar.jsx":"platform/components/Calendar/Calendar.jsx","./components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","./components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","./components/ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","./components/MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","./components/Cascader/Cascader.jsx":"platform/components/Cascader/Cascader.jsx","./components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","./components/TimePicker/TimePicker.jsx":"platform/components/TimePicker/TimePicker.jsx","./components/RelativeDateInput/RelativeDateInput.jsx":"platform/components/RelativeDateInput/RelativeDateInput.jsx","./components/LoadMore/LoadMore.jsx":"platform/components/LoadMore/LoadMore.jsx","./patterns/ImageUpload/ImageUpload.jsx":"platform/patterns/ImageUpload/ImageUpload.jsx","./patterns/AvatarUpload/AvatarUpload.jsx":"platform/patterns/AvatarUpload/AvatarUpload.jsx","./charts/scales.js":"platform/charts/scales.js","./charts/ChartFrame.jsx":"platform/charts/ChartFrame.jsx","./components/TimeZoneSelect/TimeZoneSelect.jsx":"platform/components/TimeZoneSelect/TimeZoneSelect.jsx","./components/TreeSelect/TreeSelect.jsx":"platform/components/TreeSelect/TreeSelect.jsx","./components/TransferList/TransferList.jsx":"platform/components/TransferList/TransferList.jsx","./patterns/BottomSheetNav/BottomSheetNav.jsx":"platform/patterns/BottomSheetNav/BottomSheetNav.jsx","./patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","./patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","./patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","./patterns/GroupPanel/GroupPanel.jsx":"platform/patterns/GroupPanel/GroupPanel.jsx","./patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","./patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","./patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","./utils/fields.js":"platform/utils/fields.js","./hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","./charts/parts/position.js":"platform/charts/parts/position.js","./charts/parts/Axis.jsx":"platform/charts/parts/Axis.jsx","./charts/parts/GridLines.jsx":"platform/charts/parts/GridLines.jsx","./charts/parts/ChartLegend.jsx":"platform/charts/parts/ChartLegend.jsx","./charts/parts/ChartTooltip.jsx":"platform/charts/parts/ChartTooltip.jsx","./charts/parts/DataLabel.jsx":"platform/charts/parts/DataLabel.jsx","./charts/parts/ReferenceLine.jsx":"platform/charts/parts/ReferenceLine.jsx","./charts/parts/ChartAnnotation.jsx":"platform/charts/parts/ChartAnnotation.jsx","./patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","./patterns/UserCard/UserCard.jsx":"platform/patterns/UserCard/UserCard.jsx","./components/VirtualList/VirtualList.jsx":"platform/components/VirtualList/VirtualList.jsx","./components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","./patterns/PeopleGroup/PeopleGroup.jsx":"platform/patterns/PeopleGroup/PeopleGroup.jsx","./patterns/PermissionSummary/PermissionSummary.jsx":"platform/patterns/PermissionSummary/PermissionSummary.jsx","./patterns/QueryBuilder/QueryBuilder.jsx":"platform/patterns/QueryBuilder/QueryBuilder.jsx","./components/RoleLabel/RoleLabel.jsx":"platform/components/RoleLabel/RoleLabel.jsx","./components/SearchResult/SearchResult.jsx":"platform/components/SearchResult/SearchResult.jsx","./components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","./patterns/ResourceList/ResourceList.jsx":"platform/patterns/ResourceList/ResourceList.jsx","./charts/interaction.js":"platform/charts/interaction.js","./charts/LineChart.jsx":"platform/charts/LineChart.jsx","./charts/AreaChart.jsx":"platform/charts/AreaChart.jsx","./charts/Gauge.jsx":"platform/charts/Gauge.jsx","./charts/HeatMap.jsx":"platform/charts/HeatMap.jsx","./charts/WaterfallChart.jsx":"platform/charts/WaterfallChart.jsx","./charts/WordCloud.jsx":"platform/charts/WordCloud.jsx","./charts/NetworkGraph.jsx":"platform/charts/NetworkGraph.jsx","./charts/Diagram.jsx":"platform/charts/Diagram.jsx","./charts/BarChart.jsx":"platform/charts/BarChart.jsx","./charts/ComboChart.jsx":"platform/charts/ComboChart.jsx","./charts/PieChart.jsx":"platform/charts/PieChart.jsx","./charts/BulletChart.jsx":"platform/charts/BulletChart.jsx","./charts/BoxPlot.jsx":"platform/charts/BoxPlot.jsx","./charts/RadarChart.jsx":"platform/charts/RadarChart.jsx","./charts/SankeyDiagram.jsx":"platform/charts/SankeyDiagram.jsx","./charts/TimelineChart.jsx":"platform/charts/TimelineChart.jsx","./patterns/ComparisonView/ComparisonView.jsx":"platform/patterns/ComparisonView/ComparisonView.jsx","./charts/a11y.js":"platform/charts/a11y.js","./charts/Sparkline.jsx":"platform/charts/Sparkline.jsx","./charts/LollipopChart.jsx":"platform/charts/LollipopChart.jsx","./charts/ScatterChart.jsx":"platform/charts/ScatterChart.jsx","./charts/FunnelChart.jsx":"platform/charts/FunnelChart.jsx","./charts/Treemap.jsx":"platform/charts/Treemap.jsx","./charts/GanttChart.jsx":"platform/charts/GanttChart.jsx","./charts/GeoMap.jsx":"platform/charts/GeoMap.jsx","./utils/dnd.js":"platform/utils/dnd.js","./components/DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","./patterns/SortableList/SortableList.jsx":"platform/patterns/SortableList/SortableList.jsx","./components/Resizable/Resizable.jsx":"platform/components/Resizable/Resizable.jsx","./patterns/RenameAction/RenameAction.jsx":"platform/patterns/RenameAction/RenameAction.jsx","./patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","./patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","./patterns/DuplicateAction/DuplicateAction.jsx":"platform/patterns/DuplicateAction/DuplicateAction.jsx","./patterns/Publish/Publish.jsx":"platform/patterns/Publish/Publish.jsx","./patterns/AssignControl/AssignControl.jsx":"platform/patterns/AssignControl/AssignControl.jsx","./patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","./patterns/WizardDialog/WizardDialog.jsx":"platform/patterns/WizardDialog/WizardDialog.jsx","./patterns/FormFlow/FormFlow.jsx":"platform/patterns/FormFlow/FormFlow.jsx","./patterns/Autosave/Autosave.jsx":"platform/patterns/Autosave/Autosave.jsx","./patterns/DraftState/DraftState.jsx":"platform/patterns/DraftState/DraftState.jsx","./patterns/SaveAs/SaveAs.jsx":"platform/patterns/SaveAs/SaveAs.jsx","./patterns/ArchiveRestore/ArchiveRestore.jsx":"platform/patterns/ArchiveRestore/ArchiveRestore.jsx","./components/File/File.jsx":"platform/components/File/File.jsx","./components/FileRow/FileRow.jsx":"platform/components/FileRow/FileRow.jsx","./patterns/Auth/Auth.jsx":"platform/patterns/Auth/Auth.jsx","./patterns/SessionTimeout/SessionTimeout.jsx":"platform/patterns/SessionTimeout/SessionTimeout.jsx","./patterns/RoleManager/RoleManager.jsx":"platform/patterns/RoleManager/RoleManager.jsx","./patterns/ConnectedAccounts/ConnectedAccounts.jsx":"platform/patterns/ConnectedAccounts/ConnectedAccounts.jsx","./patterns/ShareDialog/ShareDialog.jsx":"platform/patterns/ShareDialog/ShareDialog.jsx","./patterns/PermissionsEditor/PermissionsEditor.jsx":"platform/patterns/PermissionsEditor/PermissionsEditor.jsx","./patterns/Tour/Tour.jsx":"platform/patterns/Tour/Tour.jsx","./components/Checklist/Checklist.jsx":"platform/components/Checklist/Checklist.jsx","./patterns/Onboarding/Onboarding.jsx":"platform/patterns/Onboarding/Onboarding.jsx","./patterns/FeatureIntro/FeatureIntro.jsx":"platform/patterns/FeatureIntro/FeatureIntro.jsx","./patterns/HelpPanel/HelpPanel.jsx":"platform/patterns/HelpPanel/HelpPanel.jsx","./patterns/ImportDialog/ImportDialog.jsx":"platform/patterns/ImportDialog/ImportDialog.jsx","./patterns/ImportWizard/ImportWizard.jsx":"platform/patterns/ImportWizard/ImportWizard.jsx","./patterns/ExportDialog/ExportDialog.jsx":"platform/patterns/ExportDialog/ExportDialog.jsx","./patterns/AccessRequest/AccessRequest.jsx":"platform/patterns/AccessRequest/AccessRequest.jsx","./patterns/TrialUpgrade/TrialUpgrade.jsx":"platform/patterns/TrialUpgrade/TrialUpgrade.jsx","./patterns/Offboarding/Offboarding.jsx":"platform/patterns/Offboarding/Offboarding.jsx","./patterns/ShortcutsDialog/ShortcutsDialog.jsx":"platform/patterns/ShortcutsDialog/ShortcutsDialog.jsx","./patterns/FileList/FileList.jsx":"platform/patterns/FileList/FileList.jsx","./patterns/FileBrowser/FileBrowser.jsx":"platform/patterns/FileBrowser/FileBrowser.jsx","./patterns/UploadManager/UploadManager.jsx":"platform/patterns/UploadManager/UploadManager.jsx","./patterns/VersionCompare/VersionCompare.jsx":"platform/patterns/VersionCompare/VersionCompare.jsx","./patterns/AssetGallery/AssetGallery.jsx":"platform/patterns/AssetGallery/AssetGallery.jsx","./patterns/DownloadManager/DownloadManager.jsx":"platform/patterns/DownloadManager/DownloadManager.jsx","./components/MediaPlayer/MediaPlayer.jsx":"platform/components/MediaPlayer/MediaPlayer.jsx","./patterns/MetadataEditor/MetadataEditor.jsx":"platform/patterns/MetadataEditor/MetadataEditor.jsx","./patterns/RelatedAssets/RelatedAssets.jsx":"platform/patterns/RelatedAssets/RelatedAssets.jsx","./patterns/AttachmentPicker/AttachmentPicker.jsx":"platform/patterns/AttachmentPicker/AttachmentPicker.jsx","./patterns/FilePicker/FilePicker.jsx":"platform/patterns/FilePicker/FilePicker.jsx","./patterns/RenditionList/RenditionList.jsx":"platform/patterns/RenditionList/RenditionList.jsx","./components/DocumentViewer/DocumentViewer.jsx":"platform/components/DocumentViewer/DocumentViewer.jsx","./patterns/VersionHistory/VersionHistory.jsx":"platform/patterns/VersionHistory/VersionHistory.jsx","./patterns/ProductCard/ProductCard.jsx":"platform/patterns/ProductCard/ProductCard.jsx","./components/ProductOptions/ProductOptions.jsx":"platform/components/ProductOptions/ProductOptions.jsx","./templates/Commerce/Commerce.jsx":"platform/templates/Commerce/Commerce.jsx","./components/Comment/Comment.jsx":"platform/components/Comment/Comment.jsx","./patterns/CommentThread/CommentThread.jsx":"platform/patterns/CommentThread/CommentThread.jsx","./patterns/ImageAnnotation/ImageAnnotation.jsx":"platform/patterns/ImageAnnotation/ImageAnnotation.jsx","./patterns/PresenceBar/PresenceBar.jsx":"platform/patterns/PresenceBar/PresenceBar.jsx","./components/MentionInput/MentionInput.jsx":"platform/components/MentionInput/MentionInput.jsx","./components/Announcement/Announcement.jsx":"platform/components/Announcement/Announcement.jsx","./patterns/AuditLog/AuditLog.jsx":"platform/patterns/AuditLog/AuditLog.jsx","./patterns/ApprovalWorkflow/ApprovalWorkflow.jsx":"platform/patterns/ApprovalWorkflow/ApprovalWorkflow.jsx","./components/PromptInput/PromptInput.jsx":"platform/components/PromptInput/PromptInput.jsx","./components/StreamingText/StreamingText.jsx":"platform/components/StreamingText/StreamingText.jsx","./patterns/AIChat/AIChat.jsx":"platform/patterns/AIChat/AIChat.jsx","./patterns/AssistantPanel/AssistantPanel.jsx":"platform/patterns/AssistantPanel/AssistantPanel.jsx","./components/AILabel/AILabel.jsx":"platform/components/AILabel/AILabel.jsx","./components/GeneratedContent/GeneratedContent.jsx":"platform/components/GeneratedContent/GeneratedContent.jsx","./patterns/PromptHistory/PromptHistory.jsx":"platform/patterns/PromptHistory/PromptHistory.jsx","./components/Citation/Citation.jsx":"platform/components/Citation/Citation.jsx","./components/SuggestedAction/SuggestedAction.jsx":"platform/components/SuggestedAction/SuggestedAction.jsx","./patterns/AISearch/AISearch.jsx":"platform/patterns/AISearch/AISearch.jsx","./patterns/Recommendation/Recommendation.jsx":"platform/patterns/Recommendation/Recommendation.jsx","./components/AIButton/AIButton.jsx":"platform/components/AIButton/AIButton.jsx","./components/AIDisclaimer/AIDisclaimer.jsx":"platform/components/AIDisclaimer/AIDisclaimer.jsx","./components/ConfidenceIndicator/ConfidenceIndicator.jsx":"platform/components/ConfidenceIndicator/ConfidenceIndicator.jsx","./patterns/AIExplanation/AIExplanation.jsx":"platform/patterns/AIExplanation/AIExplanation.jsx","./components/PromptSuggestions/PromptSuggestions.jsx":"platform/components/PromptSuggestions/PromptSuggestions.jsx","./components/SuggestedEdit/SuggestedEdit.jsx":"platform/components/SuggestedEdit/SuggestedEdit.jsx","./components/RefineMenu/RefineMenu.jsx":"platform/components/RefineMenu/RefineMenu.jsx","./providers/AnalyticsProvider.jsx":"platform/providers/AnalyticsProvider.jsx","./templates/templates/Templates.jsx":"platform/templates/templates/Templates.jsx","./utils/browserSupport.js":"platform/utils/browserSupport.js","./providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","./patterns/SplitView/SplitView.jsx":"platform/patterns/SplitView/SplitView.jsx","./components/Heading/Heading.jsx":"platform/components/Heading/Heading.jsx","./charts/TreeChart.jsx":"platform/charts/TreeChart.jsx","./components/DataGrid/DataGridEngine.jsx":"platform/components/DataGrid/DataGridEngine.jsx"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -79124,6 +84192,12 @@ Object.defineProperty(exports, "InputGroup", {
   enumerable: true,
   get: function () {
     return _InputGroup.InputGroup;
+  }
+});
+Object.defineProperty(exports, "Isolate", {
+  enumerable: true,
+  get: function () {
+    return _Isolate.Isolate;
   }
 });
 Object.defineProperty(exports, "Kbd", {
@@ -80356,6 +85430,12 @@ Object.defineProperty(exports, "VisuallyHidden", {
     return _VisuallyHidden.VisuallyHidden;
   }
 });
+Object.defineProperty(exports, "VoteTally", {
+  enumerable: true,
+  get: function () {
+    return _VoteTally.VoteTally;
+  }
+});
 Object.defineProperty(exports, "WORKFLOW_STATUSES", {
   enumerable: true,
   get: function () {
@@ -80998,6 +86078,12 @@ Object.defineProperty(exports, "registerHotkey", {
     return _hotkey.registerHotkey;
   }
 });
+Object.defineProperty(exports, "registerIcons", {
+  enumerable: true,
+  get: function () {
+    return _Icon.registerIcons;
+  }
+});
 Object.defineProperty(exports, "relativeLuminance", {
   enumerable: true,
   get: function () {
@@ -81080,6 +86166,12 @@ Object.defineProperty(exports, "seriesColor", {
   enumerable: true,
   get: function () {
     return _scales.seriesColor;
+  }
+});
+Object.defineProperty(exports, "setDefaultIconLibrary", {
+  enumerable: true,
+  get: function () {
+    return _Icon.setDefaultIconLibrary;
   }
 });
 Object.defineProperty(exports, "setDefaultSession", {
@@ -81400,6 +86492,12 @@ Object.defineProperty(exports, "useSortable", {
     return _dnd.useSortable;
   }
 });
+Object.defineProperty(exports, "useStrings", {
+  enumerable: true,
+  get: function () {
+    return _LocaleProvider.useStrings;
+  }
+});
 Object.defineProperty(exports, "useTheme", {
   enumerable: true,
   get: function () {
@@ -81456,6 +86554,8 @@ Object.defineProperty(exports, "wordCloudLayout", {
 });
 var _Badge = require("./components/Badge/Badge.jsx");
 var _VisuallyHidden = require("./components/VisuallyHidden/VisuallyHidden.jsx");
+var _Isolate = require("./components/Isolate/Isolate.jsx");
+var _VoteTally = require("./components/VoteTally/VoteTally.jsx");
 var _Count = require("./components/Count/Count.jsx");
 var _Metric = require("./components/Metric/Metric.jsx");
 var _MetricCard = require("./components/MetricCard/MetricCard.jsx");
@@ -81544,7 +86644,6 @@ var _useInteraction = require("./hooks/useInteraction.js");
 var _ScreenLocation = require("./providers/ScreenLocation.js");
 var _UnsavedGuard = require("./providers/UnsavedGuard.jsx");
 var _TimeGrid = require("./patterns/TimeGrid/TimeGrid.jsx");
-require("./utils/prefetch.js");
 var _WidgetGrid = require("./patterns/WidgetGrid/WidgetGrid.jsx");
 var _imageEditorSteps = require("./patterns/ImageEditor/imageEditorSteps.js");
 var _grid = require("./utils/grid.js");

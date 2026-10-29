@@ -1,0 +1,5 @@
+/* Plenix · Isolate (platform/components/Isolate): a piece of text kept in its own writing direction inside text of the
+   other direction; inline, no box of its own. */
+.plx-isolate{unicode-bidi:isolate;}
+/* a left-to-right island keeps the order of its characters even when its digits are Arabic-Indic (bidi type AN), which would let a hyphen swap the numbers around it */
+.plx-isolate[dir="ltr"]{unicode-bidi:isolate-override;}

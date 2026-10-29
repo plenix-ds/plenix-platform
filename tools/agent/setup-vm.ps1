@@ -1,4 +1,4 @@
-# Plenix handoff, part 2 — run on VM 101 (PowerShell), from inside the copied Plenix-handoff folder:
+# Plenix handoff, part 2 — run on the Windows VM (PowerShell), from inside the copied Plenix-handoff folder:
 #   powershell -ExecutionPolicy Bypass -File .\setup-vm.ps1
 # Needs: Git (with Git Bash), Node 22, Chrome, GitHub access (gh auth login), Claude Code.
 # Result:
@@ -67,14 +67,15 @@ else {
   if ($LASTEXITCODE) { throw 'Creating the deploy copy failed.' }
 }
 
-Step '8. SSH key for deploys (plenix@10.0.0.30)'
+Step '8. SSH key for deploys (PUBLISH_USER on PUBLISH_HOST)'
+foreach ($n in 'PUBLISH_HOST', 'PUBLISH_USER') { if (-not [Environment]::GetEnvironmentVariable($n)) { throw "Missing $n`: set it in the environment (the publish host and its account; no default)." } }
 $key = Join-Path $HOME '.ssh\id_ed25519'
 if (-not (Test-Path $key)) {
   New-Item -ItemType Directory (Split-Path $key) -Force | Out-Null
-  ssh-keygen -t ed25519 -f $key -C 'plenix-vm101'   # press Enter twice for no passphrase
+  ssh-keygen -t ed25519 -f $key -C 'plenix-deploy'   # press Enter twice for no passphrase
 }
-Write-Host 'Add this public key to /home/plenix/.ssh/authorized_keys on 10.0.0.30 (one line):' -ForegroundColor Yellow
+Write-Host "Add this public key to ~/.ssh/authorized_keys of $env:PUBLISH_USER on $env:PUBLISH_HOST (one line):" -ForegroundColor Yellow
 Get-Content "$key.pub"
-Write-Host 'Then test it with:  ssh plenix@10.0.0.30 echo ok'
+Write-Host "Then test it with:  ssh $env:PUBLISH_USER@$env:PUBLISH_HOST echo ok"
 
 Write-Host "`nDone. Open Claude Code in $Repo and say: continue from HANDOFF.md" -ForegroundColor Green

@@ -18,7 +18,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { SUITE_SESSION } from '../../suite/session.js';
-import { ThemeProvider, ToastProvider, SessionProvider } from 'plenix-platform';
+import { DirectionProvider, ThemeProvider, ToastProvider, SessionProvider } from 'plenix-platform';
 import { MyAccountPage } from './pages/MyAccountPage.jsx';
 import { SystemSettingsPage } from './pages/SystemSettingsPage.jsx';
 import { HomePage } from './pages/home/HomePage.jsx';
@@ -41,7 +41,8 @@ function mount(el) {
   if (!render || el.hasAttribute('data-plx-mounted')) return;
   const tree = render(el);   // read the markup before React replaces it
   el.setAttribute('data-plx-mounted', '');
-  createRoot(el).render(<ThemeProvider><SessionProvider session={SUITE_SESSION}><ToastProvider>{tree}</ToastProvider></SessionProvider></ThemeProvider>);
+  // each island reads the page's own direction (<html dir>) as context; nothing on the page changes (#262)
+  createRoot(el).render(<DirectionProvider follow><ThemeProvider><SessionProvider session={SUITE_SESSION}><ToastProvider>{tree}</ToastProvider></SessionProvider></ThemeProvider></DirectionProvider>);
 }
 
 function mountAll(root) {

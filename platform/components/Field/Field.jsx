@@ -44,6 +44,7 @@ import { useTruncated } from '../../utils/overflow.js';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';
 import { announce } from '../../utils/announce.jsx';
 import { formatNumber } from '../../utils/format.js';
+import { useDescribedBy } from '../../utils/describedBy.js';
 
 // the layout a Form gives the fields inside it (Form's layout "two-column" makes them inline); a Field's own layout wins
 export const FieldLayoutContext = React.createContext(null);
@@ -74,9 +75,11 @@ export function Field({ label, hideLabel = false, description, error, required =
     if (!max || !near || said.current === null) { said.current = length; return; }
     if (said.current !== length) { said.current = length; announce(over ? fill(t.over, length - max) : fill(t.left, max - length)); }
   }, [length, max, near, over, t.over, t.left]);
+  // the control's own descriptions first, then the field's: the description, the counter, the error (utils/describedBy.js)
+  const describedBy = useDescribedBy(child.props['aria-describedby'], descId, countId, errId);
   const props = {
     id: child.props.id || controlId,
-    'aria-describedby': [child.props['aria-describedby'], descId, countId, errId].filter(Boolean).join(' ') || undefined,
+    'aria-describedby': describedBy,
     invalid: child.props.invalid !== undefined ? child.props.invalid : (error || over ? true : undefined),
     required: child.props.required !== undefined ? child.props.required : (required || undefined),
   };

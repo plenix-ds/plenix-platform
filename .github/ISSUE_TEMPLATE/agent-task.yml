@@ -33,7 +33,7 @@ body:
       value: |
         - The quick gates pass: lane-overlay, build-app.js, check-system.js (SYSTEM_OK), check-spec.js (SPEC_OK).
         - No generated file in the branch (CI: GENERATED_OK).
-        - The browser tests pass in CI on the pull request.
+        - No test was run by the author: tests run only when the owner starts them (HANDOFF.md, "No tests").
         - The pull request lists anything left undone and what needs the owner.
     validations:
       required: true

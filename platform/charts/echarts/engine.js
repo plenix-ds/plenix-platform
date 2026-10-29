@@ -7,8 +7,8 @@
      loadECharts().then((E) => E.init(el, plenixTheme(chartTokens(el)), { renderer: 'svg', width, height }));
      const t = chartTokens(el); t.color('categorical-2')   // a data-viz step as the color it is where el is
    Props:
-     loadECharts(win): adds the engine's script to the page once (the given window's, default this one) and resolves with
-       that window's PlenixECharts ({ init, version })
+     loadECharts(win): resolves with the given window's PlenixECharts ({ init, version }), loading it through the page's
+       engines script (platform/engines/plenix-engines.js) on first use; without that script it rejects with a plain message
      chartTokens(el): the chart tokens as the Platform's own chart classes resolve them where el is (theme, density and
        scope included): { color(step), colors, lineWidth, tick, title, axis, grid, point, separator, slice, area, dim, motion }
      plenixTheme(tokens): the ECharts theme (colors in the categorical order of seriesColor, the axis and grid lines, the
@@ -24,24 +24,13 @@
        are the tokens read here.
      Dark mode: the charts read the tokens again when the page's mode, theme or density changes (EChartsPlot). */
 
-import { vendorBase } from '../../utils/vendorBase.js';
+import { engine } from '../../utils/engines.js';
 
-const loading = new WeakMap();
 export function loadECharts(win) {
   const w = win || (typeof window !== 'undefined' ? window : null);
   if (!w) return Promise.reject(new Error('ECharts needs a browser'));
   if (w.PlenixECharts) return Promise.resolve(w.PlenixECharts);
-  if (loading.has(w)) return loading.get(w);
-  const doc = w.document;
-  const p = new Promise((resolve, reject) => {
-    const script = doc.createElement('script');
-    script.src = vendorBase() + 'echarts/echarts.min.js'; script.async = true; script.setAttribute('data-plx-vendor', 'echarts');
-    script.onload = () => { if (w.PlenixECharts) resolve(w.PlenixECharts); else { loading.delete(w); script.remove(); reject(new Error('ECharts did not load from ' + script.src)); } };
-    script.onerror = () => { loading.delete(w); script.remove(); reject(new Error('ECharts could not be loaded from ' + script.src)); };
-    doc.head.appendChild(script);
-  });
-  loading.set(w, p);
-  return p;
+  return engine('echarts', w);
 }
 
 const NS = 'http://www.w3.org/2000/svg';
@@ -49,6 +38,20 @@ const num = (v) => parseFloat(v) || 0;
 // a duration token in milliseconds ("200ms" or "0.2s")
 const ms = (v) => { const s = String(v).trim(); return /ms$/.test(s) ? num(s) : /s$/.test(s) ? num(s) * 1000 : num(s); };
 
+// a tick label's line height (owner, arabic-font-35; issue 413): the font size, unless a label is in a script whose letters
+// reach below it (Arabic); then the deepest such label, measured, so ECharts keeps room for it under the axis. Latin labels
+// are never measured, so their charts do not change.
+const DEEP_SCRIPT = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
+export function tickLineHeight(t, texts) {
+  const size = t.tick.fontSize, deep = (texts || []).map(String).filter((x) => DEEP_SCRIPT.test(x));
+  if (!deep.length || typeof document === 'undefined') return size;
+  const ctx = document.createElement('canvas').getContext('2d');
+  if (!ctx) return size;
+  ctx.font = (t.tick.fontWeight || 400) + ' ' + size + 'px ' + t.tick.fontFamily; ctx.textBaseline = 'top';
+  let h = size;
+  for (const x of deep) { const m = ctx.measureText(x); h = Math.max(h, Math.ceil(m.actualBoundingBoxDescent - Math.min(0, -m.actualBoundingBoxAscent))); }
+  return h;
+}
 export function chartTokens(where) {
   const doc = where.ownerDocument, win = doc.defaultView;
   const svg = doc.createElementNS(NS, 'svg');
@@ -92,7 +95,9 @@ export function chartTokens(where) {
     // the gap between a tick label and its axis, and the room above the plot (half the top tick label)
     tickOffset: len(prop('--plx-comp-chart-axis-tick-offset')),
     top: len(prop('--plx-comp-chart-margin-block-start')),
-    rtl: host.direction === 'rtl',
+    // the page's writing direction from the dir attribute (:dir), not the computed direction: the engine element itself
+    // is drawn left to right (system/charts.css) so the engine's anchors hold, and the chart mirrors through its options
+    rtl: typeof where.matches === 'function' && where.matches(':dir(rtl)'),
     // a sparkline's own look (its color follows the sparkline's data-viz step, where it is)
     sparkline: { color: cs(spark.line).stroke, lineWidth: num(cs(spark.line).strokeWidth), areaOpacity: num(cs(spark.area).fillOpacity),
       bar: cs(spark.bar).fill, last: { r: num(cs(spark.last).r), outline: cs(spark.last).stroke, outlineWidth: num(cs(spark.last).strokeWidth) } },

@@ -11,5 +11,4 @@
 *{scrollbar-width:var(--plx-sys-scrollbar-width,thin);}
 *:where(:not(:hover, :focus-within)){scrollbar-color:transparent transparent;}
 *:is(:hover, :focus-within){scrollbar-color:var(--plx-sys-scrollbar-thumb) transparent;}
-/* an open modal layer stops the page behind it scrolling (utils/layer.js sets the state on the root) */
-:root.is-scroll-locked{overflow-x:hidden;overflow-y:hidden;}
+/* an open modal layer stops the page behind it scrolling: the shared scroll lock (system/scroll-lock.css) */

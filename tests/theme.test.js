@@ -5,6 +5,7 @@
 // and PlenixWorkspace.setTheme is remembered for the next page. The repository itself is never changed.
 //   node tests/theme.test.js            (TEST_PORT: another port)
 //   TEST_SCOPE=full: always; by default (tests/changed.js) only when a global file (the tokens, the builders, the providers) or this test changed
+const shared = require('./check.js');   // the shared check helper: parts (TEST_ONLY) and the results file (TEST_RESULTS)
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
@@ -14,7 +15,7 @@ if (!changed.wants({ units: ['components/Button'] })) changed.none('THEME_OK 0/0
 changed.report('every check');
 const PORT = +process.env.TEST_PORT || 8800;
 
-const res = [], check = (n, ok, d) => res.push([n, ok, d]);
+const res = [], check = (n, ok, d) => { if (shared.check(n, ok, d)) res.push([n, ok, d]); };
 const copyDir = (a, b) => { fs.mkdirSync(b, { recursive: true }); for (const e of fs.readdirSync(a, { withFileTypes: true })) { const s = path.join(a, e.name), t = path.join(b, e.name); if (e.isDirectory()) copyDir(s, t); else fs.copyFileSync(s, t); } };
 // a temporary copy with the builders and the token source
 function stage(name, edit) {

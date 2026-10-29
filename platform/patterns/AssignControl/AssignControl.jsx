@@ -51,7 +51,7 @@ import { DatePicker } from '../../components/DatePicker/DatePicker.jsx';
 import { EntityPicker } from '../../components/EntityPicker/EntityPicker.jsx';
 import { Persona } from '../../components/Persona/Persona.jsx';
 import { Text } from '../../components/Text/Text.jsx';
-import { useOptionalToast, localDay } from '../ReviewFlow/ReviewFlow.jsx';
+import { useOptionalToast } from '../ReviewFlow/ReviewFlow.jsx';
 
 const STRINGS = {
   assign: 'Assign', assignToMe: 'Assign to me', reassign: 'Reassign', unassign: 'Unassign', unassigned: 'Unassigned',
@@ -98,7 +98,7 @@ export function AssignControl({ label = 'Assignee', people = [], value = null, o
       <div className={cx('plx-assign-control', 'plx-assign-control--delegate', className)} role="group" aria-label={label} {...rest}>
         <div className="plx-assign-control__who">
           {person ? <Persona name={person.label} src={person.src} color={person.color} size="sm"
-            secondary={<span className="plx-assign-control__dates"><Text variant="data">{formatRange(localDay(d.start), localDay(d.end))}</Text></span>} />
+            secondary={<span className="plx-assign-control__dates"><Text variant="data">{formatRange(d.start, d.end)}</Text></span>} />
             : <span className="plx-assign-control__empty">{t.notDelegated}</span>}
         </div>
         <div className="plx-assign-control__actions">

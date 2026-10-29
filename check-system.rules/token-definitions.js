@@ -7,6 +7,8 @@
 //            what GRID_EXEMPT names, with the reason for each; the corner radii have their own rule.
 //   corners  Corners are 2 to 6px (and 0). A radius token (a key with "radius") must be a reference, 0, or a px/rem length of 2 to 6px;
 //            anything else (50%, 0.5em, 9999em, 100vh, a keyword) fails, unless RADIUS_EXEMPT names the token and its exact value with the reason (the spinner, and four card inner corners).
+//            A reference is followed to the value it ends at, in every file that sets it (each theme, density and interaction), and
+//            that value must pass too: {plx-ref.size-12px} is a 12px corner. A reference that ends nowhere (missing, or a loop) fails.
 // (The box shadows, 13 tokens with 1, 2, 3 and 5px blur or ring widths, are in the backlog with the reason "optical blur/ring width; owner to decide", not exempt.)
 // What already breaks a rule when the rule began is the frozen backlog in the same JSON (grid, corners): by token, with its value.
 // It only shrinks: a token that is not listed fails; a listed token that now passes (or is gone) fails until it is removed
@@ -44,7 +46,7 @@ const one = (w) => { const m = String(w).match(LEN); return m ? (m[2] === 'rem' 
 const lengths = (v) => String(v).split(/\s+/).map(one).filter((n) => n !== null);
 const exempt = (key) => GRID_EXEMPT.find(([n]) => (n.endsWith('-') ? key.startsWith(n) : key === n));
 
-// every token of the source: { key, value, file, ref } (ref: the file is reference.tokens.json)
+// every token of the source: { key, value, file, ref, name } (ref: the file is reference.tokens.json; name: '<tier>.<key>', as a reference writes it)
 function tokens() {
   const out = [];
   const walkDir = (d) => { for (const e of fs.readdirSync(d, { withFileTypes: true })) {
@@ -54,24 +56,44 @@ function tokens() {
   const read = (f) => {
     let j; try { j = JSON.parse(fs.readFileSync(f, 'utf8')); } catch (e) { return; }
     const ref = path.basename(f) === 'reference.tokens.json', file = path.relative(ROOT, f).split(path.sep).join('/');
-    const walk = (o) => { for (const k of Object.keys(o)) {
+    const walk = (o, tier) => { for (const k of Object.keys(o)) {
       if (k.charAt(0) === '$') continue;
       const v = o[k]; if (!v || typeof v !== 'object') continue;
-      if (v.$value !== undefined) { if (typeof v.$value === 'string') out.push({ key: k, value: v.$value, file, ref }); } else walk(v);
+      if (v.$value !== undefined) { if (typeof v.$value === 'string') out.push({ key: k, value: v.$value, file, ref, name: tier + '.' + k }); } else walk(v, tier || k);
     } };
-    walk(j);
+    walk(j, '');
   };
   walkDir(TOKENS);
   return out;
 }
-// a radius value passes when every part is a reference, 0, or a px or rem length of 2 to 6px
-const radiusOk = (v) => String(v).trim().split(/\s+/).every((p) => /^\{[^}]+\}$/.test(p) || /^0(px|rem)?$/.test(p) || (one(p) !== null && one(p) >= 2 && one(p) <= CORNERS[1]));
+// a corner length passes when it is 0, or a px or rem length of 2 to 6px
+const cornerOk = (p) => /^0(px|rem)?$/.test(p) || (one(p) !== null && one(p) >= 2 && one(p) <= CORNERS[1]);
+const REF = /^\{([^}]+)\}$/;
+// the values a reference ends at: every file that sets the token, followed to a value that is not a reference ('?' for a missing token or a loop)
+function ends(values, name, seen) {
+  if (seen.has(name) || !values[name]) return ['?'];
+  const next = new Set(seen).add(name), out = [];
+  for (const v of values[name]) { const m = REF.exec(String(v).trim()); if (m) out.push(...ends(values, m[1], next)); else out.push(String(v).trim()); }
+  return out;
+}
+// a radius value passes when every part is 0, a px or rem length of 2 to 6px, or a reference that ends at such a value in every file;
+// returns null when it passes, or what it ends at
+function radiusFails(v, values) {
+  const bad = [];
+  for (const p of String(v).trim().split(/\s+/)) {
+    const m = REF.exec(p);
+    if (!m) { if (!cornerOk(p)) return String(v); continue; }
+    for (const e of new Set(ends(values, m[1], new Set()))) if (!e.split(/\s+/).every(cornerOk)) bad.push(e === '?' ? 'nothing (a missing token or a loop)' : e);
+  }
+  return bad.length ? v + ' (ends at ' + [...new Set(bad)].join(', ') + ')' : null;
+}
 function measure() {
-  const all = tokens(), colors = {}, grid = {}, corners = {}, hex = [];
+  const all = tokens(), colors = {}, grid = {}, corners = {}, hex = [], values = {};
+  for (const t of all) (values[t.name] = values[t.name] || []).push(t.value);
   for (const t of all) {
     if (t.ref && (/^color-/.test(t.key) || /^#[0-9a-f]{3,8}$/i.test(t.value))) colors[t.key] = t.value;   // a hex value is a color under any key
     else if (!t.ref && /^#[0-9a-f]{3,8}$/i.test(t.value)) hex.push(t);
-    if (/radius/.test(t.key)) { if (!radiusOk(t.value) && !radiusExempt(t.key, t.value)) corners[t.key] = t.value; continue; }
+    if (/radius/.test(t.key)) { const why = radiusExempt(t.key, t.value) ? null : radiusFails(t.value, values); if (why) corners[t.key] = why; continue; }
     const ns = lengths(t.value); if (!ns.length) continue;
     if (ns.some((n) => n !== 0 && n % 4 !== 0) && !exempt(t.key)) grid[t.key] = t.value;
   }

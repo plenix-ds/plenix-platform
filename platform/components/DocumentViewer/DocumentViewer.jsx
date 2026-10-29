@@ -15,7 +15,7 @@
      message never shows the document's address or the server's error. The page counter, page buttons and zoom show
      once a document has pages. PDF text is exposed alongside the canvas for assistive technology.
    Notes: PDF.js 4.10.38 (Apache-2.0) is in the shared vendor folder (platform/vendor/pdfjs/; on the CDN
-     /cdn/<version>/vendor/pdfjs/), found by vendorBase() like the rich-text engine; window.PlenixVendorBase overrides.
+     /cdn/<version>/vendor/pdfjs/), loaded through the page's engines script (platform/engines/plenix-engines.js, which finds the vendor folder; window.PlenixVendorBase overrides). Without that script the viewer shows its engine failure.
      Its module is an ES module: serve it as text/javascript, allow it in script-src and its worker in worker-src, and
      send CORS headers when it is on another origin. URLs must obey the application CSP/CORS policy.
      PDF canvas dimensions are document geometry, never an inline style. No remote PDF code is downloaded.
@@ -30,10 +30,10 @@ import { Notice } from '../Notice/Notice.jsx';
 import { Image } from '../Image/Image.jsx';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
 import { cx } from '../../utils/cx.js';
-import { vendorBase } from '../../utils/vendorBase.js';
+import { engine } from '../../utils/engines.js';
 const STRINGS={document:'Document',previous:'Previous page',next:'Next page',page:'Page',zoom:'Zoom',thumbnails:'Page thumbnails',loading:'Loading document',failed:'The document could not be opened.',failedEngine:'The document viewer could not start. Try again later.',failedAccess:'The document could not be opened. It may have moved, or you may not have access to it.',failedParse:'This file could not be read as a PDF.',failedRender:'This page could not be shown.',empty:'No document.',retry:'Try again'};
 const ZOOMS=[50,75,100,125,150,200];
-function vendorUrl(name){return vendorBase()+'pdfjs/'+name;}
+const pdfEngine=()=>engine('pdf');
 // why a PDF failed, from PDF.js's error names: the engine, the document's address (missing, denied, blocked) or its content
 function reasonOf(e){const n=e&&e.name||'';return /Missing|UnexpectedResponse|Password|Abort/.test(n)||/fetch|network|cors/i.test(String(e&&e.message))?'access':'parse';}
 function PdfThumbnail({pdf,number,label}){const ref=React.useRef(null);React.useEffect(()=>{let live=true,task;const observer=new IntersectionObserver(async(entries)=>{if(!entries.some(e=>e.isIntersecting))return;observer.disconnect();try{const p=await pdf.getPage(number);if(!live)return;const v=p.getViewport({scale:1}),view=p.getViewport({scale:96/v.width}),c=ref.current;if(!c)return;c.width=Math.ceil(view.width);c.height=Math.ceil(view.height);task=p.render({canvasContext:c.getContext('2d'),viewport:view});await task.promise;}catch(e){/* Navigation remains available if a preview cannot render. */}});observer.observe(ref.current);return()=>{live=false;observer.disconnect();task?.cancel();};},[pdf,number]);return <canvas ref={ref} role="img" aria-label={label}/>;}
@@ -45,7 +45,7 @@ export function DocumentViewer({kind='text',src,pages=[],text='',label,thumbnail
  React.useEffect(()=>{let live=true,task,doc;setPdf(null);setPage(initialPage);setAccessible('');setError('');setZoom(ZOOMS.includes(initialZoom)?initialZoom:100);
   if(kind!=='pdf'||!src){setLoading(false);return;}
   setLoading(true);
-  (async()=>{let engine;try{const moduleUrl=pdfModuleUrl||vendorUrl('pdf.js');engine=await import(moduleUrl);if(!live)return;engine.GlobalWorkerOptions.workerSrc=pdfWorkerUrl||new URL('pdf.worker.js',moduleUrl).href;}catch(e){if(live)fail('engine',e);return;}
+  (async()=>{let engine;try{let worker;if(pdfModuleUrl){engine=await import(pdfModuleUrl);worker=new URL('pdf.worker.js',pdfModuleUrl).href;}else{const e=await pdfEngine();engine=e.module;worker=e.worker;}if(!live)return;engine.GlobalWorkerOptions.workerSrc=pdfWorkerUrl||worker;}catch(e){if(live)fail('engine',e);return;}
    try{task=engine.getDocument(typeof src==='string'?{url:src}:{data:src.slice()});doc=await task.promise;if(live){setPdf(doc);setLoading(false);}else doc.destroy();}catch(e){if(live)fail(reasonOf(e),e);}})();
   return()=>{live=false;if(task)task.destroy();else if(doc)doc.destroy();};
  },[kind,src,attempt,pdfModuleUrl,pdfWorkerUrl]);

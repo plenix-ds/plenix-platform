@@ -1,3 +1,5 @@
+No tests: see HANDOFF.md (the owner runs them)
+
 # Task #181: Styling Standard Phase 2: DocumentViewer, MediaViewer, ProductOptions and Commerce stop styling other components (Codex)
 
 Tracker: https://github.com/plenix-ds/plenix-platform/issues/181 · Plan of record: https://github.com/plenix-ds/plenix-platform/issues/3 · Standard: `platform/standards/styling.md`
