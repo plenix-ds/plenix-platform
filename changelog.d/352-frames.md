@@ -1,0 +1,2 @@
+### Fixed
+- The record page's lab in the design spec no longer cuts off its drawings in a narrower window (owner, #352, option B: one drawing per row at full width). The first fix (#511) gave every drawing its own row, but the drawings keep a width of their own (the entity headers 720px) and the row only had 704px at a 1360px window, so the right side of each header, the next step and the action buttons, was cut off. A drawing now takes the room its row has and its content reflows: the next step moves under the facts, as on a narrow page. Spec only (a lane).
