@@ -62,12 +62,22 @@ How every Plenix part behaves when its content does not fit its space (owner, 20
 - A tooltip that repeats the trigger's own name uses `describe={false}`, so a screen reader does not read it twice.
 - A plain static heading is not focusable: a cut one shows its full text on hover only, and a screen reader reads the whole heading.
 
-## 6. Shared values
+## 6. Right to left and zoom
+
+- Every step uses logical sides (inline start and end, block start and end), never left and right.
+- In right-to-left text the ellipsis sits at the start-side end of the cut line (the left end), wrapping starts from the right, and balanced wrapping works the same way.
+- Icon-only buttons keep their reading order: the first action is at the start side in both directions.
+- Tooltips use start and end placements, not left and right.
+- A down chevron does not mirror; a breadcrumb separator does.
+- At 200% zoom the page moves up the same ladders: a narrower container is a narrower container. Nothing is lost at any step.
+- Focus order never changes when items fold: the folded actions follow More in the focus order, in the bar's order.
+
+## 7. Shared values
 
 - `--plx-sys-fit-lines` (2), `--plx-sys-fit-line-height` (16px) and `--plx-sys-fit-wrap-padding-block` (4px) are the values every wrapping heading or label shares (`platform/tokens/semantic/fit.tokens.json`). The CollapsibleSection and NavList heading tokens alias them.
 - The container widths of later ladders (the 360px label stack, the 400px footer stack) are written in their queries with a token beside them when each ladder is built.
 
-## 7. What is built
+## 8. What is built
 
 - Built: section and navigation group headings (issue 502): `CollapsibleSection`, `NavList`, `useTruncated` for several lines, the Tooltip's `describe` option.
 - To build, in this order: the Toolbar, CommandBar `priority` and ActionBar ladders (section 3 and the footer row), segmented buttons (#276), combo and select sizing, label plus control, badges and tags, table header tooltips, breadcrumbs.
