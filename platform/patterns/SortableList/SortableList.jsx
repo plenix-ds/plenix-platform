@@ -50,6 +50,8 @@ import { DragHandle } from '../../components/DragHandle/DragHandle.jsx';
 import { Menu, MenuItem, MenuDivider } from '../../components/Menu/Menu.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
+import ChevronUpIcon from 'plenix-platform/icons/plenix/chevron-up';
 
 const fill = (s, vars) => String(s).replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m));
 // after a move button moves its item, focus stays on that button in the moved item (the other one at the list's end)
@@ -74,8 +76,8 @@ export function SortableList({ items = [], renderItem, onReorder, label, getId =
         const handle = handles ? (
           <Menu label={fill(t.moveMenu, { name })} placement="bottom-start" className="plx-sortable-list__menu"
             trigger={<DragHandle dnd={s.handleProps(i)} disabled={off} className="plx-sortable-list__handle" />}>
-            <MenuItem icon="chevron-up" disabled={!s.canMove(i, -1)} onSelect={() => s.moveTo(i, i - 1)}>{grid ? t.moveEarlier : t.moveUp}</MenuItem>
-            <MenuItem icon="chevron-down" disabled={!s.canMove(i, 1)} onSelect={() => s.moveTo(i, i + 1)}>{grid ? t.moveLater : t.moveDown}</MenuItem>
+            <MenuItem icon={ChevronUpIcon} disabled={!s.canMove(i, -1)} onSelect={() => s.moveTo(i, i - 1)}>{grid ? t.moveEarlier : t.moveUp}</MenuItem>
+            <MenuItem icon={ChevronDownIcon} disabled={!s.canMove(i, 1)} onSelect={() => s.moveTo(i, i + 1)}>{grid ? t.moveLater : t.moveDown}</MenuItem>
             <MenuDivider />
             <MenuItem disabled={i === 0} onSelect={() => s.moveTo(i, 0)}>{t.moveFirst}</MenuItem>
             <MenuItem disabled={i === last} onSelect={() => s.moveTo(i, last)}>{t.moveLast}</MenuItem>
@@ -87,8 +89,8 @@ export function SortableList({ items = [], renderItem, onReorder, label, getId =
             <div className="plx-sortable-list__content">{renderItem ? renderItem(item, i) : name}</div>
             {moveButtons ? (
               <span className="plx-sortable-list__buttons">
-                <Button size="xs" variant="ghost" iconOnly icon="chevron-up" label={fill(t.moveUpNamed, { name })} disabled={off || !s.canMove(i, -1)} data-plx-move="up" onClick={() => s.moveTo(i, i - 1, { focus: keep('up') })} />
-                <Button size="xs" variant="ghost" iconOnly icon="chevron-down" label={fill(t.moveDownNamed, { name })} disabled={off || !s.canMove(i, 1)} data-plx-move="down" onClick={() => s.moveTo(i, i + 1, { focus: keep('down') })} />
+                <Button size="xs" variant="ghost" iconOnly icon={ChevronUpIcon} label={fill(t.moveUpNamed, { name })} disabled={off || !s.canMove(i, -1)} data-plx-move="up" onClick={() => s.moveTo(i, i - 1, { focus: keep('up') })} />
+                <Button size="xs" variant="ghost" iconOnly icon={ChevronDownIcon} label={fill(t.moveDownNamed, { name })} disabled={off || !s.canMove(i, 1)} data-plx-move="down" onClick={() => s.moveTo(i, i + 1, { focus: keep('down') })} />
               </span>
             ) : null}
           </li>

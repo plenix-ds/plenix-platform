@@ -58,6 +58,7 @@ import { Icon } from '../../components/Icon/Icon.jsx';
 import { NavPane } from '../NavPane/NavPane.jsx';
 import { ActionBar } from '../ActionBar/ActionBar.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 
 
 export function SettingsLayout({ nav, className, children }) {
@@ -119,7 +120,7 @@ export function SettingsSection({ title, description, collapsible = false, defau
               {canCollapse ? (
                 <button type="button" id={id} className="plx-settings__section-toggle" aria-expanded={open} aria-controls={id + '-body'} aria-describedby={descId} onClick={toggle}>
                   <span className="plx-settings__section-label">{title}</span>
-                  <span className="plx-settings__section-chevron"><Icon name="chevron-down" /></span>
+                  <span className="plx-settings__section-chevron"><Icon name={ChevronDownIcon} /></span>
                 </button>
               ) : <span id={id}>{title}</span>}
             </H>

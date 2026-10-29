@@ -7,15 +7,18 @@ const fs = require('fs');
 const [mode, a, b] = process.argv.slice(2), only = process.argv.slice(4).concat(mode === 'snapshot' && b ? [b] : []);
 const APPS = ['dashboard', 'projects', 'messages', 'contacts', 'calendar', 'tasks', 'notes', 'bookmarks', 'files', 'settings'];
 // masked: the clock; ECharts' own instance number (a timestamp); Files' drag instructions, added at a moment that varies;
-// an Image's loading state
+// an Image's loading state; React's generated ids; the Upload manager's live demo (compared without digits)
 const norm = (html) => html.replace(/\b\d{1,2}:\d{2}(:\d{2})?(\s?[AP]M)?\b/g, 'TIME').replace(/_echarts_instance_="ec_\d+"/g, '_echarts_instance_="ec"')
   .replace(/<div id="plx-dnd-instructions-\d+" class="plx-visually-hidden">[^<]*<\/div>/g, '')
-  .replace(/\bis-(loading|loaded)\b/g, 'is-load');   // an Image's loading state, which depends on when the picture arrives
+  .replace(/\bis-(loading|loaded)\b/g, 'is-load')
+  .replace(/ (id|for|aria-labelledby|aria-describedby|aria-controls|aria-activedescendant|aria-owns|headers|data-plx-scroll-viewport)="[^"]*"/g, ' $1="ID"');   // React's generated ids (they count every render, so a live demo shifts the rest)   // an Image's loading state; React's generated ids; the Upload manager's live demo (compared without digits), which depends on when the picture arrives
 
 if (mode === 'compare') {
   const A = JSON.parse(fs.readFileSync(a, 'utf8')), B = JSON.parse(fs.readFileSync(b, 'utf8'));
   const pages = Object.keys(A.pages).sort(), differs = [];
-  for (const p of pages) if (A.pages[p] !== B.pages[p]) {
+  // the Upload manager's demo runs a live upload (its counts and percentages move with time): compared without digits
+  const live = (p, h) => (/upload-manager/.test(p) && h ? h.replace(/\d+/g, '#').replace(/\b(files?|items?)\b/g, 'N') : h);
+  for (const p of pages) if (live(p, A.pages[p]) !== live(p, B.pages[p])) {
     const x = A.pages[p] || '', y = B.pages[p] || ''; let j = 0; while (x[j] === y[j]) j++;
     differs.push({ page: p, before: x.slice(Math.max(0, j - 90), j + 90), after: y.slice(Math.max(0, j - 90), j + 90) });
   }

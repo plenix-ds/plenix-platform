@@ -54,6 +54,10 @@ import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
 import { FilterBar } from '../FilterBar/FilterBar.jsx';
 import { useUid } from '../../utils/layer.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import ChecklistIcon from 'plenix-platform/icons/plenix/checklist';
+import SaveIcon from 'plenix-platform/icons/plenix/save';
+import SortIcon from 'plenix-platform/icons/plenix/sort';
+import ViewTableIcon from 'plenix-platform/icons/plenix/view-table';
 
 const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m));
 
@@ -75,7 +79,7 @@ export function SearchWorkspace({ title, query = '', onQueryChange, placeholder,
   const counted = count.toLocaleString(loc) + ' ' + nouns;
   const legacyState = bulk && !React.isValidElement(bulk) && !Array.isArray(bulk) && typeof bulk === 'object' && 'count' in bulk ? bulk : null;
   const selected = selection || legacyState;
-  const selectAll = selected && selected.onSelectAll ? { id: 'select-all', label: t.selectAll, icon: 'checklist',
+  const selectAll = selected && selected.onSelectAll ? { id: 'select-all', label: t.selectAll, icon: ChecklistIcon,
     disabled: selected.total !== undefined && selected.count >= selected.total,
     why: fill(t.allSelected, { noun: selected.noun || noun || t.result }), onSelect: selected.onSelectAll } : null;
   const selectedBar = selected ? { ...selected, actions: (selected.actions || []).concat(selectAll ? [selectAll] : []) } : null;
@@ -87,7 +91,7 @@ export function SearchWorkspace({ title, query = '', onQueryChange, placeholder,
         <h2 id={id + '-title'} className="plx-search-ws__title">{title === undefined ? t.title : title}</h2>
         <span className="plx-search-ws__count" aria-live="polite">{counted}</span>
         <span className="plx-search-ws__spacer" />
-        {onSave ? <Button size="sm" icon="save" onClick={onSave}>{t.save}</Button> : null}
+        {onSave ? <Button size="sm" icon={SaveIcon} onClick={onSave}>{t.save}</Button> : null}
         {headEnd}
       </div>
       <div role="search" className="plx-search-ws__query">
@@ -104,10 +108,10 @@ export function SearchWorkspace({ title, query = '', onQueryChange, placeholder,
       ) : null}
       <CommandBar className="plx-search-ws__bar" label={title || t.title} sticky={false} count={counted} actions={selectAll ? [selectAll] : []} selection={selectedBar}
         view={<>
-          {view ? <Menu label={t.view} placement="bottom-end" trigger={<CommandBarButton icon="view-table" label={t.view} caret />}>
+          {view ? <Menu label={t.view} placement="bottom-end" trigger={<CommandBarButton icon={ViewTableIcon} label={t.view} caret />}>
             {layouts.map((o) => <MenuItem key={o.value} checked={view.value === o.value} onSelect={() => view.onChange(o.value)}>{o.label}</MenuItem>)}
           </Menu> : null}
-          {sort ? <Menu label={t.sort} placement="bottom-end" trigger={<CommandBarButton icon="sort" aria-label={fill(t.sortValue, { value: sort.value })} label={fill(t.sortValue, { value: sort.value })} caret />}>
+          {sort ? <Menu label={t.sort} placement="bottom-end" trigger={<CommandBarButton icon={SortIcon} aria-label={fill(t.sortValue, { value: sort.value })} label={fill(t.sortValue, { value: sort.value })} caret />}>
             {sort.options.map((o) => <MenuItem key={o} checked={sort.value === o} onSelect={() => sort.onChange(o)}>{o}</MenuItem>)}
           </Menu> : null}
         </>} />

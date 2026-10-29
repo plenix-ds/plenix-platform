@@ -46,6 +46,8 @@ import { gridWithin } from '../../utils/grid.js';
 import { paneMax } from '../../utils/paneLimit.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import { useMonitorWidth } from '../../utils/monitorWidths.js';
+import PanelRightCloseIcon from 'plenix-platform/icons/plenix/panel-right-close';
+import PanelRightOpenIcon from 'plenix-platform/icons/plenix/panel-right-open';
 
 const WIDTH_KEY = 'plenix.sidePanelWidth';
 
@@ -68,7 +70,7 @@ export function SidePanel({ title, label, icon, open = true, onOpenChange, actio
   const [size, resize] = useMonitorWidth('side', { legacy: () => { try { return localStorage.getItem(WIDTH_KEY); } catch (e) { return null; } }, min: () => tokenPx('--plx-comp-side-panel-width-min'), max: () => tokenPx('--plx-comp-side-panel-width-max') });
   const docked = resizable && !small;
   const railEl = onOpenChange ? (
-    <ToolRail label={tw.pane.replace('{name}', name)} className="plx-side-panel-rail"><ToolRail.Item icon="panel-right-open" label={tw.expand} onClick={() => set(true)} /></ToolRail>
+    <ToolRail label={tw.pane.replace('{name}', name)} className="plx-side-panel-rail"><ToolRail.Item icon={PanelRightOpenIcon} label={tw.expand} onClick={() => set(true)} /></ToolRail>
   ) : null;
   if (!open) return railEl;
   if (sheet) {
@@ -84,7 +86,7 @@ export function SidePanel({ title, label, icon, open = true, onOpenChange, actio
     <aside ref={ref} aria-label={name} className={cx('plx-side-panel', small && 'plx-side-panel--overlay', docked && 'plx-side-panel--resizable', docked && size && 'plx-side-panel--resized', className)}
       data-plx-width={docked && size ? gridWithin(size, tokenPx('--plx-comp-side-panel-width-min'), paneMax(tokenPx('--plx-comp-side-panel-width-max'), tokenPx('--plx-comp-side-panel-width-min'))) + 'px' : undefined}>
       <div className="plx-side-panel__header">
-        {onOpenChange ? <Button size="sm" variant="ghost" iconOnly icon="panel-right-close" label={collapseLabel || 'Collapse panel'} onClick={() => set(false)} /> : null}
+        {onOpenChange ? <Button size="sm" variant="ghost" iconOnly icon={PanelRightCloseIcon} label={collapseLabel || 'Collapse panel'} onClick={() => set(false)} /> : null}
         {icon ? <span className="plx-side-panel__icon" aria-hidden="true">{iconElement(icon)}</span> : null}
         <h2 className="plx-side-panel__title">{title}</h2>
         {actions}
