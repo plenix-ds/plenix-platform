@@ -302,6 +302,7 @@ do are the migration list, `check-system.text-contract.json`, which only shrinks
 
 ## 7. Layout, spacing and framing
 
+- **When content does not fit:** `platform/standards/fit-and-overflow.md` (wrap, then cut, with a way to read it; bars never wrap; one ladder per kind).
 - **Spacing between things:** comes from the container's `gap` (Stack, Inline, Columns, Grid) or the pattern
   (Form, SettingsSection). Reusable controls and display components have **no default outer margin**.
 - **Spacing inside a component:** the component's own business, margins included (a label to its input lives inside
