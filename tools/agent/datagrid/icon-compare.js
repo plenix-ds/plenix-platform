@@ -1,13 +1,15 @@
 // Icon comparison (issue 286): two published CDN builds side by side, size, speed and pixels. A quick-check tool, not a test.
 //   node tools/agent/datagrid/icon-compare.js [--a 0.69.3] [--b 0.75.0] [--out docs/briefs/icons/compare.md] [--only size,paint,pixels] [--runs 5]
 // Reads https://design-system.lighthouseway.org/cdn/<version>/ (the files are public) and the St. John site's icon file when SITE_DIR (default
-// ../st-john-test-site) has one. Writes only the report file. Chrome: CHROME_PATH or the usual places.
+// ../st-john-test-site) has one. Running it loads the live production CDN: public file reads, and in the paint part a page that asks
+// for about 600 icon files at once (150 icons, --runs runs, the "as it is" case). Writes only the report file, plus the grid pictures
+// into the folder named by ICON_COMPARE_SHOTS when that is set (a debugging aid; unset by default). Chrome: CHROME_PATH or the usual places.
 //   size    plenix.css, plenix.min.css, plenix.js, plenix.esm.js and the archive, raw, gzip (level 9) and Brotli; the icon data inside plenix.css;
 //           an app using 75 icons: what each build ships for them.
 //   paint   first paint and the time until every icon is drawn, on an icon-light page (5 icons) and an icon-heavy page (150), the median of --runs runs per
 //           build, cache off, the live CDN (the numbers move with the network: compare the two builds of one run, not two runs).
 //   pixels  every Plenix icon both builds have, at xs, sm, md and lg, outline and filled, in the Compact and Comfortable densities, plus a fixed sample
-//           of the Material library (every 14th symbol, in Compact); each cell's pixels are compared (a pixel differs when a channel differs by more
+//           of the Material library (every 28th symbol, in Compact, read from this checkout's library for both builds); each cell's pixels are compared (a pixel differs when a channel differs by more
 //           than 24); the report lists the cells that differ. The grid benchmark (bench.js) runs against a checkout, not a published build, and is not part of this.
 const fs = require('fs'), path = require('path'), zlib = require('zlib');
 const arg = (name, fallback) => { const i = process.argv.indexOf('--' + name); return i >= 0 ? process.argv[i + 1] : fallback; };
