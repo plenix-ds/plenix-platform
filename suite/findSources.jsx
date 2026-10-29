@@ -10,7 +10,7 @@ const PRI={high:"High",med:"Medium",low:"Low"};
 const cap=(s)=>s?s.charAt(0).toUpperCase()+s.slice(1):s;
 // each source: label, noun, rows() → [{ key, name, sub, cells, facets, open }], filters, columns (DataGrid column
 // definitions for the DataGrid; a grid row is the source row's cells with its key as id, its name and its facets)
-export const FIND_SOURCES={
+const FIND_SOURCES={
   projects:{label:"Projects",noun:"project",filters:[{id:"status",label:"Status"},{id:"tags",label:"Tags",multiple:true}],
     columns:[{title:"Project",field:"name",kind:"name"},{title:"Status",field:"status",kind:"center",render:r=><Badge tone={r.status==="Active"?"success":"neutral"}>{r.status}</Badge>},{title:"Tags",field:"tags"},{title:"Files",field:"files",kind:"data",align:"right",headerAlign:"right"}],
     rows:()=>PROJECTS.map(p=>({key:"p"+p.id,name:p.name,sub:p.desc,cells:{status:cap(p.status),tags:p.tags.join(", "),files:p.files},facets:{status:cap(p.status),tags:p.tags}}))},

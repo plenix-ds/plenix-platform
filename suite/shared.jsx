@@ -4,7 +4,7 @@ const {useState,useRef,useEffect,useCallback}=React;
 
 
 /* ─── Icons ─────────────────────────────────────────────────────── */
-export const P={
+const P={
   home:"M3 12L12 4l9 8M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9",
   proj:"M2 6a2 2 0 012-2h4l2 2h8a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V6z",
   msg:"M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2v10z",
@@ -34,26 +34,6 @@ export const P={
 export const Ico=({n,color="currentColor",sw=1.65})=>(
   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"    className="plx-u-shrink-0 plx-u-icon-box">
     <path d={P[n]} stroke={color} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-);
-
-/* Solid filled icons for nav — each is a proper filled shape */
-export const SOLID={
-  home:    <path fillRule="evenodd" clipRule="evenodd" d="M9.293 2.293a1 1 0 011.414 0l7 7A1 1 0 0117 11h-1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-3a1 1 0 00-1-1H9a1 1 0 00-1 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-6H3a1 1 0 01-.707-1.707l7-7z"/>,
-  proj:    <path fillRule="evenodd" clipRule="evenodd" d="M2 6a2 2 0 012-2h4l2 2h6a2 2 0 012 2v1H2V6zm0 4h16v6a2 2 0 01-2 2H4a2 2 0 01-2-2v-6z"/>,
-  msg:     <path fillRule="evenodd" clipRule="evenodd" d="M2 5a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2H6l-4 4V5z"/>,
-  contact: <path fillRule="evenodd" clipRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3zm15.138-2.738A4 4 0 0120 9a4 4 0 01-2.862 3.842 6.002 6.002 0 011.994 2.887.75.75 0 01-1.44.422A4.502 4.502 0 0014 13h-.5A4.5 4.5 0 009 17.5a.75.75 0 01-1.5 0A6 6 0 016 13H5a.75.75 0 010-1.5h10a.75.75 0 010 1.5h-1a6.002 6.002 0 011.138 2.762z"/>,
-  cal:     <path fillRule="evenodd" clipRule="evenodd" d="M5 2a1 1 0 011 1v1h8V3a1 1 0 112 0v1h1a2 2 0 012 2v11a2 2 0 01-2 2H3a2 2 0 01-2-2V6a2 2 0 012-2h1V3a1 1 0 011-1zm0 6a1 1 0 000 2h10a1 1 0 100-2H5z"/>,
-  task:    <path fillRule="evenodd" clipRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm9.293 3.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L8 10.586l3.293-3.293a1 1 0 011.414 0z"/>,
-  note:    <path fillRule="evenodd" clipRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h4a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h3a1 1 0 100-2H7z"/>,
-  bkmk:    <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"/>,
-  file:    <path d="M2 6a2 2 0 012-2h5l2 3h7a2 2 0 012 2v9a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"/>,
-  srch:    <path fillRule="evenodd" clipRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"/>,
-  set:     <path fillRule="evenodd" clipRule="evenodd" d="M11.078 2.25c-.917 0-1.699.663-1.85 1.567L9.05 4.889c-.02.12-.115.26-.297.348a7.493 7.493 0 00-.986.57c-.166.115-.334.126-.45.083L6.3 5.508a1.875 1.875 0 00-2.282.819l-.922 1.597a1.875 1.875 0 00.432 2.385l.84.692c.095.078.17.229.154.43a7.598 7.598 0 000 1.139c.015.2-.059.352-.153.43l-.841.692a1.875 1.875 0 00-.432 2.385l.922 1.597a1.875 1.875 0 002.282.818l1.019-.382c.115-.043.283-.031.45.082.312.214.641.405.985.57.182.088.277.228.297.35l.178 1.071c.151.904.933 1.567 1.85 1.567h1.844c.916 0 1.699-.663 1.85-1.567l.178-1.072c.02-.12.114-.26.297-.349.344-.165.673-.356.985-.57.167-.114.335-.125.45-.082l1.02.382a1.875 1.875 0 002.28-.819l.923-1.597a1.875 1.875 0 00-.432-2.385l-.84-.692c-.095-.078-.17-.229-.154-.43a7.614 7.614 0 000-1.139c-.016-.2.059-.352.153-.43l.84-.692c.708-.582.891-1.59.433-2.385l-.922-1.597a1.875 1.875 0 00-2.282-.818l-1.02.382c-.114.043-.282.031-.449-.083a7.49 7.49 0 00-.985-.57c-.183-.087-.277-.227-.297-.348l-.179-1.072a1.875 1.875 0 00-1.85-1.567h-1.843zM12 13.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/>,
-};
-export const SolidIco=({n,size=20,color="currentColor"})=>(
-  <svg width={size} height={size} viewBox="0 0 20 20" fill={color} className="plx-u-shrink-0">
-    {SOLID[n]||<path d={P[n]} stroke={color} strokeWidth={1.5} fill="none"/>}
   </svg>
 );
 
@@ -157,7 +137,7 @@ export const CAPTURES=[
 ];
 
 /* ─── API ───────────────────────────────────────────────────────── */
-export async function callClaude(sys,usr){
+async function callClaude(sys,usr){
   const r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},
     body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:sys,messages:[{role:"user",content:usr}]})});
   const d=await r.json();return d.content?.[0]?.text||"";
@@ -177,16 +157,15 @@ Return ONLY valid JSON: {"answer":"2-3 sentence summary","results":[{"id":1,"nam
 }
 
 /* a card surface (the legacy .card rule, on tokens): spread into a style, before the element's own properties */
-export const CARD={backgroundColor:"var(--plx-sys-surface-raised)",borderRadius:"var(--plx-sys-radius-card-6px)",boxShadow:"var(--plx-sys-shadow-card)",overflowX:"hidden",overflowY:"hidden"};
 
 /* ─── Shared atoms ──────────────────────────────────────────────── */
 /* avatars: the Platform Avatar (rounded squares; corner and text size follow the size). Sizes snap to the scale. */
-export const AV_SIZES=[24,28,32,40,48,64];
+const AV_SIZES=[24,28,32,40,48,64];
 export const Av=({name,av,avColor,size=28})=>{const s=AV_SIZES.reduce((a,b)=>Math.abs(b-size)<Math.abs(a-size)?b:a);return <Avatar name={name} initials={av} size={s} color={avColor}/>;};
 // a status is never a dot (owner, 2026-10-14): priority is its icon and a short word; a project's status, in the tight nav
 // row, its icon with its name spoken
-export const PRI_TONE={high:"danger",med:"warning",low:"success"}, PRI_LABEL={high:"High priority",med:"Medium priority",low:"Low priority"}, PRI_WORD={high:"High",med:"Medium",low:"Low"};
+const PRI_TONE={high:"danger",med:"warning",low:"success"}, PRI_LABEL={high:"High priority",med:"Medium priority",low:"Low priority"}, PRI_WORD={high:"High",med:"Medium",low:"Low"};
 // the word in the row's secondary text (12px), so it shares the task's and the date's size and baseline
 export const Priority=({pri})=><Inline gap="2xs" align="baseline"><StatusIcon tone={PRI_TONE[pri]||"neutral"} size="sm" label={PRI_LABEL[pri]} className="plx-u-self-center"/><Text variant="secondary" aria-hidden="true">{PRI_WORD[pri]||pri}</Text></Inline>;
-export const STATUS_TONE={active:"success",paused:"warning",completed:"neutral"};
+const STATUS_TONE={active:"success",paused:"warning",completed:"neutral"};
 export const ProjStatus=({s})=><StatusIcon tone={STATUS_TONE[s]||"neutral"} size="sm" label={"Status: "+s}/>;

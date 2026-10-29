@@ -27,7 +27,7 @@ const CAP_STATUS={built:["success","Built"],planned:["active","Planned"],todo:["
 const capBadge=s=>{const m=CAP_STATUS[s]||CAP_STATUS.todo;return <Badge tone={m[0]}>{m[1]}</Badge>;};
 
 /* One feature as a settings row: its name and what it does, its status at the end */
-export const FeatureRow=({item})=>{
+const FeatureRow=({item})=>{
   const s=FEATURE_STATUS[item.status]||FEATURE_STATUS.planned;
   return <SettingsRow label={item.label} description={item.desc}><Badge tone={s[0]}>{s[1]}</Badge></SettingsRow>;
 };

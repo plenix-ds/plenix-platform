@@ -54,10 +54,9 @@ const SUITE_SESSION = exports.SUITE_SESSION = {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.THREADS = exports.SolidIco = exports.STATUS_TONE = exports.SOLID = exports.ProjStatus = exports.Priority = exports.PROJECTS = exports.PRI_WORD = exports.PRI_TONE = exports.PRI_LABEL = exports.P = exports.MSGS = exports.Ico = exports.EVENTS = exports.EMAILS = exports.CONTACTS = exports.CARD = exports.CAPTURES = exports.CAL_EVENTS = exports.CALENDARS = exports.Av = exports.AV_SIZES = exports.ALL_TASKS = exports.ALL_NOTES = exports.ALL_FILES = exports.ALL_BOOKMARKS = void 0;
+exports.THREADS = exports.ProjStatus = exports.Priority = exports.PROJECTS = exports.MSGS = exports.Ico = exports.EVENTS = exports.EMAILS = exports.CONTACTS = exports.CAPTURES = exports.CAL_EVENTS = exports.CALENDARS = exports.Av = exports.ALL_TASKS = exports.ALL_NOTES = exports.ALL_FILES = exports.ALL_BOOKMARKS = void 0;
 exports.aiFileName = aiFileName;
 exports.aiSearch = aiSearch;
-exports.callClaude = callClaude;
 var _plenixPlatform = require("plenix-platform");
 /* Plenix suite · shared (suite/shared.jsx). Split out of app/plenix.jsx in batch 113; edit here. */
 
@@ -69,7 +68,7 @@ const {
 } = React;
 
 /* ─── Icons ─────────────────────────────────────────────────────── */
-const P = exports.P = {
+const P = {
   home: "M3 12L12 4l9 8M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9",
   proj: "M2 6a2 2 0 012-2h4l2 2h8a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V6z",
   msg: "M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2v10z",
@@ -113,80 +112,8 @@ const Ico = ({
   strokeLinejoin: "round"
 }));
 
-/* Solid filled icons for nav — each is a proper filled shape */
-exports.Ico = Ico;
-const SOLID = exports.SOLID = {
-  home: /*#__PURE__*/React.createElement("path", {
-    fillRule: "evenodd",
-    clipRule: "evenodd",
-    d: "M9.293 2.293a1 1 0 011.414 0l7 7A1 1 0 0117 11h-1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-3a1 1 0 00-1-1H9a1 1 0 00-1 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-6H3a1 1 0 01-.707-1.707l7-7z"
-  }),
-  proj: /*#__PURE__*/React.createElement("path", {
-    fillRule: "evenodd",
-    clipRule: "evenodd",
-    d: "M2 6a2 2 0 012-2h4l2 2h6a2 2 0 012 2v1H2V6zm0 4h16v6a2 2 0 01-2 2H4a2 2 0 01-2-2v-6z"
-  }),
-  msg: /*#__PURE__*/React.createElement("path", {
-    fillRule: "evenodd",
-    clipRule: "evenodd",
-    d: "M2 5a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2H6l-4 4V5z"
-  }),
-  contact: /*#__PURE__*/React.createElement("path", {
-    fillRule: "evenodd",
-    clipRule: "evenodd",
-    d: "M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3zm15.138-2.738A4 4 0 0120 9a4 4 0 01-2.862 3.842 6.002 6.002 0 011.994 2.887.75.75 0 01-1.44.422A4.502 4.502 0 0014 13h-.5A4.5 4.5 0 009 17.5a.75.75 0 01-1.5 0A6 6 0 016 13H5a.75.75 0 010-1.5h10a.75.75 0 010 1.5h-1a6.002 6.002 0 011.138 2.762z"
-  }),
-  cal: /*#__PURE__*/React.createElement("path", {
-    fillRule: "evenodd",
-    clipRule: "evenodd",
-    d: "M5 2a1 1 0 011 1v1h8V3a1 1 0 112 0v1h1a2 2 0 012 2v11a2 2 0 01-2 2H3a2 2 0 01-2-2V6a2 2 0 012-2h1V3a1 1 0 011-1zm0 6a1 1 0 000 2h10a1 1 0 100-2H5z"
-  }),
-  task: /*#__PURE__*/React.createElement("path", {
-    fillRule: "evenodd",
-    clipRule: "evenodd",
-    d: "M3 4a1 1 0 011-1h12a1 1 0 011 1v12a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm9.293 3.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L8 10.586l3.293-3.293a1 1 0 011.414 0z"
-  }),
-  note: /*#__PURE__*/React.createElement("path", {
-    fillRule: "evenodd",
-    clipRule: "evenodd",
-    d: "M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h4a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h3a1 1 0 100-2H7z"
-  }),
-  bkmk: /*#__PURE__*/React.createElement("path", {
-    d: "M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"
-  }),
-  file: /*#__PURE__*/React.createElement("path", {
-    d: "M2 6a2 2 0 012-2h5l2 3h7a2 2 0 012 2v9a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
-  }),
-  srch: /*#__PURE__*/React.createElement("path", {
-    fillRule: "evenodd",
-    clipRule: "evenodd",
-    d: "M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-  }),
-  set: /*#__PURE__*/React.createElement("path", {
-    fillRule: "evenodd",
-    clipRule: "evenodd",
-    d: "M11.078 2.25c-.917 0-1.699.663-1.85 1.567L9.05 4.889c-.02.12-.115.26-.297.348a7.493 7.493 0 00-.986.57c-.166.115-.334.126-.45.083L6.3 5.508a1.875 1.875 0 00-2.282.819l-.922 1.597a1.875 1.875 0 00.432 2.385l.84.692c.095.078.17.229.154.43a7.598 7.598 0 000 1.139c.015.2-.059.352-.153.43l-.841.692a1.875 1.875 0 00-.432 2.385l.922 1.597a1.875 1.875 0 002.282.818l1.019-.382c.115-.043.283-.031.45.082.312.214.641.405.985.57.182.088.277.228.297.35l.178 1.071c.151.904.933 1.567 1.85 1.567h1.844c.916 0 1.699-.663 1.85-1.567l.178-1.072c.02-.12.114-.26.297-.349.344-.165.673-.356.985-.57.167-.114.335-.125.45-.082l1.02.382a1.875 1.875 0 002.28-.819l.923-1.597a1.875 1.875 0 00-.432-2.385l-.84-.692c-.095-.078-.17-.229-.154-.43a7.614 7.614 0 000-1.139c-.016-.2.059-.352.153-.43l.84-.692c.708-.582.891-1.59.433-2.385l-.922-1.597a1.875 1.875 0 00-2.282-.818l-1.02.382c-.114.043-.282.031-.449-.083a7.49 7.49 0 00-.985-.57c-.183-.087-.277-.227-.297-.348l-.179-1.072a1.875 1.875 0 00-1.85-1.567h-1.843zM12 13.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"
-  })
-};
-const SolidIco = ({
-  n,
-  size = 20,
-  color = "currentColor"
-}) => /*#__PURE__*/React.createElement("svg", {
-  width: size,
-  height: size,
-  viewBox: "0 0 20 20",
-  fill: color,
-  className: "plx-u-shrink-0"
-}, SOLID[n] || /*#__PURE__*/React.createElement("path", {
-  d: P[n],
-  stroke: color,
-  strokeWidth: 1.5,
-  fill: "none"
-}));
-
 /* ─── Data ──────────────────────────────────────────────────────── */
-exports.SolidIco = SolidIco;
+exports.Ico = Ico;
 const PROJECTS = exports.PROJECTS = [{
   id: 1,
   name: "Kitchen Renovation",
@@ -798,17 +725,10 @@ Return ONLY valid JSON: {"answer":"2-3 sentence summary","results":[{"id":1,"nam
 }
 
 /* a card surface (the legacy .card rule, on tokens): spread into a style, before the element's own properties */
-const CARD = exports.CARD = {
-  backgroundColor: "var(--plx-sys-surface-raised)",
-  borderRadius: "var(--plx-sys-radius-card-6px)",
-  boxShadow: "var(--plx-sys-shadow-card)",
-  overflowX: "hidden",
-  overflowY: "hidden"
-};
 
 /* ─── Shared atoms ──────────────────────────────────────────────── */
 /* avatars: the Platform Avatar (rounded squares; corner and text size follow the size). Sizes snap to the scale. */
-const AV_SIZES = exports.AV_SIZES = [24, 28, 32, 40, 48, 64];
+const AV_SIZES = [24, 28, 32, 40, 48, 64];
 const Av = ({
   name,
   av,
@@ -826,17 +746,17 @@ const Av = ({
 // a status is never a dot (owner, 2026-10-14): priority is its icon and a short word; a project's status, in the tight nav
 // row, its icon with its name spoken
 exports.Av = Av;
-const PRI_TONE = exports.PRI_TONE = {
+const PRI_TONE = {
     high: "danger",
     med: "warning",
     low: "success"
   },
-  PRI_LABEL = exports.PRI_LABEL = {
+  PRI_LABEL = {
     high: "High priority",
     med: "Medium priority",
     low: "Low priority"
   },
-  PRI_WORD = exports.PRI_WORD = {
+  PRI_WORD = {
     high: "High",
     med: "Medium",
     low: "Low"
@@ -857,7 +777,7 @@ const Priority = ({
   "aria-hidden": "true"
 }, PRI_WORD[pri] || pri));
 exports.Priority = Priority;
-const STATUS_TONE = exports.STATUS_TONE = {
+const STATUS_TONE = {
   active: "success",
   paused: "warning",
   completed: "neutral"
@@ -1406,7 +1326,6 @@ function SearchScreen({
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.FIND_SOURCES = void 0;
 exports.FindWorkspace = FindWorkspace;
 exports.findResults = findResults;
 var _plenixPlatform = require("plenix-platform");
@@ -1427,7 +1346,7 @@ const PRI = {
 const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
 // each source: label, noun, rows() → [{ key, name, sub, cells, facets, open }], filters, columns (DataGrid column
 // definitions for the DataGrid; a grid row is the source row's cells with its key as id, its name and its facets)
-const FIND_SOURCES = exports.FIND_SOURCES = {
+const FIND_SOURCES = {
   projects: {
     label: "Projects",
     noun: "project",
@@ -1960,11 +1879,9 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined' && document
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.appPage = exports.SUITE = void 0;
+exports.appPage = void 0;
 exports.mountSuite = mountSuite;
-exports.readPrefs = readPrefs;
 exports.settingsPage = void 0;
-exports.writePrefs = writePrefs;
 var _session = require("./session.js");
 var _plenixPlatform = require("plenix-platform");
 var _capture = require("./capture.jsx");
@@ -1997,7 +1914,7 @@ const {
 } = React;
 
 // every Plenix application of this suite: its id (PLENIX_APPS), its folder and its label
-const SUITE = exports.SUITE = [{
+const SUITE = [{
   id: 'home',
   folder: 'dashboard',
   label: 'Dashboard'
@@ -2344,7 +2261,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.CatEditModal = CatEditModal;
 exports.ClassificationWidget = ClassificationWidget;
-exports.RowItem = RowItem;
 var _plenixPlatform = require("plenix-platform");
 var _shared = require("./shared.jsx");
 /* Plenix suite · classification (suite/classification.jsx): the classification widget (project type, projects, categories,
@@ -2355,18 +2271,6 @@ var _shared = require("./shared.jsx");
 const {
   useRef
 } = React;
-
-/* A whole row (or card) that acts as one control: the Platform RowButton with its content laid out by inner (a flex row
-   by default). */
-function RowItem({
-  innerClassName,
-  children,
-  ...rest
-}) {
-  return /*#__PURE__*/React.createElement(_plenixPlatform.RowButton, rest, /*#__PURE__*/React.createElement("span", {
-    className: ['plx-u-flex plx-u-items-center', innerClassName].filter(Boolean).join(' ')
-  }, children));
-}
 
 /* ─── ClassificationWidget ───────────────────────────────────────
    Universal widget embedded in every capability's create/edit form.
@@ -2570,7 +2474,6 @@ function CatEditModal({
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.FeatureRow = void 0;
 exports.Settings = Settings;
 var _plenixPlatform = require("plenix-platform");
 var _shared = require("../suite/shared.jsx");
@@ -2657,7 +2560,6 @@ const FeatureRow = ({
 
 /* ── the screen and its cards ── */
 // the screen a card belongs to: its open state is remembered under "<screen>:<title>"
-exports.FeatureRow = FeatureRow;
 const ScreenKey = React.createContext("");
 // a settings screen: a way back (lead), its title (the h1) and actions, then its cards
 const Screen = ({

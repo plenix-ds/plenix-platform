@@ -8,7 +8,7 @@ const { useState, useEffect } = React;
 const allLink = (label, onClick) => <Button variant="ghost" size="xs" iconEnd="chevron-right" label={label} onClick={onClick}>All</Button>;
 
 /* ─── Dashboard Widgets ─────────────────────────────────────────── */
-export function EmailsWidget({ handle,  onViewAll, prefs }) {
+function EmailsWidget({ handle,  onViewAll, prefs }) {
   const [exp, setExp] = useState(null);
   const showAv = prefs?.emailAvatar !== false;
   const max = parseInt(prefs?.emailMax || '5', 10);
@@ -29,7 +29,7 @@ export function EmailsWidget({ handle,  onViewAll, prefs }) {
   );
 }
 
-export function CalendarWidget({ handle,  onViewAll }) {
+function CalendarWidget({ handle,  onViewAll }) {
   return (
     <Panel icon="calendar" title="Calendar" description={<Text variant="data">Mar 5</Text>} actions={<Inline gap="xs">{allLink('View all calendar', onViewAll)}{handle}</Inline>}>
       <Stack gap="xs">{EVENTS.map((ev) => <EventChip key={ev.id} title={ev.title} time={ev.time} color={ev.color} />)}</Stack>
@@ -37,7 +37,7 @@ export function CalendarWidget({ handle,  onViewAll }) {
   );
 }
 
-export function ProjectsWidget({ handle,  onViewAll, onProject, prefs }) {
+function ProjectsWidget({ handle,  onViewAll, onProject, prefs }) {
   const density = prefs?.projDensity || 'card';
   const showFiles = prefs?.projFiles || false;
   const showCategory = prefs?.projCategory !== false;
@@ -71,7 +71,7 @@ export function ProjectsWidget({ handle,  onViewAll, onProject, prefs }) {
   );
 }
 
-export function ContactsWidget({ handle,  onViewAll }) {
+function ContactsWidget({ handle,  onViewAll }) {
   return (
     <Panel icon="settings-users" title="Contacts" actions={<Inline gap="xs">{allLink('View all contacts', onViewAll)}{handle}</Inline>}>
       <Stack gap="sm">{CONTACTS.map((c) => (
@@ -87,7 +87,7 @@ export function ContactsWidget({ handle,  onViewAll }) {
 }
 
 /* ─── Tasks Widget (dashboard mini) ────────────────────────────── */
-export function TasksWidget({ handle,  onViewAll, prefs }) {
+function TasksWidget({ handle,  onViewAll, prefs }) {
   const [done, setDone] = useState(() => Object.fromEntries(ALL_TASKS.map((t) => [t.id, t.done])));
   const showPri = prefs?.taskPri !== false;
   const showDue = prefs?.taskDue !== false;
@@ -105,7 +105,7 @@ export function TasksWidget({ handle,  onViewAll, prefs }) {
   );
 }
 
-export function NotesWidget({ handle,  onViewAll, prefs }) {
+function NotesWidget({ handle,  onViewAll, prefs }) {
   const showDate = prefs?.noteDate !== false;
   const showFolder = prefs?.noteFolder !== false;
   const max = parseInt(prefs?.noteMax || '6', 10);
@@ -119,7 +119,7 @@ export function NotesWidget({ handle,  onViewAll, prefs }) {
 }
 
 /* the person's notifications (they are not in the header): the session's, unread first marked; Mark all read */
-export function NotificationsWidget({ handle }) {
+function NotificationsWidget({ handle }) {
   const { notifications, setNotifications } = useSession();
   const unread = notifications.filter((n) => n.unread).length;
   return (
