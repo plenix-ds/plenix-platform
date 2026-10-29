@@ -53,6 +53,7 @@ import { useOptionalToast } from '../ReviewFlow/ReviewFlow.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import { createTranslator } from '../../providers/LocaleProvider.jsx';
 import { formatLocale } from '../../utils/format.js';
+import EdCopyIcon from 'plenix-platform/icons/plenix/ed-copy';
 
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const q = (x) => '“' + x + '”';
@@ -108,7 +109,7 @@ export function DuplicateAction({ name = '', noun, variant = 'copy', taken = [],
     close();
   };
 
-  const own = trigger === false ? null : trigger || <Button icon="ed-copy" size={size}>{t.duplicate}</Button>;
+  const own = trigger === false ? null : trigger || <Button icon={EdCopyIcon} size={size}>{t.duplicate}</Button>;
   const start = own ? React.cloneElement(own, { onClick: (e) => { if (own.props.onClick) own.props.onClick(e); if (!e.defaultPrevented) begin(); } }) : null;
   return (
     <>
@@ -121,7 +122,7 @@ export function DuplicateAction({ name = '', noun, variant = 'copy', taken = [],
               <Input ref={input} value={value} onChange={(e) => { setValue(e.target.value); if (error) setError(''); }} />
             </Field>
             <p className="plx-duplicate-action__source">
-              <span className="plx-duplicate-action__icon" aria-hidden="true"><Icon name="ed-copy" /></span>
+              <span className="plx-duplicate-action__icon" aria-hidden="true"><Icon name={EdCopyIcon} /></span>
               <span className="plx-duplicate-action__from">{fill(t.from, { name: q(name) }) + (source ? ' · ' + source : '')}</span>
             </p>
             {options.length ? (

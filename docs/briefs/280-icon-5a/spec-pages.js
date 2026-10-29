@@ -6,9 +6,11 @@
 const fs = require('fs');
 const [mode, a, b] = process.argv.slice(2), only = process.argv.slice(4).concat(mode === 'snapshot' && b ? [b] : []);
 const APPS = ['dashboard', 'projects', 'messages', 'contacts', 'calendar', 'tasks', 'notes', 'bookmarks', 'files', 'settings'];
-// masked: the clock; ECharts' own instance number (a timestamp); Files' drag instructions, added at a moment that varies
+// masked: the clock; ECharts' own instance number (a timestamp); Files' drag instructions, added at a moment that varies;
+// an Image's loading state
 const norm = (html) => html.replace(/\b\d{1,2}:\d{2}(:\d{2})?(\s?[AP]M)?\b/g, 'TIME').replace(/_echarts_instance_="ec_\d+"/g, '_echarts_instance_="ec"')
-  .replace(/<div id="plx-dnd-instructions-\d+" class="plx-visually-hidden">[^<]*<\/div>/g, '');
+  .replace(/<div id="plx-dnd-instructions-\d+" class="plx-visually-hidden">[^<]*<\/div>/g, '')
+  .replace(/\bis-(loading|loaded)\b/g, 'is-load');   // an Image's loading state, which depends on when the picture arrives
 
 if (mode === 'compare') {
   const A = JSON.parse(fs.readFileSync(a, 'utf8')), B = JSON.parse(fs.readFileSync(b, 'utf8'));

@@ -23,6 +23,10 @@ import { Text } from '../../components/Text/Text.jsx';
 import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
 import { VisuallyHidden } from '../../components/VisuallyHidden/VisuallyHidden.jsx';
 import { CommandBarButton, useCommandBar } from './CommandBar.jsx';
+import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
+import ChevronUpIcon from 'plenix-platform/icons/plenix/chevron-up';
+import CircleInfoIcon from 'plenix-platform/icons/plenix/circle-info';
+import DragIcon from 'plenix-platform/icons/plenix/drag';
 
 export const toggle = (list, v) => (list.indexOf(v) >= 0 ? list.filter((x) => x !== v) : list.concat(v));
 export const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
@@ -51,7 +55,7 @@ export function PanelHead({ title, info, infoLabel, sub, actions }) {
       <div className="plx-find-panel__title-row">
         <span className="plx-find-panel__title">
           <Text variant="heading" as="span">{title}</Text>
-          {info ? <Tooltip content={info}><Button size="xs" variant="ghost" icon="circle-info" iconOnly label={infoLabel || title} /></Tooltip> : null}
+          {info ? <Tooltip content={info}><Button size="xs" variant="ghost" icon={CircleInfoIcon} iconOnly label={infoLabel || title} /></Tooltip> : null}
         </span>
         {actions ? <span className="plx-find-panel__actions">{actions}</span> : null}
       </div>
@@ -110,9 +114,9 @@ export function useReorder(items, setItems, nameOf, t) {
     onDrop: (e) => { e.preventDefault(); e.stopPropagation(); const from = drag.current; drag.current = null; setDragging(-1); if (from !== null && from !== i) move(from, i); },
   });
   const handle = (i, name) => (
-    <Menu label={fill(t.reorder, { name })} placement="bottom-end" trigger={<Button variant="ghost" icon="drag" iconOnly label={fill(t.reorder, { name })} className="plx-find-panel__handle" />}>
-      <MenuItem icon="chevron-up" disabled={i === 0} onSelect={() => move(i, i - 1, true)}>{t.moveUp}</MenuItem>
-      <MenuItem icon="chevron-down" disabled={i === items.length - 1} onSelect={() => move(i, i + 1, true)}>{t.moveDown}</MenuItem>
+    <Menu label={fill(t.reorder, { name })} placement="bottom-end" trigger={<Button variant="ghost" icon={DragIcon} iconOnly label={fill(t.reorder, { name })} className="plx-find-panel__handle" />}>
+      <MenuItem icon={ChevronUpIcon} disabled={i === 0} onSelect={() => move(i, i - 1, true)}>{t.moveUp}</MenuItem>
+      <MenuItem icon={ChevronDownIcon} disabled={i === items.length - 1} onSelect={() => move(i, i + 1, true)}>{t.moveDown}</MenuItem>
     </Menu>
   );
   const status = <VisuallyHidden role="status" aria-live="polite">{msg}</VisuallyHidden>;
