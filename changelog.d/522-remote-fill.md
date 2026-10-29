@@ -1,0 +1,2 @@
+### Added
+- DataGrid: rows from a server now load as you scroll (#522, owner decision). A grid with `fetchRows` in the default fill mode asks for the next page by itself when the scroll comes near the end. It shows a "Loading records" row at the end while the page arrives, and a row with Retry if the page fails; the rows already shown stay. It stops at the total. There are no page controls and no Load more button. A sort, filter or search starts again from the first page. `mode="pages"` and `mode="load-more"` are unchanged.
