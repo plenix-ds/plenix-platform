@@ -42,7 +42,7 @@
        to the limits. aria-valuemin and -valuemax are the limits it can reach (within GRID_MIN to GRID_BOX_MAX, a pane's
        to GRID_PANE_MAX), so a maxWidth past 1600 reports 1600.
      No size menu (owner, 2026-10-16: removed, also for touch): the edge is dragged, or moved with the keyboard.
-     PanelSplitter: drag (one grid line at a time, within min and max), or the arrow keys (--plx-sys-shell-splitter-step),
+     PanelSplitter: drag (one grid line at a time, within min and max and never past --plx-sys-shell-pane-window-share, 90%, of the window), or the arrow keys (--plx-sys-shell-splitter-step),
        Home and End; double-click or Enter collapses the area when it can collapse (onCollapse: the navigation pane folds
        to its rail).
    Notes:
@@ -55,8 +55,9 @@
 import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { arrowStep, isRtl } from '../../utils/direction.js';
-import { SIZE_STEPS, GRID_MIN, GRID_PANE_MAX, GRID_BOX_MAX } from '../../utils/sizeSteps.js';
+import { SIZE_STEPS, GRID_MIN, GRID_BOX_MAX } from '../../utils/sizeSteps.js';
 import { gridStep, gridWithin } from '../../utils/grid.js';
+import { paneMax } from '../../utils/paneLimit.js';
 import { resizeScale } from './resize-scale.js';
 import { useFloating } from '../../utils/floating.js';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
@@ -71,12 +72,13 @@ export function PanelSplitter({ label, value, min, max, onChange, onCollapse, ed
   const dir = edge === 'end' ? 1 : -1;
   // a width is always on the 4px grid (owner, 2026-10-26: smooth, then "the nearest grid line"), within the limits
   // (and within the grid lines the stylesheet draws a pane at: GRID_MIN to GRID_PANE_MAX)
-  const clamp = (w) => gridWithin(w, Math.max(min, GRID_MIN), Math.min(max(), GRID_PANE_MAX));
+  // and within the window's share (--plx-sys-shell-pane-window-share: never more than 90% of the window)
+  const clamp = (w, el) => { const lo = Math.max(min, GRID_MIN); return gridWithin(w, lo, paneMax(max(), lo, el)); };
   const onPointerDown = (e) => {
     if (e.button !== 0) return;
     e.preventDefault();
     const x0 = e.clientX, w0 = value, flip = isRtl(e.currentTarget) ? -1 : 1;
-    const move = (ev) => onChange(clamp(w0 + (ev.clientX - x0) * dir * flip));
+    const move = (ev) => onChange(clamp(w0 + (ev.clientX - x0) * dir * flip, e.currentTarget));
     const up = () => { document.removeEventListener('pointermove', move); document.removeEventListener('pointerup', up); document.documentElement.classList.remove('is-resizing-columns'); };
     document.addEventListener('pointermove', move); document.addEventListener('pointerup', up); document.documentElement.classList.add('is-resizing-columns');
   };
