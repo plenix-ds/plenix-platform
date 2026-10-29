@@ -34,7 +34,7 @@ import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { useLayer } from '../../utils/layer.js';
 import { Button } from '../../components/Button/Button.jsx';
-import { Icon } from '../../components/Icon/Icon.jsx';
+import { Icon, asIcon as iconElement } from '../../components/Icon/Icon.jsx';
 import { Sheet } from '../../components/Sheet/Sheet.jsx';
 import { ToolRail } from '../ToolRail/ToolRail.jsx';
 import { useMedia, below, PanelSplitter, tokenPx } from '../AppShell/AppShell.jsx';
@@ -78,7 +78,7 @@ export function SidePanel({ title, label, icon, open = true, onOpenChange, actio
       data-plx-width={docked && size ? gridWithin(size, tokenPx('--plx-comp-side-panel-width-min'), paneMax(tokenPx('--plx-comp-side-panel-width-max'), tokenPx('--plx-comp-side-panel-width-min'))) + 'px' : undefined}>
       <div className="plx-side-panel__header">
         {onOpenChange ? <Button size="sm" variant="ghost" iconOnly icon="panel-right-close" label={collapseLabel || 'Collapse panel'} onClick={() => set(false)} /> : null}
-        {icon ? <span className="plx-side-panel__icon" aria-hidden="true">{typeof icon === 'string' ? <Icon name={icon} /> : icon}</span> : null}
+        {icon ? <span className="plx-side-panel__icon" aria-hidden="true">{iconElement(icon)}</span> : null}
         <h2 className="plx-side-panel__title">{title}</h2>
         {actions}
       </div>

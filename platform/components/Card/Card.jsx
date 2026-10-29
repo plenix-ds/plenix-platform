@@ -105,7 +105,7 @@
 import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
-import { Icon } from '../Icon/Icon.jsx';
+import { Icon, asIcon as iconElement } from '../Icon/Icon.jsx';
 import { Badge } from '../Badge/Badge.jsx';
 import { formatNumber } from '../../utils/format.js';
 
@@ -126,7 +126,7 @@ export function Panel({ icon, title, description, actions, footer, surface = 'fl
       {title || actions || collapsible ? (
         <div className="plx-panel__header">
           <div className="plx-panel__heading">
-            {title ? <H level={headingLevel} id={id} className={cx('plx-panel__title', icon && 'plx-panel__title--icon')}>{icon ? <span className="plx-panel__icon" aria-hidden="true">{typeof icon === 'string' ? <Icon name={icon} /> : icon}</span> : null}{title}</H> : null}
+            {title ? <H level={headingLevel} id={id} className={cx('plx-panel__title', icon && 'plx-panel__title--icon')}>{icon ? <span className="plx-panel__icon" aria-hidden="true">{iconElement(icon)}</span> : null}{title}</H> : null}
             {description ? <p className="plx-panel__description">{description}</p> : null}
           </div>
           {actions ? <div className="plx-panel__actions">{actions}</div> : null}
@@ -162,7 +162,7 @@ export function Card({ icon, title, meta, actions, surface = 'flat', elevation =
     <article className={cx('plx-card', surface !== 'flat' && 'plx-card--' + surface, elevation !== 'outline' && 'plx-card--' + elevation, interactive && 'plx-card--interactive', selected && 'is-selected', accent && 'plx-card--accent', expandable && 'is-expandable', expandable && !open && 'is-collapsed', className)} data-plx-color={accent || undefined} {...rest} data-plx-layout={layout} data-plx-body-layout={bodyLayout} data-plx-title-wrap={titleWrap || undefined}>
       {title || expandable ? (
         <div className="plx-card__header">
-          {icon && title ? <span className="plx-card__icon" aria-hidden="true">{typeof icon === 'string' ? <Icon name={icon} /> : icon}</span> : null}
+          {icon && title ? <span className="plx-card__icon" aria-hidden="true">{iconElement(icon)}</span> : null}
           {title ? <H level={headingLevel} className="plx-card__title"><Opener href={href} onOpen={onOpen} current={selected} className="plx-card__opener">{title}</Opener></H> : null}
           {actions ? <div className="plx-card__actions">{actions}</div> : null}
           {expandable ? (
@@ -195,7 +195,7 @@ export function MediaCard({ src, alt = '', icon, title, meta, badge, aspect = '4
     <article className={cx('plx-media-card', (href || onOpen) && 'plx-media-card--interactive', selectable && 'plx-media-card--selectable', selected && 'is-selected', selecting && 'is-selecting', className)}
       onClick={click} onDoubleClick={dblClick} {...rest}>
       <div className="plx-media-card__media" data-plx-aspect={aspect}>
-        {src ? <img src={src} alt={alt} loading="lazy" decoding="async" className="plx-media-card__image" /> : <span className="plx-media-card__placeholder">{icon ? (typeof icon === 'string' ? <Icon name={icon} size="lg" /> : icon) : null}</span>}
+        {src ? <img src={src} alt={alt} loading="lazy" decoding="async" className="plx-media-card__image" /> : <span className="plx-media-card__placeholder">{icon ? iconElement(icon, { size: 'lg' }) : null}</span>}
         {badge ? <span className="plx-media-card__badge">{badge}</span> : null}
         {type ? <span className="plx-media-card__type"><Badge tone="neutral" size="sm" icon={typeIcon}>{type}</Badge></span> : null}
       </div>

@@ -102,7 +102,7 @@ import { devWarn } from '../../utils/devWarn.js';
 import { createPortal } from 'react-dom';
 import { cx } from '../../utils/cx.js';
 import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
-import { Icon, stateIcon } from '../../components/Icon/Icon.jsx';
+import { Icon, stateIcon, asIcon as iconElement } from '../../components/Icon/Icon.jsx';
 import { SurfaceContext } from '../../providers/Surface.jsx';
 import { BrandMark } from '../../components/Brand/Brand.jsx';
 import { Count } from '../../components/Count/Count.jsx';
@@ -296,7 +296,7 @@ const DENSITY_CHOICES = [{ value: 'compact', label: 'Compact' }, { value: 'stand
 // the application's action is an icon item like the header's others: its label is the tooltip and the accessible name
 // (owner, batch 272: "just an icon with tooltip"); a variant the application passes is no longer used
 AppHeader.Action = function AppHeaderAction({ icon, children, label, variant, ...rest }) {
-  return <AppHeader.Item icon={typeof icon === 'string' ? <Icon name={icon} /> : icon} label={label || (typeof children === 'string' ? children : undefined)} {...rest} />;
+  return <AppHeader.Item icon={iconElement(icon)} label={label || (typeof children === 'string' ? children : undefined)} {...rest} />;
 };
 
 

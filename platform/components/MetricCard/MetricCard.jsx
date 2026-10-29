@@ -80,7 +80,7 @@ import { cx } from '../../utils/cx.js';
 import { devWarn } from '../../utils/devWarn.js';
 import { useUid } from '../../utils/layer.js';
 import { formatPercent } from '../../utils/format.js';
-import { Icon } from '../Icon/Icon.jsx';
+import { Icon, asIcon as iconElement, isIconModule } from '../Icon/Icon.jsx';
 import { Badge } from '../Badge/Badge.jsx';
 import { Avatar } from '../Avatar/Avatar.jsx';
 import { IconTile } from '../IconTile/IconTile.jsx';
@@ -317,7 +317,7 @@ export function MetricCard({ type = 'value', layout = 'stacked', appearance = 'p
   const hue = HUES.indexOf(color) >= 0 ? color : 'blue';
 
   const titleText = href ? <a className="plx-metric-card__link" href={href}>{name}</a> : name;
-  const iconEl = icon ? <span className="plx-metric-card__icon" aria-hidden="true">{typeof icon === 'string' ? <Icon name={icon} /> : icon}</span> : null;
+  const iconEl = icon ? <span className="plx-metric-card__icon" aria-hidden="true">{iconElement(icon)}</span> : null;
   const moreLabel = fill(t.more, { title: typeof name === 'string' ? name : '' });
   const actions = (info || filter || menu) ? (
     <div className="plx-metric-card__actions">
@@ -338,7 +338,7 @@ export function MetricCard({ type = 'value', layout = 'stacked', appearance = 'p
   if (layout === 'tile' || layout === 'icon-start') {
     return (
       <article {...rootProps}>
-        {layout === 'icon-start' && icon ? <IconTile icon={typeof icon === 'string' ? icon : undefined} hue={hue} size="lg" /> : null}
+        {layout === 'icon-start' && icon ? <IconTile icon={typeof icon === 'string' || isIconModule(icon) ? icon : undefined} hue={hue} size="lg" /> : null}
         <div className="plx-metric-card__compact">
           <span className={cx('plx-metric-card__value', empty && 'plx-metric-card__value--empty')}>{empty || value === undefined ? '–' : value}</span>
           <H id={id} className="plx-metric-card__title">{titleText}</H>
