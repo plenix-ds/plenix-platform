@@ -61,7 +61,7 @@ const launch = async () => {
   let browser, last;
   for (let attempt = 0; attempt < 3 && !browser; attempt++) {
     try { browser = await puppeteer.launch({ executablePath: chromePath(), headless: true, protocolTimeout: 180000, timeout: 90000, args: ['--no-sandbox', '--disable-dev-shm-usage', '--allow-file-access-from-files'] }); }
-    catch (e) { last = e; if (!/WS endpoint|Timed out/i.test(String(e && e.message))) throw e; }
+    catch (e) { last = e; if (!/WS endpoint|Timed out/i.test(String(e && e.message))) throw e; console.log('Chrome did not start (attempt ' + (attempt + 1) + ' of 3): ' + String(e.message).split('\n')[0]); }
   }
   if (!browser) throw last;
   const newPage = browser.newPage.bind(browser);
