@@ -1,6 +1,8 @@
 /* Command bar study (owner review, 2026-10-14): the bar's looks and the parts Plenix does not have yet (a floating bar and
    a ghost danger button), built only from existing tokens. A study stylesheet, not a Platform part: what the
-   owner chooses becomes a CommandBar pattern with its own tokens. */
+   owner chooses becomes a CommandBar pattern with its own tokens.
+   History (#557): kept as reviewed. The glyph settings it reads (--plx-comp-icon-glyph-*) leave icon.css at icon stage
+   5c-2, and its icons then draw nothing. */
 
 /* the bar: white and framed (the default look) */
 .study-bar{align-items:center;background-color:var(--plx-sys-surface-default);min-block-size:calc(var(--plx-sys-control-height-toolbar) + 2 * var(--plx-ref-space-8px));padding-block:var(--plx-ref-space-8px);border-color:var(--plx-sys-border-default);border-radius:var(--plx-sys-radius-control-6px);border-style:solid;border-width:var(--plx-sys-border-width-thin);box-sizing:border-box;display:flex;gap:var(--plx-ref-space-4px);padding-inline:var(--plx-ref-space-8px);}

@@ -142,7 +142,7 @@ export { ProgressCircle } from './components/ProgressCircle/ProgressCircle.jsx';
 export { QRCode } from './components/QRCode/QRCode.jsx';
 export { qrEncode } from './utils/qr.js';
 export { VersionLabel } from './components/VersionLabel/VersionLabel.jsx';
-export { StatusIcon, resolveIcon, setIconLibrary, registerIcons, setDefaultIconLibrary } from './components/Icon/Icon.jsx';
+export { StatusIcon, resolveIcon, setIconLibrary, registerIcons, setDefaultIconLibrary, iconMarkup } from './components/Icon/Icon.jsx';
 export { Banner } from './components/Banner/Banner.jsx';
 export { Scrim } from './components/Scrim/Scrim.jsx';
 export { LoadingOverlay } from './components/LoadingOverlay/LoadingOverlay.jsx';

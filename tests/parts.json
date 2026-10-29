@@ -297,6 +297,10 @@
     {
      "part": "Generator",
      "checks": 4
+    },
+    {
+     "part": "Page icon files",
+     "checks": 1
     }
    ],
    "checksWithoutPart": 0,

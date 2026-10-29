@@ -31,7 +31,9 @@
    run time.
      PlenixStyleAudit.audit()   -> [{ kind, element, detail }] for the current document
      PlenixStyleAudit.report()  -> the same, printed to the console
-   Findings also go to document.documentElement's data-plx-style-findings (a count), which the page checks read. */
+   Findings also go to document.documentElement's data-plx-style-findings (a count), which the page checks read.
+   It also warns (console.warn, once per name; not a finding) about a deprecated bare icon class: plx-icon plx-icon--<name>
+   written without the Icon component, which stops drawing at icon stage 5c-2 (issue 557). */
 (function () {
   'use strict';
   var ON_THIS_MACHINE = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
@@ -126,10 +128,24 @@
     document.documentElement.setAttribute('data-plx-style-findings', String(total));
   }
   function report() { contexts = new WeakMap(); var f = audit(); f.forEach(function (x) { console.error('[Plenix style audit] ' + x.kind + ' on ' + x.element + ': ' + x.detail); }); return f; }
+  // a bare icon class (plx-icon plx-icon--<name> written without the Icon component: no plx-icon--inline) is deprecated
+  // (owner, issue 277 Q3; issue 557): it draws from the stylesheet only until stage 5c-2. A warning, once per name, not a finding
+  var bareWarned = new Set();
+  function bareIcons(scope) {
+    var list = scope.querySelectorAll ? [].slice.call(scope.querySelectorAll('.plx-icon:not(.plx-icon--inline)')) : [];
+    if (scope.nodeType === 1 && scope.matches && scope.matches('.plx-icon:not(.plx-icon--inline)')) list.unshift(scope);
+    list.forEach(function (el) {
+      var name = ((typeof el.className === 'string' ? el.className : '').match(/\bplx-icon--([a-z0-9_-]+)/) || [])[1];
+      if (!name || /^size-|^(filled|outline|mirrored)$/.test(name) || bareWarned.has(name)) return;
+      bareWarned.add(name);
+      console.warn('[Plenix] the bare icon class plx-icon--' + name + ' on ' + describe(el) + ' is retired and stops drawing at icon stage 5c-2 (issue 557): use <Icon name="' + name + '"> or, where the page writes HTML, Plenix.iconMarkup(\'' + name + '\')');
+    });
+  }
   window.PlenixStyleAudit = Object.freeze({ audit: function () { contexts = new WeakMap(); return audit(); }, report: report });
 
   if (!ON_THIS_MACHINE) return;
   function start() {
+    bareIcons(document);
     audit().forEach(function (f) { flag([f]); });
     document.documentElement.setAttribute('data-plx-style-findings', String(total));
     var pending = new Set(), frame = 0;
@@ -144,6 +160,7 @@
         nodes.forEach(function (n) {
           if (!n.isConnected) return;
           for (var parent = n.parentElement; parent; parent = parent.parentElement) if (pendingParents.has(parent)) return;
+          bareIcons(n);
           audit(n).forEach(function (f) { flag([f], n); });
         });
       });

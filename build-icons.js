@@ -5,9 +5,9 @@
 // up to 20px), <symbol>-24.svg and <symbol>-24-fill.svg optical size 24 (24px icons). map.json names the symbol behind every
 // Plenix icon name. The stylesheet carries every file as a data: URI, so an icon (outline or filled) never waits for a
 // download when it first appears or when its row is selected.
-// It also writes platform/components/Icon/glyphs.js: every symbol's four path drawings and the name of each Plenix icon,
-// so the Icon component draws an inline SVG (owner, 2026-10-23: a mask icon cost ~0.6 ms to paint, an inline path
-// ~200 times less). A class name alone (no component, or a Material name from icons-all.css) still draws the mask.
+// It also writes platform/components/Icon/glyphs.js: the name of each Plenix icon, its symbol and the mirrored symbols
+// (names only; the Icon component draws an inline SVG from a module or a fetched file, #557). A class name alone (no
+// component) still draws the mask from the stylesheet until stage 5c-2 removes it (deprecated: the owner, #277 Q3).
 const fs = require('fs');
 const path = require('path');
 const layout = require('./platform/icons/layout.js');   // the icon asset layout (#279): icons/<set>/<name>.svg|.js
@@ -121,20 +121,22 @@ module.exports = function buildIcons(root) {
   fs.writeFileSync(path.join(root, 'platform', 'components', 'Icon', 'glyphs.js'),
     '/* Plenix · Icon glyphs\n' +
     '   Summary: GENERATED FILE — DO NOT EDIT. Written by build-icons.js from platform/icons/ (Material Symbols Sharp, weight\n' +
-    '     300, used exactly as published): the names the Icon component resolves. The drawings themselves are in icon.css\n' +
-    '     (one copy: the component reads a Plenix symbol\'s files from its --plx-comp-icon-glyph-* data URIs).\n' +
-    '   Usage: import { SYMBOLS, NAMES, LIBRARY, LIBRARY_COMMIT } from \'./glyphs.js\'   (Icon.jsx only)\n' +
+    '     300, used exactly as published): the names the Icon component resolves. The drawings are modules (imported, or\n' +
+    '     registered by an icon file: plenix-icons-<site>.js), else the files of the asset layout, fetched once (issue 557).\n' +
+    '   Usage: import { SYMBOLS, NAMES, MIRRORED, LIBRARY, LIBRARY_COMMIT } from \'./glyphs.js\'   (Icon.jsx only)\n' +
     '   Props:\n' +
-    '     SYMBOLS: the Plenix set\'s symbols, space separated (their drawings are in icon.css)\n' +
+    '     SYMBOLS: the Plenix set\'s symbols, space separated\n' +
     '     NAMES: each Plenix icon name (and its underscore alias) -> [symbol, 1 when its outline is the fill version]\n' +
+    '     MIRRORED: the symbols that point along the reading direction (mirrored in right to left), space separated\n' +
     '     LIBRARY: the whole library\'s symbol names, space separated (their files load on demand)\n' +
     '     LIBRARY_COMMIT: the library\'s commit (the CDN keeps its files under /cdn/material/<commit>/) */\n' +
     'export const SYMBOLS = ' + JSON.stringify(Object.keys(paths).sort().join(' ')) + ';\n' +
     'export const NAMES = ' + JSON.stringify(named) + ';\n' +
+    'export const MIRRORED = ' + JSON.stringify(layout.MIRROR.slice().sort().join(' ')) + ';\n' +
     'export const LIBRARY = ' + JSON.stringify(library.join(' ')) + ';\n' +
     'export const LIBRARY_COMMIT = ' + JSON.stringify(String(M._commit).slice(0, 12)) + ';\n');
   // the asset layout of the Plenix set (#279, stage 1): platform/dist/icons/plenix/<name>.svg|.js and index.json, generated
-  // and not committed; no consumer reads it yet (icon.css and glyphs.js above still draw every icon)
+  // and not committed; the Icon component fetches a Plenix name's files from it when no module is registered (#557)
   const assets = layout.writeSet(root, 'plenix', path.join(root, 'platform', 'dist', 'icons', 'plenix'));
   return { symbols: symbols.length, names: names.length, bytes: Buffer.byteLength(css), assets };
 };

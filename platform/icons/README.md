@@ -139,5 +139,29 @@ A site that loads Plenix from the CDN (`plenix.js`, `window.Plenix`) registers t
   - **Unknown names and run-time names:** an unknown name, or a name built at run time (`'size-' + s`), is reported with its file and line, and the generator stops without writing (exit 1). List a run-time name's possible values in a `/* plx-icons: … */` comment on its line, or pass `--allow-unknown` to write the file without those names.
 - **Safe:** a file holds data only, as `{ name, set, symbol, fillOutline, mirrored, drawings }` objects passed to `registerIcons`. The Icon component checks every drawing with the allow-list (#285) and draws it as React props, never as HTML. A path used by several icons is written once.
 - **Offline:** the file loads nothing else, so it works offline and from `file://`. Loaded before `plenix.js`, it warns once and registers nothing.
-- **`<Icon name>` keeps working without either file:** nothing is removed from `icon.css` in this stage. Stage 5c moves the drawings out of the stylesheet; from then on a site needs one of the two files.
+- **`<Icon name>` keeps working without either file:** from stage 5c a Plenix name with no module loads its files once from the asset layout (online only). Load one of the two files for production and for `file://`.
 - **check-system:** fails when `platform/dist/plenix-icons-plenix.js` differs from what `map.json` generates. The test is `tests/site-icons.test.js`.
+
+## Icons come only from modules (#557, stage 5c)
+
+- **The resolver's order for a name:**
+  1. a registered or imported module
+  2. a Plenix name with no module: its four files, loaded once from `icons/plenix/` beside `plenix.js` or `plenix.css` (the CDN's `/cdn/<version>/icons/plenix/`, a self-hosted archive), or `platform/dist/icons/plenix/` in this repository; development warns once that production should load an icon file, import or register it
+  3. any other Material name: its files from the library, as before
+  4. an unknown name: nothing, with a warning
+- **Never from the stylesheet:** the Icon component no longer reads `--plx-comp-icon-glyph-*`. This also ends the first-paint empty icon (an icon drawn before the stylesheet arrived stayed empty).
+- **This repository's pages:** `node build-app.js` writes each page's icon file, which loads after `platform.js`:
+  - each suite application: `<app>/plenix-icons-<app>.js`, from its own source and `suite/`
+  - the Asset Manager: `dam/plenix-icons-dam.js`, for its four pages
+  - the design spec: the compatibility file
+  - the login service: `services/login/icons.js`, its two icons as markup for the server-rendered page
+  - check-system fails when any of them differs from its source.
+- **Mirroring:** every icon that points along the reading direction carries `plx-icon--mirrored`, which mirrors it in right to left. A module is marked by its `mirrored` flag, a name by its symbol (`glyphs.js`, `MIRRORED`).
+- **`iconMarkup(icon, { size, filled, label, className })`:** the component's markup as an HTML string, for code that writes HTML.
+  - The drawing comes only from a module (imported, or registered by name), through the allow-list; every value is escaped.
+  - A name with no module gives the span without a drawing, and development warns once.
+- **Retired (the owner, #277 Q3 and Q5; the deprecation notice is in the CDN README and the changelog):**
+  - the bare classes (`plx-icon plx-icon--<name>` without the component): the style audit warns about each name in development
+  - the glyph settings (`--plx-comp-icon-glyph-*`) and their per-density aliases
+  - `icons-all.css`
+  - Stage 5c-2 removes them from `icon.css` and the CDN.

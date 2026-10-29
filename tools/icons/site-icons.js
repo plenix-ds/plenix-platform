@@ -42,13 +42,15 @@ const CLASS = /\bplx-icon--([a-z0-9][a-z0-9_-]*)/g;
 // not icon names: the Icon component's modifiers (sizes, fill, layout)
 const MODIFIERS = /^(size-(xs|sm|md|lg|xl)|filled|outline|inline|mirrored)$/;
 
+// a generated file (a bundle, an icon file: "GENERATED FILE" in its first lines) is not source: its source is read instead
+const generated = (p) => { const fd = fs.openSync(p, 'r'), b = Buffer.alloc(400); const n = fs.readSync(fd, b, 0, 400, 0); fs.closeSync(fd); return /GENERATED FILE/.test(b.toString('utf8', 0, n)); };
 // every source file under the inputs, in name order
 function sourceFiles(inputs) {
   const out = [];
   const walk = (p) => {
     const st = fs.statSync(p);
     if (st.isDirectory()) { for (const e of fs.readdirSync(p).sort()) if (!SKIP.test(e)) walk(path.join(p, e)); return; }
-    if (SCRIPT.test(p) || PAGE.test(p)) out.push(p);
+    if ((SCRIPT.test(p) || PAGE.test(p)) && !generated(p)) out.push(p);
   };
   for (const i of inputs) walk(path.resolve(i));
   return out;
@@ -110,7 +112,7 @@ function resolver(root) {
 }
 
 // the classic script that registers the modules: a path used more than once is written once, as a shared constant
-function fileText(site, modules, source) {
+function fileText(site, modules, source, build) {
   const count = new Map();
   for (const m of modules) for (const size of [20, 24]) for (const k of ['outline', 'fill']) { const d = m.drawings[size][k].d; count.set(d, (count.get(d) || 0) + 1); }
   const shared = [...count.keys()].filter((d) => count.get(d) > 1), index = new Map(shared.map((d, i) => [d, i]));
@@ -124,7 +126,7 @@ function fileText(site, modules, source) {
   });
   const sets = [...new Set(modules.map((m) => m.set))].sort();
   return '/*\n * ' + HEADER + '\n * Plenix icons for ' + site + ': ' + modules.length + ' icon' + (modules.length === 1 ? '' : 's') + ' (' + sets.join(', ') + '), registered with Plenix.registerIcons.\n' +
-    ' * Source: ' + source + '\n * Build: ' + (site === 'plenix' ? 'node build-app.js (tools/icons/site-icons.js)' : 'node tools/icons/site-icons.js ' + site + ' <the site\'s source>') + '\n' +
+    ' * Source: ' + source + '\n * Build: ' + (build || (site === 'plenix' ? 'node build-app.js (tools/icons/site-icons.js)' : 'node tools/icons/site-icons.js ' + site + ' <the site\'s source>')) + '\n' +
     ' * Load it after plenix.js. The drawings are data (paths), checked by the Icon component before they are drawn.\n */\n' +
     '(function () {\n  \'use strict\';\n' +
     '  var P = typeof window !== \'undefined\' ? window.Plenix : undefined;\n' +
@@ -134,7 +136,8 @@ function fileText(site, modules, source) {
 }
 
 // a site's file from its source: { text, icons, unknown: [at "name"], unresolved, unreadable, found }
-function siteFile(root, site, inputs, base) {
+// opts: { source, build } for the header (default: the generator's own command)
+function siteFile(root, site, inputs, base, opts = {}) {
   const { names, unresolved, unreadable } = collect(inputs, base || process.cwd());
   const resolve = resolver(root), chosen = new Map(), unknown = [];
   for (const [raw, at] of [...names.entries()].sort((a, b) => (a[0] < b[0] ? -1 : 1))) {
@@ -143,8 +146,58 @@ function siteFile(root, site, inputs, base) {
     chosen.set(r.set + ':' + r.entry.name, r);
   }
   const modules = [...chosen.values()].sort((a, b) => (a.set + a.entry.name < b.set + b.entry.name ? -1 : 1)).map((r) => layout.moduleObject(r.set, r.entry));
-  const source = 'the source of ' + site + ' (' + inputs.length + ' input' + (inputs.length === 1 ? '' : 's') + ')';
-  return { text: fileText(site, modules, source), icons: modules.length, unknown, unresolved, unreadable, found: names.size };
+  const source = opts.source || 'the source of ' + site + ' (' + inputs.length + ' input' + (inputs.length === 1 ? '' : 's') + ')';
+  return { text: fileText(site, modules, source, opts.build), icons: modules.length, unknown, unresolved, unreadable, found: names.size };
+}
+
+// this repository's pages (#557): each suite application and the Asset Manager loads its own icon file after platform.js,
+// written by build-app.js from its source (the suite's shared source with each application); the design spec, which shows
+// every icon, loads the compatibility file
+const APPS = ['dashboard', 'projects', 'messages', 'contacts', 'calendar', 'tasks', 'notes', 'bookmarks', 'files', 'settings'];
+const PAGES = APPS.map((app) => ({ site: app, inputs: [app, 'suite'], out: app + '/plenix-icons-' + app + '.js' }))
+  .concat([{ site: 'dam', inputs: ['dam/app', 'dam/index.html', 'dam/settings-system.html', 'dam/settings-myaccount.html', 'dam/image-editor.html'], out: 'dam/plenix-icons-dam.js' }]);
+// writes (or with check, compares) every page's icon file; a name that is not a Plenix or Material icon (the suite's
+// capability keys in plenix-app-data.js, which no Icon draws) is counted, not fatal; a name built at run time stops the build
+function buildPages(root, opts = {}) {
+  const stale = [], unknown = [], unresolved = [];
+  let icons = 0;
+  for (const p of PAGES) {
+    const r = siteFile(root, p.site, p.inputs.map((i) => path.join(root, i)), root, { source: p.inputs.join(', '), build: 'node build-app.js (tools/icons/site-icons.js)' });
+    if (r.unreadable.length) throw new Error('icon file for ' + p.site + ': cannot read ' + r.unreadable.join('; '));
+    unresolved.push(...r.unresolved);
+    for (const u of r.unknown) if (!unknown.includes(u)) unknown.push(u);
+    icons += r.icons;
+    const file = path.join(root, p.out), now = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : null;
+    if (now !== r.text) { stale.push(p.out); if (!opts.check) fs.writeFileSync(file, r.text); }
+  }
+  if (unresolved.length) throw new Error('icon names built at run time (list them in a /* plx-icons: … */ comment): ' + [...new Set(unresolved)].join(', '));
+  // the login service renders its page on the server, without the Platform's script: its icons as markup (#557)
+  const login = serviceMarkup(root, LOGIN.names, LOGIN.out);
+  const file = path.join(root, LOGIN.out), now = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : null;
+  if (now !== login) { stale.push(LOGIN.out); if (!opts.check) fs.writeFileSync(file, login); }
+  return { pages: PAGES.length + 1, icons: icons + LOGIN.names.length, unknown, stale, changed: !!stale.length };
+}
+
+// an icon module as the markup the Icon component renders with no size and no fill (iconMarkup in Icon.jsx writes the
+// same in the browser): the span, then one svg holding the 20 and 24 outlines when they share a box
+const ESCAPE = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ESCAPE[c]);
+function markupOf(m) {
+  const k = m.fillOutline ? 'fill' : 'outline', glyphs = [[m.drawings[20][k], 20], [m.drawings[24][k], 24]];
+  const attrs = (g) => ' d="' + esc(g.d) + '"' + (g.transform ? ' transform="' + esc(g.transform) + '"' : '') + (g.fillRule ? ' fill-rule="' + esc(g.fillRule) + '"' : '') + (g.clipRule ? ' clip-rule="' + esc(g.clipRule) + '"' : '');
+  const svg = glyphs[0][0].viewBox === glyphs[1][0].viewBox
+    ? '<svg class="plx-icon__svg plx-icon__svg--shared" viewBox="' + esc(glyphs[0][0].viewBox) + '" aria-hidden="true" focusable="false">' + glyphs.map(([g, o]) => '<path class="plx-icon__glyph--' + o + '"' + attrs(g) + '></path>').join('') + '</svg>'
+    : glyphs.map(([g, o]) => '<svg class="plx-icon__svg plx-icon__glyph--' + o + '" viewBox="' + esc(g.viewBox) + '" aria-hidden="true" focusable="false"><path' + attrs(g) + '></path></svg>').join('');
+  return '<span class="plx-icon plx-icon--' + m.name + ' plx-icon--inline' + (m.mirrored ? ' plx-icon--mirrored' : '') + '" aria-hidden="true">' + svg + '</span>';
+}
+const LOGIN = { names: ['alert', 'info-circle'], out: 'services/login/icons.js' };
+function serviceMarkup(root, names, out) {
+  const byName = new Map(layout.plenixEntries(root).map((e) => [e.name, e]));
+  const table = {};
+  for (const n of names) { if (!byName.has(n)) throw new Error(out + ': no Plenix icon is named ' + n); table[n] = markupOf(layout.moduleObject('plenix', byName.get(n))); }
+  return '/*\n * ' + HEADER + '\n * The login service\'s icons, as the markup the Icon component renders (server.js writes them into its page).\n' +
+    ' * Source: platform/icons (map.json): ' + names.join(', ') + '\n * Build: node build-app.js (tools/icons/site-icons.js)\n */\n' +
+    "'use strict';\nmodule.exports = " + JSON.stringify(table, null, 1) + ';\n';
 }
 
 // the compatibility file: every Plenix icon (map.json), written into platform/dist/ by build-app.js; check: compare only
@@ -157,7 +210,7 @@ function buildCompat(root, opts = {}) {
   return { file: COMPAT, icons: modules.length, bytes: Buffer.byteLength(text), stale, changed: !!stale.length };
 }
 
-module.exports = { collect, siteFile, buildCompat, fileText, inlineScripts, COMPAT, HEADER };
+module.exports = { collect, siteFile, buildCompat, buildPages, markupOf, PAGES, LOGIN, fileText, inlineScripts, COMPAT, HEADER };
 
 if (require.main === module) {
   const args = process.argv.slice(2), flags = new Set(args.filter((a) => a === '--allow-unknown'));

@@ -29,7 +29,8 @@ const SUB = { '.plx-button__icon': ['block-size', 'inline-size', 'background-col
   for (const v of VARIANTS) for (const s of SIZES) for (const st of STATES) for (const f of FORMS) {
     const cls = ['plx-button', 'plx-button--' + v, s !== 'md' ? 'plx-button--size-' + s : '', f === 'icon-only' ? 'plx-button--icon-only' : '',
       st === 'hover' ? 'is-hover' : '', st === 'selected' ? 'is-selected' : '', st === 'focus' ? 'is-focus-visible' : '', st === 'loading' ? 'is-loading' : ''].filter(Boolean).join(' ');
-    const icon = f === 'icon' || f === 'icon-only' ? '<span class="plx-button__icon"><span class="plx-icon plx-icon--add"></span></span>' : '';
+    // the Icon component's span (plx-icon--inline: not a bare class, #557); the measured values are the slot's, not the drawing's
+    const icon = f === 'icon' || f === 'icon-only' ? '<span class="plx-button__icon"><span class="plx-icon plx-icon--add plx-icon--inline" aria-hidden="true"></span></span>' : '';
     html += '<button data-id="' + [v, s, st, f].join('|') + '" class="' + cls + '"' + (st === 'disabled' ? ' disabled' : '') + (st === 'expanded' ? ' aria-expanded="true"' : '') + '>'
       + icon + (f === 'icon-only' ? '' : '<span class="plx-button__label">Save</span>') + (f === 'caret' ? '<span class="' + ['plx-button__caret', (v === 'primary' || v === 'danger' || st === 'disabled' || st === 'loading') ? 'plx-button__caret--current' : '', st === 'expanded' ? 'plx-button__caret--open' : ''].filter(Boolean).join(' ') + '"></span>' : '') + '</button> ';
   }

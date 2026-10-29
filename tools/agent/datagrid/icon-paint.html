@@ -1,14 +1,22 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><title>Icon paint</title>
 <link rel="stylesheet" href="../../../platform/platform.css">
+<script src="../../../platform/vendor/react.production.min.js"></script>
+<script src="../../../platform/vendor/react-dom.production.min.js"></script>
+<script src="../../../platform/dist/platform.js"></script>
+<script src="../../../platform/dist/plenix-icons-plenix.js"></script>
+<script src="../../../platform/engines/plenix-engines.js"></script>
 </head><body><div id="root"></div>
 <script>
 // Icon paint probe (icon-paint.js drives it): adds N icons per step and reports how long the next frame took, so the
-// cost of painting freshly inserted mask icons can be compared between ways of giving them their picture.
+// cost of painting freshly inserted icons can be measured. The icons are the Icon component's inline svg, written with
+// Plenix.iconMarkup from the registered modules (#557: the bare mask class is retired).
 const names = ['calendar', 'field-number', 'person-female', 'person-male'];
+const marks = names.flatMap((n) => [Plenix.iconMarkup(n, { size: 'sm', filled: false }), Plenix.iconMarkup(n, { size: 'sm', filled: true })]);
 window.__add = (n) => {
   const root = document.getElementById('root'), box = document.createElement('div');
-  for (let i = 0; i < n; i += 1) { const s = document.createElement('span'); s.className = 'plx-icon plx-icon--' + names[i % 4] + ' plx-icon--size-sm ' + (i % 4 > 1 ? 'plx-icon--filled' : 'plx-icon--outline'); box.appendChild(s); }
+  const parts = []; for (let i = 0; i < n; i += 1) parts.push(marks[(i % 4) * 2 + (i % 4 > 1 ? 1 : 0)]);
+  box.innerHTML = parts.join('');
   root.replaceChildren(box);
 };
 </script></body></html>

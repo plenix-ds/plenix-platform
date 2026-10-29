@@ -15,7 +15,8 @@
 //               the token stylesheets are exactly what build-tokens.js writes from the token source (platform/tokens/*.tokens.json):
 //               tokens are edited in the JSON, never in the CSS (batch 158); the library parts' bundles (spec-parts.js,
 //               ds-sample-parts.css) and the library block of index.js and platform.css match their part files; the
-//               compatibility icon file (platform/dist/plenix-icons-plenix.js, #553) matches the icon set
+//               compatibility icon file (platform/dist/plenix-icons-plenix.js, #553) matches the icon set; each page's
+//               icon file (<app>/plenix-icons-<app>.js, dam/plenix-icons-dam.js, #557) matches its page's source
 //   audit       every page loads platform/dev/style-audit.js, which rejects inline styles and style blocks at run time
 //   page-layout an application never sets a page's layout mode (AppShell layout=, data-plx-layout): it says what the page is
 //               (<AppShell page="settings">) and the design system's layout standard (providers/pageLayouts.js) decides
@@ -90,6 +91,8 @@ for (const f of require('./build-standards.js')(ROOT, { check: true }).stale) ad
 for (const f of require('./build-tokens.js')(ROOT, { check: true }).stale) add('generated', path.join(ROOT, f), 0, f + ' differs from platform/tokens: edit the .tokens.json, then build');
 // generated: the compatibility icon file (every Plenix icon, #553) matches the icon set (platform/icons/map.json)
 for (const f of require('./tools/icons/site-icons.js').buildCompat(ROOT, { check: true }).stale) add('generated', path.join(ROOT, f), 0, f + ' differs from platform/icons: run node build-app.js, never edit the generated file');
+// generated: each page's icon file (#557) holds exactly the icons its source names
+for (const f of require('./tools/icons/site-icons.js').buildPages(ROOT, { check: true }).stale) add('generated', path.join(ROOT, f), 0, f + ' differs from the icons its page\'s source names: run node build-app.js, never edit the generated file');
 // generated: the library parts' bundles (build-spec-parts.js: spec-parts.js, ds-sample-parts.css) and the library block of
 // index.js and platform.css (build-exports.js) match their parts (platform/design-system/parts/, platform/exports/)
 for (const f of require('./build-spec-parts.js')(ROOT, { check: true }).stale) add('generated', path.join(ROOT, f), 0, f + ' differs from platform/design-system/parts: run node build-app.js');
