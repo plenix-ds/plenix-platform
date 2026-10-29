@@ -47,6 +47,14 @@ import { Table } from '../../components/Table/Table.jsx';
 import { useUid } from '../../utils/layer.js';
 import { fill, useCommercePage } from './shared.jsx';
 import { useStrings, createTranslator } from '../../providers/LocaleProvider.jsx';
+import CircleCheckIcon from 'plenix-platform/icons/plenix/circle-check';
+import CloseIcon from 'plenix-platform/icons/plenix/close';
+import DoNotDisturbIcon from 'plenix-platform/icons/plenix/do-not-disturb';
+import FilterOffIcon from 'plenix-platform/icons/plenix/filter-off';
+import PlusIcon from 'plenix-platform/icons/plenix/plus';
+import ScheduleIcon from 'plenix-platform/icons/plenix/schedule';
+import SearchIcon from 'plenix-platform/icons/plenix/search';
+import SettingsCategoriesIcon from 'plenix-platform/icons/plenix/settings-categories';
 
 
 // the products' fields, for the filter, the category quick filter and the sort (utils/fields.js)
@@ -100,12 +108,12 @@ export function ProductListing({ products = [], categories = [], title, descript
       <CommandBar label={typeof title === 'string' ? title : t.label} count={shown.length === 1 ? t.one : fill(t.count, { n: formatNumber(shown.length) })}
         find={<>{search ? <CommandBarSearch value={v.search} onChange={(e) => setSearch(e.target.value)} onClear={() => setSearch('')} placeholder={t.search} label={t.search} /> : null}
           <FilterPanel {...v.filterProps} />
-          {categories.length ? <QuickFilter label={t.category} icon="settings-categories" noun={t.category.toLowerCase()} options={categories} {...v.quickProps('category')} /> : null}</>}
+          {categories.length ? <QuickFilter label={t.category} icon={SettingsCategoriesIcon} noun={t.category.toLowerCase()} options={categories} {...v.quickProps('category')} /> : null}</>}
         view={<><SortPanel {...v.sortProps} /><ViewMenu value={v.view} onChange={v.setView} /></>} />
       {visible.length ? (list
         ? <ul className="plx-commerce__list" aria-label={typeof title === 'string' ? title : t.label}>{visible.map((p) => <li key={p.id} className="plx-commerce__list-item">{card(p, 'list')}</li>)}</ul>
         : <ContentGrid size={SIZES[v.view.size] || 'md'} label={typeof title === 'string' ? title : t.label}>{visible.map((p) => card(p, 'grid'))}</ContentGrid>)
-        : <EmptyState size="page" icon="search" title={t.empty} action={<Button icon="filter-off" onClick={clear}>{t.clear}</Button>}>{t.emptyText}</EmptyState>}
+        : <EmptyState size="page" icon={SearchIcon} title={t.empty} action={<Button icon={FilterOffIcon} onClick={clear}>{t.clear}</Button>}>{t.emptyText}</EmptyState>}
       {pages > 1 ? <Pagination page={at} pageCount={pages} onPageChange={setPage} total={shown.length} perPage={pageSize} /> : null}
     </section>
   );
@@ -163,7 +171,7 @@ export function ProductDiscovery({ products = [], categories = [], recommended =
       ) : null}
       <section className="plx-commerce__section">
         {query && !hits.length ? (
-          <EmptyState size="page" icon="search" title={fill(t.resultsFor, { q: query })} action={<Button icon="close" onClick={() => run('')}>{t.clear}</Button>}>
+          <EmptyState size="page" icon={SearchIcon} title={fill(t.resultsFor, { q: query })} action={<Button icon={CloseIcon} onClick={() => run('')}>{t.clear}</Button>}>
             <span className="plx-commerce__ideas">
               <Text variant="secondary">{t.suggestions}</Text>
               {ideas.map((s) => <Button key={s} size="xs" onClick={() => run(s)}>{s}</Button>)}
@@ -208,9 +216,9 @@ export function ProductDetail({ product, value, defaultValue, onChange, quantity
     if (onAddToCart) onAddToCart(p, choice, qty);
     setAdded(true); announce(fill(t.added, { title: p.title }));
   };
-  const status = out ? <Badge tone="negative" icon="do-not-disturb">{t.outOfStock}</Badge>
-    : typeof stock === 'number' && stock <= 5 ? <Badge tone="waiting" icon="schedule">{fill(t.lowStock, { n: formatNumber(stock) })}</Badge>
-      : <Badge tone="success" icon="circle-check">{t.inStock}</Badge>;
+  const status = out ? <Badge tone="negative" icon={DoNotDisturbIcon}>{t.outOfStock}</Badge>
+    : typeof stock === 'number' && stock <= 5 ? <Badge tone="waiting" icon={ScheduleIcon}>{fill(t.lowStock, { n: formatNumber(stock) })}</Badge>
+      : <Badge tone="success" icon={CircleCheckIcon}>{t.inStock}</Badge>;
   const tabs = [];
   if (p.description) tabs.push({ value: 'description', label: t.description, content: typeof p.description === 'string' ? <Text as="p">{p.description}</Text> : p.description });
   if (p.specs && p.specs.length) tabs.push({ value: 'details', label: t.details, content: <Table label={t.details} data={p.specs.map((s, i) => ({ id: i + 1, name: s[0], value: s[1] }))}
@@ -235,7 +243,7 @@ export function ProductDetail({ product, value, defaultValue, onChange, quantity
           {options.length || onAddToCart ? <ProductOptions className="plx-commerce__options" product={p.title} options={options} value={choice} onChange={set} errors={errors}
             quantity={qty} onQuantityChange={setQty} max={maxQuantity || (typeof stock === 'number' && stock > 0 ? stock : 99)} sizeGuide={p.sizeGuide} /> : null}
           <span className="plx-commerce__add">
-            <Button variant="primary" size="lg" icon="plus" disabled={out} onClick={add}>{t.addToCart}</Button>
+            <Button variant="primary" size="lg" icon={PlusIcon} disabled={out} onClick={add}>{t.addToCart}</Button>
           </span>
           {added ? <Notice tone="success" onDismiss={() => setAdded(false)}>{fill(t.added, { title: p.title })}{cartHref ? <>{' '}<Link href={cartHref}>{t.viewCart}</Link></> : null}</Notice> : null}
         </div>

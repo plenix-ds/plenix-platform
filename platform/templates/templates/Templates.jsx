@@ -34,6 +34,7 @@ import { Button } from '../../components/Button/Button.jsx';
 import { Link } from '../../components/Link/Link.jsx';
 import { Panel } from '../../components/Card/Card.jsx';
 import { SplitView, ReadingPane } from '../../patterns/SplitView/SplitView.jsx';
+import FolderIcon from 'plenix-platform/icons/plenix/folder';
 const WORDS = { empty: 'No records yet', emptyDescription: 'Create a record to get started.', pane: 'Records', sections: 'On this page', retry: 'Try again', home: 'Go home', search: 'Search results', tools: 'Tools', inspector: 'Options', detail: 'Details', noSelection: 'Nothing selected', noSelectionDescription: 'Choose an item to see it here.' };
 function Frame({ page = 'workspace', title, description, actions, header, sideNav, footer, mainId, children }) {
   const id = React.useId();
@@ -41,7 +42,7 @@ function Frame({ page = 'workspace', title, description, actions, header, sideNa
     <PageContent><RecordPage header={title ? <RecordPage.Header title={title} description={description} actions={actions} /> : null}>{children}</RecordPage></PageContent>
   </AppShell>;
 }
-function Cards({ items = [], onOpen }) { return <ContentGrid>{items.map(item => <FeatureCard key={item.id} title={item.title} description={item.description} icon={item.icon || 'folder'} href={item.href} onOpen={!item.href && onOpen ? () => onOpen(item) : undefined} />)}</ContentGrid>; }
+function Cards({ items = [], onOpen }) { return <ContentGrid>{items.map(item => <FeatureCard key={item.id} title={item.title} description={item.description} icon={item.icon || FolderIcon} href={item.href} onOpen={!item.href && onOpen ? () => onOpen(item) : undefined} />)}</ContentGrid>; }
 function NoRecords({ strings, empty }) { const t = { ...WORDS, ...strings }; return empty || <EmptyState title={t.empty}>{t.emptyDescription}</EmptyState>; }
 export function ListingPage({ rows = [], columns = [], empty, strings, children, ...rest }) { return <Frame {...rest}>{children}{rows.length ? <DataGrid data={rows} columns={columns} /> : <NoRecords empty={empty} strings={strings} />}</Frame>; }
 export function ContentManagementPage({ items = [], onOpen, empty, strings, children, ...rest }) { return <Frame {...rest}>{children}{items.length ? <Cards items={items} onOpen={onOpen} /> : <NoRecords empty={empty} strings={strings} />}</Frame>; }

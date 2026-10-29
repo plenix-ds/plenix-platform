@@ -81939,7 +81939,7 @@ function ProductOptions({
   }))) : null);
 }
   } },
-  "platform/templates/Commerce/shared.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../patterns/ProductCard/ProductCard.jsx":"platform/patterns/ProductCard/ProductCard.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/templates/Commerce/shared.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../patterns/ProductCard/ProductCard.jsx":"platform/patterns/ProductCard/ProductCard.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/image-b":"platform/dist/icons/plenix/image-b.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -81964,6 +81964,7 @@ var _NumberInput = require("../../components/NumberInput/NumberInput.jsx");
 var _Notice = require("../../components/Notice/Notice.jsx");
 var _ProductCard = require("../../patterns/ProductCard/ProductCard.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _imageB = _interopRequireDefault(require("plenix-platform/icons/plenix/image-b"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · Commerce templates: shared parts
    Summary: What the Commerce templates share (platform/templates/Commerce): the kind of page each template is
@@ -82065,7 +82066,7 @@ function CommerceLine({
     className: "plx-commerce-line__placeholder plx-ratio-1-1",
     "aria-hidden": "true"
   }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
-    name: "image-b"
+    name: _imageB.default
   }))), /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-commerce-line__text"
   }, /*#__PURE__*/_react.default.createElement("span", {
@@ -82157,7 +82158,45 @@ function OrderSummary({
   }, children) : null);
 }
   } },
-  "platform/templates/Commerce/Storefront.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/fields.js":"platform/utils/fields.js","../../hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","../../patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","../../patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","../../patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","../../patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","../../patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","../../patterns/ProductCard/ProductCard.jsx":"platform/patterns/ProductCard/ProductCard.jsx","../../components/ProductOptions/ProductOptions.jsx":"platform/components/ProductOptions/ProductOptions.jsx","../../components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","../../components/Table/Table.jsx":"platform/components/Table/Table.jsx","../../utils/layer.js":"platform/utils/layer.js","./shared.jsx":"platform/templates/Commerce/shared.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/dist/icons/plenix/settings-categories.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// GENERATED by platform/icons/layout.js from platform/icons (map.json; Material Symbols Sharp, weight 300, and Plenix's own icons) (do not edit). Icon "settings-categories" of the plenix set (symbol category).
+var _default = exports.default = {
+  "name": "settings-categories",
+  "set": "plenix",
+  "symbol": "category",
+  "fillOutline": false,
+  "mirrored": false,
+  "drawings": {
+    "20": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": "M303.69-543.39 480-834.77l176.31 291.38H303.69Zm392.31 432q-63.85 0-108.23-44.38T543.39-264q0-63.85 44.38-108.23T696-416.61q63.85 0 108.23 44.38T848.61-264q0 63.85-44.38 108.23T696-111.39Zm-536.61-24v-257.22h257.22v257.22H159.39Zm536.37-27.99q42.16 0 71.51-29.11 29.35-29.11 29.35-71.27t-29.11-71.51q-29.11-29.35-71.27-29.35t-71.51 29.11q-29.35 29.11-29.35 71.27t29.11 71.51q29.11 29.35 71.27 29.35Zm-484.38-24h153.24v-153.24H211.38v153.24Zm184.16-408h168.92L480-733.46l-84.46 138.08Zm84.46 0ZM364.62-340.62ZM691-269Z"
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": "M303.69-543.39 480-834.77l176.31 291.38H303.69Zm392.13 432q-63.67 0-108.05-44.38-44.38-44.38-44.38-108.05 0-62.66 44.38-107.73 44.38-45.06 108.05-45.06 62.66 0 107.73 45.06 45.06 45.07 45.06 107.73 0 63.67-45.06 108.05-45.07 44.38-107.73 44.38Zm-536.43-24v-257.22h257.22v257.22H159.39Z"
+      }
+    },
+    "24": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": "M287.69-535.39 480-850.77l192.31 315.38H287.69ZM700-95.39q-68.85 0-116.73-47.88-47.88-47.88-47.88-116.73t47.88-116.73q47.88-47.88 116.73-47.88t116.73 47.88q47.88 47.88 47.88 116.73t-47.88 116.73Q768.85-95.39 700-95.39Zm-564.61-20v-289.22h289.22v289.22H135.39Zm564.6-39.99q43.93 0 74.28-30.34t30.35-74.27q0-43.93-30.34-74.28t-74.27-30.35q-43.93 0-74.28 30.34t-30.35 74.27q0 43.93 30.34 74.28t74.27 30.35Zm-504.61-20h169.24v-169.24H195.38v169.24Zm198.16-420h172.92L480-734.46l-86.46 139.08Zm86.46 0ZM364.62-344.62ZM700-260Z"
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": "M287.69-535.39 480-850.77l192.31 315.38H287.69Zm412.13 440q-68.67 0-116.55-47.88-47.88-47.88-47.88-116.55 0-68.66 47.88-116.73 47.88-48.06 116.55-48.06 68.66 0 116.73 48.06 48.06 48.07 48.06 116.73 0 68.67-48.06 116.55-48.07 47.88-116.73 47.88Zm-564.43-20v-289.22h289.22v289.22H135.39Z"
+      }
+    }
+  }
+};
+  } },
+  "platform/templates/Commerce/Storefront.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/fields.js":"platform/utils/fields.js","../../hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","../../patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","../../patterns/SortPanel/SortPanel.jsx":"platform/patterns/SortPanel/SortPanel.jsx","../../patterns/ViewMenu/ViewMenu.jsx":"platform/patterns/ViewMenu/ViewMenu.jsx","../../patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","../../patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","../../patterns/ProductCard/ProductCard.jsx":"platform/patterns/ProductCard/ProductCard.jsx","../../components/ProductOptions/ProductOptions.jsx":"platform/components/ProductOptions/ProductOptions.jsx","../../components/Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/Carousel/Carousel.jsx":"platform/components/Carousel/Carousel.jsx","../../components/Image/Image.jsx":"platform/components/Image/Image.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Rating/Rating.jsx":"platform/components/Rating/Rating.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Tabs/Tabs.jsx":"platform/components/Tabs/Tabs.jsx","../../components/Table/Table.jsx":"platform/components/Table/Table.jsx","../../utils/layer.js":"platform/utils/layer.js","./shared.jsx":"platform/templates/Commerce/shared.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/circle-check":"platform/dist/icons/plenix/circle-check.js","plenix-platform/icons/plenix/close":"platform/dist/icons/plenix/close.js","plenix-platform/icons/plenix/do-not-disturb":"platform/dist/icons/plenix/do-not-disturb.js","plenix-platform/icons/plenix/filter-off":"platform/dist/icons/plenix/filter-off.js","plenix-platform/icons/plenix/plus":"platform/dist/icons/plenix/plus.js","plenix-platform/icons/plenix/schedule":"platform/dist/icons/plenix/schedule.js","plenix-platform/icons/plenix/search":"platform/dist/icons/plenix/search.js","plenix-platform/icons/plenix/settings-categories":"platform/dist/icons/plenix/settings-categories.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -82198,6 +82237,14 @@ var _Table = require("../../components/Table/Table.jsx");
 var _layer = require("../../utils/layer.js");
 var _shared = require("./shared.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _circleCheck = _interopRequireDefault(require("plenix-platform/icons/plenix/circle-check"));
+var _close = _interopRequireDefault(require("plenix-platform/icons/plenix/close"));
+var _doNotDisturb = _interopRequireDefault(require("plenix-platform/icons/plenix/do-not-disturb"));
+var _filterOff = _interopRequireDefault(require("plenix-platform/icons/plenix/filter-off"));
+var _plus = _interopRequireDefault(require("plenix-platform/icons/plenix/plus"));
+var _schedule = _interopRequireDefault(require("plenix-platform/icons/plenix/schedule"));
+var _search = _interopRequireDefault(require("plenix-platform/icons/plenix/search"));
+var _settingsCategories = _interopRequireDefault(require("plenix-platform/icons/plenix/settings-categories"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Commerce templates: the storefront
    Summary: The pages people shop on (platform/templates/Commerce): the product listing (ProductListing: a category's or a
@@ -82381,7 +82428,7 @@ function ProductListing({
       label: t.search
     }) : null, /*#__PURE__*/_react.default.createElement(_FilterPanel.FilterPanel, v.filterProps), categories.length ? /*#__PURE__*/_react.default.createElement(_QuickFilter.QuickFilter, _extends({
       label: t.category,
-      icon: "settings-categories",
+      icon: _settingsCategories.default,
       noun: t.category.toLowerCase(),
       options: categories
     }, v.quickProps('category'))) : null),
@@ -82400,10 +82447,10 @@ function ProductListing({
     label: typeof title === 'string' ? title : t.label
   }, visible.map(p => card(p, 'grid'))) : /*#__PURE__*/_react.default.createElement(_EmptyState.EmptyState, {
     size: "page",
-    icon: "search",
+    icon: _search.default,
     title: t.empty,
     action: /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      icon: "filter-off",
+      icon: _filterOff.default,
       onClick: clear
     }, t.clear)
   }, t.emptyText), pages > 1 ? /*#__PURE__*/_react.default.createElement(_Pagination.Pagination, {
@@ -82517,12 +82564,12 @@ function ProductDiscovery({
     className: "plx-commerce__section"
   }, query && !hits.length ? /*#__PURE__*/_react.default.createElement(_EmptyState.EmptyState, {
     size: "page",
-    icon: "search",
+    icon: _search.default,
     title: (0, _shared.fill)(t.resultsFor, {
       q: query
     }),
     action: /*#__PURE__*/_react.default.createElement(_Button.Button, {
-      icon: "close",
+      icon: _close.default,
       onClick: () => run('')
     }, t.clear)
   }, /*#__PURE__*/_react.default.createElement("span", {
@@ -82618,15 +82665,15 @@ function ProductDetail({
   };
   const status = out ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
     tone: "negative",
-    icon: "do-not-disturb"
+    icon: _doNotDisturb.default
   }, t.outOfStock) : typeof stock === 'number' && stock <= 5 ? /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
     tone: "waiting",
-    icon: "schedule"
+    icon: _schedule.default
   }, (0, _shared.fill)(t.lowStock, {
     n: (0, _format.formatNumber)(stock)
   })) : /*#__PURE__*/_react.default.createElement(_Badge.Badge, {
     tone: "success",
-    icon: "circle-check"
+    icon: _circleCheck.default
   }, t.inStock);
   const tabs = [];
   if (p.description) tabs.push({
@@ -82731,7 +82778,7 @@ function ProductDetail({
   }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
     variant: "primary",
     size: "lg",
-    icon: "plus",
+    icon: _plus.default,
     disabled: out,
     onClick: add
   }, t.addToCart)), added ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
@@ -82769,7 +82816,45 @@ function ProductDetail({
   })))) : null);
 }
   } },
-  "platform/templates/Commerce/Checkout.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","../../patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","../../patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","../../patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","../../patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","../../components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./shared.jsx":"platform/templates/Commerce/shared.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/dist/icons/plenix/briefcase.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// GENERATED by platform/icons/layout.js from platform/icons (map.json; Material Symbols Sharp, weight 300, and Plenix's own icons) (do not edit). Icon "briefcase" of the plenix set (symbol work).
+var _default = exports.default = {
+  "name": "briefcase",
+  "set": "plenix",
+  "symbol": "work",
+  "fillOutline": false,
+  "mirrored": false,
+  "drawings": {
+    "20": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": "M116-164v-536h240v-124h248v124h240v536H116Zm52-52h624v-432H168v432Zm240-484h144v-72H408v72ZM168-216v-432 432Z"
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": "M116-164v-536h240v-124h248v124h240v536H116Zm292-536h144v-72H408v72Z"
+      }
+    },
+    "24": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": "M100-140v-560h240v-140h280v140h240v560H100Zm60-60h640v-440H160v440Zm240-500h160v-80H400v80ZM160-200v-440 440Z"
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": "M100-140v-560h240v-140h280v140h240v560H100Zm300-560h160v-80H400v80Z"
+      }
+    }
+  }
+};
+  } },
+  "platform/templates/Commerce/Checkout.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../patterns/ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","../../patterns/DeleteFlow/DeleteFlow.jsx":"platform/patterns/DeleteFlow/DeleteFlow.jsx","../../patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","../../patterns/Form/Form.jsx":"platform/patterns/Form/Form.jsx","../../patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/CountrySelect/CountrySelect.jsx":"platform/components/CountrySelect/CountrySelect.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/CopyButton/CopyButton.jsx":"platform/components/CopyButton/CopyButton.jsx","../../components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","./shared.jsx":"platform/templates/Commerce/shared.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/briefcase":"platform/dist/icons/plenix/briefcase.js","plenix-platform/icons/plenix/ed-undo":"platform/dist/icons/plenix/ed-undo.js","plenix-platform/icons/plenix/lock":"platform/dist/icons/plenix/lock.js","plenix-platform/icons/plenix/trash":"platform/dist/icons/plenix/trash.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -82806,6 +82891,10 @@ var _Timeline = require("../../components/Timeline/Timeline.jsx");
 var _Icon = require("../../components/Icon/Icon.jsx");
 var _shared = require("./shared.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _briefcase = _interopRequireDefault(require("plenix-platform/icons/plenix/briefcase"));
+var _edUndo = _interopRequireDefault(require("plenix-platform/icons/plenix/ed-undo"));
+var _lock = _interopRequireDefault(require("plenix-platform/icons/plenix/lock"));
+var _trash = _interopRequireDefault(require("plenix-platform/icons/plenix/trash"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · Commerce templates: buying
    Summary: The pages that turn a cart into an order (platform/templates/Commerce): the cart (Cart: the lines with their
@@ -82908,7 +82997,7 @@ function Cart({
       "aria-label": title || t.title
     }, /*#__PURE__*/_react.default.createElement(_EmptyState.EmptyState, {
       size: "page",
-      icon: "briefcase",
+      icon: _briefcase.default,
       title: t.empty,
       action: continueHref ? /*#__PURE__*/_react.default.createElement(_Link.Link, {
         href: continueHref,
@@ -82933,7 +83022,7 @@ function Cart({
     tone: "info",
     actions: onRestore ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
       size: "xs",
-      icon: "ed-undo",
+      icon: _edUndo.default,
       onClick: () => {
         onRestore(removed);
         setRemoved(null);
@@ -82966,7 +83055,7 @@ function Cart({
         variant: "ghost",
         size: "xs",
         iconOnly: true,
-        icon: "trash",
+        icon: _trash.default,
         label: (0, _shared.fill)(t.remove, {
           title: x.title
         })
@@ -83155,7 +83244,7 @@ function PaymentFields({
     onChange: e => set('billingPostal', e.target.value)
   })))) : null, /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
     tone: "info",
-    icon: "lock"
+    icon: _lock.default
   }, t.secure), typeof amount === 'number' ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
     as: "p"
   }, t.charge, " ", /*#__PURE__*/_react.default.createElement(_Text.Text, {
@@ -83531,7 +83620,87 @@ function OrderConfirmation({
   }))));
 }
   } },
-  "platform/templates/Commerce/Account.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","../../patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","../../patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","../../patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","../../patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","../../patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","../../patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","../../components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./shared.jsx":"platform/templates/Commerce/shared.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/dist/icons/plenix/progress.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// GENERATED by platform/icons/layout.js from platform/icons (map.json; Material Symbols Sharp, weight 300, and Plenix's own icons) (do not edit). Icon "progress" of the plenix set (symbol linear_scale).
+const d0 = "M675.08-301.85q-68.31 0-116.84-42.63Q509.7-387.11 498.29-454h-219.6q-8.31 26-30.57 44.15-22.27 18.16-53.04 18.16-36.86 0-62.59-25.66-25.72-25.66-25.72-62.42 0-36.77 25.72-62.65 25.73-25.89 62.59-25.89 30.77 0 53.04 18.16Q270.38-532 279.16-506h220.23q11.28-66.89 59.33-109.52 48.05-42.63 116.36-42.63 73.91 0 126.03 52.57 52.12 52.57 52.12 126.58 0 73.23-52.12 125.19-52.12 51.96-126.03 51.96Zm0-52q52.31 0 89.23-36.92T801.23-480q0-52.31-36.92-89.23t-89.23-36.92q-52.31 0-89.23 36.92-36.93 36.92-36.93 89.23t36.93 89.23q36.92 36.92 89.23 36.92Z";
+const d1 = "M683.08-293.85q-69.31 0-120.46-43.77-51.16-43.77-63.23-112.38h-229.7q-9.31 27-32.57 44.65-23.27 17.66-54.04 17.66-38.54 0-65.43-26.89Q90.77-441.46 90.77-480q0-38.54 26.88-65.42 26.89-26.89 65.43-26.89 30.77 0 54.04 17.66Q260.38-537 269.69-510h229.7q12.07-68.61 63.23-112.38 51.15-43.77 120.46-43.77 77.23 0 131.69 54.84 54.46 54.85 54.46 132.08 0 76.46-54.46 130.92-54.46 54.46-131.69 54.46Zm0-60q52.31 0 89.23-36.92T809.23-480q0-52.31-36.92-89.23t-89.23-36.92q-52.31 0-89.23 36.92-36.93 36.92-36.93 89.23t36.93 89.23q36.92 36.92 89.23 36.92Z";
+var _default = exports.default = {
+  "name": "progress",
+  "set": "plenix",
+  "symbol": "linear_scale",
+  "fillOutline": false,
+  "mirrored": false,
+  "drawings": {
+    "20": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": d0
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": d0
+      }
+    },
+    "24": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": d1
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": d1
+      }
+    }
+  }
+};
+  } },
+  "platform/dist/icons/plenix/reply.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// GENERATED by platform/icons/layout.js from platform/icons (map.json; Material Symbols Sharp, weight 300, and Plenix's own icons) (do not edit). Icon "reply" of the plenix set (symbol reply).
+const d0 = "M744-230v-124q0-53.85-38.08-91.92Q667.85-484 614-484H263.92l133 133-36.77 37.15L164-510l196.15-196.15L396.92-669l-133 133H614q75.77 0 128.88 53.12Q796-429.77 796-354v124h-52Z";
+const d1 = "M760-220v-140q0-53.85-38.08-91.92Q683.85-490 630-490H254.92l154 154-42.77 42.15L140-520l226.15-226.15L408.92-704l-154 154H630q78.77 0 134.38 55.62Q820-438.77 820-360v140h-60Z";
+var _default = exports.default = {
+  "name": "reply",
+  "set": "plenix",
+  "symbol": "reply",
+  "fillOutline": false,
+  "mirrored": false,
+  "drawings": {
+    "20": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": d0
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": d0
+      }
+    },
+    "24": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": d1
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": d1
+      }
+    }
+  }
+};
+  } },
+  "platform/templates/Commerce/Account.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../hooks/useCollectionView.js":"platform/hooks/useCollectionView.js","../../patterns/CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../patterns/FilterPanel/FilterPanel.jsx":"platform/patterns/FilterPanel/FilterPanel.jsx","../../patterns/QuickFilter/QuickFilter.jsx":"platform/patterns/QuickFilter/QuickFilter.jsx","../../patterns/EntityHeader/EntityHeader.jsx":"platform/patterns/EntityHeader/EntityHeader.jsx","../../patterns/PropertyList/PropertyList.jsx":"platform/patterns/PropertyList/PropertyList.jsx","../../patterns/Wizard/Wizard.jsx":"platform/patterns/Wizard/Wizard.jsx","../../patterns/SettingsLayout/SettingsLayout.jsx":"platform/patterns/SettingsLayout/SettingsLayout.jsx","../../components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../components/Timeline/Timeline.jsx":"platform/components/Timeline/Timeline.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/RadioTiles/RadioTiles.jsx":"platform/components/RadioTiles/RadioTiles.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/NumberInput/NumberInput.jsx":"platform/components/NumberInput/NumberInput.jsx","./shared.jsx":"platform/templates/Commerce/shared.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/alert":"platform/dist/icons/plenix/alert.js","plenix-platform/icons/plenix/circle-check":"platform/dist/icons/plenix/circle-check.js","plenix-platform/icons/plenix/do-not-disturb":"platform/dist/icons/plenix/do-not-disturb.js","plenix-platform/icons/plenix/doc-text":"platform/dist/icons/plenix/doc-text.js","plenix-platform/icons/plenix/ed-undo":"platform/dist/icons/plenix/ed-undo.js","plenix-platform/icons/plenix/forward":"platform/dist/icons/plenix/forward.js","plenix-platform/icons/plenix/open":"platform/dist/icons/plenix/open.js","plenix-platform/icons/plenix/progress":"platform/dist/icons/plenix/progress.js","plenix-platform/icons/plenix/reply":"platform/dist/icons/plenix/reply.js","plenix-platform/icons/plenix/schedule":"platform/dist/icons/plenix/schedule.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -83572,6 +83741,16 @@ var _Input = require("../../components/Input/Input.jsx");
 var _NumberInput = require("../../components/NumberInput/NumberInput.jsx");
 var _shared = require("./shared.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _alert = _interopRequireDefault(require("plenix-platform/icons/plenix/alert"));
+var _circleCheck = _interopRequireDefault(require("plenix-platform/icons/plenix/circle-check"));
+var _doNotDisturb = _interopRequireDefault(require("plenix-platform/icons/plenix/do-not-disturb"));
+var _docText = _interopRequireDefault(require("plenix-platform/icons/plenix/doc-text"));
+var _edUndo = _interopRequireDefault(require("plenix-platform/icons/plenix/ed-undo"));
+var _forward = _interopRequireDefault(require("plenix-platform/icons/plenix/forward"));
+var _open = _interopRequireDefault(require("plenix-platform/icons/plenix/open"));
+var _progress = _interopRequireDefault(require("plenix-platform/icons/plenix/progress"));
+var _reply = _interopRequireDefault(require("plenix-platform/icons/plenix/reply"));
+var _schedule = _interopRequireDefault(require("plenix-platform/icons/plenix/schedule"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Commerce templates: after the order
    Summary: The pages that manage orders and plans (platform/templates/Commerce): order management (OrderManagement: the
@@ -83597,32 +83776,32 @@ const day = iso => iso ? (0, _format.formatDate)(/T/.test(iso) ? iso : iso + 'T1
 const ORDER_STATUSES = exports.ORDER_STATUSES = {
   unfulfilled: {
     tone: 'waiting',
-    icon: 'schedule',
+    icon: _schedule.default,
     label: 'Unfulfilled'
   },
   fulfilled: {
     tone: 'active',
-    icon: 'forward',
+    icon: _forward.default,
     label: 'Shipped'
   },
   delivered: {
     tone: 'success',
-    icon: 'circle-check',
+    icon: _circleCheck.default,
     label: 'Delivered'
   },
   returning: {
     tone: 'action-required',
-    icon: 'ed-undo',
+    icon: _edUndo.default,
     label: 'Return requested'
   },
   refunded: {
     tone: 'neutral',
-    icon: 'ed-undo',
+    icon: _edUndo.default,
     label: 'Refunded'
   },
   canceled: {
     tone: 'neutral',
-    icon: 'do-not-disturb',
+    icon: _doNotDisturb.default,
     label: 'Canceled'
   }
 };
@@ -83760,7 +83939,7 @@ function OrderManagement({
       label: t.search
     }), /*#__PURE__*/_react.default.createElement(_FilterPanel.FilterPanel, v.filterProps), /*#__PURE__*/_react.default.createElement(_QuickFilter.QuickFilter, _extends({
       label: t.status,
-      icon: "progress",
+      icon: _progress.default,
       noun: t.status.toLowerCase(),
       options: Object.keys(S).map(k => ({
         value: k,
@@ -83775,14 +83954,14 @@ function OrderManagement({
       actions: [{
         id: 'fulfill',
         label: t.fulfill,
-        icon: 'circle-check',
+        icon: _circleCheck.default,
         disabled: !chosen.every(canFulfill),
         why: t.notFulfillable,
         onSelect: () => fulfill(chosen)
       }, {
         id: 'cancel',
         label: t.cancelMany,
-        icon: 'do-not-disturb',
+        icon: _doNotDisturb.default,
         danger: true,
         disabled: !chosen.every(canCancel),
         why: t.notCancelable,
@@ -83799,23 +83978,23 @@ function OrderManagement({
     filter: v.test,
     rowMenu: o => [{
       label: t.open,
-      icon: 'open',
+      icon: _open.default,
       onSelect: () => onOpen && onOpen(o)
     }, {
       label: t.fulfill,
-      icon: 'circle-check',
+      icon: _circleCheck.default,
       disabled: !canFulfill(o),
       onSelect: () => fulfill([o])
     }, {
       label: t.refund,
-      icon: 'ed-undo',
+      icon: _edUndo.default,
       disabled: !canRefund(o),
       onSelect: () => onRefund && onRefund(o)
     }, {
       separator: true
     }, {
       label: t.cancel,
-      icon: 'do-not-disturb',
+      icon: _doNotDisturb.default,
       danger: true,
       disabled: !canCancel(o),
       onSelect: () => setAsking([o])
@@ -83865,26 +84044,26 @@ function OrderDetail({
   const cur = o.currency || currency;
   const actions = [];
   if (onFulfill) actions.push({
-    icon: 'circle-check',
+    icon: _circleCheck.default,
     label: t.fulfill,
     primary: true,
     disabled: !canFulfill(o),
     onClick: () => onFulfill(o)
   });
   if (onRefund) actions.push({
-    icon: 'ed-undo',
+    icon: _edUndo.default,
     label: t.refund,
     disabled: !canRefund(o),
     onClick: () => onRefund(o)
   });
   if (onReturn) actions.push({
-    icon: 'reply',
+    icon: _reply.default,
     label: t.return,
     disabled: o.status !== 'delivered',
     onClick: () => onReturn(o)
   });
   const more = onCancel && canCancel(o) ? [{
-    icon: 'do-not-disturb',
+    icon: _doNotDisturb.default,
     label: t.cancel,
     danger: true,
     onSelect: () => setAsking(true)
@@ -83897,7 +84076,7 @@ function OrderDetail({
     back: true
   }, t.back) : null, /*#__PURE__*/_react.default.createElement(_EntityHeader.EntityHeader, {
     media: {
-      icon: 'doc-text',
+      icon: _docText.default,
       hue: 'gray'
     },
     context: t.context,
@@ -83978,12 +84157,12 @@ function OrderDetail({
 
 /* ── subscription management ── */
 const SUB_TONES = {
-  active: ['success', 'circle-check'],
-  paused: ['waiting', 'schedule'],
-  canceled: ['neutral', 'do-not-disturb'],
-  paid: ['success', 'circle-check'],
-  refunded: ['neutral', 'ed-undo'],
-  failed: ['negative', 'alert']
+  active: ['success', _circleCheck.default],
+  paused: ['waiting', _schedule.default],
+  canceled: ['neutral', _doNotDisturb.default],
+  paid: ['success', _circleCheck.default],
+  refunded: ['neutral', _edUndo.default],
+  failed: ['negative', _alert.default]
 };
 function SubscriptionManagement({
   subscription = {},
@@ -87739,7 +87918,7 @@ function ReadingPane({
   }, empty) : null)));
 }
   } },
-  "platform/templates/templates/Templates.jsx": { deps: {"react":null,"../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","../../patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","../../patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","../../patterns/FormFlow/FormFlow.jsx":"platform/patterns/FormFlow/FormFlow.jsx","../../patterns/Auth/Auth.jsx":"platform/patterns/Auth/Auth.jsx","../../patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","../../components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../patterns/SplitView/SplitView.jsx":"platform/patterns/SplitView/SplitView.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/templates/templates/Templates.jsx": { deps: {"react":null,"../../patterns/AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../patterns/RecordPage/RecordPage.jsx":"platform/patterns/RecordPage/RecordPage.jsx","../../patterns/SecondaryPane/SecondaryPane.jsx":"platform/patterns/SecondaryPane/SecondaryPane.jsx","../../patterns/FeatureCard/FeatureCard.jsx":"platform/patterns/FeatureCard/FeatureCard.jsx","../../patterns/FormFlow/FormFlow.jsx":"platform/patterns/FormFlow/FormFlow.jsx","../../patterns/Auth/Auth.jsx":"platform/patterns/Auth/Auth.jsx","../../patterns/SearchWorkspace/SearchWorkspace.jsx":"platform/patterns/SearchWorkspace/SearchWorkspace.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../patterns/ContentGrid/ContentGrid.jsx":"platform/patterns/ContentGrid/ContentGrid.jsx","../../components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","../../components/EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Link/Link.jsx":"platform/components/Link/Link.jsx","../../components/Card/Card.jsx":"platform/components/Card/Card.jsx","../../patterns/SplitView/SplitView.jsx":"platform/patterns/SplitView/SplitView.jsx","plenix-platform/icons/plenix/folder":"platform/dist/icons/plenix/folder.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -87776,6 +87955,7 @@ var _Button = require("../../components/Button/Button.jsx");
 var _Link = require("../../components/Link/Link.jsx");
 var _Card = require("../../components/Card/Card.jsx");
 var _SplitView = require("../../patterns/SplitView/SplitView.jsx");
+var _folder = _interopRequireDefault(require("plenix-platform/icons/plenix/folder"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · page templates
    Summary: Reusable page compositions from existing Platform components, preserving the layout standard.
@@ -87845,7 +88025,7 @@ function Cards({
     key: item.id,
     title: item.title,
     description: item.description,
-    icon: item.icon || 'folder',
+    icon: item.icon || _folder.default,
     href: item.href,
     onOpen: !item.href && onOpen ? () => onOpen(item) : undefined
   })));

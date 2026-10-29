@@ -1,0 +1,34 @@
+# Icon stage 5a (#280), part 3: group 6 (templates) and the check-system rule icon-imports. Proof scripts only.
+
+## Group 6: platform/templates (Lead's decision: templates are Platform too)
+- Account, Checkout, Storefront, shared (Commerce) and Templates: 39 icon names become imports of their modules.
+- uses.js scans platform/templates; it now also reads a lookup whose table is chosen with || ((SUB_TONES[k] || [])[1]).
+- spec-pages.js, the template record pages (5) and the 10 application pages, styling/phase-2 (4eeee9c6) vs this branch:
+  noise check (two runs before) 15 of 15 the same;
+{
+ "pages": 15,
+ "same": 15,
+ "differ": 0,
+ "pageErrors": {
+  "before": 0,
+  "after": 0
+ },
+ "differs": []
+}
+- platform.js: raw 4241659 -> 4252848 (+11189); gzip 1000991 -> 1004277 (+3286)
+
+## The rule: check-system.rules/icon-imports.js (run by check-system.js; alone: node check-system.rules/icon-imports.js)
+- Reads components, patterns, hooks, providers and templates, and Icon.jsx's own tables (StatusIcon), with uses.js.
+- A finding: an icon name written as text in an icon slot (or a table it reads), a name built at run time without a
+  plx-icons comment, or a string in an icon slot that is not a Plenix name.
+- Three named exceptions, each with its reason: File's public fileIcon (and its BY_EXT table) returns names; the
+  documented defaults of Thumbnail ('document') and PermissionSummary ('lock').
+- Proven: ICON_IMPORTS_OK here; it fails on a name put back in SidePanel (icon="panel-right-close"), on StatusIcon's table
+  ('circle-info'), and on an unknown default ('lock-open').
+
+## Spec (lane 280-icon-imports): the "Platform components" row of #/foundations/foundations-icon-modules-and-delivery
+- Components, patterns and templates import their icons; the check and its three exceptions; next 5b, then 5c.
+
+## The conversion in total (groups 1 to 6, each measured against its own base)
+- platform.js: about +346.6 KB raw and +72.2 KB gzip (17.2 + 29.0 + 10.7 + 6.5 + 5.5 + 3.3 KB gzip).
+- 137 icon modules are imported by Platform source (404 import lines); 251 Plenix modules exist.
