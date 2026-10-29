@@ -48,6 +48,9 @@ import { ChartLegend } from './parts/ChartLegend.jsx';
 import { ChartTooltip, chartTooltipText } from './parts/ChartTooltip.jsx';
 import { useChartInteraction } from './interaction.js';
 import { useStrings } from '../providers/LocaleProvider.jsx';
+import EdRecenterIcon from 'plenix-platform/icons/plenix/ed-recenter';
+import EdZoomInIcon from 'plenix-platform/icons/plenix/ed-zoom-in';
+import EdZoomOutIcon from 'plenix-platform/icons/plenix/ed-zoom-out';
 
 // SVG geometry, in plot pixels: the room kept around the layout for the labels (a label is centered under its node), the
 // node's hit radius, the zoom steps
@@ -148,9 +151,9 @@ export function useGraphView({ enabled = true, strings } = {}) {
   });
   const fit = () => setView({ k: 1, x: 0, y: 0 });
   const actions = enabled ? [
-    <Button key="in" size="sm" iconOnly icon="ed-zoom-in" label={t.zoomIn} onClick={() => zoomBy(ZOOM_STEP)} />,
-    <Button key="out" size="sm" iconOnly icon="ed-zoom-out" label={t.zoomOut} onClick={() => zoomBy(1 / ZOOM_STEP)} />,
-    <Button key="fit" size="sm" icon="ed-recenter" onClick={fit}>{t.fit}</Button>,
+    <Button key="in" size="sm" iconOnly icon={EdZoomInIcon} label={t.zoomIn} onClick={() => zoomBy(ZOOM_STEP)} />,
+    <Button key="out" size="sm" iconOnly icon={EdZoomOutIcon} label={t.zoomOut} onClick={() => zoomBy(1 / ZOOM_STEP)} />,
+    <Button key="fit" size="sm" icon={EdRecenterIcon} onClick={fit}>{t.fit}</Button>,
   ] : null;
   // wraps an interaction: the background drags the view, + − 0 zoom; everything else goes to the interaction
   const wrap = (ia, hitNode) => {

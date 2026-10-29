@@ -111,7 +111,7 @@ import { Menu, MenuItem, MenuGroup, MenuDivider } from '../../components/Menu/Me
 import { Button } from '../../components/Button/Button.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { useSession } from '../../providers/SessionProvider.jsx';
-import { PLENIX_APPS, appById, appHref } from '../../providers/apps.js';
+import { PLENIX_APPS, appById, appHref, appIcon } from '../../providers/apps.js';
 import { useLayer, useUid } from '../../utils/layer.js';
 import { useDensity } from '../../hooks/useDensity.js';
 import { useMedia, below, tokenPx } from '../AppShell/AppShell.jsx';
@@ -201,7 +201,7 @@ export function AppHeader({ tone = 'accent', appName, brand, brandHref, currentA
   const brandEl = brand || (name ? <><BrandMark /><span className={cx('plx-app-header__name', sw && 'plx-app-header__name--switch')}><span className={cx('plx-app-header__product', sw && 'plx-app-header__product--switch')}>Plenix</span><span className={cx('plx-app-header__app', sw && 'plx-app-header__app--switch')}>{name}</span></span></> : <><BrandMark />Plenix</>);
   const open = (a) => (e) => { if (onOpenApp && onOpenApp(a) === true) e.preventDefault(); };
   const pinned = nav || (inApps ? PLENIX_APPS.filter((a) => pinnedApps.indexOf(a.id) >= 0).map((a) => (
-    <AppHeader.Item key={a.id} icon={<Icon name={a.icon} />} label={a.label} current={a.id === currentApp} href={appHref(a, appsRoot)} onClick={open(a)} />
+    <AppHeader.Item key={a.id} icon={<Icon name={appIcon(a)} />} label={a.label} current={a.id === currentApp} href={appHref(a, appsRoot)} onClick={open(a)} />
   )) : null);
   const showSwitcher = switcher !== undefined ? switcher : inApps;
   // Enter in the view's field: without results of its own the view closes, so the page's results show
@@ -344,7 +344,7 @@ AppHeader.Switcher = function AppHeaderSwitcher({ currentApp, appsRoot = '', onO
       <li key={a.id} className={cx('plx-app-switcher__tile', on && 'is-pinned', a.id === currentApp && 'is-current')}>
         <a className={cx('plx-app-switcher__open', a.id === currentApp && 'is-current')} href={appHref(a, appsRoot)} aria-current={a.id === currentApp ? 'page' : undefined}
           onClick={(e) => { if (onOpenApp && onOpenApp(a) === true) e.preventDefault(); setOpen(false); }}>
-          <span className="plx-app-switcher__icon" aria-hidden="true"><Icon name={a.icon} /></span>
+          <span className="plx-app-switcher__icon" aria-hidden="true"><Icon name={appIcon(a)} /></span>
           <span className="plx-app-switcher__label">{a.label}</span>
         </a>
         <button type="button" className={cx('plx-app-switcher__pin', on && 'is-pinned')} aria-pressed={on} aria-label={(on ? tw.unpin : tw.pin).replace('{app}', a.label)}

@@ -39,9 +39,12 @@ import { Table } from '../components/Table/Table.jsx';
 import { Badge } from '../components/Badge/Badge.jsx';
 import { seriesColor } from './scales.js';
 import { useStrings } from '../providers/LocaleProvider.jsx';
+import AlertIcon from 'plenix-platform/icons/plenix/alert';
+import CircleCheckIcon from 'plenix-platform/icons/plenix/circle-check';
+import WarningIcon from 'plenix-platform/icons/plenix/warning';
 
 const SIZES = ['sm', 'md', 'lg'];
-const LEVELS = { warning: { tone: 'waiting', icon: 'warning' }, critical: { tone: 'negative', icon: 'alert' } };
+const LEVELS = { warning: { tone: 'waiting', icon: WarningIcon }, critical: { tone: 'negative', icon: AlertIcon } };
 // the dial's geometry in SVG user units (the SVG is scaled to the size's width): the center, the track's radius and the
 // thresholds' radius outside it
 const VB_W = 160, VB_H = 88, CX = 80, CY = 80, R = 60, RB = 74;
@@ -61,7 +64,7 @@ export function Gauge({ title, description, value, min = 0, max = 100, format, l
   const v = Number(value);
   const bands = thresholds.filter((x) => x && LEVELS[x.level]).slice().sort((a, b) => a.value - b.value);
   const now = bands.filter((b) => v >= b.value).pop();
-  const status = now ? { tone: LEVELS[now.level].tone, icon: LEVELS[now.level].icon, label: now.label } : t.ok ? { tone: 'success', icon: 'circle-check', label: t.ok } : null;
+  const status = now ? { tone: LEVELS[now.level].tone, icon: LEVELS[now.level].icon, label: now.label } : t.ok ? { tone: 'success', icon: CircleCheckIcon, label: t.ok } : null;
   const valueText = [fmt(v), label, status && status.label].filter(Boolean).join(', ');
   const s = SIZES.indexOf(size) >= 0 ? size : 'md';
   const table = {

@@ -49,6 +49,9 @@ import { ChartLegend } from './parts/ChartLegend.jsx';
 import { ChartTooltip } from './parts/ChartTooltip.jsx';
 import { useChartPoints, ChartPatterns, patternFill } from './a11y.js';
 import { useStrings } from '../providers/LocaleProvider.jsx';
+import EdRecenterIcon from 'plenix-platform/icons/plenix/ed-recenter';
+import EdZoomInIcon from 'plenix-platform/icons/plenix/ed-zoom-in';
+import EdZoomOutIcon from 'plenix-platform/icons/plenix/ed-zoom-out';
 
 const STEPS = 7;
 // SVG geometry on the 4px grid: a marker's radius, the ring's room around it; the zoom range
@@ -101,9 +104,9 @@ export function GeoMap({ title, description, features, idKey = 'id', nameKey = '
       {zoom ? (
         <div className="plx-geo-map__controls">
           <ButtonGroup label={t.zoom}>
-            <Button size="sm" iconOnly icon="ed-zoom-in" label={t.zoomIn} disabled={view.z >= ZOOM_MAX} onClick={() => zoomBy(2)} />
-            <Button size="sm" iconOnly icon="ed-zoom-out" label={t.zoomOut} disabled={view.z <= ZOOM_MIN} onClick={() => zoomBy(0.5)} />
-            <Button size="sm" iconOnly icon="ed-recenter" label={t.reset} disabled={view.z === 1 && view.cx === null} onClick={() => setView({ z: 1, cx: null, cy: null })} />
+            <Button size="sm" iconOnly icon={EdZoomInIcon} label={t.zoomIn} disabled={view.z >= ZOOM_MAX} onClick={() => zoomBy(2)} />
+            <Button size="sm" iconOnly icon={EdZoomOutIcon} label={t.zoomOut} disabled={view.z <= ZOOM_MIN} onClick={() => zoomBy(0.5)} />
+            <Button size="sm" iconOnly icon={EdRecenterIcon} label={t.reset} disabled={view.z === 1 && view.cx === null} onClick={() => setView({ z: 1, cx: null, cy: null })} />
           </ButtonGroup>
         </div>
       ) : null}

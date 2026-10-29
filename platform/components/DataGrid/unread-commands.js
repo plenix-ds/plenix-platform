@@ -14,17 +14,19 @@
      Outlook's Unread filter; selection is two
      commands, each disabled while it would change nothing (no selected unread row, no selected read row).
    Notes: The row menu offers the same two commands for one row; the grid keeps unread rows bold with the start bar. */
+import MailIcon from 'plenix-platform/icons/plenix/mail';
+import MarkUnreadIcon from 'plenix-platform/icons/plenix/mark-unread';
 export function unreadCommands({ unreadKeys = [], onUnreadChange, selected = [], unreadOnly = false, onUnreadOnlyChange, strings } = {}) {
   const t = Object.assign({ unread: 'Unread ({count})', markRead: 'Mark as read', markUnread: 'Mark as unread' }, strings);
   const keys = new Set(unreadKeys.map(String)), picked = selected.map(String);
   const change = (next) => { const list = [...next]; onUnreadChange && onUnreadChange(list, { unreadCount: list.length }); };
   const anyUnread = picked.some((k) => keys.has(k)), anyRead = picked.some((k) => !keys.has(k));
   return {
-    filter: { id: 'unread', label: t.unread.replace('{count}', String(keys.size)), icon: 'mark-unread', toggle: true, pressed: !!unreadOnly,
+    filter: { id: 'unread', label: t.unread.replace('{count}', String(keys.size)), icon: MarkUnreadIcon, toggle: true, pressed: !!unreadOnly,
       onSelect: (next) => onUnreadOnlyChange && onUnreadOnlyChange(typeof next === 'boolean' ? next : !unreadOnly) },
     selection: [
-      { id: 'mark-read', label: t.markRead, icon: 'mail', disabled: !anyUnread, onSelect: () => change([...keys].filter((k) => !picked.includes(k))) },
-      { id: 'mark-unread', label: t.markUnread, icon: 'mark-unread', disabled: !anyRead, onSelect: () => change(new Set([...keys, ...picked])) },
+      { id: 'mark-read', label: t.markRead, icon: MailIcon, disabled: !anyUnread, onSelect: () => change([...keys].filter((k) => !picked.includes(k))) },
+      { id: 'mark-unread', label: t.markUnread, icon: MarkUnreadIcon, disabled: !anyRead, onSelect: () => change(new Set([...keys, ...picked])) },
     ],
   };
 }

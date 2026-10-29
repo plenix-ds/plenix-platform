@@ -1,0 +1,24 @@
+# Icon stage 5a (#280), group 7: charts and utils import their icons; the rule's scope, slots and header. Proof scripts only.
+# Files: charts/ChartFrame.jsx charts/Gauge.jsx charts/GeoMap.jsx charts/NetworkGraph.jsx utils/fields.js
+#        components/DataGrid/unread-commands.js providers/apps.js patterns/AppHeader/AppHeader.jsx components/Brand/Brand.jsx
+
+## Converted (18 icon names in all)
+- Charts: ChartFrame, Gauge, GeoMap and NetworkGraph import their icons.
+- utils/fields.js (KIND_ICONS) and DataGrid's unread-commands.js import theirs.
+
+## PLENIX_APPS (providers/apps.js): the fourth named exception
+- PLENIX_APPS is public, so its icons stay names (an application may print or compare them).
+- appIcon(app) returns the imported module; the header, the switcher and the brand mark draw it.
+
+## The rule (check-system.rules/icon-imports.js and platform/icons/uses.js)
+- The scan now covers platform/charts and platform/utils, and reads .js as well as .jsx.
+- glyph is a slot. mark, leading and symbol are not; the rule header says why.
+- The header lists what the rule knowingly misses.
+
+## spec-pages.js: 62 record pages and the 10 application pages, styling/phase-2 vs this branch
+- 72 of 72 the same, 0 page errors.
+
+## Spec (lane 280-icon-5a-group7): the "Platform components" row of #/foundations/foundations-icon-modules-and-delivery
+- Components, patterns, hooks, providers, templates, charts and utils import their icons; the check refuses a name
+  written as text in those folders, with four named exceptions (PLENIX_APPS added); next 5b, then 5c.
+- Lane files: parts/w00B.records.js, and spec-parts.js rebuilt by build-app after the overlay.
