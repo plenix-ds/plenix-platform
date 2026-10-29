@@ -6,6 +6,7 @@
         red-800, pressed red-900 (three distinct steps), and Danger secondary's pressed is red-900, not its hover, in the light and in the dark theme.
    The probe is proved able to see the old values first: before the build, 28px read 1.13px high and Danger's pressed was its hover color (red-800), so the limits
      below fail on the old code.
+   Descenders: gypqjy and an Arabic label draw as far down as in a reference where the label is not clipped at all; the control without the clip margin shows the cut.
    Centering is measured on the picture: the button is photographed at four times the pixels with the text "HEH" (capitals only) and the first and last rows of dark ink
      give the capitals' middle.
    Usage: node tests/button-610.test.js   (run by layout.test.js when the Button changed) */
@@ -45,6 +46,33 @@ const PORT0 = +process.env.TEST_PORT || 9630;
     await page.close();
     assert.ok(Math.abs(offsets.md) <= 0.5, '32px: the capitals are within half a pixel of the middle, got ' + offsets.md.toFixed(2));
     assert.ok(Math.abs(offsets.sm) <= 0.5, '28px: the capitals are within half a pixel of the middle (the old build: 1.13 high), got ' + offsets.sm.toFixed(2));
+    // 1b. descenders are not clipped: Latin letters with tails (gypqjy) and an Arabic label draw as far down in the button as in a reference where the label is not clipped at all.
+    //     The control first shows the probe can see clipping: with the clip margin taken away (overflow-clip-margin: 0) the tails of gypqjy are cut at the baseline.
+    const TEXT = { cap: 'HEH', latin: 'gypqjy', arabic: '\u062d\u0641\u0638 \u0627\u0644\u0645\u0644\u0641' };
+    const inkBottoms = async (css) => {
+      const p = await fresh(null, 4);
+      await p.evaluate(async (T) => {
+        document.querySelector('main').innerHTML = '<div id="c" style="padding:24px"></div>'; const h = React.createElement, P = Plenix;
+        ReactDOM.createRoot(document.getElementById('c')).render(h('div', { style: { display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' } },
+          ['md', 'sm'].flatMap((s) => Object.keys(T).map((k) => h(P.Button, { key: s + k, size: s, id: 'b-' + s + '-' + k, lang: k === 'arabic' ? 'ar' : undefined }, T[k])))));
+        await new Promise((r) => setTimeout(r, 1200));
+      }, TEXT);
+      if (css) await p.addStyleTag({ content: css });
+      const out = {};
+      for (const s of ['md', 'sm']) for (const k of Object.keys(TEXT)) {
+        const el = await p.$('#b-' + s + '-' + k), box = await el.boundingBox(), png = await el.screenshot({ encoding: 'base64' });
+        out[s + '-' + k] = await p.evaluate(async (png, height) => {
+          const img = await createImageBitmap(await (await fetch('data:image/png;base64,' + png)).blob()), c = document.createElement('canvas'); c.width = img.width; c.height = img.height;
+          const x = c.getContext('2d'); x.drawImage(img, 0, 0); const d = x.getImageData(0, 0, c.width, c.height).data, kk = img.height / height, m = Math.round(2 * kk); let bot = -1;
+          for (let y = m; y < c.height - m; y++) { let dark = 0; for (let xx = Math.round(8 * kk); xx < c.width - Math.round(8 * kk); xx++) { const i = (y * c.width + xx) * 4; if (d[i] + d[i + 1] + d[i + 2] < 300) dark++; } if (dark) bot = y; }
+          return (bot + 1) / kk;
+        }, png, box.height);
+      }
+      await p.close(); return out;
+    };
+    const real = await inkBottoms(null), unclipped = await inkBottoms('.plx-button__label{overflow-x:visible !important;overflow-y:visible !important}'), noMargin = await inkBottoms('.plx-button__label{overflow-clip-margin:0px !important}');
+    for (const s of ['md', 'sm']) assert.ok(noMargin[s + '-latin'] <= real[s + '-cap'] + 0.25 && real[s + '-latin'] > real[s + '-cap'] + 2, s + ': the probe sees clipping: without the clip margin the tails of gypqjy are cut at the baseline');
+    for (const s of ['md', 'sm']) for (const k of ['latin', 'arabic']) assert.ok(real[s + '-' + k] >= unclipped[s + '-' + k] - 0.25, s + ' ' + k + ': the label is not clipped (' + real[s + '-' + k] + ' against ' + unclipped[s + '-' + k] + ' unclipped)');
     // 2. the Danger pressed steps, in both themes
     const read = async (mode) => {
       const p = await fresh(mode);
