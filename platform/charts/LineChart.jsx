@@ -55,7 +55,7 @@ import React from 'react';
 import { cx } from '../utils/cx.js';
 import { formatNumber, formatDate, formatPercent, parseDate } from '../utils/format.js';
 import { ChartFrame } from './ChartFrame.jsx';
-import { seriesColor, scaleTime } from './scales.js';
+import { seriesColor, scaleTime, wholeDays } from './scales.js';
 import { ChartLegend } from './parts/ChartLegend.jsx';
 import { ChartTooltip, chartTooltipText } from './parts/ChartTooltip.jsx';
 import { useChartInteraction, ChartFocusMark, ChartBrush } from './interaction.js';
@@ -98,6 +98,7 @@ export function SeriesChart({ kind = 'line', title, description, data = NONE, x 
   const type = xType === 'auto' ? typeOf(xv.find((v) => v !== undefined && v !== null)) : xType;
   // a time axis reads its values with the shared reader: a date-only "YYYY-MM-DD" is that calendar day where the reader is (issue 342)
   const xs = type === 'time' ? xv.map((v) => (typeof v === 'number' ? new Date(v) : parseDate(v) || new Date(NaN))) : xv;
+  const days = type === 'time' && wholeDays(xs.filter((d) => !isNaN(d.getTime())));
   const raw = (s, c) => { const v = data[c] ? data[c][list[s].field] : undefined; return isNum(v) ? v : null; };
   const fmtX = typeof formatX === 'function' ? formatX : type === 'time' ? (v) => formatDate(v) : type === 'linear' ? (v) => formatNumber(v) : (v) => String(v);
   const fmtV = typeof format === 'function' ? format : (v) => formatNumber(v);
@@ -156,7 +157,8 @@ export function SeriesChart({ kind = 'line', title, description, data = NONE, x 
     const cols = []; for (let c = v0; c <= v1; c++) cols.push(c);
     // dates: the Platform's calendar ticks and their labels (Jun 2026, or the app's formatX), about one per TICK_ROOM
     const timeLabels = (sz) => {
-      const ts = scaleTime({ domain: [xs[v0], xs[v1]], range: [0, sz.width] });
+      // dates without a time get day ticks or coarser, never hours (issue 593)
+      const ts = scaleTime({ domain: [xs[v0], xs[v1]], range: [0, sz.width], unit: days ? 'day' : undefined });
       const count = Math.max(2, Math.floor(sz.width / TICK_ROOM));
       const ticks = ts.ticks(count);
       const text = (v) => (typeof formatX === 'function' ? fmts.current.fmtX(new Date(v)) : ts.format(new Date(v), count));

@@ -22,8 +22,11 @@
      scaleBand({ domain, range, paddingInner, paddingOuter, align }): one band per category, in the domain's order;
        paddingInner (default 0.2) and paddingOuter (default 0.1) are fractions of a step; align (default 0.5) places the
        bands when there is room left
-     scaleTime({ domain, range, nice, clamp, count }): a continuous scale over dates (Date or anything Date accepts);
-       ticks fall on calendar steps (seconds to years) in local time
+     scaleTime({ domain, range, nice, clamp, count, unit }): a continuous scale over dates (Date or anything Date accepts);
+       ticks fall on calendar steps (seconds to years) in local time; unit ("second" … "year") is the smallest step it
+       may use: "day" for dates without a time, so their ticks land on days or coarser, never hours
+     wholeDays(dates) (the charts' own, from './scales.js'): true when every date is a whole day (a date-only
+       "YYYY-MM-DD" or a Date at local midnight); the charts pass unit: "day" to their time scale then
      Every continuous scale: scale(value) → position; scale.invert(position) → value; scale.ticks(count?);
        scale.format(value, count?) → the tick label; scale.domain(), scale.range(); scale.type
      A band scale: scale(key) → start of its band (undefined for an unknown key); scale.bandwidth(); scale.step();
@@ -166,11 +169,16 @@ function addTo(x, unit, amount) {
   else y.setFullYear(y.getFullYear() + amount);
   return y;
 }
-function timeStep(span, count) {
+// the steps a scale may use: all of them, or from a smallest unit up (issue 593: dates without a time get day ticks or
+// coarser, never hours)
+const UNITS = ['second', 'minute', 'hour', 'day', 'week', 'month', 'year'];
+const stepsFrom = (unit) => (UNITS.indexOf(unit) > 0 ? TIME_STEPS.filter((s) => UNITS.indexOf(s[0]) >= UNITS.indexOf(unit)) : TIME_STEPS);
+function timeStep(span, count, unit) {
   const target = Math.abs(span) / Math.max(1, count);
   if (target <= 365 * DAY) {   // the calendar step nearest the wanted one (by ratio)
+    const steps = stepsFrom(unit);
     const gap = (s) => Math.abs(Math.log(s[2] / Math.max(1, target)));
-    return TIME_STEPS.reduce((best, s) => (gap(s) < gap(best) ? s : best), TIME_STEPS[0]);
+    return steps.reduce((best, s) => (gap(s) < gap(best) ? s : best), steps[0]);
   }
   const years = tickStep(target / (365 * DAY), 1);
   return ['year', Math.max(1, years), years * 365 * DAY];
@@ -178,12 +186,19 @@ function timeStep(span, count) {
 const TIME_LABELS = { second: { hour: 'numeric', minute: '2-digit', second: '2-digit' }, minute: { hour: 'numeric', minute: '2-digit' }, hour: { hour: 'numeric', minute: '2-digit' },
   day: { month: 'short', day: 'numeric' }, week: { month: 'short', day: 'numeric' }, month: { month: 'short', year: 'numeric' }, year: { year: 'numeric' } };
 
-export function scaleTime({ domain = [0, DAY], range = [0, 1], nice = false, clamp = false, count = 5 } = {}) {
+// true when every date is a whole day: a date-only value ("2026-10-01") or a Date at local midnight (issue 593)
+export function wholeDays(dates) {
+  const list = Array.from(dates || []).map((v) => (typeof v === 'number' ? new Date(v) : parseDate(v)));
+  return list.length > 0 && list.every((x) => x && x.getHours() === 0 && x.getMinutes() === 0 && x.getSeconds() === 0 && x.getMilliseconds() === 0);
+}
+
+export function scaleTime({ domain = [0, DAY], range = [0, 1], nice = false, clamp = false, count = 5, unit: least } = {}) {
   let d = pair(domain, [0, DAY]).map(toTime);
   const r = pair(range, [0, 1]).map(Number);
   if (d[0] === d[1]) d = [d[0] - DAY / 2, d[1] + DAY / 2];
+  const timeStepOf = (span, n) => timeStep(span, n, least);
   if (nice) {
-    const [unit, amount] = timeStep(d[1] - d[0], count);
+    const [unit, amount] = timeStepOf(d[1] - d[0], count);
     const lo = Math.min(d[0], d[1]), hi = Math.max(d[0], d[1]);
     const start = floorTo(lo, unit, amount).getTime();
     let stop = floorTo(hi, unit, amount); if (stop.getTime() < hi) stop = addTo(stop, unit, amount);
@@ -195,9 +210,9 @@ export function scaleTime({ domain = [0, DAY], range = [0, 1], nice = false, cla
     return interpolate(r[0], r[1], t);
   };
   scale.invert = (p) => new Date(d[0] + ((Number(p) - r[0]) / (r[1] - r[0])) * (d[1] - d[0]));
-  scale.step = (n = count) => timeStep(d[1] - d[0], n);
+  scale.step = (n = count) => timeStepOf(d[1] - d[0], n);
   scale.ticks = (n = count) => {
-    const [unit, amount] = timeStep(d[1] - d[0], n);
+    const [unit, amount] = timeStepOf(d[1] - d[0], n);
     const lo = Math.min(d[0], d[1]), hi = Math.max(d[0], d[1]);
     const out = [];
     let x = floorTo(lo, unit, amount);
@@ -205,7 +220,7 @@ export function scaleTime({ domain = [0, DAY], range = [0, 1], nice = false, cla
     for (let i = 0; x.getTime() <= hi && i < 1000; i++, x = addTo(x, unit, amount)) out.push(new Date(x.getTime()));
     return out;
   };
-  scale.format = (v, n = count, o = {}) => new Intl.DateTimeFormat(numeralLocale(o.locale || formatLocale()), TIME_LABELS[timeStep(d[1] - d[0], n)[0]]).format(new Date(toTime(v)));
+  scale.format = (v, n = count, o = {}) => new Intl.DateTimeFormat(numeralLocale(o.locale || formatLocale()), TIME_LABELS[timeStepOf(d[1] - d[0], n)[0]]).format(new Date(toTime(v)));
   scale.domain = () => d.map((t) => new Date(t));
   scale.range = () => r.slice();
   scale.type = 'time';
