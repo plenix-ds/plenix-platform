@@ -288,6 +288,20 @@
    "checksWithoutPart": 0,
    "checksNamedAtRunTime": 13
   },
+  "site-icons": {
+   "parts": [
+    {
+     "part": "Compatibility file",
+     "checks": 5
+    },
+    {
+     "part": "Generator",
+     "checks": 4
+    }
+   ],
+   "checksWithoutPart": 0,
+   "checksNamedAtRunTime": 0
+  },
   "theme": {
    "parts": [
     {

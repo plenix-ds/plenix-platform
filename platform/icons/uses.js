@@ -11,6 +11,8 @@
 // cannot be read: in strict mode the scan fails, naming the file and line, unless the line (or the line before) lists the
 // names it can take in a comment:   /* plx-icons: density-large density-medium density-small */
 //   scan(root, folders, { names, strict }) -> { found: Map<name, Set<file:line>>, unresolved: [file:line …], unknown: [...] }
+//   scanText(text, rel, report, opts): one body of source text, reported through report.name(name, at, node, file) and
+//     report.unresolved(at) (a site's pages: tools/icons/site-icons.js)
 const fs = require('fs');
 const path = require('path');
 
@@ -49,8 +51,10 @@ function bound(p, out) {
   return out;
 }
 
-function scanFile(file, rel, report, opts = {}) {
-  const text = fs.readFileSync(file, 'utf8'), lines = text.split('\n');
+function scanFile(file, rel, report, opts = {}) { scanText(fs.readFileSync(file, 'utf8'), rel, report, opts); }
+// the same scan over source text (a page's inline script: tools/icons/site-icons.js); rel names it in file:line
+function scanText(text, rel, report, opts = {}) {
+  const lines = text.split('\n');
   const ast = parse(text);
   // a scope per function (and the program): what its parameters bind, and its own declarations by name (not those of a
   // nested function); a name declared twice in one scope resolves to all its values
@@ -210,4 +214,4 @@ function scan(root, folders, { names, withIcon = false }) {
 // draws what it is given)
 const PLATFORM = ['platform/components', 'platform/patterns', 'platform/hooks', 'platform/providers', 'platform/templates', 'platform/charts', 'platform/utils'];
 
-module.exports = { scan, PLATFORM };
+module.exports = { scan, scanText, PLATFORM };

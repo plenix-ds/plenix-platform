@@ -3,6 +3,7 @@
 //
 //   Icons          platform/icons/                 → platform/components/Icon/icon.css   (build-icons.js)
 //                                                  → platform/dist/icons/plenix/<name>.svg|.js, index.json (the asset layout, #279)
+//                                                  → platform/dist/plenix-icons-plenix.js (the compatibility file: every Plenix icon, #553)
 //   Platform       platform/index.js               → platform/dist/platform.js       publishes its exports on window.Plenix
 //   Applications   <folder>/main.jsx               → <folder>/app.js                  one per suite application (dashboard,
 //                  projects, messages, contacts, calendar, tasks, notes, bookmarks, files, settings); they share suite/
@@ -44,6 +45,9 @@ console.log('Built platform/components/Brand/brand.css and platform/brand/favico
 const STANDARDS = require('./build-standards.js')(ROOT);
 console.log('Built ' + STANDARDS.files.join(', ') + ' from platform/standards (' + STANDARDS.pages + ' kinds of page' + (STANDARDS.stale.length ? ', ' + STANDARDS.stale.length + ' changed' : '') + ')');
 console.log('Built platform/components/Icon/icon.css (' + ICONS.names + ' icon names, ' + ICONS.symbols + ' symbols, ' + Math.round(ICONS.bytes / 1024) + ' KB)');
+// the compatibility file (#553): every Plenix icon registered with registerIcons, for a site that loads plenix.js and no icon file of its own
+const COMPAT = require('./tools/icons/site-icons.js').buildCompat(ROOT);
+console.log('Built ' + COMPAT.file + ' (' + COMPAT.icons + ' icons, ' + Math.round(COMPAT.bytes / 1024) + ' KB' + (COMPAT.changed ? '' : ', unchanged') + ')');
 // then the step rules (build-steps.js -> system/steps.css): values from the data arrive as attributes (batch 267)
 const STEPS = require('./build-steps.js')(ROOT);
 // the Platforms Standard (platform/standards/platforms.md) as the design system's data (batch 297)
