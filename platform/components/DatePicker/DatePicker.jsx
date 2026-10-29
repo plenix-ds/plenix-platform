@@ -29,7 +29,7 @@
      required: handed to the date field (a Field sets it)
      id: handed to the date field, with aria-describedby (a Field sets both)
      locale: the locale of the typed form, the names and the first day of the week (default: the page's language)
-     strings: the words it shows and announces, for other languages: { open: "Choose date", dialog: "Choose date",
+     strings: the words it shows and announces; default: the locale's datePicker words from the catalog (platform/i18n: English, Arabic), through LocaleProvider; this prop wins: { open: "Choose date", dialog: "Choose date",
        time: "Time", presets: "Presets", today: "Today", tomorrow: "Tomorrow", nextWeek: "In a week", last7: "Last 7 days",
        last30: "Last 30 days", thisMonth: "This month", lastMonth: "Last month", calendar: {…Calendar's strings} }
      className: more classes on the date picker
@@ -66,9 +66,8 @@ import { InputGroup } from '../InputGroup/InputGroup.jsx';
 import { Popover } from '../Popover/Popover.jsx';
 import { Calendar, parseIsoDate, addDays, addMonths, todayIso } from '../Calendar/Calendar.jsx';
 import CalendarIcon from 'plenix-platform/icons/plenix/calendar';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { open: 'Choose date', dialog: 'Choose date', time: 'Time', presets: 'Presets', today: 'Today', tomorrow: 'Tomorrow',
-  nextWeek: 'In a week', last7: 'Last 7 days', last30: 'Last 30 days', thisMonth: 'This month', lastMonth: 'Last month' };
 const DASH = ' – ';
 
 // the locale's numeric date: its parts in order ("month", "day", "year") and the form people read ("MM/DD/YYYY")
@@ -100,7 +99,7 @@ const monthBounds = (iso, n) => { const first = addMonths(iso.slice(0, 7) + '-01
 export const DatePicker = React.forwardRef(function DatePicker({ mode = 'single', value, defaultValue, onChange, presets, months, min, max, width,
   isDateDisabled, weekNumbers = false, defaultTime = '09:00', timeZoneName = 'short', invalid, disabled, required, id,
   'aria-describedby': describedBy, locale: localeProp, strings, className, ...rest }, ref) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('datePicker', strings);   // the locale's words (platform/i18n), with the strings prop on top
   const locale = numeralLocale(localeProp || formatLocale());
   const form = numericForm(locale);
   const range = mode === 'range', dateTime = mode === 'date-time';
