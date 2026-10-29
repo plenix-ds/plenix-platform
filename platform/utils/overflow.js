@@ -41,14 +41,14 @@ export function useOverflow(listRef, count, key) {
 /* the list's children in DOM order: the first `fit` items, the More control, the rest */
 export const splitAt = (items, fit, more) => items.slice(0, fit).concat(more ? [more] : [], items.slice(fit));
 
-/* useTruncated(ref) (batch 270): true while the element's one line of text is cut short (shown with an ellipsis), so
-   its full text can be offered in a Tooltip; checked again whenever the element's width changes. */
+/* useTruncated(ref) (batch 270): true while the element's text is cut short (shown with an ellipsis), so its full text can be offered in a
+   Tooltip: cut across one line (wider than the box) or cut after several lines (taller than the box, issue 502); checked again whenever the element's size changes. */
 export function useTruncated(ref) {
   const [cut, setCut] = React.useState(false);
   React.useLayoutEffect(() => {
     const el = ref.current;
     if (!el) return undefined;
-    const check = () => setCut(el.scrollWidth > el.clientWidth + 1);
+    const check = () => setCut(el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1);
     check();
     if (typeof ResizeObserver === 'undefined') return undefined;
     const ro = new ResizeObserver(check);

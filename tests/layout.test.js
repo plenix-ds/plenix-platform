@@ -34,6 +34,11 @@ if (changed.wants({ units: ['patterns/AppShell', 'patterns/SidePanel', 'patterns
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'monitor-widths.test.js')], { stdio: 'inherit', env: process.env });
   if (result.status !== 0) process.exit(result.status || 1);
 }
+// section headings wrap, then end in an ellipsis with a tooltip (issue 502): its own test, when CollapsibleSection, NavList, Tooltip or the truncation helper changed
+if (changed.wants({ units: ['components/CollapsibleSection', 'components/NavList', 'components/Tooltip'] })) {
+  const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'section-headings-502.test.js')], { stdio: 'inherit', env: process.env });
+  if (result.status !== 0) process.exit(result.status || 1);
+}
 if (!changed.wants({ units: ['patterns/AppShell', 'patterns/SettingsLayout', 'patterns/SplitView', 'components/VisuallyHidden', 'providers/DirectionProvider', 'components/Checkbox', 'components/Fieldset', 'components/Icon'] })) changed.none('LAYOUT_OK 0/0');
 changed.report('every mode');
 const P = 'file://' + (ROOT.startsWith('/') ? '' : '/') + ROOT.replace(/\\/g, '/') + '/platform/';
