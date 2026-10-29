@@ -19,13 +19,14 @@
      ToolRailBar (NavPane at Narrow): the same items drawn as the destinations of the bottom navigation bar
    Behavior:
      It is a toolbar with vertical orientation and one Tab stop: Arrow Up / Down, Home and End move between tools; Tab
-     enters and leaves the rail.
+     enters and leaves the rail. Its Tab stop and arrow keys are the shared focus group (useFocusGroup,
+     hooks/useFocusable.js); NavPane's and SecondaryPane's collapsed rails are this rail.
      Each tool is an icon-only toggle button with a tooltip at its end side.
    Notes:
      The editor page sets the dark mode on its container.
 */
 import React from 'react';
-import { useRovingFocus, roveTo } from '../../utils/roving.js';
+import { useFocusGroup } from '../../hooks/useFocusable.js';
 import { cx } from '../../utils/cx.js';
 import { Icon, stateIcon, asIcon as iconElement } from '../../components/Icon/Icon.jsx';
 import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
@@ -38,20 +39,12 @@ export const BarContext = React.createContext(false);
 export function ToolRail({ label, showLabels = false, className, children }) {
   const ref = React.useRef(null);
   const itemsOf = () => (ref.current ? Array.prototype.slice.call(ref.current.querySelectorAll('.plx-tool-rail__item:not([disabled])')) : []);
-  // one Tab stop: Tab enters and leaves the rail; the arrows move between tools (batch 213)
-  useRovingFocus(ref, itemsOf);
-  const onKeyDown = (e) => {
-    if (['ArrowUp', 'ArrowDown', 'Home', 'End'].indexOf(e.key) < 0) return;
-    const items = itemsOf();
-    const i = items.indexOf(document.activeElement);
-    if (i < 0) return;
-    const n = e.key === 'Home' ? 0 : e.key === 'End' ? items.length - 1 : e.key === 'ArrowDown' ? (i + 1) % items.length : (i - 1 + items.length) % items.length;
-    e.preventDefault();
-    items[n].focus();
-  };
+  // one Tab stop: Tab enters and leaves the rail; Arrow Up / Down (looping), Home and End move between tools (batch 213).
+  // The shared focus group (hooks/useFocusable.js, issue 262); the rail's own items, and a held modifier still moves, as before
+  const { groupProps } = useFocusGroup(ref, { orientation: 'vertical', items: itemsOf, modifiers: true });
   return (
     <LabelsContext.Provider value={showLabels}>
-      <div ref={ref} role="toolbar" aria-orientation="vertical" aria-label={label} className={cx('plx-tool-rail', showLabels && 'plx-tool-rail--labels', className)} onKeyDown={onKeyDown} onFocus={(e) => roveTo(ref, itemsOf(), e.target)}>{children}</div>
+      <div ref={ref} role="toolbar" aria-orientation="vertical" aria-label={label} className={cx('plx-tool-rail', showLabels && 'plx-tool-rail--labels', className)} {...groupProps}>{children}</div>
     </LabelsContext.Provider>
   );
 }
