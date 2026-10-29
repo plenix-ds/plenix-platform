@@ -45,9 +45,14 @@ import { Button } from '../Button/Button.jsx';
 import { tokenMs } from '../../utils/tokenTime.js';
 import { announce } from '../../utils/announce.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import AlertIcon from 'plenix-platform/icons/plenix/alert';
+import CircleCheckIcon from 'plenix-platform/icons/plenix/circle-check';
+import CircleInfoIcon from 'plenix-platform/icons/plenix/circle-info';
+import CloseIcon from 'plenix-platform/icons/plenix/close';
+import WarningIcon from 'plenix-platform/icons/plenix/warning';
 
 const ToastContext = React.createContext(null);
-const TONE_ICON = { info: 'circle-info', success: 'circle-check', warning: 'warning', danger: 'alert' };
+const TONE_ICON = { info: CircleInfoIcon, success: CircleCheckIcon, warning: WarningIcon, danger: AlertIcon };
 let nextId = 1;
 
 export function ToastProvider({ duration, children }) {
@@ -105,7 +110,7 @@ export function ToastProvider({ duration, children }) {
               <span className="plx-toast__icon"><Icon name={TONE_ICON[t.tone] || TONE_ICON.info} /></span>
               <span ref={(el) => { if (el) texts.current.set(t.id, el); else texts.current.delete(t.id); }} className="plx-toast__message">{t.message}</span>
               {t.action ? <Button size="xs" className="plx-toast__action" onClick={() => { if (t.action.onAction) t.action.onAction(); dismiss(t.id, 'action'); }}>{t.action.label}</Button> : null}
-              <button type="button" className="plx-toast__close" aria-label={words.dismiss} onClick={() => dismiss(t.id)}><Icon name="close" /></button>
+              <button type="button" className="plx-toast__close" aria-label={words.dismiss} onClick={() => dismiss(t.id)}><Icon name={CloseIcon} /></button>
             </div>
           ))}
         </div>,

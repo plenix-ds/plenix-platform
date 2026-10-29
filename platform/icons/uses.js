@@ -116,6 +116,7 @@ function scanFile(file, rel, report) {
         if (root.type === 'Identifier' && lookup(root).values) { const got = tables(v, 0); if (got) { got.forEach((g) => value(g, at, depth + 1)); return; } break; }
         if (root.type === 'Identifier' && lookup(root).outside === 'import' && /icons?$/i.test(root.name)) return;   // a *Icons table of another file, scanned there
         if (!v.computed) return;   // item.icon: the item's own field (collected where it is written)
+        if (v.property.type === 'NumericLiteral' && root.type === 'Identifier' && lookup(root).outside === 'param') return;   // m[3]: a tuple's own field, the same
         break;
       }
       case 'CallExpression': {
@@ -192,7 +193,7 @@ function scan(root, folders, { names }) {
     name(nm, at, node, file) {
       if (!names[nm]) { unknown.push(at + ' ' + JSON.stringify(nm)); return; }
       if (!found.has(nm)) found.set(nm, new Set()); found.get(nm).add(at);
-      if (node) { const k = file + ':' + node.start; if (!literals.has(k)) literals.set(k, { file, start: node.start, end: node.end, name: nm, jsx: !!(node.parent && node.parent.type === 'JSXAttribute') }); }
+      if (node) { const k = file + ':' + node.start; if (!literals.has(k)) literals.set(k, { file, start: node.start, end: node.end, name: nm, jsx: !!(node.parent && node.parent.type === 'JSXAttribute'), param: !!(node.parent && node.parent.type === 'AssignmentPattern') }); }
     },
     unresolved(at) { unresolved.push(at); },
   };

@@ -46,6 +46,12 @@ import { Badge } from '../Badge/Badge.jsx';
 import { Button } from '../Button/Button.jsx';
 import { Text } from '../Text/Text.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import CheckIcon from 'plenix-platform/icons/plenix/check';
+import CloseIcon from 'plenix-platform/icons/plenix/close';
+import LockIcon from 'plenix-platform/icons/plenix/lock';
+import RemoveIcon from 'plenix-platform/icons/plenix/remove';
+import ScheduleIcon from 'plenix-platform/icons/plenix/schedule';
+import VisibilityOffIcon from 'plenix-platform/icons/plenix/visibility-off';
 
 const OPTIONS = [['approve', 'check', 'success'], ['deny', 'close', 'danger'], ['abstain', 'remove', 'neutral']];
 const RESULT_TONE = { open: 'neutral', passing: 'active', failing: 'action-required', passed: 'success', failed: 'negative', tied: 'waiting', 'no-quorum': 'waiting' };
@@ -88,8 +94,8 @@ export function VoteTally({ label, members = [], outcome, settings = {}, status 
             onAnimationEnd={changed.has(m.memberId) ? () => settled(m.memberId) : undefined}>
             <Avatar name={m.name} src={m.picture || undefined} />
             <span className="plx-vote-tally__who"><Text variant="strong">{m.name}</Text>{m.role ? <Text variant="secondary">{m.role}</Text> : null}</span>
-            {m.disabledReason ? <Badge tone="neutral" icon="lock">{m.disabledReason + ' (' + t.turnedOff + ')'}</Badge>
-              : m.voteHidden ? <Badge tone="neutral" icon="visibility-off">{hiddenText}</Badge>
+            {m.disabledReason ? <Badge tone="neutral" icon={LockIcon}>{m.disabledReason + ' (' + t.turnedOff + ')'}</Badge>
+              : m.voteHidden ? <Badge tone="neutral" icon={VisibilityOffIcon}>{hiddenText}</Badge>
               : (
                 <span className="plx-vote-tally__choices" role="group" aria-label={fill(t.voteOf, { name: m.name })}>
                   {OPTIONS.map(([option, icon, tone]) => (
@@ -103,13 +109,13 @@ export function VoteTally({ label, members = [], outcome, settings = {}, status 
       </ul>
       <div className="plx-vote-tally__totals" aria-live="polite">
         {/* only the counts it is given: a vote that holds the choices back sends no approve, deny or abstain */}
-        {o.approve !== undefined ? <Badge tone="success" icon="check">{t.approve + ' ' + o.approve}</Badge> : null}
-        {o.deny !== undefined ? <Badge tone="negative" icon="close">{t.deny + ' ' + o.deny}</Badge> : null}
-        {o.abstain !== undefined ? <Badge tone="neutral" icon="remove">{t.abstain + ' ' + o.abstain}</Badge> : null}
-        {o.notVoted !== undefined ? <Badge tone="waiting" icon="schedule">{t.notVoted + ' ' + o.notVoted}</Badge> : null}
-        {o.turnedOff ? <Badge tone="neutral" icon="lock">{t.turnedOff.charAt(0).toUpperCase() + t.turnedOff.slice(1) + ' ' + o.turnedOff}</Badge> : null}
-        {o.result ? <Badge tone={RESULT_TONE[o.result] || 'neutral'} icon={o.result === 'passed' || o.result === 'passing' ? 'check' : 'schedule'}>{words[o.result] || o.result}</Badge> : null}
-        {connection === 'reconnecting' ? <Badge tone="waiting" icon="schedule">{t.reconnecting}</Badge> : null}
+        {o.approve !== undefined ? <Badge tone="success" icon={CheckIcon}>{t.approve + ' ' + o.approve}</Badge> : null}
+        {o.deny !== undefined ? <Badge tone="negative" icon={CloseIcon}>{t.deny + ' ' + o.deny}</Badge> : null}
+        {o.abstain !== undefined ? <Badge tone="neutral" icon={RemoveIcon}>{t.abstain + ' ' + o.abstain}</Badge> : null}
+        {o.notVoted !== undefined ? <Badge tone="waiting" icon={ScheduleIcon}>{t.notVoted + ' ' + o.notVoted}</Badge> : null}
+        {o.turnedOff ? <Badge tone="neutral" icon={LockIcon}>{t.turnedOff.charAt(0).toUpperCase() + t.turnedOff.slice(1) + ' ' + o.turnedOff}</Badge> : null}
+        {o.result ? <Badge tone={RESULT_TONE[o.result] || 'neutral'} icon={o.result === 'passed' || o.result === 'passing' ? CheckIcon : ScheduleIcon}>{words[o.result] || o.result}</Badge> : null}
+        {connection === 'reconnecting' ? <Badge tone="waiting" icon={ScheduleIcon}>{t.reconnecting}</Badge> : null}
         {o.quorum && o.quorum.needed ? <Text variant="secondary" className="plx-vote-tally__quorum">{fill(t.quorum, { present: o.quorum.present, needed: o.quorum.needed, state: o.quorum.met ? t.met : t.notMet })}</Text> : null}
       </div>
     </section>

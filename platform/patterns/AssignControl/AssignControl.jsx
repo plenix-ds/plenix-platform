@@ -53,6 +53,9 @@ import { Persona } from '../../components/Persona/Persona.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { useOptionalToast } from '../ReviewFlow/ReviewFlow.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import ForwardIcon from 'plenix-platform/icons/plenix/forward';
+import PencilIcon from 'plenix-platform/icons/plenix/pencil';
+import PersonIcon from 'plenix-platform/icons/plenix/person';
 
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 
@@ -97,7 +100,7 @@ export function AssignControl({ label, people = [], value = null, onChange, me, 
             : <span className="plx-assign-control__empty">{t.notDelegated}</span>}
         </div>
         <div className="plx-assign-control__actions">
-          <Button size="sm" variant="ghost" icon={person ? 'pencil' : 'forward'} onClick={begin}>{person ? t.change : t.delegate}</Button>
+          <Button size="sm" variant="ghost" icon={person ? PencilIcon : ForwardIcon} onClick={begin}>{person ? t.change : t.delegate}</Button>
           {person && onEndDelegation ? <Button size="sm" variant="ghost" onClick={() => { onEndDelegation(); say(t.ended); }}>{t.end}</Button> : null}
         </div>
         <Dialog open={open} onClose={() => setOpen(false)} title={fill(t.delegateTitle, { label: label.toLowerCase() })} size="sm"
@@ -137,7 +140,7 @@ export function AssignControl({ label, people = [], value = null, onChange, me, 
         </div>
         <div className="plx-assign-control__actions">
           {editing ? <Button size="sm" variant="ghost" onClick={cancel}>{t.cancel}</Button>
-            : me && find(me) ? <Button size="sm" variant="ghost" icon="person" onClick={() => choose(me)}>{t.assignToMe}</Button> : null}
+            : me && find(me) ? <Button size="sm" variant="ghost" icon={PersonIcon} onClick={() => choose(me)}>{t.assignToMe}</Button> : null}
         </div>
       </div>
     );
@@ -148,7 +151,7 @@ export function AssignControl({ label, people = [], value = null, onChange, me, 
         <Persona name={person.label} src={person.src} color={person.color} presence={person.presence} secondary={person.description} size="sm" />
       </div>
       <div className="plx-assign-control__actions">
-        <Button ref={again} size="sm" variant="ghost" icon="person" onClick={() => setEditing(true)}>{t.reassign}</Button>
+        <Button ref={again} size="sm" variant="ghost" icon={PersonIcon} onClick={() => setEditing(true)}>{t.reassign}</Button>
         {clearable ? <Button size="sm" variant="ghost" onClick={() => choose(null)}>{t.unassign}</Button> : null}
       </div>
     </div>

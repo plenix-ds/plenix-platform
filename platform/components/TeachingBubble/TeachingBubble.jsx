@@ -50,6 +50,7 @@ import { Popover } from '../Popover/Popover.jsx';
 import { Spotlight } from '../Spotlight/Spotlight.jsx';
 import { SurfaceContext } from '../../providers/Surface.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import CloseIcon from 'plenix-platform/icons/plenix/close';
 
 
 // a string with {name} places filled by numbers in the data font (counts are technical values)
@@ -75,7 +76,7 @@ export function TeachingBubble({ target, open = false, onDismiss, title, childre
       {media ? <div className="plx-teaching-bubble__media">{media}</div> : null}
       <div className="plx-teaching-bubble__header">
         <h2 id={id + 't'} className="plx-teaching-bubble__title">{title}</h2>
-        {onDismiss ? <Button variant="ghost" size="xs" iconOnly icon="close" label={t.close} className="plx-teaching-bubble__close" onClick={onDismiss} /> : null}
+        {onDismiss ? <Button variant="ghost" size="xs" iconOnly icon={CloseIcon} label={t.close} className="plx-teaching-bubble__close" onClick={onDismiss} /> : null}
       </div>
       <p className="plx-teaching-bubble__text">{children}</p>
       {step || actions ? (

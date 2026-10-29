@@ -43,6 +43,7 @@ import { formatBytes, formatDate, formatNumber } from '../../utils/format.js';
 import { Icon } from '../Icon/Icon.jsx';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { development } from '../../utils/devWarn.js';
 import CodeIcon from 'plenix-platform/icons/plenix/code';
 import DocTextIcon from 'plenix-platform/icons/plenix/doc-text';
 import DocumentIcon from 'plenix-platform/icons/plenix/document';
@@ -85,7 +86,15 @@ export function fileIcon(name, type) {
 // the same icon as the imported module the File draws (#280): fileIcon stays a name (it is public: a caller may print or
 // compare it); this one is the component's own (plx-icons: is not needed, every name it can return is imported here)
 const TYPE_ICONS = Object.fromEntries([CodeIcon, DocTextIcon, DocumentIcon, FileAiIcon, FileJpgIcon, FilePdfIcon, FilePngIcon, FilePsdIcon, FileSvgIcon, FileZipIcon, ImageA2Icon, TableIcon].map((m) => [m.name, m]));
-export const fileIconModule = (name, type) => TYPE_ICONS[fileIcon(name, type)];
+// a type whose icon has no import here (one added to BY_EXT alone) draws the document icon, and development says so once,
+// so the icon never silently disappears
+const unmapped = new Set();
+export function fileIconModule(name, type) {
+  const n = fileIcon(name, type);
+  if (TYPE_ICONS[n]) return TYPE_ICONS[n];
+  if (!unmapped.has(n) && development() && typeof console !== 'undefined') { unmapped.add(n); console.warn('[Plenix] File: the type icon "' + n + '" has no import in File.jsx (TYPE_ICONS); the document icon is drawn.'); }
+  return DocumentIcon;
+}
 
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 

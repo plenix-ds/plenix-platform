@@ -34,10 +34,11 @@ import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
 import { Icon, asIcon as iconElement, isIconModule, iconKey } from '../Icon/Icon.jsx';
 import { useFocusable } from '../../hooks/useFocusable.js';
+import FolderOpenIcon from 'plenix-platform/icons/plenix/folder-open';
 
 const asIcon = (i, filled) => (typeof i === 'string' || isIconModule(i) ? iconElement(i, { filled }) : React.isValidElement(i) && i.type === Icon ? React.cloneElement(i, { filled: filled || i.props.filled }) : i);
 // the icon an open item shows: its own openIcon, else an open folder for a folder
-const OPEN_ICONS = { folder: 'folder-open' };
+const OPEN_ICONS = { folder: FolderOpenIcon };
 const iconOf = (n, isOpen) => (isOpen ? n.openIcon || OPEN_ICONS[iconKey(n.icon)] || n.icon : n.icon);
 
 // one item: its focus (and whether the keyboard moved it there, :focus-visible) comes from useFocusable; the tree keeps

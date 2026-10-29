@@ -23,6 +23,7 @@ import { Badge } from '../../components/Badge/Badge.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { cx } from '../../utils/cx.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import CheckIcon from 'plenix-platform/icons/plenix/check';
 
 const statusOf = (step) => {
   const votes = (step.reviewers || []).map((a) => a.decision);
@@ -54,7 +55,7 @@ export function ApprovalWorkflow({ title, steps = [], reviewerId, variant = 'seq
       <ReviewFlow title={step.label} detail={title} status={states[i]} reviewers={step.reviewers} history={step.history} strings={reviewStrings} />
       {eligible(step, i) ? <><Field label={t.comment} error={errors[step.id]}><Textarea disabled={pending[step.id]} value={comments[step.id] || ''} onChange={(e) => setComments({ ...comments, [step.id]: e.target.value })} /></Field>
         <Inline wrap>{[['rejected', t.reject], ['changes-requested', t.changes], ['approved', t.approve]].map(([decision, word]) => <Button key={decision} disabled={pending[step.id]} variant={decision === 'approved' ? 'primary' : 'secondary'} onClick={() => decide(step, i, decision)}>{word}</Button>)}</Inline></> : null}
-      {submitted[step.id + ':' + reviewerId] ? <Badge tone="success" icon="check" role="status">{t.recorded}</Badge> : null}
+      {submitted[step.id + ':' + reviewerId] ? <Badge tone="success" icon={CheckIcon} role="status">{t.recorded}</Badge> : null}
       {errors[step.id] && !eligible(step, i) ? <Notice tone="danger">{errors[step.id]}</Notice> : null}
     </Stack>)}
   </Stack>;

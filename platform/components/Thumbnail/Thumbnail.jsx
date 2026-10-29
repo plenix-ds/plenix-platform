@@ -14,10 +14,13 @@
 */
 import React from 'react';
 import { Icon } from '../Icon/Icon.jsx';
+import DocumentIcon from 'plenix-platform/icons/plenix/document';
 
 export function Thumbnail({ src, alt = '', icon = 'document' }) {
+  // the documented default is the name; it draws from its imported module (#280)
+  const glyph = icon === 'document' ? DocumentIcon : icon;
   // an image that fails to load falls back to the icon, as when there is none (batch 215)
   const [failed, setFailed] = React.useState(false);
   React.useEffect(() => { setFailed(false); }, [src]);
-  return src && !failed ? <img className="plx-thumbnail" src={src} alt={alt} loading="lazy" decoding="async" onError={() => setFailed(true)} /> : <span className="plx-thumbnail plx-thumbnail--icon" aria-hidden="true"><Icon name={icon} size="sm" /></span>;
+  return src && !failed ? <img className="plx-thumbnail" src={src} alt={alt} loading="lazy" decoding="async" onError={() => setFailed(true)} /> : <span className="plx-thumbnail plx-thumbnail--icon" aria-hidden="true"><Icon name={glyph} size="sm" /></span>;
 }

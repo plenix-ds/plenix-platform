@@ -43,6 +43,7 @@ import { Notice } from '../../components/Notice/Notice.jsx';
 import { ImageCrop } from '../ImageUpload/ImageUpload.jsx';
 import { formatBytes } from '../../utils/format.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import TrashIcon from 'plenix-platform/icons/plenix/trash';
 
 
 export function AvatarUpload({ name, src, onChange, crop = true, removable = true, size = '2xl', accept = 'image/png,image/jpeg,image/webp', maxSize,
@@ -73,7 +74,7 @@ export function AvatarUpload({ name, src, onChange, crop = true, removable = tru
           <div className="plx-avatar-upload__actions">
             <FileInput hideSummary accept={accept} disabled={disabled || !!pending} id={id} aria-describedby={[describedBy, description ? auto + '-hint' : null].filter(Boolean).join(' ') || undefined}
               label={word} strings={{ choose: word }} onChange={chosen} />
-            {removable && src && !pending ? <Button variant="ghost" icon="trash" disabled={disabled} onClick={() => { if (onChange) onChange(null); focusChange(); }}>{t.remove}</Button> : null}
+            {removable && src && !pending ? <Button variant="ghost" icon={TrashIcon} disabled={disabled} onClick={() => { if (onChange) onChange(null); focusChange(); }}>{t.remove}</Button> : null}
           </div>
           {description ? <span className="plx-avatar-upload__hint" id={auto + '-hint'}>{description}</span> : null}
         </div>

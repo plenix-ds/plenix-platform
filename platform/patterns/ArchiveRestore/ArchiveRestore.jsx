@@ -18,6 +18,7 @@ import { Notice } from '../../components/Notice/Notice.jsx';
 import { Stack } from '../../components/Stack/Stack.jsx';
 import { cx } from '../../utils/cx.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import ArchiveIcon from 'plenix-platform/icons/plenix/archive';
 
 export function ArchiveRestore({ archived = false, onArchive, onRestore, strings, children, className }) {
   const t = useStrings('archiveRestore', strings);
@@ -29,7 +30,7 @@ export function ArchiveRestore({ archived = false, onArchive, onRestore, strings
     try { await fn(); } catch (e) { setError(t.failed); } finally { lock.current = false; setBusy(false); }
   };
   return <Stack className={cx('plx-archive-restore', className)} aria-busy={busy}>
-    {archived ? <Banner tone="neutral" icon="archive" title={<Badge tone="neutral" icon="archive">{t.archived}</Badge>}
+    {archived ? <Banner tone="neutral" icon={ArchiveIcon} title={<Badge tone="neutral" icon={ArchiveIcon}>{t.archived}</Badge>}
       actions={onRestore ? <Button size="sm" disabled={busy} onClick={() => run(onRestore)}>{t.restore}</Button> : null}>{t.message}</Banner>
       : onArchive ? <Button disabled={busy} onClick={() => run(onArchive)}>{t.archive}</Button> : null}
     {error ? <Notice tone="danger">{error}</Notice> : null}{children}

@@ -56,6 +56,7 @@ import { cx } from '../../utils/cx.js';
 import { Icon } from '../Icon/Icon.jsx';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import AddIcon from 'plenix-platform/icons/plenix/add';
 
 function RemoveButton({ label, onClick }) {
   return <button type="button" className="plx-tag__remove" aria-label={label} onClick={onClick}><span aria-hidden="true">×</span></button>;
@@ -130,7 +131,7 @@ export const TagInput = React.forwardRef(function TagInput({ onAdd, onKeyDown, v
   if (!open) {
     return (
       <Tooltip content={label}>
-        <button ref={plusRef} id={id} type="button" aria-label={label} className={cx('plx-tag', 'plx-tag--chip', 'plx-tag--add', className)} onClick={() => setOpen(true)}><Icon name="add" size="sm" /></button>
+        <button ref={plusRef} id={id} type="button" aria-label={label} className={cx('plx-tag', 'plx-tag--chip', 'plx-tag--add', className)} onClick={() => setOpen(true)}><Icon name={AddIcon} size="sm" /></button>
       </Tooltip>
     );
   }

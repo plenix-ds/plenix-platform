@@ -14,12 +14,14 @@ import { LiveRegion } from '../../utils/announce.jsx';
 import { Stack } from '../Stack/Stack.jsx';
 import { Text } from '../Text/Text.jsx';
 import { Badge } from '../Badge/Badge.jsx';
+import CheckIcon from 'plenix-platform/icons/plenix/check';
+import SparkleIcon from 'plenix-platform/icons/plenix/sparkle';
 export function StreamingText({text='',state='done',announce=true,strings,className}){
  const t={label:'AI response',streaming:'Generating response',done:'Response complete',stopped:'Generation stopped',...strings},status=['streaming','stopped'].includes(state)?state:'done';
  const [announcement,setAnnouncement]=React.useState('');
  React.useEffect(()=>{setAnnouncement(status==='streaming'?t.streaming:t[status]+(text?' — '+text:''));},[text,status,t.streaming,t.done,t.stopped]);
  return <Stack className={cx('plx-streaming-text',className)} role="group" aria-label={t.label}>
- <Badge icon={status==='done'?'check':'sparkle'}>{t[status]}</Badge>
+ <Badge icon={status==='done'?CheckIcon:SparkleIcon}>{t[status]}</Badge>
  <Text className="plx-streaming-text__content">{text}</Text>
  {announce?<LiveRegion kind="status">{announcement}</LiveRegion>:null}</Stack>;
 }
