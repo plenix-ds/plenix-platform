@@ -79,6 +79,15 @@ import { RenameAction } from '../RenameAction/RenameAction.jsx';
 import { DeleteFlow } from '../DeleteFlow/DeleteFlow.jsx';
 import { useDraggable, useDropTarget } from '../../utils/dnd.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import DownloadTrayIcon from 'plenix-platform/icons/plenix/download-tray';
+import FolderIcon from 'plenix-platform/icons/plenix/folder';
+import FolderOpenIcon from 'plenix-platform/icons/plenix/folder-open';
+import MoveIcon from 'plenix-platform/icons/plenix/move';
+import OpenIcon from 'plenix-platform/icons/plenix/open';
+import RenameIcon from 'plenix-platform/icons/plenix/rename';
+import SortAscendingIcon from 'plenix-platform/icons/plenix/sort-ascending';
+import SortDescendingIcon from 'plenix-platform/icons/plenix/sort-descending';
+import TrashIcon from 'plenix-platform/icons/plenix/trash';
 
 const FIELDS = ['name', 'size', 'modified', 'owner'];
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
@@ -133,13 +142,13 @@ export function FileList({ files = [], label, view = 'list', sortable = false, s
   // the sort menu above the list: the field, then the direction
   const fieldLabel = t[order.field] || t.name;
   const sortMenu = sortable && !table ? (
-    <Menu label={t.sort} placement="bottom-end" trigger={<Button size="sm" variant="ghost" icon={order.dir === 'desc' ? 'sort-descending' : 'sort-ascending'} caret>{fill(t.sortBy, { field: fieldLabel.toLowerCase() })}</Button>}>
+    <Menu label={t.sort} placement="bottom-end" trigger={<Button size="sm" variant="ghost" icon={order.dir === 'desc' ? SortDescendingIcon : SortAscendingIcon} caret>{fill(t.sortBy, { field: fieldLabel.toLowerCase() })}</Button>}>
       <MenuRadioGroup label={t.field} value={order.field} onChange={(v) => setOrder(Object.assign({}, order, { field: v }))}>
         {FIELDS.filter((k) => k === 'name' || facts.indexOf(k) >= 0).map((k) => <MenuItem key={k} value={k}>{t[k]}</MenuItem>)}
       </MenuRadioGroup>
       <MenuRadioGroup label={t.order} value={order.dir} onChange={(v) => setOrder(Object.assign({}, order, { dir: v }))}>
-        <MenuItem value="asc" icon="sort-ascending">{t.asc}</MenuItem>
-        <MenuItem value="desc" icon="sort-descending">{t.desc}</MenuItem>
+        <MenuItem value="asc" icon={SortAscendingIcon}>{t.asc}</MenuItem>
+        <MenuItem value="desc" icon={SortDescendingIcon}>{t.desc}</MenuItem>
       </MenuRadioGroup>
     </Menu>
   ) : null;
@@ -160,7 +169,7 @@ export function FileList({ files = [], label, view = 'list', sortable = false, s
   if (!files.length) {
     return (
       <div className={cx('plx-file-list', 'plx-file-list--' + (table ? 'table' : 'list'), sortable && !table && 'plx-file-list--sortable', className)}>
-        {empty || <EmptyState icon="folder-open" title={t.empty} />}
+        {empty || <EmptyState icon={FolderOpenIcon} title={t.empty} />}
       </div>
     );
   }
@@ -181,10 +190,10 @@ export function FileList({ files = [], label, view = 'list', sortable = false, s
     if (facts.indexOf('owner') >= 0) cols.push({ title: t.owner, field: 'owner', type: 'person' });
     if (facts.indexOf('status') >= 0) cols.push({ title: t.status, field: 'statusLabel', kind: 'center', type: 'select', render: (f) => (f.status ? <Badge tone={f.status.tone} icon={f.status.icon}>{f.status.label}</Badge> : null) });
     const menu = (f) => [].concat(
-      onOpen ? [{ label: t.open, icon: f.kind === 'folder' ? 'folder-open' : 'open', onSelect: () => onOpen(f) }] : [],
-      onDownload && f.kind !== 'folder' ? [{ label: t.download, icon: 'download-tray', onSelect: () => onDownload(f) }] : [],
-      onRename ? [{ label: t.rename, icon: 'rename', onSelect: () => setAsk({ kind: 'rename', file: f }) }] : [],
-      onDelete ? [{ separator: true }, { label: t.delete, icon: 'trash', danger: true, onSelect: () => setAsk({ kind: 'delete', file: f }) }] : []);
+      onOpen ? [{ label: t.open, icon: f.kind === 'folder' ? FolderOpenIcon : OpenIcon, onSelect: () => onOpen(f) }] : [],
+      onDownload && f.kind !== 'folder' ? [{ label: t.download, icon: DownloadTrayIcon, onSelect: () => onDownload(f) }] : [],
+      onRename ? [{ label: t.rename, icon: RenameIcon, onSelect: () => setAsk({ kind: 'rename', file: f }) }] : [],
+      onDelete ? [{ separator: true }, { label: t.delete, icon: TrashIcon, danger: true, onSelect: () => setAsk({ kind: 'delete', file: f }) }] : []);
     body = (
       <DataGrid label={label} index="id" data={rows.map((f) => Object.assign({}, f, { id: idOf(f), statusLabel: f.status ? f.status.label : '' }))} columns={cols}
         selectable={selectable} selected={selectable ? keys : undefined} onSelectionChange={selectable ? onSelectionChange : undefined}
@@ -207,8 +216,8 @@ export function FileList({ files = [], label, view = 'list', sortable = false, s
                 onRename={onRename ? (name) => onRename(f, name) : undefined} names={others(f)}
                 onDelete={onDelete ? () => onDelete(f) : undefined} deleteVariant={deleteVariant} onRestore={onRestore ? () => onRestore(f) : undefined}
                 actions={moves.length ? (
-                  <MenuSub label={t.moveTo} icon="move">
-                    {moves.map((x) => <MenuItem key={String(idOf(x))} icon="folder" onSelect={() => onMove(f, x)}>{x.name}</MenuItem>)}
+                  <MenuSub label={t.moveTo} icon={MoveIcon}>
+                    {moves.map((x) => <MenuItem key={String(idOf(x))} icon={FolderIcon} onSelect={() => onMove(f, x)}>{x.name}</MenuItem>)}
                   </MenuSub>
                 ) : undefined} />
             </DragRow>

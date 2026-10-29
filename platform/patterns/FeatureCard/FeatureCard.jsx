@@ -33,6 +33,7 @@ import { cx } from '../../utils/cx.js';
 import { Card } from '../../components/Card/Card.jsx';
 import { IconTile } from '../../components/IconTile/IconTile.jsx';
 import { Image } from '../../components/Image/Image.jsx';
+import SparkleIcon from 'plenix-platform/icons/plenix/sparkle';
 
 const VARIANTS = ['icon', 'image', 'horizontal'];
 
@@ -42,7 +43,7 @@ export function FeatureCard({ title, description, variant = 'icon', icon, hue, t
   const picture = v === 'image' || (v === 'horizontal' && image && !icon);
   const media = picture && image
     ? <Image src={image} alt={imageAlt} ratio={v === 'image' ? '16-9' : '1-1'} rounded={v === 'horizontal'} className="plx-feature-card__image" />
-    : <IconTile icon={icon || 'sparkle'} hue={hue} tone={tone} size="md" className="plx-feature-card__tile" />;
+    : <IconTile icon={icon || SparkleIcon} hue={hue} tone={tone} size="md" className="plx-feature-card__tile" />;
   return (
     <Card layout={v === 'horizontal' ? 'media-start' : 'media-first'} titleWrap title={title} meta={description} href={href} onOpen={onOpen} headingLevel={headingLevel}
       className={cx('plx-feature-card', 'plx-feature-card--' + v, className)} {...rest}>

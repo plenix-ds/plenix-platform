@@ -20,6 +20,7 @@ import { Text } from '../../components/Text/Text.jsx';
 import { TeachingBubble } from '../../components/TeachingBubble/TeachingBubble.jsx';
 import { cx } from '../../utils/cx.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import CircleInfoIcon from 'plenix-platform/icons/plenix/circle-info';
 
 export function FeatureIntro({ title, children, target, showBadge = true, initiallyOpen = false, onDismiss, strings, className }) {
   const t = useStrings('featureIntro', strings);
@@ -28,7 +29,7 @@ export function FeatureIntro({ title, children, target, showBadge = true, initia
   return <Inline className={cx('plx-feature-intro', className)} wrap>
     {target ? <TeachingBubble target={target} open={bubble} title={title} onDismiss={done} spotlight={false} strings={t}
       primaryAction={{ label: t.gotIt, onClick: done }} secondaryAction={{ label: t.later, onClick: done }}>{children}</TeachingBubble> : <Text>{title}</Text>}
-    {showBadge ? <Badge tone="active" icon="circle-info">{t.new}</Badge> : null}
+    {showBadge ? <Badge tone="active" icon={CircleInfoIcon}>{t.new}</Badge> : null}
     <Button onClick={() => { setBubble(false); setDialog(true); }}>{t.whatsNew}</Button>
     <Dialog open={dialog} title={title} onClose={done} closeLabel={t.close} footer={<Button variant="primary" onClick={done}>{t.gotIt}</Button>}>{children}</Dialog>
   </Inline>;
