@@ -13804,6 +13804,42 @@ function gridWithin(px, min, max, opts) {
   })));
 }
   } },
+  "platform/utils/dataValue.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.isDataValue = void 0;
+/* Plenix · dataValue (platform/utils/dataValue.js)
+   Summary: Is a text wholly a technical value: a number, a date, a time, a size, a version, a file name or an ID? Such a value is shown in
+     the data font (--plx-sys-font-data), beside the numbers and dates around it (owner, issue 252: a Select or Combobox that holds one shows it so).
+   Usage: isDataValue('Oct 25, 2026')   // true;   isDataValue('Compact')   // false;   isDataValue('15 minutes')   // false
+   Behavior: The whole text must be one value, or values joined by a comma, a dot, a dash or an en dash ("10", "2026-10-25", "12 MB",
+     "Oct 25, 2026", "v1.2.3", "report.csv", an issue number). A word, a sentence, or a value followed by a word ("15 minutes") is not data.
+     Months are exact names (Jan or January, Sept or September) followed by a word boundary: "Mark 5", "Market 3", "Junior 2" and "3 Decisions"
+     are not dates. Units are case-exact (kB, KB, MB, GB, TB): "5 b" is not a size.
+     A file name has no spaces, a known extension, and a stem that starts with a lowercase letter or contains a digit, an underscore or a hyphen:
+     "report.csv", "IMG_2041.jpg" and "plenix-0.73.0.zip" are data; "Node.js", "Vue.js", "Character.ai", "Read me.md" and "Export as report.csv"
+     are not (a product or a sentence, not a file).
+     The list follows the typography test's (tests/typography.test.js), plus plain numbers with thousands separators, decimals and percentages.
+   Notes: Internal; not part of the public API. Used by Select and Combobox when their data prop is not set. */
+const MONTH = '(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|June?|July?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)(?:\\.|\\b)';
+const ONE = ['\\d{4}-\\d{2}-\\d{2}(?:[ T]\\d{1,2}:\\d{2}(?::\\d{2})?)?', MONTH + ' \\d{1,2}(?:, \\d{4})?(?:,? \\d{1,2}:\\d{2}(?:\\s?[AP]M)?)?', '\\d{1,2} ' + MONTH + '(?: \\d{4})?', '\\d{1,2}:\\d{2}(?::\\d{2})?(?:\\s?[AP]M)?', '\\d+(?:[.,]\\d+)?\\s?(?:B|KB|MB|GB|TB|kB)', '\\d+\\s?[×x]\\s?\\d+(?:\\s?px)?', 'v\\d+(?:\\.\\d+){1,3}(?:-[\\w.]+)?|\\d+\\.\\d+\\.\\d+(?:-[\\w.]+)?', '#\\d{2,}', '[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}', '\\d+(?:[.,]\\d+)*%?' // a plain number, with thousands separators or decimals, or a percentage
+];
+// case-exact: no "i" flag (a unit, a month and a version letter are written one way)
+const DATA = new RegExp('^(?:' + ONE.join('|') + ')(?:\\s*[·,–-]\\s*(?:' + ONE.join('|') + '))*$');
+const EXTENSIONS = new Set('pdf png jpg jpeg gif svg webp avif heic tif tiff psd ai eps indd mp4 mov webm mp3 wav doc docx xls xlsx ppt pptx csv txt md json js jsx css html zip'.split(' '));
+function isFileName(text) {
+  const m = /^(\S+)\.([A-Za-z0-9]+)$/.exec(text); // no spaces
+  return !!m && EXTENSIONS.has(m[2].toLowerCase()) && (/^[a-z]/.test(m[1]) || /[\d_-]/.test(m[1])); // report.csv, IMG_2041.jpg: yes; Node.js, Character.ai: no
+}
+const isDataValue = text => {
+  const t = typeof text === 'string' ? text.trim() : '';
+  return t !== '' && (DATA.test(t) || isFileName(t));
+};
+exports.isDataValue = isDataValue;
+  } },
   "platform/components/Stack/Stack.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -14198,7 +14234,7 @@ const ReadOnly = exports.ReadOnly = /*#__PURE__*/_react.default.forwardRef(funct
   }, reason)) : null, children));
 });
   } },
-  "platform/components/Input/Input.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/floating.js":"platform/utils/floating.js","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Input/Input.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/dataValue.js":"platform/utils/dataValue.js","../../utils/floating.js":"platform/utils/floating.js","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -14208,6 +14244,7 @@ exports.Textarea = exports.Select = exports.Input = void 0;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _grid = require("../../utils/grid.js");
+var _dataValue = require("../../utils/dataValue.js");
 var _floating = require("../../utils/floating.js");
 var _ReadOnly = require("../../providers/ReadOnly.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -14253,7 +14290,10 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Select.className: more classes on the wrapper
      Select.readOnly: the choice shows and takes focus but cannot change (default: the nearest read-only region's, useReadOnly)
    Behavior:
-     Select.data applies the same technical-value font variant as Input.data to the field.
+     Select.data: true forces the technical-value font variant (as Input.data) on the field, false keeps the interface font; when not set, the field
+       shows its value in the data font when the chosen label is wholly a number, a date, a time, a size, a version, a file name or an ID ("10",
+       "Oct 25, 2026"), the same font as the numbers and dates around it, and a word ("Compact", "15 minutes") keeps the interface font.
+       A multi-select or list box (multiple, or a size above 1) keeps the browser's own select and does no auto detection: data there is only what the prop says
      Select is drawn by Plenix (owner, dropdown-look-36): a field and a list in the Menu's look, over a hidden native <select> that
      stays the source of truth (options, value, form, reset, label). The field is role="combobox" and the list role="listbox"; a
      <label for> or Field names and focuses it. The arrow is the form-icon size (--plx-sys-control-icon-inline), like the Combobox's.
@@ -14415,7 +14455,7 @@ const SelectList = /*#__PURE__*/_react.default.forwardRef(function SelectList({
   appearance,
   size,
   joined,
-  data = false,
+  data,
   block = false,
   width,
   className,
@@ -14582,6 +14622,8 @@ const SelectList = /*#__PURE__*/_react.default.forwardRef(function SelectList({
     }
   };
   const current = items[chosen];
+  // the data font: forced by data (true or false); otherwise when the chosen label is wholly a number, a date or another technical value
+  const asData = data === undefined ? !!(current && (0, _dataValue.isDataValue)(current.label)) : !!data;
   const grouped = []; // the rows in order, a group's rows together (an <optgroup>)
   items.forEach((it, i) => {
     const g = grouped[grouped.length - 1];
@@ -14603,7 +14645,7 @@ const SelectList = /*#__PURE__*/_react.default.forwardRef(function SelectList({
     ref: setNative,
     tabIndex: -1,
     "aria-hidden": "true",
-    className: (0, _cx.cx)('plx-input', 'plx-select__control', 'plx-select__native', data && 'plx-input--data', look(appearance))
+    className: (0, _cx.cx)('plx-input', 'plx-select__control', 'plx-select__native', asData && 'plx-input--data', look(appearance))
   }, (0, _ReadOnly.readOnlyProps)(locked, Object.assign({
     onFocus: () => {
       if (field.current) field.current.focus();
@@ -14630,7 +14672,7 @@ const SelectList = /*#__PURE__*/_react.default.forwardRef(function SelectList({
     "aria-invalid": invalid || undefined,
     "aria-required": rest.required || undefined,
     "aria-disabled": disabled || undefined,
-    className: (0, _cx.cx)('plx-input', 'plx-select__field', data && 'plx-input--data', look(appearance), disabled && 'is-disabled')
+    className: (0, _cx.cx)('plx-input', 'plx-select__field', asData && 'plx-input--data', look(appearance), disabled && 'is-disabled')
   }, (0, _ReadOnly.readOnlyProps)(locked, {
     onClick: () => {
       if (disabled) return;
@@ -37795,7 +37837,7 @@ function SegmentedControl({
   }, segments);
 }
   } },
-  "platform/components/Combobox/Combobox.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Combobox/Combobox.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/dataValue.js":"platform/utils/dataValue.js","../../utils/format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -37809,6 +37851,7 @@ var _Loading = require("../Loading/Loading.jsx");
 var _announce = require("../../utils/announce.jsx");
 var _floating = require("../../utils/floating.js");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _dataValue = require("../../utils/dataValue.js");
 var _format = require("../../utils/format.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Combobox
@@ -37822,6 +37865,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Props:
      width: "xs" | "sm" | "md" | "lg" (the field-width scale, --plx-sys-field-width-*: pick by what it holds) | "fill" (the whole
        width); without a pattern sizing it, the field is never wider than its container (P-52, owner 2026-10-19)
+     data: true forces the technical-value font on the field, false keeps the interface font; when not set, a chosen option whose label is wholly
+       a number, a date or another technical value ("10", "Oct 25, 2026") shows in the data font, as a Select does
      size: "sm" uses the existing toolbar control height; omitted or "md" keeps the standard field; multiple values can grow.
      options: the choices: [{ value, label, group }]; options with a group are listed under its heading, in the order the groups first appear
      value: the chosen value, for a single choice
@@ -37891,6 +37936,7 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
   className,
   id,
   size,
+  data,
   ...rest
 }, ref) {
   const t = (0, _LocaleProvider.useStrings)('combobox', strings),
@@ -37962,6 +38008,9 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
   const optionOf = v => options.find(x => x.value === v) || (async ? loaded.find(x => x.value === v) || seen.current.get(v) : undefined);
   const chosen = multiple ? values || [] : value !== undefined && value !== null && value !== '' ? [value] : [];
   const current = !multiple && chosen.length ? optionOf(chosen[0]) || null : null;
+  // the data font: forced by data (true or false); otherwise when the chosen label is wholly a number, a date or another technical value
+  // what the input shows decides: the typed text while there is some (open or not), else the chosen label
+  const asData = data === undefined ? (0, _dataValue.isDataValue)(text.trim() ? text : current ? String(current.label) : '') : !!data;
   const q = text.trim().toLowerCase();
   // a tag picker (multiple without marks) offers only the values not chosen yet: a chosen tag leaves only by its remove
   // button, so Enter on a suggestion always adds (P-57: Enter on a chosen suggestion removed the tag)
@@ -38038,7 +38087,7 @@ const Combobox = exports.Combobox = /*#__PURE__*/_react.default.forwardRef(funct
     ref: wrap,
     className: (0, _cx.cx)('plx-combobox', size === 'sm' && 'plx-combobox--size-sm', width && 'plx-combobox--width-' + width, multiple && 'plx-combobox--multiple', marks && 'plx-combobox--marks', open && 'is-open', disabled && 'is-disabled', className)
   }, /*#__PURE__*/_react.default.createElement("div", {
-    className: (0, _cx.cx)('plx-combobox__field', 'plx-input', disabled && 'is-disabled'),
+    className: (0, _cx.cx)('plx-combobox__field', 'plx-input', asData && 'plx-input--data', disabled && 'is-disabled'),
     "aria-invalid": invalid || undefined,
     onClick: () => {
       if (!disabled && input.current) input.current.focus();
