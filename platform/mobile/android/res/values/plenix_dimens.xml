@@ -118,7 +118,6 @@
     <dimen name="plx_component_button_icon_label_gap">4dp</dimen>
     <dimen name="plx_component_button_padding_inline">12dp</dimen>
     <dimen name="plx_component_button_radius">4dp</dimen>
-    <dimen name="plx_component_card_accent_border_inline_start_width">3dp</dimen>
     <dimen name="plx_component_card_body_font_size">13dp</dimen>
     <dimen name="plx_component_card_border_width">1dp</dimen>
     <dimen name="plx_component_card_content_actions_gap">16dp</dimen>

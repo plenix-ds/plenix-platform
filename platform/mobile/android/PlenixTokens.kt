@@ -528,7 +528,6 @@ object PlenixComponent {
     val buttonIconLabelGap = 4.dp
     val buttonPaddingInline = 12.dp
     val buttonRadius = 4.dp
-    val cardAccentBorderInlineStartWidth = 3.dp
     val cardBodyFontSize = 13.dp
     val cardBorderWidth = 1.dp
     val cardContentActionsGap = 16.dp

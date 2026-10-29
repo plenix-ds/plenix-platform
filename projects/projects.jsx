@@ -159,7 +159,7 @@ function ProjectContent({ proj, panel }) {
         <EntityHeader title="Notes" media={{ icon: 'doc-text', hue: proj.color }} subtitle={proj.name} facts={[{ label: 'Notes', value: pNotes.length }]} actions={[{ icon: 'share', label: 'Share' }]} />
         {pNotes.length ? (
           <ContentGrid size="lg" label="Notes">{pNotes.map((n, i) => (
-            <Card key={i} title={n.title} meta={<Text variant="data">{n.date}</Text>} accent={proj.color} onOpen={() => {}}>
+            <Card key={i} title={n.title} meta={<Text variant="data">{n.date}</Text>} onOpen={() => {}}>
               <Text variant="secondary">{n.preview}</Text>
               <TagList label="Tags">{n.tags.map((t) => <Tag key={t}>{t}</Tag>)}</TagList>
             </Card>

@@ -1,10 +1,9 @@
 /* Plenix · calendar (calendar/calendar.jsx). Split out of app/plenix.jsx in batch 113; rebuilt from Platform components in
-   batch 201: the month as RowButton day cells with EventChips, the chosen day's events as Cards (accent: the calendar's
-   color), the week and the day as TimeGrid. An event opened from its card or the grid is a screen (#/event/<id>, a history
+   batch 201: the month as RowButton day cells with EventChips, the chosen day's events as Cards (the calendar's color is a swatch beside its tag), the week and the day as TimeGrid. An event opened from its card or the grid is a screen (#/event/<id>, a history
    entry: Back closes it; a search result opens it on its day; Platforms Standard 4.3). The view and its date are in the
    address too, each a screen: #/month/2026-03, #/week/2026-03-01 (the week's first day), #/day/2026-03-05; #/ is the
    current month. Closing an event returns to the view it was opened from. */
-import { CommandBar, CommandBarButton, Menu, MenuItem, MenuRadioGroup, useCollectionView, Button, Card, DateBadge, EventChip, Icon, Inline, SegmentedControl, Stack, Tag, Text, TimeGrid, RowButton } from 'plenix-platform';
+import { Button, Card, ColorSwatch, CommandBar, CommandBarButton, DateBadge, EventChip, Icon, Inline, Menu, MenuItem, MenuRadioGroup, RowButton, SegmentedControl, Stack, Tag, Text, TimeGrid, useCollectionView } from 'plenix-platform';
 import { ClassificationWidget } from '../suite/classification.jsx';
 import { CALENDARS, CAL_EVENTS } from '../suite/shared.jsx';
 const { useState } = React;
@@ -90,8 +89,8 @@ export function CalendarScreen({ screen }) {
             <Stack gap="sm">
               <Text variant="eyebrow">March {selDay}</Text>
               {evFor(selDay).map((e) => (
-                <Card key={e.id} headingLevel={2} title={e.title} meta={<Text variant="data">{e.time}</Text>} accent={e.color} selected={selEv === e.id} onOpen={() => setSelEv(selEv === e.id ? null : e.id)}
-                  actions={<Tag>{calName(e.cal)}</Tag>}>
+                <Card key={e.id} headingLevel={2} title={e.title} meta={<Text variant="data">{e.time}</Text>} selected={selEv === e.id} onOpen={() => setSelEv(selEv === e.id ? null : e.id)}
+                  actions={<Inline gap="xs"><ColorSwatch color={e.color} size="sm" /><Tag>{calName(e.cal)}</Tag></Inline>}>
                   {selEv === e.id ? <ClassificationWidget value={evMeta[e.id]} onChange={(m) => setEvMeta((p) => ({ ...p, [e.id]: m }))} /> : null}
                 </Card>
               ))}

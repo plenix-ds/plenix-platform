@@ -521,7 +521,6 @@ public enum Plenix {
         public static let buttonIconLabelGap: CGFloat = 4
         public static let buttonPaddingInline: CGFloat = 12
         public static let buttonRadius: CGFloat = 4
-        public static let cardAccentBorderInlineStartWidth: CGFloat = 3
         public static let cardBodyFontSize: CGFloat = 13
         public static let cardBorderWidth: CGFloat = 1
         public static let cardContentActionsGap: CGFloat = 16

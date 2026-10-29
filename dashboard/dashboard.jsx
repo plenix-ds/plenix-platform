@@ -1,7 +1,7 @@
 /* Plenix · dashboard (dashboard/dashboard.jsx). Split out of app/plenix.jsx in batch 113; rebuilt from Platform components in
    batch 201: every widget is a Panel; the widgets sit in a WidgetGrid (drag a handle or use the arrow keys to reorder);
    rows are ActivityList items, RowButtons, Checkboxes and EventChips; project cards carry the project's color as their accent. */
-import { ActivityList, Avatar, Badge, Button, Card, Checkbox, ContentGrid, Divider, EventChip, Icon, Inline, NotificationList, Panel, RowButton, Stack, Tag, TagList, Text, WidgetGrid, useAppLayout, useSession, VisuallyHidden } from 'plenix-platform';
+import { ActivityList, Avatar, Badge, Button, Card, Checkbox, ColorSwatch, ContentGrid, Divider, EventChip, Icon, Inline, NotificationList, Panel, RowButton, Stack, Tag, TagList, Text, useAppLayout, useSession, VisuallyHidden, WidgetGrid } from 'plenix-platform';
 import { ALL_NOTES, ALL_TASKS, CONTACTS, EMAILS, EVENTS, PROJECTS, Priority } from '../suite/shared.jsx';
 const { useState, useEffect } = React;
 
@@ -50,7 +50,7 @@ function ProjectsWidget({ handle,  onViewAll, onProject, prefs }) {
       {density === 'card' ? (
         <ContentGrid size="md" label="Active projects">
           {active.map((p) => (
-            <Card key={p.id} title={p.name} meta={showCategory ? (catLabel[p.tags[0]] || p.tags[0]) : null} accent={p.color} onOpen={() => onProject(p)}>
+            <Card key={p.id} title={p.name} meta={<Inline gap="xs"><ColorSwatch color={p.color} size="sm" />{showCategory ? (catLabel[p.tags[0]] || p.tags[0]) : null}</Inline>} onOpen={() => onProject(p)}>
               {showDesc ? <Text variant="secondary">{p.desc.substring(0, 55)}…</Text> : null}
               {showFiles ? <Text variant="data">{p.files} files</Text> : null}
               {showTags ? <TagList label="Tags">{p.tags.slice(0, 2).map((t) => <Tag key={t}>{t}</Tag>)}</TagList> : null}

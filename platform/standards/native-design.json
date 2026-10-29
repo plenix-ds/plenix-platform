@@ -2493,7 +2493,7 @@
    }
   },
   "android-data-display|Card": {
-   "summary": "A Plenix card on Android is the Material 3 OutlinedCard, kept native in behavior (ripple, one TalkBack stop for a card that opens, font scale) and styled with the Plenix tokens: a 12 dp rounded rectangle on the raised surface with a 1 dp border and no elevation, a DM Sans semibold title at the heading role, a muted details line, and the Plenix selected border and accent edge. Material’s default is a filled, elevated or outlined card on a tonal surface with Roboto text; Plenix keeps Material’s structure and replaces the look.",
+   "summary": "A Plenix card on Android is the Material 3 OutlinedCard, kept native in behavior (ripple, one TalkBack stop for a card that opens, font scale) and styled with the Plenix tokens: a 12 dp rounded rectangle on the raised surface with a 1 dp border and no elevation, a DM Sans semibold title at the heading role, a muted details line, and the Plenix selected border. Material’s default is a filled, elevated or outlined card on a tonal surface with Roboto text; Plenix keeps Material’s structure and replaces the look.",
    "variants": [
     {
      "name": "Card",
@@ -2538,17 +2538,6 @@
      "compose": "PlenixCard with an Image (ContentScale.Crop, aspectRatio(4f / 3f)) above the title",
      "views": "MaterialCardView with a ShapeableImageView above the title",
      "use": "An asset tile: a picture with its name and technical details."
-    },
-    {
-     "name": "Accent",
-     "material": "— (Plenix only)",
-     "web": "data-display|Card",
-     "background": "plx-comp-card-background",
-     "content": "plx-comp-card-body-text",
-     "border": "plx-comp-card-accent",
-     "compose": "PlenixCard(…, accent = PlenixColors.dataColorBlue.current())",
-     "views": "A LayerDrawable foreground with a PlenixComponent.cardAccentBorderInlineStartWidth start bar",
-     "use": "A card that carries a color from the data, such as a project’s color."
     },
     {
      "name": "GeneratedContent: With feedback",
@@ -2643,11 +2632,6 @@
      "part": "E",
      "name": "Actions",
      "about": "Optional Plenix buttons at the end of the header or below the body; each its own target."
-    },
-    {
-     "part": "F",
-     "name": "Accent edge",
-     "about": "An optional 3 dp bar at the start edge in a color from the data."
     },
     "AILabel",
     "Retained content",
@@ -2804,17 +2788,6 @@
      "followsUrl": "https://m3.material.io/foundations/designing/structure"
     },
     {
-     "part": "F",
-     "attribute": "Accent edge",
-     "token": "plx-comp-card-accent-border-inline-start-width, plx-comp-card-accent",
-     "value": "3 dp at the start edge, in a data color (PlenixColors.dataColorBlue …); mirrors in right-to-left layouts",
-     "material": "None",
-     "compose": "Modifier.drawWithContent { drawContent(); drawRect(accent, topLeft = Offset(if (layoutDirection == LayoutDirection.Rtl) size.width - PlenixComponent.cardAccentBorderInlineStartWidth.toPx() else 0f, 0f), size = Size(PlenixComponent.cardAccentBorderInlineStartWidth.toPx(), size.height)) }",
-     "views": "foreground = LayerDrawable(arrayOf(ColorDrawable(accent))).apply { setLayerWidth(0, px(PlenixComponent.cardAccentBorderInlineStartWidth)); setLayerGravity(0, Gravity.START or Gravity.FILL_VERTICAL) }",
-     "follows": "Material 3: Cards",
-     "followsUrl": "https://m3.material.io/components/cards/specs"
-    },
-    {
      "attribute": "AI composition spacing",
      "value": "plx-sys-space-stack-md",
      "compose": "Arrangement.spacedBy(PlenixSpace.spaceStackMd)",
@@ -2939,7 +2912,6 @@
      "    title: String,",
      "    meta: String? = null,",
      "    selected: Boolean = false,",
-     "    accent: Color? = null,",
      "    onClick: (() -> Unit)? = null,",
      "    actions: (@Composable RowScope.() -> Unit)? = null,",
      "    body: @Composable ColumnScope.() -> Unit = {},",
@@ -2952,11 +2924,6 @@
      "    )",
      "    val border = BorderStroke(PlenixComponent.cardBorderWidth, if (selected) PlenixColors.actionPrimaryBackground.current() else PlenixColors.borderDefault.current())",
      "    val elevation = CardDefaults.outlinedCardElevation(defaultElevation = 0.dp)",
-     "    val edge = accent?.let { a -> Modifier.drawWithContent {",
-     "        drawContent()",
-     "        val w = PlenixComponent.cardAccentBorderInlineStartWidth.toPx()",
-     "        drawRect(a, topLeft = Offset(if (layoutDirection == LayoutDirection.Rtl) size.width - w else 0f, 0f), size = Size(w, size.height))",
-     "    } } ?: Modifier",
      "    val content: @Composable ColumnScope.() -> Unit = {",
      "        Column(Modifier.padding(PlenixSpace.spaceContainerInsetMd)) {",
      "            Text(title, style = textRole(PlenixPlatform.textHeadingSize, PlenixPlatform.textHeadingLineHeight, PlenixPlatform.textHeadingWeight), modifier = Modifier.semantics { heading() })",
@@ -2970,14 +2937,13 @@
      "        }",
      "    }",
      "    CompositionLocalProvider(LocalRippleConfiguration provides RippleConfiguration(color = PlenixColors.statePressed.current())) {",
-     "        if (onClick != null) OutlinedCard(onClick = onClick, modifier = edge.semantics { this.selected = selected }, shape = shape, colors = colors, elevation = elevation, border = border, content = content)",
-     "        else OutlinedCard(modifier = edge, shape = shape, colors = colors, elevation = elevation, border = border, content = content)",
+     "        if (onClick != null) OutlinedCard(onClick = onClick, modifier = Modifier.semantics { this.selected = selected }, shape = shape, colors = colors, elevation = elevation, border = border, content = content)",
+     "        else OutlinedCard(shape = shape, colors = colors, elevation = elevation, border = border, content = content)",
      "    }",
      "}",
      "",
      "// In a view",
-     "PlenixCard(title = \"Brand kit\", meta = \"12 assets\", onClick = { open(kit) }) { Text(\"Logos, colors and type for the spring campaign.\") }",
-     "PlenixCard(title = \"Website\", meta = \"Project\", accent = PlenixColors.dataColorBlue.current())"
+     "PlenixCard(title = \"Brand kit\", meta = \"12 assets\", onClick = { open(kit) }) { Text(\"Logos, colors and type for the spring campaign.\") }"
     ],
     "views": [
      "import android.content.res.ColorStateList",

@@ -10129,7 +10129,7 @@ function Count({
   }, rest), shown);
 }
   } },
-  "platform/components/Card/Card.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../utils/format.js":"platform/utils/format.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Card/Card.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/devWarn.js":"platform/utils/devWarn.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -10144,6 +10144,7 @@ var _layer = require("../../utils/layer.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _Badge = require("../Badge/Badge.jsx");
 var _format = require("../../utils/format.js");
+var _devWarn = require("../../utils/devWarn.js");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _chevronDown = _interopRequireDefault(require("plenix-platform/icons/plenix/chevron-down"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -10157,7 +10158,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      <MediaCard src="/a.jpg" alt="" title="hero.jpg" meta="2.4 MB · JPG" badge={<…/>} aspect="4/3"
        selected={sel} onSelectChange={(checked) => …} selectLabel="Select hero.jpg" href="#/asset/1" />
    Props:
-     Card.accent: a color from the data (a project's color): a 3px start edge in it; a data color: a hue name (blue, green, purple, red, brown, gray: the --plx-sys-data-color-<hue> tokens), set as data-plx-color; no value is written (batch 280)
+     Card.accent: removed (issue 621): a Card draws no colored edge. A color that carries meaning goes inside the card (a ColorSwatch beside the meta, a ProgressBar color); an accent passed to a Card is ignored and development warns once
      Panel.title: the heading; it also names the section landmark
      Panel.icon: the icon of what the card is (an icon name or element), before the heading (owner, batch 272: a card's
        icon always sits on the left of its heading)
@@ -10339,6 +10340,7 @@ function Opener({
     className: className
   }, children);
 }
+let warnedAccent = false;
 function Card({
   icon,
   title,
@@ -10363,6 +10365,11 @@ function Card({
   titleWrap = false,
   ...rest
 }) {
+  // the removed accent prop is ignored; development says so once (issue 621)
+  if (accent !== undefined && !warnedAccent && (0, _devWarn.development)()) {
+    warnedAccent = true;
+    console.warn('[Plenix] Card: the accent prop was removed (issue 621) and is ignored. Show the color inside the card instead (a ColorSwatch beside the meta, a ProgressBar color); see the Upgrading note.');
+  }
   const interactive = !!(href || onOpen);
   const t = (0, _LocaleProvider.useStrings)('card.card', strings);
   const id = (0, _layer.useUid)('plx-card');
@@ -10374,8 +10381,7 @@ function Card({
   };
   const hasBody = children !== undefined && children !== null;
   return /*#__PURE__*/_react.default.createElement("article", _extends({
-    className: (0, _cx.cx)('plx-card', surface !== 'flat' && 'plx-card--' + surface, elevation !== 'outline' && 'plx-card--' + elevation, interactive && 'plx-card--interactive', selected && 'is-selected', accent && 'plx-card--accent', expandable && 'is-expandable', expandable && !open && 'is-collapsed', className),
-    "data-plx-color": accent || undefined
+    className: (0, _cx.cx)('plx-card', surface !== 'flat' && 'plx-card--' + surface, elevation !== 'outline' && 'plx-card--' + elevation, interactive && 'plx-card--interactive', selected && 'is-selected', expandable && 'is-expandable', expandable && !open && 'is-collapsed', className)
   }, rest, {
     "data-plx-layout": layout,
     "data-plx-body-layout": bodyLayout,

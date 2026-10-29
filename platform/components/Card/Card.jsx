@@ -8,7 +8,7 @@
      <MediaCard src="/a.jpg" alt="" title="hero.jpg" meta="2.4 MB · JPG" badge={<…/>} aspect="4/3"
        selected={sel} onSelectChange={(checked) => …} selectLabel="Select hero.jpg" href="#/asset/1" />
    Props:
-     Card.accent: a color from the data (a project's color): a 3px start edge in it; a data color: a hue name (blue, green, purple, red, brown, gray: the --plx-sys-data-color-<hue> tokens), set as data-plx-color; no value is written (batch 280)
+     Card.accent: removed (issue 621): a Card draws no colored edge. A color that carries meaning goes inside the card (a ColorSwatch beside the meta, a ProgressBar color); an accent passed to a Card is ignored and development warns once
      Panel.title: the heading; it also names the section landmark
      Panel.icon: the icon of what the card is (an icon name or element), before the heading (owner, batch 272: a card's
        icon always sits on the left of its heading)
@@ -108,6 +108,7 @@ import { useUid } from '../../utils/layer.js';
 import { Icon, asIcon as iconElement } from '../Icon/Icon.jsx';
 import { Badge } from '../Badge/Badge.jsx';
 import { formatNumber } from '../../utils/format.js';
+import { development } from '../../utils/devWarn.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 
@@ -148,8 +149,11 @@ function Opener({ href, onOpen, current, className, children }) {
   return <span className={className}>{children}</span>;
 }
 
+let warnedAccent = false;
 export function Card({ icon, title, meta, actions, surface = 'flat', elevation = 'outline', selected = false, href, onOpen, headingLevel = 3, accent, expandable = false, defaultExpanded = false, expanded, onToggle,
   strings, className, children, layout = 'default', bodyLayout = 'default', titleWrap = false, ...rest }) {
+  // the removed accent prop is ignored; development says so once (issue 621)
+  if (accent !== undefined && !warnedAccent && development()) { warnedAccent = true; console.warn('[Plenix] Card: the accent prop was removed (issue 621) and is ignored. Show the color inside the card instead (a ColorSwatch beside the meta, a ProgressBar color); see the Upgrading note.'); }
   const interactive = !!(href || onOpen);
   const t = useStrings('card.card', strings);
   const id = useUid('plx-card');
@@ -158,7 +162,7 @@ export function Card({ icon, title, meta, actions, surface = 'flat', elevation =
   const toggle = () => { if (expanded === undefined) setOwn(!open); if (onToggle) onToggle(!open); };
   const hasBody = children !== undefined && children !== null;
   return (
-    <article className={cx('plx-card', surface !== 'flat' && 'plx-card--' + surface, elevation !== 'outline' && 'plx-card--' + elevation, interactive && 'plx-card--interactive', selected && 'is-selected', accent && 'plx-card--accent', expandable && 'is-expandable', expandable && !open && 'is-collapsed', className)} data-plx-color={accent || undefined} {...rest} data-plx-layout={layout} data-plx-body-layout={bodyLayout} data-plx-title-wrap={titleWrap || undefined}>
+    <article className={cx('plx-card', surface !== 'flat' && 'plx-card--' + surface, elevation !== 'outline' && 'plx-card--' + elevation, interactive && 'plx-card--interactive', selected && 'is-selected', expandable && 'is-expandable', expandable && !open && 'is-collapsed', className)} {...rest} data-plx-layout={layout} data-plx-body-layout={bodyLayout} data-plx-title-wrap={titleWrap || undefined}>
       {title || expandable ? (
         <div className="plx-card__header">
           {icon && title ? <span className="plx-card__icon" aria-hidden="true">{iconElement(icon)}</span> : null}

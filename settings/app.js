@@ -3334,9 +3334,14 @@ function DocsPanel({
       meta: /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
         variant: "data"
       }, pct + "%"),
-      accent: area.color,
       onOpen: () => setDocSection("feat-" + area.area)
-    });
+    }, /*#__PURE__*/React.createElement(_plenixPlatform.ProgressBar, {
+      value: pct,
+      color: area.color,
+      size: "sm",
+      label: area.area + " progress",
+      labelHidden: true
+    }));
   }))));
 
   /* Style Guide: the design system is the point of truth */
@@ -4704,7 +4709,6 @@ function Settings({
       meta: /*#__PURE__*/React.createElement(_plenixPlatform.Text, {
         variant: "data"
       }, done + "/" + area.items.length),
-      accent: area.color,
       onOpen: () => setFeatArea(area.area)
     }, /*#__PURE__*/React.createElement(_plenixPlatform.ProgressBar, {
       value: pct,

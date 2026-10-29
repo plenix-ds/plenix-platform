@@ -4649,10 +4649,6 @@
       "$value": "{plx-sys.motion-ease-standard}",
       "$type": "cubicBezier"
     },
-    "card-accent-border-inline-start-width": {
-      "$value": "{plx-sys.border-width-thick}",
-      "$type": "dimension"
-    },
     "panel-toggle-focus-outline-color": {
       "$value": "{plx-sys.focus-ring-color}",
       "$type": "color"

@@ -53,8 +53,6 @@
 .plx-panel__toggle{--plx-comp-icon-turn-duration:var(--plx-comp-panel-toggle-icon-duration);--plx-comp-icon-turn-easing:var(--plx-comp-panel-toggle-icon-easing);}
 .plx-panel.is-collapsed>.plx-panel__header{border-bottom-style:none;}
 .plx-panel.is-collapsed>.plx-panel__header .plx-panel__toggle{--plx-comp-icon-turn:rotate(-90deg);}
-/* an accent edge in the data's color (Card accent, batch 197) */
-.plx-card--accent{border-inline-start-color:var(--plx-comp-card-accent);border-inline-start-width:var(--plx-comp-card-accent-border-inline-start-width);}
 /* the collapse toggle shows the focus ring, as every control (batch 213) */
 .plx-panel__toggle:focus-visible{outline-color:var(--plx-comp-panel-toggle-focus-outline-color);outline-offset:var(--plx-comp-panel-toggle-focus-outline-offset);outline-style:solid;outline-width:var(--plx-comp-panel-toggle-focus-outline-width);}
 /* a card's icon (owner, batch 272): before the heading, at the control icon size, in the heading's color */
@@ -66,8 +64,6 @@
    the title alone opens it (or a double-click) */
 .plx-media-card--selectable{cursor:pointer;}
 .plx-media-card--selectable .plx-media-card__title::after{content:none;}
-/* the accent's data color (batch 280) */
-.plx-card--accent[data-plx-color]{--plx-comp-card-accent:var(--plx-comp-data-color);}
 /* a selectable media card's title opens it (its card-wide layer is off): it grows to the minimum target (Platforms Standard
    3.1), 44px tall with touch, through padding that a negative margin of the same size takes back, so the text and the card
    do not move (the title clips its overflow, so a layer inside it could not reach past it); positioned, so the meta line
