@@ -2200,7 +2200,7 @@
     --plx-comp-button-size-xs-selected-text: var(--plx-sys-content-default);
     --plx-comp-button-size-lg-selected-border: var(--plx-sys-border-default);
     --plx-comp-button-size-lg-selected-text: var(--plx-sys-content-default);
-    --plx-comp-button-selected-background: var(--plx-ref-color-gray-200);
+    --plx-comp-button-selected-background: var(--plx-sys-fill-neutral-hover);
     --plx-comp-button-disabled-border: var(--plx-sys-border-subtle);
     --plx-comp-button-disabled-text: var(--plx-sys-content-disabled);
     --plx-comp-button-disabled-quiet-border: transparent;
