@@ -1,0 +1,6 @@
+### Fixed
+- Four controls now follow a read-only region and their own `readOnly` prop (#262, PR 1; an owner decision of the Tech Lead: a control inside a ReadOnly region follows the region, as the region promises). Measured: with the region around them, `ColorSwatch` (a swatch button or a ColorPicker) still picked a color and `TimeZoneSelect` still let a person choose a zone; with their own `readOnly`, `SegmentedControl`, `ColorSwatch` and `PromptInput` still changed. Now none of the four changes: the options keep their place and focus, the chosen value shows, and `PromptInput` also turns off Send, the attachments and the model. `SegmentedControl` marks its group `aria-readonly`; folded into its drop-down list, the Select is read-only too. `SearchField` and `Rating` already held and are unchanged.
+
+### Changed
+- `SegmentedControl`, `ColorSwatch`, `ColorPicker`, `PromptInput` and `TimeZoneSelect` take a `readOnly` prop (default: the nearest ReadOnly region's, through `useReadOnly`). Nothing changes outside a read-only region.
+- `check-system` has a new rule, `hook-adoption`: the components that have moved onto a foundation hook (`check-system.rules/hook-adoption.json`) must keep using it. The list grows with each step of #262.

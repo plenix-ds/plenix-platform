@@ -1,0 +1,31 @@
+{
+  "$description": "Plenix · hook adoption (issue 262): the components and patterns that have moved onto a foundation hook. Each list only grows: a file listed under a hook must still use it, so a moved component cannot slide back to doing the work itself. Add a file here in the PR that moves it.",
+  "useReadOnly": [
+    "platform/components/Input/Input.jsx",
+    "platform/components/Checkbox/Checkbox.jsx",
+    "platform/components/Slider/Slider.jsx",
+    "platform/components/SegmentedControl/SegmentedControl.jsx",
+    "platform/components/ColorSwatch/ColorSwatch.jsx",
+    "platform/components/PromptInput/PromptInput.jsx",
+    "platform/components/TimeZoneSelect/TimeZoneSelect.jsx"
+  ],
+  "useDescribedBy": [],
+  "usePressable": [
+    "platform/components/RowButton/RowButton.jsx"
+  ],
+  "useFocusGroup": [
+    "platform/components/Toolbar/Toolbar.jsx"
+  ],
+  "useFloating": [
+    "platform/components/Menu/Menu.jsx",
+    "platform/components/Tooltip/Tooltip.jsx",
+    "platform/components/Popover/Popover.jsx",
+    "platform/components/Combobox/Combobox.jsx",
+    "platform/components/Cascader/Cascader.jsx",
+    "platform/components/TimePicker/TimePicker.jsx"
+  ],
+  "useGesture": [
+    "platform/components/Sheet/Sheet.jsx",
+    "platform/components/MediaViewer/MediaViewer.jsx"
+  ]
+}

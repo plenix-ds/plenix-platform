@@ -15016,7 +15016,12 @@ const SelectList = /*#__PURE__*/_react.default.forwardRef(function SelectList({
     key: o.value,
     value: o.value,
     disabled: o.disabled
-  }, o.label)) : children), /*#__PURE__*/_react.default.createElement("div", _extends({
+  }, o.label)) : children), /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+    content: current ? current.label : '',
+    disabled: !cut || open,
+    describe: false,
+    className: "plx-select__tip"
+  }, /*#__PURE__*/_react.default.createElement("div", _extends({
     ref: field,
     id: id,
     role: "combobox",
@@ -15047,11 +15052,7 @@ const SelectList = /*#__PURE__*/_react.default.forwardRef(function SelectList({
       setOpen(false);
       if (onBlur) onBlur(e);
     }
-  }), /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
-    content: current ? current.label : '',
-    disabled: !cut || open,
-    className: "plx-select__tip"
-  }, /*#__PURE__*/_react.default.createElement("span", {
+  }), /*#__PURE__*/_react.default.createElement("span", {
     ref: valueRef,
     className: "plx-select__value"
   }, current ? current.label : ''))), /*#__PURE__*/_react.default.createElement("span", {
@@ -36708,7 +36709,7 @@ exports.CATEGORY_COLORS = void 0;
 */
 const CATEGORY_COLORS = exports.CATEGORY_COLORS = ["red", "green", "yellow", "blue", "orange", "purple", "cyan", "magenta", "lime", "pink", "teal", "lavender", "beige", "maroon", "mint", "olive", "apricot", "navy", "grey"];
   } },
-  "platform/components/ColorSwatch/ColorSwatch.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","./dataColors.js":"platform/components/ColorSwatch/dataColors.js","./categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../utils/overflow.js":"platform/utils/overflow.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/ColorSwatch/ColorSwatch.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","./dataColors.js":"platform/components/ColorSwatch/dataColors.js","./categoryColors.js":"platform/components/ColorSwatch/categoryColors.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../utils/overflow.js":"platform/utils/overflow.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36725,6 +36726,7 @@ var _Button = require("../Button/Button.jsx");
 var _Menu = require("../Menu/Menu.jsx");
 var _overflow = require("../../utils/overflow.js");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _ReadOnly = require("../../providers/ReadOnly.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ColorSwatch
    Summary: A color from the data shown as a small square chip (a category's color).
@@ -36745,6 +36747,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      showLabel: shows the label as text after the swatch (default false); with onClick the swatch and its label are one
        button (wave 4)
      onClick(event): makes the swatch a button that picks the color
+     readOnly: a swatch button keeps its pressed state and does not run onClick; default the nearest ReadOnly region's (useReadOnly)
      className: more classes on the swatch
      ColorPicker: the data colors (DATA_COLORS) as a group of swatch buttons, one pressed (batch 280: a data color is a hue)
        ColorPicker.value: the chosen hue
@@ -36756,6 +36759,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
          (wave 4)
        ColorPicker shows one row (owner, batch 290): the colors that do not fit are in a More menu at its end ("+n", or the
        chosen color when it is one of them), each with its swatch and name
+       ColorPicker.readOnly: shows the chosen color and picks nothing, in the row and in its More menu; default the nearest ReadOnly region's
        ColorPicker.className: more classes on the group
    Behavior:
      unavailable marks the swatch cursor; callers still supply aria-disabled and prevent unavailable choices.
@@ -36779,7 +36783,8 @@ function ColorSwatch({
   label,
   showLabel = false,
   unavailable = false,
-  onClick,
+  onClick: pick,
+  readOnly,
   className,
   ...rest
 }) {
@@ -36791,6 +36796,11 @@ function ColorSwatch({
     tone: ['accent', 'surface', 'frost'],
     size: ['sm', 'md']
   });
+  const locked = (0, _ReadOnly.useReadOnly)(readOnly);
+  // read-only: a swatch button stays a button (focus, pressed state) but its press picks nothing
+  const onClick = pick ? locked ? e => {
+    e.preventDefault();
+  } : pick : undefined;
   if (showLabel && label) {
     // the swatch and its name as one unit: a button when it picks the color, else a span with the name as text
     const chip = /*#__PURE__*/_react.default.createElement(ColorSwatch, {
@@ -36846,6 +36856,7 @@ function ColorPicker({
   colors,
   invalid,
   required,
+  readOnly,
   className,
   ...rest
 }) {
@@ -36855,6 +36866,7 @@ function ColorPicker({
   }, {
     size: ['sm', 'md']
   });
+  const locked = (0, _ReadOnly.useReadOnly)(readOnly);
   const tw = (0, _LocaleProvider.useStrings)('colorSwatch');
   if (label === undefined) label = tw.label;
   const colorName = h => tw.colors && tw.colors[h] || nameOf(h);
@@ -36866,7 +36878,7 @@ function ColorPicker({
   const fit = (0, _overflow.useOverflow)(ref, list.length, palette + size + list.join());
   const hidden = list.slice(fit);
   const pick = h => {
-    if (onChange) onChange(h);
+    if (onChange && !locked) onChange(h);
   };
   const swatch = (h, extra) => /*#__PURE__*/_react.default.createElement(ColorSwatch, _extends({
     key: h,
@@ -38525,7 +38537,7 @@ const RowButton = exports.RowButton = /*#__PURE__*/_react.default.forwardRef(fun
   }), children);
 });
   } },
-  "platform/components/SegmentedControl/SegmentedControl.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/SegmentedControl/SegmentedControl.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/cx.js":"platform/utils/cx.js","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -38536,6 +38548,7 @@ var _react = _interopRequireDefault(require("react"));
 var _devWarn = require("../../utils/devWarn.js");
 var _direction = require("../../utils/direction.js");
 var _cx = require("../../utils/cx.js");
+var _ReadOnly = require("../../providers/ReadOnly.jsx");
 var _Icon = require("../Icon/Icon.jsx");
 var _Input = require("../Input/Input.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -38556,8 +38569,11 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      size: "md" (default) | "sm"
      className: more classes on the group
      fold: "auto" (default) | "never"
+     readOnly: shows the chosen option and does not let it change; default the nearest ReadOnly region's (useReadOnly)
      ...rest: other attributes go on the group element
    Behavior:
+     Read-only: the options keep their place and focus (the chosen one is the Tab stop), but a click, the arrow keys, Home and End
+       do not choose another option; the group is marked aria-readonly. Folded into the drop-down list, the Select is read-only too.
      Arrow keys move to the next or previous option and choose it, wrapping around; Home and End go to the first and last.
      Only the chosen option is in the Tab order.
      When the options do not fit their room, the control becomes a drop-down list (Select) with the same options, value
@@ -38624,6 +38640,7 @@ function SegmentedControl({
   label,
   size = 'md',
   fold = 'auto',
+  readOnly,
   className,
   ...rest
 }) {
@@ -38634,6 +38651,7 @@ function SegmentedControl({
     size: ['md', 'sm'],
     fold: ['auto', 'never']
   });
+  const locked = (0, _ReadOnly.useReadOnly)(readOnly);
   const refs = _react.default.useRef([]);
   const frame = _react.default.useRef(null),
     group = _react.default.useRef(null);
@@ -38648,6 +38666,7 @@ function SegmentedControl({
     if (e.key === 'End') n = options.length - 1;
     if (n === null) return;
     e.preventDefault();
+    if (locked) return; // read-only: the keys move nothing and choose nothing
     onChange(options[n].value);
     if (refs.current[n]) refs.current[n].focus();
   };
@@ -38665,13 +38684,17 @@ function SegmentedControl({
         value: String(i),
         label: o.label || o.ariaLabel || String(o.value)
       })),
-      onChange: e => onChange(options[+e.target.value].value)
+      readOnly: locked || undefined,
+      onChange: e => {
+        if (!locked) onChange(options[+e.target.value].value);
+      }
     }, rest)));
   }
   const segments = /*#__PURE__*/_react.default.createElement("div", _extends({
     ref: group,
     role: "radiogroup",
     "aria-label": label,
+    "aria-readonly": locked || undefined,
     className: (0, _cx.cx)('plx-segmented', size === 'sm' && 'plx-segmented--sm', className)
   }, rest), options.map((o, i) => /*#__PURE__*/_react.default.createElement("button", {
     key: o.value,
@@ -38684,7 +38707,9 @@ function SegmentedControl({
     tabIndex: i === index ? 0 : -1,
     "aria-label": o.icon && !o.label ? o.ariaLabel || String(o.value) : undefined,
     className: (0, _cx.cx)('plx-segmented__item', size === 'sm' && 'plx-segmented__item--sm', o.value === value && 'is-selected'),
-    onClick: () => onChange(o.value),
+    onClick: () => {
+      if (!locked) onChange(o.value);
+    },
     onKeyDown: e => move(e, i)
   }, o.icon ? (0, _Icon.stateIcon)(o.icon, o.value === value) : null, o.label ? /*#__PURE__*/_react.default.createElement("span", null, o.label) : null)));
   return fold === 'never' ? segments : /*#__PURE__*/_react.default.createElement("div", {
@@ -60172,7 +60197,7 @@ function AvatarUpload({
   }, error) : null);
 }
   } },
-  "platform/components/TimeZoneSelect/TimeZoneSelect.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/digits.js":"platform/utils/digits.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../Isolate/Isolate.jsx":"platform/components/Isolate/Isolate.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","plenix-platform/icons/plenix/select-chevron":"platform/dist/icons/plenix/select-chevron.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/TimeZoneSelect/TimeZoneSelect.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/digits.js":"platform/utils/digits.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../Isolate/Isolate.jsx":"platform/components/Isolate/Isolate.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","plenix-platform/icons/plenix/select-chevron":"platform/dist/icons/plenix/select-chevron.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -60189,6 +60214,7 @@ var _Isolate = require("../Isolate/Isolate.jsx");
 var _announce = require("../../utils/announce.jsx");
 var _floating = require("../../utils/floating.js");
 var _Icon = require("../Icon/Icon.jsx");
+var _ReadOnly = require("../../providers/ReadOnly.jsx");
 var _selectChevron = _interopRequireDefault(require("plenix-platform/icons/plenix/select-chevron"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · TimeZoneSelect
@@ -60212,6 +60238,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      placeholder: the hint in the empty field (default "Choose a time zone")
      label: the accessible name when there is no Field
      invalid: shows the invalid state
+     readOnly: shows the chosen zone and does not open the list or change it; default the nearest ReadOnly region's (useReadOnly)
      disabled: the field cannot be used
      locale: the language of the zone names (default the page's language)
      strings: the words it shows and announces, for other languages: { placeholder, empty: "No matches", utc: "Coordinated
@@ -60323,12 +60350,14 @@ const TimeZoneSelect = exports.TimeZoneSelect = /*#__PURE__*/_react.default.forw
   label,
   invalid,
   disabled,
+  readOnly,
   locale,
   strings,
   id,
   className,
   ...rest
 }, ref) {
+  const locked = (0, _ReadOnly.useReadOnly)(readOnly);
   const t = (0, _LocaleProvider.useStrings)('timeZoneSelect', strings);
   const loc = (0, _LocaleProvider.useLocale)();
   const digits = (0, _LocaleProvider.useDigits)();
@@ -60422,12 +60451,16 @@ const TimeZoneSelect = exports.TimeZoneSelect = /*#__PURE__*/_react.default.forw
     });
   }, [active, open]); // eslint-disable-line react-hooks/exhaustive-deps
   const choose = o => {
-    if (!o) return;
+    if (!o || locked) return;
     if (onChange) onChange(o.value);
     setText('');
     setOpen(false);
   };
   const onKey = e => {
+    if (locked && e.key !== 'Tab' && e.key !== 'Escape') {
+      if (!e.ctrlKey && !e.metaKey && !e.altKey) e.preventDefault();
+      return;
+    } // read-only: no keys open the list or choose
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       if (!open) setOpen(true);else setActive(a => Math.min(shown.length - 1, a + 1));
@@ -60476,11 +60509,16 @@ const TimeZoneSelect = exports.TimeZoneSelect = /*#__PURE__*/_react.default.forw
     }) : undefined,
     value: open ? text : current ? current.label : '',
     placeholder: current && open ? current.label : placeholder || t.placeholder,
+    readOnly: locked || undefined,
+    "aria-readonly": locked || undefined,
     onChange: e => {
+      if (locked) return;
       setText(e.target.value);
       setOpen(true);
     },
-    onFocus: () => setOpen(true),
+    onFocus: () => {
+      if (!locked) setOpen(true);
+    },
     onKeyDown: onKey
   }, rest)), showOffset && current && !open ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-time-zone-select__field-offset",
@@ -86841,7 +86879,7 @@ var _default = exports.default = {
   }
 };
   } },
-  "platform/components/PromptInput/PromptInput.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Field/Field.jsx":"platform/components/Field/Field.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","plenix-platform/icons/plenix/sparkle":"platform/dist/icons/plenix/sparkle.js","plenix-platform/icons/plenix/stop":"platform/dist/icons/plenix/stop.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/PromptInput/PromptInput.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Field/Field.jsx":"platform/components/Field/Field.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../FileInput/FileInput.jsx":"platform/components/FileInput/FileInput.jsx","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","plenix-platform/icons/plenix/sparkle":"platform/dist/icons/plenix/sparkle.js","plenix-platform/icons/plenix/stop":"platform/dist/icons/plenix/stop.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -86858,6 +86896,7 @@ var _FileInput = require("../FileInput/FileInput.jsx");
 var _Tag = require("../Tag/Tag.jsx");
 var _Menu = require("../Menu/Menu.jsx");
 var _Notice = require("../Notice/Notice.jsx");
+var _ReadOnly = require("../../providers/ReadOnly.jsx");
 var _sparkle = _interopRequireDefault(require("plenix-platform/icons/plenix/sparkle"));
 var _stop = _interopRequireDefault(require("plenix-platform/icons/plenix/stop"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -86872,6 +86911,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      accept: allowed file types; onAttachmentsChange(files): report selected files.
      models: [{id,label,disabled}]; model / onModelChange(id): controlled model chip menu.
      strings: label, placeholder, send, stop, stopping, failed, attachments, model, remove and file-input words.
+     readOnly: shows the draft and sends nothing (the field is read-only; Send, the attachments and the model are off); default the nearest ReadOnly region's.
      className: extra classes; ref: forwarded to the input or textarea.
    Behavior: Enter submits; Shift+Enter adds a line; IME composition never submits. Pending requests run once,
      preserve failed drafts, cancel on unmount and never erase text typed while a request was pending.
@@ -86894,8 +86934,10 @@ const PromptInput = exports.PromptInput = /*#__PURE__*/_react.default.forwardRef
   model,
   onModelChange,
   strings,
+  readOnly,
   className
 }, ref) {
+  const locked = (0, _ReadOnly.useReadOnly)(readOnly);
   const t = {
     label: 'Prompt',
     placeholder: 'Ask a question',
@@ -86942,7 +86984,7 @@ const PromptInput = exports.PromptInput = /*#__PURE__*/_react.default.forwardRef
     onAttachmentsChange?.(next);
   };
   async function send() {
-    if (disabled || streaming || lock.current || !onSend || !String(text).trim()) return;
+    if (disabled || locked || streaming || lock.current || !onSend || !String(text).trim()) return;
     lock.current = true;
     setBusy(true);
     setError('');
@@ -87001,6 +87043,7 @@ const PromptInput = exports.PromptInput = /*#__PURE__*/_react.default.forwardRef
     value: text,
     rows: multiline ? 3 : undefined,
     disabled: disabled,
+    readOnly: locked || undefined,
     placeholder: t.placeholder,
     enterKeyHint: "send",
     onChange: e => change(e.target.value),
@@ -87019,12 +87062,12 @@ const PromptInput = exports.PromptInput = /*#__PURE__*/_react.default.forwardRef
     accept: accept,
     label: t.attachments,
     strings: strings,
-    disabled: disabled || busy || streaming,
+    disabled: disabled || locked || busy || streaming,
     onChange: selectFiles
   }) : null, models.length ? /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
     label: t.model,
     trigger: /*#__PURE__*/_react.default.createElement(_Tag.Chip, {
-      disabled: disabled || busy || streaming || !onModelChange,
+      disabled: disabled || locked || busy || streaming || !onModelChange,
       "aria-label": t.model + ': ' + (chosen?.label || t.model)
     }, chosen?.label || t.model)
   }, /*#__PURE__*/_react.default.createElement(_Menu.MenuRadioGroup, {
@@ -87042,7 +87085,7 @@ const PromptInput = exports.PromptInput = /*#__PURE__*/_react.default.forwardRef
   }, stopping ? t.stopping : t.stop) : /*#__PURE__*/_react.default.createElement(_Button.Button, {
     type: "submit",
     icon: _sparkle.default,
-    disabled: disabled || busy || !onSend || !String(text).trim()
+    disabled: disabled || locked || busy || !onSend || !String(text).trim()
   }, t.send)), error ? /*#__PURE__*/_react.default.createElement(_Notice.Notice, {
     tone: "danger"
   }, error) : null);
