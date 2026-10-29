@@ -10,9 +10,14 @@
    Sort levels: [{ field, dir: "asc" | "desc" }], the first the main one; a select field sorts in its options' order. */
 
 import english from '../i18n/en.js';
+import CalendarIcon from 'plenix-platform/icons/plenix/calendar';
+import EdTextIcon from 'plenix-platform/icons/plenix/ed-text';
+import FieldNumberIcon from 'plenix-platform/icons/plenix/field-number';
+import FieldSelectIcon from 'plenix-platform/icons/plenix/field-select';
+import TagsIcon from 'plenix-platform/icons/plenix/tags';
 
 // the type icon of each kind (the field pickers and the column headers' type icons)
-export const KIND_ICONS = { text: 'ed-text', select: 'field-select', multi: 'tags', number: 'field-number', date: 'calendar' };
+export const KIND_ICONS = { text: EdTextIcon, select: FieldSelectIcon, multi: TagsIcon, number: FieldNumberIcon, date: CalendarIcon };
 // the directions in each kind's words (Airtable's)
 export const DIRECTIONS = english.fields.directions;
 // the operators by kind: [op, words]

@@ -3,10 +3,22 @@
 // site that bundles Plenix carries only the icons of the components it uses, and an icon never waits for the stylesheet.
 //   import AddIcon from 'plenix-platform/icons/plenix/add';   <Button icon={AddIcon}>   { icon: CheckIcon }     ok
 //   <Button icon="add">   { icon: 'check' }   const ICONS = { done: 'check' }                                 finding
-// The scan (platform/icons/uses.js) reads the Platform's source (components, patterns, hooks, providers, and the Icon
-// component's own tables) with Babel's parser: every icon slot, the constants and tables it reads, and asIcon. A name
+// The scan (platform/icons/uses.js) reads the Platform's source (components, patterns, hooks, providers, templates,
+// charts and utils, .js and .jsx, and the Icon component's own tables) with Babel's parser: every icon slot, the constants and tables it reads, and asIcon. A name
 // built at run time is a finding unless its line lists the names it can take in a "plx-icons:" comment.
-// Three names stay text on purpose (EXCEPTIONS below, each with its reason); anything else written as text is a finding.
+// Four places keep names as text on purpose (EXCEPTIONS below, each with its reason); anything else written as text is
+// a finding.
+// Slots: icon, iconStart, iconEnd, glyph and any <name>Icon or <name>Icons; name on <Icon> and <StatusIcon>.
+// Not slots, because in the Platform they carry no icon name: leading (it takes an element: an <Icon name="…"> inside
+// it is judged as an Icon), mark (a drag-and-drop insertion mark, or a mark-as-read function; EmptyState's mark is a
+// local that holds its icon prop), symbol (ECharts' marker shape in charts, the resolver's own field in Icon.jsx).
+// What it knowingly misses:
+//   - a name that arrives from outside the file: a prop (<Button icon={icon}>), {...rest}, or another file's constant
+//     (an imported table is judged in its own file only when its name ends in Icon or Icons, or when it sits in a slot there)
+//   - a constant that holds names but never reaches a slot in the file that declares it
+//   - a slot under a name not listed above (a new prop that carries icons must be added to SLOT in uses.js)
+//   - .js and .jsx outside components, patterns, hooks, providers, templates, charts and utils (the applications, the
+//     suite and the Asset Manager import their own icons as they convert)
 // Applications, the suite and the Asset Manager are not checked here: they import their own icons as they convert.
 //   require('./check-system.rules/icon-imports.js').check({ files, add })   (check-system.js runs every rule module)
 // Alone: node check-system.rules/icon-imports.js     -> ICON_IMPORTS_OK, or the findings and exit 1
@@ -25,6 +37,8 @@ const EXCEPTIONS = [
     reason: 'the documented default of the icon prop (the spec reads defaults from the signature); the component draws its module' },
   { file: 'platform/patterns/PermissionSummary/PermissionSummary.jsx', param: 'lock',
     reason: 'the documented default of the icon prop (the spec reads defaults from the signature); the component draws its module' },
+  { file: 'platform/providers/apps.js', inside: ['PLENIX_APPS'],
+    reason: 'PLENIX_APPS is public and its icons are names (an application may print or compare them); the header, the switcher and the brand mark draw appIcon(app), the same icon imported' },
 ];
 
 // the source ranges of a file's named functions and constants
