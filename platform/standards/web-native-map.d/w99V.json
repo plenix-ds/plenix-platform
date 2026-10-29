@@ -1,0 +1,9 @@
+{
+  "$description": "Part w99V: the iOS and Android counterparts of the live vote (VoteTally; owner, vote-live-36): a list of members, each with icon-only buttons. Merged with web-native-map.json by build-native-guidance.js.",
+  "map": {
+    "patterns|Vote": {
+      "ios": ["ios-data-display|Lists and tables", "ios-actions|Buttons"],
+      "android": ["android-data-display|List"]
+    }
+  }
+}
