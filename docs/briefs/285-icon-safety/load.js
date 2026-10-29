@@ -1,0 +1,2 @@
+const fs=require('fs'),path=require('path');
+module.exports=(root)=>{const Babel=require(path.join(root,'node_modules/@babel/standalone'));const code=Babel.transform(fs.readFileSync(path.join(root,'platform/utils/iconSafety.js'),'utf8'),{sourceType:'module',plugins:['transform-modules-commonjs']}).code;const m={exports:{}};new Function('module','exports','require',code)(m,m.exports,require);return m.exports;};
