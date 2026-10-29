@@ -189,7 +189,8 @@ function resolvePlenix(n) {
   if (library.has(symbol)) return { kind: 'library', symbol, fillOutline: false };
   return null;
 }
-// where the library's files are: set by the page (setIconLibrary), else beside the bundle's script or stylesheet
+// where the library's files are: set by the page (setIconLibrary or window.PlenixIconLibrary), else beside the bundle's script or
+// stylesheet, else beside the ES module itself (plenix.esm.js under any name, #284)
 let libraryBase = null, plenixBase;
 export function setIconLibrary(url) { libraryBase = url ? String(url).replace(/\/?$/, '/') : null; files.clear(); }
 // the Plenix bundle's own script or stylesheet on the page (its URL), or null
@@ -198,11 +199,20 @@ function bundleUrl() {
   return [...document.querySelectorAll('script[src], link[rel="stylesheet"][href]')].map((el) => el.src || el.href)
     .find((url) => /\/(plenix(\.esm|\.min)?\.(js|css)|platform\.(js|css))(\?|#|$)/.test(url)) || null;
 }
+// the URL of this module when it is the ES module build (the build gives it a banner constant: `const __plenixModuleUrl = import.meta.url`): a page
+// that imports plenix.esm.js, under any file name, finds its icons beside it with no setting (#284). Other builds have no such constant.
+function moduleUrl() {
+  try {
+    const url = typeof __plenixModuleUrl === 'string' ? __plenixModuleUrl : null;
+    // not the npm package's dist/index.js: it carries no icon folder (an app that installs it registers or imports its icons)
+    return url && /^(https?|file|chrome-extension|moz-extension):/.test(url) && !/\/dist\/index\.js(\?|#|$)/.test(url) ? url : null;
+  } catch (e) { return null; }
+}
 function base() {
   if (libraryBase) return libraryBase;
   // a page (or an extension whose bundler renames the Plenix files) can name it before Plenix draws: window.PlenixIconLibrary
   if (typeof window !== 'undefined' && typeof window.PlenixIconLibrary === 'string' && window.PlenixIconLibrary) return (libraryBase = window.PlenixIconLibrary.replace(/\/?$/, '/'));
-  const at = bundleUrl();
+  const at = bundleUrl() || moduleUrl();
   if (!at) return null;
   // the CDN: /cdn/<version>/plenix.js -> /cdn/material/<commit>/; this repository: platform/... -> platform/icons/library/
   libraryBase = /\/cdn\/[^/]+\/[^/]+$/.test(new URL(at).pathname) ? new URL('../material/' + LIBRARY_COMMIT + '/', at).href
@@ -213,7 +223,7 @@ function base() {
 // /cdn/<version>/, a self-hosted archive) and beside dist/platform.js; platform/dist/icons/plenix/ from platform.css
 function plenixFiles() {
   if (plenixBase !== undefined) return plenixBase;
-  const at = bundleUrl();
+  const at = bundleUrl() || moduleUrl();
   if (!at) return null;   // not kept: the bundle's tag may not be on the page yet
   plenixBase = new URL(/\/platform\.css(\?|#|$)/.test(at) ? 'dist/icons/plenix/' : 'icons/plenix/', at).href;
   return plenixBase;
