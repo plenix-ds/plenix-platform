@@ -10,8 +10,6 @@
      onToggle(next): runs with the new open state when the header is clicked
      actions: controls beside the header, outside its button
      headingLevel: the heading level of the title (default 3; null for a plain label)
-     wrap: the title wraps to evenly balanced lines, at most 2 (--plx-comp-collapsible-section-title-lines), the last cut with an ellipsis past them (default false: one line;
-       NavList groups set it; owner, issue 502). A one-line title stays 32px high, two lines 40px
      className: more classes on the <section>
      bodyClassName: more classes on the body
      children: the body
@@ -24,8 +22,9 @@
      Controlled with expanded and onToggle(next); uncontrolled with defaultExpanded.
      The header is one button (aria-expanded, pointing at the body).
      The chevron at the end points down while open.
-     With wrap, while the title is cut (an ellipsis after the wrapped lines) its full text shows in a tooltip on hover and keyboard focus; the button's name stays the full title.
-       Without wrap the title is one line with an ellipsis, as before.
+     The title wraps to evenly balanced lines, at most 2 (--plx-comp-collapsible-section-title-lines); past them the last line ends in an ellipsis (a word too long for
+       the line breaks there) and the full title shows in a tooltip on hover and keyboard focus (owner, issue 502). A one-line title stays 32px high, two lines are 40px.
+       The button's name stays the full title. Every section does this: navigation groups, side-panel and settings sections alike.
      The body is removed from view, and from the accessibility tree, while collapsed.
    Notes:
      It is the section header: an accent uppercase title with an optional icon, a divider beneath it and a
@@ -45,21 +44,21 @@ import ChevronUpIcon from 'plenix-platform/icons/plenix/chevron-up';
 
 const asIcon = (i) => iconElement(i);   // a name or an imported module (#280)
 
-export function CollapsibleSection({ title, icon, expanded, defaultExpanded = true, onToggle, actions, headingLevel = 3, wrap = false, className, bodyClassName, children }) {
+export function CollapsibleSection({ title, icon, expanded, defaultExpanded = true, onToggle, actions, headingLevel = 3, className, bodyClassName, children }) {
   const id = useUid('plx-collapsible-section');
   const [own, setOwn] = React.useState(defaultExpanded);
   const open = expanded !== undefined ? expanded : own;
   const toggle = () => { if (expanded === undefined) setOwn(!open); if (onToggle) onToggle(!open); };
   const Tag = headingLevel ? 'h' + headingLevel : 'div';
   const titleRef = React.useRef(null);
-  const cut = useTruncated(titleRef);   // a wrapping title is cut (past its lines): its full text goes in a Tooltip; other sections keep today's behavior
+  const cut = useTruncated(titleRef);   // the title is cut (past its lines): its full text goes in a Tooltip
   return (
     <section className={cx('plx-collapsible-section', open && 'is-expanded', className)}>
       <Tag className="plx-collapsible-section__heading">
-        <Tooltip content={title} disabled={!wrap || !cut}>
+        <Tooltip content={title} disabled={!cut} className="plx-collapsible-section__tip">
           <button type="button" className="plx-collapsible-section__toggle" aria-expanded={open} aria-controls={id + '-body'} onClick={toggle}>
             {icon ? <span className="plx-collapsible-section__icon" aria-hidden="true">{asIcon(icon)}</span> : null}
-            <span ref={titleRef} className={cx('plx-collapsible-section__title', wrap && 'plx-collapsible-section__title--wrap')}>{title}</span>
+            <span ref={titleRef} className="plx-collapsible-section__title">{title}</span>
             <span className="plx-collapsible-section__chevron" aria-hidden="true"><Icon name={ChevronDownIcon} /></span>
           </button>
         </Tooltip>

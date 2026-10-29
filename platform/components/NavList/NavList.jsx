@@ -34,8 +34,9 @@
      An item with href is a link; otherwise it is a button and onSelect(id) runs.
      A collapsible group heading folds its rows, the same in every navigation pane.
      A group heading wraps to evenly balanced lines, at most 2 (--plx-comp-collapsible-section-title-lines, --plx-comp-nav-list-heading-lines); past them the last
-       line ends in an ellipsis and the full heading shows in a tooltip (on hover and keyboard focus for a folding heading; owner, issue 502). A one-line heading
-       is 32px high, two lines 40px. The button's name stays the full heading.
+       line ends in an ellipsis and the full heading shows in a tooltip (owner, issue 502). A one-line heading is 32px high, two lines 40px. A folding heading is
+       a button: the tooltip shows on hover and keyboard focus and its name is the full heading. A static heading (collapsible: false) is plain text: a cut one shows its
+       full text on hover only (owner, issue 502, answer A); a screen reader reads the whole heading.
      A subgroup row is a button with aria-expanded; its chevron points right while closed and down while open, and its
      count follows its name. A subgroup holding the current item opens when that item becomes current; while closed it
      marks its own row as holding the current page.
@@ -117,7 +118,7 @@ function Group({ heading, items, current, onSelect, collapsible = true, icon, de
   const cut = useTruncated(headingRef);   // a static heading cut after its lines: its full text goes in a Tooltip
   if (heading && collapsible) {
     return (
-      <CollapsibleSection className="plx-nav-list__group" title={heading} icon={icon} defaultExpanded={defaultExpanded} headingLevel={null} wrap>
+      <CollapsibleSection className="plx-nav-list__group" title={heading} icon={icon} defaultExpanded={defaultExpanded} headingLevel={null}>
         <ul aria-label={heading} className="plx-nav-list__items">
           {items.map((it) => <Item key={it.id} item={it} current={current} onSelect={onSelect} t={t} loc={loc} />)}
         </ul>
@@ -126,7 +127,7 @@ function Group({ heading, items, current, onSelect, collapsible = true, icon, de
   }
   return (
     <div className="plx-nav-list__group">
-      {heading ? <Tooltip content={heading} disabled={!cut}><div id={id} className="plx-nav-list__heading"><span ref={headingRef} className="plx-nav-list__heading-text">{heading}</span></div></Tooltip> : null}
+      {heading ? <Tooltip content={heading} disabled={!cut} className="plx-nav-list__tip"><div id={id} className="plx-nav-list__heading"><span ref={headingRef} className="plx-nav-list__heading-text">{heading}</span></div></Tooltip> : null}
       <ul aria-labelledby={heading ? id : undefined} className="plx-nav-list__items">
         {items.map((it) => <Item key={it.id} item={it} current={current} onSelect={onSelect} t={t} loc={loc} />)}
       </ul>

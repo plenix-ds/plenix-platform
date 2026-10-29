@@ -11,7 +11,7 @@
 @property --plx-state-nav-list-pin-text{syntax:"*";inherits:false;}
 .plx-nav-list{display:flex;flex-direction:column;row-gap:var(--plx-comp-nav-list-row-gap);}
 /* a static group heading has the collapsible heading's geometry: its height, its text centered, the same room under it (#49) */
-.plx-nav-list__heading{align-items:center;display:flex;margin-block-end:var(--plx-comp-nav-list-heading-margin-block-end);min-block-size:var(--plx-comp-nav-list-heading-min-height);color:var(--plx-comp-nav-list-heading-text);font-size:var(--plx-comp-nav-list-heading-font-size);font-weight:var(--plx-comp-nav-list-heading-font-weight);letter-spacing:var(--plx-comp-nav-list-heading-letter-spacing);padding-block-end:var(--plx-comp-nav-list-heading-padding-block);padding-block-start:var(--plx-comp-nav-list-heading-padding-block);padding-inline-end:var(--plx-comp-nav-list-heading-padding-inline);padding-inline-start:var(--plx-comp-nav-list-heading-padding-inline);text-transform:uppercase;}
+.plx-nav-list__heading{align-items:center;display:flex;flex-basis:0%;flex-grow:1;min-inline-size:0;margin-block-end:var(--plx-comp-nav-list-heading-margin-block-end);min-block-size:var(--plx-comp-nav-list-heading-min-height);color:var(--plx-comp-nav-list-heading-text);font-size:var(--plx-comp-nav-list-heading-font-size);font-weight:var(--plx-comp-nav-list-heading-font-weight);letter-spacing:var(--plx-comp-nav-list-heading-letter-spacing);padding-block-end:var(--plx-comp-nav-list-heading-padding-block);padding-block-start:var(--plx-comp-nav-list-heading-padding-block);padding-inline-end:var(--plx-comp-nav-list-heading-padding-inline);padding-inline-start:var(--plx-comp-nav-list-heading-padding-inline);text-transform:uppercase;}
 .plx-nav-list__items{flex-direction:column;list-style-type:none;margin-block-end:0;margin-block-start:0;margin-inline-end:0;margin-inline-start:0;padding-block-end:0;padding-block-start:0;padding-inline-end:0;row-gap:var(--plx-comp-nav-list-items-row-gap);}
 .plx-nav-list__items:where(:not([hidden])){display:flex;}
 .plx-nav-list__items[hidden]{display:none;}
@@ -40,6 +40,8 @@
 .plx-nav-list__entry--actions{align-items:center;column-gap:var(--plx-comp-nav-list-entry-actions-gap);display:flex;}
 .plx-nav-list__item--in-actions{flex-basis:0%;flex-grow:1;flex-shrink:1;min-inline-size:0;}
 .plx-nav-list__actions{--plx-comp-button-context-height:var(--plx-sys-control-height-standard);--plx-comp-button-context-icon:var(--plx-sys-control-icon-standard);align-items:center;column-gap:var(--plx-comp-nav-list-actions-gap);display:flex;flex-shrink:0;}
+/* the Tooltip's wrapper around a static heading takes the group's full width, as the heading did */
+.plx-nav-list__tip{display:flex;min-inline-size:0;}
 /* a static heading's text wraps to balanced lines, at most --plx-comp-nav-list-heading-lines, the last cut with an ellipsis past them (owner, issue 502) */
 .plx-nav-list__heading-text{-webkit-box-orient:vertical;-webkit-line-clamp:var(--plx-comp-nav-list-heading-lines);display:-webkit-box;line-height:var(--plx-comp-nav-list-heading-line-height);min-inline-size:0;overflow-x:hidden;overflow-wrap:anywhere;overflow-y:hidden;text-wrap:balance;}
 /* a collapsible group: its header lines up with the rows (the legacy section header inside a navigation list) */

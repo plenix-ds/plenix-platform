@@ -628,7 +628,7 @@
     "letter-spacing"
    ]
   },
-  "plx-collapsible-section__title--wrap": {
+  "plx-collapsible-section__title": {
    "contract": "adjusts",
    "props": [
     "line-height"
