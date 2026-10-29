@@ -74,6 +74,11 @@ if (changed.wants({ units: ['components/Isolate', 'components/DataGrid', 'compon
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'ids-rtl-606.test.js')], { stdio: 'inherit', env: process.env });
   if (result.status !== 0) process.exit(result.status || 1);
 }
+// the self-hosting archive draws icons with no network (issue 284): its own test, when the Icon component changed
+if (changed.wants({ units: ['components/Icon'] })) {
+  const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'icon-offline-archive-284.test.js')], { stdio: 'inherit', env: process.env });
+  if (result.status !== 0) process.exit(result.status || 1);
+}
 // section headings wrap, then end in an ellipsis with a tooltip (issue 502): its own test, when CollapsibleSection, NavList, Tooltip or the truncation helper changed
 if (changed.wants({ units: ['components/CollapsibleSection', 'components/NavList', 'components/Tooltip', 'components/Field', 'patterns/PropertyList', 'utils/overflow.js'] })) {
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'section-headings-502.test.js')], { stdio: 'inherit', env: process.env });
