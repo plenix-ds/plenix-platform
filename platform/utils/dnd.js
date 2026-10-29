@@ -27,7 +27,7 @@
        options.orientation: "vertical" (default) | "horizontal" | "grid": the arrow keys and the drop position follow it
        options.handle: true (default) the drag starts on the handle (handleProps); false the whole item drags (itemProps
          then carries the handlers, the tab stop and the name)
-       options.disabled: no drag (default false); options.strings: the words it announces (DND_STRINGS)
+       options.disabled: no drag (default false); options.strings: the words it announces (the catalog's dnd section: Plenix's built-in words for the locale; this prop wins)
      useDraggable(options) → { props, handleProps, targets(), state }
        options.data, options.type: what is dragged and its kind, handed to the targets; options.name: its spoken name
        options.handle: as useSortable; options.disabled; options.strings
@@ -41,7 +41,7 @@
      useReposition(options) → { props, position, picked, moveBy(dx, dy) }
        options.position: { x, y } in pixels from the element's place in the layout (on the grid); options.onMove(next)
        options.bounds: a ref to the element it stays inside (default its offset parent); options.name; options.disabled
-     DND_STRINGS: the default words; moveItem(list, from, to) and transferItem(from, fromIndex, to, toIndex): the list
+     DND_STRINGS: the default English words (the catalog's dnd section); moveItem(list, from, to) and transferItem(from, fromIndex, to, toIndex): the list
        helpers; setDragOffset(el, dx, dy) and clearDragOffset(el, { settle }): move an element by a transform through
        the Web Animations API (never a style attribute), snapped to the grid; mergeDndProps(a, b): one element's props
        from the engine's and a component's (each event runs the engine's handler first; a handled event stops there)
@@ -73,29 +73,12 @@ import { snapToGrid, gridPx } from './grid.js';
 import { arrowStep, isRtl } from './direction.js';
 import { tokenMs } from './tokenTime.js';
 import { gestureTokens } from '../hooks/useGesture.js';
+import { useStrings } from '../providers/LocaleProvider.jsx';
+import english from '../i18n/en.js';
 
-export const DND_STRINGS = {
-  handle: 'Move {name}',
-  instructions: 'Press Space or Enter to pick it up. The arrow keys move it, Space or Enter drops it, Escape puts it back.',
-  pickedUp: '{name} picked up. Position {position} of {total}. The arrow keys move it, Space or Enter drops it, Escape puts it back.',
-  moved: '{name}, position {position} of {total}',
-  movedTo: '{name} moved to {list}, position {position} of {total}',
-  dropped: '{name} dropped at position {position} of {total}',
-  droppedIn: '{name} dropped in {list}, position {position} of {total}',
-  canceled: 'Move canceled. {name} is back at position {position} of {total}',
-  itemPickedUp: '{name} picked up. {count} places take it. The arrow keys choose one, Space or Enter drops it, Escape puts it back.',
-  over: 'Over {target}',
-  overReject: '{target} does not take {name}',
-  droppedOn: '{name} dropped on {target}',
-  noTargets: 'No place takes {name}',
-  itemCanceled: 'Move canceled. {name} was not moved',
-  repositionPicked: '{name} picked up. The arrow keys move it, with Shift farther; Space or Enter drops it, Escape puts it back.',
-  repositioned: '{name} moved',
-  repositionDropped: '{name} dropped',
-  repositionCanceled: 'Move canceled. {name} is back where it was',
-  movable: 'movable',
-  list: 'the list'
-};
+// the default (English) words, as before: the catalog's dnd section, so the words live in one place
+export const DND_STRINGS = english.dnd;
+
 const fill = (s, vars) => String(s).replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m));
 const reduced = () => typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -297,7 +280,7 @@ export function useSortable(options) {
   const getId = o.getId || ((x) => x.id);
   const getName = o.getName || ((x) => String(x.name != null ? x.name : x.label != null ? x.label : getId(x)));
   const orientation = o.orientation || 'vertical', useHandle = o.handle !== false;
-  const t = Object.assign({}, DND_STRINGS, o.strings);
+  const t = useStrings('dnd', o.strings);
   const [listId] = React.useState(() => o.id || nextId('plx-dnd-list'));
   const listRef = React.useRef(null);
   const latest = React.useRef(o); latest.current = Object.assign({}, o, { items, getId, getName, label: o.label || t.list, orientation });
@@ -500,7 +483,7 @@ export function useDropTarget(options) {
 /* ── useDraggable: a data item people drop on a target (a file on a folder, a card on a column) ── */
 export function useDraggable(options) {
   const o = options || {};
-  const t = Object.assign({}, DND_STRINGS, o.strings);
+  const t = useStrings('dnd', o.strings);
   const [id] = React.useState(() => nextId('plx-dnd-item'));
   const ref = React.useRef(null);
   const now = useDndSession();
@@ -582,7 +565,7 @@ export function useDraggable(options) {
 /* ── useReposition: a free move (a note on a board, a layer on a canvas), on the grid ── */
 export function useReposition(options) {
   const o = options || {};
-  const t = Object.assign({}, DND_STRINGS, o.strings);
+  const t = useStrings('dnd', o.strings);
   const pos = o.position || { x: 0, y: 0 };
   const ref = React.useRef(null);
   const [id] = React.useState(() => nextId('plx-dnd-move'));

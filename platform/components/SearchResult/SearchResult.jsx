@@ -63,9 +63,8 @@ import { SectionHeading } from '../SectionHeading/SectionHeading.jsx';
 import { Count } from '../Count/Count.jsx';
 import { Link } from '../Link/Link.jsx';
 import { Button } from '../Button/Button.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const RESULT_STRINGS = { path: 'In' };
-const GROUP_STRINGS = { more: 'Show all' };
 const escape = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 // the text with every match of the query's words in bold (case ignored; words of two letters or more, longest first)
@@ -79,7 +78,7 @@ export function highlightMatches(text, query) {
 
 export function SearchResult({ title, href, onOpen, kind = 'page', icon, thumbnail, avatar, leading, query, path, snippet, meta, actions,
   selected = false, headingLevel, strings, className, ...rest }) {
-  const t = Object.assign({}, RESULT_STRINGS, strings);
+  const t = useStrings('searchResult.result', strings);
   const name = highlightMatches(title, query);
   const opener = href ? <a href={href} className="plx-search-result__opener" aria-current={selected ? 'true' : undefined}>{name}</a>
     : onOpen ? <button type="button" className="plx-search-result__opener" aria-current={selected ? 'true' : undefined} onClick={onOpen}>{name}</button>
@@ -113,7 +112,7 @@ export function SearchResult({ title, href, onOpen, kind = 'page', icon, thumbna
 }
 
 export function SearchResultGroup({ heading, count, label, headingLevel = 3, moreHref, onMore, moreLabel, strings, className, children, ...rest }) {
-  const t = Object.assign({}, GROUP_STRINGS, strings);
+  const t = useStrings('searchResult.group', strings);
   const id = useUid('plx-search-result-group');
   const more = moreLabel || t.more;
   return (

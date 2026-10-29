@@ -27,18 +27,14 @@ import React from 'react';
 import { Button } from '../../components/Button/Button.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
-import { PanelTrigger, PanelHead, Pick, useReorder, REORDER_STRINGS, fill } from '../CommandBar/panel-parts.jsx';
+import { PanelTrigger, PanelHead, Pick, useReorder, fill } from '../CommandBar/panel-parts.jsx';
 import { KIND_ICONS, DIRECTIONS, fieldOf, kindOf } from '../../utils/fields.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = Object.assign({
-  label: 'Sort', title: 'Sort by', within: 'Sort within groups by', info: 'The rows are ordered by the first field, then by the next where the first is the same.',
-  empty: 'No sort: the rows keep their own order.', add: 'Add a sort', addAnother: 'Add another sort', remove: 'Remove the sort by {name}', removeTip: 'Remove sort',
-  field: 'Field', direction: 'Direction',
-}, REORDER_STRINGS);
 export const fieldOption = (f) => ({ value: f.value, label: f.label, icon: KIND_ICONS[kindOf(f)] });
 
 export function SortPanel({ fields = [], value = [], onChange, grouped = false, inline = false, strings }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('sortPanel', strings);
   const levels = value;
   const ro = useReorder(levels, onChange, (l) => fieldOf(fields, l.field).label, t);
   const put = (i, ch) => onChange(levels.map((l, j) => (j === i ? Object.assign({}, l, ch) : l)));

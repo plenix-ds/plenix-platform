@@ -119,7 +119,20 @@
     "failed": "Could not dismiss this announcement. Try again."
   },
   "appHeader": {
-    "aria-label": "Search"
+    "aria-label": "Search",
+    "account": {
+      "trigger": "Account and settings for {name}",
+      "menu": "Account",
+      "myAccount": "My account",
+      "settings": "Plenix settings",
+      "appSettings": "{app} settings",
+      "app": "App",
+      "density": "Display density",
+      "compact": "Compact",
+      "standard": "Standard",
+      "comfortable": "Comfortable",
+      "signOut": "Sign out"
+    }
   },
   "appShell": {
     "skip": "Skip to main content"
@@ -526,7 +539,14 @@
     "preset": "any",
     "moreLabel": "More actions",
     "from": "",
-    "to": ""
+    "to": "",
+    "reorder": {
+      "moved": "{name} moved to position {position} of {total}",
+      "row": "{name}, {position} of {total}. Alt + Arrow Up or Down moves it",
+      "reorder": "Reorder {name}",
+      "moveUp": "Move up",
+      "moveDown": "Move down"
+    }
   },
   "commandMenu": {
     "label": "Commands",
@@ -701,7 +721,11 @@
       "Sort unchecked → checked",
       "Sort checked → unchecked"
     ],
-    "unread": "Unread ({count})"
+    "unread": "Unread ({count})",
+    "columnsLabel": "{label} columns",
+    "rowsLabel": "{label} rows",
+    "columnActions": "{title} column actions",
+    "unreadRow": "{label}, unread"
   },
   "dataPill": {
     "male": "male",
@@ -958,7 +982,12 @@
     "choose": "Choose options",
     "field": "Field",
     "operator": "Operator",
-    "join": "And or or"
+    "join": "And or or",
+    "moved": "{name} moved to position {position} of {total}",
+    "row": "{name}, {position} of {total}. Alt + Arrow Up or Down moves it",
+    "reorder": "Reorder {name}",
+    "moveUp": "Move up",
+    "moveDown": "Move down"
   },
   "form": {
     "label": "Form actions"
@@ -999,7 +1028,12 @@
     "remove": "Remove the grouping by {name}",
     "removeTip": "Remove group",
     "field": "Field",
-    "order": "Order"
+    "order": "Order",
+    "moved": "{name} moved to position {position} of {total}",
+    "row": "{name}, {position} of {total}. Alt + Arrow Up or Down moves it",
+    "reorder": "Reorder {name}",
+    "moveUp": "Move up",
+    "moveDown": "Move down"
   },
   "helpPanel": {
     "title": "Help",
@@ -1433,7 +1467,11 @@
   },
   "resizable": {
     "width": "{label} width",
-    "height": "{label} height"
+    "height": "{label} height",
+    "minWidth": "Smallest width for {label} ({value}px)",
+    "maxWidth": "Largest width for {label} ({value}px)",
+    "minHeight": "Smallest height for {label} ({value}px)",
+    "maxHeight": "Largest height for {label} ({value}px)"
   },
   "resourceList": {
     "item": "item",
@@ -1457,7 +1495,46 @@
     "label": "Waiting for review",
     "noun": "item",
     "plural": "items",
-    "queueLabel": "Waiting for review"
+    "queueLabel": "Waiting for review",
+    "flow": {
+      "reviewers": "Reviewers",
+      "history": "History",
+      "comment": "Comment",
+      "commentHint": "Needed to reject or request changes.",
+      "approve": "Approve",
+      "changes": "Request changes",
+      "reject": "Reject",
+      "waiting": "Waiting",
+      "human": "Generated content. A person checks it before it is used.",
+      "needReason": "Say why, so the author knows what to change.",
+      "done": "{decision}: {title}",
+      "decisions": "Review decisions"
+    },
+    "queue": {
+      "name": "Name",
+      "type": "Type",
+      "submittedBy": "Submitted by",
+      "submitted": "Submitted",
+      "status": "Status",
+      "approve": "Approve",
+      "changes": "Request changes",
+      "reject": "Reject",
+      "rejectTitle": "Reject {what}?",
+      "changesTitle": "Request changes on {what}?",
+      "reason": "Reason",
+      "changesLabel": "What to change",
+      "reasonHint": "The authors see it with the decision.",
+      "needReason": "Say why, so the authors know what to change.",
+      "done": "{what} {decision}",
+      "count": "{n} {plural}",
+      "noun": "item",
+      "plural": "items",
+      "queueLabel": "Waiting for review",
+      "items": {
+        "one": "{n} item",
+        "other": "{n} items"
+      }
+    }
   },
   "richTextEditor": {
     "toolbar": "Formatting",
@@ -1682,7 +1759,12 @@
     "remove": "Remove the sort by {name}",
     "removeTip": "Remove sort",
     "field": "Field",
-    "direction": "Direction"
+    "direction": "Direction",
+    "moved": "{name} moved to position {position} of {total}",
+    "row": "{name}, {position} of {total}. Alt + Arrow Up or Down moves it",
+    "reorder": "Reorder {name}",
+    "moveUp": "Move up",
+    "moveDown": "Move down"
   },
   "sortableList": {
     "moveMenu": "Move {name}",
@@ -1934,7 +2016,8 @@
     "group": {
       "one": "{n} item",
       "other": "{n} items"
-    }
+    },
+    "unreadRow": "{label}, unread"
   },
   "widgetGrid": {
     "widget": "Widget",
@@ -2007,5 +2090,366 @@
       "tied": "Tied",
       "no-quorum": "No quorum"
     }
+  },
+  "card": {
+    "panel": {
+      "collapse": "Collapse {title}",
+      "expand": "Expand {title}",
+      "section": "section"
+    },
+    "mediaCard": {
+      "select": "Select {title}",
+      "item": "item",
+      "assets": "{n} assets",
+      "asset": "{n} asset"
+    },
+    "card": {
+      "expand": "Expand {title}",
+      "collapse": "Collapse {title}",
+      "card": "card"
+    }
+  },
+  "field": {
+    "counter": {
+      "left": "{n} characters left",
+      "over": "{n} characters too many"
+    }
+  },
+  "icon": {
+    "status": {
+      "info": "Information",
+      "success": "Success",
+      "warning": "Warning",
+      "danger": "Error",
+      "neutral": "Note"
+    }
+  },
+  "searchResult": {
+    "result": {
+      "path": "In"
+    },
+    "group": {
+      "more": "Show all"
+    }
+  },
+  "settingsLayout": {
+    "section": {
+      "section": "section"
+    }
+  },
+  "commerce": {
+    "orders": {
+      "label": "Orders",
+      "search": "Search orders",
+      "count": "{n} orders",
+      "one": "1 order",
+      "noun": "order",
+      "plural": "orders",
+      "number": "Order",
+      "date": "Date",
+      "customer": "Customer",
+      "items": "Items",
+      "total": "Total",
+      "status": "Status",
+      "open": "Open",
+      "fulfill": "Fulfill",
+      "refund": "Refund",
+      "cancel": "Cancel order",
+      "cancelMany": "Cancel orders",
+      "cancelTitle": "Cancel {what}?",
+      "cancelText": "The customer is told and paid back in full. This cannot be undone.",
+      "keep": "Keep the order",
+      "notFulfillable": "Only unfulfilled orders can be fulfilled",
+      "notCancelable": "Only unfulfilled orders can be canceled",
+      "notRefundable": "Only shipped or delivered orders can be refunded",
+      "fulfilled": "{what} marked as shipped",
+      "canceled": "{what} canceled"
+    },
+    "orderDetail": {
+      "context": "Order",
+      "back": "Orders",
+      "items": "Items",
+      "delivery": "Delivery",
+      "address": "Address",
+      "method": "Method",
+      "tracking": "Tracking number",
+      "payment": "Payment",
+      "history": "History",
+      "fulfill": "Fulfill",
+      "refund": "Refund",
+      "cancel": "Cancel order",
+      "return": "Start a return",
+      "cancelTitle": "Cancel order {number}?",
+      "cancelText": "The customer is told and paid back in full. This cannot be undone.",
+      "keep": "Keep the order"
+    },
+    "subscription": {
+      "plan": "Your plan",
+      "planName": "Plan",
+      "price": "Price",
+      "status": "Status",
+      "next": "Next payment",
+      "since": "Member since",
+      "ends": "Access ends",
+      "perPeriod": "{price} per {period}",
+      "more": "{amount} more",
+      "less": "{amount} less",
+      "change": "Change plan",
+      "changeTitle": "Change to {plan}?",
+      "changeText": "You will pay {price} from {date}. Until then your current plan stays as it is.",
+      "changeConfirm": "Change plan",
+      "changed": "Your plan changes to {plan} on {date}.",
+      "plans": "Plans",
+      "current": "Current plan",
+      "method": "Payment method",
+      "update": "Update payment method",
+      "manage": "Pause or cancel",
+      "manageText": "Pause to stop the payments for a while and keep your settings; cancel to end the plan. Either way you keep access until {date}.",
+      "pause": "Pause subscription",
+      "pauseTitle": "Pause your subscription?",
+      "pauseText": "No payment is taken while it is paused. Resume it whenever you like.",
+      "resume": "Resume subscription",
+      "cancel": "Cancel subscription",
+      "cancelTitle": "Cancel your subscription?",
+      "cancelText": "You keep access until {date}, and you will not be charged again.",
+      "keep": "Keep my plan",
+      "history": "Billing history",
+      "date": "Date",
+      "description": "Description",
+      "amount": "Amount",
+      "invoice": "Invoice",
+      "invoiceFor": "Invoice for {date}",
+      "paused": "Your subscription is paused.",
+      "canceled": "Your subscription is canceled.",
+      "statuses": {
+        "active": "Active",
+        "paused": "Paused",
+        "canceled": "Canceled",
+        "paid": "Paid",
+        "refunded": "Refunded",
+        "failed": "Failed"
+      }
+    },
+    "returns": {
+      "label": "Return items",
+      "items": "Items",
+      "reason": "Reason",
+      "resolution": "Resolution",
+      "review": "Review",
+      "submit": "Request return",
+      "cancel": "Cancel",
+      "window": "You can return most items within 30 days of delivery.",
+      "choose": "Choose at least one item to return.",
+      "notReturnable": "Cannot be returned",
+      "quantity": "How many, {title}",
+      "why": "Why are you returning them?",
+      "whyRequired": "Choose a reason.",
+      "note": "Anything else we should know? (optional)",
+      "want": "What would you like?",
+      "wantRequired": "Choose a refund or an exchange.",
+      "send": "How will you send them?",
+      "sendRequired": "Choose how to send them.",
+      "refund": "Refund",
+      "refundTiming": "The refund reaches your original payment method 5 to 10 business days after the items arrive.",
+      "requested": "Return requested",
+      "requestedText": "We emailed you the return label and the steps. Here is where your return stands.",
+      "status": "Return status",
+      "returning": "{n} items",
+      "returningOne": "1 item"
+    },
+    "cart": {
+      "title": "Cart",
+      "items": "{n} items",
+      "item": "1 item",
+      "lines": "Items in your cart",
+      "remove": "Remove {title}",
+      "noun": "item",
+      "removed": "{title} removed from your cart.",
+      "undo": "Undo",
+      "empty": "Your cart is empty",
+      "emptyText": "Find something you like and add it here.",
+      "continue": "Continue shopping",
+      "checkout": "Check out",
+      "promo": "Promo code",
+      "apply": "Apply",
+      "applied": "Promo code {code} applied",
+      "promoError": "This code cannot be used.",
+      "total": "Total {total}"
+    },
+    "pay": {
+      "method": "Payment method",
+      "newCard": "A new card",
+      "number": "Card number",
+      "accepted": "Visa, Mastercard, American Express or Discover",
+      "expiry": "Expiry date",
+      "expiryHint": "MM / YY",
+      "cvc": "Security code",
+      "cvcHint": "The last 3 digits on the back, or 4 on the front of American Express",
+      "name": "Name on card",
+      "billingSame": "The billing address is the same as the delivery address",
+      "billing": "Billing address",
+      "street": "Address",
+      "city": "City",
+      "postal": "Postal code",
+      "secure": "Your card details go straight to the payment provider. This page does not keep them.",
+      "charge": "You will be charged",
+      "brands": {
+        "visa": "Visa",
+        "mastercard": "Mastercard",
+        "amex": "American Express",
+        "discover": "Discover"
+      }
+    },
+    "payment": {
+      "title": "Payment",
+      "description": "Choose how to pay. Nothing is charged until you press Pay.",
+      "pay": "Pay {amount}",
+      "cancel": "Cancel",
+      "declined": "The payment did not go through",
+      "declinedText": "Your card was declined. Check the details or use another card.",
+      "paid": "Payment received"
+    },
+    "checkout": {
+      "label": "Checkout",
+      "contact": "Contact",
+      "delivery": "Delivery",
+      "payment": "Payment",
+      "review": "Review",
+      "placeOrder": "Place order",
+      "cancel": "Back to cart",
+      "email": "Email",
+      "emailHint": "For the order confirmation and delivery updates.",
+      "account": "Have an account?",
+      "signIn": "Sign in",
+      "name": "Full name",
+      "street": "Address",
+      "street2": "Apartment, suite or unit (optional)",
+      "city": "City",
+      "region": "State or region",
+      "postal": "Postal code",
+      "country": "Country",
+      "phone": "Phone (optional)",
+      "phoneHint": "Only for questions about the delivery.",
+      "method": "Delivery method",
+      "summary": "Order summary",
+      "card": "Card ending {last4}",
+      "placed": "Order placed",
+      "checkAnswers": "Check your order before you place it.",
+      "items": "Items",
+      "free": "Free"
+    },
+    "confirm": {
+      "title": "Thank you. Your order is placed.",
+      "number": "Order number",
+      "copy": "Copy the order number",
+      "sent": "We sent a confirmation to {email}.",
+      "next": "What happens next",
+      "items": "Items",
+      "view": "View your order",
+      "continue": "Continue shopping",
+      "delivery": "Delivery",
+      "method": "Delivery method"
+    },
+    "listing": {
+      "label": "Products",
+      "search": "Search products",
+      "count": "{n} products",
+      "one": "1 product",
+      "category": "Category",
+      "noun": "product",
+      "name": "Name",
+      "price": "Price",
+      "rating": "Rating",
+      "availability": "Availability",
+      "inStock": "In stock",
+      "outOfStock": "Out of stock",
+      "sale": "On sale",
+      "yes": "Yes",
+      "no": "No",
+      "empty": "No products match",
+      "emptyText": "Remove a filter or search for something else.",
+      "clear": "Clear filters and search",
+      "results": "{n} products shown",
+      "resultsOne": "1 product shown",
+      "none": "No products shown"
+    },
+    "discovery": {
+      "title": "Shop",
+      "search": "Search the shop",
+      "categories": "Shop by category",
+      "recommended": "Recommended for you",
+      "results": "Products",
+      "resultsFor": "Results for “{q}”",
+      "count": "{n} products",
+      "one": "1 product",
+      "suggestions": "Try one of these",
+      "clear": "Clear the search"
+    },
+    "productDetail": {
+      "gallery": "Pictures of {title}",
+      "reviews": "{n} reviews",
+      "review": "1 review",
+      "inStock": "In stock",
+      "lowStock": "Only {n} left",
+      "outOfStock": "Out of stock",
+      "addToCart": "Add to cart",
+      "added": "{title} added to your cart",
+      "viewCart": "View cart",
+      "choose": "Choose a {option}.",
+      "missing": "Choose your options first.",
+      "description": "Description",
+      "details": "Details",
+      "delivery": "Delivery and returns",
+      "detail": "Detail",
+      "value": "Value",
+      "related": "You may also like",
+      "rating": "Rating"
+    },
+    "line": {
+      "quantity": "Quantity, {title}",
+      "qty": "Qty {n}",
+      "each": "{price} each"
+    },
+    "summary": {
+      "title": "Order summary",
+      "subtotal": "Subtotal",
+      "discount": "Discount",
+      "shipping": "Shipping",
+      "shippingEstimated": "Estimated shipping",
+      "tax": "Tax",
+      "taxEstimated": "Estimated tax",
+      "total": "Total",
+      "free": "Free",
+      "items": "{n} items",
+      "item": "1 item",
+      "times": "× {n}"
+    }
+  },
+  "dnd": {
+    "handle": "Move {name}",
+    "instructions": "Press Space or Enter to pick it up. The arrow keys move it, Space or Enter drops it, Escape puts it back.",
+    "pickedUp": "{name} picked up. Position {position} of {total}. The arrow keys move it, Space or Enter drops it, Escape puts it back.",
+    "moved": "{name}, position {position} of {total}",
+    "movedTo": "{name} moved to {list}, position {position} of {total}",
+    "dropped": "{name} dropped at position {position} of {total}",
+    "droppedIn": "{name} dropped in {list}, position {position} of {total}",
+    "canceled": "Move canceled. {name} is back at position {position} of {total}",
+    "itemPickedUp": "{name} picked up. {count} places take it. The arrow keys choose one, Space or Enter drops it, Escape puts it back.",
+    "over": "Over {target}",
+    "overReject": "{target} does not take {name}",
+    "droppedOn": "{name} dropped on {target}",
+    "noTargets": "No place takes {name}",
+    "itemCanceled": "Move canceled. {name} was not moved",
+    "repositionPicked": "{name} picked up. The arrow keys move it, with Shift farther; Space or Enter drops it, Escape puts it back.",
+    "repositioned": "{name} moved",
+    "repositionDropped": "{name} dropped",
+    "repositionCanceled": "Move canceled. {name} is back where it was",
+    "movable": "movable",
+    "list": "the list"
+  },
+  "collapsibleSection": {
+    "less": "Show less",
+    "more": "Show more",
+    "moreCount": "Show more ({n})"
   }
 }
