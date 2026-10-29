@@ -42,7 +42,8 @@
     "platform/components/DataGrid/DataGridEngine.jsx"
   ],
   "useFocusGroup": [
-    "platform/components/Toolbar/Toolbar.jsx"
+    "platform/components/Toolbar/Toolbar.jsx",
+    "platform/patterns/ToolRail/ToolRail.jsx"
   ],
   "useFloating": [
     "platform/components/Menu/Menu.jsx",
