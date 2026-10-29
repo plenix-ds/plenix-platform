@@ -95,6 +95,11 @@ if (changed.wants({ units: ['components/Icon'] })) {
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'icon-retry-283.test.js')], { stdio: 'inherit', env: process.env });
   if (result.status !== 0) process.exit(result.status || 1);
 }
+// a Chrome Manifest V3 extension draws icons with no remote code (issue 284): its own test, when the Icon component changed
+if (changed.wants({ units: ['components/Icon'] })) {
+  const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'icon-mv3-284.test.js')], { stdio: 'inherit', env: process.env });
+  if (result.status !== 0) process.exit(result.status || 1);
+}
 // the self-hosting package carries every documented icon (issue 284): its own test, when the Icon component changed
 if (changed.wants({ units: ['components/Icon'] })) {
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'icon-package-assets-284.test.js')], { stdio: 'inherit', env: process.env });

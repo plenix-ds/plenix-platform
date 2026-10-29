@@ -55,12 +55,13 @@ function chromePath() {
 }
 // every test page asks for reduced motion, so a state is measured settled, never mid-fade (batch 236 added 80ms hover and
 // color fades; a machine whose system already reduces motion passed while CI, without it, read the start of each fade)
-const launch = async () => {
+// options.enableExtensions: folders of unpacked extensions to load (an extension fixture, #284); Chrome 137 and later ignores --load-extension
+const launch = async (options = {}) => {
   // Chrome sometimes does not print its WebSocket address within the default 30 seconds on a busy CI runner (a flake, seen on 10-28 and 10-29): wait up to
   // 90 seconds, keep the shared-memory folder off /dev/shm (small on a runner), and try again twice
   let browser, last;
   for (let attempt = 0; attempt < 3 && !browser; attempt++) {
-    try { browser = await puppeteer.launch({ executablePath: chromePath(), headless: true, protocolTimeout: 180000, timeout: 90000, args: ['--no-sandbox', '--disable-dev-shm-usage', '--allow-file-access-from-files'] }); }
+    try { browser = await puppeteer.launch({ executablePath: chromePath(), headless: true, protocolTimeout: 180000, timeout: 90000, ...(options.enableExtensions ? { enableExtensions: options.enableExtensions } : {}), args: ['--no-sandbox', '--disable-dev-shm-usage', '--allow-file-access-from-files'] }); }
     catch (e) { last = e; if (!/WS endpoint|Timed out/i.test(String(e && e.message))) throw e; console.log('Chrome did not start (attempt ' + (attempt + 1) + ' of 3): ' + String(e.message).split('\n')[0]); }
   }
   if (!browser) throw last;
