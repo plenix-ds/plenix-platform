@@ -34,9 +34,10 @@ One design system and the suite of applications built on it, owned by one person
 
 ## The owner's rules (non-negotiable)
 
-- **No release unless the owner says so.** When they do, see "Releasing" below.
+- **Ship once QA clears.** The Tech Lead, the Developers, the Defect-fix Developer and the UX Designer merge, release and deploy without asking as soon as the QA Engineer passes a change, and the QA Engineer may merge, release and deploy what it passed; owner QA follows and never blocks. See "Releasing" below.
+- **Current hold (owner, 2026-10-29): publishing is off.** No release and no deploy until the owner restores access to the web server and says so; merges continue.
 - **Ask before fixing** something the owner reports: explain the cause and the options; fix after they choose.
-- **Pixel changes wait for the owner's look** (screenshots of the real component; review pages in `docs/briefs/`).
+- **Pixel changes get the owner's QA after AI QA**: a dashboard item with screenshots of the real component at the reviewed commit; his requested changes go back through QA.
 - Styling Standard (`platform/standards/styling.md`): no `!important`, no inline styles (not even a style attribute),
   tokens only, no new colors (existing palette), flat selectors (a parent never styles a child; context values and
   state variables instead), every text part declares a text contract, no exceptions.
