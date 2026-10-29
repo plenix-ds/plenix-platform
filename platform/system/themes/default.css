@@ -188,7 +188,7 @@
   --plx-sys-rating-active: var(--plx-ref-color-orange-500);
   --plx-sys-rating-inactive: var(--plx-ref-color-gray-600);
   --plx-sys-action-danger-background-hover: var(--plx-ref-color-red-800);
-  --plx-sys-action-danger-background-pressed: var(--plx-ref-color-red-800);
+  --plx-sys-action-danger-background-pressed: var(--plx-ref-color-red-900);
   --plx-sys-accent-field-background: var(--plx-ref-color-blue-600);
   --plx-sys-accent-field-border: var(--plx-ref-color-blue-300);
   --plx-sys-accent-field-placeholder: var(--plx-ref-color-blue-300);
@@ -567,7 +567,7 @@
   --plx-sys-rating-active: var(--plx-ref-color-orange-500);
   --plx-sys-rating-inactive: var(--plx-ref-color-gray-300);
   --plx-sys-action-danger-background-hover: var(--plx-ref-color-red-800);
-  --plx-sys-action-danger-background-pressed: var(--plx-ref-color-red-800);
+  --plx-sys-action-danger-background-pressed: var(--plx-ref-color-red-900);
   --plx-sys-accent-field-background: var(--plx-ref-color-gray-800);
   --plx-sys-accent-field-border: var(--plx-ref-color-gray-500);
   --plx-sys-accent-field-placeholder: var(--plx-ref-color-gray-300);

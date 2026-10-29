@@ -127,6 +127,7 @@
   /* shape */
   --plx-comp-button-border-width: var(--plx-sys-border-width-thin);
   --plx-comp-button-radius: var(--plx-sys-radius-control);
+  --plx-comp-button-label-clip-margin: var(--plx-ref-size-4px);
   --plx-comp-button-font-family: var(--plx-sys-font-label);
   --plx-comp-button-line-height: var(--plx-ref-line-height-tight);
   --plx-comp-button-caret-duration: var(--plx-sys-motion-duration-fast);
