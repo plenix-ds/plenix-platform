@@ -43,6 +43,7 @@ import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { highlight } from '../CodeBlock/CodeBlock.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useReadOnly } from '../../providers/ReadOnly.jsx';
 
 // replaces the textarea's selection with text through the browser's editing, so it joins the undo history; falls back to
 // setting the value (and telling React) where execCommand is not available
@@ -57,8 +58,9 @@ function insert(el, text, selStart, selEnd) {
   }
 }
 
-export const CodeEditor = React.forwardRef(function CodeEditor({ value, defaultValue = '', onChange, language = 'jsx', lineNumbers = false, readOnly = false,
+export const CodeEditor = React.forwardRef(function CodeEditor({ value, defaultValue = '', onChange, language = 'jsx', lineNumbers = false, readOnly: readOnlyOwn,
   height = 'md', maxHeight = 'none', tabSize = 2, label, invalid, disabled = false, required, id, 'aria-describedby': describedBy, strings, className, onKeyDown, ...rest }, ref) {
+  const readOnly = useReadOnly(readOnlyOwn);   // its own readOnly, else the nearest ReadOnly region's
   const t = useStrings('codeEditor', strings);
   const area = React.useRef(null);
   const release = React.useRef(false);   // Escape was pressed: the next Tab leaves the editor

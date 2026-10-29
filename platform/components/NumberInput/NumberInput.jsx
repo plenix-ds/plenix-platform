@@ -28,7 +28,7 @@
      width: "xs" | "sm" | "md" | "lg" (the group's width; quantity has its own); full width by default
      invalid: the danger border and aria-invalid (a Field with an error sets it)
      disabled: turns the field and its buttons off
-     readOnly: the value can be read and copied, not changed; the buttons turn off
+     readOnly: the value can be read and copied, not changed; the buttons turn off; default the nearest ReadOnly region's (useReadOnly)
      required: handed to the field (a Field sets it)
      id: handed to the field, with aria-describedby (a Field sets both)
      strings: the words it announces, for other languages: { decrease: "Decrease", increase: "Increase" }
@@ -54,6 +54,7 @@ import { Input } from '../Input/Input.jsx';
 import { Button } from '../Button/Button.jsx';
 import { InputGroup } from '../InputGroup/InputGroup.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useReadOnly } from '../../providers/ReadOnly.jsx';
 import PlusIcon from 'plenix-platform/icons/plenix/plus';
 import RemoveIcon from 'plenix-platform/icons/plenix/remove';
 
@@ -92,8 +93,9 @@ function affix(format, currency, display, locale) {
 }
 
 export const NumberInput = React.forwardRef(function NumberInput({ value, defaultValue = null, onChange, min, max, step = 1, bigStep = 10, decimals,
-  format = 'number', currency, currencyDisplay = 'symbol', unit, stepper = 'none', width, invalid, disabled, readOnly, required, id,
+  format = 'number', currency, currencyDisplay = 'symbol', unit, stepper = 'none', width, invalid, disabled, readOnly: readOnlyOwn, required, id,
   'aria-describedby': describedBy, strings, className, onFocus, onBlur, onKeyDown, ...rest }, ref) {
+  const readOnly = useReadOnly(readOnlyOwn);   // its own readOnly, else the nearest ReadOnly region's: the step buttons and the keys follow either
   const t = useStrings('numberInput', strings);
   const locale = numeralLocale(formatLocale());
   const aff = React.useMemo(() => affix(format, currency, currencyDisplay, locale), [format, currency, currencyDisplay, locale]);

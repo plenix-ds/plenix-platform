@@ -7,7 +7,16 @@
     "platform/components/SegmentedControl/SegmentedControl.jsx",
     "platform/components/ColorSwatch/ColorSwatch.jsx",
     "platform/components/PromptInput/PromptInput.jsx",
-    "platform/components/TimeZoneSelect/TimeZoneSelect.jsx"
+    "platform/components/TimeZoneSelect/TimeZoneSelect.jsx",
+    "platform/components/NumberInput/NumberInput.jsx",
+    "platform/components/DatePicker/DatePicker.jsx",
+    "platform/components/Combobox/Combobox.jsx",
+    "platform/components/TreeSelect/TreeSelect.jsx",
+    "platform/components/TransferList/TransferList.jsx",
+    "platform/components/InlineEdit/InlineEdit.jsx",
+    "platform/components/RichTextEditor/RichTextEditor.jsx",
+    "platform/components/CodeEditor/CodeEditor.jsx",
+    "platform/components/MentionInput/MentionInput.jsx"
   ],
   "useDescribedBy": [],
   "usePressable": [
