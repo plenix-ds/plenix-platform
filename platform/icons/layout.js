@@ -24,14 +24,22 @@ const VARIANTS = ['', '-fill', '-24', '-24-fill'];
 const MIRROR = ['arrow_back', 'arrow_right', 'chevron_left', 'chevron_right', 'left_panel_close', 'left_panel_open', 'right_panel_close', 'right_panel_open', 'undo', 'redo'];
 const dashed = (s) => s.replace(/_/g, '-');
 
-// one icon file's drawing: its one path in its own box, with the path's own drawing attributes (as build-icons.js reads it)
+// the allow-list every icon file passes (platform/utils/iconSafety.js, #285): the same module the Icon component uses,
+// loaded here through Babel (it is written as an ES module for the Platform bundle)
+let safety = null;
+function iconSafety() {
+  if (safety) return safety;
+  const Babel = require('@babel/standalone');
+  const code = Babel.transform(fs.readFileSync(path.join(__dirname, '..', 'utils', 'iconSafety.js'), 'utf8'), { sourceType: 'module', plugins: ['transform-modules-commonjs'] }).code;
+  const m = { exports: {} }; new Function('module', 'exports', 'require', code)(m, m.exports, require);
+  return (safety = m.exports);
+}
+// one icon file's drawing, through the allow-list: { viewBox, d, transform?, fillRule?, clipRule? }; a file it refuses
+// stops the build, naming the file and the reason
 function readDrawing(file) {
-  const svg = fs.readFileSync(file, 'utf8'), tag = svg.match(/<path\b([^>]*)\/?>/), box = svg.match(/viewBox="([^"]+)"/), w = svg.match(/ width="([\d.]+)"/), h = svg.match(/ height="([\d.]+)"/);
-  const attr = (name) => { const m = tag && tag[1].match(new RegExp('\\s' + name + '="([^"]+)"')); return m ? m[1] : null; };
-  if (!tag || !attr('d') || (svg.match(/<path/g) || []).length !== 1 || !(box || (w && h))) throw new Error('icon file is not one path with a box: ' + file);
-  const out = { viewBox: box ? box[1] : '0 0 ' + w[1] + ' ' + h[1], d: attr('d') };
-  for (const [a, key] of [['transform', 'transform'], ['fill-rule', 'fillRule'], ['clip-rule', 'clipRule']]) if (attr(a)) out[key] = attr(a);
-  return out;
+  const r = iconSafety().checkIconSvg(fs.readFileSync(file, 'utf8'));
+  if (!r.ok) throw new Error('icon file refused (' + r.reason + '): ' + file);
+  return r.drawing;
 }
 
 // where a symbol's file is: the working set, then Plenix's own icons (custom), then the full library
