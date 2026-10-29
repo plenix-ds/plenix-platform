@@ -14,7 +14,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const SLOT = /^(icon|iconEnd|iconStart|[a-z][A-Za-z]*Icons?)$/;   // iconOnly is a flag, not a slot
+const SLOT = /^(icon|iconEnd|iconStart|glyph|[a-z][A-Za-z]*Icons?)$/;   // iconOnly is a flag; leading takes an element; mark is a drag-and-drop insertion mark or a mark-as-read function
 const ICON_ELEMENT = /(^|\.)(Icon|StatusIcon)$/;
 const MARK = /plx-icons:\s*([a-z0-9_\- ]+)/;
 
@@ -181,7 +181,7 @@ function files(dir, out = []) {
   if (!fs.existsSync(dir)) return out;
   for (const e of fs.readdirSync(dir, { withFileTypes: true }).sort((a, b) => (a.name < b.name ? -1 : 1))) {
     const p = path.join(dir, e.name);
-    if (e.isDirectory()) { if (!/^(node_modules|dist|vendor|design-system|icons)$/.test(e.name)) files(p, out); } else if (/\.jsx$/.test(e.name)) out.push(p);
+    if (e.isDirectory()) { if (!/^(node_modules|dist|vendor|design-system|icons)$/.test(e.name)) files(p, out); } else if (/\.jsx?$/.test(e.name)) out.push(p);
   }
   return out;
 }
@@ -206,8 +206,8 @@ function scan(root, folders, { names, withIcon = false }) {
   return { found, unresolved, unknown, literals: [...literals.values()] };
 }
 
-// the Platform's own source: platform/components, patterns, hooks, providers and templates (the Icon component itself excluded: it
+// the Platform's own source: platform/components, patterns, hooks, providers, templates, charts and utils (.js and .jsx) (the Icon component itself excluded: it
 // draws what it is given)
-const PLATFORM = ['platform/components', 'platform/patterns', 'platform/hooks', 'platform/providers', 'platform/templates'];
+const PLATFORM = ['platform/components', 'platform/patterns', 'platform/hooks', 'platform/providers', 'platform/templates', 'platform/charts', 'platform/utils'];
 
 module.exports = { scan, PLATFORM };

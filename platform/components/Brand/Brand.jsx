@@ -37,7 +37,7 @@ import React from 'react';
 import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { Icon } from '../Icon/Icon.jsx';
-import { appById } from '../../providers/apps.js';
+import { appById, appIcon } from '../../providers/apps.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import HomeIcon from 'plenix-platform/icons/plenix/home';
 
@@ -57,7 +57,7 @@ export function BrandMark({ kind = 'mark', tone, size, app, showName = true, cle
     const name = a ? a.label : s.name;
     return (
       <span className={lockup} role={showName ? undefined : 'img'} aria-label={showName ? undefined : (label || name)} {...rest}>
-        <span className="plx-brand-lockup__tile" aria-hidden="true"><Icon name={a ? a.icon : HomeIcon} /></span>
+        <span className="plx-brand-lockup__tile" aria-hidden="true"><Icon name={a ? appIcon(a) : HomeIcon} /></span>
         {showName ? <span className="plx-brand-lockup__app">{name}</span> : null}
       </span>
     );
