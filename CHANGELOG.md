@@ -8,9 +8,30 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [0.74.0] - 2026-10-29
 
-**In short.** The live design spec and the CDN now show the icon rebuild (each icon is its own small file; the icon stylesheet went from 555 KB to 4 KB; each site can load just its own icons), the matching top and bottom borders on selected and hovered table rows, the splitter that becomes a draggable bar between stacked panes, and toolbars that fold extra buttons into More instead of wrapping. Also: fields in toolbars size to their content and shrink before anything overflows, numbers inside phrases use the data font, the spec's color samples are full bars again, and the page-header examples show all five layouts. Bare icon class names and icons-all.css are retired (see Breaking).
+**In short.** The live design spec and the CDN now show the icon rebuild (each icon is its own small file; the icon stylesheet went from 555 KB to 4 KB; each site can load just its own icons), the matching top and bottom borders on selected and hovered table rows, the splitter that becomes a draggable bar between stacked panes, and toolbars that fold extra buttons into More instead of wrapping. Also: fields in toolbars size to their content and shrink before anything overflows, numbers inside phrases use the data font, the spec's color samples are full bars again, and the page-header examples show all five layouts. Bare icon class names and icons-all.css are removed (see Breaking).
+
+### Upgrading from 0.73.0
+An app that moves from 0.73.0 to 0.74.0 does these, in any order:
+1. **Icons:** replace every bare icon class (`<span class="plx-icon plx-icon--add">`, without the Icon component) with `<Icon name="add">`, or with `Plenix.iconMarkup(icon)` where the page writes HTML. A bare class now draws nothing.
+2. **icons-all.css:** stop loading it. It is no longer published. Any Material Symbols name draws through `<Icon name>`.
+3. **Icon settings:** remove any override of `--plx-comp-icon-glyph-*`, `--plx-comp-icon-auto-*` or `--plx-sys-icon-forced-stroke`. They no longer exist.
+4. **Icon file (recommended):** load `plenix-icons-<site>.js` (made by `tools/icons/site-icons.js` from your source) or the compatibility file `plenix-icons-plenix.js` after `plenix.js`, so icons draw at once and work offline. Without either, Plenix icons load their files once from the CDN.
+5. **Engines:** a page that shows a rich-text editor, a chart or a PDF loads `plenix-engines.js` after `plenix.js`. Without it, those parts say that the engines script is missing.
+6. **Renamed tokens:** if your theme or page sets one of the four `-radius` circle sizes below, use its `-size` name.
+7. **DataGrid:** remove `uniformPillWidths`. It is ignored, because uniform pill widths are always on.
+8. **What people will see without any change:**
+   - Toolbars and footer buttons stay on one row and fold extra buttons into More instead of wrapping.
+   - Fields in bars size to their content and shrink before overflowing.
+   - Panes start wider on large windows, and a dragged width is remembered per monitor.
+   - Selected and hovered table rows show a top border too.
+   - A stacked split view has a horizontal splitter between the panes.
+   - Numbers inside phrases ("7 files") are in the data font.
 
 ### Breaking
+- Bare icon classes draw nothing (owner, #277 and #557). `plx-icon plx-icon--<name>` without the Icon component is no longer drawn by the stylesheet. Use `<Icon name>`, or `iconMarkup(icon)` where a page writes HTML.
+- `icons-all.css` is no longer published (#557).
+- The icon drawing settings `--plx-comp-icon-glyph-*`, their per-density aliases `--plx-comp-icon-auto-*`, and `--plx-sys-icon-forced-stroke` are removed (#557).
+- The rich-text, chart and PDF engines load through a separate script, `plenix-engines.js` (owner, #456 to #458). A page that shows one of them must load it after `plenix.js`. Details are under Changed.
 - Four circle sizes are renamed from `-radius` to `-size`, so the corner rule (2 to 6px) covers only real corners (owner, dot-radius-names-34). Each still holds the circle's radius (SVG `r`), so nothing on screen changes. A theme or page that set an old name must use the new one:
   - `--plx-comp-chart-interaction-focus-mark-radius` → `--plx-comp-chart-interaction-focus-mark-size`
   - `--plx-comp-network-graph-node-radius` → `--plx-comp-network-graph-node-size`
