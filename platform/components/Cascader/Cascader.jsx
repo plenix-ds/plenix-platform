@@ -18,6 +18,7 @@
      label: the accessible name when there is no Field
      invalid: the invalid state (the field's border in the danger color); a Field with an error sets it
      disabled: the field cannot be used
+     readOnly: shows the choice and does not change it: the list does not open and the tags cannot be removed; default the nearest ReadOnly region's (useReadOnly)
      id: the id of the field's button (a Field sets it, so its label names it)
      strings: the words it shows and announces, for other languages: { placeholder: "Choose", separator: " / ",
        search: "Search", noMatches: "No matches", empty: "No items", remove: "Remove {label}", results: (n) => …,
@@ -42,6 +43,7 @@
 import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { useDescribedBy } from '../../utils/describedBy.js';
+import { useReadOnly } from '../../providers/ReadOnly.jsx';
 import { Tag } from '../Tag/Tag.jsx';
 import { MillerColumns } from '../MillerColumns/MillerColumns.jsx';
 import { announce } from '../../utils/announce.jsx';
@@ -63,7 +65,7 @@ const leavesOf = (items, trail = []) => items.reduce((all, it) => (Array.isArray
 const pathTo = (items, id) => { const hit = leavesOf(items).find((l) => l.item.id === id); return hit ? hit.trail : null; };
 
 export const Cascader = React.forwardRef(function Cascader({ options = [], value, values, onChange, multiple = false, expandTrigger = 'click', searchable = false,
-  placeholder, label, invalid, disabled, id, strings, className, 'aria-describedby': describedBy, ...rest }, ref) {
+  placeholder, label, invalid, disabled, readOnly: readOnlyOwn, id, strings, className, 'aria-describedby': describedBy, ...rest }, ref) {
   const t = useStrings('cascader', strings);
   const loc = useLocale();
   const auto = 'plx-cs' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
@@ -81,8 +83,9 @@ export const Cascader = React.forwardRef(function Cascader({ options = [], value
   const pathLabel = (trail) => trail.map((x) => x.label).join(t.separator);
   const current = !multiple && chosen.length ? pathTo(options, chosen[0]) : null;
 
+  const locked = useReadOnly(readOnlyOwn);   // its own readOnly, else the nearest ReadOnly region's: the choice shows and nothing changes it (the list does not open)
   const openList = () => {
-    if (disabled) return;
+    if (disabled || locked) return;
     setBrowse(current ? current.map((x) => x.id) : []);
     setText(''); setOpen(true);
   };
@@ -105,6 +108,7 @@ export const Cascader = React.forwardRef(function Cascader({ options = [], value
   React.useEffect(() => { setActive(0); if (q) announce(typeof t.results === 'function' ? t.results(matches.length) : loc.t('cascader.results', { count: matches.length, n: formatNumber(matches.length) })); }, [q]);
 
   const pick = (item, trail) => {
+    if (locked) return;
     if (multiple) onChange(chosen.indexOf(item.id) >= 0 ? chosen.filter((x) => x !== item.id) : chosen.concat([item.id]));
     else { onChange(item.id, trail.map((x) => x.id)); close(true); }
   };
@@ -125,7 +129,7 @@ export const Cascader = React.forwardRef(function Cascader({ options = [], value
     <div ref={wrap} className={cx('plx-cascader', multiple && 'plx-cascader--multiple', open && 'is-open', disabled && 'is-disabled', className)} onKeyDown={onListKey}>
       <div className="plx-cascader__field plx-input" aria-invalid={invalid || undefined}>
         {multiple ? chosen.map((v) => { const trail = pathTo(options, v); const name = trail ? trail[trail.length - 1].label : String(v);
-          return <Tag key={v} onRemove={disabled ? undefined : () => onChange(chosen.filter((x) => x !== v))} removeLabel={t.remove.replace('{label}', name)}>{name}</Tag>; }) : null}
+          return <Tag key={v} onRemove={disabled || locked ? undefined : () => onChange(chosen.filter((x) => x !== v))} removeLabel={t.remove.replace('{label}', name)}>{name}</Tag>; }) : null}
         <button ref={button} type="button" id={id} className="plx-cascader__trigger" aria-haspopup="dialog" aria-expanded={open} aria-controls={open ? auto + '-pop' : undefined}
           aria-label={label || undefined} aria-describedby={describedAt} disabled={disabled}
           onClick={() => (open ? close(false) : openList())}

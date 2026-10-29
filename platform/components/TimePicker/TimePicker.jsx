@@ -24,6 +24,7 @@
      label: the accessible name when there is no Field (the group's name with segments)
      invalid: the invalid state (the border in the danger color); a Field with an error sets it
      disabled: the field cannot be used
+     readOnly: shows the time and does not change it: the list does not open, the segments take no digits or arrows that change a value; default the nearest ReadOnly region's (useReadOnly)
      id: the id of the input, or of the first segment (a Field sets it)
      name: submits the "HH:MM" value with a form (a hidden input)
      strings: the words it shows and announces, for other languages: { hour: "Hour", minute: "Minute", period: "AM or
@@ -58,6 +59,7 @@ import { useStrings } from '../../providers/LocaleProvider.jsx';
 import { Icon } from '../Icon/Icon.jsx';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';
 import { useTruncated } from '../../utils/overflow.js';
+import { useReadOnly } from '../../providers/ReadOnly.jsx';
 import ScheduleIcon from 'plenix-platform/icons/plenix/schedule';
 
 const pad = (n) => String(n).padStart(2, '0');
@@ -87,15 +89,17 @@ const show = (mins, cycle, t, digits) => {
 };
 
 export const TimePicker = React.forwardRef(function TimePicker({ value, defaultValue = '', onChange, variant = 'list', hourCycle, step, min, max, label, width,
-  invalid, disabled, id, name, strings, className, ...rest }, ref) {
+  invalid, disabled, readOnly: readOnlyOwn, id, name, strings, className, ...rest }, ref) {
   devWarn('TimePicker', { variant }, { variant: ['list','segments'] });
   const t = useStrings('timePicker', strings);
   const cycle = hourCycle ? String(hourCycle) : localeCycle();
+  const locked = useReadOnly(readOnlyOwn);   // its own readOnly, else the nearest ReadOnly region's: the time shows and nothing changes it (the list does not open)
   const [own, setOwn] = React.useState(defaultValue);
   const current = value !== undefined ? value : own;
   const lo = toMin(min) !== null ? toMin(min) : 0, hi = toMin(max) !== null ? toMin(max) : 24 * 60 - 1;
   const clamp = (n) => Math.min(hi, Math.max(lo, n));
   const commit = (mins) => {
+    if (locked) return;
     const v = mins === null ? '' : fromMin(clamp(mins));
     if (value === undefined) setOwn(v);
     if (onChange && v !== current) onChange(v);
@@ -103,11 +107,11 @@ export const TimePicker = React.forwardRef(function TimePicker({ value, defaultV
   const digits = useDigits();
   const cls = cx('plx-time-picker', 'plx-time-picker--' + variant, width && 'plx-time-picker--width-' + width, disabled && 'is-disabled', className);
   const hidden = name ? <input type="hidden" name={name} value={current || ''} /> : null;
-  if (variant === 'segments') return <Segments ref={ref} {...{ t, cycle, step: step || 1, current, commit, lo, hi, label, invalid, disabled, id, cls, hidden, rest }} />;
-  return <ListPicker ref={ref} {...{ t, cycle, step: step || 15, current, commit, lo, hi, label, invalid, disabled, id, cls, hidden, rest }} />;
+  if (variant === 'segments') return <Segments ref={ref} {...{ t, cycle, step: step || 1, current, commit, lo, hi, label, invalid, disabled, locked, id, cls, hidden, rest }} />;
+  return <ListPicker ref={ref} {...{ t, cycle, step: step || 15, current, commit, lo, hi, label, invalid, disabled, locked, id, cls, hidden, rest }} />;
 });
 
-const ListPicker = React.forwardRef(function ListPicker({ t, cycle, step, current, commit, lo, hi, label, invalid, disabled, id, cls, hidden, rest }, ref) {
+const ListPicker = React.forwardRef(function ListPicker({ t, cycle, step, current, commit, lo, hi, label, invalid, disabled, locked, id, cls, hidden, rest }, ref) {
   const digits = useDigits();
   const auto = 'plx-tp' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const [open, setOpen] = React.useState(false);
@@ -122,7 +126,7 @@ const ListPicker = React.forwardRef(function ListPicker({ t, cycle, step, curren
   for (let n = Math.ceil(lo / step) * step; n <= hi; n += step) times.push(n);
   const mins = toMin(current);
   const nearest = (n) => { if (n === null || !times.length) return 0; let best = 0; times.forEach((x, i) => { if (Math.abs(x - n) < Math.abs(times[best] - n)) best = i; }); return best; };
-  const openAt = (n) => { setActive(nearest(n)); setOpen(true); };
+  const openAt = (n) => { if (locked) return; setActive(nearest(n)); setOpen(true); };
   React.useEffect(() => {
     if (!open) return undefined;
     const off = (e) => { if (wrap.current && !wrap.current.contains(e.target)) setOpen(false); };
@@ -158,7 +162,7 @@ const ListPicker = React.forwardRef(function ListPicker({ t, cycle, step, curren
       <div className="plx-time-picker__field plx-input" aria-invalid={invalid || undefined}>
         <Tooltip content={shownText} disabled={!cut || !shownText || open} describe={false} className="plx-time-picker__tip">
           <input ref={input} id={id} className="plx-time-picker__input" role="combobox" aria-expanded={open} aria-controls={auto + '-list'} aria-autocomplete="none"
-            aria-activedescendant={open && times[active] !== undefined ? optId(active) : undefined} aria-label={label} disabled={disabled} autoComplete="off" inputMode="text"
+            aria-activedescendant={open && times[active] !== undefined ? optId(active) : undefined} aria-label={label} disabled={disabled} readOnly={locked || undefined} aria-readonly={locked || undefined} autoComplete="off" inputMode="text"
             value={shownText} placeholder={cycle === '12' ? '9:00 ' + t.am : '09:00'}
             onChange={(e) => { setText(e.target.value); const n = parseTime(e.target.value, cycle); if (n !== null) setActive(nearest(n)); }}
             onBlur={() => { settle(); }} onClick={() => { if (!open && !disabled) openAt(mins); }} onKeyDown={onKey} {...rest} />
@@ -179,7 +183,7 @@ const ListPicker = React.forwardRef(function ListPicker({ t, cycle, step, curren
   );
 });
 
-const Segments = React.forwardRef(function Segments({ t, cycle, step, current, commit, lo, hi, label, invalid, disabled, id, cls, hidden, rest }, ref) {
+const Segments = React.forwardRef(function Segments({ t, cycle, step, current, commit, lo, hi, label, invalid, disabled, locked, id, cls, hidden, rest }, ref) {
   const digits = useDigits();
   const mins = toMin(current);
   // the parts being edited: hour on the clock shown (1–12 or 0–23), minute, period ('am' | 'pm'); null = empty
@@ -202,6 +206,7 @@ const Segments = React.forwardRef(function Segments({ t, cycle, step, current, c
   const onKey = (k, i) => (e) => {
     if (disabled) return;
     const n = Object.assign({}, parts);
+    if (locked && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') { if (/^(ArrowUp|ArrowDown|Home|End|Backspace|Delete|\d|[apAP])$/.test(e.key)) e.preventDefault(); return; }
     const wrapAround = (v, d, a, b, s) => { const span = b - a + 1; return ((((v === null ? (d > 0 ? a - s : b + 1) : v) - a + d * s) % span) + span) % span + a; };
     if (e.key === 'ArrowLeft') { e.preventDefault(); move(i - 1); return; }
     if (e.key === 'ArrowRight') { e.preventDefault(); move(i + 1); return; }
@@ -233,7 +238,7 @@ const Segments = React.forwardRef(function Segments({ t, cycle, step, current, c
         {segs.map((k, i) => (
           <React.Fragment key={k}>
             {k === 'm' ? <span className="plx-time-picker__separator" aria-hidden="true">:</span> : null}
-            <span ref={refs[i]} id={i === 0 ? id : undefined} role="spinbutton" tabIndex={disabled ? -1 : 0} aria-label={lbl[k]} aria-disabled={disabled || undefined}
+            <span ref={refs[i]} id={i === 0 ? id : undefined} role="spinbutton" tabIndex={disabled ? -1 : 0} aria-label={lbl[k]} aria-disabled={disabled || undefined} aria-readonly={locked || undefined}
               aria-invalid={invalid || undefined}
               aria-valuemin={k === 'p' ? undefined : range[k][0]} aria-valuemax={k === 'p' ? undefined : range[k][1]}
               aria-valuenow={k === 'p' || parts[k] === null ? undefined : parts[k]} aria-valuetext={parts[k] === null ? undefined : text(k)}

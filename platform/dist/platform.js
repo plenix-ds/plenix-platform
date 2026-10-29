@@ -58009,7 +58009,7 @@ const MillerColumns = exports.MillerColumns = /*#__PURE__*/_react.default.forwar
   }, renderPreview(preview)) : null);
 });
   } },
-  "platform/components/Cascader/Cascader.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/describedBy.js":"platform/utils/describedBy.js","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/format.js":"platform/utils/format.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","plenix-platform/icons/plenix/select-chevron":"platform/dist/icons/plenix/select-chevron.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Cascader/Cascader.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/describedBy.js":"platform/utils/describedBy.js","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","../Tag/Tag.jsx":"platform/components/Tag/Tag.jsx","../MillerColumns/MillerColumns.jsx":"platform/components/MillerColumns/MillerColumns.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/floating.js":"platform/utils/floating.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/format.js":"platform/utils/format.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","plenix-platform/icons/plenix/select-chevron":"platform/dist/icons/plenix/select-chevron.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -58019,6 +58019,7 @@ exports.Cascader = void 0;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _describedBy = require("../../utils/describedBy.js");
+var _ReadOnly = require("../../providers/ReadOnly.jsx");
 var _Tag = require("../Tag/Tag.jsx");
 var _MillerColumns = require("../MillerColumns/MillerColumns.jsx");
 var _announce = require("../../utils/announce.jsx");
@@ -58048,6 +58049,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      label: the accessible name when there is no Field
      invalid: the invalid state (the field's border in the danger color); a Field with an error sets it
      disabled: the field cannot be used
+     readOnly: shows the choice and does not change it: the list does not open and the tags cannot be removed; default the nearest ReadOnly region's (useReadOnly)
      id: the id of the field's button (a Field sets it, so its label names it)
      strings: the words it shows and announces, for other languages: { placeholder: "Choose", separator: " / ",
        search: "Search", noMatches: "No matches", empty: "No items", remove: "Remove {label}", results: (n) => …,
@@ -58094,6 +58096,7 @@ const Cascader = exports.Cascader = /*#__PURE__*/_react.default.forwardRef(funct
   label,
   invalid,
   disabled,
+  readOnly: readOnlyOwn,
   id,
   strings,
   className,
@@ -58126,8 +58129,9 @@ const Cascader = exports.Cascader = /*#__PURE__*/_react.default.forwardRef(funct
   const chosen = multiple ? values || [] : value !== undefined && value !== null && value !== '' ? [value] : [];
   const pathLabel = trail => trail.map(x => x.label).join(t.separator);
   const current = !multiple && chosen.length ? pathTo(options, chosen[0]) : null;
+  const locked = (0, _ReadOnly.useReadOnly)(readOnlyOwn); // its own readOnly, else the nearest ReadOnly region's: the choice shows and nothing changes it (the list does not open)
   const openList = () => {
-    if (disabled) return;
+    if (disabled || locked) return;
     setBrowse(current ? current.map(x => x.id) : []);
     setText('');
     setOpen(true);
@@ -58161,6 +58165,7 @@ const Cascader = exports.Cascader = /*#__PURE__*/_react.default.forwardRef(funct
     }));
   }, [q]);
   const pick = (item, trail) => {
+    if (locked) return;
     if (multiple) onChange(chosen.indexOf(item.id) >= 0 ? chosen.filter(x => x !== item.id) : chosen.concat([item.id]));else {
       onChange(item.id, trail.map(x => x.id));
       close(true);
@@ -58209,7 +58214,7 @@ const Cascader = exports.Cascader = /*#__PURE__*/_react.default.forwardRef(funct
     const name = trail ? trail[trail.length - 1].label : String(v);
     return /*#__PURE__*/_react.default.createElement(_Tag.Tag, {
       key: v,
-      onRemove: disabled ? undefined : () => onChange(chosen.filter(x => x !== v)),
+      onRemove: disabled || locked ? undefined : () => onChange(chosen.filter(x => x !== v)),
       removeLabel: t.remove.replace('{label}', name)
     }, name);
   }) : null, /*#__PURE__*/_react.default.createElement("button", _extends({
@@ -58675,7 +58680,7 @@ const EntityPicker = exports.EntityPicker = /*#__PURE__*/_react.default.forwardR
   })) : null))) : null);
 });
   } },
-  "platform/components/TimePicker/TimePicker.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/floating.js":"platform/utils/floating.js","../../utils/digits.js":"platform/utils/digits.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/overflow.js":"platform/utils/overflow.js","plenix-platform/icons/plenix/schedule":"platform/dist/icons/plenix/schedule.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/TimePicker/TimePicker.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/format.js":"platform/utils/format.js","../../utils/floating.js":"platform/utils/floating.js","../../utils/digits.js":"platform/utils/digits.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/overflow.js":"platform/utils/overflow.js","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","plenix-platform/icons/plenix/schedule":"platform/dist/icons/plenix/schedule.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -58692,6 +58697,7 @@ var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _Icon = require("../Icon/Icon.jsx");
 var _Tooltip = require("../Tooltip/Tooltip.jsx");
 var _overflow = require("../../utils/overflow.js");
+var _ReadOnly = require("../../providers/ReadOnly.jsx");
 var _schedule = _interopRequireDefault(require("plenix-platform/icons/plenix/schedule"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · TimePicker
@@ -58720,6 +58726,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      label: the accessible name when there is no Field (the group's name with segments)
      invalid: the invalid state (the border in the danger color); a Field with an error sets it
      disabled: the field cannot be used
+     readOnly: shows the time and does not change it: the list does not open, the segments take no digits or arrows that change a value; default the nearest ReadOnly region's (useReadOnly)
      id: the id of the input, or of the first segment (a Field sets it)
      name: submits the "HH:MM" value with a form (a hidden input)
      strings: the words it shows and announces, for other languages: { hour: "Hour", minute: "Minute", period: "AM or
@@ -58796,6 +58803,7 @@ const TimePicker = exports.TimePicker = /*#__PURE__*/_react.default.forwardRef(f
   width,
   invalid,
   disabled,
+  readOnly: readOnlyOwn,
   id,
   name,
   strings,
@@ -58809,12 +58817,14 @@ const TimePicker = exports.TimePicker = /*#__PURE__*/_react.default.forwardRef(f
   });
   const t = (0, _LocaleProvider.useStrings)('timePicker', strings);
   const cycle = hourCycle ? String(hourCycle) : localeCycle();
+  const locked = (0, _ReadOnly.useReadOnly)(readOnlyOwn); // its own readOnly, else the nearest ReadOnly region's: the time shows and nothing changes it (the list does not open)
   const [own, setOwn] = _react.default.useState(defaultValue);
   const current = value !== undefined ? value : own;
   const lo = toMin(min) !== null ? toMin(min) : 0,
     hi = toMin(max) !== null ? toMin(max) : 24 * 60 - 1;
   const clamp = n => Math.min(hi, Math.max(lo, n));
   const commit = mins => {
+    if (locked) return;
     const v = mins === null ? '' : fromMin(clamp(mins));
     if (value === undefined) setOwn(v);
     if (onChange && v !== current) onChange(v);
@@ -58838,6 +58848,7 @@ const TimePicker = exports.TimePicker = /*#__PURE__*/_react.default.forwardRef(f
     label,
     invalid,
     disabled,
+    locked,
     id,
     cls,
     hidden,
@@ -58855,6 +58866,7 @@ const TimePicker = exports.TimePicker = /*#__PURE__*/_react.default.forwardRef(f
     label,
     invalid,
     disabled,
+    locked,
     id,
     cls,
     hidden,
@@ -58872,6 +58884,7 @@ const ListPicker = /*#__PURE__*/_react.default.forwardRef(function ListPicker({
   label,
   invalid,
   disabled,
+  locked,
   id,
   cls,
   hidden,
@@ -58908,6 +58921,7 @@ const ListPicker = /*#__PURE__*/_react.default.forwardRef(function ListPicker({
     return best;
   };
   const openAt = n => {
+    if (locked) return;
     setActive(nearest(n));
     setOpen(true);
   };
@@ -58994,6 +59008,8 @@ const ListPicker = /*#__PURE__*/_react.default.forwardRef(function ListPicker({
     "aria-activedescendant": open && times[active] !== undefined ? optId(active) : undefined,
     "aria-label": label,
     disabled: disabled,
+    readOnly: locked || undefined,
+    "aria-readonly": locked || undefined,
     autoComplete: "off",
     inputMode: "text",
     value: shownText,
@@ -59047,6 +59063,7 @@ const Segments = /*#__PURE__*/_react.default.forwardRef(function Segments({
   label,
   invalid,
   disabled,
+  locked,
   id,
   cls,
   hidden,
@@ -59091,6 +59108,10 @@ const Segments = /*#__PURE__*/_react.default.forwardRef(function Segments({
   const onKey = (k, i) => e => {
     if (disabled) return;
     const n = Object.assign({}, parts);
+    if (locked && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') {
+      if (/^(ArrowUp|ArrowDown|Home|End|Backspace|Delete|\d|[apAP])$/.test(e.key)) e.preventDefault();
+      return;
+    }
     const wrapAround = (v, d, a, b, s) => {
       const span = b - a + 1;
       return (((v === null ? d > 0 ? a - s : b + 1 : v) - a + d * s) % span + span) % span + a;
@@ -59185,6 +59206,7 @@ const Segments = /*#__PURE__*/_react.default.forwardRef(function Segments({
     tabIndex: disabled ? -1 : 0,
     "aria-label": lbl[k],
     "aria-disabled": disabled || undefined,
+    "aria-readonly": locked || undefined,
     "aria-invalid": invalid || undefined,
     "aria-valuemin": k === 'p' ? undefined : range[k][0],
     "aria-valuemax": k === 'p' ? undefined : range[k][1],

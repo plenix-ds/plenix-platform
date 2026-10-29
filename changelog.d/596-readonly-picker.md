@@ -1,0 +1,3 @@
+### Fixed
+- `TimePicker` and `Cascader` follow a read-only region and their own `readOnly` prop (#596, from #262 PR 2). Before, typed text was blocked but a click on a time in the list changed the `TimePicker`, and a click on an option changed the `Cascader`, in a region and with `readOnly`. Now the value shows and nothing changes it: the list does not open, the `TimePicker` segments take no digits or arrows that change a value (Left and Right still move between them), and the `Cascader` tags lose their remove button. While free both change as before.
+- `check-system`'s `hook-adoption` list gains both under `useReadOnly`.
