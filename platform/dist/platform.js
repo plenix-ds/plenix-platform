@@ -1390,14 +1390,6 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 // Browser mirror of en.json, the one source of Plenix's built-in English words (components read them with useStrings; owner, arabic-words-37). The repository module loader accepts JavaScript only; the W15C catalog test and check-system's built-in-words rule check parity.
 var _default = exports.default = {
-  "common": {
-    "save": "Save",
-    "cancel": "Cancel",
-    "close": "Close",
-    "retry": "Retry",
-    "next": "Next",
-    "back": "Back"
-  },
   "collection": {
     "selected": {
       "=0": "Nothing selected",
@@ -1408,10 +1400,7 @@ var _default = exports.default = {
   "wizard": {
     "next": "Next",
     "back": "Back",
-    "finish": "Finish",
     "cancel": "Cancel",
-    "step": "Step {n} of {total}",
-    "error": "Could not save. Try again.",
     "complete": "Finish",
     "summary": "Review",
     "invalid": "Check this step before continuing.",
@@ -1431,9 +1420,6 @@ var _default = exports.default = {
     "less": "Show less"
   },
   "emptyState": {
-    "title": "No items yet",
-    "description": "Create an item to get started.",
-    "action": "Create item",
     "offline": {
       "title": "You’re offline",
       "text": "Check your connection. This page updates when you’re back online."
@@ -5971,6 +5957,7 @@ var _default = exports.default = {
     }
   },
   "dialog": {
+    "close": "إغلاق",
     "confirmLabel": "حفظ",
     "cancelLabel": "إلغاء",
     "confirm": "تأكيد",
