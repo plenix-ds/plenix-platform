@@ -37,7 +37,7 @@ import React from 'react';
 import { cx } from '../utils/cx.js';
 import { formatDate, formatPercent, formatList, parseDate } from '../utils/format.js';
 import { ChartFrame } from './ChartFrame.jsx';
-import { scaleTime, scaleBand, seriesColor } from './scales.js';
+import { scaleTime, scaleBand, seriesColor, wholeDays } from './scales.js';
 import { Axis } from './parts/Axis.jsx';
 import { GridLines } from './parts/GridLines.jsx';
 import { ReferenceLine } from './parts/ReferenceLine.jsx';
@@ -79,7 +79,8 @@ export function GanttChart({ title, description, tasks = [], today, range, color
   return (
       <ChartFrame interaction={keys.interaction} title={title} description={description} size={size} table={table} className={cx('plx-gantt', className)}>
         {({ inner, margin }) => {
-          const x = scaleTime({ domain: [lo, hi], range: [0, inner.width], nice: !range });
+          // tasks dated by day get day ticks or coarser, never hours (issue 593); today's marker does not count
+          const x = scaleTime({ domain: [lo, hi], range: [0, inner.width], nice: !range, unit: wholeDays(rows.map((r) => r.start).concat(rows.map((r) => r.end))) ? 'day' : undefined });
           const y = scaleBand({ domain: rows.map((r) => r.key), range: [0, inner.height], paddingInner: 0.4, paddingOuter: 0.2 });
           const mid = (r) => scalePosition(y, r.key);
           const a = keys.index !== null && keys.index !== undefined && rows[keys.index] ? rows[keys.index] : null;

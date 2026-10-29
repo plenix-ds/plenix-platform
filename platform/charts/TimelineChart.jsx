@@ -36,7 +36,7 @@ import React from 'react';
 import { cx } from '../utils/cx.js';
 import { formatDate as fmtDate } from '../utils/format.js';
 import { ChartFrame } from './ChartFrame.jsx';
-import { scaleBand, scaleTime, seriesColor } from './scales.js';
+import { scaleBand, scaleTime, seriesColor, wholeDays } from './scales.js';
 import { Axis } from './parts/Axis.jsx';
 import { GridLines } from './parts/GridLines.jsx';
 import { ChartTooltip } from './parts/ChartTooltip.jsx';
@@ -75,7 +75,8 @@ export function TimelineChart({ title, description, hideCaption, size, items = [
     <ChartFrame title={title} description={description} hideCaption={hideCaption} size={size} margin={m} legend={legend} legendPosition={legendPosition}
       table={table} strings={strings} className={cx('plx-timeline-chart', one && 'plx-timeline-chart--single', className)}>
       {({ inner, margin: fm }) => {
-        const x = scaleTime({ domain: dom, range: [0, inner.width], nice: !domain });
+        // items dated by day get day ticks or coarser, never hours (issue 593); today's marker does not count
+        const x = scaleTime({ domain: dom, range: [0, inner.width], nice: !domain, unit: wholeDays(list.map((it) => it.t0).concat(list.filter((it) => it.t1 !== null).map((it) => it.t1))) ? 'day' : undefined });
         const y = scaleBand({ domain: tracks.map((l) => l.id), range: [0, inner.height], paddingInner: 0, paddingOuter: 0 });
         const thick = y.bandwidth();
         // a mark sits in the lower part of its lane; its name above it
