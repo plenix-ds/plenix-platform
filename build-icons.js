@@ -35,6 +35,7 @@ module.exports = function buildIcons(root) {
     if (!fs.existsSync(f)) f = path.join(dir, 'custom', s + file + '.svg');
     if (!fs.existsSync(f)) f = path.join(dir, 'library', s + file + '.svg');
     if (!fs.existsSync(f)) throw new Error('icon file missing: ' + s + file + '.svg');
+    layout.readDrawing(f);   // the allow-list (#285): a file the Icon component would refuse stops the build here
     // one path per file, in its own box (its viewBox, or its width and height when it has none), with the path's own
     // drawing attributes (a transform, a fill rule: Plenix's custom person icons place their path with a transform)
     const svg = fs.readFileSync(f, 'utf8'), tag = svg.match(/<path\b([^>]*)\/?>/), box = svg.match(/viewBox="([^"]+)"/), w = svg.match(/ width="([\d.]+)"/), h = svg.match(/ height="([\d.]+)"/);

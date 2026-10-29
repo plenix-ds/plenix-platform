@@ -1,0 +1,276 @@
+# Icon stage 4 (#285) proof (scripts run as proof, not the test; the test is tests/icon-safety.test.js, written, not run)
+
+## Every shipped file vs the old regex readDrawing (styling/phase-2)
+files 17120 refused by the allow-list 0 different from the old regex readDrawing (styling/phase-2) 0
+
+## Hostile samples (hostile-samples.js)
+rejected       script element                 the element script is not allowed
+rejected       onload on svg                  the attribute onload is not allowed on svg
+rejected       onclick on path                the attribute onclick is not allowed on path
+rejected       javascript: URL in href        the element a is not allowed
+rejected       xlink:href on path             the attribute xlink:href is not allowed on path
+rejected       use href local                 the element use is not allowed
+rejected       use href external              the element use is not allowed
+rejected       style element with url()       the element style is not allowed
+rejected       style attribute with url()     the attribute style is not allowed on path
+rejected       foreignObject                  the element foreignObject is not allowed
+rejected       doctype entity                 the file has a doctype, an entity, CDATA or a comment
+rejected       entity reference               the file has an entity reference
+rejected       comment hiding a tag           the file has a doctype, an entity, CDATA or a comment
+rejected       CDATA                          the file has a doctype, an entity, CDATA or a comment
+rejected       image element                  the element image is not allowed
+rejected       second path                    the file has more than one drawing
+rejected       d with url(                    d holds something other than path data
+rejected       transform url                  transform holds something other than matrix, translate, scale, rotate or skew of numbers
+rejected       viewBox with letters           viewBox is not four numbers
+rejected       xmlns not SVG                  xmlns is not the SVG namespace
+rejected       fill attribute                 the attribute fill is not allowed on path
+rejected       g wrapper                      the element g is not allowed
+rejected       text content                   the file has text or markup outside its tags
+rejected       processing instruction         the file has a processing instruction
+rejected       circle (shape)                 a basic shape (circle) is not accepted: an icon is drawn as one path
+rejected       circle negative radius         a basic shape (circle) is not accepted: an icon is drawn as one path
+rejected       rect missing attributes        a basic shape (rect) is not accepted: an icon is drawn as one path
+rejected       polygon huge points            the file is larger than 32768 characters
+rejected       file too large                 the file is larger than 32768 characters
+rejected       d too long                     the path data is longer than 16384 characters
+rejected       duplicate attribute            the attribute d is written twice
+rejected       unquoted attribute             an attribute is not name="value"
+rejected       viewBox zero width             viewBox has no positive width and height
+rejected       no path                        the file has no path
+rejected       not text                       the file is not text
+real sample accepted: true | rejected 35 of 35
+module drawing checks: [true,"the drawing has a field onload that is not allowed","d holds something other than path data","transform holds something other than matrix, translate, scale, rotate or skew of numbers"]
+
+## A hostile source file stops the build
+platform/icons/custom/file_ai.svg with a <script> added (restored after): build-app.js exits 1, "icon file refused (the element script is not allowed): …/platform/icons/custom/file_ai.svg".
+
+## In Chrome (hostile-browser.js): a hostile fetched file, a hostile module (registered and as icon=), production and development React
+(the run is at the end of this file)
+
+## DOM equality and the earlier stages' cases (docs/briefs/281-icon-resolver/dom-check.js)
+{
+ "production": {
+  "plenixWins": {
+   "homeKind": "plenix",
+   "homeSymbol": "home",
+   "homeSameMarkup": true,
+   "materialLibraryDrawsModule": "module",
+   "rocketKind": "module"
+  },
+  "dom": {
+   "cases": 3816,
+   "moduleVsStylesheet": 0,
+   "registeredVsStylesheet": 0
+  },
+  "material": {
+   "plenixCheck": "check_small",
+   "materialCheck": "check",
+   "materialKind": "library",
+   "drawsMaterial": true
+  },
+  "project": {
+   "inAcme": true,
+   "inDefault": false,
+   "acmeHasNoPlenix": false
+  },
+  "mirrored": {
+   "flag": true,
+   "set": "material",
+   "classAdded": true,
+   "scaleRtl": "-1 1",
+   "plenixModuleClass": false
+  },
+  "warnings": [
+   "[Plenix] Icon: no icon is named \"acme-logo\"; nothing is drawn.",
+   "[Plenix] Icon: icon is refused (not an icon module; import it from plenix-platform/icons/<set>/<name>); nothing is drawn. [object Object]",
+   "[Plenix] Icon: icon is refused (not an icon module; import it from plenix-platform/icons/<set>/<name>); nothing is drawn. [object Object]"
+  ],
+  "pageErrors": 0
+ },
+ "development": {
+  "plenixWins": {
+   "homeKind": "plenix",
+   "homeSymbol": "home",
+   "homeSameMarkup": true,
+   "materialLibraryDrawsModule": "module",
+   "rocketKind": "module"
+  },
+  "material": {
+   "plenixCheck": "check_small",
+   "materialCheck": "check",
+   "materialKind": "library",
+   "drawsMaterial": true
+  },
+  "project": {
+   "inAcme": true,
+   "inDefault": false,
+   "acmeHasNoPlenix": false
+  },
+  "mirrored": {
+   "flag": true,
+   "set": "material",
+   "classAdded": true,
+   "scaleRtl": "-1 1",
+   "plenixModuleClass": false
+  },
+  "warnings": [
+   "[Plenix] Icon: check was fetched at run time; for production import it (plenix-platform/icons/material/check) or register it (registerIcons)",
+   "[Plenix] Icon: no icon is named \"acme-logo\"; nothing is drawn.",
+   "[Plenix] Icon: icon is refused (not an icon module; import it from plenix-platform/icons/<set>/<name>); nothing is drawn. [object Object]",
+   "[Plenix] Icon: icon is refused (not an icon module; import it from plenix-platform/icons/<set>/<name>); nothing is drawn. [object Object]"
+  ],
+  "pageErrors": 0
+ }
+}
+
+## Full-page pictures
+SAME dashboard/index.html                         before 580a2088c7 after 580a2088c7
+SAME projects/index.html                          before dc5a9e8eb2 after dc5a9e8eb2
+DIFF messages/index.html                          before 899d70f00c after 138e69a08b,8f1080f4c4
+SAME contacts/index.html                          before dba1680646 after dba1680646
+SAME calendar/index.html                          before 8595ff27b9 after 8595ff27b9
+SAME tasks/index.html                             before ea83bfb257 after ea83bfb257
+SAME notes/index.html                             before 50957af09b after 50957af09b
+SAME bookmarks/index.html                         before a9f076392b after a9f076392b
+SAME files/index.html                             before 7fb1ee2cf2 after 7fb1ee2cf2
+SAME settings/index.html                          before d614c65618 after d614c65618
+SAME dam/index.html                               before bbf2624cbe after bbf2624cbe
+SAME dam/settings-system.html                     before 36afaa8744 after 36afaa8744
+SAME dam/settings-myaccount.html                  before 58ec51e415 after 58ec51e415
+SAME platform/design-system/#/foundations/icon    before 8c4559bf5b after 8c4559bf5b
+identical 13 of 14
+
+## Messages, three loads per side (markup / picture): the same markup on every load; the picture changes on every load
+{"before":{"0c7462d1/18d1faac":1,"0c7462d1/138e69a0":2},"after":{"0c7462d1/8f1080f4":1,"0c7462d1/6587c906":1,"0c7462d1/138e69a0":1}}
+0c7462d1/18d1faac vs 0c7462d1/8f1080f4 markup same
+0c7462d1/18d1faac vs 0c7462d1/138e69a0 markup same
+0c7462d1/18d1faac vs 0c7462d1/6587c906 markup same
+
+## In Chrome (hostile-browser.js), run: a hostile file served where the library fetch looks (with a <script>), a module with a hostile d (registered and as icon=), a module with an extra field
+{
+ "production": {
+  "fetchedDrawsPath": false,
+  "scriptRan": false,
+  "registeredRefusedDrawsPath": false,
+  "propRefusedDrawsPath": false,
+  "extraFieldDrawsPath": false,
+  "warnings": [
+   "[Plenix] registerIcons: refused (its 20 outline drawing: d holds something other than path data) [object Object]",
+   "[Plenix] Icon: no icon is named \"evil-add\"; nothing is drawn. Closest: add, ad, add.",
+   "[Plenix] Icon: icon is refused (its 20 outline drawing: d holds something other than path data; import it from plenix-platform/icons/<set>/<name>); no"
+  ]
+ },
+ "development": {
+  "fetchedDrawsPath": false,
+  "scriptRan": false,
+  "registeredRefusedDrawsPath": false,
+  "propRefusedDrawsPath": false,
+  "extraFieldDrawsPath": false,
+  "warnings": [
+   "[Plenix] Icon: rocket_launch was fetched at run time; for production import it (plenix-platform/icons/material/rocket-launch) or register it (register",
+   "[Plenix] Icon: refused rocket_launch-24.svg: the element script is not allowed",
+   "[Plenix] Icon: refused rocket_launch.svg: the element script is not allowed",
+   "[Plenix] registerIcons: refused (its 20 outline drawing: d holds something other than path data) [object Object]",
+   "[Plenix] Icon: no icon is named \"evil-add\"; nothing is drawn. Closest: add, ad, add.",
+   "[Plenix] Icon: icon is refused (its 20 outline drawing: d holds something other than path data; import it from plenix-platform/icons/<set>/<name>); no"
+  ]
+ }
+}
+
+## QA on #519 (cost), after the fix
+### Every shipped file vs the old readDrawing
+files 17120 refused by the allow-list 0 different from the old regex readDrawing (styling/phase-2) 0
+### Hostile samples
+real sample accepted: true | rejected 35 of 35
+module drawing checks: [true,"the drawing has a field onload that is not allowed","d holds something other than path data","transform holds something other than matrix, translate, scale, rotate or skew of numbers"]
+### Costly values (cost.js), time per check
+30,000 spaces in a transform                     refused: transform is longer than 500 characters                         0.7 ms
+30,000 digits in a viewBox                       refused: viewBox is longer than 100 characters                           0.1 ms
+30,000 spaces inside a tag                       ACCEPTED (BAD)                                                           0.5 ms
+30,000 spaces in width                           refused: height is longer than 32 characters                             0.1 ms
+1e999 in a viewBox                               refused: viewBox has a number too large to draw                          0.3 ms
+digits run with no separator in a transform      refused: transform holds something other than matrix, translate, scale   0.3 ms
+module: 200,000 spaces in a viewBox              refused: viewBox is longer than 100 characters                           0.1 ms
+module: 200,000 spaces in a transform            refused: transform is longer than 500 characters                         0.1 ms
+module: 200,000-character d                      refused: the path data is longer than 16384 characters                   0.0 ms
+module: fillRule not a string                    refused: fill-rule is not nonzero or evenodd                             0.0 ms
+a real file                                      ACCEPTED (BAD)                                                           0.0 ms
+(30,000 spaces between attributes and the real file are legal and accepted, each read once)
+### The fetch size cap in Chrome (cap.js): a 45,087-byte file served where the library looks
+{"normalLibraryFetchDraws":true,"oversizedFileDraws":false}
+### DOM equality
+{
+ "production": {
+  "plenixWins": {
+   "homeKind": "plenix",
+   "homeSymbol": "home",
+   "homeSameMarkup": true,
+   "materialLibraryDrawsModule": "module",
+   "rocketKind": "module"
+  },
+  "dom": {
+   "cases": 3816,
+   "moduleVsStylesheet": 0,
+   "registeredVsStylesheet": 0
+  },
+  "material": {
+   "plenixCheck": "check_small",
+   "materialCheck": "check",
+   "materialKind": "library",
+   "drawsMaterial": true
+  },
+  "project": {
+   "inAcme": true,
+   "inDefault": false,
+   "acmeHasNoPlenix": false
+  },
+  "mirrored": {
+   "flag": true,
+   "set": "material",
+   "classAdded": true,
+   "scaleRtl": "-1 1",
+   "plenixModuleClass": false
+  },
+  "warnings": [
+   "[Plenix] Icon: no icon is named \"acme-logo\"; nothing is drawn.",
+   "[Plenix] Icon: icon is refused (not an icon module; import it from plenix-platform/icons/<set>/<name>); nothing is drawn. [object Object]",
+   "[Plenix] Icon: icon is refused (not an icon module; import it from plenix-platform/icons/<set>/<name>); nothing is drawn. [object Object]"
+  ],
+  "pageErrors": 0
+ },
+ "development": {
+  "plenixWins": {
+   "homeKind": "plenix",
+   "homeSymbol": "home",
+   "homeSameMarkup": true,
+   "materialLibraryDrawsModule": "module",
+   "rocketKind": "module"
+  },
+  "material": {
+   "plenixCheck": "check_small",
+   "materialCheck": "check",
+   "materialKind": "library",
+   "drawsMaterial": true
+  },
+  "project": {
+   "inAcme": true,
+   "inDefault": false,
+   "acmeHasNoPlenix": false
+  },
+  "mirrored": {
+   "flag": true,
+   "set": "material",
+   "classAdded": true,
+   "scaleRtl": "-1 1",
+   "plenixModuleClass": false
+  },
+  "warnings": [
+   "[Plenix] Icon: check was fetched at run time; for production import it (plenix-platform/icons/material/check) or register it (registerIcons)",
+   "[Plenix] Icon: no icon is named \"acme-logo\"; nothing is drawn.",
+   "[Plenix] Icon: icon is refused (not an icon module; import it from plenix-platform/icons/<set>/<name>); nothing is drawn. [object Object]",
+   "[Plenix] Icon: icon is refused (not an icon module; import it from plenix-platform/icons/<set>/<name>); nothing is drawn. [object Object]"
+  ],
+  "pageErrors": 0
+ }
+}
