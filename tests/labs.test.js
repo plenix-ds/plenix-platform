@@ -102,7 +102,11 @@ if (!ONLY && !changed.anyDS()) changed.none('LABS_OK 0/0 labs');
   const wideBad = [];
   if (!wide || wide.columns !== 1 || !wide.picks || wide.clipped) wideBad.push('DS record page lab: one column with every drawing whole expected, got ' + JSON.stringify(wide) + ' #352');
   if (!small || small.columns < 3 || small.clipped) wideBad.push('DS button lab: a column per variant expected, got ' + JSON.stringify(small) + ' #352');
-  results.push(['wide labs #352', { checks: 2, tokens: 0, bad: wideBad, nbad: wideBad.length }]);
+  // the same lab in a narrower window (1280px): its cell is then narrower than the 720px drawings, which take the room there is instead of running past the cell and being cut off (#352)
+  await page.setViewport({ width: 1280, height: 1000 });
+  const wideNarrow = await labRows('#/page-structures/record-page/v/all');
+  if (!wideNarrow || wideNarrow.columns !== 1 || !wideNarrow.picks || wideNarrow.clipped) wideBad.push('DS record page lab in a 1280px window: every drawing whole expected, got ' + JSON.stringify(wideNarrow) + ' #352');
+  results.push(['wide labs #352', { checks: 3, tokens: 0, bad: wideBad, nbad: wideBad.length }]);
   await browser.close(); server.close();
   const failed = results.filter((x) => x[1].nbad);
   results.forEach(([id, r]) => { console.log((r.nbad ? '  FAIL ' : '  ok   ') + id + ': ' + r.checks + ' checks, ' + r.tokens + ' tokens'); r.bad.forEach((b) => console.log('       ' + b)); });
