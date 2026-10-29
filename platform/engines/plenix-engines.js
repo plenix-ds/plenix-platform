@@ -10,7 +10,8 @@
      Each engine loads once per window; later callers get the same promise. A failed load is forgotten, so the next caller tries again.
      tiptap(win) and echarts(win) add the engine's script to the given window (default this one) and resolve with
      its global (PlenixTiptap, PlenixECharts). pdf() resolves with { module, worker }: the PDF.js module and its worker address.
-   Notes: Plain script, no build. A page that shows a rich-text editor, a chart or a PDF without this script gets a plain
+   Notes: Plain script, no build. A page that loads it as a module, injects it or bundles it (document.currentScript is null then)
+     must set window.PlenixVendorBase to the vendor folder first. A page that shows a rich-text editor, a chart or a PDF without this script gets a plain
      message from plenix.js saying the engines script is missing. */
 (function () {
   'use strict';

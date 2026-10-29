@@ -1,7 +1,7 @@
 // Plenix · check-system rule "page-engines" (owner, #456 to #458): plenix.js holds no engine loader, so a page that loads the Platform
 // script (platform/dist/platform.js) also loads platform/engines/plenix-engines.js, which loads the rich-text, chart and PDF engines.
 // What it rejects:
-//   missing   an HTML page with the Platform script and no plenix-engines.js script
+//   missing   an HTML page with the Platform script (dist/platform.js or plenix.js, with defer or async before src too) and no plenix-engines.js script
 //   loader    platform/ source (outside platform/engines/ and platform/vendor/) that adds a script or fetches an engine itself:
 //             createElement('script'), or the vendor folder's address (the bundle rules P-38 and P-45 count the same in the built file)
 // Alone: node check-system.rules/page-engines.js     -> PAGE_ENGINES_OK, or the findings and exit 1
@@ -18,7 +18,7 @@ function check({ add }) {
   for (const f of tracked('*.html')) {
     if (SKIP.test(f)) continue;
     const text = fs.readFileSync(path.join(ROOT, f), 'utf8');
-    if (/<script\s+src="[^"]*dist\/platform\.js"/.test(text) && !/<script\s+src="[^"]*plenix-engines\.js"/.test(text)) add(NAME, path.join(ROOT, f), 0, 'loads the Platform script but not platform/engines/plenix-engines.js: a rich-text editor, chart or PDF on this page would have no engine (#456 to #458)');
+    if (/<script\b[^>]*\bsrc="[^"]*(dist\/platform|plenix)\.js(\?[^"]*)?"/.test(text) && !/<script\b[^>]*\bsrc="[^"]*plenix-engines\.js(\?[^"]*)?"/.test(text)) add(NAME, path.join(ROOT, f), 0, 'loads the Platform script (platform.js or plenix.js) but not platform/engines/plenix-engines.js: a rich-text editor, chart or PDF on this page would have no engine (#456 to #458)');
   }
   for (const f of tracked('platform/*.js').concat(tracked('platform/**/*.js'), tracked('platform/**/*.jsx'))) {
     if (/^platform\/(engines|vendor|dist|design-system|dev)\//.test(f)) continue;
