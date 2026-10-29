@@ -14,7 +14,10 @@ const arg = (name, fallback) => { const i = process.argv.indexOf('--' + name); r
 const A = arg('a', '0.69.3'), B = arg('b', '0.75.0'), RUNS = +arg('runs', 5);
 const OUT = path.resolve(arg('out', 'docs/briefs/icons/compare.md')), ONLY = arg('only', 'size,paint,pixels').split(',');
 const CDN = 'https://design-system.lighthouseway.org/cdn/', ORIGIN = 'http://compare.test';
-const get = async (url) => { const r = await fetch(url); if (!r.ok) throw new Error(r.status + ' ' + url); return Buffer.from(await r.arrayBuffer()); };
+// the https module, not fetch: Node's fetch (undici) can fail with an assertion on a closed connection while a large file downloads
+const https = require('https');
+const request = (url, method) => new Promise((resolve, reject) => { const r = https.request(url, { method: method || 'GET' }, (res) => { const parts = []; res.on('data', (d) => parts.push(d)); res.on('end', () => resolve({ status: res.statusCode, headers: res.headers, body: Buffer.concat(parts) })); res.on('error', reject); }); r.on('error', reject); r.end(); });
+const get = async (url) => { let last; for (let i = 0; i < 3; i++) { try { const r = await request(url); if (r.status !== 200) throw new Error(r.status + ' ' + url); return r.body; } catch (e) { last = e; await new Promise((r) => setTimeout(r, 500)); } } throw last; };
 const kb = (n) => (n / 1024).toFixed(1) + ' KB', mb = (n) => (n / 1048576).toFixed(2) + ' MB';
 const gz = (b) => zlib.gzipSync(b, { level: 9 }).length, br = (b) => zlib.brotliCompressSync(b).length;
 const median = (a) => a.slice().sort((x, y) => x - y)[Math.floor(a.length / 2)];
@@ -29,7 +32,7 @@ async function sizes() {
   for (const v of [A, B]) for (const f of files) bufs[v + f] = await get(CDN + v + '/' + f);
   for (const f of files) out('| ' + f + ' | ' + [A, B].map((v) => kb(bufs[v + f].length) + ' | ' + kb(gz(bufs[v + f])) + ' | ' + kb(br(bufs[v + f]))).join(' | ') + ' |');
   const tgz = {};
-  for (const v of [A, B]) { const r = await fetch(CDN + v + '/plenix-' + v + '.tgz', { method: 'HEAD' }); tgz[v] = r.ok ? Number(r.headers.get('content-length')) : null; }
+  for (const v of [A, B]) { const r = await request(CDN + v + '/plenix-' + v + '.tgz', 'HEAD'); tgz[v] = r.status === 200 ? Number(r.headers['content-length']) : null; }
   out('| the self-hosting archive (.tgz) | ' + (tgz[A] ? kb(tgz[A]) : 'none') + ' | | | ' + (tgz[B] ? kb(tgz[B]) : 'none') + ' | | |'); out();
   const iconData = (b) => { const text = b.toString('utf8'); let n = 0, count = 0; for (const m of text.matchAll(/url\("?data:image\/svg\+xml[^")]*"?\)/g)) { n += m[0].length; count++; } return { bytes: n, count }; };
   const da = iconData(bufs[A + 'plenix.css']), db = iconData(bufs[B + 'plenix.css']);
@@ -59,7 +62,14 @@ const pageHtml = (v, body, density, registered) => '<!doctype html><html lang="e
 async function openPage(browser, v, body, density, opts = {}) {   // opts.registered: the compatibility icon file after plenix.js (every Plenix icon registered, no run-time fetch)
   const page = await browser.newPage(); await page.setViewport({ width: opts.width || 1200, height: opts.height || 900, deviceScaleFactor: 1 });
   await page.setCacheEnabled(false); await page.setRequestInterception(true);
-  page.on('request', (r) => (r.url() === ORIGIN + '/page.html' ? r.respond({ status: 200, contentType: 'text/html', body: pageHtml(v, body, density, opts.registered) }) : r.continue()));
+  const LIB = path.join(__dirname, '..', '..', '..', 'platform', 'icons', 'library');
+  page.on('request', (r) => {
+    const url = r.url(), lib = opts.localLibrary && /\/cdn\/material\/[0-9a-f]+\/([^/?]+\.svg)(\?|$)/.exec(url);
+    if (url === ORIGIN + '/page.html') return r.respond({ status: 200, contentType: 'text/html', body: pageHtml(v, body, density, opts.registered) });
+    // the pixel runs read the Material files from this checkout's library (the same files as the CDN's /cdn/material/<commit>/): the live CDN refuses a burst of hundreds of requests
+    if (lib && fs.existsSync(path.join(LIB, lib[1]))) return r.respond({ status: 200, contentType: 'image/svg+xml', headers: { 'access-control-allow-origin': '*' }, body: fs.readFileSync(path.join(LIB, lib[1])) });
+    return r.continue();
+  });
   await page.goto(ORIGIN + '/page.html', { waitUntil: 'load', timeout: 120000 });
   return page;
 }
@@ -98,7 +108,8 @@ const SIZES = ['xs', 'sm', 'md', 'lg'], CELL = 32, COLS = 36, GROUP = 20;
 async function gridShot(browser, v, names, density, registered) {
   const body = "var N=" + JSON.stringify(names) + ",S=" + JSON.stringify(SIZES) + ";var cells=[];N.forEach(function(n){S.forEach(function(s){[false,true].forEach(function(f){cells.push({n:n,s:s,f:f})})})});var h=React.createElement;function Grid(){var st=React.useState(0);window.__setLimit=st[1];var limit=st[0];return h('div',{style:{display:'grid',gridTemplateColumns:'repeat(" + COLS + "," + CELL + "px)',gridAutoRows:'" + CELL + "px',alignItems:'center',justifyItems:'center',color:'#000',background:'#fff'}},cells.map(function(c,i){return h('div',{key:i,style:{display:'flex'}},i<limit?h(Plenix.Icon,{name:c.n,size:c.s,filled:c.f}):null)}))}ReactDOM.createRoot(document.getElementById('c')).render(h(Grid));window.__cells=cells.length;";
   const rowsCount = Math.ceil(names.length * SIZES.length * 2 / COLS);
-  const page = await openPage(browser, v, body, density, { width: COLS * CELL, height: rowsCount * CELL, registered });
+  const page = await openPage(browser, v, body, density, { width: COLS * CELL, height: rowsCount * CELL, registered, localLibrary: true });
+  const seen = { failed: 0, status: {} }; if (process.env.ICON_COMPARE_SHOTS) { page.on('requestfailed', (r) => { if (/\/icons\/|\/material\//.test(r.url())) { seen.failed++; seen.last = r.failure().errorText + ' ' + r.url().split('/').slice(-2).join('/'); } }); page.on('response', (r) => { if (/\/material\/|\/icons\//.test(r.url())) seen.status[r.status()] = (seen.status[r.status()] || 0) + 1; }); }
   await page.waitForFunction(() => window.__setLimit, { timeout: 120000 });
   const per = GROUP * SIZES.length * 2, total = names.length * SIZES.length * 2;
   for (let n = per; ; n += per) {
@@ -109,6 +120,8 @@ async function gridShot(browser, v, names, density, registered) {
     if (limit >= total) break;
   }
   const shot = await page.screenshot({ encoding: 'base64', clip: { x: 0, y: 0, width: COLS * CELL, height: rowsCount * CELL } }); await page.close();
+  if (process.env.ICON_COMPARE_SHOTS) console.log('grid ' + v + ' ' + names.length + ' ' + density + ': icon file responses ' + JSON.stringify(seen.status) + ', failed ' + seen.failed + (seen.last ? ' (last: ' + seen.last + ')' : ''));
+  if (process.env.ICON_COMPARE_SHOTS) fs.writeFileSync(path.join(process.env.ICON_COMPARE_SHOTS, v + '-' + names.length + '-' + density + '.png'), Buffer.from(shot, 'base64'));   // a debugging aid: the grids as drawn
   return { shot, rowsCount };
 }
 async function pixels(common) {
@@ -118,7 +131,7 @@ async function pixels(common) {
     const library = fs.readFileSync(path.join(__dirname, '..', '..', '..', 'platform', 'components', 'Icon', 'glyphs.js'), 'utf8');
     const lib = (/export const LIBRARY = "([^"]*)"/.exec(library) || [0, ''])[1].split(' ').filter(Boolean).filter((_, i) => i % 28 === 0);
     // Plenix icons: the old build against the new with its icon file (nothing fetched); the Material sample: both fetch from /cdn/material/
-    const sets = [['Plenix icons', common, ['compact', 'comfortable'], true], ['Material sample (every 28th symbol)', lib, ['compact'], false]];
+    const sets = [['Plenix icons', common, ['compact', 'comfortable'], true], ['Material sample (every 28th symbol)', lib, ['compact'], false]].filter((x) => !process.env.ICON_COMPARE_SET || x[0].toLowerCase().startsWith(process.env.ICON_COMPARE_SET));
     const cmp = await browser.newPage();
     for (const [label, names, densities, registered] of sets) for (const density of densities) {
       const a = await gridShot(browser, A, names, density, false), b = await gridShot(browser, B, names, density, registered);
@@ -129,15 +142,15 @@ async function pixels(common) {
         list.forEach(([n, s, f], i) => { const cx = (i % cols) * cell, cy = Math.floor(i / cols) * cell; if (cy + cell > A_.h || cy + cell > B_.h) return; cells++;
           const da = A_.x.getImageData(cx, cy, cell, cell).data, db = B_.x.getImageData(cx, cy, cell, cell).data; let d = 0, ia = 0, ib = 0; for (let k = 0; k < da.length; k += 4) { if (da[k] < 200) ia++; if (db[k] < 200) ib++; if (Math.abs(da[k] - db[k]) > 24 || Math.abs(da[k + 1] - db[k + 1]) > 24 || Math.abs(da[k + 2] - db[k + 2]) > 24) d++; }
           if (ia) inkedA++; if (ib) inkedB++; if ((ia > 0) !== (ib > 0)) onlyOne++; total += d; if (d) bad.push({ n, s, f, d, ia, ib }); });
-        return { cells, inkedA, inkedB, onlyOne, total, bad: bad.sort((x, y) => y.d - x.d).slice(0, 12), badCount: bad.length };
+        const badNames = [...new Set(bad.map((x) => x.n))].sort(); return { cells, inkedA, inkedB, onlyOne, total, bad: bad.sort((x, y) => y.d - x.d).slice(0, 12), badCount: bad.length, badNames };
       }, a.shot, b.shot, names, SIZES, COLS, CELL);
       result.push({ label, density, names: names.length, ...diff });
     }
   } finally { await browser.close(); }
-  out('Every cell is one icon at one size (xs, sm, md, lg), outline and filled; the two builds are drawn the same way and each cell\'s pixels compared (a pixel differs when a channel differs by more than 24). The Plenix set of ' + B + ' is drawn from its compatibility icon file; the icons are shown in groups, each after the network is quiet.'); out();
+  out('Every cell is one icon at one size (xs, sm, md, lg), outline and filled; the two builds are drawn the same way and each cell\'s pixels compared (a pixel differs when a channel differs by more than 24). The Plenix set of ' + B + ' is drawn from its compatibility icon file; the icons are shown in groups, each after the network is quiet. The Material files are read from this checkout\'s library (the same files as the CDN\'s /cdn/material/<commit>/): the live CDN refuses a burst of hundreds of requests.'); out();
   out('| Set | Density | Icons | Cells | Drawn in ' + A + ' | Drawn in ' + B + ' | Drawn in only one | Cells that differ | Pixels that differ |'); out('|---|---|---:|---:|---:|---:|---:|---:|---:|');
   result.forEach((r) => out('| ' + r.label + ' | ' + r.density + ' | ' + r.names + ' | ' + r.cells + ' | ' + r.inkedA + ' | ' + r.inkedB + ' | ' + r.onlyOne + ' | ' + r.badCount + ' | ' + r.total + ' |')); out();
-  result.filter((r) => r.badCount).forEach((r) => { out('Cells that differ most (' + r.label + ', ' + r.density + '): ' + r.bad.map((x) => x.n + ' ' + x.s + (x.f ? ' filled' : '') + ' (' + x.d + ' px; ink ' + x.ia + ' against ' + x.ib + ')').join('; ') + '.'); out(); });
+  result.filter((r) => r.badCount).forEach((r) => { out('Icons with at least one cell that differs (' + r.label + ', ' + r.density + '): ' + r.badNames.length + ': ' + r.badNames.join(', ') + '.'); out(); out('Cells that differ most (' + r.label + ', ' + r.density + '): ' + r.bad.map((x) => x.n + ' ' + x.s + (x.f ? ' filled' : '') + ' (' + x.d + ' px; ink ' + x.ia + ' against ' + x.ib + ')').join('; ') + '.'); out(); });
 }
 
 (async () => {
