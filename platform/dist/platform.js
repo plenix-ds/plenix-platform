@@ -34303,7 +34303,9 @@ function ChartFrame({
   Object.keys(MARGIN_TOKENS).forEach(k => {
     m[k] = (0, _grid.snapToGrid)(margin && margin[k] !== undefined ? margin[k] : box.tokens ? box.tokens[k] : 0);
   });
-  const left = box.rtl ? m.end : m.start;
+  // the drawing is left to right in every language (time runs left to right, owner issue 584 B), so the start margin,
+  // where the labels sit, stays at the left
+  const left = m.start;
   const fit = typeof fitHeight === 'function';
   const height = fit ? box.width > 0 ? Math.max(1, Math.ceil(fitHeight(box.width))) : 0 : box.height;
   const inner = {
@@ -65386,10 +65388,12 @@ function SeriesChart({
         width: tk.axis.width
       }
     };
+    // time and sequence run left to right in every language, Arabic pages included (owner, issue 584 B); the labels
+    // and the legend still follow the page's direction
     const xAxis = Object.assign({
       name: xLabel,
       nameGap: tk.tickOffset * 2 + xLine,
-      inverse: tk.rtl
+      inverse: false
     }, named, type === 'band' ? Object.assign({
       type: 'category',
       boundaryGap: false,
@@ -65417,7 +65421,7 @@ function SeriesChart({
       type: 'value',
       name: yLabel,
       nameGap: 0,
-      position: tk.rtl ? 'right' : 'left',
+      position: 'left',
       axisLabel: {
         formatter: v => percent ? (0, _format.formatPercent)(v) : fmts.current.fmtV(v)
       }
