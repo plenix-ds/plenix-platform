@@ -12,7 +12,7 @@ https://github.com/google/material-design-icons/tree/737e3324305806514d7909874fa
 | `<symbol>-24-fill.svg` | `<symbol>_wght300fill1_24px.svg` (optical size 24, filled) |
 
 `map.json` names the symbol behind every Plenix icon name (`<Icon name="folder-open">` -> `folder_open`).
-`node build-app.js` runs `build-icons.js`, which writes `components/Icon/icon.css` with every file as a data: URI.
+`node build-app.js` runs `build-icons.js`, which checks every file, writes `components/Icon/glyphs.js` (the names) and the asset layout (the files and modules), and writes `components/Icon/icon.css`, which holds only presentation since #557 (no drawing).
 
 Rules: never edit, redraw, re-pad or re-weight a file; never mix in another set. To add an icon: pick the symbol on
 https://fonts.google.com/icons?icon.style=Sharp, download its four files from the same commit, add its name to
@@ -30,22 +30,18 @@ from `library/`, so nothing needs copying.
 ## The whole library on the CDN (2026-10-22)
 
 `/cdn/material/<commit>/` (on design-system.lighthouseway.org, open to other sites with CORS) holds every symbol's four
-files; deploy.sh copies `library/` there once per pinned commit. Each release's `/cdn/<version>/icons-all.css` (written by
-build-packages.js) gives every symbol its Material name as an Icon name: link it after `plenix.css` and use
-`<Icon name="person_cancel">`. A Material name that is already a Plenix name keeps the Plenix meaning (`check`, `home`).
-It is optional: `plenix.css` carries only the Plenix set as data: URIs (nothing to download); icons-all.css (about 1.4 MB,
-4,106 rules) loads each file from the CDN the first time it is drawn.
+files; deploy.sh copies `library/` there once per pinned commit. `<Icon name="person_cancel">` loads a Material name's
+files from there the first time it is drawn, or draws its imported or registered module. A Material name that is already
+a Plenix name keeps the Plenix meaning (`check`, `home`). `icons-all.css` (bare Material class names) is retired (#557).
 
 ## The naming contract (2026-10-22)
 
 | Spelling | Works | Example |
 |---|---|---|
-| Plenix name, dashes | always (plenix.css) | `mic-off`, `person-cancel`, `check-square` |
-| The same name with underscores, where the Plenix name is its Material symbol with dashes | always (plenix.css) | `mic_off`, `person_cancel` |
-| Any other Material Symbols name | with icons-all.css | `rocket_launch`, `10k` |
+| Plenix name, dashes | always | `mic-off`, `person-cancel`, `check-square` |
+| The same name with underscores, where the Plenix name is its Material symbol with dashes | always | `mic_off`, `person_cancel` |
+| Any other Material Symbols name | always (its module, or its library file) | `rocket_launch`, `10k` |
 | A Material name that is also a Plenix name | draws the Plenix icon | `check` (check_small), `home` |
-
-build-icons.js fails when a name in map.json has no rule in icon.css.
 
 ## The icon inventory and restyled icons (2026-10-24, #301)
 
@@ -160,8 +156,8 @@ A site that loads Plenix from the CDN (`plenix.js`, `window.Plenix`) registers t
 - **`iconMarkup(icon, { size, filled, label, className })`:** the component's markup as an HTML string, for code that writes HTML.
   - The drawing comes only from a module (imported, or registered by name), through the allow-list; every value is escaped.
   - A name with no module gives the span without a drawing, and development warns once.
-- **Retired (the owner, #277 Q3 and Q5; the deprecation notice is in the CDN README and the changelog):**
-  - the bare classes (`plx-icon plx-icon--<name>` without the component): the style audit warns about each name in development
-  - the glyph settings (`--plx-comp-icon-glyph-*`) and their per-density aliases
-  - `icons-all.css`
-  - Stage 5c-2 removes them from `icon.css` and the CDN.
+- **Removed in stage 5c-2 (the owner, #277 Q3 and Q5; the notice is in the CDN README and the changelog):**
+  - the bare classes (`plx-icon plx-icon--<name>` without the component): they draw nothing. The style audit warns about each name in development, and check-system (`bare-icons`) refuses one in the Platform, the applications and the spec.
+  - the glyph settings (`--plx-comp-icon-glyph-*`), their per-density aliases (`--plx-comp-icon-auto-*`), the per-name rules and the mask on `.plx-icon`: `icon.css` went from 555 KB to 4 KB.
+  - the per-name right-to-left rules: `plx-icon--mirrored` does it.
+  - `icons-all.css`: no longer published.

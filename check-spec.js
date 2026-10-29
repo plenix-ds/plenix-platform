@@ -147,7 +147,7 @@ const blocksOf = (r) => r.blocks || (r.src && /^(components|patterns)\//.test(r.
 // classes that look like variants but are not chosen by whoever uses the component (each has its reason; they are
 // documented under the component's Behavior or Names)
 const NOT_VARIANTS = {
-  'plx-icon--inline': 'how the Icon component draws (an inline SVG, every icon it renders), not a look: a bare class name (deprecated, #557) draws the mask until stage 5c-2',
+  'plx-icon--inline': 'how the Icon component draws (an inline SVG, every icon it renders), not a look: a bare class name (retired, #557) draws nothing',
   'plx-icon--mirrored': 'set by the Icon component on every icon whose symbol points along the reading direction (a module by its mirrored flag, a name by its symbol; #557), so it mirrors in right to left; not a look a person picks',
   'plx-data-grid--static': 'the renderer’s static mode (Table renders it with isStatic); in DataGrid it never applies, Table’s generated base carries it',
   'plx-table--static': 'Table’s own mode, always set: the static grid (it fits the page, wraps and grows), Table’s base look, not a variant',
