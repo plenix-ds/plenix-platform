@@ -13208,6 +13208,44 @@ function stepSize(px, dir, min, max) {
   return c[Math.max(0, Math.min(c.length - 1, i))];
 }
   } },
+  "platform/utils/paneLimit.js": { deps: {"./sizeSteps.js":"platform/utils/sizeSteps.js","./grid.js":"platform/utils/grid.js"}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.paneMax = paneMax;
+exports.shareOf = shareOf;
+var _sizeSteps = require("./sizeSteps.js");
+var _grid = require("./grid.js");
+/* Plenix · paneLimit (platform/utils/paneLimit.js)
+   Summary: How far a pane of the shell or a table column may be dragged for the room it has (owner, issue 463, option C): never more
+     than the window-share token (--plx-sys-shell-pane-window-share, 90%) of the window, of the table for a column, taken down to
+     the 4px grid. A smaller limit of the component or the app still applies: this only adds a ceiling.
+   Usage:
+     paneMax(limit, min, el): the limit a pane drags to: the smaller of limit, GRID_PANE_MAX and the window's share, never below min
+     shareOf(px, el): the token's share of a measured width (a table's), on the grid; Infinity when px is 0 (not measured yet)
+   Behavior: Read when the pane opens, on each drag and each render; nothing runs while the window edge is being dragged.
+   Notes: Internal; not part of the public API. The share is a token, never a number here. */
+
+const share = el => {
+  if (typeof document === 'undefined') return 0;
+  const doc = el && el.ownerDocument || document;
+  const v = parseFloat(doc.defaultView.getComputedStyle(doc.documentElement).getPropertyValue('--plx-sys-shell-pane-window-share'));
+  return v > 0 ? v / 100 : 0;
+};
+function shareOf(px, el) {
+  const s = share(el);
+  return s && px > 0 ? (0, _grid.snapToGrid)(px * s, {
+    round: 'down',
+    el
+  }) : Infinity;
+}
+function paneMax(limit, min, el) {
+  const win = typeof window === 'undefined' ? 0 : (el && el.ownerDocument && el.ownerDocument.defaultView || window).innerWidth;
+  return Math.max(min || 0, Math.min(limit, _sizeSteps.GRID_PANE_MAX, shareOf(win, el)));
+}
+  } },
   "platform/components/Resizable/resize-scale.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
@@ -13242,7 +13280,7 @@ function resizeScale(steps, min, max, keyboardSteps = []) {
   };
 }
   } },
-  "platform/components/Resizable/Resizable.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../utils/grid.js":"platform/utils/grid.js","./resize-scale.js":"platform/components/Resizable/resize-scale.js","../../utils/floating.js":"platform/utils/floating.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Resizable/Resizable.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/paneLimit.js":"platform/utils/paneLimit.js","./resize-scale.js":"platform/components/Resizable/resize-scale.js","../../utils/floating.js":"platform/utils/floating.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -13255,6 +13293,7 @@ var _cx = require("../../utils/cx.js");
 var _direction = require("../../utils/direction.js");
 var _sizeSteps = require("../../utils/sizeSteps.js");
 var _grid = require("../../utils/grid.js");
+var _paneLimit = require("../../utils/paneLimit.js");
 var _resizeScale = require("./resize-scale.js");
 var _floating = require("../../utils/floating.js");
 var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
@@ -13303,7 +13342,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        to the limits. aria-valuemin and -valuemax are the limits it can reach (within GRID_MIN to GRID_BOX_MAX, a pane's
        to GRID_PANE_MAX), so a maxWidth past 1600 reports 1600.
      No size menu (owner, 2026-10-16: removed, also for touch): the edge is dragged, or moved with the keyboard.
-     PanelSplitter: drag (one grid line at a time, within min and max), or the arrow keys (--plx-sys-shell-splitter-step),
+     PanelSplitter: drag (one grid line at a time, within min and max and never past --plx-sys-shell-pane-window-share, 90%, of the window), or the arrow keys (--plx-sys-shell-splitter-step),
        Home and End; double-click or Enter collapses the area when it can collapse (onCollapse: the navigation pane folds
        to its rail).
    Notes:
@@ -13332,14 +13371,18 @@ function PanelSplitter({
   const dir = edge === 'end' ? 1 : -1;
   // a width is always on the 4px grid (owner, 2026-10-26: smooth, then "the nearest grid line"), within the limits
   // (and within the grid lines the stylesheet draws a pane at: GRID_MIN to GRID_PANE_MAX)
-  const clamp = w => (0, _grid.gridWithin)(w, Math.max(min, _sizeSteps.GRID_MIN), Math.min(max(), _sizeSteps.GRID_PANE_MAX));
+  // and within the window's share (--plx-sys-shell-pane-window-share: never more than 90% of the window)
+  const clamp = (w, el) => {
+    const lo = Math.max(min, _sizeSteps.GRID_MIN);
+    return (0, _grid.gridWithin)(w, lo, (0, _paneLimit.paneMax)(max(), lo, el));
+  };
   const onPointerDown = e => {
     if (e.button !== 0) return;
     e.preventDefault();
     const x0 = e.clientX,
       w0 = value,
       flip = (0, _direction.isRtl)(e.currentTarget) ? -1 : 1;
-    const move = ev => onChange(clamp(w0 + (ev.clientX - x0) * dir * flip));
+    const move = ev => onChange(clamp(w0 + (ev.clientX - x0) * dir * flip, e.currentTarget));
     const up = () => {
       document.removeEventListener('pointermove', move);
       document.removeEventListener('pointerup', up);
@@ -27371,7 +27414,7 @@ function groupDisplay(groups, collapsed, add, gaps = true) {
   return display;
 }
   } },
-  "platform/components/DataGrid/DataGridEngine.jsx": { deps: {"react":null,"./unread.js":"platform/components/DataGrid/unread.js","./room.js":"platform/components/DataGrid/room.js","react-dom":null,"./scrollbars.jsx":"platform/components/DataGrid/scrollbars.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","@tanstack/react-table":"../../plenix/node_modules/@tanstack/react-table/build/lib/index.js","@tanstack/react-virtual":"../../plenix/node_modules/@tanstack/react-virtual/dist/cjs/index.cjs","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./environment.js":"platform/components/DataGrid/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataGrid/state.js","./adapter.js":"platform/components/DataGrid/adapter.js","./cells.jsx":"platform/components/DataGrid/cells.jsx","./records.js":"platform/components/DataGrid/records.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/DataGrid/DataGridEngine.jsx": { deps: {"react":null,"./unread.js":"platform/components/DataGrid/unread.js","./room.js":"platform/components/DataGrid/room.js","react-dom":null,"./scrollbars.jsx":"platform/components/DataGrid/scrollbars.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","@tanstack/react-table":"../../plenix/node_modules/@tanstack/react-table/build/lib/index.js","@tanstack/react-virtual":"../../plenix/node_modules/@tanstack/react-virtual/dist/cjs/index.cjs","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../utils/paneLimit.js":"platform/utils/paneLimit.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./environment.js":"platform/components/DataGrid/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataGrid/state.js","./adapter.js":"platform/components/DataGrid/adapter.js","./cells.jsx":"platform/components/DataGrid/cells.jsx","./records.js":"platform/components/DataGrid/records.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -27393,6 +27436,7 @@ var _cx = require("../../utils/cx.js");
 var _announce = require("../../utils/announce.jsx");
 var _grid = require("../../utils/grid.js");
 var _sizeSteps = require("../../utils/sizeSteps.js");
+var _paneLimit = require("../../utils/paneLimit.js");
 var _useVirtualizer = require("../../hooks/useVirtualizer.js");
 var _environment = require("./environment.js");
 var _Icon = require("../Icon/Icon.jsx");
@@ -28035,7 +28079,7 @@ function NextEngine(props) {
     const definition = columns.find(c => c.field === field),
       at = frame.current;
     const min = Math.max(floors[field] || 0, (0, _environment.tokenPixels)(definition?.minWidth || '--plx-ref-size-80px', at)),
-      max = definition?.maxWidth ? (0, _environment.tokenPixels)(definition.maxWidth, at) : _sizeSteps.SIZE_STEPS[_sizeSteps.SIZE_STEPS.length - 1];
+      max = Math.min(definition?.maxWidth ? (0, _environment.tokenPixels)(definition.maxWidth, at) : _sizeSteps.SIZE_STEPS[_sizeSteps.SIZE_STEPS.length - 1], Math.max(min, (0, _paneLimit.shareOf)(at?.clientWidth, at)));
     const width = (0, _grid.snapToGrid)((0, _sizeSteps.snapSize)((0, _environment.tokenPixels)(value, at), min, max), {
       el: at
     });
@@ -28131,9 +28175,9 @@ function NextEngine(props) {
     sortingFn: typeof c.sorter === 'function' ? (a, b, id) => c.sorter(a.getValue(id), b.getValue(id), a.original, b.original, id, sortingRef.current.find(s => s.id === id)?.desc ? 'desc' : 'asc') : c.sorter === 'number' || c.type === 'bytes' ? 'basic' : compare,
     size: kinds(c).includes('icon') ? metrics.lead : Math.max(metrics.min, floors[c.field] || 0, autoSizing[c.field] || (0, _environment.tokenPixels)(c.width, frame.current) || metrics.min),
     minSize: kinds(c).includes('icon') ? metrics.lead : Math.max(floors[c.field] || 0, (0, _environment.tokenPixels)(c.minWidth, frame.current) || metrics.min),
-    maxSize: kinds(c).includes('icon') ? metrics.lead : c.maxWidth ? (0, _environment.tokenPixels)(c.maxWidth, frame.current) : _sizeSteps.SIZE_STEPS[_sizeSteps.SIZE_STEPS.length - 1],
+    maxSize: kinds(c).includes('icon') ? metrics.lead : Math.min(c.maxWidth ? (0, _environment.tokenPixels)(c.maxWidth, frame.current) : _sizeSteps.SIZE_STEPS[_sizeSteps.SIZE_STEPS.length - 1], Math.max(Math.max(floors[c.field] || 0, (0, _environment.tokenPixels)(c.minWidth, frame.current) || metrics.min), (0, _paneLimit.shareOf)(metrics.room, frame.current))),
     meta: c
-  })), [columns, metrics.min, metrics.lead, autoSizing, floors]);
+  })), [columns, metrics.min, metrics.lead, metrics.room, autoSizing, floors]);
   // pinned (frozen) columns are TanStack's left pinning, listed in the columns' current order (columnOrder first, then
   // the rest as defined, as TanStack orders them), so a pinned column's offset is its getStart('left')
   const pinnedAt = columns.findIndex(c => c.rowLabel),
@@ -36128,6 +36172,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      empty: shown when no row matches; error and onRetry(): the error state and its one recovery; strings: the words
      className: more classes on the frame
    Behavior:
+     A column is dragged no wider than --plx-sys-shell-pane-window-share (90%) of the table, down to the 4px grid; a smaller maxWidth still applies.
      Search filtering yields to typing and evaluates each record once per predicate/data revision; numeric text collation and controlled sort state are reused.
      Width conversions are shared across cells and refreshed when the measured token environment changes.
      Horizontal body scrolling moves the column headers by the same amount; frozen headers and cells stay pinned.
@@ -40727,7 +40772,7 @@ ToolRail.Divider = function ToolRailDivider() {
   });
 };
   } },
-  "platform/patterns/NavPane/NavPane.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/patterns/NavPane/NavPane.jsx": { deps: {"react":null,"react-dom":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../utils/grid.js":"platform/utils/grid.js","../../utils/paneLimit.js":"platform/utils/paneLimit.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -40742,7 +40787,7 @@ var _Button = require("../../components/Button/Button.jsx");
 var _ToolRail = require("../ToolRail/ToolRail.jsx");
 var _AppShell = require("../AppShell/AppShell.jsx");
 var _grid = require("../../utils/grid.js");
-var _sizeSteps = require("../../utils/sizeSteps.js");
+var _paneLimit = require("../../utils/paneLimit.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · NavPane
    Summary: The navigation pane, the same on every page of every application. Give it to the AppShell's sideNav (or a
@@ -40891,7 +40936,7 @@ function NavPane({
 
   // a width only the page or the person knows (the width prop, or the splitter's) reaches the stylesheet as the pane's width, on the grid
   const w = mode === 'static' ? width : narrow ? null : layout.width;
-  const paneWidth = w ? (0, _grid.gridWithin)(parseInt(w, 10), (0, _AppShell.tokenPx)('--plx-sys-shell-nav-min-width'), Math.min((0, _AppShell.tokenPx)('--plx-sys-shell-nav-max-width'), _sizeSteps.GRID_PANE_MAX)) + 'px' : undefined;
+  const paneWidth = w ? (0, _grid.gridWithin)(parseInt(w, 10), (0, _AppShell.tokenPx)('--plx-sys-shell-nav-min-width'), (0, _paneLimit.paneMax)((0, _AppShell.tokenPx)('--plx-sys-shell-nav-max-width'), (0, _AppShell.tokenPx)('--plx-sys-shell-nav-min-width'))) + 'px' : undefined;
   const collapse = mode === 'static' || narrow ? null : /*#__PURE__*/_react.default.createElement("span", {
     className: (0, _cx.cx)('plx-nav-pane__collapse', 'plx-nav-pane__collapse--' + collapseAt)
   }, /*#__PURE__*/_react.default.createElement(_Button.Button, {
@@ -41146,7 +41191,7 @@ function SettingsRow({
   }, children));
 }
   } },
-  "platform/patterns/SidePanel/SidePanel.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","../ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/SidePanel/SidePanel.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Sheet/Sheet.jsx":"platform/components/Sheet/Sheet.jsx","../ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../utils/grid.js":"platform/utils/grid.js","../../utils/paneLimit.js":"platform/utils/paneLimit.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -41162,7 +41207,7 @@ var _Sheet = require("../../components/Sheet/Sheet.jsx");
 var _ToolRail = require("../ToolRail/ToolRail.jsx");
 var _AppShell = require("../AppShell/AppShell.jsx");
 var _grid = require("../../utils/grid.js");
-var _sizeSteps = require("../../utils/sizeSteps.js");
+var _paneLimit = require("../../utils/paneLimit.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · SidePanel
    Summary: The inspector panel on the right of the main region (details, a preview). Give it to the AppShell's panel.
@@ -41272,7 +41317,7 @@ function SidePanel({
     ref: ref,
     "aria-label": name,
     className: (0, _cx.cx)('plx-side-panel', small && 'plx-side-panel--overlay', docked && 'plx-side-panel--resizable', docked && size && 'plx-side-panel--resized', className),
-    "data-plx-width": docked && size ? (0, _grid.gridWithin)(size, (0, _AppShell.tokenPx)('--plx-comp-side-panel-width-min'), Math.min((0, _AppShell.tokenPx)('--plx-comp-side-panel-width-max'), _sizeSteps.GRID_PANE_MAX)) + 'px' : undefined
+    "data-plx-width": docked && size ? (0, _grid.gridWithin)(size, (0, _AppShell.tokenPx)('--plx-comp-side-panel-width-min'), (0, _paneLimit.paneMax)((0, _AppShell.tokenPx)('--plx-comp-side-panel-width-max'), (0, _AppShell.tokenPx)('--plx-comp-side-panel-width-min'))) + 'px' : undefined
   }, /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-side-panel__header"
   }, onOpenChange ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
@@ -41309,7 +41354,7 @@ function SidePanel({
   }), pane) : pane;
 }
   } },
-  "platform/patterns/SecondaryPane/SecondaryPane.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../utils/layer.js":"platform/utils/layer.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/SecondaryPane/SecondaryPane.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../ToolRail/ToolRail.jsx":"platform/patterns/ToolRail/ToolRail.jsx","../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../utils/layer.js":"platform/utils/layer.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/paneLimit.js":"platform/utils/paneLimit.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -41324,7 +41369,7 @@ var _ToolRail = require("../ToolRail/ToolRail.jsx");
 var _AppShell = require("../AppShell/AppShell.jsx");
 var _layer = require("../../utils/layer.js");
 var _grid = require("../../utils/grid.js");
-var _sizeSteps = require("../../utils/sizeSteps.js");
+var _paneLimit = require("../../utils/paneLimit.js");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · SecondaryPane
    Summary: A narrow pane beside the main content, inside the main region (under the header, beside the navigation pane):
@@ -41501,7 +41546,7 @@ function SecondaryPane({
   const pane = /*#__PURE__*/_react.default.createElement("aside", _extends({
     "aria-label": name,
     className: (0, _cx.cx)('plx-secondary-pane', 'plx-secondary-pane--' + side, 'plx-secondary-pane--' + width, sized && 'plx-secondary-pane--resized', narrow && listDetail && (stepAside ? 'plx-secondary-pane--aside' : 'plx-secondary-pane--list'), className),
-    "data-plx-width": sized ? (0, _grid.gridWithin)(size, min(), Math.min(max(), _sizeSteps.GRID_PANE_MAX)) + 'px' : undefined
+    "data-plx-width": sized ? (0, _grid.gridWithin)(size, min(), (0, _paneLimit.paneMax)(max(), min())) + 'px' : undefined
   }, rest), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-secondary-pane__header"
   }, icon ? typeof icon === 'string' ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
