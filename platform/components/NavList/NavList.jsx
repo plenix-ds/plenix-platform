@@ -127,7 +127,7 @@ function Group({ heading, items, current, onSelect, collapsible = true, icon, de
   }
   return (
     <div className="plx-nav-list__group">
-      {heading ? <Tooltip content={heading} disabled={!cut} className="plx-nav-list__tip"><div id={id} className="plx-nav-list__heading"><span ref={headingRef} className="plx-nav-list__heading-text">{heading}</span></div></Tooltip> : null}
+      {heading ? <Tooltip content={heading} disabled={!cut} describe={false} className="plx-nav-list__tip"><div id={id} className="plx-nav-list__heading"><span ref={headingRef} className="plx-nav-list__heading-text">{heading}</span></div></Tooltip> : null}
       <ul aria-labelledby={heading ? id : undefined} className="plx-nav-list__items">
         {items.map((it) => <Item key={it.id} item={it} current={current} onSelect={onSelect} t={t} loc={loc} />)}
       </ul>
