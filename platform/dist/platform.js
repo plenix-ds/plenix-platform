@@ -8283,6 +8283,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      action: one action under the body (a standalone Link, or a small Button); it makes the tooltip rich and a toggletip:
        it opens on click (Enter or Space on the trigger) instead of on hover and focus
      rich: the rich look without a title or an action (default false; true when title or action is given)
+     describe: false keeps the tooltip from describing the trigger (no aria-describedby) and hides the bubble from assistive technology (aria-hidden; sighted users still see it) when the trigger's own name already says the same text, as a cut heading's or label's
+       full text does, so a screen reader does not read it twice (default true)
      disabled: the tooltip neither shows nor describes the trigger (default false); for a label that is shown in full most of
        the time and only needs its tooltip when it is cut short
      className: more classes on the wrapper
@@ -8346,6 +8348,7 @@ function Tooltip({
   action,
   rich = false,
   disabled = false,
+  describe = true,
   className,
   children
 }) {
@@ -8395,9 +8398,10 @@ function Tooltip({
     };
   }, [open, toggle]);
   const child = _react.default.Children.only(children);
-  const described = {
-    'aria-describedby': (0, _describedBy.useDescribedBy)(child.props['aria-describedby'], id)
-  };
+  const describedBy = (0, _describedBy.useDescribedBy)(child.props['aria-describedby'], id);
+  const described = describe ? {
+    'aria-describedby': describedBy
+  } : {}; // describe={false}: the trigger's own name is the same text, so it is not described by it again
   const trigger = disabled ? child : /*#__PURE__*/_react.default.cloneElement(child, toggle ? Object.assign(described, {
     'aria-expanded': open,
     'aria-controls': open ? id + 'b' : undefined,
@@ -8471,7 +8475,8 @@ function Tooltip({
   }, trigger), isRich ? /*#__PURE__*/_react.default.createElement("span", {
     ref: bubble,
     id: id + 'b',
-    className: bubbleCls
+    className: bubbleCls,
+    "aria-hidden": describe ? undefined : true
   }, /*#__PURE__*/_react.default.createElement("span", {
     role: "tooltip",
     id: id,
@@ -8486,7 +8491,8 @@ function Tooltip({
     ref: bubble,
     role: "tooltip",
     id: id,
-    className: bubbleCls
+    className: bubbleCls,
+    "aria-hidden": describe ? undefined : true
   }, content));
 }
   } },
@@ -13679,6 +13685,7 @@ function Field({
   }, /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
     content: label,
     disabled: !cut,
+    describe: false,
     className: "plx-field__label-tip"
   }, /*#__PURE__*/_react.default.createElement("label", {
     ref: labelRef,
@@ -36808,6 +36815,7 @@ function CollapsibleSection({
   }, /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
     content: title,
     disabled: !cut,
+    describe: false,
     className: "plx-collapsible-section__tip"
   }, /*#__PURE__*/_react.default.createElement("button", {
     type: "button",
@@ -40152,6 +40160,7 @@ function Group({
   }, heading ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
     content: heading,
     disabled: !cut,
+    describe: false,
     className: "plx-nav-list__tip"
   }, /*#__PURE__*/_react.default.createElement("div", {
     id: id,
@@ -43131,6 +43140,7 @@ PropertyList.Item = function PropertyListItem({
   }, /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
     content: label,
     disabled: !cut,
+    describe: false,
     className: "plx-property-list__label-tip"
   }, /*#__PURE__*/_react.default.createElement("span", {
     ref: textRef,
