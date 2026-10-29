@@ -176,7 +176,7 @@ object PlenixColors {
     val selectedBorder = Pair(Color(0xFFC8DFF7), Color(0xFF2A6FDB))
     val selectedContent = Pair(Color(0xFF005A9E), Color(0xFFC8DFF7))
     val actionDangerBackgroundHover = Pair(Color(0xFF990000), Color(0xFF990000))
-    val actionDangerBackgroundPressed = Pair(Color(0xFF990000), Color(0xFF990000))
+    val actionDangerBackgroundPressed = Pair(Color(0xFF7A0000), Color(0xFF7A0000))
     val accentFieldBackground = Pair(Color(0xFF1F5BB8), Color(0xFF444444))
     val accentFieldBorder = Pair(Color(0xFFA2C0E3), Color(0xFF8E9094))
     val accentFieldPlaceholder = Pair(Color(0xFFA2C0E3), Color(0xFFD0D0D0))

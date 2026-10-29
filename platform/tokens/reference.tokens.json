@@ -973,6 +973,11 @@
       "$value": "#ffffff",
       "$type": "color"
     },
+    "color-red-900": {
+      "$value": "#7a0000",
+      "$type": "color",
+      "$description": "One step darker than red-800: the pressed step of the Danger and Danger secondary buttons, so rest (red-700), hover (red-800) and pressed (red-900) are three distinct steps (owner, 2026-10-29, #610: an explicit OK for this one color, an exception to no new colors)."
+    },
     "color-red-800": {
       "$value": "#990000",
       "$type": "color",

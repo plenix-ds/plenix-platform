@@ -73,6 +73,19 @@ function materialEntries(root) {
 
 const GENERATOR = 'plenix-icons';
 
+// the files a self-hosting package must carry for every icon the Icon API documents (#284): each Material library name of Icon's glyph list
+// (platform/components/Icon/glyphs.js) in its four files under icons/library/, and each Plenix icon in its four files under icons/plenix/.
+// has(relative path) says whether the package holds the file; returns the paths it does not (empty: the package is complete)
+function missingPackageIcons(root, has) {
+  const glyphs = fs.readFileSync(path.join(root, 'platform', 'components', 'Icon', 'glyphs.js'), 'utf8');
+  const m = /export const LIBRARY = "([^"]*)"/.exec(glyphs);
+  if (!m) throw new Error('platform/components/Icon/glyphs.js has no LIBRARY list');
+  const wanted = [];
+  for (const name of m[1].split(' ').filter(Boolean)) for (const x of VARIANTS) wanted.push('icons/library/' + name + x + '.svg');
+  for (const e of plenixEntries(root)) for (const x of VARIANTS) wanted.push('icons/plenix/' + e.name + x + '.svg');
+  return wanted.filter((f) => !has(f));
+}
+
 // one icon's module object: { name, set, symbol, fillOutline, mirrored, drawings: { 20: { outline, fill }, 24: … } }, each
 // drawing read through the allow-list (#285); also what a site's icon file registers (tools/icons/site-icons.js)
 function moduleObject(set, e) {
@@ -149,7 +162,7 @@ function writeMaterialModule(root, name, out) {
 const SOURCE = { plenix: 'platform/icons (map.json; Material Symbols Sharp, weight 300, and Plenix\'s own icons)', material: 'platform/icons/library (Material Symbols Sharp, weight 300)' };
 const writeSet = (root, set, out) => writeIconSet(set, set === 'material' ? materialEntries(root) : plenixEntries(root), out, SOURCE[set]);
 
-module.exports = { VARIANTS, MIRROR, readDrawing, plenixEntries, materialEntries, moduleObject, writeIconSet, writeSet, writeMaterialModule, SOURCE };
+module.exports = { VARIANTS, MIRROR, readDrawing, plenixEntries, materialEntries, moduleObject, writeIconSet, writeSet, writeMaterialModule, missingPackageIcons, SOURCE };
 
 if (require.main === module) {
   const [set, out] = process.argv.slice(2);

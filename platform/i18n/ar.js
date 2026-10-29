@@ -2029,6 +2029,7 @@ export default {
     }
   },
   "dialog": {
+    "close": "إغلاق",
     "confirmLabel": "حفظ",
     "cancelLabel": "إلغاء",
     "confirm": "تأكيد",
