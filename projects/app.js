@@ -2535,7 +2535,9 @@ function ProjectContent({
   panel
 }) {
   const pTasks = _shared.ALL_TASKS.filter(t => t.proj.includes(proj.name.split(' ')[0]));
-  const pNotes = _shared.ALL_NOTES.filter(n => n.folder === proj.name.split(' ')[0]);
+  // a note belongs to the project whose name starts with its folder's first word ("Kitchen Reno" → Kitchen Renovation), the
+  // rule the tasks use; comparing the whole folder with one word matched no note at all (#632)
+  const pNotes = _shared.ALL_NOTES.filter(n => n.folder.split(' ')[0] === proj.name.split(' ')[0]);
   const pFiles = _shared.ALL_FILES.filter(f => f.folder === proj.name.split('—')[0].trim().replace('Tax & Finances 2026', 'Tax 2026'));
   const [done, setDone] = useState(() => Object.fromEntries(pTasks.map(t => [t.id, t.done])));
   const doneT = pTasks.filter(t => done[t.id]).length;

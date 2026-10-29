@@ -69,6 +69,7 @@ if (changed.wants({ units: ['components/VisuallyHidden', 'patterns/EntityHeader'
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'page-h1.test.js')], { stdio: 'inherit', env: process.env });
   if (result.status !== 0) process.exit(result.status || 1);
 }
+if (changed.wants({ apps: ['projects'] })) { const r632 = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'project-notes-632.test.js')], { stdio: 'inherit', env: process.env }); if (r632.status !== 0) process.exit(r632.status || 1); }   // a project's notes show (issue 632)
 // computed identifiers read 01-20261020 on a right-to-left page (issue 606): its own test, when one of those parts changed
 if (changed.wants({ units: ['components/Isolate', 'components/DataGrid', 'components/DataPill', 'patterns/PropertyList', 'patterns/EntityHeader'] })) {
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'ids-rtl-606.test.js')], { stdio: 'inherit', env: process.env });
