@@ -17,11 +17,16 @@
     "platform/dev/*.js",
     "platform/providers/theme-boot.js",
     // loaded by script tags in pages; check-system.rules/icon-names.js reads it
-    "suite/plenix-app-data.js"
+    "suite/plenix-app-data.js",
+    // loaded by script tags in the pages: each app's icon file, the engines and the icon uses
+    "*/plenix-icons-*.js",
+    "platform/engines/plenix-engines.js",
+    "platform/icons/uses.js"
   ],
   "project": ["**/*.{js,jsx,mjs,cjs}"],
   // the build resolves this name to the script already on the page
-  "ignoreDependencies": ["plenix-platform"],
+  // paper and paperjs-offset are installed for the icon tools only: npm install --prefix tools/icons (tools/icons/package.json)
+  "ignoreDependencies": ["plenix-platform", "paper", "paperjs-offset"],
   // written by build-packages.js into the package it builds
   "ignoreUnresolved": ["./check-copy.js", "./index.cjs"],
   "ignore": [
