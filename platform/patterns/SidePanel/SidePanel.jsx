@@ -11,6 +11,8 @@
      actions: controls at the end of the header row
      footer: a row pinned to the panel's bottom (its actions: Save, Cancel), --plx-comp-pane-footer-height, its divider drawn inside
      collapseLabel: the Collapse button's label (default "Collapse panel")
+     the width a person dragged to is remembered per monitor (utils/monitorWidths.js): one value per monitor, named by its screen size in CSS pixels,
+       used only when it still fits the window; the single value saved before carries over as the current monitor's
      resizable: its start edge can be dragged (or moved with the arrow keys) between --plx-comp-side-panel-width-min and
        -max; the width is remembered; Home and End jump to the smallest and largest (batch 259); default false
      resizeLabel: the edge's accessible name (default "Resize panel")
@@ -41,6 +43,7 @@ import { useMedia, below, PanelSplitter, tokenPx } from '../AppShell/AppShell.js
 import { gridWithin } from '../../utils/grid.js';
 import { paneMax } from '../../utils/paneLimit.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useMonitorWidth } from '../../utils/monitorWidths.js';
 
 const WIDTH_KEY = 'plenix.sidePanelWidth';
 
@@ -59,8 +62,8 @@ export function SidePanel({ title, label, icon, open = true, onOpenChange, actio
   React.useEffect(() => { if (small && !wasSmall.current && open) set(false); wasSmall.current = small; }, [small]);
   const name = label || title || 'Panel';
   // the width dragged on its edge, remembered across visits (resizable, docked only)
-  const [size, setSize] = React.useState(() => { try { return +localStorage.getItem(WIDTH_KEY) || null; } catch (e) { return null; } });
-  const resize = (w) => { setSize(w); try { localStorage.setItem(WIDTH_KEY, String(w)); } catch (e) { /* this visit only */ } };
+  // remembered per monitor (utils/monitorWidths.js); the single value saved before is this monitor's first value
+  const [size, resize] = useMonitorWidth('side', { legacy: () => { try { return localStorage.getItem(WIDTH_KEY); } catch (e) { return null; } }, min: () => tokenPx('--plx-comp-side-panel-width-min'), max: () => tokenPx('--plx-comp-side-panel-width-max') });
   const docked = resizable && !small;
   const railEl = onOpenChange ? (
     <ToolRail label={tw.pane.replace('{name}', name)} className="plx-side-panel-rail"><ToolRail.Item icon="panel-right-open" label={tw.expand} onClick={() => set(true)} /></ToolRail>

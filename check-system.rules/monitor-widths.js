@@ -1,0 +1,32 @@
+// Plenix · check-system rule "monitor-widths" (owner, issue 463 option C, step 3): the width a person dragged a pane to is remembered per monitor.
+// What it rejects:
+//   helper   utils/monitorWidths.js without monitorKey, useMonitorWidth and the plenix.paneWidths store, or no longer limited by paneMax
+//   use      SidePanel or AppShell (the navigation pane's width) no longer asking useMonitorWidth, or writing the old single key again
+//            (plenix.sidePanelWidth, plenix.sideNav.width): one saved value for every screen is what this replaced
+// Alone: node check-system.rules/monitor-widths.js     -> MONITOR_WIDTHS_OK, or the findings and exit 1
+const fs = require('fs');
+const path = require('path');
+
+const NAME = 'monitor-widths';
+const ROOT = path.join(__dirname, '..');
+const read = (f) => { try { return fs.readFileSync(path.join(ROOT, f), 'utf8'); } catch (e) { return ''; } };
+
+function check({ add }) {
+  const h = read('platform/utils/monitorWidths.js'), hf = path.join(ROOT, 'platform/utils/monitorWidths.js');
+  if (!/export const monitorKey/.test(h) || !/export function useMonitorWidth/.test(h)) add(NAME, hf, 0, 'monitorWidths.js must export monitorKey and useMonitorWidth');
+  if (!/plenix\.paneWidths/.test(h)) add(NAME, hf, 0, 'the store key plenix.paneWidths is missing');
+  if (!/paneMax\(/.test(h)) add(NAME, hf, 0, 'a remembered width must be limited by paneMax (it is used only when it still fits the window)');
+  for (const [f, legacy] of [['platform/patterns/SidePanel/SidePanel.jsx', /localStorage\.setItem\(WIDTH_KEY/], ['platform/patterns/AppShell/AppShell.jsx', /writePref\('plenix\.sideNav\.width'/]]) {
+    const s = read(f), file = path.join(ROOT, f);
+    if (!/useMonitorWidth\(/.test(s)) add(NAME, file, 0, 'does not ask useMonitorWidth for the dragged width');
+    if (legacy.test(s)) add(NAME, file, 0, 'writes the old single saved width again: a width is saved per monitor (setWidth from useMonitorWidth)');
+  }
+}
+module.exports = { name: NAME, check };
+
+if (require.main === module) {
+  const findings = [];
+  check({ add: (rule, file, line, text) => findings.push(path.relative(ROOT, file) + (line ? ':' + line : '') + '  ' + text) });
+  if (findings.length) { findings.forEach((x) => console.log(x)); console.log('MONITOR_WIDTHS_FAIL (' + findings.length + ')'); process.exit(1); }
+  console.log('MONITOR_WIDTHS_OK');
+}
