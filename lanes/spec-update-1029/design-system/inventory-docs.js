@@ -68,7 +68,7 @@ window.DSDocs = {
    "name": "Not applicable: color is a foundation, not an element.",
    "announce": "Nothing: color is not announced, which is why it is never the only signal of a state.",
    "focus": "The focus ring is the blue --plx-sys-focus-ring-color, offset from the element by --plx-sys-focus-ring-offset.",
-   "contrast": "Text uses content roles on surface roles: gray-900 on white and canvas in light (pure black is never used for text, dialog chrome or the scrim), gray-200 on gray-800 and black in dark. Feedback text uses the -content role on its -soft fill; text on a solid fill uses the -on-solid role. Every pill text passes AA on its background in both modes: the status pills 6.20 to 7.54:1 in light and 4.61 to 6.22:1 in dark, the category pills 7.33 to 8.21:1. Pill borders are decorative and the text carries the meaning, so the 3:1 non-text rule does not apply to them.",
+   "contrast": "Text uses content roles on surface roles: gray-900 on white and canvas in light, gray-200 on gray-800 and black in dark. In light mode, text, the tooltip, the toast, the status bar, the data-grid text and the scrim use gray-900, never pure black. Black stays only where a role needs it: the dark canvas and its sunken surface, media surfaces, the text on the light category colors, inverse text in dark mode, and shadows (black at low opacity). Feedback text uses the -content role on its -soft fill; text on a solid fill uses the -on-solid role. Every pill text passes AA on its background in both modes: the status pills 6.20 to 7.54:1 in light and 4.61 to 6.22:1 in dark, the category pills 7.33 to 8.21:1. Pill borders are decorative and the text carries the meaning, so the 3:1 non-text rule does not apply to them.",
    "motion": "Not applicable: color has no motion of its own."
   },
   "content": {
@@ -1236,7 +1236,7 @@ window.DSDocs = {
   ]
  },
  "bulk-action-bar": {
-  "purpose": "The selection bar for a page with no command bar: the commands that act on the selected records, Select all and Clear, and the count at the far end. Where there is a command bar, the selection swaps that bar instead.",
+  "purpose": "The selection bar for a page with no command bar: the commands that act on the selected records, Select all and Clear, and the count at the far end. Where there is a command bar, the selection's commands replace the page's actions in that bar; search and the filters stay, and the bar ends with \"× N selected\", which clears the selection.",
   "anatomy": [
    "Bar — the BulkActions root: a white framed bar like the command bar, never tinted by a selection (required)",
    "Commands — ghost Buttons with icon and label, or a menu button for a group of related commands (required)",
@@ -3158,7 +3158,7 @@ window.DSDocs = {
    "pointer": "Clicking the header toggles the body and runs `onToggle(next)`. Actions beside it work on their own.",
    "keyboard": "The toggle is a native button: Tab reaches it, Enter and Space toggle it.",
    "focus": "Focus stays on the toggle after it expands or collapses.",
-   "responsive": "The title truncates with an ellipsis on one line; the actions keep their width. Every foldable section heading (CollapsibleSection, NavList groups included) wraps to two balanced lines, then the second line ends in an ellipsis, and the full text shows in a Tooltip on hover and on keyboard focus while it is cut. One line is 32px tall, two lines 40px. A plain heading that takes no focus (a static NavList heading) shows the full text on hover only. Screen readers always get the full text.",
+   "responsive": "The actions keep their width. Every foldable section heading (CollapsibleSection, NavList groups included) wraps to two balanced lines, then the second line ends in an ellipsis, and the full text shows in a Tooltip on hover and on keyboard focus while it is cut. One line is 32px tall, two lines 40px. A plain heading that takes no focus (a static NavList heading) shows the full text on hover only. Screen readers always get the full text.",
    "motion": "The chevron turns at --plx-sys-motion-duration-base with --plx-sys-motion-ease-standard. The body opens and closes without animation.",
    "loading": "Not applicable: put a loading state inside the body.",
    "error": "Not applicable: it has no error state of its own."
@@ -3216,7 +3216,7 @@ window.DSDocs = {
   "anatomy": [
    "Selection checkbox — on each Table row or MediaCard (required)",
    "Select all rows — the DataGrid header checkbox (selectable), mixed when some are selected (optional)",
-   "Bulk action bar — BulkActions, shown while anything is selected, only on a page without a command bar; under a command bar the bar swaps to the selection’s commands (optional)",
+   "Bulk action bar — BulkActions, shown while anything is selected, only on a page without a command bar; under a command bar the selection’s commands replace the page’s actions, search and the filters stay, and the bar ends with “× N selected” (optional)",
    "Selection summary — the count, Select all and Clear selection (required)",
    "Actions — buttons or menu buttons; those that do not fit move into More (required)"
   ],

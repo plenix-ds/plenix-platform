@@ -5,7 +5,7 @@ DSParts.docs.push({
     "anatomy": [
       "LocaleProvider — the region's locale, catalogs, fallback, time zone, direction and digits (required)",
       "Catalog — messages by locale, flat dot keys or nested sections; plural messages are objects of Intl plural categories with optional exact counts (\"=0\") (required)",
-      "Built-in words — i18n/en.js holds every word a Platform component shows or announces, one section per component; i18n/ar.js is the same sections in Arabic (required)",
+      "Built-in words — i18n/en.js holds the words Platform components show or announce, one section per component (DatePicker's words move there later); i18n/ar.js is the same sections in Arabic (required)",
       "useStrings(section, strings) — a component's words: the application's catalog, the built-in language, then English, with the strings prop on top (required)",
       "useLocale and createTranslator — t, strings, plural and the bound format helpers, inside and outside React (optional)"
     ],

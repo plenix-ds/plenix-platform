@@ -134,6 +134,7 @@ window.DSLayoutLab = function (api) {
     ['1920px and wider', '320px', '400px', '260 / 320 / 400px']]);
   table(card(la, 'Pane limits'), ['Rule', 'Detail'], [
     ['Size steps', 'A pane snaps to the size tokens (--plx-ref-size-*), from 4px up to 1600px; the largest steps are 960, 1000, 1200, 1400 and 1600px, so a pane or a Resizable box drags to at most 1600px'],
+    ['Narrowest middle pane', 'The secondary pane drags no narrower than its own token, --plx-comp-secondary-pane-width-min (180px)'],
     ['Window share', 'A pane is never wider than --plx-sys-shell-pane-window-share (90%) of the window, and a table column never wider than 90% of its table, taken down to the 4px grid. A smaller limit of the component or the application still applies.'],
     ['Remembered per monitor', 'The width a person drags the navigation pane or the side panel to is saved per monitor, named by its physical size (the screen size times the device pixel ratio, to the nearest 10px). A stored size within 10px counts as the same monitor. A saved width that no longer fits the window is not used and is kept for when it fits again.']]);
   var c3 = card(la, 'Columns', 'By main-region width. Density changes the gutter and margins, never the column count.');
@@ -354,7 +355,7 @@ window.DSLayoutLab = function (api) {
     ['Screens that own their navigation', 'A screen whose navigation keeps its own state (Settings, the project list) places it in the navigation area with SideNavPortal; it then behaves exactly as above.']]);
   var cB = card(pa, 'Inspector panel (right)');
   table(cB, ['Behavior', 'Rule'], [
-    ['Width', 'The SidePanel opens at --plx-comp-side-panel-width-default, by window width: 240px under 1440px (as wide as the navigation pane); 320px at 1440–1919px; 400px at 1920px and wider. A resizable panel drags from 240px to 560px (--plx-comp-side-panel-width-min, -max), never wider than 90% of the window; its width is remembered per monitor, as the navigation pane\'s. The shell\'s own inspector region (.plx-shell-inspector) takes --plx-sys-panel-inspector-width, by density: 320 / 360 / 400px. Docked.'],
+    ['Width', 'The SidePanel opens at --plx-comp-side-panel-width-default, by window width: 240px under 1440px (its own token, --plx-comp-side-panel-width-default); 320px at 1440–1919px; 400px at 1920px and wider. A resizable panel drags from 240px to 560px (--plx-comp-side-panel-width-min, -max), never wider than 90% of the window; its width is remembered per monitor, as the navigation pane\'s. The shell\'s own inspector region (.plx-shell-inspector) takes --plx-sys-panel-inspector-width, by density: 320 / 360 / 400px. Docked.'],
     ['Collapse', 'The Collapse button first in its header row ("Minimize panel" on the asset home); collapsed, a rail with Expand panel. Not every capability has an inspector.'],
     ['Footer', 'A footer row pinned to its bottom with the panel’s actions (the asset home: Save, Cancel), the same row as the navigation pane’s footer (--plx-comp-pane-footer-height).'],
     ['Below --plx-sys-shell-inspector-overlay-below (1024px)', 'Collapsed to its rail; Expand opens it over the main region with a scrim, between the header and the footer. Escape closes it.']]);
