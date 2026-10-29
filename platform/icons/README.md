@@ -113,3 +113,31 @@ One layout and one naming for every icon source, written by `layout.js` (generat
   - at run time, the icon draws nothing, and development warns once with the reason
   - at build time, the build stops, naming the file and the reason
 - **The shipped files:** all 17,120 pass and read exactly as before. The checks are `tests/icon-safety.test.js` (Node only).
+
+## A site's icon file (#553, stage 5)
+
+A site that loads Plenix from the CDN (`plenix.js`, `window.Plenix`) registers the icons its pages draw by name. Each icon then draws from its own module, not from `icon.css`. There are two choices. Each is a classic script, loaded after `plenix.js`:
+
+| File | What it registers | Made by | When to use it |
+|---|---|---|---|
+| `plenix-icons-<site>.js` | Exactly the icons the site's source uses | `node tools/icons/site-icons.js <site> <folder or file> …` | Production (recommended) |
+| `plenix-icons-plenix.js` | Every Plenix icon (the 212 names in `map.json`; their symbol spellings answer too) | `node build-app.js` into `platform/dist/`; `build-packages.js` puts it beside `plenix.js` on the CDN | A site without its own file yet |
+
+```html
+<script src="https://design-system.lighthouseway.org/cdn/<version>/plenix.js"></script>
+<script src="/plenix-icons-st-john.js"></script>
+```
+
+- **The generator:** `node tools/icons/site-icons.js <site> <folder or file> … [--out <folder>] [--allow-unknown]`
+  - **What it reads:** `.js`, `.jsx`, `.mjs`, `.html` and `.htm`, including a page's inline scripts. It skips `node_modules`, `dist`, `vendor` and dot folders.
+  - **Point it at the site's own source,** not at a built file that bundles Plenix.
+  - **A use is one of these:**
+    - an icon slot, read with Babel as the Platform's own check reads it (`platform/icons/uses.js`): `<Icon name>`, `icon="…"`, `{ icon: '…' }`, `h(Plenix.Icon, { name })`, a constant whose name ends in `Icon` or `Icons`, or a parameter's default
+    - an imported module (`plenix-platform/icons/<set>/<name>` or `/cdn/<version>/icons/<set>/<name>.js`)
+    - a bare class name (`plx-icon--<name>`)
+  - **How a name resolves:** as `<Icon name>` does. A Plenix name (with dashes, or its symbol's underscore spelling) comes first, then a Material Symbols name from `library/`.
+  - **Unknown names and run-time names:** an unknown name, or a name built at run time (`'size-' + s`), is reported with its file and line, and the generator stops without writing (exit 1). List a run-time name's possible values in a `/* plx-icons: … */` comment on its line, or pass `--allow-unknown` to write the file without those names.
+- **Safe:** a file holds data only, as `{ name, set, symbol, fillOutline, mirrored, drawings }` objects passed to `registerIcons`. The Icon component checks every drawing with the allow-list (#285) and draws it as React props, never as HTML. A path used by several icons is written once.
+- **Offline:** the file loads nothing else, so it works offline and from `file://`. Loaded before `plenix.js`, it warns once and registers nothing.
+- **`<Icon name>` keeps working without either file:** nothing is removed from `icon.css` in this stage. Stage 5c moves the drawings out of the stylesheet; from then on a site needs one of the two files.
+- **check-system:** fails when `platform/dist/plenix-icons-plenix.js` differs from what `map.json` generates. The test is `tests/site-icons.test.js`.

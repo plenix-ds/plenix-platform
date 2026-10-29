@@ -69,11 +69,17 @@ function materialEntries(root) {
 
 const GENERATOR = 'plenix-icons';
 
+// one icon's module object: { name, set, symbol, fillOutline, mirrored, drawings: { 20: { outline, fill }, 24: … } }, each
+// drawing read through the allow-list (#285); also what a site's icon file registers (tools/icons/site-icons.js)
+function moduleObject(set, e) {
+  const d = (x) => readDrawing(e.files[x]);
+  return { name: e.name, set, symbol: e.symbol, fillOutline: e.fillOutline, mirrored: e.mirrored,
+    drawings: { 20: { outline: d(''), fill: d('-fill') }, 24: { outline: d('-24'), fill: d('-24-fill') } } };
+}
+
 // one icon's module text
 function moduleText(set, e, source) {
-  const d = (x) => readDrawing(e.files[x]);
-  const mod = { name: e.name, set, symbol: e.symbol, fillOutline: e.fillOutline, mirrored: e.mirrored,
-    drawings: { 20: { outline: d(''), fill: d('-fill') }, 24: { outline: d('-24'), fill: d('-24-fill') } } };
+  const mod = moduleObject(set, e);
   // a path used by more than one drawing (outline and fill, 20 and 24 are often the same) is written once, as a constant the
   // drawings share (#280): the exported object is exactly the same, the file shorter
   const count = new Map();
@@ -139,7 +145,7 @@ function writeMaterialModule(root, name, out) {
 const SOURCE = { plenix: 'platform/icons (map.json; Material Symbols Sharp, weight 300, and Plenix\'s own icons)', material: 'platform/icons/library (Material Symbols Sharp, weight 300)' };
 const writeSet = (root, set, out) => writeIconSet(set, set === 'material' ? materialEntries(root) : plenixEntries(root), out, SOURCE[set]);
 
-module.exports = { VARIANTS, MIRROR, readDrawing, plenixEntries, materialEntries, writeIconSet, writeSet, writeMaterialModule };
+module.exports = { VARIANTS, MIRROR, readDrawing, plenixEntries, materialEntries, moduleObject, writeIconSet, writeSet, writeMaterialModule, SOURCE };
 
 if (require.main === module) {
   const [set, out] = process.argv.slice(2);
