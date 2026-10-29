@@ -20,6 +20,16 @@
       "$value": "{plx-sys.space-stack-xs}",
       "$type": "dimension",
       "$description": "The room above and below the lines of a wrapping heading: a one-line heading stays at its control height (32px), two lines become 40px."
+    },
+    "fit-field-min-width": {
+      "$value": "{plx-sys.field-width-md}",
+      "$type": "dimension",
+      "$description": "The narrowest a field in a bar or header gets (a Select, Combobox, TreeSelect, DatePicker, TimePicker, SearchField or Input without a width of its own, and one with the large width when its bar is out of room): a short field is widened to it, and a bar shrinks its fields to it before it overflows (#558, #554)."
+    },
+    "fit-field-max-width": {
+      "$value": "{plx-ref.size-320px}",
+      "$type": "dimension",
+      "$description": "The widest a field in a bar or header grows to fit its longest choice (#558): a longer choice is cut with an ellipsis and shows its full text in a tooltip."
     }
   }
 }
