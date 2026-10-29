@@ -139,9 +139,7 @@
   "platform/components/Chat/chat.css": {
    "combinator | .plx-chat__typing>span[aria-hidden]": 1,
    "combinator | .plx-chat__typing>span[aria-hidden]:nth-child(2)": 1,
-   "combinator | .plx-chat__typing>span[aria-hidden]:nth-child(3)": 1,
-   "combinator | .plx-chat__message--mine .plx-chat__bubble": 1,
-   "combinator | .plx-chat__message:not(.plx-chat__message--mine) .plx-chat__time": 1
+   "combinator | .plx-chat__typing>span[aria-hidden]:nth-child(3)": 1
   },
   "platform/components/Checkbox/checkbox.css": {
    "relational | .plx-check:has(.plx-check__input:disabled)": 1,

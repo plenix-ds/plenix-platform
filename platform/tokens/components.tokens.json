@@ -4750,7 +4750,7 @@
       "$type": "dimension"
     },
     "chat-thread-background": {
-      "$value": "{plx-sys.surface-sunken}",
+      "$value": "{plx-sys.surface-default}",
       "$type": "color"
     },
     "chat-thread-padding-block": {
@@ -4765,16 +4765,12 @@
       "$value": "{plx-sys.space-stack-sm}",
       "$type": "dimension"
     },
-    "chat-message-gap": {
-      "$value": "{plx-sys.space-inline-xs}",
-      "$type": "dimension"
-    },
     "chat-bubble-background": {
-      "$value": "{plx-sys.surface-default}",
+      "$value": "{plx-sys.message-incoming-background}",
       "$type": "color"
     },
     "chat-bubble-border-color": {
-      "$value": "{plx-sys.border-subtle}",
+      "$value": "{plx-sys.message-incoming-border}",
       "$type": "color"
     },
     "chat-bubble-radius": {
@@ -4786,7 +4782,7 @@
       "$type": "dimension"
     },
     "chat-bubble-text": {
-      "$value": "{plx-sys.content-default}",
+      "$value": "{plx-sys.message-text}",
       "$type": "color"
     },
     "chat-bubble-font-size": {
@@ -4806,16 +4802,26 @@
       "$type": "dimension"
     },
     "chat-message-mine-bubble-background": {
-      "$value": "{plx-sys.action-primary-background}",
+      "$value": "{plx-sys.message-outgoing-background}",
       "$type": "color"
     },
     "chat-message-mine-bubble-border-color": {
-      "$value": "{plx-sys.action-primary-background}",
+      "$value": "{plx-sys.message-outgoing-border}",
       "$type": "color"
     },
     "chat-message-mine-bubble-text": {
-      "$value": "{plx-sys.action-primary-content}",
+      "$value": "{plx-sys.message-text}",
       "$type": "color"
+    },
+    "chat-time-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "The time and status under a message: the secondary text color on both kinds of message (#637)."
+    },
+    "chat-avatar-offset": {
+      "$value": "{plx-ref.size-20px}",
+      "$type": "dimension",
+      "$description": "How far the sender's photo sits outside the bubble's top corner (#637, the corner overlap): an sm (28px) photo crosses the corner by 8px. The message reserves this room on that side and above, so the photo never covers the text."
     },
     "chat-meta-gap": {
       "$value": "{plx-sys.space-inline-xs}",
@@ -4832,10 +4838,6 @@
     "chat-time-font-family": {
       "$value": "{plx-sys.font-data}",
       "$type": "fontFamily"
-    },
-    "chat-message-others-time-opacity": {
-      "$value": "{plx-sys.opacity-high}",
-      "$type": "number"
     },
     "chat-composer-border-block-start-color": {
       "$value": "{plx-sys.border-divider}",
