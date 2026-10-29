@@ -49,6 +49,7 @@ import { FieldLayoutContext } from '../../components/Field/Field.jsx';
 import { Stack } from '../../components/Stack/Stack.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { ActionBar } from '../ActionBar/ActionBar.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 const LAYOUTS = ['one-column', 'two-column'];
 
@@ -76,6 +77,8 @@ export function FormSection({ title, description, headingLevel = 2, className, c
   );
 }
 
-export function FormActions({ label = 'Form actions', sticky = true, className, children }) {
+export function FormActions({ label, sticky = true, className, children }) {
+  const tw = useStrings('form');
+  if (label === undefined) label = tw.label;
   return <ActionBar label={label} className={cx('plx-form-actions', !sticky && 'plx-form-actions--static', className)}>{children}</ActionBar>;
 }

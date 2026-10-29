@@ -19,7 +19,7 @@
 import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { announce } from '../../utils/announce.jsx';
-import { formatNumber } from '../../utils/format.js';
+import { formatNumber, formatLocale } from '../../utils/format.js';
 import { compareLevels } from '../../utils/fields.js';
 import { useCollectionView } from '../../hooks/useCollectionView.js';
 import { CommandBar, CommandBarSearch } from '../../patterns/CommandBar/CommandBar.jsx';
@@ -46,12 +46,14 @@ import { Tabs } from '../../components/Tabs/Tabs.jsx';
 import { Table } from '../../components/Table/Table.jsx';
 import { useUid } from '../../utils/layer.js';
 import { fill, useCommercePage } from './shared.jsx';
-import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useStrings, createTranslator } from '../../providers/LocaleProvider.jsx';
 
 
 // the products' fields, for the filter, the category quick filter and the sort (utils/fields.js)
+// Called directly (outside a component), it reads the page's language (formatLocale), not a LocaleProvider's catalogs; ProductListing passes its own words in strings.
 export function productFields(categories = [], strings) {
-  const t = useStrings('commerce.listing', strings);
+  // not a hook (it is exported, and ProductListing calls it inside useMemo): the page locale's catalog words, with strings on top
+  const t = Object.assign({}, createTranslator(formatLocale()).section('commerce.listing'), strings);
   return [
     { value: 'title', label: t.name, kind: 'text' },
     { value: 'category', label: t.category, kind: 'select', options: categories.map((c) => ({ value: c.value, label: c.label })) },
@@ -68,7 +70,7 @@ export function ProductListing({ products = [], categories = [], title, descript
   query, onQueryChange, defaultView, search = true, strings, className }) {
   useCommercePage('product-listing');
   const t = useStrings('commerce.listing', strings);
-  const fields = React.useMemo(() => productFields(categories, strings), [categories, strings]);
+  const fields = React.useMemo(() => productFields(categories, t), [categories, t]);
   const v = useCollectionView(fields, { text: (p) => [p.title, p.meta, p.category].join(' '), quick: { category: 'list' }, view: Object.assign({ layout: 'gallery', size: 'm' }, defaultView) });
   // the search text may come from the page (ProductDiscovery's search)
   React.useEffect(() => { if (query !== undefined && query !== v.search) v.setSearch(query); }, [query]);

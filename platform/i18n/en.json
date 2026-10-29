@@ -132,7 +132,17 @@
       "standard": "Standard",
       "comfortable": "Comfortable",
       "signOut": "Sign out"
-    }
+    },
+    "navLabel": "Pinned applications",
+    "applications": "Applications",
+    "search": "Search",
+    "scope": "In {scope}",
+    "pin": "Pin {app} to the header",
+    "unpin": "Unpin {app} from the header",
+    "switchApp": "{app}, switch application",
+    "cancel": "Cancel",
+    "searchHint": "Type what you are looking for, then press Enter.",
+    "pinnedHeading": "Pinned to the header"
   },
   "appShell": {
     "skip": "Skip to main content"
@@ -297,7 +307,11 @@
     "noMatches": "No matches",
     "empty": "No items",
     "remove": "Remove {label}",
-    "columns": "Options"
+    "columns": "Options",
+    "results": {
+      "one": "{n} match",
+      "other": "{n} matches"
+    }
   },
   "chart": {
     "barChart": {
@@ -497,7 +511,32 @@
     "hint": "Tab indents. Press Escape, then Tab, to leave the editor."
   },
   "colorSwatch": {
-    "label": "Color"
+    "label": "Color",
+    "more": "More colors",
+    "moreChosen": "More colors, {name} chosen",
+    "colors": {
+      "red": "Red",
+      "green": "Green",
+      "yellow": "Yellow",
+      "blue": "Blue",
+      "orange": "Orange",
+      "purple": "Purple",
+      "cyan": "Cyan",
+      "magenta": "Magenta",
+      "lime": "Lime",
+      "pink": "Pink",
+      "teal": "Teal",
+      "lavender": "Lavender",
+      "beige": "Beige",
+      "maroon": "Maroon",
+      "mint": "Mint",
+      "olive": "Olive",
+      "apricot": "Apricot",
+      "navy": "Navy",
+      "grey": "Grey",
+      "brown": "Brown",
+      "gray": "Gray"
+    }
   },
   "columnsMenu": {
     "label": "Columns",
@@ -523,7 +562,13 @@
   },
   "combobox": {
     "loading": "Loading…",
-    "error": "The options could not be loaded"
+    "error": "The options could not be loaded",
+    "emptyText": "No matches",
+    "removeItem": "Remove {label}",
+    "results": {
+      "one": "{n} option",
+      "other": "{n} options"
+    }
   },
   "commandBar": {
     "more": "More actions",
@@ -839,7 +884,11 @@
     "browse": "Browse all {entityName}",
     "loading": "Loading…",
     "error": "The results could not be loaded",
-    "remove": "Remove {label}"
+    "remove": "Remove {label}",
+    "results": {
+      "one": "{n} result",
+      "other": "{n} results"
+    }
   },
   "errorSummary": {
     "one": "There is a problem",
@@ -1203,7 +1252,11 @@
     "unpinItem": "Unpin {label}"
   },
   "navPane": {
-    "browse": "Browse"
+    "browse": "Browse",
+    "expand": "Expand sidebar",
+    "collapse": "Collapse sidebar",
+    "resize": "Resize {name}",
+    "resizeNavigation": "Resize navigation"
   },
   "notice": {
     "dismiss": "Dismiss"
@@ -1386,7 +1439,12 @@
     "to": "To"
   },
   "rating": {
-    "label": "Rating"
+    "label": "Rating",
+    "value": "{label}: {value} of {max}",
+    "stars": {
+      "one": "{count} star",
+      "other": "{count} stars"
+    }
   },
   "refineMenu": {
     "label": "Refine",
@@ -1626,7 +1684,9 @@
     "groupInsert": "Insert",
     "groupHistory": "History",
     "leave": "Press Tab or Shift+Tab to leave the editor",
-    "hint": "Escape, then Tab, leaves the editor"
+    "hint": "Escape, then Tab, leaves the editor",
+    "heading": "Heading {n}",
+    "tip": "{name} ({keys})"
   },
   "roleLabel": {
     "owner": "Owner",
@@ -1688,7 +1748,8 @@
     "removed": "{query} removed from recent searches",
     "remove": "Remove {query}",
     "placeholder": "Search",
-    "label": "Search"
+    "label": "Search",
+    "searching": "Searching"
   },
   "searchWorkspace": {
     "title": "Search",
@@ -1822,7 +1883,12 @@
     "moreLabel": "More tabs"
   },
   "tag": {
-    "label": "Add a tag"
+    "label": "Add a tag",
+    "rename": "Rename {label}",
+    "renameTag": "Rename tag",
+    "remove": "Remove {label}",
+    "removeTag": "Remove tag",
+    "removeFilter": "Remove filter"
   },
   "teachingBubble": {
     "close": "Close",
@@ -1879,6 +1945,10 @@
       "Europe": "Europe",
       "Indian": "Indian Ocean",
       "Pacific": "Pacific"
+    },
+    "results": {
+      "one": "{n} time zone",
+      "other": "{n} time zones"
     }
   },
   "toast": {
@@ -2138,7 +2208,8 @@
     "counter": {
       "left": "{n} characters left",
       "over": "{n} characters too many"
-    }
+    },
+    "about": "About {label}"
   },
   "icon": {
     "status": {
@@ -2555,5 +2626,13 @@
   },
   "activityList": {
     "unread": "Unread"
+  },
+  "sidePanel": {
+    "expand": "Expand panel",
+    "pane": "{name} pane"
+  },
+  "splitView": {
+    "firstLabel": "First panel",
+    "maxWidth": "The other pane needs at least {n}px"
   }
 }

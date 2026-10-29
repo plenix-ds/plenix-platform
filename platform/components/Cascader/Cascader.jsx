@@ -48,9 +48,9 @@ import { useFloating, FLOATING_ANCHOR } from '../../utils/floating.js';
 
 // the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
 const TOP_LAYER = FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
+import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
+import { formatNumber } from '../../utils/format.js';
 
-const STRINGS = { placeholder: 'Choose', separator: ' / ', search: 'Search', noMatches: 'No matches', empty: 'No items', remove: 'Remove {label}',
-  results: (n) => n + (n === 1 ? ' match' : ' matches'), columns: 'Options' };
 
 // every leaf of the hierarchy with its path of items
 // the columns of the list take the narrowest width step (160px), so three levels fit under a form field
@@ -61,7 +61,8 @@ const pathTo = (items, id) => { const hit = leavesOf(items).find((l) => l.item.i
 
 export const Cascader = React.forwardRef(function Cascader({ options = [], value, values, onChange, multiple = false, expandTrigger = 'click', searchable = false,
   placeholder, label, invalid, disabled, id, strings, className, 'aria-describedby': describedBy, ...rest }, ref) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('cascader', strings);
+  const loc = useLocale();
   const auto = 'plx-cs' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const [open, setOpen] = React.useState(false);
   const [text, setText] = React.useState('');
@@ -97,7 +98,7 @@ export const Cascader = React.forwardRef(function Cascader({ options = [], value
 
   const q = text.trim().toLowerCase();
   const matches = q ? leavesOf(options).filter((l) => !l.item.disabled && String(l.item.label).toLowerCase().indexOf(q) >= 0) : [];
-  React.useEffect(() => { setActive(0); if (q) announce(t.results(matches.length)); }, [q]);
+  React.useEffect(() => { setActive(0); if (q) announce(typeof t.results === 'function' ? t.results(matches.length) : loc.t('cascader.results', { count: matches.length, n: formatNumber(matches.length) })); }, [q]);
 
   const pick = (item, trail) => {
     if (multiple) onChange(chosen.indexOf(item.id) >= 0 ? chosen.filter((x) => x !== item.id) : chosen.concat([item.id]));

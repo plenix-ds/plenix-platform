@@ -20,7 +20,7 @@
      className: more classes on the pane
      children: the body: NavList groups (whose headings are collapsible section headers), a filter field, buttons
    Behavior:
-     Its size follows the Layout grid's shell: --plx-sys-shell-nav-width (240px), resizable 140–320px with the splitter on its
+     Its size follows the Layout grid's shell: --plx-sys-shell-nav-width (240px; 272px from a window 1440px wide, 320px from 1920px: the -from-1440 and -from-1920 tokens, set in system/grid.css; its dragged width is remembered per monitor, utils/monitorWidths.js), resizable 140–320px with the splitter on its
        edge: dragged, it moves one grid line (4px) at a time and stays on the grid; the arrow keys move it by
        --plx-sys-shell-splitter-step; Enter or a double-click on the edge folds the pane to its rail.
      The first row is the same on every pane: the title, the actions, then the Collapse button at the row's end, on the side
@@ -53,8 +53,8 @@ import { ToolRail, BarContext } from '../ToolRail/ToolRail.jsx';
 import { useAppLayout, PanelSplitter, tokenPx } from '../AppShell/AppShell.jsx';
 import { gridWithin } from '../../utils/grid.js';
 import { paneMax } from '../../utils/paneLimit.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { browse: 'Browse' };
 // the rail's items out of their fragments (the bar draws destinations, never dividers)
 const railItems = (rail) => {
   const out = [];
@@ -71,7 +71,7 @@ const CHOOSES = 'a[href], .plx-nav-list__item:not(.plx-nav-list__item--group), [
 export function NavPane({ label, title, actions, as = 'nav', header, footer, rail, collapseAt = 'end', width, strings, className, children }) {
   const layout = useAppLayout();
   const ref = React.useRef(null);
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('navPane', strings);
   const Tag = as;
   const mode = layout && layout.hasSideNav ? layout.mode : 'static';
   const narrow = mode === 'bar' || mode === 'screen';
@@ -82,7 +82,7 @@ export function NavPane({ label, title, actions, as = 'nav', header, footer, rai
   React.useLayoutEffect(() => (rowed && claimRow ? claimRow() : undefined), [rowed, claimRow]);
   // the overlay and the screen are layers: Escape closes them
   useLayer(ref, mode === 'overlay' || mode === 'screen', { onEscape: layout ? layout.close : undefined });
-  const expand = <ToolRail.Item icon="panel-left-open" label="Expand sidebar" onClick={layout ? layout.toggle : undefined} />;
+  const expand = <ToolRail.Item icon="panel-left-open" label={t.expand} onClick={layout ? layout.toggle : undefined} />;
   const railEl = mode === 'rail' || mode === 'overlay' ? (
     <ToolRail label={label || 'Navigation'} className="plx-nav-pane-rail">{rail ? <>{expand}<ToolRail.Divider />{rail}</> : expand}</ToolRail>
   ) : null;
@@ -117,7 +117,7 @@ export function NavPane({ label, title, actions, as = 'nav', header, footer, rai
   const paneWidth = w ? gridWithin(parseInt(w, 10), tokenPx('--plx-sys-shell-nav-min-width'), paneMax(tokenPx('--plx-sys-shell-nav-max-width'), tokenPx('--plx-sys-shell-nav-min-width'))) + 'px' : undefined;
   const collapse = mode === 'static' || narrow ? null : (
     <span className={cx('plx-nav-pane__collapse', 'plx-nav-pane__collapse--' + collapseAt)}>
-      <Button size="sm" variant="ghost" iconOnly icon="panel-left-close" label="Collapse sidebar" onClick={layout.toggle} />
+      <Button size="sm" variant="ghost" iconOnly icon="panel-left-close" label={t.collapse} onClick={layout.toggle} />
     </span>
   );
   const onChoose = narrow ? (e) => { if (e.target.closest && e.target.closest(CHOOSES)) layout.close(); } : undefined;
@@ -133,7 +133,7 @@ export function NavPane({ label, title, actions, as = 'nav', header, footer, rai
       {header ? <div className="plx-nav-pane__subheader">{header}</div> : null}
       <div className="plx-nav-pane__body" onClick={onChoose}>{children}</div>
       {footer ? <div className="plx-nav-pane__footer">{footer}</div> : null}
-      {mode === 'inline' ? <PanelSplitter label={'Resize ' + (label || 'navigation')} value={layout.width || tokenPx('--plx-sys-shell-nav-width')}
+      {mode === 'inline' ? <PanelSplitter label={label ? t.resize.replace('{name}', label) : t.resizeNavigation} value={layout.width || tokenPx('--plx-sys-shell-nav-width')}
         min={tokenPx('--plx-sys-shell-nav-min-width')} max={() => tokenPx('--plx-sys-shell-nav-max-width')} onChange={layout.setWidth}
         onCollapse={layout.toggle} edge="end" /> : null}
     </Tag>

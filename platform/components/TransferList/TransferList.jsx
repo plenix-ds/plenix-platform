@@ -48,12 +48,8 @@ import { announce } from '../../utils/announce.jsx';
 import { Button } from '../Button/Button.jsx';
 import { SearchField } from '../SearchField/SearchField.jsx';
 import { useVirtualizer, VirtualGap, VirtualProbe } from '../../hooks/useVirtualizer.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = {
-  source: 'Available', target: 'Chosen', add: 'Add', addAll: 'Add all', remove: 'Remove', removeAll: 'Remove all', up: 'Move up', down: 'Move down',
-  search: 'Search {title}', selectAll: 'Check every item in {title}', count: '{checked} of {total} checked', moved: '{n} moved to {title}',
-  empty: 'No items', noMatch: 'No matches', moves: 'Move items'
-};
 const fill = (s, o) => String(s).replace(/\{(\w+)\}/g, (all, k) => (o[k] !== undefined ? o[k] : all));
 const AUTO_VIRTUAL = 500;
 
@@ -128,7 +124,7 @@ function Side({ id, title, items, checked, setChecked, onMove, search, virtual, 
 export function TransferList({ label, options = [], value = [], onChange, titles, search = false, ordered = false, virtualized, size = 'md', disabled = false,
   strings, className }) {
   devWarn('TransferList', { size }, { size: ['sm','md','lg'] });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('transferList', strings);
   const id = 'plx-tl' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const title = Object.assign({ source: t.source, target: t.target }, titles);
   const byValue = React.useMemo(() => new Map(options.map((o) => [o.value, o])), [options]);

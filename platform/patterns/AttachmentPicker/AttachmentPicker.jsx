@@ -17,10 +17,10 @@ import { FileInput } from '../../components/FileInput/FileInput.jsx';
 import { FileRow, FileRowList } from '../../components/FileRow/FileRow.jsx';
 import { MenuItem } from '../../components/Menu/Menu.jsx';
 import { Tag, TagList } from '../../components/Tag/Tag.jsx';
-const STRINGS={label:'Attachments',remove:'Remove {name}',invalid:'Choose a supported file within the size limit.',limit:'Too many attachments.',empty:'No attachments.'};
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 export function AttachmentPicker({value=[],onChange,variant='inline',accept='',multiple=true,maxFiles,maxSize,disabled=false,strings,className}){
   devWarn('AttachmentPicker', { variant }, { variant: ['inline','chips'] });
- const t={...STRINGS,...strings},[error,setError]=React.useState(''),[inputKey,setInputKey]=React.useState(0);
+ const t=useStrings('attachmentPicker',strings),[error,setError]=React.useState(''),[inputKey,setInputKey]=React.useState(0);
  const remove=(i)=>{if(!disabled){setError('');onChange?.(value.filter((_,n)=>n!==i));}};
  const add=(files)=>{setInputKey(n=>n+1);const rules=accept.toLowerCase().split(',').map(x=>x.trim()).filter(Boolean);
   if(files.some(f=>(typeof maxSize==='number'&&f.size>maxSize)||(rules.length&&!rules.some(r=>r[0]==='.'?f.name.toLowerCase().endsWith(r):r.endsWith('/*')?f.type.toLowerCase().startsWith(r.slice(0,-1)):f.type.toLowerCase()===r)))){setError(t.invalid);return;}

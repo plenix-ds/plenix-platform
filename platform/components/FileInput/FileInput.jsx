@@ -37,12 +37,11 @@ import { cx } from '../../utils/cx.js';
 import { formatBytes } from '../../utils/format.js';
 import { Icon } from '../Icon/Icon.jsx';
 import { Button } from '../Button/Button.jsx';
-
-const STRINGS = { choose: 'Choose file', chooseMany: 'Choose files', none: 'No file chosen', count: '{count} files', remove: 'Remove {name}' };
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export const FileInput = React.forwardRef(function FileInput({ accept, multiple = false, showList = false, hideSummary = false, onChange, label, disabled = false, required, invalid,
   id, 'aria-describedby': describedBy, strings, className, ...rest }, ref) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('fileInput', strings);
   const input = React.useRef(null);
   const [files, setFiles] = React.useState([]);
   const [focus, setFocus] = React.useState(false);

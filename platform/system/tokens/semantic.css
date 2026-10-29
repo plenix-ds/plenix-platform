@@ -150,6 +150,8 @@
 }
 :root,[data-plx-density="standard"]{
   --plx-sys-shell-nav-width: var(--plx-ref-size-240px);
+  --plx-sys-shell-nav-width-from-1440: var(--plx-ref-size-272px);
+  --plx-sys-shell-nav-width-from-1920: var(--plx-ref-size-320px);
   --plx-sys-shell-nav-min-width: var(--plx-ref-size-140px);
   --plx-sys-shell-nav-max-width: var(--plx-ref-size-320px);
   --plx-sys-shell-pane-window-share: 90%;

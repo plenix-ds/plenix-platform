@@ -48,6 +48,7 @@ import { CATEGORY_COLORS } from './categoryColors.js';
 import { Button } from '../Button/Button.jsx';
 import { Menu, MenuItem } from '../Menu/Menu.jsx';
 import { useOverflow, splitAt } from '../../utils/overflow.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 const nameOf = (h) => h.charAt(0).toUpperCase() + h.slice(1);
 
@@ -67,8 +68,11 @@ export function ColorSwatch({ color, category, tone, size = 'md', shape = 'squar
 }
 
 // the data colors to choose from: each a swatch button named by its hue, the chosen one pressed
-export function ColorPicker({ value, onChange, label = 'Color', size = 'md', palette = 'data', colors, invalid, required, className, ...rest }) {   // invalid and required: from Field, not for a group
+export function ColorPicker({ value, onChange, label, size = 'md', palette = 'data', colors, invalid, required, className, ...rest }) {   // invalid and required: from Field, not for a group
   devWarn('ColorPicker', { size }, { size: ['sm','md'] });
+  const tw = useStrings('colorSwatch');
+  if (label === undefined) label = tw.label;
+  const colorName = (h) => (tw.colors && tw.colors[h]) || nameOf(h);
   const cat = palette === 'category';
   if (cat && value === 'brown') value = 'orange';
   const all = cat ? CATEGORY_COLORS : DATA_COLORS;
@@ -79,14 +83,14 @@ export function ColorPicker({ value, onChange, label = 'Color', size = 'md', pal
   const pick = (h) => { if (onChange) onChange(h); };
   const swatch = (h, extra) => <ColorSwatch key={h} color={cat ? undefined : h} category={cat ? h : undefined} size={size} {...extra} />;
   // each swatch in a slot as tall as the row, so every item and the More button share the first row's top
-  const items = list.map((h) => <span key={h} data-plx-overflow-item="" className="plx-color-picker__slot">{swatch(h, { label: nameOf(h), pressed: value === h, onClick: () => pick(h) })}</span>);
+  const items = list.map((h) => <span key={h} data-plx-overflow-item="" className="plx-color-picker__slot">{swatch(h, { label: colorName(h), pressed: value === h, onClick: () => pick(h) })}</span>);
   const chosenHidden = hidden.indexOf(value) >= 0;
   const more = hidden.length ? (
     <span key="plx-more" data-plx-overflow-more="" className="plx-color-picker__more">
-      <Menu label={'More colors'} placement="bottom-end"
-        trigger={<Button size="2xs" variant={chosenHidden ? 'secondary' : 'ghost'} caret aria-label={'More colors' + (chosenHidden ? ', ' + nameOf(value) + ' chosen' : '')}>
+      <Menu label={tw.more} placement="bottom-end"
+        trigger={<Button size="2xs" variant={chosenHidden ? 'secondary' : 'ghost'} caret aria-label={chosenHidden ? tw.moreChosen.replace('{name}', colorName(value)) : tw.more}>
           {chosenHidden ? <ColorSwatch color={cat ? undefined : value} category={cat ? value : undefined} size="sm" /> : '+' + hidden.length}</Button>}>
-        {hidden.map((h) => <MenuItem key={h} role="menuitemradio" checked={value === h} icon={swatch(h, { size: 'sm' })} onSelect={() => pick(h)}>{nameOf(h)}</MenuItem>)}
+        {hidden.map((h) => <MenuItem key={h} role="menuitemradio" checked={value === h} icon={swatch(h, { size: 'sm' })} onSelect={() => pick(h)}>{colorName(h)}</MenuItem>)}
       </Menu>
     </span>
   ) : null;

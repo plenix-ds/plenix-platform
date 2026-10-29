@@ -115,10 +115,13 @@ import { PLENIX_APPS, appById, appHref } from '../../providers/apps.js';
 import { useLayer, useUid } from '../../utils/layer.js';
 import { useDensity } from '../../hooks/useDensity.js';
 import { useMedia, below, tokenPx } from '../AppShell/AppShell.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-export function AppHeader({ tone = 'accent', appName, brand, brandHref, currentApp, appsRoot = '', onOpenApp, nav, navLabel = 'Pinned applications',
+export function AppHeader({ tone = 'accent', appName, brand, brandHref, currentApp, appsRoot = '', onOpenApp, nav, navLabel,
   action, search, searchSuggestions, searchResults, searchScope, actions, account, switcher, back, title, className, ...rest }) {
   devWarn('AppHeader', { tone }, { tone: ['accent','frost','plain'] });
+  const tw = useStrings('appHeader');
+  if (navLabel === undefined) navLabel = tw.navLabel;
   const { pinnedApps } = useSession();
   const [searching, setSearching] = React.useState(false);
   const panel = React.useRef(null), toggle = React.useRef(null), view = React.useRef(null);
@@ -192,16 +195,16 @@ export function AppHeader({ tone = 'accent', appName, brand, brandHref, currentA
   const onViewKey = (e) => { if (e.key === 'Enter' && !searchResults && !e.defaultPrevented && e.target.tagName === 'INPUT') cancel(); };
   const scope = searchScope !== undefined ? searchScope : name;
   const searchView = fullScreen ? createPortal(
-    <div ref={view} id={searchId} className="plx-search-view" role="dialog" aria-modal="true" aria-label="Search" onKeyDown={onViewKey}>
+    <div ref={view} id={searchId} className="plx-search-view" role="dialog" aria-modal="true" aria-label={tw.search} onKeyDown={onViewKey}>
       <div className="plx-search-view__bar">
         <div className="plx-search-view__field">{React.isValidElement(search) ? React.cloneElement(search, { onAccent: false }) : search}</div>
-        <Button variant="ghost" className="plx-search-view__cancel" onClick={cancel}>Cancel</Button>
+        <Button variant="ghost" className="plx-search-view__cancel" onClick={cancel}>{tw.cancel}</Button>
       </div>
-      {scope ? <Text variant="secondary" as="p" className="plx-search-view__scope">{'In ' + scope}</Text> : null}
+      {scope ? <Text variant="secondary" as="p" className="plx-search-view__scope">{tw.scope.replace('{scope}', scope)}</Text> : null}
       <div className="plx-search-view__content">
         {searchSuggestions ? <div className="plx-search-view__suggestions">{searchSuggestions}</div> : null}
         {searchResults ? <div className="plx-search-view__results">{searchResults}</div> : null}
-        {!searchSuggestions && !searchResults ? <Text variant="secondary" as="p">Type what you are looking for, then press Enter.</Text> : null}
+        {!searchSuggestions && !searchResults ? <Text variant="secondary" as="p">{tw.searchHint}</Text> : null}
       </div>
     </div>,
     document.body,
@@ -219,7 +222,7 @@ export function AppHeader({ tone = 'accent', appName, brand, brandHref, currentA
       <div className="plx-app-header__end">
         {search ? (
             <div className="plx-app-header__search-slot">
-              <button ref={toggle} type="button" className="plx-app-header__item plx-app-header__search-toggle" aria-label="Search" aria-expanded={searching} aria-controls={searchId}
+              <button ref={toggle} type="button" className="plx-app-header__item plx-app-header__search-toggle" aria-label={tw.search} aria-expanded={searching} aria-controls={searchId}
                 aria-keyshortcuts="Control+K Meta+K" onClick={() => setSearching(true)}><Icon name="hdr-search" size="lg" /></button>
               {searchView}
               {searching && !narrow ? (
@@ -302,6 +305,7 @@ AppHeader.Action = function AppHeaderAction({ icon, children, label, variant, ..
 
 AppHeader.Switcher = function AppHeaderSwitcher({ currentApp, appsRoot = '', onOpenApp, apps = PLENIX_APPS, brand }) {
   const { pinnedApps, setPinnedApps } = useSession();
+  const tw = useStrings('appHeader');
   const [open, setOpen] = React.useState(false);
   const wrap = React.useRef(null), panel = React.useRef(null), trigger = React.useRef(null);
   const id = useUid('plx-switcher');
@@ -328,7 +332,7 @@ AppHeader.Switcher = function AppHeaderSwitcher({ currentApp, appsRoot = '', onO
           <span className="plx-app-switcher__icon" aria-hidden="true"><Icon name={a.icon} /></span>
           <span className="plx-app-switcher__label">{a.label}</span>
         </a>
-        <button type="button" className={cx('plx-app-switcher__pin', on && 'is-pinned')} aria-pressed={on} aria-label={(on ? 'Unpin ' : 'Pin ') + a.label + (on ? ' from' : ' to') + ' the header'}
+        <button type="button" className={cx('plx-app-switcher__pin', on && 'is-pinned')} aria-pressed={on} aria-label={(on ? tw.unpin : tw.pin).replace('{app}', a.label)}
           onClick={() => pin(a)}><Icon name={on ? 'pin-filled' : 'pin'} /></button>
       </li>
     );
@@ -337,19 +341,19 @@ AppHeader.Switcher = function AppHeaderSwitcher({ currentApp, appsRoot = '', onO
     <div ref={wrap} className={cx('plx-app-switcher', brand && 'plx-app-switcher--brand')}>
       {brand ? (
         <button ref={trigger} type="button" className="plx-app-header__brand plx-app-header__brand--switch" aria-haspopup="dialog" aria-expanded={open} aria-controls={id}
-          aria-label={(typeof brand === 'string' ? brand : 'Plenix' + (currentApp && appById(currentApp) ? ' ' + appById(currentApp).label : '')) + ', switch application'}
+          aria-label={tw.switchApp.replace('{app}', typeof brand === 'string' ? brand : 'Plenix' + (currentApp && appById(currentApp) ? ' ' + appById(currentApp).label : ''))}
           onClick={() => setOpen(!open)}>
           {brand}<Icon name="chevron-down" className="plx-app-header__switch-chevron" />
         </button>
       ) : (
-        <AppHeader.Item ref={trigger} icon={<Icon name="app-switcher" />} label="Applications" tooltip={false} aria-haspopup="dialog" aria-expanded={open} aria-controls={id}
+        <AppHeader.Item ref={trigger} icon={<Icon name="app-switcher" />} label={tw.applications} tooltip={false} aria-haspopup="dialog" aria-expanded={open} aria-controls={id}
           onClick={() => setOpen(!open)} />
       )}
       {open ? (
-        <div ref={panel} id={id} role="dialog" aria-label="Applications" className={cx('plx-app-switcher__panel', brand && 'plx-app-switcher__panel--brand')}>
+        <div ref={panel} id={id} role="dialog" aria-label={tw.applications} className={cx('plx-app-switcher__panel', brand && 'plx-app-switcher__panel--brand')}>
           {pinnedList.length ? (
             <section className="plx-app-switcher__pinned" aria-labelledby={id + '-pinned'}>
-              <h2 id={id + '-pinned'} className="plx-app-switcher__heading">Pinned to the header</h2>
+              <h2 id={id + '-pinned'} className="plx-app-switcher__heading">{tw.pinnedHeading}</h2>
               <ul className="plx-app-switcher__grid">{pinnedList.map(tile)}</ul>
             </section>
           ) : null}

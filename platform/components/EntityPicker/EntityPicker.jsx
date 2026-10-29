@@ -56,15 +56,16 @@ import { useFloating, FLOATING_ANCHOR } from '../../utils/floating.js';
 
 // the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
 const TOP_LAYER = FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
+import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
+import { formatNumber } from '../../utils/format.js';
 
-const STRINGS = { placeholderPeople: 'Search by name or email', placeholder: 'Search {entityName}', empty: 'No {entityName} found', browse: 'Browse all {entityName}',
-  loading: 'Loading…', error: 'The results could not be loaded', results: (n) => n + (n === 1 ? ' result' : ' results'), remove: 'Remove {label}' };
 const NAMES = { people: 'people', teams: 'teams', records: 'records' };
 const fill = (s, map) => String(s).replace(/\{(\w+)\}/g, (m, k) => (map[k] !== undefined ? map[k] : m));
 
 export const EntityPicker = React.forwardRef(function EntityPicker({ kind = 'records', options = [], value, values, onChange, multiple = false,
   loadOptions, loadDelay = 300, minChars = 1, entityName, placeholder, onBrowse, label, invalid, disabled, id, strings, className, ...rest }, ref) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('entityPicker', strings);
+  const loc = useLocale();
   const noun = entityName || NAMES[kind] || NAMES.records;
   const auto = 'plx-ep' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const listId = auto + '-list';
@@ -90,7 +91,7 @@ export const EntityPicker = React.forwardRef(function EntityPicker({ kind = 'rec
         if (n !== request.current) return;
         const got = Array.isArray(list) ? list : [];
         got.forEach((o) => seen.current.set(o.value, o));
-        setLoaded(got); setBusy(false); announce(t.results(got.length));
+        setLoaded(got); setBusy(false); announce(typeof t.results === 'function' ? t.results(got.length) : loc.t('entityPicker.results', { count: got.length, n: formatNumber(got.length) }));
       }, () => { if (n !== request.current) return; setLoaded([]); setBusy(false); setFailed(true); });
     }, loadDelay);
     return () => clearTimeout(timer);
@@ -105,7 +106,7 @@ export const EntityPicker = React.forwardRef(function EntityPicker({ kind = 'rec
   // the number of results, once typing pauses (the async loader announces its own)
   React.useEffect(() => {
     if (async || !open || !q) return undefined;
-    const timer = setTimeout(() => announce(t.results(results.length)), 500);
+    const timer = setTimeout(() => announce(typeof t.results === 'function' ? t.results(results.length) : loc.t('entityPicker.results', { count: results.length, n: formatNumber(results.length) })), 500);
     return () => clearTimeout(timer);
   }, [q, open]);
   React.useEffect(() => {

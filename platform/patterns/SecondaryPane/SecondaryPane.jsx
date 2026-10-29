@@ -15,7 +15,8 @@
      icon: an icon name or element at the start of the header row
      actions: controls at the end of the header row
      side: "start" (default; before the content) | "end"
-     width: "sm" (180px) | "md" (220px, default) | "lg" (280px), from --plx-comp-secondary-pane-width-*
+     width: "sm" (180px) | "md" (220px, default) | "lg" (280px), from --plx-comp-secondary-pane-width-*; each steps up one size from a window
+       1440px wide (220 | 260 | 320) and again from 1920px (260 | 320 | 400), set in system/grid.css from the -from-1440 and -from-1920 tokens
      collapsible: a Collapse button in the header folds the pane to a rail (an Expand button, then the rail items); default false
      collapsed / onCollapsedChange(next): the folded state, controlled; defaultCollapsed: its first state when not controlled
      rail: the items the folded rail shows under Expand (ToolRail.Item elements)
@@ -61,13 +62,12 @@ import { PanelSplitter, tokenPx, below, useMedia, useAppLayout } from '../AppShe
 import { focusables } from '../../utils/layer.js';
 import { gridWithin } from '../../utils/grid.js';
 import { paneMax } from '../../utils/paneLimit.js';
-
-const STRINGS = { expand: 'Expand {name}', collapse: 'Collapse {name}', resize: 'Resize {name}', close: 'Close {name}', back: 'Back to {name}' };
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function SecondaryPane({ title, label, icon, actions, side = 'start', width = 'md', collapsible = false, collapsed, defaultCollapsed = false,
   onCollapsedChange, rail, resizable = false, size: sizeProp, defaultSize = null, onSizeChange, detailOpen, onBack, scrollTop, onScrollChange,
   onClose, strings, className, children, ...rest }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('secondaryPane', strings);
   const [ownCollapsed, setOwnCollapsed] = React.useState(defaultCollapsed);
   const narrow = useMedia(below('--plx-sys-shell-phone-below'));
   const listDetail = detailOpen !== undefined;
@@ -128,7 +128,7 @@ export function SecondaryPane({ title, label, icon, actions, side = 'start', wid
       </ToolRail>
     );
   }
-  const min = () => tokenPx('--plx-comp-secondary-pane-width-sm');
+  const min = () => tokenPx('--plx-comp-secondary-pane-width-min');   // its own token: the small width rises on larger windows, the narrowest drag does not
   const max = () => tokenPx('--plx-comp-secondary-pane-width-max');
   const sized = size && !(narrow && listDetail);
   const pane = (
