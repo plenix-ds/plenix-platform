@@ -37,7 +37,7 @@
      A series keeps its color by its order in the data, never by rank (Data visualization colors). Positions are SVG user
        units (pixels inside ChartFrame's plot).
 */
-import { formatNumber, formatLocale, numeralLocale } from '../utils/format.js';
+import { formatNumber, formatLocale, numeralLocale, parseDate } from '../utils/format.js';
 import { datavizCategory } from '../utils/dataviz.js';
 
 const E10 = Math.sqrt(50), E5 = Math.sqrt(10), E2 = Math.sqrt(2);
@@ -140,7 +140,9 @@ const S = 1000, MIN = 60 * S, H = 60 * MIN, DAY = 24 * H;
 const TIME_STEPS = [['second', 1, S], ['second', 5, 5 * S], ['second', 15, 15 * S], ['second', 30, 30 * S], ['minute', 1, MIN], ['minute', 5, 5 * MIN],
   ['minute', 15, 15 * MIN], ['minute', 30, 30 * MIN], ['hour', 1, H], ['hour', 3, 3 * H], ['hour', 6, 6 * H], ['hour', 12, 12 * H], ['day', 1, DAY],
   ['day', 2, 2 * DAY], ['week', 1, 7 * DAY], ['month', 1, 30 * DAY], ['month', 3, 91 * DAY], ['year', 1, 365 * DAY]];
-const toTime = (v) => (v instanceof Date ? v.getTime() : new Date(v).getTime());
+// a time value: a Date, a number, or a text read by the shared reader (a date-only "YYYY-MM-DD" is that calendar day where
+// the reader is, issue 342)
+const toTime = (v) => { if (typeof v === 'number') return v; const d = parseDate(v); return d ? d.getTime() : NaN; };
 // the start of the step that holds t (local time)
 function floorTo(t, unit, amount) {
   const x = new Date(t);

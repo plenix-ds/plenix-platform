@@ -53,7 +53,7 @@
 */
 import React from 'react';
 import { cx } from '../utils/cx.js';
-import { formatNumber, formatDate, formatPercent } from '../utils/format.js';
+import { formatNumber, formatDate, formatPercent, parseDate } from '../utils/format.js';
 import { ChartFrame } from './ChartFrame.jsx';
 import { seriesColor, scaleTime } from './scales.js';
 import { ChartLegend } from './parts/ChartLegend.jsx';
@@ -96,7 +96,8 @@ export function SeriesChart({ kind = 'line', title, description, data = NONE, x 
   const list = series.map((s, i) => ({ id: s.id === undefined ? 'series-' + i : s.id, label: s.label === undefined ? String(s.id) : s.label, field: s.field || s.id, color: s.color || seriesColor(i) }));
   const xv = data.map((row) => (row ? row[x] : undefined));
   const type = xType === 'auto' ? typeOf(xv.find((v) => v !== undefined && v !== null)) : xType;
-  const xs = type === 'time' ? xv.map((v) => (v instanceof Date ? v : new Date(v))) : xv;
+  // a time axis reads its values with the shared reader: a date-only "YYYY-MM-DD" is that calendar day where the reader is (issue 342)
+  const xs = type === 'time' ? xv.map((v) => (typeof v === 'number' ? new Date(v) : parseDate(v) || new Date(NaN))) : xv;
   const raw = (s, c) => { const v = data[c] ? data[c][list[s].field] : undefined; return isNum(v) ? v : null; };
   const fmtX = typeof formatX === 'function' ? formatX : type === 'time' ? (v) => formatDate(v) : type === 'linear' ? (v) => formatNumber(v) : (v) => String(v);
   const fmtV = typeof format === 'function' ? format : (v) => formatNumber(v);
@@ -223,7 +224,7 @@ export function SeriesChart({ kind = 'line', title, description, data = NONE, x 
     });
     // the overlay works in the grid's own coordinates (its top left corner at 0,0), as the old plot's inner area
     const inner = { width: g.width, height: g.height };
-    const X = (v) => (type === 'band' ? posOf(xs.indexOf(v)) : c.convertToPixel({ xAxisIndex: 0 }, type === 'time' ? +new Date(v) : Number(v))) - g.x;
+    const X = (v) => (type === 'band' ? posOf(xs.indexOf(v)) : c.convertToPixel({ xAxisIndex: 0 }, type === 'time' ? +(typeof v === 'number' ? new Date(v) : parseDate(v) || new Date(NaN)) : Number(v))) - g.x;
     const Y = (v) => yPx(v) - g.y;
     Y.ticks = () => axisTicks(c, 'yAxis'); Y.format = (v) => fmtV(v); Y.domain = () => { const tk = Y.ticks(); return [tk[0], tk[tk.length - 1]]; };
     const at = (col) => posOf(col) - g.x;
