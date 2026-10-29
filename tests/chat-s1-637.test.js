@@ -3,9 +3,10 @@
      light: theirs gray-75 (the owner reused it for #F5F7F9) with a #A9B8C7 outline, yours #E6F0FC with a #B2CBE9 outline, the
        text #253442 (the owner's colors, the new steps slate-375, blue-125, blue-275, slate-900); the thread white
      dark: the existing dark colors (gray-900 / gray-700, blue-900 / blue-650, text gray-200)
-     every bubble: a 1px border and the card's 6px corner; every photo: the avatar standard 1px border, in its bubble's outline
-     the photo crosses the bubble's top corner (theirs at the start, yours at the end; mirrored in right to left) and covers no
-       text; a continued message lines up with the first bubble of its run
+     every bubble: a 1px border and the card's 6px corner, equal 12px left and right padding; every photo: the avatar standard
+       1px border, in its bubble's fill and outline
+     the photo sits on the bubble's top edge (the owner's mockup): 12px above it, 8px in from the start edge for theirs and from
+       the end edge for yours, mirrored in right to left; a bubble with a photo has 24px of top padding, so it covers no text
      chat.css styles no part from its parent (no ".plx-chat__message… .plx-chat__bubble" or "… .plx-chat__time" rule)
    Proof first: before #637 your message was the solid action blue with white text, the photo sat beside theirs only, and
      chat.css set the bubble from its parent: those lines fail there.
@@ -30,15 +31,16 @@ const rgb = (h) => 'rgb(' + [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)
         document.getElementById('main').innerHTML = '<div id="c"></div>';
         ReactDOM.createRoot(document.getElementById('c')).render(h(P.Chat.Thread, { label: 'Conversation', follow: false },
           h(P.Chat.Message, { id: 'a', author: 'Maya Chen', time: '10:24', avatar: h(P.Avatar, { name: 'Maya Chen', size: 'sm' }) }, 'Are the renders ready?'),
-          h(P.Chat.Message, { id: 'b', continued: true }, 'The meeting moved.'),
+          h(P.Chat.Message, { id: 'b' }, 'The meeting moved.'),
           h(P.Chat.Message, { id: 'c', mine: true, time: '10:26', avatar: h(P.Avatar, { name: 'John Doe', size: 'sm' }) }, 'Thank you! I will review the changes.')));
         await new Promise((r) => setTimeout(r, 800));
         const cs = (e) => getComputedStyle(e), box = (e) => e.getBoundingClientRect();
         const one = (id) => { const m = document.getElementById(id), b = m.querySelector('.plx-chat__bubble'), a = m.querySelector('.plx-chat__avatar'), av = a && a.querySelector('.plx-avatar');
           const bb = box(b), ab = a && box(a);
           const covers = !!a && [...b.children].some((t) => { const r = document.createRange(); r.selectNodeContents(t); return [...r.getClientRects()].some((x) => x.left < ab.right && x.right > ab.left && x.top < ab.bottom && x.bottom > ab.top); });
-          return { bg: cs(b).backgroundColor, line: cs(b).borderTopColor, width: cs(b).borderTopWidth, radius: cs(b).borderTopLeftRadius, text: cs(b).color, left: bb.left, right: bb.right,
-            avatar: av ? { line: cs(av).borderTopColor, width: cs(av).borderTopWidth, crossesTop: ab.top < bb.top && ab.bottom > bb.top, atLeft: Math.abs(ab.left + ab.width / 2 - bb.left) < Math.abs(ab.left + ab.width / 2 - bb.right) } : null, covers }; };
+          return { bg: cs(b).backgroundColor, line: cs(b).borderTopColor, width: cs(b).borderTopWidth, radius: cs(b).borderTopLeftRadius, text: cs(b).color,
+            pad: [cs(b).paddingLeft, cs(b).paddingRight, cs(b).paddingTop],
+            avatar: av ? { bg: cs(av).backgroundColor, line: cs(av).borderTopColor, width: cs(av).borderTopWidth, above: Math.round(bb.top - ab.top), fromLeft: Math.round(ab.left - bb.left), fromRight: Math.round(bb.right - ab.right) } : null, covers }; };
         return { a: one('a'), b: one('b'), c: one('c'), thread: cs(document.querySelector('.plx-chat__thread')).backgroundColor };
       }, mode, dir);
     };
@@ -48,16 +50,17 @@ const rgb = (h) => 'rgb(' + [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)
     assert.deepEqual([r.a.bg, r.a.line, r.a.text], [rgb('#F7F7F8'), rgb('#A9B8C7'), rgb('#253442')], 'theirs: gray-75 (the owner reused it for #F5F7F9) and his incoming outline');
     assert.deepEqual([r.c.bg, r.c.line, r.c.text], [rgb('#E6F0FC'), rgb('#B2CBE9'), rgb('#253442')], 'yours: the owner\'s outgoing colors');
     for (const m of [r.a, r.b, r.c]) { assert.equal(m.width, '1px', 'a 1px bubble border'); assert.equal(m.radius, '6px', 'the card corner, 6px'); }
-    assert.deepEqual([r.a.avatar.line, r.a.avatar.width], [rgb('#A9B8C7'), '1px'], 'their photo: 1px in their outline');
-    assert.deepEqual([r.c.avatar.line, r.c.avatar.width], [rgb('#B2CBE9'), '1px'], 'your photo: 1px in your outline');
-    assert.ok(r.a.avatar.crossesTop && r.a.avatar.atLeft, 'their photo crosses the top start corner');
-    assert.ok(r.c.avatar.crossesTop && !r.c.avatar.atLeft, 'your photo crosses the top end corner');
+    assert.deepEqual([r.a.avatar.bg, r.a.avatar.line, r.a.avatar.width], [rgb('#F7F7F8'), rgb('#A9B8C7'), '1px'], 'their photo: their fill, 1px in their outline');
+    assert.deepEqual([r.c.avatar.bg, r.c.avatar.line, r.c.avatar.width], [rgb('#E6F0FC'), rgb('#B2CBE9'), '1px'], 'your photo: your fill, 1px in your outline');
+    for (const m of [r.a, r.b, r.c]) assert.deepEqual(m.pad.slice(0, 2), ['12px', '12px'], 'equal 12px left and right padding');
+    assert.deepEqual([r.a.pad[2], r.c.pad[2]], ['24px', '24px'], 'a bubble with a photo: 24px top padding');
+    assert.deepEqual([r.a.avatar.above, r.a.avatar.fromLeft], [12, 8], 'their photo: 12px above the top edge, 8px in from the start');
+    assert.deepEqual([r.c.avatar.above, r.c.avatar.fromRight], [12, 8], 'your photo: 12px above the top edge, 8px in from the end');
     assert.ok(!r.a.covers && !r.c.covers, 'a photo covers no text');
-    assert.ok(Math.abs(r.b.left - r.a.left) <= 1, 'a continued message lines up with the first of its run');
     // right to left: mirrored
     r = await look('light', 'rtl');
-    assert.ok(!r.a.avatar.atLeft && r.c.avatar.atLeft, 'right to left: theirs at the right corner, yours at the left');
-    assert.ok(Math.abs(r.b.right - r.a.right) <= 1, 'right to left: the continued message lines up');
+    assert.deepEqual([r.a.avatar.fromRight, r.c.avatar.fromLeft], [8, 8], 'right to left: theirs 8px in from the right, yours from the left');
+    assert.ok(!r.a.covers && !r.c.covers, 'right to left: a photo covers no text');
     // dark: the existing dark colors
     r = await look('dark', 'ltr');
     assert.deepEqual([r.a.bg, r.a.line, r.a.text], [rgb('#34363B'), rgb('#56585E'), rgb('#E8E9EC')], 'dark theirs');

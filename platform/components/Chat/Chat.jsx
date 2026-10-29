@@ -21,10 +21,9 @@
      Chat.Message.mine: the message is the person's own (end side, the outgoing fill and outline); default false
      Chat.Message.author: who wrote it (shown above theirs; announced for mine as "You")
      Chat.Message.time: when, as shown; dateTime: the same as a machine-readable date
-     Chat.Message.avatar: the sender's Avatar (size "sm"), crossing the bubble's top corner: at the start for theirs, at the end
-       for yours (the owner's corner overlap, issue 637); its 1px border takes the bubble's outline color
-     Chat.Message.continued: a following message of a run from the same sender: no avatar (leave it out), and its bubble
-       lines up with the first one's (default false)
+     Chat.Message.avatar: the sender's Avatar (size "sm"), on the bubble's top edge, 8px in from the start edge for theirs and
+       from the end edge for yours (the owner's mockup, issue 637), half above the bubble; it takes its bubble's fill, text
+       color and outline. Leave it out on the following messages of a run from the same sender
      Chat.Message.children: the message text or content
      Chat.Composer.value / onChange(text): the message being written
      Chat.Composer.onSend(text): runs on Send and on Enter (Shift+Enter starts a new line)
@@ -97,13 +96,12 @@ function Thread({ label, follow = true, className, children, ...rest }) {
   return <div ref={ref} className={cx('plx-chat__thread', className)} role="log" aria-live="polite" aria-label={label} tabIndex={0} {...rest} onScroll={onScroll}>{children}</div>;
 }
 
-function Message({ mine = false, author, time, dateTime, avatar, continued = false, className, children, ...rest }) {
+function Message({ mine = false, author, time, dateTime, avatar, className, children, ...rest }) {
   const t = useStrings('chat');
-  const side = mine ? 'end' : 'start';
   return (
-    <div className={cx('plx-chat__message', mine && 'plx-chat__message--mine', avatar ? 'plx-chat__message--avatar-' + side : continued && 'plx-chat__message--continued-' + side, className)} {...rest}>
+    <div className={cx('plx-chat__message', mine && 'plx-chat__message--mine', avatar && 'plx-chat__message--avatar', className)} {...rest}>
       {avatar ? <span className={cx('plx-chat__avatar', mine && 'plx-chat__avatar--mine')}>{avatar}</span> : null}
-      <div className={cx('plx-chat__bubble', mine && 'plx-chat__bubble--mine')}>
+      <div className={cx('plx-chat__bubble', mine && 'plx-chat__bubble--mine', avatar && 'plx-chat__bubble--avatar')}>
         {(author && !mine) || time ? (
           <div className="plx-chat__meta">
             {mine ? <VisuallyHidden>{t.you}</VisuallyHidden> : (author ? <span className="plx-chat__author">{author}</span> : null)}
