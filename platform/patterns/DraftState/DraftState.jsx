@@ -19,6 +19,7 @@ import { Stack, Inline } from '../../components/Stack/Stack.jsx';
 import { SaveStatus } from '../Autosave/Autosave.jsx';
 import { cx } from '../../utils/cx.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import PencilIcon from 'plenix-platform/icons/plenix/pencil';
 
 export function DraftState({ version, saveState, onResume, onDiscard, strings, className }) {
   const t = useStrings('draftState', strings);
@@ -30,7 +31,7 @@ export function DraftState({ version, saveState, onResume, onDiscard, strings, c
     finally { lock.current = false; setBusy(false); }
   };
   return <Stack className={cx('plx-draft-state', className)}>
-    <Inline wrap><Badge tone="neutral" icon="pencil">{t.draft}</Badge>
+    <Inline wrap><Badge tone="neutral" icon={PencilIcon}>{t.draft}</Badge>
       {version != null ? <VersionLabel version={version} /> : null}{saveState ? <SaveStatus state={saveState} strings={strings} /> : null}
       {onResume ? <Button disabled={busy} onClick={() => run(onResume)}>{t.resume}</Button> : null}
       {onDiscard ? <Button variant="danger-secondary" disabled={busy} onClick={() => setConfirm(true)}>{t.discard}</Button> : null}</Inline>

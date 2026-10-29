@@ -81,6 +81,13 @@ import { FileList, sortFiles } from '../FileList/FileList.jsx';
 import { useDraggable, useDropTarget } from '../../utils/dnd.js';
 import { useSelection } from '../../hooks/useSelection.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import DownloadTrayIcon from 'plenix-platform/icons/plenix/download-tray';
+import FolderIcon from 'plenix-platform/icons/plenix/folder';
+import FolderAddIcon from 'plenix-platform/icons/plenix/folder-add';
+import FolderOpenIcon from 'plenix-platform/icons/plenix/folder-open';
+import MoveIcon from 'plenix-platform/icons/plenix/move';
+import TrashIcon from 'plenix-platform/icons/plenix/trash';
+import UploadIcon from 'plenix-platform/icons/plenix/upload';
 
 const ROOT = '__plx-root';
 const DRAG = 'plx-file';
@@ -159,20 +166,20 @@ export function FileBrowser({ items = [], root, folder, defaultFolder, onFolderC
   const bar = (
     <CommandBar label={nameOf(current)} count={countText}
       actions={[].concat(
-        onCreateFolder ? [{ id: 'new-folder', label: t.newFolder, icon: 'folder-add', onSelect: () => setAsking('folder') }] : [],
-        onUpload ? [{ id: 'upload', label: t.upload, icon: 'upload', onSelect: () => picker.current && picker.current.click() }] : [],
+        onCreateFolder ? [{ id: 'new-folder', label: t.newFolder, icon: FolderAddIcon, onSelect: () => setAsking('folder') }] : [],
+        onUpload ? [{ id: 'upload', label: t.upload, icon: UploadIcon, onSelect: () => picker.current && picker.current.click() }] : [],
         actions)}
       find={<CommandBarSearch value={q} onChange={(e) => setQ(e.target.value)} onClear={() => setQ('')} placeholder={t.search} aria-label={t.search} />}
       view={<><SortPanel fields={SORT_FIELDS} value={sort} onChange={(v) => setSort(v.slice(0, 1))} /><ViewMenu value={viewValue} onChange={setLayout} /></>}
       selection={selectable ? { count: sel.length, noun: t.noun, plural: t.plural, onClear: () => setSel([]), actions: [].concat(
-        onDownload ? [{ id: 'download', label: t.download, icon: 'download-tray', onSelect: () => onDownload(chosen) }] : [],
-        move ? [{ id: 'move', label: t.moveTo, icon: 'move', items: targets.map((f) => ({ id: String(f.id), label: f.name, icon: 'folder', onSelect: () => { move(chosen, keyOf(f.id)); setSel([]); } })) }] : [],
-        onDelete ? [{ id: 'delete', label: t.delete, icon: 'trash', danger: true, onSelect: () => setAsking('delete') }] : []) } : undefined} />
+        onDownload ? [{ id: 'download', label: t.download, icon: DownloadTrayIcon, onSelect: () => onDownload(chosen) }] : [],
+        move ? [{ id: 'move', label: t.moveTo, icon: MoveIcon, items: targets.map((f) => ({ id: String(f.id), label: f.name, icon: FolderIcon, onSelect: () => { move(chosen, keyOf(f.id)); setSel([]); } })) }] : [],
+        onDelete ? [{ id: 'delete', label: t.delete, icon: TrashIcon, danger: true, onSelect: () => setAsking('delete') }] : []) } : undefined} />
   );
 
   const empty = (
-    <EmptyState icon="folder-open" title={query ? fill(t.noMatch, { q: q.trim() }) : t.empty}
-      action={!query && onUpload ? <Button icon="upload" onClick={() => picker.current && picker.current.click()}>{t.upload}</Button> : undefined}>
+    <EmptyState icon={FolderOpenIcon} title={query ? fill(t.noMatch, { q: q.trim() }) : t.empty}
+      action={!query && onUpload ? <Button icon={UploadIcon} onClick={() => picker.current && picker.current.click()}>{t.upload}</Button> : undefined}>
       {query ? null : t.emptyText}
     </EmptyState>
   );
@@ -189,7 +196,7 @@ export function FileBrowser({ items = [], root, folder, defaultFolder, onFolderC
             : [ext ? ext.toUpperCase() : null, typeof x.size === 'number' ? formatBytes(x.size) : null].filter(Boolean).join(' · ');
           return (
             <GridItem key={x.id} item={x} onMove={move}>
-              <MediaCard src={x.src} alt="" icon={isFolder ? 'folder' : fileIcon(x.name, x.type)} title={x.name} meta={facts} aspect="4/3"
+              <MediaCard src={x.src} alt="" icon={isFolder ? FolderIcon : fileIcon(x.name, x.type)} title={x.name} meta={facts} aspect="4/3"
                 status={x.status} selected={sel.indexOf(x.id) >= 0} selecting={sel.length > 0}
                 onSelectChange={selectable ? (on, e) => pick.choose(x.id, e) : undefined}
                 href={hrefFor ? hrefFor(x) : undefined} onOpen={hrefFor ? undefined : isFolder ? () => go(x.id) : onOpenFile ? () => onOpenFile(x) : undefined} />
@@ -211,7 +218,7 @@ export function FileBrowser({ items = [], root, folder, defaultFolder, onFolderC
   // the tree: the root and every folder, the open folder's parents open
   const node = (f) => {
     const sub = folders.filter((x) => keyOf(x.parent) === f.id);
-    return { id: f.id, label: <TreeTarget id={f.id} name={f.name} onMove={move}>{f.name}</TreeTarget>, icon: 'folder', children: sub.length ? sub.map(node) : undefined };
+    return { id: f.id, label: <TreeTarget id={f.id} name={f.name} onMove={move}>{f.name}</TreeTarget>, icon: FolderIcon, children: sub.length ? sub.map(node) : undefined };
   };
   const [open, setOpen] = React.useState([]);
   const expanded = Array.from(new Set(open.concat(path.slice(0, -1))));

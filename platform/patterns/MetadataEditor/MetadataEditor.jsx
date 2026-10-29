@@ -21,6 +21,7 @@ import { Notice } from '../../components/Notice/Notice.jsx';
 import { useUnsavedGuard } from '../../providers/UnsavedGuard.jsx';
 import { cx } from '../../utils/cx.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import CheckIcon from 'plenix-platform/icons/plenix/check';
 
 export function MetadataEditor({ fields = [], values = {}, onSave, variant = 'inline', disabled = false, strings, className }) {
   devWarn('MetadataEditor', { variant }, { variant: ['inline','form','bulk'] });
@@ -49,6 +50,6 @@ export function MetadataEditor({ fields = [], values = {}, onSave, variant = 'in
           disabled: busy || disabled || variant === 'bulk' && !touched[f.id], onChange: (e) => { setDraft({ ...draft, [f.id]: e.target.value }); setTouched({ ...touched, [f.id]: true }); setSaved(false); } })}
       </Field></Stack>)}
     {variant !== 'inline' ? <Inline><Button type="submit" variant="primary" disabled={busy || disabled || !onSave || !dirty}>{t.save}</Button><Button disabled={busy || disabled || !dirty} onClick={reset}>{t.reset}</Button></Inline> : null}
-    {error ? <Notice tone="danger">{error}</Notice> : null}{saved ? <Badge tone="success" icon="check" role="status">{t.saved}</Badge> : null}
+    {error ? <Notice tone="danger">{error}</Notice> : null}{saved ? <Badge tone="success" icon={CheckIcon} role="status">{t.saved}</Badge> : null}
   </Stack>;
 }

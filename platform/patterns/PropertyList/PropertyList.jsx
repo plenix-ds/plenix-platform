@@ -39,7 +39,7 @@ PropertyList.Item = function PropertyListItem({ label, htmlFor, description, dat
   const cut = useTruncated(textRef);
   return (
     <div className={cx('plx-property-list__item', className)}>
-      <dt className="plx-property-list__label"><Tooltip content={label} disabled={!cut} className="plx-property-list__label-tip"><span ref={textRef} className="plx-property-list__label-text">{htmlFor ? <label htmlFor={htmlFor}>{label}</label> : label}</span></Tooltip>
+      <dt className="plx-property-list__label"><Tooltip content={label} disabled={!cut} describe={false} className="plx-property-list__label-tip"><span ref={textRef} className="plx-property-list__label-text">{htmlFor ? <label htmlFor={htmlFor}>{label}</label> : label}</span></Tooltip>
         {description ? <span className="plx-property-list__description" data-plx-text-follow="size">{description}</span> : null}
       </dt>
       <dd className={cx('plx-property-list__value', data && 'plx-property-list__value--data')} data-plx-text-follow="size">{data ? <Isolate dir="auto">{children}</Isolate> : children}</dd>

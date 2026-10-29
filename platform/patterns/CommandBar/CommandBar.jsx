@@ -102,6 +102,8 @@ import { Inline, Stack } from '../../components/Stack/Stack.jsx';
 import { Popover } from '../../components/Popover/Popover.jsx';
 import { fieldWords } from '../../utils/fields.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import CloseIcon from 'plenix-platform/icons/plenix/close';
+import SearchIcon from 'plenix-platform/icons/plenix/search';
 
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 // the steps of the button rule: 0 icon and label; 1 icons only; 2 the search as its icon; then one more action per step
@@ -227,7 +229,7 @@ export function CommandBar({ label, actions = [], find, quickFilters = [], view,
   const fullCtx = React.useMemo(() => ({ iconOnly: false, collapsed: false, step: 0, searchOpen: false, setSearchOpen }), []);
   const findEl = !(find || quickEls.length) ? null : findAway ? (
     <Toolbar.Group className="plx-command-bar__find">
-      <Popover title={t.find} placement="bottom-end" trigger={<CommandBarButton icon="search" label={t.find} iconOnly />}>
+      <Popover title={t.find} placement="bottom-end" trigger={<CommandBarButton icon={SearchIcon} label={t.find} iconOnly />}>
         <BarContext.Provider value={fullCtx}><Stack gap="sm" align="start">{find}{quickEls}</Stack></BarContext.Provider>
       </Popover>
     </Toolbar.Group>
@@ -241,7 +243,7 @@ export function CommandBar({ label, actions = [], find, quickFilters = [], view,
   const [before, after] = String(t.selected).split('{n}');
   const clearEl = selecting ? (
     <Tooltip content={t.clear}>
-      <Button size="sm" variant="ghost" icon="close" className="plx-command-bar__clear" aria-label={fill(t.clearName, { n: formatNumber(selCount) }) + hiddenText} onClick={() => sel.onClear && sel.onClear()}>
+      <Button size="sm" variant="ghost" icon={CloseIcon} className="plx-command-bar__clear" aria-label={fill(t.clearName, { n: formatNumber(selCount) }) + hiddenText} onClick={() => sel.onClear && sel.onClear()}>
         {before}<Text variant="data" className="plx-command-bar__number">{formatNumber(selCount)}</Text>{after}{hiddenText ? <>{hiddenBefore}<Text variant="data">{formatNumber(sel.hidden)}</Text>{hiddenAfter}</> : null}
       </Button>
     </Tooltip>

@@ -25,6 +25,7 @@ import { Text } from '../../components/Text/Text.jsx';
 import { useUnsavedGuard } from '../../providers/UnsavedGuard.jsx';
 import { cx } from '../../utils/cx.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import CheckIcon from 'plenix-platform/icons/plenix/check';
 
 export function ImportWizard({ open, title, onClose, fields = [], onRead, onImport, strings, className }) {
   const t = useStrings('importWizard', strings);
@@ -50,7 +51,7 @@ export function ImportWizard({ open, title, onClose, fields = [], onRead, onImpo
   if (!data) return <ImportDialog open={open} title={title || t.title} onImport={read} strings={strings} onClose={() => { if (!loaded.current && onClose) onClose(); }} />;
   return <Dialog open={open} title={title || t.title} onClose={close} dismissible={!busy}>
     <Stack className={cx('plx-import-wizard', className)}>
-      {complete ? <><Badge tone="success" icon="check" role="status">{t.imported}</Badge><Text as="h3" variant="heading">{t.results}</Text>
+      {complete ? <><Badge tone="success" icon={CheckIcon} role="status">{t.imported}</Badge><Text as="h3" variant="heading">{t.results}</Text>
         <Text variant="data">{mapped.length}</Text><Button variant="primary" onClick={onClose}>{t.done}</Button></>
         : <Wizard label={title || t.title} strings={strings} onCancel={close} onComplete={finish} steps={[
           { id: 'mapping', label: t.mapping, validate, content: <Stack>{fields.map((f) => <Field key={f.id} label={f.label} required={f.required}>
