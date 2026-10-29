@@ -91,11 +91,13 @@
      Header style 2 follows the button rule of a command bar: while the facts would wrap, first the count buttons show
        their icon only, then the states too, each with its words as its tooltip and name; past that the boxes wrap.
    Notes:
-     Writing direction (owner, arabic-batch4-36; issue 606): title, subtitle and summary are plain text. An ID or a case number in an
-       Arabic sentence reads 01-20261020, as the owner wants for computed identifiers, with no wrapping. A value that must stay left to
-       right (an email, a URL, a phone number) is wrapped in <Isolate> (subtitle={['البريد ', <Isolate kind="email">a@b.org</Isolate>]});
-       a title or subtitle that is only an ID uses <Isolate kind="id">, so it follows the page as well. Plenix does not guess. The same
-       goes for a fact's value.
+     Writing direction (owner, arabic-batch4-36; issue 606): title, subtitle and summary are plain text. Plain text reads an ID or a
+       case number as 01-20261020 (the owner's format for computed identifiers) only when it follows an Arabic letter in the same text
+       ("القضية 20261020-01") or is written in Arabic-Indic digits. An ID with Latin digits and no Arabic letter before it
+       (a title or subtitle that is only the ID) stays 20261020-01 in plain text: wrap it in <Isolate kind="id">, which reads
+       01-20261020 in a right-to-left page and 20261020-01 in a left-to-right one, for Latin and Arabic-Indic digits alike. A value that
+       must stay left to right (an email, a URL, a phone number) is wrapped in <Isolate kind="email"> (or url) instead
+       (subtitle={['البريد ', <Isolate kind="email">a@b.org</Isolate>]}). Plenix does not guess. The same goes for a fact's value.
      Not for settings screens: use RecordPage.Header. A small uppercase group label is SectionHeading.
 */
 import React from 'react';
