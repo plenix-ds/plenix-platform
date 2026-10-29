@@ -82,6 +82,8 @@
     <dimen name="plx_shell_shell_phone_below">600dp</dimen>
     <dimen name="plx_shell_shell_header_height">56dp</dimen>
     <dimen name="plx_shell_shell_nav_width">240dp</dimen>
+    <dimen name="plx_shell_shell_nav_width_from_1440">272dp</dimen>
+    <dimen name="plx_shell_shell_nav_width_from_1920">320dp</dimen>
     <dimen name="plx_shell_shell_nav_min_width">140dp</dimen>
     <dimen name="plx_shell_shell_nav_max_width">320dp</dimen>
     <dimen name="plx_shell_shell_splitter_step">16dp</dimen>

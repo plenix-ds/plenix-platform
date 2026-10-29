@@ -464,6 +464,8 @@ public enum Plenix {
         public static let shellPhoneBelow: CGFloat = 600
         public static let shellHeaderHeight: CGFloat = 56
         public static let shellNavWidth: CGFloat = 240
+        public static let shellNavWidthFrom1440: CGFloat = 272
+        public static let shellNavWidthFrom1920: CGFloat = 320
         public static let shellNavMinWidth: CGFloat = 140
         public static let shellNavMaxWidth: CGFloat = 320
         public static let shellSplitterStep: CGFloat = 16
