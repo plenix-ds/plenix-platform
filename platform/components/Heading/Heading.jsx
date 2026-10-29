@@ -17,6 +17,8 @@
    Notes:
      One level 1 per page. Skip no level going down the outline. Never uppercase (that is SectionHeading's job); never
        a heading made of bold text. Every value is a --plx-comp-heading-* token.
+     Writing direction (owner, ctm-needs-34): dir and lang go on the heading element (other props pass through), for a heading in
+       the other direction than the page.
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
