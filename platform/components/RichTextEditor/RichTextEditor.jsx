@@ -34,6 +34,10 @@
        announced after Escape)
      className: more classes on the editor
      id: the id of the editing area (a Field sets it)
+     dir, lang: the editor's writing direction and language, for an editor in the other direction than its page (an Arabic
+       answer in an English form: dir="rtl" lang="ar"). They go on the editor's root, so the toolbar mirrors, the editing
+       area and its lists start on that side, and spelling follows the language; without them the editor follows the page
+       (issue 413)
    Behavior:
      The toolbar is one Tab stop (arrow keys move inside it). Its groups that do not fit the frame's width move, in
        order from the end, into a More formatting menu at the end of the row (the Platform overflow: utils/overflow.js).
