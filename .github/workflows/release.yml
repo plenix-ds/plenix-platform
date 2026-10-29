@@ -10,6 +10,7 @@ on:
 permissions:
   contents: write
   packages: write
+  issues: read
 
 jobs:
   publish:
@@ -38,6 +39,12 @@ jobs:
           node build-packages.js
           node check-bundle.js
 
+      # the owner's readiness rule (readiness-27): no release while an issue labeled priority:1 is open (read-only; red stops the release)
+      - name: Readiness, no open priority:1
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node tools/check-readiness.js "$GITHUB_REPOSITORY"
+
       - name: Publish packages
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -45,6 +52,10 @@ jobs:
           for p in tokens icons styles react; do
             (cd packages/$p && npm publish)
           done
+
+      # the owner's live-CDN rule (cdn-live-27): the CDN serves exactly the files this release built (deploy.sh runs before the tag, so it is live now)
+      - name: Live CDN matches this build
+        run: node tools/check-live-cdn.js "$(node -p "require('./package.json').version")"
 
       - name: GitHub release
         env:

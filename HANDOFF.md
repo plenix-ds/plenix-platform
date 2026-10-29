@@ -110,6 +110,9 @@ One design system and the suite of applications built on it, owned by one person
    a `node_modules` junction, `<tmp>/Plenix - DAM/audit/batches/15-26.md` beside it, then `bash deploy.sh` there,
    then `git tag v<version> && git push origin v<version>`. Remove the junction before removing the worktree.
 4. Verify: `curl https://design-system.lighthouseway.org/cdn/<version>/plenix.js | grep <something new>`; close the issues with the version.
+5. The two release checks (owner, cdn-live-27 and readiness-27; read-only tools, not tests; release.yml runs both, the owner sees red or green):
+   - Before publishing: `node tools/check-readiness.js` lists the open issues labeled `priority:1` and exits 1 while any exists (READINESS_OK when none). A release stops while one is open.
+   - After deploying: `node tools/check-live-cdn.js <version>` compares every file of `release/cdn/<version>/` with what `https://design-system.lighthouseway.org/cdn/<version>/` serves (sha256 per file; different, missing and extra files); LIVE_CDN_OK or exit 1. `--live-only` checks the live files against the live `bundle-manifest.json` when there is no local build. The server rate-limits (HTTP 429), so the tool backs off and the full check takes a few minutes.
 
 ## Where to start
 
