@@ -37,7 +37,7 @@ function nearest(mine, key) {
   const at = (k) => /^(\d+)x(\d+)$/.exec(k), c = at(key);
   if (!c) return key;
   let best = key, gap = Infinity;
-  for (const k of Object.keys(mine)) { const m = at(k); if (!m) continue; const a = Math.abs(m[1] - c[1]), b = Math.abs(m[2] - c[2]); if (a <= 10 && b <= 10 && a + b < gap) { best = k; gap = a + b; } }
+  for (const k of Object.keys(mine).sort()) {   // sorted, and the first of an equal gap wins: the same key every time const m = at(k); if (!m) continue; const a = Math.abs(m[1] - c[1]), b = Math.abs(m[2] - c[2]); if (a <= 10 && b <= 10 && a + b < gap) { best = k; gap = a + b; } }
   return best;
 }
 // the saved width for a monitor; the first read of a panel carries the old single value over as this monitor's (written by the caller, in an
