@@ -36,6 +36,7 @@
 import React from 'react';
 import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
+import { useDescribedBy } from '../../utils/describedBy.js';
 import { Avatar } from '../../components/Avatar/Avatar.jsx';
 import { FileInput } from '../../components/FileInput/FileInput.jsx';
 import { Button } from '../../components/Button/Button.jsx';
@@ -54,6 +55,7 @@ export function AvatarUpload({ name, src, onChange, crop = true, removable = tru
   const [error, setError] = React.useState('');
   const wrap = React.useRef(null);
   const auto = 'plx-au' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
+  const describedAt = useDescribedBy(describedBy, description ? auto + '-hint' : null);   // what its owner (a Field) described, then the hint beside the actions
   const focusChange = () => setTimeout(() => { const inp = wrap.current && wrap.current.querySelector('input[type="file"]'); if (inp) inp.focus(); }, 0);
   const chosen = (files) => {
     const f = files[0];
@@ -72,7 +74,7 @@ export function AvatarUpload({ name, src, onChange, crop = true, removable = tru
         <Avatar name={name} src={pending ? undefined : src} size={size} label={t.picture.replace('{name}', name || '')} />
         <div className="plx-avatar-upload__body">
           <div className="plx-avatar-upload__actions">
-            <FileInput hideSummary accept={accept} disabled={disabled || !!pending} id={id} aria-describedby={[describedBy, description ? auto + '-hint' : null].filter(Boolean).join(' ') || undefined}
+            <FileInput hideSummary accept={accept} disabled={disabled || !!pending} id={id} aria-describedby={describedAt}
               label={word} strings={{ choose: word }} onChange={chosen} />
             {removable && src && !pending ? <Button variant="ghost" icon={TrashIcon} disabled={disabled} onClick={() => { if (onChange) onChange(null); focusChange(); }}>{t.remove}</Button> : null}
           </div>

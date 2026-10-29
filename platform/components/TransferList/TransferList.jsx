@@ -20,6 +20,8 @@
        itself over 500 items)
      size: the lists' height: "sm" | "md" (default) | "lg"
      disabled: nothing can be checked or moved
+     readOnly: the lists show what is chosen and nothing moves or is reordered (the move buttons are off; items can still be checked to read them);
+       default the nearest ReadOnly region's (useReadOnly)
      strings: the words it shows and announces, for other languages: { source, target, add: "Add", addAll: "Add all",
        remove: "Remove", removeAll: "Remove all", up: "Move up", down: "Move down", search: "Search {title}", selectAll:
        "Check every item in {title}", count: "{checked} of {total} checked", moved: "{n} moved to {title}", empty:
@@ -49,6 +51,7 @@ import { Button } from '../Button/Button.jsx';
 import { SearchField } from '../SearchField/SearchField.jsx';
 import { useVirtualizer, VirtualGap, VirtualProbe } from '../../hooks/useVirtualizer.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useReadOnly } from '../../providers/ReadOnly.jsx';
 import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 import ChevronLeftIcon from 'plenix-platform/icons/plenix/chevron-left';
 import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
@@ -125,9 +128,11 @@ function Side({ id, title, items, checked, setChecked, onMove, search, virtual, 
   );
 }
 
-export function TransferList({ label, options = [], value = [], onChange, titles, search = false, ordered = false, virtualized, size = 'md', disabled = false,
+export function TransferList({ label, options = [], value = [], onChange, titles, search = false, ordered = false, virtualized, size = 'md', disabled = false, readOnly: readOnlyOwn,
   strings, className }) {
   devWarn('TransferList', { size }, { size: ['sm','md','lg'] });
+  // read-only (its own readOnly, else the nearest ReadOnly region's): the lists show what is chosen and nothing moves or is reordered; checking items to read them still works
+  const locked = useReadOnly(readOnlyOwn), frozen = disabled || locked;
   const t = useStrings('transferList', strings);
   const id = 'plx-tl' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const title = Object.assign({ source: t.source, target: t.target }, titles);
@@ -142,7 +147,7 @@ export function TransferList({ label, options = [], value = [], onChange, titles
   // moving keeps the moved items checked in their new list
   const add = (list, title2) => {
     const moving = list.filter((o) => !o.disabled && !chosenSet.has(o.value)).map((o) => o.value);
-    if (!moving.length || disabled) return;
+    if (!moving.length || frozen) return;
     emit(value.concat(moving));
     setLeft((s) => { const n = new Set(s); moving.forEach((m) => n.delete(m)); return n; });
     setRight((s) => new Set(Array.from(s).concat(moving)));
@@ -150,7 +155,7 @@ export function TransferList({ label, options = [], value = [], onChange, titles
   };
   const remove = (list, title2) => {
     const moving = list.filter((o) => !o.disabled && chosenSet.has(o.value)).map((o) => o.value);
-    if (!moving.length || disabled) return;
+    if (!moving.length || frozen) return;
     emit(value.filter((v) => moving.indexOf(v) < 0));
     setRight((s) => { const n = new Set(s); moving.forEach((m) => n.delete(m)); return n; });
     setLeft((s) => new Set(Array.from(s).concat(moving)));
@@ -172,8 +177,8 @@ export function TransferList({ label, options = [], value = [], onChange, titles
   const firstChecked = value.findIndex((v) => right.has(v)), lastChecked = value.length - 1 - value.slice().reverse().findIndex((v) => right.has(v));
   const orderTools = ordered ? (
     <>
-      <Button size="xs" variant="ghost" iconOnly icon={ChevronUpIcon} label={t.up} disabled={disabled || firstChecked <= 0} onClick={() => shift(-1)} />
-      <Button size="xs" variant="ghost" iconOnly icon={ChevronDownIcon} label={t.down} disabled={disabled || firstChecked < 0 || lastChecked >= value.length - 1} onClick={() => shift(1)} />
+      <Button size="xs" variant="ghost" iconOnly icon={ChevronUpIcon} label={t.up} disabled={frozen || firstChecked <= 0} onClick={() => shift(-1)} />
+      <Button size="xs" variant="ghost" iconOnly icon={ChevronDownIcon} label={t.down} disabled={frozen || firstChecked < 0 || lastChecked >= value.length - 1} onClick={() => shift(1)} />
     </>
   ) : null;
   return (
@@ -182,10 +187,10 @@ export function TransferList({ label, options = [], value = [], onChange, titles
         <Side id={id + '-s'} title={title.source} items={source} checked={left} setChecked={setLeft} search={search} virtual={virtual} disabled={disabled} t={t}
           emptyText={t.empty} onMove={(list, all) => add(all ? list : list.filter((o) => left.has(o.value)), title.target)} />
         <div className="plx-transfer-list__moves" role="group" aria-label={t.moves}>
-          <Button size="sm" iconEnd={ChevronRightIcon} disabled={disabled || !leftChecked.length} onClick={() => add(leftChecked, title.target)}>{t.add}</Button>
-          <Button size="sm" disabled={disabled || !source.some((o) => !o.disabled)} onClick={() => add(source, title.target)}>{t.addAll}</Button>
-          <Button size="sm" icon={ChevronLeftIcon} disabled={disabled || !rightChecked.length} onClick={() => remove(rightChecked, title.source)}>{t.remove}</Button>
-          <Button size="sm" disabled={disabled || !target.some((o) => !o.disabled)} onClick={() => remove(target, title.source)}>{t.removeAll}</Button>
+          <Button size="sm" iconEnd={ChevronRightIcon} disabled={frozen || !leftChecked.length} onClick={() => add(leftChecked, title.target)}>{t.add}</Button>
+          <Button size="sm" disabled={frozen || !source.some((o) => !o.disabled)} onClick={() => add(source, title.target)}>{t.addAll}</Button>
+          <Button size="sm" icon={ChevronLeftIcon} disabled={frozen || !rightChecked.length} onClick={() => remove(rightChecked, title.source)}>{t.remove}</Button>
+          <Button size="sm" disabled={frozen || !target.some((o) => !o.disabled)} onClick={() => remove(target, title.source)}>{t.removeAll}</Button>
         </div>
         <Side id={id + '-t'} title={title.target} items={target} checked={right} setChecked={setRight} search={search} virtual={virtual} disabled={disabled} t={t}
           tools={orderTools} emptyText={t.empty} onMove={(list, all) => remove(all ? list : list.filter((o) => right.has(o.value)), title.source)} />

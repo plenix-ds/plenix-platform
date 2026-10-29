@@ -1,0 +1,97 @@
+/* Plenix tests · charts in right to left (issue 413, rtl-413-c; owner decision 584 B: time runs left to right in every chart,
+   Arabic pages included).
+   Summary: with dir="rtl" lang="ar" on the page:
+     LineChart (time)   the dates run left to right (January at the left, June at the right); the value axis at the left;
+                        its labels keep their Arabic-Indic digits
+     LineChart (band)   the categories run left to right in their data order
+     GanttChart         the dates run left to right; the task labels sit whole at the left of the bars, not cut by the edge
+     HeatMap (calendar) the weeks run left to right after the weekday labels' room at the left; no weekday label overlaps a cell
+     BarChart (bars)    not time: it still mirrors, its category labels at the right
+     the frame          the drawing is left to right; the title (the surrounding text) still follows the page (right to left)
+   Usage: node tests/rtl-charts.test.js   → RTL_CHARTS_OK */
+const assert = require('assert/strict'), { serve, launch } = require('./lib');
+(async () => {
+  const PORT = +process.env.TEST_PORT || 9654, server = await serve(PORT); let browser;
+  try {
+    browser = await launch(); const page = await browser.newPage(); const errors = [];
+    page.on('pageerror', (e) => errors.push(e.message));
+    await page.setViewport({ width: 900, height: 1400 });
+    await page.goto('http://localhost:' + PORT + '/Plenix/tests/fixtures/platform-host.html', { waitUntil: 'domcontentloaded' });
+    await page.waitForFunction(() => window.Plenix && window.ReactDOM, { timeout: 60000 });
+    await page.evaluate(() => { document.documentElement.setAttribute('dir', 'rtl'); document.documentElement.setAttribute('lang', 'ar'); });
+    await page.evaluate(async () => {
+      const h = React.createElement, P = window.Plenix;
+      document.getElementById('main').innerHTML = '<div id="c"></div>';
+      const months = ['2026-01-15', '2026-02-15', '2026-03-15', '2026-04-15', '2026-05-15', '2026-06-15'];
+      ReactDOM.createRoot(document.getElementById('c')).render(h(P.Stack, { gap: 'xl' },
+        h('div', { id: 'line' }, h(P.LineChart, { title: 'الرفع الشهري', x: 'day', xType: 'time', series: [{ id: 'n', label: 'الملفات' }], data: months.map((d, i) => ({ day: d, n: [3, 5, 4, 8, 7, 12][i] })) })),
+        h('div', { id: 'band' }, h(P.LineChart, { title: 'حسب الشهر', x: 'm', series: [{ id: 'n', label: 'الملفات' }], data: ['يناير', 'فبراير', 'مارس', 'أبريل'].map((m, i) => ({ m, n: [2, 6, 4, 9][i] })) })),
+        h('div', { id: 'gantt' }, h(P.GanttChart, { title: 'الخطة', tasks: [{ id: 'a', label: 'التصميم', start: '2026-10-01', end: '2026-10-05' }, { id: 'b', label: 'البناء', start: '2026-10-06', end: '2026-10-12' }] })),
+        h('div', { id: 'heat' }, h(P.HeatMap, { variant: 'calendar', title: 'التعديلات اليومية', valueLabel: 'التعديلات', data: Array.from({ length: 42 }, (x, i) => { const d = new Date(2026, 8, 1 + i), p = (n) => String(n).padStart(2, '0'); return { date: d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()), value: (i * 7) % 11 }; }) })),
+        h('div', { id: 'bar' }, h(P.BarChart, { title: 'التخزين حسب الفريق', categories: ['التصميم', 'التسويق', 'المبيعات'], series: [{ id: 'gb', label: 'التخزين', values: [420, 310, 120] }] }))));
+      await new Promise((r) => setTimeout(r, 3000));
+    });
+    // every label drawn in a chart, in drawing order, with its left edge; and the plot's middle
+    const read = (id) => page.evaluate((id) => {
+      const texts = [...document.querySelectorAll('#' + id + ' .plx-chart__engine svg text, #' + id + ' .plx-chart__svg text')].filter((t) => t.getClientRects().length)
+        .map((t) => ({ t: t.textContent.trim(), x: t.getBoundingClientRect().left }));
+      const p = document.querySelector('#' + id + ' .plx-chart__plot').getBoundingClientRect();
+      return { texts, left: p.left, mid: p.left + p.width / 2 };
+    }, id);
+    const digits = /^[٠-٩]+$/, increasing = (xs) => xs.length > 1 && xs.every((x, i) => i === 0 || x > xs[i - 1]);
+
+    // LineChart, time: dates left to right, the value axis at the left, Arabic-Indic digits
+    const line = await read('line');
+    const dates = line.texts.filter((l) => !digits.test(l.t)), values = line.texts.filter((l) => digits.test(l.t));
+    assert.ok(increasing(dates.map((l) => l.x)), 'LineChart (time): the dates run left to right: ' + JSON.stringify(dates));
+    assert.ok(/يناير/.test(dates[0].t) && /يونيو/.test(dates[dates.length - 1].t), 'LineChart (time): January first (left), June last (right): ' + JSON.stringify(dates));
+    assert.ok(values.length > 1 && values.every((l) => l.x < line.mid), 'LineChart (time): the value axis is at the left: ' + JSON.stringify(values));
+    assert.ok(dates.every((l) => /[٠-٩]/.test(l.t) && !/[0-9]/.test(l.t)), 'LineChart (time): the dates keep their Arabic-Indic digits: ' + JSON.stringify(dates));
+
+    // LineChart, band: the categories in their data order, left to right
+    const band = await read('band');
+    const cats = ['يناير', 'فبراير', 'مارس', 'أبريل'].map((m) => (band.texts.find((l) => l.t === m) || {}).x);
+    assert.ok(cats.every((x) => x !== undefined) && increasing(cats), 'LineChart (band): the categories run left to right: ' + JSON.stringify(band.texts));
+
+    // GanttChart: dates left to right; the task labels whole, at the left of the bars
+    const gantt = await read('gantt');
+    const tasks = gantt.texts.filter((l) => l.t === 'التصميم' || l.t === 'البناء'), days = gantt.texts.filter((l) => /أكتوبر/.test(l.t));
+    assert.ok(increasing(days.map((l) => l.x)), 'GanttChart: the dates run left to right: ' + JSON.stringify(days));
+    assert.equal(tasks.length, 2, 'GanttChart: both task labels drawn');
+    assert.ok(tasks.every((l) => l.x >= gantt.left && l.x < days[0].x), 'GanttChart: the task labels sit whole at the left of the bars: ' + JSON.stringify({ tasks, left: gantt.left, first: days[0] }));
+
+    // HeatMap, calendar: the cells (drawn week by week, Sunday to Saturday) and the weekday labels (Monday, Wednesday, Friday)
+    const heat = await page.evaluate(() => {
+      const box = (e) => { const r = e.getBoundingClientRect(); return { l: r.left, r: r.right, t: r.top, b: r.bottom }; };
+      return {
+        cells: [...document.querySelectorAll('#heat .plx-heat-map__cell')].map(box),
+        days: [...document.querySelectorAll('#heat .plx-chart-axis--left .plx-chart-axis__tick')].map((t) => Object.assign({ t: t.textContent.trim() }, box(t))),
+        plot: box(document.querySelector('#heat .plx-chart__plot')),
+      };
+    });
+    const firstCol = Math.min.apply(null, heat.cells.map((c) => c.l));
+    assert.ok(heat.cells.length === 42 && heat.days.length === 3, 'HeatMap (calendar): 42 days and 3 weekday labels drawn: ' + JSON.stringify({ cells: heat.cells.length, days: heat.days }));
+    // fails before the fix: in right to left the frame moved the drawing by the end margin (8px), not the start margin (40px) kept for the labels
+    const weeks = []; heat.cells.forEach((c) => { if (!weeks.length || c.l > weeks[weeks.length - 1] + 1) weeks.push(c.l); });
+    assert.ok(weeks.length === 7 && heat.cells.every((c, i) => i === 0 || c.l >= heat.cells[i - 1].l - 1) && firstCol - heat.plot.l >= 32,
+      'HeatMap (calendar): the weeks run left to right in date order, after the weekday labels\' room at the left: ' + JSON.stringify({ weeks, plot: heat.plot.l }));
+    // before the fix the SVG inherited dir=rtl, so each label's text-anchor "end" turned around and the label ran right, over the cells
+    assert.ok(heat.days.every((d) => d.r <= firstCol && d.l >= heat.plot.l - 1), 'HeatMap (calendar): each weekday label sits whole left of the first week: ' + JSON.stringify({ days: heat.days, firstCol, plot: heat.plot.l }));
+    // fails before the fix for the same reason: the turned-around labels ran from the plot's edge into the first week's cells
+    assert.ok(heat.days.every((d) => heat.cells.every((c) => d.r <= c.l || d.l >= c.r || d.b <= c.t || d.t >= c.b)), 'HeatMap (calendar): no weekday label overlaps a cell: ' + JSON.stringify(heat.days));
+
+    // BarChart, horizontal: bars are not time, so they still mirror: the category labels at the right of the plot
+    // a guard, not a regression of this fix (BarChart is outside the diff and passes before it too): it fails if decision 584 B spreads to the bars
+    const bar = await read('bar');
+    const barCats = ['التصميم', 'التسويق', 'المبيعات'].map((c) => bar.texts.find((l) => l.t === c));
+    assert.ok(barCats.every((l) => l && l.x > bar.mid), 'BarChart (horizontal): the category labels sit at the right in right to left: ' + JSON.stringify({ texts: bar.texts, mid: bar.mid }));
+
+    // the frame: the drawing is left to right, the title follows the page
+    // before the fix the heat map's SVG (no chart engine) inherited the page's rtl
+    const dirs = await page.evaluate(() => ({ svg: getComputedStyle(document.querySelector('#gantt .plx-chart__svg')).direction, heat: getComputedStyle(document.querySelector('#heat .plx-chart__svg')).direction, engine: getComputedStyle(document.querySelector('#line .plx-chart__engine')).direction, title: getComputedStyle(document.querySelector('#line .plx-chart__title')).direction }));
+    assert.deepEqual(dirs, { svg: 'ltr', heat: 'ltr', engine: 'ltr', title: 'rtl' }, 'the drawing is left to right; the title follows the page');
+
+    assert.deepEqual(errors, [], 'no script errors');
+    console.log('RTL_CHARTS_OK');
+  } finally { if (browser) await browser.close(); server.close(); }
+})().catch((e) => { console.error(e); process.exit(1); });

@@ -45,8 +45,13 @@ if (changed.wants({ units: ['components/Input', 'components/SearchField', 'compo
   if (result.status !== 0) process.exit(result.status || 1);
 }
 // controls follow read-only (issue 262, PR 1): its own test, when one of them, the ReadOnly provider or the test changed
-if (changed.wants({ units: ['components/SegmentedControl', 'components/ColorSwatch', 'components/PromptInput', 'components/TimeZoneSelect', 'components/SearchField', 'components/Rating', 'providers/ReadOnly.jsx'] })) {
+if (changed.wants({ units: ['components/SegmentedControl', 'components/ColorSwatch', 'components/PromptInput', 'components/TimeZoneSelect', 'components/SearchField', 'components/Rating', 'components/NumberInput', 'components/DatePicker', 'components/Combobox', 'components/CountrySelect', 'components/TreeSelect', 'components/TransferList', 'components/InlineEdit', 'components/RichTextEditor', 'components/CodeEditor', 'components/MentionInput', 'providers/ReadOnly.jsx'] })) {
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'readonly-adoption.test.js')], { stdio: 'inherit', env: process.env });
+  if (result.status !== 0) process.exit(result.status || 1);
+}
+// descriptions through useDescribedBy (issue 262, PR 3): its own test, when one of those controls or the helper changed
+if (changed.wants({ units: ['components/Cascader', 'components/CodeEditor', 'components/FileInput', 'components/InputGroup', 'components/RelativeDateInput', 'patterns/AvatarUpload', 'components/Field', 'utils/describedBy.js'] })) {
+  const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'describedby-adoption.test.js')], { stdio: 'inherit', env: process.env });
   if (result.status !== 0) process.exit(result.status || 1);
 }
 // section headings wrap, then end in an ellipsis with a tooltip (issue 502): its own test, when CollapsibleSection, NavList, Tooltip or the truncation helper changed

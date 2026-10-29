@@ -10,7 +10,10 @@
 .plx-chart__plot{block-size:var(--plx-comp-chart-context-plot-height,var(--plx-comp-chart-plot-height-md));min-inline-size:0;position:relative;}
 .plx-chart--sm{--plx-comp-chart-context-plot-height:var(--plx-comp-chart-plot-height-sm);}
 .plx-chart--lg{--plx-comp-chart-context-plot-height:var(--plx-comp-chart-plot-height-lg);}
-.plx-chart__svg{display:block;overflow:visible;}
+/* the drawn chart is left to right in every language: time runs left to right, Arabic pages included (owner, issue 584 B),
+   and each label's anchor (start, end) keeps its side of the point. An Arabic label still reads right to left inside its
+   own run, with its Arabic-Indic digits. */
+.plx-chart__svg{direction:ltr;display:block;overflow:visible;}
 /* the chart engine's drawing (Apache ECharts, charts/echarts/): the plot's full size, under the frame's own layer; the pointer
    and the keyboard belong to the plot and the chart interaction */
 /* the engine places every label by its own pixel positions and anchors (start, end): in a right-to-left page the SVG's

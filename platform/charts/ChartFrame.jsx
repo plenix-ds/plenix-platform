@@ -89,7 +89,9 @@ export function ChartFrame({ title, description, hideCaption = false, size = 'md
   }, []);
   const m = {};
   Object.keys(MARGIN_TOKENS).forEach((k) => { m[k] = snapToGrid(margin && margin[k] !== undefined ? margin[k] : box.tokens ? box.tokens[k] : 0); });
-  const left = box.rtl ? m.end : m.start;
+  // the drawing is left to right in every language (time runs left to right, owner issue 584 B), so the start margin,
+  // where the labels sit, stays at the left
+  const left = m.start;
   const fit = typeof fitHeight === 'function';
   const height = fit ? (box.width > 0 ? Math.max(1, Math.ceil(fitHeight(box.width))) : 0) : box.height;
   const inner = { width: Math.max(0, box.width - m.start - m.end), height: Math.max(0, height - m.top - m.bottom) };
