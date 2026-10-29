@@ -50,6 +50,8 @@ import { useFloating, FLOATING_ANCHOR } from '../../utils/floating.js';
 // the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
 const TOP_LAYER = FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 import { useStrings, useLocale, createTranslator } from '../../providers/LocaleProvider.jsx';
+import { Icon } from '../Icon/Icon.jsx';
+import SelectChevronIcon from 'plenix-platform/icons/plenix/select-chevron';
 
 // a few zones for browsers without Intl.supportedValuesOf
 const FALLBACK = ['America/Los_Angeles', 'America/Denver', 'America/Chicago', 'America/New_York', 'America/Sao_Paulo', 'Europe/London', 'Europe/Paris', 'Europe/Berlin',
@@ -166,7 +168,7 @@ export const TimeZoneSelect = React.forwardRef(function TimeZoneSelect({ value, 
           value={open ? text : (current ? current.label : '')} placeholder={current && open ? current.label : (placeholder || t.placeholder)}
           onChange={(e) => { setText(e.target.value); setOpen(true); }} onFocus={() => setOpen(true)} onKeyDown={onKey} {...rest} />
         {showOffset && current && !open ? <span className="plx-time-zone-select__field-offset" aria-hidden="true"><Isolate>{current.offset}</Isolate></span> : null}
-        <span className="plx-combobox__chevron" aria-hidden="true" />
+        <span className="plx-combobox__chevron" aria-hidden="true"><Icon icon={SelectChevronIcon} filled={false} /></span>
       </div>
       {open ? (
         <ul ref={list} className="plx-combobox__list plx-time-zone-select__list" id={listId} role="listbox" aria-label={label} popover={TOP_LAYER ? 'manual' : undefined} onMouseDown={(e) => e.preventDefault()}>

@@ -104,11 +104,11 @@
 .plx-button--on-inverse{--plx-state-button-focus-color:var(--plx-comp-button-on-inverse-focus-color);}
 .plx-button--on-accent:where(:not(.plx-button--ghost, .plx-button--primary, .plx-button--danger, .plx-button--tertiary, .plx-button--danger-secondary)){--plx-state-button-rest-background:var(--plx-comp-button-on-accent-secondary-background);--plx-state-button-rest-border:var(--plx-comp-button-on-accent-secondary-border-color);--plx-state-button-rest-text:var(--plx-comp-button-on-accent-secondary-text);--plx-state-button-hover-background:var(--plx-comp-button-on-accent-secondary-hover-background);--plx-state-button-hover-border:var(--plx-comp-button-on-accent-secondary-border-color);--plx-state-button-hover-text:var(--plx-comp-button-on-accent-secondary-text);--plx-state-button-pressed-background:var(--plx-comp-button-on-accent-secondary-pressed-background);--plx-state-button-pressed-border:var(--plx-comp-button-on-accent-secondary-border-color);--plx-state-button-pressed-text:var(--plx-comp-button-on-accent-secondary-text);--plx-state-button-selected-background:var(--plx-comp-button-on-accent-secondary-background);--plx-state-button-selected-border:var(--plx-comp-button-on-accent-secondary-border-color);--plx-state-button-selected-text:var(--plx-comp-button-on-accent-secondary-text);}
 .plx-button--icon-only{--plx-state-button-inline-size:var(--plx-comp-button-context-width,var(--plx-comp-button-height));--plx-state-button-padding-inline:0;min-inline-size:var(--plx-comp-button-height);}
-/* the caret: the thin outline chevron, muted on the unfilled buttons; on a filled button (primary, danger) and on a
-   disabled one it keeps the label's color (owner, 2026-10-14); Button.jsx gives it plx-button__caret--current then */
-.plx-button__caret{-webkit-mask-image:var(--plx-comp-icon-glyph-expand-more);-webkit-mask-position:center;-webkit-mask-repeat:no-repeat;-webkit-mask-size:contain;block-size:var(--plx-comp-button-icon);flex-shrink:0;inline-size:var(--plx-comp-button-icon);mask-image:var(--plx-comp-icon-glyph-expand-more);mask-position:center;mask-repeat:no-repeat;mask-size:contain;transition-duration:var(--plx-comp-button-caret-duration);transition-property:transform;}
-.plx-button__caret:where(:not(.plx-button__caret--current)){background-color:var(--plx-comp-button-caret-color);}
-.plx-button__caret--current{background-color:currentcolor;}
+/* the caret: the thin outline chevron (an Icon child, chevron-down, at optical size 20), muted on the unfilled buttons; on a
+   filled button (primary, danger) and on a disabled one it keeps the label's color (owner, 2026-10-14); Button.jsx gives
+   it plx-button__caret--current then */
+.plx-button__caret{--plx-comp-icon-context-show-20:block;--plx-comp-icon-context-show-24:none;--plx-comp-icon-size:var(--plx-comp-button-icon);block-size:var(--plx-comp-button-icon);display:inline-flex;flex-shrink:0;inline-size:var(--plx-comp-button-icon);transition-duration:var(--plx-comp-button-caret-duration);transition-property:transform;}
+.plx-button__caret:where(:not(.plx-button__caret--current)){color:var(--plx-comp-button-caret-color);}
 .plx-button__caret--open{transform:rotate(180deg);}
 .plx-button-group{display:inline-flex;}
 /* joined (a ButtonGroup, an InputGroup, a CopyButton field): square corners where it meets a neighbor; a seam also drops

@@ -7800,10 +7800,6 @@
       "$value": "{plx-sys.border-width-medium}",
       "$type": "dimension"
     },
-    "tree-toggle-size": {
-      "$value": "{plx-ref.size-16px}",
-      "$type": "dimension"
-    },
     "tree-toggle-background": {
       "$value": "{plx-sys.content-muted}",
       "$type": "color"

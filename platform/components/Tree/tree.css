@@ -12,10 +12,9 @@
 .plx-tree__row.is-selected{--plx-state-tree-row-background:var(--plx-comp-tree-item-selected-row-background);--plx-state-tree-row-shadow:var(--plx-comp-tree-item-selected-row-shadow);color:var(--plx-comp-tree-item-selected-row-text);font-weight:var(--plx-comp-tree-item-selected-row-font-weight);}
 /* the focus ring: the item takes focus, the row draws it (Tree sets is-focus-visible from the item's :focus-visible) */
 .plx-tree__row.is-focus-visible{outline-color:var(--plx-comp-tree-item-focus-row-outline-color);outline-offset:var(--plx-comp-tree-item-focus-row-outline-offset);outline-style:solid;outline-width:var(--plx-comp-tree-item-focus-row-outline-width);}
-/* the open control (owner, batch 238): a + box on a closed row, a − box on an open one (Material Symbols add_box and
-   indeterminate_check_box, the whole 16px icon square, unedited) */
-.plx-tree__toggle{-webkit-mask-image:var(--plx-comp-icon-glyph-add-box);-webkit-mask-position:center;-webkit-mask-repeat:no-repeat;-webkit-mask-size:var(--plx-comp-tree-toggle-size);background-color:var(--plx-comp-tree-toggle-background);block-size:var(--plx-comp-tree-toggle-height);flex-shrink:0;inline-size:var(--plx-comp-tree-toggle-width);mask-image:var(--plx-comp-icon-glyph-add-box);mask-position:center;mask-repeat:no-repeat;mask-size:var(--plx-comp-tree-toggle-mask-size);}
-.plx-tree__toggle.is-open{-webkit-mask-image:var(--plx-comp-icon-glyph-indeterminate-check-box);mask-image:var(--plx-comp-icon-glyph-indeterminate-check-box);}
+/* the open control (owner, batch 238): a + box on a closed row, a − box on an open one (Icon children square-plus and
+   square-minus: Material Symbols add_box and indeterminate_check_box, the whole 16px icon square, unedited) */
+.plx-tree__toggle{--plx-comp-icon-context-show-20:block;--plx-comp-icon-context-show-24:none;--plx-comp-icon-size:var(--plx-comp-tree-toggle-mask-size);block-size:var(--plx-comp-tree-toggle-height);color:var(--plx-comp-tree-toggle-background);display:inline-flex;flex-shrink:0;inline-size:var(--plx-comp-tree-toggle-width);}
 .plx-tree__toggle.is-leaf{visibility:hidden;}
 .plx-tree__icon{display:inline-flex;flex-shrink:0;}
 /* a row's icon follows its own item, never a selected ancestor (an open selected item holds its whole subtree): outline

@@ -22,7 +22,7 @@ const PROPS = ['background-color', 'color', 'border-top-color', 'border-left-col
   'box-shadow', 'outline-color', 'outline-style', 'outline-width', 'outline-offset', 'font-family', 'font-size', 'font-weight', 'line-height',
   'min-block-size', 'min-inline-size', 'padding-inline-start', 'padding-inline-end', 'padding-block-start', 'column-gap',
   'text-decoration-line', 'text-decoration-thickness', 'text-underline-offset', 'cursor', 'opacity'];
-const SUB = { '.plx-button__icon': ['block-size', 'inline-size', 'background-color'], '.plx-button__caret': ['block-size', 'inline-size', 'background-color', 'transform'] };
+const SUB = { '.plx-button__icon': ['block-size', 'inline-size', 'background-color'], '.plx-button__caret': ['block-size', 'inline-size', 'color', 'transform'] };
 
 (async () => {
   let html = '<!doctype html><html lang="en" data-plx-theme="default"><head><meta charset="utf-8"><link rel="stylesheet" href="' + PLAT + 'platform.css"></head><body>';
