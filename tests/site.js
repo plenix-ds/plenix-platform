@@ -59,6 +59,7 @@ function launchSite(sitePort, origin) {
   const child = spawn(process.execPath, [path.join(__dirname, 'site-guard.js'), String(process.pid), path.join(DIR, 'server', 'server.js')], {
     cwd: DIR, stdio: ['ignore', 'pipe', 'pipe'], detached: true,
     env: Object.assign({}, process.env, { PORT: String(sitePort), HOST: '127.0.0.1', DATABASE_URL: process.env.SITE_DATABASE_URL || 'pglite:memory', PLENIX_BASE: '/cdn/local/',
+      PLENIX_ENGINES: fs.existsSync(path.join(CDN_LOCAL, 'plenix-engines.js')) ? '1' : '0',   // the build under test has the engines script, or not (branches before #518)
       SEED_ON_START: '1', RESET_OPEN: '1', RESET_HOUR: '-1' }),
   });
   started.add(child);
