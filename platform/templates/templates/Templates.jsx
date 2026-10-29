@@ -5,6 +5,11 @@
      title: page title; description: supporting text; actions: existing Platform actions; children: page content.
      header, sideNav, footer: AppShell slots; mainId: unique skip-link target when embedded.
      rows, columns: DataGrid data; items: feature cards; onOpen: card action; empty: custom empty state.
+     ListingPage (the canonical full-room list, issue 522): label: the grid's name (default: the title); toolbar: a
+       CommandBar above the grid; grid: more DataGrid props (selected, onRowClick, rowMenu, selectable, …); detail: the
+       chosen record, in a SidePanel beside the list (detailTitle; onDetailClose runs when it is closed). The grid fills
+       the room left below the toolbar and scrolls inside (mode "fill", virtual rows); no page controls unless grid.mode
+       asks for them (docs/integration/data-grid.md, "The page shape").
      initialValue, sessionKey, validate, onSubmit, onSuccess, onCancel: FormFlow contract; fields: render function.
      pane, paneTitle, detailOpen, onBack: SecondaryPane master-detail contract.
      SplitWorkspace: the list and the chosen item in a SplitView (02 Page structures › Split workspace): rows and columns
@@ -20,6 +25,7 @@
 */
 import React from 'react';
 import { AppShell, PageContent } from '../../patterns/AppShell/AppShell.jsx';
+import { SidePanel } from '../../patterns/SidePanel/SidePanel.jsx';
 import { RecordPage } from '../../patterns/RecordPage/RecordPage.jsx';
 import { SecondaryPane } from '../../patterns/SecondaryPane/SecondaryPane.jsx';
 import { FeatureCard } from '../../patterns/FeatureCard/FeatureCard.jsx';
@@ -44,7 +50,20 @@ function Frame({ page = 'workspace', title, description, actions, header, sideNa
 }
 function Cards({ items = [], onOpen }) { return <ContentGrid>{items.map(item => <FeatureCard key={item.id} title={item.title} description={item.description} icon={item.icon || FolderIcon} href={item.href} onOpen={!item.href && onOpen ? () => onOpen(item) : undefined} />)}</ContentGrid>; }
 function NoRecords({ strings, empty }) { const t = { ...WORDS, ...strings }; return empty || <EmptyState title={t.empty}>{t.emptyDescription}</EmptyState>; }
-export function ListingPage({ rows = [], columns = [], empty, strings, children, ...rest }) { return <Frame {...rest}>{children}{rows.length ? <DataGrid data={rows} columns={columns} /> : <NoRecords empty={empty} strings={strings} />}</Frame>; }
+// the full-room list (issue 522, the canonical DataGrid page): the toolbar, then the grid filling the room left and
+// scrolling inside (fill, virtual rows, no page controls); the chosen record's detail in a SidePanel beside it
+export function ListingPage({ rows = [], columns = [], empty, strings, children, label, toolbar, grid, detail, detailTitle, onDetailClose, ...rest }) {
+  const id = React.useId();
+  const t = { ...WORDS, ...strings };
+  const list = rows.length ? <DataGrid label={label || rest.title || t.pane} data={rows} columns={columns} {...grid} /> : <NoRecords empty={empty} strings={strings} />;
+  if (!detail) return <Frame {...rest}>{children}{toolbar}{list}</Frame>;
+  return <AppShell page={rest.page || 'workspace'} header={rest.header} sideNav={rest.sideNav} footer={rest.footer} mainId={rest.mainId || 'plx-template-' + id}>
+    <div className="plx-page-panes">
+      <PageContent><RecordPage header={rest.title ? <RecordPage.Header title={rest.title} description={rest.description} actions={rest.actions} /> : null}>{children}{toolbar}{list}</RecordPage></PageContent>
+      <SidePanel title={detailTitle || t.detail} onOpenChange={(open) => { if (!open && onDetailClose) onDetailClose(); }}>{detail}</SidePanel>
+    </div>
+  </AppShell>;
+}
 export function ContentManagementPage({ items = [], onOpen, empty, strings, children, ...rest }) { return <Frame {...rest}>{children}{items.length ? <Cards items={items} onOpen={onOpen} /> : <NoRecords empty={empty} strings={strings} />}</Frame>; }
 export function LandingPage({ items = [], onOpen, children, ...rest }) { return <Frame {...rest}><Stack gap="lg">{children}<Cards items={items} onOpen={onOpen} /></Stack></Frame>; }
 export function HomePage(props) { return <LandingPage {...props} page="dashboard" />; }
