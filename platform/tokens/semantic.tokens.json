@@ -565,16 +565,6 @@
         }
       }
     },
-    "icon-forced-stroke": {
-      "$value": "0",
-      "$type": "number",
-      "$description": "How much of an icon's box its border fills (0 or 1). In forced colors a fill in currentcolor is forced to Canvas while a border in currentcolor takes the system color of where the icon sits (CanvasText, HighlightText in a selected item, GrayText when disabled, LinkText in a link): there the icon is drawn by its border.",
-      "$extensions": {
-        "com.plenix": {
-          "forcedColors": "1"
-        }
-      }
-    },
     "print-hidden": {
       "$value": "initial",
       "$description": "On paper the chrome is left out (the app header, the navigation pane, the skip link, the scrim, the floating action button, toasts, the spotlight): their display reads it. Not set on screen (initial: the element keeps its own).",
