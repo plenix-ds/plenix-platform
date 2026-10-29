@@ -5,8 +5,9 @@ path, so the design system, the packages, the CDN and the API never disagree.
 
 ## Who decides
 
-The owner approves every addition, every change to how something looks, and every release. Nothing is changed before it
-is discussed: a proposal (below) comes first, with numbered options and the recommendation first.
+The owner decides every addition. A proposal (below) comes first, with numbered options and the recommendation first; his
+chat instruction or dashboard tap approves it. Changes ship once the QA Engineer clears them; a change to how something
+looks then gets the owner's QA as a follow-up, which never blocks a release.
 
 ## The path of a new item
 
