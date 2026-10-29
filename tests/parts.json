@@ -142,11 +142,11 @@
     },
     {
      "part": "SplitView",
-     "checks": 3
+     "checks": 4
     },
     {
      "part": "VisuallyHidden",
-     "checks": 1
+     "checks": 2
     },
     {
      "part": "contained",
