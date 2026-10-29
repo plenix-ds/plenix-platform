@@ -7621,25 +7621,30 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Isolate
    Summary: Keeps a piece of text in its own writing direction inside text of the other direction (bidirectional
      isolation): an ID, a case number (20261020-01), an email, a URL, a phone number or code inside an Arabic sentence,
-     so it reads as written and the words around it keep their places (owner, ctm-needs-34; #413 batch 3).
+     so the words around it keep their places. An email, a URL, a phone number and code read as written; a computed identifier
+     (kind="id") reads as the page reads, 01-20261020 in a right-to-left page (owner, ctm-needs-34, issues 590 and 606).
    Usage:
-     <Text as="p">تم تسجيل القضية رقم <Isolate>20261020-01</Isolate> وستصل الإشعارات إلى <Isolate>office@example.org</Isolate>.</Text>
+     <Text as="p">تم تسجيل القضية رقم <Isolate kind="id">20261020-01</Isolate> وستصل الإشعارات إلى <Isolate kind="email">office@example.org</Isolate>.</Text>   // reads 01-20261020, and the email as written
      <Isolate dir="auto">{fileName}</Isolate>          // a value that may be in either direction: its first letter decides
    Props:
-     dir: "ltr" (default: IDs, numbers, emails, URLs, code) | "rtl" | "auto" (the first strong letter decides)
-     kind: "email" | "url": keeps its Latin digits when the page writes Arabic-Indic digits (owner, arabic-digits-risk-36); any other
-       value (an ID, a case number, a phone number, code) takes the page's digits, ٠-٩ in Arabic
+     dir: "ltr" (default: numbers, phone numbers, emails, URLs, code) | "rtl" | "auto" (the first strong letter decides). With kind="id"
+       there is no default: the ID follows the direction around it
+     kind: "id" | "email" | "url". "id" is a computed identifier or case number (20261020-01): it follows the direction of the text around it,
+       so in an Arabic sentence it reads 01-20261020, and in a left-to-right page 20261020-01 (owner, issues 590 and 606: "01-20261020
+       everywhere"). "email" and "url" keep their Latin digits when the page writes Arabic-Indic digits (owner, arabic-digits-risk-36)
+       and stay left to right. Any other value (an ID, a case number, a phone number, code) takes the page's digits, ٠-٩ in Arabic
      as: the element; default "bdi"
      className: more classes on the element
      children: the text
      ...rest: other attributes go on the element
    Behavior:
      The element is isolated (unicode-bidi: isolate, as <bdi> is): the text inside never reorders the text around it,
-       and the text around it never reorders it. In an Arabic sentence "20261020-01" stays "20261020-01" (without it,
-       the two numbers swap places: "01-20261020").
+       and the text around it never reorders it. Left to right (the default) keeps "20261020-01" as written in an Arabic sentence;
+       kind="id" lets a computed identifier read as the page reads, "01-20261020" (the two numbers swap places, each stays in its own order).
+       Use kind="id" for a computed identifier and the default for an email, a URL, a phone number or code.
      Digits: in Arabic (LocaleProvider digits, "auto" for an Arabic locale) the digits of its text are written Arabic-Indic, case
        numbers and IDs included, and an email or a web address (kind) keeps Latin (owner, arabic-ids-35, arabic-digits-risk-36).
-     A left-to-right island overrides the order (unicode-bidi: isolate-override): Arabic-Indic digits would otherwise let a hyphen
+     A left-to-right island (dir="ltr") overrides the order (unicode-bidi: isolate-override): Arabic-Indic digits would otherwise let a hyphen
        swap the two numbers around it ("٢٠٢٦١٠٢٠-٠١" reads "٠١-٢٠٢٦١٠٢٠"). The order of its characters is kept as written.
      It is inline and adds no box: alignment, wrapping and the ellipsis stay the container's.
    Notes:
@@ -7648,8 +7653,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        right); Text, which is dir="auto". Use Isolate for such a value inside running text.
 */
 function Isolate({
-  dir = 'ltr',
-  as: Tag = 'bdi',
+  dir,
+  as,
   kind,
   className,
   children,
@@ -7658,12 +7663,26 @@ function Isolate({
   const digits = (0, _LocaleProvider.useDigits)();
   // an email or a web address keeps its Latin digits; any other value takes the page's digits (Arabic-Indic in Arabic)
   const own = kind === 'email' || kind === 'url' ? 'latn' : digits;
-  const shown = _react.default.Children.map(children, child => typeof child === 'string' || typeof child === 'number' ? (0, _digits.localDigits)(String(child), {
+  const text = child => (0, _digits.localDigits)(String(child), {
     digits: own
-  }) : child);
+  });
+  // an ID is told apart piece by piece: each run of letters and digits keeps its own order (a left-to-right island of its own) and the runs
+  // follow the direction around them, so "20261020-01" reads 01-20261020 in a right-to-left sentence and as written in a left-to-right one.
+  // The text is unchanged (copy, search and screen readers get "20261020-01"); with Arabic-Indic digits a hyphen alone would do it, with Latin digits it would not
+  const pieces = child => {
+    const tokens = text(child).match(/[\p{L}\p{N}]+|[^\p{L}\p{N}]+/gu) || [];
+    return tokens.length < 2 ? tokens : tokens.map((x, i) => /^[\p{L}\p{N}]/u.test(x) ? /*#__PURE__*/_react.default.createElement("bdi", {
+      key: i,
+      dir: "ltr"
+    }, x) : x);
+  };
+  const shown = _react.default.Children.map(children, child => typeof child === 'string' || typeof child === 'number' ? kind === 'id' ? pieces(child) : text(child) : child);
+  // an ID follows the direction around it: no dir of its own (a <bdi> without one would read its first letter), so it is a span; every other value keeps its own, left to right unless said
+  const Tag = as || (kind === 'id' ? 'span' : 'bdi');
+  const own_dir = kind === 'id' ? dir : dir || 'ltr';
   return /*#__PURE__*/_react.default.createElement(Tag, _extends({
     className: (0, _cx.cx)('plx-isolate', className),
-    dir: dir
+    dir: own_dir
   }, rest), shown);
 }
   } },
@@ -30577,7 +30596,7 @@ var _default = exports.default = {
   }
 };
   } },
-  "platform/components/DataPill/DataPill.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/devWarn.js":"platform/utils/devWarn.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/person":"platform/dist/icons/plenix/person.js","plenix-platform/icons/plenix/person-female":"platform/dist/icons/plenix/person-female.js","plenix-platform/icons/plenix/person-male":"platform/dist/icons/plenix/person-male.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/DataPill/DataPill.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/devWarn.js":"platform/utils/devWarn.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../Isolate/Isolate.jsx":"platform/components/Isolate/Isolate.jsx","plenix-platform/icons/plenix/person":"platform/dist/icons/plenix/person.js","plenix-platform/icons/plenix/person-female":"platform/dist/icons/plenix/person-female.js","plenix-platform/icons/plenix/person-male":"platform/dist/icons/plenix/person-male.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -30589,6 +30608,7 @@ var _cx = require("../../utils/cx.js");
 var _devWarn = require("../../utils/devWarn.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _Isolate = require("../Isolate/Isolate.jsx");
 var _person = _interopRequireDefault(require("plenix-platform/icons/plenix/person"));
 var _personFemale = _interopRequireDefault(require("plenix-platform/icons/plenix/person-female"));
 var _personMale = _interopRequireDefault(require("plenix-platform/icons/plenix/person-male"));
@@ -30629,6 +30649,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The pill is not interactive: a value that opens something is a Link inside it, or the cell's own action.
    Notes:
      Writing direction (owner, ctm-needs-34): with data, the value keeps its own direction (dir="auto") in a right-to-left page.
+     kind="id" (owner, issue 606): the value is a computed identifier or case number. It follows the direction around it, so in a right-to-left
+       page it reads 01-20261020 and in a left-to-right one 20261020-01; an email, a URL, a phone number or a code stays data (left to right).
      Not a Tag (a keyword next to content, 10px) and not a Badge (a status): a DataPill is the value itself.
      DataGrid: a column's pill option draws each value as a DataPill (DataGrid.jsx).
 */
@@ -30649,6 +30671,7 @@ function DataPill({
   size,
   icon,
   data = false,
+  kind,
   fill = false,
   gender,
   person = false,
@@ -30677,8 +30700,10 @@ function DataPill({
     filled: !!g
   }) : null, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-data-pill__value",
-    dir: data ? 'auto' : undefined
-  }, children), g ? /*#__PURE__*/_react.default.createElement("span", {
+    dir: data && kind !== 'id' ? 'auto' : undefined
+  }, kind === 'id' ? /*#__PURE__*/_react.default.createElement(_Isolate.Isolate, {
+    kind: "id"
+  }, children) : children), g ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-visually-hidden"
   }, ', ' + t[gender]) : null);
 }
@@ -30712,8 +30737,8 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      (pill) every other value is a DataPill with its column's type icon; column.pill(value, record) may return its tone,
      icon, variant, data and gender, and column.pill === false keeps the plain value. A person (type person, kind
      avatar-name) carries value.gender.
-   Notes: A value of kind id, email, url, phone or code is a left-to-right island, and of kind data one in its own
-     direction (Isolate), so it reads as written in a right-to-left table. Imports no legacy grid implementation. Data still sorts and filters by its raw value. mods: the value classes the
+   Notes: A value of kind email, url, phone or code is a left-to-right island, of kind data one in its own direction, and of kind id one
+     that follows the table's direction (Isolate; owner, issue 606: a computed identifier reads 01-20261020 in a right-to-left table). Imports no legacy grid implementation. Data still sorts and filters by its raw value. mods: the value classes the
      engine gives every value span (__value--wrap, --sized, --lines). */
 
 const valueText = value => value == null ? '' : Array.isArray(value) ? value.map(valueText).join(', ') : typeof value === 'object' ? String(value.label ?? value.name ?? '') : String(value);
@@ -30779,6 +30804,7 @@ function CellValue({
       person: isPerson,
       gender: own.gender || (person ? person.gender : undefined),
       data: own.data !== undefined ? own.data : kinds.includes('data') || DATA_TYPES.includes(column.type),
+      kind: kinds.includes('id') ? 'id' : undefined,
       fill: own.fill
     }, text);
   }
@@ -30823,15 +30849,16 @@ function CellValue({
     }, badge.label);
   }
   // the full text on hover, only when the cell cuts it off with an ellipsis (owner, 2026-10-22)
-  // a technical value keeps its own direction inside a right-to-left table (owner, ctm-needs-34): ids, emails, URLs, phone
-  // numbers and code read left to right; any other data value by its first strong letter
+  // a technical value keeps its own direction inside a right-to-left table (owner, ctm-needs-34): emails, URLs, phone
+  // numbers and code read left to right; an id reads as the table does (01-20261020 in a right-to-left one); any other data value
+  // by its first strong letter
   const island = ISLANDS.find(k => kinds.includes(k));
   if (island) return /*#__PURE__*/_react.default.createElement("span", {
     className: own,
     onMouseEnter: fullText
   }, /*#__PURE__*/_react.default.createElement(_Isolate.Isolate, {
-    dir: island === 'data' ? 'auto' : 'ltr',
-    kind: island === 'email' || island === 'url' ? island : undefined
+    dir: island === 'data' ? 'auto' : island === 'id' ? undefined : 'ltr',
+    kind: island === 'email' || island === 'url' || island === 'id' ? island : undefined
   }, valueText(value)));
   return /*#__PURE__*/_react.default.createElement("span", {
     className: own,
@@ -33628,7 +33655,7 @@ function NextEngine(props) {
         onFocus: e => enterCut(e, row.id + '|' + c.field),
         onPointerLeave: () => leaveCut(row.id + '|' + c.field)
       } : null, {
-        dir: pinned && !isStatic ? undefined : 'auto',
+        dir: pinned && !isStatic || kinds(c).includes('id') ? undefined : 'auto',
         onDoubleClick: () => {
           if (canEdit) setEditing({
             key: row.id,
@@ -33702,7 +33729,7 @@ function NextEngine(props) {
         onSelect: () => rowDnd.moveTo(recordPositions.get(record) ?? -1, canonical.length - 1)
       }, S.moveBottom)) : c.render ? /*#__PURE__*/_react.default.createElement("span", {
         className: (0, _cx.cx)(B + '__portal', actions && B + '__portal--actions'),
-        dir: pinned && !isStatic ? 'auto' : undefined,
+        dir: pinned && !isStatic && !kinds(c).includes('id') ? 'auto' : undefined,
         "data-plx-link-target": "cell"
       }, /*#__PURE__*/_react.default.createElement(CustomCell, {
         column: c,
@@ -33714,8 +33741,8 @@ function NextEngine(props) {
         mods: mods
       })) : actions ? /*#__PURE__*/_react.default.createElement("span", {
         className: B + '__portal ' + B + '__portal--actions',
-        dir: pinned && !isStatic ? 'auto' : undefined
-      }, shown) : cutAt === row.id + '|' + c.field ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, cellDirection(pinned && !isStatic, shown), /*#__PURE__*/_react.default.createElement("span", {
+        dir: pinned && !isStatic && !kinds(c).includes('id') ? 'auto' : undefined
+      }, shown) : cutAt === row.id + '|' + c.field ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, cellDirection(pinned && !isStatic && !kinds(c).includes('id'), shown), /*#__PURE__*/_react.default.createElement("span", {
         className: B + '__cut'
       }, /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
         label: c.title,
@@ -33735,7 +33762,7 @@ function NextEngine(props) {
         })
       }, /*#__PURE__*/_react.default.createElement("div", {
         className: B + '__full-text'
-      }, (0, _cells.valueText)(value))))) : cellDirection(pinned && !isStatic, shown));
+      }, (0, _cells.valueText)(value))))) : cellDirection(pinned && !isStatic && !kinds(c).includes('id'), shown));
     }), props.viewMenu ? /*#__PURE__*/_react.default.createElement("div", {
       className: (0, _cx.cx)(`${B}__grid-cell ${B}__w-view`, modes),
       role: "gridcell"
@@ -44543,6 +44570,8 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        at the value size, so it shares the label's baseline; names, descriptions and statuses stay DM Sans; default false.
        It keeps its own writing direction in a right-to-left page (Isolate dir="auto"); a data value is text only (no links,
        controls or other parts inside it)
+     PropertyList.Item.kind: "id" for a computed identifier or case number: it follows the page's direction (01-20261020 in a
+       right-to-left page, 20261020-01 in a left-to-right one; owner, issue 606). Pair it with data for the data font
      PropertyList.Item.className: more classes on the pair
      PropertyList.Item.children: the value
    Notes:
@@ -44567,6 +44596,7 @@ PropertyList.Item = function PropertyListItem({
   htmlFor,
   description,
   data = false,
+  kind,
   className,
   children
 }) {
@@ -44592,7 +44622,9 @@ PropertyList.Item = function PropertyListItem({
   }, description) : null), /*#__PURE__*/_react.default.createElement("dd", {
     className: (0, _cx.cx)('plx-property-list__value', data && 'plx-property-list__value--data'),
     "data-plx-text-follow": "size"
-  }, data ? /*#__PURE__*/_react.default.createElement(_Isolate.Isolate, {
+  }, kind === 'id' ? /*#__PURE__*/_react.default.createElement(_Isolate.Isolate, {
+    kind: "id"
+  }, children) : data ? /*#__PURE__*/_react.default.createElement(_Isolate.Isolate, {
     dir: "auto"
   }, children) : children));
 };
@@ -44895,9 +44927,11 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
      Header style 2 follows the button rule of a command bar: while the facts would wrap, first the count buttons show
        their icon only, then the states too, each with its words as its tooltip and name; past that the boxes wrap.
    Notes:
-     Writing direction (owner, arabic-batch4-36): title, subtitle and summary are plain text. In a right-to-left page an app
-       wraps an ID or a case number in them in <Isolate> (subtitle={['القضية ', <Isolate>20261020-01</Isolate>]}), or it reads
-       backwards (01-20261020); Plenix does not guess. The same goes for a fact's value.
+     Writing direction (owner, arabic-batch4-36; issue 606): title, subtitle and summary are plain text. An ID or a case number in an
+       Arabic sentence reads 01-20261020, as the owner wants for computed identifiers, with no wrapping. A value that must stay left to
+       right (an email, a URL, a phone number) is wrapped in <Isolate> (subtitle={['البريد ', <Isolate kind="email">a@b.org</Isolate>]});
+       a title or subtitle that is only an ID uses <Isolate kind="id">, so it follows the page as well. Plenix does not guess. The same
+       goes for a fact's value.
      Not for settings screens: use RecordPage.Header. A small uppercase group label is SectionHeading.
 */
 
