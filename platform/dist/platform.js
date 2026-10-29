@@ -15016,7 +15016,12 @@ const SelectList = /*#__PURE__*/_react.default.forwardRef(function SelectList({
     key: o.value,
     value: o.value,
     disabled: o.disabled
-  }, o.label)) : children), /*#__PURE__*/_react.default.createElement("div", _extends({
+  }, o.label)) : children), /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+    content: current ? current.label : '',
+    disabled: !cut || open,
+    describe: false,
+    className: "plx-select__tip"
+  }, /*#__PURE__*/_react.default.createElement("div", _extends({
     ref: field,
     id: id,
     role: "combobox",
@@ -15047,11 +15052,7 @@ const SelectList = /*#__PURE__*/_react.default.forwardRef(function SelectList({
       setOpen(false);
       if (onBlur) onBlur(e);
     }
-  }), /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
-    content: current ? current.label : '',
-    disabled: !cut || open,
-    className: "plx-select__tip"
-  }, /*#__PURE__*/_react.default.createElement("span", {
+  }), /*#__PURE__*/_react.default.createElement("span", {
     ref: valueRef,
     className: "plx-select__value"
   }, current ? current.label : ''))), /*#__PURE__*/_react.default.createElement("span", {
