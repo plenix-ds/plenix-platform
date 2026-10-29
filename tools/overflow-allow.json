@@ -1,0 +1,4 @@
+{
+  "$description": "The overflow check's allow-list (tools/check-overflow.js; owner, fit-and-overflow stage 2). One entry per intentional case: { \"selector\": a piece of the element's selector as the report prints it, \"page\": a piece of the page address (never empty, never \"*\"), \"kind\": cut | spill | outside | page | multirow (optional), \"reason\": why it is meant to be so }. The report counts what each entry hid and names the ones that hid nothing. The first entries come from sorting the first report with the owner; there are none yet.",
+  "entries": []
+}
