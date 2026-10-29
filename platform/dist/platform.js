@@ -31711,7 +31711,7 @@ var _default = exports.default = {
   }
 };
   } },
-  "platform/components/DataGrid/DataGridEngine.jsx": { deps: {"react":null,"./unread.js":"platform/components/DataGrid/unread.js","./room.js":"platform/components/DataGrid/room.js","react-dom":null,"./scrollbars.jsx":"platform/components/DataGrid/scrollbars.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","@tanstack/react-table":"node_modules/@tanstack/react-table/build/lib/index.js","@tanstack/react-virtual":"node_modules/@tanstack/react-virtual/dist/cjs/index.cjs","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../hooks/usePressable.js":"platform/hooks/usePressable.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../utils/paneLimit.js":"platform/utils/paneLimit.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./environment.js":"platform/components/DataGrid/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataGrid/state.js","./adapter.js":"platform/components/DataGrid/adapter.js","./cells.jsx":"platform/components/DataGrid/cells.jsx","./records.js":"platform/components/DataGrid/records.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/add":"platform/dist/icons/plenix/add.js","plenix-platform/icons/plenix/attachment":"platform/dist/icons/plenix/attachment.js","plenix-platform/icons/plenix/calendar":"platform/dist/icons/plenix/calendar.js","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js","plenix-platform/icons/plenix/chevron-right":"platform/dist/icons/plenix/chevron-right.js","plenix-platform/icons/plenix/circle-info":"platform/dist/icons/plenix/circle-info.js","plenix-platform/icons/plenix/ed-text":"platform/dist/icons/plenix/ed-text.js","plenix-platform/icons/plenix/expand":"platform/dist/icons/plenix/expand.js","plenix-platform/icons/plenix/field-currency":"platform/dist/icons/plenix/field-currency.js","plenix-platform/icons/plenix/field-long-text":"platform/dist/icons/plenix/field-long-text.js","plenix-platform/icons/plenix/field-number":"platform/dist/icons/plenix/field-number.js","plenix-platform/icons/plenix/field-select":"platform/dist/icons/plenix/field-select.js","plenix-platform/icons/plenix/filter":"platform/dist/icons/plenix/filter.js","plenix-platform/icons/plenix/group-by":"platform/dist/icons/plenix/group-by.js","plenix-platform/icons/plenix/image-a-2":"platform/dist/icons/plenix/image-a-2.js","plenix-platform/icons/plenix/link":"platform/dist/icons/plenix/link.js","plenix-platform/icons/plenix/more":"platform/dist/icons/plenix/more.js","plenix-platform/icons/plenix/person":"platform/dist/icons/plenix/person.js","plenix-platform/icons/plenix/select":"platform/dist/icons/plenix/select.js","plenix-platform/icons/plenix/settings-customize":"platform/dist/icons/plenix/settings-customize.js","plenix-platform/icons/plenix/sort-ascending":"platform/dist/icons/plenix/sort-ascending.js","plenix-platform/icons/plenix/sort-descending":"platform/dist/icons/plenix/sort-descending.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
+  "platform/components/DataGrid/DataGridEngine.jsx": { deps: {"react":null,"./unread.js":"platform/components/DataGrid/unread.js","./room.js":"platform/components/DataGrid/room.js","react-dom":null,"./scrollbars.jsx":"platform/components/DataGrid/scrollbars.jsx","../../utils/dnd.js":"platform/utils/dnd.js","../DragHandle/DragHandle.jsx":"platform/components/DragHandle/DragHandle.jsx","@tanstack/react-table":"node_modules/@tanstack/react-table/build/lib/index.js","@tanstack/react-virtual":"node_modules/@tanstack/react-virtual/dist/cjs/index.cjs","../../utils/direction.js":"platform/utils/direction.js","../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../hooks/usePressable.js":"platform/hooks/usePressable.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/grid.js":"platform/utils/grid.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../utils/paneLimit.js":"platform/utils/paneLimit.js","../../hooks/useVirtualizer.js":"platform/hooks/useVirtualizer.js","./environment.js":"platform/components/DataGrid/environment.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../patterns/ColumnsMenu/ColumnsMenu.jsx":"platform/patterns/ColumnsMenu/ColumnsMenu.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Pagination/Pagination.jsx":"platform/components/Pagination/Pagination.jsx","../EmptyState/EmptyState.jsx":"platform/components/EmptyState/EmptyState.jsx","./state.js":"platform/components/DataGrid/state.js","./adapter.js":"platform/components/DataGrid/adapter.js","./cells.jsx":"platform/components/DataGrid/cells.jsx","./records.js":"platform/components/DataGrid/records.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/add":"platform/dist/icons/plenix/add.js","plenix-platform/icons/plenix/attachment":"platform/dist/icons/plenix/attachment.js","plenix-platform/icons/plenix/calendar":"platform/dist/icons/plenix/calendar.js","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js","plenix-platform/icons/plenix/chevron-right":"platform/dist/icons/plenix/chevron-right.js","plenix-platform/icons/plenix/circle-info":"platform/dist/icons/plenix/circle-info.js","plenix-platform/icons/plenix/ed-text":"platform/dist/icons/plenix/ed-text.js","plenix-platform/icons/plenix/expand":"platform/dist/icons/plenix/expand.js","plenix-platform/icons/plenix/field-currency":"platform/dist/icons/plenix/field-currency.js","plenix-platform/icons/plenix/field-long-text":"platform/dist/icons/plenix/field-long-text.js","plenix-platform/icons/plenix/field-number":"platform/dist/icons/plenix/field-number.js","plenix-platform/icons/plenix/field-select":"platform/dist/icons/plenix/field-select.js","plenix-platform/icons/plenix/filter":"platform/dist/icons/plenix/filter.js","plenix-platform/icons/plenix/group-by":"platform/dist/icons/plenix/group-by.js","plenix-platform/icons/plenix/image-a-2":"platform/dist/icons/plenix/image-a-2.js","plenix-platform/icons/plenix/link":"platform/dist/icons/plenix/link.js","plenix-platform/icons/plenix/more":"platform/dist/icons/plenix/more.js","plenix-platform/icons/plenix/person":"platform/dist/icons/plenix/person.js","plenix-platform/icons/plenix/select":"platform/dist/icons/plenix/select.js","plenix-platform/icons/plenix/settings-customize":"platform/dist/icons/plenix/settings-customize.js","plenix-platform/icons/plenix/sort-ascending":"platform/dist/icons/plenix/sort-ascending.js","plenix-platform/icons/plenix/sort-descending":"platform/dist/icons/plenix/sort-descending.js"}, externals: { "react": function () { return window.React; }, "react-dom": function () { return window.ReactDOM; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -31739,6 +31739,7 @@ var _useVirtualizer = require("../../hooks/useVirtualizer.js");
 var _environment = require("./environment.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _Button = require("../Button/Button.jsx");
+var _Stack = require("../Stack/Stack.jsx");
 var _Menu = require("../Menu/Menu.jsx");
 var _ColumnsMenu = require("../../patterns/ColumnsMenu/ColumnsMenu.jsx");
 var _Text = require("../Text/Text.jsx");
@@ -32257,7 +32258,10 @@ function NextEngine(props) {
     columnVisibility = props.onViewChange ? controlledVisibility : hiddenOwner === hiddenSignal ? visibility : props.hiddenColumns ? controlledVisibility : visibility;
   const sortingRef = _react.default.useRef(sorting);
   sortingRef.current = sorting;
-  const remoteMode = typeof props.fetchRows === 'function' && (mode === 'pages' || mode === 'load-more'),
+  // rows from a server: a page at a time ("pages"), appended by Load more ("load-more"), or appended as the person scrolls
+  // near the end ("fill", issue 522: one list, no page controls)
+  const remoteMode = typeof props.fetchRows === 'function' && (mode === 'pages' || mode === 'load-more' || mode === 'fill'),
+    scrollFill = remoteMode && mode === 'fill',
     incoming = remoteMode ? remote?.rows || EMPTY_ROWS : data;
   const source = edited?.input === incoming ? edited.rows : incoming,
     canonical = _react.default.useMemo(() => (0, _records.recordsOf)(source, index, childField), [source, index, childField]);
@@ -33057,7 +33061,7 @@ function NextEngine(props) {
         fetching.current = false;
         setRemoteBusy(false);
         setRemote(old => ({
-          rows: mode === 'load-more' && page > 0 ? [...(old?.rows || []), ...(result.rows || [])] : result.rows || [],
+          rows: (mode === 'load-more' || mode === 'fill') && page > 0 ? [...(old?.rows || []), ...(result.rows || [])] : result.rows || [],
           total: result.total || 0
         }));
       }
@@ -33074,6 +33078,26 @@ function NextEngine(props) {
     };
   }, [remoteMode, page, pageSize, JSON.stringify(sorting), JSON.stringify(filters), props.search, retry]);
   const displayedTotal = remoteMode ? remote?.total || 0 : table.getFilteredRowModel().rows.length;
+  // fill with a server (issue 522): the next page is asked for when the scroll comes within 8 rows of the end, and again
+  // while the rows do not yet fill the room; never while one is on its way, after a failure (Retry asks again) or at the total
+  const nearEnd = _react.default.useCallback(() => {
+    const el = holder.current;
+    if (!scrollFill || !el || fetching.current || remoteError || !remote) return;
+    if ((remote.rows || []).length >= (remote.total || 0)) return;
+    if (el.scrollHeight - el.scrollTop - el.clientHeight <= Math.max(1, metrics.row) * 8) {
+      fetching.current = true;
+      setPage(n => n + 1);
+    }
+  }, [scrollFill, remote, remoteError, metrics.row]);
+  _react.default.useEffect(() => {
+    const el = holder.current;
+    if (!scrollFill || !el) return undefined;
+    nearEnd();
+    el.addEventListener('scroll', nearEnd, {
+      passive: true
+    });
+    return () => el.removeEventListener('scroll', nearEnd);
+  }, [scrollFill, nearEnd]);
   // the open row (#453): the record whose details show, the row last opened by a click or Enter, or openKey (null: none);
   // it is aria-current, and in a grid without selection it takes the selected look (with selection, opening selects it)
   const openId = props.openKey !== undefined ? props.openKey == null ? null : (0, _state.recordKey)(props.openKey) : ownOpen;
@@ -33808,7 +33832,9 @@ function NextEngine(props) {
   const priorGroups = model.slice(0, first).filter(row => row.__group).map(row => row.__group),
     currentGroup = model[first]?.__group || priorGroups[priorGroups.length - 1];
   const stickyGroups = currentGroup ? priorGroups.filter((group, i) => group.path.every((part, depth) => JSON.stringify(part) === JSON.stringify(currentGroup.path[depth])) && !priorGroups.slice(i + 1).some(next => next.depth === group.depth)) : [];
-  const failed = error || remoteError;
+  // a fill grid that already shows rows says a failed next page in its last row (with Retry), not over the table
+  const moreFailed = scrollFill && remoteError && model.length > 0,
+    failed = error || (moreFailed ? null : remoteError);
   return /*#__PURE__*/_react.default.createElement(WidthPixels.Provider, {
     value: widthPixels
   }, headerMenu && !isStatic && managing ? /*#__PURE__*/_react.default.createElement(_ColumnsMenu.ManageColumnsDialog, {
@@ -33962,7 +33988,26 @@ function NextEngine(props) {
     "aria-colspan": Math.max(1, ordered.length)
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: B + '__empty'
-  }, remoteMode && remoteBusy ? S.loading : empty || S.empty))) : null)), !isStatic ? /*#__PURE__*/_react.default.createElement(_scrollbars.Scrollbars, {
+  }, remoteMode && remoteBusy ? S.loading : empty || S.empty))) : null, scrollFill && model.length && (remoteBusy || moreFailed) ? /*#__PURE__*/_react.default.createElement("div", {
+    className: `${B}__grid-placeholder`,
+    role: "row",
+    "aria-rowindex": semanticRows.length + 2
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: `${B}__grid-placeholder-contents`,
+    role: "gridcell",
+    "aria-colspan": Math.max(1, ordered.length)
+  }, moreFailed ? /*#__PURE__*/_react.default.createElement(_Stack.Inline, {
+    gap: "sm",
+    align: "center"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: B + '__empty'
+  }, S.failed), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    size: "sm",
+    onClick: () => setRetry(n => n + 1)
+  }, S.retry)) : /*#__PURE__*/_react.default.createElement("span", {
+    className: B + '__empty',
+    role: "status"
+  }, S.loading))) : null)), !isStatic ? /*#__PURE__*/_react.default.createElement(_scrollbars.Scrollbars, {
     holder: holder,
     viewportId: viewportId
   }) : null, mode === 'pages' && !failed ? /*#__PURE__*/_react.default.createElement("div", {
@@ -40913,8 +40958,11 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        by the hour) or keeps its plain value with pill: false. Tags, badges and deleted values keep their own look
      mode: "fill" (default: fills the room left on screen, virtual rows) | "pages" (pageSize, pageSizes, a footer with
        Pagination) | "load-more"; height: a size token or "100%" in place of the room "fill" measures
-     fetchRows({ page, size, sort, filters, search }): rows from a server for "pages" and "load-more", returning
-       { rows, total }; search: the page's search text
+     fetchRows({ page, size, sort, filters, search }): rows from a server, returning { rows, total }; search: the page's
+       search text. "pages" asks for one page at a time; "load-more" appends the next on Load more; "fill" (issue 522)
+       appends the next page by itself when the scroll comes within 8 rows of the end (and while the rows do not yet
+       fill the room), with a "Loading records" row at the end while it comes, a row with Retry when it fails, and no
+       more asking at total. A sort, filter or search change starts again from page 1. size is pageSize (default 50)
      storageKey: keeps the person's standalone view (sort, widths, order, hidden columns, row height, wrap, groups).
      onViewChange(patch): delegates view changes to an external controller; its presence disables the grid's own store.
        useCollectionView supplies this callback and columnWidths, so its collection state owns the view.
