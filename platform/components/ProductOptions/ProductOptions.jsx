@@ -61,6 +61,7 @@ import { NumberInput } from '../NumberInput/NumberInput.jsx';
 import { Field } from '../Field/Field.jsx';
 import { Icon } from '../Icon/Icon.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import AlertIcon from 'plenix-platform/icons/plenix/alert';
 
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const labelOf = (v) => (v.label !== undefined ? v.label : String(v.value));
@@ -77,7 +78,7 @@ function Legend({ option, value, t }) {
 }
 
 function ErrorLine({ id, children }) {
-  return children ? <span id={id} className="plx-product-options__error"><Icon name="alert" size="sm" />{children}</span> : null;
+  return children ? <span id={id} className="plx-product-options__error"><Icon name={AlertIcon} size="sm" />{children}</span> : null;
 }
 
 export function ProductOptions({ options = [], value = {}, onChange, quantity, onQuantityChange, min = 1, max = 99, product, sizeGuide,

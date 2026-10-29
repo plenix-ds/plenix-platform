@@ -31,8 +31,12 @@ import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { Icon } from '../Icon/Icon.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import PencilIcon from 'plenix-platform/icons/plenix/pencil';
+import PersonIcon from 'plenix-platform/icons/plenix/person';
+import SettingsPermissionsIcon from 'plenix-platform/icons/plenix/settings-permissions';
+import VisibilityIcon from 'plenix-platform/icons/plenix/visibility';
 
-const ICONS = { owner: 'settings-permissions', editor: 'pencil', viewer: 'visibility', custom: 'person' };
+const ICONS = { owner: SettingsPermissionsIcon, editor: PencilIcon, viewer: VisibilityIcon, custom: PersonIcon };
 
 export function RoleLabel({ role = 'viewer', label, icon, category, description, strings, className, ...rest }) {
   const t = useStrings('roleLabel', strings);

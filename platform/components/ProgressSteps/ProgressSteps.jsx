@@ -45,6 +45,8 @@ import { cx } from '../../utils/cx.js';
 import { Icon } from '../Icon/Icon.jsx';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import AlertIcon from 'plenix-platform/icons/plenix/alert';
+import CheckIcon from 'plenix-platform/icons/plenix/check';
 
 const fill = (s, n, total) => s.replace('{n}', n).replace('{total}', total);
 
@@ -71,7 +73,7 @@ export function ProgressSteps({ steps = [], current = 0, orientation = 'horizont
         const canGo = onStepClick && !s.disabled && (status === 'complete' || status === 'current' || status === 'error');
         const marker = (
           <span className="plx-progress-steps__marker" aria-hidden="true">
-            {status === 'complete' ? <Icon name="check" /> : status === 'error' ? <Icon name="alert" /> : <span className="plx-progress-steps__number">{i + 1}</span>}
+            {status === 'complete' ? <Icon name={CheckIcon} /> : status === 'error' ? <Icon name={AlertIcon} /> : <span className="plx-progress-steps__number">{i + 1}</span>}
           </span>
         );
         const words = <><span className="plx-progress-steps__label">{s.label}</span><VisuallyHidden>{', ' + t[status]}</VisuallyHidden></>;

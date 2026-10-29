@@ -6,7 +6,7 @@
 const fs = require('fs');
 const [mode, a, b] = process.argv.slice(2), only = process.argv.slice(4).concat(mode === 'snapshot' && b ? [b] : []);
 const APPS = ['dashboard', 'projects', 'messages', 'contacts', 'calendar', 'tasks', 'notes', 'bookmarks', 'files', 'settings'];
-const norm = (html) => html.replace(/\b\d{1,2}:\d{2}(:\d{2})?(\s?[AP]M)?\b/g, 'TIME');
+const norm = (html) => html.replace(/\b\d{1,2}:\d{2}(:\d{2})?(\s?[AP]M)?\b/g, 'TIME').replace(/_echarts_instance_="ec_\d+"/g, '_echarts_instance_="ec"');   // the clock; ECharts' own instance number (a timestamp)
 
 if (mode === 'compare') {
   const A = JSON.parse(fs.readFileSync(a, 'utf8')), B = JSON.parse(fs.readFileSync(b, 'utf8'));
@@ -40,8 +40,8 @@ if (mode === 'compare') {
     // the applications
     for (const app of APPS) {
       const q = await browser.newPage(); await q.setViewport({ width: 1440, height: 900 }); q.on('pageerror', (e) => first.errs.push(app + ': ' + e.message));
-      await q.goto('http://127.0.0.1:8791/plenix-b1/' + app + '/index.html', { waitUntil: 'networkidle2' }); await new Promise((r) => setTimeout(r, 1200));
-      out['app:' + app] = norm(await q.evaluate(() => document.body.innerHTML)); await q.close();
+      await q.goto('http://127.0.0.1:8791/plenix-b1/' + app + '/index.html', { waitUntil: 'networkidle2' });
+      out['app:' + app] = norm(await settled(q, () => document.body.innerHTML)); await q.close();   // settled: Files adds its drag instructions a moment later
     }
     fs.writeFileSync(a, JSON.stringify({ pages: out, errors: tabs.flatMap((p) => p.errs) }));
     console.log('snapshot', Object.keys(out).length, 'pages, page errors', tabs.flatMap((p) => p.errs).length);

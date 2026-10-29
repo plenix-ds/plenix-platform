@@ -54,6 +54,8 @@ import { Input } from '../Input/Input.jsx';
 import { Button } from '../Button/Button.jsx';
 import { InputGroup } from '../InputGroup/InputGroup.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import PlusIcon from 'plenix-platform/icons/plenix/plus';
+import RemoveIcon from 'plenix-platform/icons/plenix/remove';
 
 const decimalsOf = (n) => { const s = String(n); const i = s.indexOf('.'); return i < 0 ? 0 : s.length - i - 1; };
 const SPACES = /[\s  ]/g;
@@ -143,8 +145,8 @@ export const NumberInput = React.forwardRef(function NumberInput({ value, defaul
   const full = num == null ? undefined : format === 'currency' && currency ? formatCurrency(num, currency, { display: currencyDisplay, decimals: places })
     : (show(num) + (aff ? aff.text : unit ? ' ' + unit : ''));
   const keep = (e) => e.preventDefault();   // a press on a stepper button keeps focus where it was
-  const minus = <Button key="minus" iconOnly icon="remove" label={t.decrease} tabIndex={-1} disabled={disabled || readOnly || atMin} onMouseDown={keep} onClick={(e) => stepBy(-1, e)} />;
-  const plus = <Button key="plus" iconOnly icon="plus" label={t.increase} tabIndex={-1} disabled={disabled || readOnly || atMax} onMouseDown={keep} onClick={(e) => stepBy(1, e)} />;
+  const minus = <Button key="minus" iconOnly icon={RemoveIcon} label={t.decrease} tabIndex={-1} disabled={disabled || readOnly || atMin} onMouseDown={keep} onClick={(e) => stepBy(-1, e)} />;
+  const plus = <Button key="plus" iconOnly icon={PlusIcon} label={t.increase} tabIndex={-1} disabled={disabled || readOnly || atMax} onMouseDown={keep} onClick={(e) => stepBy(1, e)} />;
   const quantity = stepper === 'quantity';
 
   return (

@@ -95,16 +95,47 @@ import { loadTiptap } from './tiptap.js';
 import { cleanRichText, RICH_TEXT_STYLE_PROPERTIES, SAFE_HREF } from '../../utils/richTextClean.js';
 import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
 import { formatNumber } from '../../utils/format.js';
+import AddColumnLeftIcon from 'plenix-platform/icons/plenix/add-column-left';
+import AddColumnRightIcon from 'plenix-platform/icons/plenix/add-column-right';
+import AddRowAboveIcon from 'plenix-platform/icons/plenix/add-row-above';
+import AddRowBelowIcon from 'plenix-platform/icons/plenix/add-row-below';
+import ChecklistIcon from 'plenix-platform/icons/plenix/checklist';
+import CodeIcon from 'plenix-platform/icons/plenix/code';
+import CodeBlocksIcon from 'plenix-platform/icons/plenix/code-blocks';
+import EdAlignCenterIcon from 'plenix-platform/icons/plenix/ed-align-center';
+import EdAlignJustifyIcon from 'plenix-platform/icons/plenix/ed-align-justify';
+import EdAlignLeftIcon from 'plenix-platform/icons/plenix/ed-align-left';
+import EdAlignRightIcon from 'plenix-platform/icons/plenix/ed-align-right';
+import EdImageIcon from 'plenix-platform/icons/plenix/ed-image';
+import EdRedoIcon from 'plenix-platform/icons/plenix/ed-redo';
+import EdUndoIcon from 'plenix-platform/icons/plenix/ed-undo';
+import FormatBoldIcon from 'plenix-platform/icons/plenix/format-bold';
+import FormatClearIcon from 'plenix-platform/icons/plenix/format-clear';
+import FormatColorTextIcon from 'plenix-platform/icons/plenix/format-color-text';
+import FormatItalicIcon from 'plenix-platform/icons/plenix/format-italic';
+import FormatListNumberedIcon from 'plenix-platform/icons/plenix/format-list-numbered';
+import FormatQuoteIcon from 'plenix-platform/icons/plenix/format-quote';
+import FormatStrikethroughIcon from 'plenix-platform/icons/plenix/format-strikethrough';
+import FormatUnderlinedIcon from 'plenix-platform/icons/plenix/format-underlined';
+import HorizontalRuleIcon from 'plenix-platform/icons/plenix/horizontal-rule';
+import InkHighlighterIcon from 'plenix-platform/icons/plenix/ink-highlighter';
+import LinkIcon from 'plenix-platform/icons/plenix/link';
+import ListBulletsIcon from 'plenix-platform/icons/plenix/list-bullets';
+import MoreIcon from 'plenix-platform/icons/plenix/more';
+import SubscriptIcon from 'plenix-platform/icons/plenix/subscript';
+import SuperscriptIcon from 'plenix-platform/icons/plenix/superscript';
+import TableIcon from 'plenix-platform/icons/plenix/table';
+import TrashIcon from 'plenix-platform/icons/plenix/trash';
 export { cleanRichText, RICH_TEXT_STYLE_PROPERTIES };
 
 
 // the toolbar's icons (Material Symbols Sharp, platform/icons/map.json)
-const ICONS = { bold: 'format-bold', italic: 'format-italic', underline: 'format-underlined', strike: 'format-strikethrough', code: 'code',
-  subscript: 'subscript', superscript: 'superscript', link: 'link', bulleted: 'list-bullets', numbered: 'format-list-numbered', tasks: 'checklist',
-  quote: 'format-quote', codeBlock: 'code-blocks', rule: 'horizontal-rule', image: 'ed-image', table: 'table', color: 'format-color-text',
-  highlight: 'ink-highlighter', alignLeft: 'ed-align-left', alignCenter: 'ed-align-center', alignRight: 'ed-align-right',
-  alignJustify: 'ed-align-justify', clear: 'format-clear', undo: 'ed-undo', redo: 'ed-redo',
-  rowBefore: 'add-row-above', rowAfter: 'add-row-below', columnBefore: 'add-column-left', columnAfter: 'add-column-right', deleteTable: 'trash' };
+const ICONS = { bold: FormatBoldIcon, italic: FormatItalicIcon, underline: FormatUnderlinedIcon, strike: FormatStrikethroughIcon, code: CodeIcon,
+  subscript: SubscriptIcon, superscript: SuperscriptIcon, link: LinkIcon, bulleted: ListBulletsIcon, numbered: FormatListNumberedIcon, tasks: ChecklistIcon,
+  quote: FormatQuoteIcon, codeBlock: CodeBlocksIcon, rule: HorizontalRuleIcon, image: EdImageIcon, table: TableIcon, color: FormatColorTextIcon,
+  highlight: InkHighlighterIcon, alignLeft: EdAlignLeftIcon, alignCenter: EdAlignCenterIcon, alignRight: EdAlignRightIcon,
+  alignJustify: EdAlignJustifyIcon, clear: FormatClearIcon, undo: EdUndoIcon, redo: EdRedoIcon,
+  rowBefore: AddRowAboveIcon, rowAfter: AddRowBelowIcon, columnBefore: AddColumnLeftIcon, columnAfter: AddColumnRightIcon, deleteTable: TrashIcon };
 // each shortcut as a binding (Tiptap's defaults, and Plenix's Ctrl+K): shown as people read it and named for aria-keyshortcuts
 const KEYS = { bold: 'Mod+B', italic: 'Mod+I', underline: 'Mod+U', strike: 'Mod+Shift+S', code: 'Mod+E', subscript: 'Mod+,', superscript: 'Mod+.',
   highlight: 'Mod+Shift+H', link: 'Mod+K', bulleted: 'Mod+Shift+8', numbered: 'Mod+Shift+7', tasks: 'Mod+Shift+9', quote: 'Mod+Shift+B',
@@ -523,7 +554,7 @@ export function RichTextEditor({ label, defaultValue = '', onChange, toolbar = '
   const hidden = GROUPS.slice(fit);
   const more = hidden.length ? (
     <span key="plx-more" data-plx-overflow-more="" className="plx-rich-text-editor__slot">
-      <Menu label={t.more} placement="bottom-end" trigger={<Button variant="ghost" size="sm" iconOnly icon="more" label={t.more} disabled={!usable} onMouseDown={(e) => e.preventDefault()} />}>
+      <Menu label={t.more} placement="bottom-end" trigger={<Button variant="ghost" size="sm" iconOnly icon={MoreIcon} label={t.more} disabled={!usable} onMouseDown={(e) => e.preventDefault()} />}>
         {hidden.map((g) => (
           <MenuGroup key={g.id} label={g.label}>
             {(g.buttons || []).map(menuEntry)}

@@ -68,6 +68,9 @@ import { Kbd } from '../Kbd/Kbd.jsx';
 import { Spinner } from '../Loading/Loading.jsx';
 import { Tooltip } from '../Tooltip/Tooltip.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import ClockIcon from 'plenix-platform/icons/plenix/clock';
+import CloseIcon from 'plenix-platform/icons/plenix/close';
+import SearchIcon from 'plenix-platform/icons/plenix/search';
 
 const asItem = (kind) => (x) => (typeof x === 'string' ? { value: x, label: x, kind } : Object.assign({ label: x.value }, x, { kind }));
 
@@ -154,11 +157,11 @@ const SearchInput = React.forwardRef(function SearchInput({ value, onChange, onC
     'aria-activedescendant': shown && active >= 0 ? (grid ? cellId(active, cell) : optId(active)) : undefined } : {};
   return (
     <div ref={wrap} className={cx('plx-search', size === 'sm' && 'plx-search--size-sm', width === 'bar' && 'plx-search--bar', width === 'fill' && 'plx-search--fill', ['xs', 'sm', 'md', 'lg'].includes(width) && 'plx-search--width-' + width, onAccent && 'plx-search--on-accent', shown && 'is-open', className)} role="search">
-      <span className="plx-search__icon" aria-hidden="true">{loading ? <Spinner size="sm" label={t.searching} /> : <Icon name="search" />}</span>
+      <span className="plx-search__icon" aria-hidden="true">{loading ? <Spinner size="sm" label={t.searching} /> : <Icon name={SearchIcon} />}</span>
       <input ref={input} size={size === 'sm' || size === 'md' ? undefined : size} type="search" inputMode="search" enterKeyHint="search" autoComplete="off" className="plx-search__input" aria-label={label} placeholder={placeholder} value={value}
         onChange={(e) => { if (hasList) setOpen(true); if (onChange) onChange(e); }} onKeyDown={keys}
         onFocus={(e) => { if (hasList) setOpen(true); if (onFocus) onFocus(e); }} {...comboProps} {...rest} />
-      {onClear && value ? <button type="button" className="plx-search__clear" aria-label={t.clear} onClick={onClear}><Icon name="close" /></button> : null}
+      {onClear && value ? <button type="button" className="plx-search__clear" aria-label={t.clear} onClick={onClear}><Icon name={CloseIcon} /></button> : null}
       {shortcut && !value ? <span className="plx-search__kbd"><Kbd onAccent={onAccent}>{shortcut}</Kbd></span> : null}
       {hasList ? (
         <div className="plx-search__popup" hidden={!shown}>
@@ -176,11 +179,11 @@ const SearchInput = React.forwardRef(function SearchInput({ value, onChange, onC
                   className={cx('plx-search__option', 'plx-search__option--recent', 'plx-search__row', i === active && 'is-active')}
                   onMouseDown={(e) => e.preventDefault()} onMouseEnter={() => setActive(i)}>
                   <span id={cellId(i, 0)} role="gridcell" aria-selected={i === active && cell === 0} className="plx-search__cell" onClick={() => choose(it)}>
-                    <span className="plx-search__option-icon" aria-hidden="true"><Icon name="clock" /></span>
+                    <span className="plx-search__option-icon" aria-hidden="true"><Icon name={ClockIcon} /></span>
                     <span className="plx-search__option-text"><span className="plx-search__option-label">{it.label}</span></span>
                   </span>
                   <span id={cellId(i, 1)} role="gridcell" aria-selected={i === active && cell === 1} className="plx-search__remove-cell">
-                    <Button variant="ghost" size="xs" iconOnly icon="close" tabIndex={-1} label={t.remove.replace('{query}', it.value)}
+                    <Button variant="ghost" size="xs" iconOnly icon={CloseIcon} tabIndex={-1} label={t.remove.replace('{query}', it.value)}
                       className={cx('plx-search__remove', i === active && cell === 1 && 'is-focus-visible')}
                       onMouseDown={(e) => e.preventDefault()} onClick={(e) => { e.stopPropagation(); removeRecent(i); if (input.current) input.current.focus(); }} />
                   </span>
@@ -192,7 +195,7 @@ const SearchInput = React.forwardRef(function SearchInput({ value, onChange, onC
               <li key={it.kind + ':' + it.value} id={optId(i)} role="option" aria-selected={i === active}
                 className={cx('plx-search__option', it.kind === 'recent' && 'plx-search__option--recent', i === active && 'is-active')}
                 onMouseDown={(e) => e.preventDefault()} onClick={() => choose(it)} onMouseEnter={() => setActive(i)}>
-                <span className="plx-search__option-icon" aria-hidden="true"><Icon name={it.kind === 'recent' ? 'clock' : 'search'} /></span>
+                <span className="plx-search__option-icon" aria-hidden="true"><Icon name={it.kind === 'recent' ? ClockIcon : SearchIcon} /></span>
                 <span className="plx-search__option-text">
                   <span className="plx-search__option-label">{it.kind === 'recent' ? it.label : marked(it.label, text)}</span>
                   {it.description ? <span className="plx-search__option-description">{it.description}</span> : null}
@@ -220,7 +223,7 @@ function CollapsedSearch({ value, label, onKeyDown, onBlur, className, open: ope
   return (
     <>
       <Tooltip content={label}>
-        <Button ref={button} size="sm" variant="ghost" icon="search" iconOnly label={label} selected={!!value} aria-expanded={open}
+        <Button ref={button} size="sm" variant="ghost" icon={SearchIcon} iconOnly label={label} selected={!!value} aria-expanded={open}
           className={cx('plx-search__toggle', className)} onClick={() => setOpen(true)} />
       </Tooltip>
       {open ? (

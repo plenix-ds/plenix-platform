@@ -1,0 +1,67 @@
+# Icon stage 5a (#280), part 2, group 2: 26 files, 154 icon names become imports of their modules. Proof scripts only.
+# Files: EmptyState/EmptyState.jsx EntityPicker/EntityPicker.jsx File/File.jsx FileInput/FileInput.jsx FileRow/FileRow.jsx GeneratedContent/GeneratedContent.jsx Image/Image.jsx InlineEdit/InlineEdit.jsx Link/Link.jsx MediaViewer/MediaViewer.jsx Menu/Menu.jsx MetricCard/MetricCard.jsx NavList/NavList.jsx Notice/Notice.jsx NumberInput/NumberInput.jsx Popover/Popover.jsx ProductOptions/ProductOptions.jsx ProgressSteps/ProgressSteps.jsx PromptInput/PromptInput.jsx PromptSuggestions/PromptSuggestions.jsx RadioTiles/RadioTiles.jsx RefineMenu/RefineMenu.jsx RichTextEditor/RichTextEditor.jsx RoleLabel/RoleLabel.jsx SearchField/SearchField.jsx SearchResult/SearchResult.jsx 
+
+## By hand
+- File.jsx: fileIcon(name, type) stays a name (it is public: a caller may print or compare it); the File draws
+  fileIconModule(name, type), the same icon as its imported module.
+- EmptyState.jsx: its icon slot (mark) draws a module as it draws a name (asIcon). Part 1 missed it: its variable is not
+  named icon. The page check below found it (the spec's Empty state page threw before this fix).
+
+## spec-pages.js: the record pages of these components (61) and the 10 application pages, before and after
+- The comparison masks ECharts' instance number (a timestamp, MetricCard's sparkline) and waits for the applications to
+  settle (Files adds its drag instructions a moment after the page).
+- Noise check (two runs before the change):  "pages": 71, "same": 71, "differ": 0,
+{
+ "pages": 71,
+ "same": 71,
+ "differ": 0,
+ "pageErrors": {
+  "before": 0,
+  "after": 0
+ },
+ "differs": []
+}
+
+## first-paint.js: with no stylesheet on the page
+{
+ "stylesheet": false,
+ "CopyButton (converted)": {
+  "icons": 1,
+  "withPath": 1
+ },
+ "BackToTop (converted)": {
+  "icons": 1,
+  "withPath": 1
+ },
+ "Details (converted)": {
+  "icons": 2,
+  "withPath": 2
+ },
+ "Banner (its dismiss icon converted; its status icon comes from StatusIcon in Icon.jsx, a later group)": {
+  "icons": 2,
+  "withPath": 1
+ },
+ "EmptyState (group 2)": {
+  "icons": 1,
+  "withPath": 1
+ },
+ "Notice (group 2)": {
+  "icons": 1,
+  "withPath": 1
+ },
+ "SearchField (group 2)": {
+  "icons": 1,
+  "withPath": 1
+ },
+ "File (group 2)": {
+  "icons": 1,
+  "withPath": 1
+ },
+ "Button icon=\"add\" (a name, not converted)": {
+  "icons": 1,
+  "withPath": 0
+ }
+}
+
+## platform.js (styling/phase-2 at 8e4c53a1 -> this branch)
+- raw 4,015,181 -> 4,163,499 (+148,318); gzip 946,315 -> 975,354 (+29,039)

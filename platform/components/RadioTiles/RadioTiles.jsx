@@ -26,6 +26,7 @@ import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { useReadOnly, readOnlyProps } from '../../providers/ReadOnly.jsx';
 import { Icon } from '../Icon/Icon.jsx';
+import CheckIcon from 'plenix-platform/icons/plenix/check';
 
 export function RadioTiles({ legend, legendHidden = false, options = [], value, onChange, name, size = 'md', className, readOnly, ...rest }) {
   const locked = useReadOnly(readOnly);
@@ -46,7 +47,7 @@ export function RadioTiles({ legend, legendHidden = false, options = [], value, 
                 <span className="plx-radio-tile__label">{o.label}</span>
                 {o.description ? <span className="plx-radio-tile__description">{o.description}</span> : null}
               </span>
-              <span className="plx-radio-tile__check" aria-hidden="true">{on ? <Icon name="check" size="sm" filled /> : null}</span>
+              <span className="plx-radio-tile__check" aria-hidden="true">{on ? <Icon name={CheckIcon} size="sm" filled /> : null}</span>
             </label>
           );
         })}

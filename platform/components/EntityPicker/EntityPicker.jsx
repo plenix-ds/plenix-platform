@@ -58,6 +58,11 @@ import { useFloating, FLOATING_ANCHOR } from '../../utils/floating.js';
 const TOP_LAYER = FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
 import { formatNumber } from '../../utils/format.js';
+import CheckIcon from 'plenix-platform/icons/plenix/check';
+import DocumentIcon from 'plenix-platform/icons/plenix/document';
+import OpenIcon from 'plenix-platform/icons/plenix/open';
+import SearchIcon from 'plenix-platform/icons/plenix/search';
+import SettingsUsersIcon from 'plenix-platform/icons/plenix/settings-users';
 
 const NAMES = { people: 'people', teams: 'teams', records: 'records' };
 const fill = (s, map) => String(s).replace(/\{(\w+)\}/g, (m, k) => (map[k] !== undefined ? map[k] : m));
@@ -133,7 +138,7 @@ export const EntityPicker = React.forwardRef(function EntityPicker({ kind = 'rec
   };
   const visual = (o, size) => {
     if (kind === 'people') return <Avatar name={o.label} src={o.src} color={o.color} presence={o.presence} size={size === 'field' ? 'xs' : 'sm'} />;
-    const name = o.icon || (kind === 'teams' ? 'settings-users' : 'document');
+    const name = o.icon || (kind === 'teams' ? SettingsUsersIcon : DocumentIcon);
     return size === 'field' ? <Icon name={name} /> : <IconTile icon={name} size="sm" />;
   };
   const optId = (i) => auto + '-o' + i;
@@ -152,7 +157,7 @@ export const EntityPicker = React.forwardRef(function EntityPicker({ kind = 'rec
           aria-activedescendant={showList && items[active] ? optId(active) : undefined} aria-label={label} disabled={disabled} autoComplete="off"
           value={open || multiple ? text : (current ? current.label : '')} placeholder={multiple && chosen.length ? '' : (current && !open ? current.label : hint)}
           onChange={(e) => { setText(e.target.value); setOpen(true); }} onFocus={() => { if (!async) setOpen(true); }} onKeyDown={onKey} {...rest} />
-        <span className="plx-entity-picker__search" aria-hidden="true"><Icon name="search" /></span>
+        <span className="plx-entity-picker__search" aria-hidden="true"><Icon name={SearchIcon} /></span>
       </div>
       {showList ? (
         <ul ref={list} className="plx-entity-picker__list" id={listId} role="listbox" popover={TOP_LAYER ? 'manual' : undefined} onMouseDown={(e) => e.preventDefault()} aria-label={label || noun} aria-multiselectable={multiple || undefined} aria-busy={busy || undefined}>
@@ -163,7 +168,7 @@ export const EntityPicker = React.forwardRef(function EntityPicker({ kind = 'rec
           {items.map((it, i) => it.kind === 'browse'
             ? <li key="browse" id={optId(i)} role="option" aria-selected={false} className={cx('plx-entity-picker__option', 'plx-entity-picker__browse', i === active && 'is-active')}
                 onMouseDown={(e) => e.preventDefault()} onClick={() => choose(it)} onMouseEnter={() => setActive(i)}>
-                <span className="plx-entity-picker__browse-icon" aria-hidden="true"><Icon name="open" /></span>{fill(t.browse, { entityName: noun })}</li>
+                <span className="plx-entity-picker__browse-icon" aria-hidden="true"><Icon name={OpenIcon} /></span>{fill(t.browse, { entityName: noun })}</li>
             : <li key={it.o.value} id={optId(i)} role="option" aria-selected={chosen.indexOf(it.o.value) >= 0} aria-disabled={it.o.disabled || undefined}
                 className={cx('plx-entity-picker__option', i === active && 'is-active', chosen.indexOf(it.o.value) >= 0 && 'is-selected', it.o.disabled && 'is-disabled')}
                 onMouseDown={(e) => e.preventDefault()} onClick={() => choose(it)} onMouseEnter={() => setActive(i)}>
@@ -173,7 +178,7 @@ export const EntityPicker = React.forwardRef(function EntityPicker({ kind = 'rec
                   {it.o.description ? <span className="plx-entity-picker__description">{it.o.description}</span> : null}
                 </span>
                 {it.o.meta !== undefined && it.o.meta !== null ? <span className="plx-entity-picker__meta">{it.o.meta}</span> : null}
-                {chosen.indexOf(it.o.value) >= 0 ? <span className="plx-entity-picker__check" aria-hidden="true"><Icon name="check" /></span> : null}
+                {chosen.indexOf(it.o.value) >= 0 ? <span className="plx-entity-picker__check" aria-hidden="true"><Icon name={CheckIcon} /></span> : null}
               </li>)}
         </ul>
       ) : null}
