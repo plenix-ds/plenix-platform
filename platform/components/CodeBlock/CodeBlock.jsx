@@ -30,6 +30,7 @@ import { cx } from '../../utils/cx.js';
 import { Button } from '../Button/Button.jsx';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import CheckIcon from 'plenix-platform/icons/plenix/check';
 
 const KEYWORDS = 'import|from|export|default|const|let|var|function|return|if|else|for|while|do|switch|case|break|continue|new|delete|typeof|instanceof|in|of|null|undefined|true|false|this|async|await|class|extends|try|catch|finally|throw';
 // each rule: [kind, pattern]; the first that matches at a position wins
@@ -102,7 +103,7 @@ export function CodeBlock({ title, maxHeight = 'none', copy = true, label, langu
       {title || copy ? (
         <div className="plx-code-block__head">
           {title ? <span className="plx-code-block__title">{title}</span> : <span />}
-          {copy ? <Button size="xs" variant="ghost" icon={copied ? 'check' : undefined} onClick={doCopy}>{copied ? t.copied : t.copy}</Button> : null}
+          {copy ? <Button size="xs" variant="ghost" icon={copied ? CheckIcon : undefined} onClick={doCopy}>{copied ? t.copied : t.copy}</Button> : null}
           {copy ? <VisuallyHidden role="status">{said}</VisuallyHidden> : null}
         </div>
       ) : null}

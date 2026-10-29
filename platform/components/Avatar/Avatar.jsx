@@ -45,6 +45,8 @@ import { cx } from '../../utils/cx.js';
 import { Icon } from '../Icon/Icon.jsx';
 import { StatusDot } from '../StatusDot/StatusDot.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import PersonFemaleIcon from 'plenix-platform/icons/plenix/person-female';
+import PersonMaleIcon from 'plenix-platform/icons/plenix/person-male';
 
 const SIZES = [20, 24, 28, 32, 40, 48, 64];   // the scale its classes define (plx-avatar--24 …)
 // the names pages use: 2xs 20 (inside a small control: the account row in a pane footer), xs 24, sm 28, md 32, lg 40, xl 48, 2xl 64 (numbers are rejected by the system check)
@@ -65,7 +67,7 @@ export function initialsOf(name) {
   return (first + (JOINING.test(first) && JOINING.test(last) ? '\u200C' : '') + last).toUpperCase();
 }
 
-const GENDER = { male: { tone: 'blue', icon: 'person-male' }, female: { tone: 'pink', icon: 'person-female' } };
+const GENDER = { male: { tone: 'blue', icon: PersonMaleIcon }, female: { tone: 'pink', icon: PersonFemaleIcon } };
 
 export function Avatar({ name, src, initials, size = 'sm', color, category, gender, label, presence, strings, className, ...rest }) {
   devWarn('Avatar', { size }, { size: ['2xs','xs','sm','md','lg','xl','2xl'] });

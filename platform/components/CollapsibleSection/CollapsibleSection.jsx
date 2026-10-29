@@ -34,6 +34,8 @@ import { useUid } from '../../utils/layer.js';
 import { Icon, asIcon as iconElement } from '../Icon/Icon.jsx';
 import { Button } from '../Button/Button.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
+import ChevronUpIcon from 'plenix-platform/icons/plenix/chevron-up';
 
 const asIcon = (i) => iconElement(i);   // a name or an imported module (#280)
 
@@ -49,7 +51,7 @@ export function CollapsibleSection({ title, icon, expanded, defaultExpanded = tr
         <button type="button" className="plx-collapsible-section__toggle" aria-expanded={open} aria-controls={id + '-body'} onClick={toggle}>
           {icon ? <span className="plx-collapsible-section__icon" aria-hidden="true">{asIcon(icon)}</span> : null}
           <span className="plx-collapsible-section__title">{title}</span>
-          <span className="plx-collapsible-section__chevron" aria-hidden="true"><Icon name="chevron-down" /></span>
+          <span className="plx-collapsible-section__chevron" aria-hidden="true"><Icon name={ChevronDownIcon} /></span>
         </button>
         {actions ? <span className="plx-collapsible-section__actions">{actions}</span> : null}
       </Tag>
@@ -63,7 +65,7 @@ export function ShowMore({ expanded = false, count, onToggle, size = '2xs', stri
   devWarn('ShowMore', { size }, { size: ['md','sm','xs','2xs','lg'] });
   const t = useStrings('collapsibleSection', strings);
   return (
-    <Button size={size} iconEnd={expanded ? 'chevron-up' : 'chevron-down'} aria-expanded={expanded} onClick={() => { if (onToggle) onToggle(!expanded); }} {...rest}>
+    <Button size={size} iconEnd={expanded ? ChevronUpIcon : ChevronDownIcon} aria-expanded={expanded} onClick={() => { if (onToggle) onToggle(!expanded); }} {...rest}>
       {expanded ? t.less : (count !== undefined && count !== null && count !== '' ? t.moreCount.replace('{n}', count) : t.more)}
     </Button>
   );

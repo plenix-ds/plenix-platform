@@ -30,6 +30,8 @@ import React from 'react';
 import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { Icon } from '../Icon/Icon.jsx';
+import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
+import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
 
 const VARIANTS = ['default', 'bordered', 'inline'];
 
@@ -50,8 +52,8 @@ export function Details({ summary, children, variant = 'default', open: openProp
     <details className={cx('plx-details', 'plx-details--' + v, className)} open={open} name={name} onToggle={toggled} {...rest}>
       <summary className="plx-details__summary">
         <span className="plx-details__marker" aria-hidden="true">
-          <span className="plx-details__chevron plx-details__chevron--closed"><Icon name="chevron-right" /></span>
-          <span className="plx-details__chevron plx-details__chevron--open"><Icon name="chevron-down" /></span>
+          <span className="plx-details__chevron plx-details__chevron--closed"><Icon name={ChevronRightIcon} /></span>
+          <span className="plx-details__chevron plx-details__chevron--open"><Icon name={ChevronDownIcon} /></span>
         </span>
         <span className="plx-details__label">{summary}</span>
       </summary>

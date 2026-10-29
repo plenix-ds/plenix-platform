@@ -20,9 +20,10 @@ import { Text } from '../Text/Text.jsx';
 import { Button } from '../Button/Button.jsx';
 import { Popover } from '../Popover/Popover.jsx';
 import { cx } from '../../utils/cx.js';
+import SparkleIcon from 'plenix-platform/icons/plenix/sparkle';
 export const AILabel=React.forwardRef(function AILabel({variant='badge',children,explanation,strings,className},ref){
   devWarn('AILabel', { variant }, { variant: ['badge','inline','explanation'] });
  const t={label:'AI-generated',explain:'About this AI content',...strings},label=children||t.label,cls=cx('plx-ai','plx-ai-label',className);
- if(variant==='explanation'&&explanation)return <Popover label={t.explain} title={t.explain} trigger={<Button ref={ref} className={cls} variant="ghost" size="sm" icon="sparkle">{label}</Button>}><Text>{explanation}</Text></Popover>;
- return variant==='inline'?<Inline as="span" className={cls}><Icon name="sparkle"/><Text as="span">{label}</Text></Inline>:<Badge className={cls} tone="neutral" icon="sparkle">{label}</Badge>;
+ if(variant==='explanation'&&explanation)return <Popover label={t.explain} title={t.explain} trigger={<Button ref={ref} className={cls} variant="ghost" size="sm" icon={SparkleIcon}>{label}</Button>}><Text>{explanation}</Text></Popover>;
+ return variant==='inline'?<Inline as="span" className={cls}><Icon name={SparkleIcon}/><Text as="span">{label}</Text></Inline>:<Badge className={cls} tone="neutral" icon={SparkleIcon}>{label}</Badge>;
 });

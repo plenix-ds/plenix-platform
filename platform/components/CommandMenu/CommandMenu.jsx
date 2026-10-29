@@ -49,6 +49,8 @@ import { Icon } from '../Icon/Icon.jsx';
 import { Kbd } from '../Kbd/Kbd.jsx';
 import { Button } from '../Button/Button.jsx';
 import { SearchField } from '../SearchField/SearchField.jsx';
+import ArrowLeftIcon from 'plenix-platform/icons/plenix/arrow-left';
+import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 // how well an item matches the text: 4 the label starts with it, 3 a word of the label does, 2 the label contains it,
@@ -127,7 +129,7 @@ export const CommandMenu = React.forwardRef(function CommandMenu({ items = [], l
     <div className={cx('plx-command-menu', className)} {...rest}>
       {page ? (
         <div className="plx-command-menu__page">
-          <Button variant="ghost" size="xs" iconOnly icon="arrow-left" label={t.back} onClick={back} />
+          <Button variant="ghost" size="xs" iconOnly icon={ArrowLeftIcon} label={t.back} onClick={back} />
           <span className="plx-command-menu__page-title">{page.label}</span>
         </div>
       ) : null}
@@ -153,7 +155,7 @@ export const CommandMenu = React.forwardRef(function CommandMenu({ items = [], l
                   {it.description ? <span className="plx-command-menu__description">{it.description}</span> : null}
                 </span>
                 {it.shortcut ? <Kbd className="plx-command-menu__shortcut">{hotkeyLabel(it.shortcut)}</Kbd> : null}
-                {it.items ? <span className="plx-command-menu__chevron" aria-hidden="true"><Icon name="chevron-right" /></span> : null}
+                {it.items ? <span className="plx-command-menu__chevron" aria-hidden="true"><Icon name={ChevronRightIcon} /></span> : null}
               </div>
             );
           });
