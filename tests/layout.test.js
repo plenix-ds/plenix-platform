@@ -74,6 +74,11 @@ if (changed.wants({ units: ['components/Isolate', 'components/DataGrid', 'compon
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'ids-rtl-606.test.js')], { stdio: 'inherit', env: process.env });
   if (result.status !== 0) process.exit(result.status || 1);
 }
+// the ES module build finds its icons beside itself (issue 284): its own test, when the Icon component changed
+if (changed.wants({ units: ['components/Icon'] })) {
+  const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'icon-module-url-284.test.js')], { stdio: 'inherit', env: process.env });
+  if (result.status !== 0) process.exit(result.status || 1);
+}
 // a failed icon file is asked for once more (issue 283): its own test, when the Icon component changed
 if (changed.wants({ units: ['components/Icon'] })) {
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'icon-retry-283.test.js')], { stdio: 'inherit', env: process.env });
