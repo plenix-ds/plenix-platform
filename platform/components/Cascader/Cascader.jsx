@@ -50,6 +50,8 @@ import { useFloating, FLOATING_ANCHOR } from '../../utils/floating.js';
 const TOP_LAYER = FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
 import { formatNumber } from '../../utils/format.js';
+import { Icon } from '../Icon/Icon.jsx';
+import SelectChevronIcon from 'plenix-platform/icons/plenix/select-chevron';
 
 
 // every leaf of the hierarchy with its path of items
@@ -127,7 +129,7 @@ export const Cascader = React.forwardRef(function Cascader({ options = [], value
           onClick={() => (open ? close(false) : openList())}
           onKeyDown={(e) => { if (e.key === 'ArrowDown' && !open) { e.preventDefault(); openList(); } }} {...rest}>
           <span id={auto + '-value'} className={cx('plx-cascader__value', !shown && 'plx-cascader__placeholder')}>{shown || (multiple && chosen.length ? '' : placeholder || t.placeholder)}</span>
-          <span className="plx-cascader__chevron" aria-hidden="true" />
+          <span className="plx-cascader__chevron" aria-hidden="true"><Icon icon={SelectChevronIcon} filled={false} /></span>
         </button>
       </div>
       {open ? (

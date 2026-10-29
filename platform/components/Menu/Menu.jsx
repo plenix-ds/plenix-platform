@@ -83,6 +83,7 @@ import { Portal } from '../../utils/portal.jsx';
 import { useFloating } from '../../utils/floating.js';
 import { useGesture } from '../../hooks/useGesture.js';
 import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
+import CheckIcon from 'plenix-platform/icons/plenix/check';
 
 const MenuContext = React.createContext(null);
 const RadioContext = React.createContext(null);
@@ -175,7 +176,7 @@ export function MenuItem({ icon, danger = false, disabled = false, checked, type
   };
   const content = (
     <>
-      {marked ? <span className={cx('plx-menu__check', radio && 'plx-menu__check--radio', on && 'is-checked')} aria-hidden="true" /> : null}
+      {marked ? <span className={cx('plx-menu__check', radio && 'plx-menu__check--radio', on && 'is-checked')} aria-hidden="true">{on ? <Icon icon={CheckIcon} filled={false} /> : null}</span> : null}
       {icon ? <span className="plx-menu__icon">{asIcon(icon)}</span> : null}
       <span className="plx-menu__label">{children}</span>
     </>

@@ -50,9 +50,10 @@ import { arrowStep } from '../../utils/direction.js';
 import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
 import { Count } from '../Count/Count.jsx';
-import { stateIcon } from '../Icon/Icon.jsx';
+import { Icon, stateIcon } from '../Icon/Icon.jsx';
 import { Menu, MenuItem } from '../Menu/Menu.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import CaretIcon from 'plenix-platform/icons/plenix/caret';
 
 // the selected tab fills its icon (the tab owns its state)
 const asIcon = stateIcon;
@@ -153,7 +154,7 @@ export function Tabs({ variant = 'contained', orientation = 'horizontal', items,
           <Menu label={words.moreLabel} placement="bottom-end" className="plx-tabs__more-anchor" trigger={
             <button type="button" className={cx('plx-tabs__tab', 'plx-tabs__tab--' + kind, seg && 'plx-tabs__tab--first', seg && 'plx-tabs__tab--last', 'plx-tabs__more')}>
               <span className="plx-tabs__label">{words.more}</span>
-              <span className="plx-tabs__more-caret" aria-hidden="true" />
+              <span className="plx-tabs__more-caret" aria-hidden="true"><Icon icon={CaretIcon} filled={false} /></span>
             </button>}>
             {moved.map((t) => (
               <MenuItem key={t.value} icon={t.icon} disabled={t.disabled} onSelect={() => { focusNext.current = t.value; select(t.value); }}>

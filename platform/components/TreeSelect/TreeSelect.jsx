@@ -48,6 +48,9 @@ import { Popover } from '../Popover/Popover.jsx';
 import { SearchField } from '../SearchField/SearchField.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import FolderOpenIcon from 'plenix-platform/icons/plenix/folder-open';
+import SelectChevronIcon from 'plenix-platform/icons/plenix/select-chevron';
+import SquarePlusIcon from 'plenix-platform/icons/plenix/square-plus';
+import SquareMinusIcon from 'plenix-platform/icons/plenix/square-minus';
 
 const asIcon = (i) => iconElement(i);   // a name or an imported module (#280)
 const OPEN_ICONS = { folder: FolderOpenIcon };
@@ -144,7 +147,7 @@ export function TreeSelect({ nodes = [], value, values, onChange, multiple = fal
         onClick={(e) => { if (e.target.closest('[role="treeitem"]') !== e.currentTarget) return; moveTo(n.id); choose(n); }}>
         <div className={cx('plx-tree__row', !multiple && state === 'true' && 'is-selected', n.id === ringId && 'is-focus-visible')} data-plx-level={Math.min(level, 12)}>
           <span className={cx('plx-tree__toggle', isOpen && 'is-open', !kids && 'is-leaf')} aria-hidden="true"
-            onClick={kids ? (e) => { e.stopPropagation(); toggleOpen(n.id); moveTo(n.id); } : undefined} />
+            onClick={kids ? (e) => { e.stopPropagation(); toggleOpen(n.id); moveTo(n.id); } : undefined}>{kids ? <Icon icon={isOpen ? SquareMinusIcon : SquarePlusIcon} filled={false} /> : null}</span>
           {multiple ? <input type="checkbox" className="plx-check__input plx-tree-select__mark" tabIndex={-1} aria-hidden="true" inert="" readOnly checked={state === 'true'}
             ref={(el) => { if (el) el.indeterminate = state === 'mixed'; }} /> : null}
           {n.icon ? <span className="plx-tree__icon">{asIcon(iconOf(n, isOpen || state === 'true'))}</span> : null}
@@ -163,7 +166,7 @@ export function TreeSelect({ nodes = [], value, values, onChange, multiple = fal
     <button type="button" id={id} role="combobox" aria-label={label} aria-invalid={invalid || undefined} aria-required={required || undefined} disabled={disabled}
       className={cx('plx-input', 'plx-tree-select__trigger', !names.length && 'is-empty')} {...rest}>
       <span className={names.length ? 'plx-tree-select__value' : 'plx-tree-select__placeholder'}>{names.length ? summary : (placeholder || t.placeholder)}</span>
-      <span className="plx-tree-select__chevron" aria-hidden="true" />
+      <span className="plx-tree-select__chevron" aria-hidden="true"><Icon icon={SelectChevronIcon} filled={false} /></span>
     </button>
   );
   return (

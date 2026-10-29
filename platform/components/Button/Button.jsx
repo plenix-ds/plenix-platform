@@ -66,6 +66,7 @@ import { Tooltip, InTooltip } from '../Tooltip/Tooltip.jsx';
 import { Kbd } from '../Kbd/Kbd.jsx';
 import { parseHotkey, hotkeyLabel } from '../../utils/hotkey.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 
 const TONES = ['success', 'danger', 'neutral'];
 
@@ -106,7 +107,7 @@ export const Button = React.forwardRef(function Button({ variant = 'secondary', 
       {over ? <span className="plx-button__stack"><span className={cx(labelClass, 'plx-button__label--waiting')}>{children}</span>{spinner('plx-button__icon plx-button__icon--over')}</span>
         : (hasLabel ? <span className={labelClass}>{children}</span> : null)}
       {iconEnd ? <span className="plx-button__icon">{asIcon(iconEnd, on)}</span> : null}
-      {caret ? <span className={caretClass} aria-hidden="true" /> : null}
+      {caret ? <span className={caretClass} aria-hidden="true"><Icon icon={ChevronDownIcon} filled={false} /></span> : null}
     </>
   );
   const a11y = { 'aria-label': iconOnly ? (label || (typeof children === 'string' ? children : undefined)) : label, 'aria-expanded': expanded,
