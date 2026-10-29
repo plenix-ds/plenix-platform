@@ -34,6 +34,9 @@
        left or over are announced politely, once typing pauses (announce).
    Notes:
      Other props pass through to the <div>.
+     Writing direction (owner, ctm-needs-34): dir ("ltr" | "rtl") and lang on the Field go on the <div>, so the label, the control,
+       the description and the error all take that direction: an Arabic field in an English page, or the reverse. Use
+       the dir attribute, never the CSS direction property: the :dir(rtl) rules answer only to the attribute.
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';

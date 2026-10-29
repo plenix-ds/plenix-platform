@@ -24,7 +24,7 @@ if (changed.wants({ units: ['components/Resizable', 'components/DataGrid', 'patt
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'pane-limit.test.js')], { stdio: 'inherit', env: process.env });
   if (result.status !== 0) process.exit(result.status || 1);
 }
-if (!changed.wants({ units: ['patterns/AppShell', 'patterns/SettingsLayout', 'patterns/SplitView', 'components/VisuallyHidden', 'providers/DirectionProvider'] })) changed.none('LAYOUT_OK 0/0');
+if (!changed.wants({ units: ['patterns/AppShell', 'patterns/SettingsLayout', 'patterns/SplitView', 'components/VisuallyHidden', 'providers/DirectionProvider', 'components/Checkbox'] })) changed.none('LAYOUT_OK 0/0');
 changed.report('every mode');
 const P = 'file://' + (ROOT.startsWith('/') ? '' : '/') + ROOT.replace(/\\/g, '/') + '/platform/';
 // each mode through a kind of page that the standard gives it
@@ -116,6 +116,21 @@ const html = '<!doctype html><html lang="en" data-plx-theme="default" data-plx-m
     return { first, wrapped, untouched, turned, back };
   });
   check('DirectionProvider: follow gives the page\'s own direction, follows it, and writes nothing #262', follow.first === 'ltr' && !follow.wrapped && follow.untouched && follow.turned === 'rtl' && follow.back === 'ltr', JSON.stringify(follow));
+  // #420 (owner, ctm-needs-34): dir and lang on a Checkbox, Radio or Switch go on its row, so the box and its text change sides
+  const rowDir = await page.evaluate(async () => {
+    const h = React.createElement, P = window.Plenix, host = document.createElement('div'); host.style.cssText = 'inline-size:600px'; document.body.appendChild(host);
+    const root = ReactDOM.createRoot(host);
+    ReactDOM.flushSync(() => root.render(h('div', null, h(P.Checkbox, { dir: 'rtl', lang: 'ar', label: 'مربع', 'data-k': 'c' }), h(P.Radio, { dir: 'rtl', lang: 'ar', label: 'خيار', name: 'r', 'data-k': 'r' }), h(P.Switch, { dir: 'rtl', lang: 'ar', label: 'مفتاح', 'data-k': 's' }))));
+    await new Promise((r) => setTimeout(r, 200));
+    const out = {};
+    for (const k of ['c', 'r', 's']) {
+      const input = host.querySelector('[data-k="' + k + '"]'), row = input.closest('label'), box = (k === 's' ? row.querySelector('.plx-switch__track') : input).getBoundingClientRect(), text = row.querySelector('.plx-check__label, .plx-switch__label').getBoundingClientRect();
+      out[k] = { inputDir: input.getAttribute('dir'), rowDir: row.getAttribute('dir'), rowLang: row.getAttribute('lang'), rtl: row.matches(':dir(rtl)'), boxRight: box.left > text.left };
+    }
+    root.unmount(); host.remove(); return out;
+  });
+  check('Checkbox: dir and lang go on the row of a Checkbox, Radio and Switch, so the box sits on the reading start #420',
+    ['c', 'r', 's'].every((k) => rowDir[k].inputDir === null && rowDir[k].rowDir === 'rtl' && rowDir[k].rowLang === 'ar' && rowDir[k].rtl && rowDir[k].boxRight), JSON.stringify(rowDir));
   check('SplitView: stacks under 900px of its own width, side by side from 900px #410', !!split[899] && !!split[900] && split[899].width === 899 && split[899].direction === 'column' && split[900].width === 900 && split[900].direction === 'row', JSON.stringify(split));
   // issue 237: stacked by its room, the divider is the stacked one (horizontal, the height), the same focused separator
   const turned = await page.evaluate(async () => {

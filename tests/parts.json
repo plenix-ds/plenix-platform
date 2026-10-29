@@ -125,6 +125,10 @@
   "layout": {
    "parts": [
     {
+     "part": "Checkbox",
+     "checks": 1
+    },
+    {
      "part": "DirectionProvider",
      "checks": 1
     },

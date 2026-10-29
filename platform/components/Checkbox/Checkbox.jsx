@@ -46,28 +46,33 @@
      RadioGroup and ChoiceList pass other props to the <fieldset>; their readOnly goes to each radio.
      Each is read-only by its own readOnly, else inside a read-only region (useReadOnly, providers/ReadOnly.jsx): it keeps its
        value and focus, a click or a change key does not change it, and Checkbox and Switch are marked aria-readonly.
+     Writing direction (owner, ctm-needs-34): dir ("ltr" | "rtl") and lang ("ar", "en", …) on Checkbox, Radio and Switch go on
+       the row (the <label>), so the box and its text change sides together; on RadioGroup and ChoiceList they go on the
+       <fieldset>, so the legend and every option follow. An Arabic question can sit in an English page (and the reverse):
+       <Fieldset dir="rtl" lang="ar" legend="بيانات الحضور"><RadioGroup … /><Checkbox label="…" /></Fieldset>.
+       Use the dir attribute, never the CSS direction property: the :dir(rtl) rules answer only to the attribute.
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { useReadOnly, readOnlyProps } from '../../providers/ReadOnly.jsx';
 
-export const Checkbox = React.forwardRef(function Checkbox({ label, description, indeterminate = false, className, readOnly, ...rest }, ref) {
+export const Checkbox = React.forwardRef(function Checkbox({ label, description, indeterminate = false, className, readOnly, dir, lang, ...rest }, ref) {
   const locked = useReadOnly(readOnly);
   const inner = React.useRef(null);
   React.useImperativeHandle(ref, () => inner.current);
   React.useEffect(() => { if (inner.current) inner.current.indeterminate = indeterminate; }, [indeterminate]);
   return (
-    <label className={cx('plx-check', className)}>
+    <label className={cx('plx-check', className)} dir={dir} lang={lang}>
       <input ref={inner} type="checkbox" className="plx-check__input" {...readOnlyProps(locked, rest)} />
       {label || description ? <span className="plx-check__text"><span className="plx-check__label">{label}</span>{description ? <span className="plx-check__description">{description}</span> : null}</span> : null}
     </label>
   );
 });
 
-export const Radio = React.forwardRef(function Radio({ label, description, className, readOnly, ...rest }, ref) {
+export const Radio = React.forwardRef(function Radio({ label, description, className, readOnly, dir, lang, ...rest }, ref) {
   const locked = useReadOnly(readOnly);
   return (
-    <label className={cx('plx-check', className)}>
+    <label className={cx('plx-check', className)} dir={dir} lang={lang}>
       <input ref={ref} type="radio" className="plx-check__input" {...readOnlyProps(locked, rest, { aria: false })} />
       {label ? <span className="plx-check__text"><span className="plx-check__label">{label}</span>{description ? <span className="plx-check__description">{description}</span> : null}</span> : null}
     </label>
@@ -100,10 +105,10 @@ export function ChoiceList({ legend, name, value, onChange, options, className, 
   );
 }
 
-export const Switch = React.forwardRef(function Switch({ label, labelHidden = false, className, readOnly, ...rest }, ref) {
+export const Switch = React.forwardRef(function Switch({ label, labelHidden = false, className, readOnly, dir, lang, ...rest }, ref) {
   const locked = useReadOnly(readOnly);
   return (
-    <label className={cx('plx-switch', className)}>
+    <label className={cx('plx-switch', className)} dir={dir} lang={lang}>
       <input ref={ref} type="checkbox" role="switch" className="plx-switch__input" aria-label={labelHidden ? label : undefined} {...readOnlyProps(locked, rest)} />
       <span className="plx-switch__track" aria-hidden="true" />
       {label && !labelHidden ? <span className="plx-switch__label">{label}</span> : null}

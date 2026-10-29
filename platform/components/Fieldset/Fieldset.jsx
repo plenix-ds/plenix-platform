@@ -20,6 +20,9 @@
      A row keeps its controls aligned at their tops (their labels on one line) and wraps when it runs out of room.
    Notes:
      Other props pass through to the <fieldset> (disabled turns every control in it off).
+     Writing direction (owner, ctm-needs-34): dir ("ltr" | "rtl") and lang on the Fieldset go on the <fieldset>, so the legend and
+       every control in it follow: an Arabic question with its checkboxes and options inside an English page, or the
+       reverse (<Fieldset dir="rtl" lang="ar" legend="…">). Use the dir attribute, never the CSS direction property.
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
