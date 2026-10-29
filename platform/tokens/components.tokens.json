@@ -722,24 +722,60 @@
       "$value": "{plx-ref.size-280px}",
       "$type": "dimension"
     },
+    "secondary-pane-width-sm-from-1440": {
+      "$value": "{plx-ref.size-220px}",
+      "$type": "dimension",
+      "$description": "The secondary pane widths in a window 1440px wide up to 1919px (owner, issue 463 option C, step 2): each steps up one size; grid.css sets secondary-pane-width-sm, -md and -lg to them there."
+    },
+    "secondary-pane-width-md-from-1440": {
+      "$value": "{plx-ref.size-260px}",
+      "$type": "dimension"
+    },
+    "secondary-pane-width-lg-from-1440": {
+      "$value": "{plx-ref.size-320px}",
+      "$type": "dimension"
+    },
+    "secondary-pane-width-sm-from-1920": {
+      "$value": "{plx-ref.size-260px}",
+      "$type": "dimension",
+      "$description": "The secondary pane widths in a window 1920px wide and wider."
+    },
+    "secondary-pane-width-md-from-1920": {
+      "$value": "{plx-ref.size-320px}",
+      "$type": "dimension"
+    },
+    "secondary-pane-width-lg-from-1920": {
+      "$value": "{plx-ref.size-400px}",
+      "$type": "dimension"
+    },
     "secondary-pane-width-max": {
       "$value": "{plx-ref.size-400px}",
       "$type": "dimension"
     },
     "side-panel-width-default": {
-      "$value": "{plx-sys.shell-nav-width}",
+      "$value": "{plx-ref.size-240px}",
       "$type": "dimension",
       "$extensions": {
         "com.plenix": {
           "before": [
-            "  /* ── SIDE PANEL: opens as wide as the navigation pane (owner, batch 261); a resizable panel is dragged between min and max ── */"
+            "  /* ── SIDE PANEL: opens as wide as the navigation pane under 1440px (owner, batch 261), wider on larger windows (owner, issue 463 option C, step 2); a resizable panel is dragged between min and max ── */"
           ]
         }
       }
     },
     "side-panel-width-min": {
-      "$value": "{plx-sys.shell-nav-width}",
+      "$value": "{plx-ref.size-240px}",
       "$type": "dimension"
+    },
+    "side-panel-width-default-from-1440": {
+      "$value": "{plx-ref.size-320px}",
+      "$type": "dimension",
+      "$description": "The side panel's starting width in a window 1440px wide up to 1919px (owner, issue 463 option C, step 2); grid.css sets side-panel-width-default to it there."
+    },
+    "side-panel-width-default-from-1920": {
+      "$value": "{plx-ref.size-400px}",
+      "$type": "dimension",
+      "$description": "The side panel's starting width in a window 1920px wide and wider."
     },
     "side-panel-width-max": {
       "$value": "{plx-ref.size-560px}",
