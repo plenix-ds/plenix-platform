@@ -19,6 +19,7 @@
      placeholder: the hint in the empty field (default "Choose a time zone")
      label: the accessible name when there is no Field
      invalid: shows the invalid state
+     readOnly: shows the chosen zone and does not open the list or change it; default the nearest ReadOnly region's (useReadOnly)
      disabled: the field cannot be used
      locale: the language of the zone names (default the page's language)
      strings: the words it shows and announces, for other languages: { placeholder, empty: "No matches", utc: "Coordinated
@@ -51,6 +52,7 @@ import { useFloating, FLOATING_ANCHOR } from '../../utils/floating.js';
 const TOP_LAYER = FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 import { useStrings, useLocale, createTranslator } from '../../providers/LocaleProvider.jsx';
 import { Icon } from '../Icon/Icon.jsx';
+import { useReadOnly } from '../../providers/ReadOnly.jsx';
 import SelectChevronIcon from 'plenix-platform/icons/plenix/select-chevron';
 
 // a few zones for browsers without Intl.supportedValuesOf
@@ -96,7 +98,8 @@ const offsetKeys = (o) => { const sign = o.minutes < 0 ? '-' : '+', a = Math.abs
   return [fold(o.offset), sign + h, sign + String(h).padStart(2, '0'), sign + h + ':' + String(m).padStart(2, '0'), 'utc' + sign + h, 'gmt' + sign + h].join(' '); };
 
 export const TimeZoneSelect = React.forwardRef(function TimeZoneSelect({ value, onChange, grouped = true, showOffset = true, zones, date, placeholder,
-  label, invalid, disabled, locale, strings, id, className, ...rest }, ref) {
+  label, invalid, disabled, readOnly, locale, strings, id, className, ...rest }, ref) {
+  const locked = useReadOnly(readOnly);
   const t = useStrings('timeZoneSelect', strings);
   const loc = useLocale();
   const digits = useDigits();
@@ -150,8 +153,9 @@ export const TimeZoneSelect = React.forwardRef(function TimeZoneSelect({ value, 
     const el = list.current.querySelector('#' + optId(active));
     if (el && el.scrollIntoView) el.scrollIntoView({ block: 'nearest' });
   }, [active, open]);   // eslint-disable-line react-hooks/exhaustive-deps
-  const choose = (o) => { if (!o) return; if (onChange) onChange(o.value); setText(''); setOpen(false); };
+  const choose = (o) => { if (!o || locked) return; if (onChange) onChange(o.value); setText(''); setOpen(false); };
   const onKey = (e) => {
+    if (locked && e.key !== 'Tab' && e.key !== 'Escape') { if (!e.ctrlKey && !e.metaKey && !e.altKey) e.preventDefault(); return; }   // read-only: no keys open the list or choose
     if (e.key === 'ArrowDown') { e.preventDefault(); if (!open) setOpen(true); else setActive((a) => Math.min(shown.length - 1, a + 1)); }
     else if (e.key === 'ArrowUp') { e.preventDefault(); setActive((a) => Math.max(0, a - 1)); }
     else if (e.key === 'Home' && open && !text) { e.preventDefault(); setActive(0); }
@@ -166,7 +170,8 @@ export const TimeZoneSelect = React.forwardRef(function TimeZoneSelect({ value, 
           aria-activedescendant={open && shown[active] ? optId(active) : undefined} aria-label={label} disabled={disabled} autoComplete="off"
           aria-description={current && showOffset ? localDigits(current.offset, { digits }) : undefined}
           value={open ? text : (current ? current.label : '')} placeholder={current && open ? current.label : (placeholder || t.placeholder)}
-          onChange={(e) => { setText(e.target.value); setOpen(true); }} onFocus={() => setOpen(true)} onKeyDown={onKey} {...rest} />
+          readOnly={locked || undefined} aria-readonly={locked || undefined}
+          onChange={(e) => { if (locked) return; setText(e.target.value); setOpen(true); }} onFocus={() => { if (!locked) setOpen(true); }} onKeyDown={onKey} {...rest} />
         {showOffset && current && !open ? <span className="plx-time-zone-select__field-offset" aria-hidden="true"><Isolate>{current.offset}</Isolate></span> : null}
         <span className="plx-combobox__chevron" aria-hidden="true"><Icon icon={SelectChevronIcon} filled={false} /></span>
       </div>

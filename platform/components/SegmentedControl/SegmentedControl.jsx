@@ -15,8 +15,11 @@
      size: "md" (default) | "sm"
      className: more classes on the group
      fold: "auto" (default) | "never"
+     readOnly: shows the chosen option and does not let it change; default the nearest ReadOnly region's (useReadOnly)
      ...rest: other attributes go on the group element
    Behavior:
+     Read-only: the options keep their place and focus (the chosen one is the Tab stop), but a click, the arrow keys, Home and End
+       do not choose another option; the group is marked aria-readonly. Folded into the drop-down list, the Select is read-only too.
      Arrow keys move to the next or previous option and choose it, wrapping around; Home and End go to the first and last.
      Only the chosen option is in the Tab order.
      When the options do not fit their room, the control becomes a drop-down list (Select) with the same options, value
@@ -29,6 +32,7 @@ import React from 'react';
 import { devWarn } from '../../utils/devWarn.js';
 import { arrowStep } from '../../utils/direction.js';
 import { cx } from '../../utils/cx.js';
+import { useReadOnly } from '../../providers/ReadOnly.jsx';
 import { stateIcon } from '../Icon/Icon.jsx';
 import { Select } from '../Input/Input.jsx';
 
@@ -73,8 +77,9 @@ function useFold(frameRef, groupRef, key, enabled) {
   return enabled && folded;
 }
 
-export function SegmentedControl({ options, value, onChange, label, size = 'md', fold = 'auto', className, ...rest }) {
+export function SegmentedControl({ options, value, onChange, label, size = 'md', fold = 'auto', readOnly, className, ...rest }) {
   devWarn('SegmentedControl', { size, fold }, { size: ['md','sm'], fold: ['auto','never'] });
+  const locked = useReadOnly(readOnly);
   const refs = React.useRef([]);
   const frame = React.useRef(null), group = React.useRef(null);
   const folded = useFold(frame, group, size + '|' + options.map((o) => String(o.value) + ':' + (o.label || '') + ':' + (o.icon || '')).join('|'), fold !== 'never');
@@ -87,7 +92,9 @@ export function SegmentedControl({ options, value, onChange, label, size = 'md',
     if (e.key === 'Home') n = 0;
     if (e.key === 'End') n = options.length - 1;
     if (n === null) return;
-    e.preventDefault(); onChange(options[n].value); if (refs.current[n]) refs.current[n].focus();
+    e.preventDefault();
+    if (locked) return;   // read-only: the keys move nothing and choose nothing
+    onChange(options[n].value); if (refs.current[n]) refs.current[n].focus();
   };
   if (folded) {
     const at = options.findIndex((o) => o.value === value);
@@ -95,16 +102,16 @@ export function SegmentedControl({ options, value, onChange, label, size = 'md',
       <div ref={frame} className="plx-segmented-fit">
         <Select aria-label={label} size={size} className={className} value={String(Math.max(0, at))}
           options={options.map((o, i) => ({ value: String(i), label: o.label || o.ariaLabel || String(o.value) }))}
-          onChange={(e) => onChange(options[+e.target.value].value)} {...rest} />
+          readOnly={locked || undefined} onChange={(e) => { if (!locked) onChange(options[+e.target.value].value); }} {...rest} />
       </div>
     );
   }
   const segments = (
-    <div ref={group} role="radiogroup" aria-label={label} className={cx('plx-segmented', size === 'sm' && 'plx-segmented--sm', className)} {...rest}>
+    <div ref={group} role="radiogroup" aria-label={label} aria-readonly={locked || undefined} className={cx('plx-segmented', size === 'sm' && 'plx-segmented--sm', className)} {...rest}>
       {options.map((o, i) => (
         <button key={o.value} ref={(el) => { refs.current[i] = el; }} type="button" role="radio" aria-checked={o.value === value} tabIndex={i === index ? 0 : -1}
           aria-label={o.icon && !o.label ? o.ariaLabel || String(o.value) : undefined}
-          className={cx('plx-segmented__item', size === 'sm' && 'plx-segmented__item--sm', o.value === value && 'is-selected')} onClick={() => onChange(o.value)} onKeyDown={(e) => move(e, i)}>
+          className={cx('plx-segmented__item', size === 'sm' && 'plx-segmented__item--sm', o.value === value && 'is-selected')} onClick={() => { if (!locked) onChange(o.value); }} onKeyDown={(e) => move(e, i)}>
           {o.icon ? stateIcon(o.icon, o.value === value) : null}{o.label ? <span>{o.label}</span> : null}
         </button>
       ))}

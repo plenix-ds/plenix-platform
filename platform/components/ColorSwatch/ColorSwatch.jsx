@@ -17,6 +17,7 @@
      showLabel: shows the label as text after the swatch (default false); with onClick the swatch and its label are one
        button (wave 4)
      onClick(event): makes the swatch a button that picks the color
+     readOnly: a swatch button keeps its pressed state and does not run onClick; default the nearest ReadOnly region's (useReadOnly)
      className: more classes on the swatch
      ColorPicker: the data colors (DATA_COLORS) as a group of swatch buttons, one pressed (batch 280: a data color is a hue)
        ColorPicker.value: the chosen hue
@@ -28,6 +29,7 @@
          (wave 4)
        ColorPicker shows one row (owner, batch 290): the colors that do not fit are in a More menu at its end ("+n", or the
        chosen color when it is one of them), each with its swatch and name
+       ColorPicker.readOnly: shows the chosen color and picks nothing, in the row and in its More menu; default the nearest ReadOnly region's
        ColorPicker.className: more classes on the group
    Behavior:
      unavailable marks the swatch cursor; callers still supply aria-disabled and prevent unavailable choices.
@@ -49,12 +51,16 @@ import { Button } from '../Button/Button.jsx';
 import { Menu, MenuItem } from '../Menu/Menu.jsx';
 import { useOverflow, splitAt } from '../../utils/overflow.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { useReadOnly } from '../../providers/ReadOnly.jsx';
 
 const nameOf = (h) => h.charAt(0).toUpperCase() + h.slice(1);
 
-export function ColorSwatch({ color, category, tone, size = 'md', shape = 'square', pressed, label, showLabel = false, unavailable = false, onClick, className, ...rest }) {
+export function ColorSwatch({ color, category, tone, size = 'md', shape = 'square', pressed, label, showLabel = false, unavailable = false, onClick: pick, readOnly, className, ...rest }) {
   if (category === 'brown') category = 'orange';
   devWarn('ColorSwatch', { tone, size }, { tone: ['accent','surface','frost'], size: ['sm','md'] });
+  const locked = useReadOnly(readOnly);
+  // read-only: a swatch button stays a button (focus, pressed state) but its press picks nothing
+  const onClick = pick ? (locked ? (e) => { e.preventDefault(); } : pick) : undefined;
   if (showLabel && label) {
     // the swatch and its name as one unit: a button when it picks the color, else a span with the name as text
     const chip = <ColorSwatch color={color} category={category} tone={tone} size={size} shape={shape} pressed={!!onClick && !!pressed} unavailable={unavailable} />;
@@ -68,8 +74,9 @@ export function ColorSwatch({ color, category, tone, size = 'md', shape = 'squar
 }
 
 // the data colors to choose from: each a swatch button named by its hue, the chosen one pressed
-export function ColorPicker({ value, onChange, label, size = 'md', palette = 'data', colors, invalid, required, className, ...rest }) {   // invalid and required: from Field, not for a group
+export function ColorPicker({ value, onChange, label, size = 'md', palette = 'data', colors, invalid, required, readOnly, className, ...rest }) {   // invalid and required: from Field, not for a group
   devWarn('ColorPicker', { size }, { size: ['sm','md'] });
+  const locked = useReadOnly(readOnly);
   const tw = useStrings('colorSwatch');
   if (label === undefined) label = tw.label;
   const colorName = (h) => (tw.colors && tw.colors[h]) || nameOf(h);
@@ -80,7 +87,7 @@ export function ColorPicker({ value, onChange, label, size = 'md', palette = 'da
   const ref = React.useRef(null);
   const fit = useOverflow(ref, list.length, palette + size + list.join());
   const hidden = list.slice(fit);
-  const pick = (h) => { if (onChange) onChange(h); };
+  const pick = (h) => { if (onChange && !locked) onChange(h); };
   const swatch = (h, extra) => <ColorSwatch key={h} color={cat ? undefined : h} category={cat ? h : undefined} size={size} {...extra} />;
   // each swatch in a slot as tall as the row, so every item and the More button share the first row's top
   const items = list.map((h) => <span key={h} data-plx-overflow-item="" className="plx-color-picker__slot">{swatch(h, { label: colorName(h), pressed: value === h, onClick: () => pick(h) })}</span>);
