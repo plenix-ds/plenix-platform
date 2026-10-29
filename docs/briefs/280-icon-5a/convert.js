@@ -32,7 +32,9 @@ for (const file of [...want].sort()) {
   const ast = Babel.transform(text, { ast: true, code: false, sourceType: 'module', parserOpts: { plugins: ['jsx'] } }).ast;
   const last = ast.program.body.filter((n) => n.type === 'ImportDeclaration').pop();
   const lines = names.map((n) => 'import ' + ident(n) + " from 'plenix-platform/icons/plenix/" + n + "';").join('\n');
-  text = last ? text.slice(0, last.end) + '\n' + lines + text.slice(last.end) : lines + '\n' + text;
+  // after the last import; a file with none: after its header comment (the spec reads the first line: "/* Plenix · …")
+  const head = /^\/\*[\s\S]*?\*\//.exec(text);
+  text = last ? text.slice(0, last.end) + '\n' + lines + text.slice(last.end) : head ? head[0] + '\n' + lines + text.slice(head[0].length) : lines + '\n' + text;
   fs.writeFileSync(path.join(ROOT, file), text);
   total += lits.length;
   console.log('+', file, lits.length, 'strings,', names.length, 'icons');

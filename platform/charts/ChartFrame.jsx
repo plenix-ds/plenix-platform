@@ -60,6 +60,7 @@ import { Table } from '../components/Table/Table.jsx';
 import { Button } from '../components/Button/Button.jsx';
 import { snapToGrid } from '../utils/grid.js';
 import { useStrings } from '../providers/LocaleProvider.jsx';
+import RefreshIcon from 'plenix-platform/icons/plenix/refresh';
 
 const MARGIN_TOKENS = { top: '--plx-comp-chart-margin-block-start', end: '--plx-comp-chart-margin-inline-end', bottom: '--plx-comp-chart-margin-block-end', start: '--plx-comp-chart-margin-inline-start' };
 
@@ -109,7 +110,7 @@ export function ChartFrame({ title, description, hideCaption = false, size = 'md
   const toolbar = (ia && ia.zoomed) || actions ? (
     <div className="plx-chart__actions">
       {actions}
-      {ia && ia.zoomed ? <Button size="sm" icon="refresh" onClick={ia.resetZoom}>{ia.strings.resetZoom}</Button> : null}
+      {ia && ia.zoomed ? <Button size="sm" icon={RefreshIcon} onClick={ia.resetZoom}>{ia.strings.resetZoom}</Button> : null}
     </div>
   ) : null;
   const caption = (

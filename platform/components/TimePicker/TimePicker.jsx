@@ -53,6 +53,8 @@ import { useDigits } from '../../providers/LocaleProvider.jsx';
 // the top layer and CSS anchor positioning (as Menu, Popover, Select and Combobox), checked once
 const TOP_LAYER = FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { Icon } from '../Icon/Icon.jsx';
+import ScheduleIcon from 'plenix-platform/icons/plenix/schedule';
 
 const pad = (n) => String(n).padStart(2, '0');
 const toMin = (v) => { const m = /^(\d{1,2}):(\d{2})$/.exec(v || ''); return m ? (+m[1]) * 60 + (+m[2]) : null; };
@@ -153,7 +155,7 @@ const ListPicker = React.forwardRef(function ListPicker({ t, cycle, step, curren
           value={text !== null ? text : show(mins, cycle, t, digits)} placeholder={cycle === '12' ? '9:00 ' + t.am : '09:00'}
           onChange={(e) => { setText(e.target.value); const n = parseTime(e.target.value, cycle); if (n !== null) setActive(nearest(n)); }}
           onBlur={() => { settle(); }} onClick={() => { if (!open && !disabled) openAt(mins); }} onKeyDown={onKey} {...rest} />
-        <span className="plx-time-picker__icon" aria-hidden="true" />
+        <span className="plx-time-picker__icon" aria-hidden="true"><Icon icon={ScheduleIcon} filled={false} /></span>
       </div>
       {open ? (
         <ul ref={list} className="plx-time-picker__list" id={auto + '-list'} role="listbox" popover={TOP_LAYER ? 'manual' : undefined} onMouseDown={(e) => e.preventDefault()} aria-label={label ? label + ', ' + t.times : t.times}>
@@ -231,7 +233,7 @@ const Segments = React.forwardRef(function Segments({ t, cycle, step, current, c
               onKeyDown={onKey(k, i)} onBlur={() => { typed.current = ''; }}>{text(k)}</span>
           </React.Fragment>
         ))}
-        <span className="plx-time-picker__icon" aria-hidden="true" />
+        <span className="plx-time-picker__icon" aria-hidden="true"><Icon icon={ScheduleIcon} filled={false} /></span>
       </div>
       {hidden}
     </div>

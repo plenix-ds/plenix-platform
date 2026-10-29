@@ -64,6 +64,8 @@ import { useFloating, FLOATING_ANCHOR } from '../../utils/floating.js';
 import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
 import { isDataValue } from '../../utils/dataValue.js';
 import { formatNumber } from '../../utils/format.js';
+import { Icon } from '../Icon/Icon.jsx';
+import SelectChevronIcon from 'plenix-platform/icons/plenix/select-chevron';
 
 // the top layer and CSS anchor positioning (as Menu, Popover and Select), checked once
 const TOP_LAYER = FLOATING_ANCHOR && typeof HTMLElement !== 'undefined' && Object.prototype.hasOwnProperty.call(HTMLElement.prototype, 'popover');
@@ -157,7 +159,7 @@ export const Combobox = React.forwardRef(function Combobox({ options = [], value
           aria-activedescendant={open && items[active] ? optId(active) : undefined} aria-label={label} disabled={disabled} autoComplete="off"
           value={open || multiple ? text : (current ? current.label : '')} placeholder={multiple && chosen.length ? '' : (current && !open ? current.label : placeholder)}
           onChange={(e) => { setText(e.target.value); setOpen(true); }} onFocus={() => setOpen(true)} onKeyDown={onKey} {...rest} />
-        <span className="plx-combobox__chevron" aria-hidden="true" />
+        <span className="plx-combobox__chevron" aria-hidden="true"><Icon icon={SelectChevronIcon} filled={false} /></span>
       </div>
       {open ? (
         <ul ref={list} className="plx-combobox__list" id={listId} role="listbox" popover={TOP_LAYER ? 'manual' : undefined} onMouseDown={(e) => e.preventDefault()} aria-multiselectable={multiple || undefined} aria-busy={isLoading || undefined}>

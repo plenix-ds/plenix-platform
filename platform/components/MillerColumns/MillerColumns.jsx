@@ -44,6 +44,7 @@ import { cx } from '../../utils/cx.js';
 import { Icon } from '../Icon/Icon.jsx';
 import { tokenPx } from '../../patterns/AppShell/AppShell.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import ChevronRightIcon from 'plenix-platform/icons/plenix/chevron-right';
 
 const MIN_STEP = 1, MAX_STEP = 6, DEFAULT_STEP = 3;
 const fill = (s, label) => s.replace('{label}', label);
@@ -178,7 +179,7 @@ export const MillerColumns = React.forwardRef(function MillerColumns({ items = [
                         <span className="plx-miller-columns__label">{it.label}</span>
                         {it.description ? <span className="plx-miller-columns__description">{it.description}</span> : null}
                       </span>
-                      {parent ? <span className="plx-miller-columns__chevron" aria-hidden="true" /> : null}
+                      {parent ? <span className="plx-miller-columns__chevron" aria-hidden="true"><Icon icon={ChevronRightIcon} filled={false} /></span> : null}
                     </li>
                   );
                 }) : <li className="plx-miller-columns__empty" role="presentation">{t.empty}</li>}

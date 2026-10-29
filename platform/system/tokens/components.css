@@ -1730,7 +1730,6 @@
   --plx-comp-tree-item-focus-row-outline-color: var(--plx-sys-focus-ring-color);
   --plx-comp-tree-item-focus-row-outline-offset: calc(var(--plx-sys-border-width-medium) * -1);
   --plx-comp-tree-item-focus-row-outline-width: var(--plx-sys-border-width-medium);
-  --plx-comp-tree-toggle-size: var(--plx-ref-size-16px);
   --plx-comp-tree-toggle-background: var(--plx-sys-content-muted);
   --plx-comp-tree-toggle-height: var(--plx-ref-size-16px);
   --plx-comp-tree-toggle-width: var(--plx-ref-size-16px);
