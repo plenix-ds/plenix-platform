@@ -54,7 +54,7 @@
 */
 import React from 'react';
 import { cx } from '../../utils/cx.js';
-import { Icon } from '../../components/Icon/Icon.jsx';
+import { Icon, asIcon as iconElement } from '../../components/Icon/Icon.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { ToolRail } from '../ToolRail/ToolRail.jsx';
 import { PanelSplitter, tokenPx, below, useMedia, useAppLayout } from '../AppShell/AppShell.jsx';
@@ -136,7 +136,7 @@ export function SecondaryPane({ title, label, icon, actions, side = 'start', wid
       narrow && listDetail && (stepAside ? 'plx-secondary-pane--aside' : 'plx-secondary-pane--list'), className)}
       data-plx-width={sized ? gridWithin(size, min(), paneMax(max(), min())) + 'px' : undefined} {...rest}>
       <div className="plx-secondary-pane__header">
-        {icon ? (typeof icon === 'string' ? <Icon name={icon} /> : icon) : null}
+        {icon ? iconElement(icon) : null}
         <span className="plx-secondary-pane__title">{title}</span>
         {actions}
         {collapsible ? <Button size="xs" variant="ghost" iconOnly icon={side === 'start' ? 'panel-left-close' : 'panel-right-close'} label={named(t.collapse)} onClick={() => setFolded(true)} /> : null}

@@ -24,7 +24,7 @@ if (changed.wants({ units: ['components/Resizable', 'components/DataGrid', 'patt
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'pane-limit.test.js')], { stdio: 'inherit', env: process.env });
   if (result.status !== 0) process.exit(result.status || 1);
 }
-if (!changed.wants({ units: ['patterns/AppShell', 'patterns/SettingsLayout', 'patterns/SplitView', 'components/VisuallyHidden', 'providers/DirectionProvider', 'components/Checkbox', 'components/Fieldset'] })) changed.none('LAYOUT_OK 0/0');
+if (!changed.wants({ units: ['patterns/AppShell', 'patterns/SettingsLayout', 'patterns/SplitView', 'components/VisuallyHidden', 'providers/DirectionProvider', 'components/Checkbox', 'components/Fieldset', 'components/Icon'] })) changed.none('LAYOUT_OK 0/0');
 changed.report('every mode');
 const P = 'file://' + (ROOT.startsWith('/') ? '' : '/') + ROOT.replace(/\\/g, '/') + '/platform/';
 // each mode through a kind of page that the standard gives it
@@ -145,6 +145,23 @@ const html = '<!doctype html><html lang="en" data-plx-theme="default" data-plx-m
   });
   check('Fieldset: dir="rtl" and lang="ar" go on the fieldset, and a RadioGroup option inside puts its box on the right #420',
     groupDir.tag === 'FIELDSET' && groupDir.setDir === 'rtl' && groupDir.setLang === 'ar' && groupDir.rowRtl && groupDir.inputDir === null && groupDir.boxRight, JSON.stringify(groupDir));
+  // issue 280 (icon stage 5a): every component slot that takes an icon name takes the imported module the same way
+  const slotModules = await page.evaluate(async () => {
+    const h = React.createElement, P = window.Plenix, host = document.createElement('div'); document.body.appendChild(host);
+    const root = ReactDOM.createRoot(host), html = (el) => { ReactDOM.flushSync(() => root.render(el)); return host.innerHTML; };
+    // the folder module as an application imports it, rebuilt from the drawn icon (the page opens from file://, where a
+    // module import is not allowed): its outline drawings, sizes 20 and 24
+    html(h(P.Icon, { name: 'folder' }));
+    const box = host.querySelector('svg').getAttribute('viewBox'), d = (n) => host.querySelector('.plx-icon__glyph--' + n).getAttribute('d');
+    const draw = (n) => ({ outline: { viewBox: box, d: d(n) }, fill: { viewBox: box, d: d(n) } });
+    const mod = { name: 'folder', set: 'plenix', symbol: 'folder', fillOutline: false, mirrored: false, drawings: { 20: draw(20), 24: draw(24) } };
+    const make = { button: (i) => h(P.Button, { icon: i }, 'Add'), item: (i) => h('div', { role: 'menu' }, h(P.MenuItem, { icon: i }, 'Item')),
+      tree: (i) => h(P.Tree, { nodes: [{ id: 'a', label: 'A', icon: i }] }), card: (i) => h(P.Card, { title: 'T', icon: i }, 'x'),
+      nav: (i) => h(P.NavList, { items: [{ id: 'f', label: 'F', icon: i }], current: 'f' }), named: (i) => h(P.Icon, { name: i }) };
+    const out = {}; for (const [k, f] of Object.entries(make)) { const a = html(f('folder')), b = html(f(mod)); out[k] = /plx-icon--folder/.test(a) && a === b; }
+    root.unmount(); host.remove(); return out;
+  });
+  check('Icon: a Button, MenuItem, Tree, Card and NavList draw an imported icon module exactly as its name #280', Object.values(slotModules).every(Boolean), JSON.stringify(slotModules));
   check('SplitView: stacks under 900px of its own width, side by side from 900px #410', !!split[899] && !!split[900] && split[899].width === 899 && split[899].direction === 'column' && split[900].width === 900 && split[900].direction === 'row', JSON.stringify(split));
   // issue 237: stacked by its room, the divider is the stacked one (horizontal, the height), the same focused separator
   const turned = await page.evaluate(async () => {

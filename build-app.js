@@ -116,7 +116,7 @@ function bundle(target) {
       }
       // an icon module (#282): plenix-platform/icons/<set>/<name>, the asset layout's module (platform/icons/layout.js),
       // bundled into the application like a source file; a Material one is written on demand, only the names imported
-      const icon = /^plenix-platform\/icons\/(plenix|material)\/([a-z0-9-]+)$/.exec(spec);
+      const icon = /^plenix-platform\/icons\/(plenix|material)\/([a-z0-9-]+|[a-z0-9]+(?:_[a-z0-9]+)+)$/.exec(spec);   // a name, or a Plenix alias (more_horiz)
       if (icon) {
         const dir = path.join(ROOT, 'platform', 'dist', 'icons', icon[1]);
         let dep;

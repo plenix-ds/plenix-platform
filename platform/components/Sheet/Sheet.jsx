@@ -48,14 +48,14 @@ import React from 'react';
 import { createPortal } from 'react-dom';
 import { cx } from '../../utils/cx.js';
 import { focusables, useLayer, useUid } from '../../utils/layer.js';
-import { Icon } from '../Icon/Icon.jsx';
+import { Icon, asIcon as iconElement } from '../Icon/Icon.jsx';
 import { Button } from '../Button/Button.jsx';
 import { Dialog, Drawer } from '../Dialog/Dialog.jsx';
 import { useGesture } from '../../hooks/useGesture.js';
 import { useMedia, below } from '../../patterns/AppShell/AppShell.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const asIcon = (i) => (typeof i === 'string' ? <Icon name={i} /> : i);
+const asIcon = (i) => iconElement(i);   // a name or an imported module (#280)
 
 // one sheet at a time (HIG › Sheets): the open sheets in the order they opened; only the last one shows
 const openSheets = [];

@@ -44,7 +44,7 @@ import React from 'react';
 import { numeralLocale } from '../../utils/format.js';
 import { cx } from '../../utils/cx.js';
 import { useUid } from '../../utils/layer.js';
-import { Icon, stateIcon } from '../Icon/Icon.jsx';
+import { Icon, stateIcon, iconKey } from '../Icon/Icon.jsx';
 import { CollapsibleSection } from '../CollapsibleSection/CollapsibleSection.jsx';
 
 const STRINGS = { pin: 'Pin', unpin: 'Unpin', pinItem: 'Pin {label}', unpinItem: 'Unpin {label}' };
@@ -54,7 +54,7 @@ const STRINGS = { pin: 'Pin', unpin: 'Unpin', pinItem: 'Pin {label}', unpinItem:
 const asIcon = stateIcon;
 // the current item is the open one: a folder shows as an open folder (filled, like every current icon)
 const OPEN_ICONS = { folder: 'folder-open' };
-const iconOf = (icon, on) => (on && typeof icon === 'string' && OPEN_ICONS[icon]) || icon;
+const iconOf = (icon, on) => (on && OPEN_ICONS[iconKey(icon)]) || icon;
 
 const holds = (item, current) => !!item.children && item.children.some((c) => c.id === current || holds(c, current));
 

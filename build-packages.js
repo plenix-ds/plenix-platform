@@ -217,6 +217,11 @@ readme('styles', `
 const R = path.join(PKG, 'react');
 const jsOpts = { entryPoints: [path.join(P, 'index.js')], bundle: true, logLevel: 'silent', target: 'es2019', jsx: 'transform',
   loader: { '.js': 'jsx', '.jsx': 'jsx' }, external: ['react', 'react-dom', 'react-dom/client', 'react/jsx-runtime'],
+  // an icon module the Platform imports (#280, stage 5a): plenix-platform/icons/plenix/<name> is the asset layout's module
+  // (platform/dist/icons/plenix/<name>.js), as build-app.js resolves it, so the bundle carries only the icons its components
+  // import and a site's bundler drops those of the components it does not use (Platform source never imports plenix-platform
+  // itself: build-app.js refuses it)
+  alias: { 'plenix-platform': path.join(P, 'dist') },
   banner: { js: '/* ' + SCOPE + '/react ' + VERSION + ' · Plenix Platform components and patterns (generated) */' } };
 // the bundle holds no engine address and injects no script (#456, #457): the engines (rich text, charts, PDF) load through the
 // page's plenix-engines.js, shipped beside plenix.js and in the npm package's dist/ (its vendor/ folder is beside it)

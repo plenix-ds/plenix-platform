@@ -78,14 +78,14 @@
 import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { useLayer, useUid } from '../../utils/layer.js';
-import { Icon } from '../Icon/Icon.jsx';
+import { Icon, asIcon as iconElement } from '../Icon/Icon.jsx';
 import { Portal } from '../../utils/portal.jsx';
 import { useFloating } from '../../utils/floating.js';
 import { useGesture } from '../../hooks/useGesture.js';
 
 const MenuContext = React.createContext(null);
 const RadioContext = React.createContext(null);
-const asIcon = (i) => (typeof i === 'string' ? <Icon name={i} /> : i);
+const asIcon = (i) => iconElement(i);   // a name or an imported module (#280)
 // the menu's own items (not those of a submenu inside it)
 const itemsIn = (list) => (list ? Array.prototype.filter.call(list.querySelectorAll('[data-plx-menu-item]:not([aria-disabled="true"])'), (el) => el.closest('[role="menu"]') === list) : []);
 const isRtl = (el) => !!el && getComputedStyle(el).direction === 'rtl';
