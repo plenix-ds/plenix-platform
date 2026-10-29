@@ -1706,7 +1706,8 @@ var _default = exports.default = {
     "conversation": "Conversation",
     "message": "Message",
     "send": "Send",
-    "typing": "Typing"
+    "typing": "Typing",
+    "you": "You"
   },
   "checklist": {
     "dismiss": "Dismiss checklist",
@@ -1939,7 +1940,8 @@ var _default = exports.default = {
     "columnsLabel": "{label} columns",
     "rowsLabel": "{label} rows",
     "columnActions": "{title} column actions",
-    "unreadRow": "{label}, unread"
+    "unreadRow": "{label}, unread",
+    "editCell": "Edit {title}"
   },
   "dataPill": {
     "male": "male",
@@ -2719,7 +2721,30 @@ var _default = exports.default = {
       "items": {
         "one": "{n} item",
         "other": "{n} items"
+      },
+      "doneItems": {
+        "approved": {
+          "one": "{n} item approved",
+          "other": "{n} items approved"
+        },
+        "rejected": {
+          "one": "{n} item rejected",
+          "other": "{n} items rejected"
+        },
+        "changes-requested": {
+          "one": "Changes requested on {n} item",
+          "other": "Changes requested on {n} items"
+        }
       }
+    },
+    "statuses": {
+      "draft": "Draft",
+      "in-review": "In review",
+      "approved": "Approved",
+      "changes-requested": "Changes requested",
+      "rejected": "Rejected",
+      "published": "Published",
+      "scheduled": "Scheduled"
     }
   },
   "richTextEditor": {
@@ -3637,6 +3662,70 @@ var _default = exports.default = {
     "less": "Show less",
     "more": "Show more",
     "moreCount": "Show more ({n})"
+  },
+  "fields": {
+    "directions": {
+      "text": ["A → Z", "Z → A"],
+      "select": ["First → Last", "Last → First"],
+      "multi": ["First → Last", "Last → First"],
+      "number": ["1 → 9", "9 → 1"],
+      "date": ["Oldest → newest", "Newest → oldest"]
+    },
+    "operators": {
+      "text": {
+        "contains": "contains",
+        "ncontains": "does not contain",
+        "is": "is",
+        "isnot": "is not",
+        "empty": "is empty",
+        "nempty": "is not empty"
+      },
+      "select": {
+        "any": "is any of",
+        "none": "is none of",
+        "empty": "is empty",
+        "nempty": "is not empty"
+      },
+      "multi": {
+        "any": "has any of",
+        "none": "has none of",
+        "empty": "is empty",
+        "nempty": "is not empty"
+      },
+      "number": {
+        "eq": "=",
+        "ne": "≠",
+        "lt": "<",
+        "gt": ">",
+        "empty": "is empty",
+        "nempty": "is not empty"
+      },
+      "date": {
+        "is": "is",
+        "before": "is before",
+        "after": "is after",
+        "within": "is within",
+        "empty": "is empty",
+        "nempty": "is not empty"
+      }
+    },
+    "within": {
+      "week": "the past week",
+      "month": "the past month",
+      "year": "the past year"
+    },
+    "presets": {
+      "7": "Last 7 days",
+      "30": "Last 30 days",
+      "any": "Any time",
+      "year": "This year"
+    }
+  },
+  "dateBadge": {
+    "today": "Today"
+  },
+  "activityList": {
+    "unread": "Unread"
   }
 };
   } },
@@ -4002,7 +4091,8 @@ var _default = exports.default = {
     "columnsLabel": "أعمدة {label}",
     "rowsLabel": "صفوف {label}",
     "columnActions": "إجراءات العمود {title}",
-    "unreadRow": "{label}، غير مقروء"
+    "unreadRow": "{label}، غير مقروء",
+    "editCell": "تعديل {title}"
   },
   "dataPill": {
     "male": "ذكر",
@@ -5144,7 +5234,8 @@ var _default = exports.default = {
     "conversation": "المحادثة",
     "message": "الرسالة",
     "send": "إرسال",
-    "typing": "جارٍ الكتابة"
+    "typing": "جارٍ الكتابة",
+    "you": "أنت"
   },
   "checklist": {
     "dismiss": "تجاهل قائمة المهام",
@@ -5658,7 +5749,42 @@ var _default = exports.default = {
         "few": "{n} عناصر",
         "many": "{n} عنصرًا",
         "other": "{n} عنصر"
+      },
+      "doneItems": {
+        "approved": {
+          "zero": "لم تتم الموافقة على أي عنصر",
+          "one": "تمت الموافقة على عنصر واحد",
+          "two": "تمت الموافقة على عنصرين",
+          "few": "تمت الموافقة على {n} عناصر",
+          "many": "تمت الموافقة على {n} عنصرًا",
+          "other": "تمت الموافقة على {n} عنصر"
+        },
+        "rejected": {
+          "zero": "لم يتم رفض أي عنصر",
+          "one": "تم رفض عنصر واحد",
+          "two": "تم رفض عنصرين",
+          "few": "تم رفض {n} عناصر",
+          "many": "تم رفض {n} عنصرًا",
+          "other": "تم رفض {n} عنصر"
+        },
+        "changes-requested": {
+          "zero": "لم يتم طلب تعديلات على أي عنصر",
+          "one": "تم طلب تعديلات على عنصر واحد",
+          "two": "تم طلب تعديلات على عنصرين",
+          "few": "تم طلب تعديلات على {n} عناصر",
+          "many": "تم طلب تعديلات على {n} عنصرًا",
+          "other": "تم طلب تعديلات على {n} عنصر"
+        }
       }
+    },
+    "statuses": {
+      "draft": "مسودة",
+      "in-review": "قيد المراجعة",
+      "approved": "تمت الموافقة",
+      "changes-requested": "مطلوب تعديلات",
+      "rejected": "مرفوض",
+      "published": "منشور",
+      "scheduled": "مجدول"
     }
   },
   "collection": {
@@ -6093,6 +6219,70 @@ var _default = exports.default = {
     "less": "عرض أقل",
     "more": "عرض المزيد",
     "moreCount": "عرض المزيد ({n})"
+  },
+  "fields": {
+    "directions": {
+      "text": ["أ → ي", "ي → أ"],
+      "select": ["الأول → الأخير", "الأخير → الأول"],
+      "multi": ["الأول → الأخير", "الأخير → الأول"],
+      "number": ["1 → 9", "9 → 1"],
+      "date": ["الأقدم → الأحدث", "الأحدث → الأقدم"]
+    },
+    "operators": {
+      "text": {
+        "contains": "يحتوي على",
+        "ncontains": "لا يحتوي على",
+        "is": "هو",
+        "isnot": "ليس",
+        "empty": "فارغ",
+        "nempty": "غير فارغ"
+      },
+      "select": {
+        "any": "هو أحد",
+        "none": "ليس أيًّا من",
+        "empty": "فارغ",
+        "nempty": "غير فارغ"
+      },
+      "multi": {
+        "any": "يحتوي على أي من",
+        "none": "لا يحتوي على أي من",
+        "empty": "فارغ",
+        "nempty": "غير فارغ"
+      },
+      "number": {
+        "eq": "=",
+        "ne": "≠",
+        "lt": "<",
+        "gt": ">",
+        "empty": "فارغ",
+        "nempty": "غير فارغ"
+      },
+      "date": {
+        "is": "هو",
+        "before": "قبل",
+        "after": "بعد",
+        "within": "خلال",
+        "empty": "فارغ",
+        "nempty": "غير فارغ"
+      }
+    },
+    "within": {
+      "week": "الأسبوع الماضي",
+      "month": "الشهر الماضي",
+      "year": "العام الماضي"
+    },
+    "presets": {
+      "7": "آخر 7 أيام",
+      "30": "آخر 30 يومًا",
+      "any": "أي وقت",
+      "year": "هذا العام"
+    }
+  },
+  "dateBadge": {
+    "today": "اليوم"
+  },
+  "activityList": {
+    "unread": "غير مقروء"
   }
 };
   } },
@@ -25548,7 +25738,7 @@ function singleChoice(options, value, required) {
   return selected !== undefined ? [selected] : required && values.length ? [values[0]] : [];
 }
   } },
-  "platform/utils/fields.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+  "platform/utils/fields.js": { deps: {"../i18n/en.js":"platform/i18n/en.js"}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -25556,11 +25746,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.WITHIN = exports.OPERATORS = exports.KIND_ICONS = exports.DIRECTIONS = exports.DATE_PRESETS = exports.CATEGORY_ORDER = void 0;
 exports.compareLevels = compareLevels;
-exports.kindOf = exports.fieldOf = exports.conditionsOf = void 0;
+exports.kindOf = exports.fieldWords = exports.fieldOf = exports.conditionsOf = void 0;
 exports.matchesCondition = matchesCondition;
 exports.matchesDate = matchesDate;
 exports.matchesFilter = matchesFilter;
 exports.valueOf = exports.optionsOf = exports.nextId = exports.newCondition = void 0;
+var _en = _interopRequireDefault(require("../i18n/en.js"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · fields (platform/utils/fields.js): the field model of the command bar's panels (owner, 2026-10-14, Airtable
    style): what a collection's fields are, how a filter tests a row, how sort levels order rows and how a date quick filter
    reads its presets. FilterPanel, SortPanel, GroupPanel, QuickFilter and useCollectionView use it; a page may too (a
@@ -25581,33 +25773,29 @@ const KIND_ICONS = exports.KIND_ICONS = {
   date: 'calendar'
 };
 // the directions in each kind's words (Airtable's)
-const DIRECTIONS = exports.DIRECTIONS = {
-  text: ['A → Z', 'Z → A'],
-  select: ['First → Last', 'Last → First'],
-  multi: ['First → Last', 'Last → First'],
-  number: ['1 → 9', '9 → 1'],
-  date: ['Oldest → newest', 'Newest → oldest']
-};
+const DIRECTIONS = exports.DIRECTIONS = _en.default.fields.directions;
 // the operators by kind: [op, words]
-const OPERATORS = exports.OPERATORS = {
-  text: [['contains', 'contains'], ['ncontains', 'does not contain'], ['is', 'is'], ['isnot', 'is not'], ['empty', 'is empty'], ['nempty', 'is not empty']],
-  select: [['any', 'is any of'], ['none', 'is none of'], ['empty', 'is empty'], ['nempty', 'is not empty']],
-  multi: [['any', 'has any of'], ['none', 'has none of'], ['empty', 'is empty'], ['nempty', 'is not empty']],
-  number: [['eq', '='], ['ne', '≠'], ['lt', '<'], ['gt', '>'], ['empty', 'is empty'], ['nempty', 'is not empty']],
-  date: [['is', 'is'], ['before', 'is before'], ['after', 'is after'], ['within', 'is within'], ['empty', 'is empty'], ['nempty', 'is not empty']]
+// (the words are the catalog's `fields` section, English here for apps; the panels read the locale's words with fieldWords)
+const OP_ORDER = {
+  text: ['contains', 'ncontains', 'is', 'isnot', 'empty', 'nempty'],
+  select: ['any', 'none', 'empty', 'nempty'],
+  multi: ['any', 'none', 'empty', 'nempty'],
+  number: ['eq', 'ne', 'lt', 'gt', 'empty', 'nempty'],
+  date: ['is', 'before', 'after', 'within', 'empty', 'nempty']
 };
+const OPERATORS = exports.OPERATORS = Object.fromEntries(Object.entries(OP_ORDER).map(([kind, ops]) => [kind, ops.map(op => [op, _en.default.fields.operators[kind][op]])]));
 // "is within": the past week, month or year
 const WITHIN = exports.WITHIN = [{
   value: 'week',
-  label: 'the past week',
+  label: _en.default.fields.within.week,
   days: 7
 }, {
   value: 'month',
-  label: 'the past month',
+  label: _en.default.fields.within.month,
   days: 30
 }, {
   value: 'year',
-  label: 'the past year',
+  label: _en.default.fields.within.year,
   days: 365
 }];
 // the category colors (Trubetskoy's 20), in the order options take them
@@ -25716,16 +25904,16 @@ function compareLevels(fields, levels) {
 // the date quick filter: { preset: "any" | "7" | "30" | "year" | "custom", from, to } (ISO dates)
 const DATE_PRESETS = exports.DATE_PRESETS = [{
   value: 'any',
-  label: 'Any time'
+  label: _en.default.fields.presets.any
 }, {
   value: '7',
-  label: 'Last 7 days'
+  label: _en.default.fields.presets['7']
 }, {
   value: '30',
-  label: 'Last 30 days'
+  label: _en.default.fields.presets['30']
 }, {
   value: 'year',
-  label: 'This year'
+  label: _en.default.fields.presets.year
 }];
 function matchesDate(range, value, today) {
   if (!range || range.preset === 'any' || !range.preset) return true;
@@ -25736,6 +25924,19 @@ function matchesDate(range, value, today) {
   if (range.preset === 'year') return d.slice(0, 4) === now.slice(0, 4);
   return (!range.from || d >= range.from) && (!range.to || d <= range.to);
 }
+
+// the words of the filter model in the reader's language: fw = useStrings('fields') (a hook-free helper set, so the panels, the query
+// builder and the quick filters read them the same way)
+const fieldWords = exports.fieldWords = {
+  operators: (fw, kind) => (OPERATORS[kind] || []).map(([op, en]) => [op, ((fw.operators || {})[kind] || {})[op] || en]),
+  within: fw => WITHIN.map(w => Object.assign({}, w, {
+    label: (fw.within || {})[w.value] || w.label
+  })),
+  presets: fw => DATE_PRESETS.map(d => Object.assign({}, d, {
+    label: (fw.presets || {})[d.value] || d.label
+  })),
+  directions: (fw, kind) => (fw.directions || {})[kind] || DIRECTIONS[kind]
+};
   } },
   "platform/patterns/QuickFilter/QuickFilter.jsx": { deps: {"react":null,"./single-choice.js":"platform/patterns/QuickFilter/single-choice.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Stack/Stack.jsx":"platform/components/Stack/Stack.jsx","../../utils/format.js":"platform/utils/format.js","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../utils/fields.js":"platform/utils/fields.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
@@ -25817,9 +26018,10 @@ function QuickFilter({
   inline = false,
   strings
 }) {
+  const fw = (0, _LocaleProvider.useStrings)('fields');
   const t = Object.assign({
-    presets: _fields.DATE_PRESETS
-  }, (0, _LocaleProvider.useStrings)('quickFilter', strings)); // the date presets' labels come from utils/fields.js
+    presets: _fields.fieldWords.presets(fw)
+  }, (0, _LocaleProvider.useStrings)('quickFilter', strings)); // the date presets' labels are the catalog's (fields.presets)
   const [q, setQ] = _react.default.useState('');
   const first = (options || [])[0],
     firstValue = typeof first === 'string' ? first : first && first.value;
@@ -26242,6 +26444,7 @@ function CommandBar({
   className
 }) {
   const t = (0, _LocaleProvider.useStrings)('commandBar', strings);
+  const fw = (0, _LocaleProvider.useStrings)('fields');
   const root = _react.default.useRef(null);
   // the selection (owner, 2026-10-15: the swap; issue 454): an object { count, actions, onClear, noun, plural, label }; while
   // its count is above 0 the selection's commands replace the page's actions; search and filters stay
@@ -26310,7 +26513,7 @@ function CommandBar({
         onChange: v => q.onChange && q.onChange(Object.assign({}, d, {
           preset: v
         }))
-      }, _fields.DATE_PRESETS.map(p => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+      }, _fields.fieldWords.presets(fw).map(p => /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
         key: p.value,
         value: p.value
       }, counted(p)))));
@@ -28578,7 +28781,8 @@ function CellEditor({
   onCommit,
   onCancel
 }) {
-  const [draft, setDraft] = _react.default.useState(value ?? ''),
+  const S = (0, _LocaleProvider.useStrings)('dataGrid'),
+    [draft, setDraft] = _react.default.useState(value ?? ''),
     done = _react.default.useRef(false);
   const finish = () => {
     if (done.current) return;
@@ -28588,7 +28792,7 @@ function CellEditor({
   return /*#__PURE__*/_react.default.createElement("input", {
     autoFocus: true,
     className: "plx-data-grid__editor",
-    "aria-label": 'Edit ' + column.title,
+    "aria-label": S.editCell.replace('{title}', column.title),
     type: column.editor === 'number' ? 'number' : 'text',
     value: draft,
     onChange: e => setDraft(e.target.value),
@@ -32716,7 +32920,7 @@ function MetricCard({
   }, note) : null);
 }
   } },
-  "platform/components/DateBadge/DateBadge.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/DateBadge/DateBadge.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -32726,6 +32930,7 @@ exports.DateBadge = DateBadge;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · DateBadge
    Summary: A day shown as its number and weekday, with today marked (02 › Inputs › Date and time › Calendar).
@@ -32751,6 +32956,7 @@ function DateBadge({
   className,
   ...rest
 }) {
+  const t = (0, _LocaleProvider.useStrings)('dateBadge');
   const Tag = dateTime ? 'time' : 'span';
   return /*#__PURE__*/_react.default.createElement(Tag, _extends({
     className: (0, _cx.cx)('plx-date-badge', today && 'is-today', className),
@@ -32759,7 +32965,7 @@ function DateBadge({
     className: "plx-date-badge__weekday"
   }, weekday) : null, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-date-badge__day"
-  }, day), today ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, "Today") : null);
+  }, day), today ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, t.today) : null);
 }
   } },
   "platform/components/EventChip/EventChip.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -34450,6 +34656,7 @@ function Message({
   children,
   ...rest
 }) {
+  const t = (0, _LocaleProvider.useStrings)('chat');
   return /*#__PURE__*/_react.default.createElement("div", _extends({
     className: (0, _cx.cx)('plx-chat__message', mine && 'plx-chat__message--mine', className)
   }, rest), !mine && avatar ? /*#__PURE__*/_react.default.createElement("span", {
@@ -34458,7 +34665,7 @@ function Message({
     className: "plx-chat__bubble"
   }, author && !mine || time ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-chat__meta"
-  }, mine ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, "You") : author ? /*#__PURE__*/_react.default.createElement("span", {
+  }, mine ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, t.you) : author ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-chat__author"
   }, author) : null, time ? /*#__PURE__*/_react.default.createElement("time", {
     className: "plx-chat__time",
@@ -36360,7 +36567,7 @@ function Persona({
   }, secondary) : null));
 }
   } },
-  "platform/patterns/ActivityList/ActivityList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ActivityList/ActivityList.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36369,6 +36576,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.ActivityList = ActivityList;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
+var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* Plenix · ActivityList
    Summary: A list of things that happened or arrived (messages, versions, notifications, notes).
@@ -36433,6 +36641,7 @@ ActivityList.Item = function ActivityListItem({
   className
 }) {
   const stacked = _react.default.useContext(StackedContext);
+  const words = (0, _LocaleProvider.useStrings)('activityList');
   const opener = href ? /*#__PURE__*/_react.default.createElement("a", {
     href: href,
     className: "plx-activity-list__opener"
@@ -36450,7 +36659,7 @@ ActivityList.Item = function ActivityListItem({
     className: "plx-activity-list__unread"
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-visually-hidden"
-  }, "Unread")) : null, leading ? /*#__PURE__*/_react.default.createElement("span", {
+  }, words.unread)) : null, leading ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-activity-list__leading"
   }, leading) : null, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-activity-list__text"
@@ -36467,7 +36676,7 @@ ActivityList.Item = function ActivityListItem({
   }, actions) : null);
 };
   } },
-  "platform/patterns/ReviewFlow/ReviewFlow.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","../../components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","../ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","../CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ReviewFlow/ReviewFlow.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","../../components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","../ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","../CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../i18n/en.js":"platform/i18n/en.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36497,6 +36706,7 @@ var _Toast = require("../../components/Toast/Toast.jsx");
 var _ActivityList = require("../ActivityList/ActivityList.jsx");
 var _CommandBar = require("../CommandBar/CommandBar.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _en = _interopRequireDefault(require("../../i18n/en.js"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · ReviewFlow, ReviewQueue, WorkflowStatus
    Summary: The review of one item and the queue of many. ReviewFlow is a review panel: the item's status as a badge with
@@ -36552,41 +36762,43 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Decisions are final for the reviewer; to change one, decide again (the history keeps both).
 */
 // the workflow statuses: a Badge variant by meaning, and its icon (owner, 2026-10-15)
+// the labels are the catalog's (reviewFlow.statuses): this constant keeps its shape and its English labels for apps that read it
+const STATUS_LABELS = _en.default.reviewFlow.statuses;
 const WORKFLOW_STATUSES = exports.WORKFLOW_STATUSES = {
   draft: {
     tone: 'neutral',
     icon: 'pencil',
-    label: 'Draft'
+    label: STATUS_LABELS.draft
   },
   'in-review': {
     tone: 'active',
     icon: 'doc-search',
-    label: 'In review'
+    label: STATUS_LABELS['in-review']
   },
   approved: {
     tone: 'success',
     icon: 'circle-check',
-    label: 'Approved'
+    label: STATUS_LABELS.approved
   },
   'changes-requested': {
     tone: 'action-required',
     icon: 'alert',
-    label: 'Changes requested'
+    label: STATUS_LABELS['changes-requested']
   },
   rejected: {
     tone: 'negative',
     icon: 'close',
-    label: 'Rejected'
+    label: STATUS_LABELS.rejected
   },
   published: {
     tone: 'success',
     icon: 'visibility',
-    label: 'Published'
+    label: STATUS_LABELS.published
   },
   scheduled: {
     tone: 'waiting',
     icon: 'schedule',
-    label: 'Scheduled'
+    label: STATUS_LABELS.scheduled
   }
 };
 function WorkflowStatus({
@@ -36603,7 +36815,8 @@ function WorkflowStatus({
     size: ['md', 'sm']
   });
   const s = WORKFLOW_STATUSES[status] || WORKFLOW_STATUSES.draft;
-  const words = label || strings && strings[status] || s.label;
+  const names = (0, _LocaleProvider.useStrings)('reviewFlow.statuses');
+  const words = label || strings && strings[status] || names[status] || s.label;
   return /*#__PURE__*/_react.default.createElement(_Badge.Badge, _extends({
     tone: s.tone,
     icon: s.icon,
@@ -36652,7 +36865,8 @@ function ReviewFlow({
   const [error, setError] = _react.default.useState('');
   const field = _react.default.useRef(null);
   const H = 'h' + Math.min(6, Math.max(2, headingLevel));
-  const word = d => t[d] || WORKFLOW_STATUSES[d].label;
+  const names = (0, _LocaleProvider.useStrings)('reviewFlow.statuses');
+  const word = d => t[d] || names[d] || WORKFLOW_STATUSES[d].label;
   const decide = d => {
     if (reasonFor.indexOf(d) >= 0 && !comment.trim()) {
       setError(t.needReason);
@@ -36762,6 +36976,7 @@ function ReviewQueue({
   ...rest
 }) {
   const t = (0, _LocaleProvider.useStrings)('reviewFlow.queue', strings);
+  const names = (0, _LocaleProvider.useStrings)('reviewFlow.statuses');
   const loc = (0, _LocaleProvider.useLocale)();
   const builtIn = !noun && !plural; // the default words: whole counted phrases with the Arabic plural forms, from the catalog
   const many = plural || (noun ? noun + 's' : t.plural); // the default words come from the catalog
@@ -36785,9 +37000,14 @@ function ReviewQueue({
     if (onDecision) onDecision(ids, decision, reason || '');
     setSel([]);
     setAsk(null);
-    const said = fill(t.done, {
+    // the default words: one whole counted sentence per decision (Arabic plural forms); an app's own noun keeps the pieces
+    const whole = builtIn && t.doneItems && t.doneItems[decision];
+    const said = whole ? loc.t('reviewFlow.queue.doneItems.' + decision, {
+      count: ids.length,
+      n: (0, _format.formatNumber)(ids.length)
+    }) : fill(t.done, {
       what: what(ids.length),
-      decision: WORKFLOW_STATUSES[decision].label.toLowerCase()
+      decision: names[decision].toLowerCase()
     });
     if (toast) toast.show(said, {
       tone: decision === 'approved' ? 'success' : 'info'
@@ -55395,6 +55615,7 @@ function ConditionValue({
   set,
   t
 }) {
+  const fw = (0, _LocaleProvider.useStrings)('fields');
   const k = (0, _fields.kindOf)(f);
   if (c.op === 'empty' || c.op === 'nempty') return /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-find-pick--value"
@@ -55412,7 +55633,7 @@ function ConditionValue({
     label: f.label,
     size: "value",
     value: c.value || _fields.WITHIN[0].value,
-    options: _fields.WITHIN,
+    options: _fields.fieldWords.within(fw),
     onChange: v => set({
       value: v
     })
@@ -55455,6 +55676,7 @@ function ConditionRows({
   nested,
   t
 }) {
+  const fw = (0, _LocaleProvider.useStrings)('fields');
   const items = node.items;
   const setItems = list => setNode(Object.assign({}, node, {
     items: list
@@ -55536,7 +55758,7 @@ function ConditionRows({
       label: t.operator,
       size: "op",
       value: x.op,
-      options: _fields.OPERATORS[(0, _fields.kindOf)(f)].map(([value, label]) => ({
+      options: _fields.fieldWords.operators(fw, (0, _fields.kindOf)(f)).map(([value, label]) => ({
         value,
         label
       })),
@@ -55675,6 +55897,7 @@ function SortPanel({
   strings
 }) {
   const t = (0, _LocaleProvider.useStrings)('sortPanel', strings);
+  const fw = (0, _LocaleProvider.useStrings)('fields');
   const levels = value;
   const ro = (0, _panelParts.useReorder)(levels, onChange, l => (0, _fields.fieldOf)(fields, l.field).label, t);
   const put = (i, ch) => onChange(levels.map((l, j) => j === i ? Object.assign({}, l, ch) : l));
@@ -55691,7 +55914,7 @@ function SortPanel({
     variant: "secondary"
   }, t.empty), levels.map((l, i) => {
     const f = (0, _fields.fieldOf)(fields, l.field),
-      words = _fields.DIRECTIONS[(0, _fields.kindOf)(f)];
+      words = _fields.fieldWords.directions(fw, (0, _fields.kindOf)(f));
     return /*#__PURE__*/_react.default.createElement("div", _extends({
       key: l.field
     }, ro.rowProps(i, f.label)), /*#__PURE__*/_react.default.createElement(_panelParts.Pick, {
@@ -55815,6 +56038,7 @@ function GroupPanel({
 }) {
   fields = fields.filter(f => f.groupable !== false);
   const t = (0, _LocaleProvider.useStrings)('groupPanel', strings);
+  const fw = (0, _LocaleProvider.useStrings)('fields');
   const levels = value;
   const ro = (0, _panelParts.useReorder)(levels, onChange, l => (0, _fields.fieldOf)(fields, l.field).label, t);
   const put = (i, ch) => onChange(levels.map((l, j) => j === i ? Object.assign({}, l, ch) : l));
@@ -55843,7 +56067,7 @@ function GroupPanel({
     variant: "secondary"
   }, t.empty), levels.map((l, i) => {
     const f = (0, _fields.fieldOf)(fields, l.field),
-      words = _fields.DIRECTIONS[(0, _fields.kindOf)(f)];
+      words = _fields.fieldWords.directions(fw, (0, _fields.kindOf)(f));
     return /*#__PURE__*/_react.default.createElement("div", _extends({
       key: l.field
     }, ro.rowProps(i, f.label)), /*#__PURE__*/_react.default.createElement(_panelParts.Pick, {
@@ -57831,7 +58055,8 @@ const quote = s => '“' + s + '”';
 // the query as one sentence: rules in the field type's words, groups in parentheses; unfinished rules left out
 function formatQuery(node, fields = [], strings) {
   const t = Object.assign({}, (0, _LocaleProvider.createTranslator)((0, _format.formatLocale)()).section('queryBuilder'), strings); // a plain function: no hook
-  const words = (f, op) => ((_fields.OPERATORS[(0, _fields.kindOf)(f)] || []).find(o => o[0] === op) || [op, op])[1];
+  const fw = (0, _LocaleProvider.createTranslator)((0, _format.formatLocale)()).section('fields'); // a plain function: no hook
+  const words = (f, op) => (_fields.fieldWords.operators(fw, (0, _fields.kindOf)(f)).find(o => o[0] === op) || [op, op])[1];
   const rule = c => {
     const f = (0, _fields.fieldOf)(fields, c.field);
     if (!f) return null;
@@ -57844,7 +58069,7 @@ function formatQuery(node, fields = [], strings) {
       v = [].concat(c.value).map(x => quote((o.find(p => p.value === x) || {
         label: x
       }).label)).join(', ');
-    } else if (k === 'date' && c.op === 'within') v = (_fields.WITHIN.find(w => w.value === c.value) || _fields.WITHIN[0]).label;else if (k === 'text') v = quote(c.value);else v = String(c.value);
+    } else if (k === 'date' && c.op === 'within') v = (_fields.fieldWords.within(fw).find(w => w.value === c.value) || _fields.fieldWords.within(fw)[0]).label;else if (k === 'text') v = quote(c.value);else v = String(c.value);
     return f.label + ' ' + words(f, c.op) + ' ' + v;
   };
   const group = (g, top) => {
@@ -57886,6 +58111,7 @@ function RuleValue({
   id,
   label
 }) {
+  const fw = (0, _LocaleProvider.useStrings)('fields');
   const k = (0, _fields.kindOf)(f);
   if (NO_VALUE[c.op]) return /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-query-builder__value plx-query-builder__value--none"
@@ -57910,7 +58136,7 @@ function RuleValue({
       id: id,
       className: "plx-query-builder__value",
       value: c.value || _fields.WITHIN[0].value,
-      options: _fields.WITHIN.map(w => ({
+      options: _fields.fieldWords.within(fw).map(w => ({
         value: w.value,
         label: w.label
       })),
@@ -57960,6 +58186,7 @@ function Rule({
   remove,
   t
 }) {
+  const fw = (0, _LocaleProvider.useStrings)('fields');
   const f = (0, _fields.fieldOf)(fields, c.field);
   const base = uid + '-' + c.id;
   const name = fill(t.rule, {
@@ -57989,7 +58216,7 @@ function Rule({
     id: base + '-o',
     className: "plx-query-builder__operator",
     value: c.op,
-    options: (_fields.OPERATORS[(0, _fields.kindOf)(f)] || []).map(([value, label]) => ({
+    options: _fields.fieldWords.operators(fw, (0, _fields.kindOf)(f)).map(([value, label]) => ({
       value,
       label
     })),
