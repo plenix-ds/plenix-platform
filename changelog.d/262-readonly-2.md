@@ -6,6 +6,8 @@
   - `TransferList`: the move and reorder buttons are off (items can still be checked to read them);
   - `InlineEdit`: it does not open for editing and shows no edit hint;
   - `NumberInput`, `RichTextEditor`, `CodeEditor` and `MentionInput` had their own `readOnly` and now also follow the region.
+- The read-only test changes each control the way a person does before it checks that nothing changes: it types a date and presses Enter, types one and leaves the field, and picks a day in the calendar (`DatePicker`); it opens the list and clicks an option (`Combobox`, `CountrySelect`, `RelativeDateInput`). Each step must change the free control, so a zero in a region or with `readOnly` proves the control holds. `RelativeDateInput` already holds (its Select follows the region) and is now checked.
+- Not fixed yet: `TimePicker` and `Cascader` do not follow read-only: inside a ReadOnly region and with their own `readOnly`, a click on an option of their list still changes the value (measured: 1 change each; typed text is held). The test checks only that they change while free; their read-only check is left for a later change (#262).
 
 ### Changed
 - `DatePicker`, `Combobox`, `CountrySelect`, `TreeSelect`, `TransferList` and `InlineEdit` take a `readOnly` prop (default: the nearest ReadOnly region's, through `useReadOnly`). Nothing changes outside a read-only region.

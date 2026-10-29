@@ -2,15 +2,23 @@
    Summary: each control is drawn alone three ways: free (no read-only: a person can change it, which proves the probe works), inside a ReadOnly
      region (the region's contract: nothing changes) and with its own readOnly prop outside a region (nothing changes either). The probe clicks the
      control, types, presses arrow keys and Enter, clicks a choice it offers and presses its buttons, and counts the calls of its change handler.
+     Before that, the controls whose value is typed or picked from a list are changed the way a person does it (the general probe types a
+     character that filters every option out): TYPED selects the field's text, types a value and presses Enter, then again and leaves the field
+     (Tab); CALENDAR opens the calendar and clicks a day; OPENS presses the field and clicks an option that is not chosen (twice: a parent, then
+     a leaf). While free, each of these steps must change the control, so a zero in a region or with readOnly proves the control holds.
      PR 1: SearchField, SegmentedControl, Rating, ColorSwatch, PromptInput, TimeZoneSelect. PR 2: NumberInput, DatePicker, Combobox, CountrySelect,
-     TreeSelect, TransferList, InlineEdit, RichTextEditor, CodeEditor, MentionInput. TimePicker, Cascader and RelativeDateInput are drawn too, but
-     the probe cannot change them even when they are free, so they prove nothing yet and are not asserted on (CHANGES lists the controls the probe
-     can change; only those must change while free).
+     TreeSelect, TransferList, InlineEdit, RichTextEditor, CodeEditor, MentionInput, RelativeDateInput (its Select already follows the region).
+     NOT_YET: TimePicker and Cascader change while free, but do not follow read-only yet (a click on an option of their list still changes them
+     in a region and with readOnly; issue 262): only the free change is asserted for them until they are fixed.
    Usage: node tests/readonly-adoption.test.js   (run by layout.test.js when a control, the ReadOnly provider or this test changed) */
 const assert = require('assert/strict'), { serve, launch } = require('./lib');
-const CHANGES = ['SearchField', 'SegmentedControl', 'Rating', 'ColorSwatch', 'PromptInput', 'TimeZoneSelect', 'NumberInput', 'TreeSelect', 'TransferList', 'InlineEdit', 'RichTextEditor', 'CodeEditor', 'MentionInput'];
-const NAMES = ['SearchField', 'SegmentedControl', 'Rating', 'ColorSwatch', 'PromptInput', 'TimeZoneSelect', 'NumberInput', 'DatePicker', 'Combobox', 'CountrySelect', 'TreeSelect', 'TransferList',
+const CHANGES = ['SearchField', 'SegmentedControl', 'Rating', 'ColorSwatch', 'PromptInput', 'TimeZoneSelect', 'NumberInput', 'DatePicker', 'Combobox', 'CountrySelect', 'TreeSelect', 'TransferList',
   'InlineEdit', 'RichTextEditor', 'CodeEditor', 'MentionInput', 'TimePicker', 'Cascader', 'RelativeDateInput'];
+const NAMES = CHANGES, NOT_YET = ['TimePicker', 'Cascader'];
+const TYPED = { DatePicker: [['2026-10-15', 'Enter'], ['2026-10-16', 'Tab']], TimePicker: [['2pm', 'Enter'], ['3pm', 'Tab']] };
+const CALENDAR = { DatePicker: '2026-10-20' };   // the day clicked in the calendar (the value is in October 2026)
+const OPENS = { Combobox: '[role=combobox]', CountrySelect: '[role=combobox]', TimePicker: '[role=combobox]', Cascader: '.plx-cascader__trigger', RelativeDateInput: '[role=combobox]' };
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 (async () => {
   const PORT = +process.env.TEST_PORT || 9623, server = await serve(PORT); let browser;
   try {
@@ -42,13 +50,28 @@ const NAMES = ['SearchField', 'SegmentedControl', 'Rating', 'ColorSwatch', 'Prom
           CodeEditor: (o) => h(P.CodeEditor, Object.assign({ label: 'Code', language: 'css', value: 'a{}', onChange: c }, o)),
           MentionInput: (o) => h(P.MentionInput, Object.assign({ label: 'Comment', value: 'hi', options: [{ value: 'm', label: 'Maya' }], onChange: c }, o)),
           TimePicker: (o) => h(P.TimePicker, Object.assign({ label: 'Start', value: '10:00', onChange: c }, o)),
-          Cascader: (o) => h(P.Cascader, Object.assign({ label: 'Office', options: [{ value: 'a', label: 'Alpha', children: [{ value: 'a1', label: 'A1' }] }, { value: 'b', label: 'Beta' }], value: 'b', onChange: c }, o)),
+          Cascader: (o) => h(P.Cascader, Object.assign({ label: 'Office', options: [{ id: 'a', label: 'Alpha', children: [{ id: 'a1', label: 'A1' }] }, { id: 'b', label: 'Beta' }], value: 'b', onChange: c }, o)),
           RelativeDateInput: (o) => h(P.RelativeDateInput, Object.assign({ label: 'Modified', onChange: c }, o))
         };
         const el = mode === 'region' ? h(P.ReadOnly, null, items[k]({})) : items[k](mode === 'own' ? { readOnly: true } : {});
         ReactDOM.createRoot(document.getElementById('c')).render(h('div', { id: 'probe' }, el));
         await new Promise((r) => setTimeout(r, 1000));
       }, k, mode);
+      // the person's own way to change it, step by step: each step's count of changes is kept, so the free control must change at every step
+      const count = () => page.evaluate(() => window.__n), steps = [];
+      const step = async (name, act) => { const before = await count(); await act(); await wait(200); steps.push({ name, changes: (await count()) - before }); };
+      for (const [text, key] of TYPED[k] || []) await step('type ' + text + ' and ' + key, async () => {
+        const f = await page.$('#probe input:not([type=hidden])');
+        if (f) { await f.click().catch(() => {}); await f.evaluate((x) => x.select()); await page.keyboard.type(text); await page.keyboard.press(key); }
+      });
+      if (CALENDAR[k]) await step('pick ' + CALENDAR[k] + ' in the calendar', async () => {
+        const b = await page.$('#probe .plx-date-picker__button'); if (b) { await b.click().catch(() => {}); await wait(300); }
+        const d = await page.$('.plx-calendar__day[data-plx-date="' + CALENDAR[k] + '"]'); if (d) await d.click().catch(() => {});
+      });
+      if (OPENS[k]) await step('open the list and click an option', async () => {
+        const f = await page.$('#probe ' + OPENS[k]); if (f) { await f.click().catch(() => {}); await wait(300); }
+        for (let i = 0; i < 2; i++) { const o = await page.$('[role=option][aria-selected=false]:not([aria-disabled=true])'); if (o) await o.click().catch(() => {}); await wait(200); }
+      });
       const target = await page.$(['input', 'textarea', '[role=radio]', '[role=slider]', '[role=combobox]', '[role=textbox]', '[contenteditable]', 'select', 'button'].map((s) => '#probe ' + s).join(', '));
       if (target) {
         await target.click().catch(() => {}); await new Promise((r) => setTimeout(r, 250));
@@ -58,15 +81,15 @@ const NAMES = ['SearchField', 'SegmentedControl', 'Rating', 'ColorSwatch', 'Prom
         for (const bt of (await page.$$('#probe button')).slice(0, 3)) await bt.click().catch(() => {});
       }
       await new Promise((r) => setTimeout(r, 200));
-      const n = await page.evaluate(() => window.__n); await page.close(); return n;
+      const n = await page.evaluate(() => window.__n); await page.close(); return { n, steps };
     };
     for (const k of NAMES) {
       const free = await run(k, 'free'), region = await run(k, 'region'), own = await run(k, 'own');
-      if (CHANGES.indexOf(k) >= 0) assert.ok(free > 0, k + ': free, the probe changes it (else it proves nothing), got ' + free);
-      if (CHANGES.indexOf(k) >= 0 || free > 0 || k === 'DatePicker' || k === 'Combobox' || k === 'CountrySelect') {
-        assert.equal(region, 0, k + ': inside a ReadOnly region nothing changes, got ' + region + ' change(s)');
-        assert.equal(own, 0, k + ': with readOnly nothing changes, got ' + own + ' change(s)');
-      }
+      assert.ok(free.n > 0, k + ': free, the probe changes it (else it proves nothing), got ' + free.n);
+      for (const s of free.steps) assert.ok(s.changes > 0, k + ': free, "' + s.name + '" changes it (else that step proves nothing), got ' + s.changes);
+      if (NOT_YET.indexOf(k) >= 0) continue;
+      assert.equal(region.n, 0, k + ': inside a ReadOnly region nothing changes, got ' + region.n + ' change(s)');
+      assert.equal(own.n, 0, k + ': with readOnly nothing changes, got ' + own.n + ' change(s)');
     }
     assert.deepEqual(errors, [], 'no script errors');
     console.log('readonly-adoption: OK');
