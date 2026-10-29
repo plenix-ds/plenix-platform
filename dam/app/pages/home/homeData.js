@@ -58,7 +58,7 @@ export const ASSETS = [
   ['Cross Gold Procession', 'Cross - Procession', 'Cross_Gold_Procession.psd', 'Photoshop (.psd)', 'PSD', '28.4 MB', '4000 × 5000 px', 'Jul 10, 2026', 'New'],
   ['Gold Coptic Cross Linear', 'Cross - Linear', 'Gold_Coptic_Linear.ai', 'Adobe Illustrator (.ai)', 'AI', '6.1 MB', '1800 × 2400 px', 'Jul 5, 2026', 'Complete'],
 ].map(([name, cat, file, fmt, badge, size, dims, date, status], i) => ({
-  id: i, name, cat, file, fmt, badge, size, dims, date, status, thumb: 'assets/thumb-' + (21 + i) + '.svg', typeIcon: 'file-' + badge.toLowerCase(),
+  id: i, name, cat, file, fmt, badge, size, dims, date, status, thumb: 'assets/thumb-' + (21 + i) + '.svg', typeIcon: 'file-' + badge.toLowerCase() /* plx-icons: file-ai file-jpg file-png file-psd */,
   tags: name.toLowerCase().split(' '), owner: ['Jordan Avery', 'Sarah M.', 'John Deacon'][i % 3],
 }));
 export const ASSET_TOTAL = 210;

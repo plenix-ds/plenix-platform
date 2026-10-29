@@ -1,3 +1,5 @@
+// History (#557): a one-time patch a past agent ran on Windows, kept as written; the mask and glyph setting it names are gone
+// (the Tabs caret is an Icon child since #551, and the glyph settings leave icon.css at icon stage 5c-2). Do not run it.
 const fs = require('fs');
 const p = 'D:/Documents/Projects/Projects_Applications/Plenix/platform/components/Tabs/tabs.css';
 let s = fs.readFileSync(p, 'utf8');

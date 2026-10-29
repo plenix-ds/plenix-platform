@@ -1,8 +1,9 @@
 // Plenix tests · high contrast and loading motion (library wave 2, lane B): system/forced-colors.css and the loading
 // classes of system/motion.css, in a real page (the Settings application) with Chrome's media emulation.
 //   forced colors (forced-colors: active): a focused field takes a Highlight border; a selected, current or pressed item
-//     Highlight with HighlightText, and its icon HighlightText; an icon elsewhere CanvasText (not the Canvas the browser
-//     would give its mask); a disabled control GrayText; a card an outline; a progress fill Highlight
+//     Highlight with HighlightText, and its icon HighlightText; an icon elsewhere CanvasText (the icons are the Icon
+//     component's inline svg, written with Plenix.iconMarkup; #557); a disabled control GrayText; a card an outline; a
+//     progress fill Highlight
 //   more contrast (prefers-contrast: more): the border roles resolve to the strong border and muted text to the default
 //     text color, in light and in dark
 //   reduced motion (prefers-reduced-motion: reduce): plx-motion-spin, -shimmer and -progress stand still (no animation)
@@ -27,11 +28,13 @@ const res = [], check = (n, ok, d) => { if (shared.check(n, ok, d)) res.push([n,
   // specimens drawn with the Platform's classes (no style attribute), and the value a system color computes to
   const draw = () => page.evaluate(() => {
     const host = document.createElement('div'); host.id = 'hc-host'; document.body.appendChild(host);
+    // the icon as the Icon component draws it (#557: no bare icon class): plus is in the Settings page's icon file
+    const icon = window.Plenix.iconMarkup('plus');
     host.innerHTML = '<input class="plx-input" id="hc-input" aria-label="Name">'
-      + '<button type="button" class="plx-nav-list__item is-current" aria-current="page" id="hc-current"><span class="plx-icon plx-icon--add" aria-hidden="true"></span>All assets</button>'
+      + '<button type="button" class="plx-nav-list__item is-current" aria-current="page" id="hc-current">' + icon + 'All assets</button>'
       + '<button type="button" class="plx-button plx-button--secondary is-selected" aria-pressed="true" id="hc-pressed">Grid</button>'
       + '<button type="button" class="plx-button plx-button--secondary" disabled id="hc-disabled">Delete</button>'
-      + '<span id="hc-plain"><span class="plx-icon plx-icon--add" aria-hidden="true"></span></span>'
+      + '<span id="hc-plain">' + icon + '</span>'
       + '<div class="plx-card" id="hc-card"></div>'
       + '<div class="plx-progress-bar"><div class="plx-progress-bar__track"><span class="plx-progress-bar__fill" id="hc-fill"></span></div></div>'
       + '<span class="plx-motion-spin" id="hc-spin"></span><span class="plx-motion-shimmer" id="hc-shimmer"></span><span class="plx-motion-progress" id="hc-run"></span>'
@@ -51,8 +54,9 @@ const res = [], check = (n, ok, d) => { if (shared.check(n, ok, d)) res.push([n,
   for (const id of ['#hc-current', '#hc-pressed']) {
     check('forced colors: ' + id + ' (selected) is Highlight with HighlightText', (await css(id, 'backgroundColor')) === HL && (await css(id, 'color')) === HLT, (await css(id, 'backgroundColor')) + ' / ' + (await css(id, 'color')));
   }
-  check('forced colors: the icon of a current item is HighlightText', (await css('#hc-current .plx-icon', 'backgroundColor')) === HLT, await css('#hc-current .plx-icon', 'backgroundColor'));
-  check('forced colors: an icon elsewhere is CanvasText (its forced stroke)', (await css('#hc-plain .plx-icon', 'borderInlineStartColor')) === TXT && parseFloat(await css('#hc-plain .plx-icon', 'borderInlineStartWidth')) > 0, (await css('#hc-plain .plx-icon', 'borderInlineStartColor')) + ' ' + (await css('#hc-plain .plx-icon', 'borderInlineStartWidth')));
+  // an inline icon paints its path in the text color (fill: currentcolor), so the icon's color is the color it shows
+  check('forced colors: the icon of a current item is HighlightText', (await css('#hc-current .plx-icon__svg', 'fill')) === HLT && (await css('#hc-current .plx-icon', 'color')) === HLT, (await css('#hc-current .plx-icon__svg', 'fill')) + ' / ' + (await css('#hc-current .plx-icon', 'color')));
+  check('forced colors: an icon elsewhere is CanvasText', (await css('#hc-plain .plx-icon__svg', 'fill')) === TXT, await css('#hc-plain .plx-icon__svg', 'fill'));
   check('forced colors: a disabled button is GrayText', (await css('#hc-disabled', 'color')) === GRAY, await css('#hc-disabled', 'color'));
   check('forced colors: a card has an outline', (await css('#hc-card', 'outlineStyle')) === 'solid', await css('#hc-card', 'outlineStyle'));
   check('forced colors: a progress fill is Highlight', (await css('#hc-fill', 'backgroundColor')) === HL, await css('#hc-fill', 'backgroundColor'));

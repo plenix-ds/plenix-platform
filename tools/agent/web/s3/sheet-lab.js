@@ -1,3 +1,4 @@
+  // History (#557): a past agent's draft, kept as written; its bare icon classes (plx-icon--<name>) stop drawing at icon stage 5c-2.
   // ---- Sheet (<Sheet>): the bottom sheet of a Narrow window, at its two heights, as a task (Cancel and Done) or with Close;
   // drawn in a frame the height of a phone's lower screen, so the large height shows taller than the medium one
   var SH = function (n) { return 'plx-comp-sheet-' + n; };

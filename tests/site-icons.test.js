@@ -68,6 +68,18 @@ check('Compatibility file: it loads nothing (no fetch, no import, no URL) #553',
   assert.ok(!/\b(fetch|import|XMLHttpRequest|innerHTML|eval)\b|https?:/.test(text.replace(/^\/\*[\s\S]*?\*\//, '')), 'the file reaches outside itself');
 });
 
+check('Page icon files: each application, the Asset Manager and the login service are up to date #557', () => {
+  assert.deepStrictEqual(sites.buildPages(ROOT, { check: true }).stale, [], 'run node build-app.js');
+  for (const p of sites.PAGES) {
+    const text = fs.readFileSync(path.join(ROOT, p.out), 'utf8');
+    allDrawingsSafe(run(text).registered);
+    const page = p.site === 'dam' ? 'dam/index.html' : p.site + '/index.html';
+    assert.ok(fs.readFileSync(path.join(ROOT, page), 'utf8').includes('<script src="' + path.basename(p.out) + '"></script>'), page + ' does not load ' + p.out);
+  }
+  const login = require(path.join(ROOT, sites.LOGIN.out));
+  for (const n of sites.LOGIN.names) assert.ok(/^<span class="plx-icon plx-icon--[a-z-]+ plx-icon--inline[^"]*" aria-hidden="true"><svg [^<]*><path [^>]*><\/path>/.test(login[n]), n + ': ' + String(login[n]).slice(0, 120));
+});
+
 // a small site: JSX screens, a page with an inline script, an imported module, a bare class name, a Material name
 write('site/app.jsx', "import Upload from 'plenix-platform/icons/plenix/upload';\nexport const App = () => <div><Icon name=\"folder\" /><Button icon=\"add\">Add</Button><Button icon={Upload}>Up</Button></div>;\nconst toolbar = [{ icon: 'trash' }, { icon: 'rocket_launch' }];\n");
 write('site/index.html', '<!doctype html><title>x</title><span class="plx-icon plx-icon--search plx-icon--size-sm"></span>\n<script src="https://example.org/plenix.js"></script>\n<script>\n  var h = React.createElement;\n  h(Plenix.Icon, { name: "mail" });\n</script>\n');

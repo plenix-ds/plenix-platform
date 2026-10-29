@@ -4,6 +4,7 @@
 //   Icons          platform/icons/                 → platform/components/Icon/icon.css   (build-icons.js)
 //                                                  → platform/dist/icons/plenix/<name>.svg|.js, index.json (the asset layout, #279)
 //                                                  → platform/dist/plenix-icons-plenix.js (the compatibility file: every Plenix icon, #553)
+//                                                  → <app>/plenix-icons-<app>.js, dam/plenix-icons-dam.js (each page's icons, #557)
 //   Platform       platform/index.js               → platform/dist/platform.js       publishes its exports on window.Plenix
 //   Applications   <folder>/main.jsx               → <folder>/app.js                  one per suite application (dashboard,
 //                  projects, messages, contacts, calendar, tasks, notes, bookmarks, files, settings); they share suite/
@@ -48,6 +49,9 @@ console.log('Built platform/components/Icon/icon.css (' + ICONS.names + ' icon n
 // the compatibility file (#553): every Plenix icon registered with registerIcons, for a site that loads plenix.js and no icon file of its own
 const COMPAT = require('./tools/icons/site-icons.js').buildCompat(ROOT);
 console.log('Built ' + COMPAT.file + ' (' + COMPAT.icons + ' icons, ' + Math.round(COMPAT.bytes / 1024) + ' KB' + (COMPAT.changed ? '' : ', unchanged') + ')');
+// each page's own icon file (#557): <app>/plenix-icons-<app>.js and dam/plenix-icons-dam.js, exactly the icons its source names
+const PAGE_ICONS = require('./tools/icons/site-icons.js').buildPages(ROOT);
+console.log('Built ' + PAGE_ICONS.pages + ' page icon files (' + PAGE_ICONS.icons + ' icons' + (PAGE_ICONS.changed ? ', ' + PAGE_ICONS.stale.length + ' changed' : ', unchanged') + '; ' + PAGE_ICONS.unknown.length + ' names that are not icons, such as the suite\'s capability keys)');
 // then the step rules (build-steps.js -> system/steps.css): values from the data arrive as attributes (batch 267)
 const STEPS = require('./build-steps.js')(ROOT);
 // the Platforms Standard (platform/standards/platforms.md) as the design system's data (batch 297)

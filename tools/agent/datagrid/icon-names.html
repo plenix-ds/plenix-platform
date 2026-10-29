@@ -9,6 +9,8 @@
 <script>
 // Icon names (icon-names.js drives it): one Icon per way of naming one, so each case can be checked: a Plenix name, its
 // underscore alias, a Material-only name in underscores and in dashes and capitals, an unknown name, and a bare class.
+// No icon file is loaded on purpose: a Plenix name here draws from its fetched file (the fallback, #557), and the
+// unknown bare class draws nothing.
 const h = React.createElement, P = window.Plenix;
 const cases = ['person-cancel', 'person_cancel', 'rocket_launch', 'Rocket-Launch', 'no-such-icon', 'calendar'];
 ReactDOM.createRoot(document.getElementById('root')).render(h('div', null,
