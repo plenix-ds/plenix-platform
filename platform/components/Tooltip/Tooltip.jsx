@@ -12,7 +12,7 @@
      action: one action under the body (a standalone Link, or a small Button); it makes the tooltip rich and a toggletip:
        it opens on click (Enter or Space on the trigger) instead of on hover and focus
      rich: the rich look without a title or an action (default false; true when title or action is given)
-     describe: false keeps the tooltip from describing the trigger (no aria-describedby) when the trigger's own name already says the same text, as a cut heading's or label's
+     describe: false keeps the tooltip from describing the trigger (no aria-describedby) and hides the bubble from assistive technology (aria-hidden; sighted users still see it) when the trigger's own name already says the same text, as a cut heading's or label's
        full text does, so a screen reader does not read it twice (default true)
      disabled: the tooltip neither shows nor describes the trigger (default false); for a label that is shown in full most of
        the time and only needs its tooltip when it is cut short
@@ -134,14 +134,14 @@ export function Tooltip({ content, placement = 'bottom', title, action, rich = f
       onBlur={(e) => { if (!pressed.current && !(wrap.current && wrap.current.contains(e.relatedTarget))) setOpen(false); }}>
       <InTooltip.Provider value>{trigger}</InTooltip.Provider>
       {isRich ? (
-        <span ref={bubble} id={id + 'b'} className={bubbleCls}>
+        <span ref={bubble} id={id + 'b'} className={bubbleCls} aria-hidden={describe ? undefined : true}>
           <span role="tooltip" id={id} className="plx-tooltip__content">
             {title ? <span className="plx-tooltip__title">{title}</span> : null}
             <span className="plx-tooltip__body">{content}</span>
           </span>
           {action ? <span className="plx-tooltip__action">{action}</span> : null}
         </span>
-      ) : <span ref={bubble} role="tooltip" id={id} className={bubbleCls}>{content}</span>}
+      ) : <span ref={bubble} role="tooltip" id={id} className={bubbleCls} aria-hidden={describe ? undefined : true}>{content}</span>}
     </span>
   );
 }
