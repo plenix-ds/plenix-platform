@@ -7,8 +7,8 @@
      loadECharts().then((E) => E.init(el, plenixTheme(chartTokens(el)), { renderer: 'svg', width, height }));
      const t = chartTokens(el); t.color('categorical-2')   // a data-viz step as the color it is where el is
    Props:
-     loadECharts(win): adds the engine's script to the page once (the given window's, default this one) and resolves with
-       that window's PlenixECharts ({ init, version })
+     loadECharts(win): resolves with the given window's PlenixECharts ({ init, version }), loading it through the page's
+       engines script (platform/engines/plenix-engines.js) on first use; without that script it rejects with a plain message
      chartTokens(el): the chart tokens as the Platform's own chart classes resolve them where el is (theme, density and
        scope included): { color(step), colors, lineWidth, tick, title, axis, grid, point, separator, slice, area, dim, motion }
      plenixTheme(tokens): the ECharts theme (colors in the categorical order of seriesColor, the axis and grid lines, the
@@ -24,24 +24,13 @@
        are the tokens read here.
      Dark mode: the charts read the tokens again when the page's mode, theme or density changes (EChartsPlot). */
 
-import { vendorBase } from '../../utils/vendorBase.js';
+import { engine } from '../../utils/engines.js';
 
-const loading = new WeakMap();
 export function loadECharts(win) {
   const w = win || (typeof window !== 'undefined' ? window : null);
   if (!w) return Promise.reject(new Error('ECharts needs a browser'));
   if (w.PlenixECharts) return Promise.resolve(w.PlenixECharts);
-  if (loading.has(w)) return loading.get(w);
-  const doc = w.document;
-  const p = new Promise((resolve, reject) => {
-    const script = doc.createElement('script');
-    script.src = vendorBase() + 'echarts/echarts.min.js'; script.async = true; script.setAttribute('data-plx-vendor', 'echarts');
-    script.onload = () => { if (w.PlenixECharts) resolve(w.PlenixECharts); else { loading.delete(w); script.remove(); reject(new Error('ECharts did not load from ' + script.src)); } };
-    script.onerror = () => { loading.delete(w); script.remove(); reject(new Error('ECharts could not be loaded from ' + script.src)); };
-    doc.head.appendChild(script);
-  });
-  loading.set(w, p);
-  return p;
+  return engine('echarts', w);
 }
 
 const NS = 'http://www.w3.org/2000/svg';
