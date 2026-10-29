@@ -21,7 +21,7 @@ import { Menu, MenuItem, MenuRadioGroup } from '../../components/Menu/Menu.jsx';
 import { Popover } from '../../components/Popover/Popover.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
-import { VisuallyHidden } from '../../components/VisuallyHidden/VisuallyHidden.jsx';
+import { LiveRegion } from '../../utils/announce.jsx';
 import { CommandBarButton, useCommandBar } from './CommandBar.jsx';
 import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
 import ChevronUpIcon from 'plenix-platform/icons/plenix/chevron-up';
@@ -119,7 +119,7 @@ export function useReorder(items, setItems, nameOf, t) {
       <MenuItem icon={ChevronDownIcon} disabled={i === items.length - 1} onSelect={() => move(i, i + 1, true)}>{t.moveDown}</MenuItem>
     </Menu>
   );
-  const status = <VisuallyHidden role="status" aria-live="polite">{msg}</VisuallyHidden>;
+  const status = <LiveRegion kind="status">{msg}</LiveRegion>;
   return { box, rowProps, handle, status };
 }
 // the words of a row that reorders are in the catalog under each panel's section (moved, row, reorder, moveUp, moveDown)
