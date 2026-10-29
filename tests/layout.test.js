@@ -74,6 +74,11 @@ if (changed.wants({ units: ['components/Isolate', 'components/DataGrid', 'compon
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'ids-rtl-606.test.js')], { stdio: 'inherit', env: process.env });
   if (result.status !== 0) process.exit(result.status || 1);
 }
+// a failed icon file is asked for once more (issue 283): its own test, when the Icon component changed
+if (changed.wants({ units: ['components/Icon'] })) {
+  const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'icon-retry-283.test.js')], { stdio: 'inherit', env: process.env });
+  if (result.status !== 0) process.exit(result.status || 1);
+}
 // section headings wrap, then end in an ellipsis with a tooltip (issue 502): its own test, when CollapsibleSection, NavList, Tooltip or the truncation helper changed
 if (changed.wants({ units: ['components/CollapsibleSection', 'components/NavList', 'components/Tooltip', 'components/Field', 'patterns/PropertyList', 'utils/overflow.js'] })) {
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'section-headings-502.test.js')], { stdio: 'inherit', env: process.env });
