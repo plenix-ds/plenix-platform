@@ -50,15 +50,16 @@ import { Spinner } from '../Loading/Loading.jsx';
 import { ProgressSteps } from '../ProgressSteps/ProgressSteps.jsx';
 import { Text } from '../Text/Text.jsx';
 import { Textarea } from '../Input/Input.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 function Typing({ label, variant = 'typing', steps = [], current = 0, strings, className, ...rest }) {
   devWarn('Chat.Typing', { variant }, { variant: ['typing','thinking','steps'] });
-  const t = Object.assign({ thinking: 'Thinking' }, strings);
+  const t = useStrings('chat', strings);
   if (variant === 'thinking' || variant === 'steps') return <div className={cx('plx-chat__thinking', className)} role="status" {...rest}>
     <div className="plx-chat__thinking-label"><Spinner size="sm" aria-hidden="true" role="presentation" label="" /><Icon name="sparkle"/><Text>{label || t.thinking}</Text></div>
     {variant === 'steps' && steps.length ? <ProgressSteps label={label || t.thinking} steps={steps} current={current} strings={strings} /> : null}
   </div>;
-  if (label === undefined) label = 'Typing';
+  if (label === undefined) label = t.typing;
   return (
     <span className={cx('plx-chat__typing', className)} role="status" {...rest}>
       <span aria-hidden="true" /><span aria-hidden="true" /><span aria-hidden="true" />
@@ -77,7 +78,9 @@ function Header({ title, meta, avatar, actions, className, ...rest }) {
   );
 }
 
-function Thread({ label = 'Conversation', follow = true, className, children, ...rest }) {
+function Thread({ label, follow = true, className, children, ...rest }) {
+  const t = useStrings('chat');
+  label = label ?? t.conversation;
   // it opens at the newest message and follows new ones, unless the person has scrolled up to read (batch 215)
   const ref = React.useRef(null), atEnd = React.useRef(true);
   const count = React.Children.count(children);
@@ -104,7 +107,9 @@ function Message({ mine = false, author, time, dateTime, avatar, className, chil
   );
 }
 
-function Composer({ value = '', onChange, onSend, placeholder = 'Write a message', label = 'Message', sendLabel = 'Send', disabled = false, className, ...rest }) {
+function Composer({ value = '', onChange, onSend, placeholder, label, sendLabel, disabled = false, className, ...rest }) {
+  const t = useStrings('chat');
+  placeholder = placeholder ?? t.placeholder; label = label ?? t.message; sendLabel = sendLabel ?? t.send;
   const empty = !String(value).trim();
   const send = () => { if (!empty && onSend) onSend(value); };
   return (

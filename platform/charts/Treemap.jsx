@@ -36,8 +36,8 @@ import { ChartFrame } from './ChartFrame.jsx';
 import { seriesColor } from './scales.js';
 import { ChartTooltip } from './parts/ChartTooltip.jsx';
 import { useChartPoints } from './a11y.js';
+import { useStrings } from '../providers/LocaleProvider.jsx';
 
-const STRINGS = { group: 'Group', item: 'Part', value: 'Value', share: 'Share' };
 // SVG geometry on the 4px grid: a group's name row and inset, the label's inset in a tile, the smallest tile that shows a
 // name (and a value), the ring's room
 const GROUP_HEAD = 20, GROUP_PAD = 4, LABEL_PAD = 4, NAME_W = 40, NAME_H = 20, VALUE_H = 36, RING = 0;
@@ -77,7 +77,7 @@ export function squarify(values, x, y, width, height) {
 }
 
 export function Treemap({ title, description, data = [], variant, color, format, valueTitle, size = 'lg', strings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('chart.treemap', strings);
   const nested = variant ? variant === 'nested' : data.some((d) => Array.isArray(d.children));
   const v = nested ? 'nested' : 'flat';
   const uid = 'plx-treemap' + React.useId().replace(/[^a-zA-Z0-9]/g, '');

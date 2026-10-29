@@ -68,18 +68,8 @@ import { PermissionSummary } from '../PermissionSummary/PermissionSummary.jsx';
 import { AssignControl } from '../AssignControl/AssignControl.jsx';
 import { DuplicateAction } from '../DuplicateAction/DuplicateAction.jsx';
 import { DeleteFlow } from '../DeleteFlow/DeleteFlow.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = {
-  roles: 'Roles', create: 'Create role', createTitle: 'Create role', name: 'Name', description: 'Description',
-  descriptionHint: 'One sentence on what people with this role can do.', startFrom: 'Start with the permissions of',
-  empty: 'Enter a name.', taken: 'A role named {name} already exists.', back: 'All roles', members: 'Members', member: 'member',
-  membersCount: '{n} members', memberCount: '{n} member', builtIn: 'Built-in', custom: 'Custom', permissions: 'Permissions',
-  builtInNote: 'Built-in roles can’t be changed. Duplicate one to make your own.', addMember: 'Add a member', remove: 'Remove {name}',
-  lastMember: '{role} needs at least one member. Add someone else first.', noMembers: 'Nobody has this role yet.', role: 'role',
-  cancel: 'Cancel', delete: 'Delete', added: '{name} added to {role}', removed: '{name} removed from {role}', created: '{name} created',
-  access: 'People with the {role} role', people: '{n} people', peopleOne: '{n} person',
-  allowed: '{permission} allowed for {role}', denied: '{permission} no longer allowed for {role}',
-};
 const ROLE_ICONS = { owner: 'settings-permissions', editor: 'pencil', viewer: 'visibility' };
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const around = (s, key, node) => { const p = String(s).split('{' + key + '}'); return <>{p[0]}{p.length > 1 ? node : null}{p.slice(1).join('')}</>; };
@@ -94,7 +84,7 @@ function groupsOf(permissions) {
 
 export function RoleManager({ roles = [], permissions = [], people = [], onChange, view, roleId, onViewChange, defaultView = 'list',
   defaultRoleId, readOnly = false, label, headingLevel = 2, strings, className, ...rest }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('roleManager', strings);
   const [ownView, setOwnView] = React.useState(defaultView);
   const [ownId, setOwnId] = React.useState(defaultRoleId || (roles[0] && roles[0].id));
   const shown = view || ownView;

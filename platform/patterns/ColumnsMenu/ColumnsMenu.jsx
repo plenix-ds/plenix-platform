@@ -42,11 +42,8 @@ import { SearchField } from '../../components/SearchField/SearchField.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { VisuallyHidden } from '../../components/VisuallyHidden/VisuallyHidden.jsx';
 import { PanelTrigger, toggle, fill } from '../CommandBar/panel-parts.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { label: 'Columns', manage: 'Manage columns', first: 'First column', moveMenu: 'Move {name}', moveUp: 'Move {name} up', moveDown: 'Move {name} down',
-  up: 'Move up', down: 'Move down', find: 'Find a column', showAll: 'Show all', hideAll: 'Hide all', apply: 'Apply', cancel: 'Cancel', shown: '{name} shown',
-  hidden: '{name} hidden', isFirst: '{name} is the first column', moved: '{name}, position {position} of {total}', row: '{name}{first}. Alt + Arrow Up or Down moves it',
-  firstMark: ', first column', none: 'No column matches' };
 const moveTo = (order, f, i) => { const rest = order.filter((x) => x !== f); rest.splice(i, 0, f); return rest; };
 const nameIn = (fields) => (f) => { const x = fields.find((y) => y.value === f); return x ? x.label : f; };
 
@@ -97,7 +94,7 @@ export function ColumnsList({ fields, value, onChange, filter = '', t }) {
 }
 
 export function ColumnsMenu({ fields = [], value, onChange, inline = false, strings }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('columnsMenu', strings);
   const v = value || { order: fields.map((f) => f.value), hidden: [] };
   const name = nameIn(fields);
   const first = <Field label={t.first}><Select value={v.order[0]} options={v.order.map((f) => ({ value: f, label: name(f) }))}
@@ -107,7 +104,7 @@ export function ColumnsMenu({ fields = [], value, onChange, inline = false, stri
 }
 
 export function ManageColumnsDialog({ fields = [], value, onChange, strings, trigger, open: openProp, onOpenChange }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('columnsMenu', strings);
   const v = value || { order: fields.map((f) => f.value), hidden: [] };
   const controlled = openProp !== undefined;
   const [own, setOwn] = React.useState(false), open = controlled ? !!openProp : own;

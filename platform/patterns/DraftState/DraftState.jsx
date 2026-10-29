@@ -18,9 +18,10 @@ import { Notice } from '../../components/Notice/Notice.jsx';
 import { Stack, Inline } from '../../components/Stack/Stack.jsx';
 import { SaveStatus } from '../Autosave/Autosave.jsx';
 import { cx } from '../../utils/cx.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function DraftState({ version, saveState, onResume, onDiscard, strings, className }) {
-  const t = Object.assign({ draft: 'Draft', resume: 'Resume draft', discard: 'Discard draft', confirm: 'Discard this draft?', message: 'This draft will be permanently removed.', cancel: 'Keep draft', failed: 'Could not update the draft. Try again.' }, strings);
+  const t = useStrings('draftState', strings);
   const [confirm, setConfirm] = React.useState(false), [busy, setBusy] = React.useState(false), [error, setError] = React.useState('');
   const lock = React.useRef(false), cancel = React.useRef(null);
   const run = async (fn) => {

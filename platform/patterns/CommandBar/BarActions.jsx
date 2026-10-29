@@ -36,6 +36,7 @@ import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
 import { Popover } from '../../components/Popover/Popover.jsx';
 import { Spinner } from '../../components/Loading/Loading.jsx';
 import { focusables } from '../../utils/layer.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 
 // Composite triggers do not all forward arbitrary props. Keep Tooltip's description on the real control.
@@ -115,8 +116,10 @@ export const foldOrder = (actions) => {
   return plain.slice().reverse().concat(danger.slice().reverse());
 };
 
-export function BarActions({ actions = [], iconOnly = false, fold = 0, off = (a) => !!a.disabled, why = (a) => a.why, moreLabel = 'More actions',
+export function BarActions({ actions = [], iconOnly = false, fold = 0, off = (a) => !!a.disabled, why = (a) => a.why, moreLabel,
   dangerClass, size = 'sm', extra = [] }) {
+  const t = useStrings('commandBar');
+  moreLabel = moreLabel ?? t.moreLabel;
   const folded = new Set(foldOrder(actions).slice(0, fold).map((a) => a.id || a.label));
   const kept = actions.filter((a) => !folded.has(a.id || a.label));
   const away = actions.filter((a) => folded.has(a.id || a.label));

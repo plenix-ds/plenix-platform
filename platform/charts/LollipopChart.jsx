@@ -41,14 +41,14 @@ import { DataLabel } from './parts/DataLabel.jsx';
 import { ChartTooltip } from './parts/ChartTooltip.jsx';
 import { scalePosition } from './parts/position.js';
 import { useChartPoints } from './a11y.js';
+import { useStrings } from '../providers/LocaleProvider.jsx';
 
-const STRINGS = { category: 'Category', value: 'Value' };
 // the ring around the active dot (SVG geometry, the 4px grid): its radius
 const RING = 8;
 
 export function LollipopChart({ title, description, data = [], orientation = 'horizontal', sort = 'none', color, showValues = false, format,
   categoryTitle, valueTitle, size = 'md', strings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('chart.lollipopChart', strings);
   const o = orientation === 'vertical' ? 'vertical' : 'horizontal';
   const rows = React.useMemo(() => {
     const r = data.map((d, i) => ({ id: i + 1, label: String(d.label), value: Number(d.value) }));

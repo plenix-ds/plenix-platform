@@ -31,14 +31,14 @@ import { Image } from '../Image/Image.jsx';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
 import { cx } from '../../utils/cx.js';
 import { engine } from '../../utils/engines.js';
-const STRINGS={document:'Document',previous:'Previous page',next:'Next page',page:'Page',zoom:'Zoom',thumbnails:'Page thumbnails',loading:'Loading document',failed:'The document could not be opened.',failedEngine:'The document viewer could not start. Try again later.',failedAccess:'The document could not be opened. It may have moved, or you may not have access to it.',failedParse:'This file could not be read as a PDF.',failedRender:'This page could not be shown.',empty:'No document.',retry:'Try again'};
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 const ZOOMS=[50,75,100,125,150,200];
 const pdfEngine=()=>engine('pdf');
 // why a PDF failed, from PDF.js's error names: the engine, the document's address (missing, denied, blocked) or its content
 function reasonOf(e){const n=e&&e.name||'';return /Missing|UnexpectedResponse|Password|Abort/.test(n)||/fetch|network|cors/i.test(String(e&&e.message))?'access':'parse';}
 function PdfThumbnail({pdf,number,label}){const ref=React.useRef(null);React.useEffect(()=>{let live=true,task;const observer=new IntersectionObserver(async(entries)=>{if(!entries.some(e=>e.isIntersecting))return;observer.disconnect();try{const p=await pdf.getPage(number);if(!live)return;const v=p.getViewport({scale:1}),view=p.getViewport({scale:96/v.width}),c=ref.current;if(!c)return;c.width=Math.ceil(view.width);c.height=Math.ceil(view.height);task=p.render({canvasContext:c.getContext('2d'),viewport:view});await task.promise;}catch(e){/* Navigation remains available if a preview cannot render. */}});observer.observe(ref.current);return()=>{live=false;observer.disconnect();task?.cancel();};},[pdf,number]);return <canvas ref={ref} role="img" aria-label={label}/>;}
 export function DocumentViewer({kind='text',src,pages=[],text='',label,thumbnails=true,initialPage=1,initialZoom=100,pdfModuleUrl,pdfWorkerUrl,strings,onPageChange,onError,className}){
- const t={...STRINGS,...strings},[page,setPage]=React.useState(initialPage),[zoom,setZoom]=React.useState(ZOOMS.includes(initialZoom)?initialZoom:100),[pdf,setPdf]=React.useState(null),[loading,setLoading]=React.useState(false),[error,setError]=React.useState(''),[attempt,setAttempt]=React.useState(0),[accessible,setAccessible]=React.useState(''),canvas=React.useRef(null),viewport=React.useRef(null);
+ const t=useStrings('documentViewer', strings),[page,setPage]=React.useState(initialPage),[zoom,setZoom]=React.useState(ZOOMS.includes(initialZoom)?initialZoom:100),[pdf,setPdf]=React.useState(null),[loading,setLoading]=React.useState(false),[error,setError]=React.useState(''),[attempt,setAttempt]=React.useState(0),[accessible,setAccessible]=React.useState(''),canvas=React.useRef(null),viewport=React.useRef(null);
  const errorRef=React.useRef(onError);errorRef.current=onError;
  // one message per reason; strings.failed (an app's own wording) replaces them all unless the reason's own string is given
  const fail=(reason,cause)=>{const own='failed'+reason.charAt(0).toUpperCase()+reason.slice(1);setError((strings&&strings[own])||(strings&&strings.failed)||t[own]);setLoading(false);errorRef.current?.({reason,cause});};

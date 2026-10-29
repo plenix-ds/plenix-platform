@@ -59,12 +59,12 @@ import { Details } from '../components/Details/Details.jsx';
 import { Table } from '../components/Table/Table.jsx';
 import { Button } from '../components/Button/Button.jsx';
 import { snapToGrid } from '../utils/grid.js';
+import { useStrings } from '../providers/LocaleProvider.jsx';
 
-const STRINGS = { showData: 'Show the data', table: '{title}: data' };
 const MARGIN_TOKENS = { top: '--plx-comp-chart-margin-block-start', end: '--plx-comp-chart-margin-inline-end', bottom: '--plx-comp-chart-margin-block-end', start: '--plx-comp-chart-margin-inline-start' };
 
 export function ChartFrame({ title, description, hideCaption = false, size = 'md', margin, legend, legendPosition = 'bottom', table, interaction, actions, fitHeight, clip = false, strings, className, children }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('chart.chartFrame', strings);
   const uid = 'plx-chart' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const frame = React.useRef(null), plot = React.useRef(null);
   const [box, setBox] = React.useState({ width: 0, height: 0, rtl: false, tokens: null });

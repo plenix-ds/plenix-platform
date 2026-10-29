@@ -38,8 +38,8 @@ import { Details } from '../components/Details/Details.jsx';
 import { Table } from '../components/Table/Table.jsx';
 import { Badge } from '../components/Badge/Badge.jsx';
 import { seriesColor } from './scales.js';
+import { useStrings } from '../providers/LocaleProvider.jsx';
 
-const STRINGS = { showData: 'Show the data', table: '{title}: data', measure: 'Measure', value: 'Value', min: 'Minimum', max: 'Maximum', ok: '' };
 const SIZES = ['sm', 'md', 'lg'];
 const LEVELS = { warning: { tone: 'waiting', icon: 'warning' }, critical: { tone: 'negative', icon: 'alert' } };
 // the dial's geometry in SVG user units (the SVG is scaled to the size's width): the center, the track's radius and the
@@ -53,7 +53,7 @@ const arc = (r, t0, t1) => {
 };
 
 export function Gauge({ title, description, value, min = 0, max = 100, format, label, thresholds = [], size = 'md', hideCaption = false, strings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('chart.gauge', strings);
   const uid = 'plx-gauge' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const fmt = typeof format === 'function' ? format : (v) => formatNumber(v);
   const span = max - min || 1;

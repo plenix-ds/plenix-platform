@@ -17,10 +17,11 @@ import { Stack } from '../Stack/Stack.jsx';
 import { Button } from '../Button/Button.jsx';
 import { Notice } from '../Notice/Notice.jsx';
 import { cx } from '../../utils/cx.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function Announcement({ id, variant = 'banner', open = true, title, children, actions, dismissible = true, onDismiss, tone = 'info', strings, className }) {
   devWarn('Announcement', { variant, tone }, { variant: ['banner','card','dialog'], tone: ['info','success','warning','danger','neutral'] });
-  const t = Object.assign({ dismiss: 'Dismiss announcement', failed: 'Could not dismiss this announcement. Try again.' }, strings);
+  const t = useStrings('announcement', strings);
   const [closed, setClosed] = React.useState(false), [busy, setBusy] = React.useState(false), [error, setError] = React.useState('');
   const lock = React.useRef(false), epoch = React.useRef(0);
   React.useEffect(() => { epoch.current++; lock.current = false; setClosed(false); setBusy(false); setError(''); return () => { epoch.current++; }; }, [id, open]);

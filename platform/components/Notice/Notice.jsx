@@ -28,12 +28,12 @@ import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { Icon } from '../Icon/Icon.jsx';
 import { Button } from '../Button/Button.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 const ICONS = { info: 'info-circle', success: 'circle-check', warning: 'warning', danger: 'alert' };
-const STRINGS = { dismiss: 'Dismiss' };
 export function Notice({ tone = 'info', icon, title, actions, onDismiss, strings, className, children, ...rest }) {
   devWarn('Notice', { tone }, { tone: ['info','success','warning','danger'] });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('notice', strings);
   const section = title || actions;
   return (
     <div className={cx('plx-notice', 'plx-notice--' + tone, className)} role={tone === 'danger' ? 'alert' : undefined} {...rest}>

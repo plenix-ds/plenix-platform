@@ -63,17 +63,14 @@ import { Menu, MenuItem, MenuDivider } from '../Menu/Menu.jsx';
 import { ProgressBar } from '../ProgressBar/ProgressBar.jsx';
 import { RenameAction } from '../../patterns/RenameAction/RenameAction.jsx';
 import { DeleteFlow } from '../../patterns/DeleteFlow/DeleteFlow.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = {
-  select: 'Select {name}', more: 'More actions for {name}', download: 'Download {name}', rename: 'Rename…', delete: 'Delete',
-  cancel: 'Cancel', retry: 'Try again', transfer: '{label} {name}', uploading: 'Uploading', file: 'file', files: 'files', folder: 'folder', folders: 'folders', items: '{n} items', item: '{n} item',
-};
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 
 export function FileRow({ file, as = 'div', selectable = false, selected = false, onSelectChange, href, onOpen, owner, status,
   progress, progressLabel, onCancel, error, onRetry, onDownload, onRename, names, onDelete, deleteVariant = 'confirm', onRestore,
   actions, strings, className, ...rest }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('fileRow', strings);
   const f = file || {};
   const name = f.name || '';
   const folder = f.kind === 'folder';

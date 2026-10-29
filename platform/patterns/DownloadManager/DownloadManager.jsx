@@ -17,10 +17,11 @@ import { Notice } from '../../components/Notice/Notice.jsx';
 import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
 import { Stack } from '../../components/Stack/Stack.jsx';
 import { cx } from '../../utils/cx.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function DownloadManager({ items = [], onCancel, onRetry, onDownload, title, variant = 'panel', strings, className }) {
   devWarn('DownloadManager', { variant }, { variant: ['panel','progress','ready'] });
-  const t = Object.assign({ title: 'Downloads', empty: 'No downloads', queued: 'Queued', progress: 'Downloading', ready: 'Ready', failed: 'Download failed', actionFailed: 'Could not complete the download action. Try again.' }, strings);
+  const t = useStrings('downloadManager', strings);
   const [pending, setPending] = React.useState({}), [errors, setErrors] = React.useState({});
   const locks = React.useRef(new Set());
   const run = async (item, action) => {

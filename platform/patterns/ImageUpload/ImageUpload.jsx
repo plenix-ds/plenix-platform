@@ -57,19 +57,16 @@ import { Field } from '../../components/Field/Field.jsx';
 import { Input } from '../../components/Input/Input.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { announce } from '../../utils/announce.jsx';
-import { formatBytes } from '../../utils/format.js';
+import { formatBytes, formatNumber } from '../../utils/format.js';
+import { useStrings, useLocale } from '../../providers/LocaleProvider.jsx';
 
-const CROP = { title: 'Crop image', zoom: 'Zoom', frame: 'Crop area. Drag the picture, or move it with the arrow keys', apply: 'Apply', cancel: 'Cancel' };
-const STRINGS = { drop: 'Drop an image here, or', dropMany: 'Drop images here, or', choose: 'Choose image', chooseMany: 'Choose images', replace: 'Replace',
-  remove: 'Remove {name}', alt: 'Description', altHint: 'Describe this image for people who cannot see it', tooLarge: '{name} is larger than {max}',
-  notImage: '{name} is not an image', added: (n) => (n === 1 ? '1 image added' : n + ' images added'), removed: '{name} removed', crop: CROP };
 const RATIOS = { '1-1': 1, '4-3': 4 / 3, '3-2': 3 / 2, '16-9': 16 / 9, '21-9': 21 / 9, '3-4': 3 / 4, '9-16': 9 / 16 };
 const fill = (s, map) => String(s).replace(/\{(\w+)\}/g, (m, k) => (map[k] !== undefined ? map[k] : m));
 let seq = 0;
 
 /* ImageCrop: the picture drawn in the frame's ratio on a canvas off the page; the frame shows the result as an Image */
 export function ImageCrop({ src, ratio = '1-1', output = 1200, onApply, onCancel, strings, className }) {
-  const t = Object.assign({}, CROP, strings);
+  const t = useStrings('imageUpload.crop', strings);
   const r = RATIOS[ratio] || 1;
   const [zoom, setZoom] = React.useState(100);
   const [pos, setPos] = React.useState({ x: 0, y: 0 });   // the picture's offset, -1 to 1 of the room it has to move
@@ -136,7 +133,10 @@ export function ImageCrop({ src, ratio = '1-1', output = 1200, onApply, onCancel
 
 export function ImageUpload({ value = [], onChange, multiple = false, max, ratio = 'auto', crop = false, accept = 'image/png,image/jpeg,image/webp,image/gif',
   maxSize, altText = false, description, label, disabled = false, strings, className, id, 'aria-describedby': describedBy }) {
-  const t = Object.assign({}, STRINGS, strings, { crop: Object.assign({}, CROP, strings && strings.crop) });
+  const t = useStrings('imageUpload', strings);
+  const loc = useLocale();
+  // "N images added": a plural message in the catalog (Arabic has six forms); an app's own function in strings still wins
+  const addedText = (n) => (typeof t.added === 'function' ? t.added(n) : loc.t('imageUpload.added', { count: n, n: formatNumber(n) }));
   const images = value || [];
   const [over, setOver] = React.useState(false);
   const [errors, setErrors] = React.useState([]);
@@ -160,7 +160,7 @@ export function ImageUpload({ value = [], onChange, multiple = false, max, ratio
   };
   const commit = (take) => {
     onChange(multiple ? images.concat(take) : take.slice(0, 1));
-    announce(t.added(take.length));
+    announce(addedText(take.length));
   };
   const onCropped = (res) => {
     const [first, ...rest] = cropping.queue;

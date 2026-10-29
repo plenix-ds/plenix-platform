@@ -78,13 +78,8 @@ import { Menu, MenuItem, MenuRadioGroup, MenuSub } from '../../components/Menu/M
 import { RenameAction } from '../RenameAction/RenameAction.jsx';
 import { DeleteFlow } from '../DeleteFlow/DeleteFlow.jsx';
 import { useDraggable, useDropTarget } from '../../utils/dnd.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = {
-  sort: 'Sort', sortBy: 'Sort by {field}', field: 'Sort by', order: 'Order', asc: 'Ascending', desc: 'Descending',
-  name: 'Name', size: 'Size', modified: 'Modified', owner: 'Owner', status: 'Status', count: '{n} items', one: '1 item',
-  empty: 'Nothing here yet', open: 'Open', download: 'Download', rename: 'Rename…', delete: 'Delete', moveTo: 'Move to',
-  file: 'file', files: 'files', folder: 'folder', folders: 'folders', items: '{n} items', item: '{n} item',
-};
 const FIELDS = ['name', 'size', 'modified', 'owner'];
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const idOf = (f) => (f.id === undefined ? f.name : f.id);
@@ -120,7 +115,7 @@ function DragRow({ file, dragType, onMove, children }) {
 export function FileList({ files = [], label, view = 'list', sortable = false, sort, defaultSort, onSortChange, columns, selectable = false, selected = [],
   onSelectionChange, onOpen, hrefFor, onDownload, onRename, onDelete, deleteVariant = 'confirm', onRestore, dragType, onMove, moveTargets,
   rowHeight, empty, strings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('fileList', strings);
   const [own, setOwn] = React.useState(Object.assign({ field: 'name', dir: 'asc' }, defaultSort));
   const order = Object.assign({ field: 'name', dir: 'asc' }, sort === undefined ? own : sort);
   const setOrder = (next) => { if (sort === undefined) setOwn(next); if (onSortChange) onSortChange(next); };

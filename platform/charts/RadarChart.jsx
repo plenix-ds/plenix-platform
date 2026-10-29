@@ -35,15 +35,15 @@ import { scaleLinear } from './scales.js';
 import { ChartLegend } from './parts/ChartLegend.jsx';
 import { ChartTooltip } from './parts/ChartTooltip.jsx';
 import { useChartHover, withColors, legendItems, finite } from './chart-kit.js';
+import { useStrings } from '../providers/LocaleProvider.jsx';
 
-const STRINGS = { measure: 'Measure' };
 // px: the room around the web for the measures' names (on the 4px grid); the start and end sides take the longest name
 const WEB_MARGIN = { top: 24, bottom: 24 };
 const CHAR = 7;   // px: about one character of the measures' names (the label font at 12px)
 
 export function RadarChart({ title, description, hideCaption, size = 'lg', axes = [], series = [], max, rings = 4, format, showPoints = true, legend, legendPosition,
   tooltip = true, margin, strings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('chart.radarChart', strings);
   const fmt = (v) => (typeof format === 'function' ? format(v) : formatNumber(v));
   const [active, hover] = useChartHover();
   const list = withColors(series);

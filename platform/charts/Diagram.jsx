@@ -46,8 +46,8 @@ import { ChartFrame } from './ChartFrame.jsx';
 import { ChartTooltip, chartTooltipText } from './parts/ChartTooltip.jsx';
 import { useChartInteraction } from './interaction.js';
 import { graphLayers, graphNeighbors, useGraphView, directionalMove } from './NetworkGraph.jsx';
+import { useStrings } from '../providers/LocaleProvider.jsx';
 
-const STRINGS = { step: 'Step', kind: 'Kind', next: 'Leads to', previous: 'Comes from', end: 'End', process: 'Step', decision: 'Decision', terminal: 'Start or end', data: 'Data', box: 'Part', group: 'Group' };
 const SHAPES = ['process', 'decision', 'terminal', 'data'];
 // SVG geometry, in pixels on the 4px grid: each shape's size, the gaps between layers and across them, a group's padding
 const SIZE = { process: [144, 48], decision: [144, 64], terminal: [128, 40], data: [144, 48], box: [160, 64] };
@@ -62,7 +62,7 @@ function outline(shape, w, h) {
 
 export function Diagram({ title, description, nodes = [], edges = [], variant = 'flowchart', groups, direction = 'down', interactive = true, size = 'lg', margin,
   onSelect, strings, frameStrings, interactionStrings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('chart.diagram', strings);
   const uid = 'plx-diagram' + React.useId().replace(/[^a-zA-Z0-9]/g, '');
   const boxes = variant === 'boxes';
   const right = direction === 'right';

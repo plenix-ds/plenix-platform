@@ -65,10 +65,9 @@ import { SurfaceContext } from '../../providers/Surface.jsx';
 import { Tooltip, InTooltip } from '../Tooltip/Tooltip.jsx';
 import { Kbd } from '../Kbd/Kbd.jsx';
 import { parseHotkey, hotkeyLabel } from '../../utils/hotkey.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 const TONES = ['success', 'danger', 'neutral'];
-
-const STRINGS = { working: 'Working' };
 
 // the icon takes the button's state as its own (Styling Standard 3.6): filled while the button is selected, pressed or
 // open; an Icon element the caller gives keeps its own fill when it sets one
@@ -86,7 +85,7 @@ const ariaShortcut = (binding) => {
 export const Button = React.forwardRef(function Button({ variant = 'secondary', size = 'md', icon, iconEnd, iconOnly = false, label, caret = false,
   expanded, pressed, selected = false, tone, loading = false, disabled = false, href, type = 'button', joined, truncate = false, stackedLabel = false, labelRow = false, tooltip, shortcut, className, children, onClick, strings, ...rest }, ref) {
   devWarn('Button', { variant, size }, { variant: ['secondary','primary','tertiary','ghost','danger','danger-secondary','quiet'], size: ['md','sm','xs','2xs','lg'] });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('button', strings);
   // a colored surface around the button (TeachingBubble, the accent AppHeader) gives it that surface's look
   const surface = React.useContext(SurfaceContext);
   const classes = cx('plx-button', 'plx-button--' + (variant === 'quiet' ? 'ghost' : variant), size !== 'md' && 'plx-button--size-' + size, iconOnly && 'plx-button--icon-only',

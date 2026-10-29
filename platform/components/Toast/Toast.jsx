@@ -44,12 +44,14 @@ import { Icon } from '../Icon/Icon.jsx';
 import { Button } from '../Button/Button.jsx';
 import { tokenMs } from '../../utils/tokenTime.js';
 import { announce } from '../../utils/announce.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 const ToastContext = React.createContext(null);
 const TONE_ICON = { info: 'circle-info', success: 'circle-check', warning: 'warning', danger: 'alert' };
 let nextId = 1;
 
 export function ToastProvider({ duration, children }) {
+  const words = useStrings('toast');
   const [toasts, setToasts] = React.useState([]);
   const timers = React.useRef(new Map());   // id -> { wait, timer, onClose }
   const texts = React.useRef(new Map());    // id -> the message element, read for its announcement
@@ -103,7 +105,7 @@ export function ToastProvider({ duration, children }) {
               <span className="plx-toast__icon"><Icon name={TONE_ICON[t.tone] || TONE_ICON.info} /></span>
               <span ref={(el) => { if (el) texts.current.set(t.id, el); else texts.current.delete(t.id); }} className="plx-toast__message">{t.message}</span>
               {t.action ? <Button size="xs" className="plx-toast__action" onClick={() => { if (t.action.onAction) t.action.onAction(); dismiss(t.id, 'action'); }}>{t.action.label}</Button> : null}
-              <button type="button" className="plx-toast__close" aria-label="Dismiss" onClick={() => dismiss(t.id)}><Icon name="close" /></button>
+              <button type="button" className="plx-toast__close" aria-label={words.dismiss} onClick={() => dismiss(t.id)}><Icon name="close" /></button>
             </div>
           ))}
         </div>,
@@ -122,8 +124,9 @@ export function useToast() {
 // the undo pattern: the action is already done; the toast offers Undo for as long as it shows, then the change is final
 export function useUndo() {
   const toast = useToast();
-  return React.useCallback((message, { onUndo, onCommit, label = 'Undo', tone, duration } = {}) => toast.show(message, {
-    tone, duration, action: { label, onAction: onUndo },
+  const words = useStrings('toast');
+  return React.useCallback((message, { onUndo, onCommit, label, tone, duration } = {}) => toast.show(message, {
+    tone, duration, action: { label: label ?? words.undo, onAction: onUndo },
     onClose: (reason) => { if (reason !== 'action' && onCommit) onCommit(); },
-  }), [toast]);
+  }), [toast, words.undo]);
 }

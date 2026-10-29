@@ -34,8 +34,8 @@ import { ChartFrame } from './ChartFrame.jsx';
 import { seriesColor } from './scales.js';
 import { ChartTooltip } from './parts/ChartTooltip.jsx';
 import { useChartHover, finite } from './chart-kit.js';
+import { useStrings } from '../providers/LocaleProvider.jsx';
 
-const STRINGS = { source: 'Source', target: 'Target', value: 'Value', total: 'Total' };
 // px: a node's bar and the least space between two nodes of a column (on the 4px grid)
 const NODE_WIDTH = 12, NODE_GAP = 12;
 const PLOT_MARGIN = { top: 8, end: 8, bottom: 8, start: 8 };
@@ -94,7 +94,7 @@ function band(l) {
 
 export function SankeyDiagram({ title, description, hideCaption, size = 'lg', nodes = [], links = [], format, showValues = true, tooltip = true, legend, legendPosition,
   margin, strings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('chart.sankeyDiagram', strings);
   const fmt = (v) => (typeof format === 'function' ? format(v) : formatNumber(v));
   const [active, hover] = useChartHover();
   const nameOf = {};

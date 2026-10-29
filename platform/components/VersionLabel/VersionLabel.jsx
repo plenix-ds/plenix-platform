@@ -28,13 +28,13 @@ import { cx } from '../../utils/cx.js';
 import { Badge } from '../Badge/Badge.jsx';
 import { Link } from '../Link/Link.jsx';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { version: 'Version', prefix: 'v', latest: 'Latest', draft: 'Draft' };
 const STATUSES = ['latest', 'draft'];
 
 export function VersionLabel({ version, status, size = 'md', href, strings, className, ...rest }) {
   devWarn('VersionLabel', { size }, { size: ['md','sm'] });
-  const words = Object.assign({}, STRINGS, strings);
+  const words = useStrings('versionLabel', strings);
   const s = size === 'sm' ? 'sm' : 'md';
   const numbered = typeof version === 'number' || /^\d+$/.test(String(version));
   const number = (

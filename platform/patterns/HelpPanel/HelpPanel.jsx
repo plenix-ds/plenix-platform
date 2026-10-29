@@ -19,9 +19,10 @@ import { Link } from '../../components/Link/Link.jsx';
 import { Text } from '../../components/Text/Text.jsx';
 import { EmptyState } from '../../components/EmptyState/EmptyState.jsx';
 import { cx } from '../../utils/cx.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function HelpPanel({ articles = [], open = true, onOpenChange, title, strings, className }) {
-  const t = Object.assign({ title: 'Help', search: 'Search help', empty: 'No matching articles', back: 'Back to articles', read: 'Read full article', close: 'Collapse help' }, strings);
+  const t = useStrings('helpPanel', strings);
   const [query, setQuery] = React.useState(''), [selected, setSelected] = React.useState(null);
   const article = articles.find((a) => a.id === selected);
   const matches = articles.filter((a) => (a.title + ' ' + (a.summary || '')).toLowerCase().includes(query.trim().toLowerCase()));

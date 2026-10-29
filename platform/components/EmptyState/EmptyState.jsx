@@ -37,6 +37,7 @@ import React from 'react';
 import { devWarn } from '../../utils/devWarn.js';
 import { cx } from '../../utils/cx.js';
 import { Icon } from '../Icon/Icon.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 // the system states: their tone and icon, and their words (STRINGS, translatable through the strings prop)
 const KINDS = {
@@ -47,21 +48,14 @@ const KINDS = {
   maintenance: { tone: 'neutral', icon: 'settings-maintenance' },
   completion: { tone: 'success', icon: 'circle-check' }
 };
-const STRINGS = {
-  offline: { title: 'You’re offline', text: 'Check your connection. This page updates when you’re back online.' },
-  degraded: { title: 'Some features aren’t working', text: 'A service is slow or not responding, so what you see may be out of date.' },
-  'permission-denied': { title: 'You don’t have access', text: 'Ask the owner to share it with you.' },
-  'not-found': { title: 'This page doesn’t exist', text: 'It may have been moved or deleted. Check the address or go back.' },
-  maintenance: { title: 'Down for maintenance', text: 'This service is being updated. Try again in a few minutes.' },
-  completion: { title: 'All done', text: 'There’s nothing left to do here.' }
-};
 const TONE_ICONS = { error: 'warning', warning: 'warning', success: 'circle-check' };
 const ROLES = { error: 'alert', warning: 'status', success: 'status' };
 
 export function EmptyState({ size = 'inline', tone, kind, icon, title, action, strings, className, children, ...rest }) {
   devWarn('EmptyState', { size, tone }, { size: ['inline','page'], tone: ['neutral','error','warning','success'] });
   const preset = KINDS[kind];
-  const words = preset ? Object.assign({}, STRINGS[kind], strings && strings[kind]) : null;
+  const all = useStrings('emptyState', strings);   // every system state's words, the strings prop on top
+  const words = preset ? all[kind] : null;
   const t = tone || (preset ? preset.tone : 'neutral');
   const mark = icon !== undefined ? icon : preset ? preset.icon : TONE_ICONS[t];
   const head = title !== undefined ? title : words ? words.title : null;

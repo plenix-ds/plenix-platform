@@ -37,8 +37,8 @@ import { seriesColor } from './scales.js';
 import { ChartLegend } from './parts/ChartLegend.jsx';
 import { ChartTooltip, chartTooltipText } from './parts/ChartTooltip.jsx';
 import { useChartInteraction } from './interaction.js';
+import { useStrings } from '../providers/LocaleProvider.jsx';
 
-const STRINGS = { value: 'Count', word: 'Term', group: 'Group' };
 const STEPS = 5;
 // the space kept around each word while placing, and the spiral's step (SVG geometry, pixels)
 const PAD = 4, STEP = 4;
@@ -79,7 +79,7 @@ export function wordCloudLayout(boxes, width, height, layout = 'spiral') {
 
 export function WordCloud({ title, description, words = [], layout = 'spiral', groups, max = 50, valueLabel, format, size = 'md', margin, interactive = true, onSelect,
   strings, frameStrings, interactionStrings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('chart.wordCloud', strings);
   const fmt = typeof format === 'function' ? format : (v) => formatNumber(v);
   const vLabel = valueLabel || t.value;
   const sorted = words.filter((w) => w && w.text).slice().sort((a, b) => b.value - a.value);

@@ -83,6 +83,7 @@ import { Icon } from '../Icon/Icon.jsx';
 import { Button } from '../Button/Button.jsx';
 import { Field } from '../Field/Field.jsx';
 import { Input } from '../Input/Input.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 const asIcon = (i) => (typeof i === 'string' ? <Icon name={i} /> : i);
 
@@ -114,7 +115,8 @@ function useNonModalFocus(ref, open, active, firstFocus) {
 }
 
 function ModalShell({ kind, open, onClose, title, description, icon, size, side, role = 'dialog', footer, initialFocus,
-  closeLabel = 'Close', dismissible = true, flush = false, modal = true, className, children }) {
+  closeLabel, dismissible = true, flush = false, modal = true, className, children }) {
+  const t = useStrings('dialog');
   const ref = React.useRef(null);
   const id = useUid('plx-dlg');
   const firstFocus = () => {
@@ -139,7 +141,7 @@ function ModalShell({ kind, open, onClose, title, description, icon, size, side,
         <div className="plx-dialog__header">
           {icon ? <span className="plx-dialog__icon">{asIcon(icon)}</span> : null}
           <h2 id={id + 't'} className="plx-dialog__title">{title}</h2>
-          {dismissible ? <Button variant="ghost" iconOnly icon="close" label={closeLabel} className="plx-dialog__close" onClick={onClose} /> : null}
+          {dismissible ? <Button variant="ghost" iconOnly icon="close" label={closeLabel ?? t.close} className="plx-dialog__close" onClick={onClose} /> : null}
         </div>
         <div className={cx('plx-dialog__body', flush && 'plx-dialog__body--flush')}>
           {description ? <p id={id + 'd'} className="plx-dialog__description">{description}</p> : null}
@@ -162,20 +164,22 @@ export function Drawer({ size = 'md', side = 'end', ...props }) {
   return <ModalShell kind="drawer" size={size} side={side} {...props} />;
 }
 
-export function ConfirmDialog({ open, title, message, confirmLabel = 'Confirm', cancelLabel = 'Cancel', destructive = false, onConfirm, onCancel, children }) {
+export function ConfirmDialog({ open, title, message, confirmLabel, cancelLabel, destructive = false, onConfirm, onCancel, children }) {
+  const t = useStrings('dialog');
   const cancel = React.useRef(null);
   return (
     <ModalShell kind="dialog" size="sm" role="alertdialog" open={open} onClose={onCancel} title={title} description={message}
       initialFocus={destructive ? cancel : undefined} className={destructive ? 'plx-dialog--destructive' : undefined}
-      footer={<><Button ref={cancel} onClick={onCancel}>{cancelLabel}</Button><Button variant={destructive ? 'danger' : 'primary'} onClick={onConfirm}>{confirmLabel}</Button></>}>
+      footer={<><Button ref={cancel} onClick={onCancel}>{cancelLabel ?? t.cancel}</Button><Button variant={destructive ? 'danger' : 'primary'} onClick={onConfirm}>{confirmLabel ?? t.confirm}</Button></>}>
       {children}
     </ModalShell>
   );
 }
 
-export function PromptDialog({ open, title, message, label, defaultValue = '', placeholder, description, confirmLabel = 'Save', cancelLabel = 'Cancel',
+export function PromptDialog({ open, title, message, label, defaultValue = '', placeholder, description, confirmLabel, cancelLabel,
   validate, onSubmit, onCancel, inputProps, size = 'sm' }) {
   devWarn('PromptDialog', { size }, { size: ['sm','md','lg','xl','full'] });
+  const t = useStrings('dialog');
   const formId = useUid('plx-prompt');
   const input = React.useRef(null);
   const [value, setValue] = React.useState(defaultValue);
@@ -192,7 +196,7 @@ export function PromptDialog({ open, title, message, label, defaultValue = '', p
   };
   return (
     <ModalShell kind="dialog" size={size} open={open} onClose={onCancel} title={title} description={message} initialFocus={input}
-      footer={<><Button onClick={onCancel}>{cancelLabel}</Button><Button variant="primary" type="submit" form={formId}>{confirmLabel}</Button></>}>
+      footer={<><Button onClick={onCancel}>{cancelLabel ?? t.cancel}</Button><Button variant="primary" type="submit" form={formId}>{confirmLabel ?? t.save}</Button></>}>
       <form id={formId} noValidate onSubmit={submit}>
         <Field label={label} description={description} error={error || undefined}>
           <Input ref={input} value={value} placeholder={placeholder} onChange={(e) => { setValue(e.target.value); if (error) setError(''); }} {...inputProps} />

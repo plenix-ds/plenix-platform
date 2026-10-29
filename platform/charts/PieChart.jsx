@@ -52,8 +52,8 @@ import { useChartInteraction } from './interaction.js';
 import { legendItems, finite } from './chart-kit.js';
 import { useEChartsPlot, NO_MARGIN } from './echarts/EChartsPlot.jsx';
 import { snapToGrid } from '../utils/grid.js';
+import { useStrings } from '../providers/LocaleProvider.jsx';
 
-const STRINGS = { part: 'Part', value: 'Value', share: 'Share', total: 'Total', other: 'Other' };
 const VARIANTS = ['pie', 'donut', 'half'];
 const HOLE = 0.6;            // the hollow center's radius, a share of the ring's radius
 const LABEL_MIN = 0.08;      // the least share written on its slice
@@ -84,7 +84,7 @@ export function pieSlices(data, { sort = true, maxSlices = 6, other = 'Other' } 
 
 export function PieChart({ title, description, hideCaption, size, data = [], variant = 'pie', centerValue, centerLabel, sort = true, maxSlices = 6,
   format, showValues = false, legend, legendPosition, tooltip = true, interactive = true, margin, strings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('chart.pieChart', strings);
   const v = VARIANTS.indexOf(variant) >= 0 ? variant : 'pie';
   const half = v === 'half';
   const fmt = (x) => (typeof format === 'function' ? format(x) : formatNumber(x));

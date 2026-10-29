@@ -23,9 +23,10 @@ import { Notice } from '../../components/Notice/Notice.jsx';
 import { PermissionSummary } from '../PermissionSummary/PermissionSummary.jsx';
 import { useUnsavedGuard } from '../../providers/UnsavedGuard.jsx';
 import { cx } from '../../utils/cx.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function PermissionsEditor({ subjects = [], capabilities = [], value = {}, mode = 'roles', onChange, onSave, readOnly = false, strings, className }) {
-  const t = Object.assign({ label: 'Permissions', capability: 'Capability', subject: 'Show permissions for', save: 'Save permissions', failed: 'Could not save permissions. Try again.', unsaved: 'Your permission changes have not been saved.' }, strings);
+  const t = useStrings('permissionsEditor', strings);
   const [selected, setSelected] = React.useState(subjects[0]?.id || ''), [busy, setBusy] = React.useState(false), [error, setError] = React.useState('');
   const [saved, setSaved] = React.useState(value), lock = React.useRef(false);
   React.useEffect(() => { if (!onSave) setSaved(value); }, [value, onSave]);

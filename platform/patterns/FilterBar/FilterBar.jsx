@@ -24,9 +24,9 @@ import { cx } from '../../utils/cx.js';
 import { useOverflow, splitAt } from '../../utils/overflow.js';
 import { Button } from '../../components/Button/Button.jsx';
 import { Menu, MenuItem, MenuGroup, MenuDivider } from '../../components/Menu/Menu.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 const isSet = (f) => (f.multiple ? (f.value || []).length > 0 : f.value !== null && f.value !== undefined && f.value !== '');
-const STRINGS = { label: 'Filters', more: 'More filters', clearAll: 'Clear all', one: '{label}: {value}', several: '{label} · {count}' };
 const fill = (s, vars) => s.replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m));
 
 const summary = (f, t) => {
@@ -57,7 +57,7 @@ function choices(f, onChange) {
 }
 
 export function FilterBar({ label, filters, onChange, onClearAll, actions, strings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('filterBar', strings);
   const list = React.useRef(null);
   const fit = useOverflow(list, filters.length, filters.map((f) => summary(f, t)).join('|'));
   const hidden = filters.slice(fit);

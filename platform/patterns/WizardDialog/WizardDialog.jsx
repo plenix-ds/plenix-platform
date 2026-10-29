@@ -16,10 +16,11 @@ import { devWarn } from '../../utils/devWarn.js';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
 import { Wizard } from '../Wizard/Wizard.jsx';
 import { useUnsavedGuard } from '../../providers/UnsavedGuard.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function WizardDialog({ open, title, size = 'md', dirty = false, onClose, strings, ...props }) {
   devWarn('WizardDialog', { size }, { size: ['md','lg','full'] });
-  const t = Object.assign({ close: 'Close', unsaved: 'Your changes will be lost.' }, strings);
+  const t = useStrings('wizardDialog', strings);
   const [busy, setBusy] = React.useState(false);
   const guard = useUnsavedGuard(open && dirty, t.unsaved);
   const close = guard(() => { if (!busy && onClose) onClose(); });

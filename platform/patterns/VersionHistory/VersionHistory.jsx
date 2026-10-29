@@ -17,10 +17,10 @@ import { Timeline } from '../../components/Timeline/Timeline.jsx';
 import { VersionLabel } from '../../components/VersionLabel/VersionLabel.jsx';
 import { ConfirmDialog,Dialog } from '../../components/Dialog/Dialog.jsx';
 import { Badge } from '../../components/Badge/Badge.jsx';
-const STRINGS={label:'Version history',preview:'Preview',restore:'Restore',confirm:'Restore this version?',cancel:'Cancel',failed:'The version could not be restored. Try again.',restored:'Version restored',empty:'No versions.'};
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 export function VersionHistory({versions=[],currentId,onPreview,onRestore,variant='list',strings,className}){
   devWarn('VersionHistory', { variant }, { variant: ['list','restore','preview'] });
- const t={...STRINGS,...strings},[ask,setAsk]=React.useState(null),[preview,setPreview]=React.useState(null),[busy,setBusy]=React.useState(false),[error,setError]=React.useState(''),[done,setDone]=React.useState(false),lock=React.useRef(false),alive=React.useRef(true);
+ const t=useStrings('versionHistory', strings),[ask,setAsk]=React.useState(null),[preview,setPreview]=React.useState(null),[busy,setBusy]=React.useState(false),[error,setError]=React.useState(''),[done,setDone]=React.useState(false),lock=React.useRef(false),alive=React.useRef(true);
  React.useEffect(()=>{alive.current=true;return()=>{alive.current=false;};},[]);
  const restore=async()=>{if(lock.current||!ask||!onRestore)return;const v=versions.find(v=>v.id===ask.id);if(!v||v.id===currentId){setAsk(null);return;}lock.current=true;setBusy(true);setError('');try{await onRestore(v);if(alive.current){setAsk(null);setDone(true);}}catch(e){if(alive.current)setError(e?.message||t.failed);}finally{lock.current=false;if(alive.current)setBusy(false);}};
  const viewing=preview&&versions.find(v=>v.id===preview.id);

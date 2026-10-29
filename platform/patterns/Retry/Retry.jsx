@@ -49,6 +49,7 @@ import { formatDuration } from '../../utils/format.js';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Text } from '../../components/Text/Text.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function useRetry(task, { attempts = 3, auto = false, delay, maxDelay, immediate = true } = {}) {
   const [state, setState] = React.useState({ status: immediate ? 'running' : 'idle', attempt: immediate ? 1 : 0, seconds: 0, error: null, result: undefined });
@@ -105,10 +106,6 @@ export function useRetry(task, { attempts = 3, auto = false, delay, maxDelay, im
   return Object.assign({}, state, { attempts, retry, cancel });
 }
 
-const STRINGS = {
-  title: 'Couldn’t load', retry: 'Retry', retryNow: 'Retry now', retrying: 'Retrying…', waiting: 'Retrying in {time}',
-  attempt: 'Attempt {attempt} of {attempts}', stopped: 'Stopped after {attempts} attempts', dismiss: 'Dismiss'
-};
 
 // a string with {name} places filled by values in the data font (numbers and durations are technical values)
 const fill = (template, values) => template.split(/(\{\w+\})/).filter(Boolean).map((part, i) => {
@@ -119,7 +116,7 @@ const plain = (template, values) => template.replace(/\{(\w+)\}/g, (all, k) => (
 
 export function RetryNotice({ retry, title, tone = 'danger', showCount = false, onDismiss, strings, className, children, ...rest }) {
   devWarn('RetryNotice', { tone }, { tone: ['danger','warning'] });
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('retry', strings);
   const r = retry || {};
   const failing = r.status === 'failed' || r.status === 'waiting' || (r.status === 'running' && r.attempt > 1);
   const values = { attempt: r.attempt, attempts: r.attempts, time: formatDuration(r.seconds || 0) };

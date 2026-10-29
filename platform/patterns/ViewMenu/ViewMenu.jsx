@@ -22,14 +22,13 @@ import React from 'react';
 import { Menu, MenuItem, MenuDivider, MenuGroup, MenuRadioGroup } from '../../components/Menu/Menu.jsx';
 import { Tooltip } from '../../components/Tooltip/Tooltip.jsx';
 import { CommandBarButton, useCommandBar } from '../CommandBar/CommandBar.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = { reset: 'Reset view', label: 'View', layout: 'Layout', list: 'List', gallery: 'Gallery', size: 'Card size (gallery)', s: 'Small', m: 'Medium', l: 'Large',
-  height: 'Row height (list)', short: 'Short', medium: 'Medium', tall: 'Tall', 'extra-tall': 'Extra tall' };
 const SIZES = [['s', 'cards-small'], ['m', 'cards-medium'], ['l', 'cards-large']];
 const HEIGHTS = ['short', 'medium', 'tall', 'extra-tall'];
 
 export function ViewMenu({ value, onChange, gallery = true, strings, onReset }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('viewMenu', strings);
   const ctx = useCommandBar();
   const v = Object.assign({ layout: 'list', size: 'm', height: 'short' }, value);
   const set = (k) => (x) => onChange(Object.assign({}, v, { [k]: x }));

@@ -49,14 +49,8 @@ import { useUid } from '../../utils/layer.js';
 import { announce } from '../../utils/announce.jsx';
 import { Button } from '../../components/Button/Button.jsx';
 import { Dialog } from '../../components/Dialog/Dialog.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
-const STRINGS = {
-  warningTitle: 'Your session is about to end', warning: 'You’ll be signed out in {time} because you haven’t been active.',
-  stay: 'Stay signed in', signOut: 'Sign out', signedOutTitle: 'You were signed out',
-  signedOut: 'For your security, you were signed out after {minutes} minutes without activity.',
-  signedOutShort: 'For your security, you were signed out because you weren’t active.', saved: 'Your changes are saved.',
-  signIn: 'Sign in again', left: '{time} left', ended: 'Signed out',
-};
 const fill = (s, v) => String(s).replace(/\{(\w+)\}/g, (m, k) => (v[k] !== undefined ? v[k] : m));
 const clock = (sec) => { const s = Math.max(0, Math.ceil(sec)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
 const around = (s, key, node) => { const p = String(s).split('{' + key + '}'); return <>{p[0]}{p.length > 1 ? node : null}{p.slice(1).join('')}</>; };
@@ -78,7 +72,7 @@ function useLeft(state, expiresAt, remaining) {
 
 export function SessionTimeout({ state = 'active', expiresAt, remaining, idleMinutes, saved, onStay, onSignOut, onExpire, onSignIn,
   inline = false, strings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('sessionTimeout', strings);
   const left = useLeft(state, expiresAt, remaining);
   const stayRef = React.useRef(null);
   const signInRef = React.useRef(null);

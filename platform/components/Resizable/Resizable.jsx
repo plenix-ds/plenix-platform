@@ -61,6 +61,7 @@ import { paneMax } from '../../utils/paneLimit.js';
 import { resizeScale } from './resize-scale.js';
 import { useFloating } from '../../utils/floating.js';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 const useSizeEffect = typeof window === 'undefined' ? React.useEffect : React.useLayoutEffect;
 
 /* the drag handle on a resizable area's inner edge: drag, or the arrow keys (--plx-sys-shell-splitter-step), Home and End;
@@ -98,7 +99,6 @@ export function PanelSplitter({ label, value, min, max, onChange, onCollapse, ed
 }
 
 /* ── Resizable: a box with its own resize edges ── */
-const STRINGS = { width: '{label} width', height: '{label} height' };
 const fill = (s, vars) => String(s).replace(/\{(\w+)\}/g, (m, k) => (k in vars ? String(vars[k]) : m));
 // the default limits are the component's tokens (--plx-comp-resizable-min-width …), read from the page
 const tokenPx = (name) => (typeof document === 'undefined' ? 0 : parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name)) || 0);
@@ -106,7 +106,7 @@ const limit = (v, name) => (v != null ? v : tokenPx('--plx-comp-resizable-' + na
 // One axis's settled sizes: caller steps, or the 4px grid; while dragged the size moves one grid line at a time.
 export function Resizable({ label, variant = 'default', fill: fillContent = false, axis = 'horizontal', width, height, onResize, defaultWidth, defaultHeight, minWidth: minW, maxWidth: maxW,
   minHeight: minH, maxHeight: maxH, steps, strings, className, children, ...rest }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('resizable', strings);
   const minWidth = limit(minW, 'min-width'), maxWidth = limit(maxW, 'max-width'), minHeight = limit(minH, 'min-height'), maxHeight = limit(maxH, 'max-height');
   const doW = axis !== 'vertical', doH = axis !== 'horizontal';
   const wSteps = Array.isArray(steps) ? (doW ? steps : null) : steps && steps.width;

@@ -25,9 +25,10 @@ import { Button } from '../../components/Button/Button.jsx';
 import { Notice } from '../../components/Notice/Notice.jsx';
 import { useUnsavedGuard } from '../../providers/UnsavedGuard.jsx';
 import { cx } from '../../utils/cx.js';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 export function ImportDialog({ open, title, onClose, initialMode = 'file', accept = '', multiple = false, onImport, validate, strings, className }) {
-  const t = Object.assign({ title: 'Import', file: 'File', paste: 'Paste data', url: 'URL', choose: 'Choose source file', drop: 'Drop a file here or choose it below.', none: 'No file chosen', import: 'Import', cancel: 'Cancel', invalid: 'Choose a supported file, paste data, or enter an HTTP URL.', failed: 'Could not import. Your source is still available.', unsaved: 'Your import source will be lost.' }, strings);
+  const t = useStrings('importDialog', strings);
   const [mode, setMode] = React.useState(initialMode), [files, setFiles] = React.useState([]), [text, setText] = React.useState(''), [url, setUrl] = React.useState('');
   const [busy, setBusy] = React.useState(false), [error, setError] = React.useState(''), [drag, setDrag] = React.useState(false);
   const lock = React.useRef(false), epoch = React.useRef(0), first = React.useRef(initialMode); first.current = initialMode;

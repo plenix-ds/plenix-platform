@@ -42,15 +42,15 @@ import { GridLines } from './parts/GridLines.jsx';
 import { ChartTooltip } from './parts/ChartTooltip.jsx';
 import { ReferenceLine } from './parts/ReferenceLine.jsx';
 import { useChartHover, labelRoom, halfRoom } from './chart-kit.js';
+import { useStrings } from '../providers/LocaleProvider.jsx';
 
-const STRINGS = { item: 'Item', lane: 'Lane', start: 'Start', end: 'End', today: 'Today', date: 'Date', dates: 'Dates' };
 const MARK = 0.4;   // a period's bar thickness, a share of its lane
 // a date-only string (2026-09-10) is that day in local time, as people read it; anything else as Date reads it
 const toTime = (v) => { if (v instanceof Date) return v.getTime(); const d = typeof v === 'string' && /^(\d{4})-(\d{2})-(\d{2})$/.exec(v); return d ? new Date(+d[1], +d[2] - 1, +d[3]).getTime() : new Date(v).getTime(); };
 
 export function TimelineChart({ title, description, hideCaption, size, items = [], lanes, domain, today, labels = true, formatDate, tooltip = true,
   legend, legendPosition, margin, strings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('chart.timelineChart', strings);
   const fd = (d) => (typeof formatDate === 'function' ? formatDate(new Date(toTime(d))) : fmtDate(new Date(toTime(d))));
   const [active, hover] = useChartHover();
   const tracks = lanes && lanes.length ? lanes.map((l, i) => ({ id: l.id === undefined ? String(i) : l.id, label: l.label, color: l.color || seriesColor(i) }))

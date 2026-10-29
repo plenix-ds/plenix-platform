@@ -29,6 +29,7 @@ import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { Button } from '../Button/Button.jsx';
 import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
 
 const KEYWORDS = 'import|from|export|default|const|let|var|function|return|if|else|for|while|do|switch|case|break|continue|new|delete|typeof|instanceof|in|of|null|undefined|true|false|this|async|await|class|extends|try|catch|finally|throw';
 // each rule: [kind, pattern]; the first that matches at a position wins
@@ -83,10 +84,9 @@ export function highlight(text, language) {
   return out;
 }
 
-const STRINGS = { code: 'Code', copy: 'Copy', copied: 'Copied', failed: 'Could not copy' };
 
 export function CodeBlock({ title, maxHeight = 'none', copy = true, label, language = 'auto', strings, className, children }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('codeBlock', strings);
   const [copied, setCopied] = React.useState(false);
   const [said, setSaid] = React.useState('');   // what screen readers hear after Copy (batch 213)
   const text = typeof children === 'string' ? children : String(children == null ? '' : children);

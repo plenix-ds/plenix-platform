@@ -40,8 +40,8 @@ import { GridLines } from './parts/GridLines.jsx';
 import { ChartLegend } from './parts/ChartLegend.jsx';
 import { ChartTooltip } from './parts/ChartTooltip.jsx';
 import { useChartPoints } from './a11y.js';
+import { useStrings } from '../providers/LocaleProvider.jsx';
 
-const STRINGS = { series: 'Series', item: 'Item' };
 // SVG geometry on the 4px grid: a point's radius, the largest and smallest bubble's, the active ring's room
 const POINT = 4, BUBBLE_MAX = 24, BUBBLE_MIN = 4, RING = 4;
 
@@ -59,7 +59,7 @@ function fit(points) {
 
 export function ScatterChart({ title, description, series = [], variant = 'points', trend = false, xTitle, yTitle, sizeTitle, xFormat, yFormat, sizeFormat,
   size = 'md', strings, className }) {
-  const t = Object.assign({}, STRINGS, strings);
+  const t = useStrings('chart.scatterChart', strings);
   const v = variant === 'bubble' ? 'bubble' : 'points';
   const groups = series.map((s, i) => ({ id: s.id === undefined ? i : s.id, label: s.label, color: seriesColor(i),
     points: (s.points || []).map((p) => ({ x: Number(p.x), y: Number(p.y), size: Number(p.size), label: p.label })).filter((p) => isFinite(p.x) && isFinite(p.y)) }));
