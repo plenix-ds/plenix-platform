@@ -60,8 +60,8 @@ async function pool(items, worker) { let i = 0; await Promise.all(Array.from({ l
   for (const name of ['index.json', 'bundle-manifest.json']) { const r = await get(name); if (r.status === 200) { try { live[name] = JSON.parse(r.buf.toString('utf8')); } catch (e) { /* reported below */ } } }
   if (LIVE_ONLY) {
     if (!live['bundle-manifest.json']) { console.log('LIVE_CDN_ERROR: ' + BASE + 'bundle-manifest.json could not be read'); process.exit(2); }
-    // the manifest describes the offline archive: its icons/library/ copy and its icons-all.css (rewritten to point at that copy) are not served from
-    // /cdn/<version>/ (the library is shared at /cdn/material/<commit>/), so those are left out here
+    // the manifest describes the offline archive: its icons/library/ copy (and, up to icon stage 5c-2, its icons-all.css rewritten to point at that
+    // copy) are not served from /cdn/<version>/ (the library is shared at /cdn/material/<commit>/), so those are left out here
     expected = new Map(live['bundle-manifest.json'].files.filter((f) => !f.path.startsWith('icons/library/') && f.path !== 'icons-all.css').map((f) => [f.path, f.sha256]));
     expected.set('bundle-manifest.json', null);   // the manifest does not list itself: only that it is served
   } else {

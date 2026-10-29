@@ -21,7 +21,7 @@ node build-packages.js >/dev/null || { echo "build-packages failed: run node bui
 VERSION=$(node -p "require('./package.json').version")
 # the design spec runs on this release from the CDN (platform/design-system/plenix-source.js): it must name this version
 [ ! -f platform/design-system/plenix-source.js ] || grep -q "var VERSION = '$VERSION'" platform/design-system/plenix-source.js || { echo "The design spec pins another release: set VERSION in platform/design-system/plenix-source.js to $VERSION"; exit 1; }
-# the Material Symbols library, shared by every release (icons-all.css points at it): copied once per pinned commit
+# the Material Symbols library, shared by every release (the Icon component loads a Material name from it): copied once per pinned commit
 MATERIAL=$(node -p "require('./platform/icons/map.json')._commit.slice(0, 12)")
 # what /version.json says on each site (owner, version-json-33): the commit of the published tree ("-dirty" when the
 # working tree has changes that are not committed) and the time of the publish
