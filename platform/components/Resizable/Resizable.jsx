@@ -60,7 +60,7 @@ import { gridStep, gridWithin } from '../../utils/grid.js';
 import { paneMax } from '../../utils/paneLimit.js';
 import { resizeScale } from './resize-scale.js';
 import { useFloating } from '../../utils/floating.js';
-import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
+import { LiveRegion } from '../../utils/announce.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 const useSizeEffect = typeof window === 'undefined' ? React.useEffect : React.useLayoutEffect;
 
@@ -224,7 +224,7 @@ export function Resizable({ label, variant = 'default', fill: fillContent = fals
       data-plx-width={doW ? size.width + 'px' : undefined} data-plx-height={doH ? size.height + 'px' : undefined}>
       <div className="plx-resizable__content">{children}</div>
       {notice ? <span ref={bubble} role="tooltip" popover="manual" className="plx-resizable-limit">{notice}</span> : null}
-      <VisuallyHidden role="status" aria-live="polite" aria-atomic="true">{announcement}</VisuallyHidden>
+      <LiveRegion kind="status">{announcement}</LiveRegion>
       {/* one edge in one place: when the axis changes (a SplitView that stacks) the same separator stays, with its focus */}
       {doW && doH ? <>{edge('width')}{edge('height')}</> : edge(doW ? 'width' : 'height')}
       {doW && doH ? <div className="plx-resizable__corner" aria-hidden="true" onPointerDown={drag(1, 1)} /> : null}

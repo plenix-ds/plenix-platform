@@ -19,7 +19,7 @@ module.exports = {
     const data = JSON.parse(fs.readFileSync(path.join(__dirname, 'hook-adoption.json'), 'utf8'));
     for (const hook of Object.keys(data).filter((k) => Array.isArray(data[k]))) {
       const imported = new RegExp('import\\s*\\{[^}]*\\b' + hook + '\\b[^}]*\\}\\s*from');
-      const called = new RegExp('\\b' + hook + '\\s*\\(');
+      const called = new RegExp('\\b' + hook + '\\s*\\(|<' + hook + '\\b');   // a hook is called; a component (LiveRegion) is drawn
       for (const rel of data[hook]) {
         const file = path.join(ROOT, rel);
         if (!fs.existsSync(file)) { add(NAME, file, 0, rel + ' is listed under ' + hook + ' but does not exist: remove it from hook-adoption.json'); continue; }

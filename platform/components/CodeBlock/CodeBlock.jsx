@@ -28,7 +28,7 @@
 import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { Button } from '../Button/Button.jsx';
-import { VisuallyHidden } from '../VisuallyHidden/VisuallyHidden.jsx';
+import { LiveRegion } from '../../utils/announce.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
 
@@ -104,7 +104,7 @@ export function CodeBlock({ title, maxHeight = 'none', copy = true, label, langu
         <div className="plx-code-block__head">
           {title ? <span className="plx-code-block__title">{title}</span> : <span />}
           {copy ? <Button size="xs" variant="ghost" icon={copied ? CheckIcon : undefined} onClick={doCopy}>{copied ? t.copied : t.copy}</Button> : null}
-          {copy ? <VisuallyHidden role="status">{said}</VisuallyHidden> : null}
+          {copy ? <LiveRegion kind="status">{said}</LiveRegion> : null}
         </div>
       ) : null}
       <pre className="plx-code-block__pre" dir="ltr" tabIndex={0} aria-label={label || title || t.code}><code className="plx-code-block__code" data-plx-language={lang}>{colored}</code></pre>

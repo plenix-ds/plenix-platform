@@ -31,7 +31,7 @@
 import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { Icon } from '../../components/Icon/Icon.jsx';
-import { VisuallyHidden } from '../../components/VisuallyHidden/VisuallyHidden.jsx';
+import { LiveRegion } from '../../utils/announce.jsx';
 import { arrowStep } from '../../utils/direction.js';
 import { Menu, MenuItem } from '../../components/Menu/Menu.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
@@ -92,7 +92,7 @@ export function WidgetGrid({ items = [], renderItem, onReorder, label, columns =
       ))}
     </div>
     {/* the reorder announcement: beside the list, since a list holds only its items */}
-    <VisuallyHidden role="status">{said}</VisuallyHidden>
+    <LiveRegion kind="status">{said}</LiveRegion>
     </>
   );
 }

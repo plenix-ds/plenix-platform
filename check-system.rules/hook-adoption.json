@@ -30,6 +30,13 @@
     "platform/components/RelativeDateInput/RelativeDateInput.jsx",
     "platform/patterns/AvatarUpload/AvatarUpload.jsx"
   ],
+  "LiveRegion": [
+    "platform/components/CodeBlock/CodeBlock.jsx",
+    "platform/components/Resizable/Resizable.jsx",
+    "platform/patterns/WidgetGrid/WidgetGrid.jsx",
+    "platform/patterns/ColumnsMenu/ColumnsMenu.jsx",
+    "platform/patterns/CommandBar/panel-parts.jsx"
+  ],
   "usePressable": [
     "platform/components/RowButton/RowButton.jsx",
     "platform/components/DataGrid/DataGridEngine.jsx"

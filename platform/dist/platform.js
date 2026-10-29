@@ -15766,7 +15766,7 @@ function resizeScale(steps, min, max, keyboardSteps = []) {
   };
 }
   } },
-  "platform/components/Resizable/Resizable.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/paneLimit.js":"platform/utils/paneLimit.js","./resize-scale.js":"platform/components/Resizable/resize-scale.js","../../utils/floating.js":"platform/utils/floating.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Resizable/Resizable.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/direction.js":"platform/utils/direction.js","../../utils/sizeSteps.js":"platform/utils/sizeSteps.js","../../utils/grid.js":"platform/utils/grid.js","../../utils/paneLimit.js":"platform/utils/paneLimit.js","./resize-scale.js":"platform/components/Resizable/resize-scale.js","../../utils/floating.js":"platform/utils/floating.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -15782,7 +15782,7 @@ var _grid = require("../../utils/grid.js");
 var _paneLimit = require("../../utils/paneLimit.js");
 var _resizeScale = require("./resize-scale.js");
 var _floating = require("../../utils/floating.js");
-var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+var _announce = require("../../utils/announce.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Resizable, PanelSplitter
@@ -16163,10 +16163,8 @@ function Resizable({
     role: "tooltip",
     popover: "manual",
     className: "plx-resizable-limit"
-  }, notice) : null, /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, {
-    role: "status",
-    "aria-live": "polite",
-    "aria-atomic": "true"
+  }, notice) : null, /*#__PURE__*/_react.default.createElement(_announce.LiveRegion, {
+    kind: "status"
   }, announcement), doW && doH ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, edge('width'), edge('height')) : edge(doW ? 'width' : 'height'), doW && doH ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-resizable__corner",
     "aria-hidden": "true",
@@ -28890,7 +28888,7 @@ function CommandBar({
   }, parts)), /*#__PURE__*/_react.default.isValidElement(selection) ? selection : null));
 }
   } },
-  "platform/patterns/CommandBar/panel-parts.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","./CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js","plenix-platform/icons/plenix/chevron-up":"platform/dist/icons/plenix/chevron-up.js","plenix-platform/icons/plenix/circle-info":"platform/dist/icons/plenix/circle-info.js","plenix-platform/icons/plenix/drag":"platform/dist/icons/plenix/drag.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/CommandBar/panel-parts.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","./CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js","plenix-platform/icons/plenix/chevron-up":"platform/dist/icons/plenix/chevron-up.js","plenix-platform/icons/plenix/circle-info":"platform/dist/icons/plenix/circle-info.js","plenix-platform/icons/plenix/drag":"platform/dist/icons/plenix/drag.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -28909,7 +28907,7 @@ var _Menu = require("../../components/Menu/Menu.jsx");
 var _Popover = require("../../components/Popover/Popover.jsx");
 var _Text = require("../../components/Text/Text.jsx");
 var _Tooltip = require("../../components/Tooltip/Tooltip.jsx");
-var _VisuallyHidden = require("../../components/VisuallyHidden/VisuallyHidden.jsx");
+var _announce = require("../../utils/announce.jsx");
 var _CommandBar = require("./CommandBar.jsx");
 var _chevronDown = _interopRequireDefault(require("plenix-platform/icons/plenix/chevron-down"));
 var _chevronUp = _interopRequireDefault(require("plenix-platform/icons/plenix/chevron-up"));
@@ -29203,9 +29201,8 @@ function useReorder(items, setItems, nameOf, t) {
     disabled: i === items.length - 1,
     onSelect: () => move(i, i + 1, true)
   }, t.moveDown));
-  const status = /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, {
-    role: "status",
-    "aria-live": "polite"
+  const status = /*#__PURE__*/_react.default.createElement(_announce.LiveRegion, {
+    kind: "status"
   }, msg);
   return {
     box,
@@ -29330,7 +29327,7 @@ var _default = exports.default = {
   }
 };
   } },
-  "platform/patterns/ColumnsMenu/ColumnsMenu.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js","plenix-platform/icons/plenix/chevron-up":"platform/dist/icons/plenix/chevron-up.js","plenix-platform/icons/plenix/drag":"platform/dist/icons/plenix/drag.js","plenix-platform/icons/plenix/fields":"platform/dist/icons/plenix/fields.js","plenix-platform/icons/plenix/pin-filled":"platform/dist/icons/plenix/pin-filled.js","plenix-platform/icons/plenix/visibility":"platform/dist/icons/plenix/visibility.js","plenix-platform/icons/plenix/visibility-off":"platform/dist/icons/plenix/visibility-off.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/ColumnsMenu/ColumnsMenu.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Checkbox/Checkbox.jsx":"platform/components/Checkbox/Checkbox.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/SearchField/SearchField.jsx":"platform/components/SearchField/SearchField.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../CommandBar/panel-parts.jsx":"platform/patterns/CommandBar/panel-parts.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js","plenix-platform/icons/plenix/chevron-up":"platform/dist/icons/plenix/chevron-up.js","plenix-platform/icons/plenix/drag":"platform/dist/icons/plenix/drag.js","plenix-platform/icons/plenix/fields":"platform/dist/icons/plenix/fields.js","plenix-platform/icons/plenix/pin-filled":"platform/dist/icons/plenix/pin-filled.js","plenix-platform/icons/plenix/visibility":"platform/dist/icons/plenix/visibility.js","plenix-platform/icons/plenix/visibility-off":"platform/dist/icons/plenix/visibility-off.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -29350,7 +29347,7 @@ var _Menu = require("../../components/Menu/Menu.jsx");
 var _Input = require("../../components/Input/Input.jsx");
 var _SearchField = require("../../components/SearchField/SearchField.jsx");
 var _Text = require("../../components/Text/Text.jsx");
-var _VisuallyHidden = require("../../components/VisuallyHidden/VisuallyHidden.jsx");
+var _announce = require("../../utils/announce.jsx");
 var _panelParts = require("../CommandBar/panel-parts.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _chevronDown = _interopRequireDefault(require("plenix-platform/icons/plenix/chevron-down"));
@@ -29519,9 +29516,8 @@ function ColumnsList({
     }), /*#__PURE__*/_react.default.createElement(_Text.Text, {
       variant: "secondary"
     }, t.first)) : null);
-  }), /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, {
-    role: "status",
-    "aria-live": "polite"
+  }), /*#__PURE__*/_react.default.createElement(_announce.LiveRegion, {
+    kind: "status"
   }, msg));
 }
 function ColumnsMenu({
@@ -37633,7 +37629,7 @@ List.Item = function ListItem({
   })) : text);
 };
   } },
-  "platform/components/CodeBlock/CodeBlock.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/check":"platform/dist/icons/plenix/check.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/CodeBlock/CodeBlock.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/check":"platform/dist/icons/plenix/check.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -37645,7 +37641,7 @@ exports.highlight = highlight;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _Button = require("../Button/Button.jsx");
-var _VisuallyHidden = require("../VisuallyHidden/VisuallyHidden.jsx");
+var _announce = require("../../utils/announce.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _check = _interopRequireDefault(require("plenix-platform/icons/plenix/check"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -37777,8 +37773,8 @@ function CodeBlock({
     variant: "ghost",
     icon: copied ? _check.default : undefined,
     onClick: doCopy
-  }, copied ? t.copied : t.copy) : null, copy ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, {
-    role: "status"
+  }, copied ? t.copied : t.copy) : null, copy ? /*#__PURE__*/_react.default.createElement(_announce.LiveRegion, {
+    kind: "status"
   }, said) : null) : null, /*#__PURE__*/_react.default.createElement("pre", {
     className: "plx-code-block__pre",
     dir: "ltr",
@@ -47412,7 +47408,7 @@ function TimeGrid({
   }))))));
 }
   } },
-  "platform/patterns/WidgetGrid/WidgetGrid.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../components/VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../../utils/direction.js":"platform/utils/direction.js","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/drag":"platform/dist/icons/plenix/drag.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/WidgetGrid/WidgetGrid.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/direction.js":"platform/utils/direction.js","../../components/Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/drag":"platform/dist/icons/plenix/drag.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -47422,7 +47418,7 @@ exports.WidgetGrid = WidgetGrid;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _Icon = require("../../components/Icon/Icon.jsx");
-var _VisuallyHidden = require("../../components/VisuallyHidden/VisuallyHidden.jsx");
+var _announce = require("../../utils/announce.jsx");
 var _direction = require("../../utils/direction.js");
 var _Menu = require("../../components/Menu/Menu.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
@@ -47575,8 +47571,8 @@ function WidgetGrid({
       onSelect: () => place(i, items.length - 1)
     }, t.last)) : null;
     return renderItem && renderItem.length > 1 ? renderItem(it, handle) : /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, handle, renderItem ? renderItem(it) : null);
-  })()))), /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, {
-    role: "status"
+  })()))), /*#__PURE__*/_react.default.createElement(_announce.LiveRegion, {
+    kind: "status"
   }, said));
 }
   } },

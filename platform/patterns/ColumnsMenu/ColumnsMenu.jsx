@@ -40,7 +40,7 @@ import { Menu, MenuItem } from '../../components/Menu/Menu.jsx';
 import { Select } from '../../components/Input/Input.jsx';
 import { SearchField } from '../../components/SearchField/SearchField.jsx';
 import { Text } from '../../components/Text/Text.jsx';
-import { VisuallyHidden } from '../../components/VisuallyHidden/VisuallyHidden.jsx';
+import { LiveRegion } from '../../utils/announce.jsx';
 import { PanelTrigger, toggle, fill } from '../CommandBar/panel-parts.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import ChevronDownIcon from 'plenix-platform/icons/plenix/chevron-down';
@@ -95,7 +95,7 @@ export function ColumnsList({ fields, value, onChange, filter = '', t }) {
           </div>
         );
       })}
-      <VisuallyHidden role="status" aria-live="polite">{msg}</VisuallyHidden>
+      <LiveRegion kind="status">{msg}</LiveRegion>
     </div>
   );
 }
