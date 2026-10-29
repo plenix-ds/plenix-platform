@@ -1,0 +1,2 @@
+/* A pretend application's own stylesheet for tests/baseline-scan-273.test.js: a patch over a Plenix part, a raw color. */
+.questions .plx-fieldset__legend { direction: rtl; color: #253442; }
