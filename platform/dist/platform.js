@@ -13517,15 +13517,15 @@ function useOverflow(listRef, count, key) {
 /* the list's children in DOM order: the first `fit` items, the More control, the rest */
 const splitAt = (items, fit, more) => items.slice(0, fit).concat(more ? [more] : [], items.slice(fit));
 
-/* useTruncated(ref) (batch 270): true while the element's one line of text is cut short (shown with an ellipsis), so
-   its full text can be offered in a Tooltip; checked again whenever the element's width changes. */
+/* useTruncated(ref) (batch 270): true while the element's text is cut short (shown with an ellipsis), so its full text can be offered in a
+   Tooltip: cut across one line (wider than the box) or cut after several lines (taller than the box, issue 502); checked again whenever the element's size changes. */
 exports.splitAt = splitAt;
 function useTruncated(ref) {
   const [cut, setCut] = _react.default.useState(false);
   _react.default.useLayoutEffect(() => {
     const el = ref.current;
     if (!el) return undefined;
-    const check = () => setCut(el.scrollWidth > el.clientWidth + 1);
+    const check = () => setCut(el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1);
     check();
     if (typeof ResizeObserver === 'undefined') return undefined;
     const ro = new ResizeObserver(check);
@@ -36718,7 +36718,7 @@ function SectionHeading({
   }, actions) : null);
 }
   } },
-  "platform/components/CollapsibleSection/CollapsibleSection.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js","plenix-platform/icons/plenix/chevron-up":"platform/dist/icons/plenix/chevron-up.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/CollapsibleSection/CollapsibleSection.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/overflow.js":"platform/utils/overflow.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js","plenix-platform/icons/plenix/chevron-up":"platform/dist/icons/plenix/chevron-up.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36732,6 +36732,8 @@ var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _Button = require("../Button/Button.jsx");
+var _Tooltip = require("../Tooltip/Tooltip.jsx");
+var _overflow = require("../../utils/overflow.js");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _chevronDown = _interopRequireDefault(require("plenix-platform/icons/plenix/chevron-down"));
 var _chevronUp = _interopRequireDefault(require("plenix-platform/icons/plenix/chevron-up"));
@@ -36760,6 +36762,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Controlled with expanded and onToggle(next); uncontrolled with defaultExpanded.
      The header is one button (aria-expanded, pointing at the body).
      The chevron at the end points down while open.
+     The title wraps to evenly balanced lines, at most 2 (--plx-comp-collapsible-section-title-lines); past them the last line ends in an ellipsis (a word too long for
+       the line breaks there) and the full title shows in a tooltip on hover and keyboard focus (owner, issue 502). A one-line title stays 32px high, two lines are 40px.
+       The button's name stays the full title. Every section does this: navigation groups, side-panel and settings sections alike.
      The body is removed from view, and from the accessibility tree, while collapsed.
    Notes:
      It is the section header: an accent uppercase title with an optional icon, a divider beneath it and a
@@ -36787,10 +36792,16 @@ function CollapsibleSection({
     if (onToggle) onToggle(!open);
   };
   const Tag = headingLevel ? 'h' + headingLevel : 'div';
+  const titleRef = _react.default.useRef(null);
+  const cut = (0, _overflow.useTruncated)(titleRef); // the title is cut (past its lines): its full text goes in a Tooltip
   return /*#__PURE__*/_react.default.createElement("section", {
     className: (0, _cx.cx)('plx-collapsible-section', open && 'is-expanded', className)
   }, /*#__PURE__*/_react.default.createElement(Tag, {
     className: "plx-collapsible-section__heading"
+  }, /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+    content: title,
+    disabled: !cut,
+    className: "plx-collapsible-section__tip"
   }, /*#__PURE__*/_react.default.createElement("button", {
     type: "button",
     className: "plx-collapsible-section__toggle",
@@ -36801,13 +36812,14 @@ function CollapsibleSection({
     className: "plx-collapsible-section__icon",
     "aria-hidden": "true"
   }, asIcon(icon)) : null, /*#__PURE__*/_react.default.createElement("span", {
+    ref: titleRef,
     className: "plx-collapsible-section__title"
   }, title), /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-collapsible-section__chevron",
     "aria-hidden": "true"
   }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
     name: _chevronDown.default
-  }))), actions ? /*#__PURE__*/_react.default.createElement("span", {
+  })))), actions ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-collapsible-section__actions"
   }, actions) : null), /*#__PURE__*/_react.default.createElement("div", {
     id: id + '-body',
@@ -39919,7 +39931,7 @@ var _default = exports.default = {
   }
 };
   } },
-  "platform/components/NavList/NavList.jsx": { deps: {"react":null,"../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js","plenix-platform/icons/plenix/chevron-right":"platform/dist/icons/plenix/chevron-right.js","plenix-platform/icons/plenix/folder-open":"platform/dist/icons/plenix/folder-open.js","plenix-platform/icons/plenix/pin":"platform/dist/icons/plenix/pin.js","plenix-platform/icons/plenix/pin-filled":"platform/dist/icons/plenix/pin-filled.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/NavList/NavList.jsx": { deps: {"react":null,"../../utils/format.js":"platform/utils/format.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../CollapsibleSection/CollapsibleSection.jsx":"platform/components/CollapsibleSection/CollapsibleSection.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/overflow.js":"platform/utils/overflow.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js","plenix-platform/icons/plenix/chevron-right":"platform/dist/icons/plenix/chevron-right.js","plenix-platform/icons/plenix/folder-open":"platform/dist/icons/plenix/folder-open.js","plenix-platform/icons/plenix/pin":"platform/dist/icons/plenix/pin.js","plenix-platform/icons/plenix/pin-filled":"platform/dist/icons/plenix/pin-filled.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -39932,6 +39944,8 @@ var _cx = require("../../utils/cx.js");
 var _layer = require("../../utils/layer.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _CollapsibleSection = require("../CollapsibleSection/CollapsibleSection.jsx");
+var _Tooltip = require("../Tooltip/Tooltip.jsx");
+var _overflow = require("../../utils/overflow.js");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _chevronDown = _interopRequireDefault(require("plenix-platform/icons/plenix/chevron-down"));
 var _chevronRight = _interopRequireDefault(require("plenix-platform/icons/plenix/chevron-right"));
@@ -39974,6 +39988,10 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      The current item carries aria-current="page".
      An item with href is a link; otherwise it is a button and onSelect(id) runs.
      A collapsible group heading folds its rows, the same in every navigation pane.
+     A group heading wraps to evenly balanced lines, at most 2 (--plx-comp-collapsible-section-title-lines, --plx-comp-nav-list-heading-lines); past them the last
+       line ends in an ellipsis and the full heading shows in a tooltip (owner, issue 502). A one-line heading is 32px high, two lines 40px. A folding heading is
+       a button: the tooltip shows on hover and keyboard focus and its name is the full heading. A static heading (collapsible: false) is plain text: a cut one shows its
+       full text on hover only (owner, issue 502, answer A); a screen reader reads the whole heading.
      A subgroup row is a button with aria-expanded; its chevron points right while closed and down while open, and its
      count follows its name. A subgroup holding the current item opens when that item becomes current; while closed it
      marks its own row as holding the current page.
@@ -40101,6 +40119,8 @@ function Group({
   loc
 }) {
   const id = (0, _layer.useUid)('plx-nav');
+  const headingRef = _react.default.useRef(null);
+  const cut = (0, _overflow.useTruncated)(headingRef); // a static heading cut after its lines: its full text goes in a Tooltip
   if (heading && collapsible) {
     return /*#__PURE__*/_react.default.createElement(_CollapsibleSection.CollapsibleSection, {
       className: "plx-nav-list__group",
@@ -40122,10 +40142,17 @@ function Group({
   }
   return /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-nav-list__group"
-  }, heading ? /*#__PURE__*/_react.default.createElement("div", {
+  }, heading ? /*#__PURE__*/_react.default.createElement(_Tooltip.Tooltip, {
+    content: heading,
+    disabled: !cut,
+    className: "plx-nav-list__tip"
+  }, /*#__PURE__*/_react.default.createElement("div", {
     id: id,
     className: "plx-nav-list__heading"
-  }, heading) : null, /*#__PURE__*/_react.default.createElement("ul", {
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    ref: headingRef,
+    className: "plx-nav-list__heading-text"
+  }, heading))) : null, /*#__PURE__*/_react.default.createElement("ul", {
     "aria-labelledby": heading ? id : undefined,
     className: "plx-nav-list__items"
   }, items.map(it => /*#__PURE__*/_react.default.createElement(Item, {
