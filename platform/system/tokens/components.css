@@ -3393,8 +3393,8 @@
   --plx-comp-data-pill-min-height: var(--plx-sys-control-height-inline);
   --plx-comp-data-pill-padding-inline: var(--plx-sys-space-inset-sm);
   --plx-comp-data-pill-md-height: var(--plx-ref-size-24px);
-  --plx-comp-data-pill-md-padding-inline-start: var(--plx-ref-space-6px);
-  --plx-comp-data-pill-md-padding-inline-end: var(--plx-ref-space-10px);
+  --plx-comp-data-pill-md-padding-inline-start: var(--plx-ref-space-4px);
+  --plx-comp-data-pill-md-padding-inline-end: var(--plx-ref-space-4px);
   --plx-comp-data-pill-gap: var(--plx-sys-space-inline-xs);
   --plx-comp-data-pill-radius: var(--plx-sys-radius-pill-4px);
   --plx-comp-data-pill-border-width: var(--plx-sys-border-width-thin);
