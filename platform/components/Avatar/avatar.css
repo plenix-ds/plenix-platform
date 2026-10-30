@@ -19,3 +19,5 @@
    takes most of the square */
 .plx-avatar--gender[data-plx-category]{--plx-comp-avatar-own-background:var(--plx-comp-category-soft);--plx-comp-avatar-own-content:var(--plx-comp-category-on-soft);}
 .plx-avatar__gender{--plx-comp-icon-size:var(--plx-comp-avatar-gender-icon-size);}
+/* a logo (an AI provider's, or one given; issue 637): the mark in the avatar's own text color, three quarters of the square */
+.plx-avatar__logo{--plx-comp-icon-size:var(--plx-comp-avatar-logo-size);}

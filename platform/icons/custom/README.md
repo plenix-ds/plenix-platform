@@ -20,4 +20,6 @@ after the working set and before the library.
 | `file-psd` | `file_psd` | Plenix's own lettered file icon, squared letters (tools/icons/draw-file-types.js) | owner, 2026-10-24 |
 | `file-ai` | `file_ai` | Plenix's own lettered file icon, squared letters (tools/icons/draw-file-types.js) | owner, 2026-10-24 |
 
+The AI provider logos (`ai-claude`, `ai-anthropic`, `ai-gemini`, `ai-perplexity`, `ai-meta`, `ai-mistral`, `ai-deepseek`; owner, 2026-10-29) are brands' own marks, not drawings of Plenix's: their sources and the providers left out are in `BRANDS.md`.
+
 The person icons are filled drawings: their outline files carry the same shape. The others are icons from other libraries restyled by tools/icons/restyle-icon.js; their originals are in platform/icons/inventory/svg/.
