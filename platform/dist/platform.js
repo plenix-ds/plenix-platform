@@ -80,7 +80,7 @@ exports.SYMBOLS = exports.NAMES = exports.MIRRORED = exports.LIBRARY_COMMIT = ex
      MIRRORED: the symbols that point along the reading direction (mirrored in right to left), space separated
      LIBRARY: the whole library's symbol names, space separated (their files load on demand)
      LIBRARY_COMMIT: the library's commit (the CDN keeps its files under /cdn/material/<commit>/) */
-const SYMBOLS = exports.SYMBOLS = "account_circle add add_box add_circle add_column_left add_column_right add_row_above add_row_below admin_panel_settings apps archive arrow_back arrow_downward arrow_drop_down arrow_drop_down_circle arrow_right arrow_upward article attach_file attach_money auto_awesome bar_chart bookmark build calendar_month call category center_focus_weak chat_bubble check_box check_circle check_small checklist chevron_left chevron_right close close_small cloud_off code code_blocks content_copy create_new_folder crop database dataset delete density_large density_medium density_small description do_not_disturb_on document_search download draft drag_indicator drive_file_move drive_file_rename_outline edit error event_repeat expand_less expand_more file_ai file_jpg file_pdf file_png file_psd file_svg filter_alt filter_alt_off find_in_page fit_width flag flip flip_vertical folder folder_eye folder_open folder_zip format_align_center format_align_justify format_align_left format_align_right format_bold format_clear format_color_text format_italic format_list_bulleted format_list_numbered format_quote format_strikethrough format_underlined forward git_branch git_merge git_pull_request graphic_eq grid_view group headphones home horizontal_rule image indeterminate_check_box info ink_highlighter input keyboard_arrow_down left_panel_close left_panel_open library_add linear_scale link list list_alt lock logout mail mark_email_unread menu menu_book merge mic mic_off more_vert notes notifications numbers open_in_full open_in_new output perm_media person person_cancel person_female person_male photo_camera photo_filter photo_library push_pin record_voice_over redo refresh remove reply reply_all right_panel_close right_panel_open rotate_left rotate_right save save_as schedule search sell settings share smart_button snooze star stop subscript superscript swap_vert tab table table_rows text_fields title toggle_on tune undo upload view_agenda view_comfy view_module visibility visibility_off volume_off volume_up warning width_normal width_wide wifi_off work zoom_in zoom_out";
+const SYMBOLS = exports.SYMBOLS = "account_circle add add_box add_circle add_column_left add_column_right add_row_above add_row_below admin_panel_settings ai_anthropic ai_claude ai_deepseek ai_gemini ai_meta ai_mistral ai_perplexity apps archive arrow_back arrow_downward arrow_drop_down arrow_drop_down_circle arrow_right arrow_upward article attach_file attach_money auto_awesome bar_chart bookmark build calendar_month call category center_focus_weak chat_bubble check_box check_circle check_small checklist chevron_left chevron_right close close_small cloud_off code code_blocks content_copy create_new_folder crop database dataset delete density_large density_medium density_small description do_not_disturb_on document_search download draft drag_indicator drive_file_move drive_file_rename_outline edit error event_repeat expand_less expand_more file_ai file_jpg file_pdf file_png file_psd file_svg filter_alt filter_alt_off find_in_page fit_width flag flip flip_vertical folder folder_eye folder_open folder_zip format_align_center format_align_justify format_align_left format_align_right format_bold format_clear format_color_text format_italic format_list_bulleted format_list_numbered format_quote format_strikethrough format_underlined forward git_branch git_merge git_pull_request graphic_eq grid_view group headphones home horizontal_rule image indeterminate_check_box info ink_highlighter input keyboard_arrow_down left_panel_close left_panel_open library_add linear_scale link list list_alt lock logout mail mark_email_unread menu menu_book merge mic mic_off more_vert notes notifications numbers open_in_full open_in_new output perm_media person person_cancel person_female person_male photo_camera photo_filter photo_library push_pin record_voice_over redo refresh remove reply reply_all right_panel_close right_panel_open rotate_left rotate_right save save_as schedule search sell settings share smart_button snooze star stop subscript superscript swap_vert tab table table_rows text_fields title toggle_on tune undo upload view_agenda view_comfy view_module visibility visibility_off volume_off volume_up warning width_normal width_wide wifi_off work zoom_in zoom_out";
 const NAMES = exports.NAMES = {
   "add": ["add", 0],
   "add-column-left": ["add_column_left", 0],
@@ -91,6 +91,20 @@ const NAMES = exports.NAMES = {
   "add_row_above": ["add_row_above", 0],
   "add-row-below": ["add_row_below", 0],
   "add_row_below": ["add_row_below", 0],
+  "ai-anthropic": ["ai_anthropic", 0],
+  "ai_anthropic": ["ai_anthropic", 0],
+  "ai-claude": ["ai_claude", 0],
+  "ai_claude": ["ai_claude", 0],
+  "ai-deepseek": ["ai_deepseek", 0],
+  "ai_deepseek": ["ai_deepseek", 0],
+  "ai-gemini": ["ai_gemini", 0],
+  "ai_gemini": ["ai_gemini", 0],
+  "ai-meta": ["ai_meta", 0],
+  "ai_meta": ["ai_meta", 0],
+  "ai-mistral": ["ai_mistral", 0],
+  "ai_mistral": ["ai_mistral", 0],
+  "ai-perplexity": ["ai_perplexity", 0],
+  "ai_perplexity": ["ai_perplexity", 0],
   "alert": ["error", 0],
   "app-switcher": ["apps", 0],
   "archive": ["archive", 0],
@@ -8115,7 +8129,308 @@ var _default = exports.default = {
   }
 };
   } },
-  "platform/components/Avatar/Avatar.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/person-female":"platform/dist/icons/plenix/person-female.js","plenix-platform/icons/plenix/person-male":"platform/dist/icons/plenix/person-male.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/dist/icons/plenix/ai-anthropic.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// GENERATED by platform/icons/layout.js from platform/icons (map.json; Material Symbols Sharp, weight 300, and Plenix's own icons) (do not edit). Icon "ai-anthropic" of the plenix set (symbol ai_anthropic).
+const d0 = "M17.3041 3.541h-3.6718l6.696 16.918H24Zm-10.6082 0L0 20.459h3.7442l1.3693-3.5527h7.0052l1.3693 3.5528h3.7442L10.5363 3.5409Zm-.3712 10.2232 2.2914-5.9456 2.2914 5.9456Z";
+var _default = exports.default = {
+  "name": "ai-anthropic",
+  "set": "plenix",
+  "symbol": "ai_anthropic",
+  "fillOutline": false,
+  "mirrored": false,
+  "drawings": {
+    "20": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": d0,
+        "transform": "matrix(33.333333 0 0 33.333333 80 -880)"
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": d0,
+        "transform": "matrix(33.333333 0 0 33.333333 80 -880)"
+      }
+    },
+    "24": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": d0,
+        "transform": "matrix(33.333333 0 0 33.333333 80 -880)"
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": d0,
+        "transform": "matrix(33.333333 0 0 33.333333 80 -880)"
+      }
+    }
+  }
+};
+  } },
+  "platform/dist/icons/plenix/ai-claude.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// GENERATED by platform/icons/layout.js from platform/icons (map.json; Material Symbols Sharp, weight 300, and Plenix's own icons) (do not edit). Icon "ai-claude" of the plenix set (symbol ai_claude).
+const d0 = "m4.7144 15.9555 4.7174-2.6471.079-.2307-.079-.1275h-.2307l-.7893-.0486-2.6956-.0729-2.3375-.0971-2.2646-.1214-.5707-.1215-.5343-.7042.0546-.3522.4797-.3218.686.0608 1.5179.1032 2.2767.1578 1.6514.0972 2.4468.255h.3886l.0546-.1579-.1336-.0971-.1032-.0972L6.973 9.8356l-2.55-1.6879-1.3356-.9714-.7225-.4918-.3643-.4614-.1578-1.0078.6557-.7225.8803.0607.2246.0607.8925.686 1.9064 1.4754 2.4893 1.8336.3643.3035.1457-.1032.0182-.0728-.164-.2733-1.3539-2.4467-1.445-2.4893-.6435-1.032-.17-.6194c-.0607-.255-.1032-.4674-.1032-.7285L6.287.1335 6.6997 0l.9957.1336.419.3642.6192 1.4147 1.0018 2.2282 1.5543 3.0296.4553.8985.2429.8318.091.255h.1579v-.1457l.1275-1.706.2368-2.0947.2307-2.6957.0789-.7589.3764-.9107.7468-.4918.5828.2793.4797.686-.0668.4433-.2853 1.8517-.5586 2.9021-.3643 1.9429h.2125l.2429-.2429.9835-1.3053 1.6514-2.0643.7286-.8196.85-.9046.5464-.4311h1.0321l.759 1.1293-.34 1.1657-1.0625 1.3478-.8804 1.1414-1.2628 1.7-.7893 1.36.0729.1093.1882-.0183 2.8535-.607 1.5421-.2794 1.8396-.3157.8318.3886.091.3946-.3278.8075-1.967.4857-2.3072.4614-3.4364.8136-.0425.0304.0486.0607 1.5482.1457.6618.0364h1.621l3.0175.2247.7892.522.4736.6376-.079.4857-1.2142.6193-1.6393-.3886-3.825-.9107-1.3113-.3279h-.1822v.1093l1.0929 1.0686 2.0035 1.8092 2.5075 2.3314.1275.5768-.3218.4554-.34-.0486-2.2039-1.6575-.85-.7468-1.9246-1.621h-.1275v.17l.4432.6496 2.3436 3.5214.1214 1.0807-.17.3521-.6071.2125-.6679-.1214-1.3721-1.9246L14.38 17.959l-1.1414-1.9428-.1397.079-.674 7.2552-.3156.3703-.7286.2793-.6071-.4614-.3218-.7468.3218-1.4753.3886-1.9246.3157-1.53.2853-1.9004.17-.6314-.0121-.0425-.1397.0182-1.4328 1.9672-2.1796 2.9446-1.7243 1.8456-.4128.164-.7164-.3704.0667-.6618.4008-.5889 2.386-3.0357 1.4389-1.882.929-1.0868-.0062-.1579h-.0546l-6.3385 4.1164-1.1293.1457-.4857-.4554.0608-.7467.2307-.2429 1.9064-1.3114Z";
+var _default = exports.default = {
+  "name": "ai-claude",
+  "set": "plenix",
+  "symbol": "ai_claude",
+  "fillOutline": false,
+  "mirrored": false,
+  "drawings": {
+    "20": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": d0,
+        "transform": "matrix(33.333333 0 0 33.333333 80 -880)"
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": d0,
+        "transform": "matrix(33.333333 0 0 33.333333 80 -880)"
+      }
+    },
+    "24": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": d0,
+        "transform": "matrix(33.333333 0 0 33.333333 80 -880)"
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": d0,
+        "transform": "matrix(33.333333 0 0 33.333333 80 -880)"
+      }
+    }
+  }
+};
+  } },
+  "platform/dist/icons/plenix/ai-deepseek.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// GENERATED by platform/icons/layout.js from platform/icons (map.json; Material Symbols Sharp, weight 300, and Plenix's own icons) (do not edit). Icon "ai-deepseek" of the plenix set (symbol ai_deepseek).
+const d0 = "M23.748 4.651c-.254-.124-.364.113-.512.233-.051.04-.094.09-.137.137-.372.397-.806.657-1.373.626-.829-.046-1.537.214-2.163.848-.133-.782-.575-1.248-1.247-1.548-.352-.155-.708-.311-.955-.65-.172-.24-.219-.509-.305-.774-.055-.16-.11-.323-.293-.35-.2-.031-.278.136-.356.276-.313.572-.434 1.202-.422 1.84.027 1.436.633 2.58 1.838 3.393.137.094.172.187.129.323-.082.28-.18.553-.266.833-.055.179-.137.218-.328.14a5.5 5.5 0 0 1-1.737-1.179c-.857-.828-1.631-1.743-2.597-2.46a12 12 0 0 0-.689-.47c-.985-.957.13-1.743.387-1.836.27-.098.094-.433-.778-.428-.872.003-1.67.295-2.687.685a3 3 0 0 1-.465.136 9.6 9.6 0 0 0-2.883-.101c-1.885.21-3.39 1.1-4.497 2.622C.082 8.776-.231 10.854.152 13.02c.403 2.284 1.568 4.175 3.36 5.653 1.857 1.533 3.997 2.284 6.438 2.14 1.482-.085 3.132-.284 4.994-1.86.47.234.962.328 1.78.398.629.058 1.235-.031 1.705-.129.735-.155.684-.836.418-.961-2.155-1.004-1.682-.595-2.112-.926 1.095-1.295 2.768-3.598 3.284-6.733.05-.346.115-.834.108-1.114-.004-.171.035-.238.23-.257a4.2 4.2 0 0 0 1.545-.475c1.397-.763 1.96-2.016 2.093-3.517.02-.23-.004-.467-.247-.588M11.58 18.168c-2.088-1.642-3.101-2.183-3.52-2.16-.39.024-.32.472-.234.763.09.288.207.487.371.74.114.167.192.416-.113.603-.673.416-1.842-.14-1.897-.168-1.361-.801-2.5-1.86-3.301-3.306-.775-1.393-1.225-2.888-1.299-4.482-.02-.385.094-.522.477-.592a4.7 4.7 0 0 1 1.53-.038c2.131.311 3.946 1.264 5.467 2.774.868.86 1.525 1.887 2.202 2.89.72 1.066 1.494 2.082 2.48 2.915.348.291.626.513.892.677-.802.09-2.14.109-3.055-.615zm1.001-6.44a.306.306 0 0 1 .415-.287.3.3 0 0 1 .113.074.3.3 0 0 1 .086.214c0 .17-.136.307-.308.307a.303.303 0 0 1-.306-.307m3.11 1.596c-.2.081-.4.151-.591.16a1.25 1.25 0 0 1-.798-.254c-.274-.23-.47-.358-.551-.758a1.7 1.7 0 0 1 .015-.588c.07-.327-.007-.537-.238-.727-.188-.156-.426-.199-.689-.199a.6.6 0 0 1-.254-.078.253.253 0 0 1-.114-.358 1 1 0 0 1 .192-.21c.356-.202.767-.136 1.146.016.352.144.618.408 1.001.782.392.451.462.576.685.915.176.264.336.536.446.848.066.194-.02.353-.25.45";
+var _default = exports.default = {
+  "name": "ai-deepseek",
+  "set": "plenix",
+  "symbol": "ai_deepseek",
+  "fillOutline": false,
+  "mirrored": false,
+  "drawings": {
+    "20": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": d0,
+        "transform": "matrix(33.333333 0 0 33.333333 80 -880)"
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": d0,
+        "transform": "matrix(33.333333 0 0 33.333333 80 -880)"
+      }
+    },
+    "24": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": d0,
+        "transform": "matrix(33.333333 0 0 33.333333 80 -880)"
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": d0,
+        "transform": "matrix(33.333333 0 0 33.333333 80 -880)"
+      }
+    }
+  }
+};
+  } },
+  "platform/dist/icons/plenix/ai-gemini.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// GENERATED by platform/icons/layout.js from platform/icons (map.json; Material Symbols Sharp, weight 300, and Plenix's own icons) (do not edit). Icon "ai-gemini" of the plenix set (symbol ai_gemini).
+const d0 = "M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81";
+var _default = exports.default = {
+  "name": "ai-gemini",
+  "set": "plenix",
+  "symbol": "ai_gemini",
+  "fillOutline": false,
+  "mirrored": false,
+  "drawings": {
+    "20": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": d0,
+        "transform": "matrix(33.333333 0 0 33.333333 80 -880)"
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": d0,
+        "transform": "matrix(33.333333 0 0 33.333333 80 -880)"
+      }
+    },
+    "24": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": d0,
+        "transform": "matrix(33.333333 0 0 33.333333 80 -880)"
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": d0,
+        "transform": "matrix(33.333333 0 0 33.333333 80 -880)"
+      }
+    }
+  }
+};
+  } },
+  "platform/dist/icons/plenix/ai-meta.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// GENERATED by platform/icons/layout.js from platform/icons (map.json; Material Symbols Sharp, weight 300, and Plenix's own icons) (do not edit). Icon "ai-meta" of the plenix set (symbol ai_meta).
+const d0 = "M6.915 4.03c-1.968 0-3.683 1.28-4.871 3.113C.704 9.208 0 11.883 0 14.449c0 .706.07 1.369.21 1.973a6.624 6.624 0 0 0 .265.86 5.297 5.297 0 0 0 .371.761c.696 1.159 1.818 1.927 3.593 1.927 1.497 0 2.633-.671 3.965-2.444.76-1.012 1.144-1.626 2.663-4.32l.756-1.339.186-.325c.061.1.121.196.183.3l2.152 3.595c.724 1.21 1.665 2.556 2.47 3.314 1.046.987 1.992 1.22 3.06 1.22 1.075 0 1.876-.355 2.455-.843a3.743 3.743 0 0 0 .81-.973c.542-.939.861-2.127.861-3.745 0-2.72-.681-5.357-2.084-7.45-1.282-1.912-2.957-2.93-4.716-2.93-1.047 0-2.088.467-3.053 1.308-.652.57-1.257 1.29-1.82 2.05-.69-.875-1.335-1.547-1.958-2.056-1.182-.966-2.315-1.303-3.454-1.303zm10.16 2.053c1.147 0 2.188.758 2.992 1.999 1.132 1.748 1.647 4.195 1.647 6.4 0 1.548-.368 2.9-1.839 2.9-.58 0-1.027-.23-1.664-1.004-.496-.601-1.343-1.878-2.832-4.358l-.617-1.028a44.908 44.908 0 0 0-1.255-1.98c.07-.109.141-.224.211-.327 1.12-1.667 2.118-2.602 3.358-2.602zm-10.201.553c1.265 0 2.058.791 2.675 1.446.307.327.737.871 1.234 1.579l-1.02 1.566c-.757 1.163-1.882 3.017-2.837 4.338-1.191 1.649-1.81 1.817-2.486 1.817-.524 0-1.038-.237-1.383-.794-.263-.426-.464-1.13-.464-2.046 0-2.221.63-4.535 1.66-6.088.454-.687.964-1.226 1.533-1.533a2.264 2.264 0 0 1 1.088-.285z";
+var _default = exports.default = {
+  "name": "ai-meta",
+  "set": "plenix",
+  "symbol": "ai_meta",
+  "fillOutline": false,
+  "mirrored": false,
+  "drawings": {
+    "20": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": d0,
+        "transform": "matrix(33.333333 0 0 33.333333 80 -880)"
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": d0,
+        "transform": "matrix(33.333333 0 0 33.333333 80 -880)"
+      }
+    },
+    "24": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": d0,
+        "transform": "matrix(33.333333 0 0 33.333333 80 -880)"
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": d0,
+        "transform": "matrix(33.333333 0 0 33.333333 80 -880)"
+      }
+    }
+  }
+};
+  } },
+  "platform/dist/icons/plenix/ai-mistral.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// GENERATED by platform/icons/layout.js from platform/icons (map.json; Material Symbols Sharp, weight 300, and Plenix's own icons) (do not edit). Icon "ai-mistral" of the plenix set (symbol ai_mistral).
+const d0 = "M17.143 3.429v3.428h-3.429v3.429h-3.428V6.857H6.857V3.43H3.43v13.714H0v3.428h10.286v-3.428H6.857v-3.429h3.429v3.429h3.429v-3.429h3.428v3.429h-3.428v3.428H24v-3.428h-3.43V3.429z";
+var _default = exports.default = {
+  "name": "ai-mistral",
+  "set": "plenix",
+  "symbol": "ai_mistral",
+  "fillOutline": false,
+  "mirrored": false,
+  "drawings": {
+    "20": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": d0,
+        "transform": "matrix(33.333333 0 0 33.333333 80 -880)"
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": d0,
+        "transform": "matrix(33.333333 0 0 33.333333 80 -880)"
+      }
+    },
+    "24": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": d0,
+        "transform": "matrix(33.333333 0 0 33.333333 80 -880)"
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": d0,
+        "transform": "matrix(33.333333 0 0 33.333333 80 -880)"
+      }
+    }
+  }
+};
+  } },
+  "platform/dist/icons/plenix/ai-perplexity.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// GENERATED by platform/icons/layout.js from platform/icons (map.json; Material Symbols Sharp, weight 300, and Plenix's own icons) (do not edit). Icon "ai-perplexity" of the plenix set (symbol ai_perplexity).
+const d0 = "M22.3977 7.0896h-2.3106V.0676l-7.5094 6.3542V.1577h-1.1554v6.1966L4.4904 0v7.0896H1.6023v10.3976h2.8882V24l6.932-6.3591v6.2005h1.1554v-6.0469l6.9318 6.1807v-6.4879h2.8882V7.0896zm-3.4657-4.531v4.531h-5.355l5.355-4.531zm-13.2862.0676 4.8691 4.4634H5.6458V2.6262zM2.7576 16.332V8.245h7.8476l-6.1149 6.1147v1.9723H2.7576zm2.8882 5.0404v-3.8852h.0001v-2.6488l5.7763-5.7764v7.0111l-5.7764 5.2993zm12.7086.0248-5.7766-5.1509V9.0618l5.7766 5.7766v6.5588zm2.8882-5.0652h-1.733v-1.9723L13.3948 8.245h7.8478v8.087z";
+var _default = exports.default = {
+  "name": "ai-perplexity",
+  "set": "plenix",
+  "symbol": "ai_perplexity",
+  "fillOutline": false,
+  "mirrored": false,
+  "drawings": {
+    "20": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": d0,
+        "transform": "matrix(33.333333 0 0 33.333333 80 -880)"
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": d0,
+        "transform": "matrix(33.333333 0 0 33.333333 80 -880)"
+      }
+    },
+    "24": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": d0,
+        "transform": "matrix(33.333333 0 0 33.333333 80 -880)"
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": d0,
+        "transform": "matrix(33.333333 0 0 33.333333 80 -880)"
+      }
+    }
+  }
+};
+  } },
+  "platform/components/Avatar/Avatar.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../StatusDot/StatusDot.jsx":"platform/components/StatusDot/StatusDot.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/person-female":"platform/dist/icons/plenix/person-female.js","plenix-platform/icons/plenix/person-male":"platform/dist/icons/plenix/person-male.js","plenix-platform/icons/plenix/ai-anthropic":"platform/dist/icons/plenix/ai-anthropic.js","plenix-platform/icons/plenix/ai-claude":"platform/dist/icons/plenix/ai-claude.js","plenix-platform/icons/plenix/ai-deepseek":"platform/dist/icons/plenix/ai-deepseek.js","plenix-platform/icons/plenix/ai-gemini":"platform/dist/icons/plenix/ai-gemini.js","plenix-platform/icons/plenix/ai-meta":"platform/dist/icons/plenix/ai-meta.js","plenix-platform/icons/plenix/ai-mistral":"platform/dist/icons/plenix/ai-mistral.js","plenix-platform/icons/plenix/ai-perplexity":"platform/dist/icons/plenix/ai-perplexity.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8131,6 +8446,13 @@ var _StatusDot = require("../StatusDot/StatusDot.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
 var _personFemale = _interopRequireDefault(require("plenix-platform/icons/plenix/person-female"));
 var _personMale = _interopRequireDefault(require("plenix-platform/icons/plenix/person-male"));
+var _aiAnthropic = _interopRequireDefault(require("plenix-platform/icons/plenix/ai-anthropic"));
+var _aiClaude = _interopRequireDefault(require("plenix-platform/icons/plenix/ai-claude"));
+var _aiDeepseek = _interopRequireDefault(require("plenix-platform/icons/plenix/ai-deepseek"));
+var _aiGemini = _interopRequireDefault(require("plenix-platform/icons/plenix/ai-gemini"));
+var _aiMeta = _interopRequireDefault(require("plenix-platform/icons/plenix/ai-meta"));
+var _aiMistral = _interopRequireDefault(require("plenix-platform/icons/plenix/ai-mistral"));
+var _aiPerplexity = _interopRequireDefault(require("plenix-platform/icons/plenix/ai-perplexity"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Avatar
    Summary: A person's picture, or their initials, in a rounded square (never a circle), inside a 1px media border (owner,
@@ -8138,10 +8460,16 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
    Usage:
      <Avatar name="Maya Chen" size="md" />
      <Avatar name="Maya Chen" src="/people/mc.jpg" label="Maya Chen" />
+     <Avatar ai="claude" label="Claude" />          <Avatar logo={CompanyLogo} label="Acme Assistant" />
    Props:
      name: the person's name; without a picture the avatar shows its initials, from initialsOf(name)
      src: the URL of the person's picture; it replaces the initials
      initials: the text to show, only when there is no name to work from
+     ai: an AI participant's provider, shown as its logo: "claude" | "anthropic" | "gemini" | "perplexity" | "meta" |
+       "mistral" | "deepseek" (the brands' own single-color marks, built in: platform/icons/custom/BRANDS.md, which also lists
+       the providers not included); give label (or a name nearby) as for a person
+     logo: any other logo, as an icon (a module imported or registered through the icon path, or an icon name), never markup
+     The order: a logo (ai, then logo) first, then the picture (src), then the gender icon or the initials
      size: "2xs" 20px | "xs" 24px | "sm" 28px (default) | "md" 32px | "lg" 40px | "xl" 48px | "2xl" 64px; "2xs" is for inside a small control
        (the account row in a pane footer)
      color: the person's own color when the data has one, a data color: a hue name (blue, green, purple, red, brown, gray: the --plx-sys-data-color-<hue> tokens), set as data-plx-color; no value is written (batch 280): its soft fill with
@@ -8173,6 +8501,16 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      initialsOf(name) is also exported for pages that need the same initials. A name with no Latin letter (an Arabic name)
        takes each word's first letter; two Arabic initials are kept apart so they do not join (owner, ctm-needs-34).
 */
+// the built-in AI provider logos (owner, 2026-10-29, #637): the brands' own single-color marks, platform/icons/custom/BRANDS.md
+const AI = {
+  anthropic: _aiAnthropic.default,
+  claude: _aiClaude.default,
+  deepseek: _aiDeepseek.default,
+  gemini: _aiGemini.default,
+  meta: _aiMeta.default,
+  mistral: _aiMistral.default,
+  perplexity: _aiPerplexity.default
+};
 const SIZES = [20, 24, 28, 32, 40, 48, 64]; // the scale its classes define (plx-avatar--24 …)
 // the names pages use: 2xs 20 (inside a small control: the account row in a pane footer), xs 24, sm 28, md 32, lg 40, xl 48, 2xl 64 (numbers are rejected by the system check)
 const NAMED = {
@@ -8224,6 +8562,8 @@ function Avatar({
   name,
   src,
   initials,
+  ai,
+  logo,
   size = 'sm',
   color,
   category,
@@ -8235,10 +8575,14 @@ function Avatar({
   ...rest
 }) {
   (0, _devWarn.devWarn)('Avatar', {
-    size
+    size,
+    ai
   }, {
-    size: ['2xs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl']
+    size: ['2xs', 'xs', 'sm', 'md', 'lg', 'xl', '2xl'],
+    ai: Object.keys(AI)
   });
+  // a logo first (an AI provider's, or the one given), then the picture, then the gender icon or the initials
+  const mark = AI[ai] || logo || null;
   const n = NAMED[size] || size;
   const s = SIZES.indexOf(n) >= 0 ? n : NAMED.sm;
   const text = name ? initialsOf(name) : initials;
@@ -8250,8 +8594,8 @@ function Avatar({
   _react.default.useEffect(() => {
     setFailed(false);
   }, [src]);
-  const picture = src && !failed;
-  const g = !picture ? GENDER[gender] : null; // no picture and a known gender: the gender icon
+  const picture = !mark && src && !failed;
+  const g = !mark && !picture ? GENDER[gender] : null; // no logo, no picture and a known gender: the gender icon
   return /*#__PURE__*/_react.default.createElement("span", _extends({
     className: (0, _cx.cx)('plx-avatar', 'plx-avatar--' + s, p && 'plx-avatar--presence', g && 'plx-avatar--gender', className),
     "data-plx-avatar": "",
@@ -8260,7 +8604,10 @@ function Avatar({
     role: label ? 'img' : undefined,
     "aria-label": named,
     "aria-hidden": label ? undefined : true
-  }, rest), picture ? /*#__PURE__*/_react.default.createElement("img", {
+  }, rest), mark ? /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: mark,
+    className: "plx-avatar__logo"
+  }) : picture ? /*#__PURE__*/_react.default.createElement("img", {
     className: "plx-avatar__image",
     src: src,
     alt: "",

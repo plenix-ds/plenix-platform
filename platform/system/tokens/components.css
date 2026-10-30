@@ -2563,6 +2563,9 @@
   --plx-comp-avatar-group-more-font-family: var(--plx-sys-font-data);
 }
 :root,[data-plx-density],[data-plx-interaction] {
+  --plx-comp-avatar-logo-size: 75%;
+}
+:root,[data-plx-density],[data-plx-interaction] {
   --plx-comp-avatar-upload-max-width: var(--plx-ref-size-400px);
   --plx-comp-avatar-upload-row-gap: var(--plx-sys-space-stack-sm);
   --plx-comp-avatar-upload-row-column-gap: var(--plx-sys-space-inline-md);
