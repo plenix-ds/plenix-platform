@@ -14352,7 +14352,103 @@ function useInBar(ref, not) {
   return bar;
 }
   } },
-  "platform/components/Field/Field.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/describedBy.js":"platform/utils/describedBy.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/utils/dataText.jsx": { deps: {"react":null,"../components/Text/Text.jsx":"platform/components/Text/Text.jsx","./format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.dataNumber = dataNumber;
+exports.dataPhrase = dataPhrase;
+exports.dataWhenText = exports.dataText = void 0;
+var _react = _interopRequireDefault(require("react"));
+var _Text = require("../components/Text/Text.jsx");
+var _format = require("./format.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · dataText, dataPhrase, dataNumber (platform/utils/dataText.jsx)
+   Summary: A phrase with its numbers in the data font and its words in the normal font (owner, 2026-10-24, issue 260):
+     "7 files" is [7 in Reddit Mono] + " files" in DM Sans. Dates, times, sizes and money inside a phrase too.
+   Usage:
+     dataPhrase('{n} files', { n: 7 })                    // [<Text variant="data">7</Text>, ' files'], the number formatted
+     dataPhrase(fill(t.range, { first, last, total }))    // a phrase already filled: each number found in it
+     dataPhrase(strings.selected, { n: count })           // a catalog template, filled here
+     dataNumber(1284)                                     // <Text variant="data">1,284</Text>
+     dataText('4,546 assets | 12.4 GB')                   // the same as dataPhrase(text)
+   Props:
+     dataPhrase(text, values, options): text is a template ({name} placeholders) or a finished phrase. A number in values
+       is written with formatNumber (options: formatNumber's: locale, digits, …) and set in the data font; a text value
+       is written as it is and searched for numbers like the rest. Every date, time, size, percentage, money amount and
+       number left in the words is set in the data font too. Returns a node (a fragment): a phrase inside a span, which
+       keeps the data font at the phrase's own size.
+     dataNumber(value, options): one number, formatted (formatNumber) and in the data font.
+     dataText(text): a finished phrase, its numbers in the data font (dataPhrase(text) without values).
+     dataWhenText(content): for a component's text prop: a string goes through dataText, anything else is returned as it is.
+   Behavior:
+     The data font takes the size of the text around it (the span carries plx-text, the Text component's base class,
+     so the data span inherits the phrase's size and baseline; the phrase keeps its own color and weight).
+     Arabic-Indic digits (٠-٩) count as digits; a number formatted for an Arabic locale stays in its digits, and the Text
+     component writes ASCII digits in the reader's numerals as everywhere else. The order of the words never changes, so
+     right to left reads as written.
+     A value that is null or undefined leaves its placeholder empty.
+   Notes:
+     check-system's count-phrases rule (check-system.rules/count-phrases.js) finds a count joined to words in code; these
+     helpers are what it asks for. A text for screen readers (aria-label, an announcement) stays a plain string. */
+
+const D = '[0-9\\u0660-\\u0669]';
+const MONTH = '(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\\.?';
+// a date, a time, a size, money, a percentage, a measure or a number: each is one data run
+const DATUM = new RegExp('(' + D + '{4}-' + D + '{2}-' + D + '{2}(?:[ T]' + D + '{1,2}:' + D + '{2})?|' + MONTH + ' ' + D + '{1,2}(?:, ' + D + '{4})?|' + D + '{1,2}:' + D + '{2}(?:\\s?[AP]M)?|[$€£]?' + D + '[0-9\\u0660-\\u0669,.\\u066B\\u066C]*(?:\\s?(?:%|٪|[kKMB]\\b|KB|MB|GB|TB))?(?:\\s?[×x]\\s?' + D + '[0-9\\u0660-\\u0669,.]*)?)', 'g');
+const HAS_DIGIT = new RegExp(D);
+
+// a finished text -> its runs: words as text, data in the data font
+function runs(text, key) {
+  if (typeof text !== 'string' || !HAS_DIGIT.test(text)) return [text];
+  return text.split(DATUM).map((p, i) => i % 2 ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    key: key + '-' + i,
+    variant: "data"
+  }, p) : p || null);
+}
+function dataNumber(value, options) {
+  if (value === null || value === undefined || value === '') return null;
+  return /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "data"
+  }, typeof value === 'number' ? (0, _format.formatNumber)(value, options) : String(value));
+}
+function dataPhrase(text, values, options) {
+  if (text === null || text === undefined) return null;
+  if (typeof text === 'number') return dataNumber(text, options);
+  const s = String(text),
+    out = [];
+  if (values && typeof values === 'object') {
+    s.split(/(\{\w+\})/).forEach((part, i) => {
+      const m = /^\{(\w+)\}$/.exec(part);
+      if (!m || !(m[1] in values)) {
+        out.push(...runs(part, i));
+        return;
+      }
+      const v = values[m[1]];
+      if (v === null || v === undefined) return;
+      if (typeof v === 'number') out.push(/*#__PURE__*/_react.default.createElement(_Text.Text, {
+        key: i,
+        variant: "data"
+      }, (0, _format.formatNumber)(v, options)));else if (/*#__PURE__*/_react.default.isValidElement(v)) out.push(/*#__PURE__*/_react.default.cloneElement(v, {
+        key: i
+      }));else out.push(...runs(String(v), i));
+    });
+  } else out.push(...runs(s, 0));
+  return /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-text"
+  }, out);
+}
+const dataText = text => dataPhrase(text);
+
+// what a component draws for a text a page gave it: a plain string gets its numbers in the data font (a count in a hint, a banner, a
+// description: issue 260, owner 2026-10-30); anything else (an element, a list of them) is the page's own markup and stays as given
+exports.dataText = dataText;
+const dataWhenText = content => typeof content === 'string' ? dataPhrase(content) : content;
+exports.dataWhenText = dataWhenText;
+  } },
+  "platform/components/Field/Field.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../utils/overflow.js":"platform/utils/overflow.js","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/describedBy.js":"platform/utils/describedBy.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/dataText.jsx":"platform/utils/dataText.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -14368,6 +14464,7 @@ var _announce = require("../../utils/announce.jsx");
 var _format = require("../../utils/format.js");
 var _describedBy = require("../../utils/describedBy.js");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _dataText = require("../../utils/dataText.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Field
    Summary: A label, the control, and its help or error, connected for assistive technology.
@@ -14514,14 +14611,14 @@ function Field({
   }, "i") : null, lay === 'row' && description ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-field__description",
     id: descId
-  }, description) : null), /*#__PURE__*/_react.default.createElement("div", {
+  }, (0, _dataText.dataWhenText)(description)) : null), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-field__control"
   }, control, max ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-field__foot"
   }, lay !== 'row' && description ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-field__description",
     id: descId
-  }, description) : null, /*#__PURE__*/_react.default.createElement("div", {
+  }, (0, _dataText.dataWhenText)(description)) : null, /*#__PURE__*/_react.default.createElement("div", {
     className: (0, _cx.cx)('plx-field__counter', over && 'is-over')
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-field__count",
@@ -14532,7 +14629,7 @@ function Field({
   }, over ? fill(t.over, length - max) : fill(t.left, max - length)))) : lay !== 'row' && description ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-field__description",
     id: descId
-  }, description) : null, error ? /*#__PURE__*/_react.default.createElement("div", {
+  }, (0, _dataText.dataWhenText)(description)) : null, error ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-field__error",
     id: errId,
     role: "alert"
@@ -26508,7 +26605,7 @@ function tokenPixels(token, el) {
   return /^\d+(?:\.\d+)?px$/.test(v) ? parseFloat(v) : v ? tokenPixels(v, el) : 0;
 }
   } },
-  "platform/components/Checkbox/Checkbox.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Checkbox/Checkbox.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../providers/ReadOnly.jsx":"platform/providers/ReadOnly.jsx","../../utils/dataText.jsx":"platform/utils/dataText.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -26522,6 +26619,7 @@ exports.Switch = void 0;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _ReadOnly = require("../../providers/ReadOnly.jsx");
+var _dataText = require("../../utils/dataText.jsx");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Checkbox, Radio, RadioGroup, ChoiceList, Switch
    Summary: Native choice inputs, so keyboard, forms and assistive technology work as usual.
@@ -26607,7 +26705,7 @@ const Checkbox = exports.Checkbox = /*#__PURE__*/_react.default.forwardRef(funct
     className: "plx-check__label"
   }, label), description ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-check__description"
-  }, description) : null) : null);
+  }, (0, _dataText.dataWhenText)(description)) : null) : null);
 });
 const Radio = exports.Radio = /*#__PURE__*/_react.default.forwardRef(function Radio({
   label,
@@ -26635,7 +26733,7 @@ const Radio = exports.Radio = /*#__PURE__*/_react.default.forwardRef(function Ra
     className: "plx-check__label"
   }, label), description ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-check__description"
-  }, description) : null) : null);
+  }, (0, _dataText.dataWhenText)(description)) : null) : null);
 });
 function RadioGroup({
   label,
@@ -30178,96 +30276,6 @@ function ManageColumnsDialog({
     t: t
   }))));
 }
-  } },
-  "platform/utils/dataText.jsx": { deps: {"react":null,"../components/Text/Text.jsx":"platform/components/Text/Text.jsx","./format.js":"platform/utils/format.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.dataNumber = dataNumber;
-exports.dataPhrase = dataPhrase;
-exports.dataText = void 0;
-var _react = _interopRequireDefault(require("react"));
-var _Text = require("../components/Text/Text.jsx");
-var _format = require("./format.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · dataText, dataPhrase, dataNumber (platform/utils/dataText.jsx)
-   Summary: A phrase with its numbers in the data font and its words in the normal font (owner, 2026-10-24, issue 260):
-     "7 files" is [7 in Reddit Mono] + " files" in DM Sans. Dates, times, sizes and money inside a phrase too.
-   Usage:
-     dataPhrase('{n} files', { n: 7 })                    // [<Text variant="data">7</Text>, ' files'], the number formatted
-     dataPhrase(fill(t.range, { first, last, total }))    // a phrase already filled: each number found in it
-     dataPhrase(strings.selected, { n: count })           // a catalog template, filled here
-     dataNumber(1284)                                     // <Text variant="data">1,284</Text>
-     dataText('4,546 assets | 12.4 GB')                   // the same as dataPhrase(text)
-   Props:
-     dataPhrase(text, values, options): text is a template ({name} placeholders) or a finished phrase. A number in values
-       is written with formatNumber (options: formatNumber's: locale, digits, …) and set in the data font; a text value
-       is written as it is and searched for numbers like the rest. Every date, time, size, percentage, money amount and
-       number left in the words is set in the data font too. Returns a node (a fragment): a phrase inside a span, which
-       keeps the data font at the phrase's own size.
-     dataNumber(value, options): one number, formatted (formatNumber) and in the data font.
-     dataText(text): a finished phrase, its numbers in the data font (dataPhrase(text) without values).
-   Behavior:
-     The data font takes the size of the text around it (the span carries plx-text, the Text component's base class,
-     so the data span inherits the phrase's size and baseline; the phrase keeps its own color and weight).
-     Arabic-Indic digits (٠-٩) count as digits; a number formatted for an Arabic locale stays in its digits, and the Text
-     component writes ASCII digits in the reader's numerals as everywhere else. The order of the words never changes, so
-     right to left reads as written.
-     A value that is null or undefined leaves its placeholder empty.
-   Notes:
-     check-system's count-phrases rule (check-system.rules/count-phrases.js) finds a count joined to words in code; these
-     helpers are what it asks for. A text for screen readers (aria-label, an announcement) stays a plain string. */
-
-const D = '[0-9\\u0660-\\u0669]';
-const MONTH = '(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\\.?';
-// a date, a time, a size, money, a percentage, a measure or a number: each is one data run
-const DATUM = new RegExp('(' + D + '{4}-' + D + '{2}-' + D + '{2}(?:[ T]' + D + '{1,2}:' + D + '{2})?|' + MONTH + ' ' + D + '{1,2}(?:, ' + D + '{4})?|' + D + '{1,2}:' + D + '{2}(?:\\s?[AP]M)?|[$€£]?' + D + '[0-9\\u0660-\\u0669,.\\u066B\\u066C]*(?:\\s?(?:%|٪|[kKMB]\\b|KB|MB|GB|TB))?(?:\\s?[×x]\\s?' + D + '[0-9\\u0660-\\u0669,.]*)?)', 'g');
-const HAS_DIGIT = new RegExp(D);
-
-// a finished text -> its runs: words as text, data in the data font
-function runs(text, key) {
-  if (typeof text !== 'string' || !HAS_DIGIT.test(text)) return [text];
-  return text.split(DATUM).map((p, i) => i % 2 ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
-    key: key + '-' + i,
-    variant: "data"
-  }, p) : p || null);
-}
-function dataNumber(value, options) {
-  if (value === null || value === undefined || value === '') return null;
-  return /*#__PURE__*/_react.default.createElement(_Text.Text, {
-    variant: "data"
-  }, typeof value === 'number' ? (0, _format.formatNumber)(value, options) : String(value));
-}
-function dataPhrase(text, values, options) {
-  if (text === null || text === undefined) return null;
-  if (typeof text === 'number') return dataNumber(text, options);
-  const s = String(text),
-    out = [];
-  if (values && typeof values === 'object') {
-    s.split(/(\{\w+\})/).forEach((part, i) => {
-      const m = /^\{(\w+)\}$/.exec(part);
-      if (!m || !(m[1] in values)) {
-        out.push(...runs(part, i));
-        return;
-      }
-      const v = values[m[1]];
-      if (v === null || v === undefined) return;
-      if (typeof v === 'number') out.push(/*#__PURE__*/_react.default.createElement(_Text.Text, {
-        key: i,
-        variant: "data"
-      }, (0, _format.formatNumber)(v, options)));else if (/*#__PURE__*/_react.default.isValidElement(v)) out.push(/*#__PURE__*/_react.default.cloneElement(v, {
-        key: i
-      }));else out.push(...runs(String(v), i));
-    });
-  } else out.push(...runs(s, 0));
-  return /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-text"
-  }, out);
-}
-const dataText = text => dataPhrase(text);
-exports.dataText = dataText;
   } },
   "platform/components/Pagination/Pagination.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/dataText.jsx":"platform/utils/dataText.jsx"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
@@ -52686,7 +52694,7 @@ function VersionLabel({
   }, words[status]) : null);
 }
   } },
-  "platform/components/Banner/Banner.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/close":"platform/dist/icons/plenix/close.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Banner/Banner.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../utils/dataText.jsx":"platform/utils/dataText.jsx","plenix-platform/icons/plenix/close":"platform/dist/icons/plenix/close.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -52699,6 +52707,7 @@ var _cx = require("../../utils/cx.js");
 var _Icon = require("../Icon/Icon.jsx");
 var _Button = require("../Button/Button.jsx");
 var _LocaleProvider = require("../../providers/LocaleProvider.jsx");
+var _dataText = require("../../utils/dataText.jsx");
 var _close = _interopRequireDefault(require("plenix-platform/icons/plenix/close"));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* Plenix · Banner
@@ -52769,7 +52778,7 @@ function Banner({
     className: "plx-banner__title"
   }, title) : null, children ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-banner__text"
-  }, children) : null), actions ? /*#__PURE__*/_react.default.createElement("div", {
+  }, (0, _dataText.dataWhenText)(children)) : null), actions ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-banner__actions"
   }, actions) : null, onDismiss ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
     variant: "ghost",

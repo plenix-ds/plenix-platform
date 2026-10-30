@@ -46,6 +46,7 @@ import { announce } from '../../utils/announce.jsx';
 import { formatNumber } from '../../utils/format.js';
 import { useDescribedBy } from '../../utils/describedBy.js';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { dataWhenText } from '../../utils/dataText.jsx';
 
 // the layout a Form gives the fields inside it (Form's layout "two-column" makes them inline); a Field's own layout wins
 export const FieldLayoutContext = React.createContext(null);
@@ -100,19 +101,19 @@ export function Field({ label, hideLabel = false, description, error, required =
           <label ref={labelRef} className="plx-field__label" htmlFor={child.props.id || controlId}>{label}{required ? <span className="plx-field__required" aria-hidden="true"> *</span> : null}</label>
         </Tooltip>
         {info ? <button type="button" className="plx-field__info" aria-label={infoLabel || about.replace('{label}', label)} aria-expanded={showInfo} onClick={() => setShowInfo(!showInfo)}>i</button> : null}
-        {lay === 'row' && description ? <div className="plx-field__description" id={descId}>{description}</div> : null}
+        {lay === 'row' && description ? <div className="plx-field__description" id={descId}>{dataWhenText(description)}</div> : null}
       </div>
       <div className="plx-field__control">
         {control}
         {max ? (
           <div className="plx-field__foot">
-            {lay !== 'row' && description ? <div className="plx-field__description" id={descId}>{description}</div> : null}
+            {lay !== 'row' && description ? <div className="plx-field__description" id={descId}>{dataWhenText(description)}</div> : null}
             <div className={cx('plx-field__counter', over && 'is-over')}>
               <span className="plx-field__count" aria-hidden="true">{formatNumber(length) + '/' + formatNumber(max)}</span>
               <span className="plx-visually-hidden" id={countId}>{over ? fill(t.over, length - max) : fill(t.left, max - length)}</span>
             </div>
           </div>
-        ) : lay !== 'row' && description ? <div className="plx-field__description" id={descId}>{description}</div> : null}
+        ) : lay !== 'row' && description ? <div className="plx-field__description" id={descId}>{dataWhenText(description)}</div> : null}
         {error ? <div className="plx-field__error" id={errId} role="alert">{error}</div> : null}
         {info && showInfo ? <div className="plx-field__info-text">{info}</div> : null}
       </div>
