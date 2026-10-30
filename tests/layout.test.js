@@ -116,6 +116,11 @@ if (changed.wants({ units: ['components/Icon'] })) {
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'icon-fetch-642.test.js')], { stdio: 'inherit', env: process.env });
   if (result.status !== 0) process.exit(result.status || 1);
 }
+// the Chat composer: one box, attachments, emoji and dictation (issue 637, slice 3): its own test, when the Chat, the Input or the Popover changed
+if (changed.wants({ units: ['components/Chat', 'components/Input', 'components/Popover'] })) {
+  const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'chat-composer-s3.test.js')], { stdio: 'inherit', env: process.env });
+  if (result.status !== 0) process.exit(result.status || 1);
+}
 // a pill in a DataGrid or Table cell has equal padding at both sides (issue 649): its own test, when the DataPill, the DataGrid or the Table changed
 if (changed.wants({ units: ['components/DataPill', 'components/DataGrid', 'components/Table'] })) {
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'pill-padding-649.test.js')], { stdio: 'inherit', env: process.env });

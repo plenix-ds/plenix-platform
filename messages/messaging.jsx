@@ -63,7 +63,7 @@ export function MessagingScreen({ screen }) {
             <Chat.Thread label={'Conversation with ' + thd.name}>
               {mList.map((m, i) => <Chat.Message key={i} mine={m.mine} author={m.mine ? undefined : thd.name} time={m.time}>{m.text}</Chat.Message>)}
             </Chat.Thread>
-            <Chat.Composer value={input} onChange={setInput} onSend={send} placeholder="Reply…" label="Reply" />
+            <Chat.Composer value={input} onChange={setInput} onSend={send} placeholder="Reply…" label="Reply" emoji={false} />
           </>
         ) : <EmptyState size="page" icon="message" title="Select a conversation" />}
       </Stack>
