@@ -38,7 +38,7 @@ module.exports = function buildStandards(root, opts) {
   Object.keys(std.pages).forEach((k) => (std.pages[k].regions || []).forEach((r) => { if (!REG[r]) errors.push('pages.' + k + ': region "' + r + '" is not defined in regions'); }));
   (std.decide || []).forEach((d, i) => { if (d.region && !REG[d.region]) errors.push('decide[' + i + ']: region "' + d.region + '" is not defined'); });
   const FLD = std.fields || {}, CLS = FLD.classes || {};
-  [].concat(FLD.components || [], FLD.stretch || [], FLD.content || []).forEach((n) => {
+  [].concat(FLD.components || [], FLD.stretch || [], FLD.content || [], FLD.overlay || []).forEach((n) => {
     if (!exported.has(n)) errors.push('fields: "' + n + '" is not a public export');
     if (!/^plx-[a-z0-9_-]+$/.test(CLS[n] || '')) errors.push('fields.classes: "' + n + '" has no plx- class');
   });
@@ -65,11 +65,13 @@ module.exports = function buildStandards(root, opts) {
   // natural width (an Input's own width prop wins in both)
   {
     const uniq = (l) => Array.from(new Set(l.map((n) => '.' + CLS[n]).filter((x) => x !== '.undefined')));
-    const stretch = uniq(FLD.stretch || []).join(','), content = uniq(FLD.content || []).join(',');
+    const stretch = uniq(FLD.stretch || []).join(','), content = uniq(FLD.content || []).join(','), overlay = uniq(FLD.overlay || []).join(',');
     // the patterns publish context values (Styling Standard 4.1); every field reads them in its own rule, a content pattern
     // over a stretch one, and its width prop (plx-<field>--width-*) over both
     if (stretch) { css.push('/* the fields rule (layout.json › fields): in a "stretch" pattern a field fills its column */'); css.push(':is(' + stretch + '){--plx-comp-field-context-stretch-inline-size:100%;}'); }
     if (content) { css.push('/* in a "content" pattern a field takes its natural width (a select its longest option, an input its own size) */'); css.push(':is(' + content + '){--plx-comp-field-context-content-flex-shrink:0;--plx-comp-field-context-content-inline-size:auto;--plx-comp-field-context-content-min-inline-size:var(--plx-sys-fit-field-min-width);--plx-comp-field-context-content-max-inline-size:var(--plx-sys-fit-field-max-width);--plx-comp-field-context-width-flex-shrink:0;}'); css.push('/* a bar folds its Buttons first (platform/standards/fit-and-overflow.md); only when it has folded every one (data-plx-fit-shrink) do its fields shrink, down to the minimum width */'); css.push(':is(' + content + ')[data-plx-fit-shrink]{--plx-comp-field-context-content-flex-shrink:1;--plx-comp-field-context-width-flex-shrink:1;}'); }
+    // an overlay opened from a bar sits inside the bar's markup: it clears the bar's content values for what it holds (layout.json › fields › overlay)
+    if (overlay) { css.push('/* an overlay opened from a bar is its own layout: it clears the bar\'s "content" sizing, so its fields are not bar fields */'); css.push(':is(' + overlay + '){--plx-comp-field-context-content-flex-shrink:initial;--plx-comp-field-context-content-inline-size:initial;--plx-comp-field-context-content-min-inline-size:initial;--plx-comp-field-context-content-max-inline-size:initial;--plx-comp-field-context-width-flex-shrink:initial;}'); }
   }
   css.push('/* fluid: ' + M.fluid.description + ' */');
   if (M.contained) {
