@@ -3,7 +3,8 @@
    a saved width is used only when it still fits the window (the limits of step 1).
    Summary: with the side panel's limit raised to 1600px: (A) an old single value of 480 on a 1920x1080 monitor shows 480 and is stored under
      "1920x1080"; (B) a 2560x1440 monitor has no value yet, so the panel starts at its default, and End there saves 1600 under "2560x1440";
-     (C) the first monitor still shows 480; (D) in a 1000px window the 1600 does not fit (90% is 900), so the default shows and the value is kept;
+     (C) the first monitor still shows 480; (D) in a 1000px window the 1600 does not fit (90% is 900), so that window's default shows (narrower than a
+     2000px window's: the defaults by window width, issue 463 step 2) and the value is kept;
      (E) in a 2000px window it comes back.
    Usage: node tests/monitor-widths.test.js   (run by layout.test.js when AppShell or the side panel changed) */
 const assert = require('assert/strict'), { serve, launch } = require('./lib');
@@ -47,7 +48,11 @@ const SCREEN = (w, h, r) => 'Object.defineProperty(window.screen,"width",{get:()
     for (const screen of [[1280, 720, 1.5], [960, 540, 2], [1920, 1080, 1]]) { v = await visit(1600, screen); assert.equal(await v.width(), 480, 'Z: zoom ' + screen.join(' ') + ' keeps the monitor\'s width'); assert.deepEqual(Object.keys((await v.store()).side).sort(), ['1920x1080', '2560x1440'], 'Z: no new monitor appears when zoom changes'); await v.page.close(); }
     // a size a few pixels off the stored one is the same monitor (a rounding edge at an odd zoom step): 1920x1080 stored, 1914x1076 reported, still 480
     v = await visit(1600, [1914, 1076, 1]); assert.equal(await v.width(), 480, 'N: a monitor within 10px of a stored one shares its width'); assert.deepEqual(Object.keys((await v.store()).side).sort(), ['1920x1080', '2560x1440'], 'N: no new key'); await v.page.close();
-    v = await visit(1000, [2560, 1440]); assert.equal(await v.width(), start, 'D: 1600 does not fit a 1000px window: the default'); assert.deepEqual((await v.store()).side['2560x1440'], 1600, 'D: and it is kept'); await v.page.close();
+    // the default depends on the window (issue 463 step 2: 240 under 1440px, 320 from 1440, 400 from 1920): a 1000px window's default, measured on a
+    // monitor with nothing saved
+    v = await visit(1000, [3840, 2160]); const narrowDefault = await v.width(); await v.page.close();
+    assert.ok(narrowDefault < start, 'D: a 1000px window starts narrower than a 2000px one (the defaults by window width)');
+    v = await visit(1000, [2560, 1440]); assert.equal(await v.width(), narrowDefault, 'D: 1600 does not fit a 1000px window: that window\'s default'); assert.deepEqual((await v.store()).side['2560x1440'], 1600, 'D: and it is kept'); await v.page.close();
     v = await visit(2000, [2560, 1440]); assert.equal(await v.width(), 1600, 'E: it comes back when it fits'); assert.deepEqual(v.errors, [], 'no script errors'); await v.page.close();
     console.log('monitor-widths: OK');
   } finally { if (browser) await browser.close(); server.close(); }
