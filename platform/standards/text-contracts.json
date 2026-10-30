@@ -553,6 +553,10 @@
     "line-height"
    ]
   },
+  "plx-chat__time": {
+   "contract": "follows",
+   "font": "mono"
+  },
   "plx-chat__header-meta": {
    "contract": "adjusts",
    "props": [

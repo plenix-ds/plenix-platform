@@ -4881,6 +4881,11 @@
       "$type": "color",
       "$description": "The time and status under a message: the secondary text color on both kinds of message (#637)."
     },
+    "chat-time-font-family": {
+      "$value": "{plx-sys.font-data}",
+      "$type": "fontFamily",
+      "$description": "A message's sent and read times in the data font (the owner's #260: numbers in Mono), at the footer's size (#637)."
+    },
     "chat-footer-font-size": {
       "$value": "{plx-ref.font-size-10}",
       "$type": "dimension",

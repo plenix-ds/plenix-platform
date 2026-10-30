@@ -51,7 +51,8 @@ const contrast = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y
           const body = m.querySelector('.plx-chat__body');
           return { avatar: !!m.querySelector('.plx-chat__avatar'), author: !!m.querySelector('.plx-chat__author'), metaTime: !!(meta && meta.querySelector('time')),
             bg: cs(b).backgroundColor, line: cs(b).borderTopColor,
-            foot: f ? { text: f.textContent, size: cs(f).fontSize, color: cs(f).color, last: b.lastElementChild === f, below: f.getBoundingClientRect().top >= body.getBoundingClientRect().bottom } : null,
+            foot: f ? { text: f.textContent, size: cs(f).fontSize, color: cs(f).color, last: b.lastElementChild === f, below: f.getBoundingClientRect().top >= body.getBoundingClientRect().bottom,
+              mono: !f.querySelector('time') || cs(f.querySelector('time')).fontFamily.split(',')[0].replace(/["']/g, '').trim() === cs(document.documentElement).getPropertyValue('--plx-sys-font-data').split(',')[0].replace(/["']/g, '').trim() } : null,
             status: s ? { color: cs(s).color, svgs: s.querySelectorAll('svg').length, name: (s.querySelector('[role=img]') || {}).ariaLabel || '' } : null }; };
         const caption = parseFloat(cs(document.documentElement).getPropertyValue('--plx-sys-text-caption-font-size')) * parseFloat(cs(document.documentElement).fontSize);
         return { t1: msg('t1'), t2: msg('t2'), read: msg('read'), delivered: msg('delivered'), sent: msg('sent'), sending: msg('sending'), caption,
@@ -76,6 +77,7 @@ const contrast = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y
       assert.equal(m.foot.size, '10px', 'the footer is 10px');
       assert.ok(parseFloat(m.foot.size) < r.caption, 'the footer is smaller than the caption');
       assert.ok(contrast(m.foot.color, m.bg) >= 4.5, 'the footer gray passes 4.5:1 on its message');
+      assert.ok(m.foot.mono, 'the times are in the data font (the owner\'s #260: numbers in Mono; typography pattern check)');
     }
     assert.match(r.t1.foot.text, /^Sent 9:00 AM$/, 'theirs: Sent <time>');
     assert.match(r.read.foot.text, /^Sent 9:02 AM\s*\|\s*Read 9:04 AM$/, 'read: Sent <time> | Read <time>');
