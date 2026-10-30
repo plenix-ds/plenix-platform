@@ -6,6 +6,30 @@ The batch numbers point to the work log (Plenix - DAM/audit/batches/).
 
 ## [Unreleased]
 
+## [0.77.0] - 2026-10-30
+
+**In short.** Chat gets message actions and reactions: a React, Reply and More bar beside a message (bordered, never covering the text), Edit and Delete on your own messages, reactions as named pills with Add reaction, quotes and "Replying to", and "Edited" and "This message was deleted". The design spec's Chat page shows every Chat part with the owner's rules, and the suite's Messages app uses the new Chat look.
+
+### Upgrading from 0.76.0
+Nothing to change. There is no breaking change.
+
+### Added
+- Chat message actions (#637 slice 4; the owner's go, built as drawn):
+  - Chat.Message takes `onReact`, `onReply`, `onQuote`, `onCopy` (default: copies the text), `onForward`, and on your own messages `onEdit` and `onDelete`.
+  - Any of them gives the message an action bar beside the bubble, in the free space so it never covers text: React, Reply and More, all bordered buttons.
+  - More opens the menu: Reply, Quote, Copy text, Forward, then Edit and Delete (red) on your own messages.
+  - The bar shows on hover, on a long press and on keyboard focus (a Tab into it reveals it). It is mirrored in right to left.
+- Reactions: `reactions` ([{ emoji, count, mine }]) draws pills under the text, with yours outlined in the action color, then Add reaction.
+  - React opens 👍 ❤️ 😂 😮 😢 🙏 and More reactions (a placeholder until the emoji picker, #646).
+  - Each pill is named ("Thumbs up: 2") and says whether you reacted (aria-pressed).
+- `quote` ({ author, text }) shows a quoted or replied-to message inside the bubble. Chat.Composer's `replyTo` and `onCancelReply` show "Replying to <name>" above the text, with Cancel.
+- `edited` shows "· Edited" in the footer. `deleted` shows "This message was deleted", muted, with no actions, reactions or quote.
+- Chat strings in English and Arabic for the actions, reactions and their names, Replying to, Edited and deleted.
+- The Chat spec page shows every part as built (the thread, message, run, date line, status, attachments, voice message, composer with files, the AI label), with the owner's do and don't rules (no ratings; the photo crosses the bubble's border in the bubble's outline color; a state is never color alone; people's own words are not set in the data font) and a marked place for slice 4 (message actions and reactions). The written sections (anatomy, contrast, announcements) describe the built parts. This is a spec lane (`lanes/637-chat-s6`).
+
+### Changed
+- The suite's Messages app draws a conversation on the Chat parts, with the new look (#637, slice 6): a date line ("Today"), one photo and one name for each run of messages from one side (Chat.Group, the sender's photo or initials on the bubble's top corner, the person's own from their account), and the status of the person's own messages (read for the earlier ones, sent for a new reply). Its behavior is the same: the conversations, a reply sent with Enter, the unsaved-work guard. AIChat already stands on the Chat parts, so it shows the new look with no change.
+
 ## [0.76.0] - 2026-10-30
 
 **In short.** Chat gets the owner's new look: outlined bubbles in his colors with the photo on the top edge, runs and date lines, a "Sent | Read" footer with status checks, a message box with files, voice to text and a Send button, pictures, files and voice messages in the bubbles, and AI logos for the photo. Action buttons are slightly raised (the card glow, a thin shadow, one step more on hover), the red button gets a third shade, and button labels sit centered. On Arabic pages computed identifiers read 01-20261020. Numbers inside phrases use the data font everywhere. Pills have equal side padding. Big server-backed tables load more rows as you scroll. Icons load one file each, a few at a time, retry once, and work offline and in browser extensions. The Card accent edge is removed (see Breaking).

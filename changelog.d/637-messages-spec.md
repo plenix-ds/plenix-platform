@@ -1,5 +1,0 @@
-### Changed
-- The suite's Messages app draws a conversation on the Chat parts, with the new look (#637, slice 6): a date line ("Today"), one photo and one name for each run of messages from one side (Chat.Group, the sender's photo or initials on the bubble's top corner, the person's own from their account), and the status of the person's own messages (read for the earlier ones, sent for a new reply). Its behavior is the same: the conversations, a reply sent with Enter, the unsaved-work guard. AIChat already stands on the Chat parts, so it shows the new look with no change.
-
-### Added
-- The Chat spec page shows every part as built (the thread, message, run, date line, status, attachments, voice message, composer with files, the AI label), with the owner's do and don't rules (no ratings; the photo crosses the bubble's border in the bubble's outline color; a state is never color alone; people's own words are not set in the data font) and a marked place for slice 4 (message actions and reactions). The written sections (anatomy, contrast, announcements) describe the built parts. This is a spec lane (`lanes/637-chat-s6`).
