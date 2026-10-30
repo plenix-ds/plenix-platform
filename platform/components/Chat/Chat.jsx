@@ -18,10 +18,12 @@
      Chat.Thread.follow: opens at the newest message and keeps it in view as messages arrive, unless the person scrolled up
        to read (default true)
      Chat.Thread.children: the messages, in order (the oldest first)
-     Chat.Message.mine: the message is the person's own (end side, in the action color); default false
+     Chat.Message.mine: the message is the person's own (end side, the outgoing fill and outline); default false
      Chat.Message.author: who wrote it (shown above theirs; announced for mine as "You")
      Chat.Message.time: when, as shown; dateTime: the same as a machine-readable date
-     Chat.Message.avatar: an Avatar beside their messages
+     Chat.Message.avatar: the sender's Avatar (size "sm"), on the bubble's top edge, 8px in from the start edge for theirs and
+       from the end edge for yours (the owner's mockup, issue 637), half above the bubble; it takes its bubble's fill, text
+       color and outline. Leave it out on the following messages of a run from the same sender
      Chat.Message.children: the message text or content
      Chat.Composer.value / onChange(text): the message being written
      Chat.Composer.onSend(text): runs on Send and on Enter (Shift+Enter starts a new line)
@@ -32,6 +34,9 @@
      Chat.Typing.strings: thinking and ProgressSteps state words; className: more classes
      className on every part: more classes
    Behavior:
+     Messages are outlined (the owner's chat colors, issue 637): theirs in the incoming fill and outline, yours in the outgoing
+       ones, the text in the message text color; the card's corner (6px) and border (1px). Each color is a role
+       (--plx-sys-message-*) with its own dark value.
      The thread is a log (role="log", aria-live="polite"): new messages are announced.
      Send is disabled while the message is empty.
      Chat.Typing is a status region (role="status"), so its label is announced.
@@ -94,9 +99,9 @@ function Thread({ label, follow = true, className, children, ...rest }) {
 function Message({ mine = false, author, time, dateTime, avatar, className, children, ...rest }) {
   const t = useStrings('chat');
   return (
-    <div className={cx('plx-chat__message', mine && 'plx-chat__message--mine', className)} {...rest}>
-      {!mine && avatar ? <span className="plx-chat__avatar">{avatar}</span> : null}
-      <div className="plx-chat__bubble">
+    <div className={cx('plx-chat__message', mine && 'plx-chat__message--mine', avatar && 'plx-chat__message--avatar', className)} {...rest}>
+      {avatar ? <span className={cx('plx-chat__avatar', mine && 'plx-chat__avatar--mine')}>{avatar}</span> : null}
+      <div className={cx('plx-chat__bubble', mine && 'plx-chat__bubble--mine', avatar && 'plx-chat__bubble--avatar')}>
         {(author && !mine) || time ? (
           <div className="plx-chat__meta">
             {mine ? <VisuallyHidden>{t.you}</VisuallyHidden> : (author ? <span className="plx-chat__author">{author}</span> : null)}

@@ -1,6 +1,9 @@
 {
   "$description": "Frozen at 2026-10-27 for check-system.rules/token-definitions.js: the reference palette (name and value; a new or changed color needs the owner; gray 250 is in), and the tokens that were off the 4px grid or outside the 2 to 6px corners when the rule began. The grid and corners lists only shrink: node check-system.rules/token-definitions.js --shrink.",
   "reasons": {
+    "colors": {
+      "color-blue-125, color-blue-275, color-slate-375, color-slate-900": "the owner's chat colors as new steps (owner, 2026-10-29, #637: his explicit OK for these four; #F5F7F9 reuses gray-75)"
+    },
     "grid": {
       "shadow-*": "optical blur/ring width; owner to decide (the owner: everything should be on the grid)"
     }
@@ -73,10 +76,14 @@
     "color-blue-600": "#1f5bb8",
     "color-blue-400": "#2a6fdb",
     "color-blue-300": "#a2c0e3",
+    "color-blue-275": "#b2cbe9",
     "color-blue-250": "#c0ccda",
     "color-blue-200": "#c8dff7",
+    "color-blue-125": "#e6f0fc",
     "color-blue-100": "#ebf0f7",
     "color-blue-50": "#f8fafd",
+    "color-slate-900": "#253442",
+    "color-slate-375": "#a9b8c7",
     "color-purple-900": "#551a8b",
     "color-purple-700": "#6a2e7f",
     "color-purple-500": "#911eb4",

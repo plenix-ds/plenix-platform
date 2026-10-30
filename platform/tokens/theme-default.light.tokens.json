@@ -163,6 +163,31 @@
         }
       }
     },
+    "message-incoming-background": {
+      "$value": "{plx-ref.color-gray-75}",
+      "$type": "color",
+      "$extensions": { "plenix": { "group": "surface", "purpose": "The fill of a message from someone else (Chat; #637: the owner's #F5F7F9 reuses gray-75, #f7f7f8)." } }
+    },
+    "message-incoming-border": {
+      "$value": "{plx-ref.color-slate-375}",
+      "$type": "color",
+      "$extensions": { "plenix": { "group": "border", "purpose": "The 1px edge of a message from someone else, and of its sender's photo (Chat; #637)." }, "com.plenix": { "forcedColors": "CanvasText" } }
+    },
+    "message-outgoing-background": {
+      "$value": "{plx-ref.color-blue-125}",
+      "$type": "color",
+      "$extensions": { "plenix": { "group": "surface", "purpose": "The fill of the person's own message (Chat; #637)." } }
+    },
+    "message-outgoing-border": {
+      "$value": "{plx-ref.color-blue-275}",
+      "$type": "color",
+      "$extensions": { "plenix": { "group": "border", "purpose": "The 1px edge of the person's own message, and of their photo (Chat; #637)." }, "com.plenix": { "forcedColors": "CanvasText" } }
+    },
+    "message-text": {
+      "$value": "{plx-ref.color-slate-900}",
+      "$type": "color",
+      "$extensions": { "plenix": { "group": "text", "purpose": "The text of a message (Chat; #637): 11.1:1 or more on both message fills." } }
+    },
     "content-default": {
       "$value": "{plx-ref.color-gray-900}",
       "$type": "color",
