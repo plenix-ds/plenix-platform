@@ -9,6 +9,7 @@
      name stays as aria-label); with every word shown it keeps them. At 320px the icon-only Button (Reset settings) is in More, and its menu lists it.
      Cut text shows in full in a tooltip, only while it is cut: a Combobox on keyboard focus (a short one gets none), an Input in a bar on focus, a Search in a bar on hover, a
      DatePicker and a TimePicker on focus. Every case runs left to right and right to left.
+     An overlay opened from a bar (#669): a field in a Popover inside a Toolbar does not take the bar's content sizing, a field in the bar does.
    Usage: node tests/field-sizing.test.js   (run by layout.test.js when a field, the Toolbar, the ActionBar or the fold helpers changed) */
 const assert = require('assert/strict'), { serve, launch } = require('./lib');
 const LONG = 'A choice with a very long name that is wider than any field should be, to the end of the line and past it';
@@ -195,6 +196,21 @@ const FOLDABLE = ['Add new', 'Reindex', 'Import', 'Export', 'Export text', 'Rese
       assert.ok(short.wrapped && !short.open, dir + ': a Select whose text fits shows no tooltip on focus, got ' + JSON.stringify(short));
     }
     await page.evaluate(() => { document.documentElement.dir = 'ltr'; });
+    // #669: an overlay opened from a bar is its own layout (layout.json › fields › overlay): a field in a Popover inside a Toolbar does not take the bar's
+    // content sizing (and is not wrapped in the bar's cut-text Tooltip), while a field in the bar itself does
+    const overlay = await page.evaluate(async () => {
+      document.querySelector('main').innerHTML = '<div id="c"></div>';
+      const h = React.createElement, P = window.Plenix, noop = () => {};
+      ReactDOM.createRoot(document.getElementById('c')).render(h('div', { id: 'ov', style: { inlineSize: '700px' } }, h(P.Toolbar, { label: 'Overlay bar' },
+        h(P.Input, { key: 'i', 'aria-label': 'In the bar', value: 'Bar', onChange: noop }),
+        h(P.Popover, { key: 'p', trigger: h(P.Button, null, 'Open'), open: true, title: 'Panel' }, h(P.Input, { 'aria-label': 'In the popover', value: 'Panel', onChange: noop })))));
+      await new Promise((r) => setTimeout(r, 700));
+      const hook = (sel) => { const e = document.querySelector(sel); return e ? getComputedStyle(e).getPropertyValue('--plx-comp-field-context-content-max-inline-size').trim() : null; };
+      const pop = document.querySelector('[aria-label="In the popover"]');
+      return { bar: hook('[aria-label="In the bar"]'), popover: hook('[aria-label="In the popover"]'), popoverWrapped: !!(pop && pop.closest('.plx-input__tip')) };
+    });
+    assert.ok(overlay.bar, 'a field in the bar takes the bar\'s content sizing, got ' + JSON.stringify(overlay));
+    assert.deepEqual([overlay.popover, overlay.popoverWrapped], ['', false], 'a field in a Popover inside the bar does not (the overlay clears it, #669), got ' + JSON.stringify(overlay));
     assert.deepEqual(errors, [], 'no script errors');
     console.log('field-sizing: OK');
   } finally { if (browser) await browser.close(); server.close(); }

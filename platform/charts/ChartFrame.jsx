@@ -54,6 +54,7 @@
 */
 import React from 'react';
 import { cx } from '../utils/cx.js';
+import { dataWhenText } from '../utils/dataText.jsx';
 import { isRtl } from '../utils/direction.js';
 import { Details } from '../components/Details/Details.jsx';
 import { Table } from '../components/Table/Table.jsx';
@@ -118,7 +119,7 @@ export function ChartFrame({ title, description, hideCaption = false, size = 'md
   const caption = (
     <figcaption className={cx('plx-chart__caption', hideCaption && 'plx-visually-hidden')}>
       <span id={titleId} className="plx-chart__title">{title}</span>
-      {description ? <span id={descId} className="plx-chart__description">{description}</span> : null}
+      {description ? <span id={descId} className="plx-chart__description">{dataWhenText(description)}</span> : null}
     </figcaption>
   );
   // the legend (chart parts): before the plot, after it, or beside it in a row with it

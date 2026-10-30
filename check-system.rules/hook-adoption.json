@@ -57,6 +57,12 @@
     "platform/components/Banner/Banner.jsx",
     "platform/components/Field/Field.jsx",
     "platform/components/Checkbox/Checkbox.jsx",
+    "platform/components/Metric/Metric.jsx",
+    "platform/charts/ChartFrame.jsx",
+    "platform/charts/Gauge.jsx",
+    "platform/patterns/RecordPage/RecordPage.jsx",
+    "platform/patterns/ActivityList/ActivityList.jsx",
+    "platform/components/DataGrid/DataGridEngine.jsx",
     "platform/patterns/SettingsLayout/SettingsLayout.jsx"
   ],
   "useGesture": [
