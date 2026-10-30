@@ -1,0 +1,2 @@
+### Fixed
+- A panel or dialog opened from a bar keeps the focus on its first field (#558 follow-up). The bar's field sizing reached the overlay through the markup, so its Input took the bar's cut-text Tooltip after it rendered; the field was then mounted again and the focus fell to the page. Overlays (Dialog, Sheet, SidePanel, Popover and the find panels) now clear the bar's "content" sizing for what they hold (`layout.json` › fields › overlay), so their fields are sized by the overlay.

@@ -252,6 +252,19 @@
       "ActionBar",
       "AppHeader"
     ],
+    "$overlay": "An overlay opened from a bar (its popover or dialog sits inside the bar's markup) is its own layout: it clears the bar's \"content\" sizing for what it holds, so its fields are sized by the overlay, not as bar fields (a bar field's cut-text Tooltip would re-mount a field the overlay just focused; CI 2026-10-30).",
+    "overlay": [
+      "Dialog",
+      "PromptDialog",
+      "ConfirmDialog",
+      "Drawer",
+      "Sheet",
+      "SidePanel",
+      "Popover",
+      "FilterPanel",
+      "SortPanel",
+      "GroupPanel"
+    ],
     "classes": {
       "Form": "plx-form",
       "FormSection": "plx-form-section",
