@@ -1,5 +1,5 @@
 /* Plenix · FilterBar. One row; filters that do not fit move into "More filters". */
-.plx-filter-bar{--plx-comp-button-context-height:var(--plx-sys-control-height-toolbar);align-items:center;column-gap:var(--plx-comp-filter-bar-gap);display:flex;min-inline-size:0;}
+.plx-filter-bar{--plx-comp-button-context-elevation:none;--plx-comp-button-context-glow:none;--plx-comp-button-context-height:var(--plx-sys-control-height-toolbar);align-items:center;column-gap:var(--plx-comp-filter-bar-gap);display:flex;min-inline-size:0;}
 .plx-filter-bar__filters{align-items:center;block-size:var(--plx-comp-filter-bar-filters-height);column-gap:var(--plx-comp-filter-bar-filters-gap);display:flex;flex-basis:0%;flex-grow:1;flex-shrink:1;flex-wrap:wrap;min-inline-size:0;overflow-clip-margin:var(--plx-comp-filter-bar-filters-overflow-clip-margin);overflow-x:clip;overflow-y:clip;row-gap:var(--plx-comp-filter-bar-filters-row-gap);}
 .plx-filter-bar__slot{display:inline-flex;}
 .plx-filter-bar__count{color:var(--plx-comp-filter-bar-count-text);font-family:var(--plx-comp-filter-bar-count-font-family);font-size:var(--plx-comp-filter-bar-count-font-size);margin-inline-start:var(--plx-comp-filter-bar-count-margin-inline-start);word-spacing:var(--plx-sys-font-data-word-spacing);}
