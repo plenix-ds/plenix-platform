@@ -504,6 +504,18 @@
     "line-height"
    ]
   },
+  "plx-chat__attachment-meta": {
+   "contract": "adjusts",
+   "props": [
+    "font-size"
+   ]
+  },
+  "plx-chat__attachment-name": {
+   "contract": "adjusts",
+   "props": [
+    "font-weight"
+   ]
+  },
   "plx-chat__author": {
    "contract": "adjusts",
    "props": [
@@ -528,6 +540,12 @@
     "font-weight"
    ]
   },
+  "plx-chat__drop": {
+   "contract": "adjusts",
+   "props": [
+    "font-weight"
+   ]
+  },
   "plx-chat__footer": {
    "contract": "adjusts",
    "props": [
@@ -547,6 +565,12 @@
    "font": "sans",
    "adjusts": [
     "font-size",
+    "font-weight"
+   ]
+  },
+  "plx-chat__listening": {
+   "contract": "adjusts",
+   "props": [
     "font-weight"
    ]
   },

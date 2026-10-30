@@ -1,6 +1,7 @@
 /* Plenix tests · Chat slice 2: runs, date and "New messages" lines, the Sent/Read footer and the status marks (issue 637).
    Summary: Chat.Thread with a run from each person, two date lines and the "New messages" line, light and dark:
-     Chat.Group: the photo and the name on the first message of a run only
+     Chat.Group: the photo and the name on the first message of a run only; only Chat.Message children take them (a
+       Divider inside the run stays as given)
      Chat.Divider: a date line; unread: "New messages" by default (Arabic: "رسائل جديدة")
      no time on the message line; a footer at the bottom of the bubble, 10px (smaller than the 11px caption), in the
        secondary gray: "Sent <time>", and "| Read <time>" once read
@@ -36,6 +37,7 @@ const contrast = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y
             h(P.Chat.Message, { id: 't1', time: '9:00 AM' }, 'Can you send the plan?'),
             h(P.Chat.Message, { id: 't2', time: '9:01 AM' }, 'The PDF is fine.')),
           h(P.Chat.Group, { mine: true, avatar: av('John Doe') },
+            h(P.Chat.Divider, { id: 'inrun' }, '9 AM'),
             h(P.Chat.Message, { id: 'read', time: '9:02 AM', status: 'read', readTime: '9:04 AM' }, 'Here it is.'),
             h(P.Chat.Message, { id: 'delivered', time: '9:03 AM', status: 'delivered' }, 'Did it open?'),
             h(P.Chat.Message, { id: 'sent', time: '9:05 AM', status: 'sent' }, 'I can resend it.'),
@@ -53,6 +55,7 @@ const contrast = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y
             status: s ? { color: cs(s).color, svgs: s.querySelectorAll('svg').length, name: (s.querySelector('[role=img]') || {}).ariaLabel || '' } : null }; };
         const caption = parseFloat(cs(document.documentElement).getPropertyValue('--plx-sys-text-caption-font-size')) * parseFloat(cs(document.documentElement).fontSize);
         return { t1: msg('t1'), t2: msg('t2'), read: msg('read'), delivered: msg('delivered'), sent: msg('sent'), sending: msg('sending'), caption,
+          inrun: { avatar: !!q('inrun').querySelector('.plx-avatar'), attrs: [...q('inrun').attributes].map((a) => a.name).filter((n) => /mine|author|avatar/.test(n)) },
           date: q('date').textContent, unread: q('unread').textContent, unreadWeight: cs(q('unread')).fontWeight, dateWeight: cs(q('date')).fontWeight };
       }, mode, lang);
     };
@@ -61,6 +64,7 @@ const contrast = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y
     // runs: one photo and one name per run
     assert.deepEqual([r.t1.avatar, r.t1.author, r.t2.avatar, r.t2.author], [true, true, false, false], 'their run: the photo and the name on the first message only');
     assert.deepEqual([r.read.avatar, r.delivered.avatar, r.sent.avatar], [true, false, false], 'your run: the photo on the first message only');
+    assert.deepEqual([r.inrun.avatar, r.inrun.attrs], [false, []], 'a Divider inside a run takes none of the run\'s props, and the first message still gets the photo');
     // lines across the thread
     assert.equal(r.date, 'Today', 'a date line');
     assert.equal(r.unread, 'New messages', 'the unread line says New messages by default');
