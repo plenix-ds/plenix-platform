@@ -2273,11 +2273,19 @@ const {
   useState
 } = React;
 
+// a run: the messages in a row from the same side, so one photo and one name stand for them (Chat.Group)
+const runsOf = list => list.reduce((runs, m) => {
+  const last = runs[runs.length - 1];
+  if (last && last[0].mine === m.mine) last.push(m);else runs.push([m]);
+  return runs;
+}, []);
+
 /* ─── Messaging ─────────────────────────────────────────────────── */
 function MessagingScreen({
   screen
 }) {
   const layout = (0, _plenixPlatform.useAppLayout)();
+  const account = (0, _plenixPlatform.useSession)().account; // the person's own photo or initials on their messages
   const narrow = !!(layout && layout.narrow);
   const [view, updateView] = (0, _plenixPlatform.useViewState)('messaging');
   const named = screen.parts[0] === 'thread' ? +screen.parts[1] : null;
@@ -2298,7 +2306,8 @@ function MessagingScreen({
         from: 'me',
         text,
         time: 'Now',
-        mine: true
+        mine: true,
+        sent: true
       }]
     }));
     setInput('');
@@ -2400,12 +2409,20 @@ function MessagingScreen({
     }]
   })), /*#__PURE__*/React.createElement(_plenixPlatform.Chat.Thread, {
     label: 'Conversation with ' + thd.name
-  }, mList.map((m, i) => /*#__PURE__*/React.createElement(_plenixPlatform.Chat.Message, {
+  }, /*#__PURE__*/React.createElement(_plenixPlatform.Chat.Divider, null, "Today"), runsOf(mList).map((run, r) => /*#__PURE__*/React.createElement(_plenixPlatform.Chat.Group, {
+    key: r,
+    mine: run[0].mine,
+    author: run[0].mine ? undefined : thd.name,
+    avatar: /*#__PURE__*/React.createElement(_plenixPlatform.Avatar, {
+      name: run[0].mine ? account.name : thd.name,
+      src: run[0].mine ? account.src : undefined,
+      size: "sm"
+    })
+  }, run.map((m, i) => /*#__PURE__*/React.createElement(_plenixPlatform.Chat.Message, {
     key: i,
-    mine: m.mine,
-    author: m.mine ? undefined : thd.name,
-    time: m.time
-  }, m.text))), /*#__PURE__*/React.createElement(_plenixPlatform.Chat.Composer, {
+    time: m.time,
+    status: m.mine ? m.sent ? 'sent' : 'read' : undefined
+  }, m.text))))), /*#__PURE__*/React.createElement(_plenixPlatform.Chat.Composer, {
     value: input,
     onChange: setInput,
     onSend: send,

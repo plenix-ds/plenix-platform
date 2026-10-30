@@ -4,13 +4,17 @@
    Medium open the first conversation when none is named; at Narrow one pane at a time (SecondaryPane detailOpen): the
    list first, a conversation with Back to the list. A reply being written is unsaved work: leaving asks. The list's
    scroll position is kept (plenix.messaging.view). */
-import { Avatar, Chat, Count, EmptyState, EntityHeader, Inline, RowButton, SecondaryPane, Stack, Tag, Text, useAppLayout, useUnsavedGuard, useViewState } from 'plenix-platform';
+import { Avatar, Chat, Count, EmptyState, EntityHeader, Inline, RowButton, SecondaryPane, Stack, Tag, Text, useAppLayout, useSession, useUnsavedGuard, useViewState } from 'plenix-platform';
 import { MSGS, THREADS } from '../suite/shared.jsx';
 const { useState } = React;
+
+// a run: the messages in a row from the same side, so one photo and one name stand for them (Chat.Group)
+const runsOf = (list) => list.reduce((runs, m) => { const last = runs[runs.length - 1]; if (last && last[0].mine === m.mine) last.push(m); else runs.push([m]); return runs; }, []);
 
 /* ─── Messaging ─────────────────────────────────────────────────── */
 export function MessagingScreen({ screen }) {
   const layout = useAppLayout();
+  const account = useSession().account;   // the person's own photo or initials on their messages
   const narrow = !!(layout && layout.narrow);
   const [view, updateView] = useViewState('messaging');
   const named = screen.parts[0] === 'thread' ? +screen.parts[1] : null;
@@ -22,7 +26,7 @@ export function MessagingScreen({ screen }) {
   const [msgs, setMsgs] = useState(MSGS);
   const thd = THREADS.find((t) => t.id === thread);
   const mList = msgs[thread] || [];
-  const send = (text) => { setMsgs((m) => ({ ...m, [thread]: [...(m[thread] || []), { from: 'me', text, time: 'Now', mine: true }] })); setInput(''); };
+  const send = (text) => { setMsgs((m) => ({ ...m, [thread]: [...(m[thread] || []), { from: 'me', text, time: 'Now', mine: true, sent: true }] })); setInput(''); };
   return (
     <div className="plx-page-panes">
       <SecondaryPane title="Messages" width="lg"
@@ -61,7 +65,12 @@ export function MessagingScreen({ screen }) {
                   { icon: 'snooze', label: 'Snooze' }, { icon: 'trash', label: 'Delete' }]} />
             </Stack>
             <Chat.Thread label={'Conversation with ' + thd.name}>
-              {mList.map((m, i) => <Chat.Message key={i} mine={m.mine} author={m.mine ? undefined : thd.name} time={m.time}>{m.text}</Chat.Message>)}
+              <Chat.Divider>Today</Chat.Divider>
+              {runsOf(mList).map((run, r) => (
+                <Chat.Group key={r} mine={run[0].mine} author={run[0].mine ? undefined : thd.name} avatar={<Avatar name={run[0].mine ? account.name : thd.name} src={run[0].mine ? account.src : undefined} size="sm" />}>
+                  {run.map((m, i) => <Chat.Message key={i} time={m.time} status={m.mine ? (m.sent ? 'sent' : 'read') : undefined}>{m.text}</Chat.Message>)}
+                </Chat.Group>
+              ))}
             </Chat.Thread>
             <Chat.Composer value={input} onChange={setInput} onSend={send} placeholder="Reply…" label="Reply" emoji={false} />
           </>
