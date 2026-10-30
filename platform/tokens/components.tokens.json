@@ -4845,18 +4845,6 @@
       "$value": "{plx-sys.font-data}",
       "$type": "fontFamily"
     },
-    "chat-composer-border-block-start-color": {
-      "$value": "{plx-sys.border-divider}",
-      "$type": "color"
-    },
-    "chat-composer-border-block-start-width": {
-      "$value": "{plx-sys.border-width-thin}",
-      "$type": "dimension"
-    },
-    "chat-composer-gap": {
-      "$value": "{plx-sys.space-inline-sm}",
-      "$type": "dimension"
-    },
     "chat-composer-padding-block": {
       "$value": "{plx-sys.space-inset-sm}",
       "$type": "dimension"
@@ -4864,6 +4852,134 @@
     "chat-composer-padding-inline": {
       "$value": "{plx-sys.space-inset-md}",
       "$type": "dimension"
+    },
+    "chat-composer-box-background": {
+      "$value": "{plx-sys.field-background}",
+      "$type": "color",
+      "$description": "Chat composer: the one outlined box that holds the text, the files and the tools (slice 3, #637)."
+    },
+    "chat-composer-box-border-color": {
+      "$value": "{plx-sys.field-border}",
+      "$type": "color"
+    },
+    "chat-composer-box-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension"
+    },
+    "chat-composer-box-focus-border-color": {
+      "$value": "{plx-sys.focus-ring-color}",
+      "$type": "color"
+    },
+    "chat-composer-box-radius": {
+      "$value": "{plx-sys.radius-control}",
+      "$type": "dimension"
+    },
+    "chat-composer-box-drop-background": {
+      "$value": "{plx-sys.state-selected}",
+      "$type": "color",
+      "$description": "Chat composer: the box while a file is dragged over it."
+    },
+    "chat-composer-box-drop-border-color": {
+      "$value": "{plx-sys.state-selected-border}",
+      "$type": "color"
+    },
+    "chat-composer-tools-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension",
+      "$description": "Chat composer: the row of tools under the text (attach, image, emoji, microphone, send)."
+    },
+    "chat-composer-tools-padding-block": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension"
+    },
+    "chat-composer-tools-padding-inline": {
+      "$value": "{plx-sys.space-inset-xs}",
+      "$type": "dimension"
+    },
+    "chat-composer-strip-gap": {
+      "$value": "{plx-sys.space-stack-sm}",
+      "$type": "dimension",
+      "$description": "Chat composer: the files waiting to be sent."
+    },
+    "chat-composer-strip-padding": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension"
+    },
+    "chat-attachment-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "Chat composer: one file waiting to be sent (the card standard: 1px border, the card radius)."
+    },
+    "chat-attachment-padding": {
+      "$value": "{plx-sys.space-inset-sm}",
+      "$type": "dimension"
+    },
+    "chat-attachment-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension"
+    },
+    "chat-attachment-border-color": {
+      "$value": "{plx-sys.border-default}",
+      "$type": "color"
+    },
+    "chat-attachment-radius": {
+      "$value": "{plx-sys.radius-card-6px}",
+      "$type": "dimension"
+    },
+    "chat-attachment-background": {
+      "$value": "{plx-sys.surface-default}",
+      "$type": "color"
+    },
+    "chat-attachment-thumb-size": {
+      "$value": "{plx-ref.size-40px}",
+      "$type": "dimension"
+    },
+    "chat-attachment-thumb-radius": {
+      "$value": "{plx-sys.radius-avatar-6px}",
+      "$type": "dimension"
+    },
+    "chat-attachment-thumb-background": {
+      "$value": "{plx-sys.state-selected}",
+      "$type": "color"
+    },
+    "chat-attachment-meta-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension"
+    },
+    "chat-attachment-progress-width": {
+      "$value": "{plx-ref.size-160px}",
+      "$type": "dimension"
+    },
+    "chat-voice-dot-size": {
+      "$value": "{plx-ref.size-8px}",
+      "$type": "dimension",
+      "$description": "Chat composer: while dictating, the red dot beside \"Listening…\" and the ring around the microphone."
+    },
+    "chat-voice-dot-background": {
+      "$value": "{plx-sys.action-danger-background}",
+      "$type": "color"
+    },
+    "chat-voice-ring-width": {
+      "$value": "{plx-sys.border-width-medium}",
+      "$type": "dimension"
+    },
+    "chat-voice-ring-color": {
+      "$value": "{plx-sys.action-danger-background}",
+      "$type": "color"
+    },
+    "chat-voice-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension"
+    },
+    "chat-panel-padding": {
+      "$value": "{plx-sys.space-inset-md}",
+      "$type": "dimension",
+      "$description": "Chat composer: the placeholder panel the emoji button opens."
+    },
+    "chat-field-min-height-narrow": {
+      "$value": "{plx-ref.size-40px}",
+      "$type": "dimension",
+      "$description": "Chat composer: the text area's height at a phone width (one line); at larger widths it starts at two."
     },
     "chat-thread-focus-outline-color": {
       "$value": "{plx-sys.focus-ring-color}",
