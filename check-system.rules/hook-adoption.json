@@ -62,7 +62,8 @@
     "platform/charts/Gauge.jsx",
     "platform/patterns/RecordPage/RecordPage.jsx",
     "platform/patterns/ActivityList/ActivityList.jsx",
-    "platform/components/DataGrid/DataGridEngine.jsx"
+    "platform/components/DataGrid/DataGridEngine.jsx",
+    "platform/patterns/SettingsLayout/SettingsLayout.jsx"
   ],
   "useGesture": [
     "platform/components/Sheet/Sheet.jsx",
