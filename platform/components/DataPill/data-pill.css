@@ -14,7 +14,7 @@
 .plx-data-pill--solid{background-color:var(--plx-comp-data-color);border-bottom-color:var(--plx-comp-data-color);border-left-color:var(--plx-comp-data-color);border-right-color:var(--plx-comp-data-color);border-top-color:var(--plx-comp-data-color);color:var(--plx-comp-data-color-on-soft);}
 .plx-data-pill--plain{background-color:transparent;border-bottom-color:transparent;border-left-color:transparent;border-right-color:transparent;border-top-color:transparent;color:var(--plx-comp-category-on-soft);font-weight:inherit;min-block-size:0;padding-inline-end:0;padding-inline-start:0;}
 .plx-data-pill--plain:not([data-plx-category]){color:inherit;}
-/* size md: 24px tall, 6px before the icon and 10px after the value, at every density (owner, 2026-10-22; DataGrid's pills) */
+/* size md: 24px tall, 4px before the icon or the value and 4px after it, as above and below the text, at every density (owner, 2026-10-22 and 2026-10-29; DataGrid's pills) */
 .plx-data-pill--md{min-block-size:var(--plx-comp-data-pill-md-height);padding-inline-end:var(--plx-comp-data-pill-md-padding-inline-end);padding-inline-start:var(--plx-comp-data-pill-md-padding-inline-start);}
 .plx-data-pill--data{font-family:var(--plx-comp-data-pill-data-font-family);word-spacing:var(--plx-sys-font-data-word-spacing);}
 .plx-data-pill--fill{display:flex;inline-size:100%;}

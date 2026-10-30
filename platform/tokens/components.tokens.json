@@ -506,7 +506,7 @@
       "$type": "color"
     },
     "button-selected-background": {
-      "$value": "{plx-ref.color-gray-200}",
+      "$value": "{plx-sys.fill-neutral-hover}",
       "$type": "color",
       "$extensions": {
         "com.plenix": {
