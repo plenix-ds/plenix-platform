@@ -1,2 +1,0 @@
-### Fixed
-- A button's label is centered by its capital letters (#610). The label box is trimmed to the letters (`text-box: trim-both cap alphabetic`), clipped with room for descenders (`overflow: clip` with a 4px clip margin, the new `--plx-comp-button-label-clip-margin`), so the capitals sit within half a pixel of the button's middle at 32px and at 28px; before, they sat about 1.1px high at 28px. Browsers without `text-box` ignore it and keep the old position.

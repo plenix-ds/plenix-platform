@@ -1,2 +1,0 @@
-### Added
-- ListingPage is the starter for a full-room list (#522): a `toolbar` above the grid, `grid` for more DataGrid props (selection, row clicks, row menus), and `detail` (with `detailTitle` and `onDetailClose`) for the chosen record in a SidePanel beside the list. The grid fills the room left below the toolbar and scrolls inside, with no page controls. The grid is now named after the page title (or `label`). Existing ListingPage pages look the same.

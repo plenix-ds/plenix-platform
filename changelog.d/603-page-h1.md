@@ -1,2 +1,0 @@
-### Fixed
-- Every suite page has exactly one level-1 heading (#603). The dashboard, and the Projects, Contacts and Notes lists before an item is chosen (and a project's coming-soon panels), had none, so a screen reader had no page title to jump to. Each now has a visually hidden `h1` naming the page ("Dashboard", "Projects", "Contacts", "Notes", or the panel's name); with an item open, the item's own title stays the `h1`. Nothing looks different: the heading uses the standard visually hidden class and the layout is unchanged.

@@ -1,3 +1,0 @@
-### Fixed
-- A selected button (a toggle that is on) is readable in the dark theme (#645). Its fill was the palette color gray-200, which does not change with the theme, while its text and icon turn light in dark, so in dark the button showed light text on a light fill (contrast 1.0). `--plx-comp-button-selected-background` now takes the themed role `--plx-sys-fill-neutral-hover` (gray-200 in light, gray-700 in dark): light is unchanged (contrast 9.96) and dark reads at 5.86 for text and icon, in all four variants.
-- The DataPill stylesheet's comment on the md size now says 4px before and 4px after, matching the rule below it (#649).

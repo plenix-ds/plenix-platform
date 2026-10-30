@@ -1,3 +1,0 @@
-### Changed
-- Five hand-made screen-reader regions are now the system's `LiveRegion` (#262, PR 7): the reorder message of `WidgetGrid`, the copy message of `CodeBlock`, the size-limit message of `Resizable`, and the messages of `ColumnsMenu` and the Sort and Filter panels (reorder). Nothing changes for a person: each says the same text at the same time, as a polite status. The region now carries `aria-live="polite"` and `aria-atomic="true"` explicitly, which a status role already implied.
-- `check-system`'s `hook-adoption` list gains `LiveRegion` for these five, so none can go back to a bare hidden element. The rule now also accepts a component drawn as `<LiveRegion>` as its use.

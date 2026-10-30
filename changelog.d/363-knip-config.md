@@ -1,2 +1,0 @@
-### Changed
-- Knip's report is cleaner (#363, PR 1): `postcss` is a listed dev dependency (`check-bundle.js` uses it), the page-loaded files (each app's icon file, the engines script and the icon uses file) are Knip entries, and `paper` and `paperjs-offset` (installed for the icon tools with `npm install --prefix tools/icons`) are ignored by the root check. Unused files go from 22 to 9, and unlisted dependencies from 3 to 0. Nothing changes for users: no code, only the Knip setup and the dev dependency (the lock file's own version line moves to 0.75.0 with it).

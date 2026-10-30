@@ -1,2 +1,0 @@
-### Changed
-- Knip's report lists no unused file now (#363, PR 2). The nine it listed are not dead: `services/auth/npm-advanced-config.mjs` is a runbook step (`services/login/README.md`), `tests/ci197-*.cjs` and `tests/lane-198-proof/**/*.cjs` are proof tools their READMEs tell people to run, and `vote-kit/` is the open-source vote kit, a package of its own. They are marked in `knip.jsonc` with the reason, and nothing was deleted. No code changes; nothing changes for users.

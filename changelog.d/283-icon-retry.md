@@ -1,2 +1,0 @@
-### Changed
-- An icon file that fails to load is asked for once more (#283). Before, one network failure or server error (5xx) left an icon that Plenix loads at run time empty until the page reloaded. Now the file is requested again after a quarter of a second; a file that is not there (404), too large or not a drawing is still answered once, and two failures draw nothing (never a square). Icons that are imported or registered are not affected. The optional sprite from the issue is not built.

@@ -1,2 +1,0 @@
-### Changed
-- Asset Manager source: 29 exports nothing imports are no longer exported, and 7 unused sample values are removed (#363, PR 3): the dialog functions of `BulkDialogs`, `BrowseDialogs`, `MetadataFilterDialog` and `UploadDialog` (each is still used inside its file), `AssetShell`'s header and status bar, the unused `isSingleOnly`, `METADATA_FIELD_KEYS`, `CATEGORY_COUNT_LABEL`, `SEARCH_QUERY`, `SEARCH_COUNT`, `SORT_OPTIONS` and `ROLES`. Checked by grep across the pages, tests, docs and scripts first. `dam/app/assets.js` is rebuilt. Nothing changes for users.
