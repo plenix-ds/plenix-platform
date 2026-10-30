@@ -1058,6 +1058,7 @@
   --plx-comp-chat-message-mine-bubble-border-color: var(--plx-sys-message-outgoing-border);
   --plx-comp-chat-message-mine-bubble-text: var(--plx-sys-message-text);
   --plx-comp-chat-time-text: var(--plx-sys-content-muted);
+  --plx-comp-chat-time-font-family: var(--plx-sys-font-data);
   --plx-comp-chat-footer-font-size: var(--plx-ref-font-size-10);
   --plx-comp-chat-footer-gap: var(--plx-sys-space-inline-xs);
   --plx-comp-chat-status-read-icon: var(--plx-sys-message-read);
