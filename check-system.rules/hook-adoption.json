@@ -56,7 +56,8 @@
   "dataWhenText": [
     "platform/components/Banner/Banner.jsx",
     "platform/components/Field/Field.jsx",
-    "platform/components/Checkbox/Checkbox.jsx"
+    "platform/components/Checkbox/Checkbox.jsx",
+    "platform/patterns/SettingsLayout/SettingsLayout.jsx"
   ],
   "useGesture": [
     "platform/components/Sheet/Sheet.jsx",

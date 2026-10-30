@@ -52,6 +52,7 @@
 import React from 'react';
 import { useAppLayout } from '../AppShell/AppShell.jsx';
 import { cx } from '../../utils/cx.js';
+import { dataWhenText } from '../../utils/dataText.jsx';
 import { useUid } from '../../utils/layer.js';
 import { useViewState, readView } from '../../providers/ScreenLocation.js';
 import { Icon } from '../../components/Icon/Icon.jsx';
@@ -125,7 +126,7 @@ export function SettingsSection({ title, description, collapsible = false, defau
               ) : <span id={id}>{title}</span>}
             </H>
           ) : null}
-          {description ? <p id={descId} className="plx-settings__section-description">{description}</p> : null}
+          {description ? <p id={descId} className="plx-settings__section-description">{dataWhenText(description)}</p> : null}
         </div>
       ) : null}
       <div id={id + '-body'} hidden={!open} className="plx-settings__section-body">
@@ -141,7 +142,7 @@ export function SettingsRow({ label, description, htmlFor, className, children }
     <div className={cx('plx-settings__row', className)}>
       <div className="plx-settings__row-text">
         {htmlFor ? <label htmlFor={htmlFor} className="plx-settings__row-label">{label}</label> : <div className="plx-settings__row-label">{label}</div>}
-        {description ? <div className="plx-settings__row-description">{description}</div> : null}
+        {description ? <div className="plx-settings__row-description">{dataWhenText(description)}</div> : null}
       </div>
       <div className="plx-settings__row-control">{children}</div>
     </div>

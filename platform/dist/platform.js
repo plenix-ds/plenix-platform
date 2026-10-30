@@ -48675,7 +48675,7 @@ function NavPane({
   }), pane) : pane;
 }
   } },
-  "platform/patterns/SettingsLayout/SettingsLayout.jsx": { deps: {"react":null,"../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","../ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/patterns/SettingsLayout/SettingsLayout.jsx": { deps: {"react":null,"../AppShell/AppShell.jsx":"platform/patterns/AppShell/AppShell.jsx","../../utils/cx.js":"platform/utils/cx.js","../../utils/dataText.jsx":"platform/utils/dataText.jsx","../../utils/layer.js":"platform/utils/layer.js","../../providers/ScreenLocation.js":"platform/providers/ScreenLocation.js","../../components/Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../NavPane/NavPane.jsx":"platform/patterns/NavPane/NavPane.jsx","../ActionBar/ActionBar.jsx":"platform/patterns/ActionBar/ActionBar.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/chevron-down":"platform/dist/icons/plenix/chevron-down.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -48687,6 +48687,7 @@ exports.SettingsSection = SettingsSection;
 var _react = _interopRequireDefault(require("react"));
 var _AppShell = require("../AppShell/AppShell.jsx");
 var _cx = require("../../utils/cx.js");
+var _dataText = require("../../utils/dataText.jsx");
 var _layer = require("../../utils/layer.js");
 var _ScreenLocation = require("../../providers/ScreenLocation.js");
 var _Icon = require("../../components/Icon/Icon.jsx");
@@ -48845,7 +48846,7 @@ function SettingsSection({
   }, title)) : null, description ? /*#__PURE__*/_react.default.createElement("p", {
     id: descId,
     className: "plx-settings__section-description"
-  }, description) : null) : null, /*#__PURE__*/_react.default.createElement("div", {
+  }, (0, _dataText.dataWhenText)(description)) : null) : null, /*#__PURE__*/_react.default.createElement("div", {
     id: id + '-body',
     hidden: !open,
     className: "plx-settings__section-body"
@@ -48873,7 +48874,7 @@ function SettingsRow({
     className: "plx-settings__row-label"
   }, label), description ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-settings__row-description"
-  }, description) : null), /*#__PURE__*/_react.default.createElement("div", {
+  }, (0, _dataText.dataWhenText)(description)) : null), /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-settings__row-control"
   }, children));
 }

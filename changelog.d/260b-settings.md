@@ -1,0 +1,2 @@
+### Fixed
+- A count in a SettingsSection's or a SettingsRow's description is in the data font, its words in the normal font (#260, the owner, 2026-10-30): "up to 3 lines" has the 3 in Reddit Mono, in the phrase's own size, and Arabic-Indic digits keep working. A string goes through `dataWhenText`; an element given instead is drawn as it was given. The Settings layout is listed under `dataWhenText` in `check-system.rules/hook-adoption.json`. Third of three PRs (the first is the feedback parts; the second the data parts).
