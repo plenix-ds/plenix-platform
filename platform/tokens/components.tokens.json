@@ -359,8 +359,14 @@
       "$type": "color"
     },
     "button-primary-border": {
-      "$value": "{plx-sys.action-primary-background}",
-      "$type": "color"
+      "$value": "{plx-sys.action-primary-background-hover}",
+      "$type": "color",
+      "$description": "Primary at rest: the border takes its glow's rim (the hover shade) so the outermost line is the darkest and the Halo reads as lift (the owner's pick G-R4-H, #610)."
+    },
+    "button-primary-border-end": {
+      "$value": "{plx-sys.action-primary-background-pressed}",
+      "$type": "color",
+      "$description": "Primary at rest: the bottom edge, one shade deeper than its border (#610)."
     },
     "button-primary-text": {
       "$value": "{plx-sys.action-primary-content}",
@@ -371,8 +377,9 @@
       "$type": "color"
     },
     "button-primary-hover-border": {
-      "$value": "{plx-sys.action-primary-background-hover}",
-      "$type": "color"
+      "$value": "{plx-sys.action-primary-background-pressed}",
+      "$type": "color",
+      "$description": "Primary hovered: the border one shade deeper, the hover glow's rim (#610)."
     },
     "button-primary-hover-text": {
       "$value": "{plx-sys.action-primary-content}",
@@ -387,35 +394,38 @@
       "$type": "color"
     },
     "button-tertiary-background": {
-      "$value": "transparent",
-      "$type": "color"
+      "$value": "{plx-sys.control-background}",
+      "$type": "color",
+      "$description": "Tertiary at rest: the control fill under its glow, outlined and written in the action color (#610)."
     },
     "button-tertiary-border": {
       "$value": "{plx-sys.action-primary-background}",
       "$type": "color"
     },
     "button-tertiary-text": {
-      "$value": "{plx-sys.action-primary-background}",
-      "$type": "color"
+      "$value": "{plx-sys.content-link}",
+      "$type": "color",
+      "$description": "Tertiary's words: the link blue (blue-600; dark blue-200), 4.5:1 or more on every raised fill it sits on (white, gray-200, gray-250; dark gray-800, gray-700, gray-900); the action blue fell to 3.5:1 on the gray hover (#610)."
     },
     "button-tertiary-hover-background": {
-      "$value": "{plx-sys.action-primary-background}",
-      "$type": "color"
+      "$value": "{plx-sys.fill-neutral-hover}",
+      "$type": "color",
+      "$description": "Tertiary hovered: the raised gray hover fill (as secondary), still outlined and written in the action color (#610)."
     },
     "button-tertiary-hover-border": {
       "$value": "{plx-sys.action-primary-background}",
       "$type": "color"
     },
     "button-tertiary-hover-text": {
-      "$value": "{plx-sys.action-primary-content}",
+      "$value": "{plx-sys.content-link}",
       "$type": "color"
     },
     "button-tertiary-pressed-background": {
-      "$value": "{plx-sys.action-primary-background-pressed}",
+      "$value": "{plx-sys.control-raised-pressed}",
       "$type": "color"
     },
     "button-tertiary-pressed-border": {
-      "$value": "{plx-sys.action-primary-background-pressed}",
+      "$value": "{plx-sys.action-primary-background}",
       "$type": "color"
     },
     "button-ghost-background": {
@@ -448,8 +458,14 @@
       "$type": "color"
     },
     "button-danger-border": {
-      "$value": "{plx-sys.action-danger-background}",
-      "$type": "color"
+      "$value": "{plx-sys.action-danger-background-hover}",
+      "$type": "color",
+      "$description": "Danger at rest: the border takes its glow's rim (red-800), as primary (#610)."
+    },
+    "button-danger-border-end": {
+      "$value": "{plx-sys.action-danger-background-pressed}",
+      "$type": "color",
+      "$description": "Danger at rest: the bottom edge one shade deeper (red-900) (#610)."
     },
     "button-danger-text": {
       "$value": "{plx-sys.action-danger-content}",
@@ -460,8 +476,9 @@
       "$type": "color"
     },
     "button-danger-hover-border": {
-      "$value": "{plx-sys.action-danger-background-hover}",
-      "$type": "color"
+      "$value": "{plx-sys.action-danger-background-pressed}",
+      "$type": "color",
+      "$description": "Danger hovered: the border one shade deeper (red-900) (#610)."
     },
     "button-danger-hover-text": {
       "$value": "{plx-sys.action-danger-content}",
@@ -474,6 +491,56 @@
     "button-danger-pressed-border": {
       "$value": "{plx-sys.action-danger-background-pressed}",
       "$type": "color"
+    },
+    "button-raised-rest-shadow": {
+      "$value": "{plx-sys.shadow-halo}",
+      "$type": "shadow",
+      "$description": "An action button at rest (secondary, tertiary, primary, danger): the Card builder's Halo (the owner's pick G-R4-H, #610). Pressed and disabled are flat; ghost and bar buttons stay flat."
+    },
+    "button-raised-hover-shadow": {
+      "$value": "{plx-sys.shadow-lifted}",
+      "$type": "shadow",
+      "$description": "An action button hovered: one step up, the Card builder's Lifted (#610)."
+    },
+    "button-secondary-glow-image": {
+      "$value": "radial-gradient(ellipse at center, {plx-sys.control-background} 55%, {plx-sys.card-surface-rim} 100%)",
+      "$type": "string",
+      "$description": "Secondary and tertiary at rest: the Card builder's Glow, the control fill to 55% fading to the card rim (#610)."
+    },
+    "button-secondary-hover-glow-image": {
+      "$value": "radial-gradient(ellipse at center, {plx-sys.fill-neutral-hover} 55%, {plx-sys.control-raised-hover-rim} 100%)",
+      "$type": "string",
+      "$description": "Secondary and tertiary hovered: the Glow on the hover fill (#610)."
+    },
+    "button-secondary-raised-hover-background": {
+      "$value": "{plx-sys.fill-neutral-hover}",
+      "$type": "color",
+      "$description": "Secondary hovered, under its glow (gray-200; dark gray-700) (#610). The 2xs size keeps its own tinted hover, flat."
+    },
+    "button-secondary-raised-pressed-background": {
+      "$value": "{plx-sys.control-raised-pressed}",
+      "$type": "color",
+      "$description": "Secondary pressed: flat, one step past hover (gray-250; dark gray-900) (#610)."
+    },
+    "button-primary-glow-image": {
+      "$value": "radial-gradient(ellipse at center, {plx-sys.action-primary-background} 55%, {plx-sys.action-primary-background-hover} 100%)",
+      "$type": "string",
+      "$description": "Primary at rest: the Glow, fading to its own next shade (#610)."
+    },
+    "button-primary-hover-glow-image": {
+      "$value": "radial-gradient(ellipse at center, {plx-sys.action-primary-background-hover} 55%, {plx-sys.action-primary-background-pressed} 100%)",
+      "$type": "string",
+      "$description": "Primary hovered: the Glow on the hover fill (#610)."
+    },
+    "button-danger-glow-image": {
+      "$value": "radial-gradient(ellipse at center, {plx-sys.action-danger-background} 55%, {plx-sys.action-danger-background-hover} 100%)",
+      "$type": "string",
+      "$description": "Danger at rest: the Glow, fading to its own next shade (#610)."
+    },
+    "button-danger-hover-glow-image": {
+      "$value": "radial-gradient(ellipse at center, {plx-sys.action-danger-background-hover} 55%, {plx-sys.action-danger-background-pressed} 100%)",
+      "$type": "string",
+      "$description": "Danger hovered: the Glow on the hover fill (red-800 to red-900) (#610)."
     },
     "button-danger-secondary-border": {
       "$value": "{plx-sys.feedback-danger-solid}",
