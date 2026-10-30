@@ -68,6 +68,9 @@
   --plx-sys-state-pressed: var(--plx-ref-color-gray-200);
   --plx-sys-scrollbar-thumb: var(--plx-ref-color-gray-300);
   --plx-sys-state-hover-border: var(--plx-ref-color-gray-300);
+  --plx-sys-message-incoming-background: var(--plx-ref-color-gray-75);
+  --plx-sys-message-outgoing-background: var(--plx-ref-color-blue-125);
+  --plx-sys-message-text: var(--plx-ref-color-slate-900);
   --plx-sys-content-default: var(--plx-ref-color-gray-900);
   --plx-sys-content-inverse: var(--plx-ref-color-white);
   --plx-sys-content-link: var(--plx-ref-color-blue-600);
@@ -388,6 +391,8 @@
     --plx-sys-state-selected: var(--plx-ref-color-blue-100);
     --plx-sys-state-selected-pressed: var(--plx-ref-color-blue-200);
     --plx-sys-state-selected-border: var(--plx-ref-color-blue-250);
+    --plx-sys-message-incoming-border: var(--plx-ref-color-slate-375);
+    --plx-sys-message-outgoing-border: var(--plx-ref-color-blue-275);
     --plx-sys-content-disabled: var(--plx-ref-color-gray-500);
     --plx-sys-focus-ring-color: var(--plx-ref-color-blue-400);
     --plx-sys-selected-border: var(--plx-ref-color-blue-200);
@@ -403,6 +408,8 @@
     --plx-sys-state-selected: Highlight;
     --plx-sys-state-selected-pressed: Highlight;
     --plx-sys-state-selected-border: Highlight;
+    --plx-sys-message-incoming-border: CanvasText;
+    --plx-sys-message-outgoing-border: CanvasText;
     --plx-sys-content-disabled: GrayText;
     --plx-sys-focus-ring-color: Highlight;
     --plx-sys-selected-border: Highlight;
@@ -447,6 +454,9 @@
   --plx-sys-state-pressed: var(--plx-ref-color-gray-600);
   --plx-sys-scrollbar-thumb: var(--plx-ref-color-gray-600);
   --plx-sys-state-hover-border: var(--plx-ref-color-gray-500);
+  --plx-sys-message-incoming-background: var(--plx-ref-color-gray-900);
+  --plx-sys-message-outgoing-background: var(--plx-ref-color-blue-900);
+  --plx-sys-message-text: var(--plx-ref-color-gray-200);
   --plx-sys-content-default: var(--plx-ref-color-gray-200);
   --plx-sys-content-inverse: var(--plx-ref-color-black);
   --plx-sys-content-link: var(--plx-ref-color-blue-200);
@@ -766,6 +776,8 @@
     --plx-sys-state-selected: var(--plx-ref-color-gray-700);
     --plx-sys-state-selected-pressed: var(--plx-ref-color-gray-600);
     --plx-sys-state-selected-border: var(--plx-ref-color-gray-500);
+    --plx-sys-message-incoming-border: var(--plx-ref-color-gray-700);
+    --plx-sys-message-outgoing-border: var(--plx-ref-color-blue-650);
     --plx-sys-content-disabled: var(--plx-ref-color-gray-700);
     --plx-sys-focus-ring-color: var(--plx-ref-color-blue-300);
     --plx-sys-selected-border: var(--plx-ref-color-blue-400);
@@ -781,6 +793,8 @@
     --plx-sys-state-selected: Highlight;
     --plx-sys-state-selected-pressed: Highlight;
     --plx-sys-state-selected-border: Highlight;
+    --plx-sys-message-incoming-border: CanvasText;
+    --plx-sys-message-outgoing-border: CanvasText;
     --plx-sys-content-disabled: GrayText;
     --plx-sys-focus-ring-color: Highlight;
     --plx-sys-selected-border: Highlight;

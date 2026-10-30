@@ -46,7 +46,7 @@ window.DSDocs = {
  "color": {
   "purpose": "Color separates surfaces, shows what can be acted on and signals status, from one palette that every page shares. Roles keep that meaning stable in light and dark mode.",
   "anatomy": [
-   "Palette — every color defined once, --plx-ref-color-{family}-{shade} (gray, blue, red, brown, green, yellow, orange, purple, black, white), and the 20 category colors with their 100, 300 and 700 soft shades (required)",
+   "Palette — every color defined once, --plx-ref-color-{family}-{shade} (gray, slate, blue, red, pink, magenta, brown, orange, yellow, green, teal, cyan, purple, black, white), and the 20 category colors with their 100, 300 and 700 soft shades (required). A shade's number places it by lightness between its neighbors: the owner's chat colors (issue 637) added blue 125 and blue 275, and the slate family (375, 900), a blue-gray between gray and blue",
    "Surface roles — canvas, default, raised, overlay, sunken, inverse (required)",
    "Content roles — default, muted, subtle, disabled, inverse, link (required)",
    "Border roles — default, subtle, strong (required)",
