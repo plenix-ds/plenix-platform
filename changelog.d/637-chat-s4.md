@@ -1,0 +1,12 @@
+### Added
+- Chat message actions (#637 slice 4; the owner's go, built as drawn):
+  - Chat.Message takes `onReact`, `onReply`, `onQuote`, `onCopy` (default: copies the text), `onForward`, and on your own messages `onEdit` and `onDelete`.
+  - Any of them gives the message an action bar beside the bubble, in the free space so it never covers text: React, Reply and More, all bordered buttons.
+  - More opens the menu: Reply, Quote, Copy text, Forward, then Edit and Delete (red) on your own messages.
+  - The bar shows on hover, on a long press and on keyboard focus (a Tab into it reveals it). It is mirrored in right to left.
+- Reactions: `reactions` ([{ emoji, count, mine }]) draws pills under the text, with yours outlined in the action color, then Add reaction.
+  - React opens 👍 ❤️ 😂 😮 😢 🙏 and More reactions (a placeholder until the emoji picker, #646).
+  - Each pill is named ("Thumbs up: 2") and says whether you reacted (aria-pressed).
+- `quote` ({ author, text }) shows a quoted or replied-to message inside the bubble. Chat.Composer's `replyTo` and `onCancelReply` show "Replying to <name>" above the text, with Cancel.
+- `edited` shows "· Edited" in the footer. `deleted` shows "This message was deleted", muted, with no actions, reactions or quote.
+- Chat strings in English and Arabic for the actions, reactions and their names, Replying to, Edited and deleted.

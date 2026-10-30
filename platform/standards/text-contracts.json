@@ -553,6 +553,24 @@
     "line-height"
    ]
   },
+  "plx-chat__quote": {
+   "contract": "adjusts",
+   "props": [
+    "font-size"
+   ]
+  },
+  "plx-chat__quote-author": {
+   "contract": "adjusts",
+   "props": [
+    "font-weight"
+   ]
+  },
+  "plx-chat__reaction": {
+   "contract": "adjusts",
+   "props": [
+    "font-size"
+   ]
+  },
   "plx-chat__time": {
    "contract": "follows",
    "font": "mono"

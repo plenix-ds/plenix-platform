@@ -38,6 +38,14 @@
        from the end edge for yours (the owner's mockup, issue 637), half above the bubble; it takes its bubble's fill, text
        color and outline. Leave it out on the following messages of a run from the same sender
      Chat.Message.children: the message text or content
+     Chat.Message actions (issue 637 slice 4): onReact(emoji), onReply(), onQuote(), onCopy() (default: copies the message's text), onForward(), and on your own
+       messages onEdit() and onDelete(). Any of them gives the message an action bar beside the bubble: React (the quick reactions), Reply and More (a menu:
+       Reply, Quote, Copy text, Forward, then Edit and Delete in red on your own messages)
+     Chat.Message.reactions: [{ emoji, count, mine, label }]: pills under the text (the emoji and its count; yours outlined in the action color, aria-pressed),
+       then an Add reaction button; a pill toggles through onReact(emoji). label names an emoji outside the six quick ones
+     Chat.Message.quote: { author, text }: a quoted or replied-to message inside the bubble (a bar, the author, one line)
+     Chat.Message.edited: "· Edited" in the footer; deleted: "This message was deleted", muted, with no actions, reactions or quote
+     Chat.Message.strings: the words, for other languages
      Chat.Attachments: the pictures and files of one message, in a row (two or more pictures) or a column; its pictures open together in one MediaViewer
      Chat.Attachment.type: "image" (default) | "file"; src: the picture's URL (a file's download URL); name: its file name; alt: the picture's description (default the name);
        size: bytes, shown on a file card and in the viewer; href: a file's download link (default src); onDownload(): runs on Download (instead of the link)
@@ -58,6 +66,7 @@
      Chat.Composer.accept: the file types Attach offers (default any); imageAccept: the types Image offers (default image/*)
      Chat.Composer.emoji: true (default: an Emoji button opens a panel; today a placeholder that says the picker is coming) | false (no button) | a function (insert) => node that draws the app's own picker and calls insert(text)
      Chat.Composer.voice: true (default: a microphone dictates into the box, only where the browser has speech recognition; a disabled record control beside it, with the tooltip "Voice messages coming soon", is a placeholder until recording is built, issue 654) | false (neither)
+     Chat.Composer.replyTo: { author, text }: the "Replying to <name>" line above the text, with the message's first line; onCancelReply(): its Cancel button
      Chat.Composer.lang: the dictation language (default the page's: ar-EG for Arabic, en-US for English)
      Chat.Composer.strings: the words, for other languages
      Chat.Composer.placeholder: default "Write a message"; label: the field's accessible name (default "Message")
@@ -83,6 +92,11 @@
        and a Stop button show with a red dot and a ring round the microphone; Stop, the microphone again, Send, typing in the box or the browser ending it
        stops it, and typing keeps the text exactly as typed. The microphone is looked for when the composer is drawn, so a browser that gains speech
        recognition shows it with no change. A blocked microphone says so. "Listening…" and a microphone problem are announced once each (announce()).
+     The action bar sits beside the bubble in the free space (theirs at its end side, yours at its start side; mirrored in right to left) and never
+       covers text. It shows on hover, on a long press (500ms) and on keyboard focus: it stays in the Tab order as a visually hidden group, so a Tab into
+       it reveals it (as a skip link), and it stays while focus is in its menu or reaction panel. React opens six quick reactions (Thumbs up, Heart,
+       Laughing, Surprised, Sad, Thank you) and More reactions (a placeholder until the emoji picker, issue 646). Each reaction pill is named for assistive
+       technology ("Thumbs up: 2") and says whether you reacted (aria-pressed).
      Chat.Typing is a status region (role="status"), so its label is announced.
      The dots pulse one after another; people who ask their system for less motion see them still.
    Notes:
@@ -109,6 +123,8 @@ import { Attachment, Attachments, Voice, FileIcon, fill } from './ChatMedia.jsx'
 import { ProgressBar } from '../ProgressBar/ProgressBar.jsx';
 import { announce } from '../../utils/announce.jsx';
 import { formatBytes } from '../../utils/format.js';
+import { copyText } from '../../utils/clipboard.js';
+import { MessageActions, Reactions, Quote, ReplyPreview } from './ChatActions.jsx';
 import SparkleIcon from 'plenix-platform/icons/plenix/sparkle';
 import ClockIcon from 'plenix-platform/icons/plenix/clock';
 import DoneIcon from 'plenix-platform/icons/material/done';
@@ -167,32 +183,54 @@ function Thread({ label, follow = true, className, children, ...rest }) {
 // for assistive technology only when no visible word already says the state
 const STATUS_ICON = { sending: ClockIcon, sent: DoneIcon, delivered: DoneAllIcon, read: DoneAllIcon };
 
-function Footer({ status, time, dateTime, readTime, readDateTime, t }) {
+function Footer({ status, time, dateTime, readTime, readDateTime, edited, t }) {
   const sending = status === 'sending', read = status === 'read' && readTime;
   const said = sending || (status === 'sent' && time) || read;
   return (
     <div className="plx-chat__footer">
       {sending ? <span>{t.sending}</span> : time ? <span>{t.sent} <time className="plx-chat__time" dateTime={dateTime}>{time}</time></span> : null}
+      {edited ? <><span aria-hidden="true">·</span><span>{t.edited}</span></> : null}
       {read ? <><span aria-hidden="true">|</span><span>{t.read} <time className="plx-chat__time" dateTime={readDateTime}>{readTime}</time></span></> : null}
       {STATUS_ICON[status] ? <span className={cx('plx-chat__status', status === 'read' && 'plx-chat__status--read')}><Icon name={STATUS_ICON[status]} size="xs" label={said ? undefined : t[status]} /></span> : null}
     </div>
   );
 }
 
-function Message({ mine = false, author, time, dateTime, status, readTime, readDateTime, avatar, className, children, ...rest }) {
+function Message({ mine = false, author, time, dateTime, status, readTime, readDateTime, avatar, quote, reactions, edited = false, deleted = false,
+  onReact, onReply, onQuote, onCopy, onForward, onEdit, onDelete, strings, className, children, onMouseEnter, onMouseLeave, onFocus, onBlur, onPointerDown, onPointerUp, onPointerCancel, ...rest }) {
   devWarn('Chat.Message', { status }, { status: [undefined, 'sending', 'sent', 'delivered', 'read'] });
-  const t = useStrings('chat');
+  const t = useStrings('chat', strings);
+  const root = React.useRef(null), body = React.useRef(null), press = React.useRef(0);
+  // the action bar shows on hover, on keyboard focus inside the message (a Tab into the bar reveals it, as a skip link) and on a long press
+  const [shown, setShown] = React.useState(false);
+  React.useEffect(() => () => clearTimeout(press.current), []);
+  const hasActions = !deleted && !!(onReact || onReply || onQuote || onCopy || onForward || onEdit || onDelete);
+  const keep = () => !!root.current && root.current.contains(document.activeElement);
+  const copy = () => { if (onCopy) onCopy(); else if (body.current) copyText(body.current.innerText); };
+  const events = hasActions ? {
+    onMouseEnter: (e) => { setShown(true); if (onMouseEnter) onMouseEnter(e); },
+    onMouseLeave: (e) => { if (!keep()) setShown(false); if (onMouseLeave) onMouseLeave(e); },
+    onFocus: (e) => { setShown(true); if (onFocus) onFocus(e); },
+    onBlur: (e) => { if (!e.currentTarget.contains(e.relatedTarget)) setShown(false); if (onBlur) onBlur(e); },
+    onPointerDown: (e) => { if (e.pointerType === 'touch') { clearTimeout(press.current); press.current = setTimeout(() => setShown(true), LONG_PRESS); } if (onPointerDown) onPointerDown(e); },
+    onPointerUp: (e) => { clearTimeout(press.current); if (onPointerUp) onPointerUp(e); },
+    onPointerCancel: (e) => { clearTimeout(press.current); if (onPointerCancel) onPointerCancel(e); },
+  } : { onMouseEnter, onMouseLeave, onFocus, onBlur, onPointerDown, onPointerUp, onPointerCancel };
   return (
-    <div className={cx('plx-chat__message', mine && 'plx-chat__message--mine', avatar && 'plx-chat__message--avatar', className)} {...rest}>
+    <div ref={root} className={cx('plx-chat__message', mine && 'plx-chat__message--mine', avatar && 'plx-chat__message--avatar', className)} {...rest} {...events}>
       {avatar ? <span className={cx('plx-chat__avatar', mine && 'plx-chat__avatar--mine')}>{avatar}</span> : null}
       <div className={cx('plx-chat__bubble', mine && 'plx-chat__bubble--mine', avatar && 'plx-chat__bubble--avatar')}>
         {mine ? <VisuallyHidden>{t.you}</VisuallyHidden> : author ? <div className="plx-chat__meta"><span className="plx-chat__author">{author}</span></div> : null}
-        <div className="plx-chat__body">{children}</div>
-        {time || status ? <Footer status={status} time={time} dateTime={dateTime} readTime={readTime} readDateTime={readDateTime} t={t} /> : null}
+        {quote && !deleted ? <Quote author={quote.author} text={quote.text} /> : null}
+        <div ref={body} className="plx-chat__body">{deleted ? <span className="plx-chat__deleted">{t.deleted}</span> : children}</div>
+        {reactions && reactions.length && !deleted ? <Reactions reactions={reactions} mine={mine} onReact={onReact} t={t} /> : null}
+        {time || status || edited ? <Footer status={status} time={time} dateTime={dateTime} readTime={readTime} readDateTime={readDateTime} edited={edited && !deleted} t={t} /> : null}
       </div>
+      {hasActions ? <MessageActions shown={shown} mine={mine} onReact={onReact} onReply={onReply} onQuote={onQuote} onCopy={copy} onForward={onForward} onEdit={onEdit} onDelete={onDelete} t={t} /> : null}
     </div>
   );
 }
+const LONG_PRESS = 500;   // ms a finger rests on a message before its action bar shows
 
 // a run of messages from one sender: the photo and the name on the first message only, the run closer together; only the
 // Chat.Message children take mine, author and avatar (anything else, a Divider, stays as given)
@@ -251,7 +289,7 @@ function ComposerFile({ file, t, onRemove, onRetry, onCancel }) {
 }
 
 function Composer({ value = '', onChange, onSend, placeholder, label, sendLabel, disabled = false, attachments = [], onAttach, onRemoveAttachment, onRetryAttachment, onCancelAttachment,
-  accept, imageAccept = 'image/*', emoji = true, voice = true, lang, sendOn = 'enter', strings, className, ...rest }) {
+  accept, imageAccept = 'image/*', emoji = true, voice = true, lang, sendOn = 'enter', replyTo, onCancelReply, strings, className, ...rest }) {
   const t = useStrings('chat', strings);
   placeholder = placeholder ?? t.placeholder; label = label ?? t.message; sendLabel = sendLabel ?? t.send;
   const [dragging, setDragging] = React.useState(false), [listening, setListening] = React.useState(false), [speech, setSpeech] = React.useState(false), [problem, setProblem] = React.useState('');
@@ -293,6 +331,7 @@ function Composer({ value = '', onChange, onSend, placeholder, label, sendLabel,
         onDragLeave={hasFiles ? (e) => { if (!e.currentTarget.contains(e.relatedTarget)) setDragging(false); } : undefined}
         onDrop={hasFiles ? (e) => { e.preventDefault(); setDragging(false); attach(e.dataTransfer.files); } : undefined}>
         {dropping ? <div className="plx-chat__drop" role="status">{t.dropFiles}</div> : null}
+        {replyTo ? <ReplyPreview author={replyTo.author} text={replyTo.text} onCancel={onCancelReply} t={t} /> : null}
         {attachments.length ? <ul className="plx-chat__strip" aria-label={t.attachments}>{attachments.map((a) => <ComposerFile key={a.id} file={a} t={t} onRemove={onRemoveAttachment} onRetry={onRetryAttachment} onCancel={onCancelAttachment} />)}</ul> : null}
         <Textarea className="plx-chat__field" rows={2} autoGrow value={value} placeholder={placeholder} aria-label={label} disabled={disabled}
           onChange={(e) => typed(e.target.value)}

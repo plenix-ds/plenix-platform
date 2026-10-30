@@ -5191,6 +5191,148 @@
       "$type": "dimension",
       "$description": "Chat composer: the placeholder panel the emoji button opens."
     },
+    "chat-actions-offset": {
+      "$value": "{plx-ref.space-8px}",
+      "$type": "dimension",
+      "$description": "The message action bar (React, Reply, More; issue 637 slice 4): how far beside the bubble it sits, in the free space, so it never covers text."
+    },
+    "chat-actions-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension"
+    },
+    "chat-picker-gap": {
+      "$value": "{plx-ref.space-8px}",
+      "$type": "dimension",
+      "$description": "The quick reactions panel: between its row of reactions and the More reactions note."
+    },
+    "chat-quick-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension"
+    },
+    "chat-reactions-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension"
+    },
+    "chat-reaction-height": {
+      "$value": "{plx-ref.size-24px}",
+      "$type": "dimension",
+      "$description": "A reaction pill under a message's text: the emoji and its count."
+    },
+    "chat-reaction-gap": {
+      "$value": "{plx-ref.space-4px}",
+      "$type": "dimension"
+    },
+    "chat-reaction-padding-inline": {
+      "$value": "{plx-ref.space-8px}",
+      "$type": "dimension"
+    },
+    "chat-reaction-radius": {
+      "$value": "{plx-sys.radius-pill-4px}",
+      "$type": "dimension"
+    },
+    "chat-reaction-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension"
+    },
+    "chat-reaction-border-color": {
+      "$value": "{plx-sys.border-default}",
+      "$type": "color"
+    },
+    "chat-reaction-background": {
+      "$value": "{plx-sys.control-background}",
+      "$type": "color"
+    },
+    "chat-reaction-hover-background": {
+      "$value": "{plx-sys.state-hover}",
+      "$type": "color"
+    },
+    "chat-reaction-text": {
+      "$value": "{plx-sys.content-default}",
+      "$type": "color"
+    },
+    "chat-reaction-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension"
+    },
+    "chat-reaction-mine-border-color": {
+      "$value": "{plx-sys.accent-border}",
+      "$type": "color",
+      "$description": "The reaction you added: outlined in the action color (the owner's slice 4 drawing); aria-pressed says it too."
+    },
+    "chat-reaction-mine-background": {
+      "$value": "{plx-sys.state-selected}",
+      "$type": "color"
+    },
+    "chat-reaction-focus-ring-color": {
+      "$value": "{plx-sys.focus-ring-color}",
+      "$type": "color"
+    },
+    "chat-reaction-focus-ring-offset": {
+      "$value": "{plx-sys.focus-ring-offset}",
+      "$type": "dimension"
+    },
+    "chat-reaction-focus-ring-width": {
+      "$value": "{plx-sys.focus-ring-width}",
+      "$type": "dimension"
+    },
+    "chat-quote-bar-width": {
+      "$value": "{plx-sys.border-width-medium}",
+      "$type": "dimension",
+      "$description": "A quoted or replied-to message inside a bubble (and the composer's Replying to line): the bar at its start edge."
+    },
+    "chat-quote-bar-color": {
+      "$value": "{plx-sys.accent-border}",
+      "$type": "color"
+    },
+    "chat-quote-padding-inline": {
+      "$value": "{plx-ref.space-8px}",
+      "$type": "dimension"
+    },
+    "chat-quote-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension"
+    },
+    "chat-quote-font-size": {
+      "$value": "{plx-ref.font-size-12}",
+      "$type": "dimension"
+    },
+    "chat-quote-author-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight"
+    },
+    "chat-quote-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color"
+    },
+    "chat-replying-gap": {
+      "$value": "{plx-ref.space-8px}",
+      "$type": "dimension"
+    },
+    "chat-replying-padding-block": {
+      "$value": "{plx-ref.space-8px}",
+      "$type": "dimension"
+    },
+    "chat-replying-padding-inline": {
+      "$value": "{plx-ref.space-12px}",
+      "$type": "dimension"
+    },
+    "chat-replying-border-color": {
+      "$value": "{plx-sys.border-divider}",
+      "$type": "color"
+    },
+    "chat-replying-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension"
+    },
+    "chat-replying-icon": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color"
+    },
+    "chat-deleted-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "A deleted message's \"This message was deleted\": muted and slanted."
+    },
     "chat-field-min-height-narrow": {
       "$value": "{plx-ref.size-40px}",
       "$type": "dimension",
