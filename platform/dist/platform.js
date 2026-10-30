@@ -1920,7 +1920,30 @@ var _default = exports.default = {
     "voiceSpeed": "Playback speed, {rate} times",
     "voiceFailed": "This voice message could not be played",
     "record": "Record a voice message",
-    "recordSoon": "Voice messages coming soon"
+    "recordSoon": "Voice messages coming soon",
+    "messageActions": "Message actions",
+    "react": "React",
+    "reply": "Reply",
+    "moreActions": "More actions",
+    "quote": "Quote",
+    "copyText": "Copy text",
+    "forward": "Forward",
+    "edit": "Edit",
+    "delete": "Delete",
+    "reactions": "Reactions",
+    "addReaction": "Add reaction",
+    "moreReactions": "More reactions",
+    "reactionCount": "{name}: {count}",
+    "thumbsUp": "Thumbs up",
+    "heart": "Heart",
+    "laugh": "Laughing",
+    "wow": "Surprised",
+    "sad": "Sad",
+    "thanks": "Thank you",
+    "replyingTo": "Replying to {name}",
+    "cancelReply": "Cancel reply",
+    "edited": "Edited",
+    "deleted": "This message was deleted"
   },
   "checklist": {
     "dismiss": "Dismiss checklist",
@@ -5588,7 +5611,30 @@ var _default = exports.default = {
     "voiceSpeed": "سرعة التشغيل، {rate} مرة",
     "voiceFailed": "تعذر تشغيل هذه الرسالة الصوتية",
     "record": "تسجيل رسالة صوتية",
-    "recordSoon": "الرسائل الصوتية قريبا"
+    "recordSoon": "الرسائل الصوتية قريبا",
+    "messageActions": "إجراءات الرسالة",
+    "react": "تفاعل",
+    "reply": "رد",
+    "moreActions": "المزيد من الإجراءات",
+    "quote": "اقتباس",
+    "copyText": "نسخ النص",
+    "forward": "إعادة توجيه",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "reactions": "التفاعلات",
+    "addReaction": "إضافة تفاعل",
+    "moreReactions": "المزيد من التفاعلات",
+    "reactionCount": "{name}: {count}",
+    "thumbsUp": "إعجاب",
+    "heart": "قلب",
+    "laugh": "ضحك",
+    "wow": "دهشة",
+    "sad": "حزن",
+    "thanks": "شكرًا",
+    "replyingTo": "الرد على {name}",
+    "cancelReply": "إلغاء الرد",
+    "edited": "مُعدَّل",
+    "deleted": "تم حذف هذه الرسالة"
   },
   "checklist": {
     "dismiss": "تجاهل قائمة المهام",
@@ -40181,6 +40227,663 @@ function Voice({
   }, t.voiceFailed) : null);
 }
   } },
+  "platform/utils/clipboard.js": { deps: {"react":null,"./announce.jsx":"platform/utils/announce.jsx","./tokenTime.js":"platform/utils/tokenTime.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.copyImage = copyImage;
+exports.copyRich = copyRich;
+exports.copyText = copyText;
+exports.useClipboard = useClipboard;
+var _react = _interopRequireDefault(require("react"));
+var _announce = require("./announce.jsx");
+var _tokenTime = require("./tokenTime.js");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Clipboard (platform/utils/clipboard.js)
+   Summary: Copies a value (an ID, a path, a link, a code sample, a picture) to the clipboard and confirms it: the copy
+     functions write it, useClipboard keeps the "Copied" state for a moment and announces the result to screen readers.
+   Usage:
+     const clip = useClipboard();
+     <Button icon={clip.copied ? 'check' : 'copy'} onClick={() => clip.copy(path)}>{clip.copied ? 'Copied' : 'Copy file path'}</Button>
+     {clip.error && <Notice tone="danger">{clip.error}</Notice>}
+     await copyText('ASSET-0142');
+     await copyRich({ html: '<b>Cross 014</b>', text: 'Cross 014' });
+     await copyImage(pngBlob);
+   Props:
+     copyText(text): writes plain text; resolves true when copied, false when the browser refused
+     copyRich({ html, text }): writes HTML for editors that paste formatting, with the plain text for the others
+     copyImage(blob): writes a picture (a PNG Blob, or a Promise of one); false where the browser cannot
+     useClipboard({ timeout, strings }): returns { copy(value), copied, error, reset() }; value is text, { html, text } or a
+       Blob. copied stays true for timeout milliseconds (default the --plx-sys-clipboard-feedback-duration token)
+     strings: { copied: 'Copied', failed: 'Couldn’t copy. Select the text and copy it by hand.' }: what is announced and
+       returned as error
+   Behavior:
+     Uses the asynchronous Clipboard API; for text, where it is missing or refused (an insecure page, an old browser), it
+     falls back to a hidden text area and the copy command.
+     Copies only from a person's action (a press or a key): browsers refuse it otherwise.
+     Success and failure are announced through the polite live region (announce); the failure message says what to do.
+   Notes:
+     Never reads the clipboard. Name the button for what it copies ("Copy file path"), not just "Copy".
+*/
+
+const STRINGS = {
+  copied: 'Copied',
+  failed: 'Couldn’t copy. Select the text and copy it by hand.'
+};
+
+// the copy command on a hidden text area: for pages without the Clipboard API
+function legacyCopy(text) {
+  if (typeof document === 'undefined' || !document.body) return false;
+  const area = document.createElement('textarea');
+  area.className = 'plx-visually-hidden';
+  area.setAttribute('readonly', '');
+  area.setAttribute('aria-hidden', 'true');
+  area.value = text;
+  const active = document.activeElement;
+  document.body.appendChild(area);
+  area.select();
+  let done = false;
+  try {
+    done = document.execCommand('copy');
+  } catch (e) {
+    done = false;
+  }
+  area.remove();
+  if (active && active.focus) active.focus();
+  return done;
+}
+async function copyText(text) {
+  const value = String(text === undefined || text === null ? '' : text);
+  try {
+    if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(value);
+      return true;
+    }
+  } catch (e) {/* refused: try the copy command */}
+  return legacyCopy(value);
+}
+async function copyRich({
+  html = '',
+  text = ''
+} = {}) {
+  try {
+    if (typeof ClipboardItem !== 'undefined' && navigator.clipboard && navigator.clipboard.write) {
+      await navigator.clipboard.write([new ClipboardItem({
+        'text/html': new Blob([html], {
+          type: 'text/html'
+        }),
+        'text/plain': new Blob([text], {
+          type: 'text/plain'
+        })
+      })]);
+      return true;
+    }
+  } catch (e) {/* refused: plain text only */}
+  return copyText(text);
+}
+async function copyImage(blob) {
+  try {
+    if (typeof ClipboardItem === 'undefined' || !navigator.clipboard || !navigator.clipboard.write) return false;
+    const b = await blob;
+    await navigator.clipboard.write([new ClipboardItem({
+      [b.type || 'image/png']: b
+    })]);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+function useClipboard({
+  timeout,
+  strings
+} = {}) {
+  const s = {
+    ...STRINGS,
+    ...(strings || {})
+  };
+  const [copied, setCopied] = _react.default.useState(false);
+  const [error, setError] = _react.default.useState(null);
+  const timer = _react.default.useRef(null);
+  _react.default.useEffect(() => () => clearTimeout(timer.current), []);
+  const reset = _react.default.useCallback(() => {
+    clearTimeout(timer.current);
+    setCopied(false);
+    setError(null);
+  }, []);
+  const copy = _react.default.useCallback(async value => {
+    clearTimeout(timer.current);
+    const done = typeof Blob !== 'undefined' && value instanceof Blob ? await copyImage(value) : value && typeof value === 'object' && ('html' in value || 'text' in value) ? await copyRich(value) : await copyText(value);
+    setCopied(done);
+    setError(done ? null : s.failed);
+    (0, _announce.announce)(done ? s.copied : s.failed, {
+      politeness: done ? 'polite' : 'assertive'
+    });
+    if (done) timer.current = setTimeout(() => setCopied(false), timeout !== undefined ? timeout : (0, _tokenTime.tokenMs)('--plx-sys-clipboard-feedback-duration'));
+    return done;
+  }, [timeout, s.copied, s.failed]);
+  return {
+    copy,
+    copied,
+    error,
+    reset
+  };
+}
+  } },
+  "platform/dist/icons/plenix/reply.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// GENERATED by platform/icons/layout.js from platform/icons (map.json; Material Symbols Sharp, weight 300, and Plenix's own icons) (do not edit). Icon "reply" of the plenix set (symbol reply).
+const d0 = "M744-230v-124q0-53.85-38.08-91.92Q667.85-484 614-484H263.92l133 133-36.77 37.15L164-510l196.15-196.15L396.92-669l-133 133H614q75.77 0 128.88 53.12Q796-429.77 796-354v124h-52Z";
+const d1 = "M760-220v-140q0-53.85-38.08-91.92Q683.85-490 630-490H254.92l154 154-42.77 42.15L140-520l226.15-226.15L408.92-704l-154 154H630q78.77 0 134.38 55.62Q820-438.77 820-360v140h-60Z";
+var _default = exports.default = {
+  "name": "reply",
+  "set": "plenix",
+  "symbol": "reply",
+  "fillOutline": false,
+  "mirrored": true,
+  "drawings": {
+    "20": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": d0
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": d0
+      }
+    },
+    "24": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": d1
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": d1
+      }
+    }
+  }
+};
+  } },
+  "platform/dist/icons/plenix/format-quote.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// GENERATED by platform/icons/layout.js from platform/icons (map.json; Material Symbols Sharp, weight 300, and Plenix's own icons) (do not edit). Icon "format-quote" of the plenix set (symbol format_quote).
+var _default = exports.default = {
+  "name": "format-quote",
+  "set": "plenix",
+  "symbol": "format_quote",
+  "fillOutline": false,
+  "mirrored": false,
+  "drawings": {
+    "20": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": "m270.69-301.85 75.93-132.46q-3.46 1.92-8.08 2.69t-9.23.77q-42 0-73.58-33.24-31.57-33.23-31.57-79.91 0-49 32.57-81.58 32.58-32.57 81.58-32.57 48.29 0 81.22 32.57 32.93 32.58 32.93 81.45 0 13.21-4.11 27.36-4.12 14.15-11.97 29.62l-105.77 185.3h-59.92Zm283.39 0L630-434.31q-3.46 1.92-8.08 2.69-4.61.77-9.23.77-42 0-73.57-33.24-31.58-33.23-31.58-79.91 0-49.38 32.58-81.77 32.57-32.38 81.57-32.38 48.29 0 81.22 32.57 32.93 32.58 32.93 81.45 0 15.21-4.11 29.86-4.12 14.65-10.96 27.12L614-301.85h-59.92Zm-216.01-172.3q29.01 0 49.55-20.31 20.54-20.3 20.54-49.3 0-29.01-20.31-49.55-20.3-20.54-49.31-20.54-29 0-49.54 20.31-20.54 20.3-20.54 49.3 0 29.01 20.3 49.55 20.31 20.54 49.31 20.54Zm283.39 0q29 0 49.54-20.31 20.54-20.3 20.54-49.3 0-29.01-20.3-49.55-20.31-20.54-49.31-20.54-29.01 0-49.55 20.31-20.54 20.3-20.54 49.3 0 29.01 20.31 49.55 20.3 20.54 49.31 20.54Zm.23-69.85Zm-283.38 0Z"
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": "m270.69-301.85 75.93-132.46q-3.46 1.92-8.08 2.69t-9.23.77q-42 0-73.58-33.46-31.57-33.46-31.57-79.69 0-49 32.57-81.58 32.58-32.57 81.58-32.57 48.23 0 81.19 32.57Q452.46-593 452.46-544q0 15.08-4.61 29.73-4.62 14.65-11.47 27.12l-105.77 185.3h-59.92Zm283.39 0L630-434.31q-3.46 1.92-8.08 2.69-4.61.77-9.23.77-42 0-73.57-33.46-31.58-33.46-31.58-79.69 0-49.38 32.58-81.77 32.57-32.38 81.57-32.38 48.23 0 81.19 32.57Q735.84-593 735.84-544q0 15.08-4.11 29.73-4.12 14.65-10.96 27.12L614-301.85h-59.92Z"
+      }
+    },
+    "24": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": "m245.69-253.85 93.93-163.46q-3.46 1.92-8.08 2.69t-9.23.77q-61 0-103.58-42.93-42.57-42.93-42.57-103.22 0-61 42.57-103.58 42.58-42.57 103.58-42.57 60.29 0 103.22 42.57 42.93 42.58 42.93 103.45 0 21.21-5.11 39.36-5.12 18.15-14.97 34.62l-133.77 232.3h-68.92Zm355.39 0L695-417.31q-3.46 1.92-8.08 2.69-4.61.77-9.23.77-61 0-103.57-42.93-42.58-42.93-42.58-103.22 0-61.38 42.58-103.77 42.57-42.38 103.57-42.38 60.29 0 103.22 42.57 42.93 42.58 42.93 103.45 0 21.21-5.11 39.36-5.12 18.15-14.96 34.62L670-253.85h-68.92Zm-278.77-232.3q30.77 0 52.31-21.54 21.54-21.54 21.54-52.31 0-30.77-21.54-52.31-21.54-21.54-52.31-21.54-30.77 0-52.31 21.54-21.54 21.54-21.54 52.31 0 30.77 21.54 52.31 21.54 21.54 52.31 21.54Zm355.38 0q30.77 0 52.31-21.54 21.54-21.54 21.54-52.31 0-30.77-21.54-52.31-21.54-21.54-52.31-21.54-30.77 0-52.31 21.54-21.54 21.54-21.54 52.31 0 30.77 21.54 52.31 21.54 21.54 52.31 21.54Zm0-73.85Zm-355.38 0Z"
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": "m245.69-253.85 93.93-163.46q-3.46 1.92-8.08 2.69t-9.23.77q-61 0-103.58-42.96-42.57-42.96-42.57-103.19 0-61 42.57-103.58 42.58-42.57 103.58-42.57 60.23 0 103.19 42.57Q468.46-621 468.46-560q0 21.08-5.11 39.23-5.12 18.15-14.97 34.62l-133.77 232.3h-68.92Zm355.39 0L695-417.31q-3.46 1.92-8.08 2.69-4.61.77-9.23.77-61 0-103.57-42.96-42.58-42.96-42.58-103.19 0-61.38 42.58-103.77 42.57-42.38 103.57-42.38 60.23 0 103.19 42.57Q823.84-621 823.84-560q0 21.08-5.11 39.23-5.12 18.15-14.96 34.62L670-253.85h-68.92Z"
+      }
+    }
+  }
+};
+  } },
+  "platform/dist/icons/plenix/ed-copy.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// GENERATED by platform/icons/layout.js from platform/icons (map.json; Material Symbols Sharp, weight 300, and Plenix's own icons) (do not edit). Icon "ed-copy" of the plenix set (symbol content_copy).
+var _default = exports.default = {
+  "name": "ed-copy",
+  "set": "plenix",
+  "symbol": "content_copy",
+  "fillOutline": false,
+  "mirrored": false,
+  "drawings": {
+    "20": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": "M298-260v-584h488v584H298Zm52-52h384v-480H350v480ZM174-136v-571.69h52V-188h423.69v52H174Zm176-176v-480 480Z"
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": "M298-260v-584h488v584H298ZM174-136v-571.69h52V-188h423.69v52H174Z"
+      }
+    },
+    "24": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": "M290-260v-600h480v600H290Zm60-60h360v-480H350v480ZM150-120v-587.69h60V-180h407.69v60H150Zm200-200v-480 480Z"
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": "M290-260v-600h480v600H290ZM150-120v-587.69h60V-180h407.69v60H150Z"
+      }
+    }
+  }
+};
+  } },
+  "platform/dist/icons/plenix/forward.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// GENERATED by platform/icons/layout.js from platform/icons (map.json; Material Symbols Sharp, weight 300, and Plenix's own icons) (do not edit). Icon "forward" of the plenix set (symbol forward).
+const d0 = "M647.85-313.85 611.08-351l159-159-159-159 36.77-37.15L844-510 647.85-313.85ZM164-230v-124q0-75.77 53.12-128.88Q270.23-536 346-536h223.77l-133-133 36.77-37.15L669.69-510 473.54-313.85 436.77-351l133-133H346q-53.85 0-91.92 38.08Q216-407.85 216-354v124h-52Z";
+const d1 = "M633.85-293.85 591.08-336l184-184-184-184 42.77-42.15L860-520 633.85-293.85ZM100-220v-140q0-78.77 55.62-134.38Q211.23-550 290-550h272.77l-154-154 42.77-42.15L677.69-520 451.54-293.85 408.77-336l154-154H290q-53.85 0-91.92 38.08Q160-413.85 160-360v140h-60Z";
+var _default = exports.default = {
+  "name": "forward",
+  "set": "plenix",
+  "symbol": "forward",
+  "fillOutline": false,
+  "mirrored": true,
+  "drawings": {
+    "20": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": d0
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": d0
+      }
+    },
+    "24": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": d1
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": d1
+      }
+    }
+  }
+};
+  } },
+  "platform/dist/icons/plenix/pencil.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// GENERATED by platform/icons/layout.js from platform/icons (map.json; Material Symbols Sharp, weight 300, and Plenix's own icons) (do not edit). Icon "pencil" of the plenix set (symbol edit).
+var _default = exports.default = {
+  "name": "pencil",
+  "set": "plenix",
+  "symbol": "edit",
+  "fillOutline": false,
+  "mirrored": false,
+  "drawings": {
+    "20": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": "M216-216h44.46l393.46-393.46-44.46-44.46L216-260.46V-216Zm-52 52v-118.38l534-535.54 120.31 118.77L282.38-164H164Zm580-534.77L698.77-744 744-698.77ZM631.3-631.3l-21.84-22.62 44.46 44.46-22.62-21.84Z"
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": "M164-164v-118.38l534-535.54 120.31 118.77L282.38-164H164Zm527.08-482.23L744-698.77 698.77-744l-52.54 52.92 44.85 44.85Z"
+      }
+    },
+    "24": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": "M200-200h50.46l409.46-409.46-50.46-50.46L200-250.46V-200Zm-60 60v-135.38l570-569.54 134.31 136.77L275.38-140H140Zm620-569.77L709.77-760 760-709.77Zm-125.75 75.52-24.79-25.67 50.46 50.46-25.67-24.79Z"
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": "M140-140v-135.38l570-569.54 134.31 136.77L275.38-140H140Zm562.08-512.23L760-709.77 709.77-760l-57.54 57.92 49.85 49.85Z"
+      }
+    }
+  }
+};
+  } },
+  "platform/dist/icons/plenix/trash.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// GENERATED by platform/icons/layout.js from platform/icons (map.json; Material Symbols Sharp, weight 300, and Plenix's own icons) (do not edit). Icon "trash" of the plenix set (symbol delete).
+var _default = exports.default = {
+  "name": "trash",
+  "set": "plenix",
+  "symbol": "delete",
+  "fillOutline": false,
+  "mirrored": false,
+  "drawings": {
+    "20": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": "M260-164v-532h-48v-52h172v-43.38h192V-748h172v52h-48v532H260Zm52-52h336v-480H312v480Zm88.16-72h51.99v-336h-51.99v336Zm107.69 0h51.99v-336h-51.99v336ZM312-696v480-480Z"
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": "M400.16-288h51.99v-336h-51.99v336Zm107.69 0h51.99v-336h-51.99v336ZM260-164v-532h-48v-52h172v-43.38h192V-748h172v52h-48v532H260Z"
+      }
+    },
+    "24": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": "M220-140v-580h-40v-60h180v-35.38h240V-780h180v60h-40v580H220Zm60-60h400v-520H280v520Zm96.16-80h59.99v-360h-59.99v360Zm147.69 0h59.99v-360h-59.99v360ZM280-720v520-520Z"
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": "M376.16-280h59.99v-360h-59.99v360Zm147.69 0h59.99v-360h-59.99v360ZM220-140v-580h-40v-60h180v-35.38h240V-780h180v60h-40v580H220Z"
+      }
+    }
+  }
+};
+  } },
+  "platform/dist/icons/material/add-reaction.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+// GENERATED by platform/icons/layout.js from platform/icons/library (Material Symbols Sharp, weight 300) (do not edit). Icon "add-reaction" of the material set (symbol add_reaction).
+var _default = exports.default = {
+  "name": "add-reaction",
+  "set": "material",
+  "symbol": "add_reaction",
+  "fillOutline": false,
+  "mirrored": false,
+  "drawings": {
+    "20": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": "M480-480Zm.34 364q-75.11 0-141.48-28.42-66.37-28.42-116.18-78.21-49.81-49.79-78.25-116.09Q116-405.01 116-480.39q0-75.38 28.43-141.25 28.42-65.87 78.22-115.68t115.96-78.25Q404.77-844 480-844q35.46 0 70.81 6.31 35.34 6.31 67.8 20.5v57.11q-33.23-15.84-67.73-23.88Q516.38-792 480-792q-129.67 0-220.84 91.23-91.16 91.23-91.16 221Q168-350 259.23-259t221 91Q610-168 701-259.16q91-91.17 91-220.84 0-36.72-8.23-71.25-8.23-34.52-24.46-67.36h58.46q13.61 33.46 19.92 68.21Q844-515.65 844-480q0 75.23-28.42 141.39-28.42 66.16-78.21 115.96-49.79 49.8-115.85 78.22Q555.45-116 480.34-116ZM778-706v-72h-72v-52h72v-72h52v72h72v52h-72v72h-52ZM608.24-523.69q21.84 0 37.03-15.29 15.19-15.28 15.19-37.11t-15.28-37.02q-15.28-15.2-37.12-15.2-21.83 0-37.02 15.29-15.19 15.28-15.19 37.11t15.28 37.02q15.28 15.2 37.11 15.2Zm-256.3 0q21.83 0 37.02-15.29 15.19-15.28 15.19-37.11t-15.28-37.02q-15.28-15.2-37.11-15.2-21.84 0-37.03 15.29-15.19 15.28-15.19 37.11t15.28 37.02q15.28 15.2 37.12 15.2ZM480-300.31q55.18 0 101.74-27.54 46.57-27.54 75.18-75.15H303.08q28.61 47.61 75.18 75.15 46.56 27.54 101.74 27.54Z"
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": "M778-706v-72h-72v-52h72v-72h52v72h72v52h-72v72h-52ZM608.24-523.69q21.84 0 37.03-15.29 15.19-15.28 15.19-37.11t-15.28-37.02q-15.28-15.2-37.12-15.2-21.83 0-37.02 15.29-15.19 15.28-15.19 37.11t15.28 37.02q15.28 15.2 37.11 15.2Zm-256.3 0q21.83 0 37.02-15.29 15.19-15.28 15.19-37.11t-15.28-37.02q-15.28-15.2-37.11-15.2-21.84 0-37.03 15.29-15.19 15.28-15.19 37.11t15.28 37.02q15.28 15.2 37.12 15.2ZM480-300.31q55.18 0 101.74-27.54 46.57-27.54 75.18-75.15H303.08q28.61 47.61 75.18 75.15 46.56 27.54 101.74 27.54Zm.34 184.31q-75.11 0-141.48-28.42-66.37-28.42-116.18-78.21-49.81-49.79-78.25-116.09Q116-405.01 116-480.39q0-75.38 28.43-141.25 28.42-65.87 78.22-115.68t115.96-78.25Q404.77-844 480-844q35.46 0 70.81 6.31 35.34 6.31 67.8 19.86V-706h87.01v87.39h112.15q13.61 33.46 19.92 68.21Q844-515.65 844-480q0 75.23-28.42 141.39-28.42 66.16-78.21 115.96-49.79 49.8-115.85 78.22Q555.45-116 480.34-116Z"
+      }
+    },
+    "24": {
+      "outline": {
+        "viewBox": "0 -960 960 960",
+        "d": "M480-480Zm.07 380q-78.84 0-148.21-29.92t-120.68-81.21q-51.31-51.29-81.25-120.63Q100-401.1 100-479.93q0-78.84 29.93-148.21 29.92-69.37 81.22-120.68t120.65-81.25Q401.15-860 480-860q41.46 0 80.31 8.31 38.84 8.31 74.3 24.31v67.3q-34.23-18.84-73.23-29.38Q522.38-800 480-800q-133 0-226.5 93.5T160-480q0 133 93.5 226.5T480-160q133 0 226.5-93.5T800-480q0-30.46-5.73-59.12-5.73-28.65-15.96-55.49h64.46q8.61 27.46 12.92 55.71Q860-510.65 860-480q0 78.85-29.92 148.2t-81.21 120.65q-51.29 51.3-120.63 81.22Q558.9-100 480.07-100ZM810-690v-80h-80v-60h80v-80h60v80h80v60h-80v80h-60ZM616.24-527.69q21.84 0 37.03-15.29 15.19-15.28 15.19-37.11t-15.28-37.02q-15.28-15.2-37.12-15.2-21.83 0-37.02 15.29-15.19 15.28-15.19 37.11t15.28 37.02q15.28 15.2 37.11 15.2Zm-272.3 0q21.83 0 37.02-15.29 15.19-15.28 15.19-37.11t-15.28-37.02q-15.28-15.2-37.11-15.2-21.84 0-37.03 15.29-15.19 15.28-15.19 37.11t15.28 37.02q15.28 15.2 37.12 15.2ZM480-272.31q63.18 0 114.74-35.04 51.57-35.04 76.18-92.65H289.08q24.61 57.61 76.18 92.65 51.56 35.04 114.74 35.04Z"
+      },
+      "fill": {
+        "viewBox": "0 -960 960 960",
+        "d": "M810-690v-80h-80v-60h80v-80h60v80h80v60h-80v80h-60ZM616.24-527.69q21.84 0 37.03-15.29 15.19-15.28 15.19-37.11t-15.28-37.02q-15.28-15.2-37.12-15.2-21.83 0-37.02 15.29-15.19 15.28-15.19 37.11t15.28 37.02q15.28 15.2 37.11 15.2Zm-272.3 0q21.83 0 37.02-15.29 15.19-15.28 15.19-37.11t-15.28-37.02q-15.28-15.2-37.11-15.2-21.84 0-37.03 15.29-15.19 15.28-15.19 37.11t15.28 37.02q15.28 15.2 37.12 15.2ZM480-272.31q63.18 0 114.74-35.04 51.57-35.04 76.18-92.65H289.08q24.61 57.61 76.18 92.65 51.56 35.04 114.74 35.04Zm.07 172.31q-78.84 0-148.21-29.92t-120.68-81.21q-51.31-51.29-81.25-120.63Q100-401.1 100-479.93q0-78.84 29.93-148.21 29.92-69.37 81.22-120.68t120.65-81.25Q401.15-860 480-860q41.46 0 80.31 8.31 38.84 8.31 74.3 24.31V-690h95.01v95.39h113.15q8.61 27.46 12.92 55.71Q860-510.65 860-480q0 78.85-29.92 148.2t-81.21 120.65q-51.29 51.3-120.63 81.22Q558.9-100 480.07-100Z"
+      }
+    }
+  }
+};
+  } },
+  "platform/components/Chat/ChatActions.jsx": { deps: {"react":null,"../../utils/cx.js":"platform/utils/cx.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Menu/Menu.jsx":"platform/components/Menu/Menu.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","./ChatMedia.jsx":"platform/components/Chat/ChatMedia.jsx","plenix-platform/icons/plenix/reply":"platform/dist/icons/plenix/reply.js","plenix-platform/icons/plenix/more":"platform/dist/icons/plenix/more.js","plenix-platform/icons/plenix/format-quote":"platform/dist/icons/plenix/format-quote.js","plenix-platform/icons/plenix/ed-copy":"platform/dist/icons/plenix/ed-copy.js","plenix-platform/icons/plenix/forward":"platform/dist/icons/plenix/forward.js","plenix-platform/icons/plenix/pencil":"platform/dist/icons/plenix/pencil.js","plenix-platform/icons/plenix/trash":"platform/dist/icons/plenix/trash.js","plenix-platform/icons/plenix/close":"platform/dist/icons/plenix/close.js","plenix-platform/icons/material/add-reaction":"platform/dist/icons/material/add-reaction.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.MessageActions = MessageActions;
+exports.QUICK_REACTIONS = void 0;
+exports.Quote = Quote;
+exports.ReactionPicker = ReactionPicker;
+exports.Reactions = Reactions;
+exports.ReplyPreview = ReplyPreview;
+var _react = _interopRequireDefault(require("react"));
+var _cx = require("../../utils/cx.js");
+var _Button = require("../Button/Button.jsx");
+var _Icon = require("../Icon/Icon.jsx");
+var _Menu = require("../Menu/Menu.jsx");
+var _Popover = require("../Popover/Popover.jsx");
+var _Text = require("../Text/Text.jsx");
+var _ChatMedia = require("./ChatMedia.jsx");
+var _reply = _interopRequireDefault(require("plenix-platform/icons/plenix/reply"));
+var _more = _interopRequireDefault(require("plenix-platform/icons/plenix/more"));
+var _formatQuote = _interopRequireDefault(require("plenix-platform/icons/plenix/format-quote"));
+var _edCopy = _interopRequireDefault(require("plenix-platform/icons/plenix/ed-copy"));
+var _forward = _interopRequireDefault(require("plenix-platform/icons/plenix/forward"));
+var _pencil = _interopRequireDefault(require("plenix-platform/icons/plenix/pencil"));
+var _trash = _interopRequireDefault(require("plenix-platform/icons/plenix/trash"));
+var _close = _interopRequireDefault(require("plenix-platform/icons/plenix/close"));
+var _addReaction = _interopRequireDefault(require("plenix-platform/icons/material/add-reaction"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/* Plenix · Chat actions (the parts of Chat.jsx a person acts on in a message, issue 637 slice 4; documented in Chat.jsx)
+   Summary: the action bar beside a bubble (React, Reply, More), the More menu, the reaction pills with Add reaction, the quick reactions panel,
+     the quote inside a bubble and the composer's "Replying to" line. Every icon-only control is a bordered button (the secondary variant; owner, issue 637).
+   Usage:
+     <Chat.Message mine onReact={react} onReply={reply} onEdit={edit} onDelete={remove} reactions={[{ emoji: '👍', count: 2, mine: true }]}
+       quote={{ author: 'Maya Chen', text: 'The PDF is fine.' }} edited>Both floors in one file.</Chat.Message>
+     <Chat.Composer replyTo={{ author: 'Maya Chen', text: 'The PDF is fine.' }} onCancelReply={cancel} … />
+   Props:
+     the same as in Chat.jsx (Chat.Message: onReact, onReply, onQuote, onCopy, onForward, onEdit, onDelete, reactions, quote, edited, deleted;
+     Chat.Composer: replyTo, onCancelReply).
+*/
+
+// the quick reactions, in the owner's order, each with its name for assistive technology (the strings' keys)
+const QUICK_REACTIONS = exports.QUICK_REACTIONS = [['👍', 'thumbsUp'], ['❤️', 'heart'], ['😂', 'laugh'], ['😮', 'wow'], ['😢', 'sad'], ['🙏', 'thanks']];
+const nameOf = (emoji, t) => {
+  const q = QUICK_REACTIONS.find(r => r[0] === emoji);
+  return q ? t[q[1]] : emoji;
+};
+
+// React: a panel of the quick reactions and More reactions (a placeholder until the emoji picker, issue 646)
+function ReactionPicker({
+  onReact,
+  t,
+  trigger
+}) {
+  const [more, setMore] = _react.default.useState(false);
+  return /*#__PURE__*/_react.default.createElement(_Popover.Popover, {
+    title: t.addReaction,
+    size: "md",
+    placement: "bottom-start",
+    trigger: trigger
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-chat__picker"
+  }, /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-chat__quick",
+    role: "group",
+    "aria-label": t.reactions
+  }, QUICK_REACTIONS.map(([e, k]) => /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    key: k,
+    variant: "secondary",
+    size: "sm",
+    label: t[k],
+    tooltip: false,
+    onClick: () => onReact && onReact(e)
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-chat__emoji",
+    "aria-hidden": "true"
+  }, e))), /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "secondary",
+    size: "sm",
+    iconOnly: true,
+    icon: _addReaction.default,
+    label: t.moreReactions,
+    "aria-expanded": more,
+    onClick: () => setMore(!more)
+  })), more ? /*#__PURE__*/_react.default.createElement(_Text.Text, {
+    variant: "secondary"
+  }, t.emojiSoon) : null));
+}
+
+// the action bar beside the bubble: React, Reply and More (Reply, Quote, Copy text, Forward | Edit, Delete on your own messages)
+function MessageActions({
+  shown,
+  mine,
+  onReact,
+  onReply,
+  onQuote,
+  onCopy,
+  onForward,
+  onEdit,
+  onDelete,
+  t
+}) {
+  const own = mine && (onEdit || onDelete);
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-chat__actions', mine && 'plx-chat__actions--mine', !shown && 'plx-visually-hidden'),
+    role: "group",
+    "aria-label": t.messageActions
+  }, onReact ? /*#__PURE__*/_react.default.createElement(ReactionPicker, {
+    onReact: onReact,
+    t: t,
+    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "secondary",
+      size: "sm",
+      iconOnly: true,
+      icon: _addReaction.default,
+      label: t.react
+    })
+  }) : null, onReply ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "secondary",
+    size: "sm",
+    iconOnly: true,
+    icon: _reply.default,
+    label: t.reply,
+    onClick: onReply
+  }) : null, /*#__PURE__*/_react.default.createElement(_Menu.Menu, {
+    label: t.moreActions,
+    placement: mine ? 'bottom-end' : 'bottom-start',
+    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "secondary",
+      size: "sm",
+      iconOnly: true,
+      icon: _more.default,
+      label: t.moreActions
+    })
+  }, onReply ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    icon: _reply.default,
+    onSelect: onReply
+  }, t.reply) : null, onQuote ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    icon: _formatQuote.default,
+    onSelect: onQuote
+  }, t.quote) : null, /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    icon: _edCopy.default,
+    onSelect: onCopy
+  }, t.copyText), onForward ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    icon: _forward.default,
+    onSelect: onForward
+  }, t.forward) : null, own ? /*#__PURE__*/_react.default.createElement(_Menu.MenuDivider, null) : null, mine && onEdit ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    icon: _pencil.default,
+    onSelect: onEdit
+  }, t.edit) : null, mine && onDelete ? /*#__PURE__*/_react.default.createElement(_Menu.MenuItem, {
+    icon: _trash.default,
+    danger: true,
+    onSelect: onDelete
+  }, t.delete) : null));
+}
+
+// the reactions under the text: a pill each (emoji and count; yours outlined in the action color), then Add reaction
+function Reactions({
+  reactions,
+  mine,
+  onReact,
+  t
+}) {
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: (0, _cx.cx)('plx-chat__reactions', mine && 'plx-chat__reactions--mine'),
+    role: "group",
+    "aria-label": t.reactions
+  }, reactions.map(r => /*#__PURE__*/_react.default.createElement("button", {
+    key: r.emoji,
+    type: "button",
+    className: (0, _cx.cx)('plx-chat__reaction', r.mine && 'plx-chat__reaction--mine'),
+    "aria-pressed": !!r.mine,
+    "aria-label": (0, _ChatMedia.fill)(t.reactionCount, {
+      name: r.label || nameOf(r.emoji, t),
+      count: r.count
+    }),
+    onClick: onReact ? () => onReact(r.emoji) : undefined,
+    disabled: !onReact
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-chat__emoji",
+    "aria-hidden": "true"
+  }, r.emoji), /*#__PURE__*/_react.default.createElement("span", {
+    "aria-hidden": "true"
+  }, r.count))), onReact ? /*#__PURE__*/_react.default.createElement(ReactionPicker, {
+    onReact: onReact,
+    t: t,
+    trigger: /*#__PURE__*/_react.default.createElement(_Button.Button, {
+      variant: "secondary",
+      size: "xs",
+      iconOnly: true,
+      icon: _addReaction.default,
+      label: t.addReaction
+    })
+  }) : null);
+}
+
+// a quoted or replied-to message inside the bubble: a bar, its author and one line of its text
+function Quote({
+  author,
+  text
+}) {
+  return /*#__PURE__*/_react.default.createElement("blockquote", {
+    className: "plx-chat__quote"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-chat__quote-author"
+  }, author), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-chat__quote-text"
+  }, text));
+}
+
+// the composer's "Replying to <name>" line with the message's first line and a Cancel button
+function ReplyPreview({
+  author,
+  text,
+  onCancel,
+  t
+}) {
+  return /*#__PURE__*/_react.default.createElement("div", {
+    className: "plx-chat__replying"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-chat__replying-icon"
+  }, /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
+    name: _reply.default,
+    size: "sm"
+  })), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-chat__quote plx-chat__quote--replying"
+  }, /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-chat__quote-author"
+  }, (0, _ChatMedia.fill)(t.replyingTo, {
+    name: author
+  })), /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-chat__quote-text"
+  }, text)), onCancel ? /*#__PURE__*/_react.default.createElement(_Button.Button, {
+    variant: "secondary",
+    size: "sm",
+    iconOnly: true,
+    icon: _close.default,
+    label: t.cancelReply,
+    onClick: onCancel
+  }) : null);
+}
+  } },
   "platform/dist/icons/plenix/sparkle.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
@@ -40529,7 +41232,7 @@ var _default = exports.default = {
   }
 };
   } },
-  "platform/components/Chat/Chat.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./ChatMedia.jsx":"platform/components/Chat/ChatMedia.jsx","../ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","plenix-platform/icons/plenix/sparkle":"platform/dist/icons/plenix/sparkle.js","plenix-platform/icons/plenix/clock":"platform/dist/icons/plenix/clock.js","plenix-platform/icons/material/done":"platform/dist/icons/material/done.js","plenix-platform/icons/material/done-all":"platform/dist/icons/material/done-all.js","plenix-platform/icons/plenix/attachment":"platform/dist/icons/plenix/attachment.js","plenix-platform/icons/plenix/ed-image":"platform/dist/icons/plenix/ed-image.js","plenix-platform/icons/plenix/mic":"platform/dist/icons/plenix/mic.js","plenix-platform/icons/plenix/stop":"platform/dist/icons/plenix/stop.js","plenix-platform/icons/plenix/close":"platform/dist/icons/plenix/close.js","plenix-platform/icons/plenix/refresh":"platform/dist/icons/plenix/refresh.js","plenix-platform/icons/plenix/warning":"platform/dist/icons/plenix/warning.js","plenix-platform/icons/plenix/check":"platform/dist/icons/plenix/check.js","plenix-platform/icons/material/mood":"platform/dist/icons/material/mood.js","plenix-platform/icons/material/send":"platform/dist/icons/material/send.js","plenix-platform/icons/material/graphic-eq":"platform/dist/icons/material/graphic-eq.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
+  "platform/components/Chat/Chat.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../VisuallyHidden/VisuallyHidden.jsx":"platform/components/VisuallyHidden/VisuallyHidden.jsx","../Button/Button.jsx":"platform/components/Button/Button.jsx","../Icon/Icon.jsx":"platform/components/Icon/Icon.jsx","../Loading/Loading.jsx":"platform/components/Loading/Loading.jsx","../ProgressSteps/ProgressSteps.jsx":"platform/components/ProgressSteps/ProgressSteps.jsx","../Text/Text.jsx":"platform/components/Text/Text.jsx","../Input/Input.jsx":"platform/components/Input/Input.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../Popover/Popover.jsx":"platform/components/Popover/Popover.jsx","../Tooltip/Tooltip.jsx":"platform/components/Tooltip/Tooltip.jsx","./ChatMedia.jsx":"platform/components/Chat/ChatMedia.jsx","../ProgressBar/ProgressBar.jsx":"platform/components/ProgressBar/ProgressBar.jsx","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../utils/clipboard.js":"platform/utils/clipboard.js","./ChatActions.jsx":"platform/components/Chat/ChatActions.jsx","plenix-platform/icons/plenix/sparkle":"platform/dist/icons/plenix/sparkle.js","plenix-platform/icons/plenix/clock":"platform/dist/icons/plenix/clock.js","plenix-platform/icons/material/done":"platform/dist/icons/material/done.js","plenix-platform/icons/material/done-all":"platform/dist/icons/material/done-all.js","plenix-platform/icons/plenix/attachment":"platform/dist/icons/plenix/attachment.js","plenix-platform/icons/plenix/ed-image":"platform/dist/icons/plenix/ed-image.js","plenix-platform/icons/plenix/mic":"platform/dist/icons/plenix/mic.js","plenix-platform/icons/plenix/stop":"platform/dist/icons/plenix/stop.js","plenix-platform/icons/plenix/close":"platform/dist/icons/plenix/close.js","plenix-platform/icons/plenix/refresh":"platform/dist/icons/plenix/refresh.js","plenix-platform/icons/plenix/warning":"platform/dist/icons/plenix/warning.js","plenix-platform/icons/plenix/check":"platform/dist/icons/plenix/check.js","plenix-platform/icons/material/mood":"platform/dist/icons/material/mood.js","plenix-platform/icons/material/send":"platform/dist/icons/material/send.js","plenix-platform/icons/material/graphic-eq":"platform/dist/icons/material/graphic-eq.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -40554,6 +41257,8 @@ var _ChatMedia = require("./ChatMedia.jsx");
 var _ProgressBar = require("../ProgressBar/ProgressBar.jsx");
 var _announce = require("../../utils/announce.jsx");
 var _format = require("../../utils/format.js");
+var _clipboard = require("../../utils/clipboard.js");
+var _ChatActions = require("./ChatActions.jsx");
 var _sparkle = _interopRequireDefault(require("plenix-platform/icons/plenix/sparkle"));
 var _clock = _interopRequireDefault(require("plenix-platform/icons/plenix/clock"));
 var _done = _interopRequireDefault(require("plenix-platform/icons/material/done"));
@@ -40610,6 +41315,14 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        from the end edge for yours (the owner's mockup, issue 637), half above the bubble; it takes its bubble's fill, text
        color and outline. Leave it out on the following messages of a run from the same sender
      Chat.Message.children: the message text or content
+     Chat.Message actions (issue 637 slice 4): onReact(emoji), onReply(), onQuote(), onCopy() (default: copies the message's text), onForward(), and on your own
+       messages onEdit() and onDelete(). Any of them gives the message an action bar beside the bubble: React (the quick reactions), Reply and More (a menu:
+       Reply, Quote, Copy text, Forward, then Edit and Delete in red on your own messages)
+     Chat.Message.reactions: [{ emoji, count, mine, label }]: pills under the text (the emoji and its count; yours outlined in the action color, aria-pressed),
+       then an Add reaction button; a pill toggles through onReact(emoji). label names an emoji outside the six quick ones
+     Chat.Message.quote: { author, text }: a quoted or replied-to message inside the bubble (a bar, the author, one line)
+     Chat.Message.edited: "· Edited" in the footer; deleted: "This message was deleted", muted, with no actions, reactions or quote
+     Chat.Message.strings: the words, for other languages
      Chat.Attachments: the pictures and files of one message, in a row (two or more pictures) or a column; its pictures open together in one MediaViewer
      Chat.Attachment.type: "image" (default) | "file"; src: the picture's URL (a file's download URL); name: its file name; alt: the picture's description (default the name);
        size: bytes, shown on a file card and in the viewer; href: a file's download link (default src); onDownload(): runs on Download (instead of the link)
@@ -40630,6 +41343,7 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Chat.Composer.accept: the file types Attach offers (default any); imageAccept: the types Image offers (default image/*)
      Chat.Composer.emoji: true (default: an Emoji button opens a panel; today a placeholder that says the picker is coming) | false (no button) | a function (insert) => node that draws the app's own picker and calls insert(text)
      Chat.Composer.voice: true (default: a microphone dictates into the box, only where the browser has speech recognition; a disabled record control beside it, with the tooltip "Voice messages coming soon", is a placeholder until recording is built, issue 654) | false (neither)
+     Chat.Composer.replyTo: { author, text }: the "Replying to <name>" line above the text, with the message's first line; onCancelReply(): its Cancel button
      Chat.Composer.lang: the dictation language (default the page's: ar-EG for Arabic, en-US for English)
      Chat.Composer.strings: the words, for other languages
      Chat.Composer.placeholder: default "Write a message"; label: the field's accessible name (default "Message")
@@ -40655,6 +41369,11 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
        and a Stop button show with a red dot and a ring round the microphone; Stop, the microphone again, Send, typing in the box or the browser ending it
        stops it, and typing keeps the text exactly as typed. The microphone is looked for when the composer is drawn, so a browser that gains speech
        recognition shows it with no change. A blocked microphone says so. "Listening…" and a microphone problem are announced once each (announce()).
+     The action bar sits beside the bubble in the free space (theirs at its end side, yours at its start side; mirrored in right to left) and never
+       covers text. It shows on hover, on a long press (500ms) and on keyboard focus: it stays in the Tab order as a visually hidden group, so a Tab into
+       it reveals it (as a skip link), and it stays while focus is in its menu or reaction panel. React opens six quick reactions (Thumbs up, Heart,
+       Laughing, Surprised, Sad, Thank you) and More reactions (a placeholder until the emoji picker, issue 646). Each reaction pill is named for assistive
+       technology ("Thumbs up: 2") and says whether you reacted (aria-pressed).
      Chat.Typing is a status region (role="status"), so its label is announced.
      The dots pulse one after another; people who ask their system for less motion see them still.
    Notes:
@@ -40779,6 +41498,7 @@ function Footer({
   dateTime,
   readTime,
   readDateTime,
+  edited,
   t
 }) {
   const sending = status === 'sending',
@@ -40789,7 +41509,9 @@ function Footer({
   }, sending ? /*#__PURE__*/_react.default.createElement("span", null, t.sending) : time ? /*#__PURE__*/_react.default.createElement("span", null, t.sent, " ", /*#__PURE__*/_react.default.createElement("time", {
     className: "plx-chat__time",
     dateTime: dateTime
-  }, time)) : null, read ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("span", {
+  }, time)) : null, edited ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("span", {
+    "aria-hidden": "true"
+  }, "\xB7"), /*#__PURE__*/_react.default.createElement("span", null, t.edited)) : null, read ? /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("span", {
     "aria-hidden": "true"
   }, "|"), /*#__PURE__*/_react.default.createElement("span", null, t.read, " ", /*#__PURE__*/_react.default.createElement("time", {
     className: "plx-chat__time",
@@ -40811,8 +41533,27 @@ function Message({
   readTime,
   readDateTime,
   avatar,
+  quote,
+  reactions,
+  edited = false,
+  deleted = false,
+  onReact,
+  onReply,
+  onQuote,
+  onCopy,
+  onForward,
+  onEdit,
+  onDelete,
+  strings,
   className,
   children,
+  onMouseEnter,
+  onMouseLeave,
+  onFocus,
+  onBlur,
+  onPointerDown,
+  onPointerUp,
+  onPointerCancel,
   ...rest
 }) {
   (0, _devWarn.devWarn)('Chat.Message', {
@@ -40820,10 +41561,63 @@ function Message({
   }, {
     status: [undefined, 'sending', 'sent', 'delivered', 'read']
   });
-  const t = (0, _LocaleProvider.useStrings)('chat');
+  const t = (0, _LocaleProvider.useStrings)('chat', strings);
+  const root = _react.default.useRef(null),
+    body = _react.default.useRef(null),
+    press = _react.default.useRef(0);
+  // the action bar shows on hover, on keyboard focus inside the message (a Tab into the bar reveals it, as a skip link) and on a long press
+  const [shown, setShown] = _react.default.useState(false);
+  _react.default.useEffect(() => () => clearTimeout(press.current), []);
+  const hasActions = !deleted && !!(onReact || onReply || onQuote || onCopy || onForward || onEdit || onDelete);
+  const keep = () => !!root.current && root.current.contains(document.activeElement);
+  const copy = () => {
+    if (onCopy) onCopy();else if (body.current) (0, _clipboard.copyText)(body.current.innerText);
+  };
+  const events = hasActions ? {
+    onMouseEnter: e => {
+      setShown(true);
+      if (onMouseEnter) onMouseEnter(e);
+    },
+    onMouseLeave: e => {
+      if (!keep()) setShown(false);
+      if (onMouseLeave) onMouseLeave(e);
+    },
+    onFocus: e => {
+      setShown(true);
+      if (onFocus) onFocus(e);
+    },
+    onBlur: e => {
+      if (!e.currentTarget.contains(e.relatedTarget)) setShown(false);
+      if (onBlur) onBlur(e);
+    },
+    onPointerDown: e => {
+      if (e.pointerType === 'touch') {
+        clearTimeout(press.current);
+        press.current = setTimeout(() => setShown(true), LONG_PRESS);
+      }
+      if (onPointerDown) onPointerDown(e);
+    },
+    onPointerUp: e => {
+      clearTimeout(press.current);
+      if (onPointerUp) onPointerUp(e);
+    },
+    onPointerCancel: e => {
+      clearTimeout(press.current);
+      if (onPointerCancel) onPointerCancel(e);
+    }
+  } : {
+    onMouseEnter,
+    onMouseLeave,
+    onFocus,
+    onBlur,
+    onPointerDown,
+    onPointerUp,
+    onPointerCancel
+  };
   return /*#__PURE__*/_react.default.createElement("div", _extends({
+    ref: root,
     className: (0, _cx.cx)('plx-chat__message', mine && 'plx-chat__message--mine', avatar && 'plx-chat__message--avatar', className)
-  }, rest), avatar ? /*#__PURE__*/_react.default.createElement("span", {
+  }, rest, events), avatar ? /*#__PURE__*/_react.default.createElement("span", {
     className: (0, _cx.cx)('plx-chat__avatar', mine && 'plx-chat__avatar--mine')
   }, avatar) : null, /*#__PURE__*/_react.default.createElement("div", {
     className: (0, _cx.cx)('plx-chat__bubble', mine && 'plx-chat__bubble--mine', avatar && 'plx-chat__bubble--avatar')
@@ -40831,17 +41625,41 @@ function Message({
     className: "plx-chat__meta"
   }, /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-chat__author"
-  }, author)) : null, /*#__PURE__*/_react.default.createElement("div", {
+  }, author)) : null, quote && !deleted ? /*#__PURE__*/_react.default.createElement(_ChatActions.Quote, {
+    author: quote.author,
+    text: quote.text
+  }) : null, /*#__PURE__*/_react.default.createElement("div", {
+    ref: body,
     className: "plx-chat__body"
-  }, children), time || status ? /*#__PURE__*/_react.default.createElement(Footer, {
+  }, deleted ? /*#__PURE__*/_react.default.createElement("span", {
+    className: "plx-chat__deleted"
+  }, t.deleted) : children), reactions && reactions.length && !deleted ? /*#__PURE__*/_react.default.createElement(_ChatActions.Reactions, {
+    reactions: reactions,
+    mine: mine,
+    onReact: onReact,
+    t: t
+  }) : null, time || status || edited ? /*#__PURE__*/_react.default.createElement(Footer, {
     status: status,
     time: time,
     dateTime: dateTime,
     readTime: readTime,
     readDateTime: readDateTime,
+    edited: edited && !deleted,
     t: t
-  }) : null));
+  }) : null), hasActions ? /*#__PURE__*/_react.default.createElement(_ChatActions.MessageActions, {
+    shown: shown,
+    mine: mine,
+    onReact: onReact,
+    onReply: onReply,
+    onQuote: onQuote,
+    onCopy: copy,
+    onForward: onForward,
+    onEdit: onEdit,
+    onDelete: onDelete,
+    t: t
+  }) : null);
 }
+const LONG_PRESS = 500; // ms a finger rests on a message before its action bar shows
 
 // a run of messages from one sender: the photo and the name on the first message only, the run closer together; only the
 // Chat.Message children take mine, author and avatar (anything else, a Divider, stays as given)
@@ -40978,6 +41796,8 @@ function Composer({
   voice = true,
   lang,
   sendOn = 'enter',
+  replyTo,
+  onCancelReply,
   strings,
   className,
   ...rest
@@ -41108,7 +41928,12 @@ function Composer({
   }, dropping ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-chat__drop",
     role: "status"
-  }, t.dropFiles) : null, attachments.length ? /*#__PURE__*/_react.default.createElement("ul", {
+  }, t.dropFiles) : null, replyTo ? /*#__PURE__*/_react.default.createElement(_ChatActions.ReplyPreview, {
+    author: replyTo.author,
+    text: replyTo.text,
+    onCancel: onCancelReply,
+    t: t
+  }) : null, attachments.length ? /*#__PURE__*/_react.default.createElement("ul", {
     className: "plx-chat__strip",
     "aria-label": t.attachments
   }, attachments.map(a => /*#__PURE__*/_react.default.createElement(ComposerFile, {
@@ -42927,44 +43752,6 @@ ActivityList.Item = function ActivityListItem({
   }, time) : null, actions ? /*#__PURE__*/_react.default.createElement("span", {
     className: "plx-activity-list__actions"
   }, actions) : null);
-};
-  } },
-  "platform/dist/icons/plenix/pencil.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-// GENERATED by platform/icons/layout.js from platform/icons (map.json; Material Symbols Sharp, weight 300, and Plenix's own icons) (do not edit). Icon "pencil" of the plenix set (symbol edit).
-var _default = exports.default = {
-  "name": "pencil",
-  "set": "plenix",
-  "symbol": "edit",
-  "fillOutline": false,
-  "mirrored": false,
-  "drawings": {
-    "20": {
-      "outline": {
-        "viewBox": "0 -960 960 960",
-        "d": "M216-216h44.46l393.46-393.46-44.46-44.46L216-260.46V-216Zm-52 52v-118.38l534-535.54 120.31 118.77L282.38-164H164Zm580-534.77L698.77-744 744-698.77ZM631.3-631.3l-21.84-22.62 44.46 44.46-22.62-21.84Z"
-      },
-      "fill": {
-        "viewBox": "0 -960 960 960",
-        "d": "M164-164v-118.38l534-535.54 120.31 118.77L282.38-164H164Zm527.08-482.23L744-698.77 698.77-744l-52.54 52.92 44.85 44.85Z"
-      }
-    },
-    "24": {
-      "outline": {
-        "viewBox": "0 -960 960 960",
-        "d": "M200-200h50.46l409.46-409.46-50.46-50.46L200-250.46V-200Zm-60 60v-135.38l570-569.54 134.31 136.77L275.38-140H140Zm620-569.77L709.77-760 760-709.77Zm-125.75 75.52-24.79-25.67 50.46 50.46-25.67-24.79Z"
-      },
-      "fill": {
-        "viewBox": "0 -960 960 960",
-        "d": "M140-140v-135.38l570-569.54 134.31 136.77L275.38-140H140Zm562.08-512.23L760-709.77 709.77-760l-57.54 57.92 49.85 49.85Z"
-      }
-    }
-  }
 };
   } },
   "platform/patterns/ReviewFlow/ReviewFlow.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Badge/Badge.jsx":"platform/components/Badge/Badge.jsx","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/Notice/Notice.jsx":"platform/components/Notice/Notice.jsx","../../components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","../../components/Avatar/Avatar.jsx":"platform/components/Avatar/Avatar.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/DataGrid/DataGrid.jsx":"platform/components/DataGrid/DataGrid.jsx","../../components/Toast/Toast.jsx":"platform/components/Toast/Toast.jsx","../ActivityList/ActivityList.jsx":"platform/patterns/ActivityList/ActivityList.jsx","../CommandBar/CommandBar.jsx":"platform/patterns/CommandBar/CommandBar.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","../../i18n/en.js":"platform/i18n/en.js","plenix-platform/icons/plenix/alert":"platform/dist/icons/plenix/alert.js","plenix-platform/icons/plenix/circle-check":"platform/dist/icons/plenix/circle-check.js","plenix-platform/icons/plenix/close":"platform/dist/icons/plenix/close.js","plenix-platform/icons/plenix/doc-search":"platform/dist/icons/plenix/doc-search.js","plenix-platform/icons/plenix/pencil":"platform/dist/icons/plenix/pencil.js","plenix-platform/icons/plenix/schedule":"platform/dist/icons/plenix/schedule.js","plenix-platform/icons/plenix/sparkle":"platform/dist/icons/plenix/sparkle.js","plenix-platform/icons/plenix/visibility":"platform/dist/icons/plenix/visibility.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
@@ -49859,150 +50646,6 @@ const IMAGE_EDITOR_STEPS = exports.IMAGE_EDITOR_STEPS = {
   }
 };
   } },
-  "platform/utils/clipboard.js": { deps: {"react":null,"./announce.jsx":"platform/utils/announce.jsx","./tokenTime.js":"platform/utils/tokenTime.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.copyImage = copyImage;
-exports.copyRich = copyRich;
-exports.copyText = copyText;
-exports.useClipboard = useClipboard;
-var _react = _interopRequireDefault(require("react"));
-var _announce = require("./announce.jsx");
-var _tokenTime = require("./tokenTime.js");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* Plenix · Clipboard (platform/utils/clipboard.js)
-   Summary: Copies a value (an ID, a path, a link, a code sample, a picture) to the clipboard and confirms it: the copy
-     functions write it, useClipboard keeps the "Copied" state for a moment and announces the result to screen readers.
-   Usage:
-     const clip = useClipboard();
-     <Button icon={clip.copied ? 'check' : 'copy'} onClick={() => clip.copy(path)}>{clip.copied ? 'Copied' : 'Copy file path'}</Button>
-     {clip.error && <Notice tone="danger">{clip.error}</Notice>}
-     await copyText('ASSET-0142');
-     await copyRich({ html: '<b>Cross 014</b>', text: 'Cross 014' });
-     await copyImage(pngBlob);
-   Props:
-     copyText(text): writes plain text; resolves true when copied, false when the browser refused
-     copyRich({ html, text }): writes HTML for editors that paste formatting, with the plain text for the others
-     copyImage(blob): writes a picture (a PNG Blob, or a Promise of one); false where the browser cannot
-     useClipboard({ timeout, strings }): returns { copy(value), copied, error, reset() }; value is text, { html, text } or a
-       Blob. copied stays true for timeout milliseconds (default the --plx-sys-clipboard-feedback-duration token)
-     strings: { copied: 'Copied', failed: 'Couldn’t copy. Select the text and copy it by hand.' }: what is announced and
-       returned as error
-   Behavior:
-     Uses the asynchronous Clipboard API; for text, where it is missing or refused (an insecure page, an old browser), it
-     falls back to a hidden text area and the copy command.
-     Copies only from a person's action (a press or a key): browsers refuse it otherwise.
-     Success and failure are announced through the polite live region (announce); the failure message says what to do.
-   Notes:
-     Never reads the clipboard. Name the button for what it copies ("Copy file path"), not just "Copy".
-*/
-
-const STRINGS = {
-  copied: 'Copied',
-  failed: 'Couldn’t copy. Select the text and copy it by hand.'
-};
-
-// the copy command on a hidden text area: for pages without the Clipboard API
-function legacyCopy(text) {
-  if (typeof document === 'undefined' || !document.body) return false;
-  const area = document.createElement('textarea');
-  area.className = 'plx-visually-hidden';
-  area.setAttribute('readonly', '');
-  area.setAttribute('aria-hidden', 'true');
-  area.value = text;
-  const active = document.activeElement;
-  document.body.appendChild(area);
-  area.select();
-  let done = false;
-  try {
-    done = document.execCommand('copy');
-  } catch (e) {
-    done = false;
-  }
-  area.remove();
-  if (active && active.focus) active.focus();
-  return done;
-}
-async function copyText(text) {
-  const value = String(text === undefined || text === null ? '' : text);
-  try {
-    if (typeof navigator !== 'undefined' && navigator.clipboard && navigator.clipboard.writeText) {
-      await navigator.clipboard.writeText(value);
-      return true;
-    }
-  } catch (e) {/* refused: try the copy command */}
-  return legacyCopy(value);
-}
-async function copyRich({
-  html = '',
-  text = ''
-} = {}) {
-  try {
-    if (typeof ClipboardItem !== 'undefined' && navigator.clipboard && navigator.clipboard.write) {
-      await navigator.clipboard.write([new ClipboardItem({
-        'text/html': new Blob([html], {
-          type: 'text/html'
-        }),
-        'text/plain': new Blob([text], {
-          type: 'text/plain'
-        })
-      })]);
-      return true;
-    }
-  } catch (e) {/* refused: plain text only */}
-  return copyText(text);
-}
-async function copyImage(blob) {
-  try {
-    if (typeof ClipboardItem === 'undefined' || !navigator.clipboard || !navigator.clipboard.write) return false;
-    const b = await blob;
-    await navigator.clipboard.write([new ClipboardItem({
-      [b.type || 'image/png']: b
-    })]);
-    return true;
-  } catch (e) {
-    return false;
-  }
-}
-function useClipboard({
-  timeout,
-  strings
-} = {}) {
-  const s = {
-    ...STRINGS,
-    ...(strings || {})
-  };
-  const [copied, setCopied] = _react.default.useState(false);
-  const [error, setError] = _react.default.useState(null);
-  const timer = _react.default.useRef(null);
-  _react.default.useEffect(() => () => clearTimeout(timer.current), []);
-  const reset = _react.default.useCallback(() => {
-    clearTimeout(timer.current);
-    setCopied(false);
-    setError(null);
-  }, []);
-  const copy = _react.default.useCallback(async value => {
-    clearTimeout(timer.current);
-    const done = typeof Blob !== 'undefined' && value instanceof Blob ? await copyImage(value) : value && typeof value === 'object' && ('html' in value || 'text' in value) ? await copyRich(value) : await copyText(value);
-    setCopied(done);
-    setError(done ? null : s.failed);
-    (0, _announce.announce)(done ? s.copied : s.failed, {
-      politeness: done ? 'polite' : 'assertive'
-    });
-    if (done) timer.current = setTimeout(() => setCopied(false), timeout !== undefined ? timeout : (0, _tokenTime.tokenMs)('--plx-sys-clipboard-feedback-duration'));
-    return done;
-  }, [timeout, s.copied, s.failed]);
-  return {
-    copy,
-    copied,
-    error,
-    reset
-  };
-}
-  } },
   "platform/hooks/useIntersection.js": { deps: {"react":null}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -53705,44 +54348,6 @@ function MegaMenu({
   }, featured) : null)));
 }
   } },
-  "platform/dist/icons/plenix/ed-copy.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-// GENERATED by platform/icons/layout.js from platform/icons (map.json; Material Symbols Sharp, weight 300, and Plenix's own icons) (do not edit). Icon "ed-copy" of the plenix set (symbol content_copy).
-var _default = exports.default = {
-  "name": "ed-copy",
-  "set": "plenix",
-  "symbol": "content_copy",
-  "fillOutline": false,
-  "mirrored": false,
-  "drawings": {
-    "20": {
-      "outline": {
-        "viewBox": "0 -960 960 960",
-        "d": "M298-260v-584h488v584H298Zm52-52h384v-480H350v480ZM174-136v-571.69h52V-188h423.69v52H174Zm176-176v-480 480Z"
-      },
-      "fill": {
-        "viewBox": "0 -960 960 960",
-        "d": "M298-260v-584h488v584H298ZM174-136v-571.69h52V-188h423.69v52H174Z"
-      }
-    },
-    "24": {
-      "outline": {
-        "viewBox": "0 -960 960 960",
-        "d": "M290-260v-600h480v600H290Zm60-60h360v-480H350v480ZM150-120v-587.69h60V-180h407.69v60H150Zm200-200v-480 480Z"
-      },
-      "fill": {
-        "viewBox": "0 -960 960 960",
-        "d": "M290-260v-600h480v600H290ZM150-120v-587.69h60V-180h407.69v60H150Z"
-      }
-    }
-  }
-};
-  } },
   "platform/components/CopyButton/CopyButton.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/clipboard.js":"platform/utils/clipboard.js","../Button/Button.jsx":"platform/components/Button/Button.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/check":"platform/dist/icons/plenix/check.js","plenix-platform/icons/plenix/ed-copy":"platform/dist/icons/plenix/ed-copy.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -57076,44 +57681,6 @@ var _default = exports.default = {
   }
 };
   } },
-  "platform/dist/icons/plenix/format-quote.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-// GENERATED by platform/icons/layout.js from platform/icons (map.json; Material Symbols Sharp, weight 300, and Plenix's own icons) (do not edit). Icon "format-quote" of the plenix set (symbol format_quote).
-var _default = exports.default = {
-  "name": "format-quote",
-  "set": "plenix",
-  "symbol": "format_quote",
-  "fillOutline": false,
-  "mirrored": false,
-  "drawings": {
-    "20": {
-      "outline": {
-        "viewBox": "0 -960 960 960",
-        "d": "m270.69-301.85 75.93-132.46q-3.46 1.92-8.08 2.69t-9.23.77q-42 0-73.58-33.24-31.57-33.23-31.57-79.91 0-49 32.57-81.58 32.58-32.57 81.58-32.57 48.29 0 81.22 32.57 32.93 32.58 32.93 81.45 0 13.21-4.11 27.36-4.12 14.15-11.97 29.62l-105.77 185.3h-59.92Zm283.39 0L630-434.31q-3.46 1.92-8.08 2.69-4.61.77-9.23.77-42 0-73.57-33.24-31.58-33.23-31.58-79.91 0-49.38 32.58-81.77 32.57-32.38 81.57-32.38 48.29 0 81.22 32.57 32.93 32.58 32.93 81.45 0 15.21-4.11 29.86-4.12 14.65-10.96 27.12L614-301.85h-59.92Zm-216.01-172.3q29.01 0 49.55-20.31 20.54-20.3 20.54-49.3 0-29.01-20.31-49.55-20.3-20.54-49.31-20.54-29 0-49.54 20.31-20.54 20.3-20.54 49.3 0 29.01 20.3 49.55 20.31 20.54 49.31 20.54Zm283.39 0q29 0 49.54-20.31 20.54-20.3 20.54-49.3 0-29.01-20.3-49.55-20.31-20.54-49.31-20.54-29.01 0-49.55 20.31-20.54 20.3-20.54 49.3 0 29.01 20.31 49.55 20.3 20.54 49.31 20.54Zm.23-69.85Zm-283.38 0Z"
-      },
-      "fill": {
-        "viewBox": "0 -960 960 960",
-        "d": "m270.69-301.85 75.93-132.46q-3.46 1.92-8.08 2.69t-9.23.77q-42 0-73.58-33.46-31.57-33.46-31.57-79.69 0-49 32.57-81.58 32.58-32.57 81.58-32.57 48.23 0 81.19 32.57Q452.46-593 452.46-544q0 15.08-4.61 29.73-4.62 14.65-11.47 27.12l-105.77 185.3h-59.92Zm283.39 0L630-434.31q-3.46 1.92-8.08 2.69-4.61.77-9.23.77-42 0-73.57-33.46-31.58-33.46-31.58-79.69 0-49.38 32.58-81.77 32.57-32.38 81.57-32.38 48.23 0 81.19 32.57Q735.84-593 735.84-544q0 15.08-4.11 29.73-4.12 14.65-10.96 27.12L614-301.85h-59.92Z"
-      }
-    },
-    "24": {
-      "outline": {
-        "viewBox": "0 -960 960 960",
-        "d": "m245.69-253.85 93.93-163.46q-3.46 1.92-8.08 2.69t-9.23.77q-61 0-103.58-42.93-42.57-42.93-42.57-103.22 0-61 42.57-103.58 42.58-42.57 103.58-42.57 60.29 0 103.22 42.57 42.93 42.58 42.93 103.45 0 21.21-5.11 39.36-5.12 18.15-14.97 34.62l-133.77 232.3h-68.92Zm355.39 0L695-417.31q-3.46 1.92-8.08 2.69-4.61.77-9.23.77-61 0-103.57-42.93-42.58-42.93-42.58-103.22 0-61.38 42.58-103.77 42.57-42.38 103.57-42.38 60.29 0 103.22 42.57 42.93 42.58 42.93 103.45 0 21.21-5.11 39.36-5.12 18.15-14.96 34.62L670-253.85h-68.92Zm-278.77-232.3q30.77 0 52.31-21.54 21.54-21.54 21.54-52.31 0-30.77-21.54-52.31-21.54-21.54-52.31-21.54-30.77 0-52.31 21.54-21.54 21.54-21.54 52.31 0 30.77 21.54 52.31 21.54 21.54 52.31 21.54Zm355.38 0q30.77 0 52.31-21.54 21.54-21.54 21.54-52.31 0-30.77-21.54-52.31-21.54-21.54-52.31-21.54-30.77 0-52.31 21.54-21.54 21.54-21.54 52.31 0 30.77 21.54 52.31 21.54 21.54 52.31 21.54Zm0-73.85Zm-355.38 0Z"
-      },
-      "fill": {
-        "viewBox": "0 -960 960 960",
-        "d": "m245.69-253.85 93.93-163.46q-3.46 1.92-8.08 2.69t-9.23.77q-61 0-103.58-42.96-42.57-42.96-42.57-103.19 0-61 42.57-103.58 42.58-42.57 103.58-42.57 60.23 0 103.19 42.57Q468.46-621 468.46-560q0 21.08-5.11 39.23-5.12 18.15-14.97 34.62l-133.77 232.3h-68.92Zm355.39 0L695-417.31q-3.46 1.92-8.08 2.69-4.61.77-9.23.77-61 0-103.57-42.96-42.58-42.96-42.58-103.19 0-61.38 42.58-103.77 42.57-42.38 103.57-42.38 60.23 0 103.19 42.57Q823.84-621 823.84-560q0 21.08-5.11 39.23-5.12 18.15-14.96 34.62L670-253.85h-68.92Z"
-      }
-    }
-  }
-};
-  } },
   "platform/dist/icons/plenix/format-strikethrough.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
 "use strict";
 
@@ -57427,44 +57994,6 @@ var _default = exports.default = {
       "fill": {
         "viewBox": "0 -960 960 960",
         "d": d1
-      }
-    }
-  }
-};
-  } },
-  "platform/dist/icons/plenix/trash.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-// GENERATED by platform/icons/layout.js from platform/icons (map.json; Material Symbols Sharp, weight 300, and Plenix's own icons) (do not edit). Icon "trash" of the plenix set (symbol delete).
-var _default = exports.default = {
-  "name": "trash",
-  "set": "plenix",
-  "symbol": "delete",
-  "fillOutline": false,
-  "mirrored": false,
-  "drawings": {
-    "20": {
-      "outline": {
-        "viewBox": "0 -960 960 960",
-        "d": "M260-164v-532h-48v-52h172v-43.38h192V-748h172v52h-48v532H260Zm52-52h336v-480H312v480Zm88.16-72h51.99v-336h-51.99v336Zm107.69 0h51.99v-336h-51.99v336ZM312-696v480-480Z"
-      },
-      "fill": {
-        "viewBox": "0 -960 960 960",
-        "d": "M400.16-288h51.99v-336h-51.99v336Zm107.69 0h51.99v-336h-51.99v336ZM260-164v-532h-48v-52h172v-43.38h192V-748h172v52h-48v532H260Z"
-      }
-    },
-    "24": {
-      "outline": {
-        "viewBox": "0 -960 960 960",
-        "d": "M220-140v-580h-40v-60h180v-35.38h240V-780h180v60h-40v580H220Zm60-60h400v-520H280v520Zm96.16-80h59.99v-360h-59.99v360Zm147.69 0h59.99v-360h-59.99v360ZM280-720v520-520Z"
-      },
-      "fill": {
-        "viewBox": "0 -960 960 960",
-        "d": "M376.16-280h59.99v-360h-59.99v360Zm147.69 0h59.99v-360h-59.99v360ZM220-140v-580h-40v-60h180v-35.38h240V-780h180v60h-40v580H220Z"
       }
     }
   }
@@ -75515,46 +76044,6 @@ function Publish({
   })))) : null);
 }
   } },
-  "platform/dist/icons/plenix/forward.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-// GENERATED by platform/icons/layout.js from platform/icons (map.json; Material Symbols Sharp, weight 300, and Plenix's own icons) (do not edit). Icon "forward" of the plenix set (symbol forward).
-const d0 = "M647.85-313.85 611.08-351l159-159-159-159 36.77-37.15L844-510 647.85-313.85ZM164-230v-124q0-75.77 53.12-128.88Q270.23-536 346-536h223.77l-133-133 36.77-37.15L669.69-510 473.54-313.85 436.77-351l133-133H346q-53.85 0-91.92 38.08Q216-407.85 216-354v124h-52Z";
-const d1 = "M633.85-293.85 591.08-336l184-184-184-184 42.77-42.15L860-520 633.85-293.85ZM100-220v-140q0-78.77 55.62-134.38Q211.23-550 290-550h272.77l-154-154 42.77-42.15L677.69-520 451.54-293.85 408.77-336l154-154H290q-53.85 0-91.92 38.08Q160-413.85 160-360v140h-60Z";
-var _default = exports.default = {
-  "name": "forward",
-  "set": "plenix",
-  "symbol": "forward",
-  "fillOutline": false,
-  "mirrored": true,
-  "drawings": {
-    "20": {
-      "outline": {
-        "viewBox": "0 -960 960 960",
-        "d": d0
-      },
-      "fill": {
-        "viewBox": "0 -960 960 960",
-        "d": d0
-      }
-    },
-    "24": {
-      "outline": {
-        "viewBox": "0 -960 960 960",
-        "d": d1
-      },
-      "fill": {
-        "viewBox": "0 -960 960 960",
-        "d": d1
-      }
-    }
-  }
-};
-  } },
   "platform/patterns/AssignControl/AssignControl.jsx": { deps: {"react":null,"../../utils/devWarn.js":"platform/utils/devWarn.js","../../utils/cx.js":"platform/utils/cx.js","../../utils/layer.js":"platform/utils/layer.js","../../utils/announce.jsx":"platform/utils/announce.jsx","../../utils/format.js":"platform/utils/format.js","../../components/Button/Button.jsx":"platform/components/Button/Button.jsx","../../components/Dialog/Dialog.jsx":"platform/components/Dialog/Dialog.jsx","../../components/Field/Field.jsx":"platform/components/Field/Field.jsx","../../components/Input/Input.jsx":"platform/components/Input/Input.jsx","../../components/DatePicker/DatePicker.jsx":"platform/components/DatePicker/DatePicker.jsx","../../components/EntityPicker/EntityPicker.jsx":"platform/components/EntityPicker/EntityPicker.jsx","../../components/Persona/Persona.jsx":"platform/components/Persona/Persona.jsx","../../components/Text/Text.jsx":"platform/components/Text/Text.jsx","../ReviewFlow/ReviewFlow.jsx":"platform/patterns/ReviewFlow/ReviewFlow.jsx","../../providers/LocaleProvider.jsx":"platform/providers/LocaleProvider.jsx","plenix-platform/icons/plenix/forward":"platform/dist/icons/plenix/forward.js","plenix-platform/icons/plenix/pencil":"platform/dist/icons/plenix/pencil.js","plenix-platform/icons/plenix/person":"platform/dist/icons/plenix/person.js"}, externals: { "react": function () { return window.React; } }, run: function (module, exports, require) {
 "use strict";
 
@@ -86714,46 +87203,6 @@ var _default = exports.default = {
   "symbol": "linear_scale",
   "fillOutline": false,
   "mirrored": false,
-  "drawings": {
-    "20": {
-      "outline": {
-        "viewBox": "0 -960 960 960",
-        "d": d0
-      },
-      "fill": {
-        "viewBox": "0 -960 960 960",
-        "d": d0
-      }
-    },
-    "24": {
-      "outline": {
-        "viewBox": "0 -960 960 960",
-        "d": d1
-      },
-      "fill": {
-        "viewBox": "0 -960 960 960",
-        "d": d1
-      }
-    }
-  }
-};
-  } },
-  "platform/dist/icons/plenix/reply.js": { deps: {}, externals: {  }, run: function (module, exports, require) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-// GENERATED by platform/icons/layout.js from platform/icons (map.json; Material Symbols Sharp, weight 300, and Plenix's own icons) (do not edit). Icon "reply" of the plenix set (symbol reply).
-const d0 = "M744-230v-124q0-53.85-38.08-91.92Q667.85-484 614-484H263.92l133 133-36.77 37.15L164-510l196.15-196.15L396.92-669l-133 133H614q75.77 0 128.88 53.12Q796-429.77 796-354v124h-52Z";
-const d1 = "M760-220v-140q0-53.85-38.08-91.92Q683.85-490 630-490H254.92l154 154-42.77 42.15L140-520l226.15-226.15L408.92-704l-154 154H630q78.77 0 134.38 55.62Q820-438.77 820-360v140h-60Z";
-var _default = exports.default = {
-  "name": "reply",
-  "set": "plenix",
-  "symbol": "reply",
-  "fillOutline": false,
-  "mirrored": true,
   "drawings": {
     "20": {
       "outline": {
