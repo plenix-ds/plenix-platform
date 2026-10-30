@@ -1601,7 +1601,18 @@ export default {
     "ready": "جاهز",
     "failed": "تعذر الرفع",
     "dropFiles": "أفلت الملفات لإرفاقها",
-    "attachments": "المرفقات"
+    "attachments": "المرفقات",
+    "openImage": "فتح الصورة",
+    "imageFailed": "تعذر تحميل هذه الصورة",
+    "download": "تنزيل",
+    "playVoice": "تشغيل الرسالة الصوتية",
+    "pauseVoice": "إيقاف الرسالة الصوتية مؤقتا",
+    "voiceSeek": "موضع الرسالة الصوتية",
+    "voicePosition": "{time} من {total}",
+    "voiceSpeed": "سرعة التشغيل، {rate} مرة",
+    "voiceFailed": "تعذر تشغيل هذه الرسالة الصوتية",
+    "record": "تسجيل رسالة صوتية",
+    "recordSoon": "الرسائل الصوتية قريبا"
   },
   "checklist": {
     "dismiss": "تجاهل قائمة المهام",

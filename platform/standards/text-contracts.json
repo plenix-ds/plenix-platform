@@ -574,6 +574,18 @@
     "font-weight"
    ]
   },
+  "plx-chat__image-broken-text": {
+   "contract": "adjusts",
+   "props": [
+    "font-size"
+   ]
+  },
+  "plx-chat__voice-time": {
+   "contract": "adjusts",
+   "props": [
+    "font-size"
+   ]
+  },
   "plx-chat__meta": {
    "contract": "adjusts",
    "props": [
