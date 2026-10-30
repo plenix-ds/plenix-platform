@@ -15,6 +15,7 @@
        keeps the data font at the phrase's own size.
      dataNumber(value, options): one number, formatted (formatNumber) and in the data font.
      dataText(text): a finished phrase, its numbers in the data font (dataPhrase(text) without values).
+     dataWhenText(content): for a component's text prop: a string goes through dataText, anything else is returned as it is.
    Behavior:
      The data font takes the size of the text around it (the span carries plx-text, the Text component's base class,
      so the data span inherits the phrase's size and baseline; the phrase keeps its own color and weight).
@@ -65,3 +66,7 @@ export function dataPhrase(text, values, options) {
 }
 
 export const dataText = (text) => dataPhrase(text);
+
+// what a component draws for a text a page gave it: a plain string gets its numbers in the data font (a count in a hint, a banner, a
+// description: issue 260, owner 2026-10-30); anything else (an element, a list of them) is the page's own markup and stays as given
+export const dataWhenText = (content) => (typeof content === 'string' ? dataPhrase(content) : content);

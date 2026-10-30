@@ -55,6 +55,7 @@
 import React from 'react';
 import { cx } from '../../utils/cx.js';
 import { useReadOnly, readOnlyProps } from '../../providers/ReadOnly.jsx';
+import { dataWhenText } from '../../utils/dataText.jsx';
 
 export const Checkbox = React.forwardRef(function Checkbox({ label, description, indeterminate = false, className, readOnly, dir, lang, ...rest }, ref) {
   const locked = useReadOnly(readOnly);
@@ -64,7 +65,7 @@ export const Checkbox = React.forwardRef(function Checkbox({ label, description,
   return (
     <label className={cx('plx-check', className)} dir={dir} lang={lang}>
       <input ref={inner} type="checkbox" className="plx-check__input" {...readOnlyProps(locked, rest)} />
-      {label || description ? <span className="plx-check__text"><span className="plx-check__label">{label}</span>{description ? <span className="plx-check__description">{description}</span> : null}</span> : null}
+      {label || description ? <span className="plx-check__text"><span className="plx-check__label">{label}</span>{description ? <span className="plx-check__description">{dataWhenText(description)}</span> : null}</span> : null}
     </label>
   );
 });
@@ -74,7 +75,7 @@ export const Radio = React.forwardRef(function Radio({ label, description, class
   return (
     <label className={cx('plx-check', className)} dir={dir} lang={lang}>
       <input ref={ref} type="radio" className="plx-check__input" {...readOnlyProps(locked, rest, { aria: false })} />
-      {label ? <span className="plx-check__text"><span className="plx-check__label">{label}</span>{description ? <span className="plx-check__description">{description}</span> : null}</span> : null}
+      {label ? <span className="plx-check__text"><span className="plx-check__label">{label}</span>{description ? <span className="plx-check__description">{dataWhenText(description)}</span> : null}</span> : null}
     </label>
   );
 });
