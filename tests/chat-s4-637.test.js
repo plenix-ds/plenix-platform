@@ -60,7 +60,7 @@ require('./limit.js');   // the hard time limit (TEST_TIMEOUT_MS)
       await page.hover('#theirs .plx-chat__bubble'); await new Promise((r) => setTimeout(r, 200));
       let s = await state('theirs');
       assert.deepEqual([s.hidden, s.covers, s.side], [false, false, dir === 'ltr' ? 'right' : 'left'], at + 'hovered, theirs shows its bar at the bubble\'s end side, covering nothing');
-      assert.deepEqual(s.labels, [say('React', 'تفاعل'), say('Reply', 'رد'), say('More actions', 'مزيد من الإجراءات')], at + 'React, Reply, More, named');
+      assert.deepEqual(s.labels, [say('React', 'تفاعل'), say('Reply', 'رد'), say('More actions', 'المزيد من الإجراءات')], at + 'React, Reply, More, named');
       await page.mouse.move(1, 1); await new Promise((r) => setTimeout(r, 200));
       // the keyboard: a Tab into the bar reveals it
       await page.focus('#mine .plx-chat__actions button'); await new Promise((r) => setTimeout(r, 200));
@@ -68,10 +68,10 @@ require('./limit.js');   // the hard time limit (TEST_TIMEOUT_MS)
       assert.deepEqual([s.hidden, s.covers, s.side], [false, false, dir === 'ltr' ? 'left' : 'right'], at + 'focused, yours shows its bar at the bubble\'s start side');
       await page.evaluate(() => document.activeElement.blur()); await new Promise((r) => setTimeout(r, 200));
       // More: Edit and Delete on yours only, Delete in red
-      const mineItems = await menuItems('mine', say('More actions', 'مزيد من الإجراءات'));
-      assert.deepEqual(mineItems.map((i) => i.text), [say('Reply', 'رد'), say('Quote', 'اقتباس'), say('Copy text', 'نسخ النص'), say('Forward', 'إعادة توجيه'), say('Edit', 'تحرير'), say('Delete', 'حذف')], at + 'yours: the whole menu');
+      const mineItems = await menuItems('mine', say('More actions', 'المزيد من الإجراءات'));
+      assert.deepEqual(mineItems.map((i) => i.text), [say('Reply', 'رد'), say('Quote', 'اقتباس'), say('Copy text', 'نسخ النص'), say('Forward', 'إعادة توجيه'), say('Edit', 'تعديل'), say('Delete', 'حذف')], at + 'yours: the whole menu');
       assert.ok(mineItems[5].danger && !mineItems[4].danger, at + 'Delete is the danger item');
-      const theirItems = await menuItems('theirs', say('More actions', 'مزيد من الإجراءات'));
+      const theirItems = await menuItems('theirs', say('More actions', 'المزيد من الإجراءات'));
       assert.deepEqual(theirItems.map((i) => i.text), [say('Reply', 'رد'), say('Quote', 'اقتباس'), say('Copy text', 'نسخ النص'), say('Forward', 'إعادة توجيه')], at + 'theirs: no Edit or Delete');
       // reactions: named pills, yours pressed and outlined in the action color; React opens the six and More reactions
       const pills = await page.evaluate(() => [...document.querySelectorAll('#theirs .plx-chat__reaction')].map((e) => ({ name: e.getAttribute('aria-label'), pressed: e.getAttribute('aria-pressed'), line: getComputedStyle(e).borderTopColor })));
@@ -81,7 +81,7 @@ require('./limit.js');   // the hard time limit (TEST_TIMEOUT_MS)
       await page.hover('#theirs .plx-chat__bubble'); await new Promise((r) => setTimeout(r, 200));
       await page.click('#theirs .plx-chat__actions button[aria-label="' + say('React', 'تفاعل') + '"]'); await new Promise((r) => setTimeout(r, 400));
       const quick = await page.evaluate(() => [...document.querySelectorAll('.plx-chat__quick button')].filter((e) => e.getClientRects().length).map((e) => e.getAttribute('aria-label')));
-      assert.deepEqual(quick, AR ? ['إعجاب', 'قلب', 'ضحك', 'دهشة', 'حزن', 'شكرًا', 'مزيد من التفاعلات'] : ['Thumbs up', 'Heart', 'Laughing', 'Surprised', 'Sad', 'Thank you', 'More reactions'], at + 'the six quick reactions and More');
+      assert.deepEqual(quick, AR ? ['إعجاب', 'قلب', 'ضحك', 'دهشة', 'حزن', 'شكرًا', 'المزيد من التفاعلات'] : ['Thumbs up', 'Heart', 'Laughing', 'Surprised', 'Sad', 'Thank you', 'More reactions'], at + 'the six quick reactions and More');
       await page.click('.plx-chat__quick button[aria-label="' + say('Heart', 'قلب') + '"]'); await new Promise((r) => setTimeout(r, 200));
       assert.deepEqual(await page.evaluate(() => window.__calls.filter((c) => c[0] === 'react').pop()), ['react', '❤️'], at + 'a quick reaction calls onReact with its emoji');
       await page.keyboard.press('Escape'); await page.mouse.move(1, 1); await new Promise((r) => setTimeout(r, 200));
@@ -92,7 +92,7 @@ require('./limit.js');   // the hard time limit (TEST_TIMEOUT_MS)
         replying: (document.querySelector('.plx-chat__replying') || {}).textContent || '', cancel: !!document.querySelector('.plx-chat__replying button[aria-label]'),
         ghostIconOnly: [...document.querySelectorAll('#c .plx-button')].filter((b) => !b.textContent.trim() && /plx-button--ghost/.test(b.className)).length }));
       assert.match(rest.quote, /Maya Chen.*The PDF is fine\./, at + 'the quote inside the bubble: author and text');
-      assert.match(rest.edited, AR ? /تم التحرير/ : /· ?Edited/, at + '"Edited" in the footer');
+      assert.match(rest.edited, AR ? /مُعدَّل/ : /· ?Edited/, at + '"Edited" in the footer');
       assert.equal(rest.gone, say('This message was deleted', 'تم حذف هذه الرسالة'), at + 'a deleted message says so, its text is gone');
       assert.equal(rest.goneExtras, 0, at + 'a deleted message has no quote or reactions');
       assert.match(rest.replying, AR ? /الرد على Maya Chen/ : /Replying to Maya Chen/, at + 'the composer\'s Replying to line');
