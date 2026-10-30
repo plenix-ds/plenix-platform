@@ -1,0 +1,6 @@
+### Added
+- Chat.Attachment, Chat.Attachments and Chat.Voice: a message shows pictures, files and voice messages (#637, slice 5, drawn in 637-s5c and 637-s3c). A picture is a button that opens the MediaViewer (one viewer for the message's pictures; a row when there are two or more); one that does not load becomes a card that says so. A file is a card with a bordered type icon, its name and size, and a bordered Download button. The voice player has Play and Pause (one plays at a time), a waveform of bars with the played part in the accent color, the time, a speed button (1×, 1.5×, 2×) and a keyboard seek (a range slider: arrows, Home, End). The waveform stays left to right in right-to-left pages. New words in English and Arabic; new `--plx-comp-chat-media-*`, `-file-*` and `-voice-*` tokens, no new color.
+- The composer shows a disabled record control with the tooltip "Voice messages coming soon". It does nothing: recording a voice message is #654.
+
+### Changed
+- Every icon-only control of the Chat composer (Attach, Image, Emoji, the dictation microphone, a file's cancel ×) is a bordered button (the secondary variant), and a file's icon has a 1px border, in the bubble and in the composer (the owner, #637).

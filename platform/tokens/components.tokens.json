@@ -5014,6 +5014,106 @@
       "$value": "{plx-sys.space-inline-xs}",
       "$type": "dimension"
     },
+    "chat-attachment-thumb-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension",
+      "$description": "Chat: the border round a file icon, in a bubble and in the composer (the owner, #637: icons around attachments have a border)."
+    },
+    "chat-attachment-thumb-border-color": {
+      "$value": "{plx-sys.border-default}",
+      "$type": "color"
+    },
+    "chat-media-gap": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension",
+      "$description": "Chat.Attachment: the space between attachments in a bubble, and between a picture and the text."
+    },
+    "chat-media-radius": {
+      "$value": "{plx-sys.radius-media-6px}",
+      "$type": "dimension"
+    },
+    "chat-media-border-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension"
+    },
+    "chat-media-border-color": {
+      "$value": "{plx-sys.border-default}",
+      "$type": "color"
+    },
+    "chat-media-image-height": {
+      "$value": "{plx-ref.size-160px}",
+      "$type": "dimension",
+      "$description": "Chat.Attachment: a single picture's height; the width follows it (up to the bubble)."
+    },
+    "chat-media-image-width": {
+      "$value": "{plx-ref.size-240px}",
+      "$type": "dimension"
+    },
+    "chat-media-row-image-height": {
+      "$value": "{plx-ref.size-96px}",
+      "$type": "dimension",
+      "$description": "Chat.Attachment: a picture in a row of two or more."
+    },
+    "chat-media-broken-background": {
+      "$value": "{plx-sys.state-selected}",
+      "$type": "color",
+      "$description": "Chat.Attachment: a picture that did not load."
+    },
+    "chat-media-broken-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color"
+    },
+    "chat-file-min-width": {
+      "$value": "{plx-ref.size-240px}",
+      "$type": "dimension",
+      "$description": "Chat.Attachment: the narrowest a file card is drawn."
+    },
+    "chat-voice-min-width": {
+      "$value": "{plx-ref.size-280px}",
+      "$type": "dimension",
+      "$description": "Chat.Voice: the narrowest the player is drawn."
+    },
+    "chat-voice-gap-inline": {
+      "$value": "{plx-sys.space-inline-sm}",
+      "$type": "dimension"
+    },
+    "chat-voice-bar-width": {
+      "$value": "{plx-ref.size-4px}",
+      "$type": "dimension",
+      "$description": "Chat.Voice: one bar of the waveform; the waveform is drawn left to right in every language."
+    },
+    "chat-voice-bar-height-1": {
+      "$value": "{plx-ref.size-8px}",
+      "$type": "dimension"
+    },
+    "chat-voice-bar-height-2": {
+      "$value": "{plx-ref.size-16px}",
+      "$type": "dimension"
+    },
+    "chat-voice-bar-height-3": {
+      "$value": "{plx-ref.size-24px}",
+      "$type": "dimension"
+    },
+    "chat-voice-bar-height-4": {
+      "$value": "{plx-ref.size-32px}",
+      "$type": "dimension"
+    },
+    "chat-voice-bar-color": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color"
+    },
+    "chat-voice-bar-played-color": {
+      "$value": "{plx-sys.action-primary-background}",
+      "$type": "color"
+    },
+    "chat-voice-bar-radius": {
+      "$value": "{plx-sys.radius-compact-4px}",
+      "$type": "dimension"
+    },
+    "chat-voice-time-font-size": {
+      "$value": "{plx-sys.text-caption-font-size}",
+      "$type": "dimension"
+    },
     "chat-panel-padding": {
       "$value": "{plx-sys.space-inset-md}",
       "$type": "dimension",

@@ -505,7 +505,17 @@ export default {
     "ready": "Ready",
     "failed": "Could not upload",
     "dropFiles": "Drop files to attach",
-    "attachments": "Attachments"
+    "attachments": "Attachments",
+    "openImage": "Open image",
+    "imageFailed": "This picture could not be loaded",
+    "download": "Download",
+    "playVoice": "Play voice message",
+    "pauseVoice": "Pause voice message",
+    "voiceSeek": "Voice message position",
+    "voiceSpeed": "Playback speed, {rate} times",
+    "voiceFailed": "This voice message could not be played",
+    "record": "Record a voice message",
+    "recordSoon": "Voice messages coming soon"
   },
   "checklist": {
     "dismiss": "Dismiss checklist",

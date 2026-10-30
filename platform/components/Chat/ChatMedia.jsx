@@ -1,0 +1,146 @@
+/* Plenix · Chat media (the parts of Chat.jsx that show files and voice inside a message; documented in Chat.jsx)
+   Summary: Chat.Attachment (a picture or a file in a bubble), Chat.Attachments (the row or column of them, one viewer for the pictures)
+     and Chat.Voice (the voice-message player). The composer's file icons come from here too.
+   Usage:
+     <Chat.Attachments><Chat.Attachment src={url} name="wall.png" /><Chat.Attachment type="file" name="quotes.pdf" size={2400000} href={url} /></Chat.Attachments>
+     <Chat.Voice src={audioUrl} duration={23} />
+   Props:
+     the same as in Chat.jsx (Chat.Attachment: type, src, name, alt, size, href, onDownload; Chat.Voice: src, duration, peaks, label, rates, strings).
+*/
+import React from 'react';
+import { cx } from '../../utils/cx.js';
+import { Button } from '../Button/Button.jsx';
+import { Icon } from '../Icon/Icon.jsx';
+import { Text } from '../Text/Text.jsx';
+import { MediaViewer } from '../MediaViewer/MediaViewer.jsx';
+import { useStrings } from '../../providers/LocaleProvider.jsx';
+import { announce } from '../../utils/announce.jsx';
+import { formatBytes } from '../../utils/format.js';
+import DocumentIcon from 'plenix-platform/icons/plenix/document';
+import FilePdfIcon from 'plenix-platform/icons/plenix/file-pdf';
+import FileJpgIcon from 'plenix-platform/icons/plenix/file-jpg';
+import FilePngIcon from 'plenix-platform/icons/plenix/file-png';
+import FileSvgIcon from 'plenix-platform/icons/plenix/file-svg';
+import FilePsdIcon from 'plenix-platform/icons/plenix/file-psd';
+import FileAiIcon from 'plenix-platform/icons/plenix/file-ai';
+import PlayIcon from 'plenix-platform/icons/material/play-arrow';
+import PauseIcon from 'plenix-platform/icons/material/pause';
+import DownloadIcon from 'plenix-platform/icons/material/download';
+import BrokenImageIcon from 'plenix-platform/icons/material/broken-image';
+
+const FILE_ICONS = { pdf: FilePdfIcon, jpg: FileJpgIcon, jpeg: FileJpgIcon, png: FilePngIcon, svg: FileSvgIcon, psd: FilePsdIcon, ai: FileAiIcon };
+export const fileIconOf = (name) => FILE_ICONS[String(name || '').split('.').pop().toLowerCase()] || DocumentIcon;
+export const FileIcon = ({ name }) => <Icon icon={fileIconOf(name)} size="lg" />;
+export const fill = (text, values) => String(text).replace(/\{(\w+)\}/g, (m, k) => (values[k] === undefined ? m : values[k]));
+const clock = (seconds) => { const n = Math.max(0, Math.floor(Number(seconds) || 0)); return Math.floor(n / 60) + ':' + String(n % 60).padStart(2, '0'); };
+
+const GroupContext = React.createContext(null);
+
+// a picture: a button that opens the viewer; a picture that does not load becomes a card that says so
+function Picture({ src, name, alt, row, index, t }) {
+  const group = React.useContext(GroupContext);
+  const [failedSrc, setFailedSrc] = React.useState(null), failed = failedSrc === src; // a new src is tried again
+  if (failed) {
+    return (
+      <span className={cx('plx-chat__image', 'plx-chat__image--broken', row && 'plx-chat__image--row')} role="img" aria-label={t.imageFailed + (name ? ': ' + name : '')}>
+        <Icon icon={BrokenImageIcon} size="lg" />
+        <span className="plx-chat__image-broken-text">{t.imageFailed}</span>
+      </span>
+    );
+  }
+  return (
+    <button type="button" className={cx('plx-chat__image', row && 'plx-chat__image--row')} aria-haspopup="dialog" aria-label={t.openImage + ': ' + (alt || name || '')} onClick={() => group && group.open(index)}>
+      <img className="plx-chat__image-picture" src={src} alt="" onError={() => setFailedSrc(src)} />
+    </button>
+  );
+}
+
+// a file: its icon with a border, its name and size, and Download
+function FileCard({ name, size, href, onDownload, t }) {
+  return (
+    <span className="plx-chat__file">
+      <span className="plx-chat__attachment-thumb"><FileIcon name={name} /></span>
+      <span className="plx-chat__attachment-body">
+        <span className="plx-chat__attachment-name">{name}</span>
+        {size ? <span className="plx-chat__attachment-meta"><bdi>{formatBytes(size)}</bdi></span> : null}
+      </span>
+      <Button variant="secondary" size="sm" iconOnly icon={DownloadIcon} label={t.download + ': ' + name} href={href} download={href ? name : undefined} onClick={onDownload ? () => onDownload() : undefined} />
+    </span>
+  );
+}
+
+function Attachment(props) {
+  const group = React.useContext(GroupContext);
+  const t = useStrings('chat', props.strings);
+  if (!group) return <Attachments><Attachment {...props} /></Attachments>;
+  const { type = 'image', src, name, alt, size, href, onDownload, row, index } = props;
+  return type === 'file'
+    ? <FileCard name={name} size={size} href={href || src} onDownload={onDownload} t={t} />
+    : <Picture src={src} name={name} alt={alt} row={row} index={index} t={t} />;
+}
+
+function Attachments({ className, children, strings, ...rest }) {
+  const t = useStrings('chat', strings);
+  const [at, setAt] = React.useState(null);
+  const list = React.Children.toArray(children).filter((c) => React.isValidElement(c));
+  const isImage = (c) => c.type === Attachment && (c.props.type || 'image') !== 'file';
+  const pictures = list.filter(isImage);
+  const items = pictures.map((c) => ({ src: c.props.src, alt: c.props.alt || c.props.name || '', title: c.props.name, meta: c.props.size ? [formatBytes(c.props.size)] : undefined }));
+  let n = 0;
+  const shown = list.map((c) => (isImage(c) ? React.cloneElement(c, { row: pictures.length > 1, index: n++ }) : c));
+  const ctx = React.useMemo(() => ({ open: setAt }), []);
+  return (
+    <GroupContext.Provider value={ctx}>
+      <span className={cx('plx-chat__media', pictures.length > 1 && 'plx-chat__media--row', className)} {...rest}>{shown}</span>
+      {items.length ? <MediaViewer open={at !== null} items={items} index={at === null ? 0 : at} onIndexChange={setAt} onClose={() => setAt(null)} strings={strings && strings.viewer} /> : null}
+    </GroupContext.Provider>
+  );
+}
+
+// the bars: a few levels of height (four), so the sizes are tokens; with no peaks given a fixed shape is drawn
+const DEFAULT_PEAKS = [0.2, 0.4, 0.7, 0.5, 0.3, 0.8, 1, 0.6, 0.35, 0.65, 0.9, 0.45, 0.2, 0.5, 0.75, 1, 0.65, 0.35, 0.3, 0.6, 0.85, 0.45, 0.2, 0.35];
+const levelOf = (p) => 1 + Math.min(3, Math.floor(Math.max(0, Math.min(1, Number(p) || 0)) * 4));
+const RATES = [1, 1.5, 2];
+let playing = null; // one voice message plays at a time
+
+function Voice({ src, duration, peaks, label, rates = RATES, strings, className, ...rest }) {
+  const t = useStrings('chat', strings);
+  const audio = React.useRef(null);
+  const [on, setOn] = React.useState(false), [time, setTime] = React.useState(0), [total, setTotal] = React.useState(Number(duration) || 0), [rate, setRate] = React.useState(0), [failed, setFailed] = React.useState(false), [focus, setFocus] = React.useState(false);
+  const bars = (peaks && peaks.length ? peaks.slice(0, 48) : DEFAULT_PEAKS), reached = total ? Math.round((time / total) * bars.length) : 0;
+  React.useEffect(() => () => { if (playing === audio.current) playing = null; }, []);
+  const toggle = () => {
+    const a = audio.current; if (!a) return;
+    if (!a.paused) { a.pause(); return; }
+    if (playing && playing !== a) playing.pause();
+    setFailed(false);
+    const started = a.play();
+    if (started && started.catch) started.catch(() => { setFailed(true); announce(t.voiceFailed, { politeness: 'assertive' }); });
+  };
+  const seek = (value) => { const a = audio.current; if (a) a.currentTime = value; setTime(value); };
+  const cycle = () => { const next = (rate + 1) % rates.length; setRate(next); if (audio.current) audio.current.playbackRate = rates[next]; };
+  const name = label || t.playVoice;
+  return (
+    <span className={cx('plx-chat__voice', className)} {...rest}>
+      <audio ref={audio} src={src} preload="metadata"
+        onLoadedMetadata={(e) => { if (isFinite(e.currentTarget.duration)) setTotal(e.currentTarget.duration); }}
+        onPlay={() => { playing = audio.current; audio.current.playbackRate = rates[rate]; setOn(true); }}
+        onPause={() => { if (playing === audio.current) playing = null; setOn(false); }}
+        onEnded={() => { setOn(false); setTime(0); }}
+        onTimeUpdate={(e) => setTime(e.currentTarget.currentTime)}
+        onError={() => { setFailed(true); announce(t.voiceFailed, { politeness: 'assertive' }); }} />
+      <Button variant="secondary" size="sm" iconOnly icon={on ? PauseIcon : PlayIcon} label={on ? t.pauseVoice : name} onClick={toggle} />
+      <span className={cx('plx-chat__voice-wave', focus && 'plx-chat__voice-wave--focus')} dir="ltr">
+        <span className="plx-chat__voice-bars" aria-hidden="true">{bars.map((p, i) => <span key={i} className={cx('plx-chat__bar', 'plx-chat__bar--h' + levelOf(p), i < reached && 'plx-chat__bar--played')} />)}</span>
+        <input type="range" className="plx-chat__voice-seek" min={0} max={total || 0} step={1} value={Math.min(Math.floor(time), Math.floor(total || 0))} disabled={!total}
+          aria-label={t.voiceSeek} aria-valuetext={clock(time) + ' / ' + clock(total)} onChange={(e) => seek(Number(e.target.value))}
+          onFocus={(e) => setFocus(e.target.matches(':focus-visible'))} onBlur={() => setFocus(false)} />
+      </span>
+      <span className="plx-chat__voice-time" dir="ltr">{on || time ? clock(time) + ' / ' + clock(total) : clock(total)}</span>
+      <Button variant="secondary" size="sm" aria-label={fill(t.voiceSpeed, { rate: rates[rate] })} onClick={cycle}>{rates[rate]}×</Button>
+      {failed ? <Text variant="caption" role="status">{t.voiceFailed}</Text> : null}
+    </span>
+  );
+}
+
+export { Attachment, Attachments, Voice };

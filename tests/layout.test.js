@@ -129,6 +129,7 @@ if (changed.wants({ units: ['components/DataPill', 'components/DataGrid', 'compo
   if (result.status !== 0) process.exit(result.status || 1);
 }
 if (changed.wants({ units: ['components/Button'] }) && require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'button-selected-645.test.js')], { stdio: 'inherit', env: process.env }).status !== 0) process.exit(1);   // a selected button is readable in dark (issue 645)
+if (changed.wants({ units: ['components/Chat', 'components/MediaViewer', 'components/Button'] }) && require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'chat-media-s5.test.js')], { stdio: 'inherit', env: process.env }).status !== 0) process.exit(1);   // Chat: pictures, files and voice in a bubble (issue 637, slice 5)
 // section headings wrap, then end in an ellipsis with a tooltip (issue 502): its own test, when CollapsibleSection, NavList, Tooltip or the truncation helper changed
 if (changed.wants({ units: ['components/CollapsibleSection', 'components/NavList', 'components/Tooltip', 'components/Field', 'patterns/PropertyList', 'utils/overflow.js'] })) {
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'section-headings-502.test.js')], { stdio: 'inherit', env: process.env });

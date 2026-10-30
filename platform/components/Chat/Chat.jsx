@@ -38,6 +38,15 @@
        from the end edge for yours (the owner's mockup, issue 637), half above the bubble; it takes its bubble's fill, text
        color and outline. Leave it out on the following messages of a run from the same sender
      Chat.Message.children: the message text or content
+     Chat.Attachments: the pictures and files of one message, in a row (two or more pictures) or a column; its pictures open together in one MediaViewer
+     Chat.Attachment.type: "image" (default) | "file"; src: the picture's URL (a file's download URL); name: its file name; alt: the picture's description (default the name);
+       size: bytes, shown on a file card and in the viewer; href: a file's download link (default src); onDownload(): runs on Download (instead of the link)
+       A picture is a button that opens the viewer (arrows move between the message's pictures); one that does not load becomes a card that says so.
+       A file is a card with its type icon (bordered), name, size and a bordered Download button. A lone Chat.Attachment needs no Chat.Attachments.
+     Chat.Voice.src: the audio URL; duration: seconds, until the file says; peaks: bar heights 0 to 1 (default a fixed shape); label: the Play button's name;
+       rates: playback speeds the speed button cycles (default [1, 1.5, 2]); strings: the words
+       The player: Play and Pause (one voice message plays at a time), the waveform of bars with the played part in the accent color, the time ("0:23"; "0:08 / 0:23" while
+       playing or paused part-way) and the speed. The waveform is a range slider (arrows, Home and End, drag or tap) named "Voice message position"; it is drawn left to right in every language.
      Chat.Composer.value / onChange(text): the message being written
      Chat.Composer.onSend(text, files): runs on Send and, by default, on Enter (Shift+Enter starts a new line); files are the attachments that are ready
      Chat.Composer.sendOn: "enter" (default: Enter sends) | "mod-enter" (Ctrl or Command with Enter sends; Enter starts a new line)
@@ -46,7 +55,7 @@
      Chat.Composer.onRemoveAttachment(file), onRetryAttachment(file), onCancelAttachment(file): the buttons of a file's card (Cancel while it uploads)
      Chat.Composer.accept: the file types Attach offers (default any); imageAccept: the types Image offers (default image/*)
      Chat.Composer.emoji: true (default: an Emoji button opens a panel; today a placeholder that says the picker is coming) | false (no button) | a function (insert) => node that draws the app's own picker and calls insert(text)
-     Chat.Composer.voice: true (default: a microphone dictates into the box, only where the browser has speech recognition) | false (never)
+     Chat.Composer.voice: true (default: a microphone dictates into the box, only where the browser has speech recognition; a disabled record control beside it, with the tooltip "Voice messages coming soon", is a placeholder until recording is built, issue 654) | false (neither)
      Chat.Composer.lang: the dictation language (default the page's: ar-EG for Arabic, en-US for English)
      Chat.Composer.strings: the words, for other languages
      Chat.Composer.placeholder: default "Write a message"; label: the field's accessible name (default "Message")
@@ -67,6 +76,7 @@
      The composer is one outlined box (the input's 1px border and radius; the focus turns the border): the files waiting (the card standard), the text
        area without a border of its own (Input's context hooks), and a row of tools: Attach, Image and Emoji at the start; Listening, the microphone and Send
        (an arrow with its word) at the end. The text area starts at two lines and grows to its maximum height, then scrolls; at a phone width it starts at one.
+     Every icon-only control is a bordered button (the secondary variant), as are a file's icon and the Download button: they are controls, not icons in a box (owner, issue 637).
      Dictation: the microphone starts the browser's speech recognition; the words appear in the box as they are spoken (the unfinished ones too), "Listening…"
        and a Stop button show with a red dot and a ring round the microphone; Stop, the microphone again, Send, typing in the box or the browser ending it
        stops it, and typing keeps the text exactly as typed. The microphone is looked for when the composer is drawn, so a browser that gains speech
@@ -92,6 +102,8 @@ import { Textarea } from '../Input/Input.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import { Badge } from '../Badge/Badge.jsx';
 import { Popover } from '../Popover/Popover.jsx';
+import { Tooltip } from '../Tooltip/Tooltip.jsx';
+import { Attachment, Attachments, Voice, FileIcon, fill } from './ChatMedia.jsx';
 import { ProgressBar } from '../ProgressBar/ProgressBar.jsx';
 import { announce } from '../../utils/announce.jsx';
 import { formatBytes } from '../../utils/format.js';
@@ -107,15 +119,9 @@ import CloseIcon from 'plenix-platform/icons/plenix/close';
 import RefreshIcon from 'plenix-platform/icons/plenix/refresh';
 import WarningIcon from 'plenix-platform/icons/plenix/warning';
 import CheckIcon from 'plenix-platform/icons/plenix/check';
-import DocumentIcon from 'plenix-platform/icons/plenix/document';
-import FilePdfIcon from 'plenix-platform/icons/plenix/file-pdf';
-import FileJpgIcon from 'plenix-platform/icons/plenix/file-jpg';
-import FilePngIcon from 'plenix-platform/icons/plenix/file-png';
-import FileSvgIcon from 'plenix-platform/icons/plenix/file-svg';
-import FilePsdIcon from 'plenix-platform/icons/plenix/file-psd';
-import FileAiIcon from 'plenix-platform/icons/plenix/file-ai';
 import MoodIcon from 'plenix-platform/icons/material/mood';
 import SendIcon from 'plenix-platform/icons/material/send';
+import GraphicEqIcon from 'plenix-platform/icons/material/graphic-eq';
 
 function Typing({ label, variant = 'typing', steps = [], current = 0, strings, className, ...rest }) {
   devWarn('Chat.Typing', { variant }, { variant: ['typing','thinking','steps'] });
@@ -220,16 +226,13 @@ function speechLanguage(lang) {
   return /^en$/i.test(tag) ? 'en-US' : tag;
 }
 const joinSpoken = (base, spoken) => (base && spoken ? base + (/\s$/.test(base) ? '' : ' ') + spoken.trim() : base || spoken.trim());
-const FILE_ICONS = { pdf: FilePdfIcon, jpg: FileJpgIcon, jpeg: FileJpgIcon, png: FilePngIcon, svg: FileSvgIcon, psd: FilePsdIcon, ai: FileAiIcon };
-const fileIconOf = (name) => FILE_ICONS[String(name || '').split('.').pop().toLowerCase()] || DocumentIcon;
-const fill = (text, values) => String(text).replace(/\{(\w+)\}/g, (m, k) => (values[k] === undefined ? m : values[k]));
 
 // one file waiting to be sent: its picture or icon, its name, its state (a progress bar, ready, or an error with Retry) and a button to cancel or remove it
 function ComposerFile({ file, t, onRemove, onRetry, onCancel }) {
   const status = file.status || 'ready';
   return (
     <li className="plx-chat__attachment" data-plx-status={status}>
-      <span className="plx-chat__attachment-thumb">{file.previewUrl ? <img className="plx-chat__attachment-image" src={file.previewUrl} alt="" /> : <Icon icon={fileIconOf(file.name)} size="lg" />}</span>
+      <span className="plx-chat__attachment-thumb">{file.previewUrl ? <img className="plx-chat__attachment-image" src={file.previewUrl} alt="" /> : <FileIcon name={file.name} />}</span>
       <span className="plx-chat__attachment-body">
         <span className="plx-chat__attachment-name">{file.name}</span>
         <span className="plx-chat__attachment-meta">
@@ -240,7 +243,7 @@ function ComposerFile({ file, t, onRemove, onRetry, onCancel }) {
           {status === 'error' ? <><Badge tone="negative" icon={WarningIcon}>{file.error || t.failed}</Badge>{onRetry ? <Button variant="secondary" size="xs" icon={RefreshIcon} onClick={() => onRetry(file)}>{t.retry}</Button> : null}</> : null}
         </span>
       </span>
-      <Button variant="ghost" size="sm" iconOnly icon={CloseIcon} label={status === 'uploading' ? t.cancelUpload : t.remove} onClick={() => (status === 'uploading' && onCancel ? onCancel(file) : onRemove && onRemove(file))} />
+      <Button variant="secondary" size="sm" iconOnly icon={CloseIcon} label={status === 'uploading' ? t.cancelUpload : t.remove} onClick={() => (status === 'uploading' && onCancel ? onCancel(file) : onRemove && onRemove(file))} />
     </li>
   );
 }
@@ -299,14 +302,15 @@ function Composer({ value = '', onChange, onSend, placeholder, label, sendLabel,
         {problem ? <div className="plx-chat__problem"><Text variant="caption">{problem}</Text></div> : null}
         <div className="plx-chat__tools">
           {hasFiles ? <>
-            <Button variant="ghost" size="sm" iconOnly icon={AttachmentIcon} label={t.attach} disabled={disabled} onClick={() => fileInput.current && fileInput.current.click()} />
-            <Button variant="ghost" size="sm" iconOnly icon={ImageIcon} label={t.image} disabled={disabled} onClick={() => imageInput.current && imageInput.current.click()} />
+            <Button variant="secondary" size="sm" iconOnly icon={AttachmentIcon} label={t.attach} disabled={disabled} onClick={() => fileInput.current && fileInput.current.click()} />
+            <Button variant="secondary" size="sm" iconOnly icon={ImageIcon} label={t.image} disabled={disabled} onClick={() => imageInput.current && imageInput.current.click()} />
             <input ref={fileInput} type="file" multiple hidden accept={accept} onChange={(e) => { attach(e.target.files); e.target.value = ''; }} />
             <input ref={imageInput} type="file" multiple hidden accept={imageAccept} onChange={(e) => { attach(e.target.files); e.target.value = ''; }} /></> : null}
-          {emoji ? <Popover title={t.emoji} size="sm" placement="top-start" trigger={<Button variant="ghost" size="sm" iconOnly icon={MoodIcon} label={t.emoji} disabled={disabled} />}><div className="plx-chat__panel">{emojiPanel}</div></Popover> : null}
+          {emoji ? <Popover title={t.emoji} size="sm" placement="top-start" trigger={<Button variant="secondary" size="sm" iconOnly icon={MoodIcon} label={t.emoji} disabled={disabled} />}><div className="plx-chat__panel">{emojiPanel}</div></Popover> : null}
           <span className="plx-chat__tools-end">
             {listening ? <span className="plx-chat__listening"><span className="plx-chat__dot" aria-hidden="true" />{t.listening}<Button variant="secondary" size="xs" icon={StopIcon} onClick={stopListening}>{t.stop}</Button></span> : null}
-            {voice && speech ? <span className={cx('plx-chat__mic', listening && 'plx-chat__mic--listening')}><Button variant="ghost" size="sm" iconOnly icon={MicIcon} label={listening ? t.stop : t.dictate} disabled={disabled} onClick={listening ? stopListening : listen} /></span> : null}
+            {voice ? <Tooltip content={t.recordSoon}><span className="plx-chat__record" role="button" aria-disabled="true" tabIndex={0} aria-label={t.record}><Button variant="secondary" size="sm" iconOnly icon={GraphicEqIcon} label={t.record} tooltip={false} disabled aria-hidden="true" tabIndex={-1} /></span></Tooltip> : null}
+            {voice && speech ? <span className={cx('plx-chat__mic', listening && 'plx-chat__mic--listening')}><Button variant="secondary" size="sm" iconOnly icon={MicIcon} label={listening ? t.stop : t.dictate} disabled={disabled} onClick={listening ? stopListening : listen} /></span> : null}
             <Button type="submit" variant="primary" size="sm" icon={SendIcon} disabled={!canSend}>{sendLabel}</Button>
           </span>
         </div>
@@ -315,4 +319,4 @@ function Composer({ value = '', onChange, onSend, placeholder, label, sendLabel,
   );
 }
 
-export const Chat = { Header, Thread, Group, Divider, Message, Composer, Typing };
+export const Chat = { Header, Thread, Group, Divider, Message, Attachments, Attachment, Voice, Composer, Typing };
