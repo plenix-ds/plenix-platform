@@ -1578,7 +1578,12 @@ export default {
     "message": "الرسالة",
     "send": "إرسال",
     "typing": "جارٍ الكتابة",
-    "you": "أنت"
+    "you": "أنت",
+    "sent": "تم الإرسال",
+    "read": "تمت القراءة",
+    "delivered": "تم التسليم",
+    "sending": "جارٍ الإرسال",
+    "newMessages": "رسائل جديدة"
   },
   "checklist": {
     "dismiss": "تجاهل قائمة المهام",

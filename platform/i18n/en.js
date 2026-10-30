@@ -482,7 +482,12 @@ export default {
     "message": "Message",
     "send": "Send",
     "typing": "Typing",
-    "you": "You"
+    "you": "You",
+    "sent": "Sent",
+    "read": "Read",
+    "delivered": "Delivered",
+    "sending": "Sending",
+    "newMessages": "New messages"
   },
   "checklist": {
     "dismiss": "Dismiss checklist",

@@ -2,7 +2,7 @@
    Summary: Chat.Thread with messages from two people, light and dark, left to right and right to left:
      light: theirs gray-75 (the owner reused it for #F5F7F9) with a #A9B8C7 outline, yours #E6F0FC with a #B2CBE9 outline, the
        text #253442 (the owner's colors, the new steps slate-375, blue-125, blue-275, slate-900); the thread white
-     dark: the existing dark colors (gray-900 / gray-700, blue-900 / blue-650, text gray-200)
+     dark: the existing dark colors (gray-900 / gray-700, gray-700 / gray-500 since slice 2, text gray-200)
      every bubble: a 1px border and the card's 6px corner, equal 12px left and right padding; every photo: the avatar standard
        1px border, in its bubble's fill and outline
      the photo sits on the bubble's top edge (the owner's mockup): 12px above it, 8px in from the start edge for theirs and from
@@ -64,7 +64,7 @@ const rgb = (h) => 'rgb(' + [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)
     // dark: the existing dark colors
     r = await look('dark', 'ltr');
     assert.deepEqual([r.a.bg, r.a.line, r.a.text], [rgb('#34363B'), rgb('#56585E'), rgb('#E8E9EC')], 'dark theirs');
-    assert.deepEqual([r.c.bg, r.c.line], [rgb('#1F2A3A'), rgb('#3D5A80')], 'dark yours');
+    assert.deepEqual([r.c.bg, r.c.line], [rgb('#56585E'), rgb('#8E9094')], 'dark yours: gray-700, gray-500 outline (slice 2: no blue)');
     assert.deepEqual(errors, [], 'no script errors');
     console.log('CHAT_S1_637_OK');
   } finally { if (browser) await browser.close(); server.close(); }

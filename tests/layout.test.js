@@ -70,6 +70,7 @@ if (changed.wants({ units: ['components/VisuallyHidden', 'patterns/EntityHeader'
   if (result.status !== 0) process.exit(result.status || 1);
 }
 if (changed.wants({ units: ['components/Chat', 'components/Avatar'] })) { const r637 = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'chat-s1-637.test.js')], { stdio: 'inherit', env: process.env }); if (r637.status !== 0) process.exit(r637.status || 1); }   // the chat bubbles and photos (issue 637)
+if (changed.wants({ units: ['components/Chat'] })) { const r637b = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'chat-s2-637.test.js')], { stdio: 'inherit', env: process.env }); if (r637b.status !== 0) process.exit(r637b.status || 1); }   // chat runs, lines and the Sent/Read footer (issue 637)
 if (changed.wants({ apps: ['projects'] })) { const r632 = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'project-notes-632.test.js')], { stdio: 'inherit', env: process.env }); if (r632.status !== 0) process.exit(r632.status || 1); }   // a project's notes show (issue 632)
 // computed identifiers read 01-20261020 on a right-to-left page (issue 606): its own test, when one of those parts changed
 if (changed.wants({ units: ['components/Isolate', 'components/DataGrid', 'components/DataPill', 'patterns/PropertyList', 'patterns/EntityHeader'] })) {

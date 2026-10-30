@@ -4,8 +4,13 @@
    Usage:
      <Chat.Header title="Maya Chen" meta="Online" avatar={<Avatar name="Maya Chen" />} actions={<…/>} />
      <Chat.Thread label="Conversation with Maya Chen">
-       <Chat.Message author="Maya Chen" time="10:24" avatar={<Avatar name="Maya Chen" size="xs" />}>Are the renders ready?</Chat.Message>
-       <Chat.Message mine time="10:26">Uploading them now.</Chat.Message>
+       <Chat.Divider>Today</Chat.Divider>
+       <Chat.Group author="Maya Chen" avatar={<Avatar name="Maya Chen" size="sm" />}>
+         <Chat.Message time="Oct 29, 10:24 AM">Are the renders ready?</Chat.Message>
+         <Chat.Message time="Oct 29, 10:25 AM">The PDF is fine.</Chat.Message>
+       </Chat.Group>
+       <Chat.Message mine time="Oct 29, 10:26 AM" status="read" readTime="Oct 29, 10:27 AM">Uploading them now.</Chat.Message>
+       <Chat.Divider unread />
        <Chat.Typing label="Maya is typing" />
      </Chat.Thread>
      <Chat.Composer value={text} onChange={setText} onSend={send} />
@@ -19,8 +24,15 @@
        to read (default true)
      Chat.Thread.children: the messages, in order (the oldest first)
      Chat.Message.mine: the message is the person's own (end side, the outgoing fill and outline); default false
+     Chat.Group.author / avatar / mine: one sender's run of messages: the photo and the name go on the first message only,
+       and the messages sit closer together; mine applies to every message of the run
+     Chat.Divider.children: a line across the thread with a date ("Today"); unread: the "New messages" line (its default
+       text), above the first unread message
      Chat.Message.author: who wrote it (shown above theirs; announced for mine as "You")
-     Chat.Message.time: when, as shown; dateTime: the same as a machine-readable date
+     Chat.Message.time: when it was sent, as shown, in the footer line at the bottom of the bubble ("Sent <time>");
+       dateTime: the same as a machine-readable date
+     Chat.Message.status: sending | sent | delivered | read (your messages): a clock, one gray check, two gray checks, two
+       green checks, after the times; readTime / readDateTime: when it was read, shown as "| Read <time>" once read
      Chat.Message.avatar: the sender's Avatar (size "sm"), on the bubble's top edge, 8px in from the start edge for theirs and
        from the end edge for yours (the owner's mockup, issue 637), half above the bubble; it takes its bubble's fill, text
        color and outline. Leave it out on the following messages of a run from the same sender
@@ -36,7 +48,10 @@
    Behavior:
      Messages are outlined (the owner's chat colors, issue 637): theirs in the incoming fill and outline, yours in the outgoing
        ones, the text in the message text color; the card's corner (6px) and border (1px). Each color is a role
-       (--plx-sys-message-*) with its own dark value.
+       (--plx-sys-message-*) with its own dark value; in dark mode both are grays (no blue), yours the lighter one.
+     The footer line is the smallest text (10px) in the secondary gray, never on the message line. The status mark is named
+       for assistive technology when no visible word says the state (delivered; read without a read time); green is never
+       the only sign: "Read" is written.
      The thread is a log (role="log", aria-live="polite"): new messages are announced.
      Send is disabled while the message is empty.
      Chat.Typing is a status region (role="status"), so its label is announced.
@@ -57,6 +72,9 @@ import { Text } from '../Text/Text.jsx';
 import { Textarea } from '../Input/Input.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import SparkleIcon from 'plenix-platform/icons/plenix/sparkle';
+import ClockIcon from 'plenix-platform/icons/plenix/clock';
+import DoneIcon from 'plenix-platform/icons/material/done';
+import DoneAllIcon from 'plenix-platform/icons/material/done-all';
 
 function Typing({ label, variant = 'typing', steps = [], current = 0, strings, className, ...rest }) {
   devWarn('Chat.Typing', { variant }, { variant: ['typing','thinking','steps'] });
@@ -96,20 +114,57 @@ function Thread({ label, follow = true, className, children, ...rest }) {
   return <div ref={ref} className={cx('plx-chat__thread', className)} role="log" aria-live="polite" aria-label={label} tabIndex={0} {...rest} onScroll={onScroll}>{children}</div>;
 }
 
-function Message({ mine = false, author, time, dateTime, avatar, className, children, ...rest }) {
+// the status mark: sending a clock, sent one check, delivered two, read two in green (the owner, issue 637); it is named
+// for assistive technology only when no visible word already says the state
+const STATUS_ICON = { sending: ClockIcon, sent: DoneIcon, delivered: DoneAllIcon, read: DoneAllIcon };
+
+function Footer({ status, time, dateTime, readTime, readDateTime, t }) {
+  const sending = status === 'sending', read = status === 'read' && readTime;
+  const said = sending || (status === 'sent' && time) || read;
+  return (
+    <div className="plx-chat__footer">
+      {sending ? <span>{t.sending}</span> : time ? <span>{t.sent} <time className="plx-chat__time" dateTime={dateTime}>{time}</time></span> : null}
+      {read ? <><span aria-hidden="true">|</span><span>{t.read} <time className="plx-chat__time" dateTime={readDateTime}>{readTime}</time></span></> : null}
+      {STATUS_ICON[status] ? <span className={cx('plx-chat__status', status === 'read' && 'plx-chat__status--read')}><Icon name={STATUS_ICON[status]} size="xs" label={said ? undefined : t[status]} /></span> : null}
+    </div>
+  );
+}
+
+function Message({ mine = false, author, time, dateTime, status, readTime, readDateTime, avatar, className, children, ...rest }) {
+  devWarn('Chat.Message', { status }, { status: [undefined, 'sending', 'sent', 'delivered', 'read'] });
   const t = useStrings('chat');
   return (
     <div className={cx('plx-chat__message', mine && 'plx-chat__message--mine', avatar && 'plx-chat__message--avatar', className)} {...rest}>
       {avatar ? <span className={cx('plx-chat__avatar', mine && 'plx-chat__avatar--mine')}>{avatar}</span> : null}
       <div className={cx('plx-chat__bubble', mine && 'plx-chat__bubble--mine', avatar && 'plx-chat__bubble--avatar')}>
-        {(author && !mine) || time ? (
-          <div className="plx-chat__meta">
-            {mine ? <VisuallyHidden>{t.you}</VisuallyHidden> : (author ? <span className="plx-chat__author">{author}</span> : null)}
-            {time ? <time className="plx-chat__time" dateTime={dateTime}>{time}</time> : null}
-          </div>
-        ) : null}
+        {mine ? <VisuallyHidden>{t.you}</VisuallyHidden> : author ? <div className="plx-chat__meta"><span className="plx-chat__author">{author}</span></div> : null}
         <div className="plx-chat__body">{children}</div>
+        {time || status ? <Footer status={status} time={time} dateTime={dateTime} readTime={readTime} readDateTime={readDateTime} t={t} /> : null}
       </div>
+    </div>
+  );
+}
+
+// a run of messages from one sender: the photo and the name on the first message only, the run closer together
+function Group({ mine = false, author, avatar, className, children, ...rest }) {
+  let first = true;
+  const items = React.Children.map(children, (child) => {
+    if (!React.isValidElement(child)) return child;
+    const more = first ? { mine, author, avatar } : { mine, author: undefined, avatar: undefined };
+    first = false;
+    return React.cloneElement(child, more);
+  });
+  return <div className={cx('plx-chat__group', className)} {...rest}>{items}</div>;
+}
+
+// a line across the thread: a date, or "New messages" (unread) above the first unread message
+function Divider({ unread = false, className, children, ...rest }) {
+  const t = useStrings('chat');
+  return (
+    <div className={cx('plx-chat__divider', unread && 'plx-chat__divider--unread', className)} {...rest}>
+      <span className="plx-chat__divider-line" aria-hidden="true" />
+      <span>{children ?? (unread ? t.newMessages : null)}</span>
+      <span className="plx-chat__divider-line" aria-hidden="true" />
     </div>
   );
 }
@@ -129,4 +184,4 @@ function Composer({ value = '', onChange, onSend, placeholder, label, sendLabel,
   );
 }
 
-export const Chat = { Header, Thread, Message, Composer, Typing };
+export const Chat = { Header, Thread, Group, Divider, Message, Composer, Typing };
