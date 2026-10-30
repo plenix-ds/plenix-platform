@@ -31,7 +31,8 @@
   "project": ["**/*.{js,jsx,mjs,cjs}"],
   // the build resolves this name to the script already on the page
   // paper and paperjs-offset are installed for the icon tools only: npm install --prefix tools/icons (tools/icons/package.json)
-  "ignoreDependencies": ["plenix-platform", "paper", "paperjs-offset"],
+  // @plenix-ds/lint is loaded by tools/baseline/scan.js only when it is installed beside the app or here; the scan has its own copy of the rules otherwise
+  "ignoreDependencies": ["plenix-platform", "paper", "paperjs-offset", "@plenix-ds/lint"],
   // written by build-packages.js into the package it builds
   "ignoreUnresolved": ["./check-copy.js", "./index.cjs"],
   // exports used in ways Knip cannot see (a namespace, a dynamic import in a test, text read by a build or a check)
@@ -50,6 +51,8 @@
     "platform/components/RichTextEditor/RichTextEditor.jsx": ["exports"]
   },
   "ignore": [
+    // the app tests/baseline-scan-273.test.js and tools/baseline/scan.js read as text: nothing imports it
+    "tests/fixtures/baseline-app/**",
     "platform/dist/**",
     "*/app.js",
     "dam/app/assets.js",
