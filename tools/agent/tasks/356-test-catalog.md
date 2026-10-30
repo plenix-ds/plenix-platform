@@ -41,4 +41,4 @@ Runner: `tests/run.js`. Automatic names (20): site-coverage, visual, layout, pag
 - Per push and pull request (`ci.yml`, changed mode): job "Build and checks" runs build, `check-system`, `check-spec`, release build, then `formats brand-rules login types`. Six parallel browser jobs run pages; typography; reflow; component-tokens; `site-coverage visual layout`; `data-grid keyboard focus-order semantic-html utilities navigation one-primary`.
 - By hand, final gate (`full.yml`, every page): same shape; the "fixtures" job also runs utilities and keyboard; the "behavior" job runs `data-grid focus-order semantic-html navigation`.
 - By hand, on demand (`on-demand.yml`): contrast; accessibility; high-contrast, theme and density.
-- The test site is checked out from `plenix-ds/st-john-test-site` with a read token and started with PostgreSQL 16 as a service.
+- The test site is checked out from `LighthouseCollection/st-john-test-site` (public, no token) and started with PostgreSQL 16 as a service.

@@ -1,5 +1,5 @@
 // Plenix tests · accessibility: axe-core (WCAG 2.2 A and AA rules) on every app page and every page of the St. John the
-// Beloved test site (plenix-ds/st-john-test-site, served at /Plenix/test-site/; owner, 2026-10-25: tests run there, not on the design spec). Known issues are kept in tests/baselines/a11y.json (page → rule → number of elements); the
+// Beloved test site (LighthouseCollection/st-john-test-site, served at /Plenix/test-site/; owner, 2026-10-25: tests run there, not on the design spec). Known issues are kept in tests/baselines/a11y.json (page → rule → number of elements); the
 // test fails only on a rule that is new on a page or affects more elements than recorded, so issues can only go down.
 //   node tests/a11y.test.js            compare
 //   node tests/a11y.test.js --update   record the current issues as the baseline (after fixing some, to lower it; TEST_SCOPE=full only)

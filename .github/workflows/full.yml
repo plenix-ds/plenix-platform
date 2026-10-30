@@ -1,6 +1,6 @@
 # Plenix full suite: the final gate (owner, 2026-10-13), run by hand (Actions › Full suite › Run workflow) only when
 # everything is marked complete; never per push and never per release. Every test on every page (TEST_SCOPE=full), split
-# into parallel jobs, each with a time limit. The browser tests open the St. John the Beloved test site (plenix-ds/st-john-test-site) and
+# into parallel jobs, each with a time limit. The browser tests open the St. John the Beloved test site (LighthouseCollection/st-john-test-site) and
 # the suite applications, never the design spec (owner, 2026-10-25); the design system (platform/design-system) is checked
 # out with the DS_TOKEN secret for the spec check in the build job only.
 name: Full suite
@@ -94,14 +94,13 @@ jobs:
 
       - run: npm ci
 
-      - name: The St. John test site (its own repository; DS_TOKEN reads it)
+      - name: The St. John test site (its own public repository, on the owner's account; no token needed)
         uses: actions/checkout@v5
         with:
-          repository: plenix-ds/st-john-test-site
+          repository: LighthouseCollection/st-john-test-site
           # the site's revision, pinned (#382 F8): the same Platform commit always meets the same site. Bump it here and
           # in the other workflow (ci.yml, full.yml) when the site changes, in the pull request that needs the change
           ref: 2be689dee857920f99c9f23bc2ec682670343a8e
-          token: ${{ secrets.DS_TOKEN }}
           path: st-john-test-site
 
       - name: The site's packages and build

@@ -99,7 +99,7 @@ node tools/agent/generated.js --restore
 ```
 
 `node --check` on every JavaScript file you wrote. `check-system.js` must print `SYSTEM_OK` and `check-spec.js`
-`SPEC_OK`. For a library lane also place every new component on the St. John the Beloved test site (github.com/plenix-ds/st-john-test-site, cloned beside this repository;
+`SPEC_OK`. For a library lane also place every new component on the St. John the Beloved test site (github.com/LighthouseCollection/st-john-test-site, cloned beside this repository;
 site coverage is checked by the owner's test, which you do not run) and run
 `node tools/agent/native/check.js <your native fragments>` (`ALL OK`).
 

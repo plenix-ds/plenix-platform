@@ -75,11 +75,10 @@ jobs:
 
       - run: npm ci
 
-      - name: The St. John test site (its own repository; DS_TOKEN reads it)
+      - name: The St. John test site (its own public repository, on the owner's account; no token needed)
         uses: actions/checkout@v5
         with:
-          repository: plenix-ds/st-john-test-site
-          token: ${{ secrets.DS_TOKEN }}
+          repository: LighthouseCollection/st-john-test-site
           path: st-john-test-site
 
       - name: The site's packages and build

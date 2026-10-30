@@ -1,5 +1,5 @@
 // Plenix tests · the St. John the Beloved test site: its pages, and the site itself for the browser tests. The site is its
-// own web app (github.com/plenix-ds/st-john-test-site: Node 22 + PostgreSQL, Plenix from the CDN; live at
+// own web app (github.com/LighthouseCollection/st-john-test-site: Node 22 + PostgreSQL, Plenix from the CDN; live at
 // https://stjohn.lighthouseway.org). Every automatic browser test opens its pages (and the suite applications' pages where
 // the test is about them), never the design spec (owner, 2026-10-25).
 // The tests reach it at /Plenix/test-site/ on their own server (tests/lib.js serve), which starts the site on first use
@@ -23,7 +23,7 @@ const CDN_LOCAL = path.join(ROOT, 'release', 'cdn', VERSION);
 let PAGES = null;
 function pages() {
   if (PAGES) return PAGES;
-  if (!fs.existsSync(FILE)) throw new Error('The St. John test site is not at ' + DIR + ': clone github.com/plenix-ds/st-john-test-site there, or set SITE_DIR');
+  if (!fs.existsSync(FILE)) throw new Error('The St. John test site is not at ' + DIR + ': clone github.com/LighthouseCollection/st-john-test-site there, or set SITE_DIR');
   const text = fs.readFileSync(FILE, 'utf8');
   PAGES = JSON.parse(text.slice(text.indexOf('= [') + 2).replace(/;\s*$/, ''));
   return PAGES;

@@ -3,7 +3,7 @@
 # system and spec checks, the release build and the tests without a browser. The browser tests run in changed mode
 # (tests/changed.js: the push's before-SHA, or the pull request's base, to this commit) in parallel jobs, each its own
 # checkout and build (the build takes seconds, faster than passing it on as an artifact), each with a time limit.
-# The browser tests open the St. John the Beloved test site (plenix-ds/st-john-test-site) and the suite applications, never the design
+# The browser tests open the St. John the Beloved test site (LighthouseCollection/st-john-test-site) and the suite applications, never the design
 # spec (owner, 2026-10-25), so their jobs do not check the spec out. The design system (platform/design-system) is a
 # private submodule: with the DS_TOKEN secret the build job checks it out for the spec check.
 name: Checks
@@ -145,14 +145,13 @@ jobs:
 
       - run: npm ci
 
-      - name: The St. John test site (its own repository; DS_TOKEN reads it)
+      - name: The St. John test site (its own public repository, on the owner's account; no token needed)
         uses: actions/checkout@v5
         with:
-          repository: plenix-ds/st-john-test-site
+          repository: LighthouseCollection/st-john-test-site
           # the site's revision, pinned (#382 F8): the same Platform commit always meets the same site. Bump it here and
           # in the other workflow (ci.yml, full.yml) when the site changes, in the pull request that needs the change
           ref: 2be689dee857920f99c9f23bc2ec682670343a8e
-          token: ${{ secrets.DS_TOKEN }}
           path: st-john-test-site
 
       - name: The site's packages and build
