@@ -4,7 +4,7 @@
    .plx-data-pill--soft      a soft fill (shade 100), a 1px border (shade 300), the text in shade 700
    .plx-data-pill--solid     the color as the fill, its own text color
    .plx-data-pill--plain     no box: the icon and the text in the color (a name in running text)
-   .plx-data-pill--md        size md: 24px tall, 6px and 10px at the sides (a table cell's pill)
+   .plx-data-pill--md        size md: 24px tall, 4px at each side, as above and below the text (a table cell's pill)
    .plx-data-pill--data      a technical value: the data font
    .plx-data-pill--fill      the whole width of its cell
    .plx-data-pill__icon      a 16px icon before the value
@@ -14,7 +14,7 @@
 .plx-data-pill--solid{background-color:var(--plx-comp-data-color);border-bottom-color:var(--plx-comp-data-color);border-left-color:var(--plx-comp-data-color);border-right-color:var(--plx-comp-data-color);border-top-color:var(--plx-comp-data-color);color:var(--plx-comp-data-color-on-soft);}
 .plx-data-pill--plain{background-color:transparent;border-bottom-color:transparent;border-left-color:transparent;border-right-color:transparent;border-top-color:transparent;color:var(--plx-comp-category-on-soft);font-weight:inherit;min-block-size:0;padding-inline-end:0;padding-inline-start:0;}
 .plx-data-pill--plain:not([data-plx-category]){color:inherit;}
-/* size md: 24px tall, 6px before the icon and 10px after the value, at every density (owner, 2026-10-22; DataGrid's pills) */
+/* size md: 24px tall, 4px before the icon or the value and 4px after it, as above and below the text, at every density (owner, 2026-10-22 and 2026-10-29; DataGrid's pills) */
 .plx-data-pill--md{min-block-size:var(--plx-comp-data-pill-md-height);padding-inline-end:var(--plx-comp-data-pill-md-padding-inline-end);padding-inline-start:var(--plx-comp-data-pill-md-padding-inline-start);}
 .plx-data-pill--data{font-family:var(--plx-comp-data-pill-data-font-family);word-spacing:var(--plx-sys-font-data-word-spacing);}
 .plx-data-pill--fill{display:flex;inline-size:100%;}

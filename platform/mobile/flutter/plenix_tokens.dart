@@ -64,6 +64,11 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
   final Color stateSelectedPressed;
   final Color stateHoverBorder;
   final Color stateSelectedBorder;
+  final Color messageIncomingBackground;
+  final Color messageIncomingBorder;
+  final Color messageOutgoingBackground;
+  final Color messageOutgoingBorder;
+  final Color messageText;
   final Color contentDefault;
   final Color contentMuted;
   final Color contentSubtle;
@@ -422,6 +427,11 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     required this.stateSelectedPressed,
     required this.stateHoverBorder,
     required this.stateSelectedBorder,
+    required this.messageIncomingBackground,
+    required this.messageIncomingBorder,
+    required this.messageOutgoingBackground,
+    required this.messageOutgoingBorder,
+    required this.messageText,
     required this.contentDefault,
     required this.contentMuted,
     required this.contentSubtle,
@@ -781,6 +791,11 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     stateSelectedPressed: Color(0xFFC8DFF7),
     stateHoverBorder: Color(0xFFD0D0D0),
     stateSelectedBorder: Color(0xFFC0CCDA),
+    messageIncomingBackground: Color(0xFFF7F7F8),
+    messageIncomingBorder: Color(0xFFA9B8C7),
+    messageOutgoingBackground: Color(0xFFE6F0FC),
+    messageOutgoingBorder: Color(0xFFB2CBE9),
+    messageText: Color(0xFF253442),
     contentDefault: Color(0xFF34363B),
     contentMuted: Color(0xFF56585E),
     contentSubtle: Color(0xFF56585E),
@@ -1140,6 +1155,11 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     stateSelectedPressed: Color(0xFF6E6E6E),
     stateHoverBorder: Color(0xFF8E9094),
     stateSelectedBorder: Color(0xFF8E9094),
+    messageIncomingBackground: Color(0xFF34363B),
+    messageIncomingBorder: Color(0xFF56585E),
+    messageOutgoingBackground: Color(0xFF1F2A3A),
+    messageOutgoingBorder: Color(0xFF3D5A80),
+    messageText: Color(0xFFE8E9EC),
     contentDefault: Color(0xFFE8E9EC),
     contentMuted: Color(0xFFD0D0D0),
     contentSubtle: Color(0xFF8E9094),

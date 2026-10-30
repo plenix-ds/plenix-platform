@@ -30704,8 +30704,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      variant: "soft" (default: a soft fill, a 1px border two shades darker, the text in the darkest shade) | "solid" (the
        color as the fill, its own text color: a strong value such as a price band) | "plain" (no box: the icon and the
        text in the color, a name in running text)
-     size: (default) the height of the text line it sits in (the density's inline control height) | "md": 24px tall, 6px
-       before the icon and 10px after the value, at every density (owner, 2026-10-22; a DataGrid or Table cell's pill)
+     size: (default) the height of the text line it sits in (the density's inline control height) | "md": 24px tall, 4px
+       before the icon (or the value) and 4px after the value, equal to the space above and below the text, at every density (owner, 2026-10-22 and
+       2026-10-29; a DataGrid or Table cell's pill). A pill the grid widens to its column's shared width centers its content, so the extra splits between the sides
      icon: an icon name before the value (a calendar for a date, the sun or the moon for a time); false: no icon at all,
        not even the gender's: a name beside the person's avatar or picture never repeats its icon (owner, 2026-10-19)
      data: a technical value (a code, a number, a time, a price): the data font
@@ -32600,7 +32601,7 @@ function NextEngine(props) {
   // uniform pill widths (CTM, 2026-10-22; always on, owner uniform-pills-always-35): every standard pill of a column as wide as the
   // column's widest pill in the current view (the filtered, sorted page, every row of it, not only the rows drawn), so scrolling
   // a long list never changes it. The uniformPillWidths prop is accepted and ignored (deprecated).
-  // Measured like the column widths (the pill's font, weight, sides, border and icon), snapped up to the grid.
+  // Measured like the column widths (the pill's font, weight, sides, border and icon), snapped up to the grid, the text centered in it so the leftover splits between the two sides (#649).
   const gridKey = _react.default.useId(),
     [fontsReady, setFontsReady] = _react.default.useState(0);
   _react.default.useEffect(() => {
@@ -32646,7 +32647,7 @@ function NextEngine(props) {
       rules.push('[data-plx-grid-key="' + key + '"] .plx-data-pill[data-plx-pill-field="' + CSS.escape(c.field) + '"]{inline-size:' + (0, _grid.snapToGrid)(widest + sides + (icon ? glyph : 0), {
         round: 'up',
         step
-      }) + 'px;}');
+      }) + 'px;justify-content:center;}');
     });
     store.rules.set(gridKey, rules.join('\n'));
     store.flush();
@@ -38354,10 +38355,12 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Chat.Thread.follow: opens at the newest message and keeps it in view as messages arrive, unless the person scrolled up
        to read (default true)
      Chat.Thread.children: the messages, in order (the oldest first)
-     Chat.Message.mine: the message is the person's own (end side, in the action color); default false
+     Chat.Message.mine: the message is the person's own (end side, the outgoing fill and outline); default false
      Chat.Message.author: who wrote it (shown above theirs; announced for mine as "You")
      Chat.Message.time: when, as shown; dateTime: the same as a machine-readable date
-     Chat.Message.avatar: an Avatar beside their messages
+     Chat.Message.avatar: the sender's Avatar (size "sm"), on the bubble's top edge, 8px in from the start edge for theirs and
+       from the end edge for yours (the owner's mockup, issue 637), half above the bubble; it takes its bubble's fill, text
+       color and outline. Leave it out on the following messages of a run from the same sender
      Chat.Message.children: the message text or content
      Chat.Composer.value / onChange(text): the message being written
      Chat.Composer.onSend(text): runs on Send and on Enter (Shift+Enter starts a new line)
@@ -38368,6 +38371,9 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
      Chat.Typing.strings: thinking and ProgressSteps state words; className: more classes
      className on every part: more classes
    Behavior:
+     Messages are outlined (the owner's chat colors, issue 637): theirs in the incoming fill and outline, yours in the outgoing
+       ones, the text in the message text color; the card's corner (6px) and border (1px). Each color is a role
+       (--plx-sys-message-*) with its own dark value.
      The thread is a log (role="log", aria-live="polite"): new messages are announced.
      Send is disabled while the message is empty.
      Chat.Typing is a status region (role="status"), so its label is announced.
@@ -38489,11 +38495,11 @@ function Message({
 }) {
   const t = (0, _LocaleProvider.useStrings)('chat');
   return /*#__PURE__*/_react.default.createElement("div", _extends({
-    className: (0, _cx.cx)('plx-chat__message', mine && 'plx-chat__message--mine', className)
-  }, rest), !mine && avatar ? /*#__PURE__*/_react.default.createElement("span", {
-    className: "plx-chat__avatar"
+    className: (0, _cx.cx)('plx-chat__message', mine && 'plx-chat__message--mine', avatar && 'plx-chat__message--avatar', className)
+  }, rest), avatar ? /*#__PURE__*/_react.default.createElement("span", {
+    className: (0, _cx.cx)('plx-chat__avatar', mine && 'plx-chat__avatar--mine')
   }, avatar) : null, /*#__PURE__*/_react.default.createElement("div", {
-    className: "plx-chat__bubble"
+    className: (0, _cx.cx)('plx-chat__bubble', mine && 'plx-chat__bubble--mine', avatar && 'plx-chat__bubble--avatar')
   }, author && !mine || time ? /*#__PURE__*/_react.default.createElement("div", {
     className: "plx-chat__meta"
   }, mine ? /*#__PURE__*/_react.default.createElement(_VisuallyHidden.VisuallyHidden, null, t.you) : author ? /*#__PURE__*/_react.default.createElement("span", {

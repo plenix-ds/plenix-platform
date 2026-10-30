@@ -69,6 +69,7 @@ if (changed.wants({ units: ['components/VisuallyHidden', 'patterns/EntityHeader'
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'page-h1.test.js')], { stdio: 'inherit', env: process.env });
   if (result.status !== 0) process.exit(result.status || 1);
 }
+if (changed.wants({ units: ['components/Chat', 'components/Avatar'] })) { const r637 = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'chat-s1-637.test.js')], { stdio: 'inherit', env: process.env }); if (r637.status !== 0) process.exit(r637.status || 1); }   // the chat bubbles and photos (issue 637)
 if (changed.wants({ apps: ['projects'] })) { const r632 = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'project-notes-632.test.js')], { stdio: 'inherit', env: process.env }); if (r632.status !== 0) process.exit(r632.status || 1); }   // a project's notes show (issue 632)
 // computed identifiers read 01-20261020 on a right-to-left page (issue 606): its own test, when one of those parts changed
 if (changed.wants({ units: ['components/Isolate', 'components/DataGrid', 'components/DataPill', 'patterns/PropertyList', 'patterns/EntityHeader'] })) {
@@ -113,6 +114,11 @@ if (changed.wants({ units: ['components/Card'], apps: ['dashboard', 'calendar', 
 // a fetched icon asks for one file, a few at a time (issue 642): its own test, when the Icon component changed
 if (changed.wants({ units: ['components/Icon'] })) {
   const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'icon-fetch-642.test.js')], { stdio: 'inherit', env: process.env });
+  if (result.status !== 0) process.exit(result.status || 1);
+}
+// a pill in a DataGrid or Table cell has equal padding at both sides (issue 649): its own test, when the DataPill, the DataGrid or the Table changed
+if (changed.wants({ units: ['components/DataPill', 'components/DataGrid', 'components/Table'] })) {
+  const result = require('child_process').spawnSync(process.execPath, [path.join(__dirname, 'pill-padding-649.test.js')], { stdio: 'inherit', env: process.env });
   if (result.status !== 0) process.exit(result.status || 1);
 }
 // section headings wrap, then end in an ellipsis with a tooltip (issue 502): its own test, when CollapsibleSection, NavList, Tooltip or the truncation helper changed

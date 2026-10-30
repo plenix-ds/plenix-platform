@@ -1191,6 +1191,11 @@
       "$value": "#a2c0e3",
       "$type": "color"
     },
+    "color-blue-275": {
+      "$value": "#b2cbe9",
+      "$type": "color",
+      "$description": "The owner's chat color (2026-10-29, #637): an outgoing message's border. Between blue 300 and blue 250 by lightness."
+    },
     "color-blue-250": {
       "$value": "#c0ccda",
       "$type": "color"
@@ -1199,6 +1204,11 @@
       "$value": "#c8dff7",
       "$type": "color"
     },
+    "color-blue-125": {
+      "$value": "#e6f0fc",
+      "$type": "color",
+      "$description": "The owner's chat color (2026-10-29, #637): an outgoing message's fill. Between blue 200 and blue 100 by lightness."
+    },
     "color-blue-100": {
       "$value": "#ebf0f7",
       "$type": "color"
@@ -1206,6 +1216,16 @@
     "color-blue-50": {
       "$value": "#f8fafd",
       "$type": "color"
+    },
+    "color-slate-900": {
+      "$value": "#253442",
+      "$type": "color",
+      "$description": "Slate, the owner's blue-gray family (2026-10-29, #637): a message's text. Steps numbered by the gray scale's lightness."
+    },
+    "color-slate-375": {
+      "$value": "#a9b8c7",
+      "$type": "color",
+      "$description": "Slate (the owner, 2026-10-29, #637): an incoming message's border. Between the gray 350 and gray 400 lightness."
     },
     "color-purple-900": {
       "$value": "#551a8b",

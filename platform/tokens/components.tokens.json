@@ -4746,7 +4746,7 @@
       "$type": "dimension"
     },
     "chat-thread-background": {
-      "$value": "{plx-sys.surface-sunken}",
+      "$value": "{plx-sys.surface-default}",
       "$type": "color"
     },
     "chat-thread-padding-block": {
@@ -4761,16 +4761,12 @@
       "$value": "{plx-sys.space-stack-sm}",
       "$type": "dimension"
     },
-    "chat-message-gap": {
-      "$value": "{plx-sys.space-inline-xs}",
-      "$type": "dimension"
-    },
     "chat-bubble-background": {
-      "$value": "{plx-sys.surface-default}",
+      "$value": "{plx-sys.message-incoming-background}",
       "$type": "color"
     },
     "chat-bubble-border-color": {
-      "$value": "{plx-sys.border-subtle}",
+      "$value": "{plx-sys.message-incoming-border}",
       "$type": "color"
     },
     "chat-bubble-radius": {
@@ -4782,7 +4778,7 @@
       "$type": "dimension"
     },
     "chat-bubble-text": {
-      "$value": "{plx-sys.content-default}",
+      "$value": "{plx-sys.message-text}",
       "$type": "color"
     },
     "chat-bubble-font-size": {
@@ -4802,16 +4798,36 @@
       "$type": "dimension"
     },
     "chat-message-mine-bubble-background": {
-      "$value": "{plx-sys.action-primary-background}",
+      "$value": "{plx-sys.message-outgoing-background}",
       "$type": "color"
     },
     "chat-message-mine-bubble-border-color": {
-      "$value": "{plx-sys.action-primary-background}",
+      "$value": "{plx-sys.message-outgoing-border}",
       "$type": "color"
     },
     "chat-message-mine-bubble-text": {
-      "$value": "{plx-sys.action-primary-content}",
+      "$value": "{plx-sys.message-text}",
       "$type": "color"
+    },
+    "chat-time-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color",
+      "$description": "The time and status under a message: the secondary text color on both kinds of message (#637)."
+    },
+    "chat-avatar-above": {
+      "$value": "{plx-ref.space-12px}",
+      "$type": "dimension",
+      "$description": "How much of the sender's 28px photo sits above the bubble's top edge (the owner's mockup, #637): 12px above, 16px inside, covering the border. The message keeps this room above it."
+    },
+    "chat-avatar-inset": {
+      "$value": "{plx-ref.space-8px}",
+      "$type": "dimension",
+      "$description": "How far the photo sits in from the bubble's start edge (yours: the end edge), about a third of its width (#637)."
+    },
+    "chat-bubble-avatar-padding-block-start": {
+      "$value": "{plx-ref.space-24px}",
+      "$type": "dimension",
+      "$description": "A bubble's top padding under a photo: the photo's 16px inside plus 8px, so the name, time and text clear it (#637)."
     },
     "chat-meta-gap": {
       "$value": "{plx-sys.space-inline-xs}",
@@ -4828,10 +4844,6 @@
     "chat-time-font-family": {
       "$value": "{plx-sys.font-data}",
       "$type": "fontFamily"
-    },
-    "chat-message-others-time-opacity": {
-      "$value": "{plx-sys.opacity-high}",
-      "$type": "number"
     },
     "chat-composer-border-block-start-color": {
       "$value": "{plx-sys.border-divider}",
