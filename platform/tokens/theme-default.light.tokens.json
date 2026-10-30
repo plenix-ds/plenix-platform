@@ -188,6 +188,11 @@
       "$type": "color",
       "$extensions": { "plenix": { "group": "text", "purpose": "The text of a message (Chat; #637): 11.1:1 or more on both message fills." } }
     },
+    "message-read": {
+      "$value": "{plx-ref.color-green-500}",
+      "$type": "color",
+      "$extensions": { "plenix": { "group": "status", "purpose": "The two green checks of a read message (Chat; the owner, #637): the success green, 4.7:1 on your message." } }
+    },
     "content-default": {
       "$value": "{plx-ref.color-gray-900}",
       "$type": "color",

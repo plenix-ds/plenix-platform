@@ -4814,6 +4814,53 @@
       "$type": "color",
       "$description": "The time and status under a message: the secondary text color on both kinds of message (#637)."
     },
+    "chat-footer-font-size": {
+      "$value": "{plx-ref.font-size-10}",
+      "$type": "dimension",
+      "$description": "The footer line at the bottom of a bubble (Sent and Read times, the status): smaller than the caption (the owner's slice 2 go, #637), as badges and field hints; its gray passes AA (4.5:1) on every message fill."
+    },
+    "chat-footer-gap": {
+      "$value": "{plx-sys.space-inline-xs}",
+      "$type": "dimension"
+    },
+    "chat-status-read-icon": {
+      "$value": "{plx-sys.message-read}",
+      "$type": "color",
+      "$description": "The two checks of a read message: green (the owner, #637); sent and delivered stay in the footer's gray."
+    },
+    "chat-group-row-gap": {
+      "$value": "{plx-sys.space-stack-xs}",
+      "$type": "dimension",
+      "$description": "The space between the messages of one sender's run (Chat.Group), tighter than between runs (#637)."
+    },
+    "chat-divider-text": {
+      "$value": "{plx-sys.content-muted}",
+      "$type": "color"
+    },
+    "chat-divider-font-size": {
+      "$value": "{plx-ref.font-size-11}",
+      "$type": "dimension"
+    },
+    "chat-divider-unread-font-weight": {
+      "$value": "{plx-sys.font-weight-semibold}",
+      "$type": "fontWeight"
+    },
+    "chat-divider-gap": {
+      "$value": "{plx-ref.space-12px}",
+      "$type": "dimension"
+    },
+    "chat-divider-line-color": {
+      "$value": "{plx-sys.border-divider}",
+      "$type": "color"
+    },
+    "chat-divider-line-width": {
+      "$value": "{plx-sys.border-width-thin}",
+      "$type": "dimension"
+    },
+    "chat-divider-margin-block": {
+      "$value": "{plx-ref.space-8px}",
+      "$type": "dimension"
+    },
     "chat-avatar-above": {
       "$value": "{plx-ref.space-12px}",
       "$type": "dimension",
@@ -4840,10 +4887,6 @@
     "chat-author-font-weight": {
       "$value": "{plx-sys.font-weight-semibold}",
       "$type": "fontWeight"
-    },
-    "chat-time-font-family": {
-      "$value": "{plx-sys.font-data}",
-      "$type": "fontFamily"
     },
     "chat-composer-padding-block": {
       "$value": "{plx-sys.space-inset-sm}",

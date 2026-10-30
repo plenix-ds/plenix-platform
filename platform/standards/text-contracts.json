@@ -528,10 +528,29 @@
     "font-size"
    ]
   },
+  "plx-chat__divider": {
+   "contract": "adjusts",
+   "props": [
+    "font-size"
+   ]
+  },
+  "plx-chat__divider--unread": {
+   "contract": "adjusts",
+   "props": [
+    "font-weight"
+   ]
+  },
   "plx-chat__drop": {
    "contract": "adjusts",
    "props": [
     "font-weight"
+   ]
+  },
+  "plx-chat__footer": {
+   "contract": "adjusts",
+   "props": [
+    "font-size",
+    "line-height"
    ]
   },
   "plx-chat__header-meta": {
@@ -560,11 +579,6 @@
    "props": [
     "font-size"
    ]
-  },
-  "plx-chat__time": {
-   "contract": "establishes",
-   "role": "caption",
-   "font": "mono"
   },
   "plx-check": {
    "contract": "adjusts",
