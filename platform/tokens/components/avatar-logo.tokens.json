@@ -1,0 +1,10 @@
+{
+  "$description": "Avatar: an AI provider's logo, or another logo (owner, 2026-10-29, #637).",
+  "plx-comp": {
+    "avatar-logo-size": {
+      "$value": "75%",
+      "$type": "dimension",
+      "$description": "Avatar: a logo takes three quarters of the square, as the gender icon does (the icon keeps its own padding)."
+    }
+  }
+}

@@ -4,10 +4,16 @@
    Usage:
      <Avatar name="Maya Chen" size="md" />
      <Avatar name="Maya Chen" src="/people/mc.jpg" label="Maya Chen" />
+     <Avatar ai="claude" label="Claude" />          <Avatar logo={CompanyLogo} label="Acme Assistant" />
    Props:
      name: the person's name; without a picture the avatar shows its initials, from initialsOf(name)
      src: the URL of the person's picture; it replaces the initials
      initials: the text to show, only when there is no name to work from
+     ai: an AI participant's provider, shown as its logo: "claude" | "anthropic" | "gemini" | "perplexity" | "meta" |
+       "mistral" | "deepseek" (the brands' own single-color marks, built in: platform/icons/custom/BRANDS.md, which also lists
+       the providers not included); give label (or a name nearby) as for a person
+     logo: any other logo, as an icon (a module imported or registered through the icon path, or an icon name), never markup
+     The order: a logo (ai, then logo) first, then the picture (src), then the gender icon or the initials
      size: "2xs" 20px | "xs" 24px | "sm" 28px (default) | "md" 32px | "lg" 40px | "xl" 48px | "2xl" 64px; "2xs" is for inside a small control
        (the account row in a pane footer)
      color: the person's own color when the data has one, a data color: a hue name (blue, green, purple, red, brown, gray: the --plx-sys-data-color-<hue> tokens), set as data-plx-color; no value is written (batch 280): its soft fill with
@@ -47,6 +53,16 @@ import { StatusDot } from '../StatusDot/StatusDot.jsx';
 import { useStrings } from '../../providers/LocaleProvider.jsx';
 import PersonFemaleIcon from 'plenix-platform/icons/plenix/person-female';
 import PersonMaleIcon from 'plenix-platform/icons/plenix/person-male';
+import AnthropicLogo from 'plenix-platform/icons/plenix/ai-anthropic';
+import ClaudeLogo from 'plenix-platform/icons/plenix/ai-claude';
+import DeepSeekLogo from 'plenix-platform/icons/plenix/ai-deepseek';
+import GeminiLogo from 'plenix-platform/icons/plenix/ai-gemini';
+import MetaLogo from 'plenix-platform/icons/plenix/ai-meta';
+import MistralLogo from 'plenix-platform/icons/plenix/ai-mistral';
+import PerplexityLogo from 'plenix-platform/icons/plenix/ai-perplexity';
+
+// the built-in AI provider logos (owner, 2026-10-29, #637): the brands' own single-color marks, platform/icons/custom/BRANDS.md
+const AI = { anthropic: AnthropicLogo, claude: ClaudeLogo, deepseek: DeepSeekLogo, gemini: GeminiLogo, meta: MetaLogo, mistral: MistralLogo, perplexity: PerplexityLogo };
 
 const SIZES = [20, 24, 28, 32, 40, 48, 64];   // the scale its classes define (plx-avatar--24 …)
 // the names pages use: 2xs 20 (inside a small control: the account row in a pane footer), xs 24, sm 28, md 32, lg 40, xl 48, 2xl 64 (numbers are rejected by the system check)
@@ -69,8 +85,10 @@ export function initialsOf(name) {
 
 const GENDER = { male: { tone: 'blue', icon: PersonMaleIcon }, female: { tone: 'pink', icon: PersonFemaleIcon } };
 
-export function Avatar({ name, src, initials, size = 'sm', color, category, gender, label, presence, strings, className, ...rest }) {
-  devWarn('Avatar', { size }, { size: ['2xs','xs','sm','md','lg','xl','2xl'] });
+export function Avatar({ name, src, initials, ai, logo, size = 'sm', color, category, gender, label, presence, strings, className, ...rest }) {
+  devWarn('Avatar', { size, ai }, { size: ['2xs','xs','sm','md','lg','xl','2xl'], ai: Object.keys(AI) });
+  // a logo first (an AI provider's, or the one given), then the picture, then the gender icon or the initials
+  const mark = AI[ai] || logo || null;
   const n = NAMED[size] || size;
   const s = SIZES.indexOf(n) >= 0 ? n : NAMED.sm;
   const text = name ? initialsOf(name) : initials;
@@ -80,11 +98,11 @@ export function Avatar({ name, src, initials, size = 'sm', color, category, gend
   // a picture that fails to load falls back to the initials (batch 215)
   const [failed, setFailed] = React.useState(false);
   React.useEffect(() => { setFailed(false); }, [src]);
-  const picture = src && !failed;
-  const g = !picture ? GENDER[gender] : null;   // no picture and a known gender: the gender icon
+  const picture = !mark && src && !failed;
+  const g = !mark && !picture ? GENDER[gender] : null;   // no logo, no picture and a known gender: the gender icon
   return (
     <span className={cx('plx-avatar', 'plx-avatar--' + s, p && 'plx-avatar--presence', g && 'plx-avatar--gender', className)} data-plx-avatar="" data-plx-color={g ? undefined : color || undefined} data-plx-category={g ? g.tone : category || undefined} role={label ? 'img' : undefined}
-      aria-label={named} aria-hidden={label ? undefined : true} {...rest}>{picture ? <img className="plx-avatar__image" src={src} alt="" loading="lazy" decoding="async" onError={() => setFailed(true)} /> : g ? <Icon name={g.icon} filled className="plx-avatar__gender" /> : text}
+      aria-label={named} aria-hidden={label ? undefined : true} {...rest}>{mark ? <Icon name={mark} className="plx-avatar__logo" /> : picture ? <img className="plx-avatar__image" src={src} alt="" loading="lazy" decoding="async" onError={() => setFailed(true)} /> : g ? <Icon name={g.icon} filled className="plx-avatar__gender" /> : text}
       {p ? <StatusDot tone={p} size={DOT[s]} icon={DOT[s] !== 'sm'} className="plx-avatar__presence" /> : null}</span>
   );
 }
