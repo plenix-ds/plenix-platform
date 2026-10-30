@@ -160,6 +160,8 @@
   --plx-sys-shadow-halo: 0 0 1px var(--plx-ref-color-black-alpha-20), 0 0 1px var(--plx-ref-color-black-alpha-14), 0 0 3px var(--plx-ref-color-black-alpha-12);
   --plx-sys-shadow-floating: 0 0 1px var(--plx-ref-color-black-alpha-20), 0 0 3px var(--plx-ref-color-black-alpha-14), 0 0 6px var(--plx-ref-color-black-alpha-12);
   --plx-sys-card-surface-rim: var(--plx-ref-color-gray-100);
+  --plx-sys-control-raised-hover-rim: var(--plx-ref-color-gray-250);
+  --plx-sys-control-raised-pressed: var(--plx-ref-color-gray-250);
   --plx-sys-shadow-modal: 0 0 40px var(--plx-ref-color-gray-800), 0 0 0 1px var(--plx-ref-color-gray-800);
   --plx-sys-shadow-ring: 0 0 0 2px var(--plx-ref-color-blue-400);
   --plx-sys-shadow-ring-subtle: 0 0 0 2px var(--plx-ref-color-blue-100);
@@ -547,6 +549,8 @@
   --plx-sys-shadow-halo: 0 0 1px var(--plx-ref-color-black), 0 0 1px var(--plx-ref-color-black), 0 0 3px var(--plx-ref-color-black);
   --plx-sys-shadow-floating: 0 0 1px var(--plx-ref-color-black), 0 0 3px var(--plx-ref-color-black), 0 0 6px var(--plx-ref-color-black);
   --plx-sys-card-surface-rim: var(--plx-ref-color-gray-900);
+  --plx-sys-control-raised-hover-rim: var(--plx-ref-color-gray-800);
+  --plx-sys-control-raised-pressed: var(--plx-ref-color-gray-900);
   --plx-sys-shadow-modal: 0 0 40px var(--plx-ref-color-gray-800), 0 0 0 1px var(--plx-ref-color-gray-800);
   --plx-sys-shadow-ring: 0 0 0 2px var(--plx-ref-color-blue-400);
   --plx-sys-shadow-ring-subtle: 0 0 0 2px var(--plx-ref-color-black);
