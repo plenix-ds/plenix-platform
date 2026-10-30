@@ -69,6 +69,7 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
   final Color messageOutgoingBackground;
   final Color messageOutgoingBorder;
   final Color messageText;
+  final Color messageRead;
   final Color contentDefault;
   final Color contentMuted;
   final Color contentSubtle;
@@ -432,6 +433,7 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     required this.messageOutgoingBackground,
     required this.messageOutgoingBorder,
     required this.messageText,
+    required this.messageRead,
     required this.contentDefault,
     required this.contentMuted,
     required this.contentSubtle,
@@ -796,6 +798,7 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     messageOutgoingBackground: Color(0xFFE6F0FC),
     messageOutgoingBorder: Color(0xFFB2CBE9),
     messageText: Color(0xFF253442),
+    messageRead: Color(0xFF107C10),
     contentDefault: Color(0xFF34363B),
     contentMuted: Color(0xFF56585E),
     contentSubtle: Color(0xFF56585E),
@@ -1157,9 +1160,10 @@ class PlenixTheme extends ThemeExtension<PlenixTheme> {
     stateSelectedBorder: Color(0xFF8E9094),
     messageIncomingBackground: Color(0xFF34363B),
     messageIncomingBorder: Color(0xFF56585E),
-    messageOutgoingBackground: Color(0xFF1F2A3A),
-    messageOutgoingBorder: Color(0xFF3D5A80),
+    messageOutgoingBackground: Color(0xFF56585E),
+    messageOutgoingBorder: Color(0xFF8E9094),
     messageText: Color(0xFFE8E9EC),
+    messageRead: Color(0xFF9BD39B),
     contentDefault: Color(0xFFE8E9EC),
     contentMuted: Color(0xFFD0D0D0),
     contentSubtle: Color(0xFF8E9094),
