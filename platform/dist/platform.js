@@ -39826,7 +39826,7 @@ exports.Attachment = Attachment;
 exports.Attachments = Attachments;
 exports.FileIcon = void 0;
 exports.Voice = Voice;
-exports.fill = exports.fileIconOf = void 0;
+exports.fill = void 0;
 var _react = _interopRequireDefault(require("react"));
 var _cx = require("../../utils/cx.js");
 var _Button = require("../Button/Button.jsx");
@@ -39867,7 +39867,6 @@ const FILE_ICONS = {
   ai: _fileAi.default
 };
 const fileIconOf = name => FILE_ICONS[String(name || '').split('.').pop().toLowerCase()] || _document.default;
-exports.fileIconOf = fileIconOf;
 const FileIcon = ({
   name
 }) => /*#__PURE__*/_react.default.createElement(_Icon.Icon, {
