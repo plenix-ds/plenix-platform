@@ -4,7 +4,7 @@
    .plx-data-pill--soft      a soft fill (shade 100), a 1px border (shade 300), the text in shade 700
    .plx-data-pill--solid     the color as the fill, its own text color
    .plx-data-pill--plain     no box: the icon and the text in the color (a name in running text)
-   .plx-data-pill--md        size md: 24px tall, 6px and 10px at the sides (a table cell's pill)
+   .plx-data-pill--md        size md: 24px tall, 4px at each side, as above and below the text (a table cell's pill)
    .plx-data-pill--data      a technical value: the data font
    .plx-data-pill--fill      the whole width of its cell
    .plx-data-pill__icon      a 16px icon before the value
