@@ -11,7 +11,7 @@ const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
 const SITE = path.join(require('./site.js').DIR, 'site');
-if (!fs.existsSync(SITE)) { console.log('SITE_COVERAGE_FAIL the St. John test site is not at ' + SITE + ' (clone github.com/plenix-ds/st-john-test-site beside this repository, or set SITE_DIR)'); process.exit(1); }
+if (!fs.existsSync(SITE)) { console.log('SITE_COVERAGE_FAIL the St. John test site is not at ' + SITE + ' (clone github.com/LighthouseCollection/st-john-test-site beside this repository, or set SITE_DIR)'); process.exit(1); }
 const read = (f) => fs.readFileSync(f, 'utf8');
 const site = require('./site.js');
 

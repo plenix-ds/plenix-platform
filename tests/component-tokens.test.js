@@ -1,4 +1,4 @@
-// Plenix tests · component tokens, on the real components of the St. John the Beloved test site (plenix-ds/st-john-test-site, served at /Plenix/test-site/; owner,
+// Plenix tests · component tokens, on the real components of the St. John the Beloved test site (LighthouseCollection/st-john-test-site, served at /Plenix/test-site/; owner,
 // 2026-10-25: the tests run on the site, not on the design spec). It replaces the design spec's component labs in the
 // automatic runs: the labs drew every size, variant and state of a component on a spec page and checked that each token
 // moves the property it names; this test does the same on the components the site really draws.

@@ -40,7 +40,7 @@ Review the **automatic** test set: the tests that run on every change (changed m
 
 The tests themselves are not copied here. Read them in `tests/`.
 
-**Not in this repository:** the St. John the Beloved test site, where the browser tests run. It is `github.com/plenix-ds/st-john-test-site` (private), cloned beside this repository (`tests/site.js`, `SITE_DIR`). If it is not available offline, review the tests from their code and `tests/site.js`, and say in the answer which findings you could not check against the site.
+**Not in this repository:** the St. John the Beloved test site, where the browser tests run. It is `github.com/LighthouseCollection/st-john-test-site` (public, on the owner's account since 2026-10-30), cloned beside this repository (`tests/site.js`, `SITE_DIR`). If it is not available offline, review the tests from their code and `tests/site.js`, and say in the answer which findings you could not check against the site.
 
 ## Out of scope
 
